@@ -52,9 +52,10 @@ java_library(
                 "@maven//:org_antlr_antlr_runtime",
                 "@maven//:com_google_guava_guava",
 		"@maven//:javax_servlet_javax_servlet_api",
-		"@ext_jars//:eclipse_core",
+	   "@eclipse_osgi//jar",
+      "@eclipse_osgi_services//jar",
+      "@eclipse_core_jobs//jar",
+      "@eclipse_equinox_common//jar",
 		"@ext_jars//:nebula",
-		"@ext_jars//:eclipse_equinox_common",
-		"@ext_jars//:eclipse_osgi_services"
                 ],
 )

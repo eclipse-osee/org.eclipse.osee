@@ -37,10 +37,11 @@ java_library(
                 "@maven//:javax_mail_mail",
                 "@maven//:org_antlr_antlr_runtime",
                 "@maven//:com_google_guava_guava",
-		"@ext_jars//:eclipse_equinox_common",
+                "@eclipse_equinox_common//jar",
+                "@eclipse_core_commands//jar",
+                "@eclipse_core_runtime//jar",
                 "@ext_jars//:swt",
 		"@ext_jars//:jface",
 		"@ext_jars//:eclipse_ui",
-		"@ext_jars//:eclipse_core"
 		],
 )

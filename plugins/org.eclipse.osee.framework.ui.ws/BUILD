@@ -7,8 +7,9 @@ osgi_jar_converter(
 
 java_library(
     name = "org.eclipse.osee.framework.ui.ws",
-	srcs = glob(["**/*.java"]),
-	deps = ["java_deps",
+    srcs = glob(["**/*.java"]),
+    resources = ["manifest"],
+    deps = ["java_deps",
 		"//org.eclipse.osee.framework.core.packages",
 	 	"//org.eclipse.osee.framework.core.client",
 	 	"//org.eclipse.osee.framework.plugin.core",
@@ -70,11 +71,10 @@ java_library(
                 "@maven//:org_apache_activemq_activemq_all",
 		"@maven//:org_mockito_mockito_core",
 		"@maven//:org_hamcrest_hamcrest_core",
-		"@ext_jars//:eclipse_osgi_services",
+		"@eclipse_core_resources//jar",
+		"@eclipse_equinox_common//jar",
 		"@ext_jars//:eclipse_ui",
 		"@ext_jars//:swt",
 		"@ext_jars//:jface",
-		"@ext_jars//:eclipse_core",
-		"@ext_jars//:eclipse_equinox_common",
                 ],
 )

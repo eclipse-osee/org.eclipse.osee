@@ -3,80 +3,6 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_jar")
 
-http_jar(
-      name = "eclipse_core_net",
-      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.core.net_1.3.900.v20200428-1255.jar&r=1",
-      downloaded_file_name = "org.eclipse.core.net_1.3.900.v20200428-1255.jar"
-)
-
-http_jar(
-      name = "equinox_security",
-      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.equinox.security_1.3.500.v20200114-1637.jar&r=1",
-      downloaded_file_name = "org.eclipse.equinox.security_1.3.500.v20200114-1637.jar"        
-)
-
-http_jar(
-      name = "jcraft",
-      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/com.jcraft.jsch_0.1.55.v20190404-1902.jar&r=1",
-      downloaded_file_name = "com.jcraft.jsch_0.1.55.v20190404-1902.jar"
-)
-
-http_jar(
-      name = "javax_annotation",
-      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.annotation_1.3.5.v20200504-1837.jar&r=1",
-)
-
-http_jar(
-      name = "javax_activation",
-      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.activation_1.1.0.v201211130549.jar&r=1",
-)
-
-http_jar(
-      name = "javax_transaction",
-      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.transaction_1.1.1.v201105210645.jar&r=1"
-)
-
-http_jar(
-      name = "javax_ws_rs",
-      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.ws.rs_2.1.6.v20221203-1659.jar&r=1"
-)
-
-http_jar(
-      name = "javax_xml",
-      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.xml_1.4.1.v20220503-2331.jar&r=1"
-)
-
-http_jar(
-      name = "javax_xml_bind",
-      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.xml.bind_2.2.0.v201105210648.jar&r=1"
-)
-
-http_jar(
-      name = "javax_xml_ws",
-      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.xml.ws_2.1.0.v200902101523.jar&r=1"
-)
-
-http_jar(
-      name = "javax_xml_soap",
-      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.xml.soap_1.3.0.v201105210645.jar&r=1"
-)
-
-http_jar(
-      name = "javax_servlet",
-      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.servlet_3.1.0.v201410161800.jar&r=1"
-)
-
-http_jar(
-      name = "javax_validation",
-      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.validation_1.1.0.v20221112-0806.jar&r=1"
-)
-
-http_jar(
-      name = "javax_mail",
-      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.mail_1.4.0.v201005080615.jar&r=1"
-)
-
-
 
 http_archive(
     name = "rules_pkg",
@@ -100,7 +26,6 @@ http_archive(
     sha256 = RULES_JVM_EXTERNAL_SHA,
     url = "https://github.com/bazelbuild/rules_jvm_external/archive/%s.zip" % RULES_JVM_EXTERNAL_TAG,
 )
-
 
 local_repository(
     name = "ext_jars",
@@ -155,7 +80,6 @@ maven_install(
         "org.osgi:org.osgi.framework:1.10.0",
         "org.eclipse.core:org.eclipse.core.resources:3.7.100",
         "javax.mail:mail:1.4.1",
-	#"javax.transaction:javax.transaction-api:1.2",
         "org.antlr:antlr-runtime:3.2",
         "com.google.guava:guava:30.1-jre",
 	"org.apache.poi:poi:4.1.1",
@@ -185,7 +109,6 @@ maven_install(
         "org.osgi:org.osgi.service.component:1.5.0",
         "org.osgi:org.osgi.service.event:1.4.1",
 	"org.osgi:org.osgi.framework:1.10.0",
-	"org.eclipse.core:runtime:3.10.0-v20140318-2214",
 	"io.swagger.core.v3:swagger-core:2.2.7",
         "io.swagger.core.v3:swagger-jaxrs2:2.2.7",
         "io.swagger.core.v3:swagger-models:2.2.7",
@@ -194,18 +117,331 @@ maven_install(
         "org.eclipse.jgit:org.eclipse.jgit:5.8.0.202006091008-r",
         "org.jsoup:jsoup:1.8.3",
         "com.jcraft:jsch:0.1.55",
+        "org.apache.commons:commons-math3:3.6.1",
         "org.apache.geronimo.specs:geronimo-jms_1.1_spec:1.1",
         "org.apache.activemq:activemq-all:5.14.0",
 	"org.glassfish.jaxb:jaxb-runtime:3.0.1",
 	"org.apache.commons:commons-lang3:3.12.0",
-	"net.oauth.core:oauth:20090531"
+	"org.apache.commons:commons-collections4:4.4",
+	"net.oauth.core:oauth:20090531",
+	"org.apache.ws.xmlschema:xmlschema-core:2.2.5",
 	],
 
     repositories = [
         # Private repositories are supported through HTTP Basic auth
         "https://repo1.maven.org/maven2",   
-        "https://download.eclipse.org/tools/orbit/downloads/drops/R20201130205003/",
-        "https://download.eclipse.org/releases/2020-06/202006171000/plugins"
     ]
     ,
+)
+
+
+http_jar(
+      name = "eclipse_core_net",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.core.net_1.3.900.v20200428-1255.jar&r=1",
+      downloaded_file_name = "org.eclipse.core.net_1.3.900.v20200428-1255.jar"
+)
+
+http_jar(
+      name = "equinox_security",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.equinox.security_1.3.500.v20200114-1637.jar&r=1",
+      downloaded_file_name = "org.eclipse.equinox.security_1.3.500.v20200114-1637.jar"        
+)
+
+http_jar(
+      name = "jcraft",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/com.jcraft.jsch_0.1.55.v20190404-1902.jar&r=1",
+      downloaded_file_name = "com.jcraft.jsch_0.1.55.v20190404-1902.jar"
+)
+
+http_jar(
+      name = "javax_annotation",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.annotation_1.3.5.v20200504-1837.jar&r=1",
+      downloaded_file_name = "javax.annotation_1.3.5.v20200504-1837.jar"
+)
+
+http_jar(
+      name = "javax_activation",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.activation_1.1.0.v201211130549.jar&r=1",
+      downloaded_file_name = "javax.activation_1.1.0.v201211130549.jar"
+)
+
+http_jar(
+      name = "javax_transaction",
+      url = "https://download.eclipse.org/tools/orbit/downloads/drops/R20181102183712/repository/plugins/javax.transaction_1.1.1.v201105210645.jar",
+      downloaded_file_name = "javax.transaction_1.1.1.v201105210645.jar"
+)
+
+http_jar(
+      name = "javax_ws_rs",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.ws.rs_2.1.6.v20200505-2127.jar&r=1",
+      downloaded_file_name = "javax.ws.rs_2.1.6.v20200505-2127.jar"
+)
+
+http_jar(
+      name = "javax_xml",
+      url = "https://www.eclipse.org/downloads/download.php?file=/tools/orbit/downloads/drops/R20230531010532/repository/plugins/javax.xml_1.4.1.v20220503-2331.jar",
+      downloaded_file_name = "javax.xml_1.4.1.v20220503-2331.jar"
+)
+
+http_jar(
+      name = "javax_xml_bind",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.xml.bind_2.2.0.v201105210648.jar&r=1",
+      downloaded_file_name = "javax.xml.bind_2.2.0.v201105210648.jar"
+)
+
+http_jar(
+      name = "javax_xml_ws",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.xml.ws_2.1.0.v200902101523.jar&r=1",
+      downloaded_file_name = "javax.xml.ws.jar"
+)
+
+http_jar(
+      name = "javax_xml_soap",
+      url = "https://download.eclipse.org/tools/orbit/downloads/drops/R20181102183712/repository/plugins/javax.xml.soap_1.3.0.v201105210645.jar",
+      downloaded_file_name = "javax.xml.soap_1.3.0.v201105210645.jar"
+)
+
+http_jar(
+      name = "javax_servlet",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.servlet_3.1.0.v201410161800.jar&r=1",
+      downloaded_file_name = "javax.servlet_3.1.0.v201410161800.jar"
+)
+
+http_jar(
+      name = "javax_validation",
+      url = "https://www.eclipse.org/downloads/download.php?file=/tools/orbit/downloads/drops/R20230531010532/repository/plugins/javax.validation_1.1.0.v20221112-0806.jar",
+      downloaded_file_name = "javax.validation_1.1.0.v20221112-0806.jar"
+)
+
+http_jar(
+      name = "javax_mail",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.mail_1.4.0.v201005080615.jar&r=1",
+      downloaded_file_name = "javax.mail_1.4.0.v201005080615.jar"
+)
+
+http_jar(
+      name = "eclipse_core_runtime",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.core.runtime_3.18.0.v20200506-2143.jar&r=1",
+      downloaded_file_name = "org.eclipse.core.runtime_3.18.0.v20200506-2143.jar"
+)
+
+http_jar(
+      name = "eclipse_core_jobs",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.core.jobs_3.10.800.v20200421-0950.jar&r=1",
+      downloaded_file_name = "org.eclipse.core.jobs_3.10.800.v20200421-0950.jar"
+)
+
+http_jar(
+      name = "eclipse_core_resources",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.core.resources_3.13.700.v20200209-1624.jar&r=1",
+      downloaded_file_name = "org.eclipse.core.resources_3.13.700.v20200209-1624.jar"
+)
+
+http_jar(
+      name = "eclipse_core_commands",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.core.commands_3.9.700.v20191217-1850.jar&r=1",
+      downloaded_file_name = "org.eclipse.core.commands_3.9.700.v20191217-1850.jar"
+)
+
+http_jar(
+      name = "eclipse_core_filesystem",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.core.filesystem_1.7.700.v20200110-1734.jar&r=1",
+      downloaded_file_name = "org.eclipse.core.filesystem_1.7.700.v20200110-1734.jar"
+)
+
+http_jar(
+      name = "eclipse_core_filebuffers",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.core.filebuffers_3.6.1000.v20200409-1035.jar&r=1",
+      downloaded_file_name = "org.eclipse.core.filebuffers_3.6.1000.v20200409-1035.jar"
+)
+
+http_jar(
+      name = "eclipse_core_expressions",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.core.expressions_3.6.800.v20200319-0911.jar&r=1",
+      downloaded_file_name = "org.eclipse.core.expressions_3.6.800.v20200319-0911.jar"
+)
+
+http_jar(
+      name = "eclipse_core_contenttype",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.core.contenttype_3.7.700.v20200517-1644.jar&r=1",
+      downloaded_file_name = "org.eclipse.core.contenttype_3.7.700.v20200517-1644.jar"
+)
+
+http_jar(
+      name = "eclipse_core_variables",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.core.variables_3.4.800.v20200120-1101.jar&r=1",
+      downloaded_file_name = "org.eclipse.core.variables_3.4.800.v20200120-1101.jar"
+)
+
+http_jar(
+      name = "eclipse_debug_core",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.debug.core_3.15.100.v20200514-0816.jar&r=1",
+      downloaded_file_name = "org.eclipse.debug.core_3.15.100.v20200514-0816.jar"
+)
+
+http_jar(
+      name = "eclipse_text",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.text_3.10.200.v20200428-0633.jar&r=1",
+      downloaded_file_name = "org.eclipse.text_3.10.200.v20200428-0633.jar"
+)
+
+http_jar(
+      name = "eclipse_equinox_common",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.equinox.common_3.12.0.v20200504-1602.jar&r=1",
+      downloaded_file_name = "org.eclipse.equinox.common_3.12.0.v20200504-1602.jar"
+)
+
+http_jar(
+      name = "eclipse_equinox_registry",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.equinox.registry_3.8.800.v20200406-0956.jar&r=1",
+      downloaded_file_name = "org.eclipse.equinox.registry_3.8.800.v20200406-0956.jar"
+)
+
+http_jar(
+      name = "eclipse_equinox_preferences",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.equinox.preferences_3.8.0.v20200422-1833.jar&r=1",
+      downloaded_file_name = "org.eclipse.equinox.preferences_3.8.0.v20200422-1833.jar"
+)
+
+http_jar(
+      name = "eclipse_equinox_app",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.equinox.app_1.4.500.v20200422-1833.jar&r=1",
+      downloaded_file_name = "org.eclipse.equinox.app_1.4.500.v20200422-1833.jar"
+)
+
+http_jar(
+      name = "eclipse_equinox_console",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.equinox.console_1.4.100.v20200525-1407.jar&r=1",
+      downloaded_file_name = "org.eclipse.equinox.console_1.4.100.v20200525-1407.jar"
+)
+http_jar(
+      name = "eclipse_equinox_launcher",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.equinox.launcher_1.5.700.v20200207-2156.jar&r=1",
+      downloaded_file_name = "org.eclipse.equinox.launcher_1.5.700.v20200207-2156.jar"
+)
+
+http_jar(
+      name = "eclipse_osgi",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.osgi_3.15.300.v20200520-1959.jar&r=1",
+      downloaded_file_name = "org.eclipse.osgi_3.15.300.v20200520-1959.jar"
+)
+
+http_jar(
+      name = "eclipse_osgi_services",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.osgi.services_3.8.0.v20190206-2147.jar&r=1",
+      downloaded_file_name = "org.eclipse.osgi.services_3.8.0.v20190206-2147.jar"
+)
+
+http_jar(
+      name = "eclipse_osgi_util",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.osgi.util_3.5.300.v20190708-1141.jar&r=1",
+      downloaded_file_name = "org.eclipse.osgi.util_3.5.300.v20190708-1141.jar"
+)
+
+http_jar(
+      name = "eclipse_zest_core",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.zest.core_1.5.300.201606061308.jar&r=1",
+      downloaded_file_name = "org.eclipse.zest.core_1.5.300.201606061308.jar"
+)
+
+http_jar(
+      name = "eclipse_zest_layouts",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.zest.layouts_1.1.300.201606061308.jar&r=1",
+      downloaded_file_name = "org.eclipse.zest.layouts_1.1.300.201606061308.jar"
+)
+
+http_jar(
+      name = "eclipse_search",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.search_3.11.1000.v20200410-1852.jar&r=1",
+      downloaded_file_name = "org.eclipse.search_3.11.1000.v20200410-1852.jar"
+)
+
+http_jar(
+      name = "eclipse_compare",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.compare_3.7.1000.v20200511-1203.jar&r=1",
+      downloaded_file_name = "org.eclipse.compare_3.7.1000.v20200511-1203.jar"
+)
+
+http_jar(
+      name = "apache_commons_codec",
+      url = "https://www.eclipse.org/downloads/download.php?file=/tools/orbit/downloads/drops/R20230531010532/repository/plugins/org.apache.commons.codec_1.14.0.v20221112-0806.jar",
+      downloaded_file_name = "org.apache.commons.codec_1.14.0.v20221112-0806.jar"
+)
+
+http_jar(
+      name = "apache_xerces",
+      url = "https://www.eclipse.org/downloads/download.php?file=/tools/orbit/downloads/drops/R20230531010532/repository/plugins/org.apache.xerces_2.12.2.v20220131-0835.jar",
+      downloaded_file_name = "org.apache.xerces_2.12.2.v20220131-0835.jar"
+)
+
+http_jar(
+      name = "apache_xml_resolver",
+      url = "https://www.eclipse.org/downloads/download.php?file=/tools/orbit/downloads/drops/R20230531010532/repository/plugins/org.apache.xml.resolver_1.2.0.v20220715-1206.jar",
+      downloaded_file_name = "org.apache.xml.resolver_1.2.0.v20220715-1206.jar"
+)
+
+http_jar(
+      name = "antlr_runtime",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.antlr.runtime_3.2.0.v201101311130.jar&r=1",
+      downloaded_file_name = "org.antlr.runtime_3.2.0.v201101311130.jar"
+)
+
+http_jar(
+      name = "google_guava",
+      url = "https://www.eclipse.org/downloads/download.php?file=/tools/orbit/downloads/drops/R20230531010532/repository/plugins/com.google.guava_30.1.0.v20221112-0806.jar",
+      downloaded_file_name = "com.google.guava_30.1.0.v20221112-0806.jar"
+)
+
+http_jar(
+      name = "slf4j_api",
+      url = "https://www.eclipse.org/downloads/download.php?file=/tools/orbit/downloads/drops/R20230531010532/repository/plugins/org.slf4j.api_1.7.30.v20221112-0806.jar",
+      downloaded_file_name = "org.slf4j.api_1.7.30.v20221112-0806.jar"
+)
+
+http_jar(
+      name = "swagger_core",
+      url = "https://ci.eclipse.org/osee/job/osee_nightly/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/plugins/swagger-core_2.2.7.jar",
+      downloaded_file_name = "swagger-core_2.2.7.jar"
+)
+
+http_jar(
+      name = "swagger_annotations",
+      url = "https://ci.eclipse.org/osee/job/osee_nightly/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/plugins/swagger-annotations_2.2.7.jar",
+      downloaded_file_name = "swagger-annotations_2.2.7.jar"
+)
+
+http_jar(
+      name = "swagger_integration",
+      url = "https://ci.eclipse.org/osee/job/osee_nightly/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/plugins/swagger-integration_2.2.7.jar",
+      downloaded_file_name = "swagger-integration_2.2.7.jar"
+)
+
+http_jar(
+      name = "swagger_jaxrs2",
+      url = "https://ci.eclipse.org/osee/job/osee_nightly/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/plugins/swagger-jaxrs2_2.2.7.jar",
+      downloaded_file_name = "swagger-jaxrs2_2.2.7.jar"
+)
+
+http_jar(
+      name = "swagger_models",
+      url = "https://ci.eclipse.org/osee/job/osee_nightly/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/plugins/swagger-models_2.2.7.jar",
+      downloaded_file_name = "swagger-models_2.2.7.jar"
+)
+
+http_jar(
+      name = "apache_poi",
+      url = "https://ci.eclipse.org/osee/job/osee_nightly/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/plugins/org.apache.poi_4.1.1.v20221112-0806.jar",
+      downloaded_file_name = "org.apache.poi_4.1.1.v20221112-0806.jar"
+)
+
+http_jar(
+      name = "apache_poi_ooxml",
+      url = "https://ci.eclipse.org/osee/job/osee_nightly/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/plugins/org.apache.poi.ooxml_4.1.1.v20221112-0806.jar",
+      downloaded_file_name = "org.apache.poi.ooxml_4.1.1.v20221112-0806.jar"
+)
+
+http_jar(
+      name = "apache_poi_ooxml.schemas",
+      url = "https://ci.eclipse.org/osee/job/osee_nightly/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/plugins/org.apache.poi.ooxml.schemas_4.1.1.v20221112-0806.jar",
+      downloaded_file_name = "org.apache.poi.ooxml.schemas_4.1.1.v20221112-0806.jar"
 )

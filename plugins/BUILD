@@ -1,5 +1,46 @@
 package(default_visibility = ["//visibility:public"])
 
+test_suite(
+    name = "server_tests",
+    tests = ["//org.eclipse.osee.framework.jdk.core.test:JdkCoreTestSuite",
+	     "//org.eclipse.osee.account.admin.test:AccountAdmin_JUnit_TestSuite",
+	     "//org.eclipse.osee.account.rest.test:AccountRestTestSuite",
+	     "//org.eclipse.osee.ats.core.test:AllAtsCoreTestSuite",
+	     "//org.eclipse.osee.ats.rest.test:AtsServer_JUnit_TestSuite",
+	     "//org.eclipse.osee.authentication.admin.test:AuthAdminTestSuite",
+	     "//org.eclipse.osee.authentication.ldap.test:LdapAuthenticationTestSuite",
+	     "//org.eclipse.osee.authorization.admin.test:AuthAdminTestSuite",
+	     "//org.eclipse.osee.cache.admin.test:CacheAdminTestSuite",
+	     "//org.eclipse.osee.config.admin.test:ConfigAdminTestSuite",
+	     "//org.eclipse.osee.console.admin.test:AllConsoleAdminTestSuite",
+	     "//org.eclipse.osee.define.rest.test:OseeDefineTestSuite",
+	     "//org.eclipse.osee.disposition.rest.test:Disposition_JUnit_TestSuite",
+	     "//org.eclipse.osee.framework.core.model.test:AllCoreModelTestSuite",
+	     "//org.eclipse.osee.framework.core.server.test:CoreServerTestSuite",
+	     "//org.eclipse.osee.framework.help.ui.test:HelpUiTestSuite",
+	     "//org.eclipse.osee.framework.core.test:FrameworkCoreTestSuite",
+	     "//org.eclipse.osee.framework.logging.test:AllLoggingTestSuite",
+	     "//org.eclipse.osee.framework.messaging.event.res.test:AllEventResTestSuite",
+	     "//org.eclipse.osee.framework.messaging.test:AllMessagingIntegrationTestSuite",
+	     "//org.eclipse.osee.framework.resource.management.test:ResourceManagementTestSuite",
+	     "//org.eclipse.osee.jaxrs.server.test:JaxRsServerTestSuite",
+	     "//org.eclipse.osee.jdbc.test:AllJdbcTestSuite",
+	     "//org.eclipse.osee.orcs.core.test:OrcsCoreTestSuite", 
+	     "//org.eclipse.osee.orcs.db.test:OrcsDb_JUnit_TestSuite",
+	     "//org.eclipse.osee.orcs.rest.test:OrcsRest_JUnit_TestSuite",
+	     "//org.eclipse.osee.template.engine.test:OseeTemplateEngineTestSuite",
+	    ],
+    
+
+)
+
+test_suite(
+    name = "client_tests",
+    tests = ["//org.eclipse.osee.ats.ide.help.ui.test:AtsHelpUiTestSuite",
+	     "//org.eclipse.osee.framework.skynet.core.test:AllSkynetCoreJunitTestSuite",
+    	     "//org.eclipse.osee.define.ide.test:AllDefineJunitTestSuite",
+    	     "//org.eclipse.osee.framework.ui.skynet.test:AllUiSkynetJunitTestSuite"]
+)
 
 alias(
    name = "accessor",
@@ -135,6 +176,11 @@ alias(
 alias(
    name = "framework_jdk_core",
    actual = "//org.eclipse.osee.framework.jdk.core"
+)
+
+alias(
+   name = "framework_jdk_core_test",
+   actual = "//org.eclipse.osee.framework.jdk.core.test"
 )
 
 alias(

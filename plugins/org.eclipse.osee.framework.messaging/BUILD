@@ -49,6 +49,6 @@ java_library(
 		"@maven//:org_apache_geronimo_specs_geronimo_jms_1_1_spec",
                 "@maven//:org_apache_activemq_activemq_all",
 		"@maven//:org_glassfish_jaxb_jaxb_runtime",
-		"@ext_jars//:eclipse_osgi_services",
+		"@eclipse_osgi//jar"
                 ],
 )

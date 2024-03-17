@@ -49,7 +49,7 @@ java_library(
                 "@maven//:io_swagger_core_v3_swagger_annotations",
                 "@maven//:io_swagger_core_v3_swagger_jaxrs2",
                 "@maven//:io_swagger_core_v3_swagger_models",
-                "@ext_jars//:javax",
+		"@javax_annotation//jar",
 		"@ext_jars//:apache_commons_lang"
                 ],
 )

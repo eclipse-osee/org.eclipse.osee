@@ -64,14 +64,11 @@ java_library(
                 "@maven//:org_apache_activemq_activemq_all",
 		"@maven//:org_mockito_mockito_core",
 		"@maven//:org_hamcrest_hamcrest_core",
-		"@ext_jars//:eclipse_osgi_services",
 		"@ext_jars//:nebula",
 		"@ext_jars//:apache_commons_lang",
 		"@ext_jars//:eclipse_ui",
 		"@ext_jars//:swt",
 		"@ext_jars//:jface",
-		"@ext_jars//:eclipse_core",
-		"@ext_jars//:eclipse_equinox_common"
 	],
 )
 

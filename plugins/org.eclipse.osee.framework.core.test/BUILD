@@ -23,8 +23,9 @@ java_library(
 		"@maven//:org_mockito_mockito_core",
 		"@maven//:org_hamcrest_hamcrest_core",
 		"@maven//:org_junit_junit5_api",
-		"@ext_jars//:eclipse_equinox_common", 
-		"@ext_jars//:eclipse_osgi_services",
+		"@eclipse_osgi//jar",
+		"@eclipse_equinox_common//jar"
+		#"@ext_jars//:eclipse_equinox_common", 
                 ],
 )
 

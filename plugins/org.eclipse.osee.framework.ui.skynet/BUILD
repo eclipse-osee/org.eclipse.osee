@@ -7,7 +7,7 @@ osgi_jar_converter(
 
 java_library(
         name = "org.eclipse.osee.framework.ui.skynet",
-	resources = ["src-img","manifest","osgi-inf","osee-inf"],
+	resources = ["resources"],
 	srcs = glob(["**/*.java"]),
 	deps = ["java_deps",
 	 	"//org.eclipse.osee.framework.core.packages",
@@ -44,29 +44,9 @@ java_library(
 )
 
 filegroup(
-    name = "manifest",
-    srcs =
-          [
-	    "META-INF/MANIFEST.MF"
-           ],
-)
-
-filegroup(
-    name = "osee-inf",
-    srcs =
-          glob([
-	    "OSEE-INF/*"
-           ]),
-)
-
-filegroup(
-    name = "src-img",
-    srcs = glob(["**/*.gif",]),
-)
-
-filegroup(
-    name = "osgi-inf",
-    srcs = glob(["OSGI-INF/*"])
+    name = "resources",
+    srcs = glob(["**/*"])
+         
 )
 
 java_library(
@@ -99,12 +79,25 @@ java_library(
 			"@maven//:com_vladsch_flexmark_flexmark_ext_tables",
 			"@maven//:com_vladsch_flexmark_flexmark_util_ast",
 			"@maven//:com_vladsch_flexmark_flexmark",
-			"@ext_jars//:eclipse_osgi_services",
+			"@eclipse_core_resources//jar",
+			"@eclipse_core_commands//jar",
+			"@eclipse_core_runtime//jar",
+			"@eclipse_core_jobs//jar",
+			"@eclipse_core_filesystem//jar",
+			"@eclipse_equinox_common//jar",
+			"@eclipse_equinox_preferences//jar",
+			"@eclipse_equinox_app//jar",
+			"@eclipse_equinox_registry//jar",
+			"@eclipse_osgi//jar",
+			"@eclipse_osgi_services//jar",
+			"@eclipse_zest_core//jar",
+			"@eclipse_zest_layouts//jar",
+			"@eclipse_debug_core//jar",
+			"@eclipse_search//jar",
+			"@eclipse_compare//jar",
 			"@ext_jars//:eclipse_ui",
 			"@ext_jars//:swt",
 			"@ext_jars//:jface",
-			"@ext_jars//:eclipse_core",
-			"@ext_jars//:eclipse_equinox_common",
 			"@ext_jars//:apache_commons_lang",
 			"@ext_jars//:nebula"
 	],

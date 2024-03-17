@@ -66,6 +66,5 @@ java_library(
                 "@maven//:com_google_guava_guava",
 		"@maven//:org_hsqldb_hsqldb",
 		"@maven//:javax_servlet_javax_servlet_api",
-		"@ext_jars//:eclipse_osgi_services",
 		],
 )

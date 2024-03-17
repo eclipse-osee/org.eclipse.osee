@@ -83,14 +83,18 @@ java_library(
                 "@maven//:org_apache_activemq_activemq_all",
 		"@maven//:org_mockito_mockito_core",
 		"@maven//:org_hamcrest_hamcrest_core",
-		"@ext_jars//:eclipse_osgi_services",
+		"@eclipse_core_resources//jar",
+		"@eclipse_core_filesystem//jar",
+		"@eclipse_core_runtime//jar",
+		"@eclipse_equinox_common//jar",
+		"@eclipse_osgi//jar",
+		"@eclipse_core_jobs//jar",
+		"@eclipse_equinox_registry//jar",
 		"@ext_jars//:nebula",
 		"@ext_jars//:apache_commons_lang",
 		"@ext_jars//:eclipse_ui",
 		"@ext_jars//:swt",
 		"@ext_jars//:jface",
-		"@ext_jars//:eclipse_core",
-		"@ext_jars//:eclipse_equinox_common"
 	],
 )
 

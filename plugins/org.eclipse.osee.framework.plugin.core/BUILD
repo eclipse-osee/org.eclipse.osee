@@ -34,9 +34,14 @@ java_library(
                 "@maven//:javax_mail_mail",
                 "@maven//:org_antlr_antlr_runtime",
                 "@maven//:com_google_guava_guava",
-		"@ext_jars//:eclipse_core",
-		"@ext_jars//:eclipse_osgi_services",
-		"@ext_jars//:eclipse_equinox_common",
+		"@eclipse_core_runtime//jar",
+		"@eclipse_core_jobs//jar", 
+		"@eclipse_core_resources//jar",
+		"@eclipse_equinox_common//jar",
+		"@eclipse_equinox_registry//jar",
+		"@eclipse_equinox_preferences//jar",
+		"@eclipse_equinox_app//jar",
+		"@eclipse_osgi//jar"
                 ],
 )
 

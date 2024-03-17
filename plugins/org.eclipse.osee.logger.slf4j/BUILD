@@ -22,9 +22,6 @@ filegroup(
 
 java_library(
         name = "java_deps",
-        exports = [
-		"@maven//:org_slf4j_slf4j_api",
-		"@ext_jars//:eclipse_osgi_services"
-                ],
+        exports = ["@maven//:org_slf4j_slf4j_api","@eclipse_osgi//jar","@eclipse_osgi_services//jar"],
 )
 

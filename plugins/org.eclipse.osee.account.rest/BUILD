@@ -70,15 +70,13 @@ java_library(
 			"@maven//:org_osgi_org_osgi_service_event",
 			"@maven//:org_osgi_org_osgi_service_component",
 			"@maven//:org_osgi_org_osgi_framework",
-			"@maven//:org_eclipse_core_runtime",
 			"@maven//:org_eclipse_core_org_eclipse_core_resources",
 			"@maven//:javax_mail_mail",
 			"@maven//:org_antlr_antlr_runtime",
 			"@maven//:com_google_guava_guava",
 			"@maven//:javax_servlet_javax_servlet_api",
 			"@maven//:org_hsqldb_hsqldb",
-			"@ext_jars//:javax",
-			"@ext_jars//:eclipse_osgi_services",
+			"@javax_annotation//jar",
 			"@ext_jars//:poi"
                 ],
 )

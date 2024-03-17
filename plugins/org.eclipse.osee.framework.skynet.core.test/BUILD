@@ -63,9 +63,8 @@ java_library(
 		"@maven//:org_hsqldb_hsqldb",
 		"@maven//:org_jsoup_jsoup",
                 "@maven//:org_mockito_mockito_core",
-		"@ext_jars//:eclipse_core",
-		"@ext_jars//:eclipse_equinox_common",
-		"@ext_jars//:eclipse_osgi_services",
+		#"@ext_jars//:eclipse_equinox_common",
+		"@eclipse_equinox_common//jar",
                 "@ext_jars//:apache_commons_lang"
                ],
 )
