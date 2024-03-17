@@ -32,8 +32,6 @@ java_library(
                     "@maven//:org_osgi_org_osgi_service_event",
                     "@maven//:org_osgi_org_osgi_service_component",
                     "@maven//:org_osgi_org_osgi_framework",
-                    "@maven//:org_eclipse_core_runtime",
-		    "@maven//:org_eclipse_osgi",
                     "@maven//:org_eclipse_core_org_eclipse_core_resources",
                     "@maven//:javax_mail_mail",
                     "@maven//:org_antlr_antlr_runtime",

@@ -7,33 +7,23 @@ osgi_jar_converter(
 )
 
 java_library(
-    name       = "org.eclipse.osee.define.operations.api",
-    resources  = ["manifest"],
-    srcs       = glob(["**/*.java"]),
-    deps       = [ 
-                   "java_deps", 
-                   "//framework_core_packages",
-                   "//org.eclipse.osee.jdbc",
-                   "//org.eclipse.osee.orcs",
-                   "//org.eclipse.osee.console.admin",
-                   "//org.eclipse.osee.cache.admin",
-                   "//org.eclipse.osee.activity.api",
-		   "//org.eclipse.osee.define.rest.api"
-                ],
-    visibility = [
-                   "//visibility:public"
-                ]
+    name = "org.eclipse.osee.define.operations.api",
+    resources = ["resources"],
+    srcs = glob(["**/*.java"]),
+    deps = ["java_deps","//org.eclipse.osee.framework.core.packages","//org.eclipse.osee.orcs",
+            "//org.eclipse.osee.framework.core.server","//org.eclipse.osee.define.rest.api",
+	    "//org.eclipse.osee.activity.api",],
+    visibility = ["//visibility:public"]
 )
 
 filegroup(
-   name = "manifest",
-   srcs = ["META-INF/MANIFEST.MF"]
+    name = "resources",
+    srcs = glob(["**/*"]),
 )
 
-
 java_library(
-   name       = "java_deps",
-   exports    = [
+        name = "java_deps",
+        exports    = [
                    "@maven//:com_fasterxml_jackson_core_jackson_core",
                    "@maven//:com_fasterxml_jackson_core_jackson_databind",
                    "@maven//:com_fasterxml_jackson_core_jackson_annotations",
@@ -53,6 +43,5 @@ java_library(
                    "@maven//:io_swagger_core_v3_swagger_core",
                    "@maven//:io_swagger_core_v3_swagger_jaxrs2",
                    "@maven//:io_swagger_core_v3_swagger_models",
-                   "@ext_jars//:eclipse_osgi_services",
                 ]
 )

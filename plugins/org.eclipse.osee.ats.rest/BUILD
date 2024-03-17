@@ -62,8 +62,8 @@ java_library(
                 "@maven//:org_antlr_antlr_runtime",
                 "@maven//:com_google_guava_guava",
 		"@maven//:org_apache_cxf_cxf_rt_frontend_jaxrs",
-		"@ext_jars//:eclipse_osgi_services",
-		"@ext_jars//:eclipse_equinox_common",
+		"@eclipse_osgi//jar",
+		"@eclipse_equinox_common//jar", 
 		"@ext_jars//:nebula",
 		"@ext_jars//:apache_commons_lang"
                 ],

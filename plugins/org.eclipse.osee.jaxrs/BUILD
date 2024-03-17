@@ -50,7 +50,6 @@ java_library(
 		    "@maven//:org_antlr_antlr_runtime",
 		    "@maven//:com_google_guava_guava",
 		    "@ext_jars//:poi",
-		    "@ext_jars//:javax"
                 ],
 )
 

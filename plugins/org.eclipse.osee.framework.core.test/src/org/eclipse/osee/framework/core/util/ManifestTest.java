@@ -35,14 +35,16 @@ public class ManifestTest {
       File pluginsRoot = new File(pluginsPath);
       File[] pluginDirs = pluginsRoot.listFiles();
       List<File> hasVersions = new ArrayList<>();
-      for (File pluginDir : pluginDirs) {
+      if (pluginDirs != null) {
+         for (File pluginDir : pluginDirs) {
 
-         if (pluginDir.getAbsolutePath().contains("jms")) {
-            continue;
-         }
-         File manifestDir = new File(pluginDir, "META-INF" + File.separator + "MANIFEST.MF");
-         if (manifestHasVersion(manifestDir)) {
-            hasVersions.add(pluginDir);
+            if (pluginDir.getAbsolutePath().contains("jms")) {
+               continue;
+            }
+            File manifestDir = new File(pluginDir, "META-INF" + File.separator + "MANIFEST.MF");
+            if (manifestHasVersion(manifestDir)) {
+               hasVersions.add(pluginDir);
+            }
          }
       }
 

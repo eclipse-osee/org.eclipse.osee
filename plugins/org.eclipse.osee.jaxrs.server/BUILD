@@ -44,9 +44,9 @@ filegroup(
 java_library(
         name = "java_deps",
         exports = [
-                "@maven//:com_fasterxml_jackson_core_jackson_core",
-                "@maven//:com_fasterxml_jackson_core_jackson_databind",
-                "@maven//:com_fasterxml_jackson_core_jackson_annotations",
+                        "@maven//:com_fasterxml_jackson_core_jackson_core",
+                        "@maven//:com_fasterxml_jackson_core_jackson_databind",
+                        "@maven//:com_fasterxml_jackson_core_jackson_annotations",
 		        "@maven//:com_fasterxml_jackson_jaxrs_jackson_jaxrs_base",
 		        "@maven//:com_fasterxml_jackson_jaxrs_jackson_jaxrs_json_provider",
 		        "@maven//:jakarta_xml_bind_jakarta_xml_bind_api",
@@ -55,7 +55,7 @@ java_library(
 		        "@maven//:org_apache_cxf_cxf_rt_frontend_jaxrs",
 		        "@maven//:org_apache_cxf_cxf_rt_rs_client",
 		        "@maven//:org_apache_cxf_cxf_rt_rs_security_oauth",
-                "@maven//:org_apache_cxf_cxf_rt_rs_security_oauth2",
+                        "@maven//:org_apache_cxf_cxf_rt_rs_security_oauth2",
 		        "@maven//:org_apache_cxf_cxf_rt_security",
 		        "@maven//:org_apache_cxf_cxf_rt_transports_http",
 		        "@maven//:org_apache_cxf_cxf_rt_rs_service_description",
@@ -68,7 +68,8 @@ java_library(
 		        "@maven//:com_google_guava_guava",
 		        "@maven//:javax_servlet_javax_servlet_api",
 		        "@maven//:javax_annotation_javax_annotation_api",
-		        "@ext_jars//:eclipse_osgi_services",
+		        "@eclipse_osgi//jar",		 
+		        "@eclipse_osgi_services//jar",
 		        "@ext_jars//:poi"
                 ],
 )

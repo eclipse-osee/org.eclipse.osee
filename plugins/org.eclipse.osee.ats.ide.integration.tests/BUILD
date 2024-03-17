@@ -87,7 +87,6 @@ java_library(
                 "@maven//:org_apache_activemq_activemq_all",
 		"@maven//:org_mockito_mockito_core",
 		"@maven//:org_hamcrest_hamcrest_core",
-		"@ext_jars//:eclipse_osgi_services",
                 "@ext_jars//:junit",
 		"@ext_jars//:nebula",
 		"@ext_jars//:apache_commons_lang",
@@ -96,7 +95,6 @@ java_library(
 		"@ext_jars//:rmf",
 		"@ext_jars//:emf",
 		"@ext_jars//:jface",
-		"@ext_jars//:eclipse_core",
 		"@ext_jars//:eclipse_equinox_common"
 	],
 )

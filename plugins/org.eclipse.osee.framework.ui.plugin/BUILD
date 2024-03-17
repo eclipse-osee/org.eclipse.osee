@@ -7,7 +7,7 @@ osgi_jar_converter(
 
 java_library(
     name = "org.eclipse.osee.framework.ui.plugin",
-	resources = ["xml_files", "exsd_files", "img"],
+	resources = ["resources"],
 	srcs = glob(["**/*.java"]),
 	deps = ["java_deps",
 		"//org.eclipse.osee.framework.core.packages",
@@ -37,55 +37,8 @@ java_library(
 )
 
 filegroup(
-    name = "xml_files",
-    srcs =
-          [
-	    "plugin.xml"
-           ],
-)
-
-filegroup(
-    name = "exsd_files",
-    srcs =
-          [
-            "OSEE-INF/extensionPts/PropertyStoreControl.exsd",
-            "OSEE-INF/extensionPts/WorkbenchTargetProvider.exsd",
-	    "OSEE-INF/extensionPts/XNavigateItemProvider.exsd",
-	    "META-INF/MANIFEST.MF"
-           ],
-)
-
-filegroup(
-    name = "img",
-    srcs =
-          [
-		"OSEE-INF/images/admin.gif",
-		"OSEE-INF/images/browse.gif",
-		"OSEE-INF/images/bug.gif",
-		"OSEE-INF/images/chkbox_disabled.gif",
-		"OSEE-INF/images/chkbox_enabled.gif",
-		"OSEE-INF/images/edit.gif",
-		"OSEE-INF/images/errorSm.gif",
-		"OSEE-INF/images/faq.gif",
-		"OSEE-INF/images/filter.gif",
-		"OSEE-INF/images/folder.gif",
-		"OSEE-INF/images/gear.gif",
-		"OSEE-INF/images/lockkey.gif",
-		"OSEE-INF/images/needSave.gif",
-		"OSEE-INF/images/new.gif",
-		"OSEE-INF/images/open.gif",
-		"OSEE-INF/images/osee_16.png",
-		"OSEE-INF/images/permission.bmp",
-		"OSEE-INF/images/publish.gif",
-		"OSEE-INF/images/refresh.gif",
-		"OSEE-INF/images/remove.gif",
-		"OSEE-INF/images/report.gif",
-		"OSEE-INF/images/sample.gif",
-		"OSEE-INF/images/saved.gif",
-		"OSEE-INF/images/train.gif",
-		"OSEE-INF/images/viewMenu.gif",
-		"OSEE-INF/images/www.gif"
-	  ],
+    name = "resources",
+    srcs = glob(["**/*"])
 )
 
 java_library(
@@ -110,12 +63,17 @@ java_library(
 		"@maven//:org_eclipse_jdt_org_eclipse_jdt_core",
 		"@maven//:org_apache_geronimo_specs_geronimo_jms_1_1_spec",
                 "@maven//:org_apache_activemq_activemq_all",
-		"@ext_jars//:eclipse_osgi_services",
+                "@eclipse_osgi//jar",
+                "@eclipse_osgi_services//jar",
+                "@eclipse_core_commands//jar",
+                "@eclipse_core_jobs//jar",
+                "@eclipse_core_resources//jar",
+                "@eclipse_core_runtime//jar",
+                "@eclipse_equinox_common//jar",
+                "@eclipse_equinox_registry//jar",
 		"@ext_jars//:eclipse_ui",
 		"@ext_jars//:swt",
 		"@ext_jars//:jface",
-		"@ext_jars//:eclipse_core",
-		"@ext_jars//:eclipse_equinox_common",
 		"@ext_jars//:help",
 		"@ext_jars//:junit"
 	],

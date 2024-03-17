@@ -49,7 +49,8 @@ java_library(
 		"@maven//:io_swagger_core_v3_swagger_core",
 		"@maven//:io_swagger_core_v3_swagger_jaxrs2",
                 "@maven//:io_swagger_core_v3_swagger_models",
-		"@ext_jars//:eclipse_osgi_services",
+		"@eclipse_osgi_services//jar",
+		"@eclipse_osgi//jar",
 		"@ext_jars//:nebula",
 		"@ext_jars//:apache_commons_lang"
                 ],

@@ -17,11 +17,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
-import java.util.ServiceLoader;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.OrcsTokenServiceImpl;
@@ -35,11 +32,8 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.framework.launch.Framework;
-import org.osgi.framework.launch.FrameworkFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -65,16 +59,15 @@ public class RelationOrderParser {
    };
    private final OrcsTokenService tokenService;
 
-
    public RelationOrderParser() {
-      String builtByBazel = System.getProperty("built_by_bazel");
-      if(builtByBazel != null && builtByBazel.equals("yes")) {
+      String builtByBazel = System.getenv("built_by_bazel");
+      if (builtByBazel != null && builtByBazel.equals("yes")) {
          BundleContext context = OsgiUtil.createOsgiBundleContext();
-         ServiceRegistration<OrcsTokenService> servReg = context.registerService(OrcsTokenService.class, new OrcsTokenServiceImpl(), new Hashtable());
+         ServiceRegistration<OrcsTokenService> servReg =
+            context.registerService(OrcsTokenService.class, new OrcsTokenServiceImpl(), new Hashtable());
          ServiceReference<OrcsTokenService> servRef = servReg.getReference();
          tokenService = context.getService(servRef);
-      }
-      else {
+      } else {
          tokenService = OsgiUtil.getService(ArtifactLoader.class, OrcsTokenService.class);
       }
    }
@@ -124,7 +117,8 @@ public class RelationOrderParser {
       sb.append(">");
    }
 
-   private void writeEntry(StringBuilder sb, Entry<Pair<RelationTypeToken, RelationSide>, Pair<RelationSorter, List<String>>> entry) {
+   private void writeEntry(StringBuilder sb,
+      Entry<Pair<RelationTypeToken, RelationSide>, Pair<RelationSorter, List<String>>> entry) {
       Pair<RelationTypeToken, RelationSide> key = entry.getKey();
       sb.append("<");
       sb.append("Order ");

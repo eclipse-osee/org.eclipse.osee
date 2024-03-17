@@ -44,7 +44,7 @@ java_library(
                 "@maven//:org_antlr_antlr_runtime",
                 "@maven//:com_google_guava_guava",
 		"@maven//:org_hsqldb_hsqldb",
-		"@ext_jars//:eclipse_osgi_services",
 		"@ext_jars//:apache_commons_lang",
+		"@eclipse_osgi_services//jar"
 		],
 )

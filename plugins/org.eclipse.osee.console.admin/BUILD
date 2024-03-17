@@ -31,7 +31,7 @@ java_library(
                 "@maven//:jakarta_ws_rs_jakarta_ws_rs_api",
                 "@maven//:javax_activation_activation",
                 "@maven//:jakarta_xml_bind_jakarta_xml_bind_api",
-                "@ext_jars//:eclipse_osgi_services"
+                "@eclipse_osgi//jar",
                 ],
 )
 
