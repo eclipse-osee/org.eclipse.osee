@@ -33,6 +33,8 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.HelpPage;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.ImplementationDetailsMsWord;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Info;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InfoGroup;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InterfaceArrayIndexDescription;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InterfaceArrayIndexDescriptionSet;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InterfaceArtifact;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InterfaceConnection;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.InterfaceDataElement;
@@ -187,6 +189,15 @@ public interface CoreRelationTypes {
    RelationTypeToken InterfaceEnumeration = osee.addNewRelationType(2455059983007225795L, "Interface Enumeration Definition", MANY_TO_MANY, RelationSorter.USER_DEFINED, InterfaceEnumSet, "Interface Enumeration Set", InterfaceEnum, "Interface Enumeration");
    RelationTypeSide InterfaceEnumeration_EnumerationSet = RelationTypeSide.create(InterfaceEnumeration, SIDE_A);
    RelationTypeSide InterfaceEnumeration_EnumerationState = RelationTypeSide.create(InterfaceEnumeration, SIDE_B);
+
+   RelationTypeToken InterfaceArrayIndexDescriptionSetIndex = osee.addNewRelationType(1583018874205810065L, "Interface Array Index Description Set", MANY_TO_MANY, RelationSorter.USER_DEFINED, InterfaceArrayIndexDescriptionSet, "Interface Array Index Description Set", InterfaceArrayIndexDescription, "Interface Array Index Description");
+   RelationTypeSide InterfaceArrayIndexDescription_Set = RelationTypeSide.create(InterfaceArrayIndexDescriptionSetIndex, SIDE_A);
+   RelationTypeSide InterfaceArrayIndexDescription_Index = RelationTypeSide.create(InterfaceArrayIndexDescriptionSetIndex, SIDE_B);
+
+   RelationTypeToken InterfaceElementArrayIndexDescriptionSetElement = osee.addNewRelationType(8346756807758692886L, "Interface Element Array Index Description Set", MANY_TO_ONE, RelationSorter.LEXICOGRAPHICAL_ASC, InterfaceDataElement, "Interface Data Element", InterfaceArrayIndexDescriptionSet, "Interface Array Index Description Set");
+   RelationTypeSide InterfaceElementArrayIndexDescriptionSet_Element = RelationTypeSide.create(InterfaceElementArrayIndexDescriptionSetElement, SIDE_A);
+   RelationTypeSide InterfaceElementArrayIndexDescriptionSet_Set = RelationTypeSide.create(InterfaceElementArrayIndexDescriptionSetElement, SIDE_B);
+
 
    RelationTypeToken InterfaceElementArrayElement = osee.addNewRelationType(5540416179400488807L, "Interface Element Array Element", MANY_TO_MANY, RelationSorter.USER_DEFINED, InterfaceDataElement, "Interface Data Element", InterfaceDataElement, "Interface Data Element");
    RelationTypeSide InterfaceElementArrayElement_Element = RelationTypeSide.create(InterfaceElementArrayElement, SIDE_A);

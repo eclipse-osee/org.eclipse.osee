@@ -16,9 +16,9 @@ package org.eclipse.osee.framework.core.enums;
 import static org.eclipse.osee.framework.core.data.AttributeTypeToken.DEFAULT_DATE;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.*;
 import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.osee;
-import org.eclipse.osee.framework.core.data.MaterialIcon;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.MaterialColors;
+import org.eclipse.osee.framework.core.data.MaterialIcon;
 import org.eclipse.osee.framework.core.data.MaterialShades;
 import org.eclipse.osee.framework.core.publishing.RequiredIndicator;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
@@ -572,7 +572,8 @@ public interface CoreArtifactTypes {
       .zeroOrOne(InterfaceElementIndexEnd)
       .zeroOrOne(InterfaceElementArrayIndexOrder)
       .zeroOrOne(InterfaceElementArrayIndexDelimiterOne)
-      .zeroOrOne(InterfaceElementArrayIndexDelimiterTwo));
+      .zeroOrOne(InterfaceElementArrayIndexDelimiterTwo)
+      .zeroOrOne(InterfaceElementBlockData));
 
    ArtifactTypeToken InterfaceDataElementArray = osee.add(osee.artifactType(6360154518785980502L, "Interface DataElement Array", false, InterfaceDataElement));
 
@@ -595,6 +596,13 @@ public interface CoreArtifactTypes {
       .exactlyOne(InterfaceEnumOrdinalType));
 
    ArtifactTypeToken InterfaceEnumSet = osee.add(osee.artifactType(2455059983007225791L, "Interface Enumeration Set", false, InterfaceArtifact));
+
+   ArtifactTypeToken InterfaceArrayIndexDescription = osee.add(osee.artifactType(7631444686345295189L, "Interface Array Index Description", false, InterfaceArtifact)
+      .exactlyOne(InterfaceEnumOrdinal)
+      .exactlyOne(InterfaceEnumOrdinalType));
+
+   ArtifactTypeToken InterfaceArrayIndexDescriptionSet = osee.add(osee.artifactType(2582143466754453878L, "Interface Array Index Description Set", false, InterfaceArtifact));
+
 
    ArtifactTypeToken InterfaceRate = osee.add(osee.artifactType(2434833974449324686L, "Interface Transmission Rate", false, InterfaceArtifact));
 

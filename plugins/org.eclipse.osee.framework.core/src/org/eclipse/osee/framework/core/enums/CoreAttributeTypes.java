@@ -673,6 +673,8 @@ public interface CoreAttributeTypes {
 
    AttributeTypeBoolean InterfaceElementAlterable = osee.createBoolean(2455059983007225788L, "Interface Element Alterable", MediaType.TEXT_PLAIN, "Element can be altered after creation.");
 
+   AttributeTypeBoolean InterfaceElementBlockData = osee.createBoolean(1523923981411079299L, "Interface Element Block Data", MediaType.TEXT_PLAIN, "Element in array tied to Block Data");
+
    AttributeTypeBoolean InterfaceElementArrayHeader = osee.createBoolean(3313203088521964923L, "Interface Element Array Header", MediaType.TEXT_PLAIN, "Element is an array header");
 
    AttributeTypeBoolean InterfaceElementWriteArrayHeaderName = osee.createBoolean(3313203088521964924L, "Interface Element Write Array Header Name", MediaType.TEXT_PLAIN, "Exports write the array header name");
