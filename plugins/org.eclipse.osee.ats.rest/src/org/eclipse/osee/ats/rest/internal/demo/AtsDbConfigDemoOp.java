@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
+import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
@@ -62,7 +63,16 @@ public class AtsDbConfigDemoOp {
 
       createMarkdownRequirements();
 
+      addBacklogCustomization();
+
       return new XResultData();
+   }
+
+   private void addBacklogCustomization() {
+      IAtsChangeSet changes = atsApi.createChangeSet("Set Default Customization");
+      changes.addAttribute(CoreArtifactTokens.XViewerCustomization, CoreAttributeTypes.XViewerCustomization,
+         OseeInf.getResourceContents("atsConfig/TestCust.xml", AtsDbConfigDemoOp.class));
+      changes.execute();
    }
 
    private void createDemoWebConfig() {

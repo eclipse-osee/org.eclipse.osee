@@ -229,7 +229,6 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
             wr.getOrderedHeaders().add(col.getName());
          }
       }
-      wr.getOrderedHeaders().add("ID");
 
       AtsConfigurations configurations = atsApi.getConfigService().getConfigurations();
       for (IAtsWorkItem workItem : workItems) {
@@ -245,9 +244,6 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
             }
             cells.put(header.getName(), text);
          }
-
-         // add id column on all rows
-         cells.put("ID", workItem.toStringWithId());
       }
       return wr;
    }
@@ -259,6 +255,9 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
    public String getCollectionUI(@PathParam("collectorId") ArtifactId collectorId) {
       StringBuilder sb = new StringBuilder();
       ArtifactReadable collectorArt = (ArtifactReadable) atsApiServer.getQueryService().getArtifact(collectorId);
+      if (collectorArt == null) {
+         return AHTML.simplePage("Collector Art Does Not Exist " + collectorId);
+      }
       getDefaultUiTable(sb, "Collection - " + collectorArt.getName(), getCollection(collectorId));
       return sb.toString();
    }
