@@ -23,6 +23,10 @@ export const routes: Routes = [
 		pathMatch: 'prefix',
 	},
 	{
+		path: 'world',
+		loadChildren: () => import('./world/world.routes'),
+	},
+	{
 		path: 'ci',
 		loadChildren: () => import('./ci-dashboard/ci-dashboard.routes'),
 	},
