@@ -134,12 +134,6 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
    }
 
    private InterfaceStructureToken parseStructure(BranchId branch, ArtifactId connectionId,
-      InterfaceStructureToken structure, ArtifactId viewId) {
-      return this.parseStructure(branch, connectionId, structure, viewId,
-         new LinkedList<InterfaceStructureElementToken>());
-   }
-
-   private InterfaceStructureToken parseStructure(BranchId branch, ArtifactId connectionId,
       InterfaceStructureToken structure, String elementFilter) {
       return this.parseStructure(branch, connectionId, structure, ArtifactId.SENTINEL,
          this.interfaceElementApi.getAllRelatedAndFilter(branch, ArtifactId.valueOf(structure.getId()), elementFilter));
@@ -419,7 +413,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
          structure = this.getAccessor().getByRelation(branch, structureId,
             CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, this.getFullFollowRelationDetails(),
             viewId);
-         return this.parseStructure(branch, connectionId, structure, viewId);
+         return this.parseStructure(branch, connectionId, structure, viewId, structure.getElements());
       } catch (Exception ex) {
          System.out.println(ex);
          return InterfaceStructureToken.SENTINEL;
