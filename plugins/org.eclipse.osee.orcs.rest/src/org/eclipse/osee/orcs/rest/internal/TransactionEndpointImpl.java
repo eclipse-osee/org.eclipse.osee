@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -246,8 +247,7 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
                e.getMessage() + " at time: " + dateFormat.format(date)));
             TransferFileLockUtil.unLock(orcsApi.getKeyValueOps(), exportId.getId());
             throw new OseeCoreException(
-               "Error in generating transfer files, exception:  " + e + " At time: " + dateFormat.format(
-                  date));
+               "Error in generating transfer files, exception:  " + e + " At time: " + dateFormat.format(date));
          }
       }
       int errors = results.getErrorCount();
@@ -387,7 +387,7 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       }
       return results;
    }
-   
+
    @Override
    public Response downloadTransferFile(String filename) {
       String transferPath = orcsApi.getSystemProperties().getValue(
@@ -411,14 +411,13 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       if (serverDataPath == null) {
          serverDataPath = System.getProperty("user.home");
       }
-      File serverApplicDir = new File(String.format("%s%sOSSEDataTransferUploads", serverDataPath, File.separator));
+      File serverApplicDir = new File(String.format("%s%sOSEEDataTransferUploads", serverDataPath, File.separator));
       if (!serverApplicDir.exists()) {
          serverApplicDir.mkdirs();
          try {
             FileWriter readme =
                new FileWriter(String.format("%s%s%s", serverApplicDir.getPath(), File.separator, "readme.txt"));
-            readme.write(
-               "This folder contains OSEE data transfer files which were uploaded via rest api and imported into database.");
+            readme.write("This folder contains OSEE data transfer files which were imported during debugging");
             readme.close();
          } catch (IOException e) {
             throw new OseeCoreException(e, "Failed to create directory. ");
@@ -498,7 +497,17 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       }
 
       XResultData results = applyTransferFile(transDir);
-      results.log(String.format("The file is extracted to %s.", transDir));
+      String parentPath = Paths.get(transDir).getParent().toString();
+      try {
+         if (parentPath.endsWith("OSEEDataTransferUploads")) {
+            File importTransferFolder = new File(parentPath);
+            if (importTransferFolder.exists()) {
+               deleteDir(importTransferFolder);
+            }
+         }
+      } catch (Exception e) {
+         throw new OseeCoreException(e, "Transfer folder for deletion not found");
+      }
       if (results.isOK()) {
          return Response.ok().entity(String.format("Result: %s", results.toString())).build();
       } else {
@@ -541,6 +550,18 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
          results.logf("Export ID %s not locked", exportId.toString());
       }
       return results;
+   }
+
+   private void deleteDir(File file) {
+      File[] contents = file.listFiles();
+      if (contents != null) {
+         for (File f : contents) {
+            if (!Files.isSymbolicLink(f.toPath())) {
+               deleteDir(f);
+            }
+         }
+      }
+      file.delete();
    }
 
 }
