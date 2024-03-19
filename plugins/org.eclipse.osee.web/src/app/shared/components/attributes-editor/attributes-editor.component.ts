@@ -71,19 +71,18 @@ export class AttributesEditorComponent {
 
 	_attributes = new BehaviorSubject<attribute[]>([]);
 
-	@Output() updatedAttributes = new BehaviorSubject<attribute[]>([]);
+	@Output() updatedAttributes = new BehaviorSubject<attribute<string>[]>([]);
 
 	emitUpdatedAttributes() {
-		const formattedAttributes = this._attributes.value
+		const formattedAttributes: attribute<string>[] = this._attributes.value
 			.map((attribute) => {
-				const formattedAttribute = { ...attribute };
+				const formattedAttribute = { ...attribute, value: '' };
 
-				if (
-					formattedAttribute.storeType === 'Date' &&
-					formattedAttribute.value
-				) {
-					const dateValue = new Date(formattedAttribute.value);
+				if (attribute.storeType === 'Date' && attribute.value) {
+					const dateValue = new Date(attribute.value);
 					formattedAttribute.value = `${dateValue.getTime()}`;
+				} else {
+					formattedAttribute.value = attribute.value.toString();
 				}
 
 				return formattedAttribute;

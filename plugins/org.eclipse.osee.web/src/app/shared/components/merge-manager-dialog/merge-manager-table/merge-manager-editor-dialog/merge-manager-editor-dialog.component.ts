@@ -54,11 +54,10 @@ export class MergeManagerEditorDialogComponent implements OnInit {
 		this.attributes.next([attr]);
 	}
 
-	handleUpdatedAttributes(updatedAttributes: attribute[]) {
+	handleUpdatedAttributes(updatedAttributes: attribute<string>[]) {
 		if (updatedAttributes.length === 0) {
 			return;
 		}
-		this.data.attrMergeData.mergeValue = updatedAttributes[0]
-			.value as string;
+		this.data.attrMergeData.mergeValue = updatedAttributes[0].value;
 	}
 }
