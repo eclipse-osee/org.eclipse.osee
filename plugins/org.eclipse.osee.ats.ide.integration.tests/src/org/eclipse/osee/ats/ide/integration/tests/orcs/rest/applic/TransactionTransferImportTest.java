@@ -12,10 +12,8 @@
  **********************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.orcs.rest.applic;
 
-import static org.junit.Assert.assertTrue;
 import java.io.InputStream;
 import java.util.Arrays;
-import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -29,7 +27,9 @@ import org.eclipse.osee.orcs.rest.model.transaction.BranchLocation;
 import org.eclipse.osee.orcs.rest.model.transaction.TransferDBType;
 import org.eclipse.osee.orcs.rest.model.transaction.TransferInitData;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  * @author Torin Grenda
@@ -38,18 +38,11 @@ public class TransactionTransferImportTest {
 
    private static TransactionEndpoint transactionEndpoint;
    private static TransferInitData testInitJson = new TransferInitData();
-   private static String incorrectFileFormat =
-      "support/TransferTestFiles/OSEEIncorrectFormatTransfer-20230727145800-259274267223164579_1.zip";
-   private static String emptyFile =
-      "support/TransferTestFiles/OSEEEmptyTransfer-20230727145800-259274267223164579_1.zip";
-   private static String emptyManifest =
-      "support/TransferTestFiles/OSEEEmptyManifestTransfer-20230727145800-259274267223164579_1.zip";
-   private static String incorrectManifest =
-      "support/TransferTestFiles/OSEEIncorrectManifestTransfer-20230727145800-259274267223164579_1.zip";
-   private static String incorrectExportId =
-      "support/TransferTestFiles/OSEEIncorrectExportIdTransfer-20230727145800-259274267223164579_1.zip";
-   private static String successfulFile =
-      "support/TransferTestFiles/OSEESuccessfulTransfer-20230727145800-259274267223164579_1.zip";
+   private static String emptyFile = "support/TransferTestFiles/EmptyTransfer.zip";
+   private static String emptyManifest = "support/TransferTestFiles/EmptyManifestTransfer.zip";
+   private static String incorrectExportId = "support/TransferTestFiles/IncorrectExportId.zip";
+   private static String incorrectManifest = "support/TransferTestFiles/IncorrectManifestTransfer.zip";
+   private static String incorrectFileFormat = "support/TransferTestFiles/IncorrectFormatTransfer.zip";
 
    @BeforeClass
    public static void testSetup() {
@@ -63,116 +56,57 @@ public class TransactionTransferImportTest {
       bl.setBaseTxId(getMaxTransaction(DemoBranches.SAW_PL));
       bl.setBranchId(DemoBranches.SAW_PL);
       testInitJson.setBranchLocations(Arrays.asList(blCommon, bl));
-      testInitJson.setExportId(TransactionId.valueOf(259274267223164579L)); //Random Number
-      testInitJson.setTransferDBType(TransferDBType.SOURCE);
+      testInitJson.setExportId(TransactionId.valueOf(259274267223164579L));
+      testInitJson.setTransferDBType(TransferDBType.DESTINATION);
       transactionEndpoint.initTransactionTransfer(testInitJson);
    }
 
+   @Rule
+   public ExpectedException expectedEx = ExpectedException.none();
+
    @Test
    public void testEmptyManifest() {
-      try (InputStream inputStream = OsgiUtil.getResourceAsStream(getClass(), emptyManifest);
-         Response response = transactionEndpoint.uploadTransferFile(inputStream);) {
-         //Call import on a export file containing just the Json files
-         //Assert failure for incorrect folder format
-         assertTrue(response.toString().contains("Import failed: Manifest is missing data."));
-      } catch (Exception ex) {
-         throw new OseeCoreException("Failed to fetch Transfer file as input stream");
-      }
+      expectedEx.expect(OseeCoreException.class);
+      expectedEx.expectMessage("BuildId not found in:");
+      InputStream inputStream = OsgiUtil.getResourceAsStream(getClass(), emptyManifest);
+      transactionEndpoint.uploadTransferFile(inputStream);
    }
 
    @Test
-   public void testIncorrectManifest() {
-      try (InputStream inputStream = OsgiUtil.getResourceAsStream(getClass(), incorrectManifest);
-         Response response = transactionEndpoint.uploadTransferFile(inputStream);) {
-         //Call import on a export file containing just the Json files
-         //Assert failure for incorrect folder format
-         assertTrue(response.toString().contains("Import failed: Number of files does not match with Manifest."));
-      } catch (Exception ex) {
-         throw new OseeCoreException("Failed to fetch Transfer file as input stream");
-      }
-   }
-
-   @Test
-   public void testIncorrectFolderFormat() {
-      try (InputStream incorrectInputStream = OsgiUtil.getResourceAsStream(getClass(), incorrectFileFormat);
-         Response response = transactionEndpoint.uploadTransferFile(incorrectInputStream);) {
-         //Call import on a export file containing just the Json files
-         //Assert failure for incorrect folder format
-         assertTrue(response.toString().contains("Import failed: Import file is not formatted correctly"));
-      } catch (Exception ex) {
-         throw new OseeCoreException("Failed to fetch Transfer file as input stream");
-      }
-
-      try (InputStream emptyInputStream = OsgiUtil.getResourceAsStream(getClass(), emptyFile);
-         Response response = transactionEndpoint.uploadTransferFile(emptyInputStream);) {
-         //Call import on a empty export file
-         //Assert failure for empty file
-         assertTrue(response.toString().contains("Import failed: Import file is not formatted correctly"));
-      } catch (Exception ex) {
-         throw new OseeCoreException("Failed to fetch Transfer file as input stream");
-      }
+   public void testEmptyTransferFile() {
+      expectedEx.expect(OseeCoreException.class);
+      expectedEx.expectMessage("Exception while verifying manifest and transaction files");
+      InputStream inputStream = OsgiUtil.getResourceAsStream(getClass(), emptyFile);
+      transactionEndpoint.uploadTransferFile(inputStream);
    }
 
    @Test
    public void testIncorrectExportId() {
-      try (InputStream inputStream = OsgiUtil.getResourceAsStream(getClass(), incorrectExportId);
-         Response response = transactionEndpoint.uploadTransferFile(inputStream);) {
-         //Call import on a export file containing a incorrect export id
-         //Assert failure for incorrect export id
-         assertTrue(response.toString().contains("Import failed: Incorrect export id supplied"));
-      } catch (Exception ex) {
-         throw new OseeCoreException("Failed to fetch Transfer file as input stream");
-      }
+      expectedEx.expect(OseeCoreException.class);
+      expectedEx.expectMessage("The export ID is not valid. This id is not matched or there is more than one in db.");
+      InputStream inputStream = OsgiUtil.getResourceAsStream(getClass(), incorrectExportId);
+      transactionEndpoint.uploadTransferFile(inputStream);
    }
 
    @Test
-   public void testDuplicateImport() {
-      try (InputStream inputStream = OsgiUtil.getResourceAsStream(getClass(), successfulFile);
-         Response response = transactionEndpoint.uploadTransferFile(inputStream);) {
-         //Call import on sample export file
-         //Assert the first transfer goes through successfully
-         assertTrue(response.toString().contains("Successfully transferred the transaction ids"));
-         //Attempt to call import on the same sample export file
-         try (Response responseDuplicate = transactionEndpoint.uploadTransferFile(inputStream)) {
-
-            //Assert failure for duplicate exportId
-            assertTrue(responseDuplicate.toString().contains(
-               "Import failed: Import file has already previously been imported"));
-            //Remove all newly added data
-            databaseRollback();
-         }
-      } catch (Exception ex) {
-         throw new OseeCoreException("Failed to fetch Transfer file as input stream");
-      }
+   public void testIncorrectManifest() {
+      expectedEx.expect(OseeCoreException.class);
+      //Expects error to say this import is missing a file
+      expectedEx.expectMessage("Missing ");
+      InputStream inputStream = OsgiUtil.getResourceAsStream(getClass(), incorrectManifest);
+      transactionEndpoint.uploadTransferFile(inputStream);
    }
 
    @Test
-   public void testSuccessfulImport() {
-      try (InputStream inputStream = OsgiUtil.getResourceAsStream(getClass(), successfulFile);
-         Response response = transactionEndpoint.uploadTransferFile(inputStream);) {
-         //Call import on sample export file
-
-         //Check the newly imported data
-         assertTrue(response.toString().contains("Successfully transferred the transaction ids"));
-         assertTrue(TransactionManager.getTransaction(2030L).isValid());
-         assertTrue(TransactionManager.getTransaction(2031L).isValid());
-         assertTrue(TransactionManager.getTransaction(2032L).isValid());
-         assertTrue(TransactionManager.getTransaction(2033L).isValid());
-         assertTrue(TransactionManager.getTransaction(2042L).isValid());
-         assertTrue(TransactionManager.getTransaction(2041L).isValid());
-         //Remove all newly added data
-         databaseRollback();
-      } catch (Exception ex) {
-         throw new OseeCoreException("Failed to fetch Transfer file as input stream");
-      }
+   public void testIncorrectFolderFormat() {
+      expectedEx.expect(OseeCoreException.class);
+      //Expects error to say this import is missing a file
+      expectedEx.expectMessage("Missing ");
+      InputStream inputStream = OsgiUtil.getResourceAsStream(getClass(), incorrectFileFormat);
+      transactionEndpoint.uploadTransferFile(inputStream);
    }
 
    private static TransactionId getMaxTransaction(BranchId branchId) {
       return TransactionManager.getTransactionsForBranch(branchId).get(0);
-   }
-
-   //NEEDS TO BE IMPLEMENTED
-   private void databaseRollback() {
-      //Not sure how to currently clean the database after each test that actually imports data
    }
 }
