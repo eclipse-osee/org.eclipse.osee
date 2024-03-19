@@ -11,9 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-export interface attribute {
+export interface attribute<T = AttributeValue> {
 	name: string;
-	value: AttributeValue;
+	value: T;
 	typeId: string;
 	id: string;
 	storeType: storeType;
