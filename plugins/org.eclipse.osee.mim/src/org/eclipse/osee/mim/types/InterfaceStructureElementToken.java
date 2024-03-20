@@ -42,6 +42,7 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
    private Integer InterfaceElementIndexEnd;
    private List<InterfaceStructureElementToken> arrayElements = new LinkedList<>();
    private InterfaceEnumerationSet arrayDescriptionSet = InterfaceEnumerationSet.SENTINEL;
+   private boolean interfaceElementBlockData = false;
 
    private String Units;
 
@@ -93,6 +94,7 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
          art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceElementArrayIndexDelimiterOne, ""));
       this.setInterfaceElementArrayIndexDelimiterTwo(
          art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceElementArrayIndexDelimiterTwo, ""));
+      this.setInterfaceElementBlockData(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementBlockData, false));
       ArtifactReadable pTypeArt =
          art.getRelated(CoreRelationTypes.InterfaceElementPlatformType_PlatformType).getOneOrDefault(
             ArtifactReadable.SENTINEL);
@@ -149,7 +151,7 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
       ArtifactReadable arrayDescptionSetArt =
          art.getRelated(CoreRelationTypes.InterfaceElementArrayIndexDescriptionSet_Set).getAtMostOneOrDefault(
             ArtifactReadable.SENTINEL);
-      if (arrayDescptionSetArt.isValid()) {
+      if (arrayDescptionSetArt.isValid() && !arrayDescptionSetArt.getExistingAttributeTypes().isEmpty()) {
          this.setArrayDescriptionSet(new InterfaceEnumerationSet(arrayDescptionSetArt));
       }
    }
@@ -669,6 +671,14 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
 
    public void setArrayDescriptionSet(InterfaceEnumerationSet arrayDescriptionSet) {
       this.arrayDescriptionSet = arrayDescriptionSet;
+   }
+
+   public boolean isInterfaceElementBlockData() {
+      return interfaceElementBlockData;
+   }
+
+   public void setInterfaceElementBlockData(boolean interfaceElementBlockData) {
+      this.interfaceElementBlockData = interfaceElementBlockData;
    }
 
 }

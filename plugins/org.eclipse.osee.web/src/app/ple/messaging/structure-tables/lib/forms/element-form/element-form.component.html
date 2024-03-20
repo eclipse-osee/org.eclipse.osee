@@ -69,6 +69,16 @@
 		Alterable
 	</mat-slide-toggle>
 	<br />
+	<mat-slide-toggle
+		[(ngModel)]="data.element.interfaceElementBlockData"
+		(ngModelChange)="updateData()"
+		labelPosition="before"
+		name="blockdata"
+		data-cy="field-block-data"
+		class="tw-py-2">
+		Block Data Element
+	</mat-slide-toggle>
+	<br />
 	<osee-applicability-selector
 		[applicability]="data.element.applicability"
 		(applicabilityChange)="
