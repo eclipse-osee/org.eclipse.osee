@@ -25,6 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
@@ -32,12 +33,14 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionDetails;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -221,9 +224,15 @@ public class QueryEngineImpl implements QueryEngine {
       // make the HashMap capacity large enough to accommodate the artifactCount given the default load factor of 75%
       HashMap<ArtifactId, ArtifactReadable> artifactMap = new HashMap<>((int) (numArtifacts / 0.75) + 1);
       List<ArtifactId> consumedArts = new LinkedList<>();
-
       Consumer<JdbcStatement> jdbcConsumer = stmt -> {
          Long artId = stmt.getLong("art_id");
+         Long attr_id = stmt.getLong("attr_id");
+         Long otherArtId = stmt.getLong("other_art_id");
+         Long otherArtType = stmt.getLong("other_art_type_id");
+         Long typeId = stmt.getLong("type_id");
+         String value = stmt.getString("value");
+         String uri = stmt.getString("uri");
+
          ArtifactReadableImpl artifact = (ArtifactReadableImpl) artifactMap.get(ArtifactId.valueOf(artId));
          if (artifact == null) {
             artifact = createArtifact(stmt, artId, stmt.getLong("art_type_id"), queryData, queryFactory);
@@ -231,6 +240,25 @@ public class QueryEngineImpl implements QueryEngine {
             if (stmt.getLong("top") == 1) {
                artifactConsumer.accept(artifact);
                consumedArts.add(ArtifactId.valueOf(artifact.getId()));
+            } else {
+               //if we have attr_id AND other artid then we are a reference artifact
+
+               if (attr_id > 0 && otherArtId > 0 && otherArtType > 0) {
+                  //see if the parent artifact has been created, if so add to the resourceArtifacts hash map
+                  //if not, create? like relation logic?
+                  Long sourceAttrId = stmt.getLong("rel_type"); //overloading the rel_type column as attr Id for reference artifacts
+                  ArtifactReadableImpl sourceArtifact =
+                     (ArtifactReadableImpl) artifactMap.get(ArtifactId.valueOf(otherArtId));
+                  if (sourceArtifact != null) {
+                     List<IAttribute<?>> values = sourceArtifact.getAttributesHashCollection().getValues();
+                     Optional<IAttribute<?>> findFirst =
+                        values.stream().filter(a -> a.getId().equals(sourceAttrId)).findFirst();
+                     if (findFirst.isPresent()) {
+                        sourceArtifact.putReferenceArtifact(AttributeId.valueOf(findFirst.get().getId()), artifact);
+                     }
+                  }
+
+               }
             }
          } else {
             // If an artifact with top = 1 appears as an "otherArtifact" first, because it's related to an artifact with top = 1, it needs
@@ -251,12 +279,7 @@ public class QueryEngineImpl implements QueryEngine {
             }
          }
 
-         Long typeId = stmt.getLong("type_id");
-         Long otherArtId = stmt.getLong("other_art_id");
-         String value = stmt.getString("value");
-         String uri = stmt.getString("uri");
-
-         if (otherArtId == 0) {
+         if (attr_id != 0) {
             AttributeTypeGeneric<?> attributeType = tokenService.getAttributeTypeOrCreate(typeId);
             Attribute<?> attribute =
                new Attribute<>(stmt.getLong("attr_id"), attributeType, value, uri, resourceManager);
@@ -300,8 +323,7 @@ public class QueryEngineImpl implements QueryEngine {
                   }
                }
             }
-         } else {
-            Long otherArtType = stmt.getLong("other_art_type_id");
+         } else if (attr_id == 0) {
             RelationSide side = value.equals("A") ? RelationSide.SIDE_A : RelationSide.SIDE_B;
 
             ArtifactReadableImpl otherArtifact = (ArtifactReadableImpl) artifactMap.get(ArtifactId.valueOf(otherArtId));

@@ -78,7 +78,9 @@ public class BranchPaginationSqlHandler extends SqlHandler<CriteriaPagination> {
          Long lowerBound = tempLowerBound == 0 ? tempLowerBound : tempLowerBound + 1L;
          Long upperBound =
             tempLowerBound == 0 ? lowerBound + criteria.getPageSize() : lowerBound + criteria.getPageSize() - 1L;
-         writer.write(") t1 WHERE rn BETWEEN " + lowerBound + " AND " + upperBound, "");
+         writer.addParameter(lowerBound);
+         writer.addParameter(upperBound);
+         writer.write(") t1 WHERE rn BETWEEN ? AND ?");
       }
    }
 }

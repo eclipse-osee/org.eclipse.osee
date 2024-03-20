@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -362,6 +363,11 @@ public interface QueryBuilder extends Query {
    QueryBuilder followFork(RelationTypeSide relationTypeSide, ArtifactTypeToken artifacType, QueryBuilder query);
 
    QueryBuilder followNoSelect(RelationTypeSide relationTypeSide, ArtifactTypeToken artifacType);
+
+   /**
+    * @param attributeType of attribute which is an artifact id reference
+    */
+   QueryBuilder getReferenceArtifact(BranchId branchId, AttributeTypeToken attributeType);
 
    /**
     * @deprecated use follow instead, currently still needed only for ORCS script

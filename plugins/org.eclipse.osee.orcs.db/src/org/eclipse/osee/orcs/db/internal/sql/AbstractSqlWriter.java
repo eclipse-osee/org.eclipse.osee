@@ -33,6 +33,7 @@ import org.eclipse.osee.orcs.core.ds.HasOptions;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
+import org.eclipse.osee.orcs.db.internal.search.handlers.GetReferenceDetailsHandler;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.CharJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
@@ -126,6 +127,30 @@ public abstract class AbstractSqlWriter implements HasOptions {
       writeEndWithPreSelect(handlers);
 
       writeGroupAndOrder(handlers);
+      return cteAlias;
+   }
+
+   protected String writeReferenceClause(GetReferenceDetailsHandler handler) {
+
+      String ctePrefix = "reference";
+      String cteAlias = startCommonTableExpression(ctePrefix);
+      setHandlerLevel(handler);
+      handler.startWithPreSelect(this);
+      handler.addTables(this);
+      if (queryDataCursor.getView().isValid()) {
+         tupleAlias = addTable(OseeDb.TUPLE2);
+         tupleTxsAlias = addTable(OseeDb.TXS_TABLE);
+      }
+      handler.writeSelectFields(this);
+      handler.writeFromClause(this);
+
+      write("\n WHERE ");
+      handler.addPredicates(this);
+
+      removeDanglingSeparator("\n WHERE ");
+
+      handler.endWithPreSelect(this);
+
       return cteAlias;
    }
 
@@ -292,11 +317,11 @@ public abstract class AbstractSqlWriter implements HasOptions {
       write(txsAlias);
       write(".tx_current");
       if (allowDeleted) {
-         write(" <> ");
-         write(TxCurrent.NOT_CURRENT.getIdString());
+         addParameter(TxCurrent.NOT_CURRENT.getId());
+         write(" <> ?");
       } else {
-         write(" = ");
-         write(TxCurrent.CURRENT.getIdString());
+         addParameter(TxCurrent.CURRENT.getId());
+         write(" = ?");
       }
    }
 

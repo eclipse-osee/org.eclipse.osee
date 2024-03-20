@@ -50,7 +50,9 @@ public class PaginationSqlHandler extends SqlHandler<CriteriaPagination> {
          Long lowerBound = tempLowerBound == 0 ? tempLowerBound : tempLowerBound + 1L;
          Long upperBound =
             tempLowerBound == 0 ? lowerBound + criteria.getPageSize() : lowerBound + criteria.getPageSize() - 1L;
-         writer.startRecursiveCommonTableExpression("WHERE rn BETWEEN " + lowerBound + " AND " + upperBound, "");
+         writer.addParameter(lowerBound);
+         writer.addParameter(upperBound);
+         writer.startRecursiveCommonTableExpression("WHERE rn BETWEEN ? AND ?", "");
       }
    }
 

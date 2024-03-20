@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.eclipse.osee.jdbc.ObjectType;
 import org.eclipse.osee.jdbc.SqlTable;
 
@@ -67,6 +68,24 @@ public class SqlAliasManager {
    public String getFirstAlias(int level, SqlTable table, ObjectType objectType) {
       Collection<String> aliases = getAliases(level, table, objectType);
       return Iterables.getFirst(aliases, null);
+   }
+
+   public String getFirstUsedAlias(String prefix) {
+      AliasSet aliasByLevel = getAliasByLevel(0);
+      List<String> aliases = aliasByLevel.getAliases(prefix);
+
+      return Iterables.getFirst(aliases, null);
+   }
+
+   public List<String> getUsedAliases(String prefix) {
+      List<String> aliases = new ArrayList<>();
+      for (AliasSet aliasSet : usedAliases.stream().filter(a -> a.getAliases(prefix).size() > 0).collect(
+         Collectors.toList())) {
+         for (String string : aliasSet.getAliases(prefix)) {
+            aliases.add(string);
+         }
+      }
+      return aliases;
    }
 
    public String getLastAlias(SqlTable table, ObjectType objectType) {

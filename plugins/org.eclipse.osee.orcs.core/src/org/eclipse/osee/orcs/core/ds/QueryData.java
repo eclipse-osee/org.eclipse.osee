@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchCategoryToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -65,6 +66,7 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeNotExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeValueRange;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaFollowSearch;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaGetReferenceArtifact;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaPagination;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedRecursive;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
@@ -1000,5 +1002,10 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    public void setTableoptions(ArtifactTableOptions tableoptions) {
       this.tableoptions = tableoptions;
+   }
+
+   @Override
+   public QueryBuilder getReferenceArtifact(BranchId branch, AttributeTypeToken attributeType) {
+      return addAndCheck(new CriteriaGetReferenceArtifact(branch, attributeType));
    }
 }

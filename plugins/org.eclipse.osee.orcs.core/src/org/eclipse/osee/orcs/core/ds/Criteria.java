@@ -22,6 +22,10 @@ public class Criteria {
       // For subclasses to implement
    }
 
+   public boolean isReferenceHandler() {
+      return false;
+   }
+
    @Override
    public String toString() {
       return getClass().getSimpleName();

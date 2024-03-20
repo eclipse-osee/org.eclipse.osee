@@ -19,6 +19,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -71,6 +73,8 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    private final TransactionId txId;
    private final TransactionDetails latestTxDetails;
    private final ModificationType modType;
+   private final HashCollection<AttributeId, ArtifactReadable> referenceAttributes = new HashCollection<>();
+   private final HashCollection<AttributeTypeToken, ArtifactReadable> referenceAttributeByType = new HashCollection<>();
 
    public ArtifactReadableImpl(Long id, ArtifactTypeToken artifactType, BranchToken branch, ArtifactId view, ApplicabilityToken applicability, TransactionId txId, ModificationType modType, QueryFactory queryFactory) {
       super(id);
@@ -280,6 +284,15 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
 
    public void putRelation(RelationTypeToken relationType, RelationSide side, ArtifactReadable artifact) {
       (side.isSideA() ? relationsSideA : relationsSideB).put(relationType, artifact);
+   }
+
+   public void putReferenceArtifact(AttributeId attrId, ArtifactReadable artifact) {
+      referenceAttributes.put(attrId, artifact);
+      Optional<Entry<AttributeTypeToken, List<IAttribute<?>>>> findFirst = attributes.entrySet().stream().filter(
+         a -> a.getValue().stream().anyMatch(b -> b.getId().equals(attrId.getId()))).findFirst();
+      if (findFirst.isPresent()) {
+         referenceAttributeByType.put(findFirst.get().getKey(), artifact);
+      }
    }
 
    @Override
@@ -530,5 +543,22 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    @Override
    public TransactionDetails getTxDetails() {
       return latestTxDetails;
+   }
+
+   @Override
+   public List<ArtifactReadable> getReferenceArtifactsByType(AttributeTypeToken attributeType) {
+      List<ArtifactReadable> values = referenceAttributeByType.getValues(attributeType);
+      if (values == null) {
+         return Collections.emptyList();
+      }
+      return values;
+   }
+
+   @Override
+   public ArtifactReadable getReferenceArtifactByAttrId(AttributeId attributeId) {
+      if (referenceAttributes.containsKey(attributeId)) {
+         return referenceAttributes.getValues(attributeId).get(0);
+      }
+      return ArtifactReadable.SENTINEL;
    }
 }
