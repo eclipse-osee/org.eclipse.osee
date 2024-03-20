@@ -84,12 +84,12 @@ public class AttributeSortSqlHandler extends SqlHandler<CriteriaAttributeSort> {
             writer.writeAndLn();
          }
          writer.write(attrAlias);
-         writer.write(".attr_type_id = ");
-         writer.write(criteria.getAttributeType().getIdString());
+         writer.addParameter(criteria.getAttributeType().getId());
+         writer.write(".attr_type_id = ?");
          if (criteria.getAttributeType().isDate() && OptionsUtil.getMaxTime(writer.getOptions()) != null) {
+            writer.addParameter(OptionsUtil.getMaxTime(writer.getOptions()).getTime());
             writer.write(
-               " and " + writer.getJdbcClient().getDbType().getPostgresCastStart() + " value " + writer.getJdbcClient().getDbType().getPostgresCastBigIntEnd() + " > " + OptionsUtil.getMaxTime(
-                  writer.getOptions()).getTime());
+               " and " + writer.getJdbcClient().getDbType().getPostgresCastStart() + " value " + writer.getJdbcClient().getDbType().getPostgresCastBigIntEnd() + " > ?");
          }
       }
 

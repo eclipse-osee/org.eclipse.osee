@@ -111,7 +111,9 @@ WHERE
          Long lowerBound = tempLowerBound == 0 ? tempLowerBound : tempLowerBound + 1L;
          Long upperBound =
             tempLowerBound == 0 ? lowerBound + pagination.getPageSize() : lowerBound + pagination.getPageSize() - 1L;
-         writer.write(" ) t1 where rn2 between " + lowerBound + " and " + upperBound + " ");
+         writer.addParameter(lowerBound);
+         writer.addParameter(upperBound);
+         writer.write(" ) t1 where rn2 between ? AND ? ");
       } else {
          writer.write(" ) t1 ");
       }

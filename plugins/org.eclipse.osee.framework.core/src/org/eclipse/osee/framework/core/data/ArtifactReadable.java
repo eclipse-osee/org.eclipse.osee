@@ -230,6 +230,10 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    HashCollection<AttributeTypeToken, IAttribute<?>> getAttributesHashCollection();
 
+   List<ArtifactReadable> getReferenceArtifactsByType(AttributeTypeToken attributeType);
+
+   ArtifactReadable getReferenceArtifactByAttrId(AttributeId attributeId);
+
    public static class ArtifactReadableImpl extends NamedIdBase implements ArtifactReadable {
 
       public ArtifactReadableImpl() {
@@ -509,6 +513,16 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
       @Override
       public TransactionDetails getTxDetails() {
          return new TransactionDetails();
+      }
+
+      @Override
+      public List<ArtifactReadable> getReferenceArtifactsByType(AttributeTypeToken attributeType) {
+         return null;
+      }
+
+      @Override
+      public ArtifactReadable getReferenceArtifactByAttrId(AttributeId attrId) {
+         return null;
       }
    }
 }

@@ -61,5 +61,6 @@ public enum SqlHandlerPriority {
    FOLLOW_RELATION_TYPES,
    RELATION_TYPE_EXISTS,
    FOLLOW_SEARCH,
+   REFERENCE_ARTIFACT,
    LAST;
 }

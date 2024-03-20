@@ -175,6 +175,7 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
     * {@inheritDoc}
     */
 
+   @Override
    public ArtifactId getArtifactId() {
       return ArtifactId.create(this.artifact);
    }
@@ -889,6 +890,16 @@ public class WordRenderArtifactWrapperClientImpl implements PublishingArtifact {
 
    @Override
    public TransactionDetails getTxDetails() {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public List<ArtifactReadable> getReferenceArtifactsByType(AttributeTypeToken attributeType) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public ArtifactReadable getReferenceArtifactByAttrId(AttributeId attributeId) {
       throw new UnsupportedOperationException();
    }
 

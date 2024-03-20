@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
@@ -28,11 +29,13 @@ import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.RelationTypeCriteria;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaFollowSearch;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaGetReferenceArtifact;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaPagination;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelationTypeFollow;
 import org.eclipse.osee.orcs.db.internal.search.handlers.ChildrenFollowRelationSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.FollowRelationSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.FollowSearchSqlHandler;
+import org.eclipse.osee.orcs.db.internal.search.handlers.GetReferenceDetailsHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.PaginationSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerPriority;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
@@ -126,7 +129,8 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
    private void follow(SqlHandlerFactory handlerFactory, List<String> artWithAliases, String sourceArtTable) {
       List<SqlHandler<?>> handlers = new ArrayList<>();
       FollowRelationSqlHandler previousFollow = null;
-      for (Criteria criteria : queryDataCursor.getOnlyCriteriaSet()) {
+      for (Criteria criteria : queryDataCursor.getOnlyCriteriaSet().stream().filter(
+         a -> !a.isReferenceHandler()).collect(Collectors.toList())) {
          if (criteria instanceof CriteriaRelationTypeFollow) {
             FollowRelationSqlHandler handlerSlim;
             if (previousFollow == null) {
@@ -228,6 +232,46 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
             if (rootQueryData.hasCriteriaType(CriteriaFollowSearch.class)) {
                writeFollowSearchCommonTableExpression(handlerFactory, attsAlias);
             }
+            if (rootQueryData.hasCriteriaType(CriteriaGetReferenceArtifact.class)) {
+               for (Criteria criteria : rootQueryData.getOnlyCriteriaSet().stream().filter(
+                  a -> a.isReferenceHandler()).collect(Collectors.toList())) {
+                  GetReferenceDetailsHandler handler = new GetReferenceDetailsHandler();
+                  handler.setData((CriteriaGetReferenceArtifact) criteria);
+                  writeReferenceClause(handler);
+               }
+               String refAll = startCommonTableExpression("reference_all");
+               boolean first = true;
+               for (String string : getAliasManager().getUsedAliases("reference")) {
+                  if (first) {
+                     write("select * from " + string);
+                     first = false;
+                  } else {
+                     write(" union select * from " + string);
+                  }
+               }
+               String refAtts1 = startCommonTableExpression("reference_atts");
+               write(
+                  "select " + refAll + ".art_id, " + refAll + ".art_type_id, " + refAll + ".app_id, " + refAll + ".transaction_id, " + refAll + ".mod_type, " + refAll + ".tx_current, 0 AS top,");
+               if (OptionsUtil.getIncludeApplicabilityTokens(rootQueryData.getOptions())) {
+                  write("' ' app_value, ");
+               }
+               if (this.rootQueryData.orderMechanism().contains("ATTRIBUTE")) {
+                  write("' ' order_value, ");
+               }
+               if (rootQueryData.hasCriteriaType(CriteriaPagination.class)) {
+                  write("0 rn, ");
+               }
+               write("att.attr_type_id AS type_id, att.value, att.uri, att.attr_id, source_art_id AS other_art_id, ");
+               if (OptionsUtil.getIncludeLatestTransactionDetails(rootQueryData.getOptions())) {
+                  write(
+                     "-1 author, 'osee_comment' osee_comment,  -1 tx_type, -1 commit_art_id, -1 build_id, to_date('20010101','yyyyMMdd') time , -1 supp_tx_id, ");
+               }
+               write(refAll + ".source_attr_id as rel_type, 0 as rel_order,source_art_type_id as other_art_type_id \n");
+               write("FROM " + refAll + ", osee_attribute att, osee_txs txs \n");
+               write(
+                  "WHERE " + refAll + ".art_id = att.art_id AND att.gamma_id = txs.gamma_id AND txs.tx_current = 1 AND txs.branch_id = ? ");
+               addParameter(getRootQueryData().getBranch().getId());
+            }
             writeFieldsCommonTableExpression(artWithAlias, attsAlias);
          }
       }
@@ -240,8 +284,10 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          }
       } else {
          if (OptionsUtil.getIncludeLatestTransactionDetails(this.rootQueryData.getOptions())) {
+            addParameter("'yyyyMmddHHmmss'");
+            addParameter("'yyyyMmddHHmmss'");
             write(
-               "SELECT " + fieldAlias + ".* , to_char(time,'yyyyMMddHHmmss') timeStr, to_char(max(time) over (partition by art_id),'yyyyMMddHHmmss') max_time FROM %s",
+               "SELECT " + fieldAlias + ".* , to_char(time,?) timeStr, to_char(max(time) over (partition by art_id),?) max_time FROM %s",
                fieldAlias);
          } else {
             write("SELECT * FROM %s", fieldAlias);
@@ -267,15 +313,15 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
             write(fieldAlias + ".top desc");
             if (this.rootQueryData.orderMechanism().equals("ATTRIBUTE") || this.rootQueryData.orderMechanism().equals(
                "RELATION AND ATTRIBUTE")) {
-               write(", CASE WHEN " + fieldAlias + ".type_id = ");
-               write(this.rootQueryData.orderByAttribute().getIdString());
+               addParameter(this.rootQueryData.orderByAttribute().getId());
+               write(", CASE WHEN " + fieldAlias + ".type_id = ?");
                write(" THEN 0 ELSE 1 END ASC");
-               write(", CASE WHEN " + fieldAlias + ".type_id = ");
-               write(this.rootQueryData.orderByAttribute().getIdString());
+               addParameter(this.rootQueryData.orderByAttribute().getId());
+               write(", CASE WHEN " + fieldAlias + ".type_id = ?");
                write(" THEN " + fieldAlias + ".VALUE ELSE \n");
-               write("'");
-               write(new String(new char[4000]).replace('\0', 'Z'));
-               write("'");
+               String orderAttrString = "'" + new String(new char[3998]).replace('\0', 'Z') + "'";
+               addParameter(orderAttrString);
+               write("?");
                write("\n" + "END " + (this.rootQueryData.orderByAttributeDirection().equals(
                   SortOrder.DESCENDING) ? "DESC" : "ASC"));
             }
@@ -360,6 +406,11 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       });
       relWriter2.write(handlers2);
       write(relWriter2.toSql());
+      String refAtts = getAliasManager().getFirstUsedAlias("reference_atts");
+      if (refAtts != null) {
+         write("\n union all \n");
+         write("select " + refAtts + ".* from " + refAtts);
+      }
    }
 
    private String writeAttsCommonTableExpression(String artWithAlias) {

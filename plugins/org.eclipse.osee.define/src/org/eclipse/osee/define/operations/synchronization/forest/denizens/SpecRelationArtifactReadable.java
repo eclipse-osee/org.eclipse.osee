@@ -775,6 +775,16 @@ public class SpecRelationArtifactReadable implements ArtifactReadable {
    public TransactionDetails getTxDetails() {
       throw new UnsupportedOperationException();
    }
+
+   @Override
+   public List<ArtifactReadable> getReferenceArtifactsByType(AttributeTypeToken attributeType) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public ArtifactReadable getReferenceArtifactByAttrId(AttributeId attributeId) {
+      throw new UnsupportedOperationException();
+   }
 }
 
 /* EOF */
