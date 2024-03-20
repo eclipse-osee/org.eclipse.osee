@@ -32,6 +32,7 @@ export class SubElementTableRowComponentMock {
 		interfaceElementIndexEnd: 0,
 		interfaceElementIndexStart: 0,
 		interfaceElementAlterable: false,
+		interfaceElementBlockData: false,
 		interfaceElementArrayHeader: false,
 		interfaceElementWriteArrayHeaderName: false,
 		interfaceDefaultValue: '',

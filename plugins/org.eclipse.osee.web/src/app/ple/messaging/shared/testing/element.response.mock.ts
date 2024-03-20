@@ -21,6 +21,7 @@ export const elementsMock: element[] = [
 		description: '',
 		notes: '',
 		interfaceElementAlterable: true,
+		interfaceElementBlockData: false,
 		interfaceElementArrayHeader: false,
 		interfaceElementWriteArrayHeaderName: false,
 		interfaceElementIndexEnd: 1,

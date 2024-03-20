@@ -34,6 +34,7 @@ interface _element {
 	interfaceElementIndexEnd: number;
 	interfaceElementIndexStart: number;
 	interfaceElementAlterable: boolean;
+	interfaceElementBlockData: boolean;
 	interfaceDefaultValue: string;
 	units?: string;
 	enumLiteral: string;
@@ -101,6 +102,7 @@ export const elementSentinel: element = {
 	},
 	units: '',
 	interfaceElementAlterable: false,
+	interfaceElementBlockData: false,
 	interfaceElementArrayHeader: false,
 	interfaceElementWriteArrayHeaderName: false,
 	enumLiteral: '',
@@ -117,6 +119,7 @@ export const elementHeaderSentinel: element = {
 	interfaceElementIndexEnd: 0,
 	interfaceElementIndexStart: 0,
 	interfaceElementAlterable: false,
+	interfaceElementBlockData: false,
 	interfaceElementArrayHeader: true,
 	interfaceElementWriteArrayHeaderName: false,
 	interfaceDefaultValue: '',
