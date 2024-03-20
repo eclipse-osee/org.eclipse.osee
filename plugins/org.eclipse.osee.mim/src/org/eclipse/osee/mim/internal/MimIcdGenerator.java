@@ -57,6 +57,7 @@ import org.eclipse.osee.mim.InterfaceStructureApi;
 import org.eclipse.osee.mim.MimApi;
 import org.eclipse.osee.mim.types.ElementArrayIndexOrder;
 import org.eclipse.osee.mim.types.InterfaceConnection;
+import org.eclipse.osee.mim.types.InterfaceEnumeration;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
 import org.eclipse.osee.mim.types.InterfaceNode;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
@@ -89,6 +90,7 @@ public class MimIcdGenerator {
    private final Map<String, StructureInfo> headersList;
    private final Map<ArtifactId, InterfaceSubMessageToken> messageHeaders;
    private final Map<String, InterfaceStructureToken> messageHeaderStructures;
+   private final Map<ArtifactId, List<InterfaceEnumeration>> arrayDescriptions;
    private final Map<ArtifactId, MimChangeSummaryItem> diffs;
    private final Map<String, String> logicalTypeMaxRange;
    private final Map<ArtifactId, Pair<String, String>> releaseArtifacts =
@@ -101,6 +103,7 @@ public class MimIcdGenerator {
       this.headersList = new HashMap<>();
       this.messageHeaders = new HashMap<>();
       this.messageHeaderStructures = new HashMap<>();
+      this.arrayDescriptions = new HashMap<>();
       this.diffs = new HashMap<>();
 
       this.logicalTypes = new HashSet<>();
@@ -132,10 +135,11 @@ public class MimIcdGenerator {
             FollowRelation.follow(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage),
             FollowRelation.follow(CoreRelationTypes.InterfaceSubMessageContent_Structure),
             FollowRelation.follow(CoreRelationTypes.InterfaceStructureContent_DataElement),
-            FollowRelation.fork(CoreRelationTypes.InterfaceElementArrayElement_ArrayElement,
-               FollowRelation.follow(CoreRelationTypes.InterfaceElementPlatformType_PlatformType),
+            FollowRelation.fork(CoreRelationTypes.InterfaceElementPlatformType_PlatformType,
                FollowRelation.follow(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet),
                FollowRelation.follow(CoreRelationTypes.InterfaceEnumeration_EnumerationState)),
+            FollowRelation.follow(CoreRelationTypes.InterfaceElementArrayElement_ArrayElement),
+            FollowRelation.fork(CoreRelationTypes.InterfaceElementArrayIndexDescriptionSet_Set),
             FollowRelation.follow(CoreRelationTypes.InterfaceElementPlatformType_PlatformType),
             FollowRelation.follow(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet),
             FollowRelation.follow(CoreRelationTypes.InterfaceEnumeration_EnumerationState)));
@@ -301,14 +305,22 @@ public class MimIcdGenerator {
                      int endIndex = element.getInterfaceElementIndexEnd();
                      for (int i = startIndex; i <= endIndex; i++) {
                         for (InterfaceStructureElementToken arrayElement : element.getArrayElements()) {
+                           if (arrayDescriptions.get(arrayElement.getArtifactId()) == null) {
+                              if (arrayElement.getArrayDescriptionSet().isValid()) {
+                                 arrayDescriptions.put(arrayElement.getArtifactId(),
+                                    orcsApi.getQueryFactory().fromBranch(branch, view).andRelatedTo(
+                                       CoreRelationTypes.InterfaceArrayIndexDescription_Set,
+                                       arrayElement.getArrayDescriptionSet().getArtifactId()).asArtifacts().stream().map(
+                                          a -> new InterfaceEnumeration(a)).collect(Collectors.toList()));
+                              }
+                           }
                            InterfaceStructureElementToken arrayElementCopy =
                               new InterfaceStructureElementToken(arrayElement.getArtifactReadable());
                            String arrayElementName =
                               element.getInterfaceElementWriteArrayHeaderName() ? element.getName() + " " + i + " " + arrayElement.getName() : arrayElement.getName() + " " + i;
                            arrayElementCopy.setName(arrayElementName);
                            // Inherit some properties from the header in order to print the indices correctly later
-                           arrayElementCopy.setInterfaceElementWriteArrayHeaderName(
-                              element.getInterfaceElementWriteArrayHeaderName());
+                           arrayElementCopy.setArrayChild(true);
                            arrayElementCopy.setInterfaceElementArrayIndexOrder(
                               element.getInterfaceElementArrayIndexOrder());
                            arrayElementCopy.setInterfaceElementArrayIndexDelimiterOne(
@@ -1127,7 +1139,7 @@ public class MimIcdGenerator {
             // elementToken inherited header information from its parent up in createStructureInfo() if applicable.
             // These values are not set on these elements naturally.
             String elementName = elementToken.getName();
-            if (elementToken.getInterfaceElementArrayHeader() && !elementToken.getInterfaceElementWriteArrayHeaderName()) {
+            if (elementToken.isArrayChild() && !elementToken.getInterfaceElementWriteArrayHeaderName()) {
                String[] split = elementToken.getName().split(" ");
                String elementIndex = split[split.length - 1];
                if (Strings.isNumeric(elementIndex)) {
@@ -1174,20 +1186,31 @@ public class MimIcdGenerator {
             rowIndex.getAndAdd(1);
          }
       } else {
-         if (elementToken.getInterfaceElementArrayHeader() && !elementToken.getInterfaceElementWriteArrayHeaderName()) {
+         if (elementToken.isArrayChild()) {
             String elementName = elementToken.getName();
             String[] split = elementToken.getName().split(" ");
             String elementIndex = split[split.length - 1];
             if (Strings.isNumeric(elementIndex)) {
-               elementName = elementName.substring(0, elementName.length() - (elementIndex.length() + 1)).trim();
-               if (elementToken.getInterfaceElementArrayIndexOrder().equals(
-                  ElementArrayIndexOrder.INNER_OUTER.toString())) {
-                  elementName += elementToken.getInterfaceElementArrayIndexDelimiterTwo() + elementIndex;
-               } else {
-                  elementName += elementToken.getInterfaceElementArrayIndexDelimiterOne() + elementIndex;
+               Long elementIndexLong = Long.parseLong(elementIndex);
+               if (arrayDescriptions.containsKey(elementToken.getArtifactId())) {
+                  List<InterfaceEnumeration> descriptions =
+                     arrayDescriptions.get(elementToken.getArtifactId()).stream().filter(
+                        d -> d.getOrdinal() <= elementIndexLong).collect(Collectors.toList());
+                  if (descriptions.size() > 0) {
+                     values[10] = descriptions.get(descriptions.size() - 1).getName();
+                  }
+               }
+               if (!elementToken.getInterfaceElementWriteArrayHeaderName()) {
+                  elementName = elementName.substring(0, elementName.length() - (elementIndex.length() + 1)).trim();
+                  if (elementToken.getInterfaceElementArrayIndexOrder().equals(
+                     ElementArrayIndexOrder.INNER_OUTER.toString())) {
+                     elementName += elementToken.getInterfaceElementArrayIndexDelimiterTwo() + elementIndex;
+                  } else {
+                     elementName += elementToken.getInterfaceElementArrayIndexDelimiterOne() + elementIndex;
+                  }
+                  values[6] = elementName;
                }
             }
-            values[6] = elementName;
          }
 
          //@formatter:off
