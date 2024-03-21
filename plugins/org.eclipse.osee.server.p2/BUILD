@@ -1,16 +1,12 @@
 
 
-
-
-
 genrule(
   name = "osee_server_zip",
-  srcs = ["//org.eclipse.osee.server.p2:server_plugins","//org.eclipse.osee.server.p2:server_files","//org.eclipse.osee.server.p2:json","//org.eclipse.osee.server.p2:configuration"],
+  srcs = ["//org.eclipse.osee.server.p2:server_plugins","//org.eclipse.osee.server.p2:server_files","//org.eclipse.osee.server.p2:json","//org.eclipse.osee.server.p2:create_config"],
   tools = ["@bazel_tools//tools/zip:zipper"],
   outs = ["org.eclipse.osee.server.p2.zip"],
-  cmd = "cp -r $(locations server_plugins) plugins;rm -rf etc;mkdir etc;cp -r $(locations //org.eclipse.osee.server.p2:json) etc;rm -rf configuration; mkdir configuration;cp -r $(locations //org.eclipse.osee.server.p2:configuration) configuration;mkdir zip1;cp -r $(locations //org.eclipse.osee.server.p2:server_files) zip1;mv plugins zip1;mv configuration zip1;mv etc zip1;echo zip2 plugins;$(location @bazel_tools//tools/zip:zipper) c thezip.zip  zip1/* zip1/plugins/* zip1/etc/* zip1/configuration/*;cp -r thezip.zip $@",
+  cmd = "cp -r $(locations server_plugins) plugins;rm -rf etc;mkdir etc;cp -r $(locations //org.eclipse.osee.server.p2:json) etc;rm -rf configuration; mkdir configuration;cp -r $(locations //org.eclipse.osee.server.p2:create_config) configuration;chmod -R 777 configuration;mkdir osee_server;cp -r $(locations //org.eclipse.osee.server.p2:server_files) osee_server;mv plugins osee_server;mv configuration osee_server;mv etc osee_server;echo zip2 plugins;$(location @bazel_tools//tools/zip:zipper) c thezip.zip  osee_server/* osee_server/plugins/* osee_server/etc/* osee_server/configuration/*;cp -r thezip.zip $@",
 )
-
 
 filegroup(
    name = "osee_server_plugins",
@@ -41,7 +37,7 @@ filegroup(
 	    "//org.eclipse.osee.framework.jdk.core:osgi_jar",
             "//org.eclipse.osee.framework.core:osgi_jar",
             "//org.eclipse.osee.framework.logging:osgi_jar",
-	   # "//org.eclipse.osee.logger.slf4j:osgi_jar",
+	    "//org.eclipse.osee.logger.slf4j:osgi_jar",
             "//org.eclipse.osee.logger:osgi_jar",
             "//org.eclipse.osee.framework.resource.management:osgi_jar",
             "//org.eclipse.osee.framework.server.ide:osgi_jar",
@@ -69,6 +65,14 @@ genrule(
   srcs = ["osee_server_plugins",],
   outs = ["serv_plus"],
   cmd = "export version=1.0.0.v$$(date  +%Y%m%d%H%M);echo version: $$version;mkdir osee_plugins;for FILE in $(SRCS); do chmod 777 *; cp $$FILE  $${FILE%.*}_$$version.jar;mv $${FILE%.*}_$$version.jar osee_plugins;pwd;done;echo after move;chmod -R 777 osee_plugins; cp -r osee_plugins $@"
+)
+
+#"The rule of thumb when dealing with backslashes is keep adding up backslashes until you get the expected result." -wiktor-stribiżew
+genrule(
+  name = "create_config",
+  srcs = ["server_plugins"],
+  outs = ["config.ini"],
+  cmd = "echo -e 'osgi.bundles= \\\n\\' >> config.txt;ls -1 $(locations server_plugins) > server_plugins.txt;sed -i ' s/.jar/@start, \\\\\\/g' server_plugins.txt;sed -i '$$  s/, \\\\\\//g' server_plugins.txt;cat server_plugins.txt >> config.txt;echo -e 'osgi.noShutdown=true\neclipse.ignoreApp=true\nequinox.ds.debug=true\nosee.log.default=INFO\n' >> config.txt;cat server_plugins.txt;cp config.txt $@;"
 )
 
 genrule(
@@ -130,7 +134,6 @@ filegroup(
 	    "@maven//:org_apache_cxf_cxf_core",
 	    "@maven//:org_apache_cxf_cxf_rt_frontend_jaxrs",
 	    "@maven//:org_apache_cxf_cxf_rt_rs_client",
-	    "@maven//:org_apache_cxf_cxf_rt_rs_security_oauth",
 	    "@maven//:org_apache_cxf_cxf_rt_rs_security_oauth2",
 	    "@maven//:org_apache_cxf_cxf_rt_security",
 	    "@maven//:org_apache_cxf_cxf_rt_transports_http",
@@ -147,36 +150,24 @@ filegroup(
 	    "@maven//:org_apache_commons_commons_lang3",
 	    "@maven//:org_apache_commons_commons_math3",
 	    "@maven//:org_jsoup_jsoup",
-	    "@maven//:org_slf4j_slf4j_api",
+	 #   "@maven//:org_slf4j_slf4j_api",
 	    "@maven//:org_apache_ws_xmlschema_xmlschema_core",
 	    "@maven//:org_apache_commons_commons_collections4",
-	  #  "@maven//:io_swagger_core_v3_swagger_annotations",
-	    #"@ext_jars//:eclipse_equinox_common",
-            #"@ext_jars//:eclipse_core",
-	    #"@ext_jars//:emf",
-	    #"@ext_jars//:apache_commons_lang",
-	    #"@ext_jars//:javax",
-            #"@ext_jars//:nebula",
-	    #"@ext_jars//:rmf",
-	    #"@ext_jars//:eclipse_osgi_services",
-	    #"@ext_jars//:misc",
-	    #"@ext_jars//:poi",
-	    #"@ext_jars//:swagger",
+	    "@maven//:org_eclipse_jetty_jetty_http",
+	    "@maven//:org_eclipse_jetty_jetty_server",
+	    "@maven//:org_eclipse_jetty_jetty_io",
+	    "@maven//:org_eclipse_jetty_jetty_security",
+	    "@maven//:org_eclipse_jetty_jetty_util",
+	    "@maven//:org_eclipse_jetty_jetty_util_ajax",
+            "@maven//:org_eclipse_jetty_jetty_servlet",
 	    "@maven//:net_oauth_core_oauth",
-	  #  "@maven//:com_google_guava_guava",
 	    "@ext_jars//:emf",
 	    "@ext_jars//:apache_commons_lang",
-	    #"@ext_jars//:javax",
             "@ext_jars//:nebula",
 	    "@ext_jars//:rmf",
-	    #"@ext_jars//:eclipse_osgi_services",
-	    #"@ext_jars//:misc",
-	    #"@ext_jars//:poi",
-	    #"@ext_jars//:swagger",
 	    "@ext_jars//:jgit",
+	    "@ext_jars//:swt",
 	    "@eclipse_core_net//jar",
-	    "@eclipse_compare//jar",
-	    "@eclipse_search//jar",
             "@eclipse_osgi_services//jar",
 	    "@eclipse_osgi//jar",
 	    "@eclipse_osgi_util//jar",
@@ -186,6 +177,10 @@ filegroup(
 	    "@eclipse_equinox_registry//jar",
 	    "@eclipse_equinox_common//jar",
 	    "@eclipse_equinox_launcher//jar",
+	    "@eclipse_equinox_metatype//jar",
+	    "@eclipse_equinox_event//jar",
+	    "@eclipse_equinox_cm//jar",
+	    "@eclipse_equinox_ds//jar",
             "@eclipse_debug_core//jar",
 	    "@eclipse_core_filebuffers//jar",
 	    "@eclipse_core_filesystem//jar",
@@ -196,6 +191,8 @@ filegroup(
 	    "@eclipse_core_expressions//jar",
 	    "@eclipse_core_contenttype//jar",
 	    "@eclipse_core_variables//jar",
+	    "@eclipse_equinox_http_jetty//jar",	    
+	    "@eclipse_equinox_http_servlet//jar",
 	    "@eclipse_text//jar",
 	    "@javax_mail//jar",
 	    "@javax_validation//jar",
@@ -223,16 +220,14 @@ filegroup(
 	    "@swagger_models//jar",
 	    "@apache_poi//jar",
 	    "@apache_poi_ooxml//jar",
-	    "@apache_poi_ooxml.schemas//jar"
+	    "@apache_poi_ooxml.schemas//jar",
          ],
 )
-
 
 filegroup(
    name = "equinox_jar",
    srcs = ["plugins/org.eclipse.equinox.launcher_1.5.700.v20200207-2156.jar"]
 )
-
 
 genrule(
    name = "runDemo",

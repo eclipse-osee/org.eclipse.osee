@@ -41,7 +41,6 @@ java_library(
 		    "@maven//:org_hamcrest_hamcrest_core",
 		    "@maven//:org_mockito_mockito_core",
 		    "@ext_jars//:apache_commons_lang",
-		    "@ext_jars//:poi"
                 ],
 )
 

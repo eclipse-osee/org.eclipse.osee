@@ -4,6 +4,7 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_jar")
 
 
+
 http_archive(
     name = "rules_pkg",
     urls = [
@@ -125,6 +126,13 @@ maven_install(
 	"org.apache.commons:commons-collections4:4.4",
 	"net.oauth.core:oauth:20090531",
 	"org.apache.ws.xmlschema:xmlschema-core:2.2.5",
+	"org.eclipse.jetty:jetty-http:9.4.51.v20230217",
+	"org.eclipse.jetty:jetty-server:9.4.51.v20230217",
+	"org.eclipse.jetty:jetty-io:9.4.51.v20230217",
+	"org.eclipse.jetty:jetty-security:9.4.51.v20230217",
+	"org.eclipse.jetty:jetty-util:9.4.51.v20230217",
+	"org.eclipse.jetty:jetty-util-ajax:9.4.51.v20230217",
+ 	"org.eclipse.jetty:jetty-servlet:9.4.51.v20230217",
 	],
 
     repositories = [
@@ -318,6 +326,42 @@ http_jar(
       name = "eclipse_equinox_launcher",
       url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.equinox.launcher_1.5.700.v20200207-2156.jar&r=1",
       downloaded_file_name = "org.eclipse.equinox.launcher_1.5.700.v20200207-2156.jar"
+)
+
+http_jar(
+      name = "eclipse_equinox_http_jetty",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.equinox.http.jetty_3.7.400.v20200123-1333.jar&r=1",
+      downloaded_file_name = "org.eclipse.equinox.http.jetty_3.7.400.v20200123-1333.jar"
+)
+
+http_jar(
+      name = "eclipse_equinox_http_servlet",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.equinox.http.servlet_1.6.500.v20200511-1535.jar&r=1",
+      downloaded_file_name = "org.eclipse.equinox.http.servlet_1.6.500.v20200511-1535.jar"
+)
+
+http_jar(
+      name = "eclipse_equinox_metatype",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.equinox.metatype_1.5.300.v20200422-1833.jar&r=1",
+      downloaded_file_name = "org.eclipse.equinox.metatype_1.5.300.v20200422-1833.jar"
+)
+
+http_jar(
+      name = "eclipse_equinox_event",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.equinox.event_1.5.400.v20200511-1702.jar&r=1",
+      downloaded_file_name = "org.eclipse.equinox.event_1.5.400.v20200511-1702.jar"
+)
+
+http_jar(
+      name = "eclipse_equinox_ds",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.equinox.ds_1.6.200.v20200422-1833.jar&r=1",
+      downloaded_file_name = "org.eclipse.equinox.ds_1.6.200.v20200422-1833.jar"
+)
+
+http_jar(
+      name = "eclipse_equinox_cm",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.equinox.cm_1.4.400.v20200422-1833.jar&r=1",
+      downloaded_file_name = "org.eclipse.equinox.cm_1.4.400.v20200422-1833.jar"
 )
 
 http_jar(
