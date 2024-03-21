@@ -377,8 +377,9 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          String id = art.getIdString();
          Long lastmod = art.getTxDetails().getTime().getTime();
          List<String> siblings = new ArrayList<>();
-         ArtifactReadable parent =
-            art.getRelated(AtsRelationTypes.ActionToWorkflow_Action, DeletionFlag.EXCLUDE_DELETED).get(0);
+         List<ArtifactReadable> related =
+            art.getRelated(AtsRelationTypes.ActionToWorkflow_Action, DeletionFlag.EXCLUDE_DELETED);
+         ArtifactReadable parent = (related.size() > 0) ? related.get(0) : ArtifactReadable.SENTINEL;
          if (parent.isValid()) {
 
             siblings.addAll(parent.getRelated(AtsRelationTypes.ActionToWorkflow_TeamWorkflow,
