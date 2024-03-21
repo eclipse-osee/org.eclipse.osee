@@ -244,8 +244,9 @@ public class DispoProgramEndpoint {
          }
 
          if (sourceSetId != null) {
-            CopySetParams params = new CopySetParams(CopySetParamOption.OVERRIDE, CopySetParamOption.OVERRIDE,
-               CopySetParamOption.OVERRIDE, CopySetParamOption.OVERRIDE, false);
+            CopySetParams params =
+               new CopySetParams(CopySetParamOption.OVERRIDE_EMPTY, CopySetParamOption.OVERRIDE_EMPTY,
+                  CopySetParamOption.OVERRIDE_EMPTY, CopySetParamOption.OVERRIDE_EMPTY, false);
             dispoApi.copyDispoSet(programId, setId, sourceProgramId, sourceSetId, params);
          } else {
             return Response.status(Status.PRECONDITION_FAILED).entity(String.format(
