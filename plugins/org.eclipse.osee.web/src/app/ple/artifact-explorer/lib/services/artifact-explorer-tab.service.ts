@@ -22,6 +22,7 @@ import {
 	artifactTypeIcon,
 } from '../types/artifact-explorer.data';
 import { twColorClasses } from '@osee/shared/types';
+import { ArtifactIconService } from './artifact-icon.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -34,7 +35,10 @@ export class ArtifactExplorerTabService {
 	branchId = toSignal(this.uiService.id, { initialValue: '' });
 	viewId = toSignal(this.uiService.viewId, { initialValue: '' });
 
-	constructor(private eventService: BranchCommitEventService) {
+	constructor(
+		private eventService: BranchCommitEventService,
+		private artifactIconService: ArtifactIconService
+	) {
 		this.eventService.events.subscribe((id) => {
 			this.tabs.update((current) =>
 				current.filter((tab) => tab.branchId !== id)
@@ -113,45 +117,18 @@ export class ArtifactExplorerTabService {
 		this._selectedIndex.set(index);
 	}
 
-	getIconClass(icon: artifactTypeIcon): twColorClasses {
-		if (
-			icon.color === '' ||
-			icon.lightShade === '' ||
-			icon.darkShade === ''
-		) {
-			return '';
-		}
-		if (icon.lightShade === icon.darkShade) {
-			return `tw-text-${icon.color}-${icon.lightShade}`;
-		}
-		return `tw-text-${icon.color}-${icon.lightShade} dark:tw-text-${icon.color}-${icon.darkShade}`;
-	}
-
-	getIconVariantClass(icon: artifactTypeIcon) {
-		switch (icon.variant) {
-			case 'outlined':
-				return 'material-icons-outlined';
-			case 'round':
-				return 'material-icons-round';
-			case 'sharp':
-				return 'material-icons-sharp';
-			case 'two-tone':
-				return 'material-icons-two-tone';
-			default:
-				return '';
-		}
-	}
-
 	getTabIconClass(tab: tab) {
 		if (tab.tabType === 'Artifact') {
-			return this.getIconClass(tab.artifact.icon);
+			return this.artifactIconService.getIconClass(tab.artifact.icon);
 		}
 		return '';
 	}
 
 	getTabIconVariantClass(tab: tab) {
 		if (tab.tabType === 'Artifact') {
-			return this.getIconVariantClass(tab.artifact.icon);
+			return this.artifactIconService.getIconVariantClass(
+				tab.artifact.icon
+			);
 		}
 		return '';
 	}

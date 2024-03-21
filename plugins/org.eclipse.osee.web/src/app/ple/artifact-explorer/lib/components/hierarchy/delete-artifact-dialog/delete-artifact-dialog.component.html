@@ -1,0 +1,35 @@
+<!--
+ * Copyright (c) 2024 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<osee-artifact-dialog-title [option]="data.option" />
+<mat-dialog-content>
+	<div class="tw-flex tw-flex-row">
+		<div>Are you sure that you want to delete</div>
+		<div class="tw-px-2 tw-font-bold tw-text-warning">
+			{{ data.artifact.name }}
+		</div>
+		<div>?</div>
+	</div>
+</mat-dialog-content>
+<div mat-dialog-actions>
+	<button
+		mat-button
+		(click)="onCancel()">
+		Cancel
+	</button>
+	<button
+		mat-raised-button
+		(click)="onSubmit()"
+		color="primary">
+		Ok
+	</button>
+</div>

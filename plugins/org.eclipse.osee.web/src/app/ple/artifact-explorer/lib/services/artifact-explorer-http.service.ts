@@ -178,9 +178,6 @@ export class ArtifactExplorerHttpService {
 		viewId: string
 	): Observable<string[][]> {
 		let params: HttpParamsType = {};
-		if (branchId && branchId !== '') {
-			params = { ...params, branchId: branchId };
-		}
 		if (viewId && viewId !== '') {
 			params = { ...params, viewId: viewId };
 		}

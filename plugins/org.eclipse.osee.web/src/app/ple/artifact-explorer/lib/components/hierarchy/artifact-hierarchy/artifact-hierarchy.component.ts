@@ -10,31 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import {
-	Component,
-	Input,
-	OnChanges,
-	SimpleChanges,
-	ViewChild,
-	signal,
-} from '@angular/core';
+import { Component, Input, ViewChild, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-	AnimatedExpandButtonComponent,
-	BranchPickerComponent,
-} from '@osee/shared/components';
+import { BranchPickerComponent } from '@osee/shared/components';
 import { MatExpansionModule } from '@angular/material/expansion';
 import {
 	BehaviorSubject,
 	combineLatest,
 	filter,
 	map,
-	of,
 	repeat,
 	shareReplay,
 	switchMap,
 } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UiService } from '@osee/shared/services';
 import { MatIconModule } from '@angular/material/icon';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -42,13 +30,15 @@ import { MatButtonModule } from '@angular/material/button';
 import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
 import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
 import {
-	DEFAULT_HIERARCHY_ARTIFACT_ID,
+	DEFAULT_HIERARCHY_ROOT_ARTIFACT_ID,
 	artifact,
 	artifactTypeIcon,
 } from '../../../types/artifact-explorer.data';
 import { ArtifactHierarchyRelationsComponent } from '../artifact-hierarchy-relations/artifact-hierarchy-relations.component';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { ArtifactOptionsContextMenuComponent } from '../artifact-options-context-menu/artifact-options-context-menu.component';
+import { ArtifactIconService } from '../../../services/artifact-icon.service';
+import { ArtifactHierarchyArtifactsExpandedService } from '../../../services/artifact-hierarchy-artifacts-expanded.service';
 
 @Component({
 	selector: 'osee-artifact-hierarchy',
@@ -61,31 +51,22 @@ import { ArtifactOptionsContextMenuComponent } from '../artifact-options-context
 		DragDropModule,
 		MatButtonModule,
 		ArtifactHierarchyRelationsComponent,
-		AnimatedExpandButtonComponent,
 		MatMenuModule,
 		ArtifactOptionsContextMenuComponent,
 	],
 	templateUrl: './artifact-hierarchy.component.html',
 })
-export class ArtifactHierarchyComponent implements OnChanges {
-	@Input() artifactId!: `${number}`;
-	@Input() set paths(value: string[][]) {
-		this._paths.next(value);
+export class ArtifactHierarchyComponent {
+	artifactId = input.required<string>();
+	@Input() set paths(paths: string[][]) {
+		this._paths.next(paths);
 	}
 
-	private _artifactId = new BehaviorSubject<string>('');
+	protected _paths = new BehaviorSubject<string[][]>([[]]);
 
 	branchId$ = this.uiService.id;
 	branchType$ = this.uiService.type;
 	viewId$ = this.uiService.viewId;
-
-	protected artifactsOpen = signal<string[]>([]);
-	addArtifactsOpen(value: string) {
-		this.artifactsOpen.update((rows) => [...rows, value]);
-	}
-	removeArtifactsOpen(value: string) {
-		this.artifactsOpen.update((rows) => rows.filter((v) => v !== value));
-	}
 
 	trackById(index: number, item: artifact) {
 		return item.id;
@@ -94,45 +75,63 @@ export class ArtifactHierarchyComponent implements OnChanges {
 	constructor(
 		private artExpHttpService: ArtifactExplorerHttpService,
 		private uiService: UiService,
-		private tabService: ArtifactExplorerTabService
+		private tabService: ArtifactExplorerTabService,
+		private artifactIconService: ArtifactIconService,
+		private artifactsExpandedService: ArtifactHierarchyArtifactsExpandedService
 	) {}
 
-	ngOnChanges(changes: SimpleChanges): void {
-		if (
-			changes.artifactId !== undefined &&
-			changes.artifactId.previousValue !==
-				changes.artifactId.currentValue &&
-			changes.artifactId.currentValue !== undefined
-		) {
-			this._artifactId.next(changes.artifactId.currentValue);
-		}
+	// UI expand/collapse artifacts in the hierarchy
+
+	expandArtifact(value: string) {
+		this.artifactsExpandedService.expandArtifact(this.artifactId(), value);
 	}
 
-	// grabbing artifact with direct relations
-	artifactWithDirRelation$ = combineLatest([
+	collapseArtifact(value: string) {
+		this.artifactsExpandedService.collapseArtifact(
+			this.artifactId(),
+			value
+		);
+	}
+
+	artifactIsExpanded(value: string) {
+		return this.artifactsExpandedService.isExpanded(
+			this.artifactId(),
+			value
+		);
+	}
+
+	toggleExpandButton(artifactId: string) {
+		return this.artifactIsExpanded(artifactId)
+			? this.collapseArtifact(artifactId)
+			: this.expandArtifact(artifactId);
+	}
+
+	// Artifact with its direct relations
+
+	artifactWithDirRelations = combineLatest([
+		this._paths,
 		this.branchId$,
 		this.viewId$,
-		this._artifactId,
 	]).pipe(
 		filter(
-			([branch, view, artifact]) =>
-				branch != '-1' &&
-				branch != '0' &&
-				branch != '' &&
-				artifact != '' &&
-				view != ''
+			([_, branch, view]) =>
+				branch !== '-1' &&
+				branch !== '0' &&
+				branch !== '' &&
+				this.artifactId() !== '0' &&
+				view !== ''
 		),
-		switchMap(([branch, view, artifact]) =>
+		switchMap(([_, branch, view]) =>
 			this.artExpHttpService
-				.getDirectRelations(branch, artifact, view)
+				.getDirectRelations(branch, this.artifactId(), view)
 				.pipe(repeat({ delay: () => this.uiService.update }))
 		),
-		shareReplay({ bufferSize: 1, refCount: true }),
-		takeUntilDestroyed()
+		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
-	// grabbing only relations that are populated
-	relation$ = this.artifactWithDirRelation$.pipe(
+	// Relations (only ones that are populated)
+
+	relation$ = this.artifactWithDirRelations.pipe(
 		map((response) =>
 			response.relations.filter(
 				(relation) =>
@@ -144,9 +143,10 @@ export class ArtifactHierarchyComponent implements OnChanges {
 		)
 	);
 
-	// grabbing artifacts
-	artifact$ = combineLatest([
-		this.artifactWithDirRelation$,
+	// Child artifacts (children of the component's main artifact)
+
+	artifacts = combineLatest([
+		this.artifactWithDirRelations,
 		this.uiService.type,
 	]).pipe(
 		map(([response, branchType]) => {
@@ -162,53 +162,50 @@ export class ArtifactHierarchyComponent implements OnChanges {
 					?.artifacts || [];
 
 			// check if branchType is baseline and set editable accordingly (likely not needed anymore with branchType checking)
-			const artfacts = childArtifacts.map((artifact) => ({
+			const artifacts = childArtifacts.map((artifact) => ({
 				...artifact,
 				editable: branchType !== 'baseline',
 			}));
 
-			return artfacts;
+			return artifacts;
 		}),
-		shareReplay({ bufferSize: 1, refCount: true }),
-		takeUntilDestroyed()
+		shareReplay({ bufferSize: 1, refCount: true })
+	);
+
+	// Paths (initially from the paths service) that are updated and passed down to children artifact hierarchy components
+
+	latestPaths = combineLatest([this._paths, this.artifacts]).pipe(
+		map(([paths, arts]) => {
+			// Remove path from path array if we are no longer on that path
+			let childPaths = paths
+				.filter((path) => path[path.length - 1] === this.artifactId())
+				.map((path) => path.slice(0, -1));
+
+			// If a child artifact is next on path, open it
+			childPaths.forEach((path) => {
+				arts.find((art) => {
+					if (art.id === path[path.length - 1]) {
+						this.expandArtifact(art.id);
+					}
+				});
+			});
+			// Update the paths array that we are passing down the hierarchy
+			return childPaths;
+		}),
+		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
 	addTab(artifact: artifact) {
 		this.tabService.addArtifactTab(artifact);
 	}
 
-	protected _paths = new BehaviorSubject<string[][]>([[]]);
-
 	getIconClasses(icon: artifactTypeIcon) {
 		return (
-			this.tabService.getIconClass(icon) +
+			this.artifactIconService.getIconClass(icon) +
 			' ' +
-			this.tabService.getIconVariantClass(icon)
+			this.artifactIconService.getIconVariantClass(icon)
 		);
 	}
-
-	latestPaths = combineLatest([
-		this._paths.asObservable(),
-		this.artifact$,
-	]).pipe(
-		switchMap(([paths, arts]) => {
-			// Remove path from path array if we are no longer on that path
-			let childPaths = paths
-				.filter((path) => path[path.length - 1] === this.artifactId)
-				.map((path) => path.slice(0, -1));
-
-			// If a child artifact is next on path, open it
-			childPaths.forEach((path) => {
-				arts.find((art) => {
-					if (art.id == path[path.length - 1] && path.length > 1) {
-						this.addArtifactsOpen(art.id);
-					}
-				});
-			});
-			// Update the paths array that we are passing down the hierarchy
-			return of(childPaths);
-		})
-	);
 
 	// Right-click context menu
 
@@ -226,9 +223,23 @@ export class ArtifactHierarchyComponent implements OnChanges {
 		this.menuPosition.y = event.clientY + 'px';
 		this.matMenuTrigger.menuData = {
 			artifactId: artifactId,
+			parentArtifactId: this.artifactId,
 		};
 		this.matMenuTrigger.openMenu();
 	}
 
-	DEFAULT_HIERARCHY_ARTIFACT_ID = DEFAULT_HIERARCHY_ARTIFACT_ID;
+	getSiblingArtifactId(artifactId: `${number}`) {
+		return this.artifacts.pipe(
+			map((artifacts) =>
+				artifacts.filter((artifact) => artifact.id !== artifactId)
+			),
+			map((filteredArtifacts) =>
+				filteredArtifacts.length > 0
+					? filteredArtifacts[0].id
+					: undefined
+			)
+		);
+	}
+
+	DEFAULT_HIERARCHY_ROOT_ARTIFACT_ID = DEFAULT_HIERARCHY_ROOT_ARTIFACT_ID;
 }

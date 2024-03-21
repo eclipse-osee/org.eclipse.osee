@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BehaviorSubject, map } from 'rxjs';
+import { BehaviorSubject, map, tap } from 'rxjs';
 import {
 	ActionDropDownComponent,
 	BranchPickerComponent,

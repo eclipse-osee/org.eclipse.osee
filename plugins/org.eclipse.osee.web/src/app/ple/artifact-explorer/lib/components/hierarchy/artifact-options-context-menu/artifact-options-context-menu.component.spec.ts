@@ -17,6 +17,8 @@ import { TransactionService } from '@osee/shared/transactions';
 import { transactionServiceMock } from '@osee/shared/transactions/testing';
 import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
 import { artifactHierarchyPathServiceMock } from '../../../testing/artifact-hierarchy-path.service.mock';
+import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
+import { ArtifactExplorerHttpServiceMock } from '../../../testing/artifact-explorer-http.service.mock';
 
 describe('ArtifactOptionsContextMenuComponent', () => {
 	let component: ArtifactOptionsContextMenuComponent;
@@ -33,6 +35,10 @@ describe('ArtifactOptionsContextMenuComponent', () => {
 				{
 					provide: ArtifactHierarchyPathService,
 					useValue: artifactHierarchyPathServiceMock,
+				},
+				{
+					provide: ArtifactExplorerHttpService,
+					useValue: ArtifactExplorerHttpServiceMock,
 				},
 			],
 		}).compileComponents();

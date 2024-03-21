@@ -12,7 +12,7 @@
  **********************************************************************/
 import { attribute, iconVariant, twColor, twShade } from '@osee/shared/types';
 
-export const DEFAULT_HIERARCHY_ARTIFACT_ID: `${number}` = '197818';
+export const DEFAULT_HIERARCHY_ROOT_ARTIFACT_ID: `${number}` = '197818';
 
 export interface artifactWithDirectRelations {
 	artId: string;
@@ -81,15 +81,12 @@ export interface artifactHierarchyOptions {
 	showRelations: boolean;
 }
 
-export class artifactToCreate {
-	public name = '';
-	public artifactTypeId = '0';
-	public parentArtifactId = '0';
-	public attributes: attribute[] = [];
-
-	constructor(parentArtifactId: `${number}`) {
-		this.parentArtifactId = parentArtifactId;
-	}
+export interface createChildArtifactDialogData {
+	name: string;
+	artifactTypeId: string;
+	parentArtifactId: string;
+	attributes: attribute[];
+	option: artifactContextMenuOption;
 }
 
 export const artifactSentinel: artifact = {
@@ -109,3 +106,14 @@ export const artifactSentinel: artifact = {
 };
 
 export type TabType = 'Artifact' | 'ChangeReport';
+
+export interface artifactContextMenuOption {
+	name: string;
+	icon: artifactTypeIcon;
+	excludedArtifactTypes: `${number}`[];
+}
+
+export interface deleteArtifactDialogData {
+	artifact: artifact;
+	option: artifactContextMenuOption;
+}

@@ -13,7 +13,18 @@
 <form
 	#createChildArtifactForm="ngForm"
 	oseeForm>
-	<h1 mat-dialog-title>Create Child Artifact</h1>
+	<h1
+		mat-dialog-title
+		class="before:tw-h-0">
+		<div class="tw-flex tw-flex-row tw-items-center">
+			<mat-icon [class]="getIconClasses(data.option.icon)">
+				{{ data.option.icon.icon }}
+			</mat-icon>
+			<div class="tw-pl-4">
+				{{ data.option.name }}
+			</div>
+		</div>
+	</h1>
 	<mat-dialog-content>
 		<div class="tw-flex tw-flex-col">
 			@if (createChildArtifactForm.invalid) {
@@ -102,8 +113,7 @@
 	<div mat-dialog-actions>
 		<button
 			mat-button
-			(click)="onNoClick()"
-			data-cy="cancel-btn">
+			(click)="onCancel()">
 			Cancel
 		</button>
 		<button

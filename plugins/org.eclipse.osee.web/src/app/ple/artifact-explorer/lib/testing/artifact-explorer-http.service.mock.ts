@@ -10,11 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-
 import { of } from 'rxjs';
 import { ArtifactExplorerHttpService } from '../services/artifact-explorer-http.service';
 import { artifactWithDirectRelations } from '../types/artifact-explorer.data';
-import { attribute } from '@osee/shared/types';
+import {
+	artifactTypeAttributesMock,
+	artifactMock,
+} from './artifact-explorer.data.mock';
 
 export const ArtifactExplorerHttpServiceMock: Partial<ArtifactExplorerHttpService> =
 	{
@@ -25,18 +27,11 @@ export const ArtifactExplorerHttpServiceMock: Partial<ArtifactExplorerHttpServic
 		getArtifactTypeAttributes(artifactId) {
 			return of(artifactTypeAttributesMock);
 		},
-	};
 
-export const artifactTypeAttributesMock: attribute[] = [
-	{
-		name: 'subsystem',
-		value: 'data management',
-		typeId: '7',
-		id: '11111',
-		storeType: 'Enumeration',
-		multiplicityId: '2',
-	},
-];
+		getArtifactForTab(branchId, artifactId) {
+			return of(artifactMock);
+		},
+	};
 
 export const artifactWithDirectRelationsMock: artifactWithDirectRelations = {
 	artId: '777',
