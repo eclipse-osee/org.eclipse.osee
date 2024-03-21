@@ -28,7 +28,10 @@ import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { artifactToCreate } from '../../../types/artifact-explorer.data';
+import {
+	createChildArtifactDialogData,
+	artifactTypeIcon,
+} from '../../../types/artifact-explorer.data';
 import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
 import { MatListModule } from '@angular/material/list';
 import {
@@ -50,6 +53,7 @@ import {
 import { MatIconModule } from '@angular/material/icon';
 import { FormDirective } from '@osee/shared/directives';
 import { ArtifactUiService } from '@osee/shared/services';
+import { ArtifactIconService } from '../../../services/artifact-icon.service';
 
 function controlContainerFactory(controlContainer?: ControlContainer) {
 	return controlContainer;
@@ -86,10 +90,11 @@ function controlContainerFactory(controlContainer?: ControlContainer) {
 export class CreateChildArtifactDialogComponent {
 	constructor(
 		public dialogRef: MatDialogRef<CreateChildArtifactDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: artifactToCreate
+		@Inject(MAT_DIALOG_DATA) public data: createChildArtifactDialogData,
+		private artifactIconService: ArtifactIconService
 	) {}
 
-	onNoClick() {
+	onCancel() {
 		this.dialogRef.close();
 	}
 
@@ -191,4 +196,12 @@ export class CreateChildArtifactDialogComponent {
 	// Handle form status change
 
 	@ViewChild('createChildArtifactForm') _createChildArtifactForm!: NgForm;
+
+	getIconClasses(icon: artifactTypeIcon) {
+		return (
+			this.artifactIconService.getIconClass(icon) +
+			' ' +
+			this.artifactIconService.getIconVariantClass(icon)
+		);
+	}
 }

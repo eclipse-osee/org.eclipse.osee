@@ -1,0 +1,24 @@
+<!--
+ * Copyright (c) 2024 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<h1
+	mat-dialog-title
+	class="before:tw-h-0">
+	<div class="tw-flex tw-flex-row tw-items-center">
+		<mat-icon [class]="getIconClasses(_option.value.icon)">
+			{{ _option.value.icon.icon }}
+		</mat-icon>
+		<div class="tw-pl-4">
+			{{ _option.value.name }}
+		</div>
+	</div>
+</h1>

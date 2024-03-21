@@ -50,6 +50,7 @@ import {
 	artifactTypeIcon,
 } from '../../../types/artifact-explorer.data';
 import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
+import { ArtifactIconService } from '../../../services/artifact-icon.service';
 
 @Component({
 	selector: 'osee-relations-editor-panel',
@@ -130,9 +131,9 @@ export class RelationsEditorPanelComponent implements OnChanges {
 
 	getIconClasses(icon: artifactTypeIcon) {
 		return (
-			this.tabService.getIconClass(icon) +
+			this.artifactIconService.getIconClass(icon) +
 			' ' +
-			this.tabService.getIconVariantClass(icon)
+			this.artifactIconService.getIconVariantClass(icon)
 		);
 	}
 
@@ -142,7 +143,8 @@ export class RelationsEditorPanelComponent implements OnChanges {
 		private builder: TransactionBuilderService,
 		private transaction: TransactionService,
 		private uiService: UiService,
-		public dialog: MatDialog
+		public dialog: MatDialog,
+		private artifactIconService: ArtifactIconService
 	) {}
 
 	toggleExpand(identifier: string) {

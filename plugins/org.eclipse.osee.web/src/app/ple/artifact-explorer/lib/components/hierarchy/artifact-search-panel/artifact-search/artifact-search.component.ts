@@ -46,6 +46,7 @@ import {
 import { ArtifactExplorerTabService } from '../../../../services/artifact-explorer-tab.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { ArtifactIconService } from '../../../../services/artifact-icon.service';
 
 @Component({
 	selector: 'osee-artifact-search',
@@ -179,7 +180,8 @@ export class ArtifactSearchComponent {
 		private artHierPathService: ArtifactHierarchyPathService,
 		public dialog: MatDialog,
 		private advancedSearchService: AdvancedArtifactSearchService,
-		private tabService: ArtifactExplorerTabService
+		private tabService: ArtifactExplorerTabService,
+		private artifactIconService: ArtifactIconService
 	) {}
 
 	performSearch(e: Event) {
@@ -253,14 +255,14 @@ export class ArtifactSearchComponent {
 
 	getIconClasses(icon: artifactTypeIcon) {
 		return (
-			this.tabService.getIconClass(icon) +
+			this.artifactIconService.getIconClass(icon) +
 			' ' +
-			this.tabService.getIconVariantClass(icon)
+			this.artifactIconService.getIconVariantClass(icon)
 		);
 	}
 
 	showInHierarchy(artifact: artifactTokenWithIcon) {
-		this.artHierPathService.initializePaths(artifact.id);
+		this.artHierPathService.updatePaths(artifact.id);
 	}
 
 	openContextMenu(event: MouseEvent, artifact: artifactTokenWithIcon) {

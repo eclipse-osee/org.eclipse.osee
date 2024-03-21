@@ -12,17 +12,16 @@
  -->
 @if (defaultOption$ | async; as defaultOptions) {
 	<div class="tw-flex tw-flex-col tw-text-foreground-base">
-		@if (_branchEditable()) {
-			@for (defaultOption of defaultOptions; track defaultOption) {
-				<button
-					mat-menu-item
-					(click)="selectOption(defaultOption.name)">
-					<mat-icon [ngClass]="defaultOption.iconColor">{{
-						defaultOption.iconName
-					}}</mat-icon>
-					{{ defaultOption.name }}
-				</button>
-			}
+		@for (defaultOption of defaultOptions; track defaultOption) {
+			<button
+				mat-menu-item
+				[disabled]="!_branchEditable()"
+				(click)="selectOption(defaultOption)">
+				<mat-icon [class]="getIconClasses(defaultOption.icon)">{{
+					defaultOption.icon.icon
+				}}</mat-icon>
+				{{ defaultOption.name }}
+			</button>
 		}
 	</div>
 }

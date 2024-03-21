@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2023 Boeing
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -12,17 +12,18 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AnimatedExpandButtonComponent } from './animated-expand-button.component';
+import { ArtifactDialogTitleComponent } from './artifact-dialog-title.component';
 
-describe('AnimatedExpandButtonComponent', () => {
-	let component: AnimatedExpandButtonComponent;
-	let fixture: ComponentFixture<AnimatedExpandButtonComponent>;
+describe('ArtifactDialogTitleComponent', () => {
+	let component: ArtifactDialogTitleComponent;
+	let fixture: ComponentFixture<ArtifactDialogTitleComponent>;
 
-	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [AnimatedExpandButtonComponent],
-		});
-		fixture = TestBed.createComponent(AnimatedExpandButtonComponent);
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [ArtifactDialogTitleComponent],
+		}).compileComponents();
+
+		fixture = TestBed.createComponent(ArtifactDialogTitleComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

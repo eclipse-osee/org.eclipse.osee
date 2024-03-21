@@ -14,21 +14,36 @@ import { Injectable } from '@angular/core';
 import {
 	BehaviorSubject,
 	combineLatest,
-	debounceTime,
+	distinctUntilChanged,
 	filter,
-	merge,
-	of,
+	map,
 	repeat,
 	shareReplay,
 	switchMap,
 } from 'rxjs';
 import { UiService } from '@osee/shared/services';
 import { ArtifactExplorerHttpService } from './artifact-explorer-http.service';
+import { ArtifactHierarchyArtifactsExpandedService } from './artifact-hierarchy-artifacts-expanded.service';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class ArtifactHierarchyPathService {
+	constructor(
+		private artExpHttpService: ArtifactExplorerHttpService,
+		private uiService: UiService,
+		private artifactsExpandedService: ArtifactHierarchyArtifactsExpandedService
+	) {
+		// Clearing the selectedArtifactId when the branch id / view id changes
+		combineLatest([this.uiService.id, this.uiService.viewId])
+			.pipe(
+				map(([branchId, viewId]) => {
+					this.selectedArtifactId.next('');
+				})
+			)
+			.subscribe();
+	}
+
 	selectedArtifactId = new BehaviorSubject<string>('');
 	branchId = this.uiService.id;
 	viewId = this.uiService.viewId;
@@ -46,7 +61,6 @@ export class ArtifactHierarchyPathService {
 				viewId != '' &&
 				artId != ''
 		),
-		debounceTime(500),
 		switchMap(([branchId, viewId, artId]) =>
 			this.artExpHttpService
 				.getPathToArtifact(branchId, artId, viewId)
@@ -55,16 +69,12 @@ export class ArtifactHierarchyPathService {
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
-	constructor(
-		private artExpHttpService: ArtifactExplorerHttpService,
-		private uiService: UiService
-	) {}
-
 	getPaths() {
 		return this.paths;
 	}
 
-	initializePaths(artifactId: string) {
+	updatePaths(artifactId: string) {
+		this.artifactsExpandedService.clear();
 		this.selectedArtifactId.next(artifactId);
 	}
 }

@@ -31,6 +31,7 @@ import {
 	artifactTypeIcon,
 } from '../../../types/artifact-explorer.data';
 import { BehaviorSubject } from 'rxjs';
+import { ArtifactIconService } from '../../../services/artifact-icon.service';
 
 @Component({
 	selector: 'osee-artifact-hierarchy-relation-side',
@@ -47,6 +48,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class ArtifactHierarchyRelationSideComponent {
 	private tabService = inject(ArtifactExplorerTabService);
+	private artifactIconService = inject(ArtifactIconService);
 
 	@Input({ required: true }) set relationSide(value: relationSide) {
 		if (value !== undefined) this._relationSide.set(value);
@@ -100,9 +102,9 @@ export class ArtifactHierarchyRelationSideComponent {
 
 	getIconClasses(icon: artifactTypeIcon) {
 		return (
-			this.tabService.getIconClass(icon) +
+			this.artifactIconService.getIconClass(icon) +
 			' ' +
-			this.tabService.getIconVariantClass(icon)
+			this.artifactIconService.getIconVariantClass(icon)
 		);
 	}
 
