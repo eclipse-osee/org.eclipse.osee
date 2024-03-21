@@ -49,6 +49,17 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
   - `node -v`
   - `npm -v`
 
+### Move to OSEE web directory
+
+- `cd {path_to_repo}\org.eclipse.osee\plugins\org.eclipse.osee.web`
+
+### Update code
+
+- Run:
+  - `git checkout dev`
+  - `git pull --rebase`
+
+
 ### Install pnpm
 
 - Run:
@@ -70,16 +81,6 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - Run:
   - `ng version`
 
-### Move to OSEE web directory
-
-- `cd {path_to_repo}\org.eclipse.osee\plugins\org.eclipse.osee.web`
-
-### Update code
-
-- Run:
-  - `git checkout dev`
-  - `git pull --rebase`
-
 ### Download node dependencies
 
 - Run:
@@ -87,7 +88,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ### Running the Application
 
-- Ensure local OSEE application server is running:
+- Run local **OSEE application server**:
   - Open Eclipse IDE client used for development.
   - Switch to debug perspective.
   - Click debug configurations dropdown button.
@@ -98,7 +99,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
   - Run "AtsIde_Integration_TestSuite".
   - Wait for "database initialization complete".
   - Terminate "AtsIde_Integration_TestSuite".
-- Run Angular web server from shell/prompt/bash (make sure you are still in the \git\org.eclipse.osee\plugins\org.eclipse.osee.web directory):
+- Run **Angular web server** from shell/prompt/bash (make sure you are still in the \git\org.eclipse.osee\plugins\org.eclipse.osee.web directory):
   - `ng serve`
     OR
   - `ng serve --open` to open the page automatically.
