@@ -77,7 +77,6 @@ java_library(
 			"@maven//:javax_servlet_javax_servlet_api",
 			"@maven//:org_hsqldb_hsqldb",
 			"@javax_annotation//jar",
-			"@ext_jars//:poi"
                 ],
 )
 

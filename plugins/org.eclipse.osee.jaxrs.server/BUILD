@@ -70,7 +70,6 @@ java_library(
 		        "@maven//:javax_annotation_javax_annotation_api",
 		        "@eclipse_osgi//jar",		 
 		        "@eclipse_osgi_services//jar",
-		        "@ext_jars//:poi"
                 ],
 )
 

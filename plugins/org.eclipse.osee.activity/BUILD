@@ -55,7 +55,6 @@ java_library(
 		     "@maven//:javax_mail_mail",
 		     "@maven//:org_antlr_antlr_runtime",
 		     "@maven//:com_google_guava_guava",
-		     		    "@ext_jars//:poi"
                 ],
 )
 

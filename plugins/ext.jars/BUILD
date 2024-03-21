@@ -59,7 +59,7 @@ java_import(
         name = "nebula",
         jars = [
                 "org.eclipse.nebula.widgets.xviewer.core_1.0.0.202212191054.jar",
-		"org.eclipse.nebula.widgets.xviewer_1.1.0.202302231924.jar",
+		#"org.eclipse.nebula.widgets.xviewer_1.1.0.202302231924.jar",
 		"org.eclipse.nebula.widgets.ganttchart_1.0.0.202303072132.jar"
 	],
 )
@@ -106,7 +106,7 @@ java_import(
 		"org.eclipse.emf.ecore.change_2.14.0.v20190528-0725.jar",
        		"org.eclipse.sphinx.emf.serialization_0.13.1.202210010314.jar",
        		"org.eclipse.emf.edit_2.16.0.v20190920-0401.jar",
-       		"org.eclipse.emf.transaction_1.9.1.201805140824.jar"
+       		#"org.eclipse.emf.transaction_1.9.1.201805140824.jar"
        ],
 )
 
