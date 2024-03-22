@@ -8,15 +8,15 @@
 	<packaging>pom</packaging>
 	<name>OSEE MASTER - Parent (Incubation)</name>
 	<version>1.0.0-SNAPSHOT</version>
- 
+
 <!-- To only test certain modules run: mvn clean install -Dskiptests, then comment out these 3 modules and activate a profile below -->
-  
+
       		<modules>
 			<module>../../plugins/org.eclipse.osee.dep.target</module>
 			<module>../../plugins/org.eclipse.osee.x.parent</module>
 			<module>../../plugins/org.eclipse.osee.ide.parent</module>
 		</modules>
-	
+
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -49,7 +49,7 @@
 		<xerces-version>2.6.1</xerces-version>
 
 		<jaxb2-maven-version>1.5</jaxb2-maven-version>
-      <egit-site>http://download.eclipse.org/egit/updates-4.4/</egit-site> 
+      <egit-site>http://download.eclipse.org/egit/updates-4.4/</egit-site>
 		<jasmine-version>1.3.1.0</jasmine-version>
 
 		<platform-version-name>mars</platform-version-name>
@@ -69,7 +69,7 @@
 <!-- 		<cbi-jdt-repo.url>http://repo.eclipse.org/content/repositories/eclipse-releases/</cbi-jdt-repo.url> -->
 <!-- 		<cbi-jdt-version>3.10.0.v20140604-1726</cbi-jdt-version> -->
 	</properties>
-	
+
 	<licenses>
 		<license>
 			<name>Eclipse Public License v1.0</name>
@@ -106,7 +106,7 @@
 	</extensions>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
-    
+
 			<plugin>
 				<groupId>org.eclipse.tycho</groupId>
 				<artifactId>tycho-maven-plugin</artifactId>
@@ -121,8 +121,8 @@
 					<format>'v'yyyyMMddHHmm'${build-alias}'</format>
 					<archiveSite>true</archiveSite>
 					<environments>
-						<!-- <environment> <os>macosx</os> <ws>carbon</ws> <arch>x86</arch> 
-							</environment> <environment> <os>macosx</os> <ws>cocoa</ws> <arch>x86</arch> 
+						<!-- <environment> <os>macosx</os> <ws>carbon</ws> <arch>x86</arch>
+							</environment> <environment> <os>macosx</os> <ws>cocoa</ws> <arch>x86</arch>
 							</environment> -->
 						<environment>
 							<os>macosx</os>
@@ -134,7 +134,7 @@
 							<ws>win32</ws>
 							<arch>x86_64</arch>
 						</environment>
-						
+
 						<environment>
 							<os>linux</os>
 							<ws>gtk</ws>
@@ -156,8 +156,8 @@
                      </artifact>
                  </target>
 					<environments>
-						<!-- <environment> <os>macosx</os> <ws>carbon</ws> <arch>x86</arch> 
-							</environment> <environment> <os>macosx</os> <ws>cocoa</ws> <arch>x86</arch> 
+						<!-- <environment> <os>macosx</os> <ws>carbon</ws> <arch>x86</arch>
+							</environment> <environment> <os>macosx</os> <ws>cocoa</ws> <arch>x86</arch>
 							</environment> -->
 						<environment>
 							<os>macosx</os>
@@ -169,8 +169,8 @@
 							<ws>win32</ws>
 							<arch>x86_64</arch>
 						</environment>
-						
-						
+
+
 						<environment>
 							<os>linux</os>
 							<ws>gtk</ws>
@@ -278,6 +278,27 @@
 					<configuration>
 						<encoding>ISO-8859-1</encoding>
 					</configuration>
+					<executions>
+						<execution>
+							<id>copy-resources</id>
+							<phase>prepare-package</phase>
+							<goals>
+								<goal>copy-resources</goal>
+							</goals>
+							<configuration>
+								<outputDirectory>${project.build.outputDirectory}/META-INF</outputDirectory>
+								<resources>
+									<resource>
+										<directory>${project.basedir}/../../</directory>
+										<includes>
+											<include>LICENSE.md</include>
+											<include>NOTICE.md</include>
+										</includes>
+									</resource>
+								</resources>
+							</configuration>
+						</execution>
+                	</executions>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -360,7 +381,7 @@
 	</build>
 
 	<profiles>
-	
+
 
 
 		<profile>
@@ -370,7 +391,7 @@
 		   			<name>osee-target-build</name>
 	   			</property>
 		   </activation>
-		</profile>	
+		</profile>
 		<profile>
 			<id>eclipse-platform</id>
 			<activation>
@@ -440,18 +461,18 @@
 				<wikitext-site>http://download.eclipse.org/tools/mylyn/update/weekly</wikitext-site>
 				<subversive-site>http://download.eclipse.org/technology/subversive/${subversive-version}/update-site</subversive-site>
 				<polarion-site>http://community.polarion.com/projects/subversive/download/eclipse/${polarion-version}/update-site</polarion-site> -->
-			 	
-				
+
+
 			</properties>
 			<repositories>
-			   
-			  
+
+
 			<!--	<repository>
 					<id>nebula</id>
 					<layout>p2</layout>
 					<url>${nebula-site}</url>
 				</repository>
-				<repository> <id>wikitext</id> <layout>p2</layout> <url>${wikitext-site}</url> 
+				<repository> <id>wikitext</id> <layout>p2</layout> <url>${wikitext-site}</url>
 					</repository>
 				<repository>
 					<id>polarion</id>
@@ -465,8 +486,8 @@
 				</repository> -->
 			</repositories>
 		</profile>
-		<!-- 
-		
+		<!--
+
 		<profile>
 			<id>osee-all</id>
 			<activation>
@@ -486,7 +507,7 @@
 			</repositories>
 		</profile>
  -->
- 
+
 		<profile>
 			<id>osee-all-ide</id>
 			<activation>
@@ -510,7 +531,7 @@
 					<layout>p2</layout>
 					<url>${osee-xserver-site}</url>
 				</repository>
-				
+
 			</repositories>
 		</profile>
 
@@ -880,7 +901,7 @@
 
 	<profile>
 		<id>AtsInt</id>
-		
+
 		<modules>
 			<module> ../org.eclipse.osee.ats.ide.integration.tests</module>
 		</modules>
@@ -888,7 +909,7 @@
 
 	<profile>
 		<id>AtsRestInt</id>
-		
+
 		<modules>
 			<module> ../org.eclipse.osee.ats.ide.parent</module>
 		</modules>
