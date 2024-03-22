@@ -30,11 +30,13 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Hyperlink;
 import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -176,12 +178,7 @@ public class ExcelWorkbookWriter {
 
    public void writeCell(int rowIndex, int cellIndex, Object value, String hyperlink, HyperLinkType hyperlinkType,
       CELLSTYLE... styles) {
-      checkActiveSheet();
-      Row row = activeSheet.getRow(rowIndex);
-      if (row == null) {
-         row = activeSheet.createRow(rowIndex);
-      }
-      Cell cell = row.createCell(cellIndex);
+      Cell cell = getCell(rowIndex, cellIndex);
       cell.setCellStyle(createCellStyle(styles));
 
       if (!hyperlink.isEmpty()) {
@@ -202,6 +199,26 @@ public class ExcelWorkbookWriter {
          String dateString = DateUtil.get((Date) value, "MM/dd/yyyy");
          cell.setCellValue(dateString);
       }
+   }
+
+   public void writeCellStringWithSuperscript(int rowIndex, int cellIndex, String value, int superscriptStart,
+      int superscriptEnd, CELLSTYLE... styles) {
+      Cell cell = getCell(rowIndex, cellIndex);
+      cell.setCellStyle(createCellStyle(styles));
+      Font superscriptFont = workbook.createFont();
+      superscriptFont.setTypeOffset(Font.SS_SUPER);
+      RichTextString richText = new XSSFRichTextString(value);
+      richText.applyFont(superscriptStart, superscriptEnd, superscriptFont);
+      cell.setCellValue(richText);
+   }
+
+   private Cell getCell(int rowIndex, int cellIndex) {
+      checkActiveSheet();
+      Row row = activeSheet.getRow(rowIndex);
+      if (row == null) {
+         row = activeSheet.createRow(rowIndex);
+      }
+      return row.createCell(cellIndex);
    }
 
    private CellStyle createCellStyle(CELLSTYLE... styles) {
