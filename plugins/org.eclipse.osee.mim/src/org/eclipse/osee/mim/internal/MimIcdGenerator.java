@@ -1322,7 +1322,7 @@ public class MimIcdGenerator {
 
       int rowIndex = 2;
       int noteIndex = 1;
-      Map<Integer, String> messageNotes = new HashMap<>();
+      Map<Integer, MessageNote> messageNotes = new HashMap<>();
 
       for (int i = 0; i < Math.max(primaryList.size(), secondaryList.size()); i++) {
          ArtifactReadable primaryMessage = ArtifactReadable.SENTINEL;
@@ -1360,11 +1360,12 @@ public class MimIcdGenerator {
 
             String description = primaryMessage.getSoleAttributeAsString(CoreAttributeTypes.Description, "");
             if (!description.isEmpty()) {
+               CELLSTYLE superscriptColor = getCellColor(primaryMessage, CoreAttributeTypes.Description.getId());
                String messageNameWithSuperscript = primaryMessage.getName() + " [" + noteIndex + "]";
-               messageNotes.put(noteIndex, description);
+               messageNotes.put(noteIndex, new MessageNote(description, superscriptColor));
                noteIndex++;
                writer.writeCellStringWithSuperscript(rowIndex, 3, messageNameWithSuperscript,
-                  primaryMessage.getName().length(), messageNameWithSuperscript.length(),
+                  primaryMessage.getName().length(), messageNameWithSuperscript.length(), superscriptColor,
                   getCellColor(primaryMessage, CoreAttributeTypes.Name.getId()), CELLSTYLE.BOLD);
             } else {
                writer.writeCell(rowIndex, 3, primaryMessage.getName(),
@@ -1389,11 +1390,12 @@ public class MimIcdGenerator {
 
             String description = secondaryMessage.getSoleAttributeAsString(CoreAttributeTypes.Description, "");
             if (!description.isEmpty()) {
+               CELLSTYLE superscriptColor = getCellColor(primaryMessage, CoreAttributeTypes.Description.getId());
                String messageNameWithSuperscript = secondaryMessage.getName() + " [" + noteIndex + "]";
-               messageNotes.put(noteIndex, description);
+               messageNotes.put(noteIndex, new MessageNote(description, superscriptColor));
                noteIndex++;
                writer.writeCellStringWithSuperscript(rowIndex, 8, messageNameWithSuperscript,
-                  secondaryMessage.getName().length(), messageNameWithSuperscript.length(),
+                  secondaryMessage.getName().length(), messageNameWithSuperscript.length(), superscriptColor,
                   getCellColor(secondaryMessage, CoreAttributeTypes.Name.getId()), CELLSTYLE.BOLD);
             } else {
                writer.writeCell(rowIndex, 8, secondaryMessage.getName(),
@@ -1424,11 +1426,12 @@ public class MimIcdGenerator {
 
                String description = subMessage.getSoleAttributeAsString(CoreAttributeTypes.Description, "");
                if (!description.isEmpty()) {
+                  CELLSTYLE superscriptColor = getCellColor(subMessage, CoreAttributeTypes.Description.getId());
                   String subMessageNameWithSuperscript = subMessage.getName() + " [" + noteIndex + "]";
-                  messageNotes.put(noteIndex, description);
+                  messageNotes.put(noteIndex, new MessageNote(description, superscriptColor));
                   noteIndex++;
                   writer.writeCellStringWithSuperscript(rowIndex, 4, subMessageNameWithSuperscript,
-                     subMessage.getName().length(), subMessageNameWithSuperscript.length(),
+                     subMessage.getName().length(), subMessageNameWithSuperscript.length(), superscriptColor,
                      getCellColor(subMessage, CoreAttributeTypes.Name.getId()), CELLSTYLE.NONE);
                } else {
                   writer.writeCell(rowIndex, 4, subMessage.getName(),
@@ -1444,12 +1447,12 @@ public class MimIcdGenerator {
 
                String description = subMessage.getSoleAttributeAsString(CoreAttributeTypes.Description, "");
                if (!description.isEmpty()) {
+                  CELLSTYLE superscriptColor = getCellColor(subMessage, CoreAttributeTypes.Description.getId());
                   String subMessageNameWithSuperscript = subMessage.getName() + " [" + noteIndex + "]";
-                  messageNotes.put(noteIndex, description);
-                  noteIndex++;
+                  messageNotes.put(noteIndex, new MessageNote(description, superscriptColor));
                   noteIndex++;
                   writer.writeCellStringWithSuperscript(rowIndex, 9, subMessageNameWithSuperscript,
-                     subMessage.getName().length(), subMessageNameWithSuperscript.length(),
+                     subMessage.getName().length(), subMessageNameWithSuperscript.length(), superscriptColor,
                      getCellColor(subMessage, CoreAttributeTypes.Name.getId()), CELLSTYLE.NONE);
                } else {
                   writer.writeCell(rowIndex, 9, subMessage.getName(),
@@ -1476,7 +1479,8 @@ public class MimIcdGenerator {
       writer.writeCell(rowIndex, 11, "Notes:", CELLSTYLE.BOLD);
       rowIndex++;
       for (Integer superscript : messageNotes.keySet()) {
-         writer.writeCell(rowIndex, 11, superscript + ". " + messageNotes.get(superscript), CELLSTYLE.WRAP);
+         MessageNote note = messageNotes.get(superscript);
+         writer.writeCell(rowIndex, 11, superscript + ". " + note.getText(), note.getColor(), CELLSTYLE.WRAP);
          rowIndex++;
       }
 
@@ -1696,6 +1700,24 @@ public class MimIcdGenerator {
          }
       }
       return false;
+   }
+
+   private class MessageNote {
+      final String text;
+      final CELLSTYLE color;
+
+      public MessageNote(String text, CELLSTYLE color) {
+         this.text = text;
+         this.color = color;
+      }
+
+      public String getText() {
+         return text;
+      }
+
+      public CELLSTYLE getColor() {
+         return color;
+      }
    }
 
    private class StructureInfo {
