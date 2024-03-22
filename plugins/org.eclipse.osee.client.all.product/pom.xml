@@ -28,7 +28,7 @@
 							<goal>materialize-products</goal>
 						</goals>
 					</execution>
-					<!-- <execution> <id>archive-products</id> <goals> <goal>archive-products</goal> 
+					<!-- <execution> <id>archive-products</id> <goals> <goal>archive-products</goal>
 						</goals> </execution> -->
 				</executions>
 			</plugin>
@@ -54,6 +54,7 @@
 								<property name="products-directory" value="${project.build.directory}/products" />
 								<property name="output-directory" value="${project.build.directory}" />
 								<property name="resources-directory" value="${project.basedir}/resources" />
+								<property name="repo-root-directory" value="${project.basedir}/../.." />
 
 								<ant antfile="customize-product.xml" target="run"
 									inheritRefs="true" />

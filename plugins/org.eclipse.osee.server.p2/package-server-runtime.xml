@@ -5,6 +5,7 @@
 		<echo>Output-Path: ${output-path}</echo>
 		<echo>P2-Content-Path: ${p2-content-path}</echo>
 		<echo>Output-Name: ${output-name}</echo>
+		<echo>Repo-Root-Directory: [${repo-root-directory}]</echo>
 		<echo>Server-Path: ${server-path}</echo>
 		<echo>Demo-Data-Path: ${demo-content-path}</echo>
 		<echo />
@@ -14,6 +15,14 @@
 		</condition>
 
 		<mkdir dir="${server-path}" />
+
+		<!-- Add Legal Documentation -->
+		<copy todir="${server-path}">
+			<fileset dir="${repo-root-directory}">
+				<include name="LICENSE.md"/>
+				<include name="NOTICE.md"/>
+			</fileset>
+		</copy>
 
 		<property name="server-config-path" value="${server-path}/configuration" />
 		<property name="server-plugins-path" value="${server-path}/plugins" />
@@ -27,9 +36,9 @@
 		</copy>
 
 		<copy todir="${server-path}/extras">
-					<fileset dir="${project-base-path}/extras" />
-				</copy>
-		
+			<fileset dir="${project-base-path}/extras" />
+		</copy>
+
 		<copy file="${project-base-path}/runServer.sh" tofile="${server-path}/runServer.sh" overwrite="true" />
 
 		<mkdir dir="${server-etc-path}" />
@@ -153,7 +162,7 @@
 							<then>
 								<echo file="@{configPath}/config.ini" message="${projectName}" append="true" />
 							</then>
-						</elseif>						
+						</elseif>
 						<elseif>
 						   <equals arg1="${projectName}" arg2="org.eclipse.jdt.compiler.apt" />
 						   <then>
@@ -165,7 +174,7 @@
 							<then>
 								<echo file="@{configPath}/config.ini" message="${projectName}" append="true" />
 							</then>
-						</elseif>						
+						</elseif>
 						<elseif>
 							<equals arg1="${projectName}" arg2="com.google.guava" />
 							<then>

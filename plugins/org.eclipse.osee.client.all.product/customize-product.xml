@@ -10,6 +10,7 @@
 		<echo>Products-Path: [${products-directory}]</echo>
 		<echo>Output-Path: [${output-directory}]</echo>
 		<echo>Resources-Path: [${resources-directory}]</echo>
+		<echo>Repo-Root-Directory: [${repo-root-directory}]</echo>
 		<echo />
 
 		<property name="defaultWorkspaceName" value="workspace" />
@@ -32,7 +33,7 @@
 			<var name="productConfigPath" value="${productPath}/configuration" />
 			<var name="productPluginPath" value="${productPath}/plugins" />
 
-			<!-- Add JRE 
+			<!-- Add JRE
 			<if>
 				<equals arg1="@{os}" arg2="macosx" />
 				<then>
@@ -44,6 +45,14 @@
 			</else>
 			</if>
 			-->
+
+			<!-- Add Legal Documentation -->
+			<copy todir="${productPath}">
+				<fileset dir="${repo-root-directory}">
+					<include name="LICENSE.md"/>
+					<include name="NOTICE.md"/>
+				</fileset>
+			</copy>
 
 			<!-- Update Configuration Area -->
 			<delete dir="${productConfigPath}/.settings" failonerror="false" quiet="true" />
@@ -100,7 +109,7 @@
 	<!-- *************************************************************** -->
 	<!-- GENERATE CONFIG.INI -->
 	<!-- *************************************************************** -->
-	<!-- update config area osgi.configuration.area=@user.home/.eclipse/osee.platform_${VERSION} 
+	<!-- update config area osgi.configuration.area=@user.home/.eclipse/osee.platform_${VERSION}
 		eclipse.p2.data.area=@config.dir/p2/ osgi.instance.area.default=@user.home/osee_shareRC_workspace -->
 	<macrodef name="customizeConfigIni">
 		<attribute name="configPath" />

@@ -37,6 +37,7 @@
 								<property name="output-name" value="org.eclipse.osee.server.runtime" />
 								<property name="p2-content-path" value="${project.build.directory}/repository" />
 								<property name="output-path" value="${project.build.directory}" />
+								<property name="repo-root-directory" value="${project.basedir}/../.." />
 								<property name="server-path" value="${output-path}/server" />
 								<property name="demo-content-path" value="${project.basedir}/demo" />
 								<property name="etc-content-path" value="${project.basedir}/etc" />
