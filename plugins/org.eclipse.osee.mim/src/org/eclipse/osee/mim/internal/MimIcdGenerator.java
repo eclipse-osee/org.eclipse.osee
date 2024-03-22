@@ -1320,8 +1320,8 @@ public class MimIcdGenerator {
       String[] rowValues = {"No.", "Rate", "Read/Write", "Content", "", "No.", "Rate", "Read/Write", "Content"};
       writer.writeRow(1, rowValues, CELLSTYLE.BOLD, CELLSTYLE.CENTERH, CELLSTYLE.CENTERV);
 
-      int rowIndex = 2;
-      int noteIndex = 1;
+      AtomicInteger rowIndex = new AtomicInteger(2);
+      AtomicInteger noteIndex = new AtomicInteger(1);
       Map<Integer, MessageNote> messageNotes = new HashMap<>();
 
       for (int i = 0; i < Math.max(primaryList.size(), secondaryList.size()); i++) {
@@ -1346,142 +1346,56 @@ public class MimIcdGenerator {
          }
 
          if (primaryMessage.isValid()) {
-            writer.writeCell(rowIndex, 0,
-               primaryMessage.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageNumber), CELLSTYLE.CENTERH,
-               CELLSTYLE.CENTERV, getCellColor(primaryMessage, CoreAttributeTypes.InterfaceMessageNumber.getId()));
-            writer.writeCell(rowIndex, 1,
-               primaryMessage.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRate, "Aperiodic"),
-               CELLSTYLE.CENTERH, CELLSTYLE.CENTERV,
-               getCellColor(primaryMessage, CoreAttributeTypes.InterfaceMessageRate.getId()));
-            writer.writeCell(rowIndex, 2,
-               primaryMessage.getSoleAttributeValue(CoreAttributeTypes.InterfaceMessageWriteAccess, false) ? "W" : "R",
-               CELLSTYLE.CENTERH, CELLSTYLE.CENTERV,
-               getCellColor(primaryMessage, CoreAttributeTypes.InterfaceMessageWriteAccess.getId()));
-
-            String description = primaryMessage.getSoleAttributeAsString(CoreAttributeTypes.Description, "");
-            if (!description.isEmpty()) {
-               CELLSTYLE superscriptColor = getCellColor(primaryMessage, CoreAttributeTypes.Description.getId());
-               String messageNameWithSuperscript = primaryMessage.getName() + " [" + noteIndex + "]";
-               messageNotes.put(noteIndex, new MessageNote(description, superscriptColor));
-               noteIndex++;
-               writer.writeCellStringWithSuperscript(rowIndex, 3, messageNameWithSuperscript,
-                  primaryMessage.getName().length(), messageNameWithSuperscript.length(), superscriptColor,
-                  getCellColor(primaryMessage, CoreAttributeTypes.Name.getId()), CELLSTYLE.BOLD);
-            } else {
-               writer.writeCell(rowIndex, 3, primaryMessage.getName(),
-                  getCellColor(primaryMessage, CoreAttributeTypes.Name.getId()), CELLSTYLE.BOLD);
-            }
-
-            writer.addMergedRegion(rowIndex, rowIndex, 3, 4);
+            writeMessageSummary(writer, primaryMessage, rowIndex, noteIndex, 0, messageNotes);
          }
          if (secondaryMessage.isValid()) {
-            writer.writeCell(rowIndex, 5,
-               secondaryMessage.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageNumber), CELLSTYLE.CENTERH,
-               CELLSTYLE.CENTERV, getCellColor(secondaryMessage, CoreAttributeTypes.InterfaceMessageNumber.getId()));
-            writer.writeCell(rowIndex, 6,
-               secondaryMessage.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRate, "Aperiodic"),
-               CELLSTYLE.CENTERH, CELLSTYLE.CENTERV,
-               getCellColor(secondaryMessage, CoreAttributeTypes.InterfaceMessageRate.getId()));
-            writer.writeCell(rowIndex, 7,
-               secondaryMessage.getSoleAttributeValue(CoreAttributeTypes.InterfaceMessageWriteAccess,
-                  false) ? "W" : "R",
-               CELLSTYLE.CENTERH, CELLSTYLE.CENTERV,
-               getCellColor(secondaryMessage, CoreAttributeTypes.InterfaceMessageWriteAccess.getId()));
-
-            String description = secondaryMessage.getSoleAttributeAsString(CoreAttributeTypes.Description, "");
-            if (!description.isEmpty()) {
-               CELLSTYLE superscriptColor = getCellColor(primaryMessage, CoreAttributeTypes.Description.getId());
-               String messageNameWithSuperscript = secondaryMessage.getName() + " [" + noteIndex + "]";
-               messageNotes.put(noteIndex, new MessageNote(description, superscriptColor));
-               noteIndex++;
-               writer.writeCellStringWithSuperscript(rowIndex, 8, messageNameWithSuperscript,
-                  secondaryMessage.getName().length(), messageNameWithSuperscript.length(), superscriptColor,
-                  getCellColor(secondaryMessage, CoreAttributeTypes.Name.getId()), CELLSTYLE.BOLD);
-            } else {
-               writer.writeCell(rowIndex, 8, secondaryMessage.getName(),
-                  getCellColor(secondaryMessage, CoreAttributeTypes.Name.getId()), CELLSTYLE.BOLD);
-            }
-            writer.addMergedRegion(rowIndex, rowIndex, 8, 9);
+            writeMessageSummary(writer, secondaryMessage, rowIndex, noteIndex, 5, messageNotes);
          }
-         rowIndex++;
+         rowIndex.addAndGet(1);
 
          if (primaryMessage.isValid()) {
-            writer.writeCell(rowIndex, 3, "Software Interface Header", getCellColor(primaryMessage, false));
-            writer.addMergedRegion(rowIndex, rowIndex, 3, 4);
+            writer.writeCell(rowIndex.get(), 3, "Software Interface Header", getCellColor(primaryMessage, false));
+            writer.addMergedRegion(rowIndex.get(), rowIndex.get(), 3, 4);
          }
          if (secondaryMessage.isValid()) {
-            writer.writeCell(rowIndex, 8, "Software Interface Header", getCellColor(secondaryMessage, false));
-            writer.addMergedRegion(rowIndex, rowIndex, 8, 9);
+            writer.writeCell(rowIndex.get(), 8, "Software Interface Header", getCellColor(secondaryMessage, false));
+            writer.addMergedRegion(rowIndex.get(), rowIndex.get(), 8, 9);
          }
-         rowIndex++;
+         rowIndex.addAndGet(1);
 
          int numSubMessages = Math.max(primarySubMessages.size(), secondarySubMessages.size());
          for (int j = 0; j < numSubMessages; j++) {
             if (j < primarySubMessages.size()) {
                ArtifactReadable subMessage = primarySubMessages.get(j);
-               writer.writeCell(rowIndex, 3,
-                  "Submessage " + subMessage.getSoleAttributeAsString(
-                     CoreAttributeTypes.InterfaceSubMessageNumber) + ":",
-                  getCellColor(subMessage, CoreAttributeTypes.Name.getId()));
-
-               String description = subMessage.getSoleAttributeAsString(CoreAttributeTypes.Description, "");
-               if (!description.isEmpty()) {
-                  CELLSTYLE superscriptColor = getCellColor(subMessage, CoreAttributeTypes.Description.getId());
-                  String subMessageNameWithSuperscript = subMessage.getName() + " [" + noteIndex + "]";
-                  messageNotes.put(noteIndex, new MessageNote(description, superscriptColor));
-                  noteIndex++;
-                  writer.writeCellStringWithSuperscript(rowIndex, 4, subMessageNameWithSuperscript,
-                     subMessage.getName().length(), subMessageNameWithSuperscript.length(), superscriptColor,
-                     getCellColor(subMessage, CoreAttributeTypes.Name.getId()), CELLSTYLE.NONE);
-               } else {
-                  writer.writeCell(rowIndex, 4, subMessage.getName(),
-                     getCellColor(subMessage, CoreAttributeTypes.Name.getId()));
-               }
+               writeSubmessageSummary(writer, subMessage, rowIndex, noteIndex, 0, messageNotes);
             }
             if (j < secondarySubMessages.size()) {
                ArtifactReadable subMessage = secondarySubMessages.get(j);
-               writer.writeCell(rowIndex, 8,
-                  "Submessage " + subMessage.getSoleAttributeAsString(
-                     CoreAttributeTypes.InterfaceSubMessageNumber) + ":",
-                  getCellColor(subMessage, CoreAttributeTypes.Name.getId()));
-
-               String description = subMessage.getSoleAttributeAsString(CoreAttributeTypes.Description, "");
-               if (!description.isEmpty()) {
-                  CELLSTYLE superscriptColor = getCellColor(subMessage, CoreAttributeTypes.Description.getId());
-                  String subMessageNameWithSuperscript = subMessage.getName() + " [" + noteIndex + "]";
-                  messageNotes.put(noteIndex, new MessageNote(description, superscriptColor));
-                  noteIndex++;
-                  writer.writeCellStringWithSuperscript(rowIndex, 9, subMessageNameWithSuperscript,
-                     subMessage.getName().length(), subMessageNameWithSuperscript.length(), superscriptColor,
-                     getCellColor(subMessage, CoreAttributeTypes.Name.getId()), CELLSTYLE.NONE);
-               } else {
-                  writer.writeCell(rowIndex, 9, subMessage.getName(),
-                     getCellColor(subMessage, CoreAttributeTypes.Name.getId()));
-               }
+               writeSubmessageSummary(writer, subMessage, rowIndex, noteIndex, 5, messageNotes);
             }
-            rowIndex++;
+            rowIndex.addAndGet(1);
          }
 
          if (primaryMessage.isValid()) {
-            writer.addMergedRegion(rowIndex - numSubMessages - 2, rowIndex - 1, 0, 0);
-            writer.addMergedRegion(rowIndex - numSubMessages - 2, rowIndex - 1, 1, 1);
-            writer.addMergedRegion(rowIndex - numSubMessages - 2, rowIndex - 1, 2, 2);
+            writer.addMergedRegion(rowIndex.get() - numSubMessages - 2, rowIndex.get() - 1, 0, 0);
+            writer.addMergedRegion(rowIndex.get() - numSubMessages - 2, rowIndex.get() - 1, 1, 1);
+            writer.addMergedRegion(rowIndex.get() - numSubMessages - 2, rowIndex.get() - 1, 2, 2);
          }
          if (secondaryMessage.isValid()) {
-            writer.addMergedRegion(rowIndex - numSubMessages - 2, rowIndex - 1, 5, 5);
-            writer.addMergedRegion(rowIndex - numSubMessages - 2, rowIndex - 1, 6, 6);
-            writer.addMergedRegion(rowIndex - numSubMessages - 2, rowIndex - 1, 7, 7);
+            writer.addMergedRegion(rowIndex.get() - numSubMessages - 2, rowIndex.get() - 1, 5, 5);
+            writer.addMergedRegion(rowIndex.get() - numSubMessages - 2, rowIndex.get() - 1, 6, 6);
+            writer.addMergedRegion(rowIndex.get() - numSubMessages - 2, rowIndex.get() - 1, 7, 7);
          }
 
       }
 
-      rowIndex++;
-      writer.writeCell(rowIndex, 11, "Notes:", CELLSTYLE.BOLD);
-      rowIndex++;
+      rowIndex.addAndGet(1);
+      writer.writeCell(rowIndex.get(), 11, "Notes:", CELLSTYLE.BOLD);
+      rowIndex.addAndGet(1);
       for (Integer superscript : messageNotes.keySet()) {
          MessageNote note = messageNotes.get(superscript);
-         writer.writeCell(rowIndex, 11, superscript + ". " + note.getText(), note.getColor(), CELLSTYLE.WRAP);
-         rowIndex++;
+         writer.writeCell(rowIndex.get(), 11, superscript + ". " + note.getText(), note.getColor(), CELLSTYLE.WRAP);
+         rowIndex.addAndGet(1);
       }
 
       // Auto size all column widths, then set individual widths
@@ -1497,6 +1411,57 @@ public class MimIcdGenerator {
       writer.setColumnWidth(8, 5000);
       writer.setColumnWidth(9, writer.getColumnWidth(9) + 1200);
       writer.setColumnWidth(11, 20000); // Notes
+   }
+
+   private void writeMessageSummary(ExcelWorkbookWriter writer, ArtifactReadable message, AtomicInteger rowIndex,
+      AtomicInteger noteIndex, int colOffset, Map<Integer, MessageNote> messageNotes) {
+      writer.writeCell(rowIndex.get(), 0 + colOffset,
+         message.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageNumber), CELLSTYLE.CENTERH,
+         CELLSTYLE.CENTERV, getCellColor(message, CoreAttributeTypes.InterfaceMessageNumber.getId()));
+      writer.writeCell(rowIndex.get(), 1 + colOffset,
+         message.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRate, "Aperiodic"), CELLSTYLE.CENTERH,
+         CELLSTYLE.CENTERV, getCellColor(message, CoreAttributeTypes.InterfaceMessageRate.getId()));
+      writer.writeCell(rowIndex.get(), 2 + colOffset,
+         message.getSoleAttributeValue(CoreAttributeTypes.InterfaceMessageWriteAccess, false) ? "W" : "R",
+         CELLSTYLE.CENTERH, CELLSTYLE.CENTERV,
+         getCellColor(message, CoreAttributeTypes.InterfaceMessageWriteAccess.getId()));
+
+      String description = message.getSoleAttributeAsString(CoreAttributeTypes.Description, "");
+      if (!description.isEmpty()) {
+         CELLSTYLE superscriptColor = getCellColor(message, CoreAttributeTypes.Description.getId());
+         String messageNameWithSuperscript = message.getName() + " [" + noteIndex + "]";
+         messageNotes.put(noteIndex.get(), new MessageNote(description, superscriptColor));
+         noteIndex.getAndAdd(1);
+         writer.writeCellStringWithSuperscript(rowIndex.get(), 3 + colOffset, messageNameWithSuperscript,
+            message.getName().length(), messageNameWithSuperscript.length(), superscriptColor,
+            getCellColor(message, CoreAttributeTypes.Name.getId()), CELLSTYLE.BOLD);
+      } else {
+         writer.writeCell(rowIndex.get(), 3 + colOffset, message.getName(),
+            getCellColor(message, CoreAttributeTypes.Name.getId()), CELLSTYLE.BOLD);
+      }
+
+      writer.addMergedRegion(rowIndex.get(), rowIndex.get(), 3 + colOffset, 4 + colOffset);
+   }
+
+   private void writeSubmessageSummary(ExcelWorkbookWriter writer, ArtifactReadable subMessage, AtomicInteger rowIndex,
+      AtomicInteger noteIndex, int colOffset, Map<Integer, MessageNote> messageNotes) {
+      writer.writeCell(rowIndex.get(), 3 + colOffset,
+         "Submessage " + subMessage.getSoleAttributeAsString(CoreAttributeTypes.InterfaceSubMessageNumber) + ":",
+         getCellColor(subMessage, CoreAttributeTypes.Name.getId()));
+
+      String description = subMessage.getSoleAttributeAsString(CoreAttributeTypes.Description, "");
+      if (!description.isEmpty()) {
+         CELLSTYLE superscriptColor = getCellColor(subMessage, CoreAttributeTypes.Description.getId());
+         String subMessageNameWithSuperscript = subMessage.getName() + " [" + noteIndex + "]";
+         messageNotes.put(noteIndex.get(), new MessageNote(description, superscriptColor));
+         noteIndex.addAndGet(1);
+         writer.writeCellStringWithSuperscript(rowIndex.get(), 4 + colOffset, subMessageNameWithSuperscript,
+            subMessage.getName().length(), subMessageNameWithSuperscript.length(), superscriptColor,
+            getCellColor(subMessage, CoreAttributeTypes.Name.getId()), CELLSTYLE.NONE);
+      } else {
+         writer.writeCell(rowIndex.get(), 4 + colOffset, subMessage.getName(),
+            getCellColor(subMessage, CoreAttributeTypes.Name.getId()));
+      }
    }
 
    private void createUnitsAndTypesSheet(ExcelWorkbookWriter writer) {
