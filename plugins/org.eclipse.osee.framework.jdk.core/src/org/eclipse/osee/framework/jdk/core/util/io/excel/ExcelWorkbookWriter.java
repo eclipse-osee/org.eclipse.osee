@@ -202,11 +202,23 @@ public class ExcelWorkbookWriter {
    }
 
    public void writeCellStringWithSuperscript(int rowIndex, int cellIndex, String value, int superscriptStart,
-      int superscriptEnd, CELLSTYLE... styles) {
+      int superscriptEnd, CELLSTYLE superscriptColor, CELLSTYLE... styles) {
       Cell cell = getCell(rowIndex, cellIndex);
-      cell.setCellStyle(createCellStyle(styles));
+      CellStyle cellStyle = createCellStyle(styles);
+      cell.setCellStyle(cellStyle);
+
       Font superscriptFont = workbook.createFont();
       superscriptFont.setTypeOffset(Font.SS_SUPER);
+      if (cellStyle.getFillForegroundColor() != IndexedColors.LIGHT_GREEN.getIndex() && superscriptColor.equals(
+         CELLSTYLE.GREEN)) {
+         superscriptFont.setColor(IndexedColors.GREEN.getIndex());
+         superscriptFont.setBold(true);
+      } else if (cellStyle.getFillForegroundColor() != IndexedColors.LIGHT_YELLOW.getIndex() && superscriptColor.equals(
+         CELLSTYLE.YELLOW)) {
+         superscriptFont.setColor(IndexedColors.GOLD.getIndex());
+         superscriptFont.setBold(true);
+      }
+
       RichTextString richText = new XSSFRichTextString(value);
       richText.applyFont(superscriptStart, superscriptEnd, superscriptFont);
       cell.setCellValue(richText);
