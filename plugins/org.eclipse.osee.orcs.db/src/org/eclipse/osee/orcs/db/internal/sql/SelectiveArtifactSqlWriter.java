@@ -232,7 +232,6 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          }
       }
       finishWithClause();
-
       if (rootQueryData.isCountQueryType()) {
          if (rootQueryData.hasCriteriaType(CriteriaFollowSearch.class)) {
             write("select count(distinct " + fieldAlias + ".art_id) from %s", fieldAlias);
@@ -240,7 +239,13 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
             write("SELECT count(*) FROM %s", fieldAlias);
          }
       } else {
-         write("SELECT * FROM %s", fieldAlias);
+         if (OptionsUtil.getIncludeLatestTransactionDetails(this.rootQueryData.getOptions())) {
+            write(
+               "SELECT " + fieldAlias + ".* , to_char(time,'yyyyMMddHHmmss') timeStr, to_char(max(time) over (partition by art_id),'yyyyMMddHHmmss') max_time FROM %s",
+               fieldAlias);
+         } else {
+            write("SELECT * FROM %s", fieldAlias);
+         }
       }
       if (rootQueryData.hasCriteriaType(CriteriaFollowSearch.class)) {
          write(", " + attrSearchAlias);
@@ -257,8 +262,6 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       if (!rootQueryData.isCountQueryType()) {
          if (parentWriter == null && !rootQueryData.isSelectQueryType()) {
             write(" ORDER BY " + fieldAlias + ".art_id");
-         } else if (this.rootQueryData.orderMechanism().startsWith("TIME")) {
-            write(" order by " + this.rootQueryData.orderMechanism());
          } else if (this.rels2Alias != null) {
             write(" ORDER BY ");
             write(fieldAlias + ".top desc");
@@ -363,11 +366,21 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       String attsAlias = startCommonTableExpression("atts");
       String attAlias = "att";
       String attTxsAlias = "txs";
+      String txdAlias = "txd";
       writeUseNlTableHint(attAlias + " " + attTxsAlias);
       writeSelectFields(artWithAlias, "*", attAlias, "attr_type_id AS type_id", attAlias, "value", attAlias, "uri",
          attAlias, "attr_id");
       write(", 0 AS other_art_id");
+      if (OptionsUtil.getIncludeLatestTransactionDetails(rootQueryData.getOptions())) {
+         writeSelectFields(txdAlias, "author", txdAlias, "osee_comment", txdAlias, "tx_type", txdAlias, "commit_art_id",
+            txdAlias, "build_id");
+         write("," + txdAlias + ".time ");
+         write(", " + txdAlias + ".transaction_id supp_tx_id ");
+      }
       write("\n FROM %s, osee_attribute att, osee_txs txs", artWithAlias);
+      if (OptionsUtil.getIncludeLatestTransactionDetails(rootQueryData.getOptions())) {
+         write(", osee_tx_details txd");
+      }
       write("\n WHERE ");
       writeEqualsAnd(artWithAlias, attAlias, "art_id");
       AttributeTypeId attributeType = rootQueryData.getAttributeType();
@@ -375,7 +388,11 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          writeEqualsParameterAnd(attAlias, "attr_type_id", attributeType);
       }
       writeEqualsAnd(attAlias, attTxsAlias, "gamma_id");
+      if (OptionsUtil.getIncludeLatestTransactionDetails(rootQueryData.getOptions())) {
+         writeEqualsAnd(attTxsAlias, txdAlias, "transaction_id");
+      }
       writeTxBranchFilter(attTxsAlias);
+
       return attsAlias;
    }
 
@@ -383,34 +400,64 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       relsAlias = startCommonTableExpression("rels");
       String relAlias = "rel";
       String relTxsAlias = "txs";
+      String txdAlias = "txd";
       writeUseNlTableHint(relAlias + " " + relTxsAlias);
       writeSelectFields(artWithAlias, "*", relAlias, "rel_link_type_id AS type_id");
       write(
-         ", CASE art_id WHEN a_art_id THEN 'B' ELSE 'A' END AS value, '' AS spare1, 0 AS spare2, CASE art_id WHEN a_art_id THEN b_art_id ELSE a_art_id END AS other_art_id, 0 as rel_type, 0 as rel_order");
+         ", CASE art_id WHEN a_art_id THEN 'B' ELSE 'A' END AS value, '' AS spare1, 0 AS spare2, CASE art_id WHEN a_art_id THEN b_art_id ELSE a_art_id END AS other_art_id ");
+      if (OptionsUtil.getIncludeLatestTransactionDetails(rootQueryData.getOptions())) {
+         writeSelectFields(txdAlias, "author", txdAlias, "osee_comment", txdAlias, "tx_type", txdAlias, "commit_art_id",
+            txdAlias, "build_id");
+         write("," + txdAlias + ".time ");
+         write(", " + txdAlias + ".transaction_id as supp_tx_id ");
+      }
+      write(",0 as rel_type, 0 as rel_order");
       write("\n FROM %s, osee_relation_link rel, osee_txs txs", artWithAlias);
+      if (OptionsUtil.getIncludeLatestTransactionDetails(rootQueryData.getOptions())) {
+         write(", osee_tx_details txd");
+      }
       write("\n WHERE ");
       write(artWithAlias);
       write(".art_id IN (a_art_id, b_art_id)");
       writeAnd();
       writeEqualsAnd(relAlias, relTxsAlias, "gamma_id");
+      if (OptionsUtil.getIncludeLatestTransactionDetails(rootQueryData.getOptions())) {
+         writeEqualsAnd(relTxsAlias, txdAlias, "transaction_id");
+      }
       writeTxBranchFilter(relTxsAlias);
    }
 
    private void writeRelsCommonTableExpression2(String artWithAlias) {
       rels2Alias = startCommonTableExpression("rels");
+
+      String txdAlias = "txd";
       String relAlias = "rel";
       String relTxsAlias = "txs";
       writeUseNlTableHint(relAlias + " " + relTxsAlias);
       writeSelectFields(artWithAlias, "*", relAlias, "rel_type AS type_id");
       write(
-         ", CASE art_id WHEN a_art_id THEN 'B' ELSE 'A' END AS value, '' AS spare1, 0 AS spare2, CASE art_id WHEN a_art_id THEN b_art_id ELSE a_art_id END AS other_art_id, rel_type, rel_order");
+         ", CASE art_id WHEN a_art_id THEN 'B' ELSE 'A' END AS value, '' AS spare1, 0 AS spare2, CASE art_id WHEN a_art_id THEN b_art_id ELSE a_art_id END AS other_art_id ");
+      if (OptionsUtil.getIncludeLatestTransactionDetails(rootQueryData.getOptions())) {
+         writeSelectFields(txdAlias, "author", txdAlias, "osee_comment", txdAlias, "tx_type", txdAlias, "commit_art_id",
+            txdAlias, "build_id");
+         write("," + txdAlias + ".time ");
+         write(", " + txdAlias + ".transaction_id supp_tx_id ");
+      }
+      write(", rel_type, rel_order");
       write("\n FROM %s, osee_relation rel, osee_txs txs", artWithAlias);
+      if (OptionsUtil.getIncludeLatestTransactionDetails(rootQueryData.getOptions())) {
+         write(", osee_tx_details txd");
+      }
       write("\n WHERE ");
       write(artWithAlias);
       write(".art_id IN (a_art_id, b_art_id)");
       writeAnd();
       writeEqualsAnd(relAlias, relTxsAlias, "gamma_id");
+      if (OptionsUtil.getIncludeLatestTransactionDetails(rootQueryData.getOptions())) {
+         writeEqualsAnd(relTxsAlias, txdAlias, "transaction_id");
+      }
       writeTxBranchFilter(relTxsAlias);
+
    }
 
    @Override
@@ -422,12 +469,6 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
             txAlias, "mod_type", txAlias, "tx_current");
          if (OptionsUtil.getIncludeApplicabilityTokens(rootQueryData.getOptions())) {
             writeSelectFields(getMainTableAlias(OseeDb.OSEE_KEY_VALUE_TABLE), "value app_value");
-         }
-         if (OptionsUtil.getIncludeTransactionDetails(rootQueryData.getOptions())) {
-            String txdAlias = getMainTableAlias(OseeDb.TX_DETAILS_TABLE);
-            writeSelectFields(txdAlias, "author", txdAlias, "osee_comment", txdAlias, "tx_type", txdAlias,
-               "commit_art_id", txdAlias, "build_id");
-            write(", to_char(" + txdAlias + ".time,'yyyyMMddHHmiss') time");
          }
          write(", ");
          write(queryDataCursor.getParentQueryData() == null ? "1" : "0");

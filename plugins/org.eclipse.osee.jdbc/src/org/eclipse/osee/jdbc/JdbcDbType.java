@@ -16,8 +16,6 @@ package org.eclipse.osee.jdbc;
 import static org.eclipse.osee.jdbc.JdbcException.newJdbcException;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 
 /**
@@ -216,15 +214,11 @@ public class JdbcDbType extends BaseId {
       return " ";
    }
 
-   public String getDateToCompare(LocalDateTime ldt) {
-
-      String str = ldt.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-
-      if (matches(oracle)) {
-         return "to_utc_timestamp_tz('" + str + "')";
-      } else {
-         return "'" + str + "'";
+   public String getPostgresCastBigIntEnd() {
+      if (matches(postgresql)) {
+         return "as bigint)";
       }
+      return " ";
    }
 
 }

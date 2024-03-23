@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -323,18 +324,8 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
-   public QueryBuilder includeTransactionDetails(boolean orderByTime, String direction, Long maxTime) {
+   public QueryBuilder includeTransactionDetails() {
       OptionsUtil.setIncludeTransactionDetails(getOptions(), true);
-      if (maxTime > 0) {
-         OptionsUtil.setMaxTime(getOptions(), maxTime);
-      }
-      if (orderByTime) {
-         if (!direction.isBlank() && direction.equals("DESC")) {
-            setOrderMechanism("TIME DESC");
-         } else {
-            setOrderMechanism("TIME");
-         }
-      }
       return this;
    }
 
@@ -345,7 +336,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
 
    @Override
    public boolean areTransactionDetailsIncluded() {
-      return OptionsUtil.getIncludeTransactionDetails(getOptions());
+      return OptionsUtil.getIncludeLatestTransactionDetails(getOptions());
    }
 
    @Override
@@ -985,6 +976,17 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    public QueryBuilder setOrderMechanism(String orderMechanism) {
       OptionsUtil.setOrderByMechanism(getOptions(), orderMechanism);
       return this;
+   }
+
+   @Override
+   public QueryBuilder setMaxTime(Date maxTime) {
+      OptionsUtil.setMaxTime(getOptions(), maxTime);
+      return this;
+   }
+
+   @Override
+   public Date getMaxTime() {
+      return OptionsUtil.getMaxTime(getOptions());
    }
 
    @Override

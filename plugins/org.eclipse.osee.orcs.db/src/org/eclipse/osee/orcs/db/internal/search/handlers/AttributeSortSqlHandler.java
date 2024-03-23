@@ -15,6 +15,7 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 import java.util.List;
 import org.eclipse.osee.jdbc.ObjectType;
 import org.eclipse.osee.orcs.OseeDb;
+import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeSort;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -84,7 +85,12 @@ public class AttributeSortSqlHandler extends SqlHandler<CriteriaAttributeSort> {
          }
          writer.write(attrAlias);
          writer.write(".attr_type_id = ");
-         writer.write(String.valueOf(criteria.getAttributeTypeId()));
+         writer.write(criteria.getAttributeType().getIdString());
+         if (criteria.getAttributeType().isDate() && OptionsUtil.getMaxTime(writer.getOptions()) != null) {
+            writer.write(
+               " and " + writer.getJdbcClient().getDbType().getPostgresCastStart() + " value " + writer.getJdbcClient().getDbType().getPostgresCastBigIntEnd() + " > " + OptionsUtil.getMaxTime(
+                  writer.getOptions()).getTime());
+         }
       }
 
    }

@@ -249,33 +249,6 @@ public class QueryEngineImpl implements QueryEngine {
                String applicValue = stmt.getString("app_value");
                artifactMap.get(ArtifactId.valueOf(artId)).getApplicabilityToken().setName(applicValue);
             }
-            String oseeComment = "";
-            Date time = null;
-            int txType = -1;
-            ArtifactId commitArtId = ArtifactId.SENTINEL;
-            Long buildId = -1L;
-            TransactionId txId = TransactionId.valueOf(stmt.getLong("transaction_id"));
-            ArtifactId author = ArtifactId.SENTINEL;
-            if (queryData.mainTableAliasExists(OseeDb.TX_DETAILS_TABLE)) {
-               oseeComment = stmt.getString("osee_comment");
-               try {
-                  time = DateUtil.getDate("yyyyMMddHHmmss", stmt.getString("time"));
-               } catch (ParseException ex) {
-                  time = DateUtil.getSentinalDate();
-               }
-               txType = stmt.getInt("tx_type");
-               commitArtId = ArtifactId.valueOf(stmt.getLong("commit_art_id"));
-               buildId = stmt.getLong("build_id");
-               author = ArtifactId.valueOf(stmt.getLong("author"));
-               artifactMap.get(ArtifactId.valueOf(artId)).getTxDetails().setTime(time);
-               artifactMap.get(ArtifactId.valueOf(artId)).getTxDetails().setAuthor(author);
-               artifactMap.get(ArtifactId.valueOf(artId)).getTxDetails().setOseeComment(oseeComment);
-               artifactMap.get(ArtifactId.valueOf(artId)).getTxDetails().setTxType(txType);
-               artifactMap.get(ArtifactId.valueOf(artId)).getTxDetails().setTxId(txId);
-               artifactMap.get(ArtifactId.valueOf(artId)).getTxDetails().setCommitArtId(commitArtId);
-               artifactMap.get(ArtifactId.valueOf(artId)).getTxDetails().setBuild_id(buildId);
-            }
-
          }
 
          Long typeId = stmt.getLong("type_id");
@@ -291,6 +264,41 @@ public class QueryEngineImpl implements QueryEngine {
             // This can happen when the same object is returned multiple times when following relations.
             if (!artifact.getAttributeList(attributeType).stream().anyMatch(a -> a.getId().equals(attribute.getId()))) {
                artifact.putAttributeValue(attributeType, attribute);
+            }
+            if (OptionsUtil.getIncludeLatestTransactionDetails(queryData.getRootQueryData().getOptions())) {
+
+               if (artifact.getTxDetails().getAuthor().isInvalid()) {
+
+                  Date time = null;
+
+                  String maxTime = stmt.getString("max_time");
+                  String timeStr = stmt.getString("timeStr");
+                  if (maxTime.equals(timeStr)) {
+                     try {
+                        int indexOf = timeStr.indexOf(".");
+                        int endIndex = timeStr.length() - 1;
+                        if (indexOf > 0) {
+                           endIndex = indexOf;
+                        }
+                        time = DateUtil.getDate("yyyyMMddHHmmss", timeStr);
+                     } catch (ParseException ex) {
+                        time = DateUtil.getSentinalDate();
+                     }
+                     String oseeComment = stmt.getString("osee_comment");
+                     int txType = stmt.getInt("tx_type");
+                     TransactionId suppTxId = TransactionId.valueOf(stmt.getLong("supp_tx_id"));
+                     ArtifactId commitArtId = ArtifactId.valueOf(stmt.getLong("commit_art_id"));
+                     Long buildId = stmt.getLong("build_id");
+                     ArtifactId author = ArtifactId.valueOf(stmt.getLong("author"));
+                     artifact.getTxDetails().setTime(time);
+                     artifact.getTxDetails().setAuthor(author);
+                     artifact.getTxDetails().setOseeComment(oseeComment);
+                     artifact.getTxDetails().setTxType(txType);
+                     artifact.getTxDetails().setTxId(suppTxId);
+                     artifact.getTxDetails().setCommitArtId(commitArtId);
+                     artifact.getTxDetails().setBuild_id(buildId);
+                  }
+               }
             }
          } else {
             Long otherArtType = stmt.getLong("other_art_type_id");
@@ -311,6 +319,37 @@ public class QueryEngineImpl implements QueryEngine {
             if (!artifact.areRelated(relTypeSide, otherArtifact)) {
                artifact.putRelation(tokenService.getRelationTypeOrCreate(typeId), side, otherArtifact);
             }
+            if (OptionsUtil.getIncludeLatestTransactionDetails(queryData.getRootQueryData().getOptions())) {
+
+               if (artifact.getTxDetails().getAuthor().isInvalid()) {
+
+                  Date time = null;
+
+                  String maxTime = stmt.getString("max_time");
+                  String timeStr = stmt.getString("timeStr");
+                  if (maxTime.equals(timeStr)) {
+                     try {
+                        time = DateUtil.getDate("yyyyMMddHHmmss", timeStr);
+                     } catch (ParseException ex) {
+                        time = DateUtil.getSentinalDate();
+                     }
+
+                     String oseeComment = stmt.getString("osee_comment");
+                     int txType = stmt.getInt("tx_type");
+                     TransactionId suppTxId = TransactionId.valueOf(stmt.getLong("supp_tx_id"));
+                     ArtifactId commitArtId = ArtifactId.valueOf(stmt.getLong("commit_art_id"));
+                     Long buildId = stmt.getLong("build_id");
+                     ArtifactId author = ArtifactId.valueOf(stmt.getLong("author"));
+                     artifact.getTxDetails().setTime(time);
+                     artifact.getTxDetails().setAuthor(author);
+                     artifact.getTxDetails().setOseeComment(oseeComment);
+                     artifact.getTxDetails().setTxType(txType);
+                     artifact.getTxDetails().setTxId(suppTxId);
+                     artifact.getTxDetails().setCommitArtId(commitArtId);
+                     artifact.getTxDetails().setBuild_id(buildId);
+                  }
+               }
+            }
 
          }
       };
@@ -330,28 +369,34 @@ public class QueryEngineImpl implements QueryEngine {
       ArtifactId author = ArtifactId.SENTINEL;
       ArtifactId commitArtId = ArtifactId.SENTINEL;
       Long buildId = -1L;
+      TransactionId suppTxId = TransactionId.SENTINEL;
       if (queryData.mainTableAliasExists(OseeDb.OSEE_KEY_VALUE_TABLE)) {
          appValue = stmt.getString("app_value");
       }
-      if (queryData.mainTableAliasExists(OseeDb.TX_DETAILS_TABLE)) {
-         oseeComment = stmt.getString("osee_comment");
-         try {
-            time = DateUtil.getDate("yyyyMMddHHmmss", stmt.getString("time"));
+      if (OptionsUtil.getIncludeLatestTransactionDetails(queryData.getRootQueryData().getOptions())) {
+         String timeStr = stmt.getString("timeStr");
+         String maxTime = stmt.getString("max_time");
+         if (timeStr.equals(maxTime)) {
 
-         } catch (ParseException ex) {
-            time = DateUtil.getSentinalDate();
+            suppTxId = TransactionId.valueOf(stmt.getLong("supp_tx_id"));
+            oseeComment = stmt.getString("osee_comment");
+            try {
+               time = DateUtil.getDate("yyyyMMddHHmmss", timeStr);
+            } catch (ParseException ex) {
+               time = DateUtil.getSentinalDate();
+            }
+            txType = stmt.getInt("tx_type");
+            commitArtId = ArtifactId.valueOf(stmt.getLong("commit_art_id"));
+            buildId = stmt.getLong("build_id");
+            author = ArtifactId.valueOf(stmt.getLong("author"));
          }
-         txType = stmt.getInt("tx_type");
-         commitArtId = ArtifactId.valueOf(stmt.getLong("commit_art_id"));
-         buildId = stmt.getLong("build_id");
-         author = ArtifactId.valueOf(stmt.getLong("author"));
       }
       ApplicabilityToken applic = ApplicabilityToken.valueOf(stmt.getLong("app_id"), appValue);
 
-      TransactionDetails txDetails =
-         new TransactionDetails(txId, queryData.getBranch(), time, oseeComment, txType, commitArtId, buildId, author);
+      TransactionDetails txDetails = new TransactionDetails(suppTxId, queryData.getBranch(), time, oseeComment, txType,
+         commitArtId, buildId, author);
 
-      return new ArtifactReadableImpl(artId, artifactType, queryData.getBranch(), queryData.getView(), applic,
+      return new ArtifactReadableImpl(artId, artifactType, queryData.getBranch(), queryData.getView(), applic, txId,
          txDetails, modType, queryFactory);
    }
 

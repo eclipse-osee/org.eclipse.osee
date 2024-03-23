@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.rest.internal.workitem;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.net.URI;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -102,6 +103,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.TransactionReadable;
@@ -349,27 +351,48 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    }
 
    @Override
-   public int queryOpenWorkItemsCount(ArtifactTypeToken artType, Long maxTime) {
-      QueryBuilder builder = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(artType);
-      if (maxTime > 0L) {
-         builder = builder.includeTransactionDetails(false, "ASC", maxTime);
+   public int queryOpenWorkItemsCount(ArtifactTypeToken artType, AttributeTypeToken orderBy, String maxTime) {
+
+      Date maxTimeDate;
+      try {
+         maxTimeDate = DateUtil.getDate("yyyyMMddHHmmss", maxTime);
+      } catch (ParseException ex) {
+         maxTimeDate = DateUtil.getSentinalDate();
       }
+      QueryBuilder builder =
+         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(artType).setOrderByAttribute(
+            AtsAttributeTypes.CreatedDate).setOrderByAttributeDirection(SortOrder.DESCENDING).setMaxTime(maxTimeDate);
       return builder.getCount();
    }
 
    @Override
    public Collection<WorkItemLastMod> queryOpenWorkItems(ArtifactTypeToken artType, int pageSize, int pageNum,
-      boolean orderByTime, String orderDirection, Long maxTime) {
+      AttributeTypeToken orderBy, String orderDirection, String maxTime) {
       List<WorkItemLastMod> items = new ArrayList<>();
       QueryBuilder builder = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(artType);
-
+      Date maxTimeDate;
+      try {
+         maxTimeDate = DateUtil.getDate("yyyyMMddHHmmss", maxTime);
+      } catch (ParseException ex) {
+         maxTimeDate = DateUtil.getSentinalDate();
+      }
       if (pageSize != 0 && pageNum != 0) {
          builder = builder.isOnPage(pageNum, pageSize);
       }
+      if (orderBy.isValid()) {
+         builder = builder.setOrderByAttribute(orderBy);
+         if (orderDirection.startsWith("DESC")) {
+            builder = builder.setOrderByAttributeDirection(SortOrder.DESCENDING);
+         } else {
+            builder = builder.setOrderByAttributeDirection(SortOrder.ASCENDING);
+         }
+         if (orderBy.isDate() && maxTimeDate.after(DateUtil.getSentinalDate())) {
+            builder = builder.setMaxTime(maxTimeDate);
+         }
+      }
 
-      builder = builder.includeTransactionDetails(orderByTime, orderDirection, maxTime).follow(
-         AtsRelationTypes.ActionToWorkflow_Action).followNoSelect(AtsRelationTypes.ActionToWorkflow_TeamWorkflow,
-            AtsArtifactTypes.TeamWorkflow);
+      builder = builder.includeTransactionDetails().follow(AtsRelationTypes.ActionToWorkflow_Action).followNoSelect(
+         AtsRelationTypes.ActionToWorkflow_TeamWorkflow, AtsArtifactTypes.TeamWorkflow);
 
       List<ArtifactReadable> asArtifacts = builder.asArtifacts();
       for (ArtifactReadable art : asArtifacts) {

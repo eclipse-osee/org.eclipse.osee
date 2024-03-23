@@ -12,7 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.orcs.core.ds.criteria;
 
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;
@@ -23,31 +23,31 @@ import org.eclipse.osee.orcs.core.ds.OptionsUtil;
  */
 public class CriteriaAttributeSort extends Criteria {
 
-   private final long attributeTypeId;
+   private final AttributeTypeToken attributeType;
 
-   public CriteriaAttributeSort(long attributeTypeId) {
-      this.attributeTypeId = attributeTypeId;
+   public CriteriaAttributeSort(AttributeTypeToken attributeType) {
+      this.attributeType = attributeType;
    }
 
-   public CriteriaAttributeSort(AttributeTypeId attributeTypeId) {
-      this.attributeTypeId = attributeTypeId.getId();
+   public CriteriaAttributeSort(long attributeType) {
+      this.attributeType = AttributeTypeToken.valueOf(attributeType);
    }
 
    /**
     * @return the attributeTypeId
     */
-   public long getAttributeTypeId() {
-      return attributeTypeId;
+   public AttributeTypeToken getAttributeType() {
+      return attributeType;
    }
 
    @Override
    public void checkValid(Options options) {
       Conditions.assertTrue(OptionsUtil.getOrderByMechanism(options).contains("ATTRIBUTE"),
          "Order mechanism is not attribute");
-      Conditions.assertTrue(AttributeTypeId.valueOf(attributeTypeId).isValid(), "Attribute Type Id is not valid");
+      Conditions.assertTrue(attributeType.isValid(), "Attribute Type Id is not valid");
    }
 
    public boolean isValid() {
-      return AttributeTypeId.valueOf(attributeTypeId).isValid();
+      return attributeType.isValid();
    }
 }
