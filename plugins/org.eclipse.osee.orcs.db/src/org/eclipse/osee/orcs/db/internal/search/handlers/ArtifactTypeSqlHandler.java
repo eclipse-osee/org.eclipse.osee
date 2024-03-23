@@ -47,9 +47,6 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType> {
       if (OptionsUtil.getIncludeApplicabilityTokens(writer.getOptions())) {
          writer.getMainTableAlias(OseeDb.OSEE_KEY_VALUE_TABLE);
       }
-      if (OptionsUtil.getIncludeTransactionDetails(writer.getOptions())) {
-         writer.getMainTableAlias(OseeDb.TX_DETAILS_TABLE);
-      }
    }
 
    @Override

@@ -13,11 +13,13 @@
 
 package org.eclipse.osee.orcs.core.ds;
 
+import java.util.Date;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -42,7 +44,7 @@ public final class OptionsUtil {
    private static final String FOLLOW_SEARCH_IN_PROGRESS = "follow.search.in.progress";
    private static final String SINGLE_LEVEL_RELATIONS_SEARCH = "single.level.relations.search";
    private static final String BRANCH_ORDER = "branch.order";
-   private static final String INCLUDE_TRANSACTION_DETAILS = "include.transaction.details";
+   private static final String INCLUDE_LATEST_TRANSACTION_DETAILS = "include.latest.transaction.details";
    private static final String MAX_TIME = "max.time";
 
    public static Options createBranchOptions() {
@@ -55,7 +57,7 @@ public final class OptionsUtil {
       setIncludeApplicabilityTokens(options, false);
       setIncludeTransactionDetails(options, false);
       setBranchOrder(options, "id");
-      setMaxTime(options, 0L);
+      setMaxTime(options, DateUtil.getSentinalDate());
       return options;
    }
 
@@ -81,7 +83,7 @@ public final class OptionsUtil {
       setIncludeTransactionDetails(options, false);
       setSingleLevelRelationsSearch(options, false);
       setOrderByAttributeDirection(options, SortOrder.ASCENDING);
-      setMaxTime(options, 0L);
+      setMaxTime(options, DateUtil.getSentinalDate());
    }
 
    public static boolean isCacheIncluded(Options options) {
@@ -152,12 +154,12 @@ public final class OptionsUtil {
       options.put(LOAD_LEVEL, loadLevel.name());
    }
 
-   public static void setMaxTime(Options options, Long maxTime) {
+   public static void setMaxTime(Options options, Date maxTime) {
       options.put(MAX_TIME, maxTime);
    }
 
-   public static Long getMaxTime(Options options) {
-      return options.getLong(MAX_TIME);
+   public static Date getMaxTime(Options options) {
+      return options.getDate(MAX_TIME);
    }
 
    public static void setFromTransaction(Options options, TransactionId transactionId) {
@@ -213,11 +215,11 @@ public final class OptionsUtil {
    }
 
    public static void setIncludeTransactionDetails(Options options, boolean enabled) {
-      options.put(INCLUDE_TRANSACTION_DETAILS, enabled);
+      options.put(INCLUDE_LATEST_TRANSACTION_DETAILS, enabled);
    }
 
-   public static boolean getIncludeTransactionDetails(Options options) {
-      return options.getBoolean(INCLUDE_TRANSACTION_DETAILS);
+   public static boolean getIncludeLatestTransactionDetails(Options options) {
+      return options.getBoolean(INCLUDE_LATEST_TRANSACTION_DETAILS);
    }
 
    /**

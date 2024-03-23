@@ -68,7 +68,8 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    private final ArtifactId view;
    private final QueryFactory queryFactory;
    private final ApplicabilityToken applicability;
-   private final TransactionDetails txDetails;
+   private final TransactionId txId;
+   private final TransactionDetails latestTxDetails;
    private final ModificationType modType;
 
    public ArtifactReadableImpl(Long id, ArtifactTypeToken artifactType, BranchToken branch, ArtifactId view, ApplicabilityToken applicability, TransactionId txId, ModificationType modType, QueryFactory queryFactory) {
@@ -77,8 +78,9 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       this.branch = branch;
       this.view = view;
       this.applicability = applicability;
-      this.txDetails =
-         new TransactionDetails(txId, branch, null, null, -1, ArtifactId.SENTINEL, -1L, ArtifactId.SENTINEL);
+      this.txId = txId;
+      this.latestTxDetails = new TransactionDetails(TransactionId.SENTINEL, branch, null, null, -1, ArtifactId.SENTINEL,
+         -1L, ArtifactId.SENTINEL);
       this.modType = modType;
       this.queryFactory = queryFactory;
    }
@@ -89,19 +91,21 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       this.branch = branch;
       this.view = view;
       this.applicability = ApplicabilityToken.valueOf(applicability.getId(), "");
-      this.txDetails =
-         new TransactionDetails(txId, branch, null, null, -1, ArtifactId.SENTINEL, -1L, ArtifactId.SENTINEL);
+      this.txId = txId;
+      this.latestTxDetails = new TransactionDetails(TransactionId.SENTINEL, branch, null, null, -1, ArtifactId.SENTINEL,
+         -1L, ArtifactId.SENTINEL);
       this.modType = modType;
       this.queryFactory = queryFactory;
    }
 
-   public ArtifactReadableImpl(Long id, ArtifactTypeToken artifactType, BranchToken branch, ArtifactId view, ApplicabilityToken applicability, TransactionDetails txDetails, ModificationType modType, QueryFactory queryFactory) {
+   public ArtifactReadableImpl(Long id, ArtifactTypeToken artifactType, BranchToken branch, ArtifactId view, ApplicabilityToken applicability, TransactionId txId, TransactionDetails txDetails, ModificationType modType, QueryFactory queryFactory) {
       super(id);
       this.artifactType = artifactType;
       this.branch = branch;
       this.view = view;
       this.applicability = applicability;
-      this.txDetails = txDetails;
+      this.txId = txId;
+      this.latestTxDetails = txDetails;
       this.modType = modType;
       this.queryFactory = queryFactory;
    }
@@ -121,7 +125,7 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
 
    @Override
    public TransactionId getTransaction() {
-      return txDetails.getTxId();
+      return txId;
    }
 
    @Override
@@ -525,6 +529,6 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
 
    @Override
    public TransactionDetails getTxDetails() {
-      return txDetails;
+      return latestTxDetails;
    }
 }

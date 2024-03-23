@@ -13,14 +13,11 @@
 
 package org.eclipse.osee.orcs.db.internal.sql;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.TimeZone;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
@@ -364,11 +361,6 @@ public abstract class AbstractSqlWriter implements HasOptions {
             String mainTxDetailsAlias = getMainTableAlias(OseeDb.TX_DETAILS_TABLE);
             writeEqualsAnd(mainTxsAlias, "transaction_id", mainTxDetailsAlias, "transaction_id");
             writeEqualsAnd(mainTxsAlias, "branch_id", mainTxDetailsAlias, "branch_id");
-            if (OptionsUtil.getMaxTime(getOptions()) > 0 && queryDataCursor.getParentQueryData() == null) {
-               LocalDateTime ldt = LocalDateTime.ofInstant(Instant.ofEpochMilli(OptionsUtil.getMaxTime(getOptions())),
-                  TimeZone.getDefault().toZoneId());
-               write(mainTxDetailsAlias + ".time > " + jdbcClient.getDbType().getDateToCompare(ldt) + " and ");
-            }
          }
 
          writeTxBranchFilter(mainTxsAlias);

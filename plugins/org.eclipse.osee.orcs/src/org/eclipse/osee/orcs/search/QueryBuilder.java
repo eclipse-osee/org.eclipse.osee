@@ -14,6 +14,7 @@
 package org.eclipse.osee.orcs.search;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -136,7 +137,7 @@ public interface QueryBuilder extends Query {
 
    boolean areApplicabilityTokensIncluded();
 
-   QueryBuilder includeTransactionDetails(boolean orderByTime, String direction, Long maxTime);
+   QueryBuilder includeTransactionDetails();
 
    boolean areTransactionDetailsIncluded();
 
@@ -155,6 +156,10 @@ public interface QueryBuilder extends Query {
    QueryBuilder setOrderMechanism(String orderMechanism);
 
    String orderMechanism();
+
+   QueryBuilder setMaxTime(Date maxTime);
+
+   Date getMaxTime();
 
    void setTableOptions(ArtifactTableOptions tableOptions);
 
