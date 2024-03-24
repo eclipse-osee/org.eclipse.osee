@@ -59,9 +59,15 @@ java_import(
         name = "nebula",
         jars = [
                 "org.eclipse.nebula.widgets.xviewer.core_1.0.0.202212191054.jar",
-		#"org.eclipse.nebula.widgets.xviewer_1.1.0.202302231924.jar",
 		"org.eclipse.nebula.widgets.ganttchart_1.0.0.202303072132.jar"
 	],
+)
+
+java_import(
+        name = "nebula_xviewer",
+        jars = [
+                "org.eclipse.nebula.widgets.xviewer_1.1.0.202302231924.jar",
+        ],
 )
 
 java_import(

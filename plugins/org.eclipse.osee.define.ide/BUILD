@@ -91,6 +91,7 @@ java_library(
 		"@eclipse_core_jobs//jar",
 		"@eclipse_equinox_registry//jar",
 		"@ext_jars//:nebula",
+		"@ext_jars//:nebula_xviewer",
 		"@ext_jars//:apache_commons_lang",
 		"@ext_jars//:eclipse_ui",
 		"@ext_jars//:swt",
