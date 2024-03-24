@@ -17,7 +17,6 @@ test_suite(
 	     "//org.eclipse.osee.disposition.rest.test:Disposition_JUnit_TestSuite",
 	     "//org.eclipse.osee.framework.core.model.test:AllCoreModelTestSuite",
 	     "//org.eclipse.osee.framework.core.server.test:CoreServerTestSuite",
-	     "//org.eclipse.osee.framework.help.ui.test:HelpUiTestSuite",
 	     "//org.eclipse.osee.framework.core.test:FrameworkCoreTestSuite",
 	     "//org.eclipse.osee.framework.logging.test:AllLoggingTestSuite",
 	     "//org.eclipse.osee.framework.messaging.event.res.test:AllEventResTestSuite",
@@ -36,8 +35,7 @@ test_suite(
 
 test_suite(
     name = "client_tests",
-    tests = ["//org.eclipse.osee.ats.ide.help.ui.test:AtsHelpUiTestSuite",
-	     "//org.eclipse.osee.framework.skynet.core.test:AllSkynetCoreJunitTestSuite",
+    tests = ["//org.eclipse.osee.framework.skynet.core.test:AllSkynetCoreJunitTestSuite",
     	     "//org.eclipse.osee.define.ide.test:AllDefineJunitTestSuite",
     	     "//org.eclipse.osee.framework.ui.skynet.test:AllUiSkynetJunitTestSuite"]
 )

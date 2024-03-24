@@ -22,10 +22,8 @@ java_library(
                 "@maven//:com_google_guava_guava",
 		"@maven//:org_mockito_mockito_core",
 		"@maven//:org_hamcrest_hamcrest_core",
-		"@maven//:org_junit_junit5_api",
 		"@eclipse_osgi//jar",
 		"@eclipse_equinox_common//jar"
-		#"@ext_jars//:eclipse_equinox_common", 
                 ],
 )
 
