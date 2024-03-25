@@ -16,8 +16,8 @@ import { DiffReportService } from '@osee/messaging/shared/services';
 import type { submessageDiffItem } from '@osee/messaging/shared/types';
 import { from } from 'rxjs';
 import { filter, reduce, switchMap } from 'rxjs/operators';
-import { submessageDiffHeaderDetails } from '../../table-headers/submessage-diff-table-headers';
-import { DiffReportTableComponent } from '../../tables/diff-report-table/diff-report-table.component';
+import { submessageDiffHeaderDetails } from './submessage-diff-table-headers';
+import { DiffReportTableComponent } from '../diff-report-table/diff-report-table.component';
 
 @Component({
 	selector: 'osee-messaging-submessage-diffs',

@@ -15,13 +15,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { DiffReportService } from '@osee/messaging/shared/services';
 import { DiffReportServiceMock } from '@osee/messaging/shared/testing';
-import { DiffReportTableComponent } from '../../tables/diff-report-table/diff-report-table.component';
+import { DiffReportTableComponent } from '../diff-report-table/diff-report-table.component';
+import { StructureDiffsComponent } from './structure-diffs.component';
 
-import { ConnectionDiffsComponent } from './connection-diffs.component';
-
-describe('ConnectionDiffsComponent', () => {
-	let component: ConnectionDiffsComponent;
-	let fixture: ComponentFixture<ConnectionDiffsComponent>;
+describe('StructureDiffsComponent', () => {
+	let component: StructureDiffsComponent;
+	let fixture: ComponentFixture<StructureDiffsComponent>;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
@@ -32,13 +31,13 @@ describe('ConnectionDiffsComponent', () => {
 				MatIconModule,
 				MatTableModule,
 				DiffReportTableComponent,
-				ConnectionDiffsComponent,
+				StructureDiffsComponent,
 			],
 		}).compileComponents();
 	});
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(ConnectionDiffsComponent);
+		fixture = TestBed.createComponent(StructureDiffsComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

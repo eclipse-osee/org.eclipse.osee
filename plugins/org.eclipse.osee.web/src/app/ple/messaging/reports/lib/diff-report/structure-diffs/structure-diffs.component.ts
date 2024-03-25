@@ -19,9 +19,9 @@ import type {
 } from '@osee/messaging/shared/types';
 import { from } from 'rxjs';
 import { filter, reduce, switchMap } from 'rxjs/operators';
-import { elementDiffHeaderDetails } from '../../table-headers/element-diff-table-headers';
-import { structureDiffHeaderDetails } from '../../table-headers/structure-diff-table-headers';
-import { DiffReportTableComponent } from '../../tables/diff-report-table/diff-report-table.component';
+import { elementDiffHeaderDetails } from './element-diff-table-headers';
+import { structureDiffHeaderDetails } from './structure-diff-table-headers';
+import { DiffReportTableComponent } from '../diff-report-table/diff-report-table.component';
 
 @Component({
 	selector: 'osee-messaging-structure-diffs',

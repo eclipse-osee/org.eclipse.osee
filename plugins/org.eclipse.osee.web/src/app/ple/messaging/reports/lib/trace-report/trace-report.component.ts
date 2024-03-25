@@ -15,7 +15,7 @@ import { CommonModule } from '@angular/common';
 import { ReportsService } from '@osee/messaging/shared/services';
 import { ActivatedRoute } from '@angular/router';
 import { CurrentBranchInfoService, UiService } from '@osee/shared/services';
-import { TraceReportTableComponent } from '../../tables/trace-report-table/trace-report-table.component';
+import { TraceReportTableComponent } from './trace-report-table/trace-report-table.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatExpansionModule } from '@angular/material/expansion';

@@ -15,14 +15,13 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { TestScheduler } from 'rxjs/testing';
-import { ConnectionDiffsComponent } from '../../diffs/connection-diffs/connection-diffs.component';
-import { DiffReportTableComponent } from '../../tables/diff-report-table/diff-report-table.component';
-
+import { ConnectionDiffsComponent } from './connection-diffs/connection-diffs.component';
+import { DiffReportTableComponent } from './diff-report-table/diff-report-table.component';
 import { DiffReportComponent } from './diff-report.component';
-import { MessageDiffsComponent } from '../../diffs/message-diffs/message-diffs.component';
-import { NodeDiffsComponent } from '../../diffs/node-diffs/node-diffs.component';
-import { StructureDiffsComponent } from '../../diffs/structure-diffs/structure-diffs.component';
-import { SubmessageDiffsComponent } from '../../diffs/submessage-diffs/submessage-diffs.component';
+import { MessageDiffsComponent } from './message-diffs/message-diffs.component';
+import { NodeDiffsComponent } from './node-diffs/node-diffs.component';
+import { StructureDiffsComponent } from './structure-diffs/structure-diffs.component';
+import { SubmessageDiffsComponent } from './submessage-diffs/submessage-diffs.component';
 import { DiffReportService } from '@osee/messaging/shared/services';
 import { DiffReportServiceMock } from '@osee/messaging/shared/testing';
 

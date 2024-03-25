@@ -61,11 +61,11 @@
 			"@osee/messaging/message-tables/menus": [
 				"src/app/ple/messaging/message-tables/lib/menus"
 			],
-			"@osee/messaging/reports/diff": [
-				"src/app/ple/messaging/reports/lib/diff"
+			"@osee/messaging/reports/diff-report": [
+				"src/app/ple/messaging/reports/lib/diff-report"
 			],
-			"@osee/messaging/reports/trace": [
-				"src/app/ple/messaging/reports/lib/trace"
+			"@osee/messaging/reports/trace-report": [
+				"src/app/ple/messaging/reports/lib/trace-report"
 			],
 			"@osee/messaging/structure-tables": [
 				"src/app/ple/messaging/structure-tables/lib"
