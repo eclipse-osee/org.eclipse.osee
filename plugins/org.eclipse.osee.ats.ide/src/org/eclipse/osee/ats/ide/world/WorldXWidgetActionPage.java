@@ -121,7 +121,8 @@ public class WorldXWidgetActionPage extends FormPage {
    public static final String MENU_GROUP_PRE = "world.menu.group.pre";
    private final WorldEditor worldEditor;
    private WorldComposite worldComposite;
-   private static Action filterCompletedAction, filterMyAssigneeAction, toAction, toGoal, toReview, toWorkFlow, toTask;
+   private static Action filterCompletedAction, filterMyAssigneeAction, toAction, toGoal, toReview, toWorkFlow, toTask,
+      toSibling;
    private final WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
    private WorldAssigneeFilter worldAssigneeFilter = null;
    private WorkflowMetricsUI workflowMetricsUi;
@@ -130,6 +131,7 @@ public class WorldXWidgetActionPage extends FormPage {
    private final String WORKFLOWS = "Re-display as WorkFlows";
    private final String TASKS = "Re-display as Tasks";
    private final String REVIEWS = "Re-display as Reviews";
+   private final String SIBLINGS = "Re-display as Siblings";
    private Composite paramComp;
    private Composite rightParamComp;
 
@@ -431,6 +433,7 @@ public class WorldXWidgetActionPage extends FormPage {
             addActionToMenu(fMenu, toWorkFlow);
             addActionToMenu(fMenu, toTask);
             addActionToMenu(fMenu, toReview);
+            addActionToMenu(fMenu, toSibling);
          }
 
          worldEditor.createToolBarPulldown(fMenu);
@@ -671,6 +674,49 @@ public class WorldXWidgetActionPage extends FormPage {
       };
       toReview.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.REVIEW));
 
+      toSibling = new Action(SIBLINGS, IAction.AS_PUSH_BUTTON) {
+
+         @Override
+         public void run() {
+            redisplayAsSiblings();
+         }
+      };
+      toSibling.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.CONECTION_24));
+
+   }
+
+   public void redisplayAsSiblings() {
+      final List<Artifact> artifacts = worldComposite.getXViewer().getLoadedArtifacts();
+      Job job = new Job(SIBLINGS) {
+         @Override
+         protected IStatus run(IProgressMonitor monitor) {
+            try {
+               final Set<Artifact> arts = new HashSet<>();
+               for (Artifact art : artifacts) {
+                  if (art instanceof AbstractWorkflowArtifact) {
+                     Artifact parentArt = null;
+                     IAtsAction action = ((AbstractWorkflowArtifact) art).getParentAction();
+                     if (action != null) {
+                        parentArt = (Artifact) action.getStoreObject();
+                     }
+                     if (parentArt != null) {
+                        arts.addAll(Collections.castAll(
+                           AtsObjects.getArtifacts(AtsApiService.get().getWorkItemService().getTeams(parentArt))));
+                     }
+                  }
+               }
+               if (arts.isEmpty()) {
+                  AWorkbench.popup("No Siblings to Display");
+               } else {
+                  worldComposite.load(worldEditor.getWorldXWidgetActionPage().getCurrentTitleLabel(), arts);
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+            return Status.OK_STATUS;
+         }
+      };
+      Jobs.startJob(job, true);
    }
 
    public void redisplayAsAction() {
