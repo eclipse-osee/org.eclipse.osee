@@ -32,9 +32,11 @@ public interface InterfaceDifferenceReportApi {
 
    MimChangeSummary getChangeSummary(BranchId branch1, BranchId branch2, ArtifactId view);
 
-   MimChangeSummary getChangeSummary(BranchId branch1, BranchId branch2, ArtifactId view,
+   MimChangeSummary getChangeSummary(BranchId branch1, BranchId branch2, ArtifactId view, ArtifactId connectionId);
+
+   MimChangeSummary getChangeSummary(BranchId branch1, BranchId branch2, ArtifactId view, ArtifactId connectionId,
       Map<ArtifactId, MimChangeSummaryItem> changes);
 
-   MimChangeSummary getChangeSummary(BranchId branch1, BranchId branch2, ArtifactId view,
+   MimChangeSummary getChangeSummary(BranchId branch1, BranchId branch2, ArtifactId view, ArtifactId connectionId,
       Map<ArtifactId, MimChangeSummaryItem> changes, List<ApplicabilityToken> applicTokenList);
 }

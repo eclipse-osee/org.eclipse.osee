@@ -544,19 +544,26 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
 
    @Override
    public MimChangeSummary getChangeSummary(BranchId branch1, BranchId branch2, ArtifactId view) {
+      return this.getChangeSummary(branch1, branch2, view, ArtifactId.SENTINEL);
+   }
+
+   @Override
+   public MimChangeSummary getChangeSummary(BranchId branch1, BranchId branch2, ArtifactId view,
+      ArtifactId connectionId) {
       Map<ArtifactId, MimChangeSummaryItem> changes = getChangeSummaryItems(branch1, branch2, view);
-      return getChangeSummary(branch1, branch2, view, changes);
+      return getChangeSummary(branch1, branch2, view, connectionId, changes, new LinkedList<>());
    }
 
    @Override
    public MimChangeSummary getChangeSummary(BranchId branch1, BranchId branch2, ArtifactId view,
-      Map<ArtifactId, MimChangeSummaryItem> changes) {
-      return getChangeSummary(branch1, branch2, view, changes, new LinkedList<>());
+      ArtifactId connectionId, Map<ArtifactId, MimChangeSummaryItem> changes) {
+      return getChangeSummary(branch1, branch2, view, connectionId, changes, new LinkedList<>());
    }
 
    @Override
    public MimChangeSummary getChangeSummary(BranchId branch1, BranchId branch2, ArtifactId view,
-      Map<ArtifactId, MimChangeSummaryItem> changes, List<ApplicabilityToken> applicTokenList) {
+      ArtifactId connectionId, Map<ArtifactId, MimChangeSummaryItem> changes,
+      List<ApplicabilityToken> applicTokenList) {
       List<ApplicabilityToken> applicTokens = applicTokenList;
       if (applicTokenList.isEmpty()) {
          if (view.isValid()) {
@@ -836,6 +843,9 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
          }
       }
 
+      // Remove items that are not a part of the specified connection
+      narrowDiffsToConnection(summary, branch1, branch2, connectionId, view);
+
       return summary;
    }
 
@@ -907,6 +917,127 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
          elementMap.put(artId, elements);
       }
       return elements;
+   }
+
+   private void narrowDiffsToConnection(MimChangeSummary summary, BranchId branch1, BranchId branch2,
+      ArtifactId connectionId, ArtifactId view) {
+      if (connectionId.isValid()) {
+         List<ArtifactId> branch1Ids = new LinkedList<>();
+         List<ArtifactId> branch2Ids = new LinkedList<>();
+
+         // Nodes
+         for (MimChangeSummaryItem node : summary.getNodes().values()) {
+            if (node.isDeleted()) {
+               branch2Ids.add(node.getArtId());
+            } else {
+               branch1Ids.add(node.getArtId());
+            }
+         }
+         List<ArtifactReadable> nodes = new LinkedList<>();
+         nodes.addAll(orcsApi.getQueryFactory().fromBranch(branch1, view).andIds(branch1Ids).follow(
+            CoreRelationTypes.InterfaceConnectionNode_Connection).asArtifacts());
+         nodes.addAll(orcsApi.getQueryFactory().fromBranch(branch1, view).andIds(branch2Ids).follow(
+            CoreRelationTypes.InterfaceConnectionNode_Connection).asArtifacts());
+         for (ArtifactReadable node : nodes) {
+            if (node.getRelated(CoreRelationTypes.InterfaceConnectionNode_Connection).getList().stream().filter(
+               c -> c.getArtifactId().equals(connectionId)).findAny().isEmpty()) {
+               summary.getNodes().remove(node.getArtifactId());
+            }
+         }
+
+         // Connections
+         List<MimChangeSummaryItem> connectionItems = new LinkedList<>(summary.getConnections().values());
+         for (MimChangeSummaryItem connection : connectionItems) {
+            if (!connection.getArtId().equals(connectionId)) {
+               summary.getConnections().remove(connection.getArtId());
+            }
+         }
+
+         // Messages
+         branch1Ids = new LinkedList<>();
+         branch2Ids = new LinkedList<>();
+         for (MimChangeSummaryItem message : summary.getMessages().values()) {
+            if (message.isDeleted()) {
+               branch2Ids.add(message.getArtId());
+            } else {
+               branch1Ids.add(message.getArtId());
+            }
+         }
+         List<ArtifactReadable> messages = new LinkedList<>();
+         messages.addAll(orcsApi.getQueryFactory().fromBranch(branch1, view).andIds(branch1Ids).follow(
+            CoreRelationTypes.InterfaceConnectionMessage_Connection).asArtifacts());
+         messages.addAll(orcsApi.getQueryFactory().fromBranch(branch2, view).andIds(branch2Ids).follow(
+            CoreRelationTypes.InterfaceConnectionMessage_Connection).asArtifacts());
+
+         for (ArtifactReadable message : messages) {
+            if (message.getRelated(CoreRelationTypes.InterfaceConnectionMessage_Connection).getList().stream().filter(
+               c -> c.getArtifactId().equals(connectionId)).findAny().isEmpty()) {
+               summary.getMessages().remove(message.getArtifactId());
+            }
+         }
+
+         // Submessages
+         branch1Ids = new LinkedList<>();
+         branch2Ids = new LinkedList<>();
+         for (MimChangeSummaryItem submessage : summary.getSubMessages().values()) {
+            if (submessage.isDeleted()) {
+               branch2Ids.add(submessage.getArtId());
+            } else {
+               branch1Ids.add(submessage.getArtId());
+            }
+         }
+         List<ArtifactReadable> submessages = new LinkedList<>();
+         submessages.addAll(orcsApi.getQueryFactory().fromBranch(branch1, view).andIds(branch1Ids).follow(
+            CoreRelationTypes.InterfaceMessageSubMessageContent_Message).follow(
+               CoreRelationTypes.InterfaceConnectionMessage_Connection).asArtifacts());
+         submessages.addAll(orcsApi.getQueryFactory().fromBranch(branch2, view).andIds(branch2Ids).follow(
+            CoreRelationTypes.InterfaceMessageSubMessageContent_Message).follow(
+               CoreRelationTypes.InterfaceConnectionMessage_Connection).asArtifacts());
+
+         for (ArtifactReadable submessage : submessages) {
+            List<ArtifactReadable> connections = new LinkedList<>();
+            for (ArtifactReadable msg : submessage.getRelated(
+               CoreRelationTypes.InterfaceMessageSubMessageContent_Message)) {
+               connections.addAll(msg.getRelated(CoreRelationTypes.InterfaceConnectionMessage_Connection).getList());
+            }
+            if (connections.stream().filter(c -> c.getArtifactId().equals(connectionId)).findAny().isEmpty()) {
+               summary.getSubMessages().remove(submessage.getArtifactId());
+            }
+         }
+
+         // Structures
+         branch1Ids = new LinkedList<>();
+         branch2Ids = new LinkedList<>();
+         for (MimChangeSummaryItem structure : summary.getStructures().values()) {
+            if (structure.isDeleted()) {
+               branch2Ids.add(structure.getArtId());
+            } else {
+               branch1Ids.add(structure.getArtId());
+            }
+         }
+         List<ArtifactReadable> structures = new LinkedList<>();
+         structures.addAll(orcsApi.getQueryFactory().fromBranch(branch1, view).andIds(branch1Ids).follow(
+            CoreRelationTypes.InterfaceSubMessageContent_SubMessage).follow(
+               CoreRelationTypes.InterfaceMessageSubMessageContent_Message).follow(
+                  CoreRelationTypes.InterfaceConnectionMessage_Connection).asArtifacts());
+         structures.addAll(orcsApi.getQueryFactory().fromBranch(branch2, view).andIds(branch2Ids).follow(
+            CoreRelationTypes.InterfaceSubMessageContent_SubMessage).follow(
+               CoreRelationTypes.InterfaceMessageSubMessageContent_Message).follow(
+                  CoreRelationTypes.InterfaceConnectionMessage_Connection).asArtifacts());
+
+         for (ArtifactReadable structure : structures) {
+            List<ArtifactReadable> connections = new LinkedList<>();
+            for (ArtifactReadable sub : structure.getRelated(CoreRelationTypes.InterfaceSubMessageContent_SubMessage)) {
+               for (ArtifactReadable msg : sub.getRelated(
+                  CoreRelationTypes.InterfaceMessageSubMessageContent_Message)) {
+                  connections.addAll(msg.getRelated(CoreRelationTypes.InterfaceConnectionMessage_Connection).getList());
+               }
+            }
+            if (connections.stream().filter(c -> c.getArtifactId().equals(connectionId)).findAny().isEmpty()) {
+               summary.getStructures().remove(structure.getArtifactId());
+            }
+         }
+      }
    }
 
 }
