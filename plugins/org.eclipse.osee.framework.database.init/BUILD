@@ -46,6 +46,10 @@ java_library(
                 "@maven//:com_google_guava_guava",
 		"@maven//:org_hsqldb_hsqldb",
 		"@maven//:org_jsoup_jsoup",
-		"@ext_jars//:eclipse_equinox_common",
+		"@eclipse_core_runtime//jar", 
+		"@eclipse_equinox_app//jar",
+		"@eclipse_equinox_common//jar",
+		"@eclipse_equinox_registry//jar",
+		"@eclipse_osgi//jar"
 		],
 )

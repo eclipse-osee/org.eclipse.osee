@@ -86,7 +86,20 @@ java_library(
 		"@ext_jars//:eclipse_ui",
 		"@ext_jars//:swt",
 		"@ext_jars//:jface",
-		"@ext_jars//:eclipse_equinox_common"
+		"@eclipse_core_commands//jar", 
+		"@eclipse_core_jobs//jar",
+		"@eclipse_core_resources//jar",
+		"@eclipse_core_runtime//jar",
+		"@eclipse_equinox_common//jar",
+		"@eclipse_equinox_preferences//jar", 
+		"@eclipse_equinox_registry//jar", 
+		"@eclipse_osgi//jar", 
+		"@eclipse_osgi_services//jar",
+		"@eclipse_search//jar", 
+		"@eclipse_zest_core//jar",
+		"@eclipse_zest_layouts//jar",
+		"@eclipse_draw2d//jar",
+		"@ext_jars//:nebula_xviewer"
 	],
 )
 
