@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
+import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaFollowSearch;
@@ -73,6 +74,9 @@ public class PaginationSqlHandler extends SqlHandler<CriteriaPagination> {
                   writer.write(attrTable);
                   writer.write(".value");
                   firstOrderBy = false;
+                  if (OptionsUtil.getOrderByAttributeDirection(writer.getOptions()).equals(SortOrder.DESCENDING)) {
+                     writer.write(" desc");
+                  }
                }
                if (OptionsUtil.getOrderByMechanism(writer.getOptions()).contains("RELATION")) {
                   String relTable = writer.getFirstAlias(OseeDb.RELATION_TABLE);
