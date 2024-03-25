@@ -509,7 +509,8 @@ public class MimIcdGenerator {
 
       String[] headers = {
          "Item Type",
-         "Sub Item Type",
+         "",
+         "",
          "Item Name",
          "Change Type",
          "Modification Type",
@@ -522,55 +523,61 @@ public class MimIcdGenerator {
       int rowIndex = 1;
 
       for (MimChangeSummaryItem message : summary.getMessages().values()) {
-         rowIndex = writeArtifactChanges(writer, message, rowIndex, false);
+         rowIndex = writeArtifactChanges(writer, message, rowIndex, 0);
          rowIndex++;
       }
 
       for (MimChangeSummaryItem submessage : summary.getSubMessages().values()) {
-         rowIndex = writeArtifactChanges(writer, submessage, rowIndex, false);
+         rowIndex = writeArtifactChanges(writer, submessage, rowIndex, 0);
          rowIndex++;
       }
 
       for (MimChangeSummaryItem structure : summary.getStructures().values()) {
-         rowIndex = writeArtifactChanges(writer, structure, rowIndex, false);
+         rowIndex = writeArtifactChanges(writer, structure, rowIndex, 0);
          rowIndex++;
       }
 
       writer.autoSizeAllColumns(headers.length);
+      writer.setColumnWidth(0, writer.getColumnWidth(0) + 500);
+      writer.setColumnWidth(1, writer.getColumnWidth(1) + 500);
+      writer.setColumnWidth(2, writer.getColumnWidth(2) + 500);
       writer.setColumnWidth(6, 20000);
       writer.setColumnWidth(7, 20000);
+
+      writer.addMergedRegion(0, 0, 0, 2);
+      writer.writeCell(0, 0, "Item Type", CELLSTYLE.BOLD, CELLSTYLE.CENTERH);
 
    }
 
    private int writeArtifactChanges(ExcelWorkbookWriter writer, MimChangeSummaryItem item, int rowIndex,
-      boolean subArtifact) {
+      int subArtifactOffset) {
       int startRow = rowIndex;
-      writer.writeCell(rowIndex, subArtifact ? 1 : 0, formatArtifactType(item.getArtType()), CELLSTYLE.CENTERV);
-      writer.writeCell(rowIndex, 2, item.getName(), CELLSTYLE.CENTERV);
+      writer.writeCell(rowIndex, subArtifactOffset, formatArtifactType(item.getArtType()), CELLSTYLE.CENTERV);
+      writer.writeCell(rowIndex, 3, item.getName(), CELLSTYLE.CENTERV);
       if (item.isAdded()) {
-         writer.writeCell(rowIndex, 3, "Added", CELLSTYLE.GREEN);
+         writer.writeCell(rowIndex, 4, "Added", CELLSTYLE.GREEN);
          rowIndex++;
          return rowIndex;
       }
       if (item.isDeleted()) {
-         writer.writeCell(rowIndex, 3, "Deleted", CELLSTYLE.LIGHT_RED);
+         writer.writeCell(rowIndex, 4, "Deleted", CELLSTYLE.LIGHT_RED);
          rowIndex++;
          return rowIndex;
       }
       if (!item.getAttributeChanges().isEmpty()) {
          int firstRow = rowIndex;
-         writer.writeCell(rowIndex, 3, "Modified", CELLSTYLE.YELLOW, CELLSTYLE.CENTERV);
-         writer.writeCell(rowIndex, 4, "Attributes", CELLSTYLE.CENTERV);
+         writer.writeCell(rowIndex, 4, "Modified", CELLSTYLE.YELLOW, CELLSTYLE.CENTERV);
+         writer.writeCell(rowIndex, 5, "Attributes", CELLSTYLE.CENTERV);
          for (ChangeReportRowDto change : item.getAttributeChanges()) {
-            writer.writeCell(rowIndex, 5, change.getItemType());
-            writer.writeCell(rowIndex, 6, change.getIsValue(), CELLSTYLE.WRAP);
-            writer.writeCell(rowIndex, 7, change.getWasValue(), CELLSTYLE.WRAP);
-            writer.writeCell(rowIndex, 8, getRelatedWorkFlow(Collections.singleton(change.getTxId())));
+            writer.writeCell(rowIndex, 6, change.getItemType());
+            writer.writeCell(rowIndex, 7, change.getIsValue(), CELLSTYLE.WRAP);
+            writer.writeCell(rowIndex, 8, change.getWasValue(), CELLSTYLE.WRAP);
+            writer.writeCell(rowIndex, 9, getRelatedWorkFlow(Collections.singleton(change.getTxId())));
             rowIndex++;
          }
          if (firstRow < rowIndex - 1) {
-            writer.addMergedRegion(firstRow, rowIndex - 1, 3, 3);
             writer.addMergedRegion(firstRow, rowIndex - 1, 4, 4);
+            writer.addMergedRegion(firstRow, rowIndex - 1, 5, 5);
          }
       }
 
@@ -578,16 +585,15 @@ public class MimIcdGenerator {
          writer.addMergedRegion(startRow, rowIndex - 1, 0, 0);
          writer.addMergedRegion(startRow, rowIndex - 1, 1, 1);
          writer.addMergedRegion(startRow, rowIndex - 1, 2, 2);
+         writer.addMergedRegion(startRow, rowIndex - 1, 3, 3);
       }
 
-      if (!subArtifact) {
-         if (!item.getChildren().isEmpty()) {
-            if (item.getAttributeChanges().isEmpty()) {
-               rowIndex++;
-            }
-            for (MimChangeSummaryItem child : item.getChildren()) {
-               rowIndex = writeArtifactChanges(writer, child, rowIndex, true);
-            }
+      if (!item.getChildren().isEmpty()) {
+         if (item.getAttributeChanges().isEmpty()) {
+            rowIndex++;
+         }
+         for (MimChangeSummaryItem child : item.getChildren()) {
+            rowIndex = writeArtifactChanges(writer, child, rowIndex, subArtifactOffset + 1);
          }
       }
 
