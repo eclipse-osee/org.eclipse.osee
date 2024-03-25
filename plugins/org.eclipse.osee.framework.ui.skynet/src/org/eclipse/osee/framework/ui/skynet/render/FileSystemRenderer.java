@@ -1064,7 +1064,6 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       //@formatter:on
 
       var branchId = BranchId.valueOf(branchToken.getId());
-      var viewId = ArtifactId.valueOf(branchToken.getViewId());
 
       //@formatter:off
       var branchName =
@@ -1079,7 +1078,6 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       //@formatter:on
 
       this.setRendererOption(RendererOption.BRANCH, branchId);
-      this.setRendererOption(RendererOption.VIEW, viewId);
       this.setRendererOption(RendererOption.BRANCH_NAME, branchName);
 
       return artifactsNoNulls;
