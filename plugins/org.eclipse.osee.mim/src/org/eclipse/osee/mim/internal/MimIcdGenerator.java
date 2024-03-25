@@ -151,7 +151,7 @@ public class MimIcdGenerator {
 
       MimChangeSummary summary = new MimChangeSummary(new HashMap<>());
       if (diff) {
-         summary = interfaceDifferenceReportApi.getChangeSummary(branch, parentBranch, view);
+         summary = interfaceDifferenceReportApi.getChangeSummary(branch, parentBranch, view, connectionId);
          diffs.putAll(summary.getAll());
       }
 
