@@ -26,11 +26,12 @@ const routes: Routes = [
 	},
 	{
 		path: ':branchType/:branchId/differences',
-		loadChildren: () => import('@osee/messaging/reports/diff'),
+		loadChildren: () => import('@osee/messaging/reports/diff-report'),
 	},
 	{
 		path: ':branchType/:branchId/traceReport',
-		loadChildren: () => import('@osee/messaging/reports/trace'),
+		loadChildren: () =>
+			import('src/app/ple/messaging/reports/lib/trace-report'),
 	},
 ];
 

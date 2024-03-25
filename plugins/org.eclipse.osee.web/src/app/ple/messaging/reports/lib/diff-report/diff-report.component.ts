@@ -15,11 +15,11 @@ import { map } from 'rxjs/operators';
 import { ScrollToTopButtonComponent } from '@osee/shared/components';
 import { AsyncPipe, DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
-import { NodeDiffsComponent } from '../../diffs/node-diffs/node-diffs.component';
-import { ConnectionDiffsComponent } from '../../diffs/connection-diffs/connection-diffs.component';
-import { MessageDiffsComponent } from '../../diffs/message-diffs/message-diffs.component';
-import { SubmessageDiffsComponent } from '../../diffs/submessage-diffs/submessage-diffs.component';
-import { StructureDiffsComponent } from '../../diffs/structure-diffs/structure-diffs.component';
+import { NodeDiffsComponent } from './node-diffs/node-diffs.component';
+import { ConnectionDiffsComponent } from './connection-diffs/connection-diffs.component';
+import { MessageDiffsComponent } from './message-diffs/message-diffs.component';
+import { SubmessageDiffsComponent } from './submessage-diffs/submessage-diffs.component';
+import { StructureDiffsComponent } from './structure-diffs/structure-diffs.component';
 import {
 	DiffReportService,
 	HeaderService,

@@ -28,7 +28,7 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { HeaderService } from '@osee/shared/services';
-import { nodeTraceReportHeaderDetails } from '../../table-headers/trace-report-table-headers';
+import { nodeTraceReportHeaderDetails } from './trace-report-table-headers';
 import {
 	MatPaginator,
 	MatPaginatorModule,

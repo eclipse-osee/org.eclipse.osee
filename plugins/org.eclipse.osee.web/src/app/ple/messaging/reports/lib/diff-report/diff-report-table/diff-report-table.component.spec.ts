@@ -18,7 +18,7 @@ import { TestScheduler } from 'rxjs/testing';
 import { connectionDiffsMock } from '@osee/messaging/shared/testing';
 
 import { DiffReportTableComponent } from './diff-report-table.component';
-import { connectionDiffHeaderDetails } from '../../table-headers/connection-diff-table-headers';
+import { connectionDiffHeaderDetails } from '../connection-diffs/connection-diff-table-headers';
 import type { connectionDiffItem } from '@osee/messaging/shared/types';
 
 describe('DiffReportTableComponent', () => {

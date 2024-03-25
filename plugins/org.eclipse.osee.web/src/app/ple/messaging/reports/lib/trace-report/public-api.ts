@@ -10,4 +10,4 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export { default } from '../reports/diff-report/diff-report.routes';
+export { default } from '../trace-report/trace-report.routes';
