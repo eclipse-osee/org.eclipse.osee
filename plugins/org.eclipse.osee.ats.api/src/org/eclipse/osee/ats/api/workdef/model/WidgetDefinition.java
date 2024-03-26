@@ -24,7 +24,9 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.ComputedCharacteristic;
 import org.eclipse.osee.framework.core.data.ComputedCharacteristicToken;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.UserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.conditions.ConditionalRule;
 import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -43,6 +45,7 @@ public class WidgetDefinition extends LayoutItem {
    private final WidgetOptionHandler options = new WidgetOptionHandler();
    private List<ConditionalRule> conditions = new ArrayList<>();
    private List<WidgetHint> widgetHints = new ArrayList<>();
+   private IUserGroupArtifactToken userGroup = UserGroupArtifactToken.SENTINEL;
 
    private String toolTip;
    private String description;
@@ -245,6 +248,14 @@ public class WidgetDefinition extends LayoutItem {
 
    public void setWidgetHints(List<WidgetHint> widgetHints) {
       this.widgetHints = widgetHints;
+   }
+
+   public IUserGroupArtifactToken getUserGroup() {
+      return userGroup;
+   }
+
+   public void setUserGroup(IUserGroupArtifactToken userGroup) {
+      this.userGroup = userGroup;
    }
 
 }

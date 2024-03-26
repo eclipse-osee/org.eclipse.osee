@@ -231,6 +231,7 @@ public class WidgetPageUtil {
             rItem.getParameters().put(pair.getKey(), pair.getValue());
          }
          rItem.setConditions(widgetDef.getConditions());
+         rItem.setUserGroup(widgetDef.getUserGroup());
          dynamicXWidgetLayout.addWorkLayoutData(rItem);
       } catch (Exception ex) {
          rItem = new XWidgetRendererItem(dynamicXWidgetLayout);

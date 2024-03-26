@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.api.workdef.model;
 
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.jdk.core.util.WidgetHint;
 
@@ -41,6 +42,12 @@ public class SignByAndDateWidgetDefinition extends WidgetDefinition {
    public LayoutItem andRequiredByTeamLead() {
       andRequired();
       getWidgetHints().add(WidgetHint.LeadRequired);
+      return this;
+   }
+
+   public LayoutItem andRequiredByUserGroup(IUserGroupArtifactToken userGroup) {
+      andRequired();
+      setUserGroup(userGroup);
       return this;
    }
 
