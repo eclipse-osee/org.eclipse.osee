@@ -81,7 +81,6 @@ public class ConvertCompCancelStateAndAssigneeAttributes implements IAtsDatabase
    private void convert(XResultData rd, boolean reportOnly, AtsApi atsApi, Collection<ArtifactId> artIdList, int x,
       int size) {
       IAtsChangeSet changes = null;
-      System.err.println(String.format("Processing art set %s/%s", x, size));
       rd.logf("Processing art set %s/%s\n\n", x, size);
       if (!reportOnly) {
          AtsUser systemUser = atsApi.getUserService().getUserById(AtsCoreUsers.SYSTEM_USER);

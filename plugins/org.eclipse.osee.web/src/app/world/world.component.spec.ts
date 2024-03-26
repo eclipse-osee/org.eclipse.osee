@@ -13,6 +13,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import WorldComponent from './world.component';
+import { WorldHttpService } from './services/world-http.service';
+import { worldHttpServiceMock } from './services/world-http.service.mock';
+import { RouterTestingModule } from '@angular/router/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('WorldComponent', () => {
 	let component: WorldComponent;
@@ -20,7 +24,14 @@ describe('WorldComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [WorldComponent],
+			imports: [
+				WorldComponent,
+				RouterTestingModule,
+				NoopAnimationsModule,
+			],
+			providers: [
+				{ provide: WorldHttpService, useValue: worldHttpServiceMock },
+			],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(WorldComponent);

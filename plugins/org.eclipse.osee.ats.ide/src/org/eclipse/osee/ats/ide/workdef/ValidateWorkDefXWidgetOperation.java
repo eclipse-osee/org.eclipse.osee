@@ -40,9 +40,6 @@ public class ValidateWorkDefXWidgetOperation {
       for (WorkDefinition workDef : atsApi.getWorkDefinitionService().getAllWorkDefinitions()) {
          for (WidgetDefinition widgetDef : atsApi.getWorkDefinitionService().getWidgets(workDef)) {
             String xWidgetName = widgetDef.getXWidgetName();
-            if (xWidgetName.equals("XHyperlabelMemberSelectionDam")) {
-               System.err.println("here");
-            }
             if (Strings.isValid(xWidgetName)) {
                XWidget widget = getWidget(xWidgetName);
                if (widget == null || widget.getLabel().contains("Unhandled XWidget")) {
