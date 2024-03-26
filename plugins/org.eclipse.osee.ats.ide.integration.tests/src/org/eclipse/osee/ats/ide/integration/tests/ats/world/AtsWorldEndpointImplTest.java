@@ -79,14 +79,14 @@ public class AtsWorldEndpointImplTest {
    public void testGetCustomizationsGlobal() {
       Collection<CustomizeData> custGlobal = worldEp.getCustomizationsGlobal();
       Assert.assertNotNull(custGlobal);
-      Assert.assertEquals(3, custGlobal.size());
+      Assert.assertEquals(4, custGlobal.size());
    }
 
    @Test
    public void testGetCustomizations() {
       Collection<CustomizeData> custs = worldEp.getCustomizations();
       Assert.assertNotNull(custs);
-      Assert.assertEquals(4, custs.size());
+      Assert.assertEquals(5, custs.size());
    }
 
    @Test
