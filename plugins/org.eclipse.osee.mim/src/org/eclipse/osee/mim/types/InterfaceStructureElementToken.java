@@ -354,7 +354,7 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
     * @return the endByte
     */
    public Double getEndByte() {
-      return (this.beginByte + this.getElementSizeInBytes() - 1) % (this.getValidationSize() / 2);
+      return Math.max(0.0, (this.beginByte + this.getElementSizeInBytes() - 1) % (this.getValidationSize() / 2));
    }
 
    /**
@@ -375,8 +375,8 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
     * @return the endWord
     */
    public Double getEndWord() {
-      return Math.ceil(
-         ((this.getBeginWord() * (this.getValidationSize() / 2)) + this.getBeginByte() + this.getElementSizeInBytes()) / (this.getValidationSize() / 2)) - 1;
+      return Math.max(0.0, Math.ceil(
+         ((this.getBeginWord() * (this.getValidationSize() / 2)) + this.getBeginByte() + this.getElementSizeInBytes()) / (this.getValidationSize() / 2)) - 1);
    }
 
    /**
