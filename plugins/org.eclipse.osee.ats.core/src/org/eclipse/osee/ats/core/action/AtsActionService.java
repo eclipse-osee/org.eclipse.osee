@@ -439,7 +439,8 @@ public class AtsActionService implements IAtsActionService {
             AtsAttributeTypes.TeamWorkflowArtifactType, null);
          if (Strings.isValid(artifactTypeName)) {
             boolean found = false;
-            for (ArtifactTypeToken type : atsApi.getArtifactTypes()) {
+            Collection<ArtifactTypeToken> artifactTypes = atsApi.getArtifactTypes();
+            for (ArtifactTypeToken type : artifactTypes) {
                if (type.getName().equals(artifactTypeName)) {
                   teamWorkflowArtifactType = type;
                   found = true;

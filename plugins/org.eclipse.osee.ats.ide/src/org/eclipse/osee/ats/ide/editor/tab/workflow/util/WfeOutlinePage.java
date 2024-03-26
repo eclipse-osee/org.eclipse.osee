@@ -300,7 +300,7 @@ public class WfeOutlinePage extends ContentOutlinePage {
             items.add("Height: " + element.getHeight());
          }
          if (element.getAttributeType() != null) {
-            items.add("Tooltip: " + element.getAttributeType().getName());
+            items.add("Tooltip: " + element.getToolTip());
          }
          if (!element.getOptions().getXOptions().isEmpty()) {
             items.addAll(element.getOptions().getXOptions());
@@ -310,6 +310,9 @@ public class WfeOutlinePage extends ContentOutlinePage {
          }
          if (element.getWidgetHints().isEmpty()) {
             items.add("Widget Hints: " + element.getWidgetHints());
+         }
+         if (element.getUserGroup() != null && element.getUserGroup().getId() > 0) {
+            items.add("User Group: " + element.getUserGroup().toStringWithId());
          }
       }
 

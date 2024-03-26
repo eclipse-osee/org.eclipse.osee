@@ -23,7 +23,9 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.ComputedCharacteristicToken;
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.UserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.conditions.ConditionalRule;
 import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.jdk.core.util.WidgetHint;
@@ -79,6 +81,7 @@ public class XWidgetRendererItem implements Cloneable {
    private ArtifactId teamId = ArtifactId.SENTINEL;
    private List<WidgetHint> widgetHints = new ArrayList<>();
    private OseeImage oseeImage;
+   private IUserGroupArtifactToken userGroup = UserGroupArtifactToken.SENTINEL;
 
    public XWidgetRendererItem(SwtXWidgetRenderer dynamicXWidgetLayout, XOption... xOption) {
       this.dynamicXWidgetLayout = dynamicXWidgetLayout;
@@ -481,6 +484,14 @@ public class XWidgetRendererItem implements Cloneable {
 
    public void setOseeImage(OseeImage oseeImage) {
       this.oseeImage = oseeImage;
+   }
+
+   public IUserGroupArtifactToken getUserGroup() {
+      return userGroup;
+   }
+
+   public void setUserGroup(IUserGroupArtifactToken userGroup) {
+      this.userGroup = userGroup;
    }
 
 }

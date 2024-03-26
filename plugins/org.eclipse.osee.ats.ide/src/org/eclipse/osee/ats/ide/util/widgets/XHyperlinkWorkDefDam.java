@@ -64,7 +64,9 @@ public class XHyperlinkWorkDefDam extends XHyperlinkLabelValueSelection implemen
             value = Widgets.NOT_SET;
          } else {
             WorkDefinition workDefinition = atsApi.getWorkDefinitionService().getWorkDefinition(workDefId);
-            value = workDefinition.getName();
+            if (workDefinition != null) {
+               value = workDefinition.getName();
+            }
          }
       }
       return value;
