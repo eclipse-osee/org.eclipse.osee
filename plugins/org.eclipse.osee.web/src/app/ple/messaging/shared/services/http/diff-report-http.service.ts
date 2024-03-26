@@ -18,15 +18,15 @@ import { apiURL } from '@osee/environments';
 @Injectable({
 	providedIn: 'root',
 })
-export class DifferenceReportService {
+export class DiffReportHttpService {
 	constructor(private http: HttpClient) {}
 
 	getDifferenceReport(
-		fromBranchId: string | number,
-		toBranchId: string | number
+		sourceBranch: string | number,
+		destBranch: string | number
 	) {
 		return this.http.get<DifferenceReport>(
-			apiURL + '/mim/branch/' + toBranchId + '/diff/' + fromBranchId
+			apiURL + '/mim/branch/' + sourceBranch + '/diff/' + destBranch
 		);
 	}
 }

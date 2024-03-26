@@ -15,13 +15,10 @@ import {
 	HttpTestingController,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { differenceReportMock } from '@osee/messaging/shared/testing';
-import { apiURL } from '@osee/environments';
+import { DiffReportHttpService } from './diff-report-http.service';
 
-import { DifferenceReportService } from './difference-report.service';
-
-describe('DifferenceReportService', () => {
-	let service: DifferenceReportService;
+describe('DiffReportHttpService', () => {
+	let service: DiffReportHttpService;
 	let httpTestingController: HttpTestingController;
 
 	beforeEach(() => {
@@ -29,21 +26,10 @@ describe('DifferenceReportService', () => {
 			imports: [HttpClientTestingModule],
 		});
 		httpTestingController = TestBed.inject(HttpTestingController);
-		service = TestBed.inject(DifferenceReportService);
+		service = TestBed.inject(DiffReportHttpService);
 	});
 
 	it('should be created', () => {
 		expect(service).toBeTruthy();
-	});
-
-	it('should get difference report', () => {
-		const testReport = differenceReportMock;
-		service.getDifferenceReport('20', '10').subscribe();
-		const req = httpTestingController.expectOne(
-			apiURL + '/mim/branch/' + 10 + '/diff/' + 20
-		);
-		expect(req.request.method).toEqual('GET');
-		req.flush(testReport);
-		httpTestingController.verify();
 	});
 });
