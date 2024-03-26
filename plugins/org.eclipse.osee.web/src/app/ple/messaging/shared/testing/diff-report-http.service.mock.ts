@@ -10,14 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { DifferenceReportService } from '@osee/messaging/shared/services';
 import { of } from 'rxjs';
+import { DiffReportHttpService } from '@osee/messaging/shared/services';
 import { differenceReportMock } from './difference-report.mock';
 
-export const DifferenceReportServiceMock: Partial<DifferenceReportService> = {
+export const diffReportHttpServiceMock: Partial<DiffReportHttpService> = {
 	getDifferenceReport(
-		fromBranchId: string | number,
-		toBranchId: string | number
+		sourceBranch: string | number,
+		destBranch: string | number
 	) {
 		return of(differenceReportMock);
 	},

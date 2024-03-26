@@ -28,6 +28,7 @@ import type {
 	branchSummary,
 	diffReportSummaryItem,
 } from '@osee/messaging/shared/types';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-messaging-diff-report',
@@ -79,8 +80,8 @@ export class DiffReportComponent {
 	parentBranchInfo = this.diffReportService.parentBranchInfo;
 	branchSummary = this.diffReportService.branchSummary;
 	diffReportSummary = this.diffReportService.diffReportSummary;
-	differenceReport = this.diffReportService.diffReport;
-	nodes = this.diffReportService.nodes;
+	differenceReport =
+		this.diffReportService.diffReport.pipe(takeUntilDestroyed());
 
 	isDifference = this.differenceReport.pipe(
 		map((report) => {

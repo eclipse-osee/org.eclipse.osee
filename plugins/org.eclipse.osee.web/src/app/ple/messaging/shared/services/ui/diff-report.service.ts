@@ -20,8 +20,9 @@ import {
 	shareReplay,
 	map,
 	tap,
+	distinctUntilChanged,
 } from 'rxjs/operators';
-import { combineLatest, from, of, OperatorFunction } from 'rxjs';
+import { combineLatest, from, of } from 'rxjs';
 import {
 	changeInstance,
 	changeTypeNumber,
@@ -30,12 +31,11 @@ import {
 import {
 	ActionService,
 	BranchInfoService,
-	UiService,
+	CurrentBranchInfoService,
 } from '@osee/shared/services';
 import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
 import type {
 	branchSummary,
-	DifferenceReport,
 	DifferenceReportItem,
 	nodeDiffItem,
 	fieldsChanged,
@@ -51,32 +51,24 @@ import type {
 	diffItem,
 	enumDiffItem,
 } from '@osee/messaging/shared/types';
-import { CurrentDiffReportService } from './current-diff-report.service';
+import { DiffReportHttpService } from '../http/diff-report-http.service';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class DiffReportService {
 	constructor(
-		private diffService: CurrentDiffReportService,
-		private uiService: UiService,
+		private currentBranchService: CurrentBranchInfoService,
+		private diffService: DiffReportHttpService,
 		private branchInfoService: BranchInfoService,
 		private actionService: ActionService
 	) {}
 
-	private _branchInfo = this.uiService.id.pipe(
-		filter((v) => v !== ''),
-		take(1),
-		switchMap((branchId) =>
-			this.branchInfoService.getBranch(branchId).pipe(shareReplay())
-		)
-	);
+	private _branchInfo = this.currentBranchService.currentBranch;
 
 	private _parentBranchInfo = this._branchInfo.pipe(
 		switchMap((branch) =>
-			this.branchInfoService
-				.getBranch(branch.parentBranch.id)
-				.pipe(share())
+			this.branchInfoService.getBranch(branch.parentBranch.id)
 		)
 	);
 
@@ -98,12 +90,19 @@ export class DiffReportService {
 		)
 	);
 
-	private _differenceReport = this.diffService.differenceReport.pipe(
-		filter((v) => v !== undefined) as OperatorFunction<
-			DifferenceReport | undefined,
-			DifferenceReport
-		>,
-		shareReplay()
+	private _differenceReport = this.currentBranchService.currentBranch.pipe(
+		distinctUntilChanged(),
+		switchMap((branchId) =>
+			this.currentBranchService.parentBranch.pipe(
+				switchMap((parentBranchId) =>
+					this.diffService.getDifferenceReport(
+						branchId.id,
+						parentBranchId
+					)
+				)
+			)
+		),
+		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
 	private _nodes = this._differenceReport.pipe(
@@ -174,8 +173,7 @@ export class DiffReportService {
 				filter((item) => !this.isNoChanges(item)),
 				reduce((acc, curr) => [...acc, curr], [] as nodeDiffItem[])
 			)
-		),
-		shareReplay(1)
+		)
 	);
 
 	private _connections = this._differenceReport.pipe(
@@ -237,15 +235,11 @@ export class DiffReportService {
 					[] as connectionDiffItem[]
 				)
 			)
-		),
-		shareReplay(1)
+		)
 	);
 
-	private _messages = combineLatest([
-		this._differenceReport,
-		this._branchInfo,
-	]).pipe(
-		switchMap(([report, branchInfo]) =>
+	private _messages = this._differenceReport.pipe(
+		switchMap((report) =>
 			from(report.messages).pipe(
 				map((message) => {
 					let diffItem: DifferenceReportItem =
@@ -329,8 +323,7 @@ export class DiffReportService {
 				filter((item) => !this.isNoChanges(item)),
 				reduce((acc, curr) => [...acc, curr], [] as messageDiffItem[])
 			)
-		),
-		shareReplay(1)
+		)
 	);
 
 	private _subMessages = combineLatest([
@@ -396,8 +389,7 @@ export class DiffReportService {
 					[] as submessageDiffItem[]
 				)
 			)
-		),
-		shareReplay(1)
+		)
 	);
 
 	private _enumSets = this._differenceReport.pipe(
@@ -448,8 +440,7 @@ export class DiffReportService {
 				filter((item) => !this.isNoChanges(item)),
 				reduce((acc, curr) => [...acc, curr], [] as enumSetDiffItem[])
 			)
-		),
-		shareReplay(1)
+		)
 	);
 
 	private _elements = combineLatest([
@@ -660,8 +651,7 @@ export class DiffReportService {
 				filter((item) => !this.isNoChanges(item)),
 				reduce((acc, curr) => [...acc, curr], [] as elementDiffItem[])
 			)
-		),
-		shareReplay(1)
+		)
 	);
 
 	private _structures = this._differenceReport.pipe(
@@ -758,8 +748,7 @@ export class DiffReportService {
 				),
 				reduce((acc, curr) => [...acc, curr], [] as structureDiffItem[])
 			)
-		),
-		shareReplay(1)
+		)
 	);
 
 	private structsWithElements = [] as structureDiffItem[];
@@ -810,8 +799,7 @@ export class DiffReportService {
 				}),
 				map((_) => this.structsWithElements)
 			)
-		),
-		shareReplay(1)
+		)
 	);
 
 	// The report summary only shows differences in

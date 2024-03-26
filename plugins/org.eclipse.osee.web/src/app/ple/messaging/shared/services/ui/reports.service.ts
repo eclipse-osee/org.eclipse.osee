@@ -18,7 +18,6 @@ import {
 	distinct,
 	filter,
 	map,
-	shareReplay,
 	switchMap,
 	take,
 } from 'rxjs/operators';
@@ -56,9 +55,7 @@ export class ReportsService {
 	private _noCurrentPageSize$ = new BehaviorSubject<number>(200);
 
 	getReports() {
-		return this.http
-			.get<MimReport[]>(apiURL + '/mim/reports')
-			.pipe(shareReplay(1));
+		return this.http.get<MimReport[]>(apiURL + '/mim/reports');
 	}
 
 	downloadReport(report: MimReport | undefined, viewId: string) {

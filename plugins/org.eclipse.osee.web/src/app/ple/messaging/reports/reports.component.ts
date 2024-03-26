@@ -126,29 +126,9 @@ export class ReportsComponent implements OnInit {
 		}))
 	);
 
-	reportSelectionText = this.reports.pipe(
-		switchMap((reports) =>
-			iif(
-				() => reports.length > 0,
-				of('Select a Report'),
-				of('No reports available')
-			)
-		)
-	);
-
 	connections = this.branchId.pipe(
 		filter((v) => v !== ''),
 		switchMap((branchId) => this.connectionService.getConnections(branchId))
-	);
-
-	connectionSelectionText = this.connections.pipe(
-		switchMap((connections) =>
-			iif(
-				() => connections.length > 0,
-				of('Select a Connection'),
-				of('No connections available')
-			)
-		)
 	);
 
 	applicViews = this.branchId.pipe(

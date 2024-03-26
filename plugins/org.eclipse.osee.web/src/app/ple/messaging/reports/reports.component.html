@@ -41,7 +41,9 @@
 							class="tw-block tw-w-64"
 							appearance="fill">
 							<mat-label>{{
-								reportSelectionText | async
+								_reports.length > 0
+									? 'Select a Report'
+									: 'No reports available'
 							}}</mat-label>
 							<mat-select
 								(selectionChange)="selectReport($event)"
@@ -61,7 +63,9 @@
 								class="tw-block tw-w-64"
 								appearance="fill">
 								<mat-label>{{
-									connectionSelectionText | async
+									_connections.length > 0
+										? 'Select a Connection'
+										: 'No connections available'
 								}}</mat-label>
 								<mat-select
 									(selectionChange)="resetValidation()"
