@@ -21,7 +21,6 @@ import type { branchSummary } from '../../types/DifferenceReport';
 
 import { DiffReportService } from './diff-report.service';
 import {
-	differenceReportMock,
 	nodeDiffsMock,
 	messageDiffsMock,
 	submessageDiffsMock,
@@ -30,6 +29,7 @@ import {
 	structureElementDiffsMock,
 	connectionDiffsMock,
 	diffReportHttpServiceMock,
+	mimChangeSummaryMock,
 } from '@osee/messaging/shared/testing';
 import {
 	BranchInfoServiceMock,
@@ -110,7 +110,7 @@ describe('DiffReportService', () => {
 
 	it('should get difference report', () => {
 		scheduler.run(() => {
-			let expectedObservable = { a: differenceReportMock };
+			let expectedObservable = { a: mimChangeSummaryMock };
 			let expectedMarble = 'a';
 			scheduler
 				.expectObservable(service.diffReport)

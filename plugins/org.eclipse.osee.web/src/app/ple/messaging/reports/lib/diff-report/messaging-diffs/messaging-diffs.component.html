@@ -12,39 +12,39 @@
  -->
 @if (allItems | async; as allItems) {
 	@if (allItems.length > 0) {
-		<h2 class="mat-headline-6 tw-pl-4">Structures</h2>
+		<h2 class="mat-headline-6 tw-pl-4">{{ title }}</h2>
 		@if (itemsAdded | async; as _items) {
-			@for (structure of _items; track $index) {
+			@if (_items.length > 0) {
 				<div class="tw-pb-8">
 					<osee-messaging-diff-report-table
-						[items]="[structure]"
-						[title]="$index === 0 ? 'Structures Added' : ''"
+						[items]="_items"
+						[title]="title + ' Added'"
 						[showChildren]="
-							true
+							showChildren
 						"></osee-messaging-diff-report-table>
 				</div>
 			}
 		}
 		@if (itemsDeleted | async; as _items) {
-			@for (structure of _items; track $index) {
+			@if (_items.length > 0) {
 				<div class="tw-pb-8">
 					<osee-messaging-diff-report-table
-						[items]="[structure]"
-						[title]="$index === 0 ? 'Structures Deleted' : ''"
+						[items]="_items"
+						[title]="title + ' Deleted'"
 						[showChildren]="
-							true
+							showChildren
 						"></osee-messaging-diff-report-table>
 				</div>
 			}
 		}
 		@if (itemsChanged | async; as _items) {
-			@for (structure of _items; track $index) {
+			@if (_items.length > 0) {
 				<div class="tw-pb-8">
 					<osee-messaging-diff-report-table
-						[items]="[structure]"
-						[title]="$index === 0 ? 'Structures Edited' : ''"
+						[items]="_items"
+						[title]="title + ' Edited'"
 						[showChildren]="
-							true
+							showChildren
 						"></osee-messaging-diff-report-table>
 				</div>
 			}

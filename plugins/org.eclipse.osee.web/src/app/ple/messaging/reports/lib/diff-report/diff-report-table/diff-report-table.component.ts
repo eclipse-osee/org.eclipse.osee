@@ -10,29 +10,87 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { AsyncPipe, NgClass } from '@angular/common';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
-import { HeaderService } from '@osee/shared/services';
-import type { headerDetail } from '@osee/shared/types';
+import { MimChangeSummaryItem } from '@osee/messaging/shared/types';
+import { changeReportRow } from '@osee/shared/types/change-report';
 
 @Component({
 	selector: 'osee-messaging-diff-report-table',
 	templateUrl: './diff-report-table.component.html',
 	styles: [],
 	standalone: true,
-	imports: [NgIf, NgFor, AsyncPipe, NgClass, MatTableModule, MatIconModule],
+	imports: [AsyncPipe, NgClass, MatTableModule, MatIconModule],
 })
-export class DiffReportTableComponent<T extends { [key: string]: any }> {
-	@Input() items: T[] = [];
+export class DiffReportTableComponent implements OnChanges {
+	@Input({ required: true }) items: MimChangeSummaryItem[] = [];
 	@Input() title: string = '';
-	@Input() headerDetails: headerDetail<T>[] = [];
 	@Input() headers: string[] = [];
+	@Input() showChildren: boolean = false;
 
-	constructor(private headerService: HeaderService) {}
+	private _changeMap = new Map<
+		string,
+		Map<string, changeReportRow | undefined>
+	>();
 
-	getHeaderByName(header: string) {
-		return this.headerService.getHeaderByName(this.headerDetails, header);
+	getChange(item: MimChangeSummaryItem, header: string) {
+		if (this.isChanged(item, header)) {
+			return this._changeMap.get(item.artId)?.get(header);
+		}
+		return undefined;
+	}
+
+	isChanged(item: MimChangeSummaryItem, header: string) {
+		if (
+			this._changeMap.has(item.artId) &&
+			this._changeMap.get(item.artId)?.has(header)
+		) {
+			return true;
+		}
+		let changeMap = this._changeMap.get(item.artId);
+		if (!changeMap) {
+			changeMap = new Map<string, changeReportRow | undefined>();
+			this._changeMap.set(item.artId, changeMap);
+		}
+		if (header === 'Applicability' && item.applicabilityChanged) {
+			changeMap.set(header, undefined);
+			return true;
+		}
+		const change = item.attributeChanges.find(
+			(attr) => attr.itemType === header
+		);
+		if (change) {
+			changeMap.set(header, change);
+			return true;
+		}
+		return false;
+	}
+
+	ngOnChanges(changes: SimpleChanges): void {
+		if (changes.items.isFirstChange()) {
+			if (this.headers.length === 0) {
+				this.headers = this._mapToHeaders(changes.items.currentValue);
+			}
+		}
+	}
+
+	private _mapToHeaders(items: MimChangeSummaryItem[]) {
+		const headers = new Map<string, null>();
+		headers.set('Name', null);
+		let applicChange = false;
+		items.forEach((item) => {
+			item.attributeChanges.forEach((attrChange) => {
+				if (attrChange.itemType !== 'Name') {
+					headers.set(attrChange.itemType, null);
+				}
+			});
+			applicChange = applicChange || item.applicabilityChanged;
+		});
+		if (applicChange) {
+			headers.set('Applicability', null);
+		}
+		return [...headers.keys()];
 	}
 }

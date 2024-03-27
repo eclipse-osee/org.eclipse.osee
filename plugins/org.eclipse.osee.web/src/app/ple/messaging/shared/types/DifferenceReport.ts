@@ -11,8 +11,37 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import type { applic } from '@osee/shared/types/applicability';
-import type { changeInstance } from '@osee/shared/types/change-report';
+import type {
+	changeInstance,
+	changeReportRow,
+} from '@osee/shared/types/change-report';
 import { PlatformType } from './platformType';
+
+export type MimChangeSummary = {
+	nodes: { [key: `${number}`]: MimChangeSummaryItem };
+	connections: { [key: `${number}`]: MimChangeSummaryItem };
+	messages: { [key: `${number}`]: MimChangeSummaryItem };
+	subMessages: { [key: `${number}`]: MimChangeSummaryItem };
+	structures: { [key: `${number}`]: MimChangeSummaryItem };
+};
+
+export type MimChangeSummaryItem = {
+	name: string;
+	artId: `${number}`;
+	added: boolean;
+	deleted: boolean;
+	applicabilityChanged: boolean;
+	addedDueToApplicChange: boolean;
+	deletedDueToApplicChange: boolean;
+	wasApplic: applic;
+	isApplic: applic;
+	artType: string;
+	allTxIds: ({ id: string; branchId: string } | string)[];
+	itemTxIds: ({ id: string; branchId: string } | string)[];
+	attributeChanges: changeReportRow[];
+	relationChanges: changeReportRow[];
+	children: MimChangeSummaryItem[];
+};
 
 export interface DifferenceReport {
 	changeItems: DifferenceReportItemMap;

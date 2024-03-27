@@ -105,6 +105,20 @@ export class DiffReportService {
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
+	private _diffReport = this.currentBranchService.currentBranch.pipe(
+		switchMap((branchId) =>
+			this.currentBranchService.parentBranch.pipe(
+				switchMap((parentBranchId) =>
+					this.diffService.getDifferenceReport2(
+						branchId.id,
+						parentBranchId
+					)
+				)
+			)
+		),
+		shareReplay({ bufferSize: 1, refCount: true })
+	);
+
 	private _nodes = this._differenceReport.pipe(
 		switchMap((report) =>
 			from(report.nodes).pipe(
@@ -803,38 +817,34 @@ export class DiffReportService {
 	);
 
 	// The report summary only shows differences in
-	private _diffReportSummary = this._structuresWithElements.pipe(
-		switchMap((structures) =>
-			from(structures).pipe(
-				map((structure) => {
-					let summaryItem: diffReportSummaryItem = {
-						id: structure.id,
-						changeType: 'Structure',
-						action: structure.diffInfo?.added
-							? 'Added'
-							: structure.diffInfo?.deleted
-							  ? 'Deleted'
-							  : 'Edited',
-						name: structure.name,
-						details: [],
-					};
-					if (
-						Object.keys(structure.diffInfo!.fieldsChanged).length >
-						0
-					) {
-						summaryItem.details.push('Attribute changes');
-					}
-					if (structure.elementChanges!.length > 0) {
-						summaryItem.details.push('Element changes');
-					}
-					return summaryItem;
-				}),
-				reduce(
-					(acc, curr) => [...acc, curr],
-					[] as diffReportSummaryItem[]
-				)
-			)
-		)
+	private _diffReportSummary = this._diffReport.pipe(
+		map((summary) => {
+			const summaryItems: diffReportSummaryItem[] = [];
+			for (let structure of Object.values(summary.structures)) {
+				let summaryItem: diffReportSummaryItem = {
+					id: structure.artId,
+					changeType: 'Structure',
+					action: structure.added
+						? 'Added'
+						: structure.deleted
+						  ? 'Deleted'
+						  : 'Edited',
+					name: structure.name,
+					details: [],
+				};
+				if (structure.attributeChanges.length > 0) {
+					summaryItem.details.push('Attribute changes');
+				}
+				if (structure.applicabilityChanged) {
+					summaryItem.details.push('Applicability changed');
+				}
+				if (structure.children.length > 0) {
+					summaryItem.details.push('Element changes');
+				}
+				summaryItems.push(summaryItem);
+			}
+			return summaryItems;
+		})
 	);
 
 	private isDeleted(change: changeInstance) {
@@ -940,7 +950,7 @@ export class DiffReportService {
 	}
 
 	get diffReport() {
-		return this._differenceReport;
+		return this._diffReport;
 	}
 
 	get nodes() {

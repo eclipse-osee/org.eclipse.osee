@@ -14,18 +14,16 @@
 	id="page-top"
 	aria-hidden="true"></a>
 <osee-scroll-to-top-button></osee-scroll-to-top-button>
-<ng-container>
-	<h1 class="mat-headline-5 tw-pb-0 tw-pl-4 tw-pr-0 tw-pt-4">
-		Difference Report
-	</h1>
-	<ng-container *ngIf="branchSummary | async as _branchSummary">
-		<table
-			mat-table
-			[dataSource]="_branchSummary || []"
-			class="mat-elevation-z1 tw-mb-8 tw-w-full">
-			<ng-container
-				[matColumnDef]="header"
-				*ngFor="let header of branchSummaryHeaders">
+<h1 class="mat-headline-5 tw-pb-0 tw-pl-4 tw-pr-0 tw-pt-4">
+	Difference Report
+</h1>
+@if (branchSummary | async; as _branchSummary) {
+	<table
+		mat-table
+		[dataSource]="_branchSummary || []"
+		class="mat-elevation-z1 tw-mb-8 tw-w-full">
+		@for (header of branchSummaryHeaders; track $index) {
+			<ng-container [matColumnDef]="header">
 				<th
 					mat-header-cell
 					*matHeaderCellDef
@@ -39,32 +37,31 @@
 					mat-cell
 					*matCellDef="let item"
 					class="tw-bg-background-background tw-px-4 tw-py-2">
-					<ng-container *ngIf="header === 'reportDate'; else other">
+					@if (header === 'reportDate') {
 						{{ date | date: 'medium' }}
-					</ng-container>
-					<ng-template #other>
+					} @else {
 						{{ item[header] }}
-					</ng-template>
+					}
 				</td>
 			</ng-container>
-			<tr
-				mat-header-row
-				*matHeaderRowDef="branchSummaryHeaders"></tr>
-			<tr
-				mat-row
-				*matRowDef="let row; columns: branchSummaryHeaders"
-				class="hover:tw-bg-background-app-bar active:tw-bg-background-unselected-chip"></tr>
-		</table>
-	</ng-container>
-	<ng-container *ngIf="diffReportSummary | async as _diffReportSummary">
-		<h2 class="mat-headline-6 tw-pl-4">Summary</h2>
-		<table
-			mat-table
-			[dataSource]="_diffReportSummary || []"
-			class="mat-elevation-z1 tw-mb-8 tw-w-full">
-			<ng-container
-				[matColumnDef]="header"
-				*ngFor="let header of reportSummaryHeaders">
+		}
+		<tr
+			mat-header-row
+			*matHeaderRowDef="branchSummaryHeaders"></tr>
+		<tr
+			mat-row
+			*matRowDef="let row; columns: branchSummaryHeaders"
+			class="hover:tw-bg-background-app-bar active:tw-bg-background-unselected-chip"></tr>
+	</table>
+}
+@if (diffReportSummary | async; as _diffReportSummary) {
+	<h2 class="mat-headline-6 tw-pl-4">Summary</h2>
+	<table
+		mat-table
+		[dataSource]="_diffReportSummary || []"
+		class="mat-elevation-z1 tw-mb-8 tw-w-full">
+		@for (header of reportSummaryHeaders; track $index) {
+			<ng-container [matColumnDef]="header">
 				<th
 					mat-header-cell
 					*matHeaderCellDef
@@ -78,42 +75,49 @@
 					mat-cell
 					*matCellDef="let item"
 					class="tw-bg-background-background tw-px-4 tw-py-2">
-					<ng-container *ngIf="header === 'details'; else other">
-						<ng-container *ngFor="let detail of item[header]">
+					@if (header === 'details') {
+						@for (detail of item[header]; track $index) {
 							<span>{{ detail }}; </span>
-						</ng-container>
-					</ng-container>
-					<ng-template #other>
+						}
+					} @else {
 						{{ item[header] }}
-					</ng-template>
+					}
 				</td>
 			</ng-container>
-			<tr
-				mat-header-row
-				*matHeaderRowDef="reportSummaryHeaders"></tr>
-			<tr
-				mat-row
-				*matRowDef="let row; columns: reportSummaryHeaders"
-				(click)="scrollTo(row.id)"
-				class="hover:tw-cursor-pointer hover:tw-bg-background-app-bar hover:tw-opacity-75 active:tw-bg-background-unselected-chip"></tr>
-		</table>
-	</ng-container>
-</ng-container>
-<ng-container
-	*ngIf="differenceReport | async as diffReport; else diffReportLoading">
-	<ng-container *ngIf="isDifference | async; else no_diffs">
-		<osee-messaging-node-diffs></osee-messaging-node-diffs>
-		<osee-messaging-connection-diffs></osee-messaging-connection-diffs>
-		<osee-messaging-message-diffs></osee-messaging-message-diffs>
-		<osee-messaging-submessage-diffs></osee-messaging-submessage-diffs>
-		<osee-messaging-structure-diffs></osee-messaging-structure-diffs>
-	</ng-container>
-	<ng-template #no_diffs>
+		}
+		<tr
+			mat-header-row
+			*matHeaderRowDef="reportSummaryHeaders"></tr>
+		<tr
+			mat-row
+			*matRowDef="let row; columns: reportSummaryHeaders"
+			(click)="scrollTo(row.id)"
+			class="hover:tw-cursor-pointer hover:tw-bg-background-app-bar hover:tw-opacity-75 active:tw-bg-background-unselected-chip"></tr>
+	</table>
+}
+@if (differenceReport | async; as _diffReport) {
+	@if (isDifference | async) {
+		<osee-messaging-diffs
+			[items]="_diffReport.nodes | objectValues"
+			title="Nodes"></osee-messaging-diffs>
+		<osee-messaging-diffs
+			[items]="_diffReport.connections | objectValues"
+			title="Connections"></osee-messaging-diffs>
+		<osee-messaging-diffs
+			[items]="_diffReport.messages | objectValues"
+			title="Messages"></osee-messaging-diffs>
+		<osee-messaging-diffs
+			[items]="_diffReport.subMessages | objectValues"
+			title="Submessages"></osee-messaging-diffs>
+		<osee-structure-diffs
+			[items]="
+				_diffReport.structures | objectValues
+			"></osee-structure-diffs>
+	} @else {
 		<h3 class="mat-h3 tw-pb-0 tw-pl-6 tw-pr-0 tw-pt-4">No differences</h3>
-	</ng-template>
-</ng-container>
-<ng-template #diffReportLoading>
+	}
+} @else {
 	<h3 class="mat-h3 tw-pb-0 tw-pl-6 tw-pr-0 tw-pt-4">Loading report...</h3>
-</ng-template>
+}
 <!--This div is here so the scroll button doesn't cover content when scrolled all the way down-->
 <div style="height: 5em"></div>

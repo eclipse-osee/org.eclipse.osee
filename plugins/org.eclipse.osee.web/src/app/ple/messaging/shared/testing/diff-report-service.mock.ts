@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { connectionDiffsMock } from './difference-report-connections.mock';
 import { elementDiffsMock } from './difference-report-elements.mock';
 import { messageDiffsMock } from './difference-report-messages.mock';
@@ -18,24 +18,12 @@ import { nodeDiffsMock } from './difference-report-nodes.mock';
 import { structureElementDiffsMock } from './difference-report-structures-elements.mock';
 import { structureDiffsMock } from './difference-report-structures.mock';
 import { submessageDiffsMock } from './difference-report-submessages.mock';
-import { differenceReportMock } from './difference-report.mock';
 import { DiffReportService } from '../services/ui/diff-report.service';
+import { mimChangeSummaryMock } from './mim-change-summary.mock';
 
 export const DiffReportServiceMock: Partial<DiffReportService> = {
-	// get branchInfo() {
-	//     return this._branchInfo;
-	// },
-
-	// get parentBranchInfo() {
-	//     return this._parentBranchInfo;
-	// },
-
-	// get branchSummary() {
-	//     return this._branchSummary;
-	// },
-
 	get diffReport() {
-		return new BehaviorSubject(differenceReportMock);
+		return of(mimChangeSummaryMock);
 	},
 
 	get nodes() {

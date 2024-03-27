@@ -52,8 +52,8 @@ public class ChangeReportRowDto {
       this.names = names;
       this.itemType = itemType;
       this.changeType = changeType;
-      this.isValue = isValue;
-      this.wasValue = wasValue;
+      this.isValue = isValue == null ? "" : isValue;
+      this.wasValue = wasValue == null ? "" : wasValue;
       this.itemKindType = itemKindType;
       this.itemTypeId = itemTypeId;
       this.modType = modType;

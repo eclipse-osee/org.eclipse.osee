@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2023 Boeing
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,10 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './directives/highlight-filtered-text.directive';
-export * from './functions/undefinedOrNullCheck';
-export * from './pipes/display-truncated-string-with-field-overflow.pipe';
-export * from './pipes/first-letter-lower.pipe';
-export * from './pipes/split-string.pipe';
-export * from './pipes/format-milliseconds.pipe';
-export * from './pipes/object-values.pipe';
+import { ObjectValuesPipe } from './object-values.pipe';
+
+describe('ObjectValuesPipe', () => {
+	it('create an instance', () => {
+		const pipe = new ObjectValuesPipe();
+		expect(pipe).toBeTruthy();
+	});
+});

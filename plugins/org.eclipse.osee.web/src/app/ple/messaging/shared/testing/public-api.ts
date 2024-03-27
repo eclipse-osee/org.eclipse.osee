@@ -86,3 +86,4 @@ export * from './transport-type-form.component.mock';
 export * from './element-table-dropdown.service.mock';
 export * from './validation-response.mock';
 export * from './validation.service.mock';
+export * from './mim-change-summary.mock';

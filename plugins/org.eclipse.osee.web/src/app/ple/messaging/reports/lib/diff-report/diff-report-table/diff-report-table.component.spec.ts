@@ -13,17 +13,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
-
 import { TestScheduler } from 'rxjs/testing';
-import { connectionDiffsMock } from '@osee/messaging/shared/testing';
-
 import { DiffReportTableComponent } from './diff-report-table.component';
-import { connectionDiffHeaderDetails } from '../connection-diffs/connection-diff-table-headers';
-import type { connectionDiffItem } from '@osee/messaging/shared/types';
+import { mimChangeSummaryMock } from '@osee/messaging/shared/testing';
 
 describe('DiffReportTableComponent', () => {
-	let component: DiffReportTableComponent<connectionDiffItem>;
-	let fixture: ComponentFixture<DiffReportTableComponent<connectionDiffItem>>;
+	let component: DiffReportTableComponent;
+	let fixture: ComponentFixture<DiffReportTableComponent>;
 	let scheduler: TestScheduler;
 
 	beforeEach(async () => {
@@ -33,9 +29,7 @@ describe('DiffReportTableComponent', () => {
 	});
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(
-			DiffReportTableComponent<connectionDiffItem>
-		);
+		fixture = TestBed.createComponent(DiffReportTableComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});
@@ -48,10 +42,9 @@ describe('DiffReportTableComponent', () => {
 	);
 
 	it('should create', () => {
-		component.items = connectionDiffsMock;
-		component.title = 'Connections Added';
-		component.headers = ['name'];
-		component.headerDetails = connectionDiffHeaderDetails;
+		component.items = Object.values(mimChangeSummaryMock.structures);
+		component.title = 'Structures';
+		component.showChildren = true;
 		expect(component).toBeTruthy();
 	});
 });
