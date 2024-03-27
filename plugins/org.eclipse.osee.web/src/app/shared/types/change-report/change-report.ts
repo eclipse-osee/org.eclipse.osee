@@ -134,4 +134,8 @@ export interface changeReportRow {
 	changeType: string;
 	isValue: string;
 	wasValue: string;
+	txId?: {
+		id: string;
+		branchId: string;
+	};
 }

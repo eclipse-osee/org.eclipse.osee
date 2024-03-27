@@ -14,7 +14,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { DiffReportService } from '@osee/messaging/shared/services';
-import { DiffReportServiceMock } from '@osee/messaging/shared/testing';
+import {
+	DiffReportServiceMock,
+	mimChangeSummaryMock,
+} from '@osee/messaging/shared/testing';
 import { DiffReportTableComponent } from '../diff-report-table/diff-report-table.component';
 import { StructureDiffsComponent } from './structure-diffs.component';
 
@@ -43,6 +46,7 @@ describe('StructureDiffsComponent', () => {
 	});
 
 	it('should create', () => {
+		component.allItems.next(Object.values(mimChangeSummaryMock.structures));
 		expect(component).toBeTruthy();
 	});
 });

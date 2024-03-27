@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -39,6 +40,7 @@ public class MimChangeSummary {
       this.structures = new HashMap<>();
    }
 
+   @JsonIgnore
    public Map<ArtifactId, MimChangeSummaryItem> getAll() {
       return allChanges;
    }

@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2023 Boeing
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,9 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { of } from 'rxjs';
 import { DiffReportHttpService } from '@osee/messaging/shared/services';
 import { differenceReportMock } from './difference-report.mock';
+import { mimChangeSummaryMock } from './mim-change-summary.mock';
+import { of } from 'rxjs';
 
 export const diffReportHttpServiceMock: Partial<DiffReportHttpService> = {
 	getDifferenceReport(
@@ -20,5 +21,12 @@ export const diffReportHttpServiceMock: Partial<DiffReportHttpService> = {
 		destBranch: string | number
 	) {
 		return of(differenceReportMock);
+	},
+
+	getDifferenceReport2(
+		sourceBranch: string | number,
+		destBranch: string | number
+	) {
+		return of(mimChangeSummaryMock);
 	},
 };

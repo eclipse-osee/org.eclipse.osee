@@ -14,13 +14,16 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { DiffReportService } from '@osee/messaging/shared/services';
-import { DiffReportServiceMock } from '@osee/messaging/shared/testing';
+import {
+	DiffReportServiceMock,
+	mimChangeSummaryMock,
+} from '@osee/messaging/shared/testing';
 import { DiffReportTableComponent } from '../diff-report-table/diff-report-table.component';
-import { NodeDiffsComponent } from './node-diffs.component';
+import { MessagingDiffsComponent } from './messaging-diffs.component';
 
-describe('NodeDiffsComponent', () => {
-	let component: NodeDiffsComponent;
-	let fixture: ComponentFixture<NodeDiffsComponent>;
+describe('MessagingDiffsComponent', () => {
+	let component: MessagingDiffsComponent;
+	let fixture: ComponentFixture<MessagingDiffsComponent>;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
@@ -31,18 +34,35 @@ describe('NodeDiffsComponent', () => {
 				MatIconModule,
 				MatTableModule,
 				DiffReportTableComponent,
-				NodeDiffsComponent,
+				MessagingDiffsComponent,
 			],
 		}).compileComponents();
 	});
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(NodeDiffsComponent);
+		fixture = TestBed.createComponent(MessagingDiffsComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});
 
-	it('should create', () => {
+	it('should create node diffs', () => {
+		component.allItems.next(Object.values(mimChangeSummaryMock.nodes));
+		expect(component).toBeTruthy();
+	});
+	it('should create connection diffs', () => {
+		component.allItems.next(
+			Object.values(mimChangeSummaryMock.connections)
+		);
+		expect(component).toBeTruthy();
+	});
+	it('should create message diffs', () => {
+		component.allItems.next(Object.values(mimChangeSummaryMock.messages));
+		expect(component).toBeTruthy();
+	});
+	it('should create submessage diffs', () => {
+		component.allItems.next(
+			Object.values(mimChangeSummaryMock.subMessages)
+		);
 		expect(component).toBeTruthy();
 	});
 });

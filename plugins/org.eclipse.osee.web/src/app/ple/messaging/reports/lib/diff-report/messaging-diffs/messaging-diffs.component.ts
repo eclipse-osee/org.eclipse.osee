@@ -18,15 +18,17 @@ import { map } from 'rxjs/operators';
 import { DiffReportTableComponent } from '../diff-report-table/diff-report-table.component';
 
 @Component({
-	selector: 'osee-structure-diffs',
-	templateUrl: './structure-diffs.component.html',
+	selector: 'osee-messaging-diffs',
+	templateUrl: './messaging-diffs.component.html',
 	standalone: true,
 	imports: [AsyncPipe, DiffReportTableComponent],
 })
-export class StructureDiffsComponent {
+export class MessagingDiffsComponent {
 	@Input({ required: true }) set items(value: MimChangeSummaryItem[]) {
 		this.allItems.next(value);
 	}
+	@Input({ required: true }) title: string = '';
+	@Input() showChildren = false;
 
 	allItems = new BehaviorSubject<MimChangeSummaryItem[]>([]);
 

@@ -13,13 +13,11 @@
 import { Component } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { ScrollToTopButtonComponent } from '@osee/shared/components';
-import { AsyncPipe, DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, DatePipe } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
-import { NodeDiffsComponent } from './node-diffs/node-diffs.component';
-import { ConnectionDiffsComponent } from './connection-diffs/connection-diffs.component';
-import { MessageDiffsComponent } from './message-diffs/message-diffs.component';
-import { SubmessageDiffsComponent } from './submessage-diffs/submessage-diffs.component';
+import { MessagingDiffsComponent } from './messaging-diffs/messaging-diffs.component';
 import { StructureDiffsComponent } from './structure-diffs/structure-diffs.component';
+import { ObjectValuesPipe } from '@osee/shared/utils';
 import {
 	DiffReportService,
 	HeaderService,
@@ -38,17 +36,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 	],
 	standalone: true,
 	imports: [
-		NgIf,
 		AsyncPipe,
-		NgFor,
-		NgClass,
 		DatePipe,
+		ObjectValuesPipe,
 		MatTableModule,
 		ScrollToTopButtonComponent,
-		NodeDiffsComponent,
-		ConnectionDiffsComponent,
-		MessageDiffsComponent,
-		SubmessageDiffsComponent,
+		MessagingDiffsComponent,
 		StructureDiffsComponent,
 	],
 })
@@ -80,12 +73,19 @@ export class DiffReportComponent {
 	parentBranchInfo = this.diffReportService.parentBranchInfo;
 	branchSummary = this.diffReportService.branchSummary;
 	diffReportSummary = this.diffReportService.diffReportSummary;
+
 	differenceReport =
 		this.diffReportService.diffReport.pipe(takeUntilDestroyed());
 
 	isDifference = this.differenceReport.pipe(
 		map((report) => {
-			return Object.keys(report.changeItems).length !== 0;
+			return (
+				Object.keys(report.nodes).length > 0 ||
+				Object.keys(report.connections).length > 0 ||
+				Object.keys(report.messages).length > 0 ||
+				Object.keys(report.subMessages).length > 0 ||
+				Object.keys(report.structures).length > 0
+			);
 		})
 	);
 

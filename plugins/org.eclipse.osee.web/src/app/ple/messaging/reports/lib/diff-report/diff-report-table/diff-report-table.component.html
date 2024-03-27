@@ -10,133 +10,105 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<ng-container *ngIf="items?.length">
+@if (items.length > 0) {
 	<div class="diff-report-table">
 		<table
 			mat-table
 			[dataSource]="items || []"
-			class="mat-elevation-z1 tw-mb-8 tw-w-full">
-			<ng-container
-				[matColumnDef]="'TableHeader'"
-				*ngIf="title && title !== ''">
-				<th
-					mat-header-cell
-					*matHeaderCellDef
-					[attr.colspan]="headers.length"
-					class="tw-text-center tw-text-base tw-text-foreground-base">
-					{{ title }}
-				</th>
-			</ng-container>
-			<ng-container
-				[matColumnDef]="header"
-				*ngFor="let header of headers">
-				<th
-					mat-header-cell
-					*matHeaderCellDef
-					class="tw-relative tw-px-4 tw-py-2 tw-text-primary-600">
-					{{ (getHeaderByName(header) | async)?.humanReadable || '' }}
-				</th>
+			multiTemplateDataRows
+			class="mat-elevation-z1 tw-w-full">
+			@if (title !== '') {
+				<ng-container [matColumnDef]="'TableHeader'">
+					<th
+						mat-header-cell
+						*matHeaderCellDef
+						[attr.colspan]="headers.length"
+						class="tw-text-center tw-text-base tw-text-foreground-base">
+						{{ title }}
+					</th>
+				</ng-container>
+			}
+			@for (header of headers; track $index) {
+				<ng-container [matColumnDef]="header">
+					<th
+						mat-header-cell
+						*matHeaderCellDef
+						class="tw-relative tw-px-4 tw-py-2 tw-text-primary-600">
+						{{ header }}
+					</th>
+					<td
+						mat-cell
+						*matCellDef="let item"
+						class="tw-relative tw-px-4 tw-py-2"
+						[ngClass]="
+							isChanged(item, header) &&
+							!item.added &&
+							!item.deleted
+								? 'tw-bg-accent-300 dark:tw-bg-accent-600'
+								: ''
+						">
+						<a
+							id="{{ item.artId }}"
+							class="tw-top tw-absolute -tw-top-12 tw-left-0"></a>
+						@if (isChanged(item, header)) {
+							@if (!item.added && !item.deleted) {
+								<div class="tw-flex tw-items-center tw-gap-4">
+									<mat-icon class="tw-w-6 tw-text-warning"
+										>remove</mat-icon
+									>
+									@if (header === 'Applicability') {
+										<span>{{ item.wasApplic.name }}</span>
+									} @else {
+										<span>{{
+											getChange(item, header)?.wasValue
+										}}</span>
+									}
+								</div>
+								<div
+									style="
+										width: 100%;
+										border-bottom: 1px solid #000;
+										margin: 0.5em 0 0.5em 0;
+									"></div>
+							}
+							<div class="tw-flex tw-items-center tw-gap-4">
+								@if (!item.added && !item.deleted) {
+									<mat-icon class="tw-w-6 tw-text-success"
+										>add</mat-icon
+									>
+								}
+								@if (header === 'Applicability') {
+									<span>{{ item.isApplic.name }}</span>
+								} @else {
+									<span>{{
+										getChange(item, header)?.isValue
+									}}</span>
+								}
+							</div>
+						} @else if (header === 'Name') {
+							{{ item.name }}
+						}
+					</td>
+				</ng-container>
+			}
+			<ng-container matColumnDef="elementChildren">
 				<td
 					mat-cell
-					*matCellDef="let item"
-					class="tw-relative tw-px-4 tw-py-2"
-					[ngClass]="
-						item.diffInfo.fieldsChanged.hasOwnProperty(header)
-							? 'tw-bg-accent-300 dark:tw-bg-accent-600'
-							: ''
-					">
-					<a
-						id="{{ item.id }}"
-						class="tw-top tw-absolute -tw-top-12 tw-left-0"></a>
-					<ng-container
-						*ngIf="
-							item.diffInfo.fieldsChanged.hasOwnProperty(
-								header
-							) &&
-							!item.diffInfo.added &&
-							!item.diffInfo.deleted
-						">
+					*matCellDef="let element"
+					[attr.colspan]="headers.length">
+					@if (element.children.length > 0) {
 						<div
-							class="tw-flex tw-flex-row tw-items-center tw-gap-2">
-							<ng-container
-								*ngIf="
-									item.diffInfo.fieldsChanged.hasOwnProperty(
-										header
-									)
-								">
-								<mat-icon
-									class="tw-pr-2"
-									color="warn"
-									>remove</mat-icon
-								>
-							</ng-container>
-							<ng-container
-								*ngIf="
-									header === 'applicability';
-									else prev_value
-								">
-								<span>{{
-									item.diffInfo.fieldsChanged[header]?.name ||
-										''
-								}}</span>
-							</ng-container>
-							<ng-template #prev_value>
-								<span>{{
-									item.diffInfo.fieldsChanged[header]
-								}}</span>
-							</ng-template>
+							class="tw-ml-2 tw-flex tw-w-full tw-flex-col tw-border-l-2 tw-border-foreground-text tw-pt-2">
+							<osee-messaging-diff-report-table
+								[items]="element.children"
+								[showChildren]="
+									showChildren
+								"></osee-messaging-diff-report-table>
 						</div>
-						<div
-							style="
-								width: 100%;
-								border-bottom: 1px solid #000;
-								margin: 0.5em 0 0.5em 0;
-							"></div>
-					</ng-container>
-					<ng-container
-						*ngIf="header === 'applicability'; else current_value">
-						<div
-							class="tw-flex tw-flex-row tw-items-center tw-gap-2">
-							<ng-container
-								*ngIf="
-									item.diffInfo.fieldsChanged.hasOwnProperty(
-										header
-									) &&
-									!item.diffInfo.added &&
-									!item.diffInfo.deleted
-								">
-								<mat-icon
-									class="tw-pr-2"
-									color="success"
-									>add</mat-icon
-								>
-							</ng-container>
-							<span>{{ item.applicability?.name }}</span>
-						</div>
-					</ng-container>
-					<ng-template #current_value>
-						<div
-							class="tw-flex tw-flex-row tw-items-center tw-gap-2">
-							<ng-container
-								*ngIf="
-									item.diffInfo.fieldsChanged.hasOwnProperty(
-										header
-									) &&
-									!item.diffInfo.added &&
-									!item.diffInfo.deleted
-								">
-								<mat-icon
-									class="tw-pr-2"
-									color="success"
-									>add</mat-icon
-								>
-							</ng-container>
-							<span>{{ item[header] }}</span>
-						</div>
-					</ng-template>
+					}
 				</td>
 			</ng-container>
-			<ng-container *ngIf="title && title !== ''">
+			@if (title && title !== '') {
 				<tr
 					mat-header-row
 					*matHeaderRowDef="['TableHeader']">
@@ -144,7 +116,7 @@
 						title
 					}}
 				</tr>
-			</ng-container>
+			}
 			<tr
 				mat-header-row
 				*matHeaderRowDef="headers"></tr>
@@ -153,12 +125,18 @@
 				*matRowDef="let row; columns: headers"
 				class="hover:tw-bg-background-app-bar active:tw-bg-background-unselected-chip"
 				[ngClass]="
-					row.diffInfo.added
+					row.added
 						? 'odd:tw-bg-success-300 even:tw-bg-success-100 odd:hover:tw-bg-success-400 even:hover:tw-bg-success-200 odd:dark:tw-bg-success-600 even:dark:tw-bg-success-500 odd:dark:hover:tw-bg-success-700 even:dark:hover:tw-bg-success-600'
-						: row.diffInfo.deleted
+						: row.deleted
 						  ? 'odd:tw-bg-warning-200 even:tw-bg-warning-100 odd:hover:tw-bg-warning-300 even:hover:tw-bg-warning-200 odd:dark:tw-bg-warning-600 even:dark:tw-bg-warning-500 odd:dark:hover:tw-bg-warning-700 even:dark:hover:tw-bg-warning-600'
 						  : ''
 				"></tr>
+			@if (showChildren) {
+				<tr
+					mat-row
+					*matRowDef="let row; columns: ['elementChildren']"
+					class="tw-h-0 tw-flex-nowrap"></tr>
+			}
 		</table>
 	</div>
-</ng-container>
+}

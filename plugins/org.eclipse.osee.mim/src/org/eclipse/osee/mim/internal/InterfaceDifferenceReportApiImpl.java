@@ -618,7 +618,7 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
          }
 
          // If there are no real changes, do not show in report
-         if (!item.isAdded() && !item.isDeleted() && !item.isAddedDueToApplicChange() && !item.isDeletedDueToApplicChange() && item.getAttributeChanges().isEmpty() && item.getRelationChanges().isEmpty() && item.getChildren().isEmpty()) {
+         if (!item.isAdded() && !item.isDeleted() && !item.isAddedDueToApplicChange() && !item.isApplicabilityChanged() && !item.isDeletedDueToApplicChange() && item.getAttributeChanges().isEmpty() && item.getRelationChanges().isEmpty() && item.getChildren().isEmpty()) {
             changeMap.remove(item.getArtId());
             continue;
          }
@@ -826,7 +826,7 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
          ArtifactTypeToken artType = item.getArtType();
 
          // If there are no actual changes to this item, do not add it to the summary.
-         if (item.getRelationChanges().isEmpty() && item.getAttributeChanges().isEmpty() && !item.isAdded() && !item.isDeleted() && item.getChildren().isEmpty()) {
+         if (item.getRelationChanges().isEmpty() && item.getAttributeChanges().isEmpty() && !item.isApplicabilityChanged() && !item.isAdded() && !item.isDeleted() && item.getChildren().isEmpty()) {
             continue;
          }
 
@@ -834,10 +834,29 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
             summary.getNodes().put(artId, item);
          } else if (CoreArtifactTypes.InterfaceConnection.equals(artType)) {
             summary.getConnections().put(artId, item);
+            // Children that are added/removed due to relation changes only need to be added to to their respective lists.
+            item.getChildren().forEach(child -> {
+               if (child.getArtType().equals(
+                  CoreArtifactTypes.InterfaceMessage) && !summary.getMessages().containsKey(child.getArtId())) {
+                  summary.getMessages().put(child.getArtId(), child);
+               }
+            });
          } else if (CoreArtifactTypes.InterfaceMessage.equals(artType)) {
             summary.getMessages().put(artId, item);
+            item.getChildren().forEach(child -> {
+               if (child.getArtType().equals(
+                  CoreArtifactTypes.InterfaceSubMessage) && !summary.getMessages().containsKey(child.getArtId())) {
+                  summary.getSubMessages().put(child.getArtId(), child);
+               }
+            });
          } else if (CoreArtifactTypes.InterfaceSubMessage.equals(artType)) {
             summary.getSubMessages().put(artId, item);
+            item.getChildren().forEach(child -> {
+               if (child.getArtType().equals(
+                  CoreArtifactTypes.InterfaceStructure) && !summary.getMessages().containsKey(child.getArtId())) {
+                  summary.getStructures().put(child.getArtId(), child);
+               }
+            });
          } else if (CoreArtifactTypes.InterfaceStructure.equals(artType)) {
             summary.getStructures().put(artId, item);
          }
