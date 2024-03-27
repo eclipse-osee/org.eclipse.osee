@@ -1049,8 +1049,8 @@ public class MimIcdGenerator {
       PlatformTypeToken platformType = elementToken.getPlatformType();
       Integer beginWord = Math.floorDiv(byteLocation, 4);
       Integer beginByte = Math.floorMod(byteLocation, 4);
-      Integer endWord = Math.floorDiv(byteLocation + byteSize - 1, 4);
-      Integer endByte = Math.floorMod(byteLocation + byteSize - 1, 4);
+      Integer endWord = Math.max(0, Math.floorDiv(byteLocation + byteSize - 1, 4));
+      Integer endByte = Math.max(0, Math.floorMod(byteLocation + byteSize - 1, 4));
       String enumLiterals = elementToken.getEnumLiteral();
       String dataType = elementToken.getLogicalType().isEmpty() ? "n/a" : elementToken.getLogicalType();
       dataType = dataType.replace("unsigned long", "uLong").replace("unsigned short", "uShort").replace("short",
@@ -1197,8 +1197,8 @@ public class MimIcdGenerator {
             byteLocation = byteLocation + byteSize;
             beginWord = Math.floorDiv(byteLocation, 4);
             beginByte = Math.floorMod(byteLocation, 4);
-            endWord = Math.floorDiv(byteLocation + byteSize - 1, 4);
-            endByte = Math.floorMod(byteLocation + byteSize - 1, 4);
+            endWord = Math.max(0, Math.floorDiv(byteLocation + byteSize - 1, 4));
+            endByte = Math.max(0, Math.floorMod(byteLocation + byteSize - 1, 4));
 
             if (elementToken.isInterfaceElementBlockData()) {
                writer.addMergedRegion(rowIndex.get(), rowIndex.get(), 5, 12);
