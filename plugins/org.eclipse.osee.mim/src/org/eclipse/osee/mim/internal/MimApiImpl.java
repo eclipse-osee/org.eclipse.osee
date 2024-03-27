@@ -137,9 +137,7 @@ public class MimApiImpl implements MimApi {
       this.interfaceUnitApi = new InterfaceUnitApiImpl(orcsApi);
       this.interfaceRateApi = new InterfaceRateApiImpl(orcsApi);
       this.interfaceMessageTypeApi = new InterfaceMessageTypeApiImpl(orcsApi);
-      this.interfaceDifferenceReportApi = new InterfaceDifferenceReportApiImpl(orcsApi, interfaceNodeViewApi,
-         interfaceConnectionViewApi, interfaceMessageApi, interfaceSubMessageApi, interfaceStructureApi,
-         interfaceElementApi, interfacePlatformApi, interfaceEnumerationApi);
+      this.interfaceDifferenceReportApi = new InterfaceDifferenceReportApiImpl(orcsApi);
       this.mimArtifactsApi = new MimArtifactsApiImpl(orcsApi);
       this.mimReportsApi = new MimReportsApiImpl(orcsApi);
       this.crossReferenceApi = new CrossReferenceApiImpl(orcsApi);

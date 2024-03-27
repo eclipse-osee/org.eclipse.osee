@@ -12,10 +12,7 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import type {
-	DifferenceReport,
-	MimChangeSummary,
-} from '@osee/messaging/shared/types';
+import type { MimChangeSummary } from '@osee/messaging/shared/types';
 import { apiURL } from '@osee/environments';
 
 @Injectable({
@@ -28,17 +25,8 @@ export class DiffReportHttpService {
 		sourceBranch: string | number,
 		destBranch: string | number
 	) {
-		return this.http.get<DifferenceReport>(
-			apiURL + '/mim/branch/' + sourceBranch + '/diff/' + destBranch
-		);
-	}
-
-	getDifferenceReport2(
-		sourceBranch: string | number,
-		destBranch: string | number
-	) {
 		return this.http.get<MimChangeSummary>(
-			apiURL + `/mim/branch/${sourceBranch}/diff/${destBranch}/branchDiff`
+			apiURL + `/mim/branch/${sourceBranch}/diff/${destBranch}`
 		);
 	}
 }

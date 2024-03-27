@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.mim.types.MimChangeSummary;
-import org.eclipse.osee.mim.types.MimDifferenceReport;
 
 /**
  * @author Ryan T. Baldwin
@@ -31,18 +30,8 @@ import org.eclipse.osee.mim.types.MimDifferenceReport;
 @Swagger
 public interface InterfaceDifferenceReportEndpoint {
 
-   @GET()
-   @Path("{branchId}")
-   @Produces(MediaType.APPLICATION_JSON)
-   /**
-    * Gets all differences between the branches
-    *
-    * @return all differences between branches
-    */
-   MimDifferenceReport getDifferenceReport(@PathParam("branchId") BranchId branch2);
-
    @GET
-   @Path("{branchId}/branchDiff")
+   @Path("{branchId}")
    @Produces(MediaType.APPLICATION_JSON)
    MimChangeSummary getChangeSummary(@PathParam("branchId") BranchId branch2, @QueryParam("view") ArtifactId view);
 

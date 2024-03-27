@@ -19,14 +19,11 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.types.MimChangeSummary;
 import org.eclipse.osee.mim.types.MimChangeSummaryItem;
-import org.eclipse.osee.mim.types.MimDifferenceReport;
 
 /**
  * @author Ryan T. Baldwin
  */
 public interface InterfaceDifferenceReportApi {
-
-   MimDifferenceReport getDifferenceReport(BranchId branch, BranchId compareBranch);
 
    Map<ArtifactId, MimChangeSummaryItem> getChangeSummaryItems(BranchId branch1, BranchId branch2, ArtifactId view);
 
