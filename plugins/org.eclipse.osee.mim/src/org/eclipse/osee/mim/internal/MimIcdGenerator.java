@@ -1395,6 +1395,11 @@ public class MimIcdGenerator {
 
       }
 
+      String connectionDesc = connection.getSoleAttributeAsString(CoreAttributeTypes.Description, "");
+      if (!connectionDesc.isEmpty() && !connectionDesc.equals("null")) {
+         writer.writeCell(rowIndex.get(), 0, connectionDesc);
+      }
+
       rowIndex.addAndGet(1);
       writer.writeCell(rowIndex.get(), 11, "Notes:", CELLSTYLE.BOLD);
       rowIndex.addAndGet(1);
