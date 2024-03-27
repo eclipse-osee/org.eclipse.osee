@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.InterfaceDifferenceReportApi;
 import org.eclipse.osee.mim.InterfaceDifferenceReportEndpoint;
 import org.eclipse.osee.mim.types.MimChangeSummary;
-import org.eclipse.osee.mim.types.MimDifferenceReport;
 
 /**
  * @author Ryan T. Baldwin
@@ -30,11 +29,6 @@ public class InterfaceDifferenceReportEndpointImpl implements InterfaceDifferenc
    public InterfaceDifferenceReportEndpointImpl(BranchId branch, InterfaceDifferenceReportApi interfaceDifferenceReportApi) {
       this.branch = branch;
       this.interfaceDifferenceReportApi = interfaceDifferenceReportApi;
-   }
-
-   @Override
-   public MimDifferenceReport getDifferenceReport(BranchId branch2) {
-      return interfaceDifferenceReportApi.getDifferenceReport(branch, branch2);
    }
 
    @Override

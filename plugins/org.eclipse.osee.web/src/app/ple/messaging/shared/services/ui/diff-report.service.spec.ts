@@ -21,13 +21,6 @@ import type { branchSummary } from '../../types/DifferenceReport';
 
 import { DiffReportService } from './diff-report.service';
 import {
-	nodeDiffsMock,
-	messageDiffsMock,
-	submessageDiffsMock,
-	structureDiffsMock,
-	elementDiffsMock,
-	structureElementDiffsMock,
-	connectionDiffsMock,
 	diffReportHttpServiceMock,
 	mimChangeSummaryMock,
 } from '@osee/messaging/shared/testing';
@@ -114,76 +107,6 @@ describe('DiffReportService', () => {
 			let expectedMarble = 'a';
 			scheduler
 				.expectObservable(service.diffReport)
-				.toBe(expectedMarble, expectedObservable);
-		});
-	});
-
-	it('should get the node differences', () => {
-		scheduler.run(() => {
-			let expectedObservable = { a: nodeDiffsMock };
-			let expectedMarble = 'a';
-			scheduler
-				.expectObservable(service.nodes)
-				.toBe(expectedMarble, expectedObservable);
-		});
-	});
-
-	it('should get the connection differences', () => {
-		scheduler.run(() => {
-			let expectedObservable = { a: connectionDiffsMock };
-			let expectedMarble = 'a';
-			scheduler
-				.expectObservable(service.connections)
-				.toBe(expectedMarble, expectedObservable);
-		});
-	});
-
-	it('should get the message differences', () => {
-		scheduler.run(() => {
-			let expectedObservable = { a: messageDiffsMock };
-			let expectedMarble = 'a';
-			scheduler
-				.expectObservable(service.messages)
-				.toBe(expectedMarble, expectedObservable);
-		});
-	});
-
-	it('should get the submessage differences', () => {
-		scheduler.run(() => {
-			let expectedObservable = { a: submessageDiffsMock };
-			let expectedMarble = 'a';
-			scheduler
-				.expectObservable(service.submessages)
-				.toBe(expectedMarble, expectedObservable);
-		});
-	});
-
-	it('should get the structure differences', () => {
-		scheduler.run(() => {
-			let expectedObservable = { a: structureDiffsMock };
-			let expectedMarble = 'a';
-			scheduler
-				.expectObservable(service.structures)
-				.toBe(expectedMarble, expectedObservable);
-		});
-	});
-
-	it('should get the element differences', () => {
-		scheduler.run(() => {
-			let expectedObservable = { a: elementDiffsMock };
-			let expectedMarble = 'a';
-			scheduler
-				.expectObservable(service.elements)
-				.toBe(expectedMarble, expectedObservable);
-		});
-	});
-
-	it('should get the structure differences including elements', () => {
-		scheduler.run(() => {
-			let expectedObservable = { a: structureElementDiffsMock };
-			let expectedMarble = 'a';
-			scheduler
-				.expectObservable(service.structuresWithElements)
 				.toBe(expectedMarble, expectedObservable);
 		});
 	});
