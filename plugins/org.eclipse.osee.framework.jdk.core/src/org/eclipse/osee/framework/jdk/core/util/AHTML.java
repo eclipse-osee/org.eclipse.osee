@@ -585,4 +585,8 @@ public class AHTML {
       return "<html><h3>" + title + "</h3><body>" + imageUrl + AHTML.textToHtml(text) + "</html>";
    }
 
+   public static String simpleJsonPage(String json) {
+      return AHTML.pre(json);
+   }
+
 }

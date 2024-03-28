@@ -92,6 +92,17 @@ public interface AtsWorldEndpointApi {
       @PathParam("customizeGuid") String customizeGuid);
 
    @PUT
+   @Path("coll/{collectorId}/json/{customizeGuid}/publish")
+   @Produces(MediaType.APPLICATION_JSON)
+   WorldResults getCollectionJsonCustomizedPublish(@PathParam("collectorId") ArtifactId collectorId,
+      @PathParam("customizeGuid") String customizeGuid);
+
+   @GET
+   @Path("coll/{collectorId}/worldresults")
+   @Produces(MediaType.APPLICATION_JSON)
+   WorldResults getCollectionJsonCustomizedPublished(@PathParam("collectorId") ArtifactId collectorId);
+
+   @PUT
    @Path("search")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
@@ -115,4 +126,5 @@ public interface AtsWorldEndpointApi {
    @Path("columnjson")
    @Produces(MediaType.APPLICATION_JSON)
    String getColumnsJson();
+
 }
