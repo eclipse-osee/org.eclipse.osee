@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -37,20 +38,25 @@ import org.eclipse.osee.ats.api.column.AtsCoreColumn;
 import org.eclipse.osee.ats.api.column.AtsCoreColumnToken;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.AtsWorldEndpointApi;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.api.workflow.world.WorldResults;
 import org.eclipse.osee.ats.rest.AtsApiServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.result.ResultRows;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -203,6 +209,7 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
       Collection<IAtsWorkItem> collectorItems = getCollection(collectorArt);
 
       WorldResults wr = new WorldResults();
+      wr.setCollectorArt(collectorArt.getToken());
       XResultData rd = wr.getRd();
       rd.logf("Collector: %s", collectorArt.toStringWithId());
 
@@ -213,6 +220,56 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
 
          getCustomizedJsonTable(atsApiServer, customization, collectorItems, wr, rd);
       }
+      return wr;
+   }
+
+   @Override
+   @GET
+   @Path("coll/{collectorId}/worldresults")
+   @Produces(MediaType.APPLICATION_JSON)
+   public WorldResults getCollectionJsonCustomizedPublished(@PathParam("collectorId") ArtifactId collectorId) {
+
+      WorldResults wr = new WorldResults();
+      ArtifactReadable collectorArt = (ArtifactReadable) atsApiServer.getQueryService().getArtifact(collectorId);
+      if (collectorArt == null) {
+         wr.getRd().errorf("No Collector Artifact Found");
+      } else {
+         wr.setCollectorArt(collectorArt.getToken());
+         String json = atsApi.getAttributeResolver().getSoleAttributeValueAsString(collectorArt,
+            AtsAttributeTypes.WorldResults, "");
+         if (Strings.isValid(json)) {
+            wr = JsonUtil.readValue(json, WorldResults.class);
+            wr.getRd().log("Retrieved worldresults json from collector artifact");
+         } else {
+            wr.getRd().error("No World Results Found");
+         }
+      }
+      return wr;
+
+   }
+
+   @Override
+   @PUT
+   @Path("coll/{collectorId}/json/{customizeGuid}/publish")
+   @Produces(MediaType.APPLICATION_JSON)
+   public WorldResults getCollectionJsonCustomizedPublish(@PathParam("collectorId") ArtifactId collectorId,
+      @PathParam("customizeGuid") String customizeGuid) {
+
+      WorldResults wr = getCollectionJsonCustomized(collectorId, customizeGuid);
+      XResultData rd = wr.getRd();
+      if (rd.isSuccess()) {
+         try {
+            ArtifactReadable collectorArt = (ArtifactReadable) atsApiServer.getQueryService().getArtifact(collectorId);
+            String jsonStr = JsonUtil.toJson(wr);
+            IAtsChangeSet changes = atsApi.createChangeSet("Persist json view");
+            changes.setSoleAttributeFromString(collectorArt, AtsAttributeTypes.WorldResults, jsonStr);
+            TransactionToken tx = changes.executeIfNeeded();
+            wr.setTx(tx);
+         } catch (Exception ex) {
+            rd.errorf("Exception publishing %s", Lib.exceptionToString(ex));
+         }
+      }
+
       return wr;
    }
 
@@ -270,14 +327,17 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
       @PathParam("customizeGuid") String customizeGuid) {
 
       CustomizeData customization = atsApiServer.getStoreService().getCustomizationByGuid(customizeGuid);
+      if (customization == null) {
+         return AHTML.simplePage(String.format("No customization found with id [%s]", customizeGuid));
+      }
 
       // get work items
       ArtifactReadable collectorArt = (ArtifactReadable) atsApiServer.getQueryService().getArtifact(collectorId);
+      if (collectorArt == null) {
+         return AHTML.simplePage(String.format("No collector found with id [%s]", collectorId));
+      }
       Collection<IAtsWorkItem> collectorItems = getCollection(collectorArt);
 
-      if (customization == null) {
-         return "";
-      }
       String table = getCustomizedTable(atsApiServer,
          "Collector - " + collectorArt.getName() + " - Customization: " + customization.getName(), customization,
          collectorItems);

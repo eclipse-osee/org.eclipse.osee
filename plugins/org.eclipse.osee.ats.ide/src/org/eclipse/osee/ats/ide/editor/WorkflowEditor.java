@@ -819,4 +819,8 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
       return bitTab;
    }
 
+   public WfeMembersTab getMembersTab() {
+      return membersTab;
+   }
+
 }

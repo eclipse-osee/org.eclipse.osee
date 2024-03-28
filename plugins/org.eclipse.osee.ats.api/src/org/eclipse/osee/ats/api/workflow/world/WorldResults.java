@@ -15,6 +15,8 @@ package org.eclipse.osee.ats.api.workflow.world;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
@@ -25,6 +27,8 @@ public class WorldResults {
    private List<String> orderedHeaders = new ArrayList<>();
    private List<Map<String, String>> rows = new ArrayList<>();
    private XResultData rd = new XResultData();
+   private TransactionToken tx = TransactionToken.SENTINEL;
+   private ArtifactToken collectorArt = ArtifactToken.SENTINEL;
 
    public List<Map<String, String>> getRows() {
       return rows;
@@ -48,6 +52,22 @@ public class WorldResults {
 
    public void setOrderedHeaders(List<String> orderedHeaders) {
       this.orderedHeaders = orderedHeaders;
+   }
+
+   public TransactionToken getTx() {
+      return tx;
+   }
+
+   public void setTx(TransactionToken tx) {
+      this.tx = tx;
+   }
+
+   public ArtifactToken getCollectorArt() {
+      return collectorArt;
+   }
+
+   public void setCollectorArt(ArtifactToken collectorArt) {
+      this.collectorArt = collectorArt;
    }
 
 }

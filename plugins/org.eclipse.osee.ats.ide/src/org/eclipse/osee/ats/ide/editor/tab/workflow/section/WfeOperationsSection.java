@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.ide.actions.ShowBranchChangeDataAction;
 import org.eclipse.osee.ats.ide.actions.ShowWorkDefinitionAction;
 import org.eclipse.osee.ats.ide.actions.SubscribedAction;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
+import org.eclipse.osee.ats.ide.editor.tab.workflow.section.goal.WfeGoalSection;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.util.WfeReloadAction;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -124,6 +125,7 @@ public class WfeOperationsSection extends SectionPart {
 
       createAdvancedSection(sectionBody, toolkit);
       createAdminSection(sectionBody, toolkit);
+      (new WfeGoalSection(sectionBody, editor, toolkit)).create();
 
       section.setClient(sectionBody);
       toolkit.paintBordersFor(section);
