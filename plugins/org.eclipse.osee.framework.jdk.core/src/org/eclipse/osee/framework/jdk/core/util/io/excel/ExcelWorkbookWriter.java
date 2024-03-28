@@ -310,6 +310,14 @@ public class ExcelWorkbookWriter {
       return style;
    }
 
+   public Sheet getActiveSheet() {
+      return activeSheet;
+   }
+
+   public Workbook getWorkbook() {
+      return workbook;
+   }
+
    public enum CELLSTYLE {
       BOLD,
       BORDER_ALL,

@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.mim.internal;
 
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,6 +47,8 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.model.dto.ChangeReportRowDto;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookReader;
+import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookUtils;
 import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookWriter;
 import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookWriter.CELLSTYLE;
 import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookWriter.HyperLinkType;
@@ -164,86 +167,87 @@ public class MimIcdGenerator {
          secondaryNode = nodes.get(1);
       }
 
+      if (!conn.isValid() || !primaryNode.isValid() || !secondaryNode.isValid()) {
+         return;
+      }
+
       List<ArtifactReadable> messages = new LinkedList<>();
       List<ArtifactReadable> subMessages = new LinkedList<>();
       List<InterfaceSubMessageToken> subMessagesWithHeaders = new LinkedList<>();
       List<InterfaceStructureToken> structures = new LinkedList<>();
       SortedMap<InterfaceStructureToken, String> structureLinks = new TreeMap<InterfaceStructureToken, String>();
 
-      if (conn.isValid() && primaryNode.isValid() && secondaryNode.isValid()) {
-         // Write sheets
-         ExcelWorkbookWriter writer = new ExcelWorkbookWriter(outputStream, WorkbookFormat.XLSX);
-         writer.setDefaultZoom(80);
-         createChangeHistory(writer, currentBranch, conn.getId());
-         messages =
-            conn.getArtifactReadable().getRelated(CoreRelationTypes.InterfaceConnectionMessage_Message).getList();
+      // Write sheets
+      ExcelWorkbookWriter writer = new ExcelWorkbookWriter(outputStream, WorkbookFormat.XLSX);
+      writer.setDefaultZoom(80);
+      createChangeHistory(writer, currentBranch, conn.getId());
+      messages = conn.getArtifactReadable().getRelated(CoreRelationTypes.InterfaceConnectionMessage_Message).getList();
 
-         for (ArtifactReadable message : messages) {
-            InterfaceMessageToken msg = new InterfaceMessageToken(message);
-            mimApi.getInterfaceMessageApi().setUpMessage(branch, msg);
+      for (ArtifactReadable message : messages) {
+         InterfaceMessageToken msg = new InterfaceMessageToken(message);
+         mimApi.getInterfaceMessageApi().setUpMessage(branch, msg);
 
-            List<ArtifactReadable> messageSubMessages =
-               message.getRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage).getList();
-            List<InterfaceSubMessageToken> smsgTokens =
-               messageSubMessages.stream().map(art -> new InterfaceSubMessageToken(art)).collect(Collectors.toList());
+         List<ArtifactReadable> messageSubMessages =
+            message.getRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage).getList();
+         List<InterfaceSubMessageToken> smsgTokens =
+            messageSubMessages.stream().map(art -> new InterfaceSubMessageToken(art)).collect(Collectors.toList());
 
-            if (message.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageType, "error").equals(
-               "Operational")) {
-               InterfaceSubMessageToken header = interfaceMessageApi.getMessageHeader(msg);
-               messageHeaders.put(message.getArtifactId(), header);
-               smsgTokens.add(0, header);
+         if (message.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageType, "error").equals("Operational")) {
+            InterfaceSubMessageToken header = interfaceMessageApi.getMessageHeader(msg);
+            messageHeaders.put(message.getArtifactId(), header);
+            smsgTokens.add(0, header);
 
-               InterfaceStructureToken headerStruct = interfaceStructureApi.getMessageHeaderStructure(branch,
-                  ArtifactId.valueOf(connectionId), ArtifactId.valueOf(message.getId()), view);
-               messageHeaderStructures.put(header.getName(), headerStruct);
-            }
-            subMessages.addAll(messageSubMessages);
-            subMessagesWithHeaders.addAll(smsgTokens);
-            for (InterfaceSubMessageToken smsg : smsgTokens) {
-               List<InterfaceStructureToken> structs = new LinkedList<>();
-               if (smsg.getId() == 0) {
-                  structs.add(0, interfaceStructureApi.getMessageHeaderStructure(branch,
-                     ArtifactId.valueOf(connectionId), message.getArtifactId(), view));
-               } else {
-                  structs.addAll(smsg.getArtifactReadable().getRelated(
-                     CoreRelationTypes.InterfaceSubMessageContent_Structure).getList().stream().map(
-                        art -> new InterfaceStructureToken(art)).collect(Collectors.toList()));
-               }
-               structures.addAll(structs);
-            }
+            InterfaceStructureToken headerStruct = interfaceStructureApi.getMessageHeaderStructure(branch,
+               ArtifactId.valueOf(connectionId), ArtifactId.valueOf(message.getId()), view);
+            messageHeaderStructures.put(header.getName(), headerStruct);
          }
-
-         for (InterfaceStructureToken structure : structures) {
-            String sheetName =
-               structure.getNameAbbrev().isEmpty() ? structure.getName().replace("Command Taskfile", "CT").replace(
-                  "Status Taskfile", "ST") : structure.getNameAbbrev();
-            if (structure.getArtifactReadable() != null && structure.getArtifactReadable().isValid()) {
-               String abbrevName = structure.getArtifactReadable().getSoleAttributeAsString(
-                  CoreAttributeTypes.GeneralStringData, "null");
-               if (!abbrevName.equals("null")) {
-                  sheetName = abbrevName;
-               }
+         subMessages.addAll(messageSubMessages);
+         subMessagesWithHeaders.addAll(smsgTokens);
+         for (InterfaceSubMessageToken smsg : smsgTokens) {
+            List<InterfaceStructureToken> structs = new LinkedList<>();
+            if (smsg.getId() == 0) {
+               structs.add(0, interfaceStructureApi.getMessageHeaderStructure(branch, ArtifactId.valueOf(connectionId),
+                  message.getArtifactId(), view));
+            } else {
+               structs.addAll(smsg.getArtifactReadable().getRelated(
+                  CoreRelationTypes.InterfaceSubMessageContent_Structure).getList().stream().map(
+                     art -> new InterfaceStructureToken(art)).collect(Collectors.toList()));
             }
-            structureLinks.put(structure, sheetName);
+            structures.addAll(structs);
          }
-
-         createStructureInfo(branch, view, messages);
-
-         if (diff) {
-            createChangeSummary(writer, summary);
-         }
-
-         createMessageSubMessageSummary(writer, branch, view, conn.getArtifactReadable(),
-            primaryNode.getArtifactReadable(), secondaryNode.getArtifactReadable(), messages, subMessages);
-         createUnitsAndTypesSheet(writer); // Create sheet but do not write until the end to allow for list population
-         createStructureNamesSheet(writer, structureLinks);
-         createStructureSummarySheet(writer, branch, messages, structureLinks);
-         createStructureSheets(writer, subMessagesWithHeaders, structureLinks);
-         writeUnitsAndTypesSheet(writer, branch, view, primaryNode, secondaryNode);
-         writer.writeWorkbook();
-         writer.closeWorkbook();
-
       }
+
+      for (InterfaceStructureToken structure : structures) {
+         String sheetName =
+            structure.getNameAbbrev().isEmpty() ? structure.getName().replace("Command Taskfile", "CT").replace(
+               "Status Taskfile", "ST") : structure.getNameAbbrev();
+         if (structure.getArtifactReadable() != null && structure.getArtifactReadable().isValid()) {
+            String abbrevName =
+               structure.getArtifactReadable().getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData, "null");
+            if (!abbrevName.equals("null")) {
+               sheetName = abbrevName;
+            }
+         }
+         structureLinks.put(structure, sheetName);
+      }
+
+      createStructureInfo(branch, view, messages);
+
+      if (diff) {
+         createChangeSummary(writer, summary);
+      }
+
+      createMessageSubMessageSummary(writer, branch, view, conn.getArtifactReadable(),
+         primaryNode.getArtifactReadable(), secondaryNode.getArtifactReadable(), messages, subMessages);
+      addStoredSheets(writer, branch, view, conn);
+      createUnitsAndTypesSheet(writer); // Create sheet but do not write until the end to allow for list population
+      createStructureNamesSheet(writer, structureLinks);
+      createStructureSummarySheet(writer, branch, messages, structureLinks);
+      createStructureSheets(writer, subMessagesWithHeaders, structureLinks);
+      writeUnitsAndTypesSheet(writer, branch, view, primaryNode, secondaryNode);
+      writer.writeWorkbook();
+      writer.closeWorkbook();
+
    }
 
    private void createStructureInfo(BranchId branch, ArtifactId view, List<ArtifactReadable> messages) {
@@ -1069,7 +1073,7 @@ public class MimIcdGenerator {
       if (diffs.containsKey(platformType.getArtifactId())) {
          txIds.addAll(diffs.get(platformType.getArtifactId()).getAllTxIds());
       }
-      if (platformType != null && dataType.equals("enumeration")) {
+      if (dataType.equals("enumeration")) {
          ArtifactReadable enumSet = platformType.getArtifactReadable().getRelated(
             CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet).getAtMostOneOrDefault(
                ArtifactReadable.SENTINEL);
@@ -1606,6 +1610,30 @@ public class MimIcdGenerator {
       writer.setColumnWidth(5, writer.getColumnWidth(5) + 500);
       writer.setColumnWidth(7, writer.getColumnWidth(7) + 500);
 
+   }
+
+   private void addStoredSheets(ExcelWorkbookWriter writer, BranchId branch, ArtifactId view,
+      InterfaceConnection connection) {
+      List<ArtifactReadable> supportDocs =
+         orcsApi.getQueryFactory().fromBranch(branch, view).andRelatedTo(CoreRelationTypes.SupportingInfo_IsSupportedBy,
+            connection.getArtifactId()).asArtifacts();
+      for (ArtifactReadable support : supportDocs) {
+         String fileExtension = support.getSoleAttributeAsString(CoreAttributeTypes.Extension, "");
+         if (!fileExtension.equals("xlsx") && !fileExtension.equals("xls")) {
+            continue;
+         }
+         InputStream inputStream = support.getSoleAttributeValue(CoreAttributeTypes.NativeContent);
+         if (inputStream == null) {
+            continue;
+         }
+         WorkbookFormat format = fileExtension.equals("xlsx") ? WorkbookFormat.XLSX : WorkbookFormat.XLS;
+         ExcelWorkbookReader reader = new ExcelWorkbookReader(inputStream, format);
+         for (int i = 0; i < reader.getNumberOfSheets(); i++) {
+            reader.setActiveSheet(i);
+            writer.createSheet(reader.getActiveSheetName());
+            ExcelWorkbookUtils.copyActiveSheet(reader, writer);
+         }
+      }
    }
 
    private CELLSTYLE getCellColor(ArtifactReadable artifact, boolean changed) {

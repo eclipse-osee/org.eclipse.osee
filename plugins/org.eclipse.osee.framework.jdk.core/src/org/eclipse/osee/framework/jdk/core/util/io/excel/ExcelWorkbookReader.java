@@ -66,6 +66,18 @@ public class ExcelWorkbookReader {
       activeSheet = sheet;
    }
 
+   public int getNumberOfSheets() {
+      return workbook.getNumberOfSheets();
+   }
+
+   public String getActiveSheetName() {
+      return activeSheet.getSheetName();
+   }
+
+   public Sheet getActiveSheet() {
+      return activeSheet;
+   }
+
    public Object getCellValue(int rowIndex, int cellIndex) {
       checkActiveSheet();
       Row row = activeSheet.getRow(rowIndex);
