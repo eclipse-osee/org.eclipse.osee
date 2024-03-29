@@ -3,7 +3,7 @@
 CrossReference definitions are composed of classified placeholders with their equivalent value. These definitions are used by the MIM tool when generating csv files
 
 1. Open up the “Cross Reference Data Manager“ page, found in the navigation pane which can be opened by clicking on the hamburger menu in the upper left corner of the page
-    > > ![OSEE Navigator](../../images/mim/navigation.jpg)
+    > > ![OSEE Navigator](assets/images/mim/navigation.jpg)
 1. Select the Working Branch for which you wish to modify the Cross Reference Data
 1. To edit an existing row, right click on the row and select "Edit Cross Reference"
 1. To delete an existing row, right click on the row and choose "Delete Cross Reference"

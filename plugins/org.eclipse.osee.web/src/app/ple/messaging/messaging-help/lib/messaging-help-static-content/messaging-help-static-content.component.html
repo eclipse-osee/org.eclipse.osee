@@ -11,10 +11,8 @@
  *     Boeing - initial API and implementation
  -->
 <ng-container *ngIf="markdown">
-	<div
-		markdown
+	<markdown
 		[src]="markdown"
-		[srcRelativeLink]="true"
 		[disableSanitizer]="true"
-		class="[&>*code]:tw-text-primary-700 [&>*ol]:tw-list-decimal [&>*ol]:tw-pl-8 [&>*ul]:tw-list-disc [&>*ul]:tw-pl-8 [&>ol]:tw-list-decimal [&>ol]:tw-pl-8 [&>ul]:tw-list-disc [&>ul]:tw-pl-8"></div>
+		class="[&>*code]:tw-text-primary-700 [&>*ol]:tw-list-decimal [&>*ol]:tw-pl-8 [&>*ul]:tw-list-disc [&>*ul]:tw-pl-8 [&>ol]:tw-list-decimal [&>ol]:tw-pl-8 [&>ul]:tw-list-disc [&>ul]:tw-pl-8"></markdown>
 </ng-container>

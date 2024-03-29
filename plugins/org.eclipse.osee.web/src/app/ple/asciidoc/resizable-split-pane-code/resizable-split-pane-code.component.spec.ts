@@ -18,7 +18,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { MarkdownModule } from 'ngx-markdown';
+import { provideMarkdown } from 'ngx-markdown';
 import { currentTextEditorServiceMock } from '../mocks/current-text-editor-service.mock';
 import { CurrentTextEditorService } from '../services/current-text-editor.service';
 
@@ -36,12 +36,12 @@ describe('ResizableSplitPaneCodeComponent', () => {
 				MatInputModule,
 				MatFormFieldModule,
 				MatDividerModule,
-				MarkdownModule.forRoot(),
 				NoopAnimationsModule,
 				FormsModule,
 				ResizableSplitPaneCodeComponent,
 			],
 			providers: [
+				provideMarkdown(),
 				{
 					provide: CurrentTextEditorService,
 					useValue: currentTextEditorServiceMock,

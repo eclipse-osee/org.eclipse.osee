@@ -18,15 +18,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
 import { BranchPickerStub } from '@osee/shared/components/testing';
-import { MarkdownModule } from 'ngx-markdown';
+import { provideMarkdown } from 'ngx-markdown';
 import { currentTextEditorServiceMock } from '../mocks/current-text-editor-service.mock';
 import { ResizableSplitPaneCodeComponent } from '../resizable-split-pane-code/resizable-split-pane-code.component';
 import { CurrentTextEditorService } from '../services/current-text-editor.service';
 
 import { AsciidocEditorComponent } from './asciidoc-editor.component';
 import { BranchPickerComponent } from '@osee/shared/components';
+import { provideRouter } from '@angular/router';
 
 describe('AsciidocEditorComponent', () => {
 	let component: AsciidocEditorComponent;
@@ -43,19 +43,19 @@ describe('AsciidocEditorComponent', () => {
 		})
 			.configureTestingModule({
 				imports: [
-					RouterTestingModule,
 					MatIconModule,
 					MatButtonModule,
 					MatInputModule,
 					MatFormFieldModule,
 					MatDividerModule,
-					MarkdownModule.forRoot(),
 					NoopAnimationsModule,
 					FormsModule,
 					AsciidocEditorComponent,
 				],
 				declarations: [],
 				providers: [
+					provideMarkdown(),
+					provideRouter([]),
 					{
 						provide: CurrentTextEditorService,
 						useValue: currentTextEditorServiceMock,

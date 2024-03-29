@@ -12,11 +12,15 @@
  **********************************************************************/
 import { enableProdMode, importProvidersFrom } from '@angular/core';
 
-import { environment, UserHeaderService } from '@osee/environments';
+import { environment, UserHeaderService, apiURL } from '@osee/environments';
 import { AppComponent } from './app/app.component';
-import { MarkdownModule, MarkedOptions } from 'ngx-markdown';
+import { provideMarkdown, MARKED_OPTIONS } from 'ngx-markdown';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import {
+	HttpClient,
+	provideHttpClient,
+	withInterceptors,
+} from '@angular/common/http';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { OseeUrlSerializer } from './app/UrlSerializer';
 import {
@@ -35,18 +39,7 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
 	providers: [
-		importProvidersFrom(
-			MarkdownModule.forRoot({
-				markedOptions: {
-					provide: MarkedOptions,
-					useValue: {
-						gfm: true,
-						breaks: true,
-					},
-				},
-			}),
-			...extra_auth_deps
-		),
+		importProvidersFrom(...extra_auth_deps),
 		{ provide: UserHeaderService, useClass: environment.headerService },
 		{ provide: UrlSerializer, useClass: OseeUrlSerializer },
 		provideRouter(
@@ -58,6 +51,16 @@ bootstrapApplication(AppComponent, {
 			withComponentInputBinding()
 		),
 		provideHttpClient(withInterceptors(GlobalHttpInterceptors)),
+		provideMarkdown({
+			markedOptions: {
+				provide: MARKED_OPTIONS,
+				useValue: {
+					gfm: true,
+					breaks: false,
+				},
+			},
+			loader: HttpClient,
+		}),
 		provideAnimations(),
 	],
 }).catch((err) => console.error(err));

@@ -10,4 +10,4 @@ The Reports page can be accessed on the main [Messaging web page](/ple/messaging
     -   HSDN workbook version of the ICD per connection
     -   CSV files to be used an input into external tools
 
-![findelementbytype1](../../images/mim/reports1.jpg)
+![findelementbytype1](assets/images/mim/reports1.jpg)

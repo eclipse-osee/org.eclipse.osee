@@ -27,7 +27,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MarkdownModule } from 'ngx-markdown';
+import { MarkdownComponent } from 'ngx-markdown';
 import { BehaviorSubject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 import { CurrentTextEditorService } from '../services/current-text-editor.service';
@@ -47,7 +47,7 @@ import { INSERTIONS } from '../types/constants/insertions';
 		MatFormFieldModule,
 		TextFieldModule,
 		MatDividerModule,
-		MarkdownModule,
+		MarkdownComponent,
 	],
 })
 export class ResizableSplitPaneCodeComponent

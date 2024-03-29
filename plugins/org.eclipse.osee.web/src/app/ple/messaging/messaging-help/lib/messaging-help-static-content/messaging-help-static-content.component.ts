@@ -12,13 +12,13 @@
  **********************************************************************/
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MarkdownModule } from 'ngx-markdown';
+import { MarkdownComponent } from 'ngx-markdown';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
 	selector: 'osee-messaging-help-static-content',
 	standalone: true,
-	imports: [CommonModule, MarkdownModule],
+	imports: [CommonModule, MarkdownComponent],
 	templateUrl: './messaging-help-static-content.component.html',
 })
 export class MessagingHelpStaticContentComponent implements OnInit {

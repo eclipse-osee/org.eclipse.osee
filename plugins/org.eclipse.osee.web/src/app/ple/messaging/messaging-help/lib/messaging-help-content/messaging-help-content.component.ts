@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MarkdownModule } from 'ngx-markdown';
+import { MarkdownComponent } from 'ngx-markdown';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, filter, of, switchMap } from 'rxjs';
 import { HelpService } from '@osee/shared/services/help';
@@ -20,7 +20,7 @@ import { HelpService } from '@osee/shared/services/help';
 @Component({
 	selector: 'osee-messaging-help-content',
 	standalone: true,
-	imports: [CommonModule, MarkdownModule],
+	imports: [CommonModule, MarkdownComponent],
 	templateUrl: './messaging-help-content.component.html',
 })
 export class MessagingHelpContentComponent {
