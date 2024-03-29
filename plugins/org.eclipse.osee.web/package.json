@@ -79,7 +79,7 @@
 		"@types/d3-timer": "^2.0.0",
 		"@types/jasmine": "~3.6.0",
 		"@types/marked": "^4.0.7",
-		"@types/node": "^12.11.1",
+		"@types/node": "^18.13.0",
 		"@typescript-eslint/eslint-plugin": "^7.2.0",
 		"@typescript-eslint/parser": "^7.2.0",
 		"autoprefixer": "^10.4.13",
