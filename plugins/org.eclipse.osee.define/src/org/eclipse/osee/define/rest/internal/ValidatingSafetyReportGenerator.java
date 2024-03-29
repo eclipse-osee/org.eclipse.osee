@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.define.util.ComponentUtil;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -44,6 +45,8 @@ public class ValidatingSafetyReportGenerator {
    private final TraceMatch match = new TraceMatch("\\^SRS\\s*([^;]+);?", "\\[?(\\{[^\\}]+\\})(.*)");
    private final TraceAccumulator traces = new TraceAccumulator(".*\\.(java|ada|ads|adb|c|h)", match);
    private final ActivityLog activityLog;
+   private String[] prevValues;
+   private final PartitionLevels partitionLevels = new PartitionLevels();
 
    public static int SYSTEM_REQUIREMENT_INDEX = 8;
    public static int SUBSYSTEM_FUNCTION_INDEX = 9;
@@ -90,9 +93,11 @@ public class ValidatingSafetyReportGenerator {
       accumulator = new ValidatingSafetyInformationAccumulator(this, writer);
       accumulator.setupPartitions(queryFactory, branchId, view);
       componentUtil = new ComponentUtil(branchId, orcsApi);
+      partitionLevels.init(orcsApi);
    }
 
-   public void runOperation(OrcsApi providedOrcs, BranchId branchId, ArtifactId view, String codeRoot, Writer providedWriter) throws IOException {
+   public void runOperation(OrcsApi providedOrcs, BranchId branchId, ArtifactId view, String codeRoot,
+      Writer providedWriter) throws IOException {
       ISheetWriter writer = new ExcelXmlWriter(providedWriter);
 
       init(providedOrcs, branchId, writer, view);
@@ -118,6 +123,7 @@ public class ValidatingSafetyReportGenerator {
       writer.startSheet("report", columnHeadings.length);
       writer.writeRow((Object[]) columnHeadings);
       String[] currentRowValues = new String[columnHeadings.length];
+      prevValues = new String[columnHeadings.length];
 
       for (ArtifactReadable systemFunction : functionsFolder.getDescendants()) {
          String sevCat = getSeverityCategory(systemFunction);
@@ -157,7 +163,9 @@ public class ValidatingSafetyReportGenerator {
             writeCell(paraNums.toString(), currentRowValues, 7);
             writeCell(reqNames.toString(), currentRowValues, SYSTEM_REQUIREMENT_INDEX);
             accumulator.output(currentRowValues);
-            writer.writeRow((Object[]) currentRowValues);
+            if (saveToPreviousAndCheckIfDifferent(currentRowValues)) {
+               writer.writeRow((Object[]) currentRowValues);
+            }
          }
       }
       writer.endSheet();
@@ -188,7 +196,8 @@ public class ValidatingSafetyReportGenerator {
       currentRow[col] = value;
    }
 
-   private void writeSFHAInfo(ArtifactReadable systemFunction, String sevCat, ISheetWriter writer, String[] currentRowValues, int col) {
+   private void writeSFHAInfo(ArtifactReadable systemFunction, String sevCat, ISheetWriter writer,
+      String[] currentRowValues, int col) {
       ResultSet<ArtifactReadable> results = systemFunction.getRelated(CoreRelationTypes.Assessment_SafetyAssessment);
       if (results.isEmpty()) {
          writeCell("No SFHA Hazards found", currentRowValues, col);
@@ -248,4 +257,27 @@ public class ValidatingSafetyReportGenerator {
    public ComponentUtil getComponentUtil() {
       return componentUtil;
    }
+
+   public String getPartitionLevel(List<String> partitions) {
+      return partitionLevels.getLevelForPartition(partitions);
+   }
+
+   public boolean saveToPreviousAndCheckIfDifferent(String[] currentOutput) {
+      if (currentOutput == null || prevValues == null) {
+         return false;
+      }
+      boolean isDifferent = false;
+      for (int i = 0; i < columnHeadings.length; ++i) {
+         if (currentOutput[i] == null) {
+            if (prevValues[i] != null) {
+               isDifferent = true;
+            }
+         } else if (!currentOutput[i].equals(prevValues[i])) {
+            isDifferent = true;
+         }
+         prevValues[i] = currentOutput[i];
+      }
+      return isDifferent;
+   }
+
 }
