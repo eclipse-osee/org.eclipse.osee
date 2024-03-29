@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -45,9 +44,6 @@ public final class ValidatingSafetyInformationAccumulator {
    private final ValidatingSafetyReportGenerator safetyReport;
    private String functionalCategory;
    private List<ArtifactReadable> subsystemFunctions;
-   private List<ArtifactToken> tokensA;
-   private List<ArtifactToken> tokensB;
-   private List<ArtifactToken> tokensC;
    private List<ArtifactId> allowedRequirements;
    private final HashMap<ArtifactReadable, List<ArtifactReadable>> subsystemRequirements = Maps.newHashMap();
    private final HashMap<ArtifactReadable, List<ArtifactReadable>> softwareRequirements = Maps.newHashMap();
@@ -58,42 +54,12 @@ public final class ValidatingSafetyInformationAccumulator {
    }
 
    public void setupPartitions(QueryFactory qf, BranchId branch, ArtifactId view) {
-      tokensA = qf.fromBranch(branch).andIsOfType(CoreArtifactTypes.Component).andAttributeIs(CoreAttributeTypes.IDAL,
-         "A").asArtifactTokens();
-      tokensB = qf.fromBranch(branch).andIsOfType(CoreArtifactTypes.Component).andAttributeIs(CoreAttributeTypes.IDAL,
-         "B").asArtifactTokens();
-      tokensC = qf.fromBranch(branch).andIsOfType(CoreArtifactTypes.Component).andAttributeIs(CoreAttributeTypes.IDAL,
-         "C").asArtifactTokens();
-
       allowedRequirements =
          qf.fromBranch(branch, view).andIsOfType(CoreArtifactTypes.SoftwareRequirementMsWord).asArtifactIds();
    }
 
    public String calculateLevelForPartition(List<String> partitions) {
-      String toReturn = "";
-
-      if (contains(partitions, tokensA)) {
-         toReturn = "A";
-      } else if (contains(partitions, tokensB)) {
-         toReturn = "B";
-      } else if (contains(partitions, tokensC)) {
-         toReturn = "C";
-      } else {
-         toReturn = "BP";
-      }
-
-      return toReturn;
-   }
-
-   private boolean contains(List<String> container, List<ArtifactToken> checkItems) {
-      for (String element : container) {
-         for (ArtifactToken art : checkItems) {
-            if (element.equals(art.getName())) {
-               return true;
-            }
-         }
-      }
-      return false;
+      return safetyReport.getPartitionLevel(partitions);
    }
 
    public void reset(ArtifactReadable systemFunction) {
@@ -163,7 +129,8 @@ public final class ValidatingSafetyInformationAccumulator {
       return SafetyCriticalityLookup.getDALLevelFromSeverityCategory(inputSafetyCriticality);
    }
 
-   private void processSubsystemFunction(ArtifactReadable subsystemFunction, String[] currentRowValues) throws IOException {
+   private void processSubsystemFunction(ArtifactReadable subsystemFunction, String[] currentRowValues)
+      throws IOException {
       writeCell(subsystemFunction.getName(), currentRowValues,
          ValidatingSafetyReportGenerator.SUBSYSTEM_FUNCTION_INDEX);
       String sevCat =
@@ -177,14 +144,17 @@ public final class ValidatingSafetyInformationAccumulator {
       for (ArtifactReadable subsystemRequirement : subsystemRequirements.get(subsystemFunction)) {
          processSubsystemRequirement(subsystemRequirement, convertSafetyCriticalityToDAL(sevCat), currentRowValues);
       }
-      writer.writeRow((Object[]) currentRowValues);
+      if (safetyReport.saveToPreviousAndCheckIfDifferent(currentRowValues)) {
+         writer.writeRow((Object[]) currentRowValues);
+      }
    }
 
    private void writeCell(String value, String[] currentRow, int col) {
       currentRow[col] = value;
    }
 
-   private void processSubsystemRequirement(ArtifactReadable subsystemRequirement, String criticality, String[] currentRowValues) throws IOException {
+   private void processSubsystemRequirement(ArtifactReadable subsystemRequirement, String criticality,
+      String[] currentRowValues) throws IOException {
       writeCell(subsystemRequirement.getSoleAttributeAsString(CoreAttributeTypes.Subsystem, ""), currentRowValues,
          ValidatingSafetyReportGenerator.SUBSYSTEM_INDEX);
       writeCell(subsystemRequirement.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""), currentRowValues,
@@ -201,10 +171,10 @@ public final class ValidatingSafetyInformationAccumulator {
       for (ArtifactReadable softwareRequirement : softwareRequirements.get(subsystemRequirement)) {
          processSoftwareRequirement(softwareRequirement, currentCriticality, currentRowValues);
       }
-      writer.writeRow((Object[]) currentRowValues);
    }
 
-   private String writeCriticalityWithDesignCheck(ArtifactReadable art, String criticality, AttributeTypeToken thisType, RelationTypeSide relType, AttributeTypeToken otherType, String[] currentRowValues, int col) {
+   private String writeCriticalityWithDesignCheck(ArtifactReadable art, String criticality, AttributeTypeToken thisType,
+      RelationTypeSide relType, AttributeTypeToken otherType, String[] currentRowValues, int col) {
       String current = art.getSoleAttributeAsString(thisType, "Error");
       if ("Error".equals(criticality) || "Error".equals(current)) {
          writeCell("Error: invalid content", currentRowValues, col);
@@ -236,7 +206,8 @@ public final class ValidatingSafetyInformationAccumulator {
       return current;
    }
 
-   private void checkBackTrace(ArtifactReadable art, Integer current, AttributeTypeId thisType, RelationTypeSide relType, AttributeTypeToken otherType, String[] currentRowValues, int col) {
+   private void checkBackTrace(ArtifactReadable art, Integer current, AttributeTypeId thisType,
+      RelationTypeSide relType, AttributeTypeToken otherType, String[] currentRowValues, int col) {
       /**
        * when the parent criticality is less critical than the child, we check to see if the child traces to any more
        * critical parent (thus justifying the criticality of the child) note: more critical = lower number
@@ -272,9 +243,12 @@ public final class ValidatingSafetyInformationAccumulator {
       }
    }
 
-   private void processSoftwareRequirement(ArtifactReadable softwareRequirement, String sevCat, String[] currentRowValues) throws IOException {
+   private void processSoftwareRequirement(ArtifactReadable softwareRequirement, String sevCat,
+      String[] currentRowValues) throws IOException {
       writeCell(softwareRequirement.getName(), currentRowValues,
          ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX);
+      writeCell(softwareRequirement.getSoleAttributeAsString(CoreAttributeTypes.IDAL, ""), currentRowValues,
+         ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 1);
       writeCell(softwareRequirement.getSoleAttributeAsString(CoreAttributeTypes.IdalRationale, ""), currentRowValues,
          ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 2);
       writeCell(softwareRequirement.getSoleAttributeAsString(CoreAttributeTypes.SoftwareControlCategory, ""),
@@ -297,10 +271,14 @@ public final class ValidatingSafetyInformationAccumulator {
       if (Conditions.hasValues(codeUnits)) {
          for (String codeUnit : codeUnits) {
             writeCell(codeUnit, currentRowValues, ValidatingSafetyReportGenerator.CODE_UNIT_INDEX);
-            writer.writeRow((Object[]) currentRowValues);
+            if (safetyReport.saveToPreviousAndCheckIfDifferent(currentRowValues)) {
+               writer.writeRow((Object[]) currentRowValues);
+            }
          }
       } else {
-         writer.writeRow((Object[]) currentRowValues);
+         if (safetyReport.saveToPreviousAndCheckIfDifferent(currentRowValues)) {
+            writer.writeRow((Object[]) currentRowValues);
+         }
       }
    }
 }
