@@ -12,12 +12,12 @@
  **********************************************************************/
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MarkdownModule } from 'ngx-markdown';
+import { MarkdownComponent } from 'ngx-markdown';
 
 @Component({
 	selector: 'osee-bat',
 	standalone: true,
-	imports: [CommonModule, MarkdownModule],
+	imports: [CommonModule, MarkdownComponent],
 	templateUrl: './bat.component.html',
 	styles: [],
 })

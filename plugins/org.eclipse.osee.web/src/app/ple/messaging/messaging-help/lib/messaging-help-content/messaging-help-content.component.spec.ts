@@ -11,12 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { MarkdownModule } from 'ngx-markdown';
+import { provideMarkdown } from 'ngx-markdown';
 import { HelpHttpService } from '@osee/shared/services/help';
 
 import { MessagingHelpContentComponent } from './messaging-help-content.component';
 import { helpHttpServiceMock } from '@osee/shared/testing';
+import { provideRouter } from '@angular/router';
 
 describe('MessagingHelpContentComponent', () => {
 	let component: MessagingHelpContentComponent;
@@ -24,12 +24,10 @@ describe('MessagingHelpContentComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [
-				MessagingHelpContentComponent,
-				RouterTestingModule,
-				MarkdownModule.forRoot(),
-			],
+			imports: [MessagingHelpContentComponent],
 			providers: [
+				provideRouter([]),
+				provideMarkdown(),
 				{ provide: HelpHttpService, useValue: helpHttpServiceMock },
 			],
 		}).compileComponents();

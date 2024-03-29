@@ -2,7 +2,7 @@
 
 1. Open up the “Type View“ page, found in the navigation pane which can be opened by clicking on the hamburger menu in the upper left corner of the page
 
-    > > ![OSEE Navigator](../../images/mim/navigation.jpg)
+    > > ![OSEE Navigator](assets/images/mim/navigation.jpg)
 
 2. The User can either query an existing type to use as the base of their new type or start from scratch by clicking on the "+" sign on the lower left hand side of the screen.
 3. If you choose to start from an existing Type, simply filter for the existing Type.

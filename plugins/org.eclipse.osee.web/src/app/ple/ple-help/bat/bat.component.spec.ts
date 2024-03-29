@@ -12,8 +12,9 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BatComponent } from './bat.component';
-import { MarkdownModule } from 'ngx-markdown';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideMarkdown } from 'ngx-markdown';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpClient, provideHttpClient } from '@angular/common/http';
 
 describe('BatComponent', () => {
 	let component: BatComponent;
@@ -21,10 +22,11 @@ describe('BatComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [
-				BatComponent,
-				HttpClientTestingModule,
-				MarkdownModule.forRoot(),
+			imports: [BatComponent],
+			providers: [
+				provideHttpClient(),
+				provideHttpClientTesting(),
+				provideMarkdown({ loader: HttpClient }),
 			],
 		}).compileComponents();
 	});

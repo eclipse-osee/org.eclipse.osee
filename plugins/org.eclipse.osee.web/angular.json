@@ -105,15 +105,7 @@
 						"okta_java_debug": {
 							"outputPath": "dist/osee/production",
 							"baseHref": "/osee/",
-							"assets": [
-								"src/favicon.ico",
-								"src/assets",
-								{
-									"input": "src/assets_prod/help/mim",
-									"output": "assets/help/mim",
-									"glob": "*"
-								}
-							],
+							"assets": ["src/favicon.ico", "src/assets"],
 							"fileReplacements": [
 								{
 									"replace": "src/environments/environment.ts",
@@ -140,15 +132,7 @@
 						"okta_java_release": {
 							"outputPath": "dist/osee/production",
 							"baseHref": "/osee/",
-							"assets": [
-								"src/favicon.ico",
-								"src/assets",
-								{
-									"input": "src/assets_prod/help/mim",
-									"output": "assets/help/mim",
-									"glob": "*"
-								}
-							],
+							"assets": ["src/favicon.ico", "src/assets"],
 							"fileReplacements": [
 								{
 									"replace": "src/environments/environment.ts",
@@ -218,15 +202,7 @@
 									"with": "src/environments/api.java.ts"
 								}
 							],
-							"assets": [
-								"src/favicon.ico",
-								"src/assets",
-								{
-									"input": "src/assets_prod/help/mim",
-									"output": "assets/help/mim",
-									"glob": "*"
-								}
-							]
+							"assets": ["src/favicon.ico", "src/assets"]
 						},
 						"dev_java_release": {
 							"outputPath": "dist/osee/production",
@@ -237,15 +213,7 @@
 									"with": "src/environments/api.java.ts"
 								}
 							],
-							"assets": [
-								"src/favicon.ico",
-								"src/assets",
-								{
-									"input": "src/assets_prod/help/mim",
-									"output": "assets/help/mim",
-									"glob": "*"
-								}
-							],
+							"assets": ["src/favicon.ico", "src/assets"],
 							"optimization": true,
 							"outputHashing": "all",
 							"sourceMap": false,
@@ -324,15 +292,7 @@
 									"with": "src/environments/api.java.ts"
 								}
 							],
-							"assets": [
-								"src/favicon.ico",
-								"src/assets",
-								{
-									"input": "src/assets_prod/help/mim",
-									"output": "assets/help/mim",
-									"glob": "*"
-								}
-							],
+							"assets": ["src/favicon.ico", "src/assets"],
 							"optimization": true,
 							"outputHashing": "all",
 							"sourceMap": false,
@@ -397,15 +357,7 @@
 									"with": "src/environments/api.java.ts"
 								}
 							],
-							"assets": [
-								"src/favicon.ico",
-								"src/assets",
-								{
-									"input": "src/assets_prod/help/mim",
-									"output": "assets/help/mim",
-									"glob": "*"
-								}
-							]
+							"assets": ["src/favicon.ico", "src/assets"]
 						},
 						"demo_java_release": {
 							"outputPath": "dist/osee/production",
@@ -420,15 +372,7 @@
 									"with": "src/environments/api.java.ts"
 								}
 							],
-							"assets": [
-								"src/favicon.ico",
-								"src/assets",
-								{
-									"input": "src/assets_prod/help/mim",
-									"output": "assets/help/mim",
-									"glob": "*"
-								}
-							],
+							"assets": ["src/favicon.ico", "src/assets"],
 							"optimization": true,
 							"outputHashing": "all",
 							"sourceMap": false,
@@ -483,15 +427,7 @@
 						"none_java_debug": {
 							"outputPath": "dist/osee/production",
 							"baseHref": "/osee/",
-							"assets": [
-								"src/favicon.ico",
-								"src/assets",
-								{
-									"input": "src/assets_prod/help/mim",
-									"output": "assets/help/mim",
-									"glob": "*"
-								}
-							],
+							"assets": ["src/favicon.ico", "src/assets"],
 							"fileReplacements": [
 								{
 									"replace": "src/environments/environment.ts",
@@ -516,15 +452,7 @@
 									"with": "src/environments/api.java.ts"
 								}
 							],
-							"assets": [
-								"src/favicon.ico",
-								"src/assets",
-								{
-									"input": "src/assets_prod/help/mim",
-									"output": "assets/help/mim",
-									"glob": "*"
-								}
-							],
+							"assets": ["src/favicon.ico", "src/assets"],
 							"optimization": true,
 							"outputHashing": "all",
 							"sourceMap": false,
@@ -556,15 +484,7 @@
 									"with": "src/environments/api.java.ts"
 								}
 							],
-							"assets": [
-								"src/favicon.ico",
-								"src/assets",
-								{
-									"input": "src/assets_prod/help/mim",
-									"output": "assets/help/mim",
-									"glob": "*"
-								}
-							],
+							"assets": ["src/favicon.ico", "src/assets"],
 							"optimization": true,
 							"outputHashing": "all",
 							"sourceMap": false,
@@ -596,15 +516,7 @@
 									"with": "src/environments/api.java.ts"
 								}
 							],
-							"assets": [
-								"src/favicon.ico",
-								"src/assets",
-								{
-									"input": "src/assets_prod/help/mim",
-									"output": "assets/help/mim",
-									"glob": "*"
-								}
-							],
+							"assets": ["src/favicon.ico", "src/assets"],
 							"optimization": true,
 							"outputHashing": "all",
 							"sourceMap": false,
