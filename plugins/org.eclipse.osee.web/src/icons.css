@@ -10,11 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-@import '@fontsource/material-icons';
-@import '@fontsource/material-icons-outlined';
-@import '@fontsource/material-icons-round';
-@import '@fontsource/material-icons-sharp';
-@import '@fontsource/material-icons-two-tone';
+@import '@fontsource/material-icons/index.css';
+@import '@fontsource/material-icons-outlined/index.css';
+@import '@fontsource/material-icons-round/index.css';
+@import '@fontsource/material-icons-sharp/index.css';
+@import '@fontsource/material-icons-two-tone/index.css';
 
 .material-icons {
 	font-family: 'Material Icons', sans-serif;

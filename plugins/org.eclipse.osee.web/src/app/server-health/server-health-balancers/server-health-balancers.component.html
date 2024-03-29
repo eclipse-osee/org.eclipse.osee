@@ -35,7 +35,7 @@
 						(click)="toggleRow(balancer)">
 						<div class="tw-flex tw-flex-row tw-justify-between">
 							{{ balancer.name }}
-							@if (balancer.errorMsg != '') {
+							@if (balancer.errorMsg !== '') {
 								<div class="tw-text-warning">
 									{{ balancer.errorMsg }}
 								</div>

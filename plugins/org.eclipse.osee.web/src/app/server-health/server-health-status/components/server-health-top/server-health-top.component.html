@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  -->
 @if (remoteHealthTop | async; as remoteHealthTop) {
-	@if (remoteHealthTop.errorMsg != '') {
+	@if (remoteHealthTop.errorMsg !== '') {
 		<div class="tw-whitespace-pre-line tw-p-4 tw-pl-16 tw-text-warning">
 			{{ remoteHealthTop.errorMsg }}
 		</div>
