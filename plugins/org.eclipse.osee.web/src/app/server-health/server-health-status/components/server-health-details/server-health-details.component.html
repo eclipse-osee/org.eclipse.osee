@@ -13,7 +13,7 @@
 <ng-container
 	*ngIf="remoteHealthDetails | async as remoteHealthDetails; else noData">
 	<div class="tw-flex tw-items-center tw-justify-center tw-pl-16">
-		@if (remoteHealthDetails.errorMsg != '') {
+		@if (remoteHealthDetails.errorMsg !== '') {
 			<div>{{ remoteHealthDetails.errorMsg }}</div>
 		} @else {
 			<mat-table [dataSource]="dataSource">
@@ -27,8 +27,8 @@
 					<mat-header-cell *matHeaderCellDef> Value </mat-header-cell>
 					<mat-cell *matCellDef="let element">
 						@if (
-							element.key == 'serverWithHealthInfo' &&
-							element.value == ''
+							element.key === 'serverWithHealthInfo' &&
+							element.value === ''
 						) {
 							<div class="tw-font-bold">
 								osee.health.curl.server NOT set in osee_info

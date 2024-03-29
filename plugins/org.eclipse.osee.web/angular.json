@@ -31,11 +31,7 @@
 						"tsConfig": "tsconfig.app.json",
 						"assets": ["src/favicon.ico", "src/assets"],
 						"stylePreprocessorOptions": {
-							"includePaths": [
-								"src",
-								"src/sass-utils/",
-								"src/modern-ple-theme"
-							]
+							"includePaths": ["src", "src/modern-ple-theme"]
 						},
 						"styles": [
 							"src/custom-theme.scss",

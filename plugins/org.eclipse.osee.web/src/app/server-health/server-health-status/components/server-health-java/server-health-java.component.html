@@ -12,7 +12,7 @@
  -->
 @if (remoteHealthJava | async; as remoteHealthJava) {
 	<div class="tw-flex tw-items-center tw-justify-center tw-pl-16">
-		@if (remoteHealthJava.errorMsg != '') {
+		@if (remoteHealthJava.errorMsg !== '') {
 			<div class="tw-p-4 tw-text-warning">
 				{{ remoteHealthJava.errorMsg }}
 			</div>

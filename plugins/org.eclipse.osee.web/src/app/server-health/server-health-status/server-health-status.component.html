@@ -35,7 +35,7 @@
 						(click)="toggleRow(server, server.name)">
 						<div class="tw-flex tw-flex-row tw-justify-between">
 							{{ server.name }}
-							@if (server.errorMsg != '') {
+							@if (server.errorMsg !== '') {
 								<div class="tw-text-warning">
 									{{ server.errorMsg }}
 								</div>
