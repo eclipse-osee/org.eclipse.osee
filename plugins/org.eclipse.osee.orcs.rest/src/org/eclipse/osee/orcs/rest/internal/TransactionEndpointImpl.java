@@ -415,10 +415,10 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       if (!serverApplicDir.exists()) {
          serverApplicDir.mkdirs();
          try {
-            FileWriter readme =
-               new FileWriter(String.format("%s%s%s", serverApplicDir.getPath(), File.separator, "readme.txt"));
-            readme.write("This folder contains OSEE data transfer files which were imported during debugging");
-            readme.close();
+            try (FileWriter readme =
+               new FileWriter(String.format("%s%s%s", serverApplicDir.getPath(), File.separator, "readme.txt"));) {
+               readme.write("This folder contains OSEE data transfer files which were imported during debugging");
+            }
          } catch (IOException e) {
             throw new OseeCoreException(e, "Failed to create directory. ");
          }

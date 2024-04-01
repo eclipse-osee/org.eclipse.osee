@@ -31,15 +31,13 @@ public class TmoFileStreamingOutput implements StreamingOutput {
    @Override
    public void write(OutputStream os) {
       try {
-         FileInputStream fis = new FileInputStream(tmoFile);
-         ZipInputStream zis = new ZipInputStream(fis);
-         // There should only be one file per zip
-         ZipEntry tmoEntry = zis.getNextEntry();
-         if (tmoEntry != null) {
-            zis.transferTo(os);
+         try (FileInputStream fis = new FileInputStream(tmoFile); ZipInputStream zis = new ZipInputStream(fis);) {
+            // There should only be one file per zip
+            ZipEntry tmoEntry = zis.getNextEntry();
+            if (tmoEntry != null) {
+               zis.transferTo(os);
+            }
          }
-         zis.close();
-         fis.close();
       } catch (IOException ex) {
          System.out.println(ex);
       }

@@ -37,17 +37,15 @@ public class ScriptBatchStreamingOutput implements StreamingOutput {
       ZipOutputStream zipOut = new ZipOutputStream(os);
       try {
          for (File tmo : tmoFiles) {
-            FileInputStream fis = new FileInputStream(tmo);
-            ZipInputStream zis = new ZipInputStream(fis);
-            // There should only be one file per zip
-            ZipEntry tmoEntry = zis.getNextEntry();
-            if (tmoEntry != null) {
-               zipOut.putNextEntry(new ZipEntry(tmoEntry.getName()));
-               zis.transferTo(zipOut);
-               zipOut.closeEntry();
+            try (FileInputStream fis = new FileInputStream(tmo); ZipInputStream zis = new ZipInputStream(fis);) {
+               // There should only be one file per zip
+               ZipEntry tmoEntry = zis.getNextEntry();
+               if (tmoEntry != null) {
+                  zipOut.putNextEntry(new ZipEntry(tmoEntry.getName()));
+                  zis.transferTo(zipOut);
+                  zipOut.closeEntry();
+               }
             }
-            zis.close();
-            fis.close();
          }
          zipOut.putNextEntry(new ZipEntry("runId.txt"));
          zipOut.write(new String(batch.getTestEnvBatchId()).getBytes(Charset.forName("UTF-8")));

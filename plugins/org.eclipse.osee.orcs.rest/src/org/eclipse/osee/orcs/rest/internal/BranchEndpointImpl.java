@@ -712,11 +712,12 @@ public class BranchEndpointImpl implements BranchEndpoint {
       orcsApi.getJdbcService().getClient().runQuery(chStmt -> setOfBranchIds.add(getBranchId(chStmt)), query);
 
       for (BranchId branchId : setOfBranchIds.stream().collect(Collectors.toList())) {
-         Response purgeResponse = purgeBranch(branchId, false);
-         if (!purgeResponse.getStatusInfo().equals(Status.OK)) {
-            throw new OseeCoreException("Error purging deleted branch id: " + branchId);
+         try (Response purgeResponse = purgeBranch(branchId, false);) {
+            if (!purgeResponse.getStatusInfo().equals(Status.OK)) {
+               response.close();
+               throw new OseeCoreException("Error purging deleted branch id: " + branchId);
+            }
          }
-
       }
       return response;
    }
