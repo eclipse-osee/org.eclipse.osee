@@ -153,6 +153,7 @@ public class MimIcdGenerator {
       BranchId parentBranch = currentBranch.getParentBranch();
 
       MimChangeSummary summary = new MimChangeSummary(new HashMap<>());
+
       if (diff) {
          summary = interfaceDifferenceReportApi.getChangeSummary(branch, parentBranch, view, connectionId);
          diffs.putAll(summary.getAll());
@@ -172,7 +173,6 @@ public class MimIcdGenerator {
       }
 
       List<ArtifactReadable> messages = new LinkedList<>();
-      List<ArtifactReadable> subMessages = new LinkedList<>();
       List<InterfaceSubMessageToken> subMessagesWithHeaders = new LinkedList<>();
       List<InterfaceStructureToken> structures = new LinkedList<>();
       SortedMap<InterfaceStructureToken, String> structureLinks = new TreeMap<InterfaceStructureToken, String>();
@@ -197,17 +197,14 @@ public class MimIcdGenerator {
             messageHeaders.put(message.getArtifactId(), header);
             smsgTokens.add(0, header);
 
-            InterfaceStructureToken headerStruct = interfaceStructureApi.getMessageHeaderStructure(branch,
-               ArtifactId.valueOf(connectionId), ArtifactId.valueOf(message.getId()), view);
+            InterfaceStructureToken headerStruct = interfaceStructureApi.getMessageHeaderStructure(branch, conn, msg);
             messageHeaderStructures.put(header.getName(), headerStruct);
          }
-         subMessages.addAll(messageSubMessages);
          subMessagesWithHeaders.addAll(smsgTokens);
          for (InterfaceSubMessageToken smsg : smsgTokens) {
             List<InterfaceStructureToken> structs = new LinkedList<>();
             if (smsg.getId() == 0) {
-               structs.add(0, interfaceStructureApi.getMessageHeaderStructure(branch, ArtifactId.valueOf(connectionId),
-                  message.getArtifactId(), view));
+               structs.add(messageHeaderStructures.get(smsg.getName()));
             } else {
                structs.addAll(smsg.getArtifactReadable().getRelated(
                   CoreRelationTypes.InterfaceSubMessageContent_Structure).getList().stream().map(
@@ -237,12 +234,12 @@ public class MimIcdGenerator {
          createChangeSummary(writer, summary);
       }
 
-      createMessageSubMessageSummary(writer, branch, view, conn.getArtifactReadable(),
-         primaryNode.getArtifactReadable(), secondaryNode.getArtifactReadable(), messages, subMessages);
+      createMessageSubMessageSummary(writer, conn.getArtifactReadable(), primaryNode.getArtifactReadable(),
+         secondaryNode.getArtifactReadable(), messages);
       addStoredSheets(writer, branch, view, conn);
       createUnitsAndTypesSheet(writer); // Create sheet but do not write until the end to allow for list population
       createStructureNamesSheet(writer, structureLinks);
-      createStructureSummarySheet(writer, branch, messages, structureLinks);
+      createStructureSummarySheet(writer, messages, structureLinks);
       createStructureSheets(writer, subMessagesWithHeaders, structureLinks);
       writeUnitsAndTypesSheet(writer, branch, view, primaryNode, secondaryNode);
       writer.writeWorkbook();
@@ -655,8 +652,8 @@ public class MimIcdGenerator {
       }
    }
 
-   private void createStructureSummarySheet(ExcelWorkbookWriter writer, BranchId branch,
-      List<ArtifactReadable> messages, SortedMap<InterfaceStructureToken, String> structureLinks) {
+   private void createStructureSummarySheet(ExcelWorkbookWriter writer, List<ArtifactReadable> messages,
+      SortedMap<InterfaceStructureToken, String> structureLinks) {
       int totalMinSim = 0;
       int totalMaxSim = 0;
       int totalNumAttrs = 0;
@@ -1300,9 +1297,8 @@ public class MimIcdGenerator {
       return validRange;
    }
 
-   private void createMessageSubMessageSummary(ExcelWorkbookWriter writer, BranchId branch, ArtifactId view,
-      ArtifactReadable connection, ArtifactReadable primaryNode, ArtifactReadable secondaryNode,
-      List<ArtifactReadable> messages, List<ArtifactReadable> subMessages) {
+   private void createMessageSubMessageSummary(ExcelWorkbookWriter writer, ArtifactReadable connection,
+      ArtifactReadable primaryNode, ArtifactReadable secondaryNode, List<ArtifactReadable> messages) {
       List<ArtifactReadable> connectionMessages = messages.stream().filter(
          e -> !(e.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageType)).equals("Connection")).collect(
             Collectors.toList());
@@ -1342,17 +1338,13 @@ public class MimIcdGenerator {
 
          if (i < primaryList.size()) {
             primaryMessage = primaryList.get(i);
-            final ArtifactReadable pm = primaryMessage;
-            primarySubMessages = subMessages.stream().filter(
-               a -> a.areRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_Message, pm)).collect(
-                  Collectors.toList());
+            primarySubMessages =
+               primaryMessage.getRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage).getList();
          }
          if (i < secondaryList.size()) {
             secondaryMessage = secondaryList.get(i);
-            final ArtifactReadable sm = secondaryMessage;
-            secondarySubMessages = subMessages.stream().filter(
-               a -> a.areRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_Message, sm)).collect(
-                  Collectors.toList());
+            secondarySubMessages =
+               secondaryMessage.getRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage).getList();
          }
 
          if (primaryMessage.isValid()) {
