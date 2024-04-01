@@ -235,9 +235,9 @@ public class TmoImportApiImpl implements TmoImportApi {
             File file = getTempFile(ciSetId);
 
             try {
-               OutputStream outputStream = new FileOutputStream(file);
-               Lib.inputStreamToOutputStream(zipStream, outputStream);
-               outputStream.close();
+               try (OutputStream outputStream = new FileOutputStream(file);) {
+                  Lib.inputStreamToOutputStream(zipStream, outputStream);
+               }
             } catch (IOException ex) {
                if (file != null && file.exists()) {
                   file.delete();

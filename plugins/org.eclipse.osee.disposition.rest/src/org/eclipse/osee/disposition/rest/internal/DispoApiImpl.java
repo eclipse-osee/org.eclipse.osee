@@ -886,26 +886,25 @@ public class DispoApiImpl implements DispoApi {
          connection.setRequestProperty("Connection", "keep-alive");
          connection.setRequestMethod("GET");
          connection.connect();
-
-         InputStream stream = connection.getInputStream();
-
-         OutputStream outStream = null;
-
          String fileZip = String.format("%s.zip", downloadLocation);
          File uploadedZip = new File(fileZip);
-         byte[] buffer = stream.readAllBytes();
-         stream.close();
 
-         outStream = new FileOutputStream(uploadedZip);
-         outStream.write(buffer);
-         outStream.close();
+         try (InputStream stream = connection.getInputStream();
+            OutputStream outStream = new FileOutputStream(uploadedZip);) {
 
-         connection.disconnect();
+            byte[] buffer = stream.readAllBytes();
+            stream.close();
 
-         ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
-         File unzipLocation = new File(downloadLocation);
+            outStream.write(buffer);
+            outStream.close();
 
-         Zip.decompressStream(zis, buffer, unzipLocation);
+            connection.disconnect();
+
+            ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
+            File unzipLocation = new File(downloadLocation);
+
+            Zip.decompressStream(zis, buffer, unzipLocation);
+         }
       } catch (Exception ex) {
          throw new OseeCoreException("Artifactory Operation Failed", ex);
       } finally {
