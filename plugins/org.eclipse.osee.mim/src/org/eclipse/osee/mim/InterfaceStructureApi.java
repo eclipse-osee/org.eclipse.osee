@@ -18,6 +18,8 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.mim.types.InterfaceConnection;
+import org.eclipse.osee.mim.types.InterfaceMessageToken;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.InterfaceStructureToken;
 import org.eclipse.osee.orcs.core.ds.FollowRelation;
@@ -125,5 +127,8 @@ public interface InterfaceStructureApi extends QueryCapableMIMAPI<InterfaceStruc
 
    InterfaceStructureToken getMessageHeaderStructure(BranchId branch, ArtifactId connectionId, ArtifactId messageId,
       ArtifactId viewId);
+
+   InterfaceStructureToken getMessageHeaderStructure(BranchId branch, InterfaceConnection connection,
+      InterfaceMessageToken message);
 
 }
