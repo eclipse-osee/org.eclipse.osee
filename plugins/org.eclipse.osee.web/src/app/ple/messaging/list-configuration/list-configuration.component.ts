@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, inject, OnDestroy } from '@angular/core';
-import { AsyncPipe, CommonModule, NgIf } from '@angular/common';
+import { AsyncPipe, NgIf } from '@angular/common';
 import {
 	MessagingControlsComponent,
 	NamedIdListEditorComponent,
@@ -61,7 +61,6 @@ export class ListConfigurationComponent implements OnDestroy {
 			this._uiService.idValue = params.get('branchId') || '';
 			this._uiService.typeValue =
 				(params.get('branchType') as 'working' | 'baseline' | '') || '';
-			this._uiService.viewIdValue = params.get('viewId') || '';
 		}),
 		takeUntil(this._destroyed)
 	);

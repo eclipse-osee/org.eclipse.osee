@@ -27,10 +27,6 @@ const routes: Routes = [
 		path: ':branchType/:branchId',
 		loadComponent: () => import('./artifact-explorer.component'),
 	},
-	{
-		path: ':branchType/:branchId/:viewId',
-		loadComponent: () => import('./artifact-explorer.component'),
-	},
 ];
 
 export default routes;

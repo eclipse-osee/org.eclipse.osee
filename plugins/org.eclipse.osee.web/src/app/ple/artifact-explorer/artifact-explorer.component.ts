@@ -56,14 +56,6 @@ export class ArtifactExplorerComponent {
 		}
 	}
 
-	@Input() set viewId(viewId: string) {
-		if (viewId != undefined) {
-			this.uiService.viewIdValue = viewId;
-		} else {
-			this.uiService.viewIdValue = '-1';
-		}
-	}
-
 	openTabs = this.tabService.Tabs;
 	selectedTabIndex = this.tabService.selectedIndex;
 

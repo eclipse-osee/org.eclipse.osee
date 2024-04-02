@@ -20,6 +20,7 @@
 				mat-raised-button
 				color="primary"
 				[routerLink]="item.routerLink"
+				queryParamsHandling="merge"
 				class="tw-w-landing-button tw-px-4 tw-py-7"
 				[attr.data-cy]="item.cypressLabel"
 				><mat-icon>{{ item.icon }}</mat-icon

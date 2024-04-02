@@ -69,6 +69,7 @@
 					mat-list-item
 					*ngIf="!element.isDropdown"
 					[routerLink]="routePrefix + element.routerLink"
+					queryParamsHandling="merge"
 					class="hover:tw-bg-primary-100 dark:hover:tw-bg-primary-900"
 					[ngClass]="{
 						'tw-bg-primary-50 dark:tw-bg-primary-800':

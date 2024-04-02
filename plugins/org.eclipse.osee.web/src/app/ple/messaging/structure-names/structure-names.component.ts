@@ -25,8 +25,8 @@ import { map, switchMap } from 'rxjs/operators';
 import { HttpLoadingService } from '@osee/shared/services/network';
 import { UiService } from '@osee/shared/services';
 import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
-import { ConnectionDropdownComponent } from 'src/app/ple/messaging/shared/dropdowns/connection-dropdown/connection-dropdown.component';
 import { connection, connectionSentinel } from '@osee/messaging/shared/types';
+import { ConnectionDropdownComponent } from '@osee/messaging/shared/dropdowns';
 
 @Component({
 	selector: 'osee-messaging-structure-names',
@@ -81,14 +81,8 @@ export class StructureNamesComponent implements OnInit {
 		)
 	);
 
-	basePath = combineLatest([
-		this.uiService.id,
-		this.uiService.type,
-		this.uiService.viewId,
-	]).pipe(
-		switchMap(([id, type, viewId]) =>
-			of(`../../../connections/${type}/${id}/${viewId}`)
-		)
+	basePath = combineLatest([this.uiService.id, this.uiService.type]).pipe(
+		switchMap(([id, type]) => of(`../../../connections/${type}/${id}`))
 	);
 	loading = this.loadingService.isLoading;
 

@@ -55,7 +55,6 @@ export class MessagePageComponent implements OnInit, OnDestroy {
 					(values.get('branchType') as 'working' | 'baseline' | '') ||
 					'';
 				this.messageService.branch = values.get('branchId') || '';
-				this.messageService.ViewId = values.get('viewId') || '';
 				this.messageService.connection = values.get('connection') || '';
 				this.messageService.messageId = '';
 				this.messageService.subMessageId = '';
@@ -63,7 +62,6 @@ export class MessagePageComponent implements OnInit, OnDestroy {
 				this.messageService.singleStructureId = '';
 				this.messageService.DiffMode = false;
 			} else {
-				this.messageService.ViewId = values.get('viewId') || '';
 				this.messageService.connection = values.get('connection') || '';
 				this.messageService.messageId = '';
 				this.messageService.subMessageId = '';

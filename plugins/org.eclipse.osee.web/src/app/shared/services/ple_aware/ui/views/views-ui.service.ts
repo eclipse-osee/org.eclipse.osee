@@ -19,10 +19,8 @@ import { BehaviorSubject } from 'rxjs';
 export class ViewsUiService {
 	private _viewId = new BehaviorSubject<string>('-1');
 
-	constructor() {}
-
 	get viewId() {
-		return this._viewId;
+		return this._viewId.asObservable();
 	}
 
 	set ViewId(id: string) {

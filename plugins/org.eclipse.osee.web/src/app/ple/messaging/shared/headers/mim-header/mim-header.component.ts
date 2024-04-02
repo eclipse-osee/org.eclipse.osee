@@ -34,7 +34,6 @@ export class MimHeaderComponent {
 	route = combineLatest([
 		this._routeService.type,
 		this._routeService.id,
-		this._routeService.viewId,
 		this._routeService.connectionId,
 		this._routeService.messageId,
 		this._routeService.submessageId,
@@ -46,7 +45,6 @@ export class MimHeaderComponent {
 			([
 				type,
 				id,
-				viewId,
 				connection,
 				message,
 				submessage,
@@ -95,8 +93,6 @@ export class MimHeaderComponent {
 																				type +
 																				'/' +
 																				id +
-																				'/' +
-																				viewId +
 																				'/',
 																		},
 																		{
@@ -108,8 +104,6 @@ export class MimHeaderComponent {
 																				type +
 																				'/' +
 																				id +
-																				'/' +
-																				viewId +
 																				'/' +
 																				connection +
 																				'/messages',
@@ -123,8 +117,6 @@ export class MimHeaderComponent {
 																				type +
 																				'/' +
 																				id +
-																				'/' +
-																				viewId +
 																				'/' +
 																				connection +
 																				'/messages/' +
@@ -142,8 +134,6 @@ export class MimHeaderComponent {
 																				type +
 																				'/' +
 																				id +
-																				'/' +
-																				viewId +
 																				'/' +
 																				connection +
 																				'/messages/' +
@@ -176,8 +166,6 @@ export class MimHeaderComponent {
 																	type +
 																	'/' +
 																	id +
-																	'/' +
-																	viewId +
 																	'/',
 															},
 															{
@@ -189,8 +177,6 @@ export class MimHeaderComponent {
 																	type +
 																	'/' +
 																	id +
-																	'/' +
-																	viewId +
 																	'/' +
 																	connection +
 																	'/messages',
@@ -204,8 +190,6 @@ export class MimHeaderComponent {
 																	type +
 																	'/' +
 																	id +
-																	'/' +
-																	viewId +
 																	'/' +
 																	connection +
 																	'/messages/' +
@@ -237,8 +221,6 @@ export class MimHeaderComponent {
 															type +
 															'/' +
 															id +
-															'/' +
-															viewId +
 															'/',
 													},
 													{
@@ -250,8 +232,6 @@ export class MimHeaderComponent {
 															type +
 															'/' +
 															id +
-															'/' +
-															viewId +
 															'/' +
 															connection +
 															'/messages',

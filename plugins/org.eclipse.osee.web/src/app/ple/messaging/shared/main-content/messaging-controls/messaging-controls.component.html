@@ -35,6 +35,7 @@
 					<a
 						mat-raised-button
 						[routerLink]="diffRouteLink"
+						queryParamsHandling="merge"
 						matTooltip="Show differences between current branch and product line"
 						><mat-icon *ngIf="_diff === 'false'"
 							>change_history</mat-icon

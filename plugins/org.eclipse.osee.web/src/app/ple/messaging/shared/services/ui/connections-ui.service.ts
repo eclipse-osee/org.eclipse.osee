@@ -53,10 +53,6 @@ export class ConnectionsUiService {
 		return this.ui.viewId;
 	}
 
-	set ViewId(id: string) {
-		this.ui.viewIdValue = id;
-	}
-
 	get currentPage() {
 		return this._currentPage$;
 	}
