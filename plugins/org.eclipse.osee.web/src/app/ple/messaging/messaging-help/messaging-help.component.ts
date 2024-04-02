@@ -21,9 +21,6 @@ import {
 @Component({
 	selector: 'osee-messaging-help',
 	templateUrl: './messaging-help.component.html',
-	styles: [
-		':host{ height: 94vh; min-height: calc(94vh - 10%); max-height: 94vh; width: 100vw; min-width: calc(100vw - 10%); display: inline-block;}',
-	],
 	standalone: true,
 	imports: [
 		RouterOutlet,
