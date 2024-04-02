@@ -40,7 +40,8 @@
 		<ng-container *ngFor="let path of name.paths">
 			<a
 				mat-button
-				[routerLink]="((basePath | async) || '') + path.path">
+				[routerLink]="((basePath | async) || '') + path.path"
+				queryParamsHandling="merge">
 				{{ path.name }}
 			</a>
 		</ng-container>

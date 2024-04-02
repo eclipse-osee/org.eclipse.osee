@@ -39,10 +39,6 @@ export class RouteStateService {
 		return this.uiService.viewId;
 	}
 
-	set ViewId(id: string) {
-		this.uiService.ViewId = id;
-	}
-
 	get isInDiff() {
 		return this.uiService.isInDiff;
 	}

@@ -57,7 +57,6 @@ export class MultiStructureTableComponent implements OnInit, OnDestroy {
 							| '') || '';
 					this.structureService.branchId =
 						paramMap.get('branchId') || '';
-					this.structureService.ViewId = paramMap.get('viewId') || '';
 					this.structureService.messageId =
 						paramMap.get('messageId') || '';
 					this.structureService.subMessageId =
@@ -75,7 +74,6 @@ export class MultiStructureTableComponent implements OnInit, OnDestroy {
 							| '') || '';
 					this.structureService.branchId =
 						paramMap.get('branchId') || '';
-					this.structureService.ViewId = paramMap.get('viewId') || '';
 					this.structureService.messageId =
 						paramMap.get('messageId') || '';
 					this.structureService.subMessageId =

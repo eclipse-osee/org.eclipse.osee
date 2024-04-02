@@ -71,10 +71,6 @@ export class MessageUiService {
 		return this.ui.viewId;
 	}
 
-	set ViewId(id: string) {
-		this.ui.viewIdValue = id;
-	}
-
 	set DiffMode(value: boolean) {
 		this._mimRoute.diffMode = value;
 	}

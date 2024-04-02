@@ -83,10 +83,6 @@ export class UiService {
 		return this.viewService.viewId;
 	}
 
-	set viewIdValue(id: string) {
-		this.viewService.ViewId = id;
-	}
-
 	public get errorText() {
 		return this.errorService.errorText;
 	}

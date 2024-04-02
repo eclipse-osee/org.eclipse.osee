@@ -93,10 +93,6 @@ export class StructuresUiService {
 		return this.ui.viewId;
 	}
 
-	set ViewId(id: string) {
-		this.ui.viewIdValue = id;
-	}
-
 	get branchType() {
 		return this._mimRoute.type;
 	}

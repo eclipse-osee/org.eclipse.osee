@@ -23,13 +23,15 @@
 							*ngIf="_branchType === 'working'"
 							mat-raised-button
 							color="primary"
-							[routerLink]="routes.diffRoute">
+							[routerLink]="routes.diffRoute"
+							queryParamsHandling="merge">
 							Difference Report
 						</a>
 						<a
 							mat-raised-button
 							color="primary"
-							[routerLink]="routes.nodeTraceRoute">
+							[routerLink]="routes.nodeTraceRoute"
+							queryParamsHandling="merge">
 							Traceability Report
 						</a>
 					</div>

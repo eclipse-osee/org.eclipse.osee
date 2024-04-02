@@ -81,7 +81,8 @@
 					class="tw-py-6">
 					<a
 						class="tw-flex tw-flex-row tw-items-center"
-						routerLink="{{ element.routerLink }}">
+						[routerLink]="element.routerLink"
+						queryParamsHandling="merge">
 						<div class="tw-pr-2">
 							<mat-icon
 								matListItemIcon

@@ -11,7 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Routes } from '@angular/router';
-import { diffReportResolverFn } from '@osee/shared/resolvers';
 
 const routes: Routes = [
 	{
@@ -26,10 +25,6 @@ const routes: Routes = [
 	},
 	{
 		path: ':branchType/:branchId',
-		redirectTo: ':branchType/:branchId/-1',
-	},
-	{
-		path: ':branchType/:branchId/:viewId',
 		loadComponent: () => import('./list-configuration.component'),
 	},
 	{

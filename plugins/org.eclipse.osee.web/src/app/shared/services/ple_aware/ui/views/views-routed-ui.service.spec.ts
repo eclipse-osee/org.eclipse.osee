@@ -13,12 +13,15 @@
 import { TestBed } from '@angular/core/testing';
 
 import { ViewsRoutedUiService } from './views-routed-ui.service';
+import { ActivatedRoute } from '@angular/router';
 
 describe('ViewsRoutedUiService', () => {
 	let service: ViewsRoutedUiService;
 
 	beforeEach(() => {
-		TestBed.configureTestingModule({});
+		TestBed.configureTestingModule({
+			providers: [{ provide: ActivatedRoute, useValue: {} }],
+		});
 		service = TestBed.inject(ViewsRoutedUiService);
 	});
 

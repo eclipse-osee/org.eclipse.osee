@@ -70,12 +70,12 @@ const routes: Routes = [
 		loadChildren: () => import('./connection-view/connection-view.routes'),
 	},
 	{
-		path: 'connections/:branchType/:branchId/:viewId/:connection/messages',
+		path: 'connections/:branchType/:branchId/:connection/messages',
 		title: connections?.pageTitle || 'OSEE',
 		loadChildren: () => import('./message-tables/message-page.routes'),
 	},
 	{
-		path: 'connections/:branchType/:branchId/:viewId/:connection/messages/:messageId/:subMessageId/elements',
+		path: 'connections/:branchType/:branchId/:connection/messages/:messageId/:subMessageId/elements',
 		title: connections?.pageTitle || 'OSEE',
 		loadChildren: () =>
 			import('./structure-tables/structure-tables.routes'),

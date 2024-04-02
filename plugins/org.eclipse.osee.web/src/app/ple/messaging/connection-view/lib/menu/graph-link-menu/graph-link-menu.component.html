@@ -20,6 +20,7 @@
 				'/messages' +
 				messageRoute.end
 			"
+			queryParamsHandling="merge"
 			[attr.data-cy]="'goto-' + data.name"
 			><mat-icon>subdirectory_arrow_right</mat-icon>Go to
 			{{ data.name }}</a
@@ -32,6 +33,7 @@
 				'/messages' +
 				messageRoute.end
 			"
+			queryParamsHandling="merge"
 			target="_blank"
 			><mat-icon color="primary">open_in_new</mat-icon>Go to
 			{{ data.name }} in new tab</a

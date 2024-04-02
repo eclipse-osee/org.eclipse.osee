@@ -261,6 +261,7 @@
 								'/messages' +
 								messageRoute.end
 							"
+							queryParamsHandling="merge"
 							*ngIf="!link.data.deleted">
 							<ng-container
 								*ngTemplateOutlet="linkView"></ng-container>

@@ -943,19 +943,12 @@ export class CurrentGraphService {
 		return combineLatest([
 			this.routeStateService.id,
 			this.routeStateService.type,
-			this.routeStateService.viewId,
 			this.InDiff,
 		]).pipe(
-			switchMap(([id, type, viewId, diff]) =>
+			switchMap(([id, type, diff]) =>
 				of({
 					beginning:
-						'/ple/messaging/connections/' +
-						type +
-						'/' +
-						id +
-						'/' +
-						viewId +
-						'/',
+						'/ple/messaging/connections/' + type + '/' + id + '/',
 					end: diff ? '/diff' : '',
 				})
 			)

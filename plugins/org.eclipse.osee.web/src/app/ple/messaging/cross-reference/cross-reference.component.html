@@ -26,9 +26,8 @@
 					*ngFor="let option of _connections"
 					[value]="option"
 					[id]="option.id!"
-					[routerLink]="
-						((connectionRoute | async) || '') + option.id
-					">
+					[routerLink]="((connectionRoute | async) || '') + option.id"
+					queryParamsHandling="merge">
 					{{ option.name }}
 				</mat-option>
 			</mat-select>

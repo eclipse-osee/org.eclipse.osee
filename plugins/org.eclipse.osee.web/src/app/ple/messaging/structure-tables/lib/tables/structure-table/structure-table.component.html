@@ -77,7 +77,8 @@
 						*matHeaderCellDef
 						[attr.colspan]="currentHeaders.length"
 						class="tw-flex-[1_1_auto] tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap tw-text-center tw-text-sm tw-text-primary-600 hover:tw-cursor-pointer"
-						[routerLink]="previousLink">
+						[routerLink]="previousLink"
+						queryParamsHandling="merge">
 						{{ breadCrumb }}
 					</th>
 				</ng-container>
@@ -516,6 +517,7 @@
 				target="_blank"
 				*ngIf="hasFilter"
 				[routerLink]="url"
+				queryParamsHandling="merge"
 				><mat-icon color="primary">open_in_new</mat-icon>Open structure
 				table in new tab</a
 			>

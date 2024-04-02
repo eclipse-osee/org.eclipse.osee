@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ViewsUiService } from '@osee/shared/services';
 
 @Injectable({
@@ -20,19 +20,30 @@ import { ViewsUiService } from '@osee/shared/services';
 export class ViewsRoutedUiService {
 	constructor(
 		private viewsService: ViewsUiService,
-		private router: Router
-	) {}
+		private router: Router,
+		private route: ActivatedRoute
+	) {
+		this.route.queryParamMap?.subscribe((queryParams) => {
+			const viewId = queryParams.get('view');
+			if (viewId !== null) {
+				this.viewsService.ViewId = viewId;
+			}
+		});
+	}
 
 	get viewId() {
 		return this.viewsService.viewId;
 	}
 
 	set ViewId(id: string) {
-		const formattedViewId = this.viewId.getValue().replace('-', '%2D');
-		const formattedId = id.replace('-', '%2D');
 		this.viewsService.ViewId = id;
-		this.router.navigateByUrl(
-			this.router.url.replace(formattedViewId, formattedId)
-		);
+		const tree = this.router.parseUrl(this.router.url);
+		const queryParams = tree.queryParams;
+		if (!id || id === '' || id === '-1') {
+			delete queryParams['view'];
+		} else {
+			queryParams['view'] = id;
+		}
+		this.router.navigate([], { queryParams: queryParams });
 	}
 }

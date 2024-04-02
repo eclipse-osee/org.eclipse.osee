@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2023 Boeing
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,8 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './unit-dropdown/unit-dropdown.component';
-export * from './rate-dropdown/rate-dropdown.component';
-export * from './message-type-dropdown/message-type-dropdown.component';
-export * from './cross-reference-dropdown/cross-reference-dropdown.component';
-export * from './connection-dropdown/connection-dropdown.component';
+import { ViewsRoutedUiService } from '@osee/shared/services';
+
+export const viewsRoutedUiServiceMock: Partial<ViewsRoutedUiService> = {};
