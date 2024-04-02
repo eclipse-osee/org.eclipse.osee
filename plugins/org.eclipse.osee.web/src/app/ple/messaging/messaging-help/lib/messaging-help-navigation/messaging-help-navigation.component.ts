@@ -16,7 +16,7 @@ import { from, iif, of, reduce, switchMap, tap } from 'rxjs';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
-import helpNavigationStructure from 'src/app/ple/messaging/messaging-help/lib/messaging-help-navigation/messaging-help-navigation-structure';
+import helpNavigationStructure from './messaging-help-navigation-structure';
 import { navigationElement } from '@osee/shared/types';
 import { UserDataAccountService } from '@osee/auth';
 import { MatDividerModule } from '@angular/material/divider';
