@@ -24,17 +24,22 @@ export class BranchRoutedUIService {
 	) {}
 
 	set branchType(value: 'working' | 'baseline' | '') {
-		let baseUrl;
+		const tree = this.router.parseUrl(this.router.url);
+		let baseUrl =
+			tree.root.children?.primary?.segments
+				.map((s) => s.path)
+				.join('/') || this.router.url;
 		if (this.branchService.type.getValue() != '') {
-			baseUrl = this.router.url.split(
+			baseUrl = baseUrl.split(
 				this.branchService.type.getValue().replace(/ /g, '%20')
 			)[0];
-		} else {
-			baseUrl = this.router.url;
 		}
+
 		this.branchService.typeValue = value;
 		this.branchService.idValue = '';
-		this.router.navigate([baseUrl, value]);
+		this.router.navigate([baseUrl, value], {
+			queryParams: tree.queryParams,
+		});
 	}
 	get type() {
 		return this.branchService.type;
@@ -45,20 +50,21 @@ export class BranchRoutedUIService {
 	}
 
 	set branchId(value: string) {
-		let baseUrl;
+		const tree = this.router.parseUrl(this.router.url);
+		let baseUrl =
+			tree.root.children?.primary?.segments
+				.map((s) => s.path)
+				.join('/') || this.router.url;
 		if (this.branchService.type.getValue() != '') {
-			baseUrl = this.router.url.split(
+			baseUrl = baseUrl.split(
 				this.branchService.type.getValue().replace(/ /g, '%20')
 			)[0];
-		} else {
-			baseUrl = this.router.url;
 		}
 		this.branchService.idValue = value;
-		this.router.navigate([
-			baseUrl,
-			this.branchService.type.getValue(),
-			value,
-		]);
+		this.router.navigate(
+			[baseUrl, this.branchService.type.getValue(), value],
+			{ queryParams: tree.queryParams }
+		);
 	}
 
 	/**
