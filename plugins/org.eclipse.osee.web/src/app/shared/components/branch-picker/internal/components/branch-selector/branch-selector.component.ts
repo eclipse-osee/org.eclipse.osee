@@ -20,7 +20,7 @@ import {
 } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSelectChange, MatSelectModule } from '@angular/material/select';
+import { MatSelectModule } from '@angular/material/select';
 import { MatOptionLoadingComponent } from '../../../../mat-option-loading/mat-option-loading/mat-option-loading.component';
 import { BranchListService } from '../../../../internal/services/branch-list.service';
 import { BranchRoutedUIService } from '../../../../internal/services/branch-routed-ui.service';
@@ -33,7 +33,6 @@ import {
 	distinctUntilChanged,
 	of,
 	switchMap,
-	tap,
 } from 'rxjs';
 import { branch } from '@osee/shared/types';
 import { MatInputModule } from '@angular/material/input';
@@ -141,5 +140,9 @@ export class BranchSelectorComponent {
 	}
 	clear() {
 		this.updateTypeAhead('');
+	}
+
+	displayFn(val: branch) {
+		return val?.name || '';
 	}
 }

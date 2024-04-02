@@ -24,7 +24,7 @@
 			type="text"
 			matInput
 			#input
-			[ngModel]="autoCompleteState.filter"
+			[ngModel]="{ name: autoCompleteState.filter }"
 			[disabled]="(selectedBranchType | async) === ''"
 			placeholder="Branches"
 			[errorStateMatcher]="errorMatcher"
@@ -39,6 +39,7 @@
 			autoActiveFirstOption="true"
 			autoSelectActiveOption="true"
 			#autoBranches="matAutocomplete"
+			[displayWith]="displayFn"
 			(optionSelected)="selectBranch($event.option.value)">
 			<ng-container *ngIf="_branches | async as branches; else loading">
 				<ng-container *ngIf="_count | async as count; else loading">
@@ -64,6 +65,7 @@
 			<ng-template #loading>
 				<mat-option
 					id="-1"
+					disabled
 					[value]="{ id: '-1', name: 'invalid' }">
 					Loading...
 				</mat-option>
