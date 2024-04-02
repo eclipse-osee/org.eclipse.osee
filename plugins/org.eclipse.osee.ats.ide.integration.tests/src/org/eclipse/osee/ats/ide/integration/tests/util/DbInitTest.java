@@ -42,9 +42,9 @@ public class DbInitTest {
    public static void setup() throws Exception {
       OseeProperties.setIsInTest(true);
       assertTrue("Demo Application Server must be running",
-         ClientSessionManager.getAuthenticationProtocols().contains("demo"));
+         ClientSessionManager.getAuthenticationProtocols().contains("orgdemo"));
 
-      checkNotProductionDataStore();
+      assertFalse("Not to be run on a production database.", ClientSessionManager.isProductionDataStore());
 
       RenderingUtil.setPopupsAllowed(false);
    }
@@ -53,7 +53,7 @@ public class DbInitTest {
    public void testDbInit() throws Exception {
       OseeProperties.setIsInTest(true);
       List<String> protocols = ClientSessionManager.getAuthenticationProtocols();
-      Assert.assertTrue("Application Server must be running." + protocols, protocols.contains("demo"));
+      Assert.assertTrue("Application Server must be running. " + protocols, protocols.contains("orgdemo"));
 
       System.out.println("\nBegin Database Initialization");
 
@@ -89,14 +89,6 @@ public class DbInitTest {
 
       System.out.println("End Database Initialization\n");
 
-   }
-
-   private static void checkNotProductionDataStore() {
-      assertFalse("Not to be run on a production database.", isProductionDataStore());
-   }
-
-   private static boolean isProductionDataStore() {
-      return ClientSessionManager.isProductionDataStore();
    }
 
 }

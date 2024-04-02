@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.core.server.AbstractAuthenticationProvider;
 /**
  * @author Roberto E. Escobar
  */
-public class DemoAuthenticationProvider extends AbstractAuthenticationProvider {
+public class AuthenticationProviderOrgDemo extends AbstractAuthenticationProvider {
    private final boolean autoAuthenticate = true;
 
    // for ReviewOsgiXml public void setLogger(Log logger)
@@ -45,7 +45,7 @@ public class DemoAuthenticationProvider extends AbstractAuthenticationProvider {
 
    @Override
    public String getProtocol() {
-      return "demo";
+      return "orgdemo";
    }
 
 }

@@ -83,7 +83,7 @@ public class AtsTest_DemoPopulateAndTest_Suite {
       }
       OseeProperties.setIsInTest(true);
       assertTrue("Demo Application Server must be running",
-         ClientSessionManager.getAuthenticationProtocols().contains("demo"));
+         ClientSessionManager.getAuthenticationProtocols().contains("orgdemo"));
       RenderingUtil.setPopupsAllowed(false);
       DemoUtil.setPopulateDbSuccessful(false);
 

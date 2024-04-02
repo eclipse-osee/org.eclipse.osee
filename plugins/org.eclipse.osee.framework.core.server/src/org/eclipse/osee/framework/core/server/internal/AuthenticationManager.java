@@ -83,12 +83,13 @@ public class AuthenticationManager implements IAuthenticationManager {
       String key = getProtocol();
       if (Strings.isValid(key)) {
          IAuthenticationProvider provider = authenticationProviders.get(key);
+         if (provider == null) {
+            throw new OseeAuthenticationException("No authentication provider for key [%s]", key);
+         }
          if (logged.compareAndSet(false, true)) {
             XConsoleLogger.out("Authentication Provider [%s]-[%s]\n", key, provider.getClass().getSimpleName());
          }
-         if (provider != null) {
-            return provider;
-         }
+         return provider;
       }
       throw new OseeAuthenticationException("Invalid authentication protocol [%s]", key);
    }
