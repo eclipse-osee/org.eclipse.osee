@@ -44,9 +44,9 @@ public class DemoDbPopulateSuite {
       DemoUtil.checkDbInitSuccess();
       OseeProperties.setIsInTest(true);
       assertTrue("Demo Application Server must be running.",
-         ClientSessionManager.getAuthenticationProtocols().contains("demo"));
+         ClientSessionManager.getAuthenticationProtocols().contains("orgdemo"));
       assertTrue("Client must authenticate using demo protocol",
-         ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
+         ClientSessionManager.getSession().getAuthenticationProtocol().equals("orgdemo"));
       assertTrue("Should be run on demo database.", TestUtil.isDemoDb());
 
       RenderingUtil.setPopupsAllowed(false);

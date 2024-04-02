@@ -150,7 +150,7 @@ public class AtsHealthCheckOperation {
       rd.log(AHTML.heading(4, configDbName + " - ATS Health Check"));
       aiIds = atsApi.getConfigService().getConfigurations().getIdToAi().keySet();
       try {
-         ElapsedTime time = new ElapsedTime("ATS Health Check", false, true);
+         ElapsedTime time = new ElapsedTime("ATS Health Check", false, false);
          runIt(rd);
          cache = null;
          String elapsedStr = time.end(Units.MIN);

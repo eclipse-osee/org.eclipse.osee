@@ -150,7 +150,7 @@
 										<property name="xserver-home" value="${xserver-project}/target/server" />
 										<property name="xserver-port" value="${ats-server-port}" />
 										<property name="xserver-telnet-port" value="${ats-server-telnet-port}" />
-										<property name="xserver-authentication" value="demo" />
+										<property name="xserver-authentication" value="orgdemo" />
 										<property name="xserver-data"
 											value="${project.build.directory}/server-data" />
 										<property name="xserver-log-config" value="${project.basedir}/resources/logback-test.xml" />
