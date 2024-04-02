@@ -359,8 +359,8 @@ public class AtsStoreService implements IAtsStoreService {
          for (String server : servers) {
             atsApi.getServerEndpoints().getConfigEndpoint().requestCacheReload();
             try {
-               WebTarget target = AtsApiService.get().jaxRsApi().newTargetUrl(
-                  String.format("http://%s%s", server, "/ats/config/clearcache"));
+               WebTarget target =
+                  AtsApiService.get().jaxRsApi().newTargetUrl(String.format("%s%s", server, "/ats/config/clearcache"));
                Response response = target.request().get();
                if (response.getStatus() == HttpURLConnection.HTTP_OK || response.getStatus() == HttpURLConnection.HTTP_ACCEPTED) {
                   rd.logf("ATS server %s cache update was successful.\n", server);
