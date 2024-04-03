@@ -385,7 +385,8 @@ public class MimIcdGenerator {
                }
                String cat = struct.getInterfaceStructureCategory();
                String subMsgNumber = subMessage.getInterfaceSubMessageNumber();
-               String taskFileType = struct.getInterfaceTaskFileType() + "";
+               String taskFileType =
+                  struct.getInterfaceTaskFileType() == 0 ? "n/a" : struct.getInterfaceTaskFileType() + "";
                String desc = struct.getDescription();
                boolean txRateChanged = msgDiffItem != null && msgDiffItem.hasAttributeChanges(
                   CoreAttributeTypes.InterfaceMessageRate.getId());
@@ -927,7 +928,6 @@ public class MimIcdGenerator {
             writer.writeRow(3, elementHeaders, CELLSTYLE.BOLD);
             if (struct.getId() == 0) {
                for (InterfaceStructureElementToken element : struct.getElements()) {
-
                   PlatformTypeToken platformType = element.getPlatformType();
                   Integer byteSize = (int) element.getElementSizeInBytes();
                   resultWidths =
@@ -937,7 +937,6 @@ public class MimIcdGenerator {
                   rowIndex.getAndAdd(1);
                }
             } else {
-
                for (int i = 0; i < info.elements.size(); i++) {
                   InterfaceStructureElementToken element = info.elements.get(i);
                   Integer byteSize = (int) element.getInterfacePlatformTypeByteSize();
