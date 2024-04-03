@@ -13,10 +13,8 @@
 
 package org.eclipse.osee.ats.api.ev;
 
-import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
-import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 
 /**
  * @author Donald G. Dunne
@@ -52,16 +50,5 @@ public interface IAtsEarnedValueService {
    int getPercentCompleteFromTasks(IAtsWorkItem workItem);
 
    int getPercentCompleteFromReviews(IAtsWorkItem workItem, IStateToken state);
-
-   default boolean isUseTextWorkPackages(Collection<IAtsTeamWorkflow> teamWfs) {
-      boolean useTextWorkPackages = false;
-      if (!teamWfs.isEmpty()) {
-         if (teamWfs.iterator().next().getTeamDefinition().getTags() != null) {
-            useTextWorkPackages =
-               teamWfs.iterator().next().getTeamDefinition().getTags().contains(WorkPackageUtil.USE_TEXT_WORK_PACKAGES);
-         }
-      }
-      return useTextWorkPackages;
-   }
 
 }

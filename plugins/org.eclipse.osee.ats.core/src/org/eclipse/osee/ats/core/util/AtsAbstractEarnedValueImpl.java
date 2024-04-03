@@ -14,24 +14,15 @@
 package org.eclipse.osee.ats.core.util;
 
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.IAtsConfigObject;
-import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
-import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.model.WorkPackage;
-import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -45,49 +36,6 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
    public AtsAbstractEarnedValueImpl(Log logger, AtsApi atsApi) {
       this.logger = logger;
       this.atsApi = atsApi;
-   }
-
-   public Collection<IAtsWorkPackage> getWorkPackageOptions(IAtsObject object,
-      List<IAtsWorkPackage> workPackageOptions) {
-      // Config objects get work package options from related work package artifacts
-      if (object instanceof IAtsConfigObject) {
-         IAtsConfigObject configObj = (IAtsConfigObject) object;
-         ArtifactId artifact = atsApi.getQueryService().getArtifact(configObj);
-         if (artifact != null) {
-            for (ArtifactToken workPackageArt : atsApi.getRelationResolver().getRelated(artifact,
-               AtsRelationTypes.TeamDefinitionToWorkPackage_WorkPackage)) {
-               workPackageOptions.add(new WorkPackage(logger, atsApi, workPackageArt));
-            }
-         }
-      }
-      // Team Wf get work package options of Ais and Team Definition
-      else if (object instanceof IAtsTeamWorkflow) {
-         IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) object;
-         getWorkPackageOptions(teamWf.getTeamDefinition(), workPackageOptions);
-         for (IAtsActionableItem ai : teamWf.getActionableItems()) {
-            getWorkPackageOptions(ai, workPackageOptions);
-         }
-      }
-      // Children work items inherit the work packages options of their parent team workflow
-      else if (object instanceof IAtsWorkItem) {
-         IAtsWorkItem workItem = (IAtsWorkItem) object;
-         // Work Items related to Team Wf get their options from Team Wf
-         IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
-         if (teamWf != null) {
-            getWorkPackageOptions(teamWf, workPackageOptions);
-         }
-         // Stand-alone reviews get their options from related AIs and Team Defs
-         else if (workItem instanceof IAtsAbstractReview) {
-            IAtsAbstractReview review = (IAtsAbstractReview) workItem;
-            for (IAtsActionableItem ai : review.getActionableItems()) {
-               getWorkPackageOptions(ai, workPackageOptions);
-               if (ai.getTeamDefinition() != null) {
-                  getWorkPackageOptions(ai.getTeamDefinition(), workPackageOptions);
-               }
-            }
-         }
-      }
-      return workPackageOptions;
    }
 
    @Override

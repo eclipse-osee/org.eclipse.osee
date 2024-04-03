@@ -269,7 +269,7 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
          .andMembers(DemoUsers.Joe_Smith) //
          .andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_Req) //
          .andTeamWorkflowArtifactType(DemoArtifactTypes.DemoReqTeamWorkflow) //
-         .andWorkPackages("SAW PL Req Work Packages", "Work Package 1", "Work Package 2");
+         .andWorkPackages("SAW PL Req Work Packages", "Wrk Pkg 1", "Wrk Pkg 2", "Wrk Pkg 3");
 
       sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_SW_Design_TeamDef) //
          .andProgram(DemoArtifactToken.SAW_PL_Program) //

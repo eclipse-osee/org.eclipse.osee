@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.workdef;
 
 import java.util.Arrays;
 import java.util.Collection;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.data.AtsUserGroups;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -25,6 +26,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
+import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * @author Donald G. Dunne
@@ -37,8 +39,11 @@ public class ValidateWorkDefinitionNavigateItem extends XNavigateItem {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
-      XResultData results = AtsApiService.get().getWorkDefinitionService().validateWorkDefinitions();
-      XResultDataUI.report(results, getName(), Manipulations.ALL, Manipulations.ERROR_WARNING_HEADER);
+      if (MessageDialog.openConfirm(Displays.getActiveShell(), getName(),
+         getName() + "? \n\nThis will NOT make changes to db, only report problems")) {
+         XResultData results = AtsApiService.get().getWorkDefinitionService().validateWorkDefinitions();
+         XResultDataUI.report(results, getName(), Manipulations.ALL, Manipulations.ERROR_WARNING_HEADER);
+      }
    }
 
    @Override

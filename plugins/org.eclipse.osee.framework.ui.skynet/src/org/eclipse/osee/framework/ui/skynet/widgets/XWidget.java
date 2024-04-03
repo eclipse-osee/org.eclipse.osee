@@ -79,7 +79,7 @@ public abstract class XWidget {
    private Object object;
    private ILabelProvider labelProvider;
    private ArtifactTypeToken artifactType = ArtifactTypeToken.SENTINEL;
-   private AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
+   protected AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
    private AttributeTypeToken attributeType2 = AttributeTypeToken.SENTINEL;
    private String id;
    protected Object defaultValueObj;

@@ -111,7 +111,7 @@ public class AtsApplication extends Application {
       OseeTemplateTokens.register(registry);
 
       // Register conversions (add new ones to top)
-      atsApiServer.addAtsDatabaseConversion(new ConvertWorkPackageArtsToStrAttr(orcsApi));
+      atsApiServer.addAtsDatabaseConversion(new ConvertWorkPackageArtsToStrAttr());
       atsApiServer.addAtsDatabaseConversion(new ConvertCompCancelStateAndAssigneeAttributes(atsApiServer));
       atsApiServer.addAtsDatabaseConversion(new ConvertToStateAndAssigneeAttributes(orcsApi));
       atsApiServer.addAtsDatabaseConversion(new ConvertCreateUpdateAtsConfig(orcsApi));

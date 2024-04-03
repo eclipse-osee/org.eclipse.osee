@@ -45,8 +45,7 @@ public class XHyperlinkLabelEnumeratedArt extends XHyperlinkLabelValueSelection 
 
    public static final String WIDGET_ID = XHyperlinkLabelEnumeratedArt.class.getSimpleName();
 
-   protected AttributeTypeToken attributeType;
-   protected ArtifactTypeToken artifactType;
+   protected ArtifactTypeToken artifactType = ArtifactTypeToken.SENTINEL;
    protected ArtifactToken enumeratedArt = null;
    protected List<String> checked = new ArrayList<>();
 

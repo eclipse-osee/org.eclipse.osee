@@ -1590,4 +1590,10 @@ public final class Conditions {
    private Conditions() {
       // Utility Class
    }
+
+   public static void checkValid(Id id) {
+      if (id == null || id.isInvalid()) {
+         throw new OseeArgumentException("Id [%s] is Invalid", id);
+      }
+   }
 }
