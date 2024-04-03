@@ -69,6 +69,13 @@ public class AtsArtifactFactory extends ArtifactFactory {
          supportedTypes.addAll(Arrays.asList(Action, PeerToPeerReview, DecisionReview, Task, TeamWorkflow, Goal,
             AgileSprint, AgileBacklog));
          supportedTypes.addAll(TeamWorkflow.getAllDescendantTypes());
+         supportedTypes.addAll(Task.getAllDescendantTypes());
+         supportedTypes.addAll(PeerToPeerReview.getAllDescendantTypes());
+         supportedTypes.addAll(Action.getAllDescendantTypes());
+         supportedTypes.addAll(DecisionReview.getAllDescendantTypes());
+         supportedTypes.addAll(Goal.getAllDescendantTypes());
+         supportedTypes.addAll(AgileSprint.getAllDescendantTypes());
+         supportedTypes.addAll(AgileBacklog.getAllDescendantTypes());
       }
       return supportedTypes;
    }
