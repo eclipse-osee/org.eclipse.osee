@@ -12,6 +12,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.util.widgets;
 
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -24,6 +25,7 @@ public class XHyperlinkWorkPackageDam extends XHyperlinkLabelEnumeratedArtDam {
 
    public XHyperlinkWorkPackageDam() {
       super("Work Package");
+      this.attributeType = AtsAttributeTypes.WorkPackage;
    }
 
    /**

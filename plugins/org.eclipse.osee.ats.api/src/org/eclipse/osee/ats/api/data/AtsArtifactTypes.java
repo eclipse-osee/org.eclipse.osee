@@ -288,6 +288,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(ValidateChangesRanDate)
       .zeroOrOne(ManagerSignedOffByDate)
       .zeroOrOne(ManagerSignedOffBy)
+      .zeroOrOne(ActivityId)
    );
 
    ArtifactTypeToken Goal = ats.add(ats.artifactType(72L, "Goal", false, GOAL, AbstractWorkflowArtifact)

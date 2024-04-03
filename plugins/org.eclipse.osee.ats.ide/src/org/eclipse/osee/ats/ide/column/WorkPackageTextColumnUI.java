@@ -41,8 +41,8 @@ public class WorkPackageTextColumnUI extends XViewerAtsAttrTokenXColumn {
    }
 
    protected WorkPackageTextColumnUI() {
-      super(AtsAttributeTypes.WorkPackage, WorldXViewerFactory.COLUMN_NAMESPACE + ".workPackage", "Work Package (text)",
-         80, XViewerAlign.Left, false, SortDataType.String, true, "");
+      super(AtsAttributeTypes.WorkPackage, WorldXViewerFactory.COLUMN_NAMESPACE + ".workPackage", "Work Package", 80,
+         XViewerAlign.Left, false, SortDataType.String, true, "");
    }
 
    /**

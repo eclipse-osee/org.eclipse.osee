@@ -536,6 +536,9 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
                   } else {
                      Object obj = widget.getData();
                      if (obj != null) {
+                        if (obj instanceof String && Strings.isInvalid((String) obj)) {
+                           continue;
+                        }
                         changes.addAttribute(teamWf, attrType, obj);
                      }
                   }

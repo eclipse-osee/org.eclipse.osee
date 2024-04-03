@@ -201,9 +201,15 @@ public final class FrameworkXWidgetProvider {
             xWidget = getXWidget(rItem, xWidgetName, name, artifact);
          }
          if (xWidget != null) {
-            xWidget.setArtifactType(rItem.getArtifactType());
-            xWidget.setAttributeType(rItem.getAttributeType());
-            xWidget.setAttributeType2(rItem.getAttributeType2());
+            if (rItem.getArtifactType().isValid()) {
+               xWidget.setArtifactType(rItem.getArtifactType());
+            }
+            if (rItem.getAttributeType().isValid()) {
+               xWidget.setAttributeType(rItem.getAttributeType());
+            }
+            if (rItem.getAttributeType2().isValid()) {
+               xWidget.setAttributeType2(rItem.getAttributeType2());
+            }
             xWidget.setOseeImage(rItem.getOseeImage());
             xWidget.setTeamId(rItem.getTeamId());
             if (artifact != null) {

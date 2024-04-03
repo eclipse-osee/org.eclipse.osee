@@ -15,9 +15,7 @@ package org.eclipse.osee.ats.rest.internal.config;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -25,7 +23,6 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -34,7 +31,6 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime.Units;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * See getDescription() below
@@ -44,15 +40,9 @@ import org.eclipse.osee.orcs.OrcsApi;
 public class ConvertWorkPackageArtsToStrAttr implements IAtsDatabaseConversion {
 
    private static final String WFSEXIST = "wfsexist";
-   private final OrcsApi orcsApi;
    private final boolean debug = false;
    private final String TITLE = "Convert Work Packages to String Attribute";
    private AtsApi atsApi;
-   private final Map<ArtifactId, ArtifactToken> idToWorkPackage = new HashMap<>();
-
-   public ConvertWorkPackageArtsToStrAttr(OrcsApi orcsApi) {
-      this.orcsApi = orcsApi;
-   }
 
    @Override
    public void run(XResultData rd, boolean reportOnly, AtsApi atsApi) {
@@ -65,6 +55,8 @@ public class ConvertWorkPackageArtsToStrAttr implements IAtsDatabaseConversion {
       List<ArtifactToken> referencedWorkPackArts = deleteUnusedWorkPackages(allWorkPackArts, rd, reportOnly, atsApi);
 
       convertWorkItemsToStringAttr(referencedWorkPackArts, rd, reportOnly, atsApi);
+
+      convertActivityIdToWorkPkgAttr(rd, reportOnly, atsApi);
 
       rd.log("Complete");
    }
@@ -145,6 +137,52 @@ public class ConvertWorkPackageArtsToStrAttr implements IAtsDatabaseConversion {
       return referencedWorkPackArts;
    }
 
+   private void convertActivityIdToWorkPkgAttr(XResultData rd, boolean reportOnly, AtsApi atsApi) {
+      try {
+         Collection<IAtsWorkItem> workItems =
+            atsApi.getQueryService().getWorkItemsAtrTypeExists(AtsAttributeTypes.ActivityId);
+
+         int size = workItems.size();
+         int count = 1;
+
+         IAtsChangeSet changes = null;
+         if (!reportOnly) {
+            changes = atsApi.createChangeSet(getName() + " - Convert", AtsCoreUsers.SYSTEM_USER);
+         }
+
+         for (IAtsWorkItem workItem : workItems) {
+            System.err.println(String.format("Convert: Processing %s/%s...", count++, size));
+
+            List<String> actIds =
+               atsApi.getAttributeResolver().getAttributesToStringList(workItem, AtsAttributeTypes.ActivityId);
+
+            if (actIds.isEmpty()) {
+               continue;
+            }
+            String msg = String.format("Activity Id(s) [%s] needs to be converted for %s",
+               Collections.toString(",", actIds), workItem.toStringWithId());
+            System.err.println(msg);
+            rd.log(msg + "\n");
+
+            if (!reportOnly) {
+               changes.deleteAttributes(workItem, AtsAttributeTypes.ActivityId);
+               changes.setAttributeValues(workItem, AtsAttributeTypes.WorkPackage, Collections.cast(actIds));
+               rd.log("---> set and removed ref\n");
+            }
+         }
+
+         if (!reportOnly && !changes.isEmpty()) {
+            TransactionToken tx = changes.execute();
+            System.err.println("Transaction: " + tx.getIdString());
+            rd.logf("Transaction %s\n", tx.getIdString());
+         }
+
+      } catch (Exception ex) {
+         System.err.println(Lib.exceptionToString(ex));
+         rd.errorf("Exception processing ... %s\n", ex.getLocalizedMessage());
+      }
+   }
+
    private void convertWorkItemsToStringAttr(List<ArtifactToken> referencedWorkPackArts, XResultData rd,
       boolean reportOnly, AtsApi atsApi) {
       try {
@@ -186,16 +224,12 @@ public class ConvertWorkPackageArtsToStrAttr implements IAtsDatabaseConversion {
                   rd.log(msg + "\n");
 
                   IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItem(workflowArt);
-                  if (workItem.isCompletedOrCancelled()) {
-                     if (reportOnly) {
-                        System.err.println("---> need to set and removed ref");
-                     } else {
-                        changes.setSoleAttributeValue(workflowArt, AtsAttributeTypes.WorkPackage, storeId);
-                        changes.deleteAttributes(workflowArt, AtsAttributeTypes.WorkPackageReference);
-                        System.err.println("---> set and removed ref");
-                     }
+                  if (reportOnly) {
+                     System.err.println("---> need to set and removed ref");
                   } else {
-                     System.err.println("---> skipped cause inwork");
+                     changes.setSoleAttributeValue(workflowArt, AtsAttributeTypes.WorkPackage, storeId);
+                     changes.deleteAttributes(workflowArt, AtsAttributeTypes.WorkPackageReference);
+                     System.err.println("---> set and removed ref");
                   }
                }
             }

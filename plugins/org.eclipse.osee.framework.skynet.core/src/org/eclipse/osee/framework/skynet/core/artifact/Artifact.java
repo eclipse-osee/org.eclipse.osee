@@ -501,6 +501,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     */
    @SuppressWarnings("unchecked")
    private <T> Attribute<T> createAttribute(AttributeTypeId attributeType) {
+      Conditions.checkValid(attributeType);
       Class<? extends Attribute<T>> attributeClass =
          (Class<? extends Attribute<T>>) AttributeTypeManager.getAttributeBaseClass(attributeType);
       Attribute<T> attribute = null;
@@ -515,6 +516,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
 
    private <T> Attribute<T> initializeAttribute(AttributeTypeId attributeType, ModificationType modificationType,
       boolean markDirty, boolean setDefaultValue) {
+      Conditions.checkValid(attributeType);
       Attribute<T> attribute = createAttribute(attributeType);
       attribute.internalInitialize(attributeType, this, modificationType, ApplicabilityId.BASE, markDirty,
          setDefaultValue);
@@ -524,6 +526,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    public final <T> Attribute<T> internalInitializeAttribute(AttributeTypeToken attributeType, int attributeId,
       GammaId gammaId, ModificationType modificationType, ApplicabilityId applicabilityId, boolean markDirty,
       Object... data) {
+      Conditions.checkValid(attributeType);
       return internalInitializeAttribute(attributeType, AttributeId.valueOf(attributeId), gammaId, modificationType,
          applicabilityId, markDirty, data);
    }
@@ -531,6 +534,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    public final <T> Attribute<T> internalInitializeAttribute(AttributeTypeToken attributeType, AttributeId attributeId,
       GammaId gammaId, ModificationType modificationType, ApplicabilityId applicabilityId, boolean markDirty,
       Object... data) {
+      Conditions.checkValid(attributeType);
       Attribute<T> attribute = createAttribute(attributeType);
       attribute.internalInitialize(attributeType, this, modificationType, applicabilityId, attributeId, gammaId,
          markDirty, false);
@@ -540,6 +544,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
 
    @Override
    public final boolean isAttributeTypeValid(AttributeTypeId attributeType) {
+      Conditions.checkValid(attributeType);
       if (attributeType.equals(CoreAttributeTypes.Name)) {
          return true;
       }
@@ -559,7 +564,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    public final boolean areAllAttributeTypesInvalid(@NonNull AttributeTypeId... attributeTypes) {
       Conditions.requireNonNull(attributeTypes);
       for (var attributeType : attributeTypes) {
-         Conditions.requireNonNull(attributeType);
+         Conditions.checkValid(attributeType);
          if (this.isAttributeTypeValid(attributeType)) {
             return false;
          }
@@ -571,6 +576,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * The use of this method is discouraged since it directly returns Attributes.
     */
    public final <T> List<Attribute<T>> getAttributesByValue(AttributeTypeId attributeType, Object value) {
+      Conditions.checkValid(attributeType);
       List<Attribute<?>> filteredList = new ArrayList<>();
       for (Attribute<?> attribute : getAttributes(attributeType)) {
          if (attribute.getValue().equals(value)) {
@@ -581,6 +587,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    }
 
    public final <T> List<Attribute<T>> getAttributes(AttributeTypeId attributeType, DeletionFlag deletionFlag) {
+      Conditions.checkValid(attributeType);
       List<Attribute<?>> filteredList = new ArrayList<>();
       for (Attribute<?> attribute : getAttributes(attributeType)) {
          if (deletionFlag == DeletionFlag.INCLUDE_DELETED) {
@@ -628,6 +635,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * The use of this method is discouraged since it directly returns Attributes.
     */
    public final <T> List<Attribute<T>> getAttributes(AttributeTypeId attributeType) {
+      Conditions.checkValid(attributeType);
       ensureAttributesLoaded();
       return Collections.castAll(getAttributes(attributes.getValues(attributeType), false));
    }
@@ -643,6 +651,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * Deletes all attributes of the given type, if any
     */
    public final void deleteAttributes(AttributeTypeId attributeType) {
+      Conditions.checkValid(attributeType);
       for (Attribute<?> attribute : getAttributes(attributeType)) {
          attribute.delete();
       }
@@ -668,11 +677,13 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    }
 
    public final <T> Attribute<T> getSoleAttribute(AttributeTypeId attributeType) {
+      Conditions.checkValid(attributeType);
       ensureAttributesLoaded();
       return Collections.oneOrSentinel(getAttributes(attributeType), null);
    }
 
    private <T> Attribute<T> getOrCreateSoleAttribute(AttributeTypeId attributeType) {
+      Conditions.checkValid(attributeType);
       Attribute<T> attribute = getSoleAttribute(attributeType);
       if (attribute == null) {
          if (!isAttributeTypeValid(attributeType)) {
@@ -686,6 +697,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
 
    @SuppressWarnings("unchecked")
    public <T> List<T> getEnumAttributeValues(AttributeTypeToken attributeType) {
+      Conditions.checkValid(attributeType);
       List<T> attributeValues = new ArrayList<T>();
       if (attributeType.isEnumerated()) {
          List<String> enumAttributeValues = new ArrayList<String>();
@@ -720,6 +732,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * existed
     */
    public final <T> T getOrInitializeSoleAttributeValue(AttributeTypeId attributeType) {
+      Conditions.checkValid(attributeType);
       Attribute<T> attribute = getOrCreateSoleAttribute(attributeType);
       return attribute.getValue();
    }
@@ -731,6 +744,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * Used for quick access to attribute value that should only have 0 or 1 instances of the attribute.
     */
    public final <T> T getSoleAttributeValue(AttributeTypeId attributeType) {
+      Conditions.checkValid(attributeType);
       List<Attribute<T>> soleAttributes = getAttributes(attributeType);
       if (soleAttributes.isEmpty()) {
          if (!isAttributeTypeValid(attributeType)) {
@@ -774,6 +788,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
 
    public final String getSoleAttributeValueAsString(AttributeTypeToken attributeType, String defaultReturnValue)
       throws MultipleAttributesExist {
+      Conditions.checkValid(attributeType);
       String toReturn = defaultReturnValue;
       if (attributeType.isArtifactId()) {
          List<Attribute<Object>> soleAttributes = getAttributes(attributeType);
@@ -823,6 +838,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * @throws MultipleAttributesExist if multiple attribute instances exist
     */
    public final <T> T getSoleAttributeValue(AttributeTypeId attributeType, T defaultReturnValue) {
+      Conditions.checkValid(attributeType);
       List<Attribute<T>> soleAttributes = getAttributes(attributeType);
       if (soleAttributes.size() == 1) {
          T value = soleAttributes.iterator().next().getValue();
@@ -852,6 +868,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * is more than one instance of the attribute type exists for this artifact
     */
    public final void deleteSoleAttribute(AttributeTypeId attributeType) {
+      Conditions.checkValid(attributeType);
       Attribute<?> attribute = getSoleAttribute(attributeType);
       if (attribute != null) {
          deleteAttribute(attribute);
@@ -862,6 +879,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * Deletes the first attribute found of the given type and value
     */
    public final void deleteAttribute(AttributeTypeId attributeType, Object value) {
+      Conditions.checkValid(attributeType);
       for (Attribute<Object> attribute : getAttributes(attributeType)) {
          if (attribute.getValue().equals(value)) {
             deleteAttribute(attribute);
@@ -871,6 +889,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    }
 
    public final void deleteAttribute(AttributeId attributeId) {
+      Conditions.checkValid(attributeId);
       for (Attribute<?> attribute : getAttributes()) {
          if (attributeId.getId().equals(attribute.getId())) {
             deleteAttribute(attribute);
@@ -892,18 +911,22 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * a new attribute is added and its value set.
     */
    public final <T> void setSoleAttributeValue(AttributeTypeId attributeType, T value) {
+      Conditions.checkValid(attributeType);
       getOrCreateSoleAttribute(attributeType).setValue(value);
    }
 
    public final <T> void setSoleAttributeFromString(AttributeTypeId attributeType, String value) {
+      Conditions.checkValid(attributeType);
       getOrCreateSoleAttribute(attributeType).setFromString(value);
    }
 
    public final void setSoleAttributeFromStream(AttributeTypeGeneric<?> attributeType, InputStream stream) {
+      Conditions.checkValid(attributeType);
       getOrCreateSoleAttribute(attributeType).setValueFromInputStream(stream);
    }
 
    public final String getAttributesToStringSorted(AttributeTypeId attributeType) {
+      Conditions.checkValid(attributeType);
       return getAttributesToString(attributeType, true);
    }
 
@@ -911,6 +934,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * @return comma delimited representation of all the attributes of the type attributeType in an unspecified order
     */
    public final String getAttributesToString(AttributeTypeId attributeType) {
+      Conditions.checkValid(attributeType);
       return getAttributesToString(attributeType, false);
    }
 
@@ -918,6 +942,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * @return comma delimited representation of all the attributes of the type attributeName
     */
    public final String getAttributesToString(AttributeTypeId attributeType, boolean sorted) {
+      Conditions.checkValid(attributeType);
       List<String> strs = new ArrayList<>();
       List<Attribute<Object>> attributes = getAttributes(attributeType);
       if (sorted) {
@@ -934,6 +959,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * @return comma separator representation unique values of the attributes of the type attributeName
     */
    public final String getAttributesToStringUnique(AttributeTypeId attributeType, String separator) {
+      Conditions.checkValid(attributeType);
       Set<String> strs = new HashSet<>();
       for (Attribute<?> attr : getAttributes(attributeType)) {
          strs.add(String.valueOf(attr));
@@ -946,6 +972,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * value. Will not touch any other values.
     */
    public void setSingletonAttributeValue(AttributeTypeId attributeType, String value) {
+      Conditions.checkValid(attributeType);
       List<Attribute<String>> attributes = getAttributesByValue(attributeType, value);
       if (attributes.isEmpty()) {
          addAttribute(attributeType, value);
@@ -962,6 +989,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * Will remove one or more of the single string value if artifact has it. Will not touch any other values.
     */
    public void deleteSingletonAttributeValue(AttributeTypeId attributeType, String value) {
+      Conditions.checkValid(attributeType);
       for (Attribute<?> attribute : getAttributesByValue(attributeType, value)) {
          attribute.delete();
       }
@@ -975,6 +1003,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * NOTE: You MUST add artifact to transaction AFTER calling this method for new artifacts.
     */
    public final void setAttributeValues(AttributeTypeId attributeType, Collection<String> newValues) {
+      Conditions.checkValid(attributeType);
       ensureAttributesLoaded();
       // ensure new values are unique
       HashSet<String> uniqueNewValues = new HashSet<>(newValues);
@@ -1013,6 +1042,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    }
 
    public final <T> void setAttributeFromValues(AttributeTypeId attributeType, Collection<T> values) {
+      Conditions.checkValid(attributeType);
       ensureAttributesLoaded();
 
       Set<T> uniqueItems = Collections.toSet(values);
@@ -1051,6 +1081,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    }
 
    public final void setBinaryAttributeFromValues(AttributeTypeId attributeType, Collection<InputStream> values) {
+      Conditions.checkValid(attributeType);
       ensureAttributesLoaded();
 
       List<Attribute<Object>> remainingAttributes = getAttributes(attributeType);
@@ -1074,7 +1105,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * adds a new attribute of the type named attributeTypeName and assigns it the given value
     */
    public final <T> void addAttribute(AttributeTypeId attributeType, T value) {
-      Conditions.checkNotNull(value, "Attribute value", "attribute type [%s]", attributeType);
+      Conditions.checkValid(attributeType);
       initializeAttribute(attributeType, ModificationType.NEW, true, false).setValue(value);
    }
 
@@ -1083,6 +1114,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * if any.
     */
    public final void addAttribute(AttributeTypeId attributeType) {
+      Conditions.checkValid(attributeType);
       initializeAttribute(attributeType, ModificationType.NEW, true, true);
    }
 
@@ -1091,6 +1123,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * if any.
     */
    public final void addAttribute(AttributeTypeToken attributeType) {
+      Conditions.checkValid(attributeType);
       initializeAttribute(attributeType, ModificationType.NEW, true, true);
    }
 
@@ -1098,7 +1131,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * adds a new attribute of the type named attributeTypeName and assigns it the given value
     */
    public final void addAttributeFromString(AttributeTypeId attributeType, String value) {
-      Conditions.checkNotNull(value, "Attribute value", "attribute type [%s]", attributeType);
+      Conditions.checkValid(attributeType);
       initializeAttribute(attributeType, ModificationType.NEW, true, false).setFromString(value);
    }
 
@@ -1107,7 +1140,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * enumerated and value is already present
     */
    private final <T> void setOrAddAttribute(AttributeTypeId attributeType, T value) {
-      Conditions.checkNotNull(value, "Attribute value", "attribute type [%s]", attributeType);
+      Conditions.checkValid(attributeType);
       List<Attribute<Object>> attributes = getAttributes(attributeType);
       for (Attribute<?> canidateAttribute : attributes) {
          if (canidateAttribute.getValue().equals(value)) {
@@ -1121,6 +1154,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * @return string collection containing of all the attribute values of type attributeType
     */
    public final List<String> getAttributesToStringList(AttributeTypeId attributeType) {
+      Conditions.checkValid(attributeType);
       ensureAttributesLoaded();
 
       List<String> items = new ArrayList<>();
@@ -1131,6 +1165,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    }
 
    public List<String> getAttributesToStringList(AttributeTypeToken attributeType, DeletionFlag deletionFlag) {
+      Conditions.checkValid(attributeType);
       ensureAttributesLoaded();
 
       List<String> items = new ArrayList<>();
@@ -1141,6 +1176,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    }
 
    public final <T> List<T> getAttributeValues(AttributeTypeId attributeType) {
+      Conditions.checkValid(attributeType);
       ensureAttributesLoaded();
 
       List<T> items = new ArrayList<>();

@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 
@@ -41,14 +42,13 @@ public class XHyperlinkLabelEnumeratedArtDam extends XHyperlinkLabelEnumeratedAr
    }
 
    @Override
-   public void setAttributeType(AttributeTypeToken attributeType) {
-      this.attributeType = attributeType;
-   }
-
-   @Override
    public boolean handleSelection() {
       try {
          if (super.handleSelection()) {
+            if (attributeType.isInvalid()) {
+               AWorkbench.popup("Attribute Type is Invalid");
+               return false;
+            }
             artifact.setAttributeValues(attributeType, checked);
             artifact.persistInThread("Set Value(s)");
             return true;
@@ -62,9 +62,11 @@ public class XHyperlinkLabelEnumeratedArtDam extends XHyperlinkLabelEnumeratedAr
    @Override
    public String getCurrentValue() {
       String value = Widgets.NOT_SET;
-      List<String> values = artifact.getAttributesToStringList(attributeType);
-      if (values.size() > 0) {
-         value = org.eclipse.osee.framework.jdk.core.util.Collections.toString(", ", values);
+      if (attributeType.isValid()) {
+         List<String> values = artifact.getAttributesToStringList(attributeType);
+         if (values.size() > 0) {
+            value = org.eclipse.osee.framework.jdk.core.util.Collections.toString(", ", values);
+         }
       }
       return value;
    }
@@ -97,9 +99,12 @@ public class XHyperlinkLabelEnumeratedArtDam extends XHyperlinkLabelEnumeratedAr
    @Override
    public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.artifact = artifact;
-      this.attributeType = attributeType;
-      if (Strings.isInValid(getLabel())) {
-         setLabel(attributeType.getUnqualifiedName());
+      this.artifactType = artifact.getArtifactType();
+      if (attributeType.isValid()) {
+         this.attributeType = attributeType;
+         if (Strings.isInValid(getLabel())) {
+            setLabel(attributeType.getUnqualifiedName());
+         }
       }
    }
 
