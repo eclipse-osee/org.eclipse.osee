@@ -11,6 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Routes } from '@angular/router';
+import { navigationStructure } from '@osee/layout/routing';
+
+const explorer = navigationStructure[0].children.find(
+	(page) => page.label === 'Artifact Explorer'
+);
 
 const routes: Routes = [
 	{
@@ -18,13 +23,19 @@ const routes: Routes = [
 		loadChildren: () => import('@osee/toolbar'),
 		outlet: 'toolbar',
 	},
-	{ path: '', loadComponent: () => import('./artifact-explorer.component') },
+	{
+		path: '',
+		title: explorer?.pageTitle,
+		loadComponent: () => import('./artifact-explorer.component'),
+	},
 	{
 		path: ':branchType',
+		title: explorer?.pageTitle,
 		loadComponent: () => import('./artifact-explorer.component'),
 	},
 	{
 		path: ':branchType/:branchId',
+		title: explorer?.pageTitle,
 		loadComponent: () => import('./artifact-explorer.component'),
 	},
 ];
