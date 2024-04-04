@@ -75,7 +75,7 @@ export const navigationStructure: navigationElement[] = [
 			{
 				label: 'Artifact Explorer',
 				cypressLabel: 'artifactExplorer',
-				pageTitle: 'Artifact Explorer',
+				pageTitle: 'OSEE - Artifact Explorer',
 				isDropdown: false,
 				isDropdownOpen: false,
 				requiredRoles: [],
@@ -99,7 +99,7 @@ export const navigationStructure: navigationElement[] = [
 			{
 				label: 'Messaging Configuration',
 				cypressLabel: 'messaging',
-				pageTitle: 'OSEE - MIM',
+				pageTitle: 'MIM',
 				isDropdown: true,
 				isDropdownOpen: false,
 				requiredRoles: [],
@@ -111,7 +111,7 @@ export const navigationStructure: navigationElement[] = [
 					{
 						label: 'Message Configuration - Home',
 						cypressLabel: 'messaging',
-						pageTitle: 'OSEE - MIM',
+						pageTitle: 'MIM',
 						isDropdown: false,
 						isDropdownOpen: false,
 						requiredRoles: [],
@@ -123,7 +123,7 @@ export const navigationStructure: navigationElement[] = [
 					{
 						label: 'Connection View',
 						cypressLabel: 'connection-nav-button',
-						pageTitle: 'OSEE - MIM - Connection View',
+						pageTitle: 'MIM - Connection View',
 						isDropdown: false,
 						isDropdownOpen: false,
 						requiredRoles: [],
@@ -135,7 +135,7 @@ export const navigationStructure: navigationElement[] = [
 					{
 						label: 'Type View',
 						cypressLabel: 'types-nav-button',
-						pageTitle: 'OSEE - MIM - Type View',
+						pageTitle: 'MIM - Type View',
 						isDropdown: false,
 						isDropdownOpen: false,
 						requiredRoles: [],
@@ -147,7 +147,7 @@ export const navigationStructure: navigationElement[] = [
 					{
 						label: 'Structure Names',
 						cypressLabel: 'structure-nav-button',
-						pageTitle: 'OSEE - MIM - Structure Names',
+						pageTitle: 'MIM - Structure Names',
 						isDropdown: false,
 						isDropdownOpen: false,
 						requiredRoles: [],
@@ -159,7 +159,7 @@ export const navigationStructure: navigationElement[] = [
 					{
 						label: 'Find Elements by Type',
 						cypressLabel: 'typesearch-nav-button',
-						pageTitle: 'OSEE - MIM - Element TypeSearch',
+						pageTitle: 'MIM - Element TypeSearch',
 						isDropdown: false,
 						isDropdownOpen: false,
 						requiredRoles: [],
@@ -171,7 +171,7 @@ export const navigationStructure: navigationElement[] = [
 					{
 						label: 'Reports',
 						cypressLabel: 'mimreport-nav-button',
-						pageTitle: 'OSEE - MIM - Reports',
+						pageTitle: 'MIM - Reports',
 						isDropdown: false,
 						isDropdownOpen: false,
 						requiredRoles: [],
@@ -183,7 +183,7 @@ export const navigationStructure: navigationElement[] = [
 					{
 						label: 'Cross-Reference Data Manager',
 						cypressLabel: 'cross-reference-nav-button',
-						pageTitle: 'OSEE - MIM - Cross-Reference Data Manager',
+						pageTitle: 'MIM - Cross-Reference Data Manager',
 						isDropdown: false,
 						isDropdownOpen: false,
 						requiredRoles: [],
@@ -195,7 +195,7 @@ export const navigationStructure: navigationElement[] = [
 					{
 						label: 'Help',
 						cypressLabel: 'help-nav-button',
-						pageTitle: 'OSEE - MIM - Help',
+						pageTitle: 'MIM - Help',
 						isDropdown: false,
 						isDropdownOpen: false,
 						requiredRoles: [],
@@ -207,7 +207,7 @@ export const navigationStructure: navigationElement[] = [
 					{
 						label: 'Transport Type Manager',
 						cypressLabel: 'transports-nav-button',
-						pageTitle: 'OSEE - MIM - Transport Type Manager',
+						pageTitle: 'MIM - Transport Type Manager',
 						isDropdown: false,
 						isDropdownOpen: false,
 						requiredRoles: [UserRoles.OSEE_ADMIN],
@@ -219,7 +219,7 @@ export const navigationStructure: navigationElement[] = [
 					{
 						label: 'Import',
 						cypressLabel: 'mimimport-nav-button',
-						pageTitle: 'OSEE - MIM - Import',
+						pageTitle: 'MIM - Import',
 						isDropdown: false,
 						isDropdownOpen: false,
 						requiredRoles: [UserRoles.OSEE_ADMIN],
@@ -231,7 +231,7 @@ export const navigationStructure: navigationElement[] = [
 					{
 						label: 'Enumeration List Configuration',
 						cypressLabel: 'enum-list-config-nav-button',
-						pageTitle: 'OSEE - MIM - Enum List Configuration',
+						pageTitle: 'MIM - Enum List Configuration',
 						isDropdown: false,
 						isDropdownOpen: false,
 						requiredRoles: [UserRoles.OSEE_ADMIN],
@@ -259,7 +259,7 @@ export const navigationStructure: navigationElement[] = [
 	{
 		label: 'Server Health',
 		cypressLabel: '',
-		pageTitle: '',
+		pageTitle: 'OSEE - Server Health',
 		isDropdown: true,
 		isDropdownOpen: false,
 		requiredRoles: [UserRoles.OSEE_ADMIN],
@@ -270,7 +270,7 @@ export const navigationStructure: navigationElement[] = [
 			{
 				label: 'Server Health Dashboard',
 				cypressLabel: '',
-				pageTitle: '',
+				pageTitle: 'OSEE - Server Health - Dashboard',
 				isDropdown: false,
 				isDropdownOpen: false,
 				requiredRoles: [],
@@ -283,7 +283,7 @@ export const navigationStructure: navigationElement[] = [
 			{
 				label: 'Status',
 				cypressLabel: '',
-				pageTitle: '',
+				pageTitle: 'OSEE - Server Health - Status',
 				isDropdown: false,
 				isDropdownOpen: false,
 				requiredRoles: [],
@@ -295,7 +295,7 @@ export const navigationStructure: navigationElement[] = [
 			{
 				label: 'Balancers',
 				cypressLabel: '',
-				pageTitle: '',
+				pageTitle: 'OSEE - Server Health - Balancers',
 				isDropdown: false,
 				isDropdownOpen: false,
 				requiredRoles: [],
@@ -308,7 +308,7 @@ export const navigationStructure: navigationElement[] = [
 			{
 				label: 'Usage',
 				cypressLabel: '',
-				pageTitle: '',
+				pageTitle: 'OSEE - Server Health - Usage',
 				isDropdown: false,
 				isDropdownOpen: false,
 				requiredRoles: [],
@@ -320,7 +320,7 @@ export const navigationStructure: navigationElement[] = [
 			{
 				label: 'Database',
 				cypressLabel: '',
-				pageTitle: '',
+				pageTitle: 'OSEE - Server Health - DB',
 				isDropdown: false,
 				isDropdownOpen: false,
 				requiredRoles: [],
@@ -332,7 +332,7 @@ export const navigationStructure: navigationElement[] = [
 			{
 				label: 'Http Headers',
 				cypressLabel: '',
-				pageTitle: '',
+				pageTitle: 'OSEE - Server Health - Headers',
 				isDropdown: false,
 				isDropdownOpen: false,
 				requiredRoles: [],
