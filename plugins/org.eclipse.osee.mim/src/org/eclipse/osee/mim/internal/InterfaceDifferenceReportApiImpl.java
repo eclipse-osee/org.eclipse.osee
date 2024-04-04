@@ -82,7 +82,8 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
             changeMap.put(artId, item);
          }
 
-         if (change.getItemKindType().equals(ChangeType.Attribute)) {
+         if (change.getItemKindType().equals(
+            ChangeType.Attribute) && !change.getIsValue().equals(change.getWasValue())) {
             item.getAttributeChanges().add(change);
          } else if (change.getItemKindType().equals(ChangeType.Relation)) {
             item.getRelationChanges().add(change);
@@ -439,35 +440,23 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
 
    private List<ArtifactReadable> getElements(ArtifactId artId, ArtifactTypeToken artType, BranchId branch,
       Map<ArtifactId, List<ArtifactReadable>> elementMap) {
-      List<ArtifactReadable> elements = new LinkedList<>();
+      if (elementMap.containsKey(artId)) {
+         return elementMap.get(artId);
+      }
+
       QueryBuilder subQuery = new QueryData(QueryType.SELECT, orcsApi.tokenService()).follow(
          CoreRelationTypes.InterfaceStructureContent_Structure);
-      if (elementMap.containsKey(artId)) {
-         elements = elementMap.get(artId);
-      } else {
-         if (CoreArtifactTypes.InterfaceEnum.equals(artType)) {
-            ArtifactReadable enumeration = orcsApi.getQueryFactory().fromBranch(branch).andId(artId).follow(
-               CoreRelationTypes.InterfaceEnumeration_EnumerationSet).follow(
-                  CoreRelationTypes.InterfacePlatformTypeEnumeration_Element).follow(
-                     CoreRelationTypes.InterfaceElementPlatformType_Element).followFork(
-                        CoreRelationTypes.InterfaceElementArrayElement_Element, subQuery).follow(
-                           CoreRelationTypes.InterfaceStructureContent_Structure).asArtifact();
-            for (ArtifactReadable enumSet : enumeration.getRelated(
-               CoreRelationTypes.InterfaceEnumeration_EnumerationSet).getList()) {
-               for (ArtifactReadable pType : enumSet.getRelated(
-                  CoreRelationTypes.InterfacePlatformTypeEnumeration_Element)) {
-                  for (ArtifactReadable element : pType.getRelated(
-                     CoreRelationTypes.InterfaceElementPlatformType_Element)) {
-                     elements.add(element);
-                  }
-               }
-            }
-         } else if (CoreArtifactTypes.InterfaceEnumSet.equals(artType)) {
-            ArtifactReadable enumSet = orcsApi.getQueryFactory().fromBranch(branch).andId(artId).follow(
+      List<ArtifactReadable> elements = new LinkedList<>();
+
+      if (CoreArtifactTypes.InterfaceEnum.equals(artType)) {
+         ArtifactReadable enumeration = orcsApi.getQueryFactory().fromBranch(branch).andId(artId).follow(
+            CoreRelationTypes.InterfaceEnumeration_EnumerationSet).follow(
                CoreRelationTypes.InterfacePlatformTypeEnumeration_Element).follow(
                   CoreRelationTypes.InterfaceElementPlatformType_Element).followFork(
                      CoreRelationTypes.InterfaceElementArrayElement_Element, subQuery).follow(
                         CoreRelationTypes.InterfaceStructureContent_Structure).asArtifact();
+         for (ArtifactReadable enumSet : enumeration.getRelated(
+            CoreRelationTypes.InterfaceEnumeration_EnumerationSet).getList()) {
             for (ArtifactReadable pType : enumSet.getRelated(
                CoreRelationTypes.InterfacePlatformTypeEnumeration_Element)) {
                for (ArtifactReadable element : pType.getRelated(
@@ -475,35 +464,47 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
                   elements.add(element);
                }
             }
-         } else if (CoreArtifactTypes.InterfaceArrayIndexDescription.equals(artType)) {
-            ArtifactReadable desc = orcsApi.getQueryFactory().fromBranch(branch).andId(artId).follow(
-               CoreRelationTypes.InterfaceArrayIndexDescription_Set).follow(
-                  CoreRelationTypes.InterfaceElementArrayIndexDescriptionSet_Element).followFork(
-                     CoreRelationTypes.InterfaceElementArrayElement_Element, subQuery).follow(
-                        CoreRelationTypes.InterfaceStructureContent_Structure).asArtifact();
-            for (ArtifactReadable descSet : desc.getRelated(CoreRelationTypes.InterfaceArrayIndexDescription_Set)) {
-               for (ArtifactReadable element : descSet.getRelated(
-                  CoreRelationTypes.InterfaceElementArrayIndexDescriptionSet_Element)) {
-                  elements.add(element);
-               }
-            }
-         } else if (CoreArtifactTypes.InterfacePlatformType.equals(artType)) {
-            ArtifactReadable pType = orcsApi.getQueryFactory().fromBranch(branch).andId(artId).follow(
+         }
+      } else if (CoreArtifactTypes.InterfaceEnumSet.equals(artType)) {
+         ArtifactReadable enumSet = orcsApi.getQueryFactory().fromBranch(branch).andId(artId).follow(
+            CoreRelationTypes.InterfacePlatformTypeEnumeration_Element).follow(
                CoreRelationTypes.InterfaceElementPlatformType_Element).followFork(
                   CoreRelationTypes.InterfaceElementArrayElement_Element, subQuery).follow(
                      CoreRelationTypes.InterfaceStructureContent_Structure).asArtifact();
+         for (ArtifactReadable pType : enumSet.getRelated(CoreRelationTypes.InterfacePlatformTypeEnumeration_Element)) {
             for (ArtifactReadable element : pType.getRelated(CoreRelationTypes.InterfaceElementPlatformType_Element)) {
                elements.add(element);
             }
-         } else if (CoreArtifactTypes.InterfaceDataElement.equals(
-            artType) || CoreArtifactTypes.InterfaceDataElementArray.equals(artType)) {
-            ArtifactReadable element = orcsApi.getQueryFactory().fromBranch(branch).andId(artId).followFork(
+         }
+      } else if (CoreArtifactTypes.InterfaceArrayIndexDescription.equals(artType)) {
+         ArtifactReadable desc = orcsApi.getQueryFactory().fromBranch(branch).andId(artId).follow(
+            CoreRelationTypes.InterfaceArrayIndexDescription_Set).follow(
+               CoreRelationTypes.InterfaceElementArrayIndexDescriptionSet_Element).followFork(
+                  CoreRelationTypes.InterfaceElementArrayElement_Element, subQuery).follow(
+                     CoreRelationTypes.InterfaceStructureContent_Structure).asArtifact();
+         for (ArtifactReadable descSet : desc.getRelated(CoreRelationTypes.InterfaceArrayIndexDescription_Set)) {
+            for (ArtifactReadable element : descSet.getRelated(
+               CoreRelationTypes.InterfaceElementArrayIndexDescriptionSet_Element)) {
+               elements.add(element);
+            }
+         }
+      } else if (CoreArtifactTypes.InterfacePlatformType.equals(artType)) {
+         ArtifactReadable pType = orcsApi.getQueryFactory().fromBranch(branch).andId(artId).follow(
+            CoreRelationTypes.InterfaceElementPlatformType_Element).followFork(
                CoreRelationTypes.InterfaceElementArrayElement_Element, subQuery).follow(
                   CoreRelationTypes.InterfaceStructureContent_Structure).asArtifact();
+         for (ArtifactReadable element : pType.getRelated(CoreRelationTypes.InterfaceElementPlatformType_Element)) {
             elements.add(element);
          }
-         elementMap.put(artId, elements);
+      } else if (CoreArtifactTypes.InterfaceDataElement.equals(
+         artType) || CoreArtifactTypes.InterfaceDataElementArray.equals(artType)) {
+         ArtifactReadable element = orcsApi.getQueryFactory().fromBranch(branch).andId(artId).followFork(
+            CoreRelationTypes.InterfaceElementArrayElement_Element, subQuery).follow(
+               CoreRelationTypes.InterfaceStructureContent_Structure).asArtifact();
+         elements.add(element);
       }
+      elementMap.put(artId, elements);
+
       return elements;
    }
 
@@ -522,10 +523,14 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
             }
          }
          List<ArtifactReadable> nodes = new LinkedList<>();
-         nodes.addAll(orcsApi.getQueryFactory().fromBranch(branch1, view).andIds(branch1Ids).follow(
-            CoreRelationTypes.InterfaceConnectionNode_Connection).asArtifacts());
-         nodes.addAll(orcsApi.getQueryFactory().fromBranch(branch1, view).andIds(branch2Ids).follow(
-            CoreRelationTypes.InterfaceConnectionNode_Connection).asArtifacts());
+         if (!branch1Ids.isEmpty()) {
+            nodes.addAll(orcsApi.getQueryFactory().fromBranch(branch1, view).andIds(branch1Ids).follow(
+               CoreRelationTypes.InterfaceConnectionNode_Connection).asArtifacts());
+         }
+         if (!branch2Ids.isEmpty()) {
+            nodes.addAll(orcsApi.getQueryFactory().fromBranch(branch1, view).andIds(branch2Ids).follow(
+               CoreRelationTypes.InterfaceConnectionNode_Connection).asArtifacts());
+         }
          for (ArtifactReadable node : nodes) {
             if (node.getRelated(CoreRelationTypes.InterfaceConnectionNode_Connection).getList().stream().filter(
                c -> c.getArtifactId().equals(connectionId)).findAny().isEmpty()) {
@@ -552,10 +557,14 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
             }
          }
          List<ArtifactReadable> messages = new LinkedList<>();
-         messages.addAll(orcsApi.getQueryFactory().fromBranch(branch1, view).andIds(branch1Ids).follow(
-            CoreRelationTypes.InterfaceConnectionMessage_Connection).asArtifacts());
-         messages.addAll(orcsApi.getQueryFactory().fromBranch(branch2, view).andIds(branch2Ids).follow(
-            CoreRelationTypes.InterfaceConnectionMessage_Connection).asArtifacts());
+         if (!branch1Ids.isEmpty()) {
+            messages.addAll(orcsApi.getQueryFactory().fromBranch(branch1, view).andIds(branch1Ids).follow(
+               CoreRelationTypes.InterfaceConnectionMessage_Connection).asArtifacts());
+         }
+         if (!branch2Ids.isEmpty()) {
+            messages.addAll(orcsApi.getQueryFactory().fromBranch(branch2, view).andIds(branch2Ids).follow(
+               CoreRelationTypes.InterfaceConnectionMessage_Connection).asArtifacts());
+         }
 
          for (ArtifactReadable message : messages) {
             if (message.getRelated(CoreRelationTypes.InterfaceConnectionMessage_Connection).getList().stream().filter(
@@ -575,12 +584,16 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
             }
          }
          List<ArtifactReadable> submessages = new LinkedList<>();
-         submessages.addAll(orcsApi.getQueryFactory().fromBranch(branch1, view).andIds(branch1Ids).follow(
-            CoreRelationTypes.InterfaceMessageSubMessageContent_Message).follow(
-               CoreRelationTypes.InterfaceConnectionMessage_Connection).asArtifacts());
-         submessages.addAll(orcsApi.getQueryFactory().fromBranch(branch2, view).andIds(branch2Ids).follow(
-            CoreRelationTypes.InterfaceMessageSubMessageContent_Message).follow(
-               CoreRelationTypes.InterfaceConnectionMessage_Connection).asArtifacts());
+         if (!branch1Ids.isEmpty()) {
+            submessages.addAll(orcsApi.getQueryFactory().fromBranch(branch1, view).andIds(branch1Ids).follow(
+               CoreRelationTypes.InterfaceMessageSubMessageContent_Message).follow(
+                  CoreRelationTypes.InterfaceConnectionMessage_Connection).asArtifacts());
+         }
+         if (!branch2Ids.isEmpty()) {
+            submessages.addAll(orcsApi.getQueryFactory().fromBranch(branch2, view).andIds(branch2Ids).follow(
+               CoreRelationTypes.InterfaceMessageSubMessageContent_Message).follow(
+                  CoreRelationTypes.InterfaceConnectionMessage_Connection).asArtifacts());
+         }
 
          for (ArtifactReadable submessage : submessages) {
             List<ArtifactReadable> connections = new LinkedList<>();
@@ -604,14 +617,18 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
             }
          }
          List<ArtifactReadable> structures = new LinkedList<>();
-         structures.addAll(orcsApi.getQueryFactory().fromBranch(branch1, view).andIds(branch1Ids).follow(
-            CoreRelationTypes.InterfaceSubMessageContent_SubMessage).follow(
-               CoreRelationTypes.InterfaceMessageSubMessageContent_Message).follow(
-                  CoreRelationTypes.InterfaceConnectionMessage_Connection).asArtifacts());
-         structures.addAll(orcsApi.getQueryFactory().fromBranch(branch2, view).andIds(branch2Ids).follow(
-            CoreRelationTypes.InterfaceSubMessageContent_SubMessage).follow(
-               CoreRelationTypes.InterfaceMessageSubMessageContent_Message).follow(
-                  CoreRelationTypes.InterfaceConnectionMessage_Connection).asArtifacts());
+         if (!branch1Ids.isEmpty()) {
+            structures.addAll(orcsApi.getQueryFactory().fromBranch(branch1, view).andIds(branch1Ids).follow(
+               CoreRelationTypes.InterfaceSubMessageContent_SubMessage).follow(
+                  CoreRelationTypes.InterfaceMessageSubMessageContent_Message).follow(
+                     CoreRelationTypes.InterfaceConnectionMessage_Connection).asArtifacts());
+         }
+         if (!branch2Ids.isEmpty()) {
+            structures.addAll(orcsApi.getQueryFactory().fromBranch(branch2, view).andIds(branch2Ids).follow(
+               CoreRelationTypes.InterfaceSubMessageContent_SubMessage).follow(
+                  CoreRelationTypes.InterfaceMessageSubMessageContent_Message).follow(
+                     CoreRelationTypes.InterfaceConnectionMessage_Connection).asArtifacts());
+         }
 
          for (ArtifactReadable structure : structures) {
             List<ArtifactReadable> connections = new LinkedList<>();
