@@ -107,6 +107,8 @@ public interface CoreAttributeTypes {
 
    AttributeTypeString ArgumentType = osee.createString(5717501448114952990L, "Argument Type", MediaType.TEXT_PLAIN, "Argument Type");
 
+   AttributeTypeBoolean ArtifactExplorerPanelLocation = osee.createBoolean(7654764391092774947L, "Artifact Explorer Panel Location", MediaType.TEXT_PLAIN, "Left or right location of the artifact explorer panel. True = left, False = right.");
+
    AttributeTypeArtifactId BaselinedBy = osee.createArtifactIdNoTag(1152921504606847247L, "Baselined By", MediaType.TEXT_PLAIN, "");
 
    AttributeTypeDate BaselinedTimestamp = osee.createDateNoTag(1152921504606847244L, "Baselined Timestamp", AttributeTypeToken.TEXT_CALENDAR, "");

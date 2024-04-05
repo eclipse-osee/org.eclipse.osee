@@ -14,7 +14,6 @@ package org.eclipse.osee.mim.internal;
 
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
@@ -42,16 +41,16 @@ public class MimUserPreferenceEndpointImpl implements MimUserPreferenceEndpoint 
    public MimUserPreference getPreferences(BranchId branch) {
       if (mimApi.getOrcsApi().userService().getUser().isValid()) {
          ArtifactReadable user = mimApi.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
-            mimApi.getOrcsApi().userService().getUser()).asArtifact();
+            mimApi.getOrcsApi().userService().getUser()).follow(
+               CoreRelationTypes.UserMimGlobalPreferences_MimGlobalPreferences).asArtifact();
          BranchToken selectedBranch =
             mimApi.getOrcsApi().getQueryFactory().branchQuery().andId(branch).getOneOrSentinel();
          boolean hasWriteAccess = !mimApi.getOrcsApi().getAccessControlService().hasBranchPermission(user,
             selectedBranch, PermissionEnum.WRITE, null).isErrors();
 
          MimUserGlobalPreferences userGlobalPrefs = new MimUserGlobalPreferences(
-            mimApi.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andRelatedTo(
-               CoreRelationTypes.UserMimGlobalPreferences_User,
-               ArtifactId.valueOf(user.getId())).asArtifactOrSentinel());
+            user.getRelated(CoreRelationTypes.UserMimGlobalPreferences_MimGlobalPreferences).getOneOrDefault(
+               ArtifactReadable.SENTINEL));
 
          return new MimUserPreference(user, userGlobalPrefs, branch, hasWriteAccess);
       }
