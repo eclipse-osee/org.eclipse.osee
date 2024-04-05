@@ -3151,7 +3151,63 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    @Override
    public String getConfigurationPlatformBazelFile(BranchId branchId) {
       String prefix = "package(default_visibility = [\"//visibility:public\"])\r\n\r\n";
-      String content = "";
+      // Switch these two lines when Bazel 7.2 releases.
+      //      String content = "load(\"@platforms//host:constraints.bzl\",\"HOST_CONSTRAINTS\")\r\n";
+      String content = "load(\"@local_config_platform//:constraints.bzl\",\"HOST_CONSTRAINTS\")\r\n";
+
+      // Defined here: https://github.com/bazelbuild/platforms
+      List<String> preDefinedOsPlatforms = new ArrayList<String>();
+      preDefinedOsPlatforms.add("@platforms//os:android");
+      preDefinedOsPlatforms.add("@platforms//os:chromiumos");
+      preDefinedOsPlatforms.add("@platforms//os:freebsd");
+      preDefinedOsPlatforms.add("@platforms//os:fuchsia");
+      preDefinedOsPlatforms.add("@platforms//os:haiku");
+      preDefinedOsPlatforms.add("@platforms//os:ios");
+      preDefinedOsPlatforms.add("@platforms//os:linux");
+      preDefinedOsPlatforms.add("@platforms//os:macos");
+      preDefinedOsPlatforms.add("@platforms//os:netbsd");
+      preDefinedOsPlatforms.add("@platforms//os:nixos");
+      preDefinedOsPlatforms.add("@platforms//os:none");
+      preDefinedOsPlatforms.add("@platforms//os:openbsd");
+      preDefinedOsPlatforms.add("@platforms//os:osx");
+      preDefinedOsPlatforms.add("@platforms//os:qnx");
+      preDefinedOsPlatforms.add("@platforms//os:tvos");
+      preDefinedOsPlatforms.add("@platforms//os:visionos");
+      preDefinedOsPlatforms.add("@platforms//os:vxworks");
+      preDefinedOsPlatforms.add("@platforms//os:wasi");
+      preDefinedOsPlatforms.add("@platforms//os:watchos");
+      preDefinedOsPlatforms.add("@platforms//os:windows");
+
+      List<String> preDefinedCpuPlatforms = new ArrayList<String>();
+      preDefinedCpuPlatforms.add("@platforms//cpu:aarch32");
+      preDefinedCpuPlatforms.add("@platforms//cpu:aarch64");
+      preDefinedCpuPlatforms.add("@platforms//cpu:all");
+      preDefinedCpuPlatforms.add("@platforms//cpu:arm");
+      preDefinedCpuPlatforms.add("@platforms//cpu:arm64");
+      preDefinedCpuPlatforms.add("@platforms//cpu:arm64_32");
+      preDefinedCpuPlatforms.add("@platforms//cpu:arm64e");
+      preDefinedCpuPlatforms.add("@platforms//cpu:armv6-m");
+      preDefinedCpuPlatforms.add("@platforms//cpu:armv7");
+      preDefinedCpuPlatforms.add("@platforms//cpu:armv7-m");
+      preDefinedCpuPlatforms.add("@platforms//cpu:armv7e-m");
+      preDefinedCpuPlatforms.add("@platforms//cpu:armv7e-mf");
+      preDefinedCpuPlatforms.add("@platforms//cpu:armv7k");
+      preDefinedCpuPlatforms.add("@platforms//cpu:armv8-m");
+      preDefinedCpuPlatforms.add("@platforms//cpu:cortex-r52");
+      preDefinedCpuPlatforms.add("@platforms//cpu:cortex-r82");
+      preDefinedCpuPlatforms.add("@platforms//cpu:i386");
+      preDefinedCpuPlatforms.add("@platforms//cpu:mips64");
+      preDefinedCpuPlatforms.add("@platforms//cpu:ppc");
+      preDefinedCpuPlatforms.add("@platforms//cpu:ppc32");
+      preDefinedCpuPlatforms.add("@platforms//cpu:ppc64le");
+      preDefinedCpuPlatforms.add("@platforms//cpu:riscv32");
+      preDefinedCpuPlatforms.add("@platforms//cpu:riscv64");
+      preDefinedCpuPlatforms.add("@platforms//cpu:s390x");
+      preDefinedCpuPlatforms.add("@platforms//cpu:wasm32");
+      preDefinedCpuPlatforms.add("@platforms//cpu:wasm64");
+      preDefinedCpuPlatforms.add("@platforms//cpu:x86_32");
+      preDefinedCpuPlatforms.add("@platforms//cpu:x86_64");
+
       // Load all configurations (stored as branch views)
       List<ArtifactReadable> branchViews =
          orcsApi.getQueryFactory().fromBranch(branchId).andIsOfType(CoreArtifactTypes.BranchView).asArtifacts();
@@ -3200,6 +3256,30 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          }
          content = content + "\t\t\"//configurations:config_" + branchView.getName().replace(" ", "_") + "\"\r\n";
          content = content + "\t]\r\n)\r\n";
+
+         //write out predefined extensions on top of bazel's build in platforms for convenience
+         for (String osPlatform : preDefinedOsPlatforms) {
+            for (String cpuPlatform : preDefinedCpuPlatforms) {
+
+               content = content + "platform( \r\n\tname=\"" + branchView.getName().replace(" ",
+                  "_") + "_" + osPlatform.replace("@platforms//os:",
+                     "") + "_" + cpuPlatform.replace("@platforms//cpu:", "") + "\",\r\n";
+               content = content + "\tparents =[\":" + branchView.getName().replace(" ", "_") + "\"],\r\n";
+               content = content + "\tconstraint_values = [\r\n";
+               content = content + "\t\"" + osPlatform + "\",\r\n";
+               content = content + "\t\"" + cpuPlatform + "\"\r\n";
+               content = content + "]\r\n";
+               content = content + ")\r\n";
+               content = content + "\r\n";
+            }
+         }
+         //wriete out
+         content = content + "platform( \r\n\tname=\"" + branchView.getName().replace(" ", "_") + "_host" + "\",\r\n";
+         content = content + "\tparents =[\":" + branchView.getName().replace(" ", "_") + "\"],\r\n";
+         content = content + "\tconstraint_values = ";
+         content = content + "" + "HOST_CONSTRAINTS" + "\r\n";
+         content = content + ")\r\n";
+         content = content + "\r\n";
       }
       return prefix + content;
    }
@@ -3207,7 +3287,61 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    @Override
    public String getConfigurationGroupBazelFile(BranchId branchId) {
       String prefix = "package(default_visibility = [\"//visibility:public\"])\r\n\r\n";
-      String content = "";
+      // Switch these two lines when Bazel 7.2 releases.
+      //      String content = "load(\"@platforms//host:constraints.bzl\",\"HOST_CONSTRAINTS\")\r\n";
+      String content = "load(\"@local_config_platform//:constraints.bzl\",\"HOST_CONSTRAINTS\")\r\n";
+      // Defined here: https://github.com/bazelbuild/platforms
+      List<String> preDefinedOsPlatforms = new ArrayList<String>();
+      preDefinedOsPlatforms.add("@platforms//os:android");
+      preDefinedOsPlatforms.add("@platforms//os:chromiumos");
+      preDefinedOsPlatforms.add("@platforms//os:freebsd");
+      preDefinedOsPlatforms.add("@platforms//os:fuchsia");
+      preDefinedOsPlatforms.add("@platforms//os:haiku");
+      preDefinedOsPlatforms.add("@platforms//os:ios");
+      preDefinedOsPlatforms.add("@platforms//os:linux");
+      preDefinedOsPlatforms.add("@platforms//os:macos");
+      preDefinedOsPlatforms.add("@platforms//os:netbsd");
+      preDefinedOsPlatforms.add("@platforms//os:nixos");
+      preDefinedOsPlatforms.add("@platforms//os:none");
+      preDefinedOsPlatforms.add("@platforms//os:openbsd");
+      preDefinedOsPlatforms.add("@platforms//os:osx");
+      preDefinedOsPlatforms.add("@platforms//os:qnx");
+      preDefinedOsPlatforms.add("@platforms//os:tvos");
+      preDefinedOsPlatforms.add("@platforms//os:visionos");
+      preDefinedOsPlatforms.add("@platforms//os:vxworks");
+      preDefinedOsPlatforms.add("@platforms//os:wasi");
+      preDefinedOsPlatforms.add("@platforms//os:watchos");
+      preDefinedOsPlatforms.add("@platforms//os:windows");
+
+      List<String> preDefinedCpuPlatforms = new ArrayList<String>();
+      preDefinedCpuPlatforms.add("@platforms//cpu:aarch32");
+      preDefinedCpuPlatforms.add("@platforms//cpu:aarch64");
+      preDefinedCpuPlatforms.add("@platforms//cpu:all");
+      preDefinedCpuPlatforms.add("@platforms//cpu:arm");
+      preDefinedCpuPlatforms.add("@platforms//cpu:arm64");
+      preDefinedCpuPlatforms.add("@platforms//cpu:arm64_32");
+      preDefinedCpuPlatforms.add("@platforms//cpu:arm64e");
+      preDefinedCpuPlatforms.add("@platforms//cpu:armv6-m");
+      preDefinedCpuPlatforms.add("@platforms//cpu:armv7");
+      preDefinedCpuPlatforms.add("@platforms//cpu:armv7-m");
+      preDefinedCpuPlatforms.add("@platforms//cpu:armv7e-m");
+      preDefinedCpuPlatforms.add("@platforms//cpu:armv7e-mf");
+      preDefinedCpuPlatforms.add("@platforms//cpu:armv7k");
+      preDefinedCpuPlatforms.add("@platforms//cpu:armv8-m");
+      preDefinedCpuPlatforms.add("@platforms//cpu:cortex-r52");
+      preDefinedCpuPlatforms.add("@platforms//cpu:cortex-r82");
+      preDefinedCpuPlatforms.add("@platforms//cpu:i386");
+      preDefinedCpuPlatforms.add("@platforms//cpu:mips64");
+      preDefinedCpuPlatforms.add("@platforms//cpu:ppc");
+      preDefinedCpuPlatforms.add("@platforms//cpu:ppc32");
+      preDefinedCpuPlatforms.add("@platforms//cpu:ppc64le");
+      preDefinedCpuPlatforms.add("@platforms//cpu:riscv32");
+      preDefinedCpuPlatforms.add("@platforms//cpu:riscv64");
+      preDefinedCpuPlatforms.add("@platforms//cpu:s390x");
+      preDefinedCpuPlatforms.add("@platforms//cpu:wasm32");
+      preDefinedCpuPlatforms.add("@platforms//cpu:wasm64");
+      preDefinedCpuPlatforms.add("@platforms//cpu:x86_32");
+      preDefinedCpuPlatforms.add("@platforms//cpu:x86_64");
       List<ArtifactToken> groups =
          orcsApi.getQueryFactory().applicabilityQuery().getConfigurationGroupsForBranch(branchId);
       List<ArtifactReadable> features =
@@ -3239,6 +3373,21 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
          }
          content = content + "\t\t\"//configurations:config_group_" + group.getName().replace(" ", "_") + "\"\r\n";
          content = content + "\t]\r\n)\r\n";
+         for (String osPlatform : preDefinedOsPlatforms) {
+            for (String cpuPlatform : preDefinedCpuPlatforms) {
+
+               content =
+                  content + "platform( \r\n\tname=\"" + group.getName().replace(" ", "_") + "_" + osPlatform.replace(
+                     "@platforms//os:", "") + "_" + cpuPlatform.replace("@platforms//cpu:", "") + "\",\r\n";
+               content = content + "\tparents =[\":" + group.getName().replace(" ", "_") + "\"],\r\n";
+               content = content + "\tconstraint_values = [\r\n";
+               content = content + "\t\"" + osPlatform + "\",\r\n";
+               content = content + "\t\"" + cpuPlatform + "\"\r\n";
+               content = content + "]\r\n";
+               content = content + ")\r\n";
+               content = content + "\r\n";
+            }
+         }
       }
 
       return prefix + content;

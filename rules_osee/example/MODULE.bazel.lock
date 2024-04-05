@@ -73,7 +73,7 @@
                 "name": "my_product_line",
                 "osee_url": "http://host.docker.internal:8089",
                 "branch_id": "8",
-                "sha256": "E2B4B141504947A152618288DE5B58BCAFFA7B48A6D27494F1BF821338BA059C"
+                "sha256": "2bbe988cfadbd341e60dba04e7e37e0dd2ea5a15c56806cbffb20f728a33e54a"
               },
               "devDependency": false,
               "location": {
@@ -3489,7 +3489,7 @@
             "attributes": {
               "osee_url": "http://host.docker.internal:8089",
               "branch_id": "8",
-              "sha256": "E2B4B141504947A152618288DE5B58BCAFFA7B48A6D27494F1BF821338BA059C"
+              "sha256": "2bbe988cfadbd341e60dba04e7e37e0dd2ea5a15c56806cbffb20f728a33e54a"
             }
           }
         },
