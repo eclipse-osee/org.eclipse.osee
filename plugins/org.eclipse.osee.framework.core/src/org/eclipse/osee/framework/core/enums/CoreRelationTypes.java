@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.core.enums;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.AbstractSoftwareRequirement;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.AbstractTestResult;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.ArtifactExplorerUserPreferences;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.AttentionLocation;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.BranchView;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.CodeUnit;
@@ -354,6 +355,10 @@ public interface CoreRelationTypes {
    RelationTypeToken Users = osee.add(2305843009213694308L, "Users", MANY_TO_MANY, UNORDERED, Artifact, "Artifact", User, "User");
    RelationTypeSide Users_Artifact = RelationTypeSide.create(Users, SIDE_A);
    RelationTypeSide Users_User = RelationTypeSide.create(Users, SIDE_B);
+
+   RelationTypeToken UserToArtifactExplorerPrefs = osee.addNewRelationType(614953967981759467L, "User to Artifact Explorer Preferences", ONE_TO_ONE, RelationSorter.USER_DEFINED, User, "User", ArtifactExplorerUserPreferences, "Artifact Explorer User Preferences");
+   RelationTypeSide UserToArtifactExplorerPrefs_User = RelationTypeSide.create(UserToArtifactExplorerPrefs, SIDE_A);
+   RelationTypeSide UserToArtifactExplorerPrefs_Prefs = RelationTypeSide.create(UserToArtifactExplorerPrefs, SIDE_B);
 
    RelationTypeToken UserToContext = osee.add(3588536741885708579L, "User to Context", MANY_TO_MANY, UNORDERED, User, "User", Context, "Context");
    RelationTypeSide UserToContext_User = RelationTypeSide.create(UserToContext, SIDE_A);

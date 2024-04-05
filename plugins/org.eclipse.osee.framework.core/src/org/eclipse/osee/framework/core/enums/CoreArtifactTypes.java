@@ -146,6 +146,9 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken AbstractTestResult = osee.add(osee.artifactType(38L, "Abstract Test Result", true, Controlled));
 
+   ArtifactTypeToken ArtifactExplorerUserPreferences = osee.add(osee.artifactType(5896799229524426609L, "Artifact Explorer User Preferences", false, Artifact)
+      .exactlyOne(ArtifactExplorerPanelLocation, false));
+
    ArtifactTypeToken BranchView = osee.add(osee.artifactType(5849078277209560034L, "Branch View", false, new MaterialIcon("fork_right"), Artifact)
       .any(ProductApplicability, "Unspecified"));
 
