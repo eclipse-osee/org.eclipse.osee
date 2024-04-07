@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.config.JaxTeamWorkflow;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
+import org.eclipse.osee.ats.api.task.JaxAttribute;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -115,6 +116,10 @@ public class BidsOperations {
                   String pts = jTeamWf.getPriority();
                   if (Strings.isValid(pts)) {
                      changes.setSoleAttributeValue(newTeamWf, AtsAttributeTypes.Priority, pts);
+                  }
+                  for (JaxAttribute jAttr : jTeamWf.getAttributes()) {
+                     changes.setAttributeValuesAsStrings(newTeamWf, jAttr.getAttrType(),
+                        Collections.castAll(jAttr.getValues()));
                   }
                   populateJaxTeamWf(jTeamWf, newTeamWf);
                   changes.relate(bidArt, AtsRelationTypes.BuildImpactDataToTeamWf_TeamWf, newTeamWf);
