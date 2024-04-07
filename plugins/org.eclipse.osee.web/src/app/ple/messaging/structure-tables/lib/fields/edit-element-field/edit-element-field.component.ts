@@ -11,60 +11,61 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-import { A11yModule } from '@angular/cdk/a11y';
+import { CdkMonitorFocus } from '@angular/cdk/a11y';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import {
+	ChangeDetectionStrategy,
 	Component,
-	OnDestroy,
-	OnChanges,
-	Input,
-	Output,
 	EventEmitter,
 	Inject,
+	Input,
+	OnChanges,
+	OnDestroy,
+	Output,
 	SimpleChanges,
-	ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatButtonModule } from '@angular/material/button';
-import { MatOptionModule } from '@angular/material/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
+import {
+	MatAutocomplete,
+	MatAutocompleteTrigger,
+} from '@angular/material/autocomplete';
+import { MatIconAnchor } from '@angular/material/button';
+import { MatOption } from '@angular/material/core';
+import { MatFormField, MatSuffix } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { RouterLink } from '@angular/router';
-import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
+import { UnitDropdownComponent } from '@osee/messaging/shared/dropdowns';
+import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 import {
 	CurrentStructureService,
 	WarningDialogService,
 } from '@osee/messaging/shared/services';
-import type { element, PlatformType } from '@osee/messaging/shared/types';
+import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
+import type { PlatformType, element } from '@osee/messaging/shared/types';
 import {
 	ApplicabilitySelectorComponent,
 	MatOptionLoadingComponent,
 } from '@osee/shared/components';
+import { applic } from '@osee/shared/types/applicability';
 import {
+	BehaviorSubject,
+	ReplaySubject,
 	Subject,
 	combineLatest,
-	switchMap,
-	of,
-	BehaviorSubject,
-	share,
 	debounceTime,
 	distinctUntilChanged,
-	map,
-	tap,
-	scan,
-	iif,
-	ReplaySubject,
 	filter,
+	iif,
+	map,
+	of,
+	scan,
+	share,
 	skip,
+	switchMap,
+	tap,
 } from 'rxjs';
-import { CdkDrag, CdkDragHandle } from '@angular/cdk/drag-drop';
-import { applic } from '@osee/shared/types/applicability';
-import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
-import { UnitDropdownComponent } from '@osee/messaging/shared/dropdowns';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
 	selector: 'osee-messaging-edit-element-field',
@@ -73,20 +74,21 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
-		MatFormFieldModule,
 		FormsModule,
 		NgIf,
 		NgFor,
-		MatSelectModule,
-		MatOptionModule,
-		MatInputModule,
-		MatAutocompleteModule,
+		MatFormField,
+		CdkMonitorFocus,
+		MatInput,
+		MatSuffix,
+		MatAutocomplete,
+		MatAutocompleteTrigger,
+		MatIconAnchor,
+		MatIcon,
+		MatOption,
+		MatSlideToggle,
 		MatOptionLoadingComponent,
-		MatButtonModule,
-		MatIconModule,
-		MatSlideToggleModule,
 		AsyncPipe,
-		A11yModule,
 		RouterLink,
 		ApplicabilitySelectorComponent,
 		UnitDropdownComponent,

@@ -11,6 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
+	animate,
+	state,
+	style,
+	transition,
+	trigger,
+} from '@angular/animations';
+import { AsyncPipe, NgIf } from '@angular/common';
+import {
 	ChangeDetectionStrategy,
 	Component,
 	inject,
@@ -19,38 +27,33 @@ import {
 	Output,
 	SimpleChanges,
 } from '@angular/core';
-import { AsyncPipe, NgIf } from '@angular/common';
-import {
-	trigger,
-	state,
-	style,
-	transition,
-	animate,
-} from '@angular/animations';
 import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
 import {
+	MatAutocomplete,
+	MatAutocompleteTrigger,
+} from '@angular/material/autocomplete';
+import { MatIconButton } from '@angular/material/button';
+import {
 	ErrorStateMatcher,
-	MatOptionModule,
+	MatOption,
 	ShowOnDirtyErrorStateMatcher,
 } from '@angular/material/core';
+import { MatFormField, MatHint, MatSuffix } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
 import { CurrentRatesService } from '@osee/messaging/shared/services';
+import { MatOptionLoadingComponent } from '@osee/shared/components';
 import { NamedId } from '@osee/shared/types';
 import {
 	BehaviorSubject,
-	ReplaySubject,
-	Subject,
 	debounceTime,
 	distinctUntilChanged,
-	switchMap,
 	of,
+	ReplaySubject,
 	skip,
+	Subject,
+	switchMap,
 } from 'rxjs';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatOptionLoadingComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-rate-dropdown',
@@ -60,12 +63,15 @@ import { MatOptionLoadingComponent } from '@osee/shared/components';
 		AsyncPipe,
 		NgIf,
 		FormsModule,
-		MatInputModule,
-		MatOptionModule,
-		MatFormFieldModule,
-		MatAutocompleteModule,
-		MatIconModule,
-		MatButtonModule,
+		MatFormField,
+		MatInput,
+		MatAutocomplete,
+		MatAutocompleteTrigger,
+		MatHint,
+		MatSuffix,
+		MatIcon,
+		MatIconButton,
+		MatOption,
 		MatOptionLoadingComponent,
 	],
 	templateUrl: './rate-dropdown.component.html',

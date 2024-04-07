@@ -11,28 +11,24 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
+import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { AddCoursesDialogComponent } from '../../dialogs/add-courses-dialog/add-courses-dialog.component';
-import { TrainingCourseRecord } from './../../types/training-course';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatButtonModule } from '@angular/material/button';
-import { filter, take } from 'rxjs/operators';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { OperatorFunction } from 'rxjs';
-import { DefaultTrainingCourseRecord } from './../../types/training-course';
+import { filter, take } from 'rxjs/operators';
+import { AddCoursesDialogComponent } from '../../dialogs/add-courses-dialog/add-courses-dialog.component';
+import {
+	DefaultTrainingCourseRecord,
+	TrainingCourseRecord,
+} from '../../types/training-course';
 
 @Component({
 	standalone: true,
 	selector: 'osee-edit-courses-dropdown',
 	templateUrl: './edit-courses-dropdown.component.html',
 	styles: [],
-	imports: [
-		MatMenuModule,
-		MatIconModule,
-		MatButtonModule,
-		MatNativeDateModule,
-	],
+	imports: [MatButton, MatMenuTrigger, MatIcon, MatMenu, MatMenuItem],
 })
 export class EditCoursesDropdownComponent {
 	constructor(public dialog: MatDialog) {}

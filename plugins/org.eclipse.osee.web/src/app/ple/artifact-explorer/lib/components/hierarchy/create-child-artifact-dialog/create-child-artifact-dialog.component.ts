@@ -10,30 +10,37 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import {
-	Component,
-	Inject,
-	Optional,
-	Output,
-	ViewChild,
-	inject,
-} from '@angular/core';
 import { AsyncPipe, CommonModule } from '@angular/common';
+import { Component, Inject, Optional, ViewChild, inject } from '@angular/core';
+import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
+import {
+	MatAutocomplete,
+	MatAutocompleteTrigger,
+} from '@angular/material/autocomplete';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatOption } from '@angular/material/core';
 import {
 	MAT_DIALOG_DATA,
-	MatDialogModule,
+	MatDialogActions,
+	MatDialogClose,
+	MatDialogContent,
 	MatDialogRef,
+	MatDialogTitle,
 } from '@angular/material/dialog';
-import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import {
-	createChildArtifactDialogData,
-	artifactTypeIcon,
-} from '../../../types/artifact-explorer.data';
-import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
-import { MatListModule } from '@angular/material/list';
+	MatFormField,
+	MatLabel,
+	MatSuffix,
+} from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import {
+	AttributesEditorComponent,
+	MatOptionLoadingComponent,
+} from '@osee/shared/components';
+import { FormDirective } from '@osee/shared/directives';
+import { ArtifactUiService } from '@osee/shared/services';
+import { NamedId, attribute } from '@osee/shared/types';
 import {
 	BehaviorSubject,
 	ReplaySubject,
@@ -43,17 +50,12 @@ import {
 	map,
 	switchMap,
 } from 'rxjs';
-import { NamedId, attribute } from '@osee/shared/types';
-import { MatOptionModule } from '@angular/material/core';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import {
-	AttributesEditorComponent,
-	MatOptionLoadingComponent,
-} from '@osee/shared/components';
-import { MatIconModule } from '@angular/material/icon';
-import { FormDirective } from '@osee/shared/directives';
-import { ArtifactUiService } from '@osee/shared/services';
+import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
 import { ArtifactIconService } from '../../../services/artifact-icon.service';
+import {
+	artifactTypeIcon,
+	createChildArtifactDialogData,
+} from '../../../types/artifact-explorer.data';
 
 function controlContainerFactory(controlContainer?: ControlContainer) {
 	return controlContainer;
@@ -64,19 +66,25 @@ function controlContainerFactory(controlContainer?: ControlContainer) {
 	standalone: true,
 	imports: [
 		CommonModule,
-		MatDialogModule,
-		MatFormFieldModule,
-		MatInputModule,
 		FormsModule,
-		MatButtonModule,
-		MatListModule,
-		MatOptionModule,
-		MatAutocompleteModule,
-		MatOptionLoadingComponent,
-		MatIconModule,
 		AsyncPipe,
 		AttributesEditorComponent,
 		FormDirective,
+		MatOptionLoadingComponent,
+		MatDialogTitle,
+		MatIcon,
+		MatDialogContent,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatAutocomplete,
+		MatAutocompleteTrigger,
+		MatSuffix,
+		MatIconButton,
+		MatOption,
+		MatDialogActions,
+		MatButton,
+		MatDialogClose,
 	],
 	templateUrl: './create-child-artifact-dialog.component.html',
 	viewProviders: [

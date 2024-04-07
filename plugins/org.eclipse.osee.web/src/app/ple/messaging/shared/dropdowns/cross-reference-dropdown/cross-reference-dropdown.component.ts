@@ -11,6 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
+	animate,
+	state,
+	style,
+	transition,
+	trigger,
+} from '@angular/animations';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import {
 	ChangeDetectionStrategy,
 	Component,
 	inject,
@@ -19,39 +27,34 @@ import {
 	Output,
 	SimpleChanges,
 } from '@angular/core';
-import { AsyncPipe, CommonModule, NgFor, NgIf } from '@angular/common';
+import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
 import {
-	trigger,
-	state,
-	style,
-	transition,
-	animate,
-} from '@angular/animations';
-import { FormsModule, ControlContainer, NgForm } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatButtonModule } from '@angular/material/button';
+	MatAutocomplete,
+	MatAutocompleteTrigger,
+} from '@angular/material/autocomplete';
+import { MatIconButton } from '@angular/material/button';
 import {
 	ErrorStateMatcher,
-	MatOptionModule,
+	MatOption,
 	ShowOnDirtyErrorStateMatcher,
 } from '@angular/material/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatOptionLoadingComponent } from '@osee/shared/components';
+import { MatFormField, MatHint, MatSuffix } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { MatTooltip } from '@angular/material/tooltip';
 import { CrossReferenceService } from '@osee/messaging/shared/services';
+import { MatOptionLoadingComponent } from '@osee/shared/components';
 import { NamedId } from '@osee/shared/types';
 import {
 	BehaviorSubject,
-	ReplaySubject,
-	Subject,
 	debounceTime,
 	distinctUntilChanged,
-	switchMap,
 	of,
+	ReplaySubject,
 	skip,
+	Subject,
+	switchMap,
 } from 'rxjs';
-import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
 	selector: 'osee-cross-reference-dropdown',
@@ -62,14 +65,17 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 		NgIf,
 		NgFor,
 		FormsModule,
-		MatInputModule,
-		MatOptionModule,
-		MatFormFieldModule,
-		MatAutocompleteModule,
-		MatIconModule,
-		MatButtonModule,
 		MatOptionLoadingComponent,
-		MatTooltipModule,
+		MatFormField,
+		MatInput,
+		MatAutocomplete,
+		MatAutocompleteTrigger,
+		MatHint,
+		MatSuffix,
+		MatIcon,
+		MatIconButton,
+		MatOption,
+		MatTooltip,
 	],
 	templateUrl: './cross-reference-dropdown.component.html',
 	styles: [],

@@ -11,20 +11,29 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Inject } from '@angular/core';
+import { MatButton } from '@angular/material/button';
 import {
-	MatDialogRef,
 	MAT_DIALOG_DATA,
-	MatDialogModule,
+	MatDialogActions,
+	MatDialogClose,
+	MatDialogContent,
+	MatDialogRef,
+	MatDialogTitle,
 } from '@angular/material/dialog';
 import { RowObj } from '../../types/grid-commander-types/table-data-types';
-import { MatButtonModule } from '@angular/material/button';
 
 @Component({
 	selector: 'osee-delete-row-dialog',
 	templateUrl: './delete-row-dialog.component.html',
 	styles: [],
 	standalone: true,
-	imports: [MatDialogModule, MatButtonModule],
+	imports: [
+		MatDialogTitle,
+		MatDialogContent,
+		MatDialogActions,
+		MatButton,
+		MatDialogClose,
+	],
 })
 export class DeleteRowDialogComponent {
 	constructor(

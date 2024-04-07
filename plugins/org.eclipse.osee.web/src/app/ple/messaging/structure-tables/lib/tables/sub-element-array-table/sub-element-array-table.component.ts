@@ -11,6 +11,13 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
+	CdkDrag,
+	CdkDragDrop,
+	CdkDragHandle,
+	CdkDropList,
+} from '@angular/cdk/drag-drop';
+import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
+import {
 	ChangeDetectionStrategy,
 	Component,
 	Inject,
@@ -18,35 +25,42 @@ import {
 	OnInit,
 	ViewChild,
 } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
-import { MatTableModule } from '@angular/material/table';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import {
-	CdkDrag,
-	CdkDragDrop,
-	CdkDragHandle,
-	CdkDropList,
-} from '@angular/cdk/drag-drop';
-import { LayoutNotifierService } from '@osee/layout/notification';
-import { applic } from '@osee/shared/types/applicability';
-import { difference } from '@osee/shared/types/change-report';
-import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
-import { SubElementTableFieldComponent } from '../../fields/sub-element-table-field/sub-element-table-field.component';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIcon } from '@angular/material/icon';
+import {
+	MatMenu,
+	MatMenuContent,
+	MatMenuTrigger,
+} from '@angular/material/menu';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+} from '@angular/material/table';
+import { MatTooltip } from '@angular/material/tooltip';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { LayoutNotifierService } from '@osee/layout/notification';
+import {
+	CurrentStructureService,
+	HeaderService,
+} from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 import {
 	element,
 	elementSentinel,
 	elementWithChanges,
 } from '@osee/messaging/shared/types';
-import {
-	CurrentStructureService,
-	HeaderService,
-} from '@osee/messaging/shared/services';
+import { applic } from '@osee/shared/types/applicability';
+import { difference } from '@osee/shared/types/change-report';
+import { SubElementTableFieldComponent } from '../../fields/sub-element-table-field/sub-element-table-field.component';
 import { SubElementArrayTableDropdownComponent } from '../../menus/sub-element-array-table-dropdown/sub-element-array-table-dropdown.component';
 
 @Component({
@@ -66,11 +80,21 @@ import { SubElementArrayTableDropdownComponent } from '../../menus/sub-element-a
 		CdkDrag,
 		CdkDragHandle,
 		CdkDropList,
-		MatTableModule,
-		MatIconModule,
-		MatMenuModule,
-		MatTooltipModule,
-		MatFormFieldModule,
+		MatTable,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatTooltip,
+		MatCell,
+		MatCellDef,
+		MatIcon,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
+		MatMenu,
+		MatMenuContent,
+		MatMenuTrigger,
 		FormsModule,
 		SubElementTableFieldComponent,
 		SubElementArrayTableDropdownComponent,

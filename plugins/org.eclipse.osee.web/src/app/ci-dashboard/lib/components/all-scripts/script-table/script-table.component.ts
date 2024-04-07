@@ -10,23 +10,29 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { scriptDefHeaderDetails } from '../../../table-headers/script-def-headers';
-import { MatTableModule } from '@angular/material/table';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { UiService, HeaderService } from '@osee/shared/services';
+import { MatDialog } from '@angular/material/dialog';
+import { MatMenuTrigger } from '@angular/material/menu';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+} from '@angular/material/table';
+import { MatTooltip } from '@angular/material/tooltip';
+import { HeaderService, UiService } from '@osee/shared/services';
 import { SplitStringPipe } from '@osee/shared/utils';
 import { TmoService } from '../../../services/tmo.service';
-import type { SetReference } from '../../../types/tmo';
-import type { DefReference } from '../../../types/tmo';
+import { scriptDefHeaderDetails } from '../../../table-headers/script-def-headers';
+import type { DefReference, SetReference } from '../../../types/tmo';
 
 @Component({
 	selector: 'osee-script-table',
@@ -35,14 +41,17 @@ import type { DefReference } from '../../../types/tmo';
 	imports: [
 		CommonModule,
 		FormsModule,
-		MatButtonModule,
-		MatDialogModule,
-		MatFormFieldModule,
-		MatIconModule,
-		MatInputModule,
-		MatMenuModule,
-		MatTableModule,
-		MatTooltipModule,
+		MatTable,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatTooltip,
+		MatCell,
+		MatCellDef,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
 		SplitStringPipe,
 	],
 })

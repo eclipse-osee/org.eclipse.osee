@@ -11,11 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Inject } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
+import { MatButton } from '@angular/material/button';
 import {
-	MatDialogModule,
-	MatDialogRef,
 	MAT_DIALOG_DATA,
+	MatDialogActions,
+	MatDialogClose,
+	MatDialogContent,
+	MatDialogRef,
+	MatDialogTitle,
 } from '@angular/material/dialog';
 import { DeleteSubMessageDialog } from '../../types/DeleteSubMessageDialog';
 
@@ -23,7 +26,13 @@ import { DeleteSubMessageDialog } from '../../types/DeleteSubMessageDialog';
 	selector: 'osee-messaging-delete-submessage-dialog',
 	templateUrl: './delete-submessage-dialog.component.html',
 	standalone: true,
-	imports: [MatDialogModule, MatButtonModule],
+	imports: [
+		MatDialogTitle,
+		MatDialogContent,
+		MatDialogActions,
+		MatDialogClose,
+		MatButton,
+	],
 })
 export class DeleteSubmessageDialogComponent {
 	constructor(

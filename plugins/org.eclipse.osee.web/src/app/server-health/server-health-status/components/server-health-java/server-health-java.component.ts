@@ -10,17 +10,41 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+	MatTableDataSource,
+} from '@angular/material/table';
 import { shareReplay, tap } from 'rxjs';
 import { ServerHealthHttpService } from '../../../shared/services/server-health-http.service';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 
 @Component({
 	selector: 'osee-server-health-java',
 	standalone: true,
-	imports: [CommonModule, MatTableModule],
+	imports: [
+		CommonModule,
+		MatTable,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatCell,
+		MatCellDef,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
+	],
 	templateUrl: './server-health-java.component.html',
 })
 export class ServerHealthJavaComponent {

@@ -12,11 +12,41 @@
  **********************************************************************/
 import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import type { PlatformType } from '@osee/messaging/shared/types';
+import { MatButton } from '@angular/material/button';
+import {
+	MatCard,
+	MatCardActions,
+	MatCardContent,
+	MatCardHeader,
+	MatCardSubtitle,
+	MatCardTitle,
+	MatCardTitleGroup,
+} from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIcon } from '@angular/material/icon';
+import {
+	EditEnumSetDialogComponent,
+	EditTypeDialogComponent,
+} from '@osee/messaging/shared/dialogs';
+import { editPlatformTypeDialogDataMode } from '@osee/messaging/shared/enumerations';
+import {
+	EnumerationUIService,
+	PreferencesUIService,
+	TypesUIService,
+	WarningDialogService,
+} from '@osee/messaging/shared/services';
+import type {
+	PlatformType,
+	editPlatformTypeDialogData,
+} from '@osee/messaging/shared/types';
+import {
+	createArtifact,
+	modifyArtifact,
+	modifyRelation,
+	relation,
+} from '@osee/shared/types';
+import { OperatorFunction, iif, of } from 'rxjs';
+import { filter, switchMap, take } from 'rxjs/operators';
 import { PlatformTypeActionsComponent } from '../platform-type-actions/platform-type-actions.component';
 
 @Component({
@@ -25,12 +55,17 @@ import { PlatformTypeActionsComponent } from '../platform-type-actions/platform-
 	styles: [],
 	standalone: true,
 	imports: [
-		MatCardModule,
 		NgIf,
 		AsyncPipe,
-		MatDialogModule,
-		MatIconModule,
-		MatButtonModule,
+		MatCard,
+		MatCardHeader,
+		MatCardTitleGroup,
+		MatCardTitle,
+		MatCardSubtitle,
+		MatCardContent,
+		MatCardActions,
+		MatButton,
+		MatIcon,
 		PlatformTypeActionsComponent,
 	],
 })

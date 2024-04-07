@@ -10,44 +10,49 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject, OnDestroy } from '@angular/core';
-import {
-	MatDialogModule,
-	MatDialogRef,
-	MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
-import { applic } from '@osee/shared/types/applicability';
-import { CurrentGraphService } from '../../services/current-graph.service';
-import { Subject } from 'rxjs';
-import type { connection, transportType } from '@osee/messaging/shared/types';
-import { CurrentTransportTypeService } from '@osee/messaging/shared/services';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormsModule } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatOptionModule } from '@angular/material/core';
 import { AsyncPipe, NgFor } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
+import { Component, Inject, OnDestroy } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
+import { MatOption } from '@angular/material/core';
+import {
+	MAT_DIALOG_DATA,
+	MatDialogActions,
+	MatDialogClose,
+	MatDialogContent,
+	MatDialogRef,
+	MatDialogTitle,
+} from '@angular/material/dialog';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatSelect } from '@angular/material/select';
+import { CurrentTransportTypeService } from '@osee/messaging/shared/services';
+import type { connection, transportType } from '@osee/messaging/shared/types';
 import {
 	ApplicabilitySelectorComponent,
 	MatOptionLoadingComponent,
 } from '@osee/shared/components';
+import { Subject } from 'rxjs';
 
 @Component({
 	selector: 'osee-edit-connection-dialog',
 	templateUrl: './edit-connection-dialog.component.html',
 	standalone: true,
 	imports: [
-		MatDialogModule,
-		MatFormFieldModule,
+		MatDialogTitle,
+		MatDialogContent,
+		MatDialogActions,
+		MatDialogClose,
+		MatFormField,
+		MatLabel,
 		FormsModule,
-		MatInputModule,
-		MatSelectModule,
+		MatInput,
+		MatSelect,
 		MatOptionLoadingComponent,
-		MatOptionModule,
+		MatOption,
 		AsyncPipe,
 		NgFor,
-		MatButtonModule,
+		MatButton,
 		ApplicabilitySelectorComponent,
 	],
 })

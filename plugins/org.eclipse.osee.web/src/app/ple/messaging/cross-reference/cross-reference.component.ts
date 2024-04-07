@@ -10,24 +10,24 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UiService } from '@osee/shared/services';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialog } from '@angular/material/dialog';
-import { combineLatest, filter, iif, of, switchMap, take, tap } from 'rxjs';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CrossReference, connection } from '@osee/messaging/shared/types';
+import { MatFabButton } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatOption, MatSelect } from '@angular/material/select';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import {
 	CrossReferenceTableComponent,
 	NewCrossReferenceDialogComponent,
 } from '@osee/messaging/cross-reference';
-import { CrossReferenceService } from '@osee/messaging/shared/services';
 import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
+import { CrossReferenceService } from '@osee/messaging/shared/services';
+import { CrossReference, connection } from '@osee/messaging/shared/types';
+import { UiService } from '@osee/shared/services';
+import { combineLatest, filter, iif, of, switchMap, take, tap } from 'rxjs';
 
 @Component({
 	selector: 'osee-cross-reference',
@@ -36,10 +36,12 @@ import { MessagingControlsComponent } from '@osee/messaging/shared/main-content'
 		CommonModule,
 		CrossReferenceTableComponent,
 		FormsModule,
-		MatButtonModule,
-		MatFormFieldModule,
-		MatIconModule,
-		MatSelectModule,
+		MatFormField,
+		MatLabel,
+		MatSelect,
+		MatOption,
+		MatIcon,
+		MatFabButton,
 		RouterLink,
 		MessagingControlsComponent,
 	],

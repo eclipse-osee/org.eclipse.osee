@@ -13,18 +13,21 @@
 import { AsyncPipe, NgFor } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatOptionModule } from '@angular/material/core';
+import { MatButton } from '@angular/material/button';
+import { MatOption } from '@angular/material/core';
 import {
-	MatDialogModule,
-	MatDialogRef,
 	MAT_DIALOG_DATA,
+	MatDialogActions,
+	MatDialogClose,
+	MatDialogContent,
+	MatDialogRef,
+	MatDialogTitle,
 } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
-import { MatSelectChange, MatSelectModule } from '@angular/material/select';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatListOption, MatSelectionList } from '@angular/material/list';
+import { MatSelect, MatSelectChange } from '@angular/material/select';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { Observable, of } from 'rxjs';
 import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
@@ -40,14 +43,20 @@ import { PLAddFeatureData, writeFeature } from '../../types/pl-config-features';
 		NgFor,
 		AsyncPipe,
 		FormsModule,
-		MatDialogModule,
-		MatFormFieldModule,
-		MatInputModule,
-		MatSelectModule,
-		MatOptionModule,
-		MatSlideToggleModule,
-		MatButtonModule,
-		MatListModule,
+		MatDialogTitle,
+		MatDialogContent,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatSelect,
+		MatOption,
+		MatSlideToggle,
+		MatButton,
+		MatSelectionList,
+		MatListOption,
+		MatDialogActions,
+		MatButton,
+		MatDialogClose,
 	],
 })
 export class AddFeatureDialogComponent {

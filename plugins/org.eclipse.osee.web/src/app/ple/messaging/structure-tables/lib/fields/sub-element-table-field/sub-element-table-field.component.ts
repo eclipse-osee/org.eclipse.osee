@@ -19,19 +19,17 @@ import {
 	Output,
 } from '@angular/core';
 import { LayoutNotifierService } from '@osee/layout/notification';
-import { applic } from '@osee/shared/types/applicability';
-import { EditElementFieldComponent } from '../edit-element-field/edit-element-field.component';
-import { SubElementTableNoEditFieldComponent } from '../sub-element-table-no-edit-field/sub-element-table-no-edit-field.component';
-import { EnumLiteralsFieldComponent } from '../enum-literal-field/enum-literals-field.component';
 import {
 	elementSentinel,
+	type PlatformType,
 	type element,
 	type elementWithChanges,
-	type PlatformType,
 	type structure,
 } from '@osee/messaging/shared/types';
-import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
-import { MatIconModule } from '@angular/material/icon';
+import { applic } from '@osee/shared/types/applicability';
+import { EditElementFieldComponent } from '../edit-element-field/edit-element-field.component';
+import { EnumLiteralsFieldComponent } from '../enum-literal-field/enum-literals-field.component';
+import { SubElementTableNoEditFieldComponent } from '../sub-element-table-no-edit-field/sub-element-table-no-edit-field.component';
 
 @Component({
 	selector: 'osee-messaging-sub-element-table-field',
@@ -45,7 +43,6 @@ import { MatIconModule } from '@angular/material/icon';
 		NgIf,
 		NgFor,
 		AsyncPipe,
-		MatIconModule,
 		EnumLiteralsFieldComponent,
 	],
 })

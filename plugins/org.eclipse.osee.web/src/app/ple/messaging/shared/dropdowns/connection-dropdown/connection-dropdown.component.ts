@@ -11,6 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
+	animate,
+	state,
+	style,
+	transition,
+	trigger,
+} from '@angular/animations';
+import { AsyncPipe, NgIf } from '@angular/common';
+import {
 	ChangeDetectionStrategy,
 	Component,
 	Input,
@@ -19,7 +27,23 @@ import {
 	SimpleChanges,
 	inject,
 } from '@angular/core';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import {
+	MatAutocomplete,
+	MatAutocompleteTrigger,
+} from '@angular/material/autocomplete';
+import { MatIconButton } from '@angular/material/button';
+import {
+	ErrorStateMatcher,
+	MatOption,
+	ShowOnDirtyErrorStateMatcher,
+} from '@angular/material/core';
+import { MatFormField, MatSuffix } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { CurrentConnectionsService } from '@osee/messaging/shared/services';
+import { connection, connectionSentinel } from '@osee/messaging/shared/types';
+import { MatOptionLoadingComponent } from '@osee/shared/components';
 import {
 	BehaviorSubject,
 	ReplaySubject,
@@ -29,27 +53,6 @@ import {
 	of,
 	switchMap,
 } from 'rxjs';
-import { FormsModule } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
-import {
-	ErrorStateMatcher,
-	MatOptionModule,
-	ShowOnDirtyErrorStateMatcher,
-} from '@angular/material/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatOptionLoadingComponent } from '@osee/shared/components';
-import { connection, connectionSentinel } from '@osee/messaging/shared/types';
-import {
-	animate,
-	state,
-	style,
-	transition,
-	trigger,
-} from '@angular/animations';
-import { CurrentConnectionsService } from '@osee/messaging/shared/services';
 
 @Component({
 	selector: 'osee-connection-dropdown',
@@ -59,13 +62,15 @@ import { CurrentConnectionsService } from '@osee/messaging/shared/services';
 		AsyncPipe,
 		NgIf,
 		FormsModule,
-		MatInputModule,
-		MatOptionModule,
-		MatFormFieldModule,
-		MatAutocompleteModule,
-		MatIconModule,
-		MatButtonModule,
 		MatOptionLoadingComponent,
+		MatFormField,
+		MatInput,
+		MatAutocomplete,
+		MatAutocompleteTrigger,
+		MatSuffix,
+		MatIcon,
+		MatIconButton,
+		MatOption,
 	],
 	templateUrl: './connection-dropdown.component.html',
 	animations: [

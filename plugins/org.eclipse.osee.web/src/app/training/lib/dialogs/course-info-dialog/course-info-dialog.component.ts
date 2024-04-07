@@ -10,23 +10,32 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, Inject } from '@angular/core';
+import { MatButton } from '@angular/material/button';
 import {
-	MatDialogRef,
 	MAT_DIALOG_DATA,
-	MatDialogModule,
+	MatDialogActions,
+	MatDialogContent,
+	MatDialogRef,
+	MatDialogTitle,
 } from '@angular/material/dialog';
+import { MatIcon } from '@angular/material/icon';
+import { Observable, map } from 'rxjs';
 import { TrainingCourseService } from '../../services/training-course.service';
-import { map, Observable } from 'rxjs';
 import { TrainingCourse } from '../../types/training-course';
 
 @Component({
 	selector: 'osee-course-info-dialog',
 	standalone: true,
-	imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule],
+	imports: [
+		CommonModule,
+		MatDialogTitle,
+		MatDialogContent,
+		MatIcon,
+		MatDialogActions,
+		MatButton,
+	],
 	templateUrl: './course-info-dialog.component.html',
 	styles: [],
 })

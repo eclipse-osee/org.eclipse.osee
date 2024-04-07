@@ -10,8 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, Input, ViewChild } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
+import {
+	MatExpansionPanel,
+	MatExpansionPanelHeader,
+	MatExpansionPanelTitle,
+} from '@angular/material/expansion';
+import {
+	AttributesEditorComponent,
+	ExpandIconComponent,
+} from '@osee/shared/components';
+import { FormDirective } from '@osee/shared/directives';
 import { TransactionService } from '@osee/shared/transactions';
 import {
 	attribute,
@@ -19,37 +30,20 @@ import {
 	modifyArtifact,
 	transaction,
 } from '@osee/shared/types';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatInputModule } from '@angular/material/input';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { FormsModule, NgForm } from '@angular/forms';
-import { MatGridListModule } from '@angular/material/grid-list';
-import { MatIconModule } from '@angular/material/icon';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { MatExpansionModule } from '@angular/material/expansion';
 import { tab } from '../../../types/artifact-explorer.data';
-import { FormDirective } from '@osee/shared/directives';
-import {
-	AttributesEditorComponent,
-	ExpandIconComponent,
-} from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-attributes-editor-panel',
 	standalone: true,
 	imports: [
 		CommonModule,
-		MatGridListModule,
-		MatFormFieldModule,
 		FormsModule,
-		MatInputModule,
-		MatSelectModule,
-		MatIconModule,
-		MatAutocompleteModule,
-		MatExpansionModule,
 		AttributesEditorComponent,
 		FormDirective,
+		MatExpansionPanel,
+		MatExpansionPanelHeader,
+		MatExpansionPanelTitle,
 		ExpandIconComponent,
 	],
 	templateUrl: './attributes-editor-panel.component.html',

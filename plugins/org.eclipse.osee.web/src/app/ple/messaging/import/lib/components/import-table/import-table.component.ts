@@ -10,16 +10,31 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatIconModule } from '@angular/material/icon';
-import { applic } from '@osee/shared/types/applicability';
-import { HighlightFilteredTextDirective } from '@osee/shared/utils';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+	MatFormField,
+	MatLabel,
+	MatPrefix,
+} from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+} from '@angular/material/table';
 import { HeaderService } from '@osee/shared/services';
 import { headerDetail } from '@osee/shared/types';
+import { applic } from '@osee/shared/types/applicability';
+import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 
 @Component({
 	selector: 'osee-import-table',
@@ -30,10 +45,21 @@ import { headerDetail } from '@osee/shared/types';
 		NgClass,
 		NgIf,
 		NgFor,
-		MatFormFieldModule,
-		MatInputModule,
-		MatIconModule,
-		MatTableModule,
+		MatTable,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatIcon,
+		MatPrefix,
+		MatCell,
+		MatCellDef,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
 	],
 	templateUrl: './import-table.component.html',
 })

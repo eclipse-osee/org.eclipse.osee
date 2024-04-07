@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatLabel } from '@angular/material/form-field';
 import { BuildNum, version } from './version';
 
 @Component({
@@ -19,7 +19,7 @@ import { BuildNum, version } from './version';
 	templateUrl: './about.component.html',
 	styles: [],
 	standalone: true,
-	imports: [MatFormFieldModule],
+	imports: [MatLabel],
 })
 export class AboutComponent {
 	buildNumber = BuildNum;

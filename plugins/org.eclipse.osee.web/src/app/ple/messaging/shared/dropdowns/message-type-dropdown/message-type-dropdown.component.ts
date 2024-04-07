@@ -11,6 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
+	animate,
+	state,
+	style,
+	transition,
+	trigger,
+} from '@angular/animations';
+import { AsyncPipe, NgIf } from '@angular/common';
+import {
 	ChangeDetectionStrategy,
 	Component,
 	inject,
@@ -20,41 +28,32 @@ import {
 	Output,
 	SimpleChanges,
 } from '@angular/core';
-import { AsyncPipe, CommonModule, NgIf } from '@angular/common';
+import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
 import {
-	trigger,
-	state,
-	style,
-	transition,
-	animate,
-} from '@angular/animations';
-import { FormsModule, ControlContainer, NgForm } from '@angular/forms';
-import {
-	MatAutocompleteModule,
-	MatAutocompleteTrigger,
 	MatAutocomplete,
+	MatAutocompleteTrigger,
 } from '@angular/material/autocomplete';
-import { MatButtonModule } from '@angular/material/button';
+import { MatIconButton } from '@angular/material/button';
 import {
-	MatOptionModule,
 	ErrorStateMatcher,
+	MatOption,
 	ShowOnDirtyErrorStateMatcher,
 } from '@angular/material/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
+import { MatFormField, MatHint, MatSuffix } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
 import { CurrentMessageTypesService } from '@osee/messaging/shared/services';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
 import { NamedId } from '@osee/shared/types';
 import {
 	BehaviorSubject,
+	debounceTime,
+	distinct,
+	distinctUntilChanged,
+	of,
 	ReplaySubject,
 	Subject,
-	debounceTime,
-	distinctUntilChanged,
 	switchMap,
-	of,
-	distinct,
 } from 'rxjs';
 const _comparator = (previous: string, current: string) => {
 	if (typeof previous === 'string' && typeof current === 'string') {
@@ -70,13 +69,16 @@ const _comparator = (previous: string, current: string) => {
 		AsyncPipe,
 		NgIf,
 		FormsModule,
-		MatInputModule,
-		MatOptionModule,
-		MatFormFieldModule,
-		MatAutocompleteModule,
-		MatIconModule,
-		MatButtonModule,
 		MatOptionLoadingComponent,
+		MatFormField,
+		MatInput,
+		MatAutocomplete,
+		MatAutocompleteTrigger,
+		MatHint,
+		MatSuffix,
+		MatIcon,
+		MatIconButton,
+		MatOption,
 	],
 	templateUrl: './message-type-dropdown.component.html',
 	styles: [],

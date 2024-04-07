@@ -13,10 +13,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import {
+	MatFormField,
+	MatLabel,
+	MatSuffix,
+} from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
 import { artifact, createArtifact } from '@osee/shared/types';
 import { OpenUrlFormService } from '../../../../services/create-command-form-services/open-url-form.service';
 import {
@@ -30,10 +34,13 @@ import {
 	imports: [
 		CommonModule,
 		FormsModule,
-		MatFormFieldModule,
-		MatInputModule,
-		MatButtonModule,
-		MatIconModule,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatSuffix,
+		MatIconButton,
+		MatIcon,
+		MatButton,
 	],
 	templateUrl: './open-url-form.component.html',
 	styles: [],

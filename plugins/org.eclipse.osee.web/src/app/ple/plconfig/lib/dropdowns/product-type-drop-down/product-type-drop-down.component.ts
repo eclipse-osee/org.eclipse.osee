@@ -10,12 +10,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NgFor, NgIf, AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { MatIcon } from '@angular/material/icon';
+import {
+	MatMenu,
+	MatMenuContent,
+	MatMenuItem,
+	MatMenuTrigger,
+} from '@angular/material/menu';
 import { filter, switchMap, take } from 'rxjs';
 import { AddProductTypeDialogComponent } from '../../dialogs/add-product-type-dialog/add-product-type-dialog.component';
 import { EditProductTypeDialogComponent } from '../../dialogs/edit-product-type-dialog/edit-product-type-dialog.component';
@@ -31,9 +35,11 @@ import {
 	styles: [],
 	standalone: true,
 	imports: [
-		MatIconModule,
-		MatMenuModule,
-		MatFormFieldModule,
+		MatMenuItem,
+		MatMenuTrigger,
+		MatMenuContent,
+		MatMenu,
+		MatIcon,
 		NgFor,
 		NgIf,
 		AsyncPipe,

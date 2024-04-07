@@ -10,26 +10,29 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
 import { Component, computed } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatTabsModule } from '@angular/material/tabs';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatTab, MatTabGroup, MatTabLabel } from '@angular/material/tabs';
 import { ArtifactExplorerTabService } from '../../services/artifact-explorer-tab.service';
-import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
+import { tab } from '../../types/artifact-explorer.data';
+import { ChangeReportTableComponent } from '../change-report-table/change-report-table.component';
 import { ArtifactEditorComponent } from '../editor/artifact-editor/artifact-editor.component';
 import { ArtifactInfoPanelComponent } from '../editor/artifact-info-panel/artifact-info-panel.component';
 import { RelationsEditorPanelComponent } from '../editor/relations-editor-panel/relations-editor-panel.component';
-import { ChangeReportTableComponent } from '../change-report-table/change-report-table.component';
-import { tab } from '../../types/artifact-explorer.data';
 
 @Component({
 	selector: 'osee-artifact-tab-group',
 	standalone: true,
 	imports: [
-		MatTabsModule,
-		MatIconModule,
-		MatButtonModule,
-		DragDropModule,
+		MatTabGroup,
+		CdkDropList,
+		MatTab,
+		CdkDrag,
+		MatIcon,
+		MatIconButton,
+		MatTabLabel,
 		ArtifactInfoPanelComponent,
 		RelationsEditorPanelComponent,
 		ArtifactEditorComponent,

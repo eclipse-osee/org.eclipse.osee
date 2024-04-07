@@ -10,16 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule, NgFor, NgForOf } from '@angular/common';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { ReportService } from '../services/report.service';
-import { Artifact, workflow, test } from '../model/artifact';
-import { NewRow } from '../model/row';
-import { SelectionModel } from '@angular/cdk/collections';
-import { Component, ViewChild, AfterViewInit, OnInit } from '@angular/core';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import {
 	animate,
 	state,
@@ -27,29 +17,64 @@ import {
 	transition,
 	trigger,
 } from '@angular/animations';
-import { MatSortModule } from '@angular/material/sort';
+import { SelectionModel } from '@angular/cdk/collections';
+import { CommonModule } from '@angular/common';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatSelectModule } from '@angular/material/select';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
+import { MatAnchor, MatButton } from '@angular/material/button';
+import { MatFormField, MatPrefix } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSelect } from '@angular/material/select';
+import { MatSort, MatSortHeader } from '@angular/material/sort';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+	MatTableDataSource,
+} from '@angular/material/table';
 import { apiURL } from '@osee/environments';
-import { MatIconModule } from '@angular/material/icon';
 import { of } from 'rxjs';
+import { map, shareReplay, switchMap, take, tap } from 'rxjs/operators';
+import { Artifact, test, workflow } from '../model/artifact';
+import { NewRow } from '../model/row';
+import { ReportService } from '../services/report.service';
 
 @Component({
 	selector: 'osee-diff-table',
 	standalone: true,
 	imports: [
 		CommonModule,
-		MatPaginatorModule,
-		MatTableModule,
-		MatSortModule,
 		FormsModule,
 		ReactiveFormsModule,
-		MatButtonModule,
-		MatInputModule,
-		MatSelectModule,
-		MatIconModule,
+		MatFormField,
+		MatButton,
+		MatInput,
+		MatTable,
+		MatSort,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatSortHeader,
+		MatCell,
+		MatCellDef,
+		MatAnchor,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
+		MatPaginator,
+		MatSelect,
+		MatIcon,
+		MatPrefix,
 	],
 	templateUrl: './diff-table.component.html',
 	animations: [

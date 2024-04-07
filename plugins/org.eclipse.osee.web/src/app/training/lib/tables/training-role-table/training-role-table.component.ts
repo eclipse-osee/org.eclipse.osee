@@ -10,22 +10,47 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatNoDataRow,
+	MatRow,
+	MatRowDef,
+	MatTable,
+	MatTableDataSource,
+} from '@angular/material/table';
 import { HeaderService } from '@osee/shared/services';
+import { Observable, map } from 'rxjs';
+import { TrainingRoleService } from '../../services/training-role.service';
 import { TrainingRoleRecord } from '../../types/training-role';
 import { trainingRoleHeaderDetails } from './training-role-table-header';
-import { MatTableDataSource } from '@angular/material/table';
-import { map, Observable } from 'rxjs';
-import { TrainingRoleService } from './../../services/training-role.service';
-import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
 
 @Component({
 	standalone: true,
 	selector: 'osee-training-role-table',
 	templateUrl: './training-role-table.component.html',
 	styles: [],
-	imports: [MatTableModule, CommonModule],
+	imports: [
+		MatTable,
+		MatNoDataRow,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatCell,
+		MatCellDef,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
+		CommonModule,
+	],
 })
 export class TrainingRoleTableComponent {
 	private dataSource = new MatTableDataSource<TrainingRoleRecord>();

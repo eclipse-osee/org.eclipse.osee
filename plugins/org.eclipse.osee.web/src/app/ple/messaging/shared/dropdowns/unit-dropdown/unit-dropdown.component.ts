@@ -11,6 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
+	animate,
+	state,
+	style,
+	transition,
+	trigger,
+} from '@angular/animations';
+import { AsyncPipe, NgIf } from '@angular/common';
+import {
 	ChangeDetectionStrategy,
 	Component,
 	inject,
@@ -19,40 +27,37 @@ import {
 	Output,
 	SimpleChanges,
 } from '@angular/core';
-import { AsyncPipe, NgIf } from '@angular/common';
 import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import {
+	MatAutocomplete,
+	MatAutocompleteTrigger,
+} from '@angular/material/autocomplete';
+import { MatIconButton } from '@angular/material/button';
 import {
 	ErrorStateMatcher,
-	MatOptionModule,
+	MatOption,
 	ShowOnDirtyErrorStateMatcher,
 } from '@angular/material/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
+import {
+	MatFormField,
+	MatHint,
+	MatPrefix,
+	MatSuffix,
+} from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { CurrentUnitsService } from '@osee/messaging/shared/services';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
+import { NamedId } from '@osee/shared/types';
 import {
 	BehaviorSubject,
-	combineLatest,
 	debounceTime,
 	distinctUntilChanged,
-	distinctUntilKeyChanged,
 	of,
 	ReplaySubject,
 	Subject,
 	switchMap,
-	tap,
 } from 'rxjs';
-import { NamedId } from '@osee/shared/types';
-import {
-	animate,
-	state,
-	style,
-	transition,
-	trigger,
-} from '@angular/animations';
-import { MatButtonModule } from '@angular/material/button';
-import { CurrentUnitsService } from '@osee/messaging/shared/services';
 
 @Component({
 	selector: 'osee-unit-dropdown',
@@ -62,12 +67,16 @@ import { CurrentUnitsService } from '@osee/messaging/shared/services';
 		AsyncPipe,
 		NgIf,
 		FormsModule,
-		MatInputModule,
-		MatOptionModule,
-		MatFormFieldModule,
-		MatAutocompleteModule,
-		MatIconModule,
-		MatButtonModule,
+		MatFormField,
+		MatInput,
+		MatAutocomplete,
+		MatAutocompleteTrigger,
+		MatHint,
+		MatPrefix,
+		MatSuffix,
+		MatIcon,
+		MatIconButton,
+		MatOption,
 		MatOptionLoadingComponent,
 	],
 	templateUrl: './unit-dropdown.component.html',

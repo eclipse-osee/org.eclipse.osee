@@ -10,13 +10,25 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe, NgClass } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatButton } from '@angular/material/button';
 import {
 	MAT_DIALOG_DATA,
-	MatDialogModule,
+	MatDialogActions,
+	MatDialogContent,
 	MatDialogRef,
+	MatDialogTitle,
 } from '@angular/material/dialog';
-import { AsyncPipe, NgClass } from '@angular/common';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import { CommitBranchService } from '@osee/shared/services';
+import {
+	branch,
+	branchSentinel,
+	validateCommitResult,
+} from '@osee/shared/types';
 import {
 	BehaviorSubject,
 	combineLatest,
@@ -28,16 +40,6 @@ import {
 	tap,
 } from 'rxjs';
 import { MergeManagerTableComponent } from './merge-manager-table/merge-manager-table.component';
-import { MatButtonModule } from '@angular/material/button';
-import {
-	branch,
-	branchSentinel,
-	validateCommitResult,
-} from '@osee/shared/types';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { CommitBranchService } from '@osee/shared/services';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-merge-manager-dialog',
@@ -45,10 +47,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 	imports: [
 		AsyncPipe,
 		NgClass,
-		MatDialogModule,
-		MatButtonModule,
-		MatIconModule,
-		MatTooltipModule,
+		MatDialogTitle,
+		MatIcon,
+		MatTooltip,
+		MatDialogContent,
+		MatButton,
+		MatDialogActions,
 		MergeManagerTableComponent,
 	],
 	templateUrl: './merge-manager-dialog.component.html',

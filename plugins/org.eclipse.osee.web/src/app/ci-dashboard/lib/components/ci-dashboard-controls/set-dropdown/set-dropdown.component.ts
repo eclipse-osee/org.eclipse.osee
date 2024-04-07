@@ -10,29 +10,30 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, OnChanges, SimpleChanges, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import {
+	MatAutocomplete,
+	MatAutocompleteTrigger,
+	MatOption,
+} from '@angular/material/autocomplete';
+import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import {
 	BehaviorSubject,
+	combineLatest,
 	filter,
 	from,
 	of,
-	switchMap,
-	combineLatest,
 	reduce,
+	switchMap,
 } from 'rxjs';
-import type { SetReference } from '../../../types/tmo';
-import {
-	MatCheckboxChange,
-	MatCheckboxModule,
-} from '@angular/material/checkbox';
 import { CiDashboardUiService } from '../../../services/ci-dashboard-ui.service';
 import { CiSetsService } from '../../../services/ci-sets.service';
-import { toSignal } from '@angular/core/rxjs-interop';
+import type { SetReference } from '../../../types/tmo';
 
 @Component({
 	selector: 'osee-set-dropdown',
@@ -41,10 +42,13 @@ import { toSignal } from '@angular/core/rxjs-interop';
 	imports: [
 		CommonModule,
 		FormsModule,
-		MatAutocompleteModule,
-		MatCheckboxModule,
-		MatFormFieldModule,
-		MatInputModule,
+		MatCheckbox,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatAutocomplete,
+		MatAutocompleteTrigger,
+		MatOption,
 	],
 })
 export class SetDropdownComponent implements OnChanges {

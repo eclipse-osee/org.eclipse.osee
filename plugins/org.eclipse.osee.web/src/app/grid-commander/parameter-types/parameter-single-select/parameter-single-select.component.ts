@@ -10,18 +10,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { MatSelectChange, MatSelectModule } from '@angular/material/select';
-import { MatOptionModule } from '@angular/material/core';
 import { NgFor } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { MatOption } from '@angular/material/core';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatSelect, MatSelectChange } from '@angular/material/select';
 
 @Component({
 	selector: 'osee-parameter-single-select',
 	templateUrl: './parameter-single-select.component.html',
 	styles: [],
 	standalone: true,
-	imports: [MatFormFieldModule, MatSelectModule, NgFor, MatOptionModule],
+	imports: [MatFormField, MatLabel, MatSelect, NgFor, MatOption],
 })
 export class ParameterSingleSelectComponent {
 	//TODO: Determine how to dynamically render options in template based on command -- paramater attribute?

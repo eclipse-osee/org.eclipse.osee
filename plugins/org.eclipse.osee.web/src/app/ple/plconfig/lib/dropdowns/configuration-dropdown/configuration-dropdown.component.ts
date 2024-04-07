@@ -10,25 +10,30 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import {
+	MatMenu,
+	MatMenuContent,
+	MatMenuItem,
+	MatMenuTrigger,
+} from '@angular/material/menu';
 import { iif, Observable, of, OperatorFunction } from 'rxjs';
-import { filter, shareReplay, switchMap, take, tap } from 'rxjs/operators';
-import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
-import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
+import { filter, shareReplay, switchMap, take } from 'rxjs/operators';
+import { AddConfigurationDialogComponent } from '../../dialogs/add-configuration-dialog/add-configuration-dialog.component';
+import { CopyConfigurationDialogComponent } from '../../dialogs/copy-configuration-dialog/copy-configuration-dialog.component';
+import { EditConfigurationDialogComponent } from '../../dialogs/edit-config-dialog/edit-config-dialog.component';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
+import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
 import { ConfigGroup } from '../../types/pl-config-applicui-branch-mapping';
+import { editConfiguration } from '../../types/pl-config-configurations';
 import {
 	PLAddConfigData,
 	PLEditConfigData,
 } from '../../types/pl-edit-config-data';
-import { EditConfigurationDialogComponent } from '../../dialogs/edit-config-dialog/edit-config-dialog.component';
-import { editConfiguration } from '../../types/pl-config-configurations';
-import { AddConfigurationDialogComponent } from '../../dialogs/add-configuration-dialog/add-configuration-dialog.component';
-import { CopyConfigurationDialogComponent } from '../../dialogs/copy-configuration-dialog/copy-configuration-dialog.component';
-import { MatIconModule } from '@angular/material/icon';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
 	selector: 'osee-plconfig-configuration-dropdown',
@@ -36,12 +41,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 	styles: [],
 	standalone: true,
 	imports: [
-		MatIconModule,
-		MatMenuModule,
-		MatFormFieldModule,
 		NgFor,
 		NgIf,
 		AsyncPipe,
+		MatMenuItem,
+		MatMenuTrigger,
+		MatMenuContent,
+		MatMenu,
+		MatIcon,
+		MatLabel,
 	],
 })
 export class ConfigurationDropdownComponent {

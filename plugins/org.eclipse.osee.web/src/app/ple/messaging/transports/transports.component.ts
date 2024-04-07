@@ -19,26 +19,42 @@ import {
 	NgSwitchDefault,
 } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTableModule } from '@angular/material/table';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { ActivatedRoute } from '@angular/router';
-import { Subject } from 'rxjs';
-import { filter, switchMap, take, takeUntil, tap } from 'rxjs/operators';
-import { UiService } from '@osee/shared/services';
+import { MatFabButton } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIcon } from '@angular/material/icon';
 import {
-	CurrentTransportTypeService,
-	HeaderService,
-} from '@osee/messaging/shared/services';
-import type { transportType } from '@osee/messaging/shared/types';
+	MatMenu,
+	MatMenuContent,
+	MatMenuItem,
+	MatMenuTrigger,
+} from '@angular/material/menu';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+} from '@angular/material/table';
+import { MatTooltip } from '@angular/material/tooltip';
+import { ActivatedRoute } from '@angular/router';
 import {
 	EditTransportTypeDialogComponent,
 	NewTransportTypeDialogComponent,
 } from '@osee/messaging/shared/dialogs';
 import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
-import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import {
+	CurrentTransportTypeService,
+	HeaderService,
+} from '@osee/messaging/shared/services';
+import type { transportType } from '@osee/messaging/shared/types';
+import { UiService } from '@osee/shared/services';
+import { Subject } from 'rxjs';
+import { filter, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 
 @Component({
 	selector: 'osee-transports',
@@ -54,12 +70,23 @@ import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 		NgSwitchCase,
 		NgSwitchDefault,
 		NgClass,
-		MatTableModule,
-		MatTooltipModule,
-		MatButtonModule,
-		MatIconModule,
-		MatDialogModule,
-		MatMenuModule,
+		MatTable,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatCell,
+		MatCellDef,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
+		MatTooltip,
+		MatFabButton,
+		MatIcon,
+		MatMenu,
+		MatMenuContent,
+		MatMenuItem,
+		MatMenuTrigger,
 		MessagingControlsComponent,
 	],
 })

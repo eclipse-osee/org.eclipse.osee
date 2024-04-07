@@ -10,23 +10,39 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { map } from 'rxjs/operators';
-import { UiService } from '@osee/shared/services';
-import { CurrentElementSearchService } from '../../services/current-element-search.service';
-import { ElementTableSearchComponent } from '../../forms/element-table-search/element-table-search.component';
 import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { Component } from '@angular/core';
+import { MatAnchor, MatButton } from '@angular/material/button';
+import {
+	MatMenu,
+	MatMenuContent,
+	MatMenuTrigger,
+} from '@angular/material/menu';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+	MatTableDataSource,
+} from '@angular/material/table';
 import { RouterLink } from '@angular/router';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonModule } from '@angular/material/button';
+import { HeaderService } from '@osee/messaging/shared/services';
 import type {
+	PlatformType,
 	element,
 	elementWithPathsAndButtons,
-	PlatformType,
 } from '@osee/messaging/shared/types';
-import { HeaderService } from '@osee/messaging/shared/services';
+import { UiService } from '@osee/shared/services';
 import { DisplayTruncatedStringWithFieldOverflowPipe } from '@osee/shared/utils';
+import { map } from 'rxjs/operators';
+import { ElementTableSearchComponent } from '../../forms/element-table-search/element-table-search.component';
+import { CurrentElementSearchService } from '../../services/current-element-search.service';
 
 @Component({
 	selector: 'osee-typesearch-element-table',
@@ -34,16 +50,28 @@ import { DisplayTruncatedStringWithFieldOverflowPipe } from '@osee/shared/utils'
 	styles: [],
 	standalone: true,
 	imports: [
-		ElementTableSearchComponent,
-		MatTableModule,
 		NgFor,
 		NgIf,
 		AsyncPipe,
 		NgClass,
-		DisplayTruncatedStringWithFieldOverflowPipe,
 		RouterLink,
-		MatMenuModule,
-		MatButtonModule,
+		MatTable,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatCell,
+		MatCellDef,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
+		MatAnchor,
+		MatButton,
+		MatMenu,
+		MatMenuContent,
+		MatMenuTrigger,
+		ElementTableSearchComponent,
+		DisplayTruncatedStringWithFieldOverflowPipe,
 	],
 })
 export class ElementTableComponent {

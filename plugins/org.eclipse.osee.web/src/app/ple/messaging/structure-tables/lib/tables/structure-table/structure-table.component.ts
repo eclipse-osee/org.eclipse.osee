@@ -17,49 +17,8 @@ import {
 	transition,
 	trigger,
 } from '@angular/animations';
-import {
-	ChangeDetectionStrategy,
-	Component,
-	Inject,
-	Input,
-	OnDestroy,
-	OnInit,
-	ViewChild,
-} from '@angular/core';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
-import { MatTableModule } from '@angular/material/table';
-import { combineLatest, from, iif, of, OperatorFunction } from 'rxjs';
-import {
-	distinct,
-	filter,
-	first,
-	map,
-	mergeMap,
-	reduce,
-	share,
-	shareReplay,
-	skipUntil,
-	switchMap,
-	take,
-	takeUntil,
-	pairwise,
-	debounceTime,
-	scan,
-	startWith,
-	tap,
-} from 'rxjs/operators';
-import { LayoutNotifierService } from '@osee/layout/notification';
-import { applic } from '@osee/shared/types/applicability';
-import { difference } from '@osee/shared/types/change-report';
-import { AddElementDialogComponent } from '../../dialogs/add-element-dialog/add-element-dialog.component';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { DataSource } from '@angular/cdk/collections';
-import { AddStructureDialog } from '../../dialogs/add-structure-dialog/add-structure-dialog';
-import { AddStructureDialogComponent } from '../../dialogs/add-structure-dialog/add-structure-dialog.component';
-import { DeleteStructureDialogComponent } from '../../dialogs/delete-structure-dialog/delete-structure-dialog.component';
-import { RemoveStructureDialogComponent } from '../../dialogs/remove-structure-dialog/remove-structure-dialog.component';
-import { DefaultAddElementDialog } from '../../dialogs/add-element-dialog/add-element-dialog.default';
+import { CdkVirtualForOf } from '@angular/cdk/scrolling';
 import {
 	AsyncPipe,
 	NgClass,
@@ -69,43 +28,103 @@ import {
 	NgSwitch,
 	NgSwitchCase,
 } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormsModule } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { EditStructureFieldComponent } from '../../fields/edit-structure-field/edit-structure-field.component';
-import { SubElementTableComponent } from '../sub-element-table/sub-element-table.component';
-import { MatButtonModule } from '@angular/material/button';
-import { StructureTableLongTextFieldComponent } from '../../fields/structure-table-long-text-field/structure-table-long-text-field.component';
-import type {
-	structure,
-	structureWithChanges,
-	element,
-	EditViewFreeTextDialog,
-	ElementDialog,
-} from '@osee/messaging/shared/types';
-import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 import {
-	TwoLayerAddButtonComponent,
-	ViewSelectorComponent,
-} from '@osee/shared/components';
-import { CdkVirtualForOf, ScrollingModule } from '@angular/cdk/scrolling';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+	ChangeDetectionStrategy,
+	Component,
+	Inject,
+	Input,
+	OnDestroy,
+	ViewChild,
+} from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatIconButton } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import {
+	MatFormField,
+	MatHint,
+	MatLabel,
+	MatPrefix,
+} from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import {
+	MatMenu,
+	MatMenuContent,
+	MatMenuItem,
+	MatMenuTrigger,
+} from '@angular/material/menu';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+} from '@angular/material/table';
+import { MatTooltip } from '@angular/material/tooltip';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { LayoutNotifierService } from '@osee/layout/notification';
+import {
+	defaultEditElementProfile,
+	defaultEditStructureProfile,
+	defaultViewElementProfile,
+	defaultViewStructureProfile,
+} from '@osee/messaging/shared/constants';
+import { StructureDataSource } from '@osee/messaging/shared/datasources';
 import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dialogs/free-text';
 import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
 import {
 	CurrentStructureService,
 	HeaderService,
 } from '@osee/messaging/shared/services';
-import {
-	defaultEditElementProfile,
-	defaultViewElementProfile,
-	defaultEditStructureProfile,
-	defaultViewStructureProfile,
-} from '@osee/messaging/shared/constants';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
-import { StructureDataSource } from '@osee/messaging/shared/datasources';
+import type {
+	EditViewFreeTextDialog,
+	ElementDialog,
+	element,
+	structure,
+	structureWithChanges,
+} from '@osee/messaging/shared/types';
+import {
+	TwoLayerAddButtonComponent,
+	ViewSelectorComponent,
+} from '@osee/shared/components';
+import { applic } from '@osee/shared/types/applicability';
+import { difference } from '@osee/shared/types/change-report';
+import { HighlightFilteredTextDirective } from '@osee/shared/utils';
+import { combineLatest, from, iif, of } from 'rxjs';
+import {
+	debounceTime,
+	distinct,
+	filter,
+	first,
+	map,
+	mergeMap,
+	pairwise,
+	reduce,
+	scan,
+	share,
+	shareReplay,
+	startWith,
+	switchMap,
+	take,
+	takeUntil,
+	tap,
+} from 'rxjs/operators';
+import { AddElementDialogComponent } from '../../dialogs/add-element-dialog/add-element-dialog.component';
+import { DefaultAddElementDialog } from '../../dialogs/add-element-dialog/add-element-dialog.default';
+import { AddStructureDialog } from '../../dialogs/add-structure-dialog/add-structure-dialog';
+import { AddStructureDialogComponent } from '../../dialogs/add-structure-dialog/add-structure-dialog.component';
+import { DeleteStructureDialogComponent } from '../../dialogs/delete-structure-dialog/delete-structure-dialog.component';
+import { RemoveStructureDialogComponent } from '../../dialogs/remove-structure-dialog/remove-structure-dialog.component';
+import { EditStructureFieldComponent } from '../../fields/edit-structure-field/edit-structure-field.component';
+import { StructureTableLongTextFieldComponent } from '../../fields/structure-table-long-text-field/structure-table-long-text-field.component';
+import { SubElementTableComponent } from '../sub-element-table/sub-element-table.component';
 
 @Component({
 	selector: 'osee-structure-table',
@@ -123,19 +142,32 @@ import { StructureDataSource } from '@osee/messaging/shared/datasources';
 		NgSwitch,
 		NgSwitchCase,
 		NgFor,
-		MatIconModule,
 		TwoLayerAddButtonComponent,
-		MatFormFieldModule,
 		FormsModule,
-		MatInputModule,
-		MatTableModule,
-		MatDialogModule,
-		MatTooltipModule,
-		MatMenuModule,
-		MatButtonModule,
-		MatPaginatorModule,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatIcon,
+		MatPrefix,
+		MatHint,
+		MatTable,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatTooltip,
+		MatCell,
+		MatCellDef,
+		MatIconButton,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
+		MatPaginator,
+		MatMenu,
+		MatMenuContent,
+		MatMenuItem,
+		MatMenuTrigger,
 		CdkVirtualForOf,
-		ScrollingModule,
 		EditStructureFieldComponent,
 		AddStructureDialogComponent,
 		MessagingControlsComponent,

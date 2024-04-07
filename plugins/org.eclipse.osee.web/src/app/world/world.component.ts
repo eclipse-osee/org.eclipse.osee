@@ -10,6 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { CommonModule } from '@angular/common';
 import {
 	AfterViewInit,
 	Component,
@@ -18,28 +19,49 @@ import {
 	effect,
 	signal,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { WorldHttpService } from './services/world-http.service';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatSort, MatSortModule } from '@angular/material/sort';
-import { worldRow } from './world';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatButtonModule } from '@angular/material/button';
+import { MatButton } from '@angular/material/button';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatSort, MatSortHeader } from '@angular/material/sort';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+	MatTableDataSource,
+} from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
-import { debounceTime, map, switchMap, tap } from 'rxjs';
+import { debounceTime, map, switchMap } from 'rxjs';
+import { WorldHttpService } from './services/world-http.service';
+import { worldRow } from './world';
 
 @Component({
 	selector: 'osee-world',
 	standalone: true,
 	imports: [
 		CommonModule,
-		MatTableModule,
-		MatSortModule,
-		MatInputModule,
-		MatFormFieldModule,
-		MatButtonModule,
+		MatFormField,
+		MatInput,
+		MatButton,
+		MatTable,
+		MatSort,
+		MatColumnDef,
+		MatSortHeader,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatCell,
+		MatCellDef,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
 	],
 	templateUrl: './world.component.html',
 })

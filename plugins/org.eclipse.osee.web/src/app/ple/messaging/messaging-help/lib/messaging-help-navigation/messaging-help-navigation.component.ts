@@ -10,17 +10,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { from, iif, of, reduce, switchMap, tap } from 'rxjs';
+import { Component } from '@angular/core';
+import { MatDivider } from '@angular/material/divider';
+import { MatIcon } from '@angular/material/icon';
+import {
+	MatListItem,
+	MatListItemIcon,
+	MatListItemMeta,
+	MatNavList,
+} from '@angular/material/list';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { MatListModule } from '@angular/material/list';
-import { MatIconModule } from '@angular/material/icon';
-import helpNavigationStructure from './messaging-help-navigation-structure';
-import { navigationElement } from '@osee/shared/types';
 import { UserDataAccountService } from '@osee/auth';
-import { MatDividerModule } from '@angular/material/divider';
 import { HelpService } from '@osee/shared/services/help';
+import { navigationElement } from '@osee/shared/types';
+import { from, iif, of, reduce, switchMap, tap } from 'rxjs';
+import helpNavigationStructure from './messaging-help-navigation-structure';
 
 @Component({
 	selector: 'osee-messaging-help-navigation',
@@ -28,9 +33,12 @@ import { HelpService } from '@osee/shared/services/help';
 	imports: [
 		CommonModule,
 		RouterLink,
-		MatListModule,
-		MatIconModule,
-		MatDividerModule,
+		MatNavList,
+		MatListItem,
+		MatIcon,
+		MatListItemIcon,
+		MatListItemMeta,
+		MatDivider,
 	],
 	templateUrl: './messaging-help-navigation.component.html',
 })

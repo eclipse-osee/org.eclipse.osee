@@ -10,26 +10,26 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, inject, Input, Output } from '@angular/core';
 import { AsyncPipe, NgFor } from '@angular/common';
+import { Component, inject, Input, Output } from '@angular/core';
+import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
+import { MatDialogActions, MatDialogContent } from '@angular/material/dialog';
+import { MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatOption, MatSelect } from '@angular/material/select';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
+import { MessageTypeDropdownComponent } from '@osee/messaging/shared/dropdowns';
+import { HeaderService } from '@osee/messaging/shared/services';
 import {
 	INTERFACELEVELS,
-	TransportTypeForm,
 	TransportType,
 	transportTypeAttributes,
+	TransportTypeForm,
 } from '@osee/messaging/shared/types';
-import { MatDialogModule } from '@angular/material/dialog';
-import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MessageTypeDropdownComponent } from '@osee/messaging/shared/dropdowns';
+import { ApplicabilitySelectorComponent } from '@osee/shared/components';
 import { ParentErrorStateMatcher } from '@osee/shared/matchers';
 import { Subject } from 'rxjs';
-import { ApplicabilitySelectorComponent } from '@osee/shared/components';
-import { HeaderService } from '@osee/messaging/shared/services';
 
 @Component({
 	selector: 'osee-transport-type-form',
@@ -38,12 +38,16 @@ import { HeaderService } from '@osee/messaging/shared/services';
 		FormsModule,
 		NgFor,
 		AsyncPipe,
-		MatFormFieldModule,
-		MatButtonModule,
-		MatInputModule,
-		MatSelectModule,
-		MatSlideToggleModule,
-		MatDialogModule,
+		MatDialogContent,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatSlideToggle,
+		MatHint,
+		MatSelect,
+		MatOption,
+		MatDialogActions,
+		MatButton,
 		MessageTypeDropdownComponent,
 		ApplicabilitySelectorComponent,
 	],

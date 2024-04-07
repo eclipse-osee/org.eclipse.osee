@@ -10,24 +10,47 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, Input } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+	MatTableDataSource,
+} from '@angular/material/table';
 import {
 	BehaviorSubject,
 	combineLatest,
-	map,
 	shareReplay,
 	switchMap,
 	tap,
 } from 'rxjs';
 import { ServerHealthHttpService } from '../../../shared/services/server-health-http.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 
 @Component({
 	selector: 'osee-server-health-details',
 	standalone: true,
-	imports: [CommonModule, MatTableModule],
+	imports: [
+		CommonModule,
+		MatTable,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatCell,
+		MatCellDef,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
+	],
 	templateUrl: './server-health-details.component.html',
 })
 export class ServerHealthDetailsComponent {

@@ -10,16 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
+import { MatButton } from '@angular/material/button';
 import {
-	MatDialogModule,
-	MatDialogRef,
 	MAT_DIALOG_DATA,
+	MatDialogActions,
+	MatDialogClose,
+	MatDialogContent,
+	MatDialogRef,
+	MatDialogTitle,
 } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 import { addCfgGroup } from '../../types/pl-config-cfggroups';
 
 @Component({
@@ -29,10 +32,14 @@ import { addCfgGroup } from '../../types/pl-config-cfggroups';
 	standalone: true,
 	imports: [
 		FormsModule,
-		MatDialogModule,
-		MatFormFieldModule,
-		MatInputModule,
-		MatButtonModule,
+		MatDialogTitle,
+		MatDialogContent,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatDialogActions,
+		MatButton,
+		MatDialogClose,
 	],
 })
 export class AddConfigurationGroupDialogComponent {

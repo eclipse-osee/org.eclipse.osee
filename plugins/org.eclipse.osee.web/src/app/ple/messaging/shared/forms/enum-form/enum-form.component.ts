@@ -20,39 +20,48 @@ import {
 	SimpleChanges,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatOptionModule } from '@angular/material/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+	MatTableDataSource,
+} from '@angular/material/table';
 import { validateEnumLengthIsBelowMax } from '@osee/messaging/shared/functions';
-import { CurrentQueryService } from '@osee/messaging/shared/services';
 import {
 	EnumerationSetQuery,
 	andDescriptionQuery,
 } from '@osee/messaging/shared/query';
+import { CurrentQueryService } from '@osee/messaging/shared/services';
 import type { enumeration } from '@osee/messaging/shared/types';
-import { BehaviorSubject, combineLatest, from, iif, of, Subject } from 'rxjs';
+import { BehaviorSubject, Subject, combineLatest, from, iif, of } from 'rxjs';
 import {
-	switchMap,
 	concatMap,
+	debounceTime,
+	filter,
 	map,
 	reduce,
-	filter,
-	debounceTime,
 	scan,
 	startWith,
+	switchMap,
 } from 'rxjs/operators';
 
+import { MatIcon } from '@angular/material/icon';
 import { ApplicabilitySelectorComponent } from '@osee/shared/components';
-import { MatIconModule } from '@angular/material/icon';
 import {
 	ARTIFACTTYPEIDENUM,
 	ATTRIBUTETYPEIDENUM,
 	RELATIONTYPEIDENUM,
 } from '@osee/shared/types/constants';
-import { createArtifact } from '@osee/shared/types';
 
 @Component({
 	selector: 'osee-enum-form',
@@ -60,16 +69,25 @@ import { createArtifact } from '@osee/shared/types';
 	styles: [],
 	standalone: true,
 	imports: [
-		MatTableModule,
-		MatFormFieldModule,
 		FormsModule,
-		MatInputModule,
-		MatIconModule,
-		MatSelectModule,
-		MatOptionModule,
+		MatTable,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatCell,
+		MatCellDef,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatIcon,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
+		MatButton,
+		MatIconButton,
 		NgFor,
 		AsyncPipe,
-		MatButtonModule,
 		ApplicabilitySelectorComponent,
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,

@@ -10,27 +10,37 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReportsService } from '@osee/messaging/shared/services';
-import { ActivatedRoute } from '@angular/router';
-import { CurrentBranchInfoService, UiService } from '@osee/shared/services';
-import { TraceReportTableComponent } from './trace-report-table/trace-report-table.component';
-import { MatButtonModule } from '@angular/material/button';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { Observable, map } from 'rxjs';
+import { Component, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import {
+	MatButtonToggle,
+	MatButtonToggleGroup,
+} from '@angular/material/button-toggle';
+import {
+	MatExpansionPanel,
+	MatExpansionPanelContent,
+	MatExpansionPanelHeader,
+	MatExpansionPanelTitle,
+} from '@angular/material/expansion';
+import { ActivatedRoute } from '@angular/router';
+import { ReportsService } from '@osee/messaging/shared/services';
+import { CurrentBranchInfoService, UiService } from '@osee/shared/services';
+import { Observable, map } from 'rxjs';
+import { TraceReportTableComponent } from './trace-report-table/trace-report-table.component';
 
 @Component({
 	selector: 'osee-trace-report',
 	standalone: true,
 	imports: [
 		CommonModule,
-		MatButtonModule,
-		MatButtonToggleModule,
-		MatExpansionModule,
 		TraceReportTableComponent,
+		MatButtonToggleGroup,
+		MatButtonToggle,
+		MatExpansionPanel,
+		MatExpansionPanelHeader,
+		MatExpansionPanelContent,
+		MatExpansionPanelTitle,
 	],
 	templateUrl: './trace-report.component.html',
 })

@@ -11,24 +11,25 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
-	trigger,
+	animate,
 	state,
 	style,
 	transition,
-	animate,
+	trigger,
 } from '@angular/animations';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { TransactionService } from '@osee/shared/transactions';
-import { iif, Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { MatButton } from '@angular/material/button';
+import { MatLine } from '@angular/material/core';
+import { MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
 import { SideNavService } from '@osee/shared/services/layout';
-import { transactionInfo } from '@osee/shared/types/change-report';
+import { TransactionService } from '@osee/shared/transactions';
 import { applic } from '@osee/shared/types/applicability';
+import { transactionInfo } from '@osee/shared/types/change-report';
+import { Observable, iif, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
 	selector: 'osee-single-diff',
@@ -36,12 +37,13 @@ import { applic } from '@osee/shared/types/applicability';
 	styles: [],
 	standalone: true,
 	imports: [
-		MatButtonModule,
-		MatIconModule,
-		MatFormFieldModule,
 		FormsModule,
 		NgIf,
 		AsyncPipe,
+		MatButton,
+		MatIcon,
+		MatLine,
+		MatLabel,
 	],
 	animations: [
 		trigger('expandButton', [

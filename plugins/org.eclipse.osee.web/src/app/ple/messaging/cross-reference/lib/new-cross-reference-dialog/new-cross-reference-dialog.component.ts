@@ -10,21 +10,28 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-	MatDialogModule,
-	MatDialogRef,
-	MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import {
+	MatButton,
+	MatFabButton,
+	MatMiniFabButton,
+} from '@angular/material/button';
+import {
+	MAT_DIALOG_DATA,
+	MatDialogActions,
+	MatDialogClose,
+	MatDialogContent,
+	MatDialogRef,
+	MatDialogTitle,
+} from '@angular/material/dialog';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
 import type {
-	CrossReference,
 	CrossRefKeyValue,
+	CrossReference,
 } from '@osee/messaging/shared/types';
 import { ApplicabilitySelectorComponent } from '@osee/shared/components';
 
@@ -34,11 +41,16 @@ import { ApplicabilitySelectorComponent } from '@osee/shared/components';
 	imports: [
 		CommonModule,
 		FormsModule,
-		MatButtonModule,
-		MatDialogModule,
-		MatFormFieldModule,
-		MatIconModule,
-		MatInputModule,
+		MatDialogTitle,
+		MatDialogContent,
+		MatDialogActions,
+		MatDialogClose,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatButton,
+		MatMiniFabButton,
+		MatIcon,
 		ApplicabilitySelectorComponent,
 	],
 	templateUrl: './new-cross-reference-dialog.component.html',

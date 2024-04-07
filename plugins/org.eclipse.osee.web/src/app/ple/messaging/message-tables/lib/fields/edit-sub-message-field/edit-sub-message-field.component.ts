@@ -10,31 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import {
-	ChangeDetectionStrategy,
-	Component,
-	Input,
-	OnInit,
-} from '@angular/core';
-import { combineLatest, iif, of, Subject } from 'rxjs';
-import {
-	debounceTime,
-	distinctUntilChanged,
-	map,
-	scan,
-	share,
-	switchMap,
-	takeUntil,
-	tap,
-} from 'rxjs/operators';
-import { A11yModule } from '@angular/cdk/a11y';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { A11yModule, CdkMonitorFocus } from '@angular/cdk/a11y';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatOptionModule } from '@angular/material/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 import {
 	CurrentMessagesService,
 	WarningDialogService,
@@ -42,6 +23,16 @@ import {
 import type { subMessage } from '@osee/messaging/shared/types';
 import { ApplicabilitySelectorComponent } from '@osee/shared/components';
 import { applic } from '@osee/shared/types/applicability';
+import { Subject, combineLatest, iif, of } from 'rxjs';
+import {
+	debounceTime,
+	distinctUntilChanged,
+	map,
+	scan,
+	share,
+	switchMap,
+	tap,
+} from 'rxjs/operators';
 
 @Component({
 	selector: 'osee-messaging-edit-sub-message-field',
@@ -52,13 +43,11 @@ import { applic } from '@osee/shared/types/applicability';
 		NgIf,
 		NgFor,
 		AsyncPipe,
-		A11yModule,
 		FormsModule,
-		MatFormFieldModule,
-		MatSelectModule,
-		MatOptionModule,
-		MatInputModule,
-		MatSlideToggleModule,
+		A11yModule,
+		CdkMonitorFocus,
+		MatFormField,
+		MatInput,
 		ApplicabilitySelectorComponent,
 	],
 })

@@ -10,43 +10,50 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { MatDividerModule } from '@angular/material/divider';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSelectModule } from '@angular/material/select';
-import { MatOptionModule } from '@angular/material/core';
-import {
-	MatDialogModule,
-	MatDialogRef,
-	MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
-import { FormsModule } from '@angular/forms';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { Component, Inject, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
-import { MatInputModule } from '@angular/material/input';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { Observable, of, map } from 'rxjs';
-import { NamedId } from '@osee/shared/types';
-import { featureConstraintData } from '../../types/pl-config-feature-constraints';
+import { Component, Inject, OnDestroy } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import {
+	MatAutocomplete,
+	MatAutocompleteTrigger,
+} from '@angular/material/autocomplete';
+import { MatButton } from '@angular/material/button';
+import { MatOption } from '@angular/material/core';
+import {
+	MAT_DIALOG_DATA,
+	MatDialogActions,
+	MatDialogClose,
+	MatDialogContent,
+	MatDialogRef,
+	MatDialogTitle,
+} from '@angular/material/dialog';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { ApplicabilityListUIService } from '@osee/shared/services';
+import { NamedId } from '@osee/shared/types';
+import { Observable, map, of } from 'rxjs';
+import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
+import { featureConstraintData } from '../../types/pl-config-feature-constraints';
 
 @Component({
 	selector: 'osee-add-feature-constraint-dialog',
 	standalone: true,
 	imports: [
 		CommonModule,
-		MatFormFieldModule,
-		MatSlideToggleModule,
 		FormsModule,
-		MatDialogModule,
-		MatOptionModule,
-		MatSelectModule,
-		MatButtonModule,
-		MatDividerModule,
-		MatInputModule,
-		MatAutocompleteModule,
+		MatDialogTitle,
+		MatDialogContent,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatAutocomplete,
+		MatAutocompleteTrigger,
+		MatOption,
+		MatSlideToggle,
+		MatDialogActions,
+		MatButton,
+		MatDialogClose,
 	],
 	templateUrl: './add-feature-constraint-dialog.component.html',
 	styles: [],

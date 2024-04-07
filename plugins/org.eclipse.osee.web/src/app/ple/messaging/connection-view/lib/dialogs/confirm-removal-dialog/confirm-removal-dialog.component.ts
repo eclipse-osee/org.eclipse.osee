@@ -12,13 +12,16 @@
  **********************************************************************/
 import { NgFor, NgIf, TitleCasePipe } from '@angular/common';
 import { Component, Inject } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
+import { MatButton } from '@angular/material/button';
 import {
-	MatDialogModule,
-	MatDialogRef,
 	MAT_DIALOG_DATA,
+	MatDialogActions,
+	MatDialogClose,
+	MatDialogContent,
+	MatDialogRef,
+	MatDialogTitle,
 } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatLabel } from '@angular/material/form-field';
 import { RemovalDialog } from '../../types/ConfirmRemovalDialog';
 
 @Component({
@@ -26,12 +29,15 @@ import { RemovalDialog } from '../../types/ConfirmRemovalDialog';
 	templateUrl: './confirm-removal-dialog.component.html',
 	standalone: true,
 	imports: [
-		MatDialogModule,
-		MatFormFieldModule,
+		MatDialogTitle,
+		MatDialogContent,
+		MatDialogActions,
+		MatDialogClose,
+		MatLabel,
 		NgIf,
 		NgFor,
 		TitleCasePipe,
-		MatButtonModule,
+		MatButton,
 	],
 })
 export class ConfirmRemovalDialogComponent {

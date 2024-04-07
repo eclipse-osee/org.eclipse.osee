@@ -12,8 +12,8 @@
  **********************************************************************/
 import { NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenuItem } from '@angular/material/menu';
 import { applic } from '@osee/shared/types/applicability';
 import { difference } from '@osee/shared/types/change-report';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
@@ -27,7 +27,7 @@ import {
 	templateUrl: './value-menu.component.html',
 	styles: [],
 	standalone: true,
-	imports: [NgIf, MatMenuModule, MatIconModule],
+	imports: [NgIf, MatMenuItem, MatIcon],
 })
 export class ValueMenuComponent {
 	@Input() value: ExtendedNameValuePair | ExtendedNameValuePairWithChanges = {

@@ -14,17 +14,18 @@ import { AsyncPipe, NgClass, NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
+	MatAutocomplete,
+	MatAutocompleteTrigger,
+} from '@angular/material/autocomplete';
+import {
 	ErrorStateMatcher,
-	MatOptionModule,
+	MatOption,
 	ShowOnDirtyErrorStateMatcher,
 } from '@angular/material/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSelectModule } from '@angular/material/select';
-import { MatOptionLoadingComponent } from '../../../../mat-option-loading/mat-option-loading/mat-option-loading.component';
-import { BranchListService } from '../../../../internal/services/branch-list.service';
-import { BranchRoutedUIService } from '../../../../internal/services/branch-routed-ui.service';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 import { HttpLoadingService } from '@osee/shared/services/network';
+import { branch } from '@osee/shared/types';
 import {
 	BehaviorSubject,
 	ReplaySubject,
@@ -34,25 +35,25 @@ import {
 	of,
 	switchMap,
 } from 'rxjs';
-import { branch } from '@osee/shared/types';
-import { MatInputModule } from '@angular/material/input';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { BranchListService } from '../../../../internal/services/branch-list.service';
+import { BranchRoutedUIService } from '../../../../internal/services/branch-routed-ui.service';
+import { MatOptionLoadingComponent } from '../../../../mat-option-loading/mat-option-loading/mat-option-loading.component';
 
 @Component({
 	selector: 'osee-branch-selector',
 	templateUrl: './branch-selector.component.html',
 	standalone: true,
 	imports: [
-		MatFormFieldModule,
 		FormsModule,
 		AsyncPipe,
 		NgIf,
-		MatSelectModule,
-		MatInputModule,
-		MatAutocompleteModule,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatAutocomplete,
+		MatAutocompleteTrigger,
+		MatOption,
 		MatOptionLoadingComponent,
-		MatOptionModule,
-		MatProgressSpinnerModule,
 		NgClass,
 	],
 })

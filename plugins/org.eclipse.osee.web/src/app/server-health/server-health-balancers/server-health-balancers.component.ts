@@ -10,21 +10,33 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, SecurityContext } from '@angular/core';
+import { state, style, trigger } from '@angular/animations';
 import { CommonModule } from '@angular/common';
+import { Component, SecurityContext } from '@angular/core';
+import { MatIcon } from '@angular/material/icon';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+	MatTableDataSource,
+} from '@angular/material/table';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { navigationStructure } from '@osee/layout/routing';
 import {
-	navigationElement,
 	defaultNavigationElement,
+	navigationElement,
 } from '@osee/shared/types';
-import { ServerHealthPageHeaderComponent } from '../shared/components/server-health-page-header/server-health-page-header.component';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { ServerHealthHttpService } from '../shared/services/server-health-http.service';
 import { Observable, map } from 'rxjs';
+import { ServerHealthPageHeaderComponent } from '../shared/components/server-health-page-header/server-health-page-header.component';
+import { ServerHealthHttpService } from '../shared/services/server-health-http.service';
 import { healthBalancer } from '../shared/types/server-health-types';
-import { trigger, state, style } from '@angular/animations';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { MatIconModule } from '@angular/material/icon';
 const _currNavItem: navigationElement =
 	navigationStructure[1].children.find((c) => c.label === 'Balancers') ||
 	defaultNavigationElement;
@@ -35,8 +47,17 @@ const _currNavItem: navigationElement =
 	imports: [
 		CommonModule,
 		ServerHealthPageHeaderComponent,
-		MatTableModule,
-		MatIconModule,
+		MatTable,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatCell,
+		MatCellDef,
+		MatIcon,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
 	],
 	templateUrl: './server-health-balancers.component.html',
 	animations: [

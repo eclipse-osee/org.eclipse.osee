@@ -1,4 +1,3 @@
-import { DefaultTrainingCourseRecord } from './../../types/training-course';
 /*********************************************************************
  * Copyright (c) 2023 Boeing
  *
@@ -11,29 +10,35 @@ import { DefaultTrainingCourseRecord } from './../../types/training-course';
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { map, Observable } from 'rxjs';
-import { MatDialogRef } from '@angular/material/dialog';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { Component, Inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
+import {
+	MatDatepickerActions,
+	MatDatepickerApply,
+	MatDatepickerCancel,
+	MatDatepickerToggle,
+	MatDateRangeInput,
+	MatDateRangePicker,
+	MatEndDate,
+	MatStartDate,
+} from '@angular/material/datepicker';
+import {
+	MAT_DIALOG_DATA,
+	MatDialogContent,
+	MatDialogRef,
+	MatDialogTitle,
+} from '@angular/material/dialog';
+import { MatDivider } from '@angular/material/divider';
+import { MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
+import { MatListOption, MatSelectionList } from '@angular/material/list';
+import { MatOption, MatSelect } from '@angular/material/select';
 import { UserDataAccountService } from '@osee/auth';
 import { user } from '@osee/shared/types/auth';
-import { FormControl, FormGroup } from '@angular/forms';
-import {
-	TrainingCourse,
-	TrainingCourseRecord,
-} from './../../types/training-course';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatListModule } from '@angular/material/list';
-import { AsyncPipe } from '@angular/common';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatTableDataSource } from '@angular/material/table';
-import { TrainingCourseService } from './../../services/training-course.service';
+import { Observable } from 'rxjs';
+import { TrainingCourseService } from '../../services/training-course.service';
+import { TrainingCourseRecord } from '../../types/training-course';
 
 @Component({
 	standalone: true,
@@ -41,16 +46,28 @@ import { TrainingCourseService } from './../../services/training-course.service'
 	templateUrl: './add-courses-dialog.component.html',
 	styles: [],
 	imports: [
-		MatFormFieldModule,
-		MatDividerModule,
-		MatSelectModule,
 		FormsModule,
-		AsyncPipe,
-		MatListModule,
-		MatDatepickerModule,
 		CommonModule,
-		MatButtonModule,
-		MatDialogModule,
+		AsyncPipe,
+		MatDialogTitle,
+		MatDialogContent,
+		MatLabel,
+		MatFormField,
+		MatSelect,
+		MatOption,
+		MatDivider,
+		MatSelectionList,
+		MatListOption,
+		MatDateRangeInput,
+		MatStartDate,
+		MatEndDate,
+		MatHint,
+		MatDatepickerToggle,
+		MatDateRangePicker,
+		MatDatepickerActions,
+		MatButton,
+		MatDatepickerCancel,
+		MatDatepickerApply,
 	],
 })
 export class AddCoursesDialogComponent {

@@ -10,17 +10,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, inject, Input } from '@angular/core';
 import { AsyncPipe, NgIf } from '@angular/common';
+import { Component, inject, Input } from '@angular/core';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatToolbar } from '@angular/material/toolbar';
+import { RouterOutlet } from '@angular/router';
+import { SideNavService } from '@osee/shared/services/layout';
 import { HttpLoadingService } from '@osee/shared/services/network';
 import { map } from 'rxjs';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { RouterOutlet } from '@angular/router';
 import { DisplayUserComponent } from './user-display/display-user.component';
-import { SideNavService } from '@osee/shared/services/layout';
 
 @Component({
 	selector: 'osee-toolbar',
@@ -28,14 +28,14 @@ import { SideNavService } from '@osee/shared/services/layout';
 	templateUrl: './toolbar.component.html',
 	styles: [],
 	imports: [
-		MatToolbarModule,
-		MatButtonModule,
-		MatIconModule,
 		RouterOutlet,
 		NgIf,
 		AsyncPipe,
-		MatProgressSpinnerModule,
 		DisplayUserComponent,
+		MatToolbar,
+		MatIconButton,
+		MatIcon,
+		MatProgressSpinner,
 	],
 })
 export class ToolbarComponent {

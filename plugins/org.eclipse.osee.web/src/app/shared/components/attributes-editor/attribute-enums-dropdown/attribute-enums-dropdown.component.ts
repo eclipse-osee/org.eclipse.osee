@@ -10,40 +10,43 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgIf, NgFor } from '@angular/common';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import {
 	Component,
-	Optional,
 	Input,
-	inject,
+	OnChanges,
+	Optional,
 	Output,
 	SimpleChanges,
-	OnChanges,
+	inject,
 } from '@angular/core';
 import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatButtonModule } from '@angular/material/button';
 import {
-	MatOptionModule,
+	MatAutocomplete,
+	MatAutocompleteTrigger,
+} from '@angular/material/autocomplete';
+import { MatIconButton } from '@angular/material/button';
+import {
 	ErrorStateMatcher,
+	MatOption,
 	ShowOnDirtyErrorStateMatcher,
 } from '@angular/material/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatOptionLoadingComponent } from '../../mat-option-loading/mat-option-loading/mat-option-loading.component';
+import { MatFormField, MatSuffix } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { ArtifactUiService } from '@osee/shared/services';
 import { NamedId } from '@osee/shared/types';
 import {
 	BehaviorSubject,
 	ReplaySubject,
 	Subject,
+	auditTime,
 	debounceTime,
 	distinctUntilChanged,
-	switchMap,
-	auditTime,
 	filter,
+	switchMap,
 } from 'rxjs';
-import { ArtifactUiService } from '@osee/shared/services';
+import { MatOptionLoadingComponent } from '../../mat-option-loading/mat-option-loading/mat-option-loading.component';
 
 function controlContainerFactory(controlContainer?: ControlContainer) {
 	return controlContainer;
@@ -58,12 +61,14 @@ let nextUniqueId = 0;
 		AsyncPipe,
 		NgIf,
 		FormsModule,
-		MatInputModule,
-		MatOptionModule,
-		MatFormFieldModule,
-		MatAutocompleteModule,
-		MatIconModule,
-		MatButtonModule,
+		MatFormField,
+		MatInput,
+		MatAutocomplete,
+		MatAutocompleteTrigger,
+		MatIcon,
+		MatSuffix,
+		MatIconButton,
+		MatOption,
 		MatOptionLoadingComponent,
 		NgFor,
 	],

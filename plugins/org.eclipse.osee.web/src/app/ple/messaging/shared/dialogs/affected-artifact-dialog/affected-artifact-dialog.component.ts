@@ -12,13 +12,16 @@
  **********************************************************************/
 import { NgFor } from '@angular/common';
 import { Component, Inject } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
+import { MatButton } from '@angular/material/button';
 import {
-	MatDialogModule,
-	MatDialogRef,
 	MAT_DIALOG_DATA,
+	MatDialogActions,
+	MatDialogClose,
+	MatDialogContent,
+	MatDialogRef,
+	MatDialogTitle,
 } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatLabel } from '@angular/material/form-field';
 import type { affectedArtifactWarning } from '@osee/messaging/shared/types';
 
 @Component({
@@ -26,7 +29,15 @@ import type { affectedArtifactWarning } from '@osee/messaging/shared/types';
 	templateUrl: './affected-artifact-dialog.component.html',
 	styles: [],
 	standalone: true,
-	imports: [MatDialogModule, MatFormFieldModule, MatButtonModule, NgFor],
+	imports: [
+		MatDialogTitle,
+		MatDialogContent,
+		MatLabel,
+		MatDialogActions,
+		MatButton,
+		MatDialogClose,
+		NgFor,
+	],
 })
 export class AffectedArtifactDialogComponent<T = unknown> {
 	constructor(

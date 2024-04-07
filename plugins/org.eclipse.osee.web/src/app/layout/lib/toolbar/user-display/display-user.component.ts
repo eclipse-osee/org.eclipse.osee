@@ -10,10 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
-import { user } from '@osee/shared/types/auth';
-import { UserDataAccountService } from '@osee/auth';
 import {
 	animate,
 	state,
@@ -21,11 +17,15 @@ import {
 	transition,
 	trigger,
 } from '@angular/animations';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatIconModule } from '@angular/material/icon';
-import { RouterOutlet } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
+import { Component } from '@angular/core';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
+import { RouterOutlet } from '@angular/router';
+import { UserDataAccountService } from '@osee/auth';
 import { environment } from '@osee/environments';
+import { user } from '@osee/shared/types/auth';
+import { Observable } from 'rxjs';
 import { OktaSignComponent } from '../okta-sign/okta-sign.component';
 
 @Component({
@@ -48,11 +48,12 @@ import { OktaSignComponent } from '../okta-sign/okta-sign.component';
 	],
 	standalone: true,
 	imports: [
-		MatMenuModule,
-		MatIconModule,
 		RouterOutlet,
 		AsyncPipe,
 		OktaSignComponent,
+		MatMenuTrigger,
+		MatIcon,
+		MatMenu,
 	],
 })
 export class DisplayUserComponent {

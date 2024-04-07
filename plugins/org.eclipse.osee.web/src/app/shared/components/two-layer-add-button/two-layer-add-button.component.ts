@@ -12,8 +12,12 @@
  **********************************************************************/
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import {
+	MatButton,
+	MatFabButton,
+	MatMiniFabButton,
+} from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 import { BehaviorSubject } from 'rxjs';
 import {
 	addButtonHoverIconTransition,
@@ -31,7 +35,15 @@ import {
 		addButtonHoverIconTransition,
 	],
 	standalone: true,
-	imports: [NgFor, AsyncPipe, MatIconModule, MatButtonModule, NgIf],
+	imports: [
+		NgFor,
+		AsyncPipe,
+		NgIf,
+		MatMiniFabButton,
+		MatIcon,
+		MatButton,
+		MatFabButton,
+	],
 })
 export class TwoLayerAddButtonComponent<
 	T extends string = any,

@@ -10,32 +10,44 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, Inject, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
 import {
-	MatDialogModule,
-	MatDialogRef,
+	MatAutocomplete,
+	MatAutocompleteTrigger,
+} from '@angular/material/autocomplete';
+import { MatButton } from '@angular/material/button';
+import { MatOption } from '@angular/material/core';
+import {
 	MAT_DIALOG_DATA,
+	MatDialogActions,
+	MatDialogClose,
+	MatDialogContent,
+	MatDialogRef,
+	MatDialogTitle,
 } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatStepper, MatStepperModule } from '@angular/material/stepper';
-import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
+import { MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatSelect } from '@angular/material/select';
+import {
+	MatStep,
+	MatStepper,
+	MatStepperNext,
+	MatStepperPrevious,
+} from '@angular/material/stepper';
+import { MatTooltip } from '@angular/material/tooltip';
 import {
 	CurrentStructureService,
 	EnumsService,
 } from '@osee/messaging/shared/services';
+import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 import type { structure } from '@osee/messaging/shared/types';
 import {
-	MatOptionLoadingComponent,
 	ApplicabilitySelectorComponent,
+	MatOptionLoadingComponent,
 } from '@osee/shared/components';
-import { AddStructureDialog } from './add-structure-dialog';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import {
 	BehaviorSubject,
 	Subject,
@@ -46,7 +58,7 @@ import {
 	switchMap,
 	tap,
 } from 'rxjs';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { AddStructureDialog } from './add-structure-dialog';
 
 @Component({
 	selector: 'osee-messaging-add-structure-dialog',
@@ -54,19 +66,29 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 	styles: [],
 	standalone: true,
 	imports: [
-		MatStepperModule,
-		MatDialogModule,
-		MatButtonModule,
-		FormsModule,
-		MatFormFieldModule,
-		MatSelectModule,
-		MatInputModule,
-		MatAutocompleteModule,
-		MatSlideToggleModule,
+		MatDialogTitle,
+		MatStepper,
+		MatStep,
+		MatDialogContent,
+		MatButton,
+		MatStepperNext,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatAutocomplete,
+		MatAutocompleteTrigger,
+		MatOption,
+		MatTooltip,
+		MatDialogActions,
+		MatHint,
+		CdkTextareaAutosize,
+		MatSelect,
+		MatStepperPrevious,
+		MatDialogClose,
 		MatOptionLoadingComponent,
-		MatTooltipModule,
 		NgIf,
 		NgFor,
+		FormsModule,
 		AsyncPipe,
 		ApplicabilitySelectorComponent,
 	],

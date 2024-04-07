@@ -11,14 +11,25 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
+import { MatButton } from '@angular/material/button';
+import {
+	MatDialogActions,
+	MatDialogClose,
+	MatDialogContent,
+	MatDialogRef,
+	MatDialogTitle,
+} from '@angular/material/dialog';
 
 @Component({
 	selector: 'osee-remove-array-elements-dialog',
 	standalone: true,
-	imports: [CommonModule, MatDialogModule, MatButtonModule],
+	imports: [
+		MatDialogTitle,
+		MatDialogContent,
+		MatDialogActions,
+		MatButton,
+		MatDialogClose,
+	],
 	templateUrl: './remove-array-elements-dialog.component.html',
 })
 export class RemoveArrayElementsDialogComponent {

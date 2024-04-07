@@ -12,11 +12,16 @@
  **********************************************************************/
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatButton } from '@angular/material/button';
+import {
+	MatDialogActions,
+	MatDialogClose,
+	MatDialogContent,
+	MatDialogRef,
+	MatDialogTitle,
+} from '@angular/material/dialog';
+import { MatInput } from '@angular/material/input';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
 import type { nodeData } from '@osee/messaging/shared/types';
 import { NewNodeFormComponent } from '../../forms/new-node-form/new-node-form.component';
 
@@ -25,12 +30,14 @@ import { NewNodeFormComponent } from '../../forms/new-node-form/new-node-form.co
 	templateUrl: './create-new-node-dialog.component.html',
 	standalone: true,
 	imports: [
-		MatDialogModule,
-		MatFormFieldModule,
-		MatInputModule,
+		MatDialogTitle,
+		MatDialogContent,
+		MatDialogActions,
+		MatDialogClose,
+		MatInput,
 		FormsModule,
-		MatButtonModule,
-		MatSlideToggleModule,
+		MatButton,
+		MatSlideToggle,
 		NewNodeFormComponent,
 	],
 })

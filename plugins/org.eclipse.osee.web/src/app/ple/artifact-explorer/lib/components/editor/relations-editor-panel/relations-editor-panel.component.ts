@@ -10,21 +10,25 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import {
 	Component,
-	OnChanges,
 	Input,
+	OnChanges,
 	SimpleChanges,
 	computed,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule, MatDialog } from '@angular/material/dialog';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
+import { MatDialog } from '@angular/material/dialog';
+import {
+	MatExpansionPanel,
+	MatExpansionPanelHeader,
+	MatExpansionPanelTitle,
+} from '@angular/material/expansion';
+import { MatIcon } from '@angular/material/icon';
+import { MatList } from '@angular/material/list';
+import { ExpandIconComponent } from '@osee/shared/components';
 import { UiService } from '@osee/shared/services';
 import {
 	TransactionBuilderService,
@@ -34,36 +38,35 @@ import {
 	BehaviorSubject,
 	combineLatest,
 	filter,
-	switchMap,
-	shareReplay,
-	take,
-	of,
-	tap,
 	iif,
+	of,
+	shareReplay,
+	switchMap,
+	take,
+	tap,
 } from 'rxjs';
 import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
-import { RelationDeleteDialogComponent } from '../relation-delete-dialog/relation-delete-dialog.component';
-import {
-	artifact,
-	relationSide,
-	relation,
-	artifactTypeIcon,
-} from '../../../types/artifact-explorer.data';
 import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
 import { ArtifactIconService } from '../../../services/artifact-icon.service';
-import { ExpandIconComponent } from '@osee/shared/components';
+import {
+	artifact,
+	artifactTypeIcon,
+	relation,
+	relationSide,
+} from '../../../types/artifact-explorer.data';
+import { RelationDeleteDialogComponent } from '../relation-delete-dialog/relation-delete-dialog.component';
 
 @Component({
 	selector: 'osee-relations-editor-panel',
 	standalone: true,
 	imports: [
 		CommonModule,
-		MatExpansionModule,
-		MatButtonModule,
-		MatIconModule,
-		MatListModule,
-		MatDialogModule,
-		DragDropModule,
+		MatExpansionPanel,
+		MatExpansionPanelHeader,
+		MatExpansionPanelTitle,
+		MatIcon,
+		CdkDropList,
+		MatList,
 		ExpandIconComponent,
 	],
 	templateUrl: './relations-editor-panel.component.html',

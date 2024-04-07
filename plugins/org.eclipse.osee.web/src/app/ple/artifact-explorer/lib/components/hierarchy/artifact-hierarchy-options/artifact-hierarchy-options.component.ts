@@ -10,13 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonModule } from '@angular/material/button';
+import { Component } from '@angular/core';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { MatTooltip } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { map, take } from 'rxjs';
 import { ArtifactHierarchyOptionsService } from '../../../services/artifact-hierarchy-options.service';
 
@@ -25,12 +24,12 @@ import { ArtifactHierarchyOptionsService } from '../../../services/artifact-hier
 	standalone: true,
 	imports: [
 		AsyncPipe,
-		MatIconModule,
-		MatMenuModule,
-		MatButtonModule,
-		MatIconModule,
 		RouterLink,
-		MatTooltipModule,
+		MatMenuTrigger,
+		MatTooltip,
+		MatIcon,
+		MatMenu,
+		MatMenuItem,
 	],
 	templateUrl: './artifact-hierarchy-options.component.html',
 })

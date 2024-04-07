@@ -10,37 +10,36 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { from, of } from 'rxjs';
-import { take, filter, mergeMap, reduce, switchMap } from 'rxjs/operators';
-import { applic } from '@osee/shared/types/applicability';
-import { difference } from '@osee/shared/types/change-report';
-import { CurrentGraphService } from '../../services/current-graph.service';
-import { RemovalDialog } from '../../types/ConfirmRemovalDialog';
-import { ConfirmRemovalDialogComponent } from '../../dialogs/confirm-removal-dialog/confirm-removal-dialog.component';
-import { CreateConnectionDialogComponent } from '../../dialogs/create-connection-dialog/create-connection-dialog.component';
-import { EditNodeDialogComponent } from '../../dialogs/edit-node-dialog/edit-node-dialog.component';
-import { MatMenuModule } from '@angular/material/menu';
-import { AsyncPipe, NgIf } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import type {
+	OseeEdge,
+	_newConnection,
 	connection,
 	connectionWithChanges,
 	newConnection,
 	node,
 	nodeData,
 	nodeDataWithChanges,
-	OseeEdge,
-	_newConnection,
 } from '@osee/messaging/shared/types';
+import { applic } from '@osee/shared/types/applicability';
+import { difference } from '@osee/shared/types/change-report';
+import { from, of } from 'rxjs';
+import { filter, mergeMap, reduce, switchMap, take } from 'rxjs/operators';
+import { ConfirmRemovalDialogComponent } from '../../dialogs/confirm-removal-dialog/confirm-removal-dialog.component';
+import { CreateConnectionDialogComponent } from '../../dialogs/create-connection-dialog/create-connection-dialog.component';
+import { EditNodeDialogComponent } from '../../dialogs/edit-node-dialog/edit-node-dialog.component';
+import { CurrentGraphService } from '../../services/current-graph.service';
+import { RemovalDialog } from '../../types/ConfirmRemovalDialog';
 
 @Component({
 	selector: 'osee-messaging-graph-node-menu',
 	templateUrl: './graph-node-menu.component.html',
 	standalone: true,
-	imports: [NgIf, MatMenuModule, MatIconModule, MatButtonModule, AsyncPipe],
+	imports: [NgIf, MatMenuItem, MatMenuTrigger, MatMenu, MatIcon, AsyncPipe],
 })
 export class GraphNodeMenuComponent {
 	@Input() editMode: boolean = false;

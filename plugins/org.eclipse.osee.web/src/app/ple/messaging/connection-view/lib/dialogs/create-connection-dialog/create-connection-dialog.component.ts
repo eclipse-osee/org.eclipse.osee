@@ -10,38 +10,40 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { CommonModule } from '@angular/common';
 import { Component, Inject, OnDestroy } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
+import { MatOption } from '@angular/material/core';
 import {
-	MatDialogModule,
-	MatDialogRef,
 	MAT_DIALOG_DATA,
+	MatDialogActions,
+	MatDialogClose,
+	MatDialogContent,
+	MatDialogRef,
+	MatDialogTitle,
 } from '@angular/material/dialog';
-import {
-	BehaviorSubject,
-	debounceTime,
-	filter,
-	map,
-	of,
-	Subject,
-	switchMap,
-} from 'rxjs';
-import { CurrentGraphService } from '../../services/current-graph.service';
+import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatSelect, MatSelectChange } from '@angular/material/select';
+import { ConnectionNodesCountDirective } from '@osee/messaging/shared/directives';
+import { CurrentTransportTypeService } from '@osee/messaging/shared/services';
 import type {
 	newConnection,
 	node,
 	transportType,
 } from '@osee/messaging/shared/types';
-import { CurrentTransportTypeService } from '@osee/messaging/shared/services';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormsModule } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectChange, MatSelectModule } from '@angular/material/select';
-import { MatOptionModule } from '@angular/material/core';
-import { MatButtonModule } from '@angular/material/button';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
-import { CommonModule } from '@angular/common';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { ConnectionNodesCountDirective } from '@osee/messaging/shared/directives';
+import {
+	BehaviorSubject,
+	Subject,
+	debounceTime,
+	filter,
+	map,
+	of,
+	switchMap,
+} from 'rxjs';
+import { CurrentGraphService } from '../../services/current-graph.service';
 
 @Component({
 	selector: 'osee-create-connection-dialog',
@@ -49,15 +51,19 @@ import { ConnectionNodesCountDirective } from '@osee/messaging/shared/directives
 	standalone: true,
 	imports: [
 		CommonModule,
-		MatDialogModule,
-		MatFormFieldModule,
+		MatDialogTitle,
+		MatDialogContent,
+		MatDialogActions,
+		MatDialogClose,
+		MatFormField,
+		MatLabel,
+		MatError,
 		FormsModule,
-		MatInputModule,
-		MatSelectModule,
+		MatInput,
+		MatSelect,
 		MatOptionLoadingComponent,
-		MatOptionModule,
-		MatButtonModule,
-		MatAutocompleteModule,
+		MatOption,
+		MatButton,
 		ConnectionNodesCountDirective,
 	],
 })

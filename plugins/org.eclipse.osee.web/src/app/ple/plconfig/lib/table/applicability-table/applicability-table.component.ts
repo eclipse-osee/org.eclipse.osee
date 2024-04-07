@@ -19,24 +19,47 @@ import {
 	ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatOptionModule } from '@angular/material/core';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSelectChange, MatSelectModule } from '@angular/material/select';
-import { MatSort, MatSortModule } from '@angular/material/sort';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatOption } from '@angular/material/core';
+import { MatDialog } from '@angular/material/dialog';
+import {
+	MatError,
+	MatFormField,
+	MatHint,
+	MatLabel,
+	MatPrefix,
+} from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import {
+	MatMenu,
+	MatMenuContent,
+	MatMenuTrigger,
+} from '@angular/material/menu';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSelect, MatSelectChange } from '@angular/material/select';
+import { MatSort, MatSortHeader } from '@angular/material/sort';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatNoDataRow,
+	MatRow,
+	MatRowDef,
+	MatTable,
+	MatTableDataSource,
+} from '@angular/material/table';
+import { MatTooltip } from '@angular/material/tooltip';
 import {
 	BehaviorSubject,
+	OperatorFunction,
 	combineLatest,
 	from,
 	iif,
 	of,
-	OperatorFunction,
 	throwError,
 } from 'rxjs';
 import {
@@ -51,6 +74,10 @@ import {
 	take,
 	tap,
 } from 'rxjs/operators';
+import { ConfigGroupMenuComponent } from '../../menus/config-group-menu/config-group-menu.component';
+import { ConfigMenuComponent } from '../../menus/config-menu/config-menu.component';
+import { FeatureMenuComponent } from '../../menus/feature-menu/feature-menu.component';
+import { ValueMenuComponent } from '../../menus/value-menu/value-menu.component';
 import { DialogService } from '../../services/dialog.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
@@ -64,11 +91,6 @@ import {
 	configGroup,
 	configGroupWithChanges,
 } from '../../types/pl-config-configurations';
-import { FeatureMenuComponent } from '../../menus/feature-menu/feature-menu.component';
-import { ConfigMenuComponent } from '../../menus/config-menu/config-menu.component';
-import { ConfigGroupMenuComponent } from '../../menus/config-group-menu/config-group-menu.component';
-import { ValueMenuComponent } from '../../menus/value-menu/value-menu.component';
-import { MatListModule } from '@angular/material/list';
 
 @Component({
 	selector: 'osee-plconfig-applicability-table',
@@ -80,18 +102,33 @@ import { MatListModule } from '@angular/material/list';
 		NgFor,
 		NgIf,
 		NgClass,
-		MatFormFieldModule,
-		MatInputModule,
-		MatDialogModule,
-		MatIconModule,
-		MatTableModule,
-		MatSortModule,
-		MatTooltipModule,
-		MatSelectModule,
-		MatOptionModule,
-		MatListModule,
-		MatPaginatorModule,
-		MatMenuModule,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatIcon,
+		MatPrefix,
+		MatHint,
+		MatTable,
+		MatSort,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatSortHeader,
+		MatCell,
+		MatCellDef,
+		MatTooltip,
+		MatSelect,
+		MatOption,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
+		MatNoDataRow,
+		MatPaginator,
+		MatError,
+		MatMenu,
+		MatMenuContent,
+		MatMenuTrigger,
 		FeatureMenuComponent,
 		ConfigMenuComponent,
 		ConfigGroupMenuComponent,

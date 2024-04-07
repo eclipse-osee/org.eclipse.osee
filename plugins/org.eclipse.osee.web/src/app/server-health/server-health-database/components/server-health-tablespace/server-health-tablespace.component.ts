@@ -10,18 +10,44 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { tablespace } from '../../../shared/types/server-health-types';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { ServerHealthHttpService } from '../../../shared/services/server-health-http.service';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { MatSort, MatSortHeader, Sort } from '@angular/material/sort';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+	MatTableDataSource,
+} from '@angular/material/table';
 import { BehaviorSubject, map, switchMap } from 'rxjs';
-import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
+import { ServerHealthHttpService } from '../../../shared/services/server-health-http.service';
+import { tablespace } from '../../../shared/types/server-health-types';
 
 @Component({
 	selector: 'osee-server-health-tablespace',
 	standalone: true,
-	imports: [CommonModule, MatTableModule, MatSortModule],
+	imports: [
+		CommonModule,
+		MatTable,
+		MatSort,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatSortHeader,
+		MatCell,
+		MatCellDef,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
+	],
 	templateUrl: './server-health-tablespace.component.html',
 })
 export class ServerHealthTablespaceComponent implements AfterViewInit {

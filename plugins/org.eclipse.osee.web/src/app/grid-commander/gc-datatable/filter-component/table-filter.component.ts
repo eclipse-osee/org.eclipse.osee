@@ -10,17 +10,25 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe, NgFor, NgIf, TitleCasePipe } from '@angular/common';
 import { Component, OnDestroy } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import {
+	MatChipListbox,
+	MatChipOption,
+	MatChipRemove,
+} from '@angular/material/chips';
+import { MatOption } from '@angular/material/core';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import {
+	MatSelect,
+	MatSelectChange,
+	MatSelectTrigger,
+} from '@angular/material/select';
 import { combineLatest, iif, map, of, switchMap } from 'rxjs';
 import { FilterService } from '../../services/datatable-services/filter/filter.service';
-import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { ColumnFilterComponent } from './column-filter/column-filter.component';
-import { MatOptionModule } from '@angular/material/core';
-import { MatIconModule } from '@angular/material/icon';
-import { MatChipsModule } from '@angular/material/chips';
-import { FormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { NgIf, NgFor, AsyncPipe, TitleCasePipe } from '@angular/common';
 
 @Component({
 	selector: 'osee-table-filter-component',
@@ -29,16 +37,20 @@ import { NgIf, NgFor, AsyncPipe, TitleCasePipe } from '@angular/common';
 	standalone: true,
 	imports: [
 		NgIf,
-		MatFormFieldModule,
-		MatSelectModule,
 		FormsModule,
-		MatChipsModule,
 		NgFor,
-		MatIconModule,
-		MatOptionModule,
 		ColumnFilterComponent,
 		AsyncPipe,
 		TitleCasePipe,
+		MatFormField,
+		MatLabel,
+		MatSelect,
+		MatSelectTrigger,
+		MatChipListbox,
+		MatChipOption,
+		MatChipRemove,
+		MatIcon,
+		MatOption,
 	],
 })
 export class TableFilterComponent implements OnDestroy {

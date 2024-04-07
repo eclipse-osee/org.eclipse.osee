@@ -10,6 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
+import { AsyncPipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 import {
 	Component,
 	Inject,
@@ -22,64 +24,68 @@ import {
 	signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
-import { ApplicabilitySelectorComponent } from '@osee/shared/components';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { MatDivider } from '@angular/material/divider';
 import {
-	andNameQuery,
-	andQuery,
+	MatFormField,
+	MatHint,
+	MatLabel,
+	MatSuffix,
+} from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatOption, MatSelect } from '@angular/material/select';
+import {
+	MatSlideToggle,
+	MatSlideToggleChange,
+} from '@angular/material/slide-toggle';
+import { MatTooltip } from '@angular/material/tooltip';
+import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
+import { NewTypeFormComponent } from '@osee/messaging/shared/forms';
+import {
 	MimQuery,
 	PlatformTypeQuery,
+	andNameQuery,
+	andQuery,
 } from '@osee/messaging/shared/query';
-import {
-	element,
-	ElementDialog,
-	enumeration,
-	newPlatformTypeDialogReturnData,
-	PlatformType,
-} from '@osee/messaging/shared/types';
-import {
-	BehaviorSubject,
-	combineLatest,
-	debounceTime,
-	switchMap,
-	iif,
-	distinctUntilChanged,
-	map,
-	of,
-	shareReplay,
-	Subject,
-	skip,
-	tap,
-	concatMap,
-	filter,
-	from,
-	take,
-} from 'rxjs';
 import {
 	CurrentStructureService,
 	TypesUIService,
 } from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 import {
-	MatSlideToggleChange,
-	MatSlideToggleModule,
-} from '@angular/material/slide-toggle';
-import { MatSelectModule } from '@angular/material/select';
-import { AsyncPipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { NewTypeFormComponent } from '@osee/messaging/shared/forms';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatIconModule } from '@angular/material/icon';
-import { applic } from '@osee/shared/types/applicability';
+	ElementDialog,
+	PlatformType,
+	element,
+	enumeration,
+	newPlatformTypeDialogReturnData,
+} from '@osee/messaging/shared/types';
+import { ApplicabilitySelectorComponent } from '@osee/shared/components';
 import { UiService } from '@osee/shared/services';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialog } from '@angular/material/dialog';
-import { PlatformTypeQueryComponent } from '../../dialogs/platform-type-query/platform-type-query.component';
+import { applic } from '@osee/shared/types/applicability';
+import {
+	BehaviorSubject,
+	Subject,
+	combineLatest,
+	concatMap,
+	debounceTime,
+	distinctUntilChanged,
+	filter,
+	from,
+	iif,
+	map,
+	of,
+	shareReplay,
+	skip,
+	switchMap,
+	take,
+	tap,
+} from 'rxjs';
 import { AddElementDialogComponent } from '../../dialogs/add-element-dialog/add-element-dialog.component';
 import { DefaultAddElementDialog } from '../../dialogs/add-element-dialog/add-element-dialog.default';
+import { PlatformTypeQueryComponent } from '../../dialogs/platform-type-query/platform-type-query.component';
 import { RemoveArrayElementsDialogComponent } from '../../dialogs/remove-array-elements-dialog/remove-array-elements-dialog.component';
 
 const _platformTypeStates = ['SELECT', 'QUERY', 'CREATE'] as const;
@@ -95,16 +101,21 @@ type platformTypeStates =
 		AsyncPipe,
 		NgTemplateOutlet,
 		FormsModule,
-		MatFormFieldModule,
-		MatInputModule,
-		MatSlideToggleModule,
-		MatTooltipModule,
-		MatDividerModule,
-		MatSelectModule,
-		MatIconModule,
-		MatButtonModule,
-		MatTooltipModule,
-		MatProgressSpinnerModule,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatHint,
+		CdkTextareaAutosize,
+		MatSlideToggle,
+		MatButton,
+		MatTooltip,
+		MatIcon,
+		MatSelect,
+		MatOption,
+		MatSuffix,
+		MatIconButton,
+		MatDivider,
+		MatProgressSpinner,
 		ApplicabilitySelectorComponent,
 		PlatformTypeQueryComponent,
 		NewTypeFormComponent,

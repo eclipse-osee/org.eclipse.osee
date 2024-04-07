@@ -10,20 +10,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 import { map } from 'rxjs/operators';
 import { ParameterDataService } from '../../services/data-services/selected-command-data/parameter-data/parameter-data.service';
-import { FormsModule } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { NgIf, AsyncPipe } from '@angular/common';
 
 @Component({
 	selector: 'osee-parameter-integer',
 	templateUrl: './parameter-integer.component.html',
 	styles: [],
 	standalone: true,
-	imports: [NgIf, MatFormFieldModule, MatInputModule, FormsModule, AsyncPipe],
+	imports: [NgIf, MatFormField, MatLabel, MatInput, FormsModule, AsyncPipe],
 })
 export class ParameterIntegerComponent {
 	value = '';

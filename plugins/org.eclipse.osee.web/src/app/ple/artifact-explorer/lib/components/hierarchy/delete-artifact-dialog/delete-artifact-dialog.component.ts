@@ -10,27 +10,27 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, Inject } from '@angular/core';
+import { MatButton } from '@angular/material/button';
 import {
 	MAT_DIALOG_DATA,
-	MatDialogModule,
+	MatDialogActions,
+	MatDialogContent,
 	MatDialogRef,
 } from '@angular/material/dialog';
 import { deleteArtifactDialogData } from '../../../types/artifact-explorer.data';
-import { MatIconModule } from '@angular/material/icon';
 import { ArtifactDialogTitleComponent } from '../../shared/artifact-dialog-title/artifact-dialog-title.component';
-import { MatButtonModule } from '@angular/material/button';
 
 @Component({
 	selector: 'osee-delete-artifact-dialog',
 	standalone: true,
 	imports: [
 		CommonModule,
-		MatDialogModule,
-		MatIconModule,
 		ArtifactDialogTitleComponent,
-		MatButtonModule,
+		MatDialogContent,
+		MatDialogActions,
+		MatButton,
 	],
 	templateUrl: './delete-artifact-dialog.component.html',
 })

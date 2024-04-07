@@ -10,56 +10,52 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { A11yModule } from '@angular/cdk/a11y';
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import {
 	Component,
-	EventEmitter,
 	Input,
 	OnChanges,
-	OnInit,
 	Output,
 	SimpleChanges,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatOptionModule } from '@angular/material/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatTableModule } from '@angular/material/table';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+} from '@angular/material/table';
+import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 import {
 	EnumerationUIService,
 	PreferencesUIService,
 	TypesUIService,
 } from '@osee/messaging/shared/services';
-import type {
-	enumeration,
-	enumerationSet,
-	PlatformType,
-} from '@osee/messaging/shared/types';
-import {
-	BehaviorSubject,
-	combineLatest,
-	iif,
-	Observable,
-	of,
-	Subject,
-} from 'rxjs';
-import { filter, map, switchMap, tap } from 'rxjs/operators';
-import { applic } from '@osee/shared/types/applicability';
-import { EnumFormComponent } from '../enum-form/enum-form.component';
-import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
+import type { PlatformType, enumeration } from '@osee/messaging/shared/types';
 import { ApplicabilitySelectorComponent } from '@osee/shared/components';
-import {
-	ARTIFACTTYPEIDENUM,
-	ATTRIBUTETYPEIDENUM,
-	RELATIONTYPEIDENUM,
-} from '@osee/shared/types/constants';
 import {
 	createArtifact,
 	modifyArtifact,
 	modifyRelation,
 } from '@osee/shared/types';
+import { applic } from '@osee/shared/types/applicability';
+import {
+	ARTIFACTTYPEIDENUM,
+	ATTRIBUTETYPEIDENUM,
+	RELATIONTYPEIDENUM,
+} from '@osee/shared/types/constants';
+import { BehaviorSubject, Subject, combineLatest, iif, of } from 'rxjs';
+import { filter, map, switchMap } from 'rxjs/operators';
+import { EnumFormComponent } from '../enum-form/enum-form.component';
 
 @Component({
 	selector: 'osee-edit-enum-set-field',
@@ -68,15 +64,23 @@ import {
 	standalone: true,
 	imports: [
 		NgIf,
-		MatFormFieldModule,
-		MatInputModule,
 		FormsModule,
-		A11yModule,
-		MatSelectModule,
-		MatOptionModule,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		CdkTextareaAutosize,
+		MatTable,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatCell,
+		MatCellDef,
+		MatColumnDef,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
 		NgFor,
 		AsyncPipe,
-		MatTableModule,
 		EnumFormComponent,
 		ApplicabilitySelectorComponent,
 	],

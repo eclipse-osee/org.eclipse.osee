@@ -10,23 +10,26 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
-import { Observable, of, OperatorFunction } from 'rxjs';
+import { MatIcon } from '@angular/material/icon';
+import {
+	MatMenu,
+	MatMenuContent,
+	MatMenuItem,
+	MatMenuTrigger,
+} from '@angular/material/menu';
+import { Observable, OperatorFunction, of, tap } from 'rxjs';
 import { filter, shareReplay, switchMap, take } from 'rxjs/operators';
 import { AddCompoundApplicabilityDialogComponent } from '../../dialogs/add-compound-applicability-dialog/add-compound-applicability-dialog.component';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
 import { trackableFeature } from '../../types/features/base';
 import {
-	defaultCompoundApplicability,
 	PLAddCompoundApplicabilityData,
+	defaultCompoundApplicability,
 } from '../../types/pl-config-compound-applicabilities';
-import { tap } from 'rxjs';
-import { NgFor, NgIf, AsyncPipe } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
 
 @Component({
 	selector: 'osee-compound-applicability-dropdown',
@@ -34,12 +37,14 @@ import { MatIconModule } from '@angular/material/icon';
 	styles: [],
 	standalone: true,
 	imports: [
-		MatIconModule,
-		MatMenuModule,
-		MatFormFieldModule,
 		NgFor,
 		NgIf,
 		AsyncPipe,
+		MatMenuItem,
+		MatMenuTrigger,
+		MatMenu,
+		MatMenuContent,
+		MatIcon,
 	],
 })
 export class CompoundApplicabilityDropdownComponent {

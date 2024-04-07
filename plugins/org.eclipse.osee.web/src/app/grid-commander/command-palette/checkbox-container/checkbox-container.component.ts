@@ -11,26 +11,18 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import {
-	MatCheckboxChange,
-	MatCheckboxModule,
-} from '@angular/material/checkbox';
-import { CheckboxContainerService } from '../../services/command-palette-services/checkbox-container.service';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
+import { MatLabel } from '@angular/material/form-field';
+import { MatTooltip } from '@angular/material/tooltip';
+import { CheckboxContainerService } from '../../services/command-palette-services/checkbox-container.service';
 
 @Component({
 	selector: 'osee-checkbox-container',
 	templateUrl: './checkbox-container.component.html',
 	styles: [],
 	standalone: true,
-	imports: [
-		MatTooltipModule,
-		MatCheckboxModule,
-		FormsModule,
-		MatFormFieldModule,
-	],
+	imports: [FormsModule, MatTooltip, MatCheckbox, MatLabel],
 })
 export class CheckboxContainerComponent {
 	checked: boolean = true;

@@ -10,6 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
@@ -20,45 +21,61 @@ import {
 	SimpleChanges,
 	ViewChild,
 } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { Router, RouterLink } from '@angular/router';
-import { combineLatest, iif, of } from 'rxjs';
-import { filter, switchMap, take } from 'rxjs/operators';
-import {
-	applic,
-	applicabilitySentinel,
-} from '@osee/shared/types/applicability';
-import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
-import { DeleteSubmessageDialogComponent } from '../../dialogs/delete-submessage-dialog/delete-submessage-dialog.component';
-import { RemoveSubmessageDialogComponent } from '../../dialogs/remove-submessage-dialog/remove-submessage-dialog.component';
-import { AddSubMessageDialogComponent } from '../../dialogs/add-sub-message-dialog/add-sub-message-dialog.component';
-import { difference } from '@osee/shared/types/change-report';
-import { UiService } from '@osee/shared/services';
-import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { EditSubMessageFieldComponent } from '../../fields/edit-sub-message-field/edit-sub-message-field.component';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatAnchor } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import {
+	MatMenu,
+	MatMenuContent,
+	MatMenuItem,
+	MatMenuTrigger,
+} from '@angular/material/menu';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+	MatTableDataSource,
+} from '@angular/material/table';
+import { MatTooltip } from '@angular/material/tooltip';
+import { Router, RouterLink } from '@angular/router';
+import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dialogs/free-text';
 import {
 	CurrentMessagesService,
 	HeaderService,
 } from '@osee/messaging/shared/services';
 import type {
-	message,
-	subMessage,
-	messageWithChanges,
-	subMessageWithChanges,
 	EditViewFreeTextDialog,
+	message,
+	messageWithChanges,
+	subMessage,
+	subMessageWithChanges,
 } from '@osee/messaging/shared/types';
+import { UiService } from '@osee/shared/services';
 import {
-	HighlightFilteredTextDirective,
+	applic,
+	applicabilitySentinel,
+} from '@osee/shared/types/applicability';
+import { difference } from '@osee/shared/types/change-report';
+import {
 	DisplayTruncatedStringWithFieldOverflowPipe,
+	HighlightFilteredTextDirective,
 } from '@osee/shared/utils';
-import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dialogs/free-text';
+import { combineLatest, iif, of } from 'rxjs';
+import { filter, switchMap, take } from 'rxjs/operators';
+import { AddSubMessageDialogComponent } from '../../dialogs/add-sub-message-dialog/add-sub-message-dialog.component';
+import { DeleteSubmessageDialogComponent } from '../../dialogs/delete-submessage-dialog/delete-submessage-dialog.component';
+import { RemoveSubmessageDialogComponent } from '../../dialogs/remove-submessage-dialog/remove-submessage-dialog.component';
+import { EditSubMessageFieldComponent } from '../../fields/edit-sub-message-field/edit-sub-message-field.component';
+import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
 
 @Component({
 	selector: 'osee-messaging-sub-message-table',
@@ -67,9 +84,6 @@ import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dia
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	standalone: true,
 	imports: [
-		MatTableModule,
-		MatButtonModule,
-		MatTooltipModule,
 		NgFor,
 		AsyncPipe,
 		NgClass,
@@ -81,10 +95,25 @@ import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dia
 		HighlightFilteredTextDirective,
 		DisplayTruncatedStringWithFieldOverflowPipe,
 		EditSubMessageFieldComponent,
-		MatMenuModule,
-		MatIconModule,
+		MatTable,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatTooltip,
+		MatCell,
+		MatCellDef,
+		MatAnchor,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
+		MatMenu,
+		MatMenuContent,
+		MatMenuItem,
+		MatIcon,
+		MatMenuTrigger,
+		MatLabel,
 		FormsModule,
-		MatFormFieldModule,
 	],
 })
 export class SubMessageTableComponent implements OnChanges {

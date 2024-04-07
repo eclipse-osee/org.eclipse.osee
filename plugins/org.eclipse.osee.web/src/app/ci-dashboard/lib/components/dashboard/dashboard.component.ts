@@ -10,16 +10,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { DashboardService } from '../../services/dashboard.service';
-import { CiDashboardUiService } from '../../services/ci-dashboard-ui.service';
-import { MatDividerModule } from '@angular/material/divider';
-import { ScriptsPassFailChartComponent } from '../charts/scripts-pass-fail-chart/scripts-pass-fail-chart.component';
-import { TestPointsPassFailChartComponent } from '../charts/test-points-pass-fail-chart/test-points-pass-fail-chart.component';
-import { ScriptsRanChartComponent } from '../charts/scripts-ran-chart/scripts-ran-chart.component';
-import { CiDashboardControlsComponent } from '../ci-dashboard-controls/ci-dashboard-controls.component';
+import { Component } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { MatDivider } from '@angular/material/divider';
+import { CiDashboardUiService } from '../../services/ci-dashboard-ui.service';
+import { DashboardService } from '../../services/dashboard.service';
+import { ScriptsPassFailChartComponent } from '../charts/scripts-pass-fail-chart/scripts-pass-fail-chart.component';
+import { ScriptsRanChartComponent } from '../charts/scripts-ran-chart/scripts-ran-chart.component';
+import { TestPointsPassFailChartComponent } from '../charts/test-points-pass-fail-chart/test-points-pass-fail-chart.component';
+import { CiDashboardControlsComponent } from '../ci-dashboard-controls/ci-dashboard-controls.component';
 
 @Component({
 	selector: 'osee-dashboard',
@@ -32,7 +32,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 		ScriptsRanChartComponent,
 		TestPointsPassFailChartComponent,
 		CiDashboardControlsComponent,
-		MatDividerModule,
+		MatDivider,
 	],
 	templateUrl: './dashboard.component.html',
 })

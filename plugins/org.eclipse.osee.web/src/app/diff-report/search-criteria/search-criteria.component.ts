@@ -11,14 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CommonModule } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatOptionModule } from '@angular/material/core';
+import { Component, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectChange, MatSelectModule } from '@angular/material/select';
-import { ReportService } from '../services/report.service';
+import { MatButton } from '@angular/material/button';
+import { MatOption } from '@angular/material/core';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatSelect, MatSelectChange } from '@angular/material/select';
+import { BehaviorSubject, combineLatest, from, iif, of } from 'rxjs';
 import {
 	debounceTime,
 	distinctUntilChanged,
@@ -31,8 +31,7 @@ import {
 	tap,
 } from 'rxjs/operators';
 import { Build, Program, SearchOptions } from '../model/types';
-import { BehaviorSubject, combineLatest, from, iif, of } from 'rxjs';
-import { Component, Output } from '@angular/core';
+import { ReportService } from '../services/report.service';
 
 @Component({
 	selector: 'osee-search-criteria',
@@ -40,12 +39,12 @@ import { Component, Output } from '@angular/core';
 	imports: [
 		CommonModule,
 		FormsModule,
-		MatFormFieldModule,
-		MatInputModule,
-		MatSelectModule,
-		MatOptionModule,
-		MatCheckboxModule,
-		MatButtonModule,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatSelect,
+		MatOption,
+		MatButton,
 	],
 	templateUrl: './search-criteria.component.html',
 })

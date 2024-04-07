@@ -13,38 +13,43 @@
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSelectChange, MatSelectModule } from '@angular/material/select';
-import { MatTableModule } from '@angular/material/table';
-import { ActivatedRoute } from '@angular/router';
-import type {
-	connection,
-	CrossReference,
-	elementImportToken,
-	enumeration,
-	ImportEnumSet,
-	ImportSummary,
-	messageToken,
-	nodeData,
-	platformTypeImportToken,
-	subMessage,
-} from '@osee/messaging/shared/types';
+import { MatButton } from '@angular/material/button';
 import {
+	MatFormField,
+	MatLabel,
+	MatOption,
+	MatSelect,
+	MatSelectChange,
+} from '@angular/material/select';
+import { ActivatedRoute } from '@angular/router';
+import { ImportService, ImportTableComponent } from '@osee/messaging/import';
+import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
+import {
+	connectionHeaderDetails,
+	crossReferenceHeaderDetails,
+	importElementHeaderDetails,
 	importEnumSetHeaderDetails,
 	importMessageHeaderDetails,
 	importPlatformTypeHeaderDetails,
 	nodeHeaderDetails,
 	structureHeaderDetails,
 	subMessageHeaderDetails,
-	importElementHeaderDetails,
-	crossReferenceHeaderDetails,
-	connectionHeaderDetails,
 } from '@osee/messaging/shared/table-headers';
-import { BehaviorSubject, from, iif, of, OperatorFunction } from 'rxjs';
-import { concatMap, filter, map, reduce, switchMap, tap } from 'rxjs/operators';
+import type {
+	CrossReference,
+	ImportEnumSet,
+	ImportSummary,
+	connection,
+	elementImportToken,
+	enumeration,
+	messageToken,
+	nodeData,
+	platformTypeImportToken,
+	subMessage,
+} from '@osee/messaging/shared/types';
 import { UiService } from '@osee/shared/services';
-import { ImportService, ImportTableComponent } from '@osee/messaging/import';
-import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
+import { BehaviorSubject, OperatorFunction, from, iif, of } from 'rxjs';
+import { concatMap, filter, map, reduce, switchMap, tap } from 'rxjs/operators';
 
 @Component({
 	selector: 'osee-import',
@@ -58,9 +63,11 @@ import { MessagingControlsComponent } from '@osee/messaging/shared/main-content'
 		NgFor,
 		AsyncPipe,
 		FormsModule,
-		MatButtonModule,
-		MatSelectModule,
-		MatTableModule,
+		MatFormField,
+		MatLabel,
+		MatSelect,
+		MatOption,
+		MatButton,
 		ImportTableComponent,
 		MessagingControlsComponent,
 	],

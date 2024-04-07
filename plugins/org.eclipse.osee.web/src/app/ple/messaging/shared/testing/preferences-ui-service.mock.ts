@@ -22,6 +22,9 @@ export const preferencesUiServiceMock: Partial<PreferencesUIService> = {
 	createOrUpdateGlobalUserPrefs() {
 		return of(transactionResultMock);
 	},
+	updatePreferences(preferences) {
+		return of(transactionResultMock);
+	},
 	get preferences() {
 		return of(MimPreferencesMock);
 	},

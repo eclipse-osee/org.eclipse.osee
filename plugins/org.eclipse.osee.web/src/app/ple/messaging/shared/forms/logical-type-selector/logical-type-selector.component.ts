@@ -15,15 +15,13 @@ import {
 	Component,
 	EventEmitter,
 	Input,
-	OnChanges,
 	Output,
-	SimpleChanges,
 	ViewChild,
 } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { MatOptionModule } from '@angular/material/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
+import { MatOption } from '@angular/material/core';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatSelect } from '@angular/material/select';
 import { TypesService } from '@osee/messaging/shared/services';
 import type { logicalType } from '@osee/messaging/shared/types';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
@@ -36,9 +34,10 @@ import { HasValidIdDirective } from '@osee/shared/validators';
 	imports: [
 		TitleCasePipe,
 		FormsModule,
-		MatFormFieldModule,
-		MatSelectModule,
-		MatOptionModule,
+		MatFormField,
+		MatLabel,
+		MatSelect,
+		MatOption,
 		MatOptionLoadingComponent,
 		HasValidIdDirective,
 	],

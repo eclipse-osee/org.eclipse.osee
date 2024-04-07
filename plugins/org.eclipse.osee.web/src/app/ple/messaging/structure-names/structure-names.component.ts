@@ -13,20 +13,30 @@
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
+import { MatAnchor } from '@angular/material/button';
+import {
+	MatAccordion,
+	MatExpansionPanel,
+	MatExpansionPanelHeader,
+	MatExpansionPanelTitle,
+} from '@angular/material/expansion';
+import {
+	MatFormField,
+	MatHint,
+	MatLabel,
+	MatPrefix,
+} from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ConnectionDropdownComponent } from '@osee/messaging/shared/dropdowns';
+import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
 import { CurrentStructureNamesService } from '@osee/messaging/shared/services';
+import { connection, connectionSentinel } from '@osee/messaging/shared/types';
+import { UiService } from '@osee/shared/services';
+import { HttpLoadingService } from '@osee/shared/services/network';
 import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { HttpLoadingService } from '@osee/shared/services/network';
-import { UiService } from '@osee/shared/services';
-import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
-import { connection, connectionSentinel } from '@osee/messaging/shared/types';
-import { ConnectionDropdownComponent } from '@osee/messaging/shared/dropdowns';
 
 @Component({
 	selector: 'osee-messaging-structure-names',
@@ -41,11 +51,17 @@ import { ConnectionDropdownComponent } from '@osee/messaging/shared/dropdowns';
 		RouterLink,
 		AsyncPipe,
 		FormsModule,
-		MatButtonModule,
-		MatInputModule,
-		MatFormFieldModule,
-		MatIconModule,
-		MatExpansionModule,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatIcon,
+		MatPrefix,
+		MatHint,
+		MatAccordion,
+		MatExpansionPanel,
+		MatExpansionPanelHeader,
+		MatExpansionPanelTitle,
+		MatAnchor,
 		MessagingControlsComponent,
 		ConnectionDropdownComponent,
 	],

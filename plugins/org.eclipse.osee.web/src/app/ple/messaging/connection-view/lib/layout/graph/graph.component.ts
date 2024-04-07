@@ -10,32 +10,37 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { CurrentGraphService } from '../../services/current-graph.service';
-import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
-import { MatDialog } from '@angular/material/dialog';
-import { filter, switchMap, take, takeUntil, tap } from 'rxjs/operators';
-import { CreateNewNodeDialogComponent } from '../../dialogs/create-new-node-dialog/create-new-node-dialog.component';
-import { CreateConnectionDialogComponent } from '../../dialogs/create-connection-dialog/create-connection-dialog.component';
-import { Subject } from 'rxjs';
-import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { AsyncPipe, NgClass, NgIf, NgTemplateOutlet } from '@angular/common';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import {
+	MatMenu,
+	MatMenuContent,
+	MatMenuItem,
+	MatMenuTrigger,
+} from '@angular/material/menu';
+import { MatTooltip } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
-import { GraphLinkMenuComponent } from '../../menu/graph-link-menu/graph-link-menu.component';
-import { GraphNodeMenuComponent } from '../../menu/graph-node-menu/graph-node-menu.component';
-import { MatIconModule } from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import type {
+	OseeEdge,
+	OseeNode,
 	connection,
 	connectionWithChanges,
 	newConnection,
 	node,
 	nodeData,
 	nodeDataWithChanges,
-	OseeEdge,
-	OseeNode,
 } from '@osee/messaging/shared/types';
+import { NgxGraphModule } from '@swimlane/ngx-graph';
+import { Subject } from 'rxjs';
+import { filter, switchMap, take, takeUntil } from 'rxjs/operators';
+import { CreateConnectionDialogComponent } from '../../dialogs/create-connection-dialog/create-connection-dialog.component';
+import { CreateNewNodeDialogComponent } from '../../dialogs/create-new-node-dialog/create-new-node-dialog.component';
+import { GraphLinkMenuComponent } from '../../menu/graph-link-menu/graph-link-menu.component';
+import { GraphNodeMenuComponent } from '../../menu/graph-node-menu/graph-node-menu.component';
+import { CurrentGraphService } from '../../services/current-graph.service';
 
 @Component({
 	selector: 'osee-connection-view-graph',
@@ -49,12 +54,15 @@ import type {
 		NgTemplateOutlet,
 		RouterLink,
 		NgxGraphModule,
-		MatMenuModule,
-		MatIconModule,
-		MatFormFieldModule,
+		MatMenu,
+		MatMenuItem,
+		MatMenuTrigger,
+		MatMenuContent,
+		MatIcon,
 		GraphLinkMenuComponent,
 		GraphNodeMenuComponent,
-		MatTooltipModule,
+		MatTooltip,
+		MatLabel,
 	],
 })
 export class GraphComponent implements OnInit, OnDestroy {

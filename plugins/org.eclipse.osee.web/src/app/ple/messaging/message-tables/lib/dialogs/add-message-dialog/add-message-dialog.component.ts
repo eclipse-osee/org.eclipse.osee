@@ -10,48 +10,56 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { TextFieldModule } from '@angular/cdk/text-field';
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatOptionModule } from '@angular/material/core';
+import { MatButton } from '@angular/material/button';
+import { MatOption } from '@angular/material/core';
 import {
-	MatDialogModule,
-	MatDialogRef,
 	MAT_DIALOG_DATA,
+	MatDialogActions,
+	MatDialogClose,
+	MatDialogContent,
+	MatDialogRef,
+	MatDialogTitle,
 } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatSelect } from '@angular/material/select';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { MessageNodesCountDirective } from '@osee/messaging/shared/directives';
 import {
-	EnumsService,
+	MessageTypeDropdownComponent,
+	RateDropdownComponent,
+} from '@osee/messaging/shared/dropdowns';
+import {
 	CurrentMessagesService,
+	EnumsService,
 	TransportTypeUiService,
 } from '@osee/messaging/shared/services';
+import { ApplicabilitySelectorComponent } from '@osee/shared/components';
 import { AddMessageDialog } from '../../types/AddMessageDialog';
 import { AddSubMessageDialogComponent } from '../add-sub-message-dialog/add-sub-message-dialog.component';
-import { ApplicabilitySelectorComponent } from '@osee/shared/components';
-import {
-	RateDropdownComponent,
-	MessageTypeDropdownComponent,
-} from '@osee/messaging/shared/dropdowns';
 
 @Component({
 	selector: 'osee-messaging-add-message-dialog',
 	templateUrl: './add-message-dialog.component.html',
 	standalone: true,
 	imports: [
-		MatDialogModule,
-		MatInputModule,
-		MatFormFieldModule,
-		MatOptionModule,
-		MatSlideToggleModule,
-		MatButtonModule,
-		MatSelectModule,
-		TextFieldModule,
+		MatDialogTitle,
+		MatDialogContent,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		CdkTextareaAutosize,
+		MatSelect,
+		MatOption,
+		MatSlideToggle,
+		MatError,
+		MatDialogActions,
+		MatButton,
+		MatDialogClose,
 		FormsModule,
 		NgFor,
 		NgIf,

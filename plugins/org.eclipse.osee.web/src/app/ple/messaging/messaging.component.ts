@@ -12,14 +12,14 @@
  **********************************************************************/
 import { Component } from '@angular/core';
 
-import { concatMap, from, iif, of, reduce, skip, switchMap } from 'rxjs';
 import { AsyncPipe, NgFor } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
+import { MatAnchor } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
-import { MatIconModule } from '@angular/material/icon';
-import { navigationElement } from '@osee/shared/types';
-import { navigationStructure } from '@osee/layout/routing';
 import { UserDataAccountService } from '@osee/auth';
+import { navigationStructure } from '@osee/layout/routing';
+import { navigationElement } from '@osee/shared/types';
+import { concatMap, from, iif, of, reduce, skip, switchMap } from 'rxjs';
 
 const _navItems = navigationStructure[0].children.filter(
 	(c) => c.label === 'Messaging Configuration'
@@ -31,7 +31,7 @@ const _navItems = navigationStructure[0].children.filter(
 		':host{ height: 94vh; min-height: calc(94vh - 10%); max-height: 94vh; width: 100vw; min-width: calc(100vw - 10%); display: inline-block;}',
 	],
 	standalone: true,
-	imports: [NgFor, AsyncPipe, RouterLink, MatButtonModule, MatIconModule],
+	imports: [NgFor, AsyncPipe, RouterLink, MatAnchor, MatIcon],
 })
 export class MessagingComponent {
 	constructor(private userService: UserDataAccountService) {}

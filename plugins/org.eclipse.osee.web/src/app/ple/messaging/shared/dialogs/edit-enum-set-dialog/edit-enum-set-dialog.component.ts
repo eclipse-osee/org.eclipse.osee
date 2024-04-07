@@ -10,30 +10,32 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject, OnInit } from '@angular/core';
-import {
-	MatDialogModule,
-	MatDialogRef,
-	MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
-import { combineLatest, Observable, of, Subject } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
 import { AsyncPipe, NgIf } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
+import { Component, Inject } from '@angular/core';
+import { MatButton } from '@angular/material/button';
+import {
+	MAT_DIALOG_DATA,
+	MatDialogActions,
+	MatDialogClose,
+	MatDialogContent,
+	MatDialogRef,
+	MatDialogTitle,
+} from '@angular/material/dialog';
 import { EditEnumSetFieldComponent } from '@osee/messaging/shared/forms';
+import {
+	EnumerationUIService,
+	PreferencesUIService,
+} from '@osee/messaging/shared/services';
 import type {
 	enumerationSet,
 	enumsetDialogData,
 } from '@osee/messaging/shared/types';
 import {
-	EnumerationUIService,
-	PreferencesUIService,
-} from '@osee/messaging/shared/services';
-import {
 	createArtifact,
 	modifyArtifact,
 	modifyRelation,
 } from '@osee/shared/types';
+import { Observable, Subject } from 'rxjs';
 
 @Component({
 	selector: 'osee-messaging-edit-enum-set-dialog',
@@ -43,9 +45,12 @@ import {
 	imports: [
 		NgIf,
 		AsyncPipe,
-		MatDialogModule,
-		MatButtonModule,
 		EditEnumSetFieldComponent,
+		MatDialogTitle,
+		MatDialogContent,
+		MatDialogActions,
+		MatDialogClose,
+		MatButton,
 	],
 })
 export class EditEnumSetDialogComponent {

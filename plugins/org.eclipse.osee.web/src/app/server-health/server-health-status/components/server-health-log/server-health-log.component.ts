@@ -10,17 +10,26 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import {
+	CdkFixedSizeVirtualScroll,
+	CdkVirtualForOf,
+	CdkVirtualScrollViewport,
+} from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { scan, shareReplay, switchMap } from 'rxjs';
 import { ServerHealthHttpService } from '../../../shared/services/server-health-http.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ScrollingModule } from '@angular/cdk/scrolling';
 
 @Component({
 	selector: 'osee-server-health-log',
 	standalone: true,
-	imports: [CommonModule, ScrollingModule],
+	imports: [
+		CommonModule,
+		CdkVirtualScrollViewport,
+		CdkFixedSizeVirtualScroll,
+		CdkVirtualForOf,
+	],
 	templateUrl: './server-health-log.component.html',
 })
 export class ServerHealthLogComponent {

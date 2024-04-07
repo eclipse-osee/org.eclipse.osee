@@ -13,7 +13,11 @@
 import { LowerCasePipe, NgClass, NgFor } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatRadioChange, MatRadioModule } from '@angular/material/radio';
+import {
+	MatRadioButton,
+	MatRadioChange,
+	MatRadioGroup,
+} from '@angular/material/radio';
 import { BranchRoutedUIService } from '../../../../internal/services/branch-routed-ui.service';
 
 @Component({
@@ -21,7 +25,14 @@ import { BranchRoutedUIService } from '../../../../internal/services/branch-rout
 	templateUrl: './branch-type-selector.component.html',
 	styles: [],
 	standalone: true,
-	imports: [MatRadioModule, FormsModule, NgFor, NgClass, LowerCasePipe],
+	imports: [
+		MatRadioGroup,
+		MatRadioButton,
+		FormsModule,
+		NgFor,
+		NgClass,
+		LowerCasePipe,
+	],
 })
 export class BranchTypeSelectorComponent implements OnInit {
 	branchTypes: string[] = ['Product Line', 'Working'];

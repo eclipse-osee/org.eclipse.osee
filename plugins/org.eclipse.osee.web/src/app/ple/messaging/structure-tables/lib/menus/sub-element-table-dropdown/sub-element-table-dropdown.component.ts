@@ -10,32 +10,36 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject, Input } from '@angular/core';
-import { take, switchMap, iif, of } from 'rxjs';
-import { applic } from '@osee/shared/types/applicability';
-import { difference } from '@osee/shared/types/change-report';
-import { RemoveElementDialogData } from '../../dialogs/remove-element-dialog/remove-element-dialog';
-import { RemoveElementDialogComponent } from '../../dialogs/remove-element-dialog/remove-element-dialog.component';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { RouterLink } from '@angular/router';
 import { AsyncPipe, NgIf } from '@angular/common';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatIconModule } from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
+import { Component, Inject, Input } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatDivider } from '@angular/material/divider';
+import { MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
 import {
-	type element,
-	type structure,
-	type PlatformType,
-	type elementWithChanges,
-	elementSentinel,
-} from '@osee/messaging/shared/types';
+	MatMenu,
+	MatMenuContent,
+	MatMenuItem,
+	MatMenuTrigger,
+} from '@angular/material/menu';
+import { RouterLink } from '@angular/router';
 import {
 	CurrentStructureService,
 	HeaderService,
 } from '@osee/messaging/shared/services';
-import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
-import { MatDividerModule } from '@angular/material/divider';
+import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
+import {
+	elementSentinel,
+	type PlatformType,
+	type element,
+	type elementWithChanges,
+	type structure,
+} from '@osee/messaging/shared/types';
+import { applic } from '@osee/shared/types/applicability';
+import { difference } from '@osee/shared/types/change-report';
+import { iif, of, switchMap, take } from 'rxjs';
+import { RemoveElementDialogData } from '../../dialogs/remove-element-dialog/remove-element-dialog';
+import { RemoveElementDialogComponent } from '../../dialogs/remove-element-dialog/remove-element-dialog.component';
 import { ElementTableDropdownService } from '../../services/element-table-dropdown.service';
 
 /**
@@ -55,11 +59,13 @@ import { ElementTableDropdownService } from '../../services/element-table-dropdo
 		NgIf,
 		AsyncPipe,
 		RouterLink,
-		MatMenuModule,
-		MatIconModule,
-		MatDialogModule,
-		MatFormFieldModule,
-		MatDividerModule,
+		MatMenuItem,
+		MatIcon,
+		MatDivider,
+		MatMenuTrigger,
+		MatLabel,
+		MatMenu,
+		MatMenuContent,
 	],
 	templateUrl: './sub-element-table-dropdown.component.html',
 	styles: [],

@@ -11,7 +11,24 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenuItem } from '@angular/material/menu';
+import {
+	defaultEditElementProfile,
+	defaultViewElementProfile,
+} from '@osee/messaging/shared/constants';
+import { ColumnPreferencesDialogComponent } from '@osee/messaging/shared/dialogs/preferences';
+import {
+	CurrentStructureService,
+	HeaderService,
+	PreferencesUIService,
+} from '@osee/messaging/shared/services';
+import type {
+	element,
+	settingsDialogData,
+	structure,
+} from '@osee/messaging/shared/types';
 import { combineLatest, from, iif, of } from 'rxjs';
 import {
 	filter,
@@ -23,38 +40,13 @@ import {
 	switchMap,
 	take,
 } from 'rxjs/operators';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import {
-	CurrentStructureService,
-	HeaderService,
-	PreferencesUIService,
-} from '@osee/messaging/shared/services';
-import type {
-	element,
-	settingsDialogData,
-	structure,
-} from '@osee/messaging/shared/types';
-import { ColumnPreferencesDialogComponent } from '@osee/messaging/shared/dialogs/preferences';
-import {
-	defaultEditElementProfile,
-	defaultViewElementProfile,
-} from '@osee/messaging/shared/constants';
 
 @Component({
 	selector: 'osee-messaging-usermenu',
 	templateUrl: './usermenu.component.html',
 	styles: [],
 	standalone: true,
-	imports: [
-		MatButtonModule,
-		MatIconModule,
-		MatMenuModule,
-		MatDialogModule,
-		MatTooltipModule,
-	],
+	imports: [MatMenuItem, MatIcon],
 })
 export class UsermenuComponent {
 	preferences = this.structureService.preferences;
