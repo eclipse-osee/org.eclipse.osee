@@ -23,6 +23,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.config.JaxTeamWorkflow;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -300,5 +302,12 @@ public class WfeBitTab extends WfeAbstractTab implements IArtifactEventListener,
 
    public ArtifactTypeToken getBuildImpactDataType() {
       return AtsArtifactTypes.BuildImpactData;
+   }
+
+   /**
+    * Available for extension to add more information to sibling creation
+    */
+   public void creatingSibling(IAtsTeamWorkflow teamWf, JaxTeamWorkflow jTeamWf, IAtsActionableItem ai) {
+      // do nothing
    }
 }

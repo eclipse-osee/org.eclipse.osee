@@ -104,7 +104,7 @@ public class CreateSiblingAction extends Action {
             new ActionableItemTreeWithChildrenDialog(Active.Active, validAis);
          dialog.setAddIncludeAllCheckbox(false);
          if (dialog.open() == Window.OK) {
-            handleSelection(bid, dialog.getChecked());
+            handleSelection(bid, dialog.getChecked(), bitTab);
          }
       } else {
          AWorkbench.popup("Must Select a Single Build Impact");
@@ -112,7 +112,7 @@ public class CreateSiblingAction extends Action {
       }
    }
 
-   private void handleSelection(BuildImpactData selBid, Collection<IAtsActionableItem> aias) {
+   private void handleSelection(BuildImpactData selBid, Collection<IAtsActionableItem> aias, final WfeBitTab bitTab) {
 
       Job createSiblingJob = new Job("Creating Sibling Workflows") {
 
@@ -131,8 +131,9 @@ public class CreateSiblingAction extends Action {
                bids.addBuildImpactData(bid);
 
                JaxTeamWorkflow jTeamWf = new JaxTeamWorkflow();
-               jTeamWf.setName(jTeamWf.getTitle());
+               jTeamWf.setName(teamWf.getName());
                jTeamWf.setNewAi(ai.getArtifactToken());
+               bitTab.creatingSibling(teamWf, jTeamWf, ai);
                IAtsVersion version = atsApi.getVersionService().getVersionById(selBid.getBuild());
                if (version != null) {
                   jTeamWf.setTargetVersion(version.getArtifactToken());
