@@ -11,36 +11,43 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Input, computed, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatIconModule } from '@angular/material/icon';
-import { MatChipsModule } from '@angular/material/chips';
 import {
-	MatAutocompleteModule,
+	MatAutocomplete,
 	MatAutocompleteSelectedEvent,
+	MatAutocompleteTrigger,
 } from '@angular/material/autocomplete';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatChip, MatChipRemove, MatChipSet } from '@angular/material/chips';
+import { MatOption } from '@angular/material/core';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { ArtifactUiService } from '@osee/shared/services';
+import { NamedId } from '@osee/shared/types';
+import { BehaviorSubject, switchMap } from 'rxjs';
 import {
 	AdvancedSearchCriteria,
 	defaultAdvancedSearchCriteria,
 } from '../../../../../types/artifact-search';
-import { NamedId } from '@osee/shared/types';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { BehaviorSubject, switchMap } from 'rxjs';
-import { ArtifactUiService } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-advanced-search-form',
 	standalone: true,
 	imports: [
 		FormsModule,
-		MatFormFieldModule,
-		MatInputModule,
-		MatCheckboxModule,
-		MatIconModule,
-		MatChipsModule,
-		MatAutocompleteModule,
+		MatFormField,
+		MatLabel,
+		MatChipSet,
+		MatChip,
+		MatChipRemove,
+		MatIcon,
+		MatInput,
+		MatAutocomplete,
+		MatAutocompleteTrigger,
+		MatOption,
+		MatCheckbox,
 	],
 	templateUrl: './advanced-search-form.component.html',
 })

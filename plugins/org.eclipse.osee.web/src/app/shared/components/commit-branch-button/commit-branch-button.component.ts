@@ -10,19 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input, signal } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialog } from '@angular/material/dialog';
-import { of, switchMap, take, tap } from 'rxjs';
-import { CommitBranchService, UiService } from '@osee/shared/services';
-import { BranchRoutedUIService } from '../internal/services/branch-routed-ui.service';
 import { NgClass } from '@angular/common';
+import { Component, Input, signal } from '@angular/core';
+import { MatButton } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { CommitBranchService, UiService } from '@osee/shared/services';
+import { of, switchMap, take, tap } from 'rxjs';
+import { BranchRoutedUIService } from '../internal/services/branch-routed-ui.service';
 import { MergeManagerDialogComponent } from '../merge-manager-dialog/merge-manager-dialog.component';
 
 @Component({
 	selector: 'osee-commit-branch-button',
 	standalone: true,
-	imports: [NgClass, MatButtonModule],
+	imports: [NgClass, MatButton],
 	templateUrl: './commit-branch-button.component.html',
 })
 export class CommitBranchButtonComponent {

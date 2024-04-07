@@ -10,20 +10,24 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, Input, Output } from '@angular/core';
 import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatOptionModule } from '@angular/material/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { Subject, BehaviorSubject } from 'rxjs';
-import { EnumFormComponent } from '../../forms/enum-form/enum-form.component';
+import { MatIconButton } from '@angular/material/button';
+import {
+	MatError,
+	MatFormField,
+	MatLabel,
+	MatSuffix,
+} from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
 import { EnumSetUniqueDescriptionDirective } from '@osee/messaging/shared/directives';
 import type { enumeration, enumerationSet } from '@osee/messaging/shared/types';
 import { ApplicabilitySelectorComponent } from '@osee/shared/components';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { EnumFormComponent } from '../../forms/enum-form/enum-form.component';
 
 @Component({
 	selector: 'osee-enum-set-form',
@@ -31,13 +35,15 @@ import { ApplicabilitySelectorComponent } from '@osee/shared/components';
 	styles: [],
 	standalone: true,
 	imports: [
-		MatFormFieldModule,
 		FormsModule,
-		MatInputModule,
-		MatButtonModule,
-		MatIconModule,
-		MatSelectModule,
-		MatOptionModule,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatIconButton,
+		MatSuffix,
+		MatIcon,
+		MatError,
+		CdkTextareaAutosize,
 		AsyncPipe,
 		EnumFormComponent,
 		NgFor,

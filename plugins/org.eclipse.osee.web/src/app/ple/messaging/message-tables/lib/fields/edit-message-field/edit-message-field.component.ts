@@ -10,23 +10,30 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { A11yModule } from '@angular/cdk/a11y';
+import { CdkMonitorFocus } from '@angular/cdk/a11y';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatOptionModule } from '@angular/material/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatOption } from '@angular/material/core';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatSelect } from '@angular/material/select';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
+import {
+	MessageTypeDropdownComponent,
+	RateDropdownComponent,
+} from '@osee/messaging/shared/dropdowns';
 import {
 	CurrentMessagesService,
 	EnumsService,
 } from '@osee/messaging/shared/services';
 import type { message } from '@osee/messaging/shared/types';
-import { MatOptionLoadingComponent } from '@osee/shared/components';
-import { combineLatest, iif, of, Subject } from 'rxjs';
+import {
+	ApplicabilitySelectorComponent,
+	MatOptionLoadingComponent,
+} from '@osee/shared/components';
+import { applic } from '@osee/shared/types/applicability';
+import { Subject, combineLatest, iif, of } from 'rxjs';
 import {
 	debounceTime,
 	distinctUntilChanged,
@@ -37,12 +44,6 @@ import {
 	takeUntil,
 	tap,
 } from 'rxjs/operators';
-import { ApplicabilitySelectorComponent } from '@osee/shared/components';
-import { applic } from '@osee/shared/types/applicability';
-import {
-	MessageTypeDropdownComponent,
-	RateDropdownComponent,
-} from '@osee/messaging/shared/dropdowns';
 
 @Component({
 	selector: 'osee-messaging-edit-message-field',
@@ -54,14 +55,13 @@ import {
 		NgIf,
 		NgFor,
 		AsyncPipe,
-		A11yModule,
 		FormsModule,
-		MatFormFieldModule,
-		MatSelectModule,
-		MatOptionModule,
-		MatInputModule,
-		MatSlideToggleModule,
-		MatAutocompleteModule,
+		CdkMonitorFocus,
+		MatFormField,
+		MatSelect,
+		MatOption,
+		MatInput,
+		MatSlideToggle,
 		MatOptionLoadingComponent,
 		ApplicabilitySelectorComponent,
 		RateDropdownComponent,

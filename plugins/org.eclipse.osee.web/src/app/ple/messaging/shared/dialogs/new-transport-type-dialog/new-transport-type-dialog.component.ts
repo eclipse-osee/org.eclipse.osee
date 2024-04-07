@@ -13,13 +13,7 @@
 import { NgFor } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatOptionModule } from '@angular/material/core';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { TransportTypeFormComponent } from '@osee/messaging/shared/forms';
 import {
 	TransportType,
@@ -31,18 +25,7 @@ import {
 	templateUrl: './new-transport-type-dialog.component.html',
 	styles: [],
 	standalone: true,
-	imports: [
-		MatDialogModule,
-		MatFormFieldModule,
-		MatInputModule,
-		FormsModule,
-		MatSlideToggleModule,
-		MatSelectModule,
-		MatOptionModule,
-		NgFor,
-		MatButtonModule,
-		TransportTypeFormComponent,
-	],
+	imports: [FormsModule, NgFor, TransportTypeFormComponent, MatDialogTitle],
 })
 export class NewTransportTypeDialogComponent {
 	transportType = new TransportType();

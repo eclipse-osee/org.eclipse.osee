@@ -13,30 +13,33 @@
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatButton } from '@angular/material/button';
+import { MatCheckbox } from '@angular/material/checkbox';
 import {
-	MatDialogModule,
-	MatDialogRef,
 	MAT_DIALOG_DATA,
+	MatDialogActions,
+	MatDialogClose,
+	MatDialogContent,
+	MatDialogRef,
+	MatDialogTitle,
 } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatListModule } from '@angular/material/list';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatLabel } from '@angular/material/form-field';
+import { MatListOption, MatSelectionList } from '@angular/material/list';
+import { MatTooltip } from '@angular/material/tooltip';
 import {
-	defaultEditStructureProfile,
 	defaultEditElementProfile,
-	defaultViewStructureProfile,
+	defaultEditStructureProfile,
 	defaultViewElementProfile,
+	defaultViewStructureProfile,
 } from '@osee/messaging/shared/constants';
 import {
 	EditAuthService,
 	HeaderService,
 } from '@osee/messaging/shared/services';
 import type {
+	element,
 	settingsDialogData,
 	structure,
-	element,
 } from '@osee/messaging/shared/types';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -47,16 +50,20 @@ import { map } from 'rxjs/operators';
 	styles: [],
 	standalone: true,
 	imports: [
-		MatDialogModule,
-		MatCheckboxModule,
 		FormsModule,
-		MatFormFieldModule,
-		MatTooltipModule,
 		NgIf,
-		MatButtonModule,
-		MatListModule,
 		NgFor,
 		AsyncPipe,
+		MatDialogTitle,
+		MatDialogContent,
+		MatCheckbox,
+		MatLabel,
+		MatTooltip,
+		MatButton,
+		MatSelectionList,
+		MatListOption,
+		MatDialogActions,
+		MatDialogClose,
 	],
 })
 export class ColumnPreferencesDialogComponent {

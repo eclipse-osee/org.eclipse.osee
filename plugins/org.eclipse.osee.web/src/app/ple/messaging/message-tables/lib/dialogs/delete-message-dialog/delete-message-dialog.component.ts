@@ -11,11 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Inject } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
+import { MatButton } from '@angular/material/button';
 import {
-	MatDialogModule,
-	MatDialogRef,
 	MAT_DIALOG_DATA,
+	MatDialogActions,
+	MatDialogClose,
+	MatDialogContent,
+	MatDialogRef,
+	MatDialogTitle,
 } from '@angular/material/dialog';
 import { DeleteMessageDialogData } from '../../types/DeleteMessageDialog';
 
@@ -23,7 +26,13 @@ import { DeleteMessageDialogData } from '../../types/DeleteMessageDialog';
 	selector: 'osee-messaging-delete-message-dialog',
 	templateUrl: './delete-message-dialog.component.html',
 	standalone: true,
-	imports: [MatDialogModule, MatButtonModule],
+	imports: [
+		MatDialogTitle,
+		MatDialogContent,
+		MatDialogActions,
+		MatDialogClose,
+		MatButton,
+	],
 })
 export class DeleteMessageDialogComponent {
 	constructor(

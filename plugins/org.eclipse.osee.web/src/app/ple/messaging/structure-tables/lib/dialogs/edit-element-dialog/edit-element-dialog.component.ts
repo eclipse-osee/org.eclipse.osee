@@ -11,21 +11,31 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Inject } from '@angular/core';
-import { ElementFormComponent } from '../../forms/element-form/element-form.component';
 import {
-	MatDialog,
-	MatDialogModule,
-	MatDialogRef,
 	MAT_DIALOG_DATA,
+	MatDialog,
+	MatDialogActions,
+	MatDialogClose,
+	MatDialogContent,
+	MatDialogRef,
+	MatDialogTitle,
 } from '@angular/material/dialog';
+import { ElementFormComponent } from '../../forms/element-form/element-form.component';
 
-import { MatButtonModule } from '@angular/material/button';
-import { element, ElementDialog } from '@osee/messaging/shared/types';
+import { MatButton } from '@angular/material/button';
+import { ElementDialog, element } from '@osee/messaging/shared/types';
 
 @Component({
 	selector: 'osee-edit-element-dialog',
 	standalone: true,
-	imports: [MatDialogModule, MatButtonModule, ElementFormComponent],
+	imports: [
+		MatDialogTitle,
+		MatDialogContent,
+		MatDialogActions,
+		MatButton,
+		MatDialogClose,
+		ElementFormComponent,
+	],
 	templateUrl: './edit-element-dialog.component.html',
 	styles: [],
 })

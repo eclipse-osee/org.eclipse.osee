@@ -10,8 +10,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIcon } from '@angular/material/icon';
+import {
+	MatMenu,
+	MatMenuContent,
+	MatMenuItem,
+	MatMenuTrigger,
+} from '@angular/material/menu';
 import { from, iif, of, OperatorFunction, throwError } from 'rxjs';
 import {
 	filter,
@@ -22,15 +30,11 @@ import {
 	take,
 	tap,
 } from 'rxjs/operators';
-import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { AddConfigurationGroupDialogComponent } from '../../dialogs/add-configuration-group-dialog/add-configuration-group-dialog.component';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
-import { AddConfigurationGroupDialogComponent } from '../../dialogs/add-configuration-group-dialog/add-configuration-group-dialog.component';
-import { addCfgGroup } from '../../types/pl-config-cfggroups';
 import { cfgGroup } from '../../types/pl-config-branch';
-import { NgFor, NgIf, AsyncPipe } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
+import { addCfgGroup } from '../../types/pl-config-cfggroups';
 
 @Component({
 	selector: 'osee-plconfig-configuration-group-dropdown',
@@ -38,9 +42,11 @@ import { MatIconModule } from '@angular/material/icon';
 	styles: [],
 	standalone: true,
 	imports: [
-		MatIconModule,
-		MatMenuModule,
-		MatFormFieldModule,
+		MatMenuItem,
+		MatMenuTrigger,
+		MatMenuContent,
+		MatMenu,
+		MatIcon,
 		NgFor,
 		NgIf,
 		AsyncPipe,

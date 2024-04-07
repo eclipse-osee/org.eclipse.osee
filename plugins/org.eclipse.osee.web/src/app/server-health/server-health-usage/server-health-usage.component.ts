@@ -10,25 +10,41 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ServerHealthHttpService } from '../shared/services/server-health-http.service';
-import { shareReplay } from 'rxjs';
+import { Component, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+	MatExpansionPanel,
+	MatExpansionPanelHeader,
+	MatExpansionPanelTitle,
+} from '@angular/material/expansion';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+	MatTableDataSource,
+} from '@angular/material/table';
 import { navigationStructure } from '@osee/layout/routing';
 import {
-	navigationElement,
 	defaultNavigationElement,
+	navigationElement,
 } from '@osee/shared/types';
+import { shareReplay } from 'rxjs';
 import { ServerHealthPageHeaderComponent } from '../shared/components/server-health-page-header/server-health-page-header.component';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { ServerHealthHttpService } from '../shared/services/server-health-http.service';
 import {
 	session,
 	user,
 	versionNameMap,
 	versionTypeMap,
 } from '../shared/types/server-health-types';
-import { MatExpansionModule } from '@angular/material/expansion';
 
 const _currNavItem: navigationElement =
 	navigationStructure[1].children.find((c) => c.label === 'Usage') ||
@@ -40,8 +56,19 @@ const _currNavItem: navigationElement =
 	imports: [
 		CommonModule,
 		ServerHealthPageHeaderComponent,
-		MatTableModule,
-		MatExpansionModule,
+		MatExpansionPanel,
+		MatExpansionPanelHeader,
+		MatExpansionPanelTitle,
+		MatTable,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatCell,
+		MatCellDef,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
 	],
 	templateUrl: './server-health-usage.component.html',
 })

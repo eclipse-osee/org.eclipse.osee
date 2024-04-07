@@ -10,23 +10,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, SecurityContext } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
+import { Component, SecurityContext } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { RouterLink } from '@angular/router';
 import { navigationStructure } from '@osee/layout/routing';
-import { MatGridListModule } from '@angular/material/grid-list';
 import {
 	defaultNavigationElement,
 	navigationElement,
 } from '@osee/shared/types';
-import { MatButtonModule } from '@angular/material/button';
-import { RouterLink } from '@angular/router';
+import { map, shareReplay } from 'rxjs';
 import { ServerHealthPageHeaderComponent } from './shared/components/server-health-page-header/server-health-page-header.component';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ServerHealthHttpService } from './shared/services/server-health-http.service';
-import { map, of, shareReplay } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { MatTooltipModule } from '@angular/material/tooltip';
 
 const _navItems: navigationElement[] =
 	navigationStructure[1].children.filter(
@@ -43,12 +41,10 @@ const _currNavItem: navigationElement =
 	standalone: true,
 	imports: [
 		CommonModule,
-		MatIconModule,
-		MatGridListModule,
-		MatButtonModule,
 		RouterLink,
 		ServerHealthPageHeaderComponent,
-		MatTooltipModule,
+		MatTooltip,
+		MatIcon,
 	],
 	templateUrl: './server-health.component.html',
 })

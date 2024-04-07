@@ -12,37 +12,30 @@
  **********************************************************************/
 import { AsyncPipe, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import type { settingsDialogData } from '@osee/messaging/shared/types';
+import { MatButton } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenuItem } from '@angular/material/menu';
 import { ColumnPreferencesDialogComponent } from '@osee/messaging/shared/dialogs/preferences';
 import { PreferencesUIService } from '@osee/messaging/shared/services';
+import type { settingsDialogData } from '@osee/messaging/shared/types';
+import { UiService } from '@osee/shared/services';
 import { combineLatest, iif, of } from 'rxjs';
 import {
+	debounceTime,
 	map,
 	share,
 	shareReplay,
-	take,
 	switchMap,
-	debounceTime,
+	take,
 } from 'rxjs/operators';
-import { UiService } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-messaging-usermenu',
 	templateUrl: './usermenu.component.html',
 	styles: [],
 	standalone: true,
-	imports: [
-		NgIf,
-		AsyncPipe,
-		MatMenuModule,
-		MatButtonModule,
-		MatIconModule,
-		MatDialogModule,
-	],
+	imports: [NgIf, AsyncPipe, MatMenuItem, MatIcon, MatButton],
 })
 export class UsermenuComponent {
 	settingsCapable = this.routeState.id.pipe(

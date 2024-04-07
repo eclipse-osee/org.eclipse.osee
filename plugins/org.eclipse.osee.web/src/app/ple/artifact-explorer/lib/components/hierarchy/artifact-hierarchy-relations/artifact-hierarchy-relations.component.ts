@@ -10,29 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { MatIconModule } from '@angular/material/icon';
-import { DragDropModule } from '@angular/cdk/drag-drop';
-import { MatButtonModule } from '@angular/material/button';
+import { Component, Input } from '@angular/core';
 import { UiService } from '@osee/shared/services';
-import { ArtifactHierarchyRelationSideComponent } from '../artifact-hierarchy-relation-side/artifact-hierarchy-relation-side.component';
+import { Observable } from 'rxjs';
 import { ArtifactHierarchyOptionsService } from '../../../services/artifact-hierarchy-options.service';
 import { relation, relationSide } from '../../../types/artifact-explorer.data';
+import { ArtifactHierarchyRelationSideComponent } from '../artifact-hierarchy-relation-side/artifact-hierarchy-relation-side.component';
 
 @Component({
 	selector: 'osee-artifact-hierarchy-relations',
 	standalone: true,
 	templateUrl: './artifact-hierarchy-relations.component.html',
-	imports: [
-		CommonModule,
-		MatIconModule,
-		MatIconModule,
-		DragDropModule,
-		MatButtonModule,
-		ArtifactHierarchyRelationSideComponent,
-	],
+	imports: [CommonModule, ArtifactHierarchyRelationSideComponent],
 })
 export class ArtifactHierarchyRelationsComponent {
 	@Input() relation$!: Observable<relation[]>;

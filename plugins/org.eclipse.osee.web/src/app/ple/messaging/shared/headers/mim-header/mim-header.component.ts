@@ -12,23 +12,23 @@
  **********************************************************************/
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
+import { MatAnchor } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import {
 	MimRouteService,
 	SharedConnectionUIService,
 	SharedStructureUIService,
 } from '@osee/messaging/shared/services';
+import { CurrentBranchInfoService } from '@osee/shared/services';
 import { combineLatest, iif, of } from 'rxjs';
 import { debounceTime, switchMap } from 'rxjs/operators';
-import { CurrentBranchInfoService } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-messaging-header',
 	templateUrl: './mim-header.component.html',
 	styles: [],
 	standalone: true,
-	imports: [MatButtonModule, RouterLink, NgIf, NgFor, AsyncPipe],
+	imports: [MatAnchor, RouterLink, NgIf, NgFor, AsyncPipe],
 })
 export class MimHeaderComponent {
 	route = combineLatest([

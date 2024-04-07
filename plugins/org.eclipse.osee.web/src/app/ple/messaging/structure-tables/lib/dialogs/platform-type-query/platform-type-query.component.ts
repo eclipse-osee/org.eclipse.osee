@@ -10,29 +10,38 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { AsyncPipe, NgFor } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSliderModule } from '@angular/material/slider';
+import {
+	MatAutocomplete,
+	MatAutocompleteTrigger,
+} from '@angular/material/autocomplete';
+import { MatIconButton } from '@angular/material/button';
+import { MatOption } from '@angular/material/core';
+import {
+	MatFormField,
+	MatLabel,
+	MatSuffix,
+} from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { MatSelect } from '@angular/material/select';
+import { MatSlider, MatSliderThumb } from '@angular/material/slider';
 import { UnitDropdownComponent } from '@osee/messaging/shared/dropdowns';
 import {
 	PlatformTypeQuery,
-	andQuery,
-	andUnitQuery,
 	andBitSizeQuery,
-	andLogicalTypeQuery,
-	andMinValQuery,
-	andMaxValQuery,
 	andDefaultValQuery,
+	andDescriptionQuery,
+	andLogicalTypeQuery,
+	andMaxValQuery,
+	andMinValQuery,
 	andMsbValQuery,
 	andNameQuery,
-	andDescriptionQuery,
+	andQuery,
+	andUnitQuery,
 } from '@osee/messaging/shared/query';
 import type { PlatformType } from '@osee/messaging/shared/types';
 
@@ -42,14 +51,20 @@ import type { PlatformType } from '@osee/messaging/shared/types';
 	styles: [],
 	standalone: true,
 	imports: [
-		MatFormFieldModule,
 		FormsModule,
-		MatInputModule,
-		MatSliderModule,
-		MatButtonModule,
-		MatIconModule,
-		MatAutocompleteModule,
-		MatSelectModule,
+		MatLabel,
+		MatFormField,
+		MatInput,
+		MatSlider,
+		MatSuffix,
+		MatSliderThumb,
+		MatIconButton,
+		MatIcon,
+		MatAutocomplete,
+		MatAutocompleteTrigger,
+		MatOption,
+		CdkTextareaAutosize,
+		MatSelect,
 		AsyncPipe,
 		NgFor,
 		UnitDropdownComponent,

@@ -10,24 +10,24 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-	ActionDropDownComponent,
-	BranchPickerComponent,
-	UndoButtonBranchComponent,
-} from '@osee/shared/components';
-import { UiService } from '@osee/shared/services';
-import { iif, of, switchMap } from 'rxjs';
+import { Component, Input } from '@angular/core';
+import { MatAnchor } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import {
 	MimRouteService,
 	PreferencesUIService,
 } from '@osee/messaging/shared/services';
-import { ViewSelectorComponent } from '@osee/shared/components';
+import {
+	ActionDropDownComponent,
+	BranchPickerComponent,
+	UndoButtonBranchComponent,
+	ViewSelectorComponent,
+} from '@osee/shared/components';
+import { UiService } from '@osee/shared/services';
+import { iif, of, switchMap } from 'rxjs';
 
 @Component({
 	selector: 'osee-messaging-controls',
@@ -36,9 +36,9 @@ import { ViewSelectorComponent } from '@osee/shared/components';
 		CommonModule,
 		RouterLink,
 		RouterOutlet,
-		MatButtonModule,
-		MatIconModule,
-		MatTooltipModule,
+		MatAnchor,
+		MatIcon,
+		MatTooltip,
 		ActionDropDownComponent,
 		BranchPickerComponent,
 		UndoButtonBranchComponent,

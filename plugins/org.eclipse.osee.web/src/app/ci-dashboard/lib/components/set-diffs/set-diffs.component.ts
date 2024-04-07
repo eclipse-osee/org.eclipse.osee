@@ -10,19 +10,31 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AfterViewInit, Component, ViewChild, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AfterViewInit, Component, ViewChild, signal } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+	MatTableDataSource,
+} from '@angular/material/table';
+import { MatTooltip } from '@angular/material/tooltip';
+import { HeaderService } from '@osee/shared/services';
+import { SplitStringPipe } from '@osee/shared/utils';
+import { combineLatest, tap } from 'rxjs';
+import { CiSetDiffService } from '../../services/ci-set-diff.service';
+import { setDiffHeaderDetails } from '../../table-headers/set-diff.headers';
+import { SetDiff } from '../../types';
 import { CiDashboardControlsComponent } from '../ci-dashboard-controls/ci-dashboard-controls.component';
 import { SetDropdownMultiComponent } from './set-dropdown-multi/set-dropdown-multi.component';
-import { CiSetDiffService } from '../../services/ci-set-diff.service';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { HeaderService } from '@osee/shared/services';
-import { setDiffHeaderDetails } from '../../table-headers/set-diff.headers';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { combineLatest, tap } from 'rxjs';
-import { SetDiff } from '../../types';
-import { SplitStringPipe } from '@osee/shared/utils';
 
 @Component({
 	selector: 'osee-set-diffs',
@@ -31,9 +43,18 @@ import { SplitStringPipe } from '@osee/shared/utils';
 		CommonModule,
 		CiDashboardControlsComponent,
 		SetDropdownMultiComponent,
-		MatPaginatorModule,
-		MatTableModule,
-		MatTooltipModule,
+		MatTable,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatTooltip,
+		MatCell,
+		MatCellDef,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
+		MatPaginator,
 		SplitStringPipe,
 	],
 	templateUrl: './set-diffs.component.html',

@@ -11,31 +11,24 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import type { settingsDialogData } from '@osee/messaging/shared/types';
+import { MatButton } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenuItem } from '@angular/material/menu';
+import { ColumnPreferencesDialogComponent } from '@osee/messaging/shared/dialogs/preferences';
 import { PreferencesUIService } from '@osee/messaging/shared/services';
+import type { settingsDialogData } from '@osee/messaging/shared/types';
 import { combineLatest } from 'rxjs';
-import { take, switchMap } from 'rxjs/operators';
+import { switchMap, take } from 'rxjs/operators';
 import { CurrentTypesService } from '../../services/current-types.service';
 import { PlMessagingTypesUIService } from '../../services/pl-messaging-types-ui.service';
-import { ColumnPreferencesDialogComponent } from '@osee/messaging/shared/dialogs/preferences';
 
 @Component({
 	selector: 'osee-messaging-usermenu',
 	templateUrl: './usermenu.component.html',
 	styles: [],
 	standalone: true,
-	imports: [
-		MatButtonModule,
-		MatIconModule,
-		MatMenuModule,
-		MatDialogModule,
-		MatTooltipModule,
-	],
+	imports: [MatButton, MatIcon, MatMenuItem],
 })
 export class UsermenuComponent {
 	constructor(

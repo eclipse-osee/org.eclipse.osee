@@ -10,26 +10,26 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject } from '@angular/core';
 import { AsyncPipe, NgIf } from '@angular/common';
+import { Component, Inject } from '@angular/core';
 import {
-	MatDialogModule,
-	MatDialogRef,
 	MAT_DIALOG_DATA,
+	MatDialogRef,
+	MatDialogTitle,
 } from '@angular/material/dialog';
+import { TransportTypeFormComponent } from '@osee/messaging/shared/forms';
 import {
 	TransportType,
+	TransportTypeForm,
 	transportType,
 	transportTypeAttributes,
-	TransportTypeForm,
 } from '@osee/messaging/shared/types';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { TransportTypeFormComponent } from '@osee/messaging/shared/forms';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
 	selector: 'osee-edit-transport-type-dialog',
 	standalone: true,
-	imports: [MatDialogModule, NgIf, AsyncPipe, TransportTypeFormComponent],
+	imports: [MatDialogTitle, NgIf, AsyncPipe, TransportTypeFormComponent],
 	templateUrl: './edit-transport-type-dialog.component.html',
 	styles: [],
 })

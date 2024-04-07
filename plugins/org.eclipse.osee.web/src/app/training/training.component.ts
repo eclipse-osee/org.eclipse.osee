@@ -17,7 +17,6 @@ import { EditCoursesDropdownComponent } from './lib/dropdowns/edit-courses-dropd
 import { EditRolesDropdownComponent } from './lib/dropdowns/edit-roles-dropdown/edit-roles-dropdown.component';
 import { TrainingCourseTableComponent } from './lib/tables/training-course-table/training-course-table.component';
 import { TrainingRoleTableComponent } from './lib/tables/training-role-table/training-role-table.component';
-import { MatDialogModule } from '@angular/material/dialog';
 
 @Component({
 	standalone: true,
@@ -31,7 +30,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 		TrainingCourseTableComponent,
 		AddRolesDialogComponent,
 		AddCoursesDialogComponent,
-		MatDialogModule,
 	],
 })
 export class TrainingComponent {

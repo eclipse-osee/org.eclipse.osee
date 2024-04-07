@@ -10,14 +10,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject } from '@angular/core';
-import {
-	MatDialogModule,
-	MatDialogRef,
-	MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
 import { AsyncPipe, NgFor } from '@angular/common';
+import { Component, Inject } from '@angular/core';
+import { MatButton } from '@angular/material/button';
+import {
+	MAT_DIALOG_DATA,
+	MatDialogActions,
+	MatDialogClose,
+	MatDialogContent,
+	MatDialogRef,
+	MatDialogTitle,
+} from '@angular/material/dialog';
 import type { nodeData } from '@osee/messaging/shared/types';
 import { NewNodeFormComponent } from '../../forms/new-node-form/new-node-form.component';
 
@@ -26,8 +29,11 @@ import { NewNodeFormComponent } from '../../forms/new-node-form/new-node-form.co
 	templateUrl: './edit-node-dialog.component.html',
 	standalone: true,
 	imports: [
-		MatDialogModule,
-		MatButtonModule,
+		MatDialogTitle,
+		MatDialogClose,
+		MatDialogContent,
+		MatDialogActions,
+		MatButton,
 		AsyncPipe,
 		NgFor,
 		NewNodeFormComponent,

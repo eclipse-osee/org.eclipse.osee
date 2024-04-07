@@ -10,27 +10,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, WritableSignal, effect, signal } from '@angular/core';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { CiDashboardControlsComponent } from '../ci-dashboard-controls/ci-dashboard-controls.component';
-import { CiDashboardUiService } from '../../services/ci-dashboard-ui.service';
+import { Component, WritableSignal, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { CiDashboardImportService } from '../../services/ci-dashboard-import.service';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import {
-	BehaviorSubject,
-	OperatorFunction,
-	Subject,
-	combineLatest,
-	filter,
-	map,
-	of,
-	startWith,
-	switchMap,
-	tap,
-} from 'rxjs';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 import { transactionResult } from '@osee/shared/types/change-report';
+import { BehaviorSubject, map, switchMap, tap } from 'rxjs';
+import { CiDashboardImportService } from '../../services/ci-dashboard-import.service';
+import { CiDashboardUiService } from '../../services/ci-dashboard-ui.service';
+import { CiDashboardControlsComponent } from '../ci-dashboard-controls/ci-dashboard-controls.component';
 
 @Component({
 	selector: 'osee-ci-dashboard-import',
@@ -40,8 +29,8 @@ import { transactionResult } from '@osee/shared/types/change-report';
 		NgIf,
 		NgFor,
 		CiDashboardControlsComponent,
-		MatButtonModule,
-		MatIconModule,
+		MatButton,
+		MatIcon,
 	],
 	templateUrl: './ci-dashboard-import.component.html',
 })

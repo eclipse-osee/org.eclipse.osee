@@ -10,15 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, OnDestroy } from '@angular/core';
-import { CommandGroupOptionsService } from './services/data-services/commands/command-group-options.service';
+import { CommandPaletteComponent } from './command-palette/command-palette/command-palette.component';
+import { CreateCommandFormComponent } from './create-form/create-command-form/create-command-form.component';
+import { GcDatatableComponent } from './gc-datatable/gc-datatable.component';
 import { SelectedCommandDataService } from './services/data-services/selected-command-data/selected-command-data.service';
 import { DataTableService } from './services/datatable-services/datatable.service';
-import { GcDatatableComponent } from './gc-datatable/gc-datatable.component';
-import { CreateCommandFormComponent } from './create-form/create-command-form/create-command-form.component';
-import { NgIf, AsyncPipe } from '@angular/common';
-import { CommandPaletteComponent } from './command-palette/command-palette/command-palette.component';
-import { MatDialogModule } from '@angular/material/dialog';
 
 @Component({
 	selector: 'osee-grid-commander',
@@ -32,7 +30,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 		CreateCommandFormComponent,
 		GcDatatableComponent,
 		AsyncPipe,
-		MatDialogModule,
 	],
 })
 export class GridCommanderComponent implements OnDestroy {

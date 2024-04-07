@@ -10,9 +10,31 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { MatSelectChange, MatSelectModule } from '@angular/material/select';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormsModule } from '@angular/forms';
+import { MatAnchor, MatButton } from '@angular/material/button';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatOption } from '@angular/material/core';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
+import {
+	ConnectionService,
+	ReportsService,
+	ValidationUiService,
+} from '@osee/messaging/shared/services';
+import {
+	connectionValidationResultSentinel,
+	type MimReport,
+	type connection,
+} from '@osee/messaging/shared/types';
+import { ApplicabilityListService, UiService } from '@osee/shared/services';
+import { applic } from '@osee/shared/types/applicability';
 import { Subject, combineLatest, from, iif, of } from 'rxjs';
 import {
 	filter,
@@ -23,28 +45,6 @@ import {
 	switchMap,
 	tap,
 } from 'rxjs/operators';
-import { applic } from '@osee/shared/types/applicability';
-import {
-	ConnectionService,
-	ReportsService,
-	ValidationUiService,
-} from '@osee/messaging/shared/services';
-import {
-	connectionValidationResultSentinel,
-	type connection,
-	type MimReport,
-} from '@osee/messaging/shared/types';
-import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
-import { ApplicabilityListService, UiService } from '@osee/shared/services';
-import { AsyncPipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatOptionModule } from '@angular/material/core';
-import { FormsModule } from '@angular/forms';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { MatIconModule } from '@angular/material/icon';
 
 @Component({
 	selector: 'osee-messaging-reports',
@@ -57,14 +57,16 @@ import { MatIconModule } from '@angular/material/icon';
 		NgFor,
 		NgTemplateOutlet,
 		FormsModule,
-		MatFormFieldModule,
-		MatIconModule,
-		MatInputModule,
-		MatSelectModule,
-		MatOptionModule,
-		MatCheckboxModule,
-		MatButtonModule,
 		MessagingControlsComponent,
+		MatAnchor,
+		MatFormField,
+		MatLabel,
+		MatSelect,
+		MatOption,
+		MatInput,
+		MatCheckbox,
+		MatButton,
+		MatIcon,
 	],
 })
 export class ReportsComponent implements OnInit {

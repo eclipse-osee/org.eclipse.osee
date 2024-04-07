@@ -10,13 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatButton } from '@angular/material/button';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { nodeData } from '@osee/messaging/shared/types';
 import { ApplicabilitySelectorComponent } from '@osee/shared/components';
 import { applic } from '@osee/shared/types/applicability';
@@ -26,11 +26,12 @@ import { applic } from '@osee/shared/types/applicability';
 	standalone: true,
 	imports: [
 		CommonModule,
-		MatFormFieldModule,
-		MatInputModule,
+		MatFormField,
+		MatLabel,
+		MatInput,
 		FormsModule,
-		MatButtonModule,
-		MatSlideToggleModule,
+		MatButton,
+		MatSlideToggle,
 		ApplicabilitySelectorComponent,
 	],
 	templateUrl: './new-node-form.component.html',

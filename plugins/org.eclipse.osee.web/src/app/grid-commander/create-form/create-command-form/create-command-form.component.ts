@@ -13,22 +13,16 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatGridListModule } from '@angular/material/grid-list';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
+import { MatCard } from '@angular/material/card';
 import { artifact, createArtifact } from '@osee/shared/types';
 import { combineLatest, map, take } from 'rxjs';
 
+import { ParameterSingleSelectComponent } from '../../parameter-types/parameter-single-select/parameter-single-select.component';
 import { ContextSelectionService } from '../../services/create-command-form-services/context-selection.service';
 import { CreateCommandWithParameterArtifactService } from '../../services/create-command-form-services/create-command-with-parameter-artifact.service';
 import { CreateCommandService } from '../../services/create-command-form-services/create-command.service';
 import { ParameterDataService } from '../../services/data-services/selected-command-data/parameter-data/parameter-data.service';
 import { OpenUrlFormComponent } from './command-actions/open-url-form/open-url-form.component';
-import { ParameterSingleSelectComponent } from '../../parameter-types/parameter-single-select/parameter-single-select.component';
 
 @Component({
 	selector: 'osee-create-command-form',
@@ -38,13 +32,7 @@ import { ParameterSingleSelectComponent } from '../../parameter-types/parameter-
 	imports: [
 		CommonModule,
 		FormsModule,
-		MatFormFieldModule,
-		MatInputModule,
-		MatSelectModule,
-		MatGridListModule,
-		MatCardModule,
-		MatButtonModule,
-		MatIconModule,
+		MatCard,
 		OpenUrlFormComponent,
 		ParameterSingleSelectComponent,
 	],

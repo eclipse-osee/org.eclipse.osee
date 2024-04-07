@@ -10,55 +10,50 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HarnessLoader } from '@angular/cdk/testing';
-import { MatCardHarness } from '@angular/material/card/testing';
-import { MatButtonHarness } from '@angular/material/button/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatCardHarness } from '@angular/material/card/testing';
+import { MatDialogModule } from '@angular/material/dialog';
 
-import { PlatformTypeCardComponent } from './platform-type-card.component';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { of } from 'rxjs';
 import { NO_ERRORS_SCHEMA } from '@angular/compiler';
-import {
-	MockEditEnumSetFieldComponent,
-	MockEditTypeDialogComponent,
-	MockEditEnumSetDialogComponent,
-	QueryServiceMock,
-	typesServiceMock,
-	MimPreferencesServiceMock,
-	enumerationSetServiceMock,
-	enumsServiceMock,
-	warningDialogServiceMock,
-	unitsServiceMock,
-	CrossReferenceHttpServiceMock,
-	connectionServiceMock,
-	preferencesUiServiceMock,
-} from '@osee/messaging/shared/testing';
-import { EditEnumSetFieldComponent } from '@osee/messaging/shared/forms';
-import type {
-	editPlatformTypeDialogData,
-	enumerationSet,
-} from '@osee/messaging/shared/types';
-import { editPlatformTypeDialogDataMode } from '@osee/messaging/shared/enumerations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { UserDataAccountService } from '@osee/auth';
+import { userDataAccountServiceMock } from '@osee/auth/testing';
 import {
 	EditEnumSetDialogComponent,
 	EditTypeDialogComponent,
 } from '@osee/messaging/shared/dialogs';
+import { EditEnumSetFieldComponent } from '@osee/messaging/shared/forms';
 import {
-	QueryService,
-	TypesService,
-	MimPreferencesService,
+	ConnectionService,
+	CrossReferenceHttpService,
 	EnumerationSetService,
 	EnumsService,
-	WarningDialogService,
-	UnitsService,
-	CrossReferenceHttpService,
-	ConnectionService,
+	MimPreferencesService,
 	PreferencesUIService,
+	QueryService,
+	TypesService,
+	UnitsService,
+	WarningDialogService,
 } from '@osee/messaging/shared/services';
-import { UserDataAccountService } from '@osee/auth';
+import {
+	CrossReferenceHttpServiceMock,
+	MimPreferencesServiceMock,
+	MockEditEnumSetDialogComponent,
+	MockEditEnumSetFieldComponent,
+	MockEditTypeDialogComponent,
+	QueryServiceMock,
+	connectionServiceMock,
+	enumerationSetServiceMock,
+	enumsServiceMock,
+	preferencesUiServiceMock,
+	typesServiceMock,
+	unitsServiceMock,
+	warningDialogServiceMock,
+} from '@osee/messaging/shared/testing';
+import { ApplicabilityListService } from '@osee/shared/services';
+import { applicabilityListServiceMock } from '@osee/shared/testing';
 import {
 	TransactionBuilderService,
 	TransactionService,
@@ -67,9 +62,7 @@ import {
 	transactionBuilderMock,
 	transactionServiceMock,
 } from '@osee/shared/transactions/testing';
-import { userDataAccountServiceMock } from '@osee/auth/testing';
-import { ApplicabilityListService } from '@osee/shared/services';
-import { applicabilityListServiceMock } from '@osee/shared/testing';
+import { PlatformTypeCardComponent } from './platform-type-card.component';
 
 let loader: HarnessLoader;
 

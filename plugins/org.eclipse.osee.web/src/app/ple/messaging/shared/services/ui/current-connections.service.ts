@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { combineLatest, switchMap, take } from 'rxjs';
+import { combineLatest, switchMap, take, filter } from 'rxjs';
 import { ConnectionService } from 'src/app/ple/messaging/shared/services/public-api';
 import { ConnectionsUiService } from 'src/app/ple/messaging/shared/services/ui/connections-ui.service';
 
@@ -24,17 +24,24 @@ export class CurrentConnectionsService {
 		private uiService: ConnectionsUiService
 	) {}
 
-	getFilteredPaginatedConnections(pageNum: string | number, filter?: string) {
+	getFilteredPaginatedConnections(
+		pageNum: string | number,
+		filterParameter?: string
+	) {
 		return combineLatest([
 			this.uiService.BranchId,
 			this.uiService.viewId,
 			this.uiService.currentPageSize,
 		]).pipe(
 			take(1),
+			filter(
+				([branchId, viewId, pageSize]) =>
+					branchId !== '' && branchId !== '-1'
+			),
 			switchMap(([id, viewId, pageSize]) =>
 				this.connectionsService.getFiltered(
 					id,
-					filter,
+					filterParameter,
 					viewId,
 					pageNum,
 					pageSize
@@ -43,14 +50,17 @@ export class CurrentConnectionsService {
 		);
 	}
 
-	getFilteredCount(filter?: string) {
+	getFilteredCount(filterParameter?: string) {
 		return combineLatest([
 			this.uiService.BranchId,
 			this.uiService.viewId,
 		]).pipe(
 			take(1),
+			filter(
+				([branchId, viewId]) => branchId !== '' && branchId !== '-1'
+			),
 			switchMap(([id, viewId]) =>
-				this.connectionsService.getCount(id, filter, viewId)
+				this.connectionsService.getCount(id, filterParameter, viewId)
 			)
 		);
 	}

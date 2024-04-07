@@ -13,18 +13,21 @@
 import { AsyncPipe, NgFor } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatOptionModule } from '@angular/material/core';
+import { MatButton } from '@angular/material/button';
+import { MatOption } from '@angular/material/core';
 import {
-	MatDialogModule,
-	MatDialogRef,
 	MAT_DIALOG_DATA,
+	MatDialogActions,
+	MatDialogClose,
+	MatDialogContent,
+	MatDialogRef,
+	MatDialogTitle,
 } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatSelect } from '@angular/material/select';
+import { action } from '@osee/shared/types/configuration-management';
 import { ActionUserService } from '../internal/services/action-user.service';
 import { TransitionActionDialogData } from '../transition-action-dialog';
-import { action } from '@osee/shared/types/configuration-management';
 
 /**
  * @todo figure out where this used to be used??
@@ -35,14 +38,18 @@ import { action } from '@osee/shared/types/configuration-management';
 	styles: [],
 	standalone: true,
 	imports: [
-		MatDialogModule,
-		MatFormFieldModule,
 		FormsModule,
-		MatSelectModule,
-		MatOptionModule,
 		NgFor,
 		AsyncPipe,
-		MatButtonModule,
+		MatDialogTitle,
+		MatDialogContent,
+		MatFormField,
+		MatLabel,
+		MatSelect,
+		MatOption,
+		MatDialogActions,
+		MatButton,
+		MatDialogClose,
 	],
 })
 export class TransitionActionToReviewDialogComponent {

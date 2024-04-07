@@ -10,25 +10,29 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, computed, inject } from '@angular/core';
+import { CdkDropList } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import { BehaviorSubject, map, tap } from 'rxjs';
+import { Component, computed, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import {
+	MatExpansionPanel,
+	MatExpansionPanelHeader,
+	MatExpansionPanelTitle,
+} from '@angular/material/expansion';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
 import {
 	ActionDropDownComponent,
 	BranchPickerComponent,
 	ExpandIconComponent,
 	ViewSelectorComponent,
 } from '@osee/shared/components';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { DragDropModule } from '@angular/cdk/drag-drop';
-import { ArtifactHierarchyOptionsComponent } from '../artifact-hierarchy-options/artifact-hierarchy-options.component';
 import { CurrentBranchInfoService, UiService } from '@osee/shared/services';
-import { ArtifactHierarchyComponent } from '../artifact-hierarchy/artifact-hierarchy.component';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { MatIconModule } from '@angular/material/icon';
-import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
+import { BehaviorSubject, map } from 'rxjs';
 import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
+import { ArtifactHierarchyOptionsComponent } from '../artifact-hierarchy-options/artifact-hierarchy-options.component';
+import { ArtifactHierarchyComponent } from '../artifact-hierarchy/artifact-hierarchy.component';
 import { ArtifactSearchPanelComponent } from '../artifact-search-panel/artifact-search-panel.component';
 
 @Component({
@@ -37,15 +41,17 @@ import { ArtifactSearchPanelComponent } from '../artifact-search-panel/artifact-
 	imports: [
 		CommonModule,
 		BranchPickerComponent,
-		MatExpansionModule,
 		ArtifactHierarchyComponent,
-		DragDropModule,
 		ArtifactHierarchyOptionsComponent,
 		ViewSelectorComponent,
-		MatIconModule,
-		MatTooltipModule,
 		ActionDropDownComponent,
 		ArtifactSearchPanelComponent,
+		MatTooltip,
+		MatIcon,
+		MatExpansionPanel,
+		MatExpansionPanelHeader,
+		MatExpansionPanelTitle,
+		CdkDropList,
 		ExpandIconComponent,
 	],
 	templateUrl: './artifact-hierarchy-panel.component.html',

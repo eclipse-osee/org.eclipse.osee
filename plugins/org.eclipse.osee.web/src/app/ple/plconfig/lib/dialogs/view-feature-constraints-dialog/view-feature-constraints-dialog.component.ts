@@ -1,7 +1,4 @@
-import {
-	featureConstraintData,
-	defaultFeatureConstraint,
-} from './../../types/pl-config-feature-constraints';
+import { featureConstraintData } from './../../types/pl-config-feature-constraints';
 /*********************************************************************
  * Copyright (c) 2023 Boeing
  *
@@ -14,21 +11,53 @@ import {
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
-import { MatTableModule } from '@angular/material/table';
-import { applicWithConstraints } from '../../types/pl-config-feature-constraints';
-import { MatButtonModule } from '@angular/material/button';
-import { take } from 'rxjs';
+import { Component } from '@angular/core';
+import { MatButton } from '@angular/material/button';
+import {
+	MatDialogActions,
+	MatDialogContent,
+	MatDialogRef,
+	MatDialogTitle,
+} from '@angular/material/dialog';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+} from '@angular/material/table';
 import { PlConfigUIStateService } from '@osee/plconfig';
 import { response } from '@osee/shared/types';
+import { take } from 'rxjs';
+import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
+import { applicWithConstraints } from '../../types/pl-config-feature-constraints';
 
 @Component({
 	selector: 'osee-view-feature-constraints-dialog',
 	standalone: true,
-	imports: [CommonModule, MatDialogModule, MatTableModule, MatButtonModule],
+	imports: [
+		CommonModule,
+		MatDialogTitle,
+		MatDialogContent,
+		MatTable,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatCell,
+		MatCellDef,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
+		MatDialogActions,
+		MatButton,
+	],
 	templateUrl: './view-feature-constraints-dialog.component.html',
 	styles: [],
 })

@@ -10,13 +10,30 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { CdkMonitorFocus } from '@angular/cdk/a11y';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
 	Inject,
 	Input,
 } from '@angular/core';
-import { combineLatest, iif, of, Subject } from 'rxjs';
+import { FormsModule } from '@angular/forms';
+import { MatOption } from '@angular/material/core';
+import { MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatSelect } from '@angular/material/select';
+import { MatTooltip } from '@angular/material/tooltip';
+import {
+	CurrentStructureService,
+	EnumsService,
+	WarningDialogService,
+} from '@osee/messaging/shared/services';
+import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
+import type { structure } from '@osee/messaging/shared/types';
+import { ApplicabilitySelectorComponent } from '@osee/shared/components';
+import { applic } from '@osee/shared/types/applicability';
+import { Subject, combineLatest, iif, of } from 'rxjs';
 import {
 	debounceTime,
 	distinctUntilChanged,
@@ -26,23 +43,6 @@ import {
 	switchMap,
 	tap,
 } from 'rxjs/operators';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormsModule } from '@angular/forms';
-import { A11yModule } from '@angular/cdk/a11y';
-import { MatSelectModule } from '@angular/material/select';
-import { MatOptionModule } from '@angular/material/core';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { MatInputModule } from '@angular/material/input';
-import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
-import type { structure } from '@osee/messaging/shared/types';
-import {
-	CurrentStructureService,
-	EnumsService,
-	WarningDialogService,
-} from '@osee/messaging/shared/services';
-import { ApplicabilitySelectorComponent } from '@osee/shared/components';
-import { applic } from '@osee/shared/types/applicability';
-import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
 	selector: 'osee-messaging-edit-structure-field',
@@ -51,13 +51,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
-		MatFormFieldModule,
 		FormsModule,
-		A11yModule,
-		MatSelectModule,
-		MatOptionModule,
-		MatInputModule,
-		MatTooltipModule,
+		MatFormField,
+		CdkMonitorFocus,
+		MatSelect,
+		MatOption,
+		MatInput,
+		MatTooltip,
 		NgIf,
 		NgFor,
 		AsyncPipe,

@@ -12,8 +12,13 @@
  **********************************************************************/
 import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
+import { MatIcon } from '@angular/material/icon';
+import {
+	MatMenu,
+	MatMenuContent,
+	MatMenuItem,
+	MatMenuTrigger,
+} from '@angular/material/menu';
 import { applic } from '@osee/shared/types/applicability';
 import { difference } from '@osee/shared/types/change-report';
 import { DialogService } from '../../services/dialog.service';
@@ -31,8 +36,11 @@ import { ArrayDiffMenuComponent } from '../array-diff-menu/array-diff-menu.compo
 	styles: [],
 	standalone: true,
 	imports: [
-		MatMenuModule,
-		MatIconModule,
+		MatMenuItem,
+		MatMenuTrigger,
+		MatMenuContent,
+		MatMenu,
+		MatIcon,
 		NgIf,
 		AsyncPipe,
 		ArrayDiffMenuComponent,

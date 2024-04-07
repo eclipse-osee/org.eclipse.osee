@@ -10,33 +10,32 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { from, iif, of, OperatorFunction } from 'rxjs';
-import { take, filter, mergeMap, reduce, switchMap, tap } from 'rxjs/operators';
-import { CurrentGraphService } from '../../services/current-graph.service';
-import { RemovalDialog } from '../../types/ConfirmRemovalDialog';
-import { ConfirmRemovalDialogComponent } from '../../dialogs/confirm-removal-dialog/confirm-removal-dialog.component';
-import { EditConnectionDialogComponent } from '../../dialogs/edit-connection-dialog/edit-connection-dialog.component';
-import { applic } from '@osee/shared/types/applicability';
-import { difference } from '@osee/shared/types/change-report';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { RouterLink } from '@angular/router';
 import type {
+	OseeNode,
 	connection,
 	connectionWithChanges,
 	node,
 	nodeData,
 	nodeDataWithChanges,
-	OseeNode,
 	transportType,
 } from '@osee/messaging/shared/types';
-import { AsyncPipe, NgIf } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonModule } from '@angular/material/button';
+import { applic } from '@osee/shared/types/applicability';
+import { difference } from '@osee/shared/types/change-report';
+import { OperatorFunction, from, iif, of } from 'rxjs';
+import { filter, mergeMap, reduce, switchMap, take } from 'rxjs/operators';
+import { AddNodeDialog } from '../../dialogs/add-node-dialog/add-node-dialog';
 import { AddNodeDialogComponent } from '../../dialogs/add-node-dialog/add-node-dialog.component';
 import { DefaultAddNodeDialog } from '../../dialogs/add-node-dialog/add-node-dialog.default';
-import { AddNodeDialog } from '../../dialogs/add-node-dialog/add-node-dialog';
+import { ConfirmRemovalDialogComponent } from '../../dialogs/confirm-removal-dialog/confirm-removal-dialog.component';
+import { EditConnectionDialogComponent } from '../../dialogs/edit-connection-dialog/edit-connection-dialog.component';
+import { CurrentGraphService } from '../../services/current-graph.service';
+import { RemovalDialog } from '../../types/ConfirmRemovalDialog';
 
 @Component({
 	selector: 'osee-messaging-graph-link-menu',
@@ -46,9 +45,10 @@ import { AddNodeDialog } from '../../dialogs/add-node-dialog/add-node-dialog';
 		NgIf,
 		AsyncPipe,
 		RouterLink,
-		MatIconModule,
-		MatMenuModule,
-		MatButtonModule,
+		MatIcon,
+		MatMenuTrigger,
+		MatMenuItem,
+		MatMenu,
 	],
 })
 export class GraphLinkMenuComponent {

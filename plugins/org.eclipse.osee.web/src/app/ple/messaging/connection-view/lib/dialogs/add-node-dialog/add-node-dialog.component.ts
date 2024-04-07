@@ -10,38 +10,59 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, Inject } from '@angular/core';
 import {
-	MatDialogModule,
-	MatDialogRef,
+	MatAutocomplete,
+	MatAutocompleteTrigger,
+	MatOption,
+} from '@angular/material/autocomplete';
+import { MatButton } from '@angular/material/button';
+import {
 	MAT_DIALOG_DATA,
+	MatDialogActions,
+	MatDialogClose,
+	MatDialogContent,
+	MatDialogRef,
+	MatDialogTitle,
 } from '@angular/material/dialog';
-import { MatStepper, MatStepperModule } from '@angular/material/stepper';
-import { MatButtonModule } from '@angular/material/button';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import {
+	MatStep,
+	MatStepper,
+	MatStepperNext,
+	MatStepperPrevious,
+} from '@angular/material/stepper';
+import { MatTooltip } from '@angular/material/tooltip';
 import { nodeData } from '@osee/messaging/shared/types';
-import { CurrentGraphService } from '../../services/current-graph.service';
-import { BehaviorSubject, debounceTime, map, switchMap } from 'rxjs';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { BehaviorSubject, debounceTime, map, switchMap } from 'rxjs';
 import { AddNodeDialog } from '../../dialogs/add-node-dialog/add-node-dialog';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatInputModule } from '@angular/material/input';
 import { NewNodeFormComponent } from '../../forms/new-node-form/new-node-form.component';
+import { CurrentGraphService } from '../../services/current-graph.service';
 
 @Component({
 	selector: 'osee-add-node-dialog',
 	standalone: true,
 	imports: [
 		CommonModule,
-		MatDialogModule,
-		MatStepperModule,
-		MatFormFieldModule,
-		MatAutocompleteModule,
-		MatButtonModule,
-		MatInputModule,
-		MatTooltipModule,
+		MatDialogActions,
+		MatDialogClose,
+		MatDialogContent,
+		MatDialogTitle,
+		MatStepper,
+		MatStep,
+		MatStepperPrevious,
+		MatStepperNext,
+		MatLabel,
+		MatFormField,
+		MatAutocomplete,
+		MatAutocompleteTrigger,
+		MatButton,
+		MatInput,
+		MatTooltip,
+		MatOption,
 		MatOptionLoadingComponent,
 		NewNodeFormComponent,
 	],

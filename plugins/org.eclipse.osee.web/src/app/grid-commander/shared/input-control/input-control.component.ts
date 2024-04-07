@@ -10,31 +10,37 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { NgForm, FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
+import {
+	MatAutocomplete,
+	MatAutocompleteTrigger,
+} from '@angular/material/autocomplete';
+import { MatIconButton } from '@angular/material/button';
+import { MatOptgroup, MatOption } from '@angular/material/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import {
 	FloatLabelType,
+	MatError,
+	MatFormField,
 	MatFormFieldControl,
-	MatFormFieldModule,
+	MatLabel,
+	MatSuffix,
 } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { MatTooltip } from '@angular/material/tooltip';
+import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 import { tap } from 'rxjs';
 import { HelperdialogComponent } from '../../command-palette/helperdialog/helperdialog.component';
 import { CommandPaletteInputService } from '../../services/command-palette-services/command-palette-input.service';
-import { ParameterDataService } from '../../services/data-services/selected-command-data/parameter-data/parameter-data.service';
 import { CommandFromUserHistoryService } from '../../services/data-services/selected-command-data/command-from-history/command-from-user-history.service';
+import { ParameterDataService } from '../../services/data-services/selected-command-data/parameter-data/parameter-data.service';
 import {
 	Command,
 	CommandGroups,
 } from '../../types/grid-commander-types/gc-user-and-contexts-relationships';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatButtonModule } from '@angular/material/button';
-import { MatOptionModule } from '@angular/material/core';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatInputModule } from '@angular/material/input';
-import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 
 @Component({
 	selector: 'osee-input-control',
@@ -50,17 +56,22 @@ import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 	standalone: true,
 	imports: [
 		FormsModule,
-		MatFormFieldModule,
-		MatInputModule,
-		MatAutocompleteModule,
 		NgIf,
 		NgFor,
-		MatOptionModule,
 		HighlightFilteredTextDirective,
-		MatButtonModule,
-		MatTooltipModule,
-		MatIconModule,
 		AsyncPipe,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatAutocomplete,
+		MatAutocompleteTrigger,
+		MatOptgroup,
+		MatOption,
+		MatSuffix,
+		MatIcon,
+		MatIconButton,
+		MatTooltip,
+		MatError,
 	],
 })
 export class InputControlComponent<T extends CommandGroups> {

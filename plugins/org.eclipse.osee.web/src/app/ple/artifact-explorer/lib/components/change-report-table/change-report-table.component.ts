@@ -10,7 +10,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+} from '@angular/material/table';
+import { HeaderService } from '@osee/shared/services';
+import { changeReportRow } from '@osee/shared/types/change-report';
 import {
 	BehaviorSubject,
 	combineLatest,
@@ -18,19 +33,30 @@ import {
 	shareReplay,
 	switchMap,
 } from 'rxjs';
-import { HeaderService } from '@osee/shared/services';
-import { changeReportRow } from '@osee/shared/types/change-report';
-import { ChangeReportService } from './services/change-report.service';
 import { changeReportHeaders } from './change-report-table-headers';
-import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
+import { ChangeReportService } from './services/change-report.service';
 
 @Component({
 	selector: 'osee-change-report-table',
 	templateUrl: './change-report-table.component.html',
 	styles: [],
 	standalone: true,
-	imports: [NgIf, NgClass, NgFor, AsyncPipe, MatTableModule],
+	imports: [
+		NgIf,
+		NgClass,
+		NgFor,
+		AsyncPipe,
+		MatTable,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatCell,
+		MatCellDef,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
+	],
 })
 export class ChangeReportTableComponent implements OnChanges {
 	@Input() branchId: string = '';

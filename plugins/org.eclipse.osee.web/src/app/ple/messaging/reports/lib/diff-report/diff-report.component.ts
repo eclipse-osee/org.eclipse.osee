@@ -10,14 +10,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
-import { map } from 'rxjs/operators';
-import { ScrollToTopButtonComponent } from '@osee/shared/components';
 import { AsyncPipe, DatePipe } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
-import { MessagingDiffsComponent } from './messaging-diffs/messaging-diffs.component';
-import { StructureDiffsComponent } from './structure-diffs/structure-diffs.component';
-import { ObjectValuesPipe } from '@osee/shared/utils';
+import { Component } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+} from '@angular/material/table';
 import {
 	DiffReportService,
 	HeaderService,
@@ -26,7 +33,11 @@ import type {
 	branchSummary,
 	diffReportSummaryItem,
 } from '@osee/messaging/shared/types';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ScrollToTopButtonComponent } from '@osee/shared/components';
+import { ObjectValuesPipe } from '@osee/shared/utils';
+import { map } from 'rxjs/operators';
+import { MessagingDiffsComponent } from './messaging-diffs/messaging-diffs.component';
+import { StructureDiffsComponent } from './structure-diffs/structure-diffs.component';
 
 @Component({
 	selector: 'osee-messaging-diff-report',
@@ -39,7 +50,16 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 		AsyncPipe,
 		DatePipe,
 		ObjectValuesPipe,
-		MatTableModule,
+		MatTable,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatCell,
+		MatCellDef,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
 		ScrollToTopButtonComponent,
 		MessagingDiffsComponent,
 		StructureDiffsComponent,

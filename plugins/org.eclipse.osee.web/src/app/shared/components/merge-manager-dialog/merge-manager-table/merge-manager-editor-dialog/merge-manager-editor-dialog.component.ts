@@ -10,16 +10,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { CdkTrapFocus } from '@angular/cdk/a11y';
+import { AsyncPipe } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
+import { MatButton } from '@angular/material/button';
 import {
 	MAT_DIALOG_DATA,
-	MatDialogModule,
+	MatDialogActions,
+	MatDialogClose,
+	MatDialogContent,
 	MatDialogRef,
+	MatDialogTitle,
 } from '@angular/material/dialog';
 import { attribute, mergeData } from '@osee/shared/types';
 import { BehaviorSubject } from 'rxjs';
-import { AsyncPipe } from '@angular/common';
 import { AttributesEditorComponent } from '../../../attributes-editor/attributes-editor.component';
 
 @Component({
@@ -27,8 +31,12 @@ import { AttributesEditorComponent } from '../../../attributes-editor/attributes
 	standalone: true,
 	imports: [
 		AsyncPipe,
-		MatDialogModule,
-		MatButtonModule,
+		MatDialogTitle,
+		MatDialogContent,
+		MatDialogActions,
+		MatButton,
+		CdkTrapFocus,
+		MatDialogClose,
 		AttributesEditorComponent,
 	],
 	templateUrl: './merge-manager-editor-dialog.component.html',

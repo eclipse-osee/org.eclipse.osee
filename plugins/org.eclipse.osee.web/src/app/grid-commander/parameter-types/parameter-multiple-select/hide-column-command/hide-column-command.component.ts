@@ -10,18 +10,26 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe, NgFor, NgIf, TitleCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
-import { MatSelectChange, MatSelectModule } from '@angular/material/select';
+import { FormsModule } from '@angular/forms';
+import {
+	MatChipListbox,
+	MatChipOption,
+	MatChipRemove,
+} from '@angular/material/chips';
+import { MatOption } from '@angular/material/core';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import {
+	MatSelect,
+	MatSelectChange,
+	MatSelectTrigger,
+} from '@angular/material/select';
 import { of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { SelectedCommandDataService } from '../../../services/data-services/selected-command-data/selected-command-data.service';
 import { DataTableService } from '../../../services/datatable-services/datatable.service';
-import { MatOptionModule } from '@angular/material/core';
-import { MatIconModule } from '@angular/material/icon';
-import { MatChipsModule } from '@angular/material/chips';
-import { FormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { NgIf, NgFor, AsyncPipe, TitleCasePipe } from '@angular/common';
 
 @Component({
 	selector: 'osee-hide-column-command',
@@ -30,15 +38,19 @@ import { NgIf, NgFor, AsyncPipe, TitleCasePipe } from '@angular/common';
 	standalone: true,
 	imports: [
 		NgIf,
-		MatFormFieldModule,
-		MatSelectModule,
 		FormsModule,
-		MatChipsModule,
 		NgFor,
-		MatIconModule,
-		MatOptionModule,
 		AsyncPipe,
 		TitleCasePipe,
+		MatFormField,
+		MatLabel,
+		MatSelect,
+		MatSelectTrigger,
+		MatChipListbox,
+		MatChipOption,
+		MatIcon,
+		MatChipRemove,
+		MatOption,
 	],
 })
 export class HideColumnCommandComponent {

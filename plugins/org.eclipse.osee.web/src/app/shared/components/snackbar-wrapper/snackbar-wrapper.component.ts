@@ -10,21 +10,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-	MatSnackBar,
-	MatSnackBarModule,
-	MatSnackBarRef,
-} from '@angular/material/snack-bar';
-import { filter, tap } from 'rxjs';
-import { MatButtonModule } from '@angular/material/button';
+import { Component } from '@angular/core';
+import { MatButton } from '@angular/material/button';
+import { MatSnackBar, MatSnackBarRef } from '@angular/material/snack-bar';
 import { UiService } from '@osee/shared/services';
+import { filter, tap } from 'rxjs';
 
 @Component({
 	selector: 'osee-snackbar-wrapper',
 	standalone: true,
-	imports: [CommonModule, MatSnackBarModule],
+	imports: [CommonModule],
 	templateUrl: './snackbar-wrapper.component.html',
 })
 export class SnackbarWrapperComponent {
@@ -50,7 +46,7 @@ export class SnackbarWrapperComponent {
 @Component({
 	selector: 'osee-snackbar-internal',
 	standalone: true,
-	imports: [CommonModule, MatSnackBarModule, MatButtonModule],
+	imports: [CommonModule, MatButton],
 	templateUrl: './snackbar-wrapper-internal.component.html',
 })
 export class SnackbarWrapperInternalComponent {

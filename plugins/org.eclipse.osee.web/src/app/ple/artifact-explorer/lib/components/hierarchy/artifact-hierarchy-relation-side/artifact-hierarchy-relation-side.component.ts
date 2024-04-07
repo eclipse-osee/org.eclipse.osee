@@ -10,6 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { CdkDrag } from '@angular/cdk/drag-drop';
+import { CommonModule } from '@angular/common';
 import {
 	Component,
 	Input,
@@ -18,31 +20,28 @@ import {
 	inject,
 	signal,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
-import { DragDropModule } from '@angular/cdk/drag-drop';
-import { MatButtonModule } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatListItemIcon } from '@angular/material/list';
+import { ExpandIconComponent } from '@osee/shared/components';
+import { BehaviorSubject } from 'rxjs';
 import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
-import { ArtifactHierarchyComponent } from '../artifact-hierarchy/artifact-hierarchy.component';
+import { ArtifactIconService } from '../../../services/artifact-icon.service';
 import {
-	relationSide,
-	relationTypeToken,
 	artifact,
 	artifactTypeIcon,
+	relationSide,
+	relationTypeToken,
 } from '../../../types/artifact-explorer.data';
-import { BehaviorSubject } from 'rxjs';
-import { ArtifactIconService } from '../../../services/artifact-icon.service';
-import { ExpandIconComponent } from '@osee/shared/components';
+import { ArtifactHierarchyComponent } from '../artifact-hierarchy/artifact-hierarchy.component';
 
 @Component({
 	selector: 'osee-artifact-hierarchy-relation-side',
 	standalone: true,
 	imports: [
 		CommonModule,
-		MatIconModule,
-		MatIconModule,
-		DragDropModule,
-		MatButtonModule,
+		MatIcon,
+		MatListItemIcon,
+		CdkDrag,
 		ExpandIconComponent,
 		forwardRef(() => ArtifactHierarchyComponent),
 	],

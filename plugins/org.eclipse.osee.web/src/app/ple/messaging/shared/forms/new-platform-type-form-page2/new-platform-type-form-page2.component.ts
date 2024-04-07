@@ -11,51 +11,54 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
+	animate,
+	state,
+	style,
+	transition,
+	trigger,
+} from '@angular/animations';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import {
 	Component,
 	Input,
 	OnChanges,
 	Output,
 	SimpleChanges,
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatOption } from '@angular/material/core';
+import { MatDialogActions, MatDialogContent } from '@angular/material/dialog';
+import {
+	MatFormField,
+	MatLabel,
+	MatSuffix,
+} from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatSelect } from '@angular/material/select';
+import { MatStepperNext, MatStepperPrevious } from '@angular/material/stepper';
+import { validateEnumLengthIsBelowMax } from '@osee/messaging/shared/functions';
+import { EnumerationUIService } from '@osee/messaging/shared/services';
+import type {
+	PlatformType,
+	enumerationSet,
+	logicalType,
+} from '@osee/messaging/shared/types';
+import { MatOptionLoadingComponent } from '@osee/shared/components';
 import {
 	BehaviorSubject,
-	take,
-	map,
-	tap,
 	combineLatest,
 	concatMap,
 	distinct,
 	filter,
 	from,
+	map,
 	of,
 	reduce,
 	switchMap,
 } from 'rxjs';
-import { NewPlatformTypeFormComponent } from '../new-platform-type-form/new-platform-type-form.component';
 import { EnumSetFormComponent } from '../../forms/enum-set-form/enum-set-form.component';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-import { MatStepperModule } from '@angular/material/stepper';
-import {
-	trigger,
-	state,
-	style,
-	transition,
-	animate,
-} from '@angular/animations';
-import type {
-	enumerationSet,
-	logicalType,
-	PlatformType,
-} from '@osee/messaging/shared/types';
-import { validateEnumLengthIsBelowMax } from '@osee/messaging/shared/functions';
-import { EnumerationUIService } from '@osee/messaging/shared/services';
-import { MatOptionLoadingComponent } from '@osee/shared/components';
+import { NewPlatformTypeFormComponent } from '../new-platform-type-form/new-platform-type-form.component';
 
 @Component({
 	selector: 'osee-new-platform-type-form-page2',
@@ -70,12 +73,18 @@ import { MatOptionLoadingComponent } from '@osee/shared/components';
 		NgFor,
 		AsyncPipe,
 		FormsModule,
-		MatFormFieldModule,
-		MatSelectModule,
-		MatIconModule,
-		MatDialogModule,
-		MatButtonModule,
-		MatStepperModule,
+		MatDialogContent,
+		MatFormField,
+		MatLabel,
+		MatSelect,
+		MatOption,
+		MatIconButton,
+		MatSuffix,
+		MatIcon,
+		MatDialogActions,
+		MatButton,
+		MatStepperPrevious,
+		MatStepperNext,
 	],
 	animations: [
 		trigger('detailExpand', [

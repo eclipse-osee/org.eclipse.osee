@@ -11,11 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
-	NgIf,
-	NgFor,
 	AsyncPipe,
-	TitleCasePipe,
+	NgFor,
+	NgIf,
 	NgTemplateOutlet,
+	TitleCasePipe,
 } from '@angular/common';
 import {
 	Component,
@@ -25,28 +25,26 @@ import {
 	SimpleChanges,
 } from '@angular/core';
 import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
-import { MatOptionModule } from '@angular/material/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
+import { MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 import { UniquePlatformTypeAttributesDirective } from '@osee/messaging/shared/directives';
 import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 import { TypesService } from '@osee/messaging/shared/services';
 import type {
+	PlatformType,
 	enumerationSet,
 	logicalType,
 	logicalTypeFieldInfo,
-	PlatformType,
 } from '@osee/messaging/shared/types';
 import { ParentErrorStateMatcher } from '@osee/shared/matchers';
 import { applic } from '@osee/shared/types/applicability';
 import { FirstLetterLowerPipe } from '@osee/shared/utils';
 import {
 	BehaviorSubject,
+	Subject,
 	debounceTime,
 	distinctUntilChanged,
 	filter,
-	Subject,
 	switchMap,
 	tap,
 } from 'rxjs';
@@ -65,10 +63,10 @@ import { UnitDropdownComponent } from '../../dropdowns/unit-dropdown/unit-dropdo
 		NgFor,
 		AsyncPipe,
 		FormsModule,
-		MatFormFieldModule,
-		MatOptionModule,
-		MatInputModule,
-		MatSelectModule,
+		MatLabel,
+		MatFormField,
+		MatInput,
+		MatHint,
 		TitleCasePipe,
 		UniquePlatformTypeAttributesDirective,
 		FirstLetterLowerPipe,

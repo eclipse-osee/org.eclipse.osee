@@ -12,37 +12,44 @@
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
 import { Component, Inject, computed, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatOptionModule } from '@angular/material/core';
 import {
-	MatDialogModule,
-	MatDialogRef,
+	MatAutocomplete,
+	MatAutocompleteSelectedEvent,
+	MatAutocompleteTrigger,
+} from '@angular/material/autocomplete';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatOption } from '@angular/material/core';
+import {
 	MAT_DIALOG_DATA,
+	MatDialogActions,
+	MatDialogClose,
+	MatDialogContent,
+	MatDialogRef,
+	MatDialogTitle,
 } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectChange, MatSelectModule } from '@angular/material/select';
+import {
+	MatFormField,
+	MatLabel,
+	MatSuffix,
+} from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { MatSelect, MatSelectChange } from '@angular/material/select';
+import { user } from '@osee/shared/types/auth';
+import {
+	CreateAction,
+	PRIORITIES,
+	WorkType,
+	actionableItem,
+} from '@osee/shared/types/configuration-management';
 import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { filter, shareReplay, switchMap, tap } from 'rxjs/operators';
-import { ActionUserService } from '../internal/services/action-user.service';
-import { ActionStateButtonService } from '../internal/services/action-state-button.service';
-import {
-	actionableItem,
-	PRIORITIES,
-	CreateAction,
-	WorkType,
-	atsLastMod,
-} from '@osee/shared/types/configuration-management';
-import { user } from '@osee/shared/types/auth';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { MatIconModule } from '@angular/material/icon';
-import {
-	MatAutocompleteModule,
-	MatAutocompleteSelectedEvent,
-} from '@angular/material/autocomplete';
 import { LatestActionDropDownComponent } from '../../latest-action-drop-down/latest-action-drop-down.component';
+import { ActionStateButtonService } from '../internal/services/action-state-button.service';
+import { ActionUserService } from '../internal/services/action-user.service';
 /**
  * Dialog for creating a new action with the correct workType and category.
  */
@@ -54,15 +61,22 @@ import { LatestActionDropDownComponent } from '../../latest-action-drop-down/lat
 	imports: [
 		AsyncPipe,
 		FormsModule,
-		MatDialogModule,
-		MatFormFieldModule,
-		MatSelectModule,
-		MatOptionModule,
-		MatInputModule,
-		MatButtonModule,
-		MatCheckboxModule,
-		MatIconModule,
-		MatAutocompleteModule,
+		MatDialogTitle,
+		MatDialogContent,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatAutocomplete,
+		MatAutocompleteTrigger,
+		MatIconButton,
+		MatSuffix,
+		MatIcon,
+		MatOption,
+		MatSelect,
+		MatCheckbox,
+		MatButton,
+		MatDialogActions,
+		MatDialogClose,
 		LatestActionDropDownComponent,
 	],
 })

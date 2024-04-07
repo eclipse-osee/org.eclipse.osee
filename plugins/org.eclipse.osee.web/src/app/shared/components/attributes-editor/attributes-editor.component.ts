@@ -10,29 +10,27 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import {
-	Component,
-	Input,
-	Optional,
-	Output,
-	effect,
-	input,
-} from '@angular/core';
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { CommonModule, DatePipe } from '@angular/common';
-import { BehaviorSubject } from 'rxjs';
-import { AttributeEnumsDropdownComponent } from './attribute-enums-dropdown/attribute-enums-dropdown.component';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { Component, Optional, Output, effect, input } from '@angular/core';
 import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
-import { MatSelectModule } from '@angular/material/select';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MatOption, provideNativeDateAdapter } from '@angular/material/core';
+import {
+	MatDatepicker,
+	MatDatepickerInput,
+	MatDatepickerToggle,
+} from '@angular/material/datepicker';
+import { MatFormField, MatSuffix } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatSelect } from '@angular/material/select';
 import { FormDirective } from '@osee/shared/directives';
 import { attribute } from '@osee/shared/types';
-import { MarkdownEditorComponent } from './../markdown-editor/markdown-editor.component';
+import { BehaviorSubject } from 'rxjs';
 import { AttributeNameTrimPipe } from '../../pipes/attribute-name-trim/attribute-name-trim.pipe';
 import { IfIdReturnFalsePipe } from '../../pipes/if-id-return-false/if-id-return-false.pipe';
 import { StringToDatePipe } from '../../pipes/string-to-date/string-to-date.pipe';
+import { MarkdownEditorComponent } from './../markdown-editor/markdown-editor.component';
+import { AttributeEnumsDropdownComponent } from './attribute-enums-dropdown/attribute-enums-dropdown.component';
 
 function controlContainerFactory(controlContainer?: ControlContainer) {
 	return controlContainer;
@@ -47,12 +45,16 @@ function controlContainerFactory(controlContainer?: ControlContainer) {
 	imports: [
 		CommonModule,
 		AttributeEnumsDropdownComponent,
-		MatInputModule,
-		MatFormFieldModule,
 		FormsModule,
-		MatSelectModule,
-		MatDatepickerModule,
-		MatNativeDateModule,
+		MatFormField,
+		MatInput,
+		CdkTextareaAutosize,
+		MatSelect,
+		MatOption,
+		MatDatepicker,
+		MatDatepickerToggle,
+		MatDatepickerInput,
+		MatSuffix,
 		FormDirective,
 		MarkdownEditorComponent,
 		AttributeNameTrimPipe,
@@ -60,6 +62,7 @@ function controlContainerFactory(controlContainer?: ControlContainer) {
 		StringToDatePipe,
 		DatePipe,
 	],
+	providers: [provideNativeDateAdapter()],
 	templateUrl: './attributes-editor.component.html',
 	viewProviders: [
 		{

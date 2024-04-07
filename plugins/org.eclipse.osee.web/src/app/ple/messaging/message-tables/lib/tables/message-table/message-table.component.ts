@@ -18,10 +18,28 @@ import {
 	trigger,
 } from '@angular/animations';
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
+import {
+	MatMenu,
+	MatMenuContent,
+	MatMenuItem,
+	MatMenuTrigger,
+} from '@angular/material/menu';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+	MatTableDataSource,
+} from '@angular/material/table';
 import { RouterLink } from '@angular/router';
+import { difference } from '@osee/shared/types/change-report';
 import { combineLatest, iif, of } from 'rxjs';
 import {
 	debounceTime,
@@ -37,51 +55,54 @@ import {
 	take,
 	takeUntil,
 } from 'rxjs/operators';
-import { difference } from '@osee/shared/types/change-report';
 
-import { applic } from '@osee/shared/types/applicability';
-import { AddMessageDialog } from '../../types/AddMessageDialog';
-import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
-import { DeleteMessageDialogComponent } from '../../dialogs/delete-message-dialog/delete-message-dialog.component';
-import { RemoveMessageDialogComponent } from '../../dialogs/remove-message-dialog/remove-message-dialog.component';
-import { AddSubMessageDialogComponent } from '../../dialogs/add-sub-message-dialog/add-sub-message-dialog.component';
-import { AddMessageDialogComponent } from '../../dialogs/add-message-dialog/add-message-dialog.component';
-import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormsModule } from '@angular/forms';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { EditMessageFieldComponent } from '../../fields/edit-message-field/edit-message-field.component';
-import { EditMessageNodesFieldComponent } from '../../fields/edit-message-nodes-field/edit-message-nodes-field.component';
-import { SubMessageTableComponent } from '../sub-message-table/sub-message-table.component';
-import { MatInputModule } from '@angular/material/input';
-import {
-	CurrentMessagesService,
-	HeaderService,
-} from '@osee/messaging/shared/services';
-import type {
-	message,
-	messageWithChanges,
-	messageChanges,
-	EditViewFreeTextDialog,
-	ConnectionNode,
-} from '@osee/messaging/shared/types';
-import { HighlightFilteredTextDirective } from '@osee/shared/utils';
-import {
-	TwoLayerAddButtonComponent,
-	ViewSelectorComponent,
-} from '@osee/shared/components';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dialogs/free-text';
-import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
 import {
 	CdkDrag,
 	CdkDragDrop,
 	CdkDragHandle,
 	CdkDropList,
 } from '@angular/cdk/drag-drop';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
+import {
+	MatFormField,
+	MatHint,
+	MatLabel,
+	MatPrefix,
+} from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatTooltip } from '@angular/material/tooltip';
+import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dialogs/free-text';
+import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
+import {
+	CurrentMessagesService,
+	HeaderService,
+} from '@osee/messaging/shared/services';
+import type {
+	ConnectionNode,
+	EditViewFreeTextDialog,
+	message,
+	messageChanges,
+	messageWithChanges,
+} from '@osee/messaging/shared/types';
+import {
+	TwoLayerAddButtonComponent,
+	ViewSelectorComponent,
+} from '@osee/shared/components';
+import { applic } from '@osee/shared/types/applicability';
+import { HighlightFilteredTextDirective } from '@osee/shared/utils';
+import { AddMessageDialogComponent } from '../../dialogs/add-message-dialog/add-message-dialog.component';
+import { AddSubMessageDialogComponent } from '../../dialogs/add-sub-message-dialog/add-sub-message-dialog.component';
+import { DeleteMessageDialogComponent } from '../../dialogs/delete-message-dialog/delete-message-dialog.component';
+import { RemoveMessageDialogComponent } from '../../dialogs/remove-message-dialog/remove-message-dialog.component';
+import { EditMessageFieldComponent } from '../../fields/edit-message-field/edit-message-field.component';
+import { EditMessageNodesFieldComponent } from '../../fields/edit-message-nodes-field/edit-message-nodes-field.component';
+import { AddMessageDialog } from '../../types/AddMessageDialog';
+import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
+import { SubMessageTableComponent } from '../sub-message-table/sub-message-table.component';
 
 @Component({
 	selector: 'osee-messaging-message-table',
@@ -121,15 +142,29 @@ import { toSignal } from '@angular/core/rxjs-interop';
 		CdkDrag,
 		CdkDragHandle,
 		CdkDropList,
-		MatButtonModule,
-		MatIconModule,
-		MatFormFieldModule,
-		MatTableModule,
-		MatInputModule,
-		MatTooltipModule,
-		MatMenuModule,
-		MatDialogModule,
-		MatPaginatorModule,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatIcon,
+		MatPrefix,
+		MatHint,
+		MatTable,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatTooltip,
+		MatCell,
+		MatCellDef,
+		MatButton,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
+		MatPaginator,
+		MatMenu,
+		MatMenuContent,
+		MatMenuItem,
+		MatMenuTrigger,
 		AddMessageDialogComponent,
 		AddSubMessageDialogComponent,
 		RemoveMessageDialogComponent,

@@ -10,7 +10,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import {
+	MatAutocomplete,
+	MatAutocompleteTrigger,
+	MatOption,
+} from '@angular/material/autocomplete';
+import {
+	MatFormField,
+	MatLabel,
+	MatSuffix,
+} from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { MatOptionLoadingComponent } from '@osee/shared/components';
 import {
 	BehaviorSubject,
 	ReplaySubject,
@@ -20,15 +35,8 @@ import {
 	switchMap,
 	tap,
 } from 'rxjs';
+import { ScriptBatch } from '../../../types';
 import { CiBatchService } from '../../../services/ci-batch.service';
-import { AsyncPipe, NgIf } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormsModule } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
-import { ScriptBatch } from 'src/app/ci-dashboard/lib/types';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatOptionLoadingComponent } from '@osee/shared/components';
-import { MatIconModule } from '@angular/material/icon';
 
 @Component({
 	selector: 'osee-batch-dropdown',
@@ -36,12 +44,16 @@ import { MatIconModule } from '@angular/material/icon';
 	imports: [
 		AsyncPipe,
 		NgIf,
-		MatFormFieldModule,
 		FormsModule,
-		MatInputModule,
-		MatAutocompleteModule,
 		MatOptionLoadingComponent,
-		MatIconModule,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatAutocomplete,
+		MatAutocompleteTrigger,
+		MatIcon,
+		MatSuffix,
+		MatOption,
 	],
 	templateUrl: './batch-dropdown.component.html',
 })

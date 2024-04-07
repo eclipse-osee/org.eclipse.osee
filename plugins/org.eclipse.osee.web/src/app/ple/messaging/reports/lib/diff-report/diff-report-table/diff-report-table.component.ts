@@ -12,8 +12,19 @@
  **********************************************************************/
 import { AsyncPipe, NgClass } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTableModule } from '@angular/material/table';
+import { MatIcon } from '@angular/material/icon';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+} from '@angular/material/table';
 import { MimChangeSummaryItem } from '@osee/messaging/shared/types';
 import { changeReportRow } from '@osee/shared/types/change-report';
 
@@ -22,7 +33,21 @@ import { changeReportRow } from '@osee/shared/types/change-report';
 	templateUrl: './diff-report-table.component.html',
 	styles: [],
 	standalone: true,
-	imports: [AsyncPipe, NgClass, MatTableModule, MatIconModule],
+	imports: [
+		AsyncPipe,
+		NgClass,
+		MatTable,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatCell,
+		MatCellDef,
+		MatIcon,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
+	],
 })
 export class DiffReportTableComponent implements OnChanges {
 	@Input({ required: true }) items: MimChangeSummaryItem[] = [];

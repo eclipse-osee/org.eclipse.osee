@@ -11,55 +11,56 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
+	CdkFixedSizeVirtualScroll,
+	CdkVirtualForOf,
 	CdkVirtualScrollViewport,
-	ScrollingModule,
 } from '@angular/cdk/scrolling';
 import { AsyncPipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 import {
-	ChangeDetectionStrategy,
-	OnChanges,
-	OnDestroy,
-	SimpleChanges,
-	ViewChild,
-} from '@angular/core';
-import {
 	AfterViewInit,
+	ChangeDetectionStrategy,
 	Component,
 	ContentChild,
 	ContentChildren,
 	Host,
 	Input,
+	OnChanges,
+	OnDestroy,
 	Optional,
 	QueryList,
+	SimpleChanges,
 	TemplateRef,
+	ViewChild,
 	ViewChildren,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatAutocomplete } from '@angular/material/autocomplete';
-import { MatOption, MatOptionModule } from '@angular/material/core';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatButton } from '@angular/material/button';
+import { MatOption } from '@angular/material/core';
+import { MatListItemTitle } from '@angular/material/list';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatSelect } from '@angular/material/select';
 import {
-	auditTime,
 	BehaviorSubject,
+	Observable,
+	ReplaySubject,
+	Subject,
+	Subscription,
+	auditTime,
 	catchError,
 	combineLatest,
 	concatMap,
 	filter,
 	ignoreElements,
-	Observable,
 	of,
-	ReplaySubject,
 	scan,
 	shareReplay,
-	Subject,
-	Subscription,
 	switchMap,
 	takeUntil,
 	tap,
 	timer,
 } from 'rxjs';
 import { paginationMode } from '../internal/pagination-options';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 /**
  * Component that handles loading, pagination and error states for mat-options
  */
@@ -68,12 +69,16 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 	templateUrl: './mat-option-loading.component.html',
 	standalone: true,
 	imports: [
-		MatOptionModule,
 		NgIf,
 		NgFor,
 		AsyncPipe,
-		ScrollingModule,
-		MatProgressSpinnerModule,
+		MatOption,
+		CdkVirtualScrollViewport,
+		CdkFixedSizeVirtualScroll,
+		CdkVirtualForOf,
+		MatProgressSpinner,
+		MatButton,
+		MatListItemTitle,
 		NgTemplateOutlet,
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush, //lessen the amount of redrawing necessary to cause less "bounciness"

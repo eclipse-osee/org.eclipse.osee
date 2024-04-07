@@ -10,14 +10,24 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatSort, MatSortHeader, Sort } from '@angular/material/sort';
 import {
-	MatPaginator,
-	MatPaginatorModule,
-	PageEvent,
-} from '@angular/material/paginator';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+	MatTableDataSource,
+} from '@angular/material/table';
 import {
 	BehaviorSubject,
 	combineLatest,
@@ -27,13 +37,26 @@ import {
 } from 'rxjs';
 import { ServerHealthHttpService } from '../../../shared/services/server-health-http.service';
 import { sql } from '../../../shared/types/server-health-types';
-import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-server-health-sql',
 	standalone: true,
-	imports: [CommonModule, MatTableModule, MatPaginatorModule, MatSortModule],
+	imports: [
+		CommonModule,
+		MatTable,
+		MatSort,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatSortHeader,
+		MatCell,
+		MatCellDef,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
+		MatPaginator,
+	],
 	templateUrl: './server-health-sql.component.html',
 })
 export class ServerHealthSqlComponent implements AfterViewInit {

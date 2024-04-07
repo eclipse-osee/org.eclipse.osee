@@ -10,6 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { CommonModule } from '@angular/common';
 import {
 	AfterViewInit,
 	ChangeDetectionStrategy,
@@ -18,23 +19,35 @@ import {
 	Output,
 	ViewChild,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import type { NodeTraceReportItem } from '@osee/messaging/shared/types';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { HighlightFilteredTextDirective } from '@osee/shared/utils';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
-import { MatSort, MatSortModule } from '@angular/material/sort';
-import { HeaderService } from '@osee/shared/services';
-import { nodeTraceReportHeaderDetails } from './trace-report-table-headers';
 import {
-	MatPaginator,
-	MatPaginatorModule,
-	PageEvent,
-} from '@angular/material/paginator';
-import { BehaviorSubject, debounceTime, distinct, skip, tap } from 'rxjs';
+	MatFormField,
+	MatLabel,
+	MatPrefix,
+} from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatSort, MatSortHeader } from '@angular/material/sort';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRecycleRows,
+	MatRow,
+	MatRowDef,
+	MatTable,
+	MatTableDataSource,
+} from '@angular/material/table';
+import type { NodeTraceReportItem } from '@osee/messaging/shared/types';
+import { HeaderService } from '@osee/shared/services';
+import { HighlightFilteredTextDirective } from '@osee/shared/utils';
+import { BehaviorSubject, debounceTime, distinct, skip } from 'rxjs';
+import { nodeTraceReportHeaderDetails } from './trace-report-table-headers';
 
 @Component({
 	selector: 'osee-trace-report-table',
@@ -44,12 +57,25 @@ import { BehaviorSubject, debounceTime, distinct, skip, tap } from 'rxjs';
 		CommonModule,
 		FormsModule,
 		HighlightFilteredTextDirective,
-		MatFormFieldModule,
-		MatIconModule,
-		MatInputModule,
-		MatSortModule,
-		MatTableModule,
-		MatPaginatorModule,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatIcon,
+		MatPrefix,
+		MatTable,
+		MatSort,
+		MatRecycleRows,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatSortHeader,
+		MatCell,
+		MatCellDef,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
+		MatPaginator,
 	],
 	templateUrl: './trace-report-table.component.html',
 })

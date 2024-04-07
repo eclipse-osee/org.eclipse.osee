@@ -10,20 +10,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, inject, Input, Output } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
-import { NamedId } from '@osee/shared/types';
-import { MatListModule } from '@angular/material/list';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dialogs/free-text';
-import { filter, skip, Subject, switchMap, take, tap } from 'rxjs';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { EditViewFreeTextDialog } from '@osee/messaging/shared/types';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { Component, inject, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
+import { MatDialog } from '@angular/material/dialog';
+import { MatDivider } from '@angular/material/divider';
+import { MatFormField } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import {
+	MatActionList,
+	MatListItem,
+	MatListItemIcon,
+} from '@angular/material/list';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dialogs/free-text';
+import { NamedId } from '@osee/shared/types';
+import { filter, Subject, take, tap } from 'rxjs';
 
 @Component({
 	selector: 'osee-named-id-list-editor',
@@ -32,13 +35,14 @@ import { MatIconModule } from '@angular/material/icon';
 		NgFor,
 		NgIf,
 		FormsModule,
-		MatListModule,
-		MatDividerModule,
-		MatDialogModule,
-		MatPaginatorModule,
-		MatInputModule,
-		MatFormFieldModule,
-		MatIconModule,
+		MatFormField,
+		MatInput,
+		MatActionList,
+		MatListItem,
+		MatDivider,
+		MatIcon,
+		MatListItemIcon,
+		MatPaginator,
 	],
 	templateUrl: './named-id-list-editor.component.html',
 	styles: [],

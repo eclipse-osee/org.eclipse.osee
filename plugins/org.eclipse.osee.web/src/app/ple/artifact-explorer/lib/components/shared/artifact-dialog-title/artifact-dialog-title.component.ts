@@ -10,21 +10,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, Input } from '@angular/core';
+import { MatDialogTitle } from '@angular/material/dialog';
+import { MatIcon } from '@angular/material/icon';
+import { BehaviorSubject } from 'rxjs';
+import { ArtifactIconService } from '../../../services/artifact-icon.service';
 import {
 	artifactContextMenuOption,
 	artifactTypeIcon,
 } from '../../../types/artifact-explorer.data';
-import { BehaviorSubject } from 'rxjs';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { ArtifactIconService } from '../../../services/artifact-icon.service';
 
 @Component({
 	selector: 'osee-artifact-dialog-title',
 	standalone: true,
-	imports: [CommonModule, MatDialogModule, MatIconModule],
+	imports: [CommonModule, MatDialogTitle, MatIcon],
 	templateUrl: './artifact-dialog-title.component.html',
 })
 export class ArtifactDialogTitleComponent {

@@ -11,14 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Input, OnInit } from '@angular/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatLabel } from '@angular/material/form-field';
 import { ChartConfiguration, ChartData } from 'chart.js';
 import { NgChartsModule } from 'ng2-charts';
 
 @Component({
 	selector: 'osee-pie-chart',
 	standalone: true,
-	imports: [NgChartsModule, MatFormFieldModule],
+	imports: [NgChartsModule, MatLabel],
 	templateUrl: './pie-chart.component.html',
 })
 export class PieChartComponent implements OnInit {

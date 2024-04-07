@@ -10,65 +10,76 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject, ViewChild } from '@angular/core';
-import {
-	MatDialog,
-	MatDialogModule,
-	MatDialogRef,
-	MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
-import { MatStepper, MatStepperModule } from '@angular/material/stepper';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { debounceTime, delay, map, switchMap, tap } from 'rxjs/operators';
-import { MatButtonModule } from '@angular/material/button';
-import { FormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { PlatformTypeQueryComponent } from '../platform-type-query/platform-type-query.component';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { MatOptionModule } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import type { element, ElementDialog } from '@osee/messaging/shared/types';
+import { Component, Inject, ViewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import {
-	MatOptionLoadingComponent,
-	ApplicabilitySelectorComponent,
-} from '@osee/shared/components';
+	MatAutocomplete,
+	MatAutocompleteTrigger,
+} from '@angular/material/autocomplete';
+import { MatButton } from '@angular/material/button';
+import { MatOption } from '@angular/material/core';
+import {
+	MAT_DIALOG_DATA,
+	MatDialog,
+	MatDialogActions,
+	MatDialogClose,
+	MatDialogContent,
+	MatDialogRef,
+	MatDialogTitle,
+} from '@angular/material/dialog';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import {
+	MatStep,
+	MatStepper,
+	MatStepperNext,
+	MatStepperPrevious,
+} from '@angular/material/stepper';
+import { MatTooltip } from '@angular/material/tooltip';
 import { NewTypeFormComponent } from '@osee/messaging/shared/forms';
 import { CurrentStructureService } from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import type { ElementDialog, element } from '@osee/messaging/shared/types';
+import {
+	ApplicabilitySelectorComponent,
+	MatOptionLoadingComponent,
+} from '@osee/shared/components';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { debounceTime, delay, map, switchMap, tap } from 'rxjs/operators';
 import { ElementFormComponent } from '../../forms/element-form/element-form.component';
+import { PlatformTypeQueryComponent } from '../platform-type-query/platform-type-query.component';
 
 @Component({
 	selector: 'osee-messaging-add-element-dialog',
 	templateUrl: './add-element-dialog.component.html',
 	standalone: true,
 	imports: [
-		MatDialogModule,
-		MatStepperModule,
-		MatButtonModule,
 		FormsModule,
-		MatFormFieldModule,
-		MatOptionLoadingComponent,
-		MatInputModule,
-		MatSlideToggleModule,
-		MatIconModule,
-		MatDividerModule,
-		MatProgressSpinnerModule,
-		PlatformTypeQueryComponent,
-		NewTypeFormComponent,
-		MatSelectModule,
-		MatOptionModule,
-		MatTooltipModule,
-		MatAutocompleteModule,
+		MatDialogTitle,
+		MatStepper,
+		MatStep,
+		MatDialogContent,
+		MatButton,
+		MatStepperNext,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatAutocomplete,
+		MatAutocompleteTrigger,
+		MatOption,
+		MatTooltip,
+		MatDialogActions,
+		MatStepperPrevious,
+		MatDialogClose,
+		MatProgressSpinner,
 		AsyncPipe,
 		NgIf,
 		NgFor,
+		PlatformTypeQueryComponent,
+		NewTypeFormComponent,
+		MatOptionLoadingComponent,
 		ApplicabilitySelectorComponent,
 		ElementFormComponent,
 	],

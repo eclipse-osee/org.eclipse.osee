@@ -10,9 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, inject } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
-import { MatSidenavModule } from '@angular/material/sidenav';
+import { Component, inject } from '@angular/core';
+import {
+	MatSidenav,
+	MatSidenavContainer,
+	MatSidenavContent,
+} from '@angular/material/sidenav';
 import { RouterOutlet } from '@angular/router';
 import { SideNavService } from '@osee/shared/services/layout';
 import { map } from 'rxjs';
@@ -22,7 +26,13 @@ import { map } from 'rxjs';
 	standalone: true,
 	templateUrl: './nav-container.component.html',
 	styles: [],
-	imports: [MatSidenavModule, RouterOutlet, AsyncPipe],
+	imports: [
+		MatSidenavContainer,
+		MatSidenavContent,
+		MatSidenav,
+		RouterOutlet,
+		AsyncPipe,
+	],
 })
 export class NavContainerComponent {
 	private sideNavService: SideNavService = inject(SideNavService);

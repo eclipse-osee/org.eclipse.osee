@@ -12,7 +12,7 @@
  **********************************************************************/
 import { NgFor, NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { MatMenuModule } from '@angular/material/menu';
+import { MatMenuItem } from '@angular/material/menu';
 import { applic } from '@osee/shared/types/applicability';
 import { difference } from '@osee/shared/types/change-report';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
@@ -22,7 +22,7 @@ import { PlConfigCurrentBranchService } from '../../services/pl-config-current-b
 	templateUrl: './array-diff-menu.component.html',
 	styles: [],
 	standalone: true,
-	imports: [NgIf, NgFor, MatMenuModule],
+	imports: [NgIf, NgFor, MatMenuItem],
 })
 export class ArrayDiffMenuComponent {
 	@Input() array: difference[] = [];

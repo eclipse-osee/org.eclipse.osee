@@ -11,14 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
+import { MatAnchor } from '@angular/material/button';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
 	selector: 'osee-ple-main',
 	templateUrl: './ple.component.html',
 	standalone: true,
-	imports: [MatButtonModule],
+	imports: [MatAnchor],
 })
 export class PleComponent {
 	constructor(

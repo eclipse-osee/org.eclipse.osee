@@ -10,24 +10,27 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, Inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
+import { MatOption } from '@angular/material/core';
 import {
-	MatDialogModule,
-	MatDialogRef,
 	MAT_DIALOG_DATA,
+	MatDialogActions,
+	MatDialogClose,
+	MatDialogContent,
+	MatDialogRef,
+	MatDialogTitle,
 } from '@angular/material/dialog';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatSelect } from '@angular/material/select';
+import { SeparatedFeatureSelectorComponent } from '../../dropdowns/separated-feature-selector/separated-feature-selector.component';
 import {
+	PLAddCompoundApplicabilityData,
 	applicability,
 	compApplicRelationshipStructure,
 } from '../../types/pl-config-compound-applicabilities';
-import { PLAddCompoundApplicabilityData } from '../../types/pl-config-compound-applicabilities';
-import { FormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatOptionModule } from '@angular/material/core';
-import { MatButtonModule } from '@angular/material/button';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { SeparatedFeatureSelectorComponent } from '../../dropdowns/separated-feature-selector/separated-feature-selector.component';
 
 @Component({
 	selector: 'osee-add-compound-applicability-dialog',
@@ -39,11 +42,15 @@ import { SeparatedFeatureSelectorComponent } from '../../dropdowns/separated-fea
 		NgIf,
 		AsyncPipe,
 		FormsModule,
-		MatDialogModule,
-		MatFormFieldModule,
-		MatSelectModule,
-		MatOptionModule,
-		MatButtonModule,
+		MatDialogTitle,
+		MatDialogContent,
+		MatLabel,
+		MatFormField,
+		MatSelect,
+		MatOption,
+		MatButton,
+		MatDialogActions,
+		MatDialogClose,
 		SeparatedFeatureSelectorComponent,
 	],
 })

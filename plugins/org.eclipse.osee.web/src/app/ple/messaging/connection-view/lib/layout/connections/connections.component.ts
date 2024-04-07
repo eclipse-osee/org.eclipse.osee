@@ -10,19 +10,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { CurrentGraphService } from '../../services/current-graph.service';
-import { map, share, shareReplay, switchMap } from 'rxjs/operators';
+import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
+import { ViewSelectorComponent } from '@osee/shared/components';
 import { applic } from '@osee/shared/types/applicability';
 import { iif, of } from 'rxjs';
-import { AsyncPipe, NgIf } from '@angular/common';
-import { GraphComponent } from '../graph/graph.component';
+import { map, share, shareReplay, switchMap } from 'rxjs/operators';
+import { CurrentGraphService } from '../../services/current-graph.service';
 import { ConnectionsTableComponent } from '../connections-table/connections-table.component';
-import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { MatButtonModule } from '@angular/material/button';
-import { ViewSelectorComponent } from '@osee/shared/components';
+import { GraphComponent } from '../graph/graph.component';
 
 @Component({
 	selector: 'osee-connection-view-host',
@@ -32,8 +30,6 @@ import { ViewSelectorComponent } from '@osee/shared/components';
 		NgIf,
 		AsyncPipe,
 		GraphComponent,
-		MatButtonModule,
-		MatButtonToggleModule,
 		MessagingControlsComponent,
 		ViewSelectorComponent,
 		ConnectionsTableComponent,

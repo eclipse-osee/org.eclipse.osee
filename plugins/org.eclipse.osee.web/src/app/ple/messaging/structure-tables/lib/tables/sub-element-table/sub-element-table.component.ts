@@ -11,6 +11,20 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
+	animate,
+	state,
+	style,
+	transition,
+	trigger,
+} from '@angular/animations';
+import {
+	CdkDrag,
+	CdkDragDrop,
+	CdkDragHandle,
+	CdkDropList,
+} from '@angular/cdk/drag-drop';
+import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
+import {
 	ChangeDetectionStrategy,
 	Component,
 	Inject,
@@ -22,45 +36,46 @@ import {
 	computed,
 	signal,
 } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import {
-	CdkDrag,
-	CdkDragDrop,
-	CdkDragHandle,
-	CdkDropList,
-} from '@angular/cdk/drag-drop';
-import { LayoutNotifierService } from '@osee/layout/notification';
-import { applic } from '@osee/shared/types/applicability';
-import { difference } from '@osee/shared/types/change-report';
-import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
-import { SubElementTableFieldComponent } from '../../fields/sub-element-table-field/sub-element-table-field.component';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
-import { SubElementTableDropdownComponent } from '../../menus/sub-element-table-dropdown/sub-element-table-dropdown.component';
-import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
-import type {
-	structure,
-	element,
-	elementWithChanges,
-} from '@osee/messaging/shared/types';
+import { MatIconButton } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIcon } from '@angular/material/icon';
+import {
+	MatMenu,
+	MatMenuContent,
+	MatMenuTrigger,
+} from '@angular/material/menu';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+	MatTableDataSource,
+} from '@angular/material/table';
+import { MatTooltip } from '@angular/material/tooltip';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { LayoutNotifierService } from '@osee/layout/notification';
 import {
 	CurrentStructureService,
 	HeaderService,
 } from '@osee/messaging/shared/services';
+import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
+import type {
+	element,
+	elementWithChanges,
+	structure,
+} from '@osee/messaging/shared/types';
+import { applic } from '@osee/shared/types/applicability';
+import { difference } from '@osee/shared/types/change-report';
+import { SubElementTableFieldComponent } from '../../fields/sub-element-table-field/sub-element-table-field.component';
+import { SubElementTableDropdownComponent } from '../../menus/sub-element-table-dropdown/sub-element-table-dropdown.component';
 import { SubElementArrayTableComponent } from '../sub-element-array-table/sub-element-array-table.component';
-import {
-	animate,
-	state,
-	style,
-	transition,
-	trigger,
-} from '@angular/animations';
-import { MatButtonModule } from '@angular/material/button';
 
 @Component({
 	selector: 'osee-messaging-message-element-interface-sub-element-table',
@@ -79,12 +94,22 @@ import { MatButtonModule } from '@angular/material/button';
 		CdkDrag,
 		CdkDragHandle,
 		CdkDropList,
-		MatTableModule,
-		MatIconModule,
-		MatButtonModule,
-		MatMenuModule,
-		MatTooltipModule,
-		MatFormFieldModule,
+		MatTable,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatTooltip,
+		MatCell,
+		MatCellDef,
+		MatIcon,
+		MatIconButton,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
+		MatMenu,
+		MatMenuContent,
+		MatMenuTrigger,
 		FormsModule,
 		SubElementTableFieldComponent,
 		SubElementTableDropdownComponent,

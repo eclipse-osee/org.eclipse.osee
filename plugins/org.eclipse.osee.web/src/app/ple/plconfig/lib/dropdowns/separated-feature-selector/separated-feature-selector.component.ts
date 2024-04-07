@@ -10,18 +10,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatOption } from '@angular/material/core';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatSelect } from '@angular/material/select';
+import { combineLatest, concatMap, filter, from, map, scan } from 'rxjs';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
-import { MatSelectModule } from '@angular/material/select';
-import { MatOptionModule } from '@angular/material/core';
 import {
 	extendedFeature,
 	extendedFeatureWithChanges,
 } from '../../types/features/base';
-import { combineLatest, concatMap, filter, from, map, scan } from 'rxjs';
 
 @Component({
 	selector: 'osee-separated-feature-selector',
@@ -31,9 +31,10 @@ import { combineLatest, concatMap, filter, from, map, scan } from 'rxjs';
 		NgFor,
 		AsyncPipe,
 		FormsModule,
-		MatFormFieldModule,
-		MatSelectModule,
-		MatOptionModule,
+		MatFormField,
+		MatLabel,
+		MatSelect,
+		MatOption,
 	],
 	templateUrl: './separated-feature-selector.component.html',
 	styles: [],

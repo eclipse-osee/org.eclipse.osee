@@ -10,20 +10,35 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { HeaderService } from '@osee/shared/services';
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { MatButton } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import {
+	MatFormField,
+	MatLabel,
+	MatPrefix,
+} from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+	MatTableDataSource,
+} from '@angular/material/table';
+import { HeaderService } from '@osee/shared/services';
+import { Observable, map } from 'rxjs';
+import { CourseInfoDialogComponent } from '../../dialogs/course-info-dialog/course-info-dialog.component';
 import { TrainingCourseService } from '../../services/training-course.service';
 import { TrainingCourseRecord } from '../../types/training-course';
 import { trainingCourseRecordHeaderDetails } from './training-course-table-headers';
-import { MatIconModule } from '@angular/material/icon';
-import { CommonModule } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { map, Observable } from 'rxjs';
-import { MatInputModule } from '@angular/material/input';
-import { MatDialog } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-import { CourseInfoDialogComponent } from './../../dialogs/course-info-dialog/course-info-dialog.component';
 
 @Component({
 	standalone: true,
@@ -31,12 +46,22 @@ import { CourseInfoDialogComponent } from './../../dialogs/course-info-dialog/co
 	templateUrl: './training-course-table.component.html',
 	styles: [],
 	imports: [
-		MatFormFieldModule,
-		MatTableModule,
 		CommonModule,
-		MatIconModule,
-		MatInputModule,
-		MatButtonModule,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatPrefix,
+		MatTable,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatCell,
+		MatCellDef,
+		MatButton,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
 	],
 })
 export class TrainingCourseTableComponent {

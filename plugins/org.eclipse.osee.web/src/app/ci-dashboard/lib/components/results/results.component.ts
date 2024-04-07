@@ -10,24 +10,35 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+} from '@angular/material/table';
+import { MatTooltip } from '@angular/material/tooltip';
+import { ActivatedRoute } from '@angular/router';
+import { HeaderService } from '@osee/shared/services';
+import { FormatMillisecondsPipe } from '@osee/shared/utils';
+import { BehaviorSubject, combineLatest, switchMap, take, tap } from 'rxjs';
+import { CiBatchService } from '../../services/ci-batch.service';
+import { CiDashboardUiService } from '../../services/ci-dashboard-ui.service';
+import { resultHeaderDetails } from '../../table-headers/result-headers';
+import { ResultReference } from '../../types';
 import { CiDashboardControlsComponent } from '../ci-dashboard-controls/ci-dashboard-controls.component';
 import { BatchDropdownComponent } from './batch-dropdown/batch-dropdown.component';
-import { MatTableModule } from '@angular/material/table';
-import { CiBatchService } from '../../services/ci-batch.service';
-import { CommonModule } from '@angular/common';
-import { ResultReference } from '../../types';
-import { HeaderService } from '@osee/shared/services';
-import { resultHeaderDetails } from '../../table-headers/result-headers';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { FormatMillisecondsPipe } from '@osee/shared/utils';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { BehaviorSubject, combineLatest, switchMap, take, tap } from 'rxjs';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { CiDashboardUiService } from 'src/app/ci-dashboard/lib/services/ci-dashboard-ui.service';
 
 @Component({
 	selector: 'osee-results',
@@ -36,12 +47,21 @@ import { CiDashboardUiService } from 'src/app/ci-dashboard/lib/services/ci-dashb
 		CommonModule,
 		CiDashboardControlsComponent,
 		BatchDropdownComponent,
-		MatTableModule,
-		MatPaginatorModule,
-		MatTooltipModule,
 		FormatMillisecondsPipe,
-		MatButtonModule,
-		MatIconModule,
+		MatButton,
+		MatIcon,
+		MatTable,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatTooltip,
+		MatCell,
+		MatCellDef,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
+		MatPaginator,
 	],
 	templateUrl: './results.component.html',
 })

@@ -11,7 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import { MatSidenavModule } from '@angular/material/sidenav';
+import {
+	MatSidenav,
+	MatSidenavContainer,
+	MatSidenavContent,
+} from '@angular/material/sidenav';
 import { RouterOutlet } from '@angular/router';
 import {
 	MessagingHelpContentComponent,
@@ -24,7 +28,9 @@ import {
 	standalone: true,
 	imports: [
 		RouterOutlet,
-		MatSidenavModule,
+		MatSidenavContainer,
+		MatSidenav,
+		MatSidenavContent,
 		MessagingHelpNavigationComponent,
 		MessagingHelpContentComponent,
 	],

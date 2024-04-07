@@ -10,33 +10,32 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, computed, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { filter, map, of, switchMap, take, tap } from 'rxjs';
-import { MatButtonModule } from '@angular/material/button';
+import { Component, computed, input } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
-import { CreateChildArtifactDialogComponent } from '../create-child-artifact-dialog/create-child-artifact-dialog.component';
-import { MatMenuModule } from '@angular/material/menu';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenuItem } from '@angular/material/menu';
+import { UiService } from '@osee/shared/services';
+import { TransactionService } from '@osee/shared/transactions';
+import { attribute } from '@osee/shared/types';
+import { RELATIONTYPEIDENUM } from '@osee/shared/types/constants';
+import { filter, map, of, switchMap, take, tap } from 'rxjs';
+import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
+import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
+import { ArtifactIconService } from '../../../services/artifact-icon.service';
 import {
 	artifactContextMenuOption,
 	artifactTypeIcon,
 } from '../../../types/artifact-explorer.data';
-import { UiService } from '@osee/shared/services';
-import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
-import { TransactionService } from '@osee/shared/transactions';
-import { RELATIONTYPEIDENUM } from '@osee/shared/types/constants';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { MatIconModule } from '@angular/material/icon';
-import { DeleteArtifactDialogComponent } from '../delete-artifact-dialog/delete-artifact-dialog.component';
-import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
 import { DEFUALT_ARTIFACT_CONTEXT_MENU_OPTIONS } from '../../../types/default-artifact-context-menu-options';
-import { ArtifactIconService } from '../../../services/artifact-icon.service';
-import { attribute } from '@osee/shared/types';
+import { CreateChildArtifactDialogComponent } from '../create-child-artifact-dialog/create-child-artifact-dialog.component';
+import { DeleteArtifactDialogComponent } from '../delete-artifact-dialog/delete-artifact-dialog.component';
 
 @Component({
 	selector: 'osee-artifact-options-context-menu',
 	standalone: true,
-	imports: [CommonModule, MatButtonModule, MatMenuModule, MatIconModule],
+	imports: [CommonModule, MatMenuItem, MatIcon],
 	templateUrl: './artifact-options-context-menu.component.html',
 })
 export class ArtifactOptionsContextMenuComponent {

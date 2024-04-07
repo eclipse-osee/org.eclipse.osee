@@ -10,23 +10,39 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, signal } from '@angular/core';
+import { state, style, trigger } from '@angular/animations';
 import { CommonModule } from '@angular/common';
-import { ServerHealthHttpService } from '../shared/services/server-health-http.service';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { Observable, map } from 'rxjs';
-import { trigger, state, style } from '@angular/animations';
-import { ServerHealthPageHeaderComponent } from '../shared/components/server-health-page-header/server-health-page-header.component';
+import { Component, signal } from '@angular/core';
+import {
+	MatExpansionPanel,
+	MatExpansionPanelHeader,
+	MatExpansionPanelTitle,
+} from '@angular/material/expansion';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+	MatTableDataSource,
+} from '@angular/material/table';
 import { navigationStructure } from '@osee/layout/routing';
 import {
-	navigationElement,
 	defaultNavigationElement,
+	navigationElement,
 } from '@osee/shared/types';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { ServerHealthDetailsComponent } from './components/server-health-details/server-health-details.component';
+import { Observable, map } from 'rxjs';
+import { ServerHealthPageHeaderComponent } from '../shared/components/server-health-page-header/server-health-page-header.component';
+import { ServerHealthHttpService } from '../shared/services/server-health-http.service';
 import { healthServer } from '../shared/types/server-health-types';
-import { ServerHealthLogComponent } from './components/server-health-log/server-health-log.component';
+import { ServerHealthDetailsComponent } from './components/server-health-details/server-health-details.component';
 import { ServerHealthJavaComponent } from './components/server-health-java/server-health-java.component';
+import { ServerHealthLogComponent } from './components/server-health-log/server-health-log.component';
 import { ServerHealthTopComponent } from './components/server-health-top/server-health-top.component';
 
 const _currNavItem: navigationElement =
@@ -38,13 +54,24 @@ const _currNavItem: navigationElement =
 	standalone: true,
 	imports: [
 		CommonModule,
-		MatTableModule,
 		ServerHealthDetailsComponent,
 		ServerHealthPageHeaderComponent,
-		MatExpansionModule,
 		ServerHealthLogComponent,
 		ServerHealthJavaComponent,
 		ServerHealthTopComponent,
+		MatTable,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatCell,
+		MatCellDef,
+		MatExpansionPanel,
+		MatExpansionPanelHeader,
+		MatExpansionPanelTitle,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
 	],
 	templateUrl: './server-health-status.component.html',
 	animations: [

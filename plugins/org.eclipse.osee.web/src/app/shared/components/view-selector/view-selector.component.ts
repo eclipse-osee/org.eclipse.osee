@@ -10,10 +10,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import {
+	MatAutocomplete,
+	MatAutocompleteTrigger,
+} from '@angular/material/autocomplete';
+import { MatOption } from '@angular/material/core';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import {
+	ApplicabilityListUIService,
+	ViewsRoutedUiService,
+} from '@osee/shared/services';
+import { applic } from '@osee/shared/types/applicability';
 import {
 	BehaviorSubject,
 	combineLatest,
@@ -23,13 +34,6 @@ import {
 	scan,
 	switchMap,
 } from 'rxjs';
-import { applic } from '@osee/shared/types/applicability';
-import { MatInputModule } from '@angular/material/input';
-import { FormsModule } from '@angular/forms';
-import {
-	ApplicabilityListUIService,
-	ViewsRoutedUiService,
-} from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-view-selector',
@@ -37,9 +41,12 @@ import {
 	imports: [
 		CommonModule,
 		FormsModule,
-		MatAutocompleteModule,
-		MatFormFieldModule,
-		MatInputModule,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatAutocomplete,
+		MatAutocompleteTrigger,
+		MatOption,
 	],
 	templateUrl: './view-selector.component.html',
 	styles: [],

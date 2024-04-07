@@ -10,28 +10,28 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { FormsModule, ValidationErrors } from '@angular/forms';
+import { MatOption } from '@angular/material/core';
+import { MatError, MatFormField } from '@angular/material/form-field';
+import { MatSelect } from '@angular/material/select';
+import { MessageNodesCountDirective } from '@osee/messaging/shared/directives';
 import {
 	CurrentMessagesService,
 	TransportTypeUiService,
 } from '@osee/messaging/shared/services';
 import { ConnectionNode, message } from '@osee/messaging/shared/types';
-import { FormsModule, ValidationErrors } from '@angular/forms';
-import { MatSelectModule } from '@angular/material/select';
-import { MatOptionModule } from '@angular/material/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import {
 	BehaviorSubject,
+	Subject,
 	combineLatest,
 	filter,
 	of,
 	shareReplay,
-	Subject,
 	switchMap,
 	tap,
 } from 'rxjs';
-import { MessageNodesCountDirective } from '@osee/messaging/shared/directives';
 
 @Component({
 	selector: 'osee-edit-message-nodes-field',
@@ -40,9 +40,10 @@ import { MessageNodesCountDirective } from '@osee/messaging/shared/directives';
 	imports: [
 		CommonModule,
 		FormsModule,
-		MatFormFieldModule,
-		MatSelectModule,
-		MatOptionModule,
+		MatFormField,
+		MatSelect,
+		MatOption,
+		MatError,
 		MessageNodesCountDirective,
 	],
 	templateUrl: './edit-message-nodes-field.component.html',

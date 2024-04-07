@@ -10,18 +10,34 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input, ViewChild } from '@angular/core';
-import { MatTableModule } from '@angular/material/table';
-import { attrMergeData, mergeData } from '@osee/shared/types';
-import { CommitBranchService, HeaderService } from '@osee/shared/services';
-import { mergeManagerHeaderDetails } from './merge-manager-table-headers';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { AsyncPipe, DatePipe, NgClass } from '@angular/common';
-import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
-import { MatIconModule } from '@angular/material/icon';
+import { Component, Input, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MergeManagerEditorDialogComponent } from './merge-manager-editor-dialog/merge-manager-editor-dialog.component';
+import { MatIcon } from '@angular/material/icon';
+import {
+	MatMenu,
+	MatMenuContent,
+	MatMenuItem,
+	MatMenuTrigger,
+} from '@angular/material/menu';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+} from '@angular/material/table';
+import { MatTooltip } from '@angular/material/tooltip';
+import { CommitBranchService, HeaderService } from '@osee/shared/services';
+import { attrMergeData, mergeData } from '@osee/shared/types';
 import { of, switchMap, take } from 'rxjs';
+import { MergeManagerEditorDialogComponent } from './merge-manager-editor-dialog/merge-manager-editor-dialog.component';
+import { mergeManagerHeaderDetails } from './merge-manager-table-headers';
 
 @Component({
 	selector: 'osee-merge-manager-table',
@@ -30,10 +46,22 @@ import { of, switchMap, take } from 'rxjs';
 		AsyncPipe,
 		NgClass,
 		DatePipe,
-		MatTableModule,
-		MatTooltipModule,
-		MatMenuModule,
-		MatIconModule,
+		MatTable,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatTooltip,
+		MatCell,
+		MatCellDef,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
+		MatMenu,
+		MatMenuContent,
+		MatMenuItem,
+		MatIcon,
+		MatMenuTrigger,
 	],
 	templateUrl: './merge-manager-table.component.html',
 })

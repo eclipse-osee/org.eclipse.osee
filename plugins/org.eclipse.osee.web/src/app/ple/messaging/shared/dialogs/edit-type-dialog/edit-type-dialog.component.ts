@@ -10,53 +10,50 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject, OnDestroy } from '@angular/core';
-import {
-	MatDialogModule,
-	MatDialogRef,
-	MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
-import { BehaviorSubject, combineLatest, from, of, Subject } from 'rxjs';
-import {
-	concatMap,
-	filter,
-	map,
-	reduce,
-	shareReplay,
-	switchMap,
-	take,
-	takeUntil,
-} from 'rxjs/operators';
-import {
-	ARTIFACTTYPEIDENUM,
-	ATTRIBUTETYPEIDENUM,
-} from '@osee/shared/types/constants';
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { AsyncPipe, NgIf } from '@angular/common';
-import { MatStepperModule } from '@angular/material/stepper';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { Component, Inject, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatOptionModule } from '@angular/material/core';
-import { A11yModule } from '@angular/cdk/a11y';
-import { MatButtonModule } from '@angular/material/button';
+import { MatButton } from '@angular/material/button';
+import { MatOption } from '@angular/material/core';
 import {
-	UniquePlatformTypeNameDirective,
+	MAT_DIALOG_DATA,
+	MatDialogActions,
+	MatDialogClose,
+	MatDialogContent,
+	MatDialogRef,
+	MatDialogTitle,
+} from '@angular/material/dialog';
+import {
+	MatError,
+	MatFormField,
+	MatHint,
+	MatLabel,
+} from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatSelect } from '@angular/material/select';
+import { MatStep, MatStepper, MatStepperNext } from '@angular/material/stepper';
+import { PLATFORMTYPEATTRIBUTETYPEID } from '@osee/messaging/shared/attr';
+import {
 	UniquePlatformTypeAttributesDirective,
+	UniquePlatformTypeNameDirective,
 } from '@osee/messaging/shared/directives';
-import type {
-	logicalType,
-	enumerationSet,
-	editPlatformTypeDialogData,
-	enumeratedPlatformType,
-	PlatformType,
-} from '@osee/messaging/shared/types';
 import {
-	editPlatformTypeDialogDataMode,
+	CrossReferenceDropdownComponent,
+	UnitDropdownComponent,
+} from '@osee/messaging/shared/dropdowns';
+import {
 	PlatformTypeSentinel,
+	editPlatformTypeDialogDataMode,
 } from '@osee/messaging/shared/enumerations';
 import { EditEnumSetFieldComponent } from '@osee/messaging/shared/forms';
 import { TypesService } from '@osee/messaging/shared/services';
+import type {
+	PlatformType,
+	editPlatformTypeDialogData,
+	enumeratedPlatformType,
+	logicalType,
+} from '@osee/messaging/shared/types';
 import {
 	ApplicabilitySelectorComponent,
 	MatOptionLoadingComponent,
@@ -67,15 +64,22 @@ import {
 	modifyArtifact,
 	modifyRelation,
 } from '@osee/shared/types';
-import {
-	MIMATTRIBUTETYPEID,
-	PLATFORMTYPEATTRIBUTETYPEID,
-} from '@osee/messaging/shared/attr';
 import { applic } from '@osee/shared/types/applicability';
 import {
-	CrossReferenceDropdownComponent,
-	UnitDropdownComponent,
-} from '@osee/messaging/shared/dropdowns';
+	ARTIFACTTYPEIDENUM,
+	ATTRIBUTETYPEIDENUM,
+} from '@osee/shared/types/constants';
+import { BehaviorSubject, Subject, combineLatest, from, of } from 'rxjs';
+import {
+	concatMap,
+	filter,
+	map,
+	reduce,
+	shareReplay,
+	switchMap,
+	take,
+	takeUntil,
+} from 'rxjs/operators';
 
 @Component({
 	selector: 'osee-edit-type-dialog',
@@ -86,14 +90,22 @@ import {
 		NgIf,
 		FormsModule,
 		AsyncPipe,
-		MatDialogModule,
-		MatStepperModule,
-		MatFormFieldModule,
-		MatInputModule,
-		MatSelectModule,
-		MatOptionModule,
-		A11yModule,
-		MatButtonModule,
+		MatDialogTitle,
+		MatStepper,
+		MatStep,
+		MatDialogContent,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatHint,
+		MatError,
+		MatSelect,
+		MatOption,
+		MatDialogActions,
+		MatButton,
+		MatStepperNext,
+		MatDialogClose,
+		CdkTextareaAutosize,
 		MatOptionLoadingComponent,
 		UniquePlatformTypeNameDirective,
 		UniquePlatformTypeAttributesDirective,

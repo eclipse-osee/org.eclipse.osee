@@ -12,9 +12,14 @@
  **********************************************************************/
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
+import {
+	MatFormField,
+	MatLabel,
+	MatPrefix,
+	MatHint,
+} from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
 import { SearchService } from '../../services/search.service';
 
 @Component({
@@ -22,9 +27,18 @@ import { SearchService } from '../../services/search.service';
 	templateUrl: './element-table-search.component.html',
 	styles: [],
 	standalone: true,
-	imports: [MatFormFieldModule, FormsModule, MatInputModule, MatIconModule],
+	imports: [
+		FormsModule,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatIcon,
+		MatPrefix,
+		MatHint,
+	],
 })
 export class ElementTableSearchComponent {
+	//TODO: Luciano refactor searchTerm to be a signal here, this can be a lot more ergonomic
 	searchTerm: string = '';
 	constructor(private searchService: SearchService) {
 		this.searchService.searchTerm.subscribe((val) => {

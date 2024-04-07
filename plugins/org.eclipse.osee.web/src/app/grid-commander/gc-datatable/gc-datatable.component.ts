@@ -11,11 +11,40 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { SelectionModel } from '@angular/cdk/collections';
+import {
+	AsyncPipe,
+	NgClass,
+	NgFor,
+	NgIf,
+	NgSwitch,
+	NgSwitchCase,
+	NgSwitchDefault,
+} from '@angular/common';
 import { AfterViewInit, Component, OnDestroy, ViewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatIconButton } from '@angular/material/button';
+import { MatCheckbox } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatSort, Sort, MatSortModule } from '@angular/material/sort';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatFormField } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort, MatSortHeader, Sort } from '@angular/material/sort';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+	MatTableDataSource,
+} from '@angular/material/table';
+import { MatToolbar, MatToolbarRow } from '@angular/material/toolbar';
+import { MatTooltip } from '@angular/material/tooltip';
 import {
 	BehaviorSubject,
 	combineLatest,
@@ -32,30 +61,13 @@ import { CommandGroupOptionsService } from '../services/data-services/commands/c
 import { CommandFromUserHistoryService } from '../services/data-services/selected-command-data/command-from-history/command-from-user-history.service';
 import { ColumnSortingService } from '../services/datatable-services/column-sorting/column-sorting.service';
 import { DataTableService } from '../services/datatable-services/datatable.service';
-import { DeleteRowService } from '../services/datatable-services/row-actions/delete-row.service';
 import { FilterService } from '../services/datatable-services/filter/filter.service';
+import { DeleteRowService } from '../services/datatable-services/row-actions/delete-row.service';
 import { RowObjectActionsService } from '../services/datatable-services/row-actions/row-object-actions.service';
 import { commandHistoryObject } from '../types/grid-commander-types/executedCommand';
 import { RowObj } from '../types/grid-commander-types/table-data-types';
 import { DeleteRowDialogComponent } from './delete-row-dialog/delete-row-dialog.component';
 import { NoDataToDisplayComponent } from './no-data-to-display/no-data-to-display/no-data-to-display.component';
-import { MatButtonModule } from '@angular/material/button';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { FormsModule } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatIconModule } from '@angular/material/icon';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import {
-	NgIf,
-	NgFor,
-	NgSwitch,
-	NgSwitchCase,
-	NgSwitchDefault,
-	NgClass,
-	AsyncPipe,
-} from '@angular/common';
 
 @Component({
 	selector: 'osee-gc-datatable',
@@ -64,24 +76,35 @@ import {
 	standalone: true,
 	imports: [
 		NgIf,
-		MatTableModule,
-		MatSortModule,
 		NgFor,
-		MatCheckboxModule,
 		NgSwitch,
 		NgSwitchCase,
-		MatIconModule,
-		MatTooltipModule,
 		NgSwitchDefault,
-		MatFormFieldModule,
-		MatInputModule,
 		FormsModule,
 		NgClass,
-		MatToolbarModule,
-		MatButtonModule,
-		MatPaginatorModule,
 		NoDataToDisplayComponent,
 		AsyncPipe,
+		MatTable,
+		MatSort,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatCheckbox,
+		MatCell,
+		MatCellDef,
+		MatSortHeader,
+		MatIcon,
+		MatTooltip,
+		MatFormField,
+		MatInput,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
+		MatToolbar,
+		MatToolbarRow,
+		MatIconButton,
+		MatPaginator,
 	],
 })
 export class GcDatatableComponent implements AfterViewInit, OnDestroy {

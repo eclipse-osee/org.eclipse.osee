@@ -11,13 +11,18 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import { MatCardModule } from '@angular/material/card';
+import {
+	MatCard,
+	MatCardHeader,
+	MatCardSubtitle,
+	MatCardTitle,
+} from '@angular/material/card';
 
 @Component({
 	selector: 'osee-no-data-to-display',
 	templateUrl: './no-data-to-display.component.html',
 	styles: [],
 	standalone: true,
-	imports: [MatCardModule],
+	imports: [MatCard, MatCardHeader, MatCardTitle, MatCardSubtitle],
 })
 export class NoDataToDisplayComponent {}

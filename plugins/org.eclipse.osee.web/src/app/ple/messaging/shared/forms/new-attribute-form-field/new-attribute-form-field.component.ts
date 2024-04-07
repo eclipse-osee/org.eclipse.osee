@@ -12,15 +12,11 @@
  **********************************************************************/
 import { NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import {
-	ControlContainer,
-	FormsModule,
-	NgForm,
-	NgModelGroup,
-} from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
+import { ControlContainer, FormsModule, NgModelGroup } from '@angular/forms';
+import { MatOption } from '@angular/material/core';
+import { MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatSelect } from '@angular/material/select';
 import { UniquePlatformTypeNameDirective } from '@osee/messaging/shared/directives';
 import type {
 	logicalTypeFieldInfo,
@@ -35,9 +31,12 @@ import { FirstLetterLowerPipe } from '@osee/shared/utils';
 	standalone: true,
 	imports: [
 		FormsModule,
-		MatFormFieldModule,
-		MatSelectModule,
-		MatInputModule,
+		MatFormField,
+		MatLabel,
+		MatSelect,
+		MatOption,
+		MatHint,
+		MatInput,
 		NgIf,
 		NgFor,
 		FirstLetterLowerPipe,

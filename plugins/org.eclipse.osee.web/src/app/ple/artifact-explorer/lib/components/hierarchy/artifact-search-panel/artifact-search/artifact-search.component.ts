@@ -10,13 +10,30 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, ViewChild, signal } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatInputModule } from '@angular/material/input';
-import { ArtifactExplorerHttpService } from '../../../../services/artifact-explorer-http.service';
+import { Component, ViewChild, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { FormsModule } from '@angular/forms';
+import { MatIconButton } from '@angular/material/button';
+import { MatChip, MatChipRemove, MatChipSet } from '@angular/material/chips';
+import { MatDialog } from '@angular/material/dialog';
+import {
+	MatFormField,
+	MatLabel,
+	MatSuffix,
+} from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { MatList, MatListItem } from '@angular/material/list';
+import {
+	MatMenu,
+	MatMenuContent,
+	MatMenuItem,
+	MatMenuTrigger,
+} from '@angular/material/menu';
+import { MatTooltip } from '@angular/material/tooltip';
 import { UiService } from '@osee/shared/services';
+import { NamedId } from '@osee/shared/types';
 import {
 	BehaviorSubject,
 	combineLatest,
@@ -27,43 +44,40 @@ import {
 	take,
 	tap,
 } from 'rxjs';
-import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { ArtifactHierarchyPathService } from '../../../../services/artifact-hierarchy-path.service';
-import { NamedId } from '@osee/shared/types';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { AdvancedSearchDialogComponent } from './advanced-search-dialog/advanced-search-dialog.component';
 import { AdvancedArtifactSearchService } from '../../../../services/advanced-artifact-search.service';
-import { MatChipsModule } from '@angular/material/chips';
-import { AdvancedSearchCriteria } from '../../../../types/artifact-search';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatListModule } from '@angular/material/list';
+import { ArtifactExplorerHttpService } from '../../../../services/artifact-explorer-http.service';
+import { ArtifactExplorerTabService } from '../../../../services/artifact-explorer-tab.service';
+import { ArtifactHierarchyPathService } from '../../../../services/artifact-hierarchy-path.service';
+import { ArtifactIconService } from '../../../../services/artifact-icon.service';
 import {
 	artifactTokenWithIcon,
 	artifactTypeIcon,
 } from '../../../../types/artifact-explorer.data';
-import { ArtifactExplorerTabService } from '../../../../services/artifact-explorer-tab.service';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
-import { ArtifactIconService } from '../../../../services/artifact-icon.service';
+import { AdvancedSearchCriteria } from '../../../../types/artifact-search';
+import { AdvancedSearchDialogComponent } from './advanced-search-dialog/advanced-search-dialog.component';
 
 @Component({
 	selector: 'osee-artifact-search',
 	standalone: true,
 	imports: [
 		AsyncPipe,
-		MatFormFieldModule,
-		MatAutocompleteModule,
-		MatButtonModule,
-		MatInputModule,
-		MatIconModule,
-		MatDialogModule,
 		FormsModule,
-		MatChipsModule,
-		MatTooltipModule,
-		MatListModule,
-		MatMenuModule,
+		MatChipSet,
+		MatChip,
+		MatTooltip,
+		MatChipRemove,
+		MatIcon,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatSuffix,
+		MatIconButton,
+		MatList,
+		MatListItem,
+		MatMenu,
+		MatMenuContent,
+		MatMenuItem,
+		MatMenuTrigger,
 	],
 	templateUrl: './artifact-search.component.html',
 })

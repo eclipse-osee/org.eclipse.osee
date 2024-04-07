@@ -11,11 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
-	NgIf,
-	NgFor,
 	AsyncPipe,
-	TitleCasePipe,
 	KeyValuePipe,
+	NgFor,
+	NgIf,
+	TitleCasePipe,
 } from '@angular/common';
 import {
 	Component,
@@ -25,41 +25,46 @@ import {
 	Output,
 	ViewChild,
 } from '@angular/core';
-import { FormsModule, NgForm } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
+import { NgForm } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
 import {
 	MatDialog,
-	MatDialogModule,
+	MatDialogActions,
+	MatDialogContent,
 	MatDialogRef,
+	MatDialogTitle,
 } from '@angular/material/dialog';
-import { MatStepperModule } from '@angular/material/stepper';
-import { EnumSetFormComponent } from '../../forms/enum-set-form/enum-set-form.component';
-import { NewPlatformTypeFormComponent } from '../new-platform-type-form/new-platform-type-form.component';
-import { LogicalTypeSelectorComponent } from '../logical-type-selector/logical-type-selector.component';
+import { MatLabel } from '@angular/material/form-field';
+import {
+	MatStep,
+	MatStepper,
+	MatStepperNext,
+	MatStepperPrevious,
+} from '@angular/material/stepper';
+import { TypesService } from '@osee/messaging/shared/services';
+import type {
+	PlatformType,
+	logicalType,
+	newPlatformTypeDialogReturnData,
+} from '@osee/messaging/shared/types';
+import { applic } from '@osee/shared/types/applicability';
 import {
 	BehaviorSubject,
+	Observable,
+	Subject,
 	combineLatest,
 	concatMap,
 	filter,
 	from,
-	Observable,
 	of,
-	shareReplay,
-	Subject,
 	switchMap,
 	take,
 	tap,
 } from 'rxjs';
+import { EnumSetFormComponent } from '../../forms/enum-set-form/enum-set-form.component';
+import { LogicalTypeSelectorComponent } from '../logical-type-selector/logical-type-selector.component';
 import { NewPlatformTypeFormPage2Component } from '../new-platform-type-form-page2/new-platform-type-form-page2.component';
-import { TypesService } from '@osee/messaging/shared/services';
-import type {
-	logicalType,
-	PlatformType,
-	newPlatformTypeDialogReturnData,
-} from '@osee/messaging/shared/types';
-import { applic } from '@osee/shared/types/applicability';
+import { NewPlatformTypeFormComponent } from '../new-platform-type-form/new-platform-type-form.component';
 
 /**
  * Form used to create a new platform type
@@ -68,12 +73,15 @@ import { applic } from '@osee/shared/types/applicability';
 	selector: 'osee-new-type-form',
 	standalone: true,
 	imports: [
-		MatDialogModule, //note this is just to inherit styling from mat-dialog
-		MatStepperModule,
-		MatFormFieldModule,
-		FormsModule,
-		MatButtonModule,
-		MatIconModule,
+		MatDialogTitle,
+		MatStepper,
+		MatStep,
+		MatDialogContent,
+		MatDialogActions,
+		MatButton,
+		MatStepperNext,
+		MatLabel,
+		MatStepperPrevious,
 		NewPlatformTypeFormComponent,
 		NgIf,
 		NgFor,

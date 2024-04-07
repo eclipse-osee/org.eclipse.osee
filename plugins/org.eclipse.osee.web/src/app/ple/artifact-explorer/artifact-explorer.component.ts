@@ -10,17 +10,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from '@angular/core';
+import { CdkDropListGroup } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { DragDropModule } from '@angular/cdk/drag-drop';
+import { Component, Input } from '@angular/core';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { MatDrawer, MatDrawerContainer } from '@angular/material/sidenav';
+import { MatTooltip } from '@angular/material/tooltip';
 import { UiService } from '@osee/shared/services';
 import { ArtifactTabGroupComponent } from './lib/components/artifact-tab-group/artifact-tab-group.component';
 import { ArtifactHierarchyPanelComponent } from './lib/components/hierarchy/artifact-hierarchy-panel/artifact-hierarchy-panel.component';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { ArtifactExplorerTabService } from './lib/services/artifact-explorer-tab.service';
 import { tab } from './lib/types/artifact-explorer.data';
 import { map } from 'rxjs';
@@ -33,13 +33,16 @@ import { ArtifactExplorerPreferencesService } from './lib/services/artifact-expl
 	imports: [
 		CommonModule,
 		ArtifactHierarchyPanelComponent,
-		MatSidenavModule,
-		MatButtonModule,
-		MatIconModule,
 		ArtifactTabGroupComponent,
-		DragDropModule,
-		MatMenuModule,
-		MatTooltipModule,
+		MatDrawerContainer,
+		CdkDropListGroup,
+		MatDrawer,
+		MatIconButton,
+		MatMenuTrigger,
+		MatTooltip,
+		MatIcon,
+		MatMenu,
+		MatMenuItem,
 	],
 	templateUrl: './artifact-explorer.component.html',
 })

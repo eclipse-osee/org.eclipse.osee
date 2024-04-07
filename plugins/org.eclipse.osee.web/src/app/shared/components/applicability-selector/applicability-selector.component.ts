@@ -10,6 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe, NgIf } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
@@ -18,27 +19,29 @@ import {
 	Output,
 	SimpleChanges,
 } from '@angular/core';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import {
+	MatAutocomplete,
+	MatAutocompleteTrigger,
+} from '@angular/material/autocomplete';
+import { MatOption } from '@angular/material/core';
+import { MatFormField, MatSuffix } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
 import { ApplicabilityListUIService } from '@osee/shared/services';
 import { applic } from '@osee/shared/types/applicability';
 import {
 	BehaviorSubject,
+	ReplaySubject,
+	Subject,
 	combineLatest,
 	debounceTime,
 	distinctUntilChanged,
 	distinctUntilKeyChanged,
 	of,
-	ReplaySubject,
-	Subject,
 	switchMap,
 } from 'rxjs';
 import { MatOptionLoadingComponent } from '../mat-option-loading/mat-option-loading/mat-option-loading.component';
-import { FormsModule } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatOptionModule } from '@angular/material/core';
-import { MatIconModule } from '@angular/material/icon';
 
 /**
  * Component used for selecting an applicability.
@@ -67,11 +70,13 @@ import { MatIconModule } from '@angular/material/icon';
 		AsyncPipe,
 		NgIf,
 		FormsModule,
-		MatInputModule,
-		MatOptionModule,
-		MatFormFieldModule,
-		MatAutocompleteModule,
-		MatIconModule,
+		MatFormField,
+		MatInput,
+		MatAutocomplete,
+		MatAutocompleteTrigger,
+		MatIcon,
+		MatSuffix,
+		MatOption,
 		MatOptionLoadingComponent,
 	],
 })

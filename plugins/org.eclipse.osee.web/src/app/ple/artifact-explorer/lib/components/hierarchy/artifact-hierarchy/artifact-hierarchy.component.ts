@@ -10,13 +10,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input, ViewChild, input } from '@angular/core';
+import { CdkDrag } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
+import { Component, Input, ViewChild, input } from '@angular/core';
+import { MatIcon } from '@angular/material/icon';
+import { MatListItemIcon } from '@angular/material/list';
+import {
+	MatMenu,
+	MatMenuContent,
+	MatMenuTrigger,
+} from '@angular/material/menu';
 import {
 	BranchPickerComponent,
 	ExpandIconComponent,
 } from '@osee/shared/components';
-import { MatExpansionModule } from '@angular/material/expansion';
+import { UiService } from '@osee/shared/services';
 import {
 	BehaviorSubject,
 	combineLatest,
@@ -26,22 +34,17 @@ import {
 	shareReplay,
 	switchMap,
 } from 'rxjs';
-import { UiService } from '@osee/shared/services';
-import { MatIconModule } from '@angular/material/icon';
-import { DragDropModule } from '@angular/cdk/drag-drop';
-import { MatButtonModule } from '@angular/material/button';
 import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
 import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
+import { ArtifactHierarchyArtifactsExpandedService } from '../../../services/artifact-hierarchy-artifacts-expanded.service';
+import { ArtifactIconService } from '../../../services/artifact-icon.service';
 import {
 	DEFAULT_HIERARCHY_ROOT_ARTIFACT,
 	artifact,
 	artifactTypeIcon,
 } from '../../../types/artifact-explorer.data';
 import { ArtifactHierarchyRelationsComponent } from '../artifact-hierarchy-relations/artifact-hierarchy-relations.component';
-import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { ArtifactOptionsContextMenuComponent } from '../artifact-options-context-menu/artifact-options-context-menu.component';
-import { ArtifactIconService } from '../../../services/artifact-icon.service';
-import { ArtifactHierarchyArtifactsExpandedService } from '../../../services/artifact-hierarchy-artifacts-expanded.service';
 
 @Component({
 	selector: 'osee-artifact-hierarchy',
@@ -49,13 +52,14 @@ import { ArtifactHierarchyArtifactsExpandedService } from '../../../services/art
 	imports: [
 		CommonModule,
 		BranchPickerComponent,
-		MatExpansionModule,
-		MatIconModule,
-		DragDropModule,
-		MatButtonModule,
 		ArtifactHierarchyRelationsComponent,
-		MatMenuModule,
 		ArtifactOptionsContextMenuComponent,
+		MatIcon,
+		MatListItemIcon,
+		CdkDrag,
+		MatMenuTrigger,
+		MatMenu,
+		MatMenuContent,
 		ExpandIconComponent,
 	],
 	templateUrl: './artifact-hierarchy.component.html',

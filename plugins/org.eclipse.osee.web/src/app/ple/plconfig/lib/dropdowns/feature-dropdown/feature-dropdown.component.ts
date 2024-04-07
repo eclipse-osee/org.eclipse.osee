@@ -10,33 +10,37 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIcon } from '@angular/material/icon';
+import {
+	MatMenu,
+	MatMenuContent,
+	MatMenuItem,
+	MatMenuTrigger,
+} from '@angular/material/menu';
+import { response } from '@osee/shared/types';
 import { Observable, of, OperatorFunction } from 'rxjs';
-import { filter, shareReplay, switchMap, take, tap } from 'rxjs/operators';
+import { filter, shareReplay, switchMap, take } from 'rxjs/operators';
+import { AddFeatureDialogComponent } from '../../dialogs/add-feature-dialog/add-feature-dialog.component';
+import { EditFeatureDialogComponent } from '../../dialogs/edit-feature-dialog/edit-feature-dialog.component';
+import { ViewFeatureConstraintsDialogComponent } from '../../dialogs/view-feature-constraints-dialog/view-feature-constraints-dialog.component';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
+import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
 import { trackableFeature } from '../../types/features/base';
 import { defaultBaseFeature } from '../../types/features/feature';
 import {
 	modifyFeature,
+	PLAddFeatureData,
 	PLEditFeatureData,
 	writeFeature,
-	PLAddFeatureData,
 } from '../../types/pl-config-features';
-import { response } from '@osee/shared/types';
-import { AddFeatureDialogComponent } from '../../dialogs/add-feature-dialog/add-feature-dialog.component';
-import { EditFeatureDialogComponent } from '../../dialogs/edit-feature-dialog/edit-feature-dialog.component';
-import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
-import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
-import { NgFor, NgIf, AsyncPipe } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { AddFeatureConstraintDialogComponent } from './../../dialogs/add-feature-constraint-dialog/add-feature-constraint-dialog.component';
+import { AddFeatureConstraintDialogComponent } from '../../dialogs/add-feature-constraint-dialog/add-feature-constraint-dialog.component';
 import {
 	defaultFeatureConstraint,
 	featureConstraintData,
-} from './../../types/pl-config-feature-constraints';
-import { ViewFeatureConstraintsDialogComponent } from '../../dialogs/view-feature-constraints-dialog/view-feature-constraints-dialog.component';
+} from '../../types/pl-config-feature-constraints';
 
 @Component({
 	selector: 'osee-plconfig-feature-dropdown',
@@ -44,9 +48,11 @@ import { ViewFeatureConstraintsDialogComponent } from '../../dialogs/view-featur
 	styles: [],
 	standalone: true,
 	imports: [
-		MatIconModule,
-		MatMenuModule,
-		MatFormFieldModule,
+		MatMenuItem,
+		MatMenuTrigger,
+		MatMenuContent,
+		MatMenu,
+		MatIcon,
 		NgFor,
 		NgIf,
 		AsyncPipe,

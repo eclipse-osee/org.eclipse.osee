@@ -11,31 +11,31 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { combineLatest } from 'rxjs';
-import {
-	takeUntil,
-	map,
-	share,
-	shareReplay,
-	take,
-	switchMap,
-} from 'rxjs/operators';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenuItem } from '@angular/material/menu';
+import { ColumnPreferencesDialogComponent } from '@osee/messaging/shared/dialogs/preferences';
 import {
 	CurrentMessagesService,
 	PreferencesUIService,
 } from '@osee/messaging/shared/services';
 import type { settingsDialogData } from '@osee/messaging/shared/types';
-import { ColumnPreferencesDialogComponent } from '@osee/messaging/shared/dialogs/preferences';
+import { combineLatest } from 'rxjs';
+import {
+	map,
+	share,
+	shareReplay,
+	switchMap,
+	take,
+	takeUntil,
+} from 'rxjs/operators';
 
 @Component({
 	selector: 'osee-messaging-usermenu',
 	templateUrl: './usermenu.component.html',
 	styles: [],
 	standalone: true,
-	imports: [MatMenuModule, MatIconModule, MatDialogModule],
+	imports: [MatMenuItem, MatIcon],
 })
 export class UsermenuComponent {
 	preferences = this.messageService.preferences.pipe(

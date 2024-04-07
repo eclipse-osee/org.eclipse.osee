@@ -11,13 +11,25 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
+import { MatButton } from '@angular/material/button';
+import {
+	MAT_DIALOG_DATA,
+	MatDialogActions,
+	MatDialogClose,
+	MatDialogContent,
+	MatDialogTitle,
+} from '@angular/material/dialog';
 
 @Component({
 	selector: 'osee-relation-delete-dialog',
 	standalone: true,
-	imports: [MatDialogModule, MatButtonModule],
+	imports: [
+		MatDialogTitle,
+		MatDialogContent,
+		MatDialogActions,
+		MatButton,
+		MatDialogClose,
+	],
 	templateUrl: './relation-delete-dialog.component.html',
 })
 export class RelationDeleteDialogComponent {

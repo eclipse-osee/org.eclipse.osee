@@ -10,14 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
+import { Component, Input } from '@angular/core';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
 	selector: 'osee-server-health-page-header',
 	standalone: true,
-	imports: [CommonModule, MatIconModule],
+	imports: [CommonModule, MatIcon],
 	templateUrl: './server-health-page-header.component.html',
 })
 export class ServerHealthPageHeaderComponent {

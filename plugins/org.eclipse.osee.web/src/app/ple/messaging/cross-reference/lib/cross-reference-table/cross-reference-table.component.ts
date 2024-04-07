@@ -10,26 +10,41 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { crossReferenceHeaderDetails } from '@osee/messaging/shared/table-headers';
-import { MatTableModule } from '@angular/material/table';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { filter, switchMap, take, tap } from 'rxjs';
-import { MatButtonModule } from '@angular/material/button';
-import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { UiService, HeaderService } from '@osee/shared/services';
-import { NewCrossReferenceDialogComponent } from '../new-cross-reference-dialog/new-cross-reference-dialog.component';
-import { SplitStringPipe } from '@osee/shared/utils';
-import type { CrossReference } from '@osee/messaging/shared/types';
+import { MatDialog } from '@angular/material/dialog';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import {
+	MatMenu,
+	MatMenuContent,
+	MatMenuItem,
+	MatMenuTrigger,
+} from '@angular/material/menu';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+} from '@angular/material/table';
+import { MatTooltip } from '@angular/material/tooltip';
 import { TableEditTextFieldComponent } from '@osee/messaging/shared/forms';
 import { CrossReferenceService } from '@osee/messaging/shared/services';
+import { crossReferenceHeaderDetails } from '@osee/messaging/shared/table-headers';
+import type { CrossReference } from '@osee/messaging/shared/types';
 import { ApplicabilitySelectorComponent } from '@osee/shared/components';
+import { HeaderService, UiService } from '@osee/shared/services';
+import { SplitStringPipe } from '@osee/shared/utils';
+import { filter, switchMap, take, tap } from 'rxjs';
+import { NewCrossReferenceDialogComponent } from '../new-cross-reference-dialog/new-cross-reference-dialog.component';
 
 @Component({
 	selector: 'osee-cross-reference-table',
@@ -38,14 +53,25 @@ import { ApplicabilitySelectorComponent } from '@osee/shared/components';
 	imports: [
 		CommonModule,
 		FormsModule,
-		MatButtonModule,
-		MatDialogModule,
-		MatFormFieldModule,
-		MatIconModule,
-		MatInputModule,
-		MatMenuModule,
-		MatTableModule,
-		MatTooltipModule,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatIcon,
+		MatTable,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatCell,
+		MatCellDef,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatMenu,
+		MatMenuContent,
+		MatMenuItem,
+		MatMenuTrigger,
+		MatRow,
+		MatRowDef,
+		MatTooltip,
 		NewCrossReferenceDialogComponent,
 		TableEditTextFieldComponent,
 		SplitStringPipe,

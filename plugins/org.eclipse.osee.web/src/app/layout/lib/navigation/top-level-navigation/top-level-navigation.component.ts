@@ -13,9 +13,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { from, iif, of, reduce, switchMap } from 'rxjs';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatSidenavModule } from '@angular/material/sidenav';
 import {
 	AsyncPipe,
 	NgClass,
@@ -23,14 +20,20 @@ import {
 	NgIf,
 	NgTemplateOutlet,
 } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
-import { MatDividerModule } from '@angular/material/divider';
-import { SideNavService } from '@osee/shared/services/layout';
-import { UserDataAccountService } from '@osee/auth';
-import { navigationElement } from '@osee/shared/types';
-import { navigationStructure } from '@osee/layout/routing';
+import { MatDivider } from '@angular/material/divider';
+import { MatIcon } from '@angular/material/icon';
+import {
+	MatListItem,
+	MatListItemIcon,
+	MatNavList,
+} from '@angular/material/list';
+import { MatToolbar } from '@angular/material/toolbar';
 import { RouterLink } from '@angular/router';
+import { UserDataAccountService } from '@osee/auth';
+import { navigationStructure } from '@osee/layout/routing';
+import { SideNavService } from '@osee/shared/services/layout';
+import { navigationElement } from '@osee/shared/types';
+import { from, iif, of, reduce, switchMap } from 'rxjs';
 
 @Component({
 	selector: 'osee-top-level-navigation',
@@ -43,11 +46,12 @@ import { RouterLink } from '@angular/router';
 		AsyncPipe,
 		RouterLink,
 		NgTemplateOutlet,
-		MatToolbarModule,
-		MatSidenavModule,
-		MatIconModule,
-		MatListModule,
-		MatDividerModule,
+		MatToolbar,
+		MatNavList,
+		MatListItem,
+		MatIcon,
+		MatListItemIcon,
+		MatDivider,
 	],
 })
 export class TopLevelNavigationComponent {

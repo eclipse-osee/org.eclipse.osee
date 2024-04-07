@@ -10,16 +10,31 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatButton } from '@angular/material/button';
+import {
+	MAT_DIALOG_DATA,
+	MatDialogActions,
+	MatDialogClose,
+	MatDialogContent,
+	MatDialogTitle,
+} from '@angular/material/dialog';
 import { AdvancedSearchCriteria } from '../../../../../types/artifact-search';
-import { MatButtonModule } from '@angular/material/button';
 import { AdvancedSearchFormComponent } from '../advanced-search-form/advanced-search-form.component';
 
 @Component({
 	selector: 'osee-advanced-search-dialog',
 	standalone: true,
-	imports: [MatButtonModule, MatDialogModule, AdvancedSearchFormComponent],
+	imports: [
+		MatDialogContent,
+		MatDialogTitle,
+		MatDialogActions,
+		MatButton,
+		CdkTrapFocus,
+		MatDialogClose,
+		AdvancedSearchFormComponent,
+	],
 	templateUrl: './advanced-search-dialog.component.html',
 })
 export class AdvancedSearchDialogComponent {

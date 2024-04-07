@@ -10,17 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Subject, switchMap, takeUntil } from 'rxjs';
-import { MatTableModule } from '@angular/material/table';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatIconModule } from '@angular/material/icon';
-import { connectionHeaderDetails } from '@osee/messaging/shared/table-headers';
-import { connection } from '@osee/messaging/shared/types';
-import { HeaderService, UiService } from '@osee/shared/services';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import {
 	animate,
 	state,
@@ -28,18 +17,48 @@ import {
 	transition,
 	trigger,
 } from '@angular/animations';
+import { CommonModule } from '@angular/common';
+import { Component, OnDestroy } from '@angular/core';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+} from '@angular/material/table';
+import { MatTooltip } from '@angular/material/tooltip';
 import { ConnectionService } from '@osee/messaging/shared/services';
+import { connectionHeaderDetails } from '@osee/messaging/shared/table-headers';
+import { connection } from '@osee/messaging/shared/types';
+import { HeaderService, UiService } from '@osee/shared/services';
+import { Subject, switchMap, takeUntil } from 'rxjs';
 
 @Component({
 	selector: 'osee-connections-table',
 	standalone: true,
 	imports: [
 		CommonModule,
-		MatTableModule,
-		MatFormFieldModule,
-		MatInputModule,
-		MatIconModule,
-		MatTooltipModule,
+		MatTable,
+		MatCell,
+		MatHeaderCell,
+		MatCellDef,
+		MatRow,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
+		MatColumnDef,
+		MatInput,
+		MatIcon,
+		MatTooltip,
+		MatButton,
 	],
 	templateUrl: './connections-table.component.html',
 	animations: [
