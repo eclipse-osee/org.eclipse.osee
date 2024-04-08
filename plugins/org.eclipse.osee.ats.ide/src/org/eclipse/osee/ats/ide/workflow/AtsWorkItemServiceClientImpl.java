@@ -13,10 +13,13 @@
 
 package org.eclipse.osee.ats.ide.workflow;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
@@ -24,7 +27,14 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.workflow.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.ide.workflow.hooks.IAtsWorkItemHookIde;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * All client transitions should go through this service which handles transitioning on server, reloading client work
@@ -57,8 +67,64 @@ public class AtsWorkItemServiceClientImpl extends AtsWorkItemServiceImpl impleme
       if (results.isErrors()) {
          return results;
       }
+
+      sortIfBacklogItemChanged(transData);
+
       results = postEventAndReturn(transData, results);
+
       return results;
+   }
+
+   private void sortIfBacklogItemChanged(TransitionData transData) {
+      Thread sortThread = new Thread("Sort Backlog") {
+         @Override
+         public void run() {
+            try {
+               ArtifactToken backlog = ArtifactToken.SENTINEL;
+               for (IAtsWorkItem workItem : transData.getWorkItems()) {
+                  for (ArtifactToken goal : atsApi.getRelationResolver().getRelated(workItem,
+                     AtsRelationTypes.Goal_Goal)) {
+                     if (goal.isOfType(AtsArtifactTypes.AgileBacklog)) {
+                        backlog = goal;
+                        break;
+                     }
+                  }
+               }
+               if (backlog.isValid()) {
+                  ElapsedTime time = new ElapsedTime("Sort Backlog from IDE");
+                  XResultData rd = atsApi.getServerEndpoints().getAgileEndpoint().sortBacklog(backlog.getToken());
+                  if (Strings.isValid(rd.getTxId())) {
+                     reloadBacklogIfItemChanged(transData);
+                  }
+                  time.end();
+               }
+            } catch (Exception ex) {
+               System.err.println(Lib.exceptionToString(ex));
+            }
+         }
+      };
+      sortThread.start();
+   }
+
+   private void reloadBacklogIfItemChanged(TransitionData transData) {
+      try {
+         ArtifactToken backlog = ArtifactToken.SENTINEL;
+         for (IAtsWorkItem workItem : transData.getWorkItems()) {
+            for (ArtifactToken goal : atsApi.getRelationResolver().getRelated(workItem, AtsRelationTypes.Goal_Goal)) {
+               if (goal.isOfType(AtsArtifactTypes.AgileBacklog)) {
+                  backlog = goal;
+                  break;
+               }
+            }
+         }
+         if (backlog.isValid()) {
+            ((Artifact) backlog).reloadAttributesAndRelations();
+            atsApi.getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_MODIFIED,
+               Collections.singleton(atsApi.getWorkItemService().getWorkItem(backlog)), TransactionRecord.SENTINEL);
+         }
+      } catch (Exception ex) {
+         System.err.println(Lib.exceptionToString(ex));
+      }
    }
 
    private void populateTransitionData(TransitionData transData) {

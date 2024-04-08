@@ -146,7 +146,8 @@ public interface IAgileService {
 
    IAgileProgram createAgileProgram(IAgileProgram agileProgram);
 
-   IAgileProgramFeature createAgileProgramFeature(IAgileProgramBacklogItem programBacklogItem, JaxAgileProgramFeature feature);
+   IAgileProgramFeature createAgileProgramFeature(IAgileProgramBacklogItem programBacklogItem,
+      JaxAgileProgramFeature feature);
 
    void setAgileStory(IAtsTeamWorkflow codeWf, IAgileStory story, IAtsChangeSet changes);
 
@@ -154,7 +155,8 @@ public interface IAgileService {
 
    IAgileProgramBacklog createAgileProgramBacklog(IAgileProgram agileProgram, JaxAgileProgramBacklog jaxProgramBacklog);
 
-   IAgileProgramBacklogItem createAgileProgramBacklogItem(IAgileProgramBacklog programBacklog, JaxAgileProgramBacklogItem jaxProgramBacklogItem);
+   IAgileProgramBacklogItem createAgileProgramBacklogItem(IAgileProgramBacklog programBacklog,
+      JaxAgileProgramBacklogItem jaxProgramBacklogItem);
 
    IAgileProgram getAgileProgram(long programId);
 
@@ -193,5 +195,7 @@ public interface IAgileService {
    String getPointsStr(IAtsWorkItem workItem);
 
    AttributeTypeToken getPointsAttrType(IAtsTeamDefinition teamDef);
+
+   XResultData sortAgileBacklog(ArtifactToken backlog, String comment);
 
 }

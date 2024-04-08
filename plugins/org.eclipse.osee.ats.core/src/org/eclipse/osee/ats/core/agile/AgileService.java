@@ -56,6 +56,7 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.agile.operations.AgileProgramOperations;
+import org.eclipse.osee.ats.core.agile.operations.BacklogOperations;
 import org.eclipse.osee.ats.core.agile.operations.SprintBurndownOperations;
 import org.eclipse.osee.ats.core.agile.operations.SprintBurnupOperations;
 import org.eclipse.osee.ats.core.util.AtsObjects;
@@ -65,7 +66,6 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -565,7 +565,8 @@ public class AgileService implements IAgileService {
       ArtifactId backlogArt = backlogOrSprint.getStoreObject();
       for (ArtifactToken art : atsApi.getRelationResolver().getRelated(backlogArt, relationType)) {
          if (art.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-            items.add(atsApi.getWorkItemService().getAgileItem(art));
+            IAgileItem agileItem = atsApi.getWorkItemService().getAgileItem(art);
+            items.add(agileItem);
          } else {
             throw new OseeStateException("Inavlid artifact [%s] in [%s].  Only workflows are allowed, not [%s]",
                art.toStringWithId(), backlogOrSprint, art.getArtifactType());
@@ -915,6 +916,12 @@ public class AgileService implements IAgileService {
       if (sprint != null) {
          changes.relate(sprint, AtsRelationTypes.AgileSprintToItem_AtsItem, teamWf);
       }
+   }
+
+   @Override
+   public XResultData sortAgileBacklog(ArtifactToken backlog, String comment) {
+      BacklogOperations ops = new BacklogOperations(atsApi);
+      return ops.sort(backlog, comment);
    }
 
 }

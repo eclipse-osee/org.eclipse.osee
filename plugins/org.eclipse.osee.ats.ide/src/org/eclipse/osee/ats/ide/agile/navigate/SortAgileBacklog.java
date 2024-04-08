@@ -17,9 +17,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
@@ -29,9 +32,12 @@ import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsApiIde;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
@@ -78,112 +84,61 @@ public class SortAgileBacklog extends XNavigateItemAction {
          Artifact backlog = agileTeamArt.getRelatedArtifactOrNull(AtsRelationTypes.AgileTeamToBacklog_Backlog);
          if (MessageDialog.openConfirm(Displays.getActiveShell(), "Sort Agile Team",
             String.format("Sort Agile Team Backlog\n\n%s\n\nAre you sure?", backlog.toStringWithId()))) {
+            sort(backlog);
+         }
+      }
+   }
 
-            List<IAgileItem> aItems = sort(backlog);
+   private void sort(Artifact backlog) {
+      Job sortJob = new Job(getName()) {
 
-            List<Artifact> arts = new ArrayList<>();
-            for (IAgileItem aItem : aItems) {
-               arts.add((Artifact) atsApi.getQueryService().getArtifact(aItem.getArtifactId()));
+         @Override
+         protected IStatus run(IProgressMonitor monitor) {
+            IAgileBacklog bLog = atsApi.getAgileService().getAgileBacklog(backlog);
+            Collection<IAgileItem> items;
+            List<IAgileItem> sItems;
+
+            if (debug) {
+               items = atsApi.getAgileService().getItems(bLog);
+               sItems = new ArrayList<>();
+               sItems.addAll(items);
             }
-            backlog.setRelationOrder(AtsRelationTypes.Goal_Member, arts);
-            backlog.persist("Set Backlog Order");
+
+            String unOrdered = "";
+            String ordered = "";
+
+            if (debug) {
+               unOrdered = print("Un-Ordered Backlog", sItems);
+            }
+
+            XResultData rd = atsApi.getServerEndpoints().getAgileEndpoint().sortBacklog(bLog.getArtifactToken());
+            if (rd.isErrors()) {
+               XResultDataUI.report(rd, getName());
+               return Status.OK_STATUS;
+            }
+
+            backlog.reloadAttributesAndRelations();
+            TransactionRecord transaction =
+               org.eclipse.osee.framework.skynet.core.transaction.TransactionManager.getTransaction(
+                  TransactionId.valueOf(rd.getTxId()));
+            atsApi.getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_MODIFIED,
+               Collections.singleton(bLog), transaction);
+
+            if (debug) {
+               ordered = print("Ordered Backlog", sItems);
+            }
+
+            if (debug) {
+               CompareHandler compareHandler =
+                  new CompareHandler(null, new CompareItem("Un-Ordered", unOrdered, System.currentTimeMillis(), null),
+                     new CompareItem("Ordered", ordered, System.currentTimeMillis(), null), null);
+               compareHandler.compare();
+            }
+            return Status.OK_STATUS;
          }
-      }
+      };
+      sortJob.schedule();
    }
-
-   private List<IAgileItem> sort(Artifact backlog) {
-      IAgileBacklog bLog = atsApi.getAgileService().getAgileBacklog(backlog);
-      Collection<IAgileItem> items = atsApi.getAgileService().getItems(bLog);
-      List<IAgileItem> sItems = new ArrayList<>();
-      sItems.addAll(items);
-      String unOrdered = print("Un-Ordered Backlog", sItems);
-      Collections.sort(sItems, new NoSprintCompCancelledComparator() //
-         .thenComparing(new NoSprintCompCancelledComparator() //
-            .thenComparing(new SprintComparator()) //
-            .thenComparing(new CompCancelledComparator()) //
-         ));
-      String ordered = print("Ordered Backlog", sItems);
-
-      if (debug) {
-         CompareHandler compareHandler =
-            new CompareHandler(null, new CompareItem("Un-Ordered", unOrdered, System.currentTimeMillis(), null),
-               new CompareItem("Ordered", ordered, System.currentTimeMillis(), null), null);
-         compareHandler.compare();
-      }
-
-      return sItems;
-   }
-
-   // Bubble completed/cancelled with no sprint to top
-   private class NoSprintCompCancelledComparator implements Comparator<IAgileItem> {
-
-      @Override
-      public int compare(IAgileItem a1, IAgileItem a2) {
-         IAgileSprint sprint1 = atsApi.getAgileService().getSprint(a1);
-         IAgileSprint sprint2 = atsApi.getAgileService().getSprint(a2);
-
-         // Must declare equal or next comparator will not be applied
-         if (sprint1 == null && a1.getCurrentStateType().isCompletedOrCancelled() && //
-            sprint2 == null && a2.getCurrentStateType().isCompletedOrCancelled()) {
-            return 0;
-         }
-         if (sprint1 == null && a1.getCurrentStateType().isCompletedOrCancelled()) {
-            return -1;
-         } else if (sprint2 == null && a2.getCurrentStateType().isCompletedOrCancelled()) {
-            return 1;
-         }
-
-         return 0;
-      }
-   };
-
-   private class SprintComparator implements Comparator<IAgileItem> {
-
-      @Override
-      public int compare(IAgileItem a1, IAgileItem a2) {
-         IAgileSprint sprint1 = atsApi.getAgileService().getSprint(a1);
-         IAgileSprint sprint2 = atsApi.getAgileService().getSprint(a2);
-
-         if (sprint1 == null && sprint2 == null) {
-            return 0;
-         }
-         // Sort lower if no sprint
-         else if (sprint1 == null) {
-            return 1;
-         } else if (sprint2 == null) {
-            return -1;
-         }
-
-         return sprint1.getName().compareTo(sprint2.getName());
-      }
-   };
-
-   private class CompCancelledComparator implements Comparator<IAgileItem> {
-
-      @Override
-      public int compare(IAgileItem a1, IAgileItem a2) {
-         IAgileSprint sprint1 = atsApi.getAgileService().getSprint(a1);
-         IAgileSprint sprint2 = atsApi.getAgileService().getSprint(a2);
-
-         if (sprint1 == null && sprint2 == null) {
-            return 0;
-         }
-
-         if (a1.getCurrentStateType().isCancelled()) {
-            return -1;
-         }
-         if (a2.getCurrentStateType().isCancelled()) {
-            return 1;
-         }
-         if (a1.getCurrentStateType().isCompleted()) {
-            return -1;
-         }
-         if (a2.getCurrentStateType().isCompleted()) {
-            return 1;
-         }
-         return -1 * a1.getCurrentStateName().compareTo(a2.getCurrentStateName());
-      }
-   };
 
    private String print(String title, List<IAgileItem> sItems) {
       if (!debug) {

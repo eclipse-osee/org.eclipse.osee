@@ -1197,4 +1197,9 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       }
       return null;
    }
+
+   @Override
+   public XResultData sortBacklog(ArtifactToken backlog) {
+      return atsApi.getAgileService().sortAgileBacklog(backlog, "Sort Agile Backlog");
+   }
 }
