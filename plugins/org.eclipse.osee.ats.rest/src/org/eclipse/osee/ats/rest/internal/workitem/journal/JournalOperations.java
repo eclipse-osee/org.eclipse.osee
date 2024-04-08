@@ -61,7 +61,7 @@ public class JournalOperations {
          String journalStr =
             atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.Journal, "");
          String timeName =
-            String.format("====== %s on %s =================", journalData.getUser().getName(), new Date());
+            String.format(" ====== %s on %s =================", journalData.getUser().getName(), new Date());
 
          String msg = journalData.getAddMsg();
          if (Strings.isValid(msg)) {
