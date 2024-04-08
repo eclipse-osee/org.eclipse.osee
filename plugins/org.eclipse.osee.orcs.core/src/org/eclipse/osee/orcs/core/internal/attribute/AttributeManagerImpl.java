@@ -429,7 +429,12 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
       if (values == null) {
          return;
       }
-      values.forEach(Attribute::delete);
+      for (Attribute<?> attribute : values) {
+         if (attribute.getOrcsData().getVersion().getTxCurrent().isCurrent() && !attribute.getModificationType().equals(
+            ModificationType.DELETED)) {
+            attribute.delete();
+         }
+      }
    }
 
    @Override
