@@ -71,7 +71,7 @@ public class ConflictManagerInternal {
       "SELECT%s art.art_id, art.art_type_id, dest.attr_id as dest_attr_id, src.attr_id as src_attr_id, src.attr_type_id src_attr_type_id " + //
          "FROM osee_txs txs_src, osee_attribute src, osee_join_id jid, osee_attribute dest, osee_txs txs_dest, osee_txs art_tx, osee_artifact art " + //
          "WHERE txs_src.branch_id = ? AND txs_src.tx_current = 1 AND txs_src.transaction_id > ? AND txs_src.gamma_id = src.gamma_id AND src.attr_type_id = jid.id AND jid.query_id = ? " + //
-         "AND src.art_id = art.art_id and art_tx.branch_id = txs_src.branch_id and art_tx.gamma_id = art.gamma_id and art_tx.tx_current = 1" + //
+         "AND src.art_id = art.art_id and art_tx.branch_id = txs_src.branch_id and art_tx.gamma_id = art.gamma_id and art_tx.tx_current = 1 " + //
          "AND src.art_id = dest.art_id AND src.attr_type_id = dest.attr_type_id AND dest.attr_id <> src.attr_id AND dest.gamma_id = txs_dest.gamma_id AND txs_dest.branch_id = ? AND txs_dest.tx_current = 1";
 
    private static final String CONFLICT_CLEANUP =
