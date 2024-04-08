@@ -1333,6 +1333,9 @@ export abstract class CurrentStructureService {
 					allColumns.push(`"${header}:false"`);
 				}
 			});
+		allColumns = allColumns.filter(
+			(item, pos) => allColumns.indexOf(item) === pos
+		);
 		return of([columnPrefs, allColumns]);
 	}
 
