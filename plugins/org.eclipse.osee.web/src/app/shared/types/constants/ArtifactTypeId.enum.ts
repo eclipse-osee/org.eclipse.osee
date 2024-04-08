@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export const ARTIFACTTYPEIDENUM = {
+	ARTIFACTEXPLORERPREFERENCES: '5896799229524426609',
 	ELEMENT_ARRAY: '6360154518785980502',
 	ELEMENT: '2455059983007225765',
 	STRUCTURE: '2455059983007225776',

@@ -23,6 +23,9 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ArtifactExplorerTabService } from './lib/services/artifact-explorer-tab.service';
 import { tab } from './lib/types/artifact-explorer.data';
+import { map } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ArtifactExplorerPreferencesService } from './lib/services/artifact-explorer-preferences.service';
 
 @Component({
 	selector: 'osee-artifact-explorer',
@@ -58,10 +61,18 @@ export class ArtifactExplorerComponent {
 
 	openTabs = this.tabService.Tabs;
 	selectedTabIndex = this.tabService.selectedIndex;
+	panelLocation = toSignal(
+		this.userPrefsService.artifactExplorerPreferences.pipe(
+			map((prefs) =>
+				prefs.artifactExplorerPanelLocation === true ? 'start' : 'end'
+			)
+		)
+	);
 
 	constructor(
 		private uiService: UiService,
-		private tabService: ArtifactExplorerTabService
+		private tabService: ArtifactExplorerTabService,
+		private userPrefsService: ArtifactExplorerPreferencesService
 	) {}
 
 	setSelectedTab(index: number) {
