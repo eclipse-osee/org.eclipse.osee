@@ -20,7 +20,7 @@ const explorer = navigationStructure[0].children.find(
 const routes: Routes = [
 	{
 		path: '',
-		loadChildren: () => import('@osee/toolbar'),
+		loadChildren: () => import('./toolbar.routes'),
 		outlet: 'toolbar',
 	},
 	{
