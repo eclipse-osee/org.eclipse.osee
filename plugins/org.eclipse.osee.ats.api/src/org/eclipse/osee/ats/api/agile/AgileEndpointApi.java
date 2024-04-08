@@ -401,4 +401,10 @@ public interface AgileEndpointApi {
    @Path("item/{itemId}/points")
    public Response setPoints(@PathParam("itemId") long itemId, String points);
 
+   @PUT
+   @Path("backlog/sort")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public XResultData sortBacklog(ArtifactToken backlog);
+
 }

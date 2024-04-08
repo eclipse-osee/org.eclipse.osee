@@ -369,6 +369,12 @@ public class WfeMembersTab extends WfeAbstractTab implements IWorldEditor, ISele
 
       }
    }
+   @Override
+   public void handleReloaded(Collection<Artifact> modifiedArts) {
+      if (modifiedArts.contains(provider.getArtifact())) {
+         reload();
+      }
+   }
 
    @Override
    public void refresh() {

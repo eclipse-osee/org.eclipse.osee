@@ -429,6 +429,7 @@ public class TransitionManager implements IExecuteListener {
                         changes, atsApi);
                      logTimeSpent("20.2 - state hook transitioned " + listener.getClass().getSimpleName());
                   }
+
                   if (toState.isCompletedOrCancelled()) {
                      workItemService.clearImplementersCache(workItem);
                   }
@@ -441,6 +442,7 @@ public class TransitionManager implements IExecuteListener {
 
                   workItemFromStateMap.put(workItem, fromState.getName());
                }
+
             } catch (Exception ex) {
                results.addResult(workItem,
                   new TransitionResult(String.format("Exception while transitioning [%s]", transData.getName()), ex));

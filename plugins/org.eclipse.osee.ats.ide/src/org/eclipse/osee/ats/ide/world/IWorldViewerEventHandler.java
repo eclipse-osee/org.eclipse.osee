@@ -36,4 +36,8 @@ public interface IWorldViewerEventHandler {
 
    public void handleColumnTopicEvents(ArtifactTopicEvent artifactTopicEvent, WorldXViewer worldXViewer);
 
+   default void handleReloaded(Collection<Artifact> modifiedArts) {
+      return;
+   }
+
 }

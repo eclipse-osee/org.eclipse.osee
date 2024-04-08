@@ -290,6 +290,9 @@ public class WorldXViewerEventManager {
                      updatePreComputedColumnValue(allModAndParents, worldViewer);
 
                      processPurged(worldViewer, handler);
+
+                     processReloaded(artifactEvent, modifiedArts, handler);
+
                      for (Artifact artifact : modifiedArts) {
                         processArtifact(worldViewer, artifact, processed);
                      }
@@ -308,6 +311,13 @@ public class WorldXViewerEventManager {
             } catch (Exception ex) {
                OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error processing event handler for - %s", handler);
             }
+         }
+      }
+
+      private void processReloaded(ArtifactEvent artifactEvent, Collection<Artifact> modifiedArts,
+         IWorldViewerEventHandler handler) {
+         if (artifactEvent.isReloadEvent() && !modifiedArts.isEmpty()) {
+            handler.handleReloaded(modifiedArts);
          }
       }
    }
