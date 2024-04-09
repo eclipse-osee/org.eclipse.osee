@@ -169,9 +169,10 @@ public class AccessControlServiceImpl extends AbstractAccessControlService {
       Consumer<JdbcStatement> consumer = stmt -> {
          ArtifactId subjectId = UserId.valueOf(stmt.getLong("privilege_entity_id"));
          BranchId branchId = BranchId.valueOf(stmt.getLong("branch_id"));
+         BranchToken branch = branchIdToToken.get(branchId);
          PermissionEnum permission = PermissionEnum.getPermission(stmt.getInt("permission_id"));
          ArtifactTypeToken subjectArtifactType = tokenService.getArtifactType(stmt.getLong("art_type_id"));
-         ArtifactToken artifact = ArtifactToken.valueOf(stmt.getLong("art_id"), branchId);
+         ArtifactToken artifact = getArtifactFromId(ArtifactToken.valueOf(stmt.getLong("art_id"), branch), branch);
 
          artAclOps.populateArtifactAccessControlListEntry(subjectId, artifact, permission, subjectArtifactType);
       };
