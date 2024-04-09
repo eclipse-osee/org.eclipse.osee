@@ -18,7 +18,7 @@ load("@aspect_bazel_lib//lib:repo_utils.bzl","repo_utils")
 #highly derivative of rules_nodes/nodejs/repositories.bzl
 
 DEFAULT_BAT_REPOSITORY="bat"
-DEFAULT_BAT_VERSION = "1.0.3"
+DEFAULT_BAT_VERSION = "1.0.4"
 BUILT_IN_BAT_PLATFORMS = PLATFORMS.keys()
 BAT_EXTRACT_DIR = "bin/bat"
 

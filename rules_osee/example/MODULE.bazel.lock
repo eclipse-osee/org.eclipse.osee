@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 6,
-  "moduleFileHash": "279a71da54d2c5fb2b1053c58ad7e9b461cfc1d7baba5545af17be345aadb92a",
+  "moduleFileHash": "bc24c011a4db395b59ce7b34346359485ddd7120c5ad9e0bbf851fd4f3552d96",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -14,7 +14,7 @@
   },
   "localOverrideHashes": {
     "bazel_tools": "1ae69322ac3823527337acf02016e8ee95813d8d356f47060255b8956fa642f0",
-    "rules_osee": "360984d80b38d3ab2b8e0683e01c5f0d0cf9165573ab17cccd4f30e420f7d01f"
+    "rules_osee": "5ee0d528f6dba167cc013b75c94440508269457bcfbae9d7c9bd9747e5c634d6"
   },
   "moduleDepGraph": {
     "<root>": {
@@ -97,7 +97,7 @@
     },
     "rules_osee@_": {
       "name": "rules_osee",
-      "version": "0.2.4",
+      "version": "0.2.5",
       "key": "rules_osee@_",
       "repoName": "rules_osee",
       "executionPlatformsToRegister": [],
@@ -3448,7 +3448,7 @@
             "ruleClassName": "bat_repositories",
             "attributes": {
               "platform": "linux_amd64",
-              "bat_version": "1.0.3"
+              "bat_version": "1.0.4"
             }
           },
           "bat": {
@@ -3463,7 +3463,7 @@
             "ruleClassName": "bat_repositories",
             "attributes": {
               "platform": "windows_amd64",
-              "bat_version": "1.0.3"
+              "bat_version": "1.0.4"
             }
           }
         },
