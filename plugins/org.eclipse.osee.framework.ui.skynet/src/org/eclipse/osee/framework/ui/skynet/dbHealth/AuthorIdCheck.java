@@ -73,7 +73,7 @@ public class AuthorIdCheck extends DatabaseHealthOperation {
          int num = 0;
          StringBuffer infoSb = new StringBuffer(500);
          for (ArtifactId author : authors) {
-            System.out.println(String.format("Processing [%d] %d/%d...", author, num++, authors.size()));
+            System.out.println(String.format("Processing [%s] %d/%d...", author.getIdString(), num++, authors.size()));
             if (author.isInvalid()) {
                rd.addRaw(AHTML.addRowMultiColumnTable("TX_DETAILS", String.valueOf(author),
                   "Warning: Skipping author < 1; this is ok, but may want to change in future"));
