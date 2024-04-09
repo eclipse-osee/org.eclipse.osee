@@ -10,7 +10,6 @@ The BlockApplicabilityTool is used for instrumenting applicability tags on non M
 	a. https://ci.eclipse.org/osee/job/osee_dev/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/
 2. Unzip this file.
 3. In the current BlockApplicabilityTool folder, remove the 'configuration' and 'plugins' folder.  Replace these with the corresponding folders in the newly unzipped osee.server.runtime.zip folder. 
-4. In the 'plugins' folder, remove any jar that contains 'icteam', and the jar with 'slf4j.impl.log4j12' in the title.
 5. Under 'configuration/config.ini', remove the corresponding lines for the jar files deleted from 'plugins'.
 6. Zip up the 'BlockApplicabilityTool' folder.
 7. Distribute as needed.

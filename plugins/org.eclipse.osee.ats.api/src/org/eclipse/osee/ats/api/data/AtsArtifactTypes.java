@@ -32,7 +32,6 @@ import static org.eclipse.osee.ats.api.util.AtsImage.WORKFLOW_DEFINITION;
 import static org.eclipse.osee.ats.api.util.AtsImage.WORK_PACKAGE;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.AbstractAccessControlled;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.DirectSoftwareRequirement;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.BranchDiffData;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitBranchName;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitChangeId;
@@ -41,7 +40,6 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Notes;
 import static org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider.osee;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.MaterialIcon;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 
 /**
  * @author Donald G. Dunne
@@ -231,7 +229,6 @@ public interface AtsArtifactTypes {
 
    ArtifactTypeToken TeamWorkflow = ats.add(ats.artifactType(73L, "Team Workflow", false, AbstractAccessControlled, AbstractWorkflowArtifact)
       .any(ActionableItemReference)
-      .zeroOrOne(AgileChangeType, AgileChangeType.Improvement)
       .zeroOrOne(ApplicabilityWorkflow)
       .zeroOrOne(ApplicableToProgram, ApplicableToProgram.No)
       .zeroOrOne(ApproveRequestedHoursBy)
@@ -239,7 +236,6 @@ public interface AtsArtifactTypes {
       .zeroOrOne(BranchMetrics)
       .zeroOrOne(ChangeType)
       .any(CommitOverride)
-      .zeroOrOne(Condition)
       .zeroOrOne(CrashOrBlankDisplay)
       .zeroOrOne(DuplicatedPcrId)
       .zeroOrOne(EstimateAssumptions)
@@ -248,7 +244,6 @@ public interface AtsArtifactTypes {
       .zeroOrOne(GitRepoName)
       .zeroOrOne(GitBranchName)
       .zeroOrOne(HowToReproduceProblem)
-      .zeroOrOne(Information)
       .zeroOrOne(LegacyPcrId)
       .zeroOrOne(ImpactToMissionOrCrew)
       .zeroOrOne(NeedBy)
@@ -269,7 +264,6 @@ public interface AtsArtifactTypes {
       .zeroOrOne(ProposedResolution)
       .zeroOrOne(ProposedResolutionDate)
       .zeroOrOne(ProblemFirstObserved)
-      .zeroOrOne(Rank)
       .zeroOrOne(Rationale)
       .zeroOrOne(RelatedTaskWorkflowDefinitionOld)
       .any(RelatedTaskWorkflowDefinitionReference)
@@ -283,7 +277,6 @@ public interface AtsArtifactTypes {
       .zeroOrOne(WeeklyBenefit)
       .zeroOrOne(Workaround)
       .any(GitChangeId)
-      .zeroOrOne(BurnDownData)
       .zeroOrOne(ValidateChangesRanBy)
       .zeroOrOne(ValidateChangesRanDate)
       .zeroOrOne(ManagerSignedOffByDate)
@@ -369,39 +362,5 @@ public interface AtsArtifactTypes {
 
    ArtifactTypeToken AgileBacklog = ats.add(ats.artifactType(7553335770333667393L, "Agile Backlog", false, new MaterialIcon("list"), Goal));
 
-
-   //iCTeam Types
-   ArtifactTypeToken Project = ats.add(ats.artifactType(250L, "Project", false, Artifact)
-      .zeroOrOne(BaselineBranchGuid)
-      .zeroOrOne(Shortname)
-      .zeroOrOne(TaskCountForProject));
-
-   ArtifactTypeToken AgileProject = ats.add(ats.artifactType(8517L, "Agile Project", false, Project));
-
-   ArtifactTypeToken RequirementDocument = ats.add(ats.artifactType(251L, "Requirement Document", false, Artifact)
-		      .zeroOrOne(Prefix));
-   ArtifactTypeToken Software_ReQ = ats.add(ats.artifactType(252L, "Software ReQ", false, DirectSoftwareRequirement)
-		   .zeroOrOne(CoreAttributeTypes.WordTemplateContent));
-
-   ArtifactTypeToken DataTypeDefinitionString = ats.add(ats.artifactType(253L, "DataType Definition", false, Artifact)
-		   .zeroOrOne(AtsAttributeTypes.Identifier)
-		   .zeroOrOne(AtsAttributeTypes.LastChange)
-		   .zeroOrOne(AtsAttributeTypes.MaxLength));
-
-   ArtifactTypeToken SpecificationType = ats.add(ats.artifactType(254L, "Specification Type", false, Artifact)
-		   .zeroOrOne(AtsAttributeTypes.LongName)
-		   .zeroOrOne(AtsAttributeTypes.Identifier)
-		   .zeroOrOne(AtsAttributeTypes.LastChange)
-		   .zeroOrOne(Description));
-
-   ArtifactTypeToken ProjectModule = ats.add(ats.artifactType(255L, "Project Module", false, Artifact));
-
-   ArtifactTypeToken EnumValues = ats.add(ats.artifactType(258L, "DataType Definitio Enum", false, Artifact)
-		   .zeroOrOne(Identifier));
-   ArtifactTypeToken SpecifiedValues = ats.add(ats.artifactType(257L, "DataType Definitio Enum", false, EnumValues));
-   ArtifactTypeToken DataTypeDefinitionEnum = ats.add(ats.artifactType(256L, "DataType Definitio Enum", false, SpecifiedValues)
-		   .zeroOrOne(AtsAttributeTypes.Identifier)
-		   .zeroOrOne(AtsAttributeTypes.LastChange)
-		   .zeroOrOne(AtsAttributeTypes.MaxLength));
    // @formatter:on
 }
