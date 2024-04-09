@@ -59,12 +59,18 @@ public class ComputedCharacteristicTest {
 
    @Test
    public void testCalculateComputedCharacteristics() {
-      Assert.assertEquals(125, newArtifact.getComputedCharacteristicValue(DemoOseeTypes.ComputationSum));
-      Assert.assertEquals(5.4, newArtifact.getComputedCharacteristicValue(DemoOseeTypes.ComputationProduct));
-      Assert.assertEquals(217L, newArtifact.getComputedCharacteristicValue(DemoOseeTypes.ComputationAverage));
-      Assert.assertEquals(4, newArtifact.getComputedCharacteristicValue(DemoOseeTypes.ComputationQuotient));
-      Assert.assertEquals(2.1, newArtifact.getComputedCharacteristicValue(DemoOseeTypes.ComputationDelta));
-      Assert.assertEquals(-1, newArtifact.getComputedCharacteristicValue(DemoOseeTypes.ComputationDivideByZero));
+      Assert.assertEquals(Integer.valueOf(125),
+         newArtifact.getComputedCharacteristicValue(DemoOseeTypes.ComputationSum));
+      Assert.assertEquals(Double.valueOf(5.4),
+         newArtifact.getComputedCharacteristicValue(DemoOseeTypes.ComputationProduct));
+      Assert.assertEquals(Long.valueOf(217L),
+         newArtifact.getComputedCharacteristicValue(DemoOseeTypes.ComputationAverage));
+      Assert.assertEquals(Integer.valueOf(4),
+         newArtifact.getComputedCharacteristicValue(DemoOseeTypes.ComputationQuotient));
+      Assert.assertEquals(Double.valueOf(2.1),
+         newArtifact.getComputedCharacteristicValue(DemoOseeTypes.ComputationDelta));
+      Assert.assertEquals(Integer.valueOf(-1),
+         newArtifact.getComputedCharacteristicValue(DemoOseeTypes.ComputationDivideByZero));
    }
 
    @Test(expected = OseeCoreException.class)

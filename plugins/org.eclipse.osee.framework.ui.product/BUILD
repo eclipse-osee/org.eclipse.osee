@@ -72,7 +72,7 @@ java_library(
 			"@ext_jars//:jface",
                         "@ext_jars//:emf",
                         "@ext_jars//:graphiti",
-			"@ext_jars//:eclipse_equinox_common",
+			"@eclipse_equinox_common//jar",
 			"@ext_jars//:apache_commons_lang",
 			"@ext_jars//:nebula"
 	],

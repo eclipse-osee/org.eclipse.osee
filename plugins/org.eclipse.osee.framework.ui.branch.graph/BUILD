@@ -77,7 +77,10 @@ java_library(
 		"@ext_jars//:eclipse_ui",
 		"@ext_jars//:swt",
 		"@ext_jars//:jface",
-		"@ext_jars//:eclipse_equinox_common",
+		"@eclipse_equinox_common//jar",
+		"@eclipse_core_commands//jar",
+		"@eclipse_draw2d//jar",
+		"@eclipse_gef//jar",
 		"@ext_jars//:apache_commons_lang",
 		"@ext_jars//:nebula"
 	],

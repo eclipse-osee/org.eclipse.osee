@@ -232,9 +232,27 @@ http_jar(
 )
 
 http_jar(
+      name = "eclipse_gef",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.gef_3.11.0.201606061308.jar&r=1",
+      downloaded_file_name = "org.eclipse.gef_3.11.0.201606061308.jar"
+)
+
+http_jar(
       name = "eclipse_core_jobs",
       url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.core.jobs_3.10.800.v20200421-0950.jar&r=1",
       downloaded_file_name = "org.eclipse.core.jobs_3.10.800.v20200421-0950.jar"
+)
+
+http_jar(
+      name = "eclipse_graphiti_ui",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.graphiti.ui_0.17.0.202005151449.jar&r=1",
+      downloaded_file_name = "org.eclipse.graphiti.ui_0.17.0.202005151449.jar"
+)
+
+http_jar(
+      name = "eclipse_graphiti",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.graphiti_0.17.0.202005151449.jar&r=1",
+      downloaded_file_name = "org.eclipse.graphiti_0.17.0.202005151449.jar"
 )
 
 http_jar(
@@ -402,6 +420,12 @@ http_jar(
       name = "eclipse_compare",
       url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.compare_3.7.1000.v20200511-1203.jar&r=1",
       downloaded_file_name = "org.eclipse.compare_3.7.1000.v20200511-1203.jar"
+)
+
+http_jar(
+      name = "eclipse_emf_transaction",
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.emf.transaction_1.9.1.201805140824.jar&r=1",
+      downloaded_file_name = "org.eclipse.emf.transaction_1.9.1.201805140824.jar"
 )
 
 http_jar(

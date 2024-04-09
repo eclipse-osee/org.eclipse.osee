@@ -59,8 +59,9 @@ java_library(
                 "@maven//:com_google_guava_guava",
 		"@maven//:org_hsqldb_hsqldb",
 		"@maven//:org_jsoup_jsoup",
-		"@ext_jars//:eclipse_equinox_common",
-                "@ext_jars//:jface"
+		"@eclipse_equinox_common//jar",
+                "@eclipse_core_filesystem//jar",
+		"@ext_jars//:jface"
                ],
 )
 

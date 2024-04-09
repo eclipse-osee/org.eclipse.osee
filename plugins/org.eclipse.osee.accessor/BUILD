@@ -10,11 +10,12 @@ java_library(
        name = "org.eclipse.osee.accessor",
        resources = ["xml_files"],
        srcs = glob(["**/*.java"]),
-       deps = ["java_deps", "//org.eclipse.osee.framework.core.packages","//org.eclipse.osee.framework.core.model","//org.eclipse.osee.activity.api",
-	       "//org.eclipse.osee.framework.resource.management","//org.eclipse.osee.jdbc","//org.eclipse.osee.jaxrs","//org.eclipse.osee.orcs","//org.eclipse.osee.orcs.core",
-	       "//org.eclipse.osee.orcs.rest.model","//org.eclipse.osee.console.admin","//org.eclipse.osee.define.rest.api","//org.eclipse.osee.define","//org.eclipse.osee.ats.api",
-	       "//org.eclipse.osee.ats.core", "//org.eclipse.osee.framework.core.server",
-               "//org.eclipse.osee.template.engine", "//org.eclipse.osee.ats.rest"],
+       deps = ["java_deps",
+               "//org.eclipse.osee.framework.core",
+               "//org.eclipse.osee.framework.jdk.core",
+	       "//org.eclipse.osee.orcs",
+	       "//org.eclipse.osee.orcs.core"
+               ],
        visibility = ["//visibility:public"]
 )
 
@@ -25,7 +26,6 @@ filegroup(
 	"OSGI-INF/artifact.accessor.xml",
 	"META-INF/MANIFEST.MF"
   ]
-    ,
 )
 
 java_library(

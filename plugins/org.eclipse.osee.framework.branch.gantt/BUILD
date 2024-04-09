@@ -13,7 +13,8 @@ java_library(
 		"//org.eclipse.osee.framework.ui.skynet",
 	 	"//org.eclipse.osee.framework.core.model",
 	 	"//org.eclipse.osee.framework.skynet.core",
-		"//org.eclipse.osee.framework.ui.swt"
+		"//org.eclipse.osee.framework.ui.swt",
+	        "//org.eclipse.osee.accessor"
 		],
 	visibility = ["//visibility:public"]
 )
@@ -56,7 +57,7 @@ java_library(
 		"@ext_jars//:eclipse_ui",
 		"@ext_jars//:swt",
 		"@ext_jars//:jface",
-	        "@ext_jars//:eclipse_equinox_common",
+	        "@eclipse_equinox_common//jar",
 		"@ext_jars//:apache_commons_lang",
 		"@ext_jars//:nebula"
 	],
