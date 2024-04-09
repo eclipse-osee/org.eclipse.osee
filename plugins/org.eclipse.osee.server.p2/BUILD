@@ -2,10 +2,10 @@
 
 genrule(
   name = "osee_server_zip",
-  srcs = ["//org.eclipse.osee.server.p2:server_plugins","//org.eclipse.osee.server.p2:server_files","//org.eclipse.osee.server.p2:json","//org.eclipse.osee.server.p2:create_config"],
+  srcs = ["server_plugins","server_files","json","create_config"],
   tools = ["@bazel_tools//tools/zip:zipper"],
   outs = ["org.eclipse.osee.server.p2.zip"],
-  cmd = "cp -r $(locations server_plugins) plugins;rm -rf etc;mkdir etc;cp -r $(locations //org.eclipse.osee.server.p2:json) etc;rm -rf configuration; mkdir configuration;cp -r $(locations //org.eclipse.osee.server.p2:create_config) configuration;chmod -R 777 configuration;mkdir osee_server;cp -r $(locations //org.eclipse.osee.server.p2:server_files) osee_server;mv plugins osee_server;mv configuration osee_server;mv etc osee_server;echo zip2 plugins;$(location @bazel_tools//tools/zip:zipper) c thezip.zip  osee_server/* osee_server/plugins/* osee_server/etc/* osee_server/configuration/*;cp -r thezip.zip $@",
+  cmd = "cp -r $(locations server_plugins) plugins;rm -rf etc;mkdir etc;cp -r $(locations json) etc;rm -rf configuration; mkdir configuration;cp -r $(locations create_config) configuration;chmod -R 777 configuration;mkdir osee_server;cp -r $(locations server_files) .;$(location @bazel_tools//tools/zip:zipper) c thezip.zip runDemo.sh runPostgreSqlLocal.sh runHsql.sh runServer.sh runDemo.bat plugins/* etc/* configuration/*;cp -r thezip.zip $@",
 )
 
 filegroup(
@@ -79,7 +79,8 @@ genrule(
   name = "server_plugins",
   srcs = ["build_no","third_party_deps"],
   outs = ["plugins"],
-  cmd = "mkdir s1p;cp -r $(locations build_no)/* s1p; cp -r $(locations //org.eclipse.osee.server.p2:third_party_deps) s1p;chmod -R 777 s1p; cp -r s1p $@;"
+  cmd = "mkdir s1p;cp -r $(locations build_no)/* s1p; cp -r $(locations //org.eclipse.osee.server.p2:third_party_deps) s1p;chmod -R 777 s1p; cp -r s1p $@;",
+  visibility = ["//visibility:public"]   
 )
 
 filegroup(
@@ -221,7 +222,7 @@ filegroup(
 	    "@apache_poi//jar",
 	    "@apache_poi_ooxml//jar",
 	    "@apache_poi_ooxml.schemas//jar",
-         ],
+         ],         
 )
 
 filegroup(

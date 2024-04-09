@@ -95,7 +95,7 @@ java_library(
 		"@ext_jars//:rmf",
 		"@ext_jars//:emf",
 		"@ext_jars//:jface",
-		"@ext_jars//:eclipse_equinox_common"
+		"@eclipse_equinox_common//jar"
 	],
 )
 

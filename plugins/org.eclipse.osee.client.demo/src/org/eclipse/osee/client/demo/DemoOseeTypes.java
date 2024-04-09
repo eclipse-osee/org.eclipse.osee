@@ -45,14 +45,14 @@ public interface DemoOseeTypes {
    AttributeTypeInteger MeasurementSeven = clientDemo.createInteger(8927304985723049577L, "Measurement Seven", MediaType.TEXT_PLAIN, "");
    AttributeTypeInteger MeasurementEight = clientDemo.createInteger(8927304985723049578L, "Measurement Eight", MediaType.TEXT_PLAIN, "");
 
-   ComputedCharacteristicSum ComputationSum = clientDemo.createComp(ComputedCharacteristicSum::new, 8927304985723049579L, "Sum Computation", "", MeasurementOne, MeasurementTwo);
-   ComputedCharacteristicProduct ComputationProduct = clientDemo.createComp(ComputedCharacteristicProduct::new, 8927304985723049580L, "Product Computation", "", MeasurementThree, MeasurementFour);
-   ComputedCharacteristicAverage ComputationAverage = clientDemo.createComp(ComputedCharacteristicAverage::new, 8927304985723049581L, "Average Computation", "", MeasurementFive, MeasurementSix);
-   ComputedCharacteristicQuotient ComputationQuotient = clientDemo.createComp(ComputedCharacteristicQuotient::new, 8927304985723049582L, "Quotient Computation", "", MeasurementOne, MeasurementTwo);
-   ComputedCharacteristicDelta ComputationDelta = clientDemo.createComp(ComputedCharacteristicDelta::new, 8927304985723049583L, "Delta Computation", "", MeasurementThree, MeasurementFour);
-   ComputedCharacteristicDelta ComputationFailure = clientDemo.createComp(ComputedCharacteristicDelta::new, 8927304985723049584L, "Failed Computation", "This computation has too many inputs", MeasurementOne, MeasurementTwo, MeasurementSeven);
-   ComputedCharacteristicDelta ComputationInvalid = clientDemo.createComp(ComputedCharacteristicDelta::new, 8927304985723049585L, "Invalid Computation", "This computation should not be valid for any artifact type", MeasurementOne, MeasurementTwo);
-   ComputedCharacteristicQuotient ComputationDivideByZero = clientDemo.createComp(ComputedCharacteristicQuotient::new, 8927304985723049586L, "Dividing by Zero", "", MeasurementOne, MeasurementEight);
+   ComputedCharacteristicSum<Integer> ComputationSum = clientDemo.createComp(ComputedCharacteristicSum::new, 8927304985723049579L, "Sum Computation", "", MeasurementOne, MeasurementTwo);
+   ComputedCharacteristicProduct<Double> ComputationProduct = clientDemo.createComp(ComputedCharacteristicProduct::new, 8927304985723049580L, "Product Computation", "", MeasurementThree, MeasurementFour);
+   ComputedCharacteristicAverage<Long> ComputationAverage = clientDemo.createComp(ComputedCharacteristicAverage::new, 8927304985723049581L, "Average Computation", "", MeasurementFive, MeasurementSix);
+   ComputedCharacteristicQuotient<Integer> ComputationQuotient = clientDemo.createComp(ComputedCharacteristicQuotient::new, 8927304985723049582L, "Quotient Computation", "", MeasurementOne, MeasurementTwo);
+   ComputedCharacteristicDelta<Double> ComputationDelta = clientDemo.createComp(ComputedCharacteristicDelta::new, 8927304985723049583L, "Delta Computation", "", MeasurementThree, MeasurementFour);
+   ComputedCharacteristicDelta<Integer> ComputationFailure = clientDemo.createComp(ComputedCharacteristicDelta::new, 8927304985723049584L, "Failed Computation", "This computation has too many inputs", MeasurementOne, MeasurementTwo, MeasurementSeven);
+   ComputedCharacteristicDelta<Integer> ComputationInvalid = clientDemo.createComp(ComputedCharacteristicDelta::new, 8927304985723049585L, "Invalid Computation", "This computation should not be valid for any artifact type", MeasurementOne, MeasurementTwo);
+   ComputedCharacteristicQuotient<Integer> ComputationDivideByZero = clientDemo.createComp(ComputedCharacteristicQuotient::new, 8927304985723049586L, "Dividing by Zero", "", MeasurementOne, MeasurementEight);
 
    ArtifactTypeToken DemoArtifactWithSelectivePartition = clientDemo.add(clientDemo.artifactType(86L, "Demo Artifact With Selective Partition", false, Artifact)
       .atLeastOne(Partition, Partition.Unspecified));

@@ -85,7 +85,7 @@ java_library(
 		"@ext_jars//:eclipse_ui",
 		"@ext_jars//:swt",
 		"@ext_jars//:jface",
-		"@ext_jars//:eclipse_equinox_common"
+		"@eclipse_equinox_common//jar"
 	],
 )
 
