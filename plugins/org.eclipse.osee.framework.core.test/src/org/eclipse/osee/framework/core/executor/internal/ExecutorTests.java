@@ -261,6 +261,7 @@ public class ExecutorTests {
       assertTrue(future.isDone());
    }
 
+   @SuppressWarnings("java:S2189") //Ignore the infinite loop in this test
    @Test(timeout = 5000)
    public void testCancellationDuringIO() throws InterruptedException {
       TestCallable test = new TestCallable() {

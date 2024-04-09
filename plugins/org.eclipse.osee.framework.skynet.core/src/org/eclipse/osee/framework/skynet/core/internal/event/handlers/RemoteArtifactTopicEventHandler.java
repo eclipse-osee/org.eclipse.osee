@@ -66,7 +66,8 @@ public class RemoteArtifactTopicEventHandler implements EventHandlerRemote<Remot
       transport.send(sender, transEvent);
    }
 
-   private void updateArtifacts(Sender sender, Collection<EventTopicArtifactTransfer> artifacts, TransactionId transactionId) {
+   private void updateArtifacts(Sender sender, Collection<EventTopicArtifactTransfer> artifacts,
+      TransactionId transactionId) {
       // Don't crash on any one artifact update problem (no update method throughs exceptions)
       for (EventTopicArtifactTransfer transArt : artifacts) {
          EventUtil.eventLog(String.format("REM: updateArtifact -> [%s]", transArt.toString()));
@@ -135,7 +136,7 @@ public class RemoteArtifactTopicEventHandler implements EventHandlerRemote<Remot
                            if (modificationType == null) {
                               EventUtil.eventLog(String.format(
                                  "REM: updateModifiedArtifact - Can't get mod type for %s's attribute %s.",
-                                 artifact.getArtifactTypeName(), attrChange.getAttrId()));
+                                 artifact.getArtifactTypeName(), attrChange.getAttrId().getIdString()));
                               continue;
                            }
                            if (modificationType.isDeleted()) {
@@ -156,7 +157,7 @@ public class RemoteArtifactTopicEventHandler implements EventHandlerRemote<Remot
                      else {
                         if (modificationType == null) {
                            EventUtil.eventLog(String.format("REM: Can't get mod type for %s's attribute %s.",
-                              artifact.getArtifactTypeName(), attrChange.getAttrId()));
+                              artifact.getArtifactTypeName(), attrChange.getAttrId().getIdString()));
                            continue;
                         }
                         artifact.internalInitializeAttribute(attributeType, attrChange.getAttrId(),
