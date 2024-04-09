@@ -18,9 +18,7 @@
 		(click)="togglePanel()"
 		[class]="panelOpen() ? 'tw-shadow-md' : ''">
 		<mat-panel-title class="tw-flex tw-gap-4">
-			<mat-icon>
-				{{ panelOpen() ? 'expand_more' : 'chevron_right' }}
-			</mat-icon>
+			<osee-expand-icon [open]="panelOpen()" />
 			<div class="tw-font-bold">Artifact Search</div>
 		</mat-panel-title>
 	</mat-expansion-panel-header>

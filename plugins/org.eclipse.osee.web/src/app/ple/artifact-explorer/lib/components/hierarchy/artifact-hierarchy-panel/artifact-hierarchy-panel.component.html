@@ -37,9 +37,7 @@
 			(click)="togglePanel()"
 			[ngClass]="panelOpen.value ? 'tw-shadow-md' : ''">
 			<mat-panel-title class="tw-flex tw-gap-4">
-				<mat-icon>
-					{{ panelOpen.value ? 'expand_more' : 'chevron_right' }}
-				</mat-icon>
+				<osee-expand-icon [open]="panelOpen.value" />
 				<div class="tw-font-bold">Artifact Hierarchy</div>
 			</mat-panel-title>
 		</mat-expansion-panel-header>

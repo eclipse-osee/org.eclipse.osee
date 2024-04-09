@@ -11,8 +11,7 @@ Any items in this file with '{}' **needs** to be replaced with an actual value.
 NOTE: You can add as many login ids as you want to the attributes list. Just add another object with typeName as "Login Id" and value as whatever additional value you want available for the login ID.
 
 ```
-curl -v --location --request POST '{application-server-url}/orcs/txs' --header 'Authorization: Basic 3333' --header 'Content-Type: application/json' --data-raw
-'{
+curl -v --location --request POST '{application-server-url}/orcs/txs' --header 'Authorization: Basic 3333' --header 'Content-Type: application/json' --data-raw '{
     "branch": "570",
     "txComment": "Created user",
     "createArtifacts": [
@@ -34,14 +33,7 @@ curl -v --location --request POST '{application-server-url}/orcs/txs' --header '
                 },
                 {
                     "typeName": "Login Id",
-                    "value": "{windows login ID}"
-                }
-            ]
-            "relations": [
-                {
-                    "typeId": "2305843009213694308"
-                    "sideB": "{User ID}"
-                    "sideA": "48656"
+                    "value": "{windows login ID OR email address}"
                 }
             ]
         }
@@ -63,6 +55,10 @@ curl -v -X GET -H "Authorization: Basic {your login ID}" {application-server-url
 
 ## Add Roles (Users Relation) to your User Manually
 
+### Note
+
+You will need to clear the user cache (and possibly browser cache) after adding any role to your user.
+
 ### Format to Add Any Role
 
 ```
@@ -70,6 +66,10 @@ curl -v --request POST '{application-server-url}/orcs/branch/570/relation/create
 ```
 
 ### Examples
+
+#### Everyone
+
+curl -v --request POST '{application-server-url}/orcs/branch/570/relation/createRelationByType/sideA/48656/sideB/{User ID}/relationTypeToken/2305843009213694308' --header 'Authorization: Basic 3333'
 
 #### Agile User
 

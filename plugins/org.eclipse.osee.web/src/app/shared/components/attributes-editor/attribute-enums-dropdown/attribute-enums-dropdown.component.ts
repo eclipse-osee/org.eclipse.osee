@@ -32,7 +32,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatOptionLoadingComponent } from '../../mat-option-loading/mat-option-loading/mat-option-loading.component';
-import { AttributeValue, NamedId } from '@osee/shared/types';
+import { NamedId } from '@osee/shared/types';
 import {
 	BehaviorSubject,
 	ReplaySubject,
@@ -92,7 +92,7 @@ export class AttributeEnumsDropdownComponent implements OnChanges {
 
 	@Input() disabled: boolean = false;
 	@Input() hintHidden: boolean = false;
-	@Input() attributeValue: AttributeValue = '';
+	@Input() attributeValue: string = '';
 
 	private _attributeValueChange = new Subject<string>();
 	@Output() attributeValueChange = this._attributeValueChange.pipe(

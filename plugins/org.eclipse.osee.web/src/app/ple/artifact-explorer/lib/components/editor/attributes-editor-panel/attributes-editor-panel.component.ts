@@ -30,7 +30,10 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { tab } from '../../../types/artifact-explorer.data';
 import { FormDirective } from '@osee/shared/directives';
-import { AttributesEditorComponent } from '@osee/shared/components';
+import {
+	AttributesEditorComponent,
+	ExpandIconComponent,
+} from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-attributes-editor-panel',
@@ -47,6 +50,7 @@ import { AttributesEditorComponent } from '@osee/shared/components';
 		MatExpansionModule,
 		AttributesEditorComponent,
 		FormDirective,
+		ExpandIconComponent,
 	],
 	templateUrl: './attributes-editor-panel.component.html',
 })

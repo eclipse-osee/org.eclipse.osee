@@ -12,7 +12,10 @@
  **********************************************************************/
 import { Component, Input, ViewChild, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { BranchPickerComponent } from '@osee/shared/components';
+import {
+	BranchPickerComponent,
+	ExpandIconComponent,
+} from '@osee/shared/components';
 import { MatExpansionModule } from '@angular/material/expansion';
 import {
 	BehaviorSubject,
@@ -30,7 +33,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
 import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
 import {
-	DEFAULT_HIERARCHY_ROOT_ARTIFACT_ID,
+	DEFAULT_HIERARCHY_ROOT_ARTIFACT,
 	artifact,
 	artifactTypeIcon,
 } from '../../../types/artifact-explorer.data';
@@ -53,6 +56,7 @@ import { ArtifactHierarchyArtifactsExpandedService } from '../../../services/art
 		ArtifactHierarchyRelationsComponent,
 		MatMenuModule,
 		ArtifactOptionsContextMenuComponent,
+		ExpandIconComponent,
 	],
 	templateUrl: './artifact-hierarchy.component.html',
 })
@@ -217,12 +221,12 @@ export class ArtifactHierarchyComponent {
 		y: '0',
 	};
 
-	openContextMenu(event: MouseEvent, artifactId: `${number}`) {
+	openContextMenu(event: MouseEvent, artifact: artifact) {
 		event.preventDefault();
 		this.menuPosition.x = event.clientX + 'px';
 		this.menuPosition.y = event.clientY + 'px';
 		this.matMenuTrigger.menuData = {
-			artifactId: artifactId,
+			artifactId: artifact.id,
 			parentArtifactId: this.artifactId,
 		};
 		this.matMenuTrigger.openMenu();
@@ -241,5 +245,5 @@ export class ArtifactHierarchyComponent {
 		);
 	}
 
-	DEFAULT_HIERARCHY_ROOT_ARTIFACT_ID = DEFAULT_HIERARCHY_ROOT_ARTIFACT_ID;
+	DEFAULT_HIERARCHY_ROOT_ARTIFACT = DEFAULT_HIERARCHY_ROOT_ARTIFACT;
 }

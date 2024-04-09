@@ -32,6 +32,7 @@ import { ArtifactSearchMockComponent } from '../artifact-search-panel/artifact-s
 import { CurrentBranchInfoService } from '@osee/shared/services';
 import { of } from 'rxjs';
 import { testBranchInfo } from '@osee/shared/testing';
+import { ExpandIconComponent } from '@osee/shared/components';
 
 describe('ArtifactHierarchyPanelComponent', () => {
 	let component: ArtifactHierarchyPanelComponent;
@@ -52,6 +53,7 @@ describe('ArtifactHierarchyPanelComponent', () => {
 					BranchPickerStub,
 					ViewSelectorMockComponent,
 					ArtifactSearchMockComponent,
+					ExpandIconComponent,
 				],
 			},
 		}).configureTestingModule({

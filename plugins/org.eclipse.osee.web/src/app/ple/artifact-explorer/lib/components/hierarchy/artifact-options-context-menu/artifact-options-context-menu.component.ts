@@ -10,23 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input, computed, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-	BehaviorSubject,
-	combineLatest,
-	filter,
-	map,
-	of,
-	switchMap,
-	take,
-} from 'rxjs';
+import { filter, map, of, switchMap, take, tap } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateChildArtifactDialogComponent } from '../create-child-artifact-dialog/create-child-artifact-dialog.component';
 import { MatMenuModule } from '@angular/material/menu';
 import {
-	artifact,
 	artifactContextMenuOption,
 	artifactTypeIcon,
 } from '../../../types/artifact-explorer.data';
@@ -49,9 +40,10 @@ import { attribute } from '@osee/shared/types';
 	templateUrl: './artifact-options-context-menu.component.html',
 })
 export class ArtifactOptionsContextMenuComponent {
-	artifactId = input.required<`${number}`>();
+	artifactId = input.required<string>();
 	parentArtifactId = input.required<`${number}`>();
 	siblingArtifactId = input<`${number}`>('0');
+	options = of(DEFUALT_ARTIFACT_CONTEXT_MENU_OPTIONS);
 
 	constructor(
 		public dialog: MatDialog,
@@ -70,8 +62,6 @@ export class ArtifactOptionsContextMenuComponent {
 	protected _branchEditable = computed(
 		() => this._branchType() === 'working'
 	);
-
-	defaultOption$ = of(DEFUALT_ARTIFACT_CONTEXT_MENU_OPTIONS);
 
 	getIconClasses(icon: artifactTypeIcon) {
 		return (
@@ -161,7 +151,11 @@ export class ArtifactOptionsContextMenuComponent {
 														firstId
 													);
 											}
-										})
+										}),
+										tap(
+											() =>
+												(this.uiService.updated = true)
+										)
 									)
 							)
 						)
@@ -224,7 +218,12 @@ export class ArtifactOptionsContextMenuComponent {
 																this.parentArtifactId()
 															);
 														}
-													})
+													}),
+													tap(
+														() =>
+															(this.uiService.updated =
+																true)
+													)
 												)
 										)
 									)

@@ -11,11 +11,11 @@
  *     Boeing - initial API and implementation
  -->
 <div class="tw-flex tw-flex-col tw-gap-4">
-	<osee-attributes-editor-panel [tab]="tab" />
+	<osee-attributes-editor-panel [tab]="tab()" />
 	<osee-relations-editor-panel
-		[editable]="tab.artifact.editable"
-		[artifactId]="tab.artifact.id"
-		[branchId]="tab.branchId"
-		[viewId]="tab.viewId" />
-	<osee-artifact-info-panel [tab]="tab" />
+		[editable]="tab().artifact.editable"
+		[artifactId]="tab().artifact.id"
+		[branchId]="tab().branchId"
+		[viewId]="tab().viewId" />
+	<osee-artifact-info-panel [tab]="tab()" />
 </div>

@@ -15,6 +15,7 @@ import { ArtifactEditorComponent } from './artifact-editor.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { tab } from '../../../types/artifact-explorer.data';
+import { input } from '@angular/core';
 
 describe('ArtifactEditorComponent', () => {
 	let component: ArtifactEditorComponent;
@@ -64,7 +65,7 @@ describe('ArtifactEditorComponent', () => {
 
 		fixture = TestBed.createComponent(ArtifactEditorComponent);
 		component = fixture.componentInstance;
-		component.tab = tabMock;
+		fixture.componentRef.setInput('tab', tabMock);
 		fixture.detectChanges();
 	});
 

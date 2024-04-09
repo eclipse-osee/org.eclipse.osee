@@ -23,7 +23,6 @@ export const DEFUALT_ARTIFACT_CONTEXT_MENU_OPTIONS: artifactContextMenuOption[] 
 				darkShade: '500',
 				variant: '',
 			},
-			excludedArtifactTypes: [],
 		},
 		{
 			name: 'Delete Artifact',
@@ -34,6 +33,5 @@ export const DEFUALT_ARTIFACT_CONTEXT_MENU_OPTIONS: artifactContextMenuOption[] 
 				darkShade: '500',
 				variant: '',
 			},
-			excludedArtifactTypes: [],
 		},
 	];

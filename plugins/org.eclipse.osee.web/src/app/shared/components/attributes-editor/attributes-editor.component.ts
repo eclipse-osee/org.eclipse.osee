@@ -10,8 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input, Optional, Output } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {
+	Component,
+	Input,
+	Optional,
+	Output,
+	effect,
+	input,
+} from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
 import { BehaviorSubject } from 'rxjs';
 import { AttributeEnumsDropdownComponent } from './attribute-enums-dropdown/attribute-enums-dropdown.component';
 import { MatInputModule } from '@angular/material/input';
@@ -22,6 +29,10 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { FormDirective } from '@osee/shared/directives';
 import { attribute } from '@osee/shared/types';
+import { MarkdownEditorComponent } from './../markdown-editor/markdown-editor.component';
+import { AttributeNameTrimPipe } from '../../pipes/attribute-name-trim/attribute-name-trim.pipe';
+import { IfIdReturnFalsePipe } from '../../pipes/if-id-return-false/if-id-return-false.pipe';
+import { StringToDatePipe } from '../../pipes/string-to-date/string-to-date.pipe';
 
 function controlContainerFactory(controlContainer?: ControlContainer) {
 	return controlContainer;
@@ -43,6 +54,11 @@ function controlContainerFactory(controlContainer?: ControlContainer) {
 		MatDatepickerModule,
 		MatNativeDateModule,
 		FormDirective,
+		MarkdownEditorComponent,
+		AttributeNameTrimPipe,
+		IfIdReturnFalsePipe,
+		StringToDatePipe,
+		DatePipe,
 	],
 	templateUrl: './attributes-editor.component.html',
 	viewProviders: [
@@ -54,27 +70,21 @@ function controlContainerFactory(controlContainer?: ControlContainer) {
 	],
 })
 export class AttributesEditorComponent {
-	@Input() set attributes(attributes: attribute[]) {
-		this._attributes.next(attributes);
-		this._attributes.value.forEach((attr) => {
-			// Format the input attributes' date values to a format recognizable for the datepicker
-			if (attr.storeType === 'Date' && attr.value !== '') {
-				attr.value = new Date(attr.value);
-			}
-			// Format ats attribute type name
-			if (attr.name.includes('ats.')) {
-				attr.name = attr.name.replace('ats.', '');
-			}
-		});
-	}
-	@Input() editable: boolean = false;
+	attributes = input.required<attribute[]>();
+	editable = input.required<boolean>();
 
 	_attributes = new BehaviorSubject<attribute[]>([]);
 
-	@Output() updatedAttributes = new BehaviorSubject<attribute<string>[]>([]);
+	constructor() {
+		effect(() => {
+			this._attributes.next(this.attributes());
+		});
+	}
+
+	@Output() updatedAttributes = new BehaviorSubject<attribute[]>([]);
 
 	emitUpdatedAttributes() {
-		const formattedAttributes: attribute<string>[] = this._attributes.value
+		const formattedAttributes: attribute[] = this._attributes.value
 			.map((attribute) => {
 				const formattedAttribute = { ...attribute, value: '' };
 
@@ -99,5 +109,11 @@ export class AttributesEditorComponent {
 			? false
 			: attribute.multiplicityId === '2' ||
 					attribute.multiplicityId === '4';
+	}
+
+	setAttribute(val: string, attribute: attribute) {
+		const datePipe = new DatePipe('en-US');
+		const dateString = datePipe.transform(val);
+		attribute.value = dateString ? dateString : '';
 	}
 }

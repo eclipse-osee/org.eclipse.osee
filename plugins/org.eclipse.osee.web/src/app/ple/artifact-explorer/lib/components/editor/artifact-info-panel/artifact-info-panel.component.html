@@ -15,12 +15,8 @@
 		(click)="togglePanel()"
 		[ngClass]="panelOpen.value ? 'tw-shadow-md' : ''"
 		class="tw-px-0 hover:tw-bg-background-hover">
-		<mat-panel-title class="tw-flex">
-			<div class="tw-px-4">
-				<mat-icon>
-					{{ panelOpen.value ? 'expand_more' : 'chevron_right' }}
-				</mat-icon>
-			</div>
+		<mat-panel-title class="tw-flex tw-gap-4 tw-pl-4">
+			<osee-expand-icon [open]="panelOpen.value" />
 			<div class="tw-font-bold">Artifact Info</div>
 		</mat-panel-title>
 	</mat-expansion-panel-header>

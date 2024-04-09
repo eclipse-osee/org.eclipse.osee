@@ -12,7 +12,21 @@
  **********************************************************************/
 import { attribute, iconVariant, twColor, twShade } from '@osee/shared/types';
 
-export const DEFAULT_HIERARCHY_ROOT_ARTIFACT_ID: `${number}` = '197818';
+export const DEFAULT_HIERARCHY_ROOT_ARTIFACT: artifact = {
+	id: '197818',
+	name: 'Default Hierarchy Root',
+	typeId: '10',
+	typeName: 'Root Artifact',
+	icon: {
+		icon: '',
+		color: '',
+		lightShade: '',
+		darkShade: '',
+		variant: '',
+	},
+	attributes: [],
+	editable: false,
+};
 
 export interface artifactWithDirectRelations {
 	artId: string;
@@ -105,12 +119,11 @@ export const artifactSentinel: artifact = {
 	editable: false,
 };
 
-export type TabType = 'Artifact' | 'ChangeReport';
+export type TabType = 'Artifact' | 'ChangeReport' | 'MarkdownEditor';
 
 export interface artifactContextMenuOption {
 	name: string;
 	icon: artifactTypeIcon;
-	excludedArtifactTypes: `${number}`[];
 }
 
 export interface deleteArtifactDialogData {

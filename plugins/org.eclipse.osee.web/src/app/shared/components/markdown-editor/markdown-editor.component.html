@@ -1,0 +1,112 @@
+<!--
+ * Copyright (c) 2024 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+
+<div class="tw-flex tw-flex-row tw-gap-4 tw-p-4">
+	<button
+		mat-icon-button
+		matTooltip="Undo"
+		(click)="undo()">
+		<div>
+			<mat-icon> undo </mat-icon>
+		</div>
+	</button>
+	<button
+		mat-icon-button
+		matTooltip="Redo"
+		(click)="redo()">
+		<div>
+			<mat-icon> redo </mat-icon>
+		</div>
+	</button>
+	<button
+		mat-icon-button
+		matTooltip="Examples"
+		[matMenuTriggerFor]="mdExamplesMenu">
+		<div>
+			<mat-icon> lightbulb </mat-icon>
+		</div>
+	</button>
+	<mat-menu #mdExamplesMenu="matMenu">
+		@for (mdExample of mdExamples; track $index) {
+			<button
+				(click)="addExampleToMdContent(mdExample.markdown)"
+				mat-menu-item>
+				<div class="tw-flex tw-flex-row tw-items-center">
+					<div class="tw-flex tw-items-center">
+						<mat-icon> {{ mdExample.icon }} </mat-icon>
+					</div>
+					{{ mdExample.name }}
+				</div>
+			</button>
+		}
+	</mat-menu>
+</div>
+<div
+	#main
+	class="tw-flex tw-h-full tw-w-full tw-flex-col tw-items-center">
+	<!-- Editor -->
+	<div
+		class="tw-flex tw-w-full tw-border tw-border-solid tw-border-background-tooltip">
+		<!-- Markdown Editor -->
+		<div
+			#containerLeft
+			class="tw-w-1/2">
+			<div class="tw-flex tw-h-full tw-w-full tw-flex-row">
+				<mat-form-field
+					ngPreserveWhitespaces
+					class="tw-flex tw-h-full tw-w-full"
+					subscriptSizing="dynamic">
+					<textarea
+						type="text"
+						matInput
+						cdkTextareaAutosize
+						[(ngModel)]="mdContent"
+						placeholder="Start typing Markdown text..."
+						class="placeholder:tw-font-mat-bold placeholder:tw-opacity-50"
+						ngPreserveWhitespaces></textarea>
+				</mat-form-field>
+			</div>
+		</div>
+		<!-- Resizer -->
+		<div
+			#resizer
+			class="vert-divider tw-group tw-flex tw-cursor-ew-resize tw-flex-col tw-items-center tw-justify-center"
+			id="dragMe">
+			<mat-divider
+				vertical
+				class="tw-grow tw-border-r-2 group-hover:tw-border-r-foreground-text"></mat-divider>
+			<button
+				mat-icon-button
+				matTooltip="Drag to resize the pane"
+				class="tw-cursor-ew-resize"
+				disableRipple>
+				<div
+					class="tw-flex tw-items-center tw-justify-center tw-opacity-50 group-hover:tw-opacity-100">
+					<mat-icon>code</mat-icon>
+				</div>
+			</button>
+			<mat-divider
+				vertical
+				class="tw-grow tw-border-r-2 group-hover:tw-border-r-foreground-text"></mat-divider>
+		</div>
+		<!-- HTML (Markdown Preview) -->
+		<div
+			#containerRight
+			class="tw-flex tw-min-w-[1rem] tw-items-center tw-overflow-auto tw-p-2">
+			<markdown
+				[data]="mdContent()"
+				class="tw-text-base">
+			</markdown>
+		</div>
+	</div>
+</div>

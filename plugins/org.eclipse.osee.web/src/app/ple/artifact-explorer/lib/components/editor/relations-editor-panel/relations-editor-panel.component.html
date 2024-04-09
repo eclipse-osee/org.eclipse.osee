@@ -17,12 +17,8 @@
 		(click)="togglePanel()"
 		[ngClass]="panelOpen.value ? 'tw-shadow-md' : ''"
 		class="tw-px-0 hover:tw-bg-background-hover">
-		<mat-panel-title class="tw-flex">
-			<div class="tw-px-4">
-				<mat-icon>
-					{{ panelOpen.value ? 'expand_more' : 'chevron_right' }}
-				</mat-icon>
-			</div>
+		<mat-panel-title class="tw-flex tw-gap-4 tw-pl-4">
+			<osee-expand-icon [open]="panelOpen.value" />
 			<div class="tw-font-bold">Relations Editor</div>
 		</mat-panel-title>
 	</mat-expansion-panel-header>
@@ -47,20 +43,15 @@
 								toggleExpand(relation.relationTypeToken.id)
 							"
 							class="tw-flex hover:tw-text-primary">
-							<!-- animated icon -->
-							<mat-icon
-								[ngClass]="
+							<osee-expand-icon
+								[open]="
 									dropdownsOpen.value.includes(
 										relation.relationTypeToken.id
 									)
-										? 'tw-rotate-90 tw-transform tw-transition-transform tw-duration-200 tw-ease-in'
-										: 'tw-rotate-0 tw-transform tw-transition-transform tw-duration-200 tw-ease-in'
-								">
-								chevron_right
-							</mat-icon>
+								" />
 						</button>
 						<!-- relation icon -->
-						<div class="tw-pl-4">
+						<div class="tw-flex tw-items-center tw-pl-4">
 							<mat-icon
 								[ngClass]="[
 									relation.relationSides[0].artifacts.length >
@@ -73,7 +64,7 @@
 								>swap_horiz</mat-icon
 							>
 						</div>
-						<div class="tw-pl-2">
+						<div class="tw-flex tw-items-center tw-pl-2">
 							{{ relation.relationTypeToken.name }}
 						</div>
 					</div>
@@ -112,19 +103,14 @@
 								<button
 									(click)="toggleExpand(side.name)"
 									class="tw-flex hover:tw-text-primary">
-									<!-- animated icon -->
-									<mat-icon
-										[ngClass]="
+									<osee-expand-icon
+										[open]="
 											dropdownsOpen.value.includes(
 												side.name
 											)
-												? 'tw-rotate-90 tw-transform tw-transition-transform tw-duration-200 tw-ease-in'
-												: 'tw-rotate-0 tw-transform tw-transition-transform tw-duration-200 tw-ease-in'
-										">
-										chevron_right
-									</mat-icon>
+										" />
 								</button>
-								<div class="tw-pl-4">
+								<div class="tw-flex tw-items-center tw-pl-4">
 									<mat-icon
 										[ngClass]="[
 											side.artifacts.length > 0
@@ -134,7 +120,7 @@
 										>swap_horiz</mat-icon
 									>
 								</div>
-								<div class="tw-pl-2">
+								<div class="tw-flex tw-items-center tw-pl-2">
 									{{ side.name }}
 								</div>
 							</div>

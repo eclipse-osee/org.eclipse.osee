@@ -16,6 +16,7 @@ import { BehaviorSubject, map, tap } from 'rxjs';
 import {
 	ActionDropDownComponent,
 	BranchPickerComponent,
+	ExpandIconComponent,
 	ViewSelectorComponent,
 } from '@osee/shared/components';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -45,6 +46,7 @@ import { ArtifactSearchPanelComponent } from '../artifact-search-panel/artifact-
 		MatTooltipModule,
 		ActionDropDownComponent,
 		ArtifactSearchPanelComponent,
+		ExpandIconComponent,
 	],
 	templateUrl: './artifact-hierarchy-panel.component.html',
 })
