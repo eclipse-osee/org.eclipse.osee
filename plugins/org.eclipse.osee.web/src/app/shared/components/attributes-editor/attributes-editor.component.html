@@ -10,18 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-
 @if (_attributes | async; as attributes) {
 	@for (attribute of attributes; track attribute) {
 		<div class="tw-flex tw-items-center tw-justify-between">
 			<div
 				class="tw-w-1/6 tw-pl-4 tw-font-bold"
 				[ngClass]="
-					isRequired(attribute) && attribute.value === ''
+					isRequired(attribute) &&
+					attribute.value === '' &&
+					(attribute.name | attributeNameTrim | ifIdReturnFalse)
 						? 'tw-text-warning'
 						: ''
 				">
-				{{ attribute.name }}:
+				{{ attribute.name | attributeNameTrim }}:
 			</div>
 			<div class="tw-w-5/6 tw-pl-4">
 				@switch (attribute.storeType) {
@@ -32,25 +33,46 @@
 								[attributeId]="attribute.typeId"
 								[(attributeValue)]="attribute.value"
 								(attributeValueChange)="emitUpdatedAttributes()"
-								[required]="isRequired(attribute)" />
+								[required]="
+									isRequired(attribute) &&
+									(attribute.name
+										| attributeNameTrim
+										| ifIdReturnFalse)
+								" />
 						}
 					}
 					@case ('String') {
-						<mat-form-field
-							class="tw-w-full"
-							subscriptSizing="dynamic">
-							<textarea
-								[disabled]="
-									!editable || attribute.name === 'Id'
-								"
-								matInput
-								matInputAutosize
-								placeholder="value"
-								[name]="'attrString' + attribute.typeId"
-								[(ngModel)]="attribute.value"
-								(input)="emitUpdatedAttributes()"
-								[required]="isRequired(attribute)"></textarea>
-						</mat-form-field>
+						@if (attribute.name === 'Markdown Content') {
+							<osee-markdown-editor
+								[(mdContent)]="attribute.value"
+								(mdContentChange)="emitUpdatedAttributes()" />
+						} @else {
+							<mat-form-field
+								class="tw-w-full"
+								subscriptSizing="dynamic">
+								<textarea
+									[disabled]="
+										!editable() ||
+										!(
+											attribute.name
+											| attributeNameTrim
+											| ifIdReturnFalse
+										)
+									"
+									matInput
+									matInputAutosize
+									placeholder="value"
+									[name]="'attrString' + attribute.typeId"
+									[(ngModel)]="attribute.value"
+									(input)="emitUpdatedAttributes()"
+									[required]="
+										isRequired(attribute) &&
+										(attribute.name
+											| attributeNameTrim
+											| ifIdReturnFalse)
+									"></textarea>
+							</mat-form-field>
+						}
 					}
 					@case ('Boolean') {
 						<mat-form-field
@@ -61,7 +83,12 @@
 								[name]="'attrBoolean' + attribute.typeId"
 								[(ngModel)]="attribute.value"
 								(selectionChange)="emitUpdatedAttributes()"
-								[required]="isRequired(attribute)"
+								[required]="
+									isRequired(attribute) &&
+									(attribute.name
+										| attributeNameTrim
+										| ifIdReturnFalse)
+								"
 								[value]="attribute.value ? 'true' : 'false'">
 								<mat-option [value]="'true'"> true </mat-option>
 								<mat-option [value]="'false'">
@@ -79,9 +106,17 @@
 								[matDatepicker]="picker"
 								placeholder="Select a date"
 								[name]="'attrDate' + attribute.typeId"
-								[(ngModel)]="attribute.value"
-								(ngModelChange)="emitUpdatedAttributes()"
-								[required]="isRequired(attribute)"
+								[ngModel]="attribute.value | stringToDate"
+								(ngModelChange)="
+									setAttribute($event, attribute);
+									emitUpdatedAttributes()
+								"
+								[required]="
+									isRequired(attribute) &&
+									(attribute.name
+										| attributeNameTrim
+										| ifIdReturnFalse)
+								"
 								readonly
 								[disabled]="!editable" />
 							<mat-datepicker-toggle
@@ -102,7 +137,12 @@
 								[name]="'attrInteger' + attribute.typeId"
 								[(ngModel)]="attribute.value"
 								(change)="emitUpdatedAttributes()"
-								[required]="isRequired(attribute)"></textarea>
+								[required]="
+									isRequired(attribute) &&
+									(attribute.name
+										| attributeNameTrim
+										| ifIdReturnFalse)
+								"></textarea>
 						</mat-form-field>
 					}
 					@case ('Long') {
@@ -117,7 +157,12 @@
 								[name]="'attrLong' + attribute.typeId"
 								[(ngModel)]="attribute.value"
 								(change)="emitUpdatedAttributes()"
-								[required]="isRequired(attribute)"></textarea>
+								[required]="
+									isRequired(attribute) &&
+									(attribute.name
+										| attributeNameTrim
+										| ifIdReturnFalse)
+								"></textarea>
 						</mat-form-field>
 					}
 				}

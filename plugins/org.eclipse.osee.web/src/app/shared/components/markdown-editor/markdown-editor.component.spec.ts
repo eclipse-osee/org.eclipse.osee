@@ -12,22 +12,23 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AttributesEditorComponent } from './attributes-editor.component';
-import { MarkdownEditorComponent } from './../markdown-editor/markdown-editor.component';
-import { mockAttribute } from '../../types/attribute';
+import { MarkdownEditorComponent } from './markdown-editor.component';
+import { provideMarkdown } from 'ngx-markdown';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
-describe('AttributesEditorComponent', () => {
-	let component: AttributesEditorComponent;
-	let fixture: ComponentFixture<AttributesEditorComponent>;
+describe('MarkdownEditorComponent', () => {
+	let component: MarkdownEditorComponent;
+	let fixture: ComponentFixture<MarkdownEditorComponent>;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [AttributesEditorComponent, MarkdownEditorComponent],
+			imports: [MarkdownEditorComponent, NoopAnimationsModule],
+			providers: [provideMarkdown()],
 		}).compileComponents();
 
-		fixture = TestBed.createComponent(AttributesEditorComponent);
+		fixture = TestBed.createComponent(MarkdownEditorComponent);
 		component = fixture.componentInstance;
-		fixture.componentRef.setInput('attributes', [mockAttribute]);
+		fixture.componentRef.setInput('mdContent', 'this is a **bold**');
 		fixture.detectChanges();
 	});
 

@@ -10,17 +10,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-@if (defaultOption$ | async; as defaultOptions) {
+@if (options | async; as options) {
 	<div class="tw-flex tw-flex-col tw-text-foreground-base">
-		@for (defaultOption of defaultOptions; track defaultOption) {
+		@for (option of options; track option) {
 			<button
 				mat-menu-item
 				[disabled]="!_branchEditable()"
-				(click)="selectOption(defaultOption)">
-				<mat-icon [class]="getIconClasses(defaultOption.icon)">{{
-					defaultOption.icon.icon
+				(click)="selectOption(option)">
+				<mat-icon [class]="getIconClasses(option.icon)">{{
+					option.icon.icon
 				}}</mat-icon>
-				{{ defaultOption.name }}
+				{{ option.name }}
 			</button>
 		}
 	</div>

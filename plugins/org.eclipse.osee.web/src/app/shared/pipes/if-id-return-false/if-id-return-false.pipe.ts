@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2022 Boeing
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,17 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Observable, of } from 'rxjs';
-import { AttributeService } from '@osee/shared/services';
+import { Pipe, PipeTransform } from '@angular/core';
 
-let bogusObservable$ = new Observable<string>();
-
-export const attributeServiceMock: Partial<AttributeService> = {
-	getMarkDownContent(
-		branchId: string,
-		artifactID: string,
-		attributeID: string
-	) {
-		return bogusObservable$;
-	},
-};
+@Pipe({
+	name: 'ifIdReturnFalse',
+	standalone: true,
+})
+export class IfIdReturnFalsePipe implements PipeTransform {
+	transform(value: string, ...args: unknown[]): boolean {
+		return value !== 'Id';
+	}
+}

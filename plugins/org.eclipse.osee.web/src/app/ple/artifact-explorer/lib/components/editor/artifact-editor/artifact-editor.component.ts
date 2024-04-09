@@ -11,8 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CommonModule } from '@angular/common';
-import { Component, OnChanges, Input, SimpleChanges } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Component, input } from '@angular/core';
 import { tab } from '../../../types/artifact-explorer.data';
 import { ArtifactInfoPanelComponent } from '../artifact-info-panel/artifact-info-panel.component';
 import { AttributesEditorPanelComponent } from '../attributes-editor-panel/attributes-editor-panel.component';
@@ -29,39 +28,8 @@ import { RelationsEditorPanelComponent } from '../relations-editor-panel/relatio
 	],
 	templateUrl: './artifact-editor.component.html',
 })
-export class ArtifactEditorComponent implements OnChanges {
-	@Input() tab!: tab;
-	private _tab = new BehaviorSubject<tab>({
-		tabType: 'Artifact',
-		tabTitle: '',
-		artifact: {
-			name: '',
-			id: '0',
-			typeId: '',
-			typeName: '',
-			icon: {
-				icon: '',
-				color: '',
-				lightShade: '',
-				darkShade: '',
-				variant: '',
-			},
-			attributes: [],
-			editable: false,
-		},
-		branchId: '',
-		viewId: '',
-	});
-
-	ngOnChanges(changes: SimpleChanges): void {
-		if (
-			changes.tab !== undefined &&
-			changes.tab.previousValue !== changes.tab.currentValue &&
-			changes.tab.currentValue !== undefined
-		) {
-			this._tab.next(changes.tab.currentValue);
-		}
-	}
+export class ArtifactEditorComponent {
+	tab = input.required<tab>();
 
 	constructor() {}
 }

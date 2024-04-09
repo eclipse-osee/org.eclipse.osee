@@ -12,22 +12,20 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AttributesEditorComponent } from './attributes-editor.component';
-import { MarkdownEditorComponent } from './../markdown-editor/markdown-editor.component';
-import { mockAttribute } from '../../types/attribute';
+import { ExpandIconComponent } from './expand-icon.component';
 
-describe('AttributesEditorComponent', () => {
-	let component: AttributesEditorComponent;
-	let fixture: ComponentFixture<AttributesEditorComponent>;
+describe('ExpandIconComponent', () => {
+	let component: ExpandIconComponent;
+	let fixture: ComponentFixture<ExpandIconComponent>;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [AttributesEditorComponent, MarkdownEditorComponent],
+			imports: [ExpandIconComponent],
 		}).compileComponents();
 
-		fixture = TestBed.createComponent(AttributesEditorComponent);
+		fixture = TestBed.createComponent(ExpandIconComponent);
 		component = fixture.componentInstance;
-		fixture.componentRef.setInput('attributes', [mockAttribute]);
+		fixture.componentRef.setInput('open', false);
 		fixture.detectChanges();
 	});
 

@@ -85,18 +85,6 @@ export const navigationStructure: navigationElement[] = [
 				children: [],
 			},
 			{
-				label: 'AsciiDoc Editor',
-				cypressLabel: 'adocEditor',
-				pageTitle: 'AsciiDoc Editor',
-				isDropdown: false,
-				isDropdownOpen: false,
-				requiredRoles: [],
-				routerLink: '/ple/asciidoc',
-				icon: '',
-				description: '',
-				children: [],
-			},
-			{
 				label: 'Messaging Configuration',
 				cypressLabel: 'messaging',
 				pageTitle: 'MIM',

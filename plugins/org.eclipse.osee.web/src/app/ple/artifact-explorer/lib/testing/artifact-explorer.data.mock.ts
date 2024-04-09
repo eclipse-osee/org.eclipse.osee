@@ -28,7 +28,6 @@ export const artifactTypeIconMock: artifactTypeIcon = {
 export const artifactContextMenuOptionMock: artifactContextMenuOption = {
 	name: 'create',
 	icon: artifactTypeIconMock,
-	excludedArtifactTypes: [],
 };
 
 export const artifactTypeAttributesMock: attribute[] = [

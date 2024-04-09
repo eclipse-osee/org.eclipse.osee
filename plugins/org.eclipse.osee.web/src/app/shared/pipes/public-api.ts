@@ -10,29 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-
-export interface attribute {
-	name: string;
-	value: string;
-	typeId: string;
-	id: string;
-	storeType: storeType;
-	multiplicityId: string;
-}
-
-export type storeType =
-	| 'Boolean'
-	| 'Date'
-	| 'Enumeration'
-	| 'Integer'
-	| 'Long'
-	| 'String';
-
-export const mockAttribute: attribute = {
-	name: 'name',
-	value: 'requirement',
-	typeId: '1234',
-	id: '7777',
-	storeType: 'String',
-	multiplicityId: '1',
-};
+export * from './if-id-return-false/if-id-return-false.pipe';
+export * from './string-to-date/string-to-date.pipe';
+export * from './attribute-name-trim/attribute-name-trim.pipe';

@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2022 Boeing
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,19 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { TestBed } from '@angular/core/testing';
+import { Pipe, PipeTransform } from '@angular/core';
 
-import { TextEditorUiService } from './text-editor-ui.service';
-
-describe('TextEditorUiService', () => {
-	let service: TextEditorUiService;
-
-	beforeEach(() => {
-		TestBed.configureTestingModule({});
-		service = TestBed.inject(TextEditorUiService);
-	});
-
-	it('should be created', () => {
-		expect(service).toBeTruthy();
-	});
-});
+@Pipe({
+	name: 'stringToDate',
+	standalone: true,
+})
+export class StringToDatePipe implements PipeTransform {
+	transform(value: string, ...args: unknown[]): Date {
+		return new Date(value);
+	}
+}

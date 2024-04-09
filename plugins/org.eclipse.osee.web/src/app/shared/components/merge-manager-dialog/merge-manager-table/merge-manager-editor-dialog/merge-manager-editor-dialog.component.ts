@@ -54,7 +54,7 @@ export class MergeManagerEditorDialogComponent implements OnInit {
 		this.attributes.next([attr]);
 	}
 
-	handleUpdatedAttributes(updatedAttributes: attribute<string>[]) {
+	handleUpdatedAttributes(updatedAttributes: attribute[]) {
 		if (updatedAttributes.length === 0) {
 			return;
 		}

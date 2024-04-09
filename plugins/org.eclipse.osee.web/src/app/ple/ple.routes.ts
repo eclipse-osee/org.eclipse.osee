@@ -22,9 +22,6 @@ const plconfig = navigationStructure[0].children.find(
 const messaging = navigationStructure[0].children.find(
 	(page) => page.label === 'Messaging Configuration'
 );
-const asciidoc = navigationStructure[0].children.find(
-	(page) => page.label === 'AsciiDoc Editor'
-);
 
 const routes: Routes = [
 	{
@@ -52,11 +49,6 @@ const routes: Routes = [
 		path: 'messaging',
 		title: messaging?.pageTitle,
 		loadChildren: () => import('./messaging/messaging.routes'),
-	},
-	{
-		path: 'asciidoc',
-		title: asciidoc?.pageTitle,
-		loadChildren: () => import('./asciidoc/asciidoc.routes'),
 	},
 	{
 		path: 'artifact/explorer',

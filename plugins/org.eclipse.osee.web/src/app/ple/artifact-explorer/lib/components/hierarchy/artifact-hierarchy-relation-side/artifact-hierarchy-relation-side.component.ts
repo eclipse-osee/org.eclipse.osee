@@ -32,6 +32,7 @@ import {
 } from '../../../types/artifact-explorer.data';
 import { BehaviorSubject } from 'rxjs';
 import { ArtifactIconService } from '../../../services/artifact-icon.service';
+import { ExpandIconComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-artifact-hierarchy-relation-side',
@@ -42,6 +43,7 @@ import { ArtifactIconService } from '../../../services/artifact-icon.service';
 		MatIconModule,
 		DragDropModule,
 		MatButtonModule,
+		ExpandIconComponent,
 		forwardRef(() => ArtifactHierarchyComponent),
 	],
 	templateUrl: './artifact-hierarchy-relation-side.component.html',

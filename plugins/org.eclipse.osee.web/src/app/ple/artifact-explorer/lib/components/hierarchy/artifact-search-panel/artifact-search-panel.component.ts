@@ -11,14 +11,26 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, signal } from '@angular/core';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatIconModule } from '@angular/material/icon';
+import {
+	MatExpansionPanel,
+	MatExpansionPanelHeader,
+	MatExpansionPanelTitle,
+} from '@angular/material/expansion';
+import { MatIcon } from '@angular/material/icon';
 import { ArtifactSearchComponent } from './artifact-search/artifact-search.component';
+import { ExpandIconComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-artifact-search-panel',
 	standalone: true,
-	imports: [MatExpansionModule, MatIconModule, ArtifactSearchComponent],
+	imports: [
+		MatExpansionPanel,
+		MatExpansionPanelHeader,
+		MatExpansionPanelTitle,
+		MatIcon,
+		ArtifactSearchComponent,
+		ExpandIconComponent,
+	],
 	templateUrl: './artifact-search-panel.component.html',
 })
 export class ArtifactSearchPanelComponent {

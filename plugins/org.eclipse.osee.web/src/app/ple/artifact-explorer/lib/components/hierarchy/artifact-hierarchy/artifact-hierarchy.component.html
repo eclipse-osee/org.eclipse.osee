@@ -20,7 +20,7 @@
 						(contextmenu)="
 							openContextMenu(
 								$event,
-								DEFAULT_HIERARCHY_ROOT_ARTIFACT_ID
+								DEFAULT_HIERARCHY_ROOT_ARTIFACT
 							)
 						"
 						class="tw-flex tw-py-1 tw-pl-4"
@@ -32,24 +32,17 @@
 						<button
 							(click)="toggleExpandButton(artifact.id)"
 							class="tw-flex tw-items-center hover:tw-text-primary">
-							<mat-icon
-								matListItemIcon
-								[ngClass]="
-									artifactIsExpanded(artifact.id)
-										? 'tw-rotate-90 tw-transform tw-transition-transform tw-duration-200 tw-ease-in'
-										: 'tw-rotate-0 tw-transform tw-transition-transform tw-duration-200 tw-ease-in'
-								">
-								chevron_right
-							</mat-icon>
+							<osee-expand-icon
+								[open]="artifactIsExpanded(artifact.id)" />
 						</button>
 						<!-- artifact icon and name button -->
 						<button
-							(contextmenu)="openContextMenu($event, artifact.id)"
+							(contextmenu)="openContextMenu($event, artifact)"
 							cdkDrag
 							[cdkDragData]="artifact"
 							class="tw-flex tw-items-center hover:tw-text-primary"
 							(click)="addTab(artifact)">
-							<div class="tw-pl-4">
+							<div class="tw-flex tw-items-center tw-pl-4">
 								<mat-icon
 									[class]="getIconClasses(artifact.icon)">
 									{{ artifact.icon.icon }}

@@ -17,19 +17,10 @@
 	<button
 		(click)="isOpen() ? close() : open()"
 		class="tw-flex tw-items-center hover:tw-text-primary">
-		<!-- animated icon -->
-		<mat-icon
-			matListItemIcon
-			[ngClass]="
-				isOpen()
-					? 'tw-rotate-90 tw-transform tw-transition-transform tw-duration-200 tw-ease-in'
-					: 'tw-rotate-0 tw-transform tw-transition-transform tw-duration-200 tw-ease-in'
-			">
-			chevron_right
-		</mat-icon>
+		<osee-expand-icon [open]="isOpen()" />
 	</button>
 	<div class="tw-flex tw-items-center">
-		<div class="tw-pl-2 tw-text-accent-700">
+		<div class="tw-flex tw-items-center tw-pl-2 tw-text-accent-700">
 			<mat-icon> swap_horiz </mat-icon>
 		</div>
 		<div class="tw-pl-2">{{ typeName() }} - [{{ relationSideName() }}]</div>
@@ -53,15 +44,8 @@
 							: addArtifactsOpen(art.id)
 					"
 					class="tw-flex tw-items-center tw-pl-4 hover:tw-text-primary">
-					<!-- Animated icon -->
-					<div
-						[ngClass]="
-							artifactsOpen().includes(art.id)
-								? 'tw-rotate-90 tw-transform tw-transition-transform tw-duration-200 tw-ease-in'
-								: 'tw-rotate-0 tw-transform tw-transition-transform tw-duration-200 tw-ease-in'
-						">
-						<mat-icon matListItemIcon> chevron_right </mat-icon>
-					</div>
+					<osee-expand-icon
+						[open]="artifactsOpen().includes(art.id)" />
 				</button>
 				<button
 					cdkDrag

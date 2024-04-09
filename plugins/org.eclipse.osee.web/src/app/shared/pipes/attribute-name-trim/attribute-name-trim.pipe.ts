@@ -10,29 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { Pipe, PipeTransform } from '@angular/core';
 
-export interface attribute {
-	name: string;
-	value: string;
-	typeId: string;
-	id: string;
-	storeType: storeType;
-	multiplicityId: string;
+@Pipe({
+	name: 'attributeNameTrim',
+	standalone: true,
+})
+export class AttributeNameTrimPipe implements PipeTransform {
+	transform(value: string, ...args: unknown[]): string {
+		return value.replace('ats.', '');
+	}
 }
-
-export type storeType =
-	| 'Boolean'
-	| 'Date'
-	| 'Enumeration'
-	| 'Integer'
-	| 'Long'
-	| 'String';
-
-export const mockAttribute: attribute = {
-	name: 'name',
-	value: 'requirement',
-	typeId: '1234',
-	id: '7777',
-	storeType: 'String',
-	multiplicityId: '1',
-};

@@ -12,15 +12,27 @@
  **********************************************************************/
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatExpansionModule } from '@angular/material/expansion';
+import {
+	MatExpansionPanel,
+	MatExpansionPanelHeader,
+	MatExpansionPanelTitle,
+} from '@angular/material/expansion';
 import { BehaviorSubject } from 'rxjs';
 import { tab } from '../../../types/artifact-explorer.data';
-import { MatIconModule } from '@angular/material/icon';
+import { MatIcon } from '@angular/material/icon';
+import { ExpandIconComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-artifact-info-panel',
 	standalone: true,
-	imports: [CommonModule, MatExpansionModule, MatIconModule],
+	imports: [
+		CommonModule,
+		MatExpansionPanel,
+		MatExpansionPanelHeader,
+		MatExpansionPanelTitle,
+		MatIcon,
+		ExpandIconComponent,
+	],
 	templateUrl: './artifact-info-panel.component.html',
 })
 export class ArtifactInfoPanelComponent {

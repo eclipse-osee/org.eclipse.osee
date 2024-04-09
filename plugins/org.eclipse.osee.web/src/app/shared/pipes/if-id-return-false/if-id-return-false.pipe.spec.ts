@@ -10,29 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { IfIdReturnFalsePipe } from './if-id-return-false.pipe';
 
-export interface attribute {
-	name: string;
-	value: string;
-	typeId: string;
-	id: string;
-	storeType: storeType;
-	multiplicityId: string;
-}
-
-export type storeType =
-	| 'Boolean'
-	| 'Date'
-	| 'Enumeration'
-	| 'Integer'
-	| 'Long'
-	| 'String';
-
-export const mockAttribute: attribute = {
-	name: 'name',
-	value: 'requirement',
-	typeId: '1234',
-	id: '7777',
-	storeType: 'String',
-	multiplicityId: '1',
-};
+describe('IfIdReturnFalsePipe', () => {
+	it('create an instance', () => {
+		const pipe = new IfIdReturnFalsePipe();
+		expect(pipe).toBeTruthy();
+	});
+});

@@ -19,10 +19,9 @@ import {
 	artifact,
 	TabType,
 	artifactSentinel,
-	artifactTypeIcon,
 } from '../types/artifact-explorer.data';
-import { twColorClasses } from '@osee/shared/types';
 import { ArtifactIconService } from './artifact-icon.service';
+import { twColorClasses } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',

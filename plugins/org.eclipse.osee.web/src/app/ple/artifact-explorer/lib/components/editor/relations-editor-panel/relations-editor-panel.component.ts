@@ -51,6 +51,7 @@ import {
 } from '../../../types/artifact-explorer.data';
 import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
 import { ArtifactIconService } from '../../../services/artifact-icon.service';
+import { ExpandIconComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-relations-editor-panel',
@@ -63,6 +64,7 @@ import { ArtifactIconService } from '../../../services/artifact-icon.service';
 		MatListModule,
 		MatDialogModule,
 		DragDropModule,
+		ExpandIconComponent,
 	],
 	templateUrl: './relations-editor-panel.component.html',
 })
