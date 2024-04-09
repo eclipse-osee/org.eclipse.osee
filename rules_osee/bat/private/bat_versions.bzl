@@ -25,3 +25,21 @@ BAT_VERSIONS = {
     "1.0.0-linux_amd64": ("x86_64-linux","1.0.0", "", "5729E817EEE51944A63D4275CD0FCB660CA5A1595DF5DE821723F81DDB6BD85C"),
     "1.0.0-windows_amd64": ("x86_64-win","1.0.0", ".exe", "2FE8C1B068E197ADCE731026CCF8BA12E67BD55E38484EE71290BBB1AD5895A8"),
 }
+
+BAT_CAPABILITY_SETS = {
+    #1.0.4
+    "1.0.4-linux_amd64": ["no_config"],
+    "1.0.4-windows_amd64": ["no_config"],
+    #1.0.3
+    "1.0.3-linux_amd64": [],
+    "1.0.3-windows_amd64": [],
+    #1.0.2
+    "1.0.2-linux_amd64": [],
+    "1.0.2-windows_amd64": [],
+    # 1.0.1
+    "1.0.1-linux_amd64": [],
+    "1.0.1-windows_amd64": [],
+    # 1.0.0
+    "1.0.0-linux_amd64": [],
+    "1.0.0-windows_amd64": [],
+}

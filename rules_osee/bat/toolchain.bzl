@@ -13,35 +13,30 @@
 BatInfo = provider(
     fields = {
         "target_tool_path":"Path to the bat executable",
-        "tool_files":"Files required in runfiles to make the bat executable available"
+        "tool_files":"Files required in runfiles to make the bat executable available",
+        "bat_features":"Features bat tool is capable of(used for compatibility checking)."
     }
 )
-def _to_manifest_path(ctx, file):
-    if file.short_path.startswith("../"):
-        return "../../../../../external/" + file.short_path[3:] #todo figure out better workaround
-    else:
-        return file.short_path
 
 def _bat_toolchain_impl(context):
     if (context.attr.target_tool and context.attr.target_tool_path):
         fail("Can only set one of target tool and target tool path.")
     
     tool_files = []
-    target_tool_path = context.attr.target_tool_path
 
     if context.attr.target_tool:
         tool_files = [context.file.target_tool]
-        target_tool_path = _to_manifest_path(context, context.file.target_tool)
     
-    template_variables = platform_common.TemplateVariableInfo({"BAT_PATH":target_tool_path})
+    template_variables = platform_common.TemplateVariableInfo({"BAT_PATH":context.file.target_tool.path})
     default = DefaultInfo(
         files = depset(tool_files),
         runfiles = context.runfiles(files = tool_files)
     )
 
     batinfo = BatInfo(
-        target_tool_path = target_tool_path,
-        tool_files = tool_files
+        target_tool_path = context.attr.target_tool_path,
+        tool_files = context.file.target_tool,
+        bat_features = context.attr.bat_features
     )
 
     toolchain_info = platform_common.ToolchainInfo(
@@ -59,11 +54,12 @@ bat_toolchain = rule (
     implementation = _bat_toolchain_impl,
     attrs = {
         "target_tool": attr.label(
-            mandatory = False, 
+            executable = True,
+            cfg = "exec", 
             allow_single_file = True
         ),
         "target_tool_path" : attr.string(
-            mandatory = False
-        )
+        ),
+        "bat_features": attr.string_list()
     }
 )

@@ -57,7 +57,7 @@ pkg_zip(
 )
 diff_test(
     name = "applic_test",
-    file1 = "//:example_zipped_markdown_files",
+    file1 = ":example_zipped_markdown_files",
     file2 = "//__snapshot__:example_zipped_markdown_files_snapshot.zip",
 )
 
@@ -66,12 +66,31 @@ diff_test(
 
 # bat_toolchain(
 #     name = "my_bat_toolchain",
-#     target_tool_path = "./bat",
+#     target_tool = ":bat",
+#     bat_features = [
+#         "no_config"
+#     ]
 # )
 # toolchain(
 #     name = "my_bat",
 #     exec_compatible_with = [
 #         "@platforms//os:linux",
+#         "@platforms//cpu:x86_64",
+#     ],
+#     toolchain = ":my_bat_toolchain",
+#     toolchain_type = "@rules_osee//bat:toolchain_type",
+# )
+# bat_toolchain(
+#     name = "my_bat_toolchain",
+#     target_tool = ":bat.exe",
+#     bat_features = [
+#         "no_config"
+#     ]
+# )
+# toolchain(
+#     name = "my_bat",
+#     exec_compatible_with = [
+#         "@platforms//os:windows",
 #         "@platforms//cpu:x86_64",
 #     ],
 #     toolchain = ":my_bat_toolchain",

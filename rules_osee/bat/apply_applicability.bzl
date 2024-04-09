@@ -29,18 +29,37 @@ _ATTRS = {
      """),
 }
 def _create_config_directory(ctx,file):
-    path = "%s/%s" % ("/".join(["config",file.basename.removesuffix(".json")]), "marker")
-    out=ctx.actions.declare_file(path)
-    ctx.actions.run_shell(
-        inputs=[file],
-        outputs = [out],
-        command = """mkdir -p $$(dirname %s) && touch %s""" % (path, path),
-        use_default_shell_env = True
-    )
-    outputs = [out]
-    return DefaultInfo(
-        files = depset(outputs)
-    )
+    #this is for back-compat
+    found = {}
+    for bat_config_feature in ctx.toolchains["@rules_osee//bat:toolchain_type"].batinfo.bat_features:
+        if bat_config_feature == "no_config":
+            found[bat_config_feature]="no_config"
+    if not found:        
+        path = "%s/%s" % ("/".join(["config",file.basename.removesuffix(".json")]), "osee_marker")
+        out=ctx.actions.declare_file(path)
+        ctx.actions.run_shell(
+            inputs=[file],
+            outputs = [out],
+            command = """mkdir -p $$(dirname %s) && touch %s""" % (path, path),
+            use_default_shell_env = True
+        )
+        outputs = [out]
+        return DefaultInfo(
+            files = depset(outputs)
+        )
+    else:
+        path = "%s" % ("osee_marker")
+        out=ctx.actions.declare_file(path)
+        ctx.actions.run_shell(
+            inputs=[file],
+            outputs = [out],
+            command = """mkdir -p $$(dirname %s) && touch %s""" % (path, path),
+            use_default_shell_env = True
+        )
+        outputs = [out]
+        return DefaultInfo(
+            files = depset(outputs)
+        )
 def _apply_applicability_impl(ctx):
     tool_path = ctx.toolchains["@rules_osee//bat:toolchain_type"].batinfo.target_tool_path
     tool_files = ctx.toolchains["@rules_osee//bat:toolchain_type"].batinfo.tool_files
@@ -58,19 +77,24 @@ def _apply_applicability_impl(ctx):
             output = ctx.actions.declare_file(file.path,sibling=output_dir.files.to_list()[0])
             outputs.append(output)
             args.add("-s",file)
-            args.add("-o",output_dir.files.to_list()[0].dirname+"/../../")
+            args.add("-o",output_dir.files.to_list()[0].dirname.removesuffix("/".join(["config",ctx.file.applic_config.basename.removesuffix(".json")])))
             if(len(ctx.attr.begin_comment_syntax)>0):
                 args.add("-b",ctx.attr.begin_comment_syntax[0])
             if(len(ctx.attr.end_comment_syntax)>0):
                 args.add("-b",ctx.attr.end_comment_syntax[0])
             args.add("--use-direct-output")
+            #this is for back-compat
+            for bat_config_feature in ctx.toolchains["@rules_osee//bat:toolchain_type"].batinfo.bat_features:
+                if bat_config_feature == "no_config":
+                    args.add("--no-write-config-folder")
+
             ctx.actions.run(
                 inputs = [file,ctx.file.applic_config],
                 outputs = [output],
                 arguments = [args],
                 toolchain = "@rules_osee//bat:toolchain_type",
                 progress_message ="Processing %{label}'s applicability. File: %{input}",
-                executable = tool_path,
+                executable = tool_files,
                 mnemonic ="BATPreProcess"
             )
     return [

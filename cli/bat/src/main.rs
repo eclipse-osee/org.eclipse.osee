@@ -18,11 +18,7 @@ use applicability_parser::{
 };
 use clap::Parser;
 use std::{
-    thread::{ self },
-    fs::{ File, create_dir_all, self },
-    sync::mpsc::channel,
-    path::Path,
-    io::ErrorKind,
+    fs::{ self, create_dir_all, File }, io::ErrorKind, path::{Path, PathBuf}, sync::mpsc::channel, thread
 };
 use common_path::common_path;
 mod applic_config;
@@ -51,26 +47,26 @@ struct CliOptions {
     ///[
     ///     {
     ///         "normalizedName":"PRODUCT_A",
-    ///         "features":["ENGINE_5=A2543","JHU_CONTROLLER=EXCLUDED","ROBOT_ARM_LIGHT=EXCLUDED","ROBOT_SPEAKER=SPKR_A"],
+    ///         "features":["ENGINE_5=A2543","JHU_CONTROLLER=Excluded","ROBOT_ARM_LIGHT=Excluded","ROBOT_SPEAKER=SPKR_A"],
     ///         "substitutions":[
     ///             {"matchText":"SOME_SUBSTITUTION","substitute":"SOME NEW TEXT CONTENT"}
     ///         ]
     ///     },
     ///     {
     ///         "normalizedName":"PRODUCT_B",
-    ///         "features":["ENGINE_5=A2543","JHU_CONTROLLER=INCLUDED","ROBOT_ARM_LIGHT=INCLUDED","ROBOT_SPEAKER=SPKR_A"]
+    ///         "features":["ENGINE_5=A2543","JHU_CONTROLLER=Included","ROBOT_ARM_LIGHT=Included","ROBOT_SPEAKER=SPKR_A"]
     ///     },
     ///     {
     ///         "normalizedName":"abGroup",
-    ///         "features":["ENGINE_5=A2543","JHU_CONTROLLER=INCLUDED","ROBOT_ARM_LIGHT=INCLUDED","ROBOT_SPEAKER=SPKR_A"]
+    ///         "features":["ENGINE_5=A2543","JHU_CONTROLLER=Included","ROBOT_ARM_LIGHT=Included","ROBOT_SPEAKER=SPKR_A"]
     ///     },
     ///     {
     ///         "normalizedName":"PRODUCT_D",
-    ///         "features":["ENGINE_5=B5543","JHU_CONTROLLER=EXCLUDED","ROBOT_ARM_LIGHT=EXCLUDED","ROBOT_SPEAKER=SPKR_B"]
+    ///         "features":["ENGINE_5=B5543","JHU_CONTROLLER=Excluded","ROBOT_ARM_LIGHT=Excluded","ROBOT_SPEAKER=SPKR_B"]
     ///     },
     ///     {
     ///         "normalizedName":"PRODUCT_C",
-    ///         "features":["ENGINE_5=A2543","JHU_CONTROLLER=INCLUDED","ROBOT_ARM_LIGHT=EXCLUDED","ROBOT_SPEAKER=SPKR_B"]
+    ///         "features":["ENGINE_5=A2543","JHU_CONTROLLER=Included","ROBOT_ARM_LIGHT=Excluded","ROBOT_SPEAKER=SPKR_B"]
     ///     }
     ///]
     #[clap(short, long, verbatim_doc_comment)]
@@ -96,9 +92,13 @@ struct CliOptions {
     #[clap(short, long, default_value = None, verbatim_doc_comment)]
     end_comment_syntax: Option<String>,
 
-    ///use output directly as specified instead of looking for a common path
+    /// Use output directly as specified instead of looking for a common path
     #[clap(short, long, verbatim_doc_comment)]
     use_direct_output: bool,
+
+    /// Do not write the processed files to a directory in {out_dir}/config/{config_name}
+    #[clap(short,long,verbatim_doc_comment)]
+    no_write_config_folder:bool
 }
 
 fn main() {
@@ -129,6 +129,7 @@ fn main() {
         for input in &args.srcs {
             let applic_config_for_file = applic_config.clone();
             let use_direct_output = args.use_direct_output;
+            let should_not_write_config_folder = args.no_write_config_folder;
             let _outer_thread = scope.spawn(move || {
                 println!("Processing input {}", input.to_str().unwrap_or(""));
                 let file_contents = get_file_contents(input);
@@ -208,9 +209,12 @@ fn main() {
                                 input.to_path_buf()
                             }
                         };
-                        let config_path = Path::new("config").join(
-                            Path::new(&cloned_config.normalized_name)
-                        );
+                        let config_path = match should_not_write_config_folder{
+                            false => Path::new("config").join(
+                                Path::new(&cloned_config.normalized_name)
+                            ),
+                            true => PathBuf::new(),
+                        };
                         let output_config_path = out_dirs.join(config_path);
                         let localized_output = &output_config_path;
                         let processed_path = localized_output.join(match use_direct_output {
