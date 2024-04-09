@@ -22,7 +22,6 @@ def ignoreDirectory(dirPath: str):
         "node_modules", 
         ".git",
         "\\bin\\",
-        "org.eclipse.osee.icteam.ui",
         "org.eclipse.osee.web\dist", 
         "org.eclipse.osee.web\.angular\cache",
         "OSEE-INF\spellCheck"

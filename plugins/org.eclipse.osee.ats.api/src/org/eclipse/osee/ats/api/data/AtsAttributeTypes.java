@@ -24,7 +24,6 @@ import static org.eclipse.osee.framework.core.data.AttributeTypeToken.TEXT_CALEN
 import static org.eclipse.osee.framework.core.data.DisplayHint.MultiLine;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.config.AtsDisplayHint;
-import org.eclipse.osee.ats.api.data.enums.token.AgileChangeTypeAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ApplicableToProgramAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.BitStateEnumAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.CancelledReasonEnumAttributeType;
@@ -243,20 +242,6 @@ AttributeTypeString TestRunToSourceLocator = ats.createString(130595201919637916
    AttributeTypeArtifactId WorkflowDefinitionReference = ats.createArtifactId(53049621055799825L, "ats.Workflow Definition Reference", TEXT_PLAIN, "Specific work flow definition id used by this Workflow artifact", Read);
    AttributeTypeString WorkflowNotes = ats.createString(1152921504606847205L, "ats.Notes", TEXT_PLAIN, "Notes applicable to ATS Workflow", MultiLine, Edit);
    AttributeTypeString WorkType = ats.createString(72063456955810043L, "ats.Work Type", TEXT_PLAIN, "Work Type of this Team.", Config);
-
-   // IcTeam Types
-   AgileChangeTypeAttributeType AgileChangeType  = ats.createEnum(new AgileChangeTypeAttributeType(), Read);
-   AttributeTypeString Condition = ats.createString(1152921504606851666L, "req.Condition", TEXT_PLAIN, "Stores the prerequsite data for workflow", Read);
-   AttributeTypeString GUID = ats.createString(1152921504606851425L, "task.guid", TEXT_PLAIN, "Guid of the task", Read);
-   AttributeTypeString Information = ats.createString(1152921504606851665L, "tag.Information", TEXT_PLAIN, "Addition of tags to workflow", Read);
-   AttributeTypeString Rank = ats.createString(1152921504606851480L, "agile.Rank", TEXT_PLAIN, "Holds the Rank of workflow for prioritization", Read);
-   AttributeTypeString Shortname = ats.createStringNoTag(1152921504606847340L, "Shortname", TEXT_PLAIN, "Shorter name of project", Read);
-   AttributeTypeString TaskCountForProject = ats.createString(1152921504606849831L, "ats.TaskCountForProject", TEXT_PLAIN, "Count value to hold the number of tasks under a project", Read);
-   AttributeTypeString BurnDownData = ats.createString(1152921504606851667L, "burndown.data", TEXT_PLAIN, "Stores the modified remaining time and date", Read);   AttributeTypeString Prefix = ats.createString(1152921504606851670L, "prefix", TEXT_PLAIN, "Prefix", Read);
-   AttributeTypeString Identifier = ats.createString(1152921504606851671L, "id", TEXT_PLAIN, "Identifier", Read);
-   AttributeTypeString LastChange = ats.createString(1152921504606851672L, "last.change", TEXT_PLAIN, "LastChange", Read);
-   AttributeTypeString MaxLength = ats.createString(1152921504606851673L, "max.length", TEXT_PLAIN, "MaxLength", Read);
-   AttributeTypeString LongName = ats.createString(1152921504606851674L, "long.name", TEXT_PLAIN, "LongName", Read);
 
    // Remove after 1.0.0 full release
    AttributeTypeString WorkflowDefinition = ats.createString(1152921504606847149L, "ats.Workflow Definition", TEXT_PLAIN, "Specific work flow definition id used by this Workflow artifact", Read);
