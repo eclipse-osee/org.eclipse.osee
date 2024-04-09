@@ -216,7 +216,7 @@ mod tests {
                     ApplicabilityParserSyntaxTag::TagNot(ApplicabilitySyntaxTagNot(
                         vec![ApplicabilityTag {
                             tag: "SOMETHING".to_string(),
-                            value: "INCLUDED".to_string()
+                            value: "Included".to_string()
                         }],
                         vec![ApplicabilityParserSyntaxTag::Text(
                             " Some Text Here \n".to_string()
@@ -240,7 +240,7 @@ mod tests {
                     ApplicabilityParserSyntaxTag::TagNot(ApplicabilitySyntaxTagNot(
                         vec![ApplicabilityTag {
                             tag: "SOMETHING".to_string(),
-                            value: "INCLUDED".to_string()
+                            value: "Included".to_string()
                         }],
                         vec![ApplicabilityParserSyntaxTag::Text(
                             " Some Text Here \n".to_string()
@@ -274,7 +274,7 @@ mod tests {
                     ApplicabilityParserSyntaxTag::Tag(ApplicabilitySyntaxTag(
                         vec![ApplicabilityTag {
                             tag: "SOMETHING".to_string(),
-                            value: "INCLUDED".to_string()
+                            value: "Included".to_string()
                         }],
                         vec![ApplicabilityParserSyntaxTag::Text(
                             " Some Text Here \n".to_string()
@@ -307,7 +307,7 @@ mod tests {
                     ApplicabilityParserSyntaxTag::Tag(ApplicabilitySyntaxTag(
                         vec![ApplicabilityTag {
                             tag: "SOMETHING".to_string(),
-                            value: "INCLUDED".to_string()
+                            value: "Included".to_string()
                         }],
                         vec![ApplicabilityParserSyntaxTag::Text(
                             " Some Text Here \n".to_string()

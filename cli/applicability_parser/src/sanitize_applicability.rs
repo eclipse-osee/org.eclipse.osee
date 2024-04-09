@@ -123,7 +123,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///     vec![
     ///         ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
-    ///             value:"INCLUDED".to_string()
+    ///             value:"Included".to_string()
     ///             }
     ///         ],
     ///     vec![
@@ -168,7 +168,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///     vec![
     ///         ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
-    ///             value:"INCLUDED".to_string()
+    ///             value:"Included".to_string()
     ///             }
     ///         ],
     ///     vec![
@@ -215,7 +215,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///     vec![
     ///         ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
-    ///             value:"INCLUDED".to_string()
+    ///             value:"Included".to_string()
     ///             }
     ///         ],
     ///     vec![
@@ -250,7 +250,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///             vec![
     ///                 ApplicabilityTag{
     ///                     tag:"JHU_CONTROLLER".to_string(),
-    ///                     value:"EXCLUDED".to_string()
+    ///                     value:"Excluded".to_string()
     ///                     }
     ///                 ],
     ///             vec![
@@ -270,7 +270,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///         },
     ///     ApplicabilityTag{
     ///         tag:"JHU_CONTROLLER".to_string(),
-    ///         value:"EXCLUDED".to_string()
+    ///         value:"Excluded".to_string()
     ///         }
     ///     ],
     /// "",
@@ -283,7 +283,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///     vec![
     ///         ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
-    ///             value:"INCLUDED".to_string()
+    ///             value:"Included".to_string()
     ///             }
     ///         ],
     ///     vec![
@@ -291,7 +291,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///             vec![
     ///                 ApplicabilityTag{
     ///                     tag:"JHU_CONTROLLER".to_string(),
-    ///                     value:"EXCLUDED".to_string()
+    ///                     value:"Excluded".to_string()
     ///                     }
     ///                 ],
     ///             vec![
@@ -311,7 +311,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///         },
     ///     ApplicabilityTag{
     ///         tag:"JHU_CONTROLLER".to_string(),
-    ///         value:"EXCLUDED".to_string()
+    ///         value:"Excluded".to_string()
     ///         }
     ///     ],
     /// "PRODUCT_A",
@@ -332,7 +332,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///             vec![
     ///                 ApplicabilityTag{
     ///                     tag:"JHU_CONTROLLER".to_string(),
-    ///                     value:"EXCLUDED".to_string()
+    ///                     value:"Excluded".to_string()
     ///                     }
     ///                 ],
     ///             vec![
@@ -354,7 +354,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///         },
     ///     ApplicabilityTag{
     ///         tag:"JHU_CONTROLLER".to_string(),
-    ///         value:"INCLUDED".to_string()
+    ///         value:"Included".to_string()
     ///         }
     ///     ],
     /// "",
@@ -423,7 +423,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagAnd {
     ///             },
     ///         ApplicabilityTag{
     ///             tag:"ROBOT_ARM_LIGHT".to_string(),
-    ///             value:"EXCLUDED".to_string()
+    ///             value:"Excluded".to_string()
     ///             }
     ///         ],
     ///     vec![
@@ -439,7 +439,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagAnd {
     ///         },
     ///     ApplicabilityTag{
     ///             tag:"ROBOT_ARM_LIGHT".to_string(),
-    ///             value:"INCLUDED".to_string()
+    ///             value:"Included".to_string()
     ///             }
     ///     ],
     /// "",
@@ -456,7 +456,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagAnd {
     ///             },
     ///         ApplicabilityTag{
     ///             tag:"ROBOT_ARM_LIGHT".to_string(),
-    ///             value:"EXCLUDED".to_string()
+    ///             value:"Excluded".to_string()
     ///             }
     ///         ],
     ///     vec![
@@ -472,7 +472,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagAnd {
     ///             },
     ///     ApplicabilityTag{
     ///         tag:"ROBOT_ARM_LIGHT".to_string(),
-    ///         value:"EXCLUDED".to_string()
+    ///         value:"Excluded".to_string()
     ///         }
     ///     ],
     /// "",
@@ -485,11 +485,11 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagAnd {
     ///     vec![
     ///         ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
-    ///             value:"INCLUDED".to_string()
+    ///             value:"Included".to_string()
     ///             },
     ///         ApplicabilityTag{
     ///             tag:"ROBOT_ARM_LIGHT".to_string(),
-    ///             value:"EXCLUDED".to_string()
+    ///             value:"Excluded".to_string()
     ///             }
     ///         ],
     ///     vec![
@@ -501,7 +501,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagAnd {
     /// vec![
     ///     ApplicabilityTag{
     ///         tag:"ROBOT_ARM_LIGHT".to_string(),
-    ///         value:"INCLUDED".to_string()
+    ///         value:"Included".to_string()
     ///         }
     ///     ],
     /// "PRODUCT_A",
@@ -514,11 +514,11 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagAnd {
     ///     vec![
     ///         ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
-    ///             value:"INCLUDED".to_string()
+    ///             value:"Included".to_string()
     ///             },
     ///         ApplicabilityTag{
     ///             tag:"ROBOT_ARM_LIGHT".to_string(),
-    ///             value:"EXCLUDED".to_string()
+    ///             value:"Excluded".to_string()
     ///             }
     ///         ],
     ///     vec![
@@ -534,7 +534,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagAnd {
     ///         },
     ///     ApplicabilityTag{
     ///         tag:"ROBOT_ARM_LIGHT".to_string(),
-    ///         value:"EXCLUDED".to_string()
+    ///         value:"Excluded".to_string()
     ///         }
     ///     ],
     /// "PRODUCT_A",
@@ -567,7 +567,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagAnd {
     ///     vec![
     ///         ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
-    ///             value:"INCLUDED".to_string()
+    ///             value:"Included".to_string()
     ///             }
     ///         ],
     ///     vec![
@@ -614,7 +614,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagAnd {
     ///     vec![
     ///         ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
-    ///             value:"INCLUDED".to_string()
+    ///             value:"Included".to_string()
     ///             }
     ///         ],
     ///     vec![
@@ -649,7 +649,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagAnd {
     ///             vec![
     ///                 ApplicabilityTag{
     ///                     tag:"JHU_CONTROLLER".to_string(),
-    ///                     value:"EXCLUDED".to_string()
+    ///                     value:"Excluded".to_string()
     ///                     }
     ///                 ],
     ///             vec![
@@ -669,7 +669,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagAnd {
     ///         },
     ///     ApplicabilityTag{
     ///         tag:"JHU_CONTROLLER".to_string(),
-    ///         value:"EXCLUDED".to_string()
+    ///         value:"Excluded".to_string()
     ///         }
     ///     ],
     /// "",
@@ -682,7 +682,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagAnd {
     ///     vec![
     ///         ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
-    ///             value:"INCLUDED".to_string()
+    ///             value:"Included".to_string()
     ///             }
     ///         ],
     ///     vec![
@@ -690,7 +690,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagAnd {
     ///             vec![
     ///                 ApplicabilityTag{
     ///                     tag:"JHU_CONTROLLER".to_string(),
-    ///                     value:"EXCLUDED".to_string()
+    ///                     value:"Excluded".to_string()
     ///                     }
     ///                 ],
     ///             vec![
@@ -710,7 +710,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagAnd {
     ///         },
     ///     ApplicabilityTag{
     ///         tag:"JHU_CONTROLLER".to_string(),
-    ///         value:"EXCLUDED".to_string()
+    ///         value:"Excluded".to_string()
     ///         }
     ///     ],
     /// "PRODUCT_A",
@@ -731,7 +731,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagAnd {
     ///             vec![
     ///                 ApplicabilityTag{
     ///                     tag:"JHU_CONTROLLER".to_string(),
-    ///                     value:"EXCLUDED".to_string()
+    ///                     value:"Excluded".to_string()
     ///                     }
     ///                 ],
     ///             vec![
@@ -753,7 +753,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagAnd {
     ///         },
     ///     ApplicabilityTag{
     ///         tag:"JHU_CONTROLLER".to_string(),
-    ///         value:"INCLUDED".to_string()
+    ///         value:"Included".to_string()
     ///         }
     ///     ],
     /// "",
@@ -821,7 +821,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagOr {
     ///             },
     ///         ApplicabilityTag{
     ///             tag:"ROBOT_ARM_LIGHT".to_string(),
-    ///             value:"EXCLUDED".to_string()
+    ///             value:"Excluded".to_string()
     ///             }
     ///         ],
     ///     vec![
@@ -850,7 +850,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagOr {
     ///             },
     ///         ApplicabilityTag{
     ///             tag:"ROBOT_ARM_LIGHT".to_string(),
-    ///             value:"EXCLUDED".to_string()
+    ///             value:"Excluded".to_string()
     ///             }
     ///         ],
     ///     vec![
@@ -862,7 +862,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagOr {
     /// vec![
     ///     ApplicabilityTag{
     ///         tag:"ROBOT_ARM_LIGHT".to_string(),
-    ///         value:"EXCLUDED".to_string()
+    ///         value:"Excluded".to_string()
     ///         }
     ///     ],
     /// "",
@@ -875,7 +875,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagOr {
     ///     vec![
     ///         ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
-    ///             value:"INCLUDED".to_string()
+    ///             value:"Included".to_string()
     ///             }
     ///         ],
     ///     vec![
@@ -900,11 +900,11 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagOr {
     ///     vec![
     ///         ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
-    ///             value:"INCLUDED".to_string()
+    ///             value:"Included".to_string()
     ///             },
     ///         ApplicabilityTag{
     ///             tag:"ROBOT_ARM_LIGHT".to_string(),
-    ///             value:"EXCLUDED".to_string()
+    ///             value:"Excluded".to_string()
     ///             }
     ///         ],
     ///     vec![
@@ -920,7 +920,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagOr {
     ///         },
     ///     ApplicabilityTag{
     ///         tag:"ROBOT_ARM_LIGHT".to_string(),
-    ///         value:"EXCLUDED".to_string()
+    ///         value:"Excluded".to_string()
     ///         }
     ///     ],
     /// "",
@@ -953,7 +953,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagOr {
     ///     vec![
     ///         ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
-    ///             value:"INCLUDED".to_string()
+    ///             value:"Included".to_string()
     ///             }
     ///         ],
     ///     vec![
@@ -1000,7 +1000,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagOr {
     ///     vec![
     ///         ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
-    ///             value:"INCLUDED".to_string()
+    ///             value:"Included".to_string()
     ///             }
     ///         ],
     ///     vec![
@@ -1035,7 +1035,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagOr {
     ///             vec![
     ///                 ApplicabilityTag{
     ///                     tag:"JHU_CONTROLLER".to_string(),
-    ///                     value:"EXCLUDED".to_string()
+    ///                     value:"Excluded".to_string()
     ///                     }
     ///                 ],
     ///             vec![
@@ -1055,7 +1055,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagOr {
     ///         },
     ///     ApplicabilityTag{
     ///         tag:"JHU_CONTROLLER".to_string(),
-    ///         value:"EXCLUDED".to_string()
+    ///         value:"Excluded".to_string()
     ///         }
     ///     ],
     /// "",
@@ -1068,7 +1068,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagOr {
     ///     vec![
     ///         ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
-    ///             value:"INCLUDED".to_string()
+    ///             value:"Included".to_string()
     ///             }
     ///         ],
     ///     vec![
@@ -1076,7 +1076,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagOr {
     ///             vec![
     ///                 ApplicabilityTag{
     ///                     tag:"JHU_CONTROLLER".to_string(),
-    ///                     value:"EXCLUDED".to_string()
+    ///                     value:"Excluded".to_string()
     ///                     }
     ///                 ],
     ///             vec![
@@ -1096,7 +1096,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagOr {
     ///         },
     ///     ApplicabilityTag{
     ///         tag:"JHU_CONTROLLER".to_string(),
-    ///         value:"EXCLUDED".to_string()
+    ///         value:"Excluded".to_string()
     ///         }
     ///     ],
     /// "PRODUCT_A",
@@ -1117,7 +1117,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagOr {
     ///             vec![
     ///                 ApplicabilityTag{
     ///                     tag:"JHU_CONTROLLER".to_string(),
-    ///                     value:"EXCLUDED".to_string()
+    ///                     value:"Excluded".to_string()
     ///                     }
     ///                 ],
     ///             vec![
@@ -1139,13 +1139,142 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagOr {
     ///         },
     ///     ApplicabilityTag{
     ///         tag:"JHU_CONTROLLER".to_string(),
-    ///         value:"INCLUDED".to_string()
+    ///         value:"Included".to_string()
     ///         }
     ///     ],
     /// "",
     /// vec![].as_slice()
     /// ),
     /// Text("JHU Controller".to_string()));
+    /// 
+    /// assert_eq!(
+    /// ApplicabilitySyntaxTagOr(
+    /// vec![
+    ///    ApplicabilityTag {
+    ///        tag: "JHU_CONTROLLER".to_string(),
+    ///        value: "Included".to_string(),
+    ///    },
+    ///    ApplicabilityTag {
+    ///        tag: "ROBOT_ARM_LIGHT".to_string(),
+    ///        value: "Included".to_string(),
+    ///    },
+    ///],
+    /// vec![
+    ///    Text(
+    ///        "Test Text\n".to_string(),
+    ///    ),
+    ///],
+    ///Feature,
+    ///vec![],
+    ///).sanitize(
+    /// vec![
+    ///     ApplicabilityTag {
+    ///    tag: "ENGINE_5".to_string(),
+    ///    value: "A2543".to_string(),
+    ///},
+    ///ApplicabilityTag {
+    ///    tag: "JHU_CONTROLLER".to_string(),
+    ///    value: "Included".to_string(),
+    ///},
+    ///ApplicabilityTag {
+    ///    tag: "ROBOT_ARM_LIGHT".to_string(),
+    ///    value: "Excluded".to_string(),
+    ///},
+    ///ApplicabilityTag {
+    ///    tag: "ROBOT_SPEAKER".to_string(),
+    ///    value: "SPKR_B".to_string(),
+    ///},
+    ///     ],
+    /// "",
+    /// vec![].as_slice()
+    /// ),
+    /// Text("Test Text\n".to_string()));
+    /// 
+    /// assert_eq!(
+    /// ApplicabilitySyntaxTagOr(
+    /// vec![
+    ///    ApplicabilityTag {
+    ///        tag: "JHU_CONTROLLER".to_string(),
+    ///        value: "Included".to_string(),
+    ///    },
+    ///    ApplicabilityTag {
+    ///        tag: "ROBOT_ARM_LIGHT".to_string(),
+    ///        value: "Included".to_string(),
+    ///    },
+    ///],
+    /// vec![
+    ///    Text(
+    ///        "Test Text\n".to_string(),
+    ///    ),
+    ///],
+    ///Feature,
+    ///vec![],
+    ///).sanitize(
+    /// vec![
+    ///     ApplicabilityTag {
+    ///    tag: "ENGINE_5".to_string(),
+    ///    value: "A2543".to_string(),
+    ///},
+    ///ApplicabilityTag {
+    ///    tag: "JHU_CONTROLLER".to_string(),
+    ///    value: "Included".to_string(),
+    ///},
+    ///ApplicabilityTag {
+    ///    tag: "ROBOT_ARM_LIGHT".to_string(),
+    ///    value: "Included".to_string(),
+    ///},
+    ///ApplicabilityTag {
+    ///    tag: "ROBOT_SPEAKER".to_string(),
+    ///    value: "SPKR_B".to_string(),
+    ///},
+    ///     ],
+    /// "",
+    /// vec![].as_slice()
+    /// ),
+    /// Text("Test Text\n".to_string()));
+    /// 
+    /// assert_eq!(
+    /// ApplicabilitySyntaxTagOr(
+    /// vec![
+    ///    ApplicabilityTag {
+    ///        tag: "JHU_CONTROLLER".to_string(),
+    ///        value: "Included".to_string(),
+    ///    },
+    ///    ApplicabilityTag {
+    ///        tag: "ROBOT_ARM_LIGHT".to_string(),
+    ///        value: "Included".to_string(),
+    ///    },
+    ///],
+    /// vec![
+    ///    Text(
+    ///        "Test Text\n".to_string(),
+    ///    ),
+    ///],
+    ///Feature,
+    ///vec![],
+    ///).sanitize(
+    /// vec![
+    ///     ApplicabilityTag {
+    ///    tag: "ENGINE_5".to_string(),
+    ///    value: "A2543".to_string(),
+    ///},
+    ///ApplicabilityTag {
+    ///    tag: "JHU_CONTROLLER".to_string(),
+    ///    value: "Excluded".to_string(),
+    ///},
+    ///ApplicabilityTag {
+    ///    tag: "ROBOT_ARM_LIGHT".to_string(),
+    ///    value: "Excluded".to_string(),
+    ///},
+    ///ApplicabilityTag {
+    ///    tag: "ROBOT_SPEAKER".to_string(),
+    ///    value: "SPKR_B".to_string(),
+    ///},
+    ///     ],
+    /// "",
+    /// vec![].as_slice()
+    /// ),
+    /// Text("".to_string()));
     /// ```
     fn sanitize(
         &self,
@@ -1229,7 +1358,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///     vec![
     ///         ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
-    ///             value:"INCLUDED".to_string()
+    ///             value:"Included".to_string()
     ///             }
     ///         ],
     ///     vec![
@@ -1279,7 +1408,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///     vec![
     ///         ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
-    ///             value:"INCLUDED".to_string()
+    ///             value:"Included".to_string()
     ///             }
     ///         ],
     ///     vec![
@@ -1331,7 +1460,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///     vec![
     ///         ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
-    ///             value:"INCLUDED".to_string()
+    ///             value:"Included".to_string()
     ///             }
     ///         ],
     ///     vec![
@@ -1366,7 +1495,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///             vec![
     ///                 ApplicabilityTag{
     ///                     tag:"JHU_CONTROLLER".to_string(),
-    ///                     value:"INCLUDED".to_string()
+    ///                     value:"Included".to_string()
     ///                     }
     ///                 ],
     ///             vec![
@@ -1386,7 +1515,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///         },
     ///     ApplicabilityTag{
     ///         tag:"JHU_CONTROLLER".to_string(),
-    ///         value:"EXCLUDED".to_string()
+    ///         value:"Excluded".to_string()
     ///         }
     ///     ],
     /// "",
@@ -1399,7 +1528,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///     vec![
     ///         ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
-    ///             value:"INCLUDED".to_string()
+    ///             value:"Included".to_string()
     ///             }
     ///         ],
     ///     vec![
@@ -1407,7 +1536,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///             vec![
     ///                 ApplicabilityTag{
     ///                     tag:"JHU_CONTROLLER".to_string(),
-    ///                     value:"INCLUDED".to_string()
+    ///                     value:"Included".to_string()
     ///                     }
     ///                 ],
     ///             vec![
@@ -1427,7 +1556,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///         },
     ///     ApplicabilityTag{
     ///         tag:"JHU_CONTROLLER".to_string(),
-    ///         value:"EXCLUDED".to_string()
+    ///         value:"Excluded".to_string()
     ///         }
     ///     ],
     /// "PRODUCT_B",
@@ -1448,7 +1577,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///             vec![
     ///                 ApplicabilityTag{
     ///                     tag:"JHU_CONTROLLER".to_string(),
-    ///                     value:"EXCLUDED".to_string()
+    ///                     value:"Excluded".to_string()
     ///                     }
     ///                 ],
     ///             vec![
@@ -1470,7 +1599,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///         },
     ///     ApplicabilityTag{
     ///         tag:"JHU_CONTROLLER".to_string(),
-    ///         value:"EXCLUDED".to_string()
+    ///         value:"Excluded".to_string()
     ///         }
     ///     ],
     /// "",

@@ -24,7 +24,7 @@ impl From<String> for ApplicabilityTag {
             },
             None => ApplicabilityTag {
                 tag: value,
-                value: "INCLUDED".to_string(),
+                value: "Included".to_string(),
             },
         }
     }

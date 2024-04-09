@@ -73,7 +73,7 @@ fn get_remaining_text(input: &str) -> IResult<&str, ApplicabilityParserSyntaxTag
 /// ``End Feature`` More text
 /// ``Configuration [SOME CONFIGURATION]``
 /// configuration text
-/// ``End Configuration``","``","``"),Ok(("",vec![Text("Some other text\n".to_string()), Tag(ApplicabilitySyntaxTag([ApplicabilityTag { tag: "SOMETHING".to_string(), value: "INCLUDED".to_string() }].to_vec(), vec![Text("Some text here  \n".to_string())], Feature, [].to_vec())), Text(" More text\n".to_string()), Tag(ApplicabilitySyntaxTag([ApplicabilityTag { tag: "SOME CONFIGURATION".to_string(), value: "INCLUDED".to_string() }].to_vec(), vec![Text("configuration text\n".to_string())], Configuration, [].to_vec())), Text("".to_string())])));
+/// ``End Configuration``","``","``"),Ok(("",vec![Text("Some other text\n".to_string()), Tag(ApplicabilitySyntaxTag([ApplicabilityTag { tag: "SOMETHING".to_string(), value: "Included".to_string() }].to_vec(), vec![Text("Some text here  \n".to_string())], Feature, [].to_vec())), Text(" More text\n".to_string()), Tag(ApplicabilitySyntaxTag([ApplicabilityTag { tag: "SOME CONFIGURATION".to_string(), value: "Included".to_string() }].to_vec(), vec![Text("configuration text\n".to_string())], Configuration, [].to_vec())), Text("".to_string())])));
 /// ```
 pub fn parse_applicability<'a>(
     input: &'a str,
