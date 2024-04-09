@@ -627,7 +627,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
       ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream);
       try {
-         ZipEntry configurationFile = new ZipEntry("configurations/BUILD.bazel");
+         ZipEntry configurationFile = new ZipEntry("config/BUILD.bazel");
          configurationFile.setTime(0);
          zipOutputStream.putNextEntry(configurationFile);
          zipOutputStream.write(this.getBazelConfigurations().getBytes());
@@ -657,7 +657,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
          zipOutputStream.putNextEntry(moduleFile);
          zipOutputStream.write(ops.getBazelModuleFile().getBytes());
          zipOutputStream.closeEntry();
-         ZipEntry featureFile = new ZipEntry("features/BUILD.bazel");
+         ZipEntry featureFile = new ZipEntry("feature/BUILD.bazel");
          featureFile.setTime(0);
          zipOutputStream.putNextEntry(featureFile);
          zipOutputStream.write(this.getBazelFeatures().getBytes());

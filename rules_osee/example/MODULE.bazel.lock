@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 6,
-  "moduleFileHash": "bc24c011a4db395b59ce7b34346359485ddd7120c5ad9e0bbf851fd4f3552d96",
+  "moduleFileHash": "04f0f2c376d03878dd2302a9947e5ae00e587dbb0ff11daffdb764fcb613be89",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -73,7 +73,7 @@
                 "name": "my_product_line",
                 "osee_url": "http://host.docker.internal:8089",
                 "branch_id": "8",
-                "sha256": "2bbe988cfadbd341e60dba04e7e37e0dd2ea5a15c56806cbffb20f728a33e54a"
+                "sha256": "560e0b693fc28f468d3ce1f864d575de93f08255172d0b9333a258cb919d04f3"
               },
               "devDependency": false,
               "location": {
@@ -3438,7 +3438,7 @@
     },
     "@@rules_osee~//bat:extensions.bzl%bat": {
       "general": {
-        "bzlTransitiveDigest": "Kc9TNRm+daStdhMXhLMxF5sTuCdgDYprOKO92t0Jt9U=",
+        "bzlTransitiveDigest": "b9otTGQQnujr9Ww51gVztBlHRCz0HvVsOJg4oZ1dfjA=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
         "envVariables": {},
@@ -3489,7 +3489,7 @@
             "attributes": {
               "osee_url": "http://host.docker.internal:8089",
               "branch_id": "8",
-              "sha256": "2bbe988cfadbd341e60dba04e7e37e0dd2ea5a15c56806cbffb20f728a33e54a"
+              "sha256": "560e0b693fc28f468d3ce1f864d575de93f08255172d0b9333a258cb919d04f3"
             }
           }
         },

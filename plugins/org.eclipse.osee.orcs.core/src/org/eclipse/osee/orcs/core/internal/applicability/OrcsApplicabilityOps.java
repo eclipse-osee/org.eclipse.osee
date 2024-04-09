@@ -3102,9 +3102,9 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
 
    private String getFeatureConfigSettingGroup(String featureName, int size) {
       String content =
-         "selects.config_setting_group(\r\n" + "    name = \"feature_" + featureName + "\",\r\n" + "    match_any = [\r\n";
+         "selects.config_setting_group(\r\n" + "    name = \"" + featureName + "\",\r\n" + "    match_any = [\r\n";
       for (int i = 0; i < size; i++) {
-         content = content + "        \":feature" + i + "_" + featureName + "\",\r\n";
+         content = content + "        \":" + i + "_" + featureName + "\",\r\n";
       }
       content = content + "    ],\r\n" + ")\r\n\r\n";
       return content;
@@ -3126,10 +3126,10 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
             //write out multi-value features so they can be used in an OR'd fashion since bazel can't have multiple constraints per platform see #8763 on bazel's github
             for (int i = 0; i < values.size(); i++) {
 
-               content = content + "constraint_setting(name = \"feature" + i + "_" + art.getName() + "\")\r\n\r\n";
+               content = content + "constraint_setting(name = \"constraint" + i + "_" + art.getName() + "\")\r\n\r\n";
                for (String value : values) {
-                  content = content + getConstraint("feature" + i + "_" + art.getName() + "_" + value,
-                     "feature" + i + "_" + art.getName());
+                  content = content + getConstraint(i + "_" + art.getName() + "_" + value,
+                     "constraint" + i + "_" + art.getName());
                }
             }
             content = content + values.stream().map(
@@ -3137,9 +3137,14 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                   Collectors.joining(""));
 
          } else {
-            content = content + "constraint_setting(name = \"feature_" + art.getName() + "\")\r\n\r\n";
+            content = content + "constraint_setting(name = \"constraint_" + art.getName() + "\")\r\n\r\n";
             for (String value : values) {
-               content = content + getConstraint("feature_" + art.getName() + "_" + value, "feature_" + art.getName());
+               if (value.equals("Included")) {
+                  content = content + getConstraint(art.getName(), "constraint_" + art.getName());
+               } else {
+
+                  content = content + getConstraint(art.getName() + "_" + value, "constraint_" + art.getName());
+               }
             }
 
          }
@@ -3243,18 +3248,20 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                   value -> value.getSoleAttributeValue(CoreAttributeTypes.FeatureMultivalued)).filter(
                      value -> value.equals(true)).findFirst();
             if (isMultiValued.isEmpty()) {
-               content = content + "\t\t\"//features:feature" + "_" + entry.getKey() + "_" + entry.getValue().get(
-                  0) + "\",\r\n";
+               if (entry.getValue().get(0).equals("Included")) {
+                  content = content + "\t\t\"//feature:" + entry.getKey() + "\",\r\n";
+               } else {
+                  content = content + "\t\t\"//feature:" + entry.getKey() + "_" + entry.getValue().get(0) + "\",\r\n";
+               }
             } else {
                for (int i = 0; i < entry.getValue().size(); i++) {
-                  content =
-                     content + "\t\t\"//features:feature" + i + "_" + entry.getKey() + "_" + entry.getValue().get(
-                        i) + "\",\r\n";
+                  content = content + "\t\t\"//feature:" + i + "_" + entry.getKey() + "_" + entry.getValue().get(
+                     i) + "\",\r\n";
                }
 
             }
          }
-         content = content + "\t\t\"//configurations:config_" + branchView.getName().replace(" ", "_") + "\"\r\n";
+         content = content + "\t\t\"//config:" + branchView.getName().replace(" ", "_") + "\"\r\n";
          content = content + "\t]\r\n)\r\n";
 
          //write out predefined extensions on top of bazel's build in platforms for convenience
@@ -3360,18 +3367,20 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
                   value -> value.getSoleAttributeValue(CoreAttributeTypes.FeatureMultivalued)).filter(
                      value -> value.equals(true)).findFirst();
             if (isMultiValued.isEmpty()) {
-               content = content + "\t\t\"//features:feature" + "_" + entry.getKey() + "_" + entry.getValue().get(
-                  0) + "\",\r\n";
+               if (entry.getValue().get(0).equals("Included")) {
+                  content = content + "\t\t\"//feature:" + entry.getKey() + "\",\r\n";
+               } else {
+                  content = content + "\t\t\"//feature:" + entry.getKey() + "_" + entry.getValue().get(0) + "\",\r\n";
+               }
             } else {
                for (int i = 0; i < entry.getValue().size(); i++) {
-                  content =
-                     content + "\t\t\"//features:feature" + i + "_" + entry.getKey() + "_" + entry.getValue().get(
-                        i) + "\",\r\n";
+                  content = content + "\t\t\"//feature:" + i + "_" + entry.getKey() + "_" + entry.getValue().get(
+                     i) + "\",\r\n";
                }
 
             }
          }
-         content = content + "\t\t\"//configurations:config_group_" + group.getName().replace(" ", "_") + "\"\r\n";
+         content = content + "\t\t\"//config:" + group.getName().replace(" ", "_") + "\"\r\n";
          content = content + "\t]\r\n)\r\n";
          for (String osPlatform : preDefinedOsPlatforms) {
             for (String cpuPlatform : preDefinedCpuPlatforms) {
@@ -3395,7 +3404,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
 
    @Override
    public String getBazelBuildFile() {
-      return "package(default_visibility = [\"//visibility:public\"])\r\n" + "\r\n" + "filegroup(\r\n" + "    name = \"srcs\",\r\n" + "    srcs = [\r\n" + "        \"BUILD.bazel\",\r\n" + "        \"WORKSPACE\",\r\n" + "        \"//platforms/configurations:BUILD.bazel\",\r\n" + "        \"//platforms/configuration-groups:BUILD.bazel\",\r\n" + "        \"//configurations:BUILD.bazel\",\r\n" + "        \"//features:BUILD.bazel\",\r\n" + "    ],\r\n" + ")";
+      return "package(default_visibility = [\"//visibility:public\"])\r\n" + "\r\n" + "filegroup(\r\n" + "    name = \"srcs\",\r\n" + "    srcs = [\r\n" + "        \"BUILD.bazel\",\r\n" + "        \"WORKSPACE\",\r\n" + "        \"//platforms/configurations:BUILD.bazel\",\r\n" + "        \"//platforms/configuration-groups:BUILD.bazel\",\r\n" + "        \"//config:BUILD.bazel\",\r\n" + "        \"//feature:BUILD.bazel\",\r\n" + "    ],\r\n" + ")";
    }
 
    @Override
@@ -3417,13 +3426,13 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       List<ArtifactReadable> branchViews =
          orcsApi.getQueryFactory().fromBranch(branchId).andIsOfType(CoreArtifactTypes.BranchView).asArtifacts();
       for (ArtifactReadable branchView : branchViews) {
-         content = content + "constraint_value(\r\n" + "    name = \"config_" + branchView.getName().replace(" ",
+         content = content + "constraint_value(\r\n" + "    name = \"" + branchView.getName().replace(" ",
             "_") + "\",\r\n" + "    constraint_setting = \":configuration\",\r\n" + ")\r\n";
       }
       List<ArtifactToken> groups =
          orcsApi.getQueryFactory().applicabilityQuery().getConfigurationGroupsForBranch(branchId);
       for (ArtifactToken group : groups) {
-         content = content + "constraint_value(\r\n" + "    name = \"config_group_" + group.getName().replace(" ",
+         content = content + "constraint_value(\r\n" + "    name = \"" + group.getName().replace(" ",
             "_") + "\",\r\n" + "    constraint_setting = \":configuration\",\r\n" + ")\r\n";
       }
       return prefix + content;
@@ -3499,13 +3508,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       content += "filegroup(\r\n name=\"resolved_config\",\r\n srcs=select({\r\n";
       while (artIter2.hasNext()) {
          ArtifactReadable next = artIter2.next();
-         if (next.getArtifactType().equals(CoreArtifactTypes.GroupArtifact)) {
-            content += "\"//configurations:config_group_" + next.getName().replace(" ",
-               "_") + "\":[\":" + next.getName().replace(" ", "_") + ".json" + "\"]";
-         } else if (next.getArtifactType().equals(CoreArtifactTypes.BranchView)) {
-            content += "\"//configurations:config_" + next.getName().replace(" ",
-               "_") + "\":[\":" + next.getName().replace(" ", "_") + ".json" + "\"]";
-         }
+         content += "\"//config:" + next.getName().replace(" ", "_") + "\":[\":" + next.getName().replace(" ",
+            "_") + ".json" + "\"]";
          if (artIter2.hasNext()) {
             content += ",\r\n";
          }
