@@ -18,6 +18,7 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,6 +44,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
  * @author Ryan D. Brooks
  */
 @JsonSerialize(using = ArtifactReadableSerializer.class)
+@JsonDeserialize(using = ArtifactReadableDeserializer.class)
 public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsReadable {
    ArtifactReadable SENTINEL = new ArtifactReadableImpl();
 

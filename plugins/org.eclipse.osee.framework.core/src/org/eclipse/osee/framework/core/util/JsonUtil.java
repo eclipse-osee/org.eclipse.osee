@@ -13,36 +13,6 @@
 
 package org.eclipse.osee.framework.core.util;
 
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.text.SimpleDateFormat;
-import java.util.List;
-import java.util.function.Function;
-
-import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.osee.framework.core.data.ApplicabilityId;
-import org.eclipse.osee.framework.core.data.ApplicabilityToken;
-import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactReadable;
-import org.eclipse.osee.framework.core.data.ArtifactReadableDeserializer;
-import org.eclipse.osee.framework.core.data.ArtifactReadableSerializer;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
-import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.data.TransactionTokenDeserializer;
-import org.eclipse.osee.framework.core.data.TransactionTokenSerializer;
-import org.eclipse.osee.framework.core.data.UserToken;
-import org.eclipse.osee.framework.core.data.UserTokenDeserializer;
-import org.eclipse.osee.framework.core.data.UserTokenSerializer;
-import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.jdk.core.type.Id;
-import org.eclipse.osee.framework.jdk.core.type.IdDeserializer;
-import org.eclipse.osee.framework.jdk.core.type.IdSerializer;
-import org.eclipse.osee.framework.jdk.core.type.NamedIdDeserializer;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.Version;
@@ -58,6 +28,36 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.DateSerializer;
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.function.Function;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.ArtifactReadableDeserializer;
+import org.eclipse.osee.framework.core.data.ArtifactReadableSerializer;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTokenDeserializer;
+import org.eclipse.osee.framework.core.data.ArtifactTokenSerializer;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.TransactionTokenDeserializer;
+import org.eclipse.osee.framework.core.data.TransactionTokenSerializer;
+import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.core.data.UserTokenDeserializer;
+import org.eclipse.osee.framework.core.data.UserTokenSerializer;
+import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.IdDeserializer;
+import org.eclipse.osee.framework.jdk.core.type.IdSerializer;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdDeserializer;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * Since both ObjectReader / ObjectWriter are immutable, methods will create new readers/writers and configuration is
@@ -169,13 +169,12 @@ public class JsonUtil {
       addDeserializer(module, ArtifactTypeId.class, ArtifactTypeId::valueOf);
 
       module.addDeserializer(ApplicabilityToken.class, new NamedIdDeserializer<>(ApplicabilityToken::valueOf));
-      module.addDeserializer(ArtifactToken.class,
-         new NamedIdDeserializer<@NonNull ArtifactToken>(ArtifactToken::valueOf));
       module.addDeserializer(TransactionToken.class, new TransactionTokenDeserializer());
       module.addDeserializer(UserToken.class, new UserTokenDeserializer());
-
       module.addDeserializer(ArtifactReadable.class, new ArtifactReadableDeserializer());
+      module.addDeserializer(ArtifactToken.class, new ArtifactTokenDeserializer());
 
+      module.addSerializer(ArtifactToken.class, new ArtifactTokenSerializer());
       module.addSerializer(TransactionToken.class, new TransactionTokenSerializer());
       module.addSerializer(UserToken.class, new UserTokenSerializer());
       JsonSerializer<@NonNull Id> idSerializer = new IdSerializer();
