@@ -13,13 +13,13 @@
 
 package org.eclipse.osee.framework.core.data;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.logging.Level;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
-import org.eclipse.osee.framework.jdk.core.type.NamedIdSerializer;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -28,7 +28,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
  * @author Ryan D. Brooks
  * @author Donald G. Dunne
  */
-@JsonSerialize(using = NamedIdSerializer.class)
+@JsonSerialize(using = ArtifactTokenSerializer.class)
+@JsonDeserialize(using = ArtifactTokenDeserializer.class)
 public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, HasArtifactType, Identity<String> {
    public static final ArtifactToken SENTINEL = valueOf(ArtifactId.SENTINEL, BranchToken.SENTINEL);
    public static final String USE_LONG_IDS_KEY = "use.long.ids";
@@ -84,7 +85,8 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, HasArtifa
       return valueOf(id, GUID.create(), name, branch, artifactType);
    }
 
-   public static @NonNull ArtifactToken valueOf(long id, String guid, String name, BranchId branch, ArtifactTypeToken artifactType) {
+   public static @NonNull ArtifactToken valueOf(long id, String guid, String name, BranchId branch,
+      ArtifactTypeToken artifactType) {
       return new ArtifactTokenImpl(id, guid, name, branch, artifactType);
    }
 

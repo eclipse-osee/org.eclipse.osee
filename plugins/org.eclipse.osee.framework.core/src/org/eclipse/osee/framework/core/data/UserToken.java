@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.core.data;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,6 +33,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Donald G. Dunne
  */
 @JsonSerialize(using = UserTokenSerializer.class)
+@JsonDeserialize(using = UserTokenDeserializer.class)
 public interface UserToken extends ArtifactToken, UserId {
 
    public static final UserToken SENTINEL = create(Id.SENTINEL, Named.SENTINEL, "", "", false);
