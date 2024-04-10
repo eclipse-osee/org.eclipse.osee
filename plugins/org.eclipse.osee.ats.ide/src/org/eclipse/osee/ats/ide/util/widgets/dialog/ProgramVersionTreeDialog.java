@@ -33,10 +33,14 @@ public class ProgramVersionTreeDialog extends FilteredCheckboxTreeDialog<Program
 
    protected Composite dialogComp;
 
-   public ProgramVersionTreeDialog(Collection<ProgramVersion> programVersions) {
-      super("Select Program/Version", "Select Program/Version", new ArrayTreeContentProvider(),
-         new AtsObjectLabelProvider(), new AtsObjectNameSorter());
+   public ProgramVersionTreeDialog(String title, String message, Collection<ProgramVersion> programVersions) {
+      super(title, message, new ArrayTreeContentProvider(), new AtsObjectLabelProvider(), new AtsObjectNameSorter());
       setInput(programVersions);
+
+   }
+
+   public ProgramVersionTreeDialog(Collection<ProgramVersion> programVersions) {
+      this("Select Program/Version", "Select Program/Version", programVersions);
    }
 
    /**

@@ -92,7 +92,6 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -865,7 +864,6 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
    public BuildImpactDatas deleteBids(@PathParam("atsId") String atsId, BuildImpactDatas bids) {
-      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
       BidsOperations ops = new BidsOperations(atsApi, orcsApi);
       return ops.deleteBids(bids);
    }
