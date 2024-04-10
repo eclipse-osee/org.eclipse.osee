@@ -29,7 +29,7 @@
 					<product>org.eclipse.osee.framework.ui.product.osee</product>
 					<application>org.eclipse.ui.ide.workbench</application>
 					<argLine>-Xmx1024M</argLine>
-					<appArgLine>-consoleLog</appArgLine>
+					<appArgLine>-consoleLog -clean</appArgLine>
 					<systemProperties combine.children="append">
 						<osee.log.default>WARNING</osee.log.default>
 						<eventDebug>log</eventDebug>
@@ -37,7 +37,7 @@
 						<osee.is.in.db.init>true</osee.is.in.db.init>
 						<osee.application.server>http://localhost:${ats-server-port}</osee.application.server>
 						<org.eclipse.swt.browser.DefaultType>webkit</org.eclipse.swt.browser.DefaultType>
-<!-- 						<org.eclipse.swt.browser.UseWebKitGTK>true</org.eclipse.swt.browser.UseWebKitGTK> -->
+						<user.name>3333</user.name>
 					</systemProperties>
 					<redirectTestOutputToFile>false</redirectTestOutputToFile>
 				</configuration>
@@ -51,17 +51,12 @@
 						<extraRequirements>
 							<requirement>
 								<type>eclipse-feature</type>
-								<id>org.eclipse.osee.ats.ide.feature</id>
+								<id>org.eclipse.osee.client.all.feature</id>
 								<versionRange>0.0.0</versionRange>
 							</requirement>
 							<requirement>
-								<type>eclipse-feature</type>
-								<id>org.eclipse.osee.ats.ide.demo.feature</id>
-								<versionRange>0.0.0</versionRange>
-							</requirement>
-							<requirement>
-								<type>eclipse-feature</type>
-								<id>org.eclipse.sdk</id>
+								<type>eclipse-plugin</type>
+								<id>org.hsqldb</id>
 								<versionRange>0.0.0</versionRange>
 							</requirement>
 						</extraRequirements>
@@ -88,7 +83,7 @@
 						<version>${tycho-version}</version>
 						<configuration>
 							<debugPort>${ats-int-test-debug-port}</debugPort>
-							<!-- <systemProperties combine.children="append"> <equinox.ds.debug>true</equinox.ds.debug> 
+							<!-- <systemProperties combine.children="append"> <equinox.ds.debug>true</equinox.ds.debug>
 								</systemProperties> -->
 						</configuration>
 					</plugin>
@@ -158,18 +153,37 @@
 										<property name="xserver-authentication" value="demo" />
 										<property name="xserver-data"
 											value="${project.build.directory}/server-data" />
-										<property name="xserver-log-config" value="${project.basedir}/logback-test.xml" />
-
+										<property name="xserver-log-config" value="${project.basedir}/resources/logback-test.xml" />
 										<property name="xserver-use-demo-data" value="true" />
-										<property name="xserver-db-home" value="file:${xserver-data}/osee-test-db" />
-										<property name="xserver-db-name" value="osee-test-db" />
-										<property name="xserver-db-username" value="public" />
-										<property name="xserver-db-password" value="" />
-										<property name="xserver-db-address" value="127.0.0.1" />
-										<property name="xserver-db-port" value="${ats-server-db-port}" />
-										<property name="xserver-db-web-port" value="${ats-server-db-web-port}" />
-										<property name="xserver-db-type" value="HSQL" />
-										<property name="additionalJvmArgs" value=" " />
+
+										<if>
+											<isset property="postgresqlDB"/>
+											<then>
+												<echo message="Integration tests will be run with PostgreSQL."/>
+
+												<property name="xserver-db-name" value="osee-test-db" /> <!-- Also used in init copy. may not be needed -->
+												<property name="xserver-db-web-port" value="${ats-server-db-web-port}" />
+												<property name="xserver-db-type" value="PostgreSQL" />
+												<property name="xserver-config-resource" value="${project.basedir}/resources/osee.postgresql.json" />
+												<property name="osee.app.server.config.file" value="${xserver-data}/osee.postgresql.test.json" />
+												<property name="additionalJvmArgs" value=" " />
+											</then>
+											<else>
+												<echo message="Integration tests will be run with HSQL."/>
+
+												<property name="xserver-db-home" value="file:${xserver-data}/osee-test-db" />
+												<property name="xserver-db-name" value="osee-test-db" />
+												<property name="xserver-db-username" value="public" />
+												<property name="xserver-db-password" value="" />
+												<property name="xserver-db-address" value="127.0.0.1" />
+												<property name="xserver-db-port" value="${ats-server-db-port}" />
+												<property name="xserver-db-web-port" value="${ats-server-db-web-port}" />
+												<property name="xserver-db-type" value="HSQL" />
+												<property name="osee.app.server.config.file" value="${xserver-data}/osee.hsql.test.json" />
+												<property name="additionalJvmArgs" value=" " />
+											</else>
+										</if>
+
 
 										<property name="xserver-log-output" value="${xserver-data}/server-output.log" />
 										<mkdir dir="${xserver-data}" />

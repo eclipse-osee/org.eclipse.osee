@@ -1,0 +1,23 @@
+{
+    "config": [
+        {
+            "service.pid": "org.eclipse.osee.jdbc.internal.osgi.JdbcComponentFactory",
+            "jdbc.service": [
+                {
+                    "service.id": "1001",
+                    "jdbc.client.driver": "org.postgresql.Driver",
+                    "jdbc.client.db.uri": "jdbc:postgresql://postgres:5432/osee",
+                    "jdbc.client.db.username": "osee",
+                    "jdbc.client.db.password": "osee",
+                    "jdbc.client.connection.pool.enabled": "true"
+                }
+            ]
+        },
+    	  {
+    		   "service.pid": "org.eclipse.osee.http.jetty.internal.osgi.JdbcJettyHttpService",
+    		   "jetty.server.context.session.inactive.interval": 3600,
+    		   "jetty.jdbc.cluster.name" : "osee",
+    		   "jetty.jdbc.save.interval.secs" : 30
+    	  }
+    ]
+}

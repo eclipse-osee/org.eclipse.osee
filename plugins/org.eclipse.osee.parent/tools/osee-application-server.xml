@@ -1,24 +1,5 @@
 <?xml version="1.0"?>
 <project name="Test OSEE Application Server Launcher" default="run" basedir=".">
-
-	<!--
-	${extraVMargs}
-
-   $xserver-db-home
-	$xserver-db-name=psql.osee.eclipse.org \
-   $xserver-db-username=osee.eclipse \
-   $xserver-db-password=osee.eclipse \
-   $xserver-db-address=127.0.0.1 \
-   $xserver-db-port=1623 \
-   
-   ${xserver-authentication} 
-	${xserver-data}
-	${xserver-home}	
-	${xserver-port}
-	${xserver-telnet-port}
-	${xserver-log-config}
-	-->
-
 	<target name="init">
 		<echo message="extraVMargs: [${extraVMargs}]" />
 
@@ -32,7 +13,6 @@
 		</for>
 
 		<property name="xserver-use-demo-data" value="false" />
-		<property name="osee.app.server.config.file" value="${xserver-data}/osee.hsql.test.json" />
 
 		<echo message="Server Config File: [${osee.app.server.config.file}]" />
 		<echo message="Server Data Directory:  [${osee.application.server.data}]" />
@@ -62,11 +42,23 @@
 		</if>
 	</target>
 
-	<target name="writeHsqlConnectionFile" depends="init">
-		<writeJsonConfig dbaddress="${xserver-db-address}" dbpath="${xserver-db-home}" dbport="${xserver-db-port}" filepath="${osee.app.server.config.file}" />
+	<target name="writeConnectionFile" depends="init">
+		<switch value="${xserver-db-type}">
+			<case value="HSQL">
+				<writeHsqlJsonConfig dbaddress="${xserver-db-address}" dbpath="${xserver-db-home}" dbport="${xserver-db-port}" filepath="${osee.app.server.config.file}" />
+			</case>
+
+			<case value="PostgreSQL">
+				<copy file="${xserver-config-resource}" tofile="${osee.app.server.config.file}"/>
+			</case>
+
+			<default>
+				<fail message="Database type not supported: [${xserver-db-type}] - should be [HSQL, PostgreSQL]" />
+			</default>
+		</switch>
 	</target>
 
-	<target name="run" depends="init,writeHsqlConnectionFile,startServer" />
+	<target name="run" depends="init,writeConnectionFile,startServer" />
 
 	<target name="startServer">
 		<pathconvert property="launcherJarPath" setonempty="false">
@@ -81,7 +73,7 @@
 
 		<forget daemon="false">
 			<echo message="Launching Osee Application Server..." />
-			<!-- Test Should Complete in 30 mins (timeout vale) - currently, they only take ~13 mins -->
+			<!-- Test Should Complete in 30 mins (timeout value) -->
 			<java taskname="int-test-server" failonerror="true" maxmemory="1024m" timeout="1800000" jar="${launcherJarPath}" fork="yes">
 				<classpath>
 					<fileset dir="${xserver-home}/plugins" includes="org.eclipse.equinox.launcher_*.jar" />
@@ -102,9 +94,9 @@
 			</java>
 		</forget>
 
-		<sleep seconds="20"/>
-		
-		<waitfor maxwait="20" maxwaitunit="second" checkevery="1" checkeveryunit="second" >
+		<sleep seconds="60"/>
+
+		<waitfor maxwait="20" maxwaitunit="second" checkevery="100" checkeveryunit="millisecond">
 			<http url="http://127.0.0.1:${xserver-port}/orcs/datastore/info" />
 		</waitfor>
 	</target>
@@ -125,7 +117,7 @@
 		<sleep milliseconds="10000" />
 	</target>
 
-	<macrodef name="writeJsonConfig">
+	<macrodef name="writeHsqlJsonConfig">
 		<attribute name="dbAddress" />
 		<attribute name="dbPort" />
 		<attribute name="dbPath" />
@@ -151,7 +143,7 @@
             ]
         }
     ]
-}				
+}
 			</echo>
 		</sequential>
 	</macrodef>
