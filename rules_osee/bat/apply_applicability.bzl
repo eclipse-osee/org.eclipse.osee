@@ -15,6 +15,7 @@ load("@aspect_bazel_lib//lib:run_binary.bzl", "run_binary")
 _ATTRS = {
     "srcs": attr.label_list(
         allow_files = True,
+        allow_empty = False,
     ),
     "applic_config": attr.label(allow_single_file = True,),
     "begin_comment_syntax":attr.string_list(doc="""
@@ -99,7 +100,7 @@ def _apply_applicability_impl(ctx):
             )
     return [
         DefaultInfo(
-            files = depset(outputs)
+            files = depset(outputs),
         ),
         OutputGroupInfo(
             bat_files=depset(outputs)
