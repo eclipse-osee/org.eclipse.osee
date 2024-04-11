@@ -12,15 +12,18 @@
  **********************************************************************/
 use applic_config::BatConfigElement;
 use applicability_parser::{
-    parse_applicability,
-    sanitize_applicability::SanitizeApplicability,
+    parse_applicability, sanitize_applicability::SanitizeApplicability,
     substitute_applicability::SubstituteApplicability,
 };
 use clap::Parser;
-use std::{
-    fs::{ self, create_dir_all, File }, io::ErrorKind, path::{Path, PathBuf}, sync::mpsc::channel, thread
-};
 use common_path::common_path;
+use std::{
+    fs::{self, create_dir_all, File},
+    io::ErrorKind,
+    path::{Path, PathBuf},
+    sync::mpsc::channel,
+    thread,
+};
 mod applic_config;
 
 /// Block Applicability Tool(BAT)
@@ -97,25 +100,23 @@ struct CliOptions {
     use_direct_output: bool,
 
     /// Do not write the processed files to a directory in {out_dir}/config/{config_name}
-    #[clap(short,long,verbatim_doc_comment)]
-    no_write_config_folder:bool
+    #[clap(short, long, verbatim_doc_comment)]
+    no_write_config_folder: bool,
 }
 
 fn main() {
     let args = CliOptions::parse();
     let out_dir = args.out_dir.as_path();
     let applic_config: Vec<BatConfigElement> = match File::open(args.applicability_config) {
-        Ok(file) =>
-            match serde_json::from_reader(file) {
-                Ok(res) => res,
-                Err(e) =>
-                    panic!(
-                        "Could not parse applicability config JSON \n{:?}: \tat line {:?} column {:?}",
-                        e.classify(),
-                        e.line(),
-                        e.column()
-                    ),
-            }
+        Ok(file) => match serde_json::from_reader(file) {
+            Ok(res) => res,
+            Err(e) => panic!(
+                "Could not parse applicability config JSON \n{:?}: \tat line {:?} column {:?}",
+                e.classify(),
+                e.line(),
+                e.column()
+            ),
+        },
 
         Err(e) => panic!("Could not find applicability config {:?}", e),
     };
@@ -187,7 +188,7 @@ fn main() {
                                 ),
                         }
                         //convert any relative paths to absolute paths
-                        let out_dirs = match fs::canonicalize(out_dir) {
+                        let mut out_dirs = match fs::canonicalize(out_dir) {
                             Ok(i) => i,
                             Err(e) => {
                                 println!(
@@ -215,33 +216,43 @@ fn main() {
                             ),
                             true => PathBuf::new(),
                         };
-                        let output_config_path = out_dirs.join(config_path);
-                        let localized_output = &output_config_path;
-                        let processed_path = localized_output.join(match use_direct_output {
-                            true => input,
-                            false =>
-                                match common_path(&input_path, &out_dirs) {
-                                    Some(prefix) =>
-                                        match input_path.strip_prefix(prefix) {
-                                            Ok(i) => i,
-                                            Err(e) => {
-                                                println!(
-                                                    "Error stripping input prefix {:?} from input {:?}",
-                                                    e,
-                                                    input
-                                                );
+                        out_dirs.push(config_path);
+                        out_dirs.push(match use_direct_output{
+                            true => match input.file_name(){
+                                Some(file_name) => match file_name.to_str(){
+                                    Some(i) => i,
+                                    None => panic!("Failed to unwrap input file name in direct output mode! {:#?}", file_name),
+                                },
+                                None => panic!("Failed to unwrap input file name in direct output mode! {:#?}", input),
+                            }
+                            false => match common_path(&input_path, &out_dirs) {
+                                Some(prefix) =>
+                                    match input_path.strip_prefix(prefix) {
+                                        Ok(i) => match i.to_str(){
+                                            Some(str) => str,
+                                            None => panic!("Failed to unwrap input file name in common path mode! {:#?}",i),
+                                        },
+                                        Err(e) => {
+                                            println!(
+                                                "Error stripping input prefix {:?} from input {:?}",
+                                                e,
                                                 input
+                                            );
+                                            match input.to_str(){
+                                                Some(i) => i,
+                                                None => panic!("Failed to unwrap input file name in common path mode! {:#?}",input),
                                             }
                                         }
-                                    None =>
-                                        panic!(
-                                            "Error finding the common path between the input {:#?} and output directory {:#?}.",
-                                            input_path,
-                                            out_dirs
-                                        ),
-                                }
+                                    }
+                                None =>
+                                    panic!(
+                                        "Error finding the common path between the input {:#?} and output directory {:#?}.",
+                                        input_path,
+                                        out_dirs
+                                    ),
+                            },
                         });
-                        let parent = &processed_path.parent().unwrap();
+                        let parent = &out_dirs.parent().unwrap();
                         let _create_dir_all = create_dir_all(parent);
                         let parent_path_buf = parent.to_path_buf();
                         let create_directory = &parent_path_buf;
@@ -249,18 +260,18 @@ fn main() {
                             Ok(_) => {}
                             Err(e) => println!("Failed to create : {:#}", e.to_string()),
                         }
-                        let _f = match File::create(&processed_path) {
+                        let _f = match File::create(&out_dirs) {
                             Ok(fc) => fc,
                             Err(e) => panic!("Problem creating the file: {:?}", e),
                         };
-                        let file_result = File::open(&processed_path);
+                        let file_result = File::open(&out_dirs);
 
                         let _file = match file_result {
                             Ok(file) => file,
                             Err(error) =>
                                 match error.kind() {
                                     ErrorKind::NotFound =>
-                                        match File::create(&processed_path) {
+                                        match File::create(&out_dirs) {
                                             Ok(fc) => fc,
                                             Err(e) => panic!("Problem creating the file: {:?}", e),
                                         }
@@ -273,13 +284,13 @@ fn main() {
                         for received in receiver {
                             //write the file out
                             let _text = received.clone();
-                            match fs::write(&processed_path, received) {
+                            match fs::write(&out_dirs, received) {
                                 Ok(r) => r,
                                 Err(e) =>
                                     println!(
                                         "Failed to write {:#?} to {:#?}. \n Error Code: {:#?}",
                                         _text,
-                                        processed_path,
+                                        out_dirs,
                                         e
                                     ),
                             };
@@ -295,7 +306,11 @@ fn main() {
 fn get_file_contents(file: &Path) -> String {
     match std::fs::read_to_string(file) {
         Ok(i) => i,
-        Err(e) => panic!("Can't convert file {:#?} to bytes. \n Error: {:#?}", file.as_os_str(), e),
+        Err(e) => panic!(
+            "Can't convert file {:#?} to bytes. \n Error: {:#?}",
+            file.as_os_str(),
+            e
+        ),
     }
 }
 /// Sets the comment syntax to the defaults if they are defined for a given file type.
@@ -319,7 +334,7 @@ fn get_file_contents(file: &Path) -> String {
 fn get_comment_syntax(
     file: &Path,
     start_comment_syntax: &str,
-    end_comment_syntax: &str
+    end_comment_syntax: &str,
 ) -> (String, String) {
     let file_ref_copy = file;
     let ext = match file_ref_copy.extension() {
@@ -334,18 +349,18 @@ fn get_comment_syntax(
         Some("md") => ("``", "``"),
         Some("cpp" | "cxx" | "cc" | "c" | "hpp" | "hxx" | "hh" | "h" | "rs") => ("//", ""),
         Some("bzl" | "bazel") => ("#", ""),
-        None => {
-            match name {
-                Some("WORKSPACE" | "BUILD") => ("#", ""),
-                _rest => (start_comment_syntax, end_comment_syntax),
-            }
-        }
+        None => match name {
+            Some("WORKSPACE" | "BUILD") => ("#", ""),
+            _rest => (start_comment_syntax, end_comment_syntax),
+        },
         _rest => (start_comment_syntax, end_comment_syntax),
     };
     println!(
         "start comment syntax {:#?}\r\n end comment syntax {:#?}",
-        start_comment_syntax,
-        end_comment_syntax
+        start_comment_syntax, end_comment_syntax
     );
-    (start_comment_syntax.to_string(), end_comment_syntax.to_string())
+    (
+        start_comment_syntax.to_string(),
+        end_comment_syntax.to_string(),
+    )
 }
