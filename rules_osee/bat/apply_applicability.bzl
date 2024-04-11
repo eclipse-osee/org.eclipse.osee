@@ -48,12 +48,12 @@ def _create_config_directory(ctx,file):
             files = depset(outputs)
         )
     else:
-        path = "%s" % ("osee_marker")
+        path = "%s" % (".osee_marker")
         out=ctx.actions.declare_file(path)
         ctx.actions.run_shell(
             inputs=[file],
             outputs = [out],
-            command = """mkdir -p $$(dirname %s) && touch %s""" % (path, path),
+            command = """touch %s""" % ( path),
             use_default_shell_env = True
         )
         outputs = [out]
@@ -74,10 +74,10 @@ def _apply_applicability_impl(ctx):
         for file in src.files.to_list():
             args = ctx.actions.args()
             args.add("-a",ctx.file.applic_config.path)
-            output = ctx.actions.declare_file(file.path,sibling=output_dir.files.to_list()[0])
+            output = ctx.actions.declare_file(file.basename)
             outputs.append(output)
-            args.add("-s",file)
-            args.add("-o",output_dir.files.to_list()[0].dirname.removesuffix("/".join(["config",ctx.file.applic_config.basename.removesuffix(".json")])))
+            args.add("-s",file.short_path)
+            args.add("-o",output.dirname)
             if(len(ctx.attr.begin_comment_syntax)>0):
                 args.add("-b",ctx.attr.begin_comment_syntax[0])
             if(len(ctx.attr.end_comment_syntax)>0):
