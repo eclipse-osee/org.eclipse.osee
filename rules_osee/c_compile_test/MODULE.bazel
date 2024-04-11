@@ -1,0 +1,41 @@
+#
+# Copyright (c) 2024 Boeing
+#
+# This program and the accompanying materials are made
+# available under the terms of the Eclipse Public License 2.0
+# which is available at https://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     Boeing - initial API and implementation
+# 
+module(
+    name = "c_compile_test",
+    version = "0.0.0",
+    bazel_compatibility = [">=6.0.0"],
+    compatibility_level = 1,
+)
+bazel_dep(name = "rules_osee", version = "0.0.0", dev_dependency = True)
+bazel_dep(name = "aspect_bazel_lib", version = "2.3.0", dev_dependency=True)
+bazel_dep(name = "rules_pkg", version = "0.10.1")
+
+local_path_override(
+    module_name = "rules_osee",
+    path = "../"
+)
+
+bat = use_extension("@rules_osee//bat:extensions.bzl","bat")
+bat.toolchain()
+
+plconfig = use_extension("@rules_osee//plconfig:extensions.bzl","plconfig")
+plconfig.config(
+    name="my_product_line",            
+    osee_url="http://host.docker.internal:8089",
+    branch_id="8",
+    sha256="560e0b693fc28f468d3ce1f864d575de93f08255172d0b9333a258cb919d04f3")
+
+use_repo(
+    plconfig,
+    "my_product_line"
+)
