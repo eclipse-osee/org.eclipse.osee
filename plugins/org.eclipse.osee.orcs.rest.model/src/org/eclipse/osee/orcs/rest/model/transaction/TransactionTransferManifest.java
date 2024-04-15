@@ -254,7 +254,7 @@ public class TransactionTransferManifest {
                         TransactionBuilder trans = txBdf.loadFromJson(transStr);
                         TransactionToken token = trans.commit();
                         if (token.isInvalid()) {
-                           results.errorf("Failed at %s - %s. ", branchId.toString(), current);
+                           results.errorf("Transaction token at %s - %s is invalid. ", branchId.toString(), current);
                            break;
                         }
                         transTx.setImportedTransId(token);
@@ -262,7 +262,7 @@ public class TransactionTransferManifest {
                   }
                }
             } catch (Exception e) {
-               results.errorf("Failed at %s - %s.json: %s. ", branchId.toString(), current, e.getMessage());
+               results.errorf("Failed at %s - %s: %s. ", branchId.toString(), current, e.getMessage());
             }
 
             if (results.isFailed()) {

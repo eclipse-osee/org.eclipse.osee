@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
+
 import static org.eclipse.osee.orcs.rest.model.transaction.TransferTupleTypes.ExportedBranch;
 import static org.eclipse.osee.orcs.rest.model.transaction.TransferTupleTypes.TransferFile;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -28,7 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -51,25 +51,24 @@ import org.eclipse.osee.orcs.search.Operator;
 import org.eclipse.osee.orcs.search.TupleQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 public class TransferDataStoreImpl {
    private final OrcsApi orcsApi;
    private final TupleQuery tupleQuery;
    private final TransactionEndpointImpl transEndpoint;
    private final TransactionTransferManifest transferManifest = new TransactionTransferManifest();
    public static String transferDir = "transfers";
-   private final boolean debug = true;
+   StringBuilder strdebug = new StringBuilder("");
    public TransferDataStoreImpl(TransactionEndpointImpl transEndpoint, OrcsApi orcsApi) {
       this.transEndpoint = transEndpoint;
       this.orcsApi = orcsApi;
       this.tupleQuery = orcsApi.getQueryFactory().tupleQuery();
    };
-   public final XResultData transferTransactions(TransactionId exportId, XResultData results) {
+
+   public final XResultData transferTransactions(TransactionId exportId, XResultData results, String mode) {
       List<TransactionReadable> txrs = new ArrayList<>();
       List<BranchLocation> branchLocations = branchLocations(exportId);
       String currentTransferDirectory = transferDirectoryHelper(exportId);
-      int errorCount = results.getErrorCount();
+
       TransactionId maxTransactionNum = TransactionId.SENTINEL;
       if (!branchLocations.isEmpty()) {
          for (BranchLocation branchLoc : branchLocations) {
@@ -78,22 +77,26 @@ public class TransferDataStoreImpl {
             int iniTxId = txId.getIdIntValue();
             txrs = orcsApi.getQueryFactory().transactionQuery().andBranch(branchId).andTxId(Operator.GREATER_THAN,
                iniTxId).getResults().getList();
-            maxTransactionNum = txrs.get(txrs.size() - 1);
+
             if (txrs.size() < 1) {
                results.error(
-                  "\nError not enough transactions to generate transfer files, there must be at least one transaction to transfer for each branch.");
-               break;
-            } else if (maxTransactionNum == txId || maxTransactionNum == TransactionId.SENTINEL) {
-               results.error(
-                  "\nError in generating transfer files, ending (max) transaction is empty or equivalent to starting (base) transaction");
+                  "Not enough transactions to generate transfer files; Nothing has been updated since the last file was generated.");
                break;
             } else {
-               applyTransactions(txrs, branchLoc, results, branchId, currentTransferDirectory, maxTransactionNum);
+               maxTransactionNum = txrs.get(txrs.size() - 1);
+               if (maxTransactionNum == txId || maxTransactionNum == TransactionId.SENTINEL) {
+                  results.error(
+                     "During generating transfer files, ending (max) transaction is empty or equivalent to starting (base) transaction");
+                  break;
+               } else {
+                  applyTransactions(txrs, branchLoc, results, branchId, currentTransferDirectory, maxTransactionNum);
+               }
             }
          }
       }
-      if (errorCount == 0) {
-         results.log("Begin attempt to add data to tuple table");
+
+      if (results.getErrorCount() == 0) {
+         strdebug.append("Begin attempt to add data to tuple table.");
          try {
             // for each branch, do each transfer row
             TransactionBuilder txTupleTransfer =
@@ -107,38 +110,42 @@ public class TransferDataStoreImpl {
             // Once transaction process we apply and commit (add tuples from transferFileRows) to Database
             // Commit the Transactions in the transfer
             txTupleTransfer.commit();
-            results.log("Tuple Table Data Added!");
+            strdebug.append("Tuple Table Data Added!");
             String buildId = "10000";
             // Build Manifest File from ManifestData Container see design doc for additional info
             buildManifestFileHelper(currentTransferDirectory, buildId, exportId, results, maxTransactionNum);
-            
+
             try {
-          	  String osee = orcsApi.getSystemProperties().getValue(OseeClient.OSEE_APPLICATION_SERVER_DATA) + File.separator + transferDir + File.separator;
-          	  File directoryPath = new File(currentTransferDirectory);    	  
-          	  Path pathTest = Paths.get(currentTransferDirectory);
-          	  String zipTarget = osee + currentTransferDirectory.replace(osee, "").replace("\\", "") + ".zip";
-          	  results.log("\nAttemtping to compress files to location: " + zipTarget + " File(s)/Directory(ies) from: " +  directoryPath.toString());          	  
-          	  if (Files.exists(pathTest)) {    		      		  
-          		  Zip.compressDirectory(directoryPath, zipTarget, true);
-          		  results.log("\nTransfer file generation content successfully compressed, file location: " + zipTarget + "\nTransfer File Generation Process Completed!");
-          	  }
+               String osee = orcsApi.getSystemProperties().getValue(
+                  OseeClient.OSEE_APPLICATION_SERVER_DATA) + File.separator + transferDir + File.separator;
+               File directoryPath = new File(currentTransferDirectory);
+               Path pathTest = Paths.get(currentTransferDirectory);
+               String zipTarget = osee + currentTransferDirectory.replace(osee, "").replace("\\", "") + ".zip";
+               strdebug.append(
+                  "Attemtping to compress files to location: " + zipTarget + " File(s)/Directory(ies) from: " + directoryPath.toString());
+               if (Files.exists(pathTest)) {
+                  Zip.compressDirectory(directoryPath, zipTarget, true);
+                  String filename =
+                     zipTarget.split(transferDir)[zipTarget.split(transferDir).length - 1].replace("\\", "");
+                  results.log(String.format("Transfer file %s is successfully generated.", filename));
+               }
             } catch (Exception e) {
-          	  results.error("Transfer file generation content could not be compressed error: " + e.getMessage());
-          	  e.printStackTrace();
+               results.error("Transfer file generation content could not be compressed error: " + e.getMessage());
+               e.printStackTrace();
             }
          } catch (Exception ex) {
             results.errorf("%s", "Error in addding tuples exception: ", ex.getMessage());
          }
-      } else {
-         results.log("\nTransfer Failed, please retry again");
-         results.setWarningCount(0);
-         results.setErrorCount(0); // Unlocks for next transfer
       }
-      if (debug) {
+
+      if (mode != null && mode.toLowerCase().contains("debug")) {
          System.out.println("\nFinal Results Log:\n" + results.toString());
+         System.out.println(strdebug.toString());
       }
+
       return results;
    }
+
    private XResultData applyTransactions(List<TransactionReadable> txrs, BranchLocation branchLoc, XResultData results,
       BranchId branchId, String currentTransferDirectory, TransactionId endTrans) {
       Collections.sort(txrs, new TransactionIdComparator());
@@ -149,9 +156,9 @@ public class TransferDataStoreImpl {
             results.errorf("%s", String.format("Error in JSON Build: ", ex.getMessage()));
          }
       }
-      results.log("\nJSON Files Created for Branch: " + branchId.getIdString());
       return results;
    }
+
    // Query Branch Base Transaction based off supplied branch given
    // For each branch configured in the export ID return the maximum base transaction ID for that branch.
    private final List<BranchLocation> branchLocations(TransactionId exportId) {
@@ -168,6 +175,7 @@ public class TransferDataStoreImpl {
       });
       return getMaxBranchLocations(branchLocations);
    }
+
    // Set base tx to max
    private final List<BranchLocation> getMaxBranchLocations(List<BranchLocation> branchLocations) {
       List<BranchLocation> bLocs = new ArrayList<>();
@@ -213,6 +221,7 @@ public class TransferDataStoreImpl {
       }
       return bLocs;
    }
+
    private boolean verifyValidTransactionToTransferHelper(String transactionComment) {
       String[] commentsToCheckAgainst = {
          "Adding transfer tuples",
@@ -228,6 +237,7 @@ public class TransferDataStoreImpl {
       }
       return true;
    }
+
    private String transferDirectoryHelper(TransactionId exportId) {
       // Transfer File Naming Convention: OSEETransfer-YYYYMMDDhhmmss-#### where #### is a random to make the file unique.
       Random rand = new Random();
@@ -236,9 +246,11 @@ public class TransferDataStoreImpl {
       Date transferDateAndTime = new Date();
       String osee = orcsApi.getSystemProperties().getValue(
          OseeClient.OSEE_APPLICATION_SERVER_DATA) + File.separator + transferDir + File.separator;
-      
-      return osee + "OSEETransfer-" + exportId.toString() + "-" + formatter.format(transferDateAndTime) + "-" + randomFour + File.separator;
+
+      return osee + "OSEETransfer-" + exportId.toString() + "-" + formatter.format(
+         transferDateAndTime) + "-" + randomFour + File.separator;
    }
+
    private XResultData buildJSONExportDataHelper(List<TransactionReadable> txrs, BranchLocation branchLoc,
       TransactionId lastTx, BranchId branchId, String transferDirectory, XResultData results)
       throws JsonProcessingException {
@@ -251,7 +263,7 @@ public class TransferDataStoreImpl {
       for (TransactionReadable tx : txrs) {
          boolean validTxToProcess = verifyValidTransactionToTransferHelper(tx.getComment());
          TransactionId uniqueTx = TransactionId.valueOf(Lib.generateUuid());
-         String fileName = tx.getIdString() + ".json";         
+         String fileName = tx.getIdString() + ".json";
          String path = transferDirectory + branchId + File.separator + fileName;
          if (validTxToProcess) {
             TransferTransaction transTx = new TransferTransaction(branchId, tx, uniqueTx, TransferOpType.EMPTY);
@@ -283,10 +295,15 @@ public class TransferDataStoreImpl {
                   tb.addTransferTransaction(transTx);
                } catch (Exception ex) {
                   results.errorf("%s",
-                     String.format("\nError in writing file: ", ex.getMessage() + " location: " + path));
+                     String.format("Error in writing file: ", ex.getMessage() + " location: " + path));
                }
             } else {
                // tbd is null or failed, write an empty transaction
+               if (tbd != null && tbd.isFailed()) {
+                  results.setWarningCount(results.getWarningCount() + 1);
+                  results.log(tbd.getResults());
+                  results.log(tbd.getMessage());
+               }
                tb.addTransferTransaction(transTx);
                txInProcess = tx; // get the next difference from the delta from this one
             }
@@ -295,6 +312,7 @@ public class TransferDataStoreImpl {
       transferManifest.addTransferBranch(tb);
       return results;
    }
+
    private XResultData buildManifestFileHelper(String transferDirectory, String buildId, TransactionId exportId,
       XResultData results, TransactionId maxTransaction) {
       Map<String, ArrayList<String>> Hmap = new HashMap<String, ArrayList<String>>();
@@ -350,7 +368,7 @@ public class TransferDataStoreImpl {
                   files = "\n \t * " + files.replaceAll(",", "\n \t *");
                   files = files.replaceAll("[\\[\\](){}]", "");
                } catch (Exception ex) {
-                  results.errorf("%s", "\nError in string replace. Exception: ", ex.getMessage());
+                  results.errorf("%s", "Error in string replace. Exception: ", ex.getMessage());
                }
                fileOutput.append(files).append(newLine);
             }
@@ -367,36 +385,13 @@ public class TransferDataStoreImpl {
             // Use OSEE Lib to write to file
             Lib.writeStringToFile(fileOutput.toString(), file);
          } catch (Exception ex) {
-            results.errorf("%s", "\nError in writting manifest file. Exception: ", ex.getMessage());
+            results.errorf("%s", "Error in writting manifest file. Exception: ", ex.getMessage());
          }
       }
-      if (results.getErrorCount() == 0) {
-         results.addRaw(
-            "\nManifest File written, transfer files generated, check database tuple tables for confirmation! Transfer directory files located at: " + transferDirectory);
-      }
+
       return results;
-   }  
-   private String adjustTransferOpType(String transferOpType) {
-      String opTypeForManifest = "";
-      switch (transferOpType) {
-         case "PREV_TX":
-            opTypeForManifest = "PrevTX";
-            break;
-         case "ADD":
-            opTypeForManifest = "Add";
-            break;
-         case "PURGE":
-            opTypeForManifest = "Purge";
-            break;
-         case "EMPTY":
-            opTypeForManifest = "Empty";
-         case "CUR_TX":
-            opTypeForManifest = "CurTX";
-         default:
-            throw new OseeCoreException("Invalid TransferOpType");
-      }
-      return opTypeForManifest;
    }
+
    private static final class TransactionIdComparator implements Comparator<TransactionId> {
       @Override
       public int compare(TransactionId arg0, TransactionId arg1) {

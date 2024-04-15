@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.orcs.rest.applic;
 
+import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -21,6 +22,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
@@ -28,9 +30,7 @@ import org.eclipse.osee.orcs.rest.model.transaction.BranchLocation;
 import org.eclipse.osee.orcs.rest.model.transaction.TransferDBType;
 import org.eclipse.osee.orcs.rest.model.transaction.TransferInitData;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
  * @author Torin Grenda
@@ -62,41 +62,30 @@ public class TransactionTransferImportTest {
       transactionEndpoint.initTransactionTransfer(testInitJson);
    }
 
-   @Rule
-   public ExpectedException expectedEx = ExpectedException.none();
-
    @Test
    public void testEmptyManifest() {
-      expectedEx.expect(OseeCoreException.class);
-      expectedEx.expectMessage("BuildId not found in:");
-
       try (InputStream inputStream = OsgiUtil.getResourceAsStream(getClass(), emptyManifest);) {
-         transactionEndpoint.uploadTransferFile(inputStream);
+         checkResults(transactionEndpoint.uploadTransferFile(inputStream), "Error: BuildId not found in:");
       } catch (IOException ex) {
          throw new OseeCoreException("IOException has occured: " + ex);
       }
-
    }
 
    @Test
    public void testEmptyTransferFile() {
-      expectedEx.expect(OseeCoreException.class);
-      expectedEx.expectMessage("Exception while verifying manifest and transaction files");
-
       try (InputStream inputStream = OsgiUtil.getResourceAsStream(getClass(), emptyFile);) {
-         transactionEndpoint.uploadTransferFile(inputStream);
+         checkResults(transactionEndpoint.uploadTransferFile(inputStream),
+            "Exception while verifying manifest and transaction files");
       } catch (IOException ex) {
          throw new OseeCoreException("IOException has occured: " + ex);
       }
-
    }
 
    @Test
    public void testIncorrectExportId() {
-      expectedEx.expect(OseeCoreException.class);
-      expectedEx.expectMessage("The export ID is not valid. This id is not matched or there is more than one in db.");
       try (InputStream inputStream = OsgiUtil.getResourceAsStream(getClass(), incorrectExportId);) {
-         transactionEndpoint.uploadTransferFile(inputStream);
+         checkResults(transactionEndpoint.uploadTransferFile(inputStream),
+            "The export ID is not valid. This id is not matched or there is more than one in db.");
       } catch (IOException ex) {
          throw new OseeCoreException("IOException has occured: " + ex);
       }
@@ -104,32 +93,36 @@ public class TransactionTransferImportTest {
 
    @Test
    public void testIncorrectManifest() {
-      expectedEx.expect(OseeCoreException.class);
       //Expects error to say this import is missing a file
-      expectedEx.expectMessage("Missing ");
-
       try (InputStream inputStream = OsgiUtil.getResourceAsStream(getClass(), incorrectManifest);) {
-         transactionEndpoint.uploadTransferFile(inputStream);
+         checkResults(transactionEndpoint.uploadTransferFile(inputStream), "Missing ");
       } catch (IOException ex) {
          throw new OseeCoreException("IOException has occured: " + ex);
       }
-
    }
 
    @Test
    public void testIncorrectFolderFormat() {
-      expectedEx.expect(OseeCoreException.class);
       //Expects error to say this import is missing a file
-      expectedEx.expectMessage("Missing ");
       try (InputStream inputStream = OsgiUtil.getResourceAsStream(getClass(), incorrectFileFormat);) {
-         transactionEndpoint.uploadTransferFile(inputStream);
+         checkResults(transactionEndpoint.uploadTransferFile(inputStream), "Missing ");
       } catch (IOException ex) {
          throw new OseeCoreException("IOException has occured: " + ex);
       }
-
    }
 
    private static TransactionId getMaxTransaction(BranchId branchId) {
       return TransactionManager.getTransactionsForBranch(branchId).get(0);
+   }
+
+   private void checkResults(XResultData results, String teststr) {
+      boolean pass = false;
+      for (String str : results.getResults()) {
+         if (str.contains(teststr)) {
+            pass = true;
+            break;
+         }
+      }
+      assertTrue(pass);
    }
 }
