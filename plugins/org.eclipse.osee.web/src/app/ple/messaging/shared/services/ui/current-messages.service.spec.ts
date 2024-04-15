@@ -31,6 +31,7 @@ import {
 	subMessagesMock,
 	connectionNodesMock,
 	MimPreferencesMock,
+	warningDialogServiceMock,
 } from '@osee/messaging/shared/testing';
 import type { message, messageWithChanges } from '@osee/messaging/shared/types';
 import { transactionResultMock } from '@osee/shared/transactions/testing';
@@ -39,6 +40,7 @@ import {
 	BranchInfoServiceMock,
 	changeReportMock,
 } from '@osee/shared/testing';
+import { WarningDialogService } from './warning-dialog.service';
 
 describe('CurrentMessagesService', () => {
 	let service: CurrentMessagesService;
@@ -63,6 +65,10 @@ describe('CurrentMessagesService', () => {
 					useValue: MimPreferencesServiceMock,
 				},
 				{ provide: BranchInfoService, useValue: BranchInfoServiceMock },
+				{
+					provide: WarningDialogService,
+					useValue: warningDialogServiceMock,
+				},
 				{ provide: MessageUiService },
 				CurrentMessagesService,
 			],

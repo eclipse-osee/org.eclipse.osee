@@ -260,15 +260,6 @@ export class TypesUIService {
 		});
 		return of<transaction>(currentTransaction);
 	}
-	private mergeEnumTransactionWithPlatformType(
-		transactionA: transaction,
-		transactionB: transaction
-	) {
-		transactionA.createArtifacts?.push(
-			...(transactionB.createArtifacts || [])
-		);
-		return of<transaction>(transactionA);
-	}
 	partialUpdate(dialogResponse: {
 		createArtifacts: createArtifact[];
 		modifyArtifacts: modifyArtifact[];
@@ -395,17 +386,6 @@ export class TypesUIService {
 					map((_) => enumSetResults)
 				)
 			)
-		);
-	}
-
-	/**
-	 * recursively remove the id property from an object using JSON.parse(JSON.stringify())
-	 * typically used before doing a creation rest call
-	 * @param object
-	 */
-	private removeId(object: Object) {
-		JSON.parse(
-			JSON.stringify(object, (k, v) => (k === 'id' ? undefined : v))
 		);
 	}
 }

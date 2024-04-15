@@ -83,4 +83,30 @@ export class AffectedArtifactService {
 				subMessageId
 		);
 	}
+
+	getConnectionsByMessage(
+		branchId: string | number,
+		messageId: string | number
+	) {
+		return this.http.get<affectedArtifact[]>(
+			apiURL +
+				'/mim/branch/' +
+				branchId +
+				'/affected/messages/' +
+				messageId
+		);
+	}
+
+	getNodesByConnection(
+		branchId: string | number,
+		connectionId: string | number
+	) {
+		return this.http.get<affectedArtifact[]>(
+			apiURL +
+				'/mim/branch/' +
+				branchId +
+				'/affected/connections/' +
+				connectionId
+		);
+	}
 }

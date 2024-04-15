@@ -109,4 +109,31 @@ export class BranchedAffectedArtifactService {
 			)
 		);
 	}
+	getConnectionsByMessage(messageId: string | number) {
+		return this.ui.id.pipe(
+			take(1),
+			filter((id) => id !== ''),
+			switchMap((id) =>
+				iif(
+					() => id !== '',
+					this.service.getConnectionsByMessage(id, messageId),
+					of<affectedArtifact[]>([])
+				)
+			)
+		);
+	}
+
+	getNodesByConnection(connectionId: string | number) {
+		return this.ui.id.pipe(
+			take(1),
+			filter((id) => id !== ''),
+			switchMap((id) =>
+				iif(
+					() => id !== '',
+					this.service.getNodesByConnection(id, connectionId),
+					of<affectedArtifact[]>([])
+				)
+			)
+		);
+	}
 }

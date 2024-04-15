@@ -18,8 +18,8 @@ import {
 } from '@angular/common/http/testing';
 import {
 	ComponentFixture,
-	fakeAsync,
 	TestBed,
+	fakeAsync,
 	tick,
 } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
@@ -27,21 +27,24 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatSelectHarness } from '@angular/material/select/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { apiURL } from '@osee/environments';
-import { EditMessageFieldComponent } from './edit-message-field.component';
-import { MessageUiService } from '@osee/messaging/shared/services';
-import { ApplicabilityListService } from '@osee/shared/services';
-import { applicabilityListServiceMock } from '@osee/shared/testing';
+import {
+	MessageTypeDropdownComponent,
+	RateDropdownComponent,
+} from '@osee/messaging/shared/dropdowns';
 import {
 	MockMessageTypeDropdownComponent,
 	MockRateDropdownComponent,
 } from '@osee/messaging/shared/dropdowns/testing';
 import {
-	RateDropdownComponent,
-	MessageTypeDropdownComponent,
-} from '@osee/messaging/shared/dropdowns';
+	MessageUiService,
+	WarningDialogService,
+} from '@osee/messaging/shared/services';
+import { ApplicabilityListService } from '@osee/shared/services';
+import { applicabilityListServiceMock } from '@osee/shared/testing';
+import { EditMessageFieldComponent } from './edit-message-field.component';
+import { warningDialogServiceMock } from '@osee/messaging/shared/testing';
 
 describe('EditMessageFieldComponent', () => {
 	let component: EditMessageFieldComponent<any>;
@@ -59,6 +62,12 @@ describe('EditMessageFieldComponent', () => {
 				imports: [
 					MockRateDropdownComponent,
 					MockMessageTypeDropdownComponent,
+				],
+				providers: [
+					{
+						provide: WarningDialogService,
+						useValue: warningDialogServiceMock,
+					},
 				],
 			},
 		})
@@ -78,8 +87,11 @@ describe('EditMessageFieldComponent', () => {
 						provide: ApplicabilityListService,
 						useValue: applicabilityListServiceMock,
 					},
+					{
+						provide: WarningDialogService,
+						useValue: warningDialogServiceMock,
+					},
 				],
-				teardown: { destroyAfterEach: false },
 			})
 			.compileComponents();
 	});

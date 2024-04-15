@@ -93,9 +93,6 @@ export class EditStructureFieldComponent<
 		tap(() => {
 			this._structure.id = this.structureId;
 		}),
-		switchMap(() =>
-			this.warningService.openStructureDialog(this._structure)
-		),
 		switchMap((val) => this.structureService.partialUpdateStructure(val))
 	);
 	categories = this.enumService.categories;
@@ -123,11 +120,10 @@ export class EditStructureFieldComponent<
 			iif(
 				() => update.type === null,
 				of(true).pipe(
-					switchMap(() =>
-						this.warningService.openStructureDialog(this._structure)
-					),
 					switchMap((val) =>
-						this.structureService.partialUpdateStructure(val)
+						this.structureService.partialUpdateStructure(
+							this._structure
+						)
 					)
 				),
 				of(false)
