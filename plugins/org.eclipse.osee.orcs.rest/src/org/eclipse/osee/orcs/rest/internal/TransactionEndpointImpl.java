@@ -158,6 +158,7 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
 
    @Override
    public TransferInitData initTransactionTransfer(TransferInitData data) {
+      XResultData results = new XResultData();
       if (data == null) {
          TransferInitData example = new TransferInitData();
          BranchLocation bl = new BranchLocation();
@@ -169,7 +170,6 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
          example.setBranchLocations(Arrays.asList(blCommon, bl));
          example.setExportId(TransactionId.valueOf(124388928743L));
          example.setTransferDBType(TransferDBType.SOURCE);
-         XResultData results = new XResultData();
          results.error(
             "null input given - fill out the returned json and use it to set properly init the transaction transfer");
          example.setResults(results);
@@ -185,12 +185,15 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
 
          for (TransactionId id : exportIdList) {
             if (id.equals(data.getExportId())) {
-               throw new OseeCoreException(
-                  String.format("The export Id %s was already initialized.", data.getExportId().toString()));
-            }
-            throw new OseeCoreException(
-               String.format("Another export Id, %s, was initialized. This database does not accept this export id %s.",
+               results.error(String.format("The export Id %s was already initialized.", data.getExportId().toString()));
+
+            } else {
+               results.error(String.format(
+                  "Another export Id, %s, was initialized. This database does not accept this export id %s.",
                   id.toString(), data.getExportId().toString()));
+            }
+            data.setResults(results);
+            return data;
          }
       } else if (data.getTransferDBType().equals(TransferDBType.SOURCE)) {
          //Verify export id. Destination db accepts only on export id
@@ -201,8 +204,9 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
 
          for (TransactionId id : exportIdList) {
             if (id.equals(data.getExportId())) {
-               throw new OseeCoreException(
-                  String.format("The export Id %s was already initialized.", data.getExportId().toString()));
+               results.error(String.format("The export Id %s was already initialized.", data.getExportId().toString()));
+               data.setResults(results);
+               return data;
             }
          }
       }
@@ -225,59 +229,48 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
    }
 
    @Override
-   public XResultData generateTransferFile(TransactionId exportId) {
+   public XResultData generateTransferFile(TransactionId exportId, String mode) {
       XResultData results = new XResultData();
-      DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-      Date date = new Date();
 
-      // Method to check if transfer is locked
-      results = transferActiveHelper(exportId, results);
-      // Check to see if there is a transfer
-      if (results.getErrorCount() >= 1) {
-         results.errorf("%s", "Transfer in progress for exportID", exportId.getIdString());
-         throw new OseeCoreException("Transfer in progress");
-      } else {
-         try {
-            TransferDataStoreImpl transfer = new TransferDataStoreImpl(this, orcsApi);
-            // Return XResultData
-            results = transfer.transferTransactions(exportId, results);
+      //Verify export id
+      List<TransactionId> exportIdList = new ArrayList<>();
+      int intDbType = TransferDBType.SOURCE.ordinal();
+      tupleQuery.getTuple4E1FromTupleType(ExportedBranch, TransferTupleTypes.LongExportedDBType,
+         Long.valueOf(intDbType), exportIdList::add);
 
-         } catch (Exception e) {
-            results.errorf("%s", String.format("Error in generating transfer files: ",
-               e.getMessage() + " at time: " + dateFormat.format(date)));
-            TransferFileLockUtil.unLock(orcsApi.getKeyValueOps(), exportId.getId());
-            throw new OseeCoreException(
-               "Error in generating transfer files, exception:  " + e + " At time: " + dateFormat.format(date));
+      boolean exportIdExist = false;
+      for (TransactionId id : exportIdList) {
+         if (id.equals(exportId)) {
+            exportIdExist = true;
+            break;
          }
       }
-      int errors = results.getErrorCount();
-      if (errors == 0) {
-         results.log("Transfer files successfully generated at: " + dateFormat.format(date));
-         results.success("%s", results.toString());
+      if (!exportIdExist) {
+         results.errorf("Export Id %s has not been initialized.", exportId.toString());
+         return results;
       }
-      if (results.isSuccess()) {
-         results.clear();
-         results.dispose();
-      }
-      TransferFileLockUtil.unLock(orcsApi.getKeyValueOps(), exportId.getId());
-      return results;
-   }
 
-   private XResultData transferActiveHelper(TransactionId exportId, XResultData results) {
+      boolean islocked = false;
       try {
-         results.logf("Checking if transfer currently in progress for exportID: %s", exportId.getIdString());
-         boolean transferActive = TransferFileLockUtil.isLocked(orcsApi.getKeyValueOps(), exportId.getId());
-         if (transferActive) {
-            results.errorf("Transfer is active for the current export ID: %s", exportId);
-         } else {
-            // Transfer not in progress, begin lock
-            TransferFileLockUtil.lock(orcsApi.getKeyValueOps(), exportId.getId());
-            results.log("Transfer file generation will begin...");
+         if (TransferFileLockUtil.isLocked(orcsApi.getKeyValueOps(), exportId.getId())) {
+            results.errorf("%s", "Lock is on. Transfer in progress for exportID", exportId.getIdString());
+            return results;
          }
+
+         islocked = TransferFileLockUtil.lock(orcsApi.getKeyValueOps(), exportId.getId());
+
+         TransferDataStoreImpl transfer = new TransferDataStoreImpl(this, orcsApi);
+         // Return XResultData
+         results = transfer.transferTransactions(exportId, results, mode);
+
       } catch (Exception ex) {
-         results.errorf("%s", String.format(
-            "Error in checking if a transfer is active Current Export ID: " + exportId + " ", ex.getMessage()));
+         results.errorf("%s", String.format("Error during generating transfer file: ", ex.getMessage()));
+      } finally {
+         if (islocked) {
+            TransferFileLockUtil.unLock(orcsApi.getKeyValueOps(), exportId.getId());
+         }
       }
+
       return results;
    }
 
@@ -285,6 +278,7 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
    public XResultData applyTransferFile(String location) {
       XResultData results = new XResultData();
       TransactionId exportId = TransactionId.SENTINEL;
+      boolean islocked = false;
 
       try {
          TransactionTransferManifest manifest = new TransactionTransferManifest();
@@ -302,7 +296,7 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
          if (TransferFileLockUtil.isLocked(orcsApi.getKeyValueOps(), exportId.getId())) {
             results.error("Lock is on; Another upload process is in progress. ");
          } else {
-            TransferFileLockUtil.lock(orcsApi.getKeyValueOps(), exportId.getId());
+            islocked = TransferFileLockUtil.lock(orcsApi.getKeyValueOps(), exportId.getId());
 
             results = manifest.importAllTransactions(orcsApi, resourceManager);
             if (results.isFailed()) {
@@ -317,7 +311,7 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       } catch (Exception ex) {
          results.errorf("%s", String.format("Error during uploading transfer file: ", ex.getMessage()));
       } finally {
-         if (!exportId.equals(TransactionId.SENTINEL)) {
+         if (islocked) {
             TransferFileLockUtil.unLock(orcsApi.getKeyValueOps(), exportId.getId());
          }
       }
@@ -483,20 +477,22 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
    }
 
    @Override
-   public Response uploadTransferFile(InputStream zip) {
+   public XResultData uploadTransferFile(InputStream zip) {
+      XResultData results = new XResultData();
       String transDir = "";
       try {
          transDir = unzipTransferFile(zip);
          zip.close();
       } catch (Exception e) {
-         return Response.serverError().build();
+         results.error("Failed to unzip the file.");
+         return results;
       } finally {
          if (zip != null) {
             Lib.close(zip);
          }
       }
 
-      XResultData results = applyTransferFile(transDir);
+      results = applyTransferFile(transDir);
       String parentPath = Paths.get(transDir).getParent().toString();
       try {
          if (parentPath.endsWith("OSEEDataTransferUploads")) {
@@ -506,13 +502,9 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
             }
          }
       } catch (Exception e) {
-         throw new OseeCoreException(e, "Transfer folder for deletion not found");
+         results.error("Transfer folder for deletion not found. " + e.getMessage());
       }
-      if (results.isOK()) {
-         return Response.ok().entity(String.format("Result: %s", results.toString())).build();
-      } else {
-         return Response.serverError().entity(String.format("Result: %s", results.toString())).build();
-      }
+      return results;
    }
 
    // external API to check for transfer file locks, internally, just use the util class TransferFileLockUtil

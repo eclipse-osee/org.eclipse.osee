@@ -37,6 +37,7 @@ import java.util.Map;
    "addRelations"})
 public class TransactionBuilderData {
    private String results = "N/A";
+   private final StringBuilder message = new StringBuilder("");
 
    public String getResults() {
       return results;
@@ -44,6 +45,14 @@ public class TransactionBuilderData {
 
    public void setResults(String results) {
       this.results = results;
+   }
+
+   public String getMessage() {
+      return (message.toString());
+   }
+
+   public void setMessage(String message) {
+      this.message.append(message);
    }
 
    public boolean isFailed() {

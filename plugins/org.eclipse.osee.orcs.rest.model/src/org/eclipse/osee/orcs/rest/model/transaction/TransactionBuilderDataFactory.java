@@ -137,6 +137,7 @@ public class TransactionBuilderDataFactory {
 
       if (results.isFailed()) {
          tbd.setResults("Failed");
+         tbd.setMessage(results.getResults().toString());
       }
       return tbd;
    }

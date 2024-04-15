@@ -70,7 +70,7 @@ public class TransactionTransferExportTest {
       createTestWorkingBranch(DemoBranches.SAW_PL, "Test Working Branch #1");
       createTestWorkingBranch(DemoBranches.SAW_PL, "Test Working Branch #2");
       //Run export to export the changes made above
-      transactionEndpoint.generateTransferFile(testInitJson.getExportId());
+      transactionEndpoint.generateTransferFile(testInitJson.getExportId(), "false");
    }
 
    private static TransactionId getMaxTransaction(BranchId branchId) {
