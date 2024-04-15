@@ -58,6 +58,7 @@ import type {
 import { relation, transaction } from '@osee/shared/types';
 import type { MimQuery } from '@osee/messaging/shared/query';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { WarningDialogService } from './warning-dialog.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -76,7 +77,8 @@ export abstract class CurrentStructureService {
 		protected branchInfoService: CurrentBranchInfoService,
 		protected sideNavService: SideNavService,
 		protected enumListService: EnumsService,
-		protected queryService: QueryService
+		protected queryService: QueryService,
+		protected warningDialogService: WarningDialogService
 	) {}
 
 	abstract get currentPage(): Observable<number>;
@@ -404,6 +406,11 @@ export abstract class CurrentStructureService {
 		delete body.elements;
 		return combineLatest([this.BranchId, this.SubMessageId]).pipe(
 			take(1),
+			switchMap(([branch, submessage]) =>
+				this.warningDialogService
+					.openSubMessageDialog({ id: submessage })
+					.pipe(map((_) => [branch, submessage]))
+			),
 			switchMap(([branch, submessageId]) =>
 				this.structure
 					.createSubMessageRelation(
@@ -499,6 +506,11 @@ export abstract class CurrentStructureService {
 	relateStructure(structureId: string, afterStructure?: string) {
 		return combineLatest([this.BranchId, this.SubMessageId]).pipe(
 			take(1),
+			switchMap(([branch, submessage]) =>
+				this.warningDialogService
+					.openSubMessageDialog({ id: submessage })
+					.pipe(map((_) => [branch, submessage]))
+			),
 			switchMap(([branch, submessageId]) =>
 				this.structure
 					.createSubMessageRelation(
@@ -529,6 +541,11 @@ export abstract class CurrentStructureService {
 	partialUpdateStructure(body: Partial<structure>) {
 		return this.BranchId.pipe(
 			take(1),
+			switchMap((branch) =>
+				this.warningDialogService
+					.openStructureDialog(body)
+					.pipe(map((_) => branch))
+			),
 			switchMap((branchId) =>
 				this.structure.changeStructure(body, branchId).pipe(
 					take(1),
@@ -547,6 +564,11 @@ export abstract class CurrentStructureService {
 	partialUpdateElement(body: Partial<element>) {
 		return this.BranchId.pipe(
 			take(1),
+			switchMap((branch) =>
+				this.warningDialogService
+					.openElementDialog(body)
+					.pipe(map((_) => branch))
+			),
 			switchMap((branchId) =>
 				this.elements.changeElement(body, branchId).pipe(
 					take(1),
@@ -1343,6 +1365,11 @@ export abstract class CurrentStructureService {
 		return this.ui.BranchId.pipe(
 			take(1),
 			filter((id) => id !== undefined && id !== '' && id !== '-1'),
+			switchMap((id) =>
+				this.warningDialogService
+					.openSubMessageDialog({ id: submessageId })
+					.pipe(map((res) => id))
+			),
 			switchMap((branchId) =>
 				this.structure
 					.deleteSubmessageRelation(
@@ -1366,6 +1393,11 @@ export abstract class CurrentStructureService {
 		return this.ui.BranchId.pipe(
 			take(1),
 			filter((id) => id !== undefined && id !== '' && id !== '-1'),
+			switchMap((id) =>
+				this.warningDialogService
+					.openStructureDialog(structure)
+					.pipe(map((res) => id))
+			),
 			switchMap((branchId) =>
 				this.elements
 					.createStructureRelation(structure.id, element.id)
@@ -1395,6 +1427,11 @@ export abstract class CurrentStructureService {
 		return this.ui.BranchId.pipe(
 			take(1),
 			filter((id) => id !== undefined && id !== '' && id !== '-1'),
+			switchMap((branch) =>
+				this.warningDialogService
+					.openElementDialog(element)
+					.pipe(map((_) => branch))
+			),
 			switchMap((branchId) =>
 				this.elements
 					.createElementArrayRelation(headerElement.id, element.id)
@@ -1424,6 +1461,11 @@ export abstract class CurrentStructureService {
 		return this.ui.BranchId.pipe(
 			take(1),
 			filter((id) => id !== undefined && id !== '' && id !== '-1'),
+			switchMap((branch) =>
+				this.warningDialogService
+					.openElementDialog(element)
+					.pipe(map((_) => branch))
+			),
 			switchMap((branchId) =>
 				this.elements.deleteElement(branchId, element.id).pipe(
 					switchMap((transaction) =>
@@ -1442,6 +1484,11 @@ export abstract class CurrentStructureService {
 		return this.ui.BranchId.pipe(
 			take(1),
 			filter((id) => id !== undefined && id !== '' && id !== '-1'),
+			switchMap((branch) =>
+				this.warningDialogService
+					.openStructureDialog({ id: structureId })
+					.pipe(map((_) => branch))
+			),
 			switchMap((branchId) =>
 				this.structure.deleteStructure(branchId, structureId).pipe(
 					switchMap((transaction) =>

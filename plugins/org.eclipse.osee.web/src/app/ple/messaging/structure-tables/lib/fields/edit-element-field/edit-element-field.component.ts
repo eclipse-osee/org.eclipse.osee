@@ -138,6 +138,18 @@ export class EditElementFieldComponent<U extends keyof element>
 		distinctUntilChanged(),
 		skip(1), //note: we might want to move the skip above the debounceTime to make things a bit faster in the future
 		switchMap((unit) =>
+			this.warningService
+				.openPlatformTypeDialog({
+					createArtifacts: [],
+					modifyArtifacts: [{ id: this.platformType.id }],
+					deleteRelations: [],
+				})
+				.pipe(
+					filter((types) => types.modifyArtifacts.length > 0),
+					map((types) => unit)
+				)
+		),
+		switchMap((unit) =>
 			this.structureService.updatePlatformTypeValue({
 				id: this.platformType.id,
 				interfacePlatformTypeUnits: unit,
@@ -152,8 +164,9 @@ export class EditElementFieldComponent<U extends keyof element>
 		tap(() => {
 			this._element.id = this.elementId;
 		}),
-		switchMap(() => this.warningService.openElementDialog(this._element)),
-		switchMap((value) => this.structureService.partialUpdateElement(value))
+		switchMap((value) =>
+			this.structureService.partialUpdateElement(this._element)
+		)
 	);
 	private _focus = new Subject<string | null>();
 	private _updateValue = combineLatest([this._sendValue, this._focus]).pipe(
@@ -178,11 +191,10 @@ export class EditElementFieldComponent<U extends keyof element>
 			iif(
 				() => update.type === null,
 				of(true).pipe(
-					switchMap(() =>
-						this.warningService.openElementDialog(this._element)
-					),
 					switchMap((value) =>
-						this.structureService.partialUpdateElement(value)
+						this.structureService.partialUpdateElement(
+							this._element
+						)
 					)
 				),
 				of(false)

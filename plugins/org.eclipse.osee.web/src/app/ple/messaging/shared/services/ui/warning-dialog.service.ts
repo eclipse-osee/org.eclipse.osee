@@ -22,6 +22,7 @@ import type {
 	affectedArtifactWarning,
 	element,
 	enumeration,
+	message,
 	PlatformType,
 	structure,
 	subMessage,
@@ -61,6 +62,35 @@ export class WarningDialogService {
 	}
 	private _listenToDialogEmission<T>(config: MatDialogConfig<T>) {
 		return this._openDialog(config).afterClosed().pipe(take(1));
+	}
+	openMessageDialog(body: Partial<message>) {
+		return of(body.id).pipe(
+			take(1),
+			filter((id: string | undefined): id is string => id !== undefined),
+			switchMap((id) =>
+				this._getAffectedConnectionsFromAffectedArtifacts([id])
+			),
+			switchMap((artifacts) =>
+				artifacts.length > 1
+					? this._listenToDialogEmission({
+							data: {
+								affectedArtifacts: artifacts,
+								body: body,
+								modifiedObjectType: 'Message',
+								affectedObjectType: 'Connection',
+							},
+					  }).pipe(
+							filter(
+								(
+									value
+								): value is affectedArtifactWarning<subMessage> =>
+									value !== undefined
+							),
+							map((value) => value.body)
+					  )
+					: of(body)
+			)
+		);
 	}
 
 	openSubMessageDialog(body: Partial<subMessage>) {
@@ -192,15 +222,6 @@ export class WarningDialogService {
 		);
 	}
 
-	private _isRequiredEnumeration(
-		value: string | enumeration
-	): value is Required<enumeration> {
-		return (value as any).id !== undefined;
-	}
-	private _isEnumeration(value: string | enumeration): value is enumeration {
-		return (value as any).id !== undefined;
-	}
-
 	private _getAffectedEnumSetsFromEnums(enums: string[]) {
 		return of(enums).pipe(
 			concatMap((enumeration) =>
@@ -241,6 +262,88 @@ export class WarningDialogService {
 				from(enumSets).pipe(
 					switchMap((e) =>
 						this.affectedArtifacts.getElementsByType(e)
+					),
+					concatMap((arts) => from(arts))
+				)
+			),
+			distinct((v) => v.id),
+			scan((acc, curr) => [...acc, curr], [] as affectedArtifact[]),
+			startWith([]),
+			last()
+		);
+	}
+	private _getAffectedStructuresFromAffectedArtifacts(elements: string[]) {
+		return of(elements).pipe(
+			concatMap((enumSets) =>
+				from(enumSets).pipe(
+					switchMap((e) =>
+						this.affectedArtifacts.getStructuresByElement(e)
+					),
+					concatMap((arts) => from(arts))
+				)
+			),
+			distinct((v) => v.id),
+			scan((acc, curr) => [...acc, curr], [] as affectedArtifact[]),
+			startWith([]),
+			last()
+		);
+	}
+
+	private _getAffectedSubmessagesFromAffectedArtifacts(structures: string[]) {
+		return of(structures).pipe(
+			concatMap((enumSets) =>
+				from(enumSets).pipe(
+					switchMap((e) =>
+						this.affectedArtifacts.getSubMessagesByStructure(e)
+					),
+					concatMap((arts) => from(arts))
+				)
+			),
+			distinct((v) => v.id),
+			scan((acc, curr) => [...acc, curr], [] as affectedArtifact[]),
+			startWith([]),
+			last()
+		);
+	}
+	private _getAffectedMessagesFromAffectedArtifacts(submessages: string[]) {
+		return of(submessages).pipe(
+			concatMap((enumSets) =>
+				from(enumSets).pipe(
+					switchMap((e) =>
+						this.affectedArtifacts.getMessagesBySubMessage(e)
+					),
+					concatMap((arts) => from(arts))
+				)
+			),
+			distinct((v) => v.id),
+			scan((acc, curr) => [...acc, curr], [] as affectedArtifact[]),
+			startWith([]),
+			last()
+		);
+	}
+
+	private _getAffectedConnectionsFromAffectedArtifacts(messages: string[]) {
+		return of(messages).pipe(
+			concatMap((enumSets) =>
+				from(enumSets).pipe(
+					switchMap((e) =>
+						this.affectedArtifacts.getConnectionsByMessage(e)
+					),
+					concatMap((arts) => from(arts))
+				)
+			),
+			distinct((v) => v.id),
+			scan((acc, curr) => [...acc, curr], [] as affectedArtifact[]),
+			startWith([]),
+			last()
+		);
+	}
+	private _getAffectedNodesFromAffectedArtifacts(connections: string[]) {
+		return of(connections).pipe(
+			concatMap((enumSets) =>
+				from(enumSets).pipe(
+					switchMap((e) =>
+						this.affectedArtifacts.getNodesByConnection(e)
 					),
 					concatMap((arts) => from(arts))
 				)

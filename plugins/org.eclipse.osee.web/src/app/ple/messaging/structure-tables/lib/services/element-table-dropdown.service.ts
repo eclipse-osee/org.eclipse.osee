@@ -27,16 +27,7 @@ import {
 	elementWithChanges,
 	structure,
 } from '@osee/messaging/shared/types';
-import {
-	OperatorFunction,
-	combineLatest,
-	filter,
-	iif,
-	map,
-	of,
-	switchMap,
-	take,
-} from 'rxjs';
+import { OperatorFunction, filter, iif, map, of, switchMap, take } from 'rxjs';
 import { EditEnumSetDialogComponent } from '@osee/messaging/shared/dialogs';
 import {
 	createArtifact,
@@ -49,8 +40,6 @@ import { difference } from '@osee/shared/types/change-report';
 import { applic } from '@osee/shared/types/applicability';
 import { DefaultAddElementDialog } from '../dialogs/add-element-dialog/add-element-dialog.default';
 import { AddElementDialogComponent } from '../dialogs/add-element-dialog/add-element-dialog.component';
-import { UiService } from '@osee/shared/services';
-import { Router } from '@angular/router';
 import { EditElementDialogComponent } from '../dialogs/edit-element-dialog/edit-element-dialog.component';
 
 @Injectable({
@@ -58,14 +47,16 @@ import { EditElementDialogComponent } from '../dialogs/edit-element-dialog/edit-
 })
 export class ElementTableDropdownService {
 	constructor(
-		private _ui: UiService,
-		private router: Router,
 		private dialog: MatDialog,
 		@Inject(STRUCTURE_SERVICE_TOKEN)
 		private structureService: CurrentStructureService,
 		private warningDialogService: WarningDialogService,
 		private enumSetService: EnumerationUIService
 	) {}
+
+	private _isStructure(value: structure | element): value is structure {
+		return (value as any).elements !== undefined;
+	}
 
 	openAddElementDialog(
 		parent: structure | element,
@@ -91,6 +82,15 @@ export class ElementTableDropdownService {
 					data !== undefined &&
 					data !== null &&
 					data?.element !== undefined
+			),
+			switchMap((dialogResults: ElementDialog) =>
+				!this._isStructure(parent)
+					? this.warningDialogService
+							.openElementDialog(dialogResults.element)
+							.pipe(map((_) => dialogResults))
+					: this.warningDialogService
+							.openStructureDialog(parent)
+							.pipe(map((_) => dialogResults))
 			),
 			switchMap((data: ElementDialog) =>
 				iif(
@@ -184,6 +184,11 @@ export class ElementTableDropdownService {
 						val !== null &&
 						val.element !== undefined &&
 						val.type !== undefined
+				),
+				switchMap((dialogRes) =>
+					this.warningDialogService
+						.openElementDialog(dialogRes.element)
+						.pipe(map((_) => dialogRes))
 				),
 				switchMap((val) =>
 					this.structureService.changeElementFromDialog(val)

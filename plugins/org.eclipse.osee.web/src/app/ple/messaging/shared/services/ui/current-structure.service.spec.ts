@@ -42,6 +42,7 @@ import {
 	platformTypes1,
 	structuresMock2,
 	structuresPreChanges,
+	warningDialogServiceMock,
 } from '@osee/messaging/shared/testing';
 import type {
 	structure,
@@ -51,6 +52,7 @@ import { PlatformTypeQuery } from '@osee/messaging/shared/query';
 import { transactionResultMock } from '@osee/shared/transactions/testing';
 import { BranchInfoService } from '@osee/shared/services';
 import { BranchInfoServiceMock, changeReportMock } from '@osee/shared/testing';
+import { WarningDialogService } from './warning-dialog.service';
 
 const servicesUnderTest: {
 	service: typeof CurrentStructureService;
@@ -100,7 +102,6 @@ servicesUnderTest.forEach((testCase) => {
 		let service: CurrentStructureService;
 		let ui: StructuresUiService;
 		let scheduler: TestScheduler;
-		let httpTestingController: HttpTestingController;
 
 		beforeEach(() => {
 			TestBed.configureTestingModule({
@@ -125,13 +126,16 @@ servicesUnderTest.forEach((testCase) => {
 						useValue: BranchInfoServiceMock,
 					},
 					{ provide: QueryService, useValue: QueryServiceMock },
+					{
+						provide: WarningDialogService,
+						useValue: warningDialogServiceMock,
+					},
 					CurrentStructureMultiService,
 				],
 				imports: [HttpClientTestingModule],
 			});
 			service = TestBed.inject(testCase.service);
 			ui = TestBed.inject(StructuresUiService);
-			httpTestingController = TestBed.inject(HttpTestingController);
 			ui.DiffMode = false;
 			ui.difference = [];
 			if (testCase.pushStructure) {

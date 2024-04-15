@@ -57,8 +57,9 @@ import type {
 } from '@osee/messaging/shared/types';
 import { relation, transaction, transactionToken } from '@osee/shared/types';
 import { SideNavService } from '@osee/shared/services/layout';
-import { StructuresService } from 'src/app/ple/messaging/shared/services/public-api';
+import { StructuresService } from '../http/structures.service';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { WarningDialogService } from './warning-dialog.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -261,7 +262,8 @@ export class CurrentMessagesService {
 		private applicabilityService: ApplicabilityListUIService,
 		private preferenceService: PreferencesUIService,
 		private branchInfoService: CurrentBranchInfoService,
-		private sideNavService: SideNavService
+		private sideNavService: SideNavService,
+		private warningDialogService: WarningDialogService
 	) {}
 
 	get currentPage() {
@@ -510,6 +512,11 @@ export class CurrentMessagesService {
 		return combineLatest([this.BranchId, this.connectionId]).pipe(
 			take(1),
 			switchMap(([branch, connection]) =>
+				this.warningDialogService
+					.openSubMessageDialog(body)
+					.pipe(map((_) => [branch, connection]))
+			),
+			switchMap(([branch, connection]) =>
 				this.subMessageService.changeSubMessage(branch, body).pipe(
 					take(1),
 					switchMap((transaction) =>
@@ -540,6 +547,11 @@ export class CurrentMessagesService {
 		return this.BranchId.pipe(
 			take(1),
 			switchMap((branchId) =>
+				this.warningDialogService
+					.openMessageDialog(body)
+					.pipe(map((_) => branchId))
+			),
+			switchMap((branchId) =>
 				this.messageService.changeMessage(branchId, body).pipe(
 					take(1),
 					switchMap((transaction) =>
@@ -565,6 +577,11 @@ export class CurrentMessagesService {
 			this.viewId,
 		]).pipe(
 			take(1),
+			switchMap(([branch, connection, viewId]) =>
+				this.warningDialogService
+					.openMessageDialog({ id: messageId })
+					.pipe(map((_) => [branch, connection, viewId]))
+			),
 			switchMap(([branch, connection, viewId]) =>
 				this.messageService
 					.getMessage(branch, connection, messageId, viewId)
@@ -615,6 +632,11 @@ export class CurrentMessagesService {
 	) {
 		return combineLatest([this.BranchId, this.connectionId]).pipe(
 			take(1),
+			switchMap(([branch, connection]) =>
+				this.warningDialogService
+					.openMessageDialog({ id: messageId })
+					.pipe(map((_) => [branch, connection]))
+			),
 			switchMap(([branch, connection]) =>
 				this.subMessageService
 					.createMessageRelation(
@@ -712,6 +734,11 @@ export class CurrentMessagesService {
 			)
 		);
 		return transaction.pipe(
+			switchMap((tx) =>
+				this.warningDialogService
+					.openMessageDialog({ id: messageId })
+					.pipe(map((_) => tx))
+			),
 			switchMap((tx) =>
 				this.subMessageService.performMutation('', '', '', tx)
 			),
@@ -819,6 +846,11 @@ export class CurrentMessagesService {
 	deleteMessage(messageId: string) {
 		return this.BranchId.pipe(
 			take(1),
+			switchMap((branch) =>
+				this.warningDialogService
+					.openMessageDialog({ id: messageId })
+					.pipe(map((_) => branch))
+			),
 			switchMap((branchId) =>
 				this.messageService.deleteMessage(branchId, messageId).pipe(
 					switchMap((transaction) =>
@@ -836,6 +868,11 @@ export class CurrentMessagesService {
 	removeMessage(messageId: string) {
 		return combineLatest([this.connectionId, this.BranchId]).pipe(
 			take(1),
+			switchMap(([branch, connection]) =>
+				this.warningDialogService
+					.openMessageDialog({ id: messageId })
+					.pipe(map((_) => [branch, connection]))
+			),
 			switchMap(([connectionId, branchId]) =>
 				this.messageService
 					.createConnectionRelation(connectionId, messageId)
@@ -864,6 +901,11 @@ export class CurrentMessagesService {
 	removeSubMessage(submessageId: string, messageId: string) {
 		return this.BranchId.pipe(
 			take(1),
+			switchMap((id) =>
+				this.warningDialogService
+					.openSubMessageDialog({ id: submessageId })
+					.pipe(map((_) => id))
+			),
 			switchMap((branchId) =>
 				this.subMessageService
 					.createMessageRelation(messageId, submessageId)
@@ -896,6 +938,11 @@ export class CurrentMessagesService {
 	deleteSubMessage(submessageId: string) {
 		return this.BranchId.pipe(
 			take(1),
+			switchMap((id) =>
+				this.warningDialogService
+					.openSubMessageDialog({ id: submessageId })
+					.pipe(map((_) => id))
+			),
 			switchMap((branchId) =>
 				this.subMessageService
 					.deleteSubMessage(branchId, submessageId)
@@ -1545,7 +1592,7 @@ export class CurrentMessagesService {
 	 *
 	 * @param message
 	 * @param newNodes
-	 * @param type - true = publusher node, false = subscriber node
+	 * @param type - true = publisher node, false = subscriber node
 	 */
 	updateMessageNodeRelations(
 		message: message,

@@ -66,6 +66,10 @@ describe('EditElementFieldComponent', () => {
 					provide: STRUCTURE_SERVICE_TOKEN,
 					useValue: CurrentStateServiceMock,
 				},
+				{
+					provide: WarningDialogService,
+					useValue: warningDialogServiceMock,
+				},
 			],
 		})
 			.overrideComponent(EditElementFieldComponent, {
@@ -98,6 +102,10 @@ describe('EditElementFieldComponent', () => {
 						{
 							provide: STRUCTURE_SERVICE_TOKEN,
 							useValue: CurrentStateServiceMock,
+						},
+						{
+							provide: WarningDialogService,
+							useValue: warningDialogServiceMock,
 						},
 					],
 				},

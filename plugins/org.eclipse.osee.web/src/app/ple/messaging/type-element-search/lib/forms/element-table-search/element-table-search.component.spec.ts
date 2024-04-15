@@ -39,7 +39,6 @@ describe('ElementTableSearchComponent', () => {
 				NoopAnimationsModule,
 				ElementTableSearchComponent,
 			],
-			teardown: { destroyAfterEach: false },
 		}).compileComponents();
 	});
 

@@ -14,11 +14,15 @@ import { of } from 'rxjs';
 import { WarningDialogService } from '../services/ui/warning-dialog.service';
 import type {
 	element,
+	message,
 	structure,
 	subMessage,
 } from '@osee/messaging/shared/types';
 
 export const warningDialogServiceMock: Partial<WarningDialogService> = {
+	openMessageDialog(body: Partial<message>) {
+		return of(body);
+	},
 	openSubMessageDialog(body: Partial<subMessage>) {
 		return of(body);
 	},
@@ -34,10 +38,6 @@ export const warningDialogServiceMock: Partial<WarningDialogService> = {
 		return of([]);
 	},
 	openPlatformTypeDialog(tx) {
-		return of({
-			createArtifacts: [],
-			modifyArtifacts: [],
-			deleteRelations: [],
-		});
+		return of(tx);
 	},
 };
