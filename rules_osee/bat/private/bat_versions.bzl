@@ -12,6 +12,9 @@
 # 
 # @unsorted-dict-items
 BAT_VERSIONS = {
+    #1.0.5
+    "1.0.5-linux_amd64": ("x86_64-linux","1.0.5", "", "926e02ca9c2af77be9e0b7f935f9f94283e4a2e150407ef5b628582f2b1be78c"),
+    "1.0.5-windows_amd64": ("x86_64-win","1.0.5", ".exe", "936e3b20492b5f36b5bef5d24783a55ff5727ad5c60c590754fedd33bb558b2f"),
     #1.0.4
     "1.0.4-linux_amd64": ("x86_64-linux","1.0.4", "", "7781D75211248A5662C2042218CF8143A35B657D00C55827CA7B8A3141909EA6"),
     "1.0.4-windows_amd64": ("x86_64-win","1.0.4", ".exe", "A35C8A559615E9912E65A0B31FD661DABEECC3EA2F545820DF257A91BCD089E7"),
@@ -30,6 +33,9 @@ BAT_VERSIONS = {
 }
 
 BAT_CAPABILITY_SETS = {
+    #1.0.5
+    "1.0.5-linux_amd64": ["no_config"],
+    "1.0.5-windows_amd64": ["no_config"],
     #1.0.4
     "1.0.4-linux_amd64": ["no_config"],
     "1.0.4-windows_amd64": ["no_config"],

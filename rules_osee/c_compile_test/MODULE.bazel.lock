@@ -14,7 +14,7 @@
   },
   "localOverrideHashes": {
     "bazel_tools": "1ae69322ac3823527337acf02016e8ee95813d8d356f47060255b8956fa642f0",
-    "rules_osee": "5ee0d528f6dba167cc013b75c94440508269457bcfbae9d7c9bd9747e5c634d6"
+    "rules_osee": "2e8074f8b7319e7497a6e60e995a514c174a534f230e8c400cecf255acb3f45c"
   },
   "moduleDepGraph": {
     "<root>": {
@@ -95,7 +95,7 @@
     },
     "rules_osee@_": {
       "name": "rules_osee",
-      "version": "0.2.5",
+      "version": "0.2.6",
       "key": "rules_osee@_",
       "repoName": "rules_osee",
       "executionPlatformsToRegister": [],
@@ -2313,7 +2313,7 @@
     },
     "@@rules_osee~//bat:extensions.bzl%bat": {
       "general": {
-        "bzlTransitiveDigest": "b9otTGQQnujr9Ww51gVztBlHRCz0HvVsOJg4oZ1dfjA=",
+        "bzlTransitiveDigest": "huMgPsyjmwseu5eppXYN6Sg2TMscYxluKTAxQ3HiENo=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
         "envVariables": {},
@@ -2323,7 +2323,7 @@
             "ruleClassName": "bat_repositories",
             "attributes": {
               "platform": "linux_amd64",
-              "bat_version": "1.0.4"
+              "bat_version": "1.0.5"
             }
           },
           "bat": {
@@ -2338,7 +2338,7 @@
             "ruleClassName": "bat_repositories",
             "attributes": {
               "platform": "windows_amd64",
-              "bat_version": "1.0.4"
+              "bat_version": "1.0.5"
             }
           }
         },
