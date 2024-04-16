@@ -12,7 +12,7 @@
 # 
 module(
     name = "rules_osee",
-    version = "0.2.6",
+    version = "0.2.7",
     bazel_compatibility = [">=7.1.0"],
     compatibility_level = 1,
 )
