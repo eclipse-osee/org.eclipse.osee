@@ -91,6 +91,7 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -350,7 +351,8 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    }
 
    @Override
-   public int queryOpenWorkItemsCount(ArtifactTypeToken artType, AttributeTypeToken orderBy, String maxTime) {
+   public int queryOpenWorkItemsCount(ArtifactTypeToken artType, AttributeTypeToken orderBy, String maxTime,
+      String nameFilter) {
 
       Date maxTimeDate;
       try {
@@ -358,17 +360,22 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       } catch (ParseException ex) {
          maxTimeDate = DateUtil.getSentinalDate();
       }
-      QueryBuilder builder =
-         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(artType).setOrderByAttribute(
-            AtsAttributeTypes.CreatedDate).setOrderByAttributeDirection(SortOrder.DESCENDING).setMaxTime(maxTimeDate);
+      QueryBuilder builder = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(artType);
+      if (!nameFilter.isEmpty()) {
+         builder = builder.and(CoreAttributeTypes.Name, nameFilter);
+      }
+      builder = builder.setMaxTime(maxTimeDate);
       return builder.getCount();
    }
 
    @Override
    public Collection<WorkItemLastMod> queryOpenWorkItems(ArtifactTypeToken artType, int pageSize, int pageNum,
-      AttributeTypeToken orderBy, String orderDirection, String maxTime) {
+      AttributeTypeToken orderBy, String orderDirection, String maxTime, String nameFilter) {
       List<WorkItemLastMod> items = new ArrayList<>();
       QueryBuilder builder = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(artType);
+      if (!nameFilter.isEmpty()) {
+         builder = builder.and(CoreAttributeTypes.Name, nameFilter);
+      }
       Date maxTimeDate;
       try {
          maxTimeDate = DateUtil.getDate("yyyyMMddHHmmss", maxTime);
