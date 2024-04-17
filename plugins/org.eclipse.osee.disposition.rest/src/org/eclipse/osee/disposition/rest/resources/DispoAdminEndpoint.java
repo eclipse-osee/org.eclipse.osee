@@ -203,6 +203,14 @@ public class DispoAdminEndpoint {
       @Parameter(description = "Source Package", required = true) @QueryParam("sourcePackage") Long sourcePackage,
       CopySetParams params, @QueryParam("userName") String userName) {
       Response.Status status;
+      if (params == null) {
+         params = new CopySetParams();
+         params.setAnnotationParam(CopySetParamOption.OVERRIDE);
+         params.setCategoryParam(CopySetParamOption.OVERRIDE_EMPTY);
+         params.setAssigneeParam(CopySetParamOption.OVERRIDE_EMPTY);
+         params.setNoteParam(CopySetParamOption.OVERRIDE_EMPTY);
+         params.setAllowOnlyValidResolutionTypes(false);
+      }
       dispoApi.copyDispoSetCoverage(sourceBranch, sourcePackage, branch, destinationSet, params);
       status = Status.OK;
       return Response.status(status).build();
@@ -224,8 +232,12 @@ public class DispoAdminEndpoint {
       CopySetParams params,
       @Parameter(description = "The Username", required = true) @QueryParam("userName") String userName) {
       if (params == null) {
-         params = new CopySetParams(CopySetParamOption.OVERRIDE, CopySetParamOption.OVERRIDE,
-            CopySetParamOption.OVERRIDE, CopySetParamOption.OVERRIDE, false);
+         params = new CopySetParams();
+         params.setAnnotationParam(CopySetParamOption.OVERRIDE);
+         params.setCategoryParam(CopySetParamOption.OVERRIDE_EMPTY);
+         params.setAssigneeParam(CopySetParamOption.OVERRIDE_EMPTY);
+         params.setNoteParam(CopySetParamOption.OVERRIDE_EMPTY);
+         params.setAllowOnlyValidResolutionTypes(false);
       }
       dispoApi.copyDispoSet(branch, destinationSet, sourceBranch, sourceSet, params);
       Response.Status status = Status.OK;
