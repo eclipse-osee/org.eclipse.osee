@@ -125,7 +125,8 @@ public interface AtsActionEndpointApi {
    @Produces({MediaType.APPLICATION_JSON})
    int queryOpenWorkItemsCount(@QueryParam("artType") ArtifactTypeToken artType,
       @DefaultValue("-1") @QueryParam("orderBy") AttributeTypeToken orderBy,
-      @DefaultValue("20010101010101") @QueryParam("maxTime") String maxTime);
+      @DefaultValue("20010101010101") @QueryParam("maxTime") String maxTime,
+      @DefaultValue("") @QueryParam("nameFilter") String nameFilter);
 
    @Path("query/workitems")
    @GET
@@ -135,7 +136,8 @@ public interface AtsActionEndpointApi {
       @DefaultValue("0") @QueryParam("pageNumber") int pageNumber,
       @DefaultValue("-1") @QueryParam("orderBy") AttributeTypeToken orderBy,
       @DefaultValue("DESC") @QueryParam("orderDirection") String orderDirection,
-      @DefaultValue("20010101010101") @QueryParam("maxTime") String maxTime);
+      @DefaultValue("20010101010101") @QueryParam("maxTime") String maxTime,
+      @DefaultValue("") @QueryParam("nameFilter") String nameFilter);
 
    /**
     * @query_string <attr type name>=<value>, <attr type id>=<value>
