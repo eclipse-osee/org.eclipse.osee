@@ -26,6 +26,9 @@ names of features, configurations, configuration groups, and feature values may 
 > `Feature[A=Excluded]` text_1 `End Feature`<br>
 > Projects 'text_1' when feature A is excluded.
 
+> `Feature[!A]` text_1 `End Feature`<br>
+> Projects 'text_1' when feature A is excluded.  When the feature name is specified without a value and proceeded by '!', not equal to the default value for the feature is implied.
+
 
 ### Simple Configuration Applicability Tags
 
@@ -54,10 +57,12 @@ names of features, configurations, configuration groups, and feature values may 
 
 ### Tags with compound values (And/Or)
 
-> `Feature[A=Included | B=Included]` text_1 `End Feature`<br>
+> `Feature[A=Included | B=Included]` text_1 `End Feature`
+> `Feature[A | B]` text_1 `End Feature`<br>
 > Projects 'text_1' when feature A is included or feature B is included.
 
-> `Feature[A=Include & B=Included]` text_1 `End Feature`<br>
+> `Feature[A=Include & B=Included]` text_1 `End Feature`
+> `Feature[A & B]` text_1 `End Feature`<br>
 > Projects 'text_1' only when feature A and feature B are included.
 
 > `Configuration[Config_1 | Config_2]` text_1 `End Configuration`<br>
@@ -109,6 +114,11 @@ Note: If you use nested tags inside of tables the same rules apply, the tags mus
 | `Feature[A]` 4a `End Feature` <br> `Feature[A]` 5a `End Feature` | 2b | 4c | 4d | `Feature[A]` 4e `End Feature` <br> `Feature[A]` 5e `End Feature` |
 | ~~`Feature[A]` 6a~~ | ~~6b~~ | ~~6c`End Feature`~~ | ~~6d~~  | ~~6e~~ |
 
+## Substitution Tags
+- ``=[substitution_name]``
+- The substitution tag will be replaced with the value defined in the PLE model for the product configuration for the projection
+- No whitespace is allowed in the substitution_name or between '=' and '['
+- Use all CAPS for the substitution_name
 
 
 ## Previewing Change Reports/Diffs
@@ -165,7 +175,7 @@ It is important to initially preview change reports with no view selected and th
 
 - ‘Feature’, ‘End Feature’, ‘Feature Else’, ‘Configuration’, ‘End Configuration’, and ‘Configuration Else’ are all case sensitive.
     - Using ‘feature’, ‘end feature’, ‘feature else’, ‘configuration’, ‘end configuration’, and ’configuration else’ are all invalid.
-- The features/configurations anmes inside the brackets are case insensitive.
+- The features/configurations names inside the brackets are case insensitive.
 - The spacing does not matter between features when using ‘&’ or ‘|’.  A space or no space before or after the symbols is supported.
 - White space inside of the start and end tags will remain. Do not try to line up the feature tags. For example:
 ```
