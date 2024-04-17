@@ -29,9 +29,9 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelec
  */
 public class XSprintHyperlinkWidget extends XHyperlinkLabelCmdValueSelection {
 
-   IAgileSprint sprint;
-   IAtsTeamWorkflow teamWf;
-   IAtsTeamDefinition teamDef;
+   protected IAgileSprint sprint;
+   protected IAtsTeamWorkflow teamWf;
+   protected IAtsTeamDefinition teamDef;
    AtsApi atsApi;
 
    public XSprintHyperlinkWidget() {
