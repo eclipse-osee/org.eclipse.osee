@@ -46,6 +46,7 @@ public final class OptionsUtil {
    private static final String BRANCH_ORDER = "branch.order";
    private static final String INCLUDE_LATEST_TRANSACTION_DETAILS = "include.latest.transaction.details";
    private static final String MAX_TIME = "max.time";
+   private static final String LEGACY_POST_PROCESSING = "legacy_post_processing";
 
    public static Options createBranchOptions() {
       Options options = new Options();
@@ -58,6 +59,7 @@ public final class OptionsUtil {
       setIncludeTransactionDetails(options, false);
       setBranchOrder(options, "id");
       setMaxTime(options, DateUtil.getSentinalDate());
+      setLegacyPostProcessing(options, true);
       return options;
    }
 
@@ -67,6 +69,7 @@ public final class OptionsUtil {
       setFollowSearchInProgress(options, false);
       setBranchOrder(options, "id");
       setOrderByAttributeDirection(options, SortOrder.ASCENDING);
+      setLegacyPostProcessing(options, true);
       return options;
    }
 
@@ -84,6 +87,7 @@ public final class OptionsUtil {
       setSingleLevelRelationsSearch(options, false);
       setOrderByAttributeDirection(options, SortOrder.ASCENDING);
       setMaxTime(options, DateUtil.getSentinalDate());
+      setLegacyPostProcessing(options, true);
    }
 
    public static boolean isCacheIncluded(Options options) {
@@ -279,5 +283,13 @@ public final class OptionsUtil {
 
    public static String getBranchOrder(Options options) {
       return options.get(BRANCH_ORDER);
+   }
+
+   public static boolean getLegacyPostProcessing(Options options) {
+      return options.getBoolean(LEGACY_POST_PROCESSING);
+   }
+
+   public static void setLegacyPostProcessing(Options options, boolean postProcess) {
+      options.put(LEGACY_POST_PROCESSING, postProcess);
    }
 }
