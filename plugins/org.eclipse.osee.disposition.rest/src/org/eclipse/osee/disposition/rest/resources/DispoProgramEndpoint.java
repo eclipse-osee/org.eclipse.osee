@@ -244,9 +244,12 @@ public class DispoProgramEndpoint {
          }
 
          if (sourceSetId != null) {
-            CopySetParams params =
-               new CopySetParams(CopySetParamOption.OVERRIDE_EMPTY, CopySetParamOption.OVERRIDE_EMPTY,
-                  CopySetParamOption.OVERRIDE_EMPTY, CopySetParamOption.OVERRIDE_EMPTY, false);
+            CopySetParams params = new CopySetParams();
+            params.setAnnotationParam(CopySetParamOption.OVERRIDE);
+            params.setCategoryParam(CopySetParamOption.OVERRIDE_EMPTY);
+            params.setAssigneeParam(CopySetParamOption.OVERRIDE_EMPTY);
+            params.setNoteParam(CopySetParamOption.OVERRIDE_EMPTY);
+            params.setAllowOnlyValidResolutionTypes(false);
             dispoApi.copyDispoSet(programId, setId, sourceProgramId, sourceSetId, params);
          } else {
             return Response.status(Status.PRECONDITION_FAILED).entity(String.format(
