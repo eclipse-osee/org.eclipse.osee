@@ -38,8 +38,12 @@ public class XBitXViewerFactory extends XViewerFactory {
    // @formatter:on
 
    public XBitXViewerFactory() {
-      super(NAMESPACE);
+      this(NAMESPACE);
       registerColumns(Program_Col, Build_Col, Config_Col, State_Col, Id_Col, Cr_State_Col, Cr_Type_Col, Cr_Title_Col);
+   }
+
+   public XBitXViewerFactory(String namespace) {
+      super(namespace);
    }
 
    @Override

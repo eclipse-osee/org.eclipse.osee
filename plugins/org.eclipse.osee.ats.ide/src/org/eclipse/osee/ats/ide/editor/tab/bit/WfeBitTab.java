@@ -75,12 +75,17 @@ public class WfeBitTab extends WfeAbstractTab implements IArtifactEventListener,
    protected Label messageLabel;
    protected BuildImpactDatas bids;
    protected AtsApi atsApi;
+   private XBitXViewerFactory xBitXViewerFactory;
 
    public WfeBitTab(WorkflowEditor editor, IAtsTeamWorkflow teamWf) {
       super(editor, ID, teamWf, "Build Impact Table");
       this.teamWf = teamWf;
       atsApi = AtsApiService.get();
       OseeEventManager.addListener(this);
+   }
+
+   protected void setXBitXViewerFactoryAms(XBitXViewerFactory xBitXViewerFactory) {
+      this.xBitXViewerFactory = xBitXViewerFactory;
    }
 
    @Override
@@ -111,8 +116,8 @@ public class WfeBitTab extends WfeAbstractTab implements IArtifactEventListener,
          messageLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
          managedForm.getToolkit().adapt(messageLabel, true, true);
 
-         xViewer = new XBitViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, new XBitXViewerFactory(),
-            editor, teamWf);
+         xViewer = new XBitViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION,
+            xBitXViewerFactory != null ? xBitXViewerFactory : new XBitXViewerFactory(), editor, teamWf);
 
          xViewer.setContentProvider(new XBitContentProvider(xViewer));
          xViewer.setLabelProvider(new XBitLabelProvider(xViewer));
