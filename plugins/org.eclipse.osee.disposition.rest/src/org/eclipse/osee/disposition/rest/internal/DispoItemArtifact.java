@@ -21,6 +21,7 @@ import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DispoOseeTypes;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 
@@ -53,13 +54,13 @@ public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem
 
    @Override
    public Map<String, Discrepancy> getDiscrepanciesList() {
-      String discrepanciesJson = artifact.getSoleAttributeAsString(DispoOseeTypes.DispoDiscrepanciesJson, "{}");
+      String discrepanciesJson = artifact.getSoleAttributeAsString(CoreAttributeTypes.CoverageDiscrepanciesJson, "{}");
       return DispoUtil.jsonStringToDiscrepanciesMap(discrepanciesJson);
    }
 
    @Override
    public List<DispoAnnotationData> getAnnotationsList() {
-      String annotationsList = artifact.getSoleAttributeAsString(DispoOseeTypes.DispoAnnotationsJson, "[]");
+      String annotationsList = artifact.getSoleAttributeAsString(CoreAttributeTypes.CoverageAnnotationsJson, "[]");
       return DispoUtil.jsonStringToList(annotationsList, DispoAnnotationData.class);
    }
 
@@ -70,23 +71,23 @@ public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem
 
    @Override
    public String getAssignee() {
-      return artifact.getSoleAttributeAsString(DispoOseeTypes.DispoItemAssignee, "");
+      return artifact.getSoleAttributeAsString(CoreAttributeTypes.CoverageAssignee, "");
    }
 
    @Override
    public Date getCreationDate() {
-      return artifact.getSoleAttributeValue(DispoOseeTypes.DispoDateCreated);
+      return artifact.getSoleAttributeValue(CoreAttributeTypes.CoverageCreatedDate);
 
    }
 
    @Override
    public Date getLastUpdate() {
-      return artifact.getSoleAttributeValue(DispoOseeTypes.DispoItemLastUpdated);
+      return artifact.getSoleAttributeValue(CoreAttributeTypes.CoverageLastUpdated);
    }
 
    @Override
    public String getStatus() {
-      return artifact.getSoleAttributeAsString(DispoOseeTypes.DispoItemStatus);
+      return artifact.getSoleAttributeAsString(CoreAttributeTypes.CoverageStatus);
    }
 
    @Override
@@ -96,12 +97,12 @@ public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem
 
    @Override
    public Boolean getNeedsRerun() {
-      return artifact.getSoleAttributeValue(DispoOseeTypes.DispoItemNeedsRerun, false);
+      return artifact.getSoleAttributeValue(CoreAttributeTypes.CoverageNeedsRerun, false);
    }
 
    @Override
    public String getTotalPoints() {
-      return artifact.getSoleAttributeAsString(DispoOseeTypes.DispoItemTotalPoints, "0");
+      return artifact.getSoleAttributeAsString(CoreAttributeTypes.CoverageTotalPoints, "0");
    }
 
    @Override
@@ -111,7 +112,7 @@ public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem
 
    @Override
    public String getCategory() {
-      return artifact.getSoleAttributeAsString(DispoOseeTypes.DispoItemCategory, "");
+      return artifact.getSoleAttributeAsString(DispoOseeTypes.CoverageItemCategory, "");
    }
 
    @Override
@@ -126,17 +127,17 @@ public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem
 
    @Override
    public String getItemNotes() {
-      return artifact.getSoleAttributeAsString(DispoOseeTypes.DispoItemNotes, "");
+      return artifact.getSoleAttributeAsString(CoreAttributeTypes.CoverageNotes, "");
    }
 
    @Override
    public String getMethodNumber() {
-      return artifact.getSoleAttributeAsString(DispoOseeTypes.DispoItemMethodNumber, "");
+      return artifact.getSoleAttributeAsString(CoreAttributeTypes.CoverageMethodNumber, "");
    }
 
    @Override
    public String getFileNumber() {
-      return artifact.getSoleAttributeAsString(DispoOseeTypes.DispoItemFileNumber, "");
+      return artifact.getSoleAttributeAsString(CoreAttributeTypes.CoverageFileNumber, "");
    }
 
    @Override
@@ -146,6 +147,6 @@ public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem
 
    @Override
    public String getTeam() {
-      return artifact.getSoleAttributeAsString(DispoOseeTypes.DispoItemTeam, "");
+      return artifact.getSoleAttributeAsString(CoreAttributeTypes.CoverageTeam, "");
    }
 }

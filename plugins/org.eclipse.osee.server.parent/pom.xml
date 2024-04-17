@@ -118,6 +118,9 @@
 					../../plugins/org.eclipse.osee.testscript
 				</module>
 				<module>
+					../../plugins/org.eclipse.osee.coverage
+				</module>
+				<module>
 					../../plugins/org.eclipse.osee.mim
 				</module>
 			</modules>
@@ -183,6 +186,9 @@
 				</module>
 				<module>
 					../../plugins/org.eclipse.osee.testscript
+				</module>
+				<module>
+					../../plugins/org.eclipse.osee.coverage
 				</module>
 				<module>
 					../../plugins/org.eclipse.osee.mim

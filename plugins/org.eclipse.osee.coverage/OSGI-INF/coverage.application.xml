@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" name="OSEE Server Structural Coverage Analysis" deactivate="stop">
+   <implementation class="org.eclipse.osee.coverage.internal.CoverageApplication"/>
+   <service>
+      <provide interface="javax.ws.rs.core.Application"/>
+   </service>
+   <reference bind="bindCoverageApi" cardinality="1..1" interface="org.eclipse.osee.coverage.CoverageApi" name="CoverageApi" policy="static"/>
+ </scr:component>

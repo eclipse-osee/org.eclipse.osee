@@ -14,7 +14,12 @@
 package org.eclipse.osee.disposition.rest.resources;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.tags.Tags;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -39,6 +44,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
+import org.eclipse.osee.disposition.model.CopySetParamOption;
 import org.eclipse.osee.disposition.model.CopySetParams;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.MassTeamAssignParams;
@@ -206,12 +212,21 @@ public class DispoAdminEndpoint {
    @POST
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Produces(MediaType.APPLICATION_JSON)
+   @Operation(summary = "Get Dispo Set copy given a destination Set")
+   @Tags(value = {@Tag(name = "copy"), @Tag(name = "sets")})
+   @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "OK"),
+      @ApiResponse(responseCode = "400", description = "Bad Request")})
    public Response getDispoSetCopy(
       @Parameter(description = "Destination Set", required = true) @QueryParam("destinationSet") String destinationSet,
       @Parameter(description = "Source Program", required = true) @QueryParam("sourceProgram") BranchId sourceBranch,
       @Parameter(description = "Source Set", required = true) @QueryParam("sourceSet") String sourceSet,
       CopySetParams params,
       @Parameter(description = "The Username", required = true) @QueryParam("userName") String userName) {
+      if (params == null) {
+         params = new CopySetParams(CopySetParamOption.OVERRIDE, CopySetParamOption.OVERRIDE,
+            CopySetParamOption.OVERRIDE, CopySetParamOption.OVERRIDE, false);
+      }
       dispoApi.copyDispoSet(branch, destinationSet, sourceBranch, sourceSet, params);
       Response.Status status = Status.OK;
       return Response.status(status).build();

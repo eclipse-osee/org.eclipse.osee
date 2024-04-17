@@ -104,7 +104,7 @@ public class OrcsStorageImpl implements Storage {
    public boolean isUniqueSetName(BranchId branch, String name) {
       ResultSet<ArtifactReadable> results = getQuery()//
          .fromBranch(branch)//
-         .andTypeEquals(DispoOseeTypes.DispositionSet)//
+         .andTypeEquals(CoreArtifactTypes.DispositionSet)//
          .andNameEquals(name)//
          .getResults();
 
@@ -117,7 +117,7 @@ public class OrcsStorageImpl implements Storage {
       ResultSet<ArtifactReadable> results = getQuery()//
          .fromBranch(branch)//
          .andRelatedTo(CoreRelationTypes.DefaultHierarchical_Parent, setArt)//
-         .andTypeEquals(DispoOseeTypes.DispositionableItem)//
+         .andTypeEquals(CoreArtifactTypes.DispositionableItem)//
          .andNameEquals(name)//
          .getResults();
 
@@ -161,7 +161,7 @@ public class OrcsStorageImpl implements Storage {
    public List<DispoSet> findDispoSets(BranchId branch, String type) {
       ResultSet<ArtifactReadable> results = getQuery()//
          .fromBranch(branch)//
-         .andTypeEquals(DispoOseeTypes.DispositionSet)//
+         .andTypeEquals(CoreArtifactTypes.DispositionSet)//
          .getResults();
 
       List<DispoSet> toReturn = new ArrayList<>();
@@ -178,7 +178,7 @@ public class OrcsStorageImpl implements Storage {
    public List<String> getDispoSets(BranchId branch, String type) {
       ResultSet<ArtifactReadable> results = getQuery()//
          .fromBranch(branch)//
-         .andTypeEquals(DispoOseeTypes.DispositionSet)//
+         .andTypeEquals(CoreArtifactTypes.DispositionSet)//
          .getResults();
 
       List<String> toReturn = new ArrayList<>();
@@ -228,15 +228,15 @@ public class OrcsStorageImpl implements Storage {
    @Override
    public ArtifactId createSet(BranchId branch, String importPath, String setName) {
       TransactionBuilder tx = getTxFactory().createTransaction(branch, "Create Dispo Set");
-      ArtifactId creatdArtId = tx.createArtifact(DispoOseeTypes.DispositionSet, setName);
+      ArtifactId creatdArtId = tx.createArtifact(CoreArtifactTypes.DispositionSet, setName);
 
-      tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoImportPath, importPath);
-      tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.ServerImportPath, importPath);
-      tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoImportState, DispoSetStatus.NONE);
-      tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoConfig, "codeCoverage");
-      tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoNotesJson, JsonUtil.toJson(""));
-      tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoTime, new Date());
-      tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoRerunList, "");
+      tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.CoverageImportPath, importPath);
+      tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.ServerImportPath, importPath);
+      tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.CoverageImportState, DispoSetStatus.NONE);
+      tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.CoverageConfig, "codeCoverage");
+      tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.CoverageNotesJson, JsonUtil.toJson(""));
+      tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.CoverageImportDate, new Date());
+      tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.CoverageRerunList, "");
 
       tx.commit();
       return creatdArtId;
@@ -245,21 +245,22 @@ public class OrcsStorageImpl implements Storage {
    @Override
    public ArtifactId createDispoSet(BranchId branch, DispoSet descriptor) {
       TransactionBuilder tx = getTxFactory().createTransaction(branch, "Create Dispo Set");
-      ArtifactId creatdArtId = tx.createArtifact(DispoOseeTypes.DispositionSet, descriptor.getName());
+      ArtifactId creatdArtId = tx.createArtifact(CoreArtifactTypes.DispositionSet, descriptor.getName());
 
-      tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoImportPath, descriptor.getImportPath());
-      tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.ServerImportPath, descriptor.getImportPath());
-      tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoImportState, descriptor.getImportState());
-      tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoConfig, descriptor.getDispoType());
-      tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoNotesJson, JsonUtil.toJson(descriptor.getNotesList()));
+      tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.CoverageImportPath, descriptor.getImportPath());
+      tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.ServerImportPath, descriptor.getImportPath());
+      tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.CoverageImportState, descriptor.getImportState());
+      tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.CoverageConfig, descriptor.getDispoType());
+      tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.CoverageNotesJson,
+         JsonUtil.toJson(descriptor.getNotesList()));
       if (descriptor.getCiSet() == null) {
          tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoCiSet, "NOCI");
-         tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoRerunList, "NOCI");
-         tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoTime, new Date());
+         tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.CoverageRerunList, "NOCI");
+         tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.CoverageImportDate, new Date());
       } else {
          tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoCiSet, descriptor.getCiSet());
-         tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoRerunList, descriptor.getRerunList());
-         tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.DispoTime, descriptor.getTime());
+         tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.CoverageRerunList, descriptor.getRerunList());
+         tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.CoverageImportDate, descriptor.getTime());
       }
 
       tx.commit();
@@ -268,12 +269,12 @@ public class OrcsStorageImpl implements Storage {
 
    @Override
    public boolean deleteDispoSet(BranchId branch, String setId) {
-      return deleteDispoEntityArtifact(branch, setId, DispoOseeTypes.DispositionSet);
+      return deleteDispoEntityArtifact(branch, setId, CoreArtifactTypes.DispositionSet);
    }
 
    @Override
    public boolean deleteDispoItem(BranchId branch, String itemId) {
-      return deleteDispoEntityArtifact(branch, itemId, DispoOseeTypes.DispositionableItem);
+      return deleteDispoEntityArtifact(branch, itemId, CoreArtifactTypes.DispositionableItem);
    }
 
    private boolean deleteDispoEntityArtifact(BranchId branch, String entityId, ArtifactTypeToken type) {
@@ -294,10 +295,10 @@ public class OrcsStorageImpl implements Storage {
       DispoSetArtifact origSetAs = new DispoSetArtifact(dispoSet);
       TransactionBuilder tx = getTxFactory().createTransaction(branch, "Update Local Import Path for Coverage Set");
       if (!setId.serverImportPathExists()) {
-         tx.createAttribute(dispoSet, DispoOseeTypes.ServerImportPath, localImportPath);
+         tx.createAttribute(dispoSet, CoreAttributeTypes.ServerImportPath, localImportPath);
       } else {
          if (localImportPath != null && !localImportPath.equals(origSetAs.getServerImportPath())) {
-            tx.setSoleAttributeFromString(dispoSet, DispoOseeTypes.ServerImportPath, localImportPath);
+            tx.setSoleAttributeFromString(dispoSet, CoreAttributeTypes.ServerImportPath, localImportPath);
          }
       }
       tx.commit();
@@ -325,21 +326,21 @@ public class OrcsStorageImpl implements Storage {
          tx.setName(dispoSet, name);
       }
       if (importPath != null && !importPath.equals(origSetAs.getImportPath())) {
-         tx.setSoleAttributeFromString(dispoSet, DispoOseeTypes.DispoImportPath, importPath);
-         tx.setSoleAttributeFromString(dispoSet, DispoOseeTypes.ServerImportPath, importPath);
+         tx.setSoleAttributeFromString(dispoSet, CoreAttributeTypes.CoverageImportPath, importPath);
+         tx.setSoleAttributeFromString(dispoSet, CoreAttributeTypes.ServerImportPath, importPath);
       }
       if (notesList != null && !notesList.equals(origSetAs.getNotesList())) {
-         tx.setSoleAttributeFromString(dispoSet, DispoOseeTypes.DispoNotesJson,
+         tx.setSoleAttributeFromString(dispoSet, CoreAttributeTypes.CoverageNotesJson,
             JsonUtil.toJson(origSetAs.getNotesList()));
       }
       if (ciSet != null && !ciSet.equals(origSetAs.getCiSet())) {
          tx.setSoleAttributeFromString(dispoSet, DispoOseeTypes.DispoCiSet, ciSet);
       }
       if (rerunList != null && !rerunList.equals(origSetAs.getRerunList())) {
-         tx.setSoleAttributeFromString(dispoSet, DispoOseeTypes.DispoRerunList, rerunList);
+         tx.setSoleAttributeFromString(dispoSet, CoreAttributeTypes.CoverageRerunList, rerunList);
       }
       if (time != null && !time.equals(origSetAs.getTime())) {
-         tx.setSoleAttributeValue(dispoSet, DispoOseeTypes.DispoTime, time);
+         tx.setSoleAttributeValue(dispoSet, CoreAttributeTypes.CoverageImportDate, time);
       }
       tx.commit();
    }
@@ -349,30 +350,30 @@ public class OrcsStorageImpl implements Storage {
       ArtifactReadable parentSetArt = findDispoArtifact(branch, parentSet.getGuid());
       TransactionBuilder tx = getTxFactory().createTransaction(branch, "Create Dispoable Item");
 
-      ArtifactId createdItem = tx.createArtifact(DispoOseeTypes.DispositionableItem, data.getName());
+      ArtifactId createdItem = tx.createArtifact(CoreArtifactTypes.DispositionableItem, data.getName());
 
-      tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoDateCreated, data.getCreationDate());
-      tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemLastUpdated, data.getLastUpdate());
-      tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemStatus, data.getStatus());
-      tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemTotalPoints, data.getTotalPoints());
+      tx.setSoleAttributeValue(createdItem, CoreAttributeTypes.CoverageCreatedDate, data.getCreationDate());
+      tx.setSoleAttributeValue(createdItem, CoreAttributeTypes.CoverageLastUpdated, data.getLastUpdate());
+      tx.setSoleAttributeValue(createdItem, CoreAttributeTypes.CoverageStatus, data.getStatus());
+      tx.setSoleAttributeValue(createdItem, CoreAttributeTypes.CoverageTotalPoints, data.getTotalPoints());
 
-      tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemNeedsRerun, data.getNeedsRerun());
+      tx.setSoleAttributeValue(createdItem, CoreAttributeTypes.CoverageNeedsRerun, data.getNeedsRerun());
       tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemAborted, data.getAborted());
-      tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoDiscrepanciesJson,
+      tx.setSoleAttributeValue(createdItem, CoreAttributeTypes.CoverageDiscrepanciesJson,
          JsonUtil.toJson(data.getDiscrepanciesList()));
-      tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoAnnotationsJson,
+      tx.setSoleAttributeValue(createdItem, CoreAttributeTypes.CoverageAnnotationsJson,
          JsonUtil.toJson(data.getAnnotationsList()));
       tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemVersion, data.getVersion());
-      tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemAssignee, data.getAssignee());
+      tx.setSoleAttributeValue(createdItem, CoreAttributeTypes.CoverageAssignee, data.getAssignee());
       tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemMachine, data.getMachine());
-      tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemCategory, data.getCategory());
+      tx.setSoleAttributeValue(createdItem, DispoOseeTypes.CoverageItemCategory, data.getCategory());
       tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemElapsedTime, data.getElapsedTime());
 
       if (Strings.isValid(data.getFileNumber())) {
-         tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemFileNumber, data.getFileNumber());
+         tx.setSoleAttributeValue(createdItem, CoreAttributeTypes.CoverageFileNumber, data.getFileNumber());
       }
       if (Strings.isValid(data.getMethodNumber())) {
-         tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemMethodNumber, data.getMethodNumber());
+         tx.setSoleAttributeValue(createdItem, CoreAttributeTypes.CoverageMethodNumber, data.getMethodNumber());
       }
       tx.relate(parentSetArt, CoreRelationTypes.DefaultHierarchical_Child, createdItem);
 
@@ -385,34 +386,34 @@ public class OrcsStorageImpl implements Storage {
       TransactionBuilder tx = getTxFactory().createTransaction(branch, "Create Dispoable Item");
 
       for (DispoItem item : data) {
-         ArtifactId createdItem = tx.createArtifact(DispoOseeTypes.DispositionableItem, item.getName());
+         ArtifactId createdItem = tx.createArtifact(CoreArtifactTypes.DispositionableItem, item.getName());
 
          if (item.getCreationDate() == null) {
-            tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoDateCreated, new Date());
+            tx.setSoleAttributeValue(createdItem, CoreAttributeTypes.CoverageCreatedDate, new Date());
          } else {
-            tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoDateCreated, item.getCreationDate());
+            tx.setSoleAttributeValue(createdItem, CoreAttributeTypes.CoverageCreatedDate, item.getCreationDate());
          }
-         tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemLastUpdated, item.getLastUpdate());
-         tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemStatus, item.getStatus());
-         tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemTotalPoints, item.getTotalPoints());
+         tx.setSoleAttributeValue(createdItem, CoreAttributeTypes.CoverageLastUpdated, item.getLastUpdate());
+         tx.setSoleAttributeValue(createdItem, CoreAttributeTypes.CoverageStatus, item.getStatus());
+         tx.setSoleAttributeValue(createdItem, CoreAttributeTypes.CoverageTotalPoints, item.getTotalPoints());
 
-         tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemNeedsRerun, item.getNeedsRerun());
+         tx.setSoleAttributeValue(createdItem, CoreAttributeTypes.CoverageNeedsRerun, item.getNeedsRerun());
          tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemAborted, item.getAborted());
-         tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoDiscrepanciesJson,
+         tx.setSoleAttributeValue(createdItem, CoreAttributeTypes.CoverageDiscrepanciesJson,
             JsonUtil.toJson(item.getDiscrepanciesList()));
-         tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoAnnotationsJson,
+         tx.setSoleAttributeValue(createdItem, CoreAttributeTypes.CoverageAnnotationsJson,
             JsonUtil.toJson(item.getAnnotationsList()));
          tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemVersion, item.getVersion());
-         tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemAssignee, item.getAssignee());
+         tx.setSoleAttributeValue(createdItem, CoreAttributeTypes.CoverageAssignee, item.getAssignee());
          tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemMachine, item.getMachine());
-         tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemCategory, item.getCategory());
+         tx.setSoleAttributeValue(createdItem, DispoOseeTypes.CoverageItemCategory, item.getCategory());
          tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemElapsedTime, item.getElapsedTime());
 
          if (Strings.isValid(item.getFileNumber())) {
-            tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemFileNumber, item.getFileNumber());
+            tx.setSoleAttributeValue(createdItem, CoreAttributeTypes.CoverageFileNumber, item.getFileNumber());
          }
          if (Strings.isValid(item.getMethodNumber())) {
-            tx.setSoleAttributeValue(createdItem, DispoOseeTypes.DispoItemMethodNumber, item.getMethodNumber());
+            tx.setSoleAttributeValue(createdItem, CoreAttributeTypes.CoverageMethodNumber, item.getMethodNumber());
          }
          tx.relate(parentSetArt, CoreRelationTypes.DefaultHierarchical_Child, createdItem);
       }
@@ -450,33 +451,33 @@ public class OrcsStorageImpl implements Storage {
          tx.setName(currentItemArt, name);
       }
       if (newDiscrepancies != null && !newDiscrepancies.equals(origItem.getDiscrepanciesList())) {
-         tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoDiscrepanciesJson,
+         tx.setSoleAttributeFromString(currentItemArt, CoreAttributeTypes.CoverageDiscrepanciesJson,
             JsonUtil.toJson(newDiscrepancies));
       }
       if (newAnnotations != null && !newAnnotations.equals(origItem.getAnnotationsList())) {
-         tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoAnnotationsJson,
+         tx.setSoleAttributeFromString(currentItemArt, CoreAttributeTypes.CoverageAnnotationsJson,
             JsonUtil.toJson(newAnnotations));
       }
       if (assignee != null && !assignee.equals("UnAssigned") && !assignee.equals(origItem.getAssignee())) {
-         tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemAssignee, assignee);
+         tx.setSoleAttributeFromString(currentItemArt, CoreAttributeTypes.CoverageAssignee, assignee);
       }
       if (status != null && !status.equals("Unspecified") && !status.equals(origItem.getStatus())) {
-         tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemStatus, status);
+         tx.setSoleAttributeFromString(currentItemArt, CoreAttributeTypes.CoverageStatus, status);
       }
       if (lastUpdate != null && !lastUpdate.equals(origItem.getLastUpdate())) {
-         tx.setSoleAttributeValue(currentItemArt, DispoOseeTypes.DispoItemLastUpdated, lastUpdate);
+         tx.setSoleAttributeValue(currentItemArt, CoreAttributeTypes.CoverageLastUpdated, lastUpdate);
       }
       if (needsRerun != null && !needsRerun.equals(origItem.getNeedsRerun())) {
-         tx.setSoleAttributeValue(currentItemArt, DispoOseeTypes.DispoItemNeedsRerun, needsRerun.booleanValue());
+         tx.setSoleAttributeValue(currentItemArt, CoreAttributeTypes.CoverageNeedsRerun, needsRerun.booleanValue());
       }
       if (totalPoints != null && !totalPoints.equals("0.0") && !totalPoints.equals(origItem.getTotalPoints())) {
-         tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemTotalPoints, totalPoints);
+         tx.setSoleAttributeFromString(currentItemArt, CoreAttributeTypes.CoverageTotalPoints, totalPoints);
       }
       if (machine != null && !machine.equals("n/a") && !machine.equals(origItem.getMachine())) {
          tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemMachine, machine);
       }
       if (category != null && !category.isEmpty() && !category.equals(origItem.getCategory())) {
-         tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemCategory, category);
+         tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.CoverageItemCategory, category);
       }
       if (elapsedTime != null && elapsedTime.equals("0.0") && !elapsedTime.equals(origItem.getElapsedTime())) {
          tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemElapsedTime, elapsedTime);
@@ -485,19 +486,19 @@ public class OrcsStorageImpl implements Storage {
          tx.setSoleAttributeValue(currentItemArt, DispoOseeTypes.DispoItemAborted, aborted);
       }
       if (!isImport && itemNotes != null && !itemNotes.equals(origItem.getItemNotes())) {
-         tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemNotes, itemNotes);
+         tx.setSoleAttributeFromString(currentItemArt, CoreAttributeTypes.CoverageNotes, itemNotes);
       } else if (isImport && itemNotes != null && (origItem.getItemNotes().equals(
          "none") || origItem.getItemNotes().isEmpty())) {
-         tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemNotes, itemNotes);
+         tx.setSoleAttributeFromString(currentItemArt, CoreAttributeTypes.CoverageNotes, itemNotes);
       }
       if (fileNumber != null && !fileNumber.equals(origItem.getFileNumber())) {
-         tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemFileNumber, fileNumber);
+         tx.setSoleAttributeFromString(currentItemArt, CoreAttributeTypes.CoverageFileNumber, fileNumber);
       }
       if (methodNumber != null && !methodNumber.equals(origItem.getMethodNumber())) {
-         tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemMethodNumber, methodNumber);
+         tx.setSoleAttributeFromString(currentItemArt, CoreAttributeTypes.CoverageMethodNumber, methodNumber);
       }
       if (team != null && !team.equals(origItem.getTeam())) {
-         tx.setSoleAttributeFromString(currentItemArt, DispoOseeTypes.DispoItemTeam, team);
+         tx.setSoleAttributeFromString(currentItemArt, CoreAttributeTypes.CoverageTeam, team);
       }
    }
 
@@ -573,9 +574,9 @@ public class OrcsStorageImpl implements Storage {
       Set<DispoItem> toReturn = new HashSet<>();
       ResultSet<ArtifactReadable> dispoArtifacts = getQuery()//
          .fromBranch(branch)//
-         .andTypeEquals(DispoOseeTypes.DispositionableItem)//
+         .andTypeEquals(CoreArtifactTypes.DispositionableItem)//
          .andRelatedTo(CoreRelationTypes.DefaultHierarchical_Parent, dispoSetArt).and(
-            DispoOseeTypes.DispoAnnotationsJson, keyword, //
+            CoreAttributeTypes.CoverageAnnotationsJson, keyword, //
             QueryOption.CONTAINS_MATCH_OPTIONS)//
          .getResults();
 
@@ -680,8 +681,8 @@ public class OrcsStorageImpl implements Storage {
       ArtifactReadable dispoSet = findDispoArtifact(branch, setId);
       TransactionBuilder tx = getTxFactory().createTransaction(branch, "Update Dispo Operation Report");
 
-      tx.setSoleAttributeFromString(dispoSet, DispoOseeTypes.DispoImportState, newReport.getStatus().getName());
-      tx.setSoleAttributeFromString(dispoSet, DispoOseeTypes.DispoOperationSummary,
+      tx.setSoleAttributeFromString(dispoSet, CoreAttributeTypes.CoverageImportState, newReport.getStatus().getName());
+      tx.setSoleAttributeFromString(dispoSet, CoreAttributeTypes.CoverageOperationSummary,
          DispoUtil.operationReportToString(newReport));
       tx.commit();
    }
@@ -750,7 +751,7 @@ public class OrcsStorageImpl implements Storage {
    }
 
    private List<ArtifactReadable> findAllCiSets(BranchId branch) {
-      return getQuery().fromBranch(branch).andIsOfType(DispoOseeTypes.DispositionSet).andExists(
+      return getQuery().fromBranch(branch).andIsOfType(CoreArtifactTypes.DispositionSet).andExists(
          DispoOseeTypes.DispoCiSet).getResults().getList();
    }
 

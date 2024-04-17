@@ -40,6 +40,8 @@ import org.eclipse.osee.framework.core.enums.token.DataClassificationAttributeTy
 import org.eclipse.osee.framework.core.enums.token.DataClassificationRationaleType;
 import org.eclipse.osee.framework.core.enums.token.DataRightsBasisType;
 import org.eclipse.osee.framework.core.enums.token.DataRightsClassificationAttributeType;
+import org.eclipse.osee.framework.core.enums.token.DispoImportStateAttributeType;
+import org.eclipse.osee.framework.core.enums.token.DispoItemStatusAttributeType;
 import org.eclipse.osee.framework.core.enums.token.FACEOSSProfileAttributeType;
 import org.eclipse.osee.framework.core.enums.token.FACESegmentAttributeType;
 import org.eclipse.osee.framework.core.enums.token.FACETechStandardVersionAttributeType;
@@ -849,6 +851,12 @@ public interface CoreAttributeTypes {
 
    PartitionAttributeType Partition = osee.createEnum(new PartitionAttributeType());
 
+//   AttributeTypeString CoveragePartition = osee.createString(1152921504608470507L, "Name of Partition for Coverage", MediaType.TEXT_PLAIN, "");
+
+   AttributeTypeInteger CoveredCount = osee.createInteger(1152921504608470508L, "Covered Count", MediaType.TEXT_PLAIN, "Number of points that were manually covered");
+
+   AttributeTypeInteger ModifyCount = osee.createInteger(1152921504608470509L, "Modify Count", MediaType.TEXT_PLAIN, "Number of points that were set to need modification");
+
    AttributeTypeInteger PassedCount = osee.createInteger(1152921504606847297L, "Passed Count", MediaType.TEXT_PLAIN, "Number of points that passed");
 
    AttributeTypeInteger FailedCount = osee.createInteger(1152921504606847298L, "Failed Count", MediaType.TEXT_PLAIN, "Number of points that failed");
@@ -1107,5 +1115,48 @@ public interface CoreAttributeTypes {
 
    AttributeTypeJoin NameWord = osee.attributeTypeJoin("Name and Word", Name, CoreAttributeTypes.WordTemplateContent);
 
+   //Coverage Tool
+
+   AttributeTypeString CoverageAnnotationsJson = osee.createString(1152921504606847878L, "Annotations JSON", MediaType.TEXT_PLAIN, "");
+
+   AttributeTypeDate CoverageCreatedDate = osee.createDate(1152921504606847889L, "Date Created", AttributeTypeToken.TEXT_CALENDAR, "");
+
+   AttributeTypeString CoverageDiscrepanciesJson = osee.createString(1152921504606847879L, "Discrepancies JSON", MediaType.TEXT_PLAIN, "");
+
+   AttributeTypeString CoverageAssignee = osee.createString(3458764513820541441L, "Assignee", MediaType.TEXT_PLAIN, "");
+
+   AttributeTypeString CoverageFileNumber = osee.createString(3458764513820541715L, "File Number", MediaType.TEXT_PLAIN, "");
+
+   AttributeTypeDate CoverageLastUpdated = osee.createDate(1152921504606847890L, "Last Updated", AttributeTypeToken.TEXT_CALENDAR, "");
+
+   AttributeTypeString CoverageMethodNumber = osee.createString(3458764513820541460L, "Method Number", MediaType.TEXT_PLAIN, "");
+
+   AttributeTypeBoolean CoverageNeedsRerun = osee.createBoolean(3458764513820541444L, "Needs Rerun", MediaType.TEXT_PLAIN, "");
+
+   AttributeTypeString CoverageNotes = osee.createString(3458764513820541456L, "Notes", MediaType.TEXT_PLAIN, "");
+
+   AttributeTypeString CoveragePercentComplete = osee.createString(3458764513820541449L, "Percent Complete", MediaType.TEXT_PLAIN, ""); //Not Used in Code
+
+   DispoItemStatusAttributeType CoverageStatus = osee.createEnum(new DispoItemStatusAttributeType());
+
+   AttributeTypeString CoverageTeam = osee.createString(3160880792426011047L, "Team", MediaType.TEXT_PLAIN, "");
+
+   AttributeTypeString CoverageTotalPoints = osee.createString(3458764513820541443L, "item.Total Points", MediaType.TEXT_PLAIN, "");
+
+   AttributeTypeString CoverageImportPath = osee.createString(1152921504606847881L, "Import Path", MediaType.TEXT_PLAIN, "");
+
+   AttributeTypeString ServerImportPath = osee.createString(1152921504606847894L, "Import Url", MediaType.TEXT_PLAIN, "");
+
+   DispoImportStateAttributeType CoverageImportState = osee.createEnum(new DispoImportStateAttributeType());
+
+   AttributeTypeString CoverageNotesJson = osee.createString(1152921504606847880L, "Notes JSON", MediaType.TEXT_PLAIN, "");
+
+   AttributeTypeString CoverageOperationSummary = osee.createString(1152921504606847895L, "Operation Summary", MediaType.TEXT_PLAIN, "");
+
+   AttributeTypeString CoverageRerunList = osee.createString(3587660131087940587L, "Rerun List", MediaType.TEXT_PLAIN, "");
+
+   AttributeTypeString DispoSummaryCount = osee.createString(1152921504606847491L, "Summary Count", MediaType.TEXT_PLAIN, ""); //Not Used in Code
+
+   AttributeTypeDate CoverageImportDate = osee.createDate(7240092025387115138L, "Date that Coverage was last imported", AttributeTypeToken.TEXT_CALENDAR, "");
    // @formatter:on
 }
