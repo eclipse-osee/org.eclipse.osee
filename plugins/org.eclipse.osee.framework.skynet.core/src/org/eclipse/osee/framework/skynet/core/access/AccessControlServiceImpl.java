@@ -195,7 +195,7 @@ public class AccessControlServiceImpl extends AbstractAccessControlService {
          BranchToken branch = BranchManager.getBranchToken(stmt.getLong("branch_id"));
          PermissionEnum permission = PermissionEnum.getPermission(stmt.getInt("permission_id"));
          ArtifactTypeToken subjectArtifactType = tokenService.getArtifactType(stmt.getLong("art_type_id"));
-         Artifact artifact = ArtifactQuery.getArtifactFromId(stmt.getLong("art_id"), branch);
+         ArtifactToken artifact = ArtifactToken.valueOf(stmt.getLong("art_id"), branch);
 
          artAclOps.populateArtifactAccessControlListEntry(subjectId, artifact, permission, subjectArtifactType);
       };
