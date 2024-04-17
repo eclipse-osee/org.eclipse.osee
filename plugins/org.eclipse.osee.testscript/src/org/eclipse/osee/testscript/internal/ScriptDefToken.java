@@ -182,7 +182,7 @@ public class ScriptDefToken extends ArtifactAccessorResult {
    }
 
    /**
-    * @return the fullScriptName
+    * @return get the fullScriptName
     */
    public String getFullScriptName() {
       return fullScriptName;
@@ -196,7 +196,7 @@ public class ScriptDefToken extends ArtifactAccessorResult {
    }
 
    /**
-    * @return the executionDate
+    * @return get the executionDate
     */
    public Date getExecutionDate() {
       return executionDate;
@@ -210,7 +210,7 @@ public class ScriptDefToken extends ArtifactAccessorResult {
    }
 
    /**
-    * @return the executionEnvironment
+    * @return get the executionEnvironment
     */
    public String getExecutionEnvironment() {
       return executionEnvironment;
@@ -224,7 +224,7 @@ public class ScriptDefToken extends ArtifactAccessorResult {
    }
 
    /**
-    * @return the machine
+    * @return get the machine
     */
    public String getMachineName() {
       return machine;
@@ -238,210 +238,210 @@ public class ScriptDefToken extends ArtifactAccessorResult {
    }
 
    /**
-    * @return the revision
+    * @return get the revision
     */
    public String getRevision() {
       return revision;
    }
 
    /**
-    * @param revision the revision to set
+    * @param set the revision to revision
     */
    public void setRevision(String revision) {
       this.revision = revision;
    }
 
    /**
-    * @return the repositoryType
+    * @return get the repositoryType
     */
    public String getRepositoryType() {
       return repositoryType;
    }
 
    /**
-    * @param repositoryType the repositoryType to set
+    * @param set the repositoryType to repositoryType
     */
    public void setRepositoryType(String repositoryType) {
       this.repositoryType = repositoryType;
    }
 
    /**
-    * @return the team
+    * @return get the team
     */
    public String getTeam() {
       return team;
    }
 
    /**
-    * @param team the team to set
+    * @param set the team to team
     */
    public void setTeam(String team) {
       this.team = team;
    }
 
    /**
-    * @return the lastAuthor
+    * @return get the lastAuthor
     */
    public String getLastAuthor() {
       return lastAuthor;
    }
 
    /**
-    * @param lastAuthor the lastAuthor to set
+    * @param set the lastAuthor to lastAuthor
     */
    public void setLastAuthor(String lastAuthor) {
       this.lastAuthor = lastAuthor;
    }
 
    /**
-    * @return the lastModified
+    * @return get the lastModified
     */
    public Date getLastModified() {
       return lastModified;
    }
 
    /**
-    * @param lastModified the lastModified to set
+    * @param set the lastModified to lastModified
     */
    public void setLastModified(Date lastModified) {
       this.lastModified = lastModified;
    }
 
    /**
-    * @return the modified
+    * @return get the modified
     */
    public String getModified() {
       return modifiedFlag;
    }
 
    /**
-    * @param modified the modified to set
+    * @param set the modified to modified
     */
    public void setModifiedFlag(String modified) {
       this.modifiedFlag = modified;
    }
 
    /**
-    * @return the repositoryUrl
+    * @return get the repositoryUrl
     */
    public String getRepositoryUrl() {
       return repositoryUrl;
    }
 
    /**
-    * @param repositoryUrl the repositoryUrl to set
+    * @param set the repositoryUrl to repositoryUrl
     */
    public void setRepositoryUrl(String repositoryUrl) {
       this.repositoryUrl = repositoryUrl;
    }
 
    /**
-    * @return the property
+    * @return get the property
     */
    public String getProperty() {
       return property;
    }
 
    /**
-    * @param property the property to set
+    * @param set the property to property
     */
    public void setProperty(String property) {
       this.property = property;
    }
 
    /**
-    * @return the notes
+    * @return get the notes
     */
    public String getNotes() {
       return notes;
    }
 
    /**
-    * @param notes the notes to set
+    * @param set the notes to notes
     */
    public void setNotes(String notes) {
       this.notes = notes;
    }
 
    /**
-    * @return the safety
+    * @return get the safety
     */
    public boolean getSafety() {
       return safety;
    }
 
    /**
-    * @param safety the safety to set
+    * @param set the safety to safety
     */
    public void setSafety(boolean safety) {
       this.safety = safety;
    }
 
    /**
-    * @return the scheduled
+    * @return get the scheduled
     */
    public boolean getScheduled() {
       return scheduled;
    }
 
    /**
-    * @param scheduled the scheduled to set
+    * @param set the scheduled to scheduled
     */
    public void setScheduled(boolean scheduled) {
       this.scheduled = scheduled;
    }
 
    /**
-    * @return the scheduledTime
+    * @return get the scheduledTime
     */
    public Date getScheduledTime() {
       return scheduledTime;
    }
 
    /**
-    * @param scheduledTime the scheduledTime to set
+    * @param set the scheduledTime to scheduledTime
     */
    public void setScheduledTime(Date scheduledTime) {
       this.scheduledTime = scheduledTime;
    }
 
    /**
-    * @return the scheduledMachine
+    * @return get the scheduledMachine
     */
    public String getScheduledMachine() {
       return scheduledMachine;
    }
 
    /**
-    * @param scheduledMachine the scheduledMachine to set
+    * @param set the scheduledMachine to scheduledMachine
     */
    public void setScheduledMachine(String scheduledMachine) {
       this.scheduledMachine = scheduledMachine;
    }
 
    /**
-    * @return the statusBy
+    * @return get the statusBy
     */
    public String getStatusBy() {
       return statusBy;
    }
 
    /**
-    * @param statusBy the statusBy to set
+    * @param set the statusBy to statusBy
     */
    public void setStatusBy(String statusBy) {
       this.statusBy = statusBy;
    }
 
    /**
-    * @return the statusDate
+    * @return get the statusDate
     */
    public Date getStatusDate() {
       return statusDate;
    }
 
    /**
-    * @param statusDate the statusDate to set
+    * @param set the statusDate to statusDate
     */
    public void setStatusDate(Date statusDate) {
       this.statusDate = statusDate;
@@ -456,182 +456,182 @@ public class ScriptDefToken extends ArtifactAccessorResult {
    }
 
    /**
-    * @return the description
+    * @return get the description
     */
    public String getDescription() {
       return description;
    }
 
    /**
-    * @param description the description to set
+    * @param set the description to description
     */
    public void setDescription(String description) {
       this.description = description;
    }
 
    /**
-    * @return the processorId
+    * @return get the processorId
     */
    public String getLatestProcessorId() {
       return latestProcessorId;
    }
 
    /**
-    * @param processorId the processorId to set
+    * @param set the processorId to processorId
     */
    public void setLatestProcessorId(String latestProcessorId) {
       this.latestProcessorId = latestProcessorId;
    }
 
    /**
-    * @return the executionDate
+    * @return get the executionDate
     */
    public Date getLatestExecutionDate() {
       return latestExecutionDate;
    }
 
    /**
-    * @param executionDate the executionDate to set
+    * @param set the executionDate to executionDate
     */
    public void setLatestExecutionDate(Date latestExecutionDate) {
       this.latestExecutionDate = latestExecutionDate;
    }
 
    /**
-    * @return the executionEnvironment
+    * @return get the executionEnvironment
     */
    public String getLatestExecutionEnvironment() {
       return latestExecutionEnvironment;
    }
 
    /**
-    * @param executionEnvironment the executionEnvironment to set
+    * @param set the executionEnvironment to executionEnvironment
     */
    public void setLatestExecutionEnvironment(String latestExecutionEnvironment) {
       this.latestExecutionEnvironment = latestExecutionEnvironment;
    }
 
    /**
-    * @return the machine
+    * @return get the machine
     */
    public String getLatestMachineName() {
       return latestMachineName;
    }
 
    /**
-    * @param interfaceMessageWriteAccess the interfaceMessageWriteAccess to set
+    * @param set the interfaceMessageWriteAccess to interfaceMessageWriteAccess
     */
    public void setLatestMachineName(String latestMachine) {
       this.latestMachineName = latestMachine;
    }
 
    /**
-    * @return the passedCount
+    * @return get the passedCount
     */
    public int getLatestPassedCount() {
       return latestPassedCount;
    }
 
    /**
-    * @param passedCount the passedCount to set
+    * @param set the passedCount to passedCount
     */
    public void setLatestPassedCount(int latestPassedCount) {
       this.latestPassedCount = latestPassedCount;
    }
 
    /**
-    * @return the failedCount
+    * @return get the failedCount
     */
    public int getLatestFailedCount() {
       return latestFailedCount;
    }
 
    /**
-    * @param failedCount the failedCount to set
+    * @param set the failedCount to failedCount
     */
    public void setLatestFailedCount(int latestFailedCount) {
       this.latestFailedCount = latestFailedCount;
    }
 
    /**
-    * @return the interactiveCount
+    * @return get the interactiveCount
     */
    public int getLatestInteractiveCount() {
       return latestInteractiveCount;
    }
 
    /**
-    * @param interactiveCount the interactiveCount to set
+    * @param set the interactiveCount to interactiveCount
     */
    public void setLatestInteractiveCount(int latestInteractiveCount) {
       this.latestInteractiveCount = latestInteractiveCount;
    }
 
    /**
-    * @return the scriptAborted
+    * @return get the scriptAborted
     */
    public boolean getLatestScriptAborted() {
       return latestScriptAborted;
    }
 
    /**
-    * @param scriptAborted the scriptAborted to set
+    * @param set the scriptAborted to scriptAborted
     */
    public void setLatestScriptAborted(boolean latestScriptAborted) {
       this.latestScriptAborted = latestScriptAborted;
    }
 
    /**
-    * @return the elapsedTime
+    * @return get the elapsedTime
     */
    public int getLatestElapsedTime() {
       return latestElapsedTime;
    }
 
    /**
-    * @param elapsedTime the elapsedTime to set
+    * @param set the elapsedTime to elapsedTime
     */
    public void setLatestElapsedTime(int latestElapsedTime) {
       this.latestElapsedTime = latestElapsedTime;
    }
 
    /**
-    * @return the result
+    * @return get the result
     */
    public String getLatestResult() {
       return latestResult;
    }
 
    /**
-    * @param result the result to set
+    * @param set the result to result
     */
    public void setLatestResult(String latestResult) {
       this.latestResult = latestResult;
    }
 
    /**
-    * @return the scriptHealth
+    * @return get the scriptHealth
     */
    public int getLatestScriptHealth() {
       return latestScriptHealth;
    }
 
    /**
-    * @param scriptHealth the scriptHealth to set
+    * @param set the scriptHealth to scriptHealth
     */
    public void setLatestScriptHealth(int latestScriptHealth) {
       this.latestScriptHealth = latestScriptHealth;
    }
 
    /**
-    * @return the executedBy
+    * @return get the executedBy
     */
    public String getLatestExecutedBy() {
       return latestExecutedBy;
    }
 
    /**
-    * @param executedBy the executedBy to set
+    * @param set the executedBy to executedBy
     */
    public void setLatestExecutedBy(String latestExecutedBy) {
       this.latestExecutedBy = latestExecutedBy;
@@ -654,14 +654,14 @@ public class ScriptDefToken extends ArtifactAccessorResult {
    }
 
    /**
-    * @return the scriptResults
+    * @return get the scriptResults
     */
    public List<ScriptResultToken> getScriptResults() {
       return scriptResults;
    }
 
    /**
-    * @param scriptResult the scriptResults to set
+    * @param set the scriptResults to scriptResult
     */
    public void setScriptResults(List<ScriptResultToken> scriptResults) {
       this.scriptResults = scriptResults;

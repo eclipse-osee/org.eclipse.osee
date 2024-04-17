@@ -404,6 +404,17 @@ public interface CoreRelationTypes {
    RelationTypeSide WorkItem_Parent = RelationTypeSide.create(WorkItem, SIDE_A);
    RelationTypeSide WorkItem_Child = RelationTypeSide.create(WorkItem, SIDE_B);
 
+   //Coverage Tool
+   RelationTypeToken ProgramToPartitionDef = osee.addNewRelationType(2305843009213693820L, "Program to Partition", MANY_TO_MANY, UNORDERED, CoreArtifactTypes.CoverageProgram, "Coverage Program", CoreArtifactTypes.CoveragePartitionDef, "Coverage Partition Def");
+   RelationTypeSide ProgramToPartitionDef_CoverageProgram = RelationTypeSide.create(ProgramToPartitionDef, SIDE_A);
+   RelationTypeSide ProgramToPartitionDef_CoveragePartitionDef = RelationTypeSide.create(ProgramToPartitionDef, SIDE_B);
 
+   RelationTypeToken PartitionDefToPartitionResult = osee.addNewRelationType(2305843009213693821L, "Partition Def to Partition Result", MANY_TO_MANY, UNORDERED, CoreArtifactTypes.CoveragePartitionDef, "Coverage Partition Def", CoreArtifactTypes.DispositionSet, "Coverage Partition Result");
+   RelationTypeSide PartitionDefToPartitionResult_PartitionDef = RelationTypeSide.create(PartitionDefToPartitionResult, SIDE_A);
+   RelationTypeSide PartitionDefToPartitionResult_PartitionResult = RelationTypeSide.create(PartitionDefToPartitionResult, SIDE_B);
+
+   RelationTypeToken PartitionDefToCoverageChartData = osee.addNewRelationType(2305843009213693822L, "Partition Def to Coverage Build", MANY_TO_MANY, UNORDERED, CoreArtifactTypes.CoveragePartitionDef, "Coverage Partition Def", CoreArtifactTypes.CoveragePartitionChartData, "Coverage Chart Data");
+   RelationTypeSide PartitionDefToCoverageChartData_PartitionDef = RelationTypeSide.create(PartitionDefToCoverageChartData, SIDE_A);
+   RelationTypeSide PartitionDefToCoverageChartData_CoverageChartData = RelationTypeSide.create(PartitionDefToCoverageChartData, SIDE_B);
    //@formatter:on
 }

@@ -63,7 +63,6 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.DispoOseeTypes;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -396,7 +395,7 @@ public class DispoApiImpl implements DispoApi {
 
             if (needsEdit) {
                wasUpdated = true;
-               tx.setSoleAttributeFromString(dispoItemArt, DispoOseeTypes.DispoItemStatus, newStatus);
+               tx.setSoleAttributeFromString(dispoItemArt, CoreAttributeTypes.CoverageStatus, newStatus);
             }
          }
       }

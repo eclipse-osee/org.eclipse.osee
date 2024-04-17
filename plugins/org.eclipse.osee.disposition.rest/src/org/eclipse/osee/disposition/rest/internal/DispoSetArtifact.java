@@ -20,6 +20,7 @@ import org.eclipse.osee.disposition.model.Note;
 import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DispoOseeTypes;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 
@@ -47,20 +48,20 @@ public class DispoSetArtifact extends BaseIdentity<String> implements DispoSet {
 
    @Override
    public String getImportPath() {
-      return artifact.getSoleAttributeAsString(DispoOseeTypes.DispoImportPath);
+      return artifact.getSoleAttributeAsString(CoreAttributeTypes.CoverageImportPath);
    }
 
    @Override
    public String getServerImportPath() {
-      if (artifact.getAttributeCount(DispoOseeTypes.ServerImportPath) == 1) {
-         return artifact.getSoleAttributeAsString(DispoOseeTypes.ServerImportPath);
+      if (artifact.getAttributeCount(CoreAttributeTypes.ServerImportPath) == 1) {
+         return artifact.getSoleAttributeAsString(CoreAttributeTypes.ServerImportPath);
       }
       return "";
    }
 
    @Override
    public boolean serverImportPathExists() {
-      if (artifact.getAttributeCount(DispoOseeTypes.ServerImportPath) == 1) {
+      if (artifact.getAttributeCount(CoreAttributeTypes.ServerImportPath) == 1) {
          return true;
       }
       return false;
@@ -68,13 +69,14 @@ public class DispoSetArtifact extends BaseIdentity<String> implements DispoSet {
 
    @Override
    public List<Note> getNotesList() {
-      String notesJson = artifact.getSoleAttributeAsString(DispoOseeTypes.DispoNotesJson, "[]");
+      String notesJson = artifact.getSoleAttributeAsString(CoreAttributeTypes.CoverageNotesJson, "[]");
       return DispoUtil.jsonStringToList(notesJson, Note.class);
    }
 
    @Override
    public OperationReport getOperationSummary() {
-      String operationSummaryJson = artifact.getSoleAttributeAsString(DispoOseeTypes.DispoOperationSummary, "{}");
+      String operationSummaryJson =
+         artifact.getSoleAttributeAsString(CoreAttributeTypes.CoverageOperationSummary, "{}");
       return DispoUtil.jsonObjToOperationSummary(operationSummaryJson);
    }
 
@@ -85,12 +87,12 @@ public class DispoSetArtifact extends BaseIdentity<String> implements DispoSet {
 
    @Override
    public String getImportState() {
-      return artifact.getSoleAttributeAsString(DispoOseeTypes.DispoImportState, "None");
+      return artifact.getSoleAttributeAsString(CoreAttributeTypes.CoverageImportState, "None");
    }
 
    @Override
    public String getDispoType() {
-      return artifact.getSoleAttributeAsString(DispoOseeTypes.DispoConfig, "");
+      return artifact.getSoleAttributeAsString(DispoOseeTypes.CoverageConfig, "");
    }
 
    @Override
@@ -100,11 +102,11 @@ public class DispoSetArtifact extends BaseIdentity<String> implements DispoSet {
 
    @Override
    public String getRerunList() {
-      return artifact.getSoleAttributeAsString(DispoOseeTypes.DispoRerunList, "");
+      return artifact.getSoleAttributeAsString(CoreAttributeTypes.CoverageRerunList, "");
    }
 
    @Override
    public Date getTime() {
-      return artifact.getSoleAttributeValue(DispoOseeTypes.DispoTime, null);
+      return artifact.getSoleAttributeValue(CoreAttributeTypes.CoverageImportDate, null);
    }
 }

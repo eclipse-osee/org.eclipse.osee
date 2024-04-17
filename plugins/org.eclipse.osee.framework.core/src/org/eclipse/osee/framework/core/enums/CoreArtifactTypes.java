@@ -1001,5 +1001,84 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken TestPointGroupTypes = osee.add(osee.artifactType(8756764542L, "Test Point Group Types", false, Artifact));
 
    ArtifactTypeToken MachineNames = osee.add(osee.artifactType(2044731485L, "MachineNames", false, Artifact));
+
+   //Coverage Tool
+   ArtifactTypeToken CoverageProgram = osee.add(osee.artifactType(875676453598L, "Coverage Program", false, Artifact)
+      .zeroOrOne(Active));
+
+   ArtifactTypeToken CoveragePartitionDef = osee.add(osee.artifactType(875676453599L, "Coverage Partition Definition", false, Artifact)
+      .exactlyOne(Active, Boolean.TRUE)
+      .zeroOrOne(TeamName)
+      .exactlyOne(LastAuthor)
+      .exactlyOne(LastModifiedDate)
+      .exactlyOne(ModifiedFlag)
+      .zeroOrOne(CoverageImportPath)
+      .zeroOrOne(ServerImportPath)
+      .zeroOrOne(ExecutionDate)
+      .zeroOrOne(PassedCount)
+      .zeroOrOne(FailedCount)
+      .zeroOrOne(CoveredCount)
+      .zeroOrOne(ModifyCount)
+      .zeroOrOne(Result)
+      .zeroOrOne(Notes));
+
+   ArtifactTypeToken CoveragePartitionChartData = osee.add(osee.artifactType(875676453600L, "Coverage Partition Data", false, Artifact)
+      .exactlyOne(PassedCount)
+      .exactlyOne(FailedCount)
+      .exactlyOne(CoveredCount)
+      .exactlyOne(ModifyCount)
+      .zeroOrOne(Result)
+      .exactlyOne(ExecutionDate)
+      .zeroOrOne(ExecutedBy));
+
+   ArtifactTypeToken DispositionSet = osee.add(osee.artifactType(807L, "Disposition Set", false, Artifact)
+      .zeroOrOne(DispoOseeTypes.DispoCiSet)
+      .zeroOrOne(DispoOseeTypes.CoverageConfig)
+      .zeroOrOne(CoverageCreatedDate)
+      .zeroOrOne(CoverageImportPath)
+      .zeroOrOne(ServerImportPath)
+      .zeroOrOne(CoverageImportState, CoverageImportState.Unspecified)
+      .zeroOrOne(DispoOseeTypes.DispoIsMultiEnv)
+      .zeroOrOne(DispoOseeTypes.DispoMultiEnvSettings)
+      .zeroOrOne(CoverageNotesJson, "[]")
+      .zeroOrOne(CoverageOperationSummary)
+      .zeroOrOne(DispoSummaryCount, "0/0")
+      .zeroOrOne(CoverageImportDate)
+      .zeroOrOne(PassedCount)
+      .zeroOrOne(FailedCount)
+      .zeroOrOne(CoveredCount)
+      .zeroOrOne(ModifyCount)
+      .zeroOrOne(Result)
+      .zeroOrOne(ExecutionDate)
+      .zeroOrOne(ExecutedBy));
+
+   ArtifactTypeToken DispositionableItem = osee.add(osee.artifactType(808L, "osee.Dispositionable Item", false, Artifact)
+      .exactlyOne(CoverageAnnotationsJson, "{}")
+      .zeroOrOne(CoverageCreatedDate)
+      .zeroOrOne(CoverageDiscrepanciesJson, "[]")
+      .exactlyOne(DispoOseeTypes.DispoItemAborted)
+      .zeroOrOne(CoverageAssignee, "UnAssigned")
+      .zeroOrOne(DispoOseeTypes.CoverageItemCategory)
+      .zeroOrOne(DispoOseeTypes.DispoItemElapsedTime)
+      .zeroOrOne(CoverageFileNumber)
+      .zeroOrOne(CoverageLastUpdated)
+      .zeroOrOne(DispoOseeTypes.DispoItemMachine, "n/a")
+      .zeroOrOne(CoverageMethodNumber)
+      .exactlyOne(CoverageNeedsRerun)
+      .exactlyOne(DispoOseeTypes.DispoItemNeedsReview)
+      .zeroOrOne(CoverageNotes)
+      .zeroOrOne(CoveragePercentComplete, "0%")
+      .zeroOrOne(CoverageStatus, CoverageStatus.Unspecified)
+      .zeroOrOne(CoverageTotalPoints)
+      .zeroOrOne(DispoOseeTypes.DispoItemVersion)
+      .exactlyOne(CoverageTeam, "Unassigned")
+      .exactlyOne(PassedCount)
+      .exactlyOne(FailedCount)
+      .exactlyOne(CoveredCount)
+      .exactlyOne(ModifyCount)
+      .zeroOrOne(Result)
+      .exactlyOne(ExecutionDate)
+      .zeroOrOne(ExecutedBy));
+
    // @formatter:on
 }

@@ -14,7 +14,6 @@
 package org.eclipse.osee.disposition.rest;
 
 import java.util.Map;
-import org.eclipse.osee.framework.core.enums.DispoOseeTypes;
 
 /**
  * @author Dominic A. Guss
@@ -23,6 +22,9 @@ public class DispoApiConfiguration {
 
    private String fileExtRegex;
    private String resultsFileExtRegex;
+
+   static String FILE_EXT_REGEX = "dispo.api.file.ext.regex";
+   static String RESULTS_FILE_EXT_REGEX = "dispo.api.results.file.ext.regex";
 
    private DispoApiConfiguration() {
       //Builder Class
@@ -71,8 +73,8 @@ public class DispoApiConfiguration {
       }
 
       public DispoApiConfigurationBuilder properties(Map<String, Object> props) {
-         fileExtRegex(get(props, DispoOseeTypes.FILE_EXT_REGEX, ""));
-         resultsFileExtRegex(get(props, DispoOseeTypes.RESULTS_FILE_EXT_REGEX, ""));
+         fileExtRegex(get(props, FILE_EXT_REGEX, ""));
+         resultsFileExtRegex(get(props, RESULTS_FILE_EXT_REGEX, ""));
          return this;
       }
 
