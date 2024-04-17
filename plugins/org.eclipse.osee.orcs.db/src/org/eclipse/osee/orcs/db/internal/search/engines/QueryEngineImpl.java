@@ -122,7 +122,8 @@ public class QueryEngineImpl implements QueryEngine {
    }
 
    private boolean isPostProcessRequired(QueryData queryData) {
-      return queryData.hasCriteriaType(CriteriaAttributeKeywords.class);
+      return OptionsUtil.getLegacyPostProcessing(queryData.getOptions()) && queryData.hasCriteriaType(
+         CriteriaAttributeKeywords.class);
    }
 
    @Override

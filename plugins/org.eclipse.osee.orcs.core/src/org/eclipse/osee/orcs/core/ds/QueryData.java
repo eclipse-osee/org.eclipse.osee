@@ -983,6 +983,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    @Override
    public QueryBuilder setMaxTime(Date maxTime) {
       OptionsUtil.setMaxTime(getOptions(), maxTime);
+      OptionsUtil.setLegacyPostProcessing(getOptions(), false);
       return this;
    }
 
