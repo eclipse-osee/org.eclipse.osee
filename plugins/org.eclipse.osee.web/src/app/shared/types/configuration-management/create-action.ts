@@ -39,6 +39,7 @@ export interface CreateActionInterface {
 		idIntValue: number;
 		description: string;
 	};
+	parentAction: string;
 }
 // only used in action dropdown component
 export class CreateAction implements CreateActionInterface {
@@ -70,4 +71,5 @@ export class CreateAction implements CreateActionInterface {
 		idIntValue: -1,
 		description: '',
 	};
+	parentAction: string = '';
 }

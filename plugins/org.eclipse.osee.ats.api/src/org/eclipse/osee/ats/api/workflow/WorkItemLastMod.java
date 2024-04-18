@@ -22,6 +22,7 @@ public class WorkItemLastMod {
 
    private String atsId;
    private String id;
+   private String name;
    private Long lastmod;
    private List<String> siblings;
    private Long opened;
@@ -34,6 +35,7 @@ public class WorkItemLastMod {
       this.siblings = new ArrayList<>();
       this.opened = 0L;
       this.closed = 0L;
+      this.name = "";
    }
 
    public WorkItemLastMod(String atsId, String id, Long lastmod, List<String> siblings, Long opened, Long closed) {
@@ -43,6 +45,17 @@ public class WorkItemLastMod {
       this.siblings = siblings;
       this.setOpened(opened);
       this.setClosed(closed);
+      this.name = "";
+   }
+
+   public WorkItemLastMod(String atsId, String id, Long lastmod, List<String> siblings, Long opened, Long closed, String name) {
+      this.atsId = atsId;
+      this.id = id;
+      this.lastmod = lastmod;
+      this.siblings = siblings;
+      this.setOpened(opened);
+      this.setClosed(closed);
+      this.setName(name);
    }
 
    public String getAtsId() {
@@ -93,4 +106,11 @@ public class WorkItemLastMod {
       this.closed = closed;
    }
 
+   public String getName() {
+      return name;
+   }
+
+   public void setName(String Name) {
+      this.name = Name;
+   }
 }

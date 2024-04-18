@@ -55,6 +55,7 @@ const testNewActionData: CreateNewActionInterface = {
 	featureGroup: '4',
 	sprint: '10',
 	attrValues: { '999': 'value' },
+	parentAction: '',
 };
 const testUsers = [{ testDataUser: MockUserResponse }];
 describe('ActionService', () => {

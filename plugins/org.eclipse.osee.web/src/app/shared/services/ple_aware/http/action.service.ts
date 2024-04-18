@@ -31,7 +31,9 @@ import {
 	newActionResponse,
 	WorkType,
 	CreateActionField,
+	atsLastMod,
 } from '@osee/shared/types/configuration-management';
+import { ARTIFACTTYPEID } from '@osee/shared/types/constants';
 
 @Injectable({
 	providedIn: 'root',
@@ -64,6 +66,58 @@ export class ActionService {
 	}
 	public getAction(artifactId: string | number): Observable<action[]> {
 		return this.http.get<action[]>(apiURL + '/ats/action/' + artifactId);
+	}
+
+	public getLastModified(
+		artType: ARTIFACTTYPEID,
+		pageSize?: string | number,
+		pageNumber?: string | number,
+		nameFilter?: string
+	) {
+		let params: HttpParamsType = {
+			artType: artType,
+		};
+		if (pageSize && pageSize !== '') {
+			params = { ...params, pageSize: pageSize };
+		}
+		if (pageNumber && pageNumber !== '') {
+			params = { ...params, pageNumber: pageNumber };
+		}
+		if (nameFilter && nameFilter !== '') {
+			params = { ...params, nameFilter: nameFilter };
+		}
+		return this.http.get<atsLastMod[]>(
+			apiURL + '/ats/action/query/workitems',
+			{
+				params: params,
+			}
+		);
+	}
+
+	public getLastModifiedAtsAction(
+		pageSize?: string | number,
+		pageNumber?: string | number,
+		nameFilter?: string
+	) {
+		return this.getLastModified('67', pageSize, pageNumber, nameFilter);
+	}
+
+	public getLastModifiedCount(artType: ARTIFACTTYPEID, nameFilter?: string) {
+		let params: HttpParamsType = {
+			artType: artType,
+		};
+		if (nameFilter && nameFilter !== '') {
+			params = { ...params, nameFilter: nameFilter };
+		}
+		return this.http.get<number>(
+			apiURL + '/ats/action/query/workitems/count',
+			{
+				params: params,
+			}
+		);
+	}
+	public getLastModifiedCountAtsAction(nameFilter?: string) {
+		return this.getLastModifiedCount('67', nameFilter);
 	}
 	public validateTransitionAction(body: transitionAction) {
 		return this.http.post<transitionResponse>(

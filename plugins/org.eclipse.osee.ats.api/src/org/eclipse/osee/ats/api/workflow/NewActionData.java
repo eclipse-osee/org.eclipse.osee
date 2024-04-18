@@ -48,6 +48,7 @@ public class NewActionData {
    ArtifactId originator = ArtifactId.SENTINEL;
    String assignees; // Comma-separated list of assignee Artifact IDs
    ArtifactId versionId = ArtifactId.SENTINEL;
+   ArtifactId parentAction = ArtifactId.SENTINEL;
 
    public NewActionData() {
       // jax-rs
@@ -250,5 +251,13 @@ public class NewActionData {
 
    public void setVersionId(ArtifactId versionId) {
       this.versionId = versionId;
+   }
+
+   public ArtifactId getParentAction() {
+      return parentAction;
+   }
+
+   public void setParentAction(ArtifactId parentAction) {
+      this.parentAction = parentAction;
    }
 }

@@ -32,6 +32,7 @@ import {
 	PRIORITIES,
 	CreateAction,
 	WorkType,
+	atsLastMod,
 } from '@osee/shared/types/configuration-management';
 import { user } from '@osee/shared/types/auth';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -41,6 +42,7 @@ import {
 	MatAutocompleteModule,
 	MatAutocompleteSelectedEvent,
 } from '@angular/material/autocomplete';
+import { LatestActionDropDownComponent } from '../../latest-action-drop-down/latest-action-drop-down.component';
 /**
  * Dialog for creating a new action with the correct workType and category.
  */
@@ -61,6 +63,7 @@ import {
 		MatCheckboxModule,
 		MatIconModule,
 		MatAutocompleteModule,
+		LatestActionDropDownComponent,
 	],
 })
 export class CreateActionDialogComponent {
