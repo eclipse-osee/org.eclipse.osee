@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2023 Boeing
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,15 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './action';
-export * from './actionable-item';
-export * from './create-action';
-export * from './create-action-field';
-export * from './create-new-action';
-export * from './new-action-response';
-export * from './priority';
-export * from './targeted-version';
-export * from './team-workflow';
-export * from './ats-last-mod';
-export * from './transition-action';
-export * from './work-type';
+export interface atsLastMod {
+	atsId: string;
+	name: string;
+	id: string;
+	lastMod: number;
+	siblings: string[];
+	opened: number;
+	closed: number;
+}

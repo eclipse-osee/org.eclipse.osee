@@ -270,6 +270,10 @@
 		color="primary">
 		<mat-label>Create working branch</mat-label>
 	</mat-checkbox>
+	<osee-latest-action-drop-down
+		(parentActionChange)="
+			data.parentAction = $event.id
+		"></osee-latest-action-drop-down>
 </div>
 <div mat-dialog-actions>
 	<button

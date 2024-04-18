@@ -1,0 +1,67 @@
+<!--
+ * Copyright (c) 2024 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<mat-form-field
+	subscriptSizing="dynamic"
+	class="tw-w-full"
+	[id]="'action-dropdown-latest-' + _componentId()">
+	<mat-label>Select a Parent Action</mat-label>
+	<input
+		type="text"
+		matInput
+		#input
+		[(ngModel)]="parentAction"
+		(ngModelChange)="updateTypeAhead($event)"
+		[id]="'latestAction-' + _componentId()"
+		[name]="'latestAction-' + _componentId()"
+		#latestAction="ngModel"
+		[matAutocomplete]="autoActions" />
+	<mat-hint align="end"> Select a Parent Action </mat-hint>
+	<mat-icon
+		matIconSuffix
+		[@dropdownOpen]="_isOpenSignal() === true ? 'open' : 'closed'">
+		arrow_drop_down
+	</mat-icon>
+	<button
+		mat-icon-button
+		matIconSuffix
+		[@dropdownOpen]="filterSignal() !== '' ? 'closed' : 'open'"
+		(mousedown)="clear()">
+		<mat-icon>close</mat-icon>
+	</button>
+	<mat-autocomplete
+		#autoActions
+		autoActiveFirstOption="true"
+		autoSelectActiveOption="true"
+		(opened)="updateOpenState()"
+		(closed)="updateOpenState()"
+		[displayWith]="displayFn">
+		@if (_actions | async; as actions) {
+			@if (_count | async; as count) {
+				<osee-mat-option-loading
+					[data]="actions"
+					objectName="actions"
+					[paginationSize]="_size()"
+					paginationMode="AUTO"
+					[count]="count">
+					<ng-template let-option>
+						<mat-option
+							[attr.data-cy]="'option-' + option.name"
+							[value]="option">
+							{{ option.atsId }} - {{ option.name }}
+						</mat-option>
+					</ng-template>
+				</osee-mat-option-loading>
+			}
+		}
+	</mat-autocomplete>
+</mat-form-field>

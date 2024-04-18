@@ -57,6 +57,7 @@ import org.eclipse.osee.ats.api.workflow.IWorkItemListener;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.core.internal.util.AtsIdProvider;
+import org.eclipse.osee.ats.core.workflow.Action;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -130,8 +131,8 @@ public class AtsActionService implements IAtsActionService {
             createdDate = new Date();
          }
          result = createAction(asUser, data.getTitle(), data.getDescription(), data.getChangeType(), data.getPriority(),
-            data.isValidationRequired(), needByDate, ais, createdDate, createdBy, java.util.Collections.emptyList(),
-            changes);
+            data.isValidationRequired(), needByDate, ais, createdDate, createdBy, data.getParentAction(),
+            java.util.Collections.emptyList(), changes);
 
          if (result.getResults().isErrors()) {
             return result;
@@ -302,6 +303,15 @@ public class AtsActionService implements IAtsActionService {
    public ActionResult createAction(AtsUser user, String title, String desc, ChangeTypes changeType, String priority,
       boolean validationRequired, Date needByDate, Collection<IAtsActionableItem> actionableItems, Date createdDate,
       AtsUser createdBy, Collection<INewActionListener> newActionListeners, IAtsChangeSet changes) {
+      return createAction(user, title, desc, changeType, priority, validationRequired, needByDate, actionableItems,
+         createdDate, createdBy, ArtifactId.SENTINEL, newActionListeners, changes);
+   }
+
+   @Override
+   public ActionResult createAction(AtsUser user, String title, String desc, ChangeTypes changeType, String priority,
+      boolean validationRequired, Date needByDate, Collection<IAtsActionableItem> actionableItems, Date createdDate,
+      AtsUser createdBy, ArtifactId parentActionId, Collection<INewActionListener> newActionListeners,
+      IAtsChangeSet changes) {
       ActionResult result = null;
       try {
          Conditions.checkNotNullOrEmptyOrContainNull(actionableItems, "actionableItems");
@@ -311,7 +321,9 @@ public class AtsActionService implements IAtsActionService {
           * if "tt" is title, this is an action created for development. To make it easier, all fields are automatically
           * filled in for ATS developer
           */
-         IAtsAction action = createAction(title, desc, changeType, priority, validationRequired, needByDate, changes);
+         IAtsAction action =
+            parentActionId.isInvalid() ? createAction(title, desc, changeType, priority, validationRequired, needByDate,
+               changes) : new Action(atsApi, atsApi.getQueryService().getArtifact(parentActionId.getId()));
 
          // Retrieve Team Definitions corresponding to selected Actionable Items
          Collection<IAtsTeamDefinition> teamDefs =

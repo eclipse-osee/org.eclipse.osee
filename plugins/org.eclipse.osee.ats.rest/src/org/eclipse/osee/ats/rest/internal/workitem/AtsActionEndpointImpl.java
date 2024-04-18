@@ -403,6 +403,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       List<ArtifactReadable> asArtifacts = builder.asArtifacts();
       for (ArtifactReadable art : asArtifacts) {
          String atsId = art.getSoleAttributeAsString(AtsAttributeTypes.AtsId);
+         String name = art.getSoleAttributeValue(CoreAttributeTypes.Name, "");
          String id = art.getIdString();
          Long lastmod = art.getTxDetails().getTime().getTime();
          List<String> siblings = new ArrayList<>();
@@ -422,7 +423,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          if (closed == DateUtil.getSentinalDate().getTime()) {
             closed = 0L;
          }
-         items.add(new WorkItemLastMod(atsId, id, lastmod, siblings, opened, closed));
+         items.add(new WorkItemLastMod(atsId, id, lastmod, siblings, opened, closed, name));
       }
       return items;
    }
@@ -700,7 +701,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
 
       // create action
       ActionResult action = atsApi.getActionService().createAction(atsUser, title, description, changeType, priority,
-         false, null, aias, new Date(), atsUser, null, changes);
+         false, null, aias, new Date(), atsUser, ArtifactId.SENTINEL, null, changes);
       changes.execute();
 
       // Redirect to action ui

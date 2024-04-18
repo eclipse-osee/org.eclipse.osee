@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 
 /**
@@ -34,6 +35,11 @@ public interface IAtsActionService {
    ActionResult createAction(AtsUser user, String title, String desc, ChangeTypes changeType, String priority,
       boolean validationRequired, Date needByDate, Collection<IAtsActionableItem> actionableItems, Date createdDate,
       AtsUser createdBy, Collection<INewActionListener> newActionListeners, IAtsChangeSet changes);
+
+   ActionResult createAction(AtsUser user, String title, String desc, ChangeTypes changeType, String priority,
+      boolean validationRequired, Date needByDate, Collection<IAtsActionableItem> actionableItems, Date createdDate,
+      AtsUser createdBy, ArtifactId parentActionId, Collection<INewActionListener> newActionListeners,
+      IAtsChangeSet changes);
 
    IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef,
       Collection<IAtsActionableItem> actionableItems, Collection<AtsUser> assignees, IAtsChangeSet changes,

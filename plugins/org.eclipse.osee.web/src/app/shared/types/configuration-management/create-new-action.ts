@@ -13,10 +13,7 @@
 import { NamedIdAndDescription } from '../named-id';
 import { PRIORITIES, Priority } from './priority';
 import { CreateAction } from './create-action';
-import {
-	targetedVersion,
-	targetedVersionSentinel,
-} from 'src/app/shared/types/configuration-management/targeted-version';
+import { targetedVersion, targetedVersionSentinel } from './targeted-version';
 
 export interface CreateNewActionInterface {
 	title: string;
@@ -35,6 +32,7 @@ export interface CreateNewActionInterface {
 	featureGroup: string;
 	sprint: string;
 	attrValues: { [key: string]: string };
+	parentAction: string;
 }
 export class CreateNewAction implements CreateNewActionInterface {
 	constructor(config?: CreateAction) {
@@ -59,6 +57,7 @@ export class CreateNewAction implements CreateNewActionInterface {
 			this.featureGroup = config.featureGroup;
 			this.sprint = config.sprint;
 			this.attrValues = config.attrValues;
+			this.parentAction = config.parentAction;
 		}
 	}
 	changeType: NamedIdAndDescription = { id: '-1', name: '', description: '' };
@@ -77,4 +76,5 @@ export class CreateNewAction implements CreateNewActionInterface {
 	featureGroup: string = '';
 	sprint: string = '';
 	attrValues: { [key: string]: string } = {};
+	parentAction: string = '';
 }
