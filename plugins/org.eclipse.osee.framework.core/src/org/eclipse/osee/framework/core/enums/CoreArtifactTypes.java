@@ -1004,7 +1004,9 @@ public interface CoreArtifactTypes {
 
    //Coverage Tool
    ArtifactTypeToken CoverageProgram = osee.add(osee.artifactType(875676453598L, "Coverage Program", false, Artifact)
-      .zeroOrOne(Active));
+      .exactlyOne(Active)
+      .any(GeneralStringData)
+      .exactlyOne(ClearCoverage));
 
    ArtifactTypeToken CoveragePartitionDef = osee.add(osee.artifactType(875676453599L, "Coverage Partition Definition", false, Artifact)
       .exactlyOne(Active, Boolean.TRUE)

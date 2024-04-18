@@ -62,6 +62,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -742,6 +743,7 @@ public class DispoApiImpl implements DispoApi {
       String operation = newSet.getOperation();
       if (operation.equals(DispoStrings.Operation_Import)) {
          logger.info("Beginning Coverage Import on branch [%s] set [%s]", branch.toString(), setToEdit.getIdString());
+
          try {
             HashMap<String, DispoItem> nameToItemMap = getItemsMap(branch, setToEdit);
 
@@ -762,7 +764,12 @@ public class DispoApiImpl implements DispoApi {
                importDirectory = new File(setToEdit.getImportPath());
             }
             boolean pathExists = checkIfPathExists(importDirectory, report);
-            List<DispoItem> itemsFromParse = importer.importDirectory(nameToItemMap, importDirectory, report, logger);
+
+            ArtifactReadable programConfig = orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(
+               CoreArtifactTypes.CoverageProgram).andNameEquals("Coverage Config").asArtifactOrSentinel();
+
+            List<DispoItem> itemsFromParse =
+               importer.importDirectory(nameToItemMap, importDirectory, report, logger, programConfig);
 
             if (pathExists && itemsFromParse.isEmpty()) {
                report.addEntry(setToEdit.getImportPath(), "No file(s) found", DispoSummarySeverity.IGNORE);

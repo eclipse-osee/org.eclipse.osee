@@ -32,6 +32,7 @@ import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.DispoImporterApi;
 import org.eclipse.osee.disposition.rest.internal.DispoDataFactory;
 import org.eclipse.osee.framework.core.JaxRsApi;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -57,7 +58,7 @@ public class TmzImporter implements DispoImporterApi {
 
    @Override
    public List<DispoItem> importDirectory(Map<String, DispoItem> exisitingItems, File filesDir, OperationReport report,
-      Log logger) {
+      Log logger, ArtifactReadable programConfig) {
       List<DispoItem> toReturn = new LinkedList<>();
       if (!filesDir.exists() || !filesDir.isDirectory()) {
          throw new OseeArgumentException("Input directory does not exists or is not a directory [%s]",

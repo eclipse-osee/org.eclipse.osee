@@ -1158,5 +1158,8 @@ public interface CoreAttributeTypes {
    AttributeTypeString DispoSummaryCount = osee.createString(1152921504606847491L, "Summary Count", MediaType.TEXT_PLAIN, ""); //Not Used in Code
 
    AttributeTypeDate CoverageImportDate = osee.createDate(7240092025387115138L, "Date that Coverage was last imported", AttributeTypeToken.TEXT_CALENDAR, "");
+
+   AttributeTypeBoolean ClearCoverage = osee.createBoolean(7240092025387115139L, "Clear Coverage", MediaType.TEXT_PLAIN, "");
+
    // @formatter:on
 }
