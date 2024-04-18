@@ -47,6 +47,7 @@ import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
+import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.model.DispoSummarySeverity;
 import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.DispoApiConfiguration;
@@ -55,6 +56,8 @@ import org.eclipse.osee.disposition.rest.internal.DispoConnector;
 import org.eclipse.osee.disposition.rest.internal.DispoDataFactory;
 import org.eclipse.osee.disposition.rest.internal.importer.DispoSetCopier;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -111,7 +114,7 @@ public class LisFileParser implements DispoImporterApi {
 
    @Override
    public List<DispoItem> importDirectory(Map<String, DispoItem> exisitingItems, File filesDir, OperationReport report,
-      Log logger) {
+      Log logger, ArtifactReadable programConfig) {
       vCastDir = filesDir.getAbsolutePath();
       File f = new File(vCastDir + File.separator + "cover.db");
       if (!f.exists()) {
@@ -143,7 +146,7 @@ public class LisFileParser implements DispoImporterApi {
 
       processExceptionHandled(report);
 
-      return createItems(exisitingItems, report);
+      return createItems(exisitingItems, report, programConfig);
    }
 
    private HashMap<String, File> createNameToFileMap(OperationReport report) {
@@ -171,7 +174,8 @@ public class LisFileParser implements DispoImporterApi {
       return fileNameToFileMap;
    }
 
-   private List<DispoItem> createItems(Map<String, DispoItem> exisitingItems, OperationReport report) {
+   private List<DispoItem> createItems(Map<String, DispoItem> exisitingItems, OperationReport report,
+      ArtifactReadable programConfig) {
       List<DispoItem> toReturn;
       Collection<DispoItemData> items = datIdToItem.values();
 
@@ -188,8 +192,13 @@ public class LisFileParser implements DispoImporterApi {
          toReturn.addAll(items);
       }
 
+      boolean clearCoverage = false;
+      if (programConfig.isValid()) {
+         clearCoverage = programConfig.getSoleAttributeValue(CoreAttributeTypes.ClearCoverage, false);
+      }
+
       for (DispoItem item : toReturn) {
-         createPlaceHolderAnnotations((DispoItemData) item, exisitingItems, report);
+         createPlaceHolderAnnotations((DispoItemData) item, exisitingItems, report, clearCoverage);
       }
       return toReturn;
    }
@@ -220,7 +229,7 @@ public class LisFileParser implements DispoImporterApi {
    }
 
    private void createPlaceHolderAnnotations(DispoItemData item, Map<String, DispoItem> exisitingItems,
-      OperationReport report) {
+      OperationReport report, boolean clearCoverage) {
 
       List<DispoItem> prevItems = new ArrayList<DispoItem>(exisitingItems.values());
       List<String> uncovered = dispoConnector.getAllUncoveredDiscrepancies(item);
@@ -236,7 +245,22 @@ public class LisFileParser implements DispoImporterApi {
             if (uncovered.contains(discrepancy.getLocation())) {
                DispoAnnotationData uncoveredAnnotation = matchOldAnnotation(discrepancy, prevItems, item);
                if (uncoveredAnnotation != null) {
-                  keepExistingAnnotation(item, uncoveredAnnotation);
+                  if (clearCoverage) {
+                     if (uncoveredAnnotation.getResolutionType().equalsIgnoreCase(DispoStrings.Test_Unit_Resolution)) {
+                        uncoveredAnnotation.setLastResolution(uncoveredAnnotation.getResolution());
+                        addBlankAnnotationForUncoveredLine(item, discrepancy.getLocation(), discrepancy.getText(),
+                           uncoveredAnnotation.getLastResolution());
+                     } else if (uncoveredAnnotation.getResolutionType().equalsIgnoreCase(
+                        DispoStrings.Exception_Handling_Resolution)) {
+                        uncoveredAnnotation.setLastResolution("Exception_Handling");
+                        addBlankAnnotationForUncoveredLine(item, discrepancy.getLocation(), discrepancy.getText(),
+                           uncoveredAnnotation.getLastResolution());
+                     } else {
+                        keepExistingAnnotation(item, uncoveredAnnotation);
+                     }
+                  } else {
+                     keepExistingAnnotation(item, uncoveredAnnotation);
+                  }
                } else {
                   addBlankAnnotationForUncoveredLine(item, discrepancy.getLocation(), discrepancy.getText(), "N/A");
                }

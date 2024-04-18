@@ -610,9 +610,15 @@ public class OrcsStorageImpl implements Storage {
 
    @Override
    public DispoConfig findDispoConfig(BranchId branch) {
+
       ArtifactReadable config =
-         getQuery().fromBranch(branch).andNameEquals("Program Config").getResults().getOneOrDefault(
+         getQuery().fromBranch(branch).andIsOfType(CoreArtifactTypes.CoverageProgram).andNameEquals(
+            "Coverage Config").asArtifactOrSentinel();
+
+      if (!config.isValid()) {
+         config = getQuery().fromBranch(branch).andNameEquals("Program Config").getResults().getOneOrDefault(
             ArtifactReadable.SENTINEL);
+      }
 
       if (config.isInvalid()) {
          return DispoUtil.getDefaultConfig();

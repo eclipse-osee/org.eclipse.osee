@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.OperationReport;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -26,6 +27,6 @@ import org.eclipse.osee.logger.Log;
 public interface DispoImporterApi {
 
    List<DispoItem> importDirectory(Map<String, DispoItem> exisitingItems, File filesDir, OperationReport report,
-      Log logger);
+      Log logger, ArtifactReadable programConfig);
 
 }
