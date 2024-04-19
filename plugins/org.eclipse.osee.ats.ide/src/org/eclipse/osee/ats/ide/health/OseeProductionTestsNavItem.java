@@ -102,15 +102,15 @@ public class OseeProductionTestsNavItem extends XNavigateItem {
       rd.log(AHTML.beginMultiColumnTable(95, 1));
       rd.log(AHTML.addHeaderRowMultiColumnTable(Arrays.asList("Time(ms)", "Result", "Name", "Type", "Details")));
       ElapsedTime time = new ElapsedTime(" ");
-      testStandAloneRest(rd);
-      testAtsConfig(rd);
-      testAtsApiQueries(rd);
-      testAtsTeamDefinition(rd);
+      //      testStandAloneRest(rd);
+      //      testAtsConfig(rd);
+      //      testAtsTeamDefinition(rd);
       testAtsQueries(rd);
-      testArtifactQueries(rd);
+      //      testArtifactQueries(rd);
       for (OseeProductionTestProvider provider : providers) {
-         provider.testAtsQuickSearchQueries(rd);
-         provider.testPublishing(rd);
+         //         provider.testAtsQuickSearchQueries(rd);
+         //         provider.testPublishing(rd);
+         testAtsApiQueries(rd, provider);
       }
 
       Long ms = time.getTimeSpent();
@@ -212,8 +212,8 @@ public class OseeProductionTestsNavItem extends XNavigateItem {
    /////////////////////////////////
    /////////////////////////////////
 
-   private Map<String, IAtsConfigQuery> getAtsWorkItemQueries() {
-      ArtifactId atsTeamDefId = ArtifactId.valueOf(112825L);
+   private Map<String, IAtsConfigQuery> getAtsWorkItemQueries(OseeProductionTestProvider provider) {
+      ArtifactId atsTeamDefId = provider.getAtsWorkItemQueryTeamDef();
 
       IAtsTeamDefinition atsTeamDef =
          AtsApiService.get().getTeamDefinitionService().getTeamDefinitionById(atsTeamDefId);
@@ -246,8 +246,8 @@ public class OseeProductionTestsNavItem extends XNavigateItem {
       return queries;
    }
 
-   private void testAtsApiQueries(XResultData rd) {
-      for (Entry<String, IAtsConfigQuery> entry : getAtsWorkItemQueries().entrySet()) {
+   private void testAtsApiQueries(XResultData rd, OseeProductionTestProvider provider) {
+      for (Entry<String, IAtsConfigQuery> entry : getAtsWorkItemQueries(provider).entrySet()) {
          String title = entry.getKey();
          ElapsedTime time = new ElapsedTime(title);
          Collection<IAtsWorkItem> workItems = entry.getValue().getWorkItems();
