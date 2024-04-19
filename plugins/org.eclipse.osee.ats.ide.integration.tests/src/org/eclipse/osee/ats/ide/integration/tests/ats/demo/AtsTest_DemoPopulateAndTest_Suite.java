@@ -61,7 +61,7 @@ import org.junit.runners.Suite;
    Pdd81CreateButtonWDoesntWorkActionTest.class,
    Pdd82CreateCantLoadDiagramTreeActionTest.class,
    Pdd83CreateCantSeeTheGraphViewActionTest.class,
-   Pdd84CreateProblemInDiagramTreeActionTest.class,
+   Pdd84CreateProblemInTreeActionTest.class,
    Pdd85CreateProblemWithTheGraphViewActionTest.class,
    Pdd86CreateProblemWithTheUserWindowActionTest.class,
    //

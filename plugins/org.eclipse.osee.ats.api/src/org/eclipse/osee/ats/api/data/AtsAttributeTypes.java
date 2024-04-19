@@ -147,6 +147,8 @@ public interface AtsAttributeTypes {
    AttributeTypeString LegacyBuildId = ats.createString(4636732132432803380L, "ats.Legacy Build Id", TEXT_PLAIN, "", Edit);
    AttributeTypeInteger LocChanged = ats.createInteger(1152921504606847207L, "ats.LOC Changed", TEXT_PLAIN, "Total Lines of Code Changed", Edit);
    AttributeTypeInteger LocReviewed = ats.createInteger(1152921504606847208L, "ats.LOC Reviewed", TEXT_PLAIN, "Total Lines of Code Reviewed", Edit);
+   AttributeTypeInteger LocAffected = ats.createIntegerNoTag(2266722106367646882L, "demo.code.LOC Affected", TEXT_PLAIN, "Total Lines of Code Affected", Edit);
+   //ComputedCharacteristicDelta LocRemaining = ats.createComp(ComputedCharacteristicDelta::new, 89273067834049579L, "demo.code.LOC Remaining", "Total Lines of Code Remaining", LocAffected, LocReviewed);
    AttributeTypeString Location = ats.createString(1152921504606847223L, "ats.Location", TEXT_PLAIN, "Enter location of materials to review.", MultiLine, Edit);
    AttributeTypeString Log = ats.createString(1152921504606847202L, "ats.Log", MediaType.TEXT_XML, "", Edit);
    AttributeTypeString MeetingAttendeeUserId = ats.createString(1152921504606847225L, "ats.Meeting Attendee UserId", TEXT_PLAIN, "Attendee of meeting.", Read);

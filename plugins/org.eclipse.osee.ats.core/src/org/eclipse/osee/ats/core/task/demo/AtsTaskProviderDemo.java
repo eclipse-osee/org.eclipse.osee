@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.task.demo;
 
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
-import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskMatch;
@@ -44,8 +44,8 @@ public class AtsTaskProviderDemo extends AbstractAtsTaskProvider {
    public AutoGenVersion getAutoGenTaskVersionToSet(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd,
       ChangeReportTaskMatch taskMatch) {
       if (crttwd.getDestTeamWf() != null && (crttwd.getDestTeamWf().getArtifactType().equals(
-         DemoArtifactTypes.DemoCodeTeamWorkflow) || crttwd.getDestTeamWf().getArtifactType().equals(
-            DemoArtifactTypes.DemoTestTeamWorkflow))) {
+         AtsArtifactTypes.DemoCodeTeamWorkflow) || crttwd.getDestTeamWf().getArtifactType().equals(
+            AtsArtifactTypes.DemoTestTeamWorkflow))) {
          return AutoGenVersionDemo.Demo;
       }
       if (crttwd.getDestTeamDef() != null) {

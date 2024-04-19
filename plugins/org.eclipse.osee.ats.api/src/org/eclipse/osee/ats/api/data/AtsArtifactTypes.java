@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.api.data;
 
 import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.*;
 import static org.eclipse.osee.ats.api.data.AtsTypeTokenProvider.ats;
+import static org.eclipse.osee.ats.api.data.AtsTypeTokenProvider.atsDemo;
 import static org.eclipse.osee.ats.api.util.AtsImage.ACTION;
 import static org.eclipse.osee.ats.api.util.AtsImage.ACTIONABLE_ITEM;
 import static org.eclipse.osee.ats.api.util.AtsImage.BUILD_IMPACT;
@@ -361,6 +362,13 @@ public interface AtsArtifactTypes {
       .zeroOrOne(UnplannedPoints));
 
    ArtifactTypeToken AgileBacklog = ats.add(ats.artifactType(7553335770333667393L, "Agile Backlog", false, new MaterialIcon("list"), Goal));
+
+   // Demo Db Only
+   ArtifactTypeToken DemoChangeRequestTeamWorkflow = atsDemo.add(atsDemo.artifactType(3456L, "Demo Change Request", false,
+      CHANGE_REQUEST, AtsArtifactTypes.ChangeRequestTeamWorkflow));
+   ArtifactTypeToken DemoCodeTeamWorkflow = atsDemo.add(atsDemo.artifactType(79L, "Demo Code Team Workflow", false, TeamWorkflow));
+   ArtifactTypeToken DemoReqTeamWorkflow = atsDemo.add(atsDemo.artifactType(80L, "Demo Req Team Workflow", false, TeamWorkflow));
+   ArtifactTypeToken DemoTestTeamWorkflow = atsDemo.add(atsDemo.artifactType(81L, "Demo Test Team Workflow", false, TeamWorkflow));
 
    // @formatter:on
 }

@@ -48,7 +48,7 @@ public class Pdd92CreateDemoReviewsTest implements IPopulateDemoDatabaseTest {
       testReviewContents(review1, reviewTitle1, DecisionReviewState.Followup.getName(), DemoUsers.Joe_Smith.getName());
 
       // test decision review2
-      IAtsTeamWorkflow teamWf2 = DemoUtil.getProblemInDiagramTree_TeamWfWf();
+      IAtsTeamWorkflow teamWf2 = DemoUtil.getProblemInTree_TeamWfWf();
       Collection<IAtsAbstractReview> reviews2 = AtsApiService.get().getReviewService().getReviews(teamWf2);
       Assert.assertEquals("Should only 1 review", 1, reviews1.size());
       IAtsAbstractReview review2 = reviews2.iterator().next();

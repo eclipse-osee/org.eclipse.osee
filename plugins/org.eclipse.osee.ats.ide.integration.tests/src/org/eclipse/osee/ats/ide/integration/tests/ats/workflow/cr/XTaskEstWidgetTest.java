@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.cr;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.NewTaskSet;
@@ -56,7 +56,7 @@ public class XTaskEstWidgetTest implements TaskEstNameProvider {
    public void testCreate() {
 
       ArtifactToken artifactByName = atsApi.getQueryService().getArtifactByName(
-         DemoArtifactTypes.DemoChangeRequestTeamWorkflow, CreateNewDemoChangeRequestBlamTest.TITLE);
+         AtsArtifactTypes.DemoChangeRequestTeamWorkflow, CreateNewDemoChangeRequestBlamTest.TITLE);
       Assert.assertNotNull(artifactByName);
       IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(artifactByName);
 

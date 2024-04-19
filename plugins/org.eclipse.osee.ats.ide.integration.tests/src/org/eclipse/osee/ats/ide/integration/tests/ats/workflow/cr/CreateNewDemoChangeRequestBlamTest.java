@@ -14,8 +14,8 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.cr;
 
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -59,14 +59,14 @@ public class CreateNewDemoChangeRequestBlamTest {
       int elapsedTime = 0;
 
       ArtifactToken artifactByName =
-         atsApi.getQueryService().getArtifactByName(DemoArtifactTypes.DemoChangeRequestTeamWorkflow, TITLE);
+         atsApi.getQueryService().getArtifactByName(AtsArtifactTypes.DemoChangeRequestTeamWorkflow, TITLE);
 
       while (elapsedTime < (timeoutSeconds * 1000) && artifactByName == null) {
          Thread.sleep(pollingIntervalMilliseconds);
          elapsedTime += pollingIntervalMilliseconds;
 
          artifactByName =
-            atsApi.getQueryService().getArtifactByName(DemoArtifactTypes.DemoChangeRequestTeamWorkflow, TITLE);
+            atsApi.getQueryService().getArtifactByName(AtsArtifactTypes.DemoChangeRequestTeamWorkflow, TITLE);
       }
 
       System.out.println("Waited for " + pollingIntervalMilliseconds + " milliseconds...");

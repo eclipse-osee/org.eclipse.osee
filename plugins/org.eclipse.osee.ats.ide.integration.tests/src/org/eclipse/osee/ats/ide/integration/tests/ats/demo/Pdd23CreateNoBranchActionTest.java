@@ -16,7 +16,6 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.demo;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
-import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkflowTitles;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
@@ -52,13 +51,13 @@ public class Pdd23CreateNoBranchActionTest implements IPopulateDemoDatabaseTest 
       Assert.assertNotNull(designTeamArt);
 
       testTeamContents(codeTeamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Code",
-         DemoUsers.Joe_Smith.getName(), DemoArtifactTypes.DemoCodeTeamWorkflow,
+         DemoUsers.Joe_Smith.getName(), AtsArtifactTypes.DemoCodeTeamWorkflow,
          DemoTestUtil.getTeamDef(DemoArtifactToken.SAW_Code));
       testTeamContents(testTeamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Test",
-         DemoUsers.Kay_Jones.getName(), DemoArtifactTypes.DemoTestTeamWorkflow,
+         DemoUsers.Kay_Jones.getName(), AtsArtifactTypes.DemoTestTeamWorkflow,
          DemoTestUtil.getTeamDef(DemoArtifactToken.SAW_Test));
       testTeamContents(reqTeamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Requirements",
-         DemoUsers.Joe_Smith.getName(), DemoArtifactTypes.DemoReqTeamWorkflow,
+         DemoUsers.Joe_Smith.getName(), AtsArtifactTypes.DemoReqTeamWorkflow,
          DemoTestUtil.getTeamDef(DemoArtifactToken.SAW_Requirements));
       testTeamContents(designTeamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW SW Design",
          DemoUsers.Kay_Jones.getName(), AtsArtifactTypes.TeamWorkflow,

@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 /**
  * @author Donald G. Dunne
  */
-public class Pdd84CreateProblemInDiagramTreeAction implements IPopulateDemoDatabase {
+public class Pdd84CreateProblemInTreeAction implements IPopulateDemoDatabase {
 
    @Override
    public void run() {
@@ -37,7 +37,7 @@ public class Pdd84CreateProblemInDiagramTreeAction implements IPopulateDemoDatab
 
       Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(DemoArtifactToken.CIS_Test_AI);
 
-      AtsApiService.get().getActionService().createAction(null, DemoArtifactToken.ProblemInDiagramTree_TeamWf.getName(),
+      AtsApiService.get().getActionService().createAction(null, DemoArtifactToken.ProblemInTree_TeamWf.getName(),
          "Problem with the Diagram Tree", ChangeTypes.Problem, "3", false, null, aias, new Date(),
          AtsApiService.get().getUserService().getCurrentUser(), Arrays.asList(new ArtifactTokenActionListener()),
          changes);
@@ -48,7 +48,7 @@ public class Pdd84CreateProblemInDiagramTreeAction implements IPopulateDemoDatab
    private class ArtifactTokenActionListener implements INewActionListener {
       @Override
       public ArtifactToken getArtifactToken(List<IAtsActionableItem> applicableAis) {
-         return DemoArtifactToken.ProblemInDiagramTree_TeamWf;
+         return DemoArtifactToken.ProblemInTree_TeamWf;
       }
    }
 
