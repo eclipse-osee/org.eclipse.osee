@@ -25,7 +25,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoActionableItems;
-import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoWorkType;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.NewTaskData;
@@ -155,11 +154,11 @@ public class DemoTestUtil {
       if (unCommittedWorkflows == null) {
          unCommittedWorkflows = new HashMap<>();
          for (Artifact art : DemoUtil.getSawUnCommittedTeamWfs()) {
-            if (art.isOfType(DemoArtifactTypes.DemoCodeTeamWorkflow)) {
+            if (art.isOfType(AtsArtifactTypes.DemoCodeTeamWorkflow)) {
                unCommittedWorkflows.put(DemoWorkType.Code, art);
-            } else if (art.isOfType(DemoArtifactTypes.DemoTestTeamWorkflow)) {
+            } else if (art.isOfType(AtsArtifactTypes.DemoTestTeamWorkflow)) {
                unCommittedWorkflows.put(DemoWorkType.Test, art);
-            } else if (art.isOfType(DemoArtifactTypes.DemoReqTeamWorkflow)) {
+            } else if (art.isOfType(AtsArtifactTypes.DemoReqTeamWorkflow)) {
                unCommittedWorkflows.put(DemoWorkType.Requirements, art);
             } else if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                unCommittedWorkflows.put(DemoWorkType.SW_Design, art);
@@ -173,11 +172,11 @@ public class DemoTestUtil {
       if (committedWorkflows == null) {
          committedWorkflows = new HashMap<>();
          for (Artifact art : DemoUtil.getSawCommittedTeamWfs()) {
-            if (art.isOfType(DemoArtifactTypes.DemoCodeTeamWorkflow)) {
+            if (art.isOfType(AtsArtifactTypes.DemoCodeTeamWorkflow)) {
                committedWorkflows.put(DemoWorkType.Code, art);
-            } else if (art.isOfType(DemoArtifactTypes.DemoTestTeamWorkflow)) {
+            } else if (art.isOfType(AtsArtifactTypes.DemoTestTeamWorkflow)) {
                committedWorkflows.put(DemoWorkType.Test, art);
-            } else if (art.isOfType(DemoArtifactTypes.DemoReqTeamWorkflow)) {
+            } else if (art.isOfType(AtsArtifactTypes.DemoReqTeamWorkflow)) {
                committedWorkflows.put(DemoWorkType.Requirements, art);
             } else if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                committedWorkflows.put(DemoWorkType.SW_Design, art);

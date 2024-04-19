@@ -80,7 +80,7 @@ public class Pdd92CreateDemoReviews {
       changes.add(review);
 
       // Create a Decision review and transition to Completed
-      review = AtsApiService.get().getReviewService().createValidateReview(DemoUtil.getProblemInDiagramTree_TeamWfWf(),
+      review = AtsApiService.get().getReviewService().createValidateReview(DemoUtil.getProblemInTree_TeamWfWf(),
          true, createdDate, createdBy, changes);
       AtsApiService.get().getReviewService().transitionDecisionTo((DecisionReviewArtifact) review.getStoreObject(),
          DecisionReviewState.Completed, createdBy, false, changes);

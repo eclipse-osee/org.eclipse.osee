@@ -44,7 +44,7 @@ public class DemoWorkflowTitles {
    public static final String BUTTON_W_DOESNT_WORK_ON_SITUATION_PAGE = "Button W doesn't work on Situation Page";
    public static final String CANT_LOAD_DIAGRAM_TREE = "Can't load Diagram Tree";
    public static final String CANT_SEE_THE_GRAPH_TREE = "Can't see the Graph View";
-   public static final String PROBLEM_IN_DIAGRAM_TREE = "Problem in Diagram Tree";
+   public static final String PROBLEM_IN_TREE = "Problem in Diagram Tree";
    public static final String PROBLEM_WITH_THE_USER_WINDOW = "Problem with the user window";
 
 }

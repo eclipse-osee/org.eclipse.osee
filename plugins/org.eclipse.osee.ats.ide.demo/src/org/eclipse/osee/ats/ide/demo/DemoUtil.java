@@ -168,9 +168,9 @@ public class DemoUtil {
          DemoArtifactToken.CantLoadDiagramTree_TeamWf);
    }
 
-   public static TeamWorkFlowArtifact getProblemInDiagramTree_TeamWfWf() {
+   public static TeamWorkFlowArtifact getProblemInTree_TeamWfWf() {
       return (TeamWorkFlowArtifact) AtsApiService.get().getQueryService().getArtifact(
-         DemoArtifactToken.ProblemInDiagramTree_TeamWf);
+         DemoArtifactToken.ProblemInTree_TeamWf);
    }
 
    public static Collection<TeamWorkFlowArtifact> getSawCommittedTeamWfs() {

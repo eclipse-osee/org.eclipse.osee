@@ -19,7 +19,6 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.AtsSearchDataResults;
 import org.eclipse.osee.ats.api.workdef.StateType;
@@ -41,7 +40,7 @@ public class AtsWorldResultRowOperation {
    public AtsWorldResultRowOperation(AtsApi atsApi, AtsSearchData atsSearchData) {
       this.atsApi = atsApi;
       this.atsSearchData = atsSearchData;
-      DemoArtifactTypes.Action.getName();
+      AtsArtifactTypes.Action.getName();
    }
 
    public ResultRows run() {

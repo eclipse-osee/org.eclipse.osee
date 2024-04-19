@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.ats.demo;
 
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
-import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
@@ -44,7 +44,7 @@ public class Pdd83CreateCantSeeTheGraphViewActionTest implements IPopulateDemoDa
 
       testTeamContents(teamWf, DemoArtifactToken.CantSeeTheGraphView_TeamWf.getName(), "1", "",
          TeamState.Implement.getName(), DemoArtifactToken.Adapter_AI.getName(), DemoUsers.Jason_Michael.getName(),
-         DemoArtifactTypes.DemoReqTeamWorkflow, DemoTestUtil.getTeamDef(DemoArtifactToken.SAW_HW));
+         AtsArtifactTypes.DemoReqTeamWorkflow, DemoTestUtil.getTeamDef(DemoArtifactToken.SAW_HW));
 
       DemoUtil.setPopulateDbSuccessful(true);
    }

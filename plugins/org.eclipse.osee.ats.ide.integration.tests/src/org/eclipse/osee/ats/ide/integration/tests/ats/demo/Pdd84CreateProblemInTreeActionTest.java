@@ -13,12 +13,12 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.ats.demo;
 
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
-import org.eclipse.osee.ats.api.demo.DemoArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
-import org.eclipse.osee.ats.ide.demo.populate.Pdd84CreateProblemInDiagramTreeAction;
+import org.eclipse.osee.ats.ide.demo.populate.Pdd84CreateProblemInTreeAction;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -28,23 +28,23 @@ import org.junit.Test;
 /**
  * @author Donald G. Dunne
  */
-public class Pdd84CreateProblemInDiagramTreeActionTest implements IPopulateDemoDatabaseTest {
+public class Pdd84CreateProblemInTreeActionTest implements IPopulateDemoDatabaseTest {
 
    @Test
    public void testAction() {
       DemoUtil.checkDbInitAndPopulateSuccess();
       DemoUtil.setPopulateDbSuccessful(false);
 
-      Pdd84CreateProblemInDiagramTreeAction create = new Pdd84CreateProblemInDiagramTreeAction();
+      Pdd84CreateProblemInTreeAction create = new Pdd84CreateProblemInTreeAction();
       create.run();
 
       IAtsTeamWorkflow teamWf =
-         AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.ProblemInDiagramTree_TeamWf);
+         AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.ProblemInTree_TeamWf);
       Assert.assertNotNull(teamWf);
 
-      testTeamContents(teamWf, DemoArtifactToken.ProblemInDiagramTree_TeamWf.getName(), "3", "",
+      testTeamContents(teamWf, DemoArtifactToken.ProblemInTree_TeamWf.getName(), "3", "",
          TeamState.Endorse.getName(), DemoArtifactToken.CIS_Test_AI.getName(), DemoUsers.Kay_Jones.getName(),
-         DemoArtifactTypes.DemoTestTeamWorkflow, DemoTestUtil.getTeamDef(DemoArtifactToken.CIS_Test));
+         AtsArtifactTypes.DemoTestTeamWorkflow, DemoTestUtil.getTeamDef(DemoArtifactToken.CIS_Test));
 
       DemoUtil.setPopulateDbSuccessful(true);
    }
