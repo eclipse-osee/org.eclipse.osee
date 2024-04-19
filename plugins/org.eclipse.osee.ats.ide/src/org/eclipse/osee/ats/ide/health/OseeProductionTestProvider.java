@@ -13,6 +13,7 @@
 package org.eclipse.osee.ats.ide.health;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 public interface OseeProductionTestProvider {
@@ -22,5 +23,9 @@ public interface OseeProductionTestProvider {
    public void testAtsQuickSearchQueries(XResultData rd);
 
    public void testPublishing(XResultData rd);
+
+   public ArtifactId getAtsWorkItemQueryTeamDef();
+
+   public String getTestName();
 
 }
