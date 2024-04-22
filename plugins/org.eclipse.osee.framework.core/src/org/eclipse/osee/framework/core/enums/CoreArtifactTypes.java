@@ -1034,6 +1034,7 @@ public interface CoreArtifactTypes {
       .zeroOrOne(ExecutedBy));
 
    ArtifactTypeToken DispositionSet = osee.add(osee.artifactType(807L, "Disposition Set", false, Artifact)
+      .exactlyOne(Active, Boolean.TRUE)
       .zeroOrOne(DispoOseeTypes.DispoCiSet)
       .zeroOrOne(DispoOseeTypes.CoverageConfig)
       .zeroOrOne(CoverageCreatedDate)
@@ -1044,6 +1045,7 @@ public interface CoreArtifactTypes {
       .zeroOrOne(DispoOseeTypes.DispoMultiEnvSettings)
       .zeroOrOne(CoverageNotesJson, "[]")
       .zeroOrOne(CoverageOperationSummary)
+      .zeroOrOne(CoverageRerunList)
       .zeroOrOne(DispoSummaryCount, "0/0")
       .zeroOrOne(CoverageImportDate)
       .zeroOrOne(PassedCount)
