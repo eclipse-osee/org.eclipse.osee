@@ -11,11 +11,23 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
+import {
+	PreferencesUIService,
+	TypesService,
+	TypesUIService,
+} from '@osee/messaging/shared/services';
+import type {
+	PlatformType,
+	enumeration,
+	settingsDialogData,
+} from '@osee/messaging/shared/types';
+import { transaction } from '@osee/shared/types';
+import { applic } from '@osee/shared/types/applicability';
 import { BehaviorSubject, combineLatest, iif, of } from 'rxjs';
 import {
 	debounceTime,
 	distinctUntilChanged,
-	filter,
 	repeatWhen,
 	share,
 	shareReplay,
@@ -25,19 +37,6 @@ import {
 	tap,
 } from 'rxjs/operators';
 import { PlMessagingTypesUIService } from './pl-messaging-types-ui.service';
-import { applic } from '@osee/shared/types/applicability';
-import {
-	TypesService,
-	PreferencesUIService,
-	TypesUIService,
-} from '@osee/messaging/shared/services';
-import type {
-	PlatformType,
-	enumeration,
-	settingsDialogData,
-} from '@osee/messaging/shared/types';
-import { transaction } from '@osee/shared/types';
-import { toObservable } from '@angular/core/rxjs-interop';
 
 @Injectable({
 	providedIn: 'root',
@@ -54,27 +53,30 @@ export class CurrentTypesService {
 		this.currentPageSize,
 	]).pipe(
 		share(),
-		filter(
-			([filter, id, page, pageSize]) =>
-				id !== '' && id !== '0' && id !== '-1'
-		),
 		debounceTime(500),
 		distinctUntilChanged(),
 		switchMap(([filter, id, page, pageSize]) =>
-			this.typesService
-				.getFilteredTypes(filter, id, page + 1, pageSize)
-				.pipe(
-					repeatWhen((_) => this.uiService.typeUpdateRequired),
-					share(),
-					tap((y) => {
-						//this.uiService.updateTypes = false;
-						if (y.length <= this.uiService.columnCount.getValue()) {
-							this.uiService.singleLineAdjustmentNumber = 30;
-						} else {
-							this.uiService.singleLineAdjustmentNumber = 0;
-						}
-					})
-				)
+			iif(
+				() => id !== '' && id !== '0' && id !== '-1',
+				this.typesService
+					.getFilteredTypes(filter, id, page + 1, pageSize)
+					.pipe(
+						repeatWhen((_) => this.uiService.typeUpdateRequired),
+						share(),
+						tap((y) => {
+							//this.uiService.updateTypes = false;
+							if (
+								y.length <=
+								this.uiService.columnCount.getValue()
+							) {
+								this.uiService.singleLineAdjustmentNumber = 30;
+							} else {
+								this.uiService.singleLineAdjustmentNumber = 0;
+							}
+						})
+					),
+				of([] as PlatformType[])
+			)
 		),
 		shareReplay({ refCount: true, bufferSize: 1 }),
 		startWith([] as PlatformType[])
@@ -85,13 +87,16 @@ export class CurrentTypesService {
 		this.uiService.BranchId,
 	]).pipe(
 		share(),
-		filter(([filter, id]) => id !== '' && id !== '0' && id !== '-1'),
 		debounceTime(500),
 		distinctUntilChanged(),
 		switchMap(([filter, id]) =>
-			this.typesService.getFilteredTypesCount(filter, id).pipe(
-				repeatWhen((_) => this.uiService.typeUpdateRequired),
-				share()
+			iif(
+				() => id !== '' && id !== '0' && id !== '-1',
+				this.typesService.getFilteredTypesCount(filter, id).pipe(
+					repeatWhen((_) => this.uiService.typeUpdateRequired),
+					share()
+				),
+				of(0)
 			)
 		),
 		shareReplay({ refCount: true, bufferSize: 1 })
