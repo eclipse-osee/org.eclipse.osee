@@ -990,4 +990,25 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       return this.getAccessor().getAllByFilterAndCount(branch, name, Arrays.asList(CoreAttributeTypes.Name));
    }
 
+   @Override
+   public Collection<InterfaceStructureToken> getAllwithNoSubMessageRelations(BranchId branch, String filter,
+      long pageNum, long pageSize) {
+      Collection<RelationTypeSide> rel = new LinkedList<RelationTypeSide>();
+      rel.add(CoreRelationTypes.InterfaceSubMessageContent_Structure);
+      try {
+         return this.getAccessor().getAllLackingRelationByFilter(branch, filter, this.structureAttributeList, rel,
+            pageNum, pageSize);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+      }
+      return new LinkedList<InterfaceStructureToken>();
+   }
+
+   @Override
+   public int getAllwithNoSubMessageRelationsCount(BranchId branch, String filter) {
+      Collection<RelationTypeSide> rel = new LinkedList<RelationTypeSide>();
+      rel.add(CoreRelationTypes.InterfaceSubMessageContent_Structure);
+      return this.getAccessor().getAllLackingRelationByFilterAndCount(branch, filter, this.structureAttributeList, rel);
+   }
+
 }

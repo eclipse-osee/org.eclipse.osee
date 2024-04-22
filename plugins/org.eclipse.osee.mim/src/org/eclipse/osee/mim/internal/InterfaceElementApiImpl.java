@@ -515,4 +515,27 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
       }
    }
 
+   @Override
+   public Collection<InterfaceStructureElementToken> getAllwithNoStructureRelations(BranchId branch, String filter,
+      long pageNum, long pageSize) {
+      Collection<RelationTypeSide> rel = new LinkedList<RelationTypeSide>();
+      rel.add(CoreRelationTypes.InterfaceStructureContent_DataElement);
+      rel.add(CoreRelationTypes.InterfaceElementArrayElement_ArrayElement);
+      try {
+         return this.getAccessor().getAllLackingRelationByFilter(branch, filter, this.elementAttributeList, rel,
+            pageNum, pageSize);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+      }
+      return new LinkedList<InterfaceStructureElementToken>();
+   }
+
+   @Override
+   public int getAllwithNoStructureRelationsCount(BranchId branch, String filter) {
+      Collection<RelationTypeSide> rel = new LinkedList<RelationTypeSide>();
+      rel.add(CoreRelationTypes.InterfaceStructureContent_DataElement);
+      rel.add(CoreRelationTypes.InterfaceElementArrayElement_ArrayElement);
+      return this.getAccessor().getAllLackingRelationByFilterAndCount(branch, filter, this.elementAttributeList, rel);
+   }
+
 }

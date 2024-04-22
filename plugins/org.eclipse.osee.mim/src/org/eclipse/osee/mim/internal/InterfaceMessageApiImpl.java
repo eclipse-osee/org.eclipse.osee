@@ -394,4 +394,27 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
          ((List<InterfaceSubMessageToken>) m.getSubMessages()).add(Integer.valueOf(position), getMessageHeader(m));
       }
    }
+
+   @Override
+   public Collection<InterfaceMessageToken> getAllwithNoConnectionRelations(BranchId branch, String filter,
+      long pageNum, long pageSize) {
+      List<AttributeTypeId> messageAttributes = getMessageSearchAttributes();
+      Collection<RelationTypeSide> rel = new LinkedList<RelationTypeSide>();
+      rel.add(CoreRelationTypes.InterfaceConnectionMessage_Message);
+      try {
+         return this.getAccessor().getAllLackingRelationByFilter(branch, filter, messageAttributes, rel, pageNum,
+            pageSize);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+      }
+      return new LinkedList<InterfaceMessageToken>();
+   }
+
+   @Override
+   public int getAllwithNoConnectionRelationsCount(BranchId branch, String filter) {
+      List<AttributeTypeId> messageAttributes = getMessageSearchAttributes();
+      Collection<RelationTypeSide> rel = new LinkedList<RelationTypeSide>();
+      rel.add(CoreRelationTypes.InterfaceConnectionMessage_Message);
+      return this.getAccessor().getAllLackingRelationByFilterAndCount(branch, filter, messageAttributes, rel);
+   }
 }

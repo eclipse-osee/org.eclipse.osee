@@ -1017,4 +1017,36 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
       return subQuery;
    }
 
+   @Override
+   public Collection<T> getAllLackingRelationByFilter(BranchId branch, String filter,
+      Collection<AttributeTypeId> attributes, Collection<RelationTypeSide> relations, long pageCount, long pageSize)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
+      QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(artifactType);
+      for (RelationTypeSide rel : relations) {
+         query = query.andRelationNotExists(rel);
+      }
+      query = query.and(
+         attributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()), filter,
+         QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY);
+      if (pageCount != 0L && pageSize != 0L) {
+         query = query.isOnPage(pageCount, pageSize);
+      }
+      return fetchCollection(query, branch);
+   }
+
+   @Override
+   public int getAllLackingRelationByFilterAndCount(BranchId branch, String filter,
+      Collection<AttributeTypeId> attributes, Collection<RelationTypeSide> relations)
+      throws IllegalArgumentException, SecurityException {
+      QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(artifactType);
+      for (RelationTypeSide rel : relations) {
+         query = query.andRelationNotExists(rel).setLegacyPostProcessing(false);
+      }
+      query = query.and(
+         attributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()), filter,
+         QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY);
+      return query.getCount();
+   }
+
 }

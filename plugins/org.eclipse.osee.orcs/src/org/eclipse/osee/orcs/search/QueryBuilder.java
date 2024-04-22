@@ -162,6 +162,10 @@ public interface QueryBuilder extends Query {
 
    Date getMaxTime();
 
+   QueryBuilder setLegacyPostProcessing(boolean postProcessing);
+
+   boolean getLegacyPostProcessing();
+
    void setTableOptions(ArtifactTableOptions tableOptions);
 
    QueryBuilder fromTransaction(TransactionId transaction);

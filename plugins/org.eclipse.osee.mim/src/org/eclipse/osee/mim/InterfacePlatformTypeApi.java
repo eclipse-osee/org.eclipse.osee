@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.mim;
 
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.accessor.ArtifactAccessor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -101,4 +102,9 @@ public interface InterfacePlatformTypeApi extends QueryCapableMIMAPI<PlatformTyp
 
    String getUniqueIdentifier(String logicalType, String min, String max, String validRange, String units,
       String defaultValue, int bytes);
+
+   Collection<PlatformTypeToken> getAllwithNoElementRelations(BranchId branch, String filter, long pageNum,
+      long pageSize);
+
+   int getAllwithNoElementRelationsCount(BranchId branch, String filter);
 }

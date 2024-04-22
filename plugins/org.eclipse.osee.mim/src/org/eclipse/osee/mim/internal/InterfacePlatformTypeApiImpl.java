@@ -432,4 +432,24 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
       return identifier;
    }
 
+   @Override
+   public Collection<PlatformTypeToken> getAllwithNoElementRelations(BranchId branch, String filter, long pageNum,
+      long pageSize) {
+      Collection<RelationTypeSide> rel = new LinkedList<RelationTypeSide>();
+      rel.add(CoreRelationTypes.InterfaceElementPlatformType_PlatformType);
+      try {
+         return this.getAccessor().getAllLackingRelationByFilter(branch, filter, attributes, rel, pageNum, pageSize);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+      }
+      return new LinkedList<PlatformTypeToken>();
+   }
+
+   @Override
+   public int getAllwithNoElementRelationsCount(BranchId branch, String filter) {
+      Collection<RelationTypeSide> rel = new LinkedList<RelationTypeSide>();
+      rel.add(CoreRelationTypes.InterfaceElementPlatformType_PlatformType);
+      return this.getAccessor().getAllLackingRelationByFilterAndCount(branch, filter, attributes, rel);
+   }
+
 }

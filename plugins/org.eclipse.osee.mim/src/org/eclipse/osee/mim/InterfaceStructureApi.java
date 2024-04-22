@@ -131,4 +131,8 @@ public interface InterfaceStructureApi extends QueryCapableMIMAPI<InterfaceStruc
    InterfaceStructureToken getMessageHeaderStructure(BranchId branch, InterfaceConnection connection,
       InterfaceMessageToken message);
 
+   Collection<InterfaceStructureToken> getAllwithNoSubMessageRelations(BranchId branch, String filter, long pageNum,
+      long pageSize);
+
+   int getAllwithNoSubMessageRelationsCount(BranchId branch, String filter);
 }

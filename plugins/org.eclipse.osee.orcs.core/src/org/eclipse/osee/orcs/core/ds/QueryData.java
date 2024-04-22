@@ -1009,4 +1009,15 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    public QueryBuilder getReferenceArtifact(BranchId branch, AttributeTypeToken attributeType) {
       return addAndCheck(new CriteriaGetReferenceArtifact(branch, attributeType));
    }
+
+   @Override
+   public QueryBuilder setLegacyPostProcessing(boolean postProcessing) {
+      OptionsUtil.setLegacyPostProcessing(getOptions(), postProcessing);
+      return this;
+   }
+
+   @Override
+   public boolean getLegacyPostProcessing() {
+      return OptionsUtil.getLegacyPostProcessing(getOptions());
+   }
 }
