@@ -33,7 +33,7 @@ public class CancelledReasonEnumAttributeType extends AttributeTypeEnum<CancelRe
       new CancelReasonEnum(3, "Other (Must enter cancelled details)");
 
    public CancelledReasonEnumAttributeType(NamespaceToken namespace, int enumCount) {
-      super(5718762723487704057L, namespace, "ats.Cancelled Reason", MediaType.TEXT_PLAIN, "",
+      super(5718762723487704057L, namespace, "ats.Cancelled Reason Selection", MediaType.TEXT_PLAIN, "",
          TaggerTypeToken.PlainTextTagger, enumCount);
    }
 
