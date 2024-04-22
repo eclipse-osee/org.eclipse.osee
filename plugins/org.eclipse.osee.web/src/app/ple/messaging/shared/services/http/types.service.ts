@@ -157,7 +157,7 @@ export class TypesService {
 		return this.http.get<logicalType[]>(apiURL + '/mim/logicalType');
 	}
 	getLogicalTypeFormDetail(id: string) {
-		return this.http.get<logicalTypeFormDetail>(
+		return this.http.get<logicalTypeFormDetail<keyof PlatformType>>(
 			apiURL + '/mim/logicalType/' + id
 		);
 	}

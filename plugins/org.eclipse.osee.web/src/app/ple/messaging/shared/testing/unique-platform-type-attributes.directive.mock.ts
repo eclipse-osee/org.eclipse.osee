@@ -40,7 +40,7 @@ export class MockUniquePlatformTypeAttributesDirective
 {
 	@Optional()
 	@Input('oseeUniquePlatformTypeAttributes')
-	inputField?: logicalTypeFormDetail = {
+	inputField?: logicalTypeFormDetail<keyof PlatformType> = {
 		id: '',
 		name: '',
 		idString: '',

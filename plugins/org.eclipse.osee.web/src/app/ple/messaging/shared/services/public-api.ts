@@ -36,6 +36,7 @@ export * from './ui/current-units.service';
 export * from './ui/current-message-types.service';
 export * from './ui/current-rates.service';
 export * from './ui/validation-ui.service';
+export * from './ui/platform-type-actions.service';
 export * from './public/edit-auth-service.service';
 export * from './http/connection.service';
 export * from './http/element.service';

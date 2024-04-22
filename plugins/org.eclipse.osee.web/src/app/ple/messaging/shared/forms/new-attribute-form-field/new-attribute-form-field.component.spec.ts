@@ -55,6 +55,8 @@ describe('NewAttributeFormFieldComponent', () => {
 		component.form.editable = false;
 		component.form.value = '123456789';
 		component.setDefaultValue();
-		expect(component.form.value).toEqual(component.form.defaultValue);
+		expect(component.form.value).toEqual(
+			component.form.defaultValue as any
+		);
 	});
 });

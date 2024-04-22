@@ -12,4 +12,4 @@
  **********************************************************************/
 export * from './services/current-types.service';
 export * from './services/pl-messaging-types-ui.service';
-export * from './type-grid/type-grid/type-grid.component';
+export * from './type-grid/type-grid.component';

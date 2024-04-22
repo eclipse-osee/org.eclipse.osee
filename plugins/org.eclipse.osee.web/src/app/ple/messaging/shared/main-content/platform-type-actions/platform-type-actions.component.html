@@ -1,0 +1,47 @@
+<!--
+ * Copyright (c) 2024 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+@if (inEditMode() === true) {
+	<button
+		mat-stroked-button
+		class="tw-bg-background-card tw-text-foreground-text"
+		(click)="openDialog(edit)">
+		<mat-icon color="primary">edit</mat-icon>
+		Edit
+	</button>
+	<button
+		mat-stroked-button
+		class="tw-bg-background-card tw-text-foreground-text"
+		(click)="openDialog(copy)">
+		<mat-icon color="success">add</mat-icon>
+		Create New Type From Base
+	</button>
+	@if (typeData().interfaceLogicalType === 'enumeration') {
+		<button
+			mat-stroked-button
+			class="tw-bg-background-card tw-text-foreground-text"
+			(click)="openEnumDialog(true)">
+			<mat-icon color="accent">toc</mat-icon>View Related Enumeration Set
+			Attributes
+		</button>
+	}
+} @else {
+	@if (typeData().interfaceLogicalType === 'enumeration') {
+		<button
+			mat-stroked-button
+			class="tw-bg-background-card tw-text-foreground-text"
+			(click)="openEnumDialog(false)">
+			<mat-icon color="accent">toc</mat-icon>View Related Enumeration Set
+			Attributes
+		</button>
+	}
+}

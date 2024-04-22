@@ -19,7 +19,6 @@ import { enumerationSet } from '../types/enum';
 import type { PlatformType } from '../types/platformType';
 
 export class PlatformTypeSentinel implements PlatformType {
-	[index: string]: string | boolean | enumerationSet | applic;
 	id: string = '-1';
 	description: string = '';
 	interfaceLogicalType: string = '';

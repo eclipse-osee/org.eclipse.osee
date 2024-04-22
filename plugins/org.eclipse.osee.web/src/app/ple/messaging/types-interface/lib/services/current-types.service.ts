@@ -19,6 +19,7 @@ import {
 	repeatWhen,
 	share,
 	shareReplay,
+	startWith,
 	switchMap,
 	take,
 	tap,
@@ -36,6 +37,7 @@ import type {
 	settingsDialogData,
 } from '@osee/messaging/shared/types';
 import { transaction } from '@osee/shared/types';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Injectable({
 	providedIn: 'root',
@@ -43,14 +45,19 @@ import { transaction } from '@osee/shared/types';
 export class CurrentTypesService {
 	private _currentPage$ = new BehaviorSubject<number>(0);
 	private _currentPageSize$ = new BehaviorSubject<number>(10);
+
+	private _filterObs = toObservable(this.uiService.filter);
 	private _typeData = combineLatest([
-		this.uiService.filter,
+		this._filterObs,
 		this.uiService.BranchId,
 		this.currentPage,
 		this.currentPageSize,
 	]).pipe(
 		share(),
-		filter(([filter, id, page, pageSize]) => id !== ''),
+		filter(
+			([filter, id, page, pageSize]) =>
+				id !== '' && id !== '0' && id !== '-1'
+		),
 		debounceTime(500),
 		distinctUntilChanged(),
 		switchMap(([filter, id, page, pageSize]) =>
@@ -69,15 +76,16 @@ export class CurrentTypesService {
 					})
 				)
 		),
-		shareReplay({ refCount: true, bufferSize: 1 })
+		shareReplay({ refCount: true, bufferSize: 1 }),
+		startWith([] as PlatformType[])
 	);
 
 	private _typeDataCount = combineLatest([
-		this.uiService.filter,
+		this._filterObs,
 		this.uiService.BranchId,
 	]).pipe(
 		share(),
-		filter(([filter, id]) => id !== ''),
+		filter(([filter, id]) => id !== '' && id !== '0' && id !== '-1'),
 		debounceTime(500),
 		distinctUntilChanged(),
 		switchMap(([filter, id]) =>

@@ -21,9 +21,11 @@ import {
 import {
 	CurrentStructureService,
 	EnumerationUIService,
+	PlatformTypeActionsService,
 	WarningDialogService,
 } from '@osee/messaging/shared/services';
 import { MatDialogModule } from '@angular/material/dialog';
+import { of } from 'rxjs';
 
 describe('ElementTableDropdownService', () => {
 	let service: ElementTableDropdownService;
@@ -45,8 +47,13 @@ describe('ElementTableDropdownService', () => {
 					useValue: warningDialogServiceMock,
 				},
 				{
-					provide: EnumerationUIService,
-					useValue: enumerationUiServiceMock,
+					provide: PlatformTypeActionsService,
+					useValue: {
+						openCopyEditDialog: of(),
+						openEnumDialog(id: string, editMode: boolean) {
+							return of();
+						},
+					},
 				},
 			],
 		});

@@ -20,10 +20,10 @@ export interface logicalType {
 	idIntValue: number;
 }
 
-export interface logicalTypeFormDetail extends logicalType {
-	fields: logicalTypeFieldInfo[];
+export interface logicalTypeFormDetail<T> extends logicalType {
+	fields: logicalTypeFieldInfo<T>[];
 }
-export interface logicalTypeFieldInfo {
+export type logicalTypeFieldInfo<T> = {
 	attributeType: Capitalize<
 		Readonly<
 			Exclude<
@@ -36,7 +36,11 @@ export interface logicalTypeFieldInfo {
 	editable: boolean;
 	name: string;
 	required: boolean;
-	defaultValue: string;
-	value?: string;
-	jsonPropertyName: keyof PlatformType;
-}
+	defaultValue: T extends keyof PlatformType
+		? PlatformType[Exclude<T, 'enumSet' | 'interfacePlatform2sComplement'>]
+		: never;
+	value?: T extends keyof PlatformType
+		? PlatformType[Exclude<T, 'enumSet' | 'interfacePlatform2sComplement'>]
+		: never;
+	jsonPropertyName: T extends keyof PlatformType ? T : never;
+};

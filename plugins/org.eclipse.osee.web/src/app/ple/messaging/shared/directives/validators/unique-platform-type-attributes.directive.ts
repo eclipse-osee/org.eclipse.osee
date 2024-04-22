@@ -46,7 +46,7 @@ import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 export class UniquePlatformTypeAttributesDirective implements AsyncValidator {
 	@Optional()
 	@Input('oseeUniquePlatformTypeAttributes')
-	inputField?: logicalTypeFormDetail = {
+	inputField?: logicalTypeFormDetail<keyof PlatformType> = {
 		id: '',
 		name: '',
 		idString: '',
@@ -175,6 +175,7 @@ export class UniquePlatformTypeAttributesDirective implements AsyncValidator {
 			);
 		nonEditableFields.forEach((field) => {
 			queries.push(
+				//@ts-ignore
 				new andQuery(field.attributeTypeId, field.defaultValue)
 			);
 		});

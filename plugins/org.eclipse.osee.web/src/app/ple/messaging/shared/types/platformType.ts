@@ -18,7 +18,7 @@ import type { enumerationSet } from './enum';
  * Platform Type as defined by the API, ids are required when fetching or updating a platform type
  */
 export interface PlatformType {
-	[index: string]: string | boolean | enumerationSet | applic;
+	// [index: string]: string | boolean | enumerationSet | applic;
 	id: string;
 	description: string;
 	interfaceLogicalType: string;

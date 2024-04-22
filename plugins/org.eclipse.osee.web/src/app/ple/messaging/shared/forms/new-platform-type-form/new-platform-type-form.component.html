@@ -62,7 +62,10 @@
 					*ngIf="isString(_platformType[form.jsonPropertyName])">
 					<osee-unit-dropdown
 						(unitChange)="
-							_platformType[form.jsonPropertyName] = $event;
+							updateInnerPlatformType(
+								form.jsonPropertyName,
+								$event
+							);
 							updateField()
 						"
 						[required]="form.required"></osee-unit-dropdown>

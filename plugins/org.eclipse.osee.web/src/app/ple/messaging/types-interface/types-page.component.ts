@@ -10,24 +10,45 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgIf } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	OnInit,
+	effect,
+	input,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
 import { PlMessagingTypesUIService } from './lib/services/pl-messaging-types-ui.service';
-import { TypeGridComponent } from './lib/type-grid/type-grid/type-grid.component';
+import { TypesInterfaceComponent } from './lib/types-interface/types-interface.component';
 
 @Component({
 	selector: 'osee-messaging-types-interface',
-	templateUrl: './types-interface.component.html',
+	template: `<div class="tw-inline-block tw-min-w-[100vw]">
+		<osee-messaging-controls
+			[actionControls]="true"></osee-messaging-controls>
+		<osee-types-interface></osee-types-interface>
+	</div>`,
 	styles: [
 		':host{ height: 94vh; min-height: calc(94vh - 10%); max-height: 94vh; width: 100vw; min-width: calc(100vw - 10%); display: inline-block;}',
 	],
 	standalone: true,
-	imports: [NgIf, AsyncPipe, TypeGridComponent, MessagingControlsComponent],
+	imports: [TypesInterfaceComponent, MessagingControlsComponent],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TypesInterfaceComponent implements OnInit {
-	filterValue: string = '';
+export class TypesPageComponent implements OnInit {
+	type = input('', {
+		transform: (value: string | undefined) =>
+			value ? value.trim().toLowerCase() : '',
+	});
+
+	updateFilter = effect(
+		() => {
+			this.uiService.filterString = this.type();
+		},
+		{ allowSignalWrites: true }
+	);
+
 	constructor(
 		private route: ActivatedRoute,
 		private uiService: PlMessagingTypesUIService
@@ -35,7 +56,6 @@ export class TypesInterfaceComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.route.paramMap.subscribe((values) => {
-			this.filterValue = values.get('type')?.trim().toLowerCase() || '';
 			this.uiService.BranchIdString = values.get('branchId') || '';
 			this.uiService.branchType =
 				(values.get('branchType') as 'working' | 'baseline' | '') || '';
@@ -43,4 +63,4 @@ export class TypesInterfaceComponent implements OnInit {
 	}
 }
 
-export default TypesInterfaceComponent;
+export default TypesPageComponent;
