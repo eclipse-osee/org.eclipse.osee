@@ -134,4 +134,6 @@ public interface IAtsStoreService {
 
    void deleteArtifacts(List<ArtifactToken> artifacts);
 
+   XResultData validateTypes();
+
 }

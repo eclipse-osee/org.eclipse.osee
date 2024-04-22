@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2004, 2007 Boeing
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,16 +11,17 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.integration.tests.ats.workflow;
+package org.eclipse.osee.ats.core.config;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.eclipse.osee.ats.api.util.IAtsStoreService;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({AtsXCommitManagerValidatorTest.class})
-/**
- * @author Donald G. Dunne
- */
-public class ValidatorTestSuite {
-   // TestSuite
+public abstract class AbstractAtsStoreService implements IAtsStoreService {
+
+   @Override
+   public XResultData validateTypes() {
+      WorkflowTypesTestOperation op = new WorkflowTypesTestOperation();
+      return op.run();
+   }
+
 }

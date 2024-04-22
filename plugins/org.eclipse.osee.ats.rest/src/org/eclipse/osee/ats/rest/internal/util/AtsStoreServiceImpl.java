@@ -24,8 +24,8 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.config.AbstractAtsStoreService;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workflow.WorkItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -51,7 +51,7 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 /**
  * @author Donald G. Dunne
  */
-public class AtsStoreServiceImpl implements IAtsStoreService {
+public class AtsStoreServiceImpl extends AbstractAtsStoreService {
 
    private final OrcsApi orcsApi;
    private final AtsApi atsApi;

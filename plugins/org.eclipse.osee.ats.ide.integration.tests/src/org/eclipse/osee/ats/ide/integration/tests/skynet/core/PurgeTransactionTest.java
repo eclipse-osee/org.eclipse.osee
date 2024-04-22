@@ -54,7 +54,7 @@ public class PurgeTransactionTest {
 
    @Test
    public void testPurgeTransaction() throws Exception {
-      ElapsedTime time = new ElapsedTime("test", true);
+      ElapsedTime time = new ElapsedTime("test", false);
       Map<String, Integer> initialRowCount = TestUtil.getTableRowCounts(TABLES);
       TransactionToken createTxId = createArtifacts();
 

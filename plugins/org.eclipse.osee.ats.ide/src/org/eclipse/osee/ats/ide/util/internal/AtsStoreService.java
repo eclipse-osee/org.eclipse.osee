@@ -31,8 +31,8 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.config.AbstractAtsStoreService;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsDeleteManager;
@@ -65,7 +65,7 @@ import org.eclipse.osee.jdbc.JdbcService;
 /**
  * @author Donald G. Dunne
  */
-public class AtsStoreService implements IAtsStoreService {
+public class AtsStoreService extends AbstractAtsStoreService {
    private final IAtsUserService userService;
    private final JdbcService jdbcService;
    public final AtsApi atsApi;

@@ -176,7 +176,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(Priority, null)
       .zeroOrOne(ValidationRequired));
 
-   ArtifactTypeToken AbstractWorkflowArtifact = ats.add(ats.artifactType(71L, "ats.State Machine", true, AtsArtifact)
+   ArtifactTypeToken AbstractWorkflowArtifact = ats.add(ats.artifactType(71L, "ats.Workflow Artifact", true, AtsArtifact)
       .any(JournalSubscriber)
       .exactlyOne(AtsId, "0")
       .zeroOrOne(Assumptions)
