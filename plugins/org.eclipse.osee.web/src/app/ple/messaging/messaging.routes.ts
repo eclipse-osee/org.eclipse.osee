@@ -62,7 +62,7 @@ const routes: Routes = [
 	{
 		path: 'types',
 		title: types?.pageTitle || 'OSEE',
-		loadChildren: () => import('./types-interface/types-interface.routes'),
+		loadChildren: () => import('./types-interface/types-page.routes'),
 	},
 	{
 		path: 'connections',

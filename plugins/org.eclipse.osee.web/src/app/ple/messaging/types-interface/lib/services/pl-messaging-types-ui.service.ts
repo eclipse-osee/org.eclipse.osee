@@ -10,21 +10,53 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { UiService } from '@osee/shared/services';
+import { PlatformType } from '@osee/messaging/shared/types';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class PlMessagingTypesUIService {
-	private _filter: BehaviorSubject<string> = new BehaviorSubject<string>('');
+	private _filter = signal('');
 	private _singleLineAdjustment: BehaviorSubject<number> =
 		new BehaviorSubject<number>(0);
 
 	private _columnCount: BehaviorSubject<number> = new BehaviorSubject<number>(
 		0
 	);
+
+	//TODO : migrate this to array once multi select options are thought out
+	private _selected = signal<PlatformType>({
+		id: '',
+		description: '',
+		interfaceLogicalType: '',
+		interfacePlatformType2sComplement: false,
+		interfacePlatformTypeAnalogAccuracy: '',
+		interfacePlatformTypeBitsResolution: '',
+		interfacePlatformTypeBitSize: '',
+		interfacePlatformTypeCompRate: '',
+		interfaceDefaultValue: '',
+		enumSet: {
+			name: '',
+			applicability: {
+				id: '1',
+				name: 'Base',
+			},
+			description: '',
+		},
+		interfacePlatformTypeMaxval: '',
+		interfacePlatformTypeMinval: '',
+		interfacePlatformTypeMsbValue: '',
+		interfacePlatformTypeUnits: '',
+		interfacePlatformTypeValidRangeDescription: '',
+		name: '',
+		applicability: {
+			id: '1',
+			name: 'Base',
+		},
+	});
 	constructor(private ui: UiService) {}
 
 	get filter() {
@@ -32,9 +64,7 @@ export class PlMessagingTypesUIService {
 	}
 
 	set filterString(filter: string) {
-		if (filter !== this._filter.getValue()) {
-			this._filter.next(filter);
-		}
+		this._filter.set(filter);
 	}
 
 	get singleLineAdjustment() {
@@ -75,5 +105,45 @@ export class PlMessagingTypesUIService {
 
 	set branchType(value: 'working' | 'baseline' | '') {
 		this.ui.typeValue = value;
+	}
+
+	get selected() {
+		return this._selected;
+	}
+	//TODO : migrate this to array once multi select options are thought out
+	select(value: PlatformType) {
+		this._selected.update((v) =>
+			v.id !== value.id
+				? value
+				: {
+						id: '',
+						description: '',
+						interfaceLogicalType: '',
+						interfacePlatformType2sComplement: false,
+						interfacePlatformTypeAnalogAccuracy: '',
+						interfacePlatformTypeBitsResolution: '',
+						interfacePlatformTypeBitSize: '',
+						interfacePlatformTypeCompRate: '',
+						interfaceDefaultValue: '',
+						enumSet: {
+							name: '',
+							applicability: {
+								id: '1',
+								name: 'Base',
+							},
+							description: '',
+						},
+						interfacePlatformTypeMaxval: '',
+						interfacePlatformTypeMinval: '',
+						interfacePlatformTypeMsbValue: '',
+						interfacePlatformTypeUnits: '',
+						interfacePlatformTypeValidRangeDescription: '',
+						name: '',
+						applicability: {
+							id: '1',
+							name: 'Base',
+						},
+				  }
+		);
 	}
 }

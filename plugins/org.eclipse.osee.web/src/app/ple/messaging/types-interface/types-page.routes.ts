@@ -18,18 +18,18 @@ const routes: Routes = [
 		loadChildren: () => import('./toolbar.routes'),
 		outlet: 'toolbar',
 	},
-	{ path: '', loadComponent: () => import('./types-interface.component') },
+	{ path: '', loadComponent: () => import('./types-page.component') },
 	{
 		path: ':branchType',
-		loadComponent: () => import('./types-interface.component'),
+		loadComponent: () => import('./types-page.component'),
 	},
 	{
 		path: ':branchType/:branchId',
-		loadComponent: () => import('./types-interface.component'),
+		loadComponent: () => import('./types-page.component'),
 	},
 	{
 		path: ':branchType/:branchId/:type',
-		loadComponent: () => import('./types-interface.component'),
+		loadComponent: () => import('./types-page.component'),
 	},
 ];
 

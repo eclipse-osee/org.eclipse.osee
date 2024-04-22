@@ -11,8 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-import { Component, Input } from '@angular/core';
-import { TypeGridComponent } from '../type-grid/type-grid/type-grid.component';
+import { Component, Input, input } from '@angular/core';
+import { TypeGridComponent } from '../type-grid/type-grid.component';
+import { PlatformType } from '@osee/messaging/shared/types';
 
 @Component({
 	selector: 'osee-messaging-types-type-grid',
@@ -20,5 +21,5 @@ import { TypeGridComponent } from '../type-grid/type-grid/type-grid.component';
 	standalone: true,
 })
 export class MockTypeGridComponent implements Partial<TypeGridComponent> {
-	@Input() filterValue: string = '';
+	platformTypes = input.required<PlatformType[]>();
 }

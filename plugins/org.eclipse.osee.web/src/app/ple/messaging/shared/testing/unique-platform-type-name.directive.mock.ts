@@ -38,7 +38,7 @@ import { Observable, of } from 'rxjs';
 export class MockUniquePlatformTypeNameDirective implements AsyncValidator {
 	@Optional()
 	@Input('oseeUniquePlatformTypeAttributes')
-	inputField?: logicalTypeFormDetail = {
+	inputField?: logicalTypeFormDetail<keyof PlatformType> = {
 		id: '',
 		name: '',
 		idString: '',

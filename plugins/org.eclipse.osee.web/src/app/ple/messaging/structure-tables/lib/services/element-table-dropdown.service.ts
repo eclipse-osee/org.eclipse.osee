@@ -10,16 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, inject } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dialogs/free-text';
 import {
 	CurrentStructureService,
-	EnumerationUIService,
+	PlatformTypeActionsService,
 	WarningDialogService,
 } from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
-import { RemoveElementDialogData } from '../dialogs/remove-element-dialog/remove-element-dialog';
-import { RemoveElementDialogComponent } from '../dialogs/remove-element-dialog/remove-element-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
 import {
 	EditViewFreeTextDialog,
 	ElementDialog,
@@ -27,31 +26,25 @@ import {
 	elementWithChanges,
 	structure,
 } from '@osee/messaging/shared/types';
-import { OperatorFunction, filter, iif, map, of, switchMap, take } from 'rxjs';
-import { EditEnumSetDialogComponent } from '@osee/messaging/shared/dialogs';
-import {
-	createArtifact,
-	modifyArtifact,
-	modifyRelation,
-	relation,
-} from '@osee/shared/types';
-import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dialogs/free-text';
-import { difference } from '@osee/shared/types/change-report';
 import { applic } from '@osee/shared/types/applicability';
-import { DefaultAddElementDialog } from '../dialogs/add-element-dialog/add-element-dialog.default';
+import { difference } from '@osee/shared/types/change-report';
+import { filter, iif, map, of, switchMap, take } from 'rxjs';
 import { AddElementDialogComponent } from '../dialogs/add-element-dialog/add-element-dialog.component';
+import { DefaultAddElementDialog } from '../dialogs/add-element-dialog/add-element-dialog.default';
 import { EditElementDialogComponent } from '../dialogs/edit-element-dialog/edit-element-dialog.component';
+import { RemoveElementDialogData } from '../dialogs/remove-element-dialog/remove-element-dialog';
+import { RemoveElementDialogComponent } from '../dialogs/remove-element-dialog/remove-element-dialog.component';
 
 @Injectable({
 	providedIn: 'any',
 })
 export class ElementTableDropdownService {
+	private platformTypeActionsService = inject(PlatformTypeActionsService);
 	constructor(
 		private dialog: MatDialog,
 		@Inject(STRUCTURE_SERVICE_TOKEN)
 		private structureService: CurrentStructureService,
-		private warningDialogService: WarningDialogService,
-		private enumSetService: EnumerationUIService
+		private warningDialogService: WarningDialogService
 	) {}
 
 	private _isStructure(value: structure | element): value is structure {
@@ -198,73 +191,8 @@ export class ElementTableDropdownService {
 	}
 
 	openEnumDialog(id: string, editMode: boolean) {
-		/**
-		 * If create artifacts does not contain the enum set key(should be last or 2nd last object in modifiedArtifacts),
-		 * Display a warning for the following:
-		 * Each modified enum
-		 * The modified enum set
-		 * The modified platform type(s)
-		 */
-		this.dialog
-			.open(EditEnumSetDialogComponent, {
-				data: {
-					id: id,
-					isOnEditablePage: editMode,
-				},
-			})
-			.afterClosed()
-			.pipe(
-				filter((x) => x !== undefined) as OperatorFunction<
-					| {
-							createArtifacts: createArtifact[];
-							modifyArtifacts: modifyArtifact[];
-							deleteRelations: modifyRelation[];
-					  }
-					| undefined,
-					{
-						createArtifacts: createArtifact[];
-						modifyArtifacts: modifyArtifact[];
-						deleteRelations: modifyRelation[];
-					}
-				>,
-				take(1),
-				switchMap((tx) =>
-					iif(
-						() => editMode,
-						this.warningDialogService
-							.openEnumsDialogs(
-								tx.modifyArtifacts
-									.slice(0, -1)
-									.map((v) => v.id),
-								[
-									...tx.createArtifacts
-										.flatMap((v) => v.relations)
-										.filter(
-											(v): v is relation =>
-												v !== undefined
-										)
-										.map((v) => v.sideA)
-										.filter(
-											(v): v is string | string[] =>
-												v !== undefined
-										)
-										.flatMap((v) => v),
-									...tx.deleteRelations
-										.flatMap((v) => v.aArtId)
-										.filter(
-											(v): v is string => v !== undefined
-										),
-								]
-							)
-							.pipe(
-								switchMap((_) =>
-									this.enumSetService.changeEnumSet(tx)
-								)
-							),
-						of()
-					)
-				)
-			)
+		this.platformTypeActionsService
+			.openEnumDialog(id, editMode)
 			.subscribe();
 	}
 

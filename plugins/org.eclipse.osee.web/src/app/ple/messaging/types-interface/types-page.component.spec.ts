@@ -11,24 +11,18 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { CurrentTypesService } from './lib/services/current-types.service';
 
-import { TypesInterfaceComponent } from './types-interface.component';
-import { MockTypeGridComponent } from './lib/testing/type-grid.component.mock';
-import { NgIf, AsyncPipe } from '@angular/common';
-import {
-	ActionDropdownStub,
-	BranchPickerStub,
-	UndoButtonBranchMockComponent,
-} from '@osee/shared/components/testing';
+import { provideRouter } from '@angular/router';
 import { MessagingControlsMockComponent } from '@osee/messaging/shared/testing';
+import { MockTypesInterfaceComponent } from './lib/types-interface/types-interface.component.mock';
+import { TypesPageComponent } from './types-page.component';
 
 describe('TypesInterfaceComponent', () => {
-	let component: TypesInterfaceComponent;
-	let fixture: ComponentFixture<TypesInterfaceComponent>;
+	let component: TypesPageComponent;
+	let fixture: ComponentFixture<TypesPageComponent>;
 	let typesService: Partial<CurrentTypesService> = {
 		typeData: of([
 			{
@@ -99,13 +93,11 @@ describe('TypesInterfaceComponent', () => {
 	};
 
 	beforeEach(async () => {
-		await TestBed.overrideComponent(TypesInterfaceComponent, {
+		await TestBed.overrideComponent(TypesPageComponent, {
 			set: {
 				imports: [
-					NgIf,
-					AsyncPipe,
 					MessagingControlsMockComponent,
-					MockTypeGridComponent,
+					MockTypesInterfaceComponent,
 				],
 				providers: [
 					{ provide: CurrentTypesService, useValue: typesService },
@@ -113,18 +105,15 @@ describe('TypesInterfaceComponent', () => {
 			},
 		})
 			.configureTestingModule({
-				imports: [
-					NoopAnimationsModule,
-					RouterTestingModule,
-					TypesInterfaceComponent,
-				],
+				imports: [TypesPageComponent],
 				declarations: [],
+				providers: [provideNoopAnimations(), provideRouter([])],
 			})
 			.compileComponents();
 	});
 
 	beforeEach(() => {
-		fixture = TestBed.createComponent(TypesInterfaceComponent);
+		fixture = TestBed.createComponent(TypesPageComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

@@ -106,7 +106,10 @@ export class NewPlatformTypeFormComponent implements OnChanges {
 			form.fields
 				.filter((f) => !f.editable)
 				.forEach((f) => {
-					this._platformType[f.jsonPropertyName] = f.defaultValue;
+					this.updateInnerPlatformType(
+						f.jsonPropertyName,
+						f.defaultValue
+					);
 				});
 			this.updateField();
 		})
@@ -135,7 +138,7 @@ export class NewPlatformTypeFormComponent implements OnChanges {
 	}
 	protected isLogicalTypeFieldInfo(
 		value: unknown
-	): value is logicalTypeFieldInfo {
+	): value is logicalTypeFieldInfo<keyof PlatformType> {
 		return (value as any).jsonPropertyName !== undefined;
 	}
 	protected isString(
@@ -145,6 +148,12 @@ export class NewPlatformTypeFormComponent implements OnChanges {
 	}
 	updateField() {
 		this.platformType.next(this._platformType);
+	}
+	updateInnerPlatformType<T extends keyof PlatformType = keyof PlatformType>(
+		key: T,
+		value: PlatformType[T]
+	) {
+		this._platformType[key] = value;
 	}
 }
 

@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2023 Boeing
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,7 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './platform-type-card/platform-type-card.component';
-export * from './messaging-controls/messaging-controls.component';
-export * from './named-id-list-editor/named-id-list-editor.component';
-export * from './platform-type-actions/platform-type-actions.component';
+import { Component } from '@angular/core';
+import { TypesInterfaceComponent } from './types-interface.component';
+
+@Component({
+	selector: 'osee-types-interface',
+	template: '<p>Dummy</p>',
+	standalone: true,
+})
+export class MockTypesInterfaceComponent
+	implements Partial<TypesInterfaceComponent> {}
