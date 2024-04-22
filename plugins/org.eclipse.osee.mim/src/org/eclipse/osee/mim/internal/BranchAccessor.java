@@ -45,6 +45,7 @@ import org.eclipse.osee.mim.PlatformTypesEndpoint;
 import org.eclipse.osee.mim.PlatformTypesFilterEndpoint;
 import org.eclipse.osee.mim.QueryMIMResourcesEndpoint;
 import org.eclipse.osee.mim.TransportTypeEndpoint;
+import org.eclipse.osee.mim.UnreferencedICDArtifactsEndpoint;
 
 /**
  * @author Luciano T. Vaglienti
@@ -234,5 +235,12 @@ public class BranchAccessor {
    @Path("{branch}/validation")
    public InterfaceValidationEndpoint getValidationEndpoint(@PathParam("branch") BranchId branch) {
       return new InterfaceValidationEndpointImpl(branch, mimApi.getInterfaceValidationApi());
+   }
+
+   @Path("{branch}/unreferenced")
+   public UnreferencedICDArtifactsEndpoint getUnreferencedICDArtifactsEndpoint(@PathParam("branch") BranchId branch) {
+      return new UnreferencedICDArtifactsEndpointImpl(branch, mimApi.getInterfacePlatformTypeApi(),
+         mimApi.getInterfaceElementApi(), mimApi.getInterfaceStructureApi(), mimApi.getInterfaceSubMessageApi(),
+         mimApi.getInterfaceMessageApi());
    }
 }

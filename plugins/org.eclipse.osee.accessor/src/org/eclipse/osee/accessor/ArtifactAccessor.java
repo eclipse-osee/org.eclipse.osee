@@ -408,4 +408,12 @@ public interface ArtifactAccessor<T> {
    Collection<ArtifactMatch> getAffectedArtifacts(BranchId branch, ArtifactId relatedId,
       Collection<RelationTypeSide> relations) throws InstantiationException, IllegalAccessException,
       IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException;
+
+   Collection<T> getAllLackingRelationByFilter(BranchId branch, String filter, Collection<AttributeTypeId> attributes,
+      Collection<RelationTypeSide> relations, long pageCount, long pageSize)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException;
+
+   int getAllLackingRelationByFilterAndCount(BranchId branch, String filter, Collection<AttributeTypeId> attributes,
+      Collection<RelationTypeSide> relations) throws IllegalArgumentException, SecurityException;
 }

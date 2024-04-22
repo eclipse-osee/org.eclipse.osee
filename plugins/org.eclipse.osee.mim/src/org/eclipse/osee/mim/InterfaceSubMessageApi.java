@@ -69,4 +69,9 @@ public interface InterfaceSubMessageApi extends QueryCapableMIMAPI<InterfaceSubM
 
    int getAllByNameCount(BranchId branch, String name);
 
+   Collection<InterfaceSubMessageToken> getAllwithNoMessageRelations(BranchId branch, String filter, long pageNum,
+      long pageSize);
+
+   int getAllwithNoMessageRelationsCount(BranchId branch, String filter);
+
 }

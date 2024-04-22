@@ -78,4 +78,9 @@ public interface InterfaceMessageApi extends QueryCapableMIMAPI<InterfaceMessage
       String filter, ArtifactId viewId, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 
    InterfaceMessageToken setUpMessage(BranchId branch, InterfaceMessageToken message);
+
+   Collection<InterfaceMessageToken> getAllwithNoConnectionRelations(BranchId branch, String filter, long pageNum,
+      long pageSize);
+
+   int getAllwithNoConnectionRelationsCount(BranchId branch, String filter);
 }

@@ -95,4 +95,9 @@ public interface InterfaceElementApi extends QueryCapableMIMAPI<InterfaceStructu
    List<FollowRelation> getFollowRelationDetails();
 
    List<InterfaceStructureElementToken> getAllFromPlatformType(PlatformTypeToken pType);
+
+   Collection<InterfaceStructureElementToken> getAllwithNoStructureRelations(BranchId branch, String filter,
+      long pageNum, long pageSize);
+
+   int getAllwithNoStructureRelationsCount(BranchId branch, String filter);
 }

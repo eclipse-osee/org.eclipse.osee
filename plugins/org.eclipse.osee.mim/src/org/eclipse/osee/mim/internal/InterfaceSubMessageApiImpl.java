@@ -258,4 +258,25 @@ public class InterfaceSubMessageApiImpl implements InterfaceSubMessageApi {
       return this.getAccessor().getAllByFilterAndCount(branch, name, Arrays.asList(CoreAttributeTypes.Name));
    }
 
+   @Override
+   public Collection<InterfaceSubMessageToken> getAllwithNoMessageRelations(BranchId branch, String filter,
+      long pageNum, long pageSize) {
+      Collection<RelationTypeSide> rel = new LinkedList<RelationTypeSide>();
+      rel.add(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage);
+      try {
+         return this.getAccessor().getAllLackingRelationByFilter(branch, filter, subMessageAttributes, rel, pageNum,
+            pageSize);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+      }
+      return new LinkedList<InterfaceSubMessageToken>();
+   }
+
+   @Override
+   public int getAllwithNoMessageRelationsCount(BranchId branch, String filter) {
+      Collection<RelationTypeSide> rel = new LinkedList<RelationTypeSide>();
+      rel.add(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage);
+      return this.getAccessor().getAllLackingRelationByFilterAndCount(branch, filter, subMessageAttributes, rel);
+   }
+
 }
