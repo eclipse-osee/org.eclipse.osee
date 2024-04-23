@@ -277,6 +277,12 @@ public interface PublishingEndpoint {
    @Produces({MediaType.APPLICATION_JSON})
    @Path("update")
    WordUpdateChange updateWordArtifacts(WordUpdateData data);
+
+   @POST
+   @Consumes({MediaType.TEXT_PLAIN})
+   @Produces({MediaType.TEXT_PLAIN})
+   @Path("markdownToHtml")
+   String convertMarkdownToHtml(String markdownContent);
 }
 
 /* EOF */

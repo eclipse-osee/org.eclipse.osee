@@ -49,6 +49,7 @@
 							   <plugin id="flexmark-util-format"/>
 							   <plugin id="flexmark-util-misc"/>
 							   <plugin id="flexmark-util-sequence"/>
+							    <plugin id="flexmark-util-options"/>
 							   <plugin id="flexmark-util-visitor"/>
 							   <plugin id="flexmark-util-html"/>
 						           <plugin id="annotations"/>

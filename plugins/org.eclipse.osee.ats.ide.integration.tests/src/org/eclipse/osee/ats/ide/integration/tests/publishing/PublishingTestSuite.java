@@ -29,7 +29,8 @@ import org.junit.runners.Suite;
       {
          PublishingDataRightsTest.class,
          PublishingServerPreviewTest.class,
-         PublishingSharedArtifactsFolderTest.class
+         PublishingSharedArtifactsFolderTest.class,
+         MarkdownConversionTest.class
       }
    )
 //@formatter:on

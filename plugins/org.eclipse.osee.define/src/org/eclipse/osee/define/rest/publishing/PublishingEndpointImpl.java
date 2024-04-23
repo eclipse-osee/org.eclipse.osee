@@ -23,6 +23,7 @@ import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.core.Response;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.eclipse.osee.define.operations.api.DefineOperations;
+import org.eclipse.osee.define.operations.markdown.MarkdownConverter;
 import org.eclipse.osee.define.operations.publisher.publishing.PublishingPermissions;
 import org.eclipse.osee.define.operations.publisher.publishing.UserNotAuthorizedForPublishingException;
 import org.eclipse.osee.define.rest.api.publisher.publishing.LinkHandlerResult;
@@ -83,7 +84,8 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
     */
 
    @Override
-   public List<ArtifactToken> getSharedPublishingArtifacts(BranchId branch, ArtifactId view, ArtifactId sharedFolder, ArtifactTypeToken artifactType, AttributeTypeToken attributeType, String attributeValue) {
+   public List<ArtifactToken> getSharedPublishingArtifacts(BranchId branch, ArtifactId view, ArtifactId sharedFolder,
+      ArtifactTypeToken artifactType, AttributeTypeToken attributeType, String attributeValue) {
 
       try {
          PublishingPermissions.verify();
@@ -124,7 +126,8 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
     */
 
    @Override
-   public LinkHandlerResult link(BranchId branchId, ArtifactId viewId, ArtifactId artifactId, TransactionId transactionId, LinkType linkType, PresentationType presentationType) {
+   public LinkHandlerResult link(BranchId branchId, ArtifactId viewId, ArtifactId artifactId,
+      TransactionId transactionId, LinkType linkType, PresentationType presentationType) {
 
       try {
 
@@ -333,7 +336,8 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
 
    @Override
    @Deprecated
-   public Attachment msWordTemplatePublish(BranchId branch, ArtifactId template, ArtifactId headArtifact, ArtifactId view) {
+   public Attachment msWordTemplatePublish(BranchId branch, ArtifactId template, ArtifactId headArtifact,
+      ArtifactId view) {
       try {
          PublishingPermissions.verifyNonGroup();
 
@@ -397,7 +401,8 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
     */
 
    @Override
-   public Attachment msWordWholeWordContentPublish(BranchId branchId, ArtifactId viewId, ArtifactId artifactId, TransactionId transactionId, LinkType linkType, PresentationType presentationType, boolean includeErrorLog) {
+   public Attachment msWordWholeWordContentPublish(BranchId branchId, ArtifactId viewId, ArtifactId artifactId,
+      TransactionId transactionId, LinkType linkType, PresentationType presentationType, boolean includeErrorLog) {
 
       try {
          PublishingPermissions.verifyNonGroup();
@@ -463,7 +468,8 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
     */
 
    @Override
-   public LinkHandlerResult unlink(BranchId branchId, ArtifactId viewId, ArtifactId artifactId, TransactionId transactionId, LinkType linkType) {
+   public LinkHandlerResult unlink(BranchId branchId, ArtifactId viewId, ArtifactId artifactId,
+      TransactionId transactionId, LinkType linkType) {
 
       try {
 
@@ -550,6 +556,25 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
                      wordUpdateData
                   );
          //@formatter:on
+      } catch (UserNotAuthorizedForPublishingException e) {
+         throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
+      } catch (IllegalArgumentException iae) {
+         throw new BadRequestException(iae.getMessage(), Response.status(Response.Status.BAD_REQUEST).build(), iae);
+      } catch (Exception e) {
+         throw new ServerErrorException(e.getMessage(), Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(),
+            e);
+      }
+   }
+
+   @Override
+   public String convertMarkdownToHtml(String markdownContent) {
+      try {
+         PublishingPermissions.verifyNonGroup();
+         if (markdownContent == null) {
+            return "";
+         }
+         MarkdownConverter mdConverter = new MarkdownConverter(markdownContent);
+         return mdConverter.toHtml();
       } catch (UserNotAuthorizedForPublishingException e) {
          throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (IllegalArgumentException iae) {
