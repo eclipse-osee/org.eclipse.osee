@@ -203,6 +203,21 @@ public class PublishingRequestHandler {
       }
    }
 
+   /**
+    * Calls the REST API PublishingEndpoint method {@link PublishingEndpoint#convertMarkdownToHtml}.
+    *
+    * @throws OseeWebApplicationException when the REST API call fails.
+    */
+
+   public static String convertMarkdownToHtml(String markdownContent) {
+      try {
+         return PublishingRequestHandler.instance.publishingEndpoint.convertMarkdownToHtml(markdownContent);
+      } catch (Exception e) {
+         throw new OseeWebApplicationException(e, Status.INTERNAL_SERVER_ERROR,
+            "Exception in \"convertMarkdownToHtml\" request.");
+      }
+   }
+
 }
 
 /* EOF */

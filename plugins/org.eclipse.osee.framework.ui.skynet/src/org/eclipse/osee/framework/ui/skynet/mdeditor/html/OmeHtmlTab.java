@@ -13,12 +13,6 @@
 
 package org.eclipse.osee.framework.ui.skynet.mdeditor.html;
 
-import com.vladsch.flexmark.ext.gfm.tasklist.TaskListExtension;
-import com.vladsch.flexmark.ext.tables.TablesExtension;
-import com.vladsch.flexmark.html.HtmlRenderer;
-import com.vladsch.flexmark.parser.Parser;
-import com.vladsch.flexmark.util.ast.Node;
-import com.vladsch.flexmark.util.data.MutableDataSet;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Base64;
@@ -31,6 +25,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.httpRequests.PublishingRequestHandler;
 import org.eclipse.osee.framework.ui.skynet.action.browser.IBrowserActionHandler;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.mdeditor.OmeAbstractTab;
@@ -133,34 +128,23 @@ public class OmeHtmlTab extends OmeAbstractTab implements IBrowserActionHandler 
             }
          }
 
-         MutableDataSet options = new MutableDataSet();
-         options.set(Parser.EXTENSIONS, Arrays.asList(TablesExtension.create(), TaskListExtension.create()));
-         Parser parser = Parser.builder(options).build();
-         HtmlRenderer renderer = HtmlRenderer.builder(options).build();
-         Node document = parser.parse(mdContent);
-         String html = renderer.render(document);
-         String styledHtml = addHTMLStyling(html);
+         try {
+            String html = PublishingRequestHandler.convertMarkdownToHtml(mdContent);
+            omeData.setHtmlContent(html);
+            Displays.ensureInDisplayThread(new Runnable() {
 
-         omeData.setHtmlContent(styledHtml);
-         Displays.ensureInDisplayThread(new Runnable() {
-
-            @Override
-            public void run() {
-               browser.setText(styledHtml);
-               if (managedForm != null) {
-                  managedForm.reflow(true);
+               @Override
+               public void run() {
+                  browser.setText(html);
+                  if (managedForm != null) {
+                     managedForm.reflow(true);
+                  }
                }
-            }
-         });
+            });
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
       }
-   }
-
-   private static String addHTMLStyling(String html) {
-      String style =
-         "<style> table { width: 100%; } table, th, td { border: 1px solid black; border-collapse: collapse; padding: 5px; }";
-      style += "img { display: block; margin-left: auto; margin-right: auto; }";
-      style += "</style>";
-      return style + html;
    }
 
    private static String execCmd(String cmd) throws java.io.IOException {
