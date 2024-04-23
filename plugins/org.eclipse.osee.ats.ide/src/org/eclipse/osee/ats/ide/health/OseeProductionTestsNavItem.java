@@ -102,14 +102,14 @@ public class OseeProductionTestsNavItem extends XNavigateItem {
       rd.log(AHTML.beginMultiColumnTable(95, 1));
       rd.log(AHTML.addHeaderRowMultiColumnTable(Arrays.asList("Time(ms)", "Result", "Name", "Type", "Details")));
       ElapsedTime time = new ElapsedTime(" ");
-      //      testStandAloneRest(rd);
-      //      testAtsConfig(rd);
-      //      testAtsTeamDefinition(rd);
+      testStandAloneRest(rd);
+      testAtsConfig(rd);
+      testAtsTeamDefinition(rd);
       testAtsQueries(rd);
-      //      testArtifactQueries(rd);
+      testArtifactQueries(rd);
+      testAtsQuickSearchQueries(rd);
       for (OseeProductionTestProvider provider : providers) {
-         //         provider.testAtsQuickSearchQueries(rd);
-         //         provider.testPublishing(rd);
+         provider.testPublishing(rd);
          testAtsApiQueries(rd, provider);
       }
 
@@ -120,18 +120,12 @@ public class OseeProductionTestsNavItem extends XNavigateItem {
       XResultDataUI.report(rd, getName());
    }
 
-   /////////////////////////////////
-   /////////////////////////////////
-
    private void testAtsConfig(XResultData rd) {
       ElapsedTime time = new ElapsedTime("Get ATS Config with Pend");
       AtsApiService.get().getConfigService().getConfigurationsWithPend();
       rd.logf(AHTML.addRowMultiColumnTable(time.getTimeSpent().toString(), "PASS", "Get ATS Config with Pend", "JSON",
          "/ats/config"));
    }
-
-   /////////////////////////////////
-   /////////////////////////////////
 
    private List<StandAloneRestData> getStandAloneRestCalls() {
 
@@ -145,13 +139,11 @@ public class OseeProductionTestsNavItem extends XNavigateItem {
       datas.add(new StandAloneRestData("ATS Action Search", "/ats/ui/action/Search", "HTML", "ATS - Search"));
       datas.add(new StandAloneRestData("ATS Configure Branch", "/ats/config/ui/NewAtsBranchConfig", "HTML", "ATS - Configure Branch"));
       datas.add(new StandAloneRestData("ORCS Branch", "/orcs/branch", "HTML", "Name"));
-
       datas.add(new StandAloneRestData("ATS Health Check", "/ats/health/check", "HTML", "ATS Health Check"));
       datas.add(new StandAloneRestData("ATS Config", "/ats/config", "JSON", "\"views\""));
       datas.add(new StandAloneRestData("ATS Program", "/ats/program", "JSON", "\"name\""));
       datas.add(new StandAloneRestData("ATS Program Details", "/ats/program/details", "JSON", "\"country\""));
       datas.add(new StandAloneRestData("ATS Team Details", "/ats/team/details", "JSON", "\"Name\""));
-      datas.add(new StandAloneRestData("Dispo Program", "/dispo/program", "JSON", "\"text\""));
       datas.add(new StandAloneRestData("ORCS Branch", "/orcs/branches", "JSON", "\"inheritAccessControl\""));
       datas.add(new StandAloneRestData("APPS API", "/apps/api", "JSON", "\"description\""));
       datas.add(new StandAloneRestData("ATS AI Details", "/ats/ai/details", "JSON", "\"Description\""));
@@ -209,9 +201,6 @@ public class OseeProductionTestsNavItem extends XNavigateItem {
       return jaxRsApi.newTarget(path).request(mediaType).get().readEntity(String.class);
    }
 
-   /////////////////////////////////
-   /////////////////////////////////
-
    private Map<String, IAtsConfigQuery> getAtsWorkItemQueries(OseeProductionTestProvider provider) {
       ArtifactId atsTeamDefId = provider.getAtsWorkItemQueryTeamDef();
 
@@ -258,9 +247,6 @@ public class OseeProductionTestsNavItem extends XNavigateItem {
       }
    }
 
-   /////////////////////////////////
-   /////////////////////////////////
-
    private Map<String, IAtsConfigQuery> getConfigObjectQueries() {
       Map<String, IAtsConfigQuery> queries = new HashMap<>();
       queries.put("Team Definition",
@@ -286,9 +272,6 @@ public class OseeProductionTestsNavItem extends XNavigateItem {
       }
    }
 
-   /////////////////////////////////
-   /////////////////////////////////
-
    private Map<String, IAtsQuery> getAtsQueries() {
       Map<String, IAtsQuery> queries = new HashMap<>();
       queries.put("Peer Review WorkItem", queryService.createQuery(WorkItemType.PeerReview));
@@ -311,9 +294,6 @@ public class OseeProductionTestsNavItem extends XNavigateItem {
             workItems.size() + " returned"));
       }
    }
-
-   /////////////////////////////////
-   /////////////////////////////////
 
    private Map<String, QueryBuilderArtifact> getArtifactQueries() {
       QueryBuilderArtifact query1 = ArtifactQuery.createQueryBuilder(CoreBranches.COMMON);
@@ -341,8 +321,19 @@ public class OseeProductionTestsNavItem extends XNavigateItem {
       }
    }
 
-   /////////////////////////////////
-   /////////////////////////////////
+   public void testAtsQuickSearchQueries(XResultData rd) {
+      for (OseeProductionTestProvider provider : providers) {
+         for (Entry<String, QueryBuilderArtifact> entry : provider.getAtsQuickSearchQueries().entrySet()) {
+            String title = entry.getKey();
+            ElapsedTime time = new ElapsedTime(title);
+            ResultSet<Artifact> artifacts = entry.getValue().getResults();
+            boolean passed = true;
+            Long ms = time.getTimeSpent();
+            rd.logf(AHTML.addRowMultiColumnTable(ms.toString(), getPassFail(passed), title, "API",
+               artifacts.size() + " returned"));
+         }
+      }
+   }
 
    @Override
    public Collection<IUserGroupArtifactToken> getUserGroups() {

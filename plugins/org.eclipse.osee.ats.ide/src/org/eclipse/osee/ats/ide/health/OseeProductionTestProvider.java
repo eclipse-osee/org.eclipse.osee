@@ -13,19 +13,21 @@
 package org.eclipse.osee.ats.ide.health;
 
 import java.util.Collection;
+import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.skynet.core.artifact.search.QueryBuilderArtifact;
 
 public interface OseeProductionTestProvider {
 
    public Collection<StandAloneRestData> getStandAloneRestDatas();
-
-   public void testAtsQuickSearchQueries(XResultData rd);
 
    public void testPublishing(XResultData rd);
 
    public ArtifactId getAtsWorkItemQueryTeamDef();
 
    public String getTestName();
+
+   public Map<String, QueryBuilderArtifact> getAtsQuickSearchQueries();
 
 }
