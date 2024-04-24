@@ -60,7 +60,6 @@ describe('PlConfigCurrentBranchService', () => {
 			getBranchApplicability: of(testBranchApplicability),
 			getBranchState: of(testBranchListing),
 			modifyConfiguration: of(MockXResultData),
-			synchronizeGroup: of(MockXResultData),
 			addFeature: of(MockXResultData),
 			modifyFeature: of(MockXResultData),
 			deleteFeature: of(MockXResultData),
@@ -578,7 +577,7 @@ describe('PlConfigCurrentBranchService', () => {
 							configurations: ['2', '3'],
 						},
 					])
-				).toBe('|', { a: MockXResultData });
+				).toBe('a', { a: MockXResultData });
 			});
 		});
 		it('should edit configuration details', () => {
@@ -592,10 +591,7 @@ describe('PlConfigCurrentBranchService', () => {
 						copyFrom: '',
 					})
 				).toBe('a', {
-					a: {
-						success: MockXResultData.success,
-						results: MockXResultData.results,
-					},
+					a: MockXResultData,
 				});
 			});
 		});
@@ -610,10 +606,15 @@ describe('PlConfigCurrentBranchService', () => {
 						configurationGroup: ['123'],
 					})
 				).toBe('a', {
-					a: {
-						success: MockXResultData.success,
-						results: MockXResultData.results,
-					},
+					a: MockXResultData,
+				});
+			});
+		});
+
+		it('should delete configuration', () => {
+			scheduler.run(({ expectObservable }) => {
+				expectObservable(service.deleteConfiguration('123')).toBe('a', {
+					a: MockXResultData,
 				});
 			});
 		});

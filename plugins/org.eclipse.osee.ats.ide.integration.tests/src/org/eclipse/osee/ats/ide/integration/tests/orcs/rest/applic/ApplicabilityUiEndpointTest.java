@@ -18,6 +18,7 @@ import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityUiEndpoint;
@@ -59,13 +60,14 @@ public class ApplicabilityUiEndpointTest {
       ApplicabilityUiEndpoint applUiEndpoint = ServiceUtil.getOseeClient().getApplicabilityUiEndpoint();
       Assert.assertNotNull(applUiEndpoint);
 
-      ApplicabilityBranchConfig config = applUiEndpoint.getConfig(BranchId.valueOf(DemoBranches.SAW_PL.getId()));
+      ApplicabilityBranchConfig config =
+         applUiEndpoint.getConfig(BranchId.valueOf(DemoBranches.SAW_PL.getId()), ArtifactId.SENTINEL);
       Assert.assertNotNull(config);
 
       Assert.assertEquals(4, config.getViews().size());
       Assert.assertEquals(DemoBranches.SAW_PL.getId(), config.getBranch().getId());
 
-      config = applUiEndpoint.getConfig(BranchId.valueOf(DemoBranches.SAW_PL.getId()));
+      config = applUiEndpoint.getConfig(BranchId.valueOf(DemoBranches.SAW_PL.getId()), ArtifactId.SENTINEL);
       Assert.assertNotNull(config);
 
    }

@@ -101,7 +101,9 @@ public final class FeatureImpactStreamingOutput implements StreamingOutput {
       ZipOutputStream zipOut = new ZipOutputStream(output);
 
       List<ChangeItem> changes = orcsApi.getBranchOps().compareBranch(branch);
-      List<ArtifactToken> viewsForBranch = orcsApi.getQueryFactory().applicabilityQuery().getViewsForBranch(branch);
+      List<ArtifactToken> viewsForBranch =
+         orcsApi.getQueryFactory().applicabilityQuery().getViewsForBranch(branch).stream().map(
+            a -> a.getToken()).collect(Collectors.toList());
 
       TreeMap<ApplicabilityToken, TreeMap<ArtifactToken, String>> featureViewsImpacted =
          new TreeMap<ApplicabilityToken, TreeMap<ArtifactToken, String>>();

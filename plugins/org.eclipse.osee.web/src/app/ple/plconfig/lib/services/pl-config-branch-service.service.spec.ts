@@ -130,16 +130,6 @@ describe('PlConfigBranchService', () => {
 		httpTestingController.verify();
 	});
 
-	it('post synchronizeGroup should return results from /orcs/branch/ + branchId + /applic/cfggroup/sync/ +configId', () => {
-		service.synchronizeGroup('10', '20').subscribe();
-		const req = httpTestingController.expectOne(
-			apiURL + '/orcs/branch/' + 10 + '/applic/cfggroup/sync/' + 20
-		);
-		expect(req.request.method).toEqual('POST');
-		req.flush({});
-		httpTestingController.verify();
-	});
-
 	it('get getCfgGroups should return results from /orcs/branch/ + branchId +/applic/cfggroup/', () => {
 		service.getCfgGroups('10').subscribe();
 		const req = httpTestingController.expectOne(

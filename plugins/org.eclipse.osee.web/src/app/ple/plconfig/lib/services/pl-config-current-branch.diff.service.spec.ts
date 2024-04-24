@@ -601,7 +601,6 @@ describe('PlConfigCurrentBranchService diffs', () => {
 			getBranchApplicability: of(testBranchApplicability),
 			getBranchState: of(testBranchListing),
 			modifyConfiguration: of(MockXResultData),
-			synchronizeGroup: of(MockXResultData),
 			addFeature: of(MockXResultData),
 			modifyFeature: of(MockXResultData),
 			deleteFeature: of(MockXResultData),

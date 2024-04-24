@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -41,7 +42,8 @@ public class ApplicabilityFeatureMatrixGenerator {
       this.orcsApi = orcsApi;
    }
 
-   public void runOperation(OrcsApi providedOrcs, Writer providedWriter, BranchId branch, String filter) throws IOException {
+   public void runOperation(OrcsApi providedOrcs, Writer providedWriter, BranchId branch, String filter)
+      throws IOException {
       ISheetWriter writer = new ExcelXmlWriter(providedWriter);
       createConfigSheet(writer, branch, filter);
       createGroupsSheet(writer, branch, filter);
@@ -53,7 +55,8 @@ public class ApplicabilityFeatureMatrixGenerator {
       headingsList.add("Feature");
       headingsList.add("Description");
       List<ArtifactToken> configurationsForBranch =
-         orcsApi.getQueryFactory().applicabilityQuery().getConfigurationsForBranch(branch);
+         orcsApi.getQueryFactory().applicabilityQuery().getConfigurationsForBranch(branch).stream().map(
+            a -> a.getToken()).collect(Collectors.toList());
       if (Strings.isValid(filter)) {
          configurationsForBranch.removeIf(art -> art.getName().matches(filter));
       }
@@ -73,7 +76,8 @@ public class ApplicabilityFeatureMatrixGenerator {
       headingsList.add("Feature");
       headingsList.add("Description");
       List<ArtifactToken> configurationsForBranch =
-         orcsApi.getQueryFactory().applicabilityQuery().getConfigurationGroupsForBranch(branch);
+         orcsApi.getQueryFactory().applicabilityQuery().getConfigurationGroupsForBranch(branch).stream().map(
+            a -> a.getToken()).collect(Collectors.toList());
       if (Strings.isValid(filter)) {
          configurationsForBranch.removeIf(art -> art.getName().matches(filter));
       }
@@ -87,7 +91,8 @@ public class ApplicabilityFeatureMatrixGenerator {
       writer.endSheet();
    }
 
-   private void printMatrix(ISheetWriter writer, BranchId branch, List<ArtifactToken> configurationsForBranch) throws IOException {
+   private void printMatrix(ISheetWriter writer, BranchId branch, List<ArtifactToken> configurationsForBranch)
+      throws IOException {
       List<FeatureDefinition> featureDefinitionData =
          orcsApi.getQueryFactory().applicabilityQuery().getFeatureDefinitionData(branch);
 
