@@ -47,6 +47,7 @@ describe('SubMessageTableComponent', () => {
 	let scheduler: TestScheduler;
 	let expectedData = [
 		{
+			id: '',
 			name: 'Name',
 			description:
 				'description adslkfj;asjfadkljf;lajdfla;jsdfdlkasjf;lkajslfjad;ljfkladjsf;',
@@ -54,6 +55,7 @@ describe('SubMessageTableComponent', () => {
 			interfaceMessageRate: '1Hz',
 		},
 		{
+			id: '',
 			name: 'Name2',
 			description: 'description2',
 			interfaceSubMessageNumber: '1',

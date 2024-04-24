@@ -329,6 +329,21 @@ export class ReportsService {
 		)
 	);
 
+	private _unreferencedReportRoute = combineLatest([
+		this.ui.id,
+		this.ui.type,
+	]).pipe(
+		switchMap(([branchId, branchType]) =>
+			of(
+				'/ple/messaging/reports/' +
+					branchType +
+					'/' +
+					branchId +
+					'/unreferenced'
+			)
+		)
+	);
+
 	get nodeTraceReportRequirements() {
 		return this._nodeTraceReportRequirements;
 	}
@@ -367,6 +382,10 @@ export class ReportsService {
 
 	get nodeTraceReportRoute() {
 		return this._nodeTraceReportRoute;
+	}
+
+	get unreferencedReportRoute() {
+		return this._unreferencedReportRoute;
 	}
 
 	get branchId() {

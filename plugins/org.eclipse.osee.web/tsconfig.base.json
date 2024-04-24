@@ -67,6 +67,9 @@
 			"@osee/messaging/reports/trace-report": [
 				"src/app/ple/messaging/reports/lib/trace-report"
 			],
+			"@osee/messaging/reports/unreferenced-report": [
+				"src/app/ple/messaging/reports/lib/unreferenced-report"
+			],
 			"@osee/messaging/structure-tables": [
 				"src/app/ple/messaging/structure-tables/lib"
 			],

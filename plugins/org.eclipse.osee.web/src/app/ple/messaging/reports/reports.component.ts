@@ -119,10 +119,12 @@ export class ReportsComponent implements OnInit {
 	webReportRoutes = combineLatest([
 		this.reportsService.diffReportRoute,
 		this.reportsService.nodeTraceReportRoute,
+		this.reportsService.unreferencedReportRoute,
 	]).pipe(
-		map(([diffRoute, nodeTraceRoute]) => ({
+		map(([diffRoute, nodeTraceRoute, unreferencedRoute]) => ({
 			diffRoute: diffRoute,
 			nodeTraceRoute: nodeTraceRoute,
+			unreferencedRoute: unreferencedRoute,
 		}))
 	);
 

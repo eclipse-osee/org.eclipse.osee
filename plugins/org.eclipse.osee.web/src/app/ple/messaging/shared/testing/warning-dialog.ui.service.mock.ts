@@ -13,6 +13,7 @@
 import { of } from 'rxjs';
 import { WarningDialogService } from '../services/ui/warning-dialog.service';
 import type {
+	PlatformType,
 	element,
 	message,
 	structure,
@@ -37,7 +38,10 @@ export const warningDialogServiceMock: Partial<WarningDialogService> = {
 	openEnumsDialogs(enums, enumSets, platformTypes) {
 		return of([]);
 	},
-	openPlatformTypeDialog(tx) {
+	openPlatformTypeDialog(body: Partial<PlatformType>) {
+		return of(body);
+	},
+	openPlatformTypeDialogWithManifest(tx) {
 		return of(tx);
 	},
 };

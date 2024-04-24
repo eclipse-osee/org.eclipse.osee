@@ -139,7 +139,7 @@ export class EditElementFieldComponent<U extends keyof element>
 		skip(1), //note: we might want to move the skip above the debounceTime to make things a bit faster in the future
 		switchMap((unit) =>
 			this.warningService
-				.openPlatformTypeDialog({
+				.openPlatformTypeDialogWithManifest({
 					createArtifacts: [],
 					modifyArtifacts: [{ id: this.platformType.id }],
 					deleteRelations: [],

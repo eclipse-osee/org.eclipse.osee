@@ -59,7 +59,7 @@ export class PlatformTypeActionsService {
 			filter((val) => val !== undefined),
 			switchMap(({ manifest, mode }) =>
 				this.warningDialogService
-					.openPlatformTypeDialog(manifest)
+					.openPlatformTypeDialogWithManifest(manifest)
 					.pipe(
 						switchMap((v) =>
 							iif(
@@ -80,7 +80,7 @@ export class PlatformTypeActionsService {
 		deleteRelations: modifyRelation[];
 	}) {
 		return this.warningDialogService
-			.openPlatformTypeDialog(manifest)
+			.openPlatformTypeDialogWithManifest(manifest)
 			.pipe(
 				switchMap((body) => this.typesService.partialUpdate(manifest))
 			);

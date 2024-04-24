@@ -30,8 +30,12 @@ const routes: Routes = [
 	},
 	{
 		path: ':branchType/:branchId/traceReport',
+		loadChildren: () => import('@osee/messaging/reports/trace-report'),
+	},
+	{
+		path: ':branchType/:branchId/unreferenced',
 		loadChildren: () =>
-			import('src/app/ple/messaging/reports/lib/trace-report'),
+			import('@osee/messaging/reports/unreferenced-report'),
 	},
 ];
 
