@@ -1,0 +1,37 @@
+<div class="tw-flex tw-place-content-center">
+	<h1
+		class="tw-text-4xl tw-font-extrabold tw-leading-none tw-tracking-tight tw-text-gray-900 dark:tw-text-white md:tw-text-5xl lg:tw-text-6xl">
+		Transfer File Generation And Current Export Data
+	</h1>
+</div>
+
+<osee-generate-export />
+
+<div class="tw-flex tw-place-content-center">
+	<mat-form-field subscriptSizing="dynamic">
+		<mat-label>Enter Source Id</mat-label>
+		<input
+			type="text"
+			matInput
+			[(ngModel)]="exportFilter"
+			name="exportFilter"
+			placeholder="Filter Export by Source Id..." /><mat-icon
+			matPrefix></mat-icon>
+	</mat-form-field>
+	<button
+		type="submit"
+		class="tw-m-2 tw-max-w-sm tw-space-x-1 tw-rounded-full tw-bg-blue-700 tw-px-5 tw-py-2.5 tw-text-center tw-text-sm tw-font-medium tw-text-white hover:tw-bg-blue-800 focus:tw-outline-none focus:tw-ring-4 focus:tw-ring-blue-300 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 dark:focus:tw-ring-blue-800"
+		mat-raised-button
+		(click)="onSearch()">
+		Filter
+	</button>
+	<button
+		class="tw-m-2 tw-max-w-sm tw-space-x-1 tw-rounded-full tw-bg-blue-700 tw-px-5 tw-py-2.5 tw-text-center tw-text-sm tw-font-medium tw-text-white hover:tw-bg-blue-800 focus:tw-outline-none focus:tw-ring-4 focus:tw-ring-blue-300 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 dark:focus:tw-ring-blue-800"
+		mat-raised-button
+		(click)="clear()">
+		Clear
+	</button>
+</div>
+<div class="tw-place-content-center">
+	<osee-export-table [exportedData]="exportedData()" />
+</div>
