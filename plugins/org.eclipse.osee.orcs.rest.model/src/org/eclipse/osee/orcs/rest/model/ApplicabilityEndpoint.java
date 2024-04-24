@@ -340,11 +340,6 @@ public interface ApplicabilityEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    XResultData isAccess();
 
-   @GET
-   @Path("featureMatrix")
-   @Produces(MediaType.APPLICATION_XML)
-   public Response getFeatureMatrixExcel(@PathParam("branch") BranchId branchId, @QueryParam("filter") String filter);
-
    @POST
    @Path("blockVisibility")
    @Consumes(MediaType.APPLICATION_JSON)

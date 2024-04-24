@@ -618,43 +618,15 @@ export class PlConfigCurrentBranchService {
 		groups: configGroup[]
 	) {
 		return this.editConfiguration(featureId, body).pipe(
-			switchMap((val) =>
-				iif(
-					() => val.success,
-					from(groups).pipe(
-						mergeMap((elem) =>
-							this.synchronizeGroup(elem.id).pipe()
-						)
-					),
-					of() // @todo replace with a false response
-				)
-			),
-			take(groups.length > 0 ? groups.length : 1),
-			reduce((acc, curr) => {
-				if (curr.results.length > 0) {
-					acc.push(curr.results[0]);
+			tap((response) => {
+				if (response.success) {
+					this.uiStateService.updateReqConfig = true;
+					this.uiStateService.error = '';
 				}
-				return acc;
-			}, [] as string[]),
-			switchMap((val) =>
-				iif(
-					() => val.length > 0,
-					of(val).pipe(
-						tap((val) => {
-							val.forEach((el) => {
-								this.uiStateService.error = el;
-							});
-						})
-					),
-					of()
-				)
-			),
-			tap(() => {
-				this.uiStateService.updateReqConfig = true;
 			})
 		);
 	}
-	public editConfigurationDetailsBase(body: editConfiguration) {
+	public editConfigurationDetails(body: editConfiguration) {
 		return this.uiStateService.branchId.pipe(
 			filter((val) => val !== ''),
 			switchMap((val) =>
@@ -669,57 +641,7 @@ export class PlConfigCurrentBranchService {
 			)
 		);
 	}
-	//modifies configuration
-	public editConfigurationDetails(body: editConfiguration) {
-		return this.editConfigurationDetailsBase(body).pipe(
-			switchMap((val) =>
-				iif(
-					() =>
-						val.success &&
-						typeof body?.configurationGroup !== 'undefined' &&
-						body.configurationGroup !== undefined &&
-						body.configurationGroup.length !== 0,
-					from(body.configurationGroup as string[]).pipe(
-						concatMap((group) => this.synchronizeGroup(group)),
-						take(
-							(body.configurationGroup !== undefined &&
-								body.configurationGroup.length) ||
-								0
-						),
-						reduce(
-							(acc, curr) => {
-								if (!curr.success) {
-									acc = {
-										success: false,
-										results: [
-											...acc.results,
-											...curr.results,
-										],
-									};
-								}
-								return acc;
-							},
-							{ success: true, results: [] } as {
-								success: boolean;
-								results: string[];
-							}
-						),
-						tap((response) => {
-							if (response.success) {
-								this.uiStateService.updateReqConfig = true;
-								this.uiStateService.error = '';
-							} else {
-								this.uiStateService.error =
-									response.results.toString();
-							}
-						})
-					),
-					of() // @todo replace with a false response
-				)
-			)
-		);
-	}
-	public addConfigurationBase(body: configuration) {
+	public addConfiguration(body: configuration) {
 		return this.uiStateService.branchId.pipe(
 			filter((val) => val !== ''),
 			switchMap((branchId) =>
@@ -734,63 +656,7 @@ export class PlConfigCurrentBranchService {
 			)
 		);
 	}
-
-	//adds configuration
-	public addConfiguration(body: configuration) {
-		return this.addConfigurationBase(body).pipe(
-			tap((b) => {
-				if (b.success) {
-					this.uiStateService.updateReqConfig = true;
-					this.uiStateService.error = '';
-				}
-			}),
-			switchMap((val) =>
-				iif(
-					() =>
-						val.success &&
-						body.configurationGroup !== undefined &&
-						body.configurationGroup.length !== 0,
-					from(body.configurationGroup as string[]).pipe(
-						concatMap((group) => this.synchronizeGroup(group)),
-						take(
-							(body.configurationGroup !== undefined &&
-								body.configurationGroup.length) ||
-								0
-						),
-						reduce(
-							(acc, curr) => {
-								if (!curr.success) {
-									acc = {
-										success: false,
-										results: [
-											...acc.results,
-											...curr.results,
-										],
-									};
-								}
-								return acc;
-							},
-							{ success: true, results: [] } as {
-								success: boolean;
-								results: string[];
-							}
-						),
-						tap((response) => {
-							if (response.success) {
-								this.uiStateService.updateReqConfig = true;
-								this.uiStateService.error = '';
-							} else {
-								this.uiStateService.error =
-									response.results.toString();
-							}
-						})
-					),
-					of() // @todo replace with a false response
-				)
-			)
-		);
-	}
-	public deleteConfigurationBase(configId: string) {
+	public deleteConfiguration(configId: string) {
 		return this.uiStateService.branchId.pipe(
 			filter((val) => val !== ''),
 			switchMap((val) =>
@@ -801,78 +667,6 @@ export class PlConfigCurrentBranchService {
 							this.uiStateService.error = '';
 						} else {
 							this.uiStateService.error = results.results[0];
-						}
-					})
-				)
-			)
-		);
-	}
-	/**
-	 * @todo fix
-	 * @param configId
-	 * @returns
-	 */
-	public deleteConfiguration(configId: string) {
-		return this.deleteConfigurationBase(configId).pipe(
-			switchMap((val) =>
-				iif(
-					() => val.success,
-					this._groups.pipe(
-						take(1),
-						mergeMap((x) =>
-							from(x).pipe(
-								mergeMap((y) =>
-									zip(
-										this.synchronizeGroup(y).pipe(
-											tap((a) => {
-												if (a.success) {
-													this.uiStateService.updateReqConfig =
-														true;
-													this.uiStateService.error =
-														'';
-												} else {
-													this.uiStateService.error =
-														a.results[0];
-												}
-											})
-										)
-									).pipe(
-										tap((responses) => {
-											let error: string = '';
-											responses.forEach((response) => {
-												if (response.success) {
-													this.uiStateService.updateReqConfig =
-														true;
-													this.uiStateService.error =
-														'';
-												} else {
-													response.results.forEach(
-														(result) => {
-															error += result;
-														}
-													);
-												}
-											});
-											this.uiStateService.error = error;
-										})
-									)
-								)
-							)
-						)
-					),
-					of() // @todo replace with a false response
-				)
-			)
-		);
-	}
-	public synchronizeGroup(configId: string) {
-		return this.uiStateService.branchId.pipe(
-			filter((val) => val !== ''),
-			switchMap((branchId) =>
-				this.branchService.synchronizeGroup(branchId, configId).pipe(
-					tap((val) => {
-						if (val.results.length > 0) {
-							this.uiStateService.error = val.results[0];
 						}
 					})
 				)

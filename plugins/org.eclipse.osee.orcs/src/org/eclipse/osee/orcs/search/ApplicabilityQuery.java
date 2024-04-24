@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -59,7 +60,7 @@ public interface ApplicabilityQuery {
 
    Map<String, List<String>> getNamedViewApplicabilityMap(BranchId branch, ArtifactId viewId);
 
-   List<ArtifactToken> getViewsForBranch(BranchId branch);
+   List<ArtifactReadable> getViewsForBranch(BranchId branch);
 
    ArtifactToken getViewByName(BranchId branch, String viewName);
 
@@ -87,11 +88,11 @@ public interface ApplicabilityQuery {
 
    boolean applicabilityExistsOnBranchView(BranchId branch, ArtifactId viewId, String applicability);
 
-   List<ArtifactToken> getConfigurationGroupsForBranch(BranchId branch);
+   List<ArtifactReadable> getConfigurationGroupsForBranch(BranchId branch);
 
    String getConfigMatrix(BranchId branch, String matrixtype, String filter);
 
-   List<ArtifactToken> getConfigurationsForBranch(BranchId branch);
+   List<ArtifactReadable> getConfigurationsForBranch(BranchId branch);
 
    List<ApplicabilityUseResultToken> getApplicabilityUsage(BranchId branch, String applic, List<ArtifactTypeToken> arts,
       List<AttributeTypeToken> atts);

@@ -94,50 +94,6 @@ export class ConfigurationGroupDropdownComponent {
 			.pipe(take(1))
 			.subscribe((response) => {});
 	}
-	synchronizeGroups(groups: cfgGroup[]) {
-		of(undefined)
-			.pipe(
-				switchMap((val) =>
-					from(groups).pipe(
-						mergeMap((group) =>
-							this.currentBranchService
-								.synchronizeGroup(group.id)
-								.pipe(
-									take(1),
-									map((resp) => resp.success)
-								)
-						)
-					)
-				),
-				scan((acc, curr) => {
-					if (!curr) {
-						return false;
-					} else {
-						return acc;
-					}
-				}, true),
-				switchMap((result) =>
-					iif(
-						() => result,
-						of().pipe(
-							tap(() => {
-								this.uiStateService.updateReqConfig = true;
-							})
-						),
-						throwError(() => {
-							this.uiStateService.updateReqConfig = true;
-							this.uiStateService.error =
-								'Error synchronizing Configuration Groups.';
-						})
-					)
-				)
-			)
-			.subscribe(
-				() => {},
-				() => {}
-			);
-		//silence the error by subscribing to error notification
-	}
 	toggleMenu(menuTrigger: MatMenuTrigger) {
 		menuTrigger.toggleMenu();
 	}

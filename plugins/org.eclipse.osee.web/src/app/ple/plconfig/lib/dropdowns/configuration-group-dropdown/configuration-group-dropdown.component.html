@@ -30,25 +30,14 @@
 			data-cy="add-config-group-btn">
 			<mat-icon color="success">add_box</mat-icon>Add Configuration Group
 		</button>
-		@if (cfgGroups | async; as groups) {
-			<div>
-				<button
-					mat-menu-item
-					(click)="synchronizeGroups(groups)"
-					data-cy="sync-config-group-btn">
-					<mat-icon color="primary">sync</mat-icon>Synchronize Groups
-				</button>
-			</div>
-		}
-		@if ((editable | async) === true) {
-			<button
-				mat-menu-item
-				[matMenuTriggerFor]="deleteConfigGroupMenu"
-				data-cy="delete-config-group-btn">
-				<mat-icon color="warn">delete_forever</mat-icon>Delete
-				Configuration Group
-			</button>
-		}
+		<button
+			mat-menu-item
+			[matMenuTriggerFor]="deleteConfigGroupMenu"
+			*ngIf="(editable | async) === true"
+			data-cy="delete-config-group-btn">
+			<mat-icon color="warn">delete_forever</mat-icon>Delete Configuration
+			Group
+		</button>
 	</ng-template>
 </mat-menu>
 <mat-menu

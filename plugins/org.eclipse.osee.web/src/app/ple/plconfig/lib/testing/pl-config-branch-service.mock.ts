@@ -79,12 +79,6 @@ export const PlConfigBranchServiceMock: Partial<PlConfigBranchService> = {
 	): Observable<response> {
 		throw new Error('Function not implemented.');
 	},
-	synchronizeGroup: function (
-		branchId: string | number | undefined,
-		configId: string
-	): Observable<response> {
-		throw new Error('Function not implemented.');
-	},
 	getCfgGroups: function (
 		branchId: string | number | undefined
 	): Observable<cfgGroup[]> {

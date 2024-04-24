@@ -14,7 +14,6 @@
 package org.eclipse.osee.orcs.core.internal.search;
 
 import static org.eclipse.osee.framework.core.enums.CoreTupleTypes.ViewApplicability;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,7 +29,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
-
 import org.eclipse.osee.framework.core.applicability.ApplicabilityUseResultToken;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
@@ -309,12 +307,12 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    }
 
    @Override
-   public List<ArtifactToken> getViewsForBranch(BranchId branch) {
-      List<ArtifactToken> views =
-         queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).asArtifactTokens();
-      List<ArtifactToken> cfgGrps =
+   public List<ArtifactReadable> getViewsForBranch(BranchId branch) {
+      List<ArtifactReadable> views =
+         queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).asArtifacts();
+      List<ArtifactReadable> cfgGrps =
          queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andRelatedTo(
-            CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder).asArtifactTokens();
+            CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder).asArtifacts();
       if (!cfgGrps.isEmpty()) {
          views.addAll(cfgGrps);
       }
@@ -322,15 +320,15 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    }
 
    @Override
-   public List<ArtifactToken> getConfigurationsForBranch(BranchId branch) {
-      return queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).asArtifactTokens();
+   public List<ArtifactReadable> getConfigurationsForBranch(BranchId branch) {
+      return queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).asArtifacts();
    }
 
    @Override
-   public List<ArtifactToken> getConfigurationGroupsForBranch(BranchId branch) {
-      List<ArtifactToken> views =
+   public List<ArtifactReadable> getConfigurationGroupsForBranch(BranchId branch) {
+      List<ArtifactReadable> views =
          queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andRelatedTo(
-            CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder).asArtifactTokens();
+            CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder).asArtifacts();
 
       return views;
    }
@@ -412,32 +410,32 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    public String getConfigMatrix(BranchId branch, String matrixType, String filter) {
       StringBuilder html = getHtmlStart();
 
-      List<ArtifactToken> branchViews = new ArrayList<ArtifactToken>();
+      List<ArtifactReadable> branchViews = new ArrayList<ArtifactReadable>();
 
       if (matrixType.equals("configs")) {
          html.append(String.format("<h3>Configurations Feature Matrix for branch: %s</h3>",
             branchQuery.andId(branch).getResults().getExactlyOne().getName()));
          branchViews = this.getConfigurationsForBranch(branch);
-         printTable(html, branchViews, branch, filter);
+         printTable(html, branchViews.stream().map(a -> a.getToken()).collect(Collectors.toList()), branch, filter);
       } else if (matrixType.equals("groups")) {
          html.append(String.format("<h3>Configuration Groups Feature Matrix for branch: %s</h3>",
             branchQuery.andId(branch).getResults().getExactlyOne().getName()));
          branchViews = this.getConfigurationGroupsForBranch(branch);
-         printTable(html, branchViews, branch, filter);
+         printTable(html, branchViews.stream().map(a -> a.getToken()).collect(Collectors.toList()), branch, filter);
       } else if (matrixType.equals("all")) {
          html.append(String.format("<h3>Configurations and Groups Feature Matrix for branch: %s</h3>",
             branchQuery.andId(branch).getResults().getExactlyOne().getName()));
          branchViews = this.getViewsForBranch(branch);
-         printTable(html, branchViews, branch, filter);
+         printTable(html, branchViews.stream().map(a -> a.getToken()).collect(Collectors.toList()), branch, filter);
       } else {
          html.append(String.format("<h3>Configuration Groups Feature Matrix for branch: %s</h3>",
             branchQuery.andId(branch).getResults().getExactlyOne().getName()));
          branchViews = this.getConfigurationGroupsForBranch(branch);
-         printTable(html, branchViews, branch, filter);
+         printTable(html, branchViews.stream().map(a -> a.getToken()).collect(Collectors.toList()), branch, filter);
          html.append(String.format("<h3>Configurations Feature Matrix for branch: %s</h3>",
             branchQuery.andId(branch).getResults().getExactlyOne().getName()));
          branchViews = this.getConfigurationsForBranch(branch);
-         printTable(html, branchViews, branch, filter);
+         printTable(html, branchViews.stream().map(a -> a.getToken()).collect(Collectors.toList()), branch, filter);
       }
 
       html.append("</body></html>");
@@ -591,9 +589,8 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
       artSet.addAll(orcsApi.getQueryFactory().fromBranch(branch, appToken).includeApplicabilityTokens().asArtifacts());
       for (String str : searchStrings) {
 
-         artSet.addAll(orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andIsOfType(arts).and(attrTypes, str,
-            QueryOption.TOKEN_COUNT__MATCH, 
-            QueryOption.TOKEN_MATCH_ORDER__MATCH).asArtifacts());
+         artSet.addAll(orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andIsOfType(arts).and(
+            attrTypes, str, QueryOption.TOKEN_COUNT__MATCH, QueryOption.TOKEN_MATCH_ORDER__MATCH).asArtifacts());
       }
       result.add(new ApplicabilityUseResultToken(appToken, artSet));
    }

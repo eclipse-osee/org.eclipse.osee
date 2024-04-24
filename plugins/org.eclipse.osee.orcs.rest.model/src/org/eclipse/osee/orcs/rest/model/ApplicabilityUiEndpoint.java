@@ -14,13 +14,16 @@
 package org.eclipse.osee.orcs.rest.model;
 
 import java.util.List;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 
 /**
@@ -54,11 +57,18 @@ public interface ApplicabilityUiEndpoint {
    @GET
    @Path("branch/{branch}")
    @Produces({MediaType.APPLICATION_JSON})
-   public ApplicabilityBranchConfig getConfig(@PathParam("branch") BranchId branch);
+   public ApplicabilityBranchConfig getConfig(@PathParam("branch") BranchId branch,
+      @DefaultValue("-1") @QueryParam("config") ArtifactId config);
 
    @GET
    @Path("branch/{branch}/all")
    @Produces({MediaType.APPLICATION_JSON})
-   public ApplicabilityBranchConfig getConfigWithCompoundApplics(@PathParam("branch") BranchId branch);
+   public ApplicabilityBranchConfig getConfigWithCompoundApplics(@PathParam("branch") BranchId branch,
+      @DefaultValue("-1") @QueryParam("config") ArtifactId config);
+
+   @GET
+   @Path("ple/access")
+   @Produces({MediaType.TEXT_PLAIN})
+   public String getPleAccess();
 
 }

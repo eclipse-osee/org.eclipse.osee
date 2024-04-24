@@ -226,19 +226,6 @@ export class PlConfigBranchService {
 			body
 		);
 	}
-	public synchronizeGroup(
-		branchId: string | number | undefined,
-		configId: string
-	): Observable<response> {
-		return this.http.post<response>(
-			apiURL +
-				'/orcs/branch/' +
-				branchId +
-				'/applic/cfggroup/sync/' +
-				configId,
-			null
-		);
-	}
 	public getCfgGroups(
 		branchId: string | number | undefined
 	): Observable<cfgGroup[]> {

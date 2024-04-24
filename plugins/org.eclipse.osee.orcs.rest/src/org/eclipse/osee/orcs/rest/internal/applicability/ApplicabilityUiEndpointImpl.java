@@ -21,10 +21,10 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.OrcsApplicability;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityUiEndpoint;
 
 /**
@@ -35,10 +35,10 @@ public class ApplicabilityUiEndpointImpl implements ApplicabilityUiEndpoint {
 
    @Context
    private UriInfo uriInfo;
-   private final OrcsApplicability ops;
+   private final OrcsApi orcsApi;
 
    public ApplicabilityUiEndpointImpl(OrcsApi orcsApi) {
-      ops = orcsApi.getApplicabilityOps();
+      this.orcsApi = orcsApi;
    }
 
    @Override
@@ -67,22 +67,36 @@ public class ApplicabilityUiEndpointImpl implements ApplicabilityUiEndpoint {
 
    @Override
    public List<BranchId> getApplicabilityBranches() {
-      return ops.getApplicabilityBranches();
+      return orcsApi.getApplicabilityOps().getApplicabilityBranches();
    }
 
    @Override
    public List<BranchId> getApplicabilityBranchesByType(String branchQueryType) {
-      return ops.getApplicabilityBranchesByType(branchQueryType);
+      return orcsApi.getApplicabilityOps().getApplicabilityBranchesByType(branchQueryType);
    }
 
    @Override
-   public ApplicabilityBranchConfig getConfig(BranchId branch) {
-      return ops.getConfig(branch);
+   public ApplicabilityBranchConfig getConfig(BranchId branch, ArtifactId config) {
+      String pleAccess = getPleAccess();
+      boolean isSingleAccess = pleAccess.isEmpty() ? false : pleAccess.equals("SINGLE") ? true : false;
+      if (config.isInvalid() && !pleAccess.isEmpty() && isSingleAccess) {
+         return null;
+      }
+      return orcsApi.getApplicabilityOps().getConfig(branch, config);
    }
 
    @Override
-   public ApplicabilityBranchConfig getConfigWithCompoundApplics(BranchId branch) {
-      return ops.getConfigWithCompoundApplics(branch);
+   public ApplicabilityBranchConfig getConfigWithCompoundApplics(BranchId branch, ArtifactId config) {
+      String pleAccess = getPleAccess();
+      boolean isSingleAccess = pleAccess.isEmpty() ? false : pleAccess.equals("SINGLE") ? true : false;
+      if (config.isInvalid() && !pleAccess.isEmpty() && isSingleAccess) {
+         return null;
+      }
+      return orcsApi.getApplicabilityOps().getConfigWithCompoundApplics(branch, config);
+   }
+
+   public String getPleAccess() {
+      return orcsApi.getSystemProperties().getValue("ple.access");
    }
 
 }

@@ -23,12 +23,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityUseResultToken;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.applicability.ProductTypeDefinition;
@@ -61,7 +60,6 @@ import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsApplicability;
-import org.eclipse.osee.orcs.rest.internal.writer.ApplicabilityFeatureMatrixStreamingOutput;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.osee.orcs.search.ApplicabilityQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -140,12 +138,13 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
 
    @Override
    public List<ArtifactToken> getViews() {
-      return applicabilityQuery.getViewsForBranch(branch);
+      return applicabilityQuery.getViewsForBranch(branch).stream().map(a -> a.getToken()).collect(Collectors.toList());
    }
 
    @Override
    public List<ArtifactToken> getCfgGroup() {
-      return applicabilityQuery.getConfigurationGroupsForBranch(branch);
+      return applicabilityQuery.getConfigurationGroupsForBranch(branch).stream().map(a -> a.getToken()).collect(
+         Collectors.toList());
    }
 
    @Override
@@ -261,8 +260,14 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       if (results.isErrors()) {
          return results;
       }
-
-      return ops.removeApplicabilityFromView(branch, viewId, applicability);
+      results = ops.removeApplicabilityFromView(branch, viewId, applicability);
+      for (ArtifactReadable grp : orcsApi.getQueryFactory().applicabilityQuery().getConfigurationGroupsForBranch(
+         branch).stream().filter(
+            a -> a.getRelated(CoreRelationTypes.PlConfigurationGroup_BranchView).getList().stream().anyMatch(
+               b -> b.getId() == viewId.getId())).collect(Collectors.toList())) {
+         ops.syncConfigGroup(branch, grp.getIdString(), results);
+      }
+      return results;
    }
 
    @Override
@@ -436,14 +441,6 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
          return access;
       }
       return ops.syncConfigGroup(branch);
-   }
-
-   @Override
-   public Response getFeatureMatrixExcel(BranchId branchId, String filter) {
-      StreamingOutput streamingOutput = new ApplicabilityFeatureMatrixStreamingOutput(orcsApi, branchId, filter);
-      ResponseBuilder builder = Response.ok(streamingOutput);
-      builder.header("Content-Disposition", "attachment; filename=" + "FeatureMatrix.xml");
-      return builder.build();
    }
 
    @Override
