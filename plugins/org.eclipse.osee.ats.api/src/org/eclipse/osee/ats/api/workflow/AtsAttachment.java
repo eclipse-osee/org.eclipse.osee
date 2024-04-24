@@ -19,6 +19,7 @@ public class AtsAttachment {
    private String name;
    private BranchId branch;
    private String location;
+   private String type;
 
    public AtsAttachment() {
       // for jax-rs
@@ -52,6 +53,14 @@ public class AtsAttachment {
 
    public void setBranch(BranchId branch) {
       this.branch = branch;
+   }
+
+   public String getType() {
+      return type;
+   }
+
+   public void setType(String type) {
+      this.type = type;
    }
 
    @Override
