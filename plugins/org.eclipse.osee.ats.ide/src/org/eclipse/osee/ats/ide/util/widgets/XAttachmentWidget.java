@@ -74,7 +74,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 public abstract class XAttachmentWidget extends XLabelValue implements ArtifactWidget {
 
    private final String configKey;
-   private final HashMap<String, BranchId> nameLocationBranchMap = new HashMap<>();
+   protected final HashMap<String, BranchId> nameLocationBranchMap = new HashMap<>();
    private final static String SELECT = "Select";
 
    private Hyperlink readHyperlink;
