@@ -39,6 +39,10 @@ export const routes: Routes = [
 		loadChildren: () => import('./ple/ple.routes'),
 	},
 	{
+		path: 'mnc',
+		loadChildren: () => import('./mnc/mnc.routes'),
+	},
+	{
 		path: 'training',
 		loadChildren: () => import('./training/training.routes'),
 	},

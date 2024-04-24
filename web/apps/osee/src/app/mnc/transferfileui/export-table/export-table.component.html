@@ -1,0 +1,78 @@
+<div class="tw-flex tw-place-content-center">
+	<table
+		mat-table
+		class="mat-elevation-z8"
+		[dataSource]="dataSource"
+		matSort>
+		<caption
+			class="tw-items-center tw-py-3 tw-text-2xl tw-font-extrabold tw-leading-none tw-tracking-tight tw-text-gray-900 dark:tw-text-white">
+			Exported Data Info
+		</caption>
+		<!-- Database Source Id -->
+		<ng-container matColumnDef="source">
+			<th
+				mat-header-cell
+				*matHeaderCellDef
+				class="tw-px-4 tw-text-sm tw-font-bold tw-text-primary-600">
+				Source Id
+			</th>
+			<td
+				mat-cell
+				class="tw-px-4"
+				*matCellDef="let element">
+				{{ element.source }}
+			</td>
+		</ng-container>
+		<!-- Export Generation Date -->
+		<ng-container matColumnDef="date">
+			<th
+				mat-header-cell
+				*matHeaderCellDef
+				class="tw-px-4 tw-text-sm tw-font-bold tw-text-primary-600">
+				Date Created
+			</th>
+			<td
+				mat-cell
+				class="tw-px-4"
+				*matCellDef="let element">
+				{{ element.date }}
+			</td>
+		</ng-container>
+		<!-- Download Export -->
+		<ng-container matColumnDef="file">
+			<th
+				mat-header-cell
+				*matHeaderCellDef
+				class="tw-px-4 tw-text-sm tw-font-bold tw-text-primary-600">
+				Download Export
+			</th>
+			<td
+				mat-cell
+				class="tw-px-4"
+				*matCellDef="let element">
+				<button
+					name="download"
+					class="tw-my-2 tw-space-x-1 tw-rounded-full tw-bg-blue-700 tw-px-5 tw-py-2.5 tw-text-center tw-text-sm tw-font-medium tw-text-white hover:tw-bg-blue-800 focus:tw-outline-none focus:tw-ring-4 focus:tw-ring-blue-300 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 dark:focus:tw-ring-blue-800"
+					(click)="download(element.file)">
+					Download
+				</button>
+			</td>
+		</ng-container>
+		<tr
+			mat-header-row
+			*matHeaderRowDef="displayedColumns"></tr>
+		<ng-container *ngIf="exportedData().length !== 0">
+			<tr
+				mat-row
+				*matRowDef="let row; columns: displayedColumns"></tr>
+		</ng-container>
+	</table>
+</div>
+<div
+	*ngIf="exportedData().length === 0"
+	class="tw-flex tw-place-content-center">
+	<p>
+		No data available for the table, please initialize a transfer and/or
+		generate a new export to utilize this page.
+	</p>
+</div>
