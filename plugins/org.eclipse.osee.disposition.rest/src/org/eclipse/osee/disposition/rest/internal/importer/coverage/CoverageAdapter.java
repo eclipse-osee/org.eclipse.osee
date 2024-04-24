@@ -104,10 +104,52 @@ public class CoverageAdapter {
          }
 
          Discrepancy matchedDiscrepancy = textToDiscrepancyMap.get(textFromCoverage);
-         if (!resolutionFromCoverage.equalsIgnoreCase("Test_Unit") && !resolutionFromCoverage.equalsIgnoreCase(
-            "Exception_Handling") && matchedDiscrepancy != null) {
+         if (!resolutionFromCoverage.equalsIgnoreCase(
+            DispoStrings.Test_Unit_Resolution) && !resolutionFromCoverage.equalsIgnoreCase(
+               DispoStrings.Exception_Handling_Resolution) && matchedDiscrepancy != null) {
             madeChange = true;
-            boolean isReplace = false;
+            DispoAnnotationData annotationToUpdate = findAnnotation(matchedDiscrepancy.getText(), annotations);
+            if (annotationToUpdate == DispoAnnotationData.SENTINEL) {
+               annotationToUpdate = new DispoAnnotationData();
+               annotationToUpdate.setIndex(annotations.size());
+               annotationToUpdate.setLocationRefs(lineNumberFromCoverage);
+               annotationToUpdate.setCustomerNotes(textFromCoverage);
+            }
+
+            if (!annotationToUpdate.getResolutionType().equals(
+               DispoStrings.Test_Unit_Resolution) && !annotationToUpdate.getResolutionType().equals(
+                  DispoStrings.Exception_Handling_Resolution)) {
+
+               annotationToUpdate.setIsDefault(false);
+
+               annotationToUpdate.setLastResolutionType(annotationToUpdate.getResolutionType());
+               annotationToUpdate.setLastResolution(annotationToUpdate.getResolution());
+               annotationToUpdate.setLastManualResolutionType(annotationToUpdate.getResolutionType());
+               annotationToUpdate.setLastManualResolution(annotationToUpdate.getResolution());
+
+               annotationToUpdate.setResolutionType(resolutionFromCoverage);
+               annotationToUpdate.setIsResolutionValid(true);
+               annotationToUpdate.setResolution(rationale);
+               annotationToUpdate.setDeveloperNotes("");
+               dispoConnector.connectAnnotation(annotationToUpdate, dest.getDiscrepanciesList());
+
+               annotations.add(annotationToUpdate.getIndex(), annotationToUpdate);
+            } else {
+               annotationToUpdate.setLastResolutionType(resolutionFromCoverage);
+               annotationToUpdate.setLastResolution(rationale);
+               annotationToUpdate.setLastManualResolutionType(resolutionFromCoverage);
+               annotationToUpdate.setLastManualResolution(rationale);
+
+               dispoConnector.connectAnnotation(annotationToUpdate, dest.getDiscrepanciesList());
+
+               annotations.add(annotationToUpdate.getIndex(), annotationToUpdate);
+            }
+
+         } else if (matchedDiscrepancy == null) {
+            report.addEntry(source.getName(),
+               String.format("Could not find matching Discrepancy for [%s]", covearageItem), WARNING);
+         } else {
+            madeChange = true;
             DispoAnnotationData annotationToUpdate = findAnnotation(matchedDiscrepancy.getText(), annotations);
             if (annotationToUpdate == null) {
                annotationToUpdate = new DispoAnnotationData();
@@ -121,19 +163,15 @@ public class CoverageAdapter {
                   DispoStrings.Exception_Handling_Resolution)) {
 
                annotationToUpdate.setIsDefault(false);
-               annotationToUpdate.setResolutionType(resolutionFromCoverage);
-               annotationToUpdate.setIsResolutionValid(true);
-               annotationToUpdate.setResolution(rationale);
-               annotationToUpdate.setLastResolution("N/A");
-               annotationToUpdate.setDeveloperNotes("");
+
+               annotationToUpdate.setLastResolutionType(resolutionFromCoverage);
+               annotationToUpdate.setLastResolution(rationale);
+
                dispoConnector.connectAnnotation(annotationToUpdate, dest.getDiscrepanciesList());
 
                annotations.add(annotationToUpdate.getIndex(), annotationToUpdate);
-
             }
-         } else if (matchedDiscrepancy == null) {
-            report.addEntry(source.getName(),
-               String.format("Could not find matching Discrepancy for [%s]", covearageItem), WARNING);
+
          }
       }
 
@@ -150,7 +188,7 @@ public class CoverageAdapter {
             return annotation;
          }
       }
-      return null;
+      return DispoAnnotationData.SENTINEL;
    }
 
    private Map<String, Discrepancy> getTextToDiscrepancyMap(DispoItem dest) {

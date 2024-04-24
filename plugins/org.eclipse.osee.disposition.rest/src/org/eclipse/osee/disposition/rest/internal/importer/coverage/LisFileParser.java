@@ -109,16 +109,21 @@ public class LisFileParser implements DispoImporterApi {
       this.dispoConnector = connector;
    }
 
+   /**
+    *
+    */
+
    @Override
    public List<DispoItem> importDirectory(Map<String, DispoItem> exisitingItems, File filesDir, OperationReport report,
       Log logger, ArtifactReadable programConfig) {
+
+      //Get information from cover.db file in vcast output
       vCastDir = filesDir.getAbsolutePath();
       File f = new File(vCastDir + File.separator + "cover.db");
       if (!f.exists()) {
          vCastDir = filesDir.getAbsolutePath() + File.separator + "vcast";
          f = new File(vCastDir + File.separator + "cover.db");
       }
-
       VCastDataStore dataStore = VCastClient.newDataStore(f.getAbsolutePath(), logger);
 
       dataStore.setIsMCDC();
@@ -128,6 +133,7 @@ public class LisFileParser implements DispoImporterApi {
 
       HashMap<String, File> nameToFileMap = createNameToFileMap(report);
 
+      //Query cover.db database based on instrumented LIS files
       for (VCastInstrumentedFile instrumentedFile : instrumentedFiles) {
          processInstrumented(dataStore, instrumentedFile, nameToFileMap, report);
       }
@@ -135,13 +141,13 @@ public class LisFileParser implements DispoImporterApi {
       Collection<VCastResult> results = getResultFiles(dataStore);
       for (VCastResult result : results) {
          try {
-            processResults(result, report);
+            processResults(result, exisitingItems, report);
          } catch (Exception ex) {
             report.addEntry("FAILURE", "VCast Error", ERROR);
          }
       }
 
-      processExceptionHandled(report);
+      processExceptionHandled(exisitingItems, report);
 
       return createItems(exisitingItems, report, programConfig);
    }
@@ -231,6 +237,7 @@ public class LisFileParser implements DispoImporterApi {
       List<DispoItem> prevItems = new ArrayList<DispoItem>(exisitingItems.values());
       List<String> uncovered = dispoConnector.getAllUncoveredDiscrepancies(item);
       List<String> discrepanciesToRemove = new ArrayList<>();
+
       if (!uncovered.isEmpty()) {
          Map<String, Discrepancy> discrepanciesList = item.getDiscrepanciesList();
          for (String id : discrepanciesList.keySet()) {
@@ -241,25 +248,23 @@ public class LisFileParser implements DispoImporterApi {
             }
             if (uncovered.contains(discrepancy.getLocation())) {
                DispoAnnotationData uncoveredAnnotation = matchOldAnnotation(discrepancy, prevItems, item);
-               if (uncoveredAnnotation != null) {
-                  if (clearCoverage) {
-                     if (uncoveredAnnotation.getResolutionType().equalsIgnoreCase(DispoStrings.Test_Unit_Resolution)) {
-                        uncoveredAnnotation.setLastResolution(uncoveredAnnotation.getResolution());
-                        addBlankAnnotationForUncoveredLine(item, discrepancy.getLocation(), discrepancy.getText(),
-                           uncoveredAnnotation.getLastResolution());
-                     } else if (uncoveredAnnotation.getResolutionType().equalsIgnoreCase(
-                        DispoStrings.Exception_Handling_Resolution)) {
-                        uncoveredAnnotation.setLastResolution("Exception_Handling");
-                        addBlankAnnotationForUncoveredLine(item, discrepancy.getLocation(), discrepancy.getText(),
-                           uncoveredAnnotation.getLastResolution());
+               if (uncoveredAnnotation != DispoAnnotationData.SENTINEL) {
+                  if (clearCoverage && (uncoveredAnnotation.getResolutionType().equalsIgnoreCase(
+                     DispoStrings.Test_Unit_Resolution) || uncoveredAnnotation.getResolutionType().equalsIgnoreCase(
+                        Exception_Handling_Resolution))) {
+                     if (!uncoveredAnnotation.getLastManualResolutionType().isEmpty()) {
+                        addAnnotationForPreviouslyCoveredLine(item, discrepancy.getLocation(), discrepancy.getText(),
+                           uncoveredAnnotation);
                      } else {
-                        keepExistingAnnotation(item, uncoveredAnnotation);
+                        addBlankAnnotationForUncoveredLine(item, discrepancy.getLocation(), discrepancy.getText(),
+                           uncoveredAnnotation);
                      }
                   } else {
                      keepExistingAnnotation(item, uncoveredAnnotation);
                   }
                } else {
-                  addBlankAnnotationForUncoveredLine(item, discrepancy.getLocation(), discrepancy.getText(), "N/A");
+                  addBlankAnnotationForUncoveredLine(item, discrepancy.getLocation(), discrepancy.getText(),
+                     uncoveredAnnotation);
                }
             }
          }
@@ -270,7 +275,7 @@ public class LisFileParser implements DispoImporterApi {
       }
    }
 
-   private void processExceptionHandled(OperationReport report) {
+   private void processExceptionHandled(Map<String, DispoItem> exisitingItems, OperationReport report) {
       for (String datId : datIdsCoveredByException) {
          Matcher matcher = Pattern.compile("\\d*:\\d*:").matcher(datId);
          matcher.find();
@@ -279,6 +284,11 @@ public class LisFileParser implements DispoImporterApi {
          String line = datId.replaceAll("\\d*:\\d*:", "");
          line = line.replaceAll(":", "");
          String text = "";
+
+         String lastManualResolutionType = "";
+         String lastManualResolution = "";
+         List<DispoItem> prevItems = new ArrayList<DispoItem>(exisitingItems.values());
+
          if (line.endsWith("RESULT")) {
             String lineF = line + ".F";
             Discrepancy matchingDiscrepancyF = matchDiscrepancy(lineF, item.getDiscrepanciesList());
@@ -286,22 +296,43 @@ public class LisFileParser implements DispoImporterApi {
                text = matchingDiscrepancyF.getText();
                Map<String, Discrepancy> discrepancies = item.getDiscrepanciesList();
                discrepancies.remove(matchingDiscrepancyF.getId());
-               addAnnotationForCoveredLine(item, lineF, Exception_Handling_Resolution, "", text);
+
+               DispoAnnotationData prevAnnotation = matchOldAnnotation(matchingDiscrepancyF, prevItems, item);
+               if (prevAnnotation != DispoAnnotationData.SENTINEL && !prevAnnotation.getResolutionType().equalsIgnoreCase(
+                  DispoStrings.Test_Unit_Resolution) && !prevAnnotation.getResolutionType().equalsIgnoreCase(
+                     DispoStrings.Exception_Handling_Resolution)) {
+                  lastManualResolutionType = prevAnnotation.getResolutionType();
+                  lastManualResolution = prevAnnotation.getResolution();
+               }
+
+               addAnnotationForCoveredLine(item, lineF, Exception_Handling_Resolution, "", text,
+                  lastManualResolutionType, lastManualResolution);
             }
             line = line + ".T";
          }
          Discrepancy matchingDiscrepancy = matchDiscrepancy(line, item.getDiscrepanciesList());
          if (matchingDiscrepancy != null) {
+
+            DispoAnnotationData prevAnnotation = matchOldAnnotation(matchingDiscrepancy, prevItems, item);
+            if (prevAnnotation != null && !prevAnnotation.getResolutionType().equalsIgnoreCase(
+               DispoStrings.Test_Unit_Resolution) && !prevAnnotation.getResolutionType().equalsIgnoreCase(
+                  DispoStrings.Exception_Handling_Resolution)) {
+               lastManualResolutionType = prevAnnotation.getResolutionType();
+               lastManualResolution = prevAnnotation.getResolution();
+            }
+
             text = matchingDiscrepancy.getText();
             Map<String, Discrepancy> discrepancies = item.getDiscrepanciesList();
             if (matchingDiscrepancy.getPairAnnotations() != null && !matchingDiscrepancy.getPairAnnotations().isEmpty() && !matchingDiscrepancy.getIsOverloadedCondition()) {
                addAnnotationForCoveredMcdcLine(item, line, Exception_Handling_Resolution, "", text,
-                  matchingDiscrepancy.getPairAnnotations());
+                  matchingDiscrepancy.getPairAnnotations(), lastManualResolutionType, lastManualResolution);
                discrepancies.remove(matchingDiscrepancy.getId());
             } else if (matchingDiscrepancy.getIsOverloadedCondition()) {
-               addAnnotationForOverloadedMcdcLine(item, line, text, "", matchingDiscrepancy.getDevNotes());
+               addAnnotationForOverloadedMcdcLine(item, line, text, matchingDiscrepancy.getDevNotes(),
+                  Exception_Handling_Resolution, "", lastManualResolutionType, lastManualResolution);
             } else {
-               addAnnotationForCoveredLine(item, line, Exception_Handling_Resolution, "", text);
+               addAnnotationForCoveredLine(item, line, Exception_Handling_Resolution, "", text,
+                  lastManualResolutionType, lastManualResolution);
                discrepancies.remove(matchingDiscrepancy.getId());
             }
          }
@@ -694,22 +725,24 @@ public class LisFileParser implements DispoImporterApi {
       return sb.toString();
    }
 
-   private void processResults(VCastResult result, OperationReport report) throws Exception {
+   private void processResults(VCastResult result, Map<String, DispoItem> exisitingItems, OperationReport report)
+      throws Exception {
       String resultPath = result.getPath();
       String resultPathAbs = vCastDir + File.separator + resultPath;
       File resultsFile = new File(resultPathAbs);
       if (!resultsFile.exists()) {
-         boolean fileExists = findAndProcessResultFile(resultsFile, resultPath, report);
+         boolean fileExists = findAndProcessResultFile(resultsFile, resultPath, exisitingItems, report);
 
          if (!fileExists) {
             report.addEntry("SQL", String.format("Could not find DAT file [%s]", resultPathAbs), WARNING);
          }
       } else {
-         process(report, resultPath, resultsFile);
+         process(resultPath, resultsFile, exisitingItems, report);
       }
    }
 
-   private boolean findAndProcessResultFile(File resultsFile, String resultPath, OperationReport report) {
+   private boolean findAndProcessResultFile(File resultsFile, String resultPath, Map<String, DispoItem> exisitingItems,
+      OperationReport report) {
       List<File> resultsDirs = new ArrayList<>();
       resultsDirs.add(new File(vCastDir + File.separator + RESULTS));
       resultsDirs.add(new File(vCastDir + File.separator + RESULTS + File.separator + IMPORTED_RESULTS));
@@ -724,7 +757,7 @@ public class LisFileParser implements DispoImporterApi {
                String inputF = file.toString();
                String outputF = inputF.replaceAll(config.getResultsFileExtRegex(), "");
                if (outputF.toString().equalsIgnoreCase(resultsFile.toString())) {
-                  process(report, resultPath, file);
+                  process(resultPath, file, exisitingItems, report);
                   return true; // File exists
                }
             }
@@ -733,7 +766,8 @@ public class LisFileParser implements DispoImporterApi {
       return false; // File does not exist
    }
 
-   private void process(OperationReport report, String resultPath, File resultsFile) {
+   private void process(String resultPath, File resultsFile, Map<String, DispoItem> exisitingItems,
+      OperationReport report) {
       if (!isDuplicateFile(resultsFile, report)) {
          //Start reading line by line
          BufferedReader br = null;
@@ -749,7 +783,7 @@ public class LisFileParser implements DispoImporterApi {
                         resultsLine, resultsFile.getName()), WARNING);
                   } else {
                      if (!alreadyUsedDatIds.contains(resultsLine)) {
-                        processDatFileLine(report, resultPath, resultsFile, resultsLine);
+                        processDatFileLine(report, resultPath, resultsFile, resultsLine, exisitingItems);
                      }
                   }
                }
@@ -770,7 +804,7 @@ public class LisFileParser implements DispoImporterApi {
                            resultsLine, resultsFile.getName()), WARNING);
                      } else {
                         if (!alreadyUsedDatIds.contains(resultsLine)) {
-                           processDatFileLine(report, resultPath, resultsFile, resultsLine);
+                           processDatFileLine(report, resultPath, resultsFile, resultsLine, exisitingItems);
                         }
                      }
                   }
@@ -787,24 +821,25 @@ public class LisFileParser implements DispoImporterApi {
       }
    }
 
-   private void processDatFileLine(OperationReport report, String resultPath, File resultsFile, String resultsLine) {
+   private void processDatFileLine(OperationReport report, String resultPath, File resultsFile, String resultsLine,
+      Map<String, DispoItem> exisitingItems) {
       alreadyUsedDatIds.add(resultsLine);
       StringTokenizer st = new StringTokenizer(resultsLine);
       int count = st.countTokens();
       if (count == 3) {
          Matcher m = fileMethod3LineNumberPattern.matcher(resultsLine);
          if (m.find()) {
-            processSingleResult(resultPath, m);
+            processSingleResult(resultPath, m, exisitingItems);
          }
       } else if (count == 4) {
          Matcher m = fileMethod4LineNumberPlusTokenPattern.matcher(resultsLine);
          if (m.find()) {
-            processSingleResultBranch(resultPath, m);
+            processSingleResultBranch(resultPath, m, exisitingItems);
          }
       } else if (count == 5) {
          Matcher m = fileMethod5LineNumberPattern.matcher(resultsLine);
          if (m.find()) {
-            processMultiResultMCDC(resultPath, m);
+            processMultiResultMCDC(resultPath, m, exisitingItems);
          }
       } else {
          report.addEntry("RESULTS FILE PARSE",
@@ -824,8 +859,12 @@ public class LisFileParser implements DispoImporterApi {
       }
    }
 
-   private void processSingleResult(String resultPath, Matcher m) {
+   private void processSingleResult(String resultPath, Matcher m, Map<String, DispoItem> exisitingItems) {
       DispoItemData item = datIdToItem.get(generateDatId(m.group(1), m.group(2)));
+      String lastManualResolutionType = "";
+      String lastManualResolution = "";
+      List<DispoItem> prevItems = new ArrayList<DispoItem>(exisitingItems.values());
+
       if (item != null) {
          String location = m.group(3);
          String discrepancyText = "";
@@ -833,31 +872,59 @@ public class LisFileParser implements DispoImporterApi {
          if (matchingDiscrepancy != null) {
             discrepancyText = matchingDiscrepancy.getText();
             Map<String, Discrepancy> discrepancies = item.getDiscrepanciesList();
+
             discrepancies.remove(matchingDiscrepancy.getId());
             datIdsCoveredByException.remove(generateDatId(m.group(1), m.group(2), m.group(3)));
             item.setDiscrepanciesList(discrepancies);
-            addAnnotationForCoveredLine(item, location, Test_Unit_Resolution, resultPath, discrepancyText);
+
+            DispoAnnotationData prevAnnotation = matchOldAnnotation(matchingDiscrepancy, prevItems, item);
+            if (prevAnnotation != DispoAnnotationData.SENTINEL && !prevAnnotation.getResolutionType().equalsIgnoreCase(
+               DispoStrings.Test_Unit_Resolution) && !prevAnnotation.getResolutionType().equalsIgnoreCase(
+                  DispoStrings.Exception_Handling_Resolution)) {
+               lastManualResolutionType = prevAnnotation.getResolutionType();
+               lastManualResolution = prevAnnotation.getResolution();
+            }
+
+            addAnnotationForCoveredLine(item, location, Test_Unit_Resolution, resultPath, discrepancyText,
+               lastManualResolutionType, lastManualResolution);
          }
       }
    }
 
-   private void processSingleResultBranch(String resultPath, Matcher m) {
+   private void processSingleResultBranch(String resultPath, Matcher m, Map<String, DispoItem> exisitingItems) {
       DispoItemData item = datIdToItem.get(generateDatId(m.group(1), m.group(2)));
+      String lastManualResolutionType = "";
+      String lastManualResolution = "";
+      List<DispoItem> prevItems = new ArrayList<DispoItem>(exisitingItems.values());
+
       if (item != null) {
          String location = m.group(3) + "." + m.group(4);
          Discrepancy matchingDiscrepancy = matchDiscrepancy(location, item.getDiscrepanciesList());
          if (matchingDiscrepancy != null) {
+
             String text = matchingDiscrepancy.getText();
             Map<String, Discrepancy> discrepancies = item.getDiscrepanciesList();
             discrepancies.remove(matchingDiscrepancy.getId());
             datIdsCoveredByException.remove(generateDatId(m.group(1), m.group(2), m.group(3), m.group(4)));
             item.setDiscrepanciesList(discrepancies);
-            addAnnotationForCoveredLine(item, location, Test_Unit_Resolution, resultPath, text);
+
+            DispoAnnotationData prevAnnotation = matchOldAnnotation(matchingDiscrepancy, prevItems, item);
+            if (prevAnnotation != DispoAnnotationData.SENTINEL && !prevAnnotation.getResolutionType().equalsIgnoreCase(
+               DispoStrings.Test_Unit_Resolution) && !prevAnnotation.getResolutionType().equalsIgnoreCase(
+                  DispoStrings.Exception_Handling_Resolution)) {
+               lastManualResolutionType = prevAnnotation.getResolutionType();
+               lastManualResolution = prevAnnotation.getResolution();
+            }
+
+            addAnnotationForCoveredLine(item, location, Test_Unit_Resolution, resultPath, text,
+               lastManualResolutionType, lastManualResolution);
          }
       }
    }
 
-   private void processMultiResultMCDC(String resultPath, Matcher m) {
+   private void processMultiResultMCDC(String resultPath, Matcher m, Map<String, DispoItem> exisitingItems) {
+      List<DispoItem> prevItems = new ArrayList<DispoItem>(exisitingItems.values());
+
       DispoItemData item = datIdToItem.get(generateDatId(m.group(1), m.group(2)));
       if (item != null) {
          Integer lineNumber = Integer.valueOf(m.group(3));
@@ -866,6 +933,8 @@ public class LisFileParser implements DispoImporterApi {
          Map<String, Boolean> bitsTrueMap =
             getBitToBoolean(Integer.toString(bitsValue, 2), Integer.toString(bitsMask, 2));
          for (String abbrevCond : bitsTrueMap.keySet()) {
+            String lastManualResolutionType = "";
+            String lastManualResolution = "";
             String location = "";
             if (bitsTrueMap.get(abbrevCond) == null) {
                location = formatLocation(lineNumber, abbrevCond, " ");
@@ -878,17 +947,27 @@ public class LisFileParser implements DispoImporterApi {
             }
             Discrepancy matchingDiscrepancy = matchDiscrepancy(location, item.getDiscrepanciesList());
             if (matchingDiscrepancy != null) {
+
+               DispoAnnotationData prevAnnotation = matchOldAnnotation(matchingDiscrepancy, prevItems, item);
+               if (prevAnnotation != DispoAnnotationData.SENTINEL && !prevAnnotation.getResolutionType().equalsIgnoreCase(
+                  DispoStrings.Test_Unit_Resolution) && !prevAnnotation.getResolutionType().equalsIgnoreCase(
+                     DispoStrings.Exception_Handling_Resolution)) {
+                  lastManualResolutionType = prevAnnotation.getResolutionType();
+                  lastManualResolution = prevAnnotation.getResolution();
+               }
+
                String text = matchingDiscrepancy.getText();
                Map<String, Discrepancy> discrepancies = item.getDiscrepanciesList();
                if (matchingDiscrepancy.getPairAnnotations() != null && !matchingDiscrepancy.getPairAnnotations().isEmpty() && !matchingDiscrepancy.getIsOverloadedCondition()) {
                   addAnnotationForCoveredMcdcLine(item, location, Test_Unit_Resolution, resultPath, text,
-                     matchingDiscrepancy.getPairAnnotations());
+                     matchingDiscrepancy.getPairAnnotations(), lastManualResolutionType, lastManualResolution);
                   discrepancies.remove(matchingDiscrepancy.getId());
                } else if (matchingDiscrepancy.getIsOverloadedCondition()) {
-                  addAnnotationForOverloadedMcdcLine(item, location, text, resultPath,
-                     matchingDiscrepancy.getDevNotes());
+                  addAnnotationForOverloadedMcdcLine(item, location, text, matchingDiscrepancy.getDevNotes(),
+                     Test_Unit_Resolution, resultPath, lastManualResolutionType, lastManualResolution);
                } else {
-                  addAnnotationForCoveredLine(item, location, Test_Unit_Resolution, resultPath, text);
+                  addAnnotationForCoveredLine(item, location, Test_Unit_Resolution, resultPath, text,
+                     lastManualResolutionType, lastManualResolution);
                   discrepancies.remove(matchingDiscrepancy.getId());
                }
                datIdsCoveredByException.remove(
@@ -958,7 +1037,7 @@ public class LisFileParser implements DispoImporterApi {
 
    private DispoAnnotationData matchOldAnnotation(Discrepancy discrepancy, List<DispoItem> oldItems,
       DispoItemData item) {
-      DispoAnnotationData toReturn = null;
+      DispoAnnotationData toReturn = DispoAnnotationData.SENTINEL;
       DispoItem dispoItem = null;
       if (!oldItems.isEmpty()) {
          for (DispoItem oldItem : oldItems) {
@@ -998,7 +1077,7 @@ public class LisFileParser implements DispoImporterApi {
    }
 
    private void addBlankAnnotationForUncoveredLine(DispoItemData item, String location, String text,
-      String lastResolution) {
+      DispoAnnotationData uncoveredAnnotation) {
       DispoAnnotationData newAnnotation = new DispoAnnotationData();
       dataFactory.initAnnotation(newAnnotation);
       String idOfNewAnnotation = dataFactory.getNewId();
@@ -1008,7 +1087,10 @@ public class LisFileParser implements DispoImporterApi {
       newAnnotation.setLocationRefs(location);
       newAnnotation.setResolutionType("");
       newAnnotation.setResolution("");
-      newAnnotation.setLastResolution(lastResolution);
+      newAnnotation.setLastResolutionType(uncoveredAnnotation.getResolutionType());
+      newAnnotation.setLastResolution(uncoveredAnnotation.getResolution());
+      newAnnotation.setLastManualResolutionType(uncoveredAnnotation.getLastManualResolutionType());
+      newAnnotation.setLastManualResolution(uncoveredAnnotation.getLastManualResolution());
       newAnnotation.setIsResolutionValid(false);
       newAnnotation.setCustomerNotes(text);
 
@@ -1030,8 +1112,50 @@ public class LisFileParser implements DispoImporterApi {
       annotationsList.add(newIndex, newAnnotation);
    }
 
+   private void addAnnotationForPreviouslyCoveredLine(DispoItemData item, String location, String text,
+      DispoAnnotationData uncoveredAnnotation) {
+      DispoAnnotationData newAnnotation = new DispoAnnotationData();
+      dataFactory.initAnnotation(newAnnotation);
+      String idOfNewAnnotation = dataFactory.getNewId();
+      newAnnotation.setId(idOfNewAnnotation);
+
+      newAnnotation.setIsDefault(false);
+      newAnnotation.setLocationRefs(location);
+      newAnnotation.setResolutionType(uncoveredAnnotation.getLastManualResolutionType());
+      newAnnotation.setResolution(uncoveredAnnotation.getLastManualResolution());
+      newAnnotation.setLastResolutionType(uncoveredAnnotation.getResolutionType());
+      newAnnotation.setLastResolution(uncoveredAnnotation.getResolution());
+      newAnnotation.setLastManualResolutionType(uncoveredAnnotation.getLastManualResolutionType());
+      newAnnotation.setLastManualResolution(uncoveredAnnotation.getLastManualResolution());
+      if (uncoveredAnnotation.getLastManualResolution().contains("Modify")) {
+         newAnnotation.setIsResolutionValid(false);
+         newAnnotation.setNeedsModify(true);
+      } else {
+         newAnnotation.setIsResolutionValid(true);
+         newAnnotation.setNeedsModify(false);
+      }
+      newAnnotation.setCustomerNotes(text);
+
+      if (location.contains("(P")) {
+         Discrepancy matchingDiscrepancy = matchDiscrepancy(location, item.getDiscrepanciesList());
+         if (matchingDiscrepancy.getPairAnnotations() != null && !matchingDiscrepancy.getPairAnnotations().isEmpty() && !matchingDiscrepancy.getIsOverloadedCondition()) {
+            Map<Integer, DispoAnnotationData> pairAnnotations = new HashMap<>();
+            pairAnnotations.putAll(matchingDiscrepancy.getPairAnnotations());
+            newAnnotation.setPossiblePairs(getPossiblePairs(pairAnnotations, item));
+            newAnnotation.setSatisfiedPairs("");
+         }
+      }
+
+      dispoConnector.connectAnnotation(newAnnotation, item.getDiscrepanciesList());
+
+      List<DispoAnnotationData> annotationsList = item.getAnnotationsList();
+      int newIndex = annotationsList.size();
+      newAnnotation.setIndex(newIndex);
+      annotationsList.add(newIndex, newAnnotation);
+   }
+
    private void addAnnotationForCoveredLine(DispoItemData item, String location, String resolutionType,
-      String coveringFile, String text) {
+      String coveringFile, String text, String lastManualResolutionType, String lastManualResolution) {
       DispoAnnotationData newAnnotation = new DispoAnnotationData();
       dataFactory.initAnnotation(newAnnotation);
       String idOfNewAnnotation = dataFactory.getNewId();
@@ -1041,7 +1165,11 @@ public class LisFileParser implements DispoImporterApi {
       newAnnotation.setLocationRefs(location);
       newAnnotation.setResolutionType(resolutionType);
       newAnnotation.setResolution(coveringFile);
-      newAnnotation.setLastResolution("N/A");
+      newAnnotation.setLastResolutionType(lastManualResolutionType);
+      newAnnotation.setLastResolution(lastManualResolution);
+      newAnnotation.setLastManualResolutionType(lastManualResolutionType);
+      newAnnotation.setLastManualResolution(lastManualResolution);
+
       newAnnotation.setIsResolutionValid(true);
       newAnnotation.setCustomerNotes(text);
 
@@ -1052,7 +1180,8 @@ public class LisFileParser implements DispoImporterApi {
    }
 
    private void addAnnotationForOverloadedMcdcLine(DispoItemData item, String location, String text,
-      String lastResolution, String developerNotes) {
+      String developerNotes, String lastResolutionType, String lastResolution, String lastManualResolutionType,
+      String lastManualResolution) {
       DispoAnnotationData newAnnotation = new DispoAnnotationData();
       dataFactory.initAnnotation(newAnnotation);
       String idOfNewAnnotation = dataFactory.getNewId();
@@ -1062,7 +1191,12 @@ public class LisFileParser implements DispoImporterApi {
       newAnnotation.setLocationRefs(location);
       newAnnotation.setResolutionType("");
       newAnnotation.setResolution("");
+
+      newAnnotation.setLastResolutionType(Test_Unit_Resolution);
       newAnnotation.setLastResolution(lastResolution);
+      newAnnotation.setLastManualResolutionType(lastManualResolutionType);
+      newAnnotation.setLastManualResolution(lastManualResolution);
+
       newAnnotation.setIsResolutionValid(false);
       newAnnotation.setCustomerNotes(text);
       newAnnotation.setDeveloperNotes(developerNotes);
@@ -1075,7 +1209,8 @@ public class LisFileParser implements DispoImporterApi {
    }
 
    private boolean addAnnotationForCoveredMcdcLine(DispoItemData item, String location, String resolutionType,
-      String coveringFile, String text, Map<Integer, DispoAnnotationData> pairAnnotations) {
+      String coveringFile, String text, Map<Integer, DispoAnnotationData> pairAnnotations,
+      String lastManualResolutionType, String lastManualResolution) {
       boolean isCovered = false;
       DispoAnnotationData newAnnotation = new DispoAnnotationData();
       dataFactory.initAnnotation(newAnnotation);
@@ -1083,7 +1218,12 @@ public class LisFileParser implements DispoImporterApi {
 
       newAnnotation.setId(idOfNewAnnotation);
       newAnnotation.setLocationRefs(location);
-      newAnnotation.setLastResolution("N/A");
+
+      newAnnotation.setLastResolutionType(lastManualResolutionType);
+      newAnnotation.setLastResolution(lastManualResolution);
+      newAnnotation.setLastManualResolutionType(lastManualResolutionType);
+      newAnnotation.setLastManualResolution(lastManualResolution);
+
       newAnnotation.setCustomerNotes(text);
 
       List<String> satisfiedPairs = getSatisfiedPairs(pairAnnotations, resolutionType, coveringFile);
