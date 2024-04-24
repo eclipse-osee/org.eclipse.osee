@@ -14,7 +14,7 @@ import type { difference } from '@osee/shared/types/change-report';
 import type { applic } from '@osee/shared/types/applicability';
 
 export interface subMessage {
-	id?: string;
+	id: string;
 	name: string;
 	description: string;
 	interfaceSubMessageNumber: string;

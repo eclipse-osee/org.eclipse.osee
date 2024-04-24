@@ -183,7 +183,34 @@ export class WarningDialogService {
 		);
 	}
 
-	openPlatformTypeDialog(tx: {
+	openPlatformTypeDialog(body: Partial<PlatformType>) {
+		return of(body.id).pipe(
+			take(1),
+			filter((id: string | undefined): id is string => id !== undefined),
+			switchMap((id) => this.affectedArtifacts.getElementsByType(id)),
+			switchMap((artifacts) =>
+				artifacts.length > 1
+					? this._listenToDialogEmission({
+							data: {
+								affectedArtifacts: artifacts,
+								body: body,
+								modifiedObjectType: 'Platform Type',
+								affectedObjectType: 'Element',
+							},
+					  }).pipe(
+							filter(
+								(
+									value
+								): value is affectedArtifactWarning<PlatformType> =>
+									value !== undefined
+							),
+							map((value) => value.body)
+					  )
+					: of(body)
+			)
+		);
+	}
+	openPlatformTypeDialogWithManifest(tx: {
 		createArtifacts: createArtifact[];
 		modifyArtifacts: modifyArtifact[];
 		deleteRelations: modifyRelation[];

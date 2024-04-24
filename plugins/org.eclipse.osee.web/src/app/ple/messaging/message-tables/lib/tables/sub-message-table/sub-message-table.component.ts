@@ -244,6 +244,7 @@ export class SubMessageTableComponent implements OnChanges {
 	}
 	insertSubMessage(message: message, afterSubMessage?: string) {
 		this._addSubMessageDialog(message, {
+			id: '',
 			name: '',
 			description: '',
 			interfaceSubMessageNumber: '',

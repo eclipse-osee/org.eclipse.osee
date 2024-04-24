@@ -272,6 +272,7 @@ describe('MessageTableComponent', () => {
 				id: '2',
 				name: 'blah',
 				subMessage: {
+					id: '',
 					name: 'abcdef',
 					description: 'qwerty',
 					interfaceSubMessageNumber: '12345',

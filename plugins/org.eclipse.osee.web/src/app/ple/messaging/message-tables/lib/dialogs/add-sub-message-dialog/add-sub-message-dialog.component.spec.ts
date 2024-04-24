@@ -41,6 +41,7 @@ describe('AddSubMessageDialogComponent', () => {
 		id: '123456',
 		name: 'message',
 		subMessage: {
+			id: '',
 			name: '',
 			description: '',
 			interfaceSubMessageNumber: '',
