@@ -94,28 +94,33 @@ public class WfeActionableItemHeader extends Composite {
          return;
       }
       final TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) workItem;
-      IAtsAction parentAction = (IAtsAction) teamWf.getParentAction().getStoreObject();
-      if (parentAction == null) {
-         label.setText(" " + "Error: No Parent Action.");
-         label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-      } else if (AtsApiService.get().getActionableItemService().getActionableItems(parentAction).isEmpty()) {
-         label.setText(" " + "Error: No Actionable Items identified.");
+      if (teamWf.getParentAction() == null) {
+         label.setText("Error: No Parent Action");
          label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
       } else {
-         StringBuffer sb =
-            new StringBuffer(AtsApiService.get().getActionableItemService().getActionableItemsStr(teamWf));
-         if (AtsApiService.get().getWorkItemService().getTeams(parentAction).size() > 1) {
-            sb.append("         Other: ");
-            for (IAtsTeamWorkflow workflow : AtsApiService.get().getWorkItemService().getTeams(parentAction)) {
-               if (workflow.notEqual(teamWf)) {
-                  sb.append(AtsApiService.get().getActionableItemService().getActionableItemsStr(workflow));
-                  sb.append(", ");
+         IAtsAction parentAction = (IAtsAction) teamWf.getParentAction().getStoreObject();
+         if (parentAction == null) {
+            label.setText(" " + "Error: No Parent Action.");
+            label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+         } else if (AtsApiService.get().getActionableItemService().getActionableItems(parentAction).isEmpty()) {
+            label.setText(" " + "Error: No Actionable Items identified.");
+            label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
+         } else {
+            StringBuffer sb =
+               new StringBuffer(AtsApiService.get().getActionableItemService().getActionableItemsStr(teamWf));
+            if (AtsApiService.get().getWorkItemService().getTeams(parentAction).size() > 1) {
+               sb.append("         Other: ");
+               for (IAtsTeamWorkflow workflow : AtsApiService.get().getWorkItemService().getTeams(parentAction)) {
+                  if (workflow.notEqual(teamWf)) {
+                     sb.append(AtsApiService.get().getActionableItemService().getActionableItemsStr(workflow));
+                     sb.append(", ");
+                  }
                }
             }
+            label.setText(sb.toString().replaceFirst(", $", ""));
+            label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            label.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
          }
-         label.setText(sb.toString().replaceFirst(", $", ""));
-         label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         label.setForeground(Displays.getSystemColor(SWT.COLOR_BLACK));
       }
       label.update();
       layout();
