@@ -31,6 +31,7 @@ public abstract class AbstractJoinQuery implements AutoCloseable {
       "INSERT INTO osee_join_cleanup (query_id, table_name, issued_at, expires_in) VALUES (?,?,?,?)";
    private static final String DELETE_FROM_JOIN_CLEANUP = "DELETE FROM osee_join_cleanup WHERE query_id =?";
 
+   @SuppressWarnings("java:S2245") //This random doesn't need to be truly random as it is not sensitive
    private static final Random random = new Random();
 
    private final JoinItem joinItem;

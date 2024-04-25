@@ -250,7 +250,7 @@ public class SprintReportAction extends AbstractAtsAction {
             Double pts = cat3ToPoints.get(cat3);
             if (pts > 0) {
                Double percent = 0.0;
-               if (pts > 0.0) {
+               if (pts > 0.0 && totalPts != 0) {
                   percent = pts / totalPts;
                }
                rd.logf("Cat3: %s - %s  -   Percent: %.2f\n", cat3, pts, percent);

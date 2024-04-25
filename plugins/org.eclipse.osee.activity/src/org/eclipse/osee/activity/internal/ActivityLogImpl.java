@@ -255,6 +255,7 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
       storage.cleanEntries(cleanerKeepDays);
    }
 
+   @SuppressWarnings("java:S2245") //This random doesn't need to be truly random as it is not sensitive
    private void setupCleaner() {
       // randomly pick a start time around midnight
       Random random = new Random();
@@ -302,7 +303,8 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
       return createEntry(accountId, type, parentId, status, messageArgs);
    }
 
-   private Long createEntry(UserId accountId, ActivityTypeToken type, Long parentId, Integer status, Object... messageArgs) {
+   private Long createEntry(UserId accountId, ActivityTypeToken type, Long parentId, Integer status,
+      Object... messageArgs) {
       if (isEnabled()) {
          Object[] rootEntry = activityMonitor.getThreadRootEntry(parentId);
          Long serverId = LogEntry.SERVER_ID.from(rootEntry);
@@ -319,13 +321,15 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
    }
 
    @Override
-   public Long createEntry(UserId accountId, Long clientId, ActivityTypeToken type, Long parentId, Integer status, String... messageArgs) {
+   public Long createEntry(UserId accountId, Long clientId, ActivityTypeToken type, Long parentId, Integer status,
+      String... messageArgs) {
       Object[] entry = createEntry(parentId, type, accountId, get(SERVER_ID), clientId, computeDuration(parentId),
          status, (Object[]) messageArgs);
       return LogEntry.ENTRY_ID.from(entry);
    }
 
-   private Object[] createEntry(Long parentId, ActivityTypeToken type, UserId accountId, Long serverId, Long clientId, Long duration, Integer status, Object... messageArgs) {
+   private Object[] createEntry(Long parentId, ActivityTypeToken type, UserId accountId, Long serverId, Long clientId,
+      Long duration, Integer status, Object... messageArgs) {
       Object[] entry;
       Long entryId = Lib.generateUuid();
       Date startTime = GlobalTime.GreenwichMeanTimestamp();
@@ -506,12 +510,14 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
    }
 
    @Override
-   public Long createActivityThread(ActivityTypeToken type, UserId accountId, Long serverId, Long clientId, Object... messageArgs) {
+   public Long createActivityThread(ActivityTypeToken type, UserId accountId, Long serverId, Long clientId,
+      Object... messageArgs) {
       return createActivityThread(Id.SENTINEL, type, accountId, serverId, clientId, messageArgs);
    }
 
    @Override
-   public Long createActivityThread(Long parentId, ActivityTypeToken type, UserId accountId, Long serverId, Long clientId, Object... messageArgs) {
+   public Long createActivityThread(Long parentId, ActivityTypeToken type, UserId accountId, Long serverId,
+      Long clientId, Object... messageArgs) {
       Object[] entry = createEntry(parentId, type, accountId, serverId, clientId, 0L, 0, messageArgs);
       activityMonitor.addActivityThread(entry);
       return LogEntry.ENTRY_ID.from(entry);

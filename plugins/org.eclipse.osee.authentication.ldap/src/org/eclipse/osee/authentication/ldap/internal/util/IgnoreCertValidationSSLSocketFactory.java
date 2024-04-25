@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public class IgnoreCertValidationSSLSocketFactory extends SSLSocketFactory {
 
-   private static final String SSL_CONTEXT = "SSL";
+   private static final String SSL_CONTEXT = "TLSv1.2";
    private static final IgnoreCertValidationSSLSocketFactory INSTANCE = createInstance();
 
    private final SSLSocketFactory sslFactory;
@@ -72,12 +72,14 @@ public class IgnoreCertValidationSSLSocketFactory extends SSLSocketFactory {
    }
 
    @Override
-   public Socket createSocket(String host, int port, InetAddress localHost, int localPort) throws IOException, UnknownHostException {
+   public Socket createSocket(String host, int port, InetAddress localHost, int localPort)
+      throws IOException, UnknownHostException {
       return sslFactory.createSocket(host, port, localHost, localPort);
    }
 
    @Override
-   public Socket createSocket(InetAddress address, int port, InetAddress localAddress, int localPort) throws IOException {
+   public Socket createSocket(InetAddress address, int port, InetAddress localAddress, int localPort)
+      throws IOException {
       return sslFactory.createSocket(address, port, localAddress, localPort);
    }
 
@@ -94,6 +96,7 @@ public class IgnoreCertValidationSSLSocketFactory extends SSLSocketFactory {
       }
    }
 
+   @SuppressWarnings("java:S4830") //These are supposed to ignore certs
    private static TrustManager newNoopTrustManager() {
       return new X509TrustManager() {
          @Override
