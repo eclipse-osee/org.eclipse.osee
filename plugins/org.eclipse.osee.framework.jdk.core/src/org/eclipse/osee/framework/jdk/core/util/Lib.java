@@ -80,6 +80,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.MatchFilter;
  * @author Ryan D. Brooks
  */
 public final class Lib {
+   @SuppressWarnings("java:S2245") //This random doesn't need to be truly random as it is not sensitive
    private static final Random RANDOM = new Random();
 
    private final static String INVALID_URI_CHARACTERS_REGEX = "[<>]";

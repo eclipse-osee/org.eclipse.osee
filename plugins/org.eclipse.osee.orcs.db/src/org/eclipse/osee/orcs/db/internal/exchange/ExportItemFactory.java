@@ -103,7 +103,7 @@ public class ExportItemFactory {
       items.add(new ManifestExportItem(logger, preferences, items, options));
       items.add(new MetadataExportItem(logger, items, getDbService()));
 
-      if(options.getBoolean("sql_export")) {
+      if (options.getBoolean("sql_export")) {
          addSqlItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_BRANCH_DATA, BRANCH_TABLE_QUERY);
          addSqlItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_TX_DETAILS_DATA, TX_DETAILS_TABLE_QUERY);
          addSqlItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_TXS_DATA, TXS_TABLE_QUERY);
@@ -115,14 +115,16 @@ public class ExportItemFactory {
       return items;
    }
 
-   private void addItem(List<AbstractExportItem> items, Long branchJoinId, PropertyStore options, int gammaJoinId, ExportItem exportItem, String query) {
+   private void addItem(List<AbstractExportItem> items, Long branchJoinId, PropertyStore options, int gammaJoinId,
+      ExportItem exportItem, String query) {
       StringBuilder modifiedQuery = new StringBuilder(query);
       Object[] bindData = prepareQuery(exportItem, modifiedQuery, options, branchJoinId, gammaJoinId);
       items.add(new DbTableXmlExportItem(getLogger(), getDbService(), getResourceManager(), exportItem,
          modifiedQuery.toString(), bindData));
    }
 
-   private void addSqlItem(List<AbstractExportItem> items, Long branchJoinId, PropertyStore options, int gammaJoinId, ExportItem exportItem, String query) {
+   private void addSqlItem(List<AbstractExportItem> items, Long branchJoinId, PropertyStore options, int gammaJoinId,
+      ExportItem exportItem, String query) {
       StringBuilder modifiedQuery = new StringBuilder(query);
       Object[] bindData = prepareQuery(exportItem, modifiedQuery, options, branchJoinId, gammaJoinId);
       items.add(new DbTableSqlExportItem(getLogger(), getDbService(), getResourceManager(), exportItem,
@@ -137,6 +139,7 @@ public class ExportItemFactory {
       }
    }
 
+   @SuppressWarnings("java:S2245") //This random doesn't need to be truly random as it is not sensitive
    private int createGammaJoin(JdbcClient jdbcClient, Long branchJoinId, PropertyStore options) {
       List<Object> bindList = new ArrayList<>();
       Random rand = new Random();
@@ -160,7 +163,8 @@ public class ExportItemFactory {
       return gammaJoinId;
    }
 
-   private static Object[] prepareQuery(ExportItem exportItem, StringBuilder query, PropertyStore options, Long branchJoinId, int gammaJionId) {
+   private static Object[] prepareQuery(ExportItem exportItem, StringBuilder query, PropertyStore options,
+      Long branchJoinId, int gammaJionId) {
       List<Object> bindData = new ArrayList<>();
 
       if (exportItem.matches(ExportItem.OSEE_ARTIFACT_DATA, ExportItem.OSEE_ATTRIBUTE_DATA,

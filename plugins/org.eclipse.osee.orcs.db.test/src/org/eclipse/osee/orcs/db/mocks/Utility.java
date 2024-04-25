@@ -38,6 +38,7 @@ public final class Utility {
       }
    }
 
+   @SuppressWarnings("java:S2245") //This random doesn't need to be truly random as it is not sensitive
    public static String generateData(int size) {
       char[] data = new char[size];
       for (int index = 0; index < size; index++) {

@@ -18,6 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
 /**
  * @author Ryan D. Brooks
  */
+@SuppressWarnings("java:S2245") //These randoms do not need to be truly random as they are just used in a test to check uniqueness
 public class RandomIdUniquenessTest {
    private final ThreadLocalRandom random = ThreadLocalRandom.current();
    private final long[] ids = new long[1000000000];

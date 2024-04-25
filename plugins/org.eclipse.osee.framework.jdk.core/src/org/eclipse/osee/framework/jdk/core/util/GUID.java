@@ -48,6 +48,7 @@ public final class GUID {
 
    public static String create() {
       long time = System.nanoTime();
+      @SuppressWarnings("java:S2245") //This random doesn't need to be truly random as it is not sensitive
       long rand = (long) (Math.random() * Long.MAX_VALUE);
 
       // 120-bit value
