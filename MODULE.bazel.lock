@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 6,
-  "moduleFileHash": "c50b1b72a64809dcd05b637f9c44f5c4e6b00124942579cb849025649586f5bc",
+  "moduleFileHash": "e236f9179a9826028d9cedd38c4f625e7a4c0502f6dbf11d852fd280ae9311b3",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -24,7 +24,8 @@
       "repoName": "osee",
       "executionPlatformsToRegister": [],
       "toolchainsToRegister": [
-        "@rust_toolchains//:all"
+        "@rust_toolchains//:all",
+        "//:local_bat_toolchain"
       ],
       "extensionUsages": [
         {

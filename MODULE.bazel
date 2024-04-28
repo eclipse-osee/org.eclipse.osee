@@ -59,3 +59,4 @@ crate.from_cargo(
     "//cli/applicability:Cargo.toml",],
 )
 use_repo(crate, "crates")
+register_toolchains("//:local_bat_toolchain")
