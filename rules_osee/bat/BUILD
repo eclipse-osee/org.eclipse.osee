@@ -13,6 +13,9 @@
 package(default_visibility = ["//visibility:public"])
 load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
 load("//bat/private:toolchains_repo.bzl", "PLATFORMS")
+# Feature[INTERNAL_RELEASE_ONLY]
+load("@rules_osee//bat:apply_applicability.bzl","apply_applicability")
+# End Feature
 toolchain_type(
     name = "toolchain_type",
     visibility = ["//visibility:public"],
@@ -25,15 +28,21 @@ toolchain_type(
     )
     for key, values in PLATFORMS.items()
 ]
-
+# Feature[INTERNAL_RELEASE_ONLY]
+apply_applicability(
+    name="applic_BUILD",
+    srcs=["BUILD"],
+    applic_config="@rules_osee//:rules_osee.json"
+)
 # note: this is filegroup and not pkg_files due to a weird module dependency
 filegroup(
     name = "files_to_release",
     srcs = [
-        "BUILD",
+        "applic_BUILD",
         "//bat/private:files_to_release"
     ] + glob(["*.bzl"]),
     visibility = [
-        "//release:__pkg__",
+        "//visibility:public",
     ]
 )
+# End Feature

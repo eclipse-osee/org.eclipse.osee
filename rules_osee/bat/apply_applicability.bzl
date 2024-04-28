@@ -69,14 +69,17 @@ def _apply_applicability_impl(ctx):
     if(len(ctx.attr.end_comment_syntax)>1):
         fail("Length of end comment syntax is too long")
     output_dir = _create_config_directory(ctx,ctx.file.applic_config)
+    path_in_output= output_dir.files.to_list()[0].dirname.split("/bin/")[1]
     outputs = []
     for src in ctx.attr.srcs:
         for file in src.files.to_list():
             args = ctx.actions.args()
             args.add("-a",ctx.file.applic_config.path)
-            output = ctx.actions.declare_file(file.basename)
+            path_in_file = file.dirname.split(path_in_output)[1] if len(file.dirname.split(path_in_output)) > 1 else file.dirname
+            file_to_create ="".join([path_in_file,file.basename]) if path_in_file == "" else "/".join([path_in_file,file.basename]).removeprefix("/")
+            output = ctx.actions.declare_file(file_to_create)
             outputs.append(output)
-            args.add("-s",file.short_path)
+            args.add("-s",file.path)
             args.add("-o",output.dirname)
             if(len(ctx.attr.begin_comment_syntax)>0):
                 args.add("-b",ctx.attr.begin_comment_syntax[0])

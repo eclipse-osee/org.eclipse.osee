@@ -11,12 +11,20 @@
 #     Boeing - initial API and implementation
 # 
 package(default_visibility = ["//visibility:public"])
+# Feature[INTERNAL_RELEASE_ONLY]
+load("@rules_osee//bat:apply_applicability.bzl","apply_applicability")
+apply_applicability(
+    name="applic_BUILD",
+    srcs=["BUILD"],
+    applic_config="@rules_osee//:rules_osee.json"
+)
 filegroup(
     name = "files_to_release",
     srcs = [
-        "BUILD",
+        "applic_BUILD",
     ] + glob(["*.bzl"]),
     visibility = [
-        "//release:__pkg__",
+        "//visibility:public",
     ]
 )
+# End Feature

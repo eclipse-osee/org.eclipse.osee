@@ -1,0 +1,6 @@
+[
+    {
+        "normalizedName":"rules_osee",
+        "features":["INTERNAL_RELEASE_ONLY=EXCLUDED"]
+    }
+]

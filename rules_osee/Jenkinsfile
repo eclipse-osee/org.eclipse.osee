@@ -48,9 +48,7 @@ spec:
     stage('Build release') {
       steps {
         container('bazel') {
-          dir('rules_osee') {
-            sh 'bazel --bazelrc=release/release.rc build //release:rules_osee' //note: using custom bazelrc just to set the output base for writing the files out
-          }
+          sh 'bazel --bazelrc=release/release.rc build //release:rules_osee' //note: using custom bazelrc just to set the output base for writing the files out
         }
       }
     }
@@ -62,7 +60,7 @@ spec:
             sh '''
               ssh -o BatchMode=yes genie.osee@projects-storage.eclipse.org rm -rf /home/data/httpd/download.eclipse.org/technology/osee/downloads/rules_osee/0.2.7
               ssh -o BatchMode=yes genie.osee@projects-storage.eclipse.org mkdir -p /home/data/httpd/download.eclipse.org/technology/osee/downloads/rules_osee/0.2.7
-              scp -o BatchMode=yes -r ./rules_osee/output_rules_osee_bazel/execroot/_main/bazel-out/k8-fastbuild/bin/release/rules-osee-0.2.7.tar.gz genie.osee@projects-storage.eclipse.org:/home/data/httpd/download.eclipse.org/technology/osee/downloads/rules_osee/0.2.7
+              scp -o BatchMode=yes -r ./output_rules_osee_bazel/execroot/_main/bazel-out/k8-fastbuild/bin/release/rules-osee-0.2.7.tar.gz genie.osee@projects-storage.eclipse.org:/home/data/httpd/download.eclipse.org/technology/osee/downloads/rules_osee/0.2.7
             '''
           }
         }

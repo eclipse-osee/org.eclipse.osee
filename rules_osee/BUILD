@@ -13,4 +13,25 @@
 package(
     default_visibility = ["//visibility:__pkg__"],
 )
-exports_files(["BUILD", "MODULE.bazel", "WORKSPACE"])
+# Feature[INTERNAL_RELEASE_ONLY]
+load("@rules_osee//bat:apply_applicability.bzl","apply_applicability")
+apply_applicability(
+    name="applic_BUILD",
+    srcs=["BUILD"],
+    applic_config="@rules_osee//:rules_osee.json",
+    visibility=["//visibility:public"]
+)
+apply_applicability(
+    name="applic_MODULE",
+    srcs=["MODULE.bazel"],
+    applic_config="@rules_osee//:rules_osee.json",
+    visibility=["//visibility:public"]
+)
+# End Feature
+
+
+exports_files([ "MODULE.bazel", "WORKSPACE"
+# Feature[INTERNAL_RELEASE_ONLY]
+,"rules_osee.json"
+# End Feature
+])

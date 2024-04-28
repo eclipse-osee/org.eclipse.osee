@@ -1,1 +1,0 @@
-exports_files(["test_flat.zip","test_nested.zip"])

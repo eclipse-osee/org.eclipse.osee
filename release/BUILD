@@ -22,11 +22,11 @@ package(
 pkg_files(
     name="files_to_publish",
     srcs = [
-        "//:BUILD",
-        "//:WORKSPACE",
-        "//:MODULE.bazel",
-        "//bat:files_to_release",
-        "//plconfig:files_to_release"
+        "@rules_osee//:applic_BUILD",
+        "@rules_osee//:WORKSPACE",
+        "@rules_osee//:applic_MODULE",
+        "@rules_osee//bat:files_to_release",
+        "@rules_osee//plconfig:files_to_release"
     ],
     strip_prefix = strip_prefix.from_root(),
 )
@@ -34,7 +34,7 @@ pkg_files(
 pkg_tar(
     name="rules_osee",
     srcs = [
-        "//release:files_to_publish"
+        ":files_to_publish"
     ],
     out = "rules-osee-%s.tar.gz" % version,
     extension = "tar.gz",

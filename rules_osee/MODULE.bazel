@@ -21,9 +21,9 @@ bazel_dep(name = "aspect_bazel_lib", version = "2.3.0")
 bazel_dep(name = "bazel_skylib", version = "1.5.0")
 bazel_dep(name = "platforms", version = "0.0.8")
 
-# Used for packaging
 # Feature[INTERNAL_RELEASE_ONLY]
-bazel_dep(name = "rules_pkg", version = "0.10.1", dev_dependency= True)
+# Used for packaging
+bazel_dep(name = "rules_pkg", version = "0.10.1")
 bazel_dep(name = "stardoc", version = "0.5.6", dev_dependency = True)
 # End Feature
 
