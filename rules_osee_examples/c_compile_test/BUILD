@@ -34,7 +34,7 @@ apply_applicability(
 
 cc_library(
     name="subheaders",
-    hdrs=["//level1/level2:processed_subhdrs"]
+    hdrs=["//rules_osee_examples/c_compile_test/level1/level2:processed_subhdrs"]
 )
 
 cc_library(
@@ -50,11 +50,11 @@ cc_library(
 cc_library(
     name="test_nested",
     srcs=[":processed_srcs"],
-    hdrs=["//level1/level2:processed_subhdrs",":headers"],
-    includes = ["//level1/level2:processed_subhdrs",":processed_hdrs", "level1/level2"],
+    hdrs=["//rules_osee_examples/c_compile_test/level1/level2:processed_subhdrs",":headers"],
+    includes = ["level1/level2"],
     deps=[":subheaders",":headers"],
     data=[
-        "//level1/level2:processed_subhdrs",
+        "//rules_osee_examples/c_compile_test/level1/level2:processed_subhdrs",
         ":processed_hdrs"
     ]
 )
@@ -63,7 +63,7 @@ cc_library(
     name="test_flat",
     srcs=[":processed_srcs"],
     hdrs=[":subheaders_from_top",":headers"],
-    includes = [":processed_subhdrs",":processed_hdrs"],
+    includes = ["level3/level4"],
     deps=[":subheaders_from_top",":headers"],
     data=[
         ":processed_subhdrs",
@@ -86,11 +86,17 @@ pkg_zip(
 diff_test(
     name = "flat_zip_test",
     file1 = ":example_zipped_test_flat",
-    file2 = "//__snapshot__:test_flat.zip",
+    file2 = select({
+        "@platforms//os:linux":"//rules_osee_examples/c_compile_test/__snapshot__:test_flat_gcc.zip",
+        "@platforms//os:windows":"//rules_osee_examples/c_compile_test/__snapshot__:test_flat_msvc.zip"
+    }),
 )
 
 diff_test(
     name = "nested_zip_test",
     file1 = ":example_zipped_test_nested",
-    file2 = "//__snapshot__:test_nested.zip",
+    file2 = select({
+        "@platforms//os:linux":"//rules_osee_examples/c_compile_test/__snapshot__:test_nested_gcc.zip",
+        "@platforms//os:windows":"//rules_osee_examples/c_compile_test/__snapshot__:test_nested_msvc.zip"
+    })
 )

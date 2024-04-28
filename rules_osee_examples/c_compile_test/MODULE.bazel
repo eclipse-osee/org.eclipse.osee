@@ -11,19 +11,13 @@
 #     Boeing - initial API and implementation
 # 
 module(
-    name = "c_compile_test",
-    version = "0.0.0",
+    name = "rules_osee_c_compile_test",
+    version = "0.0.1",
     bazel_compatibility = [">=6.0.0"],
-    compatibility_level = 1,
 )
-bazel_dep(name = "rules_osee", version = "0.0.0", dev_dependency = True)
-bazel_dep(name = "aspect_bazel_lib", version = "2.3.0", dev_dependency=True)
+bazel_dep(name = "rules_osee", version = "0.2.7")
+bazel_dep(name = "aspect_bazel_lib", version = "2.3.0")
 bazel_dep(name = "rules_pkg", version = "0.10.1")
-
-local_path_override(
-    module_name = "rules_osee",
-    path = "../"
-)
 
 bat = use_extension("@rules_osee//bat:extensions.bzl","bat")
 bat.toolchain()

@@ -10,15 +10,23 @@
 # Contributors:
 #     Boeing - initial API and implementation
 # 
+# Feature[INTERNAL_RELEASE_ONLY]
 load("@rules_pkg//:mappings.bzl", "pkg_files", "strip_prefix")
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
+load("@rules_osee//bat:apply_applicability.bzl","apply_applicability")
+apply_applicability(
+    name="applic_BUILD",
+    srcs=["BUILD"],
+    applic_config="@rules_osee//:rules_osee.json"
+)
 pkg_files(
     name="files_to_release",
     srcs = [
-        "BUILD",
+        "applic_BUILD",
     ] + glob(["*.bzl"]),
     strip_prefix = strip_prefix.from_root(),
     visibility = [
-        "//bat:__pkg__",
+        "//visibility:public",
     ]
 )
+# End Feature
