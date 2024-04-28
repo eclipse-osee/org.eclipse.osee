@@ -15,7 +15,7 @@ module(
     version = "0.0.1",
     bazel_compatibility = [">=6.0.0"],
 )
-bazel_dep(name = "rules_osee", version = "0.2.7")
+bazel_dep(name = "rules_osee", version = "0.2.8")
 bazel_dep(name = "aspect_bazel_lib", version = "2.3.0")
 bazel_dep(name = "rules_pkg", version = "0.10.1")
 
