@@ -43,6 +43,22 @@ impl FromStr for Substitution {
     }
 }
 #[cfg(feature = "serde")]
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct SubstitutionInner {
+    pub match_text: String,
+    pub substitute: String,
+}
+#[cfg(feature = "serde")]
+impl From<SubstitutionInner> for Substitution {
+    fn from(value: SubstitutionInner) -> Self {
+        Self {
+            match_text: value.match_text,
+            substitute: value.substitute,
+        }
+    }
+}
+#[cfg(feature = "serde")]
 use serde::{de::Error, Deserialize};
 #[cfg(feature = "serde")]
 impl<'de> Deserialize<'de> for Substitution {
@@ -52,24 +68,10 @@ impl<'de> Deserialize<'de> for Substitution {
     {
         #[derive(Deserialize)]
         #[serde(rename_all = "camelCase")]
-        struct SubstitutionInner {
-            pub match_text: String,
-            pub substitute: String,
-        }
-        impl From<SubstitutionInner> for Substitution {
-            fn from(value: SubstitutionInner) -> Self {
-                Self {
-                    match_text: value.match_text,
-                    substitute: value.substitute,
-                }
-            }
-        }
-        #[derive(Deserialize)]
-        #[serde(rename_all = "camelCase")]
         #[serde(untagged)]
         enum SubstitutionVariants {
             StringSub(String),
-            Substitution(SubstitutionInner),
+            SubstitutionElement(SubstitutionInner),
         }
         match SubstitutionVariants::deserialize(deserializer) {
             Ok(result) => match result {
@@ -83,7 +85,7 @@ impl<'de> Deserialize<'de> for Substitution {
                         substitute: "".to_string(),
                     }),
                 },
-                SubstitutionVariants::Substitution(sub) => Ok(sub.into()),
+                SubstitutionVariants::SubstitutionElement(sub) => Ok(sub.into()),
             },
             Err(deserializer_error) => Err(D::Error::custom(deserializer_error.to_string())),
         }

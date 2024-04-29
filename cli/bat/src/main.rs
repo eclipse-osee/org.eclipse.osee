@@ -153,10 +153,7 @@ fn main() {
                     let cloned_config = config.clone();
                     let (sender, receiver) = channel();
                     let _s1 = scope.spawn(move || {
-                        let substitutions = match config.substitutions {
-                            Some(res) => res,
-                            None => vec![],
-                        };
+                        let substitutions = config.substitutions.unwrap_or_default();
                         let sanitized_content = copy
                             .iter()
                             .cloned()

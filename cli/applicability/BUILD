@@ -11,7 +11,7 @@
 #     Boeing - initial API and implementation
 # 
 load("@crates//:defs.bzl", "all_crate_deps")
-load("@rules_rust//rust:defs.bzl", "rust_library", "rust_doc", "rust_clippy", "rust_test")
+load("@rules_rust//rust:defs.bzl", "rust_library", "rust_doc", "rust_clippy", "rust_test", "rust_doc_test")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -28,12 +28,19 @@ rust_library(
 
 rust_test(
     name="applicability_test",
-    crate=":applicability"
+    crate=":applicability",
+    size="small"
 )
 
 rust_doc(
     name="applicability_doc",
     crate=":applicability"
+)
+
+rust_doc_test(
+    name="applicability_doc_test",
+    crate=":applicability",
+    size="small"
 )
 
 rust_clippy(

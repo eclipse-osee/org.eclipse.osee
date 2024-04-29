@@ -1,0 +1,3 @@
+build --aspects=@rules_rust//rust:defs.bzl%rustfmt_aspect
+build --output_groups=+rustfmt_checks
+try-import %workspace%/bazelrc/.rustrc

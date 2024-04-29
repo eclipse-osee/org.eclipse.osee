@@ -11,7 +11,7 @@
 #     Boeing - initial API and implementation
 # 
 load("@crates//:defs.bzl", "all_crate_deps")
-load("@rules_rust//rust:defs.bzl", "rust_library", "rust_doc", "rust_clippy", "rust_test")
+load("@rules_rust//rust:defs.bzl", "rust_library", "rust_doc", "rust_clippy", "rust_test", "rust_doc_test")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -30,12 +30,24 @@ rust_library(
 
 rust_test(
     name="applicability_parser_test",
-    crate=":applicability_parser"
+    crate=":applicability_parser",
+    size="small",
+    crate_features = [
+        "default",
+        "derive",
+        "serde"
+    ]
 )
 
 rust_doc(
     name="applicability_parser_doc",
     crate=":applicability_parser"
+)
+
+rust_doc_test(
+    name="applicability_parser_doc_test",
+    crate=":applicability_parser",
+    size="small",
 )
 
 rust_clippy(

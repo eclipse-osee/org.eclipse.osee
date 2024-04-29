@@ -1146,7 +1146,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagOr {
     /// vec![].as_slice()
     /// ),
     /// Text("JHU Controller".to_string()));
-    /// 
+    ///
     /// assert_eq!(
     /// ApplicabilitySyntaxTagOr(
     /// vec![
@@ -1189,7 +1189,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagOr {
     /// vec![].as_slice()
     /// ),
     /// Text("Test Text\n".to_string()));
-    /// 
+    ///
     /// assert_eq!(
     /// ApplicabilitySyntaxTagOr(
     /// vec![
@@ -1232,7 +1232,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagOr {
     /// vec![].as_slice()
     /// ),
     /// Text("Test Text\n".to_string()));
-    /// 
+    ///
     /// assert_eq!(
     /// ApplicabilitySyntaxTagOr(
     /// vec![
