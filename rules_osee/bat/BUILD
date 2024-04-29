@@ -12,7 +12,7 @@
 # 
 package(default_visibility = ["//visibility:public"])
 load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
-load("//bat/private:toolchains_repo.bzl", "PLATFORMS")
+load("@rules_osee//bat/private:toolchains_repo.bzl", "PLATFORMS")
 # Feature[INTERNAL_RELEASE_ONLY]
 load("@rules_osee//bat:apply_applicability.bzl","apply_applicability")
 # End Feature

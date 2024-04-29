@@ -69,7 +69,7 @@ def _apply_applicability_impl(ctx):
     if(len(ctx.attr.end_comment_syntax)>1):
         fail("Length of end comment syntax is too long")
     output_dir = _create_config_directory(ctx,ctx.file.applic_config)
-    path_in_output= output_dir.files.to_list()[0].dirname.split("/bin/")[1]
+    path_in_output= output_dir.files.to_list()[0].dirname.split("/bin/")[1] if len(output_dir.files.to_list()[0].dirname.split("/bin/") ) > 1 else output_dir.files.to_list()[0].dirname
     outputs = []
     for src in ctx.attr.srcs:
         for file in src.files.to_list():
