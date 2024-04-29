@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarRef } from '@angular/material/snack-bar';
@@ -20,7 +20,7 @@ import { filter, tap } from 'rxjs';
 @Component({
 	selector: 'osee-snackbar-wrapper',
 	standalone: true,
-	imports: [CommonModule],
+	imports: [AsyncPipe],
 	templateUrl: './snackbar-wrapper.component.html',
 })
 export class SnackbarWrapperComponent {
@@ -46,7 +46,7 @@ export class SnackbarWrapperComponent {
 @Component({
 	selector: 'osee-snackbar-internal',
 	standalone: true,
-	imports: [CommonModule, MatButton],
+	imports: [AsyncPipe, MatButton],
 	templateUrl: './snackbar-wrapper-internal.component.html',
 })
 export class SnackbarWrapperInternalComponent {

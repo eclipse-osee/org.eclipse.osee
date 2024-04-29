@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2021 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2021 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <div class="mat-elevation-z8">
 	<osee-typesearch-element-table-search></osee-typesearch-element-table-search>
 	<table
@@ -17,80 +17,76 @@
 		multiTemplateDataRows
 		[dataSource]="dataSource"
 		class="tw-w-full">
-		<ng-container
-			[matColumnDef]="header"
-			*ngFor="
-				let header of headers;
-				let i = index;
-				trackBy: valueTracker
-			">
-			<th
-				mat-header-cell
-				*matHeaderCellDef
-				[attr.colspan]="headers[i]"
-				class="tw-text-primary-600">
-				<ng-container *ngIf="header !== 'paths'; else path">
-					{{ getHumanReadable(header) | async }}
-				</ng-container>
-				<ng-template #path> Connection View </ng-template>
-			</th>
-			<td
-				mat-cell
-				*matCellDef="let element; let i = dataIndex">
-				<ng-container
-					*ngIf="
-						header === 'notes' || header === 'description';
-						else noShrink
-					">
-					{{
-						element[header]
-							| displayTruncatedStringWithFieldOverflow: 15
-					}}
-				</ng-container>
-				<ng-template #noShrink>
-					<ng-container *ngIf="header !== 'paths'; else pathButton">
-						<ng-container *ngIf="isPlatformType(element[header])">
-							{{ element[header].name }}
-						</ng-container>
-						<ng-container *ngIf="!isPlatformType(element[header])">
-							{{ element[header] }}
-						</ng-container>
-					</ng-container>
-					<ng-template #pathButton>
-						<ng-container *ngIf="element.paths.length === 1">
-							<ng-container *ngIf="branchType | async as _type">
-								<ng-container *ngIf="branchId | async as _id">
-									<a
-										mat-button
-										[routerLink]="
-											'/ple/messaging/connections/' +
-											_type +
-											'/' +
-											_id +
-											'/' +
-											element.paths[0]
-										"
-										queryParamsHandling="merge"
-										>Go to</a
-									>
-								</ng-container>
-							</ng-container>
-						</ng-container>
-						<ng-container *ngIf="element.paths.length > 1">
-							<button
-								mat-button
-								[matMenuTriggerFor]="routeMenu"
-								[matMenuTriggerData]="{
-									paths: element.paths,
-									names: element.buttonNames
-								}">
-								Go to
-							</button>
-						</ng-container>
-					</ng-template>
-				</ng-template>
-			</td>
-		</ng-container>
+		@for (
+			header of headers;
+			track valueTracker(i, header);
+			let i = $index
+		) {
+			<ng-container [matColumnDef]="header">
+				<th
+					mat-header-cell
+					*matHeaderCellDef
+					[attr.colspan]="headers[i]"
+					class="tw-text-primary-600">
+					@if (header !== 'paths') {
+						{{ getHumanReadable(header) | async }}
+					} @else {
+						Connection View
+					}
+					<ng-template #path> Connection View </ng-template>
+				</th>
+				<td
+					mat-cell
+					*matCellDef="let element; let i = dataIndex">
+					@if (header === 'notes' || header === 'description') {
+						{{
+							element[header]
+								| displayTruncatedStringWithFieldOverflow: 15
+						}}
+					} @else {
+						@if (header !== 'paths') {
+							@if (isPlatformType(element[header])) {
+								{{ element[header].name }}
+							}
+							@if (!isPlatformType(element[header])) {
+								{{ element[header] }}
+							}
+						} @else {
+							@if (element.paths.length === 1) {
+								@if (branchType | async; as _type) {
+									@if (branchId | async; as _id) {
+										<a
+											mat-button
+											[routerLink]="
+												'/ple/messaging/connections/' +
+												_type +
+												'/' +
+												_id +
+												'/' +
+												element.paths[0]
+											"
+											queryParamsHandling="merge"
+											>Go to</a
+										>
+									}
+								}
+							}
+							@if (element.paths.length > 1) {
+								<button
+									mat-button
+									[matMenuTriggerFor]="routeMenu"
+									[matMenuTriggerData]="{
+										paths: element.paths,
+										names: element.buttonNames
+									}">
+									Go to
+								</button>
+							}
+						}
+					}
+				</td>
+			</ng-container>
+		}
 		<tr
 			mat-header-row
 			*matHeaderRowDef="headers; sticky: true"></tr>
@@ -105,9 +101,9 @@
 		matMenuContent
 		let-paths="paths"
 		let-names="names">
-		<ng-container *ngIf="branchType | async as _type">
-			<ng-container *ngIf="branchId | async as _id">
-				<ng-container *ngFor="let path of paths; index as i">
+		@if (branchType | async; as _type) {
+			@if (branchId | async; as _id) {
+				@for (path of paths; track path; let i = $index) {
 					<a
 						mat-button
 						[routerLink]="
@@ -122,8 +118,8 @@
 						class="tw-h-auto"
 						>{{ names[i] }}</a
 					>
-				</ng-container>
-			</ng-container>
-		</ng-container>
+				}
+			}
+		}
 	</ng-template>
 </mat-menu>

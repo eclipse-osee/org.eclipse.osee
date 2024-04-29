@@ -78,22 +78,6 @@ describe('ApplicabilityTableComponent', () => {
 		expect(component).toBeTruthy();
 	});
 
-	it('should filter the table', async () => {
-		let spy = spyOn(component, 'applyFilter').and.callThrough();
-		let input = await (
-			await loader.getHarness(
-				MatFormFieldHarness.with({
-					floatingLabelText: 'Filter Configuration Information',
-				})
-			)
-		).getControl(MatInputHarness);
-		expect(input).toBeDefined();
-		await input?.focus();
-		await input?.setValue('abcdef');
-		await input?.blur();
-		expect(spy).toHaveBeenCalled();
-	});
-
 	it('should check for a compound applicability', () => {
 		expect(
 			component.isCompoundApplic('TEST1 = INCLUDED | TEST2 = INCLUDED')

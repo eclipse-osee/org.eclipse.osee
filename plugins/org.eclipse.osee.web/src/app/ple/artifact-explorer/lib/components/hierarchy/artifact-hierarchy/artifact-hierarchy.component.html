@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 @if (branchId$ | async; as branchId) {
 	@if (branchType$ | async; as branchType) {
 		@if (artifacts | async; as artifacts) {
@@ -54,18 +54,18 @@
 						</button>
 					</div>
 					<!-- child artifacts -->
-					<div
-						class="tw-pl-8"
-						*ngIf="artifactIsExpanded(artifact.id)">
-						@if (paths.length > 0) {
-							<osee-artifact-hierarchy
-								[artifactId]="artifact.id"
-								[paths]="paths" />
-						} @else {
-							<osee-artifact-hierarchy
-								[artifactId]="artifact.id" />
-						}
-					</div>
+					@if (artifactIsExpanded(artifact.id)) {
+						<div class="tw-pl-8">
+							@if (paths.length > 0) {
+								<osee-artifact-hierarchy
+									[artifactId]="artifact.id"
+									[paths]="paths" />
+							} @else {
+								<osee-artifact-hierarchy
+									[artifactId]="artifact.id" />
+							}
+						</div>
+					}
 				}
 				<!-- relations (toggled via option) -->
 				@if (paths.length > 0) {

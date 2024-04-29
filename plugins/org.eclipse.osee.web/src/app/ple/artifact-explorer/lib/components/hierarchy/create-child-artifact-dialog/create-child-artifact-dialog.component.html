@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2024 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2024 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <form
 	#createChildArtifactForm="ngForm"
 	oseeForm>
@@ -41,11 +41,13 @@
 					[(ngModel)]="data.name" />
 			</mat-form-field>
 
-			<ng-container
-				*ngIf="{
+			@if (
+				{
 					openedState: isOpen | async,
 					filter: filter | async
-				} as autoCompleteState">
+				};
+				as autoCompleteState
+			) {
 				<mat-form-field
 					subscriptSizing="dynamic"
 					id="artifactType-selector"
@@ -65,31 +67,30 @@
 						(ngModelChange)="updateTypeAhead($event)"
 						#artifactTypes="ngModel"
 						[matAutocomplete]="autoArtifactTypes" />
-					<mat-icon
-						*ngIf="!autoCompleteState.openedState"
-						matIconSuffix
-						>arrow_drop_down</mat-icon
-					>
-					<button
-						mat-icon-button
-						*ngIf="
-							autoCompleteState.openedState &&
-							autoCompleteState.filter !== ''
-						"
-						matIconSuffix
-						(mousedown)="clear()">
-						<mat-icon>close</mat-icon>
-					</button>
+					@if (!autoCompleteState.openedState) {
+						<mat-icon matIconSuffix>arrow_drop_down</mat-icon>
+					}
+					@if (
+						autoCompleteState.openedState &&
+						autoCompleteState.filter !== ''
+					) {
+						<button
+							mat-icon-button
+							matIconSuffix
+							(mousedown)="clear()">
+							<mat-icon>close</mat-icon>
+						</button>
+					}
 					<mat-autocomplete
 						autoActiveFirstOption="true"
 						autoSelectActiveOption="true"
 						#autoArtifactTypes="matAutocomplete"
 						(optionSelected)="updateValue($event.option.value)">
-						<mat-option
-							*ngFor="let type of _artifactTypes | async"
-							[value]="type">
-							{{ type.name }}
-						</mat-option>
+						@for (type of _artifactTypes | async; track type) {
+							<mat-option [value]="type">
+								{{ type.name }}
+							</mat-option>
+						}
 						<ng-template #loading>
 							<mat-option
 								id="-1"
@@ -99,7 +100,7 @@
 						</ng-template>
 					</mat-autocomplete>
 				</mat-form-field>
-			</ng-container>
+			}
 
 			@if (_attributes | async; as attributes) {
 				<osee-attributes-editor

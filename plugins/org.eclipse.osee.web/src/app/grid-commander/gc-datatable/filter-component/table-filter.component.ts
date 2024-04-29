@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgFor, NgIf, TitleCasePipe } from '@angular/common';
+import { AsyncPipe, TitleCasePipe } from '@angular/common';
 import { Component, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
@@ -36,9 +36,7 @@ import { ColumnFilterComponent } from './column-filter/column-filter.component';
 	styles: [],
 	standalone: true,
 	imports: [
-		NgIf,
 		FormsModule,
-		NgFor,
 		ColumnFilterComponent,
 		AsyncPipe,
 		TitleCasePipe,

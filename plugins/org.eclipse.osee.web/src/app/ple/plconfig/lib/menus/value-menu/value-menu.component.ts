@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenuItem } from '@angular/material/menu';
@@ -27,7 +26,7 @@ import {
 	templateUrl: './value-menu.component.html',
 	styles: [],
 	standalone: true,
-	imports: [NgIf, MatMenuItem, MatIcon],
+	imports: [MatMenuItem, MatIcon],
 })
 export class ValueMenuComponent {
 	@Input() value: ExtendedNameValuePair | ExtendedNameValuePairWithChanges = {

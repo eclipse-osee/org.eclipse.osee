@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, WritableSignal, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatButton } from '@angular/material/button';
@@ -24,14 +24,7 @@ import { CiDashboardControlsComponent } from '../ci-dashboard-controls/ci-dashbo
 @Component({
 	selector: 'osee-ci-dashboard-import',
 	standalone: true,
-	imports: [
-		AsyncPipe,
-		NgIf,
-		NgFor,
-		CiDashboardControlsComponent,
-		MatButton,
-		MatIcon,
-	],
+	imports: [AsyncPipe, CiDashboardControlsComponent, MatButton, MatIcon],
 	templateUrl: './ci-dashboard-import.component.html',
 })
 export default class CiDashboardImportComponent {

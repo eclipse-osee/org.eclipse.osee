@@ -1,103 +1,104 @@
 <!--
- * Copyright (c) 2021 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
-<h1
-	mat-dialog-title
-	*ngIf="data.editable === false">
-	Configuration Group Details
-</h1>
-<h1
-	mat-dialog-title
-	*ngIf="data.editable === true">
-	Editing {{ data.configGroup.name }}
-</h1>
+* Copyright (c) 2021 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
+@if (data.editable === false) {
+	<h1 mat-dialog-title>Configuration Group Details</h1>
+}
+@if (data.editable === true) {
+	<h1 mat-dialog-title>Editing {{ data.configGroup.name }}</h1>
+}
 <div mat-dialog-content>
-	<div *ngIf="data.editable === true">
-		<mat-form-field class="tw-text-lg">
-			<mat-label>Configuration Group Name</mat-label>
-			<input
-				matInput
-				type="text"
-				[(ngModel)]="data.configGroup.name"
-				#input
-				required />
-		</mat-form-field>
-		<br />
-		<mat-form-field class="tw-text-lg">
-			<mat-label>Configuration Group Description</mat-label>
-			<input
-				matInput
-				type="text"
-				[(ngModel)]="data.configGroup.description"
-				#input
-				required />
-		</mat-form-field>
-		<br />
+	@if (data.editable === true) {
 		<div>
-			<mat-label class="tw-text-lg">Select Views</mat-label>
-			<mat-selection-list
-				[(ngModel)]="data.configGroup.views"
-				color="warn"
-				class="tw-text-lg">
-				<mat-list-option
-					*ngFor="let view of totalConfigurations"
-					[value]="view"
-					[attr.data-cy]="'view-' + view.name">
-					{{ view.name }}
-				</mat-list-option>
-			</mat-selection-list>
-		</div>
-	</div>
-	<div *ngIf="data.editable === false">
-		<div>
-			<mat-label><b>Configuration Group Name:</b></mat-label>
-			{{ data.configGroup.name }}
-		</div>
-		<div>
-			<mat-label><b>Configuration Group Description:</b></mat-label>
-			{{ data.configGroup.description }}
-		</div>
-		<div>
-			<mat-label><b>Configurations:</b></mat-label>
-			<div *ngFor="let config of data.configGroup.views">
-				{{ config.name }}
+			<mat-form-field class="tw-text-lg">
+				<mat-label>Configuration Group Name</mat-label>
+				<input
+					matInput
+					type="text"
+					[(ngModel)]="data.configGroup.name"
+					#input
+					required />
+			</mat-form-field>
+			<br />
+			<mat-form-field class="tw-text-lg">
+				<mat-label>Configuration Group Description</mat-label>
+				<input
+					matInput
+					type="text"
+					[(ngModel)]="data.configGroup.description"
+					#input
+					required />
+			</mat-form-field>
+			<br />
+			<div>
+				<mat-label class="tw-text-lg">Select Views</mat-label>
+				<mat-selection-list
+					[(ngModel)]="data.configGroup.views"
+					color="warn"
+					class="tw-text-lg">
+					@for (view of totalConfigurations; track view) {
+						<mat-list-option
+							[value]="view"
+							[attr.data-cy]="'view-' + view.name">
+							{{ view.name }}
+						</mat-list-option>
+					}
+				</mat-selection-list>
 			</div>
 		</div>
-	</div>
+	}
+	@if (data.editable === false) {
+		<div>
+			<div>
+				<mat-label><b>Configuration Group Name:</b></mat-label>
+				{{ data.configGroup.name }}
+			</div>
+			<div>
+				<mat-label><b>Configuration Group Description:</b></mat-label>
+				{{ data.configGroup.description }}
+			</div>
+			<div>
+				<mat-label><b>Configurations:</b></mat-label>
+				@for (config of data.configGroup.views; track config) {
+					<div>
+						{{ config.name }}
+					</div>
+				}
+			</div>
+		</div>
+	}
 </div>
 <div mat-dialog-actions>
 	<button
 		mat-button
 		(click)="onNoClick()">
-		<div
-			*ngIf="data.editable === true"
-			data-cy="cancel-btn">
-			Cancel
-		</div>
-		<div
-			*ngIf="data.editable === false"
-			data-cy="ok-btn">
-			Ok
-		</div>
+		@if (data.editable === true) {
+			<div data-cy="cancel-btn">Cancel</div>
+		}
+		@if (data.editable === false) {
+			<div data-cy="ok-btn">Ok</div>
+		}
 	</button>
-	<div *ngIf="data.editable === true">
-		<button
-			mat-button
-			[mat-dialog-close]="data"
-			cdkFocusInitial
-			color="primary"
-			[disabled]="data.configGroup.name.length <= 0"
-			data-cy="submit-btn">
-			Ok
-		</button>
-	</div>
+	@if (data.editable === true) {
+		<div>
+			<button
+				mat-button
+				[mat-dialog-close]="data"
+				cdkFocusInitial
+				color="primary"
+				[disabled]="data.configGroup.name.length <= 0"
+				data-cy="submit-btn">
+				Ok
+			</button>
+		</div>
+	}
 </div>

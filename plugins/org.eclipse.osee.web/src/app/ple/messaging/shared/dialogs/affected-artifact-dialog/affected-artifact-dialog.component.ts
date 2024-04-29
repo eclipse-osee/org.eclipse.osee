@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NgFor } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import {
@@ -36,7 +35,6 @@ import type { affectedArtifactWarning } from '@osee/messaging/shared/types';
 		MatDialogActions,
 		MatButton,
 		MatDialogClose,
-		NgFor,
 	],
 })
 export class AffectedArtifactDialogComponent<T = unknown> {

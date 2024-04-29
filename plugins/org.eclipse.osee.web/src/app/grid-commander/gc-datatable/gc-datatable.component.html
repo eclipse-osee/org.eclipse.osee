@@ -1,273 +1,326 @@
 <!--
- * Copyright (c) 2022 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
-<div
-	class="tw-relative tw-z-[1] tw-mt-4"
-	*ngIf="(displayedTableData | async)?.length; else noData">
-	<ng-container *ngIf="dataSource | async as data">
-		<table
-			class="mat-elevation-z8 tw-w-[98.5%]"
-			mat-table
-			[dataSource]="data"
-			#dataTable
-			matSort
-			(matSortChange)="sortData($event, data.data)">
-			<ng-container *ngIf="columnData | async as columnSchema">
-				<ng-container
-					[matColumnDef]="col.name"
-					*ngFor="let col of columnSchema">
-					<ng-container *ngIf="col.name === 'select'">
-						<th
-							mat-header-cell
-							*matHeaderCellDef>
-							<mat-checkbox
-								(change)="$event ? masterToggle() : null"
-								[checked]="
-									selection.hasValue() && isAllSelected()
-								"
-								[indeterminate]="
-									selection.hasValue() && !isAllSelected()
-								">
-							</mat-checkbox>
-						</th>
-					</ng-container>
-
-					<ng-container
-						*ngIf="
-							col.name !== 'select' && col.name !== 'Action';
-							else header
-						">
-						<th
-							mat-header-cell
-							*matHeaderCellDef
-							class="mat-headline-6 tw-justify-center tw-text-primary-a700"
-							mat-sort-header>
-							{{ col.name }}
-						</th>
-					</ng-container>
-					<ng-template #header>
-						<th
-							mat-header-cell
-							*matHeaderCellDef
-							class="mat-headline-6 tw-justify-center tw-text-center tw-text-primary-a700">
-							{{ col.name }}
-						</th>
-					</ng-template>
-
-					<td
-						class="tw-text-center"
-						mat-cell
-						*matCellDef="let row; let i = index">
-						<ng-container
-							[ngSwitch]="col.type"
-							*ngIf="!row.isEdit">
-							<div
-								class="tw-flex tw-items-end tw-justify-center"
-								*ngSwitchCase="'Action'">
-								<a>
-									<mat-icon
-										*ngIf="row.Favorite === 'false'"
-										class="tw-text-accent-a200"
-										(click)="toggleFavorite(row)"
-										matTooltip="Favorite Command"
-										matTooltipClass="tw-bg-accent-a200">
-										star_border
-									</mat-icon>
-									<mat-icon
-										*ngIf="row.Favorite === 'true'"
-										class="tw-text-accent-a200"
-										(click)="toggleFavorite(row)"
-										matTooltip="Favorite Command"
-										matTooltipClass="tw-bg-accent-a200">
-										star
-									</mat-icon>
-								</a>
-								<a>
-									<mat-icon
-										class="tw-mx-[0.2rem] tw-my-0 tw-text-success-500"
-										matTooltip="Add row"
-										*ngIf="canAddRowViaAction | async"
-										matTooltipClass="tw-bg-success-500">
-										add
-									</mat-icon>
-								</a>
-								<a (click)="row.isEdit = !row.isEdit">
-									<mat-icon
-										class="tw-mt-2"
-										matTooltip="Edit row"
-										*ngIf="canEditRowViaAction | async">
-										mode_edit
-									</mat-icon>
-								</a>
-								<a>
-									<mat-icon
-										class="tw-mx-[0.2rem] tw-my-0 tw-text-warning-700"
-										(click)="
-											openDeleteRowDialog('Delete', row)
-										"
-										matTooltip="Delete row"
-										matTooltipClass="tw-bg-warning-700">
-										delete
-									</mat-icon>
-								</a>
-								<a>
-									<mat-icon
-										class="tw-text-primary-900"
-										(click)="hideRow(row)"
-										*ngIf="canHideRowViaAction | async"
-										matTooltip="Hide row"
-										matTooltipClass="tw-bg-primary-900">
-										visibility_off
-									</mat-icon>
-								</a>
-							</div>
-
-							<ng-container *ngSwitchCase="'isSelect'">
-								<div>
+* Copyright (c) 2022 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
+@if ((displayedTableData | async)?.length) {
+	<div class="tw-relative tw-z-[1] tw-mt-4">
+		@if (dataSource | async; as data) {
+			<table
+				class="mat-elevation-z8 tw-w-[98.5%]"
+				mat-table
+				[dataSource]="data"
+				#dataTable
+				matSort
+				(matSortChange)="sortData($event, data.data)">
+				@if (columnData | async; as columnSchema) {
+					@for (col of columnSchema; track col) {
+						<ng-container [matColumnDef]="col.name">
+							@if (col.name === 'select') {
+								<th
+									mat-header-cell
+									*matHeaderCellDef>
 									<mat-checkbox
-										(click)="$event.stopPropagation()"
 										(change)="
-											$event
-												? onElementToggled(row)
-												: null
+											$event ? masterToggle() : null
 										"
-										[checked]="selection.isSelected(row)">
+										[checked]="
+											selection.hasValue() &&
+											isAllSelected()
+										"
+										[indeterminate]="
+											selection.hasValue() &&
+											!isAllSelected()
+										">
 									</mat-checkbox>
-								</div>
-							</ng-container>
-							<ng-container *ngSwitchDefault>
-								<div (click)="onRowClicked(row)">
-									{{ row[col.name] }}
-								</div>
-							</ng-container>
+								</th>
+							}
+							@if (
+								col.name !== 'select' && col.name !== 'Action'
+							) {
+								<th
+									mat-header-cell
+									*matHeaderCellDef
+									class="mat-headline-6 tw-justify-center tw-text-primary-a700"
+									mat-sort-header>
+									{{ col.name }}
+								</th>
+							} @else {
+								<th
+									mat-header-cell
+									*matHeaderCellDef
+									class="mat-headline-6 tw-justify-center tw-text-center tw-text-primary-a700">
+									{{ col.name }}
+								</th>
+							}
+							<td
+								class="tw-text-center"
+								mat-cell
+								*matCellDef="let row; let i = index">
+								@if (!row.isEdit) {
+									@switch (col.type) {
+										@case ('Action') {
+											<div
+												class="tw-flex tw-items-end tw-justify-center">
+												<a>
+													@if (
+														row.Favorite === 'false'
+													) {
+														<mat-icon
+															class="tw-text-accent-a200"
+															(click)="
+																toggleFavorite(
+																	row
+																)
+															"
+															matTooltip="Favorite Command"
+															matTooltipClass="tw-bg-accent-a200">
+															star_border
+														</mat-icon>
+													}
+													@if (
+														row.Favorite === 'true'
+													) {
+														<mat-icon
+															class="tw-text-accent-a200"
+															(click)="
+																toggleFavorite(
+																	row
+																)
+															"
+															matTooltip="Favorite Command"
+															matTooltipClass="tw-bg-accent-a200">
+															star
+														</mat-icon>
+													}
+												</a>
+												<a>
+													@if (
+														canAddRowViaAction
+															| async
+													) {
+														<mat-icon
+															class="tw-mx-[0.2rem] tw-my-0 tw-text-success-500"
+															matTooltip="Add row"
+															matTooltipClass="tw-bg-success-500">
+															add
+														</mat-icon>
+													}
+												</a>
+												<a
+													(click)="
+														row.isEdit = !row.isEdit
+													">
+													@if (
+														canEditRowViaAction
+															| async
+													) {
+														<mat-icon
+															class="tw-mt-2"
+															matTooltip="Edit row">
+															mode_edit
+														</mat-icon>
+													}
+												</a>
+												<a>
+													<mat-icon
+														class="tw-mx-[0.2rem] tw-my-0 tw-text-warning-700"
+														(click)="
+															openDeleteRowDialog(
+																'Delete',
+																row
+															)
+														"
+														matTooltip="Delete row"
+														matTooltipClass="tw-bg-warning-700">
+														delete
+													</mat-icon>
+												</a>
+												<a>
+													@if (
+														canHideRowViaAction
+															| async
+													) {
+														<mat-icon
+															class="tw-text-primary-900"
+															(click)="
+																hideRow(row)
+															"
+															matTooltip="Hide row"
+															matTooltipClass="tw-bg-primary-900">
+															visibility_off
+														</mat-icon>
+													}
+												</a>
+											</div>
+										}
+										@case ('isSelect') {
+											<div>
+												<mat-checkbox
+													(click)="
+														$event.stopPropagation()
+													"
+													(change)="
+														$event
+															? onElementToggled(
+																	row
+															  )
+															: null
+													"
+													[checked]="
+														selection.isSelected(
+															row
+														)
+													">
+												</mat-checkbox>
+											</div>
+										}
+										@default {
+											<div (click)="onRowClicked(row)">
+												{{ row[col.name] }}
+											</div>
+										}
+									}
+								}
+								@if (row.isEdit) {
+									@switch (col.type) {
+										@case ('Action') {
+											<div
+												class="tw-flex tw-items-end tw-justify-center">
+												<a
+													(click)="
+														row.isEdit = !row.isEdit
+													">
+													<mat-icon
+														class="tw-mr-[0.2rem] tw-text-success-500"
+														matTooltip="Save Changes"
+														matTooltipClass="tw-bg-success-500">
+														done_outline
+													</mat-icon>
+												</a>
+												<a
+													(click)="
+														row.isEdit = !row.isEdit
+													">
+													<mat-icon
+														class="tw-mr-[0.2rem] tw-text-warning-700"
+														matTooltip="Cancel Changes"
+														matTooltipClass="tw-bg-warning-700">
+														update_disabled
+													</mat-icon>
+												</a>
+											</div>
+										}
+										@case ('isSelect') {
+											<div>
+												<mat-checkbox
+													disabled="true"
+													style="
+														opacity: 0;
+													"></mat-checkbox>
+											</div>
+										}
+										@default {
+											<mat-form-field
+												appearance="outline">
+												<input
+													[type]="col.name"
+													matInput
+													[(ngModel)]="
+														row[col.name]
+													" />
+											</mat-form-field>
+										}
+									}
+								}
+							</td>
 						</ng-container>
-						<ng-container
-							[ngSwitch]="col.type"
-							*ngIf="row.isEdit">
-							<div
-								class="tw-flex tw-items-end tw-justify-center"
-								*ngSwitchCase="'Action'">
-								<a (click)="row.isEdit = !row.isEdit">
-									<mat-icon
-										class="tw-mr-[0.2rem] tw-text-success-500"
-										matTooltip="Save Changes"
-										matTooltipClass="tw-bg-success-500">
-										done_outline
-									</mat-icon>
-								</a>
-
-								<a (click)="row.isEdit = !row.isEdit">
-									<mat-icon
-										class="tw-mr-[0.2rem] tw-text-warning-700"
-										matTooltip="Cancel Changes"
-										matTooltipClass="tw-bg-warning-700">
-										update_disabled
-									</mat-icon>
-								</a>
-							</div>
-							<ng-container *ngSwitchCase="'isSelect'">
-								<div>
-									<mat-checkbox
-										disabled="true"
-										style="opacity: 0"></mat-checkbox>
-								</div>
-							</ng-container>
-
-							<mat-form-field
-								appearance="outline"
-								*ngSwitchDefault>
-								<input
-									[type]="col.name"
-									matInput
-									[(ngModel)]="row[col.name]" />
-							</mat-form-field>
-						</ng-container>
-					</td>
-				</ng-container>
-			</ng-container>
-
-			<ng-container *ngIf="displayedColumns | async as displayedCols">
-				<tr
-					mat-header-row
-					*matHeaderRowDef="displayedCols; sticky: true"
-					class="hover:tw-cursor-pointer"></tr>
-				<tr
-					mat-row
-					class="odd:tw-bg-background-unselected-chip even:tw-bg-background-disabled-button-toggle hover:tw-cursor-pointer hover:tw-bg-background-dialog dark:hover:tw-bg-background-hover"
-					*matRowDef="
-						let row;
-						columns: displayedCols;
-						let i = index
-					"></tr>
-			</ng-container>
-		</table>
-	</ng-container>
-	<mat-toolbar class="mat-elevation-z4 tw-w-full">
-		<mat-toolbar-row class="tw-mr-8 tw-bg-background-card">
-			<div class="tw-flex tw-items-end tw-justify-center">
-				<button
-					mat-icon-button
-					matTooltip="Add row"
-					matTooltipClass="tw-bg-success-500"
-					*ngIf="canAddRowViaAction | async">
-					<mat-icon
-						class="action-add tw-mx-[0.2rem] tw-my-0 tw-text-success-500">
-						add
-					</mat-icon>
-				</button>
-				<button
-					mat-icon-button
-					matTooltip="Delete selected rows"
-					matTooltipClass="tw-bg-warning-700"
-					*ngIf="multiRowDeleteActionIcon | async">
-					<mat-icon
-						class="tw-mx-[0.2rem] tw-my-0 tw-text-warning-700">
-						delete
-					</mat-icon>
-				</button>
-				<button
-					mat-icon-button
-					matTooltip="Hide selected rows"
-					matTooltipClass="tw-bg-primary-900"
-					(click)="hideSelectedRows()"
-					*ngIf="canHideRowViaAction | async">
-					<mat-icon class="tw-text-primary-900">
-						visibility_off
-					</mat-icon>
-				</button>
-				<button
-					mat-icon-button
-					matTooltip="Unhide rows"
-					matTooltipClass="tw-bg-primary-900"
-					[disabled]="hiddenRows.value.length === 0"
-					(click)="showHiddenRows()"
-					*ngIf="canHideRowViaAction | async">
-					<mat-icon class="tw-text-primary-900">
-						visibility
-					</mat-icon>
-				</button>
-			</div>
-			<mat-paginator
-				class="tw-w-full"
-				hidePageSize
-				showFirstLastButtons
-				pageSize="100"
-				aria-label="Select page">
-			</mat-paginator>
-		</mat-toolbar-row>
-	</mat-toolbar>
-</div>
-<ng-template #noData>
+					}
+				}
+				@if (displayedColumns | async; as displayedCols) {
+					<tr
+						mat-header-row
+						*matHeaderRowDef="displayedCols; sticky: true"
+						class="hover:tw-cursor-pointer"></tr>
+					<tr
+						mat-row
+						class="odd:tw-bg-background-unselected-chip even:tw-bg-background-disabled-button-toggle hover:tw-cursor-pointer hover:tw-bg-background-dialog dark:hover:tw-bg-background-hover"
+						*matRowDef="
+							let row;
+							columns: displayedCols;
+							let i = index
+						"></tr>
+				}
+			</table>
+		}
+		<mat-toolbar class="mat-elevation-z4 tw-w-full">
+			<mat-toolbar-row class="tw-mr-8 tw-bg-background-card">
+				<div class="tw-flex tw-items-end tw-justify-center">
+					@if (canAddRowViaAction | async) {
+						<button
+							mat-icon-button
+							matTooltip="Add row"
+							matTooltipClass="tw-bg-success-500">
+							<mat-icon
+								class="action-add tw-mx-[0.2rem] tw-my-0 tw-text-success-500">
+								add
+							</mat-icon>
+						</button>
+					}
+					@if (multiRowDeleteActionIcon | async) {
+						<button
+							mat-icon-button
+							matTooltip="Delete selected rows"
+							matTooltipClass="tw-bg-warning-700">
+							<mat-icon
+								class="tw-mx-[0.2rem] tw-my-0 tw-text-warning-700">
+								delete
+							</mat-icon>
+						</button>
+					}
+					@if (canHideRowViaAction | async) {
+						<button
+							mat-icon-button
+							matTooltip="Hide selected rows"
+							matTooltipClass="tw-bg-primary-900"
+							(click)="hideSelectedRows()">
+							<mat-icon class="tw-text-primary-900">
+								visibility_off
+							</mat-icon>
+						</button>
+					}
+					@if (canHideRowViaAction | async) {
+						<button
+							mat-icon-button
+							matTooltip="Unhide rows"
+							matTooltipClass="tw-bg-primary-900"
+							[disabled]="hiddenRows.value.length === 0"
+							(click)="showHiddenRows()">
+							<mat-icon class="tw-text-primary-900">
+								visibility
+							</mat-icon>
+						</button>
+					}
+				</div>
+				<mat-paginator
+					class="tw-w-full"
+					hidePageSize
+					showFirstLastButtons
+					pageSize="100"
+					aria-label="Select page">
+				</mat-paginator>
+			</mat-toolbar-row>
+		</mat-toolbar>
+	</div>
+} @else {
 	<div class="tw-flex tw-justify-center">
 		<osee-no-data-to-display></osee-no-data-to-display>
 	</div>
-</ng-template>
+}

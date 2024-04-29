@@ -1,20 +1,22 @@
 <!--
- * Copyright (c) 2021 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
-<ng-container
-	*ngIf="{
+* Copyright (c) 2021 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
+@if (
+	{
 		openedState: isOpen | async,
 		filter: filter | async
-	} as autoCompleteState">
+	};
+	as autoCompleteState
+) {
 	<mat-form-field
 		appearance="fill"
 		subscriptSizing="dynamic"
@@ -41,9 +43,9 @@
 			#autoBranches="matAutocomplete"
 			[displayWith]="displayFn"
 			(optionSelected)="selectBranch($event.option.value)">
-			<ng-container *ngIf="_branches | async as branches; else loading">
-				<ng-container *ngIf="_count | async as count; else loading">
-					<ng-container *ngIf="_size | async as size; else loading">
+			@if (_branches | async; as branches) {
+				@if (_count | async; as count) {
+					@if (_size | async; as size) {
 						<osee-mat-option-loading
 							[data]="branches"
 							objectName="Branches"
@@ -59,17 +61,30 @@
 								</mat-option>
 							</ng-template>
 						</osee-mat-option-loading>
-					</ng-container>
-				</ng-container>
-			</ng-container>
-			<ng-template #loading>
+					} @else {
+						<mat-option
+							id="-1"
+							disabled
+							[value]="{ id: '-1', name: 'invalid' }">
+							Loading...
+						</mat-option>
+					}
+				} @else {
+					<mat-option
+						id="-1"
+						disabled
+						[value]="{ id: '-1', name: 'invalid' }">
+						Loading...
+					</mat-option>
+				}
+			} @else {
 				<mat-option
 					id="-1"
 					disabled
 					[value]="{ id: '-1', name: 'invalid' }">
 					Loading...
 				</mat-option>
-			</ng-template>
+			}
 		</mat-autocomplete>
 	</mat-form-field>
-</ng-container>
+}

@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2021 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2021 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <h1 mat-dialog-title>Add Configuration</h1>
 <div mat-dialog-content>
 	<mat-form-field class="tw-w-full tw-text-lg">
@@ -45,12 +45,16 @@
 		<mat-select
 			[(ngModel)]="data.copyFrom"
 			required>
-			<mat-option
-				*ngFor="let option of (branchApplicability | async)?.views"
-				[value]="option"
-				[attr.data-cy]="'option-' + option.name">
-				{{ option.name }}
-			</mat-option>
+			@for (
+				option of (branchApplicability | async)?.views;
+				track option
+			) {
+				<mat-option
+					[value]="option"
+					[attr.data-cy]="'option-' + option.name">
+					{{ option.name }}
+				</mat-option>
+			}
 		</mat-select>
 	</mat-form-field>
 	<br />
@@ -62,12 +66,13 @@
 			[(ngModel)]="data.group"
 			multiple
 			data-cy="field-configGroup">
-			<mat-option
-				*ngFor="let config of cfgGroups | async"
-				[value]="config"
-				[attr.data-cy]="'option-' + config.name">
-				{{ config.name }}
-			</mat-option>
+			@for (config of cfgGroups | async; track config) {
+				<mat-option
+					[value]="config"
+					[attr.data-cy]="'option-' + config.name">
+					{{ config.name }}
+				</mat-option>
+			}
 		</mat-select>
 	</mat-form-field>
 	<div>
@@ -80,17 +85,18 @@
 			[(ngModel)]="data.productApplicabilities"
 			color="primary"
 			class="tw-text-lg">
-			<mat-list-option
-				*ngFor="let type of productApplicabilities | async"
-				[value]="type.name"
-				[attr.data-cy]="
-					'field-product-type-' +
-					type.name +
-					'-' +
-					data.productApplicabilities.includes(type.name)
-				">
-				{{ type.name }}
-			</mat-list-option>
+			@for (type of productApplicabilities | async; track type) {
+				<mat-list-option
+					[value]="type.name"
+					[attr.data-cy]="
+						'field-product-type-' +
+						type.name +
+						'-' +
+						data.productApplicabilities.includes(type.name)
+					">
+					{{ type.name }}
+				</mat-list-option>
+			}
 		</mat-selection-list>
 	</div>
 </div>

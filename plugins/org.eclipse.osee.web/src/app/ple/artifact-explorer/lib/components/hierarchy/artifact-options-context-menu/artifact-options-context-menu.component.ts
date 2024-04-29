@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
@@ -35,7 +35,7 @@ import { DeleteArtifactDialogComponent } from '../delete-artifact-dialog/delete-
 @Component({
 	selector: 'osee-artifact-options-context-menu',
 	standalone: true,
-	imports: [CommonModule, MatMenuItem, MatIcon],
+	imports: [AsyncPipe, MatMenuItem, MatIcon],
 	templateUrl: './artifact-options-context-menu.component.html',
 })
 export class ArtifactOptionsContextMenuComponent {

@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <div class="tw-flex tw-h-full tw-flex-col">
 	<osee-server-health-page-header
 		[icon]="currNavItem.icon"
@@ -18,7 +18,7 @@
 	<!-- Important Nav Buttons -->
 	<div class="tw-flex tw-justify-center">
 		<div class="tw-grid tw-flex-1 tw-grid-cols-5 tw-gap-8 tw-p-8 tw-pt-0">
-			<ng-container *ngFor="let item of importantNavItems">
+			@for (item of importantNavItems; track item) {
 				<a
 					[matTooltip]="item.description"
 					[routerLink]="item.routerLink"
@@ -36,7 +36,7 @@
 						</div>
 					</div>
 				</a>
-			</ng-container>
+			}
 			@if (activeMq | async; as activeMq) {
 				<a
 					matTooltip="External Link to ActiveMQ Configuration Page"
@@ -83,7 +83,7 @@
 	<!-- Non-Important Nav Buttons -->
 	<div class="tw-flex tw-justify-center">
 		<div class="tw-grid tw-flex-1 tw-grid-cols-5 tw-gap-8 tw-p-8 tw-pt-0">
-			<ng-container *ngFor="let item of nonImportantNavItems">
+			@for (item of nonImportantNavItems; track item) {
 				<a
 					[matTooltip]="item.description"
 					[routerLink]="item.routerLink"
@@ -101,7 +101,7 @@
 						</div>
 					</div>
 				</a>
-			</ng-container>
+			}
 		</div>
 	</div>
 </div>

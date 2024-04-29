@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ControlContainer, FormsModule, NgModelGroup } from '@angular/forms';
 import { MatOption } from '@angular/material/core';
@@ -19,8 +18,8 @@ import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
 import { UniquePlatformTypeNameDirective } from '@osee/messaging/shared/directives';
 import type {
-	logicalTypeFieldInfo,
 	PlatformType,
+	logicalTypeFieldInfo,
 } from '@osee/messaging/shared/types';
 import { FirstLetterLowerPipe } from '@osee/shared/utils';
 
@@ -37,8 +36,6 @@ import { FirstLetterLowerPipe } from '@osee/shared/utils';
 		MatOption,
 		MatHint,
 		MatInput,
-		NgIf,
-		NgFor,
 		FirstLetterLowerPipe,
 		UniquePlatformTypeNameDirective,
 	],

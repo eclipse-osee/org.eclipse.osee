@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import {
@@ -29,7 +29,7 @@ import { TrainingCourse } from '../../types/training-course';
 	selector: 'osee-course-info-dialog',
 	standalone: true,
 	imports: [
-		CommonModule,
+		AsyncPipe,
 		MatDialogTitle,
 		MatDialogContent,
 		MatIcon,

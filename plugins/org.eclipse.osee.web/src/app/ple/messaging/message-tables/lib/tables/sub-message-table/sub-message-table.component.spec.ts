@@ -383,7 +383,7 @@ describe('SubMessageTableComponent', () => {
 		});
 
 		afterEach(() => {
-			component.matMenuTrigger.closeMenu();
+			component.matMenuTrigger().closeMenu();
 		});
 	});
 });

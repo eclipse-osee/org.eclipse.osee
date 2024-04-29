@@ -11,8 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { Component, Inject, ViewChild } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { Component, Inject, viewChild } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import {
 	MatAutocomplete,
@@ -50,7 +51,6 @@ import {
 } from '@osee/shared/components';
 import {
 	BehaviorSubject,
-	Subject,
 	debounceTime,
 	delay,
 	distinct,
@@ -86,18 +86,20 @@ import { AddStructureDialog } from './add-structure-dialog';
 		MatStepperPrevious,
 		MatDialogClose,
 		MatOptionLoadingComponent,
-		NgIf,
-		NgFor,
 		FormsModule,
 		AsyncPipe,
 		ApplicabilitySelectorComponent,
 	],
+	providers: [
+		{
+			provide: STRUCTURE_SERVICE_TOKEN,
+			useExisting: CurrentStructureService,
+		},
+	],
 })
 export class AddStructureDialogComponent {
-	@ViewChild(MatStepper) set _internalStepper(stepper: MatStepper) {
-		this.__internalStepper.next(stepper);
-	}
-	__internalStepper = new Subject<MatStepper>();
+	_internalStepper = viewChild.required(MatStepper);
+	__internalStepper = toObservable(this._internalStepper);
 
 	_firstStepFilled = new BehaviorSubject<boolean>(true);
 	private _moveToNextStep = this.__internalStepper.pipe(

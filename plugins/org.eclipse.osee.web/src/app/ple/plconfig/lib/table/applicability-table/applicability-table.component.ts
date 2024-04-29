@@ -10,14 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
-import {
-	AfterViewInit,
-	Component,
-	OnChanges,
-	SimpleChanges,
-	ViewChild,
-} from '@angular/core';
+import { AsyncPipe, NgClass } from '@angular/common';
+import { Component, effect, signal, viewChild } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatOption } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -54,7 +49,6 @@ import {
 } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
 import {
-	BehaviorSubject,
 	OperatorFunction,
 	combineLatest,
 	from,
@@ -72,7 +66,6 @@ import {
 	shareReplay,
 	switchMap,
 	take,
-	tap,
 } from 'rxjs/operators';
 import { ConfigGroupMenuComponent } from '../../menus/config-group-menu/config-group-menu.component';
 import { ConfigMenuComponent } from '../../menus/config-menu/config-menu.component';
@@ -82,8 +75,13 @@ import { DialogService } from '../../services/dialog.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
 import { ExtendedNameValuePairWithChanges } from '../../types/base-types/ExtendedNameValuePair';
-import { extendedFeature, trackableFeature } from '../../types/features/base';
 import {
+	extendedFeature,
+	extendedFeatureWithChanges,
+	trackableFeature,
+} from '../../types/features/base';
+import {
+	PlConfigApplicUIBranchMappingImpl,
 	view,
 	viewWithChanges,
 } from '../../types/pl-config-applicui-branch-mapping';
@@ -99,8 +97,6 @@ import {
 	imports: [
 		FormsModule,
 		AsyncPipe,
-		NgFor,
-		NgIf,
 		NgClass,
 		MatFormField,
 		MatLabel,
@@ -135,42 +131,39 @@ import {
 		ValueMenuComponent,
 	],
 })
-export class ApplicabilityTableComponent implements AfterViewInit, OnChanges {
-	branchApplicability = this.currentBranchService.branchApplicability.pipe(
-		share(),
-		shareReplay({ refCount: true, bufferSize: 1 })
-	);
-	private _filter = new BehaviorSubject<string>('');
-	dataSource = combineLatest([this.branchApplicability, this._filter]).pipe(
-		tap((value) => {
-			this.uiStateService.editableValue = value[0].editable;
-			this.uiStateService.groupsString = value[0].groups.map((a) => a.id);
-		}),
-		switchMap(([branchApplicability, filter]) =>
-			iif(
-				() => filter.length === 0,
-				of(new MatTableDataSource(branchApplicability.features)).pipe(
-					map((ds) => {
-						if (this.paginator) {
-							ds.paginator = this.paginator;
-						}
-						return ds;
-					})
-				),
-				of(new MatTableDataSource(branchApplicability.features)).pipe(
-					map((data) => {
-						if (this.paginator) {
-							data.paginator = this.paginator;
-						}
-						data.filter = filter;
-						if (data.paginator) {
-							data.paginator.firstPage();
-						}
-						return data;
-					})
-				)
-			)
-		)
+export class ApplicabilityTableComponent {
+	private branchApplicability =
+		this.currentBranchService.branchApplicability.pipe(
+			share(),
+			shareReplay({ refCount: true, bufferSize: 1 }),
+			takeUntilDestroyed()
+		);
+	private branchApplicabilitySignal = toSignal(this.branchApplicability, {
+		initialValue: new PlConfigApplicUIBranchMappingImpl(),
+	});
+	private sort = viewChild.required(MatSort);
+	private paginator = viewChild.required(MatPaginator);
+	protected filter = signal('');
+	protected dataSource = new MatTableDataSource<
+		extendedFeature | extendedFeatureWithChanges
+	>();
+	private _updateDataSourceWithData = effect(() => {
+		this.dataSource.data = this.branchApplicabilitySignal().features;
+	});
+	private _updateDataSourceWithSorter = effect(() => {
+		this.dataSource.sort = this.sort();
+	});
+	private _updateDataSourceWithPaginator = effect(() => {
+		this.dataSource.paginator = this.paginator();
+	});
+	private _updateDataSourceWithFilter = effect(
+		() => {
+			this.dataSource.filter = this.filter();
+			if (this.dataSource.paginator) {
+				this.dataSource.paginator.firstPage();
+			}
+		},
+		{ allowSignalWrites: true }
 	);
 
 	topLevelHeaders = this.currentBranchService.topLevelHeaders;
@@ -182,55 +175,32 @@ export class ApplicabilityTableComponent implements AfterViewInit, OnChanges {
 	viewCount = this.currentBranchService.viewCount;
 	groupCount = this.currentBranchService.groupCount;
 	groupList = this.currentBranchService.groupList;
-	_editable = this.uiStateService.editable;
+	_editable = this.currentBranchService.editable;
 	applicsWithFeatureConstraint$ =
 		this.currentBranchService.applicsWithFeatureConstraints;
 	feature$ = this.currentBranchService.branchApplicFeatures;
-	@ViewChild(MatSort, { static: false }) sort: MatSort;
 	menuPosition = {
 		x: '0',
 		y: '0',
 	};
-	@ViewChild('featureMenuTrigger', { static: true })
-	featureTrigger!: MatMenuTrigger;
-	@ViewChild('configMenuTrigger', { static: true })
-	configTrigger!: MatMenuTrigger;
-	@ViewChild('configGroupMenuTrigger', { static: true })
-	configGroupTrigger!: MatMenuTrigger;
-	@ViewChild('valueMenuTrigger', { static: true })
-	valueTrigger!: MatMenuTrigger;
+	featureTrigger = viewChild.required('featureMenuTrigger', {
+		read: MatMenuTrigger,
+	});
+	configTrigger = viewChild.required('configMenuTrigger', {
+		read: MatMenuTrigger,
+	});
+	configGroupTrigger = viewChild.required('configGroupMenuTrigger', {
+		read: MatMenuTrigger,
+	});
+	valueTrigger = viewChild.required('valueMenuTrigger', {
+		read: MatMenuTrigger,
+	});
 	constructor(
 		private uiStateService: PlConfigUIStateService,
 		private currentBranchService: PlConfigCurrentBranchService,
 		public dialog: MatDialog,
 		private dialogService: DialogService
-	) {
-		this.sort = new MatSort();
-	}
-	ngOnChanges(changes: SimpleChanges): void {
-		this.uiStateService.editableValue = false;
-	}
-
-	ngAfterViewInit() {
-		this.dataSource
-			.pipe(
-				take(1),
-				map((val) => {
-					val.sort = this.sort;
-					val.paginator = this.paginator;
-				})
-			)
-			.subscribe();
-	}
-	@ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
-	applyFilter(event: Event) {
-		this._filter.next(
-			(event.target as HTMLInputElement).value.trim().toLowerCase()
-		);
-	}
-	log(value: any) {
-		console.log(value);
-	}
+	) {}
 	valueTracker(index: any, item: any) {
 		return index;
 	}
@@ -604,16 +574,16 @@ export class ApplicabilityTableComponent implements AfterViewInit, OnChanges {
 		this.menuPosition.y = event.clientY + 'px';
 		switch (type) {
 			case 'FEATURE':
-				this.featureTrigger.menuData = {
+				this.featureTrigger().menuData = {
 					feature: data,
 				};
-				this.configTrigger.closeMenu();
-				this.configGroupTrigger.closeMenu();
-				this.valueTrigger.closeMenu();
-				this.featureTrigger.openMenu();
+				this.configTrigger().closeMenu();
+				this.configGroupTrigger().closeMenu();
+				this.valueTrigger().closeMenu();
+				this.featureTrigger().openMenu();
 				break;
 			case 'CONFIG':
-				this.configTrigger.menuData = {
+				this.configTrigger().menuData = {
 					config: this.currentBranchService
 						.findViewByName(data as unknown as string)
 						.pipe(
@@ -625,13 +595,13 @@ export class ApplicabilityTableComponent implements AfterViewInit, OnChanges {
 							>
 						),
 				};
-				this.configTrigger.openMenu();
-				this.configGroupTrigger.closeMenu();
-				this.valueTrigger.closeMenu();
-				this.featureTrigger.closeMenu();
+				this.configTrigger().openMenu();
+				this.configGroupTrigger().closeMenu();
+				this.valueTrigger().closeMenu();
+				this.featureTrigger().closeMenu();
 				break;
 			case 'GROUP':
-				this.configGroupTrigger.menuData = {
+				this.configGroupTrigger().menuData = {
 					group: this.currentBranchService
 						.findGroup(data as unknown as string)
 						.pipe(
@@ -645,19 +615,19 @@ export class ApplicabilityTableComponent implements AfterViewInit, OnChanges {
 							>
 						),
 				};
-				this.configGroupTrigger.openMenu();
-				this.configTrigger.closeMenu();
-				this.valueTrigger.closeMenu();
-				this.featureTrigger.closeMenu();
+				this.configGroupTrigger().openMenu();
+				this.configTrigger().closeMenu();
+				this.valueTrigger().closeMenu();
+				this.featureTrigger().closeMenu();
 				break;
 			case 'VALUE':
-				this.valueTrigger.menuData = {
+				this.valueTrigger().menuData = {
 					value: data,
 				};
-				this.configGroupTrigger.closeMenu();
-				this.configTrigger.closeMenu();
-				this.valueTrigger.openMenu();
-				this.featureTrigger.closeMenu();
+				this.configGroupTrigger().closeMenu();
+				this.configTrigger().closeMenu();
+				this.valueTrigger().openMenu();
+				this.featureTrigger().closeMenu();
 				break;
 
 			default:

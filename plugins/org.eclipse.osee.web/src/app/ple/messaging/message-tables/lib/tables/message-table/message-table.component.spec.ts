@@ -422,7 +422,7 @@ describe('MessageTableComponent', () => {
 			expect(serviceSpy).toHaveBeenCalled();
 		});
 		afterEach(() => {
-			component.matMenuTrigger.closeMenu();
+			component.matMenuTrigger().closeMenu();
 		});
 	});
 });

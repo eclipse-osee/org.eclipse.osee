@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, DatePipe, NgClass } from '@angular/common';
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, viewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import {
@@ -71,8 +71,7 @@ export class MergeManagerTableComponent {
 	@Input({ required: true }) branchId!: string;
 	@Input({ required: true }) parentBranchId!: string;
 
-	@ViewChild(MatMenuTrigger, { static: true })
-	matMenuTrigger!: MatMenuTrigger;
+	matMenuTrigger = viewChild.required(MatMenuTrigger);
 
 	headers: (keyof mergeData | keyof attrMergeData)[] = [
 		'name',
@@ -174,9 +173,9 @@ export class MergeManagerTableComponent {
 		event.preventDefault();
 		this.menuPosition.x = event.clientX + 'px';
 		this.menuPosition.y = event.clientY + 'px';
-		this.matMenuTrigger.menuData = {
+		this.matMenuTrigger().menuData = {
 			data: data,
 		};
-		this.matMenuTrigger.openMenu();
+		this.matMenuTrigger().openMenu();
 	}
 }

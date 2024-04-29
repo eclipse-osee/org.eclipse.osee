@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2021 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2021 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <div class="tw-flex tw-h-[94vh] tw-flex-col">
 	<div class="tw-flex tw-flex-grow tw-items-center tw-justify-between">
 		<div class="tw-flex tw-items-center tw-gap-12">
@@ -19,9 +19,8 @@
 			<osee-edit-definitions-dropdown></osee-edit-definitions-dropdown>
 		</div>
 		<div class="tw-flex tw-items-center tw-gap-2">
-			<ng-container *ngIf="isAllowedToDiff | async as _diff">
-				<ng-container
-					*ngIf="(branchType | async) && (branchId | async)">
+			@if (isAllowedToDiff | async; as _diff) {
+				@if ((branchType | async) && (branchId | async)) {
 					<button
 						mat-raised-button
 						[routerLink]="
@@ -37,16 +36,18 @@
 								: '../'
 						"
 						queryParamsHandling="merge">
-						<mat-icon *ngIf="_diff === 'false'"
-							>visibility_off</mat-icon
-						><mat-icon *ngIf="_diff === 'true'"
-							>change_history</mat-icon
-						><span>{{
+						@if (_diff === 'false') {
+							<mat-icon>visibility_off</mat-icon>
+						}
+						@if (_diff === 'true') {
+							<mat-icon>change_history</mat-icon>
+						}
+						<span>{{
 							_diff === 'true' ? 'Show Deltas' : 'Hide Deltas'
 						}}</span>
 					</button>
-				</ng-container>
-			</ng-container>
+				}
+			}
 			<osee-action-dropdown
 				category="1"
 				workType="ARB"></osee-action-dropdown>

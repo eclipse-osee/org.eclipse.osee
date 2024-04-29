@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2021 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2021 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <h1 mat-dialog-title>Copy Configuration</h1>
 <mat-label class="tw-text-lg">Copy To:</mat-label>
 <br />
@@ -18,12 +18,13 @@
 	<mat-select
 		(selectionChange)="selectDestinationBranch($event)"
 		data-cy="copyTo-configuration">
-		<mat-option
-			*ngFor="let option of views | async"
-			[value]="option"
-			[attr.data-cy]="'option-' + option.name">
-			{{ option.name }}
-		</mat-option>
+		@for (option of views | async; track option) {
+			<mat-option
+				[value]="option"
+				[attr.data-cy]="'option-' + option.name">
+				{{ option.name }}
+			</mat-option>
+		}
 	</mat-select>
 </mat-form-field>
 <br />
@@ -34,12 +35,13 @@
 	<mat-select
 		(selectionChange)="selectBranch($event)"
 		data-cy="copyFrom-configuration">
-		<mat-option
-			*ngFor="let option of views | async"
-			[value]="option.id"
-			[attr.data-cy]="'option-' + option.name">
-			{{ option.name }}
-		</mat-option>
+		@for (option of views | async; track option) {
+			<mat-option
+				[value]="option.id"
+				[attr.data-cy]="'option-' + option.name">
+				{{ option.name }}
+			</mat-option>
+		}
 	</mat-select>
 </mat-form-field>
 <div mat-dialog-actions>

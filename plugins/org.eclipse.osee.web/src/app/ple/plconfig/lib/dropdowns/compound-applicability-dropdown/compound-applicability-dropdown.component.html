@@ -1,23 +1,24 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
-<button
-	mat-menu-item
-	#menuTrigger1="matMenuTrigger"
-	(mousedown)="toggleMenu(menuTrigger1)"
-	[matMenuTriggerFor]="mainMenu"
-	*ngIf="(editable | async) === true">
-	Change Compound Applicabities
-</button>
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
+@if ((editable | async) === true) {
+	<button
+		mat-menu-item
+		#menuTrigger1="matMenuTrigger"
+		(mousedown)="toggleMenu(menuTrigger1)"
+		[matMenuTriggerFor]="mainMenu">
+		Change Compound Applicabities
+	</button>
+}
 <mat-menu
 	class="tw-max-w-none"
 	#mainMenu="matMenu">
@@ -40,12 +41,13 @@
 	class="tw-max-w-none"
 	#deleteMenu="matMenu">
 	<!-- loop through features and only print compound applicabilites (name has '=' symbol) -->
-	<ng-container *ngFor="let feature of features | async">
-		<button
-			*ngIf="isCompoundApplic(feature.name)"
-			mat-menu-item
-			(click)="deleteCompApplic(feature)">
-			{{ feature.name }}
-		</button>
-	</ng-container>
+	@for (feature of features | async; track feature) {
+		@if (isCompoundApplic(feature.name)) {
+			<button
+				mat-menu-item
+				(click)="deleteCompApplic(feature)">
+				{{ feature.name }}
+			</button>
+		}
+	}
 </mat-menu>

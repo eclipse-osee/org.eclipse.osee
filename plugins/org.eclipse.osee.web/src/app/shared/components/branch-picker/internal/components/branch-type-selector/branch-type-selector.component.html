@@ -1,33 +1,34 @@
 <!--
- * Copyright (c) 2021 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2021 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <mat-radio-group
 	(change)="selectType($event)"
 	class="tw-min-w-fit"
 	[(ngModel)]="branchType">
 	<div class="tw-flex tw-flex-row">
-		<mat-radio-button
-			*ngFor="let type of branchTypes"
-			[attr.data-cy]="normalizeType(type | lowercase)"
-			[value]="normalizeType(type | lowercase)"
-			[id]="normalizeType(type | lowercase)"
-			[name]="type | lowercase"
-			[ngClass]="
-				branchType === (type | lowercase)
-					? 'tw-pr-3 tw-text-foreground-base tw-drop-shadow'
-					: 'tw-pr-3 tw-text-foreground-base'
-			"
-			color="primary">
-			{{ type }}
-		</mat-radio-button>
+		@for (type of branchTypes; track type) {
+			<mat-radio-button
+				[attr.data-cy]="normalizeType(type | lowercase)"
+				[value]="normalizeType(type | lowercase)"
+				[id]="normalizeType(type | lowercase)"
+				[name]="type | lowercase"
+				[ngClass]="
+					branchType === (type | lowercase)
+						? 'tw-pr-3 tw-text-foreground-base tw-drop-shadow'
+						: 'tw-pr-3 tw-text-foreground-base'
+				"
+				color="primary">
+				{{ type }}
+			</mat-radio-button>
+		}
 	</div>
 </mat-radio-group>

@@ -1,17 +1,17 @@
 <!--
- * Copyright (c) 2022 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2022 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <div class="tw-flex">
-	<ng-container *ngIf="filterColumnOptions | async as filterColumnOptions">
+	@if (filterColumnOptions | async; as filterColumnOptions) {
 		<div class="filter-container tw-w-[18.75rem]">
 			<mat-form-field
 				class="tw-w-full"
@@ -22,41 +22,48 @@
 					multiple
 					(selectionChange)="onSelectColumnToFilterBy($event)">
 					<mat-select-trigger>
-						<mat-chip-listbox
-							*ngIf="
-								selectedColsToFilter | async as filterChipLabels
-							">
-							<mat-chip-option
-								*ngFor="let col of filterChipLabels"
-								[removable]="true"
-								(removed)="removeColFromFilter(col)">
-								{{ col | titlecase }}
-								<mat-icon matChipRemove>cancel</mat-icon>
-							</mat-chip-option>
-						</mat-chip-listbox>
+						@if (
+							selectedColsToFilter | async;
+							as filterChipLabels
+						) {
+							<mat-chip-listbox>
+								@for (col of filterChipLabels; track col) {
+									<mat-chip-option
+										[removable]="true"
+										(removed)="removeColFromFilter(col)">
+										{{ col | titlecase }}
+										<mat-icon matChipRemove
+											>cancel</mat-icon
+										>
+									</mat-chip-option>
+								}
+							</mat-chip-listbox>
+						}
 					</mat-select-trigger>
-					<ng-container *ngIf="_filterType$ | async as filterType">
+					@if (_filterType$ | async; as filterType) {
 						<mat-option
 							value="all"
 							[disabled]="filterType === 'other'"
 							>All</mat-option
 						>
-						<mat-option
-							[disabled]="filterType === 'all'"
-							*ngFor="let col of filterColumnOptions.slice(1)"
-							value="{{ col }}">
-							{{ col | titlecase }}
-						</mat-option>
-					</ng-container>
+						@for (col of filterColumnOptions.slice(1); track col) {
+							<mat-option
+								[disabled]="filterType === 'all'"
+								value="{{ col }}">
+								{{ col | titlecase }}
+							</mat-option>
+						}
+					}
 				</mat-select>
 			</mat-form-field>
 		</div>
-	</ng-container>
-	<ng-container *ngIf="selectedColsToFilter.value.length > 0">
-		<osee-column-filter
-			class="tw-ml-16 tw-w-[18.75rem]"
-			*ngIf="_filterInputLabelObs$ | async as filterLabel"
-			[filterInputLabel]="filterLabel"
-			(update)="updateColFilterStrings($event)"></osee-column-filter>
-	</ng-container>
+	}
+	@if (selectedColsToFilter.value.length > 0) {
+		@if (_filterInputLabelObs$ | async; as filterLabel) {
+			<osee-column-filter
+				class="tw-ml-16 tw-w-[18.75rem]"
+				[filterInputLabel]="filterLabel"
+				(update)="updateColFilterStrings($event)"></osee-column-filter>
+		}
+	}
 </div>

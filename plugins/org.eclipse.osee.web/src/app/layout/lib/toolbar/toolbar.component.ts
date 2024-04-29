@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgIf } from '@angular/common';
-import { Component, inject, Input } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { Component, Input, inject } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
@@ -29,7 +29,6 @@ import { DisplayUserComponent } from './user-display/display-user.component';
 	styles: [],
 	imports: [
 		RouterOutlet,
-		NgIf,
 		AsyncPipe,
 		DisplayUserComponent,
 		MatToolbar,

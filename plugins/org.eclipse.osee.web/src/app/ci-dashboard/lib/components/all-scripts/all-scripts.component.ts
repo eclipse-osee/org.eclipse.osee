@@ -11,10 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, OnInit, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { UiService } from '@osee/shared/services';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { ScriptTableComponent } from './script-table/script-table.component';
 import { SetReference, setReferenceSentinel } from '../../../lib/types/tmo';
 import { BranchPickerComponent } from '../../../../shared/components/branch-picker/branch-picker/branch-picker.component';
@@ -26,10 +26,7 @@ import { TmoService } from '../../../lib/services/tmo.service';
 	standalone: true,
 	templateUrl: './all-scripts.component.html',
 	imports: [
-		CommonModule,
 		AsyncPipe,
-		NgFor,
-		NgIf,
 		RouterLink,
 		ScriptTableComponent,
 		BranchPickerComponent,

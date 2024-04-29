@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatCard } from '@angular/material/card';
@@ -30,7 +30,7 @@ import { OpenUrlFormComponent } from './command-actions/open-url-form/open-url-f
 	templateUrl: './create-command-form.component.html',
 	styles: [],
 	imports: [
-		CommonModule,
+		AsyncPipe,
 		FormsModule,
 		MatCard,
 		OpenUrlFormComponent,

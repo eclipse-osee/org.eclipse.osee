@@ -11,12 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 @Component({
 	selector: 'osee-ple-help',
 	standalone: true,
-	imports: [CommonModule],
+	imports: [],
 	templateUrl: './ple-help.component.html',
 	styles: [],
 })

@@ -1,47 +1,47 @@
 <!--
- * Copyright (c) 2022 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
-<ng-container *ngIf="globalPrefs | async">
+* Copyright (c) 2022 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
+@if (globalPrefs | async) {
 	<div
 		class="tw-cursor-pointer tw-px-1 tw-py-0 tw-text-start"
 		(click)="toggleExpanded()">
-		<ng-container *ngIf="getEnumLiteralsArray() as enumLiterals">
-			<ng-container *ngIf="wordWrap === false">
-				<ng-container *ngIf="enumLiterals.length > 0">
+		@if (getEnumLiteralsArray(); as enumLiterals) {
+			@if (wordWrap === false) {
+				@if (enumLiterals.length > 0) {
 					{{ enumLiterals[0] }}
-				</ng-container>
-				<ng-container *ngIf="enumLiterals.length > 3">
+				}
+				@if (enumLiterals.length > 3) {
 					<br />
 					...
 					<br />
 					{{ enumLiterals[enumLiterals.length - 1] }}
-				</ng-container>
-				<ng-container *ngIf="enumLiterals.length === 2">
+				}
+				@if (enumLiterals.length === 2) {
 					<br />
 					{{ enumLiterals[1] }}
-				</ng-container>
-				<ng-container *ngIf="enumLiterals.length === 3">
+				}
+				@if (enumLiterals.length === 3) {
 					<br />
 					{{ enumLiterals[1] }}
 					<br />
 					{{ enumLiterals[2] }}
-				</ng-container>
-			</ng-container>
-			<ng-container *ngIf="wordWrap === true">
-				<ng-container *ngFor="let item of enumLiterals">
+				}
+			}
+			@if (wordWrap === true) {
+				@for (item of enumLiterals; track item) {
 					{{ item }}
 					<br />
-				</ng-container>
-			</ng-container>
-		</ng-container>
+				}
+			}
+		}
 	</div>
-</ng-container>
+}

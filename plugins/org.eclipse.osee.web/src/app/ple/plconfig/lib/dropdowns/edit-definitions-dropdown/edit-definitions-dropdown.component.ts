@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
@@ -30,7 +30,6 @@ import { ProductTypeDropDownComponent } from '../product-type-drop-down/product-
 		MatButton,
 		MatMenu,
 		MatMenuTrigger,
-		NgIf,
 		AsyncPipe,
 		ConfigurationDropdownComponent,
 		ConfigurationGroupDropdownComponent,

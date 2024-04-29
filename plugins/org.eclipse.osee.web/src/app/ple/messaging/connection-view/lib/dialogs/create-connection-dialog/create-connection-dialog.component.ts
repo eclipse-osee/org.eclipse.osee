@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, Inject, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
@@ -50,7 +50,7 @@ import { CurrentGraphService } from '../../services/current-graph.service';
 	templateUrl: './create-connection-dialog.component.html',
 	standalone: true,
 	imports: [
-		CommonModule,
+		AsyncPipe,
 		MatDialogTitle,
 		MatDialogContent,
 		MatDialogActions,

@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, ViewChild } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { Component, OnDestroy, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
@@ -51,7 +51,7 @@ import { NewCrossReferenceDialogComponent } from '../new-cross-reference-dialog/
 	standalone: true,
 	templateUrl: './cross-reference-table.component.html',
 	imports: [
-		CommonModule,
+		AsyncPipe,
 		FormsModule,
 		MatFormField,
 		MatLabel,
@@ -79,8 +79,7 @@ import { NewCrossReferenceDialogComponent } from '../new-cross-reference-dialog/
 	],
 })
 export class CrossReferenceTableComponent implements OnDestroy {
-	@ViewChild(MatMenuTrigger, { static: true })
-	matMenuTrigger!: MatMenuTrigger;
+	matMenuTrigger = viewChild.required(MatMenuTrigger);
 
 	constructor(
 		private headerService: HeaderService,
@@ -133,10 +132,10 @@ export class CrossReferenceTableComponent implements OnDestroy {
 		event.preventDefault();
 		this.menuPosition.x = event.clientX + 'px';
 		this.menuPosition.y = event.clientY + 'px';
-		this.matMenuTrigger.menuData = {
+		this.matMenuTrigger().menuData = {
 			crossRef: crossRef,
 		};
-		this.matMenuTrigger.openMenu();
+		this.matMenuTrigger().openMenu();
 	}
 
 	openEditDialog(crossRef: CrossReference) {

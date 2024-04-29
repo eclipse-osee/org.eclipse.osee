@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import {
 	MAT_DIALOG_DATA,
@@ -29,7 +29,7 @@ import { BehaviorSubject } from 'rxjs';
 @Component({
 	selector: 'osee-edit-transport-type-dialog',
 	standalone: true,
-	imports: [MatDialogTitle, NgIf, AsyncPipe, TransportTypeFormComponent],
+	imports: [MatDialogTitle, AsyncPipe, TransportTypeFormComponent],
 	templateUrl: './edit-transport-type-dialog.component.html',
 	styles: [],
 })

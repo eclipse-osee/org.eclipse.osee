@@ -1,22 +1,18 @@
 <!--
- * Copyright (c) 2022 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
-<ng-container *ngIf="_options | async as _opt; else loadingMatOptions">
+* Copyright (c) 2022 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
+@if (_options | async; as _opt) {
 	{{ disableSelect ? setDisabled(false) : '' }}
-	<ng-container
-		*ngIf="
-			paginationMode === 'AUTO' || paginationMode === 'MANUAL';
-			else nonPaginated
-		">
+	@if (paginationMode === 'AUTO' || paginationMode === 'MANUAL') {
 		<!--48 is avg size for mat-option-->
 		<cdk-virtual-scroll-viewport
 			itemSize="48"
@@ -26,48 +22,45 @@
 			<ng-template
 				*cdkVirtualFor="let opt of _opt"
 				let-opt
-				[ngTemplateOutlet]="template"
+				[ngTemplateOutlet]="template()"
 				[ngTemplateOutletContext]="{ $implicit: opt, opt: opt }">
 			</ng-template>
-			<ng-container *ngIf="_opt.length === 0">
+			@if (_opt.length === 0) {
 				<div class="tw-pl-4">No {{ objectName }} available.</div>
-			</ng-container>
-			<ng-container
-				*ngIf="paginationMode === 'MANUAL' && _opt.length > 0">
-				<div
-					class="tw-flex tw-items-center"
-					*ngIf="(_paginationComplete | async) === false">
-					<button
-						mat-button
-						matListItemTitle
-						class="tw-flex-grow"
-						(click)="createPaginationEvent()">
-						Show More
-					</button>
-				</div>
-			</ng-container>
+			}
+			@if (paginationMode === 'MANUAL' && _opt.length > 0) {
+				@if ((_paginationComplete | async) === false) {
+					<div class="tw-flex tw-items-center">
+						<button
+							mat-button
+							matListItemTitle
+							class="tw-flex-grow"
+							(click)="createPaginationEvent()">
+							Show More
+						</button>
+					</div>
+				}
+			}
 		</cdk-virtual-scroll-viewport>
-	</ng-container>
-	<ng-template #nonPaginated>
-		<ng-template
-			*ngFor="let opt of _opt"
-			let-opt
-			[ngTemplateOutlet]="template"
-			[ngTemplateOutletContext]="{ $implicit: opt, opt: opt }">
-		</ng-template>
-		<ng-container *ngIf="_opt.length === 0">
+	} @else {
+		@for (opt of _opt; track opt) {
+			<ng-template
+				let-opt
+				[ngTemplateOutlet]="template()"
+				[ngTemplateOutletContext]="{ $implicit: opt, opt: opt }">
+			</ng-template>
+		}
+		@if (_opt.length === 0) {
 			No {{ objectName }} available.
-		</ng-container>
-	</ng-template>
-</ng-container>
-<ng-template #loadingMatOptions>
+		}
+	}
+} @else {
 	{{ disableSelect ? setDisabled(true) : '' }}
-	<ng-container *ngIf="error | async as _error; else loadInProgress">
+	@if (error | async; as _error) {
 		<mat-option disabled>
 			{{ _error }}
 		</mat-option>
-	</ng-container>
-	<ng-template #loadInProgress>
+	} @else {
 		<mat-option disabled>
 			<div class="tw-flex tw-items-center tw-gap-4">
 				<mat-spinner
@@ -78,5 +71,5 @@
 				<div>Loading...</div>
 			</div>
 		</mat-option>
-	</ng-template>
-</ng-template>
+	}
+}

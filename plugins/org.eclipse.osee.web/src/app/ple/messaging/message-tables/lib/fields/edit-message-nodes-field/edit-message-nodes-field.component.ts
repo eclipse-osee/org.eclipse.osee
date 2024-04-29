@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { FormsModule, ValidationErrors } from '@angular/forms';
 import { MatOption } from '@angular/material/core';
@@ -38,7 +38,7 @@ import {
 	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
-		CommonModule,
+		AsyncPipe,
 		FormsModule,
 		MatFormField,
 		MatSelect,

@@ -137,6 +137,10 @@ export class PlConfigCurrentBranchService {
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
+	private _editable = this._branchApplicabilityNoChanges.pipe(
+		map((applic) => `${applic.editable}`)
+	);
+
 	private _viewsWithGroup = this._branchApplicabilityNoChanges.pipe(
 		switchMap((a) =>
 			of(a).pipe(
@@ -482,6 +486,10 @@ export class PlConfigCurrentBranchService {
 		)
 		//map((applic)=>applic.views)
 	);
+
+	private _groups = this._branchApplicabilityNoChanges.pipe(
+		map((applic) => applic.groups.map((a) => a.id))
+	);
 	constructor(
 		private uiStateService: PlConfigUIStateService,
 		private branchService: PlConfigBranchService,
@@ -491,6 +499,10 @@ export class PlConfigCurrentBranchService {
 	) {}
 	public get branchApplicability() {
 		return this._branchApplicability;
+	}
+
+	public get editable() {
+		return this._editable;
 	}
 	public get applicsWithFeatureConstraints() {
 		return this._applicsWithFeatureConstraints;
@@ -805,7 +817,7 @@ export class PlConfigCurrentBranchService {
 			switchMap((val) =>
 				iif(
 					() => val.success,
-					this.uiStateService.groups.pipe(
+					this._groups.pipe(
 						take(1),
 						mergeMap((x) =>
 							from(x).pipe(

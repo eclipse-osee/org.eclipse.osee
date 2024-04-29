@@ -17,7 +17,7 @@ import {
 	transition,
 	trigger,
 } from '@angular/animations';
-import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, viewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import {
 	MatMenu,
@@ -62,7 +62,7 @@ import {
 	CdkDragHandle,
 	CdkDropList,
 } from '@angular/cdk/drag-drop';
-import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import {
@@ -133,11 +133,9 @@ import { SubMessageTableComponent } from '../sub-message-table/sub-message-table
 	],
 	standalone: true,
 	imports: [
-		NgIf,
 		AsyncPipe,
 		RouterLink,
 		FormsModule,
-		NgFor,
 		NgClass,
 		CdkDrag,
 		CdkDragHandle,
@@ -208,8 +206,7 @@ export class MessageTableComponent {
 		x: '0',
 		y: '0',
 	};
-	@ViewChild(MatMenuTrigger, { static: true })
-	matMenuTrigger!: MatMenuTrigger;
+	matMenuTrigger = viewChild.required(MatMenuTrigger);
 	sideNav = this.messageService.sideNavContent;
 	sideNavOpened = this.sideNav.pipe(map((value) => value.opened));
 	inDiffMode = this.messageService.isInDiff.pipe(
@@ -384,12 +381,12 @@ export class MessageTableComponent {
 		event.preventDefault();
 		this.menuPosition.x = event.clientX + 'px';
 		this.menuPosition.y = event.clientY + 'px';
-		this.matMenuTrigger.menuData = {
+		this.matMenuTrigger().menuData = {
 			message: message,
 			field: field,
 			header: header,
 		};
-		this.matMenuTrigger.openMenu();
+		this.matMenuTrigger().openMenu();
 	}
 	removeMessage(message: message) {
 		//open dialog, iif result ==='ok' messageservice. removemessage

@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgFor, NgIf, TitleCasePipe } from '@angular/common';
+import { AsyncPipe, TitleCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
@@ -37,9 +37,7 @@ import { DataTableService } from '../../../services/datatable-services/datatable
 	styles: [],
 	standalone: true,
 	imports: [
-		NgIf,
 		FormsModule,
-		NgFor,
 		AsyncPipe,
 		TitleCasePipe,
 		MatFormField,

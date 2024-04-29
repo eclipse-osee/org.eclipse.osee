@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
-import { CommonModule, DatePipe } from '@angular/common';
+import { AsyncPipe, DatePipe, NgClass } from '@angular/common';
 import { Component, Optional, Output, effect, input } from '@angular/core';
 import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
 import { MatOption, provideNativeDateAdapter } from '@angular/material/core';
@@ -43,7 +43,8 @@ function controlContainerFactory(controlContainer?: ControlContainer) {
 	selector: 'osee-attributes-editor',
 	standalone: true,
 	imports: [
-		CommonModule,
+		NgClass,
+		AsyncPipe,
 		AttributeEnumsDropdownComponent,
 		FormsModule,
 		MatFormField,

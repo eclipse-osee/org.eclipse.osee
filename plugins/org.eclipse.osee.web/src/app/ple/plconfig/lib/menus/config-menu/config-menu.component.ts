@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import {
@@ -23,7 +23,6 @@ import { applic } from '@osee/shared/types/applicability';
 import { difference } from '@osee/shared/types/change-report';
 import { DialogService } from '../../services/dialog.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
-import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
 import {
 	view,
 	viewWithChanges,
@@ -41,13 +40,12 @@ import { ArrayDiffMenuComponent } from '../array-diff-menu/array-diff-menu.compo
 		MatMenuContent,
 		MatMenu,
 		MatIcon,
-		NgIf,
 		AsyncPipe,
 		ArrayDiffMenuComponent,
 	],
 })
 export class ConfigMenuComponent {
-	_editable = this.uiStateService.editable;
+	_editable = this.currentBranchService.editable;
 	@Input() config: view | viewWithChanges = {
 		name: '',
 		description: '',
@@ -56,7 +54,6 @@ export class ConfigMenuComponent {
 	};
 	constructor(
 		private dialogService: DialogService,
-		private uiStateService: PlConfigUIStateService,
 		private currentBranchService: PlConfigCurrentBranchService
 	) {}
 	openConfigMenu(header: string, editable: string) {

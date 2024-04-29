@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { MatAnchor } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -33,7 +33,7 @@ import { iif, of, switchMap } from 'rxjs';
 	selector: 'osee-messaging-controls',
 	standalone: true,
 	imports: [
-		CommonModule,
+		AsyncPipe,
 		RouterLink,
 		RouterOutlet,
 		MatAnchor,

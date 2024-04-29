@@ -11,8 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CdkDrag } from '@angular/cdk/drag-drop';
-import { CommonModule } from '@angular/common';
-import { Component, Input, ViewChild, input } from '@angular/core';
+import { AsyncPipe, NgClass } from '@angular/common';
+import { Component, Input, input, viewChild } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatListItemIcon } from '@angular/material/list';
 import {
@@ -50,7 +50,8 @@ import { ArtifactOptionsContextMenuComponent } from '../artifact-options-context
 	selector: 'osee-artifact-hierarchy',
 	standalone: true,
 	imports: [
-		CommonModule,
+		NgClass,
+		AsyncPipe,
 		BranchPickerComponent,
 		ArtifactHierarchyRelationsComponent,
 		ArtifactOptionsContextMenuComponent,
@@ -215,10 +216,7 @@ export class ArtifactHierarchyComponent {
 		);
 	}
 
-	// Right-click context menu
-
-	@ViewChild(MatMenuTrigger, { static: true })
-	matMenuTrigger!: MatMenuTrigger;
+	matMenuTrigger = viewChild.required(MatMenuTrigger);
 
 	menuPosition = {
 		x: '0',
@@ -229,11 +227,11 @@ export class ArtifactHierarchyComponent {
 		event.preventDefault();
 		this.menuPosition.x = event.clientX + 'px';
 		this.menuPosition.y = event.clientY + 'px';
-		this.matMenuTrigger.menuData = {
+		this.matMenuTrigger().menuData = {
 			artifactId: artifact.id,
 			parentArtifactId: this.artifactId,
 		};
-		this.matMenuTrigger.openMenu();
+		this.matMenuTrigger().openMenu();
 	}
 
 	getSiblingArtifactId(artifactId: `${number}`) {

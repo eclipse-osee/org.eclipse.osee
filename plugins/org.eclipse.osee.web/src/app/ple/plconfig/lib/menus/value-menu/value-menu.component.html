@@ -1,23 +1,25 @@
 <!--
- * Copyright (c) 2021 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
-<ng-container *ngIf="hasChanges(value)">
-	<ng-container *ngIf="value.changes.value !== undefined">
+* Copyright (c) 2021 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
+@if (hasChanges(value)) {
+	@if (value.changes.value !== undefined) {
 		<button
 			mat-menu-item
 			(click)="viewDiff(true, value.changes.value, 'Value')">
 			<mat-icon color="accent">pageview</mat-icon>View Diff for
 			{{ value.name }}
 		</button>
-	</ng-container>
-</ng-container>
-<ng-container *ngIf="!hasChanges(value)"> No changes to view </ng-container>
+	}
+}
+@if (!hasChanges(value)) {
+	No changes to view
+}

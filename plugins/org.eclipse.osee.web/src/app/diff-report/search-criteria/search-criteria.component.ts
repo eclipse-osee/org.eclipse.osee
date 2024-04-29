@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
@@ -37,7 +37,7 @@ import { ReportService } from '../services/report.service';
 	selector: 'osee-search-criteria',
 	standalone: true,
 	imports: [
-		CommonModule,
+		AsyncPipe,
 		FormsModule,
 		MatFormField,
 		MatLabel,

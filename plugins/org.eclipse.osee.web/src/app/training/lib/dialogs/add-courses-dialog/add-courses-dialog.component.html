@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <form #addCourseForm="ngForm">
 	<h1
 		mat-dialog-title
@@ -61,11 +61,11 @@
 				[multiple]="false"
 				required
 				color="primary">
-				<mat-list-option
-					*ngFor="let course of test_courses | async"
-					[value]="course.courseID">
-					{{ course.courseID }} - {{ course.courseTitle }}
-				</mat-list-option>
+				@for (course of test_courses | async; track course) {
+					<mat-list-option [value]="course.courseID">
+						{{ course.courseID }} - {{ course.courseTitle }}
+					</mat-list-option>
+				}
 			</mat-selection-list>
 		</div>
 		<br />

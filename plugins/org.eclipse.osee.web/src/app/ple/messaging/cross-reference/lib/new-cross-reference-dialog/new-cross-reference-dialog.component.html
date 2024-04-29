@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <h1 mat-dialog-title>Create New Cross Reference</h1>
 <form #crossRefForm="ngForm">
 	<mat-dialog-content>
@@ -43,7 +43,7 @@
 		</div>
 		<div class="tw-grid tw-gap-2 tw-py-2">
 			<h4 class="tw-m-0">Array Values</h4>
-			<ng-container *ngFor="let item of arrayValues; let i = index">
+			@for (item of arrayValues; track item; let i = $index) {
 				<div class="tw-flex tw-gap-2">
 					<mat-form-field>
 						<mat-label>Key</mat-label>
@@ -62,7 +62,7 @@
 							[name]="'field-item-value-' + i" />
 					</mat-form-field>
 				</div>
-			</ng-container>
+			}
 		</div>
 		<button
 			mat-mini-fab

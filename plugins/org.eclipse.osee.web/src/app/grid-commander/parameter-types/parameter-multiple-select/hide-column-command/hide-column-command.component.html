@@ -1,18 +1,18 @@
 <!--
- * Copyright (c) 2022 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2022 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <div class="tw-w-[30rem]">
-	<ng-container *ngIf="columnOptions | async as columnOptions">
-		<ng-container *ngIf="commandDescription$ | async as description">
+	@if (columnOptions | async; as columnOptions) {
+		@if (commandDescription$ | async; as description) {
 			<mat-form-field
 				class="tw-w-full"
 				appearance="outline">
@@ -23,23 +23,27 @@
 					(selectionChange)="onSelectColToHide($event)">
 					<mat-select-trigger>
 						<mat-chip-listbox>
-							<mat-chip-option
-								*ngFor="let col of hideColumnsControl.value"
-								[removable]="true"
-								(removed)="unhideCol(col)">
-								{{ col | titlecase }}
-								<mat-icon matChipRemove>cancel</mat-icon>
-							</mat-chip-option>
+							@for (col of hideColumnsControl.value; track col) {
+								<mat-chip-option
+									[removable]="true"
+									(removed)="unhideCol(col)">
+									{{ col | titlecase }}
+									<mat-icon matChipRemove>cancel</mat-icon>
+								</mat-chip-option>
+							}
 						</mat-chip-listbox>
 					</mat-select-trigger>
-
-					<mat-option
-						*ngFor="let colOpts of columnOptions; let i = index"
-						[value]="colOpts">
-						{{ colOpts | titlecase }}
-					</mat-option>
+					@for (
+						colOpts of columnOptions;
+						track colOpts;
+						let i = $index
+					) {
+						<mat-option [value]="colOpts">
+							{{ colOpts | titlecase }}
+						</mat-option>
+					}
 				</mat-select>
 			</mat-form-field>
-		</ng-container>
-	</ng-container>
+		}
+	}
 </div>

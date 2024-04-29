@@ -1,22 +1,24 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
-<ng-container *ngIf="selectedBatch | async"></ng-container>
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
+@if (selectedBatch | async) {}
 <div class="tw-min-w-[350px]">
-	<ng-container
-		*ngIf="{
+	@if (
+		{
 			openedState: isOpen | async,
 			filter: filter | async
-		} as autoCompleteState">
+		};
+		as autoCompleteState
+	) {
 		<mat-form-field
 			subscriptSizing="dynamic"
 			id="batch-selector"
@@ -34,41 +36,38 @@
 				(ngModelChange)="updateFilter($event)"
 				#batches="ngModel"
 				[matAutocomplete]="autoBatches" />
-			<mat-icon
-				*ngIf="!autoCompleteState.openedState"
-				matIconSuffix
-				>arrow_drop_down</mat-icon
-			>
-			<mat-icon
-				*ngIf="
-					autoCompleteState.openedState &&
-					autoCompleteState.filter !== ''
-				"
-				class="tw-cursor-pointer"
-				matIconSuffix
-				(mousedown)="updateFilter('')"
-				>close</mat-icon
-			>
+			@if (!autoCompleteState.openedState) {
+				<mat-icon matIconSuffix>arrow_drop_down</mat-icon>
+			}
+			@if (
+				autoCompleteState.openedState && autoCompleteState.filter !== ''
+			) {
+				<mat-icon
+					class="tw-cursor-pointer"
+					matIconSuffix
+					(mousedown)="updateFilter('')"
+					>close</mat-icon
+				>
+			}
 			<mat-autocomplete
 				autoActiveFirstOption="true"
 				autoSelectActiveOption="true"
 				#autoBatches="matAutocomplete"
 				(optionSelected)="updateValue($event.option.value)">
-				<ng-container
-					*ngIf="{
+				@if (
+					{
 						options: batchOptions | async,
 						count: count | async
-					} as _batches">
-					<ng-container
-						*ngIf="
-							_batches.options !== null &&
-								_batches.options !== undefined &&
-								_batches.count !== null &&
-								_batches.count !== undefined;
-							else loading
-						">
-						<ng-container
-							*ngIf="_batches.count > 0; else noOptions">
+					};
+					as _batches
+				) {
+					@if (
+						_batches.options !== null &&
+						_batches.options !== undefined &&
+						_batches.count !== null &&
+						_batches.count !== undefined
+					) {
+						@if (_batches.count > 0) {
 							<osee-mat-option-loading
 								[data]="_batches.options"
 								objectName="batches"
@@ -84,24 +83,22 @@
 									</mat-option>
 								</ng-template>
 							</osee-mat-option-loading>
-						</ng-container>
-					</ng-container>
-				</ng-container>
-				<ng-template #loading>
-					<mat-option
-						id="-1"
-						disabled>
-						Loading...
-					</mat-option>
-				</ng-template>
-				<ng-template #noOptions>
-					<mat-option
-						id="-1"
-						disabled>
-						No test runs available for this CI Set
-					</mat-option>
-				</ng-template>
+						} @else {
+							<mat-option
+								id="-1"
+								disabled>
+								No test runs available for this CI Set
+							</mat-option>
+						}
+					} @else {
+						<mat-option
+							id="-1"
+							disabled>
+							Loading...
+						</mat-option>
+					}
+				}
 			</mat-autocomplete>
 		</mat-form-field>
-	</ng-container>
+	}
 </div>

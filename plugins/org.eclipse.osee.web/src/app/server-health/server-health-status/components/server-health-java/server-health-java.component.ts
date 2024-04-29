@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -33,7 +33,7 @@ import { ServerHealthHttpService } from '../../../shared/services/server-health-
 	selector: 'osee-server-health-java',
 	standalone: true,
 	imports: [
-		CommonModule,
+		AsyncPipe,
 		MatTable,
 		MatColumnDef,
 		MatHeaderCell,

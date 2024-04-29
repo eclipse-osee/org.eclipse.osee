@@ -16,14 +16,14 @@ import {
 	CdkDragHandle,
 	CdkDropList,
 } from '@angular/cdk/drag-drop';
-import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
 	Inject,
 	Input,
 	OnInit,
-	ViewChild,
+	viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -72,8 +72,6 @@ import { SubElementArrayTableDropdownComponent } from '../../menus/sub-element-a
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	standalone: true,
 	imports: [
-		NgFor,
-		NgIf,
 		NgClass,
 		AsyncPipe,
 		RouterLink,
@@ -113,9 +111,9 @@ export class SubElementArrayTableComponent implements OnInit {
 		x: '0',
 		y: '0',
 	};
-
-	@ViewChild('generalMenuTrigger', { static: true })
-	generalMenuTrigger!: MatMenuTrigger;
+	generalMenuTrigger = viewChild.required('generalMenuTrigger', {
+		read: MatMenuTrigger,
+	});
 	constructor(
 		private route: ActivatedRoute,
 		public dialog: MatDialog,
@@ -174,13 +172,13 @@ export class SubElementArrayTableComponent implements OnInit {
 		event.preventDefault();
 		this.menuPosition.x = event.clientX + 'px';
 		this.menuPosition.y = event.clientY + 'px';
-		this.generalMenuTrigger.menuData = {
+		this.generalMenuTrigger().menuData = {
 			element: element,
 			headerElement: this.element,
 			field: field,
 			header: header,
 		};
-		this.generalMenuTrigger.openMenu();
+		this.generalMenuTrigger().openMenu();
 	}
 
 	getHeaderByName(value: string) {

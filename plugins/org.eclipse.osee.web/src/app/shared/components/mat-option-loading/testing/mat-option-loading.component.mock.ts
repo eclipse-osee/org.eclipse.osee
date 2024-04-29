@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { AsyncPipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
+import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import {
 	Component,
 	ContentChild,
@@ -43,7 +43,7 @@ import { paginationMode } from '../internal/pagination-options';
 	selector: 'osee-mat-option-loading',
 	templateUrl: './mat-option-loading.component.mock.html',
 	standalone: true,
-	imports: [AsyncPipe, NgTemplateOutlet, NgFor, NgIf],
+	imports: [AsyncPipe, NgTemplateOutlet],
 })
 export class MockMatOptionLoadingComponent<T = unknown> implements OnInit {
 	@Input() count: Observable<number> | undefined = undefined;

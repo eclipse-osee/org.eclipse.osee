@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <button
 	mat-stroked-button
 	[matMenuTriggerFor]="mainMenu"
@@ -26,9 +26,9 @@
 	<!-- feature dropdown -->
 	<osee-plconfig-feature-dropdown></osee-plconfig-feature-dropdown>
 	<!-- product type dropdown -->
-	<ng-container *ngIf="isTeamLead | async">
+	@if (isTeamLead | async) {
 		<osee-plconfig-product-type-dropdown></osee-plconfig-product-type-dropdown>
-	</ng-container>
+	}
 	<!-- compound applicability dropdown -->
 	<osee-compound-applicability-dropdown></osee-compound-applicability-dropdown>
 </mat-menu>

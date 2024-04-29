@@ -1,40 +1,41 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <mat-card class="gc-card">
-	<div
-		class="form-group"
-		*ngIf="createCommandFormOptions | async as formOptions">
-		<osee-parameter-single-select
-			[options]="formOptions.contexts"
-			[label]="'Add new Command to: '"
-			(selectionChange)="
-				onContextSelectionChange($event)
-			"></osee-parameter-single-select>
-		<div
-			class="form-group"
-			*ngIf="formOptions.commandActions">
+	@if (createCommandFormOptions | async; as formOptions) {
+		<div class="form-group">
 			<osee-parameter-single-select
-				[options]="formOptions.commandActions"
-				[label]="'This Command will: '"
+				[options]="formOptions.contexts"
+				[label]="'Add new Command to: '"
 				(selectionChange)="
-					onCommandSelectionChange($event)
+					onContextSelectionChange($event)
 				"></osee-parameter-single-select>
-
-			<ng-container *ngIf="commandAction === 'Open a URL'">
-				<osee-open-url-form
-					(submitOpenURLCommandForm)="onSubmitHandler($event)">
-				</osee-open-url-form>
-			</ng-container>
+			@if (formOptions.commandActions) {
+				<div class="form-group">
+					<osee-parameter-single-select
+						[options]="formOptions.commandActions"
+						[label]="'This Command will: '"
+						(selectionChange)="
+							onCommandSelectionChange($event)
+						"></osee-parameter-single-select>
+					@if (commandAction === 'Open a URL') {
+						<osee-open-url-form
+							(submitOpenURLCommandForm)="
+								onSubmitHandler($event)
+							">
+						</osee-open-url-form>
+					}
+				</div>
+			}
 		</div>
-	</div>
+	}
 </mat-card>

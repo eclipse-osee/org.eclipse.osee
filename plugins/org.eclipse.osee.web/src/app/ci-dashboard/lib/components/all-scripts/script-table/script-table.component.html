@@ -1,49 +1,51 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <!-- <mat-form-field class="tw-w-full">
-	<mat-label>Filter Table</mat-label>
-	<input
-		matInput
-		[ngModel]="filterValue | async"
-		(keyup)="applyFilter($event)"
-		#input />
-	<mat-icon matPrefix>filter_list</mat-icon>
+<mat-label>Filter Table</mat-label>
+<input
+  matInput
+  [ngModel]="filterValue | async"
+  (keyup)="applyFilter($event)"
+  #input />
+  <mat-icon matPrefix>filter_list</mat-icon>
 </mat-form-field> -->
 <div class="mat-elevation-z8 tw-max-h-[65vh] tw-overflow-scroll">
 	<table
 		mat-table
 		[dataSource]="scriptDefs">
-		<ng-container
-			[matColumnDef]="header"
-			*ngFor="let header of headers">
-			<th
-				mat-header-cell
-				*matHeaderCellDef
-				class="tw-border-x-[1px] tw-border-foreground tw-px-1 tw-py-0 tw-text-center tw-text-sm tw-font-medium tw-text-primary"
-				[matTooltip]="
-					(getTableHeaderByName(header) | async)?.description || ''
-				">
-				{{
-					(getTableHeaderByName(header) | async)?.humanReadable || ''
-				}}
-			</th>
-			<td
-				mat-cell
-				class="tw-border-[1px] tw-border-foreground tw-px-1 tw-py-0 tw-text-center"
-				*matCellDef="let def">
-				{{ def[header] }}
-			</td>
-		</ng-container>
+		@for (header of headers; track header) {
+			<ng-container [matColumnDef]="header">
+				<th
+					mat-header-cell
+					*matHeaderCellDef
+					class="tw-border-x-[1px] tw-border-foreground tw-px-1 tw-py-0 tw-text-center tw-text-sm tw-font-medium tw-text-primary"
+					[matTooltip]="
+						(getTableHeaderByName(header) | async)?.description ||
+						''
+					">
+					{{
+						(getTableHeaderByName(header) | async)?.humanReadable ||
+							''
+					}}
+				</th>
+				<td
+					mat-cell
+					class="tw-border-[1px] tw-border-foreground tw-px-1 tw-py-0 tw-text-center"
+					*matCellDef="let def">
+					{{ def[header] }}
+				</td>
+			</ng-container>
+		}
 		<tr
 			mat-header-row
 			*matHeaderRowDef="headers; sticky: true"></tr>

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import {
 	Component,
 	Input,
@@ -63,7 +63,6 @@ import { EnumFormComponent } from '../enum-form/enum-form.component';
 	styles: [],
 	standalone: true,
 	imports: [
-		NgIf,
 		FormsModule,
 		MatFormField,
 		MatLabel,
@@ -79,7 +78,6 @@ import { EnumFormComponent } from '../enum-form/enum-form.component';
 		MatHeaderRowDef,
 		MatRow,
 		MatRowDef,
-		NgFor,
 		AsyncPipe,
 		EnumFormComponent,
 		ApplicabilitySelectorComponent,

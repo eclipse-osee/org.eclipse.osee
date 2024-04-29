@@ -17,7 +17,7 @@ import {
 	transition,
 	trigger,
 } from '@angular/animations';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { Component, OnDestroy } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -44,7 +44,8 @@ import { Subject, switchMap, takeUntil } from 'rxjs';
 	selector: 'osee-connections-table',
 	standalone: true,
 	imports: [
-		CommonModule,
+		NgClass,
+		AsyncPipe,
 		MatTable,
 		MatCell,
 		MatHeaderCell,

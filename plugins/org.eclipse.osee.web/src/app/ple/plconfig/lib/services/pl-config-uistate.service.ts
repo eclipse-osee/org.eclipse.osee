@@ -23,7 +23,6 @@ export class PlConfigUIStateService {
 	private _differences = new ReplaySubject<changeInstance[] | undefined>(
 		undefined
 	);
-	private _editable = new BehaviorSubject<string>('false');
 	private _groups = new BehaviorSubject<string[]>([]);
 	constructor(private ui: UiService) {}
 
@@ -54,23 +53,11 @@ export class PlConfigUIStateService {
 	public set loadingValue(loading: boolean | string) {
 		this.ui.loading = loading as boolean;
 	}
-	public get editable() {
-		return this._editable;
-	}
-	public set editableValue(edit: boolean | string) {
-		this.editable.next(edit.toString());
-	}
 	public get errors() {
 		return this.ui.errorText;
 	}
 	public set error(errorString: string) {
 		this.ui.ErrorText = errorString;
-	}
-	public set groupsString(groups: string[]) {
-		this._groups.next(groups);
-	}
-	public get groups() {
-		return this._groups;
 	}
 	get differences() {
 		return this._differences.pipe(

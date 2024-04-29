@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { Component } from '@angular/core';
 import {
 	MatCell,
@@ -49,7 +49,8 @@ import { trainingRoleHeaderDetails } from './training-role-table-header';
 		MatHeaderRowDef,
 		MatRow,
 		MatRowDef,
-		CommonModule,
+		NgClass,
+		AsyncPipe,
 	],
 })
 export class TrainingRoleTableComponent {

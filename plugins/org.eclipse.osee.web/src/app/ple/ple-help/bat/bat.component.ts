@@ -11,13 +11,13 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { MarkdownComponent } from 'ngx-markdown';
 
 @Component({
 	selector: 'osee-bat',
 	standalone: true,
-	imports: [CommonModule, MarkdownComponent],
+	imports: [MarkdownComponent],
 	templateUrl: './bat.component.html',
 	styles: [],
 })

@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import {
@@ -40,7 +39,6 @@ import { ArrayDiffMenuComponent } from '../array-diff-menu/array-diff-menu.compo
 		MatMenuContent,
 		MatMenu,
 		MatIcon,
-		NgIf,
 		ArrayDiffMenuComponent,
 	],
 })

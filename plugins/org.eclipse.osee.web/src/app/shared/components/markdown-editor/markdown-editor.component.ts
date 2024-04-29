@@ -11,28 +11,38 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
-	AfterViewInit,
+	ChangeDetectionStrategy,
 	Component,
 	ElementRef,
-	OnDestroy,
-	Renderer2,
-	RendererStyleFlags2,
-	ViewChild,
 	computed,
 	model,
 	signal,
+	viewChild,
 } from '@angular/core';
+import {
+	takeUntilDestroyed,
+	toObservable,
+	toSignal,
+} from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatDivider } from '@angular/material/divider';
 import { MatFormField } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MarkdownComponent } from 'ngx-markdown';
+import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatTooltip } from '@angular/material/tooltip';
-import { scan } from 'rxjs';
-import { MatMenu, MatMenuTrigger, MatMenuItem } from '@angular/material/menu';
+import { MarkdownComponent } from 'ngx-markdown';
+import {
+	combineLatest,
+	fromEvent,
+	map,
+	of,
+	scan,
+	switchMap,
+	takeUntil,
+	throttleTime,
+} from 'rxjs';
 import { mdExamples } from './markdown-editor-examples';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-markdown-editor',
@@ -50,8 +60,9 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 		MatMenuItem,
 	],
 	templateUrl: './markdown-editor.component.html',
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MarkdownEditorComponent implements OnDestroy, AfterViewInit {
+export class MarkdownEditorComponent {
 	mdContent = model.required<string>();
 	_history = toObservable(this.mdContent).pipe(
 		scan((acc, curr) => {
@@ -65,8 +76,6 @@ export class MarkdownEditorComponent implements OnDestroy, AfterViewInit {
 	redoHistory = signal([] as string[]);
 	maxHistory = signal(100);
 	mdExamples = mdExamples;
-
-	constructor(private renderer2: Renderer2) {}
 
 	addExampleToMdContent(markdownExample: string) {
 		this.mdContent.set(this.mdContent() + '\n\n' + markdownExample);
@@ -117,91 +126,69 @@ export class MarkdownEditorComponent implements OnDestroy, AfterViewInit {
 		}
 	}
 
-	// Mouse/Cursor tracking
-
-	private unlistenSlideMouseDown!: () => void;
-	private unlistenSlideMouseMoving!: () => void;
-	private unlistenSlideMouseUp!: () => void;
-
-	private oldCursorX!: number;
-	private oldLeftWidth!: number;
-
 	// Template element references
 
-	@ViewChild('resizer') resizerRef!: ElementRef;
-	@ViewChild('containerLeft') containerLeftRef!: ElementRef;
-	@ViewChild('containerLeftTextarea')
-	containerLeftTextareaRef!: ElementRef;
-	@ViewChild('containerRight') containerRightRef!: ElementRef;
-	@ViewChild('main') bodyRef!: ElementRef;
+	private resizerRef = viewChild.required('resizer', { read: ElementRef });
+	private resizerEl = computed<HTMLElement>(
+		() => this.resizerRef().nativeElement
+	);
+	private _offsetWidth = computed(
+		() => this.resizerEl().parentElement?.offsetWidth || 0
+	);
+	private containerLeftRef = viewChild.required('containerLeft', {
+		read: ElementRef,
+	});
+	private container__leftEL = computed<HTMLElement>(
+		() => this.containerLeftRef().nativeElement
+	);
 
-	ngAfterViewInit(): void {
-		const resizerEl = this.resizerRef.nativeElement;
+	private oldLeftWidth = computed(() => this.container__leftEL().offsetWidth);
+	containerRightRef = viewChild.required('containerRight', {
+		read: ElementRef,
+	});
+	bodyRef = viewChild.required('main', { read: ElementRef });
+	bodyEl = computed<HTMLElement>(() => this.bodyRef().nativeElement);
 
-		const container__leftEL = this.containerLeftRef.nativeElement;
-		const container__rightEL = this.containerRightRef.nativeElement;
-		const bodyEl = this.bodyRef.nativeElement;
+	private _mouseDownOnResizeButton = toObservable(this.resizerEl).pipe(
+		switchMap((el) => fromEvent<MouseEvent>(el, 'mousedown')),
+		takeUntilDestroyed()
+	);
 
-		this.unlistenSlideMouseDown = this.renderer2.listen(
-			resizerEl,
-			'mousedown',
-			(event) => {
-				this.oldCursorX = event.clientX;
-				this.oldLeftWidth = container__leftEL.offsetWidth;
+	private _oldCursorX = this._mouseDownOnResizeButton.pipe(
+		map((event) => event.x),
+		takeUntilDestroyed()
+	);
 
-				this.unlistenSlideMouseMoving = this.renderer2.listen(
-					'document',
-					'mousemove',
-					(event) => {
-						const dx = event.clientX - this.oldCursorX;
+	private _mouseUp = fromEvent<MouseEvent>(document, 'mouseup').pipe(
+		takeUntilDestroyed()
+	);
 
-						const newLeftWidth =
-							((this.oldLeftWidth + dx) * 100) /
-							resizerEl.parentNode.offsetWidth;
+	private _mouseMove = fromEvent<MouseEvent>(document, 'mousemove').pipe(
+		takeUntilDestroyed()
+	);
 
-						this.renderer2.setStyle(
-							container__leftEL,
-							'width',
-							newLeftWidth + '%',
-							RendererStyleFlags2.Important
-						);
-					}
-				);
+	private _mouseMoveX = this._mouseMove.pipe(
+		map((event) => event.x),
+		takeUntilDestroyed()
+	);
 
-				this.unlistenSlideMouseUp = this.renderer2.listen(
-					'document',
-					'mouseup',
-					() => {
-						this.renderer2.removeStyle(resizerEl, 'cursor');
-						this.renderer2.removeStyle(bodyEl, 'cursor');
+	private _width = this._oldCursorX.pipe(
+		switchMap((x) =>
+			combineLatest([of(x), this._mouseMoveX]).pipe(
+				throttleTime(16.67), //locking updates to 60Hz
+				map(([oldX, newX]) => newX - oldX),
+				map(
+					(dx) =>
+						((this.oldLeftWidth() + dx) * 100) / this._offsetWidth()
+				),
+				map((w) => 'width:' + w + '% !important'),
+				takeUntil(this._mouseUp)
+			)
+		),
+		takeUntilDestroyed()
+	);
 
-						this.renderer2.removeStyle(
-							container__leftEL,
-							'userSelect'
-						);
-						this.renderer2.removeStyle(
-							container__leftEL,
-							'pointerEvents'
-						);
-
-						this.renderer2.removeStyle(
-							container__rightEL,
-							'userSelect'
-						);
-						this.renderer2.removeStyle(
-							container__rightEL,
-							'pointerEvents'
-						);
-
-						this.unlistenSlideMouseMoving();
-						this.unlistenSlideMouseUp();
-					}
-				);
-			}
-		);
-	}
-
-	ngOnDestroy(): void {
-		this.unlistenSlideMouseDown();
-	}
+	protected width = toSignal(this._width, {
+		initialValue: 'width:50% !important',
+	});
 }

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { ServerHealthSqlComponent } from './components/server-health-sql/server-health-sql.component';
 import { ServerHealthTablespaceComponent } from './components/server-health-tablespace/server-health-tablespace.component';
 import { navigationStructure } from '@osee/layout/routing';
@@ -28,7 +28,6 @@ const _currNavItem: navigationElement =
 	selector: 'osee-server-health-database',
 	standalone: true,
 	imports: [
-		CommonModule,
 		ServerHealthSqlComponent,
 		ServerHealthTablespaceComponent,
 		ServerHealthPageHeaderComponent,

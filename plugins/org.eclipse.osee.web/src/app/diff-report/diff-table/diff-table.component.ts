@@ -18,8 +18,8 @@ import {
 	trigger,
 } from '@angular/animations';
 import { SelectionModel } from '@angular/cdk/collections';
-import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { Component, OnInit, effect, viewChild } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAnchor, MatButton } from '@angular/material/button';
 import { MatFormField, MatPrefix } from '@angular/material/form-field';
@@ -52,7 +52,7 @@ import { ReportService } from '../services/report.service';
 	selector: 'osee-diff-table',
 	standalone: true,
 	imports: [
-		CommonModule,
+		AsyncPipe,
 		FormsModule,
 		ReactiveFormsModule,
 		MatFormField,
@@ -92,12 +92,20 @@ import { ReportService } from '../services/report.service';
 		]),
 	],
 })
-export class DiffTableComponent implements OnInit, AfterViewInit {
+export class DiffTableComponent implements OnInit {
 	loading = false;
-	@ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
-	@ViewChild(MatSort) sort!: MatSort;
+	private paginator = viewChild.required(MatPaginator);
+	private sort = viewChild.required(MatSort);
 	dataSource: MatTableDataSource<workflow> =
 		new MatTableDataSource<workflow>();
+
+	private _updateDataSourcePaginator = effect(() => {
+		this.dataSource.paginator = this.paginator();
+	});
+
+	private _updateDataSourceSort = effect(() => {
+		this.dataSource.sort = this.sort();
+	});
 	selection = new SelectionModel<Artifact>(true, []);
 	allRowsExpanded: boolean = false;
 	isExpansionDetailRow = (i: number, row: Object) =>
@@ -169,11 +177,6 @@ export class DiffTableComponent implements OnInit, AfterViewInit {
 
 	onArtifactToggled(artifact: Artifact) {
 		this.selection.toggle(artifact);
-	}
-
-	ngAfterViewInit() {
-		this.dataSource.paginator = this.paginator;
-		this.dataSource.sort = this.sort;
 	}
 
 	artifact = this.reportService.artifact;

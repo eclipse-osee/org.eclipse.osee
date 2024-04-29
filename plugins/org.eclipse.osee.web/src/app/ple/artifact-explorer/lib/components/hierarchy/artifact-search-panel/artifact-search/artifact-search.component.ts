@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, ViewChild, signal } from '@angular/core';
+import { Component, signal, viewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
@@ -82,8 +82,7 @@ import { AdvancedSearchDialogComponent } from './advanced-search-dialog/advanced
 	templateUrl: './artifact-search.component.html',
 })
 export class ArtifactSearchComponent {
-	@ViewChild(MatMenuTrigger, { static: true })
-	matMenuTrigger!: MatMenuTrigger;
+	matMenuTrigger = viewChild.required(MatMenuTrigger);
 
 	searchText = new BehaviorSubject<string>('');
 	searchTrigger = new BehaviorSubject<boolean>(false);
@@ -283,10 +282,10 @@ export class ArtifactSearchComponent {
 		event.preventDefault();
 		this.menuPosition.x = event.clientX + 'px';
 		this.menuPosition.y = event.clientY + 'px';
-		this.matMenuTrigger.menuData = {
+		this.matMenuTrigger().menuData = {
 			artifact: artifact,
 		};
-		this.matMenuTrigger.openMenu();
+		this.matMenuTrigger().openMenu();
 	}
 
 	nextPage() {

@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -46,7 +46,8 @@ import { trainingCourseRecordHeaderDetails } from './training-course-table-heade
 	templateUrl: './training-course-table.component.html',
 	styles: [],
 	imports: [
-		CommonModule,
+		NgClass,
+		AsyncPipe,
 		MatFormField,
 		MatLabel,
 		MatInput,

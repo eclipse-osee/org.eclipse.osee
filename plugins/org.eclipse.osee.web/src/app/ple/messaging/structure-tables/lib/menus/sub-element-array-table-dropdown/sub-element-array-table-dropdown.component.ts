@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, Inject, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatDivider } from '@angular/material/divider';
@@ -56,7 +56,6 @@ import { ElementTableDropdownService } from '../../services/element-table-dropdo
 		'osee-sub-element-array-table-dropdown[element][headerElement][header][branchId][branchType][editMode]',
 	standalone: true,
 	imports: [
-		NgIf,
 		AsyncPipe,
 		RouterLink,
 		MatMenuItem,

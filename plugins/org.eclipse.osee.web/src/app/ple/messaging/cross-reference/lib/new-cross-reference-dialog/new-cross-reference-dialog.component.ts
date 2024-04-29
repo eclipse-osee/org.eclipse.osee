@@ -10,14 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import {
-	MatButton,
-	MatFabButton,
-	MatMiniFabButton,
-} from '@angular/material/button';
+import { MatButton, MatMiniFabButton } from '@angular/material/button';
 import {
 	MAT_DIALOG_DATA,
 	MatDialogActions,
@@ -39,7 +34,6 @@ import { ApplicabilitySelectorComponent } from '@osee/shared/components';
 	selector: 'osee-new-cross-reference-dialog',
 	standalone: true,
 	imports: [
-		CommonModule,
 		FormsModule,
 		MatDialogTitle,
 		MatDialogContent,

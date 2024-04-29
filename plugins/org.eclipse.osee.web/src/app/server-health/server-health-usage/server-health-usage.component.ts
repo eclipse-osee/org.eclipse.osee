@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
@@ -54,7 +54,8 @@ const _currNavItem: navigationElement =
 	selector: 'osee-server-health-usage',
 	standalone: true,
 	imports: [
-		CommonModule,
+		NgClass,
+		AsyncPipe,
 		ServerHealthPageHeaderComponent,
 		MatExpansionPanel,
 		MatExpansionPanelHeader,

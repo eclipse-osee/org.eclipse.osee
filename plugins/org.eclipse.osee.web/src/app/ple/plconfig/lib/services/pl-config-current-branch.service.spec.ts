@@ -11,12 +11,21 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
+import { ActionService, UiService } from '@osee/shared/services';
+import {
+	MockXResultData,
+	testBranchActions,
+	testBranchListing,
+	testCommitResponse,
+	testWorkFlow,
+} from '@osee/shared/testing';
 import { of } from 'rxjs';
 import { TestScheduler } from 'rxjs/testing';
 import {
 	testApplicabilityTag,
 	testBranchApplicability,
 } from '../testing/mockBranchService';
+import { plConfigTypesServiceMock } from '../testing/pl-config-types.service.mock';
 import {
 	view,
 	viewWithChanges,
@@ -25,19 +34,10 @@ import {
 	configGroup,
 	configurationGroup,
 } from '../types/pl-config-configurations';
-import { ActionService, UiService } from '@osee/shared/services';
 import { PlConfigBranchService } from './pl-config-branch-service.service';
 import { PlConfigCurrentBranchService } from './pl-config-current-branch.service';
-import { PlConfigUIStateService } from './pl-config-uistate.service';
 import { PlConfigTypesService } from './pl-config-types.service';
-import { plConfigTypesServiceMock } from '../testing/pl-config-types.service.mock';
-import {
-	testBranchListing,
-	MockXResultData,
-	testCommitResponse,
-	testBranchActions,
-	testWorkFlow,
-} from '@osee/shared/testing';
+import { PlConfigUIStateService } from './pl-config-uistate.service';
 
 describe('PlConfigCurrentBranchService', () => {
 	let service: PlConfigCurrentBranchService;
@@ -614,15 +614,6 @@ describe('PlConfigCurrentBranchService', () => {
 						success: MockXResultData.success,
 						results: MockXResultData.results,
 					},
-				});
-			});
-		});
-
-		it('should delete configuration', () => {
-			scheduler.run(({ expectObservable }) => {
-				ui.groupsString = ['456'];
-				expectObservable(service.deleteConfiguration('123')).toBe('a', {
-					a: [MockXResultData],
 				});
 			});
 		});

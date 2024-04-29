@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Component } from '@angular/core';
 
-import { AsyncPipe, NgFor } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { MatAnchor } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
@@ -31,7 +31,7 @@ const _navItems = navigationStructure[0].children.filter(
 		':host{ height: 94vh; min-height: calc(94vh - 10%); max-height: 94vh; width: 100vw; min-width: calc(100vw - 10%); display: inline-block;}',
 	],
 	standalone: true,
-	imports: [NgFor, AsyncPipe, RouterLink, MatAnchor, MatIcon],
+	imports: [AsyncPipe, RouterLink, MatAnchor, MatIcon],
 })
 export class MessagingComponent {
 	constructor(private userService: UserDataAccountService) {}

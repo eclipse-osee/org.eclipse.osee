@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <mat-form-field class="tw-w-full">
 	<mat-label>Filter Table</mat-label>
 	<input
@@ -23,85 +23,85 @@
 	<table
 		mat-table
 		[dataSource]="(data | async) || []">
-		<ng-container
-			[matColumnDef]="header"
-			*ngFor="let header of headers">
-			<th
-				mat-header-cell
-				*matHeaderCellDef
-				class="tw-text-primary-600"
-				[matTooltip]="
-					(getTableHeaderByName(header) | async)?.description || ''
-				">
-				{{
-					(getTableHeaderByName(header) | async)?.humanReadable || ''
-				}}
-			</th>
-			<td
-				mat-cell
-				*matCellDef="let ref"
-				(contextmenu)="openMenu($event, ref)">
-				<ng-container *ngIf="(inEditMode | async) === true">
-					<ng-container
-						*ngIf="
+		@for (header of headers; track header) {
+			<ng-container [matColumnDef]="header">
+				<th
+					mat-header-cell
+					*matHeaderCellDef
+					class="tw-text-primary-600"
+					[matTooltip]="
+						(getTableHeaderByName(header) | async)?.description ||
+						''
+					">
+					{{
+						(getTableHeaderByName(header) | async)?.humanReadable ||
+							''
+					}}
+				</th>
+				<td
+					mat-cell
+					*matCellDef="let ref"
+					(contextmenu)="openMenu($event, ref)">
+					@if ((inEditMode | async) === true) {
+						@if (
 							header !== 'crossReferenceArrayValues' &&
 							header !== 'applicability'
-						">
-						<osee-table-edit-text-field
-							[value]="ref[header]"
-							(enterPressed)="
-								updateCrossReference(ref, header, $event)
-							"
-							(focusLost)="
-								updateCrossReference(ref, header, $event)
-							"></osee-table-edit-text-field>
-					</ng-container>
-					<ng-container
-						*ngIf="header === 'crossReferenceArrayValues'">
-						<ng-container *ngIf="ref[header] !== ''">
-							<button
-								class="tw-m-2 tw-w-full tw-cursor-pointer tw-rounded-md tw-border tw-border-solid tw-p-1 tw-text-left"
-								(click)="openEditDialog(ref)">
-								<ng-container
-									*ngFor="
-										let item of ref[header] | splitString
-									">
-									{{ item }}
-									<br />
-								</ng-container>
-							</button>
-						</ng-container>
-					</ng-container>
-					<ng-container *ngIf="header === 'applicability'">
-						<osee-applicability-selector
-							[applicability]="ref[header]"
-							(applicabilityChange)="
-								updateCrossReference(ref, header, $event)
-							"></osee-applicability-selector>
-					</ng-container>
-				</ng-container>
-				<ng-container *ngIf="(inEditMode | async) === false">
-					<ng-container
-						*ngIf="
+						) {
+							<osee-table-edit-text-field
+								[value]="ref[header]"
+								(enterPressed)="
+									updateCrossReference(ref, header, $event)
+								"
+								(focusLost)="
+									updateCrossReference(ref, header, $event)
+								"></osee-table-edit-text-field>
+						}
+						@if (header === 'crossReferenceArrayValues') {
+							@if (ref[header] !== '') {
+								<button
+									class="tw-m-2 tw-w-full tw-cursor-pointer tw-rounded-md tw-border tw-border-solid tw-p-1 tw-text-left"
+									(click)="openEditDialog(ref)">
+									@for (
+										item of ref[header] | splitString;
+										track item
+									) {
+										{{ item }}
+										<br />
+									}
+								</button>
+							}
+						}
+						@if (header === 'applicability') {
+							<osee-applicability-selector
+								[applicability]="ref[header]"
+								(applicabilityChange)="
+									updateCrossReference(ref, header, $event)
+								"></osee-applicability-selector>
+						}
+					}
+					@if ((inEditMode | async) === false) {
+						@if (
 							header !== 'crossReferenceArrayValues' &&
 							header !== 'applicability'
-						">
-						{{ ref[header] }}
-					</ng-container>
-					<ng-container
-						*ngIf="header === 'crossReferenceArrayValues'">
-						<ng-container
-							*ngFor="let item of ref[header] | splitString">
-							{{ item }}
-							<br />
-						</ng-container>
-					</ng-container>
-					<ng-container *ngIf="header === 'applicability'">
-						{{ ref[header].value }}
-					</ng-container>
-				</ng-container>
-			</td>
-		</ng-container>
+						) {
+							{{ ref[header] }}
+						}
+						@if (header === 'crossReferenceArrayValues') {
+							@for (
+								item of ref[header] | splitString;
+								track item
+							) {
+								{{ item }}
+								<br />
+							}
+						}
+						@if (header === 'applicability') {
+							{{ ref[header].value }}
+						}
+					}
+				</td>
+			</ng-container>
+		}
 		<tr
 			mat-header-row
 			*matHeaderRowDef="headers; sticky: true"></tr>

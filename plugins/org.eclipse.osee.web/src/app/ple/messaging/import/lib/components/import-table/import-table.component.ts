@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import {
 	MatFormField,
@@ -43,8 +43,6 @@ import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 		AsyncPipe,
 		HighlightFilteredTextDirective,
 		NgClass,
-		NgIf,
-		NgFor,
 		MatTable,
 		MatColumnDef,
 		MatHeaderCell,

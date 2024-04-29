@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { PreferencesUIService } from '@osee/messaging/shared/services';
 import { tap } from 'rxjs';
@@ -20,7 +20,7 @@ import { tap } from 'rxjs';
 	selector: 'osee-enum-literals-field',
 	templateUrl: './enum-literals-field.component.html',
 	styles: [],
-	imports: [NgIf, NgFor, AsyncPipe],
+	imports: [AsyncPipe],
 })
 export class EnumLiteralsFieldComponent {
 	@Input() enumLiterals: string = '';

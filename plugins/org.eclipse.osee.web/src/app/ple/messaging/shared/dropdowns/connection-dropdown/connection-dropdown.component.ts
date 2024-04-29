@@ -17,7 +17,7 @@ import {
 	transition,
 	trigger,
 } from '@angular/animations';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
@@ -60,7 +60,6 @@ import {
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		AsyncPipe,
-		NgIf,
 		FormsModule,
 		MatOptionLoadingComponent,
 		MatFormField,

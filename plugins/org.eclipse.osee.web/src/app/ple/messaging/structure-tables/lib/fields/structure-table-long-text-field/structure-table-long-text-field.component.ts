@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Input } from '@angular/core';
-import { AsyncPipe, NgClass, NgIf, NgStyle } from '@angular/common';
+import { AsyncPipe, NgClass, NgStyle } from '@angular/common';
 import { tap } from 'rxjs';
 import { PreferencesUIService } from '@osee/messaging/shared/services';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
@@ -21,13 +21,7 @@ import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 	templateUrl: './structure-table-long-text-field.component.html',
 	styles: [],
 	standalone: true,
-	imports: [
-		NgClass,
-		NgIf,
-		NgStyle,
-		HighlightFilteredTextDirective,
-		AsyncPipe,
-	],
+	imports: [NgClass, NgStyle, HighlightFilteredTextDirective, AsyncPipe],
 })
 export class StructureTableLongTextFieldComponent {
 	@Input() text: string = '';

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, Input, Output } from '@angular/core';
 import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
@@ -46,8 +46,6 @@ import { EnumFormComponent } from '../../forms/enum-form/enum-form.component';
 		CdkTextareaAutosize,
 		AsyncPipe,
 		EnumFormComponent,
-		NgFor,
-		NgIf,
 		EnumSetUniqueDescriptionDirective,
 		ApplicabilitySelectorComponent,
 	],

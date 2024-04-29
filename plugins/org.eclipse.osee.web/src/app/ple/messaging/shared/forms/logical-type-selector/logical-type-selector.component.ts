@@ -16,7 +16,7 @@ import {
 	EventEmitter,
 	Input,
 	Output,
-	ViewChild,
+	viewChild,
 } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MatOption } from '@angular/material/core';
@@ -45,8 +45,7 @@ import { HasValidIdDirective } from '@osee/shared/validators';
 	styles: [],
 })
 export class LogicalTypeSelectorComponent {
-	@ViewChild('logicalTypeSelector')
-	form!: NgForm;
+	form = viewChild.required('logicalTypeSelector', { read: NgForm });
 	@Input() type: logicalType = {
 		id: '-1',
 		name: '',

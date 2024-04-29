@@ -1,21 +1,17 @@
 <!--
- * Copyright (c) 2021 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
-<ng-container *ngIf="enumObs | async as enumerationSet">
-	<ng-container
-		*ngIf="
-			(inEditMode | async) === true && isOnEditablePage === true;
-			else no_edit
-		">
+* Copyright (c) 2021 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
+@if (enumObs | async; as enumerationSet) {
+	@if ((inEditMode | async) === true && isOnEditablePage === true) {
 		<h1 mat-dialog-title>Editing {{ enumerationSet.name }}</h1>
 		<mat-dialog-content>
 			<osee-edit-enum-set-field
@@ -23,8 +19,7 @@
 				[platformTypeId]="data.id"
 				(enumSetTx)="receiveTx($event)"></osee-edit-enum-set-field>
 		</mat-dialog-content>
-	</ng-container>
-	<ng-template #no_edit>
+	} @else {
 		<h1 mat-dialog-title>Viewing {{ enumerationSet.name }}</h1>
 		<mat-dialog-content>
 			<osee-edit-enum-set-field
@@ -32,20 +27,20 @@
 				[platformTypeId]="data.id"
 				(enumSetTx)="receiveTx($event)"></osee-edit-enum-set-field>
 		</mat-dialog-content>
-	</ng-template>
-</ng-container>
+	}
+}
 <mat-dialog-actions align="end">
 	<button
 		mat-button
 		(click)="onNoClick()">
 		Cancel
 	</button>
-	<ng-container *ngIf="receivedTx | async as result">
+	@if (receivedTx | async; as result) {
 		<button
 			mat-raised-button
 			color="primary"
 			[mat-dialog-close]="result">
 			Ok
 		</button>
-	</ng-container>
+	}
 </mat-dialog-actions>

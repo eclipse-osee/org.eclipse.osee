@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { AsyncPipe, NgClass } from '@angular/common';
+import { Component, effect, viewChild } from '@angular/core';
 import { MatSort, MatSortHeader, Sort } from '@angular/material/sort';
 import {
 	MatCell,
@@ -34,7 +34,8 @@ import { tablespace } from '../../../shared/types/server-health-types';
 	selector: 'osee-server-health-tablespace',
 	standalone: true,
 	imports: [
-		CommonModule,
+		NgClass,
+		AsyncPipe,
 		MatTable,
 		MatSort,
 		MatColumnDef,
@@ -50,10 +51,13 @@ import { tablespace } from '../../../shared/types/server-health-types';
 	],
 	templateUrl: './server-health-tablespace.component.html',
 })
-export class ServerHealthTablespaceComponent implements AfterViewInit {
+export class ServerHealthTablespaceComponent {
 	constructor(private serverHealthHttpService: ServerHealthHttpService) {}
+	private sort = viewChild.required(MatSort);
 
-	@ViewChild(MatSort) sort!: MatSort;
+	private _updateDataSourceSort = effect(() => {
+		this.dataSource.sort = this.sort();
+	});
 
 	orderBy$ = new BehaviorSubject<orderByPair>({
 		orderByName: '',
@@ -182,10 +186,6 @@ export class ServerHealthTablespaceComponent implements AfterViewInit {
 				)
 		)
 	);
-
-	ngAfterViewInit() {
-		this.dataSource.sort = this.sort;
-	}
 }
 
 interface orderByPair {

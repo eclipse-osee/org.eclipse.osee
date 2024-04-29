@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgFor } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import {
@@ -35,7 +35,6 @@ import { NewNodeFormComponent } from '../../forms/new-node-form/new-node-form.co
 		MatDialogActions,
 		MatButton,
 		AsyncPipe,
-		NgFor,
 		NewNodeFormComponent,
 	],
 })

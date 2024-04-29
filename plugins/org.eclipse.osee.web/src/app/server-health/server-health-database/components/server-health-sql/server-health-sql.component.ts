@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { AsyncPipe, NgClass } from '@angular/common';
+import { Component, effect, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, MatSortHeader, Sort } from '@angular/material/sort';
@@ -42,7 +42,8 @@ import { sql } from '../../../shared/types/server-health-types';
 	selector: 'osee-server-health-sql',
 	standalone: true,
 	imports: [
-		CommonModule,
+		NgClass,
+		AsyncPipe,
 		MatTable,
 		MatSort,
 		MatColumnDef,
@@ -59,11 +60,21 @@ import { sql } from '../../../shared/types/server-health-types';
 	],
 	templateUrl: './server-health-sql.component.html',
 })
-export class ServerHealthSqlComponent implements AfterViewInit {
+export class ServerHealthSqlComponent {
 	constructor(private serverHealthHttpService: ServerHealthHttpService) {}
 
-	@ViewChild(MatPaginator, { static: false }) paginator!: MatPaginator;
-	@ViewChild(MatSort) sort!: MatSort;
+	private paginator = viewChild(MatPaginator);
+	private sort = viewChild.required(MatSort);
+	private _updateSort = effect(() => {
+		this.dataSource.sort = this.sort();
+	});
+
+	private _updatePaginator = effect(() => {
+		const paginator = this.paginator();
+		if (paginator) {
+			this.dataSource.paginator = paginator;
+		}
+	});
 
 	displayedColumns = [
 		'sqlText',
@@ -160,11 +171,6 @@ export class ServerHealthSqlComponent implements AfterViewInit {
 		shareReplay({ bufferSize: 1, refCount: true }),
 		takeUntilDestroyed()
 	);
-
-	ngAfterViewInit() {
-		this.dataSource.paginator = this.paginator;
-		this.dataSource.sort = this.sort;
-	}
 }
 
 interface orderByPair {

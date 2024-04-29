@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MatButton, MatIconButton } from '@angular/material/button';
@@ -32,7 +31,6 @@ import {
 	selector: 'osee-open-url-form',
 	standalone: true,
 	imports: [
-		CommonModule,
 		FormsModule,
 		MatFormField,
 		MatLabel,

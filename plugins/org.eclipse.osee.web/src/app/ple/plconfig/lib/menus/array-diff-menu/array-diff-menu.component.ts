@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NgFor, NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { MatMenuItem } from '@angular/material/menu';
 import { applic } from '@osee/shared/types/applicability';
@@ -22,7 +21,7 @@ import { PlConfigCurrentBranchService } from '../../services/pl-config-current-b
 	templateUrl: './array-diff-menu.component.html',
 	styles: [],
 	standalone: true,
-	imports: [NgIf, NgFor, MatMenuItem],
+	imports: [MatMenuItem],
 })
 export class ArrayDiffMenuComponent {
 	@Input() array: difference[] = [];

@@ -1,21 +1,21 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <osee-ci-dashboard-controls
 	><div class="tw-flex tw-w-full tw-items-end tw-justify-between">
-		<ng-container *ngIf="branchId() && setId()">
+		@if (branchId() && setId()) {
 			<osee-batch-dropdown></osee-batch-dropdown>
-		</ng-container>
-		<ng-container *ngIf="batchId() !== '-1'">
+		}
+		@if (batchId() !== '-1') {
 			<button
 				mat-raised-button
 				color="primary"
@@ -23,57 +23,59 @@
 				<mat-icon>download</mat-icon
 				><span class="tw-pl-2">Download</span>
 			</button>
-		</ng-container>
+		}
 	</div>
 </osee-ci-dashboard-controls>
-<ng-container *ngIf="results | async as _results">
-	<ng-container *ngIf="resultsCount | async as _count">
+@if (results | async; as _results) {
+	@if (resultsCount | async; as _count) {
 		<div class="tw-h-[76vh] tw-overflow-auto">
 			<table
 				mat-table
 				[dataSource]="_results">
-				<ng-container
-					[matColumnDef]="header"
-					*ngFor="let header of headers">
-					<th
-						mat-header-cell
-						*matHeaderCellDef
-						class="tw-text-primary-600"
-						[matTooltip]="
-							(getTableHeaderByName(header) | async)
-								?.description || ''
-						">
-						{{
-							(getTableHeaderByName(header) | async)
-								?.humanReadable || ''
-						}}
-					</th>
-					<td
-						mat-cell
-						*matCellDef="let result">
-						<ng-container *ngIf="header === 'name'">
-							<a
-								href=""
-								class="tw-text-primary"
-								>{{ result.name }}</a
-							>
-						</ng-container>
-						<ng-container *ngIf="header === 'totalTestPoints'">
-							{{ result['passedCount'] + result['failedCount'] }}
-						</ng-container>
-						<ng-container *ngIf="header === 'elapsedTime'">
-							{{ result[header] | formatMilliseconds }}
-						</ng-container>
-						<ng-container
-							*ngIf="
+				@for (header of headers; track header) {
+					<ng-container [matColumnDef]="header">
+						<th
+							mat-header-cell
+							*matHeaderCellDef
+							class="tw-text-primary-600"
+							[matTooltip]="
+								(getTableHeaderByName(header) | async)
+									?.description || ''
+							">
+							{{
+								(getTableHeaderByName(header) | async)
+									?.humanReadable || ''
+							}}
+						</th>
+						<td
+							mat-cell
+							*matCellDef="let result">
+							@if (header === 'name') {
+								<a
+									href=""
+									class="tw-text-primary"
+									>{{ result.name }}</a
+								>
+							}
+							@if (header === 'totalTestPoints') {
+								{{
+									result['passedCount'] +
+										result['failedCount']
+								}}
+							}
+							@if (header === 'elapsedTime') {
+								{{ result[header] | formatMilliseconds }}
+							}
+							@if (
 								header !== 'name' &&
 								header !== 'totalTestPoints' &&
 								header !== 'elapsedTime'
-							">
-							{{ result[header] }}
-						</ng-container>
-					</td>
-				</ng-container>
+							) {
+								{{ result[header] }}
+							}
+						</td>
+					</ng-container>
+				}
 				<tr
 					mat-header-row
 					*matHeaderRowDef="headers; sticky: true"></tr>
@@ -91,5 +93,5 @@
 			(page)="setPage($event)"
 			[length]="_count"
 			[disabled]="false"></mat-paginator>
-	</ng-container>
-</ng-container>
+	}
+}

@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <ng-container>
 	<form
 		#createArtifactForm="ngForm"
@@ -26,15 +26,16 @@
 					[(ngModel)]="commandObject.name"
 					name="commandName"
 					#commandName="ngModel" />
-				<button
-					type="button"
-					*ngIf="commandObject.name"
-					matSuffix
-					mat-icon-button
-					aria-label="Clear"
-					(click)="commandObject.name = ''">
-					<mat-icon>close</mat-icon>
-				</button>
+				@if (commandObject.name) {
+					<button
+						type="button"
+						matSuffix
+						mat-icon-button
+						aria-label="Clear"
+						(click)="commandObject.name = ''">
+						<mat-icon>close</mat-icon>
+					</button>
+				}
 			</mat-form-field>
 			<mat-form-field
 				appearance="outline"
@@ -47,15 +48,16 @@
 					[(ngModel)]="commandObject.description"
 					name="commandDescription"
 					#commandDescription="ngModel" />
-				<button
-					type="button"
-					*ngIf="commandObject.description"
-					matSuffix
-					mat-icon-button
-					aria-label="Clear"
-					(click)="commandObject.description = ''">
-					<mat-icon>close</mat-icon>
-				</button>
+				@if (commandObject.description) {
+					<button
+						type="button"
+						matSuffix
+						mat-icon-button
+						aria-label="Clear"
+						(click)="commandObject.description = ''">
+						<mat-icon>close</mat-icon>
+					</button>
+				}
 			</mat-form-field>
 			<mat-form-field
 				appearance="outline"
@@ -69,15 +71,16 @@
 					[(ngModel)]="commandObject.contentURL"
 					name="commandContentUrl"
 					#commandContentUrl="ngModel" />
-				<button
-					type="button"
-					*ngIf="commandObject.contentURL"
-					matSuffix
-					mat-icon-button
-					aria-label="Clear"
-					(click)="commandObject.contentURL = ''">
-					<mat-icon>close</mat-icon>
-				</button>
+				@if (commandObject.contentURL) {
+					<button
+						type="button"
+						matSuffix
+						mat-icon-button
+						aria-label="Clear"
+						(click)="commandObject.contentURL = ''">
+						<mat-icon>close</mat-icon>
+					</button>
+				}
 			</mat-form-field>
 			<button
 				type="button"
@@ -85,16 +88,16 @@
 				mat-raised-button
 				color="accent"
 				(click)="displayParameterOptionsBtnHandler($event)">
-				<mat-icon *ngIf="!displayParameterOptions">
-					expand_more
-				</mat-icon>
-				<mat-icon *ngIf="displayParameterOptions">
-					expand_less
-				</mat-icon>
+				@if (!displayParameterOptions) {
+					<mat-icon> expand_more </mat-icon>
+				}
+				@if (displayParameterOptions) {
+					<mat-icon> expand_less </mat-icon>
+				}
 				Advanced Options
 			</button>
 		</section>
-		<ng-container *ngIf="displayParameterOptions">
+		@if (displayParameterOptions) {
 			<section>
 				<mat-form-field
 					appearance="outline"
@@ -106,15 +109,16 @@
 						[(ngModel)]="defaultParameter.description"
 						[value]="commandObject.description"
 						name="parameterDescription" />
-					<button
-						type="button"
-						*ngIf="defaultParameter.description"
-						matSuffix
-						mat-icon-button
-						aria-label="Clear"
-						(click)="defaultParameter.description = ''">
-						<mat-icon>close</mat-icon>
-					</button>
+					@if (defaultParameter.description) {
+						<button
+							type="button"
+							matSuffix
+							mat-icon-button
+							aria-label="Clear"
+							(click)="defaultParameter.description = ''">
+							<mat-icon>close</mat-icon>
+						</button>
+					}
 				</mat-form-field>
 				<mat-form-field
 					appearance="outline"
@@ -125,18 +129,19 @@
 						type="url"
 						[(ngModel)]="defaultParameter.defaultValue"
 						name="parameterdefaultValue" />
-					<button
-						type="button"
-						*ngIf="defaultParameter.defaultValue"
-						matSuffix
-						mat-icon-button
-						aria-label="Clear"
-						(click)="defaultParameter.defaultValue = ''">
-						<mat-icon>close</mat-icon>
-					</button>
+					@if (defaultParameter.defaultValue) {
+						<button
+							type="button"
+							matSuffix
+							mat-icon-button
+							aria-label="Clear"
+							(click)="defaultParameter.defaultValue = ''">
+							<mat-icon>close</mat-icon>
+						</button>
+					}
 				</mat-form-field>
 			</section>
-		</ng-container>
+		}
 		<div class="tw-m-4 tw-mb-7">
 			<button
 				type="submit"

@@ -1,24 +1,24 @@
 <!--
- * Copyright (c) 2022 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2022 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <h1 mat-dialog-title>Warning - Attribute affects multiple artifacts</h1>
 <mat-dialog-content>
 	The following {{ data.affectedObjectType }}(s) will be affected by your
 	change:
 	<br />
-	<ng-container *ngFor="let artifact of data.affectedArtifacts">
+	@for (artifact of data.affectedArtifacts; track artifact) {
 		<mat-label>{{ artifact.name }}</mat-label>
 		<br />
-	</ng-container>
+	}
 </mat-dialog-content>
 <br />
 <mat-dialog-content>

@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, SecurityContext } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatIcon } from '@angular/material/icon';
@@ -40,7 +40,7 @@ const _currNavItem: navigationElement =
 	selector: 'osee-server-health',
 	standalone: true,
 	imports: [
-		CommonModule,
+		AsyncPipe,
 		RouterLink,
 		ServerHealthPageHeaderComponent,
 		MatTooltip,

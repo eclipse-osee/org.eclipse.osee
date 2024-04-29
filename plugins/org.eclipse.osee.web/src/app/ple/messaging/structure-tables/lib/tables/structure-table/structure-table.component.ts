@@ -19,22 +19,14 @@ import {
 } from '@angular/animations';
 import { DataSource } from '@angular/cdk/collections';
 import { CdkVirtualForOf } from '@angular/cdk/scrolling';
-import {
-	AsyncPipe,
-	NgClass,
-	NgFor,
-	NgIf,
-	NgStyle,
-	NgSwitch,
-	NgSwitchCase,
-} from '@angular/common';
+import { AsyncPipe, NgClass, NgStyle } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
 	Inject,
 	Input,
 	OnDestroy,
-	ViewChild,
+	viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
@@ -133,15 +125,10 @@ import { SubElementTableComponent } from '../sub-element-table/sub-element-table
 	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
-		NgIf,
-		NgFor,
 		NgClass,
 		NgStyle,
 		AsyncPipe,
 		RouterLink,
-		NgSwitch,
-		NgSwitchCase,
-		NgFor,
 		TwoLayerAddButtonComponent,
 		FormsModule,
 		MatFormField,
@@ -441,8 +428,7 @@ export class StructureTableComponent implements OnDestroy {
 		x: '0',
 		y: '0',
 	};
-	@ViewChild(MatMenuTrigger, { static: true })
-	matMenuTrigger!: MatMenuTrigger;
+	matMenuTrigger = viewChild.required(MatMenuTrigger);
 	sideNav = this.structureService.sideNavContent;
 	sideNavOpened = this.sideNav.pipe(map((value) => value.opened));
 	inDiffMode = this.structureService.isInDiff.pipe(
@@ -561,7 +547,7 @@ export class StructureTableComponent implements OnDestroy {
 		event.preventDefault();
 		this.menuPosition.x = event.clientX + 'px';
 		this.menuPosition.y = event.clientY + 'px';
-		this.matMenuTrigger.menuData = {
+		this.matMenuTrigger().menuData = {
 			id: id,
 			name: name,
 			description: description,
@@ -579,7 +565,7 @@ export class StructureTableComponent implements OnDestroy {
 				id +
 				(diff === 'true' ? '/diff' : ''),
 		};
-		this.matMenuTrigger.openMenu();
+		this.matMenuTrigger().openMenu();
 	}
 
 	removeStructureDialog(id: string, name: string) {

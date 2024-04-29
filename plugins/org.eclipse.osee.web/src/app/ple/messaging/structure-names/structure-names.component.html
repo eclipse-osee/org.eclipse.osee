@@ -1,22 +1,23 @@
 <!--
- * Copyright (c) 2022 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2022 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <osee-messaging-controls>
-	<ng-container *ngIf="connection | async as _connection"
-		><osee-connection-dropdown
+	@if (connection | async; as _connection) {
+		<osee-connection-dropdown
 			[connection]="_connection"
 			(connectionChange)="selectConnection($event)"
-			[showNoneOption]="true"></osee-connection-dropdown> </ng-container
-></osee-messaging-controls>
+			[showNoneOption]="true"></osee-connection-dropdown>
+	}
+</osee-messaging-controls>
 <mat-form-field class="tw-w-full tw-pb-4">
 	<mat-label>Filter Structures</mat-label>
 	<input
@@ -31,19 +32,21 @@
 <mat-accordion
 	multi="true"
 	displayMode="flat">
-	<mat-expansion-panel *ngFor="let name of names | async">
-		<mat-expansion-panel-header>
-			<mat-panel-title class="tw-line-clamp-1 tw-whitespace-nowrap">
-				{{ name.name }}
-			</mat-panel-title>
-		</mat-expansion-panel-header>
-		<ng-container *ngFor="let path of name.paths">
-			<a
-				mat-button
-				[routerLink]="((basePath | async) || '') + path.path"
-				queryParamsHandling="merge">
-				{{ path.name }}
-			</a>
-		</ng-container>
-	</mat-expansion-panel>
+	@for (name of names | async; track name) {
+		<mat-expansion-panel>
+			<mat-expansion-panel-header>
+				<mat-panel-title class="tw-line-clamp-1 tw-whitespace-nowrap">
+					{{ name.name }}
+				</mat-panel-title>
+			</mat-expansion-panel-header>
+			@for (path of name.paths; track path) {
+				<a
+					mat-button
+					[routerLink]="((basePath | async) || '') + path.path"
+					queryParamsHandling="merge">
+					{{ path.name }}
+				</a>
+			}
+		</mat-expansion-panel>
+	}
 </mat-accordion>

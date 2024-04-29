@@ -83,6 +83,12 @@ describe('AddStructureDialogComponent', () => {
 					MockMatOptionLoadingComponent,
 					MockApplicabilitySelectorComponent,
 				],
+				providers: [
+					{
+						provide: STRUCTURE_SERVICE_TOKEN,
+						useValue: CurrentStateServiceMock,
+					},
+				],
 			},
 			remove: {
 				imports: [

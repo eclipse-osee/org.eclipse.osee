@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NgFor, NgIf, TitleCasePipe } from '@angular/common';
+import { TitleCasePipe } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import {
@@ -34,8 +34,6 @@ import { RemovalDialog } from '../../types/ConfirmRemovalDialog';
 		MatDialogActions,
 		MatDialogClose,
 		MatLabel,
-		NgIf,
-		NgFor,
 		TitleCasePipe,
 		MatButton,
 	],

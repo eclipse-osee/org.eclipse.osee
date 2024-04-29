@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <form #transportTypeForm="ngForm">
 	<mat-dialog-content>
 		<mat-form-field class="tw-w-full">
@@ -116,13 +116,13 @@
 				data-cy="field-available-message-headers"
 				required
 				multiple>
-				<ng-container *ngFor="let header of messageHeaders | async">
+				@for (header of messageHeaders | async; track header) {
 					<mat-option
 						[value]="header.header"
 						[id]="header.header">
 						{{ header.humanReadable }}
 					</mat-option>
-				</ng-container>
+				}
 			</mat-select>
 		</mat-form-field>
 		<br />
@@ -134,13 +134,13 @@
 				data-cy="field-available-submessage-headers"
 				required
 				multiple>
-				<ng-container *ngFor="let header of subMessageHeaders | async">
+				@for (header of subMessageHeaders | async; track header) {
 					<mat-option
 						[value]="header.header"
 						[id]="header.header">
 						{{ header.humanReadable }}
 					</mat-option>
-				</ng-container>
+				}
 			</mat-select>
 		</mat-form-field>
 		<mat-form-field class="tw-w-full">
@@ -151,13 +151,13 @@
 				data-cy="field-available-structure-headers"
 				required
 				multiple>
-				<ng-container *ngFor="let header of structureHeaders | async">
+				@for (header of structureHeaders | async; track header) {
 					<mat-option
 						[value]="header.header"
 						[id]="header.header">
 						{{ header.humanReadable }}
 					</mat-option>
-				</ng-container>
+				}
 			</mat-select>
 		</mat-form-field>
 		<mat-form-field class="tw-w-full">
@@ -168,13 +168,13 @@
 				data-cy="field-available-element-headers"
 				required
 				multiple>
-				<ng-container *ngFor="let header of elementHeaders | async">
+				@for (header of elementHeaders | async; track header) {
 					<mat-option
 						[value]="header.header"
 						[id]="header.header">
 						{{ header.humanReadable }}
 					</mat-option>
-				</ng-container>
+				}
 			</mat-select>
 		</mat-form-field>
 		<mat-form-field class="tw-w-full">
@@ -185,11 +185,11 @@
 				data-cy="field-interface-levels-to-use"
 				required
 				multiple>
-				<ng-container *ngFor="let level of levels">
+				@for (level of levels; track level) {
 					<mat-option [value]="level">
 						{{ level }}
 					</mat-option>
-				</ng-container>
+				}
 			</mat-select>
 		</mat-form-field>
 		<mat-slide-toggle

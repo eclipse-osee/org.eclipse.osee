@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -26,7 +26,7 @@ import { SetReference } from '../../../types';
 	selector: 'osee-set-dropdown-multi',
 	standalone: true,
 	imports: [
-		CommonModule,
+		AsyncPipe,
 		MatCheckbox,
 		MatFormField,
 		MatLabel,

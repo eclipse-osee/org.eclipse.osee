@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, Inject, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
@@ -40,7 +40,7 @@ import { featureConstraintData } from '../../types/pl-config-feature-constraints
 	selector: 'osee-add-feature-constraint-dialog',
 	standalone: true,
 	imports: [
-		CommonModule,
+		AsyncPipe,
 		FormsModule,
 		MatDialogTitle,
 		MatDialogContent,

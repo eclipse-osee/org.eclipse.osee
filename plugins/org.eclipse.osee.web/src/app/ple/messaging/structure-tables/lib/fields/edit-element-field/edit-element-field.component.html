@@ -1,102 +1,103 @@
 <!--
- * Copyright (c) 2021 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2021 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <div class="tw-flex tw-items-center tw-gap-2">
-	<ng-container *ngIf="header === 'applicability' && isApplic(value)">
+	@if (header === 'applicability' && isApplic(value)) {
 		<osee-applicability-selector
 			[applicability]="value"
 			(applicabilityChange)="
 				updateImmediately(returnAsT($event))
 			"></osee-applicability-selector>
-	</ng-container>
-	<mat-form-field
-		*ngIf="
-			header !== 'applicability' &&
-			header !== 'units' &&
-			header !== 'interfaceElementAlterable'
-		"
-		cdkMonitorSubtreeFocus
-		(cdkFocusChange)="focusChanged($event)"
-		subscriptSizing="dynamic"
-		class="tw-w-[90%] [&>.mdc-text-field--filled]:tw-bg-inherit">
-		<input
-			matInput
-			[(ngModel)]="value"
-			(ngModelChange)="updateElement(header, value)"
-			*ngIf="header !== 'platformType'"
-			[disabled]="editingDisabled" />
-		<ng-container *ngIf="header === 'name'">
-			<ng-container *ngIf="elementEnd - elementStart > 0">
-				<p matSuffix>
-					{{ '[' + elementStart + '...' + elementEnd + ']' }}
-				</p>
-			</ng-container>
-		</ng-container>
-		<ng-container *ngIf="header === 'platformType'">
-			<ng-container
-				*ngIf="header === 'platformType' && isPlatformType(value)">
-				<div class="tw-flex">
-					<input
-						matInput
-						type="text"
-						[(ngModel)]="value.name"
-						[matAutocomplete]="auto"
-						(keyup)="applySearch(value.name)"
-						[disabled]="editingDisabled"
-						(focusin)="autoCompleteOpened()" />
-					<ng-container *ngIf="_location | async as location">
-						<a
-							mat-icon-button
-							matSuffix
-							[routerLink]="
-								'/ple/messaging/' +
-								location.type +
-								'/' +
-								location.id +
-								'/type/' +
-								platformType.id
-							"
-							queryParamsHandling="merge"
-							(contextmenu)="openMenu($event, value)"
-							><mat-icon>arrow_forward</mat-icon></a
-						>
-					</ng-container>
-				</div>
-				<mat-autocomplete
-					autoActiveFirstOption
-					#auto="matAutocomplete"
-					(optionSelected)="updateType($event.option.value)"
-					(opened)="autoCompleteOpened()">
-					<ng-container *ngIf="filteredTypes | async as func">
-						<osee-mat-option-loading
-							[data]="func"
-							[count]="(filteredTypesCount | async) || -1"
-							objectName="Types"
-							[paginationSize]="paginationSize"
-							paginationMode="AUTO">
-							<ng-template let-option>
-								<mat-option
-									[value]="option"
-									[id]="option.id">
-									{{ option.name }}
-								</mat-option>
-							</ng-template>
-						</osee-mat-option-loading>
-					</ng-container>
-				</mat-autocomplete>
-			</ng-container>
-		</ng-container>
-	</mat-form-field>
-	<ng-container *ngIf="header === 'interfaceElementAlterable'">
+	}
+	@if (
+		header !== 'applicability' &&
+		header !== 'units' &&
+		header !== 'interfaceElementAlterable'
+	) {
+		<mat-form-field
+			cdkMonitorSubtreeFocus
+			(cdkFocusChange)="focusChanged($event)"
+			subscriptSizing="dynamic"
+			class="tw-w-[90%] [&>.mdc-text-field--filled]:tw-bg-inherit">
+			@if (header !== 'platformType') {
+				<input
+					matInput
+					[(ngModel)]="value"
+					(ngModelChange)="updateElement(header, value)"
+					[disabled]="editingDisabled" />
+			}
+			@if (header === 'name') {
+				@if (elementEnd - elementStart > 0) {
+					<p matSuffix>
+						{{ '[' + elementStart + '...' + elementEnd + ']' }}
+					</p>
+				}
+			}
+			@if (header === 'platformType') {
+				@if (header === 'platformType' && isPlatformType(value)) {
+					<div class="tw-flex">
+						<input
+							matInput
+							type="text"
+							[(ngModel)]="value.name"
+							[matAutocomplete]="auto"
+							(keyup)="applySearch(value.name)"
+							[disabled]="editingDisabled"
+							(focusin)="autoCompleteOpened()" />
+						@if (_location | async; as location) {
+							<a
+								mat-icon-button
+								matSuffix
+								[routerLink]="
+									'/ple/messaging/' +
+									location.type +
+									'/' +
+									location.id +
+									'/type/' +
+									platformType.id
+								"
+								queryParamsHandling="merge"
+								(contextmenu)="openMenu($event, value)"
+								><mat-icon>arrow_forward</mat-icon></a
+							>
+						}
+					</div>
+					<mat-autocomplete
+						autoActiveFirstOption
+						#auto="matAutocomplete"
+						(optionSelected)="updateType($event.option.value)"
+						(opened)="autoCompleteOpened()">
+						@if (filteredTypes | async; as func) {
+							<osee-mat-option-loading
+								[data]="func"
+								[count]="(filteredTypesCount | async) || -1"
+								objectName="Types"
+								[paginationSize]="paginationSize"
+								paginationMode="AUTO">
+								<ng-template let-option>
+									<mat-option
+										[value]="option"
+										[id]="option.id">
+										{{ option.name }}
+									</mat-option>
+								</ng-template>
+							</osee-mat-option-loading>
+						}
+					</mat-autocomplete>
+				}
+			}
+		</mat-form-field>
+	}
+	@if (header === 'interfaceElementAlterable') {
 		<mat-slide-toggle
 			[(ngModel)]="value"
 			[labelPosition]="value ? 'after' : 'before'"
@@ -104,15 +105,15 @@
 			(ngModelChange)="updateImmediately(value)">
 			{{ value ? 'True' : 'False' }}
 		</mat-slide-toggle>
-	</ng-container>
-	<ng-container *ngIf="header === 'units'">
-		<ng-container *ngIf="isString(value)">
+	}
+	@if (header === 'units') {
+		@if (isString(value)) {
 			<form>
 				<osee-unit-dropdown
 					[unit]="value"
 					(unitChange)="updateUnits($event)"
 					[hintHidden]="true"></osee-unit-dropdown>
 			</form>
-		</ng-container>
-	</ng-container>
+		}
+	}
 </div>

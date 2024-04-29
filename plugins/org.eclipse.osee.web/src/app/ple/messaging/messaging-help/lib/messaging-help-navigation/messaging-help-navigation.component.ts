@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
+import { NgClass, AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatDivider } from '@angular/material/divider';
 import { MatIcon } from '@angular/material/icon';
@@ -31,7 +31,9 @@ import helpNavigationStructure from './messaging-help-navigation-structure';
 	selector: 'osee-messaging-help-navigation',
 	standalone: true,
 	imports: [
-		CommonModule,
+		NgClass,
+		NgTemplateOutlet,
+		AsyncPipe,
 		RouterLink,
 		MatNavList,
 		MatListItem,

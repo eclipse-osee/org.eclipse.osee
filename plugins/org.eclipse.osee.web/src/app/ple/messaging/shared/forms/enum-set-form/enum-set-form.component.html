@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2022 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2022 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <div
 	ngModelGroup="enumSetForm"
 	#enumSetCtrl="ngModelGroup"
@@ -28,9 +28,9 @@
 			(click)="closeForm()">
 			<mat-icon>remove</mat-icon>
 		</button>
-		<ng-container *ngIf="enumSetCtrl.errors?.['attributesNotUnique']">
+		@if (enumSetCtrl.errors?.['attributesNotUnique']) {
 			<mat-error> Enumerations Not Unique </mat-error>
-		</ng-container>
+		}
 	</mat-form-field>
 	<br />
 	<mat-form-field class="tw-w-full">

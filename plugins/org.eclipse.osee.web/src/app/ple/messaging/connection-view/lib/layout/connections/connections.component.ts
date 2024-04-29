@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
@@ -27,7 +27,6 @@ import { GraphComponent } from '../graph/graph.component';
 	templateUrl: './connections.component.html',
 	standalone: true,
 	imports: [
-		NgIf,
 		AsyncPipe,
 		GraphComponent,
 		MessagingControlsComponent,

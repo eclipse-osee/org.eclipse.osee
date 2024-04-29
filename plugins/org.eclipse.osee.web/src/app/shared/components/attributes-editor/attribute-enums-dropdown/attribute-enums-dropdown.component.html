@@ -1,20 +1,22 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
-<ng-container
-	*ngIf="{
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
+@if (
+	{
 		openedState: isOpen | async,
 		filter: filter | async
-	} as autoCompleteState">
+	};
+	as autoCompleteState
+) {
 	<mat-form-field
 		subscriptSizing="dynamic"
 		id="enum-selector"
@@ -34,30 +36,27 @@
 			(ngModelChange)="updateTypeAhead($event)"
 			#enums="ngModel"
 			[matAutocomplete]="enumsAutocomplete" />
-		<mat-icon
-			*ngIf="!autoCompleteState.openedState"
-			matIconSuffix
-			>arrow_drop_down</mat-icon
-		>
-		<button
-			mat-icon-button
-			*ngIf="
-				autoCompleteState.openedState && autoCompleteState.filter !== ''
-			"
-			matIconSuffix
-			(mousedown)="clear()">
-			<mat-icon>close</mat-icon>
-		</button>
+		@if (!autoCompleteState.openedState) {
+			<mat-icon matIconSuffix>arrow_drop_down</mat-icon>
+		}
+		@if (autoCompleteState.openedState && autoCompleteState.filter !== '') {
+			<button
+				mat-icon-button
+				matIconSuffix
+				(mousedown)="clear()">
+				<mat-icon>close</mat-icon>
+			</button>
+		}
 		<mat-autocomplete
 			autoActiveFirstOption="true"
 			autoSelectActiveOption="true"
 			#enumsAutocomplete="matAutocomplete"
 			(optionSelected)="updateValue($event.option.value)">
-			<mat-option
-				*ngFor="let enum of _enums | async"
-				[value]="enum">
-				{{ enum }}
-			</mat-option>
+			@for (enum of _enums | async; track enum) {
+				<mat-option [value]="enum">
+					{{ enum }}
+				</mat-option>
+			}
 			<ng-template #loading>
 				<mat-option
 					id="-1"
@@ -67,4 +66,4 @@
 			</ng-template>
 		</mat-autocomplete>
 	</mat-form-field>
-</ng-container>
+}

@@ -10,8 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NgFor, NgIf } from '@angular/common';
-import { Component, inject, Input, Output } from '@angular/core';
+import { Component, Input, Output, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatDivider } from '@angular/material/divider';
@@ -26,14 +25,12 @@ import {
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dialogs/free-text';
 import { NamedId } from '@osee/shared/types';
-import { filter, Subject, take, tap } from 'rxjs';
+import { Subject, filter, take, tap } from 'rxjs';
 
 @Component({
 	selector: 'osee-named-id-list-editor',
 	standalone: true,
 	imports: [
-		NgFor,
-		NgIf,
 		FormsModule,
 		MatFormField,
 		MatInput,

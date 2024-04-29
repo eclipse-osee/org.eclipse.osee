@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <div class="tw-pt-4 tw-text-center">
 	<h2>Traceability Report Type for {{ branchName | async }}</h2>
 	<mat-button-toggle-group
@@ -38,9 +38,9 @@
 		>
 	</mat-button-toggle-group>
 </div>
-<ng-container *ngIf="group.value === 'requirements'">
-	<ng-container *ngIf="requirementsReport | async as data; else loading">
-		<ng-container *ngIf="currentPageSize | async as size; else loading">
+@if (group.value === 'requirements') {
+	@if (requirementsReport | async; as data) {
+		@if (currentPageSize | async; as size) {
 			<osee-trace-report-table
 				[data]="data"
 				[pageSize]="size"
@@ -50,18 +50,19 @@
 				[total]="
 					(requirementsReportCount | async) || 0
 				"></osee-trace-report-table>
-		</ng-container>
-	</ng-container>
+		} @else {
+			<h3 class="tw-px-8 tw-py-4">Loading report...</h3>
+		}
+	} @else {
+		<h3 class="tw-px-8 tw-py-4">Loading report...</h3>
+	}
 	<mat-expansion-panel>
 		<mat-expansion-panel-header>
 			Requirements Missing Trace
 		</mat-expansion-panel-header>
-
 		<ng-template matExpansionPanelContent>
-			<ng-container
-				*ngIf="missingRequirementsReport | async as data; else loading">
-				<ng-container
-					*ngIf="missingPageSize | async as size; else loading">
+			@if (missingRequirementsReport | async; as data) {
+				@if (missingPageSize | async; as size) {
 					<osee-trace-report-table
 						[data]="data"
 						[pageSize]="size"
@@ -71,14 +72,18 @@
 						[total]="
 							(missingRequirementsReportCount | async) || 0
 						"></osee-trace-report-table>
-				</ng-container>
-			</ng-container>
+				} @else {
+					<h3 class="tw-px-8 tw-py-4">Loading report...</h3>
+				}
+			} @else {
+				<h3 class="tw-px-8 tw-py-4">Loading report...</h3>
+			}
 		</ng-template>
 	</mat-expansion-panel>
-</ng-container>
-<ng-container *ngIf="group.value === 'artifacts'">
-	<ng-container *ngIf="artifactsReport | async as data; else loading">
-		<ng-container *ngIf="currentPageSize | async as size; else loading">
+}
+@if (group.value === 'artifacts') {
+	@if (artifactsReport | async; as data) {
+		@if (currentPageSize | async; as size) {
 			<osee-trace-report-table
 				[data]="data"
 				[pageSize]="size"
@@ -88,21 +93,19 @@
 				[total]="
 					(requirementsReportCount | async) || 0
 				"></osee-trace-report-table>
-		</ng-container>
-	</ng-container>
+		} @else {
+			<h3 class="tw-px-8 tw-py-4">Loading report...</h3>
+		}
+	} @else {
+		<h3 class="tw-px-8 tw-py-4">Loading report...</h3>
+	}
 	<mat-expansion-panel>
 		<mat-expansion-panel-header>
 			<mat-panel-title> MIM Artifacts Missing Trace </mat-panel-title>
 		</mat-expansion-panel-header>
-
 		<ng-template matExpansionPanelContent>
-			<ng-container
-				*ngIf="
-					missingInterfaceArtifactsReport | async as data;
-					else loading
-				">
-				<ng-container
-					*ngIf="missingPageSize | async as size; else loading">
+			@if (missingInterfaceArtifactsReport | async; as data) {
+				@if (missingPageSize | async; as size) {
 					<osee-trace-report-table
 						[data]="data"
 						[pageSize]="size"
@@ -112,11 +115,12 @@
 						[total]="
 							(missingInterfaceArtifactsReportCount | async) || 0
 						"></osee-trace-report-table>
-				</ng-container>
-			</ng-container>
+				} @else {
+					<h3 class="tw-px-8 tw-py-4">Loading report...</h3>
+				}
+			} @else {
+				<h3 class="tw-px-8 tw-py-4">Loading report...</h3>
+			}
 		</ng-template>
 	</mat-expansion-panel>
-</ng-container>
-<ng-template #loading>
-	<h3 class="tw-px-8 tw-py-4">Loading report...</h3>
-</ng-template>
+}

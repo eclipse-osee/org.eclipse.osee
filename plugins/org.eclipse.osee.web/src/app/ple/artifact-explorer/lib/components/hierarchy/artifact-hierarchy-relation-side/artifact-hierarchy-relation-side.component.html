@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <div
 	class="tw-flex tw-py-1 tw-pl-4"
 	[ngClass]="isOpen() ? 'tw-bg-background-hover' : ''">
@@ -26,8 +26,8 @@
 		<div class="tw-pl-2">{{ typeName() }} - [{{ relationSideName() }}]</div>
 	</div>
 </div>
-<ng-container *ngIf="isOpen()">
-	<ng-container *ngFor="let art of artifacts(); trackBy: trackArtifacts">
+@if (isOpen()) {
+	@for (art of artifacts(); track trackArtifacts($index, art)) {
 		<!-- Artifact dropdown button -->
 		<div class="tw-pl-8">
 			<div
@@ -63,20 +63,20 @@
 				</button>
 			</div>
 		</div>
-
 		<!-- Child artifacts within artifact dropdown -->
-		<div
-			*ngIf="artifactsOpen().includes(art.id)"
-			class="tw-pl-16">
-			<div *ngIf="_paths | async as paths; else noPaths">
-				<osee-artifact-hierarchy
-					[artifactId]="art.id"
-					[paths]="paths"></osee-artifact-hierarchy>
+		@if (artifactsOpen().includes(art.id)) {
+			<div class="tw-pl-16">
+				@if (_paths | async; as paths) {
+					<div>
+						<osee-artifact-hierarchy
+							[artifactId]="art.id"
+							[paths]="paths"></osee-artifact-hierarchy>
+					</div>
+				} @else {
+					<osee-artifact-hierarchy
+						[artifactId]="art.id"></osee-artifact-hierarchy>
+				}
 			</div>
-			<ng-template #noPaths>
-				<osee-artifact-hierarchy
-					[artifactId]="art.id"></osee-artifact-hierarchy>
-			</ng-template>
-		</div>
-	</ng-container>
-</ng-container>
+		}
+	}
+}

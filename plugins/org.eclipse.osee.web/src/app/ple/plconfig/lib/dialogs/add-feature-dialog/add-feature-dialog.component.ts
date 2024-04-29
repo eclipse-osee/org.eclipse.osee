@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgFor } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
@@ -40,7 +40,6 @@ import { PLAddFeatureData, writeFeature } from '../../types/pl-config-features';
 	styles: [],
 	standalone: true,
 	imports: [
-		NgFor,
 		AsyncPipe,
 		FormsModule,
 		MatDialogTitle,

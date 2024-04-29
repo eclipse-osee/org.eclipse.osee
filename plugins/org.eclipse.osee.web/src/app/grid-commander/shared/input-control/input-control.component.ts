@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import {
@@ -56,8 +56,6 @@ import {
 	standalone: true,
 	imports: [
 		FormsModule,
-		NgIf,
-		NgFor,
 		HighlightFilteredTextDirective,
 		AsyncPipe,
 		MatFormField,

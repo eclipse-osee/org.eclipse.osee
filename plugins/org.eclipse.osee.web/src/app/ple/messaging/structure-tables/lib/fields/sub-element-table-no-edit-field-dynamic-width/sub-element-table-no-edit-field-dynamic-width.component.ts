@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgClass, NgIf, NgStyle } from '@angular/common';
+import { AsyncPipe, NgClass, NgStyle } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { PreferencesUIService } from '@osee/messaging/shared/services';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
@@ -22,13 +22,7 @@ import { tap } from 'rxjs';
 		'./sub-element-table-no-edit-field-dynamic-width.component.html',
 	styles: [],
 	standalone: true,
-	imports: [
-		HighlightFilteredTextDirective,
-		NgIf,
-		NgStyle,
-		NgClass,
-		AsyncPipe,
-	],
+	imports: [HighlightFilteredTextDirective, NgStyle, NgClass, AsyncPipe],
 })
 export class SubElementTableNoEditFieldDynamicWidthComponent {
 	@Input() field: string = '';

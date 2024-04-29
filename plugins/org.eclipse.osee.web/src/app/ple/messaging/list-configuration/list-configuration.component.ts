@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, inject, OnDestroy } from '@angular/core';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import {
 	MessagingControlsComponent,
 	NamedIdListEditorComponent,
@@ -36,7 +36,6 @@ import { ViewSelectorComponent } from '@osee/shared/components';
 		MessagingControlsComponent,
 		ViewSelectorComponent,
 		AsyncPipe,
-		NgIf,
 	],
 	templateUrl: './list-configuration.component.html',
 })
