@@ -31,7 +31,8 @@ rust_binary(
 
 rust_test(
     name="bat_test",
-    crate=":bat"
+    crate=":bat",
+    size="small"
 )
 
 rust_doc(
