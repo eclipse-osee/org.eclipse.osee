@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
@@ -23,7 +23,7 @@ import { ParameterDataService } from '../../services/data-services/selected-comm
 	templateUrl: './parameter-integer.component.html',
 	styles: [],
 	standalone: true,
-	imports: [NgIf, MatFormField, MatLabel, MatInput, FormsModule, AsyncPipe],
+	imports: [MatFormField, MatLabel, MatInput, FormsModule, AsyncPipe],
 })
 export class ParameterIntegerComponent {
 	value = '';

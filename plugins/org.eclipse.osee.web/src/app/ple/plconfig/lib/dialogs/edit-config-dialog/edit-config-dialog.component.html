@@ -1,156 +1,167 @@
 <!--
- * Copyright (c) 2021 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
-<h1
-	mat-dialog-title
-	*ngIf="data.editable === true">
-	Editing {{ data.currentConfig.name }} Configuration
-</h1>
-<h1
-	mat-dialog-title
-	*ngIf="data.editable === false">
-	Configuration Details
-</h1>
+* Copyright (c) 2021 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
+@if (data.editable === true) {
+	<h1 mat-dialog-title>
+		Editing {{ data.currentConfig.name }} Configuration
+	</h1>
+}
+@if (data.editable === false) {
+	<h1 mat-dialog-title>Configuration Details</h1>
+}
 <div mat-dialog-content>
-	<div *ngIf="data.editable === true">
-		<mat-form-field class="tw-w-full tw-text-lg">
-			<mat-label>Configuration Name</mat-label>
-			<input
-				matInput
-				type="text"
-				[(ngModel)]="data.currentConfig.name"
-				#input
-				required
-				data-cy="field-name"
-				[attr.data-cy-value]="
-					'field-name-' + data.currentConfig.name
-				" />
-		</mat-form-field>
-		<br />
-		<mat-form-field class="tw-w-full tw-text-lg">
-			<mat-label>Configuration Description</mat-label>
-			<input
-				matInput
-				type="text"
-				[(ngModel)]="data.currentConfig.description"
-				#input
-				required
-				data-cy="field-description"
-				[attr.data-cy-value]="
-					'field-description-' + data.currentConfig.description
-				" />
-		</mat-form-field>
-		<br />
-		<mat-label class="tw-text-lg">Copy From:</mat-label>
-		<br />
-		<mat-form-field class="tw-w-full tw-text-lg">
-			<mat-label>Select a Configuration</mat-label>
-			<mat-select [(ngModel)]="data.copyFrom">
-				<mat-option
-					*ngFor="let option of (branchApplicability | async)?.views"
-					[value]="option">
-					{{ option.name }}
-				</mat-option>
-			</mat-select>
-		</mat-form-field>
-		<br />
-		<mat-label class="tw-text-lg">Change Configuration Group:</mat-label>
-		<br />
-		<mat-form-field class="tw-w-full tw-text-lg">
-			<mat-label> Select a Configuration Group </mat-label>
-			<mat-select
-				[(ngModel)]="data.group"
-				multiple
-				[compareWith]="compareCfgGroup"
-				data-cy="field-group">
-				<mat-option
-					*ngFor="let config of cfgGroups | async"
-					[value]="config"
-					[attr.data-cy]="
-						'option-' +
-						config.name +
-						'-' +
-						containsGroup(data.group, config)
-					">
-					{{ config.name }}
-				</mat-option>
-			</mat-select>
-		</mat-form-field>
+	@if (data.editable === true) {
 		<div>
-			<mat-label
-				class="tw-text-lg"
-				data-cy="product-types-selection"
-				>Select Product Types</mat-label
+			<mat-form-field class="tw-w-full tw-text-lg">
+				<mat-label>Configuration Name</mat-label>
+				<input
+					matInput
+					type="text"
+					[(ngModel)]="data.currentConfig.name"
+					#input
+					required
+					data-cy="field-name"
+					[attr.data-cy-value]="
+						'field-name-' + data.currentConfig.name
+					" />
+			</mat-form-field>
+			<br />
+			<mat-form-field class="tw-w-full tw-text-lg">
+				<mat-label>Configuration Description</mat-label>
+				<input
+					matInput
+					type="text"
+					[(ngModel)]="data.currentConfig.description"
+					#input
+					required
+					data-cy="field-description"
+					[attr.data-cy-value]="
+						'field-description-' + data.currentConfig.description
+					" />
+			</mat-form-field>
+			<br />
+			<mat-label class="tw-text-lg">Copy From:</mat-label>
+			<br />
+			<mat-form-field class="tw-w-full tw-text-lg">
+				<mat-label>Select a Configuration</mat-label>
+				<mat-select [(ngModel)]="data.copyFrom">
+					@for (
+						option of (branchApplicability | async)?.views;
+						track option
+					) {
+						<mat-option [value]="option">
+							{{ option.name }}
+						</mat-option>
+					}
+				</mat-select>
+			</mat-form-field>
+			<br />
+			<mat-label class="tw-text-lg"
+				>Change Configuration Group:</mat-label
 			>
-			<mat-selection-list
-				[(ngModel)]="data.productApplicabilities"
-				color="primary"
-				class="tw-text-lg">
-				<mat-list-option
-					*ngFor="let type of productApplicabilities | async"
-					[value]="type.name"
-					[attr.data-cy]="
-						'field-product-type-' +
-						type.name +
-						'-' +
-						data.productApplicabilities.includes(type.name)
-					">
-					{{ type.name }}
-				</mat-list-option>
-			</mat-selection-list>
-		</div>
-	</div>
-	<div *ngIf="data.editable === false">
-		<div>
-			<mat-label class="tw-font-bold">Configuration Name:</mat-label>
-			{{ data.currentConfig.name }}
-		</div>
-		<div>
-			<mat-label class="tw-font-bold"
-				>Configuration Description:</mat-label
-			>
-			{{ data.currentConfig.description }}
-		</div>
-		<div *ngIf="data.productApplicabilities.length > 0">
-			<mat-label class="tw-font-bold">Product Types:</mat-label>
-			<div *ngFor="let app of data.productApplicabilities">
-				{{ app }}
+			<br />
+			<mat-form-field class="tw-w-full tw-text-lg">
+				<mat-label> Select a Configuration Group </mat-label>
+				<mat-select
+					[(ngModel)]="data.group"
+					multiple
+					[compareWith]="compareCfgGroup"
+					data-cy="field-group">
+					@for (config of cfgGroups | async; track config) {
+						<mat-option
+							[value]="config"
+							[attr.data-cy]="
+								'option-' +
+								config.name +
+								'-' +
+								containsGroup(data.group, config)
+							">
+							{{ config.name }}
+						</mat-option>
+					}
+				</mat-select>
+			</mat-form-field>
+			<div>
+				<mat-label
+					class="tw-text-lg"
+					data-cy="product-types-selection"
+					>Select Product Types</mat-label
+				>
+				<mat-selection-list
+					[(ngModel)]="data.productApplicabilities"
+					color="primary"
+					class="tw-text-lg">
+					@for (type of productApplicabilities | async; track type) {
+						<mat-list-option
+							[value]="type.name"
+							[attr.data-cy]="
+								'field-product-type-' +
+								type.name +
+								'-' +
+								data.productApplicabilities.includes(type.name)
+							">
+							{{ type.name }}
+						</mat-list-option>
+					}
+				</mat-selection-list>
 			</div>
 		</div>
-	</div>
+	}
+	@if (data.editable === false) {
+		<div>
+			<div>
+				<mat-label class="tw-font-bold">Configuration Name:</mat-label>
+				{{ data.currentConfig.name }}
+			</div>
+			<div>
+				<mat-label class="tw-font-bold"
+					>Configuration Description:</mat-label
+				>
+				{{ data.currentConfig.description }}
+			</div>
+			@if (data.productApplicabilities.length > 0) {
+				<div>
+					<mat-label class="tw-font-bold">Product Types:</mat-label>
+					@for (app of data.productApplicabilities; track app) {
+						<div>
+							{{ app }}
+						</div>
+					}
+				</div>
+			}
+		</div>
+	}
 </div>
 <div mat-dialog-actions>
 	<button
 		mat-button
 		(click)="onNoClick()">
-		<div
-			*ngIf="data.editable === true"
-			data-cy="cancel-btn">
-			Cancel
-		</div>
-		<div
-			*ngIf="data.editable === false"
-			data-cy="ok-btn">
-			Ok
-		</div>
+		@if (data.editable === true) {
+			<div data-cy="cancel-btn">Cancel</div>
+		}
+		@if (data.editable === false) {
+			<div data-cy="ok-btn">Ok</div>
+		}
 	</button>
-	<div *ngIf="data.editable === true">
-		<button
-			mat-button
-			[mat-dialog-close]="data"
-			cdkFocusInitial
-			[disabled]="data.currentConfig.name.length === 0"
-			data-cy="submit-btn">
-			Ok
-		</button>
-	</div>
+	@if (data.editable === true) {
+		<div>
+			<button
+				mat-button
+				[mat-dialog-close]="data"
+				cdkFocusInitial
+				[disabled]="data.currentConfig.name.length === 0"
+				data-cy="submit-btn">
+				Ok
+			</button>
+		</div>
+	}
 </div>

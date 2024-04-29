@@ -1,26 +1,27 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
-<ng-container
-	*ngIf="{
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
+@if (
+	{
 		openedState: isOpen | async,
 		filter: filter | async
-	} as autoCompleteState">
+	};
+	as autoCompleteState
+) {
 	<mat-form-field
 		subscriptSizing="dynamic"
 		id="cross-ref-selector"
 		class="tw-w-full">
-		<ng-container
-			*ngIf="minimum === '' && maximum === ''; else boundedInput">
+		@if (minimum === '' && maximum === '') {
 			<input
 				type="text"
 				matInput
@@ -40,8 +41,7 @@
 				(focusout)="close()"
 				(ngModelChange)="updateTypeAhead($event)"
 				[matAutocomplete]="autoCrossRefs" />
-		</ng-container>
-		<ng-template #boundedInput>
+		} @else {
 			<input
 				type="text"
 				matInput
@@ -63,42 +63,45 @@
 				[max]="maximum"
 				[min]="minimum"
 				[matAutocomplete]="autoCrossRefs" />
-		</ng-template>
-		<mat-hint
-			*ngIf="!hintHidden"
-			align="end"
-			><ng-container *ngIf="alternateObjectType === ''; else altHint">
-				Select a Cross Reference
-			</ng-container>
-			<ng-template #altHint>
-				Select a {{ alternateObjectType }}
-			</ng-template>
-		</mat-hint>
+		}
+		@if (!hintHidden) {
+			<mat-hint align="end">
+				@if (alternateObjectType === '') {
+					Select a Cross Reference
+				} @else {
+					Select a {{ alternateObjectType }}
+				}
+			</mat-hint>
+		}
 		<!-- <mat-icon matIconPrefix>straighten</mat-icon> -->
-		<mat-icon
-			*ngIf="!autoCompleteState.openedState"
-			[@dropdownOpen]="autoCompleteState.openedState ? 'open' : 'closed'"
-			matIconSuffix
-			>arrow_drop_down</mat-icon
-		>
-		<button
-			mat-icon-button
-			*ngIf="
-				autoCompleteState.openedState && autoCompleteState.filter !== ''
-			"
-			[@dropdownOpen]="!autoCompleteState.openedState ? 'open' : 'closed'"
-			matIconSuffix
-			(mousedown)="clear()">
-			<mat-icon>close</mat-icon>
-		</button>
+		@if (!autoCompleteState.openedState) {
+			<mat-icon
+				[@dropdownOpen]="
+					autoCompleteState.openedState ? 'open' : 'closed'
+				"
+				matIconSuffix
+				>arrow_drop_down</mat-icon
+			>
+		}
+		@if (autoCompleteState.openedState && autoCompleteState.filter !== '') {
+			<button
+				mat-icon-button
+				[@dropdownOpen]="
+					!autoCompleteState.openedState ? 'open' : 'closed'
+				"
+				matIconSuffix
+				(mousedown)="clear()">
+				<mat-icon>close</mat-icon>
+			</button>
+		}
 		<mat-autocomplete
 			autoActiveFirstOption="true"
 			autoSelectActiveOption="true"
 			#autoCrossRefs="matAutocomplete"
 			(optionSelected)="updateValue($event.option.value)">
-			<ng-container *ngIf="_crossRefs | async as crossRefs; else loading">
-				<ng-container *ngIf="_count | async as count; else loading">
-					<ng-container *ngIf="_size | async as size; else loading">
+			@if (_crossRefs | async; as crossRefs) {
+				@if (_count | async; as count) {
+					@if (_size | async; as size) {
 						<osee-mat-option-loading
 							[data]="crossRefs"
 							objectName="cross references"
@@ -122,25 +125,36 @@
 									<br />
 									Connections:
 									<br />
-									<ng-container
-										*ngFor="
-											let connection of option.connections
-										">
+									@for (
+										connection of option.connections;
+										track connection
+									) {
 										{{ connection.name }}
-									</ng-container>
+									}
 								</mat-option>
 							</ng-template>
 						</osee-mat-option-loading>
-					</ng-container>
-				</ng-container>
-			</ng-container>
-			<ng-template #loading>
+					} @else {
+						<mat-option
+							id="-1"
+							[value]="{ id: '-1', name: 'invalid' }">
+							Loading...
+						</mat-option>
+					}
+				} @else {
+					<mat-option
+						id="-1"
+						[value]="{ id: '-1', name: 'invalid' }">
+						Loading...
+					</mat-option>
+				}
+			} @else {
 				<mat-option
 					id="-1"
 					[value]="{ id: '-1', name: 'invalid' }">
 					Loading...
 				</mat-option>
-			</ng-template>
+			}
 		</mat-autocomplete>
 	</mat-form-field>
-</ng-container>
+}

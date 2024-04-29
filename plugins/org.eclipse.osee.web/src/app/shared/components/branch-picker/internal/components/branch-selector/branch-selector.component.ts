@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgClass, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
@@ -46,7 +46,6 @@ import { MatOptionLoadingComponent } from '../../../../mat-option-loading/mat-op
 	imports: [
 		FormsModule,
 		AsyncPipe,
-		NgIf,
 		MatFormField,
 		MatLabel,
 		MatInput,

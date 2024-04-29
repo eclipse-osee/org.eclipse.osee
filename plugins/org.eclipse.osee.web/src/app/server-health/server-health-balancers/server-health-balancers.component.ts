@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { state, style, trigger } from '@angular/animations';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { Component, SecurityContext } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import {
@@ -45,7 +45,8 @@ const _currNavItem: navigationElement =
 	selector: 'osee-server-health-balancers',
 	standalone: true,
 	imports: [
-		CommonModule,
+		NgClass,
+		AsyncPipe,
 		ServerHealthPageHeaderComponent,
 		MatTable,
 		MatColumnDef,

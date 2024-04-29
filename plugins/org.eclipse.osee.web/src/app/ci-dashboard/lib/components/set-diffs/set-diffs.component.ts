@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ViewChild, signal } from '@angular/core';
+import { AsyncPipe, NgClass } from '@angular/common';
+import { Component, effect, signal, viewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import {
 	MatCell,
@@ -40,7 +40,8 @@ import { SetDropdownMultiComponent } from './set-dropdown-multi/set-dropdown-mul
 	selector: 'osee-set-diffs',
 	standalone: true,
 	imports: [
-		CommonModule,
+		NgClass,
+		AsyncPipe,
 		CiDashboardControlsComponent,
 		SetDropdownMultiComponent,
 		MatTable,
@@ -59,10 +60,14 @@ import { SetDropdownMultiComponent } from './set-dropdown-multi/set-dropdown-mul
 	],
 	templateUrl: './set-diffs.component.html',
 })
-export default class SetDiffsComponent implements AfterViewInit {
-	@ViewChild(MatPaginator) paginator!: MatPaginator;
+export default class SetDiffsComponent {
+	private paginator = viewChild.required(MatPaginator);
 
 	dataSource = new MatTableDataSource<SetDiff>();
+
+	private _updateDataSourcePaginator = effect(() => {
+		this.dataSource.paginator = this.paginator();
+	});
 
 	defaultHeaders = ['name', 'equal'];
 	setDiffHeaders = ['passes', 'fails', 'abort'];
@@ -73,10 +78,6 @@ export default class SetDiffsComponent implements AfterViewInit {
 		private diffService: CiSetDiffService,
 		private headerService: HeaderService
 	) {}
-
-	ngAfterViewInit() {
-		this.dataSource.paginator = this.paginator;
-	}
 
 	selectedSets = this.diffService.selectedSets;
 

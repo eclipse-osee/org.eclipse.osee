@@ -1,21 +1,21 @@
 <!--
- * Copyright (c) 2022 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
-<ng-container *ngIf="!data.mode">
+* Copyright (c) 2022 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
+@if (!data.mode) {
 	<h1 mat-dialog-title>Editing {{ platform_type }}</h1>
-</ng-container>
-<ng-container *ngIf="data.mode">
+}
+@if (data.mode) {
 	<h1 mat-dialog-title>Creating New Type from {{ platform_type }}</h1>
-</ng-container>
+}
 <mat-stepper #stepper>
 	<mat-step label="Platform Type">
 		<mat-dialog-content>
@@ -36,11 +36,11 @@
 					name="platformTypeName"
 					#platformTypeName="ngModel" />
 				<mat-hint align="end">Name of Platform Type</mat-hint>
-				<mat-error
-					id="platformTypeName"
-					*ngIf="platformTypeName.errors?.['notUnique']"
-					>Name must be unique.</mat-error
-				>
+				@if (platformTypeName.errors?.['notUnique']) {
+					<mat-error id="platformTypeName"
+						>Name must be unique.</mat-error
+					>
+				}
 			</mat-form-field>
 			<osee-applicability-selector
 				[applicability]="data.type.applicability"
@@ -80,15 +80,15 @@
 					<mat-hint align="end"
 						>Corresponding Logical (Primitive) Type</mat-hint
 					>
-					<mat-error
-						id="interfaceLogicalType"
-						*ngIf="platformTypeForm.errors?.['attributesNotUnique']"
-						>Attributes not unique.{{
-							platformTypeForm.errors?.['attributesNotUnique']
-								.value
-						}}
-						matches.</mat-error
-					>
+					@if (platformTypeForm.errors?.['attributesNotUnique']) {
+						<mat-error id="interfaceLogicalType"
+							>Attributes not unique.{{
+								platformTypeForm.errors?.['attributesNotUnique']
+									.value
+							}}
+							matches.</mat-error
+						>
+					}
 				</mat-form-field>
 				<br />
 				<div
@@ -111,17 +111,16 @@
 							name="description"
 							#description="ngModel"></textarea>
 						<mat-hint>Description of Platform Type</mat-hint>
-						<mat-error
-							id="description"
-							*ngIf="
-								platformTypeForm.errors?.['attributesNotUnique']
-							"
-							>Attributes not unique.{{
-								platformTypeForm.errors?.['attributesNotUnique']
-									.value
-							}}
-							matches.</mat-error
-						>
+						@if (platformTypeForm.errors?.['attributesNotUnique']) {
+							<mat-error id="description"
+								>Attributes not unique.{{
+									platformTypeForm.errors?.[
+										'attributesNotUnique'
+									].value
+								}}
+								matches.</mat-error
+							>
+						}
 					</mat-form-field>
 				</div>
 				<br />
@@ -198,17 +197,16 @@
 						<mat-hint align="end"
 							>Size of Platform Type in Bytes</mat-hint
 						>
-						<mat-error
-							id="byte_size1"
-							*ngIf="
-								platformTypeForm.errors?.['attributesNotUnique']
-							"
-							>Attributes not unique.{{
-								platformTypeForm.errors?.['attributesNotUnique']
-									.value
-							}}
-							matches.</mat-error
-						>
+						@if (platformTypeForm.errors?.['attributesNotUnique']) {
+							<mat-error id="byte_size1"
+								>Attributes not unique.{{
+									platformTypeForm.errors?.[
+										'attributesNotUnique'
+									].value
+								}}
+								matches.</mat-error
+							>
+						}
 					</mat-form-field>
 					<mat-form-field>
 						<mat-label for="interfacePlatformTypeBitSize"
@@ -234,17 +232,16 @@
 						<mat-hint align="end"
 							>Size of Platform Type in Bits</mat-hint
 						>
-						<mat-error
-							id="interfacePlatformTypeBitSize"
-							*ngIf="
-								platformTypeForm.errors?.['attributesNotUnique']
-							"
-							>Attributes not unique.{{
-								platformTypeForm.errors?.['attributesNotUnique']
-									.value
-							}}
-							matches.</mat-error
-						>
+						@if (platformTypeForm.errors?.['attributesNotUnique']) {
+							<mat-error id="interfacePlatformTypeBitSize"
+								>Attributes not unique.{{
+									platformTypeForm.errors?.[
+										'attributesNotUnique'
+									].value
+								}}
+								matches.</mat-error
+							>
+						}
 					</mat-form-field>
 				</div>
 				<br />
@@ -278,17 +275,16 @@
 						<mat-hint align="end"
 							>Bit Resolution of a Platform Type</mat-hint
 						>
-						<mat-error
-							id="interfacePlatformTypeBitsResolution"
-							*ngIf="
-								platformTypeForm.errors?.['attributesNotUnique']
-							"
-							>Attributes not unique.{{
-								platformTypeForm.errors?.['attributesNotUnique']
-									.value
-							}}
-							matches.</mat-error
-						>
+						@if (platformTypeForm.errors?.['attributesNotUnique']) {
+							<mat-error id="interfacePlatformTypeBitsResolution"
+								>Attributes not unique.{{
+									platformTypeForm.errors?.[
+										'attributesNotUnique'
+									].value
+								}}
+								matches.</mat-error
+							>
+						}
 					</mat-form-field>
 					<mat-form-field>
 						<mat-label for="interfacePlatformTypeCompRate"
@@ -315,17 +311,16 @@
 						<mat-hint align="end"
 							>Comp Rate of a Platform Type</mat-hint
 						>
-						<mat-error
-							id="interfacePlatformTypeCompRate"
-							*ngIf="
-								platformTypeForm.errors?.['attributesNotUnique']
-							"
-							>Attributes not unique.{{
-								platformTypeForm.errors?.['attributesNotUnique']
-									.value
-							}}
-							matches.</mat-error
-						>
+						@if (platformTypeForm.errors?.['attributesNotUnique']) {
+							<mat-error id="interfacePlatformTypeCompRate"
+								>Attributes not unique.{{
+									platformTypeForm.errors?.[
+										'attributesNotUnique'
+									].value
+								}}
+								matches.</mat-error
+							>
+						}
 					</mat-form-field>
 					<mat-form-field>
 						<mat-label for="interfacePlatformTypeAnalogAccuracy"
@@ -352,17 +347,16 @@
 						<mat-hint align="end"
 							>Analog Accuracy of a Platform Type</mat-hint
 						>
-						<mat-error
-							id="interfacePlatformTypeAnalogAccuracy"
-							*ngIf="
-								platformTypeForm.errors?.['attributesNotUnique']
-							"
-							>Attributes not unique.{{
-								platformTypeForm.errors?.['attributesNotUnique']
-									.value
-							}}
-							matches.</mat-error
-						>
+						@if (platformTypeForm.errors?.['attributesNotUnique']) {
+							<mat-error id="interfacePlatformTypeAnalogAccuracy"
+								>Attributes not unique.{{
+									platformTypeForm.errors?.[
+										'attributesNotUnique'
+									].value
+								}}
+								matches.</mat-error
+							>
+						}
 					</mat-form-field>
 					<osee-unit-dropdown
 						[(unit)]="data.type.interfacePlatformTypeUnits"
@@ -380,8 +374,7 @@
 				(click)="onNoClick()">
 				Cancel
 			</button>
-			<ng-container
-				*ngIf="data.type.interfaceLogicalType === 'enumeration'">
+			@if (data.type.interfaceLogicalType === 'enumeration') {
 				<button
 					mat-raised-button
 					matStepperNext
@@ -396,10 +389,9 @@
 					">
 					Next
 				</button>
-			</ng-container>
-			<ng-container *ngIf="manifest | async as _manifest">
-				<ng-container
-					*ngIf="data.type.interfaceLogicalType !== 'enumeration'">
+			}
+			@if (manifest | async; as _manifest) {
+				@if (data.type.interfaceLogicalType !== 'enumeration') {
 					<button
 						mat-raised-button
 						[mat-dialog-close]="_manifest"
@@ -414,12 +406,12 @@
 						">
 						Ok
 					</button>
-				</ng-container>
-			</ng-container>
+				}
+			}
 		</mat-dialog-actions>
 	</mat-step>
-	<ng-container *ngIf="data.type.interfaceLogicalType === 'enumeration'">
-		<ng-container *ngIf="manifest | async as _manifest">
+	@if (data.type.interfaceLogicalType === 'enumeration') {
+		@if (manifest | async; as _manifest) {
 			<mat-step label="Enumeration Set">
 				<mat-dialog-content>
 					<osee-edit-enum-set-field
@@ -437,10 +429,7 @@
 						(click)="onNoClick()">
 						Cancel
 					</button>
-					<ng-container
-						*ngIf="
-							data.type.interfaceLogicalType === 'enumeration'
-						">
+					@if (data.type.interfaceLogicalType === 'enumeration') {
 						<button
 							mat-raised-button
 							[mat-dialog-close]="_manifest"
@@ -456,9 +445,9 @@
 							">
 							Ok
 						</button>
-					</ng-container>
+					}
 				</mat-dialog-actions>
 			</mat-step>
-		</ng-container>
-	</ng-container>
+		}
+	}
 </mat-stepper>

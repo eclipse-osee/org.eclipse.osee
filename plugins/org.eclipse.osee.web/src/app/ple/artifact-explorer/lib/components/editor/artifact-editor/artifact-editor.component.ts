@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, input, OnChanges, SimpleChanges } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import { tab } from '../../../types/artifact-explorer.data';
 import { ArtifactInfoPanelComponent } from '../artifact-info-panel/artifact-info-panel.component';
 import { AttributesEditorPanelComponent } from '../attributes-editor-panel/attributes-editor-panel.component';
@@ -21,7 +21,6 @@ import { RelationsEditorPanelComponent } from '../relations-editor-panel/relatio
 	selector: 'osee-artifact-editor',
 	standalone: true,
 	imports: [
-		CommonModule,
 		RelationsEditorPanelComponent,
 		ArtifactInfoPanelComponent,
 		AttributesEditorPanelComponent,

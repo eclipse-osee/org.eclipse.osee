@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { LowerCasePipe, NgClass, NgFor } from '@angular/common';
+import { LowerCasePipe, NgClass } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
@@ -29,7 +29,6 @@ import { BranchRoutedUIService } from '../../../../internal/services/branch-rout
 		MatRadioGroup,
 		MatRadioButton,
 		FormsModule,
-		NgFor,
 		NgClass,
 		LowerCasePipe,
 	],

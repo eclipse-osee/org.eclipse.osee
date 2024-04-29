@@ -12,7 +12,7 @@
  **********************************************************************/
 
 import { CdkMonitorFocus } from '@angular/cdk/a11y';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
@@ -75,8 +75,6 @@ import {
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		FormsModule,
-		NgIf,
-		NgFor,
 		MatFormField,
 		CdkMonitorFocus,
 		MatInput,

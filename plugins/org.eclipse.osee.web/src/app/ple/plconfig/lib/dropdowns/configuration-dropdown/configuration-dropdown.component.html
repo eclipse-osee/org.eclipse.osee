@@ -1,24 +1,25 @@
 <!--
- * Copyright (c) 2021 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
-<button
-	mat-menu-item
-	#menuTrigger1="matMenuTrigger"
-	(mousedown)="toggleMenu(menuTrigger1)"
-	[matMenuTriggerFor]="mainMenu"
-	*ngIf="(editable | async) === true"
-	data-cy="change-config-dropdown-btn">
-	Change Configurations
-</button>
+* Copyright (c) 2021 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
+@if ((editable | async) === true) {
+	<button
+		mat-menu-item
+		#menuTrigger1="matMenuTrigger"
+		(mousedown)="toggleMenu(menuTrigger1)"
+		[matMenuTriggerFor]="mainMenu"
+		data-cy="change-config-dropdown-btn">
+		Change Configurations
+	</button>
+}
 <mat-menu
 	class="tw-max-w-none"
 	#mainMenu="matMenu">
@@ -32,59 +33,65 @@
 				>add_box</mat-icon
 			>Add Configuration
 		</button>
-		<button
-			mat-menu-item
-			*ngIf="(editable | async) === true"
-			(click)="copyConfiguration()"
-			data-cy="copy-menu-btn">
-			<mat-icon>insert_drive_file</mat-icon>Copy Configuration
-		</button>
-		<button
-			mat-menu-item
-			[matMenuTriggerFor]="editConfigMenu"
-			*ngIf="(editable | async) === true"
-			data-cy="edit-menu-btn">
-			<mat-icon color="primary">edit</mat-icon>Edit Configuration
-		</button>
-		<button
-			mat-menu-item
-			[matMenuTriggerFor]="deleteConfigMenu"
-			*ngIf="(editable | async) === true"
-			data-cy="delete-menu-btn">
-			<mat-icon color="warn">delete_forever</mat-icon>Delete Configuration
-		</button>
+		@if ((editable | async) === true) {
+			<button
+				mat-menu-item
+				(click)="copyConfiguration()"
+				data-cy="copy-menu-btn">
+				<mat-icon>insert_drive_file</mat-icon>Copy Configuration
+			</button>
+		}
+		@if ((editable | async) === true) {
+			<button
+				mat-menu-item
+				[matMenuTriggerFor]="editConfigMenu"
+				data-cy="edit-menu-btn">
+				<mat-icon color="primary">edit</mat-icon>Edit Configuration
+			</button>
+		}
+		@if ((editable | async) === true) {
+			<button
+				mat-menu-item
+				[matMenuTriggerFor]="deleteConfigMenu"
+				data-cy="delete-menu-btn">
+				<mat-icon color="warn">delete_forever</mat-icon>Delete
+				Configuration
+			</button>
+		}
 	</ng-template>
 </mat-menu>
 <mat-menu
 	class="tw-max-w-none"
 	#deleteConfigMenu="matMenu">
-	<button
-		*ngFor="let configuration of configs | async"
-		mat-menu-item
-		(click)="deleteConfig(configuration)"
-		[attr.data-cy]="'delete-config-' + configuration.name + '-btn'">
-		{{ configuration.name }}
-	</button>
+	@for (configuration of configs | async; track configuration) {
+		<button
+			mat-menu-item
+			(click)="deleteConfig(configuration)"
+			[attr.data-cy]="'delete-config-' + configuration.name + '-btn'">
+			{{ configuration.name }}
+		</button>
+	}
 </mat-menu>
 <mat-menu
 	class="tw-max-w-none"
 	#editConfigMenu="matMenu">
-	<button
-		*ngFor="let configuration of configs | async"
-		mat-menu-item
-		(click)="
-			openEditDialog(
-				configuration,
-				configuration?.productApplicabilities,
-				configuration?.group
-			)
-		"
-		[attr.data-cy]="'edit-config-' + configuration.name + '-btn'">
-		{{ configuration.name }}
-	</button>
+	@for (configuration of configs | async; track configuration) {
+		<button
+			mat-menu-item
+			(click)="
+				openEditDialog(
+					configuration,
+					configuration?.productApplicabilities,
+					configuration?.group
+				)
+			"
+			[attr.data-cy]="'edit-config-' + configuration.name + '-btn'">
+			{{ configuration.name }}
+		</button>
+	}
 </mat-menu>
-<mat-label
-	*ngIf="(editable | async) === false"
-	class="tw-items-center tw-text-center"
-	>Branch is not editable</mat-label
->
+@if ((editable | async) === false) {
+	<mat-label class="tw-items-center tw-text-center"
+		>Branch is not editable</mat-label
+	>
+}

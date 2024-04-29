@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import {
@@ -43,7 +43,6 @@ import { Observable, Subject } from 'rxjs';
 	styles: [],
 	standalone: true,
 	imports: [
-		NgIf,
 		AsyncPipe,
 		EditEnumSetFieldComponent,
 		MatDialogTitle,

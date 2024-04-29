@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
-import { AsyncPipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
+import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import {
 	Component,
 	Inject,
@@ -96,8 +96,6 @@ type platformTypeStates =
 	selector: 'osee-element-form',
 	standalone: true,
 	imports: [
-		NgIf,
-		NgFor,
 		AsyncPipe,
 		NgTemplateOutlet,
 		FormsModule,

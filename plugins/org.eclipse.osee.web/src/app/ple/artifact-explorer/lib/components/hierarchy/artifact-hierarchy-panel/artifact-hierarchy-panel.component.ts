@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CdkDropList } from '@angular/cdk/drag-drop';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
@@ -39,7 +39,8 @@ import { ArtifactSearchPanelComponent } from '../artifact-search-panel/artifact-
 	selector: 'osee-artifact-hierarchy-panel',
 	standalone: true,
 	imports: [
-		CommonModule,
+		NgClass,
+		AsyncPipe,
 		BranchPickerComponent,
 		ArtifactHierarchyComponent,
 		ArtifactHierarchyOptionsComponent,

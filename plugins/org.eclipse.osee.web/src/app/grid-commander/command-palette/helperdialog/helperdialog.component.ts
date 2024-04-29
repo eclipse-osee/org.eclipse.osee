@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import {
 	MatDialog,
@@ -24,7 +24,7 @@ import { CommandGroupOptionsService } from '../../services/data-services/command
 	templateUrl: './helperdialog.component.html',
 	styles: [],
 	standalone: true,
-	imports: [NgIf, NgFor, AsyncPipe, MatDialogContent],
+	imports: [AsyncPipe, MatDialogContent],
 })
 export class HelperdialogComponent {
 	allCommands = this.commandGroupOptsService.allCommands;

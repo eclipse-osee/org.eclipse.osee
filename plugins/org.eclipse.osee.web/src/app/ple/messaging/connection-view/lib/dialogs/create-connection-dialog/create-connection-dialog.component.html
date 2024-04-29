@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2021 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2021 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <form #connectionForm="ngForm">
 	<h1 mat-dialog-title>
 		Create Connection{{ title ? ' to Node: ' + title : '' }}
@@ -68,9 +68,8 @@
 					</osee-mat-option-loading>
 				</mat-select>
 			</mat-form-field>
-			<ng-container
-				*ngIf="newConnection.connection.transportType as transportType">
-				<ng-container *ngIf="transportType.directConnection">
+			@if (newConnection.connection.transportType; as transportType) {
+				@if (transportType.directConnection) {
 					<mat-form-field
 						id="connection-from-node-selector"
 						class="tw-w-full">
@@ -102,7 +101,7 @@
 							</osee-mat-option-loading>
 						</mat-select>
 					</mat-form-field>
-					<ng-container *ngIf="!data?.id">
+					@if (!data?.id) {
 						<mat-form-field
 							id="connection-to-node-selector"
 							class="tw-w-full">
@@ -134,10 +133,10 @@
 								</osee-mat-option-loading>
 							</mat-select>
 						</mat-form-field>
-					</ng-container>
-				</ng-container>
-				<ng-container *ngIf="!transportType.directConnection">
-					<ng-container *ngIf="nodes | async as _nodes">
+					}
+				}
+				@if (!transportType.directConnection) {
+					@if (nodes | async; as _nodes) {
 						<mat-form-field id="connection-node-selector">
 							<mat-label>Select Nodes</mat-label>
 							<mat-select
@@ -149,29 +148,38 @@
 								data-cy="field-init-node"
 								[compareWith]="compareNodes"
 								[oseeConnectionNodesCount]="transportType">
-								<mat-option
-									*ngFor="let option of _nodes"
-									[value]="option.id"
-									[attr.data-cy]="'option-' + option.name">
-									{{ option.name }}
-								</mat-option>
+								@for (option of _nodes; track option) {
+									<mat-option
+										[value]="option.id"
+										[attr.data-cy]="
+											'option-' + option.name
+										">
+										{{ option.name }}
+									</mat-option>
+								}
 							</mat-select>
-							<mat-error
-								*ngIf="
-									nodesSelect.control.errors?.min ||
-									nodesSelect.control.errors?.required
-								">
-								Minimum nodes is
-								{{ nodesSelect.control.errors?.min?.min || 1 }}
-							</mat-error>
-							<mat-error *ngIf="nodesSelect.control.errors?.max"
-								>Maximum nodes is
-								{{ nodesSelect.control.errors?.max.max }}
-							</mat-error>
+							@if (
+								nodesSelect.control.errors?.min ||
+								nodesSelect.control.errors?.required
+							) {
+								<mat-error>
+									Minimum nodes is
+									{{
+										nodesSelect.control.errors?.min?.min ||
+											1
+									}}
+								</mat-error>
+							}
+							@if (nodesSelect.control.errors?.max) {
+								<mat-error
+									>Maximum nodes is
+									{{ nodesSelect.control.errors?.max.max }}
+								</mat-error>
+							}
 						</mat-form-field>
-					</ng-container>
-				</ng-container>
-			</ng-container>
+					}
+				}
+			}
 		</div>
 	</mat-dialog-content>
 	<div
@@ -183,7 +191,7 @@
 			data-cy="cancel-btn">
 			Cancel
 		</button>
-		<ng-container *ngIf="newConnection.connection.transportType as type">
+		@if (newConnection.connection.transportType; as type) {
 			<button
 				mat-raised-button
 				[mat-dialog-close]="newConnection"
@@ -199,6 +207,6 @@
 				data-cy="submit-btn">
 				Ok
 			</button>
-		</ng-container>
+		}
 	</div>
 </form>

@@ -1,14 +1,14 @@
 <!--
- * Copyright (c) 2022 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
+* Copyright (c) 2022 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
 -->
 <mat-toolbar class="tw-h-16 tw-text-xl tw-font-bold"
 	>OSEE Navigator</mat-toolbar
@@ -29,92 +29,93 @@
 	let-elements>
 	<div>
 		<mat-nav-list class="tw-py-0">
-			<ng-container *ngFor="let element of elements">
+			@for (element of elements; track element) {
 				<!-- If dropdown -->
-				<mat-list-item
-					*ngIf="element.isDropdown"
-					(click)="element.isDropdownOpen = !element.isDropdownOpen"
-					[ngClass]="{
-						'tw-bg-primary-100 tw-shadow-md hover:tw-bg-primary-400 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900':
-							router.url.includes(element.routerLink) &&
-							!element.isDropdownOpen,
-						'dark:hover:tw-bg-background-disabled-button':
-							router.url.includes(element.routerLink) &&
-							!element.isDropdownOpen
-					}"
-					class="tw-py-6">
-					<div class="tw-flex tw-items-center tw-justify-between">
-						<div class="tw-flex tw-flex-row tw-items-center">
+				@if (element.isDropdown) {
+					<mat-list-item
+						(click)="
+							element.isDropdownOpen = !element.isDropdownOpen
+						"
+						[ngClass]="{
+							'tw-bg-primary-100 tw-shadow-md hover:tw-bg-primary-400 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900':
+								router.url.includes(element.routerLink) &&
+								!element.isDropdownOpen,
+							'dark:hover:tw-bg-background-disabled-button':
+								router.url.includes(element.routerLink) &&
+								!element.isDropdownOpen
+						}"
+						class="tw-py-6">
+						<div class="tw-flex tw-items-center tw-justify-between">
+							<div class="tw-flex tw-flex-row tw-items-center">
+								<div class="tw-pr-2">
+									@if (element.icon !== '') {
+										<mat-icon matListItemIcon
+											>{{ element.icon }}
+										</mat-icon>
+									}
+								</div>
+								<div>
+									{{ element.label }}
+								</div>
+							</div>
+							<div class="tw-flex tw-items-center">
+								@if (!element.isDropdownOpen) {
+									<mat-icon>chevron_right</mat-icon>
+								}
+								@if (element.isDropdownOpen) {
+									<mat-icon>expand_more</mat-icon>
+								}
+							</div>
+						</div>
+					</mat-list-item>
+				}
+				<!-- If not a dropdown -->
+				@if (!element.isDropdown) {
+					<mat-list-item
+						(click)="closeTopLevelNav()"
+						[ngClass]="{
+							'tw-bg-primary-100 tw-shadow-md hover:tw-bg-primary-400 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900':
+								router.url === element.routerLink,
+							'dark:hover:tw-bg-background-disabled-button':
+								router.url !== element.routerLink
+						}"
+						class="tw-py-6">
+						<a
+							class="tw-flex tw-flex-row tw-items-center"
+							[routerLink]="element.routerLink"
+							queryParamsHandling="merge">
 							<div class="tw-pr-2">
-								<mat-icon
-									matListItemIcon
-									*ngIf="element.icon !== ''"
-									>{{ element.icon }}
-								</mat-icon>
+								@if (element.icon !== '') {
+									<mat-icon matListItemIcon
+										>{{ element.icon }}
+									</mat-icon>
+								}
 							</div>
 							<div>
 								{{ element.label }}
 							</div>
-						</div>
-
-						<div class="tw-flex tw-items-center">
-							<mat-icon *ngIf="!element.isDropdownOpen"
-								>chevron_right</mat-icon
-							>
-							<mat-icon *ngIf="element.isDropdownOpen"
-								>expand_more</mat-icon
-							>
-						</div>
-					</div>
-				</mat-list-item>
-
-				<!-- If not a dropdown -->
-				<mat-list-item
-					*ngIf="!element.isDropdown"
-					(click)="closeTopLevelNav()"
-					[ngClass]="{
-						'tw-bg-primary-100 tw-shadow-md hover:tw-bg-primary-400 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900':
-							router.url === element.routerLink,
-						'dark:hover:tw-bg-background-disabled-button':
-							router.url !== element.routerLink
-					}"
-					class="tw-py-6">
-					<a
-						class="tw-flex tw-flex-row tw-items-center"
-						[routerLink]="element.routerLink"
-						queryParamsHandling="merge">
-						<div class="tw-pr-2">
-							<mat-icon
-								matListItemIcon
-								*ngIf="element.icon !== ''"
-								>{{ element.icon }}
-							</mat-icon>
-						</div>
-						<div>
-							{{ element.label }}
-						</div>
-					</a>
-				</mat-list-item>
-
+						</a>
+					</mat-list-item>
+				}
 				<!-- If the element has children and dropdown is open -->
-				<mat-nav-list
-					class="tw-py-0"
-					*ngIf="element.children && element.isDropdownOpen">
-					<mat-divider></mat-divider>
-					<div class="tw-pl-4">
-						<ng-container
-							*ngTemplateOutlet="
-								recursiveMenu;
-								context: {
-									$implicit:
-										(getElementsWithPermission(
-											element.children
-										) | async)
-								}
-							"></ng-container>
-					</div>
-				</mat-nav-list>
-			</ng-container>
+				@if (element.children && element.isDropdownOpen) {
+					<mat-nav-list class="tw-py-0">
+						<mat-divider></mat-divider>
+						<div class="tw-pl-4">
+							<ng-container
+								*ngTemplateOutlet="
+									recursiveMenu;
+									context: {
+										$implicit:
+											(getElementsWithPermission(
+												element.children
+											) | async)
+									}
+								"></ng-container>
+						</div>
+					</mat-nav-list>
+				}
+			}
 		</mat-nav-list>
 	</div>
 </ng-template>

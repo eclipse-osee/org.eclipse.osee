@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CdkMonitorFocus } from '@angular/cdk/a11y';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
@@ -58,8 +58,6 @@ import {
 		MatOption,
 		MatInput,
 		MatTooltip,
-		NgIf,
-		NgFor,
 		AsyncPipe,
 		ApplicabilitySelectorComponent,
 	],

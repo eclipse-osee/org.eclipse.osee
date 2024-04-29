@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgClass, NgIf, NgTemplateOutlet } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AsyncPipe, NgClass, NgTemplateOutlet } from '@angular/common';
+import { Component, Input, OnDestroy, OnInit, viewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatLabel } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
@@ -48,7 +48,6 @@ import { CurrentGraphService } from '../../services/current-graph.service';
 	styles: [':host{ width: 100%; height: 100%;}'],
 	standalone: true,
 	imports: [
-		NgIf,
 		AsyncPipe,
 		NgClass,
 		NgTemplateOutlet,
@@ -82,9 +81,9 @@ export class GraphComponent implements OnInit, OnDestroy {
 		x: '0',
 		y: '0',
 	};
-	@ViewChild('linkMenuTrigger') linkMenuTrigger!: MatMenuTrigger;
-	@ViewChild('nodeMenuTrigger') nodeMenuTrigger!: MatMenuTrigger;
-	@ViewChild('graphMenuTrigger') graphMenuTrigger!: MatMenuTrigger;
+	linkMenuTrigger = viewChild.required<MatMenuTrigger>('linkMenuTrigger');
+	nodeMenuTrigger = viewChild.required<MatMenuTrigger>('nodeMenuTrigger');
+	graphMenuTrigger = viewChild.required<MatMenuTrigger>('graphMenuTrigger');
 
 	_messageRoute = this.graphService.messageRoute;
 	constructor(
@@ -111,14 +110,14 @@ export class GraphComponent implements OnInit, OnDestroy {
 		//find node names based on value.data.source and value.data.target
 		let source = nodes.find((node) => node.id === value.source);
 		let target = nodes.find((node) => node.id === value.target);
-		this.linkMenuTrigger.menuData = {
+		this.linkMenuTrigger().menuData = {
 			data: value.data,
 			source: source,
 			target: target,
 		};
-		this.nodeMenuTrigger.closeMenu();
-		this.graphMenuTrigger.closeMenu();
-		this.linkMenuTrigger.openMenu();
+		this.nodeMenuTrigger().closeMenu();
+		this.graphMenuTrigger().closeMenu();
+		this.linkMenuTrigger().openMenu();
 	}
 
 	openNodeDialog(
@@ -131,14 +130,14 @@ export class GraphComponent implements OnInit, OnDestroy {
 		this.nodePosition.y = event.clientY + 'px';
 		let source = edges.filter((edge) => edge.source === value.id);
 		let target = edges.filter((edge) => edge.target === value.id);
-		this.nodeMenuTrigger.menuData = {
+		this.nodeMenuTrigger().menuData = {
 			data: value.data,
 			sources: source,
 			targets: target,
 		};
-		this.linkMenuTrigger.closeMenu();
-		this.graphMenuTrigger.closeMenu();
-		this.nodeMenuTrigger.openMenu();
+		this.linkMenuTrigger().closeMenu();
+		this.graphMenuTrigger().closeMenu();
+		this.nodeMenuTrigger().openMenu();
 	}
 
 	openGraphDialog(event: MouseEvent) {
@@ -153,9 +152,9 @@ export class GraphComponent implements OnInit, OnDestroy {
 		) {
 			this.graphMenuPosition.x = event.clientX + 'px';
 			this.graphMenuPosition.y = event.clientY + 'px';
-			this.linkMenuTrigger.closeMenu();
-			this.nodeMenuTrigger.closeMenu();
-			this.graphMenuTrigger.openMenu();
+			this.linkMenuTrigger().closeMenu();
+			this.nodeMenuTrigger().closeMenu();
+			this.graphMenuTrigger().openMenu();
 		}
 	}
 

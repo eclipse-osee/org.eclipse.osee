@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
@@ -21,8 +21,9 @@ import {
 	MatMenuTrigger,
 } from '@angular/material/menu';
 import { response } from '@osee/shared/types';
-import { Observable, of, OperatorFunction } from 'rxjs';
+import { Observable, OperatorFunction, of } from 'rxjs';
 import { filter, shareReplay, switchMap, take } from 'rxjs/operators';
+import { AddFeatureConstraintDialogComponent } from '../../dialogs/add-feature-constraint-dialog/add-feature-constraint-dialog.component';
 import { AddFeatureDialogComponent } from '../../dialogs/add-feature-dialog/add-feature-dialog.component';
 import { EditFeatureDialogComponent } from '../../dialogs/edit-feature-dialog/edit-feature-dialog.component';
 import { ViewFeatureConstraintsDialogComponent } from '../../dialogs/view-feature-constraints-dialog/view-feature-constraints-dialog.component';
@@ -31,16 +32,15 @@ import { PlConfigUIStateService } from '../../services/pl-config-uistate.service
 import { trackableFeature } from '../../types/features/base';
 import { defaultBaseFeature } from '../../types/features/feature';
 import {
-	modifyFeature,
-	PLAddFeatureData,
-	PLEditFeatureData,
-	writeFeature,
-} from '../../types/pl-config-features';
-import { AddFeatureConstraintDialogComponent } from '../../dialogs/add-feature-constraint-dialog/add-feature-constraint-dialog.component';
-import {
 	defaultFeatureConstraint,
 	featureConstraintData,
 } from '../../types/pl-config-feature-constraints';
+import {
+	PLAddFeatureData,
+	PLEditFeatureData,
+	modifyFeature,
+	writeFeature,
+} from '../../types/pl-config-features';
 
 @Component({
 	selector: 'osee-plconfig-feature-dropdown',
@@ -53,8 +53,6 @@ import {
 		MatMenuContent,
 		MatMenu,
 		MatIcon,
-		NgFor,
-		NgIf,
 		AsyncPipe,
 	],
 })

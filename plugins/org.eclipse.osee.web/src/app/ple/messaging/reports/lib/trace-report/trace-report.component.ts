@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
@@ -33,7 +33,7 @@ import { TraceReportTableComponent } from './trace-report-table/trace-report-tab
 	selector: 'osee-trace-report',
 	standalone: true,
 	imports: [
-		CommonModule,
+		AsyncPipe,
 		TraceReportTableComponent,
 		MatButtonToggleGroup,
 		MatButtonToggle,

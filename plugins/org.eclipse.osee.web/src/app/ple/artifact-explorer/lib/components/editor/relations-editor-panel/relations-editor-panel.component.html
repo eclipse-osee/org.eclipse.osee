@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <mat-expansion-panel
 	class="[&>div>div]:tw-px-0"
 	hideToggle>
@@ -24,9 +24,11 @@
 	</mat-expansion-panel-header>
 
 	<div class="tw-pt-4">
-		<ng-container *ngIf="artWithRelation$ | async as art">
-			<ng-container
-				*ngFor="let relation of art.relations; trackBy: relationOpen">
+		@if (artWithRelation$ | async; as art) {
+			@for (
+				relation of art.relations;
+				track relationOpen($index, relation)
+			) {
 				<div class="tw-h-auto">
 					<!-- expand icon button and relation name -->
 					<div
@@ -69,117 +71,135 @@
 						</div>
 					</div>
 					<!-- relation sides and their artifacts -->
-					<ng-container
-						*ngFor="
-							let side of relation.relationSides;
-							trackBy: relationSideOpen
-						">
-						<div
-							*ngIf="
-								dropdownsOpen.value.includes(
-									relation.relationTypeToken.id
-								)
-							"
-							class="tw-pl-8"
-							[ngClass]="
-								dropdownsOpen.value.includes(
-									relation.relationTypeToken.id
-								)
-									? 'tw-h-auto '
-									: 'tw-h-0 tw-bg-inherit'
-							"
-							id="relationList"
-							cdkDropList
-							(cdkDropListDropped)="
-								addRelationOnItemDropped($event, relation, side)
-							">
+					@for (
+						side of relation.relationSides;
+						track relationSideOpen($index, side)
+					) {
+						@if (
+							dropdownsOpen.value.includes(
+								relation.relationTypeToken.id
+							)
+						) {
 							<div
-								class="tw-flex tw-items-center tw-py-1 tw-pl-4"
+								class="tw-pl-8"
 								[ngClass]="
-									dropdownsOpen.value.includes(side.name)
-										? 'tw-bg-background-hover'
-										: 'tw-bg-inherit'
+									dropdownsOpen.value.includes(
+										relation.relationTypeToken.id
+									)
+										? 'tw-h-auto '
+										: 'tw-h-0 tw-bg-inherit'
+								"
+								id="relationList"
+								cdkDropList
+								(cdkDropListDropped)="
+									addRelationOnItemDropped(
+										$event,
+										relation,
+										side
+									)
 								">
-								<button
-									(click)="toggleExpand(side.name)"
-									class="tw-flex hover:tw-text-primary">
-									<osee-expand-icon
-										[open]="
+								<div
+									class="tw-flex tw-items-center tw-py-1 tw-pl-4"
+									[ngClass]="
+										dropdownsOpen.value.includes(side.name)
+											? 'tw-bg-background-hover'
+											: 'tw-bg-inherit'
+									">
+									<button
+										(click)="toggleExpand(side.name)"
+										class="tw-flex hover:tw-text-primary">
+										<osee-expand-icon
+											[open]="
+												dropdownsOpen.value.includes(
+													side.name
+												)
+											" />
+									</button>
+									<div
+										class="tw-flex tw-items-center tw-pl-4">
+										<mat-icon
+											[ngClass]="[
+												side.artifacts.length > 0
+													? 'tw-text-accent-700'
+													: 'tw-text-foreground-disabled'
+											]"
+											>swap_horiz</mat-icon
+										>
+									</div>
+									<div
+										class="tw-flex tw-items-center tw-pl-2">
+										{{ side.name }}
+									</div>
+								</div>
+								@if (dropdownsOpen.value.includes(side.name)) {
+									<div
+										class="tw-pl-14"
+										[ngClass]="
 											dropdownsOpen.value.includes(
 												side.name
 											)
-										" />
-								</button>
-								<div class="tw-flex tw-items-center tw-pl-4">
-									<mat-icon
-										[ngClass]="[
-											side.artifacts.length > 0
-												? 'tw-text-accent-700'
-												: 'tw-text-foreground-disabled'
-										]"
-										>swap_horiz</mat-icon
-									>
-								</div>
-								<div class="tw-flex tw-items-center tw-pl-2">
-									{{ side.name }}
-								</div>
-							</div>
-							<div
-								*ngIf="dropdownsOpen.value.includes(side.name)"
-								class="tw-pl-14"
-								[ngClass]="
-									dropdownsOpen.value.includes(side.name)
-										? 'tw-h-auto'
-										: 'tw-h-0'
-								">
-								<!-- aritfacts within the relation side -->
-								<ng-container *ngIf="side.artifacts as arts">
-									<mat-list class="tw-p-0">
-										<div
-											*ngFor="let art of arts"
-											class="tw-h-auto tw-px-0 tw-py-1">
-											<div
-												class="tw-flex tw-items-center tw-justify-between hover:tw-text-primary">
-												<button
-													(click)="addTab(art)"
-													class="tw-flex tw-items-center">
-													<mat-icon
-														[class]="
-															getIconClasses(
-																art.icon
-															)
-														">
-														{{ art.icon.icon }}
-													</mat-icon>
-													<div class="tw-pl-2">
-														{{ art.name }}
+												? 'tw-h-auto'
+												: 'tw-h-0'
+										">
+										<!-- aritfacts within the relation side -->
+										@if (side.artifacts; as arts) {
+											<mat-list class="tw-p-0">
+												@for (art of arts; track art) {
+													<div
+														class="tw-h-auto tw-px-0 tw-py-1">
+														<div
+															class="tw-flex tw-items-center tw-justify-between hover:tw-text-primary">
+															<button
+																(click)="
+																	addTab(art)
+																"
+																class="tw-flex tw-items-center">
+																<mat-icon
+																	[class]="
+																		getIconClasses(
+																			art.icon
+																		)
+																	">
+																	{{
+																		art.icon
+																			.icon
+																	}}
+																</mat-icon>
+																<div
+																	class="tw-pl-2">
+																	{{
+																		art.name
+																	}}
+																</div>
+															</button>
+															<button
+																class="tw-px-4"
+																(click)="
+																	editable
+																		? deleteRelation(
+																				art,
+																				relation,
+																				side
+																		  )
+																		: ''
+																">
+																<mat-icon
+																	class="tw-transform tw-text-warning tw-transition-transform tw-duration-200 tw-ease-in-out hover:tw-rotate-180"
+																	>remove_circle_outline</mat-icon
+																>
+															</button>
+														</div>
 													</div>
-												</button>
-												<button
-													class="tw-px-4"
-													(click)="
-														editable
-															? deleteRelation(
-																	art,
-																	relation,
-																	side
-															  )
-															: ''
-													">
-													<mat-icon
-														class="tw-transform tw-text-warning tw-transition-transform tw-duration-200 tw-ease-in-out hover:tw-rotate-180"
-														>remove_circle_outline</mat-icon
-													>
-												</button>
-											</div>
-										</div>
-									</mat-list>
-								</ng-container>
+												}
+											</mat-list>
+										}
+									</div>
+								}
 							</div>
-						</div>
-					</ng-container>
+						}
+					}
 				</div>
-			</ng-container>
-		</ng-container>
+			}
+		}
 	</div>
 </mat-expansion-panel>

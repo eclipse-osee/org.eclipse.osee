@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import {
 	Component,
 	Input,
@@ -59,7 +59,6 @@ let nextUniqueId = 0;
 	standalone: true,
 	imports: [
 		AsyncPipe,
-		NgIf,
 		FormsModule,
 		MatFormField,
 		MatInput,
@@ -70,7 +69,6 @@ let nextUniqueId = 0;
 		MatIconButton,
 		MatOption,
 		MatOptionLoadingComponent,
-		NgFor,
 	],
 	templateUrl: './attribute-enums-dropdown.component.html',
 	viewProviders: [

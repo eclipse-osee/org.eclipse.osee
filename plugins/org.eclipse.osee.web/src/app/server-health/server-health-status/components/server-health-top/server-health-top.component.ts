@@ -11,15 +11,16 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { shareReplay } from 'rxjs';
 import { ServerHealthHttpService } from '../../../shared/services/server-health-http.service';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
 	selector: 'osee-server-health-top',
 	standalone: true,
-	imports: [CommonModule],
+	imports: [AsyncPipe],
 	templateUrl: './server-health-top.component.html',
 })
 export class ServerHealthTopComponent {

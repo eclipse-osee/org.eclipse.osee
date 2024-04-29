@@ -17,7 +17,7 @@ import {
 	transition,
 	trigger,
 } from '@angular/animations';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
@@ -36,15 +36,7 @@ import { switchMap } from 'rxjs/operators';
 	templateUrl: './single-diff.component.html',
 	styles: [],
 	standalone: true,
-	imports: [
-		FormsModule,
-		NgIf,
-		AsyncPipe,
-		MatButton,
-		MatIcon,
-		MatLine,
-		MatLabel,
-	],
+	imports: [FormsModule, AsyncPipe, MatButton, MatIcon, MatLine, MatLabel],
 	animations: [
 		trigger('expandButton', [
 			state('closed', style({ transform: 'rotate(180deg)' })),

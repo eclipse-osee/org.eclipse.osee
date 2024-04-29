@@ -1,16 +1,16 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
-<ng-container *ngIf="sets | async as _sets">
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
+@if (sets | async; as _sets) {
 	<div class="tw-flex tw-flex-col">
 		<mat-checkbox
 			[checked]="activeOnly()"
@@ -26,12 +26,12 @@
 				(ngModelChange)="updateSets($event)"
 				multiple
 				[compareWith]="compareSets">
-				<mat-option
-					*ngFor="let option of _sets"
-					[value]="option">
-					{{ option.name }}
-				</mat-option>
+				@for (option of _sets; track option) {
+					<mat-option [value]="option">
+						{{ option.name }}
+					</mat-option>
+				}
 			</mat-select>
 		</mat-form-field>
 	</div>
-</ng-container>
+}

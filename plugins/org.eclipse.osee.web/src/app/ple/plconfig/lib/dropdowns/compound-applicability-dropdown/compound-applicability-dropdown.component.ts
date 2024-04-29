@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, ViewContainerRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
@@ -37,8 +37,6 @@ import {
 	styles: [],
 	standalone: true,
 	imports: [
-		NgFor,
-		NgIf,
 		AsyncPipe,
 		MatMenuItem,
 		MatMenuTrigger,

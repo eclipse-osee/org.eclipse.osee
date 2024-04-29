@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <form #addFeatureConstraintForm="ngForm">
 	<h1 mat-dialog-title>Add Feature Constraint</h1>
 	<div mat-dialog-content>
@@ -32,11 +32,11 @@
 			<mat-autocomplete
 				#auto="matAutocomplete"
 				(optionSelected)="findMatch(true)">
-				<mat-option
-					*ngFor="let applic of filteredChildApplic$ | async"
-					[value]="applic.name">
-					{{ applic.name }}
-				</mat-option>
+				@for (applic of filteredChildApplic$ | async; track applic) {
+					<mat-option [value]="applic.name">
+						{{ applic.name }}
+					</mat-option>
+				}
 			</mat-autocomplete>
 		</mat-form-field>
 
@@ -45,67 +45,75 @@
 		</mat-slide-toggle>
 
 		<!-- If constraint is applicability (Parent) -->
-		<div *ngIf="!constraintIsCompApplic">
-			<mat-form-field class="tw-w-full tw-text-lg">
-				<mat-label>Select an Applicability</mat-label>
-
-				<input
-					placeholder="Filter..."
-					matInput
-					[(ngModel)]="data.featureConstraint.applicability2.name"
-					name="selectedParent"
-					[matAutocomplete]="auto"
-					(keyup)="
-						filter(
-							data.featureConstraint.applicability2.name,
-							false
-						);
-						closePreview()
-					"
-					(ngModelChange)="clearApp2ID(); closePreview()"
-					required />
-				<mat-autocomplete
-					#auto="matAutocomplete"
-					(optionSelected)="findMatch(false)">
-					<mat-option
-						*ngFor="let applic of filteredParentApplic$ | async"
-						[value]="applic.name">
-						{{ applic.name }}
-					</mat-option>
-				</mat-autocomplete>
-			</mat-form-field>
-		</div>
+		@if (!constraintIsCompApplic) {
+			<div>
+				<mat-form-field class="tw-w-full tw-text-lg">
+					<mat-label>Select an Applicability</mat-label>
+					<input
+						placeholder="Filter..."
+						matInput
+						[(ngModel)]="data.featureConstraint.applicability2.name"
+						name="selectedParent"
+						[matAutocomplete]="auto"
+						(keyup)="
+							filter(
+								data.featureConstraint.applicability2.name,
+								false
+							);
+							closePreview()
+						"
+						(ngModelChange)="clearApp2ID(); closePreview()"
+						required />
+					<mat-autocomplete
+						#auto="matAutocomplete"
+						(optionSelected)="findMatch(false)">
+						@for (
+							applic of filteredParentApplic$ | async;
+							track applic
+						) {
+							<mat-option [value]="applic.name">
+								{{ applic.name }}
+							</mat-option>
+						}
+					</mat-autocomplete>
+				</mat-form-field>
+			</div>
+		}
 
 		<!-- If constraint is compound applicability (Parent) -->
-		<div *ngIf="constraintIsCompApplic">
-			<mat-form-field class="tw-w-full tw-text-lg">
-				<mat-label>Select a Compound Applicability</mat-label>
-
-				<input
-					placeholder="Filter..."
-					matInput
-					[(ngModel)]="data.featureConstraint.applicability2.name"
-					name="selectedParent"
-					[matAutocomplete]="auto"
-					(keyup)="
-						filter(
-							data.featureConstraint.applicability2.name,
-							false
-						)
-					"
-					(ngModelChange)="clearApp2ID(); closePreview()"
-					required />
-				<mat-autocomplete
-					#auto="matAutocomplete"
-					(optionSelected)="findMatch(false)">
-					<mat-option
-						*ngFor="let applic of filteredParentCompApplic$ | async"
-						[value]="applic.name">
-						{{ applic.name }}
-					</mat-option>
-				</mat-autocomplete>
-			</mat-form-field>
-		</div>
+		@if (constraintIsCompApplic) {
+			<div>
+				<mat-form-field class="tw-w-full tw-text-lg">
+					<mat-label>Select a Compound Applicability</mat-label>
+					<input
+						placeholder="Filter..."
+						matInput
+						[(ngModel)]="data.featureConstraint.applicability2.name"
+						name="selectedParent"
+						[matAutocomplete]="auto"
+						(keyup)="
+							filter(
+								data.featureConstraint.applicability2.name,
+								false
+							)
+						"
+						(ngModelChange)="clearApp2ID(); closePreview()"
+						required />
+					<mat-autocomplete
+						#auto="matAutocomplete"
+						(optionSelected)="findMatch(false)">
+						@for (
+							applic of filteredParentCompApplic$ | async;
+							track applic
+						) {
+							<mat-option [value]="applic.name">
+								{{ applic.name }}
+							</mat-option>
+						}
+					</mat-autocomplete>
+				</mat-form-field>
+			</div>
+		}
 
 		<!-- Preview the text in real words AND any conflicts that may exist once added -->
 		<div [hidden]="hidePreview">
@@ -128,16 +136,16 @@
 					Conflicts that MUST be resolved before adding:
 				</div>
 				<div class="tw-text-warning">
-					<ng-container *ngIf="conflict$ | async as conflicts">
-						<ng-container
-							*ngIf="conflicts.length > 0; else noConflicts">
-							<ng-container *ngFor="let conflict of conflicts">
+					@if (conflict$ | async; as conflicts) {
+						@if (conflicts.length > 0) {
+							@for (conflict of conflicts; track conflict) {
 								{{ conflict }}
 								<br />
-							</ng-container>
-						</ng-container>
-					</ng-container>
-					<ng-template #noConflicts> No Conflicts </ng-template>
+							}
+						} @else {
+							No Conflicts
+						}
+					}
 				</div>
 			</mat-label>
 		</div>
@@ -160,7 +168,7 @@
 			(click)="toggleHidePreview(); findConstraintConflicts()">
 			View Preview
 		</button>
-		<ng-container *ngIf="conflict$ | async as conflicts">
+		@if (conflict$ | async; as conflicts) {
 			<button
 				mat-raised-button
 				[hidden]="
@@ -174,6 +182,6 @@
 				color="primary">
 				Confirm
 			</button>
-		</ng-container>
+		}
 	</div>
 </form>

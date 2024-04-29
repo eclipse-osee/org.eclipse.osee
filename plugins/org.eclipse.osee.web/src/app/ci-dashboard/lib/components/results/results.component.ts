@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { MatButton } from '@angular/material/button';
@@ -44,7 +44,7 @@ import { BatchDropdownComponent } from './batch-dropdown/batch-dropdown.componen
 	selector: 'osee-results',
 	standalone: true,
 	imports: [
-		CommonModule,
+		AsyncPipe,
 		CiDashboardControlsComponent,
 		BatchDropdownComponent,
 		FormatMillisecondsPipe,

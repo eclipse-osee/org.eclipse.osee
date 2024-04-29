@@ -1,22 +1,21 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <div class="tw-flex tw-h-full tw-flex-col">
 	<osee-server-health-page-header
 		[icon]="currNavItem.icon"
 		[name]="currNavItem.label"
 		[description]="currNavItem.description" />
-	<ng-container
-		*ngIf="balancersAsDataSource | async as dataSource; else noData">
+	@if (balancersAsDataSource | async; as dataSource) {
 		<div>
 			<table
 				mat-table
@@ -66,43 +65,45 @@
 						*matCellDef="let balancer"
 						[attr.colspan]="displayedColumns.length"
 						class="tw-p-0">
-						<div
-							class="tw-overflow-hidden tw-bg-white"
-							[@detailExpand]="
-								balancer.expanded ? 'expanded' : 'collapsed'
-							"
-							*ngIf="balancer.expanded && balancer.alive">
-							<div class="tw-flex tw-flex-col">
-								<iframe
-									class="tw-min-h-[700px] tw-min-w-full"
-									[src]="
-										buildBalancerManagerUrl(balancer.name)
-									"
-									frameborder="0"></iframe>
-								<a
-									(click)="
-										openLink(
+						@if (balancer.expanded && balancer.alive) {
+							<div
+								class="tw-overflow-hidden tw-bg-white"
+								[@detailExpand]="
+									balancer.expanded ? 'expanded' : 'collapsed'
+								">
+								<div class="tw-flex tw-flex-col">
+									<iframe
+										class="tw-min-h-[700px] tw-min-w-full"
+										[src]="
 											buildBalancerManagerUrl(
 												balancer.name
 											)
-										)
-									"
-									class="tw-w-full tw-rounded-md tw-bg-primary-500 tw-p-4 tw-text-foreground tw-shadow-md hover:tw-bg-primary-700 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900">
-									<div class="tw-flex tw-items-center">
-										<div class="tw-px-4 tw-text-white">
-											<mat-icon>open_in_new</mat-icon>
+										"
+										frameborder="0"></iframe>
+									<a
+										(click)="
+											openLink(
+												buildBalancerManagerUrl(
+													balancer.name
+												)
+											)
+										"
+										class="tw-w-full tw-rounded-md tw-bg-primary-500 tw-p-4 tw-text-foreground tw-shadow-md hover:tw-bg-primary-700 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900">
+										<div class="tw-flex tw-items-center">
+											<div class="tw-px-4 tw-text-white">
+												<mat-icon>open_in_new</mat-icon>
+											</div>
+											<div
+												class="tw-flex tw-flex-col tw-items-start tw-text-lg tw-font-bold tw-text-white">
+												Open in New Window
+											</div>
 										</div>
-										<div
-											class="tw-flex tw-flex-col tw-items-start tw-text-lg tw-font-bold tw-text-white">
-											Open in New Window
-										</div>
-									</div>
-								</a>
+									</a>
+								</div>
 							</div>
-						</div>
+						}
 					</td>
 				</ng-container>
-
 				<tr
 					mat-header-row
 					*matHeaderRowDef="displayedColumns; sticky: true"></tr>
@@ -121,9 +122,9 @@
 					class="tw-h-0"></tr>
 			</table>
 		</div>
-	</ng-container>
+	} @else {
+		<div class="tw-flex tw-items-center tw-justify-center tw-p-4">
+			No data
+		</div>
+	}
 </div>
-
-<ng-template #noData>
-	<div class="tw-flex tw-items-center tw-justify-center tw-p-4">No data</div>
-</ng-template>

@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
+import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -51,10 +51,8 @@ import {
 	templateUrl: './reports.component.html',
 	standalone: true,
 	imports: [
-		NgIf,
 		AsyncPipe,
 		RouterLink,
-		NgFor,
 		NgTemplateOutlet,
 		FormsModule,
 		MessagingControlsComponent,

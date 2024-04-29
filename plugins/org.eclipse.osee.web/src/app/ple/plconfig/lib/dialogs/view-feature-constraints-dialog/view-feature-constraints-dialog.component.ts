@@ -11,7 +11,6 @@ import { featureConstraintData } from './../../types/pl-config-feature-constrain
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import {
@@ -42,7 +41,6 @@ import { applicWithConstraints } from '../../types/pl-config-feature-constraints
 	selector: 'osee-view-feature-constraints-dialog',
 	standalone: true,
 	imports: [
-		CommonModule,
 		MatDialogTitle,
 		MatDialogContent,
 		MatTable,

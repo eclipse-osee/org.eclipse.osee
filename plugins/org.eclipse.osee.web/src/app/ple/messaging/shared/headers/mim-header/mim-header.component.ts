@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatAnchor } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
@@ -28,7 +28,7 @@ import { debounceTime, switchMap } from 'rxjs/operators';
 	templateUrl: './mim-header.component.html',
 	styles: [],
 	standalone: true,
-	imports: [MatAnchor, RouterLink, NgIf, NgFor, AsyncPipe],
+	imports: [MatAnchor, RouterLink, AsyncPipe],
 })
 export class MimHeaderComponent {
 	route = combineLatest([

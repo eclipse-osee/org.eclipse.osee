@@ -100,8 +100,8 @@ describe('GraphComponent', () => {
 		loader = TestbedHarnessEnvironment.loader(fixture);
 	});
 	beforeEach(() => {
-		component.linkMenuTrigger.closeMenu();
-		component.nodeMenuTrigger.closeMenu();
+		component.linkMenuTrigger().closeMenu();
+		component.nodeMenuTrigger().closeMenu();
 	});
 
 	it('should create', () => {
@@ -125,7 +125,7 @@ describe('GraphComponent', () => {
 					menuLinkHarness = await loader.getHarness(
 						MatMenuHarness.with({ triggerText: 'LinkMenu' })
 					);
-					component.linkMenuTrigger.menuData = {
+					component.linkMenuTrigger().menuData = {
 						data: {
 							id: '1',
 							name: 'edge',
@@ -222,7 +222,7 @@ describe('GraphComponent', () => {
 							]
 						);
 						expect(await menuLinkHarness.isOpen()).toBeTrue();
-						component.linkMenuTrigger.menuData = {
+						component.linkMenuTrigger().menuData = {
 							data: testMenuData,
 							source: {
 								id: '2',
@@ -314,7 +314,7 @@ describe('GraphComponent', () => {
 					menuNodeHarness = await loader.getHarness(
 						MatMenuHarness.with({ triggerText: 'NodeMenu' })
 					);
-					component.nodeMenuTrigger.menuData = {
+					component.nodeMenuTrigger().menuData = {
 						data: node.data,
 						sources: [connections[0]],
 						targets: [connections[1]],
@@ -357,7 +357,7 @@ describe('GraphComponent', () => {
 							]
 						);
 						expect(await menuNodeHarness.isOpen()).toBeTrue();
-						component.nodeMenuTrigger.menuData = {
+						component.nodeMenuTrigger().menuData = {
 							data: node.data,
 							sources: [connections[0]],
 							targets: [connections[1]],

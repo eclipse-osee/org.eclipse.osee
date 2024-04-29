@@ -10,8 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { Component, Inject, ViewChild } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { Component, Inject, viewChild } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import {
 	MatAutocomplete,
@@ -75,20 +76,22 @@ import { PlatformTypeQueryComponent } from '../platform-type-query/platform-type
 		MatDialogClose,
 		MatProgressSpinner,
 		AsyncPipe,
-		NgIf,
-		NgFor,
 		PlatformTypeQueryComponent,
 		NewTypeFormComponent,
 		MatOptionLoadingComponent,
 		ApplicabilitySelectorComponent,
 		ElementFormComponent,
 	],
+	providers: [
+		{
+			provide: STRUCTURE_SERVICE_TOKEN,
+			useExisting: CurrentStructureService,
+		},
+	],
 })
 export class AddElementDialogComponent {
-	@ViewChild(MatStepper) set _internalStepper(stepper: MatStepper) {
-		this.__internalStepper.next(stepper);
-	}
-	__internalStepper = new Subject<MatStepper>();
+	_internalStepper = viewChild.required(MatStepper);
+	__internalStepper = toObservable(this._internalStepper);
 
 	private _moveToNextStep = this.__internalStepper.pipe(
 		debounceTime(1),

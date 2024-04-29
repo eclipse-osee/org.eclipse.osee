@@ -23,7 +23,7 @@ import {
 	CdkDragHandle,
 	CdkDropList,
 } from '@angular/cdk/drag-drop';
-import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
@@ -32,9 +32,9 @@ import {
 	OnChanges,
 	OnInit,
 	SimpleChanges,
-	ViewChild,
 	computed,
 	signal,
+	viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
@@ -86,8 +86,6 @@ import { SubElementArrayTableComponent } from '../sub-element-array-table/sub-el
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	standalone: true,
 	imports: [
-		NgFor,
-		NgIf,
 		NgClass,
 		AsyncPipe,
 		RouterLink,
@@ -160,8 +158,9 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 		y: '0',
 	};
 
-	@ViewChild('generalMenuTrigger', { static: true })
-	generalMenuTrigger!: MatMenuTrigger;
+	generalMenuTrigger = viewChild.required('generalMenuTrigger', {
+		read: MatMenuTrigger,
+	});
 	constructor(
 		private route: ActivatedRoute,
 		public dialog: MatDialog,
@@ -261,13 +260,13 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 		event.preventDefault();
 		this.menuPosition.x = event.clientX + 'px';
 		this.menuPosition.y = event.clientY + 'px';
-		this.generalMenuTrigger.menuData = {
+		this.generalMenuTrigger().menuData = {
 			element: element,
 			structure: this.structure,
 			field: field,
 			header: header,
 		};
-		this.generalMenuTrigger.openMenu();
+		this.generalMenuTrigger().openMenu();
 	}
 
 	getHeaderByName(value: string) {

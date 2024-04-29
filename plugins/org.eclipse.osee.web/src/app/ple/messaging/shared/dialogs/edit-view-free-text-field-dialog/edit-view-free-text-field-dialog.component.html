@@ -1,24 +1,25 @@
 <!--
- * Copyright (c) 2021 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2021 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <h1 mat-dialog-title>
-	<ng-container *ngIf="(editMode | async) === true; else noEditHeader"
-		>Editing
-	</ng-container>
-	<ng-template #noEditHeader>Viewing </ng-template>
+	@if ((editMode | async) === true) {
+		Editing
+	} @else {
+		Viewing
+	}
 	{{ data.type }}
 </h1>
 <mat-dialog-content>
-	<ng-container *ngIf="(editMode | async) === true; else noEditContent">
+	@if ((editMode | async) === true) {
 		<mat-form-field class="tw-h-full tw-w-full">
 			<mat-label>{{ data.type }}</mat-label>
 			<textarea
@@ -28,12 +29,9 @@
 				cdkAutosizeMinRows="1"
 				data-cy="field-description"></textarea>
 		</mat-form-field>
-	</ng-container>
-	<ng-template
-		#noEditContent
-		data-cy="field-description"
-		>{{ data.original }}</ng-template
-	>
+	} @else {
+		{{ data.original }}
+	}
 </mat-dialog-content>
 <div mat-dialog-actions>
 	<button
@@ -42,7 +40,7 @@
 		data-cy="cancel-btn">
 		Cancel
 	</button>
-	<ng-container *ngIf="(editMode | async) === true; else noEditSubmit">
+	@if ((editMode | async) === true) {
 		<button
 			mat-raised-button
 			color="primary"
@@ -50,8 +48,7 @@
 			data-cy="submit-btn">
 			<mat-icon>save</mat-icon><span>Save Changes</span>
 		</button>
-	</ng-container>
-	<ng-template #noEditSubmit>
+	} @else {
 		<button
 			mat-raised-button
 			color="primary"
@@ -59,5 +56,5 @@
 			data-cy="submit-btn">
 			Ok
 		</button>
-	</ng-template>
+	}
 </div>

@@ -1,18 +1,19 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <osee-messaging-controls [actionControls]="true">
-	<osee-view-selector
-		*ngIf="(branchId | async) && (branchType | async)"></osee-view-selector>
+	@if ((branchId | async) && (branchType | async)) {
+		<osee-view-selector></osee-view-selector>
+	}
 </osee-messaging-controls>
 <div class="tw-flex tw-flex-row">
 	<osee-named-id-list-editor

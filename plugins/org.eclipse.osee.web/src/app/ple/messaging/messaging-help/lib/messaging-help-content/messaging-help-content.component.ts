@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { MarkdownComponent } from 'ngx-markdown';
 import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, filter, of, switchMap } from 'rxjs';
@@ -20,7 +20,7 @@ import { HelpService } from '@osee/shared/services/help';
 @Component({
 	selector: 'osee-messaging-help-content',
 	standalone: true,
-	imports: [CommonModule, MarkdownComponent],
+	imports: [AsyncPipe, MarkdownComponent],
 	templateUrl: './messaging-help-content.component.html',
 })
 export class MessagingHelpContentComponent {

@@ -28,6 +28,7 @@ describe('NodeTraceReqTableComponent', () => {
 
 		fixture = TestBed.createComponent(TraceReportTableComponent);
 		component = fixture.componentInstance;
+		fixture.componentRef.setInput('data', []);
 		fixture.detectChanges();
 	});
 

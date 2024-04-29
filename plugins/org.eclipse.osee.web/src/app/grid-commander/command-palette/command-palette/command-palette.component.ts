@@ -23,7 +23,7 @@ import { HelperdialogComponent } from '../helperdialog/helperdialog.component';
 import { ParameterTypesComponent } from '../../parameter-types/parameter-types.component';
 import { TableFilterComponent } from '../../gc-datatable/filter-component/table-filter.component';
 import { InputControlComponent } from '../../shared/input-control/input-control.component';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
 	selector: 'osee-command-palette',
@@ -31,7 +31,6 @@ import { NgIf, AsyncPipe } from '@angular/common';
 	styles: [],
 	standalone: true,
 	imports: [
-		NgIf,
 		InputControlComponent,
 		TableFilterComponent,
 		ParameterTypesComponent,

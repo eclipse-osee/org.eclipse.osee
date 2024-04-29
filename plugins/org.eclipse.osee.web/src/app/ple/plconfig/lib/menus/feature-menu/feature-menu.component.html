@@ -1,21 +1,21 @@
 <!--
- * Copyright (c) 2021 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2021 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <button
 	mat-menu-item
 	(click)="displayFeatureMenu(feature)">
 	<mat-icon color="primary">edit</mat-icon>Open Feature Menu
 </button>
-<ng-container *ngIf="hasFeatureChanges(feature)">
+@if (hasFeatureChanges(feature)) {
 	<button
 		mat-menu-item
 		[matMenuTriggerFor]="featureDiffMenu"
@@ -24,12 +24,12 @@
 		{{ feature.name }}
 	</button>
 	<!--TODO IMPLEMENT DIFF VIEWER-->
-</ng-container>
+}
 <mat-menu #featureDiffMenu="matMenu">
 	<ng-template
 		matMenuContent
 		let-feature="feature">
-		<ng-container *ngIf="feature.changes.defaultValue !== undefined">
+		@if (feature.changes.defaultValue !== undefined) {
 			<button
 				mat-menu-item
 				(click)="
@@ -41,8 +41,8 @@
 				">
 				Default Value
 			</button>
-		</ng-container>
-		<ng-container *ngIf="feature.changes.description !== undefined">
+		}
+		@if (feature.changes.description !== undefined) {
 			<button
 				mat-menu-item
 				(click)="
@@ -50,8 +50,8 @@
 				">
 				Description
 			</button>
-		</ng-container>
-		<ng-container *ngIf="feature.changes.multiValued !== undefined">
+		}
+		@if (feature.changes.multiValued !== undefined) {
 			<button
 				mat-menu-item
 				(click)="
@@ -59,16 +59,15 @@
 				">
 				Multi Valued
 			</button>
-		</ng-container>
-		<ng-container *ngIf="feature.changes.name !== undefined">
+		}
+		@if (feature.changes.name !== undefined) {
 			<button
 				mat-menu-item
 				(click)="viewDiff(true, feature.changes.name, 'Name')">
 				Name
 			</button>
-		</ng-container>
-		<ng-container
-			*ngIf="feature.changes.productApplicabilities !== undefined">
+		}
+		@if (feature.changes.productApplicabilities !== undefined) {
 			<button
 				mat-menu-item
 				[matMenuTriggerFor]="arrayDiffMenu"
@@ -77,8 +76,8 @@
 				}">
 				Product Applicabilities
 			</button>
-		</ng-container>
-		<ng-container *ngIf="feature.changes.valueType !== undefined">
+		}
+		@if (feature.changes.valueType !== undefined) {
 			<button
 				mat-menu-item
 				(click)="
@@ -86,27 +85,26 @@
 				">
 				Value Type
 			</button>
-		</ng-container>
-		<ng-container *ngIf="feature.changes.values !== undefined">
+		}
+		@if (feature.changes.values !== undefined) {
 			<button
 				mat-menu-item
 				[matMenuTriggerFor]="arrayDiffMenu"
 				[matMenuTriggerData]="{ array: feature.changes.values }">
 				Values
 			</button>
-		</ng-container>
-		<ng-container
-			*ngIf="
-				feature.changes.defaultValue === undefined &&
-				feature.changes.description === undefined &&
-				feature.changes.multiValued === undefined &&
-				feature.changes.name === undefined &&
-				feature.changes.productApplicabilities === undefined &&
-				feature.changes.valueType === undefined &&
-				feature.changes.values === undefined
-			">
+		}
+		@if (
+			feature.changes.defaultValue === undefined &&
+			feature.changes.description === undefined &&
+			feature.changes.multiValued === undefined &&
+			feature.changes.name === undefined &&
+			feature.changes.productApplicabilities === undefined &&
+			feature.changes.valueType === undefined &&
+			feature.changes.values === undefined
+		) {
 			<button mat-menu-item>No items currently available.</button>
-		</ng-container>
+		}
 	</ng-template>
 </mat-menu>
 <mat-menu #arrayDiffMenu="matMenu">

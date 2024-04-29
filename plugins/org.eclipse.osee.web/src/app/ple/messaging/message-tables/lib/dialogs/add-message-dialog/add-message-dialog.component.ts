@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
@@ -61,8 +61,6 @@ import { AddSubMessageDialogComponent } from '../add-sub-message-dialog/add-sub-
 		MatButton,
 		MatDialogClose,
 		FormsModule,
-		NgFor,
-		NgIf,
 		AsyncPipe,
 		MessageNodesCountDirective,
 		ApplicabilitySelectorComponent,

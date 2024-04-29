@@ -1,17 +1,17 @@
 <!--
- * Copyright (c) 2021 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2021 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <div class="nested-add-buttons-container">
-	<ng-container *ngFor="let element of nestedLevel; let i = index">
+	@for (element of nestedLevel; track element; let i = $index) {
 		<div
 			[@slidingAddButton]="{
 				value: (isOpen | async) === true ? 'visible' : 'hidden',
@@ -57,50 +57,51 @@
 				</button>
 			</div>
 		</div>
-	</ng-container>
-	<div
-		*ngIf="!firstOptionDisabled"
-		[@slidingAddButton]="{
-			value: (isOpen | async) === true ? 'visible' : 'hidden',
-			params: {
-				hiddenYTranslation: 2161 + 'px',
-				visibleYTranslation: -25 + 'px',
-				time: '225',
-				delay: '25'
-			}
-		}"
-		(mouseleave)="removeHover(defaultValue)"
-		class="base-add-button-container"
-		(click)="normalClick.emit(baseLevel)"
-		data-cy="base-add-button">
-		<div class="tw-flex">
-			<button
-				[@addHoverButton]="{
-					value: !hoveredElements.includes(defaultValue.id)
-						? 'closed'
-						: 'open',
-					params: { time: '225', delay: '25' }
-				}"
-				mat-mini-fab
-				color="primary"
-				class="mat-elevation-z9 tw-z-[999]"
-				(mouseenter)="hoveredElements.push(defaultValue.id)">
-				<mat-icon>{{ baseIcon }}</mat-icon>
-			</button>
-			<button
-				[@addHoverButton]="{
-					value: hoveredElements.includes(defaultValue.id)
-						? 'closed'
-						: 'open',
-					params: { time: '225', delay: '25' }
-				}"
-				class="mat-elevation-z9 tw-z-[999]"
-				mat-raised-button
-				(mouseenter)="hoveredElements.push(defaultValue.id)">
-				{{ baseLevel }}<mat-icon>{{ baseIcon }}</mat-icon>
-			</button>
+	}
+	@if (!firstOptionDisabled) {
+		<div
+			[@slidingAddButton]="{
+				value: (isOpen | async) === true ? 'visible' : 'hidden',
+				params: {
+					hiddenYTranslation: 2161 + 'px',
+					visibleYTranslation: -25 + 'px',
+					time: '225',
+					delay: '25'
+				}
+			}"
+			(mouseleave)="removeHover(defaultValue)"
+			class="base-add-button-container"
+			(click)="normalClick.emit(baseLevel)"
+			data-cy="base-add-button">
+			<div class="tw-flex">
+				<button
+					[@addHoverButton]="{
+						value: !hoveredElements.includes(defaultValue.id)
+							? 'closed'
+							: 'open',
+						params: { time: '225', delay: '25' }
+					}"
+					mat-mini-fab
+					color="primary"
+					class="mat-elevation-z9 tw-z-[999]"
+					(mouseenter)="hoveredElements.push(defaultValue.id)">
+					<mat-icon>{{ baseIcon }}</mat-icon>
+				</button>
+				<button
+					[@addHoverButton]="{
+						value: hoveredElements.includes(defaultValue.id)
+							? 'closed'
+							: 'open',
+						params: { time: '225', delay: '25' }
+					}"
+					class="mat-elevation-z9 tw-z-[999]"
+					mat-raised-button
+					(mouseenter)="hoveredElements.push(defaultValue.id)">
+					{{ baseLevel }}<mat-icon>{{ baseIcon }}</mat-icon>
+				</button>
+			</div>
 		</div>
-	</div>
+	}
 </div>
 <div class="tw-flex">
 	<button

@@ -10,21 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
-import { CiDashboardControlsComponent } from '../ci-dashboard-controls/ci-dashboard-controls.component';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { CiDashboardUiService } from '../../services/ci-dashboard-ui.service';
 import { DashboardService } from '../../services/dashboard.service';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { ScriptsPassFailChartComponent } from '../charts/scripts-pass-fail-chart/scripts-pass-fail-chart.component';
+import { CiDashboardControlsComponent } from '../ci-dashboard-controls/ci-dashboard-controls.component';
 
 @Component({
 	selector: 'osee-subsystems',
 	standalone: true,
 	imports: [
 		AsyncPipe,
-		NgIf,
-		NgFor,
 		CiDashboardControlsComponent,
 		ScriptsPassFailChartComponent,
 	],

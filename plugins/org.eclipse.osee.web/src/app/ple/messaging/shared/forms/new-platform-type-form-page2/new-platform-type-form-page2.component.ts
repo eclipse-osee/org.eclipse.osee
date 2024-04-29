@@ -17,7 +17,7 @@ import {
 	transition,
 	trigger,
 } from '@angular/animations';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import {
 	Component,
 	Input,
@@ -69,8 +69,6 @@ import { NewPlatformTypeFormComponent } from '../new-platform-type-form/new-plat
 		NewPlatformTypeFormComponent,
 		MatOptionLoadingComponent,
 		EnumSetFormComponent,
-		NgIf,
-		NgFor,
 		AsyncPipe,
 		FormsModule,
 		MatDialogContent,

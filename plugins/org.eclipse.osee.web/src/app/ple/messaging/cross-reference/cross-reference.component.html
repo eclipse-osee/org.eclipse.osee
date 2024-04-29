@@ -1,17 +1,17 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <osee-messaging-controls [actionControls]="true">
-	<ng-container *ngIf="connections | async as _connections">
+	@if (connections | async; as _connections) {
 		<mat-form-field
 			class="form-field"
 			subscriptSizing="dynamic"
@@ -22,25 +22,28 @@
 				(ngModelChange)="(SelectedConnection)"
 				[compareWith]="compareConnections"
 				[disabled]="_connections.length === 0">
-				<mat-option
-					*ngFor="let option of _connections"
-					[value]="option"
-					[id]="option.id!"
-					[routerLink]="((connectionRoute | async) || '') + option.id"
-					queryParamsHandling="merge">
-					{{ option.name }}
-				</mat-option>
+				@for (option of _connections; track option) {
+					<mat-option
+						[value]="option"
+						[id]="option.id!"
+						[routerLink]="
+							((connectionRoute | async) || '') + option.id
+						"
+						queryParamsHandling="merge">
+						{{ option.name }}
+					</mat-option>
+				}
 			</mat-select>
 		</mat-form-field>
-	</ng-container>
+	}
 </osee-messaging-controls>
-<ng-container *ngIf="branchId | async as _branch">
-	<ng-container *ngIf="_branch !== '0' && _branch !== ' '">
-		<ng-container *ngIf="branchType | async as _branchType">
-			<ng-container *ngIf="selectedConnectionId | async as _connectionId">
-				<ng-container *ngIf="_connectionId !== ''">
+@if (branchId | async; as _branch) {
+	@if (_branch !== '0' && _branch !== ' ') {
+		@if (branchType | async; as _branchType) {
+			@if (selectedConnectionId | async; as _connectionId) {
+				@if (_connectionId !== '') {
 					<osee-cross-reference-table></osee-cross-reference-table>
-					<ng-container *ngIf="(inEditMode | async) === true">
+					@if ((inEditMode | async) === true) {
 						<button
 							mat-fab
 							class="tw-absolute tw-bottom-2 tw-right-2"
@@ -48,9 +51,9 @@
 							(click)="openAddDialog()">
 							<mat-icon>add</mat-icon>
 						</button>
-					</ng-container>
-				</ng-container>
-			</ng-container>
-		</ng-container>
-	</ng-container>
-</ng-container>
+					}
+				}
+			}
+		}
+	}
+}

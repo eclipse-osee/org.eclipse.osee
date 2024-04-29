@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatFabButton } from '@angular/material/button';
@@ -33,7 +33,7 @@ import { combineLatest, filter, iif, of, switchMap, take, tap } from 'rxjs';
 	selector: 'osee-cross-reference',
 	standalone: true,
 	imports: [
-		CommonModule,
+		AsyncPipe,
 		CrossReferenceTableComponent,
 		FormsModule,
 		MatFormField,

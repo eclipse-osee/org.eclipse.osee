@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CdkDrag } from '@angular/cdk/drag-drop';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import {
 	Component,
 	Input,
@@ -38,7 +38,8 @@ import { ArtifactHierarchyComponent } from '../artifact-hierarchy/artifact-hiera
 	selector: 'osee-artifact-hierarchy-relation-side',
 	standalone: true,
 	imports: [
-		CommonModule,
+		NgClass,
+		AsyncPipe,
 		MatIcon,
 		MatListItemIcon,
 		CdkDrag,

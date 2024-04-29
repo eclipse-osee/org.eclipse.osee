@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <div class="tw-px-0 tw-py-4">
 	<mat-form-field
 		class="tw-w-full"
@@ -28,69 +28,71 @@
 		matRecycleRows
 		[trackBy]="trackRows"
 		class="mat-elevation-z2">
-		<ng-container
-			[matColumnDef]="header"
-			*ngFor="let header of headers">
-			<ng-container *ngIf="header !== 'relatedItems'">
-				<th
-					mat-header-cell
-					*matHeaderCellDef
-					mat-sort-header
-					class="tw-text-primary-600">
-					{{
-						(getTableHeaderByName(header) | async)?.humanReadable ||
-							''
-					}}
-				</th>
-			</ng-container>
-			<ng-container *ngIf="header === 'relatedItems'">
-				<th
-					mat-header-cell
-					*matHeaderCellDef
-					class="tw-text-primary-600">
-					<div class="tw-pb-2 tw-pl-2 tw-pr-0 tw-pt-3">
+		@for (header of headers; track header) {
+			<ng-container [matColumnDef]="header">
+				@if (header !== 'relatedItems') {
+					<th
+						mat-header-cell
+						*matHeaderCellDef
+						mat-sort-header
+						class="tw-text-primary-600">
 						{{
 							(getTableHeaderByName(header) | async)
 								?.humanReadable || ''
 						}}
-					</div>
-					<div class="tw-grid tw-grid-cols-[1fr_1fr]">
-						<div class="tw-px-2 tw-py-[0.3rem]">Name</div>
-						<div class="tw-px-2 tw-py-[0.3rem]">Artifact Type</div>
-					</div>
-				</th>
-			</ng-container>
-			<td
-				mat-cell
-				*matCellDef="let item">
-				<ng-container *ngIf="header !== 'relatedItems'">
-					<div
-						oseeHighlightFilteredText
-						[searchTerms]="dataSource.filter"
-						[text]="item[header]"
-						classToApply="tw-text-accent-900">
-						{{ item[header] }}
-					</div>
-				</ng-container>
-				<ng-container *ngIf="header === 'relatedItems'">
-					<ng-container *ngFor="let rel of item.relatedItems">
-						<div class="tw-grid tw-grid-cols-[1fr_1fr]">
-							<ng-container
-								*ngFor="
-									let text of [rel.name, rel.artifactType]
-								">
-								<ng-container
-									[ngTemplateOutlet]="subTableCell"
-									[ngTemplateOutletContext]="{
-										item: item,
-										text: text
-									}"></ng-container>
-							</ng-container>
+					</th>
+				}
+				@if (header === 'relatedItems') {
+					<th
+						mat-header-cell
+						*matHeaderCellDef
+						class="tw-text-primary-600">
+						<div class="tw-pb-2 tw-pl-2 tw-pr-0 tw-pt-3">
+							{{
+								(getTableHeaderByName(header) | async)
+									?.humanReadable || ''
+							}}
 						</div>
-					</ng-container>
-				</ng-container>
-			</td>
-		</ng-container>
+						<div class="tw-grid tw-grid-cols-[1fr_1fr]">
+							<div class="tw-px-2 tw-py-[0.3rem]">Name</div>
+							<div class="tw-px-2 tw-py-[0.3rem]">
+								Artifact Type
+							</div>
+						</div>
+					</th>
+				}
+				<td
+					mat-cell
+					*matCellDef="let item">
+					@if (header !== 'relatedItems') {
+						<div
+							oseeHighlightFilteredText
+							[searchTerms]="dataSource.filter"
+							[text]="item[header]"
+							classToApply="tw-text-accent-900">
+							{{ item[header] }}
+						</div>
+					}
+					@if (header === 'relatedItems') {
+						@for (rel of item.relatedItems; track rel) {
+							<div class="tw-grid tw-grid-cols-[1fr_1fr]">
+								@for (
+									text of [rel.name, rel.artifactType];
+									track text
+								) {
+									<ng-container
+										[ngTemplateOutlet]="subTableCell"
+										[ngTemplateOutletContext]="{
+											item: item,
+											text: text
+										}"></ng-container>
+								}
+							</div>
+						}
+					}
+				</td>
+			</ng-container>
+		}
 		<tr
 			mat-header-row
 			*matHeaderRowDef="headers"></tr>

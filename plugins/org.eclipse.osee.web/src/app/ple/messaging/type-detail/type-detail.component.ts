@@ -10,11 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TypesUIService } from '@osee/messaging/shared/services';
 import { PlatformTypeCardComponent } from '@osee/messaging/shared/main-content';
+import { TypesUIService } from '@osee/messaging/shared/services';
 import { TypeDetailService } from '@osee/messaging/type-detail';
 import { filter, map, switchMap } from 'rxjs/operators';
 
@@ -23,7 +23,7 @@ import { filter, map, switchMap } from 'rxjs/operators';
 	templateUrl: './type-detail.component.html',
 	styles: [],
 	standalone: true,
-	imports: [NgIf, AsyncPipe, PlatformTypeCardComponent],
+	imports: [AsyncPipe, PlatformTypeCardComponent],
 })
 export class TypeDetailComponent implements OnInit {
 	type = this._typeDetail.typeId.pipe(

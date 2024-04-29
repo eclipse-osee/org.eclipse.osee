@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2022 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2022 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <mat-label>Query for Platform Type:</mat-label>
 <div>
 	<div class="tw-flex tw-flex-row tw-justify-around">
@@ -61,12 +61,13 @@
 				class="name-select"
 				data-cy="field-name"
 				#nameAuto="matAutocomplete">
-				<mat-option
-					*ngFor="let type of types"
-					[value]="type"
-					[attr.data-cy]="'option-' + type">
-					<mat-label>{{ type }}</mat-label>
-				</mat-option>
+				@for (type of types; track type) {
+					<mat-option
+						[value]="type"
+						[attr.data-cy]="'option-' + type">
+						<mat-label>{{ type }}</mat-label>
+					</mat-option>
+				}
 			</mat-autocomplete>
 		</mat-form-field>
 		<br />
@@ -82,12 +83,13 @@
 				class="description-select"
 				data-cy="field-description"
 				#descriptionAuto="matAutocomplete">
-				<mat-option
-					*ngFor="let _description of descriptions"
-					[value]="_description"
-					[attr.data-cy]="'option-' + _description">
-					<mat-label>{{ _description }}</mat-label>
-				</mat-option>
+				@for (_description of descriptions; track _description) {
+					<mat-option
+						[value]="_description"
+						[attr.data-cy]="'option-' + _description">
+						<mat-label>{{ _description }}</mat-label>
+					</mat-option>
+				}
 			</mat-autocomplete>
 		</mat-form-field>
 	</div>
@@ -100,32 +102,33 @@
 				class="logical-type-select"
 				data-cy="field-logical-type"
 				style="visibility: visible">
-				<mat-option
-					*ngFor="let lt of logicalTypes"
-					[value]="lt"
-					[attr.data-cy]="'option-' + lt">
-					<mat-label>{{ lt }}</mat-label>
-				</mat-option>
+				@for (lt of logicalTypes; track lt) {
+					<mat-option
+						[value]="lt"
+						[attr.data-cy]="'option-' + lt">
+						<mat-label>{{ lt }}</mat-label>
+					</mat-option>
+				}
 			</mat-select>
 		</mat-form-field>
 		<form>
 			<osee-unit-dropdown [(unit)]="unit"> </osee-unit-dropdown>
 		</form>
 		<!-- <mat-form-field>
-			<mat-label>Units</mat-label>
-			<mat-select
-				[(ngModel)]="unit"
-				class="unit-select"
-				data-cy="field-units"
-				style="visibility: visible">
-				<mat-option
-					*ngFor="let unit of units | async"
-					[value]="unit"
-					[attr.data-cy]="'option-' + unit">
-					<mat-label>{{ unit }}</mat-label>
-				</mat-option>
-			</mat-select>
-		</mat-form-field> -->
+            <mat-label>Units</mat-label>
+            <mat-select
+              [(ngModel)]="unit"
+              class="unit-select"
+              data-cy="field-units"
+              style="visibility: visible">
+              <mat-option
+                *ngFor="let unit of units | async"
+                [value]="unit"
+                [attr.data-cy]="'option-' + unit">
+                <mat-label>{{ unit }}</mat-label>
+              </mat-option>
+            </mat-select>
+          </mat-form-field> -->
 	</div>
 	<br />
 	<div class="tw-flex tw-flex-row tw-justify-around">
@@ -136,12 +139,13 @@
 				class="min-val-select"
 				data-cy="field-min-val"
 				style="visibility: visible">
-				<mat-option
-					*ngFor="let minVal of minValues"
-					[value]="minVal"
-					[attr.data-cy]="'option-' + minVal">
-					<mat-label>{{ minVal }}</mat-label>
-				</mat-option>
+				@for (minVal of minValues; track minVal) {
+					<mat-option
+						[value]="minVal"
+						[attr.data-cy]="'option-' + minVal">
+						<mat-label>{{ minVal }}</mat-label>
+					</mat-option>
+				}
 			</mat-select>
 		</mat-form-field>
 		<mat-form-field>
@@ -151,12 +155,13 @@
 				class="max-val-select"
 				data-cy="field-max-val"
 				style="visibility: visible">
-				<mat-option
-					*ngFor="let maxVal of maxValues"
-					[value]="maxVal"
-					[attr.data-cy]="'option-' + maxVal">
-					<mat-label>{{ maxVal }}</mat-label>
-				</mat-option>
+				@for (maxVal of maxValues; track maxVal) {
+					<mat-option
+						[value]="maxVal"
+						[attr.data-cy]="'option-' + maxVal">
+						<mat-label>{{ maxVal }}</mat-label>
+					</mat-option>
+				}
 			</mat-select>
 		</mat-form-field>
 	</div>
@@ -169,12 +174,13 @@
 				class="default-val-select"
 				data-cy="field-default-val"
 				style="visibility: visible">
-				<mat-option
-					*ngFor="let defaultValue of defaultValues"
-					[value]="defaultValue"
-					[attr.data-cy]="'option-' + defaultValue">
-					<mat-label>{{ defaultValue }}</mat-label>
-				</mat-option>
+				@for (defaultValue of defaultValues; track defaultValue) {
+					<mat-option
+						[value]="defaultValue"
+						[attr.data-cy]="'option-' + defaultValue">
+						<mat-label>{{ defaultValue }}</mat-label>
+					</mat-option>
+				}
 			</mat-select>
 		</mat-form-field>
 		<mat-form-field>
@@ -184,12 +190,13 @@
 				class="msb-val-select"
 				data-cy="field-msb-val"
 				style="visibility: visible">
-				<mat-option
-					*ngFor="let msbVal of msbValues"
-					[value]="msbVal"
-					[attr.data-cy]="'option-' + msbVal">
-					<mat-label>{{ msbVal }}</mat-label>
-				</mat-option>
+				@for (msbVal of msbValues; track msbVal) {
+					<mat-option
+						[value]="msbVal"
+						[attr.data-cy]="'option-' + msbVal">
+						<mat-label>{{ msbVal }}</mat-label>
+					</mat-option>
+				}
 			</mat-select>
 		</mat-form-field>
 	</div>

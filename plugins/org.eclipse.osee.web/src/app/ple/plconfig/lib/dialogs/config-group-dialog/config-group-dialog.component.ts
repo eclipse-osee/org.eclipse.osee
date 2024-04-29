@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CdkTrapFocus } from '@angular/cdk/a11y';
-import { NgFor, NgIf } from '@angular/common';
+
 import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
@@ -35,8 +35,6 @@ import { CfgGroupDialog } from '../../types/pl-config-cfggroups';
 	styles: [],
 	standalone: true,
 	imports: [
-		NgIf,
-		NgFor,
 		FormsModule,
 		MatDialogTitle,
 		MatDialogContent,

@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatOption } from '@angular/material/core';
@@ -27,8 +27,6 @@ import {
 	selector: 'osee-separated-feature-selector',
 	standalone: true,
 	imports: [
-		NgIf,
-		NgFor,
 		AsyncPipe,
 		FormsModule,
 		MatFormField,

@@ -10,13 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import {
-	AsyncPipe,
-	NgFor,
-	NgIf,
-	NgTemplateOutlet,
-	TitleCasePipe,
-} from '@angular/common';
+import { AsyncPipe, NgTemplateOutlet, TitleCasePipe } from '@angular/common';
 import {
 	Component,
 	Input,
@@ -59,8 +53,6 @@ import { UnitDropdownComponent } from '../../dropdowns/unit-dropdown/unit-dropdo
 	styles: [],
 	viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
 	imports: [
-		NgIf,
-		NgFor,
 		AsyncPipe,
 		FormsModule,
 		MatLabel,

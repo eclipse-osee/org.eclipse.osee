@@ -11,16 +11,16 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { SearchCriteriaComponent } from './search-criteria/search-criteria.component';
 import { DiffTableComponent } from './diff-table/diff-table.component';
 import { SearchOptions } from './model/types';
+import { SearchCriteriaComponent } from './search-criteria/search-criteria.component';
 import { ReportService } from './services/report.service';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
 	selector: 'osee-diff-report',
 	standalone: true,
-	imports: [CommonModule, SearchCriteriaComponent, DiffTableComponent],
+	imports: [AsyncPipe, SearchCriteriaComponent, DiffTableComponent],
 	templateUrl: './diff-report.component.html',
 })
 export class DiffReportComponent {

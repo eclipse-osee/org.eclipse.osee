@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
@@ -19,7 +19,7 @@ import {
 	OnChanges,
 	Output,
 	SimpleChanges,
-	ViewChild,
+	viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatAnchor } from '@angular/material/button';
@@ -84,10 +84,8 @@ import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	standalone: true,
 	imports: [
-		NgFor,
 		AsyncPipe,
 		NgClass,
-		NgIf,
 		RouterLink,
 		DeleteSubmessageDialogComponent,
 		RemoveSubmessageDialogComponent,
@@ -146,8 +144,7 @@ export class SubMessageTableComponent implements OnChanges {
 		x: '0',
 		y: '0',
 	};
-	@ViewChild(MatMenuTrigger, { static: true })
-	matMenuTrigger!: MatMenuTrigger;
+	matMenuTrigger = viewChild.required(MatMenuTrigger);
 	constructor(
 		public dialog: MatDialog,
 		private router: Router,
@@ -186,7 +183,7 @@ export class SubMessageTableComponent implements OnChanges {
 		event.preventDefault();
 		this.menuPosition.x = event.clientX + 'px';
 		this.menuPosition.y = event.clientY + 'px';
-		this.matMenuTrigger.menuData = {
+		this.matMenuTrigger().menuData = {
 			message: message,
 			submessage: submessage,
 			location: location,
@@ -200,7 +197,7 @@ export class SubMessageTableComponent implements OnChanges {
 					? (submessage as subMessageWithChanges).changes[header]
 					: undefined,
 		};
-		this.matMenuTrigger.menuData = this.matMenuTrigger.menuData as {
+		this.matMenuTrigger().menuData = this.matMenuTrigger().menuData as {
 			message: message | messageWithChanges;
 			submessage: subMessage | subMessageWithChanges;
 			location: string;
@@ -213,7 +210,7 @@ export class SubMessageTableComponent implements OnChanges {
 				| ' ';
 			change: difference | undefined;
 		};
-		this.matMenuTrigger.openMenu();
+		this.matMenuTrigger().openMenu();
 	}
 
 	removeSubMessage(submessage: subMessage, message: message) {

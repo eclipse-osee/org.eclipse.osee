@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CdkTrapFocus } from '@angular/cdk/a11y';
-import { AsyncPipe, NgFor } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
@@ -48,7 +48,6 @@ import { PLEditConfigData } from '../../types/pl-edit-config-data';
 	standalone: true,
 	imports: [
 		FormsModule,
-		NgFor,
 		AsyncPipe,
 		MatDialogTitle,
 		MatLabel,

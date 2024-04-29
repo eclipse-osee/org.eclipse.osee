@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import {
 	MatCell,
@@ -42,9 +42,7 @@ import { ChangeReportService } from './services/change-report.service';
 	styles: [],
 	standalone: true,
 	imports: [
-		NgIf,
 		NgClass,
-		NgFor,
 		AsyncPipe,
 		MatTable,
 		MatColumnDef,

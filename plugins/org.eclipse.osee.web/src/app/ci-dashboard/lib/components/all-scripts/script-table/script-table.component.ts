@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, ViewChild } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { Component, OnDestroy, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
@@ -39,7 +39,7 @@ import type { DefReference, SetReference } from '../../../types/tmo';
 	standalone: true,
 	templateUrl: './script-table.component.html',
 	imports: [
-		CommonModule,
+		AsyncPipe,
 		FormsModule,
 		MatTable,
 		MatColumnDef,
@@ -56,8 +56,7 @@ import type { DefReference, SetReference } from '../../../types/tmo';
 	],
 })
 export class ScriptTableComponent implements OnDestroy {
-	@ViewChild(MatMenuTrigger, { static: true })
-	matMenuTrigger!: MatMenuTrigger;
+	matMenuTrigger = viewChild.required(MatMenuTrigger);
 
 	noneOption = { name: 'None' } as SetReference;
 
@@ -91,10 +90,10 @@ export class ScriptTableComponent implements OnDestroy {
 		event.preventDefault();
 		this.menuPosition.x = event.clientX + 'px';
 		this.menuPosition.y = event.clientY + 'px';
-		this.matMenuTrigger.menuData = {
+		this.matMenuTrigger().menuData = {
 			defRef: defRef,
 		};
-		this.matMenuTrigger.openMenu();
+		this.matMenuTrigger().openMenu();
 	}
 
 	headers: (keyof DefReference)[] = [

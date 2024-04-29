@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { UiService } from '@osee/shared/services';
 import { Observable } from 'rxjs';
@@ -22,7 +22,7 @@ import { ArtifactHierarchyRelationSideComponent } from '../artifact-hierarchy-re
 	selector: 'osee-artifact-hierarchy-relations',
 	standalone: true,
 	templateUrl: './artifact-hierarchy-relations.component.html',
-	imports: [CommonModule, ArtifactHierarchyRelationSideComponent],
+	imports: [AsyncPipe, ArtifactHierarchyRelationSideComponent],
 })
 export class ArtifactHierarchyRelationsComponent {
 	@Input() relation$!: Observable<relation[]>;

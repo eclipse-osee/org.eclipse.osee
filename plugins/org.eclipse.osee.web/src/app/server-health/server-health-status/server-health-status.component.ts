@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { state, style, trigger } from '@angular/animations';
-import { CommonModule } from '@angular/common';
+import { NgClass, AsyncPipe } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import {
 	MatExpansionPanel,
@@ -53,7 +53,8 @@ const _currNavItem: navigationElement =
 	selector: 'osee-server-health-status',
 	standalone: true,
 	imports: [
-		CommonModule,
+		NgClass,
+		AsyncPipe,
 		ServerHealthDetailsComponent,
 		ServerHealthPageHeaderComponent,
 		ServerHealthLogComponent,

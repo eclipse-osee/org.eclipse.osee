@@ -10,22 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import {
-	AsyncPipe,
-	KeyValuePipe,
-	NgFor,
-	NgIf,
-	TitleCasePipe,
-} from '@angular/common';
+import { AsyncPipe, KeyValuePipe, TitleCasePipe } from '@angular/common';
 import {
 	Component,
-	ContentChild,
 	Input,
 	OnInit,
 	Output,
-	ViewChild,
+	signal,
+	viewChild,
 } from '@angular/core';
-import { NgForm } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import {
 	MatDialog,
@@ -83,8 +76,6 @@ import { NewPlatformTypeFormComponent } from '../new-platform-type-form/new-plat
 		MatLabel,
 		MatStepperPrevious,
 		NewPlatformTypeFormComponent,
-		NgIf,
-		NgFor,
 		AsyncPipe,
 		TitleCasePipe,
 		KeyValuePipe,
@@ -96,11 +87,9 @@ import { NewPlatformTypeFormComponent } from '../new-platform-type-form/new-plat
 	styles: [':host{width: 100%;height: 100%;}'],
 })
 export class NewTypeFormComponent implements OnInit {
-	@ContentChild('platformTypeForm') platformTypeForm!: NgForm;
-	@ViewChild(LogicalTypeSelectorComponent)
-	logicalTypeSelector!: LogicalTypeSelectorComponent;
+	logicalTypeSelector = viewChild(LogicalTypeSelectorComponent);
 
-	logicalTypeSubject: BehaviorSubject<logicalType> = new BehaviorSubject({
+	selectedLogicalType = signal<logicalType>({
 		id: '-1',
 		name: '',
 		idString: '-1',
@@ -168,7 +157,7 @@ export class NewTypeFormComponent implements OnInit {
 	 * Sets the current logical type
 	 */
 	setLogicalType(value: logicalType) {
-		this.logicalTypeSubject.next(value);
+		this.selectedLogicalType.set(value);
 	}
 	/**
 	 * Closes the form and returns a result

@@ -15,23 +15,18 @@ import {
 	CdkVirtualForOf,
 	CdkVirtualScrollViewport,
 } from '@angular/cdk/scrolling';
-import { AsyncPipe, NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
+import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import {
-	AfterViewInit,
 	ChangeDetectionStrategy,
 	Component,
-	ContentChild,
-	ContentChildren,
 	Host,
 	Input,
 	OnChanges,
-	OnDestroy,
 	Optional,
-	QueryList,
 	SimpleChanges,
 	TemplateRef,
-	ViewChild,
-	ViewChildren,
+	contentChild,
+	viewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatAutocomplete } from '@angular/material/autocomplete';
@@ -44,7 +39,6 @@ import {
 	BehaviorSubject,
 	Observable,
 	ReplaySubject,
-	Subject,
 	Subscription,
 	auditTime,
 	catchError,
@@ -56,7 +50,6 @@ import {
 	scan,
 	shareReplay,
 	switchMap,
-	takeUntil,
 	tap,
 	timer,
 } from 'rxjs';
@@ -69,8 +62,6 @@ import { paginationMode } from '../internal/pagination-options';
 	templateUrl: './mat-option-loading.component.html',
 	standalone: true,
 	imports: [
-		NgIf,
-		NgFor,
 		AsyncPipe,
 		MatOption,
 		CdkVirtualScrollViewport,
@@ -83,9 +74,7 @@ import { paginationMode } from '../internal/pagination-options';
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush, //lessen the amount of redrawing necessary to cause less "bounciness"
 })
-export class MatOptionLoadingComponent<T>
-	implements AfterViewInit, OnDestroy, OnChanges
-{
+export class MatOptionLoadingComponent<T> implements OnChanges {
 	/**
 	 * Total number of items that should come from the paginated data source
 	 */
@@ -134,30 +123,27 @@ export class MatOptionLoadingComponent<T>
 	@Input() noneOption: T | undefined = undefined;
 
 	private _currentPageNumber = new BehaviorSubject<number | string>(1);
-	private _done = new Subject<void>();
-
-	@ViewChildren(MatOption) protected options!: QueryList<MatOption>;
-	@ContentChild(TemplateRef) template!: TemplateRef<{ $implicit: T; opt: T }>;
+	template = contentChild.required(TemplateRef, {
+		read: TemplateRef<{ $implicit: T; opt: T }>,
+	});
 	_paginationComplete = new BehaviorSubject<boolean>(false);
 
-	@ContentChildren(MatOption)
-	protected resolvedOptions!: QueryList<MatOption>;
-	@ViewChild(CdkVirtualScrollViewport, { static: false })
-	cdkVirtualScrollViewPort!: CdkVirtualScrollViewport;
+	cdkVirtualScrollViewPort = viewChild(CdkVirtualScrollViewport);
+
 	private _autoPaginate = timer(0, 250).pipe(
 		filter(
 			(_) =>
 				this.paginationMode === 'AUTO' &&
-				this.cdkVirtualScrollViewPort !== undefined &&
-				this.cdkVirtualScrollViewPort.getRenderedRange().end ===
-					this.cdkVirtualScrollViewPort.getDataLength()
+				this.cdkVirtualScrollViewPort() !== undefined &&
+				this.cdkVirtualScrollViewPort()!.getRenderedRange().end ===
+					this.cdkVirtualScrollViewPort()!.getDataLength()
 		),
 		switchMap((_) => this._paginationComplete),
 		filter((complete) => complete === false),
 		auditTime(this.rateLimit),
 		tap((_) => this.createPaginationEvent()),
-		tap((_) => this.cdkVirtualScrollViewPort.checkViewportSize()),
-		takeUntil(this._done)
+		tap((_) => this.cdkVirtualScrollViewPort()!.checkViewportSize()),
+		takeUntilDestroyed()
 	);
 	private _autoPaginateSubscription: Subscription | undefined = undefined;
 	private _dataSubject = new ReplaySubject<
@@ -242,10 +228,7 @@ export class MatOptionLoadingComponent<T>
 	constructor(
 		@Host()
 		@Optional()
-		private _parentSelect: MatSelect,
-		@Host()
-		@Optional()
-		private _parentAutoComplete: MatAutocomplete // Angular apparently doesn't like DI'ing multiple types
+		private _parentSelect: MatSelect
 	) {}
 
 	ngOnChanges(changes: SimpleChanges): void {
@@ -269,74 +252,12 @@ export class MatOptionLoadingComponent<T>
 			this._count.next(changes.count.currentValue);
 		}
 	}
-	ngOnDestroy(): void {
-		this._done.next();
-		this._done.complete();
-	}
 	/**
 	 * @TODO shareReplay observables need to be handled, or mat-select with delayed values needs to be handled
 	 */
 
 	getHeightPx(itemSize: number, optLength: number) {
 		return itemSize * Math.min(5, Math.max(optLength, 1));
-	}
-
-	ngAfterViewInit(): void {
-		if (this._parentSelect !== undefined && this._parentSelect !== null) {
-			/**leaving disabled for now, will need to figure out test fix. 
-			/However, this needs to remain on for autocomplete since the most common pattern for autocomplete
-			involves something like (pageNum)=>this.opened.pipe(switchMap(v=>this.filter.pipe(PAGINATED_OBSERVABLE_HERE)))
-			*/
-			//this.registerSelectOptions(this._parentSelect, this.options);
-			combineLatest([
-				this.resolvedOptions.changes,
-				this.options.changes,
-			]).subscribe(([changes]) => {
-				this.registerSelectOptions(this._parentSelect, this.options);
-				if (this.cdkVirtualScrollViewPort !== undefined) {
-					this.cdkVirtualScrollViewPort.scrollToIndex(0);
-					this.cdkVirtualScrollViewPort.checkViewportSize();
-				}
-			});
-		}
-		if (
-			this._parentAutoComplete !== undefined &&
-			this._parentAutoComplete !== null
-		) {
-			this.registerSelectOptions(this._parentAutoComplete, this.options);
-			combineLatest([
-				this.resolvedOptions.changes,
-				this.options.changes,
-			]).subscribe(([changes]) => {
-				this.registerSelectOptions(
-					this._parentAutoComplete,
-					this.options
-				);
-				if (this.cdkVirtualScrollViewPort !== undefined) {
-					this.cdkVirtualScrollViewPort.scrollToIndex(0);
-					this.cdkVirtualScrollViewPort.checkViewportSize();
-				}
-			});
-		}
-	}
-
-	protected registerSelectOptions(
-		select: MatSelect | MatAutocomplete,
-		options: QueryList<MatOption>
-	): void {
-		const _options = [
-			...new Map(
-				[...select.options.toArray(), ...options.toArray()].map((m) => [
-					m.id,
-					m,
-				])
-			).values(),
-		];
-		const __options = _options.filter(
-			(v, i) => _options.map((a) => a.value).indexOf(v.value) === i
-		);
-		select.options.reset([...__options]);
-		select.options.notifyOnChanges();
 	}
 
 	private _isMatSelect(

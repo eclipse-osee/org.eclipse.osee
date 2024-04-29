@@ -11,16 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { SelectionModel } from '@angular/cdk/collections';
-import {
-	AsyncPipe,
-	NgClass,
-	NgFor,
-	NgIf,
-	NgSwitch,
-	NgSwitchCase,
-	NgSwitchDefault,
-} from '@angular/common';
-import { AfterViewInit, Component, OnDestroy, ViewChild } from '@angular/core';
+import { AsyncPipe, NgClass } from '@angular/common';
+import { AfterViewInit, Component, OnDestroy, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
 import { MatCheckbox } from '@angular/material/checkbox';
@@ -75,11 +67,6 @@ import { NoDataToDisplayComponent } from './no-data-to-display/no-data-to-displa
 	styles: [],
 	standalone: true,
 	imports: [
-		NgIf,
-		NgFor,
-		NgSwitch,
-		NgSwitchCase,
-		NgSwitchDefault,
 		FormsModule,
 		NgClass,
 		NoDataToDisplayComponent,
@@ -108,8 +95,8 @@ import { NoDataToDisplayComponent } from './no-data-to-display/no-data-to-displa
 	],
 })
 export class GcDatatableComponent implements AfterViewInit, OnDestroy {
-	@ViewChild(MatPaginator, { static: true }) paginator!: MatPaginator;
-	@ViewChild(MatSort, { static: false }) sort!: MatSort;
+	private paginator = viewChild(MatPaginator);
+	private sort = viewChild(MatSort);
 
 	selection = new SelectionModel<RowObj>(true, []);
 
@@ -149,12 +136,14 @@ export class GcDatatableComponent implements AfterViewInit, OnDestroy {
 				of(new MatTableDataSource(data)).pipe(
 					tap((val) => this._rowsToBeSelected.next(val.data)),
 					map((ds) => {
-						if (this.paginator) {
-							ds.paginator = this.paginator;
+						const paginator = this.paginator();
+						if (paginator) {
+							ds.paginator = paginator;
 						}
-						if (this.sort) {
+						const sort = this.sort();
+						if (sort) {
 							ds.sortData = this.sortFunction;
-							ds.sort = this.sort;
+							ds.sort = sort;
 						}
 						return ds;
 					})
@@ -163,8 +152,9 @@ export class GcDatatableComponent implements AfterViewInit, OnDestroy {
 				of(new MatTableDataSource(data)).pipe(
 					tap((val) => this._rowsToBeSelected.next(val.data)),
 					map((data) => {
-						if (this.paginator) {
-							data.paginator = this.paginator;
+						const paginator = this.paginator();
+						if (paginator) {
+							data.paginator = paginator;
 						}
 						data.filter = filter;
 						//this overrides the default filter funcitonality
@@ -239,9 +229,10 @@ export class GcDatatableComponent implements AfterViewInit, OnDestroy {
 						if (data.paginator) {
 							data.paginator.firstPage();
 						}
-						if (this.sort) {
+						const sort = this.sort();
+						if (sort) {
 							data.sortData = this.sortFunction;
-							data.sort = this.sort;
+							data.sort = sort;
 						}
 						return data;
 					})

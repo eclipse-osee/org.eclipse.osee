@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <ng-container>
 	<h2 class="mat-headline-5">Build Trace Report</h2>
 	<h2 class="mat-headline-7">Enter one or more search criteria:</h2>
@@ -34,7 +34,7 @@
 					#input />
 			</mat-form-field>
 		</ng-container>
-		<ng-container *ngIf="programs | async as _programs">
+		@if (programs | async; as _programs) {
 			<mat-form-field
 				class="form-fields-container"
 				appearance="fill">
@@ -44,35 +44,38 @@
 					[disabled]="_programs.length === 0"
 					[value]="programSelection | async"
 					required>
-					<mat-option
-						*ngFor="let option of _programs"
-						[value]="option"
-						[id]="option.guid!">
-						{{ option.name }}</mat-option
-					>
+					@for (option of _programs; track option) {
+						<mat-option
+							[value]="option"
+							[id]="option.guid!">
+							{{ option.name }}</mat-option
+						>
+					}
 				</mat-select>
 			</mat-form-field>
-		</ng-container>
-		<ng-container *ngIf="programSelection | async">
-			<mat-form-field
-				*ngIf="builds | async as _builds"
-				class="form-fields-container"
-				appearance="fill">
-				<mat-label>{{ buildSelectionText | async }}</mat-label>
-				<mat-select
-					[ngModel]="selectedBuild | async"
-					(ngModelChange)="setSelectedBuild($event)"
-					[disabled]="_builds.length === 0"
-					required>
-					<mat-option
-						*ngFor="let option of _builds"
-						[value]="option"
-						[id]="option.guid!">
-						{{ option.name }}
-					</mat-option>
-				</mat-select>
-			</mat-form-field>
-		</ng-container>
+		}
+		@if (programSelection | async) {
+			@if (builds | async; as _builds) {
+				<mat-form-field
+					class="form-fields-container"
+					appearance="fill">
+					<mat-label>{{ buildSelectionText | async }}</mat-label>
+					<mat-select
+						[ngModel]="selectedBuild | async"
+						(ngModelChange)="setSelectedBuild($event)"
+						[disabled]="_builds.length === 0"
+						required>
+						@for (option of _builds; track option) {
+							<mat-option
+								[value]="option"
+								[id]="option.guid!">
+								{{ option.name }}
+							</mat-option>
+						}
+					</mat-select>
+				</mat-form-field>
+			}
+		}
 		<button
 			mat-raised-button
 			(click)="startGenerateReport()"

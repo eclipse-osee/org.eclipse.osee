@@ -10,11 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { Component } from '@angular/core';
-import { ciNavigationStructure } from '../../navigation/ci-dashboard-navigation-structure';
 import { Router, RouterLink } from '@angular/router';
-import { CiDashboardUiService } from '../../services/ci-dashboard-ui.service';
+import { UserDataAccountService } from '@osee/auth';
+import { navigationElement } from '@osee/shared/types';
 import {
 	combineLatest,
 	concatMap,
@@ -24,13 +24,13 @@ import {
 	reduce,
 	switchMap,
 } from 'rxjs';
-import { UserDataAccountService } from '@osee/auth';
-import { navigationElement } from '@osee/shared/types';
+import { ciNavigationStructure } from '../../navigation/ci-dashboard-navigation-structure';
+import { CiDashboardUiService } from '../../services/ci-dashboard-ui.service';
 
 @Component({
 	selector: 'osee-ci-nav-header',
 	standalone: true,
-	imports: [AsyncPipe, NgIf, NgFor, NgClass, RouterLink],
+	imports: [AsyncPipe, NgClass, RouterLink],
 	templateUrl: './ci-nav-header.component.html',
 })
 export default class CiNavHeaderComponent {

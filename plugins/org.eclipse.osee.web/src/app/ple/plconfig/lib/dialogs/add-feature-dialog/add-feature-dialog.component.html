@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2021 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2021 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <h1 mat-dialog-title>Add Feature</h1>
 <div mat-dialog-content>
 	<mat-form-field class="tw-w-full tw-text-lg">
@@ -45,12 +45,13 @@
 			required
 			data-cy="field-valueType"
 			[attr.data-cy-value]="'field-valueType-' + data.feature.valueType">
-			<mat-option
-				*ngFor="let type of valueTypes | async"
-				[value]="type"
-				[attr.data-cy]="'option-' + type">
-				{{ type }}
-			</mat-option>
+			@for (type of valueTypes | async; track type) {
+				<mat-option
+					[value]="type"
+					[attr.data-cy]="'option-' + type">
+					{{ type }}
+				</mat-option>
+			}
 		</mat-select>
 	</mat-form-field>
 	<br />
@@ -64,24 +65,26 @@
 		Multi-Valued
 	</mat-slide-toggle>
 	<br />
-	<mat-form-field
-		*ngFor="
-			let value of data.feature.values;
-			index as i;
-			trackBy: valueTracker
-		"
-		class="tw-w-full tw-text-lg">
-		<mat-label>Value</mat-label>
-		<input
-			matInput
-			type="text"
-			#input
-			[(ngModel)]="data.feature.values[i]"
-			(keyup)="data.feature.setValueStr()"
-			required
-			[attr.data-cy]="'field-value-' + i"
-			[attr.data-cy-value]="'field-value-' + data.feature.values[i]" />
-	</mat-form-field>
+	@for (
+		value of data.feature.values;
+		track valueTracker(i, value);
+		let i = $index
+	) {
+		<mat-form-field class="tw-w-full tw-text-lg">
+			<mat-label>Value</mat-label>
+			<input
+				matInput
+				type="text"
+				#input
+				[(ngModel)]="data.feature.values[i]"
+				(keyup)="data.feature.setValueStr()"
+				required
+				[attr.data-cy]="'field-value-' + i"
+				[attr.data-cy-value]="
+					'field-value-' + data.feature.values[i]
+				" />
+		</mat-form-field>
+	}
 	<button
 		mat-stroked-button
 		(click)="increaseValueArray()"
@@ -99,12 +102,13 @@
 			[attr.data-cy-value]="
 				'field-defaultValue-' + data.feature.defaultValue
 			">
-			<mat-option
-				*ngFor="let value of data.feature.values"
-				[value]="value"
-				[attr.data-cy]="'option-' + value">
-				{{ value }}
-			</mat-option>
+			@for (value of data.feature.values; track value) {
+				<mat-option
+					[value]="value"
+					[attr.data-cy]="'option-' + value">
+					{{ value }}
+				</mat-option>
+			}
 		</mat-select>
 	</mat-form-field>
 	<br />
@@ -114,17 +118,18 @@
 			[(ngModel)]="data.feature.productApplicabilities"
 			color="primary"
 			class="tw-text-lg">
-			<mat-list-option
-				*ngFor="let type of productApplicabilities | async"
-				[value]="type.name"
-				[attr.data-cy]="
-					'field-product-type-' +
-					type.name +
-					'-' +
-					data.feature.productApplicabilities.includes(type.name)
-				">
-				{{ type.name }}
-			</mat-list-option>
+			@for (type of productApplicabilities | async; track type) {
+				<mat-list-option
+					[value]="type.name"
+					[attr.data-cy]="
+						'field-product-type-' +
+						type.name +
+						'-' +
+						data.feature.productApplicabilities.includes(type.name)
+					">
+					{{ type.name }}
+				</mat-list-option>
+			}
 		</mat-selection-list>
 	</div>
 </div>

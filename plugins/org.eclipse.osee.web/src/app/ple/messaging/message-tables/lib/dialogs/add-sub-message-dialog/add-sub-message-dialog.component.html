@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2021 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2021 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <h1 mat-dialog-title>Add Sub Message to Message {{ data.name }}</h1>
 <mat-horizontal-stepper
 	#stepper
@@ -43,8 +43,7 @@
 					(keyup)="applySearchTerm($event)"
 					name="autocomplete-text" />
 				<mat-autocomplete #auto="matAutocomplete">
-					<ng-container
-						*ngIf="availableSubMessages | async as submessages">
+					@if (availableSubMessages | async; as submessages) {
 						<osee-mat-option-loading
 							[data]="submessages"
 							[count]="(availableSubMessagesCount | async) || -1"
@@ -61,18 +60,19 @@
 								</mat-option>
 							</ng-template>
 						</osee-mat-option-loading>
-					</ng-container>
+					}
 				</mat-autocomplete>
 			</mat-form-field>
 		</div>
 		<mat-dialog-actions align="end">
-			<button
-				mat-raised-button
-				color="primary"
-				*ngIf="selectedSubmessage"
-				(click)="moveToReview(stepper)">
-				Proceed to Review
-			</button>
+			@if (selectedSubmessage) {
+				<button
+					mat-raised-button
+					color="primary"
+					(click)="moveToReview(stepper)">
+					Proceed to Review
+				</button>
+			}
 		</mat-dialog-actions>
 	</mat-step>
 	<mat-step
@@ -111,24 +111,26 @@
 			</osee-applicability-selector>
 		</div>
 		<mat-dialog-actions align="end">
-			<button
-				mat-raised-button
-				matStepperPrevious
-				*ngIf="_firstStepFilled | async">
-				Back
-			</button>
-			<button
-				mat-raised-button
-				color="primary"
-				*ngIf="
-					data.subMessage.name.length > 0 &&
-					data.subMessage.interfaceSubMessageNumber !== undefined &&
-					data.subMessage.interfaceSubMessageNumber !== ''
-				"
-				matStepperNext
-				data-cy="stepper-next">
-				Next
-			</button>
+			@if (_firstStepFilled | async) {
+				<button
+					mat-raised-button
+					matStepperPrevious>
+					Back
+				</button>
+			}
+			@if (
+				data.subMessage.name.length > 0 &&
+				data.subMessage.interfaceSubMessageNumber !== undefined &&
+				data.subMessage.interfaceSubMessageNumber !== ''
+			) {
+				<button
+					mat-raised-button
+					color="primary"
+					matStepperNext
+					data-cy="stepper-next">
+					Next
+				</button>
+			}
 		</mat-dialog-actions>
 	</mat-step>
 	<mat-step

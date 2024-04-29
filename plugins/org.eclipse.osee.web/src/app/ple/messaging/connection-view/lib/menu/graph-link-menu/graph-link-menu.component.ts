@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
@@ -42,7 +42,6 @@ import { RemovalDialog } from '../../types/ConfirmRemovalDialog';
 	templateUrl: './graph-link-menu.component.html',
 	standalone: true,
 	imports: [
-		NgIf,
 		AsyncPipe,
 		RouterLink,
 		MatIcon,

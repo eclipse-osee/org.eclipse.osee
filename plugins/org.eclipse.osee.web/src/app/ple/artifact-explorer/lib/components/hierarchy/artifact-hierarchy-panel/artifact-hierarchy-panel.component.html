@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <div class="tw-max-h-94vh">
 	<div class="tw-relative tw-py-2">
 		@if (branchId() && branchType()) {
@@ -51,15 +51,16 @@
 					class="tw-h-full"
 					cdkDropList
 					cdkDropListConnectedTo="relationList">
-					<div *ngIf="paths | async as paths; else emptyPath">
+					@if (paths | async; as paths) {
+						<div>
+							<osee-artifact-hierarchy
+								[paths]="paths"
+								artifactId="197818"></osee-artifact-hierarchy>
+						</div>
+					} @else {
 						<osee-artifact-hierarchy
-							[paths]="paths"
 							artifactId="197818"></osee-artifact-hierarchy>
-					</div>
-					<ng-template #emptyPath>
-						<osee-artifact-hierarchy
-							artifactId="197818"></osee-artifact-hierarchy>
-					</ng-template>
+					}
 				</div>
 			}
 		</div>

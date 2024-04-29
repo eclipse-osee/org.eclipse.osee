@@ -10,15 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import {
-	AsyncPipe,
-	NgClass,
-	NgFor,
-	NgSwitch,
-	NgSwitchCase,
-	NgSwitchDefault,
-} from '@angular/common';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AsyncPipe, NgClass } from '@angular/common';
+import { Component, OnDestroy, OnInit, viewChild } from '@angular/core';
 import { MatFabButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
@@ -65,10 +58,6 @@ import { filter, switchMap, take, takeUntil, tap } from 'rxjs/operators';
 	standalone: true,
 	imports: [
 		AsyncPipe,
-		NgFor,
-		NgSwitch,
-		NgSwitchCase,
-		NgSwitchDefault,
 		NgClass,
 		MatTable,
 		MatColumnDef,
@@ -96,8 +85,7 @@ export class TransportsComponent implements OnInit, OnDestroy {
 		x: '0',
 		y: '0',
 	};
-	@ViewChild(MatMenuTrigger, { static: true })
-	matMenuTrigger!: MatMenuTrigger;
+	matMenuTrigger = viewChild.required(MatMenuTrigger);
 	transports = this.transportTypesService.transportTypes.pipe(
 		takeUntil(this._done)
 	);
@@ -152,10 +140,10 @@ export class TransportsComponent implements OnInit, OnDestroy {
 		event.preventDefault();
 		this.menuPosition.x = event.clientX + 'px';
 		this.menuPosition.y = event.clientY + 'px';
-		this.matMenuTrigger.menuData = {
+		this.matMenuTrigger().menuData = {
 			transport: type,
 		};
-		this.matMenuTrigger.openMenu();
+		this.matMenuTrigger().openMenu();
 	}
 
 	openEditDialog(type: transportType) {

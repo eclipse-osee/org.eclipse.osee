@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NgFor } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
@@ -25,7 +24,7 @@ import {
 	templateUrl: './new-transport-type-dialog.component.html',
 	styles: [],
 	standalone: true,
-	imports: [FormsModule, NgFor, TransportTypeFormComponent, MatDialogTitle],
+	imports: [FormsModule, TransportTypeFormComponent, MatDialogTitle],
 })
 export class NewTransportTypeDialogComponent {
 	transportType = new TransportType();

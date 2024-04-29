@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
@@ -35,15 +35,14 @@ import {
 	switchMap,
 	tap,
 } from 'rxjs';
-import { ScriptBatch } from '../../../types';
 import { CiBatchService } from '../../../services/ci-batch.service';
+import { ScriptBatch } from '../../../types';
 
 @Component({
 	selector: 'osee-batch-dropdown',
 	standalone: true,
 	imports: [
 		AsyncPipe,
-		NgIf,
 		FormsModule,
 		MatOptionLoadingComponent,
 		MatFormField,

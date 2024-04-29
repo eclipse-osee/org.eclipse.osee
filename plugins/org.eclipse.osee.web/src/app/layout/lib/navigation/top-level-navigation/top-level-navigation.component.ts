@@ -13,13 +13,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
-import {
-	AsyncPipe,
-	NgClass,
-	NgFor,
-	NgIf,
-	NgTemplateOutlet,
-} from '@angular/common';
+import { AsyncPipe, NgClass, NgTemplateOutlet } from '@angular/common';
 import { MatDivider } from '@angular/material/divider';
 import { MatIcon } from '@angular/material/icon';
 import {
@@ -40,8 +34,6 @@ import { from, iif, of, reduce, switchMap } from 'rxjs';
 	templateUrl: './top-level-navigation.component.html',
 	standalone: true,
 	imports: [
-		NgIf,
-		NgFor,
 		NgClass,
 		AsyncPipe,
 		RouterLink,

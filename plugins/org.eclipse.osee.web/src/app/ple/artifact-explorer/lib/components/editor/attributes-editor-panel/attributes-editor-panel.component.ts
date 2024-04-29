@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
-import { Component, Input, ViewChild } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { Component, Input, ViewChild, viewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import {
 	MatExpansionPanel,
@@ -32,18 +32,20 @@ import {
 } from '@osee/shared/types';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { tab } from '../../../types/artifact-explorer.data';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
 	selector: 'osee-attributes-editor-panel',
 	standalone: true,
 	imports: [
-		CommonModule,
+		NgClass,
 		FormsModule,
 		AttributesEditorComponent,
 		FormDirective,
 		MatExpansionPanel,
 		MatExpansionPanelHeader,
 		MatExpansionPanelTitle,
+		MatIcon,
 		ExpandIconComponent,
 	],
 	templateUrl: './attributes-editor-panel.component.html',
@@ -102,5 +104,8 @@ export class AttributesEditorPanelComponent {
 
 	// Handle form status change
 
-	@ViewChild('attributesEditorForm') _attributesEditorForm!: NgForm;
+	protected _attributesEditorForm = viewChild.required(
+		'attributesEditorForm',
+		{ read: NgForm }
+	);
 }

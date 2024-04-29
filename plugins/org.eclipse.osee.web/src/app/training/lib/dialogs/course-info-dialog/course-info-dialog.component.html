@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 
 <h1
 	mat-dialog-title
@@ -19,7 +19,7 @@
 <div
 	mat-dialog-content
 	class="tw-max-w-[50%]">
-	<ng-container *ngFor="let course of courses$ | async">
+	@for (course of courses$ | async; track course) {
 		<div class="tw-flex tw-justify-start">
 			<div class="tw-me-2 tw-ms-2 tw-font-mat-bold">Name:</div>
 			<div>
@@ -64,7 +64,7 @@
 				</button>
 			</div>
 		</div>
-	</ng-container>
+	}
 </div>
 <div mat-dialog-actions>
 	<button

@@ -1,14 +1,14 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
 -->
 <mat-nav-list class="tw-min-w-[450px]">
 	<ng-template
@@ -19,7 +19,7 @@
 					(getElementsWithPermission(staticNavElements) | async)
 			}
 		"></ng-template>
-	<ng-container *ngIf="loadedNavElements | async as pages">
+	@if (loadedNavElements | async; as pages) {
 		<ng-template
 			*ngTemplateOutlet="
 				recursiveMenu;
@@ -28,7 +28,7 @@
 				}
 			">
 		</ng-template>
-	</ng-container>
+	}
 </mat-nav-list>
 
 <ng-template
@@ -36,69 +36,76 @@
 	let-elements>
 	<div class="tw-px-2">
 		<mat-nav-list>
-			<ng-container *ngFor="let element of elements">
+			@for (element of elements; track element) {
 				<!-- If dropdown -->
-				<a
-					mat-list-item
-					*ngIf="element.isDropdown"
-					(click)="element.isDropdownOpen = !element.isDropdownOpen"
-					class="hover:tw-bg-primary-100 dark:hover:tw-bg-primary-900"
-					[ngClass]="{
-						'tw-bg-primary-50 dark:tw-bg-primary-800':
-							currentPath === element.routerLink &&
-							!element.isDropdownOpen
-					}">
-					<mat-icon
-						matListItemIcon
-						*ngIf="element.icon !== ''"
-						class="tw-mr-2"
-						>{{ element.icon }}</mat-icon
-					>
-					{{ element.label }}
-					<div matListItemMeta>
-						<mat-icon *ngIf="!element.isDropdownOpen"
-							>chevron_right</mat-icon
-						>
-						<mat-icon *ngIf="element.isDropdownOpen"
-							>expand_more</mat-icon
-						>
-					</div>
-				</a>
-				<!-- If not a dropdown -->
-				<a
-					mat-list-item
-					*ngIf="!element.isDropdown"
-					[routerLink]="routePrefix + element.routerLink"
-					queryParamsHandling="merge"
-					class="hover:tw-bg-primary-100 dark:hover:tw-bg-primary-900"
-					[ngClass]="{
-						'tw-bg-primary-50 dark:tw-bg-primary-800':
-							currentPath === element.routerLink
-					}">
-					<mat-icon
-						matListItemIcon
-						*ngIf="element.icon !== ''"
-						class="tw-mr-2"
-						>{{ element.icon }}</mat-icon
-					>
-					{{ element.label }}
-				</a>
-				<!-- If the element has children and dropdown is open -->
-				<mat-nav-list
-					class="tw-pb-2"
-					*ngIf="element.children && element.isDropdownOpen">
-					<mat-divider></mat-divider>
-					<ng-container
-						*ngTemplateOutlet="
-							recursiveMenu;
-							context: {
-								$implicit:
-									(getElementsWithPermission(element.children)
-									| async)
+				@if (element.isDropdown) {
+					<a
+						mat-list-item
+						(click)="
+							element.isDropdownOpen = !element.isDropdownOpen
+						"
+						class="hover:tw-bg-primary-100 dark:hover:tw-bg-primary-900"
+						[ngClass]="{
+							'tw-bg-primary-50 dark:tw-bg-primary-800':
+								currentPath === element.routerLink &&
+								!element.isDropdownOpen
+						}">
+						@if (element.icon !== '') {
+							<mat-icon
+								matListItemIcon
+								class="tw-mr-2"
+								>{{ element.icon }}</mat-icon
+							>
+						}
+						{{ element.label }}
+						<div matListItemMeta>
+							@if (!element.isDropdownOpen) {
+								<mat-icon>chevron_right</mat-icon>
 							}
-						"></ng-container>
-				</mat-nav-list>
-			</ng-container>
+							@if (element.isDropdownOpen) {
+								<mat-icon>expand_more</mat-icon>
+							}
+						</div>
+					</a>
+				}
+				<!-- If not a dropdown -->
+				@if (!element.isDropdown) {
+					<a
+						mat-list-item
+						[routerLink]="routePrefix + element.routerLink"
+						queryParamsHandling="merge"
+						class="hover:tw-bg-primary-100 dark:hover:tw-bg-primary-900"
+						[ngClass]="{
+							'tw-bg-primary-50 dark:tw-bg-primary-800':
+								currentPath === element.routerLink
+						}">
+						@if (element.icon !== '') {
+							<mat-icon
+								matListItemIcon
+								class="tw-mr-2"
+								>{{ element.icon }}</mat-icon
+							>
+						}
+						{{ element.label }}
+					</a>
+				}
+				<!-- If the element has children and dropdown is open -->
+				@if (element.children && element.isDropdownOpen) {
+					<mat-nav-list class="tw-pb-2">
+						<mat-divider></mat-divider>
+						<ng-container
+							*ngTemplateOutlet="
+								recursiveMenu;
+								context: {
+									$implicit:
+										(getElementsWithPermission(
+											element.children
+										) | async)
+								}
+							"></ng-container>
+					</mat-nav-list>
+				}
+			}
 		</mat-nav-list>
 	</div>
 </ng-template>

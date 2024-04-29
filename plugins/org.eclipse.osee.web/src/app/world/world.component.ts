@@ -10,14 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
 import {
-	AfterViewInit,
 	Component,
-	ViewChild,
 	computed,
 	effect,
+	inject,
 	signal,
+	viewChild,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButton } from '@angular/material/button';
@@ -46,7 +45,6 @@ import { worldRow } from './world';
 	selector: 'osee-world',
 	standalone: true,
 	imports: [
-		CommonModule,
 		MatFormField,
 		MatInput,
 		MatButton,
@@ -65,7 +63,9 @@ import { worldRow } from './world';
 	],
 	templateUrl: './world.component.html',
 })
-class WorldComponent implements AfterViewInit {
+class WorldComponent {
+	private routeUrl = inject(ActivatedRoute);
+	private worldService = inject(WorldHttpService);
 	dataSource = new MatTableDataSource<worldRow>([]);
 	params = this.routeUrl.queryParamMap.pipe(
 		map((value) => {
@@ -85,21 +85,14 @@ class WorldComponent implements AfterViewInit {
 	filter = signal('');
 	headers = computed(() => this.tabledata()?.orderedHeaders || []);
 	rows = computed(() => this.tabledata()?.rows || []);
+	protected sort = viewChild.required(MatSort);
 
-	constructor(
-		private worldService: WorldHttpService,
-		private routeUrl: ActivatedRoute
-	) {
-		effect(() => {
-			this.dataSource.data = this.rows();
-		});
-	}
-
-	@ViewChild(MatSort) sort!: MatSort;
-	ngAfterViewInit() {
-		this.dataSource.sort = this.sort;
-	}
-
+	private _updateDataSourceSort = effect(() => {
+		this.dataSource.sort = this.sort();
+	});
+	private _updateDataSourceData = effect(() => {
+		this.dataSource.data = this.rows();
+	});
 	updateFilter(event: KeyboardEvent) {
 		const filterValue = (event.target as HTMLInputElement).value;
 		this.filter.set(filterValue);

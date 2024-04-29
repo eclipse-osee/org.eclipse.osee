@@ -10,14 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import {
-	AfterViewInit,
 	ChangeDetectionStrategy,
 	Component,
 	Input,
 	Output,
-	ViewChild,
+	effect,
+	input,
+	viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
@@ -54,7 +55,8 @@ import { nodeTraceReportHeaderDetails } from './trace-report-table-headers';
 	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
-		CommonModule,
+		NgTemplateOutlet,
+		AsyncPipe,
 		FormsModule,
 		HighlightFilteredTextDirective,
 		MatFormField,
@@ -79,13 +81,29 @@ import { nodeTraceReportHeaderDetails } from './trace-report-table-headers';
 	],
 	templateUrl: './trace-report-table.component.html',
 })
-export class TraceReportTableComponent implements AfterViewInit {
-	@Input() data: NodeTraceReportItem[] = [];
+export class TraceReportTableComponent {
+	data = input.required<NodeTraceReportItem[]>();
 
-	@ViewChild(MatSort) sort!: MatSort;
-	@ViewChild(MatPaginator) paginator!: MatPaginator;
+	sort = viewChild.required(MatSort);
+	paginator = viewChild.required(MatPaginator);
 
-	dataSource: MatTableDataSource<NodeTraceReportItem>;
+	private _setSort = effect(() => {
+		this.dataSource.sort = this.sort();
+	});
+
+	private _setPaginator = effect(() => {
+		this.dataSource.paginator = this.paginator();
+	});
+
+	private _setDataSourceData = effect(
+		() => {
+			this.dataSource.data = this.data();
+		},
+		{ allowSignalWrites: true }
+	);
+
+	dataSource: MatTableDataSource<NodeTraceReportItem> =
+		new MatTableDataSource<NodeTraceReportItem>([]);
 
 	@Input() set pageSize(value: number) {
 		if (value) {
@@ -123,9 +141,7 @@ export class TraceReportTableComponent implements AfterViewInit {
 		distinct()
 	);
 
-	constructor(private headerService: HeaderService) {
-		this.dataSource = new MatTableDataSource(this.data);
-	}
+	constructor(private headerService: HeaderService) {}
 
 	filterPredicate(data: NodeTraceReportItem, filter: string) {
 		const filterLower = filter.toLowerCase();
@@ -150,12 +166,6 @@ export class TraceReportTableComponent implements AfterViewInit {
 		const filterValue = (event.target as HTMLInputElement).value;
 		this.dataSource.filterPredicate = this.filterPredicate;
 		this.dataSource.filter = filterValue;
-	}
-
-	ngAfterViewInit() {
-		this.dataSource = new MatTableDataSource(this.data);
-		this.dataSource.sort = this.sort;
-		this.dataSource.paginator = this.paginator;
 	}
 
 	getTableHeaderByName(header: keyof NodeTraceReportItem) {

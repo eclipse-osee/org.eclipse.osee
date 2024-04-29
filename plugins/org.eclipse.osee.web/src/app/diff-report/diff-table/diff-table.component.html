@@ -1,16 +1,16 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
-<ng-container *ngIf="artifactData | async as _data"></ng-container>
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
+@if (artifactData | async; as _data) {}
 
 <div class="tw-flex tw-gap-2">
 	<button
@@ -31,22 +31,22 @@
 		(click)="exportDataAsCsv()">
 		Export Displayed Data to CSV
 	</button>
-	<ng-container *ngIf="link | async as _link">
+	@if (link | async; as _link) {
 		<button
 			mat-raised-button
 			class="tw-h-12 tw-w-48 tw-border-solid tw-border-primary"
 			(click)="exportAllDataAsCsv(_link)">
 			Export All Data to CSV
 		</button>
-	</ng-container>
-	<ng-container *ngIf="link | async as _link">
+	}
+	@if (link | async; as _link) {
 		<button
 			mat-raised-button
 			class="tw-h-12 tw-w-48 tw-border-solid tw-border-primary"
 			(click)="downloadChangeReports(_link)">
 			Download Change Reports
 		</button>
-	</ng-container>
+	}
 </div>
 <mat-form-field
 	subscriptSizing="dynamic"
@@ -106,8 +106,8 @@
 			class="tw-h-0 tw-border-x-[0.1rem] tw-border-b-[0.1rem] tw-border-primary tw-p-0 tw-pl-2 tw-pr-[0.2rem]"
 			*matCellDef="let artifact">
 			{{ artifact.workflowID }}
-			<ng-container *ngIf="endPointUrl | async as _link">
-				<ng-container *ngIf="artifact.changeReport">
+			@if (endPointUrl | async; as _link) {
+				@if (artifact.changeReport) {
 					<br />
 					<button
 						mat-button
@@ -122,8 +122,8 @@
 						">
 						REQ
 					</button>
-				</ng-container>
-			</ng-container>
+				}
+			}
 		</td>
 	</ng-container>
 
@@ -253,26 +253,29 @@
 							Test
 						</th>
 					</tr>
-					<tr
-						class="tw-border-b-[0.1rem] tw-border-b-primary"
-						*ngFor="let requirement of element.requirements">
-						<td
-							mat-cell
-							class="tw-h-0 tw-border-x-[0.1rem] tw-border-b-[0.1rem] tw-border-primary tw-p-0 tw-pl-2 tw-pr-[0.2rem]">
-							{{ requirement.name }}
-						</td>
-						<td
-							mat-cell
-							class="tw-h-0 tw-border-x-[0.1rem] tw-border-b-[0.1rem] tw-border-primary tw-p-0 tw-pl-2 tw-pr-[0.2rem]">
-							<tr
+					@for (
+						requirement of element.requirements;
+						track requirement
+					) {
+						<tr class="tw-border-b-[0.1rem] tw-border-b-primary">
+							<td
 								mat-cell
-								*ngFor="let test of requirement.tests">
-								{{
-									getTestTd(test)
-								}}
-							</tr>
-						</td>
-					</tr>
+								class="tw-h-0 tw-border-x-[0.1rem] tw-border-b-[0.1rem] tw-border-primary tw-p-0 tw-pl-2 tw-pr-[0.2rem]">
+								{{ requirement.name }}
+							</td>
+							<td
+								mat-cell
+								class="tw-h-0 tw-border-x-[0.1rem] tw-border-b-[0.1rem] tw-border-primary tw-p-0 tw-pl-2 tw-pr-[0.2rem]">
+								@for (test of requirement.tests; track test) {
+									<tr mat-cell>
+										{{
+											getTestTd(test)
+										}}
+									</tr>
+								}
+							</td>
+						</tr>
+					}
 				</table>
 			</div>
 		</td>

@@ -1,22 +1,21 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <div class="tw-flex tw-h-full tw-flex-col">
 	<osee-server-health-page-header
 		[icon]="currNavItem.icon"
 		[name]="currNavItem.label"
 		[description]="currNavItem.description" />
-	<ng-container
-		*ngIf="serversAsDataSource | async as dataSource; else noData">
+	@if (serversAsDataSource | async; as dataSource) {
 		<div>
 			<table
 				mat-table
@@ -85,121 +84,125 @@
 						*matCellDef="let server"
 						[attr.colspan]="displayedColumns.length"
 						class="tw-p-0">
-						<div
-							class="tw-overflow-hidden"
-							[@detailExpand]="
-								server.expanded ? 'expanded' : 'collapsed'
-							"
-							*ngIf="
-								server.expanded &&
-								server.serverAlive &&
-								server.dbAlive
-							">
-							<mat-expansion-panel class="[&>div>div]:tw-p-0">
-								<mat-expansion-panel-header
-									(click)="
-										panelsOpen().includes(
-											server.name + 'Details'
-										)
-											? removeFromPanelsOpen(
-													server.name + 'Details'
-											  )
-											: addToPanelsOpen(
-													server.name + 'Details'
-											  )
-									"
-									[ngClass]="
-										panelsOpen().includes(
-											server.name + 'Details'
-										)
-											? 'tw-bg-primary-500 hover:tw-bg-primary-700 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900'
-											: ''
-									"
-									class="tw-pl-16 tw-shadow-md">
-									<mat-panel-title> Details </mat-panel-title>
-								</mat-expansion-panel-header>
-								<osee-server-health-details
-									[serverName]="server.name" />
-							</mat-expansion-panel>
-							<mat-expansion-panel class="[&>div>div]:tw-p-0">
-								<mat-expansion-panel-header
-									(click)="
-										panelsOpen().includes(
-											server.name + 'Log'
-										)
-											? removeFromPanelsOpen(
-													server.name + 'Log'
-											  )
-											: addToPanelsOpen(
-													server.name + 'Log'
-											  )
-									"
-									[ngClass]="
-										panelsOpen().includes(
-											server.name + 'Log'
-										)
-											? 'tw-bg-primary-500 hover:tw-bg-primary-700 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900'
-											: ''
-									"
-									class="tw-pl-16 tw-shadow-md">
-									<mat-panel-title> Log </mat-panel-title>
-								</mat-expansion-panel-header>
-								<osee-server-health-log />
-							</mat-expansion-panel>
-							<mat-expansion-panel class="[&>div>div]:tw-p-0">
-								<mat-expansion-panel-header
-									(click)="
-										panelsOpen().includes(
-											server.name + 'Java'
-										)
-											? removeFromPanelsOpen(
-													server.name + 'Java'
-											  )
-											: addToPanelsOpen(
-													server.name + 'Java'
-											  )
-									"
-									[ngClass]="
-										panelsOpen().includes(
-											server.name + 'Java'
-										)
-											? 'tw-bg-primary-500 hover:tw-bg-primary-700 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900'
-											: ''
-									"
-									class="tw-pl-16 tw-shadow-md">
-									<mat-panel-title> Java </mat-panel-title>
-								</mat-expansion-panel-header>
-								<osee-server-health-java />
-							</mat-expansion-panel>
-							<mat-expansion-panel class="[&>div>div]:tw-p-0">
-								<mat-expansion-panel-header
-									(click)="
-										panelsOpen().includes(
-											server.name + 'Top'
-										)
-											? removeFromPanelsOpen(
-													server.name + 'Top'
-											  )
-											: addToPanelsOpen(
-													server.name + 'Top'
-											  )
-									"
-									[ngClass]="
-										panelsOpen().includes(
-											server.name + 'Top'
-										)
-											? 'tw-bg-primary-500 hover:tw-bg-primary-700 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900'
-											: ''
-									"
-									class="tw-pl-16 tw-shadow-md">
-									<mat-panel-title> Top </mat-panel-title>
-								</mat-expansion-panel-header>
-								<osee-server-health-top />
-							</mat-expansion-panel>
-						</div>
+						@if (
+							server.expanded &&
+							server.serverAlive &&
+							server.dbAlive
+						) {
+							<div
+								class="tw-overflow-hidden"
+								[@detailExpand]="
+									server.expanded ? 'expanded' : 'collapsed'
+								">
+								<mat-expansion-panel class="[&>div>div]:tw-p-0">
+									<mat-expansion-panel-header
+										(click)="
+											panelsOpen().includes(
+												server.name + 'Details'
+											)
+												? removeFromPanelsOpen(
+														server.name + 'Details'
+												  )
+												: addToPanelsOpen(
+														server.name + 'Details'
+												  )
+										"
+										[ngClass]="
+											panelsOpen().includes(
+												server.name + 'Details'
+											)
+												? 'tw-bg-primary-500 hover:tw-bg-primary-700 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900'
+												: ''
+										"
+										class="tw-pl-16 tw-shadow-md">
+										<mat-panel-title>
+											Details
+										</mat-panel-title>
+									</mat-expansion-panel-header>
+									<osee-server-health-details
+										[serverName]="server.name" />
+								</mat-expansion-panel>
+								<mat-expansion-panel class="[&>div>div]:tw-p-0">
+									<mat-expansion-panel-header
+										(click)="
+											panelsOpen().includes(
+												server.name + 'Log'
+											)
+												? removeFromPanelsOpen(
+														server.name + 'Log'
+												  )
+												: addToPanelsOpen(
+														server.name + 'Log'
+												  )
+										"
+										[ngClass]="
+											panelsOpen().includes(
+												server.name + 'Log'
+											)
+												? 'tw-bg-primary-500 hover:tw-bg-primary-700 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900'
+												: ''
+										"
+										class="tw-pl-16 tw-shadow-md">
+										<mat-panel-title> Log </mat-panel-title>
+									</mat-expansion-panel-header>
+									<osee-server-health-log />
+								</mat-expansion-panel>
+								<mat-expansion-panel class="[&>div>div]:tw-p-0">
+									<mat-expansion-panel-header
+										(click)="
+											panelsOpen().includes(
+												server.name + 'Java'
+											)
+												? removeFromPanelsOpen(
+														server.name + 'Java'
+												  )
+												: addToPanelsOpen(
+														server.name + 'Java'
+												  )
+										"
+										[ngClass]="
+											panelsOpen().includes(
+												server.name + 'Java'
+											)
+												? 'tw-bg-primary-500 hover:tw-bg-primary-700 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900'
+												: ''
+										"
+										class="tw-pl-16 tw-shadow-md">
+										<mat-panel-title>
+											Java
+										</mat-panel-title>
+									</mat-expansion-panel-header>
+									<osee-server-health-java />
+								</mat-expansion-panel>
+								<mat-expansion-panel class="[&>div>div]:tw-p-0">
+									<mat-expansion-panel-header
+										(click)="
+											panelsOpen().includes(
+												server.name + 'Top'
+											)
+												? removeFromPanelsOpen(
+														server.name + 'Top'
+												  )
+												: addToPanelsOpen(
+														server.name + 'Top'
+												  )
+										"
+										[ngClass]="
+											panelsOpen().includes(
+												server.name + 'Top'
+											)
+												? 'tw-bg-primary-500 hover:tw-bg-primary-700 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900'
+												: ''
+										"
+										class="tw-pl-16 tw-shadow-md">
+										<mat-panel-title> Top </mat-panel-title>
+									</mat-expansion-panel-header>
+									<osee-server-health-top />
+								</mat-expansion-panel>
+							</div>
+						}
 					</td>
 				</ng-container>
-
 				<tr
 					mat-header-row
 					*matHeaderRowDef="displayedColumns; sticky: true"></tr>
@@ -218,9 +221,9 @@
 					class="tw-h-0"></tr>
 			</table>
 		</div>
-	</ng-container>
+	} @else {
+		<div class="tw-flex tw-items-center tw-justify-center tw-p-4">
+			No data
+		</div>
+	}
 </div>
-
-<ng-template #noData>
-	<div class="tw-flex tw-items-center tw-justify-center tw-p-4">No data</div>
-</ng-template>

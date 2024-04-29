@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
-import { AsyncPipe, NgFor } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
@@ -66,7 +66,6 @@ import type { PlatformType } from '@osee/messaging/shared/types';
 		CdkTextareaAutosize,
 		MatSelect,
 		AsyncPipe,
-		NgFor,
 		UnitDropdownComponent,
 	],
 })

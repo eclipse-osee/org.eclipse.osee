@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <h1 mat-dialog-title>Create New Platform Type</h1>
 <mat-horizontal-stepper
 	#stepper
@@ -18,35 +18,33 @@
 		label="Select a logical type"
 		[completed]="
 			!(
-				(logicalTypeSelector !== undefined &&
-					logicalTypeSelector.form !== undefined &&
-					(logicalTypeSelector.form.pending ||
-						logicalTypeSelector.form.disabled ||
-						logicalTypeSelector.form.invalid)) ||
-				logicalTypeSelector === undefined ||
-				logicalTypeSelector.form === undefined
+				(logicalTypeSelector() !== undefined &&
+					logicalTypeSelector()!.form() !== undefined &&
+					(logicalTypeSelector()!.form().pending ||
+						logicalTypeSelector()!.form().disabled ||
+						logicalTypeSelector()!.form().invalid)) ||
+				logicalTypeSelector() === undefined ||
+				logicalTypeSelector()?.form() === undefined
 			)
 		">
 		<mat-dialog-content>
-			<ng-container *ngIf="logicalTypeSubject | async as __logicalType">
-				<osee-logical-type-selector
-					[type]="__logicalType"
-					(typeChanged)="setLogicalType($event)">
-				</osee-logical-type-selector>
-			</ng-container>
+			<osee-logical-type-selector
+				[type]="selectedLogicalType()"
+				(typeChanged)="setLogicalType($event)">
+			</osee-logical-type-selector>
 		</mat-dialog-content>
 		<mat-dialog-actions align="end">
 			<button
 				mat-button
 				matStepperNext
 				[disabled]="
-					(logicalTypeSelector !== undefined &&
-						logicalTypeSelector.form !== undefined &&
-						(logicalTypeSelector.form.pending ||
-							logicalTypeSelector.form.disabled ||
-							logicalTypeSelector.form.invalid)) ||
-					logicalTypeSelector === undefined ||
-					logicalTypeSelector.form === undefined
+					(logicalTypeSelector() !== undefined &&
+						logicalTypeSelector()!.form() !== undefined &&
+						(logicalTypeSelector()!.form().pending ||
+							logicalTypeSelector()!.form().disabled ||
+							logicalTypeSelector()!.form().invalid)) ||
+					logicalTypeSelector() === undefined ||
+					logicalTypeSelector()?.form() === undefined
 				"
 				data-cy="stepper-next-1">
 				Next
@@ -54,48 +52,39 @@
 		</mat-dialog-actions>
 	</mat-step>
 	<mat-step label="Fill out type information">
-		<ng-container *ngIf="logicalTypeSubject | async as __logicalType">
-			<osee-new-platform-type-form-page2
-				[logicalType]="__logicalType"
-				(typeFormState)="
-					updateFormState($event)
-				"></osee-new-platform-type-form-page2>
-		</ng-container>
+		<osee-new-platform-type-form-page2
+			[logicalType]="selectedLogicalType()"
+			(typeFormState)="
+				updateFormState($event)
+			"></osee-new-platform-type-form-page2>
 	</mat-step>
 	<mat-step label="Summary">
-		<ng-container *ngIf="closeDialog | async"></ng-container>
+		@if (closeDialog | async) {}
 		<mat-dialog-content>
 			<p class="mat-headline-5">
 				A new platform type of type
-				{{ (logicalTypeSubject | async)?.name | titlecase }} will be
-				created with the following properties:
+				{{ selectedLogicalType().name | titlecase }}
+				will be created with the following properties:
 			</p>
 			<br />
-			<ng-container *ngIf="_typeFormState | async as attrs">
-				<ng-container
-					*ngFor="let attr of attrs.platformType | keyvalue">
-					<ng-container
-						*ngIf="
-							attr.key !== 'id' && attr.key !== 'applicability'
-						">
+			@if (_typeFormState | async; as attrs) {
+				@for (attr of attrs.platformType | keyvalue; track attr) {
+					@if (attr.key !== 'id' && attr.key !== 'applicability') {
 						<mat-label class="mat-headline-6">
 							{{ attr.key | titlecase }} :
 							{{ attr.value }}</mat-label
 						>
 						<br />
-					</ng-container>
-					<ng-container
-						*ngIf="
-							attr.key === 'applicability' && isApplic(attr.value)
-						">
+					}
+					@if (attr.key === 'applicability' && isApplic(attr.value)) {
 						<mat-label class="mat-headline-6">
 							{{ attr.key | titlecase }} :
 							{{ attr.value.name }}</mat-label
 						>
 						<br />
-					</ng-container>
-				</ng-container>
-			</ng-container>
+					}
+				}
+			}
 			<!--TODO: add enum set/enum display-->
 		</mat-dialog-content>
 		<mat-dialog-actions align="end">

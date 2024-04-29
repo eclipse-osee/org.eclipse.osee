@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -40,7 +40,7 @@ import type { SetReference } from '../../../types/tmo';
 	standalone: true,
 	templateUrl: './set-dropdown.component.html',
 	imports: [
-		CommonModule,
+		AsyncPipe,
 		FormsModule,
 		MatCheckbox,
 		MatFormField,

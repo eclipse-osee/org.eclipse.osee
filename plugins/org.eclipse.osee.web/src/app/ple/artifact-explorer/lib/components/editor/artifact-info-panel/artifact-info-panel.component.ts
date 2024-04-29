@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import {
 	MatExpansionPanel,
@@ -25,7 +25,7 @@ import { tab } from '../../../types/artifact-explorer.data';
 	selector: 'osee-artifact-info-panel',
 	standalone: true,
 	imports: [
-		CommonModule,
+		NgClass,
 		MatExpansionPanel,
 		MatExpansionPanelHeader,
 		MatExpansionPanelTitle,

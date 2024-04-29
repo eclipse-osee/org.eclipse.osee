@@ -1,51 +1,52 @@
 <!--
- * Copyright (c) 2021 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2021 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <osee-messaging-controls
 	[actionControls]="true"
 	[diff]="true"
 	[diffRouteLink]="(inDiffMode | async) === 'false' ? 'diff' : '../'">
-	<osee-view-selector
-		*ngIf="(branchId | async) && (branchType | async)"></osee-view-selector>
+	@if ((branchId | async) && (branchType | async)) {
+		<osee-view-selector></osee-view-selector>
+	}
 </osee-messaging-controls>
 <!-- <div class="tw-flex tw-w-full tw-px-8 tw-pb-4">
-	<mat-button-toggle-group
-		name="displayType"
-		aria-label="Display Type"
-		class="tw-ml-auto"
-		#group="matButtonToggleGroup">
-		<mat-button-toggle
-			value="graph"
-			class="tw-w-40"
-			[checked]="true"
+<mat-button-toggle-group
+  name="displayType"
+  aria-label="Display Type"
+  class="tw-ml-auto"
+  #group="matButtonToggleGroup">
+  <mat-button-toggle
+    value="graph"
+    class="tw-w-40"
+    [checked]="true"
 			[class]="
 				group.value === 'graph'
 					? 'tw-bg-primary-200 dark:tw-bg-primary-700'
 					: ''
 			"
-			>Graph View</mat-button-toggle
-		>
-		<mat-button-toggle
-			value="table"
-			class="tw-w-40"
+    >Graph View</mat-button-toggle
+    >
+    <mat-button-toggle
+      value="table"
+      class="tw-w-40"
 			[class]="
 				group.value === 'table'
 					? 'tw-bg-primary-200 dark:tw-bg-primary-700'
 					: ''
 			"
-			>Table View</mat-button-toggle
-		>
-	</mat-button-toggle-group>
-</div> -->
+      >Table View</mat-button-toggle
+      >
+    </mat-button-toggle-group>
+  </div> -->
 <!-- <ng-container *ngIf="group.value === 'graph'"> -->
 <osee-connection-view-graph
 	[editMode]="(inEditMode | async) || false"></osee-connection-view-graph>

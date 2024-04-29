@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <div class="training-course-table-container">
 	<mat-form-field class="tw-w-full">
 		<mat-label>Filter Table</mat-label>
@@ -19,51 +19,48 @@
 			#input />
 		<mat-icon matPrefix>filter_list</mat-icon>
 	</mat-form-field>
-	<ng-container *ngIf="courseRecordsAsMatTableDataSource$ | async as data">
+	@if (courseRecordsAsMatTableDataSource$ | async; as data) {
 		<table
 			mat-table
 			[dataSource]="data"
 			class="mat-elevation-z8 tw-rounded-md tw-border tw-border-solid">
 			<!-- If there is no data for the table, display a no data message -->
 			<div *matNoDataRow>No Courses</div>
-
-			<ng-container
-				*ngFor="let header of recordHeaders"
-				[matColumnDef]="header">
-				<th
-					mat-header-cell
-					*matHeaderCellDef
-					[ngClass]="{
-						'tw-border-r tw-border-solid': header !== 'endDate'
-					}">
-					<div class="tw-font-mat-bold tw-text-primary-600">
-						{{
-							(getTableHeadersByName(header) | async)
-								?.humanReadable || ''
-						}}
-					</div>
-				</th>
-
-				<td
-					mat-cell
-					*matCellDef="let item; let row = index"
-					[ngClass]="{
-						'tw-border-r tw-border-solid': header !== 'endDate'
-					}">
-					<ng-container *ngIf="header !== 'courseID'">
-						{{ item[header] }}
-					</ng-container>
-					<ng-container *ngIf="header === 'courseID'">
-						<button
-							mat-raised-button
-							color="primary"
-							(click)="viewCourseInfo(item[header])">
+			@for (header of recordHeaders; track header) {
+				<ng-container [matColumnDef]="header">
+					<th
+						mat-header-cell
+						*matHeaderCellDef
+						[ngClass]="{
+							'tw-border-r tw-border-solid': header !== 'endDate'
+						}">
+						<div class="tw-font-mat-bold tw-text-primary-600">
+							{{
+								(getTableHeadersByName(header) | async)
+									?.humanReadable || ''
+							}}
+						</div>
+					</th>
+					<td
+						mat-cell
+						*matCellDef="let item; let row = index"
+						[ngClass]="{
+							'tw-border-r tw-border-solid': header !== 'endDate'
+						}">
+						@if (header !== 'courseID') {
 							{{ item[header] }}
-						</button>
-					</ng-container>
-				</td>
-			</ng-container>
-
+						}
+						@if (header === 'courseID') {
+							<button
+								mat-raised-button
+								color="primary"
+								(click)="viewCourseInfo(item[header])">
+								{{ item[header] }}
+							</button>
+						}
+					</td>
+				</ng-container>
+			}
 			<tr
 				mat-header-row
 				*matHeaderRowDef="recordHeaders"></tr>
@@ -72,5 +69,5 @@
 				*matRowDef="let row; columns: recordHeaders"
 				class="odd:tw-bg-background-selected-button even:tw-bg-background-background"></tr>
 		</table>
-	</ng-container>
+	}
 </div>

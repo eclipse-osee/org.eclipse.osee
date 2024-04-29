@@ -1,18 +1,17 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
-<ng-container *ngIf="_formInfo | async as formInfo">
-	<ng-container
-		*ngIf="formInfo.name === 'enumeration'; else genericNewAttributes">
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
+@if (_formInfo | async; as formInfo) {
+	@if (formInfo.name === 'enumeration') {
 		<!-- disable attribute validation for enumerations since they are usually sharing common attributes -->
 		<div
 			ngModelGroup="platformTypeForm"
@@ -22,17 +21,16 @@
 				{{ formInfo.name | titlecase }}</mat-label
 			>
 			<br />
-			<ng-container *ngFor="let form of formInfo.fields; index as i">
+			@for (form of formInfo.fields; track form; let i = $index) {
 				<!-- Render form field inline instead of passing stuff down -->
 				<ng-container
 					*ngTemplateOutlet="
 						platformTypeEditor;
 						context: { form: form }
 					"></ng-container>
-			</ng-container>
+			}
 		</div>
-	</ng-container>
-	<ng-template #genericNewAttributes>
+	} @else {
 		<div
 			ngModelGroup="platformTypeForm"
 			#platformTypeCtrl="ngModelGroup"
@@ -42,24 +40,23 @@
 				{{ formInfo.name | titlecase }}</mat-label
 			>
 			<br />
-			<ng-container *ngFor="let form of formInfo.fields; index as i">
+			@for (form of formInfo.fields; track form; let i = $index) {
 				<ng-container
 					*ngTemplateOutlet="
 						platformTypeEditor;
 						context: { form: form }
 					"></ng-container>
-			</ng-container>
+			}
 		</div>
-	</ng-template>
-</ng-container>
+	}
+}
 <ng-template
 	#platformTypeEditor
 	let-form="form">
-	<ng-container *ngIf="isLogicalTypeFieldInfo(form)">
-		<ng-container *ngIf="form.editable">
-			<ng-container *ngIf="form.name === 'Units'; else genericInput">
-				<ng-container
-					*ngIf="isString(_platformType[form.jsonPropertyName])">
+	@if (isLogicalTypeFieldInfo(form)) {
+		@if (form.editable) {
+			@if (form.name === 'Units') {
+				@if (isString(_platformType[form.jsonPropertyName])) {
 					<osee-unit-dropdown
 						(unitChange)="
 							updateInnerPlatformType(
@@ -69,12 +66,11 @@
 							updateField()
 						"
 						[required]="form.required"></osee-unit-dropdown>
-				</ng-container>
-			</ng-container>
-			<ng-template #genericInput>
+				}
+			} @else {
 				<mat-form-field class="tw-w-full">
 					<mat-label>{{ form.name }}</mat-label>
-					<ng-container *ngIf="form.attributeType === 'Name'">
+					@if (form.attributeType === 'Name') {
 						<input
 							matInput
 							type="text"
@@ -87,8 +83,8 @@
 							#ctrl="ngModel"
 							[required]="form.required"
 							[attr.data-cy]="'field-' + form.attributeType" />
-					</ng-container>
-					<ng-container *ngIf="form.attributeType !== 'Name'">
+					}
+					@if (form.attributeType !== 'Name') {
 						<input
 							matInput
 							type="text"
@@ -99,15 +95,15 @@
 							#ctrl="ngModel"
 							[required]="form.required"
 							[attr.data-cy]="'field-' + form.attributeType" />
-					</ng-container>
-					<ng-container *ngIf="form.defaultValue">
+					}
+					@if (form.defaultValue) {
 						<mat-hint align="end"
 							>Default Value: {{ form.defaultValue }}</mat-hint
 						>
-					</ng-container>
+					}
 				</mat-form-field>
-			</ng-template>
+			}
 			<br />
-		</ng-container>
-	</ng-container>
+		}
+	}
 </ng-template>

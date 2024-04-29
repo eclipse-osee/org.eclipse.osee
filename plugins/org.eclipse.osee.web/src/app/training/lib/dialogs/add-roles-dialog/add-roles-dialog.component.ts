@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
@@ -44,9 +44,9 @@ import { MatSelect } from '@angular/material/select';
 import { UserDataAccountService } from '@osee/auth';
 import { user } from '@osee/shared/types/auth';
 import { Observable } from 'rxjs';
-import { AddCoursesDialogComponent } from '../add-courses-dialog/add-courses-dialog.component';
 import { TrainingRoleService } from '../../services/training-role.service';
 import { TrainingRoleRecord } from '../../types/training-role';
+import { AddCoursesDialogComponent } from '../add-courses-dialog/add-courses-dialog.component';
 
 @Component({
 	standalone: true,
@@ -56,7 +56,6 @@ import { TrainingRoleRecord } from '../../types/training-role';
 	imports: [
 		FormsModule,
 		AsyncPipe,
-		CommonModule,
 		MatDialogTitle,
 		MatDialogContent,
 		MatLabel,

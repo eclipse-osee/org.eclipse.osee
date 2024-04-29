@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2021 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2021 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <form #addMessageForm="ngForm">
 	<h1 mat-dialog-title>Create New Message</h1>
 	<mat-dialog-content>
@@ -48,12 +48,13 @@
 				required
 				name="periodicity"
 				data-cy="field-periodicity">
-				<mat-option
-					*ngFor="let option of periodicities | async"
-					[value]="option"
-					[attr.data-cy]="'option-' + option">
-					{{ option }}
-				</mat-option>
+				@for (option of periodicities | async; track option) {
+					<mat-option
+						[value]="option"
+						[attr.data-cy]="'option-' + option">
+						{{ option }}
+					</mat-option>
+				}
 			</mat-select>
 		</mat-form-field>
 		<br />
@@ -65,10 +66,11 @@
 			"
 			data-cy="field-write-access"
 			class="tw-w-full tw-pb-4">
-			<ng-container *ngIf="data.interfaceMessageWriteAccess; else read">
+			@if (data.interfaceMessageWriteAccess) {
 				Writable
-			</ng-container>
-			<ng-template #read> Read Only </ng-template>
+			} @else {
+				Read Only
+			}
 		</mat-slide-toggle>
 		<br />
 		<osee-message-type-dropdown
@@ -86,7 +88,7 @@
 				required
 				data-cy="field-message-number" />
 		</mat-form-field>
-		<ng-container *ngIf="transportType | async as type">
+		@if (transportType | async; as type) {
 			<br />
 			<mat-form-field class="tw-w-full">
 				<label>Publisher Node(s)</label>
@@ -99,25 +101,29 @@
 					#pubSelect="ngModel"
 					[oseeMessageNodesCount]="true"
 					data-cy="field-pub-node">
-					<mat-option
-						*ngFor="let option of nodes | async"
-						[value]="option"
-						[attr.data-cy]="'option-' + option.name">
-						{{ option.name }}
-					</mat-option>
+					@for (option of nodes | async; track option) {
+						<mat-option
+							[value]="option"
+							[attr.data-cy]="'option-' + option.name">
+							{{ option.name }}
+						</mat-option>
+					}
 				</mat-select>
-				<mat-error
-					*ngIf="
-						pubSelect.control.errors?.min ||
-						pubSelect.control.errors?.required
-					"
-					>Minimum nodes is
-					{{ type.minimumPublisherMultiplicity || 1 }}</mat-error
-				>
-				<mat-error *ngIf="pubSelect.control.errors?.max"
-					>Maximum nodes is
-					{{ type.maximumPublisherMultiplicity }}</mat-error
-				>
+				@if (
+					pubSelect.control.errors?.min ||
+					pubSelect.control.errors?.required
+				) {
+					<mat-error
+						>Minimum nodes is
+						{{ type.minimumPublisherMultiplicity || 1 }}</mat-error
+					>
+				}
+				@if (pubSelect.control.errors?.max) {
+					<mat-error
+						>Maximum nodes is
+						{{ type.maximumPublisherMultiplicity }}</mat-error
+					>
+				}
 			</mat-form-field>
 			<br />
 			<mat-form-field class="tw-w-full">
@@ -131,32 +137,36 @@
 					[compareWith]="compareIds"
 					[oseeMessageNodesCount]="false"
 					data-cy="field-sub-node">
-					<mat-option
-						*ngFor="let option of nodes | async"
-						[value]="option"
-						[id]="option.id"
-						[attr.data-cy]="'option-' + option.name">
-						{{ option.name }}
-					</mat-option>
+					@for (option of nodes | async; track option) {
+						<mat-option
+							[value]="option"
+							[id]="option.id"
+							[attr.data-cy]="'option-' + option.name">
+							{{ option.name }}
+						</mat-option>
+					}
 				</mat-select>
-				<mat-error
-					*ngIf="
-						subSelect.control.errors?.min ||
-						subSelect.control.errors?.required
-					"
-					>Minimum nodes is
-					{{ type.minimumSubscriberMultiplicity || 1 }}</mat-error
-				>
-				<mat-error *ngIf="subSelect.control.errors?.max"
-					>Maximum nodes is
-					{{ type.maximumSubscriberMultiplicity }}</mat-error
-				>
+				@if (
+					subSelect.control.errors?.min ||
+					subSelect.control.errors?.required
+				) {
+					<mat-error
+						>Minimum nodes is
+						{{ type.minimumSubscriberMultiplicity || 1 }}</mat-error
+					>
+				}
+				@if (subSelect.control.errors?.max) {
+					<mat-error
+						>Maximum nodes is
+						{{ type.maximumSubscriberMultiplicity }}</mat-error
+					>
+				}
 			</mat-form-field>
 			<osee-applicability-selector
 				[applicability]="data.applicability"
 				(applicabilityChange)="data.applicability = $event"
 				[required]="true"></osee-applicability-selector>
-		</ng-container>
+		}
 	</mat-dialog-content>
 	<mat-dialog-actions align="end">
 		<button
@@ -165,8 +175,8 @@
 			data-cy="cancel-btn">
 			Cancel
 		</button>
-		<ng-container *ngIf="transportType | async as type">
-			<ng-container *ngIf="type.id !== '-1'; else invalidTransportType">
+		@if (transportType | async; as type) {
+			@if (type.id !== '-1') {
 				<button
 					mat-raised-button
 					[mat-dialog-close]="data"
@@ -177,13 +187,12 @@
 					data-cy="submit-btn">
 					Ok
 				</button>
-			</ng-container>
-		</ng-container>
-		<ng-template #invalidTransportType>
-			<mat-error
-				>Transport Type is invalid. Please contact a MIM
-				admin.</mat-error
-			>
-		</ng-template>
+			} @else {
+				<mat-error
+					>Transport Type is invalid. Please contact a MIM
+					admin.</mat-error
+				>
+			}
+		}
 	</mat-dialog-actions>
 </form>

@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
@@ -39,7 +39,7 @@ import {
 	selector: 'osee-view-selector',
 	standalone: true,
 	imports: [
-		CommonModule,
+		AsyncPipe,
 		FormsModule,
 		MatFormField,
 		MatLabel,

@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2022 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2022 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <form
 	#f="ngForm"
 	(ngSubmit)="_onSubmit(f)">
@@ -32,66 +32,74 @@
 			name="inputElement"
 			#inputElement="ngModel" />
 
-		<input
-			*ngIf="usePredictiveText"
-			class="mat-elevation-z0 tw-absolute tw-left-0 tw-w-full"
-			id="suggestion-text"
-			matInput
-			placeholder="{{ predictiveText | async }}"
-			disabled />
+		@if (usePredictiveText) {
+			<input
+				class="mat-elevation-z0 tw-absolute tw-left-0 tw-w-full"
+				id="suggestion-text"
+				matInput
+				placeholder="{{ predictiveText | async }}"
+				disabled />
+		}
 
 		<mat-autocomplete
 			autoActiveFirstOption
 			#auto="matAutocomplete">
-			<mat-optgroup
-				*ngFor="let command of data"
-				[label]="command.contextGroup">
-				<ng-container
-					*ngIf="
+			@for (command of data; track command) {
+				<mat-optgroup [label]="command.contextGroup">
+					@if (
 						command.commands !== undefined &&
 						(isParamDefined$ | async) === false
-					">
-					<mat-option
-						(onSelectionChange)="
-							_onCommandObjSelected(commandObject, f)
-						"
-						*ngFor="let commandObject of command.commands"
-						[value]="commandObject.name">
-						<ng-container *ngIf="input !== null">
-							<span
-								oseeHighlightFilteredText
-								[searchTerms]="input"
-								[text]="commandObject.name"
-								classToApply="tw-text-accent-900">
-								{{ commandObject.name }}
-							</span>
-						</ng-container>
-					</mat-option>
-				</ng-container>
-			</mat-optgroup>
+					) {
+						@for (
+							commandObject of command.commands;
+							track commandObject
+						) {
+							<mat-option
+								(onSelectionChange)="
+									_onCommandObjSelected(commandObject, f)
+								"
+								[value]="commandObject.name">
+								@if (input !== null) {
+									<span
+										oseeHighlightFilteredText
+										[searchTerms]="input"
+										[text]="commandObject.name"
+										classToApply="tw-text-accent-900">
+										{{ commandObject.name }}
+									</span>
+								}
+							</mat-option>
+						}
+					}
+				</mat-optgroup>
+			}
 		</mat-autocomplete>
 
-		<button
-			*ngIf="displayHelpIcon && (input === null || input?.length === 0)"
-			matIconSuffix
-			mat-icon-button
-			matTooltip="Shows all commands"
-			matTooltipClass="tw-text-background-selected-disabled-button"
-			(click)="_dialog($event)">
-			<mat-icon
-				class="tw-text-background-selected-disabled-button dark:tw-text-foreground-disabled-button">
-				help_center
-			</mat-icon>
-		</button>
-		<button
-			type="button"
-			*ngIf="input !== undefined && input && !fromHistory"
-			matSuffix
-			mat-icon-button
-			aria-label="Clear"
-			(click)="clearInput()">
-			<mat-icon>close</mat-icon>
-		</button>
-		<mat-error *ngIf="inputElement.invalid"> {{ error }}</mat-error>
+		@if (displayHelpIcon && (input === null || input.length === 0)) {
+			<button
+				matIconSuffix
+				mat-icon-button
+				matTooltip="Shows all commands"
+				matTooltipClass="tw-text-background-selected-disabled-button"
+				(click)="_dialog($event)">
+				<mat-icon
+					class="tw-text-background-selected-disabled-button dark:tw-text-foreground-disabled-button">
+					help_center
+				</mat-icon>
+			</button>
+		}
+		@if (input !== undefined && input && !fromHistory) {
+			<button
+				type="button"
+				matSuffix
+				mat-icon-button
+				aria-label="Clear"
+				(click)="clearInput()">
+				<mat-icon>close</mat-icon>
+			</button>
+		}
+		@if (inputElement.invalid) {
+			<mat-error> {{ error }}</mat-error>
+		}
 	</mat-form-field>
 </form>

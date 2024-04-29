@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
@@ -20,7 +20,7 @@ import {
 	MatMenuItem,
 	MatMenuTrigger,
 } from '@angular/material/menu';
-import { from, iif, of, OperatorFunction, throwError } from 'rxjs';
+import { OperatorFunction, from, iif, of, throwError } from 'rxjs';
 import {
 	filter,
 	map,
@@ -47,8 +47,6 @@ import { addCfgGroup } from '../../types/pl-config-cfggroups';
 		MatMenuContent,
 		MatMenu,
 		MatIcon,
-		NgFor,
-		NgIf,
 		AsyncPipe,
 	],
 })

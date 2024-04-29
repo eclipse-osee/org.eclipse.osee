@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
@@ -59,8 +59,6 @@ import { concatMap, filter, map, reduce, switchMap, tap } from 'rxjs/operators';
 	],
 	standalone: true,
 	imports: [
-		NgIf,
-		NgFor,
 		AsyncPipe,
 		FormsModule,
 		MatFormField,

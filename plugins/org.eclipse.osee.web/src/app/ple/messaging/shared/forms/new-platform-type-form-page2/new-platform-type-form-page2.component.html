@@ -1,27 +1,26 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <form #platformTypeForm="ngForm">
-	<ng-container *ngIf="logicalTypeSubject | async as __logicalType">
-		<ng-container
-			*ngIf="__logicalType.id !== '' && __logicalType.id !== '-1'">
+	@if (logicalTypeSubject | async; as __logicalType) {
+		@if (__logicalType.id !== '' && __logicalType.id !== '-1') {
 			<mat-dialog-content>
 				<osee-new-platform-type-form
 					[logicalType]="__logicalType"
 					(platformType)="
 						attributesUpdate($event)
 					"></osee-new-platform-type-form>
-				<ng-container *ngIf="__logicalType.name === 'enumeration'">
-					<ng-container *ngIf="(createNewEnum | async) !== true">
+				@if (__logicalType.name === 'enumeration') {
+					@if ((createNewEnum | async) !== true) {
 						<mat-form-field class="tw-w-full">
 							<mat-label>Select an Enumeration Set</mat-label>
 							<mat-select
@@ -50,7 +49,7 @@
 								}}</mat-icon>
 							</button>
 						</mat-form-field>
-					</ng-container>
+					}
 					<div
 						[@detailExpand]="
 							(createNewEnum | async) === true &&
@@ -58,20 +57,13 @@
 								? 'expanded'
 								: 'collapsed'
 						">
-						<ng-container *ngIf="(createNewEnum | async) === true">
-							<ng-container
-								*ngIf="
-									platformType | async as attrs;
-									else NoBitSize
-								">
-								<ng-container
-									*ngIf="
-										attrs.interfacePlatformTypeBitSize !==
-											undefined &&
-											attrs.interfacePlatformTypeBitSize !==
-												'0';
-										else NoBitSize
-									">
+						@if ((createNewEnum | async) === true) {
+							@if (platformType | async; as attrs) {
+								@if (
+									attrs.interfacePlatformTypeBitSize !==
+										undefined &&
+									attrs.interfacePlatformTypeBitSize !== '0'
+								) {
 									<osee-enum-set-form
 										[bitSize]="
 											attrs.interfacePlatformTypeBitSize ||
@@ -81,17 +73,19 @@
 										(closed)="
 											toggleEnumCreationState()
 										"></osee-enum-set-form>
-								</ng-container>
-							</ng-container>
-							<ng-template #NoBitSize>
+								} @else {
+									No Bit Size defined, please select a bit
+									size above.
+								}
+							} @else {
 								No Bit Size defined, please select a bit size
 								above.
-							</ng-template>
-						</ng-container>
+							}
+						}
 					</div>
-				</ng-container>
+				}
 			</mat-dialog-content>
-		</ng-container>
+		}
 		<mat-dialog-actions align="end">
 			<button
 				mat-button
@@ -123,5 +117,5 @@
 				Next
 			</button>
 		</mat-dialog-actions>
-	</ng-container>
+	}
 </form>

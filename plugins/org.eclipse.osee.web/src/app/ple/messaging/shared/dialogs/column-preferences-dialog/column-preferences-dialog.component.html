@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2021 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2021 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <h1 mat-dialog-title>Settings</h1>
 <mat-dialog-content>
 	<div class="tw-flex tw-flex-col tw-items-start">
@@ -27,7 +27,7 @@
 			<mat-label>Word Wrap</mat-label>
 		</mat-checkbox>
 	</div>
-	<ng-container *ngIf="data.headersTableActive">
+	@if (data.headersTableActive) {
 		<div
 			class="tw-flex tw-justify-between tw-justify-items-center tw-px-0 tw-pb-1 tw-pt-2">
 			<h2 class="tw-m-0">Column Preferences</h2>
@@ -52,45 +52,47 @@
 					<mat-selection-list
 						[(ngModel)]="data.allowedHeaders1"
 						color="primary">
-						<ng-container *ngFor="let header of data.allHeaders1">
-							<mat-list-option
-								*ngIf="isString(header)"
-								[value]="header"
-								[attr.data-cy]="'header-' + header"
-								[attr.data-cy-checked]="
-									'selection-' + isChecked(0, header)
-								">
-								{{
-									(
-										getHeaderByName(header, 'structure')
-										| async
-									)?.humanReadable
-								}}
-							</mat-list-option>
-						</ng-container>
+						@for (header of data.allHeaders1; track header) {
+							@if (isString(header)) {
+								<mat-list-option
+									[value]="header"
+									[attr.data-cy]="'header-' + header"
+									[attr.data-cy-checked]="
+										'selection-' + isChecked(0, header)
+									">
+									{{
+										(
+											getHeaderByName(header, 'structure')
+											| async
+										)?.humanReadable
+									}}
+								</mat-list-option>
+							}
+						}
 					</mat-selection-list>
 				</td>
 				<td class="mat-cell tw-align-top">
 					<mat-selection-list
 						[(ngModel)]="data.allowedHeaders2"
 						color="primary">
-						<mat-list-option
-							*ngFor="let header of data.allHeaders2"
-							[value]="header"
-							[attr.data-cy]="'header-' + header"
-							[attr.data-cy-checked]="
-								'selection-' + isChecked(1, header)
-							">
-							{{
-								(getHeaderByName(header, 'element') | async)
-									?.humanReadable
-							}}
-						</mat-list-option>
+						@for (header of data.allHeaders2; track header) {
+							<mat-list-option
+								[value]="header"
+								[attr.data-cy]="'header-' + header"
+								[attr.data-cy-checked]="
+									'selection-' + isChecked(1, header)
+								">
+								{{
+									(getHeaderByName(header, 'element') | async)
+										?.humanReadable
+								}}
+							</mat-list-option>
+						}
 					</mat-selection-list>
 				</td>
 			</tr>
 		</table>
-	</ng-container>
+	}
 </mat-dialog-content>
 <mat-dialog-actions align="end">
 	<button

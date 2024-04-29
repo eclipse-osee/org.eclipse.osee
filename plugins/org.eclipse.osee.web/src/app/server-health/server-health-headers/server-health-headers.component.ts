@@ -11,16 +11,17 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
+import { AsyncPipe } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { navigationStructure } from '@osee/layout/routing';
 import {
-	navigationElement,
 	defaultNavigationElement,
+	navigationElement,
 } from '@osee/shared/types';
+import { shareReplay } from 'rxjs';
 import { ServerHealthPageHeaderComponent } from '../shared/components/server-health-page-header/server-health-page-header.component';
 import { ServerHealthHttpService } from '../shared/services/server-health-http.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { shareReplay } from 'rxjs';
 import { unknownJson } from '../shared/types/server-health-types';
 
 const _currNavItem: navigationElement =
@@ -30,7 +31,7 @@ const _currNavItem: navigationElement =
 @Component({
 	selector: 'osee-server-health-headers',
 	standalone: true,
-	imports: [CommonModule, ServerHealthPageHeaderComponent],
+	imports: [AsyncPipe, ServerHealthPageHeaderComponent],
 	templateUrl: './server-health-headers.component.html',
 })
 export class ServerHealthHeadersComponent {

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import {
 	Component,
 	Input,
@@ -60,7 +60,8 @@ import { RelationDeleteDialogComponent } from '../relation-delete-dialog/relatio
 	selector: 'osee-relations-editor-panel',
 	standalone: true,
 	imports: [
-		CommonModule,
+		NgClass,
+		AsyncPipe,
 		MatExpansionPanel,
 		MatExpansionPanelHeader,
 		MatExpansionPanelTitle,

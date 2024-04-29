@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, OnDestroy } from '@angular/core';
 import { CommandPaletteComponent } from './command-palette/command-palette/command-palette.component';
 import { CreateCommandFormComponent } from './create-form/create-command-form/create-command-form.component';
@@ -26,7 +26,6 @@ import { DataTableService } from './services/datatable-services/datatable.servic
 	standalone: true,
 	imports: [
 		CommandPaletteComponent,
-		NgIf,
 		CreateCommandFormComponent,
 		GcDatatableComponent,
 		AsyncPipe,

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CdkDropListGroup } from '@angular/cdk/drag-drop';
-import { CommonModule } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -31,7 +31,7 @@ import { ArtifactExplorerPreferencesService } from './lib/services/artifact-expl
 	selector: 'osee-artifact-explorer',
 	standalone: true,
 	imports: [
-		CommonModule,
+		NgClass,
 		ArtifactHierarchyPanelComponent,
 		ArtifactTabGroupComponent,
 		MatDrawerContainer,

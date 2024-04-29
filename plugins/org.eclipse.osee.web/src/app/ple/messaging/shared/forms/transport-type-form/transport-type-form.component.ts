@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgFor } from '@angular/common';
-import { Component, inject, Input, Output } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { Component, Input, Output, inject } from '@angular/core';
 import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatDialogActions, MatDialogContent } from '@angular/material/dialog';
@@ -24,8 +24,8 @@ import { HeaderService } from '@osee/messaging/shared/services';
 import {
 	INTERFACELEVELS,
 	TransportType,
-	transportTypeAttributes,
 	TransportTypeForm,
+	transportTypeAttributes,
 } from '@osee/messaging/shared/types';
 import { ApplicabilitySelectorComponent } from '@osee/shared/components';
 import { ParentErrorStateMatcher } from '@osee/shared/matchers';
@@ -36,7 +36,6 @@ import { Subject } from 'rxjs';
 	standalone: true,
 	imports: [
 		FormsModule,
-		NgFor,
 		AsyncPipe,
 		MatDialogContent,
 		MatFormField,

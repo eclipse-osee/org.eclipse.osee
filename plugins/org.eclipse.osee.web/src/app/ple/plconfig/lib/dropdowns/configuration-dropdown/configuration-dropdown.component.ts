@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatLabel } from '@angular/material/form-field';
@@ -21,7 +21,7 @@ import {
 	MatMenuItem,
 	MatMenuTrigger,
 } from '@angular/material/menu';
-import { iif, Observable, of, OperatorFunction } from 'rxjs';
+import { Observable, OperatorFunction, iif, of } from 'rxjs';
 import { filter, shareReplay, switchMap, take } from 'rxjs/operators';
 import { AddConfigurationDialogComponent } from '../../dialogs/add-configuration-dialog/add-configuration-dialog.component';
 import { CopyConfigurationDialogComponent } from '../../dialogs/copy-configuration-dialog/copy-configuration-dialog.component';
@@ -41,8 +41,6 @@ import {
 	styles: [],
 	standalone: true,
 	imports: [
-		NgFor,
-		NgIf,
 		AsyncPipe,
 		MatMenuItem,
 		MatMenuTrigger,

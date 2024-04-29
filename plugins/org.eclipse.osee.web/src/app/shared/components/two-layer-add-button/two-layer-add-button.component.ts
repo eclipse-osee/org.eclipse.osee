@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import {
 	MatButton,
@@ -35,15 +35,7 @@ import {
 		addButtonHoverIconTransition,
 	],
 	standalone: true,
-	imports: [
-		NgFor,
-		AsyncPipe,
-		NgIf,
-		MatMiniFabButton,
-		MatIcon,
-		MatButton,
-		MatFabButton,
-	],
+	imports: [AsyncPipe, MatMiniFabButton, MatIcon, MatButton, MatFabButton],
 })
 export class TwoLayerAddButtonComponent<
 	T extends string = any,

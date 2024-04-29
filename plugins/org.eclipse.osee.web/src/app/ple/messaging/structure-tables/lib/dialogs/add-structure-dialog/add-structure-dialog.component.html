@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2021 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2021 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <h1 mat-dialog-title>Add Structure to {{ data.name }}</h1>
 <mat-horizontal-stepper #stepper>
 	<mat-step
@@ -41,8 +41,7 @@
 						(keyup)="applySearchTerm($event)"
 						name="autocomplete-text" />
 					<mat-autocomplete #auto="matAutocomplete">
-						<ng-container
-							*ngIf="availableStructures | async as structures">
+						@if (availableStructures | async; as structures) {
 							<osee-mat-option-loading
 								[data]="structures"
 								[count]="
@@ -63,19 +62,20 @@
 									</mat-option>
 								</ng-template>
 							</osee-mat-option-loading>
-						</ng-container>
+						}
 					</mat-autocomplete>
 				</mat-form-field>
 			</div>
 		</mat-dialog-content>
 		<mat-dialog-actions align="end">
-			<button
-				mat-raised-button
-				color="primary"
-				*ngIf="selectedStructure"
-				(click)="moveToReview(stepper)">
-				Proceed to Review
-			</button>
+			@if (selectedStructure) {
+				<button
+					mat-raised-button
+					color="primary"
+					(click)="moveToReview(stepper)">
+					Proceed to Review
+				</button>
+			}
 		</mat-dialog-actions>
 	</mat-step>
 	<mat-step
@@ -100,10 +100,12 @@
 						[required]="data.structure.name.length > 31"
 						maxlength="31"
 						data-cy="field-name-abbrev" />
-					<mat-hint *ngIf="nameAbbrevInput.value.length > 0"
-						>{{ nameAbbrevInput.value.length || 0 }}/31
-						characters</mat-hint
-					>
+					@if (nameAbbrevInput.value.length > 0) {
+						<mat-hint
+							>{{ nameAbbrevInput.value.length || 0 }}/31
+							characters</mat-hint
+						>
+					}
 				</mat-form-field>
 				<mat-form-field>
 					<mat-label>Description</mat-label>
@@ -147,12 +149,13 @@
 						[(ngModel)]="data.structure.interfaceStructureCategory"
 						required
 						data-cy="field-category">
-						<mat-option
-							*ngFor="let option of categories | async"
-							[value]="option"
-							[attr.data-cy]="'option-' + option">
-							{{ option }}
-						</mat-option>
+						@for (option of categories | async; track option) {
+							<mat-option
+								[value]="option"
+								[attr.data-cy]="'option-' + option">
+								{{ option }}
+							</mat-option>
+						}
 					</mat-select>
 				</mat-form-field>
 				<osee-applicability-selector

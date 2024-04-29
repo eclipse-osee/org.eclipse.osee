@@ -1,63 +1,60 @@
 <!--
- * Copyright (c) 2021 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
-<ng-container
-	*ngIf="header !== 'interfaceMessageWriteAccess'; else writeAccess">
-	<mat-form-field
-		*ngIf="
-			header !== 'applicability' &&
-			header !== 'interfaceMessageRate' &&
-			header !== 'interfaceMessageType'
-		"
-		cdkMonitorSubtreeFocus
-		(cdkFocusChange)="focusChanged($event)"
-		class="tw-w-full [&>.mdc-text-field--filled]:tw-bg-inherit"
-		subscriptSizing="dynamic">
-		<ng-container
-			*ngIf="
+* Copyright (c) 2021 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
+@if (header !== 'interfaceMessageWriteAccess') {
+	@if (
+		header !== 'applicability' &&
+		header !== 'interfaceMessageRate' &&
+		header !== 'interfaceMessageType'
+	) {
+		<mat-form-field
+			cdkMonitorSubtreeFocus
+			(cdkFocusChange)="focusChanged($event)"
+			class="tw-w-full [&>.mdc-text-field--filled]:tw-bg-inherit"
+			subscriptSizing="dynamic">
+			@if (
 				header === 'interfaceMessagePeriodicity' ||
-					header === 'publisherNodes' ||
-					header === 'subscriberNodes';
-				else generalEdit
-			">
-			<ng-container *ngIf="header === 'interfaceMessagePeriodicity'">
-				<mat-select
+				header === 'publisherNodes' ||
+				header === 'subscriberNodes'
+			) {
+				@if (header === 'interfaceMessagePeriodicity') {
+					<mat-select
+						[(ngModel)]="value"
+						(ngModelChange)="updateImmediately(value)"
+						required>
+						@for (option of periodicities | async; track option) {
+							<mat-option [value]="option">
+								{{ option }}
+							</mat-option>
+						}
+					</mat-select>
+				}
+			} @else {
+				<input
+					matInput
 					[(ngModel)]="value"
-					(ngModelChange)="updateImmediately(value)"
-					required>
-					<mat-option
-						*ngFor="let option of periodicities | async"
-						[value]="option">
-						{{ option }}
-					</mat-option>
-				</mat-select>
-			</ng-container>
-		</ng-container>
-		<ng-template #generalEdit>
-			<input
-				matInput
-				[(ngModel)]="value"
-				(ngModelChange)="updateMessage(value)" />
-		</ng-template>
-	</mat-form-field>
-	<ng-container *ngIf="header === 'applicability' && isApplic(value)">
+					(ngModelChange)="updateMessage(value)" />
+			}
+		</mat-form-field>
+	}
+	@if (header === 'applicability' && isApplic(value)) {
 		<osee-applicability-selector
 			[applicability]="value"
 			(applicabilityChange)="
 				updateImmediately(returnAsT($event))
 			"></osee-applicability-selector>
-	</ng-container>
-	<ng-container *ngIf="header === 'interfaceMessageRate'">
-		<ng-container *ngIf="isString(value)">
+	}
+	@if (header === 'interfaceMessageRate') {
+		@if (isString(value)) {
 			<form>
 				<osee-rate-dropdown
 					[rate]="value"
@@ -65,10 +62,10 @@
 					(rateChange)="updateImmediately(returnAsT($event))"
 					[hintHidden]="true"></osee-rate-dropdown>
 			</form>
-		</ng-container>
-	</ng-container>
-	<ng-container *ngIf="header === 'interfaceMessageType'">
-		<ng-container *ngIf="isString(value)">
+		}
+	}
+	@if (header === 'interfaceMessageType') {
+		@if (isString(value)) {
 			<form>
 				<osee-message-type-dropdown
 					[messageType]="value"
@@ -76,17 +73,18 @@
 					(messageTypeChange)="updateImmediately(returnAsT($event))"
 					[hintHidden]="true"></osee-message-type-dropdown>
 			</form>
-		</ng-container>
-	</ng-container>
-</ng-container>
-
-<ng-template #writeAccess>
+		}
+	}
+} @else {
 	<mat-slide-toggle
 		[(ngModel)]="value"
 		[labelPosition]="value ? 'after' : 'before'"
 		color="primary"
 		(ngModelChange)="updateImmediately(value)">
-		<ng-container *ngIf="value; else read"> Writable </ng-container>
-		<ng-template #read> Read Only </ng-template>
+		@if (value) {
+			Writable
+		} @else {
+			Read Only
+		}
 	</mat-slide-toggle>
-</ng-template>
+}

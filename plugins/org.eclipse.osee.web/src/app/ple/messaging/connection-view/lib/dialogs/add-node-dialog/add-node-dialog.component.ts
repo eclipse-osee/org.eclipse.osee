@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import {
 	MatAutocomplete,
@@ -46,7 +46,7 @@ import { CurrentGraphService } from '../../services/current-graph.service';
 	selector: 'osee-add-node-dialog',
 	standalone: true,
 	imports: [
-		CommonModule,
+		AsyncPipe,
 		MatDialogActions,
 		MatDialogClose,
 		MatDialogContent,

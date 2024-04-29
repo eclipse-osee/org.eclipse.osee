@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -35,7 +35,7 @@ import {
 	templateUrl: './usermenu.component.html',
 	styles: [],
 	standalone: true,
-	imports: [NgIf, AsyncPipe, MatMenuItem, MatIcon, MatButton],
+	imports: [AsyncPipe, MatMenuItem, MatIcon, MatButton],
 })
 export class UsermenuComponent {
 	settingsCapable = this.routeState.id.pipe(

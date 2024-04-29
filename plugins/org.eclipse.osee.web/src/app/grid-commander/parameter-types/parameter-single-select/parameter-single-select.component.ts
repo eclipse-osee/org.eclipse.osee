@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NgFor } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatOption } from '@angular/material/core';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
@@ -21,7 +20,7 @@ import { MatSelect, MatSelectChange } from '@angular/material/select';
 	templateUrl: './parameter-single-select.component.html',
 	styles: [],
 	standalone: true,
-	imports: [MatFormField, MatLabel, MatSelect, NgFor, MatOption],
+	imports: [MatFormField, MatLabel, MatSelect, MatOption],
 })
 export class ParameterSingleSelectComponent {
 	//TODO: Determine how to dynamically render options in template based on command -- paramater attribute?

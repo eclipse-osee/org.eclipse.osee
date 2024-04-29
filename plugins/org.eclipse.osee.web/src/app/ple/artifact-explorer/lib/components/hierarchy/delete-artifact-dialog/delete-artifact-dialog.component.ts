@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import {
@@ -26,7 +25,6 @@ import { ArtifactDialogTitleComponent } from '../../shared/artifact-dialog-title
 	selector: 'osee-delete-artifact-dialog',
 	standalone: true,
 	imports: [
-		CommonModule,
 		ArtifactDialogTitleComponent,
 		MatDialogContent,
 		MatDialogActions,

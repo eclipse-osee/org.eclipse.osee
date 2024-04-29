@@ -18,14 +18,14 @@ import { ParameterDataService } from '../../services/data-services/selected-comm
 import { CommandFromUserHistoryService } from '../../services/data-services/selected-command-data/command-from-history/command-from-user-history.service';
 import { SelectedCommandDataService } from '../../services/data-services/selected-command-data/selected-command-data.service';
 import { InputControlComponent } from '../../shared/input-control/input-control.component';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
 	selector: 'osee-parameter-string',
 	templateUrl: './parameter-string.component.html',
 	styles: [],
 	standalone: true,
-	imports: [NgIf, InputControlComponent, AsyncPipe],
+	imports: [InputControlComponent, AsyncPipe],
 })
 export class ParameterStringComponent implements OnDestroy {
 	isCustomCommand$ = this.selectedCommandDataService.isCustomCommand;

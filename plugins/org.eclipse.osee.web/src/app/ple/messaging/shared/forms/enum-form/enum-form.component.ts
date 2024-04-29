@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgFor } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
@@ -86,7 +86,6 @@ import {
 		MatRowDef,
 		MatButton,
 		MatIconButton,
-		NgFor,
 		AsyncPipe,
 		ApplicabilitySelectorComponent,
 	],

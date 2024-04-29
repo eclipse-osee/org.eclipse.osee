@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
@@ -40,8 +40,6 @@ import { SubElementTableNoEditFieldComponent } from '../sub-element-table-no-edi
 	imports: [
 		EditElementFieldComponent,
 		SubElementTableNoEditFieldComponent,
-		NgIf,
-		NgFor,
 		AsyncPipe,
 		EnumLiteralsFieldComponent,
 	],

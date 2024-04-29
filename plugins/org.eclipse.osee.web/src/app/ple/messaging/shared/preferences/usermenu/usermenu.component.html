@@ -1,29 +1,29 @@
 <!--
- * Copyright (c) 2021 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
-<ng-container *ngIf="settingsCapable | async as capable">
-	<ng-container *ngIf="capable === 'true'">
+* Copyright (c) 2021 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
+@if (settingsCapable | async; as capable) {
+	@if (capable === 'true') {
 		<button
 			mat-menu-item
 			(click)="openSettingsDialog()"
 			data-cy="mim-settings">
 			<mat-icon>settings</mat-icon><span>Settings</span>
 		</button>
-	</ng-container>
-	<ng-container *ngIf="capable === 'false'">
+	}
+	@if (capable === 'false') {
 		<button
 			mat-menu-item
 			[disabled]="true">
 			No branch selected
 		</button>
-	</ng-container>
-</ng-container>
+	}
+}

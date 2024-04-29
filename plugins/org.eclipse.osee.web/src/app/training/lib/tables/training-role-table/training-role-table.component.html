@@ -1,24 +1,23 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
-<ng-container *ngIf="coursesAsMatTableDataSource$ | async as data">
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
+@if (coursesAsMatTableDataSource$ | async; as data) {
 	<table
 		mat-table
 		[dataSource]="data"
 		class="mat-elevation-z8 tw-rounded-md tw-border tw-border-solid">
 		<!-- If there is no data for the table, display a no data message -->
 		<div *matNoDataRow>No Roles</div>
-
-		<ng-container *ngFor="let header of headers">
+		@for (header of headers; track header) {
 			<ng-container [matColumnDef]="header">
 				<th
 					mat-header-cell
@@ -42,8 +41,7 @@
 					{{ item[header] }}
 				</td>
 			</ng-container>
-		</ng-container>
-
+		}
 		<tr
 			mat-header-row
 			*matHeaderRowDef="headers"></tr>
@@ -52,4 +50,4 @@
 			*matRowDef="let row; columns: headers"
 			class="odd:tw-bg-background-selected-button even:tw-bg-background-background"></tr>
 	</table>
-</ng-container>
+}

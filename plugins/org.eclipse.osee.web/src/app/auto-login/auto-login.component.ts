@@ -10,15 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { OKTA_AUTH } from '@okta/okta-angular';
 import { defer, switchMap, take, timer } from 'rxjs';
 
 @Component({
 	selector: 'osee-auto-login',
 	standalone: true,
-	imports: [CommonModule],
+	imports: [AsyncPipe],
 	templateUrl: './auto-login.component.html',
 })
 export class AutoLoginComponent {

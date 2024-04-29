@@ -1,32 +1,33 @@
 <!--
- * Copyright (c) 2022 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2022 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <osee-messaging-controls></osee-messaging-controls>
-<ng-container *ngIf="branchId | async as _branch">
-	<ng-container *ngIf="_branch !== '0' && _branch !== ' '">
-		<ng-container *ngIf="branchType | async as _branchType">
+@if (branchId | async; as _branch) {
+	@if (_branch !== '0' && _branch !== ' ') {
+		@if (branchType | async; as _branchType) {
 			<div class="tw-pl-8">
-				<ng-container *ngIf="webReportRoutes | async as routes">
+				@if (webReportRoutes | async; as routes) {
 					<h2 class="mat-headline-6">Web-Based Reports</h2>
 					<div
 						class="tw-flex tw-w-80 tw-flex-col tw-gap-4 tw-pb-4 tw-pl-4">
-						<a
-							*ngIf="_branchType === 'working'"
-							mat-raised-button
-							color="primary"
-							[routerLink]="routes.diffRoute"
-							queryParamsHandling="merge">
-							Difference Report
-						</a>
+						@if (_branchType === 'working') {
+							<a
+								mat-raised-button
+								color="primary"
+								[routerLink]="routes.diffRoute"
+								queryParamsHandling="merge">
+								Difference Report
+							</a>
+						}
 						<a
 							mat-raised-button
 							color="primary"
@@ -42,8 +43,8 @@
 							Unreferenced Artifacts Report
 						</a>
 					</div>
-				</ng-container>
-				<ng-container *ngIf="reports | async as _reports">
+				}
+				@if (reports | async; as _reports) {
 					<h2 class="mat-headline-6">Downloadable Reports</h2>
 					<div class="tw-pl-4">
 						<mat-form-field
@@ -58,16 +59,16 @@
 								(selectionChange)="selectReport($event)"
 								[disabled]="_reports.length === 0"
 								[(value)]="selectedReport">
-								<mat-option
-									*ngFor="let option of _reports"
-									[value]="option"
-									[id]="option.id">
-									{{ option.name }}
-								</mat-option>
+								@for (option of _reports; track option) {
+									<mat-option
+										[value]="option"
+										[id]="option.id">
+										{{ option.name }}
+									</mat-option>
+								}
 							</mat-select>
 						</mat-form-field>
-						<ng-container
-							*ngIf="connections | async as _connections">
+						@if (connections | async; as _connections) {
 							<mat-form-field
 								class="tw-block tw-w-80"
 								appearance="fill">
@@ -80,16 +81,20 @@
 									(selectionChange)="resetValidation()"
 									[disabled]="_connections.length === 0"
 									[(value)]="selectedConnection">
-									<mat-option
-										*ngFor="let option of _connections"
-										[value]="option"
-										[id]="option.id!">
-										{{ option.name }}
-									</mat-option>
+									@for (
+										option of _connections;
+										track option
+									) {
+										<mat-option
+											[value]="option"
+											[id]="option.id!">
+											{{ option.name }}
+										</mat-option>
+									}
 								</mat-select>
 							</mat-form-field>
-						</ng-container>
-						<ng-container *ngIf="applicViews | async as _views">
+						}
+						@if (applicViews | async; as _views) {
 							<mat-form-field
 								class="tw-block tw-w-80"
 								appearance="fill">
@@ -98,17 +103,17 @@
 									(selectionChange)="resetValidation()"
 									[disabled]="_views.length === 0"
 									[(value)]="selectedApplic">
-									<mat-option
-										*ngFor="let option of _views"
-										[value]="option"
-										[id]="option.id!">
-										{{ option.name }}
-									</mat-option>
+									@for (option of _views; track option) {
+										<mat-option
+											[value]="option"
+											[id]="option.id!">
+											{{ option.name }}
+										</mat-option>
+									}
 								</mat-select>
 							</mat-form-field>
-						</ng-container>
-						<ng-container
-							*ngIf="selectedReport?.httpMethod === 'POST'">
+						}
+						@if (selectedReport?.httpMethod === 'POST') {
 							<p>Select a file or enter JSON</p>
 							<input
 								type="file"
@@ -124,12 +129,11 @@
 									[(ngModel)]="requestBody"
 									placeholder="{...}"></textarea>
 							</mat-form-field>
-						</ng-container>
-						<ng-container
-							*ngIf="
-								selectedReport?.diffAvailable &&
-								_branchType !== 'baseline'
-							">
+						}
+						@if (
+							selectedReport?.diffAvailable &&
+							_branchType !== 'baseline'
+						) {
 							<mat-checkbox
 								class="tw-block"
 								[(ngModel)]="includeDiff"
@@ -139,9 +143,8 @@
 									>Show differences in report</mat-label
 								>
 							</mat-checkbox>
-						</ng-container>
-						<ng-container
-							*ngIf="selectedReport?.requiresValidation">
+						}
+						@if (selectedReport?.requiresValidation) {
 							<mat-checkbox
 								class="tw-block"
 								[(ngModel)]="bypassValidation"
@@ -151,12 +154,9 @@
 									>Bypass Connection Validation</mat-label
 								>
 							</mat-checkbox>
-						</ng-container>
-						<ng-container
-							*ngIf="
-								connectionValidationResults | async as _results
-							">
-							<ng-container *ngIf="_results.branch !== '-1'">
+						}
+						@if (connectionValidationResults | async; as _results) {
+							@if (_results.branch !== '-1') {
 								<div class="tw-text-md tw-pt-4 tw-font-bold">
 									Connection Validation
 									{{ _results.passed ? 'Passed' : 'Failed' }}
@@ -179,8 +179,8 @@
 										label: 'All Messages have Message Type set',
 										errors: _results.messageTypeErrors
 									}"></ng-container>
-							</ng-container>
-						</ng-container>
+							}
+						}
 						<div class="tw-flex tw-gap-4">
 							<button
 								mat-raised-button
@@ -193,11 +193,10 @@
 								class="tw-mt-4">
 								Validate Connection
 							</button>
-							<ng-container
-								*ngIf="
-									connectionValidationResults
-										| async as _results
-								">
+							@if (
+								connectionValidationResults | async;
+								as _results
+							) {
 								<button
 									mat-raised-button
 									color="primary"
@@ -214,35 +213,35 @@
 									class="tw-mt-4">
 									Get Report
 								</button>
-							</ng-container>
+							}
 						</div>
 					</div>
-				</ng-container>
+				}
 			</div>
-		</ng-container>
-	</ng-container>
-</ng-container>
+		}
+	}
+}
 
 <ng-template
 	let-label="label"
 	let-errors="errors"
 	#validationResults>
-	<ng-container *ngIf="errors !== undefined">
+	@if (errors !== undefined) {
 		<ul class="tw-pl-4">
 			<li class="tw-flex tw-items-center tw-gap-2">
 				{{ label }}
-				<ng-container *ngIf="errors.length === 0">
+				@if (errors.length === 0) {
 					<mat-icon color="success">check</mat-icon>
-				</ng-container>
-				<ng-container *ngIf="errors.length > 0">
+				}
+				@if (errors.length > 0) {
 					<mat-icon color="warn">close</mat-icon>
-				</ng-container>
+				}
 			</li>
-			<li
-				*ngFor="let error of errors"
-				class="tw-pl-4">
-				{{ error }}
-			</li>
+			@for (error of errors; track error) {
+				<li class="tw-pl-4">
+					{{ error }}
+				</li>
+			}
 		</ul>
-	</ng-container>
+	}
 </ng-template>

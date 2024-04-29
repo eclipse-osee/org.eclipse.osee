@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatDivider } from '@angular/material/divider';
@@ -26,8 +26,6 @@ import { CiDashboardControlsComponent } from '../ci-dashboard-controls/ci-dashbo
 	standalone: true,
 	imports: [
 		AsyncPipe,
-		NgIf,
-		NgFor,
 		ScriptsPassFailChartComponent,
 		ScriptsRanChartComponent,
 		TestPointsPassFailChartComponent,

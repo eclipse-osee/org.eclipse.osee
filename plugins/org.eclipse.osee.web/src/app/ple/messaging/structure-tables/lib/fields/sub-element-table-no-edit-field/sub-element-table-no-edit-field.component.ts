@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NgIf } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { MatAnchor } from '@angular/material/button';
 import { MatLabel } from '@angular/material/form-field';
@@ -30,7 +29,6 @@ import { SubElementTableNoEditFieldNameComponent } from '../sub-element-table-no
 		SubElementTableNoEditFieldFilteredComponent,
 		SubElementTableNoEditFieldNameComponent,
 		RouterLink,
-		NgIf,
 		MatLabel,
 		MatAnchor,
 	],

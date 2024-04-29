@@ -11,9 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
-import { AsyncPipe, NgIf } from '@angular/common';
-import { Component, Inject, ViewChild } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AsyncPipe } from '@angular/common';
+import { Component, Inject, viewChild } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import {
 	MatAutocomplete,
@@ -45,7 +45,6 @@ import {
 } from '@osee/shared/components';
 import {
 	BehaviorSubject,
-	Subject,
 	debounceTime,
 	delay,
 	distinct,
@@ -61,7 +60,6 @@ import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
 	standalone: true,
 	imports: [
 		AsyncPipe,
-		NgIf,
 		FormsModule,
 		ApplicabilitySelectorComponent,
 		MatOptionLoadingComponent,
@@ -84,10 +82,8 @@ import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
 	],
 })
 export class AddSubMessageDialogComponent {
-	@ViewChild(MatStepper) set _internalStepper(stepper: MatStepper) {
-		this.__internalStepper.next(stepper);
-	}
-	__internalStepper = new Subject<MatStepper>();
+	_internalStepper = viewChild.required(MatStepper);
+	__internalStepper = toObservable(this._internalStepper);
 
 	_firstStepFilled = new BehaviorSubject<boolean>(true);
 	private _moveToNextStep = this.__internalStepper.pipe(

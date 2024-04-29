@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2021 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2021 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <h1 mat-dialog-title>Add Element to {{ data.name }}</h1>
 <mat-horizontal-stepper
 	#stepper
@@ -43,8 +43,7 @@
 						(keyup)="applySearchTerm($event)"
 						name="autocomplete-text" />
 					<mat-autocomplete #auto="matAutocomplete">
-						<ng-container
-							*ngIf="availableElements | async as elements">
+						@if (availableElements | async; as elements) {
 							<osee-mat-option-loading
 								[data]="elements"
 								[count]="(availableElementsCount | async) || -1"
@@ -66,19 +65,20 @@
 									</mat-option>
 								</ng-template>
 							</osee-mat-option-loading>
-						</ng-container>
+						}
 					</mat-autocomplete>
 				</mat-form-field>
 			</div>
 		</mat-dialog-content>
 		<mat-dialog-actions align="end">
-			<button
-				mat-raised-button
-				color="primary"
-				*ngIf="selectedElement"
-				(click)="moveToReview(stepper)">
-				Proceed to Review
-			</button>
+			@if (selectedElement) {
+				<button
+					mat-raised-button
+					color="primary"
+					(click)="moveToReview(stepper)">
+					Proceed to Review
+				</button>
+			}
 		</mat-dialog-actions>
 	</mat-step>
 	<mat-step
@@ -97,22 +97,23 @@
 				(click)="resetDialog()">
 				Back
 			</button>
-			<button
-				mat-raised-button
-				color="primary"
-				(click)="resetDialog()"
-				*ngIf="
-					data.element.name !== undefined &&
-					data.element.description !== undefined &&
-					data.element.name.length > 0 &&
-					(data.element.interfaceElementArrayHeader ||
-						(data.type.name.length > 0 &&
-							+(data.type.id !== undefined && data.type.id) > 0))
-				"
-				matStepperNext
-				data-cy="stepper-next">
-				Next
-			</button>
+			@if (
+				data.element.name !== undefined &&
+				data.element.description !== undefined &&
+				data.element.name.length > 0 &&
+				(data.element.interfaceElementArrayHeader ||
+					(data.type.name.length > 0 &&
+						+(data.type.id !== undefined && data.type.id) > 0))
+			) {
+				<button
+					mat-raised-button
+					color="primary"
+					(click)="resetDialog()"
+					matStepperNext
+					data-cy="stepper-next">
+					Next
+				</button>
+			}
 		</mat-dialog-actions>
 	</mat-step>
 	<mat-step

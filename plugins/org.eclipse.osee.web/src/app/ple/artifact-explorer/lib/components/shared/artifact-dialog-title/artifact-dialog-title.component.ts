@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { MatDialogTitle } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
@@ -24,7 +23,7 @@ import {
 @Component({
 	selector: 'osee-artifact-dialog-title',
 	standalone: true,
-	imports: [CommonModule, MatDialogTitle, MatIcon],
+	imports: [MatDialogTitle, MatIcon],
 	templateUrl: './artifact-dialog-title.component.html',
 })
 export class ArtifactDialogTitleComponent {

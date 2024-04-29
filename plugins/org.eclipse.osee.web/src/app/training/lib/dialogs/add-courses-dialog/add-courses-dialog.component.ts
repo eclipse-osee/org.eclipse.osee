@@ -10,17 +10,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import {
+	MatDateRangeInput,
+	MatDateRangePicker,
 	MatDatepickerActions,
 	MatDatepickerApply,
 	MatDatepickerCancel,
 	MatDatepickerToggle,
-	MatDateRangeInput,
-	MatDateRangePicker,
 	MatEndDate,
 	MatStartDate,
 } from '@angular/material/datepicker';
@@ -47,7 +47,6 @@ import { TrainingCourseRecord } from '../../types/training-course';
 	styles: [],
 	imports: [
 		FormsModule,
-		CommonModule,
 		AsyncPipe,
 		MatDialogTitle,
 		MatDialogContent,

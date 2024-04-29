@@ -1,22 +1,21 @@
 <!--
- * Copyright (c) 2022 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2022 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <osee-messaging-controls [actionControls]="true"></osee-messaging-controls>
-<ng-container *ngIf="branchId | async as _branch">
-	<ng-container *ngIf="_branch !== '0' && _branch !== ' '">
-		<ng-container *ngIf="branchType | async as _branchType">
-			<ng-container
-				*ngIf="_branchType === 'working'; else branchTypeMessage">
-				<ng-container *ngIf="importOptions | async as _importOptions">
+@if (branchId | async; as _branch) {
+	@if (_branch !== '0' && _branch !== ' ') {
+		@if (branchType | async; as _branchType) {
+			@if (_branchType === 'working') {
+				@if (importOptions | async; as _importOptions) {
 					<div class="tw-pl-8">
 						<h2>Import</h2>
 						<div class="tw-flex tw-w-60 tw-flex-col tw-gap-2">
@@ -30,50 +29,60 @@
 									"
 									[disabled]="_importOptions.length === 0"
 									[value]="importOptionSelection | async">
-									<mat-option
-										*ngFor="let option of _importOptions"
-										[value]="option"
-										[id]="option.id">
-										{{ option.name }}
-									</mat-option>
-								</mat-select>
-							</mat-form-field>
-							<ng-container
-								*ngIf="connections | async as _connections">
-								<mat-form-field
-									*ngIf="
-										(importOptionSelection | async)
-											?.connectionRequired
-									"
-									class="form-field"
-									appearance="fill">
-									<mat-label>{{
-										connectionSelectionText | async
-									}}</mat-label>
-									<mat-select
-										[ngModel]="selectedConnection | async"
-										(ngModelChange)="
-											setSelectedConnection($event)
-										"
-										[disabled]="_connections.length === 0">
+									@for (
+										option of _importOptions;
+										track option
+									) {
 										<mat-option
-											*ngFor="let option of _connections"
 											[value]="option"
-											[id]="option.id!">
+											[id]="option.id">
 											{{ option.name }}
 										</mat-option>
-									</mat-select>
-								</mat-form-field>
-							</ng-container>
+									}
+								</mat-select>
+							</mat-form-field>
+							@if (connections | async; as _connections) {
+								@if (
+									(importOptionSelection | async)
+										?.connectionRequired
+								) {
+									<mat-form-field
+										class="form-field"
+										appearance="fill">
+										<mat-label>{{
+											connectionSelectionText | async
+										}}</mat-label>
+										<mat-select
+											[ngModel]="
+												selectedConnection | async
+											"
+											(ngModelChange)="
+												setSelectedConnection($event)
+											"
+											[disabled]="
+												_connections.length === 0
+											">
+											@for (
+												option of _connections;
+												track option
+											) {
+												<mat-option
+													[value]="option"
+													[id]="option.id!">
+													{{ option.name }}
+												</mat-option>
+											}
+										</mat-select>
+									</mat-form-field>
+								}
+							}
 						</div>
-						<ng-container
-							*ngIf="importOptionSelection | async as option">
-							<ng-container
-								*ngIf="
-									!option.connectionRequired ||
-									(option.connectionRequired &&
-										(selectedConnectionId | async) !== '')
-								">
+						@if (importOptionSelection | async; as option) {
+							@if (
+								!option.connectionRequired ||
+								(option.connectionRequired &&
+									(selectedConnectionId | async) !== '')
+							) {
 								<div class="tw-flex tw-items-center">
 									<label
 										for="file-upload"
@@ -91,22 +100,20 @@
 										(change)="selectFile($event)"
 										accept=".xlsx, .xls, .json, .zip"
 										class="tw-hidden" />
-									<ng-container
-										*ngIf="selectedFile | async as file">
+									@if (selectedFile | async; as file) {
 										<div class="-tw-ml-12">
 											Selected:
 											<span class="tw-font-bold">{{
 												file.name
 											}}</span>
 										</div>
-									</ng-container>
+									}
 								</div>
-							</ng-container>
-							<ng-container
-								*ngIf="
-									(selectedFile | async) &&
-									(importSuccess | async) === undefined
-								">
+							}
+							@if (
+								(selectedFile | async) &&
+								(importSuccess | async) === undefined
+							) {
 								<button
 									mat-raised-button
 									color="primary"
@@ -114,27 +121,19 @@
 									class="tw-mt-4">
 									Get Import Summary
 								</button>
-							</ng-container>
-							<ng-container
-								*ngIf="
-									importSuccess | async as _importSuccess;
-									else summary
-								">
+							}
+							@if (importSuccess | async; as _importSuccess) {
 								<div class="tw-mt-4 tw-pr-4">
-									<ng-container *ngIf="_importSuccess">
+									@if (_importSuccess) {
 										<p>Import successful</p>
-									</ng-container>
-									<ng-container *ngIf="!_importSuccess">
+									}
+									@if (!_importSuccess) {
 										<p>Import failed</p>
-									</ng-container>
+									}
 								</div>
-							</ng-container>
-							<ng-template #summary>
-								<ng-container
-									*ngIf="
-										importSummary | async as _importSummary
-									">
-									<ng-container *ngIf="showSummary">
+							} @else {
+								@if (importSummary | async; as _importSummary) {
+									@if (showSummary) {
 										<div class="tw-mt-4 tw-pr-4">
 											<h3>
 												The following will be imported
@@ -144,11 +143,9 @@
 														| async
 												}}</span>
 											</h3>
-											<ng-container
-												*ngIf="
-													_importSummary.nodes
-														.length > 0
-												">
+											@if (
+												_importSummary.nodes.length > 0
+											) {
 												<osee-import-table
 													[data]="
 														_importSummary.nodes
@@ -160,12 +157,11 @@
 													[tableTitle]="
 														'Nodes'
 													"></osee-import-table>
-											</ng-container>
-											<ng-container
-												*ngIf="
-													_importSummary.connections
-														.length > 0
-												">
+											}
+											@if (
+												_importSummary.connections
+													.length > 0
+											) {
 												<osee-import-table
 													[data]="
 														_importSummary.connections
@@ -179,12 +175,11 @@
 													[tableTitle]="
 														'Connections'
 													"></osee-import-table>
-											</ng-container>
-											<ng-container
-												*ngIf="
-													_importSummary.messages
-														.length > 0
-												">
+											}
+											@if (
+												_importSummary.messages.length >
+												0
+											) {
 												<osee-import-table
 													[data]="
 														_importSummary.messages
@@ -196,12 +191,11 @@
 													[tableTitle]="
 														'Messages'
 													"></osee-import-table>
-											</ng-container>
-											<ng-container
-												*ngIf="
-													_importSummary.subMessages
-														.length > 0
-												">
+											}
+											@if (
+												_importSummary.subMessages
+													.length > 0
+											) {
 												<osee-import-table
 													[data]="
 														_importSummary.subMessages
@@ -215,12 +209,11 @@
 													[tableTitle]="
 														'SubMessages'
 													"></osee-import-table>
-											</ng-container>
-											<ng-container
-												*ngIf="
-													_importSummary.structures
-														.length > 0
-												">
+											}
+											@if (
+												_importSummary.structures
+													.length > 0
+											) {
 												<osee-import-table
 													[data]="
 														_importSummary.structures
@@ -232,12 +225,11 @@
 													[tableTitle]="
 														'Structures'
 													"></osee-import-table>
-											</ng-container>
-											<ng-container
-												*ngIf="
-													_importSummary.elements
-														.length > 0
-												">
+											}
+											@if (
+												_importSummary.elements.length >
+												0
+											) {
 												<osee-import-table
 													[data]="
 														_importSummary.elements
@@ -249,12 +241,11 @@
 													[tableTitle]="
 														'Elements'
 													"></osee-import-table>
-											</ng-container>
-											<ng-container
-												*ngIf="
-													_importSummary.platformTypes
-														.length > 0
-												">
+											}
+											@if (
+												_importSummary.platformTypes
+													.length > 0
+											) {
 												<osee-import-table
 													[data]="
 														_importSummary.platformTypes
@@ -268,12 +259,11 @@
 													[tableTitle]="
 														'Platform Types'
 													"></osee-import-table>
-											</ng-container>
-											<ng-container
-												*ngIf="
-													_importSummary.enumSets
-														.length > 0
-												">
+											}
+											@if (
+												_importSummary.enumSets.length >
+												0
+											) {
 												<osee-import-table
 													[data]="
 														(enumSets | async) || []
@@ -285,13 +275,11 @@
 													[tableTitle]="
 														'Enum Sets'
 													"></osee-import-table>
-											</ng-container>
-											<ng-container
-												*ngIf="
-													_importSummary
-														.crossReferences
-														.length > 0
-												">
+											}
+											@if (
+												_importSummary.crossReferences
+													.length > 0
+											) {
 												<osee-import-table
 													[data]="
 														_importSummary.crossReferences
@@ -303,7 +291,7 @@
 													[tableTitle]="
 														'Cross References'
 													"></osee-import-table>
-											</ng-container>
+											}
 										</div>
 										<button
 											mat-raised-button
@@ -312,18 +300,17 @@
 											[disabled]="!_importSummary">
 											Import
 										</button>
-									</ng-container>
-								</ng-container>
-							</ng-template>
-						</ng-container>
+									}
+								}
+							}
+						}
 					</div>
-				</ng-container>
-			</ng-container>
-			<ng-template #branchTypeMessage>
+				}
+			} @else {
 				<div class="import-form-container">
 					<p>Can only import to a working branch</p>
 				</div>
-			</ng-template>
-		</ng-container>
-	</ng-container>
-</ng-container>
+			}
+		}
+	}
+}

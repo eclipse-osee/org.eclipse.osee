@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 
@@ -19,7 +18,7 @@ import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 	templateUrl: './sub-element-table-no-edit-field-name.component.html',
 	styles: [],
 	standalone: true,
-	imports: [HighlightFilteredTextDirective, NgIf],
+	imports: [HighlightFilteredTextDirective],
 })
 export class SubElementTableNoEditFieldNameComponent {
 	@Input() filter: string = '';

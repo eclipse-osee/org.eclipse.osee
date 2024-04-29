@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <h1 mat-dialog-title>Add Node to {{ data.connection.name }}</h1>
 <mat-horizontal-stepper
 	#stepper
@@ -43,7 +43,7 @@
 						(keyup)="applySearchTerm($event)"
 						name="autocomplete-text" />
 					<mat-autocomplete #auto="matAutocomplete">
-						<ng-container *ngIf="availableNodes | async as nodes">
+						@if (availableNodes | async; as nodes) {
 							<osee-mat-option-loading
 								[data]="nodes"
 								[count]="(availableNodesCount | async) || -1"
@@ -64,19 +64,20 @@
 									</mat-option>
 								</ng-template>
 							</osee-mat-option-loading>
-						</ng-container>
+						}
 					</mat-autocomplete>
 				</mat-form-field>
 			</div>
 		</mat-dialog-content>
 		<mat-dialog-actions align="end">
-			<button
-				mat-raised-button
-				color="primary"
-				*ngIf="selectedNode"
-				(click)="moveToReview(stepper)">
-				Proceed to Review
-			</button>
+			@if (selectedNode) {
+				<button
+					mat-raised-button
+					color="primary"
+					(click)="moveToReview(stepper)">
+					Proceed to Review
+				</button>
+			}
 		</mat-dialog-actions>
 	</mat-step>
 	<mat-step
@@ -94,25 +95,22 @@
 				data-cy="back-2">
 				Back
 			</button>
-			<button
-				mat-raised-button
-				color="primary"
-				*ngIf="data.node.name !== ''"
-				matStepperNext
-				data-cy="stepper-next">
-				Next
-			</button>
+			@if (data.node.name !== '') {
+				<button
+					mat-raised-button
+					color="primary"
+					matStepperNext
+					data-cy="stepper-next">
+					Next
+				</button>
+			}
 		</mat-dialog-actions>
 	</mat-step>
 	<mat-step
 		label="Review"
 		#step3>
 		<mat-dialog-content>
-			<ng-container
-				*ngIf="
-					data.node.id === '' || data.node.id === '-1';
-					else relate
-				">
+			@if (data.node.id === '' || data.node.id === '-1') {
 				<div class="tw-flex tw-flex-col">
 					A node will be created and added to:
 					<span class="tw-font-bold">{{ data.connection.name }}</span>
@@ -145,10 +143,12 @@
 						>Node Network Address:
 						{{ data.node.interfaceNodeAddress }}</mat-label
 					>
-					<mat-label *ngIf="data.node.applicability"
-						>Applicability:
-						{{ data.node.applicability.name }}</mat-label
-					>
+					@if (data.node.applicability) {
+						<mat-label
+							>Applicability:
+							{{ data.node.applicability.name }}</mat-label
+						>
+					}
 					<mat-label
 						>Used in code gen tool:
 						{{ data.node.interfaceNodeToolUse }}</mat-label
@@ -162,15 +162,14 @@
 						{{ data.node.interfaceNodeBuildCodeGen }}</mat-label
 					>
 				</div>
-			</ng-container>
-			<ng-template #relate>
+			} @else {
 				<div>
 					The node
 					<span class="tw-font-bold">{{ data.node.name }}</span> will
 					be added to the connection
 					<span class="tw-font-bold">{{ data.connection.name }}</span>
 				</div>
-			</ng-template>
+			}
 		</mat-dialog-content>
 		<mat-dialog-actions align="end">
 			<button

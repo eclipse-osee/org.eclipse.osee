@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatAnchor, MatButton } from '@angular/material/button';
 import {
@@ -50,8 +50,6 @@ import { CurrentElementSearchService } from '../../services/current-element-sear
 	styles: [],
 	standalone: true,
 	imports: [
-		NgFor,
-		NgIf,
 		AsyncPipe,
 		NgClass,
 		RouterLink,

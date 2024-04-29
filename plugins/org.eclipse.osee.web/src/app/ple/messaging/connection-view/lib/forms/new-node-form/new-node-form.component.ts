@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
@@ -25,7 +24,6 @@ import { applic } from '@osee/shared/types/applicability';
 	selector: 'osee-new-node-form',
 	standalone: true,
 	imports: [
-		CommonModule,
 		MatFormField,
 		MatLabel,
 		MatInput,

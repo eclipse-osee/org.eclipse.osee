@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <mat-form-field
 	subscriptSizing="dynamic"
 	id="applicability-selector"
@@ -28,9 +28,8 @@
 		autoActiveFirstOption
 		#autoApplicability="matAutocomplete"
 		(optionSelected)="updateValue($event.option.value)">
-		<ng-container *ngIf="applicabilities | async as _applics; else loading">
-			<ng-container
-				*ngIf="applicabilityCount | async as _count; else loading">
+		@if (applicabilities | async; as _applics) {
+			@if (applicabilityCount | async; as _count) {
 				<osee-mat-option-loading
 					[data]="_applics"
 					objectName="applicability"
@@ -46,14 +45,19 @@
 						</mat-option>
 					</ng-template>
 				</osee-mat-option-loading>
-			</ng-container>
-		</ng-container>
-		<ng-template #loading>
+			} @else {
+				<mat-option
+					id="-1"
+					[value]="{ id: '-1', name: 'invalid' }">
+					Loading...
+				</mat-option>
+			}
+		} @else {
 			<mat-option
 				id="-1"
 				[value]="{ id: '-1', name: 'invalid' }">
 				Loading...
 			</mat-option>
-		</ng-template>
+		}
 	</mat-autocomplete>
 </mat-form-field>

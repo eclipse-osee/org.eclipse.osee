@@ -1,15 +1,15 @@
 <!--
- * Copyright (c) 2023 Boeing
- *
- * This program and the accompanying materials are made
- * available under the terms of the Eclipse Public License 2.0
- * which is available at https://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     Boeing - initial API and implementation
- -->
+* Copyright (c) 2023 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
 <div
 	class="tw-max-h-[40vh] tw-w-full tw-overflow-scroll"
 	[ngClass]="showTableContents ? '' : 'tw-overflow-hidden tw-p-1'">
@@ -51,40 +51,41 @@
 				</div>
 			</th>
 		</ng-container>
-		<ng-container
-			[matColumnDef]="header"
-			*ngFor="let header of headers">
-			<th
-				mat-header-cell
-				*matHeaderCellDef
-				class="tw-text-primary-600">
-				{{
-					(getTableHeaderByName(header) | async)?.humanReadable || ''
-				}}
-			</th>
-			<td
-				mat-cell
-				*matCellDef="let item; let i = index">
-				<ng-container *ngIf="header !== 'applicability'">
-					<div
-						oseeHighlightFilteredText
-						[searchTerms]="filterText"
-						[text]="item[header]"
-						classToApply="tw-text-accent-900">
-						{{ item[header] }}
-					</div>
-				</ng-container>
-				<ng-container *ngIf="header === 'applicability'">
-					<div
-						oseeHighlightFilteredText
-						[searchTerms]="filterText"
-						[text]="item[header].name"
-						classToApply="tw-text-accent-900">
-						{{ item[header].name }}
-					</div>
-				</ng-container>
-			</td>
-		</ng-container>
+		@for (header of headers; track header) {
+			<ng-container [matColumnDef]="header">
+				<th
+					mat-header-cell
+					*matHeaderCellDef
+					class="tw-text-primary-600">
+					{{
+						(getTableHeaderByName(header) | async)?.humanReadable ||
+							''
+					}}
+				</th>
+				<td
+					mat-cell
+					*matCellDef="let item; let i = index">
+					@if (header !== 'applicability') {
+						<div
+							oseeHighlightFilteredText
+							[searchTerms]="filterText"
+							[text]="item[header]"
+							classToApply="tw-text-accent-900">
+							{{ item[header] }}
+						</div>
+					}
+					@if (header === 'applicability') {
+						<div
+							oseeHighlightFilteredText
+							[searchTerms]="filterText"
+							[text]="item[header].name"
+							classToApply="tw-text-accent-900">
+							{{ item[header].name }}
+						</div>
+					}
+				</td>
+			</ng-container>
+		}
 		<tr
 			mat-header-row
 			*matHeaderRowDef="['TableHeader']; sticky: true"></tr>

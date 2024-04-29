@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -32,7 +32,6 @@ import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 	templateUrl: './plconfig.component.html',
 	standalone: true,
 	imports: [
-		NgIf,
 		AsyncPipe,
 		RouterLink,
 		MatButton,

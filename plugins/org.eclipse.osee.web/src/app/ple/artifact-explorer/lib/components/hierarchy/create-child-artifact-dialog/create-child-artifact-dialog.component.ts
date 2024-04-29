@@ -10,8 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, CommonModule } from '@angular/common';
-import { Component, Inject, Optional, ViewChild, inject } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import {
+	Component,
+	Inject,
+	Optional,
+	ViewChild,
+	inject,
+	viewChild,
+} from '@angular/core';
 import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
 import {
 	MatAutocomplete,
@@ -65,7 +72,7 @@ function controlContainerFactory(controlContainer?: ControlContainer) {
 	selector: 'osee-create-artifact-dialog',
 	standalone: true,
 	imports: [
-		CommonModule,
+		AsyncPipe,
 		FormsModule,
 		AsyncPipe,
 		AttributesEditorComponent,
@@ -203,7 +210,10 @@ export class CreateChildArtifactDialogComponent {
 
 	// Handle form status change
 
-	@ViewChild('createChildArtifactForm') _createChildArtifactForm!: NgForm;
+	protected _createChildArtifactForm = viewChild.required(
+		'createChildArtifactForm',
+		{ read: NgForm }
+	);
 
 	getIconClasses(icon: artifactTypeIcon) {
 		return (
