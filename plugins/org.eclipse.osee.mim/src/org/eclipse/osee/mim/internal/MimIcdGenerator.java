@@ -134,6 +134,7 @@ public class MimIcdGenerator {
       boolean diff) {
       InterfaceConnection conn = mimApi.getInterfaceConnectionViewApi().get(branch, view, connectionId,
          Arrays.asList(FollowRelation.fork(CoreRelationTypes.InterfaceConnectionNode_Node),
+            FollowRelation.fork(CoreRelationTypes.InterfaceConnectionTransportType_TransportType),
             FollowRelation.follow(CoreRelationTypes.InterfaceConnectionMessage_Message),
             FollowRelation.follow(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage),
             FollowRelation.follow(CoreRelationTypes.InterfaceSubMessageContent_Structure),
@@ -355,10 +356,15 @@ public class MimIcdGenerator {
                   MimChangeSummaryItem pTypeDiffItem = diffs.get(element.getPlatformType().getArtifactId());
                   structureSizeChanged =
                      structureSizeChanged || (pTypeDiffItem != null && pTypeDiffItem.hasAttributeChanges(
-                        CoreAttributeTypes.InterfacePlatformTypeBitSize.getId())) || (elementDiffItem != null && (elementDiffItem.isAdded() || !elementDiffItem.getRelationChanges().isEmpty()));
+                        CoreAttributeTypes.InterfacePlatformTypeBitSize.getId())) || (elementDiffItem != null && (elementDiffItem.isAdded() || (!elementDiffItem.getRelationChanges().isEmpty() && Integer.parseInt(
+                           elementDiffItem.getArtifactReadable().getRelated(
+                              CoreRelationTypes.InterfaceElementPlatformType_PlatformType).getAtMostOneOrDefault(
+                                 ArtifactReadable.SENTINEL).getSoleAttributeAsString(
+                                    CoreAttributeTypes.InterfacePlatformTypeBitSize)) != (int) element.getElementSizeInBits())));
                   Optional<MimChangeSummaryItem> structElementDiffItem =
                      structDiffItem == null ? Optional.empty() : structDiffItem.getChild(element.getArtifactId());
                   boolean elementAdded = structElementDiffItem.isPresent() && structElementDiffItem.get().isAdded();
+
                   if (structureSizeChanged || elementAdded) {
                      byteChangeIndex = Math.min(i, byteChangeIndex);
                   }
@@ -1104,11 +1110,14 @@ public class MimIcdGenerator {
       boolean elementAdded = elementDiff.isPresent() && elementDiff.get().isAdded();
       boolean platformTypeChanged = elementDiff.isPresent() && !elementDiff.get().getRelationChanges(
          CoreRelationTypes.InterfaceElementPlatformType.getId()).isEmpty();
+      boolean enumLiteralsChanged =
+         elementDiff.isPresent() && elementDiff.get().getAttributeChanges().stream().anyMatch(
+            a -> a.getItemTypeId().equals(CoreAttributeTypes.InterfaceElementEnumLiteral.getId()));
       CELLSTYLE pTypeStyle = elementAdded || getCellColor(elementToken.getArtifactReadable(), false).equals(
          CELLSTYLE.GREEN) ? CELLSTYLE.GREEN : platformTypeChanged ? CELLSTYLE.YELLOW : CELLSTYLE.NONE;
 
       CELLSTYLE enumStyle = elementAdded || getCellColor(elementToken.getArtifactReadable(), false).equals(
-         CELLSTYLE.GREEN) ? CELLSTYLE.GREEN : enumChanged || platformTypeChanged ? CELLSTYLE.YELLOW : CELLSTYLE.NONE;
+         CELLSTYLE.GREEN) ? CELLSTYLE.GREEN : enumChanged || platformTypeChanged || enumLiteralsChanged ? CELLSTYLE.YELLOW : CELLSTYLE.NONE;
 
       CELLSTYLE byteStyle = elementAdded || getCellColor(elementToken.getArtifactReadable(), false).equals(
          CELLSTYLE.GREEN) ? CELLSTYLE.GREEN : bytesChanged ? CELLSTYLE.YELLOW : CELLSTYLE.NONE;
