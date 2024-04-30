@@ -42,28 +42,28 @@ test_suite(
 
 alias(
    name = "accessor",
-   actual = "//org.eclipse.osee.accessor:accessor"
+   actual = "//org.eclipse.osee.accessor"
 )
 
 alias(
    name = "account_rest_client",
-   actual = "//org.eclipse.osee.account.rest.client:account_rest_client"
+   actual = "//org.eclipse.osee.account.rest.client"
 )
 
 
 alias(
    name = "account_admin",
-   actual = "//org.eclipse.osee.account.admin:account_admin"
+   actual = "//org.eclipse.osee.account.admin"
 )
 
 alias(
    name = "account_rest",
-   actual = "//org.eclipse.osee.account.rest:account_rest"
+   actual = "//org.eclipse.osee.account.rest"
 )
 
 alias(
    name = "account_rest_model",
-   actual = "//org.eclipse.osee.account.rest.model:account_rest_model"
+   actual = "//org.eclipse.osee.account.rest.model"
 )
 
 alias(
@@ -137,8 +137,8 @@ alias(
 )
 
 alias(
-   name = "define_api",
-   actual = "//org.eclipse.osee.define.api"
+   name = "define_rest_api",
+   actual = "//org.eclipse.osee.define.rest.api"
 )
 
 alias(
@@ -174,11 +174,6 @@ alias(
 alias(
    name = "framework_jdk_core",
    actual = "//org.eclipse.osee.framework.jdk.core"
-)
-
-alias(
-   name = "framework_jdk_core_test",
-   actual = "//org.eclipse.osee.framework.jdk.core.test"
 )
 
 alias(
@@ -307,7 +302,3 @@ alias(
     actual = "//org.eclipse.osee.template.engine"
 )
 
-alias(
-    name = "vcast",
-    actual = "//org.eclipse.osee.vcast"
-)

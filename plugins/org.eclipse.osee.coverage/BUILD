@@ -7,7 +7,7 @@ java_library(
 	       "//org.eclipse.osee.activity.api",
 	       "//org.eclipse.osee.framework.resource.management","//org.eclipse.osee.jdbc",
 	       "//org.eclipse.osee.jaxrs","//org.eclipse.osee.orcs","//org.eclipse.osee.orcs.core",
-	       "//org.eclipse.osee.orcs.rest.model","//org.eclipse.osee.console.admin","//org.eclipse.osee.define.api",
+	       "//org.eclipse.osee.orcs.rest.model","//org.eclipse.osee.console.admin","//org.eclipse.osee.define.rest.api",
 	       "//org.eclipse.osee.define","//org.eclipse.osee.ats.api","//org.eclipse.osee.ats.core",
                "//org.eclipse.osee.framework.core.server","//org.eclipse.osee.template.engine", 
                "//org.eclipse.osee.ats.rest","//org.eclipse.osee.accessor"],
@@ -44,10 +44,7 @@ java_library(
                 "@maven//:io_swagger_core_v3_swagger_jaxrs2",
     		"@maven//:org_apache_cxf_cxf_rt_frontend_jaxrs",
     		"@maven//:io_swagger_core_v3_swagger_models",		
-		"@ext_jars//:eclipse_osgi_services",
 		"@ext_jars//:nebula",
-		"@ext_jars//:eclipse_core",
 		"@ext_jars//:apache_commons_lang",
-		"@ext_jars//:eclipse_equinox_common"
                 ],
 )

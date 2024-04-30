@@ -1,9 +1,5 @@
 load("//:osgi.bzl", "osgi_jar_converter")
 
-osgi_jar_converter(
-    name = "osgi_jar",
-    arg = "org.eclipse.osee.ats.ide.integration.tests",
-)
 
 java_test(
 	name = "AtsIdeIntegrationTestSuite",
@@ -87,7 +83,6 @@ java_library(
                 "@maven//:org_apache_activemq_activemq_all",
 		"@maven//:org_mockito_mockito_core",
 		"@maven//:org_hamcrest_hamcrest_core",
-                "@ext_jars//:junit",
 		"@ext_jars//:nebula",
 		"@ext_jars//:apache_commons_lang",
 		"@ext_jars//:eclipse_ui",
@@ -95,7 +90,11 @@ java_library(
 		"@ext_jars//:rmf",
 		"@ext_jars//:emf",
 		"@ext_jars//:jface",
-		"@eclipse_equinox_common//jar"
+		"@eclipse_equinox_common//jar",
+		"@eclipse_core_jobs//jar",
+		"@eclipse_core_resources//jar",
+		"@eclipse_osgi//jar",
+		"@ext_jars//:nebula_xviewer"
 	],
 )
 
