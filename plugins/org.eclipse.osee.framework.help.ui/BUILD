@@ -8,6 +8,7 @@ osgi_jar_converter(
 java_library(
         name = "org.eclipse.osee.framework.help.ui",
 	resources = ["common_deps"],
+	data = ["common_deps"],
         srcs = glob(["**/*.java"]),
 	deps = ["java_deps",
 		"mylyn",
@@ -27,7 +28,9 @@ filegroup(
 	       "**/*.css",
 	       "**/*.jpg",
 	       "**/*.MF"
-	 ])
+	 ]),
+	 	visibility = ["//visibility:public"]
+	 
 )
 
 java_library(

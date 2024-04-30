@@ -1,12 +1,18 @@
 java_test(
         name = "HelpUiTestSuite",
-#	resources = ["common_deps"],
-        srcs = glob(["**/*.java"]),
+ 	resources = ["resources",],
+	srcs = glob(["**/*.java"]),
 	deps = ["java_deps","//org.eclipse.osee.framework.help.ui","//org.eclipse.osee.framework.core.packages"
 	],
+	
 	visibility = ["//visibility:public"]
 )
-                        
+                       
+
+filegroup(
+    name = "resources",
+    srcs = glob(["**/*"])
+)
 
 java_library(
         name = "java_deps",
@@ -25,6 +31,7 @@ java_library(
                 "@maven//:com_google_guava_guava",
 		"@maven//:org_mockito_mockito_core",
 		"@maven//:org_hamcrest_hamcrest_core",
+		"@eclipse_core_runtime//jar",
 		"@eclipse_equinox_common//jar", "@eclipse_osgi//jar"
                 ],
 )

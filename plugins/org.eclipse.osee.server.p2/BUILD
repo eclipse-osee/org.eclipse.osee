@@ -151,7 +151,6 @@ filegroup(
 	    "@maven//:org_apache_commons_commons_lang3",
 	    "@maven//:org_apache_commons_commons_math3",
 	    "@maven//:org_jsoup_jsoup",
-	 #   "@maven//:org_slf4j_slf4j_api",
 	    "@maven//:org_apache_ws_xmlschema_xmlschema_core",
 	    "@maven//:org_apache_commons_commons_collections4",
 	    "@maven//:org_eclipse_jetty_jetty_http",
@@ -225,23 +224,23 @@ filegroup(
          ],         
 )
 
-filegroup(
-   name = "equinox_jar",
-   srcs = ["plugins/org.eclipse.equinox.launcher_1.5.700.v20200207-2156.jar"]
-)
+#filegroup(
+#   name = "equinox_jar",
+#   srcs = ["plugins/org.eclipse.equinox.launcher_1.5.700.v20200207-2156.jar"]
+#)
 
-genrule(
-   name = "runDemo",
-   srcs = ["equinox_jar"],
-   outs = ["out.txt"],
-   cmd = "java -server \
--Xmx3G \
--Dorg.osgi.service.http.port=8089 \
--Dlogback.configurationFile=logback-dev.xml \
--Dorg.eclipse.equinox.http.jetty.context.sessioninactiveinterval=3600 \
--Dcm.config.uri=etc/osee.hsql.json \
--Dosee.authentication.protocol=demo \
--Dosee.application.server.data=demo/binary_data \
--jar $(location :equinox_jar) -console -consoleLog; pwd; ls > $@",
-)
+#genrule(
+#   name = "runDemo",
+#   srcs = ["equinox_jar"],
+#   outs = ["out.txt"],
+#   cmd = "java -server \
+#-Xmx3G \
+#-Dorg.osgi.service.http.port=8089 \
+#-Dlogback.configurationFile=logback-dev.xml \
+#-Dorg.eclipse.equinox.http.jetty.context.sessioninactiveinterval=3600 \
+#-Dcm.config.uri=etc/osee.hsql.json \
+#-Dosee.authentication.protocol=demo \
+#-Dosee.application.server.data=demo/binary_data \
+#-jar $(location :equinox_jar) -console -consoleLog; pwd; ls > $@",
+#)
 

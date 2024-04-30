@@ -47,6 +47,8 @@ java_library(
 		    "@maven//:javax_activation_activation",
 		    "@maven//:org_slf4j_slf4j_api",
 		    "@maven//:javax_mail_mail",
+		    "@javax_xml_ws//jar",
+		    "@javax_ws_rs//jar",
 		    "@maven//:org_antlr_antlr_runtime",
 		    "@maven//:com_google_guava_guava",
                 ],
