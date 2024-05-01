@@ -37,6 +37,8 @@ import {
 	typesServiceMock,
 	enumsServiceMock,
 	QueryServiceMock,
+	MockUniquePlatformTypeNameDirective,
+	MockCrossReferenceDropdownComponent,
 } from '@osee/messaging/shared/testing';
 import type { editPlatformTypeDialogData } from '@osee/messaging/shared/types';
 import { editPlatformTypeDialogDataMode } from '@osee/messaging/shared/enumerations';
@@ -49,10 +51,7 @@ import {
 	MockApplicabilitySelectorComponent,
 	MockMatOptionLoadingComponent,
 } from '@osee/shared/components/testing';
-import { MockUniquePlatformTypeNameDirective } from 'src/app/ple/messaging/shared/testing/unique-platform-type-name.directive.mock';
-import { UnitDropdownComponent } from '@osee/messaging/shared/dropdowns';
 import { MockUnitDropdownComponent } from '@osee/messaging/shared/dropdowns/testing';
-import { MockCrossReferenceDropdownComponent } from 'src/app/ple/messaging/shared/dropdowns/cross-reference-dropdown/cross-reference-dropdown.component.mock';
 
 let loader: HarnessLoader;
 

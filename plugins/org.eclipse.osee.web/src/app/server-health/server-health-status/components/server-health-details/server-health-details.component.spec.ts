@@ -13,9 +13,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ServerHealthDetailsComponent } from './server-health-details.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ServerHealthHttpService } from 'src/app/server-health/shared/services/server-health-http.service';
-import { ServerHealthHttpServiceMock } from 'src/app/server-health/shared/testing/server-health-http.service.mock';
+import { ServerHealthHttpService } from '../../../shared/services/server-health-http.service';
+import { ServerHealthHttpServiceMock } from '../../../shared/testing/server-health-http.service.mock';
 
 describe('ServerHealthDetailsComponent', () => {
 	let component: ServerHealthDetailsComponent;

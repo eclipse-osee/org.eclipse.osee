@@ -13,8 +13,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ServerHealthTopComponent } from './server-health-top.component';
-import { ServerHealthHttpService } from 'src/app/server-health/shared/services/server-health-http.service';
-import { ServerHealthHttpServiceMock } from 'src/app/server-health/shared/testing/server-health-http.service.mock';
+import { ServerHealthHttpService } from '../../../shared/services/server-health-http.service';
+import { ServerHealthHttpServiceMock } from '../../../shared/testing/server-health-http.service.mock';
 
 describe('ServerHealthTopComponent', () => {
 	let component: ServerHealthTopComponent;

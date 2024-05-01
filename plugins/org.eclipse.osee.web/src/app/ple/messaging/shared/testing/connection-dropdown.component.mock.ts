@@ -17,7 +17,7 @@ import {
 	ShowOnDirtyErrorStateMatcher,
 } from '@angular/material/core';
 import { Subject } from 'rxjs';
-import { ConnectionDropdownComponent } from './connection-dropdown.component';
+import { ConnectionDropdownComponent } from '../dropdowns/connection-dropdown/connection-dropdown.component';
 import { connection, connectionSentinel } from '@osee/messaging/shared/types';
 
 @Component({

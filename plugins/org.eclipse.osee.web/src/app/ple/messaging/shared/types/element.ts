@@ -13,7 +13,7 @@ import type { applic } from '@osee/shared/types/applicability';
  *     Boeing - initial API and implementation
  **********************************************************************/
 import type { hasChanges } from '@osee/shared/types/change-report';
-import { PlatformType } from 'src/app/ple/messaging/shared/types/platformType';
+import { PlatformType } from './platformType';
 import {
 	ArrayHeaderPlatformType,
 	PlatformTypeSentinel,

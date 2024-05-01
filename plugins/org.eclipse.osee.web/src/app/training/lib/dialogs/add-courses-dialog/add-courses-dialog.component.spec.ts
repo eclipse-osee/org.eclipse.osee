@@ -24,7 +24,7 @@ import { AddCoursesDialogComponent } from './add-courses-dialog.component';
 import { UserDataAccountService } from '@osee/auth';
 import { MatNativeDateModule, MatOptionModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
-import { TrainingCourseServiceMock } from 'src/app/training/lib/testing/training-course.service.mock';
+import { TrainingCourseServiceMock } from '../../testing/training-course.service.mock';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
 
 describe('AddCoursesDialogComponent', () => {

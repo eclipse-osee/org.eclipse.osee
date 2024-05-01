@@ -80,3 +80,6 @@ export * from './validation-response.mock';
 export * from './validation.service.mock';
 export * from './mim-change-summary.mock';
 export * from './unreferenced.service.mock';
+export * from './unique-platform-type-name.directive.mock';
+export * from './cross-reference-dropdown.component.mock';
+export * from './connection-dropdown.component.mock';

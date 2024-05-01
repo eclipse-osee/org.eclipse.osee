@@ -12,8 +12,8 @@
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
 import { CiSetsService } from './ci-sets.service';
-import { CiSetsHttpService } from 'src/app/ci-dashboard/lib/services/ci-sets-http.service';
-import { ciSetsHttpServiceMock } from 'src/app/ci-dashboard/lib/services/ci-sets-http.service.mock';
+import { CiSetsHttpService } from './ci-sets-http.service';
+import { ciSetsHttpServiceMock } from './ci-sets-http.service.mock';
 
 describe('CiSetsService', () => {
 	let service: CiSetsService;

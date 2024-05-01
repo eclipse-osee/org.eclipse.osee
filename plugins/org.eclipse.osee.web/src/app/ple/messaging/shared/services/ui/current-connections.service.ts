@@ -12,8 +12,8 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { combineLatest, switchMap, take, filter } from 'rxjs';
-import { ConnectionService } from 'src/app/ple/messaging/shared/services/public-api';
-import { ConnectionsUiService } from 'src/app/ple/messaging/shared/services/ui/connections-ui.service';
+import { ConnectionService } from '../http/connection.service';
+import { ConnectionsUiService } from './connections-ui.service';
 
 @Injectable({
 	providedIn: 'root',
