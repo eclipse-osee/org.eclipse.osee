@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 6,
-  "moduleFileHash": "969ccaccc9d4ca2e6efad1aeb7dfd51d5518d34915b45f2bb7c0bbcfb71b9d8c",
+  "moduleFileHash": "e8938f4474e9cb9864dd85cbd5e16d27d21cf1970805ba08604071f6da01f5dc",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -138,9 +138,16 @@
                 "cargo_lockfile": ":Cargo.lock",
                 "manifests": [
                   ":Cargo.toml",
-                  "//cli/applicability_parser:Cargo.toml",
                   "//cli/bat:Cargo.toml",
-                  "//cli/applicability:Cargo.toml"
+                  "//cli/pat:Cargo.toml",
+                  "//cli/applicability:Cargo.toml",
+                  "//cli/applicability_parser:Cargo.toml",
+                  "//cli/applicability_parser_config:Cargo.toml",
+                  "//cli/applicability_match:Cargo.toml",
+                  "//cli/applicability_parser_types:Cargo.toml",
+                  "//cli/applicability_path:Cargo.toml",
+                  "//cli/applicability_sanitization:Cargo.toml",
+                  "//cli/applicability_substitution:Cargo.toml"
                 ]
               },
               "devDependency": false,

@@ -53,10 +53,18 @@ crate = use_extension(
 crate.from_cargo(
     name = "crates",
     cargo_lockfile = ":Cargo.lock",
-    manifests = [":Cargo.toml",
-    "//cli/applicability_parser:Cargo.toml",
+    manifests = [
+    ":Cargo.toml",
     "//cli/bat:Cargo.toml",
-    "//cli/applicability:Cargo.toml",],
+    "//cli/pat:Cargo.toml",
+    "//cli/applicability:Cargo.toml",
+    "//cli/applicability_parser:Cargo.toml",
+    "//cli/applicability_parser_config:Cargo.toml",
+    "//cli/applicability_match:Cargo.toml",
+    "//cli/applicability_parser_types:Cargo.toml",
+    "//cli/applicability_path:Cargo.toml",
+    "//cli/applicability_sanitization:Cargo.toml",
+    "//cli/applicability_substitution:Cargo.toml"],
 )
 use_repo(crate, "crates")
 register_toolchains("//:local_bat_toolchain")

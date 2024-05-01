@@ -19,7 +19,8 @@ rust_library(
     name = "applicability_parser",
     srcs = glob(['src/**/*.rs']),
     deps = all_crate_deps(normal = True)+[
-        "//cli/applicability:applicability"
+        "//cli/applicability:applicability",
+        "//cli/applicability_parser_types:applicability_parser_types"
     ],
     crate_features = [
         "default",

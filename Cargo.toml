@@ -13,9 +13,14 @@
 [workspace]
 resolver = "2"
 members = [
-    "cli/applicability",
+    "cli/applicability", "cli/applicability_match",
     "cli/applicability_parser",
-    "cli/bat"
+    "cli/applicability_parser_config", 
+    "cli/applicability_parser_types", "cli/applicability_path", 
+    "cli/applicability_sanitization",
+    "cli/applicability_substitution",
+    "cli/bat",
+    "cli/pat"
 ]
 [workspace.package]
 license="EPL-2.0"

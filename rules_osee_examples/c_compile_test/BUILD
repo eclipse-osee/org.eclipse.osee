@@ -17,19 +17,22 @@ load("@aspect_bazel_lib//lib:diff_test.bzl", "diff_test")
 apply_applicability(
     name="processed_subhdrs",
     srcs=glob(["level3/**/*.h"]),
-    applic_config = "@my_product_line//config_files:resolved_config"
+    # applic_config = "@my_product_line//config_files:resolved_config"
+    applic_config = ":PRODUCT_A.json"
 )
 
 apply_applicability(
     name="processed_hdrs",
     srcs=glob(["*.h"]),
-    applic_config = "@my_product_line//config_files:resolved_config"
+    # applic_config = "@my_product_line//config_files:resolved_config"
+    applic_config = ":PRODUCT_A.json"
 )
 
 apply_applicability(
     name="processed_srcs",
     srcs=[":hello_world.c"],
-    applic_config = "@my_product_line//config_files:resolved_config"
+    # applic_config = "@my_product_line//config_files:resolved_config"
+    applic_config = ":PRODUCT_A.json"
 )
 
 cc_library(
@@ -100,3 +103,4 @@ diff_test(
         "@platforms//os:windows":"//rules_osee_examples/c_compile_test/__snapshot__:test_nested_msvc.zip"
     })
 )
+exports_files(["PRODUCT_A.json"])

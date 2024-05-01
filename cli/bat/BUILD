@@ -20,7 +20,10 @@ rust_binary(
     srcs = glob(['src/**/*.rs']),
     deps = all_crate_deps(normal = True)+[
         "//cli/applicability:applicability",
-        "//cli/applicability_parser:applicability_parser"
+        "//cli/applicability_parser:applicability_parser",
+        "//cli/applicability_parser_config:applicability_parser_config",
+        "//cli/applicability_substitution:applicability_substitution",
+        "//cli/applicability_sanitization:applicability_sanitization",
     ],
     crate_features = [
         "default",

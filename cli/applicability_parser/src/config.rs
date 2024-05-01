@@ -10,7 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-use applicability::applic_tag::{ApplicabilityTag, ApplicabilityTagTypes};
+use applicability::applic_tag::ApplicabilityTagTypes;
+use applicability_parser_types::{
+    applic_tokens::ApplicTokens,
+    applicability_parser_syntax_tag::{
+        ApplicabilityParserSyntaxTag, ApplicabilitySyntaxTag, ApplicabilitySyntaxTagNot,
+    },
+};
 use nom::{
     branch::alt,
     character::complete::line_ending,
@@ -20,22 +26,15 @@ use nom::{
     IResult,
 };
 
-use crate::applicability_parser_syntax_tag::{
-    ApplicabilitySyntaxTag, ApplicabilitySyntaxTagAnd, ApplicabilitySyntaxTagNot,
-    ApplicabilitySyntaxTagNotAnd, ApplicabilitySyntaxTagNotOr, ApplicabilitySyntaxTagOr,
-};
+use crate::tag_parser::applicability_tag;
 
 use super::{
-    applicability_parser_syntax_tag::TagVariants,
     config_text::{
         else_config_text_parser, end_config_text_parser, not_config_text_parser,
         start_config_text_parser,
     },
     end::end_tag_parser,
     next::next_inner,
-    tag_parser::applicability_tag,
-    tag_parser::TokenSplit,
-    ApplicabilityParserSyntaxTag,
 };
 ///
 /// Parse End:
@@ -68,7 +67,7 @@ fn parse_end<'a>(
 fn config_tag_parser<'a>(
     starting_parser: impl FnMut(&'a str) -> IResult<&str, &str>,
     custom_end_comment_syntax: &'a str,
-) -> impl FnMut(&'a str) -> IResult<&'a str, Vec<TokenSplit>> {
+) -> impl FnMut(&'a str) -> IResult<&'a str, Vec<ApplicTokens>> {
     applicability_tag(starting_parser, end_tag_parser(custom_end_comment_syntax))
 }
 fn config_contents_parser<'a>(
@@ -80,7 +79,7 @@ fn config_contents_parser<'a>(
 ) -> IResult<
     &'a str,
     (
-        Vec<TokenSplit>,
+        Vec<ApplicTokens>,
         Option<&str>,
         Vec<ApplicabilityParserSyntaxTag>,
     ),
@@ -131,7 +130,7 @@ fn config_parser<'a>(
     &'a str,
     (
         (
-            Vec<TokenSplit>,
+            Vec<ApplicTokens>,
             Option<&str>,
             Vec<ApplicabilityParserSyntaxTag>,
         ),
@@ -171,54 +170,23 @@ pub fn parse_config<'a>(
             (tokens, _ln1, contents),
             (_potential_else, else_contents, (_potential_end1, _potential_end2)),
         )| {
-            let config_type = match tokens.first().cloned() {
-                Some(token) => match token {
-                    TokenSplit::And(_) => TagVariants::And,
-                    TokenSplit::Or(_) => TagVariants::Or,
-                    TokenSplit::AndOr(_) => TagVariants::Normal,
-                },
-                None => TagVariants::Normal,
-            };
-            let tag_list = tokens
-                .iter()
-                .map(|tag| match tag {
-                    TokenSplit::And(tag_content)
-                    | TokenSplit::Or(tag_content)
-                    | TokenSplit::AndOr(tag_content) => tag_content.to_string().into(),
-                })
-                .collect::<Vec<ApplicabilityTag>>();
-            match config_type {
-                TagVariants::And => {
-                    ApplicabilityParserSyntaxTag::TagAnd(ApplicabilitySyntaxTagAnd(
-                        tag_list,
-                        contents,
-                        ApplicabilityTagTypes::Configuration,
-                        else_contents,
-                    ))
-                }
-                TagVariants::Or => ApplicabilityParserSyntaxTag::TagOr(ApplicabilitySyntaxTagOr(
-                    tag_list,
-                    contents,
-                    ApplicabilityTagTypes::Configuration,
-                    else_contents,
-                )),
-                TagVariants::Normal => ApplicabilityParserSyntaxTag::Tag(ApplicabilitySyntaxTag(
-                    tag_list,
-                    contents,
-                    ApplicabilityTagTypes::Configuration,
-                    else_contents,
-                )),
-            }
+            ApplicabilityParserSyntaxTag::Tag(ApplicabilitySyntaxTag(
+                tokens,
+                contents,
+                ApplicabilityTagTypes::Configuration,
+                else_contents,
+            ))
         },
     )
 }
 #[cfg(test)]
 mod parse_config_tests {
     use applicability::applic_tag::{ApplicabilityTag, ApplicabilityTagTypes};
-
-    use crate::applicability_parser_syntax_tag::{
-        ApplicabilityParserSyntaxTag, ApplicabilitySyntaxTag, ApplicabilitySyntaxTagAnd,
-        ApplicabilitySyntaxTagOr,
+    use applicability_parser_types::{
+        applic_tokens::{
+            ApplicTokens, ApplicabilityAndTag, ApplicabilityNoTag, ApplicabilityOrTag,
+        },
+        applicability_parser_syntax_tag::{ApplicabilityParserSyntaxTag, ApplicabilitySyntaxTag},
     };
 
     use super::parse_config;
@@ -231,10 +199,10 @@ mod parse_config_tests {
             Ok((
                 "",
                 ApplicabilityParserSyntaxTag::Tag(ApplicabilitySyntaxTag(
-                    vec![ApplicabilityTag {
+                    vec![ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag {
                         tag: "SOMETHING".to_string(),
                         value: "Included".to_string()
-                    }],
+                    }))],
                     vec![ApplicabilityParserSyntaxTag::Text(
                         "Some Text Here \n".to_string()
                     ),],
@@ -248,18 +216,18 @@ mod parse_config_tests {
     fn anded_config() {
         let mut parser = parse_config("``", "``");
         assert_eq!(
-            parser("`` Configuration[SOMETHING & SOMETHING ELSE] \n Some Text Here \n`` End Configuration ``"),
+            parser("`` Configuration[SOMETHING & SOMETHING_ELSE] \n Some Text Here \n`` End Configuration ``"),
             Ok((
                 "",
-                ApplicabilityParserSyntaxTag::TagAnd(ApplicabilitySyntaxTagAnd(
-                    vec![ApplicabilityTag {
+                ApplicabilityParserSyntaxTag::Tag(ApplicabilitySyntaxTag(
+                    vec![ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag {
                         tag: "SOMETHING".to_string(),
                         value: "Included".to_string()
-                    },
-                    ApplicabilityTag {
-                        tag: "SOMETHING ELSE".to_string(),
+                    })),
+                    ApplicTokens::And(ApplicabilityAndTag(ApplicabilityTag {
+                        tag: "SOMETHING_ELSE".to_string(),
                         value: "Included".to_string()
-                    }],
+                    }))],
                     vec![ApplicabilityParserSyntaxTag::Text("Some Text Here \n".to_string()),],
                     ApplicabilityTagTypes::Configuration,
                     vec![]
@@ -272,18 +240,18 @@ mod parse_config_tests {
     fn ored_config() {
         let mut parser = parse_config("``", "``");
         assert_eq!(
-            parser("`` Configuration[SOMETHING | SOMETHING ELSE] \n Some Text Here \n`` End Configuration ``"),
+            parser("`` Configuration[SOMETHING | SOMETHING_ELSE] \n Some Text Here \n`` End Configuration ``"),
             Ok((
                 "",
-                ApplicabilityParserSyntaxTag::TagOr(ApplicabilitySyntaxTagOr(
-                    vec![ApplicabilityTag {
+                ApplicabilityParserSyntaxTag::Tag(ApplicabilitySyntaxTag(
+                    vec![ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag {
                         tag: "SOMETHING".to_string(),
                         value: "Included".to_string()
-                    },
-                    ApplicabilityTag {
-                        tag: "SOMETHING ELSE".to_string(),
+                    })),
+                    ApplicTokens::Or(ApplicabilityOrTag(ApplicabilityTag {
+                        tag: "SOMETHING_ELSE".to_string(),
                         value: "Included".to_string()
-                    }],
+                    }))],
                     vec![ApplicabilityParserSyntaxTag::Text("Some Text Here \n".to_string()),],
                     ApplicabilityTagTypes::Configuration,
                     vec![]
@@ -307,58 +275,25 @@ pub fn parse_config_not<'a>(
             (tokens, _ln1, contents),
             (_potential_else, else_contents, (_potential_end1, _potential_end2)),
         )| {
-            let config_type = match tokens.first().cloned() {
-                Some(token) => match token {
-                    TokenSplit::And(_) => TagVariants::And,
-                    TokenSplit::Or(_) => TagVariants::Or,
-                    TokenSplit::AndOr(_) => TagVariants::Normal,
-                },
-                None => TagVariants::Normal,
-            };
-            let tag_list = tokens
-                .iter()
-                .map(|tag| match tag {
-                    TokenSplit::And(tag_content)
-                    | TokenSplit::Or(tag_content)
-                    | TokenSplit::AndOr(tag_content) => tag_content.to_string().into(),
-                })
-                .collect::<Vec<ApplicabilityTag>>();
-            match config_type {
-                TagVariants::And => {
-                    ApplicabilityParserSyntaxTag::TagNotAnd(ApplicabilitySyntaxTagNotAnd(
-                        tag_list,
-                        contents,
-                        ApplicabilityTagTypes::Configuration,
-                        else_contents,
-                    ))
-                }
-                TagVariants::Or => {
-                    ApplicabilityParserSyntaxTag::TagNotOr(ApplicabilitySyntaxTagNotOr(
-                        tag_list,
-                        contents,
-                        ApplicabilityTagTypes::Configuration,
-                        else_contents,
-                    ))
-                }
-                TagVariants::Normal => {
-                    ApplicabilityParserSyntaxTag::TagNot(ApplicabilitySyntaxTagNot(
-                        tag_list,
-                        contents,
-                        ApplicabilityTagTypes::Configuration,
-                        else_contents,
-                    ))
-                }
-            }
+            ApplicabilityParserSyntaxTag::TagNot(ApplicabilitySyntaxTagNot(
+                tokens,
+                contents,
+                ApplicabilityTagTypes::Configuration,
+                else_contents,
+            ))
         },
     )
 }
 #[cfg(test)]
 mod parse_config_not_tests {
     use applicability::applic_tag::{ApplicabilityTag, ApplicabilityTagTypes};
-
-    use crate::applicability_parser_syntax_tag::{
-        ApplicabilityParserSyntaxTag, ApplicabilitySyntaxTagNot, ApplicabilitySyntaxTagNotAnd,
-        ApplicabilitySyntaxTagNotOr,
+    use applicability_parser_types::{
+        applic_tokens::{
+            ApplicTokens, ApplicabilityAndTag, ApplicabilityNoTag, ApplicabilityOrTag,
+        },
+        applicability_parser_syntax_tag::{
+            ApplicabilityParserSyntaxTag, ApplicabilitySyntaxTagNot,
+        },
     };
 
     use super::parse_config_not;
@@ -371,10 +306,10 @@ mod parse_config_not_tests {
             Ok((
                 "",
                 ApplicabilityParserSyntaxTag::TagNot(ApplicabilitySyntaxTagNot(
-                    vec![ApplicabilityTag {
+                    vec![ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag {
                         tag: "SOMETHING".to_string(),
                         value: "Included".to_string()
-                    }],
+                    }))],
                     vec![ApplicabilityParserSyntaxTag::Text(
                         "Some Text Here \n".to_string()
                     ),],
@@ -389,19 +324,19 @@ mod parse_config_not_tests {
         let mut parser = parse_config_not("``", "``");
         assert_eq!(
             parser(
-                "`` Configuration Not[SOMETHING & SOMETHING ELSE] \n Some Text Here \n`` End Configuration ``"
+                "`` Configuration Not[SOMETHING & SOMETHING_ELSE] \n Some Text Here \n`` End Configuration ``"
             ),
             Ok((
                 "",
-                ApplicabilityParserSyntaxTag::TagNotAnd(ApplicabilitySyntaxTagNotAnd(
-                    vec![ApplicabilityTag {
+                ApplicabilityParserSyntaxTag::TagNot(ApplicabilitySyntaxTagNot(
+                    vec![ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag {
                         tag: "SOMETHING".to_string(),
                         value: "Included".to_string()
-                    },
-                    ApplicabilityTag {
-                        tag: "SOMETHING ELSE".to_string(),
+                    })),
+                    ApplicTokens::And(ApplicabilityAndTag(ApplicabilityTag {
+                        tag: "SOMETHING_ELSE".to_string(),
                         value: "Included".to_string()
-                    }],
+                    }))],
                     vec![ApplicabilityParserSyntaxTag::Text("Some Text Here \n".to_string()),],
                     ApplicabilityTagTypes::Configuration,
                     vec![]
@@ -415,19 +350,19 @@ mod parse_config_not_tests {
         let mut parser = parse_config_not("``", "``");
         assert_eq!(
             parser(
-                "`` Configuration Not[SOMETHING | SOMETHING ELSE] \n Some Text Here \n`` End Configuration ``"
+                "`` Configuration Not[SOMETHING | SOMETHING_ELSE] \n Some Text Here \n`` End Configuration ``"
             ),
             Ok((
                 "",
-                ApplicabilityParserSyntaxTag::TagNotOr(ApplicabilitySyntaxTagNotOr(
-                    vec![ApplicabilityTag {
+                ApplicabilityParserSyntaxTag::TagNot(ApplicabilitySyntaxTagNot(
+                    vec![ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag {
                         tag: "SOMETHING".to_string(),
                         value: "Included".to_string()
-                    },
-                    ApplicabilityTag {
-                        tag: "SOMETHING ELSE".to_string(),
+                    })),
+                    ApplicTokens::Or(ApplicabilityOrTag(ApplicabilityTag {
+                        tag: "SOMETHING_ELSE".to_string(),
                         value: "Included".to_string()
-                    }],
+                    }))],
                     vec![ApplicabilityParserSyntaxTag::Text("Some Text Here \n".to_string()),],
                     ApplicabilityTagTypes::Configuration,
                     vec![]

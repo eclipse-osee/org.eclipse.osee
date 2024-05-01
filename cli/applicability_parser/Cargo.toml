@@ -12,7 +12,7 @@
  ######################################################################
 [package]
 name = "applicability_parser"
-version = "1.0.0"
+version = "2.0.0"
 edition = "2021"
 authors=["Luciano Vaglienti <luciano.t.vaglienti@boeing.com>"]
 license.workspace=true
@@ -22,5 +22,7 @@ license.workspace=true
 [dependencies]
 nom = "7.1.3"
 nom-bufreader = { version = "0.2.0" }
+tracing = { version = "0.1.40" }
 serde = { version = "1.0.188", optional = true, features = ["derive"] }
 applicability = {path="../applicability",features=["serde"]}
+applicability_parser_types = {path="../applicability_parser_types"}

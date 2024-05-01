@@ -11,3 +11,4 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 pub mod applic_tag;
+pub mod substitution;

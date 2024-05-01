@@ -28,8 +28,8 @@ use super::{
         else_feature_text_parser, end_feature_text_parser, not_feature_text_parser,
         start_feature_text_parser,
     },
-    ApplicabilityParserSyntaxTag,
 };
+use applicability_parser_types::applicability_parser_syntax_tag::ApplicabilityParserSyntaxTag;
 use nom::{
     branch::alt,
     character::complete::anychar,
@@ -52,6 +52,8 @@ pub fn next<'a>(
         let start_config_not = not_config_text_parser(custom_start_comment_syntax);
         let start_config_group = start_config_group_text_parser(custom_start_comment_syntax);
         let start_config_group_not = not_config_group_text_parser(custom_start_comment_syntax);
+        let substitution_as_str =
+            parse_substitution_as_str(custom_start_comment_syntax, custom_end_comment_syntax);
 
         let inner_parser = alt((
             start_feature,
@@ -60,14 +62,14 @@ pub fn next<'a>(
             start_config_not,
             start_config_group,
             start_config_group_not,
-            parse_substitution_as_str(),
+            substitution_as_str,
         ));
         let remaining_chars = many_till(anychar, peek(inner_parser));
         let remaining = map(remaining_chars, |(parsed_characters, _)| {
             ApplicabilityParserSyntaxTag::Text(parsed_characters.into_iter().collect::<String>())
         });
         alt((
-            parse_substitution(),
+            parse_substitution(custom_start_comment_syntax, custom_end_comment_syntax),
             parse_feature_not(custom_start_comment_syntax, custom_end_comment_syntax),
             parse_feature(custom_start_comment_syntax, custom_end_comment_syntax),
             parse_config_not(custom_start_comment_syntax, custom_end_comment_syntax),
@@ -151,6 +153,8 @@ pub fn next_inner<'a>(
         let config_group_else =
             else_config_group_text_parser(custom_start_comment_syntax, custom_end_comment_syntax);
 
+        let substitution_as_str =
+            parse_substitution_as_str(custom_start_comment_syntax, custom_end_comment_syntax);
         //this is the next type to parse...
 
         let inner_parser = alt((
@@ -166,7 +170,7 @@ pub fn next_inner<'a>(
             feature_else,
             config_else,
             config_group_else,
-            parse_substitution_as_str(),
+            substitution_as_str,
         ));
         let remaining_chars = many_till(anychar, peek(inner_parser));
         let remaining = map(remaining_chars, |(parsed_characters, _)| {
@@ -176,7 +180,7 @@ pub fn next_inner<'a>(
         let mut parser = preceded(
             error_parser(custom_start_comment_syntax, custom_end_comment_syntax),
             alt((
-                parse_substitution(),
+                parse_substitution(custom_start_comment_syntax, custom_end_comment_syntax),
                 parse_feature_not(custom_start_comment_syntax, custom_end_comment_syntax),
                 parse_feature(custom_start_comment_syntax, custom_end_comment_syntax),
                 parse_config_not(custom_start_comment_syntax, custom_end_comment_syntax),
@@ -195,17 +199,18 @@ mod tests {
     mod next_inner_tests {
 
         use applicability::applic_tag::{ApplicabilityTag, ApplicabilityTagTypes};
+        use applicability_parser_types::{
+            applic_tokens::{ApplicTokens, ApplicabilityNoTag},
+            applicability_parser_syntax_tag::{
+                ApplicabilityParserSyntaxTag, ApplicabilitySyntaxTag, ApplicabilitySyntaxTagNot,
+            },
+        };
         use nom::{
             error::{Error, ErrorKind, ParseError},
             Err,
         };
 
-        use crate::{
-            applicability_parser_syntax_tag::{
-                ApplicabilityParserSyntaxTag, ApplicabilitySyntaxTag, ApplicabilitySyntaxTagNot,
-            },
-            next::next_inner,
-        };
+        use crate::next::next_inner;
         #[test]
         fn happy_path_feature_not() {
             let mut parser = next_inner("``", "``");
@@ -214,10 +219,10 @@ mod tests {
                 Ok((
                     "",
                     ApplicabilityParserSyntaxTag::TagNot(ApplicabilitySyntaxTagNot(
-                        vec![ApplicabilityTag {
+                        vec![ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag {
                             tag: "SOMETHING".to_string(),
                             value: "Included".to_string()
-                        }],
+                        }))],
                         vec![ApplicabilityParserSyntaxTag::Text(
                             " Some Text Here \n".to_string()
                         )],
@@ -238,10 +243,10 @@ mod tests {
                 Ok((
                     "",
                     ApplicabilityParserSyntaxTag::TagNot(ApplicabilitySyntaxTagNot(
-                        vec![ApplicabilityTag {
+                        vec![ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag {
                             tag: "SOMETHING".to_string(),
                             value: "Included".to_string()
-                        }],
+                        }))],
                         vec![ApplicabilityParserSyntaxTag::Text(
                             " Some Text Here \n".to_string()
                         )],
@@ -272,10 +277,10 @@ mod tests {
                 Ok((
                     "",
                     ApplicabilityParserSyntaxTag::Tag(ApplicabilitySyntaxTag(
-                        vec![ApplicabilityTag {
+                        vec![ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag {
                             tag: "SOMETHING".to_string(),
                             value: "Included".to_string()
-                        }],
+                        }))],
                         vec![ApplicabilityParserSyntaxTag::Text(
                             " Some Text Here \n".to_string()
                         )],
@@ -305,10 +310,10 @@ mod tests {
                 Ok((
                     "",
                     ApplicabilityParserSyntaxTag::Tag(ApplicabilitySyntaxTag(
-                        vec![ApplicabilityTag {
+                        vec![ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag {
                             tag: "SOMETHING".to_string(),
                             value: "Included".to_string()
-                        }],
+                        }))],
                         vec![ApplicabilityParserSyntaxTag::Text(
                             " Some Text Here \n".to_string()
                         )],
