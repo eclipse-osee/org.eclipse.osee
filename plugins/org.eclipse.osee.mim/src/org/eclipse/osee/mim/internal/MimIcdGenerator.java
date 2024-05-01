@@ -356,11 +356,13 @@ public class MimIcdGenerator {
                   MimChangeSummaryItem pTypeDiffItem = diffs.get(element.getPlatformType().getArtifactId());
                   structureSizeChanged =
                      structureSizeChanged || (pTypeDiffItem != null && pTypeDiffItem.hasAttributeChanges(
-                        CoreAttributeTypes.InterfacePlatformTypeBitSize.getId())) || (elementDiffItem != null && (elementDiffItem.isAdded() || (!elementDiffItem.getRelationChanges().isEmpty() && Integer.parseInt(
-                           elementDiffItem.getArtifactReadable().getRelated(
-                              CoreRelationTypes.InterfaceElementPlatformType_PlatformType).getAtMostOneOrDefault(
-                                 ArtifactReadable.SENTINEL).getSoleAttributeAsString(
-                                    CoreAttributeTypes.InterfacePlatformTypeBitSize)) != (int) element.getElementSizeInBits())));
+                        CoreAttributeTypes.InterfacePlatformTypeBitSize.getId()) && Integer.parseInt(
+                           pTypeDiffItem.getArtifactReadable().getSoleAttributeAsString(
+                              CoreAttributeTypes.InterfacePlatformTypeBitSize)) != (int) element.getElementSizeInBits()) || (elementDiffItem != null && (elementDiffItem.isAdded() || (!elementDiffItem.getRelationChanges().isEmpty() && Integer.parseInt(
+                                 elementDiffItem.getArtifactReadable().getRelated(
+                                    CoreRelationTypes.InterfaceElementPlatformType_PlatformType).getAtMostOneOrDefault(
+                                       ArtifactReadable.SENTINEL).getSoleAttributeAsString(
+                                          CoreAttributeTypes.InterfacePlatformTypeBitSize)) != (int) element.getElementSizeInBits())));
                   Optional<MimChangeSummaryItem> structElementDiffItem =
                      structDiffItem == null ? Optional.empty() : structDiffItem.getChild(element.getArtifactId());
                   boolean elementAdded = structElementDiffItem.isPresent() && structElementDiffItem.get().isAdded();
