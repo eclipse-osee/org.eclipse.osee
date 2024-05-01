@@ -13,6 +13,9 @@
 
 package org.eclipse.osee.define.rest.publishing;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -567,14 +570,16 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
    }
 
    @Override
-   public String convertMarkdownToHtml(String markdownContent) {
+   public Response convertMarkdownToHtml(String markdownContent) {
       try {
          PublishingPermissions.verifyNonGroup();
          if (markdownContent == null) {
-            return "";
+            return Response.status(Response.Status.BAD_REQUEST).entity("Markdown content is null").build();
          }
          MarkdownConverter mdConverter = new MarkdownConverter(markdownContent);
-         return mdConverter.toHtml();
+         String html = mdConverter.toHtml();
+         InputStream stream = new ByteArrayInputStream(html.getBytes(StandardCharsets.UTF_8));
+         return Response.ok(stream).header("Content-Disposition", "attachment; filename=markdownToHtml.html").build();
       } catch (UserNotAuthorizedForPublishingException e) {
          throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (IllegalArgumentException iae) {

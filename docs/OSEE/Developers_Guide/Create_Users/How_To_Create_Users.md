@@ -33,7 +33,7 @@ curl -v --location --request POST '{application-server-url}/orcs/txs' --header '
                 },
                 {
                     "typeName": "Login Id",
-                    "value": "{windows login ID OR email address}"
+                    "value": ["{windows login ID}", "{email address}"]
                 }
             ]
         }
