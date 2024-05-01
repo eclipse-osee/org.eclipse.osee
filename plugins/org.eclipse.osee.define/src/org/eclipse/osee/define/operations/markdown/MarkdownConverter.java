@@ -12,8 +12,10 @@
  **********************************************************************/
 package org.eclipse.osee.define.operations.markdown;
 
+import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
 import com.vladsch.flexmark.ext.gfm.tasklist.TaskListExtension;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
+import com.vladsch.flexmark.ext.toc.TocExtension;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Node;
@@ -44,23 +46,23 @@ public class MarkdownConverter {
       Parser parser = Parser.builder(this.options).build();
       HtmlRenderer renderer = HtmlRenderer.builder(this.options).build();
       Node document = parser.parse(this.markdownContent);
-      String style = "<style>" + readMarkdownToHtmlStylesCssFile() + "</style>";
-      return style + renderer.render(document);
+      return "<html><head>" + getCssStyles() + "</head><body>\n" + renderer.render(document) + "</body></html>";
    }
 
    private void setDefaultOptions() {
       options = new MutableDataSet();
-      options.set(Parser.EXTENSIONS, Arrays.asList(TablesExtension.create(), TaskListExtension.create()));
+      options.set(Parser.EXTENSIONS, Arrays.asList(TablesExtension.create(), TaskListExtension.create(),
+         TocExtension.create(), AutolinkExtension.create()));
    }
 
    protected void setOptions(MutableDataSet options) {
       this.options = options;
    }
 
-   private String readMarkdownToHtmlStylesCssFile() {
+   private String getCssStyles() {
       String temp = OseeInf.getResourceContents("markdownToHtmlStyles.css", getClass());
       Pattern pattern = Pattern.compile("^\\s*/\\*{2}.*?\\*/\\s*", Pattern.DOTALL);
       Matcher matcher = pattern.matcher(temp);
-      return matcher.replaceFirst("");
+      return "<style>\n" + matcher.replaceFirst("") + "\n</style>";
    }
 }

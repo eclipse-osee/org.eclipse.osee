@@ -211,7 +211,8 @@ public class PublishingRequestHandler {
 
    public static String convertMarkdownToHtml(String markdownContent) {
       try {
-         return PublishingRequestHandler.instance.publishingEndpoint.convertMarkdownToHtml(markdownContent);
+         return PublishingRequestHandler.instance.publishingEndpoint.convertMarkdownToHtml(markdownContent).readEntity(
+            String.class);
       } catch (Exception e) {
          throw new OseeWebApplicationException(e, Status.INTERNAL_SERVER_ERROR,
             "Exception in \"convertMarkdownToHtml\" request.");

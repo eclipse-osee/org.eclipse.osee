@@ -25,6 +25,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -279,10 +280,10 @@ public interface PublishingEndpoint {
    WordUpdateChange updateWordArtifacts(WordUpdateData data);
 
    @POST
-   @Consumes({MediaType.TEXT_PLAIN})
-   @Produces({MediaType.TEXT_PLAIN})
+   @Consumes(MediaType.TEXT_PLAIN)
+   @Produces(MediaType.APPLICATION_OCTET_STREAM)
    @Path("markdownToHtml")
-   String convertMarkdownToHtml(String markdownContent);
+   Response convertMarkdownToHtml(String markdownContent);
 }
 
 /* EOF */
