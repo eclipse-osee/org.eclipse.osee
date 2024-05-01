@@ -78,6 +78,7 @@
 		}
 		<button
 			mat-raised-button
+			[disabled]="clicked()"
 			(click)="startGenerateReport()"
 			color="primary"
 			class="reports-form-button">

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Output } from '@angular/core';
+import { Component, Output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/core';
@@ -158,6 +158,8 @@ export class SearchCriteriaComponent {
 		this.reportService.SelectedBuild = build;
 	}
 
+	clicked = signal(false);
+
 	reset() {
 		this.workflowNum = '';
 		this.workflowDesc = '';
@@ -172,9 +174,11 @@ export class SearchCriteriaComponent {
 		this.reportService.SelectedBuild = {} as Build;
 		this.reportService.setSearchOptions = searchOptions;
 		this.reportService.DisplayTable = false;
+		this.clicked.set(false);
 	}
 
 	startGenerateReport() {
 		this.startReport.next(true);
+		this.clicked.set(true);
 	}
 }
