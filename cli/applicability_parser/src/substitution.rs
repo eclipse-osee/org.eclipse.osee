@@ -11,62 +11,40 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 use nom::{
-    character::complete::char,
+    bytes::complete::tag,
+    character::complete::multispace0,
     combinator::map,
-    sequence::{delimited, tuple},
+    sequence::{preceded, terminated},
     IResult,
 };
 
-use crate::{
-    applicability_parser_syntax_tag::{self, TagVariants},
-    tag_parser::{substitution_tag, TokenSplit},
-    ApplicabilityParserSyntaxTag,
-};
+use crate::{tag_parser::applicability_tag, ApplicabilityParserSyntaxTag};
 pub fn parse_substitution<'a>(
+    custom_start_comment_syntax: &'a str,
+    custom_end_comment_syntax: &'a str,
 ) -> impl FnMut(&'a str) -> IResult<&'a str, ApplicabilityParserSyntaxTag> {
-    let equals = char('=');
-    let left_brace = char('[');
-    let start = tuple((equals, left_brace));
-    let right_brace = char(']');
-    let inner = delimited(start, substitution_tag(), right_brace);
+    let start = preceded(
+        tag(custom_start_comment_syntax),
+        preceded(
+            multispace0,
+            terminated(tag("Eval"), preceded(multispace0, tag("["))),
+        ),
+    );
+    let right_brace = tag("]");
+    let inner = applicability_tag(
+        start,
+        terminated(right_brace, tag(custom_end_comment_syntax)),
+    );
     map(inner, |tokens| {
-        let substitution_type = match tokens.first().cloned() {
-            Some(token) => match token {
-                TokenSplit::And(_) => TagVariants::And,
-                TokenSplit::Or(_) => TagVariants::Or,
-                TokenSplit::AndOr(_) => TagVariants::Normal,
-            },
-            None => TagVariants::Normal,
-        };
-        let tag_list = tokens
-            .iter()
-            .map(|tag| match tag {
-                TokenSplit::And(tag_content)
-                | TokenSplit::Or(tag_content)
-                | TokenSplit::AndOr(tag_content) => tag_content.to_string(),
-            })
-            .collect::<Vec<String>>();
-        match substitution_type {
-            TagVariants::And => ApplicabilityParserSyntaxTag::SubstitutionAnd(
-                applicability_parser_syntax_tag::SubstitutionSyntaxTagAnd(tag_list),
-            ),
-            TagVariants::Or => ApplicabilityParserSyntaxTag::SubstitutionOr(
-                applicability_parser_syntax_tag::SubstitutionSyntaxTagOr(tag_list),
-            ),
-            TagVariants::Normal => match tag_list.first() {
-                Some(tag) => ApplicabilityParserSyntaxTag::Substitution(tag.to_owned()),
-                None => ApplicabilityParserSyntaxTag::Text("".to_string()),
-            },
-        }
+        ApplicabilityParserSyntaxTag::Substitution(tokens)
     })
 }
-pub fn parse_substitution_as_str<'a>() -> impl FnMut(&'a str) -> IResult<&'a str, &'a str> {
+pub fn parse_substitution_as_str<'a>(
+    custom_start_comment_syntax: &'a str,
+    custom_end_comment_syntax: &'a str,
+) -> impl FnMut(&'a str) -> IResult<&'a str, &'a str> {
     move |input: &str| {
-        let equals = char('=');
-        let left_brace = char('[');
-        let start = tuple((equals, left_brace));
-        let right_brace = char(']');
-        let inner = delimited(start, substitution_tag(), right_brace);
+        let inner = parse_substitution(custom_start_comment_syntax, custom_end_comment_syntax);
         map(inner, |_tokens| input)(input)
     }
 }

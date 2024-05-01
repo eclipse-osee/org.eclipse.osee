@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-use applicability_parser_syntax_tag::ApplicabilityParserSyntaxTag;
+use applicability_parser_types::applicability_parser_syntax_tag::ApplicabilityParserSyntaxTag;
 use nom::{
     branch::permutation,
     character::complete::anychar,
@@ -22,7 +22,6 @@ use nom::{
 // #[macro_use] uncomment if you use Deserialize or Serialize on a struct in applicability lib
 extern crate serde;
 use self::next::next;
-pub mod applicability_parser_syntax_tag;
 
 mod config;
 mod config_group;
@@ -31,11 +30,7 @@ mod config_text;
 mod end;
 mod feature;
 mod feature_text;
-mod match_applicability;
 mod next;
-pub mod sanitize_applicability;
-mod split;
-pub mod substitute_applicability;
 mod substitution;
 mod tag_parser;
 
@@ -59,21 +54,22 @@ fn get_remaining_text(input: &str) -> IResult<&str, ApplicabilityParserSyntaxTag
 /// # Examples:
 /// ``` rust
 /// use applicability_parser::parse_applicability;
-/// use applicability_parser::applicability_parser_syntax_tag::ApplicabilitySyntaxTag;
-/// use applicability_parser::applicability_parser_syntax_tag::ApplicabilityParserSyntaxTag;
-/// use applicability_parser::applicability_parser_syntax_tag::ApplicabilityParserSyntaxTag::Tag;
-/// use applicability_parser::applicability_parser_syntax_tag::ApplicabilityParserSyntaxTag::Text;
+/// use applicability_parser_types::applicability_parser_syntax_tag::ApplicabilitySyntaxTag;
+/// use applicability_parser_types::applicability_parser_syntax_tag::ApplicabilityParserSyntaxTag;
+/// use applicability_parser_types::applicability_parser_syntax_tag::ApplicabilityParserSyntaxTag::Tag;
+/// use applicability_parser_types::applicability_parser_syntax_tag::ApplicabilityParserSyntaxTag::Text;
 /// use applicability::applic_tag::ApplicabilityTagTypes::Configuration;
 /// use applicability::applic_tag::ApplicabilityTagTypes::Feature;
 /// use applicability::applic_tag::ApplicabilityTag;
+/// use applicability_parser_types::applic_tokens::{ApplicabilityNoTag,ApplicTokens};
 ///
 /// assert_eq!(parse_applicability("Some other text
 /// ``Feature[SOMETHING] ``
 /// Some text here  
 /// ``End Feature`` More text
-/// ``Configuration [SOME CONFIGURATION]``
+/// ``Configuration [SOME_CONFIGURATION]``
 /// configuration text
-/// ``End Configuration``","``","``"),Ok(("",vec![Text("Some other text\n".to_string()), Tag(ApplicabilitySyntaxTag([ApplicabilityTag { tag: "SOMETHING".to_string(), value: "Included".to_string() }].to_vec(), vec![Text("Some text here  \n".to_string())], Feature, [].to_vec())), Text(" More text\n".to_string()), Tag(ApplicabilitySyntaxTag([ApplicabilityTag { tag: "SOME CONFIGURATION".to_string(), value: "Included".to_string() }].to_vec(), vec![Text("configuration text\n".to_string())], Configuration, [].to_vec())), Text("".to_string())])));
+/// ``End Configuration``","``","``"),Ok(("",vec![Text("Some other text\n".to_string()), Tag(ApplicabilitySyntaxTag([ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag { tag: "SOMETHING".to_string(), value: "Included".to_string() }))].to_vec(), vec![Text("Some text here  \n".to_string())], Feature, [].to_vec())), Text(" More text\n".to_string()), Tag(ApplicabilitySyntaxTag([ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag { tag: "SOME_CONFIGURATION".to_string(), value: "Included".to_string() }))].to_vec(), vec![Text("configuration text\n".to_string())], Configuration, [].to_vec())), Text("".to_string())])));
 /// ```
 pub fn parse_applicability<'a>(
     input: &'a str,

@@ -10,10 +10,11 @@
 # Contributors:
 #     Boeing - initial API and implementation
 # 
+
 # Feature[INTERNAL_RELEASE_ONLY]
 load("@rules_pkg//:mappings.bzl", "pkg_files", "strip_prefix")
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
-load(":version.bzl", "version")
+load(":version.bzl", "rules_osee_version", "bat_version", "pat_version")
 
 package(
     default_visibility = ["//visibility:private"],
@@ -36,10 +37,36 @@ pkg_tar(
     srcs = [
         ":files_to_publish"
     ],
-    out = "rules-osee-%s.tar.gz" % version,
+    out = "rules-osee-%s.tar.gz" % rules_osee_version,
     extension = "tar.gz",
     mode = "0644",
     owner = "0.0",
     strip_prefix = strip_prefix.from_root()
+)
+
+pkg_tar(
+    name="bat",
+    srcs = [
+        "//cli/bat:bat",
+        "//cli:LICENSE.md"
+    ],
+    out = "bat-%s.tar.gz" % bat_version,
+    extension = "tar.gz",
+    mode = "0644",
+    owner = "0.0",
+    strip_prefix = strip_prefix.from_root("cli")
+)
+
+pkg_tar(
+    name="pat",
+    srcs = [
+        "//cli/pat:pat",
+        "//cli:LICENSE.md"
+    ],
+    out = "pat-%s.tar.gz" %pat_version,
+    extension = "tar.gz",
+    mode = "0644",
+    owner = "0.0",
+    strip_prefix = strip_prefix.from_root("cli")
 )
 # End Feature

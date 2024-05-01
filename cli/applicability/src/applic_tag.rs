@@ -39,6 +39,12 @@ impl PartialEq<String> for ApplicabilityTag {
         self.tag == *other
     }
 }
+
+impl From<ApplicabilityTag> for String {
+    fn from(applic: ApplicabilityTag) -> Self {
+        applic.tag + "=" + &applic.value
+    }
+}
 #[cfg(feature = "serde")]
 use serde::{de::Error, Deserialize};
 #[cfg(feature = "serde")]

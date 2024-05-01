@@ -11,4 +11,6 @@
 #     Boeing - initial API and implementation
 # 
 # Keep in sync with MODULE.bazel
-version = "0.2.10"
+rules_osee_version = "0.2.10"
+bat_version = "1.1.0"
+pat_version = "0.3.0"
