@@ -52,10 +52,8 @@ spec:
           sh 'corepack prepare pnpm@latest-8 --activate'
           sh 'corepack pnpm -v'
           sh 'corepack pnpm config set store-dir ~/.pnpm-store'
-          dir('plugins/org.eclipse.osee.web') {
-            sh 'npm config set fetch-timeout=100000'
-            sh 'corepack pnpm install'
-          }
+          sh 'npm config set fetch-timeout=100000'
+          sh 'corepack pnpm install'
         }
       }
     }
@@ -63,11 +61,10 @@ spec:
     stage('Linting') {
       steps {
         container('node') {
-          dir('plugins/org.eclipse.osee.web') {
-            sh 'npx -p @angular/cli ng lint'
-            sh 'corepack pnpm exec stylelint "**/*.scss"'
-            sh 'corepack pnpm exec prettier --check .'
-          }
+          sh 'corepack pnpm -r run lint'
+          sh 'corepack pnpm -r run stylelint'
+          sh 'corepack pnpm -r run prettier:check'
+          
         }
       }
     }
@@ -75,9 +72,7 @@ spec:
     stage('Run tests') {
       steps {
         container('node') {
-          dir('plugins/org.eclipse.osee.web') {
-            sh 'npx -p @angular/cli ng test --browsers=ChromeHeadlessNoSandbox --watch=false'
-          }
+          sh 'corepack pnpm -r run test --browsers=ChromeHeadlessNoSandbox --watch=false'
         }
       }
     }
@@ -85,9 +80,7 @@ spec:
     stage('Build Production') {
       steps {
         container('node') {
-          dir('plugins/org.eclipse.osee.web') {
-            sh 'npx -p @angular/cli ng build -c production'
-          }
+          sh 'corepack pnpm -r run build -c production'
         }
       }
     }
