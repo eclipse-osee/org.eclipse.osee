@@ -51,10 +51,8 @@ spec:
           sh 'corepack enable --install-directory ~/bin'
           sh 'corepack prepare pnpm@latest-8 --activate'
           sh 'corepack pnpm config set store-dir ~/.pnpm-store'
-          dir('plugins/org.eclipse.osee.web') {
-            sh 'npm config set fetch-timeout=100000'
-            sh 'corepack pnpm install'
-          }
+          sh 'npm config set fetch-timeout=100000'
+          sh 'corepack pnpm install'
         }
       }
     }
@@ -62,9 +60,7 @@ spec:
     stage('Build Demo') {
       steps {
         container('node') {
-          dir('plugins/org.eclipse.osee.web') {
-            sh 'npx -p @angular/cli ng build -c demo'
-          }
+          sh 'corepack pnpm -r run build -c demo'
         }
       }
     }
