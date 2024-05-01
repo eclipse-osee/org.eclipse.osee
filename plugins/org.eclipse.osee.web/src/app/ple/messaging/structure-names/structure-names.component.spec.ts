@@ -23,11 +23,11 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { StructureNamesService } from '@osee/messaging/shared/services';
 import {
 	MessagingControlsMockComponent,
+	MockConnectionDropdownComponent,
 	structuresNameServiceMock,
 } from '@osee/messaging/shared/testing';
 
 import { StructureNamesComponent } from './structure-names.component';
-import { MockConnectionDropdownComponent } from 'src/app/ple/messaging/shared/dropdowns/connection-dropdown/connection-dropdown.component.mock';
 
 describe('StructureNamesComponent', () => {
 	let component: StructureNamesComponent;

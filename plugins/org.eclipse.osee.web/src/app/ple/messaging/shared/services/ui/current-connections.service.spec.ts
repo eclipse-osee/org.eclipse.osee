@@ -12,7 +12,7 @@
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
 import { CurrentConnectionsService } from './current-connections.service';
-import { ConnectionService } from 'src/app/ple/messaging/shared/services/public-api';
+import { ConnectionService } from '../http/connection.service';
 import { connectionServiceMock } from '@osee/messaging/shared/testing';
 
 describe('CurrentConnectionsService', () => {

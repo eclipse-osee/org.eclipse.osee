@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import navigationStructure from '../../../src/app/navigation/top-level-navigation/top-level-navigation-structure';
+import { navigationStructure } from '../../../src/app/layout/lib/navigation/top-level-navigation/top-level-navigation-structure';
 export const amountOfPages = navigationStructure.length;
 
 export const amountOfMessagePages =
