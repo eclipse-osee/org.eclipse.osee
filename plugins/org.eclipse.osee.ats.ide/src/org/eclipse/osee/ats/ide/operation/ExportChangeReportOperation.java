@@ -31,11 +31,9 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.model.change.CompareData;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -63,8 +61,8 @@ public final class ExportChangeReportOperation extends AbstractOperation {
    private final Appendable resultFolder;
    private final boolean reverse;
    private final boolean writeChangeReports;
-   private final ArtifactTypeToken[] DISALLOW_TYPES = {CoreArtifactTypes.ImplementationDetailsMsWord};
    private final String overrideDataRightsClassification;
+   private final List<Long> excludedIds = new ArrayList<>();
    boolean debug = false;
 
    public ExportChangeReportOperation(List<IAtsTeamWorkflow> workflows, boolean reverse, boolean writeChangeReports, String overrideDataRightsClassification, Appendable resultFolder, OperationLogger logger) {
@@ -74,6 +72,10 @@ public final class ExportChangeReportOperation extends AbstractOperation {
       this.writeChangeReports = writeChangeReports;
       this.overrideDataRightsClassification = overrideDataRightsClassification;
       this.resultFolder = resultFolder;
+
+      for (ChangeReportProvider provider : ChangeReportProviderService.getProviders()) {
+         excludedIds.addAll(provider.getExcludedArtifactIds());
+      }
    }
 
    @Override
@@ -204,7 +206,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
          Iterator<Change> iterator = changes.iterator();
          while (iterator.hasNext()) {
             Change change = iterator.next();
-            if (!(change instanceof ArtifactChange)) {
+            if (!(change instanceof ArtifactChange) || excludedIds.contains(change.getChangeArtifact().getId())) {
                iterator.remove();
             } else {
                artIds.add(change.getArtId());
