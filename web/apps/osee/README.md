@@ -34,75 +34,75 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ### Check Angular version compatibility
 
-- This step is essential for determining the compatible Node.js version to select during Node.js installation.
-- Determine current Angular version from `@angular/core` in [`package.json`](/package.json).
-- Check version compatibility [here](https://angular.io/guide/versions).
+-   This step is essential for determining the compatible Node.js version to select during Node.js installation.
+-   Determine current Angular version from `@angular/core` in [`package.json`](/package.json).
+-   Check version compatibility [here](https://angular.io/guide/versions).
 
 ### Install Node.js
 
-- Download a compatible version of Node.js for the current Angular version from [here](https://nodejs.org/en/download).
+-   Download a compatible version of Node.js for the current Angular version from [here](https://nodejs.org/en/download).
 
 ### Verify Node.js Installation
 
-- Open shell/prompt/bash.
-- Run:
-  - `node -v`
-  - `npm -v`
+-   Open shell/prompt/bash
+-   Run the following commands:
+    -   `node -v`
+    -   `npm -v`
 
-### Move to OSEE web directory
+### Move to OSEE web app directory
 
-- `cd {path_to_repo}\org.eclipse.osee\plugins\org.eclipse.osee.web`
+-   `cd {path_to_repo}\org.eclipse.osee\web\apps\osee`
 
 ### Update code
 
-- Run:
-  - `git checkout dev`
-  - `git pull --rebase`
-
+-   Run:
+    -   `git checkout dev`
+    -   `git pull --rebase`
 
 ### Install pnpm
 
-- Run:
-  - `npm install -g @pnpm/exe`
-  - Restart shell/prompt/bash after install completes.
+-   Run:
+    -   `npm install -g @pnpm/exe`
+        -   If issues arise:
+            -   Open Microsoft settings
+            -   Search for 'Edit system variables for account'
+            -   Bump the `pnpm` home variable to the top of the stack
+-   Restart shell/prompt/bash after install completes (make sure you cd back to the {path_to_repo}\org.eclipse.osee\web\apps\osee)
 
 ### Verify pnpm Installation
 
-- Run:
-  - `pnpm -v`
+-   Run:
+    -   `pnpm -v`
 
 ### Install Angular CLI
 
-- Run:
-  - `npm install -g @angular/cli`
+-   Run:
+    -   `npm install -g @angular/cli`
+-   Restart shell/prompt/bash after install completes (make sure you cd back to the {path_to_repo}\org.eclipse.osee\web\apps\osee)
 
 ### Verify Angular CLI Installation
 
-- Run:
-  - `ng version`
+-   Run:
+    -   `ng version`
+-   Answer 'yes' for the first question and 'no' for the second question (if prompted with questions)
 
 ### Download node dependencies
 
-- Run:
-  - `pnpm install`
+-   Run:
+    -   `pnpm install`
 
 ### Running the Application
 
-- Run local **OSEE application server**:
-  - Open Eclipse IDE client used for development.
-  - Switch to debug perspective.
-  - Click debug configurations dropdown button.
-  - Click "debug configurations..."
-  - Click "OSEE_Application_Server_[PostGreSQL]" to run local server.
-- If database is not populated:
-  - Run local server.
-  - Run "AtsIde_Integration_TestSuite".
-  - Wait for "database initialization complete".
-  - Terminate "AtsIde_Integration_TestSuite".
-- Run **Angular web server** from shell/prompt/bash (make sure you are still in the \git\org.eclipse.osee\plugins\org.eclipse.osee.web directory):
-  - `ng serve`
+-   [Run local **OSEE application server**](../../../docs/run-local-application-server.md)
+-   Run **Angular web server** from shell/prompt/bash in the {path_to_repo}\org.eclipse.osee directory:
+    -   `pnpm -r run serve`
     OR
-  - `ng serve --open` to open the page automatically.
+    -   `pnpm -r run serve --open` to open the page automatically
+
+### Running unit tests
+
+-   Run **Jasmine unit tests** from shell/prompt/bash in the {path_to_repo}\org.eclipse.osee directory:
+    -   `pnpm -r run test --browsers=ChromeHeadless`
 
 ## Visual Studio Code Extensions 
 
@@ -110,12 +110,12 @@ Visual Studio Code extensions enhance the functionality of the editor by offerin
 
 ### Essential plugins:
 
-- Angular Language Service
-- ESLint
-- Prettier - Code Formatter
-- Tailwind CSS IntelliSense
+-   Angular Language Service
+-   ESLint
+-   Prettier - Code Formatter
+-   Tailwind CSS IntelliSense
 
 ### Recommended plugins:
 
-- Error Lens
-- GitLens
+-   Error Lens
+-   GitLens
