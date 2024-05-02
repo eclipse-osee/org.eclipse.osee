@@ -363,14 +363,18 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
     * table
     */
    @Override
-   public String getViewTable(BranchId branch, String filter) {
-      return getConfigMatrix(branch, "all", filter);
+   public String getViewTable(BranchId branch, String filter, ArtifactId view) {
+      return getConfigMatrix(branch, "all", filter, view);
    }
 
-   private void printTable(StringBuilder html, List<ArtifactToken> branchViews, BranchId branch, String filter) {
+   private void printTable(StringBuilder html, List<ArtifactToken> branchViews, BranchId branch, String filter,
+      ArtifactId viewId) {
       html.append("<table border=\"1\">");
       if (Strings.isValid(filter)) {
          branchViews.removeIf(art -> art.getName().matches(filter));
+      }
+      if (viewId.isValid()) {
+         branchViews.removeIf(art -> !art.getId().equals(viewId.getId()));
       }
 
       List<FeatureDefinition> featureDefinitionData = getFeatureDefinitionData(branch);
@@ -407,7 +411,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    }
 
    @Override
-   public String getConfigMatrix(BranchId branch, String matrixType, String filter) {
+   public String getConfigMatrix(BranchId branch, String matrixType, String filter, ArtifactId viewId) {
       StringBuilder html = getHtmlStart();
 
       List<ArtifactReadable> branchViews = new ArrayList<ArtifactReadable>();
@@ -416,26 +420,31 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
          html.append(String.format("<h3>Configurations Feature Matrix for branch: %s</h3>",
             branchQuery.andId(branch).getResults().getExactlyOne().getName()));
          branchViews = this.getConfigurationsForBranch(branch);
-         printTable(html, branchViews.stream().map(a -> a.getToken()).collect(Collectors.toList()), branch, filter);
+         printTable(html, branchViews.stream().map(a -> a.getToken()).collect(Collectors.toList()), branch, filter,
+            viewId);
       } else if (matrixType.equals("groups")) {
          html.append(String.format("<h3>Configuration Groups Feature Matrix for branch: %s</h3>",
             branchQuery.andId(branch).getResults().getExactlyOne().getName()));
          branchViews = this.getConfigurationGroupsForBranch(branch);
-         printTable(html, branchViews.stream().map(a -> a.getToken()).collect(Collectors.toList()), branch, filter);
+         printTable(html, branchViews.stream().map(a -> a.getToken()).collect(Collectors.toList()), branch, filter,
+            viewId);
       } else if (matrixType.equals("all")) {
          html.append(String.format("<h3>Configurations and Groups Feature Matrix for branch: %s</h3>",
             branchQuery.andId(branch).getResults().getExactlyOne().getName()));
          branchViews = this.getViewsForBranch(branch);
-         printTable(html, branchViews.stream().map(a -> a.getToken()).collect(Collectors.toList()), branch, filter);
+         printTable(html, branchViews.stream().map(a -> a.getToken()).collect(Collectors.toList()), branch, filter,
+            viewId);
       } else {
          html.append(String.format("<h3>Configuration Groups Feature Matrix for branch: %s</h3>",
             branchQuery.andId(branch).getResults().getExactlyOne().getName()));
          branchViews = this.getConfigurationGroupsForBranch(branch);
-         printTable(html, branchViews.stream().map(a -> a.getToken()).collect(Collectors.toList()), branch, filter);
+         printTable(html, branchViews.stream().map(a -> a.getToken()).collect(Collectors.toList()), branch, filter,
+            viewId);
          html.append(String.format("<h3>Configurations Feature Matrix for branch: %s</h3>",
             branchQuery.andId(branch).getResults().getExactlyOne().getName()));
          branchViews = this.getConfigurationsForBranch(branch);
-         printTable(html, branchViews.stream().map(a -> a.getToken()).collect(Collectors.toList()), branch, filter);
+         printTable(html, branchViews.stream().map(a -> a.getToken()).collect(Collectors.toList()), branch, filter,
+            viewId);
       }
 
       html.append("</body></html>");

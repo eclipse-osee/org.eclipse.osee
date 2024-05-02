@@ -284,12 +284,13 @@ public interface ApplicabilityEndpoint {
    @GET
    @Path("table")
    @Produces(MediaType.TEXT_HTML)
-   String getViewTable(@QueryParam("filter") String filter);
+   String getViewTable(@QueryParam("filter") String filter, @DefaultValue("-1") @QueryParam("view") ArtifactId view);
 
    @GET
    @Path("matrix")
    @Produces(MediaType.TEXT_HTML)
-   String getConfigMatrix(@QueryParam("matrixtype") String matrixType, @QueryParam("filter") String filter);
+   String getConfigMatrix(@QueryParam("matrixtype") String matrixType, @QueryParam("filter") String filter,
+      @DefaultValue("-1") @QueryParam("view") ArtifactId view);
 
    /**
     * Set the applicability in osee_txs for the given artifacts. This affects whether the artifact is included in a

@@ -281,17 +281,27 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public String getViewTable(String filter) {
-      return applicabilityQuery.getViewTable(branch, filter);
+   public String getViewTable(String filter, ArtifactId view) {
+      String pleAccess = orcsApi.getSystemProperties().getValue("ple.access");
+      boolean isSingleAccess = pleAccess.isEmpty() ? false : pleAccess.equals("SINGLE") ? true : false;
+      if (view.isInvalid() && !pleAccess.isEmpty() && isSingleAccess) {
+         return null;
+      }
+      return applicabilityQuery.getViewTable(branch, filter, view);
    }
 
    @Override
-   public String getConfigMatrix(String matrixType, String filter) {
+   public String getConfigMatrix(String matrixType, String filter, ArtifactId view) {
       String mType = "all";
+      String pleAccess = orcsApi.getSystemProperties().getValue("ple.access");
+      boolean isSingleAccess = pleAccess.isEmpty() ? false : pleAccess.equals("SINGLE") ? true : false;
+      if (view.isInvalid() && !pleAccess.isEmpty() && isSingleAccess) {
+         return null;
+      }
       if (matrixType != null) {
          mType = matrixType;
       }
-      return applicabilityQuery.getConfigMatrix(branch, mType, filter);
+      return applicabilityQuery.getConfigMatrix(branch, mType, filter, view);
    }
 
    @Override
