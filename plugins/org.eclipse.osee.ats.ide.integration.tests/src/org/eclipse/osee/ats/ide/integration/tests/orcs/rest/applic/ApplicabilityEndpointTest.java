@@ -133,7 +133,7 @@ public class ApplicabilityEndpointTest {
 
       List<ArtifactToken> viewList = appl.getViews();
       Assert.assertEquals(viewCount, viewList.size());
-      String viewTable = appl.getViewTable(null);
+      String viewTable = appl.getViewTable(null, ArtifactId.SENTINEL);
       Assert.assertFalse("ApplicabilityEndpoint.deleteView failure", viewTable.contains("Product D"));
       Assert.assertTrue("ApplicabilityEndpoint.createView failure", viewTable.contains(newView.getName()));
 

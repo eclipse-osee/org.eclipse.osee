@@ -64,7 +64,7 @@ public interface ApplicabilityQuery {
 
    ArtifactToken getViewByName(BranchId branch, String viewName);
 
-   String getViewTable(BranchId branch, String filter);
+   String getViewTable(BranchId branch, String filter, ArtifactId view);
 
    ArtifactId getVersionConfig(ArtifactId art, BranchId branch);
 
@@ -90,7 +90,7 @@ public interface ApplicabilityQuery {
 
    List<ArtifactReadable> getConfigurationGroupsForBranch(BranchId branch);
 
-   String getConfigMatrix(BranchId branch, String matrixtype, String filter);
+   String getConfigMatrix(BranchId branch, String matrixtype, String filter, ArtifactId view);
 
    List<ArtifactReadable> getConfigurationsForBranch(BranchId branch);
 
