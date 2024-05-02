@@ -295,8 +295,8 @@ public class QueryEngineImpl implements QueryEngine {
 
                   Date time = null;
 
-                  String maxTime = stmt.getString("max_time");
-                  String timeStr = stmt.getString("timeStr");
+                  String maxTime = stmt.getString("max_time").replaceAll("'", "");
+                  String timeStr = stmt.getString("timeStr").replaceAll("'", "");
                   if (maxTime.equals(timeStr)) {
                      try {
                         int indexOf = timeStr.indexOf(".");
@@ -348,8 +348,8 @@ public class QueryEngineImpl implements QueryEngine {
 
                   Date time = null;
 
-                  String maxTime = stmt.getString("max_time");
-                  String timeStr = stmt.getString("timeStr");
+                  String maxTime = stmt.getString("max_time").replaceAll("'", "");
+                  String timeStr = stmt.getString("timeStr").replaceAll("'", "");
                   if (maxTime.equals(timeStr)) {
                      try {
                         time = DateUtil.getDate("yyyyMMddHHmmss", timeStr);
@@ -397,8 +397,8 @@ public class QueryEngineImpl implements QueryEngine {
          appValue = stmt.getString("app_value");
       }
       if (OptionsUtil.getIncludeLatestTransactionDetails(queryData.getRootQueryData().getOptions())) {
-         String timeStr = stmt.getString("timeStr");
-         String maxTime = stmt.getString("max_time");
+         String timeStr = stmt.getString("timeStr").replaceAll("'", "");
+         String maxTime = stmt.getString("max_time").replaceAll("'", "");
          if (timeStr.equals(maxTime)) {
 
             suppTxId = TransactionId.valueOf(stmt.getLong("supp_tx_id"));
