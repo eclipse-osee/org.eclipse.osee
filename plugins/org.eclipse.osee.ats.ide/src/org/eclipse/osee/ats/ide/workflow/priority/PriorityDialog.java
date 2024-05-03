@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.team.Priorities;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredListDialog;
 import org.eclipse.osee.framework.ui.swt.Widgets;
@@ -27,6 +28,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -40,6 +42,7 @@ public class PriorityDialog extends FilteredListDialog<Priorities> {
    private boolean clearAllowed = true;
    private Composite container;
    private Priorities initialPriority = null;
+   private String descUrl;
 
    public PriorityDialog(Collection<IAtsTeamWorkflow> teamWfs, List<Priorities> priorities) {
       super("Select Priority", "Select Priority", new PriorityLabelProvider());
@@ -73,6 +76,22 @@ public class PriorityDialog extends FilteredListDialog<Priorities> {
             @Override
             public void widgetSelected(SelectionEvent e) {
                setSelection(null);
+               close();
+            }
+         });
+      }
+
+      if (Strings.isValid(descUrl)) {
+         Composite composite = new Composite((Composite) control, SWT.None);
+         composite.setLayout(new GridLayout());
+         composite.setLayoutData(new GridData());
+
+         final Button button = new Button(composite, SWT.PUSH);
+         button.setText("Show Descriptions");
+         button.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               Program.launch(descUrl);
                close();
             }
          });
@@ -124,5 +143,9 @@ public class PriorityDialog extends FilteredListDialog<Priorities> {
       } else {
          initialPriority = priorities;
       }
+   }
+
+   public void setDescUrl(String descUrl) {
+      this.descUrl = descUrl;
    }
 }

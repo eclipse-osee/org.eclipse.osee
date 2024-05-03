@@ -37,18 +37,8 @@ import org.eclipse.osee.framework.ui.swt.Widgets;
 public class XHyperlinkPrioritySelectionDam extends XHyperlinkPrioritySelection implements AttributeWidget {
 
    public static final String WIDGET_ID = XHyperlinkPrioritySelectionDam.class.getSimpleName();
-
    protected Artifact artifact;
-
    public static String NOT_SET = Widgets.NOT_SET;
-
-   public XHyperlinkPrioritySelectionDam() {
-      this("");
-   }
-
-   public XHyperlinkPrioritySelectionDam(String label) {
-      super(label);
-   }
 
    public XHyperlinkPrioritySelectionDam(String label, Priorities... priorities) {
       super(label, priorities);

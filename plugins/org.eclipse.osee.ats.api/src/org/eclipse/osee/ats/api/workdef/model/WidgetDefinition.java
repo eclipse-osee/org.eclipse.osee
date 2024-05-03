@@ -47,7 +47,7 @@ public class WidgetDefinition extends LayoutItem {
    private final RelationTypeSide relationTypeSide;
    private final WidgetOptionHandler options = new WidgetOptionHandler();
    private List<ConditionalRule> conditions = new ArrayList<>();
-   private List<WidgetHint> widgetHints = new ArrayList<>();
+   private final List<WidgetHint> widgetHints = new ArrayList<>();
    private IUserGroupArtifactToken userGroup = UserGroupArtifactToken.SENTINEL;
 
    private String toolTip;
@@ -247,10 +247,6 @@ public class WidgetDefinition extends LayoutItem {
 
    public List<WidgetHint> getWidgetHints() {
       return widgetHints;
-   }
-
-   public void setWidgetHints(List<WidgetHint> widgetHints) {
-      this.widgetHints = widgetHints;
    }
 
    public IUserGroupArtifactToken getUserGroup() {

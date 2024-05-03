@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 /**
  * @author Donald G. Dunne
  */
-public class XWidgetRendererItem implements Cloneable {
+public class XWidgetRendererItem {
 
    private static final FrameworkXWidgetProvider xWidgetFactory = FrameworkXWidgetProvider.getInstance();
    private static final String UNKNOWN = "Unknown";

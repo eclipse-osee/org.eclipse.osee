@@ -423,4 +423,8 @@ public class XWidgetBuilder {
       return this;
    }
 
+   public XWidgetBuilder andParameter(String key, Object obj) {
+      currItem.getParameters().put(key, obj);
+      return this;
+   }
 }

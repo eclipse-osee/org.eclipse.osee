@@ -50,7 +50,7 @@ public class XHyperlinkPrioritySelection extends GenericXWidget {
    protected Composite comp;
    protected boolean includeColon = true;
    protected Priorities selected = Priorities.None;
-   protected final List<Priorities> priorities = new ArrayList<>();;
+   protected final List<Priorities> priorities = new ArrayList<>();
 
    public XHyperlinkPrioritySelection() {
       this("");
@@ -105,11 +105,15 @@ public class XHyperlinkPrioritySelection extends GenericXWidget {
          if (getToolTip() != null) {
             labelHyperlink.setToolTipText(getToolTip());
          }
+
          labelHyperlink.addListener(SWT.MouseUp, new Listener() {
             @Override
             public void handleEvent(Event event) {
                if (event.button == 1) {
                   PriorityDialog dialog = new PriorityDialog(null, getPriorities());
+                  dialog.setHelpAvailable(false);
+                  String descUrl = (String) getParameters().get("DescUrl");
+                  dialog.setDescUrl(descUrl);
                   if (dialog.open() == Window.OK) {
                      selected = dialog.getSelected();
                      handleSelected(selected);
