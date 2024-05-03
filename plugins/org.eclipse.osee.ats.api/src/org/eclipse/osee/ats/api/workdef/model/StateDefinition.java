@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.api.workdef.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewDefinition;
@@ -34,14 +35,21 @@ public class StateDefinition extends AbstractWorkDefItem implements IStateToken 
    private StateType StateType;
    private int ordinal = 0;
    private List<LayoutItem> stateItems = new ArrayList<>(5);
+   @JsonIgnore
    private final RuleManager ruleMgr = new RuleManager();
+   @JsonIgnore
    private final List<StateDefinition> toStates = new ArrayList<>(5);
+   @JsonIgnore
    private final List<IAtsDecisionReviewDefinition> decisionReviews = new ArrayList<>();
+   @JsonIgnore
    private final List<IAtsPeerReviewDefinition> peerReviews = new ArrayList<>();
+   @JsonIgnore
    private WorkDefinition workDefinition;
    private Integer recommendedPercentComplete = null;
    private StateColor color = null;
+   @JsonIgnore
    private final List<IAtsTransitionHook> transitionListeners = new ArrayList<>();
+   @JsonIgnore
    private final List<IAtsWorkItemHook> workItemListeners = new ArrayList<>();
    private List<StateOption> stateOptions = new ArrayList<>();
    private IUserGroupArtifactToken transitionUserGroup = null;
@@ -226,6 +234,14 @@ public class StateDefinition extends AbstractWorkDefItem implements IStateToken 
 
    public List<IAtsWorkItemHook> getWorkItemListeners() {
       return workItemListeners;
+   }
+
+   public List<String> getToStateNames() {
+      List<String> stateNames = new ArrayList<>();
+      for (StateDefinition state : getToStates()) {
+         stateNames.add(state.getName());
+      }
+      return stateNames;
    }
 
 }
