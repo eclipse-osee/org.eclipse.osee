@@ -14,17 +14,11 @@ import { CdkDropList } from '@angular/cdk/drag-drop';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import {
-	MatExpansionPanel,
-	MatExpansionPanelHeader,
-	MatExpansionPanelTitle,
-} from '@angular/material/expansion';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import {
 	ActionDropDownComponent,
 	BranchPickerComponent,
-	ExpandIconComponent,
 	ViewSelectorComponent,
 } from '@osee/shared/components';
 import { CurrentBranchInfoService, UiService } from '@osee/shared/services';
@@ -34,6 +28,7 @@ import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarc
 import { ArtifactHierarchyOptionsComponent } from '../artifact-hierarchy-options/artifact-hierarchy-options.component';
 import { ArtifactHierarchyComponent } from '../artifact-hierarchy/artifact-hierarchy.component';
 import { ArtifactSearchPanelComponent } from '../artifact-search-panel/artifact-search-panel.component';
+import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
 
 @Component({
 	selector: 'osee-artifact-hierarchy-panel',
@@ -47,13 +42,10 @@ import { ArtifactSearchPanelComponent } from '../artifact-search-panel/artifact-
 		ViewSelectorComponent,
 		ActionDropDownComponent,
 		ArtifactSearchPanelComponent,
+		ArtifactExplorerExpansionPanelComponent,
 		MatTooltip,
 		MatIcon,
-		MatExpansionPanel,
-		MatExpansionPanelHeader,
-		MatExpansionPanelTitle,
 		CdkDropList,
-		ExpandIconComponent,
 	],
 	templateUrl: './artifact-hierarchy-panel.component.html',
 })
@@ -81,12 +73,6 @@ export class ArtifactHierarchyPanelComponent {
 		private tabService: ArtifactExplorerTabService,
 		private currentBranchService: CurrentBranchInfoService
 	) {}
-
-	// panel open/close state handling
-	panelOpen = new BehaviorSubject<boolean>(true);
-	togglePanel() {
-		this.panelOpen.next(!this.panelOpen.value);
-	}
 
 	openChangeReport() {
 		this.tabService.addTab(

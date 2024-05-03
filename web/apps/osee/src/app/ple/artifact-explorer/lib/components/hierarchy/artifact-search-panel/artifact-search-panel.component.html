@@ -10,17 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<mat-expansion-panel
-	class="[&>div>div]:tw-px-0"
-	[expanded]="panelOpen()"
-	hideToggle>
-	<mat-expansion-panel-header
-		(click)="togglePanel()"
-		[class]="panelOpen() ? 'tw-shadow-md' : ''">
-		<mat-panel-title class="tw-flex tw-gap-4">
-			<osee-expand-icon [open]="panelOpen()" />
-			<div class="tw-font-bold">Artifact Search</div>
-		</mat-panel-title>
-	</mat-expansion-panel-header>
+<osee-artifact-explorer-expansion-panel
+	title="Artifact Search"
+	[openDefault]="false">
 	<osee-artifact-search class="tw-w-full" />
-</mat-expansion-panel>
+</osee-artifact-explorer-expansion-panel>
