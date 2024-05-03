@@ -534,7 +534,7 @@ public class TransitionManager implements IExecuteListener {
           * Ensure assignee is selected if required in current state, else current assignees will be used, else current
           * user will be used when transition; Nothing to validate here. See AtsWorkflowLinks.md for design.
           */
-         boolean requireAssignee = workItem.getWorkDefinition().getOptions().contains(WorkDefOption.RequireAssignees);
+         boolean requireAssignee = workItem.getWorkDefinition().getOptions().contains(WorkDefOption.RequireAssignee);
          if (requireAssignee && fromStateDef.isWorking() && transData.isToAssigneesEmptyOrUnassigned()) {
             results.addResult(workItem, TransitionResult.MUST_HAVE_ASSIGNEE);
          }

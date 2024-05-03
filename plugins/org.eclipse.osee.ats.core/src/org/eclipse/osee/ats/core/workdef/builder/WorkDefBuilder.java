@@ -261,6 +261,7 @@ public class WorkDefBuilder {
    }
 
    public void andAssigneesRequired() {
-      workDef.getOptions().add(WorkDefOption.RequireAssignees);
+      workDef.getOptions().add(WorkDefOption.RequireAssignee);
    }
+
 }

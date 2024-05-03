@@ -119,7 +119,7 @@ public class WfeAssigneesHeader extends Composite {
          }
          valueLabel.setText(Strings.truncate(value, 150, true));
 
-         if (workItem.getWorkDefinition().hasOption(WorkDefOption.RequireAssignees)) {
+         if (workItem.getWorkDefinition().hasOption(WorkDefOption.RequireAssignee)) {
             IManagedForm managedForm = editor.getWorkFlowTab().getManagedForm();
             if (managedForm != null && !managedForm.getForm().isDisposed()) {
                IMessageManager messageManager = managedForm.getMessageManager();
