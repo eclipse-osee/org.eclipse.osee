@@ -285,7 +285,8 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testAtsActionRestCall() {
-      testActionRestCall("ats/action/" + DemoUtil.getSawCodeCommittedWf().getAtsId(), 1);
+      String atsId = "ats/action/" + DemoUtil.getSawCodeCommittedWf().getAtsId();
+      testActionRestCall(atsId, 1);
    }
 
    @Test

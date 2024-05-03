@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.api.workdef.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,14 +38,22 @@ import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 public class WorkDefinition extends AbstractWorkDefItem {
 
    private final List<StateDefinition> states = new ArrayList<>(5);
+   @JsonIgnore
    private final CountingMap<String> labelCount = new CountingMap<String>();
+   @JsonIgnore
    private final List<CreateTasksDefinition> createTasksDefs = new ArrayList<>();
+   @JsonIgnore
    private final Map<ReviewRole, Integer> reviewRoleMap = new ConcurrentHashMap<>();
+   @JsonIgnore
    private final Map<ReviewRoleType, Integer> reviewRoleTypeMap = new ConcurrentHashMap<>();
+   @JsonIgnore
    private StateDefinition startState;
+   @JsonIgnore
    private HeaderDefinition headerDef;
    private boolean showStateMetrics = false;
+   @JsonIgnore
    private List<XViewerColumn> reviewDefectColumns = new ArrayList<>();
+   @JsonIgnore
    private XResultData results = new XResultData();
    private final List<WorkDefOption> options = new ArrayList<>();
    private final List<ChangeTypes> changeTypes = new ArrayList<>();
@@ -97,6 +106,7 @@ public class WorkDefinition extends AbstractWorkDefItem {
       return headerDef != null && !headerDef.getLayoutItems().isEmpty();
    }
 
+   @JsonIgnore
    public HeaderDefinition getDefaultHeaderDef() {
       HeaderDefinition defaultHeaderDef = new HeaderDefinition(this);
       defaultHeaderDef.setShowMetricsHeader(true);
@@ -206,4 +216,15 @@ public class WorkDefinition extends AbstractWorkDefItem {
       return priorities;
    }
 
+   public String getStartStateName() {
+      return getStartState().getName();
+   }
+
+   public List<String> getStateNames() {
+      List<String> stateNames = new ArrayList<>();
+      for (StateDefinition state : getStates()) {
+         stateNames.add(state.getName());
+      }
+      return stateNames;
+   }
 }

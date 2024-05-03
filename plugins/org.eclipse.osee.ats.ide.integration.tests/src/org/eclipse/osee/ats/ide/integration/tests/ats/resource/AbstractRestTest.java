@@ -77,6 +77,13 @@ public abstract class AbstractRestTest {
       return getAndCheckResponseCode(url, MediaType.APPLICATION_JSON_TYPE);
    }
 
+   public JsonNode getJsonNode(String path) {
+      WebTarget target = jaxRsApi.newTarget(path);
+      String json = target.request(MediaType.APPLICATION_JSON_TYPE).get().readEntity(String.class);
+      JsonNode arrayNode = jaxRsApi.readTree(json);
+      return arrayNode;
+   }
+
    protected String getJson(WebTarget target) {
       return target.request(MediaType.APPLICATION_JSON_TYPE).get().readEntity(String.class);
    }

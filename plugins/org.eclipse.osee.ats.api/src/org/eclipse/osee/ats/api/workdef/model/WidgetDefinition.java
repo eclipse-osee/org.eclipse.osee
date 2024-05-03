@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.api.workdef.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,8 +40,10 @@ public class WidgetDefinition extends LayoutItem {
 
    private final AttributeTypeToken attributeType;
    private AttributeTypeToken attributeType2;
+   @JsonIgnore
    private final ComputedCharacteristicToken<?> computedCharacteristic;
    private final Map<String, Object> parameters = new HashMap<String, Object>();
+   @JsonIgnore
    private final RelationTypeSide relationTypeSide;
    private final WidgetOptionHandler options = new WidgetOptionHandler();
    private List<ConditionalRule> conditions = new ArrayList<>();

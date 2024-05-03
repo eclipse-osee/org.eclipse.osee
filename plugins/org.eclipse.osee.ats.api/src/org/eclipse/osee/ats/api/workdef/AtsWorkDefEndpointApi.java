@@ -13,10 +13,13 @@
 
 package org.eclipse.osee.ats.api.workdef;
 
+import java.util.Collection;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
@@ -26,6 +29,20 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 @Path("workdef")
 @Swagger
 public interface AtsWorkDefEndpointApi {
+
+   @GET
+   @Produces(MediaType.APPLICATION_JSON)
+   public Collection<WorkDefinition> get();
+
+   @Path("{id}")
+   @GET
+   @Produces(MediaType.APPLICATION_JSON)
+   public WorkDefinition getWorkDef(@PathParam("id") String id);
+
+   @Path("teamdef/{id}")
+   @GET
+   @Produces(MediaType.APPLICATION_JSON)
+   public WorkDefinition getWorkDefForTeam(@PathParam("id") String id);
 
    /**
     * Convert missing work definitions to artifact referenced attriutes
