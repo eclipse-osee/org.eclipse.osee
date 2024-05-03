@@ -16,8 +16,10 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
@@ -92,6 +94,7 @@ public abstract class XWidget {
    private ArtifactId teamId = ArtifactId.SENTINEL;
    private List<WidgetHint> widgetHints = new ArrayList<>();
    private OseeImage oseeImage;
+   private final Map<String, Object> parameters = new HashMap<String, Object>();
 
    public XWidget(String label) {
       this.label = label;
@@ -586,6 +589,14 @@ public abstract class XWidget {
 
    public void setOseeImage(OseeImage oseeImage) {
       this.oseeImage = oseeImage;
+   }
+
+   public Map<String, Object> getParameters() {
+      return parameters;
+   }
+
+   public void addParameter(String key, Object value) {
+      parameters.put(key, value);
    }
 
 }

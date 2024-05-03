@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.ide.workdef;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
@@ -191,6 +190,7 @@ public class WidgetPageUtil {
             rItem.setAttributeType2(widgetDef.getAttributeType2());
          }
          rItem.setWidgetHints(widgetDef.getWidgetHints());
+         rItem.getParameters().putAll(widgetDef.getParameters());
          rItem.setRelationTypeSide(widgetDef.getRelationTypeSide());
          rItem.setOseeImage(widgetDef.getOseeImage());
          rItem.setEnumeratedArt(widgetDef.getEnumeratedArt());
@@ -226,9 +226,6 @@ public class WidgetPageUtil {
             if (option != null) {
                rItem.getXOptionHandler().add(option);
             }
-         }
-         for (Entry<String, Object> pair : widgetDef.getParameters().entrySet()) {
-            rItem.getParameters().put(pair.getKey(), pair.getValue());
          }
          rItem.setConditions(widgetDef.getConditions());
          rItem.setUserGroup(widgetDef.getUserGroup());

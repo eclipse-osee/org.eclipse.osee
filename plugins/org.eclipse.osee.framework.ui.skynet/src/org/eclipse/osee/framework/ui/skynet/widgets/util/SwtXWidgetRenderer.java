@@ -171,6 +171,8 @@ public class SwtXWidgetRenderer {
       xWidget.setTeamId(rItem.getTeamId());
       xWidget.setValues(rItem.getValues());
       xWidget.setConditions(rItem.getConditions());
+      xWidget.getWidgetHints().addAll(rItem.getWidgetHints());
+      xWidget.getParameters().putAll(rItem.getParameters());
 
       return xWidget;
    }
@@ -259,7 +261,6 @@ public class SwtXWidgetRenderer {
          if (rItem.getObject() != null) {
             xWidget.setObject(rItem.getObject());
          }
-         xWidget.getWidgetHints().addAll(rItem.getWidgetHints());
 
          if (dynamicWidgetLayoutListener != null) {
             dynamicWidgetLayoutListener.widgetCreating(xWidget, toolkit, artifact, this, xModListener, isEditable);
@@ -280,7 +281,6 @@ public class SwtXWidgetRenderer {
             }
             xText.setDynamicallyCreated(true);
          }
-         xWidget.setWidgetHints(rItem.getWidgetHints());
 
          xWidget.createWidgets(managedForm, currentComp, 2);
          setAttrToolTip(xWidget, rItem);

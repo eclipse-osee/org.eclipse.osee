@@ -35,6 +35,11 @@ public class PriorityWidgetDefinition extends WidgetDefinition {
       }
    }
 
+   public PriorityWidgetDefinition addPriorityUrl(String priorityUrl) {
+      addParameter("DescUrl", priorityUrl);
+      return this;
+   }
+
    public LayoutItem andRequired() {
       set(WidgetOption.REQUIRED_FOR_TRANSITION);
       return this;
