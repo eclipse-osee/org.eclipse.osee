@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefOption;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
@@ -305,6 +306,9 @@ public class WfeHeaderComposite extends Composite {
 
    public boolean isShowTargetedVersion() {
       if (!workItem.isTeamWorkflow()) {
+         return false;
+      }
+      if (workItem.getWorkDefinition().hasOption(WorkDefOption.NoTargetedVersion)) {
          return false;
       }
       return AtsApiService.get().getVersionService().isTeamUsesVersions(

@@ -80,8 +80,8 @@ public class Pdd92CreateDemoReviews {
       changes.add(review);
 
       // Create a Decision review and transition to Completed
-      review = AtsApiService.get().getReviewService().createValidateReview(DemoUtil.getProblemInTree_TeamWfWf(),
-         true, createdDate, createdBy, changes);
+      review = AtsApiService.get().getReviewService().createValidateReview(DemoUtil.getProblemInTree_TeamWfWf(), true,
+         createdDate, createdBy, changes);
       AtsApiService.get().getReviewService().transitionDecisionTo((DecisionReviewArtifact) review.getStoreObject(),
          DecisionReviewState.Completed, createdBy, false, changes);
       if (result.isFalse()) {
@@ -154,7 +154,8 @@ public class Pdd92CreateDemoReviews {
       roles.add(new UserRole(ReviewRole.Author, DemoUsers.Kay_Jones, 2.3, false));
       roles.add(new UserRole(ReviewRole.Reviewer, DemoUsers.Joe_Smith, 4.5, false));
       roles.add(new UserRole(ReviewRole.Reviewer, DemoUsers.Alex_Kay, 2.0, false));
-      AtsApiService.get().getReviewService().setPrepareStateData(false, reviewArt3, roles, "here", 100, 2.5, changes);
+      AtsApiService.get().getReviewService().setPrepareStateData(false, reviewArt3, roles, "review materials", 100, 2.5,
+         changes);
       changes.execute();
    }
 
