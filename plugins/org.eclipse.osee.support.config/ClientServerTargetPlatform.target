@@ -671,12 +671,12 @@
 <plugin id="flexmark-util-visitor"/>
 <plugin id="flexmark-util-sequence"/>
 <plugin id="annotations"/>
-<plugin id="org.eclipse.jetty.http" version="9.4.51.v20230217"/>
-<plugin id="org.eclipse.jetty.io" version="9.4.51.v20230217"/>
-<plugin id="org.eclipse.jetty.security" version="9.4.51.v20230217"/>
-<plugin id="org.eclipse.jetty.server" version="9.4.51.v20230217"/>
-<plugin id="org.eclipse.jetty.servlet" version="9.4.51.v20230217"/>
-<plugin id="org.eclipse.jetty.util" version="9.4.51.v20230217"/>
+<plugin id="org.eclipse.jetty.http"/>
+<plugin id="org.eclipse.jetty.io"/>
+<plugin id="org.eclipse.jetty.security"/>
+<plugin id="org.eclipse.jetty.server"/>
+<plugin id="org.eclipse.jetty.servlet"/>
+<plugin id="org.eclipse.jetty.util"/>
 <plugin id="com.sun.jna.platform" version="5.12.1.v20221103-2317"/>
 <plugin id="com.sun.jna" version="5.12.1.v20221103-2317"/>
 <plugin id="autolink"/>
