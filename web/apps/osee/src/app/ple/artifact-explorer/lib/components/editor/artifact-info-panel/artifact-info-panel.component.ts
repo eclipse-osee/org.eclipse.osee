@@ -12,23 +12,17 @@
  **********************************************************************/
 import { NgClass } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import {
-	MatExpansionPanel,
-	MatExpansionPanelHeader,
-	MatExpansionPanelTitle,
-} from '@angular/material/expansion';
 import { ExpandIconComponent } from '@osee/shared/components';
 import { BehaviorSubject } from 'rxjs';
 import { tab } from '../../../types/artifact-explorer.data';
+import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
 
 @Component({
 	selector: 'osee-artifact-info-panel',
 	standalone: true,
 	imports: [
 		NgClass,
-		MatExpansionPanel,
-		MatExpansionPanelHeader,
-		MatExpansionPanelTitle,
+		ArtifactExplorerExpansionPanelComponent,
 		ExpandIconComponent,
 	],
 	templateUrl: './artifact-info-panel.component.html',

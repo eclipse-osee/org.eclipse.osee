@@ -10,18 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<mat-expansion-panel hideToggle>
-	<mat-expansion-panel-header
-		(click)="togglePanel()"
-		[ngClass]="panelOpen.value ? 'tw-shadow-md' : ''"
-		class="tw-px-0 hover:tw-bg-background-hover">
-		<mat-panel-title class="tw-flex tw-gap-4 tw-pl-4">
-			<osee-expand-icon [open]="panelOpen.value" />
-			<div class="tw-font-bold">Artifact Info</div>
-		</mat-panel-title>
-	</mat-expansion-panel-header>
-
-	<div class="tw-pt-4">
+<osee-artifact-explorer-expansion-panel title="Artifact Info">
+	<div class="tw-p-4">
 		<div class="tw-flex tw-pb-2">
 			<div class="tw-font-bold">Artifact Name:</div>
 			<div class="tw-pl-4">
@@ -47,4 +37,4 @@
 			</div>
 		</div>
 	</div>
-</mat-expansion-panel>
+</osee-artifact-explorer-expansion-panel>

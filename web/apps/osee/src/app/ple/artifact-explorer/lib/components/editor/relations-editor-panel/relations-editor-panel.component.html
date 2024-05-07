@@ -10,19 +10,7 @@
 * Contributors:
 *     Boeing - initial API and implementation
 -->
-<mat-expansion-panel
-	class="[&>div>div]:tw-px-0"
-	hideToggle>
-	<mat-expansion-panel-header
-		(click)="togglePanel()"
-		[ngClass]="panelOpen.value ? 'tw-shadow-md' : ''"
-		class="tw-px-0 hover:tw-bg-background-hover">
-		<mat-panel-title class="tw-flex tw-gap-4 tw-pl-4">
-			<osee-expand-icon [open]="panelOpen.value" />
-			<div class="tw-font-bold">Relations Editor</div>
-		</mat-panel-title>
-	</mat-expansion-panel-header>
-
+<osee-artifact-explorer-expansion-panel title="Relations Editor">
 	<div class="tw-pt-4">
 		@if (artWithRelation$ | async; as art) {
 			@for (
@@ -202,4 +190,4 @@
 			}
 		}
 	</div>
-</mat-expansion-panel>
+</osee-artifact-explorer-expansion-panel>
