@@ -11,13 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { NgClass } from '@angular/common';
-import { Component, Input, ViewChild, viewChild } from '@angular/core';
+import { Component, Input, viewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import {
-	MatExpansionPanel,
-	MatExpansionPanelHeader,
-	MatExpansionPanelTitle,
-} from '@angular/material/expansion';
 import {
 	AttributesEditorComponent,
 	ExpandIconComponent,
@@ -33,6 +28,7 @@ import {
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { tab } from '../../../types/artifact-explorer.data';
 import { MatIcon } from '@angular/material/icon';
+import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
 
 @Component({
 	selector: 'osee-attributes-editor-panel',
@@ -42,10 +38,8 @@ import { MatIcon } from '@angular/material/icon';
 		FormsModule,
 		AttributesEditorComponent,
 		FormDirective,
-		MatExpansionPanel,
-		MatExpansionPanelHeader,
-		MatExpansionPanelTitle,
 		MatIcon,
+		ArtifactExplorerExpansionPanelComponent,
 		ExpandIconComponent,
 	],
 	templateUrl: './attributes-editor-panel.component.html',

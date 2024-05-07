@@ -21,11 +21,6 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
-import {
-	MatExpansionPanel,
-	MatExpansionPanelHeader,
-	MatExpansionPanelTitle,
-} from '@angular/material/expansion';
 import { MatIcon } from '@angular/material/icon';
 import { MatList } from '@angular/material/list';
 import { ExpandIconComponent } from '@osee/shared/components';
@@ -55,6 +50,7 @@ import {
 	relationSide,
 } from '../../../types/artifact-explorer.data';
 import { RelationDeleteDialogComponent } from '../relation-delete-dialog/relation-delete-dialog.component';
+import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
 
 @Component({
 	selector: 'osee-relations-editor-panel',
@@ -62,9 +58,7 @@ import { RelationDeleteDialogComponent } from '../relation-delete-dialog/relatio
 	imports: [
 		NgClass,
 		AsyncPipe,
-		MatExpansionPanel,
-		MatExpansionPanelHeader,
-		MatExpansionPanelTitle,
+		ArtifactExplorerExpansionPanelComponent,
 		MatIcon,
 		CdkDropList,
 		MatList,
