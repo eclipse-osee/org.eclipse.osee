@@ -6,6 +6,7 @@ genrule(
   tools = ["@bazel_tools//tools/zip:zipper"],
   outs = ["org.eclipse.osee.server.p2.zip"],
   cmd = "cp -r $(locations server_plugins) plugins;rm -rf etc;mkdir etc;cp -r $(locations json) etc;rm -rf configuration; mkdir configuration;cp -r $(locations create_config) configuration;chmod -R 777 configuration;mkdir osee_server;cp -r $(locations server_files) .;$(location @bazel_tools//tools/zip:zipper) c thezip.zip runDemo.sh runPostgreSqlLocal.sh runHsql.sh runServer.sh runDemo.bat plugins/* etc/* configuration/*;cp -r thezip.zip $@",
+  visibility = ["//:__pkg__"]
 )
 
 filegroup(

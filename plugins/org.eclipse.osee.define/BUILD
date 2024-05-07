@@ -83,6 +83,8 @@ java_library(
 		"@maven//:com_vladsch_flexmark_flexmark",
 		"@maven//:com_vladsch_flexmark_flexmark_ext_tables",
 		"@maven//:com_vladsch_flexmark_flexmark_ext_gfm_tasklist",
+		"@maven//:com_vladsch_flexmark_flexmark_ext_toc",
+		"@maven//:com_vladsch_flexmark_flexmark_ext_autolink",
 		"@ext_jars//:apache_commons_lang",
 		"@ext_jars//:rmf",
 		"@ext_jars//:emf",
