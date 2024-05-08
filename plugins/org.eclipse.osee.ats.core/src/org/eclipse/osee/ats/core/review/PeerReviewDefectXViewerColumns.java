@@ -31,6 +31,7 @@ public class PeerReviewDefectXViewerColumns {
    public static XViewerColumn Description_Col = new XViewerColumn("osee.defect.description", "Description", 200, XViewerAlign.Left, true, SortDataType.String_MultiLine, false, null);
    public static XViewerColumn Location_Col = new XViewerColumn("osee.defect.location", "Location", 100, XViewerAlign.Left, true, SortDataType.String_MultiLine, false, null);
    public static XViewerColumn Resolution_Col = new XViewerColumn("osee.defect.resolution", "Resolution", 200, XViewerAlign.Left, true, SortDataType.String_MultiLine, false, null);
+   public static XViewerColumn Resolved_By_Col = new XViewerColumn("osee.defect.resolved.by", "Resolved By", 70, XViewerAlign.Left, true, SortDataType.String, false, null);
    public static XViewerColumn Notes_Col = new XViewerColumn("osee.defect.notes", "Notes", 200, XViewerAlign.Left, true, SortDataType.String_MultiLine, false, null);
    // @formatter:on
 
