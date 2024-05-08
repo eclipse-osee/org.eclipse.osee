@@ -89,11 +89,20 @@ export class PlConfigBranchService {
 		);
 	}
 	public getBranchApplicability(
-		id: number | string | undefined
+		branchId: number | string | undefined,
+		viewId: number | string
 	): Observable<PlConfigApplicUIBranchMapping> {
+		let params: HttpParamsType = {};
+		if (viewId !== '') {
+			params = {
+				...params,
+				config: viewId,
+			};
+		}
 		return this.http
 			.get<PlConfigApplicUIBranchMapping>(
-				apiURL + '/orcs/applicui/branch/' + id + '/all'
+				apiURL + '/orcs/applicui/branch/' + branchId + '/all',
+				{ params: params }
 			)
 			.pipe(share());
 	}

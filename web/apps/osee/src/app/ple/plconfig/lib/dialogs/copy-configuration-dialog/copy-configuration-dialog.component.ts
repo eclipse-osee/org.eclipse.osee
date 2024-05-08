@@ -40,6 +40,8 @@ import {
 	configGroupWithChanges,
 } from '../../types/pl-config-configurations';
 import { PLEditConfigData } from '../../types/pl-edit-config-data';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { UiService } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-plconfig-copy-configuration-dialog',
@@ -65,13 +67,16 @@ export class CopyConfigurationDialogComponent {
 	private _groups: Observable<(configGroup | configGroupWithChanges)[]>;
 	private _untouchedViews: Observable<(view | viewWithChanges)[]>;
 	views: Observable<(viewWithChangesAndGroups | viewWithGroups)[]>;
+	viewId = toSignal(this.uiService.viewId);
 	constructor(
 		public dialogRef: MatDialogRef<CopyConfigurationDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: PLEditConfigData,
-		private branchService: PlConfigBranchService
+		private branchService: PlConfigBranchService,
+		private uiService: UiService
 	) {
 		this.branchApplicability = this.branchService.getBranchApplicability(
-			data.currentBranch
+			data.currentBranch,
+			this.viewId() || ''
 		);
 		this._groups = this.branchApplicability.pipe(
 			map((applic) => applic.groups)

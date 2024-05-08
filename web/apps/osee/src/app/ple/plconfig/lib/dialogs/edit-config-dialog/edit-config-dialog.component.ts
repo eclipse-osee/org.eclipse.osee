@@ -38,6 +38,8 @@ import {
 } from '../../types/pl-config-applicui-branch-mapping';
 import { cfgGroup } from '../../types/pl-config-branch';
 import { PLEditConfigData } from '../../types/pl-edit-config-data';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { UiService } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-plconfig-edit-configuration-dialog',
@@ -66,15 +68,18 @@ export class EditConfigurationDialogComponent {
 	branchApplicability: Observable<PlConfigApplicUIBranchMapping>;
 	cfgGroups: Observable<cfgGroup[]>;
 	productApplicabilities = this.currentBranchService.productTypes;
+	viewId = toSignal(this.uiService.viewId);
 	constructor(
 		private typeService: PlConfigTypesService,
 		public dialogRef: MatDialogRef<EditConfigurationDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: PLEditConfigData,
 		private branchService: PlConfigBranchService,
-		private currentBranchService: PlConfigCurrentBranchService
+		private currentBranchService: PlConfigCurrentBranchService,
+		private uiService: UiService
 	) {
 		this.branchApplicability = this.branchService.getBranchApplicability(
-			data.currentBranch
+			data.currentBranch,
+			this.viewId() || ''
 		);
 		this.cfgGroups = this.currentBranchService.cfgGroups;
 	}

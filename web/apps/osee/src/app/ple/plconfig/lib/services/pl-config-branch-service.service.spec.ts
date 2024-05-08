@@ -49,7 +49,7 @@ describe('PlConfigBranchService', () => {
 		httpTestingController.verify();
 	});
 	it('get branch applicability should return results from /orcs/applicui/branch', () => {
-		service.getBranchApplicability(10).subscribe();
+		service.getBranchApplicability(10, '').subscribe();
 		const req = httpTestingController.expectOne(
 			apiURL + '/orcs/applicui/branch/' + 10 + '/all'
 		);

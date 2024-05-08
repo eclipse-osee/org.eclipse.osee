@@ -634,13 +634,22 @@
 			}
 			<tr
 				mat-header-row
-				*matHeaderRowDef="topLevelHeaders | async; sticky: true"></tr>
+				*matHeaderRowDef="topLevelHeaders | async; sticky: true"
+				[ngClass]="{
+					'tw-hidden': (topLevelHeaders | async)?.length === 0
+				}"></tr>
 			<tr
 				mat-header-row
-				*matHeaderRowDef="secondaryHeaders | async; sticky: true"></tr>
+				*matHeaderRowDef="secondaryHeaders | async; sticky: true"
+				[ngClass]="{
+					'tw-hidden': (secondaryHeaders | async)?.length === 0
+				}"></tr>
 			<tr
 				mat-header-row
-				*matHeaderRowDef="columnIds | async; sticky: true"></tr>
+				*matHeaderRowDef="columnIds | async; sticky: true"
+				[ngClass]="{
+					'tw-hidden': (columnIds | async)?.length === 0
+				}"></tr>
 			<tr
 				mat-row
 				*matRowDef="let row; columns: columnIds | async"

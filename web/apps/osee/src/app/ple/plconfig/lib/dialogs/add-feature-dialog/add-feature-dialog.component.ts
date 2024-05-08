@@ -33,6 +33,8 @@ import { PlConfigBranchService } from '../../services/pl-config-branch-service.s
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigApplicUIBranchMapping } from '../../types/pl-config-applicui-branch-mapping';
 import { PLAddFeatureData, writeFeature } from '../../types/pl-config-features';
+import { UiService } from '@osee/shared/services';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-plconfig-add-feature-dialog',
@@ -63,14 +65,17 @@ export class AddFeatureDialogComponent {
 	productApplicabilities = this.currentBranchService.productTypes;
 	private _valueTypes: string[] = ['String', 'Integer', 'Decimal', 'Boolean'];
 	valueTypes: Observable<string[]> = of(this._valueTypes);
+	viewId = toSignal(this.uiService.viewId);
 	constructor(
 		public dialogRef: MatDialogRef<AddFeatureDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: PLAddFeatureData,
 		private branchService: PlConfigBranchService,
-		private currentBranchService: PlConfigCurrentBranchService
+		private currentBranchService: PlConfigCurrentBranchService,
+		private uiService: UiService
 	) {
 		this.branchApplicability = this.branchService.getBranchApplicability(
-			data.currentBranch
+			data.currentBranch,
+			this.viewId() || ''
 		);
 	}
 	onNoClick(): void {
