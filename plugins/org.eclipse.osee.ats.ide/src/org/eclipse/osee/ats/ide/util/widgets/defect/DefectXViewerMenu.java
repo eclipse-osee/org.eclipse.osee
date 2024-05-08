@@ -32,13 +32,16 @@ import org.eclipse.osee.ats.api.review.ReviewDefectItem.InjectionActivity;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsReviewHook;
 import org.eclipse.osee.ats.core.review.PeerReviewDefectXViewerColumns;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -449,18 +452,28 @@ public class DefectXViewerMenu {
 
    private boolean setClosed(Collection<ReviewDefectItem> defectItems, boolean closed) {
       boolean modified = false;
+      XResultData rd = new XResultData();
       for (ReviewDefectItem defectItem : defectItems) {
          if (defectItem.isClosed() != closed) {
-            defectItem.setClosed(closed);
             if (closed) {
-               defectItem.setClosedUserId(AtsApiService.get().getUserService().getCurrentUserId());
+               for (IAtsReviewHook provider : AtsApiService.get().getReviewService().getReviewHooks()) {
+                  provider.checkDefectCanClose(defectItem, closed, rd);
+               }
+               if (rd.isSuccess()) {
+                  defectItem.setClosed(closed);
+                  defectItem.setClosedUserId(AtsApiService.get().getUserService().getCurrentUserId());
+               }
             } else {
+               defectItem.setClosed(closed);
                defectItem.setClosedUserId("");
             }
             if (!modified) {
                modified = true;
             }
          }
+      }
+      if (rd.isErrors()) {
+         XResultDataUI.report(rd, "Error(s) for Defect(s)");
       }
       return modified;
    }
@@ -507,9 +520,16 @@ public class DefectXViewerMenu {
    private boolean setResolution(Collection<ReviewDefectItem> defectItems, String resolution) {
       boolean modified = false;
       for (ReviewDefectItem defectItem : defectItems) {
-         defectItem.setResolution(resolution);
-         if (!modified) {
-            modified = true;
+         if (!defectItem.getResolution().equals(resolution)) {
+            defectItem.setResolution(resolution);
+            if (!resolution.isBlank()) {
+               defectItem.setResolvedUserId(AtsApiService.get().getUserService().getCurrentUserId());
+            } else {
+               defectItem.setResolvedUserId("");
+            }
+            if (!modified) {
+               modified = true;
+            }
          }
       }
       return modified;

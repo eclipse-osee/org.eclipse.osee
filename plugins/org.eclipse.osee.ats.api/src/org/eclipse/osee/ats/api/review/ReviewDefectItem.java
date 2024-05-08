@@ -43,6 +43,8 @@ public class ReviewDefectItem {
    private String notes = "";
    private boolean closed = false;
    private String closedUserId = "";
+   private String resolvedUserId = "";
+
    public static enum Severity {
       None,
       Major,
@@ -174,7 +176,9 @@ public class ReviewDefectItem {
             "<closed>" + closed + "</closed>" + //
             "<notes>" + notes + "</notes>" + //
             "<id>" + id + "</id> " + //
+            "<resolveduserid>" + resolvedUserId + "</resolveduserid> " + //
             "<closeduserid>" + closedUserId + "</closeduserid>");
+
       if (andGuid) {
          sb.append("<guid>" + guid + "</guid>");
       }
@@ -190,6 +194,7 @@ public class ReviewDefectItem {
       this.date = date;
       this.userId = AXml.getTagData(xml, "user");
       this.closedUserId = AXml.getTagData(xml, "closeduserid");
+      this.resolvedUserId = AXml.getTagData(xml, "resolveduserid");
       this.description = AXml.getTagData(xml, "description");
       this.location = AXml.getTagData(xml, "location");
       this.resolution = AXml.getTagData(xml, "resolution");
@@ -330,5 +335,13 @@ public class ReviewDefectItem {
 
    public void setClosedUserId(String closedUserId) {
       this.closedUserId = closedUserId;
+   }
+
+   public String getResolvedUserId() {
+      return resolvedUserId;
+   }
+
+   public void setResolvedUserId(String resolvedUserId) {
+      this.resolvedUserId = resolvedUserId;
    }
 }

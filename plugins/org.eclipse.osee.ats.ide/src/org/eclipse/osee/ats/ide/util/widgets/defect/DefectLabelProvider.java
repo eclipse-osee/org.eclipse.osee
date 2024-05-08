@@ -74,6 +74,15 @@ public class DefectLabelProvider extends XViewerLabelProvider {
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
+      } else if (dCol.equals(PeerReviewDefectXViewerColumns.Resolved_By_Col)) {
+         try {
+            if (Strings.isValid(defectItem.getResolvedUserId())) {
+               User user = UserManager.getUserByUserId(defectItem.getResolvedUserId());
+               return ArtifactImageManager.getImage(user);
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
       }
       return null;
    }
@@ -123,6 +132,21 @@ public class DefectLabelProvider extends XViewerLabelProvider {
          return defectItem.getInjectionActivity() == InjectionActivity.None ? "" : defectItem.getInjectionActivity().name();
       } else if (aCol.equals(PeerReviewDefectXViewerColumns.Notes_Col)) {
          return defectItem.getNotes();
+      } else if (aCol.equals(PeerReviewDefectXViewerColumns.Resolved_By_Col)) {
+         String name = "";
+         if (Strings.isValid(defectItem.getResolvedUserId())) {
+            try {
+               AtsUser atsUser = AtsApiService.get().getUserService().getUserByUserId(defectItem.getResolvedUserId());
+               if (atsUser == null) {
+                  return "Unknown - " + defectItem.getResolvedUserId();
+               }
+               name = atsUser.getName();
+            } catch (OseeCoreException ex) {
+               name = String.format("Erroring getting user name: [%s]", ex.getLocalizedMessage());
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         }
+         return name;
       }
       return "Unhandled Column";
    }

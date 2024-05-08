@@ -14,6 +14,8 @@
 package org.eclipse.osee.ats.api.workflow.hooks;
 
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
+import org.eclipse.osee.ats.api.review.ReviewDefectItem;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -24,7 +26,13 @@ public interface IAtsReviewHook {
     * Notification that a review was created. This allows the extension to do necessary initial tasks after the review
     * workflow artifact is created. All changes made to review will be persisted after this call.
     */
-   public void reviewCreated(IAtsAbstractReview reviewWf);
+   default public void reviewCreated(IAtsAbstractReview reviewWf) {
+      // do nothing
+   }
+
+   default public void checkDefectCanClose(ReviewDefectItem defectItems, boolean closed, XResultData rd) {
+      // do nothing
+   }
 
    public String getDescription();
 
