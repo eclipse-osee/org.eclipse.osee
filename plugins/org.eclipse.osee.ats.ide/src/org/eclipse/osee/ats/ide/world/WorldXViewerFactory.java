@@ -52,6 +52,7 @@ import org.eclipse.osee.ats.ide.column.GoalsColumnUI;
 import org.eclipse.osee.ats.ide.column.GroupsColumnUI;
 import org.eclipse.osee.ats.ide.column.ImplementorColumnUI;
 import org.eclipse.osee.ats.ide.column.LastStatusedColumnUI;
+import org.eclipse.osee.ats.ide.column.LastTransitionDateColumnUI;
 import org.eclipse.osee.ats.ide.column.NumberOfTasksColumnUI;
 import org.eclipse.osee.ats.ide.column.NumberOfTasksRemainingColumnUI;
 import org.eclipse.osee.ats.ide.column.OriginatingWorkFlowColumnUI;
@@ -350,6 +351,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          LastModifiedTransactionColumn.getInstance(),
          LastModifiedTransactionCommentColumn.getInstance(),
          LastStatusedColumnUI.getInstance(),
+         LastTransitionDateColumnUI.getInstance(),
          NumberOfTasksColumnUI.getInstance(),
          NumberOfTasksRemainingColumnUI.getInstance(),
          OriginatingWorkFlowColumnUI.getInstance(),
