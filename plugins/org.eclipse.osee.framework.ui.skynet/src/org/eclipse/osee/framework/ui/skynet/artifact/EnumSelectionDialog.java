@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.DisplayHint;
 import org.eclipse.osee.framework.core.data.Multiplicity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -56,7 +57,7 @@ public class EnumSelectionDialog extends FilteredCheckboxTreeDialog<String> {
    public EnumSelectionDialog(AttributeTypeEnum<?> attributeType, Collection<? extends Artifact> artifacts) {
       super("Select Options" + (isSingletonAttribute(attributeType, artifacts) ? " - (Singleton)" : ""),
          "Select option(s) to add, delete or replace.", new ArrayTreeContentProvider(), new StringLabelProvider(),
-         new StringViewerSorter());
+         attributeType.hasDisplayHint(DisplayHint.InOrder) ? null : new StringViewerSorter());
       this.attributeType = attributeType;
       this.artifacts = artifacts;
       Set<String> options;
@@ -75,7 +76,8 @@ public class EnumSelectionDialog extends FilteredCheckboxTreeDialog<String> {
       setInput(options);
    }
 
-   public static boolean isSingletonAttribute(AttributeTypeToken attributeType, Collection<? extends Artifact> artifacts) {
+   public static boolean isSingletonAttribute(AttributeTypeToken attributeType,
+      Collection<? extends Artifact> artifacts) {
       for (Artifact artifact : artifacts) {
          if (artifact.getArtifactType().getMax(attributeType) != 1) {
             return false;
