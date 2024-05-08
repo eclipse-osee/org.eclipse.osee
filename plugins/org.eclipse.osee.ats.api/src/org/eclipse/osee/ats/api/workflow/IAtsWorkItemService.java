@@ -237,6 +237,14 @@ public interface IAtsWorkItemService {
       return getTimeInState(workItem, workItem.getCurrentState());
    }
 
+   default public Date getLastTransitionDate(IAtsWorkItem workItem) {
+      IAtsLogItem logItem = getStateStartedData(workItem, workItem.getCurrentState());
+      if (logItem != null) {
+         return logItem.getDate();
+      }
+      return null;
+   }
+
    /**
     * This method is for backward compatibility and should NOT be used outside core ATS
     */
@@ -279,4 +287,5 @@ public interface IAtsWorkItemService {
    }
 
    boolean isAllowSiblingCreation(IAtsWorkItem workItem);
+
 }
