@@ -34,6 +34,8 @@ import { PlConfigTypesService } from '../../services/pl-config-types.service';
 import { PlConfigApplicUIBranchMapping } from '../../types/pl-config-applicui-branch-mapping';
 import { cfgGroup } from '../../types/pl-config-branch';
 import { PLAddConfigData } from '../../types/pl-edit-config-data';
+import { UiService } from '@osee/shared/services';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-plconfig-add-configuration-dialog',
@@ -61,15 +63,18 @@ export class AddConfigurationDialogComponent {
 	branchApplicability: Observable<PlConfigApplicUIBranchMapping>;
 	cfgGroups: Observable<cfgGroup[]>;
 	productApplicabilities = this.currentBranchService.productTypes;
+	viewId = toSignal(this.uiService.viewId);
 	constructor(
 		private typeService: PlConfigTypesService,
 		public dialogRef: MatDialogRef<AddConfigurationDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: PLAddConfigData,
 		private branchService: PlConfigBranchService,
-		private currentBranchService: PlConfigCurrentBranchService
+		private currentBranchService: PlConfigCurrentBranchService,
+		private uiService: UiService
 	) {
 		this.branchApplicability = this.branchService.getBranchApplicability(
-			data.currentBranch
+			data.currentBranch,
+			this.viewId() || ''
 		);
 		this.cfgGroups = this.currentBranchService.cfgGroups;
 	}

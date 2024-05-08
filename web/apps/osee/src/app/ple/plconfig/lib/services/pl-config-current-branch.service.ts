@@ -63,7 +63,12 @@ import {
 	editConfiguration,
 } from '../types/pl-config-configurations';
 import { modifyFeature, writeFeature } from '../types/pl-config-features';
-import { ActionService } from '@osee/shared/services';
+import {
+	ActionService,
+	UiService,
+	ViewsRoutedUiService,
+	ViewsUiService,
+} from '@osee/shared/services';
 import { PlConfigBranchService } from './pl-config-branch-service.service';
 import { PlConfigUIStateService } from './pl-config-uistate.service';
 import {
@@ -102,18 +107,31 @@ export class PlConfigCurrentBranchService {
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 	private _branchApplicabilityNoChanges: Observable<PlConfigApplicUIBranchMapping> =
-		this.uiStateService.branchId.pipe(
-			switchMap((val) =>
-				iif(
-					() => val !== '',
-					this.branchService.getBranchApplicability(val).pipe(
-						repeatWhen((_) => this.uiStateService.updateReq),
-						share()
-					),
+		combineLatest([
+			this.uiStateService.branchId,
+			this.uiService.viewId,
+		]).pipe(
+			switchMap(([branchId, viewId]) => {
+				return iif(
+					() => branchId !== '',
+					this.branchService
+						.getBranchApplicability(branchId, viewId)
+						.pipe(
+							switchMap((resp) => {
+								if (resp === null) {
+									return of(
+										new PlConfigApplicUIBranchMappingImpl()
+									);
+								} else {
+									return of(resp);
+								}
+							}),
+							repeatWhen((_) => this.uiStateService.updateReq),
+							share()
+						),
 					of(new PlConfigApplicUIBranchMappingImpl())
-				)
-			),
-			share(),
+				);
+			}),
 			shareReplay({ bufferSize: 1, refCount: true })
 		);
 	private _branchApplicability = combineLatest([
@@ -223,71 +241,82 @@ export class PlConfigCurrentBranchService {
 	);
 	private _topLevelHeaders = this._grouping.pipe(
 		switchMap((response) =>
-			of(response).pipe(
-				mergeMap((grouping) =>
-					from(grouping).pipe(
-						switchMap((val) =>
-							iif(
-								() => val.group.name !== 'No Group',
-								of(val),
-								of({
-									group: {
-										id: '-1',
-										name: '',
-										description: '',
-										configurations: [],
-									},
-									views: [],
-								})
+			iif(
+				() => response.length === 0,
+				of([]),
+				of(response).pipe(
+					mergeMap((grouping) =>
+						from(grouping).pipe(
+							switchMap((val) =>
+								iif(
+									() => val.group.name !== 'No Group',
+									of(val),
+									of({
+										group: {
+											id: '-1',
+											name: '',
+											description: '',
+											configurations: [],
+										},
+										views: [],
+									})
+								)
 							)
 						)
+					),
+					scan(
+						(acc, curr) => {
+							return [...acc, curr];
+						},
+						[] as { group: configGroup; views: view[] }[]
 					)
 				)
 			)
 		),
-		scan(
-			(acc, curr) => {
-				return [...acc, curr];
-			},
-			[] as { group: configGroup; views: view[] }[]
-		),
-		switchMap((cumulative) =>
-			iif(
-				() => cumulative.length > 1,
-				iif(
-					() =>
-						(
-							cumulative.find((a) => a.group.id === '-1')
-								?.views || []
-						).length === 0,
-					of([' ', 'Groups']),
-					of([' ', 'Configurations', 'Groups'])
-				),
-				of([' ', 'Configurations'])
-			)
-		),
+		switchMap((cumulative) => {
+			if (cumulative.length === 0) {
+				return of([]);
+			}
+			if (cumulative.length > 1) {
+				if (
+					(cumulative.find((a) => a.group.id === '-1')?.views || [])
+						.length === 0
+				) {
+					return of([' ', 'Groups']);
+				} else {
+					return of([' ', 'Configurations', 'Groups']);
+				}
+			}
+			return of([' ', 'Configurations']);
+		}),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 	private _secondaryHeaders = this._grouping.pipe(
-		switchMap((response) =>
-			of(response).pipe(
-				mergeMap((grouping) =>
-					from(grouping).pipe(
-						switchMap((grouping) =>
-							of(grouping.group).pipe(map((group) => group.name))
+		switchMap((response) => {
+			if (response.length === 0) {
+				return of([]);
+			} else {
+				return of(response).pipe(
+					mergeMap((grouping) =>
+						from(grouping).pipe(
+							switchMap((grouping) =>
+								of(grouping.group).pipe(
+									map((group) => group.name)
+								)
+							)
 						)
+					),
+					distinct(),
+					scan(
+						(acc, cur) => {
+							acc = this.makeHeaderUnique([...acc, cur]);
+							return acc;
+						},
+						['  '] as string[]
 					)
-				),
-				distinct(),
-				scan(
-					(acc, cur) => {
-						acc = this.makeHeaderUnique([...acc, cur]);
-						return acc;
-					},
-					['  '] as string[]
-				)
-			)
-		),
+				);
+			}
+		}),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
@@ -327,50 +356,54 @@ export class PlConfigCurrentBranchService {
 	);
 	private _headers = this._grouping.pipe(
 		switchMap((response) =>
-			of(response).pipe(
-				mergeMap((grouping) =>
-					from(grouping).pipe(
-						switchMap((grouping) =>
-							iif(
-								() => grouping.group.name !== 'No Group',
-								from(grouping.views).pipe(
-									startWith({
-										id: '',
-										name: grouping.group.name,
-										hasFeatureApplicabilities: false,
-										productApplicabilities: [],
-									}),
-									switchMap((view) =>
-										of({
-											columnId: Math.random()
-												.toString(36)
-												.slice(2),
-											name: view.name,
-										})
-									)
-								),
-								from(grouping.views).pipe(
-									filter(
-										(val) =>
-											val.hasFeatureApplicabilities ===
-											true
+			iif(
+				() => response.length === 0,
+				of([]),
+				of(response).pipe(
+					mergeMap((grouping) =>
+						from(grouping).pipe(
+							switchMap((grouping) =>
+								iif(
+									() => grouping.group.name !== 'No Group',
+									from(grouping.views).pipe(
+										startWith({
+											id: '',
+											name: grouping.group.name,
+											hasFeatureApplicabilities: false,
+											productApplicabilities: [],
+										}),
+										switchMap((view) =>
+											of({
+												columnId: Math.random()
+													.toString(36)
+													.slice(2),
+												name: view.name,
+											})
+										)
 									),
-									switchMap((view) =>
-										of({
-											columnId: Math.random()
-												.toString(36)
-												.slice(2),
-											name: view.name,
-										})
+									from(grouping.views).pipe(
+										filter(
+											(val) =>
+												val.hasFeatureApplicabilities ===
+												true
+										),
+										switchMap((view) =>
+											of({
+												columnId: Math.random()
+													.toString(36)
+													.slice(2),
+												name: view.name,
+											})
+										)
 									)
 								)
 							)
 						)
-					)
-				),
-				scan((acc, cur) => [...acc, cur], [
-					{ columnId: '0', name: 'feature' },
-				] as { columnId: string; name: string }[])
+					),
+					scan((acc, cur) => [...acc, cur], [
+						{ columnId: '0', name: 'feature' },
+					] as { columnId: string; name: string }[])
+				)
 			)
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
@@ -378,17 +411,21 @@ export class PlConfigCurrentBranchService {
 
 	private _viewCount = this._grouping.pipe(
 		switchMap((response) =>
-			of(response).pipe(
-				mergeMap((responseGrouping) =>
-					from(responseGrouping).pipe(
-						filter(
-							(grouping) => grouping.group.name === 'No Group'
-						),
-						map(
-							(group) =>
-								group.views.filter(
-									(v) => v.hasFeatureApplicabilities
-								).length
+			iif(
+				() => response.length === 0,
+				of(0),
+				of(response).pipe(
+					mergeMap((responseGrouping) =>
+						from(responseGrouping).pipe(
+							filter(
+								(grouping) => grouping.group.name === 'No Group'
+							),
+							map(
+								(group) =>
+									group.views.filter(
+										(v) => v.hasFeatureApplicabilities
+									).length
+							)
 						)
 					)
 				)
@@ -398,11 +435,17 @@ export class PlConfigCurrentBranchService {
 	);
 	private _groupCount = this._grouping.pipe(
 		switchMap((grouping) =>
-			of(grouping).pipe(
-				mergeMap((grouping) =>
-					from(grouping).pipe(map((group) => group.views.length + 1))
-				),
-				scan((acc, curr) => acc + curr, 0)
+			iif(
+				() => grouping.length === 0,
+				of(0),
+				of(grouping).pipe(
+					mergeMap((grouping) =>
+						from(grouping).pipe(
+							map((group) => group.views.length + 1)
+						)
+					),
+					scan((acc, curr) => acc + curr, 0)
+				)
 			)
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
@@ -495,7 +538,8 @@ export class PlConfigCurrentBranchService {
 		private branchService: PlConfigBranchService,
 		private typesService: PlConfigTypesService,
 		private actionService: ActionService,
-		private sideNavService: SideNavService
+		private sideNavService: SideNavService,
+		private uiService: UiService
 	) {}
 	public get branchApplicability() {
 		return this._branchApplicability;

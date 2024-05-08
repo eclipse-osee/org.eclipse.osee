@@ -34,6 +34,8 @@ import { PlConfigBranchService } from '../../services/pl-config-branch-service.s
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigApplicUIBranchMapping } from '../../types/pl-config-applicui-branch-mapping';
 import { PLEditFeatureData } from '../../types/pl-config-features';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { UiService } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-plconfig-edit-feature-dialog',
@@ -65,14 +67,17 @@ export class EditFeatureDialogComponent {
 	productApplicabilities = this.currentBranchService.productTypes;
 	editable: Observable<string>;
 	valueTypes: Observable<string[]> = of(this._valueTypes);
+	viewId = toSignal(this.uiService.viewId);
 	constructor(
 		public dialogRef: MatDialogRef<EditFeatureDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: PLEditFeatureData,
 		private branchService: PlConfigBranchService,
-		private currentBranchService: PlConfigCurrentBranchService
+		private currentBranchService: PlConfigCurrentBranchService,
+		private uiService: UiService
 	) {
 		this.branchApplicability = this.branchService.getBranchApplicability(
-			data.currentBranch
+			data.currentBranch,
+			this.viewId() || ''
 		);
 		this.editable = of(data.editable.toString());
 	}

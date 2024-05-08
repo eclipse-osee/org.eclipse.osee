@@ -23,6 +23,7 @@ import {
 import {
 	ActionDropDownComponent,
 	BranchPickerComponent,
+	ViewSelectorComponent,
 } from '@osee/shared/components';
 import { Observable, Subject, combineLatest, iif, of } from 'rxjs';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
@@ -40,6 +41,7 @@ import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 		ActionDropDownComponent,
 		EditDefinitionsDropdownComponent,
 		ApplicabilityTableComponent,
+		ViewSelectorComponent,
 	],
 })
 export class PlconfigComponent implements OnInit, OnDestroy {

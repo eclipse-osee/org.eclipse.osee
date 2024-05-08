@@ -66,6 +66,7 @@ import {
 	shareReplay,
 	switchMap,
 	take,
+	tap,
 } from 'rxjs/operators';
 import { ConfigGroupMenuComponent } from '../../menus/config-group-menu/config-group-menu.component';
 import { ConfigMenuComponent } from '../../menus/config-menu/config-menu.component';
@@ -147,15 +148,24 @@ export class ApplicabilityTableComponent {
 	protected dataSource = new MatTableDataSource<
 		extendedFeature | extendedFeatureWithChanges
 	>();
-	private _updateDataSourceWithData = effect(() => {
-		this.dataSource.data = this.branchApplicabilitySignal().features;
-	});
-	private _updateDataSourceWithSorter = effect(() => {
-		this.dataSource.sort = this.sort();
-	});
-	private _updateDataSourceWithPaginator = effect(() => {
-		this.dataSource.paginator = this.paginator();
-	});
+	private _updateDataSourceWithData = effect(
+		() => {
+			this.dataSource.data = this.branchApplicabilitySignal().features;
+		},
+		{ allowSignalWrites: true }
+	);
+	private _updateDataSourceWithSorter = effect(
+		() => {
+			this.dataSource.sort = this.sort();
+		},
+		{ allowSignalWrites: true }
+	);
+	private _updateDataSourceWithPaginator = effect(
+		() => {
+			this.dataSource.paginator = this.paginator();
+		},
+		{ allowSignalWrites: true }
+	);
 	private _updateDataSourceWithFilter = effect(
 		() => {
 			this.dataSource.filter = this.filter();

@@ -36,6 +36,9 @@ export const plCurrentBranchServiceMock: Partial<PlConfigCurrentBranchService> =
 		get groupList() {
 			return of(testBranchApplicability.groups);
 		},
+		get secondaryHeaderLength() {
+			return of([1]);
+		},
 		modifyFeature(feature: modifyFeature) {
 			return of(MockXResultData);
 		},
