@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2022 Boeing
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,8 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export enum UserRoles {
-	CI_ADMIN = '11563063',
-	MIM_ADMIN = '11563064',
-	OSEE_ADMIN = '52247',
+package org.eclipse.osee.framework.core.enums;
+
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.data.UserGroupArtifactToken;
+
+public class MimUserGroups {
+
+   public static final IUserGroupArtifactToken MimAdmin = UserGroupArtifactToken.valueOf(11563064L, "MIM Admin");
+
 }

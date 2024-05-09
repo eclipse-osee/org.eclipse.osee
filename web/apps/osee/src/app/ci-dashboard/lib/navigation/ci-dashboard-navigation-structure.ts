@@ -100,7 +100,7 @@ export const ciNavigationStructure: navigationElement[] = [
 				pageTitle: 'OSEE - Continuous Integration',
 				isDropdown: false,
 				isDropdownOpen: false,
-				requiredRoles: [UserRoles.OSEE_ADMIN],
+				requiredRoles: [UserRoles.CI_ADMIN],
 				routerLink: '/ci/import',
 				icon: '',
 				description: '',
