@@ -50,7 +50,15 @@ export class UserDataAccountService {
 		uuid: 0,
 		roles: [
 			{
-				id: '52247',
+				id: UserRoles.CI_ADMIN,
+				name: 'CI Admin',
+			},
+			{
+				id: UserRoles.MIM_ADMIN,
+				name: 'MIM Admin',
+			},
+			{
+				id: UserRoles.OSEE_ADMIN,
 				name: 'Osee Admin',
 			},
 		],

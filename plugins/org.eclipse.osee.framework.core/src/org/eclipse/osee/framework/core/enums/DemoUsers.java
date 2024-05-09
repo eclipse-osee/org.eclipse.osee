@@ -13,12 +13,14 @@
 
 package org.eclipse.osee.framework.core.enums;
 
+import static org.eclipse.osee.framework.core.enums.CIUserGroups.CIAdmin;
 import static org.eclipse.osee.framework.core.enums.CoreUserGroups.AccountAdmin;
 import static org.eclipse.osee.framework.core.enums.CoreUserGroups.AgileUser;
 import static org.eclipse.osee.framework.core.enums.CoreUserGroups.DefaultArtifactEditor;
 import static org.eclipse.osee.framework.core.enums.CoreUserGroups.EarnedValueUser;
 import static org.eclipse.osee.framework.core.enums.CoreUserGroups.OseeAccessAdmin;
 import static org.eclipse.osee.framework.core.enums.CoreUserGroups.OseeAdmin;
+import static org.eclipse.osee.framework.core.enums.MimUserGroups.MimAdmin;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -36,8 +38,9 @@ public class DemoUsers implements BootstrapUserProvider {
 
    public static List<UserToken> values = new ArrayList<UserToken>();
 
-   public static final UserToken Joe_Smith = create(61106791L, "Joe Smith", "joe@google.com", "3333", true,
-      Arrays.asList("3333"), AgileUser, EarnedValueUser, DefaultArtifactEditor, AccountAdmin, OseeAccessAdmin);
+   public static final UserToken Joe_Smith =
+      create(61106791L, "Joe Smith", "joe@google.com", "3333", true, Arrays.asList("3333"), AgileUser, EarnedValueUser,
+         DefaultArtifactEditor, AccountAdmin, OseeAccessAdmin, MimAdmin, CIAdmin);
 
    public static final UserToken Kay_Jones =
       create(5896672L, "Kay Jones", "kay@google.com", "4444", true, AgileUser, EarnedValueUser);

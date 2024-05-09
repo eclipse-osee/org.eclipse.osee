@@ -27,10 +27,12 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.core.enums.CIUserGroups;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
+import org.eclipse.osee.framework.core.enums.MimUserGroups;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
@@ -92,6 +94,8 @@ public class CreateSystemBranches {
       tx.createArtifact(userGroupsFolder, CoreUserGroups.AccountAdmin);
       tx.createArtifact(userGroupsFolder, CoreUserGroups.OseeAccessAdmin);
       tx.createArtifact(userGroupsFolder, CoreUserGroups.Publishing);
+      tx.createArtifact(userGroupsFolder, MimUserGroups.MimAdmin);
+      tx.createArtifact(userGroupsFolder, CIUserGroups.CIAdmin);
 
       ArtifactToken prefArt = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
          CoreArtifactTokens.GlobalPreferences).getArtifactOrSentinal();
@@ -116,6 +120,12 @@ public class CreateSystemBranches {
       }
       if (!roles.contains(CoreUserGroups.OseeAccessAdmin)) {
          roles.add(CoreUserGroups.OseeAccessAdmin);
+      }
+      if (!roles.contains(MimUserGroups.MimAdmin)) {
+         roles.add(MimUserGroups.MimAdmin);
+      }
+      if (!roles.contains(CIUserGroups.CIAdmin)) {
+         roles.add(CIUserGroups.CIAdmin);
       }
       UserToken userWithRoles = UserToken.create(superUser.getId(), superUser.getName(), superUser.getEmail(),
          superUser.getUserId(), true, superUser.getLoginIds(), roles);
