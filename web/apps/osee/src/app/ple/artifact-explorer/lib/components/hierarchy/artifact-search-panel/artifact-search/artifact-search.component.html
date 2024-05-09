@@ -113,50 +113,24 @@
 	@if ({ count: searchResultsCount | async }; as _count) {
 		@if (paginatedSearchResults | async; as _currentResults) {
 			@if (!useCount() || _count.count !== null) {
-				<mat-list
-					role="list"
-					class="tw-max-h-80 tw-overflow-auto">
-					@for (artifact of allSearchResults(); track $index) {
-						<mat-list-item
-							role="listitem"
-							class="hover:tw-bg-background-app-bar [&>span>span]:tw-h-full [&>span]:tw-h-full"
-							(contextmenu)="openContextMenu($event, artifact)"
-							><button
-								class="tw-flex tw-h-full tw-w-full tw-items-center tw-gap-2 tw-text-left"
-								(click)="selectSearchResult(artifact)">
-								<mat-icon
-									[class]="getIconClasses(artifact.icon)"
-									>{{ artifact.icon.icon }}</mat-icon
-								>
-								{{ artifact.name }}
-							</button></mat-list-item
-						>
-					} @empty {
-						<div class="tw-px-4 tw-pt-4">
-							<span>No results found</span>
-						</div>
-					}
-					@if (
-						(useCount() &&
-							_count.count !== null &&
-							allSearchResults().length < _count.count) ||
-						(!useCount() && _currentResults.length === pageSize)
-					) {
-						<mat-list-item>
-							@if (useCount()) {
-								<span class="tw-pr-2"
-									>Showing {{ allSearchResults().length }} of
-									{{ _count.count }} results</span
-								>
-							}
-							<button
-								class="tw-rounded-md tw-border tw-border-primary tw-px-2 tw-py-1 hover:tw-text-primary"
-								(click)="nextPage()">
-								Show More
-							</button>
-						</mat-list-item>
-					}
-				</mat-list>
+				<osee-paginated-mat-list
+					[allItems]="allSearchResults()"
+					[currentPageItems]="_currentResults"
+					[count]="_count.count || -1"
+					[pageSize]="pageSize"
+					(paginate)="nextPage()">
+					<ng-template let-item>
+						<button
+							class="tw-flex tw-h-full tw-w-full tw-items-center tw-gap-2 tw-text-left"
+							(click)="selectSearchResult(item)"
+							(contextmenu)="openContextMenu($event, item)">
+							<mat-icon [class]="getIconClasses(item.icon)">{{
+								item.icon.icon
+							}}</mat-icon>
+							{{ item.name }}
+						</button>
+					</ng-template>
+				</osee-paginated-mat-list>
 			}
 		}
 	}
