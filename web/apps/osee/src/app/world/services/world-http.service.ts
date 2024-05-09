@@ -26,4 +26,15 @@ export class WorldHttpService {
 			apiURL + `/ats/world/coll/${collId}/json/${custId}`
 		);
 	}
+	getWorldDataStored(collId: string) {
+		return this.http.get<world>(
+			apiURL + `/ats/world/coll/${collId}/worldresults`
+		);
+	}
+	publishWorldData(collId: string, custId: string, world: world) {
+		return this.http.put<world>(
+			apiURL + `/ats/world/coll/${collId}/json/${custId}/publish`,
+			world
+		);
+	}
 }

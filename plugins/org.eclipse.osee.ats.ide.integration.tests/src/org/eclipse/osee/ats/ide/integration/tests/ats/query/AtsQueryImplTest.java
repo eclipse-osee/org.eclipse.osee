@@ -136,7 +136,14 @@ public class AtsQueryImplTest {
    public void testByWorkingWorkItem() {
       IAtsQuery query = queryService.createQuery(WorkItemType.WorkItem);
       query.andStateType(StateType.Working);
-      assertEquals(55, query.getResults().size());
+      assertEquals(56, query.getResults().size());
+   }
+
+   @Test
+   public void testByWorkingGoal() {
+      IAtsQuery query = queryService.createQuery(WorkItemType.Goal);
+      query.andStateType(StateType.Working);
+      assertEquals(1, query.getResults().size());
    }
 
    @Test

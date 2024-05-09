@@ -54,12 +54,11 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 public class AtsStoreServiceImpl extends AbstractAtsStoreService {
 
    private final OrcsApi orcsApi;
-   private final AtsApi atsApi;
 
    private final JdbcService jdbcService;
 
    public AtsStoreServiceImpl(AtsApi atsApi, OrcsApi orcsApi) {
-      this.atsApi = atsApi;
+      super(atsApi);
       this.orcsApi = orcsApi;
       this.jdbcService = atsApi.getJdbcService();
    }

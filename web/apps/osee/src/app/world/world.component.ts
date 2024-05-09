@@ -23,6 +23,7 @@ import { MatButton } from '@angular/material/button';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
+import { SafeResourceUrl } from '@angular/platform-browser';
 import {
 	MatCell,
 	MatCellDef,
@@ -67,6 +68,8 @@ class WorldComponent {
 	private routeUrl = inject(ActivatedRoute);
 	private worldService = inject(WorldHttpService);
 	dataSource = new MatTableDataSource<worldRow>([]);
+	displayPublish = true;
+	collId = '';
 	params = this.routeUrl.queryParamMap.pipe(
 		map((value) => {
 			return {
@@ -77,11 +80,18 @@ class WorldComponent {
 	);
 	worldData = this.params.pipe(
 		debounceTime(500),
-		switchMap((value) =>
-			this.worldService.getWorldData(value.collId, value.custId)
-		)
+		switchMap((value) => {
+			this.collId = value.collId;
+			if (value.custId === '') {
+				this.displayPublish = false;
+				return this.worldService.getWorldDataStored(value.collId);
+			}
+			return this.worldService.getWorldData(value.collId, value.custId);
+		})
 	);
-	tabledata = toSignal(this.worldData);
+	tabledata = toSignal(this.worldData, {
+		initialValue: { orderedHeaders: [], rows: [] },
+	});
 	filter = signal('');
 	headers = computed(() => this.tabledata()?.orderedHeaders || []);
 	rows = computed(() => this.tabledata()?.rows || []);
@@ -97,6 +107,25 @@ class WorldComponent {
 		const filterValue = (event.target as HTMLInputElement).value;
 		this.filter.set(filterValue);
 		this.dataSource.filter = filterValue.trim().toLowerCase();
+	}
+	publish() {
+		this.params
+			.pipe(
+				switchMap((value) => {
+					return this.worldService.publishWorldData(
+						value.collId,
+						value.custId,
+						this.tabledata()
+					);
+				})
+			)
+			.subscribe();
+	}
+	openExport(collId: string) {
+		this.openLink('/ats/world/coll/' + collId + '/export');
+	}
+	openLink(url: string) {
+		window.open(url, '_blank');
 	}
 }
 export default WorldComponent;

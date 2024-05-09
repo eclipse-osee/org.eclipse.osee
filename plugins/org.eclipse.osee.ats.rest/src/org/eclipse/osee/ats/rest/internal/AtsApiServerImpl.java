@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
@@ -44,10 +43,8 @@ import org.eclipse.osee.ats.rest.internal.util.AtsStoreServiceImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsActionEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsTaskService;
 import org.eclipse.osee.framework.core.access.IAccessControlService;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.orcs.OrcsApi;
 
@@ -175,51 +172,6 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
    @Override
    public void clearImplementersCache(IAtsWorkItem workItem) {
       // do nothing; no cache on server
-   }
-
-   private List<ArtifactId> getCustomizeArts() {
-      List<ArtifactId> customizationArts = getGlobalCustomizeArts();
-      for (ArtifactId artifact : getQueryService().getArtifacts(CoreArtifactTypes.User)) {
-         customizationArts.add(artifact);
-      }
-      return customizationArts;
-   }
-
-   private List<ArtifactId> getGlobalCustomizeArts() {
-      List<ArtifactId> customizationArts = new ArrayList<>();
-      for (ArtifactId artifact : getQueryService().getArtifacts(CoreArtifactTypes.XViewerGlobalCustomization)) {
-         customizationArts.add(artifact);
-      }
-      return customizationArts;
-   }
-
-   @Override
-   public Collection<CustomizeData> getCustomizations(String namespace) {
-      List<CustomizeData> customizations = new ArrayList<>();
-      for (ArtifactId customizationArt : getCustomizeArts()) {
-         addCustomizationsFromArts(namespace, customizations, customizationArt);
-      }
-      return customizations;
-   }
-
-   private void addCustomizationsFromArts(String namespace, List<CustomizeData> customizations,
-      ArtifactId customizationArt) {
-      for (String custXml : getAttributeResolver().getAttributesToStringList(customizationArt,
-         CoreAttributeTypes.XViewerCustomization)) {
-         if (custXml.contains("\"" + namespace + "\"") || custXml.contains("." + namespace + "\"")) {
-            CustomizeData data = new CustomizeData(custXml);
-            customizations.add(data);
-         }
-      }
-   }
-
-   @Override
-   public Collection<CustomizeData> getCustomizationsGlobal(String namespace) {
-      List<CustomizeData> customizations = new ArrayList<>();
-      for (ArtifactId customizationArt : getGlobalCustomizeArts()) {
-         addCustomizationsFromArts(namespace, customizations, customizationArt);
-      }
-      return customizations;
    }
 
    @Override

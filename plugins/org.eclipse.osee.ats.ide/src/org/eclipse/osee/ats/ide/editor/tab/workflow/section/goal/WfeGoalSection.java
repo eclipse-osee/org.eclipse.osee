@@ -50,6 +50,9 @@ public class WfeGoalSection {
       sectionBody.setLayout(ALayout.getZeroMarginLayout(1, false));
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
+      new XButtonViaAction(
+         new SelectWebExportCustomizationAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(sectionBody,
+            2);
       new XButtonViaAction(new OpenWebViewLegacyHtmlAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(
          sectionBody, 2);
       new XButtonViaAction(new OpenWebViewJsonLiveAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(
@@ -64,6 +67,8 @@ public class WfeGoalSection {
          sectionBody, 2);
       new XButtonViaAction(
          new OpenWebViewAngularSavedAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(sectionBody, 2);
+      new XButtonViaAction(new OpenWebExportAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(
+         sectionBody, 2);
 
       section.setClient(sectionBody);
    }

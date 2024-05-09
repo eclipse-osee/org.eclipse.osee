@@ -98,6 +98,11 @@ public interface AtsWorldEndpointApi {
       @PathParam("customizeGuid") String customizeGuid);
 
    @GET
+   @Path("coll/{collectorId}/export")
+   @Produces(MediaType.TEXT_HTML)
+   public String getCollectionExport(@PathParam("collectorId") ArtifactId collectorId);
+
+   @GET
    @Path("coll/{collectorId}/worldresults")
    @Produces(MediaType.APPLICATION_JSON)
    WorldResults getCollectionJsonCustomizedPublished(@PathParam("collectorId") ArtifactId collectorId);

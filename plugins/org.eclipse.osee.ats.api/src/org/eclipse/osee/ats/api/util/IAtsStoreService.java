@@ -136,4 +136,8 @@ public interface IAtsStoreService {
 
    XResultData validateTypes();
 
+   Collection<CustomizeData> getCustomizations(String namespace);
+
+   Collection<CustomizeData> getCustomizationsGlobal(String namespace);
+
 }

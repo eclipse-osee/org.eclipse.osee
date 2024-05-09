@@ -14,24 +14,18 @@
 package org.eclipse.osee.ats.ide.editor.tab.workflow.section.goal;
 
 import org.eclipse.osee.ats.api.util.AtsImage;
-import org.eclipse.osee.ats.ide.actions.AbstractAtsAction;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.program.Program;
 
 /**
  * @author Donald G. Dunne
  */
-public class OpenWebViewJsonSavedAction extends AbstractAtsAction {
-
-   private final GoalArtifact goalArt;
+public class OpenWebViewJsonSavedAction extends AbstractWebExportAction {
 
    public OpenWebViewJsonSavedAction(GoalArtifact goalArt, WorkflowEditor editor) {
-      super("Open Web Json Data - Saved");
-      this.goalArt = goalArt;
-      setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.REPORT));
+      super("Open Web Json Data - Saved", goalArt, editor, AtsImage.GLOBE);
    }
 
    @Override
