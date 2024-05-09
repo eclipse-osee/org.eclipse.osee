@@ -15,39 +15,33 @@ package org.eclipse.osee.ats.ide.editor.tab.workflow.section.goal;
 
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.world.WorldResults;
-import org.eclipse.osee.ats.ide.actions.AbstractAtsAction;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
-import org.eclipse.osee.ats.ide.editor.tab.members.WfeMembersTab;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
-import org.eclipse.osee.ats.ide.world.WorldXViewer;
 import org.eclipse.osee.framework.core.util.JsonUtil;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.compare.CompareHandler;
 import org.eclipse.osee.framework.ui.skynet.compare.CompareItem;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Donald G. Dunne
  */
-public class OpenDifferencesViewAction extends AbstractAtsAction {
-
-   private final GoalArtifact goalArt;
-   private final WorkflowEditor editor;
+public class OpenDifferencesViewAction extends AbstractWebExportAction {
 
    public OpenDifferencesViewAction(GoalArtifact goalArt, WorkflowEditor editor) {
-      super("Open Differences View");
-      this.goalArt = goalArt;
-      this.editor = editor;
-      setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.REPORT));
+      super("Open Differences View", goalArt, editor, AtsImage.REPORT);
    }
 
    @Override
    public void runWithException() {
-      WfeMembersTab membersTab = editor.getMembersTab();
-      WorldXViewer worldXViewer = membersTab.getWorldXViewer();
-      String custId = worldXViewer.getCustomizeMgr().getCurrentCustomizeData().getGuid();
+
+      String custGuid = validateAndGetCustomizeDataGuid();
+      if (Strings.isInvalid(custGuid)) {
+         return;
+      }
+
       WorldResults liveWr = AtsApiService.get().getServerEndpoints().getWorldEndpoint().getCollectionJsonCustomized(
-         goalArt.getToken(), custId);
+         goalArt.getToken(), custGuid);
 
       WorldResults savedWr =
          AtsApiService.get().getServerEndpoints().getWorldEndpoint().getCollectionJsonCustomizedPublished(

@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
@@ -38,7 +39,8 @@ public class MyWorldSearchItemTest {
       AtsUser currentUser = AtsApiService.get().getUserService().getCurrentUser();
       MyWorldSearchItem search = new MyWorldSearchItem("Search", currentUser);
       Collection<Artifact> results = search.performSearchGetResults();
-      DemoTestUtil.assertTypes(results, 11, IAtsWorkItem.class);
+      DemoTestUtil.assertTypes(results, 12, IAtsWorkItem.class);
+      DemoTestUtil.assertTypes(results, 1, IAtsGoal.class);
       DemoTestUtil.assertTypes(results, 8, IAtsTeamWorkflow.class);
       DemoTestUtil.assertTypes(results, 2, IAtsDecisionReview.class);
       DemoTestUtil.assertTypes(results, 1, IAtsPeerToPeerReview.class);

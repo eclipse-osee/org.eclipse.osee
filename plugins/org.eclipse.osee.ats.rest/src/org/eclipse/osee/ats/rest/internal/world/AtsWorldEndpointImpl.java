@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.rest.internal.world;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -46,6 +47,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.AtsWorldEndpointApi;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.api.workflow.world.WorldResults;
+import org.eclipse.osee.ats.core.workflow.util.AtsWorkItemAtsIdSorter;
 import org.eclipse.osee.ats.rest.AtsApiServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -99,7 +101,7 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
    public Collection<CustomizeData> getCustomizationsGlobal() {
       List<CustomizeData> datas = new LinkedList<>();
       for (String namespace : namespaces) {
-         datas.addAll(atsApiServer.getCustomizationsGlobal(namespace));
+         datas.addAll(atsApi.getStoreService().getCustomizationsGlobal(namespace));
       }
       return datas;
    }
@@ -111,7 +113,7 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
    public Collection<CustomizeData> getCustomizations() {
       List<CustomizeData> datas = new LinkedList<>();
       for (String namespace : namespaces) {
-         datas.addAll(atsApiServer.getCustomizations(namespace));
+         datas.addAll(atsApi.getStoreService().getCustomizations(namespace));
       }
       return datas;
    }
@@ -181,8 +183,8 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
       return getCollection(collectorArt);
    }
 
-   private Collection<IAtsWorkItem> getCollection(ArtifactReadable collectorArt) {
-      Collection<IAtsWorkItem> myWorldItems = new ArrayList<>();
+   private List<IAtsWorkItem> getCollection(ArtifactReadable collectorArt) {
+      List<IAtsWorkItem> myWorldItems = new ArrayList<>();
       if (collectorArt != null) {
          if (collectorArt.isOfType(AtsArtifactTypes.Goal)) {
             myWorldItems.addAll(atsApiServer.getWorkItemService().getWorkItems(
@@ -206,7 +208,9 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
 
       // get work items
       ArtifactReadable collectorArt = (ArtifactReadable) atsApiServer.getQueryService().getArtifact(collectorId);
-      Collection<IAtsWorkItem> collectorItems = getCollection(collectorArt);
+      List<IAtsWorkItem> collectorItems = getCollection(collectorArt);
+
+      Collections.sort(collectorItems, new AtsWorkItemAtsIdSorter());
 
       WorldResults wr = new WorldResults();
       wr.setCollectorArt(collectorArt.getToken());
@@ -236,7 +240,7 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
       } else {
          wr.setCollectorArt(collectorArt.getToken());
          String json = atsApi.getAttributeResolver().getSoleAttributeValueAsString(collectorArt,
-            AtsAttributeTypes.WorldResults, "");
+            AtsAttributeTypes.WorldResultsJson, "");
          if (Strings.isValid(json)) {
             wr = JsonUtil.readValue(json, WorldResults.class);
             wr.getRd().log("Retrieved worldresults json from collector artifact");
@@ -262,7 +266,7 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
             ArtifactReadable collectorArt = (ArtifactReadable) atsApiServer.getQueryService().getArtifact(collectorId);
             String jsonStr = JsonUtil.toJson(wr);
             IAtsChangeSet changes = atsApi.createChangeSet("Persist json view");
-            changes.setSoleAttributeFromString(collectorArt, AtsAttributeTypes.WorldResults, jsonStr);
+            changes.setSoleAttributeFromString(collectorArt, AtsAttributeTypes.WorldResultsJson, jsonStr);
             TransactionToken tx = changes.executeIfNeeded();
             wr.setTx(tx);
          } catch (Exception ex) {
@@ -271,6 +275,28 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
       }
 
       return wr;
+   }
+
+   @Override
+   @GET
+   @Path("coll/{collectorId}/export")
+   @Produces(MediaType.TEXT_HTML)
+   public String getCollectionExport(@PathParam("collectorId") ArtifactId collectorId) {
+      WorldResults wr = getCollectionJsonCustomizedPublished(collectorId);
+      StringBuilder sb = new StringBuilder();
+      sb.append(AHTML.beginMultiColumnTable(99, 4));
+      sb.append(AHTML.addHeaderRowMultiColumnTable(wr.getOrderedHeaders()));
+      List<Map<String, String>> rows = wr.getRows();
+      for (Map<String, String> row : rows) {
+         List<String> rowCells = new ArrayList<>();
+         for (String colHead : wr.getOrderedHeaders()) {
+            rowCells.add(row.get(colHead));
+         }
+         sb.append(AHTML.addRowMultiColumnTableCollection(rowCells));
+      }
+      sb.append(AHTML.endMultiColumnTable());
+      String html = AHTML.simplePage(wr.getCollectorArt().getName(), sb.toString());
+      return html;
    }
 
    public static WorldResults getCustomizedJsonTable(AtsApi atsApi, CustomizeData customization,

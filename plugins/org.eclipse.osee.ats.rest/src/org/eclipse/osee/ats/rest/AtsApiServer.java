@@ -13,8 +13,6 @@
 
 package org.eclipse.osee.ats.rest;
 
-import java.util.Collection;
-import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -33,10 +31,6 @@ public interface AtsApiServer extends AtsApi {
    Iterable<IAtsDatabaseConversion> getDatabaseConversions();
 
    void addAtsDatabaseConversion(IAtsDatabaseConversion conversion);
-
-   Collection<CustomizeData> getCustomizations(String namespace);
-
-   Collection<CustomizeData> getCustomizationsGlobal(String namespace);
 
    AtsActionEndpointApi getActionEndpoint();
 

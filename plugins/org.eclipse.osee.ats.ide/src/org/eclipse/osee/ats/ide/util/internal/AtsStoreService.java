@@ -68,10 +68,9 @@ import org.eclipse.osee.jdbc.JdbcService;
 public class AtsStoreService extends AbstractAtsStoreService {
    private final IAtsUserService userService;
    private final JdbcService jdbcService;
-   public final AtsApi atsApi;
 
    public AtsStoreService(AtsApi atsApi, IAtsUserService userService, JdbcService jdbcService) {
-      this.atsApi = atsApi;
+      super(atsApi);
       this.userService = userService;
       this.jdbcService = jdbcService;
    }

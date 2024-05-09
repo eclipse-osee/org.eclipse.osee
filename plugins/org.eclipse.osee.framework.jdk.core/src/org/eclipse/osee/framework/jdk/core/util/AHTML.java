@@ -424,6 +424,10 @@ public class AHTML {
       return addRowMultiColumnTable(str, colOptions, null);
    }
 
+   public static String addRowMultiColumnTableCollection(Collection<String> str) {
+      return addRowMultiColumnTable(str.toArray(new String[str.size()]), null, null);
+   }
+
    public static String addRowMultiColumnTable(String[] str, String[] colOptions, String backgroundColor) {
       StringBuilder s = new StringBuilder();
       if (backgroundColor != null) {

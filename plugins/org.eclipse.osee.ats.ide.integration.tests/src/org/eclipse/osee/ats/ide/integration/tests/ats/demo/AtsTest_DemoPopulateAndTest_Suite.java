@@ -71,6 +71,7 @@ import org.junit.runners.Suite;
    Pdd93CreateDemoAgileTest.class,
    Pdd94CreateDemoFavoritesTest.class,
    Pdd95CreateDemoWorkPackagesTest.class,
+   Pdd96CreateDemoWebExportGoal.class
    //
 })
 

@@ -127,7 +127,8 @@ public interface AtsAttributeTypes {
    AttributeTypeDouble EstimatedHours = ats.createDouble(1152921504606847182L, "ats.Estimated Hours", TEXT_PLAIN, "Hours estimated to implement the changes associated with this Action.\\nIncludes estimated hours for workflows, tasks and reviews.", DisplayHint.SingleLine, Edit);
    AttributeTypeDate EstimatedReleaseDate = ats.createDate(1152921504606847164L, "ats.Estimated Release Date", TEXT_CALENDAR, "Date the changes will be made available to the users.", Edit);
    AttributeTypeString ExternalReference = ats.createString(52148954699L, "ats.External Reference", TEXT_PLAIN, "Associated External PCR Number", Edit);
-   AttributeTypeString WorldResults = ats.createString(8910159741989007159L, "ats.World Results", TEXT_PLAIN, "World Results json", Edit);
+   AttributeTypeString WorldResultsJson = ats.createString(8910159741989007159L, "ats.World Results Json", TEXT_PLAIN, "", Edit);
+   AttributeTypeString WorldResultsCustId = ats.createString(3432929579057647175L, "ats.World Results Customize Guid", TEXT_PLAIN, "", Edit);
    AttributeTypeString FlightNumber = ats.createString(5486142454969512441L, "Flight Number", MediaType.TEXT_PLAIN, "", Edit);
    AttributeTypeString FullName = ats.createString(1152921504606847198L, "ats.Full Name", TEXT_PLAIN, "Expanded and descriptive name.", Edit);
    AttributeTypeString FunctionalArea = ats.createString(5540854390791380448L, "ats.Functional Area", TEXT_PLAIN, "", Read);

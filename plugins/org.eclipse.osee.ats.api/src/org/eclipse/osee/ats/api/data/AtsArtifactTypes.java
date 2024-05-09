@@ -288,7 +288,8 @@ public interface AtsArtifactTypes {
    ArtifactTypeToken Goal = ats.add(ats.artifactType(72L, "Goal", false, GOAL, AbstractWorkflowArtifact)
       .zeroOrOne(ChangeType)
       .zeroOrOne(NeedBy)
-      .zeroOrOne(WorldResults)
+      .zeroOrOne(WorldResultsJson)
+      .zeroOrOne(WorldResultsCustId)
       .zeroOrOne(Priority));
 
    ArtifactTypeToken Task = ats.add(ats.artifactType(74L, "Task", false, TASK, AbstractWorkflowArtifact)

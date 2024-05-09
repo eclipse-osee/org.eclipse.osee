@@ -19,16 +19,25 @@
 			(keyup)="updateFilter($event)" />
 	</mat-form-field>
 
-	<button
-		mat-button
-		class="tw-bg-primary tw-text-background-background">
-		Review Changes
-	</button>
+	@if (displayPublish) {
+		<button
+			mat-button
+			class="tw-bg-primary tw-text-background-background">
+			Review Changes
+		</button>
 
+		<button
+			mat-button
+			class="tw-bg-primary tw-text-background-background"
+			(click)="publish()">
+			Publish
+		</button>
+	}
 	<button
 		mat-button
-		class="tw-bg-primary tw-text-background-background">
-		Publish
+		class="tw-bg-primary tw-text-background-background"
+		(click)="openExport(collId)">
+		Export
 	</button>
 </div>
 
