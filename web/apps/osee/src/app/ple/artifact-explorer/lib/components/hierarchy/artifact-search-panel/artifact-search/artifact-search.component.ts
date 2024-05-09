@@ -55,6 +55,7 @@ import {
 } from '../../../../types/artifact-explorer.data';
 import { AdvancedSearchCriteria } from '../../../../types/artifact-search';
 import { AdvancedSearchDialogComponent } from './advanced-search-dialog/advanced-search-dialog.component';
+import { PaginatedMatListComponent } from '../../../shared/paginated-mat-list/paginated-mat-list.component';
 
 @Component({
 	selector: 'osee-artifact-search',
@@ -72,12 +73,11 @@ import { AdvancedSearchDialogComponent } from './advanced-search-dialog/advanced
 		MatInput,
 		MatSuffix,
 		MatIconButton,
-		MatList,
-		MatListItem,
 		MatMenu,
 		MatMenuContent,
 		MatMenuItem,
 		MatMenuTrigger,
+		PaginatedMatListComponent,
 	],
 	templateUrl: './artifact-search.component.html',
 })

@@ -1,0 +1,49 @@
+<!--
+* Copyright (c) 2024 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
+<mat-list
+	role="list"
+	class="tw-max-h-80 tw-overflow-auto">
+	@for (item of allItems(); track $index) {
+		<mat-list-item
+			role="listitem"
+			class="hover:tw-bg-background-app-bar [&>span>span]:tw-h-full [&>span]:tw-h-full"
+			><ng-template
+				let-item
+				[ngTemplateOutlet]="template()"
+				[ngTemplateOutletContext]="{ $implicit: item, item: item }">
+			</ng-template
+		></mat-list-item>
+	} @empty {
+		<div class="tw-px-4 tw-pt-4">
+			<span>No results found</span>
+		</div>
+	}
+	@if (
+		(useCount() && allItems().length < count()) ||
+		(!useCount() && currentPageItems().length === pageSize())
+	) {
+		<mat-list-item>
+			@if (useCount()) {
+				<span class="tw-pr-2"
+					>Showing {{ allItems().length }} of
+					{{ count() }} results</span
+				>
+			}
+			<button
+				class="tw-rounded-md tw-border tw-border-primary tw-px-2 tw-py-1 hover:tw-text-primary"
+				(click)="nextPage()">
+				Show More
+			</button>
+		</mat-list-item>
+	}
+</mat-list>
