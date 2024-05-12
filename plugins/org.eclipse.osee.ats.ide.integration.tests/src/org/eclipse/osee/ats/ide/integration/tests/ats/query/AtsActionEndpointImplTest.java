@@ -48,8 +48,8 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.NewActionResult;
 import org.eclipse.osee.ats.api.workflow.journal.JournalData;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.resource.AbstractRestTest;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
@@ -159,7 +159,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    public TeamWorkFlowArtifact getCodeWorkflow() {
       if (teamWfArt == null) {
-         teamWfArt = DemoUtil.getSawCodeCommittedWf();
+         teamWfArt = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
          teamWfArt.setSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "PCR8125");
          teamWfArt.persist(getClass().getSimpleName());
       }
@@ -191,7 +191,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testQuerySingle() {
-      TeamWorkFlowArtifact sawCodeCommittedWf = DemoUtil.getSawCodeCommittedWf();
+      TeamWorkFlowArtifact sawCodeCommittedWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
 
       String idString = sawCodeCommittedWf.getTeamDefinition().getIdString();
       WebTarget target = createWebTarget( //
@@ -301,7 +301,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    }
 
    private TeamWorkFlowArtifact testAttributeTypeMatchesRestAttributes(AttributeTypeToken attributeType) {
-      TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
+      TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
       AtsActionEndpointApi actionEp = AtsApiService.get().getServerEndpoints().getActionEndpoint();
       Attribute attribute = actionEp.getActionAttributeByType(teamWf.getIdString(), attributeType);
       Assert.assertEquals(teamWf, attribute.getArtId());
@@ -350,7 +350,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    public void testSetActionFloatAttributeByType() {
       AtsActionEndpointApi actionEp = AtsApiService.get().getServerEndpoints().getActionEndpoint();
 
-      TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
+      TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
 
       Assert.assertEquals(0, AtsApiService.get().getAttributeResolver().getAttributesToStringList((IAtsObject) teamWf,
          AtsAttributeTypes.EstimatedHours).size());
@@ -376,7 +376,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    public void testSetActionIntegerAttributeByType() {
       AtsActionEndpointApi actionEp = AtsApiService.get().getServerEndpoints().getActionEndpoint();
 
-      TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
+      TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
 
       Assert.assertEquals(0, AtsApiService.get().getAttributeResolver().getAttributesToStringList((IAtsObject) teamWf,
          AtsAttributeTypes.PercentRework).size());
@@ -402,7 +402,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    public void testSetActionDateAttributeByType() {
       AtsActionEndpointApi actionEp = AtsApiService.get().getServerEndpoints().getActionEndpoint();
 
-      TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
+      TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
 
       Assert.assertEquals((Date) null, AtsApiService.get().getAttributeResolver().getSoleAttributeValue(
          (IAtsObject) teamWf, AtsAttributeTypes.NeedBy, null));
@@ -435,7 +435,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    public void testSetActionBooleanAttributeByType() {
       AtsActionEndpointApi actionEp = AtsApiService.get().getServerEndpoints().getActionEndpoint();
 
-      TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
+      TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
 
       Assert.assertEquals(false, AtsApiService.get().getAttributeResolver().getSoleAttributeValue((IAtsObject) teamWf,
          AtsAttributeTypes.ValidationRequired, false));
@@ -461,9 +461,9 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    public void testQueryByLegacyIds() {
       AtsActionEndpointApi actionEp = AtsApiService.get().getServerEndpoints().getActionEndpoint();
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getName());
-      TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
+      TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
       changes.setSoleAttributeValue((IAtsTeamWorkflow) teamWf, AtsAttributeTypes.LegacyPcrId, "PCR 2344");
-      TeamWorkFlowArtifact teamWf2 = DemoUtil.getSawTestCommittedWf();
+      TeamWorkFlowArtifact teamWf2 = (TeamWorkFlowArtifact) DemoUtil.getSawTestCommittedWf();
       changes.setSoleAttributeValue((IAtsTeamWorkflow) teamWf2, AtsAttributeTypes.LegacyPcrId, "PCR2345");
       changes.execute();
 
@@ -485,7 +485,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    @Test
    public void testSetActionTitleByKey() {
       AtsActionEndpointApi actionEp = AtsApiService.get().getServerEndpoints().getActionEndpoint();
-      TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
+      TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
 
       String origTitle = teamWf.getName();
       testSetActionByKey("", origTitle + "-1", AtsAttributeTypes.Title, AttributeKey.Title);
@@ -504,7 +504,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testSetActionVersionByKey() {
-      TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
+      TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
 
       IAtsVersion version = AtsApiService.get().getVersionService().getTargetedVersion(teamWf);
       Assert.assertEquals(DemoArtifactToken.SAW_Bld_2, version);
@@ -540,7 +540,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    @Test
    public void testSetActionAssigneesByKey() {
       AtsActionEndpointApi actionEp = AtsApiService.get().getServerEndpoints().getActionEndpoint();
-      TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
+      TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
       List<AtsUser> assignees = teamWf.getAssignees();
       Assert.assertEquals(1, assignees.size());
       Assert.assertEquals(DemoUsers.Joe_Smith, assignees.iterator().next());
@@ -566,7 +566,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    @Test
    public void testSetActionOriginatorByKey() {
       AtsActionEndpointApi actionEp = AtsApiService.get().getServerEndpoints().getActionEndpoint();
-      TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
+      TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
       AtsUser createdBy = teamWf.getCreatedBy();
       Assert.assertEquals(DemoUsers.Joe_Smith, createdBy);
 
@@ -578,7 +578,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       AttributeKey attrKey) {
       AtsActionEndpointApi actionEp = AtsApiService.get().getServerEndpoints().getActionEndpoint();
 
-      TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
+      TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
       String orig = AtsApiService.get().getAttributeResolver().getSoleAttributeValue((IAtsObject) teamWf, attrType,
          defaultAttrValue);
       teamWf = testAttributeTypeMatchesRestAttributes(attrType);
@@ -741,7 +741,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    public void testJournal() {
       AtsApi atsApi = AtsApiService.get();
       AtsActionEndpointApi actionEp = atsApi.getServerEndpoints().getActionEndpoint();
-      IAtsTeamWorkflow codeWf = (IAtsTeamWorkflow) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
+      IAtsTeamWorkflow codeWf = DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
       String atsId = codeWf.getAtsId();
 
       JournalData jd = actionEp.getJournalData(atsId);

@@ -38,6 +38,7 @@ import org.junit.BeforeClass;
  * @author Donald G. Dunne
  */
 public class DbInitTest {
+
    @BeforeClass
    public static void setup() throws Exception {
       OseeProperties.setIsInTest(true);
@@ -50,7 +51,7 @@ public class DbInitTest {
    }
 
    @org.junit.Test
-   public void testDbInit() throws Exception {
+   public void demoDbInit() throws Exception {
       OseeProperties.setIsInTest(true);
       List<String> protocols = ClientSessionManager.getAuthenticationProtocols();
       Assert.assertTrue("Application Server must be running. " + protocols, protocols.contains("orgdemo"));

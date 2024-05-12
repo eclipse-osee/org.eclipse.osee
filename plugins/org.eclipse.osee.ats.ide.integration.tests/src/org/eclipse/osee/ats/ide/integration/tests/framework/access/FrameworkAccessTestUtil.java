@@ -27,9 +27,9 @@ import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
-import org.eclipse.osee.ats.ide.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.access.IAccessControlService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -57,7 +57,7 @@ public class FrameworkAccessTestUtil {
       if (reqTeamWf == null) {
          IAtsChangeSet changes = AtsApiService.get().createChangeSet("FrameworkAccessByAttrTypeTest");
 
-         Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(DemoArtifactToken.SAW_Requirements_AI,
+         Collection<IAtsActionableItem> aias = DemoUtil.getActionableItems(DemoArtifactToken.SAW_Requirements_AI,
             DemoArtifactToken.SAW_Code_AI, DemoArtifactToken.SAW_Test_AI);
          Date createdDate = new Date();
          AtsUser createdBy = AtsApiService.get().getUserService().getCurrentUser();
@@ -86,7 +86,7 @@ public class FrameworkAccessTestUtil {
          Assert.assertNotNull(testTeamWf);
 
          // Create Req working branch
-         Result result = AtsApiService.get().getBranchServiceIde().createWorkingBranch_Validate(reqTeamWf);
+         Result result = AtsApiService.get().getBranchService().createWorkingBranchValidate(reqTeamWf);
          Assert.assertTrue(result.toString(), result.isTrue());
 
          AtsApiService.get().getBranchServiceIde().createWorkingBranch_Create(reqTeamWf, true);
@@ -95,7 +95,7 @@ public class FrameworkAccessTestUtil {
          Assert.assertTrue(reqWorkBrch.isValid());
 
          // Create Test working branch
-         result = AtsApiService.get().getBranchServiceIde().createWorkingBranch_Validate(testTeamWf);
+         result = AtsApiService.get().getBranchService().createWorkingBranchValidate(testTeamWf);
          Assert.assertTrue(result.toString(), result.isTrue());
 
          AtsApiService.get().getBranchServiceIde().createWorkingBranch_Create(testTeamWf, true);

@@ -51,6 +51,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -417,6 +418,12 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    public Collection<ArtifactToken> getArtifacts(ArtifactTypeToken artType, AttributeTypeToken attrType, String value,
       BranchToken branch) {
       return Collections.castAll(ArtifactQuery.getArtifactListFromTypeAndAttribute(artType, attrType, value, branch));
+   }
+
+   @Override
+   public Collection<ArtifactToken> getArtifactsFromTypeAndName(ArtifactTypeToken artType, String name,
+      BranchToken branch, QueryOption[] queryOption) {
+      return Collections.castAll(ArtifactQuery.getArtifactListFromTypeAndName(artType, name, branch, queryOption));
    }
 
 }

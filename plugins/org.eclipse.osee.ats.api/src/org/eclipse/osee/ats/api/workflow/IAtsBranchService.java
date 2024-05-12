@@ -49,7 +49,7 @@ public interface IAtsBranchService {
 
    BranchToken getBranch(IAtsTeamWorkflow teamWf);
 
-   BranchId getBranch(IAtsConfigObject configObject);
+   BranchToken getBranch(IAtsConfigObject configObject);
 
    BranchId getBranch(CommitConfigItem configObject);
 
@@ -94,7 +94,7 @@ public interface IAtsBranchService {
    /**
     * @return Branch that is the configured branch to create working branch from.
     */
-   BranchId getConfiguredBranchForWorkflow(IAtsTeamWorkflow teamWf);
+   BranchToken getConfiguredBranchForWorkflow(IAtsTeamWorkflow teamWf);
 
    /**
     * Return working branch associated with SMA whether it is committed or not; This data is cached across all workflows
@@ -106,7 +106,8 @@ public interface IAtsBranchService {
 
    boolean isWorkingBranchEverCommitted(IAtsTeamWorkflow teamWf);
 
-   Collection<Object> combineCommitTransactionsAndConfigItems(Collection<CommitConfigItem> commitConfigItems, Collection<TransactionRecord> commitTxs);
+   Collection<Object> combineCommitTransactionsAndConfigItems(Collection<CommitConfigItem> commitConfigItems,
+      Collection<TransactionRecord> commitTxs);
 
    Collection<TransactionRecord> getCommitTransactionsToUnarchivedBaselineBranchs(IAtsTeamWorkflow teamWf);
 
@@ -136,7 +137,8 @@ public interface IAtsBranchService {
 
    Collection<BranchId> getBranchesInCommit();
 
-   boolean workingBranchCommittedToDestinationBranchParentPriorToDestinationBranchCreation(IAtsTeamWorkflow teamWf, BranchId destinationBranch, Collection<? extends TransactionToken> commitTransactionIds);
+   boolean workingBranchCommittedToDestinationBranchParentPriorToDestinationBranchCreation(IAtsTeamWorkflow teamWf,
+      BranchId destinationBranch, Collection<? extends TransactionToken> commitTransactionIds);
 
    BranchId getParentBranch(BranchId branch);
 
@@ -187,5 +189,20 @@ public interface IAtsBranchService {
    BranchData validate(BranchData branchData, AtsApi atsApi);
 
    XResultData commitBranch(IAtsTeamWorkflow teamWf, BranchId destinationBranch, AtsUser user, XResultData rd);
+
+   BranchData createWorkingBranch(IAtsTeamWorkflow teamWf);
+
+   XResultData commitWorkingBranch(IAtsTeamWorkflow teamWf, boolean commitPopup, boolean overrideStateValidation,
+      BranchId destinationBranch, boolean archiveWorkingBranch, XResultData rd);
+
+   /**
+    * Perform error checks and popup confirmation dialogs associated with creating a working branch.
+    *
+    * @param popup if true, errors are popped up to user; otherwise sent silently in Results
+    * @return Result return of status
+    */
+   Result createWorkingBranchValidate(IAtsTeamWorkflow teamWf);
+
+   BranchToken getWorkingBranchPend(IAtsTeamWorkflow teamWf);
 
 }

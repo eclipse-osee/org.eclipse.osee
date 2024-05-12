@@ -66,9 +66,9 @@ public class DecisionReviewOnTransitionToHook implements IAtsTransitionHook {
       }
       IAtsDecisionReview decArt = null;
       if (revDef.isAutoTransitionToDecision()) {
-         decArt = (IAtsDecisionReview) atsApi.getReviewService().createNewDecisionReviewAndTransitionToDecision(teamWf,
+         decArt = atsApi.getReviewService().createNewDecisionReviewAndTransitionToDecision(teamWf,
             revDef.getReviewTitle(), revDef.getDescription(), revDef.getRelatedToState(), revDef.getBlockingType(),
-            revDef.getOptions(), users, createdDate, createdBy, changes).getStoreObject();
+            revDef.getOptions(), users, createdDate, createdBy, changes);
       } else {
          decArt = atsApi.getReviewService().createNewDecisionReview(teamWf, revDef.getBlockingType(),
             revDef.getReviewTitle(), revDef.getRelatedToState(), revDef.getDescription(), revDef.getOptions(), users,
@@ -94,7 +94,8 @@ public class DecisionReviewOnTransitionToHook implements IAtsTransitionHook {
       AtsUser createdBy = AtsCoreUsers.SYSTEM_USER;
       IAtsTeamWorkflow teamArt = (IAtsTeamWorkflow) workItem;
 
-      for (IAtsDecisionReviewDefinition decRevDef : workItem.getStateDefinition().getDecisionReviews()) {
+      for (IAtsDecisionReviewDefinition decRevDef : workItem.getWorkDefinition().getStateByName(
+         toState.getName()).getDecisionReviews()) {
          if (decRevDef.getStateEventType() != null && decRevDef.getStateEventType().equals(
             StateEventType.TransitionTo)) {
             IAtsDecisionReview decArt = DecisionReviewOnTransitionToHook.createNewDecisionReview(decRevDef, changes,

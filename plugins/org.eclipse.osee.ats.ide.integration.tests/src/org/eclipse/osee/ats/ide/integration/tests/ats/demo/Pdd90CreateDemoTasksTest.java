@@ -15,10 +15,9 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.demo;
 
 import java.util.LinkedList;
 import java.util.List;
-
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.demo.populate.Pdd90CreateDemoTasks;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
@@ -41,14 +40,14 @@ public class Pdd90CreateDemoTasksTest implements IPopulateDemoDatabaseTest {
       Pdd90CreateDemoTasks create = new Pdd90CreateDemoTasks();
       create.run();
 
-      TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
+      TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
       List<String> taskNames = new LinkedList<>();
       taskNames.addAll(DemoUtil.Saw_Code_Committed_Task_Titles);
       for (IAtsTask task : AtsApiService.get().getTaskService().getTasks(teamWf)) {
          testTaskContents((TaskArtifact) task, TaskStates.InWork.getName(), TeamState.Implement.getName());
          taskNames.remove(task.getName());
          String assignees = task.getAssigneesStr();
-         boolean containsJoe = assignees.contains(DemoUsers.Joe_Smith.getName()); 
+         boolean containsJoe = assignees.contains(DemoUsers.Joe_Smith.getName());
          boolean containsKay = assignees.contains(DemoUsers.Kay_Jones.getName());
          Assert.assertTrue(containsJoe && containsKay);
       }
@@ -57,7 +56,7 @@ public class Pdd90CreateDemoTasksTest implements IPopulateDemoDatabaseTest {
             AtsApiService.get().getTaskService().getTasks(teamWf));
       }
 
-      teamWf = DemoUtil.getSawCodeUnCommittedWf();
+      teamWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeUnCommittedWf();
       taskNames.clear();
       taskNames.addAll(DemoUtil.Saw_Code_UnCommitted_Task_Titles);
       for (IAtsTask task : AtsApiService.get().getTaskService().getTasks(teamWf)) {

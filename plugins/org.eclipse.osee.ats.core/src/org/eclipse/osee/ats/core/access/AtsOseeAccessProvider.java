@@ -47,7 +47,6 @@ public class AtsOseeAccessProvider implements IOseeAccessProvider {
    }
 
    public void addAtsAccessProvider(IAtsAccessContextProvider provider) {
-      AccessControlUtil.errorf(getClass().getSimpleName() + " - " + provider.getClass().getSimpleName());
       providers.add(provider);
    }
 
@@ -63,7 +62,8 @@ public class AtsOseeAccessProvider implements IOseeAccessProvider {
    }
 
    @Override
-   public XResultData hasArtifactContextWriteAccess(ArtifactToken user, Collection<? extends ArtifactToken> artifacts, XResultData rd) {
+   public XResultData hasArtifactContextWriteAccess(ArtifactToken user, Collection<? extends ArtifactToken> artifacts,
+      XResultData rd) {
       AtsUser atsUser = AtsApiService.get().getUserService().getUserById(user);
       for (ArtifactToken artifact : artifacts) {
          boolean found = false;
@@ -82,7 +82,8 @@ public class AtsOseeAccessProvider implements IOseeAccessProvider {
    }
 
    @Override
-   public XResultData hasAttributeTypeContextWriteAccess(ArtifactToken user, Collection<? extends ArtifactToken> artifacts, AttributeTypeToken attributeType, XResultData rd) {
+   public XResultData hasAttributeTypeContextWriteAccess(ArtifactToken user,
+      Collection<? extends ArtifactToken> artifacts, AttributeTypeToken attributeType, XResultData rd) {
       AtsUser atsUser = AtsApiService.get().getUserService().getUserById(user);
       for (ArtifactToken artifact : artifacts) {
          boolean found = false;
@@ -101,7 +102,8 @@ public class AtsOseeAccessProvider implements IOseeAccessProvider {
    }
 
    @Override
-   public XResultData hasRelationContextWriteAccess(ArtifactToken user, ArtifactToken artifact, RelationTypeToken relationType, XResultData rd) {
+   public XResultData hasRelationContextWriteAccess(ArtifactToken user, ArtifactToken artifact,
+      RelationTypeToken relationType, XResultData rd) {
       AtsUser atsUser = AtsApiService.get().getUserService().getUserById(user);
       boolean found = false;
       for (IAtsAccessContextProvider provider : providers) {

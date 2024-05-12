@@ -44,6 +44,7 @@ import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.util.AtsRelationChange.RelationOperation;
+import org.eclipse.osee.framework.core.data.ArtifactAnnotation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -607,6 +608,10 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
       for (String name : names) {
          addAttribute(art, attrType, name);
       }
+   }
+
+   public void addAnnotation(ArtifactToken art, ArtifactAnnotation annotation) {
+      addAttribute(art, CoreAttributeTypes.Annotation, annotation.toXml());
    }
 
 }

@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.core.util;
 
+import java.rmi.activation.Activator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.branch.BranchData;
@@ -52,6 +54,7 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G Dunne
@@ -67,6 +70,8 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    private static Set<BranchId> branchesInCommit = new HashSet<>();
    private final ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
    private CommitOverrideOperations commitOverrideOps;
+   public final static String PARENT_BRANCH_CAN_NOT_BE_DETERMINED =
+      "Parent Branch cannot be determined.\n\nPlease specify parent branch through Targeted Version or Team Definition.\n\nContact your team lead to configure this.";
 
    public AbstractAtsBranchService(AtsApi atsApi, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
       this.atsApi = atsApi;
@@ -114,8 +119,8 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    }
 
    @Override
-   public BranchId getConfiguredBranchForWorkflow(IAtsTeamWorkflow teamWf) {
-      BranchId parentBranch = BranchId.SENTINEL;
+   public BranchToken getConfiguredBranchForWorkflow(IAtsTeamWorkflow teamWf) {
+      BranchToken parentBranch = BranchToken.SENTINEL;
 
       // Check for parent branch id in Version artifact
       if (atsApi.getTeamDefinitionService().isTeamUsesVersions(teamWf.getTeamDefinition())) {
@@ -335,23 +340,26 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    }
 
    @Override
-   public BranchId getBranch(IAtsConfigObject configObject) {
-      BranchId branch = BranchId.SENTINEL;
+   public BranchToken getBranch(IAtsConfigObject configObject) {
+      BranchToken branch = BranchToken.SENTINEL;
       if (configObject instanceof IAtsVersion) {
          IAtsVersion version = (IAtsVersion) configObject;
          if (version.getBaselineBranch().isValid()) {
-            branch = version.getBaselineBranch();
+            BranchId branchId = version.getBaselineBranch();
+            branch = atsApi.getBranchService().getBranch(branchId);
          }
       }
       if (branch.isInvalid() && configObject instanceof IAtsTeamDefinition) {
          IAtsTeamDefinition teamDef = (IAtsTeamDefinition) configObject;
          if (atsApi.getTeamDefinitionService().getBaselineBranchId(teamDef).isValid()) {
-            branch = atsApi.getTeamDefinitionService().getBaselineBranchId(teamDef);
+            BranchId branchId = atsApi.getTeamDefinitionService().getBaselineBranchId(teamDef);
+            branch = atsApi.getBranchService().getBranch(branchId);
          }
       }
       if (branch.isInvalid()) {
-         branch = BranchId.valueOf(atsApi.getAttributeResolver().getSoleAttributeValue(configObject,
-            AtsAttributeTypes.BaselineBranchId, Id.SENTINEL.toString()));
+         String branchId = atsApi.getAttributeResolver().getSoleAttributeValue(configObject,
+            AtsAttributeTypes.BaselineBranchId, Id.SENTINEL.toString());
+         branch = BranchToken.create(BranchId.valueOf(branchId), "Unknown");
       }
       return branch;
    }
@@ -383,7 +391,8 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
     * This method was refactored from above so it could be tested independently
     */
    @Override
-   public Collection<Object> combineCommitTransactionsAndConfigItems(Collection<CommitConfigItem> configItems, Collection<TransactionRecord> commitTxs) {
+   public Collection<Object> combineCommitTransactionsAndConfigItems(Collection<CommitConfigItem> configItems,
+      Collection<TransactionRecord> commitTxs) {
       // commitMgrInputObjs will hold a union of all commits from configArtSet and commitTxs.
       // - first, we addAll configArtSet
       // - next, we loop through commitTxs and for any tx that has the same branch as ANY pre-existing commit
@@ -504,7 +513,8 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    }
 
    @Override
-   public CommitStatus getCommitStatus(IAtsTeamWorkflow teamWf, BranchId destinationBranch, CommitConfigItem configItem) {
+   public CommitStatus getCommitStatus(IAtsTeamWorkflow teamWf, BranchId destinationBranch,
+      CommitConfigItem configItem) {
       BranchId workingBranch = getWorkingBranch(teamWf);
       if (workingBranch.isValid()) {
          if (getBranchState(workingBranch).isRebaselineInProgress()) {
@@ -592,7 +602,9 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    }
 
    @Override
-   public boolean workingBranchCommittedToDestinationBranchParentPriorToDestinationBranchCreation(IAtsTeamWorkflow teamWf, BranchId destinationBranch, Collection<? extends TransactionToken> commitTransactionIds) {
+   public boolean workingBranchCommittedToDestinationBranchParentPriorToDestinationBranchCreation(
+      IAtsTeamWorkflow teamWf, BranchId destinationBranch,
+      Collection<? extends TransactionToken> commitTransactionIds) {
       BranchId destinationBranchParent = getParentBranch(destinationBranch);
       if (getBranchType(destinationBranchParent) == BranchType.SYSTEM_ROOT) {
          return false;
@@ -713,4 +725,74 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       }
       return bd;
    }
+
+   /**
+    * Perform error checks and popup confirmation dialogs associated with creating a working branch.
+    *
+    * @param popup if true, errors are popped up to user; otherwise sent silently in Results
+    * @return Result return of status
+    */
+   @Override
+   public Result createWorkingBranchValidate(IAtsTeamWorkflow teamWf) {
+      try {
+         if (atsApi.getBranchService().isCommittedBranchExists(teamWf)) {
+            return new Result(
+               "Committed branch already exists. Can not create another working branch once changes have been committed.");
+         }
+         if (atsApi.getBranchService().isWorkingBranchInWork(teamWf)) {
+            return new Result("Cannot create another branch while the current branch is in work.");
+         }
+         BranchId parentBranch = atsApi.getBranchService().getConfiguredBranchForWorkflow(teamWf);
+         if (parentBranch == null || parentBranch.isInvalid()) {
+            return new Result(PARENT_BRANCH_CAN_NOT_BE_DETERMINED);
+         }
+
+         if (atsApi.getBranchService().getBranch(parentBranch) == null) {
+            return new Result(PARENT_BRANCH_CAN_NOT_BE_DETERMINED);
+         }
+
+         Result result = atsApi.getBranchService().isCreateBranchAllowed(teamWf);
+         if (result.isFalse()) {
+            return result;
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         return new Result("Exception occurred: " + ex.getLocalizedMessage());
+      }
+      return Result.TrueResult;
+   }
+
+   @Override
+   public BranchData createWorkingBranch(IAtsTeamWorkflow teamWf) {
+      BranchToken parentBranch = atsApi.getBranchService().getConfiguredBranchForWorkflow(teamWf);
+      BranchData bd = new BranchData();
+      bd.setParent(parentBranch);
+      bd.setAssociatedArt(teamWf.getArtifactToken());
+      bd.setAuthor(atsApi.getUserService().getCurrentUser().getArtifactToken());
+      bd.setCreationComment(String.format("New Baseline Branch from %s", parentBranch.toStringWithId()));
+      bd.setBranchType(BranchType.WORKING);
+      final String branchName = atsApi.getBranchService().getBranchName(teamWf);
+      bd.setBranchName(branchName);
+      BranchData createBranch = createBranch(bd);
+      return createBranch;
+   }
+
+   @Override
+   public BranchToken getWorkingBranchPend(IAtsTeamWorkflow teamWf) {
+      BranchToken branch = BranchToken.SENTINEL;
+      for (int x = 0; x < 5; x++) {
+         branch = getWorkingBranch(teamWf);
+         if (branch.isValid()) {
+            break;
+         } else {
+            try {
+               Thread.sleep(1000);
+            } catch (Exception ex) {
+               // do nothing
+            }
+         }
+      }
+      return branch;
+   }
+
 }

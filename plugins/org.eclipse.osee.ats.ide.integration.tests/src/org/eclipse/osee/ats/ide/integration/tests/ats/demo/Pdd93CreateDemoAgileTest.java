@@ -17,9 +17,10 @@ import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.demo.populate.Pdd93CreateDemoAgile;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
+import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -32,6 +33,7 @@ public class Pdd93CreateDemoAgileTest implements IPopulateDemoDatabaseTest {
    public void testAction() throws Exception {
       DemoUtil.checkDbInitAndPopulateSuccess();
       DemoUtil.setPopulateDbSuccessful(false);
+      TestUtil.setIsInTest(true);
 
       Pdd93CreateDemoAgile create = new Pdd93CreateDemoAgile();
       create.run();

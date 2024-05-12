@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.ats.AtsTest_Ats_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.actions.AtsTest_Action_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.query.AtsTest_Query_Suite;

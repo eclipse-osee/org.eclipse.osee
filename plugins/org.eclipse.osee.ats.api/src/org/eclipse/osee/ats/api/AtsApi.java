@@ -247,4 +247,12 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
 
    boolean isConfigValue(String key, boolean defaultValue);
 
+   String getOseeInfo(String key);
+
+   boolean isOseeInfo(String key, String value);
+
+   void setOseeInfo(String key, String value);
+
+   void removeOseeInfo(String key);
+
 }

@@ -28,9 +28,6 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 
 public interface AtsBranchServiceIde {
 
-   public final String PARENT_BRANCH_CAN_NOT_BE_DETERMINED =
-      "Parent Branch cannot be determined.\n\nPlease specify parent branch through Targeted Version or Team Definition.\n\nContact your team lead to configure this.";
-
    void showMergeManager(TeamWorkFlowArtifact teamArt);
 
    void showMergeManager(TeamWorkFlowArtifact teamArt, BranchId destinationBranch);
@@ -89,14 +86,6 @@ public interface AtsBranchServiceIde {
     */
    boolean createNecessaryBranchEventReviews(StateEventType stateEventType, IAtsTeamWorkflow teamWf, Date createdDate,
       AtsUser createdBy, IAtsChangeSet changes);
-
-   /**
-    * Perform error checks and popup confirmation dialogs associated with creating a working branch.
-    *
-    * @param popup if true, errors are popped up to user; otherwise sent silently in Results
-    * @return Result return of status
-    */
-   Result createWorkingBranch_Validate(IAtsTeamWorkflow teamWf);
 
    /**
     * Create a working branch associated with this Team Workflow. Call createWorkingBranch_Validate first to validate

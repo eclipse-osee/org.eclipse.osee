@@ -23,8 +23,8 @@ import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.ide.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 
@@ -37,7 +37,7 @@ public class Pdd80CreateButtonSDoesntWorkAction implements IPopulateDemoDatabase
    public void run() {
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
 
-      Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(DemoArtifactToken.Reader_AI);
+      Collection<IAtsActionableItem> aias = DemoUtil.getActionableItems(DemoArtifactToken.Reader_AI);
 
       ActionResult actionResult = AtsApiService.get().getActionService().createAction(null,
          DemoArtifactToken.ButtonSDoesntWorkOnHelp_TeamWf.getName(), "Problem with the help", ChangeTypes.Problem, "3",

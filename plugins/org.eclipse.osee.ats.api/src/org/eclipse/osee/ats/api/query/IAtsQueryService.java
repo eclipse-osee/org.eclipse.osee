@@ -100,6 +100,8 @@ public interface IAtsQueryService {
     */
    IAtsWorkItem getWorkItem(String id);
 
+   IAtsWorkItem getWorkItem(ArtifactId id);
+
    /**
     * @param ATS Id
     */
@@ -258,5 +260,10 @@ public interface IAtsQueryService {
       DeletionFlag excludeDeleted, QueryOption[] containsMatchOptions);
 
    Collection<ArtifactToken> getArtifactsByAttrFast(AttributeTypeToken attrType, String value);
+
+   Collection<ArtifactToken> getArtifactsFromTypeAndName(ArtifactTypeToken art, String name, BranchToken branch,
+      QueryOption[] queryOption);
+
+   ArtifactToken getArtifactFromName(ArtifactTypeToken artType, String name, BranchToken branch);
 
 }

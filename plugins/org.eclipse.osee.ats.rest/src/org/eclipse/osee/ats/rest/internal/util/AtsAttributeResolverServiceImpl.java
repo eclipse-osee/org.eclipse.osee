@@ -71,12 +71,14 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public String getSoleAttributeValueAsString(IAtsObject atsObject, AttributeTypeToken attributeType, String defaultValue) {
+   public String getSoleAttributeValueAsString(IAtsObject atsObject, AttributeTypeToken attributeType,
+      String defaultValue) {
       return getArtifact(atsObject).getAttributeValuesAsString(attributeType);
    }
 
    @Override
-   public String getSoleAttributeValueAsString(ArtifactId artifact, AttributeTypeToken attributeType, String defaultValue) {
+   public String getSoleAttributeValueAsString(ArtifactId artifact, AttributeTypeToken attributeType,
+      String defaultValue) {
       return getArtifact(artifact).getSoleAttributeValue(attributeType, defaultValue);
    }
 
@@ -131,22 +133,26 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeToken attributeType, Object value, IAtsChangeSet changes) {
+   public void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeToken attributeType, Object value,
+      IAtsChangeSet changes) {
       changes.setSoleAttributeValue(atsObject, attributeType, value);
    }
 
    @Override
-   public void addAttribute(IAtsWorkItem workItem, AttributeTypeToken attributeType, Object value, IAtsChangeSet changes) {
+   public void addAttribute(IAtsWorkItem workItem, AttributeTypeToken attributeType, Object value,
+      IAtsChangeSet changes) {
       changes.addAttribute(workItem, attributeType, value);
    }
 
    @Override
-   public void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeToken attributeType, Object value, IAtsChangeSet changes) {
+   public void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeToken attributeType, Object value,
+      IAtsChangeSet changes) {
       changes.deleteAttribute(workItem, attributeType, value);
    }
 
    @Override
-   public <T> void setValue(IAtsWorkItem workItem, IAttribute<T> attr, AttributeTypeId attributeType, T value, IAtsChangeSet changes) {
+   public <T> void setValue(IAtsWorkItem workItem, IAttribute<T> attr, AttributeTypeId attributeType, T value,
+      IAtsChangeSet changes) {
       changes.setValue(workItem, attr, attributeType, value);
    }
 
@@ -225,7 +231,9 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public List<String> getAttributesToStringListFromArt(ArtifactToken artifact, AttributeTypeToken attributeType, DeletionFlag deletionFlag) {
+   public List<String> getAttributesToStringListFromArt(ArtifactToken artifact, AttributeTypeToken attributeType,
+      DeletionFlag deletionFlag) {
       return ((ArtifactReadable) artifact).getAttributeValues(attributeType, deletionFlag);
    }
+
 }

@@ -225,7 +225,13 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public XResultData commitBranch(IAtsTeamWorkflow teamWf, BranchId destinationBranch, AtsUser user, XResultData rd) {
-      return null;
+      throw new UnsupportedOperationException("Not supported on client");
+   }
+
+   @Override
+   public XResultData commitWorkingBranch(IAtsTeamWorkflow teamWf, boolean commitPopup, boolean overrideStateValidation,
+      BranchId destinationBranch, boolean archiveWorkingBranch, XResultData rd) {
+      throw new UnsupportedOperationException("Not supported on client");
    }
 
 }

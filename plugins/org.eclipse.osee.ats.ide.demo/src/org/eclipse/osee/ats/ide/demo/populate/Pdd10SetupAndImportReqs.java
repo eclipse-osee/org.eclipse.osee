@@ -25,7 +25,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
-import org.eclipse.osee.ats.ide.demo.config.DemoDbUtil;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.demo.internal.Activator;
 import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsUtilClient;
@@ -48,6 +48,7 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -230,25 +231,27 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
 
    private void demoDbTraceabilityTx(SkynetTransaction transaction, BranchToken branch) {
       try {
-         Collection<Artifact> systemArts =
-            DemoDbUtil.getArtTypeRequirements(debug, CoreArtifactTypes.SystemRequirementMsWord, "Robot", branch);
+         Collection<Artifact> systemArts = Collections.castAll(
+            DemoUtil.getArtTypeRequirements(debug, CoreArtifactTypes.SystemRequirementMsWord, "Robot", branch));
 
          Collection<Artifact> component =
-            DemoDbUtil.getArtTypeRequirements(debug, CoreArtifactTypes.Component, "API", branch);
-         component.addAll(DemoDbUtil.getArtTypeRequirements(debug, CoreArtifactTypes.Component, "Hardware", branch));
-         component.addAll(DemoDbUtil.getArtTypeRequirements(debug, CoreArtifactTypes.Component, "Sensor", branch));
+            Collections.castAll(DemoUtil.getArtTypeRequirements(debug, CoreArtifactTypes.Component, "API", branch));
+         component.addAll(Collections.castAll(
+            DemoUtil.getArtTypeRequirements(debug, CoreArtifactTypes.Component, "Hardware", branch)));
+         component.addAll(
+            Collections.castAll(DemoUtil.getArtTypeRequirements(debug, CoreArtifactTypes.Component, "Sensor", branch)));
 
-         Collection<Artifact> subSystemArts =
-            DemoDbUtil.getArtTypeRequirements(debug, CoreArtifactTypes.SubsystemRequirementMsWord, "Robot", branch);
-         subSystemArts.addAll(
-            DemoDbUtil.getArtTypeRequirements(debug, CoreArtifactTypes.SubsystemRequirementMsWord, "Video", branch));
-         subSystemArts.addAll(DemoDbUtil.getArtTypeRequirements(debug, CoreArtifactTypes.SubsystemRequirementMsWord,
-            "Interface", branch));
+         Collection<Artifact> subSystemArts = Collections.castAll(
+            DemoUtil.getArtTypeRequirements(debug, CoreArtifactTypes.SubsystemRequirementMsWord, "Robot", branch));
+         subSystemArts.addAll(Collections.castAll(
+            DemoUtil.getArtTypeRequirements(debug, CoreArtifactTypes.SubsystemRequirementMsWord, "Video", branch)));
+         subSystemArts.addAll(Collections.castAll(
+            DemoUtil.getArtTypeRequirements(debug, CoreArtifactTypes.SubsystemRequirementMsWord, "Interface", branch)));
 
-         Collection<Artifact> softArts =
-            DemoDbUtil.getArtTypeRequirements(debug, CoreArtifactTypes.SoftwareRequirementMsWord, "Robot", branch);
-         softArts.addAll(
-            DemoDbUtil.getArtTypeRequirements(debug, CoreArtifactTypes.SoftwareRequirementMsWord, "Interface", branch));
+         Collection<Artifact> softArts = Collections.castAll(
+            DemoUtil.getArtTypeRequirements(debug, CoreArtifactTypes.SoftwareRequirementMsWord, "Robot", branch));
+         softArts.addAll(Collections.castAll(
+            DemoUtil.getArtTypeRequirements(debug, CoreArtifactTypes.SoftwareRequirementMsWord, "Interface", branch)));
 
          // Relate System to SubSystem to Software Requirements
          for (Artifact systemArt : systemArts) {

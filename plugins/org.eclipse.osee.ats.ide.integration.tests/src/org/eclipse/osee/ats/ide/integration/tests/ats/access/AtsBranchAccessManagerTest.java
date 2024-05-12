@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.access.AtsAccessService;
 import org.eclipse.osee.ats.core.access.demo.DemoAtsAccessContextTokens;
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -60,7 +60,7 @@ public class AtsBranchAccessManagerTest {
    @Test
    public void testGetContextIds() throws Exception {
       IAtsAccessService accessService = AtsApiService.get().getAtsAccessService();
-      TeamWorkFlowArtifact teamArt = DemoUtil.getButtonWDoesntWorkOnSituationPageWf();
+      TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) DemoUtil.getButtonWDoesntWorkOnSituationPageWf();
       IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
       IAtsActionableItem ai = teamArt.getActionableItems().iterator().next();
 

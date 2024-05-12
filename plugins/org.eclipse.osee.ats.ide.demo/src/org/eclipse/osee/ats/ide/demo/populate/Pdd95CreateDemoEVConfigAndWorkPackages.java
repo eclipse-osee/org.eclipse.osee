@@ -31,7 +31,7 @@ import org.eclipse.osee.ats.api.program.JaxProgram;
 import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -58,15 +58,15 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
       IAtsChangeSet changes = AtsApiService.get().createChangeSet(getClass().getSimpleName());
 
       // set work packages
-      TeamWorkFlowArtifact commWf = DemoUtil.getSawCodeCommittedWf();
+      TeamWorkFlowArtifact commWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
       changes.setSoleAttributeValue((IAtsTeamWorkflow) commWf, AtsAttributeTypes.WorkPackageReference,
          DemoArtifactToken.SAW_Code_Team_WorkPackage_01);
 
-      TeamWorkFlowArtifact unCommWf = DemoUtil.getSawCodeUnCommittedWf();
+      TeamWorkFlowArtifact unCommWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeUnCommittedWf();
       changes.setSoleAttributeValue((IAtsTeamWorkflow) unCommWf, AtsAttributeTypes.WorkPackageReference,
          DemoArtifactToken.SAW_Code_Team_WorkPackage_01);
 
-      TeamWorkFlowArtifact noBranchWf = DemoUtil.getSawCodeNoBranchWf();
+      TeamWorkFlowArtifact noBranchWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeNoBranchWf();
       changes.setSoleAttributeValue((IAtsTeamWorkflow) noBranchWf, AtsAttributeTypes.WorkPackageReference,
          DemoArtifactToken.SAW_Code_Team_WorkPackage_03);
 

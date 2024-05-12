@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.api.review.ReviewRole;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
@@ -103,7 +103,7 @@ public class Pdd92CreateDemoReviews {
 
       IAtsChangeSet changes = AtsApiService.get().createChangeSet("Populate Demo DB - PeerToPeer 1and2");
 
-      TeamWorkFlowArtifact firstCodeArt = DemoUtil.getSawCodeCommittedWf();
+      TeamWorkFlowArtifact firstCodeArt = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
 
       // Create PeerToPeer review 1 and leave in Prepare state
       AtsApiService.get().getReviewService().createNewPeerToPeerReview(firstCodeArt,
@@ -136,7 +136,7 @@ public class Pdd92CreateDemoReviews {
 
    public void createPeerToPeerReview3() {
       IAtsChangeSet changes = AtsApiService.get().createChangeSet("Populate Demo DB - PeerToPeer 3.1");
-      TeamWorkFlowArtifact secondCodeArt = DemoUtil.getSawCodeUnCommittedWf();
+      TeamWorkFlowArtifact secondCodeArt = (TeamWorkFlowArtifact) DemoUtil.getSawCodeUnCommittedWf();
 
       reviewArt3 =
          (PeerToPeerReviewArtifact) AtsApiService.get().getReviewService().createNewPeerToPeerReview(secondCodeArt,

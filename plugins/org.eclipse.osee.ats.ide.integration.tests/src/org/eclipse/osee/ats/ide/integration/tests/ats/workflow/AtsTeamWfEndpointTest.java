@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.AtsTeamWfEndpointApi;
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -53,7 +53,7 @@ public class AtsTeamWfEndpointTest {
    public void setup() {
       atsApi = AtsApiService.get();
       teamWfEp = AtsApiService.get().getServerEndpoints().getTeamWfEp();
-      codeTeamWorkFlow = DemoUtil.getSawCodeUnCommittedWf();
+      codeTeamWorkFlow = (TeamWorkFlowArtifact) DemoUtil.getSawCodeUnCommittedWf();
    }
 
    @Test

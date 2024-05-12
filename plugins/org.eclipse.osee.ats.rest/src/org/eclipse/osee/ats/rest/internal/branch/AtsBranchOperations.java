@@ -59,6 +59,7 @@ public class AtsBranchOperations {
       cbd.setCategories(orcsApi.getQueryFactory().branchQuery().getBranchCategories(bd.getParent()));
       Branch newBranch = orcsApi.getBranchOps().createBranch(cbd);
       bd.getResults().setIds(Arrays.asList(newBranch.getIdString()));
+      bd.setNewBranch(cbd.getNewBranch());
       return bd;
    }
 

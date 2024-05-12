@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests;
 
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionBuilder;
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.ats.demo.AtsTest_DemoPopulateAndTest_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workdef.AtsIntegrationTestsWorkDefinitionProvider;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtilTest;

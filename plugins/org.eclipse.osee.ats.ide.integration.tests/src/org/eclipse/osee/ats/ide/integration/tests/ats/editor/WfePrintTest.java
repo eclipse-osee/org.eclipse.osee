@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.editor;
 
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.util.WfePrint;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
@@ -44,7 +44,7 @@ public class WfePrintTest {
    public void testSMAPrint() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
-      TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeUnCommittedWf();
+      TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeUnCommittedWf();
       Assert.assertNotNull(teamWf);
 
       WfePrint smaPrint = new WfePrint(teamWf);

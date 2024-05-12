@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.workdef;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.ats.resource.AbstractRestTest;
 import org.junit.Assert;
 import org.junit.Test;

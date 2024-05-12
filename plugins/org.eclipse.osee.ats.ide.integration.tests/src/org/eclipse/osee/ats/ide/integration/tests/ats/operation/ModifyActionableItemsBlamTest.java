@@ -14,7 +14,7 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.operation;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.operation.ModifyActionableItemsBlam;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
@@ -40,7 +40,7 @@ public class ModifyActionableItemsBlamTest {
    public void testModifyActionableItemsBlam() {
       BlamEditor.closeAll();
       ModifyActionableItemsBlam blam = new ModifyActionableItemsBlam();
-      TeamWorkFlowArtifact sawCodeCommittedWf = DemoUtil.getSawCodeCommittedWf();
+      TeamWorkFlowArtifact sawCodeCommittedWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
       blam.setDefaultTeamWorkflow(sawCodeCommittedWf);
       BlamEditor.edit(blam);
       Collection<BlamEditor> editors = BlamEditor.getEditors();

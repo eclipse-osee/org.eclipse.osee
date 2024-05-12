@@ -19,8 +19,8 @@ import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.column.AssigneeColumn;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.column.AssigneeColumnUI;
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -58,7 +58,7 @@ public class AssigneeColumnTest {
 
    @org.junit.Test
    public void testGetAssigneeStrFromInWorkWorkflow() {
-      TeamWorkFlowArtifact sawCodeCommittedWf = DemoUtil.getSawCodeCommittedWf();
+      TeamWorkFlowArtifact sawCodeCommittedWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
       Assert.assertEquals("Joe Smith", AssigneeColumn.getAssigneeStrr(sawCodeCommittedWf));
    }
 
@@ -77,7 +77,7 @@ public class AssigneeColumnTest {
 
    @org.junit.Test
    public void testGetAssigneesStrAction() {
-      TeamWorkFlowArtifact sawCodeCommittedWf = DemoUtil.getSawCodeCommittedWf();
+      TeamWorkFlowArtifact sawCodeCommittedWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
       IAtsAction action = sawCodeCommittedWf.getParentAction();
       Assert.assertEquals("", AssigneeColumn.getAssigneeStrr(action));
    }

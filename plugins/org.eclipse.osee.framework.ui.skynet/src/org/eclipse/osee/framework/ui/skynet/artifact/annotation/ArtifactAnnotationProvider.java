@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.annotation;
 
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**

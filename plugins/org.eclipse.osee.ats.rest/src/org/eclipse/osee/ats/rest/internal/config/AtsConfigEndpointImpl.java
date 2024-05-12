@@ -44,6 +44,7 @@ import org.eclipse.osee.ats.rest.AtsApiServer;
 import org.eclipse.osee.ats.rest.internal.config.operation.AtsConfigOperations;
 import org.eclipse.osee.ats.rest.internal.config.operation.ConvertAtsAisAndTeamDefsOperation;
 import org.eclipse.osee.ats.rest.internal.demo.AtsDbConfigDemoOp;
+import org.eclipse.osee.ats.rest.internal.demo.AtsDbConfigPopulateDemoDbAndTestOp;
 import org.eclipse.osee.ats.rest.internal.util.health.AtsHealthCheckOperation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactImage;
@@ -208,10 +209,21 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    }
 
    @Override
+   public XResultData atsDbInit() {
+      XResultData rd = new XResultData();
+      try {
+         rd = atsApi.getConfigService().configAtsDatabase(atsApi);
+      } catch (Exception ex) {
+         rd.error(Lib.exceptionToString(ex));
+      }
+      return rd;
+   }
+
+   @Override
    public XResultData demoDbInit() {
       XResultData rd = new XResultData();
       try {
-         AtsDbConfigDemoOp config = new AtsDbConfigDemoOp(atsApi);
+         AtsDbConfigDemoOp config = new AtsDbConfigDemoOp(rd, atsApi);
          config.run();
       } catch (Exception ex) {
          rd.error(Lib.exceptionToString(ex));
@@ -220,10 +232,11 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    }
 
    @Override
-   public XResultData atsDbInit() {
+   public XResultData demoDbPopulate() {
       XResultData rd = new XResultData();
       try {
-         rd = atsApi.getConfigService().configAtsDatabase(atsApi);
+         AtsDbConfigPopulateDemoDbAndTestOp populateDemoDb = new AtsDbConfigPopulateDemoDbAndTestOp(rd, atsApi);
+         populateDemoDb.run();
       } catch (Exception ex) {
          rd.error(Lib.exceptionToString(ex));
       }

@@ -93,7 +93,8 @@ public class PeerReviewOnTransitionToHook implements IAtsTransitionHook {
       AtsUser createdBy = AtsCoreUsers.SYSTEM_USER;
       IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
 
-      for (IAtsPeerReviewDefinition peerRevDef : workItem.getStateDefinition().getPeerReviews()) {
+      for (IAtsPeerReviewDefinition peerRevDef : workItem.getWorkDefinition().getStateByName(
+         toState.getName()).getPeerReviews()) {
          if (peerRevDef.getStateEventType() != null && peerRevDef.getStateEventType().equals(
             StateEventType.TransitionTo)) {
             IAtsPeerToPeerReview peerRev =

@@ -32,11 +32,10 @@ public class BranchStatusColumnTest {
    public void testGetColumnText() throws Exception {
       SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
 
-      IAtsTeamWorkflow reqArt =
-         (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
+      IAtsTeamWorkflow reqArt = DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
       Assert.assertEquals("Working", BranchStatusColumnUI.getInstance().getBranchStatus(reqArt));
 
-      IAtsTeamWorkflow testArt = (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Test);
+      IAtsTeamWorkflow testArt = DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Test);
       Assert.assertEquals("", BranchStatusColumnUI.getInstance().getBranchStatus(testArt));
 
       TeamWorkFlowArtifact reqArt2 =

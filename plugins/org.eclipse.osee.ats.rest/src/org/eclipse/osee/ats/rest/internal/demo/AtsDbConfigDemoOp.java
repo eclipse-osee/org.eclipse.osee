@@ -42,13 +42,16 @@ public class AtsDbConfigDemoOp {
 
    private final AtsApi atsApi;
 
-   public AtsDbConfigDemoOp(AtsApi atsApi) {
+   public AtsDbConfigDemoOp(XResultData rd, AtsApi atsApi) {
       this.atsApi = atsApi;
    }
 
    public XResultData run() {
 
       (new AtsDbConfigAIsAndTeamsDemoOp(atsApi)).run();
+
+      atsApi.getConfigService().getConfigurationsWithPend();
+
       configureForParallelCommit();
 
       IAtsChangeSet changes = atsApi.createChangeSet("Set ATS Admin");

@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.ide.demo.access;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.core.access.AbstractAtsAccessContextProvider;
 import org.eclipse.osee.ats.core.access.demo.DemoAtsAccessContexts;
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 
 /**
  * @author Donald G. Dunne

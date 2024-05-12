@@ -409,7 +409,7 @@ public class AtsBranchConfigurationTest {
    }
 
    public static BranchToken createBranch(String namespace, IAtsTeamWorkflow teamWf) throws Exception {
-      Result result = AtsApiService.get().getBranchServiceIde().createWorkingBranch_Validate(
+      Result result = AtsApiService.get().getBranchService().createWorkingBranchValidate(
          (TeamWorkFlowArtifact) teamWf.getStoreObject());
       if (result.isFalse()) {
          AWorkbench.popup(result);

@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.ide.integration.tests;
 
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 
