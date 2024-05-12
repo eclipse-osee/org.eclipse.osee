@@ -17,8 +17,8 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflow;
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.junit.Assert;
@@ -31,7 +31,7 @@ public class TeamWorkflowTest {
 
    @Test
    public void testGetActionableItems() {
-      TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
+      TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
       Set<IAtsActionableItem> ais = teamWf.getActionableItems();
       Assert.assertEquals(1, ais.size());
       Assert.assertEquals(DemoArtifactToken.SAW_Code_AI, ais.iterator().next());
@@ -44,7 +44,7 @@ public class TeamWorkflowTest {
 
    @Test
    public void testGetTeamDefinition() {
-      TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
+      TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
       IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
       Assert.assertNotNull(teamDef);
       Assert.assertEquals(DemoArtifactToken.SAW_Code, teamDef);

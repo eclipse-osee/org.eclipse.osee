@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -53,7 +53,7 @@ public class TaskRelatedToChangedArtifactTest {
    public void testCreateSawTestWf() throws Exception {
       AtsTestUtil.cleanupAndReset(getClass().getName());
 
-      TeamWorkFlowArtifact codeWf = DemoUtil.getSawCodeCommittedWf();
+      TeamWorkFlowArtifact codeWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
       assertNotNull(codeWf);
       IAtsTask codeTask = null;
       for (IAtsTask task : AtsApiService.get().getTaskService().getTasks(codeWf)) {

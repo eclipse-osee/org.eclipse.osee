@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.demo;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.demo.populate.Pdd10SetupAndImportReqs;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.enums.Active;

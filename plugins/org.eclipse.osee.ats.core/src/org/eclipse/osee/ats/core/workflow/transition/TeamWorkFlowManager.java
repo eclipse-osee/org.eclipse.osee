@@ -79,6 +79,7 @@ public class TeamWorkFlowManager {
          }
          return Result.TrueResult;
       }
+
       if (teamWf.isInState(TeamState.Endorse)) {
          Result result = processEndorseState(popup, teamWf, currentStateUser, transitionToAssignees, date, changes);
          if (result.isFalse()) {

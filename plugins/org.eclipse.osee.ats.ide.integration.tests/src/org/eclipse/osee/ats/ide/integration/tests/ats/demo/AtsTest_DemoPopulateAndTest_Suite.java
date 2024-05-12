@@ -17,7 +17,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.util.Collection;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IdeClientSession;
@@ -47,12 +47,8 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({ //
    Pdd10SetupAndImportReqsTest.class,
    //
-   Pdd15CreateNotesAndAnnotationsTest.class,
-   //
-   Pdd20CreateCommittedActionTest.class,
-   Pdd21CreateUnCommittedActionTest.class,
-   Pdd22CreateUnCommittedConflictedActionTest.class,
-   Pdd23CreateNoBranchActionTest.class,
+   // Eventually, all Pdd will be moved to server and just DbPopulateTest remains to call server
+   PopulateDemoDatabaseAndTest.class,
    //
    Pdd51CreateWorkaroundForGraphViewActionsTest.class,
    Pdd52CreateWorkingWithDiagramTreeActionsTest.class,

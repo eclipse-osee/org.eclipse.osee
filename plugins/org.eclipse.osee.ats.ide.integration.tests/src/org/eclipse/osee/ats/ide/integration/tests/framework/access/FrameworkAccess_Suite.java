@@ -12,7 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.framework.access;
 
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

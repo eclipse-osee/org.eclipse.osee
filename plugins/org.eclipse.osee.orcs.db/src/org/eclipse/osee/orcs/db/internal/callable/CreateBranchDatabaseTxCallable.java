@@ -18,6 +18,7 @@ import java.util.HashSet;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserService;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -210,6 +211,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
 
       addMergeBranchEntry(0.20, connection);
 
+      newBranchData.setNewBranch(BranchToken.create(branch.getId(), truncatedName));
    }
 
    private void addMergeBranchEntry(double workAmount, JdbcConnection connection) {

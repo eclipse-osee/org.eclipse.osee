@@ -282,7 +282,7 @@ public class AtsTestUtil {
       AtsApiService.get().reloadServerAndClientCaches();
       AtsApiService.get().clearCaches();
 
-      Result result = AtsApiService.get().getBranchServiceIde().createWorkingBranch_Validate(teamWf);
+      Result result = AtsApiService.get().getBranchService().createWorkingBranchValidate(teamWf);
       if (result.isFalse()) {
          return result;
       }

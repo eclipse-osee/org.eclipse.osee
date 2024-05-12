@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.core.server;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.OseeDb;
 
@@ -48,7 +49,9 @@ public class OseeInfo {
 
    public static void setValue(JdbcClient jdbcClient, String key, String value) {
       jdbcClient.runPreparedUpdate(DELETE_KEY_SQL, key);
-      jdbcClient.runPreparedUpdate(OseeDb.OSEE_INFO_TABLE.getInsertSql(), key, value);
+      if (Strings.isValid(value)) {
+         jdbcClient.runPreparedUpdate(OseeDb.OSEE_INFO_TABLE.getInsertSql(), key, value);
+      }
       cache.put(key, value);
    }
 

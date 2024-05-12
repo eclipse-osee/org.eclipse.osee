@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.api.branch;
 
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
@@ -31,6 +32,7 @@ public class BranchData {
    ArtifactToken associatedArt = ArtifactToken.SENTINEL;
    ArtifactToken author = ArtifactToken.SENTINEL;
    String creationComment;
+   BranchToken newBranch = BranchToken.SENTINEL;
 
    public BranchData() {
       // Needed for jax-rs serialization
@@ -106,6 +108,14 @@ public class BranchData {
 
    public void setCreationComment(String creationComment) {
       this.creationComment = creationComment;
+   }
+
+   public BranchToken getNewBranch() {
+      return newBranch;
+   }
+
+   public void setNewBranch(BranchToken newBranch) {
+      this.newBranch = newBranch;
    }
 
 }

@@ -11,12 +11,13 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.integration.tests.ats.demo;
+package org.eclipse.osee.ats.rest.internal.demo;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
@@ -28,31 +29,28 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.api.workflow.note.AtsStateNoteType;
 import org.eclipse.osee.ats.api.workflow.note.IAtsStateNoteService;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
-import org.eclipse.osee.ats.ide.demo.config.DemoDbUtil;
-import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
-import org.eclipse.osee.ats.ide.util.AtsApiIde;
+import org.eclipse.osee.framework.core.data.ArtifactAnnotation;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.artifact.annotation.ArtifactAnnotation;
-import org.eclipse.osee.framework.ui.skynet.artifact.annotation.ArtifactAnnotationManager;
-import org.junit.Test;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
  */
-public class Pdd15CreateNotesAndAnnotationsTest implements IPopulateDemoDatabaseTest {
+public class Pdd15CreateNotesAndAnnotations extends AbstractPopulateDemoDatabase {
 
-   @Test
-   public void testAction() {
-      DemoUtil.checkDbInitAndPopulateSuccess();
-      DemoUtil.setPopulateDbSuccessful(false);
+   public Pdd15CreateNotesAndAnnotations(XResultData rd, AtsApi atsApi) {
+      super(rd, atsApi);
+   }
 
-      AtsApiIde atsApi = AtsApiService.get();
+   @Override
+   public void run() {
+      rd.logf("\n\nRunning [%s]...\n", getClass().getSimpleName());
+
       IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName());
 
-      Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(DemoArtifactToken.SAW_Code_AI);
+      Collection<IAtsActionableItem> aias = DemoUtil.getActionableItems(atsApi, DemoArtifactToken.SAW_Code_AI);
       Date createdDate = new Date();
       AtsUser createdBy = atsApi.getUserService().getCurrentUser();
 
@@ -61,6 +59,11 @@ public class Pdd15CreateNotesAndAnnotationsTest implements IPopulateDemoDatabase
             "Problem with the Diagram View", ChangeTypes.Problem, "1", false, null, aias, createdDate, createdBy,
             Arrays.asList(new ArtifactTokenActionListener()), changes);
       changes.execute();
+
+      if (actionResult.getResults().isErrors()) {
+         rd.errorf("Error creating Action in %s: %s", getClass().getSimpleName(), actionResult.getResults().toString());
+         return;
+      }
 
       IAtsTeamWorkflow teamWf = actionResult.getFirstTeam();
 
@@ -80,16 +83,15 @@ public class Pdd15CreateNotesAndAnnotationsTest implements IPopulateDemoDatabase
       changes.execute();
 
       // create annotations
-      Artifact teamWfArt = (Artifact) teamWf;
-      ArtifactAnnotationManager.addAnnotation(teamWfArt,
+      changes = atsApi.createChangeSet("Create Annotations");
+      changes.addAnnotation(teamWf.getStoreObject(),
          ArtifactAnnotation.getError("my.annotation", "This is error annotation"));
-      ArtifactAnnotationManager.addAnnotation(teamWfArt,
+      changes.addAnnotation(teamWf.getStoreObject(),
          ArtifactAnnotation.getWarning("my.annotation", "This is warning annotation"));
-      ArtifactAnnotationManager.addAnnotation(teamWfArt,
+      changes.addAnnotation(teamWf.getStoreObject(),
          ArtifactAnnotation.getInfo("my.annotation", "This is info annotation"));
-      ((Artifact) teamWf.getStoreObject()).persist("Add Annotations");
 
-      DemoUtil.setPopulateDbSuccessful(true);
+      changes.execute();
    }
 
    private class ArtifactTokenActionListener implements INewActionListener {

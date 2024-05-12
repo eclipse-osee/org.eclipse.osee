@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.notify.AtsWorkItemNotificationEvent;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.framework.core.data.ArtifactAnnotation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -216,5 +217,7 @@ public interface IAtsChangeSet {
    void updateForTransition(IAtsWorkItem workItem, IStateToken toState, Collection<AtsUser> toStateAssigees);
 
    void addAttributes(ArtifactToken art, AttributeTypeString attrType, String... names);
+
+   void addAnnotation(ArtifactToken art, ArtifactAnnotation annotation);
 
 }

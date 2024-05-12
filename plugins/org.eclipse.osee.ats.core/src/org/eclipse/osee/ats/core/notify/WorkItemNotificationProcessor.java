@@ -247,8 +247,14 @@ public class WorkItemNotificationProcessor {
       ArrayList<AtsUser> arts = new ArrayList<>();
       for (ArtifactId art : atsApi.getRelationResolver().getRelated(workItem.getStoreObject(),
          AtsRelationTypes.SubscribedUser_User)) {
-         arts.add(userService.getUserByUserId(
-            (String) atsApi.getAttributeResolver().getSoleAttributeValue(art, CoreAttributeTypes.UserId, null)));
+         String userId =
+            (String) atsApi.getAttributeResolver().getSoleAttributeValue(art, CoreAttributeTypes.UserId, null);
+         if (Strings.isValid(userId)) {
+            AtsUser user = userService.getUserByUserId(userId);
+            if (user != null) {
+               arts.add(user);
+            }
+         }
       }
       return arts;
    }

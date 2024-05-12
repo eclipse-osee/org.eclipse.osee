@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact.annotation;
 
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.ArtifactAnnotation;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;

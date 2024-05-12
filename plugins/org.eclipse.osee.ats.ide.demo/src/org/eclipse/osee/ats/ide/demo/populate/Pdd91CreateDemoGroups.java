@@ -13,11 +13,12 @@
 
 package org.eclipse.osee.ats.ide.demo.populate;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -40,8 +41,10 @@ public class Pdd91CreateDemoGroups {
       // Create group of all resulting objects
       Artifact groupArt =
          UniversalGroup.addGroup(DemoArtifactToken.Test_Group, AtsApiService.get().getAtsBranch(), transaction);
-      for (TeamWorkFlowArtifact codeArt : Arrays.asList(DemoUtil.getSawCodeCommittedWf(),
-         DemoUtil.getSawCodeUnCommittedWf())) {
+      List<TeamWorkFlowArtifact> teamWfs = new ArrayList<>();
+      teamWfs.add((TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf());
+      teamWfs.add((TeamWorkFlowArtifact) DemoUtil.getSawCodeUnCommittedWf());
+      for (TeamWorkFlowArtifact codeArt : teamWfs) {
 
          // Add Action to Universal Group
          groupArt.addRelation(CoreRelationTypes.UniversalGrouping_Members,

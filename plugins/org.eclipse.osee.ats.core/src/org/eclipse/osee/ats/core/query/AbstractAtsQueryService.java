@@ -480,4 +480,20 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
       return getArtifacts(CoreAttributeTypes.Name, name, branch);
    }
 
+   @Override
+   public ArtifactToken getArtifactFromName(ArtifactTypeToken artType, String name, BranchToken branch) {
+      Collection<ArtifactToken> arts =
+         getArtifactsFromTypeAndName(artType, name, branch, QueryOption.CONTAINS_MATCH_OPTIONS);
+      if (!arts.isEmpty()) {
+         return arts.iterator().next();
+      }
+      return null;
+   }
+
+   @Override
+   public IAtsWorkItem getWorkItem(ArtifactId id) {
+      ArtifactToken art = getArtifact(id);
+      return atsApi.getWorkItemService().getWorkItem(art);
+   }
+
 }

@@ -237,4 +237,5 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
       Objects.requireNonNull(art.getRelations(relationTypeSide));
       return art.getRelations(relationTypeSide).getList();
    }
+
 }

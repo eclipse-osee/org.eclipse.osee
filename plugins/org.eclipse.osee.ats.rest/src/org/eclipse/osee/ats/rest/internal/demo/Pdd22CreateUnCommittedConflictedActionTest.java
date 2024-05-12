@@ -11,43 +11,43 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.integration.tests.ats.demo;
+package org.eclipse.osee.ats.rest.internal.demo;
 
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoWorkflowTitles;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
-import org.eclipse.osee.ats.ide.demo.populate.Pdd22CreateUnCommittedConflictedAction;
-import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
-import org.eclipse.osee.ats.ide.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
-import org.junit.Assert;
-import org.junit.Test;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
  */
-public class Pdd22CreateUnCommittedConflictedActionTest implements IPopulateDemoDatabaseTest {
+public class Pdd22CreateUnCommittedConflictedActionTest extends AbstractPopulateDemoDatabaseTest {
 
-   @Test
-   public void testAction() {
+   public Pdd22CreateUnCommittedConflictedActionTest(XResultData rd, AtsApi atsApi) {
+      super(rd, atsApi);
+   }
+
+   @Override
+   public void run() {
+      rd.logf("Running [%s]...\n", getClass().getSimpleName());
+
       DemoUtil.checkDbInitAndPopulateSuccess();
       DemoUtil.setPopulateDbSuccessful(false);
 
-      Pdd22CreateUnCommittedConflictedAction create = new Pdd22CreateUnCommittedConflictedAction();
-      create.run();
-
       String title = DemoWorkflowTitles.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW;
       IAtsTeamWorkflow teamWf =
-         AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_UnCommitedConflicted_Req_TeamWf);
-      Assert.assertNotNull(teamWf);
+         atsApi.getQueryService().getTeamWf(DemoArtifactToken.SAW_UnCommitedConflicted_Req_TeamWf);
+      assertNotNull(teamWf);
 
       testTeamContents(teamWf, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Requirements",
          DemoUsers.Joe_Smith.getName(), AtsArtifactTypes.DemoReqTeamWorkflow,
-         DemoTestUtil.getTeamDef(DemoArtifactToken.SAW_Requirements));
+         getTeamDef(DemoArtifactToken.SAW_Requirements));
 
       DemoUtil.setPopulateDbSuccessful(true);
    }

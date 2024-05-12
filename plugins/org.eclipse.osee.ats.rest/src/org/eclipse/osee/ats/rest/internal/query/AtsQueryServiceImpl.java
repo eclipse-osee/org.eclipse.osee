@@ -45,12 +45,14 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -214,11 +216,13 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
    @Override
    public ArtifactReadable getArtifact(ArtifactId artifact, BranchId branch) {
+      Conditions.assertTrue(branch.isValid(), "branch must be valid");
       return (ArtifactReadable) query.fromBranch(branch).andId(artifact).getArtifactOrNull();
    }
 
    @Override
    public ArtifactReadable getArtifact(ArtifactId artifact, BranchId branch, DeletionFlag deletionFlag) {
+      Conditions.assertTrue(branch.isValid(), "branch must be valid");
       return (ArtifactReadable) query.fromBranch(branch).andId(artifact).includeDeletedArtifacts().getArtifactOrNull();
    }
 
@@ -348,6 +352,14 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
       BranchToken branch) {
       return Collections.castAll(
          orcsApi.getQueryFactory().fromBranch(branch).and(attrType, Arrays.asList(value)).getResults().getList());
+   }
+
+   @Override
+   public Collection<ArtifactToken> getArtifactsFromTypeAndName(ArtifactTypeToken artType, String name,
+      BranchToken branch, QueryOption[] queryOption) {
+      return Collections.castAll(
+         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(artType).and(CoreAttributeTypes.Name,
+            Arrays.asList(name), queryOption).getResults().getList());
    }
 
 }

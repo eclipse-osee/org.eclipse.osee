@@ -270,12 +270,17 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public XResultData commitBranch(IAtsTeamWorkflow teamWf, BranchId destinationBranch, AtsUser asUser, XResultData rd) {
-
+   public XResultData commitBranch(IAtsTeamWorkflow teamWf, BranchId destinationBranch, AtsUser asUser,
+      XResultData rd) {
       AtsBranchCommitOperation commitOp =
          new AtsBranchCommitOperation(asUser, teamWf, atsApi, orcsApi, false, destinationBranch, rd);
       return commitOp.run();
+   }
 
+   @Override
+   public XResultData commitWorkingBranch(IAtsTeamWorkflow teamWf, boolean commitPopup, boolean overrideStateValidation,
+      BranchId destinationBranch, boolean archiveWorkingBranch, XResultData rd) {
+      return commitBranch(teamWf, destinationBranch, atsApi.getUserService().getCurrentUser(), rd);
    }
 
 }

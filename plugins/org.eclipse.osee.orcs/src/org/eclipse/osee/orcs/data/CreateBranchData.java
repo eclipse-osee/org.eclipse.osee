@@ -41,6 +41,7 @@ public class CreateBranchData {
    // Merge Branch Legacy Support
    private Long mergeAddressingQueryId = MERGE_ADDRESSING_QUERY_ID;
    private BranchId mergeDestinationBranchId = MERGE_DESTINATION_BRANCH_ID;
+   private BranchToken newBranch = BranchToken.SENTINEL;
 
    private boolean txCopyBranchType = false;
    private BranchId parentBranch;
@@ -180,6 +181,14 @@ public class CreateBranchData {
 
    public void setMergeBaselineTransaction(TransactionToken mergeBaselineTransaction) {
       this.mergeBaselineTransaction = mergeBaselineTransaction;
+   }
+
+   public BranchToken getNewBranch() {
+      return newBranch;
+   }
+
+   public void setNewBranch(BranchToken newBranch) {
+      this.newBranch = newBranch;
    }
 
 }

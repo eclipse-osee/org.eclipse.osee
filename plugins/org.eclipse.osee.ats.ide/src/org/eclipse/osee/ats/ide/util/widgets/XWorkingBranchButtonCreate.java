@@ -17,7 +17,7 @@ import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.ide.branch.AtsBranchServiceIde;
+import org.eclipse.osee.ats.core.util.AbstractAtsBranchService;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.header.WfeTargetedVersionHeader;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -50,7 +50,7 @@ public class XWorkingBranchButtonCreate extends XWorkingBranchButtonAbstract {
             disableAll = true;
             refreshEnablement(button);
             // Create working branch
-            Result result = AtsApiService.get().getBranchServiceIde().createWorkingBranch_Validate(getTeamArt());
+            Result result = AtsApiService.get().getBranchService().createWorkingBranchValidate(getTeamArt());
             boolean appropriate = selectTargetedVersionOrConfigureParentBranchIfAppropriate(result, button);
             if (appropriate) {
                disableAll = false;
@@ -96,19 +96,19 @@ public class XWorkingBranchButtonCreate extends XWorkingBranchButtonAbstract {
 
    private boolean selectTargetedVersionOrConfigureParentBranchIfAppropriate(Result result, Button button) {
       boolean returnVal = false;
-      if (result.getText().equals(AtsBranchServiceIde.PARENT_BRANCH_CAN_NOT_BE_DETERMINED)) {
+      if (result.getText().equals(AbstractAtsBranchService.PARENT_BRANCH_CAN_NOT_BE_DETERMINED)) {
          returnVal = true;
          IAtsVersion version = AtsApiService.get().getVersionService().getTargetedVersion(getTeamArt());
          if (version == null) {
             MessageDialog dialog = new MessageDialog(Displays.getActiveShell(), "Create Working Branch", null,
-               AtsBranchServiceIde.PARENT_BRANCH_CAN_NOT_BE_DETERMINED, MessageDialog.ERROR,
+               AbstractAtsBranchService.PARENT_BRANCH_CAN_NOT_BE_DETERMINED, MessageDialog.ERROR,
                new String[] {"Select Targeted Version", "Cancel"}, 0);
             if (dialog.open() == Window.OK) {
                WfeTargetedVersionHeader.promptChangeVersion(getTeamArt());
             }
          } else {
             MessageDialog dialog = new MessageDialog(Displays.getActiveShell(), "Create Working Branch", null,
-               AtsBranchServiceIde.PARENT_BRANCH_CAN_NOT_BE_DETERMINED, MessageDialog.ERROR,
+               AbstractAtsBranchService.PARENT_BRANCH_CAN_NOT_BE_DETERMINED, MessageDialog.ERROR,
                new String[] {"Ok", "Cancel"}, 0);
             dialog.open();
          }

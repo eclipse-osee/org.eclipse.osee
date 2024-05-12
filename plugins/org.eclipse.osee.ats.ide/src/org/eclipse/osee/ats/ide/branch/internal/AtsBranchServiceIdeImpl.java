@@ -19,7 +19,6 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -443,42 +442,6 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
          }
       }
       return created;
-   }
-
-   /**
-    * Perform error checks and popup confirmation dialogs associated with creating a working branch.
-    *
-    * @param popup if true, errors are popped up to user; otherwise sent silently in Results
-    * @return Result return of status
-    */
-   @Override
-   public Result createWorkingBranch_Validate(IAtsTeamWorkflow teamWf) {
-      try {
-         if (atsApi.getBranchService().isCommittedBranchExists(teamWf)) {
-            return new Result(
-               "Committed branch already exists. Can not create another working branch once changes have been committed.");
-         }
-         if (atsApi.getBranchService().isWorkingBranchInWork(teamWf)) {
-            return new Result("Cannot create another branch while the current branch is in work.");
-         }
-         BranchId parentBranch = atsApi.getBranchService().getConfiguredBranchForWorkflow(teamWf);
-         if (parentBranch == null || parentBranch.isInvalid()) {
-            return new Result(PARENT_BRANCH_CAN_NOT_BE_DETERMINED);
-         }
-
-         if (atsApi.getBranchService().getBranch(parentBranch) == null) {
-            return new Result(PARENT_BRANCH_CAN_NOT_BE_DETERMINED);
-         }
-
-         Result result = atsApi.getBranchService().isCreateBranchAllowed(teamWf);
-         if (result.isFalse()) {
-            return result;
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-         return new Result("Exception occurred: " + ex.getLocalizedMessage());
-      }
-      return Result.TrueResult;
    }
 
    /**

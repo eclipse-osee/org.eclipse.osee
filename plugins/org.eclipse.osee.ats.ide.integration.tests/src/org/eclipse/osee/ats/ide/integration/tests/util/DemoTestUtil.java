@@ -35,7 +35,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -55,8 +55,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  * @author Donald G. Dunne
  */
 public class DemoTestUtil {
-   public static Map<DemoWorkType, Artifact> unCommittedWorkflows;
-   public static Map<DemoWorkType, Artifact> committedWorkflows;
+   public static Map<DemoWorkType, IAtsTeamWorkflow> unCommittedWorkflows;
+   public static Map<DemoWorkType, IAtsTeamWorkflow> committedWorkflows;
    public static TeamWorkFlowArtifact toolsTeamWorkflow;
 
    public static User getDemoUser(UserToken demoUser) {
@@ -150,36 +150,36 @@ public class DemoTestUtil {
       return toolsTeamWorkflow;
    }
 
-   public static Artifact getUncommittedActionWorkflow(DemoWorkType demoWorkType) {
+   public static IAtsTeamWorkflow getUncommittedActionWorkflow(DemoWorkType demoWorkType) {
       if (unCommittedWorkflows == null) {
          unCommittedWorkflows = new HashMap<>();
-         for (Artifact art : DemoUtil.getSawUnCommittedTeamWfs()) {
-            if (art.isOfType(AtsArtifactTypes.DemoCodeTeamWorkflow)) {
-               unCommittedWorkflows.put(DemoWorkType.Code, art);
-            } else if (art.isOfType(AtsArtifactTypes.DemoTestTeamWorkflow)) {
-               unCommittedWorkflows.put(DemoWorkType.Test, art);
-            } else if (art.isOfType(AtsArtifactTypes.DemoReqTeamWorkflow)) {
-               unCommittedWorkflows.put(DemoWorkType.Requirements, art);
-            } else if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-               unCommittedWorkflows.put(DemoWorkType.SW_Design, art);
+         for (IAtsTeamWorkflow teamWf : DemoUtil.getSawUnCommittedTeamWfs()) {
+            if (teamWf.isOfType(AtsArtifactTypes.DemoCodeTeamWorkflow)) {
+               unCommittedWorkflows.put(DemoWorkType.Code, teamWf);
+            } else if (teamWf.isOfType(AtsArtifactTypes.DemoTestTeamWorkflow)) {
+               unCommittedWorkflows.put(DemoWorkType.Test, teamWf);
+            } else if (teamWf.isOfType(AtsArtifactTypes.DemoReqTeamWorkflow)) {
+               unCommittedWorkflows.put(DemoWorkType.Requirements, teamWf);
+            } else if (teamWf.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+               unCommittedWorkflows.put(DemoWorkType.SW_Design, teamWf);
             }
          }
       }
       return unCommittedWorkflows.get(demoWorkType);
    }
 
-   public static Artifact getCommittedActionWorkflow(DemoWorkType demoWorkType) {
+   public static IAtsTeamWorkflow getCommittedActionWorkflow(DemoWorkType demoWorkType) {
       if (committedWorkflows == null) {
          committedWorkflows = new HashMap<>();
-         for (Artifact art : DemoUtil.getSawCommittedTeamWfs()) {
-            if (art.isOfType(AtsArtifactTypes.DemoCodeTeamWorkflow)) {
-               committedWorkflows.put(DemoWorkType.Code, art);
-            } else if (art.isOfType(AtsArtifactTypes.DemoTestTeamWorkflow)) {
-               committedWorkflows.put(DemoWorkType.Test, art);
-            } else if (art.isOfType(AtsArtifactTypes.DemoReqTeamWorkflow)) {
-               committedWorkflows.put(DemoWorkType.Requirements, art);
-            } else if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-               committedWorkflows.put(DemoWorkType.SW_Design, art);
+         for (IAtsTeamWorkflow teamWf : DemoUtil.getSawCommittedTeamWfs()) {
+            if (teamWf.isOfType(AtsArtifactTypes.DemoCodeTeamWorkflow)) {
+               committedWorkflows.put(DemoWorkType.Code, teamWf);
+            } else if (teamWf.isOfType(AtsArtifactTypes.DemoTestTeamWorkflow)) {
+               committedWorkflows.put(DemoWorkType.Test, teamWf);
+            } else if (teamWf.isOfType(AtsArtifactTypes.DemoReqTeamWorkflow)) {
+               committedWorkflows.put(DemoWorkType.Requirements, teamWf);
+            } else if (teamWf.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+               committedWorkflows.put(DemoWorkType.SW_Design, teamWf);
             }
          }
       }

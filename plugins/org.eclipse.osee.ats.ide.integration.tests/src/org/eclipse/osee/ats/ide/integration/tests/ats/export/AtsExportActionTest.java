@@ -22,7 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.export.AtsExportAction;
 import org.eclipse.osee.ats.ide.export.AtsExportAction.ExportOption;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -38,7 +38,7 @@ import org.junit.Test;
 
 /**
  * Test unit for {@link AtsExportAction}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsExportActionTest {
@@ -70,8 +70,8 @@ public class AtsExportActionTest {
    public void testExport_asHtmlMerged() throws CoreException, IOException {
       AtsExportAction exporter = new AtsExportAction();
       exporter.setPopup(false);
-      TeamWorkFlowArtifact codeWf1 = DemoUtil.getSawCodeCommittedWf();
-      TeamWorkFlowArtifact codeWf2 = DemoUtil.getSawCodeNoBranchWf();
+      TeamWorkFlowArtifact codeWf1 = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
+      TeamWorkFlowArtifact codeWf2 = (TeamWorkFlowArtifact) DemoUtil.getSawCodeNoBranchWf();
       List<ExportOption> exportOptions =
          Arrays.asList(ExportOption.MERGE_INTO_SINGLE_FILE, ExportOption.AS_HTML_TO_FILE);
       IFolder toDir = getTestFolderOrCreate();
@@ -87,8 +87,8 @@ public class AtsExportActionTest {
    public void testExport_asHtmlSingle() throws CoreException, IOException {
       AtsExportAction exporter = new AtsExportAction();
       exporter.setPopup(false);
-      TeamWorkFlowArtifact codeWf1 = DemoUtil.getSawCodeCommittedWf();
-      TeamWorkFlowArtifact codeWf2 = DemoUtil.getSawCodeNoBranchWf();
+      TeamWorkFlowArtifact codeWf1 = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
+      TeamWorkFlowArtifact codeWf2 = (TeamWorkFlowArtifact) DemoUtil.getSawCodeNoBranchWf();
       List<ExportOption> exportOptions =
          Arrays.asList(ExportOption.SAVE_INTO_SEPARATE_FILES, ExportOption.AS_HTML_TO_FILE);
       IFolder toDir = getTestFolderOrCreate();
@@ -104,7 +104,7 @@ public class AtsExportActionTest {
    public void testExport_asHtmlSingleWithTasks() throws CoreException, IOException {
       AtsExportAction exporter = new AtsExportAction();
       exporter.setPopup(false);
-      TeamWorkFlowArtifact codeWf1 = DemoUtil.getSawCodeCommittedWf();
+      TeamWorkFlowArtifact codeWf1 = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
       List<ExportOption> exportOptions = Arrays.asList(ExportOption.SAVE_INTO_SEPARATE_FILES,
          ExportOption.AS_HTML_TO_FILE, ExportOption.INCLUDE_TASKLIST);
       IFolder toDir = getTestFolderOrCreate();
@@ -122,8 +122,8 @@ public class AtsExportActionTest {
    public void testExport_asHtmlResultsEditorSingle() {
       AtsExportAction exporter = new AtsExportAction();
       exporter.setPopup(false);
-      TeamWorkFlowArtifact codeWf1 = DemoUtil.getSawCodeCommittedWf();
-      TeamWorkFlowArtifact codeWf2 = DemoUtil.getSawCodeNoBranchWf();
+      TeamWorkFlowArtifact codeWf1 = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
+      TeamWorkFlowArtifact codeWf2 = (TeamWorkFlowArtifact) DemoUtil.getSawCodeNoBranchWf();
       List<ExportOption> exportOptions =
          Arrays.asList(ExportOption.SAVE_INTO_SEPARATE_FILES, ExportOption.AS_HTML_TO_RESULT_EDITOR);
       Result result = exporter.export(Arrays.asList(codeWf1, codeWf2), exportOptions, null);
@@ -140,8 +140,8 @@ public class AtsExportActionTest {
    public void testExport_asHtmlResultsEditorMerge() {
       AtsExportAction exporter = new AtsExportAction();
       exporter.setPopup(false);
-      TeamWorkFlowArtifact codeWf1 = DemoUtil.getSawCodeCommittedWf();
-      TeamWorkFlowArtifact codeWf2 = DemoUtil.getSawCodeNoBranchWf();
+      TeamWorkFlowArtifact codeWf1 = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
+      TeamWorkFlowArtifact codeWf2 = (TeamWorkFlowArtifact) DemoUtil.getSawCodeNoBranchWf();
       List<ExportOption> exportOptions =
          Arrays.asList(ExportOption.MERGE_INTO_SINGLE_FILE, ExportOption.AS_HTML_TO_RESULT_EDITOR);
       Result result = exporter.export(Arrays.asList(codeWf1, codeWf2), exportOptions, null);

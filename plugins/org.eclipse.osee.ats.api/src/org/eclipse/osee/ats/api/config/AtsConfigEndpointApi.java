@@ -115,6 +115,11 @@ public interface AtsConfigEndpointApi {
    public XResultData demoDbInit();
 
    @PUT
+   @Path("init/demopop")
+   @Produces(MediaType.APPLICATION_JSON)
+   public XResultData demoDbPopulate();
+
+   @PUT
    @Path("init/ats")
    @Produces(MediaType.APPLICATION_JSON)
    public XResultData atsDbInit();

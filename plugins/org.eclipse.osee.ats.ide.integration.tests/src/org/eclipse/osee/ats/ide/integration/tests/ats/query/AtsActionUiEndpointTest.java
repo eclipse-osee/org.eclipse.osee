@@ -17,8 +17,8 @@ import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.workflow.AtsActionUiEndpointApi;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.resource.AbstractRestTest;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
@@ -54,15 +54,15 @@ public class AtsActionUiEndpointTest extends AbstractRestTest {
 
    @Test
    public void getAction() throws Exception {
-      TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
+      TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
       String html = getHtml("/ats/ui/action/" + teamWf.getAtsId());
       Assert.assertTrue(html.contains("Title: <b>" + teamWf.getName() + "</b>"));
    }
 
    @Test
    public void getActions() throws Exception {
-      Collection<TeamWorkFlowArtifact> wfs =
-         Arrays.asList(DemoUtil.getSawCodeCommittedWf(), DemoUtil.getSawTestCommittedWf());
+      Collection<TeamWorkFlowArtifact> wfs = Arrays.asList((TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf(),
+         (TeamWorkFlowArtifact) DemoUtil.getSawTestCommittedWf());
       String atsIds = Collections.toString(",", AtsObjects.toAtsIds(wfs));
       String html = getHtml("/ats/ui/action/" + atsIds);
       Assert.assertTrue(html.contains("$url='/ats/action/" + atsIds + "/details';"));
@@ -70,7 +70,7 @@ public class AtsActionUiEndpointTest extends AbstractRestTest {
 
    @Test
    public void getActionDetails() throws Exception {
-      TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
+      TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
       String html = getHtml("/ats/ui/action/" + teamWf.getAtsId() + "/details");
       Assert.assertTrue(html.contains("Artifact Type: <b>" + teamWf.getArtifactTypeName() + "</b>"));
    }

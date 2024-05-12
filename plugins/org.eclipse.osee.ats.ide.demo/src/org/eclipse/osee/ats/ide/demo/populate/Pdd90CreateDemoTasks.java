@@ -14,14 +14,13 @@
 package org.eclipse.osee.ats.ide.demo.populate;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.user.AtsUser;
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.demo.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -37,8 +36,10 @@ public class Pdd90CreateDemoTasks {
       AtsUser createdBy = AtsApiService.get().getUserService().getCurrentUser();
       boolean firstTaskWorkflow = true;
       NewTaskSet newTaskSet = NewTaskSet.create("Populate Demo DB - Create Tasks", createdBy);
-      for (TeamWorkFlowArtifact codeArt : Arrays.asList(DemoUtil.getSawCodeCommittedWf(),
-         DemoUtil.getSawCodeUnCommittedWf())) {
+      List<TeamWorkFlowArtifact> teamWfs = new ArrayList<>();
+      teamWfs.add((TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf());
+      teamWfs.add((TeamWorkFlowArtifact) DemoUtil.getSawCodeUnCommittedWf());
+      for (TeamWorkFlowArtifact codeArt : teamWfs) {
          NewTaskData newTaskData = NewTaskData.create(newTaskSet, codeArt);
          List<String> assigneeUserIds = new ArrayList<>();
          if (firstTaskWorkflow) {

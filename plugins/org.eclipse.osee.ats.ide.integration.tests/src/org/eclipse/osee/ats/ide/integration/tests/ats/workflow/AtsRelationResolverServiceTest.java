@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -47,8 +47,8 @@ public class AtsRelationResolverServiceTest {
    @BeforeClass
    public static void setUpBeforeClass() throws Exception {
       atsApi = AtsApiService.get();
-      sawCodeCommittedWf = DemoUtil.getSawCodeCommittedWf();
-      sawCodeUnCommittedWf = DemoUtil.getSawCodeUnCommittedWf();
+      sawCodeCommittedWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
+      sawCodeUnCommittedWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeUnCommittedWf();
       topAi = AtsApiService.get().getQueryServiceIde().getArtifact(AtsArtifactToken.TopActionableItem);
       relationResolver = atsApi.getRelationResolver();
    }

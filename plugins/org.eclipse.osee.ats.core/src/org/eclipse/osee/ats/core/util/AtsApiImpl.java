@@ -82,6 +82,7 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -580,6 +581,26 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
          return defaultValue;
       }
       return "true".equals(booleanValue);
+   }
+
+   public String getOseeInfo(String key) {
+      return OseeInfo.getValue(jdbcService.getClient(), key);
+   }
+
+   @Override
+   public boolean isOseeInfo(String key, String value) {
+      String val = getOseeInfo(key);
+      return val.equals(value);
+   }
+
+   @Override
+   public void setOseeInfo(String key, String value) {
+      OseeInfo.setValue(jdbcService.getClient(), key, value);
+   }
+
+   @Override
+   public void removeOseeInfo(String key) {
+      OseeInfo.setValue(jdbcService.getClient(), key, null);
    }
 
 }

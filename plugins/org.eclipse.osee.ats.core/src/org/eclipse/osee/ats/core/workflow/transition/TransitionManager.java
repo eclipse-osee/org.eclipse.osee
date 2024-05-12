@@ -356,7 +356,7 @@ public class TransitionManager implements IExecuteListener {
                StateDefinition fromState = workItem.getStateDefinition();
                StateDefinition toState = workItem.getWorkDefinition().getStateByName(transData.getToStateName());
 
-               //Ignore transitions to the same state
+               // Ignore transitions to the same state
                if (!fromState.equals(toState)) {
                   Date transitionDate = getTransitionOnDate();
                   AtsUser transitionUser = getTransitionAsUser();

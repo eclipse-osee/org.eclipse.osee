@@ -377,8 +377,10 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       IAtsChangeSet changes) {
       Conditions.assertNotNull(workDefinition, "WorkDefinition");
       ArtifactTypeToken reviewArtType = workDefinition.getArtType();
-      IAtsPeerToPeerReview peerRev = (IAtsPeerToPeerReview) changes.createArtifact(reviewArtType,
-         reviewTitle == null ? "Peer to Peer Review" : reviewTitle);
+      ArtifactToken peerRevArt =
+         changes.createArtifact(reviewArtType, reviewTitle == null ? "Peer to Peer Review" : reviewTitle);
+
+      IAtsPeerToPeerReview peerRev = (IAtsPeerToPeerReview) atsApi.getWorkItemService().getWorkItem(peerRevArt);
 
       if (teamWf != null) {
          changes.relate(teamWf, AtsRelationTypes.TeamWorkflowToReview_Review, peerRev);

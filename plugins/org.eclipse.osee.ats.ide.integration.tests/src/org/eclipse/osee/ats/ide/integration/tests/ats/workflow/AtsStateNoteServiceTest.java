@@ -18,8 +18,8 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.workflow.note.AtsStateNote;
 import org.eclipse.osee.ats.api.workflow.note.AtsStateNoteType;
 import org.eclipse.osee.ats.api.workflow.note.IAtsStateNoteService;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -38,7 +38,7 @@ public class AtsStateNoteServiceTest {
    @Test
    public void testAddAndGetNotes() {
 
-      TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
+      TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) DemoUtil.getSawCodeCommittedWf();
       Assert.assertNotNull(teamWf);
 
       AtsApi atsApi = AtsApiService.get();
