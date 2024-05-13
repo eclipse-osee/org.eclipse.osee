@@ -182,6 +182,11 @@ public interface ApplicabilityEndpoint {
    @GET
    @Path("views")
    @Produces(MediaType.APPLICATION_JSON)
+   List<ArtifactToken> getViews(@QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
+
+   @GET
+   @Path("views/ide")
+   @Produces(MediaType.APPLICATION_JSON)
    List<ArtifactToken> getViews();
 
    @PUT

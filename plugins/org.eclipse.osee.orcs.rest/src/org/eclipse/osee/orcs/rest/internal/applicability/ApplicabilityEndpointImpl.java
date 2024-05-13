@@ -141,8 +141,16 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
+   public List<ArtifactToken> getViews(AttributeTypeToken orderByAttributeType) {
+      return orderByAttributeType == null ? applicabilityQuery.getViewsForBranch(branch).stream().map(
+         a -> a.getToken()).collect(
+            Collectors.toList()) : applicabilityQuery.getViewsForBranch(branch, orderByAttributeType).stream().map(
+               a -> a.getToken()).collect(Collectors.toList());
+   }
+
+   @Override
    public List<ArtifactToken> getViews() {
-      return applicabilityQuery.getViewsForBranch(branch).stream().map(a -> a.getToken()).collect(Collectors.toList());
+      return this.getViews(CoreAttributeTypes.Name);
    }
 
    @Override
