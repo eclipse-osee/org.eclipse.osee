@@ -103,6 +103,11 @@ public interface TransactionEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    XResultData generateTransferFile(@QueryParam("exportId") TransactionId exportId, @QueryParam("mode") String mode);
 
+   @GET
+   @Path("xfer/getLatestXferFile")
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData reGenerateTransferFile(@QueryParam("exportId") TransactionId exportId, @QueryParam("mode") String mode);
+
    @POST
    @Path("xfer/upload")
    @Produces(MediaType.APPLICATION_JSON)

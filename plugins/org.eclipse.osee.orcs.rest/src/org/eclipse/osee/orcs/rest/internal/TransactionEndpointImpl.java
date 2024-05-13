@@ -230,6 +230,15 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
 
    @Override
    public XResultData generateTransferFile(TransactionId exportId, String mode) {
+      return generateTransferFileImpl(exportId, false, mode);
+   }
+
+   @Override
+   public XResultData reGenerateTransferFile(TransactionId exportId, String mode) {
+      return generateTransferFileImpl(exportId, true, mode);
+   }
+
+   public XResultData generateTransferFileImpl(TransactionId exportId, boolean regen, String mode) {
       XResultData results = new XResultData();
 
       //Verify export id
@@ -261,7 +270,7 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
 
          TransferDataStoreImpl transfer = new TransferDataStoreImpl(this, orcsApi);
          // Return XResultData
-         results = transfer.transferTransactions(exportId, results, mode);
+         results = transfer.transferTransactions(exportId, results, regen, mode);
 
       } catch (Exception ex) {
          results.errorf("%s", String.format("Error during generating transfer file: ", ex.getMessage()));
@@ -408,11 +417,11 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       File serverApplicDir = new File(String.format("%s%sOSEEDataTransferUploads", serverDataPath, File.separator));
       if (!serverApplicDir.exists()) {
          serverApplicDir.mkdirs();
-         try {
-            try (FileWriter readme =
-               new FileWriter(String.format("%s%s%s", serverApplicDir.getPath(), File.separator, "readme.txt"));) {
-               readme.write("This folder contains OSEE data transfer files which were imported during debugging");
-            }
+         try (FileWriter readme =
+            new FileWriter(String.format("%s%s%s", serverApplicDir.getPath(), File.separator, "readme.txt"))) {
+
+            readme.write("This folder contains OSEE data transfer files which were imported during debugging");
+            //readme.close();
          } catch (IOException e) {
             throw new OseeCoreException(e, "Failed to create directory. ");
          }
