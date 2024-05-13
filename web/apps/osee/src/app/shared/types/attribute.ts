@@ -36,3 +36,12 @@ export const mockAttribute: attribute = {
 	storeType: 'String',
 	multiplicityId: '1',
 };
+
+export const nameAttribute: attribute = {
+	name: 'Name',
+	value: '',
+	typeId: '1152921504606847088',
+	id: '',
+	storeType: 'String',
+	multiplicityId: '1',
+};

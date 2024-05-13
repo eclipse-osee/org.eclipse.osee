@@ -320,6 +320,20 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    }
 
    @Override
+   public List<ArtifactReadable> getViewsForBranch(BranchId branch, AttributeTypeToken orderByAttributeType) {
+      List<ArtifactReadable> views =
+         queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).setOrderByAttribute(
+            orderByAttributeType).asArtifacts();
+      List<ArtifactReadable> cfgGrps =
+         queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andRelatedTo(
+            CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder).asArtifacts();
+      if (!cfgGrps.isEmpty()) {
+         views.addAll(cfgGrps);
+      }
+      return views;
+   }
+
+   @Override
    public List<ArtifactReadable> getConfigurationsForBranch(BranchId branch) {
       return queryFactory.fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).asArtifacts();
    }

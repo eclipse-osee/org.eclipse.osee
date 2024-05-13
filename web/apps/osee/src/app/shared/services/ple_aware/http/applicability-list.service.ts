@@ -13,7 +13,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { apiURL } from '@osee/environments';
-import { HttpParamsType } from '@osee/shared/types';
+import { HttpParamsType, nameAttribute } from '@osee/shared/types';
 import { applic } from '@osee/shared/types/applicability';
 
 @Injectable({
@@ -63,9 +63,21 @@ export class ApplicabilityListService {
 		);
 	}
 
-	getViews(branchId: string | number) {
+	getViews(branchId: string | number, orderByAttributeTypeId?: string) {
+		let params: HttpParamsType = {};
+		if (orderByAttributeTypeId && orderByAttributeTypeId !== '') {
+			params = {
+				...params,
+				orderByAttributeType: orderByAttributeTypeId,
+			};
+		} else {
+			params = { ...params, orderByAttributeType: nameAttribute.typeId };
+		}
 		return this.http.get<applic[]>(
-			apiURL + '/orcs/branch/' + branchId + '/applic/views'
+			apiURL + '/orcs/branch/' + branchId + '/applic/views',
+			{
+				params: params,
+			}
 		);
 	}
 }

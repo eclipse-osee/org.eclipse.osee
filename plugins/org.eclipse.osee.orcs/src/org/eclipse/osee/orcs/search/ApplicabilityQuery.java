@@ -101,4 +101,6 @@ public interface ApplicabilityQuery {
 
    List<FeatureDefinition> getFeatureDefinitionData(BranchId branch);
 
+   List<ArtifactReadable> getViewsForBranch(BranchId branch, AttributeTypeToken orderByAttributeType);
+
 }
