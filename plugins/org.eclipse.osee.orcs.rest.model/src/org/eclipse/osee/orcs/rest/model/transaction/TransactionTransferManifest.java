@@ -17,6 +17,7 @@ import static org.eclipse.osee.orcs.rest.model.transaction.TransferTupleTypes.Ex
 import static org.eclipse.osee.orcs.rest.model.transaction.TransferTupleTypes.TransferFile;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -58,6 +59,15 @@ public class TransactionTransferManifest {
          transferBranchList = new ArrayList<>();
       }
       transferBranchList.add(tb);
+   }
+
+   public TransferBranch getTransferBranch(BranchId branchId) {
+      for (TransferBranch tb : transferBranchList) {
+         if (tb.getBranchId().equals(branchId)) {
+            return tb;
+         }
+      }
+      return null;
    }
 
    public XResultData parse(String dirName) {
@@ -119,6 +129,7 @@ public class TransactionTransferManifest {
       String[] mdCols = row.split("\\|");
       TransferBranch transBranch = new TransferBranch(BranchId.valueOf(mdCols[1].trim()));
       transBranch.setUniqueTx(TransactionId.valueOf(mdCols[3].trim()));
+      transBranch.setPrevTx(TransactionId.valueOf(mdCols[2].trim()));
 
       TransferTransaction trans = new TransferTransaction(transBranch.getBranchId(), transBranch.getPrevTx(),
          TransactionId.valueOf(mdCols[3].trim()), TransferOpType.PREV_TX);
@@ -348,6 +359,14 @@ public class TransactionTransferManifest {
          results.error(String.format("Error while Adding transaction tuples to database %s ", e.getMessage()));
       }
       return results;
+   }
+
+   public void getTransactionMapping(HashMap<TransactionId, TransactionId> regenMap) {
+      for (TransferBranch tb : transferBranchList) {
+         for (TransferTransaction txTrans : tb.getTxList()) {
+            regenMap.put(txTrans.getSourceTransId(), txTrans.getSourceUniqueTrans());
+         }
+      }
    }
 
    public TransactionId getExportID() {
