@@ -29,6 +29,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityUseResultToken;
+import org.eclipse.osee.framework.core.applicability.BatConfigFile;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.applicability.ProductTypeDefinition;
 import org.eclipse.osee.framework.core.data.ApplicabilityData;
@@ -436,7 +437,7 @@ public interface ApplicabilityEndpoint {
    @GET
    @Path("bazel")
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-   Response getBazelZip();
+   Response getBazelZip(@QueryParam("productType") @DefaultValue("") String productType);
 
    @GET
    @Path("bazel/features")
@@ -457,4 +458,15 @@ public interface ApplicabilityEndpoint {
    @Path("bazel/configurations")
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
    String getBazelConfigurations();
+
+   @GET
+   @Path("repository")
+   @Produces(MediaType.APPLICATION_OCTET_STREAM)
+   Response getRepositoryZip(@QueryParam("productType") @DefaultValue("") String productType);
+
+   @GET
+   @Path("block")
+   @Produces(MediaType.APPLICATION_JSON)
+   Collection<BatConfigFile> getBlockApplicabilityToolConfiguration(
+      @QueryParam("productType") @DefaultValue("") String productType);
 }

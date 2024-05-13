@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
+import org.eclipse.osee.framework.core.applicability.BatConfigFile;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.applicability.ProductTypeDefinition;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
@@ -163,13 +164,16 @@ public interface OrcsApplicability {
    List<String> getApplicabilityConstraintConflicts(ApplicabilityId childApplic, ApplicabilityId parentApplic,
       BranchId branch);
 
-   String getFeatureBazelFile(BranchId branchId);
+   String getFeatureBazelFile(BranchId branchId, Collection<ArtifactReadable> arts);
 
-   String getConfigurationPlatformBazelFile(BranchId branchId);
+   String getConfigurationPlatformBazelFile(BranchId branchId, Collection<ArtifactReadable> configurations,
+      Collection<ArtifactReadable> groups, Collection<ArtifactReadable> features);
 
-   String getConfigurationBazelFile(BranchId branchId);
+   String getConfigurationBazelFile(BranchId branchId, Collection<ArtifactReadable> groups,
+      Collection<ArtifactReadable> configurations);
 
-   String getConfigurationGroupBazelFile(BranchId branchId);
+   String getConfigurationGroupBazelFile(BranchId branchId, Collection<ArtifactReadable> groups,
+      Collection<ArtifactReadable> features);
 
    String getBazelBuildFile();
 
@@ -184,10 +188,12 @@ public interface OrcsApplicability {
    /**
     * see cli/applic_config.rs for definition
     */
-   String getBatConfigurationFile(BranchId branchId, ArtifactReadable art);
+   Collection<BatConfigFile> getBatConfigurationFile(BranchId branchId, ArtifactReadable art,
+      List<ArtifactReadable> featureArts);
 
    /**
     * see cli/applic_config.rs for definition
     */
-   String getBatConfigurationGroupFile(BranchId branchId, ArtifactReadable art);
+   Collection<BatConfigFile> getBatConfigurationGroupFile(BranchId branchId, ArtifactReadable art,
+      List<ArtifactReadable> featureArts);
 }
