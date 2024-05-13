@@ -30,7 +30,7 @@ plconfig.config(
     name="my_product_line",            
     osee_url="http://host.docker.internal:8089",
     branch_id="8",
-    sha256="560e0b693fc28f468d3ce1f864d575de93f08255172d0b9333a258cb919d04f3")
+    sha256="867edb85ef1c5e840c67d3c4bc3cda14efa331c2830bfe6e272aa4d4904798c0")
 use_repo(
     plconfig,
     "my_product_line"

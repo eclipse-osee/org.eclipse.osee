@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.orcs.rest.internal.applicability;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +30,7 @@ import java.util.zip.ZipOutputStream;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityUseResultToken;
+import org.eclipse.osee.framework.core.applicability.BatConfigFile;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.applicability.ProductTypeDefinition;
 import org.eclipse.osee.framework.core.data.ApplicabilityData;
@@ -51,6 +53,7 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -62,6 +65,7 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsApplicability;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.osee.orcs.search.ApplicabilityQuery;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
@@ -611,43 +615,76 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
 
    @Override
    public String getBazelFeatures() {
-      return ops.getFeatureBazelFile(branch);
+      return ops.getFeatureBazelFile(branch,
+         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.Feature).asArtifacts());
    }
 
    @Override
    public String getBazelPlatformConfigurations() {
-      return ops.getConfigurationPlatformBazelFile(branch);
+      return ops.getConfigurationPlatformBazelFile(branch,
+         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).asArtifacts(),
+         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andRelatedTo(
+            CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder).asArtifacts(),
+         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.Feature).asArtifacts());
    }
 
    @Override
    public String getBazelPlatformConfigurationGroups() {
-      return ops.getConfigurationGroupBazelFile(branch);
+      return ops.getConfigurationGroupBazelFile(branch,
+         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andRelatedTo(
+            CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder).asArtifacts(),
+         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.Feature).asArtifacts());
    }
 
    @Override
    public String getBazelConfigurations() {
-      return ops.getConfigurationBazelFile(branch);
+      return ops.getConfigurationBazelFile(branch,
+         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andRelatedTo(
+            CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder).asArtifacts(),
+         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).asArtifacts());
    }
 
    @Override
-   public Response getBazelZip() {
+   public Response getBazelZip(String productType) {
       ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
       ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream);
       try {
+         QueryBuilder featureQuery =
+            orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.Feature);
+         if (!productType.isEmpty()) {
+            featureQuery = featureQuery.andAttributeIs(CoreAttributeTypes.ProductApplicability, productType);
+         }
+         List<ArtifactReadable> features = featureQuery.asArtifacts();
+         QueryBuilder configurationQuery =
+            orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView);
+         if (!productType.isEmpty()) {
+            configurationQuery =
+               configurationQuery.andAttributeIs(CoreAttributeTypes.ProductApplicability, productType);
+         }
+         List<ArtifactReadable> configurations = configurationQuery.asArtifacts();
+         QueryBuilder configurationGroupQuery =
+            orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andRelatedTo(
+               CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder);
+         if (!productType.isEmpty()) {
+            configurationGroupQuery =
+               configurationGroupQuery.andAttributeIs(CoreAttributeTypes.ProductApplicability, productType);
+         }
+         List<ArtifactReadable> configurationGroups = configurationGroupQuery.asArtifacts();
          ZipEntry configurationFile = new ZipEntry("config/BUILD.bazel");
          configurationFile.setTime(0);
          zipOutputStream.putNextEntry(configurationFile);
-         zipOutputStream.write(this.getBazelConfigurations().getBytes());
+         zipOutputStream.write(ops.getConfigurationBazelFile(branch, configurationGroups, configurations).getBytes());
          zipOutputStream.closeEntry();
          ZipEntry configurationPlatformFile = new ZipEntry("platforms/configurations/BUILD.bazel");
          configurationPlatformFile.setTime(0);
          zipOutputStream.putNextEntry(configurationPlatformFile);
-         zipOutputStream.write(this.getBazelPlatformConfigurations().getBytes());
+         zipOutputStream.write(
+            ops.getConfigurationPlatformBazelFile(branch, configurations, configurationGroups, features).getBytes());
          zipOutputStream.closeEntry();
          ZipEntry configurationGroupPlatformFile = new ZipEntry("platforms/configuration-groups/BUILD.bazel");
          configurationGroupPlatformFile.setTime(0);
          zipOutputStream.putNextEntry(configurationGroupPlatformFile);
-         zipOutputStream.write(this.getBazelPlatformConfigurationGroups().getBytes());
+         zipOutputStream.write(ops.getConfigurationGroupBazelFile(branch, configurationGroups, features).getBytes());
          zipOutputStream.closeEntry();
          ZipEntry buildFile = new ZipEntry("BUILD.bazel");
          buildFile.setTime(0);
@@ -667,25 +704,28 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
          ZipEntry featureFile = new ZipEntry("feature/BUILD.bazel");
          featureFile.setTime(0);
          zipOutputStream.putNextEntry(featureFile);
-         zipOutputStream.write(this.getBazelFeatures().getBytes());
+         zipOutputStream.write(ops.getFeatureBazelFile(branch, features).getBytes());
          zipOutputStream.closeEntry();
-         List<ArtifactReadable> configurations =
-            orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).asArtifacts();
+
          for (ArtifactReadable configuration : configurations) {
             ZipEntry batFile = new ZipEntry("config_files/" + configuration.getName().replace(" ", "_") + ".json");
             batFile.setTime(0);
             zipOutputStream.putNextEntry(batFile);
-            zipOutputStream.write(ops.getBatConfigurationFile(branch, configuration).getBytes());
+            Collection<BatConfigFile> batConfigFile = ops.getBatConfigurationFile(branch, configuration, features);
+            ObjectMapper mapper = new ObjectMapper();
+            byte[] valueToWrite = mapper.writeValueAsBytes(batConfigFile);
+            zipOutputStream.write(valueToWrite);
             zipOutputStream.closeEntry();
          }
-         List<ArtifactReadable> configurationGroups =
-            orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andRelatedTo(
-               CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder).asArtifacts();
          for (ArtifactReadable configurationGroup : configurationGroups) {
             ZipEntry batFile = new ZipEntry("config_files/" + configurationGroup.getName().replace(" ", "_") + ".json");
             batFile.setTime(0);
             zipOutputStream.putNextEntry(batFile);
-            zipOutputStream.write(ops.getBatConfigurationGroupFile(branch, configurationGroup).getBytes());
+            Collection<BatConfigFile> batConfigFile =
+               ops.getBatConfigurationGroupFile(branch, configurationGroup, features);
+            ObjectMapper mapper = new ObjectMapper();
+            byte[] valueToWrite = mapper.writeValueAsBytes(batConfigFile);
+            zipOutputStream.write(valueToWrite);
             zipOutputStream.closeEntry();
          }
          configurations.addAll(configurationGroups);
@@ -710,6 +750,99 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       }
       return Response.ok(byteArrayOutputStream.toByteArray()).type("application/zip").header("Content-Disposition",
          "attachment; filename=\"bazel.zip\"").build();
+   }
+
+   @Override
+   public Response getRepositoryZip(String productType) {
+      ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+      ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream);
+      try {
+         QueryBuilder featureQuery =
+            orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.Feature);
+         if (!productType.isEmpty()) {
+            featureQuery = featureQuery.andAttributeIs(CoreAttributeTypes.ProductApplicability, productType);
+         }
+         List<ArtifactReadable> features = featureQuery.asArtifacts();
+         QueryBuilder configurationQuery =
+            orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView);
+         if (!productType.isEmpty()) {
+            configurationQuery =
+               configurationQuery.andAttributeIs(CoreAttributeTypes.ProductApplicability, productType);
+         }
+         List<ArtifactReadable> configurations = configurationQuery.asArtifacts();
+         QueryBuilder configurationGroupQuery =
+            orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andRelatedTo(
+               CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder);
+         if (!productType.isEmpty()) {
+            configurationGroupQuery =
+               configurationGroupQuery.andAttributeIs(CoreAttributeTypes.ProductApplicability, productType);
+         }
+         List<ArtifactReadable> configurationGroups = configurationGroupQuery.asArtifacts();
+
+         for (ArtifactReadable configuration : configurations) {
+            ZipEntry batFile = new ZipEntry(configuration.getName().replace(" ", "_") + ".json");
+            batFile.setTime(0);
+            zipOutputStream.putNextEntry(batFile);
+            Collection<BatConfigFile> batConfigFile = ops.getBatConfigurationFile(branch, configuration, features);
+            ObjectMapper mapper = new ObjectMapper();
+            byte[] valueToWrite = mapper.writeValueAsBytes(batConfigFile);
+            zipOutputStream.write(valueToWrite);
+            zipOutputStream.closeEntry();
+         }
+         for (ArtifactReadable configurationGroup : configurationGroups) {
+            ZipEntry batFile = new ZipEntry(configurationGroup.getName().replace(" ", "_") + ".json");
+            batFile.setTime(0);
+            zipOutputStream.putNextEntry(batFile);
+            Collection<BatConfigFile> batConfigFile =
+               ops.getBatConfigurationGroupFile(branch, configurationGroup, features);
+            ObjectMapper mapper = new ObjectMapper();
+            byte[] valueToWrite = mapper.writeValueAsBytes(batConfigFile);
+            zipOutputStream.write(valueToWrite);
+            zipOutputStream.closeEntry();
+         }
+
+      } catch (IOException e) {
+         e.printStackTrace();
+      } finally {
+         try {
+            zipOutputStream.close();
+         } catch (IOException e) {
+         }
+      }
+      return Response.ok(byteArrayOutputStream.toByteArray()).type("application/zip").header("Content-Disposition",
+         "attachment; filename=\"repository.zip\"").build();
+   }
+
+   @Override
+   public Collection<BatConfigFile> getBlockApplicabilityToolConfiguration(String productType) {
+      QueryBuilder featureQuery = orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.Feature);
+      if (!productType.isEmpty()) {
+         featureQuery = featureQuery.andAttributeIs(CoreAttributeTypes.ProductApplicability, productType);
+      }
+      List<ArtifactReadable> features = featureQuery.asArtifacts();
+      QueryBuilder configurationQuery =
+         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView);
+      if (!productType.isEmpty()) {
+         configurationQuery = configurationQuery.andAttributeIs(CoreAttributeTypes.ProductApplicability, productType);
+      }
+      List<ArtifactReadable> configurations = configurationQuery.asArtifacts();
+      QueryBuilder configurationGroupQuery =
+         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andRelatedTo(
+            CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder);
+      if (!productType.isEmpty()) {
+         configurationGroupQuery =
+            configurationGroupQuery.andAttributeIs(CoreAttributeTypes.ProductApplicability, productType);
+      }
+      List<ArtifactReadable> configurationGroups = configurationGroupQuery.asArtifacts();
+      Collection<BatConfigFile> groupFiles = configurationGroups.stream().flatMap(
+         group -> ops.getBatConfigurationGroupFile(branch, group, features).stream()).collect(Collectors.toList());
+
+      Collection<BatConfigFile> configFiles = configurations.stream().flatMap(
+         configuration -> ops.getBatConfigurationFile(branch, configuration, features).stream()).collect(
+            Collectors.toList());
+
+      groupFiles.addAll(configFiles);
+      return groupFiles;
    }
 
 }

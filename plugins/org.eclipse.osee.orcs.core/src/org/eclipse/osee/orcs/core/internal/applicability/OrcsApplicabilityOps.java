@@ -42,6 +42,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
+import org.eclipse.osee.framework.core.applicability.BatConfigFile;
 import org.eclipse.osee.framework.core.applicability.BranchViewDefinition;
 import org.eclipse.osee.framework.core.applicability.ExtendedFeatureDefinition;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
@@ -3137,12 +3138,11 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    }
 
    @Override
-   public String getFeatureBazelFile(BranchId branchId) {
+   public String getFeatureBazelFile(BranchId branchId, Collection<ArtifactReadable> arts) {
       String prefix =
          "package(default_visibility = [\"//visibility:public\"])\r\n\r\n" + "load(\"@bazel_skylib//lib:selects.bzl\", \"selects\")\r\n\r\n";
       String content = "";
-      for (ArtifactReadable art : orcsApi.getQueryFactory().fromBranch(branchId).andIsOfType(
-         CoreArtifactTypes.Feature).asArtifacts()) {
+      for (ArtifactReadable art : arts) {
 
          //create the constraint setting based on the name of the feature
 
@@ -3180,7 +3180,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    }
 
    @Override
-   public String getConfigurationPlatformBazelFile(BranchId branchId) {
+   public String getConfigurationPlatformBazelFile(BranchId branchId, Collection<ArtifactReadable> configurations,
+      Collection<ArtifactReadable> groups, Collection<ArtifactReadable> features) {
       String prefix = "package(default_visibility = [\"//visibility:public\"])\r\n\r\n";
       // Switch these two lines when Bazel 7.2 releases.
       //      String content = "load(\"@platforms//host:constraints.bzl\",\"HOST_CONSTRAINTS\")\r\n";
@@ -3240,13 +3241,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       preDefinedCpuPlatforms.add("@platforms//cpu:x86_64");
 
       // Load all configurations (stored as branch views)
-      List<ArtifactReadable> branchViews =
-         orcsApi.getQueryFactory().fromBranch(branchId).andIsOfType(CoreArtifactTypes.BranchView).asArtifacts();
-      List<ArtifactReadable> groups =
-         orcsApi.getQueryFactory().applicabilityQuery().getConfigurationGroupsForBranch(branchId);
-      List<ArtifactReadable> features =
-         orcsApi.getQueryFactory().fromBranch(branchId).andIsOfType(CoreArtifactTypes.Feature).asArtifacts();
-      for (ArtifactReadable branchView : branchViews) {
+      for (ArtifactReadable branchView : configurations) {
          content = content + "platform(\r\n" + "\tname = \"" + branchView.getName().replace(" ", "_") + "\",\r\n";
          Map<String, List<String>> namedViewApplicabilityMap =
             orcsApi.getQueryFactory().applicabilityQuery().getNamedViewApplicabilityMap(branchId, branchView);
@@ -3318,7 +3313,8 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    }
 
    @Override
-   public String getConfigurationGroupBazelFile(BranchId branchId) {
+   public String getConfigurationGroupBazelFile(BranchId branchId, Collection<ArtifactReadable> groups,
+      Collection<ArtifactReadable> features) {
       String prefix = "package(default_visibility = [\"//visibility:public\"])\r\n\r\n";
       // Switch these two lines when Bazel 7.2 releases.
       //      String content = "load(\"@platforms//host:constraints.bzl\",\"HOST_CONSTRAINTS\")\r\n";
@@ -3375,10 +3371,6 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       preDefinedCpuPlatforms.add("@platforms//cpu:wasm64");
       preDefinedCpuPlatforms.add("@platforms//cpu:x86_32");
       preDefinedCpuPlatforms.add("@platforms//cpu:x86_64");
-      List<ArtifactReadable> groups =
-         orcsApi.getQueryFactory().applicabilityQuery().getConfigurationGroupsForBranch(branchId);
-      List<ArtifactReadable> features =
-         orcsApi.getQueryFactory().fromBranch(branchId).andIsOfType(CoreArtifactTypes.Feature).asArtifacts();
       for (ArtifactToken group : groups) {
          content = content + "platform(\r\n" + "\tname = \"" + group.getName().replace(" ",
             "_") + "\",\r\n" + "\tconstraint_values = [\r\n";
@@ -3444,19 +3436,16 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    }
 
    @Override
-   public String getConfigurationBazelFile(BranchId branchId) {
+   public String getConfigurationBazelFile(BranchId branchId, Collection<ArtifactReadable> groups,
+      Collection<ArtifactReadable> configurations) {
       String prefix =
          "package(default_visibility = [\"//visibility:public\"])\r\n" + "\r\n" + "#note: Configuration and configuration groups have to be declared here since they are a mutually exclusive selection.\r\n" + "constraint_setting(name = \"configuration\")\r\n";
       String content = "";
       // Load all configurations (stored as branch views)
-      List<ArtifactReadable> branchViews =
-         orcsApi.getQueryFactory().fromBranch(branchId).andIsOfType(CoreArtifactTypes.BranchView).asArtifacts();
-      for (ArtifactReadable branchView : branchViews) {
+      for (ArtifactReadable branchView : configurations) {
          content = content + "constraint_value(\r\n" + "    name = \"" + branchView.getName().replace(" ",
             "_") + "\",\r\n" + "    constraint_setting = \":configuration\",\r\n" + ")\r\n";
       }
-      List<ArtifactReadable> groups =
-         orcsApi.getQueryFactory().applicabilityQuery().getConfigurationGroupsForBranch(branchId);
       for (ArtifactToken group : groups) {
          content = content + "constraint_value(\r\n" + "    name = \"" + group.getName().replace(" ",
             "_") + "\",\r\n" + "    constraint_setting = \":configuration\",\r\n" + ")\r\n";
@@ -3465,58 +3454,30 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
    }
 
    @Override
-   public String getBatConfigurationFile(BranchId branchId, ArtifactReadable art) {
+   public Collection<BatConfigFile> getBatConfigurationFile(BranchId branchId, ArtifactReadable art,
+      List<ArtifactReadable> featureArts) {
       /**
        * @TODO implement groups once supported in BAT tool
        */
-      String content = "[{";
-      content = content + " \"normalizedName\": \"" + art.getName().replace(" ", "_") + "\",";
-      content = content + " \"features\":[";
-      Map<ArtifactId, Map<String, List<String>>> branchViewsMap = new HashMap<>();
       Map<String, List<String>> namedViewApplicabilityMap =
          orcsApi.getQueryFactory().applicabilityQuery().getNamedViewApplicabilityMap(branchId, art);
-      branchViewsMap.put(art, namedViewApplicabilityMap);
-      List<ArtifactReadable> featureArts =
-         orcsApi.getQueryFactory().fromBranch(branchId).andIsOfType(CoreArtifactTypes.Feature).asArtifacts();
-      Iterator<ArtifactReadable> featureIter = featureArts.iterator();
-      while (featureIter.hasNext()) {
-         ArtifactReadable featureArt = featureIter.next();
-         FeatureDefinition fDef = getFeatureDefinition(featureArt);
-         content = content + "\"" + fDef.getName() + "=" + getViewToFeatureValue(ArtifactId.valueOf(art.getId()), fDef,
-            branchViewsMap) + "\"";
-         if (featureIter.hasNext()) {
-            content = content + ",";
-         }
-      }
-      content = content + "]";
-      content = content + "}]";
-      return content;
+      orcsApi.jaxRsApi().getObjectMapper();
+      BatConfigFile configFile = new BatConfigFile(art, namedViewApplicabilityMap, featureArts);
+      List<BatConfigFile> configFiles = new ArrayList<>();
+      configFiles.add(configFile);
+      return configFiles;
    }
 
    @Override
-   public String getBatConfigurationGroupFile(BranchId branchId, ArtifactReadable art) {
-      String content = "[{";
-      content = content + " \"normalizedName\": \"" + art.getName().replace(" ", "_") + "\",";
-      content = content + " \"features\":[";
-      Map<ArtifactId, Map<String, List<String>>> branchViewsMap = new HashMap<>();
+   public Collection<BatConfigFile> getBatConfigurationGroupFile(BranchId branchId, ArtifactReadable art,
+      List<ArtifactReadable> featureArts) {
       Map<String, List<String>> namedViewApplicabilityMap =
          orcsApi.getQueryFactory().applicabilityQuery().getNamedViewApplicabilityMap(branchId, art);
-      branchViewsMap.put(art, namedViewApplicabilityMap);
-      List<ArtifactReadable> featureArts =
-         orcsApi.getQueryFactory().fromBranch(branchId).andIsOfType(CoreArtifactTypes.Feature).asArtifacts();
-      Iterator<ArtifactReadable> featureIter = featureArts.iterator();
-      while (featureIter.hasNext()) {
-         ArtifactReadable featureArt = featureIter.next();
-         FeatureDefinition fDef = getFeatureDefinition(featureArt);
-         content = content + "\"" + fDef.getName() + "=" + getViewToFeatureValue(ArtifactId.valueOf(art.getId()), fDef,
-            branchViewsMap) + "\"";
-         if (featureIter.hasNext()) {
-            content = content + ",";
-         }
-      }
-      content = content + "]";
-      content = content + "}]";
-      return content;
+      orcsApi.jaxRsApi().getObjectMapper();
+      BatConfigFile configFile = new BatConfigFile(art, namedViewApplicabilityMap, featureArts);
+      List<BatConfigFile> configFiles = new ArrayList<>();
+      configFiles.add(configFile);
+      return configFiles;
    }
 
    @Override
