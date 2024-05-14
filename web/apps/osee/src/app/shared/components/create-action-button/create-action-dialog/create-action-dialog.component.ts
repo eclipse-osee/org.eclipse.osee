@@ -12,7 +12,7 @@
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
 import { Component, Inject, computed, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import {
 	MatAutocomplete,
@@ -48,8 +48,8 @@ import {
 import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { filter, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { LatestActionDropDownComponent } from '../../latest-action-drop-down/latest-action-drop-down.component';
-import { ActionStateButtonService } from '../internal/services/action-state-button.service';
-import { ActionUserService } from '../internal/services/action-user.service';
+import { ActionUserService } from '../../action-state-button/internal/services/action-user.service';
+import { CreateActionService } from '../internal/services/create-action.service';
 /**
  * Dialog for creating a new action with the correct workType and category.
  */
@@ -85,12 +85,13 @@ export class CreateActionDialogComponent {
 	users = this.userService.usersSorted;
 	actionableItemsFilter = signal('');
 	actionableItems = toSignal(
-		this.actionService.actionableItems.pipe(
+		this.createActionService.actionableItems.pipe(
 			tap((items) => {
 				if (items.length === 1) {
 					this._selectActionableItem(items[0]);
 				}
-			})
+			}),
+			takeUntilDestroyed()
 		)
 	);
 	filteredActionableItems = computed(
@@ -103,7 +104,7 @@ export class CreateActionDialogComponent {
 	);
 	workTypesFilter = signal('');
 	workTypes = toSignal(
-		this.actionService.workTypes.pipe(
+		this.createActionService.workTypes.pipe(
 			tap((types) => {
 				types.forEach((t) => {
 					if (t.name === this.data.defaultWorkType) {
@@ -123,7 +124,7 @@ export class CreateActionDialogComponent {
 					.includes(this.workTypesFilter().toLowerCase())
 			) || []
 	);
-	points = this.actionService.getPoints();
+	points = this.createActionService.getPoints();
 	workType: WorkType = {
 		name: '',
 		humanReadableName: '',
@@ -135,8 +136,8 @@ export class CreateActionDialogComponent {
 		filter((id) => id !== ''),
 		switchMap((id) =>
 			combineLatest([
-				this.actionService.branchState,
-				this.actionService.getVersions(id),
+				this.createActionService.currentBranch,
+				this.createActionService.getVersions(id),
 			]).pipe(
 				tap(([branch, versions]) => {
 					versions.forEach((v) => {
@@ -152,24 +153,26 @@ export class CreateActionDialogComponent {
 	);
 	changeTypes = this.actionableItemId.pipe(
 		filter((id) => id !== ''),
-		switchMap((id) => this.actionService.getChangeTypes(id))
+		switchMap((id) => this.createActionService.getChangeTypes(id))
 	);
 	additionalFields = this.actionableItemId.pipe(
 		filter((id) => id !== ''),
-		switchMap((id) => this.actionService.getCreateActionFields(id))
+		switchMap((id) => this.createActionService.getCreateActionFields(id))
 	);
 	teamDef = this.actionableItemId.pipe(
 		filter((id) => id !== ''),
-		switchMap((id) => this.actionService.getTeamDef(id)),
+		switchMap((id) => this.createActionService.getTeamDef(id)),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 	featureGroups = this.teamDef.pipe(
 		filter((t) => t !== undefined && t !== null && t.length > 0),
-		switchMap((teams) => this.actionService.getFeatureGroups(teams[0].id))
+		switchMap((teams) =>
+			this.createActionService.getFeatureGroups(teams[0].id)
+		)
 	);
 	sprints = this.teamDef.pipe(
 		filter((t) => t !== undefined && t !== null && t.length > 0),
-		switchMap((teams) => this.actionService.getSprints(teams[0].id))
+		switchMap((teams) => this.createActionService.getSprints(teams[0].id))
 	);
 	private _priorityKeys = Object.keys(PRIORITIES);
 	private _priorityValues = Object.values(PRIORITIES);
@@ -183,7 +186,7 @@ export class CreateActionDialogComponent {
 	constructor(
 		public dialogRef: MatDialogRef<CreateActionDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: CreateAction,
-		public actionService: ActionStateButtonService,
+		public createActionService: CreateActionService,
 		public userService: ActionUserService
 	) {}
 
@@ -205,7 +208,7 @@ export class CreateActionDialogComponent {
 
 	private _selectWorkType(workType: WorkType) {
 		this.workType = workType;
-		this.actionService.workTypeValue = this.workType.name;
+		this.createActionService.workTypeValue = this.workType.name;
 		this.data.createBranchDefault = this.workType.createBranchDefault;
 		this._selectActionableItem(new actionableItem());
 	}

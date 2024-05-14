@@ -15,8 +15,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ArtifactHierarchyPanelComponent } from './artifact-hierarchy-panel.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import {
-	ActionDropdownStub,
 	BranchPickerStub,
+	CurrentActionDropdownMockComponent,
 } from '@osee/shared/components/testing';
 import { ViewSelectorMockComponent } from '@osee/messaging/shared/testing';
 import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
@@ -49,7 +49,7 @@ describe('ArtifactHierarchyPanelComponent', () => {
 					ArtifactHeirarchyOptionsMockComponent,
 					MatIconModule,
 					ArtifactSearchComponent,
-					ActionDropdownStub,
+					CurrentActionDropdownMockComponent,
 					BranchPickerStub,
 					ViewSelectorMockComponent,
 					ArtifactSearchMockComponent,

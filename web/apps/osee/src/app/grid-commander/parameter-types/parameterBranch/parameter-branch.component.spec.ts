@@ -13,14 +13,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import {
-	ActionDropDownComponent,
 	BranchPickerComponent,
+	CurrentActionDropDownComponent,
 } from '@osee/shared/components';
 
 import { ParameterBranchComponent } from './parameter-branch.component';
 import {
-	ActionDropdownStub,
 	BranchPickerStub,
+	CurrentActionDropdownMockComponent,
 } from '@osee/shared/components/testing';
 import { ParameterDataService } from '../../services/data-services/selected-command-data/parameter-data/parameter-data.service';
 import { parameterDataServiceMock } from '../../services/data-services/selected-command-data/parameter-data/parameter-data.service.mock';
@@ -32,10 +32,13 @@ describe('ParameterBranchComponent', () => {
 	beforeEach(async () => {
 		await TestBed.overrideComponent(ParameterBranchComponent, {
 			add: {
-				imports: [BranchPickerStub, ActionDropdownStub],
+				imports: [BranchPickerStub, CurrentActionDropdownMockComponent],
 			},
 			remove: {
-				imports: [BranchPickerComponent, ActionDropDownComponent],
+				imports: [
+					BranchPickerComponent,
+					CurrentActionDropDownComponent,
+				],
 			},
 		}).configureTestingModule({
 			imports: [NoopAnimationsModule, ParameterBranchComponent],

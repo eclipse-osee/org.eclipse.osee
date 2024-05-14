@@ -24,12 +24,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { ActionService } from '@osee/shared/services';
-import { ActionStateButtonService } from '../internal/services/action-state-button.service';
-import { actionStateButtonServiceMock } from '../internal/services/action-state-button.service.mock';
-import { ActionUserService } from '../internal/services/action-user.service';
-import { MockActionUserService } from '../internal/services/action-user.service.mock';
+import { ActionUserService } from '../../action-state-button/internal/services/action-user.service';
+import { MockActionUserService } from '../../action-state-button/internal/services/action-user.service.mock';
 
 import { CreateActionDialogComponent } from './create-action-dialog.component';
+import { CreateActionService } from '../internal/services/create-action.service';
+import { createActionServiceMock } from '../internal/services/create-action.service.mock';
 
 describe('CreateActionDialogComponent', () => {
 	let component: CreateActionDialogComponent;
@@ -84,8 +84,8 @@ describe('CreateActionDialogComponent', () => {
 					},
 				},
 				{
-					provide: ActionStateButtonService,
-					useValue: actionStateButtonServiceMock,
+					provide: CreateActionService,
+					useValue: createActionServiceMock,
 				},
 				{
 					provide: ActionService,

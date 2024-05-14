@@ -10,25 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-@if (
-	(branchInfo | async)?.branchType === '2' &&
-	(branchInfo | async)?.id !== '570'
-) {
-	<button
-		mat-raised-button
-		(click)="addAction()"
-		color="primary">
-		<mat-icon>add</mat-icon>Create Action
-	</button>
-} @else {
-	<button
-		mat-raised-button
-		[matMenuTriggerFor]="stateMenu"
-		class="tw-flex tw-justify-between tw-bg-primary tw-text-background">
-		{{ currentStateName | async
-		}}<mat-icon iconPositionEnd>expand_more</mat-icon>
-	</button>
-}
+<button
+	mat-raised-button
+	[matMenuTriggerFor]="stateMenu"
+	class="tw-flex tw-justify-between tw-bg-primary tw-text-background">
+	{{ currentStateName | async
+	}}<mat-icon iconPositionEnd>expand_more</mat-icon>
+</button>
+
 <mat-menu
 	#stateMenu="matMenu"
 	class="[&>div>div]: tw-max-w-none">
