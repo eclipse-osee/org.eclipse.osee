@@ -13,7 +13,9 @@
 
 package org.eclipse.osee.mim.internal;
 
+import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.InterfaceValidationApi;
 import org.eclipse.osee.mim.InterfaceValidationEndpoint;
@@ -35,6 +37,11 @@ public class InterfaceValidationEndpointImpl implements InterfaceValidationEndpo
    @Override
    public ConnectionValidationResult validateConnection(ArtifactId connectionId, ArtifactId viewId) {
       return validationApi.validateConnection(branch, viewId, connectionId);
+   }
+
+   @Override
+   public List<ArtifactToken> getImpactedConnections() {
+      return validationApi.getImpactedConnections(branch);
    }
 
 }

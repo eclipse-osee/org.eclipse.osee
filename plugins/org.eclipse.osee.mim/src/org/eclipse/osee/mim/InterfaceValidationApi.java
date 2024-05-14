@@ -12,7 +12,9 @@
  **********************************************************************/
 package org.eclipse.osee.mim;
 
+import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.types.ConnectionValidationResult;
 
@@ -23,4 +25,5 @@ public interface InterfaceValidationApi {
 
    ConnectionValidationResult validateConnection(BranchId branch, ArtifactId viewId, ArtifactId connectionId);
 
+   List<ArtifactToken> getImpactedConnections(BranchId branch);
 }

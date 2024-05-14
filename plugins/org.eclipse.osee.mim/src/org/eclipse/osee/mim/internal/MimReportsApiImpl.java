@@ -158,5 +158,4 @@ public class MimReportsApiImpl implements MimReportsApi {
          CoreArtifactTypes.InterfaceArtifact).andRelationNotExists(
             CoreRelationTypes.RequirementsToInterface).getCount();
    }
-
 }

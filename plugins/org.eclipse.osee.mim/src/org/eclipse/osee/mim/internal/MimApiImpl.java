@@ -141,7 +141,8 @@ public class MimApiImpl implements MimApi {
       this.mimArtifactsApi = new MimArtifactsApiImpl(orcsApi);
       this.mimReportsApi = new MimReportsApiImpl(orcsApi);
       this.crossReferenceApi = new CrossReferenceApiImpl(orcsApi);
-      this.interfaceValidationApi = new InterfaceValidationApiImpl(this.interfaceConnectionViewApi);
+      this.interfaceValidationApi =
+         new InterfaceValidationApiImpl(this.interfaceConnectionViewApi, orcsApi.getJdbcService().getClient());
    }
 
    @Override
