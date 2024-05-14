@@ -17,7 +17,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import {
-	ActionDropDownComponent,
+	CurrentActionDropDownComponent,
 	BranchPickerComponent,
 	ViewSelectorComponent,
 } from '@osee/shared/components';
@@ -40,7 +40,7 @@ import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-e
 		ArtifactHierarchyComponent,
 		ArtifactHierarchyOptionsComponent,
 		ViewSelectorComponent,
-		ActionDropDownComponent,
+		CurrentActionDropDownComponent,
 		ArtifactSearchPanelComponent,
 		ArtifactExplorerExpansionPanelComponent,
 		MatTooltip,

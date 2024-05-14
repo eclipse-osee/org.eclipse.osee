@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Component } from '@angular/core';
 import {
-	ActionDropDownComponent,
+	CurrentActionDropDownComponent,
 	BranchPickerComponent,
 } from '@osee/shared/components';
 import { map } from 'rxjs/operators';
@@ -23,7 +23,7 @@ import { ParameterDataService } from '../../services/data-services/selected-comm
 	templateUrl: './parameter-branch.component.html',
 	styles: [],
 	standalone: true,
-	imports: [BranchPickerComponent, ActionDropDownComponent],
+	imports: [BranchPickerComponent, CurrentActionDropDownComponent],
 })
 export class ParameterBranchComponent {
 	parameter$ = this.parameterDataService.parameter$;

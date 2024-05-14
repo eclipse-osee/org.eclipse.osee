@@ -12,20 +12,14 @@
  **********************************************************************/
 import { of } from 'rxjs';
 
-import { CreateAction } from '@osee/shared/types/configuration-management';
 import { ActionStateButtonService } from './action-state-button.service';
 import {
 	testBranchActions,
 	testWorkFlow,
 	testBranchInfo,
 	MockNamedId,
-	MockUserResponse,
 	testCommitResponse,
 	testDataTransitionResponse,
-	MockXResultData,
-	testnewActionResponse,
-	testWorkType,
-	testAgilePoints,
 } from '@osee/shared/testing';
 
 export const actionStateButtonServiceMock: Partial<ActionStateButtonService> = {
@@ -36,30 +30,12 @@ export const actionStateButtonServiceMock: Partial<ActionStateButtonService> = {
 	branchApproved: of('true'),
 	teamsLeads: of(MockNamedId),
 	branchTransitionable: of('true'),
-	addActionInitialStep: of(MockUserResponse),
-	getPoints() {
-		return of(testAgilePoints);
-	},
 	commitBranch(body: { committer: string; archive: string }) {
 		return of(testCommitResponse);
 	},
 	doCommitBranch: of(testDataTransitionResponse),
 	doTransition: of(testDataTransitionResponse),
 	doApproveBranch: of(true),
-	doAddAction(value: CreateAction, category: string) {
-		return of(testnewActionResponse);
-	},
-	actionableItems: of([
-		{
-			id: '123',
-			name: 'First ARB',
-		},
-		{
-			id: '456',
-			name: 'Second ARB',
-		},
-	]),
-	workTypes: of([testWorkType]),
 	nextStates: of([]),
 	previousStates: of([]),
 	currentState: of({ state: '', rules: [], committable: false }),
@@ -73,27 +49,12 @@ export const actionStateButtonServiceMockApprove: Partial<ActionStateButtonServi
 		branchApproved: of('true'),
 		teamsLeads: of(MockNamedId),
 		branchTransitionable: of('true'),
-		addActionInitialStep: of(MockUserResponse),
 		commitBranch(body: { committer: string; archive: string }) {
 			return of(testCommitResponse);
 		},
 		doCommitBranch: of(testDataTransitionResponse),
 		doTransition: of(testDataTransitionResponse),
 		doApproveBranch: of(true),
-		doAddAction(value: CreateAction, category: string) {
-			return of(testnewActionResponse);
-		},
-		actionableItems: of([
-			{
-				id: '123',
-				name: 'First ARB',
-			},
-			{
-				id: '456',
-				name: 'Second ARB',
-			},
-		]),
-		workTypes: of([testWorkType]),
 		nextStates: of([]),
 		previousStates: of([]),
 		currentState: of({ state: '', rules: [], committable: false }),
@@ -107,27 +68,12 @@ export const actionStateButtonServiceMockCommit: Partial<ActionStateButtonServic
 		branchApproved: of('true'),
 		teamsLeads: of(MockNamedId),
 		branchTransitionable: of('true'),
-		addActionInitialStep: of(MockUserResponse),
 		commitBranch(body: { committer: string; archive: string }) {
 			return of(testCommitResponse);
 		},
 		doCommitBranch: of(testDataTransitionResponse),
 		doTransition: of(testDataTransitionResponse),
 		doApproveBranch: of(true),
-		doAddAction(value: CreateAction, category: string) {
-			return of(testnewActionResponse);
-		},
-		actionableItems: of([
-			{
-				id: '123',
-				name: 'First ARB',
-			},
-			{
-				id: '456',
-				name: 'Second ARB',
-			},
-		]),
-		workTypes: of([testWorkType]),
 		nextStates: of([]),
 		previousStates: of([]),
 		currentState: of({ state: '', rules: [], committable: false }),

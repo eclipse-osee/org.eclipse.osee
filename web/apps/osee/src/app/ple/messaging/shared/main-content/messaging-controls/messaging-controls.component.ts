@@ -21,7 +21,7 @@ import {
 	PreferencesUIService,
 } from '@osee/messaging/shared/services';
 import {
-	ActionDropDownComponent,
+	CurrentActionDropDownComponent,
 	BranchPickerComponent,
 	UndoButtonBranchComponent,
 	ViewSelectorComponent,
@@ -39,7 +39,7 @@ import { iif, of, switchMap } from 'rxjs';
 		MatAnchor,
 		MatIcon,
 		MatTooltip,
-		ActionDropDownComponent,
+		CurrentActionDropDownComponent,
 		BranchPickerComponent,
 		UndoButtonBranchComponent,
 		ViewSelectorComponent,

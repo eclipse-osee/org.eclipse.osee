@@ -11,101 +11,40 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { iif, of, combineLatest, BehaviorSubject } from 'rxjs';
+import { iif, of, combineLatest } from 'rxjs';
 import { switchMap, shareReplay, take, tap, map } from 'rxjs/operators';
 import {
 	ActionService,
-	BranchInfoService,
 	CommitBranchService,
 	CurrentActionService,
 	CurrentBranchInfoService,
 	UiService,
 } from '@osee/shared/services';
-import { BranchCategoryService } from '../../../internal/services/branch-category.service';
 import { UserDataAccountService } from '@osee/auth';
 import { BranchRoutedUIService } from '../../../internal/services/branch-routed-ui.service';
 import {
 	transitionAction,
-	CreateAction,
-	CreateNewAction,
 	teamWorkflowState,
 } from '@osee/shared/types/configuration-management';
 import { MatDialog } from '@angular/material/dialog';
-import { MergeManagerDialogComponent } from '../../../merge-manager-dialog/merge-manager-dialog.component';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class ActionStateButtonService {
-	private _workType = new BehaviorSubject<string>('');
 	constructor(
 		public dialog: MatDialog,
 		private uiService: UiService,
 		private actionService: ActionService,
-		private branchService: BranchInfoService,
 		private currentBranchService: CurrentBranchInfoService,
 		private accountService: UserDataAccountService,
 		private branchedRouter: BranchRoutedUIService,
-		private branchCategoryService: BranchCategoryService,
 		private currentActionService: CurrentActionService,
 		private commitBranchService: CommitBranchService
 	) {}
 
-	set category(category: string) {
-		this.branchCategoryService.category = category;
-	}
-
-	set workTypeValue(workType: string) {
-		this._workType.next(workType);
-	}
-
-	get workType() {
-		return this._workType.asObservable();
-	}
-
 	private _user = this.accountService.user;
 
-	private _actionableItems = this.workType.pipe(
-		switchMap((workType) =>
-			this.actionService.getActionableItems(workType)
-		),
-		shareReplay({ bufferSize: 1, refCount: true })
-	);
-
-	private _workTypes = this.actionService
-		.getWorkTypes()
-		.pipe(shareReplay({ bufferSize: 1, refCount: true }));
-
-	get actionableItems() {
-		return this._actionableItems;
-	}
-
-	get workTypes() {
-		return this._workTypes;
-	}
-
-	getVersions(actionableItem: string) {
-		return this.actionService.getVersions(actionableItem);
-	}
-
-	getChangeTypes(actionableItem: string) {
-		return this.actionService.getChangeTypes(actionableItem);
-	}
-	getPoints() {
-		return this.actionService.getPoints();
-	}
-	getCreateActionFields(actionableItemId: string) {
-		return this.actionService.getCreateActionFields(actionableItemId);
-	}
-	getTeamDef(actionableItemId: string) {
-		return this.actionService.getTeamDef(actionableItemId);
-	}
-	getFeatureGroups(teamDefId: string) {
-		return this.actionService.getFeatureGroups(teamDefId);
-	}
-	getSprints(teamDefId: string) {
-		return this.actionService.getSprints(teamDefId);
-	}
 	private _branchState = this.currentBranchService.currentBranch;
 	private _branchAction = this.currentActionService.branchAction;
 	private _branchWorkflow = this.currentActionService.branchWorkFlow;
@@ -181,10 +120,6 @@ export class ActionStateButtonService {
 		return this._state;
 	}
 
-	private _addActionInitialStep = this._user.pipe(take(1));
-	public get addActionInitialStep() {
-		return this._addActionInitialStep;
-	}
 	public transitionValidate(state: teamWorkflowState) {
 		return combineLatest([this.branchAction, this._user]).pipe(
 			take(1),
@@ -417,41 +352,5 @@ export class ActionStateButtonService {
 
 	public get doApproveBranch() {
 		return this._doApproveBranch;
-	}
-
-	public doAddAction(value: CreateAction, category: string) {
-		if (typeof value?.description === 'undefined') {
-			return of(); // @todo replace with a false response
-		}
-		if (!value.createBranchDefault) {
-			return this.actionService.createAction(new CreateNewAction(value));
-		}
-		return this.actionService.createBranch(new CreateNewAction(value)).pipe(
-			switchMap((branchResponse) =>
-				iif(
-					() => category !== '0',
-					this.branchService.setBranchCategory(
-						branchResponse.workingBranchId.id,
-						category
-					),
-					of(branchResponse)
-				).pipe(
-					map(() => branchResponse),
-					tap((resp) => {
-						this.uiService.updated = true;
-						if (resp.results.success) {
-							const _branchType =
-								resp.workingBranchId.branchType === '2'
-									? 'baseline'
-									: 'working';
-							this.branchedRouter.position = {
-								type: _branchType,
-								id: resp.workingBranchId.id,
-							};
-						}
-					})
-				)
-			)
-		);
 	}
 }

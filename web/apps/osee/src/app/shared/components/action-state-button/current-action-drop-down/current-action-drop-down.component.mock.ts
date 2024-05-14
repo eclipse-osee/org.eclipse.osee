@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2022 Boeing
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,12 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
-	selector: 'osee-action-dropdown',
+	selector: 'osee-current-action-drop-down',
 	template: '<div>Dummy</div>',
 	standalone: true,
 })
-// eslint-disable-next-line @angular-eslint/component-class-suffix
-export class ActionDropdownStub {}
+export class CurrentActionDropdownMockComponent {
+	category = input('0');
+	workType = input('');
+}

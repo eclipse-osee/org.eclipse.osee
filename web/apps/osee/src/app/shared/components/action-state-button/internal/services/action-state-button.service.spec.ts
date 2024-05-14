@@ -19,8 +19,6 @@ import {
 	CommitBranchService,
 	UiService,
 } from '@osee/shared/services';
-import { CreateAction } from '@osee/shared/types/configuration-management';
-
 import { ActionStateButtonService } from './action-state-button.service';
 import { BranchRoutedUIService } from '../../../internal/services/branch-routed-ui.service';
 import { branchRoutedUiServiceMock } from '../../../internal/services/branch-routed-ui.service.mock';
@@ -28,8 +26,6 @@ import { UserDataAccountService } from '@osee/auth';
 import {
 	actionServiceMock,
 	BranchInfoServiceMock,
-	MockUserResponse,
-	testnewActionResponse,
 	testCommitResponse,
 	testDataTransitionResponse,
 	commitBranchServiceMock,
@@ -78,22 +74,6 @@ describe('ActionStateButtonService', () => {
 		expect(service).toBeTruthy();
 	});
 
-	it('should add an action', () => {
-		scheduler.run(({ expectObservable }) => {
-			expectObservable(
-				service.doAddAction(new CreateAction(MockUserResponse), '3')
-			).toBe('(a|)', { a: testnewActionResponse });
-		});
-	});
-	it('should add an action and create a branch', () => {
-		scheduler.run(({ expectObservable }) => {
-			const create = new CreateAction(MockUserResponse);
-			create.createBranchDefault = true;
-			expectObservable(service.doAddAction(create, '3')).toBe('(a|)', {
-				a: testnewActionResponse,
-			});
-		});
-	});
 	it('should commit a branch', () => {
 		scheduler.run(({ expectObservable }) => {
 			expectObservable(

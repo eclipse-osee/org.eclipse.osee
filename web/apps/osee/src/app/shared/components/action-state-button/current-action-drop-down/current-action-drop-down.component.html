@@ -1,5 +1,5 @@
 <!--
- * Copyright (c) 2022 Boeing
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,9 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<ng-container>
-	<div>
-		<osee-branch-picker></osee-branch-picker>
-		<osee-current-action-drop-down />
-	</div>
-</ng-container>
+@if (branchInfo()?.branchType === '2' && branchInfo()?.id !== '570') {
+	<osee-create-action-button
+		[category]="category()"
+		[workType]="workType()" />
+} @else {
+	<osee-action-dropdown />
+}

@@ -14,7 +14,7 @@ import { Component, Input, OnInit, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import {
-	ActionDropDownComponent,
+	CurrentActionDropDownComponent,
 	BranchPickerComponent,
 } from '@osee/shared/components';
 import { CiDashboardUiService } from '../../services/ci-dashboard-ui.service';
@@ -26,7 +26,7 @@ import { SetDropdownComponent } from './set-dropdown/set-dropdown.component';
 	imports: [
 		BranchPickerComponent,
 		SetDropdownComponent,
-		ActionDropDownComponent,
+		CurrentActionDropDownComponent,
 	],
 	templateUrl: './ci-dashboard-controls.component.html',
 })

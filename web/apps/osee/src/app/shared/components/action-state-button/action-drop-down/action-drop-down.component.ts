@@ -11,21 +11,17 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, NgClass, NgTemplateOutlet } from '@angular/common';
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { BranchInfoService, CommitBranchService } from '@osee/shared/services';
-import {
-	CreateAction,
-	teamWorkflowState,
-} from '@osee/shared/types/configuration-management';
+import { teamWorkflowState } from '@osee/shared/types/configuration-management';
 import { iif, of } from 'rxjs';
-import { filter, map, switchMap, take } from 'rxjs/operators';
+import { map, switchMap, take } from 'rxjs/operators';
 import { MergeManagerDialogComponent } from '../../merge-manager-dialog/merge-manager-dialog.component';
-import { CreateActionDialogComponent } from '../create-action-dialog/create-action-dialog.component';
 import { ActionStateButtonService } from '../internal/services/action-state-button.service';
 
 /**
@@ -38,7 +34,6 @@ import { ActionStateButtonService } from '../internal/services/action-state-butt
 	standalone: true,
 	imports: [
 		AsyncPipe,
-		CreateActionDialogComponent,
 		MatButton,
 		MatIcon,
 		MatIconButton,
@@ -49,11 +44,7 @@ import { ActionStateButtonService } from '../internal/services/action-state-butt
 		NgTemplateOutlet,
 	],
 })
-export class ActionDropDownComponent implements OnChanges {
-	@Input() category: string = '0';
-	@Input() workType: string = '';
-	branchInfo = this.actionService.branchState;
-
+export class ActionDropDownComponent {
 	branchTransitionable = this.actionService.branchTransitionable;
 
 	nextStates = this.actionService.nextStates;
@@ -69,24 +60,6 @@ export class ActionDropDownComponent implements OnChanges {
 	isTeamLead = this.actionService.isTeamLead;
 
 	isApproved = this.actionService.branchApproved.pipe(takeUntilDestroyed());
-
-	doAddAction = this.actionService.addActionInitialStep.pipe(
-		switchMap((thisUser) =>
-			this.dialog
-				.open(CreateActionDialogComponent, {
-					data: new CreateAction(thisUser, this.workType),
-					minWidth: '60%',
-				})
-				.afterClosed()
-				.pipe(
-					take(1),
-					filter((val): val is CreateAction => val !== undefined),
-					switchMap((value) =>
-						this.actionService.doAddAction(value, this.category)
-					)
-				)
-		)
-	);
 
 	doApproveBranch = this.actionService.doApproveBranch;
 
@@ -131,13 +104,6 @@ export class ActionDropDownComponent implements OnChanges {
 		private commitBranchService: CommitBranchService,
 		private branchService: BranchInfoService
 	) {}
-	ngOnChanges(changes: SimpleChanges): void {
-		this.actionService.category = this.category;
-		this.actionService.workTypeValue = this.workType;
-	}
-	addAction(): void {
-		this.doAddAction.subscribe();
-	}
 	transition(state: teamWorkflowState) {
 		this.actionService.transition(state).subscribe();
 	}
