@@ -299,6 +299,15 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
+   public <T> AttributeId createAttribute(ArtifactId sourceArtifact, AttributeTypeToken attributeType,
+      AttributeId attributeId, T value) {
+      checkPermissionsForLoginId(attributeType);
+      validateBuilder();
+      Artifact asArtifact = getForWrite(sourceArtifact);
+      return asArtifact.createAttribute(attributeType, attributeId, value);
+   }
+
+   @Override
    public <T> AttributeId createAttributeFromString(ArtifactId sourceArtifact, AttributeTypeToken attributeType,
       String value) {
       checkPermissionsForLoginId(attributeType);

@@ -17,7 +17,6 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -115,6 +114,8 @@ public interface TransactionBuilder {
 
    <T> AttributeId createAttribute(ArtifactId art, AttributeTypeToken attributeType, T value);
 
+   <T> AttributeId createAttribute(ArtifactId art, AttributeTypeToken attributeType, AttributeId attributeId, T value);
+
    <T> AttributeId createAttributeFromString(ArtifactId art, AttributeTypeToken attributeType, String value);
 
    <T> AttributeId createAttribute(ArtifactId art, AttributeTypeToken attributeType, UserToken userToken, T value);
@@ -191,14 +192,14 @@ public interface TransactionBuilder {
    void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, String rationale, RelationSorter sortType);
 
    void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ArtifactId relatedArtifact,
-			String insertType, ArtifactId afterArtifact);
+      String insertType, ArtifactId afterArtifact);
 
    void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ArtifactId relatedArtifact,
       String afterArtifact);
 
-	void validateRelationsAll();
+   void validateRelationsAll();
 
-	void validateRelationsRelTypeArtA(RelationTypeToken relType, ArtifactId artA);
+   void validateRelationsRelTypeArtA(RelationTypeToken relType, ArtifactId artA);
 
    void setRelations(ArtifactId artA, RelationTypeToken relType, Iterable<? extends ArtifactId> artBs);
 
@@ -220,7 +221,7 @@ public interface TransactionBuilder {
       GammaId gammaId);
 
    void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ArtifactId relatedArtifact,
-			String insertType, ArtifactId afterArtifact, GammaId gammaId);
+      String insertType, ArtifactId afterArtifact, GammaId gammaId);
 
    void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ArtifactId relatedArtifact,
       String afterArtifact, GammaId gammaId);

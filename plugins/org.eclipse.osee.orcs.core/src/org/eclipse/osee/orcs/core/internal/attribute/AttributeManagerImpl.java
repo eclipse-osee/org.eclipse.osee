@@ -456,10 +456,14 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
       attribute.delete();
    }
 
-   @Override
-   public <T> Attribute<T> createAttribute(AttributeTypeToken attributeType) {
+   private void attributeCanBeCreated(AttributeTypeToken attributeType) {
       checkTypeValid(attributeType);
       checkMultiplicityCanAdd(attributeType);
+   }
+
+   @Override
+   public <T> Attribute<T> createAttribute(AttributeTypeToken attributeType) {
+      attributeCanBeCreated(attributeType);
       Attribute<T> attr = attributeFactory.createAttributeWithDefaults(this, getOrcsData(), attributeType);
       return attr;
    }
@@ -469,6 +473,14 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
       Attribute<T> attribute = createAttribute(attributeType);
       attribute.setValue(value);
       return attribute;
+   }
+
+   @Override
+   public <T> Attribute<T> createAttribute(AttributeTypeToken attributeType, AttributeId attributeId, T value) {
+      attributeCanBeCreated(attributeType);
+      Attribute<T> attr = attributeFactory.createAttributeWithDefaults(this, getOrcsData(), attributeType, attributeId);
+      attr.setValue(value);
+      return attr;
    }
 
    @Override
