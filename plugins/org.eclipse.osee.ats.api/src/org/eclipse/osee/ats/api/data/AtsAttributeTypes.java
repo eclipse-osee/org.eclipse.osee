@@ -171,7 +171,7 @@ public interface AtsAttributeTypes {
    AttributeTypeString OriginatingPcrId = ats.createString(1152922093379125418L, "ats.Originating PCR Id", TEXT_PLAIN, "", Edit);
    AttributeTypeInteger PagesChanged = ats.createInteger(1152921504606847209L, "ats.Pages Changed", TEXT_PLAIN, "Total Pages of Changed", Edit);
    AttributeTypeInteger PagesReviewed = ats.createInteger(1152921504606847210L, "ats.Pages Reviewed", TEXT_PLAIN, "Total Pages of Reviewed", Edit);
-   AttributeTypeString PcrToolId = ats.createString(1152922093370736810L, "ats.PCR Tool Id", TEXT_PLAIN, "", Edit);
+   AttributeTypeString PcrId = ats.createString(1152922093370736810L, "ats.PCR Id", TEXT_PLAIN, "Related PCR Id(s) from external tools", Edit);
    AttributeTypeString PeerReviewId = ats.createString(4231136442842667818L, "ats.Peer Review Id", TEXT_PLAIN, "", Edit);
    AttributeTypeInteger PercentComplete = ats.createInteger(1152921504606847183L, "ats.Percent Complete", TEXT_PLAIN, "", Edit);
    AttributeTypeInteger PercentRework = ats.createInteger(1152921504606847189L, "ats.Percent Rework", TEXT_PLAIN, "", Edit);
