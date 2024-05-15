@@ -61,6 +61,13 @@ public class AttributeFactory {
       return createAttribute(container, data, true, true);
    }
 
+   public <T> Attribute<T> createAttributeWithDefaults(AttributeContainer container, ArtifactData artifactData,
+      AttributeTypeToken attributeType, AttributeId attributeId) {
+      AttributeData<T> data =
+         dataFactory.create(artifactData, tokenService.getAttributeType(attributeType.getId()), attributeId);
+      return createAttribute(container, data, true, true);
+   }
+
    public <T> Attribute<T> createAttribute(AttributeContainer container, AttributeData<T> data) {
       return createAttribute(container, data, false, false);
    }

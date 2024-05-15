@@ -130,6 +130,15 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
+   public AttributeData create(ArtifactData parent, AttributeTypeGeneric attributeType, AttributeId attributeId) {
+      VersionData version = objectFactory.createDefaultVersionData();
+      version.setBranch(parent.getVersion().getBranch());
+      ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
+      return objectFactory.createAttributeData(version, attributeId, attributeType, modType, parent,
+         ApplicabilityId.BASE);
+   }
+
+   @Override
    public AttributeData copy(BranchId destination, AttributeData orcsData) {
       AttributeData copy = objectFactory.createCopy(orcsData);
       updateDataForCopy(destination, copy);
