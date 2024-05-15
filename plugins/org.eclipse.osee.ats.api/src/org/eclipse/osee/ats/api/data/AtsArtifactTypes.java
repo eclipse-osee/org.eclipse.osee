@@ -254,7 +254,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(OperationalImpactWorkaround)
       .zeroOrOne(OperationalImpactWorkaroundDescription)
       .zeroOrOne(OriginatingPcrId)
-      .zeroOrOne(PcrToolId)
+      .any(PcrId)
       .zeroOrOne(PercentRework)
       .zeroOrOne(PointsAttributeType)
       .zeroOrOne(Priority)

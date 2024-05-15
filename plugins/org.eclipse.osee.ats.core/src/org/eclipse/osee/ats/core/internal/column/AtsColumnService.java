@@ -404,7 +404,6 @@ public class AtsColumnService implements IAtsColumnService {
          legacyIdToId.put("ats.column.numeric1", AtsAttributeTypes.Numeric1.getName());
          legacyIdToId.put("ats.column.originatingpcrid", AtsAttributeTypes.OriginatingPcrId.getName());
          legacyIdToId.put("ats.column.pagesReviewed", AtsAttributeTypes.PagesReviewed.getName());
-         legacyIdToId.put("ats.column.pcrtoolid", AtsAttributeTypes.PcrToolId.getName());
          legacyIdToId.put("ats.column.points", AtsAttributeTypes.Points.getName());
          legacyIdToId.put("ats.column.rationale", AtsAttributeTypes.Rationale.getName());
          legacyIdToId.put("ats.column.resolution", AtsAttributeTypes.Resolution.getName());

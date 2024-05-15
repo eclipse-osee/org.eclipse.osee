@@ -248,7 +248,7 @@ public class ConvertWorkDefinitionsToJavaOperation {
    //         attrTypeMap.put("ats.LOC Changed", "LocChanged");
    //         attrTypeMap.put("LOCReviewed", "LocReviewed");
    //         attrTypeMap.put("LBA Change Type", "ChangeType");
-   //         attrTypeMap.put("Type", "PcrToolId");
+   //         attrTypeMap.put("Type", "PcrId");
    //         attrTypeMap.put("Description of Action", "Description");
    //      }
    //      return attrTypeMap;
