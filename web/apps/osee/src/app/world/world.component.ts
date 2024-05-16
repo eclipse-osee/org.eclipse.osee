@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
+	AfterViewInit,
 	Component,
 	computed,
 	effect,
@@ -18,12 +19,11 @@ import {
 	signal,
 	viewChild,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { MatButton } from '@angular/material/button';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
-import { SafeResourceUrl } from '@angular/platform-browser';
 import {
 	MatCell,
 	MatCellDef,
@@ -37,15 +37,25 @@ import {
 	MatTable,
 	MatTableDataSource,
 } from '@angular/material/table';
-import { ActivatedRoute } from '@angular/router';
-import { debounceTime, map, switchMap } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import {
+	debounceTime,
+	filter,
+	map,
+	shareReplay,
+	switchMap,
+	take,
+	tap,
+} from 'rxjs';
 import { WorldHttpService } from './services/world-http.service';
-import { worldRow } from './world';
+import { world, worldRow, worldRowWithDiffs, worldWithDiffs } from './world';
+import { NgClass } from '@angular/common';
 
 @Component({
 	selector: 'osee-world',
 	standalone: true,
 	imports: [
+		NgClass,
 		MatFormField,
 		MatInput,
 		MatButton,
@@ -64,37 +74,130 @@ import { worldRow } from './world';
 	],
 	templateUrl: './world.component.html',
 })
-class WorldComponent {
+class WorldComponent implements AfterViewInit {
+	private router = inject(Router);
 	private routeUrl = inject(ActivatedRoute);
 	private worldService = inject(WorldHttpService);
-	dataSource = new MatTableDataSource<worldRow>([]);
-	displayPublish = true;
-	collId = '';
+	dataSource = new MatTableDataSource<worldRowWithDiffs>([]);
+
 	params = this.routeUrl.queryParamMap.pipe(
 		map((value) => {
 			return {
 				collId: value.get('collId') || '',
 				custId: value.get('custId') || '',
+				diff: value.get('diff') || '',
 			};
 		})
 	);
-	worldData = this.params.pipe(
-		debounceTime(500),
-		switchMap((value) => {
-			this.collId = value.collId;
-			if (value.custId === '') {
-				this.displayPublish = false;
-				return this.worldService.getWorldDataStored(value.collId);
-			}
-			return this.worldService.getWorldData(value.collId, value.custId);
-		})
+	paramsSignal = toSignal(this.params);
+	showDiffs = computed(() => this.paramsSignal()?.diff);
+	displayPublish = computed(() => this.paramsSignal()?.custId !== '');
+
+	private _worldData = toSignal(
+		this.params.pipe(
+			switchMap((value) => {
+				if (value.custId === '') {
+					return this.worldService.getWorldDataStored(value.collId);
+				}
+				return this.worldService.getWorldData(
+					value.collId,
+					value.custId
+				);
+			}),
+			takeUntilDestroyed(),
+			shareReplay({ bufferSize: 1, refCount: true })
+		),
+		{ initialValue: { orderedHeaders: [], rows: [] } }
 	);
-	tabledata = toSignal(this.worldData, {
-		initialValue: { orderedHeaders: [], rows: [] },
+
+	private _worldDataStored = toSignal(
+		this.params.pipe(
+			filter((params) => params.diff === 'true'),
+			switchMap((params) =>
+				this.worldService.getWorldDataStored(params.collId)
+			),
+			takeUntilDestroyed(),
+			shareReplay({ bufferSize: 1, refCount: true })
+		)
+	);
+
+	tableData = computed(() => {
+		const dataWithDiffs: worldWithDiffs = {
+			orderedHeaders: this._worldData().orderedHeaders,
+			rows: [],
+		};
+
+		// Convert current rows to rows with diffs, with no changes initially.
+		dataWithDiffs.rows = this._worldData().rows.map((row) => {
+			const newRow: worldRowWithDiffs = {};
+			Object.keys(row).forEach((key) => {
+				newRow[key] = {
+					value: row[key],
+					added: false,
+					deleted: false,
+					changed: false,
+				};
+			});
+			return newRow;
+		});
+
+		if (
+			this.showDiffs() &&
+			this.paramsSignal()?.custId !== '' &&
+			this._worldDataStored()
+		) {
+			// Create and populate maps of ATS IDs to rows for easy lookup.
+			// This assumes ATS Id will always be available in the customization
+			// and should probably be changed to something that will definitely
+			// always be available (add something to each row on backend)
+			const worldDataMap = new Map<string, worldRow>();
+			const storedDataMap = new Map<string, worldRow>();
+			this._worldData().rows.forEach((row) =>
+				worldDataMap.set(row['ATS Id'], row)
+			);
+			this._worldDataStored()!.rows.forEach((row) =>
+				storedDataMap.set(row['ATS Id'], row)
+			);
+
+			// Check if current rows have an existing entry in the stored data.
+			// If not, mark the current row as added. If so, check for changed values.
+			dataWithDiffs.rows.forEach((row) => {
+				const storedRow = storedDataMap.get(row['ATS Id'].value);
+				if (!storedRow) {
+					row['ATS Id'].added = true;
+				} else {
+					Object.keys(row).forEach((key) => {
+						if (row[key].value !== storedRow[key]) {
+							row[key].changed = true;
+						}
+					});
+				}
+			});
+
+			// Go back through the stored data and see if there is anything in there
+			// that is not in the current data. If so, add it and mark deleted.
+			storedDataMap.forEach((row, key) => {
+				if (!worldDataMap.has(key)) {
+					const newRow: worldRowWithDiffs = {};
+					Object.keys(row).forEach((rowKey) => {
+						newRow[rowKey] = {
+							value: row[rowKey],
+							added: false,
+							deleted: true,
+							changed: false,
+						};
+					});
+					dataWithDiffs.rows.push(newRow);
+				}
+			});
+		}
+
+		return dataWithDiffs;
 	});
+
 	filter = signal('');
-	headers = computed(() => this.tabledata()?.orderedHeaders || []);
-	rows = computed(() => this.tabledata()?.rows || []);
+	headers = computed(() => this.tableData()?.orderedHeaders || []);
+	rows = computed(() => this.tableData()?.rows || []);
 	protected sort = viewChild.required(MatSort);
 
 	private _updateDataSourceSort = effect(() => {
@@ -103,27 +206,79 @@ class WorldComponent {
 	private _updateDataSourceData = effect(() => {
 		this.dataSource.data = this.rows();
 	});
+
+	ngAfterViewInit(): void {
+		this.dataSource.sortingDataAccessor = (item, property) => {
+			return item[property].value;
+		};
+		this.dataSource.filterPredicate = (
+			row: worldRowWithDiffs,
+			filter: string
+		) => {
+			const filterLower = filter.toLowerCase();
+			for (let key of Object.keys(row)) {
+				if (row[key].value.toLowerCase().includes(filterLower)) {
+					return true;
+				}
+			}
+			return false;
+		};
+	}
+
 	updateFilter(event: KeyboardEvent) {
 		const filterValue = (event.target as HTMLInputElement).value;
 		this.filter.set(filterValue);
 		this.dataSource.filter = filterValue.trim().toLowerCase();
 	}
+
+	toggleDiff() {
+		const tree = this.router.parseUrl(this.router.url);
+		const queryParams = tree.queryParams;
+		if (queryParams['diff']) {
+			delete queryParams['diff'];
+		} else {
+			queryParams['diff'] = 'true';
+		}
+		this.router.navigate([], { queryParams: queryParams });
+	}
+
 	publish() {
 		this.params
 			.pipe(
+				take(1),
 				switchMap((value) => {
 					return this.worldService.publishWorldData(
 						value.collId,
 						value.custId,
-						this.tabledata()
+						this._worldData()
 					);
 				})
 			)
 			.subscribe();
 	}
-	openExport(collId: string) {
-		this.openLink('/ats/world/coll/' + collId + '/export');
+
+	openExport() {
+		this.params
+			.pipe(
+				take(1),
+				tap((params) =>
+					this.openLink(
+						'/ats/world/coll/' + params.collId + '/export'
+					)
+				)
+			)
+			.subscribe();
 	}
+
+	openSaved() {
+		this.params
+			.pipe(
+				take(1),
+				tap((params) => this.openLink(`/world?collId=${params.collId}`))
+			)
+			.subscribe();
+	}
+
 	openLink(url: string) {
 		window.open(url, '_blank');
 	}

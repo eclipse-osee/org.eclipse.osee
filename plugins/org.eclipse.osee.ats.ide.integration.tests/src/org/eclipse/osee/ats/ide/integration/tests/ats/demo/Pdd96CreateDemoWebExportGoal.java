@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.integration.tests.ats.demo;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -24,6 +25,9 @@ import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.ide.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.util.OseeInf;
 import org.junit.Test;
 
 /**
@@ -41,6 +45,7 @@ public class Pdd96CreateDemoWebExportGoal implements IPopulateDemoDatabaseTest {
 
       IAtsChangeSet changes = atsApi.createChangeSet("Create Web Export");
       AtsUser createdBy = atsApi.getUserService().getCurrentUser();
+
       IAtsGoal webExportGoal = atsApi.getActionService().createGoal(AtsArtifactToken.WebExportGoal,
          atsApi.getTeamDefinitionService().getTeamDefinitionById(DemoArtifactToken.SAW_PL_TeamDef), atsApi, changes);
       changes.addChild(headingArt, webExportGoal.getArtifactId());
@@ -49,6 +54,12 @@ public class Pdd96CreateDemoWebExportGoal implements IPopulateDemoDatabaseTest {
       for (ArtifactToken wfArt : assigned) {
          changes.relate(webExportGoal.getStoreObject(), AtsRelationTypes.Goal_Member, wfArt);
       }
+
+      // Set customization id for goal customization in WebExportCust.xml being added below
+      changes.addAttribute(webExportGoal, AtsAttributeTypes.WorldResultsCustId, "4vgtrpe942a9t1hu3imv30");
+
+      changes.addAttribute(CoreArtifactTokens.XViewerCustomization, CoreAttributeTypes.XViewerCustomization,
+         OseeInf.getResourceContents("atsConfig/WebExportCust.xml", Pdd96CreateDemoWebExportGoal.class));
 
       changes.execute();
 

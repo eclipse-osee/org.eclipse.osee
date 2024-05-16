@@ -13,6 +13,7 @@
 package org.eclipse.osee.ats.ide.editor.tab.workflow.section.goal;
 
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButtonViaAction;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -50,23 +51,35 @@ public class WfeGoalSection {
       sectionBody.setLayout(ALayout.getZeroMarginLayout(1, false));
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
+      boolean admin = AtsApiService.get().getUserService().isAtsAdmin();
+
       new XButtonViaAction(
          new SelectWebExportCustomizationAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(sectionBody,
             2);
-      new XButtonViaAction(new OpenWebViewLegacyHtmlAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(
+
+      if (admin) {
+         new XButtonViaAction(
+            new OpenWebViewLegacyHtmlAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(sectionBody, 2);
+         new XButtonViaAction(new OpenWebViewJsonLiveAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(
+            sectionBody, 2);
+      }
+
+      new XButtonViaAction(new OpenWebViewLiveAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(
          sectionBody, 2);
-      new XButtonViaAction(new OpenWebViewJsonLiveAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(
+      new XButtonViaAction(new OpenDifferencesIdeViewAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(
          sectionBody, 2);
-      new XButtonViaAction(new OpenWebViewAngularLiveAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(
-         sectionBody, 2);
-      new XButtonViaAction(new OpenDifferencesViewAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(
+      new XButtonViaAction(new OpenDifferencesWebViewAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(
          sectionBody, 2);
       new XButtonViaAction(new PublishWebViewJsonAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(
          sectionBody, 2);
-      new XButtonViaAction(new OpenWebViewJsonSavedAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(
+
+      if (admin) {
+         new XButtonViaAction(
+            new OpenWebViewJsonSavedAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(sectionBody, 2);
+      }
+
+      new XButtonViaAction(new OpenWebViewSavedAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(
          sectionBody, 2);
-      new XButtonViaAction(
-         new OpenWebViewAngularSavedAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(sectionBody, 2);
       new XButtonViaAction(new OpenWebExportAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(
          sectionBody, 2);
 

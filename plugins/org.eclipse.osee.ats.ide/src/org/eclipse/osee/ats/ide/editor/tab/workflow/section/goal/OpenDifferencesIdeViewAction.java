@@ -26,10 +26,10 @@ import org.eclipse.osee.framework.ui.skynet.compare.CompareItem;
 /**
  * @author Donald G. Dunne
  */
-public class OpenDifferencesViewAction extends AbstractWebExportAction {
+public class OpenDifferencesIdeViewAction extends AbstractWebExportAction {
 
-   public OpenDifferencesViewAction(GoalArtifact goalArt, WorkflowEditor editor) {
-      super("Open Differences View", goalArt, editor, AtsImage.REPORT);
+   public OpenDifferencesIdeViewAction(GoalArtifact goalArt, WorkflowEditor editor) {
+      super("Open Differences IDE View", goalArt, editor, AtsImage.REPORT);
    }
 
    @Override
