@@ -41,6 +41,10 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    private final Map<Long, AttributeTypeJoin> attributeTypeJoins = new ConcurrentHashMap<>();
    private final Map<Long, RelationTypeJoin> relationTypeJoins = new ConcurrentHashMap<>();
 
+   private final Map<Long, Tuple2Type<?, ?>> tuple2Types = new ConcurrentHashMap<>();
+   private final Map<Long, Tuple3Type<?, ?, ?>> tuple3Types = new ConcurrentHashMap<>();
+   private final Map<Long, Tuple4Type<?, ?, ?, ?>> tuple4Types = new ConcurrentHashMap<>();
+
    /**
     * Register core types first to prevent their ids from being registered by mistaken or malicious code
     */
@@ -123,6 +127,33 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    }
 
    @Override
+   public <E1, E2> Tuple2Type<E1, E2> getTuple2Type(Long id) {
+      Tuple2Type<E1, E2> tuple = (Tuple2Type<E1, E2>) tuple2Types.get(id);
+      if (tuple == null) {
+         return tuple;
+      }
+      throw new OseeTypeDoesNotExist("Tuple 2 type [%s] is not available.", id);
+   }
+
+   @Override
+   public <E1, E2, E3> Tuple3Type<E1, E2, E3> getTuple3Type(Long id) {
+      Tuple3Type<E1, E2, E3> tuple = (Tuple3Type<E1, E2, E3>) tuple3Types.get(id);
+      if (tuple == null) {
+         return tuple;
+      }
+      throw new OseeTypeDoesNotExist("Tuple 3 type [%s] is not available.", id);
+   }
+
+   @Override
+   public <E1, E2, E3, E4> Tuple4Type<E1, E2, E3, E4> getTuple4Type(Long id) {
+      Tuple4Type<E1, E2, E3, E4> tuple = (Tuple4Type<E1, E2, E3, E4>) tuple4Types.get(id);
+      if (tuple == null) {
+         return tuple;
+      }
+      throw new OseeTypeDoesNotExist("Tuple 4 type [%s] is not available.", id);
+   }
+
+   @Override
    public ArtifactTypeToken getArtifactTypeOrSentinel(Long id) {
       return getXTypeOrSentinel(artifactTypes, id, ArtifactTypeToken.SENTINEL);
    }
@@ -173,7 +204,7 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    public RelationTypeToken getRelationTypeOrCreate(Long id) {
       RelationTypeToken relationType = getRelationTypeOrSentinel(id);
       if (relationType.isInvalid()) {
-         relationType = RelationTypeToken.create(id, "Mising Artifact Type " + id, null, null, null, null, null, null);
+         relationType = RelationTypeToken.create(id, "Missing Artifact Type " + id, null, null, null, null, null, null);
          registerRelationType(relationType);
       }
       return relationType;
@@ -320,6 +351,21 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    }
 
    @Override
+   public Collection<Tuple2Type<?, ?>> getTuple2Types() {
+      return Collections.unmodifiableCollection(tuple2Types.values());
+   }
+
+   @Override
+   public Collection<Tuple3Type<?, ?, ?>> getTuple3Types() {
+      return Collections.unmodifiableCollection(tuple3Types.values());
+   }
+
+   @Override
+   public Collection<Tuple4Type<?, ?, ?, ?>> getTuple4Types() {
+      return Collections.unmodifiableCollection(tuple4Types.values());
+   }
+
+   @Override
    public List<ArtifactTypeToken> getConcreteArtifactTypes() {
       List<ArtifactTypeToken> concreteArtifactTypes = new ArrayList<>();
       for (ArtifactTypeToken artifactType : getArtifactTypes()) {
@@ -373,4 +419,32 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
       }
       return attributeTypeTokens;
    }
+
+   @Override
+   public void registerTuple2Type(Tuple2Type<?, ?> tupleType) {
+      Tuple2Type<?, ?> existingType = tuple2Types.putIfAbsent(tupleType.getId(), tupleType);
+      if (existingType != null) {
+         throw new OseeArgumentException("The tuple2 type %s with the same id as %s has already been registered.",
+            existingType, tupleType);
+      }
+   }
+
+   @Override
+   public void registerTuple3Type(Tuple3Type<?, ?, ?> tupleType) {
+      Tuple3Type<?, ?, ?> existingType = tuple3Types.putIfAbsent(tupleType.getId(), tupleType);
+      if (existingType != null) {
+         throw new OseeArgumentException("The tuple3 type %s with the same id as %s has already been registered.",
+            existingType, tupleType);
+      }
+   }
+
+   @Override
+   public void registerTuple4Type(Tuple4Type<?, ?, ?, ?> tupleType) {
+      Tuple4Type<?, ?, ?, ?> existingType = tuple4Types.putIfAbsent(tupleType.getId(), tupleType);
+      if (existingType != null) {
+         throw new OseeArgumentException("The tuple4 type %s with the same id as %s has already been registered.",
+            existingType, tupleType);
+      }
+   }
+
 }

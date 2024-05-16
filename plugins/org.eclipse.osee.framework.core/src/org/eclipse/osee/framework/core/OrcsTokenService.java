@@ -26,6 +26,9 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeJoin;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.data.Tuple2Type;
+import org.eclipse.osee.framework.core.data.Tuple3Type;
+import org.eclipse.osee.framework.core.data.Tuple4Type;
 
 /**
  * @author Ryan D. Brooks
@@ -63,6 +66,21 @@ public interface OrcsTokenService {
     * @return singleton full relation type token with the given id or throw OseeTypeDoesNotExist if not found
     */
    RelationTypeToken getRelationType(Long id);
+
+   /**
+    * @return singleton full tuple 2 type token with the given id or throw OseeTypeDoesNotExist if not found
+    */
+   <E1, E2> Tuple2Type<E1, E2> getTuple2Type(Long id);
+
+   /**
+    * @return singleton full tuple 3 type token with the given id or throw OseeTypeDoesNotExist if not found
+    */
+   <E1, E2, E3> Tuple3Type<E1, E2, E3> getTuple3Type(Long id);
+
+   /**
+    * @return singleton full tuple 4 type token with the given id or throw OseeTypeDoesNotExist if not found
+    */
+   <E1, E2, E3, E4> Tuple4Type<E1, E2, E3, E4> getTuple4Type(Long id);
 
    /**
     * @return singleton full relation type token with the given name or throw OseeTypeDoesNotExist if not found
@@ -122,6 +140,21 @@ public interface OrcsTokenService {
    void registerRelationType(RelationTypeToken relationType);
 
    /**
+    * Register the given tuple2 type token by its id. Throws OseeArgumentException if that id is already registered.
+    */
+   void registerTuple2Type(Tuple2Type<?, ?> tupleType);
+
+   /**
+    * Register the given tuple3 type token by its id. Throws OseeArgumentException if that id is already registered.
+    */
+   void registerTuple3Type(Tuple3Type<?, ?, ?> tupleType);
+
+   /**
+    * Register the given tuple4 type token by its id. Throws OseeArgumentException if that id is already registered.
+    */
+   void registerTuple4Type(Tuple4Type<?, ?, ?, ?> tupleType);
+
+   /**
     * Get Iterable List of ids of Attributes that are taggable
     */
    Iterable<AttributeTypeGeneric<?>> getTaggedAttrs();
@@ -140,6 +173,21 @@ public interface OrcsTokenService {
     * Get unmodifiable list of AttributeTypes.
     */
    Collection<AttributeTypeGeneric<?>> getAttributeTypes();
+
+   /**
+    * Get unmodifiable list of Tuple 2 Types.
+    */
+   Collection<Tuple2Type<?, ?>> getTuple2Types();
+
+   /**
+    * Get unmodifiable list of Tuple 3 Types.
+    */
+   Collection<Tuple3Type<?, ?, ?>> getTuple3Types();
+
+   /**
+    * Get unmodifiable list of Tuple 4 Types.
+    */
+   Collection<Tuple4Type<?, ?, ?, ?>> getTuple4Types();
 
    /**
     * Get List of non-abstract Artifact Types
