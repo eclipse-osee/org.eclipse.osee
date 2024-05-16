@@ -36,6 +36,7 @@ public final class CoreTypeTokenProvider extends OrcsTypeTokenProviderBase {
          FaceOseeTypes.UnitOfConformance, OteArtifactTypes.TestRun, OteAttributeTypes.BuildId,
          OteRelationTypes.TestCaseToRunRelation);
       registerTokenClasses(CoreArtifactTypes.class, CoreAttributeTypes.class, CoreRelationTypes.class,
-         FaceOseeTypes.class, OteArtifactTypes.class, OteAttributeTypes.class, OteRelationTypes.class);
+         CoreTupleTypes.class, FaceOseeTypes.class, OteArtifactTypes.class, OteAttributeTypes.class,
+         OteRelationTypes.class);
    }
 }

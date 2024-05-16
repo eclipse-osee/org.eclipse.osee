@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.core.data;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.jdt.annotation.NonNull;
@@ -133,6 +134,9 @@ public class OrcsTypeTokens {
    private final ChainingArrayList<@NonNull ComputedCharacteristic<?>> computedCharacteristics =
       new ChainingArrayList<>();
    private final List<OrcsTypeJoin<?, ?>> orcsTypeJoins = new ArrayList<>();
+   private final List<Tuple2Type<?, ?>> tuple2Types = new ArrayList<>();
+   private final List<Tuple3Type<?, ?, ?>> tuple3Types = new ArrayList<>();
+   private final List<Tuple4Type<?, ?, ?, ?>> tuple4Types = new ArrayList<>();
    private final NamespaceToken namespace;
 
    /**
@@ -215,10 +219,34 @@ public class OrcsTypeTokens {
          artifactTypeA, sideAName, artifactTypeB, sideBName));
    }
 
+   public <E1, E2> Tuple2Type<E1, E2> add(TupleFamilyId familyId, long id, Function<Long, E1> valueOfE1,
+      Function<Long, E2> valueOfE2) {
+      Tuple2Type<E1, E2> tuple = Tuple2Type.valueOf(familyId, id, valueOfE1, valueOfE2);
+      tuple2Types.add(tuple);
+      return tuple;
+   }
+
+   public <E1, E2, E3> Tuple3Type<E1, E2, E3> add(TupleFamilyId familyId, long id, Function<Long, E1> valueOfE1,
+      Function<Long, E2> valueOfE2, Function<Long, E3> valueOfE3) {
+      Tuple3Type<E1, E2, E3> tuple = Tuple3Type.valueOf(familyId, id, valueOfE1, valueOfE2, valueOfE3);
+      tuple3Types.add(tuple);
+      return tuple;
+   }
+
+   public <E1, E2, E3, E4> Tuple4Type<E1, E2, E3, E4> add(TupleFamilyId familyId, long id, Function<Long, E1> valueOfE1,
+      Function<Long, E2> valueOfE2, Function<Long, E3> valueOfE3, Function<Long, E4> valueOfE4) {
+      Tuple4Type<E1, E2, E3, E4> tuple = Tuple4Type.valueOf(familyId, id, valueOfE1, valueOfE2, valueOfE3, valueOfE4);
+      tuple4Types.add(tuple);
+      return tuple;
+   }
+
    public void registerTypes(OrcsTokenService tokenService) {
       artifactTypes.forEach(tokenService::registerArtifactType);
       attributeTypes.forEach(tokenService::registerAttributeType);
       relationTypes.forEach(tokenService::registerRelationType);
+      tuple2Types.forEach(tokenService::registerTuple2Type);
+      tuple3Types.forEach(tokenService::registerTuple3Type);
+      tuple4Types.forEach(tokenService::registerTuple4Type);
 
       for (OrcsTypeJoin<?, ?> typeJoin : orcsTypeJoins) {
          if (typeJoin instanceof ArtifactTypeJoin) {
@@ -670,7 +698,7 @@ public class OrcsTypeTokens {
    }
 
    public int size() {
-      return artifactTypes.size() + attributeTypes.size() + relationTypes.size();
+      return artifactTypes.size() + attributeTypes.size() + relationTypes.size() + tuple2Types.size() + tuple3Types.size() + tuple4Types.size();
    }
 
    @Override
