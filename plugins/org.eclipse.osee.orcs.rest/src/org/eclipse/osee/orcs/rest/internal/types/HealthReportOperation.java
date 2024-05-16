@@ -60,7 +60,7 @@ public class HealthReportOperation {
 
       JdbcStatement chStmt = jdbcService.getClient().getStatement();
       try {
-         String query = "SELECT UNIQUE attr_type_id FROM osee_attribute";
+         String query = "SELECT DISTINCT attr_type_id FROM osee_attribute";
          chStmt.runPreparedQuery(query);
          while (chStmt.next()) {
             Long attrTypeId = chStmt.getLong("attr_type_id");
