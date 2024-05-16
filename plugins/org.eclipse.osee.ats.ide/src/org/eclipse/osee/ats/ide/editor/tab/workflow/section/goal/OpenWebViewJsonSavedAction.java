@@ -25,7 +25,7 @@ import org.eclipse.swt.program.Program;
 public class OpenWebViewJsonSavedAction extends AbstractWebExportAction {
 
    public OpenWebViewJsonSavedAction(GoalArtifact goalArt, WorkflowEditor editor) {
-      super("Open Web Json Data - Saved", goalArt, editor, AtsImage.GLOBE);
+      super("Open Web Json Data - Saved (admin)", goalArt, editor, AtsImage.GLOBE);
    }
 
    @Override

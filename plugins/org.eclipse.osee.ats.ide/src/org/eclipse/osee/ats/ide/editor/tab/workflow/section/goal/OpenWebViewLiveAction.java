@@ -17,23 +17,28 @@ import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.swt.program.Program;
 
 /**
  * @author Donald G. Dunne
  */
-public class OpenWebViewAngularSavedAction extends AbstractWebExportAction {
+public class OpenWebViewLiveAction extends AbstractWebExportAction {
 
-   public OpenWebViewAngularSavedAction(GoalArtifact goalArt, WorkflowEditor editor) {
-      super("Open Web Angular View - Saved", goalArt, editor, AtsImage.GLOBE);
+   public OpenWebViewLiveAction(GoalArtifact goalArt, WorkflowEditor editor) {
+      super("Open Web View - Live", goalArt, editor, AtsImage.GLOBE);
    }
 
    @Override
    public void runWithException() {
-      String server = AtsApiService.get().getApplicationServerBase();
+      String custGuid = validateAndGetCustomizeDataGuid();
+      if (Strings.isInvalid(custGuid)) {
+         return;
+      }
 
+      String server = AtsApiService.get().getApplicationServerBase();
       server = server.replaceFirst(":[0-9]+$", ":4200");
-      String url = String.format("%s/world?collId=%s", server, goalArt.getIdString());
+      String url = String.format("%s/world?collId=%s&custId=%s", server, goalArt.getIdString(), custGuid);
       Program.launch(url);
    }
 

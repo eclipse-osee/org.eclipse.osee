@@ -70,8 +70,14 @@ public class AtsDbConfigDemoOp {
 
    private void addBacklogCustomization() {
       IAtsChangeSet changes = atsApi.createChangeSet("Set Default Customization");
-      changes.addAttribute(CoreArtifactTokens.XViewerCustomization, CoreAttributeTypes.XViewerCustomization,
-         OseeInf.getResourceContents("atsConfig/TestCust.xml", AtsDbConfigDemoOp.class));
+      String testCust = OseeInf.getResourceContents("atsConfig/TestCust.xml", AtsDbConfigDemoOp.class);
+      String custXml = "";
+      for (String line : testCust.split("\n")) {
+         if (line.startsWith("<")) {
+            custXml = line;
+         }
+      }
+      changes.addAttribute(CoreArtifactTokens.XViewerCustomization, CoreAttributeTypes.XViewerCustomization, custXml);
       changes.execute();
    }
 

@@ -23,14 +23,15 @@ import org.eclipse.swt.program.Program;
 /**
  * @author Donald G. Dunne
  */
-public class OpenWebViewAngularLiveAction extends AbstractWebExportAction {
+public class OpenDifferencesWebViewAction extends AbstractWebExportAction {
 
-   public OpenWebViewAngularLiveAction(GoalArtifact goalArt, WorkflowEditor editor) {
-      super("Open Web Angular View - Live", goalArt, editor, AtsImage.GLOBE);
+   public OpenDifferencesWebViewAction(GoalArtifact goalArt, WorkflowEditor editor) {
+      super("Open Differences Web View", goalArt, editor, AtsImage.REPORT);
    }
 
    @Override
    public void runWithException() {
+
       String custGuid = validateAndGetCustomizeDataGuid();
       if (Strings.isInvalid(custGuid)) {
          return;
@@ -38,7 +39,7 @@ public class OpenWebViewAngularLiveAction extends AbstractWebExportAction {
 
       String server = AtsApiService.get().getApplicationServerBase();
       server = server.replaceFirst(":[0-9]+$", ":4200");
-      String url = String.format("%s/world?collId=%s&custId=%s", server, goalArt.getIdString(), custGuid);
+      String url = String.format("%s/world?collId=%s&custId=%s&diff=true", server, goalArt.getIdString(), custGuid);
       Program.launch(url);
    }
 

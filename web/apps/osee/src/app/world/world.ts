@@ -18,3 +18,17 @@ export type world = {
 export type worldRow = {
 	[key: string]: string;
 };
+
+export type worldRowWithDiffs = {
+	[key: string]: {
+		value: string;
+		added: boolean;
+		deleted: boolean;
+		changed: boolean;
+	};
+};
+
+export type worldWithDiffs = {
+	orderedHeaders: string[];
+	rows: worldRowWithDiffs[];
+};
