@@ -110,10 +110,22 @@ public class XDynamicAttrValuesWidget extends XWidget implements WorldEditorWidg
             AttributeTypeFilteredDialog diag =
                new AttributeTypeFilteredDialog(Collections.castAll(searchableAttrTypes));
             if (diag.open() == Window.OK) {
-               if (diag.isNonExists()) {
-                  attrValues.addAttrValue(diag.getSelectedElement(), true);
-               } else {
-                  attrValues.addAttrValue(diag.getSelected());
+               List<AttributeValue> currAttrValues = attrValues.getAttributes();
+               AttributeTypeToken selectedAttrType = diag.getSelectedType();
+               boolean error = false;
+               for (AttributeValue attrVal : currAttrValues) {
+                  if (attrVal.getAttrType().equals(selectedAttrType)) {
+                     AWorkbench.popup("Search Type Error", "Search Type [%s] Already Exists",
+                        selectedAttrType.toString());
+                     error = true;
+                  }
+               }
+               if (!error) {
+                  if (diag.isValue()) {
+                     attrValues.addAttrValue(selectedAttrType);
+                  } else {
+                     attrValues.addAttrValue(selectedAttrType, diag.getAttrValueType());
+                  }
                }
                createUpdateAttached();
             }
@@ -161,6 +173,9 @@ public class XDynamicAttrValuesWidget extends XWidget implements WorldEditorWidg
             final AttributeValue fAttrValue = attrValue;
             if (attrValue.isNotExists()) {
                toolkit.createLabel(lComp, "does not exist");
+               attrTypeToValuesLabel.put(attrValue.getAttrType(), null);
+            } else if (attrValue.isExists()) {
+               toolkit.createLabel(lComp, "does exist");
                attrTypeToValuesLabel.put(attrValue.getAttrType(), null);
             } else {
                Hyperlink valuesLink = toolkit.createHyperlink(lComp, "select to set values", SWT.NONE);

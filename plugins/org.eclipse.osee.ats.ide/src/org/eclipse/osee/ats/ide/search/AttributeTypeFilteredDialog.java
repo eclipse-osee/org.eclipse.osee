@@ -11,12 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 package org.eclipse.osee.ats.ide.search;
-
 import java.util.Collection;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.api.util.AttributeValues.AttrValueType;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -36,14 +34,12 @@ import org.eclipse.swt.widgets.Control;
  */
 public class AttributeTypeFilteredDialog extends FilteredListDialog<AttributeTypeToken> {
 
-   private boolean nonExists = false;
-   private AttributeTypeToken selectedElement = AttributeTypeToken.SENTINEL;
-   private final AtsApi atsApi;
+   private AttrValueType attrValueType = AttrValueType.Value;
+   private AttributeTypeToken selectedType = AttributeTypeToken.SENTINEL;
 
    public AttributeTypeFilteredDialog(Collection<AttributeTypeToken> attributeTypes) {
       super("Select Attribute Type", "Select Attribute Type", new AttributeTypeLabelProvider());
       setInput(attributeTypes);
-      atsApi = AtsApiService.get();
    }
 
    @Override
@@ -63,15 +59,31 @@ public class AttributeTypeFilteredDialog extends FilteredListDialog<AttributeTyp
          public void widgetSelected(SelectionEvent e) {
             Object[] selectedElements = getSelectedElements();
             if (selectedElements.length == 0) {
-               AWorkbench.popup("Must Select at Attribute Type");
+               AWorkbench.popup("Must Select an Attribute Type");
                return;
             }
-            selectedElement = (AttributeTypeToken) selectedElements[0];
-            nonExists = true;
+            selectedType = (AttributeTypeToken) selectedElements[0];
+            attrValueType = AttrValueType.AttrNotExists;
             close();
          }
       });
 
+      final Button existsButton = new Button(composite, SWT.PUSH);
+      existsButton.setText("\"Exists\" and Close");
+      existsButton.setToolTipText("Select to add Exists Attribute Type to query");
+      existsButton.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            Object[] selectedElements = getSelectedElements();
+            if (selectedElements.length == 0) {
+               AWorkbench.popup("Must Select an Attribute Type");
+               return;
+            }
+            selectedType = (AttributeTypeToken) selectedElements[0];
+            attrValueType = AttrValueType.AttrExists;
+            close();
+         }
+      });
       return control;
    }
 
@@ -113,11 +125,31 @@ public class AttributeTypeFilteredDialog extends FilteredListDialog<AttributeTyp
 
    }
 
-   public boolean isNonExists() {
-      return nonExists;
+   public AttributeTypeToken getSelectedType() {
+      if (selectedType.isInvalid()) {
+         return getSelected();
+      }
+      return selectedType;
    }
 
-   public AttributeTypeToken getSelectedElement() {
-      return selectedElement;
+   public final AttrValueType getAttrValueType() {
+      return attrValueType;
    }
+
+   public final void setAttrValueType(AttrValueType attrValueType) {
+      this.attrValueType = attrValueType;
+   }
+
+   public boolean isNonExists() {
+      return attrValueType == AttrValueType.AttrNotExists;
+   }
+
+   public boolean isExists() {
+      return attrValueType == AttrValueType.AttrExists;
+   }
+
+   public boolean isValue() {
+      return attrValueType == AttrValueType.Value;
+   }
+
 }
