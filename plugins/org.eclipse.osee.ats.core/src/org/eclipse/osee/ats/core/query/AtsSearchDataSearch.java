@@ -152,6 +152,8 @@ public class AtsSearchDataSearch {
       for (AttributeValue attrVal : data.getAttrValues().getAttributes()) {
          if (attrVal.isNotExists()) {
             query.andNotExists(attrVal.getAttrType());
+         } else if (attrVal.isExists()) {
+            query.andExists(attrVal.getAttrType());
          } else if (!attrVal.getValues().isEmpty()) {
             query.andAttr(attrVal.getAttrType(), attrVal.getValues());
          }

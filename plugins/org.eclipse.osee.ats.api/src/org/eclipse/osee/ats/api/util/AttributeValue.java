@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.api.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.ats.api.util.AttributeValues.AttrValueType;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 
 /**
@@ -23,7 +24,7 @@ public class AttributeValue {
 
    private AttributeTypeToken attrType = AttributeTypeToken.SENTINEL;
    private List<String> values = new ArrayList<>();
-   private boolean notExists = false;
+   private AttrValueType attrValueType = AttrValueType.Value;
 
    public AttributeValue() {
       // for jax-rs
@@ -36,9 +37,9 @@ public class AttributeValue {
       }
    }
 
-   public AttributeValue(AttributeTypeToken attrType, boolean notExists) {
+   public AttributeValue(AttributeTypeToken attrType, AttrValueType attrValueType) {
       this.attrType = attrType;
-      this.notExists = true;
+      this.attrValueType = attrValueType;
    }
 
    public AttributeTypeToken getAttrType() {
@@ -73,11 +74,19 @@ public class AttributeValue {
    }
 
    public boolean isNotExists() {
-      return notExists;
+      return attrValueType == AttrValueType.AttrNotExists;
    }
 
-   public void setNotExists(boolean notExists) {
-      this.notExists = notExists;
+   public boolean isExists() {
+      return attrValueType == AttrValueType.AttrExists;
+   }
+
+   public final AttrValueType getAttrValueType() {
+      return attrValueType;
+   }
+
+   public final void setAttrValueType(AttrValueType attrValueType) {
+      this.attrValueType = attrValueType;
    }
 
 }
