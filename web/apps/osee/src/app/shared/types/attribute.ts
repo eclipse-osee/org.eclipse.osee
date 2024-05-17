@@ -14,8 +14,8 @@
 export interface attribute {
 	name: string;
 	value: string;
-	typeId: string;
-	id: string;
+	typeId: `${number}`;
+	id: `${number}`;
 	storeType: storeType;
 	multiplicityId: string;
 }
@@ -41,7 +41,7 @@ export const nameAttribute: attribute = {
 	name: 'Name',
 	value: '',
 	typeId: '1152921504606847088',
-	id: '',
+	id: '8888',
 	storeType: 'String',
 	multiplicityId: '1',
 };

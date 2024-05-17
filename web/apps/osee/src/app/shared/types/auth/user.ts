@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export interface user {
-	id: string;
+	id: `${number}`;
 	name: string;
 	guid: null;
 	active: boolean;

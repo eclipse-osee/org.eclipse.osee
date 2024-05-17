@@ -14,9 +14,12 @@ import { NgClass } from '@angular/common';
 import { Component, Input, signal } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { CommitBranchService, UiService } from '@osee/shared/services';
+import {
+	BranchRoutedUIService,
+	CommitBranchService,
+	UiService,
+} from '@osee/shared/services';
 import { of, switchMap, take, tap } from 'rxjs';
-import { BranchRoutedUIService } from '../internal/services/branch-routed-ui.service';
 import { MergeManagerDialogComponent } from '../merge-manager-dialog/merge-manager-dialog.component';
 
 @Component({

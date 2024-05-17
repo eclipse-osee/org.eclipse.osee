@@ -12,6 +12,7 @@
  **********************************************************************/
 export * from './action';
 export * from './actionable-item';
+export * from './artifact';
 export * from './create-action';
 export * from './create-action-field';
 export * from './create-new-action';

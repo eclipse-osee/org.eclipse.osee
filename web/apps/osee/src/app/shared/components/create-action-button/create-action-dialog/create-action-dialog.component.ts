@@ -49,7 +49,7 @@ import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { filter, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { LatestActionDropDownComponent } from '../../latest-action-drop-down/latest-action-drop-down.component';
 import { ActionUserService } from '../../action-state-button/internal/services/action-user.service';
-import { CreateActionService } from '../internal/services/create-action.service';
+import { CreateActionService } from '../../../services/ple_aware/httpui/create-action.service';
 /**
  * Dialog for creating a new action with the correct workType and category.
  */

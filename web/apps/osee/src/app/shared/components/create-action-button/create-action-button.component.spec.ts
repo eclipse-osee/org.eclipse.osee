@@ -12,8 +12,8 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CreateActionButtonComponent } from './create-action-button.component';
-import { CreateActionService } from './internal/services/create-action.service';
-import { createActionServiceMock } from './internal/services/create-action.service.mock';
+import { CreateActionService } from '../../services/ple_aware/httpui/create-action.service';
+import { createActionServiceMock } from '@osee/messaging/shared/services/ple_aware/testing';
 
 describe('CreateActionButtonComponent', () => {
 	let component: CreateActionButtonComponent;

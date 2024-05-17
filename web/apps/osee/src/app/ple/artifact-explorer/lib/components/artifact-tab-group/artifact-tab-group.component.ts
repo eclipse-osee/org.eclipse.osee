@@ -21,6 +21,7 @@ import { ChangeReportTableComponent } from '../change-report-table/change-report
 import { ArtifactEditorComponent } from '../editor/artifact-editor/artifact-editor.component';
 import { ArtifactInfoPanelComponent } from '../editor/artifact-info-panel/artifact-info-panel.component';
 import { RelationsEditorPanelComponent } from '../editor/relations-editor-panel/relations-editor-panel.component';
+import { TeamWorkflowTabComponent } from '../editor/team-workflow-tab/team-workflow-tab.component';
 
 @Component({
 	selector: 'osee-artifact-tab-group',
@@ -36,6 +37,7 @@ import { RelationsEditorPanelComponent } from '../editor/relations-editor-panel/
 		ArtifactInfoPanelComponent,
 		RelationsEditorPanelComponent,
 		ArtifactEditorComponent,
+		TeamWorkflowTabComponent,
 		ChangeReportTableComponent,
 	],
 	templateUrl: './artifact-tab-group.component.html',

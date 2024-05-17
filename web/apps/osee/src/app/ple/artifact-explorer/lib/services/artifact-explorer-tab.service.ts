@@ -14,14 +14,12 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Injectable, inject, signal } from '@angular/core';
 import { BranchCommitEventService, UiService } from '@osee/shared/services';
 import { toSignal } from '@angular/core/rxjs-interop';
-import {
-	tab,
-	artifact,
-	TabType,
-	artifactSentinel,
-} from '../types/artifact-explorer.data';
+import { tab } from '../types/artifact-explorer.data';
 import { ArtifactIconService } from './artifact-icon.service';
-import { twColorClasses } from '@osee/shared/types';
+import {
+	artifact,
+	teamWorkflowToken,
+} from '@osee/shared/types/configuration-management';
 
 @Injectable({
 	providedIn: 'root',
@@ -45,18 +43,24 @@ export class ArtifactExplorerTabService {
 		});
 	}
 
-	addTab(tabType: TabType, tabTitle: string) {
-		this.tabs.update((rows) => [
-			...rows,
-			{
-				tabType,
-				tabTitle,
-				artifact: artifactSentinel,
-				branchId: this.branchId(),
-				viewId: this.viewId(),
-			},
-		]);
+	generateTabId() {
+		return (performance.now() * Math.random()).toString();
+	}
+
+	addTab(tab: tab) {
+		this.tabs.update((rows) => [...rows, tab]);
 		this.SelectedIndex = this.tabs().length - 1;
+	}
+
+	addChangeReportTab(tabTitle: string) {
+		let newTab: tab = {
+			tabId: this.generateTabId(),
+			tabType: 'ChangeReport',
+			tabTitle,
+			branchId: this.branchId(),
+			viewId: this.viewId(),
+		};
+		this.addTab(newTab);
 	}
 
 	addArtifactTab(artifact: artifact) {
@@ -71,24 +75,45 @@ export class ArtifactExplorerTabService {
 		// don't open a tab for the same artifact on the same branch
 		const currentIndex = this.tabs().findIndex(
 			(existingTab) =>
+				existingTab.tabType === 'Artifact' &&
 				existingTab.branchId === this.uiService.id.value &&
 				existingTab.artifact?.id === artifact.id
 		);
-		if (currentIndex === -1) {
-			this.tabs.update((rows) => [
-				...rows,
-				{
-					tabType: 'Artifact',
-					tabTitle: artifact.name,
-					artifact: artifact,
-					branchId: branchId,
-					viewId: viewId,
-				},
-			]);
-			this.SelectedIndex = this.tabs().length - 1;
-		} else {
+		if (currentIndex !== -1) {
 			this.SelectedIndex = currentIndex;
+			return;
 		}
+
+		this.addTab({
+			tabId: this.generateTabId(),
+			tabType: 'Artifact',
+			tabTitle: artifact.name,
+			artifact: artifact,
+			branchId: branchId,
+			viewId: viewId,
+		});
+	}
+
+	addTeamWorkflowTab(teamWorkflow: teamWorkflowToken) {
+		// don't open a tab for an action if it's already open
+		const currentIndex = this.tabs().findIndex(
+			(existingTab) =>
+				existingTab.tabType === 'TeamWorkflow' &&
+				existingTab.teamWorkflowId === teamWorkflow.id
+		);
+		if (currentIndex !== -1) {
+			this.SelectedIndex = currentIndex;
+			return;
+		}
+
+		this.addTab({
+			tabId: this.generateTabId(),
+			tabType: 'TeamWorkflow',
+			tabTitle: teamWorkflow.atsId + ' - ' + teamWorkflow.name,
+			teamWorkflowId: teamWorkflow.id,
+			branchId: '570',
+			viewId: '-1',
+		});
 	}
 
 	removeTab(index: number) {
@@ -96,12 +121,16 @@ export class ArtifactExplorerTabService {
 	}
 
 	getTabIcon(tab: tab) {
-		if (tab.tabType === 'Artifact' && tab.artifact) {
-			return tab.artifact.icon.icon;
-		} else if (tab.tabType === 'ChangeReport') {
-			return 'differences';
+		switch (tab.tabType) {
+			case 'Artifact':
+				return tab.artifact.icon.icon;
+			case 'ChangeReport':
+				return 'differences';
+			case 'TeamWorkflow':
+				return 'assignment';
+			default:
+				return '';
 		}
-		return '';
 	}
 
 	get Tabs() {
@@ -128,6 +157,9 @@ export class ArtifactExplorerTabService {
 			return this.artifactIconService.getIconVariantClass(
 				tab.artifact.icon
 			);
+		}
+		if (tab.tabType === 'TeamWorkflow') {
+			return 'material-icons-outlined';
 		}
 		return '';
 	}

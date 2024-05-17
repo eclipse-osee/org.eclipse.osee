@@ -14,32 +14,31 @@
 	mat-raised-button
 	[matMenuTriggerFor]="stateMenu"
 	class="tw-flex tw-justify-between tw-bg-primary tw-text-background">
-	{{ currentStateName | async
-	}}<mat-icon iconPositionEnd>expand_more</mat-icon>
+	{{ currentStateName() }}<mat-icon iconPositionEnd>expand_more</mat-icon>
 </button>
 
 <mat-menu
 	#stateMenu="matMenu"
 	class="[&>div>div]: tw-max-w-none">
-	@for (state of previousStates | async; track state.state) {
+	@for (state of previousStates(); track state.state) {
 		<ng-container
 			[ngTemplateOutlet]="transitionButton"
 			[ngTemplateOutletContext]="{
 				$implicit: {
 					state: state,
 					isPrevious: true,
-					currentState: currentState | async
+					currentState: currentState()
 				}
 			}"></ng-container>
 	}
-	@for (state of nextStates | async; track state.state) {
+	@for (state of nextStates(); track state.state) {
 		<ng-container
 			[ngTemplateOutlet]="transitionButton"
 			[ngTemplateOutletContext]="{
 				$implicit: {
 					state: state,
 					isPrevious: false,
-					currentState: currentState | async
+					currentState: currentState()
 				}
 			}"></ng-container>
 	}
@@ -50,7 +49,7 @@
 	let-ctx>
 	@if (
 		((!ctx.currentState.rules.includes('REQUIRED_FOR_TRANSITION') ||
-			(isApproved | async) === 'true' ||
+			transitionApproved() ||
 			ctx.isPrevious) &&
 			ctx.currentState.state !== 'Review') ||
 		ctx.state.state === 'Cancelled'
@@ -82,7 +81,8 @@
 			</div>
 		</button>
 	} @else if (
-		(isApproved | async) === 'true' &&
+		commitAllowed() &&
+		transitionApproved() &&
 		ctx.currentState.commitable &&
 		!ctx.isPrevious
 	) {
@@ -111,8 +111,8 @@
 			</div>
 		</button>
 	} @else if (
-		(isTeamLead | async) === true &&
-		(isApproved | async) === 'false' &&
+		isTeamLead() &&
+		!transitionApproved() &&
 		!ctx.isPrevious &&
 		ctx.state.state !== 'Cancelled'
 	) {
@@ -141,7 +141,9 @@
 			</div>
 		</button>
 	} @else if (
-		(isApproved | async) === 'true' && ctx.state.state === 'Completed'
+		commitAllowed() &&
+		transitionApproved() &&
+		ctx.state.state === 'Completed'
 	) {
 		<button
 			mat-menu-item

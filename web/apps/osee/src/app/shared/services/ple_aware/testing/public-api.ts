@@ -10,11 +10,4 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
-
-@Component({
-	selector: 'osee-artifact-hierarchy-panel',
-	template: '<div>Dummy</div>',
-	standalone: true,
-})
-export class ArtifactHeirarchyMockComponent {}
+export * from './create-action.service.mock';

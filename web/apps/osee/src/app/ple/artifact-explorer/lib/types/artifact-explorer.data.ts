@@ -10,7 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { attribute, iconVariant, twColor, twShade } from '@osee/shared/types';
+import { attribute } from '@osee/shared/types';
+import {
+	artifact,
+	artifactTypeIcon,
+	relation,
+	teamWorkflow,
+} from '@osee/shared/types/configuration-management';
 
 export const DEFAULT_HIERARCHY_ROOT_ARTIFACT: artifact = {
 	id: '197818',
@@ -35,61 +41,29 @@ export interface artifactWithDirectRelations {
 	relations: relation[];
 }
 
-export interface relation {
-	relationTypeToken: relationTypeToken;
-	relationSides: relationSide[];
-}
-
-export interface relationTypeToken {
-	id: `${number}`;
-	idIntValue: number;
-	idString: string;
-	multiplicity: string;
-	name: string;
-	newRelationTable: boolean;
-	order: string;
-	ordered: boolean;
-	relationArtifactType: string;
-}
-
-export interface relationSide {
-	name: string;
-	artifacts: artifact[];
-	isSideA: boolean;
-	isSideB: boolean;
-}
-
-export interface artifact {
-	name: string;
-	id: `${number}`;
-	typeId: string;
-	typeName: string;
-	icon: artifactTypeIcon;
-	attributes: attribute[];
-	editable: boolean;
-}
-
-export type artifactTypeIcon = {
-	icon: string;
-	color: twColor;
-	lightShade: twShade;
-	darkShade: twShade;
-	variant: iconVariant;
-};
-
-export interface tab {
+interface abstractTab {
+	tabId: string;
 	tabType: TabType;
 	tabTitle: string;
-	artifact: artifact;
 	branchId: string;
 	viewId: string;
 }
 
-export type artifactTokenWithIcon = {
-	id: `${number}`;
-	name: string;
-	icon: artifactTypeIcon;
-};
+export interface artifactTab extends abstractTab {
+	tabType: 'Artifact';
+	artifact: artifact;
+}
+
+export interface changeReportTab extends abstractTab {
+	tabType: 'ChangeReport';
+}
+
+export interface teamWorkflowTab extends abstractTab {
+	tabType: 'TeamWorkflow';
+	teamWorkflowId: `${number}`;
+}
+
+export type tab = artifactTab | changeReportTab | teamWorkflowTab;
 
 export interface artifactHierarchyOptions {
 	showRelations: boolean;
@@ -103,29 +77,17 @@ export interface createChildArtifactDialogData {
 	option: artifactContextMenuOption;
 }
 
-export const artifactSentinel: artifact = {
-	id: '-1',
-	name: '',
-	typeId: '',
-	typeName: '',
-	icon: {
-		icon: '',
-		color: '',
-		lightShade: '',
-		darkShade: '',
-		variant: '',
-	},
-	attributes: [],
-	editable: false,
-};
-
-export type TabType = 'Artifact' | 'ChangeReport' | 'MarkdownEditor';
+export type TabType =
+	| 'Artifact'
+	| 'ChangeReport'
+	| 'MarkdownEditor'
+	| 'TeamWorkflow';
 
 export interface artifactContextMenuOption {
 	name: string;
 	icon: artifactTypeIcon;
 }
-
+export type ExplorerPanel = 'Actions' | 'Artifacts' | 'Branches';
 export interface deleteArtifactDialogData {
 	artifact: artifact;
 	option: artifactContextMenuOption;

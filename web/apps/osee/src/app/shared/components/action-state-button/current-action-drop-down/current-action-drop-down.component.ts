@@ -12,9 +12,12 @@
  **********************************************************************/
 import { Component, inject, input } from '@angular/core';
 import { ActionDropDownComponent } from '../action-drop-down/action-drop-down.component';
-import { ActionStateButtonService } from '../internal/services/action-state-button.service';
 import { CreateActionButtonComponent } from '../../create-action-button/create-action-button.component';
 import { toSignal } from '@angular/core/rxjs-interop';
+import {
+	CurrentActionService,
+	CurrentBranchInfoService,
+} from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-current-action-drop-down',
@@ -26,7 +29,9 @@ export class CurrentActionDropDownComponent {
 	category = input('0');
 	workType = input('');
 
-	actionService = inject(ActionStateButtonService);
+	currentBranchService = inject(CurrentBranchInfoService);
+	currentActionSercice = inject(CurrentActionService);
 
-	branchInfo = toSignal(this.actionService.branchState);
+	currentBranch = toSignal(this.currentBranchService.currentBranch);
+	teamWorkflow = toSignal(this.currentActionSercice.branchWorkFlow);
 }

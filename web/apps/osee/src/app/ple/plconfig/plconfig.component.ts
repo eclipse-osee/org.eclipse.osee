@@ -21,8 +21,8 @@ import {
 	PlConfigUIStateService,
 } from '@osee/plconfig';
 import {
-	ActionDropDownComponent,
 	BranchPickerComponent,
+	CurrentActionDropDownComponent,
 	ViewSelectorComponent,
 } from '@osee/shared/components';
 import { Observable, Subject, combineLatest, iif, of } from 'rxjs';
@@ -38,7 +38,7 @@ import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 		MatButton,
 		MatIcon,
 		BranchPickerComponent,
-		ActionDropDownComponent,
+		CurrentActionDropDownComponent,
 		EditDefinitionsDropdownComponent,
 		ApplicabilityTableComponent,
 		ViewSelectorComponent,

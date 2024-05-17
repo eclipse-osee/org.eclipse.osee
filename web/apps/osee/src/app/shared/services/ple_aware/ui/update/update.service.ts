@@ -19,6 +19,7 @@ import { debounceTime } from 'rxjs/operators';
 })
 export class UpdateService {
 	private _updateRequired: Subject<boolean> = new Subject<boolean>();
+	private _updateArtifact = new Subject<string>();
 
 	private _updateOccurred = this._updateRequired.pipe(debounceTime(100));
 	constructor() {}
@@ -29,5 +30,13 @@ export class UpdateService {
 
 	set updated(value: boolean) {
 		this._updateRequired.next(value);
+	}
+
+	get updateArtifact() {
+		return this._updateArtifact;
+	}
+
+	set updatedArtifact(value: string) {
+		this._updateArtifact.next(value);
 	}
 }

@@ -13,10 +13,7 @@
 import { of } from 'rxjs';
 import { ArtifactExplorerHttpService } from '../services/artifact-explorer-http.service';
 import { artifactWithDirectRelations } from '../types/artifact-explorer.data';
-import {
-	artifactTypeAttributesMock,
-	artifactMock,
-} from './artifact-explorer.data.mock';
+import { artifactMock, artifactTypeAttributesMock } from '@osee/shared/testing';
 
 export const ArtifactExplorerHttpServiceMock: Partial<ArtifactExplorerHttpService> =
 	{

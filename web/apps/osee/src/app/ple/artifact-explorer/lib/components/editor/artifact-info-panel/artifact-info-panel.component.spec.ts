@@ -32,6 +32,7 @@ describe('ArtifactInfoPanelComponent', () => {
 
 		// tab input
 		const tabMock: tab = {
+			tabId: '222',
 			tabType: 'Artifact',
 			tabTitle: '',
 			artifact: {

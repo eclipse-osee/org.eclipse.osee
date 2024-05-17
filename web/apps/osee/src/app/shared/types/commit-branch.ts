@@ -50,7 +50,7 @@ export type mergeData = {
 };
 
 export type attrMergeData = {
-	attrType: string;
+	attrType: `${number}`;
 	attrId: string;
 	attrTypeName: string;
 	sourceValue: string;

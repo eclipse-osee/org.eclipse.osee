@@ -15,6 +15,10 @@ import { branch, response } from '..';
 export interface newActionResponse {
 	action: null;
 	results: response;
-	teamWfs: [];
+	teamWfs: newActionTeamWorkflow[];
 	workingBranchId: branch;
 }
+
+type newActionTeamWorkflow = {
+	id: `${number}`;
+};

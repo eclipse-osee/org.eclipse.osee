@@ -32,6 +32,11 @@ import {
 	WorkType,
 	CreateActionField,
 	atsLastMod,
+	teamWorkflowToken,
+	workDefinition,
+	TeamWorkflowSearchCriteria,
+	TeamWorkflowSearchCriteriaImpl,
+	teamWorkflowDetails,
 } from '@osee/shared/types/configuration-management';
 import { ARTIFACTTYPEID } from '@osee/shared/types/constants';
 
@@ -66,6 +71,74 @@ export class ActionService {
 	}
 	public getAction(artifactId: string | number): Observable<action[]> {
 		return this.http.get<action[]>(apiURL + '/ats/action/' + artifactId);
+	}
+
+	public getTeamWorkflowDetails(artifactId: string | number) {
+		return this.http.get<teamWorkflowDetails>(
+			apiURL + '/ats/teamwf/details/' + artifactId
+		);
+	}
+
+	public getTeamWorkflowsForUser(
+		userId: `${number}`,
+		count?: number,
+		pageNum?: number
+	) {
+		const criteria = new TeamWorkflowSearchCriteriaImpl();
+		criteria.assignees = [userId];
+		return this.searchTeamWorkflows(criteria, count, pageNum);
+	}
+
+	public getTeamWorkflowsForUserCount(userId: `${number}`) {
+		const criteria = new TeamWorkflowSearchCriteriaImpl();
+		criteria.assignees = [userId];
+		const params = this.createParams(criteria);
+		return this.http.get<number>(apiURL + '/ats/teamwf/search/count', {
+			params: params,
+		});
+	}
+
+	public searchTeamWorkflows(
+		criteria: TeamWorkflowSearchCriteria,
+		count?: number,
+		pageNum?: number
+	) {
+		const params = this.createParams(criteria, count, pageNum);
+		return this.http.get<teamWorkflowToken[]>(
+			apiURL + `/ats/teamwf/search`,
+			{ params: params }
+		);
+	}
+
+	private createParams(
+		criteria: TeamWorkflowSearchCriteria,
+		count?: number,
+		pageNum?: number
+	) {
+		let params: HttpParamsType = {};
+		if (pageNum && count) {
+			params = { ...params, pageNum: pageNum, count: count };
+		}
+		if (criteria.assignees && criteria.assignees.length > 0) {
+			params = { ...params, assignee: criteria.assignees };
+		}
+		if (criteria.originators && criteria.originators.length > 0) {
+			params = { ...params, originator: criteria.originators };
+		}
+		if (criteria.inProgressOnly) {
+			params = { ...params, inProgressOnly: criteria.inProgressOnly };
+		}
+		if (criteria.searchByArtId) {
+			params = { ...params, searchByArtId: criteria.searchByArtId };
+		}
+		if (criteria.search) {
+			params = { ...params, search: criteria.search };
+		}
+		return params;
+	}
+
+	public getWorkDefinition(id: `${number}` | number) {
+		return this.http.get<workDefinition>(apiURL + '/ats/workdef/' + id);
 	}
 
 	public getLastModified(

@@ -16,9 +16,13 @@ import {
 	teamWorkflow,
 	targetedVersion,
 	WorkType,
+	teamWorkflowToken,
+	teamWorkflowDetails,
 } from '@osee/shared/types/configuration-management';
 import { commitResponse, transitionResponse } from '@osee/shared/types';
 import { MockXResultData } from './XResultData.response.mock';
+import { artifactMock } from './artifact.mock';
+import { MockUserResponse } from './user.response.mock';
 
 export const testBranchActions: action[] = [
 	{
@@ -67,7 +71,7 @@ export const testWorkFlow: teamWorkflow = {
 	'ats.Team Definition Reference': 'TestTeamDefinition',
 	'ats.Description': 'Description',
 	TeamName: 'SAW',
-	Assignees: 'Example User',
+	Assignees: [{ id: '54321', name: 'Example User' }],
 	ChangeType: 'Improvment',
 	Priority: 'low',
 	State: 'Review',
@@ -82,6 +86,19 @@ export const testWorkFlow: teamWorkflow = {
 		committable: false,
 	},
 };
+
+export const teamWorkflowDetailsMock: teamWorkflowDetails = {
+	...testWorkFlow,
+	artifact: artifactMock,
+	leads: [MockUserResponse],
+};
+
+export const teamWorkflowTokenMock: teamWorkflowToken = {
+	id: '111',
+	atsId: 'TW01',
+	name: 'Test Workflow',
+};
+
 export const testARB = [
 	{
 		id: '123',

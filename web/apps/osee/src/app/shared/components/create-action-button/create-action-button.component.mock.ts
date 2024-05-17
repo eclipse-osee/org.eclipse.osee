@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2022 Boeing
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,16 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { BehaviorSubject } from 'rxjs';
-import { BranchRoutedUIService } from './branch-routed-ui.service';
+import { Component, input } from '@angular/core';
 
-export const branchRoutedUiServiceMock: Partial<BranchRoutedUIService> = {
-	branchType: '',
-	type: new BehaviorSubject<'working' | 'baseline' | ''>(''),
-	id: new BehaviorSubject(''),
-	branchId: '',
-
-	set position(value: { type: 'working' | 'baseline' | ''; id: string }) {
-		//do nothing
-	},
-};
+@Component({
+	selector: 'osee-create-action-button',
+	template: '<div>Dummy</div>',
+	standalone: true,
+})
+export class CreateActionButtonMockComponent {
+	category = input('0');
+	workType = input('');
+}

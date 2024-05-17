@@ -33,6 +33,7 @@ import {
 	BranchInfoServiceMock,
 	actionServiceMock,
 	commitBranchServiceMock,
+	teamWorkflowDetailsMock,
 } from '@osee/shared/testing';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
 
@@ -113,6 +114,7 @@ describe('ActionDropDownComponent', () => {
 	beforeEach(() => {
 		fixture = TestBed.createComponent(ActionDropDownComponent);
 		component = fixture.componentInstance;
+		fixture.componentRef.setInput('teamWorkflow', teamWorkflowDetailsMock);
 		fixture.detectChanges();
 	});
 	it('should create', () => {

@@ -38,13 +38,13 @@ import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer
 import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
 import { ArtifactHierarchyArtifactsExpandedService } from '../../../services/artifact-hierarchy-artifacts-expanded.service';
 import { ArtifactIconService } from '../../../services/artifact-icon.service';
-import {
-	DEFAULT_HIERARCHY_ROOT_ARTIFACT,
-	artifact,
-	artifactTypeIcon,
-} from '../../../types/artifact-explorer.data';
+import { DEFAULT_HIERARCHY_ROOT_ARTIFACT } from '../../../types/artifact-explorer.data';
 import { ArtifactHierarchyRelationsComponent } from '../artifact-hierarchy-relations/artifact-hierarchy-relations.component';
 import { ArtifactOptionsContextMenuComponent } from '../artifact-options-context-menu/artifact-options-context-menu.component';
+import {
+	artifact,
+	artifactTypeIcon,
+} from '@osee/shared/types/configuration-management';
 
 @Component({
 	selector: 'osee-artifact-hierarchy',

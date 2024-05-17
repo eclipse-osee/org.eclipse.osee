@@ -15,6 +15,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AttributesEditorComponent } from './attributes-editor.component';
 import { MarkdownEditorComponent } from './../markdown-editor/markdown-editor.component';
 import { mockAttribute } from '../../types/attribute';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 describe('AttributesEditorComponent', () => {
 	let component: AttributesEditorComponent;
@@ -23,11 +24,13 @@ describe('AttributesEditorComponent', () => {
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			imports: [AttributesEditorComponent, MarkdownEditorComponent],
+			providers: [provideNoopAnimations()],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(AttributesEditorComponent);
 		component = fixture.componentInstance;
 		fixture.componentRef.setInput('attributes', [mockAttribute]);
+		fixture.componentRef.setInput('editable', true);
 		fixture.detectChanges();
 	});
 

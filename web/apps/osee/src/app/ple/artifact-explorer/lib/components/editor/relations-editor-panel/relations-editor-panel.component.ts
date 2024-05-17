@@ -48,7 +48,7 @@ import {
 	artifactTypeIcon,
 	relation,
 	relationSide,
-} from '../../../types/artifact-explorer.data';
+} from '@osee/shared/types/configuration-management';
 import { RelationDeleteDialogComponent } from '../relation-delete-dialog/relation-delete-dialog.component';
 import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
 

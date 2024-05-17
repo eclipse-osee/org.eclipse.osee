@@ -10,43 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { attribute } from '@osee/shared/types';
-import {
-	artifactTypeIcon,
-	artifactContextMenuOption,
-	artifact,
-} from '../types/artifact-explorer.data';
-
-export const artifactTypeIconMock: artifactTypeIcon = {
-	icon: 'insert_drive_file',
-	color: 'primary',
-	lightShade: '500',
-	darkShade: '500',
-	variant: '',
-};
+import { artifactContextMenuOption } from '../types/artifact-explorer.data';
+import { artifactTypeIconMock } from '@osee/shared/testing';
 
 export const artifactContextMenuOptionMock: artifactContextMenuOption = {
 	name: 'create',
 	icon: artifactTypeIconMock,
-};
-
-export const artifactTypeAttributesMock: attribute[] = [
-	{
-		name: 'subsystem',
-		value: 'data management',
-		typeId: '7',
-		id: '11111',
-		storeType: 'Enumeration',
-		multiplicityId: '2',
-	},
-];
-
-export const artifactMock: artifact = {
-	name: 'test',
-	id: '1234',
-	typeId: '1111',
-	typeName: 'requirement',
-	icon: artifactTypeIconMock,
-	attributes: artifactTypeAttributesMock,
-	editable: true,
 };

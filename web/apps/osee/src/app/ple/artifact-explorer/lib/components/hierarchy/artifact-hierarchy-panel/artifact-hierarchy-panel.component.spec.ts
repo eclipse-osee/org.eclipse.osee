@@ -27,12 +27,22 @@ import { ArtifactHierarchyComponent } from '../artifact-hierarchy/artifact-hiera
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatIconModule } from '@angular/material/icon';
 import { ArtifactSearchComponent } from '../artifact-search-panel/artifact-search/artifact-search.component';
-import { ArtifactHeirarchyOptionsMockComponent } from '../artifact-hierarchy-options/artifact-heirarchy-oprions.component.mock';
+import { ArtifactHierarchyOptionsMockComponent } from '../artifact-hierarchy-options/artifact-hierarchy-oprions.component.mock';
 import { ArtifactSearchMockComponent } from '../artifact-search-panel/artifact-search-panel.component.mock';
-import { CurrentBranchInfoService } from '@osee/shared/services';
+import {
+	ActionService,
+	CreateActionService,
+	CurrentActionService,
+	CurrentBranchInfoService,
+} from '@osee/shared/services';
 import { of } from 'rxjs';
-import { testBranchInfo } from '@osee/shared/testing';
+import {
+	actionServiceMock,
+	currentActionServiceMock,
+	testBranchInfo,
+} from '@osee/shared/testing';
 import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
+import { createActionServiceMock } from '@osee/messaging/shared/services/ple_aware/testing';
 
 describe('ArtifactHierarchyPanelComponent', () => {
 	let component: ArtifactHierarchyPanelComponent;
@@ -46,7 +56,7 @@ describe('ArtifactHierarchyPanelComponent', () => {
 					MatExpansionModule,
 					ArtifactHierarchyComponent,
 					DragDropModule,
-					ArtifactHeirarchyOptionsMockComponent,
+					ArtifactHierarchyOptionsMockComponent,
 					MatIconModule,
 					ArtifactSearchComponent,
 					CurrentActionDropdownMockComponent,
@@ -71,6 +81,15 @@ describe('ArtifactHierarchyPanelComponent', () => {
 						},
 					} as Partial<CurrentBranchInfoService>,
 				},
+				{
+					provide: CurrentActionService,
+					useValue: currentActionServiceMock,
+				},
+				{
+					provide: CreateActionService,
+					useValue: createActionServiceMock,
+				},
+				{ provide: ActionService, useValue: actionServiceMock },
 			],
 		});
 		fixture = TestBed.createComponent(ArtifactHierarchyPanelComponent);

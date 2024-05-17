@@ -36,8 +36,8 @@ import {
 	switchMap,
 } from 'rxjs';
 import { BranchListService } from '../../../../internal/services/branch-list.service';
-import { BranchRoutedUIService } from '../../../../internal/services/branch-routed-ui.service';
 import { MatOptionLoadingComponent } from '../../../../mat-option-loading/mat-option-loading/mat-option-loading.component';
+import { BranchRoutedUIService } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-branch-selector',

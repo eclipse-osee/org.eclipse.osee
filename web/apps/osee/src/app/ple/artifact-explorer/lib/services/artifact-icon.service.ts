@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { twColorClasses } from '@osee/shared/types';
-import { artifactTypeIcon } from '../types/artifact-explorer.data';
+import { artifactTypeIcon } from '@osee/shared/types/configuration-management';
 
 @Injectable({
 	providedIn: 'root',

@@ -30,3 +30,6 @@ export * from './artifact-ui.service.mock';
 export * from './commit-branch.mock';
 export * from './commit-branch.service.mock';
 export * from './views-routed-ui.service.mock';
+export * from './branch-routed-ui.service.mock';
+export * from './current-action.service.mock';
+export * from './artifact.mock';

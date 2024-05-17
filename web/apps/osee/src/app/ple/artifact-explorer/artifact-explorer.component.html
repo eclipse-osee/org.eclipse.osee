@@ -22,7 +22,10 @@
 			mode="side"
 			[position]="panelLocation() || 'end'"
 			opened="true">
-			<osee-artifact-hierarchy-panel />
+			<osee-artifact-hierarchy-panel
+				[ngClass]="{ 'tw-hidden': currentPanel() !== 'Artifacts' }" />
+			<osee-actions-panel
+				[ngClass]="{ 'tw-hidden': currentPanel() !== 'Actions' }" />
 		</mat-drawer>
 		<div
 			class="tw-flex tw-flex-col"
@@ -55,6 +58,29 @@
 					}}
 				</mat-icon>
 			</button>
+			@if (drawer.opened) {
+				<button
+					mat-icon-button
+					(click)="setCurrentPanel('Artifacts')">
+					<mat-icon
+						[ngClass]="{
+							'tw-text-primary': currentPanel() === 'Artifacts'
+						}"
+						>padding</mat-icon
+					>
+				</button>
+				<button
+					mat-icon-button
+					(click)="setCurrentPanel('Actions')">
+					<mat-icon
+						class="material-icons-outlined"
+						[ngClass]="{
+							'tw-text-primary': currentPanel() === 'Actions'
+						}"
+						>assignment</mat-icon
+					>
+				</button>
+			}
 		</div>
 		<osee-artifact-tab-group />
 	</mat-drawer-container>
