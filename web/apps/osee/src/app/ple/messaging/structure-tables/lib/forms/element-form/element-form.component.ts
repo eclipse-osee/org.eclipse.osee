@@ -14,7 +14,6 @@ import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import {
 	Component,
-	Inject,
 	Input,
 	OnChanges,
 	OnInit,
@@ -54,7 +53,6 @@ import {
 	CurrentStructureService,
 	TypesUIService,
 } from '@osee/messaging/shared/services';
-import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 import {
 	ElementDialog,
 	PlatformType,
@@ -243,7 +241,6 @@ export class ElementFormComponent implements OnInit, OnChanges {
 		}
 	}
 	constructor(
-		@Inject(STRUCTURE_SERVICE_TOKEN)
 		private structures: CurrentStructureService,
 		private dialog: MatDialog,
 		private typeDialogService: TypesUIService,

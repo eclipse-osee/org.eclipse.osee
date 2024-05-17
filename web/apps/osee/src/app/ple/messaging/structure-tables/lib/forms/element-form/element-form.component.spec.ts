@@ -26,6 +26,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import {
+	CurrentStructureService,
 	EnumerationSetService,
 	EnumsService,
 	TypesService,
@@ -88,7 +89,7 @@ describe('ElementFormComponent', () => {
 				providers: [
 					{ provide: TypesService, useValue: typesServiceMock },
 					{
-						provide: STRUCTURE_SERVICE_TOKEN,
+						provide: CurrentStructureService,
 						useValue: CurrentStateServiceMock,
 					},
 					{ provide: EnumsService, useValue: enumsServiceMock },
