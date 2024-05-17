@@ -26,7 +26,7 @@ import {
 	transaction,
 } from '@osee/shared/types';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { tab } from '../../../types/artifact-explorer.data';
+import { artifactTab } from '../../../types/artifact-explorer.data';
 import { MatIcon } from '@angular/material/icon';
 import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
 
@@ -45,7 +45,7 @@ import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-e
 	templateUrl: './attributes-editor-panel.component.html',
 })
 export class AttributesEditorPanelComponent {
-	@Input() tab!: tab;
+	@Input() tab!: artifactTab;
 
 	enum$ = new Observable<string[]>();
 

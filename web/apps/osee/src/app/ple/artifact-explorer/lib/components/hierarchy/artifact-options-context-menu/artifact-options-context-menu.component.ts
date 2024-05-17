@@ -24,13 +24,11 @@ import { filter, map, of, switchMap, take, tap } from 'rxjs';
 import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
 import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
 import { ArtifactIconService } from '../../../services/artifact-icon.service';
-import {
-	artifactContextMenuOption,
-	artifactTypeIcon,
-} from '../../../types/artifact-explorer.data';
+import { artifactContextMenuOption } from '../../../types/artifact-explorer.data';
 import { DEFUALT_ARTIFACT_CONTEXT_MENU_OPTIONS } from '../../../types/default-artifact-context-menu-options';
 import { CreateChildArtifactDialogComponent } from '../create-child-artifact-dialog/create-child-artifact-dialog.component';
 import { DeleteArtifactDialogComponent } from '../delete-artifact-dialog/delete-artifact-dialog.component';
+import { artifactTypeIcon } from '@osee/shared/types/configuration-management';
 
 @Component({
 	selector: 'osee-artifact-options-context-menu',

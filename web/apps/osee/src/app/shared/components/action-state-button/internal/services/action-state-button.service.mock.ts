@@ -11,70 +11,60 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { of } from 'rxjs';
-
 import { ActionStateButtonService } from './action-state-button.service';
 import {
-	testBranchActions,
-	testWorkFlow,
-	testBranchInfo,
-	MockNamedId,
 	testCommitResponse,
 	testDataTransitionResponse,
 } from '@osee/shared/testing';
+import {
+	teamWorkflowState,
+	action,
+} from '@osee/shared/types/configuration-management';
 
 export const actionStateButtonServiceMock: Partial<ActionStateButtonService> = {
-	approvedState: of('false'),
-	branchAction: of(testBranchActions),
-	branchWorkFlow: of(testWorkFlow),
-	branchState: of(testBranchInfo),
-	branchApproved: of('true'),
-	teamsLeads: of(MockNamedId),
-	branchTransitionable: of('true'),
+	isTransitionApproved(action: action) {
+		return of(true);
+	},
 	commitBranch(body: { committer: string; archive: string }) {
 		return of(testCommitResponse);
 	},
 	doCommitBranch: of(testDataTransitionResponse),
-	doTransition: of(testDataTransitionResponse),
-	doApproveBranch: of(true),
-	nextStates: of([]),
-	previousStates: of([]),
-	currentState: of({ state: '', rules: [], committable: false }),
+	transition(state: teamWorkflowState, action: action) {
+		return of(testDataTransitionResponse);
+	},
+	approveBranch(action: action) {
+		return of(true);
+	},
 };
 export const actionStateButtonServiceMockApprove: Partial<ActionStateButtonService> =
 	{
-		approvedState: of('approvable'),
-		branchAction: of(testBranchActions),
-		branchWorkFlow: of(testWorkFlow),
-		branchState: of(testBranchInfo),
-		branchApproved: of('true'),
-		teamsLeads: of(MockNamedId),
-		branchTransitionable: of('true'),
+		isTransitionApproved(action: action) {
+			return of(true);
+		},
 		commitBranch(body: { committer: string; archive: string }) {
 			return of(testCommitResponse);
 		},
 		doCommitBranch: of(testDataTransitionResponse),
-		doTransition: of(testDataTransitionResponse),
-		doApproveBranch: of(true),
-		nextStates: of([]),
-		previousStates: of([]),
-		currentState: of({ state: '', rules: [], committable: false }),
+		transition(state: teamWorkflowState, action: action) {
+			return of(testDataTransitionResponse);
+		},
+		approveBranch(action: action) {
+			return of(true);
+		},
 	};
 export const actionStateButtonServiceMockCommit: Partial<ActionStateButtonService> =
 	{
-		approvedState: of('committable'),
-		branchAction: of(testBranchActions),
-		branchWorkFlow: of(testWorkFlow),
-		branchState: of(testBranchInfo),
-		branchApproved: of('true'),
-		teamsLeads: of(MockNamedId),
-		branchTransitionable: of('true'),
+		isTransitionApproved(action: action) {
+			return of(true);
+		},
 		commitBranch(body: { committer: string; archive: string }) {
 			return of(testCommitResponse);
 		},
 		doCommitBranch: of(testDataTransitionResponse),
-		doTransition: of(testDataTransitionResponse),
-		doApproveBranch: of(true),
-		nextStates: of([]),
-		previousStates: of([]),
-		currentState: of({ state: '', rules: [], committable: false }),
+		transition(state: teamWorkflowState, action: action) {
+			return of(testDataTransitionResponse);
+		},
+		approveBranch(action: action) {
+			return of(true);
+		},
 	};

@@ -18,11 +18,14 @@ import {
 	BranchInfoServiceMock,
 	MockUserResponse,
 	actionServiceMock,
+	branchRoutedUiServiceMock,
 	testnewActionResponse,
 } from '@osee/shared/testing';
-import { ActionService, BranchInfoService } from '@osee/shared/services';
-import { BranchRoutedUIService } from '../../../internal/services/branch-routed-ui.service';
-import { branchRoutedUiServiceMock } from '../../../internal/services/branch-routed-ui.service.mock';
+import {
+	ActionService,
+	BranchInfoService,
+	BranchRoutedUIService,
+} from '@osee/shared/services';
 import { UserDataAccountService } from '@osee/auth';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
 
@@ -61,11 +64,14 @@ describe('CreateActionService', () => {
 
 	it('should add an action', () => {
 		scheduler.run(({ expectObservable }) => {
-			expectObservable(
-				service.createAction(new CreateAction(MockUserResponse), '3')
-			).toBe('(a|)', { a: testnewActionResponse });
+			const createAction = new CreateAction(MockUserResponse);
+			expectObservable(service.createAction(createAction, '3')).toBe(
+				'(a|)',
+				{ a: testnewActionResponse }
+			);
 		});
 	});
+
 	it('should add an action and create a branch', () => {
 		scheduler.run(({ expectObservable }) => {
 			const create = new CreateAction(MockUserResponse);

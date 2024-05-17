@@ -31,6 +31,7 @@ describe('AttributesEditorPanelComponent', () => {
 
 		// tab input
 		const tabMock: tab = {
+			tabId: '111',
 			tabType: 'Artifact',
 			tabTitle: '',
 			artifact: {

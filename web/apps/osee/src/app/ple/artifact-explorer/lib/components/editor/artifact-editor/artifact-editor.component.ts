@@ -10,9 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, input, OnChanges, SimpleChanges } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { tab } from '../../../types/artifact-explorer.data';
+import { Component, input } from '@angular/core';
+import { artifactTab } from '../../../types/artifact-explorer.data';
 import { ArtifactInfoPanelComponent } from '../artifact-info-panel/artifact-info-panel.component';
 import { AttributesEditorPanelComponent } from '../attributes-editor-panel/attributes-editor-panel.component';
 import { RelationsEditorPanelComponent } from '../relations-editor-panel/relations-editor-panel.component';
@@ -28,7 +27,7 @@ import { RelationsEditorPanelComponent } from '../relations-editor-panel/relatio
 	templateUrl: './artifact-editor.component.html',
 })
 export class ArtifactEditorComponent {
-	tab = input.required<tab>();
+	tab = input.required<artifactTab>();
 
 	constructor() {}
 }

@@ -14,7 +14,7 @@ import { NgClass } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { ExpandIconComponent } from '@osee/shared/components';
 import { BehaviorSubject } from 'rxjs';
-import { tab } from '../../../types/artifact-explorer.data';
+import { artifactTab } from '../../../types/artifact-explorer.data';
 import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
 
 @Component({
@@ -28,7 +28,7 @@ import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-e
 	templateUrl: './artifact-info-panel.component.html',
 })
 export class ArtifactInfoPanelComponent {
-	@Input() tab!: tab;
+	@Input() tab!: artifactTab;
 
 	// panel open/close state handling
 	panelOpen = new BehaviorSubject<boolean>(false);

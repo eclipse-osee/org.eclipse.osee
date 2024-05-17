@@ -33,6 +33,7 @@ describe('ArtifactEditorComponent', () => {
 
 		// tab input
 		const tabMock: tab = {
+			tabId: '333',
 			tabType: 'Artifact',
 			tabTitle: '',
 			artifact: {

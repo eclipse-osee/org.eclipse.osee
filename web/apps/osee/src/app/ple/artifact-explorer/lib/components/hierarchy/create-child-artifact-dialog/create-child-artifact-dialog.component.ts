@@ -59,10 +59,8 @@ import {
 } from 'rxjs';
 import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
 import { ArtifactIconService } from '../../../services/artifact-icon.service';
-import {
-	artifactTypeIcon,
-	createChildArtifactDialogData,
-} from '../../../types/artifact-explorer.data';
+import { createChildArtifactDialogData } from '../../../types/artifact-explorer.data';
+import { artifactTypeIcon } from '@osee/shared/types/configuration-management';
 
 function controlContainerFactory(controlContainer?: ControlContainer) {
 	return controlContainer;

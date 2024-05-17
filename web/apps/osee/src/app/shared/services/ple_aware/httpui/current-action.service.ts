@@ -13,7 +13,7 @@
 import { Injectable } from '@angular/core';
 import {
 	actionImpl,
-	teamWorkflowImpl,
+	teamWorkflowDetailsImpl,
 } from '@osee/shared/types/configuration-management';
 import {
 	switchMap,
@@ -26,10 +26,12 @@ import {
 	filter,
 	from,
 	map,
+	repeat,
 } from 'rxjs';
 import { CurrentBranchInfoService } from './current-branch-info.service';
 import { ActionService } from '../http/action.service';
 import { UserDataAccountService } from '@osee/auth';
+import { UiService } from '../ui/ui.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -38,7 +40,8 @@ export class CurrentActionService {
 	constructor(
 		private currentBranchService: CurrentBranchInfoService,
 		private actionService: ActionService,
-		private accountService: UserDataAccountService
+		private accountService: UserDataAccountService,
+		private uiService: UiService
 	) {}
 	private _user = this.accountService.user;
 	private _branchState = this.currentBranchService.currentBranch;
@@ -69,6 +72,22 @@ export class CurrentActionService {
 		return this._branchAction;
 	}
 
+	private _branchWorkflowToken = this.branchState.pipe(
+		filter(
+			(state) =>
+				state.associatedArtifact !== '' &&
+				state.associatedArtifact !== '-1'
+		),
+		switchMap((state) =>
+			this.actionService.searchTeamWorkflows({
+				search: state.associatedArtifact,
+				searchByArtId: true,
+			})
+		),
+		filter((teamWfs) => teamWfs.length === 1),
+		map((teamWfs) => teamWfs[0])
+	);
+
 	private _branchWorkflow = this.branchAction.pipe(
 		switchMap((val) =>
 			iif(
@@ -76,11 +95,19 @@ export class CurrentActionService {
 					val.length > 0 &&
 					val[0]?.TeamWfAtsId != '' &&
 					typeof val[0]?.id !== 'undefined',
-				this.actionService.getWorkFlow(val[0]?.id).pipe(
-					//repeatWhen((_) => this.uiService.update),
+				this.actionService.getTeamWorkflowDetails(val[0]?.id).pipe(
+					repeat({
+						delay: () =>
+							this.uiService.updateArtifact.pipe(
+								filter(
+									(updatedId) =>
+										updatedId === val[0].id.toString()
+								)
+							),
+					}),
 					share()
 				),
-				of(new teamWorkflowImpl())
+				of(new teamWorkflowDetailsImpl())
 			)
 		),
 		share(),
@@ -89,6 +116,10 @@ export class CurrentActionService {
 
 	public get branchWorkFlow() {
 		return this._branchWorkflow;
+	}
+
+	public get branchWorkflowToken() {
+		return this._branchWorkflowToken;
 	}
 
 	private _teamsLeads = this.branchWorkFlow.pipe(

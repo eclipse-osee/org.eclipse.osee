@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { NgClass } from '@angular/common';
-import { Component, OnInit, input, signal } from '@angular/core';
+import { Component, OnInit, effect, input, signal } from '@angular/core';
 import {
 	MatExpansionPanel,
 	MatExpansionPanelHeader,
@@ -35,6 +35,10 @@ export class ArtifactExplorerExpansionPanelComponent implements OnInit {
 	openDefault = input(false);
 	title = input('');
 	panelOpen = signal(false);
+
+	openEffect = effect(() => this.panelOpen.set(this.openDefault()), {
+		allowSignalWrites: true,
+	});
 
 	ngOnInit(): void {
 		this.panelOpen.set(this.openDefault());

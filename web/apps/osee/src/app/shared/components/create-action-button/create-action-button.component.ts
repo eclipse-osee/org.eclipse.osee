@@ -17,7 +17,7 @@ import { filter, switchMap, take } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateActionDialogComponent } from './create-action-dialog/create-action-dialog.component';
 import { CreateAction } from '@osee/shared/types/configuration-management';
-import { CreateActionService } from './internal/services/create-action.service';
+import { CreateActionService } from '../../services/ple_aware/httpui/create-action.service';
 
 @Component({
 	selector: 'osee-create-action-button',

@@ -14,10 +14,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DeleteArtifactDialogComponent } from './delete-artifact-dialog.component';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import {
-	artifactContextMenuOptionMock,
-	artifactMock,
-} from '../../../testing/artifact-explorer.data.mock';
+import { artifactContextMenuOptionMock } from '../../../testing/artifact-explorer.data.mock';
+import { artifactMock } from '@osee/shared/testing';
 
 describe('DeleteArtifactDialogComponent', () => {
 	let component: DeleteArtifactDialogComponent;

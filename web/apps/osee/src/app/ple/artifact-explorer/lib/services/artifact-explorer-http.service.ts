@@ -14,13 +14,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { apiURL } from '@osee/environments';
 import { Observable } from 'rxjs';
+import { artifactWithDirectRelations } from '../types/artifact-explorer.data';
+import { HttpParamsType, attribute } from '@osee/shared/types';
+import { AdvancedSearchCriteria } from '../types/artifact-search';
 import {
 	artifact,
 	artifactTokenWithIcon,
-	artifactWithDirectRelations,
-} from '../types/artifact-explorer.data';
-import { HttpParamsType, attribute } from '@osee/shared/types';
-import { AdvancedSearchCriteria } from '../types/artifact-search';
+} from '@osee/shared/types/configuration-management';
 
 @Injectable({
 	providedIn: 'root',

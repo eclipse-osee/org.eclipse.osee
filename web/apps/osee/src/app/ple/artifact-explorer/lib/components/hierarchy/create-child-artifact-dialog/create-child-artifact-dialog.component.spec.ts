@@ -20,7 +20,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ArtifactService } from '../../../../../../shared/services/ple_aware/http/artifact.service';
 import { artifactServiceMock } from '../../../../../../shared/services/ple_aware/http/artifact.service.mock';
 import { FormDirective } from '@osee/shared/directives';
-import { artifactTypeIconMock } from '../../../testing/artifact-explorer.data.mock';
+import { artifactTypeIconMock } from '@osee/shared/testing';
 
 describe('CreateChildArtifactDialogComponent', () => {
 	let component: CreateChildArtifactDialogComponent;

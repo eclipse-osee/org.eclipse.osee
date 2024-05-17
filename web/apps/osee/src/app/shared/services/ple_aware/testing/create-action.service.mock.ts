@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { of } from 'rxjs';
-import { CreateActionService } from './create-action.service';
+import { CreateActionService } from '../httpui/create-action.service';
 import { CreateAction } from '@osee/shared/types/configuration-management';
 import {
 	MockUserResponse,
@@ -39,4 +39,5 @@ export const createActionServiceMock: Partial<CreateActionService> = {
 		},
 	]),
 	workTypes: of([testWorkType]),
+	createdTeamWorkflows: of([]),
 };

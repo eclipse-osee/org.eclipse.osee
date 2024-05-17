@@ -12,9 +12,9 @@
  -->
 @if (tabs().length === 0) {
 	<div
-		class="tw-flex tw-h-[80%] tw-w-full tw-items-center tw-justify-center tw-opacity-70">
+		class="tw-flex tw-h-[55%] tw-w-full tw-flex-col tw-items-center tw-justify-center">
 		<span
-			class="tw-select-none tw-text-4xl tw-font-bold tw-text-background-status-bar"
+			class="tw-select-none tw-text-4xl tw-font-bold tw-text-background-status-bar tw-opacity-70"
 			>No open tabs</span
 		>
 	</div>
@@ -29,7 +29,7 @@
 		cdkDropList
 		(cdkDropListDropped)="onTabDropped($event)"
 		cdkDropListOrientation="horizontal">
-		@for (tab of tabs(); track $index) {
+		@for (tab of tabs(); track tab.tabId) {
 			<mat-tab #matTab>
 				<ng-template mat-tab-label>
 					<div
@@ -62,6 +62,10 @@
 								[branchId]="
 									tab.branchId
 								"></osee-change-report-table>
+						}
+						@case ('TeamWorkflow') {
+							<osee-team-workflow-tab
+								[teamWorkflowId]="tab.teamWorkflowId" />
 						}
 						@default {
 							No tab defined for this type

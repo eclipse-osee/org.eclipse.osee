@@ -21,14 +21,21 @@ import {
 	BranchPickerComponent,
 	ViewSelectorComponent,
 } from '@osee/shared/components';
-import { CurrentBranchInfoService, UiService } from '@osee/shared/services';
-import { BehaviorSubject, map } from 'rxjs';
+import {
+	ActionService,
+	CreateActionService,
+	CurrentActionService,
+	CurrentBranchInfoService,
+	UiService,
+} from '@osee/shared/services';
+import { concatMap, filter, from, map, take, tap } from 'rxjs';
 import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
 import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
 import { ArtifactHierarchyOptionsComponent } from '../artifact-hierarchy-options/artifact-hierarchy-options.component';
 import { ArtifactHierarchyComponent } from '../artifact-hierarchy/artifact-hierarchy.component';
 import { ArtifactSearchPanelComponent } from '../artifact-search-panel/artifact-search-panel.component';
 import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
+import { MatButton } from '@angular/material/button';
 
 @Component({
 	selector: 'osee-artifact-hierarchy-panel',
@@ -45,6 +52,7 @@ import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-e
 		ArtifactExplorerExpansionPanelComponent,
 		MatTooltip,
 		MatIcon,
+		MatButton,
 		CdkDropList,
 	],
 	templateUrl: './artifact-hierarchy-panel.component.html',
@@ -68,16 +76,53 @@ export class ArtifactHierarchyPanelComponent {
 			this.branchId() !== '0'
 	);
 
+	// This signal listens for new actions created using the create action button,
+	// and opens new tabs for those actions.
+	private _openNewActionTab = toSignal(
+		this.createActionService.createdTeamWorkflows.pipe(
+			concatMap((tws) =>
+				from(tws).pipe(
+					concatMap((tw) =>
+						this.actionService
+							.searchTeamWorkflows({
+								search: tw,
+								searchByArtId: true,
+							})
+							.pipe(
+								filter((tokens) => tokens.length === 1),
+								tap((tokens) =>
+									this.tabService.addTeamWorkflowTab(
+										tokens[0]
+									)
+								)
+							)
+					)
+				)
+			)
+		)
+	);
+
 	constructor(
 		private artHierPathService: ArtifactHierarchyPathService,
 		private tabService: ArtifactExplorerTabService,
-		private currentBranchService: CurrentBranchInfoService
+		private currentBranchService: CurrentBranchInfoService,
+		private currentActionService: CurrentActionService,
+		private createActionService: CreateActionService,
+		private actionService: ActionService
 	) {}
 
 	openChangeReport() {
-		this.tabService.addTab(
-			'ChangeReport',
+		this.tabService.addChangeReportTab(
 			'Change Report - ' + this.branchName()
 		);
+	}
+
+	openTeamWorkflowTab() {
+		this.currentActionService.branchWorkflowToken
+			.pipe(
+				take(1),
+				tap((teamwf) => this.tabService.addTeamWorkflowTab(teamwf))
+			)
+			.subscribe();
 	}
 }

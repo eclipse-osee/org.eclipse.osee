@@ -49,13 +49,13 @@ import { ArtifactExplorerHttpService } from '../../../../services/artifact-explo
 import { ArtifactExplorerTabService } from '../../../../services/artifact-explorer-tab.service';
 import { ArtifactHierarchyPathService } from '../../../../services/artifact-hierarchy-path.service';
 import { ArtifactIconService } from '../../../../services/artifact-icon.service';
-import {
-	artifactTokenWithIcon,
-	artifactTypeIcon,
-} from '../../../../types/artifact-explorer.data';
 import { AdvancedSearchCriteria } from '../../../../types/artifact-search';
 import { AdvancedSearchDialogComponent } from './advanced-search-dialog/advanced-search-dialog.component';
 import { PaginatedMatListComponent } from '../../../shared/paginated-mat-list/paginated-mat-list.component';
+import {
+	artifactTokenWithIcon,
+	artifactTypeIcon,
+} from '@osee/shared/types/configuration-management';
 
 @Component({
 	selector: 'osee-artifact-search',
@@ -207,8 +207,13 @@ export class ArtifactSearchComponent {
 
 	selectSearchResult(artifact: artifactTokenWithIcon) {
 		if (
-			this.tabService.Tabs().filter((t) => t.artifact.id === artifact.id)
-				.length > 0
+			this.tabService
+				.Tabs()
+				.filter(
+					(t) =>
+						t.tabType === 'Artifact' &&
+						t.artifact.id === artifact.id
+				).length > 0
 		) {
 			return;
 		}

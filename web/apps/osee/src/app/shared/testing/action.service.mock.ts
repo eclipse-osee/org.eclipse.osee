@@ -17,6 +17,7 @@ import {
 	transitionAction,
 } from '@osee/shared/types/configuration-management';
 import {
+	teamWorkflowTokenMock,
 	testARB,
 	testAgilePoints,
 	testBranchActions,
@@ -47,6 +48,16 @@ export const actionServiceMock: Partial<ActionService> = {
 	},
 	getWorkFlow(id: string | number) {
 		return of(testWorkFlow);
+	},
+	getTeamWorkflowsForUser(
+		userId: `${number}`,
+		count?: number,
+		pageNum?: number
+	) {
+		return of([teamWorkflowTokenMock]);
+	},
+	getTeamWorkflowsForUserCount(userId: `${number}`) {
+		return of(1);
 	},
 	getAction(artifactId: string | number) {
 		return of(testBranchActions);

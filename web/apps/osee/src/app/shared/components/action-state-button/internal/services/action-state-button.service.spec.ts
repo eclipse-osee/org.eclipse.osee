@@ -16,12 +16,11 @@ import { TestScheduler } from 'rxjs/testing';
 import {
 	ActionService,
 	BranchInfoService,
+	BranchRoutedUIService,
 	CommitBranchService,
 	UiService,
 } from '@osee/shared/services';
 import { ActionStateButtonService } from './action-state-button.service';
-import { BranchRoutedUIService } from '../../../internal/services/branch-routed-ui.service';
-import { branchRoutedUiServiceMock } from '../../../internal/services/branch-routed-ui.service.mock';
 import { UserDataAccountService } from '@osee/auth';
 import {
 	actionServiceMock,
@@ -29,6 +28,9 @@ import {
 	testCommitResponse,
 	testDataTransitionResponse,
 	commitBranchServiceMock,
+	branchRoutedUiServiceMock,
+	testBranchActions,
+	testWorkFlow,
 } from '@osee/shared/testing';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
 
@@ -83,15 +85,23 @@ describe('ActionStateButtonService', () => {
 	});
 	it('should approve current branch', () => {
 		scheduler.run(({ expectObservable }) => {
-			expectObservable(service.doApproveBranch).toBe('(a|)', {
-				a: true,
-			});
+			expectObservable(service.approveBranch(testBranchActions[0])).toBe(
+				'(a|)',
+				{
+					a: true,
+				}
+			);
 		});
 	});
 
 	it('should transition current branch', () => {
 		scheduler.run(({ expectObservable }) => {
-			expectObservable(service.doTransition).toBe('(a|)', {
+			expectObservable(
+				service.transition(
+					testWorkFlow.currentState,
+					testBranchActions[0]
+				)
+			).toBe('(a|)', {
 				a: testDataTransitionResponse,
 			});
 		});
@@ -107,23 +117,11 @@ describe('ActionStateButtonService', () => {
 
 	it('should get transitionable state', () => {
 		scheduler.run(({ expectObservable }) => {
-			expectObservable(service.branchTransitionable).toBe('a', {
-				a: 'false',
+			expectObservable(
+				service.isTransitionApproved(testBranchActions[0])
+			).toBe('(a|)', {
+				a: true,
 			});
-		});
-	});
-
-	it('should get team leads', () => {
-		scheduler.run(({ expectObservable }) => {
-			expectObservable(service.teamsLeads).toBe('a', {
-				a: [{ id: '0', name: 'name' }],
-			});
-		});
-	});
-
-	it('should get branch approved', () => {
-		scheduler.run(({ expectObservable }) => {
-			expectObservable(service.branchApproved).toBe('a', { a: 'true' });
 		});
 	});
 });

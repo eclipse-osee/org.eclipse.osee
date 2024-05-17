@@ -63,6 +63,14 @@ export class UiService {
 		this.updateService.updated = value;
 	}
 
+	get updateArtifact() {
+		return this.updateService.updateArtifact;
+	}
+
+	set updatedArtifact(value: string) {
+		this.updateService.updatedArtifact = value;
+	}
+
 	get isInDiff() {
 		return this.diffModeService.isInDiff;
 	}

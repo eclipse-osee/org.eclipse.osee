@@ -11,18 +11,22 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, NgClass, NgTemplateOutlet } from '@angular/common';
-import { Component } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, computed, input, output } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { BranchInfoService, CommitBranchService } from '@osee/shared/services';
-import { teamWorkflowState } from '@osee/shared/types/configuration-management';
-import { iif, of } from 'rxjs';
-import { map, switchMap, take } from 'rxjs/operators';
+import {
+	teamWorkflowDetails,
+	teamWorkflowState,
+} from '@osee/shared/types/configuration-management';
+import { Subject, iif, of } from 'rxjs';
+import { filter, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { MergeManagerDialogComponent } from '../../merge-manager-dialog/merge-manager-dialog.component';
 import { ActionStateButtonService } from '../internal/services/action-state-button.service';
+import { branch, branchSentinel } from '@osee/shared/types';
 
 /**
  * Allows users to create and manage the state of a branch from within a page.
@@ -45,26 +49,45 @@ import { ActionStateButtonService } from '../internal/services/action-state-butt
 	],
 })
 export class ActionDropDownComponent {
-	branchTransitionable = this.actionService.branchTransitionable;
+	teamWorkflow = input.required<teamWorkflowDetails>();
+	branch = input<branch>(branchSentinel);
+	commitAllowed = input(true);
+	update = output();
 
-	nextStates = this.actionService.nextStates;
+	private _updateWorkflow = new Subject<boolean>();
 
-	previousStates = this.actionService.previousStates;
+	teamWorkflow$ = toObservable(this.teamWorkflow);
+	branch$ = toObservable(this.branch);
 
-	currentState = this.actionService.currentState;
-	currentStateName = this.currentState.pipe(
-		map((state) => state.state),
-		map((name) => name.replace(/([a-z])([A-Z])/g, '$1 $2')) //yucky regex to convert camelcase to spaced out
+	nextStates = computed(() => this.teamWorkflow().toStates);
+	previousStates = computed(() =>
+		this.teamWorkflow().previousStates.slice(0, -1)
 	);
 
-	isTeamLead = this.actionService.isTeamLead;
+	currentState = computed(() => this.teamWorkflow().currentState);
+	currentStateName = computed(() =>
+		this.currentState().state.replace(/([a-z])([A-Z])/g, '$1 $2')
+	);
 
-	isApproved = this.actionService.branchApproved.pipe(takeUntilDestroyed());
+	isTeamLead = toSignal(
+		this.teamWorkflow$.pipe(
+			switchMap((wf) => this.actionService.isTeamLead(wf)),
+			shareReplay({ bufferSize: 1, refCount: true })
+		)
+	);
 
-	doApproveBranch = this.actionService.doApproveBranch;
+	transitionApproved = toSignal(
+		this.teamWorkflow$.pipe(
+			switchMap((action) =>
+				this.actionService.isTransitionApproved(action)
+			),
+			shareReplay({ bufferSize: 1, refCount: true })
+		)
+	);
 
-	doCommitBranch = this.actionService.branchState.pipe(
+	doCommitBranch = this.branch$.pipe(
 		take(1),
+		filter((currentBranch) => currentBranch.id !== '-1'),
 		switchMap((currentBranch) =>
 			this.branchService.getBranch(currentBranch.parentBranch.id).pipe(
 				switchMap((parentBranch) =>
@@ -104,12 +127,39 @@ export class ActionDropDownComponent {
 		private commitBranchService: CommitBranchService,
 		private branchService: BranchInfoService
 	) {}
+
 	transition(state: teamWorkflowState) {
-		this.actionService.transition(state).subscribe();
+		this.teamWorkflow$
+			.pipe(
+				take(1),
+				switchMap((action) =>
+					this.actionService.transition(state, action)
+				),
+				tap((res) => {
+					if (res.results.length === 0) {
+						this._updateWorkflow.next(true);
+						this.update.emit();
+					}
+				})
+			)
+			.subscribe();
 	}
-	approveBranch(): void {
-		this.doApproveBranch.subscribe();
+
+	approveBranch() {
+		this.teamWorkflow$
+			.pipe(
+				take(1),
+				switchMap((action) => this.actionService.approveBranch(action)),
+				tap((res) => {
+					if (res) {
+						this._updateWorkflow.next(true);
+						this.update.emit();
+					}
+				})
+			)
+			.subscribe();
 	}
+
 	commitBranch(): void {
 		this.doCommitBranch.subscribe();
 	}

@@ -67,4 +67,16 @@ export const artifactUiServiceMock: Partial<ArtifactUiService> = {
 			},
 		]);
 	},
+	getArtifactTypeAttributes(artifactTypeId: `${number}`) {
+		return of([
+			{
+				id: '1',
+				multiplicityId: '1',
+				name: 'Test Attribute',
+				storeType: 'String',
+				typeId: '123',
+				value: 'Test value',
+			},
+		]);
+	},
 };

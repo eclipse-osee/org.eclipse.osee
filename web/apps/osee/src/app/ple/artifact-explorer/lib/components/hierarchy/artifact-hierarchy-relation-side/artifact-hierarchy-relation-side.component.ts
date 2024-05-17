@@ -26,13 +26,13 @@ import { ExpandIconComponent } from '@osee/shared/components';
 import { BehaviorSubject } from 'rxjs';
 import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
 import { ArtifactIconService } from '../../../services/artifact-icon.service';
+import { ArtifactHierarchyComponent } from '../artifact-hierarchy/artifact-hierarchy.component';
 import {
 	artifact,
 	artifactTypeIcon,
 	relationSide,
 	relationTypeToken,
-} from '../../../types/artifact-explorer.data';
-import { ArtifactHierarchyComponent } from '../artifact-hierarchy/artifact-hierarchy.component';
+} from '@osee/shared/types/configuration-management';
 
 @Component({
 	selector: 'osee-artifact-hierarchy-relation-side',

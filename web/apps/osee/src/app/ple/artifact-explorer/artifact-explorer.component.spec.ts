@@ -12,13 +12,17 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ArtifactExplorerComponent } from './artifact-explorer.component';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { ArtifactHeirarchyMockComponent } from './lib/components/hierarchy/artifact-hierarchy-panel/artifact-heirarchy-panel.component.mock';
+import { ArtifactHierarchyMockComponent } from './lib/components/hierarchy/artifact-hierarchy-panel/artifact-hierarchy-panel.component.mock';
 import { ArtifactHierarchyPanelComponent } from './lib/components/hierarchy/artifact-hierarchy-panel/artifact-hierarchy-panel.component';
 import { ArtifactExplorerPreferencesHttpService } from './lib/services/artifact-explorer-preferences-http.service';
 import { artifactExplorerPreferencesHttpServiceMock } from './lib/testing/artifact-explorer-preferences-http.service.mock';
 import { UserDataAccountService } from '@osee/auth';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
+import { ActivatedRoute } from '@angular/router';
+import { ActionsPanelMockComponent } from './lib/components/actions/actions-panel.component.mock';
+import { ActionsPanelComponent } from './lib/components/actions/actions-panel.component';
+import { of } from 'rxjs';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 describe('ArtifactExplorerComponent', () => {
 	let component: ArtifactExplorerComponent;
@@ -27,13 +31,19 @@ describe('ArtifactExplorerComponent', () => {
 	beforeEach(() => {
 		TestBed.overrideComponent(ArtifactExplorerComponent, {
 			add: {
-				imports: [ArtifactHeirarchyMockComponent],
+				imports: [
+					ArtifactHierarchyMockComponent,
+					ActionsPanelMockComponent,
+				],
 			},
 			remove: {
-				imports: [ArtifactHierarchyPanelComponent],
+				imports: [
+					ArtifactHierarchyPanelComponent,
+					ActionsPanelComponent,
+				],
 			},
 		}).configureTestingModule({
-			imports: [ArtifactExplorerComponent, NoopAnimationsModule],
+			imports: [ArtifactExplorerComponent],
 			providers: [
 				{
 					provide: ArtifactExplorerPreferencesHttpService,
@@ -43,6 +53,11 @@ describe('ArtifactExplorerComponent', () => {
 					provide: UserDataAccountService,
 					useValue: userDataAccountServiceMock,
 				},
+				{
+					provide: ActivatedRoute,
+					useValue: { queryParamMap: of(new Map<string, string>()) },
+				},
+				provideNoopAnimations(),
 			],
 		});
 		fixture = TestBed.createComponent(ArtifactExplorerComponent);

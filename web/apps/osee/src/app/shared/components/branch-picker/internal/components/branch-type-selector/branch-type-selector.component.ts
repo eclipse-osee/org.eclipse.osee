@@ -18,7 +18,7 @@ import {
 	MatRadioChange,
 	MatRadioGroup,
 } from '@angular/material/radio';
-import { BranchRoutedUIService } from '../../../../internal/services/branch-routed-ui.service';
+import { BranchRoutedUIService } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-branch-type-selector',

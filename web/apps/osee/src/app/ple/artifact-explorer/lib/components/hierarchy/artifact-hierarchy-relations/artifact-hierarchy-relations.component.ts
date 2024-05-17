@@ -15,8 +15,11 @@ import { Component, Input } from '@angular/core';
 import { UiService } from '@osee/shared/services';
 import { Observable } from 'rxjs';
 import { ArtifactHierarchyOptionsService } from '../../../services/artifact-hierarchy-options.service';
-import { relation, relationSide } from '../../../types/artifact-explorer.data';
 import { ArtifactHierarchyRelationSideComponent } from '../artifact-hierarchy-relation-side/artifact-hierarchy-relation-side.component';
+import {
+	relation,
+	relationSide,
+} from '@osee/shared/types/configuration-management';
 
 @Component({
 	selector: 'osee-artifact-hierarchy-relations',

@@ -140,7 +140,9 @@
 				"src/app/shared/types/configuration-management"
 			],
 			"@osee/shared/types/constants": ["src/app/shared/types/constants"],
-			"@osee/messaging/shared": ["src/app/ple/messaging/shared"],
+			"@osee/messaging/shared/services/ple_aware/testing": [
+				"src/app/shared/services/ple_aware/testing"
+			],
 			"@osee/messaging/shared/attr": [
 				"src/app/ple/messaging/shared/attr"
 			],

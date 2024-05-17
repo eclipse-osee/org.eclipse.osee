@@ -10,7 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, input, output } from '@angular/core';
+import { branch, branchSentinel } from '@osee/shared/types';
+import { teamWorkflowDetails } from '@osee/shared/types/configuration-management';
 
 @Component({
 	selector: 'osee-action-dropdown',
@@ -18,4 +20,9 @@ import { Component } from '@angular/core';
 	standalone: true,
 })
 // eslint-disable-next-line @angular-eslint/component-class-suffix
-export class ActionDropdownStub {}
+export class ActionDropdownStub {
+	teamWorkflow = input.required<teamWorkflowDetails>();
+	branch = input<branch>(branchSentinel);
+	commitAllowed = input(true);
+	update = output();
+}

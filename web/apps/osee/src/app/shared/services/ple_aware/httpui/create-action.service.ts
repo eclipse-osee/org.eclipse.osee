@@ -15,6 +15,7 @@ import { UserDataAccountService } from '@osee/auth';
 import {
 	ActionService,
 	BranchInfoService,
+	BranchRoutedUIService,
 	CurrentBranchInfoService,
 	UiService,
 } from '@osee/shared/services';
@@ -24,6 +25,8 @@ import {
 } from '@osee/shared/types/configuration-management';
 import {
 	BehaviorSubject,
+	Subject,
+	filter,
 	iif,
 	map,
 	of,
@@ -31,13 +34,14 @@ import {
 	switchMap,
 	tap,
 } from 'rxjs';
-import { BranchRoutedUIService } from '../../../internal/services/branch-routed-ui.service';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class CreateActionService {
 	private _workType = new BehaviorSubject<string>('');
+
+	private _createdTeamWorkflows = new Subject<`${number}`[]>();
 
 	currentBranch = this.currentBranchService.currentBranch;
 
@@ -73,6 +77,14 @@ export class CreateActionService {
 		this._workType.next(workType);
 	}
 
+	get createdTeamWorkflows() {
+		return this._createdTeamWorkflows.asObservable();
+	}
+
+	set CreatedTeamWorkflows(value: `${number}`[]) {
+		this._createdTeamWorkflows.next(value);
+	}
+
 	getVersions(actionableItem: string) {
 		return this.actionService.getVersions(actionableItem);
 	}
@@ -101,7 +113,17 @@ export class CreateActionService {
 			return of(); // @todo replace with a false response
 		}
 		if (!value.createBranchDefault) {
-			return this.actionService.createAction(new CreateNewAction(value));
+			return this.actionService
+				.createAction(new CreateNewAction(value))
+				.pipe(
+					tap((res) => {
+						if (res.teamWfs.length > 0) {
+							this.CreatedTeamWorkflows = res.teamWfs.map(
+								(wf) => wf.id
+							);
+						}
+					})
+				);
 		}
 		return this.actionService.createBranch(new CreateNewAction(value)).pipe(
 			switchMap((branchResponse) =>

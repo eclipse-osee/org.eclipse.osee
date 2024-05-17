@@ -10,10 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-@if (branchInfo()?.branchType === '2' && branchInfo()?.id !== '570') {
+@if (currentBranch()?.branchType === '2' && currentBranch()?.id !== '570') {
 	<osee-create-action-button
 		[category]="category()"
 		[workType]="workType()" />
-} @else {
-	<osee-action-dropdown />
+} @else if (teamWorkflow() && currentBranch()) {
+	<osee-action-dropdown
+		[teamWorkflow]="teamWorkflow()!"
+		[branch]="currentBranch()!" />
 }

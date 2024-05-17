@@ -28,6 +28,10 @@ export class ArtifactUiService {
 		return this.artifactService.getAttributeTypes(artifactTypes);
 	}
 
+	getArtifactTypeAttributes(artifactTypeId: `${number}`) {
+		return this.artifactService.getArtifactTypeAttributes(artifactTypeId);
+	}
+
 	getAttributeEnums(attributeId: string) {
 		return this.artifactService.getAttributeEnums(attributeId);
 	}

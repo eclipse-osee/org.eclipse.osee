@@ -264,16 +264,13 @@
 			}
 		}
 	}
-	<mat-checkbox
-		class="tw-pb-2"
-		[(ngModel)]="data.createBranchDefault"
-		color="primary">
-		<mat-label>Create working branch</mat-label>
-	</mat-checkbox>
 	<osee-latest-action-drop-down
 		(parentActionChange)="
 			data.parentAction = $event.id
 		"></osee-latest-action-drop-down>
+	@if (data.createBranchDefault) {
+		<p>* A working branch will be created for this action</p>
+	}
 </div>
 <div mat-dialog-actions>
 	<button

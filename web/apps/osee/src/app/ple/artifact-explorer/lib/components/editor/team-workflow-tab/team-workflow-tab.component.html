@@ -1,0 +1,75 @@
+<!--
+ * Copyright (c) 2024 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+@if (workDef() && twAttributeTypes()) {
+	<div class="tw-flex tw-flex-col tw-gap-4">
+		<div class="tw-flex tw-justify-start tw-pl-4 tw-pt-4">
+			<button
+				[disabled]="!hasChanges()"
+				(click)="saveChanges()">
+				<mat-icon [ngClass]="[hasChanges() ? 'tw-text-primary' : '']"
+					>save</mat-icon
+				>
+			</button>
+		</div>
+		<osee-artifact-explorer-expansion-panel
+			title="Team Workflow Details"
+			[openDefault]="true">
+			<div
+				class="tw-grid tw-grid-cols-3 tw-justify-between tw-gap-2 tw-p-4 [&>div>span]:tw-font-bold">
+				<div><span>Title:</span> {{ teamWorkflow().Name }}</div>
+				<div>
+					<span>Team Workflow ID:</span>
+					{{ teamWorkflow().TeamWfAtsId }}
+				</div>
+				<div>
+					<span>Action ID:</span> {{ teamWorkflow().ActionAtsId }}
+				</div>
+				<div>
+					<span>Created:</span> {{ teamWorkflow().CreatedDate }}
+				</div>
+				<div>
+					<span>Created By:</span> {{ teamWorkflow().CreatedBy }}
+				</div>
+				<div><span>Team:</span> {{ teamWorkflow().TeamName }}</div>
+				<div>
+					<span>Current State:</span>
+					{{ teamWorkflow().currentState.state }}
+				</div>
+				<div><span>Assignees:</span> {{ assigneesString() }}</div>
+			</div>
+		</osee-artifact-explorer-expansion-panel>
+		<div class="tw-flex tw-items-center tw-gap-4 tw-pl-4">
+			<span class="tw-font-bold">Current State:</span>
+			<osee-action-dropdown
+				[teamWorkflow]="teamWorkflow()"
+				[commitAllowed]="false"
+				(update)="updateTeamWorkflow()" />
+		</div>
+		@for (state of previousStates(); track $index) {
+			<osee-artifact-explorer-expansion-panel
+				[title]="state.state"
+				[openDefault]="
+					teamWorkflow().currentState.state === state.state
+				">
+				<div class="tw-pt-4">
+					<osee-attributes-editor
+						[attributes]="stateAttributes().get(state.state) || []"
+						[editable]="true"
+						(updatedAttributes)="handleUpdatedAttributes($event)" />
+				</div>
+			</osee-artifact-explorer-expansion-panel>
+		}
+	</div>
+} @else {
+	<div class="tw-p-4">Loading...</div>
+}

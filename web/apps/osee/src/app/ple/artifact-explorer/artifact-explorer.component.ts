@@ -22,7 +22,9 @@ import { UiService } from '@osee/shared/services';
 import { ArtifactTabGroupComponent } from './lib/components/artifact-tab-group/artifact-tab-group.component';
 import { ArtifactHierarchyPanelComponent } from './lib/components/hierarchy/artifact-hierarchy-panel/artifact-hierarchy-panel.component';
 import { ArtifactExplorerTabService } from './lib/services/artifact-explorer-tab.service';
-import { tab } from './lib/types/artifact-explorer.data';
+import { ExplorerPanel, tab } from './lib/types/artifact-explorer.data';
+import { ActionsPanelComponent } from './lib/components/actions/actions-panel.component';
+import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ArtifactExplorerPreferencesService } from './lib/services/artifact-explorer-preferences.service';
@@ -33,6 +35,7 @@ import { ArtifactExplorerPreferencesService } from './lib/services/artifact-expl
 	imports: [
 		NgClass,
 		ArtifactHierarchyPanelComponent,
+		ActionsPanelComponent,
 		ArtifactTabGroupComponent,
 		MatDrawerContainer,
 		CdkDropListGroup,
@@ -72,11 +75,30 @@ export class ArtifactExplorerComponent {
 		)
 	);
 
+	currentPanel = toSignal(
+		this.routeUrl.queryParamMap.pipe(
+			map((value) => {
+				const panel = value.get('panel') as ExplorerPanel | null;
+				return panel === null ? 'Artifacts' : panel;
+			})
+		),
+		{ initialValue: 'Artifacts' }
+	);
+
 	constructor(
 		private uiService: UiService,
 		private tabService: ArtifactExplorerTabService,
-		private userPrefsService: ArtifactExplorerPreferencesService
+		private userPrefsService: ArtifactExplorerPreferencesService,
+		private routeUrl: ActivatedRoute,
+		private router: Router
 	) {}
+
+	setCurrentPanel(panel: ExplorerPanel) {
+		this.router.navigate([], {
+			queryParams: { panel: panel },
+			relativeTo: this.routeUrl,
+		});
+	}
 
 	setSelectedTab(index: number) {
 		this.tabService.SelectedIndex = index;

@@ -10,6 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { artifact, artifactSentinel } from './artifact';
+import { NamedId } from '../named-id';
+
 export interface teamWorkflow {
 	id: number;
 	Name: string;
@@ -33,7 +36,7 @@ export interface teamWorkflow {
 	'ats.Team Definition Reference': string;
 	'ats.Description': string;
 	TeamName: string;
-	Assignees: string;
+	Assignees: teamWorkflowUser[];
 	ChangeType: string;
 	Priority: string;
 	State: string;
@@ -42,7 +45,6 @@ export interface teamWorkflow {
 	TargetedVersion: string;
 	previousStates: teamWorkflowState[];
 	toStates: teamWorkflowState[];
-
 	currentState: teamWorkflowState;
 }
 
@@ -74,7 +76,7 @@ export class teamWorkflowImpl implements teamWorkflow {
 	'ats.Team Definition Reference': string = '';
 	'ats.Description': string = '';
 	TeamName: string = '';
-	Assignees: string = '';
+	Assignees: teamWorkflowUser[] = [];
 	ChangeType: string = '';
 	Priority: string = '';
 	State: string = '';
@@ -88,4 +90,74 @@ export class teamWorkflowImpl implements teamWorkflow {
 		rules: [],
 		committable: false,
 	};
+}
+
+type teamWorkflowUser = { id: `${number}`; name: string };
+
+export interface teamWorkflowDetails extends teamWorkflow {
+	artifact: artifact;
+	leads: NamedId[];
+}
+
+export class teamWorkflowDetailsImpl
+	extends teamWorkflowImpl
+	implements teamWorkflowDetails
+{
+	artifact: artifact = artifactSentinel;
+	leads: NamedId[] = [];
+}
+
+export type workDefinition = {
+	id: `${number}`;
+	name: string;
+	states: workDefinitionState[];
+};
+
+export type workDefinitionState = {
+	id: `${number}`;
+	name: string;
+	completed: boolean;
+	cancelled: boolean;
+	toStateNames: string[];
+	completedOrCancelled: boolean;
+	stateType: 'Working' | 'Completed' | 'Cancelled';
+	layoutItems: workDefinitonLayoutItem[];
+};
+
+export type workDefinitonLayoutItem = {
+	id: `${number}`;
+	name: string;
+	attributeType: `${number}`;
+	attributeType2: `${number}` | null;
+	options: {
+		xoptions: workDefinitonLayoutOption[];
+	};
+};
+
+export type workDefinitonLayoutOption =
+	| 'REQUIRED_FOR_TRANSITION'
+	| 'NOT_REQUIRED_FOR_TRANSITION';
+
+export type teamWorkflowToken = {
+	id: `${number}`;
+	name: string;
+	atsId: string;
+};
+
+export interface TeamWorkflowSearchCriteria {
+	search?: string;
+	assignees?: `${number}`[];
+	originators?: `${number}`[];
+	inProgressOnly?: boolean;
+	searchByArtId?: boolean;
+}
+
+export class TeamWorkflowSearchCriteriaImpl
+	implements TeamWorkflowSearchCriteria
+{
+	search: string = '';
+	assignees: `${number}`[] = [];
+	originators: `${number}`[] = [];
+	inProgressOnly: boolean = true;
+	searchById?: boolean = false;
 }

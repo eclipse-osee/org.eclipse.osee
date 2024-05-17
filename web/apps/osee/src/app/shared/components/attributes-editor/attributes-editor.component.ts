@@ -77,18 +77,10 @@ export class AttributesEditorComponent {
 	attributes = input.required<attribute[]>();
 	editable = input.required<boolean>();
 
-	_attributes = new BehaviorSubject<attribute[]>([]);
-
-	constructor() {
-		effect(() => {
-			this._attributes.next(this.attributes());
-		});
-	}
-
 	@Output() updatedAttributes = new BehaviorSubject<attribute[]>([]);
 
 	emitUpdatedAttributes() {
-		const formattedAttributes: attribute[] = this._attributes.value
+		const formattedAttributes: attribute[] = this.attributes()
 			.map((attribute) => {
 				const formattedAttribute = { ...attribute, value: '' };
 
