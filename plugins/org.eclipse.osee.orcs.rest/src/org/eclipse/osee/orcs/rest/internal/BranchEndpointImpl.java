@@ -937,17 +937,17 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    @Override
    public boolean undoLatest(BranchId branch) {
-      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
-      return undo(newTxQuery().andIsHead(branch).getResultsAsIds().getOneOrDefault(TransactionId.SENTINEL));
+      return orcsApi.getTransactionFactory().undoTx(branch,
+         newTxQuery().andIsHead(branch).getResultsAsIds().getOneOrDefault(TransactionId.SENTINEL));
    }
 
    @Override
-   public boolean undo(BranchId branch, TransactionId transaction) {
+   public boolean purge(BranchId branch, TransactionId transaction) {
       orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
-      return undo(transaction);
+      return purge(transaction);
    }
 
-   private boolean undo(TransactionId tx) {
+   private boolean purge(TransactionId tx) {
       return orcsApi.getTransactionFactory().purgeTxs(tx.getIdString());
    }
 
