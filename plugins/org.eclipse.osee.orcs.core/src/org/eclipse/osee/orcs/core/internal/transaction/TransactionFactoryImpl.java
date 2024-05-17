@@ -19,10 +19,14 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -30,6 +34,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.core.executor.CancellableCallable;
@@ -42,6 +47,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.KeyValueOps;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
@@ -359,6 +365,191 @@ public class TransactionFactoryImpl implements TransactionFactory {
       });
 
       return changeReportRows;
+   }
+
+   @Override
+   public boolean undoTx(BranchId branch, TransactionId transaction) {
+      //@formatter:off
+String query =
+"WITH\r\n" +
+   "currentTx as (SELECT * from osee_txs txs where txs.transaction_id =? and txs.branch_id=?),\r\n" +
+   "newArts1 as (SELECT art.*, 2 as event_type, '' as name from osee_artifact art, currentTx txs  WHERE art.gamma_id = txs.gamma_id and txs.mod_type =1),\r\n" +
+   "newArts2 as (SELECT art.*, 2 as event_type, '' as name from osee_artifact art, currentTx txs  WHERE art.gamma_id = txs.gamma_id and txs.mod_type =6),\r\n" +
+   "newArts as (SELECT * FROM newArts1 UNION SELECT * FROM newArts2 ),\r\n" +
+   "modifiedArts as (SELECT art.*, 8 as event_type, '' as name from osee_artifact art, currentTx txs WHERE art.gamma_id = txs.gamma_id and txs.mod_type =2),\r\n" +
+   "deletedArts as (SELECT art.*, 3 as event_type, attr.value as name from osee_artifact art, currentTx txs, osee_attribute attr, osee_txs attrTxs WHERE art.gamma_id = txs.gamma_id and txs.mod_type =3 and attrTxs.transaction_id = txs.transaction_id and attr.gamma_id = attrTxs.gamma_id and attr.attr_type_id = ?),\r\n" +
+   "artsCombined as (SELECT * from newArts UNION SELECT * from modifiedArts UNION SELECT * from deletedArts),\r\n" +
+   "newAttr1 as (SELECT attr.*, 1 as event_type,'' as previous_value from osee_attribute attr, currentTx txs WHERE attr.gamma_id=txs.gamma_id and txs.mod_type=1),\r\n"+
+   "newAttr2 as (SELECT attr.*, 1 as event_type, '' as previous_value from osee_attribute attr, currentTx txs WHERE attr.gamma_id=txs.gamma_id and txs.mod_type=6),\r\n"+
+   "newAttr as (SELECT * FROM newAttr1 UNION SELECT * FROM newAttr2 ),\r\n"+
+   "modifiedAttr as (SELECT attr.*, 7 as event_type from osee_attribute attr, currentTx txs WHERE attr.gamma_id=txs.gamma_id and txs.mod_type=2),\r\n"+
+   "previousModifiedAttr as (SELECT attr.* from osee_attribute attr, modifiedAttr modAttr, osee_txs txs WHERE txs.branch_id = ? and txs.tx_current <>? and txs.gamma_id = attr.gamma_id and attr.attr_type_id = modAttr.attr_type_id and attr.art_id = modAttr.art_id),\r\n"+
+   "fullModifiedAttr as (SELECT attr.*, prevMod.value as previous_value from modifiedAttr attr, previousModifiedAttr prevMod),\r\n"+
+   "deletedAttr1 as (SELECT attr.*, 6 as event_type ,'' as previous_value from osee_attribute attr, currentTx txs WHERE attr.gamma_id=txs.gamma_id and txs.mod_type=3),\r\n"+
+   "deletedAttr2 as (SELECT attr.*, 6 as event_type, '' as previous_value from osee_attribute attr, currentTx txs WHERE attr.gamma_id=txs.gamma_id and txs.mod_type=5),\r\n"+
+   "deletedAttr as (SELECT * FROM deletedAttr1 UNION SELECT * FROM deletedAttr2 ),\r\n"+
+   "attrCombined as (SELECT * FROM newAttr UNION SELECT * from fullModifiedAttr UNION SELECT * from deletedAttr),\r\n"+
+   "newRel1 as (SELECT rel.*, 0 as event_type from osee_relation rel, currentTx txs WHERE rel.gamma_id=txs.gamma_id and txs.mod_type=1),\r\n" +
+   "newRel2 as (SELECT rel.*, 0 as event_type from osee_relation rel, currentTx txs WHERE rel.gamma_id=txs.gamma_id and txs.mod_type=6),\r\n" +
+   "newRel as (SELECT * from newRel1 UNION SELECT * from newRel2),\r\n" +
+   "modifiedRel as (SELECT rel.*, 5 as event_type from osee_relation rel, currentTx txs WHERE rel.gamma_id=txs.gamma_id and txs.mod_type=2),\r\n" +
+   "deletedRel1 as (SELECT rel.*, 5 as event_type from osee_relation rel, currentTx txs WHERE rel.gamma_id=txs.gamma_id and txs.mod_type=3),\r\n" +
+   "deletedRel2 as (SELECT rel.*, 5 as event_type from osee_relation rel, currentTx txs WHERE rel.gamma_id=txs.gamma_id and txs.mod_type=5),\r\n" +
+   "deletedRel as (SELECT * FROM deletedRel1 UNION SELECT * FROM deletedRel2 ),\r\n" +
+   "relsCombined as (SELECT * from newRel UNION SELECT * from modifiedRel UNION SELECT * from deletedRel ),\r\n" +
+   "afterArtifactLocation as (SELECT MAX(rel2.rel_order) OVER (PARTITION BY rel2.rel_type, rel2.a_art_id) as rel_order, rel2.rel_type,rel2.a_art_id \r\n" +
+   "                    FROM relsCombined rel1, osee_txs txs, osee_relation rel2 WHERE \r\n" +
+   "            txs.branch_id = ? and txs.tx_current =? and txs.gamma_id = rel2.gamma_id and\r\n" +
+   "           rel2.a_art_id = rel1.a_art_id and rel2.rel_type = rel1.rel_type and rel2.rel_order < rel1.rel_order  ),\r\n" +
+   "afterArtifactWithMissing as (SELECT DISTINCT rel_order, rel_type,a_art_id from afterArtifactLocation UNION SELECT rel.rel_order,rel.rel_type,rel.a_art_id FROM relsCombined rel, afterArtifactLocation art WHERE rel.rel_type <> art.rel_type and rel.a_art_id <> art.a_art_id ),\r\n"+
+   "afterArtifact as (SELECT rel.a_art_id, rel.rel_type,CASE WHEN art.rel_order <>0 THEN rel.b_art_id ELSE 0 END as b_art_id FROM osee_relation rel, afterArtifactWithMissing art WHERE rel.rel_order = art.rel_order and rel.rel_type = art.rel_type and rel.a_art_id =art.a_art_id),\r\n" +
+   "completeNewRels as (SELECT relsCombined.rel_type, relsCombined.a_art_id, relsCombined.b_art_id, CASE WHEN afterArtifact.b_art_id <>0 THEN afterArtifact.b_art_id ELSE 0 END as rel_order, relsCombined.event_type from relsCombined, afterArtifact WHERE afterArtifact.rel_type = relsCombined.rel_type and afterArtifact.a_art_id = relsCombined.a_art_id ),\r\n" +
+   "newTuple21 as (SELECT t2.*, 9 as event_type from osee_tuple2 t2, currentTx txs  WHERE t2.gamma_id = txs.gamma_id and txs.mod_type =1),\r\n" +
+   "newTuple22 as (SELECT t2.*, 9 as event_type from osee_tuple2 t2, currentTx txs  WHERE t2.gamma_id = txs.gamma_id and txs.mod_type =6),\r\n" +
+   "newTuple2 as (SELECT * FROM newTuple21 UNION SELECT * FROM newTuple22 ),\r\n" +
+   "modifiedTuple2 as (SELECT t2.*, 10 as event_type from osee_tuple2 t2, currentTx txs WHERE t2.gamma_id = txs.gamma_id and txs.mod_type =2),\r\n" +
+   "deletedTuple2 as (SELECT t2.*, 11 as event_type from osee_tuple2 t2, currentTx txs WHERE t2.gamma_id = txs.gamma_id and txs.mod_type =3),\r\n" +
+   "tuple2Combined as (SELECT * from newTuple2 UNION SELECT * from modifiedTuple2 UNION SELECT * FROM deletedTuple2),\r\n" +
+   "newTuple31 as (SELECT t3.*, 12 as event_type from osee_tuple3 t3, currentTx txs  WHERE t3.gamma_id = txs.gamma_id and txs.mod_type =1),\r\n" +
+   "newTuple32 as (SELECT t3.*, 12 as event_type from osee_tuple3 t3, currentTx txs  WHERE t3.gamma_id = txs.gamma_id and txs.mod_type =6),\r\n" +
+   "newTuple3 as (SELECT * FROM newTuple31 UNION SELECT * FROM newTuple32 ),\r\n" +
+   "modifiedTuple3 as (SELECT t3.*, 13 as event_type from osee_tuple3 t3, currentTx txs WHERE t3.gamma_id = txs.gamma_id and txs.mod_type =2),\r\n" +
+   "deletedTuple3 as (SELECT t3.*, 14 as event_type from osee_tuple3 t3, currentTx txs WHERE t3.gamma_id = txs.gamma_id and txs.mod_type =3),\r\n" +
+   "tuple3Combined as (SELECT * from newTuple3 UNION SELECT * from modifiedTuple3 UNION SELECT * FROM deletedTuple3),\r\n" +
+   "newTuple41 as (SELECT t4.*, 15 as event_type from osee_tuple4 t4, currentTx txs  WHERE t4.gamma_id = txs.gamma_id and txs.mod_type =1),\r\n" +
+   "newTuple42 as (SELECT t4.*, 15 as event_type from osee_tuple4 t4, currentTx txs  WHERE t4.gamma_id = txs.gamma_id and txs.mod_type =6),\r\n" +
+   "newTuple4 as (SELECT * FROM newTuple41 UNION SELECT * FROM newTuple42 ),\r\n" +
+   "modifiedTuple4 as (SELECT t4.*, 16 as event_type from osee_tuple4 t4, currentTx txs WHERE t4.gamma_id = txs.gamma_id and txs.mod_type =2),\r\n" +
+   "deletedTuple4 as (SELECT t4.*, 17 as event_type from osee_tuple4 t4, currentTx txs WHERE t4.gamma_id = txs.gamma_id and txs.mod_type =3),\r\n" +
+   "tuple4Combined as (SELECT * from newTuple4 UNION SELECT * from modifiedTuple4 UNION SELECT * FROM deletedTuple4),\r\n" +
+   "newOldRel1 as (SELECT rel.*, 0 as event_type from osee_relation_link rel, currentTx txs WHERE rel.gamma_id=txs.gamma_id and txs.mod_type=1),\r\n"+
+   "newOldRel2 as (SELECT rel.*, 0 as event_type from osee_relation_link rel, currentTx txs WHERE rel.gamma_id=txs.gamma_id and txs.mod_type=6),\r\n"+
+   "newOldRel as (SELECT * from newOldRel1 UNION SELECT * from newOldRel2),\r\n"+
+   "modifiedOldRel as (SELECT rel.*, 4 as event_type from osee_relation_link rel, currentTx txs WHERE rel.gamma_id=txs.gamma_id and txs.mod_type=2),\r\n"+
+   "deletedOldRel1 as (SELECT rel.*, 5 as event_type from osee_relation_link rel, currentTx txs WHERE rel.gamma_id=txs.gamma_id and txs.mod_type=3),\r\n"+
+   "deletedOldRel2 as (SELECT rel.*, 5 as event_type from osee_relation_link rel, currentTx txs WHERE rel.gamma_id=txs.gamma_id and txs.mod_type=5),\r\n"+
+   "deletedOldRel as (SELECT * FROM deletedOldRel1 UNION SELECT * FROM deletedOldRel2 ),\r\n"+
+   "oldRelsCombined as (SELECT * from newOldRel UNION SELECT * from modifiedOldRel UNION SELECT * from deletedOldRel ),\r\n"+
+   "arts as (SELECT art_id as id , art_type_id as type_id , guid as extra1,0 as extra2, 0 as extra3, 0 as extra4,0 as extra5, name as extra6,event_type from artsCombined),\r\n"+
+   "attr as (SELECT attr_id as id , attr_type_id as type_id ,value as extra1,art_id as extra2, 0 as extra3, 0 as extra4, 0 as extra5, previous_value as extra6, event_type from attrCombined),\r\n"+
+   "rels as (SELECT 0 as id, rel_type as type_id, '' as extra1, a_art_id as extra2,b_art_id as extra3, rel_order as extra4, 0 as extra5, '' as extra6, event_type from completeNewRels ),\r\n"+
+   "oldRels as (SELECT rel_link_id as id, rel_link_type_id as type_id, '' as extra1, a_art_id as extra2, b_art_id as extra3,0 as extra4, 0 as extra5, '' as extra6, event_type from oldRelsCombined),\r\n"+
+   "tuple2s as (SELECT 0 as id, tuple_type as type_id, '' as extra1, e1 as extra2,e2 as extra3, 0 as extra4, 0 as extra5, '' as extra6, event_type from tuple2Combined ),\r\n"+
+   "tuple3s as (SELECT 0 as id, tuple_type as type_id, '' as extra1, e1 as extra2, e2 as extra3, e3 as extra4, 0 as extra5, '' as extra6, event_type from tuple3Combined), \r\n"+
+   "tuple4s as (SELECT 0 as id, tuple_type as type_id, '' as extra1, e1 as extra2, e2 as extra3, e3 as extra4, e4 as extra5, '' as extra6, event_type from tuple4Combined)\r\n"+
+   "SELECT * from attr UNION SELECT * from arts UNION SELECT * FROM rels UNION SELECT * from tuple2s UNION SELECT * from tuple3s UNION SELECT * from tuple4s UNION SELECT * from oldRels ORDER BY event_type\r\n";
+//@formatter:on
+      TransactionBuilder tx = createTransaction(branch, "Undoing " + transaction.getIdString());
+      List<ArtifactToken> createdArts = new LinkedList<>();
+      Consumer<JdbcStatement> consumer = stmt -> {
+         int event_type = stmt.getInt("event_type");
+         switch (event_type) {
+            case 0:
+               // new rel2
+               tx.unrelate(ArtifactId.valueOf(stmt.getLong("extra2")),
+                  orcsApi.tokenService().getRelationType(stmt.getLong("type_id")),
+                  ArtifactId.valueOf(stmt.getLong("extra3")));
+               break;
+            case 1:
+               // new attr
+               tx.deleteByAttributeId(ArtifactId.valueOf(stmt.getLong("extra2")),
+                  AttributeId.valueOf(stmt.getLong("id")));
+               break;
+            case 2:
+               //new art
+               tx.deleteArtifact(ArtifactId.valueOf(stmt.getLong("id")));
+               break;
+            case 3:
+               // deleted art
+               createdArts.add(tx.createArtifact(ArtifactToken.valueOf(stmt.getLong("id"), stmt.getString("extra1"),
+                  stmt.getString("extra6"), branch, orcsApi.tokenService().getArtifactType(stmt.getLong("type_id")))));
+               break;
+            case 4:
+               // modified old rel
+               // special case - can't handle due to tx builder deficiences
+               break;
+            case 5:
+               // deleted rel2
+               Long afterArtifact = stmt.getLong("extra4");
+               if (afterArtifact != 0L) {
+                  tx.relate(ArtifactId.valueOf(stmt.getLong("extra2")),
+                     orcsApi.tokenService().getRelationType(stmt.getLong("type_id")),
+                     ArtifactId.valueOf(stmt.getLong("extra3")), ArtifactId.SENTINEL,
+                     String.valueOf(stmt.getLong("extra4")));
+               } else {
+                  tx.relate(ArtifactId.valueOf(stmt.getLong("extra2")),
+                     orcsApi.tokenService().getRelationType(stmt.getLong("type_id")),
+                     ArtifactId.valueOf(stmt.getLong("extra3")), ArtifactId.SENTINEL, "end");
+               }
+               break;
+            case 6:
+               // deleted attr
+               AttributeTypeGeneric<?> attrType = orcsApi.tokenService().getAttributeType(stmt.getLong("type_id"));
+               ArtifactId artId = ArtifactId.valueOf(stmt.getLong("extra2"));
+               if (!attrType.equals(CoreAttributeTypes.Name)) {
+
+                  tx.createAttribute(artId, attrType, stmt.getString("extra1"));
+               }
+               break;
+            case 7:
+               // modified attr
+               tx.setAttributeById(ArtifactId.valueOf(stmt.getLong("extra2")), AttributeId.valueOf(stmt.getLong("id")),
+                  stmt.getString("extra6"));
+               break;
+            case 8:
+               // modified art
+               // no-op?
+               break;
+            case 9:
+               // added tuple2
+               tx.deleteTuple2(orcsApi.tokenService().getTuple2Type(stmt.getLong("type_id")), stmt.getLong("extra2"),
+                  stmt.getLong("extra3"));
+               break;
+            case 10:
+               // modified tuple2
+               // no-op
+               break;
+            case 11:
+               // deleted tuple2
+               tx.addTuple2(orcsApi.tokenService().getTuple2Type(stmt.getLong("type_id")), stmt.getLong("extra2"),
+                  stmt.getLong("extra3"));
+               break;
+            case 12:
+               // created tuple3
+               tx.deleteTuple3(orcsApi.tokenService().getTuple3Type(stmt.getLong("type_id")), stmt.getLong("extra2"),
+                  stmt.getLong("extra3"), stmt.getLong("extra4"));
+               break;
+            case 13:
+               // modified tuple3
+               // no-op
+               break;
+            case 14:
+               // deleted tuple3
+               tx.addTuple3(orcsApi.tokenService().getTuple3Type(stmt.getLong("type_id")), stmt.getLong("extra2"),
+                  stmt.getLong("extra3"), stmt.getLong("extra4"));
+               break;
+            case 15:
+               // created tuple4
+               tx.deleteTuple4(orcsApi.tokenService().getTuple4Type(stmt.getLong("type_id")), stmt.getLong("extra2"),
+                  stmt.getLong("extra3"), stmt.getLong("extra4"), stmt.getLong("extra5"));
+               break;
+            case 16:
+               // modified tuple4
+               // no-op
+               break;
+            case 17:
+               // deleted tuple4
+               tx.addTuple4(orcsApi.tokenService().getTuple4Type(stmt.getLong("type_id")), stmt.getLong("extra2"),
+                  stmt.getLong("extra3"), stmt.getLong("extra4"), stmt.getLong("extra5"));
+               break;
+            default:
+               break;
+
+         }
+      };
+      orcsApi.getJdbcService().getClient().runQuery(consumer, query, transaction, branch, CoreAttributeTypes.Name,
+         branch, 1, branch, 1);
+      return tx.commit().isValid();
    }
 
 }

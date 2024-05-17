@@ -354,8 +354,8 @@ public interface BranchEndpoint {
     * @return
     */
    @DELETE
-   @Path("{branchId}/undo/{txId}")
+   @Path("{branchId}/purge/{txId}")
    @Produces(MediaType.APPLICATION_JSON)
-   boolean undo(@PathParam("branchId") BranchId branch, @PathParam("txId") TransactionId transaction);
+   boolean purge(@PathParam("branchId") BranchId branch, @PathParam("txId") TransactionId transaction);
 
 }
