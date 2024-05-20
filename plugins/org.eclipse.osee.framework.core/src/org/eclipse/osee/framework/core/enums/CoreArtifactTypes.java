@@ -725,6 +725,8 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken TestResultWholeWord = osee.add(osee.artifactType(40L, "Test Result - Whole Word", false, MsWordWholeDocument, AbstractTestResult));
 
+   ArtifactTypeToken TestResultMsWord = osee.add(osee.artifactType(3846914593624672570L, "Test Result - MS Word", false, MsWordTemplate, AbstractTestResult));
+
    ArtifactTypeToken TestUnit = osee.add(osee.artifactType(4L, "Test Unit", true, Controlled));
 
    ArtifactTypeToken IntegrationTestProcedureMsWord = osee.add(osee.artifactType(443398723457743215L, "Integration Test Procedure - MS Word", false, MsWordTemplate, TestUnit)
