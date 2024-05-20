@@ -27,6 +27,7 @@ import {
 import { PageEvent } from '@angular/material/paginator';
 import { NamedId } from '@osee/shared/types';
 import { ViewSelectorComponent } from '@osee/shared/components';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-list-configuration',
@@ -50,10 +51,12 @@ export class ListConfigurationComponent implements OnDestroy {
 
 	private _currentMessageTypesService = inject(CurrentMessageTypesService);
 
-	branchId = this._uiService.idAsObservable.pipe(
-		filter((id) => id !== '' && id !== '-1' && id !== '0')
+	branchId = toSignal(
+		this._uiService.id.pipe(
+			filter((id) => id !== '' && id !== '-1' && id !== '0')
+		)
 	);
-	branchType = this._uiService.type;
+	branchType = toSignal(this._uiService.type);
 	private _destroyed = new Subject<void>();
 	routeSetup = this._route.paramMap.pipe(
 		tap((params) => {
