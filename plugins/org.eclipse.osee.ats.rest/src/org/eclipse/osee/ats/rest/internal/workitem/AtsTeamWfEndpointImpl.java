@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.ws.rs.Path;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
@@ -26,6 +27,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
@@ -33,9 +35,11 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
+import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.AtsTeamWfEndpointApi;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.TeamWorkflowToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -50,7 +54,9 @@ import org.eclipse.osee.framework.core.model.dto.DiffReportEndpointDto;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
  * @author Donald G. Dunne
@@ -106,6 +112,56 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
          }
       }
       return teamWfs;
+   }
+
+   @Override
+   public List<TeamWorkflowToken> search(String search, List<ArtifactId> originators, List<ArtifactId> assignees,
+      boolean inProgressOnly, boolean searchByArtId, long pageNum, long pageSize) {
+      return getSearchQueryBuilder(search, originators, assignees, inProgressOnly, searchByArtId, pageNum,
+         pageSize).asArtifacts().stream().map(art -> new TeamWorkflowToken(art)).collect(Collectors.toList());
+   }
+
+   @Override
+   public List<ArtifactToken> searchTokens(String search, List<ArtifactId> originators, List<ArtifactId> assignees,
+      boolean inProgressOnly, boolean searchByArtId, long pageNum, long pageSize) {
+      return getSearchQueryBuilder(search, originators, assignees, inProgressOnly, searchByArtId, pageNum,
+         pageSize).asArtifactTokens();
+   }
+
+   @Override
+   public int getSearchResultCount(String search, List<ArtifactId> originators, List<ArtifactId> assignees,
+      boolean inProgressOnly, boolean searchByArtId) {
+      return getSearchQueryBuilder(search, originators, assignees, inProgressOnly, searchByArtId, 0, 0).getCount();
+   }
+
+   private QueryBuilder getSearchQueryBuilder(String search, List<ArtifactId> originators, List<ArtifactId> assignees,
+      boolean inProgressOnly, boolean searchByArtId, long pageNum, long pageSize) {
+      QueryBuilder query =
+         this.orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(AtsArtifactTypes.TeamWorkflow);
+      if (searchByArtId && Strings.isNumeric(search)) {
+         return query.andId(ArtifactId.valueOf(search));
+      }
+      if (!originators.isEmpty()) {
+         query.and(AtsAttributeTypes.CreatedBy,
+            originators.stream().map(id -> id.getIdString()).collect(Collectors.toList()));
+      }
+      if (!assignees.isEmpty()) {
+         for (ArtifactId assignee : assignees) {
+            query.and(AtsAttributeTypes.CurrentStateAssignee, assignee.getIdString());
+         }
+      }
+      if (inProgressOnly) {
+         query.andAttributeIs(AtsAttributeTypes.CurrentStateType, StateType.Working.toString());
+      }
+      if (pageNum != 0L && pageSize != 0L) {
+         query = query.isOnPage(pageNum, pageSize);
+      }
+      return query;
+   }
+
+   @Override
+   public IAtsTeamWorkflow getTeamWorkflowDetails(ArtifactId id) {
+      return this.getTeamWorkflow(id.getIdString());
    }
 
    @Override

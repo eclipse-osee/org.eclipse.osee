@@ -26,6 +26,7 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.dto.DiffReportEndpointDto;
@@ -87,6 +88,35 @@ public interface AtsTeamWfEndpointApi {
    @Path("{id}/goal")
    @Produces({MediaType.APPLICATION_JSON})
    List<IAtsGoal> getGoals(@PathParam("id") String id);
+
+   @GET
+   @Path("search")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<TeamWorkflowToken> search(@QueryParam("search") String search,
+      @QueryParam("originator") List<ArtifactId> originators, @QueryParam("assignee") List<ArtifactId> assignees,
+      @QueryParam("inProgressOnly") boolean inProgressOnly, @QueryParam("searchByArtId") boolean searchByArtId,
+      @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize);
+
+   @GET
+   @Path("search/token")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<ArtifactToken> searchTokens(@QueryParam("search") String search,
+      @QueryParam("originator") List<ArtifactId> originators, @QueryParam("assignee") List<ArtifactId> assignees,
+      @QueryParam("inProgressOnly") boolean inProgressOnly, @QueryParam("searchByArtId") boolean searchByArtId,
+      @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize);
+
+   @GET
+   @Path("search/count")
+   @Produces(MediaType.APPLICATION_JSON)
+   int getSearchResultCount(@QueryParam("search") String search, @QueryParam("originator") List<ArtifactId> originators,
+      @QueryParam("assignee") List<ArtifactId> assignees, @QueryParam("inProgressOnly") boolean inProgressOnly,
+      @QueryParam("searchByArtId") boolean searchByArtId);
+
+   @GET
+   @TeamWorkflowDetails
+   @Path("details/{id}")
+   @Produces(MediaType.APPLICATION_JSON)
+   IAtsTeamWorkflow getTeamWorkflowDetails(@PathParam("id") ArtifactId id);
 
    @GET
    @Path("release/{release}")

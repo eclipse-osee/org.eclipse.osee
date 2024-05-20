@@ -27,7 +27,7 @@ public class WorkType extends OseeEnum {
 
    public static final WorkType All = new WorkType("All");
    public static final WorkType Applicability = new WorkType("Applicability");
-   public static final WorkType ARB = new WorkType("ARB", "Architecture Review Board");
+   public static final WorkType ARB = new WorkType("ARB", "Architecture Review Board", true);
    public static final WorkType ChangeRequest =
       new WorkType("Change Requst", "Top level Change Request to rule them all");
    public static final WorkType Code = new WorkType("Code");
@@ -38,25 +38,25 @@ public class WorkType extends OseeEnum {
    public static final WorkType Integration = new WorkType("Integration");
    public static final WorkType IntegrationTest = new WorkType("IntegrationTest", "Integration Test", "");
    public static final WorkType Issues = new WorkType("Issues");
-   public static final WorkType Maintenance = new WorkType("Maintenance", true);
+   public static final WorkType Maintenance = new WorkType("Maintenance");
    public static final WorkType MIM = new WorkType("MIM", "MIM", "Message Interface Modeling", true);
    public static final WorkType MissionCode = new WorkType("MissionCode", "Mission Code", "");
    public static final WorkType None = new WorkType("None");
    public static final WorkType PIDS = new WorkType("PIDS");
    public static final WorkType ProblemReport = new WorkType("Problem Report");
    public static final WorkType Program = new WorkType("Program", "Top Level item of given type for a Program");
-   public static final WorkType Requirements = new WorkType("Requirements", true);
+   public static final WorkType Requirements = new WorkType("Requirements");
    public static final WorkType Software = new WorkType("Software");
    public static final WorkType SoftwareTest = new WorkType("SoftwareTest", "Software Test", "");
    public static final WorkType SSDD = new WorkType("SSDD");
    public static final WorkType SubSystems = new WorkType("SubSystems");
    public static final WorkType Support = new WorkType("Support");
-   public static final WorkType SW_Design = new WorkType("SW_Design", "Software Design", "", true);
-   public static final WorkType SW_TechAppr = new WorkType("SW_TechAppr", "Software Tech Approach", "", true);
-   public static final WorkType Systems = new WorkType("Systems", true);
+   public static final WorkType SW_Design = new WorkType("SW_Design", "Software Design", "");
+   public static final WorkType SW_TechAppr = new WorkType("SW_TechAppr", "Software Tech Approach", "");
+   public static final WorkType Systems = new WorkType("Systems");
    public static final WorkType Test = new WorkType("Test");
    public static final WorkType Test_Librarian = new WorkType("Test_Librarian", "Test Librarian", "");
-   public static final WorkType Test_Procedures = new WorkType("Test_Procedures", "Test Procedures", "", true);
+   public static final WorkType Test_Procedures = new WorkType("Test_Procedures", "Test Procedures", "");
 
    private String humanReadableName;
    private String description;
@@ -70,7 +70,7 @@ public class WorkType extends OseeEnum {
       this(name, "");
    }
 
-   private WorkType(String name, boolean createBranch) {
+   private WorkType(String name, String humanReadableName, boolean createBranch) {
       this(name, name, "", createBranch);
    }
 

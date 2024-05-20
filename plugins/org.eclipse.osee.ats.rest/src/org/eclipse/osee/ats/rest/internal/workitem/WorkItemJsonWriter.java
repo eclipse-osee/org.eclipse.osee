@@ -48,6 +48,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.TeamWorkflowDetails;
 import org.eclipse.osee.ats.api.workflow.WorkItemWriterOptions;
 import org.eclipse.osee.ats.core.review.ReviewDefectManager;
 import org.eclipse.osee.ats.core.review.UserRoleManager;
@@ -57,12 +58,15 @@ import org.eclipse.osee.ats.rest.internal.util.ActionPage;
 import org.eclipse.osee.ats.rest.internal.util.TargetedVersion;
 import org.eclipse.osee.ats.rest.util.WorkItemJsonProvider;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.ArtifactRelatedDirectArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IRelationLink;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -230,6 +234,9 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
          writeCurrentState(atsApi, writer, teamWf);
          writeToStates(atsApi, writer, teamWf);
          writePreviousStates(atsApi, writer, teamWf);
+         if (matches(TeamWorkflowDetails.class, annotations)) {
+            writeTeamWorkflowDetails(orcsApi, atsApi, writer, teamWf);
+         }
       }
 
       if (workItem.isReview()) {
@@ -489,5 +496,18 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       boolean hasCommitManager = atsApi.getWorkDefinitionService().getWidgetsFromLayoutItems(state).stream().map(
          widget -> widget.getName()).anyMatch(name -> name.equals("Commit Manager"));
       writer.writeObjectField("committable", hasCommitManager);
+   }
+
+   private static void writeTeamWorkflowDetails(OrcsApi orcsApi, AtsApi atsApi, JsonGenerator writer,
+      IAtsTeamWorkflow teamWf) throws IOException {
+      ArtifactReadable artReadable =
+         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(teamWf.getArtifactId()).asArtifact();
+      List<ArtifactToken> leads =
+         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.User).andRelatedTo(
+            AtsRelationTypes.TeamLead_Team, teamWf.getTeamDefinition().getArtifactId()).asArtifactTokens();
+
+      writer.writeObjectField("artifact", new ArtifactRelatedDirectArtifact(artReadable, orcsApi.tokenService()));
+      writer.writeObjectField("leads", leads);
+
    }
 }
