@@ -41,15 +41,16 @@ public class ArtifactDeltaToFileConverter {
       return renderer;
    }
 
-   public Pair<IFile, IFile> convertToFile(PresentationType presentationType, String pathPrefix, ArtifactDelta artifactDelta) {
+   public Pair<IFile, IFile> convertToFile(PresentationType presentationType, String pathPrefix,
+      ArtifactDelta artifactDelta) {
       Artifact baseArtifact = artifactDelta.getStartArtifact();
       Artifact newerArtifact = artifactDelta.getEndArtifact();
       if (newerArtifact.getModType().isDeleted()) {
          newerArtifact = null;
       }
 
-      IFile baseFile = renderer.renderToFile(this.toList(baseArtifact), presentationType, pathPrefix);
-      IFile newerFile = renderer.renderToFile(this.toList(newerArtifact), presentationType, pathPrefix);
+      IFile baseFile = renderer.renderToFile(this.toList(baseArtifact), presentationType, pathPrefix).orElseThrow();
+      IFile newerFile = renderer.renderToFile(this.toList(newerArtifact), presentationType, pathPrefix).orElseThrow();
       return new Pair<>(baseFile, newerFile);
    }
 
@@ -60,13 +61,14 @@ public class ArtifactDeltaToFileConverter {
          newerArtifact = null;
       }
 
-      IFile baseFile = renderer.renderToFile(this.toList(baseArtifact), presentationType, null);
+      IFile baseFile = renderer.renderToFile(this.toList(baseArtifact), presentationType, null).orElseThrow();
       IFile copiedFile = renderer.copyToNewFile(newerArtifact, presentationType, baseFile);
 
       return new Pair<>(baseFile, copiedFile);
    }
 
-   public void convertToFileForMerge(final Collection<IFile> outputFiles, TransactionDelta txDelta, Artifact baseVersion, Artifact newerVersion) {
+   public void convertToFileForMerge(final Collection<IFile> outputFiles, TransactionDelta txDelta,
+      Artifact baseVersion, Artifact newerVersion) {
       ArtifactDelta artifactDelta = new ArtifactDelta(txDelta, baseVersion, newerVersion);
 
       CompareDataCollector colletor = new CompareDataCollector() {

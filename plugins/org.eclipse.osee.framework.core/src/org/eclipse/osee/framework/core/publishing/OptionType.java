@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.core.publishing;
 
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import java.io.OutputStream;
+import java.nio.file.Path;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -87,6 +88,15 @@ public enum OptionType {
            org.eclipse.osee.framework.core.data.BranchId.SENTINEL
         ),
 
+     FilenameFormat
+        (
+           FilenameFormat.class,
+           IsCollection.NO,
+           CanCopy.YES,
+           NO_DESERIALIZER(),
+           org.eclipse.osee.framework.core.publishing.FilenameFormat.PREVIEW
+        ),
+
      FormatIndicator
         (
            FormatIndicator.class,
@@ -117,6 +127,15 @@ public enum OptionType {
      OutputStream
         (
            OutputStream.class,
+           IsCollection.NO,
+           CanCopy.NO,
+           NO_DESERIALIZER(),
+           NO_DEFAULT_VALUE()
+        ),
+
+     Path
+        (
+           Path.class,
            IsCollection.NO,
            CanCopy.NO,
            NO_DESERIALIZER(),

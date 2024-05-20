@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.exception.OperationTimedoutException;
 import org.eclipse.osee.framework.core.model.change.CompareData;
+import org.eclipse.osee.framework.core.publishing.FilenameFormat;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.publishing.RendererUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -249,18 +250,28 @@ public abstract class AbstractWordCompare implements IComparator {
    protected String getDiffPath(Artifact baseVersion, Artifact newerVersion, PresentationType presentationType,
       String prefix) {
       //@formatter:off
-      var artifact =
+      final var artifact =
          Objects.nonNull( baseVersion )
             ? baseVersion
             : newerVersion;
 
-      var branchToken = artifact.getBranchToken();
+      final var branchToken = artifact.getBranchToken();
 
-      var artifacts = Collections.singletonList( artifact );
+      final var artifacts = Collections.singletonList( artifact );
 
-      var path = RendererUtil.makeRenderPath( prefix.concat( "/results" ) );
+      final var path = RendererUtil.makeRenderPath( prefix.concat( "/results" ) );
 
-      var diffPath =
+      final var segments =
+         RenderingUtil
+            .getFileNameSegmentsFromArtifacts
+               (
+                  FilenameFormat.PREVIEW,
+                  presentationType,
+                  branchToken.getShortName(),
+                  artifacts
+               );
+
+      final String diffPath =
          RenderingUtil
             .getRenderFile
                (
@@ -268,7 +279,7 @@ public abstract class AbstractWordCompare implements IComparator {
                   presentationType,
                   path,
                   "xml",
-                  RenderingUtil.getFileNameSegmentsFromArtifacts( presentationType, branchToken.getShortName(), artifacts )
+                  segments
                )
             .flatMap( RenderingUtil::getOsString )
             .orElseThrow

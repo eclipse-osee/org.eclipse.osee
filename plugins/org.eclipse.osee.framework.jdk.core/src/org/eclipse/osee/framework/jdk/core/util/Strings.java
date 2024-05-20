@@ -163,7 +163,7 @@ public class Strings {
 
    public static boolean isBlank(CharSequence value) {
       for (int i = 0; i < value.length(); i++) {
-         if (Character.isWhitespace(value.charAt(i))) {
+         if (!Character.isWhitespace(value.charAt(i))) {
             return false;
          }
       }
@@ -382,6 +382,37 @@ public class Strings {
       return false;
    }
 
+   public static boolean notEquals(CharSequence tested, String... tests) {
+
+      if ((tested == null) && (((tests == null) || (tests.length == 0)))) {
+         //both are empty
+         return false;
+      }
+
+      if (tested == null) {
+         //only tested is empty
+         return true;
+      }
+
+      if ((tests == null) || (tests.length == 0)) {
+         //only tests are empty
+         return true;
+      }
+
+      for (int i = 0; i < tests.length; i++) {
+         var toTest = tests[i];
+         if (toTest == null) {
+            //only toTest string is null
+            return true;
+         }
+
+         if (CharSequence.compare(tested, toTest) != 0) {
+            return true;
+         }
+      }
+      return false;
+   }
+
    public static String quote(String nameReference) {
       return wrapWith(nameReference, QUOTE_STR, false);
    }
@@ -512,7 +543,8 @@ public class Strings {
     * @throws NullPointerException when <code>collectionFactory</code> is <code>null</code>.
     */
 
-   public static <T extends Collection<String>> T split(char delimiter, String string, int maxSplits, Supplier<T> collectionFactory) {
+   public static <T extends Collection<String>> T split(char delimiter, String string, int maxSplits,
+      Supplier<T> collectionFactory) {
 
       var result = Objects.requireNonNull(collectionFactory).get();
 
@@ -546,7 +578,8 @@ public class Strings {
     * @throws NullPointerException when <code>collectionFactory</code> is <code>null</code>.
     */
 
-   public static <T extends Collection<String>> T split(char delimiter, CharSequence charSequence, Supplier<T> collectionFactory) {
+   public static <T extends Collection<String>> T split(char delimiter, CharSequence charSequence,
+      Supplier<T> collectionFactory) {
 
       var result = Objects.requireNonNull(collectionFactory).get();
 
@@ -581,7 +614,8 @@ public class Strings {
     * @throws NullPointerException when <code>collectionFactory</code> is <code>null</code>.
     */
 
-   public static <T extends Collection<String>> T split(char delimiter, CharSequence charSequence, int maxSplits, Supplier<T> collectionFactory) {
+   public static <T extends Collection<String>> T split(char delimiter, CharSequence charSequence, int maxSplits,
+      Supplier<T> collectionFactory) {
 
       var result = Objects.requireNonNull(collectionFactory).get();
 
@@ -613,7 +647,8 @@ public class Strings {
     * @throws NullPointerException when <code>collectionFactory</code> is <code>null</code>.
     */
 
-   public static <T extends Collection<CharSequenceWindow>> T splitToLinesInCharSequenceWindows(CharSequence charSequence, Supplier<T> collectionFactory) {
+   public static <T extends Collection<CharSequenceWindow>> T splitToLinesInCharSequenceWindows(
+      CharSequence charSequence, Supplier<T> collectionFactory) {
 
       var result = Objects.requireNonNull(collectionFactory).get();
 
@@ -650,7 +685,8 @@ public class Strings {
     * @throws NullPointerException when <code>collectionFactory</code> is <code>null</code>.
     */
 
-   public static <T extends Collection<CharSequenceWindow>> T splitToCharSequenceWindows(char delimiter, CharSequence charSequence, Supplier<T> collectionFactory) {
+   public static <T extends Collection<CharSequenceWindow>> T splitToCharSequenceWindows(char delimiter,
+      CharSequence charSequence, Supplier<T> collectionFactory) {
 
       var result = Objects.requireNonNull(collectionFactory).get();
 
@@ -685,7 +721,8 @@ public class Strings {
     * @throws NullPointerException when <code>collectionFactory</code> is <code>null</code>.
     */
 
-   public static <T extends Collection<CharSequenceWindow>> T splitToCharSequenceWindows(char delimiter, CharSequence charSequence, int maxSplits, Supplier<T> collectionFactory) {
+   public static <T extends Collection<CharSequenceWindow>> T splitToCharSequenceWindows(char delimiter,
+      CharSequence charSequence, int maxSplits, Supplier<T> collectionFactory) {
 
       var result = Objects.requireNonNull(collectionFactory).get();
 

@@ -24,6 +24,7 @@ import java.util.Random;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Conditions.ValueType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -94,11 +95,67 @@ public class FilenameFactory {
 
    private static final Pattern WHITESPACE_CLEANER_PATTERN = Pattern.compile("\\s+");
 
+   private static final Pattern FILENNAME_SAFE_CHAR_CONSOLIDATION_PATTERN =
+      Pattern.compile(FILENAME_SAFE_CHAR_REPLACEMENT + FILENAME_SAFE_CHAR_REPLACEMENT + "+");
    /**
     * The maximum number of characters allowed in a filename.
     */
 
    private static final int WINDOWS_FILENAME_LIMIT = 215;
+
+   /**
+    * Cleans the <code>name</code> using {@link #makeNameCleaner} and the forms the file name by combining the
+    * <code>name</code> and <code>extension</code>.
+    * <p>
+    * If the first character of the <code>extension</code> is not a '.', a '.' will be appended before the
+    * <code>extension</code>. The returned {@link String} will always be non-<code>null</code> and non-blank.
+    *
+    * @param extension the optional file extension.
+    * @param name the name portion of the filename.
+    * @return the build filename.
+    */
+
+   public static @NonNull String create(@Nullable CharSequence extension, @NonNull CharSequence name) {
+
+      //@formatter:off
+      final var safeName =
+         Conditions.require
+            (
+               name,
+               Conditions.ValueType.PARAMETER,
+               "name",
+               "cannot be null or blank",
+               Strings::isInvalidOrBlank,
+               IllegalArgumentException::new
+            );
+
+      final var cleanName = FilenameFactory.makeNameCleaner(safeName);
+
+      final var extensionValid =
+            Strings.isValidAndNonBlank( extension )
+         && (    ( extension.length()    != 1                                            )
+              || ( extension.charAt( 0 ) != FilenameFactory.FILENAME_EXTENSION_SEPARATOR ) );
+
+      final var length =
+           cleanName.length()
+         + ( extensionValid ? extension.length() : 0 )
+         + 1;
+
+      var filename = new StringBuilder( length ).append( cleanName );
+
+      if ( extensionValid ) {
+
+         if( extension.charAt(0) != FilenameFactory.FILENAME_EXTENSION_SEPARATOR )
+         {
+            filename.append( FilenameFactory.FILENAME_EXTENSION_SEPARATOR );
+         }
+
+         filename.append( extension );
+      }
+
+      return filename.toString();
+      //@formatter:on
+   }
 
    /**
     * Converts each segment in the <code>segments</code> array into a safe name segment using {@link #makeNameSafer}. A
@@ -145,7 +202,8 @@ public class FilenameFactory {
     * @return the built filename.
     */
 
-   static @NonNull String create(CharSequence dateSegment, CharSequence randomSegment, CharSequence extension, CharSequence... segments) {
+   static @NonNull String create(CharSequence dateSegment, CharSequence randomSegment, CharSequence extension,
+      CharSequence... segments) {
 
       //@formatter:off
       var safeDateSegment = FilenameFactory.makeNameSafer(dateSegment);
@@ -212,9 +270,6 @@ public class FilenameFactory {
          );
       //@formatter:on
 
-      var dateSegment = FilenameFactory.getDateSegment();
-      var randomSegment = FilenameFactory.getRandomSegment();
-
       //@formatter:off
       return
          filenameSpecifications
@@ -224,8 +279,9 @@ public class FilenameFactory {
                   Collectors.toMap
                      (
                         FilenameSpecification::getKey,
-                        ( filenameSpecification ) -> filenameSpecification.build(dateSegment, randomSegment) )
-                     );
+                        FilenameSpecification::build
+                     )
+               );
       //@formatter:on
    }
 
@@ -236,7 +292,7 @@ public class FilenameFactory {
     * @return time date string.
     */
 
-   private static String getDateSegment() {
+   static String getDateSegment() {
       DateFormat dateFormat = new SimpleDateFormat(FilenameFactory.FILENAME_DATE_TIME_FORMAT);
       var dateSegment = dateFormat.format(new Date());
       return dateSegment;
@@ -250,7 +306,7 @@ public class FilenameFactory {
     * @return a 5 digit 0 padded decimal string.
     */
 
-   private static String getRandomSegment() {
+   static String getRandomSegment() {
       var randomValue = FilenameFactory.generator.nextInt(99999) + 1;
       var randomSegment = String.format("%05d", randomValue);
       return randomSegment;
@@ -275,6 +331,27 @@ public class FilenameFactory {
    }
 
    /**
+    * Cleans the file name using {@link @makeNameCleaner} and truncates the length to {@link #FILENAME_SAFE_LENGTH}.
+    *
+    * @param name the filename to make safe.
+    * @return a clean short filename.
+    */
+
+   public static @NonNull String makeNameSafer(CharSequence name) {
+
+      //@formatter:off
+      final var cleanName = FilenameFactory.makeNameCleaner( name );
+
+      final var shortCleanName =
+         (cleanName.length() > FilenameFactory.FILENAME_SAFE_LENGTH )
+            ? cleanName.substring(0, FilenameFactory.FILENAME_SAFE_LENGTH )
+            : cleanName;
+      //@formatter:on
+
+      return shortCleanName;
+   }
+
+   /**
     * Replaces the following characters in the name with a " ":
     *
     * <pre>
@@ -287,15 +364,15 @@ public class FilenameFactory {
     * <p>
     * The remaining white space sequences are consolidated and replaced with a "-".
     * <p>
-    * The string is truncated to 20 characters in length.
+    * Multiple safe characters "-" in a sequence are consolidated into a single safe character.
     * <p>
     * The returned {@link String} will always be non-<code>null</code> but might be empty.
     *
-    * @param filename the file name to clean and URL encode.
+    * @param filename the file name to clean.
     * @return a clean filename.
     */
 
-   public static @NonNull String makeNameSafer(CharSequence name) {
+   public static @NonNull String makeNameCleaner(CharSequence name) {
 
       //@formatter:off
       var characterCleanName =
@@ -320,13 +397,16 @@ public class FilenameFactory {
                   FilenameFactory.FILENAME_SAFE_CHAR_REPLACEMENT
                );
 
-      var shortWhiteSpaceCleanTrimCharacterCleanName =
-         (whiteSpaceCleanTrimCharacterCleanName.length() > FilenameFactory.FILENAME_SAFE_LENGTH )
-            ? whiteSpaceCleanTrimCharacterCleanName.substring(0, FilenameFactory.FILENAME_SAFE_LENGTH )
-            : whiteSpaceCleanTrimCharacterCleanName;
-         //@formatter:on
+      var consolidatedSafeWhiteSpaceCleanTrimCharacterCleanName =
+             Strings.totallySaferReplace
+                (
+                   whiteSpaceCleanTrimCharacterCleanName,
+                   FilenameFactory.FILENNAME_SAFE_CHAR_CONSOLIDATION_PATTERN,
+                   FilenameFactory.FILENAME_SAFE_CHAR_REPLACEMENT
+                );
+      //@formatter:on
 
-      return shortWhiteSpaceCleanTrimCharacterCleanName;
+      return consolidatedSafeWhiteSpaceCleanTrimCharacterCleanName;
    }
 
    /**

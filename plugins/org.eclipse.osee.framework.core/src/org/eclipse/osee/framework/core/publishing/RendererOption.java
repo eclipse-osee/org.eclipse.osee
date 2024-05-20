@@ -91,6 +91,8 @@ public enum RendererOption {
 
    EXECUTE_VB_SCRIPT("execute.vb.script", OptionType.String),
 
+   FILENAME_FORMAT("FilenameFormat", OptionType.FilenameFormat),
+
    /**
     * Flag used to track the number of Publishing Template requests when {@link #USE_TEMPLATE_ONCE} is
     * <code>true</code>.
@@ -140,6 +142,8 @@ public enum RendererOption {
    OUTLINE_TYPE("Outline Type", OptionType.String),
 
    OUTPUT_STREAM("Output Stream", OptionType.OutputStream),
+
+   OUTPUT_PATH("OutputPath", OptionType.Path),
 
    OVERRIDE_DATA_RIGHTS("Override Data Rights", OptionType.String),
 
@@ -312,7 +316,8 @@ public enum RendererOption {
     */
 
    @SuppressWarnings("unchecked")
-   private static <T> void addDeserializer(SimpleModule simpleModule, Class<T> objectClass, JsonDeserializer<?> jsonDeserializer) {
+   private static <T> void addDeserializer(SimpleModule simpleModule, Class<T> objectClass,
+      JsonDeserializer<?> jsonDeserializer) {
       simpleModule.addDeserializer(objectClass, (JsonDeserializer<T>) jsonDeserializer);
    }
 

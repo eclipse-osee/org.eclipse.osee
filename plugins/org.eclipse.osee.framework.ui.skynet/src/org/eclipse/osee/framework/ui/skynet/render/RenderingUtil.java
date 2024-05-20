@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -25,6 +26,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.OseeData;
@@ -33,16 +37,19 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionDeltaSupplier;
 import org.eclipse.osee.framework.core.publishing.FilenameFactory;
+import org.eclipse.osee.framework.core.publishing.FilenameFormat;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.publishing.RendererUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.program.Program;
@@ -77,6 +84,12 @@ public final class RenderingUtil {
    //@formatter:on
 
    /**
+    * One and done flag to warn a user about a large file name.
+    */
+
+   private static AtomicBoolean showAgain = new AtomicBoolean(true);
+
+   /**
     * Default class to used for the error document when the render class can't be determined.
     */
 
@@ -93,12 +106,6 @@ public final class RenderingUtil {
     */
 
    private static final String UNKNOWN_RENDERER = "UNKNOWN RENDERER";
-
-   /**
-    * One and done flag to warn a user about a large file name.
-    */
-
-   private static AtomicBoolean showAgain = new AtomicBoolean(true);
 
    /**
     * Predicate used to determine if pop-up dialogs are allowed.
@@ -185,7 +192,7 @@ public final class RenderingUtil {
     */
 
    public static String displayErrorDocument(IRenderer renderer, PresentationType presentationType,
-      BranchToken branchToken, List<Artifact> artifacts, String errorMessage) {
+      IProgressMonitor monitor, BranchToken branchToken, List<Artifact> artifacts, String errorMessage) {
 
       var rendererClass = Objects.nonNull(renderer) ? renderer.getClass() : RenderingUtil.UNKNOWN_CLASS;
       var rendererName = Objects.nonNull(renderer) ? renderer.getName() : RenderingUtil.UNKNOWN_RENDERER;
@@ -202,22 +209,38 @@ public final class RenderingUtil {
                 .indentInc()
                 .segment( "Artifacts", artifacts,   Artifact::getIdString    )
                 .segment( "Branch",    branchToken, BranchToken::getIdString )
-                .blank()
-                .indentDec()
-                .title( "Reason Follows:" )
-                .blank()
-                .block( errorMessage )
                 .toString();
       //@formatter:on
 
-      OseeLog.log(rendererClass, Level.WARNING, message);
+      OseeLog.log(rendererClass, Level.WARNING, errorMessage);
 
       if (RenderingUtil.arePopupsAllowed()) {
+
+         //@formatter:off
+         final var buttonActions =
+            ( monitor == null )
+               ? null
+               : Map.<String,Runnable>of
+                    (
+                       "Cancel",
+                       () -> monitor.setCanceled( true )
+                    );
+         //@formatter:on
 
          Displays.pendInDisplayThread(new Runnable() {
             @Override
             public void run() {
-               MessageDialog.openError(Displays.getActiveShell(), "Publishing Error", message);
+               //@formatter:off
+               AWorkbench.popup
+                  (
+                     AWorkbench.MessageType.Error,
+                     "Publishing Failure",
+                     message,
+                     errorMessage,
+                     buttonActions,
+                     AWorkbench.SCROLLING_TEXT_BOX | AWorkbench.INCLUDE_CANCEL_BUTTON
+                  );
+               //@formatter:on
             }
          });
       }
@@ -424,7 +447,7 @@ public final class RenderingUtil {
     * with the first 15 characters of the associated artifact's URL safe name; otherwise, and empty {@link Optional}.
     */
 
-   private static Optional<String> getFileNameSegmentFromTransactionDeltaAssociatedArtifactName(
+   public static Optional<String> getFileNameSegmentFromTransactionDeltaAssociatedArtifactName(
       TransactionDelta txDelta) {
 
       if (Objects.isNull(txDelta)) {
@@ -497,65 +520,110 @@ public final class RenderingUtil {
     * @return a {@link String} array of filename segments.
     */
 
-   public static String[] getFileNameSegmentsFromArtifacts(PresentationType presentationType, String branchName,
-      List<Artifact> artifacts) {
+   //@formatter:off
+   public static @NonNull String[]
+      getFileNameSegmentsFromArtifacts
+         (
+            @NonNull  FilenameFormat          filenameFormat,
+            @Nullable PresentationType        presentationType,
+            @Nullable String                  branchName,
+            @NonNull  List<@NonNull Artifact> artifacts
+         ) {
+   //@formatter:on
 
-      var segments = new LinkedList<String>();
+      final var safeFilenameFormat = Conditions.requireNonNull(filenameFormat, "filenameFormat");
 
       //@formatter:off
-      var safeBranchName =
-         Strings.isValidAndNonBlank( branchName )
-            ? FilenameFactory.makeNameSafer( branchName )
-            : null;
+      final var safeArtifacts =
+         Conditions.require
+            (
+               artifacts,
+               Conditions.ValueType.PARAMETER,
+               "artifacts",
+               "cannot be null or contain null entries",
+               Conditions.or
+                  (
+                     Objects::isNull,
+                     Conditions::collectionContainsNull
+                  ),
+               IllegalArgumentException::new
+            );
       //@formatter:on
 
-      if (Strings.isValidAndNonBlank(safeBranchName)) {
-         segments.add(safeBranchName);
-      }
+      switch (safeFilenameFormat) {
 
-      if (Objects.nonNull(artifacts) && artifacts.size() > 1) {
-         segments.add("artifacts");
-         segments.add(Integer.toString(artifacts.size()));
-         return segments.toArray(String[]::new);
-      }
+         case EXPORT: {
 
-      if (Objects.nonNull(artifacts) && artifacts.size() == 1) {
-
-         var artifact = artifacts.get(0);
-
-         if (Objects.nonNull(artifact)) {
-
-            var safeArtifactName = FilenameFactory.makeNameSafer(artifact.getName());
-
-            if (Strings.isValidAndNonBlank(safeArtifactName)) {
-               segments.add(safeArtifactName);
+            if (artifacts.isEmpty()) {
+               return new String[] {"artifacts-0"};
             }
 
-            var artifactIdString = artifact.getIdString();
+            final var artifact = artifacts.get(0);
+            final var artifactName = artifact.getName();
+            final var safeArtifactName = FilenameFactory.makeNameCleaner(artifactName);
 
-            segments.add(artifactIdString);
+            return new String[] {safeArtifactName};
+         }
+
+         case PREVIEW: {
+
+            var segments = new LinkedList<String>();
 
             //@formatter:off
-            var transaction =
-                  artifact.isValid()
-               && ( artifact.isHistorical() || ( presentationType == PresentationType.DIFF ) )
-                     ? artifact.getTransaction()
-                     : null;
+            var safeBranchName =
+               Strings.isValidAndNonBlank( branchName )
+                  ? FilenameFactory.makeNameSafer( branchName )
+                  : null;
             //@formatter:on
 
-            if (Objects.nonNull(transaction) && transaction.isValid()) {
-               var transactionIdString = transaction.getIdString();
-               segments.add(transactionIdString);
+            if (Strings.isValidAndNonBlank(safeBranchName)) {
+               segments.add(safeBranchName);
             }
 
+            if (Objects.nonNull(artifacts) && artifacts.size() > 1) {
+               segments.add("artifacts");
+               segments.add(Integer.toString(artifacts.size()));
+               return segments.toArray(String[]::new);
+            }
+
+            if (Objects.nonNull(artifacts) && artifacts.size() == 1) {
+
+               var artifact = artifacts.get(0);
+
+               var safeArtifactName = FilenameFactory.makeNameSafer(artifact.getName());
+
+               if (Strings.isValidAndNonBlank(safeArtifactName)) {
+                  segments.add(safeArtifactName);
+               }
+
+               var artifactIdString = artifact.getIdString();
+
+               segments.add(artifactIdString);
+
+               //@formatter:off
+                  var transaction =
+                        artifact.isValid()
+                     && ( artifact.isHistorical() || ( PresentationType.DIFF.equals( presentationType ) ) )
+                           ? artifact.getTransaction()
+                           : null;
+                  //@formatter:on
+
+               if (Objects.nonNull(transaction) && transaction.isValid()) {
+                  var transactionIdString = transaction.getIdString();
+                  segments.add(transactionIdString);
+               }
+
+               return segments.toArray(String[]::new);
+            }
+
+            segments.add("artifacts");
+            segments.add("0");
             return segments.toArray(String[]::new);
          }
+
+         default:
+            throw Conditions.invalidCase(filenameFormat, "filenameFormat", IllegalArgumentException::new);
       }
-
-      segments.add("artifacts");
-      segments.add("0");
-      return segments.toArray(String[]::new);
-
    }
 
    /**

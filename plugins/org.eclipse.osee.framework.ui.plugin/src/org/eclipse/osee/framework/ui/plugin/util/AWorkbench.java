@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.ui.plugin.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -47,7 +48,22 @@ import org.eclipse.ui.WorkbenchException;
 
 public final class AWorkbench {
 
+   /**
+    * Enumeration of the dialog box content types that can be created.
+    * <ul>
+    * <li>{@link #Confirm}</li>
+    * <li>{@link #Error}</li>
+    * <li>{@link #Informational}</li>
+    * </ul>
+    */
+
    public static enum MessageType {
+
+      /**
+       * Creates a confirmation dialog with an "OK" and "CANCEL" buttons.
+       *
+       * @see MessageDialog#CONFIRM
+       */
 
       Confirm {
 
@@ -57,11 +73,18 @@ public final class AWorkbench {
          }
 
          @Override
-         protected String[] getButtonLabels() {
-            return new String[] {IDialogConstants.OK_LABEL, IDialogConstants.CANCEL_LABEL};
+         protected String[] getButtonLabels(int options) {
+            return MessageType.OK_CANCEL_BUTTON_SET;
          }
 
       },
+
+      /**
+       * Creates an error dialog with an "OK" button. A "CANCEL" button will only be included when the option
+       * {@link AWorkbench#INCLUDE_CANCEL_BUTTON} was specified.
+       *
+       * @see MessageDialog#ERROR
+       */
 
       Error {
 
@@ -71,11 +94,23 @@ public final class AWorkbench {
          }
 
          @Override
-         protected String[] getButtonLabels() {
-            return new String[] {IDialogConstants.OK_LABEL};
+         protected String[] getButtonLabels(int options) {
+
+      //@formatter:off
+            return
+               ( ( options & AWorkbench.INCLUDE_CANCEL_BUTTON ) > 0 )
+                  ? MessageType.OK_CANCEL_BUTTON_SET
+                  : MessageType.OK_BUTTON_SET;
+            //@formatter:on
          }
 
       },
+
+      /**
+       * Creates an information dialog with an "OK" button. A "CANCEL" button is not provided.
+       *
+       * @see MessageDialog#INFORMATION
+       */
 
       Informational {
 
@@ -85,15 +120,20 @@ public final class AWorkbench {
          }
 
          @Override
-         protected String[] getButtonLabels() {
-            return new String[] {IDialogConstants.OK_LABEL};
+         protected String[] getButtonLabels(int options) {
+            return MessageType.OK_BUTTON_SET;
          }
 
       };
 
+      private static final String[] OK_BUTTON_SET = new String[] {IDialogConstants.OK_LABEL};
+
+      public static final String[] OK_CANCEL_BUTTON_SET =
+         new String[] {IDialogConstants.OK_LABEL, IDialogConstants.CANCEL_LABEL};
+
       abstract protected int getKind();
 
-      abstract protected String[] getButtonLabels();
+      abstract protected String[] getButtonLabels(int options);
    }
 
    /**
@@ -101,6 +141,12 @@ public final class AWorkbench {
     */
 
    public static final int SCROLLING_TEXT_BOX = 1;
+
+   /**
+    * This option will include a cancel button on the pop-up.
+    */
+
+   public static final int INCLUDE_CANCEL_BUTTON = 2;
 
    public static IWorkbenchPage getActivePage() {
       IWorkbenchWindow workbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
@@ -202,17 +248,25 @@ public final class AWorkbench {
     * <dd>A pop-up window of the type specified by <code>messageType</code> is displayed with the window title specified
     * by <code>title</code>, the <code>message</code> displayed on the pop-up background, and a scrolling text box with
     * the <code>longMessage</code>.</dd>
+    * <dt>{@link AWorkbench#INCLUDE_CANCEL_BUTTON}:</dt>
+    * <dd>When the option is specified a cancel button will be included on the pop-up. This option is only necessary for
+    * {@link MessageType}s that do not include a cancel button by default.</dd>
     * </dl>
+    * A map of {@link Runnable} actions keyed by the pop-up button names may be provided. When the name of the pressed
+    * dismissal button has a {@link Runnable} entry in the map it will be run. See {@link AWorkbench.MessageType}s for
+    * the supported button names.
+    * <p>
     *
     * @param messageType the type of message pop-up window.
     * @param title the window title.
     * @param message a short message displayed on the pop-up background.
     * @param longMessage a longer message displayed according to the <code>options</code>.
+    * @param buttonActions a {@link Map} of {@link Runnable} button press actions keyed by the pop-up button names.
     * @param options the pop-up window display options.
     */
 
    public static void popup(final MessageType messageType, final String title, String message, final String longMessage,
-      int options) {
+      Map<String, Runnable> buttonActions, int options) {
 
       if (!PlatformUI.isWorkbenchRunning()) {
 
@@ -230,86 +284,95 @@ public final class AWorkbench {
 
       }
 
-      switch (options) {
+      final var scrollingTextBox = (options & AWorkbench.SCROLLING_TEXT_BOX) > 0;
 
-         case 0:
-         default: {
-            AWorkbench.popup(messageType, title, message);
-            return;
-         }
+      if (!scrollingTextBox) {
 
-         case SCROLLING_TEXT_BOX: {
-            //@formatter:off
-            AWorkbench
-               .getDisplay()
-               .syncExec
-                  (
-                     new Runnable()
-                     {
-
-                        @Override
-                        public void run() {
-
-                           final var workbench = PlatformUI.getWorkbench();
-                           final var window = workbench.getActiveWorkbenchWindow();
-                           final var shell = window.getShell();
-
-                            final var messageDialog =
-                              new MessageDialog
-                                     (
-                                        shell,
-                                        title,
-                                        null,
-                                        message,
-                                        messageType.getKind(),
-                                        0,
-                                        messageType.getButtonLabels()
-                                     ) {
-
-                              @Override
-                              protected Control createCustomArea(Composite parent) {
-
-                                 final var textGridData = new GridData();
-
-                                 textGridData.horizontalAlignment = SWT.FILL;
-                                 textGridData.grabExcessHorizontalSpace = true;
-                                 textGridData.minimumWidth = 128;
-                                 textGridData.widthHint = 128;
-
-                                 textGridData.verticalAlignment = SWT.FILL;
-                                 textGridData.grabExcessVerticalSpace = true;
-                                 textGridData.minimumHeight = 256;
-                                 textGridData.heightHint = 256;
-
-                                 final var text = new Text(parent, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL );
-
-                                 text.setEditable(false);
-                                 text.setLayoutData( textGridData );
-
-                                 text.setText(longMessage);
-
-                                 return text;
-                              }
-
-                              void display() {
-
-                                 final var defaultStyles = this.getShellStyle();
-                                 this.setShellStyle( defaultStyles | SWT.RESIZE );
-                                 this.open();
-                              }
-                           };
-
-                           messageDialog.display();
-
-                        }
-                     }
-                  );
-
-            return;
-         }
-
+         AWorkbench.popup(messageType, title, message);
+         return;
       }
 
+      //@formatter:off
+      AWorkbench
+         .getDisplay()
+         .syncExec
+            (
+               new Runnable()
+               {
+
+                  @Override
+                  public void run() {
+
+                     final var workbench = PlatformUI.getWorkbench();
+                     final var window = workbench.getActiveWorkbenchWindow();
+                     final var shell = window.getShell();
+                     final var buttonLabels = messageType.getButtonLabels(options);
+
+                      final var messageDialog =
+                        new MessageDialog
+                               (
+                                  shell,
+                                  title,
+                                  null,
+                                  message,
+                                  messageType.getKind(),
+                                  0,
+                                  buttonLabels
+                               ) {
+
+                        @Override
+                        protected Control createCustomArea(Composite parent) {
+
+                           final var textGridData = new GridData();
+
+                           textGridData.horizontalAlignment = SWT.FILL;
+                           textGridData.grabExcessHorizontalSpace = true;
+                           textGridData.minimumWidth = 128;
+                           textGridData.widthHint = 128;
+
+                           textGridData.verticalAlignment = SWT.FILL;
+                           textGridData.grabExcessVerticalSpace = true;
+                           textGridData.minimumHeight = 256;
+                           textGridData.heightHint = 256;
+
+                           final var text = new Text(parent, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL );
+
+                           text.setEditable(false);
+                           text.setLayoutData( textGridData );
+
+                           text.setText(longMessage);
+
+                           return text;
+                        }
+
+                        String display() {
+
+                           final var defaultStyles = this.getShellStyle();
+                           this.setShellStyle( defaultStyles | SWT.RESIZE );
+                           final var pressedButtonIndex = this.open();
+                           final var pressedButton =
+                              ( ( pressedButtonIndex >= 0 ) && ( pressedButtonIndex < buttonLabels.length ) )
+                                 ? buttonLabels[ pressedButtonIndex ]
+                                 : IDialogConstants.OK_LABEL;
+                           return pressedButton;
+                        }
+                     };
+
+                     final var pressedButton = messageDialog.display();
+
+                     if( buttonActions != null ) {
+
+                        final var buttonAction = buttonActions.get( pressedButton );
+
+                        if( buttonAction != null ) {
+
+                           buttonAction.run();
+                        }
+                     }
+                  }
+               }
+            );
+      //@formatter:on
    }
 
    public static void popup(Result result) {
@@ -329,7 +392,6 @@ public final class AWorkbench {
    public static void popup(String title, String message) {
       popup(MessageType.Informational, title, message);
    }
-
 
    public static void popup(String title, String messageFormat, Object... data) {
       popup(MessageType.Informational, title, String.format(messageFormat, data));

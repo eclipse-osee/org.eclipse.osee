@@ -49,9 +49,9 @@ import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WholeWordRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -560,7 +560,8 @@ public class PreviewAndMultiPreviewTest {
     * @return the new {@link AssertionError} object.
     */
 
-   private static AssertionError buildAssertionError(PublishingXmlUtils publishingXmlUtils, String errorStatement, String documentString) {
+   private static AssertionError buildAssertionError(PublishingXmlUtils publishingXmlUtils, String errorStatement,
+      String documentString) {
 
       var error = publishingXmlUtils.getLastError();
 
@@ -636,7 +637,8 @@ public class PreviewAndMultiPreviewTest {
             renderer.setRendererOption(RendererOption.TEMPLATE_OPTION, templateOption);
          }
 
-         var iFile = renderer.renderToFile(rootArtifacts, PresentationType.PREVIEW, testName.getMethodName());
+         var iFile =
+            renderer.renderToFile(rootArtifacts, PresentationType.PREVIEW, testName.getMethodName()).orElseThrow();
 
          var filePath = iFile.getLocation();
 
@@ -851,8 +853,10 @@ public class PreviewAndMultiPreviewTest {
          Assert.assertTrue("Exception is expected.", false);
       } catch (Exception exception) {
 
+         var cause = (Exception) exception.getCause();
+
          Asserts.assertException("Exception type or message is not as expected.", OseeCoreException.class,
-            "Failed to find a Publishing Template.", exception);
+            "Failed to find a Publishing Template.", cause);
          //@formatter:on
       }
    }
