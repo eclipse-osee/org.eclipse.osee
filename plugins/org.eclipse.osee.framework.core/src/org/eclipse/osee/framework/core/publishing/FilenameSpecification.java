@@ -13,8 +13,8 @@
 
 package org.eclipse.osee.framework.core.publishing;
 
-import java.util.Objects;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
  * A class to specify the static parts of a publishing filename with extension.
@@ -23,6 +23,12 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 
 public class FilenameSpecification {
+
+   /**
+    * Saves the desired format for the generated filename.
+    */
+
+   private final FilenameFormat filenameFormat;
 
    /**
     * Saves the filename extension excluding the extension separator.
@@ -46,38 +52,60 @@ public class FilenameSpecification {
     * Saves the parameters for building a publishing filename.
     *
     * @param key a key to be associated with the filename build from this specification.
+    * @param filenameFormat the {@link FilenameFormat} for the generated filename.
     * @param extension the extension for the filename excluding the extension separator.
     * @param segments a possibly empty array of {@link CharSequence}s to be used as filename segments.
     */
 
-   public FilenameSpecification(@NonNull String key, @NonNull CharSequence extension, @NonNull CharSequence... segments) {
-      this.key = Objects.requireNonNull(key);
-      this.extension = Objects.requireNonNull(extension);
-      this.segments = Objects.requireNonNull(segments);
+   public FilenameSpecification(@NonNull String key, @NonNull FilenameFormat filenameFormat,
+      @NonNull CharSequence extension, @NonNull CharSequence... segments) {
+      this.key = Conditions.requireNonNull(key, "key");
+      this.filenameFormat = Conditions.requireNonNull(filenameFormat, "filenameFormat");
+      this.extension = Conditions.requireNonNull(extension, "extension");
+      this.segments = Conditions.requireNonNull(segments, "segments");
    }
 
    /**
     * Builds the filename with extension for a publishing file.
     *
-    * @param dateSegment the date segment for the filename.
-    * @param randomSegment the random segment for the filename.
-    * @return the build publishing filename.
+    * @return the generated filename.
+    * @throws IllegalStateException for an unexpected {@link FilenameFormat}.
     */
 
    @NonNull
-   String build(@NonNull CharSequence dateSegment, @NonNull CharSequence randomSegment) {
+   String build() {
 
-      //@formatter:off
-      var filename =
-         FilenameFactory.create
-            (
-               Objects.requireNonNull(dateSegment),
-               Objects.requireNonNull(randomSegment),
-               this.extension,
-               this.segments
-            );
-      //@formatter:on
-      return filename;
+      switch (this.filenameFormat) {
+
+         case PREVIEW: {
+            //@formatter:off
+            final var filename =
+               FilenameFactory.create
+                  (
+                     FilenameFactory.getDateSegment(),
+                     FilenameFactory.getRandomSegment(),
+                     this.extension,
+                     this.segments
+                  );
+            //@formatter:on
+            return filename;
+         }
+
+         case EXPORT: {
+            //@formatter:off
+            final var filename =
+               FilenameFactory.create
+                  (
+                     this.extension,
+                     this.segments[0]
+                  );
+            //@formatter:on
+            return filename;
+         }
+
+         default:
+            throw Conditions.invalidCase(this.filenameFormat, "filenameFormat", IllegalStateException::new);
+      }
    }
 
    /**

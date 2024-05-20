@@ -393,6 +393,7 @@ public class MarkdownRenderer extends FileSystemRenderer {
                (
                   this,
                   presentationType,
+                  null, /* no button actions */
                   artifacts.get( 0 ).getBranch(),
                   artifacts,
                   "Editing of multiple Markdown artifacts is not implemented."

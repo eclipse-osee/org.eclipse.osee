@@ -115,7 +115,8 @@ public abstract class AbstractEditTest {
 
    private Artifact artifact;
 
-   protected AbstractEditTest(BranchToken branch, String editFile, ArtifactTypeToken artType, FileSystemRenderer renderer) {
+   protected AbstractEditTest(BranchToken branch, String editFile, ArtifactTypeToken artType,
+      FileSystemRenderer renderer) {
       this.branch = branch;
       this.editFile = editFile;
       this.artType = artType;
@@ -245,13 +246,13 @@ public abstract class AbstractEditTest {
    }
 
    private IFile openArtifactForEdit(FileSystemRenderer renderer, Artifact artifact) {
-      IFile editFile =
-         renderer.renderToFile(this.toList(artifact), PresentationType.SPECIALIZED_EDIT, this.method.getTestName());
-      Assert.assertNotNull(editFile);
+      IFile editFile = renderer.renderToFile(this.toList(artifact), PresentationType.SPECIALIZED_EDIT,
+         this.method.getTestName()).orElseThrow();
       return editFile;
    }
 
-   private void writeNewContentAndWaitForSave(Artifact artifact, IFile editFile, String content) throws UnsupportedEncodingException, CoreException, InterruptedException {
+   private void writeNewContentAndWaitForSave(Artifact artifact, IFile editFile, String content)
+      throws UnsupportedEncodingException, CoreException, InterruptedException {
       EventSystemPreferences preferences = OseeEventManager.getPreferences();
 
       boolean eventBoolean = preferences.isDisableEvents();
@@ -281,9 +282,8 @@ public abstract class AbstractEditTest {
       Assert.assertNotNull(renderer);
       Assert.assertNotNull(artifact);
 
-      IFile renderedFileFromModifiedStorage =
-         renderer.renderToFile(this.toList(artifact), PresentationType.SPECIALIZED_EDIT, this.method.getTestName());
-      Assert.assertNotNull(renderedFileFromModifiedStorage);
+      IFile renderedFileFromModifiedStorage = renderer.renderToFile(this.toList(artifact),
+         PresentationType.SPECIALIZED_EDIT, this.method.getTestName()).orElseThrow();
       InputStream inputStream = null;
       try {
          inputStream = renderedFileFromModifiedStorage.getContents();

@@ -18,11 +18,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -34,11 +36,15 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.publishing.FilenameFormat;
+import org.eclipse.osee.framework.core.publishing.FilenameSpecification;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.publishing.RendererUtil;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
@@ -270,10 +276,9 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
    public @NonNull IFile copyToNewFile(Artifact artifact, @NonNull PresentationType presentationType,
       @NonNull IFile file) {
 
-      Objects.requireNonNull(presentationType,
-         "FileSystemRender::renderToFile, parameter \"presentationType\" cannot be null.");
+      final var safePresentationType = Conditions.requireNonNull(presentationType, "presentationType");
 
-      Objects.requireNonNull(file, "FileSystemRender::renderToFile, parameter \"file\" cannot be null.");
+      final var safeIFile = Conditions.requireNonNull(file, "file");
 
       /*
        * Make the artifact into a list
@@ -285,16 +290,18 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
        * Copy the file contents
        */
 
-      try (var inputStream = file.getContents()) {
+      try (var inputStream = safeIFile.getContents()) {
          //@formatter:off
          return
-            this.renderToFileInternal   /* <presentation-folder> "/" <branch-name> "/" <artifact-name> "-" <artifact-id> [ "-" <transaction-id> ] */
-               (
-                  artifacts,            /* List<Artifact>   artifacts        */
-                  presentationType,     /* PresentationType presentationType */
-                  null,                 /* String           pathPrefix       */
-                  inputStream           /* InputStream      inputStream      */
-               );
+            this
+               .renderToFileInternal       /* <presentation-folder> "/" <branch-name> "/" <artifact-name> "-" <artifact-id> [ "-" <transaction-id> ] */
+                  (
+                     artifacts,            /* List<Artifact>   artifacts        */
+                     safePresentationType, /* PresentationType presentationType */
+                     null,                 /* String           pathPrefix       */
+                     inputStream           /* InputStream      inputStream      */
+                  )
+               .orElseThrow();             /* Optional will be empty when exporting a file. Exports should not get here. */
          //@formatter:on
       } catch (Exception e) {
          //@formatter:off
@@ -304,9 +311,9 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
                      new Message()
                             .title( "FileSystemRenderer::copyToNewFile, Failed to copy file." )
                             .indentInc()
-                            .segment( "Artifact",         artifact            )
-                            .segment( "PresentationType", presentationType    )
-                            .segment( "File", file.getFullPath().toOSString() )
+                            .segment( "Artifact",         artifact             )
+                            .segment( "PresentationType", safePresentationType )
+                            .segment( "File", safeIFile.getFullPath().toOSString()  )
                             .reasonFollowsWithTrace( e )
                             .toString(),
                      e
@@ -665,63 +672,60 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
     */
 
    @Override
-   public void open(List<Artifact> artifacts, PresentationType presentationType) {
+   public void open(@Nullable List<Artifact> artifacts, @NonNull PresentationType presentationType) {
 
-      Objects.requireNonNull(presentationType,
-         "FileSystemRender::open, parameter \"presentationType\" cannot be null.");
+      final var safePresentationType = Conditions.requireNonNull(presentationType, "presentationType");
 
       if (presentationType.matches(PresentationType.DEFAULT_OPEN)) {
          presentationType = PresentationType.PREVIEW;
       }
 
-      /*
-       * Get the render output and write the content file to the workspace
-       */
-
-      var contentFile = this.renderToFile(artifacts, presentationType, null);
-
-      if (Objects.isNull(contentFile)) {
-         //@formatter:off
-         throw
-            new OseeCoreException
-                   (
-                      "FileSystemRenderer::open, Renderer \"renderToFile\" returned null."
-                   );
-         //@formatter:on
-      }
-
-      /*
-       * If there were no artifacts, do not display the empty content to the user.
-       */
-
-      if (Objects.isNull(artifacts) || artifacts.isEmpty()) {
-         return;
-      }
-
-      /*
-       * Display renderer content to the user.
-       */
-
-      var firstArtifact = artifacts.iterator().next();
-      var branchToken = firstArtifact.getBranchToken();
-      var program = this.getAssociatedProgram(firstArtifact);
-
       try {
 
-         RenderingUtil.displayDocument(presentationType, program, contentFile);
+         /*
+          * Get the render output and write the content file to the workspace. When previewing the returned optional
+          * will contain the IFile handle to the rendered file in the workspace. When exporting the returned optional
+          * will be empty.
+          */
+
+         var contentFileOptional = this.renderToFile(artifacts, safePresentationType, null);
+
+         /*
+          * If there were no artifacts or content file, do not display the empty content to the user.
+          */
+
+         if (Objects.isNull(artifacts) || artifacts.isEmpty() || contentFileOptional.isEmpty()) {
+            return;
+         }
+
+         /*
+          * Display renderer content to the user.
+          */
+
+         var program = this.getAssociatedProgram(artifacts.get(0));
+
+         RenderingUtil.displayDocument(safePresentationType, program, contentFileOptional.get());
 
       } catch (Exception e) {
 
+         var branchToken = artifacts.get(0).getBranchToken();
+
          //@formatter:off
+         final var monitor =
+            this.isRendererOptionSet( RendererOption.PROGRESS_MONITOR )
+               ? (IProgressMonitor) this.getRendererOptionValue( RendererOption.PROGRESS_MONITOR )
+               : null;
+
          var message =
             RenderingUtil.displayErrorDocument
-            (
-               this,
-               presentationType,
-               branchToken,
-               artifacts,
-               e.getMessage()
-            );
+               (
+                  this,
+                  presentationType,
+                  monitor,
+                  branchToken,
+                  artifacts,
+                  e.getMessage()
+               );
          //@formatter:on
 
          throw new OseeCoreException(message, e);
@@ -770,7 +774,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
     * @throws IllegalArgumentException when the provided artifacts are not from the same branch.
     */
 
-   public IFile renderToFile(List<Artifact> artifacts, PresentationType presentationType, String pathPrefix) {
+   public Optional<IFile> renderToFile(List<Artifact> artifacts, PresentationType presentationType, String pathPrefix) {
 
       Objects.requireNonNull(presentationType,
          "FileSystemRender::renderToFile, parameter \"presentationType\" cannot be null.");
@@ -910,7 +914,28 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
    }
 
    /**
-    * Writes the Renderer's output to a content file and sets up file monitoring.
+    * Writes the Renderer's output to a content file.
+    * <p>
+    * The output path is determined in the following order of precedence:
+    * <dl>
+    * <dt>The renderer option {@link RendererOption#OUTPUT_PATH} specifies a path,</dt>
+    * <dd>it will be used. An output path specified by renderer options might not be a location in the user's
+    * workspace.</dd>
+    * <dt>The parameter <code>pathPrefix</code> is non-<code>null</code>,</dt>
+    * <dd>the <code>pathPrefix</code> will be used as the location under the workspace presentation folder to write the
+    * output file. The path specified by <code>pathPrefix</code> will be &quot;cleaned&quot; using
+    * {@link RendererUtil#makePath}.</dd>
+    * <dt>Otherwise,</dt>
+    * <dd>The name of the branch containing the artifacts being rendered will be used as the location under the
+    * workspace presentation folder to write the output file. The branch name will be &quot;cleaned&quot; using
+    * {@link RendererUtil#makePath}.</dd>
+    * </dl>
+    * When the renderer options specify an output path with , it will be used.
+    * <p>
+    * The branch name will be used as the first filename segment when the {@link RendererOption#FILENAME_FORMAT} is
+    * {@link FilenameFormat#PREVIEW} and the parameter <code>pathPrefix</code> is not equal to the value of the
+    * {@link RendererOption#BRANCH_NAME}.
+    * <p>
     *
     * @param artifacts the artifacts rendered. Used to determine the file extension, generate the filename, and for the
     * update monitor to save a modified content file back to the artifacts.
@@ -923,101 +948,189 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
     * @throws OseeCoreException when unable to create the {@link IFile} handle or an error occurs writing the file.
     */
 
-   private IFile renderToFileInternal(List<Artifact> artifacts, PresentationType presentationType, String pathPrefix,
-      InputStream renderInputStream) {
+   private Optional<IFile> renderToFileInternal(List<Artifact> artifacts, PresentationType presentationType,
+      String pathPrefix, InputStream renderInputStream) {
 
       /*
-       * Get a handle to the content file. This creates all the sub-directories in the user workspace to where the
-       * content file is to be. It does not create or check for the existence of the content file.
+       * Get renderer options
        */
 
-      var branchId = (BranchId) this.getRendererOptionValue(RendererOption.BRANCH);
-      var branchName = (String) this.getRendererOptionValue(RendererOption.BRANCH_NAME);
+      final var branchId = (BranchId) this.getRendererOptionValue(RendererOption.BRANCH);
+      final var branchName = (String) this.getRendererOptionValue(RendererOption.BRANCH_NAME);
+      final var filenameFormat = (FilenameFormat) this.getRendererOptionValue(RendererOption.FILENAME_FORMAT);
 
       //@formatter:off
-      var contentFile =
-         RenderingUtil
-            .getRenderFile
-               (
-                  this,                                             /* For call back to set output file path              */
-                  presentationType,                                 /* Locates workspace presentation folder              */
-                  RendererUtil.makeRenderPath                       /* Sub-folder under the workspace presentation folder */
-                     (
-                        Objects.nonNull( pathPrefix )
-                           ? pathPrefix
-                           : branchName
-                     ),
-                  this.getAssociatedExtension(artifacts),           /* File extension for content file                    */
-                  RenderingUtil.getFileNameSegmentsFromArtifacts    /* Generates content filename segments                */
-                     (
-                        presentationType,
-                        Objects.nonNull( pathPrefix ) && !pathPrefix.equals( branchName )
-                           ? branchName
-                           : null,
-                        artifacts
-                     )
-               )
-            .orElseThrow
-               (
-                  () -> new OseeCoreException
-                               (
-                                 new Message()
-                                        .title( "FileSystemRenderer::renderToFileInternal, Failed to locate render file for display." )
-                                        .indentInc()
-                                        .segment( "Renderer",             this.getName()                       )
-                                        .segment( "Presentation Type",    presentationType.name( )             )
-                                        .segment( "Branch Name",          branchName                           )
-                                        .segment( "Branch Id",            branchId                             )
-                                        .segmentIndexed( "Artifacts", artifacts, Artifact::getIdString, 20 )
-                                        .toString()
-                               )
-               );
+      final var pathRoot =
+         this.isRendererOptionSet( RendererOption.OUTPUT_PATH )
+            ? (Path) this.getRendererOptionValue( RendererOption.OUTPUT_PATH )
+            : ( pathPrefix != null )
+                   ? RendererUtil.makePath( pathPrefix )
+                   : RendererUtil.makePath( branchName );
       //@formatter:on
 
       /*
-       * Write the Renderer's output to the content file.
+       * Determine the filename extension from the artifacts
        */
 
-      AIFile.writeToFile(contentFile, renderInputStream);
+      final var extension = this.getAssociatedExtension(artifacts);
 
       /*
-       * If the render was running in a sub-thread, it should be complete when the file write completes.
+       * Determine if the branch name should be the first filename segment
        */
 
-      if ((Boolean) this.getRendererOptionValue(RendererOption.CLIENT_RENDERER_CAN_STREAM)) {
-         this.checkRenderThreadExceptions();
-      }
+      //@formatter:off
+      final var branchNameFilenameSegment =
+         filenameFormat.isPreview() && Objects.nonNull( pathPrefix ) && !pathPrefix.equals( branchName )
+            ? branchName
+            : null;
+      //@formatter:on
 
-      if (presentationType.matches(PresentationType.PREVIEW)) {
+      /*
+       * Create the filename segments according to the filename format.
+       */
 
-         monitor.markAsReadOnly(contentFile);
+      //@formatter:off
+      final var filenameSegments =
+         RenderingUtil.getFileNameSegmentsFromArtifacts
+            (
+               filenameFormat,
+               presentationType,
+               branchNameFilenameSegment,
+               artifacts
+            );
+      
+      final var filenameSpecification =
+         new FilenameSpecification(Strings.EMPTY_STRING, filenameFormat, extension, filenameSegments);
 
-         return contentFile;
-      }
+      switch (filenameFormat) {
 
-      if (presentationType.matches(PresentationType.SPECIALIZED_EDIT)) {
+         case EXPORT: {
 
-         var location = contentFile.getLocation();
-
-         if (Objects.nonNull(location)) {
-
-            var file = location.toFile();
-
-            if (Objects.nonNull(file)) {
-
-               //@formatter:off
-               monitor.addFile
+            RendererUtil
+               .getRenderFile( pathRoot, filenameSpecification )
+               .map
                   (
-                     file,
-                     this.getUpdateOperation( file, artifacts, branchId, presentationType ) /* abstract */
+                     ( contentFile ) ->
+                     {
+                        try {
+                           Lib.inputStreamToFile( renderInputStream, contentFile );
+                        } catch( Exception e ) {
+
+                           throw
+                              new OseeCoreException
+                                     (
+                                        new Message()
+                                               .title( "FileSystemRenderer::renderToFileInternal, Failed to write export file." )
+                                               .indentInc()
+                                               .segment( "Renderer",    this.getName() )
+                                               .segment( "Branch Name", branchName     )
+                                               .segment( "Branch Id",   branchId       )
+                                               .segmentIndexed( "Artifacts", artifacts, Artifact::getIdString, 20 )
+                                               .indentDec()
+                                               .reasonFollows( e )
+                                               .toString()
+                                      );
+                        }
+                        return contentFile;
+                     }
+                  )
+               .orElseThrow
+                  (
+                     () -> new OseeCoreException
+                                  (
+                                     new Message()
+                                            .title( "FileSystemRenderer::renderToFileInternal, Failed to export file." )
+                                            .indentInc()
+                                            .segment( "Renderer",    this.getName() )
+                                            .segment( "Branch Name", branchName     )
+                                            .segment( "Branch Id",   branchId       )
+                                            .segmentIndexed( "Artifacts", artifacts, Artifact::getIdString, 20 )
+                                            .toString()
+                                  )
                   );
-               //@formatter:on
-            }
+
+            return Optional.empty();
+
          }
 
-      }
+         case PREVIEW: {
 
-      return contentFile;
+            final var subFolderIPath = RendererUtil.makeRenderPath(pathRoot.toString());
+
+            final var iFile =
+               RenderingUtil.getRenderFile(this, presentationType, subFolderIPath, extension, filenameSegments).map(
+                  (contentFile) -> {
+                     try {
+                        AIFile.writeToFile(contentFile, renderInputStream);
+                     } catch (Exception e) {
+                              throw
+                                 new OseeCoreException
+                                        (
+                                           new Message()
+                                                  .title( "FileSystemRenderer::renderToFileInternal, Failed to write preview file." )
+                                                  .indentInc()
+                                                  .segment( "Renderer",    this.getName() )
+                                                  .segment( "Branch Name", branchName     )
+                                                  .segment( "Branch Id",   branchId       )
+                                                  .segmentIndexed( "Artifacts", artifacts, Artifact::getIdString, 20 )
+                                                  .indentDec()
+                                                  .reasonFollows( e )
+                                                  .toString()
+                                         );
+                     }
+
+                     if (presentationType.matches(PresentationType.PREVIEW)) {
+
+                        monitor.markAsReadOnly(contentFile);
+
+                        return contentFile;
+
+                     }
+
+                     if (presentationType.matches(PresentationType.SPECIALIZED_EDIT)) {
+
+                        var location = contentFile.getLocation();
+
+                        if (Objects.nonNull(location)) {
+
+                           var file = location.toFile();
+
+                           if (Objects.nonNull(file)) {
+
+                              monitor.addFile(file,
+                                 this.getUpdateOperation(file, artifacts, branchId, presentationType) /* abstract */
+                              );
+                           }
+                        }
+                     }
+
+                     return contentFile;
+                  }
+
+               ).orElseThrow
+                    (
+                       () -> new OseeCoreException
+                                    (
+                                       new Message()
+                                              .title( "FileSystemRenderer::renderToFileInternal, Failed render file for display.")
+                                              .indentInc()
+                                              .segment( "Renderer", this.getName() )
+                                              .segment( "Presentation Type", presentationType.name() )
+                                              .segment( "Branch Name", branchName )
+                                              .segment( "Branch Id", branchId )
+                                              .segmentIndexed("Artifacts", artifacts, Artifact::getIdString, 20)
+                                              .toString()
+                                    )
+                    );
+
+            return Optional.of(iFile);
+         }
+
+         default:
+            throw Conditions.invalidCase(filenameFormat, "filenameFormat", IllegalArgumentException::new);
+      }
+      //@formatter:on
+
    }
 
    private List<Artifact> setRendererOptions(List<Artifact> artifacts) {
@@ -1039,7 +1152,6 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
                       new Message()
                              .title( "FileSystemRenderer::renderToFile, All of the artifacts must be on the same branch for mass processing." )
                              .indentInc()
-                             //.segment       ( "PresentationType", presentationType.name() )
                              .segmentIndexed( "Branches Found",   branchTokens, BranchToken::getShortName )
                              .toString()
                    );

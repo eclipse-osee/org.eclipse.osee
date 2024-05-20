@@ -32,6 +32,9 @@
            icon="OSEE-INF/images/query_log.gif"
            id="org.eclipse.osee.framework.ui.skynet.artifactExport"
            name="OSEE Artifact Export">
+           <description>
+           Export Artifacts as Word previews to the local file system.
+           </description>
      </wizard>
      <category
            id="org.eclipse.osee.framework.ui.skynet.export"

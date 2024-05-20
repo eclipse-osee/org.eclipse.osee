@@ -50,8 +50,11 @@ public class OtherEditorHandler extends AbstractEditorHandler {
          if (dialog.open() == Window.OK) {
             IEditorDescriptor editor = dialog.getSelectedEditor();
             if (editor != null) {
-               IFile file = renderer.renderToFile(artifacts, PresentationType.SPECIALIZED_EDIT, null);
-               openEditor(editor, file, editor.isOpenExternal());
+               //@formatter:off
+               renderer
+                  .renderToFile( artifacts, PresentationType.SPECIALIZED_EDIT, null )
+                  .ifPresent( (file ) -> openEditor( editor, file, editor.isOpenExternal() ) );
+               //@formatter:on
             }
          }
       }

@@ -13,13 +13,16 @@
 
 package org.eclipse.osee.framework.jdk.core.util;
 
+import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
@@ -41,6 +44,54 @@ public final class Collectors {
 
    private Collectors() {
    }
+
+   /**
+    * Returns a {@link Collector} that accumulates {@link CharSequence}s and builds a {@link Path}.
+    *
+    * @return when at least one path segment is accumulated an {@link Optional} containing the built {@link Path};
+    * otherwise, an empty {@link Optional}.
+    */
+
+   //@formatter:off
+   public static Collector<CharSequence, ?, Optional<Path>> toPath() {
+
+      final Supplier<LinkedList<CharSequence>> supplier = LinkedList::new;
+
+      BiConsumer<LinkedList<CharSequence>, CharSequence> accumulator = List::add;
+
+      final BinaryOperator<LinkedList<CharSequence>> combiner =
+         ( listA, listB) ->
+         {
+            listA.addAll(listB);
+            return listA;
+         };
+
+      final Function<LinkedList<CharSequence>, Optional<Path>> finisher =
+         ( list ) ->
+         {
+            if (list.isEmpty()) {
+               return Optional.empty();
+            }
+
+            final Path path = Path.of(list.removeFirst().toString());
+
+            while (!list.isEmpty()) {
+               path.resolve(list.removeFirst().toString());
+            }
+
+            return Optional.of(path);
+         };
+
+      return
+         Collector.of
+            (
+               supplier,
+               accumulator,
+               combiner,
+               finisher
+            );
+   }
+   //@formatter:on
 
    /**
     * Returns a {@link Collector} which collects the value extracted with <code>valueMapper</code> and stores it into a

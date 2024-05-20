@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.core.publishing;
 
+import java.io.File;
 import java.util.EnumMap;
 import java.util.Objects;
 import java.util.Optional;
@@ -21,10 +22,14 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collectors;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -303,6 +308,31 @@ public class RendererUtil {
    }
 
    /**
+    * Creates a {@link File} object representing the file <code>filenameSpecification</code> under the path
+    * <code>pathRoot</code>. This method does not verify or create the path specified by <code>pathRoot</code>.
+    *
+    * @param pathRoot the path the file is file is to be under.
+    * @param filenameSpecification specifies the filename.
+    * @return on success an {@link Optional} containing a {@link File} representation of the path and filename;
+    * otherwise, an empty {@link Optional}.
+    */
+
+   public static @NonNull Optional<File> getRenderFile(java.nio.file.@NonNull Path pathRoot,
+      @NonNull FilenameSpecification filenameSpecification) {
+      final var safePathRoot = Conditions.requireNonNull(pathRoot, "pathRoot");
+      final var safeFilenameSpecification = Conditions.requireNonNull(filenameSpecification, "filenameSpecification");
+
+      try {
+         final var filename = safeFilenameSpecification.build();
+         final var path = safePathRoot.resolve(filename);
+         final var file = path.toFile();
+         return Optional.of(file);
+      } catch (Exception e) {
+         return Optional.empty();
+      }
+   }
+
+   /**
     * Splits the provided <code>pathString</code> using both the UNIX and Windows path delimiters. Each segment of the
     * path is converted into a safe name using {@link FilenameFactory#makeNameSafer}. Any segments with names that
     * degenerate into an empty string are ignored. Any path segments matching {@link RendererUtil#BAD_PATH_SEGMENTS} are
@@ -342,6 +372,38 @@ public class RendererUtil {
       }
 
       return path;
+   }
+
+   /**
+    * Splits the provided <code>pathString</code> using both the UNIX and Windows path delimiters. Each segment of the
+    * path is converted into a safe name using {@link FilenameFactory#makeNameSafer}. Any path segments with names that
+    * degenerate into an empty string are ignored. Any path segments matching {@link #BAD_PATH_SEGMENTS} are also
+    * ignored. The remaining segments are build into an {@link java.nio.file.Path} object representing the path.
+    * <p>
+    * When the parameter <code>pathString</code> is <code>null</code> or blank, the path "." is returned.
+    *
+    * @param pathString the string to process.
+    * @return an {@link java.nio.file.Path} representing the path.
+    */
+
+   public static java.nio.file.@NonNull Path makePath(@Nullable CharSequence pathString) {
+
+      if (Strings.isInvalidOrBlank(pathString)) {
+         return java.nio.file.Path.of(".");
+      }
+
+      //@formatter:off
+      final var result =
+         RendererUtil.PATH_SPLITTER_PATTERN
+            .splitAsStream( pathString )
+            .map( FilenameFactory::makeNameSafer )
+            .filter( Strings::isBlank )
+            .filter( ( segment ) -> Strings.notEquals( segment, RendererUtil.BAD_PATH_SEGMENTS ) )
+            .collect( Collectors.toPath() )
+            .orElse( java.nio.file.Path.of( ".") );
+      //@formatter:on
+
+      return result;
    }
 
 }
