@@ -290,7 +290,7 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    }
 
    @Override
-   public ArtifactRelatedDirectArtifact getArtifact(@PathParam("artifactId") ArtifactId artifactId) {
+   public ArtifactRelatedDirectArtifact getArtifact(ArtifactId artifactId) {
       ArtifactReadable artReadable = orcsApi.getQueryFactory().fromBranch(branch).andId(artifactId).asArtifact();
       return new ArtifactRelatedDirectArtifact(artReadable, orcsApi.tokenService());
    }
