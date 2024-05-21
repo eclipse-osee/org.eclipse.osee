@@ -10,7 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { artifact, artifactSentinel } from './artifact';
+import {
+	artifactWithRelations,
+	artifactWithRelationsSentinel,
+} from '@osee/artifact-with-relations/types';
 import { NamedId } from '../named-id';
 
 export interface teamWorkflow {
@@ -95,7 +98,7 @@ export class teamWorkflowImpl implements teamWorkflow {
 type teamWorkflowUser = { id: `${number}`; name: string };
 
 export interface teamWorkflowDetails extends teamWorkflow {
-	artifact: artifact;
+	artifact: artifactWithRelations;
 	leads: NamedId[];
 }
 
@@ -103,7 +106,7 @@ export class teamWorkflowDetailsImpl
 	extends teamWorkflowImpl
 	implements teamWorkflowDetails
 {
-	artifact: artifact = artifactSentinel;
+	artifact: artifactWithRelations = artifactWithRelationsSentinel;
 	leads: NamedId[] = [];
 }
 

@@ -21,8 +21,8 @@ import {
 } from '@osee/shared/types/configuration-management';
 import { commitResponse, transitionResponse } from '@osee/shared/types';
 import { MockXResultData } from './XResultData.response.mock';
-import { artifactMock } from './artifact.mock';
 import { MockUserResponse } from './user.response.mock';
+import { artifactWithRelationsMock } from '@osee/artifact-with-relations/testing';
 
 export const testBranchActions: action[] = [
 	{
@@ -89,7 +89,7 @@ export const testWorkFlow: teamWorkflow = {
 
 export const teamWorkflowDetailsMock: teamWorkflowDetails = {
 	...testWorkFlow,
-	artifact: artifactMock,
+	artifact: artifactWithRelationsMock,
 	leads: [MockUserResponse],
 };
 

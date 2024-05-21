@@ -12,9 +12,9 @@
  **********************************************************************/
 import { attribute } from '@osee/shared/types';
 import {
-	artifact,
+	artifactWithRelations,
 	artifactTypeIcon,
-} from '@osee/shared/types/configuration-management';
+} from '@osee/artifact-with-relations/types';
 
 export const artifactTypeIconMock: artifactTypeIcon = {
 	icon: 'insert_drive_file',
@@ -35,12 +35,61 @@ export const artifactTypeAttributesMock: attribute[] = [
 	},
 ];
 
-export const artifactMock: artifact = {
+export const artifactWithRelationsMock: artifactWithRelations = {
 	name: 'test',
 	id: '1234',
 	typeId: '1111',
 	typeName: 'requirement',
 	icon: artifactTypeIconMock,
 	attributes: artifactTypeAttributesMock,
+	relations: [
+		{
+			relationTypeToken: {
+				id: '1234',
+				idIntValue: 1234,
+				idString: '1234',
+				multiplicity: '',
+				name: 'rel',
+				newRelationTable: true,
+				order: '',
+				ordered: false,
+				relationArtifactType: '',
+			},
+			relationSides: [
+				{
+					name: 'relSide',
+					artifacts: [
+						{
+							name: 'Mock Artifact',
+							id: '123',
+							typeId: '456',
+							typeName: 'Mock Type',
+							icon: {
+								icon: 'folder',
+								color: 'accent',
+								lightShade: '400',
+								darkShade: '400',
+								variant: '',
+							},
+							attributes: [
+								{
+									name: 'Attribute 1',
+									value: 'Value 1',
+									typeId: '789',
+									id: '1',
+									storeType: 'String',
+									multiplicityId: '2',
+								},
+							],
+							relations: [],
+							editable: true,
+						},
+					],
+					isSideA: true,
+					isSideB: false,
+				},
+			],
+		},
+	],
 	editable: true,
 };

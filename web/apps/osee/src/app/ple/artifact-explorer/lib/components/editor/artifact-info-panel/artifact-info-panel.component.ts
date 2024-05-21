@@ -14,7 +14,7 @@ import { NgClass } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { ExpandIconComponent } from '@osee/shared/components';
 import { BehaviorSubject } from 'rxjs';
-import { artifactTab } from '../../../types/artifact-explorer.data';
+import { artifactTab } from '../../../types/artifact-explorer';
 import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
 
 @Component({

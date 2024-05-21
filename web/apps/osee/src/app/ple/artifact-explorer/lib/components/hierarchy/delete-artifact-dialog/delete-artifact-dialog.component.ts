@@ -18,7 +18,7 @@ import {
 	MatDialogContent,
 	MatDialogRef,
 } from '@angular/material/dialog';
-import { deleteArtifactDialogData } from '../../../types/artifact-explorer.data';
+import { deleteArtifactDialogData } from '../../../types/artifact-explorer';
 import { ArtifactDialogTitleComponent } from '../../shared/artifact-dialog-title/artifact-dialog-title.component';
 
 @Component({

@@ -24,7 +24,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactRelatedDirectAttribute;
+import org.eclipse.osee.framework.core.data.ArtifactWithRelationsAttribute;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
@@ -95,11 +95,11 @@ public class TypesEndpointImpl implements TypesEndpoint {
    }
 
    @Override
-   public Collection<ArtifactRelatedDirectAttribute> getArtifactTypeAttributes(ArtifactId artifactId) {
+   public Collection<ArtifactWithRelationsAttribute> getArtifactTypeAttributes(ArtifactId artifactId) {
       return orcsApi.tokenService().getArtifactTypes().stream().filter(
          art -> art.getId().equals(artifactId.getId())).flatMap(
             art -> art.getValidAttributeTypes().stream().map(
-               attr -> new ArtifactRelatedDirectAttribute(attr, art.getMultiplicity(attr)))).collect(
+               attr -> new ArtifactWithRelationsAttribute(attr, art.getMultiplicity(attr)))).collect(
                   Collectors.toList());
    }
 

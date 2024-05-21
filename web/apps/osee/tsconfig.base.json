@@ -45,6 +45,12 @@
 			"@osee/ci-dashboard/navigation": [
 				"src/app/ci-dashboard/lib/navigation"
 			],
+			"@osee/artifact-with-relations/services": [
+				"src/app/artifact-with-relations/services"
+			],
+			"@osee/artifact-with-relations/types": [
+				"src/app/artifact-with-relations/types"
+			],
 			"@osee/messaging/connection-view": [
 				"src/app/ple/messaging/connection-view/lib"
 			],

@@ -22,7 +22,7 @@ import { UiService } from '@osee/shared/services';
 import { ArtifactTabGroupComponent } from './lib/components/artifact-tab-group/artifact-tab-group.component';
 import { ArtifactHierarchyPanelComponent } from './lib/components/hierarchy/artifact-hierarchy-panel/artifact-hierarchy-panel.component';
 import { ArtifactExplorerTabService } from './lib/services/artifact-explorer-tab.service';
-import { ExplorerPanel, tab } from './lib/types/artifact-explorer.data';
+import { ExplorerPanel, tab } from './lib/types/artifact-explorer';
 import { ActionsPanelComponent } from './lib/components/actions/actions-panel.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';

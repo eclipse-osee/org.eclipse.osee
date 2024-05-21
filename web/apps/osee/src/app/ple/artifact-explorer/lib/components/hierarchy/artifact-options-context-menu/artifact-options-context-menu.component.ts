@@ -20,15 +20,15 @@ import { UiService } from '@osee/shared/services';
 import { TransactionService } from '@osee/shared/transactions';
 import { attribute } from '@osee/shared/types';
 import { RELATIONTYPEIDENUM } from '@osee/shared/types/constants';
-import { filter, map, of, switchMap, take, tap } from 'rxjs';
+import { combineLatest, filter, map, of, switchMap, take, tap } from 'rxjs';
 import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
 import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
 import { ArtifactIconService } from '../../../services/artifact-icon.service';
-import { artifactContextMenuOption } from '../../../types/artifact-explorer.data';
-import { DEFUALT_ARTIFACT_CONTEXT_MENU_OPTIONS } from '../../../types/default-artifact-context-menu-options';
+import { artifactContextMenuOption } from '../../../types/artifact-explorer';
+import { DEFAULT_ARTIFACT_CONTEXT_MENU_OPTIONS } from '../../../types/artifact-explorer-constants';
 import { CreateChildArtifactDialogComponent } from '../create-child-artifact-dialog/create-child-artifact-dialog.component';
 import { DeleteArtifactDialogComponent } from '../delete-artifact-dialog/delete-artifact-dialog.component';
-import { artifactTypeIcon } from '@osee/shared/types/configuration-management';
+import { artifactTypeIcon } from '@osee/artifact-with-relations/types';
 
 @Component({
 	selector: 'osee-artifact-options-context-menu',
@@ -40,7 +40,7 @@ export class ArtifactOptionsContextMenuComponent {
 	artifactId = input.required<string>();
 	parentArtifactId = input.required<`${number}`>();
 	siblingArtifactId = input<`${number}`>('0');
-	options = of(DEFUALT_ARTIFACT_CONTEXT_MENU_OPTIONS);
+	options = of(DEFAULT_ARTIFACT_CONTEXT_MENU_OPTIONS);
 
 	constructor(
 		public dialog: MatDialog,
@@ -162,12 +162,17 @@ export class ArtifactOptionsContextMenuComponent {
 	}
 
 	private deleteArtifact(option: artifactContextMenuOption) {
-		this.branchId$
+		combineLatest([this.branchId$, this.uiService.viewId])
 			.pipe(
 				take(1),
-				switchMap((branchId) =>
+				switchMap(([branchId, viewId]) =>
 					this.artExpHttpService
-						.getArtifactForTab(branchId, this.artifactId())
+						.getartifactWithRelations(
+							branchId,
+							this.artifactId(),
+							viewId,
+							false
+						)
 						.pipe(
 							switchMap((artifact) =>
 								this.dialog

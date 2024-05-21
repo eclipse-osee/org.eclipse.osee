@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, filter, merge, of, switchMap } from 'rxjs';
-import { artifactHierarchyOptions } from '../types/artifact-explorer.data';
+import { artifactHierarchyOptions } from '../types/artifact-explorer';
 import { ArtifactHierarchyPathService } from './artifact-hierarchy-path.service';
 
 @Injectable({

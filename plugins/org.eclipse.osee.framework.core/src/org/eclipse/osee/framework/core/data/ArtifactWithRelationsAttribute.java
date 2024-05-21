@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.jdk.core.type.Id;
 /**
  * @author Jaden W. Puckett
  */
-public class ArtifactRelatedDirectAttribute {
+public class ArtifactWithRelationsAttribute {
    private final AttributeTypeToken attributeTypeToken;
    private final Multiplicity multiplicity;
 
@@ -26,7 +26,7 @@ public class ArtifactRelatedDirectAttribute {
    private final ArtifactTypeToken artifactTypeToken;
    private final OrcsTokenService tokenService;
 
-   public ArtifactRelatedDirectAttribute(AttributeTypeToken attributeTypeToken, Multiplicity multiplicity) {
+   public ArtifactWithRelationsAttribute(AttributeTypeToken attributeTypeToken, Multiplicity multiplicity) {
       this.attributeTypeToken = attributeTypeToken;
       this.multiplicity = multiplicity;
 
@@ -35,7 +35,7 @@ public class ArtifactRelatedDirectAttribute {
       this.tokenService = null;
    }
 
-   public ArtifactRelatedDirectAttribute(IAttribute<?> attribute, ArtifactTypeToken artifactTypeToken, OrcsTokenService tokenService) {
+   public ArtifactWithRelationsAttribute(IAttribute<?> attribute, ArtifactTypeToken artifactTypeToken, OrcsTokenService tokenService) {
       this.attribute = attribute;
       this.artifactTypeToken = artifactTypeToken;
       this.tokenService = tokenService;

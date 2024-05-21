@@ -16,7 +16,7 @@ import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTab, MatTabGroup, MatTabLabel } from '@angular/material/tabs';
 import { ArtifactExplorerTabService } from '../../services/artifact-explorer-tab.service';
-import { tab } from '../../types/artifact-explorer.data';
+import { tab } from '../../types/artifact-explorer';
 import { ChangeReportTableComponent } from '../change-report-table/change-report-table.component';
 import { ArtifactEditorComponent } from '../editor/artifact-editor/artifact-editor.component';
 import { ArtifactInfoPanelComponent } from '../editor/artifact-info-panel/artifact-info-panel.component';

@@ -28,7 +28,7 @@
 				@case ('Enumeration') {
 					@if (attribute.typeId) {
 						<osee-attribute-enums-dropdown
-							[disabled]="!editable"
+							[disabled]="!editable()"
 							[attributeId]="attribute.typeId"
 							[(attributeValue)]="attribute.value"
 							(attributeValueChange)="emitUpdatedAttributes()"
@@ -78,7 +78,7 @@
 						class="tw-w-full"
 						subscriptSizing="dynamic">
 						<mat-select
-							[disabled]="!editable"
+							[disabled]="!editable()"
 							[name]="'attrBoolean' + attribute.typeId"
 							[(ngModel)]="attribute.value"
 							(selectionChange)="emitUpdatedAttributes()"
@@ -115,7 +115,7 @@
 									| ifIdReturnFalse)
 							"
 							readonly
-							[disabled]="!editable" />
+							[disabled]="!editable()" />
 						<mat-datepicker-toggle
 							matSuffix
 							[for]="picker"></mat-datepicker-toggle>
@@ -127,7 +127,7 @@
 						class="tw-w-full"
 						subscriptSizing="dynamic">
 						<textarea
-							[disabled]="!editable"
+							[disabled]="!editable()"
 							matInput
 							matInputAutosize
 							placeholder="value"
@@ -147,7 +147,7 @@
 						class="tw-w-full"
 						subscriptSizing="dynamic">
 						<textarea
-							[disabled]="!editable"
+							[disabled]="!editable()"
 							matInput
 							matInputAutosize
 							placeholder="value"

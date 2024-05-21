@@ -28,11 +28,10 @@ import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
-import org.eclipse.osee.framework.core.data.ArtifactRelatedDirect;
-import org.eclipse.osee.framework.core.data.ArtifactRelatedDirectArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTokenWithIcon;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.ArtifactWithRelations;
 import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -290,12 +289,6 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    }
 
    @Override
-   public ArtifactRelatedDirectArtifact getArtifact(ArtifactId artifactId) {
-      ArtifactReadable artReadable = orcsApi.getQueryFactory().fromBranch(branch).andId(artifactId).asArtifact();
-      return new ArtifactRelatedDirectArtifact(artReadable, orcsApi.tokenService());
-   }
-
-   @Override
    public List<ArtifactToken> expGetArtifactTokens(ArtifactTypeToken artifactType, ArtifactId parent, ArtifactId view) {
       //      orcsApi.getAdminOps().registerMissingOrcsTypeJoins();
       //      List<ArtifactReadable> artifacts =
@@ -459,15 +452,16 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    }
 
    @Override
-   public ArtifactRelatedDirect getRelatedDirect(BranchId branch, ArtifactId artifact, ArtifactId viewId) {
+   public ArtifactWithRelations getRelatedDirect(BranchId branch, ArtifactId artifact, ArtifactId viewId,
+      boolean includeRelations) {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
-      // query for artifact and its direct relations
       QueryBuilder query = orcsApi.getQueryFactory().fromBranch(branch, viewId);
-      ArtifactReadable art = query.andId(artifact).followAll(true).asArtifact();
-      // query for artifact type token using input artifact id
-      ArtifactTypeToken token = art.getArtifactType();
-      // pojo to store artifact's direct relations and all valid relation types
-      return new ArtifactRelatedDirect(token, art, branch, this.tokenService);
+      query = query.andId(artifact);
+      if (includeRelations) {
+         query = query.followAll(true);
+      }
+      ArtifactReadable art = query.asArtifact();
+      return new ArtifactWithRelations(art, this.tokenService, includeRelations);
    }
 
    @Override

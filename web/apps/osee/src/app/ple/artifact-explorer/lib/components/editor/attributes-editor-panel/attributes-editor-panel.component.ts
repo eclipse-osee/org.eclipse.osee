@@ -26,7 +26,7 @@ import {
 	transaction,
 } from '@osee/shared/types';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { artifactTab } from '../../../types/artifact-explorer.data';
+import { artifactTab } from '../../../types/artifact-explorer';
 import { MatIcon } from '@angular/material/icon';
 import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
 

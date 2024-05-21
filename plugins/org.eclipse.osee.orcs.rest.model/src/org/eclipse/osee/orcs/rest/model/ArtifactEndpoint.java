@@ -31,11 +31,10 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
-import org.eclipse.osee.framework.core.data.ArtifactRelatedDirect;
-import org.eclipse.osee.framework.core.data.ArtifactRelatedDirectArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTokenWithIcon;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.ArtifactWithRelations;
 import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -108,11 +107,6 @@ public interface ArtifactEndpoint {
    @Path("{artifactId}/tokenOrSentinal")
    @Produces(MediaType.APPLICATION_JSON)
    ArtifactToken getArtifactTokenOrSentinel(@PathParam("artifactId") ArtifactId artifactId);
-
-   @GET
-   @Path("load/{artifactId}")
-   @Produces(MediaType.APPLICATION_JSON)
-   ArtifactRelatedDirectArtifact getArtifact(@PathParam("artifactId") ArtifactId artifactId);
 
    @Path("{artifactId}/attribute")
    AttributeEndpoint getAttributes(@PathParam("artifactId") ArtifactId artifactId);
@@ -246,8 +240,9 @@ public interface ArtifactEndpoint {
    @SwaggerCommonOrcsAnnotations
    @Operation(summary = "Gets only the first layer of related Artifacts")
    @Tag(name = "hierarchy")
-   ArtifactRelatedDirect getRelatedDirect(@PathParam("branch") BranchId branch,
-      @PathParam("artifact") ArtifactId artifact, @QueryParam("viewId") ArtifactId viewId);
+   ArtifactWithRelations getRelatedDirect(@PathParam("branch") BranchId branch,
+      @PathParam("artifact") ArtifactId artifact, @QueryParam("viewId") ArtifactId viewId,
+      @QueryParam("includeRelations") boolean includeRelations);
 
    @GET
    @Path("createTxBuilder/{artifactTypeId}")

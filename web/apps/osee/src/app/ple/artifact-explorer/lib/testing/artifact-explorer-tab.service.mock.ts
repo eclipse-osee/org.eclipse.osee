@@ -12,7 +12,7 @@
  **********************************************************************/
 import { ArtifactExplorerTabService } from '../services/artifact-explorer-tab.service';
 import { signal } from '@angular/core';
-import { tab } from '../types/artifact-explorer.data';
+import { tab } from '../types/artifact-explorer';
 
 export const tabsMock: tab[] = [
 	{
@@ -41,6 +41,7 @@ export const tabsMock: tab[] = [
 					multiplicityId: '2',
 				},
 			],
+			relations: [],
 			editable: true,
 		},
 		branchId: '789',
