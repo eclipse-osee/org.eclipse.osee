@@ -43,6 +43,15 @@
 				"src/app/ci-dashboard/lib/navigation"
 			],
 			"@osee/ci-dashboard/testing": ["src/app/ci-dashboard/lib/testing"],
+			"@osee/artifact-with-relations/services": [
+				"src/app/artifact-with-relations/services"
+			],
+			"@osee/artifact-with-relations/testing": [
+				"src/app/artifact-with-relations/testing"
+			],
+			"@osee/artifact-with-relations/types": [
+				"src/app/artifact-with-relations/types"
+			],
 			"@osee/messaging/connection-view": [
 				"src/app/ple/messaging/connection-view/lib"
 			],

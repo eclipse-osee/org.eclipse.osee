@@ -28,11 +28,11 @@ import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-
 import { ArtifactIconService } from '../../../services/artifact-icon.service';
 import { ArtifactHierarchyComponent } from '../artifact-hierarchy/artifact-hierarchy.component';
 import {
-	artifact,
+	artifactWithRelations,
 	artifactTypeIcon,
-	relationSide,
+	artifactRelationSide,
 	relationTypeToken,
-} from '@osee/shared/types/configuration-management';
+} from '@osee/artifact-with-relations/types';
 
 @Component({
 	selector: 'osee-artifact-hierarchy-relation-side',
@@ -52,13 +52,13 @@ export class ArtifactHierarchyRelationSideComponent {
 	private tabService = inject(ArtifactExplorerTabService);
 	private artifactIconService = inject(ArtifactIconService);
 
-	@Input({ required: true }) set relationSide(value: relationSide) {
+	@Input({ required: true }) set relationSide(value: artifactRelationSide) {
 		if (value !== undefined) this._relationSide.set(value);
 	}
 	@Input() set typeToken(value: relationTypeToken) {
 		if (value !== undefined) this._typeToken.set(value);
 	}
-	protected _relationSide = signal<relationSide>({
+	protected _relationSide = signal<artifactRelationSide>({
 		name: '',
 		artifacts: [],
 		isSideA: false,
@@ -94,11 +94,11 @@ export class ArtifactHierarchyRelationSideComponent {
 		this.isOpen.set(false);
 	}
 
-	addTab(artifact: artifact) {
+	addTab(artifact: artifactWithRelations) {
 		this.tabService.addArtifactTab(artifact);
 	}
 
-	trackArtifacts(index: number, item: artifact) {
+	trackArtifacts(index: number, item: artifactWithRelations) {
 		return item.id;
 	}
 

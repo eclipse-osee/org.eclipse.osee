@@ -44,11 +44,11 @@ import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer
 import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
 import { ArtifactIconService } from '../../../services/artifact-icon.service';
 import {
-	artifact,
+	artifactWithRelations,
 	artifactTypeIcon,
-	relation,
-	relationSide,
-} from '@osee/shared/types/configuration-management';
+	artifactRelation,
+	artifactRelationSide,
+} from '@osee/artifact-with-relations/types';
 import { RelationDeleteDialogComponent } from '../relation-delete-dialog/relation-delete-dialog.component';
 import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
 
@@ -123,7 +123,12 @@ export class RelationsEditorPanelComponent implements OnChanges {
 	]).pipe(
 		filter(([branch, view, artifact]) => branch != '' && artifact != ''),
 		switchMap(([branch, view, artifact]) =>
-			this.artExpHttpService.getDirectRelations(branch, artifact, view)
+			this.artExpHttpService.getartifactWithRelations(
+				branch,
+				artifact,
+				view,
+				true
+			)
 		),
 		shareReplay({ bufferSize: 1, refCount: true }),
 		takeUntilDestroyed()
@@ -161,11 +166,11 @@ export class RelationsEditorPanelComponent implements OnChanges {
 	}
 
 	addRelationOnItemDropped(
-		event: CdkDragDrop<artifact[]>,
-		relation: relation,
-		side: relationSide
+		event: CdkDragDrop<artifactWithRelations[]>,
+		relation: artifactRelation,
+		side: artifactRelationSide
 	): void {
-		const droppedArt: artifact = event.item.data;
+		const droppedArt: artifactWithRelations = event.item.data;
 		if (this._editable && this._hierarchyEditable()) {
 			// Build the transaction based on which side an artifact is dropped into
 			this._branchId
@@ -198,7 +203,11 @@ export class RelationsEditorPanelComponent implements OnChanges {
 		}
 	}
 
-	deleteRelation(otherArt: artifact, relation: relation, side: relationSide) {
+	deleteRelation(
+		otherArt: artifactWithRelations,
+		relation: artifactRelation,
+		side: artifactRelationSide
+	) {
 		const branchId = this._branchId.pipe(
 			take(1),
 			filter((id) => id != '')
@@ -211,7 +220,7 @@ export class RelationsEditorPanelComponent implements OnChanges {
 						.open(RelationDeleteDialogComponent, {
 							data: {
 								sideAName: otherArt.name,
-								sideBName: art.artName,
+								sideBName: art.name,
 							},
 						})
 						.afterClosed()
@@ -229,9 +238,9 @@ export class RelationsEditorPanelComponent implements OnChanges {
 														.id,
 													side.isSideA
 														? otherArt.id
-														: art.artId,
+														: art.id,
 													side.isSideA
-														? art.artId
+														? art.id
 														: otherArt.id,
 													undefined,
 													undefined,
@@ -271,15 +280,15 @@ export class RelationsEditorPanelComponent implements OnChanges {
 	// track the state of the UI as relation dropdowns expand and collapse
 	dropdownsOpen = new BehaviorSubject<string[]>([]);
 
-	relationOpen(index: number, relation: relation) {
+	relationOpen(index: number, relation: artifactRelation) {
 		return relation.relationTypeToken.id;
 	}
 
-	relationSideOpen(index: number, relationSide: relationSide) {
+	relationSideOpen(index: number, relationSide: artifactRelationSide) {
 		return relationSide.name;
 	}
 
-	addTab(artifact: artifact) {
+	addTab(artifact: artifactWithRelations) {
 		this.tabService.addArtifactTabOnBranch(
 			{
 				...artifact,

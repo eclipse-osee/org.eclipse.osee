@@ -11,11 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ArtifactInfoPanelComponent } from './artifact-info-panel.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { tab } from '../../../types/artifact-explorer.data';
+import { tab } from '../../../types/artifact-explorer';
+import { artifactWithRelationsMock } from '@osee/artifact-with-relations/testing';
 
 describe('ArtifactInfoPanelComponent', () => {
 	let component: ArtifactInfoPanelComponent;
@@ -35,30 +35,7 @@ describe('ArtifactInfoPanelComponent', () => {
 			tabId: '222',
 			tabType: 'Artifact',
 			tabTitle: '',
-			artifact: {
-				name: 'Mock Artifact',
-				id: '123',
-				typeId: '456',
-				typeName: 'Mock Type',
-				icon: {
-					icon: 'folder',
-					color: 'accent',
-					lightShade: '400',
-					darkShade: '400',
-					variant: '',
-				},
-				attributes: [
-					{
-						name: 'Attribute 1',
-						value: 'Value 1',
-						typeId: '789',
-						id: '1',
-						storeType: 'String',
-						multiplicityId: '2',
-					},
-				],
-				editable: true,
-			},
+			artifact: artifactWithRelationsMock,
 			branchId: '789',
 			viewId: '0',
 		};

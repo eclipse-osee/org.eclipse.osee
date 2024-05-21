@@ -14,12 +14,10 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Injectable, inject, signal } from '@angular/core';
 import { BranchCommitEventService, UiService } from '@osee/shared/services';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { tab } from '../types/artifact-explorer.data';
+import { tab } from '../types/artifact-explorer';
 import { ArtifactIconService } from './artifact-icon.service';
-import {
-	artifact,
-	teamWorkflowToken,
-} from '@osee/shared/types/configuration-management';
+import { artifactWithRelations } from '@osee/artifact-with-relations/types';
+import { teamWorkflowToken } from '@osee/shared/types/configuration-management';
 
 @Injectable({
 	providedIn: 'root',
@@ -63,12 +61,12 @@ export class ArtifactExplorerTabService {
 		this.addTab(newTab);
 	}
 
-	addArtifactTab(artifact: artifact) {
+	addArtifactTab(artifact: artifactWithRelations) {
 		this.addArtifactTabOnBranch(artifact, this.branchId(), this.viewId());
 	}
 
 	addArtifactTabOnBranch(
-		artifact: artifact,
+		artifact: artifactWithRelations,
 		branchId: string,
 		viewId: string
 	) {

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, input } from '@angular/core';
-import { artifactTab } from '../../../types/artifact-explorer.data';
+import { artifactTab } from '../../../types/artifact-explorer';
 import { ArtifactInfoPanelComponent } from '../artifact-info-panel/artifact-info-panel.component';
 import { AttributesEditorPanelComponent } from '../attributes-editor-panel/attributes-editor-panel.component';
 import { RelationsEditorPanelComponent } from '../relations-editor-panel/relations-editor-panel.component';

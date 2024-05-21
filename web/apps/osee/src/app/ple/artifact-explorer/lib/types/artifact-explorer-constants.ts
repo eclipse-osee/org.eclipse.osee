@@ -10,9 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { artifactContextMenuOption } from './artifact-explorer.data';
+import { artifactWithRelations } from '@osee/artifact-with-relations/types';
+import { artifactContextMenuOption } from './artifact-explorer';
 
-export const DEFUALT_ARTIFACT_CONTEXT_MENU_OPTIONS: artifactContextMenuOption[] =
+export const DEFAULT_ARTIFACT_CONTEXT_MENU_OPTIONS: artifactContextMenuOption[] =
 	[
 		{
 			name: 'Create Child Artifact',
@@ -35,3 +36,20 @@ export const DEFUALT_ARTIFACT_CONTEXT_MENU_OPTIONS: artifactContextMenuOption[] 
 			},
 		},
 	];
+
+export const DEFAULT_HIERARCHY_ROOT_ARTIFACT: artifactWithRelations = {
+	id: '197818',
+	name: 'Default Hierarchy Root',
+	typeId: '10',
+	typeName: 'Root Artifact',
+	icon: {
+		icon: '',
+		color: '',
+		lightShade: '',
+		darkShade: '',
+		variant: '',
+	},
+	attributes: [],
+	relations: [],
+	editable: false,
+};

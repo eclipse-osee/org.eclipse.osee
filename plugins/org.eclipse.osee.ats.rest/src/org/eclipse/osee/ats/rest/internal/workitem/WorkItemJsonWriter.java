@@ -58,8 +58,8 @@ import org.eclipse.osee.ats.rest.internal.util.ActionPage;
 import org.eclipse.osee.ats.rest.internal.util.TargetedVersion;
 import org.eclipse.osee.ats.rest.util.WorkItemJsonProvider;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
-import org.eclipse.osee.framework.core.data.ArtifactRelatedDirectArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactWithRelations;
 import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.GammaId;
@@ -506,7 +506,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
          orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.User).andRelatedTo(
             AtsRelationTypes.TeamLead_Team, teamWf.getTeamDefinition().getArtifactId()).asArtifactTokens();
 
-      writer.writeObjectField("artifact", new ArtifactRelatedDirectArtifact(artReadable, orcsApi.tokenService()));
+      writer.writeObjectField("artifact", new ArtifactWithRelations(artReadable, orcsApi.tokenService(), false));
       writer.writeObjectField("leads", leads);
 
    }

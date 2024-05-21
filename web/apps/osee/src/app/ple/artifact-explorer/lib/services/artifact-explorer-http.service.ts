@@ -14,13 +14,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { apiURL } from '@osee/environments';
 import { Observable } from 'rxjs';
-import { artifactWithDirectRelations } from '../types/artifact-explorer.data';
 import { HttpParamsType, attribute } from '@osee/shared/types';
 import { AdvancedSearchCriteria } from '../types/artifact-search';
 import {
-	artifact,
+	artifactWithRelations,
 	artifactTokenWithIcon,
-} from '@osee/shared/types/configuration-management';
+} from '@osee/artifact-with-relations/types';
 
 @Injectable({
 	providedIn: 'root',
@@ -28,12 +27,13 @@ import {
 export class ArtifactExplorerHttpService {
 	constructor(private http: HttpClient) {}
 
-	public getDirectRelations(
+	public getartifactWithRelations(
 		branchId: string,
 		artifactId: string,
-		viewId: string
-	): Observable<artifactWithDirectRelations> {
-		return this.http.get<artifactWithDirectRelations>(
+		viewId: string,
+		includeRelations: boolean
+	) {
+		return this.http.get<artifactWithRelations>(
 			apiURL +
 				'/orcs/branch/' +
 				branchId +
@@ -41,7 +41,7 @@ export class ArtifactExplorerHttpService {
 				artifactId +
 				'/related/direct',
 			{
-				params: { viewId: viewId },
+				params: { viewId: viewId, includeRelations: includeRelations },
 			}
 		);
 	}
@@ -70,30 +70,6 @@ export class ArtifactExplorerHttpService {
 		);
 	}
 
-	public getArtifactsByFilter(
-		branchId: string,
-		filter: string,
-		viewId: string,
-		count: number,
-		pageNum: number | string,
-		searchCriteria?: AdvancedSearchCriteria
-	) {
-		const params = this.createParams(
-			branchId,
-			filter,
-			viewId,
-			searchCriteria,
-			count,
-			pageNum
-		);
-		return this.http.get<artifact[]>(
-			apiURL + '/orcs/branch/' + branchId + '/artifact/search',
-			{
-				params: params,
-			}
-		);
-	}
-
 	public getArtifactsByFilterCount(
 		branchId: string,
 		filter: string,
@@ -111,12 +87,6 @@ export class ArtifactExplorerHttpService {
 			{
 				params: params,
 			}
-		);
-	}
-
-	public getArtifactForTab(branchId: string, artifactId: string) {
-		return this.http.get<artifact>(
-			apiURL + '/orcs/branch/' + branchId + '/artifact/load/' + artifactId
 		);
 	}
 

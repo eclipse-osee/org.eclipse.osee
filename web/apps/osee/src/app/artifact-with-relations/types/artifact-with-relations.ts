@@ -10,16 +10,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { attribute } from '../attribute';
-import { iconVariant, twColor, twShade } from '../tw-colors';
+import { attribute, iconVariant, twColor, twShade } from '@osee/shared/types';
 
-export type artifact = {
+export type artifactWithRelations = {
 	name: string;
 	id: `${number}`;
 	typeId: string;
 	typeName: string;
 	icon: artifactTypeIcon;
 	attributes: attribute[];
+	relations: artifactRelation[];
 	editable: boolean;
 };
 
@@ -31,14 +31,14 @@ export type artifactTypeIcon = {
 	variant: iconVariant;
 };
 
-export interface relation {
+export interface artifactRelation {
 	relationTypeToken: relationTypeToken;
-	relationSides: relationSide[];
+	relationSides: artifactRelationSide[];
 }
 
-export interface relationSide {
+export interface artifactRelationSide {
 	name: string;
-	artifacts: artifact[];
+	artifacts: artifactWithRelations[];
 	isSideA: boolean;
 	isSideB: boolean;
 }
@@ -61,7 +61,7 @@ export type artifactTokenWithIcon = {
 	icon: artifactTypeIcon;
 };
 
-export const artifactSentinel: artifact = {
+export const artifactWithRelationsSentinel: artifactWithRelations = {
 	id: '-1',
 	name: '',
 	typeId: '',
@@ -74,5 +74,6 @@ export const artifactSentinel: artifact = {
 		variant: '',
 	},
 	attributes: [],
+	relations: [],
 	editable: false,
 };

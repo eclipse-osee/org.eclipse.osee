@@ -10,36 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { attribute } from '@osee/shared/types';
 import {
-	artifact,
+	artifactWithRelations,
 	artifactTypeIcon,
-	relation,
-	teamWorkflow,
-} from '@osee/shared/types/configuration-management';
-
-export const DEFAULT_HIERARCHY_ROOT_ARTIFACT: artifact = {
-	id: '197818',
-	name: 'Default Hierarchy Root',
-	typeId: '10',
-	typeName: 'Root Artifact',
-	icon: {
-		icon: '',
-		color: '',
-		lightShade: '',
-		darkShade: '',
-		variant: '',
-	},
-	attributes: [],
-	editable: false,
-};
-
-export interface artifactWithDirectRelations {
-	artId: string;
-	artName: string;
-	artType: string;
-	relations: relation[];
-}
+} from '@osee/artifact-with-relations/types';
+import { attribute } from '@osee/shared/types';
 
 interface abstractTab {
 	tabId: string;
@@ -51,7 +26,7 @@ interface abstractTab {
 
 export interface artifactTab extends abstractTab {
 	tabType: 'Artifact';
-	artifact: artifact;
+	artifact: artifactWithRelations;
 }
 
 export interface changeReportTab extends abstractTab {
@@ -89,6 +64,6 @@ export interface artifactContextMenuOption {
 }
 export type ExplorerPanel = 'Actions' | 'Artifacts' | 'Branches';
 export interface deleteArtifactDialogData {
-	artifact: artifact;
+	artifact: artifactWithRelations;
 	option: artifactContextMenuOption;
 }

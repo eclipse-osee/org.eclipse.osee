@@ -24,7 +24,6 @@ import {
 } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
-import { MatList, MatListItem } from '@angular/material/list';
 import {
 	MatMenu,
 	MatMenuContent,
@@ -55,7 +54,7 @@ import { PaginatedMatListComponent } from '../../../shared/paginated-mat-list/pa
 import {
 	artifactTokenWithIcon,
 	artifactTypeIcon,
-} from '@osee/shared/types/configuration-management';
+} from '@osee/artifact-with-relations/types';
 
 @Component({
 	selector: 'osee-artifact-search',
@@ -220,14 +219,24 @@ export class ArtifactSearchComponent {
 		const branchId = this.branchId();
 		const branchType = this.branchType();
 		if (branchId && branchType && artifact.id !== '-1') {
-			this.artExpHttpService
-				.getArtifactForTab(branchId, artifact.id)
+			this.uiService.viewId
 				.pipe(
-					tap((art) =>
-						this.tabService.addArtifactTab({
-							...art,
-							editable: branchType !== 'baseline',
-						})
+					switchMap((viewId) =>
+						this.artExpHttpService
+							.getartifactWithRelations(
+								branchId,
+								artifact.id,
+								viewId,
+								true
+							)
+							.pipe(
+								tap((art) =>
+									this.tabService.addArtifactTab({
+										...art,
+										editable: branchType !== 'baseline',
+									})
+								)
+							)
 					)
 				)
 				.subscribe();

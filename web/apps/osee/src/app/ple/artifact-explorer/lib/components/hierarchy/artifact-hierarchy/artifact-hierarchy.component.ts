@@ -38,13 +38,13 @@ import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer
 import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
 import { ArtifactHierarchyArtifactsExpandedService } from '../../../services/artifact-hierarchy-artifacts-expanded.service';
 import { ArtifactIconService } from '../../../services/artifact-icon.service';
-import { DEFAULT_HIERARCHY_ROOT_ARTIFACT } from '../../../types/artifact-explorer.data';
 import { ArtifactHierarchyRelationsComponent } from '../artifact-hierarchy-relations/artifact-hierarchy-relations.component';
 import { ArtifactOptionsContextMenuComponent } from '../artifact-options-context-menu/artifact-options-context-menu.component';
 import {
-	artifact,
+	artifactWithRelations,
 	artifactTypeIcon,
-} from '@osee/shared/types/configuration-management';
+} from '@osee/artifact-with-relations/types';
+import { DEFAULT_HIERARCHY_ROOT_ARTIFACT } from '../../../types/artifact-explorer-constants';
 
 @Component({
 	selector: 'osee-artifact-hierarchy',
@@ -77,7 +77,7 @@ export class ArtifactHierarchyComponent {
 	branchType$ = this.uiService.type;
 	viewId$ = this.uiService.viewId;
 
-	trackById(index: number, item: artifact) {
+	trackById(index: number, item: artifactWithRelations) {
 		return item.id;
 	}
 
@@ -132,7 +132,7 @@ export class ArtifactHierarchyComponent {
 		),
 		switchMap(([_, branch, view]) =>
 			this.artExpHttpService
-				.getDirectRelations(branch, this.artifactId(), view)
+				.getartifactWithRelations(branch, this.artifactId(), view, true)
 				.pipe(repeat({ delay: () => this.uiService.update }))
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
@@ -204,7 +204,7 @@ export class ArtifactHierarchyComponent {
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
-	addTab(artifact: artifact) {
+	addTab(artifact: artifactWithRelations) {
 		this.tabService.addArtifactTab(artifact);
 	}
 
@@ -223,7 +223,7 @@ export class ArtifactHierarchyComponent {
 		y: '0',
 	};
 
-	openContextMenu(event: MouseEvent, artifact: artifact) {
+	openContextMenu(event: MouseEvent, artifact: artifactWithRelations) {
 		event.preventDefault();
 		this.menuPosition.x = event.clientX + 'px';
 		this.menuPosition.y = event.clientY + 'px';

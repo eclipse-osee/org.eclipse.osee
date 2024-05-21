@@ -17,9 +17,9 @@ import { Observable } from 'rxjs';
 import { ArtifactHierarchyOptionsService } from '../../../services/artifact-hierarchy-options.service';
 import { ArtifactHierarchyRelationSideComponent } from '../artifact-hierarchy-relation-side/artifact-hierarchy-relation-side.component';
 import {
-	relation,
-	relationSide,
-} from '@osee/shared/types/configuration-management';
+	artifactRelation,
+	artifactRelationSide,
+} from '@osee/artifact-with-relations/types';
 
 @Component({
 	selector: 'osee-artifact-hierarchy-relations',
@@ -28,7 +28,7 @@ import {
 	imports: [AsyncPipe, ArtifactHierarchyRelationSideComponent],
 })
 export class ArtifactHierarchyRelationsComponent {
-	@Input() relation$!: Observable<relation[]>;
+	@Input() relation$!: Observable<artifactRelation[]>;
 	@Input() paths!: string[][];
 
 	branchId$ = this.uiService.id;
@@ -40,11 +40,11 @@ export class ArtifactHierarchyRelationsComponent {
 
 	option$ = this.optionsService.options$;
 
-	trackRelations(index: number, item: relation) {
+	trackRelations(index: number, item: artifactRelation) {
 		return item.relationTypeToken.id;
 	}
 
-	trackRelationSides(index: number, item: relationSide) {
+	trackRelationSides(index: number, item: artifactRelationSide) {
 		return item.name;
 	}
 }

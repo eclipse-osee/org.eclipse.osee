@@ -24,7 +24,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactRelatedDirectAttribute;
+import org.eclipse.osee.framework.core.data.ArtifactWithRelationsAttribute;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
@@ -50,7 +50,7 @@ public interface TypesEndpoint {
    @GET
    @Path("artifact/{artifactId}/attributes")
    @Produces(MediaType.APPLICATION_JSON)
-   Collection<ArtifactRelatedDirectAttribute> getArtifactTypeAttributes(@PathParam("artifactId") ArtifactId artifactId);
+   Collection<ArtifactWithRelationsAttribute> getArtifactTypeAttributes(@PathParam("artifactId") ArtifactId artifactId);
 
    @GET
    @Path("attribute")

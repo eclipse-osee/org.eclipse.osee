@@ -12,7 +12,7 @@
  **********************************************************************/
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { AsyncPipe, DatePipe, NgClass } from '@angular/common';
-import { Component, Optional, Output, effect, input } from '@angular/core';
+import { Component, Optional, Output, input } from '@angular/core';
 import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
 import { MatOption, provideNativeDateAdapter } from '@angular/material/core';
 import {

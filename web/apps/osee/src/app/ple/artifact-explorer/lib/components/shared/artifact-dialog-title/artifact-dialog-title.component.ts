@@ -15,8 +15,8 @@ import { MatDialogTitle } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { BehaviorSubject } from 'rxjs';
 import { ArtifactIconService } from '../../../services/artifact-icon.service';
-import { artifactContextMenuOption } from '../../../types/artifact-explorer.data';
-import { artifactTypeIcon } from '@osee/shared/types/configuration-management';
+import { artifactContextMenuOption } from '../../../types/artifact-explorer';
+import { artifactTypeIcon } from '@osee/artifact-with-relations/types';
 
 @Component({
 	selector: 'osee-artifact-dialog-title',

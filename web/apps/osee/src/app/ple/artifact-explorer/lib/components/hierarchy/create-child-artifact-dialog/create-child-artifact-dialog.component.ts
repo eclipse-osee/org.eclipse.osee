@@ -11,14 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import {
-	Component,
-	Inject,
-	Optional,
-	ViewChild,
-	inject,
-	viewChild,
-} from '@angular/core';
+import { Component, Inject, Optional, inject, viewChild } from '@angular/core';
 import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
 import {
 	MatAutocomplete,
@@ -59,8 +52,8 @@ import {
 } from 'rxjs';
 import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
 import { ArtifactIconService } from '../../../services/artifact-icon.service';
-import { createChildArtifactDialogData } from '../../../types/artifact-explorer.data';
-import { artifactTypeIcon } from '@osee/shared/types/configuration-management';
+import { createChildArtifactDialogData } from '../../../types/artifact-explorer';
+import { artifactTypeIcon } from '@osee/artifact-with-relations/types';
 
 function controlContainerFactory(controlContainer?: ControlContainer) {
 	return controlContainer;

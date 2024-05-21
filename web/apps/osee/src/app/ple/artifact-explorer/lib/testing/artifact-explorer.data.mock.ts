@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { artifactContextMenuOption } from '../types/artifact-explorer.data';
-import { artifactTypeIconMock } from '@osee/shared/testing';
+import { artifactContextMenuOption } from '../types/artifact-explorer';
+import { artifactTypeIconMock } from '@osee/artifact-with-relations/testing';
 
 export const artifactContextMenuOptionMock: artifactContextMenuOption = {
 	name: 'create',
