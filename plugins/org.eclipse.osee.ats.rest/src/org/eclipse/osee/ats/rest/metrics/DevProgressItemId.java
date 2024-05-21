@@ -31,6 +31,8 @@ public enum DevProgressItemId {
    Analyze("Analyze Date"),
    Authorize("Authorize Date"),
    Implement("Implement Date"),
+   Verify("Verify Date"),
+   Demonstrate("Demonstrate Date"),
    Complete("Complete Date"),
    Cancelled("Cancelled Date"),
    TotalCount("Statusable UI Count"),
