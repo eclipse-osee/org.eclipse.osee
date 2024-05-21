@@ -24,7 +24,6 @@ export * from './ple_aware/httpui/current-branch-info.service';
 export * from './ple_aware/httpui/current-action.service';
 export * from './ple_aware/http/applicability-list.service';
 export * from './ple_aware/httpui/applicability-list-ui.service';
-export * from './ple_aware/httpui/create-action.service';
 export * from './ple_aware/ui/branch/branch-routed-ui.service';
 export * from './ple_aware/ui/views/views-ui.service';
 export * from './ple_aware/ui/views/views-routed-ui.service';

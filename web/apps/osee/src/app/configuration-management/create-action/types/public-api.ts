@@ -10,13 +10,5 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './action';
-export * from './actionable-item';
-export * from './create-action-field';
-export * from './new-action-response';
-export * from './priority';
-export * from './targeted-version';
-export * from './team-workflow';
-export * from './ats-last-mod';
-export * from './transition-action';
-export * from './work-type';
+export * from './create-action';
+export * from './create-new-action';

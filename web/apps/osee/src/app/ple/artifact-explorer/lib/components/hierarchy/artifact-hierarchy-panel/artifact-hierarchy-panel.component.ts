@@ -23,7 +23,6 @@ import {
 } from '@osee/shared/components';
 import {
 	ActionService,
-	CreateActionService,
 	CurrentActionService,
 	CurrentBranchInfoService,
 	UiService,
@@ -36,6 +35,7 @@ import { ArtifactHierarchyComponent } from '../artifact-hierarchy/artifact-hiera
 import { ArtifactSearchPanelComponent } from '../artifact-search-panel/artifact-search-panel.component';
 import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
 import { MatButton } from '@angular/material/button';
+import { CreateActionService } from '@osee/configuration-management/create-action/services';
 
 @Component({
 	selector: 'osee-artifact-hierarchy-panel',

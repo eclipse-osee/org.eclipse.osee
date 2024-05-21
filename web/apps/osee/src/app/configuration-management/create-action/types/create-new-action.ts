@@ -10,10 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NamedIdAndDescription } from '../named-id';
-import { PRIORITIES, Priority } from './priority';
+import { NamedIdAndDescription } from '@osee/shared/types';
+import {
+	PRIORITIES,
+	Priority,
+	targetedVersion,
+	targetedVersionSentinel,
+} from '@osee/shared/types/configuration-management';
 import { CreateAction } from './create-action';
-import { targetedVersion, targetedVersionSentinel } from './targeted-version';
 
 export interface CreateNewActionInterface {
 	title: string;

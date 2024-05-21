@@ -13,6 +13,10 @@
 import { Injectable } from '@angular/core';
 import { UserDataAccountService } from '@osee/auth';
 import {
+	CreateAction,
+	CreateNewAction,
+} from '@osee/configuration-management/create-action/types';
+import {
 	ActionService,
 	BranchInfoService,
 	BranchRoutedUIService,
@@ -20,13 +24,8 @@ import {
 	UiService,
 } from '@osee/shared/services';
 import {
-	CreateAction,
-	CreateNewAction,
-} from '@osee/shared/types/configuration-management';
-import {
 	BehaviorSubject,
 	Subject,
-	filter,
 	iif,
 	map,
 	of,

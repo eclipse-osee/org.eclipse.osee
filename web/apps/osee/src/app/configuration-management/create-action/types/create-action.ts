@@ -10,10 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { user } from '../auth';
-import { PRIORITIES, Priority } from './priority';
-import { actionableItem } from './actionable-item';
-import { targetedVersion, targetedVersionSentinel } from './targeted-version';
+import { user } from '@osee/shared/types/auth';
+import {
+	PRIORITIES,
+	Priority,
+	actionableItem,
+	targetedVersion,
+	targetedVersionSentinel,
+} from '@osee/shared/types/configuration-management';
 
 export interface CreateActionInterface {
 	createdByUser: user;
