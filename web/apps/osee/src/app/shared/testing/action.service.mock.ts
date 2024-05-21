@@ -12,10 +12,8 @@
  **********************************************************************/
 import { of } from 'rxjs';
 import { ActionService } from '@osee/shared/services';
-import {
-	CreateNewActionInterface,
-	transitionAction,
-} from '@osee/shared/types/configuration-management';
+import { transitionAction } from '@osee/shared/types/configuration-management';
+import { CreateNewActionInterface } from '@osee/configuration-management/create-action/types';
 import {
 	teamWorkflowTokenMock,
 	testARB,

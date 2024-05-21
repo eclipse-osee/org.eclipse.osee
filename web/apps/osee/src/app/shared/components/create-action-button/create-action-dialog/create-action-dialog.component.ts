@@ -40,7 +40,6 @@ import { MatInput } from '@angular/material/input';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { user } from '@osee/shared/types/auth';
 import {
-	CreateAction,
 	PRIORITIES,
 	WorkType,
 	actionableItem,
@@ -49,7 +48,8 @@ import { BehaviorSubject, combineLatest, of } from 'rxjs';
 import { filter, shareReplay, switchMap, tap } from 'rxjs/operators';
 import { LatestActionDropDownComponent } from '../../latest-action-drop-down/latest-action-drop-down.component';
 import { ActionUserService } from '../../action-state-button/internal/services/action-user.service';
-import { CreateActionService } from '../../../services/ple_aware/httpui/create-action.service';
+import { CreateAction } from '@osee/configuration-management/create-action/types';
+import { CreateActionService } from '@osee/configuration-management/create-action/services';
 /**
  * Dialog for creating a new action with the correct workType and category.
  */

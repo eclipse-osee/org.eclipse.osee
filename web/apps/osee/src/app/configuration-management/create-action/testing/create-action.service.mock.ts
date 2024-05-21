@@ -11,14 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { of } from 'rxjs';
-import { CreateActionService } from '../httpui/create-action.service';
-import { CreateAction } from '@osee/shared/types/configuration-management';
 import {
 	MockUserResponse,
 	testnewActionResponse,
 	testWorkType,
 	testAgilePoints,
 } from '@osee/shared/testing';
+import { CreateAction } from '@osee/configuration-management/create-action/types';
+import { CreateActionService } from '@osee/configuration-management/create-action/services';
 
 export const createActionServiceMock: Partial<CreateActionService> = {
 	getPoints() {

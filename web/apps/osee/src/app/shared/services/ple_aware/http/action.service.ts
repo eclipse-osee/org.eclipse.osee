@@ -27,7 +27,6 @@ import {
 	action,
 	transitionAction,
 	targetedVersion,
-	CreateNewActionInterface,
 	newActionResponse,
 	WorkType,
 	CreateActionField,
@@ -39,6 +38,7 @@ import {
 	teamWorkflowDetails,
 } from '@osee/shared/types/configuration-management';
 import { ARTIFACTTYPEID } from '@osee/shared/types/constants';
+import { CreateNewActionInterface } from '@osee/configuration-management/create-action/types';
 
 @Injectable({
 	providedIn: 'root',

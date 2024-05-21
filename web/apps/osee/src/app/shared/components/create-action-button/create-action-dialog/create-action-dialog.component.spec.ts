@@ -28,8 +28,8 @@ import { ActionUserService } from '../../action-state-button/internal/services/a
 import { MockActionUserService } from '../../action-state-button/internal/services/action-user.service.mock';
 
 import { CreateActionDialogComponent } from './create-action-dialog.component';
-import { CreateActionService } from '../../../services/ple_aware/httpui/create-action.service';
-import { createActionServiceMock } from '@osee/messaging/shared/services/ple_aware/testing';
+import { createActionServiceMock } from '@osee/configuration-management/create-action/testing';
+import { CreateActionService } from '@osee/configuration-management/create-action/services';
 
 describe('CreateActionDialogComponent', () => {
 	let component: CreateActionDialogComponent;

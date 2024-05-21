@@ -24,7 +24,6 @@ import {
 	transitionAction,
 	PRIORITIES,
 	targetedVersionSentinel,
-	CreateNewActionInterface,
 } from '@osee/shared/types/configuration-management';
 import { ActionService } from './action.service';
 import {
@@ -37,6 +36,7 @@ import {
 	testnewActionResponse,
 	MockXResultData,
 } from '@osee/shared/testing';
+import { CreateNewActionInterface } from '@osee/configuration-management/create-action/types';
 
 const testNewActionData: CreateNewActionInterface = {
 	title: 'title',

@@ -52,6 +52,15 @@
 			"@osee/artifact-with-relations/types": [
 				"src/app/artifact-with-relations/types"
 			],
+			"@osee/configuration-management/create-action/services": [
+				"src/app/configuration-management/create-action/services"
+			],
+			"@osee/configuration-management/create-action/testing": [
+				"src/app/configuration-management/create-action/testing"
+			],
+			"@osee/configuration-management/create-action/types": [
+				"src/app/configuration-management/create-action/types"
+			],
 			"@osee/messaging/connection-view": [
 				"src/app/ple/messaging/connection-view/lib"
 			],
@@ -149,9 +158,6 @@
 				"src/app/shared/types/configuration-management"
 			],
 			"@osee/shared/types/constants": ["src/app/shared/types/constants"],
-			"@osee/messaging/shared/services/ple_aware/testing": [
-				"src/app/shared/services/ple_aware/testing"
-			],
 			"@osee/messaging/shared/attr": [
 				"src/app/ple/messaging/shared/attr"
 			],

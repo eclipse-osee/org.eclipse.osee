@@ -51,6 +51,12 @@
 			"@osee/artifact-with-relations/types": [
 				"src/app/artifact-with-relations/types"
 			],
+			"@osee/configuration-management/create-action/services": [
+				"src/app/configuration-management/create-action/services"
+			],
+			"@osee/configuration-management/create-action/types": [
+				"src/app/configuration-management/create-action/types"
+			],
 			"@osee/messaging/connection-view": [
 				"src/app/ple/messaging/connection-view/lib"
 			],

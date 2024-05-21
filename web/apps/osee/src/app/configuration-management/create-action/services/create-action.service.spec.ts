@@ -13,7 +13,6 @@
 import { TestBed } from '@angular/core/testing';
 import { CreateActionService } from './create-action.service';
 import { TestScheduler } from 'rxjs/testing';
-import { CreateAction } from '@osee/shared/types/configuration-management';
 import {
 	BranchInfoServiceMock,
 	MockUserResponse,
@@ -28,6 +27,7 @@ import {
 } from '@osee/shared/services';
 import { UserDataAccountService } from '@osee/auth';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
+import { CreateAction } from '@osee/configuration-management/create-action/types';
 
 describe('CreateActionService', () => {
 	let service: CreateActionService;

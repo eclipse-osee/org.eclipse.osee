@@ -31,7 +31,6 @@ import { ArtifactHierarchyOptionsMockComponent } from '../artifact-hierarchy-opt
 import { ArtifactSearchMockComponent } from '../artifact-search-panel/artifact-search-panel.component.mock';
 import {
 	ActionService,
-	CreateActionService,
 	CurrentActionService,
 	CurrentBranchInfoService,
 } from '@osee/shared/services';
@@ -42,7 +41,8 @@ import {
 	testBranchInfo,
 } from '@osee/shared/testing';
 import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
-import { createActionServiceMock } from '@osee/messaging/shared/services/ple_aware/testing';
+import { createActionServiceMock } from '@osee/configuration-management/create-action/testing';
+import { CreateActionService } from '@osee/configuration-management/create-action/services';
 
 describe('ArtifactHierarchyPanelComponent', () => {
 	let component: ArtifactHierarchyPanelComponent;

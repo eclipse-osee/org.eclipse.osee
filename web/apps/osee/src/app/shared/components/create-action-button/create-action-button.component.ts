@@ -16,8 +16,8 @@ import { MatIcon } from '@angular/material/icon';
 import { filter, switchMap, take } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateActionDialogComponent } from './create-action-dialog/create-action-dialog.component';
-import { CreateAction } from '@osee/shared/types/configuration-management';
-import { CreateActionService } from '../../services/ple_aware/httpui/create-action.service';
+import { CreateAction } from '@osee/configuration-management/create-action/types';
+import { CreateActionService } from '@osee/configuration-management/create-action/services';
 
 @Component({
 	selector: 'osee-create-action-button',
