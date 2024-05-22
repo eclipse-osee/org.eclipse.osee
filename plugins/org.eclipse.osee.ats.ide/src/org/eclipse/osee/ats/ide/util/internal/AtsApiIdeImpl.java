@@ -281,4 +281,5 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
    public IAccessControlService getAccessControlService() {
       return getOseeClient().getAccessControlService();
    }
+
 }

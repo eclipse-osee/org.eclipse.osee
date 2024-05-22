@@ -33,15 +33,18 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
  */
 public interface IAttributeResolver {
 
-   default ArtifactId getSoleArtifactIdReference(IAtsObject atsObject, AttributeTypeToken artifactReferencedAttributeType, ArtifactId defaultValue) {
+   default ArtifactId getSoleArtifactIdReference(IAtsObject atsObject,
+      AttributeTypeToken artifactReferencedAttributeType, ArtifactId defaultValue) {
       return getSoleAttributeValue(atsObject, artifactReferencedAttributeType, ArtifactId.SENTINEL);
    }
 
-   default ArtifactId getSoleArtifactIdReference(ArtifactToken art, AttributeTypeToken artifactReferencedAttributeType, ArtifactId defaultValue) {
+   default ArtifactId getSoleArtifactIdReference(ArtifactToken art, AttributeTypeToken artifactReferencedAttributeType,
+      ArtifactId defaultValue) {
       return getSoleAttributeValue(art, artifactReferencedAttributeType, defaultValue);
    }
 
-   default Collection<ArtifactId> getArtifactIdReferences(ArtifactToken artifact, AttributeTypeToken artifactReferencedAttributeType) {
+   default Collection<ArtifactId> getArtifactIdReferences(ArtifactToken artifact,
+      AttributeTypeToken artifactReferencedAttributeType) {
       return getAttributeValues(artifact, artifactReferencedAttributeType);
    }
 
@@ -51,7 +54,8 @@ public interface IAttributeResolver {
 
    boolean isAttributeTypeValid(IAtsWorkItem workItem, AttributeTypeToken attributeType);
 
-   String getSoleAttributeValueAsString(IAtsObject atsObject, AttributeTypeToken attributeType, String defaultReturnValue);
+   String getSoleAttributeValueAsString(IAtsObject atsObject, AttributeTypeToken attributeType,
+      String defaultReturnValue);
 
    int getAttributeCount(IAtsObject atsObject, AttributeTypeToken attributeType);
 
@@ -75,13 +79,16 @@ public interface IAttributeResolver {
 
    void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeToken attributeType, IAtsChangeSet changes);
 
-   void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeToken attributeType, Object value, IAtsChangeSet changes);
+   void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeToken attributeType, Object value,
+      IAtsChangeSet changes);
 
    void addAttribute(IAtsWorkItem workItem, AttributeTypeToken attributeType, Object value, IAtsChangeSet changes);
 
-   void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeToken attributeType, Object value, IAtsChangeSet changes);
+   void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeToken attributeType, Object value,
+      IAtsChangeSet changes);
 
-   <T> void setValue(IAtsWorkItem workItem, IAttribute<T> attr, AttributeTypeId attributeType, T value, IAtsChangeSet changes);
+   <T> void setValue(IAtsWorkItem workItem, IAttribute<T> attr, AttributeTypeId attributeType, T value,
+      IAtsChangeSet changes);
 
    <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr, IAtsChangeSet changes);
 
@@ -93,11 +100,13 @@ public interface IAttributeResolver {
 
    <T> Collection<T> getAttributeValues(IAtsObject atsObject, AttributeTypeToken attributeType);
 
-   String getSoleAttributeValueAsString(ArtifactId artifact, AttributeTypeToken attributeType, String defaultReturnValue);
+   String getSoleAttributeValueAsString(ArtifactId artifact, AttributeTypeToken attributeType,
+      String defaultReturnValue);
 
    int getAttributeCount(IAtsWorkItem workItem, AttributeTypeToken attributeType);
 
-   default public String getAttributesToStringUniqueList(IAtsObject atsObject, AttributeTypeToken attributeType, String separator) {
+   default public String getAttributesToStringUniqueList(IAtsObject atsObject, AttributeTypeToken attributeType,
+      String separator) {
       Set<String> strs = new HashSet<>();
       strs.addAll(getAttributesToStringList(atsObject, attributeType));
       return org.eclipse.osee.framework.jdk.core.util.Collections.toString(separator, strs);
@@ -107,7 +116,8 @@ public interface IAttributeResolver {
 
    List<String> getAttributesToStringListFromArt(ArtifactToken artifact, AttributeTypeToken attributeType);
 
-   List<String> getAttributesToStringListFromArt(ArtifactToken artifact, AttributeTypeToken attributeType, DeletionFlag deletionFlag);
+   List<String> getAttributesToStringListFromArt(ArtifactToken artifact, AttributeTypeToken attributeType,
+      DeletionFlag deletionFlag);
 
    /**
     * @return value in static id field that starts with key=; key= will be stripped off string and remaining returned
@@ -122,5 +132,9 @@ public interface IAttributeResolver {
    default boolean hasTag(ArtifactToken art, String tag) {
       return getAttributesToStringList(art, CoreAttributeTypes.StaticId).contains(tag);
    }
+
+   boolean hasNoAttribute(IAtsWorkItem workItem, AttributeTypeToken... attrTypes);
+
+   boolean hasAttribute(IAtsWorkItem workItem, AttributeTypeToken... attrTypes);
 
 }

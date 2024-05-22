@@ -568,4 +568,18 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
       return atsAccessService;
    }
 
+   @Override
+   public boolean isConfigValue(String key) {
+      return "true".equals(getConfigValue(key));
+   }
+
+   @Override
+   public boolean isConfigValue(String key, boolean defaultValue) {
+      String booleanValue = getConfigValue(key, "");
+      if (Strings.isInvalid(booleanValue)) {
+         return defaultValue;
+      }
+      return "true".equals(booleanValue);
+   }
+
 }

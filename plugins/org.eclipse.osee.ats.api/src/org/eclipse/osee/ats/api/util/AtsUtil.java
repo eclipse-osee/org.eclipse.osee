@@ -27,6 +27,7 @@ public class AtsUtil {
    public final static double DEFAULT_HOURS_PER_WORK_DAY = 8;
    public static final String DEFAULT_ATS_ID_VALUE = "0";
    public static final String USER_CREATION_DISABLED = "UserCreationDisabled2";
+   public static final String MEETING_ATTENDEE_AS_USER_ID = "MeetingAttendeeAsUserId";
    public static final String ATS_CONFIG_ACTION_URL_KEY = "ActionUrl_26_0";
    public static final String ATS_DEFAULT_ACTION_URL = "/ats/ui/action/ID";
    public static final String SINGLE_SERVER_DEPLOYMENT = "single_server_deployment";

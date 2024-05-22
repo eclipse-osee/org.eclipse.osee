@@ -224,6 +224,10 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    @Override
    public Collection<IAtsTransitionHook> getTransitionHooks() {
       if (transitionHooks == null) {
+         /**
+          * NOTE: New transition checks should be incorporated into TransitionManager rather than creating new hooks
+          * here. Hooks should only be needed for non-ats.core bundles.
+          */
          transitionHooks = new HashSet<>();
          transitionHooks.add(new DecisionReviewOnTransitionToHook());
          transitionHooks.add(new PeerReviewOnTransitionToHook());

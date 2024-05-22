@@ -95,7 +95,8 @@ public interface IAtsWorkDefinitionService {
 
    ArtifactToken getWorkDefArt(String workDefName);
 
-   WorkDefinition computeWorkDefinitionForTeamWfNotYetCreated(IAtsTeamDefinition teamDef, Collection<INewActionListener> newActionListeners);
+   WorkDefinition computeWorkDefinitionForTeamWfNotYetCreated(IAtsTeamDefinition teamDef,
+      Collection<INewActionListener> newActionListeners);
 
    void setWorkDefinitionAttrs(IAtsTeamDefinition topTeam, NamedIdBase id, IAtsChangeSet changes);
 
@@ -123,5 +124,14 @@ public interface IAtsWorkDefinitionService {
    Collection<WidgetDefinition> getWidgets(WorkDefinition workDef);
 
    public Collection<String> updateAllValidStateNames();
+
+   default WidgetDefinition getWidgetFromLayoutItems(StateDefinition stateDef, String label) {
+      for (WidgetDefinition widgetDef : getWidgetsFromLayoutItems(stateDef)) {
+         if (widgetDef.getName().equals(label)) {
+            return widgetDef;
+         }
+      }
+      return null;
+   }
 
 }

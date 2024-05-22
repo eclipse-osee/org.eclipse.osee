@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2013 Boeing
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,27 +11,27 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.core.workdef;
+package org.eclipse.osee.ats.api.workdef.model;
 
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
-import org.junit.Assert;
-import org.junit.Test;
 
 /**
- * Test case for {@link WidgetOption}
- *
  * @author Donald G. Dunne
  */
-public class WidgetOptionTest {
+public class MeetingAttendeeWidgetDefinition extends WidgetDefinition {
 
-   @Test
-   public void testValues() {
-      Assert.assertEquals(38, WidgetOption.values().length);
+   public MeetingAttendeeWidgetDefinition() {
+      super("Meeting Attendee(s)", "XHyperlinkMeetingAttendeesSelectionDam");
    }
 
-   @Test
-   public void testValueOf() {
-      Assert.assertEquals(WidgetOption.ADD_DEFAULT_VALUE, WidgetOption.valueOf(WidgetOption.ADD_DEFAULT_VALUE.name()));
+   public LayoutItem andRequired() {
+      set(WidgetOption.REQUIRED_FOR_TRANSITION);
+      return this;
+   }
+
+   public LayoutItem andRequiredForFormal() {
+      set(WidgetOption.REQUIRED_FOR_FORMAL_REVIEW);
+      return this;
    }
 
 }

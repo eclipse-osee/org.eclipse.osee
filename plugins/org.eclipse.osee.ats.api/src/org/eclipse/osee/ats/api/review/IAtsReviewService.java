@@ -110,4 +110,6 @@ public interface IAtsReviewService {
 
    String getValidateReviewTitle(IAtsTeamWorkflow teamWf);
 
+   boolean isFormalReview(IAtsWorkItem workItem);
+
 }

@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.api.review.ReviewDefectItem;
+import org.eclipse.osee.ats.api.review.ReviewUtil;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
@@ -48,10 +49,12 @@ import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
+import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefOption;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -506,6 +509,7 @@ public class TransitionManager implements IExecuteListener {
       } else if (!toStateDef.isCancelled() && !isOverrideAttributeValidationState) {
 
          validatePeerDefects(results, workItem, toStateDef);
+         validatePeerMeetingAttendees(results, workItem, fromStateDef);
 
          // Validate XWidgets for transition
          logTimeStart("05.41 - validateWidgetTransition");
@@ -554,8 +558,29 @@ public class TransitionManager implements IExecuteListener {
       logTimeSpent("05.4 - isStateTransitionable");
    }
 
+   private void validatePeerMeetingAttendees(TransitionResults results, IAtsWorkItem workItem,
+      StateDefinition fromState) {
+      logTimeStart("05.42.1 - validatePeerMeetingAttendees");
+      if (workItem.isPeerReview()) {
+         IAtsPeerToPeerReview review = (IAtsPeerToPeerReview) workItem;
+         StateDefinition stateDef = review.getWorkDefinition().getStateByName(fromState.getName());
+         WidgetDefinition widgetDef =
+            atsApi.getWorkDefinitionService().getWidgetFromLayoutItems(stateDef, ReviewUtil.MEETING_ATTENDEES_LABEL);
+         if (widgetDef != null) {
+            if (widgetDef.is(WidgetOption.REQUIRED_FOR_TRANSITION) || (widgetDef.is(
+               WidgetOption.REQUIRED_FOR_FORMAL_REVIEW) && atsApi.getReviewService().isFormalReview(workItem))) {
+               if (atsApi.getAttributeResolver().hasNoAttribute(workItem, AtsAttributeTypes.MeetingAttendeeId,
+                  AtsAttributeTypes.MeetingAttendeeUserId)) {
+                  results.addResult(workItem, TransitionResult.REVIEW_REQUIRES_MEETING_ATTENDEES);
+               }
+            }
+         }
+      }
+      logTimeSpent("05.42.1 - validatePeerMeetingAttendees");
+   }
+
    private void validatePeerDefects(TransitionResults results, IAtsWorkItem workItem, StateDefinition toStateDef) {
-      logTimeStart("05.42 - validatePeerDefects");
+      logTimeStart("05.42.2 - validatePeerDefects");
       if (workItem.isPeerReview() && toStateDef.isCompleted()) {
          IAtsPeerToPeerReview review = (IAtsPeerToPeerReview) workItem;
          IAtsPeerReviewDefectManager defectMgr = review.getDefectManager();
@@ -574,7 +599,7 @@ public class TransitionManager implements IExecuteListener {
             }
          }
       }
-      logTimeSpent("05.42 - validatePeerDefects");
+      logTimeSpent("05.42.2 - validatePeerDefects");
    }
 
    private void validateReviewsCancelled(TransitionResults results, IAtsWorkItem workItem, StateDefinition toStateDef) {
