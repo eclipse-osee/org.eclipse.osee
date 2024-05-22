@@ -478,6 +478,21 @@ public class WordTemplateRenderer extends FileSystemRenderer {
 
    /**
     * {@inheritDoc}
+    *
+    * @implNote During the client side difference processing, empty place holder word documents are created for
+    * artifacts that do not contain Word ML content. This override prevents the super method from obtaining an invalid
+    * filename extension for a Word document.
+    * @param artifacts this parameter is ignored.
+    * @return {@value #DEFAULT_ASSOCIATED_FILE_EXTENSION}.
+    */
+
+   @Override
+   public String getAssociatedExtension(List<Artifact> artifacts) {
+      return WordTemplateRenderer.DEFAULT_ASSOCIATED_FILE_EXTENSION;
+   }
+
+   /**
+    * {@inheritDoc}
     */
 
    @Override
