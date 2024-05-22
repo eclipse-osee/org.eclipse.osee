@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.CompositeLayoutItem;
+import org.eclipse.osee.ats.api.workdef.model.MeetingAttendeeWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
@@ -129,8 +130,7 @@ public class WorkDefReviewPeerToPeer extends AbstractWorkDef {
                new WidgetDefinition(AtsAttributeTypes.MeetingLength, "XFloatDam", REQUIRED_FOR_TRANSITION), //
                new WidgetDefinition(AtsAttributeTypes.MeetingLocation, "XTextDam", REQUIRED_FOR_TRANSITION) //
             ), //
-            new WidgetDefinition(AtsAttributeTypes.MeetingAttendeeUserId, "XHyperlabelMemberSelectionDam",
-               REQUIRED_FOR_TRANSITION), //
+            new MeetingAttendeeWidgetDefinition().andRequiredForFormal(), //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //
             new WidgetDefinition(AtsAttributeTypes.Role, "XUserRoleViewer", REQUIRED_FOR_TRANSITION), //
             new WidgetDefinition(AtsAttributeTypes.ReviewDefect, "XDefectViewer"), //

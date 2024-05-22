@@ -605,4 +605,10 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       return review;
    }
 
+   @Override
+   public boolean isFormalReview(IAtsWorkItem workItem) {
+      return (ReviewFormalType.Formal.name().equals(
+         atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.ReviewFormalType, "")));
+   }
+
 }

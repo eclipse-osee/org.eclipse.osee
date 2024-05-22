@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -38,8 +37,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
  */
 public class XHyperlabelMemberSelectionDam extends XHyperlabelMemberSelection implements AttributeWidget {
 
-   private Artifact artifact;
-   private AttributeTypeToken attributeType;
+   protected Artifact artifact;
 
    public XHyperlabelMemberSelectionDam() {
       this("Select User");
@@ -52,11 +50,6 @@ public class XHyperlabelMemberSelectionDam extends XHyperlabelMemberSelection im
    @Override
    public Artifact getArtifact() {
       return artifact;
-   }
-
-   @Override
-   public AttributeTypeToken getAttributeType() {
-      return attributeType;
    }
 
    @Override
@@ -77,13 +70,7 @@ public class XHyperlabelMemberSelectionDam extends XHyperlabelMemberSelection im
       try {
          for (Object artIdObj : artifact.getAttributeValues(attributeType)) {
             try {
-               if (artIdObj instanceof ArtifactId) {
-                  users.add(UserManager.getUserByArtId((ArtifactId) artIdObj));
-               } else if (artIdObj instanceof String) {
-                  if (Strings.isValid((String) artIdObj)) {
-                     users.add(UserManager.getUserByUserId((String) artIdObj));
-                  }
-               }
+               users.add(UserManager.getUserByArtId((ArtifactId) artIdObj));
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
@@ -91,23 +78,13 @@ public class XHyperlabelMemberSelectionDam extends XHyperlabelMemberSelection im
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-
       return users;
    }
 
    @Override
    public void saveToArtifact() {
       try {
-         Set<User> selectedUsers = getSelectedUsers();
-         if (attributeType.isString()) {
-            Set<String> userIds = new HashSet<>();
-            for (User user : selectedUsers) {
-               userIds.add(user.getUserId());
-            }
-            artifact.setAttributeFromValues(attributeType, userIds);
-         } else if (attributeType.isArtifactId()) {
-            artifact.setAttributeFromValues(attributeType, selectedUsers);
-         }
+         artifact.setAttributeFromValues(attributeType, getSelectedUsers());
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

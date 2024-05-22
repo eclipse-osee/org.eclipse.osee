@@ -243,4 +243,8 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
       getAttributeResolver().setStaticIdValue(workItem, key, value, changes);
    }
 
+   boolean isConfigValue(String key);
+
+   boolean isConfigValue(String key, boolean defaultValue);
+
 }

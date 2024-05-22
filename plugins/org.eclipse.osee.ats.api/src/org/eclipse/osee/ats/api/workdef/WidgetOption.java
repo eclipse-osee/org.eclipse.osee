@@ -74,6 +74,8 @@ public enum WidgetOption {
    ALIGN_CENTER,
 
    // Widget Type
-   WALKTHROUGH;
+   WALKTHROUGH, //
+
+   REQUIRED_FOR_FORMAL_REVIEW;
 
 }

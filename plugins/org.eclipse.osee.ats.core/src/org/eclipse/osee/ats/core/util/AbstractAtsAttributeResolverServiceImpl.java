@@ -14,6 +14,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 
@@ -47,6 +48,21 @@ public abstract class AbstractAtsAttributeResolverServiceImpl implements IAttrib
          }
       }
       changes.addAttribute(workItem, CoreAttributeTypes.StaticId, key + "=" + value);
+   }
+
+   @Override
+   public boolean hasNoAttribute(IAtsWorkItem workItem, AttributeTypeToken... attrTypes) {
+      return !hasAttribute(workItem, attrTypes);
+   }
+
+   @Override
+   public boolean hasAttribute(IAtsWorkItem workItem, AttributeTypeToken... attrTypes) {
+      for (AttributeTypeToken attrType : attrTypes) {
+         if (getAttributeCount(workItem, attrType) > 0) {
+            return true;
+         }
+      }
+      return false;
    }
 
 }

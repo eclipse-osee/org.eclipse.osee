@@ -73,7 +73,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
          + "attr.ATTR_TYPE_ID = ? and attr.VALUE = ?";
 
    private static String ATTR_EXISTS_QUERY =
-      "SELECT unique art.art_id FROM osee_artifact art, osee_txs txs, OSEE_ATTRIBUTE attr WHERE txs.branch_id = ? and " //
+      "SELECT distinct art.art_id FROM osee_artifact art, osee_txs txs, OSEE_ATTRIBUTE attr WHERE txs.branch_id = ? and " //
          + "art.gamma_id = txs.gamma_id " //
          + "AND txs.tx_current = 1 AND attr.ART_ID = art.ART_ID and " //
          + "attr.ATTR_TYPE_ID = ?";

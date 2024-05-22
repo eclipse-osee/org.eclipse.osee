@@ -98,6 +98,7 @@ public class AtsXWidgetProvider extends BaseXWidgetProvider {
       register(XHyperlinkWfdForRelatedStateDam.class);
       register(XHyperlinkWorkDefDam.class);
       register(XIntroducedInVersionWithPersistWidget.class);
+      register(XHyperlinkMeetingAttendeesSelectionDam.class);
       register(XOpenSprintBurndownButton.class);
       register(XOpenSprintBurnupButton.class);
       register(XOpenSprintDataTableButton.class);
