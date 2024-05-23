@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -76,7 +77,13 @@ public class XHyperlabelMemberSelectionDam extends XHyperlabelMemberSelection im
       try {
          for (Object artIdObj : artifact.getAttributeValues(attributeType)) {
             try {
-               users.add(UserManager.getUserByArtId((ArtifactId) artIdObj));
+               if (artIdObj instanceof ArtifactId) {
+                  users.add(UserManager.getUserByArtId((ArtifactId) artIdObj));
+               } else if (artIdObj instanceof String) {
+                  if (Strings.isValid((String) artIdObj)) {
+                     users.add(UserManager.getUserByUserId((String) artIdObj));
+                  }
+               }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
@@ -91,7 +98,16 @@ public class XHyperlabelMemberSelectionDam extends XHyperlabelMemberSelection im
    @Override
    public void saveToArtifact() {
       try {
-         artifact.setAttributeFromValues(attributeType, getSelectedUsers());
+         Set<User> selectedUsers = getSelectedUsers();
+         if (attributeType.isString()) {
+            Set<String> userIds = new HashSet<>();
+            for (User user : selectedUsers) {
+               userIds.add(user.getUserId());
+            }
+            artifact.setAttributeFromValues(attributeType, userIds);
+         } else if (attributeType.isArtifactId()) {
+            artifact.setAttributeFromValues(attributeType, selectedUsers);
+         }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
