@@ -270,13 +270,15 @@ public class MimIcdGenerator {
             msgRateText = msgPeriodicity;
          }
          if (message.getExistingAttributeTypes().contains(CoreAttributeTypes.InterfaceMessageRate)) {
-            msgRateText = message.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRate, "Error");
-            try {
-               msgRate = Integer.parseInt(msgRateText);
-            } catch (NumberFormatException nfe) {
-               //do nothing
+            msgRateText = message.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRate, "Aperiodic");
+            if (!msgRateText.equals("Aperiodic")) {
+               try {
+                  msgRate = Integer.parseInt(msgRateText);
+               } catch (NumberFormatException nfe) {
+                  //do nothing
+               }
             }
-            if (msgPeriodicity.equals("Aperiodic")) {
+            if (msgPeriodicity.equals("Aperiodic") && !msgRateText.equals("Aperiodic")) {
                msgRateText = msgRateText + "-A";
             }
          }
@@ -331,6 +333,11 @@ public class MimIcdGenerator {
                               element.getInterfaceElementArrayIndexDelimiterOne());
                            arrayElementCopy.setInterfaceElementArrayIndexDelimiterTwo(
                               element.getInterfaceElementArrayIndexDelimiterTwo());
+
+                           // If $parentindex is used in the element description, replace it with the parent array index.
+                           arrayElementCopy.setDescription(
+                              arrayElementCopy.getDescription().replace("$parentindex", Integer.toString(i)));
+
                            flatElements.add(arrayElementCopy);
                         }
                      }
@@ -1212,6 +1219,9 @@ public class MimIcdGenerator {
             values[3] = endWord;
             values[4] = endByte;
 
+            // Replace uses of $index with the current array index
+            values[10] = description.replace("$index", Integer.toString(i));
+
             // elementToken inherited header information from its parent up in createStructureInfo() if applicable.
             // These values are not set on these elements naturally.
             String elementName = elementToken.getName();
@@ -1574,6 +1584,12 @@ public class MimIcdGenerator {
       txRates.sort(new Comparator<String>() {
          @Override
          public int compare(String o1, String o2) {
+            if (o1.equals("Aperiodic")) {
+               return 1;
+            }
+            if (o2.equals("Aperiodic")) {
+               return -1;
+            }
             String[] split1 = o1.split("-");
             String[] split2 = o2.split("-");
             Integer rate1 = Integer.parseInt(split1[0]);
