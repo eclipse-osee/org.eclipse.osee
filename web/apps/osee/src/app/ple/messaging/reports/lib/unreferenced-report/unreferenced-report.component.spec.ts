@@ -11,7 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { UnreferencedReportComponent } from './unreferenced-report.component';
 import {
 	MimPreferencesService,

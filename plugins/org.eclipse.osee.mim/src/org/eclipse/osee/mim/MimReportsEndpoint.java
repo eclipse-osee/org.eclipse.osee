@@ -21,6 +21,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.mim.types.MimReportToken;
@@ -93,4 +94,8 @@ public interface MimReportsEndpoint {
    public NodeTraceReportItem getRequirementsFromInterface(@PathParam("branchId") BranchId branch,
       @PathParam("artId") ArtifactId artId);
 
+   @GET()
+   @Path("{branchId}/impactedConnections")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<ArtifactToken> getImpactedConnections(@PathParam("branchId") BranchId branch);
 }

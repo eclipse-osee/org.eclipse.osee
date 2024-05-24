@@ -12,24 +12,17 @@
  **********************************************************************/
 package org.eclipse.osee.mim.internal;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.enums.TxCurrent;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
 import org.eclipse.osee.mim.InterfaceValidationApi;
 import org.eclipse.osee.mim.types.ConnectionValidationResult;
@@ -101,49 +94,6 @@ public class InterfaceValidationApiImpl implements InterfaceValidationApi {
       }
 
       return result;
-   }
-
-   @Override
-   public List<ArtifactToken> getImpactedConnections(BranchId branch) {
-      String query = "with impactedArts as " + //
-         "        (select distinct attr.art_id from osee_txs txs, osee_attribute attr "//
-         + "               where branch_id = ? and transaction_id > (select baseline_transaction_id from osee_branch b where b.branch_id = ?) and txs.gamma_id = attr.gamma_id union all" + // workingBranch,workingBranch
-         "         select distinct art.art_id  from osee_txs txs, osee_artifact art where branch_id = ? and transaction_id > (select baseline_transaction_id from osee_branch b where b.branch_id = ?) and txs.gamma_id = art.gamma_id union all" + //workingBranch,workingBranch
-         "         select distinct art.a_art_id from osee_txs txs, osee_relation art where branch_id = ? and transaction_id > (select baseline_transaction_id from osee_branch b where b.branch_id = ?) and txs.gamma_id = art.gamma_id)," + // workingBranch,workingBranch
-         "  allRels (a_art_id, b_art_id, gamma_id, rel_type) as " + //
-         "        (select a_art_id, b_art_id, txs.gamma_id, rel_type " + //
-         "          from osee_txs txs, osee_relation rel " + //
-         "          where txs.branch_id = ? and txs.tx_current = ? and txs.gamma_id = rel.gamma_id " + //workingBranch,tx_current=1
-         "         union all" + //
-         "         select a_art_id, b_art_id, txs.gamma_id, rel_link_type_id rel_type " + //
-         "          from osee_txs txs, osee_relation_link rel " + //
-         "          where txs.branch_id = ? and txs.tx_current = ? and txs.gamma_id = rel.gamma_id), " + //workingBranch,tx_current=1
-         "  cte_query (b_art_id, a_art_id, rel_type) as " + //
-         "        (select b_art_id, a_art_id, rel_type " + //
-         "          from allRels " + //
-         "          where b_art_id in (select art_id from impactedArts)" + //
-         "         union all" + //
-         "          select e.b_art_id, e.a_art_id, e.rel_type " + //
-         "          from allRels e " + //
-         "          inner join cte_query c on c.a_art_id = e.b_art_id) " + //
-         " select distinct attr.art_id, attr.value " + //
-         " from cte_query cq, osee_txs txs, osee_artifact art, osee_txs attrTxs, osee_attribute attr " + //
-         " where cq.a_art_id = art.art_id and art.art_type_id = ? and txs.branch_id = ? and txs.tx_current = ? and " + //CoreArtifactTypes.InterfaceConnection.getId(), CoreArtifactTypes.workingBranch,tx_current = 1
-         " txs.gamma_id = art.gamma_id and attrTxs.branch_id = ? and attrTxs.tx_current = ? and attrTxs.gamma_id = attr.gamma_id and attr.art_id = art.art_id " + //workingBranch,tx_current = 1
-         " and attr.attr_type_id = ?"; //CoreAttributeTypes.Name
-
-      List<ArtifactToken> conns = new ArrayList<>();
-      Consumer<JdbcStatement> consumer = stmt -> {
-         conns.add(ArtifactToken.valueOf(ArtifactId.valueOf(stmt.getLong("art_id")), stmt.getString("value")));
-      };
-
-      jdbcClient.runQuery(consumer, query, branch, branch, branch, branch, branch, branch, branch,
-         TxCurrent.CURRENT.getIdIntValue(), branch, TxCurrent.CURRENT.getIdIntValue(),
-         CoreArtifactTypes.InterfaceConnection.getId(), branch, TxCurrent.CURRENT.getIdIntValue(), branch,
-         TxCurrent.CURRENT.getIdIntValue(), CoreAttributeTypes.Name.getId());
-
-      return conns;
-
    }
 
 }

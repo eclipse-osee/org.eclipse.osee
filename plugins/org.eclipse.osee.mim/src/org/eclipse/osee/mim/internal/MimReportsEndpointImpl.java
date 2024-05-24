@@ -14,6 +14,7 @@ package org.eclipse.osee.mim.internal;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.MimApi;
 import org.eclipse.osee.mim.MimReportsEndpoint;
@@ -86,6 +87,11 @@ public class MimReportsEndpointImpl implements MimReportsEndpoint {
    @Override
    public int getCountInterfaceToRequirementsWithNoMatch(BranchId branch) {
       return mimApi.getMimReportsApi().getCountInterfaceToRequirementsWithNoMatch(branch);
+   }
+
+   @Override
+   public List<ArtifactToken> getImpactedConnections(BranchId branch) {
+      return mimApi.getMimReportsApi().getImpactedConnections(branch);
    }
 
 }

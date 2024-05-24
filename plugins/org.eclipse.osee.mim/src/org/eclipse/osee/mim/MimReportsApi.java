@@ -14,6 +14,7 @@ package org.eclipse.osee.mim;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.types.NodeTraceReportItem;
 
@@ -51,5 +52,7 @@ public interface MimReportsApi {
    public NodeTraceReportItem getInterfacesFromRequirement(BranchId branch, ArtifactId artId);
 
    public NodeTraceReportItem getRequirementsFromInterface(BranchId branch, ArtifactId artId);
+
+   public List<ArtifactToken> getImpactedConnections(BranchId branch);
 
 }
