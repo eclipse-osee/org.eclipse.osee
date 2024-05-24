@@ -13,6 +13,7 @@
 import { of } from 'rxjs';
 import { ReportsService } from '../services';
 import { NodeTraceReportMock } from './node-trace-report-mock';
+import { MockNamedId } from '@osee/shared/testing';
 
 export const ReportsServiceMock: Partial<ReportsService> = {
 	get currentPage() {
@@ -50,5 +51,11 @@ export const ReportsServiceMock: Partial<ReportsService> = {
 	},
 	get nodeTraceReportNoMatchingInterfaceArtifactsCount() {
 		return of(Math.min(NodeTraceReportMock.length, 200));
+	},
+	get impactedConnectionsRoute() {
+		return of('connectionsRoute');
+	},
+	get impactedConnectionsArtifacts() {
+		return of(MockNamedId);
 	},
 };

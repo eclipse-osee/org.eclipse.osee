@@ -37,6 +37,11 @@ const routes: Routes = [
 		loadChildren: () =>
 			import('@osee/messaging/reports/unreferenced-report'),
 	},
+	{
+		path: ':branchType/:branchId/impactedConnections',
+		loadChildren: () =>
+			import('@osee/messaging/reports/impacted-connections-report'),
+	},
 ];
 
 export default routes;

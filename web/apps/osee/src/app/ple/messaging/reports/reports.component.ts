@@ -120,12 +120,21 @@ export class ReportsComponent implements OnInit {
 		this.reportsService.diffReportRoute,
 		this.reportsService.nodeTraceReportRoute,
 		this.reportsService.unreferencedReportRoute,
+		this.reportsService.impactedConnectionsRoute,
 	]).pipe(
-		map(([diffRoute, nodeTraceRoute, unreferencedRoute]) => ({
-			diffRoute: diffRoute,
-			nodeTraceRoute: nodeTraceRoute,
-			unreferencedRoute: unreferencedRoute,
-		}))
+		map(
+			([
+				diffRoute,
+				nodeTraceRoute,
+				unreferencedRoute,
+				impactedConnectionsRoute,
+			]) => ({
+				diffRoute: diffRoute,
+				nodeTraceRoute: nodeTraceRoute,
+				unreferencedRoute: unreferencedRoute,
+				impactedConnectionsRoute: impactedConnectionsRoute,
+			})
+		)
 	);
 
 	connections = this.branchId.pipe(

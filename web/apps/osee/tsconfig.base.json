@@ -88,6 +88,9 @@
 			"@osee/messaging/reports/unreferenced-report": [
 				"src/app/ple/messaging/reports/lib/unreferenced-report"
 			],
+			"@osee/messaging/reports/impacted-connections-report": [
+				"src/app/ple/messaging/reports/lib/impacted-connections-report"
+			],
 			"@osee/messaging/structure-tables": [
 				"src/app/ple/messaging/structure-tables/lib"
 			],

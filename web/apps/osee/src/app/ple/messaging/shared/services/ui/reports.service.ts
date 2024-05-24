@@ -26,6 +26,7 @@ import { apiURL } from '@osee/environments';
 import type { connection, MimReport } from '@osee/messaging/shared/types';
 import type { NodeTraceReportItem } from '../../types/NodeTraceReport';
 import { UiService } from '@osee/shared/services';
+import { NamedId } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',
@@ -314,6 +315,32 @@ export class ReportsService {
 		)
 	);
 
+	private _impactedConnectionsRoute = combineLatest([
+		this.ui.id,
+		this.ui.type,
+	]).pipe(
+		switchMap(([branchId, branchType]) =>
+			of(
+				'/ple/messaging/reports/' +
+					branchType +
+					'/' +
+					branchId +
+					'/impactedConnections'
+			)
+		)
+	);
+
+	private _impactedConnectionsArtifacts = combineLatest([this.ui.id]).pipe(
+		filter(([v]) => v !== undefined),
+		distinct(),
+		debounceTime(50),
+		switchMap(([id]) =>
+			this.http.get<NamedId[]>(
+				apiURL + '/mim/reports/' + id + '/impactedConnections'
+			)
+		)
+	);
+
 	private _nodeTraceReportRoute = combineLatest([
 		this.ui.id,
 		this.ui.type,
@@ -364,6 +391,10 @@ export class ReportsService {
 		return this._nodeTraceReportInterfaceArtifacts;
 	}
 
+	get impactedConnectionsArtifacts() {
+		return this._impactedConnectionsArtifacts;
+	}
+
 	get nodeTraceReportInterfaceArtifactsCount() {
 		return this._nodeTraceReportInterfaceArtifactsCount;
 	}
@@ -386,6 +417,10 @@ export class ReportsService {
 
 	get unreferencedReportRoute() {
 		return this._unreferencedReportRoute;
+	}
+
+	get impactedConnectionsRoute() {
+		return this._impactedConnectionsRoute;
 	}
 
 	get branchId() {
