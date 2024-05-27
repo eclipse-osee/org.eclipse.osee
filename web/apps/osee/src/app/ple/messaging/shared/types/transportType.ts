@@ -16,10 +16,9 @@ import {
 	structure,
 	subMessage,
 } from '@osee/messaging/shared/types';
-import {
-	applicabilitySentinel,
-	hasApplic,
-} from '@osee/shared/types/applicability';
+import { applicabilitySentinel, hasApplic } from '@osee/applicability/types';
+import { attribute } from '@osee/attributes/types';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 
 export const INTERFACELEVELS = [
 	'message',
@@ -30,99 +29,269 @@ export const INTERFACELEVELS = [
 
 export type interfaceLevels =
 	(typeof INTERFACELEVELS)[keyof typeof INTERFACELEVELS];
-export interface transportTypeId {
-	id: string;
-}
+export type transportTypeId = {
+	id: `${number}`;
+};
 
-export interface transportType
-	extends Required<TransportTypeForm>,
-		Required<computedTransportTypeAttributes>,
-		Required<transportTypeRelations>,
-		Required<hasApplic> {}
+export type transportTypeGammaId = {
+	gammaId: `${number}`;
+};
 
-export interface transportTypeAttributes {
-	name: string;
-	byteAlignValidation: boolean;
-	messageGeneration: boolean;
-	byteAlignValidationSize: number;
-	messageGenerationType: string;
-	messageGenerationPosition: string;
-	minimumPublisherMultiplicity: number;
-	maximumPublisherMultiplicity: number;
-	minimumSubscriberMultiplicity: number;
-	maximumSubscriberMultiplicity: number;
-	availableMessageHeaders: (keyof message)[];
-	availableSubmessageHeaders: (keyof subMessage)[];
-	availableStructureHeaders: (
-		| keyof structure
-		| 'txRate'
-		| 'publisher'
-		| 'messageNumber'
-	)[];
-	availableElementHeaders: (keyof element)[];
-	interfaceLevelsToUse: interfaceLevels[];
-	dashedPresentation: boolean;
-	spareAutoNumbering: boolean;
-}
+export type transportType = {} & Required<TransportTypeForm> &
+	Required<computedTransportTypeAttributes> &
+	Required<transportTypeRelations> &
+	Required<hasApplic>;
 
-export interface computedTransportTypeAttributes {
+export type transportTypeAttributes = {
+	name: attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>;
+	byteAlignValidation: attribute<
+		boolean,
+		typeof ATTRIBUTETYPEIDENUM.BYTEALIGNVALIDATION
+	>;
+	messageGeneration: attribute<
+		boolean,
+		typeof ATTRIBUTETYPEIDENUM.MESSAGEGENERATION
+	>;
+	byteAlignValidationSize: attribute<
+		number,
+		typeof ATTRIBUTETYPEIDENUM.BYTEALIGNVALIDATIONSIZE
+	>;
+	messageGenerationType: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.MESSAGEGENERATIONTYPE
+	>;
+	messageGenerationPosition: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.MESSAGEGENERATIONPOSITION
+	>;
+	minimumPublisherMultiplicity: attribute<
+		number,
+		typeof ATTRIBUTETYPEIDENUM.MINIMUMPUBLISHERMULTIPLICITY
+	>;
+	maximumPublisherMultiplicity: attribute<
+		number,
+		typeof ATTRIBUTETYPEIDENUM.MAXIMUMPUBLISHERMULTIPLICITY
+	>;
+	minimumSubscriberMultiplicity: attribute<
+		number,
+		typeof ATTRIBUTETYPEIDENUM.MINIMUMSUBSCRIBERMULTIPLICITY
+	>;
+	maximumSubscriberMultiplicity: attribute<
+		number,
+		typeof ATTRIBUTETYPEIDENUM.MAXIMUMSUBSCRIBERMULTIPLICITY
+	>;
+	availableMessageHeaders: attribute<
+		(keyof message)[],
+		typeof ATTRIBUTETYPEIDENUM.AVAILABLEMESSAGEHEADERS
+	>;
+	availableSubmessageHeaders: attribute<
+		(keyof subMessage)[],
+		typeof ATTRIBUTETYPEIDENUM.AVAILABLESUBMESSAGEHEADERS
+	>;
+	availableStructureHeaders: attribute<
+		(keyof structure | 'txRate' | 'publisher' | 'messageNumber')[],
+		typeof ATTRIBUTETYPEIDENUM.AVAILABLESTRUCTUREHEADERS
+	>;
+	availableElementHeaders: attribute<
+		(keyof element)[],
+		typeof ATTRIBUTETYPEIDENUM.AVAILABLEELEMENTHEADERS
+	>;
+	interfaceLevelsToUse: attribute<
+		interfaceLevels[],
+		typeof ATTRIBUTETYPEIDENUM.INTERFACELEVELSTOUSE
+	>;
+	dashedPresentation: attribute<
+		boolean,
+		typeof ATTRIBUTETYPEIDENUM.DASHEDPRESENTATION
+	>;
+	spareAutoNumbering: attribute<
+		boolean,
+		typeof ATTRIBUTETYPEIDENUM.SPAREAUTONUMBERING
+	>;
+};
+
+export type computedTransportTypeAttributes = {
 	directConnection: boolean;
-}
-export interface transportTypeRelations {}
+};
+export type transportTypeRelations = object;
 
-export interface TransportTypeForm
-	extends transportTypeAttributes,
-		Partial<transportTypeId>,
-		hasApplic {}
+export type TransportTypeForm = {} & transportTypeAttributes &
+	transportTypeId &
+	transportTypeGammaId &
+	hasApplic;
 
-export interface createTransportType
-	extends Omit<
-			transportTypeAttributes,
-			| 'availableMessageHeaders'
-			| 'availableSubmessageHeaders'
-			| 'availableStructureHeaders'
-			| 'availableElementHeaders'
-			| 'interfaceLevelsToUse'
-		>,
-		hasApplic,
-		Partial<transportTypeId> {
+export type createTransportType = {
 	availableMessageHeaders: string;
 	availableSubmessageHeaders: string;
 	availableStructureHeaders: string;
 	availableElementHeaders: string;
 	interfaceLevelsToUse: string;
-}
+} & Omit<
+	transportTypeAttributes,
+	| 'availableMessageHeaders'
+	| 'availableSubmessageHeaders'
+	| 'availableStructureHeaders'
+	| 'availableElementHeaders'
+	| 'interfaceLevelsToUse'
+> &
+	hasApplic &
+	Partial<transportTypeId>;
 
 export class TransportType implements TransportTypeForm {
-	name: string = '';
-	byteAlignValidation: boolean = false;
-	messageGeneration: boolean = false;
-	byteAlignValidationSize: number = 0;
-	messageGenerationType: string = '';
-	messageGenerationPosition: string = '';
-	minimumPublisherMultiplicity: number = 0;
-	maximumPublisherMultiplicity: number = 0;
-	minimumSubscriberMultiplicity: number = 0;
-	maximumSubscriberMultiplicity: number = 0;
+	name: attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME> = {
+		id: '-1',
+		typeId: '1152921504606847088',
+		gammaId: '-1',
+		value: '',
+	};
+	byteAlignValidation: attribute<
+		boolean,
+		typeof ATTRIBUTETYPEIDENUM.BYTEALIGNVALIDATION
+	> = {
+		id: '-1',
+		typeId: '1682639796635579163',
+		gammaId: '-1',
+		value: false,
+	};
+	messageGeneration: attribute<
+		boolean,
+		typeof ATTRIBUTETYPEIDENUM.MESSAGEGENERATION
+	> = {
+		id: '-1',
+		typeId: '6696101226215576386',
+		gammaId: '-1',
+		value: false,
+	};
+	byteAlignValidationSize: attribute<
+		number,
+		typeof ATTRIBUTETYPEIDENUM.BYTEALIGNVALIDATIONSIZE
+	> = {
+		id: '-1',
+		typeId: '6745328086388470469',
+		gammaId: '-1',
+		value: 0,
+	};
+	messageGenerationType: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.MESSAGEGENERATIONTYPE
+	> = {
+		id: '-1',
+		typeId: '7121809480940961886',
+		gammaId: '-1',
+		value: '',
+	};
+	messageGenerationPosition: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.MESSAGEGENERATIONPOSITION
+	> = {
+		id: '-1',
+		typeId: '7004358807289801815',
+		gammaId: '-1',
+		value: '',
+	};
+	minimumPublisherMultiplicity: attribute<
+		number,
+		typeof ATTRIBUTETYPEIDENUM.MINIMUMPUBLISHERMULTIPLICITY
+	> = {
+		id: '-1',
+		typeId: '7904304476851517',
+		gammaId: '-1',
+		value: 0,
+	};
+	maximumPublisherMultiplicity: attribute<
+		number,
+		typeof ATTRIBUTETYPEIDENUM.MAXIMUMPUBLISHERMULTIPLICITY
+	> = {
+		id: '-1',
+		typeId: '8536169210675063038',
+		gammaId: '-1',
+		value: 0,
+	};
+	minimumSubscriberMultiplicity: attribute<
+		number,
+		typeof ATTRIBUTETYPEIDENUM.MINIMUMSUBSCRIBERMULTIPLICITY
+	> = {
+		id: '-1',
+		typeId: '6433031401579983113',
+		gammaId: '-1',
+		value: 0,
+	};
+	maximumSubscriberMultiplicity: attribute<
+		number,
+		typeof ATTRIBUTETYPEIDENUM.MAXIMUMSUBSCRIBERMULTIPLICITY
+	> = {
+		id: '-1',
+		typeId: '7284240818299786725',
+		gammaId: '-1',
+		value: 0,
+	};
 	applicability = applicabilitySentinel;
-	dashedPresentation: boolean = false;
-	spareAutoNumbering: boolean = false;
-	availableMessageHeaders: (keyof message)[] = [];
-	availableSubmessageHeaders: (keyof subMessage)[] = [];
-	availableStructureHeaders: (
-		| keyof structure
-		| 'txRate'
-		| 'publisher'
-		| 'messageNumber'
-	)[] = [];
-	availableElementHeaders: (keyof element)[] = [];
-	interfaceLevelsToUse: interfaceLevels[] = [
-		'message',
-		'submessage',
-		'structure',
-		'element',
-	];
-	id: string = '';
+	dashedPresentation: attribute<
+		boolean,
+		typeof ATTRIBUTETYPEIDENUM.DASHEDPRESENTATION
+	> = {
+		id: '-1',
+		typeId: '3564212740439618526',
+		gammaId: '-1',
+		value: false,
+	};
+	spareAutoNumbering: attribute<
+		boolean,
+		typeof ATTRIBUTETYPEIDENUM.SPAREAUTONUMBERING
+	> = {
+		id: '-1',
+		typeId: '6696101226215576390',
+		gammaId: '-1',
+		value: false,
+	};
+	availableMessageHeaders: attribute<
+		(keyof message)[],
+		typeof ATTRIBUTETYPEIDENUM.AVAILABLEMESSAGEHEADERS
+	> = {
+		id: '-1',
+		typeId: '2811393503797133191',
+		gammaId: '-1',
+		value: [],
+	};
+	availableSubmessageHeaders: attribute<
+		(keyof subMessage)[],
+		typeof ATTRIBUTETYPEIDENUM.AVAILABLESUBMESSAGEHEADERS
+	> = {
+		id: '-1',
+		typeId: '3432614776670156459',
+		gammaId: '-1',
+		value: [],
+	};
+	availableStructureHeaders: attribute<
+		(keyof structure | 'txRate' | 'publisher' | 'messageNumber')[],
+		typeof ATTRIBUTETYPEIDENUM.AVAILABLESTRUCTUREHEADERS
+	> = {
+		id: '-1',
+		typeId: '3020789555488549747',
+		gammaId: '-1',
+		value: [],
+	};
+	availableElementHeaders: attribute<
+		(keyof element)[],
+		typeof ATTRIBUTETYPEIDENUM.AVAILABLEELEMENTHEADERS
+	> = {
+		id: '-1',
+		typeId: '3757258106573748121',
+		gammaId: '-1',
+		value: [],
+	};
+	interfaceLevelsToUse: attribute<
+		interfaceLevels[],
+		typeof ATTRIBUTETYPEIDENUM.INTERFACELEVELSTOUSE
+	> = {
+		id: '-1',
+		typeId: '1668394842614655222',
+		gammaId: '-1',
+		value: ['message', 'submessage', 'structure', 'element'],
+	};
+
+	id: `${number}` = '-1';
+	gammaId: `${number}` = '-1';
 	constructor(transportType?: transportType) {
 		if (transportType) {
 			this.name = transportType.name;
@@ -153,39 +322,120 @@ export class TransportType implements TransportTypeForm {
 				transportType.availableElementHeaders;
 			this.interfaceLevelsToUse = transportType.interfaceLevelsToUse;
 			this.id = transportType.id;
+			this.gammaId = transportType.gammaId;
+			this.spareAutoNumbering = transportType.spareAutoNumbering;
 		}
 	}
 }
-/**
- * This function makes transport type be in a form that the transaction builder will like
- * @todo Eventually make this return with typeIds and gammas i.e. create a createArtifact
- */
-export function serialize<T extends TransportTypeForm>(
-	body: T
-): createTransportType {
-	return {
-		availableMessageHeaders:
-			'[' + body.availableMessageHeaders.toString() + ']',
-		availableSubmessageHeaders:
-			'[' + body.availableStructureHeaders.toString() + ']',
-		availableStructureHeaders:
-			'[' + body.availableStructureHeaders.toString() + ']',
-		availableElementHeaders:
-			'[' + body.availableElementHeaders.toString() + ']',
-		interfaceLevelsToUse: '[' + body.interfaceLevelsToUse.toString() + ']',
-		name: body.name,
-		byteAlignValidation: body.byteAlignValidation,
-		messageGeneration: body.messageGeneration,
-		byteAlignValidationSize: body.byteAlignValidationSize,
-		messageGenerationType: body.messageGenerationType,
-		messageGenerationPosition: body.messageGenerationPosition,
-		minimumPublisherMultiplicity: body.minimumPublisherMultiplicity,
-		maximumPublisherMultiplicity: body.maximumPublisherMultiplicity,
-		minimumSubscriberMultiplicity: body.minimumSubscriberMultiplicity,
-		maximumSubscriberMultiplicity: body.maximumSubscriberMultiplicity,
-		dashedPresentation: body.dashedPresentation,
-		spareAutoNumbering: body.spareAutoNumbering,
-		applicability: body.applicability,
-		id: body.id,
+
+export function getTransportTypeSentinel() {
+	const transportType: transportType = {
+		name: {
+			id: '-1',
+			typeId: '1152921504606847088',
+			gammaId: '-1',
+			value: '',
+		},
+		byteAlignValidation: {
+			id: '-1',
+			typeId: '1682639796635579163',
+			gammaId: '-1',
+			value: false,
+		},
+		byteAlignValidationSize: {
+			id: '-1',
+			typeId: '6745328086388470469',
+			gammaId: '-1',
+			value: 0,
+		},
+		messageGeneration: {
+			id: '-1',
+			typeId: '6696101226215576386',
+			gammaId: '-1',
+			value: false,
+		},
+		messageGenerationType: {
+			id: '-1',
+			typeId: '7121809480940961886',
+			gammaId: '-1',
+			value: '',
+		},
+		messageGenerationPosition: {
+			id: '-1',
+			typeId: '7004358807289801815',
+			gammaId: '-1',
+			value: '',
+		},
+		minimumPublisherMultiplicity: {
+			id: '-1',
+			typeId: '7904304476851517',
+			gammaId: '-1',
+			value: 0,
+		},
+		maximumPublisherMultiplicity: {
+			id: '-1',
+			typeId: '8536169210675063038',
+			gammaId: '-1',
+			value: 0,
+		},
+		minimumSubscriberMultiplicity: {
+			id: '-1',
+			typeId: '6433031401579983113',
+			gammaId: '-1',
+			value: 0,
+		},
+		maximumSubscriberMultiplicity: {
+			id: '-1',
+			typeId: '7284240818299786725',
+			gammaId: '-1',
+			value: 0,
+		},
+		availableMessageHeaders: {
+			id: '-1',
+			typeId: '2811393503797133191',
+			gammaId: '-1',
+			value: [],
+		},
+		availableSubmessageHeaders: {
+			id: '-1',
+			typeId: '3432614776670156459',
+			gammaId: '-1',
+			value: [],
+		},
+		availableStructureHeaders: {
+			id: '-1',
+			typeId: '3020789555488549747',
+			gammaId: '-1',
+			value: [],
+		},
+		availableElementHeaders: {
+			id: '-1',
+			typeId: '3757258106573748121',
+			gammaId: '-1',
+			value: [],
+		},
+		interfaceLevelsToUse: {
+			id: '-1',
+			typeId: '1668394842614655222',
+			gammaId: '-1',
+			value: ['message', 'submessage', 'structure', 'element'],
+		},
+		dashedPresentation: {
+			id: '-1',
+			typeId: '3564212740439618526',
+			gammaId: '-1',
+			value: false,
+		},
+		spareAutoNumbering: {
+			id: '-1',
+			typeId: '6696101226215576390',
+			gammaId: '-1',
+			value: false,
+		},
+		id: '-1',
+		gammaId: '-1',
+		applicability: { id: '1', name: 'Base' },
+		directConnection: false,
 	};
+	return transportType;
 }

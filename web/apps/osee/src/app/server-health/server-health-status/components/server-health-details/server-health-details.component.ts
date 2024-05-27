@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
 	MatCell,
@@ -54,7 +54,7 @@ import { ServerHealthHttpService } from '../../../shared/services/server-health-
 	templateUrl: './server-health-details.component.html',
 })
 export class ServerHealthDetailsComponent {
-	constructor(private serverHealthHttpService: ServerHealthHttpService) {}
+	private serverHealthHttpService = inject(ServerHealthHttpService);
 
 	@Input() set serverName(value: string) {
 		if (value) {
@@ -65,7 +65,10 @@ export class ServerHealthDetailsComponent {
 	_serverName = new BehaviorSubject<string>('');
 
 	displayedColumns: string[] = ['key', 'value'];
-	dataSource = new MatTableDataSource<{ key: string; value: unknown }>([]);
+	dataSource = new MatTableDataSource<{
+		key: string;
+		value: string | string[];
+	}>([]);
 
 	remoteHealthDetails = combineLatest([this._serverName]).pipe(
 		switchMap(([name]) =>

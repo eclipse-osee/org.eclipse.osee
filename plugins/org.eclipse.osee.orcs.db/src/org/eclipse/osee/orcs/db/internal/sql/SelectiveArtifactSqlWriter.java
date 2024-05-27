@@ -356,7 +356,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       fieldAlias = startCommonTableExpression("fields");
       writeSelectAndHint();
       writeSelectFields(attsAlias, "*");
-      write(", 0 as rel_type, 0 as rel_order, 0 AS other_art_type_id FROM ");
+      write(", 0 AS other_art_type_id FROM ");
       write(attsAlias);
       write("\n UNION ALL\n ");
       SelectiveArtifactSqlWriter relWriter = new SelectiveArtifactSqlWriter(this);
@@ -420,8 +420,10 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       String txdAlias = "txd";
       writeUseNlTableHint(attAlias + " " + attTxsAlias);
       writeSelectFields(artWithAlias, "*", attAlias, "attr_type_id AS type_id", attAlias, "value", attAlias, "uri",
-         attAlias, "attr_id");
+         attAlias, "attr_id", attTxsAlias, "gamma_id");
       write(", 0 AS other_art_id");
+      write(", 0 as other_art_gamma_id");
+      write(", 0 as rel_type, 0 as rel_order");
       if (OptionsUtil.getIncludeLatestTransactionDetails(rootQueryData.getOptions())) {
          writeSelectFields(txdAlias, "author", txdAlias, "osee_comment", txdAlias, "tx_type", txdAlias, "commit_art_id",
             txdAlias, "build_id");
@@ -451,24 +453,28 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       relsAlias = startCommonTableExpression("rels");
       String relAlias = "rel";
       String relTxsAlias = "txs";
+      String secondaryTxsAlias = "txs2";
+      String primary = "primaryArt";
+      String secondary = "secondaryArt";
       String txdAlias = "txd";
       writeUseNlTableHint(relAlias + " " + relTxsAlias);
-      writeSelectFields(artWithAlias, "*", relAlias, "rel_link_type_id AS type_id");
+      writeSelectFields(primary, "*", relAlias, "rel_link_type_id AS type_id");
       write(
-         ", CASE art_id WHEN a_art_id THEN 'B' ELSE 'A' END AS value, '' AS spare1, 0 AS spare2, CASE art_id WHEN a_art_id THEN b_art_id ELSE a_art_id END AS other_art_id ");
+         ", CASE %s.art_id WHEN a_art_id THEN 'B' ELSE 'A' END AS value, '' AS spare1, 0 AS spare2 ,%s.gamma_id, CASE %s.art_id WHEN a_art_id THEN b_art_id ELSE a_art_id END AS other_art_id,%s.gamma_id as other_art_gamma_id, 0 as rel_type, 0 as rel_order",
+         primary, relTxsAlias, primary, secondaryTxsAlias);
       if (OptionsUtil.getIncludeLatestTransactionDetails(rootQueryData.getOptions())) {
          writeSelectFields(txdAlias, "author", txdAlias, "osee_comment", txdAlias, "tx_type", txdAlias, "commit_art_id",
             txdAlias, "build_id");
          write("," + txdAlias + ".time ");
          write(", " + txdAlias + ".transaction_id as supp_tx_id ");
       }
-      write(",0 as rel_type, 0 as rel_order");
-      write("\n FROM %s, osee_relation_link rel, osee_txs txs", artWithAlias);
+      write("\n FROM %s %s, osee_relation_link rel, osee_txs txs, osee_artifact %s, osee_txs %s", artWithAlias, primary,
+         secondary, secondaryTxsAlias);
       if (OptionsUtil.getIncludeLatestTransactionDetails(rootQueryData.getOptions())) {
          write(", osee_tx_details txd");
       }
       write("\n WHERE ");
-      write(artWithAlias);
+      write(primary);
       write(".art_id IN (a_art_id, b_art_id)");
       writeAnd();
       writeEqualsAnd(relAlias, relTxsAlias, "gamma_id");
@@ -476,6 +482,12 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          writeEqualsAnd(relTxsAlias, txdAlias, "transaction_id");
       }
       writeTxBranchFilter(relTxsAlias);
+      writeAnd();
+      write(secondary);
+      write(".art_id = CASE %s.art_id WHEN a_art_id THEN b_art_id ELSE a_art_id END ", primary);
+      writeAnd();
+      writeEqualsAnd(secondaryTxsAlias, secondary, "gamma_id");
+      writeTxBranchFilter(secondaryTxsAlias);
    }
 
    private void writeRelsCommonTableExpression2(String artWithAlias) {
@@ -484,23 +496,27 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       String txdAlias = "txd";
       String relAlias = "rel";
       String relTxsAlias = "txs";
+      String secondaryTxsAlias = "txs2";
+      String primary = "primaryArt";
+      String secondary = "secondaryArt";
       writeUseNlTableHint(relAlias + " " + relTxsAlias);
-      writeSelectFields(artWithAlias, "*", relAlias, "rel_type AS type_id");
+      writeSelectFields(primary, "*", relAlias, "rel_type AS type_id");
       write(
-         ", CASE art_id WHEN a_art_id THEN 'B' ELSE 'A' END AS value, '' AS spare1, 0 AS spare2, CASE art_id WHEN a_art_id THEN b_art_id ELSE a_art_id END AS other_art_id ");
+         ", CASE %s.art_id WHEN a_art_id THEN 'B' ELSE 'A' END AS value, '' AS spare1, 0 AS spare2, %s.gamma_id, CASE %s.art_id WHEN a_art_id THEN b_art_id ELSE a_art_id END AS other_art_id,%s.gamma_id as other_art_gamma_id, rel_type, rel_order",
+         primary, relTxsAlias, primary, secondaryTxsAlias);
       if (OptionsUtil.getIncludeLatestTransactionDetails(rootQueryData.getOptions())) {
          writeSelectFields(txdAlias, "author", txdAlias, "osee_comment", txdAlias, "tx_type", txdAlias, "commit_art_id",
             txdAlias, "build_id");
          write("," + txdAlias + ".time ");
          write(", " + txdAlias + ".transaction_id supp_tx_id ");
       }
-      write(", rel_type, rel_order");
-      write("\n FROM %s, osee_relation rel, osee_txs txs", artWithAlias);
+      write("\n FROM %s %s, osee_relation rel, osee_txs txs , osee_artifact %s, osee_txs %s", artWithAlias, primary,
+         secondary, secondaryTxsAlias);
       if (OptionsUtil.getIncludeLatestTransactionDetails(rootQueryData.getOptions())) {
          write(", osee_tx_details txd");
       }
       write("\n WHERE ");
-      write(artWithAlias);
+      write(primary);
       write(".art_id IN (a_art_id, b_art_id)");
       writeAnd();
       writeEqualsAnd(relAlias, relTxsAlias, "gamma_id");
@@ -508,7 +524,12 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          writeEqualsAnd(relTxsAlias, txdAlias, "transaction_id");
       }
       writeTxBranchFilter(relTxsAlias);
-
+      writeAnd();
+      write(secondary);
+      write(".art_id = CASE %s.art_id WHEN a_art_id THEN b_art_id ELSE a_art_id END ", primary);
+      writeAnd();
+      writeEqualsAnd(secondaryTxsAlias, secondary, "gamma_id");
+      writeTxBranchFilter(secondaryTxsAlias);
    }
 
    @Override
@@ -517,7 +538,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       String txAlias = getMainTableAlias(OseeDb.TXS_TABLE);
       if (relsAlias == null && rels2Alias == null) {
          writeSelectFields(artAlias, "art_id", artAlias, "art_type_id", txAlias, "app_id", txAlias, "transaction_id",
-            txAlias, "mod_type", txAlias, "tx_current");
+            txAlias, "mod_type", txAlias, "tx_current", txAlias, "gamma_id as art_gamma_id");
          if (OptionsUtil.getIncludeApplicabilityTokens(rootQueryData.getOptions())) {
             writeSelectFields(getMainTableAlias(OseeDb.OSEE_KEY_VALUE_TABLE), "value app_value");
          }

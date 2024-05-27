@@ -13,8 +13,8 @@
 
 import type { subMessage } from '@osee/messaging/shared/types';
 
-export interface AddSubMessageDialog {
-	id: string;
+export type AddSubMessageDialog = {
+	id: `${number}`;
 	name: string;
 	subMessage: subMessage;
-}
+};

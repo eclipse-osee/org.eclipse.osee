@@ -16,8 +16,8 @@ import { DashboardHttpService } from '../../services/dashboard-http.service';
 import { dashboardHttpServiceMock } from '../../services/dashboard-http.service.mock';
 import { NgIf } from '@angular/common';
 import { CiDashboardControlsMockComponent } from '@osee/ci-dashboard/testing';
-import { TransactionService } from '@osee/shared/transactions';
-import { transactionServiceMock } from '@osee/shared/transactions/testing';
+import { TransactionService } from '@osee/transactions/services';
+import { transactionServiceMock } from '@osee/transactions/services/testing';
 
 describe('DashboardComponent', () => {
 	let component: DashboardComponent;

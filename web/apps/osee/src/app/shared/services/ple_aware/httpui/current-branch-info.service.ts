@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { iif, of } from 'rxjs';
 import {
 	filter,
@@ -32,7 +32,7 @@ export class branchImpl implements branch {
 	baselineTx = '';
 	parentTx = '';
 	parentBranch = {
-		id: '',
+		id: '-1' as `${number}`,
 		viewId: '',
 	};
 	branchState = '-1';
@@ -42,7 +42,7 @@ export class branchImpl implements branch {
 	shortName = '';
 	idIntValue = -1;
 	name = '';
-	id = '-1';
+	id: `${number}` = '-1';
 	viewId = '-1';
 }
 
@@ -50,6 +50,10 @@ export class branchImpl implements branch {
 	providedIn: 'root',
 })
 export class CurrentBranchInfoService {
+	private _branchService = inject(BranchInfoService);
+	private _uiService = inject(UiService);
+	private eventService = inject(BranchCommitEventService);
+
 	private readonly _currentBranch = this._uiService.id.pipe(
 		filter((val) => val !== '0'),
 		switchMap((branchId) =>
@@ -65,11 +69,6 @@ export class CurrentBranchInfoService {
 		share(),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
-	constructor(
-		private _branchService: BranchInfoService,
-		private _uiService: UiService,
-		private eventService: BranchCommitEventService
-	) {}
 
 	get currentBranch() {
 		return this._currentBranch;

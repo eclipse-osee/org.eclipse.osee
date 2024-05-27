@@ -21,12 +21,10 @@ import { InputControlComponent } from '../../../shared/input-control/input-contr
 	imports: [InputControlComponent],
 })
 export class ColumnFilterComponent {
-	@Input() filterInputLabel: string = '';
+	@Input() filterInputLabel = '';
 	@Output('update') updateInput: EventEmitter<{
 		input: string;
 	}> = new EventEmitter<{ input: string }>();
-
-	constructor() {}
 
 	update(e: { input: string }) {
 		this.updateInput.emit({

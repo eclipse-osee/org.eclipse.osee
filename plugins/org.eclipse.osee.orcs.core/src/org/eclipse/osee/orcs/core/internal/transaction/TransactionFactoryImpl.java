@@ -435,13 +435,16 @@ String query =
    "deletedRel2 as (SELECT rel.*, 5 as event_type from osee_relation rel, currentTx txs WHERE rel.gamma_id=txs.gamma_id and txs.mod_type=5),\r\n" +
    "deletedRel as (SELECT * FROM deletedRel1 UNION SELECT * FROM deletedRel2 ),\r\n" +
    "relsCombined as (SELECT * from newRel UNION SELECT * from modifiedRel UNION SELECT * from deletedRel ),\r\n" +
-   "afterArtifactLocation as (SELECT MAX(rel2.rel_order) OVER (PARTITION BY rel2.rel_type, rel2.a_art_id) as rel_order, rel2.rel_type,rel2.a_art_id \r\n" +
+   "afterArtifactLocation as (SELECT MAX(rel2.rel_order) OVER (PARTITION BY rel2.rel_type, rel2.a_art_id, rel1.event_type) as rel_order, rel2.rel_type,rel2.a_art_id, rel1.event_type as event_type \r\n" +
    "                    FROM relsCombined rel1, osee_txs txs, osee_relation rel2 WHERE \r\n" +
    "            txs.branch_id = ? and txs.tx_current =? and txs.gamma_id = rel2.gamma_id and\r\n" +
    "           rel2.a_art_id = rel1.a_art_id and rel2.rel_type = rel1.rel_type and rel2.rel_order < rel1.rel_order  ),\r\n" +
-   "afterArtifactWithMissing as (SELECT DISTINCT rel_order, rel_type,a_art_id from afterArtifactLocation UNION SELECT rel.rel_order,rel.rel_type,rel.a_art_id FROM relsCombined rel, afterArtifactLocation art WHERE rel.rel_type <> art.rel_type and rel.a_art_id <> art.a_art_id ),\r\n"+
-   "afterArtifact as (SELECT rel.a_art_id, rel.rel_type,CASE WHEN art.rel_order <>0 THEN rel.b_art_id ELSE 0 END as b_art_id FROM osee_relation rel, afterArtifactWithMissing art WHERE rel.rel_order = art.rel_order and rel.rel_type = art.rel_type and rel.a_art_id =art.a_art_id),\r\n" +
-   "completeNewRels as (SELECT relsCombined.rel_type, relsCombined.a_art_id, relsCombined.b_art_id, CASE WHEN afterArtifact.b_art_id <>0 THEN afterArtifact.b_art_id ELSE 0 END as rel_order, relsCombined.event_type from relsCombined, afterArtifact WHERE afterArtifact.rel_type = relsCombined.rel_type and afterArtifact.a_art_id = relsCombined.a_art_id ),\r\n" +
+   "missingRels AS (SELECT rels.rel_order, rels.rel_type, rels.a_art_id, rels.event_type from relsCombined rels WHERE NOT EXISTS (\r\n" +
+   "SELECT NULL FROM afterArtifactLocation art WHERE art.a_art_id = rels.a_art_id and art.rel_type = rels.rel_type and art.event_type = rels.event_type\r\n" +
+   ")),"+
+   "afterArtifactWithMissing as (SELECT DISTINCT rel_order, rel_type,a_art_id, event_type from afterArtifactLocation UNION SELECT rels.rel_order, rels.rel_type, rels.a_art_id, rels.event_type from missingRels rels),\r\n"+
+   "afterArtifact as (SELECT rel.a_art_id, rel.rel_type, art.event_type, CASE WHEN art.rel_order <>0 THEN rel.b_art_id ELSE 0 END as b_art_id FROM osee_relation rel, afterArtifactWithMissing art WHERE rel.rel_order = art.rel_order and rel.rel_type = art.rel_type and rel.a_art_id =art.a_art_id),\r\n" +
+   "completeNewRels as (SELECT relsCombined.rel_type, relsCombined.a_art_id, relsCombined.b_art_id, CASE WHEN afterArtifact.b_art_id <>0 THEN afterArtifact.b_art_id ELSE 0 END as rel_order, relsCombined.event_type from relsCombined, afterArtifact WHERE afterArtifact.rel_type = relsCombined.rel_type and afterArtifact.a_art_id = relsCombined.a_art_id and afterArtifact.event_type = relsCombined.event_type ),\r\n" +
    "newTuple21 as (SELECT t2.*, 9 as event_type from osee_tuple2 t2, currentTx txs  WHERE t2.gamma_id = txs.gamma_id and txs.mod_type =1),\r\n" +
    "newTuple22 as (SELECT t2.*, 9 as event_type from osee_tuple2 t2, currentTx txs  WHERE t2.gamma_id = txs.gamma_id and txs.mod_type =6),\r\n" +
    "newTuple2 as (SELECT * FROM newTuple21 UNION SELECT * FROM newTuple22 ),\r\n" +

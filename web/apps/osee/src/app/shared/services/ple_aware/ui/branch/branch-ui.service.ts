@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BranchIdService } from './branch-id.service';
 import { BranchTypeService } from './branch-type.service';
 
@@ -18,10 +18,8 @@ import { BranchTypeService } from './branch-type.service';
 	providedIn: 'root',
 })
 export class BranchUIService {
-	constructor(
-		private typeService: BranchTypeService,
-		private idService: BranchIdService
-	) {}
+	private typeService = inject(BranchTypeService);
+	private idService = inject(BranchIdService);
 
 	get id() {
 		return this.idService.BranchId;

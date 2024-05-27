@@ -13,14 +13,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
-import { TestScheduler } from 'rxjs/testing';
+
 import { DiffReportTableComponent } from './diff-report-table.component';
 import { mimChangeSummaryMock } from '@osee/messaging/shared/testing';
 
 describe('DiffReportTableComponent', () => {
 	let component: DiffReportTableComponent;
 	let fixture: ComponentFixture<DiffReportTableComponent>;
-	let scheduler: TestScheduler;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
@@ -33,13 +32,6 @@ describe('DiffReportTableComponent', () => {
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});
-
-	beforeEach(
-		() =>
-			(scheduler = new TestScheduler((actual, expected) => {
-				expect(actual).toEqual(expected);
-			}))
-	);
 
 	it('should create', () => {
 		component.items = Object.values(mimChangeSummaryMock.structures);

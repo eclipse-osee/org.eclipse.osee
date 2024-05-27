@@ -12,7 +12,7 @@
  **********************************************************************/
 import { state, style, trigger } from '@angular/animations';
 import { NgClass, AsyncPipe } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import {
 	MatExpansionPanel,
 	MatExpansionPanelHeader,
@@ -86,6 +86,8 @@ const _currNavItem: navigationElement =
 	],
 })
 export class ServerHealthStatusComponent {
+	private serverHealthHttpService = inject(ServerHealthHttpService);
+
 	get currNavItem() {
 		return _currNavItem;
 	}
@@ -100,7 +102,6 @@ export class ServerHealthStatusComponent {
 			})
 		);
 
-	constructor(private serverHealthHttpService: ServerHealthHttpService) {}
 	displayedColumns = ['name', 'serverAlive', 'dbAlive'];
 
 	toggleRow(element: { expanded: boolean }, serverName: string) {

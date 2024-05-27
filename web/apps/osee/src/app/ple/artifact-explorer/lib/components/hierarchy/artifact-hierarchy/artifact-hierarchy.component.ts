@@ -12,7 +12,7 @@
  **********************************************************************/
 import { CdkDrag } from '@angular/cdk/drag-drop';
 import { AsyncPipe, NgClass } from '@angular/common';
-import { Component, Input, input, viewChild } from '@angular/core';
+import { Component, Input, input, viewChild, inject } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatListItemIcon } from '@angular/material/list';
 import {
@@ -66,6 +66,14 @@ import { ArtifactOperationsContextMenuComponent } from '../artifact-operations-c
 	templateUrl: './artifact-hierarchy.component.html',
 })
 export class ArtifactHierarchyComponent {
+	private artExpHttpService = inject(ArtifactExplorerHttpService);
+	private uiService = inject(UiService);
+	private tabService = inject(ArtifactExplorerTabService);
+	private artifactIconService = inject(ArtifactIconService);
+	private artifactsExpandedService = inject(
+		ArtifactHierarchyArtifactsExpandedService
+	);
+
 	artifactId = input.required<string>();
 	@Input() set paths(paths: string[][]) {
 		this._paths.next(paths);
@@ -77,17 +85,9 @@ export class ArtifactHierarchyComponent {
 	branchType$ = this.uiService.type;
 	viewId$ = this.uiService.viewId;
 
-	trackById(index: number, item: artifactWithRelations) {
+	trackById(_index: number, item: artifactWithRelations) {
 		return item.id;
 	}
-
-	constructor(
-		private artExpHttpService: ArtifactExplorerHttpService,
-		private uiService: UiService,
-		private tabService: ArtifactExplorerTabService,
-		private artifactIconService: ArtifactIconService,
-		private artifactsExpandedService: ArtifactHierarchyArtifactsExpandedService
-	) {}
 
 	// UI expand/collapse artifacts in the hierarchy
 
@@ -186,7 +186,7 @@ export class ArtifactHierarchyComponent {
 	latestPaths = combineLatest([this._paths, this.artifacts]).pipe(
 		map(([paths, arts]) => {
 			// Remove path from path array if we are no longer on that path
-			let childPaths = paths
+			const childPaths = paths
 				.filter((path) => path[path.length - 1] === this.artifactId())
 				.map((path) => path.slice(0, -1));
 

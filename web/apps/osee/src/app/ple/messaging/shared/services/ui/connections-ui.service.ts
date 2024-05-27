@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { UiService } from '@osee/shared/services';
 import { BehaviorSubject, Observable } from 'rxjs';
 
@@ -18,10 +18,11 @@ import { BehaviorSubject, Observable } from 'rxjs';
 	providedIn: 'root',
 })
 export class ConnectionsUiService {
+	private ui = inject(UiService);
+
 	private _currentPage$ = new BehaviorSubject<number>(0);
 	private _currentPageSize$ = new BehaviorSubject<number>(10);
 	private _filter: BehaviorSubject<string> = new BehaviorSubject<string>('');
-	constructor(private ui: UiService) {}
 
 	get filter() {
 		return this._filter;

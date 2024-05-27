@@ -21,9 +21,8 @@ import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 	imports: [HighlightFilteredTextDirective],
 })
 export class SubElementTableNoEditFieldNameComponent {
-	@Input() filter: string = '';
-	@Input() name: string = '';
-	@Input() end: number = 0;
-	@Input() start: number = 0;
-	constructor() {}
+	@Input() filter = '';
+	@Input() name = '';
+	@Input() end = 0;
+	@Input() start = 0;
 }

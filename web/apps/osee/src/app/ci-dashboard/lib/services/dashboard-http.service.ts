@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { CIStats, CITimelineStats } from '../types/ci-stats';
 import { apiURL } from '@osee/environments';
 import { HttpParamsType, NamedId } from '@osee/shared/types';
@@ -20,7 +20,7 @@ import { HttpParamsType, NamedId } from '@osee/shared/types';
 	providedIn: 'root',
 })
 export class DashboardHttpService {
-	constructor(private http: HttpClient) {}
+	private http = inject(HttpClient);
 
 	getTeamStats(branchId: string, ciSet: string) {
 		return this.http.get<CIStats[]>(
@@ -79,7 +79,7 @@ export class DashboardHttpService {
 		pageSize: number,
 		orderByAttributeId: string
 	) {
-		let params: HttpParamsType = {
+		const params: HttpParamsType = {
 			filter: filter,
 			pageNum: pageNum,
 			pageSize: pageSize,

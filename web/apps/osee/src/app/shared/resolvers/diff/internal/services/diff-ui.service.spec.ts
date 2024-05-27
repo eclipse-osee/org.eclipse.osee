@@ -51,7 +51,7 @@ describe('DiffUIService', () => {
 		expect(service).toBeTruthy();
 	});
 	it('should not return a diff', () => {
-		scheduler.run(({ expectObservable, cold }) => {
+		scheduler.run(({ expectObservable }) => {
 			service.DiffMode = false;
 			const expectedValues = { a: changeReportMock, b: undefined };
 			expectObservable(service.diff).toBe('(b|)', expectedValues);

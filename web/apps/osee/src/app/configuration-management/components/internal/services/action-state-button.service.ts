@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { iif, of, combineLatest } from 'rxjs';
 import { map, switchMap, take, tap } from 'rxjs/operators';
 import {
@@ -36,15 +36,13 @@ import {
 	providedIn: 'root',
 })
 export class ActionStateButtonService {
-	constructor(
-		public dialog: MatDialog,
-		private uiService: UiService,
-		private actionService: ActionService,
-		private currentBranchService: CurrentBranchInfoService,
-		private accountService: UserDataAccountService,
-		private branchedRouter: BranchRoutedUIService,
-		private currentActionService: CurrentActionService
-	) {}
+	dialog = inject(MatDialog);
+	private uiService = inject(UiService);
+	private actionService = inject(ActionService);
+	private currentBranchService = inject(CurrentBranchInfoService);
+	private accountService = inject(UserDataAccountService);
+	private branchedRouter = inject(BranchRoutedUIService);
+	private currentActionService = inject(CurrentActionService);
 
 	private _user = this.accountService.user;
 	private _branchAction = this.currentActionService.branchAction;

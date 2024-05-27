@@ -26,8 +26,6 @@ export class AdvancedArtifactSearchService {
 			...defaultAdvancedSearchCriteria,
 		});
 
-	constructor() {}
-
 	get advancedSearchCriteria() {
 		return this._advancedSearchCriteria.asObservable();
 	}

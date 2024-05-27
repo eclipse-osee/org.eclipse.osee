@@ -19,15 +19,15 @@ import {
 import { UiService } from '@osee/shared/services';
 import { filter, Subject, takeUntil, tap } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import {
-	CurrentMessageTypesService,
-	CurrentRatesService,
-	CurrentUnitsService,
-} from '@osee/messaging/shared/services';
 import { PageEvent } from '@angular/material/paginator';
 import { NamedId } from '@osee/shared/types';
 import { CurrentViewSelectorComponent } from '@osee/shared/components';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { CurrentUnitsService } from '@osee/messaging/units/services';
+import { CurrentStructureCategoriesService } from '@osee/messaging/structure-category/services';
+import { CurrentMessagePeriodicityService } from '@osee/messaging/message-periodicity/services';
+import { CurrentMessageTypesService } from '@osee/messaging/message-type/services';
+import { CurrentRatesService } from '@osee/messaging/rate/services';
 
 @Component({
 	selector: 'osee-list-configuration',
@@ -51,6 +51,12 @@ export class ListConfigurationComponent implements OnDestroy {
 
 	private _currentMessageTypesService = inject(CurrentMessageTypesService);
 
+	private _currentStructureCategoriesService = inject(
+		CurrentStructureCategoriesService
+	);
+	private _currentMessagePeriodicityService = inject(
+		CurrentMessagePeriodicityService
+	);
 	branchId = toSignal(
 		this._uiService.id.pipe(
 			filter((id) => id !== '' && id !== '-1' && id !== '0')
@@ -130,6 +136,59 @@ export class ListConfigurationComponent implements OnDestroy {
 
 	createMessageType(value: string) {
 		this._currentMessageTypesService.createMessageType(value).subscribe();
+	}
+
+	structureCategories = this._currentStructureCategoriesService.current;
+	structureCategoriesCount = this._currentStructureCategoriesService.count;
+	structureCategoriesPageSize =
+		this._currentStructureCategoriesService.currentPageSize;
+	structureCategoriesPageIndex =
+		this._currentStructureCategoriesService.currentPage;
+
+	updateStructureCategoriesPages(pg: PageEvent) {
+		this._currentStructureCategoriesService.page = pg.pageIndex;
+		this._currentStructureCategoriesService.pageSize = pg.pageSize;
+	}
+	structureCategoriesFilterChange(f: string) {
+		this._currentStructureCategoriesService.page = 0;
+		this._currentStructureCategoriesService.filter = f;
+	}
+	updateStructureCategory(value: NamedId) {
+		this._currentStructureCategoriesService
+			.modifyStructureCategory(value)
+			.subscribe();
+	}
+
+	createStructureCategory(value: string) {
+		this._currentStructureCategoriesService
+			.createStructureCategory(value)
+			.subscribe();
+	}
+	messagePeriodicities = this._currentMessagePeriodicityService.current;
+	messagePeriodicitiesCount = this._currentMessagePeriodicityService.count;
+	messagePeriodicitiesPageSize =
+		this._currentMessagePeriodicityService.currentPageSize;
+	messagePeriodicitiesPageIndex =
+		this._currentMessagePeriodicityService.currentPage;
+
+	updateMessagePeriodicitiesPages(pg: PageEvent) {
+		this._currentMessagePeriodicityService.page = pg.pageIndex;
+		this._currentMessagePeriodicityService.pageSize = pg.pageSize;
+	}
+	messagePeriodicitiesFilterChange(f: string) {
+		this._currentMessagePeriodicityService.page = 0;
+		this._currentMessagePeriodicityService.filter = f;
+	}
+	updateMessagePeriodicity(value: NamedId) {
+		this._currentMessagePeriodicityService
+			.modifyMessagePeriodicity(value)
+			.subscribe();
+	}
+
+	createMessagePeriodicity(value: string) {
+		this._currentMessagePeriodicityService
+			.createMessagePeriodicity(value)
+			.subscribe();
 	}
 }
 

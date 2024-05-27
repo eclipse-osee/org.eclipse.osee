@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable, combineLatest, filter, switchMap, tap } from 'rxjs';
 import { apiURL } from '@osee/environments';
 import {
@@ -34,10 +34,8 @@ import { ServerHealthDetailsService } from './server-health-details.service';
 	providedIn: 'root',
 })
 export class ServerHealthHttpService {
-	constructor(
-		private http: HttpClient,
-		private healthDetailsService: ServerHealthDetailsService
-	) {}
+	private http = inject(HttpClient);
+	private healthDetailsService = inject(ServerHealthDetailsService);
 
 	public get Status(): Observable<healthStatus> {
 		return this.http.get<healthStatus>(apiURL + '/health/status');

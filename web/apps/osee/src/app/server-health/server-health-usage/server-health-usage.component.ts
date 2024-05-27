@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, NgClass } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
 	MatExpansionPanel,
@@ -74,7 +74,7 @@ const _currNavItem: navigationElement =
 	templateUrl: './server-health-usage.component.html',
 })
 export class ServerHealthUsageComponent {
-	constructor(private serverHealthHttpService: ServerHealthHttpService) {}
+	private serverHealthHttpService = inject(ServerHealthHttpService);
 
 	get currNavItem() {
 		return _currNavItem;

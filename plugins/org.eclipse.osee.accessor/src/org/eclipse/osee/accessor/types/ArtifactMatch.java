@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 /**
  * @author Luciano T. Vaglienti
  */
-public class ArtifactMatch extends ArtifactAccessorResult {
+public class ArtifactMatch extends ArtifactAccessorResultWithoutGammas {
 
    private String Name; //required
 

@@ -13,21 +13,20 @@
 <button
 	mat-raised-button
 	[matMenuTriggerFor]="courseMenu"
-	class="tw-flex tw-h-full tw-flex-col"
-	color="primary">
-	<mat-icon>import_contacts</mat-icon>
+	class="tw-flex tw-h-full tw-flex-col">
+	<mat-icon class="tw-text-osee-blue-9">import_contacts</mat-icon>
 	Edit Courses
 </button>
 <mat-menu #courseMenu="matMenu">
 	<button
 		mat-menu-item
 		(click)="addCourses()">
-		<mat-icon color="success">add</mat-icon>Add Course
+		<mat-icon class="tw-text-osee-green-9">add</mat-icon>Add Course
 	</button>
 	<button
 		mat-menu-item
 		[matMenuTriggerFor]="deleteCourseMenu">
-		<mat-icon color="warn">delete</mat-icon>Delete Course
+		<mat-icon class="tw-text-osee-red-9">delete</mat-icon>Delete Course
 	</button>
 </mat-menu>
 <mat-menu #deleteCourseMenu="matMenu">

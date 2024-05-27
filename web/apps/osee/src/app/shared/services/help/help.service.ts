@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HelpPage, navigationElement } from '@osee/shared/types';
 import { from, map, reduce, shareReplay, switchMap } from 'rxjs';
 import { HelpHttpService } from '@osee/shared/services/help';
@@ -19,7 +19,7 @@ import { HelpHttpService } from '@osee/shared/services/help';
 	providedIn: 'root',
 })
 export class HelpService {
-	constructor(private helpHttpService: HelpHttpService) {}
+	private helpHttpService = inject(HelpHttpService);
 
 	getHelpPage(id: string) {
 		return this.helpHttpService.getHelpPage(id);

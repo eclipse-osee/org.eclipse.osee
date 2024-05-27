@@ -12,25 +12,13 @@
  **********************************************************************/
 import { Component } from '@angular/core';
 import { MatAnchor } from '@angular/material/button';
-import { ActivatedRoute, Router } from '@angular/router';
+import { RouterLink } from '@angular/router';
 
 @Component({
 	selector: 'osee-ple-main',
 	templateUrl: './ple.component.html',
 	standalone: true,
-	imports: [MatAnchor],
+	imports: [MatAnchor, RouterLink],
 })
-export class PleComponent {
-	constructor(
-		private route: ActivatedRoute,
-		private router: Router
-	) {}
-
-	navigateTo(location: string) {
-		this.router.navigate([location], {
-			relativeTo: this.route.parent,
-			queryParamsHandling: 'merge',
-		});
-	}
-}
+export class PleComponent {}
 export default PleComponent;

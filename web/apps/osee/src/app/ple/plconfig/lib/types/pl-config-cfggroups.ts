@@ -12,12 +12,12 @@
  **********************************************************************/
 import { view } from './pl-config-applicui-branch-mapping';
 
-export interface addCfgGroup {
+export type addCfgGroup = {
 	title: string;
 	description: string;
-}
+};
 
-export interface CfgGroupDialog {
+export type CfgGroupDialog = {
 	configGroup: {
 		name: string;
 		description: string;
@@ -26,10 +26,10 @@ export interface CfgGroupDialog {
 		configurations: string[];
 	};
 	editable: boolean;
-}
-export interface ConfigurationGroupDefinition {
+};
+export type ConfigurationGroupDefinition = {
 	id?: string;
 	name: string;
 	description: string;
 	configurations?: string[];
-}
+};

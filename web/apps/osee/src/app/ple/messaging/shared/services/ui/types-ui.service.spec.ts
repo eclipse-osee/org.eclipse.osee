@@ -13,20 +13,19 @@
 import { TestBed } from '@angular/core/testing';
 import {
 	typesServiceMock,
-	enumsServiceMock,
 	enumerationSetServiceMock,
 } from '@osee/messaging/shared/testing';
-import {
-	transactionMock,
-	transactionResultMock,
-} from '@osee/shared/transactions/testing';
+import { transactionResultMock } from '@osee/transactions/testing';
 import { TestScheduler } from 'rxjs/testing';
 import { UiService } from '@osee/shared/services';
 import { EnumerationSetService } from '../http/enumeration-set.service';
-import { EnumsService } from '../http/enums.service';
 import { TypesService } from '../http/types.service';
 
 import { TypesUIService } from './types-ui.service';
+import { transactionMock } from '@osee/transactions/testing';
+import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
+import { CurrentTransactionService } from '@osee/transactions/services';
+import { currentTransactionServiceMock } from '@osee/transactions/services/testing';
 
 describe('TypesUIService', () => {
 	let service: TypesUIService;
@@ -37,10 +36,13 @@ describe('TypesUIService', () => {
 		TestBed.configureTestingModule({
 			providers: [
 				{ provide: TypesService, useValue: typesServiceMock },
-				{ provide: EnumsService, useValue: enumsServiceMock },
 				{
 					provide: EnumerationSetService,
 					useValue: enumerationSetServiceMock,
+				},
+				{
+					provide: CurrentTransactionService,
+					useValue: currentTransactionServiceMock,
 				},
 			],
 		});
@@ -59,8 +61,10 @@ describe('TypesUIService', () => {
 
 	it('should create a transaction', () => {
 		scheduler.run(({ expectObservable }) => {
-			expectObservable(service.changeType({})).toBe('(a|)', {
-				a: transactionMock,
+			expectObservable(
+				service.changeType(new PlatformTypeSentinel())
+			).toBe('(a|)', {
+				a: transactionResultMock,
 			});
 		});
 	});
@@ -115,19 +119,7 @@ describe('TypesUIService', () => {
 			uiService.idValue = '10';
 			scheduler
 				.expectObservable(
-					service.createType({}, true, {
-						enumSetId: '1',
-						enumSetName: 'hello',
-						enumSetApplicability: { id: '1', name: 'Base' },
-						enumSetDescription: 'description',
-						enums: [
-							{
-								name: 'Hello',
-								ordinal: 0,
-								applicability: { id: '1', name: 'base' },
-							},
-						],
-					})
+					service.createType(new PlatformTypeSentinel())
 				)
 				.toBe(expectedMarble, expectedFilterValues);
 		});
@@ -140,19 +132,7 @@ describe('TypesUIService', () => {
 			uiService.idValue = '10';
 			scheduler
 				.expectObservable(
-					service.createType({}, false, {
-						enumSetId: '1',
-						enumSetName: 'hello',
-						enumSetApplicability: { id: '1', name: 'Base' },
-						enumSetDescription: 'description',
-						enums: [
-							{
-								name: 'Hello',
-								ordinal: 0,
-								applicability: { id: '1', name: 'base' },
-							},
-						],
-					})
+					service.createType(new PlatformTypeSentinel())
 				)
 				.toBe(expectedMarble, expectedFilterValues);
 		});
@@ -165,23 +145,7 @@ describe('TypesUIService', () => {
 			uiService.idValue = '10';
 			scheduler
 				.expectObservable(
-					service.createType(
-						{ interfaceLogicalType: 'enumeration' },
-						true,
-						{
-							enumSetId: '1',
-							enumSetName: 'hello',
-							enumSetApplicability: { id: '1', name: 'Base' },
-							enumSetDescription: 'description',
-							enums: [
-								{
-									name: 'Hello',
-									ordinal: 0,
-									applicability: { id: '1', name: 'base' },
-								},
-							],
-						}
-					)
+					service.createType(new PlatformTypeSentinel())
 				)
 				.toBe(expectedMarble, expectedFilterValues);
 		});
@@ -194,23 +158,7 @@ describe('TypesUIService', () => {
 			uiService.idValue = '10';
 			scheduler
 				.expectObservable(
-					service.createType(
-						{ interfaceLogicalType: 'enumeration' },
-						false,
-						{
-							enumSetId: '1',
-							enumSetName: 'hello',
-							enumSetApplicability: { id: '1', name: 'Base' },
-							enumSetDescription: 'description',
-							enums: [
-								{
-									name: 'Hello',
-									ordinal: 0,
-									applicability: { id: '1', name: 'base' },
-								},
-							],
-						}
-					)
+					service.createType(new PlatformTypeSentinel())
 				)
 				.toBe(expectedMarble, expectedFilterValues);
 		});

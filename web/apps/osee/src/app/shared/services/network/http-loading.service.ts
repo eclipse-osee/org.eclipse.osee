@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { delay, refCount, shareReplay, startWith } from 'rxjs/operators';
+import { delay, shareReplay, startWith } from 'rxjs/operators';
 
 @Injectable({
 	providedIn: 'root',
@@ -21,7 +21,6 @@ export class HttpLoadingService {
 	private _isLoading: BehaviorSubject<string> = new BehaviorSubject<string>(
 		'false'
 	);
-	constructor() {}
 
 	get isLoading() {
 		return this._isLoading.pipe(

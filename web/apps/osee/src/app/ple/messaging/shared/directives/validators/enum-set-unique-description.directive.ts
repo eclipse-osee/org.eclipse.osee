@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Directive, Input } from '@angular/core';
+import { Directive, Input, inject } from '@angular/core';
 import {
 	AbstractControl,
 	AsyncValidator,
@@ -34,20 +34,37 @@ import { Observable, of, switchMap, take } from 'rxjs';
 	],
 })
 export class EnumSetUniqueDescriptionDirective implements AsyncValidator {
+	private queryService = inject(CurrentQueryService);
+
 	@Input('oseeEnumSetUniqueDescription')
 	enumSet: enumerationSet = {
-		name: '',
+		name: {
+			id: '-1',
+			value: '',
+			typeId: '1152921504606847088',
+			gammaId: '-1',
+		},
 		applicability: {
 			id: '1',
 			name: 'Base',
 		},
-		description: '',
+		description: {
+			id: '-1',
+			value: '',
+			typeId: '1152921504606847090',
+			gammaId: '-1',
+		},
+		enumerations: [],
+		id: '-1',
+		gammaId: '-1',
 	};
-	constructor(private queryService: CurrentQueryService) {}
+
 	validate(
-		control: AbstractControl<any, any>
+		_control: AbstractControl<never, never>
 	): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {
-		const attrQuery = new andDescriptionQuery(this.enumSet.description);
+		const attrQuery = new andDescriptionQuery(
+			this.enumSet.description.value
+		);
 		const query = new MimQuery('2455059983007225791', undefined, [
 			attrQuery,
 		]);
@@ -59,7 +76,7 @@ export class EnumSetUniqueDescriptionDirective implements AsyncValidator {
 					results.length > 0
 						? of<ValidationErrors>({
 								attributesNotUnique: { value: results.length },
-						  })
+							})
 						: of(null)
 				)
 			);

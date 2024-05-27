@@ -24,11 +24,11 @@
 				[attr.colspan]="headers.length"
 				class="tw-text-foreground-base">
 				<div class="tw-grid tw-h-12 tw-grid-cols-3">
-					<div
+					<summary
 						class="tw-flex tw-items-center hover:tw-cursor-pointer"
 						(click)="toggleTableContents()">
 						<span>{{ tableTitle }}: {{ data.length }}</span>
-					</div>
+					</summary>
 					<div class="tw-relative">
 						<mat-form-field
 							class="tw-absolute tw-left-0 tw-top-0 tw-w-full"
@@ -69,9 +69,9 @@
 						<div
 							oseeHighlightFilteredText
 							[searchTerms]="filterText"
-							[text]="item[header]"
+							[text]="item[header].value"
 							classToApply="tw-text-accent-900">
-							{{ item[header] }}
+							{{ item[header].value }}
 						</div>
 					}
 					@if (header === 'applicability') {

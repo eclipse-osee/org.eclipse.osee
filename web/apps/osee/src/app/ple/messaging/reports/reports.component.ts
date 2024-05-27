@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatAnchor, MatButton } from '@angular/material/button';
@@ -34,7 +34,7 @@ import {
 	type connection,
 } from '@osee/messaging/shared/types';
 import { ApplicabilityListService, UiService } from '@osee/shared/services';
-import { applic } from '@osee/shared/types/applicability';
+import { applic } from '@osee/applicability/types';
 import { Subject, combineLatest, from, iif, of } from 'rxjs';
 import {
 	filter,
@@ -68,14 +68,17 @@ import {
 	],
 })
 export class ReportsComponent implements OnInit {
-	constructor(
-		private route: ActivatedRoute,
-		private routerState: UiService,
-		private reportsService: ReportsService,
-		private validationService: ValidationUiService,
-		private connectionService: ConnectionService,
-		private applicService: ApplicabilityListService
-	) {
+	private route = inject(ActivatedRoute);
+	private routerState = inject(UiService);
+	private reportsService = inject(ReportsService);
+	private validationService = inject(ValidationUiService);
+	private connectionService = inject(ConnectionService);
+	private applicService = inject(ApplicabilityListService);
+
+	/** Inserted by Angular inject() migration for backwards compatibility */
+	constructor(...args: unknown[]);
+
+	constructor() {
 		// When the branch changes, need to reset the validation results
 		this.reportsService.branchId
 			.pipe(
@@ -93,7 +96,7 @@ export class ReportsComponent implements OnInit {
 		});
 	}
 
-	bypassValidation: boolean = false;
+	bypassValidation = false;
 
 	selectedReport: MimReport | undefined = undefined;
 	selectedApplic: applic = { id: '-1', name: 'None' };

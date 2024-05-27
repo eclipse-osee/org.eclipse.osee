@@ -12,7 +12,14 @@
  **********************************************************************/
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { AsyncPipe } from '@angular/common';
-import { Component, Inject, viewChild } from '@angular/core';
+import {
+	Component,
+	computed,
+	effect,
+	inject,
+	signal,
+	viewChild,
+} from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import {
@@ -37,12 +44,10 @@ import {
 	MatStepperPrevious,
 } from '@angular/material/stepper';
 import { MatTooltip } from '@angular/material/tooltip';
+import { ApplicabilityDropdownComponent } from '@osee/applicability/applicability-dropdown';
 import { CurrentMessagesService } from '@osee/messaging/shared/services';
-import type { subMessage } from '@osee/messaging/shared/types';
-import {
-	ApplicabilitySelectorComponent,
-	MatOptionLoadingComponent,
-} from '@osee/shared/components';
+import { MatOptionLoadingComponent } from '@osee/shared/components';
+import { writableSlice } from '@osee/shared/utils';
 import {
 	BehaviorSubject,
 	debounceTime,
@@ -53,6 +58,7 @@ import {
 	tap,
 } from 'rxjs';
 import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
+import { applicabilitySentinel } from '@osee/applicability/types';
 
 @Component({
 	selector: 'osee-messaging-add-sub-message-dialog',
@@ -61,7 +67,7 @@ import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
 	imports: [
 		AsyncPipe,
 		FormsModule,
-		ApplicabilitySelectorComponent,
+		ApplicabilityDropdownComponent,
 		MatOptionLoadingComponent,
 		MatDialogTitle,
 		MatStepper,
@@ -82,10 +88,49 @@ import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
 	],
 })
 export class AddSubMessageDialogComponent {
+	dialogRef =
+		inject<MatDialogRef<AddSubMessageDialogComponent>>(MatDialogRef);
+	private messageService = inject(CurrentMessagesService);
+
 	_internalStepper = viewChild.required(MatStepper);
 	__internalStepper = toObservable(this._internalStepper);
 
 	_firstStepFilled = new BehaviorSubject<boolean>(true);
+	protected data = signal(inject<AddSubMessageDialog>(MAT_DIALOG_DATA));
+	protected messageName = computed(() => this.data().name);
+	protected subMessage = writableSlice(this.data, 'subMessage');
+	protected subMessageId = writableSlice(this.subMessage, 'id');
+	protected subMessageNameAttr = writableSlice(this.subMessage, 'name');
+	protected subMessageName = writableSlice(this.subMessageNameAttr, 'value');
+	protected subMessageDescriptionAttr = writableSlice(
+		this.subMessage,
+		'description'
+	);
+	protected subMessageDescription = writableSlice(
+		this.subMessageDescriptionAttr,
+		'value'
+	);
+	protected subMessageNumberAttr = writableSlice(
+		this.subMessage,
+		'interfaceSubMessageNumber'
+	);
+	protected subMessageNumber = writableSlice(
+		this.subMessageNumberAttr,
+		'value'
+	);
+	protected subMessageApplicability = writableSlice(
+		this.subMessage,
+		'applicability'
+	);
+	protected subMessageFilter = signal('');
+	private _updateFilterBasedOnSubMessageSelection = effect(
+		() => {
+			if (this.subMessageId() !== '-1') {
+				this.subMessageFilter.set(this.subMessageName());
+			}
+		},
+		{ allowSignalWrites: true }
+	);
 	private _moveToNextStep = this.__internalStepper.pipe(
 		debounceTime(1),
 		delay(1),
@@ -93,8 +138,8 @@ export class AddSubMessageDialogComponent {
 		tap((stepper) => {
 			if (
 				stepper &&
-				this.data.subMessage.id !== undefined &&
-				this.data.subMessage.id !== '-1'
+				this.subMessageId() !== undefined &&
+				this.subMessageId() !== '-1'
 			) {
 				stepper.next();
 				this._firstStepFilled.next(false);
@@ -102,19 +147,17 @@ export class AddSubMessageDialogComponent {
 		}),
 		takeUntilDestroyed()
 	);
-	constructor(
-		public dialogRef: MatDialogRef<AddSubMessageDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: AddSubMessageDialog,
-		private messageService: CurrentMessagesService
-	) {
+
+	/** Inserted by Angular inject() migration for backwards compatibility */
+	constructor(...args: unknown[]);
+	constructor() {
 		this._moveToNextStep.subscribe();
 	}
 
-	selectedSubmessage: subMessage | undefined;
-	submessageSearch = new BehaviorSubject<string>('');
+	private _submessageSearch = toObservable(this.subMessageFilter);
 	paginationSize = 50;
 
-	availableSubMessages = this.submessageSearch.pipe(
+	availableSubMessages = this._submessageSearch.pipe(
 		debounceTime(250),
 		map(
 			(search) => (pageNum: string | number) =>
@@ -126,7 +169,7 @@ export class AddSubMessageDialogComponent {
 		)
 	);
 
-	availableSubMessagesCount = this.submessageSearch.pipe(
+	availableSubMessagesCount = this._submessageSearch.pipe(
 		debounceTime(250),
 		switchMap((search) =>
 			this.messageService.getSubmessagesByNameCount(search)
@@ -138,23 +181,33 @@ export class AddSubMessageDialogComponent {
 	}
 
 	createNew() {
-		this.data.subMessage.id = '-1';
-		this.selectedSubmessage = undefined;
+		this.subMessageId.set('-1');
+		this.subMessage.set({
+			id: '-1',
+			gammaId: '-1',
+			name: {
+				id: '-1',
+				typeId: '1152921504606847088',
+				gammaId: '-1',
+				value: '',
+			},
+			description: {
+				id: '-1',
+				typeId: '1152921504606847090',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceSubMessageNumber: {
+				id: '-1',
+				typeId: '2455059983007225769',
+				gammaId: '-1',
+				value: '',
+			},
+			applicability: applicabilitySentinel,
+		});
 	}
 
 	moveToReview(stepper: MatStepper) {
-		if (this.selectedSubmessage) {
-			this.data.subMessage = this.selectedSubmessage;
-		}
 		this.moveToStep(3, stepper);
-	}
-
-	applySearchTerm(searchTerm: Event) {
-		const value = (searchTerm.target as HTMLInputElement).value;
-		this.submessageSearch.next(value);
-	}
-
-	selectExistingSubmessage(structure: subMessage) {
-		this.selectedSubmessage = structure;
 	}
 }

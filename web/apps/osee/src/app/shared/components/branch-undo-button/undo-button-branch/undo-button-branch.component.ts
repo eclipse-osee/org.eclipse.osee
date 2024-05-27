@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -24,8 +24,9 @@ import { CurrentBranchTransactionService } from '../internal/services/current-br
 	imports: [MatButton, MatIcon, MatTooltip],
 })
 export class UndoButtonBranchComponent {
+	private _undoService = inject(CurrentBranchTransactionService);
+
 	private _undoLatest = this._undoService.undoLatest;
-	constructor(private _undoService: CurrentBranchTransactionService) {}
 
 	undo() {
 		return this._undoLatest.subscribe();

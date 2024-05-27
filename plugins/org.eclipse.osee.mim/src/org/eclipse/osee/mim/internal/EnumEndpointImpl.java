@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.mim.EnumEndpoint;
 import org.eclipse.osee.mim.types.ElementArrayIndexOrder;
 
@@ -29,7 +28,7 @@ public class EnumEndpointImpl implements EnumEndpoint {
    @Override
    public Collection<String> getPeriodicity() {
       List<String> periodicities = new ArrayList<String>();
-      periodicities.addAll(CoreAttributeTypes.InterfaceMessagePeriodicity.getEnumStrValues());
+      //      periodicities.addAll(CoreAttributeTypes.InterfaceMessagePeriodicity.getEnumStrValues());
       periodicities.sort(Comparator.comparing(String::toString));
       return periodicities;
    }
@@ -42,7 +41,7 @@ public class EnumEndpointImpl implements EnumEndpoint {
    @Override
    public Collection<String> getMessageRates() {
       List<String> rates = new ArrayList<String>();
-      rates.addAll(CoreAttributeTypes.InterfaceMessageRate.getEnumStrValues());
+      //      rates.addAll(CoreAttributeTypes.InterfaceMessageRate.getEnumStrValues());
       rates.sort(new Comparator<String>() {
 
          @Override
@@ -57,7 +56,7 @@ public class EnumEndpointImpl implements EnumEndpoint {
    @Override
    public Collection<String> getMessageTypes() {
       List<String> types = new ArrayList<String>();
-      types.addAll(CoreAttributeTypes.InterfaceMessageType.getEnumStrValues());
+      //      types.addAll(CoreAttributeTypes.InterfaceMessageType.getEnumStrValues());
       types.sort(Comparator.comparing(String::toString));
       return types;
    }
@@ -65,7 +64,8 @@ public class EnumEndpointImpl implements EnumEndpoint {
    @Override
    public Collection<String> getStructureCategories() {
       List<String> categories = new ArrayList<String>();
-      categories.addAll(CoreAttributeTypes.InterfaceStructureCategory.getEnumStrValues());
+      // TODO USE_GAMMA_IDS
+      //      categories.addAll(InterfaceStructureCategoryAttribute.);
       categories.sort(Comparator.comparing(String::toString));
       return categories;
    }
@@ -73,7 +73,7 @@ public class EnumEndpointImpl implements EnumEndpoint {
    @Override
    public Collection<String> getPossibleUnits() {
       List<String> units = new ArrayList<String>();
-      units.addAll(CoreAttributeTypes.InterfacePlatformTypeUnits.getEnumStrValues());
+      //      units.addAll(CoreAttributeTypes.InterfacePlatformTypeUnits.getEnumStrValues());
       units.sort(Comparator.comparing(String::toString));
       return units;
    }

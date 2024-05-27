@@ -11,8 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
-	HttpClientTestingModule,
 	HttpTestingController,
+	provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { apiURL } from '@osee/environments';
@@ -21,6 +21,10 @@ import { BranchListService } from './branch-list.service';
 import { BranchCategoryService } from './branch-category.service';
 import { UiService } from '@osee/shared/services';
 import { branch } from '@osee/shared/types';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('BranchListService', () => {
 	let service: BranchListService;
@@ -29,7 +33,13 @@ describe('BranchListService', () => {
 	let httpTestingController: HttpTestingController;
 
 	beforeEach(() => {
-		TestBed.configureTestingModule({ imports: [HttpClientTestingModule] });
+		TestBed.configureTestingModule({
+			imports: [],
+			providers: [
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+			],
+		});
 		service = TestBed.inject(BranchListService);
 		routeService = TestBed.inject(UiService);
 		categoryService = TestBed.inject(BranchCategoryService);
@@ -42,7 +52,7 @@ describe('BranchListService', () => {
 	describe('Core Functionality', () => {
 		describe('branches observable', () => {
 			it('should call for baseline branches when set to product line', () => {
-				let testData: branch[] = [];
+				const testData: branch[] = [];
 				routeService.typeValue = 'baseline';
 				categoryService.category = '3';
 				service.branches.subscribe();
@@ -57,7 +67,7 @@ describe('BranchListService', () => {
 			});
 
 			it('should call for working branches when set to working', () => {
-				let testData: branch[] = [];
+				const testData: branch[] = [];
 				routeService.typeValue = 'working';
 				categoryService.category = '3';
 				service.branches.subscribe();

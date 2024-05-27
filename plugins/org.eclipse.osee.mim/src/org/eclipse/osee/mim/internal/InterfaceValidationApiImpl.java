@@ -63,12 +63,13 @@ public class InterfaceValidationApiImpl implements InterfaceValidationApi {
 
       List<InterfaceStructureToken> structures = new LinkedList<>();
 
-      ConnectionValidationResult result = new ConnectionValidationResult(branch, viewId, connection.getName());
+      ConnectionValidationResult result =
+         new ConnectionValidationResult(branch, viewId, connection.getName().getValue());
 
       // All messages must have a message type
       for (InterfaceMessageToken message : messages) {
-         if (Strings.isInvalid(message.getInterfaceMessageType())) {
-            result.getMessageTypeErrors().add(message.getName());
+         if (Strings.isInvalid(message.getInterfaceMessageType().getValue())) {
+            result.getMessageTypeErrors().add(message.getName().getValue());
          }
 
          // Get all the structs for this message while we're here
@@ -85,14 +86,14 @@ public class InterfaceValidationApiImpl implements InterfaceValidationApi {
       for (InterfaceStructureToken structure : structures) {
          structure.getElements().stream().filter(a -> a.getId() == -1L).collect(Collectors.toList());
          if (structure.getIncorrectlySized()) {
-            result.getStructureByteAlignmentErrors().add(structure.getName());
+            result.getStructureByteAlignmentErrors().add(structure.getName().getValue());
          }
          if (structure.getElements().stream().anyMatch(a -> a.getId() == -1L)) {
-            result.getStructureWordAlignmentErrors().add(structure.getName());
+            result.getStructureWordAlignmentErrors().add(structure.getName().getValue());
          }
          ;
          String structureSheetName =
-            structure.getNameAbbrev().isEmpty() ? structure.getName() : structure.getNameAbbrev();
+            structure.getNameAbbrev().getValue().isEmpty() ? structure.getName().getValue() : structure.getNameAbbrev().getValue();
          if (structureSheetNames.contains(structureSheetName)) {
             result.getDuplicateStructureNameErrors().add(structureSheetName);
          }

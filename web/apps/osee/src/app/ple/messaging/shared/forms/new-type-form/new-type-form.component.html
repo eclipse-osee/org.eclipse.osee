@@ -11,68 +11,76 @@
 *     Boeing - initial API and implementation
 -->
 <h1 mat-dialog-title>Create New Platform Type</h1>
-<mat-horizontal-stepper
-	#stepper
-	linear="true">
-	<mat-step
-		label="Select a logical type"
-		[completed]="
-			!(
-				(logicalTypeSelector() !== undefined &&
-					logicalTypeSelector()!.form() !== undefined &&
-					(logicalTypeSelector()!.form().pending ||
-						logicalTypeSelector()!.form().disabled ||
-						logicalTypeSelector()!.form().invalid)) ||
-				logicalTypeSelector() === undefined ||
-				logicalTypeSelector()?.form() === undefined
-			)
-		">
-		<mat-dialog-content>
-			<osee-logical-type-selector
-				[type]="selectedLogicalType()"
-				(typeChanged)="setLogicalType($event)">
-			</osee-logical-type-selector>
-		</mat-dialog-content>
-		<mat-dialog-actions align="end">
-			<button
-				mat-button
-				matStepperNext
-				[disabled]="
-					(logicalTypeSelector() !== undefined &&
-						logicalTypeSelector()!.form() !== undefined &&
-						(logicalTypeSelector()!.form().pending ||
-							logicalTypeSelector()!.form().disabled ||
-							logicalTypeSelector()!.form().invalid)) ||
-					logicalTypeSelector() === undefined ||
-					logicalTypeSelector()?.form() === undefined
-				"
-				data-cy="stepper-next-1">
-				Next
-			</button>
-		</mat-dialog-actions>
-	</mat-step>
-	<mat-step label="Fill out type information">
-		<osee-new-platform-type-form-page2
-			[logicalType]="selectedLogicalType()"
-			(typeFormState)="
-				updateFormState($event)
-			"></osee-new-platform-type-form-page2>
-	</mat-step>
-	<mat-step label="Summary">
-		@if (closeDialog | async) {}
-		<mat-dialog-content>
-			<p class="mat-headline-5">
-				A new platform type of type
-				{{ selectedLogicalType().name | titlecase }}
-				will be created with the following properties:
-			</p>
-			<br />
-			@if (_typeFormState | async; as attrs) {
-				@for (attr of attrs.platformType | keyvalue; track attr) {
-					@if (attr.key !== 'id' && attr.key !== 'applicability') {
+<form #newTypeForm="ngForm">
+	<mat-horizontal-stepper
+		#stepper
+		linear="true">
+		<mat-step
+			label="Select a logical type"
+			[completed]="
+				!logicalTypeCtrl.invalid &&
+				!logicalTypeCtrl.pending &&
+				!logicalTypeCtrl.disabled
+			">
+			<div
+				ngModelGroup="logicalTypeSelection"
+				#logicalTypeCtrl="ngModelGroup">
+				<mat-dialog-content>
+					<osee-logical-type-dropdown
+						[(type)]="selectedLogicalType" />
+				</mat-dialog-content>
+			</div>
+			<mat-dialog-actions align="end">
+				<button
+					mat-flat-button
+					matStepperNext
+					type="button"
+					[disabled]="
+						logicalTypeCtrl.invalid ||
+						logicalTypeCtrl.pending ||
+						logicalTypeCtrl.disabled ||
+						selectedLogicalType().id === '-1'
+					"
+					data-cy="stepper-next-1">
+					Next
+				</button>
+			</mat-dialog-actions>
+		</mat-step>
+		<mat-step label="Fill out type information">
+			<ng-template matStepContent>
+				<osee-new-platform-type-form-page2
+					[logicalType]="selectedLogicalType()"
+					[(platformType)]="platformType" />
+			</ng-template>
+		</mat-step>
+		<mat-step label="Summary">
+			<mat-dialog-content>
+				<p class="mat-headline-5">
+					A new platform type of type
+					{{ selectedLogicalType().name | titlecase }}
+					will be created with the following properties:
+				</p>
+				<br />
+				@for (
+					attr of platformType() | keyvalue;
+					track attr.key + attr.value
+				) {
+					@if (
+						attr.key !== 'id' &&
+						attr.key !== 'applicability' &&
+						attr.key !== 'enumSet' &&
+						attr.key !== 'gammaId'
+					) {
 						<mat-label class="mat-headline-6">
 							{{ attr.key | titlecase }} :
-							{{ attr.value }}</mat-label
+							{{ $any(attr.value).value }}</mat-label
+						>
+						<br />
+					}
+					@if (attr.key === 'enumSet') {
+						<mat-label class="mat-headline-6">
+							{{ attr.key | titlecase }} :
+							{{ $any(attr.value).name.value }}</mat-label
 						>
 						<br />
 					}
@@ -84,23 +92,25 @@
 						<br />
 					}
 				}
-			}
-			<!--TODO: add enum set/enum display-->
-		</mat-dialog-content>
-		<mat-dialog-actions align="end">
-			<button
-				mat-button
-				matStepperPrevious>
-				Back
-			</button>
-			<button
-				mat-raised-button
-				color="primary"
-				(click)="close()"
-				data-cy="close-new-platform-menu">
-				Ok
-			</button>
-			<ng-template> </ng-template>
-		</mat-dialog-actions>
-	</mat-step>
-</mat-horizontal-stepper>
+				<!--TODO: add enum set/enum display-->
+			</mat-dialog-content>
+			<mat-dialog-actions align="end">
+				<button
+					mat-button
+					type="button"
+					matStepperPrevious>
+					Back
+				</button>
+				<button
+					mat-flat-button
+					class="primary-button"
+					type="button"
+					(click)="triggerClose()"
+					data-cy="close-new-platform-menu">
+					Ok
+				</button>
+				<ng-template> </ng-template>
+			</mat-dialog-actions>
+		</mat-step>
+	</mat-horizontal-stepper>
+</form>

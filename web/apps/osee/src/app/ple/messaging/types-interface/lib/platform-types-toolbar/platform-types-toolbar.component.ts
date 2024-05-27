@@ -18,6 +18,7 @@ import { PlatformTypesFabComponent } from '../platform-types-fab/platform-types-
 import { PlMessagingTypesUIService } from '../services/pl-messaging-types-ui.service';
 import { CurrentTypesService } from '../services/current-types.service';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { AttributeToValuePipe } from '@osee/attributes/pipes';
 
 @Component({
 	selector: 'osee-platform-types-toolbar',
@@ -27,14 +28,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
 		MatPaginator,
 		PlatformTypeActionsComponent,
 		PlatformTypesFabComponent,
+		AttributeToValuePipe,
 	],
-	template: `<mat-toolbar class="tw-bg-background-card">
-		@if (
-			selection().id !== '' &&
-			selection().id !== '-1' &&
-			selection().id !== '0'
-		) {
-			{{ selection().name + ' Selected ' }}
+	template: `<mat-toolbar>
+		@if (selection().id !== '-1' && selection().id !== '0') {
+			{{ (selection().name | attributeToValue) + ' Selected ' }}
 			<span class="tw-flex-auto"></span>
 			<osee-platform-type-actions
 				[typeData]="selection()"></osee-platform-type-actions>
@@ -44,7 +42,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 			class="tw-w-1/3"
 			[pageSizeOptions]="[
 				10, 15, 20, 25, 50, 75, 100, 200, 250, 500, 1000, 1500, 2000,
-				2500, 5000
+				2500, 5000,
 			]"
 			[pageIndex]="currentPage()"
 			(page)="setPage($event)"

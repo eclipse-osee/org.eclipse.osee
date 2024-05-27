@@ -30,7 +30,7 @@
 							((connectionRoute | async) || '') + option.id
 						"
 						queryParamsHandling="merge">
-						{{ option.name }}
+						{{ option.name.value }}
 					</mat-option>
 				}
 			</mat-select>
@@ -41,13 +41,12 @@
 	@if (_branch !== '0' && _branch !== ' ') {
 		@if (branchType | async; as _branchType) {
 			@if (selectedConnectionId | async; as _connectionId) {
-				@if (_connectionId !== '') {
+				@if (_connectionId !== '-1') {
 					<osee-cross-reference-table></osee-cross-reference-table>
 					@if ((inEditMode | async) === true) {
 						<button
 							mat-fab
-							class="tw-absolute tw-bottom-2 tw-right-2"
-							color="primary"
+							class="tertiary-fab tw-absolute tw-bottom-2 tw-right-2"
 							(click)="openAddDialog()">
 							<mat-icon>add</mat-icon>
 						</button>

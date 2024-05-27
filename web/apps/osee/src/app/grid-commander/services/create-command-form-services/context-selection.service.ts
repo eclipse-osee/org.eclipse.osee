@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, combineLatest, iif, of, scan, switchMap } from 'rxjs';
 import { UserContextRelationsService } from '../data-services/context-relations/user-context-relations.service';
 
@@ -18,6 +18,8 @@ import { UserContextRelationsService } from '../data-services/context-relations/
 	providedIn: 'root',
 })
 export class ContextSelectionService {
+	private userContextRelationsService = inject(UserContextRelationsService);
+
 	private _selectedContext = new BehaviorSubject<string>('');
 
 	availableContexts = this.userContextRelationsService.contexts.pipe(
@@ -54,10 +56,6 @@ export class ContextSelectionService {
 			)
 		)
 	);
-
-	constructor(
-		private userContextRelationsService: UserContextRelationsService
-	) {}
 
 	public get selectedContext() {
 		return this._selectedContext;

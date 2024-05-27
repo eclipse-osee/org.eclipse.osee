@@ -17,24 +17,23 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { response } from '@osee/shared/types';
 import { of } from 'rxjs';
 import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { testBranchApplicability } from '../../testing/mockBranchService';
-
 import { CurrentBranchInfoService } from '@osee/shared/services';
-import { testBranchInfo } from '@osee/shared/testing';
-import { DialogService } from 'src/app/ple/plconfig/lib/services/dialog.service';
-import { DialogServiceMock } from 'src/app/ple/plconfig/lib/testing/mockDialogService.mock';
+import { XResultData } from '@osee/shared/types';
+import { DialogService } from '../../services/dialog.service';
+import { DialogServiceMock } from '../../testing/mockDialogService.mock';
 import { ConfigurationDropdownComponent } from './configuration-dropdown.component';
+import { testBranchInfo } from '@osee/shared/testing';
 
 describe('ConfigurationDropdownComponent', () => {
 	let component: ConfigurationDropdownComponent;
 	let fixture: ComponentFixture<ConfigurationDropdownComponent>;
 
 	beforeEach(async () => {
-		const testResponse: response = {
+		const testResponse: XResultData = {
 			empty: false,
 			errorCount: 0,
 			errors: false,
@@ -57,11 +56,11 @@ describe('ConfigurationDropdownComponent', () => {
 			'copyConfiguration',
 			'addConfiguration',
 		]);
-		var addConfigurationSpy =
+		const _addConfigurationSpy =
 			branchService.addConfiguration.and.returnValue(of(testResponse));
-		var copyConfigurationSpy =
+		const _copyConfigurationSpy =
 			branchService.copyConfiguration.and.returnValue(of(testResponse));
-		var delteConfigurationSpy =
+		const _delteConfigurationSpy =
 			branchService.deleteConfiguration.and.returnValue(of(testResponse));
 		await TestBed.configureTestingModule({
 			imports: [

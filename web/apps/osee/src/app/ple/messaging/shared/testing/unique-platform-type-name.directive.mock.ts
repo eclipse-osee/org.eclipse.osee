@@ -36,15 +36,6 @@ import { Observable, of } from 'rxjs';
 	],
 })
 export class MockUniquePlatformTypeNameDirective implements AsyncValidator {
-	@Optional()
-	@Input('oseeUniquePlatformTypeAttributes')
-	inputField?: logicalTypeFormDetail<keyof PlatformType> = {
-		id: '',
-		name: '',
-		idString: '',
-		idIntValue: 0,
-		fields: [],
-	};
 	@Input() referencePlatform: PlatformType = new PlatformTypeSentinel();
 	validate(
 		control: AbstractControl<PlatformType, any>

@@ -43,7 +43,7 @@ export class ToolbarComponent {
 	topLevelNavIcon = this.sideNavService.leftSideNav.pipe(map((v) => v.icon));
 	isLoading = this.loadingService.isLoading;
 
-	@Input() oseeToolbar: boolean = true;
+	@Input() oseeToolbar = true;
 	toggleTopLevelNavIcon() {
 		this.sideNavService.toggleLeftSideNav = '';
 	}

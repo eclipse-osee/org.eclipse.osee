@@ -60,11 +60,12 @@ describe('EnumFormComponent', () => {
 
 		fixture = TestBed.createComponent(EnumFormComponent);
 		component = fixture.componentInstance;
-		component.enumSetName = 'enumSet1';
-		component.bitSize = '32';
+		fixture.componentRef.setInput('enumSetName', 'enumSet1');
+		fixture.componentRef.setInput('bitSize', '32');
+		fixture.componentRef.setInput('enumSetId', '1234');
+		fixture.componentRef.setInput('enums', []);
 		loader = TestbedHarnessEnvironment.loader(fixture);
 		fixture.detectChanges();
-		component.ngOnChanges({});
 	});
 
 	it('should create', () => {
@@ -72,13 +73,13 @@ describe('EnumFormComponent', () => {
 	});
 
 	it('should add an enum', async () => {
-		let table = await loader.getHarness(MatTableHarness);
+		const table = await loader.getHarness(MatTableHarness);
 		expect(table).toBeDefined();
-		let addButton = await loader.getHarness(
+		const addButton = await loader.getHarness(
 			MatButtonHarness.with({ text: new RegExp('add') })
 		);
 		expect(await addButton.isDisabled()).toBe(false);
-		let spy = spyOn(component, 'addEnum').and.callThrough();
+		const spy = spyOn(component, 'addEnum').and.callThrough();
 		await addButton.click();
 		expect(spy).toHaveBeenCalled();
 	});

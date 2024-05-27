@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { UserDataAccountService } from '@osee/auth';
 import {
 	ConflictUpdateData,
@@ -23,28 +23,27 @@ import {
 	BranchInfoService,
 	UiService,
 } from '@osee/shared/services';
-import { TransactionService } from '@osee/shared/transactions';
+import { branch } from '@osee/shared/types';
+import { TransactionService } from '@osee/transactions/services';
 import {
-	attributeType,
-	branch,
-	modifyArtifact,
-	transaction,
-} from '@osee/shared/types';
+	legacyAttributeType,
+	legacyTransaction,
+	legacyModifyArtifact,
+} from '@osee/transactions/types';
 import { Subject, of, switchMap, take, tap } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class CommitBranchService {
+	private uiService = inject(UiService);
+	private branchInfoService = inject(BranchInfoService);
+	private accountService = inject(UserDataAccountService);
+	private eventService = inject(BranchCommitEventService);
+
 	private _updatedMergeData = new Subject();
 
-	constructor(
-		private uiService: UiService,
-		private branchInfoService: BranchInfoService,
-		private transactionService: TransactionService,
-		private accountService: UserDataAccountService,
-		private eventService: BranchCommitEventService
-	) {}
+	private transactionService = inject(TransactionService);
 
 	getBranch(branchId: string) {
 		return this.branchInfoService.getBranch(branchId);
@@ -89,7 +88,7 @@ export class CommitBranchService {
 		branchId: string,
 		parentBranchId: string
 	) {
-		const tx: transaction = {
+		const tx: legacyTransaction = {
 			branch: mergeBranchId,
 			txComment:
 				'Update merge value for artifact: ' +
@@ -97,11 +96,11 @@ export class CommitBranchService {
 				', attribute: ' +
 				data.attrMergeData.attrTypeName,
 		};
-		const attribute: attributeType = {
+		const attribute: legacyAttributeType = {
 			typeId: data.attrMergeData.attrType,
 			value: data.attrMergeData.mergeValue,
 		};
-		const modifyArtifact: modifyArtifact = {
+		const modifyArtifact: legacyModifyArtifact = {
 			id: data.artId,
 			setAttributes: [attribute],
 		};

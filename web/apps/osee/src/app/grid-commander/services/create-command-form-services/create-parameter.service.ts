@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
 	combineLatest,
 	debounceTime,
@@ -22,7 +22,7 @@ import {
 	tap,
 } from 'rxjs';
 import { UiService } from '@osee/shared/services';
-import { artifact, createArtifact } from '@osee/shared/types';
+import { legacyArtifact, legacyCreateArtifact } from '@osee/transactions/types';
 import { CreateParameterAndRelationsService } from '../create-command-artifact-and-relations/create-parameter-and-relations.service';
 import { CommandGroupOptionsService } from '../data-services/commands/command-group-options.service';
 import { GCBranchIdService } from '../fetch-data-services/branch/gc-branch-id.service';
@@ -31,27 +31,28 @@ import { GCBranchIdService } from '../fetch-data-services/branch/gc-branch-id.se
 	providedIn: 'root',
 })
 export class CreateParameterService {
-	private _commandArtId: string = '';
+	private commandGroupOptionsService = inject(CommandGroupOptionsService);
+	private createParameterAndRelationsService = inject(
+		CreateParameterAndRelationsService
+	);
+	private branchIdService = inject(GCBranchIdService);
+	private uiService = inject(UiService);
+
+	private _commandArtId = '';
 	done = new Subject();
 
 	public set doneFx(val: unknown) {
 		this.done.next(val);
 	}
-	constructor(
-		private commandGroupOptionsService: CommandGroupOptionsService,
-		private createParameterAndRelationsService: CreateParameterAndRelationsService,
-		private branchIdService: GCBranchIdService,
-		private uiService: UiService
-	) {}
 
 	public createParameterArtifact(
-		parameter: Partial<createArtifact & artifact>,
+		parameter: Partial<legacyCreateArtifact & legacyArtifact>,
 		commandId: string
 	) {
 		return combineLatest([of(parameter), of(commandId)]).pipe(
 			debounceTime(750),
 			take(1),
-			switchMap(([parameter, commandId]) =>
+			switchMap(([parameter, _commandId]) =>
 				this.createParameterAndRelationsService
 					.createParameterAndEstablishCommandRelation(
 						this.branchIdService.branchId,

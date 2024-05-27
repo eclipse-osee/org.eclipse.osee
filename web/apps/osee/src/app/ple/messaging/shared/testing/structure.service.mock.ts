@@ -11,16 +11,19 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import type { structure } from '@osee/messaging/shared/types';
-import { relation, transaction } from '@osee/shared/types';
 import {
 	transactionMock,
 	transactionResultMock,
-} from '@osee/shared/transactions/testing';
+} from '@osee/transactions/testing';
+import {
+	legacyRelation,
+	legacyTransaction,
+	transaction,
+} from '@osee/transactions/types';
 import { of } from 'rxjs';
 import { StructuresService } from '../services/http/structures.service';
-import { structuresMock3, structuresMock2 } from './structure.mock';
+import { structuresMock2, structuresMock3 } from './structure.mock';
 
-//let i= 0;
 export const structureServiceMock: Partial<StructuresService> = {
 	getFilteredStructures(
 		filter: string,
@@ -40,18 +43,15 @@ export const structureServiceMock: Partial<StructuresService> = {
 			sideA: '10',
 		});
 	},
-	createStructure(
-		body: Partial<structure>,
-		branchId: string,
-		relations: relation[]
+	addNewStructureToTransaction(
+		body: structure,
+		tx: Required<transaction>,
+		key?: string
 	) {
-		return of(transactionMock);
+		return tx;
 	},
-	performMutation(transaction: transaction) {
+	performMutation(transaction: legacyTransaction) {
 		return of(transactionResultMock);
-	},
-	changeStructure(body: Partial<structure>, branchId: string) {
-		return of(transactionMock);
 	},
 	getStructure(
 		branchId: string,
@@ -64,8 +64,8 @@ export const structureServiceMock: Partial<StructuresService> = {
 	},
 	addRelation(
 		branchId: string,
-		relation: relation,
-		transaction?: transaction
+		relation: legacyRelation,
+		transaction?: legacyTransaction
 	) {
 		return of(transactionMock);
 	},
@@ -102,18 +102,15 @@ export const structureServiceMock3: Partial<StructuresService> & {
 			sideA: '10',
 		});
 	},
-	createStructure(
-		body: Partial<structure>,
-		branchId: string,
-		relations: relation[]
+	addNewStructureToTransaction(
+		body: structure,
+		tx: Required<transaction>,
+		key?: string
 	) {
-		return of(transactionMock);
+		return tx;
 	},
-	performMutation(transaction: transaction) {
+	performMutation(transaction: legacyTransaction) {
 		return of(transactionResultMock);
-	},
-	changeStructure(body: Partial<structure>, branchId: string) {
-		return of(transactionMock);
 	},
 	getStructure(
 		branchId: string,
@@ -126,8 +123,8 @@ export const structureServiceMock3: Partial<StructuresService> & {
 	},
 	addRelation(
 		branchId: string,
-		relation: relation,
-		transaction?: transaction
+		relation: legacyRelation,
+		transaction?: legacyTransaction
 	) {
 		return of(transactionMock);
 	},
@@ -165,32 +162,31 @@ export const structureServiceRandomMock: Partial<StructuresService> & {
 			sideA: '10',
 		});
 	},
-	createStructure(
-		body: Partial<structure>,
-		branchId: string,
-		relations: relation[]
+	addNewStructureToTransaction(
+		body: structure,
+		tx: Required<transaction>,
+		key?: string
 	) {
-		return of(transactionMock);
+		return tx;
 	},
-	performMutation(transaction: transaction) {
+	performMutation(transaction: legacyTransaction) {
 		return of(transactionResultMock);
-	},
-	changeStructure(body: Partial<structure>, branchId: string) {
-		return of(transactionMock);
 	},
 	getStructure(
 		branchId: string,
 		messageId: string,
 		subMessageId: string,
 		structureId: string,
-		connectionId: string
+		connectionId: string,
+		viewId: string,
+		filter?: string
 	) {
 		return of(structuresMock3[0]);
 	},
 	addRelation(
 		branchId: string,
-		relation: relation,
-		transaction?: transaction
+		relation: legacyRelation,
+		transaction?: legacyTransaction
 	) {
 		return of(transactionMock);
 	},

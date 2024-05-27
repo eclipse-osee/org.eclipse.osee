@@ -12,16 +12,16 @@
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
 
-import { PlatformTypeActionsService } from './platform-type-actions.service';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import {
-	warningDialogServiceMock,
 	enumerationUiServiceMock,
-	typesServiceMock,
+	typesUIServiceMock,
+	warningDialogServiceMock,
 } from '@osee/messaging/shared/testing';
-import { WarningDialogService } from './warning-dialog.service';
 import { EnumerationUIService } from './enumeration-ui.service';
-import { TypesService } from '../http/types.service';
+import { PlatformTypeActionsService } from './platform-type-actions.service';
+import { TypesUIService } from './types-ui.service';
+import { WarningDialogService } from './warning-dialog.service';
 
 describe('PlatformTypeActionsService', () => {
 	let service: PlatformTypeActionsService;
@@ -38,7 +38,7 @@ describe('PlatformTypeActionsService', () => {
 					provide: EnumerationUIService,
 					useValue: enumerationUiServiceMock,
 				},
-				{ provide: TypesService, useValue: typesServiceMock },
+				{ provide: TypesUIService, useValue: typesUIServiceMock },
 			],
 		});
 		service = TestBed.inject(PlatformTypeActionsService);

@@ -89,7 +89,7 @@ export const MOCKCOMMANDS: Command[] = [
 		idString: '',
 		parameter: {
 			name: '',
-			id: '',
+			id: '-1',
 			idIntValue: 0,
 			idString: '',
 			typeAsString: '',
@@ -110,7 +110,7 @@ export const MOCKCOMMANDS: Command[] = [
 		idString: '',
 		parameter: {
 			name: '',
-			id: '',
+			id: '-1',
 			idIntValue: 0,
 			idString: '',
 			typeAsString: '',

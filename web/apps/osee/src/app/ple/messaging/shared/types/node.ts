@@ -10,57 +10,76 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import type { difference } from '@osee/shared/types/change-report';
-import type { applic } from '@osee/shared/types/applicability';
+import type { applic } from '@osee/applicability/types';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
+import { attribute } from '@osee/attributes/types';
+import type { hasChanges } from '@osee/shared/types/change-report';
 import type { Node } from '@swimlane/ngx-graph';
 
-export interface nodeData {
-	id: string;
-	name: string;
-	description?: string;
-	interfaceNodeNumber: string;
-	interfaceNodeGroupId: string;
-	interfaceNodeBackgroundColor: string;
-	interfaceNodeAddress: string;
-	applicability?: applic;
-	interfaceNodeBuildCodeGen: boolean;
-	interfaceNodeCodeGen: boolean;
-	interfaceNodeCodeGenName: string;
-	nameAbbrev: string;
-	interfaceNodeToolUse: boolean;
-	interfaceNodeType: string;
-	notes: string;
-}
+export type nodeData = {
+	id: `${number}`;
+	gammaId: `${number}`;
+} & Required<_nodeAttributes> &
+	Required<_nodeApplic> &
+	Required<_nodeRelations> &
+	_nodeChanges;
+type _nodeApplic = {
+	applicability: applic;
+};
 
-export interface nodeDataWithChanges extends nodeData {
-	deleted: boolean;
-	changes: nodeChanges;
-}
+type _nodeAttributes = {
+	name: attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>;
+	description: attribute<string, typeof ATTRIBUTETYPEIDENUM.DESCRIPTION>;
+	interfaceNodeNumber: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACENODENUMBER
+	>;
+	interfaceNodeGroupId: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACENODEGROUPID
+	>;
+	interfaceNodeBackgroundColor: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACENODEBACKGROUNDCOLOR
+	>;
+	interfaceNodeAddress: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACENODEADDRESS
+	>;
+	applicability: applic;
+	interfaceNodeBuildCodeGen: attribute<
+		boolean,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACENODEBUILDCODEGEN
+	>;
+	interfaceNodeCodeGen: attribute<
+		boolean,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACENODECODEGEN
+	>;
+	interfaceNodeCodeGenName: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACENODECODEGENNAME
+	>;
+	nameAbbrev: attribute<string, typeof ATTRIBUTETYPEIDENUM.NAMEABBREV>;
+	interfaceNodeToolUse: attribute<
+		boolean,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACENODETOOLUSE
+	>;
+	interfaceNodeType: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACENODETYPE
+	>;
+	notes: attribute<string, typeof ATTRIBUTETYPEIDENUM.NOTES>;
+};
+type _nodeRelations = object;
 
-export interface nodeChanges {
-	name?: difference;
-	description?: difference;
-	interfaceNodeNumber?: string;
-	interfaceNodeGroupId?: string;
-	interfaceNodeBackgroundColor?: difference;
-	interfaceNodeAddress?: difference;
-	applicability?: difference;
-	interfaceNodeBuildCodeGen?: difference;
-	interfaceNodeCodeGen?: difference;
-	interfaceNodeCodeGenName?: difference;
-	nameAbbrev?: difference;
-	interfaceNodeToolUse?: difference;
-	interfaceNodeType?: difference;
-	notes?: difference;
-}
-
-export interface node {
-	id?: string;
-	name: string;
-	description?: string;
-	applicability?: applic;
-}
-
-export interface OseeNode<T> extends Omit<Node, 'data'> {
+type _nodeChanges = {
+	deleted?: boolean;
+	added?: boolean;
+	changes?: __nodeChanges;
+};
+type __nodeChanges = {} & hasChanges<_nodeAttributes> &
+	hasChanges<_nodeApplic> &
+	hasChanges<_nodeRelations>;
+export type OseeNode<T> = {
 	data: T;
-}
+} & Omit<Node, 'data'>;

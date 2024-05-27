@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import {
@@ -20,7 +20,7 @@ import {
 } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
-import { artifact, createArtifact } from '@osee/shared/types';
+import { legacyArtifact, legacyCreateArtifact } from '@osee/transactions/types';
 import { OpenUrlFormService } from '../../../../services/create-command-form-services/open-url-form.service';
 import {
 	commandObject,
@@ -44,15 +44,17 @@ import {
 	styles: [],
 })
 export class OpenUrlFormComponent {
+	private openURLFormService = inject(OpenUrlFormService);
+
 	@Output('submitOpenURLCommandForm') submitOpenUrlForm: EventEmitter<{
-		command: Partial<createArtifact & artifact>;
-		parameter: Partial<createArtifact & artifact>;
+		command: Partial<legacyCreateArtifact & legacyArtifact>;
+		parameter: Partial<legacyCreateArtifact & legacyArtifact>;
 	}> = new EventEmitter<{
-		command: Partial<createArtifact & artifact>;
-		parameter: Partial<createArtifact & artifact>;
+		command: Partial<legacyCreateArtifact & legacyArtifact>;
+		parameter: Partial<legacyCreateArtifact & legacyArtifact>;
 	}>();
 
-	displayParameterOptions: boolean = false;
+	displayParameterOptions = false;
 
 	patternValidatorForURL =
 		'(?:http[s]:?\\/\\/)?(?:[\\w\\-]+(?::[\\w\\-]+)?@)?(?:[\\w\\-]+\\.)+(?:[a-z]{2,4})(?::[0-9]+)?(?:\\/[\\w\\-\\.%]+)*(?:\\?(?:[\\w\\-\\.%]+=[\\w\\-\\.%!]+&?)+)?(#\\w+\\-\\.%!)?';
@@ -71,8 +73,6 @@ export class OpenUrlFormComponent {
 		//TODO: How to determine Validator Type
 		validatorType: this.patternValidatorForURL,
 	};
-
-	constructor(private openURLFormService: OpenUrlFormService) {}
 
 	onSubmitHandler(form: NgForm) {
 		if (form.form.status === 'INVALID') return;

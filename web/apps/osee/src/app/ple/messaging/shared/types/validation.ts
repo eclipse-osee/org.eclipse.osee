@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface ConnectionValidationResult {
+export type ConnectionValidationResult = {
 	branch: string;
 	viewId: string;
 	connectionName: string;
@@ -19,7 +19,7 @@ export interface ConnectionValidationResult {
 	structureWordAlignmentErrors: string[];
 	duplicateStructureNameErrors: string[];
 	messageTypeErrors: string[];
-}
+};
 
 export const connectionValidationResultSentinel: ConnectionValidationResult = {
 	branch: '-1',

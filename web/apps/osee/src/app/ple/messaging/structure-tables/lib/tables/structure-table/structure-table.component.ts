@@ -23,29 +23,15 @@ import { AsyncPipe, NgClass, NgStyle } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
-	Inject,
-	Input,
 	OnDestroy,
-	viewChild,
+	inject,
+	input,
+	signal,
 } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import {
-	MatFormField,
-	MatHint,
-	MatLabel,
-	MatPrefix,
-} from '@angular/material/form-field';
-import { MatIcon } from '@angular/material/icon';
-import { MatInput } from '@angular/material/input';
-import {
-	MatMenu,
-	MatMenuContent,
-	MatMenuItem,
-	MatMenuTrigger,
-} from '@angular/material/menu';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import {
 	MatCell,
 	MatCellDef,
@@ -60,6 +46,9 @@ import {
 } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { PersistedApplicabilityDropdownComponent } from '@osee/applicability/persisted-applicability-dropdown';
+import { applicabilitySentinel } from '@osee/applicability/types';
+import { PersistedStringAttributeInputComponent } from '@osee/attributes/persisted-string-attribute-input';
 import { LayoutNotifierService } from '@osee/layout/notification';
 import {
 	defaultEditElementProfile,
@@ -68,54 +57,32 @@ import {
 	defaultViewStructureProfile,
 } from '@osee/messaging/shared/constants';
 import { StructureDataSource } from '@osee/messaging/shared/datasources';
-import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dialogs/free-text';
-import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
-import {
-	CurrentStructureService,
-	HeaderService,
-} from '@osee/messaging/shared/services';
+import { HeaderService } from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 import type {
-	EditViewFreeTextDialog,
-	ElementDialog,
-	element,
+	DisplayableElementProps,
+	displayableStructureFields,
 	structure,
 	structureWithChanges,
 } from '@osee/messaging/shared/types';
-import {
-	TwoLayerAddButtonComponent,
-	CurrentViewSelectorComponent,
-} from '@osee/shared/components';
-import { applic } from '@osee/shared/types/applicability';
-import { difference } from '@osee/shared/types/change-report';
-import { HighlightFilteredTextDirective } from '@osee/shared/utils';
+import { PersistedStructureCategoryDropdownComponent } from '@osee/messaging/structure-category/persisted-structure-category-dropdown';
+import { writableSlice } from '@osee/shared/utils';
 import { combineLatest, from, iif, of } from 'rxjs';
 import {
-	debounceTime,
 	distinct,
 	filter,
-	first,
 	map,
 	mergeMap,
-	pairwise,
 	reduce,
-	scan,
 	share,
 	shareReplay,
-	startWith,
 	switchMap,
-	take,
-	takeUntil,
 	tap,
 } from 'rxjs/operators';
-import { AddElementDialogComponent } from '../../dialogs/add-element-dialog/add-element-dialog.component';
-import { DefaultAddElementDialog } from '../../dialogs/add-element-dialog/add-element-dialog.default';
-import { AddStructureDialog } from '../../dialogs/add-structure-dialog/add-structure-dialog';
-import { AddStructureDialogComponent } from '../../dialogs/add-structure-dialog/add-structure-dialog.component';
-import { DeleteStructureDialogComponent } from '../../dialogs/delete-structure-dialog/delete-structure-dialog.component';
-import { RemoveStructureDialogComponent } from '../../dialogs/remove-structure-dialog/remove-structure-dialog.component';
-import { EditStructureFieldComponent } from '../../fields/edit-structure-field/edit-structure-field.component';
 import { StructureTableLongTextFieldComponent } from '../../fields/structure-table-long-text-field/structure-table-long-text-field.component';
+import { StructureTableNoEditFieldComponent } from '../../fields/structure-table-no-edit-field/structure-table-no-edit-field.component';
+import { StructureMenuComponent } from '../../menus/structure-menu/structure-menu.component';
+import { StructureImpactsValidatorDirective } from '../../structure-impacts-validator.directive';
 import { SubElementTableComponent } from '../sub-element-table/sub-element-table.component';
 
 @Component({
@@ -129,14 +96,7 @@ import { SubElementTableComponent } from '../sub-element-table/sub-element-table
 		NgStyle,
 		AsyncPipe,
 		RouterLink,
-		TwoLayerAddButtonComponent,
 		FormsModule,
-		MatFormField,
-		MatLabel,
-		MatInput,
-		MatIcon,
-		MatPrefix,
-		MatHint,
 		MatTable,
 		MatColumnDef,
 		MatHeaderCell,
@@ -149,19 +109,15 @@ import { SubElementTableComponent } from '../sub-element-table/sub-element-table
 		MatHeaderRowDef,
 		MatRow,
 		MatRowDef,
-		MatPaginator,
-		MatMenu,
-		MatMenuContent,
-		MatMenuItem,
-		MatMenuTrigger,
 		CdkVirtualForOf,
-		EditStructureFieldComponent,
-		AddStructureDialogComponent,
-		MessagingControlsComponent,
-		CurrentViewSelectorComponent,
+		PersistedApplicabilityDropdownComponent,
+		PersistedStringAttributeInputComponent,
+		PersistedStructureCategoryDropdownComponent,
 		SubElementTableComponent,
-		HighlightFilteredTextDirective,
 		StructureTableLongTextFieldComponent,
+		StructureMenuComponent,
+		StructureTableNoEditFieldComponent,
+		StructureImpactsValidatorDirective,
 	],
 	animations: [
 		trigger('detailExpand', [
@@ -183,14 +139,28 @@ import { SubElementTableComponent } from '../sub-element-table/sub-element-table
 	],
 })
 export class StructureTableComponent implements OnDestroy {
-	expandedElement = this.structureService.expandedRows;
-	@Input() previousLink = '../../../../';
-	@Input() structureId = '';
+	dialog = inject(MatDialog);
+	private route = inject(ActivatedRoute);
+	private structureService = inject(STRUCTURE_SERVICE_TOKEN);
+	private layoutNotifier = inject(LayoutNotifierService);
+	private headerService = inject(HeaderService);
+
+	protected expandedElement = this.structureService.expandedRows;
+	previousLink = input('../../../../');
+	structureId = input('');
 	messageData: DataSource<structure | structureWithChanges> =
 		new StructureDataSource(this.structureService);
-	@Input() hasFilter: boolean = false;
-	truncatedSections: string[] = [];
-	editableStructureHeaders: (keyof structure)[] = [
+	protected structureFilter = this.structureService.structureFilter;
+
+	protected editableStructureHeaders: (
+		| keyof structure
+		| ' '
+		| 'txRate'
+		| 'publisher'
+		| 'subscriber'
+		| 'messageNumber'
+		| 'messagePeriodicity'
+	)[] = [
 		'name',
 		'nameAbbrev',
 		'description',
@@ -200,53 +170,52 @@ export class StructureTableComponent implements OnDestroy {
 		'interfaceStructureCategory',
 		'applicability',
 	];
+	protected headerIsEditable(
+		header:
+			| keyof structure
+			| ' '
+			| 'txRate'
+			| 'publisher'
+			| 'subscriber'
+			| 'messageNumber'
+			| 'messagePeriodicity'
+	): header is
+		| 'name'
+		| 'nameAbbrev'
+		| 'description'
+		| 'interfaceMaxSimultaneity'
+		| 'interfaceMinSimultaneity'
+		| 'interfaceTaskFileType'
+		| 'interfaceStructureCategory'
+		| 'applicability' {
+		return this.editableStructureHeaders.includes(header);
+	}
 
-	filter: string = '';
-	searchTerms: string = '';
-	@Input() breadCrumb: string = '';
-	preferences = this.structureService.preferences;
-	isEditing = this.preferences.pipe(
+	breadCrumb = input('');
+	protected preferences = this.structureService.preferences;
+	private _isEditing$ = this.preferences.pipe(
 		map((x) => x.inEditMode),
 		share(),
 		shareReplay(1)
 	);
-	structures = this.structureService.structures.pipe(
+	protected isEditing = toSignal(this._isEditing$, { initialValue: false });
+
+	protected structures = this.structureService.structures.pipe(
 		tap((structs) => {
-			if (this.filter !== '') {
+			if (this.structureFilter() !== '') {
 				structs.forEach((s) => {
-					if (s.elements && s.elements.length > 0) {
+					if (
+						s.elements &&
+						s.elements.length > 0 &&
+						!this.rowIsExpanded(s.id)
+					) {
 						this.rowChange(s, true);
 					}
 				});
 			}
 		})
 	);
-	structuresCount = this.structureService.structuresCount;
-	currentPage = this.structureService.currentPage;
-	currentPageSize = this.structureService.currentPageSize;
-
-	currentOffset = combineLatest([
-		this.structureService.currentPage.pipe(startWith(0), pairwise()),
-		this.structureService.currentPageSize,
-	]).pipe(
-		debounceTime(100),
-		scan((acc, [[previousPageNum, currentPageNum], currentSize]) => {
-			if (previousPageNum < currentPageNum) {
-				return (acc += currentSize);
-			} else {
-				return acc;
-			}
-		}, 10)
-	);
-
-	minPageSize = combineLatest([
-		this.currentOffset,
-		this.structuresCount,
-	]).pipe(
-		debounceTime(100),
-		switchMap(([offset, messages]) => of([offset, messages])),
-		map(([offset, length]) => Math.max(offset + 1, length + 1))
-	);
+	protected structuresCount = this.structureService.structuresCount;
 
 	private _currentElementHeaders = combineLatest([
 		this.headerService.AllElementHeaders,
@@ -259,14 +228,17 @@ export class StructureTableComponent implements OnDestroy {
 						filter(
 							(column) =>
 								allHeaders.includes(
-									column.name as keyof element
+									column.name as keyof DisplayableElementProps
 								) && column.enabled
 						),
 						distinct((r) => r.name),
-						map((header) => header.name as keyof element),
+						map(
+							(header) =>
+								header.name as keyof DisplayableElementProps
+						),
 						reduce(
 							(acc, curr) => [...acc, curr],
-							[] as (keyof element)[]
+							[] as (keyof DisplayableElementProps)[]
 						)
 					)
 				)
@@ -283,7 +255,7 @@ export class StructureTableComponent implements OnDestroy {
 						return array;
 					})
 				),
-				this.isEditing.pipe(
+				this._isEditing$.pipe(
 					switchMap((editing) =>
 						iif(
 							() => editing,
@@ -294,20 +266,22 @@ export class StructureTableComponent implements OnDestroy {
 				)
 			)
 		),
-		switchMap((finalHeaders) => of(['rowControls', ...finalHeaders])),
+		switchMap((finalHeaders) =>
+			of(['rowControls' as const, ...finalHeaders])
+		),
 		share(),
 		shareReplay(1)
 	);
 
-	currentElementHeaders = combineLatest([
+	protected currentElementHeaders = combineLatest([
 		this._currentElementHeaders,
 		this.headerService.AllElementHeaders,
 	]).pipe(
 		map(([headers, allheaders]) =>
 			headers.sort(
 				(a, b) =>
-					allheaders.indexOf(a as keyof element) -
-					allheaders.indexOf(b as keyof element)
+					allheaders.indexOf(a as keyof DisplayableElementProps) -
+					allheaders.indexOf(b as keyof DisplayableElementProps)
 			)
 		)
 	);
@@ -323,20 +297,35 @@ export class StructureTableComponent implements OnDestroy {
 						filter(
 							(column) =>
 								allHeaders.includes(
-									column.name as Extract<
-										keyof structure,
-										string
-									>
+									column.name as keyof displayableStructureFields &
+										' ' &
+										'txRate' &
+										'publisher' &
+										'subscriber' &
+										'messageNumber' &
+										'messagePeriodicity'
 								) && column.enabled
 						),
 						distinct((r) => r.name),
 						map(
 							(header) =>
-								header.name as Extract<keyof structure, string>
+								header.name as keyof displayableStructureFields &
+									' ' &
+									'txRate' &
+									'publisher' &
+									'subscriber' &
+									'messageNumber' &
+									'messagePeriodicity'
 						),
 						reduce(
 							(acc, curr) => [...acc, curr],
-							[] as Extract<keyof structure, string>[]
+							[] as (keyof displayableStructureFields &
+								' ' &
+								'txRate' &
+								'publisher' &
+								'subscriber' &
+								'messageNumber' &
+								'messagePeriodicity')[]
 						)
 					)
 				)
@@ -346,7 +335,7 @@ export class StructureTableComponent implements OnDestroy {
 			iif(
 				() => headers.length !== 0,
 				of(headers),
-				this.isEditing.pipe(
+				this._isEditing$.pipe(
 					switchMap((editing) =>
 						iif(
 							() => editing,
@@ -357,12 +346,12 @@ export class StructureTableComponent implements OnDestroy {
 				)
 			)
 		),
-		switchMap((finalHeaders) => of([' ', ...finalHeaders])),
+		switchMap((finalHeaders) => of([' ' as const, ...finalHeaders])),
 		share(),
 		shareReplay(1)
 	);
 
-	currentStructureHeaders = combineLatest([
+	protected currentStructureHeaders = combineLatest([
 		this._currentStructureHeaders,
 		this.headerService.AllStructureHeaders,
 	]).pipe(
@@ -373,144 +362,247 @@ export class StructureTableComponent implements OnDestroy {
 		)
 	);
 
-	_connectionsRoute = this.structureService.connectionsRoute;
-	_messageData = this.structureService.message.pipe(
-		takeUntil(this.structureService.done)
-	);
-	structureDialog = this.structureService.SubMessageId.pipe(
-		take(1),
-		switchMap((submessage) =>
-			this.dialog
-				.open(AddStructureDialogComponent, {
-					minWidth: '80%',
-					data: {
-						id: submessage,
-						name: this.breadCrumb,
-						structure: {
-							id: '-1',
-							name: '',
-							elements: [],
-							description: '',
-							interfaceMaxSimultaneity: '',
-							interfaceMinSimultaneity: '',
-							interfaceStructureCategory: '',
-							interfaceTaskFileType: 0,
-							applicability: {
-								id: '1',
-								name: 'Base',
-							},
-						},
-					},
-				})
-				.afterClosed()
-				.pipe(
-					take(1),
-					filter((val) => val !== undefined),
-					switchMap((value: AddStructureDialog) =>
-						iif(
-							() =>
-								value.structure.id !== '-1' &&
-								value.structure.id.length > 0,
-							this.structureService.relateStructure(
-								value.structure.id
-							),
-							this.structureService.createStructure(
-								value.structure
-							)
-						)
-					)
-				)
-		),
-		first()
-	);
-	layout = this.layoutNotifier.layout;
-	menuPosition = {
+	protected _messageData =
+		this.structureService.message.pipe(takeUntilDestroyed());
+	protected message = toSignal(this._messageData, {
+		initialValue: {
+			id: '-1',
+			gammaId: '-1',
+			name: {
+				id: '-1',
+				typeId: '1152921504606847088',
+				gammaId: '-1',
+				value: '',
+			},
+			description: {
+				id: '-1',
+				typeId: '1152921504606847090',
+				gammaId: '-1',
+				value: '',
+			},
+			subMessages: [],
+			interfaceMessageRate: {
+				id: '-1',
+				typeId: '2455059983007225763',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMessagePeriodicity: {
+				id: '-1',
+				typeId: '3899709087455064789',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMessageWriteAccess: {
+				id: '-1',
+				typeId: '2455059983007225754',
+				gammaId: '-1',
+				value: false,
+			},
+			interfaceMessageType: {
+				id: '-1',
+				typeId: '2455059983007225770',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMessageNumber: {
+				id: '-1',
+				typeId: '2455059983007225768',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMessageExclude: {
+				id: '-1',
+				typeId: '2455059983007225811',
+				gammaId: '-1',
+				value: false,
+			},
+			interfaceMessageIoMode: {
+				id: '-1',
+				typeId: '2455059983007225813',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMessageModeCode: {
+				id: '-1',
+				typeId: '2455059983007225810',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMessageRateVer: {
+				id: '-1',
+				typeId: '2455059983007225805',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMessagePriority: {
+				id: '-1',
+				typeId: '2455059983007225806',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMessageProtocol: {
+				id: '-1',
+				typeId: '2455059983007225809',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMessageRptWordCount: {
+				id: '-1',
+				typeId: '2455059983007225807',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMessageRptCmdWord: {
+				id: '-1',
+				typeId: '2455059983007225808',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMessageRunBeforeProc: {
+				id: '-1',
+				typeId: '2455059983007225812',
+				gammaId: '-1',
+				value: false,
+			},
+			interfaceMessageVer: {
+				id: '-1',
+				typeId: '2455059983007225804',
+				gammaId: '-1',
+				value: '',
+			},
+			applicability: applicabilitySentinel,
+			publisherNodes: [],
+			subscriberNodes: [],
+		},
+	});
+	protected layout = this.layoutNotifier.layout;
+	protected menuMetaData = signal<{
+		x: string;
+		y: string;
+		structure: structure;
+		url: string;
+		header:
+			| keyof displayableStructureFields
+			| ' '
+			| 'txRate'
+			| 'publisher'
+			| 'subscriber'
+			| 'messageNumber'
+			| 'messagePeriodicity';
+		isInDiff: boolean;
+		open: boolean;
+	}>({
 		x: '0',
 		y: '0',
-	};
-	matMenuTrigger = viewChild.required(MatMenuTrigger);
-	sideNav = this.structureService.sideNavContent;
-	sideNavOpened = this.sideNav.pipe(map((value) => value.opened));
-	inDiffMode = this.structureService.isInDiff.pipe(
+		url: '',
+		open: false,
+		header: ' ',
+		isInDiff: false,
+		structure: {
+			id: '-1',
+			gammaId: '-1',
+			name: {
+				id: '-1',
+				typeId: '1152921504606847088',
+				gammaId: '-1',
+				value: '',
+			},
+			nameAbbrev: {
+				id: '-1',
+				typeId: '8355308043647703563',
+				gammaId: '-1',
+				value: '',
+			},
+			description: {
+				id: '-1',
+				typeId: '1152921504606847090',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMaxSimultaneity: {
+				id: '-1',
+				typeId: '2455059983007225756',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMinSimultaneity: {
+				id: '-1',
+				typeId: '2455059983007225755',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceTaskFileType: {
+				id: '-1',
+				typeId: '2455059983007225760',
+				gammaId: '-1',
+				value: 0,
+			},
+			interfaceStructureCategory: {
+				id: '-1',
+				typeId: '2455059983007225764',
+				gammaId: '-1',
+				value: '',
+			},
+			applicability: applicabilitySentinel,
+			elements: [],
+		},
+	});
+	protected menuPositionX = writableSlice(this.menuMetaData, 'x');
+	protected menuPositionY = writableSlice(this.menuMetaData, 'y');
+	protected url = writableSlice(this.menuMetaData, 'url');
+	protected contextStructure = writableSlice(this.menuMetaData, 'structure');
+	protected menuHeader = writableSlice(this.menuMetaData, 'header');
+	protected menuDiff = writableSlice(this.menuMetaData, 'isInDiff');
+	protected menuOpen = writableSlice(this.menuMetaData, 'open');
+	protected sideNav = this.structureService.sideNavContent;
+	protected sideNavOpened = this.sideNav.pipe(map((value) => value.opened));
+	protected inDiffMode = this.structureService.isInDiff.pipe(
 		switchMap((val) => iif(() => val, of('true'), of('false')))
 	);
 
-	textExpanded: boolean = false;
-	toggleExpanded() {
-		this.textExpanded = !this.textExpanded;
-	}
-
-	constructor(
-		public dialog: MatDialog,
-		private route: ActivatedRoute,
-		@Inject(STRUCTURE_SERVICE_TOKEN)
-		private structureService: CurrentStructureService,
-		private layoutNotifier: LayoutNotifierService,
-		private headerService: HeaderService
-	) {}
-
 	ngOnDestroy(): void {
-		this.structureService.filter = '';
+		this.structureFilter.set('');
 	}
 
-	valueTracker(index: any, item: any) {
+	protected valueTracker(index: number, _item: unknown) {
 		return index;
 	}
 
-	structureTracker(index: number, item: structure | structureWithChanges) {
-		return item.id !== '-1' ? item.id : index.toString();
-	}
-	openAddElementDialog(structure: structure | structureWithChanges) {
-		const dialogData = new DefaultAddElementDialog(
-			structure?.id || '',
-			structure?.name || ''
-		);
-		let dialogRef = this.dialog.open(AddElementDialogComponent, {
-			data: dialogData,
-			minWidth: '80%',
-		});
-		let createElement = dialogRef.afterClosed().pipe(
-			filter(
-				(val) =>
-					(val !== undefined || val !== null) &&
-					val?.element !== undefined
-			),
-			switchMap((value: ElementDialog) =>
-				iif(
-					() =>
-						value.element.id !== undefined &&
-						value.element.id !== '-1' &&
-						value.element.id.length > 0,
-					this.structureService.relateElement(
-						structure.id,
-						value.element.id !== undefined ? value.element.id : '-1'
-					),
-					this.structureService.createNewElement(
-						value.element,
-						structure.id,
-						value.type.id as string
-					)
-				)
-			),
-			take(1)
-		);
-		createElement.subscribe();
+	protected structureTracker(
+		index: number,
+		item: structure | structureWithChanges
+	) {
+		return item.id !== '-1'
+			? item.id +
+					item.elements
+						.map(
+							(x) =>
+								x.id +
+								x.arrayElements.map((y) => y.id).join('::')
+						)
+						.join(':')
+			: index.toString();
 	}
 
-	rowIsExpanded(value: string) {
-		return this.structureService.expandedRows.pipe(
-			map((rows) => rows.map((s) => s.id).includes(value))
-		);
+	protected rowIsExpanded(value: `${number}`) {
+		return this.structureService
+			.expandedRows()
+			.map((s) => s.id)
+			.includes(value);
 	}
 
-	expandRow(value: structure | structureWithChanges) {
+	protected expandRow(value: structure | structureWithChanges) {
 		this.structureService.addExpandedRow = value;
 	}
-	hideRow(value: structure | structureWithChanges) {
+	protected hideRow(value: structure | structureWithChanges) {
 		this.structureService.removeExpandedRow = value;
 	}
 
-	rowChange(value: structure | structureWithChanges, type: boolean) {
+	protected rowChange(
+		value: structure | structureWithChanges,
+		type: boolean
+	) {
 		if (type) {
 			this.expandRow(value);
 		} else {
@@ -518,227 +610,51 @@ export class StructureTableComponent implements OnDestroy {
 		}
 	}
 
-	applyFilter(event: Event) {
-		const filterValue = (event.target as HTMLInputElement).value;
-		this.searchTerms = filterValue;
-		this.filter = filterValue.trim().toLowerCase();
-		this.structureService.filter = (event.target as HTMLInputElement).value;
-	}
-	isTruncated(value: string) {
-		if (this.truncatedSections.find((x) => x === value)) {
-			return true;
-		}
-		return false;
-	}
-
-	openAddStructureDialog() {
-		this.structureDialog.subscribe();
-	}
-
-	openMenu(
+	protected openMenu(
 		event: MouseEvent,
 		id: string,
-		name: string,
-		description: string,
+		_name: string,
+		_description: string,
 		structure: structure,
-		header: keyof structure,
+		header:
+			| keyof displayableStructureFields
+			| ' '
+			| 'txRate'
+			| 'publisher'
+			| 'subscriber'
+			| 'messageNumber'
+			| 'messagePeriodicity',
 		diff: string
 	) {
 		event.preventDefault();
-		this.menuPosition.x = event.clientX + 'px';
-		this.menuPosition.y = event.clientY + 'px';
-		this.matMenuTrigger().menuData = {
-			id: id,
-			name: name,
-			description: description,
-			structure: structure,
-			header: header,
-			diffMode: diff === 'true',
-			url:
-				this.route.snapshot.pathFromRoot
-					.map((r) => r.url)
-					.join()
-					.replace(/(diff)/g, '')
-					.replace(/,/g, '/')
-					.replace(/\/\//g, '') +
+		this.menuPositionX.set(event.clientX + 'px');
+		this.menuPositionY.set(event.clientY + 'px');
+		this.url.set(
+			this.route.snapshot.pathFromRoot
+				.map((r) => r.url)
+				.join()
+				.replace(/(diff)/g, '')
+				.replace(/,/g, '/')
+				.replace(/\/\//g, '') +
 				'/' +
 				id +
-				(diff === 'true' ? '/diff' : ''),
-		};
-		this.matMenuTrigger().openMenu();
+				(diff === 'true' ? '/diff' : '')
+		);
+		this.contextStructure.set(structure);
+		this.menuHeader.set(header);
+		this.menuDiff.set(diff === 'true');
+		this.menuOpen.set(true);
 	}
-
-	removeStructureDialog(id: string, name: string) {
-		this.structureService.SubMessageId.pipe(
-			take(1),
-			switchMap((subMessageId) =>
-				this.dialog
-					.open(RemoveStructureDialogComponent, {
-						data: {
-							subMessageId: subMessageId,
-							structureId: id,
-							structureName: name,
-						},
-					})
-					.afterClosed()
-					.pipe(
-						take(1),
-						switchMap((dialogResult: string) =>
-							iif(
-								() => dialogResult === 'ok',
-								this.structureService.removeStructureFromSubmessage(
-									id,
-									subMessageId
-								),
-								of()
-							)
-						)
-					)
-			)
-		).subscribe();
-	}
-
-	deleteStructureDialog(id: string, name: string) {
-		this.dialog
-			.open(DeleteStructureDialogComponent, {
-				data: {
-					structureId: id,
-					structureName: name,
-				},
-			})
-			.afterClosed()
-			.pipe(
-				take(1),
-				switchMap((dialogResult: string) =>
-					iif(
-						() => dialogResult === 'ok',
-						this.structureService.deleteStructure(id),
-						of()
-					)
-				)
-			)
-			.subscribe();
-	}
-
-	insertStructure(afterStructure?: string) {
-		this.dialog
-			.open(AddStructureDialogComponent, {
-				data: {
-					id: this.structureService.subMessageId,
-					name: this.breadCrumb,
-					structure: {
-						id: '-1',
-						name: '',
-						elements: [],
-						description: '',
-						interfaceMaxSimultaneity: '',
-						interfaceMinSimultaneity: '',
-						interfaceStructureCategory: '',
-						interfaceTaskFileType: 0,
-					},
-				},
-			})
-			.afterClosed()
-			.pipe(
-				take(1),
-				filter((val) => val !== undefined),
-				switchMap((value: AddStructureDialog) =>
-					iif(
-						() =>
-							value.structure.id !== '-1' &&
-							value.structure.id.length > 0,
-						this.structureService.relateStructure(
-							value.structure.id,
-							afterStructure
-						),
-						this.structureService.createStructure(
-							value.structure,
-							afterStructure
-						)
-					)
-				)
-			)
-			.subscribe();
-	}
-
-	copyStructure(
-		structure: structure | structureWithChanges,
-		afterStructure?: string
+	protected getHeaderByName(
+		value:
+			| keyof structure
+			| ' '
+			| 'txRate'
+			| 'publisher'
+			| 'subscriber'
+			| 'messageNumber'
+			| 'messagePeriodicity'
 	) {
-		this.dialog
-			.open(AddStructureDialogComponent, {
-				data: {
-					id: this.structureService.subMessageId,
-					name: this.breadCrumb,
-					structure: structuredClone(structure),
-				},
-			})
-			.afterClosed()
-			.pipe(
-				take(1),
-				filter((val) => val !== undefined),
-				switchMap((result) =>
-					this.structureService.copyStructure(
-						result.structure,
-						afterStructure
-					)
-				)
-			)
-			.subscribe();
-	}
-	openDescriptionDialog(description: string, structureId: string) {
-		this.dialog
-			.open(EditViewFreeTextFieldDialogComponent, {
-				data: {
-					original: JSON.parse(JSON.stringify(description)) as string,
-					type: 'Description',
-					return: description,
-				},
-				minHeight: '60%',
-				minWidth: '60%',
-			})
-			.afterClosed()
-			.pipe(
-				take(1),
-				switchMap((response: EditViewFreeTextDialog | string) =>
-					iif(
-						() =>
-							response === 'ok' ||
-							response === 'cancel' ||
-							response === undefined,
-						//do nothing
-						of(),
-						//change description
-						this.structureService.partialUpdateStructure({
-							id: structureId,
-							description: (response as EditViewFreeTextDialog)
-								.return,
-						})
-					)
-				)
-			)
-			.subscribe();
-	}
-
-	getHeaderByName(value: keyof structure) {
 		return this.headerService.getHeaderByName(value, 'structure');
-	}
-
-	viewDiff(open: boolean, value: difference, header: string) {
-		this.structureService.sideNav = {
-			opened: open,
-			field: header,
-			currentValue: value.currentValue as string | number | applic,
-			previousValue: value.previousValue as
-				| string
-				| number
-				| applic
-				| undefined,
-			transaction: value.transactionToken,
-		};
-	}
-	setPage(event: PageEvent) {
-		this.structureService.pageSize = event.pageSize;
-		this.structureService.page = event.pageIndex;
 	}
 }

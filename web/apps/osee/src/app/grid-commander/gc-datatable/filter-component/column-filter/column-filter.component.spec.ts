@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ColumnFilterComponent } from './column-filter.component';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule } from '@angular/forms';
@@ -21,6 +21,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('ColumnFilterComponent', () => {
 	let component: ColumnFilterComponent;
@@ -31,7 +35,6 @@ describe('ColumnFilterComponent', () => {
 			imports: [
 				CommonModule,
 				FormsModule,
-				HttpClientTestingModule,
 				MatInputModule,
 				MatDialogModule,
 				MatAutocompleteModule,
@@ -40,7 +43,11 @@ describe('ColumnFilterComponent', () => {
 				ColumnFilterComponent,
 				InputControlComponent,
 			],
-			providers: [{ provide: MatDialogRef, useValue: {} }],
+			providers: [
+				{ provide: MatDialogRef, useValue: {} },
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+			],
 		}).compileComponents();
 	});
 

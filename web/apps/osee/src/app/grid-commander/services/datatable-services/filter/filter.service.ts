@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, combineLatest, from, of } from 'rxjs';
 import {
 	concatMap,
@@ -26,6 +26,8 @@ import { DataTableService } from '../datatable.service';
 	providedIn: 'root',
 })
 export class FilterService {
+	private dataTableService = inject(DataTableService);
+
 	//this creates the filtering string that will be used in the filtering function -- getFilterPredicate() in gc-datatable.component.ts
 	private _filterString = new BehaviorSubject<string>('');
 
@@ -114,8 +116,6 @@ export class FilterService {
 	updateColumnsToFilter(columns: string[]) {
 		this.selectedColumnsToFilter.next(columns);
 	}
-
-	constructor(private dataTableService: DataTableService) {}
 
 	public get selectedColumnsToFilter() {
 		return this._selectedColumnsToFilter;

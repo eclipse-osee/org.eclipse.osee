@@ -19,7 +19,7 @@
 		*ngTemplateOutlet="
 			recursiveMenu;
 			context: {
-				$implicit: (getElementsWithPermission(navElements) | async)
+				$implicit: (getElementsWithPermission(navElements) | async),
 			}
 		"></ng-template>
 </mat-nav-list>
@@ -37,12 +37,12 @@
 							element.isDropdownOpen = !element.isDropdownOpen
 						"
 						[ngClass]="{
-							'tw-bg-primary-100 tw-shadow-md hover:tw-bg-primary-400 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900':
+							'tw-rounded-l-2xl tw-bg-primary-100 tw-shadow-md hover:tw-bg-primary-400 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900':
 								router.url.includes(element.routerLink) &&
 								!element.isDropdownOpen,
 							'dark:hover:tw-bg-background-disabled-button':
 								router.url.includes(element.routerLink) &&
-								!element.isDropdownOpen
+								!element.isDropdownOpen,
 						}"
 						class="tw-py-6">
 						<div class="tw-flex tw-items-center tw-justify-between">
@@ -74,10 +74,10 @@
 					<mat-list-item
 						(click)="closeTopLevelNav()"
 						[ngClass]="{
-							'tw-bg-primary-100 tw-shadow-md hover:tw-bg-primary-400 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900':
+							'tw-rounded-l-3xl tw-bg-primary-100 tw-shadow-md hover:tw-bg-primary-400 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900':
 								router.url === element.routerLink,
 							'dark:hover:tw-bg-background-disabled-button':
-								router.url !== element.routerLink
+								router.url !== element.routerLink,
 						}"
 						class="tw-py-6">
 						<a
@@ -100,7 +100,7 @@
 				<!-- If the element has children and dropdown is open -->
 				@if (element.children && element.isDropdownOpen) {
 					<mat-nav-list class="tw-py-0">
-						<mat-divider></mat-divider>
+						<mat-divider inset="true"></mat-divider>
 						<div class="tw-pl-4">
 							<ng-container
 								*ngTemplateOutlet="
@@ -109,7 +109,7 @@
 										$implicit:
 											(getElementsWithPermission(
 												element.children
-											) | async)
+											) | async),
 									}
 								"></ng-container>
 						</div>

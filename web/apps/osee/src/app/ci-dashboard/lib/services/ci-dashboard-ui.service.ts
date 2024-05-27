@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { UiService } from '@osee/shared/services';
 import { BehaviorSubject } from 'rxjs';
@@ -19,10 +19,8 @@ import { BehaviorSubject } from 'rxjs';
 	providedIn: 'root',
 })
 export class CiDashboardUiService {
-	constructor(
-		private uiService: UiService,
-		private router: Router
-	) {}
+	private uiService = inject(UiService);
+	private router = inject(Router);
 
 	private _ciSetId = new BehaviorSubject<string>('-1');
 

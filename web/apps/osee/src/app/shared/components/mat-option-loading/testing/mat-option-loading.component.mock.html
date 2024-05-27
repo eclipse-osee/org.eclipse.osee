@@ -12,7 +12,7 @@
 -->
 @for (opt of _options | async; track opt) {
 <ng-container
-	[ngTemplateOutlet]="template"
+	[ngTemplateOutlet]="template()"
 	[ngTemplateOutletContext]="{ $implicit: opt, opt: opt }">
 </ng-container>
 }

@@ -153,8 +153,8 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
 
    private InterfaceStructureToken parseStructure(BranchId branch, InterfaceConnection connection,
       InterfaceStructureToken structure, ArtifactId viewId, List<InterfaceStructureElementToken> defaultElements) {
-      boolean shouldValidate = connection.getTransportType().isByteAlignValidation();
-      int validationSize = connection.getTransportType().getByteAlignValidationSize();
+      boolean shouldValidate = connection.getTransportType().getByteAlignValidation().getValue();
+      int validationSize = connection.getTransportType().getByteAlignValidationSize().getValue();
       Collection<InterfaceStructureElementToken> elements = new LinkedList<>();
       elements.addAll(defaultElements.size() > 0 ? defaultElements : interfaceElementApi.getAllRelated(branch,
          structure.getArtifactId(), viewId));
@@ -201,7 +201,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
                      previousElement.setValidationSize(validationSize);
                      tempElements.add(previousElement);
                   }
-                  if (!currentElement.isInterfaceElementBlockData() && currentElement.getInterfacePlatformTypeWordSize() > 1 && (previousElement.getEndWord() + 1) % currentElement.getInterfacePlatformTypeWordSize() != 0) {
+                  if (!currentElement.isInterfaceElementBlockData().getValue() && currentElement.getInterfacePlatformTypeWordSize() > 1 && (previousElement.getEndWord() + 1) % currentElement.getInterfacePlatformTypeWordSize() != 0) {
                      /**
                       * Make sure elements of size larger than 2 words start on m*n indexed words
                       */
@@ -239,7 +239,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
                      tempElement.setValidationSize(validationSize);
                      tempElements.add(tempElement);
                   }
-                  if (!currentElement.isInterfaceElementBlockData() && !isArray && currentElement.getEndWord() % 2 != 1 && shouldValidate) {
+                  if (!currentElement.isInterfaceElementBlockData().getValue() && !isArray && currentElement.getEndWord() % 2 != 1 && shouldValidate) {
                      /**
                       * Rule for making sure next element on next structure sent is on boundary of 2n
                       */
@@ -268,7 +268,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
                previousElement = currentElement;
 
                if (!elementIterator.hasNext()) {
-                  if (!currentElement.isInterfaceElementBlockData() && !isArray && currentElement.getEndByte() != ((validationSize / 2) - 1)) {
+                  if (!currentElement.isInterfaceElementBlockData().getValue() && !isArray && currentElement.getEndByte() != ((validationSize / 2) - 1)) {
                      /**
                       * Rule for making sure last element ends on last byte of word(no partials)
                       */
@@ -282,7 +282,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
                      tempElement.setValidationSize(validationSize);
                      tempElements.add(tempElement);
                   }
-                  if (!currentElement.isInterfaceElementBlockData() && !isArray && currentElement.getEndWord() % 2 != 1 && shouldValidate) {
+                  if (!currentElement.isInterfaceElementBlockData().getValue() && !isArray && currentElement.getEndWord() % 2 != 1 && shouldValidate) {
                      /**
                       * Rule for making sure next element on next structure sent is on boundary of 2n
                       */
@@ -555,14 +555,14 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       if (message.isInvalid()) {
          return InterfaceStructureToken.SENTINEL;
       }
-      boolean shouldValidate = connection.getTransportType().isByteAlignValidation();
-      int validationSize = connection.getTransportType().getByteAlignValidationSize();
+      boolean shouldValidate = connection.getTransportType().getByteAlignValidation().getValue();
+      int validationSize = connection.getTransportType().getByteAlignValidationSize().getValue();
       ApplicabilityToken applic = message.getApplicability();
       String initiatingNode = "Node"; // This should always be overwritten below, but initializing just in case.
       if (message.getPublisherNodes().size() > 0) {
-         initiatingNode = message.getPublisherNodes().get(0).getName();
+         initiatingNode = message.getPublisherNodes().get(0).getName().getValue();
       }
-      String messageNumber = message.getInterfaceMessageNumber();
+      String messageNumber = message.getInterfaceMessageNumber().getValue();
       Long id = 0L;
 
       InterfaceStructureCategoryAttribute categoryEnum = new InterfaceStructureCategoryAttribute();
@@ -606,7 +606,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
 
       // Submessages
       for (InterfaceSubMessageToken subMessage : message.getSubMessages()) {
-         String number = subMessage.getInterfaceSubMessageNumber();
+         String number = subMessage.getInterfaceSubMessageNumber().getValue();
          List<InterfaceStructureToken> structures = subMessage.getArtifactReadable().getRelatedList(
             CoreRelationTypes.InterfaceSubMessageContent_Structure).stream().map(
                s -> new InterfaceStructureToken(s)).collect(Collectors.toList());
@@ -620,8 +620,8 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
             Integer minSimult = null;
             Integer maxSimult = null;
             for (InterfaceStructureToken struct : structures) {
-               String min = struct.getInterfaceMinSimultaneity();
-               String max = struct.getInterfaceMaxSimultaneity();
+               String min = struct.getInterfaceMinSimultaneity().getValue();
+               String max = struct.getInterfaceMaxSimultaneity().getValue();
                if (Strings.isNumeric(min) && Strings.isNumeric(max)) {
                   minSimult = minSimult == null ? Integer.parseInt(min) : minSimult + Integer.parseInt(min);
                   maxSimult = maxSimult == null ? Integer.parseInt(max) : maxSimult + Integer.parseInt(max);
@@ -663,12 +663,12 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
          e.setIncludedInCounts(true);
          e.setShouldValidate(shouldValidate);
          e.setValidationSize(validationSize);
-         if (e.getName().equals("Insert Spare")) {
+         if (e.getName().getValue().equals("Insert Spare")) {
             PlatformTypeToken spareType = new PlatformTypeToken(0L, "UINTEGER", "unsigned integer", "32", "", "", "");
             spareType.setInterfacePlatformTypeValidRangeDescription("n/a");
             e.setName("Byte Alignment Spare");
             e.setPlatformType(spareType);
-            e.setLogicalType("unsigned integer");
+            //            e.setLogicalType("unsigned integer");
          }
       });
 
@@ -688,22 +688,21 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
             offsetType.setInterfacePlatformTypeValidRangeDescription("Calculated");
             offsetElement.setInterfaceElementAlterable(true);
          } else {
-            offsetElement.setInterfacePlatformTypeMinval(offset + "");
-            offsetElement.setInterfacePlatformTypeMaxval(offset + "");
             offsetType.setInterfacePlatformTypeMinval(offset + "");
             offsetType.setInterfacePlatformTypeMaxval(offset + "");
 
             // If the current submessage has a static size, calculate and store the total size of the submessage (sum of struct size * simult)
             // If not a static size, the rest of the offsets can not be calculated, so break the loop
             InterfaceStructureElementToken numStructsElement = messageHeader.getElements().get(offsetIndex - 1);
-            String minNumElements = numStructsElement.getInterfacePlatformTypeMinval();
-            String maxNumElements = numStructsElement.getInterfacePlatformTypeMaxval();
+            String minNumElements = numStructsElement.getPlatformType().getInterfacePlatformTypeMinval().getValue();
+            String maxNumElements = numStructsElement.getPlatformType().getInterfacePlatformTypeMaxval().getValue();
             if (Strings.isNumeric(minNumElements) && Strings.isNumeric(maxNumElements) && minNumElements.equals(
                maxNumElements)) {
                InterfaceSubMessageToken submessage =
                   ((List<InterfaceSubMessageToken>) message.getSubMessages()).get(submessageNumber - 1);
                for (InterfaceStructureToken structure : submessageStructures.get(submessage.getArtifactId())) {
-                  offset += structure.getSizeInBytes() * Integer.parseInt(structure.getInterfaceMaxSimultaneity());
+                  offset +=
+                     structure.getSizeInBytes() * Integer.parseInt(structure.getInterfaceMaxSimultaneity().getValue());
                }
             } else {
                isCalculated = true;

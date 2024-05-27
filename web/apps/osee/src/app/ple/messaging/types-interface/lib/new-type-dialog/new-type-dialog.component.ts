@@ -10,8 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
 import { NewTypeFormComponent } from '@osee/messaging/shared/forms';
+import { PlatformType } from '@osee/messaging/shared/types';
 
 @Component({
 	selector: 'osee-new-type-dialog',
@@ -21,5 +23,8 @@ import { NewTypeFormComponent } from '@osee/messaging/shared/forms';
 	imports: [NewTypeFormComponent],
 })
 export class NewTypeDialogComponent {
-	constructor() {}
+	private dialog = inject(MatDialogRef<NewTypeDialogComponent>);
+	closeDialog(result: PlatformType) {
+		this.dialog.close(result);
+	}
 }

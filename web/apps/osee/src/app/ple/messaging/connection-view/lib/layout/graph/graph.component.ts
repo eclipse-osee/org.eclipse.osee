@@ -11,7 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, NgClass, NgTemplateOutlet } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit, viewChild } from '@angular/core';
+import {
+	Component,
+	Input,
+	OnDestroy,
+	OnInit,
+	viewChild,
+	inject,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatLabel } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
@@ -27,19 +34,15 @@ import type {
 	OseeEdge,
 	OseeNode,
 	connection,
-	connectionWithChanges,
-	newConnection,
-	node,
 	nodeData,
-	nodeDataWithChanges,
 } from '@osee/messaging/shared/types';
 import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { Subject } from 'rxjs';
 import { filter, switchMap, take, takeUntil } from 'rxjs/operators';
 import { CreateConnectionDialogComponent } from '../../dialogs/create-connection-dialog/create-connection-dialog.component';
 import { CreateNewNodeDialogComponent } from '../../dialogs/create-new-node-dialog/create-new-node-dialog.component';
-import { GraphLinkMenuComponent } from '../../menu/graph-link-menu/graph-link-menu.component';
-import { GraphNodeMenuComponent } from '../../menu/graph-node-menu/graph-node-menu.component';
+import { GraphLinkMenuComponent } from '../../menu/graph-link/graph-link-menu.component';
+import { GraphNodeMenuComponent } from '../../menu/graph-node/graph-node-menu.component';
 import { CurrentGraphService } from '../../services/current-graph.service';
 
 @Component({
@@ -65,8 +68,11 @@ import { CurrentGraphService } from '../../services/current-graph.service';
 	],
 })
 export class GraphComponent implements OnInit, OnDestroy {
+	private graphService = inject(CurrentGraphService);
+	dialog = inject(MatDialog);
+
 	private _done = new Subject<void>();
-	@Input() editMode: boolean = false;
+	@Input() editMode = false;
 	data = this.graphService.nodes.pipe(takeUntil(this._done));
 	update = this.graphService.updated;
 	linkPosition = {
@@ -86,10 +92,7 @@ export class GraphComponent implements OnInit, OnDestroy {
 	graphMenuTrigger = viewChild.required<MatMenuTrigger>('graphMenuTrigger');
 
 	_messageRoute = this.graphService.messageRoute;
-	constructor(
-		private graphService: CurrentGraphService,
-		public dialog: MatDialog
-	) {}
+
 	ngOnDestroy(): void {
 		this._done.next();
 		this._done.complete();
@@ -101,15 +104,15 @@ export class GraphComponent implements OnInit, OnDestroy {
 
 	openLinkDialog(
 		event: MouseEvent,
-		value: OseeEdge<connection | connectionWithChanges>,
-		nodes: OseeNode<node | nodeData | nodeDataWithChanges>[]
+		value: OseeEdge<connection>,
+		nodes: OseeNode<nodeData>[]
 	) {
 		event.preventDefault();
 		this.linkPosition.x = event.clientX + 'px';
 		this.linkPosition.y = event.clientY + 'px';
 		//find node names based on value.data.source and value.data.target
-		let source = nodes.find((node) => node.id === value.source);
-		let target = nodes.find((node) => node.id === value.target);
+		const source = nodes.find((node) => node.id === value.source);
+		const target = nodes.find((node) => node.id === value.target);
 		this.linkMenuTrigger().menuData = {
 			data: value.data,
 			source: source,
@@ -122,14 +125,14 @@ export class GraphComponent implements OnInit, OnDestroy {
 
 	openNodeDialog(
 		event: MouseEvent,
-		value: OseeNode<node | nodeData | nodeDataWithChanges>,
-		edges: OseeEdge<connection | connectionWithChanges>[]
+		value: OseeNode<nodeData>,
+		edges: OseeEdge<connection>[]
 	) {
 		event.preventDefault();
 		this.nodePosition.x = event.clientX + 'px';
 		this.nodePosition.y = event.clientY + 'px';
-		let source = edges.filter((edge) => edge.source === value.id);
-		let target = edges.filter((edge) => edge.target === value.id);
+		const source = edges.filter((edge) => edge.source === value.id);
+		const target = edges.filter((edge) => edge.target === value.id);
 		this.nodeMenuTrigger().menuData = {
 			data: value.data,
 			sources: source,
@@ -144,7 +147,7 @@ export class GraphComponent implements OnInit, OnDestroy {
 		event.stopPropagation();
 		event.preventDefault();
 		//hacky way of keeping the event to white space only instead of activating on right mouse click of other elements
-		let target = event.target as HTMLElement;
+		const target = event.target as HTMLElement;
 		if (
 			target.attributes
 				.getNamedItem('class')
@@ -159,13 +162,13 @@ export class GraphComponent implements OnInit, OnDestroy {
 	}
 
 	createNewNode() {
-		let dialogRef = this.dialog.open(CreateNewNodeDialogComponent);
+		const dialogRef = this.dialog.open(CreateNewNodeDialogComponent);
 		dialogRef
 			.afterClosed()
 			.pipe(
 				take(1),
 				filter(
-					(dialogResponse: node) =>
+					(dialogResponse: nodeData) =>
 						dialogResponse !== undefined && dialogResponse !== null
 				),
 				switchMap((results) => this.graphService.createNewNode(results))
@@ -174,7 +177,7 @@ export class GraphComponent implements OnInit, OnDestroy {
 	}
 
 	createNewConnection() {
-		let dialogRef = this.dialog.open(CreateConnectionDialogComponent, {
+		const dialogRef = this.dialog.open(CreateConnectionDialogComponent, {
 			minWidth: '40%',
 		});
 		dialogRef
@@ -182,15 +185,10 @@ export class GraphComponent implements OnInit, OnDestroy {
 			.pipe(
 				take(1),
 				filter(
-					(dialogResponse: newConnection) =>
+					(dialogResponse: connection) =>
 						dialogResponse !== undefined && dialogResponse !== null
 				),
-				switchMap((res) =>
-					this.graphService.createNewConnection(
-						res.connection as connection,
-						res.nodeIds
-					)
-				)
+				switchMap((res) => this.graphService.createNewConnection(res))
 			)
 			.subscribe();
 	}

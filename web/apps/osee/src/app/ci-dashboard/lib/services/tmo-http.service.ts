@@ -11,11 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { DefReference, ScriptBatch, SetDiff } from '../types/tmo';
 import { ResultReference } from '../types/tmo';
 import { apiURL } from '@osee/environments';
-import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 import { FilesService } from '@osee/shared/services';
 import { Observable } from 'rxjs';
 import { HttpParamsType } from '@osee/shared/types';
@@ -24,10 +24,8 @@ import { HttpParamsType } from '@osee/shared/types';
 	providedIn: 'root',
 })
 export class TmoHttpService {
-	constructor(
-		private http: HttpClient,
-		private fileService: FilesService
-	) {}
+	private http = inject(HttpClient);
+	private fileService = inject(FilesService);
 
 	getScriptDefList(branchId: string | number, setId: string | number) {
 		return this.http.get<DefReference[]>(

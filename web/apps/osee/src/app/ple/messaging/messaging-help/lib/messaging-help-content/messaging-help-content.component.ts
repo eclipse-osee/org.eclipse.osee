@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { MarkdownComponent } from 'ngx-markdown';
 import { ActivatedRoute } from '@angular/router';
@@ -24,10 +24,13 @@ import { HelpService } from '@osee/shared/services/help';
 	templateUrl: './messaging-help-content.component.html',
 })
 export class MessagingHelpContentComponent {
-	constructor(
-		private route: ActivatedRoute,
-		private helpService: HelpService
-	) {
+	private route = inject(ActivatedRoute);
+	private helpService = inject(HelpService);
+
+	/** Inserted by Angular inject() migration for backwards compatibility */
+	constructor(...args: unknown[]);
+
+	constructor() {
 		this.route.paramMap.subscribe((params) => {
 			this.id.next(params.get('id') || '');
 		});

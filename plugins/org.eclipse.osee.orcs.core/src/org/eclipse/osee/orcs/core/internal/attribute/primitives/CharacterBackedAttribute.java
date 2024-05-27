@@ -42,4 +42,5 @@ public abstract class CharacterBackedAttribute<T> extends AttributeImpl<T> {
       Conditions.checkNotNull(value, "Attribute value", "attribute id [%s]", getId());
       return getDataProxy().setValue(value);
    }
+
 }

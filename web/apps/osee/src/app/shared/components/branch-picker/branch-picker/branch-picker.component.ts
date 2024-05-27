@@ -10,7 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+	Component,
+	Input,
+	OnChanges,
+	SimpleChanges,
+	inject,
+} from '@angular/core';
 import { BranchCategoryService } from '../../internal/services/branch-category.service';
 import { BranchSelectorComponent } from '../internal/components/branch-selector/branch-selector.component';
 import { BranchTypeSelectorComponent } from '../internal/components/branch-type-selector/branch-type-selector.component';
@@ -24,16 +30,19 @@ import { WorktypeService } from '@osee/shared/services';
 	imports: [BranchTypeSelectorComponent, BranchSelectorComponent],
 })
 export class BranchPickerComponent implements OnChanges {
-	@Input() category: string = '0';
+	private branchCategoryService = inject(BranchCategoryService);
+	private workTypeService = inject(WorktypeService);
+
+	@Input() category = '0';
 	@Input() workType: workType = 'None';
-	constructor(
-		private branchCategoryService: BranchCategoryService,
-		private workTypeService: WorktypeService
-	) {
+
+	/** Inserted by Angular inject() migration for backwards compatibility */
+	constructor(...args: unknown[]);
+	constructor() {
 		this.branchCategoryService.category = this.category;
 		this.workTypeService.workType = this.workType;
 	}
-	ngOnChanges(changes: SimpleChanges): void {
+	ngOnChanges(_changes: SimpleChanges): void {
 		this.branchCategoryService.category = this.category;
 		this.workTypeService.workType = this.workType;
 	}

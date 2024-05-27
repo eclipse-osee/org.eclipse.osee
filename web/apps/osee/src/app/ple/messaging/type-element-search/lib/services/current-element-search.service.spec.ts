@@ -27,6 +27,7 @@ describe('CurrentElementSearchService', () => {
 	let service: CurrentElementSearchService;
 	let searchService: SearchService;
 	let routerStateService: RouterStateService;
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	let searchServiceSpy: jasmine.SpyObj<SearchService>;
 	let platformTypeSpy: jasmine.SpyObj<PlatformTypesService>;
 	let scheduler: TestScheduler;

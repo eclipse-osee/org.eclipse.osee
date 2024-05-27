@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-const TWCLASSES = [
+const _TWCLASSES = [
 	'',
 	'tw-text-primary-50',
 	'tw-text-primary-100',
@@ -54,8 +54,8 @@ const TWCLASSES = [
 	'tw-text-accent-900',
 ] as const;
 
-const TWCOLORS = ['', 'primary', 'accent', 'warning', 'success'] as const;
-const TWSHADES = [
+const _TWCOLORS = ['', 'primary', 'accent', 'warning', 'success'] as const;
+const _TWSHADES = [
 	'',
 	'50',
 	'100',
@@ -68,14 +68,14 @@ const TWSHADES = [
 	'800',
 	'900',
 ] as const;
-const ICONVARIANTS = ['', 'outlined', 'round', 'sharp', 'two-tone'] as const;
+const _ICONVARIANTS = ['', 'outlined', 'round', 'sharp', 'two-tone'] as const;
 
-export type twColor = (typeof TWCOLORS)[number];
+export type twColor = (typeof _TWCOLORS)[number];
 
-export type twShade = (typeof TWSHADES)[number];
+export type twShade = (typeof _TWSHADES)[number];
 
-export type iconVariant = (typeof ICONVARIANTS)[number];
+export type iconVariant = (typeof _ICONVARIANTS)[number];
 
-type twClasses = (typeof TWCLASSES)[number];
+type twClasses = (typeof _TWCLASSES)[number];
 
 export type twColorClasses = `` | twClasses | `${twClasses} dark:${twClasses}`;

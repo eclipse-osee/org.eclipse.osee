@@ -19,6 +19,7 @@ import {
 	effect,
 	input,
 	viewChild,
+	inject,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
@@ -82,6 +83,8 @@ import { nodeTraceReportHeaderDetails } from './trace-report-table-headers';
 	templateUrl: './trace-report-table.component.html',
 })
 export class TraceReportTableComponent {
+	private headerService = inject(HeaderService);
+
 	data = input.required<NodeTraceReportItem[]>();
 
 	sort = viewChild.required(MatSort);
@@ -141,8 +144,6 @@ export class TraceReportTableComponent {
 		distinct()
 	);
 
-	constructor(private headerService: HeaderService) {}
-
 	filterPredicate(data: NodeTraceReportItem, filter: string) {
 		const filterLower = filter.toLowerCase();
 		if (
@@ -174,7 +175,7 @@ export class TraceReportTableComponent {
 			header
 		);
 	}
-	trackRows(index: number, item: NodeTraceReportItem) {
+	trackRows(_index: number, item: NodeTraceReportItem) {
 		return item.id;
 	}
 

@@ -10,15 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import type { PlatformType } from '@osee/messaging/shared/types';
+import { transactionResultMock } from '@osee/transactions/testing';
+import type { legacyTransaction } from '@osee/transactions/types';
 import { of } from 'rxjs';
 import { TypesUIService } from '../services/ui/types-ui.service';
 import { platformTypes1 } from './platform-types.response.mock';
-import type { PlatformType } from '@osee/messaging/shared/types';
-import { transaction } from '@osee/shared/types';
-import {
-	transactionMock,
-	transactionResultMock,
-} from '@osee/shared/transactions/testing';
 export const typesUIServiceMock: Partial<TypesUIService> = {
 	get types() {
 		return of(platformTypes1);
@@ -30,10 +27,12 @@ export const typesUIServiceMock: Partial<TypesUIService> = {
 	getTypeFromBranch(branchId: string, typeId: string) {
 		return of(platformTypes1[0]);
 	},
-	changeType(type: Partial<PlatformType>) {
-		return of(transactionMock);
-	},
-	performMutation(body: transaction) {
+	changeType(type: PlatformType) {
 		return of(transactionResultMock);
 	},
+	performMutation(body: legacyTransaction) {
+		return of(transactionResultMock);
+	},
+	searchLocation: of(''),
+	detailLocation: of(''),
 };

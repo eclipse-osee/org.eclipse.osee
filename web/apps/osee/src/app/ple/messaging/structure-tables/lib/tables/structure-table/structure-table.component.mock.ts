@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from '@angular/core';
+import { Component, Input, input } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import type { structure } from '@osee/messaging/shared/types';
 import { Observable, of } from 'rxjs';
@@ -21,12 +21,8 @@ import { Observable, of } from 'rxjs';
 	standalone: true,
 })
 // eslint-disable-next-line @angular-eslint/component-class-suffix
-export class StructureTableComponentMock {
-	@Input() previousLink = '../../../../';
-	@Input() structureId = '';
-	@Input() messageData: Observable<MatTableDataSource<structure>> = of(
-		new MatTableDataSource<structure>()
-	);
-	@Input() hasFilter: boolean = false;
-	@Input() breadCrumb: string = '';
+export class MockStructureTableComponent {
+	previousLink = input('../../../../');
+	structureId = input('');
+	breadCrumb = input('');
 }

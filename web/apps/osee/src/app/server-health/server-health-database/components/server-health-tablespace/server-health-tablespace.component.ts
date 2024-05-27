@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, NgClass } from '@angular/common';
-import { Component, effect, viewChild } from '@angular/core';
+import { Component, effect, viewChild, inject } from '@angular/core';
 import { MatSort, MatSortHeader, Sort } from '@angular/material/sort';
 import {
 	MatCell,
@@ -52,7 +52,8 @@ import { tablespace } from '../../../shared/types/server-health-types';
 	templateUrl: './server-health-tablespace.component.html',
 })
 export class ServerHealthTablespaceComponent {
-	constructor(private serverHealthHttpService: ServerHealthHttpService) {}
+	private serverHealthHttpService = inject(ServerHealthHttpService);
+
 	private sort = viewChild.required(MatSort);
 
 	private _updateDataSourceSort = effect(() => {
@@ -188,7 +189,7 @@ export class ServerHealthTablespaceComponent {
 	);
 }
 
-interface orderByPair {
+type orderByPair = {
 	orderByName: string;
 	orderByDirection: string;
-}
+};

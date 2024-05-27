@@ -21,11 +21,13 @@ import org.eclipse.osee.mim.InterfaceElementApi;
 import org.eclipse.osee.mim.InterfaceEnumerationApi;
 import org.eclipse.osee.mim.InterfaceEnumerationSetApi;
 import org.eclipse.osee.mim.InterfaceMessageApi;
+import org.eclipse.osee.mim.InterfaceMessagePeriodicityApi;
 import org.eclipse.osee.mim.InterfaceMessageTypeApi;
 import org.eclipse.osee.mim.InterfaceNodeViewApi;
 import org.eclipse.osee.mim.InterfacePlatformTypeApi;
 import org.eclipse.osee.mim.InterfaceRateApi;
 import org.eclipse.osee.mim.InterfaceStructureApi;
+import org.eclipse.osee.mim.InterfaceStructureCategoryApi;
 import org.eclipse.osee.mim.InterfaceSubMessageApi;
 import org.eclipse.osee.mim.InterfaceUnitApi;
 import org.eclipse.osee.mim.InterfaceValidationApi;
@@ -79,6 +81,8 @@ public class MimApiImpl implements MimApi {
    private InterfaceValidationApi interfaceValidationApi;
    private MimArtifactsApi mimArtifactsApi;
    private MimReportsApi mimReportsApi;
+   private InterfaceStructureCategoryApi interfaceStructureCategoryApi;
+   private InterfaceMessagePeriodicityApi interfaceMessagePeriodicityApi;
    private MimPeerReviewApi mimPeerReviewApi;
 
    public void bindOrcsApi(OrcsApi orcsApi) {
@@ -147,9 +151,9 @@ public class MimApiImpl implements MimApi {
       this.crossReferenceApi = new CrossReferenceApiImpl(orcsApi);
       this.interfaceValidationApi =
          new InterfaceValidationApiImpl(this.interfaceConnectionViewApi, this.interfaceStructureApi);
-      
-
-      this.mimPeerReviewApi = new MimPeerReviewApiImpl(orcsApi, atsApi);
+      this.interfaceStructureCategoryApi = new InterfaceStructureCategoryApiImpl(orcsApi);
+      this.interfaceMessagePeriodicityApi = new InterfaceMessagePeriodicityApiImpl(orcsApi);
+	  this.mimPeerReviewApi = new MimPeerReviewApiImpl(orcsApi, atsApi);
    }
 
    @Override
@@ -263,6 +267,16 @@ public class MimApiImpl implements MimApi {
    @Override
    public InterfaceValidationApi getInterfaceValidationApi() {
       return interfaceValidationApi;
+   }
+
+   @Override
+   public InterfaceStructureCategoryApi getInterfaceStructureCategoryApi() {
+      return this.interfaceStructureCategoryApi;
+   }
+
+   @Override
+   public InterfaceMessagePeriodicityApi getInterfaceMessagePeriodicityApi() {
+      return this.interfaceMessagePeriodicityApi;
    }
 
 }

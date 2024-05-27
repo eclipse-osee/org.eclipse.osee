@@ -25,8 +25,8 @@ public class MimImportSummary {
    private final List<InterfaceMessageToken> messages;
    private final List<InterfaceSubMessageToken> subMessages;
    private final List<InterfaceStructureToken> structures;
-   private final List<InterfaceElementImportToken> elements;
-   private final List<PlatformTypeImportToken> platformTypes;
+   private final List<InterfaceStructureElementToken> elements;
+   private final List<PlatformTypeToken> platformTypes;
    private final List<InterfaceEnumerationSet> enumSets;
    private final List<InterfaceEnumeration> enums;
    private final List<CrossReference> crossReferences;
@@ -104,11 +104,11 @@ public class MimImportSummary {
       return structures;
    }
 
-   public List<InterfaceElementImportToken> getElements() {
+   public List<InterfaceStructureElementToken> getElements() {
       return elements;
    }
 
-   public List<PlatformTypeImportToken> getPlatformTypes() {
+   public List<PlatformTypeToken> getPlatformTypes() {
       return platformTypes;
    }
 

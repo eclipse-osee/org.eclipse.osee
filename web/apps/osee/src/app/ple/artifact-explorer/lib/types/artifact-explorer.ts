@@ -12,46 +12,45 @@
  **********************************************************************/
 import {
 	artifactWithRelations,
-	artifactTypeIcon,
 	operationType,
 } from '@osee/artifact-with-relations/types';
 import { attribute } from '@osee/shared/types';
 
-interface abstractTab {
+type abstractTab = {
 	tabId: string;
 	tabType: TabType;
 	tabTitle: string;
 	branchId: string;
 	viewId: string;
-}
+};
 
-export interface artifactTab extends abstractTab {
+export type artifactTab = {
 	tabType: 'Artifact';
 	artifact: artifactWithRelations;
-}
+} & abstractTab;
 
-export interface changeReportTab extends abstractTab {
+export type changeReportTab = {
 	tabType: 'ChangeReport';
-}
+} & abstractTab;
 
-export interface teamWorkflowTab extends abstractTab {
+export type teamWorkflowTab = {
 	tabType: 'TeamWorkflow';
 	teamWorkflowId: `${number}`;
-}
+} & abstractTab;
 
 export type tab = artifactTab | changeReportTab | teamWorkflowTab;
 
-export interface artifactHierarchyOptions {
+export type artifactHierarchyOptions = {
 	showRelations: boolean;
-}
+};
 
-export interface createChildArtifactDialogData {
+export type createChildArtifactDialogData = {
 	name: string;
 	artifactTypeId: string;
 	parentArtifactId: string;
 	attributes: attribute[];
 	operationType: operationType;
-}
+};
 
 export type TabType =
 	| 'Artifact'
@@ -61,61 +60,61 @@ export type TabType =
 
 export type ExplorerPanel = 'Actions' | 'Artifacts' | 'Branches';
 
-export interface deleteArtifactDialogData {
+export type deleteArtifactDialogData = {
 	artifact: artifactWithRelations;
 	operationType: operationType;
-}
+};
 
 // Publishing
-export interface publishMarkdownDialogData {
+export type publishMarkdownDialogData = {
 	templateId: string;
 	operationType: operationType;
-}
+};
 
-export interface publishingTemplateKeyGroups {
+export type publishingTemplateKeyGroups = {
 	publishingTemplateKeyGroupList: publishingTemplateKey[];
-}
+};
 
-export interface publishingTemplateKey {
+export type publishingTemplateKey = {
 	identifier: key;
 	matchCriteria: {
 		key: key[];
 	};
 	name: key;
 	safeName: key;
-}
+};
 
-export interface key {
+export type key = {
 	key: string;
 	keyType: string;
-}
+};
 
-export interface publishMarkdownAsHtmlRequestData {
+export type publishMarkdownAsHtmlRequestData = {
 	publishMarkdownAsHtmlRequestData: publishingRequestData;
-}
+};
 
-export interface publishingRequestData {
+export type publishingRequestData = {
 	artifactIds: string[];
 	publishingRendererOptions: publishingRendererOptions;
 	publishingTemplateRequest: publishingTemplateRequest;
-}
+};
 
-export interface publishingRendererOptions {
+export type publishingRendererOptions = {
 	Branch: publishingRendererOptionsBranch;
 	PublishingFormat: publishingRendererOptionsPublishingFormat;
-}
+};
 
-export interface publishingRendererOptionsBranch {
+export type publishingRendererOptionsBranch = {
 	id: string;
 	viewId: string;
-}
+};
 
-export interface publishingRendererOptionsPublishingFormat {
+export type publishingRendererOptionsPublishingFormat = {
 	formatIndicator: string;
-}
+};
 
-export interface publishingTemplateRequest {
+export type publishingTemplateRequest = {
 	byOptions: boolean;
 	formatIndicator: string;
 	templateId: string;
-}
+};

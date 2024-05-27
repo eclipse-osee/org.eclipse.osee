@@ -12,7 +12,7 @@
  -->
 <table
 	mat-table
-	[dataSource]="dataSource"
+	[dataSource]="enums()"
 	class="tw-w-full">
 	<ng-container matColumnDef="name">
 		<th
@@ -29,18 +29,7 @@
 				<mat-label>Enter a name</mat-label>
 				<input
 					matInput
-					[ngModel]="element.name"
-					(ngModelChange)="
-						update(
-							{
-								ordinal: element.ordinal,
-								id: element.id,
-								name: $event,
-								applicability: element.applicability
-							},
-							i
-						)
-					" />
+					[(ngModel)]="element.name.value" />
 			</mat-form-field>
 		</td>
 	</ng-container>
@@ -59,18 +48,7 @@
 				<mat-label>Enter an ordinal</mat-label>
 				<input
 					matInput
-					[(ngModel)]="element.ordinal"
-					(ngModelChange)="
-						update(
-							{
-								ordinal: $event,
-								id: element.id,
-								name: element.name,
-								applicability: element.applicability
-							},
-							i
-						)
-					"
+					[(ngModel)]="element.ordinal.value"
 					type="number" />
 			</mat-form-field>
 		</td>
@@ -84,20 +62,9 @@
 		<td
 			mat-cell
 			*matCellDef="let element; index as i">
-			<osee-applicability-selector
-				[applicability]="element.applicability"
-				(applicabilityChange)="
-					update(
-						{
-							ordinal: element.ordinal,
-							id: element.id,
-							name: element.name,
-							applicability: $event
-						},
-						i
-					)
-				"
-				class="tw-w-full"></osee-applicability-selector>
+			<osee-applicability-dropdown
+				[(applicability)]="element.applicability"
+				class="tw-w-full"></osee-applicability-dropdown>
 		</td>
 	</ng-container>
 	<ng-container matColumnDef="delete-button">
@@ -109,10 +76,10 @@
 			*matCellDef="let element; index as i">
 			<button
 				mat-button
-				(click)="removeEnum(element.id)"
+				(click)="removeEnum(element)"
 				[disabled]="validateEnumLengthIsBelowMax()"
 				class="tw-w-full">
-				<mat-icon color="warn">delete-forever</mat-icon>
+				<mat-icon class="tw-text-osee-red-9">delete-forever</mat-icon>
 			</button>
 		</td>
 	</ng-container>
@@ -122,7 +89,7 @@
 			'name',
 			'ordinal',
 			'applicability',
-			'delete-button'
+			'delete-button',
 		]"></tr>
 	<tr
 		mat-row
@@ -136,5 +103,5 @@
 	(click)="addEnum()"
 	[disabled]="validateEnumLengthIsBelowMax()"
 	class="tw-w-full">
-	<mat-icon color="success">add</mat-icon>
+	<mat-icon class="tw-text-osee-green-9">add</mat-icon>
 </button>

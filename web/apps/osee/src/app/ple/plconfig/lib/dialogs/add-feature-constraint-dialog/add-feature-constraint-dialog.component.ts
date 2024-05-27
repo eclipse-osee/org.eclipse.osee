@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
 	MatAutocomplete,
@@ -59,6 +59,12 @@ import { featureConstraintData } from '../../types/pl-config-feature-constraints
 	styles: [],
 })
 export class AddFeatureConstraintDialogComponent {
+	dialogRef =
+		inject<MatDialogRef<AddFeatureConstraintDialogComponent>>(MatDialogRef);
+	private currentBranchService = inject(PlConfigCurrentBranchService);
+	data = inject<featureConstraintData>(MAT_DIALOG_DATA);
+	private applicListUIService = inject(ApplicabilityListUIService);
+
 	constraintIsCompApplic = false;
 	preview = '';
 	hidePreview = true;
@@ -94,17 +100,10 @@ export class AddFeatureConstraintDialogComponent {
 	filteredParentApplic$: Observable<NamedId[]> = this.applic$;
 	filteredParentCompApplic$: Observable<NamedId[]> = this.compApplic$;
 
-	constructor(
-		public dialogRef: MatDialogRef<AddFeatureConstraintDialogComponent>,
-		private currentBranchService: PlConfigCurrentBranchService,
-		@Inject(MAT_DIALOG_DATA) public data: featureConstraintData,
-		private applicListUIService: ApplicabilityListUIService
-	) {}
-
 	// Search for conflicts in existing configurations
 	findConstraintConflicts() {
 		if (
-			this.data.featureConstraint.applicability1.id != '' &&
+			this.data.featureConstraint.applicability1.id != '-1' &&
 			this.data.featureConstraint.applicability2.id
 		) {
 			this.conflict$ =
@@ -117,15 +116,15 @@ export class AddFeatureConstraintDialogComponent {
 
 	// Prevents case where user selects option, alters input text, then tries to submit form
 	clearApp1ID() {
-		this.data.featureConstraint.applicability1.id = '';
+		this.data.featureConstraint.applicability1.id = '-1';
 	}
 
 	// Prevents case where user selects option, alters input text, then tries to submit form
 	clearApp2ID() {
-		this.data.featureConstraint.applicability2.id = '';
+		this.data.featureConstraint.applicability2.id = '-1';
 	}
 
-	filter(value: string, isChild: Boolean): void {
+	filter(value: string, isChild: boolean): void {
 		const filterValue = value.toLowerCase();
 
 		if (isChild) {
@@ -159,7 +158,7 @@ export class AddFeatureConstraintDialogComponent {
 
 	toggleIsCompoundApplic(): void {
 		this.constraintIsCompApplic = !this.constraintIsCompApplic;
-		this.data.featureConstraint.applicability2.id = '';
+		this.data.featureConstraint.applicability2.id = '-1';
 		this.data.featureConstraint.applicability2.name = '';
 		this.hidePreview = true;
 	}
@@ -176,7 +175,7 @@ export class AddFeatureConstraintDialogComponent {
 		this.dialogRef.close();
 	}
 
-	findMatch(isChild: Boolean): void {
+	findMatch(isChild: boolean): void {
 		if (isChild) {
 			this.applic$
 				.pipe(
@@ -190,7 +189,7 @@ export class AddFeatureConstraintDialogComponent {
 				)
 				.subscribe((item) => {
 					this.data.featureConstraint.applicability1.id =
-						item?.id || '';
+						item?.id || '-1';
 				});
 		} else {
 			if (!this.constraintIsCompApplic) {
@@ -207,7 +206,7 @@ export class AddFeatureConstraintDialogComponent {
 					)
 					.subscribe((item) => {
 						this.data.featureConstraint.applicability2.id =
-							item?.id || '';
+							item?.id || '-1';
 					});
 			} else {
 				this.compApplic$
@@ -223,7 +222,7 @@ export class AddFeatureConstraintDialogComponent {
 					)
 					.subscribe((item) => {
 						this.data.featureConstraint.applicability2.id =
-							item?.id || '';
+							item?.id || '-1';
 					});
 			}
 		}

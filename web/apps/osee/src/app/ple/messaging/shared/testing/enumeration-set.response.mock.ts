@@ -15,8 +15,20 @@ import type { enumerationSet } from '@osee/messaging/shared/types';
 
 export const enumerationSetMock: enumerationSet[] = [
 	{
-		name: 'Hello',
-		description: 'World',
+		id: '2',
+		gammaId: '2',
+		name: {
+			id: '-1',
+			typeId: '1152921504606847088',
+			gammaId: '-1',
+			value: 'Hello',
+		},
+		description: {
+			id: '-1',
+			typeId: '1152921504606847090',
+			gammaId: '-1',
+			value: 'World',
+		},
 		applicability: {
 			id: '1',
 			name: 'Base',
@@ -24,15 +36,39 @@ export const enumerationSetMock: enumerationSet[] = [
 		enumerations: [
 			{
 				id: '1',
-				name: 'a',
-				ordinal: 0,
+				gammaId: '1',
+				name: {
+					id: '-1',
+					typeId: '1152921504606847088',
+					gammaId: '-1',
+					value: 'a',
+				},
+				ordinal: {
+					id: '-1',
+					typeId: '2455059983007225790',
+					gammaId: '-1',
+					value: 0,
+				},
 				applicability: { id: '1', name: 'Base' },
 			},
 		],
 	},
 	{
-		name: 'enumset',
-		description: '',
+		id: '3',
+		gammaId: '3',
+		name: {
+			id: '-1',
+			typeId: '1152921504606847088',
+			gammaId: '-1',
+			value: 'enumset',
+		},
+		description: {
+			id: '-1',
+			typeId: '1152921504606847090',
+			gammaId: '-1',
+			value: '',
+		},
+		enumerations: [],
 		applicability: {
 			id: '1',
 			name: 'Base',

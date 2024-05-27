@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import {
 	PreferencesUIService,
@@ -18,9 +19,9 @@ import {
 	WarningDialogService,
 } from '@osee/messaging/shared/services';
 import { UiService } from '@osee/shared/services';
-import { NamedIdTableComponent } from '../unreferenced-report/named-id-table/named-id-table.component';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { NamedId, transaction } from '@osee/shared/types';
+import { NamedIdWithGammas } from '@osee/shared/types';
+import { TransactionService } from '@osee/transactions/services';
+import { legacyTransaction } from '@osee/transactions/types';
 import {
 	concatMap,
 	filter,
@@ -32,7 +33,7 @@ import {
 	take,
 	tap,
 } from 'rxjs';
-import { TransactionService } from '@osee/shared/transactions';
+import { NamedIdTableComponent } from '../unreferenced-report/named-id-table/named-id-table.component';
 
 const _warningDialogTypes = [
 	'type',
@@ -50,7 +51,7 @@ type warningDialogTypes =
 	standalone: true,
 	imports: [NamedIdTableComponent],
 	template: `
-		<div class="mat-h3">Platform Types:</div>
+		<div class="tw-px-4 tw-py-2 tw-text-xl">Platform Types</div>
 		<osee-named-id-table
 			[content]="unReferencedUiService.types()"
 			[(currentPage)]="unReferencedUiService.currentTypesPage"
@@ -63,7 +64,7 @@ type warningDialogTypes =
 			(itemsToDelete)="
 				deleteArtifacts($event, 'type')
 			"></osee-named-id-table>
-		<div class="mat-h3">Elements:</div>
+		<div class="tw-px-4 tw-py-2 tw-text-xl">Elements</div>
 		<osee-named-id-table
 			[content]="unReferencedUiService.elements()"
 			[(currentPage)]="unReferencedUiService.currentElementsPage"
@@ -76,7 +77,7 @@ type warningDialogTypes =
 			(itemsToDelete)="
 				deleteArtifacts($event, 'element')
 			"></osee-named-id-table>
-		<div class="mat-h3">Structures:</div>
+		<div class="tw-px-4 tw-py-2 tw-text-xl">Structures</div>
 		<osee-named-id-table
 			[content]="unReferencedUiService.structures()"
 			[(currentPage)]="unReferencedUiService.currentStructuresPage"
@@ -89,7 +90,7 @@ type warningDialogTypes =
 			(itemsToDelete)="
 				deleteArtifacts($event, 'structure')
 			"></osee-named-id-table>
-		<div class="mat-h3">Submessages:</div>
+		<div class="tw-px-4 tw-py-2 tw-text-xl">Submessages</div>
 		<osee-named-id-table
 			[content]="unReferencedUiService.submessages()"
 			[(currentPage)]="unReferencedUiService.currentSubmessagesPage"
@@ -102,7 +103,7 @@ type warningDialogTypes =
 			(itemsToDelete)="
 				deleteArtifacts($event, 'submessage')
 			"></osee-named-id-table>
-		<div class="mat-h3">Messages:</div>
+		<div class="tw-px-4 tw-py-2 tw-text-xl">Messages</div>
 		<osee-named-id-table
 			[content]="unReferencedUiService.messages()"
 			[(currentPage)]="unReferencedUiService.currentMessagesPage"
@@ -139,7 +140,7 @@ export class UnreferencedReportComponent {
 	}
 
 	private getWarningDialog(
-		value: NamedId | NamedId[],
+		value: NamedIdWithGammas | NamedIdWithGammas[],
 		type: warningDialogTypes
 	) {
 		switch (type) {
@@ -151,7 +152,10 @@ export class UnreferencedReportComponent {
 								.openPlatformTypeDialog({ id: v.id })
 								.pipe(map((_) => v))
 						),
-						reduce((acc, curr) => [...acc, curr], [] as NamedId[])
+						reduce(
+							(acc, curr) => [...acc, curr],
+							[] as NamedIdWithGammas[]
+						)
 					);
 				} else {
 					return this.warningDialogService
@@ -166,7 +170,10 @@ export class UnreferencedReportComponent {
 								.openElementDialog({ id: v.id })
 								.pipe(map((_) => v))
 						),
-						reduce((acc, curr) => [...acc, curr], [] as NamedId[])
+						reduce(
+							(acc, curr) => [...acc, curr],
+							[] as NamedIdWithGammas[]
+						)
 					);
 				} else {
 					return this.warningDialogService
@@ -181,7 +188,10 @@ export class UnreferencedReportComponent {
 								.openStructureDialog({ id: v.id })
 								.pipe(map((_) => v))
 						),
-						reduce((acc, curr) => [...acc, curr], [] as NamedId[])
+						reduce(
+							(acc, curr) => [...acc, curr],
+							[] as NamedIdWithGammas[]
+						)
 					);
 				} else {
 					return this.warningDialogService
@@ -196,7 +206,10 @@ export class UnreferencedReportComponent {
 								.openSubMessageDialog({ id: v.id })
 								.pipe(map((_) => v))
 						),
-						reduce((acc, curr) => [...acc, curr], [] as NamedId[])
+						reduce(
+							(acc, curr) => [...acc, curr],
+							[] as NamedIdWithGammas[]
+						)
 					);
 				} else {
 					return this.warningDialogService
@@ -211,7 +224,10 @@ export class UnreferencedReportComponent {
 								.openMessageDialog({ id: v.id })
 								.pipe(map((_) => v))
 						),
-						reduce((acc, curr) => [...acc, curr], [] as NamedId[])
+						reduce(
+							(acc, curr) => [...acc, curr],
+							[] as NamedIdWithGammas[]
+						)
 					);
 				} else {
 					return this.warningDialogService
@@ -223,7 +239,10 @@ export class UnreferencedReportComponent {
 		}
 	}
 
-	deleteArtifacts(value: NamedId | NamedId[], type: warningDialogTypes) {
+	deleteArtifacts(
+		value: NamedIdWithGammas | NamedIdWithGammas[],
+		type: warningDialogTypes
+	) {
 		this._ui.id
 			.pipe(
 				take(1),
@@ -232,7 +251,7 @@ export class UnreferencedReportComponent {
 					this.getWarningDialog(value, type).pipe(map((_) => id))
 				),
 				switchMap((id) =>
-					of<transaction>({
+					of<legacyTransaction>({
 						branch: id,
 						txComment: 'Deletion from Unreferenced Artifact Report',
 						deleteArtifacts: Array.isArray(value)

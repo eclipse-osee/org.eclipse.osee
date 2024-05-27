@@ -17,7 +17,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 	standalone: true,
 })
 export class FirstLetterLowerPipe implements PipeTransform {
-	constructor() {}
 	transform(value: string): string;
 	transform(value: null | undefined): null;
 	transform(value: string | null | undefined): string | null;

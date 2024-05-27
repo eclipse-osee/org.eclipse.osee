@@ -47,7 +47,9 @@ import { CurrentBranchInfoService, branchImpl } from '@osee/shared/services';
 })
 export class ProductTypeDropDownComponent {
 	//TODO add real prefs
+	private currentBranchService = inject(PlConfigCurrentBranchService);
 	private _branchInfoService = inject(CurrentBranchInfoService);
+	dialog = inject(MatDialog);
 	private _branch = toSignal(
 		this._branchInfoService.currentBranch.pipe(takeUntilDestroyed()),
 		{
@@ -56,10 +58,6 @@ export class ProductTypeDropDownComponent {
 	);
 	protected editable = computed(() => this._branch().branchType === '0');
 	productTypes = this.currentBranchService.productTypes;
-	constructor(
-		private currentBranchService: PlConfigCurrentBranchService,
-		public dialog: MatDialog
-	) {}
 
 	addProductType() {
 		this.dialog

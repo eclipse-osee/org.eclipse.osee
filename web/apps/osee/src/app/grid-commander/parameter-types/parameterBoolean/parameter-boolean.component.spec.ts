@@ -10,7 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClientModule } from '@angular/common/http';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ParameterBooleanComponent } from './parameter-boolean.component';
@@ -21,7 +24,8 @@ describe('ParameterBooleanComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [HttpClientModule, ParameterBooleanComponent],
+			imports: [ParameterBooleanComponent],
+			providers: [provideHttpClient(withInterceptorsFromDi())],
 		}).compileComponents();
 	});
 

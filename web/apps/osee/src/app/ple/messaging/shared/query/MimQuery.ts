@@ -10,18 +10,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
+import type { MIMATTRIBUTETYPEID } from '@osee/messaging/shared/attr';
 import {
 	ARTIFACTTYPEID,
 	ARTIFACTTYPEIDENUM,
-	ATTRIBUTETYPEIDENUM,
 	RELATIONTYPEID,
-	RELATIONTYPEIDENUM,
 } from '@osee/shared/types/constants';
-import type { MIMATTRIBUTETYPEID } from '@osee/messaging/shared/attr';
 import type { enumerationSet } from '../types/enum';
 import type { PlatformType } from '../types/platformType';
 
-interface _mimQuery<T> {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+type _mimQuery<T> = {
 	type: ARTIFACTTYPEID;
 	related?: {
 		relation: RELATIONTYPEID;
@@ -29,11 +29,11 @@ interface _mimQuery<T> {
 		side: 'SIDE_A' | 'SIDE_B';
 	};
 	queries?: _andQuery[];
-}
-interface _andQuery {
+};
+type _andQuery = {
 	attributeId: MIMATTRIBUTETYPEID;
 	value: string;
-}
+};
 export class andQuery implements _andQuery {
 	constructor(attributeTypeId: MIMATTRIBUTETYPEID, value: string) {
 		this.attributeId = attributeTypeId;

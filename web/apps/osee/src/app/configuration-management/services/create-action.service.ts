@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { UserDataAccountService } from '@osee/auth';
 import {
 	CreateAction,
@@ -38,6 +38,13 @@ import { ActionService } from './action.service';
 	providedIn: 'root',
 })
 export class CreateActionService {
+	private actionService = inject(ActionService);
+	private branchService = inject(BranchInfoService);
+	private uiService = inject(UiService);
+	private branchedRouter = inject(BranchRoutedUIService);
+	private accountService = inject(UserDataAccountService);
+	private currentBranchService = inject(CurrentBranchInfoService);
+
 	private _workType = new BehaviorSubject<string>('');
 
 	private _createdTeamWorkflows = new Subject<`${number}`[]>();
@@ -54,15 +61,6 @@ export class CreateActionService {
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
-
-	constructor(
-		private actionService: ActionService,
-		private branchService: BranchInfoService,
-		private uiService: UiService,
-		private branchedRouter: BranchRoutedUIService,
-		private accountService: UserDataAccountService,
-		private currentBranchService: CurrentBranchInfoService
-	) {}
 
 	get user() {
 		return this.accountService.user;

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { MatAnchor } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -47,16 +47,16 @@ import { iif, of, switchMap } from 'rxjs';
 	templateUrl: './messaging-controls.component.html',
 })
 export class MessagingControlsComponent {
-	@Input() branchControls: boolean = true;
-	@Input() actionControls: boolean = false;
-	@Input() diff: boolean = false;
-	@Input() diffRouteLink: string | any | null | undefined = null;
+	private preferencesService = inject(PreferencesUIService);
+	private ui = inject(UiService);
+	private mimRoutes = inject(MimRouteService);
 
-	constructor(
-		private preferencesService: PreferencesUIService,
-		private ui: UiService,
-		private mimRoutes: MimRouteService
-	) {}
+	@Input() branchControls = true;
+	@Input() actionControls = false;
+	@Input() diff = false;
+	//the type below is driven by angular itself
+	//eslint-disable-next-line @typescript-eslint/no-explicit-any
+	@Input() diffRouteLink: string | any | null | undefined = null;
 
 	inEditMode = this.preferencesService.inEditMode;
 	branchId = this.ui.id;

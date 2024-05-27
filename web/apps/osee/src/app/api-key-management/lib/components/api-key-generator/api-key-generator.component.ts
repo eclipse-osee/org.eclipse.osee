@@ -16,6 +16,7 @@ import {
 	signal,
 	inject,
 	WritableSignal,
+	OnDestroy,
 } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { Clipboard } from '@angular/cdk/clipboard';
@@ -36,7 +37,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	templateUrl: './api-key-generator.component.html',
 })
-export class ApiKeyGeneratorComponent {
+export class ApiKeyGeneratorComponent implements OnDestroy {
 	apiKeyService = inject(ApiKeyService);
 	uiService = inject(UiService);
 	dialog = inject(MatDialog);
@@ -104,7 +105,7 @@ export class ApiKeyGeneratorComponent {
 			.pipe(
 				takeUntil(this.destroy$),
 				take(1),
-				tap((uidAndKeyValue: { [key: string]: string }) => {
+				tap((uidAndKeyValue: Record<string, string>) => {
 					this.apiKeyValue.set(uidAndKeyValue['keyValue']);
 					apiKeyToCreate.uniqueID = uidAndKeyValue['uniqueID'];
 					this.addTab(apiKeyToCreate);
@@ -123,7 +124,7 @@ export class ApiKeyGeneratorComponent {
 			this.apiKeyService.revokeApiKey(apiKey.uniqueID).subscribe();
 			this.apiKeys.update((rows) => rows.filter((v) => v !== apiKey));
 		} else {
-			let errorMessage: string =
+			const errorMessage =
 				'The API Key has no uniqueID, and cannot be revoked.';
 			this.uiService.ErrorText = errorMessage;
 			throw Error(errorMessage);

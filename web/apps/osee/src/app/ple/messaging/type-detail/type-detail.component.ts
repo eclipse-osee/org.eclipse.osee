@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PlatformTypeCardComponent } from '@osee/messaging/shared/main-content';
 import { TypesUIService } from '@osee/messaging/shared/services';
@@ -26,16 +26,15 @@ import { filter, map, switchMap } from 'rxjs/operators';
 	imports: [AsyncPipe, PlatformTypeCardComponent],
 })
 export class TypeDetailComponent implements OnInit {
+	private router = inject(Router);
+	private route = inject(ActivatedRoute);
+	private _typeDetail = inject(TypeDetailService);
+	private _typeService = inject(TypesUIService);
+
 	type = this._typeDetail.typeId.pipe(
 		filter((typeId) => typeId !== ''),
 		switchMap((typeId) => this._typeService.getType(typeId))
 	);
-	constructor(
-		private router: Router,
-		private route: ActivatedRoute,
-		private _typeDetail: TypeDetailService,
-		private _typeService: TypesUIService
-	) {}
 
 	ngOnInit(): void {
 		this.route.paramMap

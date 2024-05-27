@@ -11,17 +11,17 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import type { CrossReference } from '@osee/messaging/shared/types';
 import { apiURL } from '@osee/environments';
 import { HttpParamsType } from '@osee/shared/types';
-import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class CrossReferenceHttpService {
-	constructor(private http: HttpClient) {}
+	private http = inject(HttpClient);
 
 	getAll(
 		branchId: string,
@@ -69,7 +69,7 @@ export class CrossReferenceHttpService {
 
 	getCount(
 		branchId: string,
-		connectionId: string,
+		_connectionId: string,
 		filter: string,
 		viewId: string
 	) {

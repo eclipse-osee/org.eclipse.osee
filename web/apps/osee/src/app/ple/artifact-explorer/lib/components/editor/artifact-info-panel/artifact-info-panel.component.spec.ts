@@ -12,10 +12,14 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ArtifactInfoPanelComponent } from './artifact-info-panel.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { tab } from '../../../types/artifact-explorer';
 import { artifactWithRelationsMock } from '@osee/artifact-with-relations/testing';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('ArtifactInfoPanelComponent', () => {
 	let component: ArtifactInfoPanelComponent;
@@ -23,10 +27,10 @@ describe('ArtifactInfoPanelComponent', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [
-				ArtifactInfoPanelComponent,
-				HttpClientTestingModule,
-				BrowserAnimationsModule,
+			imports: [ArtifactInfoPanelComponent, BrowserAnimationsModule],
+			providers: [
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
 			],
 		});
 

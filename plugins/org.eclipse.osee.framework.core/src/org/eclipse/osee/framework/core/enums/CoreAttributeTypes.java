@@ -52,12 +52,6 @@ import org.eclipse.osee.framework.core.enums.token.FunctionalGroupingAttributeTy
 import org.eclipse.osee.framework.core.enums.token.GfeCfeAttributeType;
 import org.eclipse.osee.framework.core.enums.token.HttpMethodAttributeType;
 import org.eclipse.osee.framework.core.enums.token.IdalAttributeType;
-import org.eclipse.osee.framework.core.enums.token.InterfaceLogicalTypeAttribute;
-import org.eclipse.osee.framework.core.enums.token.InterfaceMessagePeriodicityAttributeType;
-import org.eclipse.osee.framework.core.enums.token.InterfaceMessageRateAttributeType;
-import org.eclipse.osee.framework.core.enums.token.InterfaceMessageTypeAttributeType;
-import org.eclipse.osee.framework.core.enums.token.InterfacePlatformTypeUnitsAttribute;
-import org.eclipse.osee.framework.core.enums.token.InterfaceStructureCategoryAttribute;
 import org.eclipse.osee.framework.core.enums.token.LegacyDalAttributeType;
 import org.eclipse.osee.framework.core.enums.token.PageOrientationAttributeType;
 import org.eclipse.osee.framework.core.enums.token.PartitionAttributeType;
@@ -89,7 +83,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public interface CoreAttributeTypes {
 
    // @formatter:off
-   
+
    AttributeTypeString AbridgedEmail = osee.createString(1867950456941316571L, "Abridged Email", MediaType.TEXT_PLAIN, "");
 
    AttributeTypeString AccessContextId = osee.createString(1152921504606847102L, "Access Context Id", MediaType.TEXT_PLAIN, "", DisplayHint.SingleLine);
@@ -139,6 +133,8 @@ public interface CoreAttributeTypes {
    ComponentAttributeType Component = osee.createEnum(new ComponentAttributeType());
 
    AttributeTypeBoolean ConnectionRequired = osee.createBoolean(2323113524155051455L, "Connection Required", MediaType.TEXT_PLAIN, "Specifies if an import requires a connection to be provided");
+
+   AttributeTypeBoolean TransportTypeRequired = osee.createBoolean(6581066011530441793L, "Transport Type Required", MediaType.TEXT_PLAIN, "Specifies if an import requires a transport type to be provided");
 
    AttributeTypeString ContentUrl = osee.createString(1152921504606847100L, "Content URL", MediaType.TEXT_PLAIN, "");
 
@@ -624,9 +620,9 @@ public interface CoreAttributeTypes {
 
    AttributeTypeString InterfaceMessageNumber = osee.createString(2455059983007225768L, "Interface Message Number", MediaType.TEXT_PLAIN, "");
 
-   InterfaceMessagePeriodicityAttributeType InterfaceMessagePeriodicity = osee.createEnum(new InterfaceMessagePeriodicityAttributeType());
+   AttributeTypeString InterfaceMessagePeriodicity = osee.createString(3899709087455064789L, "Interface Message Periodicity", MediaType.TEXT_PLAIN, "");
 
-   InterfaceMessageRateAttributeType InterfaceMessageRate = osee.createEnum(new InterfaceMessageRateAttributeType());
+   AttributeTypeString InterfaceMessageRate = osee.createString(2455059983007225763L, "Interface Message Rate", MediaType.TEXT_PLAIN, "");
 
    AttributeTypeString InterfaceMessageRateVer = osee.createString(2455059983007225805L, "Message Rate Ver", MediaType.TEXT_PLAIN, "");
 
@@ -640,7 +636,7 @@ public interface CoreAttributeTypes {
 
    AttributeTypeBoolean InterfaceMessageRunBeforeProc = osee.createBoolean(2455059983007225812L, "Message Run Before Proc", MediaType.TEXT_PLAIN, "");
 
-   InterfaceMessageTypeAttributeType InterfaceMessageType = osee.createEnum(new InterfaceMessageTypeAttributeType());
+   AttributeTypeString InterfaceMessageType = osee.createString(2455059983007225770L, "Interface Message Type", MediaType.TEXT_PLAIN, "");
 
    AttributeTypeString InterfaceMessageVer = osee.createString(2455059983007225804L, "Message Ver", MediaType.TEXT_PLAIN, "");
 
@@ -664,7 +660,7 @@ public interface CoreAttributeTypes {
 
    AttributeTypeBoolean InterfaceNodeToolUse = osee.createBoolean(5863226088234748106L, "Interface Node Tool Use", MediaType.TEXT_PLAIN, "");
 
-   InterfaceStructureCategoryAttribute InterfaceStructureCategory = osee.createEnum(new InterfaceStructureCategoryAttribute());
+   AttributeTypeString InterfaceStructureCategory = osee.createString(2455059983007225764L, "Interface Structure Category", MediaType.TEXT_PLAIN, "");
 
    AttributeTypeString InterfaceSubMessageNumber = osee.createString(2455059983007225769L, "Interface Sub Message Number", MediaType.TEXT_PLAIN, "");
 
@@ -696,7 +692,7 @@ public interface CoreAttributeTypes {
 
    AttributeTypeString InterfaceElementArrayIndexDelimiterTwo = osee.createString(6818939106523472583L, "Interface Element Array Index Delimiter Two", MediaType.TEXT_PLAIN, "");
 
-   InterfaceLogicalTypeAttribute InterfaceLogicalType = osee.createEnum(new InterfaceLogicalTypeAttribute());
+   AttributeTypeString InterfaceLogicalType = osee.createString(2455059983007225762L, "Interface Logical Type", MediaType.TEXT_PLAIN, "");
 
    AttributeTypeLong InterfaceEnumOrdinal = osee.createLong(2455059983007225790L, "Ordinal", MediaType.TEXT_PLAIN, "");
 
@@ -704,7 +700,7 @@ public interface CoreAttributeTypes {
 
    AttributeTypeString InterfaceElementEnumLiteral = osee.createString(2455059983007225803L, "Enum Literal", MediaType.TEXT_PLAIN, "");
 
-   InterfacePlatformTypeUnitsAttribute InterfacePlatformTypeUnits = osee.createEnum(new InterfacePlatformTypeUnitsAttribute());
+   AttributeTypeString InterfacePlatformTypeUnits = osee.createString(4026643196432874344L, "Interface Platform Type Units", MediaType.TEXT_PLAIN, "");
 
    AttributeTypeString InterfacePlatformTypeValidRangeDescription = osee.createString(2121416901992068417L, "Interface Platform Type Valid Range Desc", MediaType.TEXT_PLAIN, "");
 

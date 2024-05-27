@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { changeReportRow } from '@osee/shared/types/change-report';
 import { apiURL } from '@osee/environments';
 
@@ -19,7 +19,7 @@ import { apiURL } from '@osee/environments';
 	providedIn: 'root',
 })
 export class ChangeReportHttpService {
-	constructor(private http: HttpClient) {}
+	private http = inject(HttpClient);
 
 	getBranchChangeReport(branch1Id: string, branch2Id: string) {
 		return this.http.get<changeReportRow[]>(

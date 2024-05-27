@@ -18,6 +18,7 @@ import {
 	OnChanges,
 	SimpleChanges,
 	computed,
+	inject,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
@@ -25,10 +26,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatList } from '@angular/material/list';
 import { ExpandIconComponent } from '@osee/shared/components';
 import { UiService } from '@osee/shared/services';
-import {
-	TransactionBuilderService,
-	TransactionService,
-} from '@osee/shared/transactions';
+import { TransactionBuilderService } from '@osee/shared/transactions-legacy';
 import {
 	BehaviorSubject,
 	combineLatest,
@@ -51,6 +49,7 @@ import {
 } from '@osee/artifact-with-relations/types';
 import { RelationDeleteDialogComponent } from '../relation-delete-dialog/relation-delete-dialog.component';
 import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
+import { TransactionService } from '@osee/transactions/services';
 
 @Component({
 	selector: 'osee-relations-editor-panel',
@@ -67,6 +66,13 @@ import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-e
 	templateUrl: './relations-editor-panel.component.html',
 })
 export class RelationsEditorPanelComponent implements OnChanges {
+	private artExpHttpService = inject(ArtifactExplorerHttpService);
+	private tabService = inject(ArtifactExplorerTabService);
+	private builder = inject(TransactionBuilderService);
+	private uiService = inject(UiService);
+	dialog = inject(MatDialog);
+	private artifactIconService = inject(ArtifactIconService);
+
 	@Input({ required: true }) artifactId!: string;
 	@Input({ required: true }) branchId!: string;
 	@Input({ required: true }) viewId!: string;
@@ -121,7 +127,7 @@ export class RelationsEditorPanelComponent implements OnChanges {
 		this._viewId,
 		this._artifactId,
 	]).pipe(
-		filter(([branch, view, artifact]) => branch != '' && artifact != ''),
+		filter(([branch, _view, artifact]) => branch != '' && artifact != ''),
 		switchMap(([branch, view, artifact]) =>
 			this.artExpHttpService.getartifactWithRelations(
 				branch,
@@ -141,16 +147,7 @@ export class RelationsEditorPanelComponent implements OnChanges {
 			this.artifactIconService.getIconVariantClass(icon)
 		);
 	}
-
-	constructor(
-		private artExpHttpService: ArtifactExplorerHttpService,
-		private tabService: ArtifactExplorerTabService,
-		private builder: TransactionBuilderService,
-		private transaction: TransactionService,
-		private uiService: UiService,
-		public dialog: MatDialog,
-		private artifactIconService: ArtifactIconService
-	) {}
+	private transaction = inject(TransactionService);
 
 	toggleExpand(identifier: string) {
 		const newArray = this.dropdownsOpen.value;
@@ -280,11 +277,11 @@ export class RelationsEditorPanelComponent implements OnChanges {
 	// track the state of the UI as relation dropdowns expand and collapse
 	dropdownsOpen = new BehaviorSubject<string[]>([]);
 
-	relationOpen(index: number, relation: artifactRelation) {
+	relationOpen(_index: number, relation: artifactRelation) {
 		return relation.relationTypeToken.id;
 	}
 
-	relationSideOpen(index: number, relationSide: artifactRelationSide) {
+	relationSideOpen(_index: number, relationSide: artifactRelationSide) {
 		return relationSide.name;
 	}
 

@@ -11,47 +11,46 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
+import { applic } from '@osee/applicability/types';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
+import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 import type {
-	structure,
 	element,
-	elementWithChanges,
+	structure,
 	structureWithChanges,
 } from '@osee/messaging/shared/types';
 import {
-	combineLatest,
-	share,
-	debounceTime,
-	distinctUntilChanged,
-	filter,
-	switchMap,
-	repeat,
-	shareReplay,
-	of,
-	concatMap,
-	from,
-	iif,
-	map,
-	OperatorFunction,
-	reduce,
-	take,
-	BehaviorSubject,
-	Observable,
-	tap,
-} from 'rxjs';
-import { applic } from '@osee/shared/types/applicability';
-import {
+	ModificationType,
 	changeInstance,
 	changeTypeNumber,
-	ModificationType,
 	ignoreType,
 } from '@osee/shared/types/change-report';
 import {
-	ATTRIBUTETYPEIDENUM,
 	RELATIONTYPEID,
 	RELATIONTYPEIDENUM,
 } from '@osee/shared/types/constants';
+import {
+	BehaviorSubject,
+	Observable,
+	OperatorFunction,
+	combineLatest,
+	concatMap,
+	debounceTime,
+	distinctUntilChanged,
+	filter,
+	from,
+	iif,
+	map,
+	of,
+	reduce,
+	repeat,
+	share,
+	shareReplay,
+	switchMap,
+	take,
+} from 'rxjs';
 import { CurrentStructureService } from './current-structure.service';
-import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 /**
  * Note these type guards are pretty specific to multi service, however they might be useful to single service...TBD
@@ -73,12 +72,13 @@ function _isStructureRel(rel2: RELATIONTYPEID): rel2 is StructureRels {
 export class CurrentStructureMultiService extends CurrentStructureService {
 	private _currentPage$ = new BehaviorSubject<number>(0);
 	private _currentPageSize$ = new BehaviorSubject<number>(25);
+	private _filter = toObservable(this.ui.filter);
 	private _structuresNoDiff = combineLatest([
-		this.ui.filter,
+		this._filter,
 		this.ui.BranchId,
 		this.ui.messageId,
-		this.ui.subMessageId,
-		this.ui.connectionId,
+		this._submessageId,
+		this.connectionId,
 		this.ui.viewId,
 		this.currentPage,
 		this.currentPageSize,
@@ -88,19 +88,19 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 		distinctUntilChanged(),
 		filter(
 			([
-				filter,
+				_filter,
 				branchId,
 				messageId,
 				subMessageId,
 				connectionId,
-				viewId,
-				page,
-				pageSize,
+				_viewId,
+				_page,
+				_pageSize,
 			]) =>
 				branchId !== '' &&
 				messageId !== '' &&
-				subMessageId !== '' &&
-				connectionId !== ''
+				subMessageId !== '-1' &&
+				connectionId !== '-1'
 		),
 		switchMap(
 			([
@@ -140,7 +140,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 			this.BranchId,
 			this.branchInfoService.parentBranch,
 			this.MessageId,
-			this.SubMessageId,
+			this._submessageId,
 			this.connectionId,
 			this.ui.viewId,
 		]),
@@ -169,16 +169,16 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 							subMessageId,
 							connectionId,
 							viewId
-					  )
+						)
 					: of(structures)
 		)
 	);
 	private _structuresCount = combineLatest([
-		this.ui.filter,
+		this._filter,
 		this.ui.BranchId,
 		this.ui.messageId,
-		this.ui.subMessageId,
-		this.ui.connectionId,
+		this._submessageId,
+		this.connectionId,
 		this.ui.viewId,
 	]).pipe(
 		share(),
@@ -186,17 +186,17 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 		distinctUntilChanged(),
 		filter(
 			([
-				filter,
+				_filter,
 				branchId,
 				messageId,
 				subMessageId,
 				connectionId,
-				viewId,
+				_viewId,
 			]) =>
 				branchId !== '' &&
 				messageId !== '' &&
-				subMessageId !== '' &&
-				connectionId !== ''
+				subMessageId !== '-1' &&
+				connectionId !== '-1'
 		),
 		switchMap(
 			([
@@ -252,7 +252,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 
 	private _parseDifferences(
 		differences: changeInstance[] | undefined,
-		_oldStructures: Required<structure>[],
+		_oldStructures: structure[],
 		parentBranch: string,
 		branchId: string,
 		messageId: string,
@@ -307,15 +307,15 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 											? [
 													ModificationType.NEW,
 													ModificationType.DELETED,
-											  ].indexOf(
+												].indexOf(
 													a.currentVersion.modType
-											  ) -
-											  [
+												) -
+												[
 													ModificationType.NEW,
 													ModificationType.DELETED,
-											  ].indexOf(
+												].indexOf(
 													b.currentVersion.modType
-											  )
+												)
 											: 0) -
 										(Number(a.artIdB) - Number(b.artIdB));
 									return (
@@ -354,38 +354,41 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 									(val) =>
 										structures
 											.map((a) => a.id)
-											.includes(val.artId) ||
+											.includes(
+												val.artId as `${number}`
+											) ||
 										structures
 											.map((a) => a.id)
-											.includes(val.artIdB) ||
+											.includes(
+												val.artIdB as `${number}`
+											) ||
 										!(
 											(
 												structures
 													.map((a) => a.elements)
 													.flat() as (
 													| element
-													| elementWithChanges
 													| undefined
 												)[]
 											).includes(undefined) &&
 											(structures
-												.map(
-													(a) =>
+												.map((a) =>
+													a.elements?.map((b) => b.id)
+												)
+												.flat()
+												.includes(
+													val.artId as `${number}`
+												) ||
+												structures
+													.map((a) =>
 														a.elements?.map(
 															(b) => b.id
 														)
-												)
-												.flat()
-												.includes(val.artId) ||
-												structures
-													.map(
-														(a) =>
-															a.elements?.map(
-																(b) => b.id
-															)
 													)
 													.flat()
-													.includes(val.artIdB))
+													.includes(
+														val.artIdB as `${number}`
+													))
 										) ||
 										val.artId === subMessageId
 								),
@@ -410,7 +413,9 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 												() =>
 													structures
 														.map((a) => a.id)
-														.includes(change.artId),
+														.includes(
+															change.artId as `${number}`
+														),
 												of(structures).pipe(
 													take(1),
 													concatMap((structures) =>
@@ -426,7 +431,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																		).pipe(
 																			map(
 																				(
-																					val
+																					_
 																				) => {
 																					structure =
 																						this._structureChangeSetup(
@@ -443,11 +448,12 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																							previousValue:
 																								change
 																									.baselineVersion
-																									.applicabilityToken,
+																									.applicabilityToken as applic,
+
 																							currentValue:
 																								change
 																									.currentVersion
-																									.applicabilityToken,
+																									.applicabilityToken as applic,
 																							transactionToken:
 																								change
 																									.currentVersion
@@ -482,16 +488,14 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 												iif(
 													() =>
 														structures
-															.map(
-																(a) =>
-																	a.elements?.map(
-																		(b) =>
-																			b.id
-																	)
+															.map((a) =>
+																a.elements?.map(
+																	(b) => b.id
+																)
 															)
 															.flat()
 															.includes(
-																change.artId
+																change.artId as `${number}`
 															),
 													of(structures).pipe(
 														take(1),
@@ -514,14 +518,14 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																								a.id
 																						)
 																						.includes(
-																							change.artId
+																							change.artId as `${number}`
 																						),
 																				of(
 																					structure
 																				).pipe(
 																					map(
 																						(
-																							val
+																							_
 																						) => {
 																							const index =
 																								structure.elements?.findIndex(
@@ -531,42 +535,40 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																										el.id ===
 																										change.artId
 																								);
+																							let element =
+																								structure
+																									.elements[
+																									index
+																								];
+																							element =
+																								this._elementChangeSetup(
+																									element
+																								);
+																							if (
+																								this._elementIsDiffed(
+																									element
+																								)
+																							) {
+																								element.changes.applicability =
+																									{
+																										previousValue:
+																											change
+																												.baselineVersion
+																												.applicabilityToken as applic,
+																										currentValue:
+																											change
+																												.currentVersion
+																												.applicabilityToken as applic,
+																										transactionToken:
+																											change
+																												.currentVersion
+																												.transactionToken,
+																									};
+																							}
 																							structure.elements[
 																								index
 																							] =
-																								this._elementChangeSetup(
-																									structure
-																										.elements[
-																										index
-																									]
-																								);
-																							(
-																								structure
-																									.elements[
-																									index
-																								] as elementWithChanges
-																							).changes.applicability =
-																								{
-																									previousValue:
-																										change
-																											.baselineVersion
-																											.applicabilityToken as applic,
-																									currentValue:
-																										change
-																											.currentVersion
-																											.applicabilityToken as applic,
-																									transactionToken:
-																										change
-																											.currentVersion
-																											.transactionToken,
-																								};
-																							(
-																								structure
-																									.elements[
-																									index
-																								] as elementWithChanges
-																							).added =
-																								true;
+																								element;
 																							(
 																								structure as structureWithChanges
 																							).hasElementChanges =
@@ -609,18 +611,15 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 													iif(
 														() =>
 															structures
-																.map(
-																	(a) =>
-																		a.elements?.map(
-																			(
-																				b
-																			) =>
-																				b.id
-																		)
+																.map((a) =>
+																	a.elements?.map(
+																		(b) =>
+																			b.id
+																	)
 																)
 																.flat()
 																.includes(
-																	change.artId
+																	change.artId as `${number}`
 																),
 														of(structures).pipe(
 															take(1),
@@ -643,14 +642,14 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																									a.id
 																							)
 																							.includes(
-																								change.artId
+																								change.artId as `${number}`
 																							),
 																					of(
 																						structure
 																					).pipe(
 																						map(
 																							(
-																								val
+																								_
 																							) => {
 																								const index =
 																									structure.elements?.findIndex(
@@ -660,38 +659,45 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																											el.id ===
 																											change.artId
 																									);
-																								structure.elements[
-																									index
-																								] =
+																								let element =
+																									structure
+																										.elements[
+																										index
+																									];
+
+																								element =
 																									this._elementChangeSetup(
 																										structure
 																											.elements[
 																											index
 																										]
 																									);
-																								(
-																									structure
-																										.elements[
-																										index
-																									] as elementWithChanges
-																								).changes.applicability =
-																									{
-																										previousValue:
-																											change
-																												.baselineVersion
-																												.applicabilityToken as applic,
-																										currentValue:
-																											change
-																												.currentVersion
-																												.applicabilityToken as applic,
-																										transactionToken:
-																											change
-																												.currentVersion
-																												.transactionToken,
-																									};
-																								(
-																									structure as structureWithChanges
-																								).hasElementChanges =
+																								if (
+																									this._elementIsDiffed(
+																										element
+																									)
+																								) {
+																									element.changes.applicability =
+																										{
+																											previousValue:
+																												change
+																													.baselineVersion
+																													.applicabilityToken as applic,
+																											currentValue:
+																												change
+																													.currentVersion
+																													.applicabilityToken as applic,
+																											transactionToken:
+																												change
+																													.currentVersion
+																													.transactionToken,
+																										};
+																								}
+																								structure.elements[
+																									index
+																								] =
+																									element;
+																								structure.hasElementChanges =
 																									true;
 																								return structure as structureWithChanges;
 																							}
@@ -723,7 +729,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																			a.id
 																	)
 																	.includes(
-																		change.artId
+																		change.artId as `${number}`
 																	),
 															of(structures).pipe(
 																take(1),
@@ -747,7 +753,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																						).pipe(
 																							map(
 																								(
-																									val
+																									_
 																								) => {
 																									structure =
 																										this._structureChangeSetup(
@@ -760,11 +766,12 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																											previousValue:
 																												change
 																													.baselineVersion
-																													.applicabilityToken,
+																													.applicabilityToken as applic,
+
 																											currentValue:
 																												change
 																													.currentVersion
-																													.applicabilityToken,
+																													.applicabilityToken as applic,
 																											transactionToken:
 																												change
 																													.currentVersion
@@ -805,7 +812,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																	(a) => a.id
 																)
 																.includes(
-																	change.artId
+																	change.artId as `${number}`
 																),
 														of(structures).pipe(
 															take(1),
@@ -827,7 +834,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																					).pipe(
 																						map(
 																							(
-																								val
+																								_
 																							) => {
 																								structure =
 																									this._structureChangeSetup(
@@ -840,11 +847,12 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																										previousValue:
 																											change
 																												.baselineVersion
-																												.applicabilityToken,
+																												.applicabilityToken as applic,
+
 																										currentValue:
 																											change
 																												.currentVersion
-																												.applicabilityToken,
+																												.applicabilityToken as applic,
 																										transactionToken:
 																											change
 																												.currentVersion
@@ -886,7 +894,9 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 												() =>
 													structures
 														.map((a) => a.id)
-														.includes(change.artId),
+														.includes(
+															change.artId as `${number}`
+														),
 												of(structures).pipe(
 													take(1),
 													concatMap((structures) =>
@@ -917,13 +927,37 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																						).changes.description =
 																							{
 																								previousValue:
-																									change
-																										.baselineVersion
-																										.value,
+																									{
+																										id: structure
+																											.description
+																											.id,
+																										typeId: structure
+																											.description
+																											.typeId,
+																										gammaId:
+																											change
+																												.baselineVersion
+																												.gammaId as `${number}`,
+																										value: change
+																											.baselineVersion
+																											.value as string,
+																									},
 																								currentValue:
-																									change
-																										.currentVersion
-																										.value,
+																									{
+																										id: structure
+																											.description
+																											.id,
+																										typeId: structure
+																											.description
+																											.typeId,
+																										gammaId:
+																											change
+																												.baselineVersion
+																												.gammaId as `${number}`,
+																										value: change
+																											.currentVersion
+																											.value as string,
+																									},
 																								transactionToken:
 																									change
 																										.currentVersion
@@ -953,13 +987,38 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																							).changes.name =
 																								{
 																									previousValue:
-																										change
-																											.baselineVersion
-																											.value,
+																										{
+																											id: structure
+																												.name
+																												.id,
+																											typeId: structure
+																												.name
+																												.typeId,
+																											gammaId:
+																												change
+																													.baselineVersion
+																													.gammaId as `${number}`,
+																											value: change
+																												.baselineVersion
+																												.value as string,
+																										},
+
 																									currentValue:
-																										change
-																											.currentVersion
-																											.value,
+																										{
+																											id: structure
+																												.name
+																												.id,
+																											typeId: structure
+																												.name
+																												.typeId,
+																											gammaId:
+																												change
+																													.baselineVersion
+																													.gammaId as `${number}`,
+																											value: change
+																												.currentVersion
+																												.value as string,
+																										},
 																									transactionToken:
 																										change
 																											.currentVersion
@@ -989,13 +1048,38 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																								).changes.interfaceMaxSimultaneity =
 																									{
 																										previousValue:
-																											change
-																												.baselineVersion
-																												.value,
+																											{
+																												id: structure
+																													.interfaceMaxSimultaneity
+																													.id,
+																												typeId: structure
+																													.interfaceMaxSimultaneity
+																													.typeId,
+																												gammaId:
+																													change
+																														.baselineVersion
+																														.gammaId as `${number}`,
+																												value: change
+																													.baselineVersion
+																													.value as string,
+																											},
+
 																										currentValue:
-																											change
-																												.currentVersion
-																												.value,
+																											{
+																												id: structure
+																													.interfaceMaxSimultaneity
+																													.id,
+																												typeId: structure
+																													.interfaceMaxSimultaneity
+																													.typeId,
+																												gammaId:
+																													change
+																														.baselineVersion
+																														.gammaId as `${number}`,
+																												value: change
+																													.currentVersion
+																													.value as string,
+																											},
 																										transactionToken:
 																											change
 																												.currentVersion
@@ -1025,13 +1109,38 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																									).changes.interfaceMinSimultaneity =
 																										{
 																											previousValue:
-																												change
-																													.baselineVersion
-																													.value,
+																												{
+																													id: structure
+																														.interfaceMinSimultaneity
+																														.id,
+																													typeId: structure
+																														.interfaceMinSimultaneity
+																														.typeId,
+																													gammaId:
+																														change
+																															.baselineVersion
+																															.gammaId as `${number}`,
+																													value: change
+																														.baselineVersion
+																														.value as string,
+																												},
+
 																											currentValue:
-																												change
-																													.currentVersion
-																													.value,
+																												{
+																													id: structure
+																														.interfaceMinSimultaneity
+																														.id,
+																													typeId: structure
+																														.interfaceMinSimultaneity
+																														.typeId,
+																													gammaId:
+																														change
+																															.baselineVersion
+																															.gammaId as `${number}`,
+																													value: change
+																														.currentVersion
+																														.value as string,
+																												},
 																											transactionToken:
 																												change
 																													.currentVersion
@@ -1061,13 +1170,38 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																										).changes.interfaceStructureCategory =
 																											{
 																												previousValue:
-																													change
-																														.baselineVersion
-																														.value,
+																													{
+																														id: structure
+																															.interfaceStructureCategory
+																															.id,
+																														typeId: structure
+																															.interfaceStructureCategory
+																															.typeId,
+																														gammaId:
+																															change
+																																.baselineVersion
+																																.gammaId as `${number}`,
+																														value: change
+																															.baselineVersion
+																															.value as string,
+																													},
+
 																												currentValue:
-																													change
-																														.currentVersion
-																														.value,
+																													{
+																														id: structure
+																															.interfaceStructureCategory
+																															.id,
+																														typeId: structure
+																															.interfaceStructureCategory
+																															.typeId,
+																														gammaId:
+																															change
+																																.baselineVersion
+																																.gammaId as `${number}`,
+																														value: change
+																															.currentVersion
+																															.value as string,
+																													},
 																												transactionToken:
 																													change
 																														.currentVersion
@@ -1097,13 +1231,38 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																											).changes.interfaceTaskFileType =
 																												{
 																													previousValue:
-																														change
-																															.baselineVersion
-																															.value,
+																														{
+																															id: structure
+																																.interfaceTaskFileType
+																																.id,
+																															typeId: structure
+																																.interfaceTaskFileType
+																																.typeId,
+																															gammaId:
+																																change
+																																	.baselineVersion
+																																	.gammaId as `${number}`,
+																															value: change
+																																.baselineVersion
+																																.value as number,
+																														},
+
 																													currentValue:
-																														change
-																															.currentVersion
-																															.value,
+																														{
+																															id: structure
+																																.interfaceTaskFileType
+																																.id,
+																															typeId: structure
+																																.interfaceTaskFileType
+																																.typeId,
+																															gammaId:
+																																change
+																																	.baselineVersion
+																																	.gammaId as `${number}`,
+																															value: change
+																																.currentVersion
+																																.value as number,
+																														},
 																													transactionToken:
 																														change
 																															.currentVersion
@@ -1141,16 +1300,14 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 												iif(
 													() =>
 														structures
-															.map(
-																(a) =>
-																	a.elements?.map(
-																		(b) =>
-																			b.id
-																	)
+															.map((a) =>
+																a.elements?.map(
+																	(b) => b.id
+																)
 															)
 															.flat()
 															.includes(
-																change.artId
+																change.artId as `${number}`
 															),
 													of(structures).pipe(
 														take(1),
@@ -1173,7 +1330,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																								a.id
 																						)
 																						.includes(
-																							change.artId
+																							change.artId as `${number}`
 																						),
 																				of(
 																					structure
@@ -1208,24 +1365,52 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																																this._elementChangeSetup(
 																																	el
 																																);
-																															(
-																																el as elementWithChanges
-																															).changes.description =
-																																{
-																																	previousValue:
-																																		change
-																																			.baselineVersion
-																																			.value as string,
-																																	currentValue:
-																																		change
-																																			.currentVersion
-																																			.value as string,
-																																	transactionToken:
-																																		change
-																																			.currentVersion
-																																			.transactionToken,
-																																};
-																															return el as elementWithChanges;
+																															if (
+																																this._elementIsDiffed(
+																																	el
+																																)
+																															) {
+																																el.changes.description =
+																																	{
+																																		previousValue:
+																																			{
+																																				id: el
+																																					.description
+																																					.id,
+																																				typeId: el
+																																					.description
+																																					.typeId,
+																																				gammaId:
+																																					change
+																																						.baselineVersion
+																																						.gammaId as `${number}`,
+																																				value: change
+																																					.baselineVersion
+																																					.value as string,
+																																			},
+																																		currentValue:
+																																			{
+																																				id: el
+																																					.description
+																																					.id,
+																																				typeId: el
+																																					.description
+																																					.typeId,
+																																				gammaId:
+																																					change
+																																						.currentVersion
+																																						.gammaId as `${number}`,
+																																				value: change
+																																					.currentVersion
+																																					.value as string,
+																																			},
+																																		transactionToken:
+																																			change
+																																				.currentVersion
+																																				.transactionToken,
+																																	};
+																															}
+																															return el;
 																														}
 																													)
 																												),
@@ -1244,24 +1429,52 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																																	this._elementChangeSetup(
 																																		el
 																																	);
-																																(
-																																	el as elementWithChanges
-																																).changes.name =
-																																	{
-																																		previousValue:
-																																			change
-																																				.baselineVersion
-																																				.value as string,
-																																		currentValue:
-																																			change
-																																				.currentVersion
-																																				.value as string,
-																																		transactionToken:
-																																			change
-																																				.currentVersion
-																																				.transactionToken,
-																																	};
-																																return el as elementWithChanges;
+																																if (
+																																	this._elementIsDiffed(
+																																		el
+																																	)
+																																) {
+																																	el.changes.name =
+																																		{
+																																			previousValue:
+																																				{
+																																					id: el
+																																						.name
+																																						.id,
+																																					typeId: el
+																																						.name
+																																						.typeId,
+																																					gammaId:
+																																						change
+																																							.baselineVersion
+																																							.gammaId as `${number}`,
+																																					value: change
+																																						.baselineVersion
+																																						.value as string,
+																																				},
+																																			currentValue:
+																																				{
+																																					id: el
+																																						.name
+																																						.id,
+																																					typeId: el
+																																						.name
+																																						.typeId,
+																																					gammaId:
+																																						change
+																																							.currentVersion
+																																							.gammaId as `${number}`,
+																																					value: change
+																																						.currentVersion
+																																						.value as string,
+																																				},
+																																			transactionToken:
+																																				change
+																																					.currentVersion
+																																					.transactionToken,
+																																		};
+																																}
+																																return el;
 																															}
 																														)
 																													),
@@ -1280,24 +1493,52 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																																		this._elementChangeSetup(
 																																			el
 																																		);
-																																	(
-																																		el as elementWithChanges
-																																	).changes.interfaceElementAlterable =
-																																		{
-																																			previousValue:
-																																				change
-																																					.baselineVersion
-																																					.value as boolean,
-																																			currentValue:
-																																				change
-																																					.currentVersion
-																																					.value as boolean,
-																																			transactionToken:
-																																				change
-																																					.currentVersion
-																																					.transactionToken,
-																																		};
-																																	return el as elementWithChanges;
+																																	if (
+																																		this._elementIsDiffed(
+																																			el
+																																		)
+																																	) {
+																																		el.changes.interfaceElementAlterable =
+																																			{
+																																				previousValue:
+																																					{
+																																						id: el
+																																							.interfaceElementAlterable
+																																							.id,
+																																						typeId: el
+																																							.interfaceElementAlterable
+																																							.typeId,
+																																						gammaId:
+																																							change
+																																								.baselineVersion
+																																								.gammaId as `${number}`,
+																																						value: change
+																																							.baselineVersion
+																																							.value as boolean,
+																																					},
+																																				currentValue:
+																																					{
+																																						id: el
+																																							.interfaceElementAlterable
+																																							.id,
+																																						typeId: el
+																																							.interfaceElementAlterable
+																																							.typeId,
+																																						gammaId:
+																																							change
+																																								.currentVersion
+																																								.gammaId as `${number}`,
+																																						value: change
+																																							.currentVersion
+																																							.value as boolean,
+																																					},
+																																				transactionToken:
+																																					change
+																																						.currentVersion
+																																						.transactionToken,
+																																			};
+																																	}
+																																	return el;
 																																}
 																															)
 																														),
@@ -1316,24 +1557,52 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																																			this._elementChangeSetup(
 																																				el
 																																			);
-																																		(
-																																			el as elementWithChanges
-																																		).changes.interfaceElementIndexStart =
-																																			{
-																																				previousValue:
-																																					change
-																																						.baselineVersion
-																																						.value as number,
-																																				currentValue:
-																																					change
-																																						.currentVersion
-																																						.value as number,
-																																				transactionToken:
-																																					change
-																																						.currentVersion
-																																						.transactionToken,
-																																			};
-																																		return el as elementWithChanges;
+																																		if (
+																																			this._elementIsDiffed(
+																																				el
+																																			)
+																																		) {
+																																			el.changes.interfaceElementIndexStart =
+																																				{
+																																					previousValue:
+																																						{
+																																							id: el
+																																								.interfaceElementIndexStart
+																																								.id,
+																																							typeId: el
+																																								.interfaceElementIndexStart
+																																								.typeId,
+																																							gammaId:
+																																								change
+																																									.baselineVersion
+																																									.gammaId as `${number}`,
+																																							value: change
+																																								.baselineVersion
+																																								.value as number,
+																																						},
+																																					currentValue:
+																																						{
+																																							id: el
+																																								.interfaceElementIndexStart
+																																								.id,
+																																							typeId: el
+																																								.interfaceElementIndexStart
+																																								.typeId,
+																																							gammaId:
+																																								change
+																																									.currentVersion
+																																									.gammaId as `${number}`,
+																																							value: change
+																																								.currentVersion
+																																								.value as number,
+																																						},
+																																					transactionToken:
+																																						change
+																																							.currentVersion
+																																							.transactionToken,
+																																				};
+																																		}
+																																		return el;
 																																	}
 																																)
 																															),
@@ -1352,24 +1621,52 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																																				this._elementChangeSetup(
 																																					el
 																																				);
-																																			(
-																																				el as elementWithChanges
-																																			).changes.interfaceElementIndexEnd =
-																																				{
-																																					previousValue:
-																																						change
-																																							.baselineVersion
-																																							.value as number,
-																																					currentValue:
-																																						change
-																																							.currentVersion
-																																							.value as number,
-																																					transactionToken:
-																																						change
-																																							.currentVersion
-																																							.transactionToken,
-																																				};
-																																			return el as elementWithChanges;
+																																			if (
+																																				this._elementIsDiffed(
+																																					el
+																																				)
+																																			) {
+																																				el.changes.interfaceElementIndexEnd =
+																																					{
+																																						previousValue:
+																																							{
+																																								id: el
+																																									.interfaceElementIndexEnd
+																																									.id,
+																																								typeId: el
+																																									.interfaceElementIndexEnd
+																																									.typeId,
+																																								gammaId:
+																																									change
+																																										.baselineVersion
+																																										.gammaId as `${number}`,
+																																								value: change
+																																									.baselineVersion
+																																									.value as number,
+																																							},
+																																						currentValue:
+																																							{
+																																								id: el
+																																									.interfaceElementIndexEnd
+																																									.id,
+																																								typeId: el
+																																									.interfaceElementIndexEnd
+																																									.typeId,
+																																								gammaId:
+																																									change
+																																										.currentVersion
+																																										.gammaId as `${number}`,
+																																								value: change
+																																									.currentVersion
+																																									.value as number,
+																																							},
+																																						transactionToken:
+																																							change
+																																								.currentVersion
+																																								.transactionToken,
+																																					};
+																																			}
+																																			return el;
 																																		}
 																																	)
 																																),
@@ -1388,24 +1685,52 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																																					this._elementChangeSetup(
 																																						el
 																																					);
-																																				(
-																																					el as elementWithChanges
-																																				).changes.notes =
-																																					{
-																																						previousValue:
-																																							change
-																																								.baselineVersion
-																																								.value as string,
-																																						currentValue:
-																																							change
-																																								.currentVersion
-																																								.value as string,
-																																						transactionToken:
-																																							change
-																																								.currentVersion
-																																								.transactionToken,
-																																					};
-																																				return el as elementWithChanges;
+																																				if (
+																																					this._elementIsDiffed(
+																																						el
+																																					)
+																																				) {
+																																					el.changes.notes =
+																																						{
+																																							previousValue:
+																																								{
+																																									id: el
+																																										.notes
+																																										.id,
+																																									typeId: el
+																																										.notes
+																																										.typeId,
+																																									gammaId:
+																																										change
+																																											.baselineVersion
+																																											.gammaId as `${number}`,
+																																									value: change
+																																										.baselineVersion
+																																										.value as string,
+																																								},
+																																							currentValue:
+																																								{
+																																									id: el
+																																										.notes
+																																										.id,
+																																									typeId: el
+																																										.notes
+																																										.typeId,
+																																									gammaId:
+																																										change
+																																											.currentVersion
+																																											.gammaId as `${number}`,
+																																									value: change
+																																										.currentVersion
+																																										.value as string,
+																																								},
+																																							transactionToken:
+																																								change
+																																									.currentVersion
+																																									.transactionToken,
+																																						};
+																																				}
+																																				return el;
 																																			}
 																																		)
 																																	),
@@ -1424,24 +1749,52 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																																						this._elementChangeSetup(
 																																							el
 																																						);
-																																					(
-																																						el as elementWithChanges
-																																					).changes.enumLiteral =
-																																						{
-																																							previousValue:
-																																								change
-																																									.baselineVersion
-																																									.value as string,
-																																							currentValue:
-																																								change
-																																									.currentVersion
-																																									.value as string,
-																																							transactionToken:
-																																								change
-																																									.currentVersion
-																																									.transactionToken,
-																																						};
-																																					return el as elementWithChanges;
+																																					if (
+																																						this._elementIsDiffed(
+																																							el
+																																						)
+																																					) {
+																																						el.changes.enumLiteral =
+																																							{
+																																								previousValue:
+																																									{
+																																										id: el
+																																											.enumLiteral
+																																											.id,
+																																										typeId: el
+																																											.enumLiteral
+																																											.typeId,
+																																										gammaId:
+																																											change
+																																												.baselineVersion
+																																												.gammaId as `${number}`,
+																																										value: change
+																																											.baselineVersion
+																																											.value as string,
+																																									},
+																																								currentValue:
+																																									{
+																																										id: el
+																																											.enumLiteral
+																																											.id,
+																																										typeId: el
+																																											.enumLiteral
+																																											.typeId,
+																																										gammaId:
+																																											change
+																																												.currentVersion
+																																												.gammaId as `${number}`,
+																																										value: change
+																																											.currentVersion
+																																											.value as string,
+																																									},
+																																								transactionToken:
+																																									change
+																																										.currentVersion
+																																										.transactionToken,
+																																							};
+																																					}
+																																					return el;
 																																				}
 																																			)
 																																		),
@@ -1470,10 +1823,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																							...acc,
 																							curr,
 																						],
-																						[] as (
-																							| element
-																							| elementWithChanges
-																						)[]
+																						[] as element[]
 																					),
 																					map(
 																						(
@@ -1577,24 +1927,78 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																																	this._elementChangeSetup(
 																																		el
 																																	);
-																																(
-																																	el as elementWithChanges
-																																).changes.units =
-																																	{
-																																		previousValue:
-																																			change
-																																				.baselineVersion
-																																				.value as string,
-																																		currentValue:
-																																			change
-																																				.currentVersion
-																																				.value as string,
-																																		transactionToken:
-																																			change
-																																				.currentVersion
-																																				.transactionToken,
-																																	};
-																																return el as elementWithChanges;
+																																if (
+																																	this._elementIsDiffed(
+																																		el
+																																	)
+																																) {
+																																	if (
+																																		el
+																																			.changes
+																																			.platformType ===
+																																		undefined
+																																	) {
+																																		el.changes.platformType =
+																																			{
+																																				previousValue:
+																																					{
+																																						...new PlatformTypeSentinel(),
+																																						interfacePlatformTypeUnits:
+																																							{
+																																								...new PlatformTypeSentinel()
+																																									.interfacePlatformTypeUnits,
+																																								gammaId:
+																																									change
+																																										.baselineVersion
+																																										.gammaId as `${number}`,
+																																								value: change
+																																									.baselineVersion
+																																									.value as string,
+																																							},
+																																					},
+																																				currentValue:
+																																					{
+																																						...new PlatformTypeSentinel(),
+																																						interfacePlatformTypeUnits:
+																																							{
+																																								...new PlatformTypeSentinel()
+																																									.interfacePlatformTypeUnits,
+																																								gammaId:
+																																									change
+																																										.currentVersion
+																																										.gammaId as `${number}`,
+																																								value: change
+																																									.currentVersion
+																																									.value as string,
+																																							},
+																																					},
+																																				transactionToken:
+																																					change
+																																						.currentVersion
+																																						.transactionToken,
+																																			};
+																																	} else if (
+																																		el
+																																			.changes
+																																			.platformType !==
+																																			undefined &&
+																																		el
+																																			.changes
+																																			.platformType
+																																			?.currentValue
+																																			.interfacePlatformTypeUnits
+																																			.value !==
+																																			element
+																																				.platformType
+																																				.interfacePlatformTypeUnits
+																																				.value
+																																	) {
+																																		el.changes.platformType!.transactionToken =
+																																			change.currentVersion.transactionToken;
+																																	}
+																																}
+
+																																return el;
 																															}
 																														)
 																													),
@@ -1613,42 +2017,71 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																																		this._elementChangeSetup(
 																																			el
 																																		);
-																																	(
-																																		el as elementWithChanges
-																																	).changes.platformType =
-																																		{
-																																			previousValue:
-																																				{
-																																					...((
-																																						el as elementWithChanges
-																																					)
-																																						.changes
-																																						.platformType
-																																						?.previousValue ||
-																																						new PlatformTypeSentinel()),
-																																					name: change
-																																						.baselineVersion
-																																						.value as string,
-																																				},
-																																			currentValue:
-																																				{
-																																					...((
-																																						el as elementWithChanges
-																																					)
-																																						.changes
-																																						.platformType
-																																						?.currentValue ||
-																																						new PlatformTypeSentinel()),
-																																					name: change
+																																	if (
+																																		this._elementIsDiffed(
+																																			el
+																																		)
+																																	) {
+																																		el.changes.platformType =
+																																			{
+																																				previousValue:
+																																					{
+																																						...(el
+																																							.changes
+																																							.platformType
+																																							?.previousValue ||
+																																							new PlatformTypeSentinel()),
+
+																																						name: {
+																																							id: el
+																																								.platformType
+																																								.name
+																																								.id,
+																																							typeId: el
+																																								.platformType
+																																								.name
+																																								.typeId,
+																																							gammaId:
+																																								change
+																																									.baselineVersion
+																																									.gammaId as `${number}`,
+																																							value: change
+																																								.baselineVersion
+																																								.value as string,
+																																						},
+																																					},
+																																				currentValue:
+																																					{
+																																						...(el
+																																							.changes
+																																							.platformType
+																																							?.currentValue ||
+																																							new PlatformTypeSentinel()),
+																																						name: {
+																																							id: el
+																																								.platformType
+																																								.name
+																																								.id,
+																																							typeId: el
+																																								.platformType
+																																								.name
+																																								.typeId,
+																																							gammaId:
+																																								change
+																																									.baselineVersion
+																																									.gammaId as `${number}`,
+																																							value: change
+																																								.currentVersion
+																																								.value as string,
+																																						},
+																																					},
+																																				transactionToken:
+																																					change
 																																						.currentVersion
-																																						.value as string,
-																																				},
-																																			transactionToken:
-																																				change
-																																					.currentVersion
-																																					.transactionToken,
-																																		};
-																																	return el as elementWithChanges;
+																																						.transactionToken,
+																																			};
+																																	}
+																																	return el;
 																																}
 																															)
 																														),
@@ -1672,10 +2105,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																								...acc,
 																								curr,
 																							],
-																							[] as (
-																								| element
-																								| elementWithChanges
-																							)[]
+																							[] as element[]
 																						),
 																						map(
 																							(
@@ -1732,7 +2162,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																	(a) => a.id
 																)
 																.includes(
-																	change.artIdB
+																	change.artIdB as `${number}`
 																),
 														of(structures).pipe(
 															take(1),
@@ -1914,7 +2344,8 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																			structures =
 																				[
 																					...structures,
-																					struct as structureWithChanges,
+
+																					struct as unknown as structureWithChanges,
 																				];
 																			return structures as (
 																				| Required<structure>
@@ -1940,7 +2371,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																	(a) => a.id
 																)
 																.includes(
-																	change.artId
+																	change.artId as `${number}`
 																),
 														iif(
 															() =>
@@ -1953,18 +2384,17 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																	.modType ===
 																	ModificationType.NONE &&
 																structures
-																	.map(
-																		(a) =>
-																			a.elements?.map(
-																				(
-																					b
-																				) =>
-																					b.id
-																			)
+																	.map((a) =>
+																		a.elements?.map(
+																			(
+																				b
+																			) =>
+																				b.id
+																		)
 																	)
 																	.flat()
 																	.includes(
-																		change.artIdB
+																		change.artIdB as `${number}`
 																	),
 															of(structures).pipe(
 																take(1),
@@ -1989,7 +2419,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																										a.id
 																								)
 																								.includes(
-																									change.artIdB
+																									change.artIdB as `${number}`
 																								),
 																						of(
 																							structure
@@ -2020,130 +2450,287 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																																	this._elementChangeSetup(
 																																		el
 																																	);
-																																(
-																																	el as elementWithChanges
-																																).changes.name =
-																																	{
-																																		previousValue:
-																																			'',
-																																		currentValue:
-																																			el.name,
-																																		transactionToken:
-																																			change
-																																				.currentVersion
-																																				.transactionToken,
-																																	};
-																																(
-																																	el as elementWithChanges
-																																).changes.description =
-																																	{
-																																		previousValue:
-																																			'',
-																																		currentValue:
-																																			el.description,
-																																		transactionToken:
-																																			change
-																																				.currentVersion
-																																				.transactionToken,
-																																	};
-																																(
-																																	el as elementWithChanges
-																																).changes.interfaceElementAlterable =
-																																	{
-																																		previousValue:
-																																			false,
-																																		currentValue:
-																																			el.interfaceElementAlterable,
-																																		transactionToken:
-																																			change
-																																				.currentVersion
-																																				.transactionToken,
-																																	};
-																																(
-																																	el as elementWithChanges
-																																).changes.interfaceElementIndexEnd =
-																																	{
-																																		previousValue: 0,
-																																		currentValue:
-																																			el.interfaceElementIndexEnd,
-																																		transactionToken:
-																																			change
-																																				.currentVersion
-																																				.transactionToken,
-																																	};
-																																(
-																																	el as elementWithChanges
-																																).changes.interfaceElementIndexStart =
-																																	{
-																																		previousValue: 0,
-																																		currentValue:
-																																			el.interfaceElementIndexStart,
-																																		transactionToken:
-																																			change
-																																				.currentVersion
-																																				.transactionToken,
-																																	};
-																																(
-																																	el as elementWithChanges
-																																).changes.notes =
-																																	{
-																																		previousValue:
-																																			'',
-																																		currentValue:
-																																			el.notes,
-																																		transactionToken:
-																																			change
-																																				.currentVersion
-																																				.transactionToken,
-																																	};
-																																(
-																																	el as elementWithChanges
-																																).changes.enumLiteral =
-																																	{
-																																		previousValue:
-																																			'',
-																																		currentValue:
-																																			el.notes,
-																																		transactionToken:
-																																			change
-																																				.currentVersion
-																																				.transactionToken,
-																																	};
-																																(
-																																	el as elementWithChanges
-																																).changes.platformType =
-																																	{
-																																		previousValue:
-																																			new PlatformTypeSentinel(),
-																																		currentValue:
-																																			el.platformType,
-																																		transactionToken:
-																																			change
-																																				.currentVersion
-																																				.transactionToken,
-																																	};
-																																(
-																																	el as elementWithChanges
-																																).changes.applicability =
-																																	{
-																																		previousValue:
-																																			change
-																																				.baselineVersion
-																																				.applicabilityToken as applic,
-																																		currentValue:
-																																			change
-																																				.currentVersion
-																																				.applicabilityToken as applic,
-																																		transactionToken:
-																																			change
-																																				.currentVersion
-																																				.transactionToken,
-																																	};
-																																(
-																																	el as elementWithChanges
-																																).added =
+																																if (
+																																	this._elementIsDiffed(
+																																		el
+																																	)
+																																) {
+																																	el.changes.name =
+																																		{
+																																			previousValue:
+																																				{
+																																					id: el
+																																						.name
+																																						.id,
+																																					typeId: el
+																																						.name
+																																						.typeId,
+																																					gammaId:
+																																						'-1',
+																																					value: '',
+																																				},
+																																			currentValue:
+																																				{
+																																					id: el
+																																						.name
+																																						.id,
+																																					typeId: el
+																																						.name
+																																						.typeId,
+																																					gammaId:
+																																						el
+																																							.name
+																																							.gammaId,
+																																					value: el
+																																						.name
+																																						.value,
+																																				},
+																																			transactionToken:
+																																				change
+																																					.currentVersion
+																																					.transactionToken,
+																																		};
+																																	el.changes.description =
+																																		{
+																																			previousValue:
+																																				{
+																																					id: el
+																																						.description
+																																						.id,
+																																					typeId: el
+																																						.description
+																																						.typeId,
+																																					gammaId:
+																																						'-1',
+																																					value: '',
+																																				},
+																																			currentValue:
+																																				{
+																																					id: el
+																																						.description
+																																						.id,
+																																					typeId: el
+																																						.description
+																																						.typeId,
+																																					gammaId:
+																																						el
+																																							.description
+																																							.gammaId,
+																																					value: el
+																																						.description
+																																						.value,
+																																				},
+																																			transactionToken:
+																																				change
+																																					.currentVersion
+																																					.transactionToken,
+																																		};
+																																	el.changes.interfaceElementAlterable =
+																																		{
+																																			previousValue:
+																																				{
+																																					id: el
+																																						.interfaceElementAlterable
+																																						.id,
+																																					typeId: el
+																																						.interfaceElementAlterable
+																																						.typeId,
+																																					gammaId:
+																																						'-1',
+																																					value: false,
+																																				},
+																																			currentValue:
+																																				{
+																																					id: el
+																																						.interfaceElementAlterable
+																																						.id,
+																																					typeId: el
+																																						.interfaceElementAlterable
+																																						.typeId,
+																																					gammaId:
+																																						el
+																																							.interfaceElementAlterable
+																																							.gammaId,
+																																					value: el
+																																						.interfaceElementAlterable
+																																						.value,
+																																				},
+																																			transactionToken:
+																																				change
+																																					.currentVersion
+																																					.transactionToken,
+																																		};
+																																	el.changes.interfaceElementIndexEnd =
+																																		{
+																																			previousValue:
+																																				{
+																																					id: el
+																																						.interfaceElementIndexEnd
+																																						.id,
+																																					typeId: el
+																																						.interfaceElementIndexEnd
+																																						.typeId,
+																																					gammaId:
+																																						'-1',
+																																					value: 0,
+																																				},
+																																			currentValue:
+																																				{
+																																					id: el
+																																						.interfaceElementIndexEnd
+																																						.id,
+																																					typeId: el
+																																						.interfaceElementIndexEnd
+																																						.typeId,
+																																					gammaId:
+																																						el
+																																							.interfaceElementIndexEnd
+																																							.gammaId,
+																																					value: el
+																																						.interfaceElementIndexEnd
+																																						.value,
+																																				},
+																																			transactionToken:
+																																				change
+																																					.currentVersion
+																																					.transactionToken,
+																																		};
+																																	el.changes.interfaceElementIndexStart =
+																																		{
+																																			previousValue:
+																																				{
+																																					id: el
+																																						.interfaceElementIndexStart
+																																						.id,
+																																					typeId: el
+																																						.interfaceElementIndexStart
+																																						.typeId,
+																																					gammaId:
+																																						'-1',
+																																					value: 0,
+																																				},
+																																			currentValue:
+																																				{
+																																					id: el
+																																						.interfaceElementIndexStart
+																																						.id,
+																																					typeId: el
+																																						.interfaceElementIndexStart
+																																						.typeId,
+																																					gammaId:
+																																						el
+																																							.interfaceElementIndexStart
+																																							.gammaId,
+																																					value: el
+																																						.interfaceElementIndexStart
+																																						.value,
+																																				},
+																																			transactionToken:
+																																				change
+																																					.currentVersion
+																																					.transactionToken,
+																																		};
+																																	el.changes.notes =
+																																		{
+																																			previousValue:
+																																				{
+																																					id: el
+																																						.notes
+																																						.id,
+																																					typeId: el
+																																						.notes
+																																						.typeId,
+																																					gammaId:
+																																						'-1',
+																																					value: '',
+																																				},
+																																			currentValue:
+																																				{
+																																					id: el
+																																						.notes
+																																						.id,
+																																					typeId: el
+																																						.notes
+																																						.typeId,
+																																					gammaId:
+																																						el
+																																							.notes
+																																							.gammaId,
+																																					value: el
+																																						.notes
+																																						.value,
+																																				},
+																																			transactionToken:
+																																				change
+																																					.currentVersion
+																																					.transactionToken,
+																																		};
+																																	el.changes.enumLiteral =
+																																		{
+																																			previousValue:
+																																				{
+																																					id: el
+																																						.enumLiteral
+																																						.id,
+																																					typeId: el
+																																						.enumLiteral
+																																						.typeId,
+																																					gammaId:
+																																						'-1',
+																																					value: '',
+																																				},
+																																			currentValue:
+																																				{
+																																					id: el
+																																						.enumLiteral
+																																						.id,
+																																					typeId: el
+																																						.enumLiteral
+																																						.typeId,
+																																					gammaId:
+																																						el
+																																							.enumLiteral
+																																							.gammaId,
+																																					value: el
+																																						.enumLiteral
+																																						.value,
+																																				},
+																																			transactionToken:
+																																				change
+																																					.currentVersion
+																																					.transactionToken,
+																																		};
+																																	el.changes.platformType =
+																																		{
+																																			previousValue:
+																																				new PlatformTypeSentinel(),
+																																			currentValue:
+																																				el.platformType,
+																																			transactionToken:
+																																				change
+																																					.currentVersion
+																																					.transactionToken,
+																																		};
+																																	el.changes.applicability =
+																																		{
+																																			previousValue:
+																																				change
+																																					.baselineVersion
+																																					.applicabilityToken as applic,
+																																			currentValue:
+																																				change
+																																					.currentVersion
+																																					.applicabilityToken as applic,
+																																			transactionToken:
+																																				change
+																																					.currentVersion
+																																					.transactionToken,
+																																		};
+																																}
+
+																																el.added =
 																																	true;
-																																return el as elementWithChanges;
+																																return el;
 																															}
 																														)
 																													),
@@ -2162,10 +2749,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																									...acc,
 																									curr,
 																								],
-																								[] as (
-																									| element
-																									| elementWithChanges
-																								)[]
+																								[] as element[]
 																							),
 																							map(
 																								(
@@ -2376,7 +2960,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																										structure.elements =
 																											[
 																												...structure.elements,
-																												val,
+																												val as unknown as Required<element>,
 																											];
 																										structure.numElements =
 																											structure.elements.length;
@@ -2439,18 +3023,17 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																	.id ===
 																	RELATIONTYPEIDENUM.INTERFACEELEMENTPLATFORMTYPE &&
 																structures
-																	.map(
-																		(a) =>
-																			a.elements?.map(
-																				(
-																					b
-																				) =>
-																					b.id
-																			)
+																	.map((a) =>
+																		a.elements?.map(
+																			(
+																				b
+																			) =>
+																				b.id
+																		)
 																	)
 																	.flat()
 																	.includes(
-																		change.artId
+																		change.artId as `${number}`
 																	),
 															iif(
 																() =>
@@ -2487,7 +3070,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																											a.id
 																									)
 																									.includes(
-																										change.artId
+																										change.artId as `${number}`
 																									),
 																							of(
 																								structure
@@ -2512,7 +3095,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																														).pipe(
 																															concatMap(
 																																(
-																																	val
+																																	_
 																																) =>
 																																	this.typeService
 																																		.getTypeFromBranch(
@@ -2529,63 +3112,51 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																																							element
 																																						);
 																																					if (
-																																						(
-																																							element as elementWithChanges
-																																						)
-																																							.changes
-																																							.platformType ===
-																																						undefined
-																																					) {
-																																						(
-																																							element as elementWithChanges
-																																						).changes.platformType =
-																																							{
-																																								previousValue:
-																																									new PlatformTypeSentinel(),
-																																								currentValue:
-																																									{
-																																										...((
-																																											element as elementWithChanges
-																																										)
-																																											.changes
-																																											.platformType
-																																											?.currentValue ||
-																																											new PlatformTypeSentinel()),
-																																										name: type.name,
-																																									},
-																																								transactionToken:
-																																									change
-																																										.currentVersion
-																																										.transactionToken,
-																																							};
-																																					} else if (
-																																						(
-																																							element as elementWithChanges
-																																						)
-																																							.changes
-																																							.platformType !==
-																																							undefined &&
-																																						(
-																																							element as elementWithChanges
-																																						)
-																																							.changes
-																																							.platformType
-																																							?.currentValue
-																																							.name !==
+																																						this._elementIsDiffed(
 																																							element
-																																								.platformType
-																																								.name
+																																						)
 																																					) {
-																																						(
-																																							element as elementWithChanges
-																																						).changes.platformType!.currentValue.name =
-																																							type.name;
-																																						(
-																																							element as elementWithChanges
-																																						).changes.platformType!.transactionToken =
-																																							change.currentVersion.transactionToken;
+																																						if (
+																																							element
+																																								.changes
+																																								.platformType ===
+																																							undefined
+																																						) {
+																																							element.changes.platformType =
+																																								{
+																																									previousValue:
+																																										new PlatformTypeSentinel(),
+																																									currentValue:
+																																										{
+																																											...new PlatformTypeSentinel(),
+																																											name: type.name,
+																																										},
+																																									transactionToken:
+																																										change
+																																											.currentVersion
+																																											.transactionToken,
+																																								};
+																																						} else if (
+																																							element
+																																								.changes
+																																								.platformType !==
+																																								undefined &&
+																																							element
+																																								.changes
+																																								.platformType
+																																								?.currentValue
+																																								.name !==
+																																								element
+																																									.platformType
+																																									.name
+																																						) {
+																																							element.changes.platformType!.currentValue.name =
+																																								type.name;
+																																							element.changes.platformType!.transactionToken =
+																																								change.currentVersion.transactionToken;
+																																						}
 																																					}
-																																					return element as elementWithChanges;
+																																					return element;
 																																				}
 																																			)
 																																		)
@@ -2606,10 +3177,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																										...acc,
 																										curr,
 																									],
-																									[] as (
-																										| element
-																										| elementWithChanges
-																									)[]
+																									[] as element[]
 																								),
 																								map(
 																									(
@@ -2681,7 +3249,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																												a.id
 																										)
 																										.includes(
-																											change.artId
+																											change.artId as `${number}`
 																										),
 																								of(
 																									structure
@@ -2706,7 +3274,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																															).pipe(
 																																concatMap(
 																																	(
-																																		val
+																																		_
 																																	) =>
 																																		this.typeService
 																																			.getTypeFromBranch(
@@ -2723,67 +3291,57 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																																								element
 																																							);
 																																						if (
-																																							(
-																																								element as elementWithChanges
-																																							)
-																																								.changes
-																																								.platformType ===
-																																							undefined
-																																						) {
-																																							(
-																																								element as elementWithChanges
-																																							).changes.platformType =
-																																								{
-																																									previousValue:
-																																										{
-																																											...(
-																																												element as elementWithChanges
-																																											)
-																																												.changes
-																																												.platformType!
-																																												.previousValue,
-																																											name: type.name,
-																																										},
-																																									currentValue:
-																																										new PlatformTypeSentinel(),
-																																									transactionToken:
-																																										change
-																																											.currentVersion
-																																											.transactionToken,
-																																								};
-																																						} else if (
-																																							(
-																																								element as elementWithChanges
-																																							)
-																																								.changes
-																																								.platformType !==
-																																								undefined &&
-																																							(
-																																								element as elementWithChanges
-																																							)
-																																								.changes
-																																								.platformType
-																																								?.currentValue
-																																								.name !==
+																																							this._elementIsDiffed(
 																																								element
-																																									.platformType
-																																									.name
+																																							)
 																																						) {
-																																							(
-																																								element as elementWithChanges
-																																							).changes.platformType!.previousValue.name =
-																																								type.name;
-																																							(
-																																								element as elementWithChanges
-																																							).changes.platformType!.transactionToken =
-																																								change.currentVersion.transactionToken;
-																																						} else {
-																																							(
-																																								element as elementWithChanges
-																																							).changes.platformType!.previousValue.name =
-																																								type.name;
+																																							if (
+																																								element
+																																									.changes
+																																									.platformType ===
+																																								undefined
+																																							) {
+																																								element.changes.platformType =
+																																									{
+																																										previousValue:
+																																											{
+																																												...element
+																																													.changes
+																																													.platformType!
+																																													.previousValue,
+																																												name: type.name,
+																																											},
+																																										currentValue:
+																																											new PlatformTypeSentinel(),
+																																										transactionToken:
+																																											change
+																																												.currentVersion
+																																												.transactionToken,
+																																									};
+																																							} else if (
+																																								element
+																																									.changes
+																																									.platformType !==
+																																									undefined &&
+																																								element
+																																									.changes
+																																									.platformType
+																																									?.currentValue
+																																									.name !==
+																																									element
+																																										.platformType
+																																										.name
+																																							) {
+																																								element.changes.platformType!.previousValue.name =
+																																									type.name;
+																																								element.changes.platformType!.transactionToken =
+																																									change.currentVersion.transactionToken;
+																																							} else {
+																																								element.changes.platformType!.previousValue.name =
+																																									type.name;
+																																							}
 																																						}
-																																						return element as elementWithChanges;
+																																						return element;
 																																					}
 																																				)
 																																			)
@@ -2804,10 +3362,7 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 																											...acc,
 																											curr,
 																										],
-																										[] as (
-																											| element
-																											| elementWithChanges
-																										)[]
+																										[] as element[]
 																									),
 																									map(
 																										(
@@ -2858,12 +3413,9 @@ export class CurrentStructureMultiService extends CurrentStructureService {
 										)
 									)
 								)
-								// tap((valueToDebug) => {
-								//   console.log(valueToDebug)
-								// })
 							)
 						),
-						switchMap((val) =>
+						switchMap((_) =>
 							of(
 								structures as (
 									| structure

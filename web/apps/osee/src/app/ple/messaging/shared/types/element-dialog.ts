@@ -13,14 +13,17 @@
 
 import type { element, PlatformType } from '@osee/messaging/shared/types';
 
-export interface ElementDialog {
+export type ElementDialog = {
 	id: string;
 	name: string;
-	element: Partial<element>;
+	//NOTE: do not touch. This is strictly for diffing purposes when creating a transaction(i.e. figuring out what occurred in the dialog)
+	startingElement: element;
+	element: element;
 	type: PlatformType;
 	mode: ElementDialogMode;
 	allowArray: boolean;
 	arrayChild: boolean;
-}
+	createdTypes: PlatformType[];
+};
 
 export type ElementDialogMode = 'add' | 'edit';

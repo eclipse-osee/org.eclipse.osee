@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { BranchPickerComponent } from '@osee/shared/components';
 import { map } from 'rxjs/operators';
 import { ParameterDataService } from '../../services/data-services/selected-command-data/parameter-data/parameter-data.service';
@@ -24,11 +24,11 @@ import { CurrentActionDropDownComponent } from '@osee/configuration-management/c
 	imports: [BranchPickerComponent, CurrentActionDropDownComponent],
 })
 export class ParameterBranchComponent {
+	private parameterDataService = inject(ParameterDataService);
+
 	parameter$ = this.parameterDataService.parameter$;
 	paramString = '';
 	userPrompt$ = this.parameter$.pipe(
 		map((param) => param?.attributes.description)
 	);
-
-	constructor(private parameterDataService: ParameterDataService) {}
 }

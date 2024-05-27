@@ -19,8 +19,6 @@ import { BehaviorSubject } from 'rxjs';
 export class CheckboxContainerService {
 	private _clearIsChecked = new BehaviorSubject<boolean>(true);
 
-	constructor() {}
-
 	updateClearIsChecked(val: boolean) {
 		this._clearIsChecked.next(val);
 	}

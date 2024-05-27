@@ -48,6 +48,11 @@ import { CurrentBranchInfoService, branchImpl } from '@osee/shared/services';
 	],
 })
 export class CompoundApplicabilityDropdownComponent {
+	private currentBranchService = inject(PlConfigCurrentBranchService);
+	private uiStateService = inject(PlConfigUIStateService);
+	dialog = inject(MatDialog);
+	private viewContainerRef = inject(ViewContainerRef);
+
 	selectedBranch: Observable<string> = this.uiStateService.branchId.pipe(
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
@@ -64,13 +69,6 @@ export class CompoundApplicabilityDropdownComponent {
 	features = this.currentBranchService.features;
 
 	equalsSymbol = '=';
-
-	constructor(
-		private currentBranchService: PlConfigCurrentBranchService,
-		private uiStateService: PlConfigUIStateService,
-		public dialog: MatDialog,
-		private viewContainerRef: ViewContainerRef
-	) {}
 
 	toggleMenu(menuTrigger: MatMenuTrigger) {
 		menuTrigger.toggleMenu();

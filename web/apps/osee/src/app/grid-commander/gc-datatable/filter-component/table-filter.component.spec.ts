@@ -12,11 +12,15 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FilterService } from '../../services/datatable-services/filter/filter.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TableFilterComponent } from './table-filter.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatChipsModule } from '@angular/material/chips';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('TableFilterComponent', () => {
 	let component: TableFilterComponent;
@@ -25,14 +29,17 @@ describe('TableFilterComponent', () => {
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			imports: [
-				HttpClientTestingModule,
 				MatFormFieldModule,
 				MatSelectModule,
 				MatChipsModule,
 				MatSelectModule,
 				TableFilterComponent,
 			],
-			providers: [FilterService],
+			providers: [
+				FilterService,
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+			],
 		}).compileComponents();
 	});
 

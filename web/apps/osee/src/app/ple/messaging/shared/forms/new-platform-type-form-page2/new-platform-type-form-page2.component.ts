@@ -18,13 +18,8 @@ import {
 	trigger,
 } from '@angular/animations';
 import { AsyncPipe } from '@angular/common';
-import {
-	Component,
-	Input,
-	OnChanges,
-	Output,
-	SimpleChanges,
-} from '@angular/core';
+import { Component, input, model, signal, inject } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/core';
@@ -37,6 +32,8 @@ import {
 import { MatIcon } from '@angular/material/icon';
 import { MatSelect } from '@angular/material/select';
 import { MatStepperNext, MatStepperPrevious } from '@angular/material/stepper';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
+import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 import { validateEnumLengthIsBelowMax } from '@osee/messaging/shared/functions';
 import { EnumerationUIService } from '@osee/messaging/shared/services';
 import type {
@@ -46,13 +43,16 @@ import type {
 } from '@osee/messaging/shared/types';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
 import {
+	provideOptionalControlContainerNgForm,
+	writableSlice,
+} from '@osee/shared/utils';
+import {
 	BehaviorSubject,
 	combineLatest,
 	concatMap,
 	distinct,
 	filter,
 	from,
-	map,
 	of,
 	reduce,
 	switchMap,
@@ -94,32 +94,37 @@ import { NewPlatformTypeFormComponent } from '../new-platform-type-form/new-plat
 			),
 		]),
 	],
+	viewProviders: [provideOptionalControlContainerNgForm()],
 })
-export class NewPlatformTypeFormPage2Component implements OnChanges {
-	constructor(private enumSetService: EnumerationUIService) {}
+export class NewPlatformTypeFormPage2Component {
+	private enumSetService = inject(EnumerationUIService);
+
 	enumSetState = new BehaviorSubject<enumerationSet | undefined>(undefined);
 
-	createNewEnum = new BehaviorSubject<boolean>(false);
+	createNewEnum = signal(false);
 
-	logicalTypeSubject: BehaviorSubject<logicalType> = new BehaviorSubject({
-		id: '-1',
-		name: '',
-		idString: '-1',
-		idIntValue: -1,
-	});
+	logicalType = input.required<logicalType>();
 
-	@Input() logicalType: logicalType = {
-		id: '-1',
-		name: '',
-		idString: '-1',
-		idIntValue: -1,
-	};
 	_enumSets = this.enumSetService.enumSets;
-	platformType = new BehaviorSubject<Partial<PlatformType>>({});
-	enumSets = combineLatest([this.platformType, this._enumSets]).pipe(
+	platformType = model<PlatformType>(new PlatformTypeSentinel());
+	private platformType$ = toObservable(this.platformType);
+	enumSet = writableSlice(this.platformType, 'enumSet');
+	private enumSetId = writableSlice(this.enumSet, 'id');
+	private enumSetName = writableSlice(this.enumSet, 'name');
+	private enumSetNameId = writableSlice(this.enumSetName, 'id');
+	private enumSetDescription = writableSlice(this.enumSet, 'description');
+	private enumSetDescriptionId = writableSlice(this.enumSetDescription, 'id');
+	private enumerations = writableSlice(this.enumSet, 'enumerations');
+	enumSets = combineLatest([this.platformType$, this._enumSets]).pipe(
 		switchMap(([pType, enumSets]) =>
 			of({
-				bitSize: pType.interfacePlatformTypeBitSize || '0',
+				bitSize: pType.interfacePlatformTypeBitSize || {
+					id: '-1',
+					value: '0',
+					attributeType:
+						ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEBITSIZE,
+					gammaId: '-1',
+				},
 				enumSets: enumSets,
 			}).pipe(
 				switchMap(({ bitSize, enumSets }) =>
@@ -130,7 +135,7 @@ export class NewPlatformTypeFormPage2Component implements OnChanges {
 									(enumSet) =>
 										!validateEnumLengthIsBelowMax(
 											enumSet.enumerations?.length || 0,
-											parseInt(bitSize)
+											parseInt(bitSize.value)
 										)
 								),
 								distinct()
@@ -146,40 +151,11 @@ export class NewPlatformTypeFormPage2Component implements OnChanges {
 		)
 	);
 
-	@Output() typeFormState = combineLatest([
-		this.platformType,
-		this.enumSetState,
-		this.createNewEnum,
-	]).pipe(
-		map(([pType, enumSet, create]) => {
-			return {
-				platformType: pType,
-				createEnum: create,
-				enumSet: enumSet,
-				enumSetName: enumSet?.name || '',
-				enumSetId: enumSet?.id || '-1',
-				enumSetDescription: enumSet?.description || '',
-				enumSetApplicability: enumSet?.applicability || {
-					id: '1',
-					name: 'Base',
-				},
-				enums: enumSet?.enumerations || [],
-			};
-		})
-	);
-
 	/**
 	 * Updates the platform type to the current state from osee-new-platform-type-form
 	 */
-	attributesUpdate(value: Partial<PlatformType>) {
-		this.platformType.next(value);
-	}
-
-	/**
-	 * Updates the enum set's state in this form
-	 */
-	updateEnumSet(value: enumerationSet) {
-		this.enumSetState.next(value);
+	attributesUpdate(value: PlatformType) {
+		this.platformType.set(value);
 	}
 
 	/**
@@ -187,7 +163,21 @@ export class NewPlatformTypeFormPage2Component implements OnChanges {
 	 */
 	toggleEnumCreationState(event?: Event) {
 		event?.stopPropagation();
-		this.createNewEnum.next(!this.createNewEnum.getValue());
+		if (!this.createNewEnum()) {
+			//if going from selected to creation state, clear out ids
+			this.enumSetId.set('-1');
+			this.enumSetNameId.set('-1');
+			this.enumSetDescriptionId.set('-1');
+			this.enumerations.update((e) => {
+				e.forEach((v) => {
+					v.id = '-1';
+					v.name.id = '-1';
+					v.ordinal.id = '-1';
+				});
+				return e;
+			});
+		}
+		this.createNewEnum.update((v) => !v);
 	}
 
 	/**
@@ -195,14 +185,5 @@ export class NewPlatformTypeFormPage2Component implements OnChanges {
 	 */
 	compareEnumSet(o1: enumerationSet, o2: enumerationSet) {
 		return o1?.id === o2?.id && o1?.name === o2?.name;
-	}
-
-	ngOnChanges(changes: SimpleChanges) {
-		if (
-			changes.logicalType.currentValue !==
-			this.logicalTypeSubject.getValue()
-		) {
-			this.logicalTypeSubject.next(changes.logicalType.currentValue);
-		}
 	}
 }

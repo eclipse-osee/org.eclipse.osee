@@ -10,18 +10,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface commandObject {
+export type commandObject = {
 	name: string;
 	description: string;
 	contentURL: string;
 	httpMethod?: string | null;
 	customCommand: boolean;
-}
+};
 
-export interface parameterObject {
+export type parameterObject = {
 	name: string;
 	description: string;
 	defaultValue: string;
 	isValidatorUsed: boolean;
 	validatorType: string;
-}
+};

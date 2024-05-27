@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
 	BehaviorSubject,
 	combineLatest,
@@ -28,6 +28,8 @@ import { UserHistoryService } from '../../data-services/history/user-history.ser
 	providedIn: 'root',
 })
 export class HistoryTableService {
+	private userHistoryService = inject(UserHistoryService);
+
 	_combinedDataTable = new BehaviorSubject<ResponseTableData>({
 		tableOptions: { columns: [] },
 		data: [],
@@ -54,8 +56,6 @@ export class HistoryTableService {
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
-	constructor(private userHistoryService: UserHistoryService) {}
-
 	sortColumnHeaders(cols: ResponseColumnSchema[]) {
 		const importOrder = [
 			'Artifact Id',
@@ -66,7 +66,7 @@ export class HistoryTableService {
 			'Is Validated',
 			'Favorite',
 		];
-		const sortByColumnName: { [key: string]: number } = importOrder.reduce(
+		const sortByColumnName: Record<string, number> = importOrder.reduce(
 			(obj, name, index) => {
 				return {
 					...obj,

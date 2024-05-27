@@ -11,10 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { headerDetail } from '@osee/shared/types';
-import {
-	TrainingCourse,
-	TrainingCourseRecord,
-} from '../../types/training-course';
+import { TrainingCourseRecord } from '../../types/training-course';
 
 export const trainingCourseRecordHeaderDetails: headerDetail<TrainingCourseRecord>[] =
 	[

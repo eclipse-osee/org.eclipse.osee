@@ -10,12 +10,12 @@
 * Contributors:
 *     Boeing - initial API and implementation
 -->
-@if (_formInfo | async; as formInfo) {
+@if (__formInfo | async; as formInfo) {
 	@if (formInfo.name === 'enumeration') {
 		<!-- disable attribute validation for enumerations since they are usually sharing common attributes -->
 		<div
-			ngModelGroup="platformTypeForm"
-			#platformTypeCtrl="ngModelGroup">
+			ngModelGroup="platformTypeGroup"
+			#platformTypeGroupCtrl>
 			<mat-label class="mat-headline-5"
 				>Set fields for new type based on logical type
 				{{ formInfo.name | titlecase }}</mat-label
@@ -32,15 +32,19 @@
 		</div>
 	} @else {
 		<div
-			ngModelGroup="platformTypeForm"
-			#platformTypeCtrl="ngModelGroup"
+			ngModelGroup="platformTypeGroup"
+			#platformTypeGroupCtrl
 			[oseeUniquePlatformTypeAttributes]="formInfo">
 			<mat-label class="mat-headline-5"
 				>Set fields for new type based on logical type
 				{{ formInfo.name | titlecase }}</mat-label
 			>
 			<br />
-			@for (form of formInfo.fields; track form; let i = $index) {
+			@for (
+				form of formInfo.fields;
+				track form.attributeTypeId;
+				let i = $index
+			) {
 				<ng-container
 					*ngTemplateOutlet="
 						platformTypeEditor;
@@ -56,52 +60,24 @@
 	@if (isLogicalTypeFieldInfo(form)) {
 		@if (form.editable) {
 			@if (form.name === 'Units') {
-				@if (isString(_platformType[form.jsonPropertyName])) {
-					<osee-unit-dropdown
-						(unitChange)="
-							updateInnerPlatformType(
-								form.jsonPropertyName,
-								$event
-							);
-							updateField()
-						"
-						[required]="form.required"></osee-unit-dropdown>
-				}
-			} @else {
-				<mat-form-field class="tw-w-full">
-					<mat-label>{{ form.name }}</mat-label>
-					@if (form.attributeType === 'Name') {
-						<input
-							matInput
-							type="text"
-							[(ngModel)]="_platformType[form.jsonPropertyName]"
-							(ngModelChange)="updateField()"
-							[name]="form.attributeType | oseeFirstLetterLower"
-							[id]="form.attributeTypeId"
-							oseeUniquePlatformTypeName
-							[ngModelOptions]="{ updateOn: 'blur' }"
-							#ctrl="ngModel"
-							[required]="form.required"
-							[attr.data-cy]="'field-' + form.attributeType" />
-					}
-					@if (form.attributeType !== 'Name') {
-						<input
-							matInput
-							type="text"
-							[(ngModel)]="_platformType[form.jsonPropertyName]"
-							(ngModelChange)="updateField()"
-							[name]="form.attributeType | oseeFirstLetterLower"
-							[id]="form.attributeTypeId"
-							#ctrl="ngModel"
-							[required]="form.required"
-							[attr.data-cy]="'field-' + form.attributeType" />
-					}
-					@if (form.defaultValue) {
-						<mat-hint align="end"
-							>Default Value: {{ form.defaultValue }}</mat-hint
-						>
-					}
-				</mat-form-field>
+				<osee-unit-dropdown
+					(unitChange)="
+						updateInnerPlatformTypeWithRaw(
+							form.jsonPropertyName,
+							$event
+						)
+					"
+					[required]="form.required"></osee-unit-dropdown>
+			} @else if (
+				isGeneralEditable(form) &&
+				!isString(platformType()[form.jsonPropertyName])
+			) {
+				<osee-new-platform-type-field
+					[form]="$any(form)"
+					[value]="platformType()[form.jsonPropertyName]"
+					(valueChange)="
+						updateInnerPlatformType(form.jsonPropertyName, $event)
+					" />
 			}
 			<br />
 		}

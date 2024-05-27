@@ -67,15 +67,18 @@ import { CiDetailsService } from '../../services/ci-details.service';
 	templateUrl: './results.component.html',
 })
 export default class ResultsComponent {
+	private uiService = inject(CiDashboardUiService);
+	private batchService = inject(CiBatchService);
+	private headerService = inject(HeaderService);
+	private route = inject(ActivatedRoute);
+
 	router = inject(Router);
 	detailsService = inject(CiDetailsService);
 
-	constructor(
-		private uiService: CiDashboardUiService,
-		private batchService: CiBatchService,
-		private headerService: HeaderService,
-		private route: ActivatedRoute
-	) {
+	/** Inserted by Angular inject() migration for backwards compatibility */
+	constructor(...args: unknown[]);
+
+	constructor() {
 		this.batchService.selectedBatchId
 			.pipe(
 				tap((_) => this.currentPage.next(0)),

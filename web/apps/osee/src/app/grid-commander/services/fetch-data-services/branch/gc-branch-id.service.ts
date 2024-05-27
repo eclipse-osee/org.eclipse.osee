@@ -16,8 +16,6 @@ import { Injectable } from '@angular/core';
 	providedIn: 'root',
 })
 export class GCBranchIdService {
-	constructor() {}
-
 	/**anything User related or ATS related stays on 570 everything else would need to use the UI service
 	 * as more commands are added to GC that do things on different branches
 	 * we will have to leverage the UiService to determine the branch

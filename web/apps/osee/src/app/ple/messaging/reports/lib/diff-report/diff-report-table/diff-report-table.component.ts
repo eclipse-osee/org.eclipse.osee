@@ -51,9 +51,9 @@ import { changeReportRow } from '@osee/shared/types/change-report';
 })
 export class DiffReportTableComponent implements OnChanges {
 	@Input({ required: true }) items: MimChangeSummaryItem[] = [];
-	@Input() title: string = '';
+	@Input() title = '';
 	@Input() headers: string[] = [];
-	@Input() showChildren: boolean = false;
+	@Input() showChildren = false;
 
 	private _changeMap = new Map<
 		string,

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CdkTrapFocus } from '@angular/cdk/a11y';
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import {
 	MAT_DIALOG_DATA,
@@ -38,5 +38,5 @@ import { AdvancedSearchFormComponent } from '../advanced-search-form/advanced-se
 	templateUrl: './advanced-search-dialog.component.html',
 })
 export class AdvancedSearchDialogComponent {
-	constructor(@Inject(MAT_DIALOG_DATA) public data: AdvancedSearchCriteria) {}
+	data = inject<AdvancedSearchCriteria>(MAT_DIALOG_DATA);
 }

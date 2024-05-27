@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/core';
@@ -61,18 +61,23 @@ import { toSignal } from '@angular/core/rxjs-interop';
 	],
 })
 export class AddFeatureDialogComponent {
+	dialogRef = inject<MatDialogRef<AddFeatureDialogComponent>>(MatDialogRef);
+	data = inject<PLAddFeatureData>(MAT_DIALOG_DATA);
+	private branchService = inject(PlConfigBranchService);
+	private currentBranchService = inject(PlConfigCurrentBranchService);
+	private uiService = inject(UiService);
+
 	branchApplicability: Observable<PlConfigApplicUIBranchMapping>;
 	productApplicabilities = this.currentBranchService.productTypes;
 	private _valueTypes: string[] = ['String', 'Integer', 'Decimal', 'Boolean'];
 	valueTypes: Observable<string[]> = of(this._valueTypes);
 	viewId = toSignal(this.uiService.viewId);
-	constructor(
-		public dialogRef: MatDialogRef<AddFeatureDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: PLAddFeatureData,
-		private branchService: PlConfigBranchService,
-		private currentBranchService: PlConfigCurrentBranchService,
-		private uiService: UiService
-	) {
+
+	/** Inserted by Angular inject() migration for backwards compatibility */
+	constructor(...args: unknown[]);
+	constructor() {
+		const data = this.data;
+
 		this.branchApplicability = this.branchService.getBranchApplicability(
 			data.currentBranch,
 			this.viewId() || ''
@@ -99,7 +104,7 @@ export class AddFeatureDialogComponent {
 	selectDefaultValue(event: MatSelectChange) {
 		this.data.feature.defaultValue = event.value;
 	}
-	valueTracker<T>(index: number, item: T) {
+	valueTracker<T>(index: number, _item: T) {
 		return index;
 	}
 	clearFeatureData() {

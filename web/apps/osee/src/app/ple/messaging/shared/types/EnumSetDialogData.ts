@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface enumsetDialogData {
+export type enumsetDialogData = {
 	id: string;
 	isOnEditablePage: boolean;
-}
+};

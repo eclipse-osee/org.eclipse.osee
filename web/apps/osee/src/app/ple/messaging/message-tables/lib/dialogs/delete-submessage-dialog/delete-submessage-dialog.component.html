@@ -12,8 +12,8 @@
  -->
 <h1 mat-dialog-title>Deleting Submessage</h1>
 <mat-dialog-content>
-	Are you sure you want to delete {{ data.submessage.name }}? This will remove
-	all instances of this element from all messages & connections.
+	Are you sure you want to delete {{ data.submessage.name.value }}? This will
+	remove all instances of this element from all messages & connections.
 </mat-dialog-content>
 <mat-dialog-actions>
 	<button
@@ -23,8 +23,8 @@
 		No
 	</button>
 	<button
-		mat-raised-button
-		color="primary"
+		mat-flat-button
+		class="primary-button"
 		mat-dialog-close="ok"
 		data-cy="submit-btn">
 		Yes

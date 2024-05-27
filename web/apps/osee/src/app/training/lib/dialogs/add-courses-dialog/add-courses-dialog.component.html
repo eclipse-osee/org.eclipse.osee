@@ -59,10 +59,11 @@
 				name="course"
 				[(ngModel)]="data.courseID"
 				[multiple]="false"
-				required
-				color="primary">
+				required>
 				@for (course of test_courses | async; track course) {
-					<mat-list-option [value]="course.courseID">
+					<mat-list-option
+						[value]="course.courseID"
+						class="primary-checkbox">
 						{{ course.courseID }} - {{ course.courseTitle }}
 					</mat-list-option>
 				}
@@ -107,8 +108,8 @@
 							Cancel
 						</button>
 						<button
-							mat-raised-button
-							color="primary"
+							mat-flat-button
+							class="primary-button"
 							matDateRangePickerApply>
 							Apply
 						</button>
@@ -126,9 +127,9 @@
 			Cancel
 		</button>
 		<button
-			mat-raised-button
+			mat-flat-button
 			[disabled]="addCourseForm.invalid"
-			color="primary">
+			class="primary-button">
 			Confirm
 		</button>
 	</div>

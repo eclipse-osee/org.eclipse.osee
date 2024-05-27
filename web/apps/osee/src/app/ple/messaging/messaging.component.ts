@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { AsyncPipe } from '@angular/common';
 import { MatAnchor } from '@angular/material/button';
@@ -34,7 +34,7 @@ const _navItems = navigationStructure[0].children.filter(
 	imports: [AsyncPipe, RouterLink, MatAnchor, MatIcon],
 })
 export class MessagingComponent {
-	constructor(private userService: UserDataAccountService) {}
+	private userService = inject(UserDataAccountService);
 
 	_filteredNavItems = from(this.allNavItems).pipe(
 		skip(1), // Skip the messaging home page item

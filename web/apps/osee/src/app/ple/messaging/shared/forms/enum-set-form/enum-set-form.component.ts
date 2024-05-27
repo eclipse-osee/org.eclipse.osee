@@ -12,8 +12,8 @@
  **********************************************************************/
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { AsyncPipe } from '@angular/common';
-import { Component, Input, Output } from '@angular/core';
-import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
+import { Component, Input, Output, model } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
 import {
 	MatError,
@@ -23,10 +23,14 @@ import {
 } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
+import { ApplicabilityDropdownComponent } from '@osee/applicability/applicability-dropdown';
 import { EnumSetUniqueDescriptionDirective } from '@osee/messaging/shared/directives';
 import type { enumeration, enumerationSet } from '@osee/messaging/shared/types';
-import { ApplicabilitySelectorComponent } from '@osee/shared/components';
-import { BehaviorSubject, Subject } from 'rxjs';
+import {
+	provideOptionalControlContainerNgForm,
+	writableSlice,
+} from '@osee/shared/utils';
+import { Subject } from 'rxjs';
 import { EnumFormComponent } from '../../forms/enum-form/enum-form.component';
 
 @Component({
@@ -47,42 +51,27 @@ import { EnumFormComponent } from '../../forms/enum-form/enum-form.component';
 		AsyncPipe,
 		EnumFormComponent,
 		EnumSetUniqueDescriptionDirective,
-		ApplicabilitySelectorComponent,
+		ApplicabilityDropdownComponent,
 	],
-	viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
+	viewProviders: [provideOptionalControlContainerNgForm()],
 })
 export class EnumSetFormComponent {
-	@Input() bitSize: string = '0';
-	enumSet: enumerationSet = {
-		name: '',
-		description: '',
-		applicability: {
-			id: '1',
-			name: 'Base',
-		},
-	};
-
-	@Output('enumSet') private _enumSet = new BehaviorSubject<enumerationSet>({
-		name: '',
-		description: '',
-		applicability: {
-			id: '1',
-			name: 'Base',
-		},
-	});
+	@Input() bitSize = '0';
+	enumSet = model.required<enumerationSet>();
+	protected name = writableSlice(this.enumSet, 'name');
+	protected nameValue = writableSlice(this.name, 'value');
+	protected description = writableSlice(this.enumSet, 'description');
+	protected descriptionValue = writableSlice(this.description, 'value');
+	protected applicability = writableSlice(this.enumSet, 'applicability');
+	protected enumerations = writableSlice(this.enumSet, 'enumerations');
 	@Output('closed') _closeForm = new Subject();
 
 	updateDescription(value: string) {
-		this.enumSet.description = value;
+		this.descriptionValue.set(value);
 	}
 
 	updateEnums(value: enumeration[]) {
-		let enumSet = this._enumSet.getValue();
-		enumSet.enumerations = value;
-		this._enumSet.next(enumSet);
-	}
-	updateEnumSet() {
-		this._enumSet.next(this.enumSet);
+		this.enumerations.set(value);
 	}
 	closeForm() {
 		this._closeForm.next(true);

@@ -12,7 +12,7 @@
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
 import { TestScheduler } from 'rxjs/testing';
-import { transactionResultMock } from '@osee/shared/transactions/testing';
+import { transactionResultMock } from '@osee/transactions/testing';
 
 import { CurrentBranchTransactionService } from './current-branch-transaction.service';
 import { BranchTransactionService } from './branch-transaction.service';

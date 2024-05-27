@@ -11,16 +11,16 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { apiURL } from '@osee/environments';
-import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 import type { transportType } from '@osee/messaging/shared/types';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class TransportTypeService {
-	constructor(private http: HttpClient) {}
+	private http = inject(HttpClient);
 
 	getAll(branchId: string) {
 		return this.http.get<Required<transportType>[]>(

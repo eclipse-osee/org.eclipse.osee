@@ -26,24 +26,24 @@ import { MatIcon } from '@angular/material/icon';
 import { MatFormField, MatInput, MatLabel } from '@angular/material/input';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import {
-	MatTable,
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatFooterCell,
+	MatFooterCellDef,
+	MatFooterRow,
+	MatFooterRowDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
 	MatHeaderRow,
 	MatHeaderRowDef,
 	MatRow,
 	MatRowDef,
-	MatColumnDef,
-	MatHeaderCell,
-	MatHeaderCellDef,
-	MatCell,
-	MatCellDef,
+	MatTable,
 	MatTableDataSource,
-	MatFooterRow,
-	MatFooterRowDef,
-	MatFooterCell,
-	MatFooterCellDef,
 } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
-import { NamedId } from '@osee/shared/types';
+import { NamedIdWithGammas } from '@osee/shared/types';
 
 @Component({
 	selector: 'osee-named-id-table',
@@ -93,15 +93,24 @@ import { NamedId } from '@osee/shared/types';
 						{{ columnMetaData()[idx].displayName }}
 					</mat-header-cell>
 					<mat-cell *matCellDef="let row">
-						{{ row[column] }}
+						@switch (column) {
+							@case ('name') {
+								{{ row[column].value }}
+							}
+							@default {
+								{{ row[column] }}
+							}
+						}
 						@if (
 							columnMetaData()[idx].hasInteraction && inEditMode()
 						) {
 							<button
 								mat-icon-button
 								(click)="deleteValue(row)"
-								[matTooltip]="'Delete ' + row.name">
-								<mat-icon color="warn">delete</mat-icon>
+								[matTooltip]="'Delete ' + row.name.value">
+								<mat-icon class="tw-text-osee-red-9"
+									>delete</mat-icon
+								>
 							</button>
 						}
 					</mat-cell>
@@ -114,7 +123,9 @@ import { NamedId } from '@osee/shared/types';
 								mat-icon-button
 								(click)="deleteAll()"
 								matTooltip="Delete all visible">
-								<mat-icon color="warn">delete</mat-icon>
+								<mat-icon class="tw-text-osee-red-9"
+									>delete</mat-icon
+								>
 							</button>
 						}
 					</mat-footer-cell>
@@ -125,16 +136,14 @@ import { NamedId } from '@osee/shared/types';
 				class="tw-text-primary-500"></mat-header-row>
 			<mat-row
 				*matRowDef="let row; columns: displayedColumns()"
-				class="
-			 even:tw-bg-background-background hover:tw-bg-background-hover hover:tw-font-extrabold
-			"></mat-row>
+				class="even:tw-bg-background-background hover:tw-bg-background-hover hover:tw-font-extrabold"></mat-row>
 			<mat-footer-row
 				*matFooterRowDef="displayedColumns()"></mat-footer-row>
 		</mat-table>
 		<mat-paginator
 			[pageSizeOptions]="[
 				10, 15, 20, 25, 50, 75, 100, 200, 250, 500, 1000, 1500, 2000,
-				2500, 5000
+				2500, 5000,
 			]"
 			[pageIndex]="currentPage()"
 			(page)="setPage($event)"
@@ -143,7 +152,7 @@ import { NamedId } from '@osee/shared/types';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NamedIdTableComponent {
-	content = input.required<NamedId[]>();
+	content = input.required<NamedIdWithGammas[]>();
 	currentPage = model.required<number>();
 	size = input.required<number>();
 	inEditMode = input.required<boolean>();
@@ -151,16 +160,16 @@ export class NamedIdTableComponent {
 	filter = model.required<string>();
 
 	currentPageSize = output<number>();
-	protected dataSource = new MatTableDataSource<NamedId>();
+	protected dataSource = new MatTableDataSource<NamedIdWithGammas>();
 	private _updateDataSource = effect(() => {
 		this.dataSource.data = this.content();
 	});
 
-	itemsToDelete = output<NamedId | NamedId[]>();
+	itemsToDelete = output<NamedIdWithGammas | NamedIdWithGammas[]>();
 
 	protected columnMetaData = signal<
 		{
-			key: keyof NamedId | 'delete';
+			key: keyof NamedIdWithGammas | 'delete';
 			tooltip: string;
 			displayName: string;
 			hasInteraction: boolean;
@@ -196,7 +205,7 @@ export class NamedIdTableComponent {
 	deleteAll() {
 		this.itemsToDelete.emit(this.content());
 	}
-	deleteValue(value: NamedId) {
+	deleteValue(value: NamedIdWithGammas) {
 		this.itemsToDelete.emit(value);
 	}
 

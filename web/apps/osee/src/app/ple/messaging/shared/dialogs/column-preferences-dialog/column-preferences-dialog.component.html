@@ -16,14 +16,14 @@
 		<mat-checkbox
 			[(ngModel)]="data.editable"
 			[disabled]="(editability | async) === false || false"
-			color="primary">
+			class="primary-checkbox">
 			<mat-label>Edit Mode</mat-label>
 		</mat-checkbox>
 		<mat-checkbox
 			[(ngModel)]="data.wordWrap"
 			matTooltip="Turn on to view full length content in tables"
 			[matTooltipPosition]="'right'"
-			color="primary">
+			class="primary-checkbox">
 			<mat-label>Word Wrap</mat-label>
 		</mat-checkbox>
 	</div>
@@ -49,9 +49,7 @@
 			</tr>
 			<tr class="mat-row">
 				<td class="mat-cell tw-align-top">
-					<mat-selection-list
-						[(ngModel)]="data.allowedHeaders1"
-						color="primary">
+					<mat-selection-list [(ngModel)]="data.allowedHeaders1">
 						@for (header of data.allHeaders1; track header) {
 							@if (isString(header)) {
 								<mat-list-option
@@ -72,9 +70,7 @@
 					</mat-selection-list>
 				</td>
 				<td class="mat-cell tw-align-top">
-					<mat-selection-list
-						[(ngModel)]="data.allowedHeaders2"
-						color="primary">
+					<mat-selection-list [(ngModel)]="data.allowedHeaders2">
 						@for (header of data.allHeaders2; track header) {
 							<mat-list-option
 								[value]="header"
@@ -102,9 +98,9 @@
 		Cancel
 	</button>
 	<button
-		mat-raised-button
+		mat-flat-button
 		[mat-dialog-close]="data"
-		color="primary"
+		class="primary-button"
 		data-cy="submit-btn">
 		Ok
 	</button>

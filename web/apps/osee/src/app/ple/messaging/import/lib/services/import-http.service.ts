@@ -11,20 +11,34 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import type { ImportSummary, ImportOption } from '@osee/messaging/shared/types';
 import { shareReplay } from 'rxjs/operators';
 import { apiURL } from '@osee/environments';
+import { transactionResult } from '@osee/transactions/types';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class ImportHttpService {
-	constructor(private http: HttpClient) {}
+	private http = inject(HttpClient);
 
-	getImportSummary(url: string, fileName: string, formData: FormData | File) {
+	performImport(branchId: string, summary: ImportSummary) {
+		return this.http.post<transactionResult>(
+			apiURL + `/mim/import/icd/summary/${branchId}`,
+			summary
+		);
+	}
+
+	getImportSummary(
+		url: string,
+		transportTypeId: `${number}`,
+		fileName: string,
+		formData: FormData | File
+	) {
 		return this.http.post<ImportSummary>(apiURL + url, formData, {
 			params: {
+				transportType: transportTypeId,
 				fileName: fileName,
 			},
 		});

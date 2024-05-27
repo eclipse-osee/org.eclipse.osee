@@ -10,35 +10,32 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { of, switchMap, take } from 'rxjs';
+import { TransactionBuilderService } from '@osee/shared/transactions-legacy';
 import {
-	TransactionBuilderService,
-	TransactionService,
-} from '@osee/shared/transactions';
-import {
-	relation,
-	createArtifact,
-	transaction,
-	artifact,
-} from '@osee/shared/types';
+	legacyRelation,
+	legacyCreateArtifact,
+	legacyTransaction,
+	legacyArtifact,
+} from '@osee/transactions/types';
 import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
 import { GCRELATIONTYPEID } from '../../types/grid-commander-constants/gcRelationTypeId.enum';
+import { TransactionService } from '@osee/transactions/services';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class CreateParameterAndRelationsService {
-	constructor(
-		private transactionService: TransactionService,
-		private builder: TransactionBuilderService
-	) {}
+	private builder = inject(TransactionBuilderService);
+
+	private transactionService = inject(TransactionService);
 
 	createParameterArtifact(
 		branchId: string,
-		parameter: Partial<createArtifact & artifact>,
+		parameter: Partial<legacyCreateArtifact & legacyArtifact>,
 		parameterType: string,
-		transaction?: transaction,
+		transaction?: legacyTransaction,
 		key?: string
 	) {
 		return of(
@@ -61,7 +58,7 @@ export class CreateParameterAndRelationsService {
 		commandId: string,
 		parameterId: string
 	) {
-		let relation: relation = {
+		const relation: legacyRelation = {
 			typeId: GCRELATIONTYPEID.DEFAULT_HIERARCHICAL,
 			sideA: commandId,
 			sideB: parameterId,
@@ -71,8 +68,8 @@ export class CreateParameterAndRelationsService {
 
 	establishParameterTypeToCommandRelation(
 		branchId: string,
-		relation: relation,
-		transaction?: transaction
+		relation: legacyRelation,
+		transaction?: legacyTransaction
 	) {
 		return of(
 			this.builder.addRelation(
@@ -98,11 +95,11 @@ export class CreateParameterAndRelationsService {
 
 	createParameterAndEstablishCommandRelation(
 		branchId: string,
-		parameter: Partial<createArtifact & artifact>,
+		parameter: Partial<legacyCreateArtifact & legacyArtifact>,
 		commandId: string,
 		parameterType: string = ARTIFACTTYPEIDENUM.PARAMETERSTRING,
-		transaction?: transaction,
-		key?: string
+		_transaction?: legacyTransaction,
+		_key?: string
 	) {
 		return this.createParameterArtifact(
 			branchId,
@@ -127,7 +124,7 @@ export class CreateParameterAndRelationsService {
 		);
 	}
 
-	performMutation(body: transaction) {
+	performMutation(body: legacyTransaction) {
 		return this.transactionService.performMutation(body);
 	}
 }

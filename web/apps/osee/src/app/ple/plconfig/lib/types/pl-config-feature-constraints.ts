@@ -10,15 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { applic } from '@osee/shared/types/applicability';
+import { applic } from '@osee/applicability/types';
 
-export interface featureConstraint {
+export type featureConstraint = {
 	applicability1: applic;
 	applicability2: applic;
-}
-export interface featureConstraintData {
+};
+export type featureConstraintData = {
 	featureConstraint: featureConstraint;
-}
+};
 export const defaultFeatureConstraint = {
 	applicability1: {
 		id: '',
@@ -30,8 +30,8 @@ export const defaultFeatureConstraint = {
 	},
 };
 // mapping used for GET response
-export interface applicWithConstraints {
+export type applicWithConstraints = {
 	id: string;
 	name: string;
 	constraints: applicWithConstraints[];
-}
+};

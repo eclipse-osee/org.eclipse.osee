@@ -21,16 +21,18 @@ export function writableSlice<T, K extends keyof T>(
 	sourceSignal: WritableSignal<T>,
 	property: K
 ): WritableSignal<T[K]> {
-	let _computed = computed(() => sourceSignal()[property]) as WritableSignal<
-		T[K]
-	>;
-	let _set = function (value: T[K]) {
-		let _newValue = { ...sourceSignal() };
+	const _computed = computed(
+		() => sourceSignal()[property]
+	) as WritableSignal<T[K]>;
+	const _set = function (value: T[K]) {
+		const _newValue = { ...sourceSignal() };
 		_newValue[property] = value;
 		sourceSignal.set(_newValue);
 	};
 	//no-op for now?kinda challenging
-	let _update = function (updateFn: (value: T[K]) => T[K]) {};
+	const _update = function (updateFn: (value: T[K]) => T[K]) {
+		_set(updateFn(_computed()));
+	};
 	_computed.set = _set;
 	_computed.update = _update;
 	return _computed;
@@ -40,14 +42,17 @@ export function writableArraySlice<T>(
 	sourceSignal: WritableSignal<T[]>,
 	index: number
 ): WritableSignal<T> {
-	let _computed = computed(() => sourceSignal()[index]) as WritableSignal<T>;
-	let _set = function (value: T) {
-		let _newArr = [...sourceSignal()];
+	const _computed = computed(
+		() => sourceSignal()[index]
+	) as WritableSignal<T>;
+	const _set = function (value: T) {
+		const _newArr = [...sourceSignal()];
 		_newArr[index] = value;
 		sourceSignal.set(_newArr);
 	};
 	//no-op for now?kinda challenging
-	let _update = function (updateFn: (value: T) => T) {};
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
+	const _update = function (updateFn: (value: T) => T) {};
 	_computed.set = _set;
 	_computed.update = _update;
 	return _computed;

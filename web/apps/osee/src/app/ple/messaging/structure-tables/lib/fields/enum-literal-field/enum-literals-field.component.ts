@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { PreferencesUIService } from '@osee/messaging/shared/services';
 import { tap } from 'rxjs';
 
@@ -23,14 +23,14 @@ import { tap } from 'rxjs';
 	imports: [AsyncPipe],
 })
 export class EnumLiteralsFieldComponent {
-	@Input() enumLiterals: string = '';
+	private preferencesService = inject(PreferencesUIService);
 
-	wordWrap: boolean = false;
+	@Input() enumLiterals = '';
+
+	wordWrap = false;
 	globalPrefs = this.preferencesService.globalPrefs.pipe(
 		tap((prefs) => (this.wordWrap = prefs.wordWrap))
 	);
-
-	constructor(private preferencesService: PreferencesUIService) {}
 
 	toggleExpanded() {
 		this.wordWrap = !this.wordWrap;

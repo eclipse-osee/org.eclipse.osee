@@ -33,10 +33,11 @@ import {
 	EditDefinitionsDropdownComponent,
 	ApplicabilityTableComponent,
 } from '@osee/plconfig';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { BranchPickerComponent } from '@osee/shared/components';
 import { ActionDropdownStub } from '@osee/configuration-management/testing';
 import { ActionDropDownComponent } from '@osee/configuration-management/components';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('PlconfigComponent', () => {
 	let component: PlconfigComponent;
@@ -53,7 +54,6 @@ describe('PlconfigComponent', () => {
 		})
 			.configureTestingModule({
 				imports: [
-					HttpClientTestingModule,
 					MatDialogModule,
 					MatMenuModule,
 					MatIconModule,
@@ -73,8 +73,11 @@ describe('PlconfigComponent', () => {
 					PlconfigComponent,
 				],
 				providers: [
+					provideHttpClient(),
+					provideHttpClientTesting(),
 					{
 						provide: Router,
+						// eslint-disable-next-line @typescript-eslint/no-empty-function
 						useValue: { navigate: () => {}, events: of() },
 					},
 					{

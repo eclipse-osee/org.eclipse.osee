@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { CiSetsHttpService } from './ci-sets-http.service';
 import { CiDashboardUiService } from './ci-dashboard-ui.service';
 import {
@@ -25,10 +25,8 @@ import {
 	providedIn: 'root',
 })
 export class CiSetsService {
-	constructor(
-		private ciSetsService: CiSetsHttpService,
-		private ui: CiDashboardUiService
-	) {}
+	private ciSetsService = inject(CiSetsHttpService);
+	private ui = inject(CiDashboardUiService);
 
 	private _activeOnly = new BehaviorSubject<boolean>(false);
 

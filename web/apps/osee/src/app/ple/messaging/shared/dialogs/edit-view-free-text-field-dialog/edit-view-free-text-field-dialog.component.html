@@ -42,16 +42,16 @@
 	</button>
 	@if ((editMode | async) === true) {
 		<button
-			mat-raised-button
-			color="primary"
+			mat-flat-button
+			class="primary-button"
 			[mat-dialog-close]="data"
 			data-cy="submit-btn">
 			<mat-icon>save</mat-icon><span>Save Changes</span>
 		</button>
 	} @else {
 		<button
-			mat-raised-button
-			color="primary"
+			mat-flat-button
+			class="primary-button"
 			mat-dialog-close="ok"
 			data-cy="submit-btn">
 			Ok

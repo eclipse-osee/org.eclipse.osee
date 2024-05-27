@@ -11,9 +11,13 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 import { HideColumnCommandComponent } from './hide-column-command.component';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('HideColumnCommandComponent', () => {
 	let component: HideColumnCommandComponent;
@@ -21,7 +25,11 @@ describe('HideColumnCommandComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule, HideColumnCommandComponent],
+			imports: [HideColumnCommandComponent],
+			providers: [
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+			],
 		}).compileComponents();
 	});
 

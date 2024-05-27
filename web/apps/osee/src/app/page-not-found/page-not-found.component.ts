@@ -20,7 +20,5 @@ import { Component } from '@angular/core';
 	],
 	standalone: true,
 })
-export class PageNotFoundComponent {
-	constructor() {}
-}
+export class PageNotFoundComponent {}
 export default PageNotFoundComponent;

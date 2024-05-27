@@ -12,7 +12,8 @@
  **********************************************************************/
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { AsyncPipe } from '@angular/common';
-import { Component, Inject, OnDestroy } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/core';
@@ -33,43 +34,32 @@ import {
 import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
 import { MatStep, MatStepper, MatStepperNext } from '@angular/material/stepper';
-import { PLATFORMTYPEATTRIBUTETYPEID } from '@osee/messaging/shared/attr';
+import { ApplicabilityDropdownComponent } from '@osee/applicability/applicability-dropdown';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 import {
 	UniquePlatformTypeAttributesDirective,
 	UniquePlatformTypeNameDirective,
 } from '@osee/messaging/shared/directives';
-import {
-	CrossReferenceDropdownComponent,
-	UnitDropdownComponent,
-} from '@osee/messaging/shared/dropdowns';
-import {
-	PlatformTypeSentinel,
-	editPlatformTypeDialogDataMode,
-} from '@osee/messaging/shared/enumerations';
+import { CrossReferenceDropdownComponent } from '@osee/messaging/shared/dropdowns';
+import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 import { EditEnumSetFieldComponent } from '@osee/messaging/shared/forms';
 import { TypesService } from '@osee/messaging/shared/services';
 import type {
 	PlatformType,
 	editPlatformTypeDialogData,
-	enumeratedPlatformType,
 	logicalType,
 } from '@osee/messaging/shared/types';
-import {
-	ApplicabilitySelectorComponent,
-	MatOptionLoadingComponent,
-} from '@osee/shared/components';
+import { UnitDropdownComponent } from '@osee/messaging/units/dropdown';
+import { MatOptionLoadingComponent } from '@osee/shared/components';
 import { ParentErrorStateMatcher } from '@osee/shared/matchers';
+import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
+import { writableSlice } from '@osee/shared/utils';
 import {
-	createArtifact,
-	modifyArtifact,
-	modifyRelation,
-} from '@osee/shared/types';
-import { applic } from '@osee/shared/types/applicability';
-import {
-	ARTIFACTTYPEIDENUM,
-	ATTRIBUTETYPEIDENUM,
-} from '@osee/shared/types/constants';
-import { BehaviorSubject, Subject, combineLatest, from, of } from 'rxjs';
+	legacyCreateArtifact,
+	legacyModifyArtifact,
+	legacyModifyRelation,
+} from '@osee/transactions/types';
+import { Subject, combineLatest, from, of } from 'rxjs';
 import {
 	concatMap,
 	filter,
@@ -78,7 +68,6 @@ import {
 	shareReplay,
 	switchMap,
 	take,
-	takeUntil,
 } from 'rxjs/operators';
 
 @Component({
@@ -109,13 +98,153 @@ import {
 		UniquePlatformTypeNameDirective,
 		UniquePlatformTypeAttributesDirective,
 		EditEnumSetFieldComponent,
-		ApplicabilitySelectorComponent,
+		ApplicabilityDropdownComponent,
 		UnitDropdownComponent,
 		CrossReferenceDropdownComponent,
 	],
 })
-export class EditTypeDialogComponent implements OnDestroy {
-	platform_type: string = '';
+export class EditTypeDialogComponent {
+	dialogRef = inject<MatDialogRef<EditTypeDialogComponent>>(MatDialogRef);
+	data = inject(MAT_DIALOG_DATA);
+	private typesService = inject(TypesService);
+
+	protected platformType = signal(
+		inject<editPlatformTypeDialogData>(MAT_DIALOG_DATA).type
+	);
+
+	private _nameAttr = writableSlice(this.platformType, 'name');
+	protected name = writableSlice(this._nameAttr, 'value');
+	private _descriptionAttr = writableSlice(this.platformType, 'description');
+	protected description = writableSlice(this._descriptionAttr, 'value');
+	private _logicalTypeAttr = writableSlice(
+		this.platformType,
+		'interfaceLogicalType'
+	);
+	protected logicalType = writableSlice(this._logicalTypeAttr, 'value');
+	private _complementAttr = writableSlice(
+		this.platformType,
+		'interfacePlatformType2sComplement'
+	);
+	protected complement = writableSlice(this._complementAttr, 'value');
+	private _accuracyAttr = writableSlice(
+		this.platformType,
+		'interfacePlatformTypeAnalogAccuracy'
+	);
+	protected accuracy = writableSlice(this._accuracyAttr, 'value');
+	private _resolutionAttr = writableSlice(
+		this.platformType,
+		'interfacePlatformTypeBitsResolution'
+	);
+	protected resolution = writableSlice(this._resolutionAttr, 'value');
+	private _sizeAttr = writableSlice(
+		this.platformType,
+		'interfacePlatformTypeBitSize'
+	);
+	protected size = writableSlice(this._sizeAttr, 'value');
+	private _compRateAttr = writableSlice(
+		this.platformType,
+		'interfacePlatformTypeCompRate'
+	);
+	protected compRate = writableSlice(this._compRateAttr, 'value');
+	private _defaultValueAttr = writableSlice(
+		this.platformType,
+		'interfaceDefaultValue'
+	);
+	protected defaultValue = writableSlice(this._defaultValueAttr, 'value');
+	private _maxValAttr = writableSlice(
+		this.platformType,
+		'interfacePlatformTypeMaxval'
+	);
+	protected maxVal = writableSlice(this._maxValAttr, 'value');
+	private _minValAttr = writableSlice(
+		this.platformType,
+		'interfacePlatformTypeMinval'
+	);
+	protected minVal = writableSlice(this._minValAttr, 'value');
+	private _msbValAttr = writableSlice(
+		this.platformType,
+		'interfacePlatformTypeMsbValue'
+	);
+	protected msbVal = writableSlice(this._msbValAttr, 'value');
+	protected _unitsAttr = writableSlice(
+		this.platformType,
+		'interfacePlatformTypeUnits'
+	);
+	protected units = writableSlice(this._unitsAttr, 'value');
+	private _validRangeAttr = writableSlice(
+		this.platformType,
+		'interfacePlatformTypeValidRangeDescription'
+	);
+	protected validRange = writableSlice(this._validRangeAttr, 'value');
+
+	protected applicability = writableSlice(this.platformType, 'applicability');
+	private _applicabilityId = computed(() => this.applicability().id);
+	protected mode = signal(
+		inject<editPlatformTypeDialogData>(MAT_DIALOG_DATA).mode
+	);
+	private _id = computed(() => this.platformType().id);
+
+	protected pTypeManifest = computed(() => {
+		if (this.mode() === 0) {
+			return {
+				createArtifacts: [],
+				modifyArtifacts: [
+					{
+						id: this._id() || '-1',
+						setAttributes: [
+							this._nameAttr(),
+							this._descriptionAttr(),
+							this._logicalTypeAttr(),
+							this._complementAttr(),
+							this._accuracyAttr(),
+							this._resolutionAttr(),
+							this._sizeAttr(),
+							this._compRateAttr(),
+							this._defaultValueAttr(),
+							this._defaultValueAttr(),
+							this._maxValAttr(),
+							this._minValAttr(),
+							this._msbValAttr(),
+							this._unitsAttr(),
+							this._validRangeAttr(),
+						],
+						applicabilityId: this._applicabilityId(),
+					},
+				],
+				deleteRelations: [],
+			};
+		}
+		return {
+			createArtifacts: [
+				{
+					typeId: ARTIFACTTYPEIDENUM.PLATFORMTYPE,
+					applicabilityId: this._applicabilityId(),
+					name: this.name(),
+					key: '3e1a2d30-f7db-43d2-af9d-d423115cbb8', //magic UUID to reference platform type
+					attributes: [
+						this._descriptionAttr(),
+						this._logicalTypeAttr(),
+						this._complementAttr(),
+						this._accuracyAttr(),
+						this._resolutionAttr(),
+						this._sizeAttr(),
+						this._compRateAttr(),
+						this._defaultValueAttr(),
+						this._defaultValueAttr(),
+						this._maxValAttr(),
+						this._minValAttr(),
+						this._msbValAttr(),
+						this._unitsAttr(),
+						this._validRangeAttr(),
+					],
+				},
+			],
+			modifyArtifacts: [],
+			deleteRelations: [],
+		};
+	});
+	private _platformType = toObservable(this.name);
+	platformTypeTitle = this._platformType.pipe(take(1));
 	logicalTypes = this.typesService.logicalTypes.pipe(
 		switchMap((logicalTypes) =>
 			from(logicalTypes).pipe(
@@ -134,59 +263,39 @@ export class EditTypeDialogComponent implements OnDestroy {
 		),
 		reduce((acc, curr) => [...acc, curr], [] as logicalType[])
 	);
-	enumSet: {
-		createArtifacts: createArtifact[];
-		modifyArtifacts: modifyArtifact[];
-		deleteRelations: modifyRelation[];
-	} = {
-		createArtifacts: [],
-		modifyArtifacts: [],
-		deleteRelations: [],
-	};
 
-	private enumSetManifest = new BehaviorSubject<{
-		createArtifacts: createArtifact[];
-		modifyArtifacts: modifyArtifact[];
-		deleteRelations: modifyRelation[];
+	private enumSetManifest = signal<{
+		createArtifacts: legacyCreateArtifact[];
+		modifyArtifacts: legacyModifyArtifact[];
+		deleteRelations: legacyModifyRelation[];
 	}>({ createArtifacts: [], modifyArtifacts: [], deleteRelations: [] });
-	private pTypeManifest = new BehaviorSubject<{
-		createArtifacts: createArtifact[];
-		modifyArtifacts: modifyArtifact[];
-		deleteRelations: modifyRelation[];
-	}>({ createArtifacts: [], modifyArtifacts: [], deleteRelations: [] });
-	protected manifest = combineLatest([
-		this.enumSetManifest,
-		this.pTypeManifest,
-	]).pipe(
-		map(([enumSet, pType]) => {
-			return {
-				createArtifacts: [
-					...enumSet.createArtifacts,
-					...pType.createArtifacts,
-				],
-				modifyArtifacts: [
-					...enumSet.modifyArtifacts,
-					...pType.modifyArtifacts,
-				],
-				deleteRelations: [
-					...enumSet.deleteRelations,
-					...pType.deleteRelations,
-				],
-			};
-		}),
-		map((changeManifest) => {
-			return {
-				manifest: changeManifest,
-				mode: this.data.mode,
-			};
-		})
-	);
+	private _manifest = computed(() => {
+		return {
+			createArtifacts: [
+				...this.enumSetManifest().createArtifacts,
+				...this.pTypeManifest().createArtifacts,
+			],
+			modifyArtifacts: [
+				...this.enumSetManifest().modifyArtifacts,
+				...this.pTypeManifest().modifyArtifacts,
+			],
+			deleteRelations: [
+				...this.enumSetManifest().deleteRelations,
+				...this.pTypeManifest().deleteRelations,
+			],
+		};
+	});
+	protected manifest = computed(() => {
+		return {
+			manifest: this._manifest(),
+			mode: this.mode(),
+		};
+	});
 	parentMatcher = new ParentErrorStateMatcher();
 
 	enumUnique = new Subject<string>();
-	private _logicalType = new Subject<string>();
+	private _logicalType = toObservable(this.logicalType);
 
-	private _done = new Subject();
 	private _fieldInfo = combineLatest([
 		this._logicalType,
 		this.logicalTypes,
@@ -207,7 +316,7 @@ export class EditTypeDialogComponent implements OnDestroy {
 		map((result) => result.fields),
 		concatMap((fields) => from(fields)),
 		shareReplay({ bufferSize: 1, refCount: true }),
-		takeUntil(this._done)
+		takeUntilDestroyed()
 	);
 
 	bitSizeRequired = this._fieldInfo.pipe(
@@ -295,161 +404,53 @@ export class EditTypeDialogComponent implements OnDestroy {
 	);
 	reference: Partial<PlatformType> = new PlatformTypeSentinel();
 
-	constructor(
-		public dialogRef: MatDialogRef<EditTypeDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: editPlatformTypeDialogData,
-		private typesService: TypesService
-	) {
-		this.platform_type = this.data.type.name;
-		this.reference = { ...this.data.type };
-		if (this.data.mode === 0) {
-			this.pTypeManifest.next({
-				createArtifacts: [],
-				modifyArtifacts: [
-					{
-						id: this.data.type.id || '-1',
-						setAttributes: [],
-						applicabilityId: this.data.type.applicability.id,
-					},
-				],
-				deleteRelations: [],
-			});
-		} else {
-			this.pTypeManifest.next({
-				createArtifacts: [
-					{
-						typeId: ARTIFACTTYPEIDENUM.PLATFORMTYPE,
-						applicabilityId: this.data.type.applicability.id,
-						name: this.data.type.name,
-						key: '3e1a2d30-f7db-43d2-af9d-d423115cbb8', //magic UUID to reference platform type
-						attributes: [
-							{
-								typeId: ATTRIBUTETYPEIDENUM.DESCRIPTION,
-								value: this.data.type.description,
-							},
-							{
-								typeId: ATTRIBUTETYPEIDENUM.LOGICALTYPE,
-								value: this.data.type.interfaceLogicalType,
-							},
-							{
-								typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMINVAL,
-								value: this.data.type
-									.interfacePlatformTypeMinval,
-							},
-							{
-								typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMAXVAL,
-								value: this.data.type
-									.interfacePlatformTypeMaxval,
-							},
-							{
-								typeId: ATTRIBUTETYPEIDENUM.INTERFACEDEFAULTVAL,
-								value: this.data.type.interfaceDefaultValue,
-							},
-							{
-								typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMSBVAL,
-								value: this.data.type
-									.interfacePlatformTypeMsbValue,
-							},
-							{
-								typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEBITSIZE,
-								value: this.data.type
-									.interfacePlatformTypeBitSize,
-							},
-							{
-								typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEBITSRESOLUTION,
-								value: this.data.type
-									.interfacePlatformTypeBitsResolution,
-							},
-							{
-								typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPECOMPRATE,
-								value: this.data.type
-									.interfacePlatformTypeCompRate,
-							},
-							{
-								typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEANALOGACCURACY,
-								value: this.data.type
-									.interfacePlatformTypeAnalogAccuracy,
-							},
-							{
-								typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEUNITS,
-								value: this.data.type
-									.interfacePlatformTypeUnits,
-							},
-							{
-								typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPE2SCOMPLEMENT,
-								value: this.data.type
-									.interfacePlatformType2sComplement,
-							},
-							{
-								typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEVALIDRANGEDESCRIPTION,
-								value: this.data.type
-									.interfacePlatformTypeValidRangeDescription,
-							},
-						],
-					},
-				],
-				modifyArtifacts: [],
-				deleteRelations: [],
-			});
-			delete this.reference.id;
-		}
-	}
+	/** Inserted by Angular inject() migration for backwards compatibility */
+	constructor(...args: unknown[]);
 
-	ngOnDestroy(): void {
-		this._done.next('');
+	constructor() {
+		this.reference = structuredClone(this.data.type);
 	}
 
 	/**
 	 * Calculates MSB value based on Bit Resolution, Byte Size and whether or not the type is signed/unsigned
 	 * @returns @type {string} MSB Value
 	 */
-	getMSBValue() {
-		if (
-			this.data.type.interfacePlatformTypeBitsResolution === '' ||
-			this.data.type.interfacePlatformTypeBitSize === ''
-		) {
+	protected msbValue = computed(() => {
+		if (this.resolution() === '' || this.size() === '') {
 			return '';
 		}
 		return (
-			Number(this.data.type.interfacePlatformTypeBitsResolution) *
-			(2 ^
-				((Number(this.data.type.interfacePlatformTypeBitSize) * 8 -
-					Number(this.data.type.interfacePlatformType2sComplement)) /
-					2))
+			Number(this.resolution()) *
+			(2 ^ ((Number(this.size()) * 8 - Number(this.complement())) / 2))
 		).toString();
-	}
+	});
 
 	/**
 	 * Calculates Resolution based on MSB value, Byte Size and whether or not the type is signed/unsigned
 	 * @returns @type {string} Resolution
 	 */
-	getResolution() {
-		if (
-			this.data.type.interfacePlatformTypeMsbValue === '' ||
-			this.data.type.interfacePlatformTypeBitSize === ''
-		) {
+	protected computedResolution = computed(() => {
+		if (this.msbValue() === '' || this.size() === '') {
 			return '';
 		}
 		return (
-			(Number(this.data.type.interfacePlatformTypeMsbValue) * 2) /
-			(2 ^
-				(Number(this.data.type.interfacePlatformTypeBitSize) * 8 -
-					Number(this.data.type.interfacePlatformType2sComplement)))
+			(Number(this.msbValue()) * 2) /
+			(2 ^ (Number(this.size()) * 8 - Number(this.complement())))
 		).toString();
-	}
+	});
 
 	/**
 	 * Returns the bit size which is 8 * byte size
 	 */
 	get byte_size() {
-		return Number(this.data.type.interfacePlatformTypeBitSize) / 8;
+		return Number(this.size()) / 8;
 	}
 
 	/**
 	 * Sets the byte size based on bit size /8
 	 */
 	set byte_size(value: number) {
-		this.data.type.interfacePlatformTypeBitSize = String(value * 8);
+		this.size.set(String(value * 8));
 	}
 
 	/**
@@ -474,113 +475,15 @@ export class EditTypeDialogComponent implements OnDestroy {
 		return val1 === val2;
 	}
 	enumUpdate(value: {
-		createArtifacts: createArtifact[];
-		modifyArtifacts: modifyArtifact[];
-		deleteRelations: modifyRelation[];
+		createArtifacts: legacyCreateArtifact[];
+		modifyArtifacts: legacyModifyArtifact[];
+		deleteRelations: legacyModifyRelation[];
 	}) {
 		if (value) {
-			this.enumSet = value;
-			this.enumSetManifest.next(value);
+			this.enumSetManifest.set(value);
 		}
-	}
-	get returnValue(): {
-		mode: editPlatformTypeDialogDataMode;
-		type: enumeratedPlatformType;
-		enumeration: {
-			createArtifacts: createArtifact[];
-			modifyArtifacts: modifyArtifact[];
-			deleteRelations: modifyRelation[];
-		};
-	} {
-		return {
-			mode: this.data.mode,
-			type: {
-				...this.data.type,
-				interfaceLogicalType: 'enumeration',
-				enumerationSet: {
-					name: '',
-					applicability: {
-						id: '1',
-						name: 'Base',
-					},
-					description: '',
-				},
-			},
-			enumeration: this.enumSet,
-		};
 	}
 	updateUnique(value: boolean) {
 		this.enumUnique.next(value.toString());
-	}
-
-	updateLogicalType(value: string) {
-		this._logicalType.next(value);
-		this.updatePTypeManifest(ATTRIBUTETYPEIDENUM.LOGICALTYPE, value);
-	}
-
-	updatePTypeManifest(
-		attributeType: PLATFORMTYPEATTRIBUTETYPEID,
-		value: string
-	) {
-		const newValue = this.pTypeManifest.getValue();
-		if (this.data.mode === 0) {
-			if (
-				newValue.modifyArtifacts[0].setAttributes
-					?.map((v) => v.typeId)
-					.includes(attributeType)
-			) {
-				//replace the existing value
-				const index = newValue.modifyArtifacts[0].setAttributes
-					?.map((v) => v.typeId)
-					.indexOf(attributeType);
-				if (index !== -1) {
-					newValue.modifyArtifacts[0].setAttributes[index] = {
-						typeId: attributeType,
-						value: value,
-					};
-				}
-			} else {
-				newValue.modifyArtifacts[0].setAttributes?.push({
-					typeId: attributeType,
-					value: value,
-				});
-			}
-		} else {
-			if (attributeType === ATTRIBUTETYPEIDENUM.NAME) {
-				newValue.createArtifacts[0].name = value;
-			} else {
-				if (
-					newValue.createArtifacts[0].attributes
-						?.map((v) => v.typeId)
-						.includes(attributeType)
-				) {
-					//replace the existing value
-					const index = newValue.createArtifacts[0].attributes
-						?.map((v) => v.typeId)
-						.indexOf(attributeType);
-					if (index !== -1) {
-						newValue.createArtifacts[0].attributes[index] = {
-							typeId: attributeType,
-							value: value,
-						};
-					}
-				} else {
-					newValue.createArtifacts[0].attributes?.push({
-						typeId: attributeType,
-						value: value,
-					});
-				}
-			}
-		}
-		this.pTypeManifest.next(newValue);
-	}
-	modifyApplicability(applicability: applic) {
-		const newValue = this.pTypeManifest.getValue();
-		if (this.data.mode === 0) {
-			newValue.modifyArtifacts[0].applicabilityId = applicability.id;
-		} else {
-			newValue.createArtifacts[0].applicabilityId = applicability.id;
-		}
-		this.pTypeManifest.next(newValue);
 	}
 }

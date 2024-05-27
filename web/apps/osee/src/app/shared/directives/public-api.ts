@@ -11,3 +11,4 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export * from './form.directive';
+export * from './form-group.directive';

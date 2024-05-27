@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { AsyncPipe, NgClass, NgTemplateOutlet } from '@angular/common';
@@ -47,11 +47,9 @@ import { from, iif, of, reduce, switchMap } from 'rxjs';
 	],
 })
 export class TopLevelNavigationComponent {
-	constructor(
-		public router: Router,
-		private userService: UserDataAccountService,
-		public sideNavService: SideNavService
-	) {}
+	router = inject(Router);
+	private userService = inject(UserDataAccountService);
+	sideNavService = inject(SideNavService);
 
 	navElements = navigationStructure; // structure that stores the navigation elements
 

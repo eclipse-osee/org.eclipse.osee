@@ -53,9 +53,16 @@ describe('NewAttributeFormFieldComponent', () => {
 	});
 	it('should set default value', () => {
 		component.form.editable = false;
-		component.form.value = '123456789';
+		component.form.value = {
+			id: '-1',
+			typeId: '1152921504606847088',
+			gammaId: '-1',
+			value: '123456789',
+		};
 		component.setDefaultValue();
 		expect(component.form.value).toEqual(
+			//TODO figure out some typescript magic to make these types line up properly
+			//eslint-disable-next-line @typescript-eslint/no-explicit-any
 			component.form.defaultValue as any
 		);
 	});

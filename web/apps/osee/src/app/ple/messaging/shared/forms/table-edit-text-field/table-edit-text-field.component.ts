@@ -23,7 +23,7 @@ import { MatInput } from '@angular/material/input';
 	styles: [],
 })
 export class TableEditTextFieldComponent {
-	@Input() value: string = '';
+	@Input() value = '';
 	@Output() changeEvent = new EventEmitter<string>();
 	@Output() focusLost = new EventEmitter<string>();
 	@Output() enterPressed = new EventEmitter<string>();

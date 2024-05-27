@@ -19,8 +19,9 @@ import {
 } from '@angular/forms';
 import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 import type {
-	logicalTypeFormDetail,
 	PlatformType,
+	PlatformTypeAttr,
+	logicalTypeFormDetail,
 } from '@osee/messaging/shared/types';
 import { Observable, of } from 'rxjs';
 
@@ -40,14 +41,15 @@ export class MockUniquePlatformTypeAttributesDirective
 {
 	@Optional()
 	@Input('oseeUniquePlatformTypeAttributes')
-	inputField?: logicalTypeFormDetail<keyof PlatformType> = {
-		id: '',
+	inputField?: logicalTypeFormDetail<keyof PlatformTypeAttr> = {
+		id: '-1',
 		name: '',
 		idString: '',
 		idIntValue: 0,
 		fields: [],
 	};
-	@Input() referencePlatform: PlatformType = new PlatformTypeSentinel();
+	@Input() referencePlatform: PlatformType | Partial<PlatformType> =
+		new PlatformTypeSentinel();
 	validate(
 		control: AbstractControl<PlatformType, any>
 	): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> {

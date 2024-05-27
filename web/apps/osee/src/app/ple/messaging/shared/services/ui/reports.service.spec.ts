@@ -11,8 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
-	HttpClientTestingModule,
 	HttpTestingController,
+	provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { mimReportsMock } from '@osee/messaging/shared/testing';
@@ -21,6 +21,10 @@ import { apiURL } from '@osee/environments';
 import { NodeTraceReportMock } from '../../testing/node-trace-report-mock';
 
 import { ReportsService } from './reports.service';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('ReportsService', () => {
 	let service: ReportsService;
@@ -29,7 +33,11 @@ describe('ReportsService', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
+			imports: [],
+			providers: [
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+			],
 		});
 		service = TestBed.inject(ReportsService);
 		httpTestingController = TestBed.inject(HttpTestingController);
@@ -50,10 +58,10 @@ describe('ReportsService', () => {
 		scheduler.run(() => {
 			service.BranchId = '10';
 			service.BranchType = 'working';
-			let expectedObservable = {
+			const expectedObservable = {
 				a: '/ple/messaging/reports/working/10/differences',
 			};
-			let expectedMarble = '(a)';
+			const expectedMarble = '(a)';
 			scheduler
 				.expectObservable(service.diffReportRoute)
 				.toBe(expectedMarble, expectedObservable);

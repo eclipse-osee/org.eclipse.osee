@@ -11,29 +11,23 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { TestScheduler } from 'rxjs/testing';
 
-import { SingleStructureTableComponent } from './single-structure-table.component';
 import { AsyncPipe } from '@angular/common';
-import { CurrentStateServiceMock } from '@osee/messaging/shared/testing';
-import { StructureTableComponentMock } from '@osee/messaging/structure-tables/testing';
-import { CurrentStructureSingleService } from '@osee/messaging/shared/services';
-import {
-	STRUCTURE_SERVICE_TOKEN,
-	SINGLE_STRUCTURE_SERVICE,
-} from '@osee/messaging/shared/tokens';
 import { provideRouter } from '@angular/router';
+import { CurrentStructureSingleService } from '@osee/messaging/shared/services';
+import { CurrentStateServiceMock } from '@osee/messaging/shared/testing';
+import { SINGLE_STRUCTURE_SERVICE } from '@osee/messaging/shared/tokens';
+import { MockStructureInterfaceComponent } from '../lib/structure-interface/structure-interface.component.mock';
+import { SingleStructureTableComponent } from './single-structure-table.component';
 
 describe('SingleStructureTableComponent', () => {
 	let component: SingleStructureTableComponent;
 	let fixture: ComponentFixture<SingleStructureTableComponent>;
-	let scheduler: TestScheduler;
 
 	beforeEach(async () => {
 		await TestBed.overrideComponent(SingleStructureTableComponent, {
 			set: {
-				imports: [AsyncPipe, StructureTableComponentMock],
+				imports: [AsyncPipe, MockStructureInterfaceComponent],
 				providers: [
 					{
 						provide: CurrentStructureSingleService,
@@ -55,12 +49,6 @@ describe('SingleStructureTableComponent', () => {
 		fixture.detectChanges();
 	});
 
-	beforeEach(
-		() =>
-			(scheduler = new TestScheduler((actual, expected) => {
-				expect(actual.filteredData).toEqual(expected.filteredData);
-			}))
-	);
 	it('should create', () => {
 		expect(component).toBeTruthy();
 	});

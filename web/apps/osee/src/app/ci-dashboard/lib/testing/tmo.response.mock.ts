@@ -18,7 +18,7 @@ import {
 	TestPointReference,
 	ScriptBatch,
 } from '../types';
-import { transactionResultMock } from '@osee/shared/transactions/testing';
+import { transactionResultMock } from '@osee/transactions/testing';
 
 export const setsMock: SetReference[] = [
 	{

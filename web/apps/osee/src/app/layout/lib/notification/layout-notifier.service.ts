@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import {
 	asyncScheduler,
 	combineLatest,
@@ -30,7 +30,6 @@ import {
 	shareReplay,
 	startWith,
 	switchMap,
-	tap,
 } from 'rxjs/operators';
 import { pageState, tableRecommendations } from './layout.recommendations';
 
@@ -38,12 +37,14 @@ import { pageState, tableRecommendations } from './layout.recommendations';
 	providedIn: 'root',
 })
 export class LayoutNotifierService {
+	private observer = inject(BreakpointObserver);
+
 	private _isXSmall = this.observer
 		.observe(Breakpoints.XSmall)
 		.pipe(
 			switchMap((states) =>
 				from(Object.entries(states.breakpoints)).pipe(
-					switchMap(([query, matched]) => of(matched).pipe())
+					switchMap(([_query, matched]) => of(matched).pipe())
 				)
 			)
 		);
@@ -112,7 +113,7 @@ export class LayoutNotifierService {
 		.pipe(
 			switchMap((states) =>
 				from(Object.entries(states.breakpoints)).pipe(
-					switchMap(([query, matched]) => of(matched).pipe())
+					switchMap(([_query, matched]) => of(matched).pipe())
 				)
 			)
 		);
@@ -121,7 +122,7 @@ export class LayoutNotifierService {
 			this.observer.observe(queries).pipe(
 				switchMap((states) =>
 					from(Object.entries(states.breakpoints)).pipe(
-						switchMap(([query, matched]) => of(matched).pipe()),
+						switchMap(([_query, matched]) => of(matched).pipe()),
 						reduce((acc, curr) => [...acc, curr], [] as boolean[])
 					)
 				)
@@ -134,7 +135,7 @@ export class LayoutNotifierService {
 			this.observer.observe(queries).pipe(
 				switchMap((states) =>
 					from(Object.entries(states.breakpoints)).pipe(
-						switchMap(([query, matched]) => of(matched).pipe()),
+						switchMap(([_query, matched]) => of(matched).pipe()),
 						reduce((acc, curr) => [...acc, curr], [] as boolean[])
 					)
 				)
@@ -147,7 +148,7 @@ export class LayoutNotifierService {
 			this.observer.observe(queries).pipe(
 				switchMap((states) =>
 					from(Object.entries(states.breakpoints)).pipe(
-						switchMap(([query, matched]) => of(matched).pipe()),
+						switchMap(([_query, matched]) => of(matched).pipe()),
 						reduce((acc, curr) => [...acc, curr], [] as boolean[])
 					)
 				)
@@ -263,7 +264,6 @@ export class LayoutNotifierService {
 		share(),
 		shareReplay({ refCount: true, bufferSize: 1 })
 	);
-	constructor(private observer: BreakpointObserver) {}
 
 	get isSmall() {
 		return this._isSmall;

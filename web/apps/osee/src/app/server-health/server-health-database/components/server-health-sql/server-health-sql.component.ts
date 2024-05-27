@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, NgClass } from '@angular/common';
-import { Component, effect, viewChild } from '@angular/core';
+import { Component, effect, viewChild, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort, MatSortHeader, Sort } from '@angular/material/sort';
@@ -61,7 +61,7 @@ import { sql } from '../../../shared/types/server-health-types';
 	templateUrl: './server-health-sql.component.html',
 })
 export class ServerHealthSqlComponent {
-	constructor(private serverHealthHttpService: ServerHealthHttpService) {}
+	private serverHealthHttpService = inject(ServerHealthHttpService);
 
 	private paginator = viewChild(MatPaginator);
 	private sort = viewChild.required(MatSort);
@@ -173,7 +173,7 @@ export class ServerHealthSqlComponent {
 	);
 }
 
-interface orderByPair {
+type orderByPair = {
 	orderByName: string;
 	orderByDirection: string;
-}
+};

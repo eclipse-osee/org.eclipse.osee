@@ -17,52 +17,35 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonHarness } from '@angular/material/button/testing';
 import {
+	MAT_DIALOG_DATA,
 	MatDialogModule,
 	MatDialogRef,
-	MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { graphServiceMock } from '../../testing/current-graph.service.mock';
 import { CurrentGraphService } from '../../services/current-graph.service';
+import { graphServiceMock } from '../../testing/current-graph.service.mock';
 
-import { EditConnectionDialogComponent } from './edit-connection-dialog.component';
 import { MatFormFieldHarness } from '@angular/material/form-field/testing';
 import { MatInputHarness } from '@angular/material/input/testing';
 import { MatSelectHarness } from '@angular/material/select/testing';
 import type { connection } from '@osee/messaging/shared/types';
-import {
-	CurrentTransportTypeService,
-	EnumsService,
-} from '@osee/messaging/shared/services';
+import { EditConnectionDialogComponent } from './edit-connection-dialog.component';
 
-import {
-	dialogRef,
-	enumsServiceMock,
-	CurrentTransportTypeServiceMock,
-	ethernetTransportType,
-	nodesMock,
-} from '@osee/messaging/shared/testing';
-import {
-	MockApplicabilitySelectorComponent,
-	MockMatOptionLoadingComponent,
-} from '@osee/shared/components/testing';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatOptionModule } from '@angular/material/core';
 import { AsyncPipe, NgFor } from '@angular/common';
+import { MatOptionModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MockApplicabilityDropdownComponent } from '@osee/applicability/applicability-dropdown/testing';
+import { connectionMock, dialogRef } from '@osee/messaging/shared/testing';
+import { MockTransportTypeDropdownComponent } from '@osee/messaging/transports/dropdown/testing';
+import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
 
 describe('EditConnectionDialogComponent', () => {
 	let component: EditConnectionDialogComponent;
 	let fixture: ComponentFixture<EditConnectionDialogComponent>;
 	let loader: HarnessLoader;
-	let dialogData: connection = {
-		name: '',
-		description: '',
-		transportType: ethernetTransportType,
-		nodes: nodesMock,
-		applicability: { id: '1', name: 'Base' },
-	};
+	const dialogData: connection = connectionMock;
 
 	beforeEach(async () => {
 		await TestBed.overrideComponent(EditConnectionDialogComponent, {
@@ -74,11 +57,12 @@ describe('EditConnectionDialogComponent', () => {
 					MatInputModule,
 					MatSelectModule,
 					MockMatOptionLoadingComponent,
-					MockApplicabilitySelectorComponent,
+					MockApplicabilityDropdownComponent,
 					MatOptionModule,
 					AsyncPipe,
 					NgFor,
 					MatButtonModule,
+					MockTransportTypeDropdownComponent,
 				],
 			},
 		})
@@ -99,11 +83,6 @@ describe('EditConnectionDialogComponent', () => {
 						provide: CurrentGraphService,
 						useValue: graphServiceMock,
 					},
-					{ provide: EnumsService, useValue: enumsServiceMock },
-					{
-						provide: CurrentTransportTypeService,
-						useValue: CurrentTransportTypeServiceMock,
-					},
 				],
 			})
 			.compileComponents();
@@ -112,16 +91,6 @@ describe('EditConnectionDialogComponent', () => {
 	beforeEach(() => {
 		fixture = TestBed.createComponent(EditConnectionDialogComponent);
 		component = fixture.componentInstance;
-		component.data = {
-			name: 'Connection',
-			description: '',
-			transportType: ethernetTransportType,
-			nodes: nodesMock,
-			applicability: {
-				id: '1',
-				name: 'Base',
-			},
-		};
 		fixture.detectChanges();
 		loader = TestbedHarnessEnvironment.loader(fixture);
 	});
@@ -131,21 +100,22 @@ describe('EditConnectionDialogComponent', () => {
 	});
 
 	it('should close without anything returning', async () => {
-		let buttons = await loader.getAllHarnesses(MatButtonHarness);
-		let spy = spyOn(component, 'onNoClick').and.callThrough();
+		const buttons = await loader.getAllHarnesses(MatButtonHarness);
+		const spy = spyOn(component, 'onNoClick').and.callThrough();
 		if ((await buttons[0].getText()) === 'Cancel') {
 			await buttons[0].click();
 			expect(spy).toHaveBeenCalled();
 		}
 	});
 
-	it('should select a new transport type', async () => {
-		let form = await loader.getHarness(
+	//OBE maybe move to transport type dropdown
+	xit('should select a new transport type', async () => {
+		const form = await loader.getHarness(
 			MatFormFieldHarness.with({
 				selector: '#connection-transport-type-selector',
 			})
 		);
-		let select = await form.getControl(MatSelectHarness);
+		const select = await form.getControl(MatSelectHarness);
 		await select?.open();
 		expect((await select?.getOptions())?.length).toEqual(1);
 		await select?.clickOptions({ text: 'ETHERNET' });
@@ -153,22 +123,22 @@ describe('EditConnectionDialogComponent', () => {
 	});
 
 	it('should enter a description', async () => {
-		let form = loader.getHarness(
+		const form = loader.getHarness(
 			MatFormFieldHarness.with({
 				selector: '#connection-description-field',
 			})
 		);
-		let input = await (await form).getControl(MatInputHarness);
+		const input = await (await form).getControl(MatInputHarness);
 		expect(await input?.getType()).toEqual('text');
 		await input?.setValue('Description');
 		expect(await input?.getValue()).toEqual('Description');
 	});
 
 	it('should enter a name', async () => {
-		let form = loader.getHarness(
+		const form = loader.getHarness(
 			MatFormFieldHarness.with({ selector: '#connection-name-field' })
 		);
-		let input = await (await form).getControl(MatInputHarness);
+		const input = await (await form).getControl(MatInputHarness);
 		expect(await input?.getType()).toEqual('text');
 		await input?.setValue('Name');
 		expect(await input?.getValue()).toEqual('Name');

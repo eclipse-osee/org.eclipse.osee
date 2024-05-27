@@ -14,37 +14,37 @@
 @if (branchId | async; as _branch) {
 	@if (_branch !== '0' && _branch !== ' ') {
 		@if (branchType | async; as _branchType) {
-			<div class="tw-pl-8">
+			<div class="tw-pl-4">
 				@if (webReportRoutes | async; as routes) {
-					<h2 class="mat-headline-6">Web-Based Reports</h2>
+					<h4>Web-Based Reports</h4>
 					<div
 						class="tw-flex tw-w-80 tw-flex-col tw-gap-4 tw-pb-4 tw-pl-4">
 						@if (_branchType === 'working') {
 							<a
-								mat-raised-button
-								color="primary"
+								mat-flat-button
+								class="primary-button"
 								[routerLink]="routes.diffRoute"
 								queryParamsHandling="merge">
 								Difference Report
 							</a>
 							<a
-								mat-raised-button
-								color="primary"
+								mat-flat-button
+								class="primary-button"
 								[routerLink]="routes.impactedConnectionsRoute"
 								queryParamsHandling="merge">
 								Validate Connection Impact
 							</a>
 						}
 						<a
-							mat-raised-button
-							color="primary"
+							mat-flat-button
+							class="primary-button"
 							[routerLink]="routes.nodeTraceRoute"
 							queryParamsHandling="merge">
 							Traceability Report
 						</a>
 						<a
-							mat-raised-button
-							color="primary"
+							mat-flat-button
+							class="primary-button"
 							[routerLink]="routes.unreferencedRoute"
 							queryParamsHandling="merge">
 							Unreferenced Artifacts Report
@@ -52,7 +52,7 @@
 					</div>
 				}
 				@if (reports | async; as _reports) {
-					<h2 class="mat-headline-6">Downloadable Reports</h2>
+					<h4>Downloadable Reports</h4>
 					<div class="tw-pl-4">
 						<mat-form-field
 							class="tw-block tw-w-80"
@@ -95,7 +95,7 @@
 										<mat-option
 											[value]="option"
 											[id]="option.id!">
-											{{ option.name }}
+											{{ option.name.value }}
 										</mat-option>
 									}
 								</mat-select>
@@ -142,9 +142,8 @@
 							_branchType !== 'baseline'
 						) {
 							<mat-checkbox
-								class="tw-block"
+								class="primary-checkbox tw-block"
 								[(ngModel)]="includeDiff"
-								color="primary"
 								cdkFocusInitial>
 								<mat-label
 									>Show differences in report</mat-label
@@ -153,9 +152,8 @@
 						}
 						@if (selectedReport?.requiresValidation) {
 							<mat-checkbox
-								class="tw-block"
+								class="primary-checkbox tw-block"
 								[(ngModel)]="bypassValidation"
-								color="primary"
 								cdkFocusInitial>
 								<mat-label
 									>Bypass Connection Validation</mat-label
@@ -172,32 +170,32 @@
 									[ngTemplateOutlet]="validationResults"
 									[ngTemplateOutletContext]="{
 										label: 'Structures are byte aligned',
-										errors: _results.structureByteAlignmentErrors
+										errors: _results.structureByteAlignmentErrors,
 									}"></ng-container
 								><ng-container
 									[ngTemplateOutlet]="validationResults"
 									[ngTemplateOutletContext]="{
 										label: 'Structures are word aligned',
-										errors: _results.structureWordAlignmentErrors
+										errors: _results.structureWordAlignmentErrors,
 									}"></ng-container
 								><ng-container
 									[ngTemplateOutlet]="validationResults"
 									[ngTemplateOutletContext]="{
 										label: 'Structure names are unique',
-										errors: _results.duplicateStructureNameErrors
+										errors: _results.duplicateStructureNameErrors,
 									}"></ng-container>
 								<ng-container
 									[ngTemplateOutlet]="validationResults"
 									[ngTemplateOutletContext]="{
 										label: 'All Messages have Message Type set',
-										errors: _results.messageTypeErrors
+										errors: _results.messageTypeErrors,
 									}"></ng-container>
 							}
 						}
 						<div class="tw-flex tw-gap-4">
 							<button
-								mat-raised-button
-								color="primary"
+								mat-flat-button
+								class="primary-button"
 								(click)="validateConnection()"
 								[disabled]="
 									!selectedConnection ||
@@ -211,8 +209,8 @@
 								as _results
 							) {
 								<button
-									mat-raised-button
-									color="primary"
+									mat-flat-button
+									class="primary-button"
 									(click)="getSelectedReport()"
 									[disabled]="
 										!selectedReport ||
@@ -244,10 +242,10 @@
 			<li class="tw-flex tw-items-center tw-gap-2">
 				{{ label }}
 				@if (errors.length === 0) {
-					<mat-icon color="success">check</mat-icon>
+					<mat-icon class="tw-text-osee-green-9">check</mat-icon>
 				}
 				@if (errors.length > 0) {
-					<mat-icon color="warn">close</mat-icon>
+					<mat-icon class="tw-text-osee-red-9">close</mat-icon>
 				}
 			</li>
 			@for (error of errors; track error) {

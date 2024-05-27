@@ -10,53 +10,51 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { HarnessLoader } from '@angular/cdk/testing';
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
 import { NgxGraphModule, Node } from '@swimlane/ngx-graph';
-import { graphServiceMock } from '../../testing/current-graph.service.mock';
 import { CurrentGraphService } from '../../services/current-graph.service';
-import { HarnessLoader } from '@angular/cdk/testing';
-import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
+import { graphServiceMock } from '../../testing/current-graph.service.mock';
 
-import { GraphComponent } from './graph.component';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import {
 	MatMenuHarness,
 	MatMenuItemHarness,
 } from '@angular/material/menu/testing';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
-import { MatInputModule } from '@angular/material/input';
-import { CommonModule } from '@angular/common';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { provideRouter } from '@angular/router';
+import {
+	connectionMock,
+	ethernetTransportType,
+	nodesMock,
+} from '@osee/messaging/shared/testing';
+import type {
+	OseeEdge,
+	connection,
+	nodeData,
+} from '@osee/messaging/shared/types';
+import { of } from 'rxjs';
 import { ConfirmRemovalDialogComponent } from '../../dialogs/confirm-removal-dialog/confirm-removal-dialog.component';
 import { CreateConnectionDialogComponent } from '../../dialogs/create-connection-dialog/create-connection-dialog.component';
 import { CreateNewNodeDialogComponent } from '../../dialogs/create-new-node-dialog/create-new-node-dialog.component';
 import { EditConnectionDialogComponent } from '../../dialogs/edit-connection-dialog/edit-connection-dialog.component';
 import { EditNodeDialogComponent } from '../../dialogs/edit-node-dialog/edit-node-dialog.component';
-import { of } from 'rxjs';
 import { MockGraphLinkMenuComponent } from '../../testing/graph-link-menu.component.mock';
 import { MockGraphNodeMenuComponent } from '../../testing/graph-node-menu.component.mock';
-import { MatIconModule } from '@angular/material/icon';
-import type {
-	connectionWithChanges,
-	OseeEdge,
-	node,
-} from '@osee/messaging/shared/types';
-import { EnumsService } from '@osee/messaging/shared/services';
-import { RouteStateService } from '../../services/route-state-service.service';
-import {
-	enumsServiceMock,
-	ethernetTransportType,
-} from '@osee/messaging/shared/testing';
+import { GraphComponent } from './graph.component';
 
 describe('GraphComponent', () => {
 	let component: GraphComponent;
 	let fixture: ComponentFixture<GraphComponent>;
 	let loader: HarnessLoader;
-	let routerService: RouteStateService;
 	let menuLinkHarness: MatMenuHarness;
 	let menuNodeHarness: MatMenuHarness;
 	let menuGraphHarness: MatMenuHarness;
@@ -67,8 +65,6 @@ describe('GraphComponent', () => {
 				MatDialogModule,
 				MatIconModule,
 				NgxGraphModule,
-				NoopAnimationsModule,
-				RouterTestingModule,
 				MatMenuModule,
 				MatFormFieldModule,
 				FormsModule,
@@ -85,12 +81,12 @@ describe('GraphComponent', () => {
 				GraphComponent,
 			],
 			providers: [
+				provideRouter([]),
+				provideNoopAnimations(),
 				{ provide: CurrentGraphService, useValue: graphServiceMock },
-				{ provide: EnumsService, useValue: enumsServiceMock },
 			],
 			teardown: { destroyAfterEach: false },
 		}).compileComponents();
-		routerService = TestBed.inject(RouteStateService);
 	});
 
 	beforeEach(() => {
@@ -174,10 +170,21 @@ describe('GraphComponent', () => {
 				});
 				describe('Testing open function', () => {
 					it('should open the menu with proper initialization and close/reset', async () => {
-						const testMenuData: connectionWithChanges = {
+						const testMenuData: connection = {
 							id: '1',
-							name: 'edge',
-							description: '',
+							gammaId: '-1',
+							name: {
+								id: '-1',
+								typeId: '1152921504606847088',
+								gammaId: '-1',
+								value: 'edge',
+							},
+							description: {
+								id: '-1',
+								typeId: '1152921504606847090',
+								gammaId: '-1',
+								value: '',
+							},
 							applicability: {
 								id: '1',
 								name: 'Base',
@@ -186,16 +193,6 @@ describe('GraphComponent', () => {
 							nodes: [],
 							deleted: false,
 							added: false,
-							changes: {
-								name: {
-									previousValue: 'abcdef',
-									currentValue: 'jkl',
-									transactionToken: {
-										id: '-1',
-										branchId: '-1',
-									},
-								},
-							},
 						};
 						component.openLinkDialog(
 							new MouseEvent('contextmenu', {
@@ -212,12 +209,12 @@ describe('GraphComponent', () => {
 								{
 									id: '10',
 									label: '10',
-									data: { id: '10', name: '10' },
+									data: nodesMock[0],
 								},
 								{
 									id: '15',
 									label: '15',
-									data: { id: '15', name: '15' },
+									data: nodesMock[0],
 								},
 							]
 						);
@@ -267,7 +264,7 @@ describe('GraphComponent', () => {
 				});
 			});
 			describe('Node Menu', () => {
-				let node: Node = {
+				const node: Node = {
 					id: '2',
 					label: 'Node 1',
 					data: {
@@ -282,32 +279,16 @@ describe('GraphComponent', () => {
 						description: '',
 					},
 				};
-				let connections: OseeEdge<connectionWithChanges>[] = [
+				const connections: OseeEdge<connection>[] = [
 					{
 						source: '2',
 						target: '5',
-						data: {
-							name: '',
-							description: '',
-							transportType: ethernetTransportType,
-							nodes: [],
-							deleted: false,
-							added: false,
-							changes: {},
-						},
+						data: connectionMock,
 					},
 					{
 						target: '2',
 						source: '7',
-						data: {
-							name: '',
-							description: '',
-							transportType: ethernetTransportType,
-							nodes: [],
-							deleted: false,
-							added: false,
-							changes: {},
-						},
+						data: connectionMock,
 					},
 				];
 				beforeEach(async () => {
@@ -330,29 +311,22 @@ describe('GraphComponent', () => {
 								clientX: 200,
 								clientY: 200,
 							}),
-							{ id: '1', data: { name: 'first' } },
+							{
+								id: '1',
+								data: nodesMock[0],
+							},
 							[
 								{
 									id: 'a3',
 									source: '1',
 									target: '2',
-									data: {
-										name: 'a',
-										description: '',
-										transportType: ethernetTransportType,
-										nodes: [],
-									},
+									data: connectionMock,
 								},
 								{
 									id: 'a4',
 									source: '2',
 									target: '1',
-									data: {
-										name: 'b',
-										description: '',
-										transportType: ethernetTransportType,
-										nodes: [],
-									},
+									data: connectionMock,
 								},
 							]
 						);
@@ -385,11 +359,11 @@ describe('GraphComponent', () => {
 				});
 				describe('Testing open function', () => {
 					it('should open the menu with proper initialization and close/reset', async () => {
-						let event = new MouseEvent('contextmenu', {
+						const event = new MouseEvent('contextmenu', {
 							clientX: 300,
 							clientY: 300,
 						});
-						let el = document.createElement('button');
+						const el = document.createElement('button');
 						el.classList.add('panning-rect');
 						Object.defineProperty(event, 'target', {
 							value: el,
@@ -410,20 +384,16 @@ describe('GraphComponent', () => {
 						expect(items.length).toEqual(2);
 					});
 					it('should open create new node dialog', async () => {
-						let response: node = {
-							name: 'abcdef',
-							description: 'jkl',
-							applicability: { id: '1', name: 'Base' },
-						};
-						let dialogRefSpy = jasmine.createSpyObj({
+						const response: nodeData = nodesMock[0];
+						const dialogRefSpy = jasmine.createSpyObj({
 							afterClosed: of(response),
 							close: null,
 						});
-						let dialogSpy = spyOn(
+						const _dialogSpy = spyOn(
 							TestBed.inject(MatDialog),
 							'open'
 						).and.returnValue(dialogRefSpy);
-						let spy = spyOn(
+						const spy = spyOn(
 							component,
 							'createNewNode'
 						).and.callThrough();

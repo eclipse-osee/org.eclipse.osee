@@ -20,7 +20,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class WorktypeService {
 	private _workType = new BehaviorSubject<workType>('None');
 	private workType$ = this._workType.asObservable();
-	constructor() {}
+
 	get workType(): Observable<workType> {
 		return this.workType$;
 	}

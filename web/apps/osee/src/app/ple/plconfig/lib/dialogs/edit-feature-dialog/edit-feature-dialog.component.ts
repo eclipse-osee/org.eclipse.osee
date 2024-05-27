@@ -12,7 +12,7 @@
  **********************************************************************/
 import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { AsyncPipe } from '@angular/common';
-import { Component, Inject, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/core';
@@ -30,9 +30,7 @@ import { MatListOption, MatSelectionList } from '@angular/material/list';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { Observable, of } from 'rxjs';
-import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
-import { PlConfigApplicUIBranchMapping } from '../../types/pl-config-applicui-branch-mapping';
 import { PLEditFeatureData } from '../../types/pl-config-features';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { UiService } from '@osee/shared/services';
@@ -62,17 +60,16 @@ import { UiService } from '@osee/shared/services';
 	],
 })
 export class EditFeatureDialogComponent {
+	dialogRef = inject<MatDialogRef<EditFeatureDialogComponent>>(MatDialogRef);
+	data = inject<PLEditFeatureData>(MAT_DIALOG_DATA);
+	private currentBranchService = inject(PlConfigCurrentBranchService);
+	private uiService = inject(UiService);
+
 	private _valueTypes: string[] = ['String', 'Integer', 'Decimal', 'Boolean'];
 	productApplicabilities = this.currentBranchService.productTypes;
 	editable = signal(inject<PLEditFeatureData>(MAT_DIALOG_DATA).editable);
 	valueTypes: Observable<string[]> = of(this._valueTypes);
 	viewId = toSignal(this.uiService.viewId);
-	constructor(
-		public dialogRef: MatDialogRef<EditFeatureDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: PLEditFeatureData,
-		private currentBranchService: PlConfigCurrentBranchService,
-		private uiService: UiService
-	) {}
 
 	onNoClick(): void {
 		this.dialogRef.close();
@@ -95,7 +92,7 @@ export class EditFeatureDialogComponent {
 	selectDefaultValue(event: MatSelectChange) {
 		this.data.feature.defaultValue = event.value;
 	}
-	valueTracker(index: any, item: any) {
+	valueTracker(index: number, _item: unknown) {
 		return index;
 	}
 }

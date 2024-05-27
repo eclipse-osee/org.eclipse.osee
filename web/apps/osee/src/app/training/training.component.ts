@@ -32,7 +32,5 @@ import { TrainingRoleTableComponent } from './lib/tables/training-role-table/tra
 		AddCoursesDialogComponent,
 	],
 })
-export class TrainingComponent {
-	constructor() {}
-}
+export class TrainingComponent {}
 export default TrainingComponent;

@@ -72,11 +72,11 @@
 							}
 						}
 						@if (header === 'applicability') {
-							<osee-applicability-selector
+							<osee-applicability-dropdown
 								[applicability]="ref[header]"
 								(applicabilityChange)="
 									updateCrossReference(ref, header, $event)
-								"></osee-applicability-selector>
+								"></osee-applicability-dropdown>
 						}
 					}
 					@if ((inEditMode | async) === false) {
@@ -121,12 +121,14 @@
 		<button
 			mat-menu-item
 			(click)="openEditDialog(crossRef)">
-			<mat-icon color="primary">edit</mat-icon>Edit Cross Reference
+			<mat-icon class="tw-text-osee-green-9">edit</mat-icon>Edit Cross
+			Reference
 		</button>
 		<button
 			mat-menu-item
 			(click)="deleteCrossReference(crossRef)">
-			<mat-icon color="warn">delete</mat-icon>Delete Cross Reference
+			<mat-icon class="tw-text-osee-red-9">delete</mat-icon>Delete Cross
+			Reference
 		</button>
 	</ng-template>
 </mat-menu>

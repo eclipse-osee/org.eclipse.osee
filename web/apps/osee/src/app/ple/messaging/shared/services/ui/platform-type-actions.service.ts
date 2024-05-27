@@ -22,11 +22,11 @@ import {
 	editPlatformTypeDialogData,
 } from '@osee/messaging/shared/types';
 import {
-	createArtifact,
-	modifyArtifact,
-	modifyRelation,
-	relation,
-} from '@osee/shared/types';
+	legacyCreateArtifact,
+	legacyModifyArtifact,
+	legacyModifyRelation,
+	legacyRelation,
+} from '@osee/transactions/types';
 import { OperatorFunction, iif, of } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
 import { EnumerationUIService } from './enumeration-ui.service';
@@ -53,7 +53,7 @@ export class PlatformTypeActionsService {
 		};
 		const dialogRef = this.dialog.open(EditTypeDialogComponent, {
 			data: dialogData,
-			minWidth: '70%',
+			minWidth: '70vw',
 		});
 		return dialogRef.afterClosed().pipe(
 			filter((val) => val !== undefined),
@@ -61,29 +61,23 @@ export class PlatformTypeActionsService {
 				this.warningDialogService
 					.openPlatformTypeDialogWithManifest(manifest)
 					.pipe(
-						switchMap((v) =>
-							iif(
-								() =>
-									mode ===
-									editPlatformTypeDialogDataMode.copy,
-								this.typesService.copyType(manifest),
-								this.getEditObservable(manifest)
-							)
+						switchMap((_) =>
+							mode === editPlatformTypeDialogDataMode.copy
+								? this.typesService.copyType(manifest)
+								: this.getEditObservable(manifest)
 						)
 					)
 			)
 		);
 	}
 	private getEditObservable(manifest: {
-		createArtifacts: createArtifact[];
-		modifyArtifacts: modifyArtifact[];
-		deleteRelations: modifyRelation[];
+		createArtifacts: legacyCreateArtifact[];
+		modifyArtifacts: legacyModifyArtifact[];
+		deleteRelations: legacyModifyRelation[];
 	}) {
 		return this.warningDialogService
 			.openPlatformTypeDialogWithManifest(manifest)
-			.pipe(
-				switchMap((body) => this.typesService.partialUpdate(manifest))
-			);
+			.pipe(switchMap((_) => this.typesService.partialUpdate(manifest)));
 	}
 
 	openEnumDialog(id: string, editMode: boolean) {
@@ -100,20 +94,22 @@ export class PlatformTypeActionsService {
 					id: id,
 					isOnEditablePage: editMode,
 				},
+				minWidth: '70vw',
+				minHeight: '80vh',
 			})
 			.afterClosed()
 			.pipe(
 				filter((x) => x !== undefined) as OperatorFunction<
 					| {
-							createArtifacts: createArtifact[];
-							modifyArtifacts: modifyArtifact[];
-							deleteRelations: modifyRelation[];
+							createArtifacts: legacyCreateArtifact[];
+							modifyArtifacts: legacyModifyArtifact[];
+							deleteRelations: legacyModifyRelation[];
 					  }
 					| undefined,
 					{
-						createArtifacts: createArtifact[];
-						modifyArtifacts: modifyArtifact[];
-						deleteRelations: modifyRelation[];
+						createArtifacts: legacyCreateArtifact[];
+						modifyArtifacts: legacyModifyArtifact[];
+						deleteRelations: legacyModifyRelation[];
 					}
 				>,
 				take(1),
@@ -129,7 +125,7 @@ export class PlatformTypeActionsService {
 									...tx.createArtifacts
 										.flatMap((v) => v.relations)
 										.filter(
-											(v): v is relation =>
+											(v): v is legacyRelation =>
 												v !== undefined
 										)
 										.map((v) => v.sideA)

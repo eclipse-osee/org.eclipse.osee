@@ -11,33 +11,30 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 import { apiURL } from '@osee/environments';
+import { TransactionBuilderService } from '@osee/shared/transactions-legacy';
+import { HttpParamsType } from '@osee/shared/types';
+import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
+import { createArtifact } from '@osee/transactions/functions';
+import { TransactionService } from '@osee/transactions/services';
+import type { legacyTransaction, transaction } from '@osee/transactions/types';
+import { Observable } from 'rxjs';
 import type {
 	logicalType,
 	logicalTypeFormDetail,
 } from '../../types/logicaltype';
-import type { PlatformType } from '../../types/platformType';
-import {
-	ATTRIBUTETYPEIDENUM,
-	ARTIFACTTYPEIDENUM,
-} from '@osee/shared/types/constants';
-import {
-	TransactionBuilderService,
-	TransactionService,
-} from '@osee/shared/transactions';
-import type { HttpParamsType, relation, transaction } from '@osee/shared/types';
+import type { PlatformType, PlatformTypeAttr } from '../../types/platformType';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class TypesService {
-	constructor(
-		private http: HttpClient,
-		private builder: TransactionBuilderService,
-		private transactionService: TransactionService
-	) {}
+	private http = inject(HttpClient);
+	private builder = inject(TransactionBuilderService);
+
+	private transactionService = inject(TransactionService);
 
 	/**
 	 * Gets a list of Platform Types based on a filter condition using the platform types filter GET API
@@ -52,7 +49,11 @@ export class TypesService {
 		pageSize: number
 	): Observable<PlatformType[]> {
 		return this.http.get<PlatformType[]>(
-			apiURL + '/mim/branch/' + branchId + '/types/filter/' + filter,
+			apiURL +
+				'/mim/branch/' +
+				branchId +
+				'/types/filter' +
+				(filter !== '' ? '/' + filter : ''),
 			{
 				params: {
 					count: pageSize,
@@ -119,37 +120,36 @@ export class TypesService {
 		);
 	}
 
-	createPlatformType(
-		branchId: string,
-		type: PlatformType | Partial<PlatformType>,
-		relations: relation[],
-		transaction?: transaction,
+	addNewPlatformTypeToTransaction(
+		type: PlatformType,
+		tx: Required<transaction>,
 		key?: string
 	) {
-		return of<transaction>(
-			this.builder.createArtifact(
-				type,
-				ARTIFACTTYPEIDENUM.PLATFORMTYPE,
-				relations,
-				transaction,
-				branchId,
-				'Create Platform Type',
-				key
-			)
+		const {
+			id,
+			gammaId,
+			added,
+			deleted,
+			changes,
+			applicability,
+			enumSet,
+			...remainingAttributes
+		} = type;
+		const attributeKeys = Object.keys(
+			remainingAttributes
+		) as (keyof typeof remainingAttributes)[];
+		const attributes = attributeKeys.map((k) => remainingAttributes[k]);
+		const results = createArtifact(
+			tx,
+			ARTIFACTTYPEIDENUM.PLATFORMTYPE,
+			applicability,
+			[],
+			key,
+			...attributes
 		);
+		return results.tx;
 	}
-
-	changePlatformType(branchId: string, type: Partial<PlatformType>) {
-		return of<transaction>(
-			this.builder.modifyArtifact(
-				type,
-				undefined,
-				branchId,
-				'Change platform type attributes'
-			)
-		);
-	}
-	performMutation(body: transaction) {
+	performMutation(body: legacyTransaction) {
 		return this.transactionService.performMutation(body);
 	}
 
@@ -157,7 +157,7 @@ export class TypesService {
 		return this.http.get<logicalType[]>(apiURL + '/mim/logicalType');
 	}
 	getLogicalTypeFormDetail(id: string) {
-		return this.http.get<logicalTypeFormDetail<keyof PlatformType>>(
+		return this.http.get<logicalTypeFormDetail<keyof PlatformTypeAttr>>(
 			apiURL + '/mim/logicalType/' + id
 		);
 	}

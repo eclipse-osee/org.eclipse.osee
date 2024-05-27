@@ -50,5 +50,31 @@
 			(filterChange)="messageTypesFilterChange($event)"
 			(namedIdEdit)="updateMessageType($event)"
 			(createNew)="createMessageType($event)"></osee-named-id-list-editor>
+		<osee-named-id-list-editor
+			[name]="'Structure Categories'"
+			[allowedToEdit]="branchType() === 'working'"
+			[dataToDisplay]="(structureCategories | async) || []"
+			[pageIndex]="(structureCategoriesPageIndex | async) || 0"
+			[pageSize]="(structureCategoriesPageSize | async) || 10"
+			[count]="(structureCategoriesCount | async) || 0"
+			(pageEvent)="updateStructureCategoriesPages($event)"
+			(filterChange)="structureCategoriesFilterChange($event)"
+			(namedIdEdit)="updateStructureCategory($event)"
+			(createNew)="
+				createStructureCategory($event)
+			"></osee-named-id-list-editor>
+		<osee-named-id-list-editor
+			[name]="'Message Periodicities'"
+			[allowedToEdit]="branchType() === 'working'"
+			[dataToDisplay]="(messagePeriodicities | async) || []"
+			[pageIndex]="(messagePeriodicitiesPageIndex | async) || 0"
+			[pageSize]="(messagePeriodicitiesPageSize | async) || 10"
+			[count]="(messagePeriodicitiesCount | async) || 0"
+			(pageEvent)="updateMessagePeriodicitiesPages($event)"
+			(filterChange)="messagePeriodicitiesFilterChange($event)"
+			(namedIdEdit)="updateMessagePeriodicity($event)"
+			(createNew)="
+				createMessagePeriodicity($event)
+			"></osee-named-id-list-editor>
 	</div>
 }

@@ -10,19 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from '@angular/core';
-import {
-	ethernetTransportType,
-	nodesMock,
-} from '@osee/messaging/shared/testing';
-import type {
-	connection,
-	connectionWithChanges,
-	OseeNode,
-	node,
-	nodeData,
-	nodeDataWithChanges,
-} from '@osee/messaging/shared/types';
+import { Component, input } from '@angular/core';
+import type { connection } from '@osee/messaging/shared/types';
 
 @Component({
 	selector: 'osee-messaging-graph-link-menu',
@@ -30,16 +19,5 @@ import type {
 	standalone: true,
 })
 export class MockGraphLinkMenuComponent {
-	@Input() editMode: boolean = false;
-	@Input() data: connection | connectionWithChanges = {
-		name: '',
-		description: '',
-		transportType: ethernetTransportType,
-		nodes: nodesMock,
-	};
-
-	@Input()
-	source!: OseeNode<node | nodeData | nodeDataWithChanges>;
-	@Input()
-	target!: OseeNode<node | nodeData | nodeDataWithChanges>;
+	data = input.required<connection>();
 }

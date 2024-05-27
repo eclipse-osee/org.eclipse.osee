@@ -11,8 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
-	HttpClientTestingModule,
 	HttpTestingController,
+	provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { apiURL } from '@osee/environments';
@@ -22,6 +22,10 @@ import {
 } from '../testing/import.response.mock';
 
 import { ImportHttpService } from './import-http.service';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('ImportHttpService', () => {
 	let service: ImportHttpService;
@@ -29,7 +33,11 @@ describe('ImportHttpService', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
+			imports: [],
+			providers: [
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+			],
 		});
 		service = TestBed.inject(ImportHttpService);
 		httpTestingController = TestBed.inject(HttpTestingController);
@@ -49,10 +57,10 @@ describe('ImportHttpService', () => {
 
 	it('should get import summary', () => {
 		service
-			.getImportSummary('/test/url', 'filename', new FormData())
+			.getImportSummary('/test/url', '12345', 'filename', new FormData())
 			.subscribe();
 		const req = httpTestingController.expectOne(
-			apiURL + '/test/url?fileName=filename'
+			apiURL + '/test/url?transportType=12345&fileName=filename'
 		);
 		expect(req.request.method).toEqual('POST');
 		req.flush(importSummaryMock);

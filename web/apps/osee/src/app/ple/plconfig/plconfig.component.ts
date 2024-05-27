@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -48,8 +48,11 @@ import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 	],
 })
 export class PlconfigComponent implements OnInit, OnDestroy {
+	private uiStateService = inject(PlConfigUIStateService);
+	private route = inject(ActivatedRoute);
+
 	_updateRequired: Observable<boolean> = this.uiStateService.updateReq;
-	_branchType: string = '';
+	_branchType = '';
 	branchType = this.uiStateService.viewBranchType;
 	branchId = this.uiStateService.branchId;
 	private _done = new Subject();
@@ -59,7 +62,7 @@ export class PlconfigComponent implements OnInit, OnDestroy {
 		this.uiStateService.isInDiff,
 	]).pipe(
 		//invalid conditions equals false
-		switchMap(([branchType, branchId, inDiff]) =>
+		switchMap(([_branchType, branchId, inDiff]) =>
 			iif(
 				() =>
 					inDiff === false &&
@@ -73,10 +76,10 @@ export class PlconfigComponent implements OnInit, OnDestroy {
 	);
 	diff = './diff';
 	currentRoute = this.route;
-	constructor(
-		private uiStateService: PlConfigUIStateService,
-		private route: ActivatedRoute
-	) {
+
+	/** Inserted by Angular inject() migration for backwards compatibility */
+	constructor(...args: unknown[]);
+	constructor() {
 		this.uiStateService.branchIdNum = '';
 		this.uiStateService.viewBranchTypeString = '';
 		this.uiStateService.viewBranchType.subscribe((id) => {
@@ -103,7 +106,7 @@ export class PlconfigComponent implements OnInit, OnDestroy {
 			),
 		])
 			.pipe(
-				tap(([paramMap, data]) => {
+				tap(([paramMap, _data]) => {
 					this.uiStateService.viewBranchTypeString =
 						(paramMap.get('branchType') as
 							| 'working'
@@ -112,7 +115,7 @@ export class PlconfigComponent implements OnInit, OnDestroy {
 					this.uiStateService.branchIdNum =
 						paramMap.get('branchId') || '';
 				}),
-				switchMap(([paramMap, data]) =>
+				switchMap(([_paramMap, data]) =>
 					iif(
 						() => data.diff !== undefined,
 						of(data).pipe(

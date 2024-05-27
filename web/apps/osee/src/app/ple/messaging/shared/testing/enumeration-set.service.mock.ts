@@ -10,54 +10,40 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import type { enumeration, enumSet } from '@osee/messaging/shared/types';
-import { relation, transaction } from '@osee/shared/types';
+import type { enumeration, enumerationSet } from '@osee/messaging/shared/types';
+import { transactionResultMock } from '@osee/transactions/testing';
 import {
-	transactionMock,
-	transactionResultMock,
-} from '@osee/shared/transactions/testing';
+	legacyRelation,
+	legacyTransaction,
+	transaction,
+} from '@osee/transactions/types';
 import { of } from 'rxjs';
 import { EnumerationSetService } from '../services/http/enumeration-set.service';
 import { enumerationSetMock } from './enumeration-set.response.mock';
 
 export const enumerationSetServiceMock: Partial<EnumerationSetService> = {
 	createEnumSet(
-		branchId: string,
-		type: enumSet | Partial<enumSet>,
-		relations: relation[],
-		transaction?: transaction
+		set: enumerationSet,
+		tx: Required<transaction>,
+		key?: string
 	) {
-		return of(transactionMock);
-	},
-	changeEnumSet(
-		branchId: string,
-		type: Partial<enumSet>,
-		transaction?: transaction
-	) {
-		return of(transactionMock);
+		return tx;
 	},
 	createEnum(
-		branchId: string,
-		type: enumeration | Partial<enumeration>,
-		relations: relation[],
-		transaction?: transaction
+		enumeration: enumeration,
+		tx: Required<transaction>,
+		key?: string
 	) {
-		return of(transactionMock);
-	},
-	createEnumSetToPlatformTypeRelation(sideA?: string) {
-		return of<relation>({
-			typeName: 'Interface Platform Type Enumeration Set',
-			sideA: sideA,
-		});
+		return tx;
 	},
 	createPlatformTypeToEnumSetRelation(sideB?: string) {
-		return of<relation>({
+		return of<legacyRelation>({
 			typeName: 'Interface Platform Type Enumeration Set',
 			sideB: sideB,
 		});
 	},
 	createEnumToEnumSetRelation(sideA?: string) {
-		return of<relation>({
+		return of<legacyRelation>({
 			typeName: 'Interface Enumeration Definition',
 			sideA: sideA,
 		});
@@ -68,7 +54,7 @@ export const enumerationSetServiceMock: Partial<EnumerationSetService> = {
 	getEnumSet(branchId: string, platformTypeId: string) {
 		return of(enumerationSetMock[0]);
 	},
-	performMutation(body: transaction) {
+	performMutation(body: legacyTransaction) {
 		return of(transactionResultMock);
 	},
 };

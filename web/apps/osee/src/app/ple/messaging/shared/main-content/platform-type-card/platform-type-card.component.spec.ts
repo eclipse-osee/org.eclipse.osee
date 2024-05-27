@@ -17,7 +17,7 @@ import { MatCardHarness } from '@angular/material/card/testing';
 import { MatDialogModule } from '@angular/material/dialog';
 
 import { NO_ERRORS_SCHEMA } from '@angular/compiler';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { UserDataAccountService } from '@osee/auth';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
 import {
@@ -29,12 +29,10 @@ import {
 	ConnectionService,
 	CrossReferenceHttpService,
 	EnumerationSetService,
-	EnumsService,
 	MimPreferencesService,
 	PreferencesUIService,
 	QueryService,
 	TypesService,
-	UnitsService,
 	WarningDialogService,
 } from '@osee/messaging/shared/services';
 import {
@@ -46,23 +44,20 @@ import {
 	QueryServiceMock,
 	connectionServiceMock,
 	enumerationSetServiceMock,
-	enumsServiceMock,
 	preferencesUiServiceMock,
 	typesServiceMock,
-	unitsServiceMock,
 	warningDialogServiceMock,
 } from '@osee/messaging/shared/testing';
 import { ApplicabilityListService } from '@osee/shared/services';
 import { applicabilityListServiceMock } from '@osee/shared/testing';
-import {
-	TransactionBuilderService,
-	TransactionService,
-} from '@osee/shared/transactions';
-import {
-	transactionBuilderMock,
-	transactionServiceMock,
-} from '@osee/shared/transactions/testing';
+import { TransactionBuilderService } from '@osee/shared/transactions-legacy';
+import { transactionBuilderMock } from '@osee/shared/transactions-legacy/testing';
 import { PlatformTypeCardComponent } from './platform-type-card.component';
+import { PlatformType } from '@osee/messaging/shared/types';
+import { UnitsService } from '@osee/messaging/units/services';
+import { unitsServiceMock } from '@osee/messaging/units/services/testing';
+import { PlatformTypeActionsComponent } from '../platform-type-actions/platform-type-actions.component';
+import { MockPlatformTypeActionsComponent } from '@osee/messaging/shared/main-content/testing';
 
 let loader: HarnessLoader;
 
@@ -84,12 +79,14 @@ describe('PlatformTypeCardComponent', () => {
 					imports: [
 						EditTypeDialogComponent,
 						EditEnumSetDialogComponent,
+						PlatformTypeActionsComponent,
 					],
 				},
 				add: {
 					imports: [
 						MockEditTypeDialogComponent,
 						MockEditEnumSetDialogComponent,
+						MockPlatformTypeActionsComponent,
 					],
 					providers: [
 						{
@@ -99,10 +96,6 @@ describe('PlatformTypeCardComponent', () => {
 						{
 							provide: UnitsService,
 							useValue: unitsServiceMock,
-						},
-						{
-							provide: TransactionService,
-							useValue: transactionServiceMock,
 						},
 						{
 							provide: CrossReferenceHttpService,
@@ -121,7 +114,6 @@ describe('PlatformTypeCardComponent', () => {
 			})
 			.configureTestingModule({
 				imports: [
-					NoopAnimationsModule,
 					MatDialogModule,
 					MockEditTypeDialogComponent,
 					MockEditEnumSetDialogComponent,
@@ -129,6 +121,7 @@ describe('PlatformTypeCardComponent', () => {
 				],
 				declarations: [],
 				providers: [
+					provideNoopAnimations(),
 					{ provide: QueryService, useValue: QueryServiceMock },
 					{ provide: TypesService, useValue: typesServiceMock },
 					{
@@ -147,7 +140,6 @@ describe('PlatformTypeCardComponent', () => {
 						provide: UserDataAccountService,
 						useValue: userDataAccountServiceMock,
 					},
-					{ provide: EnumsService, useValue: enumsServiceMock },
 					{
 						provide: ApplicabilityListService,
 						useValue: applicabilityListServiceMock,
@@ -159,10 +151,6 @@ describe('PlatformTypeCardComponent', () => {
 					{
 						provide: UnitsService,
 						useValue: unitsServiceMock,
-					},
-					{
-						provide: TransactionService,
-						useValue: transactionServiceMock,
 					},
 					{
 						provide: CrossReferenceHttpService,
@@ -186,31 +174,113 @@ describe('PlatformTypeCardComponent', () => {
 		fixture = TestBed.createComponent(PlatformTypeCardComponent);
 		loader = TestbedHarnessEnvironment.loader(fixture);
 		component = fixture.componentInstance;
-		const expectedData = {
+		const expectedData: PlatformType = {
 			id: '0',
-			name: 'Random enumeration',
-			description: '',
-			interfaceLogicalType: 'enumeration',
-			interfacePlatformTypeMinval: '0',
-			interfacePlatformTypeMaxval: '1',
-			interfacePlatformTypeBitSize: '8',
-			interfaceDefaultValue: '0',
-			interfacePlatformTypeMsbValue: '0',
-			interfacePlatformTypeBitsResolution: '0',
-			interfacePlatformTypeCompRate: '0',
-			interfacePlatformTypeAnalogAccuracy: '0',
-			interfacePlatformType2sComplement: false,
-			interfacePlatformTypeEnumLiteral: 'A string',
-			interfacePlatformTypeUnits: 'N/A',
-			interfacePlatformTypeValidRangeDescription: 'N/A',
+			gammaId: '-1',
+			name: {
+				id: '-1',
+				typeId: '1152921504606847088',
+				gammaId: '-1',
+				value: 'Random enumeration',
+			},
+			description: {
+				id: '-1',
+				typeId: '1152921504606847090',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceLogicalType: {
+				id: '-1',
+				typeId: '2455059983007225762',
+				gammaId: '-1',
+				value: 'enumeration',
+			},
+			interfacePlatformTypeMinval: {
+				id: '-1',
+				typeId: '3899709087455064782',
+				gammaId: '-1',
+				value: '0',
+			},
+			interfacePlatformTypeMaxval: {
+				id: '-1',
+				typeId: '3899709087455064783',
+				gammaId: '-1',
+				value: '1',
+			},
+			interfacePlatformTypeBitSize: {
+				id: '-1',
+				typeId: '2455059983007225786',
+				gammaId: '-1',
+				value: '8',
+			},
+			interfaceDefaultValue: {
+				id: '-1',
+				typeId: '2886273464685805413',
+				gammaId: '-1',
+				value: '0',
+			},
+			interfacePlatformTypeMsbValue: {
+				id: '-1',
+				typeId: '3899709087455064785',
+				gammaId: '-1',
+				value: '0',
+			},
+			interfacePlatformTypeBitsResolution: {
+				id: '-1',
+				typeId: '3899709087455064786',
+				gammaId: '-1',
+				value: '0',
+			},
+			interfacePlatformTypeCompRate: {
+				id: '-1',
+				typeId: '3899709087455064787',
+				gammaId: '-1',
+				value: '0',
+			},
+			interfacePlatformTypeAnalogAccuracy: {
+				id: '-1',
+				typeId: '3899709087455064788',
+				gammaId: '-1',
+				value: '0',
+			},
+			interfacePlatformType2sComplement: {
+				id: '-1',
+				typeId: '3899709087455064784',
+				gammaId: '-1',
+				value: false,
+			},
+			interfacePlatformTypeUnits: {
+				id: '-1',
+				typeId: '4026643196432874344',
+				gammaId: '-1',
+				value: 'N/A',
+			},
+			interfacePlatformTypeValidRangeDescription: {
+				id: '-1',
+				typeId: '2121416901992068417',
+				gammaId: '-1',
+				value: 'N/A',
+			},
 			applicability: {
 				id: '1',
 				name: 'Base',
 			},
 			enumSet: {
 				id: '-1',
-				name: '',
-				description: '',
+				gammaId: '-1',
+				name: {
+					id: '-1',
+					typeId: '1152921504606847088',
+					gammaId: '-1',
+					value: '',
+				},
+				description: {
+					id: '-1',
+					typeId: '1152921504606847090',
+					gammaId: '-1',
+					value: '',
+				},
+				enumerations: [],
 				applicability: { id: '1', name: 'Base' },
 			},
 		};

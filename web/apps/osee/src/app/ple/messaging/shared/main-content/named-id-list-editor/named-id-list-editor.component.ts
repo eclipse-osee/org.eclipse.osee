@@ -45,18 +45,18 @@ import { Subject, filter, take, tap } from 'rxjs';
 	styles: [],
 })
 export class NamedIdListEditorComponent {
-	@Input() name: string = '';
+	@Input() name = '';
 	@Input() dataToDisplay: NamedId[] = [];
-	@Input() count: number = 0;
+	@Input() count = 0;
 
-	@Input() pageSize: number = 10;
+	@Input() pageSize = 10;
 
-	@Input() pageIndex: number = 1;
-	@Input() allowedToEdit: boolean = false;
+	@Input() pageIndex = 1;
+	@Input() allowedToEdit = false;
 
 	@Output() pageEvent = new Subject<PageEvent>();
 
-	filter: string = '';
+	filter = '';
 	_filterChange = new Subject<string>();
 	@Output() filterChange = this._filterChange;
 

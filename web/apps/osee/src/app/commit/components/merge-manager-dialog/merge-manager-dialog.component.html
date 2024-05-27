@@ -80,7 +80,7 @@
 				mat-button
 				[ngClass]="{
 					'tw-bg-primary tw-text-background-background':
-						_mergeStatus.commitable
+						_mergeStatus.commitable,
 				}"
 				[disabled]="!_mergeStatus.commitable"
 				(click)="commitBranch()">

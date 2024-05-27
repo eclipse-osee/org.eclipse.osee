@@ -12,8 +12,8 @@
  **********************************************************************/
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { AsyncPipe, DatePipe, NgClass } from '@angular/common';
-import { Component, Optional, Output, input } from '@angular/core';
-import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
+import { Component, Output, input } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatOption, provideNativeDateAdapter } from '@angular/material/core';
 import {
 	MatDatepicker,
@@ -25,16 +25,13 @@ import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
 import { FormDirective } from '@osee/shared/directives';
 import { attribute } from '@osee/shared/types';
+import { provideOptionalControlContainerNgForm } from '@osee/shared/utils';
 import { BehaviorSubject } from 'rxjs';
 import { AttributeNameTrimPipe } from '../../pipes/attribute-name-trim/attribute-name-trim.pipe';
 import { IfIdReturnFalsePipe } from '../../pipes/if-id-return-false/if-id-return-false.pipe';
 import { StringToDatePipe } from '../../pipes/string-to-date/string-to-date.pipe';
 import { MarkdownEditorComponent } from './../markdown-editor/markdown-editor.component';
 import { AttributeEnumsDropdownComponent } from './attribute-enums-dropdown/attribute-enums-dropdown.component';
-
-function controlContainerFactory(controlContainer?: ControlContainer) {
-	return controlContainer;
-}
 
 // Attributes Editor does not enforce required fields.
 // It will just highlight required fields based on an attribute's multiplicityId.
@@ -65,13 +62,7 @@ function controlContainerFactory(controlContainer?: ControlContainer) {
 	],
 	providers: [provideNativeDateAdapter()],
 	templateUrl: './attributes-editor.component.html',
-	viewProviders: [
-		{
-			provide: ControlContainer,
-			useFactory: controlContainerFactory,
-			deps: [[new Optional(), NgForm]],
-		},
-	],
+	viewProviders: [provideOptionalControlContainerNgForm()],
 })
 export class AttributesEditorComponent {
 	attributes = input.required<attribute[]>();

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpMethods } from '@osee/shared/types';
 import { apiURL } from '@osee/environments';
 
@@ -19,7 +19,7 @@ import { apiURL } from '@osee/environments';
 	providedIn: 'root',
 })
 export class FilesService {
-	constructor(private http: HttpClient) {}
+	private http = inject(HttpClient);
 
 	getFileAsBlob(
 		httpMethod: HttpMethods,

@@ -12,7 +12,13 @@
  **********************************************************************/
 import { headerDetail } from '@osee/shared/types';
 
-export const setDiffHeaderDetails: headerDetail<any>[] = [
+export const setDiffHeaderDetails: headerDetail<{
+	name: unknown;
+	equal: unknown;
+	passes: unknown;
+	fails: unknown;
+	abort: unknown;
+}>[] = [
 	{
 		header: 'name',
 		description: 'Name of the script',

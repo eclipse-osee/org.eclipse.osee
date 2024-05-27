@@ -18,18 +18,19 @@ import {
 	trigger,
 } from '@angular/animations';
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatLine } from '@angular/material/core';
 import { MatLabel } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { SideNavService } from '@osee/shared/services/layout';
-import { TransactionService } from '@osee/shared/transactions';
-import { applic } from '@osee/shared/types/applicability';
-import { transactionInfo } from '@osee/shared/types/change-report';
-import { Observable, iif, of } from 'rxjs';
+import { TransactionHistoryService } from '@osee/transaction-history/services';
+import { applic } from '@osee/applicability/types';
+import { iif, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { attribute } from '@osee/attributes/types';
+import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
 
 @Component({
 	selector: 'osee-single-diff',
@@ -53,6 +54,9 @@ import { switchMap } from 'rxjs/operators';
 	],
 })
 export class SingleDiffComponent {
+	private transactionService = inject(TransactionHistoryService);
+	private sideNavService = inject(SideNavService);
+
 	contents = this.sideNavService.rightSideNavContent.pipe(
 		switchMap((content) =>
 			of(content).pipe(
@@ -72,18 +76,41 @@ export class SingleDiffComponent {
 			)
 		)
 	);
-
-	transactionInfo!: Observable<transactionInfo>;
 	opened = this.sideNavService.rightSideNavOpened;
-	constructor(
-		private transactionService: TransactionService,
-		private sideNavService: SideNavService
-	) {}
 
 	isApplic(
-		value: string | number | boolean | applic | undefined
+		value:
+			| string
+			| number
+			| boolean
+			| applic
+			| undefined
+			| attribute<unknown, ATTRIBUTETYPEID>
 	): value is applic {
-		return typeof value === 'object' && value?.name !== undefined;
+		return (
+			typeof value === 'object' &&
+			'name' in value &&
+			value?.name !== undefined
+		);
+	}
+
+	protected isAttribute(
+		value:
+			| string
+			| number
+			| boolean
+			| applic
+			| undefined
+			| attribute<unknown, ATTRIBUTETYPEID>
+	): value is attribute<unknown, ATTRIBUTETYPEID> {
+		return (
+			typeof value === 'object' &&
+			'id' in value &&
+			'typeId' in value &&
+			'gammaId' in value &&
+			'value' in value &&
+			value.value !== undefined
+		);
 	}
 
 	viewDiff(open: boolean, value: string | number | applic, header: string) {

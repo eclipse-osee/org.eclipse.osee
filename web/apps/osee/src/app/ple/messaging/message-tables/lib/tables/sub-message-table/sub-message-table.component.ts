@@ -15,6 +15,7 @@ import {
 	ChangeDetectionStrategy,
 	Component,
 	EventEmitter,
+	inject,
 	Input,
 	OnChanges,
 	Output,
@@ -47,6 +48,9 @@ import {
 } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
 import { Router, RouterLink } from '@angular/router';
+import { PersistedApplicabilityDropdownComponent } from '@osee/applicability/persisted-applicability-dropdown';
+import { applic, applicabilitySentinel } from '@osee/applicability/types';
+import { PersistedStringAttributeInputComponent } from '@osee/attributes/persisted-string-attribute-input';
 import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dialogs/free-text';
 import {
 	CurrentMessagesService,
@@ -60,10 +64,6 @@ import type {
 	subMessageWithChanges,
 } from '@osee/messaging/shared/types';
 import { UiService } from '@osee/shared/services';
-import {
-	applic,
-	applicabilitySentinel,
-} from '@osee/shared/types/applicability';
 import { difference } from '@osee/shared/types/change-report';
 import {
 	DisplayTruncatedStringWithFieldOverflowPipe,
@@ -74,7 +74,7 @@ import { filter, switchMap, take } from 'rxjs/operators';
 import { AddSubMessageDialogComponent } from '../../dialogs/add-sub-message-dialog/add-sub-message-dialog.component';
 import { DeleteSubmessageDialogComponent } from '../../dialogs/delete-submessage-dialog/delete-submessage-dialog.component';
 import { RemoveSubmessageDialogComponent } from '../../dialogs/remove-submessage-dialog/remove-submessage-dialog.component';
-import { EditSubMessageFieldComponent } from '../../fields/edit-sub-message-field/edit-sub-message-field.component';
+import { SubMessageImpactsValidatorDirective } from '../../sub-message-impacts-validator.directive';
 import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
 
 @Component({
@@ -92,7 +92,6 @@ import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
 		AddSubMessageDialogComponent,
 		HighlightFilteredTextDirective,
 		DisplayTruncatedStringWithFieldOverflowPipe,
-		EditSubMessageFieldComponent,
 		MatTable,
 		MatColumnDef,
 		MatHeaderCell,
@@ -112,16 +111,25 @@ import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
 		MatMenuTrigger,
 		MatLabel,
 		FormsModule,
+		PersistedApplicabilityDropdownComponent,
+		PersistedStringAttributeInputComponent,
+		SubMessageImpactsValidatorDirective,
 	],
 })
 export class SubMessageTableComponent implements OnChanges {
+	dialog = inject(MatDialog);
+	private router = inject(Router);
+	private messageService = inject(CurrentMessagesService);
+	private headerService = inject(HeaderService);
+	private _ui = inject(UiService);
+
 	@Input() data: subMessage[] = [];
 	@Input() dataSource: MatTableDataSource<subMessage> =
 		new MatTableDataSource<subMessage>();
-	@Input() filter: string = '';
+	@Input() filter = '';
 
 	@Input() element!: message;
-	@Input() editMode: boolean = false;
+	@Input() editMode = false;
 	@Output() expandRow = new EventEmitter();
 	headers = this.headerService.AllSubMessageHeaders.pipe(
 		switchMap(([name, description, number, applicability]) =>
@@ -145,17 +153,14 @@ export class SubMessageTableComponent implements OnChanges {
 		y: '0',
 	};
 	matMenuTrigger = viewChild.required(MatMenuTrigger);
-	constructor(
-		public dialog: MatDialog,
-		private router: Router,
-		private messageService: CurrentMessagesService,
-		private headerService: HeaderService,
-		private _ui: UiService
-	) {
+
+	/** Inserted by Angular inject() migration for backwards compatibility */
+	constructor(...args: unknown[]);
+	constructor() {
 		this.dataSource.data = this.data;
 	}
 
-	ngOnChanges(changes: SimpleChanges): void {
+	ngOnChanges(_changes: SimpleChanges): void {
 		this.dataSource.data = this.data;
 		if (this.filter !== '') {
 			if (this.dataSource.filteredData.length > 0) {
@@ -164,11 +169,14 @@ export class SubMessageTableComponent implements OnChanges {
 		}
 	}
 
-	valueTracker(index: any, item: any) {
+	valueTracker(index: number, _item: unknown) {
 		return index;
 	}
 
-	subMessageTracker(index: any, item: subMessage | subMessageWithChanges) {
+	subMessageTracker(
+		_index: number,
+		item: subMessage | subMessageWithChanges
+	) {
 		return item.id;
 	}
 
@@ -196,19 +204,6 @@ export class SubMessageTableComponent implements OnChanges {
 					undefined
 					? (submessage as subMessageWithChanges).changes[header]
 					: undefined,
-		};
-		this.matMenuTrigger().menuData = this.matMenuTrigger().menuData as {
-			message: message | messageWithChanges;
-			submessage: subMessage | subMessageWithChanges;
-			location: string;
-			field: string | applic;
-			header:
-				| 'name'
-				| 'description'
-				| 'interfaceSubMessageNumber'
-				| 'applicability'
-				| ' ';
-			change: difference | undefined;
 		};
 		this.matMenuTrigger().openMenu();
 	}
@@ -262,7 +257,7 @@ export class SubMessageTableComponent implements OnChanges {
 		return this.dialog.open(AddSubMessageDialogComponent, {
 			minWidth: '80%',
 			data: {
-				name: message.name,
+				name: message.name.value,
 				id: message.id,
 				subMessage: submessage,
 			},
@@ -270,10 +265,26 @@ export class SubMessageTableComponent implements OnChanges {
 	}
 	insertSubMessage(message: message, afterSubMessage?: string) {
 		this._addSubMessageDialog(message, {
-			id: '',
-			name: '',
-			description: '',
-			interfaceSubMessageNumber: '',
+			id: '-1',
+			gammaId: '-1',
+			name: {
+				id: '-1',
+				typeId: '1152921504606847088',
+				gammaId: '-1',
+				value: '',
+			},
+			description: {
+				id: '-1',
+				typeId: '1152921504606847090',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceSubMessageNumber: {
+				id: '-1',
+				typeId: '2455059983007225769',
+				gammaId: '-1',
+				value: '',
+			},
 			applicability: applicabilitySentinel,
 		})
 			.afterClosed()
@@ -281,24 +292,17 @@ export class SubMessageTableComponent implements OnChanges {
 				take(1),
 				filter((val) => val !== undefined),
 				switchMap((z: AddSubMessageDialog) =>
-					iif(
-						() =>
-							z != undefined &&
-							z.subMessage != undefined &&
-							z.subMessage.id != undefined &&
-							z?.subMessage?.id.length > 0 &&
-							z.subMessage.id !== '-1',
-						this.messageService.relateSubMessage(
-							z.id,
-							z?.subMessage?.id || '-1',
-							afterSubMessage || 'end'
-						),
-						this.messageService.createSubMessage(
-							z.subMessage,
-							z.id,
-							afterSubMessage
-						)
-					)
+					z.subMessage.id.length > 0 && z.subMessage.id !== '-1'
+						? this.messageService.relateSubMessage(
+								z.id,
+								z?.subMessage?.id || '-1',
+								afterSubMessage || 'end'
+							)
+						: this.messageService.createSubMessage(
+								z.subMessage,
+								z.id,
+								afterSubMessage
+							)
 				)
 			)
 			.subscribe();
@@ -325,17 +329,14 @@ export class SubMessageTableComponent implements OnChanges {
 			.subscribe();
 	}
 
-	openDescriptionDialog(
-		description: string,
-		submessageId: string,
-		messageId: string
-	) {
+	openDescriptionDialog(submessage: subMessage) {
+		const previous = structuredClone(submessage);
 		this.dialog
 			.open(EditViewFreeTextFieldDialogComponent, {
 				data: {
-					original: JSON.parse(JSON.stringify(description)) as string,
+					original: submessage.description.value,
 					type: 'Description',
-					return: description,
+					return: submessage.description.value,
 				},
 				minHeight: '60%',
 				minWidth: '60%',
@@ -354,12 +355,16 @@ export class SubMessageTableComponent implements OnChanges {
 						//change description
 						this.messageService.partialUpdateSubMessage(
 							{
-								id: submessageId,
-								description: (
-									response as EditViewFreeTextDialog
-								).return,
+								...submessage,
+								description: {
+									id: submessage.description.id,
+									typeId: submessage.description.typeId,
+									gammaId: submessage.description.gammaId,
+									value: (response as EditViewFreeTextDialog)
+										.return,
+								},
 							},
-							messageId
+							previous
 						)
 					)
 				)

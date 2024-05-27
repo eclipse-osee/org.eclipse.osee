@@ -10,10 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { UiService } from '@osee/shared/services';
 import { SideNavService } from '@osee/shared/services/layout';
-import { applic } from '@osee/shared/types/applicability';
 import {
 	ModificationType,
 	changeInstance,
@@ -21,11 +20,9 @@ import {
 	difference,
 	ignoreType,
 	itemTypeIdRelation,
-	transactionToken,
 } from '@osee/shared/types/change-report';
 import {
 	ARTIFACTTYPEIDENUM,
-	ATTRIBUTETYPEIDENUM,
 	RELATIONTYPEIDENUM,
 } from '@osee/shared/types/constants';
 import { Observable, combineLatest, concat, from, iif, of } from 'rxjs';
@@ -63,11 +60,20 @@ import {
 import { PlConfigBranchService } from './pl-config-branch-service.service';
 import { PlConfigTypesService } from './pl-config-types.service';
 import { PlConfigUIStateService } from './pl-config-uistate.service';
+import { applic } from '@osee/applicability/types';
+import { transactionToken } from '@osee/transactions/types';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class PlConfigCurrentBranchService {
+	private uiStateService = inject(PlConfigUIStateService);
+	private branchService = inject(PlConfigBranchService);
+	private typesService = inject(PlConfigTypesService);
+	private sideNavService = inject(SideNavService);
+	private uiService = inject(UiService);
+
 	private _applicsWithFeatureConstraints: Observable<
 		applicWithConstraints[]
 	> = this.uiStateService.branchId.pipe(
@@ -109,13 +115,6 @@ export class PlConfigCurrentBranchService {
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
-	constructor(
-		private uiStateService: PlConfigUIStateService,
-		private branchService: PlConfigBranchService,
-		private typesService: PlConfigTypesService,
-		private sideNavService: SideNavService,
-		private uiService: UiService
-	) {}
 	public get applicsWithFeatureConstraints() {
 		return this._applicsWithFeatureConstraints;
 	}
@@ -174,7 +173,7 @@ export class PlConfigCurrentBranchService {
 		);
 	}
 
-	public getView(viewId: string, useDiffs: boolean = false) {
+	public getView(viewId: string, useDiffs = false) {
 		const query = this.uiStateService.branchId.pipe(
 			take(1),
 			filter((val) => val !== ''),
@@ -299,7 +298,7 @@ export class PlConfigCurrentBranchService {
 			shareReplay({ bufferSize: 1, refCount: true })
 		);
 	}
-	public getCfgGroupDetail(cfgGroup: string, useDiffs: boolean = false) {
+	public getCfgGroupDetail(cfgGroup: string, useDiffs = false) {
 		const query = this.uiStateService.branchId.pipe(
 			filter((val) => val !== ''),
 			switchMap((branchId) =>
@@ -723,7 +722,7 @@ export class PlConfigCurrentBranchService {
 		this.uiStateService.currentPage$,
 		this.uiStateService.currentPageSize$,
 	]).pipe(
-		filter(([branchId, filter, viewId, page, pageSize]) => branchId !== ''),
+		filter(([branchId]) => branchId !== ''),
 		debounceTime(500),
 		distinctUntilChanged(),
 		switchMap(([branchId, filter, viewId, page, pageSize]) =>
@@ -755,7 +754,6 @@ export class PlConfigCurrentBranchService {
 					differences.length !== 0,
 				this.__parseDifferences(
 					differences as changeInstance[],
-					branchId,
 					applic
 				).pipe(
 					switchMap((diffedTable) =>
@@ -778,7 +776,7 @@ export class PlConfigCurrentBranchService {
 		this.uiStateService.filter$,
 		this.uiService.viewId,
 	]).pipe(
-		filter(([branchId, filter, viewId]) => branchId !== ''),
+		filter(([branchId]) => branchId !== ''),
 		debounceTime(500),
 		distinctUntilChanged(),
 		switchMap(([branchId, filter, viewId]) =>
@@ -791,10 +789,9 @@ export class PlConfigCurrentBranchService {
 
 	private __parseDifferences(
 		differences: changeInstance[],
-		branchId: string,
 		tableData: plConfigTable
 	) {
-		let _tableData = structuredClone(tableData); //do not mutate the underlying observable data
+		const _tableData = structuredClone(tableData); //do not mutate the underlying observable data
 		const _differences = differences.filter(
 			(v) => v.ignoreType !== ignoreType.DELETED_AND_DNE_ON_DESTINATION
 		);
@@ -886,7 +883,7 @@ export class PlConfigCurrentBranchService {
 						deleted: true,
 						gammaId: '',
 						applicability: {
-							id: '',
+							id: '-1',
 							name: 'DELETED_CONFIG',
 							gammaId: '',
 						},
@@ -931,28 +928,25 @@ export class PlConfigCurrentBranchService {
 					_tableData.table[featureIndex].changes = {};
 				}
 				if (!_tableData.table[featureIndex].deleted) {
-					let _changes: difference = {
+					const _changes: difference = {
 						currentValue: change.currentVersion.value,
 						previousValue: change.baselineVersion.value,
 						transactionToken:
 							change.currentVersion.transactionToken,
 					};
 					if (change.itemTypeId === ATTRIBUTETYPEIDENUM.NAME) {
-						//TODO handle this better. This definitely isn't undefined per previous line(s)
-						//@ts-ignore
+						// @ts-expect-error TODO handle this better. This definitely isn't undefined per previous line(s)
 						_tableData.table[featureIndex].changes.name = _changes;
 					}
 					if (
 						change.itemTypeId === ATTRIBUTETYPEIDENUM.DEFAULTVALUE
 					) {
-						//TODO handle this better. This definitely isn't undefined per previous line(s)
-						//@ts-ignore
+						// @ts-expect-error TODO handle this better. This definitely isn't undefined per previous line(s)
 						_tableData.table[featureIndex].changes.defaultValue =
 							_changes;
 					}
 					if (change.itemTypeId === ATTRIBUTETYPEIDENUM.DESCRIPTION) {
-						//TODO handle this better. This definitely isn't undefined per previous line(s)
-						//@ts-ignore
+						// @ts-expect-error TODO handle this better. This definitely isn't undefined per previous line(s)
 						_tableData.table[featureIndex].changes.description =
 							_changes;
 					}
@@ -960,30 +954,27 @@ export class PlConfigCurrentBranchService {
 						change.itemTypeId === ATTRIBUTETYPEIDENUM.PRODUCT_TYPE
 					) {
 						if (
-							//@ts-ignore
 							_tableData.table[featureIndex].changes
 								.productApplicabilities === undefined
 						) {
-							//@ts-ignore
 							_tableData.table[
 								featureIndex
-							].changes.productApplicabilities = {};
-							//@ts-ignore
+							].changes.productApplicabilities = {
+								currentValue: [],
+								previousValue: [],
+								transactionToken: { id: '-1', branchId: '-1' },
+							};
 							_tableData.table[
 								featureIndex
 							].changes.productApplicabilities.currentValue = [];
-							//@ts-ignore
 							_tableData.table[
 								featureIndex
 							].changes.productApplicabilities.previousValue = [];
-							//@ts-ignore
 							_tableData.table[
 								featureIndex
 							].changes.productApplicabilities.transactionToken =
 								change.currentVersion.transactionToken;
 						}
-						//TODO handle this better. This definitely isn't undefined per previous line(s)
-						//@ts-ignore
 						_tableData.table[
 							featureIndex
 						].changes.productApplicabilities.currentValue.push(
@@ -991,44 +982,39 @@ export class PlConfigCurrentBranchService {
 						);
 					}
 					if (change.itemTypeId === ATTRIBUTETYPEIDENUM.MULTIVALUED) {
-						//TODO handle this better. This definitely isn't undefined per previous line(s)
-						//@ts-ignore
+						// @ts-expect-error TODO handle this better. This definitely isn't undefined per previous line(s)
 						_tableData.table[featureIndex].changes.multiValued =
 							_changes;
 					}
 					if (
 						change.itemTypeId === ATTRIBUTETYPEIDENUM.DEFAULTVALUE
 					) {
-						//TODO handle this better. This definitely isn't undefined per previous line(s)
-						//@ts-ignore
+						// @ts-expect-error TODO handle this better. This definitely isn't undefined per previous line(s)
 						_tableData.table[featureIndex].changes.defaultValue =
 							_changes;
 					}
 				} else {
-					let _changes: difference = {
+					const _changes: difference = {
 						currentValue: change.destinationVersion.value,
 						previousValue: change.baselineVersion.value,
 						transactionToken:
 							change.currentVersion.transactionToken,
 					};
 					if (change.itemTypeId === ATTRIBUTETYPEIDENUM.NAME) {
-						//TODO handle this better. This definitely isn't undefined per previous line(s)
 						_tableData.table[featureIndex].name =
 							_changes.previousValue as string;
-						//@ts-ignore
+						// @ts-expect-error TODO handle this better. This definitely isn't undefined per previous line(s)
 						_tableData.table[featureIndex].changes.name = _changes;
 					}
 					if (
 						change.itemTypeId === ATTRIBUTETYPEIDENUM.DEFAULTVALUE
 					) {
-						//TODO handle this better. This definitely isn't undefined per previous line(s)
-						//@ts-ignore
+						// @ts-expect-error TODO handle this better. This definitely isn't undefined per previous line(s)
 						_tableData.table[featureIndex].changes.defaultValue =
 							_changes;
 					}
 					if (change.itemTypeId === ATTRIBUTETYPEIDENUM.DESCRIPTION) {
-						//TODO handle this better. This definitely isn't undefined per previous line(s)
-						//@ts-ignore
+						// @ts-expect-error TODO handle this better. This definitely isn't undefined per previous line(s)
 						_tableData.table[featureIndex].changes.description =
 							_changes;
 					}
@@ -1036,30 +1022,27 @@ export class PlConfigCurrentBranchService {
 						change.itemTypeId === ATTRIBUTETYPEIDENUM.PRODUCT_TYPE
 					) {
 						if (
-							//@ts-ignore
 							_tableData.table[featureIndex].changes
 								.productApplicabilities === undefined
 						) {
-							//@ts-ignore
 							_tableData.table[
 								featureIndex
-							].changes.productApplicabilities = {};
-							//@ts-ignore
+							].changes.productApplicabilities = {
+								currentValue: [],
+								previousValue: [],
+								transactionToken: { id: '-1', branchId: '-1' },
+							};
 							_tableData.table[
 								featureIndex
 							].changes.productApplicabilities.currentValue = [];
-							//@ts-ignore
 							_tableData.table[
 								featureIndex
 							].changes.productApplicabilities.previousValue = [];
-							//@ts-ignore
 							_tableData.table[
 								featureIndex
 							].changes.productApplicabilities.transactionToken =
 								change.currentVersion.transactionToken;
 						}
-						//TODO handle this better. This definitely isn't undefined per previous line(s)
-						//@ts-ignore
 						_tableData.table[
 							featureIndex
 						].changes.productApplicabilities.currentValue.push(
@@ -1067,8 +1050,7 @@ export class PlConfigCurrentBranchService {
 						);
 					}
 					if (change.itemTypeId === ATTRIBUTETYPEIDENUM.MULTIVALUED) {
-						//TODO handle this better. This definitely isn't undefined per previous line(s)
-						//@ts-ignore
+						// @ts-expect-error TODO handle this better. This definitely isn't undefined per previous line(s)
 						_tableData.table[featureIndex].changes.multiValued =
 							_changes;
 					}
@@ -1084,7 +1066,7 @@ export class PlConfigCurrentBranchService {
 		branchId: string,
 		tableData: plConfigTable
 	) {
-		let _tableData = structuredClone(tableData); //do not mutate the underlying observable data
+		const _tableData = structuredClone(tableData); //do not mutate the underlying observable data
 		const _differences = differences.filter(
 			(v) => v.ignoreType !== ignoreType.DELETED_AND_DNE_ON_DESTINATION
 		);
@@ -1094,10 +1076,10 @@ export class PlConfigCurrentBranchService {
 				a.deleted && b.deleted
 					? 0
 					: a.deleted && !b.deleted
-					  ? 1
-					  : !a.deleted && b.deleted
-					    ? -1
-					    : 0
+						? 1
+						: !a.deleted && b.deleted
+							? -1
+							: 0
 			);
 		const _uniqueDifferences = [...new Set(_t2Differences)];
 		const __differences = concat(from(_uniqueDifferences));
@@ -1143,7 +1125,7 @@ export class PlConfigCurrentBranchService {
 		value: {
 			change: changeInstance;
 			applic: { featureName: string; featureValue: string };
-			token: string[];
+			token: `${number}`[];
 		},
 		data: plConfigTable
 	) {
@@ -1173,7 +1155,7 @@ export class PlConfigCurrentBranchService {
 						)
 				) !== undefined
 			) {
-				//@ts-ignore
+				// @ts-expect-error undefined
 				_tableData.table
 					.find(
 						(f) =>
@@ -1198,7 +1180,7 @@ export class PlConfigCurrentBranchService {
 									value.applic.featureValue &&
 							c.id === value.token[0]
 					).added = true;
-				//@ts-ignore
+				// @ts-expect-error undefined
 				_tableData.table
 					.find(
 						(f) =>
@@ -1232,7 +1214,7 @@ export class PlConfigCurrentBranchService {
 		value: {
 			change: changeInstance;
 			applic: { featureName: string; featureValue: string };
-			token: string[];
+			token: `${number}`[];
 		},
 		data: plConfigTable
 	) {
@@ -1265,7 +1247,7 @@ export class PlConfigCurrentBranchService {
 				) !== undefined
 			) {
 				//just mark it as deleted
-				//@ts-ignore
+				// @ts-expect-error undefined
 				_tableData.table
 					.find(
 						(f) =>
@@ -1291,7 +1273,7 @@ export class PlConfigCurrentBranchService {
 									value.applic.featureValue &&
 							c.id === value.token[0]
 					).deleted = true;
-				//@ts-ignore
+				// @ts-expect-error undefined
 				_tableData.table
 					.find(
 						(f) =>
@@ -1347,7 +1329,7 @@ export class PlConfigCurrentBranchService {
 						return {
 							id: x.id,
 							name: x.name,
-							gammaId: '',
+							gammaId: '-1',
 							typeId: x.typeId,
 							applicability: {
 								id: value.token[1],
@@ -1362,11 +1344,11 @@ export class PlConfigCurrentBranchService {
 						};
 					});
 				//covered by above check
-				//@ts-ignore
+				// @ts-expect-error undefined
 				_tableData.table.find(
 					(f) => f.id === value.token[0]
 				).configurationValues = configValues;
-				//@ts-ignore
+				// @ts-expect-error undefined
 				_tableData.table.find((f) => f.id === value.token[0]).deleted =
 					true;
 			} else {
@@ -1390,7 +1372,7 @@ export class PlConfigCurrentBranchService {
 						};
 					});
 				_tableData.table.push({
-					id: '',
+					id: '-1',
 					name: value.applic.featureName,
 					configurationValues: configValues,
 					attributes: [],
@@ -1411,7 +1393,9 @@ export class PlConfigCurrentBranchService {
 		return typeof change.currentVersion.value === 'string' &&
 			change.currentVersion.value !== null &&
 			change.currentVersion.value.split('|', 2).length === 2
-			? change.currentVersion.value.split('|', 2)[1].split(', ')
+			? (change.currentVersion.value
+					.split('|', 2)[1]
+					.split(', ') as `${number}`[])
 			: [];
 	}
 	get applicabilityTableData() {
@@ -1429,7 +1413,7 @@ export class PlConfigCurrentBranchService {
 		if (feature.changes === undefined) {
 			feature.changes = {};
 		}
-		let changes: difference = {
+		const changes: difference = {
 			currentValue: change.currentVersion.value,
 			previousValue: change.baselineVersion.value,
 			transactionToken: change.currentVersion.transactionToken,
@@ -1610,7 +1594,7 @@ export class PlConfigCurrentBranchService {
 		if (group.changes === undefined) {
 			group.changes = {};
 		}
-		let changes: difference = {
+		const changes: difference = {
 			currentValue: change.currentVersion.value,
 			previousValue: change.baselineVersion.value,
 			transactionToken: change.currentVersion.transactionToken,
@@ -1630,14 +1614,13 @@ export class PlConfigCurrentBranchService {
 					transactionToken: change.currentVersion.transactionToken,
 				};
 			}
-		} else {
 		}
 	}
 	updateViewAttributes(change: changeInstance, view: viewWithChanges) {
 		if (view.changes === undefined) {
 			view.changes = {};
 		}
-		let changes: difference = {
+		const changes: difference = {
 			currentValue: change.currentVersion.value,
 			previousValue: change.baselineVersion.value,
 			transactionToken: change.currentVersion.transactionToken,
@@ -1708,7 +1691,6 @@ export class PlConfigCurrentBranchService {
 					transactionToken: change.currentVersion.transactionToken,
 				};
 			}
-		} else {
 		}
 		return view;
 	}
@@ -1727,7 +1709,7 @@ export class PlConfigCurrentBranchService {
 								(_) =>
 									(this.uiStateService.updateReqConfig = true)
 							)
-					  )
+						)
 					: of(response)
 			)
 		);
@@ -1747,7 +1729,7 @@ export class PlConfigCurrentBranchService {
 								(_) =>
 									(this.uiStateService.updateReqConfig = true)
 							)
-					  )
+						)
 					: of(response)
 			)
 		);
@@ -1767,7 +1749,7 @@ export class PlConfigCurrentBranchService {
 								(_) =>
 									(this.uiStateService.updateReqConfig = true)
 							)
-					  )
+						)
 					: of(response)
 			)
 		);

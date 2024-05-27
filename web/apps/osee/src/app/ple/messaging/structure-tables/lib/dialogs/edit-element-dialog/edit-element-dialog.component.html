@@ -10,9 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<h1 mat-dialog-title>Editing element {{ data.element.name }}</h1>
+<h1 mat-dialog-title>Editing element {{ data().element.name.value }}</h1>
 <mat-dialog-content>
-	<osee-element-form [(data)]="data"></osee-element-form>
+	<form #elementDialogForm="ngForm">
+		<osee-element-form [(data)]="data"></osee-element-form>
+	</form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
 	<button
@@ -22,9 +24,10 @@
 		Cancel
 	</button>
 	<button
-		mat-raised-button
-		color="primary"
-		[mat-dialog-close]="data"
+		mat-flat-button
+		class="primary-button"
+		[disabled]="!elementDialogForm.valid"
+		[mat-dialog-close]="data()"
 		data-cy="submit-btn">
 		Ok
 	</button>

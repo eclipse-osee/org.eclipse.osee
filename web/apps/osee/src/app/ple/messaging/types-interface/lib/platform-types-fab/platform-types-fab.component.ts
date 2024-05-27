@@ -10,20 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatFabButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
-import { CurrentTypesService } from '../services/current-types.service';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIcon } from '@angular/material/icon';
+import { PlatformType } from '@osee/messaging/shared/types';
+import { OperatorFunction, filter, switchMap } from 'rxjs';
 import { NewTypeDialogComponent } from '../new-type-dialog/new-type-dialog.component';
-import {
-	PlatformType,
-	enumeration,
-	newPlatformTypeDialogReturnData,
-} from '@osee/messaging/shared/types';
-import { applic } from '@osee/shared/types/applicability';
-import { filter, OperatorFunction, switchMap } from 'rxjs';
-import { AsyncPipe } from '@angular/common';
+import { CurrentTypesService } from '../services/current-types.service';
 
 @Component({
 	selector: 'osee-platform-types-fab',
@@ -32,7 +27,7 @@ import { AsyncPipe } from '@angular/common';
 	template: `@if ((inEditMode | async) === true) {
 		<button
 			mat-fab
-			class="tw-bg-success-200"
+			class="tertiary-fab"
 			(click)="openNewTypeDialog()"
 			data-cy="add-type-bottom-button">
 			<mat-icon>add</mat-icon>
@@ -54,34 +49,13 @@ export class PlatformTypesFabComponent {
 			.afterClosed()
 			.pipe(
 				filter((x) => x !== undefined) as OperatorFunction<
-					newPlatformTypeDialogReturnData | undefined,
-					newPlatformTypeDialogReturnData
+					PlatformType | undefined,
+					PlatformType
 				>,
-				switchMap(
-					({ platformType, createEnum, enumSet, ...enumData }) =>
-						this.mapTo(platformType, createEnum, enumData).pipe()
+				switchMap((platformType) =>
+					this.typesService.createType(platformType)
 				)
 			)
 			.subscribe();
-	}
-	/**
-	 *
-	 * @TODO replace enumData with actual enum
-	 */
-	mapTo(
-		results: Partial<PlatformType>,
-		newEnum: boolean,
-		enumData: {
-			enumSetId: string;
-			enumSetName: string;
-			enumSetDescription: string;
-			enumSetApplicability: applic;
-			enums: enumeration[];
-		}
-	) {
-		results.name =
-			(results?.name?.charAt(0)?.toLowerCase() || '') +
-			results?.name?.slice(1);
-		return this.typesService.createType(results, newEnum, enumData);
 	}
 }

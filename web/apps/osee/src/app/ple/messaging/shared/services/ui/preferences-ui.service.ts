@@ -10,9 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { UserDataAccountService } from '@osee/auth';
-import { transaction } from '@osee/shared/types';
+import { legacyTransaction } from '@osee/transactions/types';
 import { combineLatest, from, iif, Observable, of } from 'rxjs';
 import type { settingsDialogData } from '@osee/messaging/shared/types';
 import {
@@ -27,19 +27,23 @@ import {
 	tap,
 } from 'rxjs/operators';
 import { UiService } from '@osee/shared/services';
-import { transactionResult } from '@osee/shared/types/change-report';
+import { transactionResult } from '@osee/transactions/types';
 import { MimPreferencesService } from '../http/mim-preferences.service';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class PreferencesUIService {
+	private ui = inject(UiService);
+	private userService = inject(UserDataAccountService);
+	private preferenceService = inject(MimPreferencesService);
+
 	private _preferences = combineLatest([
 		this.ui.id,
 		this.userService.user,
 	]).pipe(
 		share(),
-		filter(([id, user]) => id !== '' && id !== '-1'),
+		filter(([id, _user]) => id !== '' && id !== '-1'),
 		switchMap(([id, user]) =>
 			this.preferenceService.getUserPrefs(id, user).pipe(
 				repeatWhen((_) => this.ui.update),
@@ -87,7 +91,7 @@ export class PreferencesUIService {
 							? this.preferenceService.createGlobalUserPrefs(
 									user,
 									{ wordWrap: result.wordWrap }
-							  )
+								)
 							: this.preferenceService.updateGlobalUserPrefs(
 									globalPrefs,
 									{
@@ -95,7 +99,7 @@ export class PreferencesUIService {
 										name: globalPrefs.name,
 										wordWrap: result.wordWrap,
 									}
-							  )
+								)
 					)
 				)
 			)
@@ -128,7 +132,7 @@ export class PreferencesUIService {
 			switchMap(([prefs, branch, branchPrefs]) =>
 				iif(
 					() => prefs.hasBranchPref,
-					of<transaction>({
+					of<legacyTransaction>({
 						branch: '570',
 						txComment: 'Updating MIM User Preferences',
 						modifyArtifacts: [
@@ -146,7 +150,7 @@ export class PreferencesUIService {
 							},
 						],
 					}),
-					of<transaction>({
+					of<legacyTransaction>({
 						branch: '570',
 						txComment: 'Updating MIM User Preferences',
 						modifyArtifacts: [
@@ -165,12 +169,6 @@ export class PreferencesUIService {
 			)
 		);
 	}
-
-	constructor(
-		private ui: UiService,
-		private userService: UserDataAccountService,
-		private preferenceService: MimPreferencesService
-	) {}
 
 	public get branchId() {
 		return this.ui.id;

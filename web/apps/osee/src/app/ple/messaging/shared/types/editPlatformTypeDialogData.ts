@@ -11,21 +11,21 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
-	createArtifact,
-	modifyArtifact,
-	modifyRelation,
-} from '@osee/shared/types';
+	legacyCreateArtifact,
+	legacyModifyArtifact,
+	legacyModifyRelation,
+} from '@osee/transactions/types';
 import type { PlatformType } from './platformType';
 
 /**
  * Container containing info on whether or not the Edit Dialog should open in create/edit mode and what data to pre populate the fields with.
  */
-export interface editPlatformTypeDialogData {
+export type editPlatformTypeDialogData = {
 	mode: 0 | 1;
 	type: PlatformType;
 	enumerationSet?: {
-		createArtifacts: createArtifact[];
-		modifyArtifacts: modifyArtifact[];
-		deleteRelations: modifyRelation[];
+		createArtifacts: legacyCreateArtifact[];
+		modifyArtifacts: legacyModifyArtifact[];
+		deleteRelations: legacyModifyRelation[];
 	};
-}
+};

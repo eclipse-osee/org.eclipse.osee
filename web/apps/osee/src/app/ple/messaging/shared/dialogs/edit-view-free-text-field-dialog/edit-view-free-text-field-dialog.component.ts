@@ -12,7 +12,7 @@
  **********************************************************************/
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { AsyncPipe } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import {
@@ -50,10 +50,12 @@ import type { EditViewFreeTextDialog } from '@osee/messaging/shared/types';
 	],
 })
 export class EditViewFreeTextFieldDialogComponent {
+	dialogRef =
+		inject<MatDialogRef<EditViewFreeTextFieldDialogComponent>>(
+			MatDialogRef
+		);
+	data = inject<EditViewFreeTextDialog>(MAT_DIALOG_DATA);
+	private preferencesService = inject(PreferencesUIService);
+
 	editMode = this.preferencesService.inEditMode;
-	constructor(
-		public dialogRef: MatDialogRef<EditViewFreeTextFieldDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: EditViewFreeTextDialog,
-		private preferencesService: PreferencesUIService
-	) {}
 }

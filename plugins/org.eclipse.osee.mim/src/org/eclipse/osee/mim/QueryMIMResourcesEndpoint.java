@@ -18,8 +18,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import org.eclipse.osee.accessor.types.AttributeQuery;
 import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.accessor.types.AttributeQuery;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 
 @Path("query")

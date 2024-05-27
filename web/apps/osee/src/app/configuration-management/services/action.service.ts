@@ -11,14 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { user } from '@osee/shared/types/auth';
 import { apiURL } from '@osee/environments';
 import {
 	HttpParamsType,
 	NamedId,
-	response,
+	XResultData,
 	transitionResponse,
 } from '@osee/shared/types';
 import {
@@ -48,7 +48,7 @@ import {
 	providedIn: 'root',
 })
 export class ActionService {
-	constructor(private http: HttpClient) {}
+	private http = inject(HttpClient);
 
 	public get users(): Observable<user[]> {
 		return this.http.get<user[]>(apiURL + '/ats/user?active=Active');
@@ -264,8 +264,8 @@ export class ActionService {
 	public commitBranch(
 		teamWf: string,
 		branchId: string | number
-	): Observable<response> {
-		return this.http.put<response>(
+	): Observable<XResultData> {
+		return this.http.put<XResultData>(
 			apiURL +
 				'/ats/action/branch/commit?teamWfId=' +
 				teamWf +

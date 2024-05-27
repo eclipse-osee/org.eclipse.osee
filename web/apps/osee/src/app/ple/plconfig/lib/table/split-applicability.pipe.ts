@@ -17,6 +17,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 	standalone: true,
 })
 export class SplitApplicabilityPipe implements PipeTransform {
+	//eslint-disable-next-line @typescript-eslint/no-unused-vars
 	transform(value: string, ...args: unknown[]): string {
 		return value.split(new RegExp('s?=s?'))[1];
 	}

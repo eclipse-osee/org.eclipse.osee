@@ -15,7 +15,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PlatformTypesFabComponent } from './platform-types-fab.component';
 import { CurrentTypesService } from '../services/current-types.service';
 import { of } from 'rxjs';
-import { transactionResultMock } from '@osee/shared/transactions/testing';
+import { transactionResultMock } from '@osee/transactions/testing';
 
 describe('PlatformTypesFabComponent', () => {
 	let component: PlatformTypesFabComponent;

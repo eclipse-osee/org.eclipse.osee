@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -25,6 +25,7 @@ import { connectionSentinel } from '@osee/messaging/shared/types';
 import { TestScheduler } from 'rxjs/testing';
 import { ValidationService } from '@osee/messaging/shared/services';
 import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('ReportsComponent', () => {
 	let component: ReportsComponent;
@@ -44,10 +45,11 @@ describe('ReportsComponent', () => {
 				imports: [
 					RouterTestingModule,
 					NoopAnimationsModule,
-					HttpClientTestingModule,
 					ReportsComponent,
 				],
 				providers: [
+					provideHttpClient(),
+					provideHttpClientTesting(),
 					{
 						provide: ValidationService,
 						useValue: validationServiceMock,

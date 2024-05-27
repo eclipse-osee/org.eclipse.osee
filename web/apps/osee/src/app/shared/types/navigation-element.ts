@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { UserRoles } from '@osee/shared/types/auth';
-export interface navigationElement {
+export type navigationElement = {
 	label: string;
 	cypressLabel: string;
 	pageTitle: string;
@@ -22,7 +22,7 @@ export interface navigationElement {
 	icon: string;
 	description: string;
 	children: navigationElement[];
-}
+};
 
 export const defaultNavigationElement: navigationElement = {
 	label: '',

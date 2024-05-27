@@ -50,10 +50,10 @@ public class MIMImportUtil {
       for (InterfaceStructureToken structure : summary.getStructures()) {
          data.getCreateArtifacts().add(structure.createArtifact(structure.getIdString(), applicId));
       }
-      for (InterfaceElementImportToken element : summary.getElements()) {
+      for (InterfaceStructureElementToken element : summary.getElements()) {
          data.getCreateArtifacts().add(element.createArtifact(element.getIdString(), applicId));
       }
-      for (PlatformTypeImportToken pType : summary.getPlatformTypes()) {
+      for (PlatformTypeToken pType : summary.getPlatformTypes()) {
          data.getCreateArtifacts().add(pType.createArtifact(pType.getIdString(), applicId));
       }
       for (InterfaceEnumerationSet enumSet : summary.getEnumSets()) {

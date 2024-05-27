@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, signal, viewChild } from '@angular/core';
+import { Component, signal, viewChild, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
@@ -81,6 +81,14 @@ import {
 	templateUrl: './artifact-search.component.html',
 })
 export class ArtifactSearchComponent {
+	private artExpHttpService = inject(ArtifactExplorerHttpService);
+	private uiService = inject(UiService);
+	private artHierPathService = inject(ArtifactHierarchyPathService);
+	dialog = inject(MatDialog);
+	private advancedSearchService = inject(AdvancedArtifactSearchService);
+	private tabService = inject(ArtifactExplorerTabService);
+	private artifactIconService = inject(ArtifactIconService);
+
 	matMenuTrigger = viewChild.required(MatMenuTrigger);
 
 	searchText = new BehaviorSubject<string>('');
@@ -185,16 +193,6 @@ export class ArtifactSearchComponent {
 			)
 		)
 	);
-
-	constructor(
-		private artExpHttpService: ArtifactExplorerHttpService,
-		private uiService: UiService,
-		private artHierPathService: ArtifactHierarchyPathService,
-		public dialog: MatDialog,
-		private advancedSearchService: AdvancedArtifactSearchService,
-		private tabService: ArtifactExplorerTabService,
-		private artifactIconService: ArtifactIconService
-	) {}
 
 	performSearch(e: Event) {
 		e.stopPropagation();

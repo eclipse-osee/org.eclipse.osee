@@ -49,9 +49,8 @@ class OuterComponent implements AfterViewInit {
 	observable$ = of(['1', '2', '3']);
 	@ViewChild('osee-mat-option-loading')
 	public loading!: MatOptionLoadingComponent<string>;
-	constructor() {}
 	ngAfterViewInit(): void {
-		const variable = 0;
+		const _variable = 0;
 	}
 }
 

@@ -21,7 +21,7 @@ export class BranchIdService {
 		'0'
 	);
 	id = this._branchId.asObservable();
-	constructor() {}
+
 	get BranchId() {
 		return this._branchId;
 	}

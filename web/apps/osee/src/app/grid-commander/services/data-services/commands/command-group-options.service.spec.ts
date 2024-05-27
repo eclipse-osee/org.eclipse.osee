@@ -10,35 +10,29 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import {
-	HttpClientTestingModule,
-	HttpTestingController,
-} from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { TestScheduler } from 'rxjs/testing';
 
 import { CommandGroupOptionsService } from './command-group-options.service';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('CommandGroupOptionsService', () => {
 	let service: CommandGroupOptionsService;
-	let scheduler: TestScheduler;
-	let httpTestingController: HttpTestingController;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule, RouterTestingModule],
+			imports: [RouterTestingModule],
+			providers: [
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+			],
 		});
 		service = TestBed.inject(CommandGroupOptionsService);
-		httpTestingController = TestBed.inject(HttpTestingController);
 	});
-
-	beforeEach(
-		() =>
-			(scheduler = new TestScheduler((actual, expected) => {
-				expect(actual).toEqual(expected);
-			}))
-	);
 
 	it('should be created', () => {
 		expect(service).toBeTruthy();

@@ -35,7 +35,9 @@ describe('FormDirective', () => {
 	});
 
 	it('should create an instance', () => {
-		const directive = new FormDirective(ngFormMock);
-		expect(directive).toBeTruthy();
+		TestBed.runInInjectionContext(() => {
+			const directive = new FormDirective();
+			expect(directive).toBeTruthy();
+		});
 	});
 });

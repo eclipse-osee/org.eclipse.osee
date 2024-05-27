@@ -18,7 +18,7 @@
 					class="tw-p-2"
 					[ngClass]="{
 						'tw-border-b-2 tw-border-primary tw-text-primary':
-							router.url.includes(navItem.routerLink)
+							router.url.includes(navItem.routerLink),
 					}"
 					[routerLink]="
 						navItem.routerLink + (routeSuffix | async) || ''

@@ -10,19 +10,24 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 import {
 	ConnectionService,
 	CrossReferenceHttpService,
 	MimRouteService,
 	PreferencesUIService,
 } from '@osee/messaging/shared/services';
-import {
-	TransactionBuilderService,
-	TransactionService,
-} from '@osee/shared/transactions';
-import type { relation, transaction } from '@osee/shared/types';
+import type { CrossReference, connection } from '@osee/messaging/shared/types';
+import { TransactionBuilderService } from '@osee/shared/transactions-legacy';
 import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
+import { TransactionService } from '@osee/transactions/services';
+import type {
+	legacyRelation,
+	legacyTransaction,
+	transaction,
+} from '@osee/transactions/types';
 import {
 	BehaviorSubject,
 	combineLatest,
@@ -36,21 +41,24 @@ import {
 	take,
 	tap,
 } from 'rxjs';
-import type { CrossReference, connection } from '@osee/messaging/shared/types';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class CrossReferenceService {
-	constructor(
-		private crossRefHttpService: CrossReferenceHttpService,
-		private ui: MimRouteService,
-		private connectionService: ConnectionService,
-		private txBuilder: TransactionBuilderService,
-		private txService: TransactionService,
-		private preferencesService: PreferencesUIService
-	) {}
+	private crossRefHttpService = inject(CrossReferenceHttpService);
+	private ui = inject(MimRouteService);
+	private connectionService = inject(ConnectionService);
+	private txBuilder = inject(TransactionBuilderService);
+	private preferencesService = inject(PreferencesUIService);
 
+	private txService = inject(TransactionService);
+
+	selectedConnectionId = toObservable(this.ui.connectionId);
+
+	set SelectedConnectionId(connection: `${number}`) {
+		this.ui.connectionIdString = connection;
+	}
 	private _currentPage$ = new BehaviorSubject<number>(0);
 	private _currentPageSize$ = new BehaviorSubject<number>(10);
 
@@ -63,8 +71,8 @@ export class CrossReferenceService {
 		this.ui.viewId,
 	]).pipe(
 		filter(
-			([branchId, connectionId, filterValue, viewId]) =>
-				branchId !== '' && branchId !== '0' && connectionId !== ''
+			([branchId, connectionId, _filterValue, _viewId]) =>
+				branchId !== '' && branchId !== '0' && connectionId !== '-1'
 		),
 		debounceTime(500),
 		switchMap(([branchId, connection, filterValue, viewId]) =>
@@ -80,10 +88,44 @@ export class CrossReferenceService {
 		switchMap((branchId) => this.connectionService.getConnections(branchId))
 	);
 
+	addCrossRefToTransaction(
+		crossRef: CrossReference,
+		tx: Required<transaction>,
+		key?: string
+	) {
+		//TODO: UPDATE CROSS REFS TO USE GAMMA IDS
+		//NOTE: this is a manual tx due to crossRefs not supporting gamma ids yet(see above)
+		const { id, applicability, connections, ..._remainingAttributes } =
+			crossRef;
+		// const attributeKeys = Object.keys(
+		// 	remainingAttributes
+		// ) as (keyof typeof remainingAttributes)[];
+		// const attributes = attributeKeys.map((k) => remainingAttributes[k]);
+		tx.createArtifacts.push({
+			typeId: ARTIFACTTYPEIDENUM.CROSSREFERENCE,
+			name: crossRef.name,
+			key: key ?? crypto.randomUUID(),
+			attributes: [
+				{
+					typeId: ATTRIBUTETYPEIDENUM.CROSSREFVALUE,
+					value: crossRef.crossReferenceValue,
+				},
+				{
+					typeId: ATTRIBUTETYPEIDENUM.CROSSREFARRAYVALUES,
+					value: crossRef.crossReferenceArrayValues,
+				},
+				{
+					typeId: ATTRIBUTETYPEIDENUM.CROSSREFADDITIONALCONTENT,
+					value: crossRef.crossReferenceAdditionalContent,
+				},
+			],
+		});
+		return tx;
+	}
 	createCrossReferenceTx(
 		crossRef: CrossReference,
 		branchId: string,
-		transaction: transaction | undefined,
+		transaction: legacyTransaction | undefined,
 		key?: string
 	) {
 		return of(
@@ -104,7 +146,7 @@ export class CrossReferenceService {
 			take(1),
 			filter(
 				([branchId, connectionId]) =>
-					branchId !== '' && branchId !== '0' && connectionId !== ''
+					branchId !== '' && branchId !== '0' && connectionId !== '-1'
 			),
 			switchMap(([branchId, connection]) =>
 				this.createCrossReferenceTx(
@@ -209,7 +251,7 @@ export class CrossReferenceService {
 	}
 
 	createConnectionRelation(connectionId: string, crossReferenceId: string) {
-		let relation: relation = {
+		const relation: legacyRelation = {
 			typeName: 'Interface Connection Cross Reference',
 			sideA: connectionId,
 			sideB: crossReferenceId,
@@ -217,7 +259,11 @@ export class CrossReferenceService {
 		return of(relation);
 	}
 
-	addRelation(branchId: string, relation: relation, tx: transaction) {
+	addRelation(
+		branchId: string,
+		relation: legacyRelation,
+		tx: legacyTransaction
+	) {
 		return of(
 			this.txBuilder.addRelation(
 				relation.typeName,
@@ -239,7 +285,7 @@ export class CrossReferenceService {
 	]).pipe(
 		switchMap(([connectionId, connections]) => {
 			let connection: connection | undefined;
-			if (connectionId !== '') {
+			if (connectionId !== '-1') {
 				connections.forEach((c) => {
 					if (c.id === connectionId) {
 						connection = c;
@@ -329,14 +375,6 @@ export class CrossReferenceService {
 
 	get connections() {
 		return this._connections;
-	}
-
-	get selectedConnectionId() {
-		return this.ui.connectionId;
-	}
-
-	set SelectedConnectionId(connection: string) {
-		this.ui.connectionIdString = connection;
 	}
 
 	get currentPageSize() {

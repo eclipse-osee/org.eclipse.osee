@@ -12,7 +12,13 @@
  **********************************************************************/
 import { SelectionModel } from '@angular/cdk/collections';
 import { AsyncPipe, NgClass } from '@angular/common';
-import { AfterViewInit, Component, OnDestroy, viewChild } from '@angular/core';
+import {
+	AfterViewInit,
+	Component,
+	OnDestroy,
+	viewChild,
+	inject,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
 import { MatCheckbox } from '@angular/material/checkbox';
@@ -95,6 +101,17 @@ import { NoDataToDisplayComponent } from './no-data-to-display/no-data-to-displa
 	],
 })
 export class GcDatatableComponent implements AfterViewInit, OnDestroy {
+	private dataTableService = inject(DataTableService);
+	private filterService = inject(FilterService);
+	dialog = inject(MatDialog);
+	private commandGroupOptService = inject(CommandGroupOptionsService);
+	private commandFromUserHistoryService = inject(
+		CommandFromUserHistoryService
+	);
+	private rowObjectActionService = inject(RowObjectActionsService);
+	private columnSortingService = inject(ColumnSortingService);
+	private deleteRowService = inject(DeleteRowService);
+
 	private paginator = viewChild(MatPaginator);
 	private sort = viewChild(MatSort);
 
@@ -130,7 +147,7 @@ export class GcDatatableComponent implements AfterViewInit, OnDestroy {
 		this.filterColumns,
 		this.filterVisibleColumns,
 	]).pipe(
-		switchMap(([data, update, filter, allColumns, visibleColumns]) =>
+		switchMap(([data, _update, filter, allColumns, visibleColumns]) =>
 			iif(
 				() => filter === '_$_$_$_$_$_$_$_',
 				of(new MatTableDataSource(data)).pipe(
@@ -162,7 +179,7 @@ export class GcDatatableComponent implements AfterViewInit, OnDestroy {
 							row: RowObj,
 							filter: string
 						) => {
-							const matchingRows = [];
+							const matchingRows: boolean[] = [];
 							//index 0 of filter when converted to an array of strings is the value used to search all columns in table
 							const filterAllValue = filter.split('$')[0];
 							//array that reflects the strings of each property for the Row object without index 0 ('all')
@@ -185,22 +202,14 @@ export class GcDatatableComponent implements AfterViewInit, OnDestroy {
 									.map((val) =>
 										columnHeadersUsedForFilter.indexOf(val)
 									);
-								for (
-									let i = 0;
-									i < indicesOfVisibleCols.length;
-									i++
-								) {
-									//using the numbers from indiciesOfVisibleCols we can see if each specified property of row contains the 'filterAllValue'
+								indicesOfVisibleCols.forEach((index) => {
 									const customFilter = row[
-										Object.keys(row)[
-											indicesOfVisibleCols[i]
-										]
+										Object.keys(row)[index]
 									]
 										.toString()
 										.includes(filterAllValue);
-									//if the value does include the filter string then it will be pushed to the matchingRows array
 									matchingRows.push(customFilter);
-								}
+								});
 								//we return rowObjects that have all true values inside of the matchingRows array
 								//note filterStrings that are an empty string will return true
 								return matchingRows.some(Boolean);
@@ -241,17 +250,6 @@ export class GcDatatableComponent implements AfterViewInit, OnDestroy {
 		)
 	);
 
-	constructor(
-		private dataTableService: DataTableService,
-		private filterService: FilterService,
-		public dialog: MatDialog,
-		private commandGroupOptService: CommandGroupOptionsService,
-		private commandFromUserHistoryService: CommandFromUserHistoryService,
-		private rowObjectActionService: RowObjectActionsService,
-		private columnSortingService: ColumnSortingService,
-		private deleteRowService: DeleteRowService
-	) {}
-
 	ngOnDestroy(): void {
 		this.dataTableService.doneFx = '';
 	}
@@ -262,7 +260,7 @@ export class GcDatatableComponent implements AfterViewInit, OnDestroy {
 		this.filterService.columnOptionsForFilter.subscribe();
 	}
 
-	sortData(sort: Sort, data: RowObj[]) {
+	sortData(_sort: Sort, _data: RowObj[]) {
 		this._updateMatSort.next(true);
 		return this.sortFunction;
 	}
@@ -279,11 +277,13 @@ export class GcDatatableComponent implements AfterViewInit, OnDestroy {
 	};
 
 	masterToggle() {
-		this.isAllSelected()
-			? this.selection.clear()
-			: this._rowsToBeSelected.value.forEach((row) =>
-					this.selection.select(row)
-			  );
+		if (this.isAllSelected()) {
+			this.selection.clear();
+		} else {
+			this._rowsToBeSelected.value.forEach((row) =>
+				this.selection.select(row)
+			);
+		}
 	}
 
 	isAllSelected() {
@@ -299,7 +299,7 @@ export class GcDatatableComponent implements AfterViewInit, OnDestroy {
 	}
 
 	hideRow(rowData: RowObj) {
-		let tempArr = this.hiddenRows.value;
+		const tempArr = this.hiddenRows.value;
 		tempArr.push(rowData);
 
 		this.hiddenRows.next(tempArr);
@@ -323,9 +323,11 @@ export class GcDatatableComponent implements AfterViewInit, OnDestroy {
 	}
 
 	toggleFavorite(rowData: commandHistoryObject) {
-		rowData.Favorite === 'false'
-			? (rowData.Favorite = 'true')
-			: (rowData.Favorite = 'false');
+		if (rowData.Favorite === 'false') {
+			rowData.Favorite = 'true';
+		} else {
+			rowData.Favorite = 'false';
+		}
 		const modifiedArtifact =
 			this.rowObjectActionService.createModifiedFavoriteObject(rowData);
 		this.rowObjectActionService

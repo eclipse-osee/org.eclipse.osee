@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
 	BehaviorSubject,
 	combineLatest,
@@ -26,10 +26,8 @@ import { CiDashboardUiService } from './ci-dashboard-ui.service';
 	providedIn: 'root',
 })
 export class CiSetDiffService {
-	constructor(
-		private uiService: CiDashboardUiService,
-		private tmoHttp: TmoHttpService
-	) {}
+	private uiService = inject(CiDashboardUiService);
+	private tmoHttp = inject(TmoHttpService);
 
 	private _selectedSets = new BehaviorSubject<SetReference[]>([]);
 

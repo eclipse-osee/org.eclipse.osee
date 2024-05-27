@@ -118,6 +118,7 @@ describe('FeatureMenuComponent', () => {
 		await (await menu.getSubmenu())?.clickItem({ text: 'Name' });
 		expect(spy).toHaveBeenCalled();
 	});
+
 	it('should open the feature dialog', async () => {
 		const spy = spyOn(component, 'displayFeatureMenu').and.callThrough();
 		const menu = await loader.getHarness(

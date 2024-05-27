@@ -11,7 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Routes } from '@angular/router';
-import { PleHelpComponent } from './ple-help.component';
 
 const routes: Routes = [
 	{

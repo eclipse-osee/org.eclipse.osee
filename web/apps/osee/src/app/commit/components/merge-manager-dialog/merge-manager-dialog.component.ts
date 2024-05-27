@@ -84,10 +84,7 @@ export class MergeManagerDialogComponent {
 	]).pipe(
 		filter(
 			([sourceBranch, destBranch, _]) =>
-				sourceBranch.id != '' &&
-				sourceBranch.id != '-1' &&
-				destBranch.id != '' &&
-				destBranch.id != '-1'
+				sourceBranch.id != '-1' && destBranch.id != '-1'
 		),
 		switchMap(([sourceBranch, destBranch, _]) =>
 			this.commitBranchService.getMergeBranch(
@@ -101,7 +98,7 @@ export class MergeManagerDialogComponent {
 	);
 
 	mergeData = this.mergeBranchId.pipe(
-		filter((id) => id !== '' && id !== '-1'),
+		filter((id) => id !== '-1'),
 		switchMap((id) =>
 			this.commitBranchService.getMergeData(id).pipe(
 				repeat({
@@ -116,10 +113,7 @@ export class MergeManagerDialogComponent {
 	mergeStatus = combineLatest([this.sourceBranch$, this.destBranch$]).pipe(
 		filter(
 			([sourceBranch, destBranch]) =>
-				sourceBranch.id !== '' &&
-				sourceBranch.id !== '-1' &&
-				destBranch.id !== '' &&
-				destBranch.id !== '-1'
+				sourceBranch.id !== '-1' && destBranch.id !== '-1'
 		),
 		switchMap(([sourceBranch, destBranch]) =>
 			this.commitBranchService

@@ -14,7 +14,7 @@
 package org.eclipse.osee.coverage.internal;
 
 import java.util.Date;
-import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 /**
  * @author Stephen J. Molaro
  */
-public class CoverageItemToken extends ArtifactAccessorResult {
+public class CoverageItemToken extends ArtifactAccessorResultWithoutGammas {
 
    public static final CoverageItemToken SENTINEL = new CoverageItemToken();
 

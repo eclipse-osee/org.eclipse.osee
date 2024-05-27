@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { apiURL } from '@osee/environments';
 import { ConnectionValidationResult } from '@osee/messaging/shared/types';
 
@@ -19,7 +19,7 @@ import { ConnectionValidationResult } from '@osee/messaging/shared/types';
 	providedIn: 'root',
 })
 export class ValidationService {
-	constructor(private http: HttpClient) {}
+	private http = inject(HttpClient);
 
 	getConnectionValidation(
 		branchId: string,

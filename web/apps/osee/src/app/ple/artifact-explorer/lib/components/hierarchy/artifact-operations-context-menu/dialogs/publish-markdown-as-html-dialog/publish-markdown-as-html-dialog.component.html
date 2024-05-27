@@ -16,7 +16,7 @@
 		@if (
 			{
 				openedState: isOpen | async,
-				filter: filterBySafeName | async
+				filter: filterBySafeName | async,
 			};
 			as autoCompleteState
 		) {
@@ -78,9 +78,9 @@
 			Cancel
 		</button>
 		<button
-			mat-raised-button
+			mat-flat-button
 			[mat-dialog-close]="data"
-			color="primary"
+			class="primary-button"
 			[disabled]="publishMarkdownForm.invalid || data.templateId === '0'">
 			Ok
 		</button>

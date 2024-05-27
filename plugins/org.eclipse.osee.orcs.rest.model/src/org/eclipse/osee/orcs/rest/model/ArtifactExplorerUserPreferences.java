@@ -12,14 +12,14 @@
  **********************************************************************/
 package org.eclipse.osee.orcs.rest.model;
 
-import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 
 /**
  * @author Ryan T. Baldwin
  */
-public class ArtifactExplorerUserPreferences extends ArtifactAccessorResult {
+public class ArtifactExplorerUserPreferences extends ArtifactAccessorResultWithoutGammas {
 
    private final boolean artifactExplorerPanelLocation;
 

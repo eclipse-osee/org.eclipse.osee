@@ -10,9 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { applic } from '@osee/shared/types/applicability';
+import { applic } from '@osee/applicability/types';
 import type { connection } from './connection';
-export interface CrossReference {
+export type CrossReference = {
 	id?: string;
 	name: string;
 	crossReferenceValue: string;
@@ -20,9 +20,9 @@ export interface CrossReference {
 	crossReferenceAdditionalContent: string;
 	connections?: connection[];
 	applicability: applic;
-}
+};
 
-export interface CrossRefKeyValue {
+export type CrossRefKeyValue = {
 	key: string;
 	value: string;
-}
+};

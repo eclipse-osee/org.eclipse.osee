@@ -19,7 +19,6 @@ import { BehaviorSubject } from 'rxjs';
 export class BranchCategoryService {
 	private _branchCategory: BehaviorSubject<string> =
 		new BehaviorSubject<string>('');
-	constructor() {}
 
 	get branchCategory() {
 		return this._branchCategory;

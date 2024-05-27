@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, NgClass } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
 	MatCell,
 	MatCellDef,
@@ -54,6 +54,9 @@ import { trainingRoleHeaderDetails } from './training-role-table-header';
 	],
 })
 export class TrainingRoleTableComponent {
+	private headerService = inject(HeaderService);
+	private trainingRoleService = inject(TrainingRoleService);
+
 	private dataSource = new MatTableDataSource<TrainingRoleRecord>();
 
 	coursesAsMatTableDataSource$: Observable<
@@ -65,11 +68,6 @@ export class TrainingRoleTableComponent {
 			return dataSource;
 		})
 	);
-
-	constructor(
-		private headerService: HeaderService,
-		private trainingRoleService: TrainingRoleService
-	) {}
 
 	getTableHeadersByName(header: keyof TrainingRoleRecord) {
 		return this.headerService.getHeaderByName(
