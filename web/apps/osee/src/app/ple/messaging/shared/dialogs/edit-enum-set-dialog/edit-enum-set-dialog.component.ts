@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import {
 	MAT_DIALOG_DATA,
@@ -31,10 +31,10 @@ import type {
 	enumsetDialogData,
 } from '@osee/messaging/shared/types';
 import {
-	createArtifact,
-	modifyArtifact,
-	modifyRelation,
-} from '@osee/shared/types';
+	legacyCreateArtifact,
+	legacyModifyArtifact,
+	legacyModifyRelation,
+} from '@osee/transactions/types';
 import { Observable, Subject } from 'rxjs';
 
 @Component({
@@ -53,6 +53,11 @@ import { Observable, Subject } from 'rxjs';
 	],
 })
 export class EditEnumSetDialogComponent {
+	dialogRef = inject<MatDialogRef<EditEnumSetDialogComponent>>(MatDialogRef);
+	data = inject<enumsetDialogData>(MAT_DIALOG_DATA);
+	private enumSetService = inject(EnumerationUIService);
+	private preferenceService = inject(PreferencesUIService);
+
 	enumObs: Observable<enumerationSet> = this.enumSetService.getEnumSet(
 		this.data.id
 	);
@@ -60,25 +65,19 @@ export class EditEnumSetDialogComponent {
 	inEditMode = this.preferenceService.inEditMode;
 
 	receivedTx = new Subject<{
-		createArtifacts: createArtifact[];
-		modifyArtifacts: modifyArtifact[];
-		deleteRelations: modifyRelation[];
+		createArtifacts: legacyCreateArtifact[];
+		modifyArtifacts: legacyModifyArtifact[];
+		deleteRelations: legacyModifyRelation[];
 	}>();
-	constructor(
-		public dialogRef: MatDialogRef<EditEnumSetDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: enumsetDialogData,
-		private enumSetService: EnumerationUIService,
-		private preferenceService: PreferencesUIService
-	) {}
 
 	onNoClick(): void {
 		this.dialogRef.close();
 	}
 
 	receiveTx(value: {
-		createArtifacts: createArtifact[];
-		modifyArtifacts: modifyArtifact[];
-		deleteRelations: modifyRelation[];
+		createArtifacts: legacyCreateArtifact[];
+		modifyArtifacts: legacyModifyArtifact[];
+		deleteRelations: legacyModifyRelation[];
 	}) {
 		this.receivedTx.next(value);
 	}

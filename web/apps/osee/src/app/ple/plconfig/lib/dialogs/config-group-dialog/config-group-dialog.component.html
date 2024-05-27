@@ -43,8 +43,7 @@
 				<mat-label class="tw-text-lg">Select Views</mat-label>
 				<mat-selection-list
 					[(ngModel)]="data.configGroup.views"
-					color="warn"
-					class="tw-text-lg">
+					class="error-checkbox tw-text-lg">
 					@for (view of totalConfigurations; track view) {
 						<mat-list-option
 							[value]="view"
@@ -91,10 +90,10 @@
 	@if (data.editable === true) {
 		<div>
 			<button
-				mat-button
+				mat-flat-button
 				[mat-dialog-close]="data"
 				cdkFocusInitial
-				color="primary"
+				class="primary-button"
 				[disabled]="data.configGroup.name.length <= 0"
 				data-cy="submit-btn">
 				Ok

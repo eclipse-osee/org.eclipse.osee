@@ -10,36 +10,33 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { TransactionBuilderService } from '@osee/shared/transactions-legacy';
 import {
-	TransactionBuilderService,
-	TransactionService,
-} from '@osee/shared/transactions';
-import {
-	relation,
-	createArtifact,
-	transaction,
-	artifact,
-} from '@osee/shared/types';
+	legacyRelation,
+	legacyCreateArtifact,
+	legacyTransaction,
+	legacyArtifact,
+} from '@osee/transactions/types';
 import { of, switchMap, take, tap } from 'rxjs';
 import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
 import { GCRELATIONTYPEID } from '../../types/grid-commander-constants/gcRelationTypeId.enum';
 import { CreateParameterService } from '../create-command-form-services/create-parameter.service';
+import { TransactionService } from '@osee/transactions/services';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class CreateCommandandAndRelationsService {
-	constructor(
-		private createParameterService: CreateParameterService,
-		private transactionService: TransactionService,
-		private builder: TransactionBuilderService
-	) {}
+	private createParameterService = inject(CreateParameterService);
+	private builder = inject(TransactionBuilderService);
+
+	private transactionService = inject(TransactionService);
 
 	createCommandArtifact(
 		branchId: string,
-		command: Partial<createArtifact & artifact>,
-		transaction?: transaction,
+		command: Partial<legacyCreateArtifact & legacyArtifact>,
+		transaction?: legacyTransaction,
 		key?: string
 	) {
 		return of(
@@ -59,7 +56,7 @@ export class CreateCommandandAndRelationsService {
 	}
 
 	createCommandToContextRelation(contextId: string, commandId: string) {
-		let relation: relation = {
+		const relation: legacyRelation = {
 			typeId: GCRELATIONTYPEID.CONTEXT_TO_COMMAND,
 			sideA: contextId,
 			sideB: commandId,
@@ -69,8 +66,8 @@ export class CreateCommandandAndRelationsService {
 
 	establishCommandToContextRelation(
 		branchId: string,
-		relation: relation,
-		transaction?: transaction
+		relation: legacyRelation,
+		transaction?: legacyTransaction
 	) {
 		return of(
 			this.builder.addRelation(
@@ -96,10 +93,10 @@ export class CreateCommandandAndRelationsService {
 
 	createCommandAndEstablishContextRelation(
 		branchId: string,
-		command: Partial<createArtifact & artifact>,
+		command: Partial<legacyCreateArtifact & legacyArtifact>,
 		context: string[],
-		transaction?: transaction,
-		key?: string
+		_transaction?: legacyTransaction,
+		_key?: string
 	) {
 		return this.createCommandArtifact(branchId, command).pipe(
 			take(1),
@@ -125,7 +122,7 @@ export class CreateCommandandAndRelationsService {
 		);
 	}
 
-	performMutation(body: transaction) {
+	performMutation(body: legacyTransaction) {
 		return this.transactionService.performMutation(body);
 	}
 }

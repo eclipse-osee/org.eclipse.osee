@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ParameterDataService } from '../services/data-services/selected-command-data/parameter-data/parameter-data.service';
 import { ParameterMultipleSelectComponent } from './parameter-multiple-select/parameter-multiple-select.component';
 import { ParameterStringComponent } from './parameterString/parameter-string.component';
@@ -28,7 +28,7 @@ import { AsyncPipe } from '@angular/common';
 	],
 })
 export class ParameterTypesComponent {
-	parameter$ = this.parameterDataService.parameter$;
+	private parameterDataService = inject(ParameterDataService);
 
-	constructor(private parameterDataService: ParameterDataService) {}
+	parameter$ = this.parameterDataService.parameter$;
 }

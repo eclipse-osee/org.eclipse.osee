@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
 	combineLatest,
 	of,
@@ -21,7 +21,7 @@ import {
 	tap,
 } from 'rxjs';
 import { UiService } from '@osee/shared/services';
-import { artifact, createArtifact } from '@osee/shared/types';
+import { legacyArtifact, legacyCreateArtifact } from '@osee/transactions/types';
 import { CreateCommandService } from './create-command.service';
 import { CreateParameterService } from './create-parameter.service';
 
@@ -29,21 +29,19 @@ import { CreateParameterService } from './create-parameter.service';
 	providedIn: 'root',
 })
 export class CreateCommandWithParameterArtifactService {
+	private createCommandService = inject(CreateCommandService);
+	private createParameterService = inject(CreateParameterService);
+	private uiService = inject(UiService);
+
 	done = new Subject();
 
 	public set doneFx(val: unknown) {
 		this.done.next(val);
 	}
 
-	constructor(
-		private createCommandService: CreateCommandService,
-		private createParameterService: CreateParameterService,
-		private uiService: UiService
-	) {}
-
 	public createCommandWithParameter(
-		command: Partial<createArtifact & artifact>,
-		parameter: Partial<createArtifact & artifact>
+		command: Partial<legacyCreateArtifact & legacyArtifact>,
+		parameter: Partial<legacyCreateArtifact & legacyArtifact>
 	) {
 		return combineLatest([of(command), of(parameter)]).pipe(
 			switchMap(([command, parameter]) =>

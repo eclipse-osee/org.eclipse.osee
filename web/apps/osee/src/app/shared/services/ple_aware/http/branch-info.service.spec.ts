@@ -11,14 +11,18 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
-	HttpClientTestingModule,
 	HttpTestingController,
+	provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { apiURL } from '@osee/environments';
 import { testBranchInfo } from '@osee/shared/testing';
 
 import { BranchInfoService } from './branch-info.service';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('BranchInfoService', () => {
 	let service: BranchInfoService;
@@ -26,7 +30,11 @@ describe('BranchInfoService', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
+			imports: [],
+			providers: [
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+			],
 		});
 		service = TestBed.inject(BranchInfoService);
 		httpTestingController = TestBed.inject(HttpTestingController);

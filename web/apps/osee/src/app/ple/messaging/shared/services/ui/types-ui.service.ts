@@ -10,40 +10,39 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import type {
 	PlatformType,
 	enumeration,
 	enumerationSet,
-	enumeratedPlatformType,
 } from '@osee/messaging/shared/types';
-import {
-	createArtifact,
-	modifyArtifact,
-	modifyRelation,
-	transaction,
-} from '@osee/shared/types';
-import { of, from, combineLatest } from 'rxjs';
-import {
-	share,
-	switchMap,
-	repeatWhen,
-	shareReplay,
-	take,
-	tap,
-	reduce,
-	concatMap,
-	map,
-	filter,
-} from 'rxjs/operators';
 import { UiService } from '@osee/shared/services';
-import { applic } from '@osee/shared/types/applicability';
+import {
+	ARTIFACTTYPEIDENUM,
+	RELATIONTYPEIDENUM,
+} from '@osee/shared/types/constants';
+import { createArtifact as _createArtifact } from '@osee/transactions/functions';
+import { CurrentTransactionService } from '@osee/transactions/services';
+import {
+	legacyCreateArtifact,
+	legacyModifyArtifact,
+	legacyModifyRelation,
+	legacyTransaction,
+	transaction,
+	transactionResult,
+} from '@osee/transactions/types';
+import { Observable, combineLatest, of } from 'rxjs';
+import {
+	filter,
+	map,
+	repeatWhen,
+	share,
+	shareReplay,
+	switchMap,
+	take,
+} from 'rxjs/operators';
 import { TypesService } from '../http/types.service';
 import { EnumerationUIService } from './enumeration-ui.service';
-import {
-	ARTIFACTTYPEID,
-	ARTIFACTTYPEIDENUM,
-} from '@osee/shared/types/constants';
 
 const _artTypes = [
 	ARTIFACTTYPEIDENUM.ENUM,
@@ -60,6 +59,10 @@ function _isCreationRel(rel2: string): rel2 is CreationRels {
 	providedIn: 'root',
 })
 export class TypesUIService {
+	private _ui = inject(UiService);
+	private _typesService = inject(TypesService);
+	private _enumSetService = inject(EnumerationUIService);
+
 	private _types = this._ui.id.pipe(
 		filter((id) => id !== ''),
 		share(),
@@ -71,13 +74,30 @@ export class TypesUIService {
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
-	constructor(
-		private _ui: UiService,
-		private _typesService: TypesService,
-		private _enumSetService: EnumerationUIService
-	) {}
+
+	private _typeDetailLocation = combineLatest([
+		this._ui.type,
+		this._ui.id,
+	]).pipe(
+		map(([type, id]) => '/ple/messaging/' + type + '/' + id + '/type/')
+	);
+
+	private _typeSearchLocation = combineLatest([
+		this._ui.type,
+		this._ui.id,
+	]).pipe(map(([type, id]) => '/ple/messaging/types/' + type + '/' + id));
+
+	private _currentTx = inject(CurrentTransactionService);
 	get types() {
 		return this._types;
+	}
+
+	get detailLocation() {
+		return this._typeDetailLocation;
+	}
+
+	get searchLocation() {
+		return this._typeSearchLocation;
 	}
 
 	getPaginatedFilteredTypes(
@@ -123,152 +143,133 @@ export class TypesUIService {
 	getTypeFromBranch(branchId: string, typeId: string) {
 		return this._typesService.getType(branchId, typeId);
 	}
-	changeType(type: Partial<PlatformType>) {
-		return this._ui.id.pipe(
-			take(1),
-			filter((id) => id !== ''),
-			switchMap((branchId) =>
-				this._typesService.changePlatformType(branchId, type)
-			)
+	changeType(type: PlatformType) {
+		const {
+			id,
+			applicability,
+			gammaId,
+			added,
+			deleted,
+			changes,
+			enumSet,
+			...remainingAttributes
+		} = type;
+		const attributeKeys = Object.keys(
+			remainingAttributes
+		) as (keyof typeof remainingAttributes)[];
+		const attributes = attributeKeys
+			.map((k) => remainingAttributes[k])
+			.filter((attr) => attr.id !== '');
+		return this._currentTx.modifyArtifactAndMutate(
+			'Modifying Platform Type',
+			id,
+			applicability,
+			{ set: attributes }
 		);
 	}
-	performMutation(body: transaction) {
+	performMutation(body: legacyTransaction) {
 		return this._ui.id.pipe(
 			take(1),
 			filter((id) => id !== ''),
-			switchMap((branchId) => this._typesService.performMutation(body))
+			switchMap((_) => this._typesService.performMutation(body))
 		);
 	}
 
-	/**
-	 *
-	 * @TODO replace enumSetData with actual enumerationSet
-	 */
-	createType(
-		body: PlatformType | Partial<PlatformType>,
-		isNewEnumSet: boolean,
-		enumSetData: {
-			enumSetId: string;
-			enumSetName: string;
-			enumSetDescription: string;
-			enumSetApplicability: applic;
-			enums: enumeration[];
-		}
+	createPlatformType(
+		type: PlatformType,
+		existingTx?: Required<transaction>,
+		elementKey?: string
 	) {
-		delete body.id;
-		const enumInfo: enumerationSet = {
-			id: enumSetData.enumSetId,
-			name: enumSetData.enumSetName,
-			applicability: enumSetData.enumSetApplicability,
-			description: enumSetData.enumSetDescription,
-			enumerations: enumSetData.enums,
-		};
-		return body.interfaceLogicalType === 'enumeration'
-			? isNewEnumSet
-				? combineLatest([
-						this._ui.id,
-						this.createEnumSet(enumInfo),
-				  ]).pipe(
-						take(1),
-						filter(
-							([id, enumerationSetResults]) =>
-								id !== '' &&
-								enumerationSetResults.results.success
-						),
-						switchMap(([branchId, enumerationSetResults]) =>
-							this._enumSetService
-								.createPlatformTypeToEnumSetRelation(
-									enumerationSetResults.results.ids[0]
-								)
-								.pipe(
-									switchMap((relation) =>
-										this._typesService.createPlatformType(
-											branchId,
-											body,
-											[relation]
-										)
-									)
-								)
-						),
-						take(1),
-						switchMap((transaction) =>
-							this._typesService
-								.performMutation(transaction)
-								.pipe(
-									tap(() => {
-										this._ui.updated = true;
-									})
-								)
-						)
-				  )
-				: this._enumSetService
-						.createPlatformTypeToEnumSetRelation(
-							enumSetData.enumSetId
-						)
-						.pipe(
-							take(1),
-							switchMap((relation) =>
-								this._typesService.createPlatformType(
-									this._ui.id.getValue(),
-									body,
-									[relation]
-								)
-							),
-							take(1),
-							switchMap((transaction) =>
-								this._typesService
-									.performMutation(transaction)
-									.pipe(
-										tap(() => {
-											this._ui.updated = true;
-										})
-									)
-							)
-						)
-			: this._ui.id.pipe(
-					take(1),
-					switchMap((id) =>
-						this._typesService.createPlatformType(id, body, [])
-					),
-					switchMap((tx) => this._typesService.performMutation(tx)),
-					take(1),
-					tap((_) => (this._ui.updated = true))
-			  );
-	}
-	private fixEnum(enumeration: enumeration) {
-		enumeration.applicabilityId = enumeration.applicability.id;
-		return of<enumeration>(enumeration);
-	}
-
-	private mergeEnumArray(transactions: transaction[]) {
-		let currentTransaction: transaction = {
-			branch: '',
-			txComment: '',
-			createArtifacts: [],
-		};
-		if (transactions?.[0]) {
-			currentTransaction = transactions.shift() || {
-				branch: '',
-				txComment: '',
-				createArtifacts: [],
-			};
+		const {
+			id,
+			gammaId,
+			added,
+			deleted,
+			changes,
+			applicability,
+			enumSet,
+			...remainingAttributes
+		} = type;
+		const attributeKeys = Object.keys(
+			remainingAttributes
+		) as (keyof typeof remainingAttributes)[];
+		const attributes = attributeKeys.map((k) => remainingAttributes[k]);
+		//if the enumset's id > 0 and not '' , we should reuse the existing enum set, else we should create a new enum set
+		const enumSetRels =
+			remainingAttributes.interfaceLogicalType.value === 'enumeration' &&
+			enumSet.id !== '-1' &&
+			enumSet.id !== '0'
+				? [
+						{
+							typeId: '2455059983007225794' as const,
+							sideB: enumSet.id,
+						},
+					]
+				: [];
+		const elementRels =
+			elementKey && existingTx
+				? [
+						{
+							typeId: RELATIONTYPEIDENUM.INTERFACEELEMENTPLATFORMTYPE,
+							sideA: elementKey,
+						},
+					]
+				: [];
+		const { tx, ...createdType } =
+			elementKey && existingTx
+				? _createArtifact(
+						existingTx,
+						ARTIFACTTYPEIDENUM.PLATFORMTYPE,
+						applicability,
+						[...enumSetRels, ...elementRels],
+						undefined,
+						...attributes
+					)
+				: this._currentTx.createArtifact(
+						'Creating Platform Type',
+						ARTIFACTTYPEIDENUM.PLATFORMTYPE,
+						applicability,
+						enumSetRels,
+						...attributes
+					);
+		if (remainingAttributes.interfaceLogicalType.value === 'enumeration') {
+			if (enumSet.id === '-1' || enumSet.id === '0') {
+				this.createEnumerationSet(
+					enumSet,
+					createdType._newArtifact.key,
+					tx
+				);
+			}
 		}
-		transactions.forEach((transaction) => {
-			currentTransaction.createArtifacts?.push(
-				...(transaction?.createArtifacts || [])
-			);
-		});
-		return of<transaction>(currentTransaction);
+		return { tx, createdType };
+	}
+	createType(body: PlatformType): Observable<Required<transactionResult>>;
+	createType(
+		body: PlatformType,
+		elementKey: string,
+		existingTx: Required<transaction>
+	): Observable<Required<transaction>>;
+	createType(
+		body: PlatformType,
+		elementKey?: string,
+		existingTx?: Required<transaction>
+	) {
+		//TODO: luciano confirm this didn't break
+		const { tx } = this.createPlatformType(body, existingTx, elementKey);
+		if (!(elementKey && existingTx)) {
+			return of(tx).pipe(take(1), this._currentTx.performMutation());
+		}
+		return of(tx).pipe(take(1));
 	}
 	partialUpdate(dialogResponse: {
-		createArtifacts: createArtifact[];
-		modifyArtifacts: modifyArtifact[];
-		deleteRelations: modifyRelation[];
+		createArtifacts: legacyCreateArtifact[];
+		modifyArtifacts: legacyModifyArtifact[];
+		deleteRelations: legacyModifyRelation[];
 	}) {
 		return this._ui.id.pipe(
 			take(1),
 			map((id) => {
-				const tx: transaction = {
+				const tx: legacyTransaction = {
 					branch: id,
 					txComment: 'Updating platform type',
 					createArtifacts: dialogResponse.createArtifacts,
@@ -284,9 +285,9 @@ export class TypesUIService {
 	}
 
 	copyType(dialogResponse: {
-		createArtifacts: createArtifact[];
-		modifyArtifacts: modifyArtifact[];
-		deleteRelations: modifyRelation[];
+		createArtifacts: legacyCreateArtifact[];
+		modifyArtifacts: legacyModifyArtifact[];
+		deleteRelations: legacyModifyRelation[];
 	}) {
 		const createArtifacts = dialogResponse.createArtifacts.sort((a, b) => {
 			if (_isCreationRel(a.typeId) && _isCreationRel(b.typeId)) {
@@ -300,7 +301,7 @@ export class TypesUIService {
 		return this._ui.id.pipe(
 			take(1),
 			map((id) => {
-				const tx: transaction = {
+				const tx: legacyTransaction = {
 					branch: id,
 					txComment: 'Creating platform type',
 					createArtifacts: createArtifacts,
@@ -315,77 +316,85 @@ export class TypesUIService {
 		);
 	}
 
-	createEnums(set: enumerationSet, id: string) {
-		return this._ui.id.pipe(
-			filter((branchId) => branchId !== ''),
-			switchMap((branchId) =>
-				of(set).pipe(
-					take(1),
-					concatMap((enumSet) =>
-						from(enumSet.enumerations || []).pipe(
-							switchMap((enumeration) =>
-								this.fixEnum(enumeration)
-							),
-							switchMap((enumeration) =>
-								this._enumSetService
-									.createEnumToEnumSetRelation(id)
-									.pipe(
-										switchMap((relation) =>
-											this._enumSetService.createEnum(
-												branchId,
-												enumeration,
-												[relation]
-											)
-										)
-									)
-							)
-						)
-					),
-					reduce((acc, curr) => [...acc, curr], [] as transaction[]),
-					switchMap((enumTransactions) =>
-						this.mergeEnumArray(enumTransactions)
-					)
-				)
-			)
+	createEnum(
+		enumeration: enumeration,
+		enumKey: string,
+		existingTx: Required<transaction>
+	) {
+		const { id, gammaId, applicability, ...remainingAttributes } =
+			enumeration;
+		const attributeKeys = Object.keys(
+			remainingAttributes
+		) as (keyof typeof remainingAttributes)[];
+		const attributes = attributeKeys.map((k) => remainingAttributes[k]);
+		return _createArtifact(
+			existingTx,
+			ARTIFACTTYPEIDENUM.ENUM,
+			applicability,
+			[
+				{
+					typeId: RELATIONTYPEIDENUM.INTERFACEENUMTOENUMSET,
+					sideA: enumKey,
+				},
+			],
+			undefined,
+			...attributes
 		);
 	}
 
-	createEnumSet(set: enumerationSet) {
-		const { enumerations, ...body } = set;
-		if (
-			body.applicabilityId === undefined &&
-			body.applicability !== undefined &&
-			body.applicability.id !== undefined &&
-			body.applicability.id !== '-1'
-		) {
-			//make sure applicabilityId is always set
-			body.applicabilityId = body.applicability.id;
+	createEnumerationSet(
+		set: enumerationSet,
+		platformTypeKey?: string,
+		existingTx?: Required<transaction>
+	) {
+		const {
+			enumerations,
+			id,
+			gammaId,
+			applicability,
+			...remainingAttributes
+		} = set;
+		const attributeKeys = Object.keys(
+			remainingAttributes
+		) as (keyof typeof remainingAttributes)[];
+		const attributes = attributeKeys.map((k) => remainingAttributes[k]);
+		const { tx, _newArtifact } =
+			platformTypeKey && existingTx
+				? _createArtifact(
+						existingTx,
+						ARTIFACTTYPEIDENUM.ENUMSET,
+						applicability,
+						[
+							{
+								typeId: RELATIONTYPEIDENUM.INTERFACEENUMSETTOPLATFORMTYPE,
+								sideA: platformTypeKey,
+							},
+						],
+						undefined,
+						...attributes
+					)
+				: this._currentTx.createArtifact(
+						'Creating enumset',
+						ARTIFACTTYPEIDENUM.ENUMSET,
+						applicability,
+						[],
+						...attributes
+					);
+		enumerations.forEach((enumeration) => {
+			this.createEnum(enumeration, _newArtifact.key, tx);
+		});
+		return tx;
+	}
+
+	createEnumSet(
+		set: enumerationSet,
+		platformTypeKey?: string,
+		existingTx?: Required<transaction>
+	) {
+		const tx = this.createEnumerationSet(set, platformTypeKey, existingTx);
+		if (!(platformTypeKey && existingTx)) {
+			return of(tx).pipe(take(1), this._currentTx.performMutation());
 		}
-		const enumSet = this._ui.id.pipe(
-			take(1),
-			filter((id) => id !== ''),
-			switchMap((id) => this._enumSetService.createEnumSet(id, body, [])),
-			switchMap((enumTransaction) =>
-				this._typesService.performMutation(enumTransaction)
-			)
-		);
-		return combineLatest([this._ui.id, enumSet]).pipe(
-			take(1),
-			filter(
-				([id, enumSetResults]) =>
-					id !== '' && enumSetResults.results.success
-			),
-			switchMap(([id, enumSetResults]) =>
-				this.createEnums(set, enumSetResults.results.ids[0]).pipe(
-					switchMap((enumTransaction) =>
-						this.mergeEnumArray([enumTransaction])
-					),
-					switchMap((enumTransaction) =>
-						this._typesService.performMutation(enumTransaction)
-					),
-					map((_) => enumSetResults)
-				)
-			)
-		);
+		return of(tx).pipe(take(1));
 	}
 }

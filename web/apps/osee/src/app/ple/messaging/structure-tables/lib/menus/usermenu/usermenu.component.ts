@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenuItem } from '@angular/material/menu';
@@ -25,7 +25,8 @@ import {
 	PreferencesUIService,
 } from '@osee/messaging/shared/services';
 import type {
-	element,
+	DisplayableElementProps,
+	displayableStructureFields,
 	settingsDialogData,
 	structure,
 } from '@osee/messaging/shared/types';
@@ -49,6 +50,11 @@ import {
 	imports: [MatMenuItem, MatIcon],
 })
 export class UsermenuComponent {
+	dialog = inject(MatDialog);
+	private structureService = inject(CurrentStructureService);
+	private headerService = inject(HeaderService);
+	private preferencesService = inject(PreferencesUIService);
+
 	preferences = this.structureService.preferences;
 	isEditing = this.preferences.pipe(
 		map((x) => x.inEditMode),
@@ -67,18 +73,21 @@ export class UsermenuComponent {
 							(column) =>
 								allHeaders.includes(
 									column.name as Extract<
-										keyof element,
+										keyof DisplayableElementProps,
 										string
 									>
 								) && column.enabled
 						),
 						map(
 							(header) =>
-								header.name as Extract<keyof element, string>
+								header.name as Extract<
+									keyof DisplayableElementProps,
+									string
+								>
 						),
 						reduce(
 							(acc, curr) => [...acc, curr],
-							[] as (keyof element)[]
+							[] as (keyof DisplayableElementProps)[]
 						)
 					)
 				)
@@ -111,19 +120,38 @@ export class UsermenuComponent {
 						filter(
 							(column) =>
 								structureHeaders.includes(
-									column.name as Extract<
-										keyof structure,
-										string
-									>
+									column.name as
+										| keyof displayableStructureFields
+										| 'txRate'
+										| 'publisher'
+										| 'subscriber'
+										| 'messageNumber'
+										| 'messagePeriodicity'
+										| ' '
 								) && column.enabled
 						),
 						map(
 							(header) =>
-								header.name as Extract<keyof structure, string>
+								header.name as
+									| keyof structure
+									| 'txRate'
+									| 'publisher'
+									| 'subscriber'
+									| 'messageNumber'
+									| 'messagePeriodicity'
+									| ' '
 						),
 						reduce(
 							(acc, curr) => [...acc, curr],
-							[] as Extract<keyof structure, string>[]
+							[] as (
+								| keyof structure
+								| 'txRate'
+								| 'publisher'
+								| 'subscriber'
+								| 'messageNumber'
+								| 'messagePeriodicity'
+								| ' '
+							)[]
 						)
 					)
 				)
@@ -134,12 +162,12 @@ export class UsermenuComponent {
 				() => headers.length !== 0,
 				of(headers),
 				of([
-					'name',
-					'description',
-					'interfaceMinSimultaneity',
-					'interfaceMaxSimultaneity',
-					'interfaceTaskFileType',
-					'interfaceStructureCategory',
+					'name' as const,
+					'description' as const,
+					'interfaceMinSimultaneity' as const,
+					'interfaceMaxSimultaneity' as const,
+					'interfaceTaskFileType' as const,
+					'interfaceStructureCategory' as const,
 				])
 			)
 		),
@@ -199,12 +227,7 @@ export class UsermenuComponent {
 					)
 		)
 	);
-	constructor(
-		public dialog: MatDialog,
-		private structureService: CurrentStructureService,
-		private headerService: HeaderService,
-		private preferencesService: PreferencesUIService
-	) {}
+
 	openSettingsDialog() {
 		this.settingsDialog.subscribe();
 	}

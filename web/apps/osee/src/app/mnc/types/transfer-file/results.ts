@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface results {
+export type results = {
 	title: string;
 	results: string[];
 	ids: string[];
@@ -29,21 +29,21 @@ export interface results {
 	errors: boolean;
 	failed: boolean;
 	ok: boolean;
-}
+};
 
-export interface xResultTable {
+export type xResultTable = {
 	rows: row[];
 	columns: column[];
 	name: string;
-}
+};
 
-export interface row {
+export type row = {
 	values: string[];
-}
+};
 
-export interface column {
+export type column = {
 	id: string;
 	name: string;
 	width: number;
 	type: string;
-}
+};

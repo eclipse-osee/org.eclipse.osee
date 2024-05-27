@@ -10,24 +10,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { shareReplay, switchMap, take } from 'rxjs/operators';
 import { combineLatest } from 'rxjs';
 import {
 	MimRouteService,
 	TransportTypeService,
 } from '@osee/messaging/shared/services';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class TransportTypeUiService {
-	constructor(
-		private transportTypeService: TransportTypeService,
-		private mimRoute: MimRouteService
-	) {}
+	private transportTypeService = inject(TransportTypeService);
+	private mimRoute = inject(MimRouteService);
 
-	private _connectionId = this.mimRoute.connectionId;
+	private _connectionId = toObservable(this.mimRoute.connectionId);
 	private _branchId = this.mimRoute.id;
 
 	private _currentTransportType = combineLatest([

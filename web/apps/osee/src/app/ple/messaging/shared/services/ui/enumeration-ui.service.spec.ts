@@ -12,7 +12,7 @@
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
 import { enumerationSetServiceMock } from '@osee/messaging/shared/testing';
-import { transactionResultMock } from '@osee/shared/transactions/testing';
+import { transactionResultMock } from '@osee/transactions/testing';
 import { TestScheduler } from 'rxjs/testing';
 import { UiService } from '@osee/shared/services';
 import { EnumerationSetService } from '../http/enumeration-set.service';

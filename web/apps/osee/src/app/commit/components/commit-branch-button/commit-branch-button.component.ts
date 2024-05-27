@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { NgClass } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, input, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { BranchRoutedUIService, UiService } from '@osee/shared/services';
@@ -34,6 +34,11 @@ import { toObservable } from '@angular/core/rxjs-interop';
 	</button>`,
 })
 export class CommitBranchButtonComponent {
+	dialog = inject(MatDialog);
+	private commitBranchService = inject(CommitBranchService);
+	private uiService = inject(UiService);
+	private branchedRouter = inject(BranchRoutedUIService);
+
 	sourceBranchId = input.required<string>();
 	destBranchId = input.required<string>();
 	disabled = input(false);
@@ -41,13 +46,6 @@ export class CommitBranchButtonComponent {
 
 	sourceBranchId$ = toObservable(this.sourceBranchId);
 	destBranchId$ = toObservable(this.destBranchId);
-
-	constructor(
-		public dialog: MatDialog,
-		private commitBranchService: CommitBranchService,
-		private uiService: UiService,
-		private branchedRouter: BranchRoutedUIService
-	) {}
 
 	commitBranch() {
 		combineLatest([this.sourceBranchId$, this.destBranchId$])

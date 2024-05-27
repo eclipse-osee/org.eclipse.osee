@@ -16,8 +16,8 @@ import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer
 import { ArtifactExplorerHttpServiceMock } from '../../../testing/artifact-explorer-http.service.mock';
 import { TeamWorkflowService } from '../../../services/team-workflow.service';
 import { teamWorkflowServiceMock } from '../../../testing/team-workflow.service.mock';
-import { TransactionService } from '@osee/shared/transactions';
-import { transactionServiceMock } from '@osee/shared/transactions/testing';
+import { TransactionService } from '@osee/transactions/services';
+import { transactionServiceMock } from '@osee/transactions/services/testing';
 import { ActionService } from '@osee/configuration-management/services';
 import { actionServiceMock } from '@osee/configuration-management/testing';
 import { ActivatedRoute } from '@angular/router';

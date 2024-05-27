@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
@@ -38,6 +38,10 @@ import {
 	imports: [AsyncPipe, MatMenuItem, MatIcon, MatButton],
 })
 export class UsermenuComponent {
+	private routeState = inject(UiService);
+	dialog = inject(MatDialog);
+	private preferencesService = inject(PreferencesUIService);
+
 	settingsCapable = this.routeState.id.pipe(
 		debounceTime(0),
 		switchMap((val) =>
@@ -53,11 +57,7 @@ export class UsermenuComponent {
 		share(),
 		shareReplay(1)
 	);
-	constructor(
-		private routeState: UiService,
-		public dialog: MatDialog,
-		private preferencesService: PreferencesUIService
-	) {}
+
 	openSettingsDialog() {
 		combineLatest([
 			this.inEditMode,

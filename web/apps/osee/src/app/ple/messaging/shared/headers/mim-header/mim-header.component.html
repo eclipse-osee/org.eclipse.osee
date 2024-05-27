@@ -10,14 +10,17 @@
 * Contributors:
 *     Boeing - initial API and implementation
 -->
-@for (link of route | async; track link) {
-	@if (link.displayName !== '') {
-		<a
-			mat-button
-			[routerLink]="link.routerLink"
-			queryParamsHandling="merge"
-			>{{ link.displayName }}</a
-		>
-		/
+<p class="tw-line-clamp-1 tw-truncate">
+	@for (link of route | async; track link) {
+		@if (link.displayName !== '') {
+			<a
+				mat-button
+				type="button"
+				[routerLink]="link.routerLink"
+				queryParamsHandling="merge"
+				>{{ link.displayName }}</a
+			>
+			/
+		}
 	}
-}
+</p>

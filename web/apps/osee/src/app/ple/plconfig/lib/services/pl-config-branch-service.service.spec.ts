@@ -11,8 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
-	HttpClientTestingModule,
 	HttpTestingController,
+	provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { concatMap, take } from 'rxjs/operators';
@@ -22,6 +22,10 @@ import { configuration } from '../types/pl-config-configurations';
 import { modifyFeature, writeFeature } from '../types/pl-config-features';
 
 import { PlConfigBranchService } from './pl-config-branch-service.service';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('PlConfigBranchService', () => {
 	let service: PlConfigBranchService;
@@ -29,7 +33,11 @@ describe('PlConfigBranchService', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
+			imports: [],
+			providers: [
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+			],
 		});
 		service = TestBed.inject(PlConfigBranchService);
 		httpTestingController = TestBed.inject(HttpTestingController);
@@ -189,7 +197,7 @@ describe('PlConfigBranchService', () => {
 			.getApplicabilityToken('10', '20')
 			.pipe(
 				take(1),
-				concatMap((app) => service.getApplicabilityToken('10', '20'))
+				concatMap((_app) => service.getApplicabilityToken('10', '20'))
 			)
 			.subscribe();
 		const req = httpTestingController.expectOne(

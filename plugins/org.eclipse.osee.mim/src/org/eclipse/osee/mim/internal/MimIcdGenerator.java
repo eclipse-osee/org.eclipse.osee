@@ -59,6 +59,7 @@ import org.eclipse.osee.mim.InterfaceMessageApi;
 import org.eclipse.osee.mim.InterfaceStructureApi;
 import org.eclipse.osee.mim.MimApi;
 import org.eclipse.osee.mim.types.ElementArrayIndexOrder;
+import org.eclipse.osee.mim.types.IcdElementIndex;
 import org.eclipse.osee.mim.types.InterfaceConnection;
 import org.eclipse.osee.mim.types.InterfaceEnumeration;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
@@ -181,7 +182,13 @@ public class MimIcdGenerator {
 
       List<InterfaceSubMessageToken> subMessagesWithHeaders = new LinkedList<>();
       List<InterfaceStructureToken> structures = new LinkedList<>();
-      SortedMap<InterfaceStructureToken, String> structureLinks = new TreeMap<InterfaceStructureToken, String>();
+      SortedMap<InterfaceStructureToken, String> structureLinks =
+         new TreeMap<InterfaceStructureToken, String>(new Comparator<InterfaceStructureToken>() {
+            @Override
+            public int compare(InterfaceStructureToken o1, InterfaceStructureToken o2) {
+               return o1.getName().getValue().compareTo(o2.getName().getValue());
+            }
+         });
 
       // Write sheets
       ExcelWorkbookWriter writer = new ExcelWorkbookWriter(outputStream, WorkbookFormat.XLSX);
@@ -206,14 +213,14 @@ public class MimIcdGenerator {
             smsgTokens.add(0, header);
 
             InterfaceStructureToken headerStruct = interfaceStructureApi.getMessageHeaderStructure(branch, conn, msg);
-            messageHeaderStructures.put(header.getName(), headerStruct);
+            messageHeaderStructures.put(header.getName().getValue(), headerStruct);
 
          }
          subMessagesWithHeaders.addAll(smsgTokens);
          for (InterfaceSubMessageToken smsg : smsgTokens) {
             List<InterfaceStructureToken> structs = new LinkedList<>();
             if (smsg.getId() == 0) {
-               structs.add(messageHeaderStructures.get(smsg.getName()));
+               structs.add(messageHeaderStructures.get(smsg.getName().getValue()));
             } else {
                structs.addAll(smsg.getArtifactReadable().getRelated(
                   CoreRelationTypes.InterfaceSubMessageContent_Structure).getList().stream().map(
@@ -226,8 +233,8 @@ public class MimIcdGenerator {
                   if (structDiff != null) {
                      InterfaceStructureToken parentStructHeader = interfaceStructureApi.getMessageHeaderStructure(
                         parentBranch, connectionId, message.getArtifactId(), view);
-                     String headerName =
-                        msg.getPublisherNodes().get(0).getName() + " M" + msg.getInterfaceMessageNumber() + " Header";
+                     String headerName = msg.getPublisherNodes().get(
+                        0).getName().getValue() + " M" + msg.getInterfaceMessageNumber() + " Header";
                      parentMessageHeaderStructures.put(headerName, parentStructHeader);
                      break;
                   }
@@ -239,8 +246,8 @@ public class MimIcdGenerator {
 
       for (InterfaceStructureToken structure : structures) {
          String sheetName =
-            structure.getNameAbbrev().isEmpty() ? structure.getName().replace("Command Taskfile", "CT").replace(
-               "Status Taskfile", "ST") : structure.getNameAbbrev();
+            structure.getNameAbbrev().getValue().isEmpty() ? structure.getName().getValue().replace("Command Taskfile",
+               "CT").replace("Status Taskfile", "ST") : structure.getNameAbbrev().getValue();
          if (structure.getArtifactReadable() != null && structure.getArtifactReadable().isValid()) {
             String abbrevName =
                structure.getArtifactReadable().getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData, "null");
@@ -360,7 +367,7 @@ public class MimIcdGenerator {
             }
             List<InterfaceStructureToken> structures = new LinkedList<>();
             if (subMessage.getId() == 0) {
-               structures.add(messageHeaderStructures.get(subMessage.getName()));
+               structures.add(messageHeaderStructures.get(subMessage.getName().getValue()));
             } else {
                structures.addAll(subMessage.getArtifactReadable().getRelated(
                   CoreRelationTypes.InterfaceSubMessageContent_Structure).getList().stream().map(
@@ -421,9 +428,9 @@ public class MimIcdGenerator {
                }
                List<InterfaceStructureElementToken> flatElements = new LinkedList<>();
                for (InterfaceStructureElementToken element : struct.getElements()) {
-                  if (element.getInterfaceElementArrayHeader()) {
-                     int startIndex = element.getInterfaceElementIndexStart();
-                     int endIndex = element.getInterfaceElementIndexEnd();
+                  if (element.getInterfaceElementArrayHeader().getValue()) {
+                     int startIndex = element.getInterfaceElementIndexStart().getValue();
+                     int endIndex = element.getInterfaceElementIndexEnd().getValue();
                      for (int i = startIndex; i <= endIndex; i++) {
                         for (InterfaceStructureElementToken arrayElement : element.getArrayElements()) {
                            if (arrayDescriptions.get(arrayElement.getArtifactId()) == null) {
@@ -438,11 +445,11 @@ public class MimIcdGenerator {
                            InterfaceStructureElementToken arrayElementCopy =
                               new InterfaceStructureElementToken(arrayElement.getArtifactReadable());
                            String arrayElementName =
-                              element.getInterfaceElementWriteArrayHeaderName() || arrayElement.getInterfaceElementWriteArrayHeaderName() ? element.getName() + " " + i + " " + arrayElement.getName() : arrayElement.getName() + " " + i;
+                              element.getInterfaceElementWriteArrayHeaderName().getValue() || arrayElement.getInterfaceElementWriteArrayHeaderName().getValue() ? element.getName().getValue() + " " + i + " " + arrayElement.getName().getValue() : arrayElement.getName().getValue() + " " + i;
                            arrayElementCopy.setName(arrayElementName);
                            // Inherit some properties from the header in order to print the indices correctly later
                            arrayElementCopy.setInterfaceElementWriteArrayHeaderName(
-                              element.getInterfaceElementWriteArrayHeaderName() || arrayElement.getInterfaceElementWriteArrayHeaderName());
+                              element.getInterfaceElementWriteArrayHeaderName().getValue() || arrayElement.getInterfaceElementWriteArrayHeaderName().getValue());
                            arrayElementCopy.setArrayChild(true);
                            arrayElementCopy.setInterfaceElementArrayIndexOrder(
                               element.getInterfaceElementArrayIndexOrder());
@@ -453,11 +460,11 @@ public class MimIcdGenerator {
 
                            // If $parentindex is used in the element name, description, or notes, replace it with the parent array index.
                            arrayElementCopy.setName(
-                              arrayElementCopy.getName().replace("$parentindex", Integer.toString(i)));
-                           arrayElementCopy.setDescription(
-                              arrayElementCopy.getDescription().replace("$parentindex", Integer.toString(i)));
+                              arrayElementCopy.getName().getValue().replace("$parentindex", Integer.toString(i)));
+                           arrayElementCopy.setDescription(arrayElementCopy.getDescription().getValue().replace(
+                              "$parentindex", Integer.toString(i)));
                            arrayElementCopy.setNotes(
-                              arrayElementCopy.getNotes().replace("$parentindex", Integer.toString(i)));
+                              arrayElementCopy.getNotes().getValue().replace("$parentindex", Integer.toString(i)));
 
                            flatElements.add(arrayElementCopy);
                         }
@@ -482,8 +489,8 @@ public class MimIcdGenerator {
                   structureChanged = structureChanged || elementDiffItem != null || pTypeDiffItem != null;
                }
 
-               String minSim = struct.getInterfaceMinSimultaneity();
-               String maxSim = struct.getInterfaceMaxSimultaneity();
+               String minSim = struct.getInterfaceMinSimultaneity().getValue();
+               String maxSim = struct.getInterfaceMaxSimultaneity().getValue();
 
                String minBps = "Classified";
                String maxBps = "Classified";
@@ -499,11 +506,11 @@ public class MimIcdGenerator {
                      maxBps = "Classified";
                   }
                }
-               String cat = struct.getInterfaceStructureCategory();
-               String subMsgNumber = subMessage.getInterfaceSubMessageNumber();
+               String cat = struct.getInterfaceStructureCategory().getValue();
+               String subMsgNumber = subMessage.getInterfaceSubMessageNumber().getValue();
                String taskFileType =
-                  struct.getInterfaceTaskFileType() == 0 ? "n/a" : struct.getInterfaceTaskFileType() + "";
-               String desc = struct.getDescription();
+                  struct.getInterfaceTaskFileType().getValue() == 0 ? "n/a" : struct.getInterfaceTaskFileType().getValue() + "";
+               String desc = struct.getDescription().getValue();
 
                boolean numElementsChanged = false;
                boolean sizeInBytesChanged = false;
@@ -529,13 +536,14 @@ public class MimIcdGenerator {
                   sizeInBytesChanged = !struct.getSizeInBytes().equals(parentStructure.getSizeInBytes());
                }
 
-               StructureInfo structureInfo =
-                  new StructureInfo(struct.getName(), struct.getNameAbbrev(), cat, msgRateText, minSim, maxSim, minBps,
-                     maxBps, elementCount, sizeInBytes, sendingNode.getName(), msgNumber, subMsgNumber, taskFileType,
-                     desc, message, subMessage.getArtifactReadable(), flatElements, structureChanged, txRateChanged,
-                     numElementsChanged, sizeInBytesChanged, false, icdcn, parentStructure);
+               StructureInfo structureInfo = new StructureInfo(struct.getName().getValue(),
+                  struct.getNameAbbrev().getValue(), cat, msgRateText, minSim, maxSim, minBps, maxBps, elementCount,
+                  sizeInBytes, sendingNode.getName(), msgNumber, subMsgNumber, taskFileType, desc, message,
+                  subMessage.getArtifactReadable(), flatElements, structureChanged, txRateChanged, numElementsChanged,
+                  sizeInBytesChanged, false, icdcn, parentStructure);
+
                if (struct.getId() == 0) {
-                  headerStructureInfoMap.put(struct.getName(), structureInfo);
+                  headerStructureInfoMap.put(struct.getName().getValue(), structureInfo);
                } else {
                   structureInfoMap.put(ArtifactId.valueOf(struct.getId()), structureInfo);
                }
@@ -769,7 +777,7 @@ public class MimIcdGenerator {
       structureList.sort(new Comparator<InterfaceStructureToken>() {
          @Override
          public int compare(InterfaceStructureToken o1, InterfaceStructureToken o2) {
-            return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
+            return o1.getName().getValue().toLowerCase().compareTo(o2.getName().getValue().toLowerCase());
          }
       });
 
@@ -789,7 +797,7 @@ public class MimIcdGenerator {
          CELLSTYLE color =
             structure.isAutogenerated() ? getHeaderStructureNameColor(structure) : getStructureNameColor(structure);
 
-         writer.writeCell(rowNum, colNum, structure.getName(), "'" + structures.get(structure) + "'!A1",
+         writer.writeCell(rowNum, colNum, structure.getName().getValue(), "'" + structures.get(structure) + "'!A1",
             HyperLinkType.SHEET, CELLSTYLE.HYPERLINK, color);
          rowNum++;
       }
@@ -798,7 +806,7 @@ public class MimIcdGenerator {
    }
 
    private CELLSTYLE getHeaderStructureNameColor(InterfaceStructureToken struct) {
-      CELLSTYLE style = headerNameStyles.getOrDefault(struct.getName(), CELLSTYLE.NONE);
+      CELLSTYLE style = headerNameStyles.getOrDefault(struct.getName().getValue(), CELLSTYLE.NONE);
       if (!style.equals(CELLSTYLE.NONE)) {
          return style;
       }
@@ -869,7 +877,7 @@ public class MimIcdGenerator {
 
             List<InterfaceStructureToken> structures = new LinkedList<>();
             if (subMessage.getId() == 0) {
-               structures.add(messageHeaderStructures.get(subMessage.getName()));
+               structures.add(messageHeaderStructures.get(subMessage.getName().getValue()));
             } else {
                structures.addAll(subMessage.getArtifactReadable().getRelated(
                   CoreRelationTypes.InterfaceSubMessageContent_Structure).getList().stream().map(
@@ -890,12 +898,12 @@ public class MimIcdGenerator {
                totalStructs++;
 
                if (struct.isAutogenerated()) {
-                  InterfaceStructureToken parentHeader = parentMessageHeaderStructures.get(struct.getName());
+                  InterfaceStructureToken parentHeader = parentMessageHeaderStructures.get(struct.getName().getValue());
                   boolean sizeChanged =
                      parentHeader == null ? false : !struct.getSizeInBytes().equals(parentHeader.getSizeInBytes());
                   // @formatter:off
                   writer.writeCell(rowIndex, 0, structureInfo.category, getHeaderStructureCellColor(structureInfo.isAdded));
-                  writer.writeCell(rowIndex, 1, struct.getName(), "'" + sheetName + "'!A1", HyperLinkType.SHEET, getHeaderStructureCellColor(structureInfo.isAdded), CELLSTYLE.HYPERLINK);
+                  writer.writeCell(rowIndex, 1, struct.getName().getValue(), "'" + sheetName + "'!A1", HyperLinkType.SHEET, getHeaderStructureCellColor(structureInfo.isAdded), CELLSTYLE.HYPERLINK);
                   writer.writeCell(rowIndex, 2, structureInfo.txRate,
                      getCellColor(structReadable, message, CoreAttributeTypes.InterfaceMessageRate.getId()).equals(
                         CELLSTYLE.NONE) ? getCellColor(structReadable, message,
@@ -928,7 +936,7 @@ public class MimIcdGenerator {
                } else {
                   // @formatter:off
                   writer.writeCell(rowIndex, 0, structureInfo.category, getCellColor(structReadable, CoreAttributeTypes.InterfaceStructureCategory.getId()));
-                  writer.writeCell(rowIndex, 1, struct.getName(), "'" + sheetName + "'!A1", HyperLinkType.SHEET, getCellColor(structReadable, CoreAttributeTypes.Name.getId()), CELLSTYLE.HYPERLINK);
+                  writer.writeCell(rowIndex, 1, struct.getName().getValue(), "'" + sheetName + "'!A1", HyperLinkType.SHEET, getCellColor(structReadable, CoreAttributeTypes.Name.getId()), CELLSTYLE.HYPERLINK);
                   writer.writeCell(rowIndex, 2, structureInfo.txRate,
                      getCellColor(structReadable, message, CoreAttributeTypes.InterfaceMessageRate.getId()).equals(
                         CELLSTYLE.NONE) ? getCellColor(structReadable, message,
@@ -984,7 +992,7 @@ public class MimIcdGenerator {
    }
 
    private StructureInfo getStructureInfo(InterfaceStructureToken struct) {
-      return struct.getId() == 0 ? headerStructureInfoMap.get(struct.getName()) : structureInfoMap.get(
+      return struct.getId() == 0 ? headerStructureInfoMap.get(struct.getName().getValue()) : structureInfoMap.get(
          ArtifactId.valueOf(struct.getId()));
    }
 
@@ -1149,9 +1157,9 @@ public class MimIcdGenerator {
       //@formatter:on
 
       if (changed) {
-         CELLSTYLE currentStyle = headerNameStyles.get(structure.getName());
+         CELLSTYLE currentStyle = headerNameStyles.get(structure.getName().getValue());
          if (currentStyle != null && !currentStyle.equals(CELLSTYLE.GREEN)) {
-            headerNameStyles.put(structure.getName(), CELLSTYLE.YELLOW);
+            headerNameStyles.put(structure.getName().getValue(), CELLSTYLE.YELLOW);
          }
       }
 
@@ -1217,7 +1225,7 @@ public class MimIcdGenerator {
 
          List<InterfaceStructureToken> structs = new LinkedList<>();
          if (subMessage.getId() == 0) {
-            structs.add(messageHeaderStructures.get(subMessage.getName()));
+            structs.add(messageHeaderStructures.get(subMessage.getName().getValue()));
          } else {
             structs.addAll(subMessage.getArtifactReadable().getRelated(
                CoreRelationTypes.InterfaceSubMessageContent_Structure).getList().stream().map(
@@ -1237,12 +1245,12 @@ public class MimIcdGenerator {
             columnWidths = getMaxLengthsArray(columnWidths, createStringLengthArray(structureHeaders));
 
             if (struct.getId() == 0) {
-               StructureInfo info = headerStructureInfoMap.get(struct.getName());
-               InterfaceStructureToken parentHeader = parentMessageHeaderStructures.get(struct.getName());
+               StructureInfo info = headerStructureInfoMap.get(struct.getName().getValue());
+               InterfaceStructureToken parentHeader = parentMessageHeaderStructures.get(struct.getName().getValue());
                boolean isAdded = parentHeader != null && parentHeader.getId() == -1L;
 
                if (isAdded) {
-                  headerNameStyles.put(struct.getName(), CELLSTYLE.GREEN);
+                  headerNameStyles.put(struct.getName().getValue(), CELLSTYLE.GREEN);
                   info.isAdded = true;
                }
 
@@ -1259,9 +1267,10 @@ public class MimIcdGenerator {
                   InterfaceStructureElementToken element = struct.getElements().get(i);
 
                   if (!isAdded && msgHeaderICDCNs.containsKey(
-                     info.message.getArtifactId()) && element.getName().contains(
+                     info.message.getArtifactId()) && element.getName().getValue().contains(
                         "Number of Structures in Submessage")) {
-                     String subMsgNum = element.getName().substring(element.getName().lastIndexOf(" ") + 1);
+                     String subMsgNum =
+                        element.getName().getValue().substring(element.getName().getValue().lastIndexOf(" ") + 1);
                      List<ArtifactId> subMsgsChanged =
                         msgHeaderICDCNs.get(info.message.getArtifactId()).stream().map(a -> a.getFirst()).collect(
                            Collectors.toList());
@@ -1278,8 +1287,8 @@ public class MimIcdGenerator {
                   InterfaceStructureElementToken diffElement =
                      parentHeader != null && parentHeader.getId() != -1L && parentHeader.getElements().size() > i ? parentHeader.getElements().get(
                         i) : null;
-                  if (parentHeader != null && (diffElement == null || (i == parentHeader.getElements().size() - 1 && diffElement.getName().equals(
-                     "Byte Alignment Spare") && !element.getName().equals("Byte Alignment Spare")))) {
+                  if (parentHeader != null && (diffElement == null || (i == parentHeader.getElements().size() - 1 && diffElement.getName().getValue().equals(
+                     "Byte Alignment Spare") && !element.getName().getValue().equals("Byte Alignment Spare")))) {
                      isAdded = true;
                   }
 
@@ -1322,8 +1331,8 @@ public class MimIcdGenerator {
                   resultWidths = printDataElementRow(writer, rowIndex, struct.getArtifactReadable(), element,
                      byteLocation, byteSize, parentElement);
                   columnWidths = getMaxLengthsArray(columnWidths, resultWidths);
-                  int startIndex = element.getInterfaceElementIndexStart();
-                  int endIndex = element.getInterfaceElementIndexEnd();
+                  int startIndex = element.getInterfaceElementIndexStart().getValue();
+                  int endIndex = element.getInterfaceElementIndexEnd().getValue();
                   if (startIndex < endIndex) {
                      byteSize = byteSize * (endIndex - startIndex + 1);
                   }
@@ -1383,14 +1392,15 @@ public class MimIcdGenerator {
       Integer beginByte = Math.floorMod(byteLocation, 4);
       Integer endWord = Math.floorDiv(byteLocation + byteSize - 1, 4);
       Integer endByte = Math.floorMod(byteLocation + byteSize - 1, 4);
-      String elementName = element.getName();
-      String dataType = logicalTypeToDataType(element.getLogicalType());
+      String elementName = element.getName().getValue();
+      String dataType = logicalTypeToDataType(element.getPlatformType().getInterfaceLogicalType().getValue());
       String units =
-         (platformType == null || platformType.getInterfacePlatformTypeUnits() == Strings.EMPTY_STRING) ? "n/a" : platformType.getInterfacePlatformTypeUnits();
+         (platformType == null || platformType.getInterfacePlatformTypeUnits().getValue() == Strings.EMPTY_STRING) ? "n/a" : platformType.getInterfacePlatformTypeUnits().getValue();
       String validRange = getValidRangeString(element, platformType, dataType);
-      String alterable = element.getInterfaceElementAlterable() ? "Yes" : "No";
-      String description = element.getDescription() == Strings.EMPTY_STRING ? "n/a" : element.getDescription();
-      String notes = element.getNotes();
+      String alterable = element.getInterfaceElementAlterable().getValue() ? "Yes" : "No";
+      String description =
+         element.getDescription().getValue() == Strings.EMPTY_STRING ? "n/a" : element.getDescription().getValue();
+      String notes = element.getNotes().getValue();
 
       Object[] values = new Object[] {
          beginWord, // 0
@@ -1422,7 +1432,7 @@ public class MimIcdGenerator {
       writer.writeCell(rowIndex.get(), 7, values[7], getHeaderStructureCellColor(isAdded));
       writer.writeCell(rowIndex.get(), 8, values[8], getHeaderStructureCellColor(isAdded));
 
-      Object diffElementValue = diffElement == null ? null : getValidRangeString(diffElement, diffElement.getPlatformType(), logicalTypeToDataType(diffElement.getLogicalType()));
+      Object diffElementValue = diffElement == null ? null : getValidRangeString(diffElement, diffElement.getPlatformType(), logicalTypeToDataType(diffElement.getPlatformType().getInterfaceLogicalType().getValue()));
       CELLSTYLE color = getHeaderStructureCellColor(validRange, diffElementValue, isAdded);
       changed = changed || !color.equals(CELLSTYLE.NONE);
       writer.writeCell(rowIndex.get(), 9, values[9], color);
@@ -1442,9 +1452,9 @@ public class MimIcdGenerator {
       this.units.add(units);
 
       if (changed) {
-         CELLSTYLE currentStyle = headerNameStyles.get(structure.getName());
+         CELLSTYLE currentStyle = headerNameStyles.get(structure.getName().getValue());
          if (currentStyle == null || !currentStyle.equals(CELLSTYLE.GREEN)) {
-            headerNameStyles.put(structure.getName(), CELLSTYLE.YELLOW);
+            headerNameStyles.put(structure.getName().getValue(), CELLSTYLE.YELLOW);
          }
       }
 
@@ -1484,17 +1494,20 @@ public class MimIcdGenerator {
       Integer beginByte = Math.floorMod(byteLocation, 4);
       Integer endWord = Math.max(0, Math.floorDiv(byteLocation + byteSize - 1, 4));
       Integer endByte = Math.max(0, Math.floorMod(byteLocation + byteSize - 1, 4));
-      String enumLiterals = elementToken.getEnumLiteral();
-      String dataType = elementToken.getLogicalType().isEmpty() ? "n/a" : elementToken.getLogicalType();
+      String enumLiterals = elementToken.getEnumLiteral().getValue();
+      String dataType =
+         elementToken.getPlatformType().getInterfaceLogicalType().getValue().isEmpty() ? "n/a" : elementToken.getPlatformType().getInterfaceLogicalType().getValue();
       dataType = logicalTypeToDataType(dataType);
-      String units = elementToken.getUnits().isEmpty() ? "n/a" : elementToken.getUnits();
-      Integer startIndex = elementToken.getInterfaceElementIndexStart();
-      Integer endIndex = elementToken.getInterfaceElementIndexEnd();
+      String units =
+         elementToken.getPlatformType().getInterfacePlatformTypeUnits().getValue().isEmpty() ? "n/a" : elementToken.getPlatformType().getInterfacePlatformTypeUnits().getValue();
+      Integer startIndex = elementToken.getInterfaceElementIndexStart().getValue();
+      Integer endIndex = elementToken.getInterfaceElementIndexEnd().getValue();
       String validRange = getValidRangeString(elementToken, platformType, dataType);
-      String alterable = elementToken.getInterfaceElementAlterable() ? "Yes" : "No";
-      String description = elementToken.getDescription().isEmpty() ? "n/a" : elementToken.getDescription();
-      String notes = elementToken.getNotes().isEmpty() ? "" : elementToken.getNotes();
-      String defaultValue = elementToken.getInterfaceDefaultValue();
+      String alterable = elementToken.getInterfaceElementAlterable().getValue() ? "Yes" : "No";
+      String description =
+         elementToken.getDescription().getValue().isEmpty() ? "n/a" : elementToken.getDescription().getValue();
+      String notes = elementToken.getNotes().getValue().isEmpty() ? "" : elementToken.getNotes().getValue();
+      String defaultValue = elementToken.getInterfaceDefaultValue().getValue();
       boolean enumChanged = false;
 
       if (diffs.containsKey(platformType.getArtifactId())) {
@@ -1525,8 +1538,8 @@ public class MimIcdGenerator {
          enumLiterals = "n/a";
       }
 
-      if (elementToken.isInterfaceElementBlockData()) {
-         dataType = elementToken.getDescription();
+      if (elementToken.isInterfaceElementBlockData().getValue()) {
+         dataType = elementToken.getDescription().getValue();
       }
 
       MimChangeSummaryItem structDiff = diffs.get(structure.getArtifactId());
@@ -1591,10 +1604,11 @@ public class MimIcdGenerator {
       CELLSTYLE byteSizeStyle = elementAdded || elementStyle.equals(
          CELLSTYLE.GREEN) ? CELLSTYLE.GREEN : (parentElement.isValid() ? elementToken.getElementSizeInBytes() != parentElement.getElementSizeInBytes() : false) ? CELLSTYLE.YELLOW : CELLSTYLE.LIGHT_BLUE_XLSX;
 
-      CELLSTYLE logicalTypeStyle = elementToken.isInterfaceElementBlockData() ? getStructureCellColor(structure,
-         elementToken.getArtifactReadable(), CoreAttributeTypes.Description.getId(),
-         0) : elementAdded || elementStyle.equals(
-            CELLSTYLE.GREEN) ? CELLSTYLE.GREEN : logicalTypeChanged ? CELLSTYLE.YELLOW : CELLSTYLE.NONE;
+      CELLSTYLE logicalTypeStyle =
+         elementToken.isInterfaceElementBlockData().getValue() ? getStructureCellColor(structure,
+            elementToken.getArtifactReadable(), CoreAttributeTypes.Description.getId(),
+            0) : elementAdded || elementStyle.equals(
+               CELLSTYLE.GREEN) ? CELLSTYLE.GREEN : logicalTypeChanged ? CELLSTYLE.YELLOW : CELLSTYLE.NONE;
 
       CELLSTYLE pRangeStyle = elementAdded || elementStyle.equals(
          CELLSTYLE.GREEN) ? CELLSTYLE.GREEN : rangeChanged ? CELLSTYLE.YELLOW : CELLSTYLE.NONE;
@@ -1612,7 +1626,7 @@ public class MimIcdGenerator {
          endByte, // 4
          icdcns, // 5
          dataType, // 6
-         elementToken.getName(), // 7
+         elementToken.getName().getValue(), // 7
          units, // 8
          validRange, // 9
          alterable, // 10
@@ -1647,15 +1661,15 @@ public class MimIcdGenerator {
 
             // elementToken inherited header information from its parent up in createStructureInfo() if applicable.
             // These values are not set on these elements naturally.
-            String elementName = elementToken.getName();
-            if (elementToken.isArrayChild() && !elementToken.getInterfaceElementWriteArrayHeaderName()) {
-               String[] split = elementToken.getName().split(" ");
+            String elementName = elementToken.getName().getValue();
+            if (elementToken.isArrayChild() && !elementToken.getInterfaceElementWriteArrayHeaderName().getValue()) {
+               String[] split = elementToken.getName().getValue().split(" ");
                String elementIndex = split[split.length - 1];
                if (Strings.isNumeric(elementIndex)) {
                   elementName = elementName.substring(0, elementName.length() - (elementIndex.length() + 1)).trim();
-                  String delimiter1 = elementToken.getInterfaceElementArrayIndexDelimiterOne();
-                  String delimiter2 = elementToken.getInterfaceElementArrayIndexDelimiterTwo();
-                  if (elementToken.getInterfaceElementArrayIndexOrder().equals(
+                  String delimiter1 = elementToken.getInterfaceElementArrayIndexDelimiterOne().getValue();
+                  String delimiter2 = elementToken.getInterfaceElementArrayIndexDelimiterTwo().getValue();
+                  if (elementToken.getInterfaceElementArrayIndexOrder().getValue().equals(
                      ElementArrayIndexOrder.INNER_OUTER.toString())) {
                      elementName += delimiter1 + i + delimiter2 + elementIndex;
                   } else {
@@ -1669,22 +1683,22 @@ public class MimIcdGenerator {
             values[7] = elementName;
 
             //@formatter:off
-            writer.writeCell(rowIndex.get(), 0, values[0], arrBeginWordStyle, CELLSTYLE.CENTERH);
-            writer.writeCell(rowIndex.get(), 1, values[1], arrBeginByteStyle, CELLSTYLE.CENTERH);
-            writer.writeCell(rowIndex.get(), 2, values[2], arrByteSizeStyle, CELLSTYLE.CENTERH);
-            writer.writeCell(rowIndex.get(), 3, values[3], arrEndWordStyle, CELLSTYLE.CENTERH);
-            writer.writeCell(rowIndex.get(), 4, values[4], arrEndByteStyle, CELLSTYLE.CENTERH);
-            writer.writeCell(rowIndex.get(), 5, values[5], arrIcdcnStyle);
-            writer.writeCell(rowIndex.get(), 6, values[6], arrLogicalTypeStyle);
-            if (!elementToken.isInterfaceElementBlockData()) {
-               writer.writeCell(rowIndex.get(), 7, values[7], getStructureCellColor(structure, elementToken.getArtifactReadable(), CoreAttributeTypes.Name.getId(), i));
-               writer.writeCell(rowIndex.get(), 8, values[8], arrPTypeStyle.equals(CELLSTYLE.GREEN) || arrPTypeStyle.equals(CELLSTYLE.YELLOW) ? arrPUnitsStyle : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeUnits.getId(), i));
-               writer.writeCell(rowIndex.get(), 9, values[9], arrPTypeStyle.equals(CELLSTYLE.GREEN) || arrPTypeStyle.equals(CELLSTYLE.YELLOW) ? arrPRangeStyle : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeMinval.getId(), i).equals(CELLSTYLE.YELLOW) ? CELLSTYLE.YELLOW : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeMaxval.getId(), i), CELLSTYLE.WRAP);
-               writer.writeCell(rowIndex.get(), 10, values[10], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfaceElementAlterable.getId(), i), CELLSTYLE.CENTERH);
-               writer.writeCell(rowIndex.get(), 11, values[11], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.Description.getId(), i), CELLSTYLE.WRAP);
-               writer.writeCell(rowIndex.get(), 12, values[12], arrEnumStyle, CELLSTYLE.WRAP);
-               writer.writeCell(rowIndex.get(), 13, values[13], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.Notes.getId(), i), CELLSTYLE.WRAP);
-               writer.writeCell(rowIndex.get(), 14, values[14], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfaceDefaultValue.getId(), i));
+            writer.writeCell(rowIndex.get(), IcdElementIndex.beginWord.ordinal(), values[IcdElementIndex.beginWord.ordinal()],  arrBeginWordStyle, CELLSTYLE.CENTERH);
+            writer.writeCell(rowIndex.get(), IcdElementIndex.beginByte.ordinal(), values[IcdElementIndex.beginByte.ordinal()], arrBeginByteStyle, CELLSTYLE.CENTERH);
+            writer.writeCell(rowIndex.get(), IcdElementIndex.byteSize.ordinal(), values[IcdElementIndex.byteSize.ordinal()], arrByteSizeStyle, CELLSTYLE.CENTERH);
+            writer.writeCell(rowIndex.get(), IcdElementIndex.endWord.ordinal(), values[IcdElementIndex.endWord.ordinal()], arrEndWordStyle, CELLSTYLE.CENTERH);
+            writer.writeCell(rowIndex.get(), IcdElementIndex.endByte.ordinal(), values[IcdElementIndex.endByte.ordinal()], arrEndByteStyle, CELLSTYLE.CENTERH);
+            writer.writeCell(rowIndex.get(), IcdElementIndex.icdcns.ordinal(), values[IcdElementIndex.icdcns.ordinal()], arrIcdcnStyle);
+            writer.writeCell(rowIndex.get(), IcdElementIndex.dataType.ordinal(), values[IcdElementIndex.dataType.ordinal()], arrLogicalTypeStyle);
+            if (!elementToken.isInterfaceElementBlockData().getValue()) {
+               writer.writeCell(rowIndex.get(), IcdElementIndex.name.ordinal(), values[IcdElementIndex.name.ordinal()], getStructureCellColor(structure, elementToken.getArtifactReadable(), CoreAttributeTypes.Name.getId(), i));
+               writer.writeCell(rowIndex.get(), IcdElementIndex.units.ordinal(), values[IcdElementIndex.units.ordinal()], arrPTypeStyle.equals(CELLSTYLE.GREEN) || arrPTypeStyle.equals(CELLSTYLE.YELLOW) ? arrPUnitsStyle : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeUnits.getId(), i));
+               writer.writeCell(rowIndex.get(), IcdElementIndex.validRange.ordinal(), values[IcdElementIndex.validRange.ordinal()], arrPTypeStyle.equals(CELLSTYLE.GREEN) || arrPTypeStyle.equals(CELLSTYLE.YELLOW) ? arrPRangeStyle : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeMinval.getId(), i).equals(CELLSTYLE.YELLOW) ? CELLSTYLE.YELLOW : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeMaxval.getId(), i), CELLSTYLE.WRAP);
+               writer.writeCell(rowIndex.get(), IcdElementIndex.alterable.ordinal(), values[IcdElementIndex.alterable.ordinal()], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfaceElementAlterable.getId(), i), CELLSTYLE.CENTERH);
+               writer.writeCell(rowIndex.get(), IcdElementIndex.description.ordinal(), values[IcdElementIndex.description.ordinal()], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.Description.getId(), i), CELLSTYLE.WRAP);
+               writer.writeCell(rowIndex.get(), IcdElementIndex.enumLiterals.ordinal(), values[IcdElementIndex.enumLiterals.ordinal()], arrEnumStyle, CELLSTYLE.WRAP);
+               writer.writeCell(rowIndex.get(), IcdElementIndex.notes.ordinal(), values[IcdElementIndex.notes.ordinal()], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.Notes.getId(), i), CELLSTYLE.WRAP);
+               writer.writeCell(rowIndex.get(), IcdElementIndex.defaultValue.ordinal(), values[IcdElementIndex.defaultValue.ordinal()], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfaceDefaultValue.getId(), i));
             }
             //@formatter:on
 
@@ -1694,7 +1708,7 @@ public class MimIcdGenerator {
             endWord = Math.max(0, Math.floorDiv(byteLocation + byteSize - 1, 4));
             endByte = Math.max(0, Math.floorMod(byteLocation + byteSize - 1, 4));
 
-            if (elementToken.isInterfaceElementBlockData()) {
+            if (elementToken.isInterfaceElementBlockData().getValue()) {
                writer.addMergedRegion(rowIndex.get(), rowIndex.get(), 6, 13);
             }
 
@@ -1702,22 +1716,22 @@ public class MimIcdGenerator {
          }
       } else {
          if (elementToken.isArrayChild()) {
-            String elementName = elementToken.getName();
-            String[] split = elementToken.getName().split(" ");
+            String elementName = elementToken.getName().getValue();
+            String[] split = elementToken.getName().getValue().split(" ");
             String elementIndex = split[split.length - 1];
             if (Strings.isNumeric(elementIndex)) {
                Long elementIndexLong = Long.parseLong(elementIndex);
                if (arrayDescriptions.containsKey(elementToken.getArtifactId())) {
                   List<InterfaceEnumeration> descriptions =
                      arrayDescriptions.get(elementToken.getArtifactId()).stream().filter(
-                        d -> d.getOrdinal() <= elementIndexLong).collect(Collectors.toList());
+                        d -> d.getOrdinal().getValue() <= elementIndexLong).collect(Collectors.toList());
                   if (descriptions.size() > 0) {
-                     values[11] = descriptions.get(descriptions.size() - 1).getName();
+                     values[11] = descriptions.get(descriptions.size() - 1).getName().getValue();
                   }
                }
-               if (!elementToken.getInterfaceElementWriteArrayHeaderName()) {
+               if (!elementToken.getInterfaceElementWriteArrayHeaderName().getValue()) {
                   elementName = elementName.substring(0, elementName.length() - (elementIndex.length() + 1)).trim();
-                  if (elementToken.getInterfaceElementArrayIndexOrder().equals(
+                  if (elementToken.getInterfaceElementArrayIndexOrder().getValue().equals(
                      ElementArrayIndexOrder.INNER_OUTER.toString())) {
                      elementName += elementToken.getInterfaceElementArrayIndexDelimiterTwo() + elementIndex;
                   } else {
@@ -1736,7 +1750,7 @@ public class MimIcdGenerator {
          writer.writeCell(rowIndex.get(), 4, values[4], endByteStyle, CELLSTYLE.CENTERH);
          writer.writeCell(rowIndex.get(), 5, values[5], icdcnStyle);
          writer.writeCell(rowIndex.get(), 6, values[6], logicalTypeStyle);
-         if (!elementToken.isInterfaceElementBlockData()) {
+         if (!elementToken.isInterfaceElementBlockData().getValue()) {
             writer.writeCell(rowIndex.get(), 7, values[7], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.Name.getId(), 0));
             writer.writeCell(rowIndex.get(), 8, values[8], pTypeStyle.equals(CELLSTYLE.GREEN) || pTypeStyle.equals(CELLSTYLE.YELLOW) ? pUnitsStyle : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeUnits.getId(), 0));
             writer.writeCell(rowIndex.get(), 9, values[9], pTypeStyle.equals(CELLSTYLE.GREEN) || pTypeStyle.equals(CELLSTYLE.YELLOW) ? pRangeStyle : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeMinval.getId(), 0).equals(CELLSTYLE.YELLOW) ? CELLSTYLE.YELLOW : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeMaxval.getId(), 0), CELLSTYLE.WRAP);
@@ -1748,7 +1762,7 @@ public class MimIcdGenerator {
          }
          //@formatter:on
 
-         if (elementToken.isInterfaceElementBlockData()) {
+         if (elementToken.isInterfaceElementBlockData().getValue()) {
             writer.addMergedRegion(rowIndex.get(), rowIndex.get(), 6, 13);
          }
 
@@ -1766,9 +1780,9 @@ public class MimIcdGenerator {
    private String getValidRangeString(InterfaceStructureElementToken elementToken, PlatformTypeToken platformType,
       String dataType) {
       String minVal =
-         elementToken.getInterfacePlatformTypeMinval().isEmpty() ? "n/a" : elementToken.getInterfacePlatformTypeMinval();
+         elementToken.getPlatformType().getInterfacePlatformTypeMinval().getValue().isEmpty() ? "n/a" : elementToken.getPlatformType().getInterfacePlatformTypeMinval().getValue();
       String maxVal =
-         elementToken.getInterfacePlatformTypeMaxval().isEmpty() ? "n/a" : elementToken.getInterfacePlatformTypeMaxval();
+         elementToken.getPlatformType().getInterfacePlatformTypeMaxval().getValue().isEmpty() ? "n/a" : elementToken.getPlatformType().getInterfacePlatformTypeMaxval().getValue();
       String validRange = "";
       if (dataType.equals("enumeration")) {
          validRange = "see enumerated literals";
@@ -1783,8 +1797,8 @@ public class MimIcdGenerator {
             validRange = minVal + " to " + maxVal;
          }
          if ((validRange.isEmpty() || validRange.equals(
-            "n/a")) && !platformType.getInterfacePlatformTypeValidRangeDescription().isEmpty()) {
-            validRange = platformType.getInterfacePlatformTypeValidRangeDescription();
+            "n/a")) && !platformType.getInterfacePlatformTypeValidRangeDescription().getValue().isEmpty()) {
+            validRange = platformType.getInterfacePlatformTypeValidRangeDescription().getValue();
          }
       }
       return validRange;
@@ -2085,8 +2099,8 @@ public class MimIcdGenerator {
 
       // Systems Table
       writer.writeCell(4, 11, "Systems", CELLSTYLE.BOLD, CELLSTYLE.CENTERH, CELLSTYLE.BORDER_ALL);
-      writer.writeCell(5, 11, primaryNode.getName(), CELLSTYLE.CENTERH, CELLSTYLE.BORDER_ALL);
-      writer.writeCell(6, 11, secondaryNode.getName(), CELLSTYLE.CENTERH, CELLSTYLE.BORDER_ALL);
+      writer.writeCell(5, 11, primaryNode.getName().getValue(), CELLSTYLE.CENTERH, CELLSTYLE.BORDER_ALL);
+      writer.writeCell(6, 11, secondaryNode.getName().getValue(), CELLSTYLE.CENTERH, CELLSTYLE.BORDER_ALL);
 
       // Alterable After Table
       writer.writeCell(4, 13, "Alterable After", CELLSTYLE.BOLD, CELLSTYLE.CENTERH, CELLSTYLE.BORDER_ALL);

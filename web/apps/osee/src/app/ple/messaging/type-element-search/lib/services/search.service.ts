@@ -20,7 +20,6 @@ export class SearchService {
 	private _searchTerm: BehaviorSubject<string> = new BehaviorSubject<string>(
 		''
 	);
-	constructor() {}
 
 	get searchTerm() {
 		return this._searchTerm;

@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
 	BehaviorSubject,
 	Observable,
@@ -39,6 +39,12 @@ import { branch } from '@osee/shared/types';
 	providedIn: 'root',
 })
 export class BranchListService {
+	private branchService = inject(BranchInfoService);
+	private ui = inject(UiService);
+	private categoryService = inject(BranchCategoryService);
+	private workTypeService = inject(WorktypeService);
+	private pageSizeService = inject(BranchPageService);
+
 	private _type = this.ui.type.pipe(
 		map((type) =>
 			type === 'baseline' ? '2' : type == 'working' ? '0' : '-1'
@@ -88,13 +94,6 @@ export class BranchListService {
 		shareReplay({ bufferSize: 1, refCount: true }),
 		takeUntilDestroyed()
 	);
-	constructor(
-		private branchService: BranchInfoService,
-		private ui: UiService,
-		private categoryService: BranchCategoryService,
-		private workTypeService: WorktypeService,
-		private pageSizeService: BranchPageService
-	) {}
 
 	get branches() {
 		return this._branches;
@@ -131,7 +130,7 @@ export class BranchListService {
 		);
 	}
 
-	getFilteredCount(pageNum: string | number, filter?: string) {
+	getFilteredCount(filter?: string) {
 		return combineLatest([
 			this._type,
 			this.categoryService.branchCategory,

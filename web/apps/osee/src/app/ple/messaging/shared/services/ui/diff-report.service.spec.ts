@@ -63,8 +63,8 @@ describe('DiffReportService', () => {
 
 	it('should get the branch info', () => {
 		scheduler.run(() => {
-			let expectedObservable = { a: testBranchInfo };
-			let expectedMarble = 'a';
+			const expectedObservable = { a: testBranchInfo };
+			const expectedMarble = 'a';
 			scheduler
 				.expectObservable(service.branchInfo)
 				.toBe(expectedMarble, expectedObservable);
@@ -73,8 +73,8 @@ describe('DiffReportService', () => {
 
 	it('should get the parent branch info', () => {
 		scheduler.run(() => {
-			let expectedObservable = { a: testBranchInfo };
-			let expectedMarble = 'a';
+			const expectedObservable = { a: testBranchInfo };
+			const expectedMarble = 'a';
 			scheduler
 				.expectObservable(service.parentBranchInfo)
 				.toBe(expectedMarble, expectedObservable);
@@ -83,15 +83,15 @@ describe('DiffReportService', () => {
 
 	it('should get the branch summary', () => {
 		scheduler.run(() => {
-			let summary: branchSummary[] = [
+			const summary: branchSummary[] = [
 				{
 					pcrNo: testBranchActions[0].AtsId,
 					description: testBranchActions[0].Name,
 					compareBranch: testBranchInfo.name,
 				},
 			];
-			let expectedObservable = { a: summary };
-			let expectedMarble = 'a';
+			const expectedObservable = { a: summary };
+			const expectedMarble = 'a';
 			scheduler
 				.expectObservable(service.branchSummary)
 				.toBe(expectedMarble, expectedObservable);
@@ -100,8 +100,8 @@ describe('DiffReportService', () => {
 
 	it('should get difference report', () => {
 		scheduler.run(() => {
-			let expectedObservable = { a: mimChangeSummaryMock };
-			let expectedMarble = 'a';
+			const expectedObservable = { a: mimChangeSummaryMock };
+			const expectedMarble = 'a';
 			scheduler
 				.expectObservable(service.diffReport)
 				.toBe(expectedMarble, expectedObservable);

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, DatePipe, NgClass } from '@angular/common';
-import { Component, Input, viewChild } from '@angular/core';
+import { Component, Input, viewChild, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import {
@@ -67,6 +67,10 @@ import { attrMergeData, mergeData } from '@osee/commit/types';
 	templateUrl: './merge-manager-table.component.html',
 })
 export class MergeManagerTableComponent {
+	dialog = inject(MatDialog);
+	private headerService = inject(HeaderService);
+	private commitBranchService = inject(CommitBranchService);
+
 	@Input({ required: true }) mergeData!: mergeData[];
 	@Input({ required: true }) mergeBranchId!: string;
 	@Input({ required: true }) branchId!: string;
@@ -87,12 +91,6 @@ export class MergeManagerTableComponent {
 		x: '0',
 		y: '0',
 	};
-
-	constructor(
-		public dialog: MatDialog,
-		private headerService: HeaderService,
-		private commitBranchService: CommitBranchService
-	) {}
 
 	selectSourceValue(data: mergeData) {
 		data.attrMergeData.mergeValue = data.attrMergeData.sourceValue;

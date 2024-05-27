@@ -15,11 +15,12 @@ import {
 	Component,
 	OnDestroy,
 	OnInit,
+	inject,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MessageTableComponent } from '@osee/messaging/message-tables';
 import { CurrentMessagesService } from '@osee/messaging/shared/services';
 import { combineLatest, iif, of } from 'rxjs';
+import MessageInterfaceComponent from './lib/message-interface/message-interface.component';
 
 @Component({
 	selector: 'osee-messaging-message-page',
@@ -29,14 +30,13 @@ import { combineLatest, iif, of } from 'rxjs';
 	],
 	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
-	imports: [MessageTableComponent],
+	imports: [MessageInterfaceComponent],
 })
 export class MessagePageComponent implements OnInit, OnDestroy {
-	constructor(
-		private router: Router,
-		private route: ActivatedRoute,
-		private messageService: CurrentMessagesService
-	) {}
+	private router = inject(Router);
+	private route = inject(ActivatedRoute);
+	private messageService = inject(CurrentMessagesService);
+
 	ngOnDestroy(): void {
 		this.messageService.clearRows();
 		this.messageService.toggleDone = true;
@@ -49,22 +49,25 @@ export class MessagePageComponent implements OnInit, OnDestroy {
 			iif(() => this.router.url.includes('diff'), of(false), of(true)),
 		]).subscribe(([values, data, mode]) => {
 			if (mode) {
-				this.messageService.filter =
-					values.get('type')?.trim().toLowerCase() || ''; //@todo FIX
+				this.messageService.messageFilter.set(
+					values.get('type')?.trim().toLowerCase() || ''
+				); //@todo FIX
 				this.messageService.branchType =
 					(values.get('branchType') as 'working' | 'baseline' | '') ||
 					'';
 				this.messageService.branch = values.get('branchId') || '';
-				this.messageService.connection = values.get('connection') || '';
+				this.messageService.connection =
+					(values.get('connection') as `${number}`) || '-1';
 				this.messageService.messageId = '';
-				this.messageService.subMessageId = '';
+				this.messageService.subMessageId = '-1';
 				this.messageService.submessageToStructureBreadCrumbs = '';
 				this.messageService.singleStructureId = '';
 				this.messageService.DiffMode = false;
 			} else {
-				this.messageService.connection = values.get('connection') || '';
+				this.messageService.connection =
+					(values.get('connection') as `${number}`) || '-1';
 				this.messageService.messageId = '';
-				this.messageService.subMessageId = '';
+				this.messageService.subMessageId = '-1';
 				this.messageService.submessageToStructureBreadCrumbs = '';
 				this.messageService.singleStructureId = '';
 				this.messageService.difference = data.diff;

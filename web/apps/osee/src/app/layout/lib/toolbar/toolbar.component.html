@@ -10,10 +10,12 @@
 * Contributors:
 *     Boeing - initial API and implementation
 -->
-<mat-toolbar class="tw-h-[6vh]">
-	<div class="tw-flex tw-w-full tw-items-center tw-justify-between tw-gap-2">
+<mat-toolbar class="tw-relative tw-h-[6vh] tw-w-screen">
+	<div
+		class="tw-flex tw-w-[85vw] tw-min-w-[70vw] tw-max-w-[85vw] tw-items-center tw-justify-between">
 		<!-- Top Level Nav - Button -->
-		<span class="tw-flex tw-items-center tw-justify-start tw-gap-2">
+		<span
+			class="tw-flex tw-flex-grow tw-items-center tw-justify-start tw-gap-4">
 			<button
 				mat-icon-button
 				(click)="toggleTopLevelNavIcon()">
@@ -24,17 +26,22 @@
 				<img
 					src="favicon.ico"
 					width="48"
-					height="47" />
+					height="47"
+					alt="OSEE logo" />
 			}
 			<router-outlet
 				name="title"
+				class="tw-flex-shrink tw-flex-grow"
 				(click)="closeTopLevelNavIcon()"></router-outlet>
 			<router-outlet
 				name="navigationHeader"
+				class="tw-flex-shrink tw-flex-grow"
 				(click)="closeTopLevelNavIcon()"></router-outlet>
 		</span>
 	</div>
-	<span class="tw-flex tw-items-center tw-justify-end tw-gap-2">
+	<span class="tw-flex-auto"></span>
+	<span
+		class="tw-relative tw-flex tw-min-w-[5vw] tw-items-center tw-justify-end tw-gap-2">
 		@if ((isLoading | async) === 'true') {
 			<mat-progress-spinner
 				mode="indeterminate"

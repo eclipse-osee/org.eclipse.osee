@@ -26,15 +26,15 @@ export class baseFeature implements feature {
 			this.description = defaultFeature.description;
 		}
 	}
-	public name: string = '';
-	public description: string = '';
-	public valueType: string = '';
-	public valueStr: string = '';
-	public defaultValue: string = '';
-	public productAppStr: string = '';
+	public name = '';
+	public description = '';
+	public valueType = '';
+	public valueStr = '';
+	public defaultValue = '';
+	public productAppStr = '';
 	public values: string[] = [];
 	public productApplicabilities: string[] = [];
-	public multiValued: boolean = false;
+	public multiValued = false;
 	public setValueStr(): void {
 		this.valueStr = this.values.toString();
 	}
@@ -43,15 +43,15 @@ export class baseFeature implements feature {
 	}
 }
 export class defaultBaseFeature implements feature {
-	public name: string = '';
-	public description: string = '';
-	public valueType: string = 'String';
-	public valueStr: string = 'String';
-	public defaultValue: string = 'Included';
-	public productAppStr: string = '';
+	public name = '';
+	public description = '';
+	public valueType = 'String';
+	public valueStr = 'String';
+	public defaultValue = 'Included';
+	public productAppStr = '';
 	public values: string[] = ['Included', 'Excluded'];
 	public productApplicabilities: string[] = [];
-	public multiValued: boolean = false;
+	public multiValued = false;
 	public setValueStr(): void {
 		this.valueStr = this.values.toString();
 	}

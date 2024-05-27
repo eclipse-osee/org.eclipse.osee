@@ -24,7 +24,8 @@ export const routes: Routes = [
 			},
 			{
 				path: '',
-				loadComponent: () => import('@osee/messaging/shared/headers'),
+				loadComponent: () =>
+					import('./lib/message-filter/message-filter.component'),
 				outlet: 'navigationHeader',
 			},
 		],

@@ -14,7 +14,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ArtifactHierarchyOptionsComponent } from './artifact-hierarchy-options.component';
 import { ActivatedRoute } from '@angular/router';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('ArtifactHierarchyOptionsComponent', () => {
 	let component: ArtifactHierarchyOptionsComponent;
@@ -22,11 +26,12 @@ describe('ArtifactHierarchyOptionsComponent', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [
-				ArtifactHierarchyOptionsComponent,
-				HttpClientTestingModule,
+			imports: [ArtifactHierarchyOptionsComponent],
+			providers: [
+				{ provide: ActivatedRoute, useValue: {} },
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
 			],
-			providers: [{ provide: ActivatedRoute, useValue: {} }],
 		});
 		fixture = TestBed.createComponent(ArtifactHierarchyOptionsComponent);
 		component = fixture.componentInstance;

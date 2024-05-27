@@ -15,7 +15,6 @@ import { Component, computed, effect, inject, viewChild } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatOption } from '@angular/material/core';
-import { MatDialog } from '@angular/material/dialog';
 import {
 	MatError,
 	MatFormField,
@@ -51,7 +50,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { CurrentBranchInfoService, branchImpl } from '@osee/shared/services';
 import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
 import { OperatorFunction } from 'rxjs';
-import { filter, tap } from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 import { ConfigGroupMenuComponent } from '../../menus/config-group-menu/config-group-menu.component';
 import { ConfigMenuComponent } from '../../menus/config-menu/config-menu.component';
 import { FeatureMenuComponent } from '../../menus/feature-menu/feature-menu.component';
@@ -73,7 +72,7 @@ import { PLConfigFilterComponent } from '../plconfig-filter/plconfig-filter.comp
 	selector: 'osee-plconfig-applicability-table',
 	template: `<osee-plconfig-filter></osee-plconfig-filter>
 		<div
-			class="tw-h-[72vh] tw-w-[100vw] tw-overflow-auto [&::-webkit-scrollbar-corner]:tw-bg-background-app-bar [&::-webkit-scrollbar-thumb]:tw-bg-primary [&::-webkit-scrollbar-track]:tw-border-r-[10px] [&::-webkit-scrollbar-track]:tw-bg-background-app-bar [&::-webkit-scrollbar]:tw-bg-background-app-bar">
+			class="tw-h-[72vh] tw-w-screen tw-overflow-auto [&::-webkit-scrollbar-corner]:tw-bg-background-app-bar [&::-webkit-scrollbar-thumb]:tw-bg-primary [&::-webkit-scrollbar-track]:tw-border-r-[10px] [&::-webkit-scrollbar-track]:tw-bg-background-app-bar [&::-webkit-scrollbar]:tw-bg-background-app-bar">
 			<table
 				mat-table
 				[dataSource]="dataSource"
@@ -81,7 +80,7 @@ import { PLConfigFilterComponent } from '../plconfig-filter/plconfig-filter.comp
 				matSortActive="feature"
 				matSortDirection="asc"
 				class="mat-elevation-z8 tw-w-full tw-min-w-[100vw] tw-max-w-[100vw] tw-border-separate tw-overflow-auto">
-				@for (column of topHeaders(); track column; let idx = $index) {
+				@for (column of topHeaders(); track $index; let idx = $index) {
 					<ng-container [matColumnDef]="column">
 						<th
 							mat-header-cell
@@ -94,7 +93,7 @@ import { PLConfigFilterComponent } from '../plconfig-filter/plconfig-filter.comp
 				}
 				@for (
 					column of groupHeaders();
-					track column;
+					track $index;
 					let idx = $index
 				) {
 					<ng-container [matColumnDef]="column">
@@ -107,9 +106,9 @@ import { PLConfigFilterComponent } from '../plconfig-filter/plconfig-filter.comp
 						</th>
 					</ng-container>
 				}
-				@for (column of viewHeaders(); track column) {
+				@for (column of viewHeaders(); track $index) {
 					<ng-container
-						[matColumnDef]="column.id"
+						[matColumnDef]="column.headerId"
 						[sticky]="column.id === '-1'">
 						<th
 							mat-header-cell
@@ -120,7 +119,7 @@ import { PLConfigFilterComponent } from '../plconfig-filter/plconfig-filter.comp
 									column.typeId !== '6' && !column.added,
 								'tw-bg-success-300 tw-text-success-300-contrast':
 									column.added,
-								'tw-bg-warning-100': column.deleted
+								'tw-bg-warning-100': column.deleted,
 							}"
 							class="tw-cursor-pointer tw-border-b-2 tw-border-r-2 tw-border-solid tw-border-foreground-divider tw-text-center tw-font-bold"
 							(click)="openConfigMenu(column)"
@@ -178,12 +177,12 @@ import { PLConfigFilterComponent } from '../plconfig-filter/plconfig-filter.comp
 					class="tw-h-12"
 					[class]="
 						row.added
-							? 'even:tw-bg-success-100 odd:tw-bg-success-300 odd:tw-text-success-300-constrast even:tw-text-success-100-contrast tw-font-bold'
+							? 'odd:tw-text-success-300-constrast tw-font-bold odd:tw-bg-success-300 even:tw-bg-success-100 even:tw-text-success-100-contrast'
 							: row.deleted
-							  ? 'even:tw-bg-warning-100 odd:tw-bg-warning-100 even:tw-text-warning-100-contrast odd:tw-text-warning-100-contrast tw-font-bold'
-							  : row.changes
-							    ? 'odd:tw-bg-accent-100 even:tw-bg-accent-200 odd:tw-text-accent-100-contrast even:tw-text-accent-200-contrast'
-							    : 'even:tw-bg-background-card odd:tw-bg-background-background'
+								? 'tw-font-bold odd:tw-bg-warning-100 odd:tw-text-warning-100-contrast even:tw-bg-warning-100 even:tw-text-warning-100-contrast'
+								: row.changes
+									? 'odd:tw-bg-accent-100 odd:tw-text-accent-100-contrast even:tw-bg-accent-200 even:tw-text-accent-200-contrast'
+									: 'odd:tw-bg-background-background even:tw-bg-background-card'
 					"></tr>
 			</table>
 		</div>
@@ -211,7 +210,7 @@ import { PLConfigFilterComponent } from '../plconfig-filter/plconfig-filter.comp
 							name: '',
 							description: '',
 							hasFeatureApplicabilities: false,
-							id: ''
+							id: '-1',
 						}
 					"></osee-plconfig-config-menu>
 			</ng-template>
@@ -225,8 +224,8 @@ import { PLConfigFilterComponent } from '../plconfig-filter/plconfig-filter.comp
 						(group | async) || {
 							name: '',
 							description: '',
-							id: '',
-							configurations: []
+							id: '-1',
+							configurations: [],
 						}
 					"></osee-plconfig-config-group-menu>
 			</ng-template>
@@ -319,7 +318,6 @@ import { PLConfigFilterComponent } from '../plconfig-filter/plconfig-filter.comp
 export class ApplicabilityTableComponent {
 	private uiStateService = inject(PlConfigUIStateService);
 	private currentBranchService = inject(PlConfigCurrentBranchService);
-	private dialog = inject(MatDialog);
 	private dialogService = inject(DialogService);
 	//TODO add real prefs
 	private _branchInfoService = inject(CurrentBranchInfoService);
@@ -353,8 +351,8 @@ export class ApplicabilityTableComponent {
 			this.pageSize() >= 5
 				? Array.from(
 						{ length: (this.pageSize() - 0) / 5 + 1 },
-						(value, index) => 0 + index * 5
-				  )
+						(_, index) => 0 + index * 5
+					)
 				: [];
 		//ensure there is atleast 5 entries between the current page index and max table count
 		const countOptions =
@@ -366,8 +364,8 @@ export class ApplicabilityTableComponent {
 							length:
 								(this.tableCount() - this.pageSize()) / 5 + 1,
 						},
-						(value, index) => this.pageSize() + index * 5
-				  )
+						(_, index) => this.pageSize() + index * 5
+					)
 				: [];
 		const combined = pageOptions
 			.concat(startingOptions)
@@ -386,7 +384,7 @@ export class ApplicabilityTableComponent {
 					this.completeTable().headerLengths.reduce(
 						(acc, curr) => acc + curr,
 						0
-						//@ts-expect-error
+						//@ts-expect-error headerLengths will always be populated
 					) - this.completeTable().headerLengths.at(-1),
 					0
 				) > 0
@@ -454,17 +452,25 @@ export class ApplicabilityTableComponent {
 		];
 	});
 
-	viewHeaders = computed<configurationValue[]>(() => [
-		{
-			id: '-1',
-			name: 'Feature',
-			gammaId: '-1',
-			typeId: '-1',
-			applicability: { id: '-1', gammaId: '-1', name: '' },
-		},
-		...this.completeTable().headers.filter((x) => x.id !== '-1'),
-	]);
-	viewHeaderIds = computed(() => this.viewHeaders().map((x) => x.id));
+	viewHeaders = computed<(configurationValue & { headerId: string })[]>(
+		() => [
+			{
+				id: '-1',
+				name: 'Feature',
+				gammaId: '-1',
+				typeId: '-1',
+				applicability: { id: '-1', gammaId: '-1', name: '' },
+				headerId: '-1' + crypto.randomUUID(),
+			},
+			...this.completeTable()
+				.headers.filter((x) => x.id !== '-1')
+				.map((x) => ({
+					...x,
+					headerId: x.id + crypto.randomUUID(),
+				})),
+		]
+	);
+	viewHeaderIds = computed(() => this.viewHeaders().map((x) => x.headerId));
 	hasNoGroup = computed(
 		() => this.numOfGroups() !== this.completeTable().headerLengths.length
 	);
@@ -537,7 +543,7 @@ export class ApplicabilityTableComponent {
 			return;
 		}
 		this.dialogService
-			.openEditConfigGroupDialog(config.id, true)
+			.openEditConfigGroupDialog(config.id, this.editable())
 			.subscribe();
 	}
 

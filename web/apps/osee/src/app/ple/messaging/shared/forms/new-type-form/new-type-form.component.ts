@@ -13,51 +13,36 @@
 import { AsyncPipe, KeyValuePipe, TitleCasePipe } from '@angular/common';
 import {
 	Component,
-	Input,
-	OnInit,
-	Output,
+	effect,
+	model,
+	output,
 	signal,
-	viewChild,
+	inject,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButton } from '@angular/material/button';
 import {
-	MatDialog,
 	MatDialogActions,
 	MatDialogContent,
-	MatDialogRef,
 	MatDialogTitle,
 } from '@angular/material/dialog';
 import { MatLabel } from '@angular/material/form-field';
 import {
 	MatStep,
+	MatStepContent,
 	MatStepper,
 	MatStepperNext,
 	MatStepperPrevious,
 } from '@angular/material/stepper';
+import { applic } from '@osee/applicability/types';
+import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 import { TypesService } from '@osee/messaging/shared/services';
-import type {
-	PlatformType,
-	logicalType,
-	newPlatformTypeDialogReturnData,
-} from '@osee/messaging/shared/types';
-import { applic } from '@osee/shared/types/applicability';
-import {
-	BehaviorSubject,
-	Observable,
-	Subject,
-	combineLatest,
-	concatMap,
-	filter,
-	from,
-	of,
-	switchMap,
-	take,
-	tap,
-} from 'rxjs';
-import { EnumSetFormComponent } from '../../forms/enum-set-form/enum-set-form.component';
+import type { PlatformType, logicalType } from '@osee/messaging/shared/types';
+import { provideOptionalControlContainerNgForm } from '@osee/shared/utils';
+import { Observable } from 'rxjs';
 import { LogicalTypeSelectorComponent } from '../logical-type-selector/logical-type-selector.component';
 import { NewPlatformTypeFormPage2Component } from '../new-platform-type-form-page2/new-platform-type-form-page2.component';
-import { NewPlatformTypeFormComponent } from '../new-platform-type-form/new-platform-type-form.component';
+import { FormsModule } from '@angular/forms';
 
 /**
  * Form used to create a new platform type
@@ -75,84 +60,71 @@ import { NewPlatformTypeFormComponent } from '../new-platform-type-form/new-plat
 		MatStepperNext,
 		MatLabel,
 		MatStepperPrevious,
-		NewPlatformTypeFormComponent,
 		AsyncPipe,
 		TitleCasePipe,
 		KeyValuePipe,
-		EnumSetFormComponent,
 		LogicalTypeSelectorComponent,
 		NewPlatformTypeFormPage2Component,
+		MatStepContent,
+		FormsModule,
 	],
 	templateUrl: './new-type-form.component.html',
 	styles: [':host{width: 100%;height: 100%;}'],
+	viewProviders: [provideOptionalControlContainerNgForm()],
 })
-export class NewTypeFormComponent implements OnInit {
-	logicalTypeSelector = viewChild(LogicalTypeSelectorComponent);
+export class NewTypeFormComponent {
+	private typesService = inject(TypesService);
 
+	logicalTypes: Observable<logicalType[]> = this.typesService.logicalTypes;
+
+	private __lt = toSignal(this.logicalTypes, { initialValue: [] });
 	selectedLogicalType = signal<logicalType>({
 		id: '-1',
 		name: '',
 		idString: '-1',
 		idIntValue: -1,
 	});
-	logicalTypes: Observable<logicalType[]> = this.typesService.logicalTypes;
-	constructor(
-		private dialog: MatDialog, //used for checking and closing dialog if in case where this form can perform that action
-		private typesService: TypesService
-	) {}
-	/**
-	 * Pre-populate the field with some data, currently only does logical type
-	 */
-	@Input() preFillData?: PlatformType[];
 
-	_typeFormState = new Subject<newPlatformTypeDialogReturnData>();
+	platformType = model<PlatformType>(new PlatformTypeSentinel());
 
-	private _dialogToClose = new BehaviorSubject<
-		MatDialogRef<unknown, unknown> | undefined
-	>(undefined);
-
-	closeDialog = combineLatest([
-		this._dialogToClose,
-		this._typeFormState,
-	]).pipe(
-		filter((v) => v[0] !== undefined),
-		take(1),
-		tap(([dialog, state]) => dialog !== undefined && dialog.close(state))
+	private _updateLogicalTypeBasedOnPlatformType = effect(
+		() => {
+			const foundType = this.__lt().find(
+				(v) =>
+					v.name.toLowerCase() ===
+					this.platformType().interfaceLogicalType.value.toLowerCase()
+			);
+			if (foundType) {
+				this.setLogicalType(foundType);
+			}
+		},
+		{ allowSignalWrites: true }
 	);
 
-	updateOuterComponent = new Subject<boolean>();
+	private _removeIds = effect(() => {
+		//if the platform type, or it's attributes have ids they should be zeroized to -1
+		//enum sets and enums should continue to have their ids until the user selects to create a new enumset/enum
+		const _platformType = this.platformType();
+		_platformType.id = '-1';
+		_platformType.description.id = '-1';
+		_platformType.interfaceDefaultValue.id = '-1';
+		_platformType.interfaceLogicalType.id = '-1';
+		_platformType.interfacePlatformType2sComplement.id = '-1';
+		_platformType.interfacePlatformTypeAnalogAccuracy.id = '-1';
+		_platformType.interfacePlatformTypeBitSize.id = '-1';
+		_platformType.interfacePlatformTypeBitsResolution.id = '-1';
+		_platformType.interfacePlatformTypeCompRate.id = '-1';
+		_platformType.interfacePlatformTypeMaxval.id = '-1';
+		_platformType.interfacePlatformTypeMinval.id = '-1';
+		_platformType.interfacePlatformTypeMsbValue.id = '-1';
+		_platformType.interfacePlatformTypeUnits.id = '-1';
+		_platformType.interfacePlatformTypeValidRangeDescription.id = '-1';
+		_platformType.name.id = '-1';
+	});
+	close = output<boolean>();
 
-	/**
-	 * Output event to notify that the dialog has been closed
-	 * Also contains the results of the dialog.
-	 * @type {newPlatformTypeDialogReturnData}
-	 */
-	@Output() typeFormState = combineLatest([
-		this._typeFormState,
-		this.updateOuterComponent,
-	]).pipe(switchMap(([componentState, update]) => of(componentState)));
+	result = output<PlatformType>();
 
-	ngOnInit(): void {
-		if (this.preFillData !== undefined && this.preFillData.length > 0) {
-			this.logicalTypes
-				.pipe(
-					concatMap((lt) => from(lt)),
-					filter(
-						(logicalType) =>
-							this.preFillData !== undefined &&
-							this.preFillData.length > 0 &&
-							logicalType.name.toLowerCase() ===
-								this.preFillData[0].interfaceLogicalType.toLowerCase()
-					),
-					take(1),
-					tap((lt) => {
-						//set the pre fill data
-						this.setLogicalType(lt);
-					})
-				)
-				.subscribe();
-		}
-	}
 	/**
 	 * Sets the current logical type
 	 */
@@ -162,26 +134,16 @@ export class NewTypeFormComponent implements OnInit {
 	/**
 	 * Closes the form and returns a result
 	 */
-	close() {
-		const isInDialog = this.dialog.getDialogById('new-type-dialog');
-
-		if (!isInDialog) {
-			//update the outer component if you aren't in a dialog
-			this.updateOuterComponent.next(true);
-			return;
-		}
-		this._dialogToClose.next(isInDialog);
-	}
-
-	updateFormState(state: newPlatformTypeDialogReturnData) {
-		this._typeFormState.next(state);
+	triggerClose() {
+		this.close.emit(true);
+		this.result.emit(this.platformType());
 	}
 
 	isApplic(value: unknown): value is applic {
 		return (
-			(value as any) !== undefined &&
-			(value as any).id !== undefined &&
-			(value as any).name !== undefined
+			(value as unknown) !== undefined &&
+			(value as applic).id !== undefined &&
+			(value as applic).name !== undefined
 		);
 	}
 }

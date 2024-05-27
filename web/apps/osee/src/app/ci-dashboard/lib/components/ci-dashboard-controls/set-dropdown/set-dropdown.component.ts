@@ -11,7 +11,13 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+	Component,
+	Input,
+	OnChanges,
+	SimpleChanges,
+	inject,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import {
@@ -52,12 +58,10 @@ import type { SetReference } from '../../../types/tmo';
 	],
 })
 export class SetDropdownComponent implements OnChanges {
-	@Input() setId: string = '';
+	private ciSetsService = inject(CiSetsService);
+	private ui = inject(CiDashboardUiService);
 
-	constructor(
-		private ciSetsService: CiSetsService,
-		private ui: CiDashboardUiService
-	) {}
+	@Input() setId = '';
 
 	filterText = new BehaviorSubject<string>('');
 
@@ -101,7 +105,7 @@ export class SetDropdownComponent implements OnChanges {
 		this.filterText.next(value);
 	}
 
-	ngOnChanges(changes: SimpleChanges): void {
+	ngOnChanges(_changes: SimpleChanges): void {
 		this.ui.CiSetId = this.setId;
 	}
 }

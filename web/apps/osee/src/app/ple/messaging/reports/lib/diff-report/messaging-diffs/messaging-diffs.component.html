@@ -12,7 +12,7 @@
  -->
 @if (allItems | async; as allItems) {
 	@if (allItems.length > 0) {
-		<h2 class="mat-headline-6 tw-pl-4">{{ title }}</h2>
+		<h5 class="tw-pl-4">{{ title }}</h5>
 		@if (itemsAdded | async; as _items) {
 			@if (_items.length > 0) {
 				<div class="tw-pb-8">

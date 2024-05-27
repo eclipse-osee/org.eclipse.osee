@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Inject, computed, signal } from '@angular/core';
+import { Component, computed, signal, inject } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import {
@@ -81,6 +81,11 @@ import { CreateActionService } from '@osee/configuration-management/services';
 	],
 })
 export class CreateActionDialogComponent {
+	dialogRef = inject<MatDialogRef<CreateActionDialogComponent>>(MatDialogRef);
+	data = inject<CreateAction>(MAT_DIALOG_DATA);
+	createActionService = inject(CreateActionService);
+	userService = inject(ActionUserService);
+
 	actionableItemId = new BehaviorSubject<string>('');
 	users = this.userService.usersSorted;
 	actionableItemsFilter = signal('');
@@ -182,13 +187,6 @@ export class CreateActionDialogComponent {
 			value: this._priorityValues[row],
 		};
 	});
-
-	constructor(
-		public dialogRef: MatDialogRef<CreateActionDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: CreateAction,
-		public createActionService: CreateActionService,
-		public userService: ActionUserService
-	) {}
 
 	onNoClick(): void {
 		this.dialogRef.close();

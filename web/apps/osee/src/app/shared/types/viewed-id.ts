@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface viewedId {
-	id: string;
+export type viewedId = {
+	id: `${number}`;
 	viewId: string;
-}
+};

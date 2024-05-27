@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
 	BehaviorSubject,
 	combineLatest,
@@ -37,6 +37,19 @@ import { ExecutedCommandsArtifactService } from './executed-commands-artifact.se
 	providedIn: 'root',
 })
 export class ExecutedCommandsService {
+	private commandGroupOptService = inject(CommandGroupOptionsService);
+	private selectedCommandDataService = inject(SelectedCommandDataService);
+	private parameterDataService = inject(ParameterDataService);
+	private commandFromUserHistoryService = inject(
+		CommandFromUserHistoryService
+	);
+	private userHistoryService = inject(UserHistoryService);
+	private executedCommandsArtifactService = inject(
+		ExecutedCommandsArtifactService
+	);
+	private branchIdService = inject(GCBranchIdService);
+	private uiService = inject(UiService);
+
 	isFromHistory = this.commandFromUserHistoryService.fromHistoryAsObservable;
 	executedCommandDetails$ =
 		this.commandFromUserHistoryService.executedCommandDetails;
@@ -56,17 +69,6 @@ export class ExecutedCommandsService {
 	public set doneFx(val: unknown) {
 		this.done.next(val);
 	}
-
-	constructor(
-		private commandGroupOptService: CommandGroupOptionsService,
-		private selectedCommandDataService: SelectedCommandDataService,
-		private parameterDataService: ParameterDataService,
-		private commandFromUserHistoryService: CommandFromUserHistoryService,
-		private userHistoryService: UserHistoryService,
-		private executedCommandsArtifactService: ExecutedCommandsArtifactService,
-		private branchIdService: GCBranchIdService,
-		private uiService: UiService
-	) {}
 
 	get updateCommand() {
 		return combineLatest([

@@ -19,7 +19,15 @@ import {
 	targetedVersionSentinel,
 } from '@osee/shared/types/configuration-management';
 
-export interface CreateActionInterface {
+type _changeType = {
+	id: `${number}`;
+	name: string;
+	idString: string;
+	idIntValue: number;
+	description: string;
+};
+
+export type CreateActionInterface = {
 	createdByUser: user;
 	defaultWorkType: string;
 	originator: user;
@@ -34,20 +42,14 @@ export interface CreateActionInterface {
 	workPackage: string;
 	featureGroup: string;
 	sprint: string;
-	attrValues: { [key: string]: string };
+	attrValues: Record<string, string>;
 	createBranchDefault: boolean;
-	changeType: {
-		id: string;
-		name: string;
-		idString: string;
-		idIntValue: number;
-		description: string;
-	};
+	changeType: _changeType;
 	parentAction: string;
-}
+};
 // only used in action dropdown component
 export class CreateAction implements CreateActionInterface {
-	constructor(currentUser: user, workType: string = '') {
+	constructor(currentUser: user, workType = '') {
 		this.createdByUser = currentUser;
 		this.originator = currentUser;
 		this.defaultWorkType = workType;
@@ -59,21 +61,21 @@ export class CreateAction implements CreateActionInterface {
 	assignees = '';
 	actionableItem: actionableItem = new actionableItem();
 	targetedVersion: targetedVersion = targetedVersionSentinel;
-	title: string = '';
-	description: string = '';
+	title = '';
+	description = '';
 	points = '';
 	unplanned = false;
-	workPackage: string = '';
-	featureGroup: string = '';
-	sprint: string = '';
-	attrValues: { [key: string]: string } = {};
-	createBranchDefault: boolean = false;
-	changeType = {
+	workPackage = '';
+	featureGroup = '';
+	sprint = '';
+	attrValues: Record<string, string> = {};
+	createBranchDefault = false;
+	changeType: _changeType = {
 		id: '-1',
 		name: '',
 		idString: '-1',
 		idIntValue: -1,
 		description: '',
 	};
-	parentAction: string = '';
+	parentAction = '';
 }

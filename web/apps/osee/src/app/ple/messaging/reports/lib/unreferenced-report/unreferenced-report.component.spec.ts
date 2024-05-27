@@ -26,8 +26,8 @@ import { provideRouter } from '@angular/router';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { UserDataAccountService } from '@osee/auth';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
-import { TransactionService } from '@osee/shared/transactions';
-import { transactionServiceMock } from '@osee/shared/transactions/testing';
+import { TransactionService } from '@osee/transactions/services';
+import { transactionServiceMock } from '@osee/transactions/services/testing';
 
 describe('UnreferencedReportComponent', () => {
 	let component: UnreferencedReportComponent;
@@ -76,10 +76,6 @@ describe('UnreferencedReportComponent', () => {
 					{
 						provide: UserDataAccountService,
 						useValue: userDataAccountServiceMock,
-					},
-					{
-						provide: TransactionService,
-						useValue: transactionServiceMock,
 					},
 					{
 						provide: WarningDialogService,

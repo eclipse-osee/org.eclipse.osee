@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import type {
 	OseeNode,
 	nodeData,
@@ -26,7 +26,7 @@ import { ClusterNode } from '@swimlane/ngx-graph';
 	providedIn: 'root',
 })
 export class GraphService {
-	constructor(private http: HttpClient) {}
+	private http = inject(HttpClient);
 
 	getNodes(id: string, viewId: string) {
 		let params: HttpParamsType = {};

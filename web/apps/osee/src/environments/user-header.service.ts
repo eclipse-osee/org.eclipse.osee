@@ -17,8 +17,6 @@ import { Injectable } from '@angular/core';
 	providedIn: 'root',
 })
 export abstract class UserHeaderService {
-	constructor() {}
-
 	abstract useCustomHeaders: boolean;
 	abstract headers: HttpHeaders;
 }

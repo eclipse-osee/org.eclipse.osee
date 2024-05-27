@@ -11,19 +11,22 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
-	HttpClientTestingModule,
 	HttpTestingController,
+	provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { TransactionBuilderService } from '@osee/shared/transactions';
-import {
-	transactionBuilderMock,
-	transactionMock,
-} from '@osee/shared/transactions/testing';
+import { TransactionBuilderService } from '@osee/shared/transactions-legacy';
+import { transactionBuilderMock } from '@osee/shared/transactions-legacy/testing';
 import { TestScheduler } from 'rxjs/testing';
 import { apiURL } from '@osee/environments';
 
 import { NodeService } from './node.service';
+import { transactionMock, txMock } from '@osee/transactions/testing';
+import { nodesMock } from '@osee/messaging/shared/testing';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('NodeService', () => {
 	let service: NodeService;
@@ -32,13 +35,15 @@ describe('NodeService', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
+			imports: [],
 			providers: [
 				{
 					provide: TransactionBuilderService,
 					useValue: transactionBuilderMock,
 				},
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
 			],
-			imports: [HttpClientTestingModule],
 		});
 		service = TestBed.inject(NodeService);
 		httpTestingController = TestBed.inject(HttpTestingController);
@@ -78,39 +83,17 @@ describe('NodeService', () => {
 		});
 		describe('Adding data', () => {
 			it('should add a node', () => {
-				scheduler.run(() => {
-					const expectedfilterValues = { a: transactionMock };
-					const expectedMarble = '(a|)';
-					scheduler
-						.expectObservable(
-							service.createNode('10', {
-								id: '',
-								name: '',
-								description: '',
-							})
-						)
-						.toBe(expectedMarble, expectedfilterValues);
-				});
+				expect(
+					service.addNewNodeToTransaction(
+						nodesMock[0],
+						txMock,
+						undefined
+					)
+				).toBe(txMock);
 			});
 		});
 
 		describe('Modifying data', () => {
-			it('should create a transaction to change a node', () => {
-				scheduler.run(() => {
-					const expectedfilterValues = { a: transactionMock };
-					const expectedMarble = '(a|)';
-					scheduler
-						.expectObservable(
-							service.changeNode('10', {
-								id: '',
-								name: '',
-								description: '',
-							})
-						)
-						.toBe(expectedMarble, expectedfilterValues);
-				});
-			});
-
 			it('should create a transaction to delete a node', () => {
 				scheduler.run(() => {
 					const expectedfilterValues = { a: transactionMock };

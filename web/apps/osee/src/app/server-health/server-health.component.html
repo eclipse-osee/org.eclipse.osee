@@ -38,6 +38,8 @@
 				</a>
 			}
 			@if (activeMq | async; as activeMq) {
+				<!-- TODO: Jaden please address this :) -->
+				<!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
 				<a
 					matTooltip="External Link to ActiveMQ Configuration Page"
 					(click)="openLink(activeMq.activeMqUrl)"
@@ -63,6 +65,8 @@
 				[src]="prometheusUrl"
 				class="tw-min-h-[900px] tw-min-w-full"
 				frameborder="0"></iframe>
+			<!-- TODO: Jaden please address this :) -->
+			<!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
 			<a
 				(click)="openLink(prometheusUrl)"
 				class="tw-w-full tw-rounded-md tw-bg-primary-500 tw-p-4 tw-text-foreground tw-shadow-md hover:tw-bg-primary-700 dark:tw-bg-primary-600 dark:hover:tw-bg-primary-900">

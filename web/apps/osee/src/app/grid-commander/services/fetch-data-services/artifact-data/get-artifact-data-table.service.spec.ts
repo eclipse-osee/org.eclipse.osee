@@ -13,12 +13,16 @@
 import { TestBed } from '@angular/core/testing';
 import { apiURL } from '@osee/environments';
 import {
-	HttpClientTestingModule,
 	HttpTestingController,
+	provideHttpClientTesting,
 } from '@angular/common/http/testing';
 
 import { GetArtifactDataTableService } from './get-artifact-data-table.service';
 import { artifactAttributesByRowMock } from '../../../mock-data/mock-tableData';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('GetArtifactDataTableService', () => {
 	let service: GetArtifactDataTableService;
@@ -26,7 +30,11 @@ describe('GetArtifactDataTableService', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
+			imports: [],
+			providers: [
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+			],
 		});
 		service = TestBed.inject(GetArtifactDataTableService);
 		httpTestingController = TestBed.inject(HttpTestingController);

@@ -55,9 +55,8 @@ import { FormsModule } from '@angular/forms';
 				}
 			</select>
 			<button
-				class="tw-mb-2 tw-me-2 tw-space-x-1 tw-rounded-full tw-bg-blue-700 tw-px-5 tw-py-2.5 tw-text-center tw-text-sm tw-font-medium tw-text-white hover:tw-bg-blue-800 focus:tw-outline-none focus:tw-ring-4 focus:tw-ring-blue-300 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 dark:focus:tw-ring-blue-800"
-				mat-raised-button
-				color="primary"
+				class="primary-button tw-mb-2 tw-me-2 tw-space-x-1 tw-rounded-full tw-bg-blue-700 tw-px-5 tw-py-2.5 tw-text-center tw-text-sm tw-font-medium tw-text-white hover:tw-bg-blue-800 focus:tw-outline-none focus:tw-ring-4 focus:tw-ring-blue-300 dark:tw-bg-blue-600 dark:hover:tw-bg-blue-700 dark:focus:tw-ring-blue-800"
+				mat-flat-button
 				(click)="generateExport()">
 				Generate
 			</button>

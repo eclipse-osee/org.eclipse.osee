@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { apiURL } from '@osee/environments';
 import { UsersContext } from '../../../types/grid-commander-types/gc-user-and-contexts-relationships';
@@ -21,12 +21,10 @@ import { GCBranchIdService } from '../branch/gc-branch-id.service';
 	providedIn: 'root',
 })
 export class GetUserContextRelationsService {
-	private defaultBranchId = this.branchIdService.branchId;
+	private http = inject(HttpClient);
+	private branchIdService = inject(GCBranchIdService);
 
-	constructor(
-		private http: HttpClient,
-		private branchIdService: GCBranchIdService
-	) {}
+	private defaultBranchId = this.branchIdService.branchId;
 
 	getResponseUserContextData(): Observable<UsersContext[]> {
 		return this.http.get<UsersContext[]>(

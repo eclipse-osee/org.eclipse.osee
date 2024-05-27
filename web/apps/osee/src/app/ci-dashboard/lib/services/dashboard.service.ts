@@ -10,26 +10,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { combineLatest, filter, switchMap, take, tap } from 'rxjs';
 import { DashboardHttpService } from './dashboard-http.service';
 import { CiDashboardUiService } from './ci-dashboard-ui.service';
-import { TransactionService } from '@osee/shared/transactions';
-import {
-	ARTIFACTTYPEIDENUM,
-	ATTRIBUTETYPEIDENUM,
-} from '@osee/shared/types/constants';
+import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
 import { NamedId } from '@osee/shared/types';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
+import { TransactionService } from '@osee/transactions/services';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class DashboardService {
-	constructor(
-		private uiService: CiDashboardUiService,
-		private dashboardHttpService: DashboardHttpService,
-		private transactionService: TransactionService
-	) {}
+	private uiService = inject(CiDashboardUiService);
+	private dashboardHttpService = inject(DashboardHttpService);
+	private transactionService = inject(TransactionService);
 
 	private _teamStats = combineLatest([
 		this.uiService.branchId,

@@ -16,8 +16,20 @@ import { nodesMock } from './nodes-response.mock';
 import { ethernetTransportType } from './transport-type.response.mock';
 
 export const connectionMock: connection = {
-	name: 'connection1',
-	description: '',
+	id: '1',
+	gammaId: '1',
+	name: {
+		id: '-1',
+		typeId: '1152921504606847088',
+		gammaId: '-1',
+		value: 'connection1',
+	},
+	description: {
+		id: '-1',
+		typeId: '1152921504606847090',
+		gammaId: '-1',
+		value: '',
+	},
 	transportType: ethernetTransportType,
 	nodes: nodesMock,
 	applicability: {

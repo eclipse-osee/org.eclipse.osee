@@ -13,13 +13,15 @@
 import { of } from 'rxjs';
 import { MessagesService } from '../services/http/messages.service';
 import { messagesMock } from './messages.response.mock';
-import { connectionNodesMock } from '@osee/messaging/shared/testing';
 import type { message } from '@osee/messaging/shared/types';
-import { transaction, relation } from '@osee/shared/types';
+import { transactionResultMock } from '@osee/transactions/testing';
+import { transactionMock } from '@osee/transactions/testing';
 import {
-	transactionMock,
-	transactionResultMock,
-} from '@osee/shared/transactions/testing';
+	legacyRelation,
+	legacyTransaction,
+	transaction,
+} from '@osee/transactions/types';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 
 export const messageServiceMock: Partial<MessagesService> = {
 	getFilteredMessages(filter, branchId, connectionId, pageNum, pageSize) {
@@ -29,16 +31,19 @@ export const messageServiceMock: Partial<MessagesService> = {
 		return of(messagesMock[0]);
 	},
 	getConnectionName(branchId: string, connectionId: string) {
-		return of('hello');
+		return of({
+			id: '-1',
+			typeId: ATTRIBUTETYPEIDENUM.NAME,
+			gammaId: '-1',
+			value: 'hello',
+		});
 	},
-	getConnectionNodes(branchId: string, connectionId: string) {
-		return of(connectionNodesMock);
-	},
-	createMessage(branchId: string, message: Partial<message>) {
-		return of(transactionMock);
-	},
-	changeMessage(branchId: string, message: Partial<message>) {
-		return of(transactionMock);
+	addNewMessageToTransaction(
+		message: message,
+		tx: Required<transaction>,
+		key?: string
+	) {
+		return tx;
 	},
 	createConnectionRelation(connectionId: string) {
 		return of({
@@ -56,17 +61,17 @@ export const messageServiceMock: Partial<MessagesService> = {
 			sideA: '20',
 		});
 	},
-	performMutation(body: transaction) {
+	performMutation(body: legacyTransaction) {
 		return of(transactionResultMock);
 	},
 	deleteMessage(
 		branchId: string,
 		messageId: string,
-		transaction?: transaction
+		transaction?: legacyTransaction
 	) {
 		return of(transactionMock);
 	},
-	deleteRelation(branchId: string, relation: relation) {
+	deleteRelation(branchId: string, relation: legacyRelation) {
 		return of(transactionMock);
 	},
 };

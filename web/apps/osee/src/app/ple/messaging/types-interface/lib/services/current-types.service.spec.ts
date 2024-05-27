@@ -10,44 +10,38 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import {
-	HttpClientTestingModule,
-	HttpTestingController,
-} from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TestScheduler } from 'rxjs/testing';
 
-import { CurrentTypesService } from './current-types.service';
-import { PlMessagingTypesUIService } from './pl-messaging-types-ui.service';
 import { UserDataAccountService } from '@osee/auth';
-import { TransactionBuilderService } from '@osee/shared/transactions';
-import {
-	transactionBuilderMock,
-	transactionResultMock,
-} from '@osee/shared/transactions/testing';
-import {
-	MimPreferencesServiceMock,
-	typesServiceMock,
-	enumsServiceMock,
-	enumerationSetServiceMock,
-	platformTypes1,
-	MimPreferencesMock,
-} from '@osee/messaging/shared/testing';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
+import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 import {
+	EnumerationSetService,
 	MimPreferencesService,
 	TypesService,
-	EnumsService,
-	EnumerationSetService,
 } from '@osee/messaging/shared/services';
+import {
+	MimPreferencesMock,
+	MimPreferencesServiceMock,
+	enumerationSetServiceMock,
+	platformTypes1,
+	typesServiceMock,
+} from '@osee/messaging/shared/testing';
 import { ApplicabilityListService } from '@osee/shared/services';
 import { applicabilityListServiceMock } from '@osee/shared/testing';
+import { TransactionBuilderService } from '@osee/shared/transactions-legacy';
+import { transactionBuilderMock } from '@osee/shared/transactions-legacy/testing';
+import { CurrentTransactionService } from '@osee/transactions/services';
+import { currentTransactionServiceMock } from '@osee/transactions/services/testing';
+import { transactionResultMock } from '@osee/transactions/testing';
+import { CurrentTypesService } from './current-types.service';
+import { PlMessagingTypesUIService } from './pl-messaging-types-ui.service';
 
 describe('CurrentTypesService', () => {
 	let service: CurrentTypesService;
 	let uiService: PlMessagingTypesUIService;
 	let scheduler: TestScheduler;
-	let httpTestingController: HttpTestingController;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
@@ -65,7 +59,6 @@ describe('CurrentTypesService', () => {
 					useValue: userDataAccountServiceMock,
 				},
 				{ provide: TypesService, useValue: typesServiceMock },
-				{ provide: EnumsService, useValue: enumsServiceMock },
 				{
 					provide: EnumerationSetService,
 					useValue: enumerationSetServiceMock,
@@ -74,12 +67,14 @@ describe('CurrentTypesService', () => {
 					provide: ApplicabilityListService,
 					useValue: applicabilityListServiceMock,
 				},
+				{
+					provide: CurrentTransactionService,
+					useValue: currentTransactionServiceMock,
+				},
 			],
-			imports: [HttpClientTestingModule],
 		});
 		service = TestBed.inject(CurrentTypesService);
 		uiService = TestBed.inject(PlMessagingTypesUIService);
-		httpTestingController = TestBed.inject(HttpTestingController);
 	});
 
 	beforeEach(
@@ -126,19 +121,7 @@ describe('CurrentTypesService', () => {
 			uiService.BranchIdString = '10';
 			scheduler
 				.expectObservable(
-					service.createType({}, true, {
-						enumSetId: '1',
-						enumSetName: 'hello',
-						enumSetApplicability: { id: '1', name: 'Base' },
-						enumSetDescription: 'description',
-						enums: [
-							{
-								name: 'Hello',
-								ordinal: 0,
-								applicability: { id: '1', name: 'base' },
-							},
-						],
-					})
+					service.createType(new PlatformTypeSentinel())
 				)
 				.toBe(expectedMarble, expectedFilterValues);
 		});
@@ -151,19 +134,7 @@ describe('CurrentTypesService', () => {
 			uiService.BranchIdString = '10';
 			scheduler
 				.expectObservable(
-					service.createType({}, false, {
-						enumSetId: '1',
-						enumSetName: 'hello',
-						enumSetApplicability: { id: '1', name: 'Base' },
-						enumSetDescription: 'description',
-						enums: [
-							{
-								name: 'Hello',
-								ordinal: 0,
-								applicability: { id: '1', name: 'base' },
-							},
-						],
-					})
+					service.createType(new PlatformTypeSentinel())
 				)
 				.toBe(expectedMarble, expectedFilterValues);
 		});
@@ -176,23 +147,7 @@ describe('CurrentTypesService', () => {
 			uiService.BranchIdString = '10';
 			scheduler
 				.expectObservable(
-					service.createType(
-						{ interfaceLogicalType: 'enumeration' },
-						true,
-						{
-							enumSetId: '1',
-							enumSetName: 'hello',
-							enumSetApplicability: { id: '1', name: 'Base' },
-							enumSetDescription: 'description',
-							enums: [
-								{
-									name: 'Hello',
-									ordinal: 0,
-									applicability: { id: '1', name: 'base' },
-								},
-							],
-						}
-					)
+					service.createType(new PlatformTypeSentinel())
 				)
 				.toBe(expectedMarble, expectedFilterValues);
 		});
@@ -205,23 +160,7 @@ describe('CurrentTypesService', () => {
 			uiService.BranchIdString = '10';
 			scheduler
 				.expectObservable(
-					service.createType(
-						{ interfaceLogicalType: 'enumeration' },
-						false,
-						{
-							enumSetId: '1',
-							enumSetName: 'hello',
-							enumSetApplicability: { id: '1', name: 'Base' },
-							enumSetDescription: 'description',
-							enums: [
-								{
-									name: 'Hello',
-									ordinal: 0,
-									applicability: { id: '1', name: 'base' },
-								},
-							],
-						}
-					)
+					service.createType(new PlatformTypeSentinel())
 				)
 				.toBe(expectedMarble, expectedFilterValues);
 		});

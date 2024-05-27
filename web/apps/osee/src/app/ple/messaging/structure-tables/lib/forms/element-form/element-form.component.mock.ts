@@ -11,11 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-import { Component, Input, Output } from '@angular/core';
+import { Component, model } from '@angular/core';
 
-import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 import { ElementDialog } from '@osee/messaging/shared/types';
-import { Subject } from 'rxjs';
 
 import { ElementFormComponent } from './element-form.component';
 
@@ -25,16 +23,5 @@ import { ElementFormComponent } from './element-form.component';
 	standalone: true,
 })
 export class MockElementFormComponent implements Partial<ElementFormComponent> {
-	@Input() data: ElementDialog = {
-		id: '',
-		name: '',
-		element: {},
-		type: new PlatformTypeSentinel(),
-		mode: 'add',
-		allowArray: true,
-		arrayChild: false,
-	};
-	@Input() reset!: number | null;
-
-	@Output() dataChange = new Subject<ElementDialog>();
+	data = model.required<ElementDialog>();
 }

@@ -13,19 +13,24 @@
 package org.eclipse.osee.mim.types;
 
 import java.util.List;
-import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithGammas;
+import org.eclipse.osee.accessor.types.AttributePojo;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * @author Luciano T. Vaglienti
  */
-public class ConnectionViewData extends ArtifactAccessorResult {
+public class ConnectionViewData extends ArtifactAccessorResultWithGammas {
    private TransportType TransportType; //will need logic for both of these or data stored in DB
    private List<InterfaceNode> nodes;
    private ApplicabilityToken applicability;
-   private String Description;
+   private AttributePojo<String> Description =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.Description, GammaId.SENTINEL, "", "");
 
    public ConnectionViewData(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -36,7 +41,7 @@ public class ConnectionViewData extends ArtifactAccessorResult {
 
    }
 
-   public ConnectionViewData(Long id, String name) {
+   public ConnectionViewData(Long id, AttributePojo<String> name) {
       super(id, name);
    }
 
@@ -69,7 +74,7 @@ public class ConnectionViewData extends ArtifactAccessorResult {
     * @return the isDashed
     */
    public boolean isDashed() {
-      return TransportType.getDashedPresentation();
+      return TransportType.getDashedPresentation().getValue();
    }
 
    /**
@@ -89,14 +94,14 @@ public class ConnectionViewData extends ArtifactAccessorResult {
    /**
     * @return the description
     */
-   public String getDescription() {
+   public AttributePojo<String> getDescription() {
       return Description;
    }
 
    /**
     * @param description the description to set
     */
-   public void setDescription(String description) {
+   public void setDescription(AttributePojo<String> description) {
       this.Description = description;
    }
 

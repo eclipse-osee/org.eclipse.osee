@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import type { branchApplicability } from '@osee/messaging/shared/types';
 import { BehaviorSubject, iif, Observable, of } from 'rxjs';
 import { switchMap, share } from 'rxjs/operators';
@@ -21,6 +21,8 @@ import { apiURL } from '@osee/environments';
 	providedIn: 'root',
 })
 export class EditAuthService {
+	private http = inject(HttpClient);
+
 	private _branchId: BehaviorSubject<string> = new BehaviorSubject<string>(
 		'0'
 	);
@@ -56,7 +58,6 @@ export class EditAuthService {
 			)
 		)
 	);
-	constructor(private http: HttpClient) {}
 
 	private getBranchInfo(id: string | number) {
 		return this.http.get<branchApplicability>(

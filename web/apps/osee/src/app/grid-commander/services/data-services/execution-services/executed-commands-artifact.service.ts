@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { executedCommand } from '../../../types/grid-commander-types/executedCommand';
 import {
 	ARTIFACTTYPEIDENUM,
@@ -18,26 +18,23 @@ import {
 } from '@osee/shared/types/constants';
 import { of, switchMap, take } from 'rxjs';
 import { userHistory } from '../../../types/grid-commander-types/userHistory';
-import {
-	TransactionBuilderService,
-	TransactionService,
-} from '@osee/shared/transactions';
-import { relation, transaction } from '@osee/shared/types';
+import { TransactionBuilderService } from '@osee/shared/transactions-legacy';
+import { legacyRelation, legacyTransaction } from '@osee/transactions/types';
+import { TransactionService } from '@osee/transactions/services';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class ExecutedCommandsArtifactService {
-	constructor(
-		private transactionService: TransactionService,
-		private builder: TransactionBuilderService
-	) {}
+	private builder = inject(TransactionBuilderService);
+
+	private transactionService = inject(TransactionService);
 
 	//create an ExecutedCommand Artifact
 	createExecutedCommandArtifact(
 		branchId: string,
 		executedCommand: Partial<executedCommand>,
-		transaction?: transaction,
+		transaction?: legacyTransaction,
 		key?: string
 	) {
 		return of(
@@ -58,7 +55,7 @@ export class ExecutedCommandsArtifactService {
 
 	//Create relation of ExecutedCommand Artifact to the User's Executed Command History
 	createCommandToHistoryRelation(historyId: string, commandId: string) {
-		let relation: relation = {
+		const relation: legacyRelation = {
 			typeId: RELATIONTYPEIDENUM.DEFAULT_HIERARCHICAL,
 			sideA: historyId,
 			sideB: commandId,
@@ -69,8 +66,8 @@ export class ExecutedCommandsArtifactService {
 	//Add new Relation
 	addToExecutedCommandHx(
 		branchId: string,
-		relation: relation,
-		transaction?: transaction
+		relation: legacyRelation,
+		transaction?: legacyTransaction
 	) {
 		return of(
 			this.builder.addRelation(
@@ -99,8 +96,8 @@ export class ExecutedCommandsArtifactService {
 		branchId: string,
 		executedCommand: Partial<executedCommand>,
 		userHistory: userHistory,
-		transaction?: transaction,
-		key?: string
+		_transaction?: legacyTransaction,
+		_key?: string
 	) {
 		return this.createExecutedCommandArtifact(
 			branchId,
@@ -152,7 +149,7 @@ export class ExecutedCommandsArtifactService {
 		);
 	}
 
-	performMutation(body: transaction) {
+	performMutation(body: legacyTransaction) {
 		return this.transactionService.performMutation(body);
 	}
 }

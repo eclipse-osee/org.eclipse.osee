@@ -77,6 +77,10 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    <T> T getSoleAttributeValue(AttributeTypeToken attributeType, T defaultValue);
 
+   <T> IAttribute<T> getSoleAttribute(AttributeTypeToken attributeType);
+
+   <T> IAttribute<T> getSoleAttribute(AttributeTypeToken attributeType, T defaultValue);
+
    String getSoleAttributeAsString(AttributeTypeToken attributeType);
 
    String getSoleAttributeAsString(AttributeTypeToken attributeType, String defaultValue);
@@ -215,6 +219,8 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
    ApplicabilityId getApplicability();
 
    ApplicabilityToken getApplicabilityToken();
+
+   GammaId getGamma();
 
    String getSafeName();
 
@@ -486,6 +492,11 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
       }
 
       @Override
+      public GammaId getGamma() {
+         return GammaId.SENTINEL;
+      }
+
+      @Override
       public String getSafeName() {
          return null;
       }
@@ -519,9 +530,19 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
       public List<ArtifactReadable> getReferenceArtifactsByType(AttributeTypeToken attributeType) {
          return null;
       }
+	  
+	  public <T> AttributeReadable<T> getSoleAttribute(AttributeTypeToken attributeType) {
+         return null;
+      }
+
 
       @Override
       public ArtifactReadable getReferenceArtifactByAttrId(AttributeId attrId) {
+         return null;
+      }
+	  
+	  @Override
+      public <T> IAttribute<T> getSoleAttribute(AttributeTypeToken attributeType, T defaultValue) {
          return null;
       }
    }

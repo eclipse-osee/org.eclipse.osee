@@ -126,7 +126,6 @@
 				>
 				<mat-selection-list
 					[(ngModel)]="data.feature.productApplicabilities"
-					color="primary"
 					class="tw-text-lg">
 					@for (type of productApplicabilities | async; track type) {
 						<mat-list-option

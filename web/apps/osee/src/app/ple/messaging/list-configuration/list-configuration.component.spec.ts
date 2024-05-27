@@ -12,25 +12,27 @@
  **********************************************************************/
 import { AsyncPipe, NgIf } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { NamedIdListEditorComponent } from '@osee/messaging/shared/main-content';
 import {
-	UnitsService,
-	RatesService,
-	MessageTypesService,
-} from '@osee/messaging/shared/services';
-import {
-	unitsServiceMock,
-	ratesServiceMock,
-	messageTypesServiceMock,
 	MessagingControlsMockComponent,
+	messageTypesServiceMock,
+	ratesServiceMock,
 } from '@osee/messaging/shared/testing';
-import { TransactionService } from '@osee/shared/transactions';
-import { transactionServiceMock } from '@osee/shared/transactions/testing';
 
+import { CurrentMessagePeriodicityService } from '@osee/messaging/message-periodicity/services';
+import { CurrentMessagePeriodicitiesServiceMock } from '@osee/messaging/message-periodicity/services/testing';
+import { MessageTypesService } from '@osee/messaging/message-type/services';
+import { RatesService } from '@osee/messaging/rate/services';
+import { CurrentStructureCategoriesService } from '@osee/messaging/structure-category/services';
+import { CurrentStructureCategoriesServiceMock } from '@osee/messaging/structure-category/services/testing';
+import { UnitsService } from '@osee/messaging/units/services';
+import { unitsServiceMock } from '@osee/messaging/units/services/testing';
+import { TransactionService } from '@osee/transactions/services';
+import { transactionServiceMock } from '@osee/transactions/services/testing';
 import { ListConfigurationComponent } from './list-configuration.component';
-import { MockViewSelectorComponent } from '@osee/shared/components/testing';
+import { MockCurrentViewSelectorComponent } from '@osee/shared/components/testing';
 
 describe('ListConfigurationComponent', () => {
 	let component: ListConfigurationComponent;
@@ -56,9 +58,13 @@ describe('ListConfigurationComponent', () => {
 						provide: MessageTypesService,
 						useValue: messageTypesServiceMock,
 					},
+					{
+						provide: CurrentStructureCategoriesService,
+						useValue: CurrentStructureCategoriesServiceMock,
+					},
 				],
 				imports: [
-					MockViewSelectorComponent,
+					MockCurrentViewSelectorComponent,
 					MessagingControlsMockComponent,
 					NamedIdListEditorComponent,
 					AsyncPipe,
@@ -67,8 +73,9 @@ describe('ListConfigurationComponent', () => {
 			},
 		})
 			.configureTestingModule({
-				imports: [NoopAnimationsModule, ListConfigurationComponent],
+				imports: [ListConfigurationComponent],
 				providers: [
+					provideNoopAnimations(),
 					{
 						provide: TransactionService,
 						useValue: transactionServiceMock,
@@ -84,6 +91,14 @@ describe('ListConfigurationComponent', () => {
 					{
 						provide: MessageTypesService,
 						useValue: messageTypesServiceMock,
+					},
+					{
+						provide: CurrentStructureCategoriesService,
+						useValue: CurrentStructureCategoriesServiceMock,
+					},
+					{
+						provide: CurrentMessagePeriodicityService,
+						useValue: CurrentMessagePeriodicitiesServiceMock,
 					},
 					provideRouter([]),
 				],

@@ -10,70 +10,107 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Directive, forwardRef, Input } from '@angular/core';
+import { Directive, effect, forwardRef, input } from '@angular/core';
 import {
 	AbstractControl,
-	AsyncValidator,
-	NG_ASYNC_VALIDATORS,
+	NG_VALIDATORS,
 	ValidationErrors,
+	Validator,
 } from '@angular/forms';
 import { nodeData, transportType } from '@osee/messaging/shared/types';
-import { Observable, of } from 'rxjs';
 
 @Directive({
-	selector: '[oseeConnectionNodesCount]',
+	selector: '[oseeNodesCount]',
 	standalone: true,
 	providers: [
 		{
-			provide: NG_ASYNC_VALIDATORS,
-			useExisting: forwardRef(() => ConnectionNodesCountDirective),
+			provide: NG_VALIDATORS,
+			useExisting: forwardRef(() => NodesCountDirective),
 			multi: true,
 		},
 	],
 })
-export class ConnectionNodesCountDirective implements AsyncValidator {
-	@Input() oseeConnectionNodesCount!: transportType;
+export class NodesCountDirective implements Validator {
+	//TODO remove this variable once signals are fully integrated into forms
+	_control!: AbstractControl;
+	oseeNodesCount = input.required<transportType>();
+	validationType = input<'connection' | 'publish' | 'subscribe'>(
+		'connection'
+	);
 
-	constructor() {}
+	private _noopEffect = effect(() => {
+		//TODO remove this effect once signals are fully integrated into forms
+		this.oseeNodesCount();
+		this.validationType();
+		if (this._control) {
+			this._control.updateValueAndValidity();
+		}
+	});
 
-	validate(
-		control: AbstractControl<nodeData[]>
-	): Observable<ValidationErrors | null> {
-		const type = this.oseeConnectionNodesCount;
-		const length = control.value.length;
-		const min = Math.min(
-			type.minimumPublisherMultiplicity,
-			type.minimumSubscriberMultiplicity
-		);
-		const max =
-			type.maximumPublisherMultiplicity === 0 ||
-			type.maximumSubscriberMultiplicity === 0
-				? 0
-				: type.maximumPublisherMultiplicity +
-				  type.maximumSubscriberMultiplicity;
+	validate(control: AbstractControl<nodeData[]>): ValidationErrors | null {
+		//TODO remove this variable once signals are fully integrated into forms
+		this._control = control;
+		const type = this.oseeNodesCount();
+		const validationType = this.validationType();
+		const min =
+			validationType === 'connection'
+				? Math.min(
+						type.minimumPublisherMultiplicity.value,
+						type.minimumSubscriberMultiplicity.value
+					)
+				: validationType === 'publish'
+					? type.minimumPublisherMultiplicity.value
+					: type.minimumSubscriberMultiplicity.value;
 		if (!control.value) {
-			return of<ValidationErrors>({
+			return {
 				min: {
 					min: min,
 					actual: 0,
 				},
-			});
+			};
+		}
+		const length = control.value.length;
+		const max =
+			validationType === 'connection'
+				? type.maximumPublisherMultiplicity.value === 0 ||
+					type.maximumSubscriberMultiplicity.value === 0
+					? 0
+					: type.maximumPublisherMultiplicity.value +
+						type.maximumSubscriberMultiplicity.value
+				: validationType === 'publish'
+					? type.maximumPublisherMultiplicity.value
+					: type.maximumSubscriberMultiplicity.value;
+
+		//TODO all logic related to direct connection should be separate validator
+		const directConnection = type.directConnection;
+		if (
+			(directConnection &&
+				length !== 2 &&
+				validationType === 'connection') ||
+			(length < 2 && validationType === 'connection')
+		) {
+			return {
+				min: {
+					min: 2,
+					actual: length,
+				},
+			};
 		}
 		if (min !== 0 && length < min) {
-			return of<ValidationErrors>({
+			return {
 				min: {
 					min: min,
 					actual: length,
 				},
-			});
+			};
 		} else if (max !== 0 && length > max) {
-			return of<ValidationErrors>({
+			return {
 				max: {
 					max: max,
 					actual: length,
 				},
-			});
+			};
 		}
-		return of(null);
+		return null;
 	}
 }

@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Directive, Input, input } from '@angular/core';
+import { Directive, input } from '@angular/core';
 import {
 	AbstractControl,
 	ValidationErrors,

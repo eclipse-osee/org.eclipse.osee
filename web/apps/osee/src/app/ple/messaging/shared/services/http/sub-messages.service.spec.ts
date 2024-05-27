@@ -11,20 +11,25 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
-	HttpClientTestingModule,
 	HttpTestingController,
+	provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { TransactionBuilderService } from '@osee/shared/transactions';
-import {
-	transactionBuilderMock,
-	transactionMock,
-} from '@osee/shared/transactions/testing';
-import { TestScheduler } from 'rxjs/testing';
-import { relation } from '@osee/shared/types';
 import { apiURL } from '@osee/environments';
+import { TransactionBuilderService } from '@osee/shared/transactions-legacy';
+import { transactionBuilderMock } from '@osee/shared/transactions-legacy/testing';
+import { legacyRelation } from '@osee/transactions/types';
+import { TestScheduler } from 'rxjs/testing';
 
+import { subMessagesMock } from '@osee/messaging/shared/testing';
+import { CurrentTransactionService } from '@osee/transactions/services';
+import { currentTransactionServiceMock } from '@osee/transactions/services/testing';
+import { transactionMock, txMock } from '@osee/transactions/testing';
 import { SubMessagesService } from './sub-messages.service';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('SubMessagesService', () => {
 	let service: SubMessagesService;
@@ -33,13 +38,19 @@ describe('SubMessagesService', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
+			imports: [],
 			providers: [
 				{
 					provide: TransactionBuilderService,
 					useValue: transactionBuilderMock,
 				},
+				{
+					provide: CurrentTransactionService,
+					useValue: currentTransactionServiceMock,
+				},
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
 			],
-			imports: [HttpClientTestingModule],
 		});
 		service = TestBed.inject(SubMessagesService);
 		httpTestingController = TestBed.inject(HttpTestingController);
@@ -58,14 +69,14 @@ describe('SubMessagesService', () => {
 
 	it('should create a message relation', () => {
 		scheduler.run(() => {
-			let relation: relation = {
+			const relation: legacyRelation = {
 				typeName: 'Interface Message SubMessage Content',
 				sideA: '10',
 				sideB: '10',
 				afterArtifact: 'end',
 			};
-			let expectedObservable = { a: relation };
-			let expectedMarble = '(a|)';
+			const expectedObservable = { a: relation };
+			const expectedMarble = '(a|)';
 			scheduler
 				.expectObservable(service.createMessageRelation('10', '10'))
 				.toBe(expectedMarble, expectedObservable);
@@ -73,29 +84,15 @@ describe('SubMessagesService', () => {
 	});
 
 	it('should create a submessage creation transaction', () => {
-		scheduler.run(() => {
-			let expectedObservable = { a: transactionMock };
-			let expectedMarble = '(a|)';
-			scheduler
-				.expectObservable(service.createSubMessage('10', {}, []))
-				.toBe(expectedMarble, expectedObservable);
-		});
-	});
-
-	it('should create a submessage change transaction', () => {
-		scheduler.run(() => {
-			let expectedObservable = { a: transactionMock };
-			let expectedMarble = '(a|)';
-			scheduler
-				.expectObservable(service.changeSubMessage('10', {}))
-				.toBe(expectedMarble, expectedObservable);
-		});
+		expect(
+			service.createSubMessage(subMessagesMock[0], txMock, undefined)
+		).toBe(txMock);
 	});
 
 	it('should create a delete relation transaction', () => {
 		scheduler.run(() => {
-			let expectedObservable = { a: transactionMock };
-			let expectedMarble = '(a|)';
+			const expectedObservable = { a: transactionMock };
+			const expectedMarble = '(a|)';
 			scheduler
 				.expectObservable(
 					service.deleteRelation('10', {
@@ -110,8 +107,8 @@ describe('SubMessagesService', () => {
 
 	it('should create a delete sub message transaction', () => {
 		scheduler.run(() => {
-			let expectedObservable = { a: transactionMock };
-			let expectedMarble = '(a|)';
+			const expectedObservable = { a: transactionMock };
+			const expectedMarble = '(a|)';
 			scheduler
 				.expectObservable(service.deleteSubMessage('10', '20'))
 				.toBe(expectedMarble, expectedObservable);
@@ -120,8 +117,8 @@ describe('SubMessagesService', () => {
 
 	it('should create a relation', () => {
 		scheduler.run(() => {
-			let expectedObservable = { a: transactionMock };
-			let expectedMarble = '(a|)';
+			const expectedObservable = { a: transactionMock };
+			const expectedMarble = '(a|)';
 			scheduler
 				.expectObservable(
 					service.addRelation('10', {

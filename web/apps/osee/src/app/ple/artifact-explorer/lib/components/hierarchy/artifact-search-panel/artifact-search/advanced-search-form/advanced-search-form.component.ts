@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input, computed, signal } from '@angular/core';
+import { Component, Input, computed, signal, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import {
@@ -52,22 +52,19 @@ import {
 	templateUrl: './advanced-search-form.component.html',
 })
 export class AdvancedSearchFormComponent {
+	private artifactService = inject(ArtifactUiService);
+
 	@Input() data: AdvancedSearchCriteria = {
 		...defaultAdvancedSearchCriteria,
 	};
 
-	constructor(private artifactService: ArtifactUiService) {}
-
 	artifactTypes = toSignal(this.artifactService.allArtifactTypes);
 	_selectedArtifactTypes = new BehaviorSubject<NamedId[]>([]);
 	artTypesFilter = signal('');
-	filteredArtTypes = computed(
-		() =>
-			this.artifactTypes()?.filter((a) =>
-				a.name
-					.toLowerCase()
-					.includes(this.artTypesFilter().toLowerCase())
-			)
+	filteredArtTypes = computed(() =>
+		this.artifactTypes()?.filter((a) =>
+			a.name.toLowerCase().includes(this.artTypesFilter().toLowerCase())
+		)
 	);
 	updateArtTypesFilter(value: string) {
 		this.artTypesFilter.set(value);
@@ -99,13 +96,10 @@ export class AdvancedSearchFormComponent {
 		)
 	);
 	attrTypesFilter = signal('');
-	filteredAttrTypes = computed(
-		() =>
-			this.attributeTypes()?.filter((a) =>
-				a.name
-					.toLowerCase()
-					.includes(this.attrTypesFilter().toLowerCase())
-			)
+	filteredAttrTypes = computed(() =>
+		this.attributeTypes()?.filter((a) =>
+			a.name.toLowerCase().includes(this.attrTypesFilter().toLowerCase())
+		)
 	);
 	updateAttrTypesFilter(value: string) {
 		this.attrTypesFilter.set(value);

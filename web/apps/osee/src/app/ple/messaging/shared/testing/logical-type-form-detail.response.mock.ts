@@ -13,12 +13,13 @@
 
 import type {
 	PlatformType,
+	PlatformTypeAttr,
 	logicalTypeFormDetail,
 } from '@osee/messaging/shared/types';
 import { PLATFORMTYPEATTRIBUTETYPEIDENUM } from '@osee/messaging/shared/attr';
 
 export const logicalTypeFormDetailMock: logicalTypeFormDetail<
-	keyof PlatformType
+	keyof PlatformTypeAttr
 > = {
 	fields: [
 		{
@@ -27,12 +28,22 @@ export const logicalTypeFormDetailMock: logicalTypeFormDetail<
 			attributeType: 'InterfacePlatformTypeBitSize',
 			editable: true,
 			required: true,
-			defaultValue: '8',
-			value: '8',
+			defaultValue: {
+				id: '-1',
+				typeId: PLATFORMTYPEATTRIBUTETYPEIDENUM.BIT_SIZE,
+				gammaId: '-1',
+				value: '8',
+			},
+			value: {
+				id: '-1',
+				typeId: PLATFORMTYPEATTRIBUTETYPEIDENUM.BIT_SIZE,
+				gammaId: '-1',
+				value: '8',
+			},
 			jsonPropertyName: 'interfacePlatformTypeBitSize',
 		},
 	],
-	id: '',
+	id: '-1',
 	name: 'enumeration',
 	idString: '',
 	idIntValue: 0,

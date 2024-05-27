@@ -18,8 +18,6 @@ import { artifactTypeIcon } from '@osee/artifact-with-relations/types';
 	providedIn: 'root',
 })
 export class ArtifactIconService {
-	constructor() {}
-
 	getIconClass(icon: artifactTypeIcon): twColorClasses {
 		if (
 			icon.color === '' ||

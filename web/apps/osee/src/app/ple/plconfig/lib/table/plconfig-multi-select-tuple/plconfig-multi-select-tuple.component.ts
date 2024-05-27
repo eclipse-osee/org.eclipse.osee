@@ -30,7 +30,7 @@ import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
-import { applicWithGamma } from '@osee/shared/types/applicability';
+import { applicWithGamma } from '@osee/applicability/types';
 import {
 	ReplaySubject,
 	combineLatest,
@@ -80,8 +80,8 @@ let nextUniqueId = 0;
 						v.added
 							? 'tw-bg-success-300 tw-text-success-300-contrast'
 							: v.deleted
-							  ? 'tw-bg-warning-300 tw-text-warning-300-contrast'
-							  : ''
+								? 'tw-bg-warning-300 tw-text-warning-300-contrast'
+								: ''
 					">
 					{{ v.name | splitApplicability }}
 					<button
@@ -125,8 +125,8 @@ let nextUniqueId = 0;
 									[matTooltip]="
 										option.constrained
 											? 'Requires ' +
-											  option.constrainedBy +
-											  ' to be set'
+												option.constrainedBy +
+												' to be set'
 											: ''
 									"
 									matTooltipDisabled="false"
@@ -166,12 +166,11 @@ export class PlconfigMultiSelectTupleComponent {
 	);
 
 	public tuples = this._openAutoComplete.pipe(
-		debounceTime(500),
 		distinctUntilChanged(),
 		switchMap((_) =>
 			this.filter$.pipe(
 				distinctUntilChanged(),
-				debounceTime(500),
+				debounceTime(250),
 				switchMap((filter) =>
 					of((pageNum: string | number) =>
 						this.currentBranchService.getFeatureValues(
@@ -187,7 +186,6 @@ export class PlconfigMultiSelectTupleComponent {
 		)
 	);
 	availableTuplesCount = this._openAutoComplete.pipe(
-		debounceTime(10),
 		distinctUntilChanged(),
 		switchMap((_) =>
 			combineLatest([this._configId$, this._featureId$]).pipe(

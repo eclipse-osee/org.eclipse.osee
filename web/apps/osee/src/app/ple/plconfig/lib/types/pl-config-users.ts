@@ -10,24 +10,24 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface userInterface {
+export type userInterface = {
 	id: string;
 	name: string;
 	guid: null;
 	active: boolean;
 	description: null;
-	workTypes: any[];
-	tags: any[];
+	workTypes: unknown[];
+	tags: unknown[];
 	userId: string;
 	email: string;
 	loginIds: string[];
-	savedSearches: any[];
-	userGroups: any[];
+	savedSearches: unknown[];
+	userGroups: unknown[];
 	artifactId: string;
 	idString: string;
 	idIntValue: number;
 	uuid: number;
-}
+};
 export class pluser implements userInterface {
 	id = '';
 	name = '';

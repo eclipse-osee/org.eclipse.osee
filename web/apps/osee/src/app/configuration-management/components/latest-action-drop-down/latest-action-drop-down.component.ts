@@ -18,16 +18,9 @@ import {
 	trigger,
 } from '@angular/animations';
 import { AsyncPipe } from '@angular/common';
-import {
-	Component,
-	Optional,
-	computed,
-	inject,
-	model,
-	signal,
-} from '@angular/core';
+import { Component, computed, inject, model, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import {
 	MatAutocomplete,
 	MatAutocompleteTrigger,
@@ -44,6 +37,7 @@ import {
 import { ActionService } from '@osee/configuration-management/services';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
 import { atsLastMod } from '@osee/shared/types/configuration-management';
+import { provideOptionalControlContainerNgForm } from '@osee/shared/utils';
 import {
 	Observable,
 	debounceTime,
@@ -52,9 +46,6 @@ import {
 	scan,
 	switchMap,
 } from 'rxjs';
-function controlContainerFactory(controlContainer?: ControlContainer) {
-	return controlContainer;
-}
 let nextUniqueId = 0;
 @Component({
 	selector: 'osee-latest-action-drop-down',
@@ -92,13 +83,7 @@ let nextUniqueId = 0;
 		]),
 	],
 	templateUrl: './latest-action-drop-down.component.html',
-	viewProviders: [
-		{
-			provide: ControlContainer,
-			useFactory: controlContainerFactory,
-			deps: [[new Optional(), NgForm]],
-		},
-	],
+	viewProviders: [provideOptionalControlContainerNgForm()],
 })
 export class LatestActionDropDownComponent {
 	protected _componentId = signal(`${nextUniqueId++}`);
@@ -119,7 +104,7 @@ export class LatestActionDropDownComponent {
 	protected _openAutoCompleteSignal = signal(false);
 	protected _openAutoCompleteObs = toObservable(this._openAutoCompleteSignal);
 	protected _openAutoCompleteCountObs = this._openAutoCompleteObs.pipe(
-		scan((acc, curr) => acc + 1, 0)
+		scan((acc, _curr) => acc + 1, 0)
 	);
 	protected _openAutoCompleteCountSignal = toSignal(
 		this._openAutoCompleteCountObs,

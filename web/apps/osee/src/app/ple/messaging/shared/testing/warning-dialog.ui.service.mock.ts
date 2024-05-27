@@ -31,7 +31,9 @@ export const warningDialogServiceMock: Partial<WarningDialogService> = {
 	openStructureDialog(body: Partial<structure>) {
 		return of(body);
 	},
-
+	openElementDialogById(body: `${number}`) {
+		return of(body);
+	},
 	openElementDialog(body: Partial<element>) {
 		return of(body);
 	},

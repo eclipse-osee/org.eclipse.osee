@@ -11,30 +11,31 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import type { subMessage } from '@osee/messaging/shared/types';
-import { relation, transaction } from '@osee/shared/types';
 import {
 	transactionMock,
 	transactionResultMock,
-} from '@osee/shared/transactions/testing';
+} from '@osee/transactions/testing';
+import {
+	legacyRelation,
+	legacyTransaction,
+	transaction,
+} from '@osee/transactions/types';
 import { of } from 'rxjs';
 import { SubMessagesService } from '../services/http/sub-messages.service';
 import { subMessagesMock } from './sub-messages.response.mock';
 
 export const subMessageServiceMock: Partial<SubMessagesService> = {
-	changeSubMessage(branchId: string, submessage: Partial<subMessage>) {
-		return of(transactionMock);
-	},
 	getSubMessage(branchId, connectionId, messageId, submessageId) {
 		return of(subMessagesMock[0]);
 	},
 	createSubMessage(
-		branchId: string,
-		submessage: Partial<subMessage>,
-		relations: relation[]
+		submessage: subMessage,
+		tx: Required<transaction>,
+		key?: string
 	) {
-		return of(transactionMock);
+		return tx;
 	},
-	addRelation(branchId: string, relation: relation) {
+	addRelation(branchId: string, relation: legacyRelation) {
 		return of(transactionMock);
 	},
 	createMessageRelation(messageId: string) {
@@ -47,18 +48,18 @@ export const subMessageServiceMock: Partial<SubMessagesService> = {
 		branchId: string,
 		connectionId: string,
 		messageId: string,
-		body: transaction
+		body: legacyTransaction
 	) {
 		return of(transactionResultMock);
 	},
 	deleteSubMessage(
 		branchId: string,
 		submessageId: string,
-		transaction?: transaction
+		transaction?: legacyTransaction
 	) {
 		return of(transactionMock);
 	},
-	deleteRelation(branchId: string, relation: relation) {
+	deleteRelation(branchId: string, relation: legacyRelation) {
 		return of(transactionMock);
 	},
 };

@@ -12,36 +12,38 @@
  -->
 @if (inEditMode() === true) {
 	<button
-		mat-stroked-button
+		mat-raised-button
 		class="tw-bg-background-card tw-text-foreground-text"
 		(click)="openDialog(edit)">
-		<mat-icon color="primary">edit</mat-icon>
+		<mat-icon class="tw-text-osee-yellow-10 dark:tw-text-osee-amber-9"
+			>edit</mat-icon
+		>
 		Edit
 	</button>
 	<button
-		mat-stroked-button
+		mat-raised-button
 		class="tw-bg-background-card tw-text-foreground-text"
 		(click)="openDialog(copy)">
-		<mat-icon color="success">add</mat-icon>
+		<mat-icon class="tw-text-osee-green-9">add</mat-icon>
 		Create New Type From Base
 	</button>
-	@if (typeData().interfaceLogicalType === 'enumeration') {
+	@if (typeData().interfaceLogicalType.value === 'enumeration') {
 		<button
-			mat-stroked-button
+			mat-raised-button
 			class="tw-bg-background-card tw-text-foreground-text"
 			(click)="openEnumDialog(true)">
-			<mat-icon color="accent">toc</mat-icon>View Related Enumeration Set
-			Attributes
+			<mat-icon class="tw-text-osee-blue-9">toc</mat-icon>View Related
+			Enumeration Set Attributes
 		</button>
 	}
 } @else {
-	@if (typeData().interfaceLogicalType === 'enumeration') {
+	@if (typeData().interfaceLogicalType.value === 'enumeration') {
 		<button
-			mat-stroked-button
+			mat-raised-button
 			class="tw-bg-background-card tw-text-foreground-text"
 			(click)="openEnumDialog(false)">
-			<mat-icon color="accent">toc</mat-icon>View Related Enumeration Set
-			Attributes
+			<mat-icon class="tw-text-osee-blue-9">toc</mat-icon>View Related
+			Enumeration Set Attributes
 		</button>
 	}
 }

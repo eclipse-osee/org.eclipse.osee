@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface TransferData {
+export type TransferData = {
 	source: string;
 	date: string;
 	file: string;
-}
+};

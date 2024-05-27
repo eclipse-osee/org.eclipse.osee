@@ -17,7 +17,7 @@ import { extendedFeature, extendedFeatureWithChanges } from './features/base';
 import { configGroup } from './pl-config-configurations';
 import { branchInfo } from '@osee/shared/types';
 
-export interface PlConfigApplicUIBranchMapping {
+export type PlConfigApplicUIBranchMapping = {
 	associatedArtifactId: string;
 	branch: branchInfo;
 	editable: boolean;
@@ -25,18 +25,18 @@ export interface PlConfigApplicUIBranchMapping {
 	groups: configGroup[];
 	parentBranch: branchInfo;
 	views: (view | viewWithChanges)[];
-}
+};
 export class PlConfigApplicUIBranchMappingImpl
 	implements PlConfigApplicUIBranchMapping
 {
-	associatedArtifactId: string = '-1';
+	associatedArtifactId = '-1';
 	branch: branchInfo = {
 		idIntValue: 0,
 		name: '',
 		id: '0',
 		viewId: '-1',
 	};
-	editable: boolean = false;
+	editable = false;
 	features: (extendedFeature | extendedFeatureWithChanges)[] = [];
 	groups: configGroup[] = [];
 	parentBranch: branchInfo = {
@@ -48,13 +48,14 @@ export class PlConfigApplicUIBranchMappingImpl
 	views: (view | viewWithChanges)[] = [];
 }
 
-export interface ConfigGroup extends NamedIdAndDescription, showable {}
-export interface view extends NamedIdAndDescription, showable {
+export type ConfigGroup = {} & NamedIdAndDescription & showable;
+export type view = {
 	hasFeatureApplicabilities: boolean;
 	productApplicabilities?: string[];
-}
+} & NamedIdAndDescription &
+	showable;
 
-export interface viewWithChanges extends view {
+export type viewWithChanges = {
 	deleted: boolean;
 	added: boolean;
 	changes: {
@@ -63,14 +64,14 @@ export interface viewWithChanges extends view {
 		description?: difference<string>;
 		productApplicabilities?: difference[];
 	};
-}
-export interface viewWithChangesAndGroups extends viewWithChanges {
+} & view;
+export type viewWithChangesAndGroups = {
 	groups: configGroup[];
-}
-export interface viewWithGroups extends view {
+} & viewWithChanges;
+export type viewWithGroups = {
 	groups: configGroup[];
-}
-export interface viewWithDescription extends view {
+} & view;
+export type viewWithDescription = {
 	groups: configGroup[];
 	description: string;
-}
+} & view;

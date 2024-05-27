@@ -19,10 +19,10 @@ import {
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { PageEvent } from '@angular/material/paginator';
 import { NamedId } from '@osee/shared/types';
-import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
 import { combineLatest, switchMap } from 'rxjs';
 import { CiDashboardUiService } from '../../../services/ci-dashboard-ui.service';
 import { DashboardService } from '../../../services/dashboard.service';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 
 @Component({
 	selector: 'osee-teams-list',

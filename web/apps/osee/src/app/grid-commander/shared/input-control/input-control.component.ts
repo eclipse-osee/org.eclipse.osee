@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import {
 	MatAutocomplete,
@@ -73,14 +73,21 @@ import {
 	],
 })
 export class InputControlComponent<T extends CommandGroups> {
+	private dialogModel = inject(MatDialog);
+	private commandPaletteInputService = inject(CommandPaletteInputService);
+	private parameterDataService = inject(ParameterDataService);
+	private commandFromUserHistoryService = inject(
+		CommandFromUserHistoryService
+	);
+
 	@Input() input!: string | null;
 	@Input() label!: string;
 	@Input() placeHolder!: string;
 	@Input() displayHelpIcon!: boolean;
 	@Input() floatLabelControl: FloatLabelType = 'auto';
-	@Input() type: string = 'text';
+	@Input() type = 'text';
 	@Input() patternValidator!: string;
-	@Input() required: boolean = false;
+	@Input() required = false;
 	@Input() error!: string;
 	@Input() commandPaletteUse!: boolean;
 	@Input() usePredictiveText!: boolean;
@@ -107,26 +114,20 @@ export class InputControlComponent<T extends CommandGroups> {
 		type: string;
 	}> = new EventEmitter<{ input: string; type: string }>();
 
-	constructor(
-		private dialogModel: MatDialog,
-		private commandPaletteInputService: CommandPaletteInputService,
-		private parameterDataService: ParameterDataService,
-
-		private commandFromUserHistoryService: CommandFromUserHistoryService
-	) {}
-
 	_onInput(e: Event) {
 		let inputVal = (e.target as HTMLInputElement).value;
 		if (inputVal[0] === undefined || inputVal === '') inputVal = '';
 		this.input = inputVal;
 
-		this.commandPaletteUse
-			? this.updateInput.emit({
-					input: this.formatInputText(inputVal),
-			  })
-			: this.updateInput.emit({
-					input: inputVal,
-			  });
+		if (this.commandPaletteUse) {
+			this.updateInput.emit({
+				input: this.formatInputText(inputVal),
+			});
+		} else {
+			this.updateInput.emit({
+				input: inputVal,
+			});
+		}
 	}
 
 	_onSubmit(form: NgForm) {
@@ -145,14 +146,16 @@ export class InputControlComponent<T extends CommandGroups> {
 	}
 
 	_onCommandObjSelected(commandObj: Command, inputForm: NgForm) {
-		this.commandPaletteUse
-			? this.selectedCommandViaAutocomplete.emit({
-					selectedCommandObj: commandObj,
-					form: inputForm,
-			  })
-			: this.updateInput.emit({
-					input: commandObj.name,
-			  });
+		if (this.commandPaletteUse) {
+			this.selectedCommandViaAutocomplete.emit({
+				selectedCommandObj: commandObj,
+				form: inputForm,
+			});
+		} else {
+			this.updateInput.emit({
+				input: commandObj.name,
+			});
+		}
 	}
 
 	_dialog(e?: Event) {

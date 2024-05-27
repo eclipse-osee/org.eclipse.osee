@@ -30,7 +30,6 @@ import {
 	],
 })
 export class HasValidIdDirective implements Validator {
-	constructor() {}
 	validate(
 		control: AbstractControl<
 			{ id: string | number },
@@ -41,6 +40,7 @@ export class HasValidIdDirective implements Validator {
 			control.value !== null &&
 			((typeof control.value.id === 'string' &&
 				control.value.id === '-1') ||
+				control.value.id === '' ||
 				control.value.id === -1)
 			? { invalidId: true }
 			: null;

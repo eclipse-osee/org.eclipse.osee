@@ -10,13 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClient } from '@angular/common/http';
 import {
-	HttpClientTestingModule,
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
+import {
 	HttpTestingController,
+	provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { TestScheduler } from 'rxjs/testing';
 import { apiURL } from '@osee/environments';
 
 import { NamedId } from '@osee/shared/types';
@@ -60,25 +62,19 @@ const testNewActionData: CreateNewActionInterface = {
 const testUsers = [{ testDataUser: MockUserResponse }];
 describe('ActionService', () => {
 	let service: ActionService;
-	let httpClient: HttpClient;
 	let httpTestingController: HttpTestingController;
-	let scheduler: TestScheduler;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
+			imports: [],
+			providers: [
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+			],
 		});
 		service = TestBed.inject(ActionService);
-		httpClient = TestBed.inject(HttpClient);
 		httpTestingController = TestBed.inject(HttpTestingController);
 	});
-
-	beforeEach(
-		() =>
-			(scheduler = new TestScheduler((actual, expected) => {
-				expect(actual).toEqual(expected);
-			}))
-	);
 
 	it('should be created', () => {
 		expect(service).toBeTruthy();
@@ -125,7 +121,7 @@ describe('ActionService', () => {
 	});
 
 	it('should get validateTransitionAction response', () => {
-		let transitionData = new transitionAction(
+		const transitionData = new transitionAction(
 			'Review',
 			'Transition To Review',
 			testBranchActions,
@@ -141,7 +137,7 @@ describe('ActionService', () => {
 	});
 
 	it('should transitionAction', () => {
-		let transitionData = new transitionAction(
+		const transitionData = new transitionAction(
 			'Review',
 			'Transition To Review',
 			testBranchActions,
@@ -201,7 +197,7 @@ describe('ActionService', () => {
 	});
 
 	it('should get team leads', () => {
-		let testData: NamedId[] = [
+		const testData: NamedId[] = [
 			{
 				id: '0',
 				name: 'name',

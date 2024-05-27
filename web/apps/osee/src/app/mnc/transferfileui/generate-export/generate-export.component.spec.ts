@@ -12,9 +12,13 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { GenerateExportComponent } from './generate-export.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { transferFileHttpServiceMock } from '../../../mnc/lib/testing/transfer-file-http.service.mock';
 import { TransferFileService } from '../../../mnc/services/transfer-file/transfer-file.service';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('GenerateExportComponent', () => {
 	let component: GenerateExportComponent;
@@ -22,12 +26,14 @@ describe('GenerateExportComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [GenerateExportComponent, HttpClientTestingModule],
+			imports: [GenerateExportComponent],
 			providers: [
 				{
 					provide: TransferFileService,
 					useValue: transferFileHttpServiceMock,
 				},
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
 			],
 		}).compileComponents();
 

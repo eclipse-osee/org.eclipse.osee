@@ -31,7 +31,7 @@
 					[step]="bitSizeSliderStepSize"
 					thumbLabel="true"
 					[displayWith]="bitSizeDisplay"
-					color="primary"
+					class="primary-slide-toggle"
 					matSuffix>
 					<input
 						[(ngModel)]="bitSize"
@@ -114,21 +114,6 @@
 		<form>
 			<osee-unit-dropdown [(unit)]="unit"> </osee-unit-dropdown>
 		</form>
-		<!-- <mat-form-field>
-            <mat-label>Units</mat-label>
-            <mat-select
-              [(ngModel)]="unit"
-              class="unit-select"
-              data-cy="field-units"
-              style="visibility: visible">
-              <mat-option
-                *ngFor="let unit of units | async"
-                [value]="unit"
-                [attr.data-cy]="'option-' + unit">
-                <mat-label>{{ unit }}</mat-label>
-              </mat-option>
-            </mat-select>
-          </mat-form-field> -->
 	</div>
 	<br />
 	<div class="tw-flex tw-flex-row tw-justify-around">

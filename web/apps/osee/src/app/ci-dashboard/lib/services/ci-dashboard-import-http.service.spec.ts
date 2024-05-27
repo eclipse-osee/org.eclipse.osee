@@ -12,13 +12,23 @@
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
 import { CiDashboardImportHttpService } from './ci-dashboard-import-http.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('CiDashboardImportHttpService', () => {
 	let service: CiDashboardImportHttpService;
 
 	beforeEach(() => {
-		TestBed.configureTestingModule({ imports: [HttpClientTestingModule] });
+		TestBed.configureTestingModule({
+			imports: [],
+			providers: [
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+			],
+		});
 		service = TestBed.inject(CiDashboardImportHttpService);
 	});
 

@@ -11,11 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { PlconfigMultiSelectTupleComponent } from './plconfig-multi-select-tuple.component';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { PlConfigCurrentBranchService } from 'src/app/ple/plconfig/lib/services/pl-config-current-branch.service';
-import { plCurrentBranchServiceMock } from 'src/app/ple/plconfig/lib/testing/mockPlCurrentBranchService.mock';
+import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
+import { plCurrentBranchServiceMock } from '../../testing/mockPlCurrentBranchService.mock';
 
 describe('PlconfigMultiSelectTupleComponent', () => {
 	let component: PlconfigMultiSelectTupleComponent;

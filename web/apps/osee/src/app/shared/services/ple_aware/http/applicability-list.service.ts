@@ -11,16 +11,16 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { apiURL } from '@osee/environments';
 import { HttpParamsType, nameAttribute } from '@osee/shared/types';
-import { applic } from '@osee/shared/types/applicability';
+import { applic } from '@osee/applicability/types';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class ApplicabilityListService {
-	constructor(private http: HttpClient) {}
+	private http = inject(HttpClient);
 
 	getApplicabilities(
 		branchId: string | number,

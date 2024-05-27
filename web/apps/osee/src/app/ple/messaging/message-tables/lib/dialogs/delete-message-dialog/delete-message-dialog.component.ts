@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import {
 	MAT_DIALOG_DATA,
@@ -21,6 +21,7 @@ import {
 	MatDialogTitle,
 } from '@angular/material/dialog';
 import { DeleteMessageDialogData } from '../../types/DeleteMessageDialog';
+import { AttributeToValuePipe } from '@osee/attributes/pipes';
 
 @Component({
 	selector: 'osee-messaging-delete-message-dialog',
@@ -32,11 +33,11 @@ import { DeleteMessageDialogData } from '../../types/DeleteMessageDialog';
 		MatDialogActions,
 		MatDialogClose,
 		MatButton,
+		AttributeToValuePipe,
 	],
 })
 export class DeleteMessageDialogComponent {
-	constructor(
-		public dialogRef: MatDialogRef<DeleteMessageDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: DeleteMessageDialogData
-	) {}
+	dialogRef =
+		inject<MatDialogRef<DeleteMessageDialogComponent>>(MatDialogRef);
+	data = inject<DeleteMessageDialogData>(MAT_DIALOG_DATA);
 }

@@ -11,7 +11,15 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+	Component,
+	OnDestroy,
+	OnInit,
+	effect,
+	inject,
+	signal,
+} from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import {
@@ -35,18 +43,21 @@ import {
 	structureHeaderDetails,
 	subMessageHeaderDetails,
 } from '@osee/messaging/shared/table-headers';
-import type {
-	CrossReference,
-	ImportEnumSet,
-	ImportSummary,
-	connection,
-	elementImportToken,
-	enumeration,
-	messageToken,
-	nodeData,
-	platformTypeImportToken,
-	subMessage,
+import {
+	transportType,
+	type CrossReference,
+	type ImportEnumSet,
+	type ImportSummary,
+	type connection,
+	type elementImportToken,
+	type enumeration,
+	type messageToken,
+	type nodeData,
+	type platformTypeImportToken,
+	type subMessage,
+	getTransportTypeSentinel,
 } from '@osee/messaging/shared/types';
+import { TransportTypeDropdownComponent } from '@osee/messaging/transports/dropdown';
 import { UiService } from '@osee/shared/services';
 import { BehaviorSubject, OperatorFunction, from, iif, of } from 'rxjs';
 import { concatMap, filter, map, reduce, switchMap, tap } from 'rxjs/operators';
@@ -54,9 +65,6 @@ import { concatMap, filter, map, reduce, switchMap, tap } from 'rxjs/operators';
 @Component({
 	selector: 'osee-import',
 	templateUrl: './import.component.html',
-	styles: [
-		':host{ height: 94vh; min-height: calc(94vh - 10%); max-height: 94vh; width: 100vw; min-width: calc(100vw - 10%); display: inline-block; overflow: scroll; margin-bottom: -1em;}',
-	],
 	standalone: true,
 	imports: [
 		AsyncPipe,
@@ -68,14 +76,13 @@ import { concatMap, filter, map, reduce, switchMap, tap } from 'rxjs/operators';
 		MatButton,
 		ImportTableComponent,
 		MessagingControlsComponent,
+		TransportTypeDropdownComponent,
 	],
 })
 export class ImportComponent implements OnInit, OnDestroy {
-	constructor(
-		private route: ActivatedRoute,
-		private routerState: UiService,
-		private importService: ImportService
-	) {}
+	private route = inject(ActivatedRoute);
+	private routerState = inject(UiService);
+	private importService = inject(ImportService);
 
 	ngOnInit(): void {
 		this.route.paramMap.subscribe((params) => {
@@ -89,19 +96,32 @@ export class ImportComponent implements OnInit, OnDestroy {
 		this.importService.reset();
 	}
 
-	showSummary: boolean = false;
-	importOptionSelection = this.importService.selectedImportOption;
+	showSummary = false;
+	selectedImportOption = toSignal(this.importService.selectedImportOption, {
+		initialValue: {
+			id: '-1',
+			name: '',
+			url: '',
+			connectionRequired: false,
+			transportTypeRequired: false,
+		},
+	});
 	branchId = this.importService.branchId;
 	branchType = this.importService.branchType;
 	importSummary = this.importService.importSummary.pipe(
 		tap(() => (this.showSummary = true))
 	);
 	importOptions = this.importService.importOptions;
-	importSuccess = this.importService.importSuccess;
+	importSuccess = toSignal(this.importService.importSuccess);
 	selectedImportFileName = this.importService.importFile.pipe(
 		switchMap((file) =>
 			iif(() => file === undefined, of(''), of(file?.name))
 		)
+	);
+	transportType = signal<transportType>(getTransportTypeSentinel());
+
+	private _transportTypeEffect = effect(
+		() => (this.importService.TransportType = this.transportType())
 	);
 
 	_selectedConnection = new BehaviorSubject<connection | undefined>(
@@ -111,22 +131,18 @@ export class ImportComponent implements OnInit, OnDestroy {
 	connections = this.importService.connections;
 
 	importOptionSelectionText = this.importOptions.pipe(
-		switchMap((options) =>
-			iif(
-				() => options.length > 0,
-				of('Select an import type'),
-				of('No import types available')
-			)
+		map((options) =>
+			options.length > 0
+				? 'Select an import type'
+				: 'No import types available'
 		)
 	);
 
 	connectionSelectionText = this.connections.pipe(
-		switchMap((connections) =>
-			iif(
-				() => connections.length > 0,
-				of('Select a Connection'),
-				of('No connections available')
-			)
+		map((connections) =>
+			connections.length > 0
+				? 'Select a Connection'
+				: 'No connections available'
 		)
 	);
 

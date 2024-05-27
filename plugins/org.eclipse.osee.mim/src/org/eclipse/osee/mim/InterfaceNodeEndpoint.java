@@ -65,7 +65,8 @@ public interface InterfaceNodeEndpoint {
 
    @GET
    @Path("name")
-   Collection<InterfaceNode> getNodesByName(@QueryParam("name") String name, @QueryParam("pageNum") long pageNum,
+   Collection<InterfaceNode> getNodesByName(@QueryParam("name") String name,
+      @QueryParam("connectionId") ArtifactId connectionId, @QueryParam("pageNum") long pageNum,
       @QueryParam("count") long pageSize);
 
    @GET

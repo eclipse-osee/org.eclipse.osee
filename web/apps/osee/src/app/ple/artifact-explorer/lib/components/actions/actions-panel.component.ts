@@ -10,32 +10,26 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, signal } from '@angular/core';
-import { ActionService } from '@osee/configuration-management/services';
-import { ArtifactExplorerExpansionPanelComponent } from '../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
+import { AsyncPipe } from '@angular/common';
+import { Component, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { FormsModule } from '@angular/forms';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
 import { UserDataAccountService } from '@osee/auth';
+import { ActionService } from '@osee/configuration-management/services';
+import { teamWorkflowToken } from '@osee/shared/types/configuration-management';
 import {
 	BehaviorSubject,
 	combineLatest,
 	debounceTime,
 	filter,
-	map,
 	switchMap,
 	tap,
 } from 'rxjs';
 import { ArtifactExplorerTabService } from '../../services/artifact-explorer-tab.service';
-import { teamWorkflowToken } from '@osee/shared/types/configuration-management';
+import { ArtifactExplorerExpansionPanelComponent } from '../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
 import { PaginatedMatListComponent } from '../shared/paginated-mat-list/paginated-mat-list.component';
-import { toSignal } from '@angular/core/rxjs-interop';
-import {
-	MatFormField,
-	MatLabel,
-	MatSuffix,
-} from '@angular/material/form-field';
-import { FormsModule } from '@angular/forms';
-import { MatIcon } from '@angular/material/icon';
-import { AsyncPipe } from '@angular/common';
-import { MatInput } from '@angular/material/input';
 
 @Component({
 	selector: 'osee-actions-panel',
@@ -52,6 +46,10 @@ import { MatInput } from '@angular/material/input';
 	templateUrl: './actions-panel.component.html',
 })
 export class ActionsPanelComponent {
+	private tabService = inject(ArtifactExplorerTabService);
+	private actionService = inject(ActionService);
+	private userService = inject(UserDataAccountService);
+
 	pageNum = new BehaviorSubject<number>(1);
 	pageSize = 20;
 
@@ -96,12 +94,6 @@ export class ActionsPanelComponent {
 		),
 		{ initialValue: -1 }
 	);
-
-	constructor(
-		private tabService: ArtifactExplorerTabService,
-		private actionService: ActionService,
-		private userService: UserDataAccountService
-	) {}
 
 	openInTab(teamwfId: `${number}`) {
 		this.actionService

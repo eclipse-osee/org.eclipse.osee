@@ -11,9 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-import { Component, Input, Output } from '@angular/core';
-import type { logicalType } from '@osee/messaging/shared/types';
-import { of } from 'rxjs';
+import { Component, input, model } from '@angular/core';
+import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
+import type { PlatformType, logicalType } from '@osee/messaging/shared/types';
 import { NewPlatformTypeFormPage2Component } from './new-platform-type-form-page2.component';
 
 @Component({
@@ -24,19 +24,6 @@ import { NewPlatformTypeFormPage2Component } from './new-platform-type-form-page
 export class MockNewPlatformTypeFormPage2Component
 	implements Partial<NewPlatformTypeFormPage2Component>
 {
-	@Input() logicalType: logicalType = {
-		id: '-1',
-		name: '',
-		idString: '-1',
-		idIntValue: -1,
-	};
-	@Output() attributes = of({
-		platformType: {},
-		createEnum: false,
-		enumSetId: '',
-		enumSetName: '',
-		enumSetDescription: '',
-		enumSetApplicability: { id: '1', name: 'Base' },
-		enums: [],
-	});
+	logicalType = input.required<logicalType>();
+	platformType = model<PlatformType>(new PlatformTypeSentinel());
 }

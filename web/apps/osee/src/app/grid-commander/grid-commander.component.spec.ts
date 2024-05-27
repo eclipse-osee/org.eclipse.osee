@@ -10,28 +10,29 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { Router, ActivatedRoute } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CommandPaletteComponent } from './command-palette/command-palette/command-palette.component';
 import { GcDatatableComponent } from './gc-datatable/gc-datatable.component';
 import { NoDataToDisplayComponent } from './gc-datatable/no-data-to-display/no-data-to-display/no-data-to-display.component';
 import { GridCommanderComponent } from './grid-commander.component';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('GridCommanderComponent', () => {
 	let component: GridCommanderComponent;
 	let fixture: ComponentFixture<GridCommanderComponent>;
-	let router: any;
 
 	beforeEach(async () => {
-		router = jasmine.createSpyObj('Router', ['navigate']);
 		await TestBed.configureTestingModule({
 			imports: [
 				RouterTestingModule,
-				HttpClientTestingModule,
 				MatCardModule,
 				MatDialogModule,
 				MatCardModule,
@@ -42,8 +43,9 @@ describe('GridCommanderComponent', () => {
 			],
 			providers: [
 				{ provide: MatDialogRef, useValue: {} },
-				{ provide: Router, useValue: router },
-				{ provide: ActivatedRoute, useValue: {} },
+				provideRouter([]),
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
 			],
 		}).compileComponents();
 	});

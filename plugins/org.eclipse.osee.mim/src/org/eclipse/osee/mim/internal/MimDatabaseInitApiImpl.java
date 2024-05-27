@@ -40,17 +40,17 @@ import org.eclipse.osee.mim.MimApi;
 import org.eclipse.osee.mim.MimDatabaseInitApi;
 import org.eclipse.osee.mim.MimDemoBranches;
 import org.eclipse.osee.mim.types.InterfaceConnection;
-import org.eclipse.osee.mim.types.InterfaceElementImportToken;
 import org.eclipse.osee.mim.types.InterfaceEnumOrdinalType;
 import org.eclipse.osee.mim.types.InterfaceEnumeration;
 import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
 import org.eclipse.osee.mim.types.InterfaceNode;
+import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.InterfaceStructureToken;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
 import org.eclipse.osee.mim.types.MIMImportUtil;
 import org.eclipse.osee.mim.types.MimImportSummary;
-import org.eclipse.osee.mim.types.PlatformTypeImportToken;
+import org.eclipse.osee.mim.types.PlatformTypeToken;
 import org.eclipse.osee.mim.types.TransportType;
 import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderData;
 import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderDataFactory;
@@ -134,10 +134,10 @@ public class MimDatabaseInitApiImpl implements MimDatabaseInitApi {
       InterfaceStructureToken structure = createStructure();
       summary.getStructures().add(structure);
 
-      List<InterfaceElementImportToken> elements = createElements();
+      List<InterfaceStructureElementToken> elements = createElements();
       summary.getElements().addAll(elements);
 
-      List<PlatformTypeImportToken> pTypes = createPlatformTypes(summary);
+      List<PlatformTypeToken> pTypes = createPlatformTypes(summary);
       summary.getPlatformTypes().addAll(pTypes);
 
       summary.getConnectionTransportTypeRelations().put(connection.getIdString(),
@@ -154,8 +154,8 @@ public class MimDatabaseInitApiImpl implements MimDatabaseInitApi {
 
       // Add element -> platform type relations. This assumes that elements and platform types were created in the right order
       for (int i = 0; i < elements.size(); i++) {
-         InterfaceElementImportToken element = elements.get(i);
-         PlatformTypeImportToken pType = pTypes.get(i);
+         InterfaceStructureElementToken element = elements.get(i);
+         PlatformTypeToken pType = pTypes.get(i);
          summary.getElementPlatformTypeRelations().put(element.getIdString(), Arrays.asList(pType.getIdString()));
       }
 
@@ -226,40 +226,40 @@ public class MimDatabaseInitApiImpl implements MimDatabaseInitApi {
       return structure;
    }
 
-   private List<InterfaceElementImportToken> createElements() {
-      List<InterfaceElementImportToken> elements = new LinkedList<>();
-      InterfaceElementImportToken element = new InterfaceElementImportToken(getRandomId(), "Integer Element");
+   private List<InterfaceStructureElementToken> createElements() {
+      List<InterfaceStructureElementToken> elements = new LinkedList<>();
+      InterfaceStructureElementToken element = new InterfaceStructureElementToken(getRandomId(), "Integer Element");
       element.setInterfaceElementAlterable(true);
       elements.add(element);
 
-      element = new InterfaceElementImportToken(getRandomId(), "Boolean Element");
+      element = new InterfaceStructureElementToken(getRandomId(), "Boolean Element");
       element.setInterfaceElementIndexStart(1);
       element.setInterfaceElementIndexEnd(4);
       elements.add(element);
 
-      element = new InterfaceElementImportToken(getRandomId(), "Float Element");
+      element = new InterfaceStructureElementToken(getRandomId(), "Float Element");
       elements.add(element);
 
-      element = new InterfaceElementImportToken(getRandomId(), "Demo Fault");
+      element = new InterfaceStructureElementToken(getRandomId(), "Demo Fault");
       elements.add(element);
 
       return elements;
    }
 
-   private List<PlatformTypeImportToken> createPlatformTypes(MimImportSummary summary) {
-      List<PlatformTypeImportToken> pTypes = new LinkedList<>();
-      PlatformTypeImportToken pType =
-         new PlatformTypeImportToken(getRandomId(), "Integer", "unsigned integer", "32", "0", "2^31-1", "", "", "", "");
+   private List<PlatformTypeToken> createPlatformTypes(MimImportSummary summary) {
+      List<PlatformTypeToken> pTypes = new LinkedList<>();
+      PlatformTypeToken pType =
+         new PlatformTypeToken(getRandomId(), "Integer", "unsigned integer", "32", "0", "2^31-1", "", "", "", "");
       pTypes.add(pType);
 
-      pType = new PlatformTypeImportToken(getRandomId(), "Boolean", "boolean", "8", "0", "1", "", "", "", "");
+      pType = new PlatformTypeToken(getRandomId(), "Boolean", "boolean", "8", "0", "1", "", "", "", "");
       pTypes.add(pType);
 
-      pType = new PlatformTypeImportToken(getRandomId(), "Float", "float", "32", "", "", "", "", "", "");
+      pType = new PlatformTypeToken(getRandomId(), "Float", "float", "32", "", "", "", "", "", "");
       pTypes.add(pType);
 
       // Create Demo Fault platform type, enum set, and relations
-      pType = new PlatformTypeImportToken(getRandomId(), "Demo Fault", "enumeration", "32", "", "", "", "", "", "");
+      pType = new PlatformTypeToken(getRandomId(), "Demo Fault", "enumeration", "32", "", "", "", "", "", "");
       pTypes.add(pType);
       InterfaceEnumerationSet enumSet = new InterfaceEnumerationSet(getRandomId(), "Demo Fault");
       summary.getEnumSets().add(enumSet);

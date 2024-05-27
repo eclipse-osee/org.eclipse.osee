@@ -10,27 +10,27 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface user {
+export type user = {
 	id: `${number}`;
 	name: string;
 	guid: null;
 	active: boolean;
 	description: null;
-	workTypes: any[];
-	tags: any[];
+	workTypes: unknown[];
+	tags: unknown[];
 	userId: string;
 	email: string;
 	loginIds: string[];
-	savedSearches: any[];
-	userGroups: any[];
+	savedSearches: unknown[];
+	userGroups: unknown[];
 	artifactId: string;
 	idString: string;
 	idIntValue: number;
 	uuid: number;
 	roles: userRole[];
-}
+};
 
-export interface userRole {
+export type userRole = {
 	id: string;
 	name: string;
-}
+};

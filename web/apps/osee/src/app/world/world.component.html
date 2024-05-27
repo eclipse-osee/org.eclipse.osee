@@ -82,7 +82,7 @@
 				class="tw-border-2 tw-border-background-app-bar"
 				[ngClass]="{
 					'tw-bg-accent-300 dark:tw-bg-accent-600':
-						data[header].changed
+						data[header].changed,
 				}">
 				{{ data[header].value }}
 			</td>
@@ -99,6 +99,6 @@
 			'odd:tw-bg-success-300 even:tw-bg-success-100 odd:dark:tw-bg-success-600 even:dark:tw-bg-success-500':
 				row['ATS Id'].added,
 			'odd:tw-bg-warning-200 even:tw-bg-warning-100 odd:dark:tw-bg-warning-600 even:dark:tw-bg-warning-500':
-				row['ATS Id'].deleted
+				row['ATS Id'].deleted,
 		}"></tr>
 </table>

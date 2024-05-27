@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.ComputedCharacteristicToken;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.IRelationLink;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -641,6 +642,16 @@ public class SpecterSpecObjectArtifactReadable implements ArtifactReadable {
    public HashCollection<AttributeTypeToken, IAttribute<?>> getAttributesHashCollection() {
       throw new UnsupportedOperationException();
    }
+   
+   /**
+    * {@inheritDoc}
+    *
+    * @throws UnsupportedOperationException method is not implemented
+    */
+   @Override
+   public <T> AttributeReadable<T> getSoleAttribute(AttributeTypeToken attributeType) {
+      throw new UnsupportedOperationException();
+   }
 
    @Override
    public TransactionDetails getTxDetails() {
@@ -651,9 +662,29 @@ public class SpecterSpecObjectArtifactReadable implements ArtifactReadable {
    public List<ArtifactReadable> getReferenceArtifactsByType(AttributeTypeToken attributeType) {
       throw new UnsupportedOperationException();
    }
+   
+   /**
+    * {@inheritDoc}
+    *
+    * @throws UnsupportedOperationException method is not implemented
+    */
+   @Override
+   public <T> IAttribute<T> getSoleAttribute(AttributeTypeToken attributeType, T defaultValue) {
+      throw new UnsupportedOperationException();
+   }
 
    @Override
    public ArtifactReadable getReferenceArtifactByAttrId(AttributeId attributeId) {
+      throw new UnsupportedOperationException();
+   }
+   
+   /**
+    * {@inheritDoc}
+    *
+    * @throws UnsupportedOperationException method is not implemented
+    */
+   @Override
+   public GammaId getGamma() {
       throw new UnsupportedOperationException();
    }
 

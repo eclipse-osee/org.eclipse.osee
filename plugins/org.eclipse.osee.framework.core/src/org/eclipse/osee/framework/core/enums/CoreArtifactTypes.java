@@ -548,7 +548,7 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken InterfaceMessage = osee.add(osee.artifactType(2455059983007225775L, "Interface Message", false, InterfaceArtifact)
       .exactlyOne(InterfaceMessageNumber)
-      .exactlyOne(InterfaceMessagePeriodicity)
+      .exactlyOne(CoreAttributeTypes.InterfaceMessagePeriodicity)
       .zeroOrOne(InterfaceMessageRate)
       .exactlyOne(InterfaceMessageWriteAccess)
       .exactlyOne(InterfaceMessageType)
@@ -568,7 +568,7 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken InterfaceStructure = osee.add(osee.artifactType(2455059983007225776L, "Interface Structure", false, InterfaceArtifact)
       .zeroOrOne(NameAbbrev)
-      .zeroOrOne(InterfaceStructureCategory)
+      .zeroOrOne(CoreAttributeTypes.InterfaceStructureCategory)
       .zeroOrOne(InterfaceMinSimultaneity)
       .zeroOrOne(InterfaceMaxSimultaneity)
       .zeroOrOne(InterfaceTaskFileType)
@@ -622,6 +622,9 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken InterfaceUnit = osee.add(osee.artifactType(8314622128828217343L, "Interface Unit", false, InterfaceArtifact)
       .exactlyOne(InterfaceUnitMeasurement));
 
+   ArtifactTypeToken InterfaceStructureCategory = osee.add(osee.artifactType(4378109504313902462L, "Interface Structure Category", false, InterfaceArtifact));
+   ArtifactTypeToken InterfaceMessagePeriodicity = osee.add(osee.artifactType(5082065531138977539L, "Interface Message Periodicity", false, InterfaceArtifact));
+
    ArtifactTypeToken InterfaceMessageTypeEnum = osee.add(osee.artifactType(8893121862470164649L, "Interface Message Type Enum", false, InterfaceArtifact));
 
    ArtifactTypeToken CrossReference = osee.add(osee.artifactType(5198407772394384771L, "Cross Reference", false, Artifact)
@@ -670,9 +673,9 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken MimReport = osee.add(osee.artifactType(1112907634879895453L, "MIM Report", false, OseeReport));
 
    ArtifactTypeToken MimImport = osee.add(osee.artifactType(2807814791345263165L, "MIM Import", false, Artifact)
-      .zeroOrOne(ImportTransportType)
       .exactlyOne(EndpointUrl)
-      .exactlyOne(ConnectionRequired));
+      .exactlyOne(ConnectionRequired)
+      .exactlyOne(TransportTypeRequired));
 
    ArtifactTypeToken DiffReportEndPoint = osee.add(osee.artifactType(8247460208362207697L, "DIFF Report End Point", false, Artifact)
       .exactlyOne(EndpointUrl));

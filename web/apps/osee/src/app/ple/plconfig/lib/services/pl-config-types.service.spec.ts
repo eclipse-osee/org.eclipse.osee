@@ -11,13 +11,17 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
-	HttpClientTestingModule,
 	HttpTestingController,
+	provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { apiURL } from '@osee/environments';
 
 import { PlConfigTypesService } from './pl-config-types.service';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('PlConfigTypesService', () => {
 	let service: PlConfigTypesService;
@@ -25,7 +29,11 @@ describe('PlConfigTypesService', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
+			imports: [],
+			providers: [
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+			],
 		});
 		service = TestBed.inject(PlConfigTypesService);
 		httpTestingController = TestBed.inject(HttpTestingController);

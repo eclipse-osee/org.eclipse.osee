@@ -22,7 +22,7 @@
 							<mat-label>Edit Enumeration Set Name</mat-label>
 							<input
 								matInput
-								[(ngModel)]="enumerationSet.name"
+								[(ngModel)]="enumerationSet.name.value"
 								(ngModelChange)="setName($event)" />
 						</mat-form-field>
 					}
@@ -39,7 +39,7 @@
 								placeholder="Edit Enumeration Set Description"
 								disabled
 								cdkTextareaAutosize
-								[(ngModel)]="enumerationSet.description"
+								[(ngModel)]="enumerationSet.description.value"
 								(ngModelChange)="
 									setDescription($event)
 								"></textarea>
@@ -47,20 +47,22 @@
 					}
 					<br />
 					@if (enumerationSet.applicability !== undefined) {
-						<osee-applicability-selector
+						<osee-applicability-dropdown
 							[applicability]="enumerationSet.applicability"
 							(applicabilityChange)="setApplicability($event)"
 							class="tw-w-full">
-						</osee-applicability-selector>
+						</osee-applicability-dropdown>
 					}
 					<br />
 					Enums:
 					@if (_type | async; as typeData) {
 						<osee-enum-form
-							[bitSize]="typeData.interfacePlatformTypeBitSize"
+							[bitSize]="
+								typeData.interfacePlatformTypeBitSize.value
+							"
 							[enumSetId]="enumerationSet.id || '-1'"
-							[enumSetName]="enumerationSet.name"
-							[preload]="enumerationSet.enumerations || []"
+							[enumSetName]="enumerationSet.name.value"
+							[enums]="enumerationSet.enumerations || []"
 							(enumSetString)="setDescription($event)"
 							(unique)="updateUnique($event)"
 							(tx)="updateEnumTx($event)"></osee-enum-form>
@@ -129,7 +131,7 @@
 							*matHeaderRowDef="[
 								'name',
 								'ordinal',
-								'applicability'
+								'applicability',
 							]"></tr>
 						<tr
 							mat-row

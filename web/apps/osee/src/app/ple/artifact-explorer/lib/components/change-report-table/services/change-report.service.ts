@@ -10,9 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
-import { TransactionService } from '@osee/shared/transactions';
-import { iif, of, shareReplay, switchMap, take } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { TransactionHistoryService } from '@osee/transaction-history/services';
+import { iif, of, shareReplay, switchMap } from 'rxjs';
 import { BranchInfoService } from '@osee/shared/services';
 import { ChangeReportHttpService } from './change-report-http.service';
 import { ActionService } from '@osee/configuration-management/services';
@@ -21,12 +21,10 @@ import { ActionService } from '@osee/configuration-management/services';
 	providedIn: 'root',
 })
 export class ChangeReportService {
-	constructor(
-		private crHttpService: ChangeReportHttpService,
-		private branchInfoService: BranchInfoService,
-		private actionService: ActionService,
-		private txService: TransactionService
-	) {}
+	private crHttpService = inject(ChangeReportHttpService);
+	private branchInfoService = inject(BranchInfoService);
+	private actionService = inject(ActionService);
+	private txService = inject(TransactionHistoryService);
 
 	getBranchChanges(branch1Id: string, branch2Id: string) {
 		return this.crHttpService.getBranchChangeReport(branch1Id, branch2Id);

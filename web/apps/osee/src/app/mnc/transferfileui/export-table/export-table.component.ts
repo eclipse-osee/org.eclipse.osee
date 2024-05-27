@@ -59,7 +59,7 @@ export class ExportTableComponent {
 	displayedColumns: string[] = ['source', 'date', 'file'];
 	dataSource = new MatTableDataSource<TransferData>();
 	id = new BehaviorSubject<string>('');
-	errorMessage: string = '';
+	errorMessage = '';
 	exportedData = input.required<TransferData[]>();
 	_updateDataSource = effect(
 		() => {
@@ -72,8 +72,8 @@ export class ExportTableComponent {
 			this.fileService
 				.downloadFile(selectedFile)
 				.subscribe((response) => {
-					let blob: Blob = response.body as Blob;
-					let link = document.createElement('a');
+					const blob: Blob = response.body as Blob;
+					const link = document.createElement('a');
 					link.href = window.URL.createObjectURL(blob);
 					link.download = selectedFile;
 					link.click();

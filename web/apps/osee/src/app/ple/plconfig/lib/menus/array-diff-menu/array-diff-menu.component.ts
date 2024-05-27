@@ -10,9 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { MatMenuItem } from '@angular/material/menu';
-import { applic } from '@osee/shared/types/applicability';
+import { applic } from '@osee/applicability/types';
 import { difference } from '@osee/shared/types/change-report';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 
@@ -24,8 +24,9 @@ import { PlConfigCurrentBranchService } from '../../services/pl-config-current-b
 	imports: [MatMenuItem],
 })
 export class ArrayDiffMenuComponent {
+	private currentBranchService = inject(PlConfigCurrentBranchService);
+
 	@Input() array: difference[] = [];
-	constructor(private currentBranchService: PlConfigCurrentBranchService) {}
 
 	viewDiff(open: boolean, value: difference, header: string) {
 		let current = value.currentValue as string | number | applic;

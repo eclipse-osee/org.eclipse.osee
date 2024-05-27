@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
@@ -59,20 +59,22 @@ import { PLAddConfigData } from '../../types/pl-edit-config-data';
 	],
 })
 export class AddConfigurationDialogComponent {
+	private typeService = inject(PlConfigTypesService);
+	dialogRef =
+		inject<MatDialogRef<AddConfigurationDialogComponent>>(MatDialogRef);
+	data = inject<PLAddConfigData>(MAT_DIALOG_DATA);
+	private branchService = inject(PlConfigBranchService);
+	private currentBranchService = inject(PlConfigCurrentBranchService);
+	private uiService = inject(UiService);
+
 	cfgGroups = this.currentBranchService.cfgGroups;
 	productApplicabilities = this.currentBranchService.productTypes;
 	viewId = toSignal(this.uiService.viewId);
-	constructor(
-		public dialogRef: MatDialogRef<AddConfigurationDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: PLAddConfigData,
-		private currentBranchService: PlConfigCurrentBranchService,
-		private uiService: UiService
-	) {}
 
 	onNoClick(): void {
 		this.dialogRef.close();
 	}
-	valueTracker(index: any, item: any) {
+	valueTracker(index: number, _item: unknown) {
 		return index;
 	}
 }

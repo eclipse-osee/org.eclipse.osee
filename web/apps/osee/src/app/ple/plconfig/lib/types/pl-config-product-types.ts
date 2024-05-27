@@ -10,11 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface productType {
+export type productType = {
 	id?: string;
 	name: string;
 	description: string;
-}
+};
 export class ProductType implements productType {
 	constructor(name: string, description: string, id?: string) {
 		this.name = name;
@@ -24,8 +24,8 @@ export class ProductType implements productType {
 		}
 	}
 	id?: string;
-	name: string = '';
-	description: string = '';
+	name = '';
+	description = '';
 }
 
 export class RequiredProductType extends ProductType {

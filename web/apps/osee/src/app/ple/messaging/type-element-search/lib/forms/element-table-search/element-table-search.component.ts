@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
 	MatFormField,
@@ -38,9 +38,14 @@ import { SearchService } from '../../services/search.service';
 	],
 })
 export class ElementTableSearchComponent {
+	private searchService = inject(SearchService);
+
 	//TODO: Luciano refactor searchTerm to be a signal here, this can be a lot more ergonomic
-	searchTerm: string = '';
-	constructor(private searchService: SearchService) {
+	searchTerm = '';
+
+	/** Inserted by Angular inject() migration for backwards compatibility */
+	constructor(...args: unknown[]);
+	constructor() {
 		this.searchService.searchTerm.subscribe((val) => {
 			this.searchTerm = val;
 		});

@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { map } from 'rxjs';
 import { SideNavService } from '@osee/shared/services/layout';
 import { NavContainerComponent } from '@osee/layout/container';
@@ -24,6 +24,8 @@ import { SnackbarWrapperComponent } from '@osee/shared/components';
 	imports: [RouterOutlet, NavContainerComponent, SnackbarWrapperComponent],
 })
 export class AppComponent {
+	private sideNavService = inject(SideNavService);
+
 	rightSideNavOpened = this.sideNavService.rightSideNavOpened;
 	leftSideNavOpened = this.sideNavService.leftSideNav.pipe(
 		map((v) => v.opened)
@@ -37,6 +39,5 @@ export class AppComponent {
 		this.sideNavService.closeLeftSideNav = '';
 	}
 
-	constructor(private sideNavService: SideNavService) {}
 	title = 'OSEE';
 }

@@ -21,18 +21,17 @@ export type collectorArt = {
 	name: string;
 };
 
-export type worldRow = {
-	[key: string]: string;
-};
+export type worldRow = Record<string, string>;
 
-export type worldRowWithDiffs = {
-	[key: string]: {
+export type worldRowWithDiffs = Record<
+	string,
+	{
 		value: string;
 		added: boolean;
 		deleted: boolean;
 		changed: boolean;
-	};
-};
+	}
+>;
 
 export type worldWithDiffs = {
 	orderedHeaders: string[];

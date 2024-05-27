@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import type { CrossReference } from '@osee/messaging/shared/types';
-import { applicabilitySentinel } from '@osee/shared/types/applicability';
+import { applicabilitySentinel } from '@osee/applicability/types';
 
 export const crossReferencesMock: CrossReference[] = [
 	{

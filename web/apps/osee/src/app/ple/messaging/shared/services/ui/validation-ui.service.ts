@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { UiService } from '@osee/shared/services';
 import { filter, switchMap, take } from 'rxjs';
 import { ValidationService } from '../http/validation.service';
@@ -19,10 +19,8 @@ import { ValidationService } from '../http/validation.service';
 	providedIn: 'root',
 })
 export class ValidationUiService {
-	constructor(
-		private ui: UiService,
-		private validationService: ValidationService
-	) {}
+	private ui = inject(UiService);
+	private validationService = inject(ValidationService);
 
 	validateConnection(connectionId: string, viewId: string) {
 		return this.ui.id.pipe(

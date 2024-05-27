@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface EditViewFreeTextDialog {
+export type EditViewFreeTextDialog = {
 	original: string;
 	type: string;
 	return: string;
-}
+};

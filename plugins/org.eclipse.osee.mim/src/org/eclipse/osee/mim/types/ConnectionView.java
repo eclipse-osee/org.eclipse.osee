@@ -14,19 +14,19 @@ package org.eclipse.osee.mim.types;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
-import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithGammas;
+import org.eclipse.osee.accessor.types.AttributePojo;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * @author Luciano T. Vaglienti
  */
-public class ConnectionView extends ArtifactAccessorResult {
-
-   @JsonIgnore
-   private String Name; //required
+public class ConnectionView extends ArtifactAccessorResultWithGammas {
 
    private String source = "";//source node to reference
    private String target = ""; //target node to reference
@@ -38,8 +38,8 @@ public class ConnectionView extends ArtifactAccessorResult {
    }
 
    public ConnectionView(InterfaceConnection connection, String source, String target) {
-      this(connection.getId(), connection.getName(), connection.getDescription(), connection.getTransportType(),
-         connection.getNodes());
+      this(connection.getId(), connection.getGammaId(), connection.getName(), connection.getDescription(),
+         connection.getTransportType(), connection.getNodes());
       this.setSource(source);
       this.setTarget(target);
       this.setApplicability(connection.getApplicability());
@@ -48,24 +48,26 @@ public class ConnectionView extends ArtifactAccessorResult {
    public ConnectionView(ArtifactReadable art) {
       this();
       this.setId(art.getId());
-      this.setName(art.getName());
+      this.setName(AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.Name, "")));
       this.setData(new ConnectionViewData(art));
-      this.setDescription(art.getSoleAttributeValue(CoreAttributeTypes.Description, ""));
+      this.setDescription(AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.Description, "")));
       this.setApplicability(
          !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
    }
 
-   public ConnectionView(Long id, String name, String description, TransportType transportType, List<InterfaceNode> nodes) {
-      this(id, name);
-      this.setLabel(name);
+   public ConnectionView(Long id, GammaId gamma, AttributePojo<String> name, AttributePojo<String> description, TransportType transportType, List<InterfaceNode> nodes) {
+      super(id, name);
+      this.setLabel(name.getValue());
       this.setData(new ConnectionViewData(id, name));
+      this.data.setGamma(gamma);
+      this.setGamma(gamma);
       this.setDescription(description);
       this.setTransportType(transportType);
       this.setNodes(nodes);
    }
 
    public ConnectionView(Long id, String name) {
-      super(id, name);
+      super(id, AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.Name, GammaId.SENTINEL, name, ""));
    }
 
    public ConnectionView() {
@@ -75,20 +77,20 @@ public class ConnectionView extends ArtifactAccessorResult {
     * @return the description
     */
    @JsonIgnore
-   public String getDescription() {
+   public AttributePojo<String> getDescription() {
       return data.getDescription();
    }
 
    /**
     * @param description the description to set
     */
-   public void setDescription(String description) {
+   public void setDescription(AttributePojo<String> description) {
       this.data.setDescription(description);
    }
 
    @Override
    @JsonIgnore
-   public String getName() {
+   public AttributePojo<String> getName() {
       return super.getName();
    }
 

@@ -12,4 +12,4 @@
  **********************************************************************/
 import { NamedIdAndDescription } from '@osee/shared/types';
 
-export interface cfgGroup extends NamedIdAndDescription {}
+export type cfgGroup = {} & NamedIdAndDescription;

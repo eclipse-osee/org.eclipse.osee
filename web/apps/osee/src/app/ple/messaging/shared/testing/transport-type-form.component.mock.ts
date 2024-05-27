@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Input, Output } from '@angular/core';
-import { TransportTypeFormComponent } from '@osee/messaging/shared/forms';
+import { TransportTypeFormComponent } from '@osee/messaging/transports/forms';
 import {
 	TransportType,
 	transportTypeAttributes,

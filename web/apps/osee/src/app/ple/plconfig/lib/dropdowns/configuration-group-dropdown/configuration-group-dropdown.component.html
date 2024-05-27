@@ -28,22 +28,23 @@
 			(click)="addConfigurationGroup()"
 			[disabled]="!editable()"
 			data-cy="add-config-group-btn">
-			<mat-icon color="success">add_box</mat-icon>Add Configuration Group
+			<mat-icon class="tw-text-osee-green-9">add_box</mat-icon>Add
+			Configuration Group
 		</button>
 		<button
 			mat-menu-item
 			[matMenuTriggerFor]="deleteConfigGroupMenu"
 			[disabled]="!editable()"
 			data-cy="delete-config-group-btn">
-			<mat-icon color="warn">delete_forever</mat-icon>Delete Configuration
-			Group
+			<mat-icon class="tw-text-osee-red-9">delete_forever</mat-icon>Delete
+			Configuration Group
 		</button>
 	</ng-template>
 </mat-menu>
 <mat-menu
 	class="tw-max-w-none"
 	#deleteConfigGroupMenu="matMenu">
-	@for (group of cfgGroups | async; track group) {
+	@for (group of cfgGroups | async; track group.id) {
 		<button
 			mat-menu-item
 			(click)="deleteGroup(group.id)"

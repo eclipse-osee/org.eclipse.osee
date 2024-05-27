@@ -25,9 +25,9 @@
 						mat-header-cell
 						*matHeaderCellDef
 						[attr.colspan]="header === ' ' ? 2 : 3"
-						class="tw-border-[1px] tw-border-gray-400 tw-text-primary-600"
+						class="tw-border tw-border-gray-400 tw-text-primary-600"
 						[ngClass]="{
-							'tw-border-b-0': header === ' '
+							'tw-border-b-0': header === ' ',
 						}">
 						<div class="tw-w-full tw-text-center">{{ header }}</div>
 					</th>
@@ -45,7 +45,7 @@
 							'tw-border-r-[1px]':
 								header.includes('abort') || header === 'equal',
 							'tw-border-t-0':
-								header === 'name' || header === 'equal'
+								header === 'name' || header === 'equal',
 						}"
 						[matTooltip]="
 							(getTableHeaderByName(header) | async)

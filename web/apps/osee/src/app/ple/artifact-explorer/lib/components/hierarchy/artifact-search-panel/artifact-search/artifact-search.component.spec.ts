@@ -13,8 +13,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ArtifactSearchComponent } from './artifact-search.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('ArtifactSearchComponent', () => {
 	let component: ArtifactSearchComponent;
@@ -22,10 +26,10 @@ describe('ArtifactSearchComponent', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [
-				ArtifactSearchComponent,
-				HttpClientTestingModule,
-				BrowserAnimationsModule,
+			imports: [ArtifactSearchComponent, BrowserAnimationsModule],
+			providers: [
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
 			],
 		});
 		fixture = TestBed.createComponent(ArtifactSearchComponent);

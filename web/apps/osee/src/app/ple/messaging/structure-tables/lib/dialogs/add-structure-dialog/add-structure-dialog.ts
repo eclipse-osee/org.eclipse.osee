@@ -13,8 +13,8 @@
 
 import type { structure } from '@osee/messaging/shared/types';
 
-export interface AddStructureDialog {
+export type AddStructureDialog = {
 	id: string;
 	name: string;
 	structure: structure;
-}
+};

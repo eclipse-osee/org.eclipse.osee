@@ -11,7 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TitleCasePipe } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	inject,
+	signal,
+} from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import {
 	MAT_DIALOG_DATA,
@@ -37,12 +42,13 @@ import { RemovalDialog } from '../../types/ConfirmRemovalDialog';
 		TitleCasePipe,
 		MatButton,
 	],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfirmRemovalDialogComponent {
-	constructor(
-		public dialogRef: MatDialogRef<ConfirmRemovalDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: RemovalDialog
-	) {}
+	dialogRef =
+		inject<MatDialogRef<ConfirmRemovalDialogComponent>>(MatDialogRef);
+
+	protected data = signal(inject<RemovalDialog>(MAT_DIALOG_DATA));
 
 	onNoClick() {
 		this.dialogRef.close();

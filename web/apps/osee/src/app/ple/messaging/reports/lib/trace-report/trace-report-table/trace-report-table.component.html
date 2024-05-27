@@ -84,7 +84,7 @@
 										[ngTemplateOutlet]="subTableCell"
 										[ngTemplateOutletContext]="{
 											item: item,
-											text: text
+											text: text,
 										}"></ng-container>
 								}
 							</div>
@@ -103,7 +103,7 @@
 	</table>
 	<mat-paginator
 		[pageSizeOptions]="[
-			5, 10, 20, 25, 50, 75, 100, 150, 200, 250, 500, 750, 100
+			5, 10, 20, 25, 50, 75, 100, 150, 200, 250, 500, 750, 100,
 		]"
 		[pageSize]="(pageSize$ | async) || 0"
 		[pageIndex]="(currentPage$ | async) || 0"

@@ -10,15 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import type { applic } from '@osee/shared/types/applicability';
+import type { applic } from '@osee/applicability/types';
 import type { changeReportRow } from '@osee/shared/types/change-report';
 
 export type MimChangeSummary = {
-	nodes: { [key: `${number}`]: MimChangeSummaryItem };
-	connections: { [key: `${number}`]: MimChangeSummaryItem };
-	messages: { [key: `${number}`]: MimChangeSummaryItem };
-	subMessages: { [key: `${number}`]: MimChangeSummaryItem };
-	structures: { [key: `${number}`]: MimChangeSummaryItem };
+	nodes: Record<`${number}`, MimChangeSummaryItem>;
+	connections: Record<`${number}`, MimChangeSummaryItem>;
+	messages: Record<`${number}`, MimChangeSummaryItem>;
+	subMessages: Record<`${number}`, MimChangeSummaryItem>;
+	structures: Record<`${number}`, MimChangeSummaryItem>;
 };
 
 export type MimChangeSummaryItem = {
@@ -39,22 +39,22 @@ export type MimChangeSummaryItem = {
 	children: MimChangeSummaryItem[];
 };
 
-export interface diffUrl {
+export type diffUrl = {
 	label?: string;
 	url?: string;
-}
+};
 
-export interface branchSummary {
+export type branchSummary = {
 	pcrNo: string;
 	description: string;
 	compareBranch: string;
 	reportDate?: string;
-}
+};
 
-export interface diffReportSummaryItem {
+export type diffReportSummaryItem = {
 	id: string;
 	changeType: string;
 	action: string;
 	name: string;
 	details: string[];
-}
+};

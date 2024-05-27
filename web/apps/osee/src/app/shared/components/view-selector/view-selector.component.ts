@@ -22,7 +22,7 @@ import {
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { ApplicabilityListUIService } from '@osee/shared/services';
-import { applic } from '@osee/shared/types/applicability';
+import { applic } from '@osee/applicability/types';
 import {
 	provideOptionalControlContainerNgForm,
 	writableSlice,

@@ -32,19 +32,19 @@ export type artifactTypeIcon = {
 	variant: iconVariant;
 };
 
-export interface artifactRelation {
+export type artifactRelation = {
 	relationTypeToken: relationTypeToken;
 	relationSides: artifactRelationSide[];
-}
+};
 
-export interface artifactRelationSide {
+export type artifactRelationSide = {
 	name: string;
 	artifacts: artifactWithRelations[];
 	isSideA: boolean;
 	isSideB: boolean;
-}
+};
 
-export interface relationTypeToken {
+export type relationTypeToken = {
 	id: `${number}`;
 	idIntValue: number;
 	idString: string;
@@ -54,14 +54,14 @@ export interface relationTypeToken {
 	order: string;
 	ordered: boolean;
 	relationArtifactType: string;
-}
+};
 
-export interface operationType {
+export type operationType = {
 	id: `${number}`;
 	name: string;
 	description: string;
 	materialIcon: artifactTypeIcon;
-}
+};
 
 export const operationTypeMock: operationType = {
 	id: '1',

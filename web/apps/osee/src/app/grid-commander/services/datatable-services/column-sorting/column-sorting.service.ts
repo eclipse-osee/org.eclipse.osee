@@ -17,8 +17,6 @@ import { RowObj } from '../../../types/grid-commander-types/table-data-types';
 	providedIn: 'root',
 })
 export class ColumnSortingService {
-	constructor() {}
-
 	columnSort(property: string, isAsc: boolean, data: RowObj[]) {
 		//create array of favorites to sort
 		const favoritedRows = data

@@ -1,0 +1,407 @@
+/*********************************************************************
+ * Copyright (c) 2024 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+/* stylelint-disable comment-empty-line-before */
+/* stylelint-disable color-hex-length */
+html {
+	/* M3 Blues */
+	--osee-blue-0: #000000;
+	--osee-blue-1: #00006e;
+	--osee-blue-2: #002d6e;
+	--osee-blue-3: #003784;
+	--osee-blue-4: #00429b;
+	--osee-blue-5: #004db2;
+	--osee-blue-6: #0058ca;
+	--osee-blue-7: #1770f6;
+	--osee-blue-8: #558dff;
+	--osee-blue-9: #85a9ff;
+	--osee-blue-10: #b0c6ff;
+	--osee-blue-11: #d9e2ff;
+	--osee-blue-12: #edf0ff;
+	--osee-blue-13: #faf8ff;
+	--osee-blue-14: #fefbff;
+	--osee-blue-15: #ffffff;
+	/* M2 Blues */
+	--osee-blue-16: #e3f2fd;
+	--osee-blue-17: #bbdefb;
+	--osee-blue-18: #90caf9;
+	--osee-blue-19: #64b5f6;
+	--osee-blue-20: #42a5f5;
+	--osee-blue-21: #2196f3;
+	--osee-blue-22: #1e88e5;
+	--osee-blue-23: #1976d2;
+	--osee-blue-24: #1565c0;
+	--osee-blue-25: #0d47a1;
+	--osee-blue-26: #82b1ff;
+	--osee-blue-27: #448aff;
+	--osee-blue-28: #2979ff;
+	--osee-blue-29: #2962ff;
+	/* M3 Light-Blues */
+	--osee-light-blue-0: #000000;
+	--osee-light-blue-1: #001e2b;
+	--osee-light-blue-2: #003548;
+	--osee-light-blue-3: #004058;
+	--osee-light-blue-4: #004d67;
+	--osee-light-blue-5: #005977;
+	--osee-light-blue-6: #006688;
+	--osee-light-blue-7: #0080aa;
+	--osee-light-blue-8: #009cce;
+	--osee-light-blue-9: #3fb7ea;
+	--osee-light-blue-10: #75d1ff;
+	--osee-light-blue-11: #c2e8ff;
+	--osee-light-blue-12: #e2f3ff;
+	--osee-light-blue-13: #f5faff;
+	--osee-light-blue-14: #fbfcff;
+	--osee-light-blue-15: #ffffff;
+	/* M2 Light-Blues */
+	--osee-light-blue-16: #e1f5fe;
+	--osee-light-blue-17: #b3e5fc;
+	--osee-light-blue-18: #81d4fa;
+	--osee-light-blue-19: #4fc3f7;
+	--osee-light-blue-20: #29b6f6;
+	--osee-light-blue-21: #03a9f4;
+	--osee-light-blue-22: #039be5;
+	--osee-light-blue-23: #0288d1;
+	--osee-light-blue-24: #0277bd;
+	--osee-light-blue-25: #01579b;
+	--osee-light-blue-26: #80d8ff;
+	--osee-light-blue-27: #40c4ff;
+	--osee-light-blue-28: #00b0ff;
+	--osee-light-blue-29: #0091ea;
+	/* M3 ambers */
+	--osee-amber-0: #000000;
+	--osee-amber-1: #251a00;
+	--osee-amber-2: #3f2e00;
+	--osee-amber-3: #4c3800;
+	--osee-amber-4: #5a4300;
+	--osee-amber-5: #684f00;
+	--osee-amber-6: #775a00;
+	--osee-amber-7: #967200;
+	--osee-amber-8: #b58a00;
+	--osee-amber-9: #d6a400;
+	--osee-amber-10: #f7be00;
+	--osee-amber-11: #ffdf99;
+	--osee-amber-12: #ffefd2;
+	--osee-amber-13: #fff8f2;
+	--osee-amber-14: #fffbff;
+	--osee-amber-15: #ffffff;
+	/* M2 ambers */
+	--osee-amber-16: #ffd54f;
+	--osee-amber-17: #ffca28;
+	--osee-amber-18: #ffc107;
+	--osee-amber-19: #ffb300;
+	--osee-amber-20: #ffc400;
+	--osee-amber-21: #ffd740;
+	--osee-amber-22: #ffab00;
+	--osee-amber-23: #ffe57f;
+	--osee-amber-24: #ff6f00;
+	--osee-amber-25: #ff8f00;
+	--osee-amber-26: #ffa000;
+	--osee-amber-27: #ffe082;
+	--osee-amber-28: #ffecb3;
+	--osee-amber-29: #fff8e1;
+	/* M3 yellows */
+	--osee-yellow-0: #000000;
+	--osee-yellow-1: #1f1c00;
+	--osee-yellow-2: #363100;
+	--osee-yellow-3: #423c00;
+	--osee-yellow-4: #4f4800;
+	--osee-yellow-5: #5c5300;
+	--osee-yellow-6: #695f00;
+	--osee-yellow-7: #847800;
+	--osee-yellow-8: #a09200;
+	--osee-yellow-9: #bdad00;
+	--osee-yellow-10: #dbc900;
+	--osee-yellow-11: #fae500;
+	--osee-yellow-12: #fff39b;
+	--osee-yellow-13: #fff9e7;
+	--osee-yellow-14: #fffbff;
+	--osee-yellow-15: #ffffff;
+	/* M2 yellows */
+	--osee-yellow-16: #fffde7;
+	--osee-yellow-17: #fff9c4;
+	--osee-yellow-18: #fff59d;
+	--osee-yellow-19: #fff176;
+	--osee-yellow-20: #ffee58;
+	--osee-yellow-21: #ffeb3b;
+	--osee-yellow-22: #fdd835;
+	--osee-yellow-23: #fbc02d;
+	--osee-yellow-24: #f9a825;
+	--osee-yellow-25: #f57f17;
+	--osee-yellow-26: #ffff8d;
+	--osee-yellow-27: #ffff00;
+	--osee-yellow-28: #ffea00;
+	--osee-yellow-29: #ffd600;
+	/* M3 Greens */
+	--osee-green-0: #000000;
+	--osee-green-1: #00210b;
+	--osee-green-2: #003918;
+	--osee-green-3: #00451f;
+	--osee-green-4: #005226;
+	--osee-green-5: #00602d;
+	--osee-green-6: #006d35;
+	--osee-green-7: #008944;
+	--osee-green-8: #00a754;
+	--osee-green-9: #00c564;
+	--osee-green-10: #00e475;
+	--osee-green-11: #62ff96;
+	--osee-green-12: #c4ffcc;
+	--osee-green-13: #eaffe9;
+	--osee-green-14: #f5fff2;
+	--osee-green-15: #ffffff;
+	/* M2 Greens */
+	--osee-green-16: #e8f5e9;
+	--osee-green-17: #c8e6c9;
+	--osee-green-18: #a5d6a7;
+	--osee-green-19: #81c784;
+	--osee-green-20: #66bb6a;
+	--osee-green-21: #4caf50;
+	--osee-green-22: #43a047;
+	--osee-green-23: #388e3c;
+	--osee-green-24: #2e7d32;
+	--osee-green-25: #1b5e20;
+	--osee-green-26: #b9f6ca;
+	--osee-green-27: #69f0ae;
+	--osee-green-28: #00e676;
+	--osee-green-29: #00c853;
+	/* M3 Reds */
+	--osee-red-0: #000000;
+	--osee-red-1: #410002;
+	--osee-red-2: #690005;
+	--osee-red-3: #7e0007;
+	--osee-red-4: #93000a;
+	--osee-red-5: #a80710;
+	--osee-red-6: #ba1a1a;
+	--osee-red-7: #de3730;
+	--osee-red-8: #ff5449;
+	--osee-red-9: #ff897d;
+	--osee-red-10: #ffb4ab;
+	--osee-red-11: #ffdad6;
+	--osee-red-12: #ffedea;
+	--osee-red-13: #fff8f7;
+	--osee-red-14: #fffbff;
+	--osee-red-15: #ffffff;
+	/* M2 Reds */
+	--osee-red-16: #ffebee;
+	--osee-red-17: #ffcdd2;
+	--osee-red-18: #ef9a9a;
+	--osee-red-19: #e57373;
+	--osee-red-20: #ef5350;
+	--osee-red-21: #f44336;
+	--osee-red-22: #e53935;
+	--osee-red-23: #d32f2f;
+	--osee-red-24: #c62828;
+	--osee-red-25: #b71c1c;
+	--osee-red-26: #ff8a80;
+	--osee-red-27: #ff5252;
+	--osee-red-28: #ff1744;
+	--osee-red-29: #d50000;
+
+	/* M3 Neutral */
+	--osee-neutral-0: #000000;
+	--osee-neutral-1: #1b1b1f;
+	--osee-neutral-2: #303034;
+	--osee-neutral-3: #3b3b3f;
+	--osee-neutral-4: #46464a;
+	--osee-neutral-5: #525256;
+	--osee-neutral-6: #5e5e62;
+	--osee-neutral-7: #77777a;
+	--osee-neutral-8: #919094;
+	--osee-neutral-9: #acabaf;
+	--osee-neutral-10: #c7c6ca;
+	--osee-neutral-11: #e3e2e6;
+	--osee-neutral-12: #f2f0f4;
+	--osee-neutral-13: #fbf8fd;
+	--osee-neutral-14: #fefbff;
+	--osee-neutral-15: #ffffff;
+	--osee-neutral-16: #0d0e11;
+	--osee-neutral-17: #121316;
+	--osee-neutral-18: #1f1f23;
+	--osee-neutral-19: #292a2d;
+	--osee-neutral-20: #343438;
+	--osee-neutral-21: #39393c;
+	--osee-neutral-22: #dbd9dd;
+	--osee-neutral-23: #e9e7ec;
+	--osee-neutral-24: #efedf1;
+	--osee-neutral-25: #f5f3f7;
+	/* M3 Neutral Variant */
+	--osee-neutral-variant-0: #000000;
+	--osee-neutral-variant-1: #191b23;
+	--osee-neutral-variant-2: #2e3038;
+	--osee-neutral-variant-3: #393b43;
+	--osee-neutral-variant-4: #44464f;
+	--osee-neutral-variant-5: #50525a;
+	--osee-neutral-variant-6: #5c5e67;
+	--osee-neutral-variant-7: #757780;
+	--osee-neutral-variant-8: #8f9099;
+	--osee-neutral-variant-9: #a9abb4;
+	--osee-neutral-variant-10: #c5c6d0;
+	--osee-neutral-variant-11: #e1e2ec;
+	--osee-neutral-variant-12: #eff0fa;
+	--osee-neutral-variant-13: #faf8ff;
+	--osee-neutral-variant-14: #fefbff;
+	--osee-neutral-variant-15: #ffffff;
+	/* M2 Miscellaneous */
+	--osee-misc-0: #e0e0e0;
+	--osee-misc-1: #f5f5f5;
+	--osee-misc-2: #fafafa;
+	--osee-misc-3: rgb(0 0 0);
+	--osee-misc-4: rgb(255 255 255);
+	--osee-misc-5: #bdbdbd;
+	--osee-misc-6: #eeeeee;
+	--osee-misc-7: rgb(97 97 97);
+	--osee-misc-8: #212121;
+	--osee-misc-9: #424242;
+	--osee-misc-10: #303030;
+
+	@media (prefers-color-scheme: light) {
+		/* M2 BACK COMPAT */
+		--osee-primary-16: var(--osee-blue-16);
+		--osee-primary-17: var(--osee-blue-17);
+		--osee-primary-18: var(--osee-blue-18);
+		--osee-primary-19: var(--osee-blue-19);
+		--osee-primary-20: var(--osee-blue-20);
+		--osee-primary-21: var(--osee-blue-21);
+		--osee-primary-22: var(--osee-blue-22);
+		--osee-primary-23: var(--osee-blue-23);
+		--osee-primary-24: var(--osee-blue-24);
+		--osee-primary-25: var(--osee-blue-25);
+		--osee-primary-26: var(--osee-blue-26);
+		--osee-primary-27: var(--osee-blue-27);
+		--osee-primary-28: var(--osee-blue-28);
+		--osee-primary-29: var(--osee-blue-29);
+		--osee-primary-default: var(--osee-blue-28);
+		--osee-primary-lighter: var(--osee-blue-29);
+		--osee-primary-darker: var(--osee-blue-25);
+		--osee-secondary-16: var(--osee-amber-16);
+		--osee-secondary-17: var(--osee-amber-17);
+		--osee-secondary-18: var(--osee-amber-18);
+		--osee-secondary-19: var(--osee-amber-19);
+		--osee-secondary-20: var(--osee-amber-20);
+		--osee-secondary-21: var(--osee-amber-21);
+		--osee-secondary-22: var(--osee-amber-22);
+		--osee-secondary-23: var(--osee-amber-23);
+		--osee-secondary-24: var(--osee-amber-24);
+		--osee-secondary-25: var(--osee-amber-25);
+		--osee-secondary-26: var(--osee-amber-26);
+		--osee-secondary-27: var(--osee-amber-27);
+		--osee-secondary-28: var(--osee-amber-28);
+		--osee-secondary-29: var(--osee-amber-29);
+		--osee-secondary-default: var(--osee-amber-22);
+		--osee-secondary-lighter: var(--osee-amber-16);
+		--osee-secondary-darker: var(--osee-amber-27);
+
+		/* M2 BACK COMPAT: BACKGROUND */
+		--osee-background-status-bar: var(--osee-misc-0);
+		--osee-background-app-bar: var(--osee-misc-1);
+		--osee-background-background: var(--osee-misc-2);
+		--osee-background-hover: rgba(0 0 0 / 4%);
+		--osee-background-card: var(--osee-misc-4);
+		--osee-background-dialog: var(--osee-misc-4);
+		--osee-background-disabled-button: rgba(0 0 0 / 12%);
+		--osee-background-raised-button: var(--osee-misc-4);
+		--osee-background-focused-button: rgba(0 0 0 / 12%);
+		--osee-background-selected-button: var(--osee-misc-0);
+		--osee-background-selected-disabled-button: var(--osee-misc-5);
+		--osee-background-disabled-button-toggle: var(--osee-misc-6);
+		--osee-background-unselected-chip: var(--osee-misc-1);
+		--osee-background-disabled-list-option: var(--osee-misc-6);
+		--osee-background-tooltip: var(--osee-misc-7);
+		/* M2 BACK COMPAT: FOREGROUND */
+		--osee-foreground-base: 0 0 0;
+		--osee-foreground-divider: rgba(0 0 0 / 12%);
+		--osee-foreground-dividers: rgba(0 0 0 / 12%);
+		--osee-foreground-disabled: rgba(0 0 0 / 38%);
+		--osee-foreground-disabled-button: rgba(0 0 0 / 26%);
+		--osee-foreground-disabled-text: rgba(0 0 0 / 38%);
+		--osee-foreground-elevation: 0 0 0;
+		--osee-foreground-hint-text: rgba(0 0 0 / 38%);
+		--osee-foreground-secondary-text: rgba(0 0 0 / 54%);
+		--osee-foreground-icon: rgba(0 0 0 / 54%);
+		--osee-foreground-icons: rgba(0 0 0 / 54%);
+		--osee-foreground-text: rgba(0 0 0 / 87%);
+		--osee-foreground-slider-min: rgba(0 0 0 / 87%);
+		--osee-foreground-slider-off: rgba(0 0 0 / 26%);
+		--osee-foreground-slider-off-active: rgba(0 0 0 / 38%);
+	}
+
+	@media (prefers-color-scheme: dark) {
+		/* M2 BACK COMPAT */
+		--osee-primary-16: var(--osee-light-blue-16);
+		--osee-primary-17: var(--osee-light-blue-17);
+		--osee-primary-18: var(--osee-light-blue-18);
+		--osee-primary-19: var(--osee-light-blue-19);
+		--osee-primary-20: var(--osee-light-blue-20);
+		--osee-primary-21: var(--osee-light-blue-21);
+		--osee-primary-22: var(--osee-light-blue-22);
+		--osee-primary-23: var(--osee-light-blue-23);
+		--osee-primary-24: var(--osee-light-blue-24);
+		--osee-primary-25: var(--osee-light-blue-25);
+		--osee-primary-26: var(--osee-light-blue-26);
+		--osee-primary-27: var(--osee-light-blue-27);
+		--osee-primary-28: var(--osee-light-blue-28);
+		--osee-primary-29: var(--osee-light-blue-29);
+		--osee-primary-default: var(--osee-light-blue-19);
+		--osee-primary-lighter: var(--osee-light-blue-18);
+		--osee-primary-darker: var(--osee-light-blue-20);
+		--osee-secondary-16: var(--osee-yellow-16);
+		--osee-secondary-17: var(--osee-yellow-17);
+		--osee-secondary-18: var(--osee-yellow-18);
+		--osee-secondary-19: var(--osee-yellow-19);
+		--osee-secondary-20: var(--osee-yellow-20);
+		--osee-secondary-21: var(--osee-yellow-21);
+		--osee-secondary-22: var(--osee-yellow-22);
+		--osee-secondary-23: var(--osee-yellow-23);
+		--osee-secondary-24: var(--osee-yellow-24);
+		--osee-secondary-25: var(--osee-yellow-25);
+		--osee-secondary-26: var(--osee-yellow-26);
+		--osee-secondary-27: var(--osee-yellow-27);
+		--osee-secondary-28: var(--osee-yellow-28);
+		--osee-secondary-29: var(--osee-yellow-29);
+		--osee-secondary-default: var(--osee-yellow-26);
+		--osee-secondary-lighter: var(--osee-yellow-16);
+		--osee-secondary-darker: var(--osee-yellow-27);
+
+		/* M2 BACK COMPAT: BACKGROUND */
+		--osee-background-status-bar: 0 0 0;
+		--osee-background-app-bar: var(--osee-misc-8);
+		--osee-background-background: var(--osee-misc-10);
+		--osee-background-hover: rgba(255 255 255 / 4%);
+		--osee-background-card: var(--osee-misc-9);
+		--osee-background-dialog: var(--osee-misc-9);
+		--osee-background-disabled-button: rgba(255 255 255 / 12%);
+		--osee-background-raised-button: var(--osee-misc-9);
+		--osee-background-focused-button: rgba(255 255 255 / 12%);
+		--osee-background-selected-button: var(--osee-misc-8);
+		--osee-background-selected-disabled-button: var(--osee-misc-9);
+		--osee-background-disabled-button-toggle: 0 0 0;
+		--osee-background-unselected-chip: var(--osee-misc-7);
+		--osee-background-disabled-list-option: rgb(255 255 255 / 12%);
+		--osee-background-tooltip: var(--osee-misc-7);
+		/* M2 BACK COMPAT: FOREGROUND */
+		--osee-foreground-base: var(--osee-misc-4);
+		--osee-foreground-divider: rgba(255 255 255 / 12%);
+		--osee-foreground-dividers: rgba(255 255 255 / 12%);
+		--osee-foreground-disabled: rgba(255 255 255 / 50%);
+		--osee-foreground-disabled-button: rgba(255 255 255 / 30%);
+		--osee-foreground-disabled-text: rgba(255 255 255 / 50%);
+		--osee-foreground-elevation: 0 0 0;
+		--osee-foreground-hint-text: rgba(255 255 255 / 50%);
+		--osee-foreground-secondary-text: rgba(255 255 255 / 70%);
+		--osee-foreground-icon: var(--osee-misc-4);
+		--osee-foreground-icons: var(--osee-misc-4);
+		--osee-foreground-text: var(--osee-misc-4);
+		--osee-foreground-slider-min: var(--osee-misc-4);
+		--osee-foreground-slider-off: rgba(255 255 255 / 30%);
+		--osee-foreground-slider-off-active: rgba(255 255 255 / 30%);
+	}
+}

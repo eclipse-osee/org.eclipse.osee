@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { debounceTime, iif, map, of, shareReplay, switchMap } from 'rxjs';
 import { Command } from '../../../types/grid-commander-types/gc-user-and-contexts-relationships';
 import { CommandGroupOptionsService } from '../commands/command-group-options.service';
@@ -19,12 +19,10 @@ import { CommandGroupOptionsService } from '../commands/command-group-options.se
 	providedIn: 'root',
 })
 export class SelectedCommandDataService {
+	private commandGroupOptionsService = inject(CommandGroupOptionsService);
+
 	private _filteredCommandGroups$ =
 		this.commandGroupOptionsService.filteredCommandGroups;
-
-	constructor(
-		private commandGroupOptionsService: CommandGroupOptionsService
-	) {}
 
 	private _selectedCommandObject$ = this._filteredCommandGroups$.pipe(
 		debounceTime(200),
@@ -35,7 +33,7 @@ export class SelectedCommandDataService {
 				of({
 					contextGroup: '',
 					name: '',
-					id: '',
+					id: '-1' as const,
 					idIntValue: 0,
 					idString: '',
 					attributes: {
@@ -45,7 +43,7 @@ export class SelectedCommandDataService {
 					},
 					parameter: {
 						name: '',
-						id: '',
+						id: '-1' as const,
 						typeAsString: '',
 						idIntValue: 0,
 						idString: '',
@@ -65,11 +63,7 @@ export class SelectedCommandDataService {
 	public get selectedCommandNotEmpty() {
 		return this._selectedCommandObject$.pipe(
 			switchMap((command) =>
-				iif(
-					() => command.name === '' && command.id === '',
-					of(),
-					of(true)
-				)
+				iif(() => command.name === '', of(), of(true))
 			)
 		);
 	}

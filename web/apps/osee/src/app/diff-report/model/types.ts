@@ -10,35 +10,35 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface DiffEndPoint {
+export type DiffEndPoint = {
 	id: string;
 	name: string;
 	endpointUrl: string;
-}
+};
 
-export interface Config {
+export type Config = {
 	programsToBuilds: ProgramToBuild[];
-}
+};
 
-export interface ProgramToBuild {
+export type ProgramToBuild = {
 	builds: Build[];
 	program: Program;
-}
+};
 
-export interface Build {
+export type Build = {
 	name: string;
 	guid: string;
-}
+};
 
-export interface Program {
+export type Program = {
 	name: string;
 	guid: string;
-}
+};
 
-export interface SearchOptions {
+export type SearchOptions = {
 	workflowNum: string;
 	workflowDesc: string;
 	program: string;
 	build: string;
 	displaySearch: boolean;
-}
+};

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { apiURL } from '@osee/environments';
 import type { connection } from '../../types/connection';
 
@@ -19,7 +19,7 @@ import type { connection } from '../../types/connection';
 	providedIn: 'root',
 })
 export class SharedConnectionService {
-	constructor(private http: HttpClient) {}
+	private http = inject(HttpClient);
 
 	getConnection(branchId: string, connectionId: string) {
 		return this.http.get<connection>(

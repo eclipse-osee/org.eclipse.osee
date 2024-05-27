@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -34,9 +34,9 @@ import { ArtifactHierarchyOptionsService } from '../../../services/artifact-hier
 	templateUrl: './artifact-hierarchy-options.component.html',
 })
 export class ArtifactHierarchyOptionsComponent {
-	option$ = this.optionsService.options$;
+	private optionsService = inject(ArtifactHierarchyOptionsService);
 
-	constructor(private optionsService: ArtifactHierarchyOptionsService) {}
+	option$ = this.optionsService.options$;
 
 	toggleShowRelations() {
 		this.option$

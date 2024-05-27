@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface HelpPage {
+export type HelpPage = {
 	id: string;
 	name: string;
 	markdownContent: string;
@@ -18,4 +18,4 @@ export interface HelpPage {
 	header: boolean;
 	training: boolean;
 	children: HelpPage[];
-}
+};

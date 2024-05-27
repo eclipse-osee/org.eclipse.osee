@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import {
@@ -47,11 +47,12 @@ import { productType } from '../../types/pl-config-product-types';
 	],
 })
 export class EditProductTypeDialogComponent {
+	dialogRef =
+		inject<MatDialogRef<EditProductTypeDialogComponent>>(MatDialogRef);
+	data = inject<Required<productType>>(MAT_DIALOG_DATA);
+
 	parentMatcher = new ParentErrorStateMatcher();
-	constructor(
-		public dialogRef: MatDialogRef<EditProductTypeDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: Required<productType>
-	) {}
+
 	onNoClick(): void {
 		this.dialogRef.close();
 	}

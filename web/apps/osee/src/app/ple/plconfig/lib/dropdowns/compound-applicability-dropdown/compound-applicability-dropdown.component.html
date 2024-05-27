@@ -26,15 +26,15 @@
 			mat-menu-item
 			[disabled]="!editable()"
 			(click)="addCompApplic()">
-			<mat-icon color="success">add_box</mat-icon>Add Compound
-			Applicability
+			<mat-icon class="tw-text-osee-green-9">add_box</mat-icon>Add
+			Compound Applicability
 		</button>
 		<button
 			mat-menu-item
 			[disabled]="!editable()"
 			[matMenuTriggerFor]="deleteMenu">
-			<mat-icon color="warn">delete_forever</mat-icon>Delete Compound
-			Applicability
+			<mat-icon class="tw-text-osee-red-9">delete_forever</mat-icon>Delete
+			Compound Applicability
 		</button>
 	</ng-template>
 </mat-menu>

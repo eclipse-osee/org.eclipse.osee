@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import {
 	MAT_DIALOG_DATA,
@@ -36,10 +36,8 @@ import { RowObj } from '../../types/grid-commander-types/table-data-types';
 	],
 })
 export class DeleteRowDialogComponent {
-	constructor(
-		public dialogRef: MatDialogRef<DeleteRowDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: { action: string; object: RowObj }
-	) {}
+	dialogRef = inject<MatDialogRef<DeleteRowDialogComponent>>(MatDialogRef);
+	data = inject(MAT_DIALOG_DATA);
 
 	doAction(action: string, rowObj: RowObj) {
 		this.dialogRef.close({ event: action, data: rowObj });

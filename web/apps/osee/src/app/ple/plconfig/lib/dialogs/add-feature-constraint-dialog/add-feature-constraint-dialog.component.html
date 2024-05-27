@@ -162,24 +162,24 @@
 			mat-raised-button
 			[disabled]="
 				addFeatureConstraintForm.invalid ||
-				data.featureConstraint.applicability2.id === '' ||
-				data.featureConstraint.applicability1.id === ''
+				data.featureConstraint.applicability2.id === '-1' ||
+				data.featureConstraint.applicability1.id === '-1'
 			"
 			(click)="toggleHidePreview(); findConstraintConflicts()">
 			View Preview
 		</button>
 		@if (conflict$ | async; as conflicts) {
 			<button
-				mat-raised-button
+				mat-flat-button
 				[hidden]="
 					addFeatureConstraintForm.invalid ||
-					data.featureConstraint.applicability2.id === '' ||
-					data.featureConstraint.applicability1.id === '' ||
+					data.featureConstraint.applicability2.id === '-1' ||
+					data.featureConstraint.applicability1.id === '-1' ||
 					hidePreview
 				"
 				[mat-dialog-close]="data"
 				[disabled]="conflicts.length > 0"
-				color="primary">
+				class="primary-button">
 				Confirm
 			</button>
 		}

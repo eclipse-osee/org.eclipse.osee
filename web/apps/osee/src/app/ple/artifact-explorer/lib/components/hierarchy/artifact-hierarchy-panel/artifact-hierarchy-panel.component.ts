@@ -57,6 +57,13 @@ import {
 	templateUrl: './artifact-hierarchy-panel.component.html',
 })
 export class ArtifactHierarchyPanelComponent {
+	private artHierPathService = inject(ArtifactHierarchyPathService);
+	private tabService = inject(ArtifactExplorerTabService);
+	private currentBranchService = inject(CurrentBranchInfoService);
+	private currentActionService = inject(CurrentActionService);
+	private createActionService = inject(CreateActionService);
+	private actionService = inject(ActionService);
+
 	private uiService = inject(UiService);
 	protected branchType = toSignal(this.uiService.type, { initialValue: '' });
 	protected branchId = toSignal(this.uiService.id, { initialValue: '' });
@@ -100,15 +107,6 @@ export class ArtifactHierarchyPanelComponent {
 			)
 		)
 	);
-
-	constructor(
-		private artHierPathService: ArtifactHierarchyPathService,
-		private tabService: ArtifactExplorerTabService,
-		private currentBranchService: CurrentBranchInfoService,
-		private currentActionService: CurrentActionService,
-		private createActionService: CreateActionService,
-		private actionService: ActionService
-	) {}
 
 	openChangeReport() {
 		this.tabService.addChangeReportTab(

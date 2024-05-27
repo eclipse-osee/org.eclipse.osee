@@ -10,25 +10,25 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import type { CrossReference } from './crossReference';
-import type { messageToken } from './messages';
-import type { subMessage } from './sub-messages';
-import type { elementImportToken } from './element';
-import type { enumeration, enumSet } from './enum';
-import type { nodeData } from './node';
-import type { platformTypeImportToken } from './platformType';
-import type { structure } from './structure';
 import type { connection } from '@osee/messaging/shared/types';
+import type { CrossReference } from './crossReference';
+import type { element } from './element';
+import type { enumeration, enumerationSet } from './enum';
+import type { message } from './messages';
+import type { nodeData } from './node';
+import type { PlatformType } from './platformType';
+import type { structure } from './structure';
+import type { subMessage } from './sub-messages';
 
-export interface ImportSummary {
+export type ImportSummary = {
 	nodes: nodeData[];
 	connections: connection[];
-	messages: messageToken[];
+	messages: message[];
 	subMessages: subMessage[];
 	structures: structure[];
-	elements: elementImportToken[];
-	platformTypes: platformTypeImportToken[];
-	enumSets: enumSet[];
+	elements: element[];
+	platformTypes: PlatformType[];
+	enumSets: enumerationSet[];
 	enums: enumeration[];
 	crossReferences: CrossReference[];
 	connectionNodeRelations: importRelationMap;
@@ -42,20 +42,18 @@ export interface ImportSummary {
 	platformTypeEnumSetRelations: importRelationMap;
 	enumSetEnumRelations: importRelationMap;
 	connectionCrossReferenceRelations: importRelationMap;
-}
+};
 
-export interface importRelationMap {
-	[key: string]: string[];
-}
+export type importRelationMap = Record<string, string[]>;
 
-export interface ImportOption {
+export type ImportOption = {
 	id: string;
 	name: string;
 	url: string;
-	transportType: string;
 	connectionRequired: boolean;
-}
+	transportTypeRequired: boolean;
+};
 
-export interface ImportEnumSet extends enumSet {
+export type ImportEnumSet = {
 	enums: string[];
-}
+} & enumerationSet;

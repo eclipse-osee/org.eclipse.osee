@@ -10,10 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import {
-	HttpClientTestingModule,
-	HttpTestingController,
-} from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,16 +19,18 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { DisplayUserComponent } from './display-user.component';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('DisplayUserComponent', () => {
 	let component: DisplayUserComponent;
 	let fixture: ComponentFixture<DisplayUserComponent>;
-	let httpTestingController: HttpTestingController;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			imports: [
-				HttpClientTestingModule,
 				MatIconModule,
 				MatMenuModule,
 				MatButtonModule,
@@ -39,8 +38,11 @@ describe('DisplayUserComponent', () => {
 				NoopAnimationsModule,
 				DisplayUserComponent,
 			],
+			providers: [
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+			],
 		}).compileComponents();
-		httpTestingController = TestBed.inject(HttpTestingController);
 	});
 
 	beforeEach(() => {

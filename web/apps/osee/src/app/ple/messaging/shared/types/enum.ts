@@ -10,31 +10,27 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import type { applic } from '@osee/shared/types/applicability';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
+import { attribute } from '@osee/attributes/types';
+import type { applic } from '@osee/applicability/types';
 
-export interface enumeration {
-	id?: string;
-	name: string;
-	ordinal: number;
+export type enumeration = {
+	id: `${number}`;
+	gammaId: `${number}`;
+	name: Required<attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>>;
+	ordinal: Required<
+		attribute<number, typeof ATTRIBUTETYPEIDENUM.INTERFACEENUMORDINAL>
+	>;
 	applicability: applic;
-	applicabilityId?: string;
-}
+};
 
-export interface enumerationSet extends enumSet {
-	id?: string;
-	name: string;
+export type enumerationSet = {
+	id: `${number}`;
+	gammaId: `${number}`;
+	name: Required<attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>>;
+	description: Required<
+		attribute<string, typeof ATTRIBUTETYPEIDENUM.DESCRIPTION>
+	>;
 	applicability: applic;
-	description: string;
-	enumerations?: enumeration[];
-	/**
-	 * Only used in api creation
-	 */
-	applicabilityId?: string;
-}
-export interface enumSet {
-	id?: string;
-	name: string;
-	applicability: applic;
-	description: string;
-	applicabilityId?: string;
-}
+	enumerations: enumeration[];
+};

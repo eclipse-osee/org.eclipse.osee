@@ -13,8 +13,10 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { transactionToken } from '@osee/shared/types';
-import { applic } from '@osee/shared/types/applicability';
+import { transactionToken } from '@osee/transactions/types';
+import { applic } from '@osee/applicability/types';
+import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
+import { attribute } from '@osee/attributes/types';
 
 @Injectable({
 	providedIn: 'root',
@@ -23,8 +25,18 @@ export class SideNavService {
 	private _rightSideNavContent = new ReplaySubject<{
 		opened: boolean;
 		field: string;
-		currentValue: string | number | applic | boolean;
-		previousValue?: string | number | applic | boolean;
+		currentValue:
+			| string
+			| number
+			| applic
+			| boolean
+			| attribute<unknown, ATTRIBUTETYPEID>;
+		previousValue?:
+			| string
+			| number
+			| applic
+			| boolean
+			| attribute<unknown, ATTRIBUTETYPEID>;
 		transaction?: transactionToken;
 		user?: string;
 		date?: string;
@@ -37,7 +49,6 @@ export class SideNavService {
 		icon: 'menu',
 	});
 	private _leftSideNavContent$ = this._leftSideNavContent.asObservable();
-	constructor() {}
 
 	get rightSideNavContent() {
 		return this._rightSideNavContent;

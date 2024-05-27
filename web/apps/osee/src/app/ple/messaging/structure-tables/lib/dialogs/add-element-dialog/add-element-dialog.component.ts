@@ -11,11 +11,19 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Inject, viewChild } from '@angular/core';
+import {
+	Component,
+	computed,
+	effect,
+	inject,
+	signal,
+	viewChild,
+} from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import {
 	MatAutocomplete,
+	MatAutocompleteSelectedEvent,
 	MatAutocompleteTrigger,
 } from '@angular/material/autocomplete';
 import { MatButton } from '@angular/material/button';
@@ -39,15 +47,13 @@ import {
 	MatStepperPrevious,
 } from '@angular/material/stepper';
 import { MatTooltip } from '@angular/material/tooltip';
+import { AttributeToValuePipe } from '@osee/attributes/pipes';
 import { NewTypeFormComponent } from '@osee/messaging/shared/forms';
 import { CurrentStructureService } from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 import type { ElementDialog, element } from '@osee/messaging/shared/types';
-import {
-	ApplicabilitySelectorComponent,
-	MatOptionLoadingComponent,
-} from '@osee/shared/components';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { MatOptionLoadingComponent } from '@osee/shared/components';
+import { writableSlice } from '@osee/shared/utils';
 import { debounceTime, delay, map, switchMap, tap } from 'rxjs/operators';
 import { ElementFormComponent } from '../../forms/element-form/element-form.component';
 import { PlatformTypeQueryComponent } from '../platform-type-query/platform-type-query.component';
@@ -79,8 +85,8 @@ import { PlatformTypeQueryComponent } from '../platform-type-query/platform-type
 		PlatformTypeQueryComponent,
 		NewTypeFormComponent,
 		MatOptionLoadingComponent,
-		ApplicabilitySelectorComponent,
 		ElementFormComponent,
+		AttributeToValuePipe,
 	],
 	providers: [
 		{
@@ -90,6 +96,10 @@ import { PlatformTypeQueryComponent } from '../platform-type-query/platform-type
 	],
 })
 export class AddElementDialogComponent {
+	dialog = inject(MatDialog);
+	private structures = inject(STRUCTURE_SERVICE_TOKEN);
+	dialogRef = inject<MatDialogRef<AddElementDialogComponent>>(MatDialogRef);
+
 	_internalStepper = viewChild.required(MatStepper);
 	__internalStepper = toObservable(this._internalStepper);
 
@@ -98,24 +108,40 @@ export class AddElementDialogComponent {
 		delay(1),
 		tap((v) => {
 			if (
-				this.data.element.id !== '' &&
-				this.data.element.id !== '-1' &&
-				this._isFullElement(this.data.element)
+				this.elementId() !== '-1' &&
+				this._isFullElement(this.data().element)
 			) {
-				this.data.element.id = '-1';
-				if (this.selectedElement) {
-					this.selectedElement.id = '-1';
-					this._cleanElement(this.selectedElement);
+				this.elementId.set('-1');
+				if (this.element()) {
+					this.elementId.set('-1');
 				}
-				this._cleanElement(this.data.element);
-				this.data.type = this.data.element.platformType;
+				this.type.set(this.data().element.platformType);
 				v.next();
 			}
 		})
 	);
-	protected resetElementForm = new Subject<number>();
+
+	protected data = signal(inject<ElementDialog>(MAT_DIALOG_DATA));
+
+	protected name = computed(() => this.data().name);
+
+	protected element = writableSlice(this.data, 'element');
+	protected type = writableSlice(this.data, 'type');
+	protected elementId = writableSlice(this.element, 'id');
+	protected elementNameAttr = writableSlice(this.element, 'name');
+	protected elementName = writableSlice(this.elementNameAttr, 'value');
+
 	paginationSize = 10;
-	elementSearch = new BehaviorSubject<string>('');
+
+	protected elementSearchString = signal('');
+
+	private _updateElementSearchOnSelection = effect(
+		() => {
+			this.elementSearchString.set(this.elementName());
+		},
+		{ allowSignalWrites: true }
+	);
+	elementSearch = toObservable(this.elementSearchString);
 	selectedElement: element | undefined = undefined;
 
 	availableElements = this.elementSearch.pipe(
@@ -135,20 +161,10 @@ export class AddElementDialogComponent {
 		switchMap((search) => this.structures.getElementsByNameCount(search))
 	);
 
-	constructor(
-		public dialog: MatDialog,
-		@Inject(STRUCTURE_SERVICE_TOKEN)
-		private structures: CurrentStructureService,
-		public dialogRef: MatDialogRef<AddElementDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: ElementDialog
-	) {
-		if (
-			this.data.element.id !== '' &&
-			this.data.element.id !== '-1' &&
-			this._isFullElement(this.data.element)
-		) {
-			this.selectExistingElement(this.data.element);
-		}
+	/** Inserted by Angular inject() migration for backwards compatibility */
+	constructor(...args: unknown[]);
+
+	constructor() {
 		this._moveToNextStep.subscribe();
 	}
 
@@ -158,27 +174,22 @@ export class AddElementDialogComponent {
 		return value?.id !== undefined;
 	}
 
-	applySearchTerm(searchTerm: Event) {
-		const value = (searchTerm.target as HTMLInputElement).value;
-		this.elementSearch.next(value);
+	selectElement(event: MatAutocompleteSelectedEvent) {
+		this.element.set(event.option.value);
 	}
 
 	createNew() {
-		this.data.element.id = '-1';
-		this.selectedElement = undefined;
-	}
-	selectExistingElement(element: element) {
-		this.selectedElement = element;
+		this.elementId.set('-1');
 	}
 
 	getElementOptionToolTip(element: element) {
 		let tooltip = '';
-		if (element.logicalType) {
-			tooltip += element.logicalType;
+		if (element.platformType.interfaceLogicalType) {
+			tooltip += element.platformType.interfaceLogicalType;
 		}
 		if (
-			element.interfaceElementIndexStart !==
-			element.interfaceElementIndexEnd
+			element.interfaceElementIndexStart.value !==
+			element.interfaceElementIndexEnd.value
 		) {
 			tooltip +=
 				' [' +
@@ -198,27 +209,10 @@ export class AddElementDialogComponent {
 		stepper.selectedIndex = index - 1;
 	}
 	moveToReview(stepper: MatStepper) {
-		if (this.selectedElement) {
-			this.data.element = this.selectedElement;
-		}
 		this.moveToStep(3, stepper);
 	}
-	resetDialog() {
-		this.resetElementForm.next(Math.random());
-	}
 
-	private _cleanElement(_element: element) {
-		delete _element.beginByte;
-		delete _element.beginWord;
-		delete _element.endByte;
-		delete _element.endWord;
-		delete _element.autogenerated;
-		delete _element.logicalType;
-		delete _element.interfacePlatformTypeDescription;
-		delete _element.units;
-		delete _element.interfacePlatformTypeMaxval;
-		delete _element.interfacePlatformTypeMinval;
-		delete _element.elementSizeInBits;
-		delete _element.elementSizeInBytes;
+	resetId() {
+		this.elementId.set('-1');
 	}
 }

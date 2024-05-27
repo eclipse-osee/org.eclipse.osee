@@ -11,22 +11,25 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
-import {
-	HttpClientTestingModule,
-	HttpTestingController,
-} from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ExecutedCommandsArtifactService } from './executed-commands-artifact.service';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('ExecutedCommandsArtifactService', () => {
 	let service: ExecutedCommandsArtifactService;
-	let httpTestingController: HttpTestingController;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
+			imports: [],
+			providers: [
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+			],
 		});
 		service = TestBed.inject(ExecutedCommandsArtifactService);
-		httpTestingController = TestBed.inject(HttpTestingController);
 	});
 
 	it('should be created', () => {

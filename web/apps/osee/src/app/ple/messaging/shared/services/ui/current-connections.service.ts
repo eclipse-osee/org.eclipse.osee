@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { combineLatest, switchMap, take, filter } from 'rxjs';
 import { ConnectionService } from '../http/connection.service';
 import { ConnectionsUiService } from './connections-ui.service';
@@ -19,10 +19,8 @@ import { ConnectionsUiService } from './connections-ui.service';
 	providedIn: 'root',
 })
 export class CurrentConnectionsService {
-	constructor(
-		private connectionsService: ConnectionService,
-		private uiService: ConnectionsUiService
-	) {}
+	private connectionsService = inject(ConnectionService);
+	private uiService = inject(ConnectionsUiService);
 
 	getFilteredPaginatedConnections(
 		pageNum: string | number,
@@ -35,7 +33,7 @@ export class CurrentConnectionsService {
 		]).pipe(
 			take(1),
 			filter(
-				([branchId, viewId, pageSize]) =>
+				([branchId, _viewId, _pageSize]) =>
 					branchId !== '' && branchId !== '-1'
 			),
 			switchMap(([id, viewId, pageSize]) =>
@@ -57,7 +55,7 @@ export class CurrentConnectionsService {
 		]).pipe(
 			take(1),
 			filter(
-				([branchId, viewId]) => branchId !== '' && branchId !== '-1'
+				([branchId, _viewId]) => branchId !== '' && branchId !== '-1'
 			),
 			switchMap(([id, viewId]) =>
 				this.connectionsService.getCount(id, filterParameter, viewId)

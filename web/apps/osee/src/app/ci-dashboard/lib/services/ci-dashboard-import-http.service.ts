@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { apiURL } from '@osee/environments';
 import { TmoImportResult } from '../types/tmo-import';
 
@@ -19,7 +19,7 @@ import { TmoImportResult } from '../types/tmo-import';
 	providedIn: 'root',
 })
 export class CiDashboardImportHttpService {
-	constructor(private http: HttpClient) {}
+	private http = inject(HttpClient);
 
 	importFile(branchId: string, ciSetId: string, file: File) {
 		const formData = new FormData();

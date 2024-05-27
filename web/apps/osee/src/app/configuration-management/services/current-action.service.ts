@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
 	actionImpl,
 	teamWorkflowDetailsImpl,
@@ -36,12 +36,11 @@ import { ActionService } from './action.service';
 	providedIn: 'root',
 })
 export class CurrentActionService {
-	constructor(
-		private currentBranchService: CurrentBranchInfoService,
-		private actionService: ActionService,
-		private accountService: UserDataAccountService,
-		private uiService: UiService
-	) {}
+	private currentBranchService = inject(CurrentBranchInfoService);
+	private actionService = inject(ActionService);
+	private accountService = inject(UserDataAccountService);
+	private uiService = inject(UiService);
+
 	private _user = this.accountService.user;
 	private _branchState = this.currentBranchService.currentBranch;
 
@@ -144,10 +143,10 @@ export class CurrentActionService {
 	private _isATeamLead = combineLatest([this.teamsLeads, this.user]).pipe(
 		switchMap(([leads, user]) =>
 			of([leads, user]).pipe(
-				concatMap(([leadsResponse, currentUser]) =>
+				concatMap(([_leadsResponse, _currentUser]) =>
 					from(leads).pipe(
 						filter((val) => val.id === user.id),
-						map((v) => true)
+						map((_) => true)
 					)
 				)
 			)

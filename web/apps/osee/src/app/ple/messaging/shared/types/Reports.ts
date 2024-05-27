@@ -16,7 +16,7 @@ import type {
 	ProducesMediaType,
 } from '@osee/shared/types';
 
-export interface MimReport {
+export type MimReport = {
 	id: string;
 	name: string;
 	url: string;
@@ -26,4 +26,4 @@ export interface MimReport {
 	producesMediaType: ProducesMediaType;
 	diffAvailable: boolean;
 	requiresValidation: boolean;
-}
+};

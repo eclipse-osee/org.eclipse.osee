@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import {
 	MatMenu,
@@ -18,7 +18,7 @@ import {
 	MatMenuItem,
 	MatMenuTrigger,
 } from '@angular/material/menu';
-import { applic } from '@osee/shared/types/applicability';
+import { applic } from '@osee/applicability/types';
 import { difference } from '@osee/shared/types/change-report';
 import { DialogService } from '../../services/dialog.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
@@ -40,11 +40,11 @@ import { ArrayDiffMenuComponent } from '../array-diff-menu/array-diff-menu.compo
 	],
 })
 export class FeatureMenuComponent {
+	private dialogService = inject(DialogService);
+	private currentBranchService = inject(PlConfigCurrentBranchService);
+
 	feature = input.required<plconfigTableEntry>();
-	constructor(
-		private dialogService: DialogService,
-		private currentBranchService: PlConfigCurrentBranchService
-	) {}
+
 	hasFeatureChanges(value: plconfigTableEntry): value is plconfigTableEntry {
 		return (value as plconfigTableEntry).changes !== undefined;
 	}

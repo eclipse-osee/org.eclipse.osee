@@ -42,11 +42,11 @@ export const artifactUiServiceMock: Partial<ArtifactUiService> = {
 	get allArtifactTypes() {
 		return of([
 			{
-				id: '1',
+				id: '1' as `${number}`,
 				name: 'Artifact Type 1',
 			},
 			{
-				id: '2',
+				id: '2' as `${number}`,
 				name: 'Artifact Type 2',
 			},
 		]);
@@ -54,15 +54,15 @@ export const artifactUiServiceMock: Partial<ArtifactUiService> = {
 	get allAttributeTypes() {
 		return of([
 			{
-				id: '1',
+				id: '1' as `${number}`,
 				name: 'Attribute Type 1',
 			},
 			{
-				id: '2',
+				id: '2' as `${number}`,
 				name: 'Attribute Type 2',
 			},
 			{
-				id: '3',
+				id: '3' as `${number}`,
 				name: 'Attribute Type 3',
 			},
 		]);

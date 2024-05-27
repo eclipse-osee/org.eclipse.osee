@@ -10,19 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import type { applic } from '@osee/shared/types/applicability';
+import type { applic } from '@osee/applicability/types';
 import type { enumeration, enumerationSet } from './enum';
 import type { PlatformType } from './platformType';
 
-export interface newTypeDialogData {
+export type newTypeDialogData = {
 	fields: logicalTypefieldValue[];
-}
-export interface logicalTypefieldValue {
+};
+export type logicalTypefieldValue = {
 	name: string;
 	value: string;
-}
-export interface newPlatformTypeDialogReturnData {
-	platformType: Partial<PlatformType>;
+};
+export type newPlatformTypeDialogReturnData = {
+	platformType: PlatformType;
 	createEnum: boolean;
 	enumSet?: enumerationSet;
 	enumSetId: string;
@@ -30,4 +30,4 @@ export interface newPlatformTypeDialogReturnData {
 	enumSetDescription: string;
 	enumSetApplicability: applic;
 	enums: enumeration[];
-}
+};

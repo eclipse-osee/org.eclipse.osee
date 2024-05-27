@@ -1,0 +1,120 @@
+<!--
+* Copyright (c) 2022 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
+<osee-messaging-controls [actionControls]="true"></osee-messaging-controls>
+<table
+	mat-table
+	[dataSource]="(transports | async) || []"
+	class="tw-w-full">
+	@for (
+		header of (headers | async) || [];
+		track valueTracker(i, header);
+		let i = $index
+	) {
+		<ng-container [matColumnDef]="header">
+			<th
+				mat-header-cell
+				*matHeaderCellDef
+				[attr.colspan]="((headers | async) || [])[i]"
+				class="tw-text-primary-600"
+				[matTooltip]="
+					(getHeaderByName(header) | async)?.description || ''
+				">
+				<ng-container>
+					{{ (getHeaderByName(header) | async)?.humanReadable }}
+				</ng-container>
+			</th>
+			<td
+				mat-cell
+				*matCellDef="let element; let i = dataIndex"
+				[attr.data-cy]="'table-element-' + element[header]"
+				class="tw-truncate">
+				@switch (header) {
+					@case ('applicability') {
+						{{ element[header].name }}
+					}
+					@case ('availableMessageHeaders') {
+						@for (h of element[header].value; track h) {
+							{{ h + ' , ' }}
+							<br />
+						}
+					}
+					@case ('availableSubmessageHeaders') {
+						@for (h of element[header].value; track h) {
+							{{ h + ' , ' }}
+							<br />
+						}
+					}
+					@case ('availableStructureHeaders') {
+						@for (h of element[header].value; track h) {
+							{{ h + ' , ' }}
+							<br />
+						}
+					}
+					@case ('availableElementHeaders') {
+						@for (h of element[header].value; track h) {
+							{{ h + ' , ' }}
+							<br />
+						}
+					}
+					@case ('interfaceLevelsToUse') {
+						@for (level of element[header].value; track level) {
+							{{ level + ' , ' }}
+							<br />
+						}
+					}
+					@case ('id') {}
+					@case ('gammaId') {}
+					@default {
+						{{ element[header] | attributeToValue }}
+					}
+				}
+			</td>
+		</ng-container>
+	}
+
+	<tr
+		mat-header-row
+		*matHeaderRowDef="(headers | async) || []; sticky: true"></tr>
+
+	<tr
+		mat-row
+		*matRowDef="let row; columns: (headers | async) || []"
+		class="odd:tw-bg-background-selected-button even:tw-bg-background-background"
+		[attr.data-cy]="'transport-type-table-row-' + row.name"
+		(contextmenu)="openMenu($event, row)"></tr>
+</table>
+
+<button
+	mat-fab
+	class="tertiary-fab tw-absolute tw-bottom-[2%] tw-right-[2%]"
+	(click)="openAddDialog()">
+	<mat-icon>add</mat-icon>
+</button>
+<mat-menu
+	#contextMenu="matMenu"
+	class="wide-mat-menu">
+	<ng-template
+		matMenuContent
+		let-transport="transport">
+		<button
+			mat-menu-item
+			(click)="openEditDialog(transport)">
+			Edit Transport Type {{ transport.name.value }}
+		</button>
+	</ng-template>
+</mat-menu>
+<div
+	class="tw-invisible tw-fixed"
+	[style.left]="menuPosition.x"
+	[style.top]="menuPosition.y"
+	[matMenuTriggerFor]="contextMenu"></div>

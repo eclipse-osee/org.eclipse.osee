@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-export interface action {
+export type action = {
 	id: number;
 	Name: string;
 	AtsId: string;
@@ -19,13 +19,13 @@ export interface action {
 	TeamWfAtsId: string;
 	ArtifactType: string;
 	actionLocation: string;
-}
+};
 export class actionImpl implements action {
-	id: number = 0;
-	Name: string = '';
-	AtsId: string = '';
-	ActionAtsId: string = '';
-	TeamWfAtsId: string = '';
-	ArtifactType: string = ' ';
-	actionLocation: string = '';
+	id = 0;
+	Name = '';
+	AtsId = '';
+	ActionAtsId = '';
+	TeamWfAtsId = '';
+	ArtifactType = ' ';
+	actionLocation = '';
 }

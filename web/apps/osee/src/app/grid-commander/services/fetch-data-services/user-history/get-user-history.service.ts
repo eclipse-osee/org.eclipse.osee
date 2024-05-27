@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { apiURL } from '@osee/environments';
 import { userHistory } from '../../../types/grid-commander-types/userHistory';
 
@@ -19,7 +19,7 @@ import { userHistory } from '../../../types/grid-commander-types/userHistory';
 	providedIn: 'root',
 })
 export class GetUserHistoryService {
-	constructor(private http: HttpClient) {}
+	private http = inject(HttpClient);
 
 	getUserHistory(branchId: string) {
 		return this.http.get<userHistory>(

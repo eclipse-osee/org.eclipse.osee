@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, combineLatest, iif, of } from 'rxjs';
 import {
 	debounceTime,
@@ -32,16 +32,14 @@ import { NamedId } from '@osee/shared/types';
 	providedIn: 'root',
 })
 export class ReportsService {
-	constructor(
-		private ui: UiService,
-		private http: HttpClient,
-		private fileService: FilesService
-	) {}
+	private ui = inject(UiService);
+	private http = inject(HttpClient);
+	private fileService = inject(FilesService);
 
 	private _connection = new BehaviorSubject<
 		Partial<connection> | Required<connection>
 	>({ id: '-1' });
-	private _requestBody: BehaviorSubject<string> = new BehaviorSubject('');
+	private _requestBody = new BehaviorSubject<string>('');
 	private _requestBodyFile: BehaviorSubject<File | undefined> =
 		new BehaviorSubject<File | undefined>(undefined);
 	private _includeDiff: BehaviorSubject<boolean> =
@@ -88,7 +86,7 @@ export class ReportsService {
 									'download',
 									report?.fileNamePrefix +
 										'_' +
-										connection?.name +
+										connection?.name.value +
 										'.' +
 										report?.fileExtension
 								);
@@ -128,7 +126,7 @@ export class ReportsService {
 						report.httpMethod,
 						report.url
 							.replace('<branchId>', branchId)
-							.replace('<connectionId>', connection?.id!)
+							.replace('<connectionId>', connection?.id ?? '-1')
 							.replace('<diffAvailable>', includeDiff + '')
 							.replace('<viewId>', viewId),
 						file === undefined ? input : file

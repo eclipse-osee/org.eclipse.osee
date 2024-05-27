@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { map, switchMap, take } from 'rxjs/operators';
 import { BranchTransactionService } from './branch-transaction.service';
 import { UiService } from '@osee/shared/services';
@@ -19,6 +19,9 @@ import { UiService } from '@osee/shared/services';
 	providedIn: 'root',
 })
 export class CurrentBranchTransactionService {
+	private _uiService = inject(UiService);
+	private _branchTransactionService = inject(BranchTransactionService);
+
 	private _undoLatest = this._uiService.id.pipe(
 		take(1),
 		switchMap((id) =>
@@ -30,10 +33,6 @@ export class CurrentBranchTransactionService {
 			)
 		)
 	);
-	constructor(
-		private _uiService: UiService,
-		private _branchTransactionService: BranchTransactionService
-	) {}
 
 	get undoLatest() {
 		return this._undoLatest;

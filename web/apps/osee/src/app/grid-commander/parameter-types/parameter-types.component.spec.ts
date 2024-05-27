@@ -10,9 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClientModule } from '@angular/common/http';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ParameterTypesComponent } from './parameter-types.component';
 
 describe('ParameterTypesComponent', () => {
@@ -21,10 +24,10 @@ describe('ParameterTypesComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [
-				HttpClientModule,
-				HttpClientTestingModule,
-				ParameterTypesComponent,
+			imports: [ParameterTypesComponent],
+			providers: [
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
 			],
 		}).compileComponents();
 	});

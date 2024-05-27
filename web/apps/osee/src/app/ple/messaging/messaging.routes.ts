@@ -135,7 +135,7 @@ const routes: Routes = [
 		title: transports?.pageTitle || 'OSEE',
 		canActivate: [RoleGuard],
 		data: { requiredRoles: imports?.requiredRoles },
-		loadChildren: () => import('./transports/transports.routes'),
+		loadChildren: () => import('./pages/transports/transports.routes'),
 	},
 	{
 		path: 'lists',

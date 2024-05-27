@@ -11,8 +11,8 @@
 *     Boeing - initial API and implementation
 -->
 @if (globalPrefs | async) {
-	<div
-		class="tw-cursor-pointer tw-px-1 tw-py-0 tw-text-start"
+	<summary
+		class="tw-inline-block tw-cursor-pointer tw-px-1 tw-py-0 tw-text-start"
 		(click)="toggleExpanded()">
 		@if (getEnumLiteralsArray(); as enumLiterals) {
 			@if (wordWrap === false) {
@@ -43,5 +43,5 @@
 				}
 			}
 		}
-	</div>
+	</summary>
 }

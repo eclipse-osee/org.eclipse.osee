@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
 	MatAutocomplete,
@@ -57,7 +57,7 @@ import { ScriptBatch } from '../../../types';
 	templateUrl: './batch-dropdown.component.html',
 })
 export class BatchDropdownComponent {
-	constructor(private batchService: CiBatchService) {}
+	private batchService = inject(CiBatchService);
 
 	filter = new BehaviorSubject<string>('');
 	isOpen = new BehaviorSubject<boolean>(false);

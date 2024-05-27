@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { apiURL } from '../../../environments';
 import { world } from '../world';
 
@@ -19,7 +19,7 @@ import { world } from '../world';
 	providedIn: 'root',
 })
 export class WorldHttpService {
-	constructor(private http: HttpClient) {}
+	private http = inject(HttpClient);
 
 	getWorldData(collId: string, custId: string) {
 		return this.http.get<world>(

@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
 import { MatLabel } from '@angular/material/form-field';
@@ -25,9 +25,9 @@ import { CheckboxContainerService } from '../../services/command-palette-service
 	imports: [FormsModule, MatTooltip, MatCheckbox, MatLabel],
 })
 export class CheckboxContainerComponent {
-	checked: boolean = true;
+	private checkboxContainerService = inject(CheckboxContainerService);
 
-	constructor(private checkboxContainerService: CheckboxContainerService) {}
+	checked = true;
 
 	onChanged(event: MatCheckboxChange) {
 		this.checkboxContainerService.updateClearIsChecked(event.checked);

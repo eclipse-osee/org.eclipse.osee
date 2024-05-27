@@ -20,7 +20,7 @@
 		#input />
 </mat-form-field>
 <mat-action-list>
-	@for (artifact of dataToDisplay; track artifact) {
+	@for (artifact of dataToDisplay; track artifact.id) {
 		@if (allowedToEdit) {
 			<button
 				mat-list-item

@@ -10,11 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface SetReference {
+export type SetReference = {
 	id: string;
 	name: string;
 	active: boolean;
-}
+};
 
 export const setReferenceSentinel: SetReference = {
 	id: '',
@@ -22,10 +22,10 @@ export const setReferenceSentinel: SetReference = {
 	active: false,
 };
 
-export interface DefReference {
+export type DefReference = {
 	id: `${number}`;
 	name: string;
-	fullScriptName: String;
+	fullScriptName: string;
 	executionDate: Date;
 	executionEnvironment: string;
 	machineName: string;
@@ -58,9 +58,9 @@ export interface DefReference {
 	latestScriptHealth: number;
 	latestExecutedBy: string;
 	latestUserName: string;
-}
+};
 
-export interface ResultReference {
+export type ResultReference = {
 	id: string;
 	name: string;
 	processorId: string;
@@ -93,7 +93,7 @@ export interface ResultReference {
 	witnesses: string[];
 	testPoints: TestPointReference[];
 	definitionId: `${number}`;
-}
+};
 
 export const defReferenceSentinel: DefReference = {
 	id: '-1',
@@ -168,7 +168,7 @@ export const resultReferenceSentinel: ResultReference = {
 	definitionId: '-1',
 };
 
-export interface TestPointReference {
+export type TestPointReference = {
 	id: string;
 	name: string;
 	testNumber: number;
@@ -185,16 +185,16 @@ export interface TestPointReference {
 	elapsedTime: number;
 	transmissionCount: number;
 	notes: string;
-}
+};
 
-export interface ScriptBatch {
+export type ScriptBatch = {
 	id: string;
 	name: string;
 	batchId: string;
 	executionDate: Date;
 	machineName: string;
 	testEnvBatchId: string;
-}
+};
 
 export const scriptBatchSentinel: ScriptBatch = {
 	id: '-1',
@@ -208,11 +208,12 @@ export const scriptBatchSentinel: ScriptBatch = {
 export type SetDiff = {
 	name: string;
 	equal: boolean;
-	results: {
-		[key: string]: {
+	results: Record<
+		string,
+		{
 			passes: number;
 			fails: number;
 			abort: boolean;
-		};
-	};
+		}
+	>;
 };

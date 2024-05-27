@@ -11,7 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { MatAnchor } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import {
@@ -31,12 +32,19 @@ import { debounceTime, switchMap } from 'rxjs/operators';
 	imports: [MatAnchor, RouterLink, AsyncPipe],
 })
 export class MimHeaderComponent {
+	private _routeService = inject(MimRouteService);
+	private _currentBranchService = inject(CurrentBranchInfoService);
+	private _connectionService = inject(SharedConnectionUIService);
+	private _structureService = inject(SharedStructureUIService);
+
+	private _submessageId = toObservable(this._routeService.submessageId);
+	private _connectionId = toObservable(this._routeService.connectionId);
 	route = combineLatest([
 		this._routeService.type,
 		this._routeService.id,
-		this._routeService.connectionId,
+		this._connectionId,
 		this._routeService.messageId,
-		this._routeService.submessageId,
+		this._submessageId,
 		this._routeService.submessageToStructureBreadCrumbs,
 		this._routeService.singleStructureId,
 	]).pipe(
@@ -58,14 +66,13 @@ export class MimHeaderComponent {
 						this._currentBranchService.currentBranch.pipe(
 							switchMap((detail) =>
 								iif(
-									() =>
-										connection !== '0' && connection !== '',
+									() => connection !== '-1',
 									this._connectionService.connection.pipe(
 										switchMap((connectionDetails) =>
 											iif(
 												() => message !== '',
 												iif(
-													() => submessage !== '',
+													() => submessage !== '-1',
 													iif(
 														() =>
 															singleStructureId !==
@@ -97,7 +104,9 @@ export class MimHeaderComponent {
 																		},
 																		{
 																			displayName:
-																				connectionDetails.name,
+																				connectionDetails
+																					.name
+																					.value,
 																			routerLink:
 																				'/ple/messaging/' +
 																				'connections/' +
@@ -127,7 +136,9 @@ export class MimHeaderComponent {
 																		},
 																		{
 																			displayName:
-																				structure.name,
+																				structure
+																					.name
+																					.value,
 																			routerLink:
 																				'/ple/messaging/' +
 																				'connections/' +
@@ -170,7 +181,9 @@ export class MimHeaderComponent {
 															},
 															{
 																displayName:
-																	connectionDetails.name,
+																	connectionDetails
+																		.name
+																		.value,
 																routerLink:
 																	'/ple/messaging/' +
 																	'connections/' +
@@ -225,7 +238,8 @@ export class MimHeaderComponent {
 													},
 													{
 														displayName:
-															connectionDetails.name,
+															connectionDetails
+																.name.value,
 														routerLink:
 															'/ple/messaging/' +
 															'connections/' +
@@ -263,13 +277,6 @@ export class MimHeaderComponent {
 				)
 		)
 	);
-
-	constructor(
-		private _routeService: MimRouteService,
-		private _currentBranchService: CurrentBranchInfoService,
-		private _connectionService: SharedConnectionUIService,
-		private _structureService: SharedStructureUIService
-	) {}
 }
 
 export default MimHeaderComponent;

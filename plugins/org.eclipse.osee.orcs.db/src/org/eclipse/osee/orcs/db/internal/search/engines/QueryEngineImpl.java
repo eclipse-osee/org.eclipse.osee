@@ -227,6 +227,7 @@ public class QueryEngineImpl implements QueryEngine {
       List<ArtifactId> consumedArts = new LinkedList<>();
       Consumer<JdbcStatement> jdbcConsumer = stmt -> {
          Long artId = stmt.getLong("art_id");
+         GammaId artGamma = GammaId.valueOf(stmt.getLong("art_gamma_id"));
          Long attr_id = stmt.getLong("attr_id");
          Long otherArtId = stmt.getLong("other_art_id");
          Long otherArtType = stmt.getLong("other_art_type_id");
@@ -235,8 +236,8 @@ public class QueryEngineImpl implements QueryEngine {
          String uri = stmt.getString("uri");
 
          ArtifactReadableImpl artifact = (ArtifactReadableImpl) artifactMap.get(ArtifactId.valueOf(artId));
-         if (artifact == null) {
-            artifact = createArtifact(stmt, artId, stmt.getLong("art_type_id"), queryData, queryFactory);
+         if (artifact == null && artGamma != null) {
+            artifact = createArtifact(stmt, artId, stmt.getLong("art_type_id"), queryData, queryFactory, artGamma);
             artifactMap.put(artifact, artifact);
             if (stmt.getLong("top") == 1) {
                artifactConsumer.accept(artifact);
@@ -282,8 +283,9 @@ public class QueryEngineImpl implements QueryEngine {
 
          if (attr_id != 0) {
             AttributeTypeGeneric<?> attributeType = tokenService.getAttributeTypeOrCreate(typeId);
+            GammaId gamma = GammaId.valueOf(stmt.getLong("gamma_id"));
             Attribute<?> attribute =
-               new Attribute<>(stmt.getLong("attr_id"), attributeType, value, uri, resourceManager);
+               new Attribute<>(stmt.getLong("attr_id"), attributeType, value, uri, gamma, resourceManager);
             // Check if the attribute value has been added already to the artifact to prevent duplicate values.
             // This can happen when the same object is returned multiple times when following relations.
             if (!artifact.getAttributeList(attributeType).stream().anyMatch(a -> a.getId().equals(attribute.getId()))) {
@@ -329,7 +331,8 @@ public class QueryEngineImpl implements QueryEngine {
 
             ArtifactReadableImpl otherArtifact = (ArtifactReadableImpl) artifactMap.get(ArtifactId.valueOf(otherArtId));
             if (otherArtifact == null) {
-               otherArtifact = createArtifact(stmt, otherArtId, otherArtType, queryData, queryFactory);
+               GammaId gamma = GammaId.valueOf(stmt.getLong("other_art_gamma_id"));
+               otherArtifact = createArtifact(stmt, otherArtId, otherArtType, queryData, queryFactory, gamma);
                artifactMap.put(otherArtifact, otherArtifact);
             }
             /*
@@ -381,7 +384,7 @@ public class QueryEngineImpl implements QueryEngine {
    }
 
    private ArtifactReadableImpl createArtifact(JdbcStatement stmt, Long artId, Long artifactTypeId, QueryData queryData,
-      QueryFactory queryFactory) {
+      QueryFactory queryFactory, GammaId gammaId) {
       TransactionId txId = TransactionId.valueOf(stmt.getLong("transaction_id"));
       ModificationType modType = ModificationType.valueOf(stmt.getInt("mod_type"));
       ArtifactTypeToken artifactType = tokenService.getArtifactTypeOrCreate(artifactTypeId);
@@ -420,7 +423,7 @@ public class QueryEngineImpl implements QueryEngine {
          commitArtId, buildId, author);
 
       return new ArtifactReadableImpl(artId, artifactType, queryData.getBranch(), queryData.getView(), applic, txId,
-         txDetails, modType, queryFactory);
+         txDetails, modType, queryFactory, gammaId);
    }
 
    @Override

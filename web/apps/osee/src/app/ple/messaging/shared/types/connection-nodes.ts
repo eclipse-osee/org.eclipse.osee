@@ -12,6 +12,4 @@
  **********************************************************************/
 import type { nodeData } from './node';
 
-export interface ConnectionNode
-	extends Pick<nodeData, 'id'>,
-		Pick<nodeData, 'name'> {}
+export type ConnectionNode = {} & Pick<nodeData, 'id'> & Pick<nodeData, 'name'>;

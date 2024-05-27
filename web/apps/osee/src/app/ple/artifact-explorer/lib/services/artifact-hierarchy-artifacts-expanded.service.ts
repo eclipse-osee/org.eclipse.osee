@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable, WritableSignal, signal } from '@angular/core';
+import { Injectable, WritableSignal, signal, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UiService } from '@osee/shared/services';
 import { map } from 'rxjs';
@@ -19,11 +19,16 @@ import { map } from 'rxjs';
 	providedIn: 'root',
 })
 export class ArtifactHierarchyArtifactsExpandedService {
+	private uiService = inject(UiService);
+
 	private artifactsExpandedStructArray: WritableSignal<
 		artifactsExpandedStruct[]
 	> = signal([]);
 
-	constructor(private uiService: UiService) {
+	/** Inserted by Angular inject() migration for backwards compatibility */
+	constructor(...args: unknown[]);
+
+	constructor() {
 		// Clearing the artifactsExpandedStructArray when the branch id changes
 		this.uiService.id
 			.pipe(
@@ -81,7 +86,7 @@ export class ArtifactHierarchyArtifactsExpandedService {
 	}
 }
 
-interface artifactsExpandedStruct {
+type artifactsExpandedStruct = {
 	artifactId: string;
 	childArtifactIds: string[];
-}
+};

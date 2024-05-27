@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ApplicabilityListUIService } from '@osee/shared/services';
-import { applic } from '@osee/shared/types/applicability';
+import { applic } from '@osee/applicability/types';
 import { of } from 'rxjs';
 
 export const applicsMock: applic[] = [

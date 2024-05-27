@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { switchMap, reduce, shareReplay, map } from 'rxjs/operators';
 import { combineLatest } from 'rxjs';
 import {
@@ -28,12 +28,10 @@ import { ActionService } from '@osee/configuration-management/services';
 	providedIn: 'root',
 })
 export class DiffReportService {
-	constructor(
-		private currentBranchService: CurrentBranchInfoService,
-		private diffService: DiffReportHttpService,
-		private branchInfoService: BranchInfoService,
-		private actionService: ActionService
-	) {}
+	private currentBranchService = inject(CurrentBranchInfoService);
+	private diffService = inject(DiffReportHttpService);
+	private branchInfoService = inject(BranchInfoService);
+	private actionService = inject(ActionService);
 
 	private _branchInfo = this.currentBranchService.currentBranch;
 
@@ -79,15 +77,15 @@ export class DiffReportService {
 	private _diffReportSummary = this._diffReport.pipe(
 		map((summary) => {
 			const summaryItems: diffReportSummaryItem[] = [];
-			for (let structure of Object.values(summary.structures)) {
-				let summaryItem: diffReportSummaryItem = {
+			for (const structure of Object.values(summary.structures)) {
+				const summaryItem: diffReportSummaryItem = {
 					id: structure.artId,
 					changeType: 'Structure',
 					action: structure.added
 						? 'Added'
 						: structure.deleted
-						  ? 'Deleted'
-						  : 'Edited',
+							? 'Deleted'
+							: 'Edited',
 					name: structure.name,
 					details: [],
 				};

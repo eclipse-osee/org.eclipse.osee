@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { switchMap, take } from 'rxjs/operators';
 import {
 	CurrentBranchInfoService,
@@ -21,10 +21,8 @@ import {
 	providedIn: 'root',
 })
 export class DifferenceBranchInfoService {
-	constructor(
-		private diffService: DifferenceReportService,
-		private branchInfoService: CurrentBranchInfoService
-	) {}
+	private diffService = inject(DifferenceReportService);
+	private branchInfoService = inject(CurrentBranchInfoService);
 
 	differences(branchId: string | number) {
 		return this.branchInfoService.parentBranch.pipe(

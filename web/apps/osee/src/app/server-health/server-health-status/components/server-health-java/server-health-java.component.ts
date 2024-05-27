@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
 	MatCell,
@@ -48,10 +48,13 @@ import { ServerHealthHttpService } from '../../../shared/services/server-health-
 	templateUrl: './server-health-java.component.html',
 })
 export class ServerHealthJavaComponent {
-	constructor(private serverHealthHttpService: ServerHealthHttpService) {}
+	private serverHealthHttpService = inject(ServerHealthHttpService);
 
 	displayedColumns: string[] = ['key', 'value'];
-	dataSource = new MatTableDataSource<{ key: string; value: unknown }>([]);
+	dataSource = new MatTableDataSource<{
+		key: string;
+		value: string | string[];
+	}>([]);
 
 	remoteHealthJava = this.serverHealthHttpService.RemoteJava.pipe(
 		tap((data) => {

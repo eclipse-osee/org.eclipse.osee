@@ -10,13 +10,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface NamedId {
-	id: string;
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
+import { attribute } from '@osee/attributes/types';
+export type NamedId = {
+	id: `${number}`;
 	name: string;
-}
+};
 
-export interface NamedIdAndDescription {
-	id: string;
+export type NamedIdWithGammas = {
+	id: `${number}`;
+	name: attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>;
+};
+
+export type NamedIdAndDescription = {
+	id: `${number}`;
 	name: string;
 	description: string;
-}
+};

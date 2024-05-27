@@ -10,39 +10,26 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HarnessLoader } from '@angular/cdk/testing';
-import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatButtonHarness } from '@angular/material/button/testing';
 import {
+	MAT_DIALOG_DATA,
 	MatDialogModule,
 	MatDialogRef,
-	MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { graphServiceMock } from '../../testing/current-graph.service.mock';
-import { CurrentGraphService } from '../../services/current-graph.service';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
-import { EditNodeDialogComponent } from './edit-node-dialog.component';
-import type { node } from '@osee/messaging/shared/types';
-import { dialogRef } from '@osee/messaging/shared/testing';
 import { AsyncPipe, NgFor } from '@angular/common';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MockNewNodeFormComponent } from '@osee/messaging/connection-view/testing';
+import { dialogRef, nodesMock } from '@osee/messaging/shared/testing';
+import type { nodeData } from '@osee/messaging/shared/types';
+import { EditNodeDialogComponent } from './edit-node-dialog.component';
 
 describe('EditNodeDialogComponent', () => {
 	let component: EditNodeDialogComponent;
 	let fixture: ComponentFixture<EditNodeDialogComponent>;
-	let loader: HarnessLoader;
-	let dialogData: node = {
-		name: '',
-		applicability: { id: '1', name: 'Base' },
-	};
+	const dialogData: nodeData = nodesMock[0];
 
 	beforeEach(async () => {
 		await TestBed.overrideComponent(EditNodeDialogComponent, {
@@ -52,25 +39,17 @@ describe('EditNodeDialogComponent', () => {
 					MatButtonModule,
 					AsyncPipe,
 					NgFor,
+					FormsModule,
 					MockNewNodeFormComponent,
 				],
 			},
 		})
 			.configureTestingModule({
-				imports: [
-					MatDialogModule,
-					MatButtonModule,
-					NoopAnimationsModule,
-					EditNodeDialogComponent,
-					MockNewNodeFormComponent,
-				],
+				imports: [EditNodeDialogComponent],
 				providers: [
+					provideNoopAnimations(),
 					{ provide: MatDialogRef, useValue: dialogRef },
 					{ provide: MAT_DIALOG_DATA, useValue: dialogData },
-					{
-						provide: CurrentGraphService,
-						useValue: graphServiceMock,
-					},
 				],
 			})
 			.compileComponents();
@@ -80,19 +59,9 @@ describe('EditNodeDialogComponent', () => {
 		fixture = TestBed.createComponent(EditNodeDialogComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
-		loader = TestbedHarnessEnvironment.loader(fixture);
 	});
 
 	it('should create', () => {
 		expect(component).toBeTruthy();
-	});
-
-	it('should close without anything returning', async () => {
-		let buttons = await loader.getAllHarnesses(MatButtonHarness);
-		let spy = spyOn(component, 'onNoClick').and.callThrough();
-		if ((await buttons[0].getText()) === 'Cancel') {
-			await buttons[0].click();
-			expect(spy).toHaveBeenCalled();
-		}
 	});
 });

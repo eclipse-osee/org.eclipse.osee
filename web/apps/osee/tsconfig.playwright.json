@@ -1,0 +1,439 @@
+/*********************************************************************
+ * Copyright (c) 2024 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+{
+	"extends": "./tsconfig.base.json",
+	"compilerOptions": {
+		"module": "ESNext",
+		"moduleResolution": "node",
+		"types": ["node"],
+		"paths": {
+			"@osee/core": ["src/app/core"],
+			"@osee/attributes/types": ["src/app/attributes/types"],
+			"@osee/attributes/constants": ["src/app/attributes/constants"],
+			"@osee/attributes/pipes": ["src/app/attributes/pipes"],
+			"@osee/attributes/persisted-string-attribute-input": [
+				"src/app/attributes/components/persisted-string-attribute-input"
+			],
+			"@osee/attributes/persisted-number-attribute-input": [
+				"src/app/attributes/components/persisted-number-attribute-input"
+			],
+			"@osee/attributes/persisted-boolean-attribute-toggle": [
+				"src/app/attributes/components/persisted-boolean-attribute-toggle"
+			],
+			"@osee/attributes/persisted-string-attribute-input/testing": [
+				"src/app/attributes/components/persisted-string-attribute-input/testing"
+			],
+			"@osee/attributes/persisted-number-attribute-input/testing": [
+				"src/app/attributes/components/persisted-number-attribute-input/testing"
+			],
+			"@osee/attributes/persisted-boolean-attribute-toggle/testing": [
+				"src/app/attributes/components/persisted-boolean-attribute-toggle/testing"
+			],
+			"@osee/applicability/applicability-dropdown": [
+				"src/app/applicability/components/applicability-dropdown"
+			],
+			"@osee/applicability/applicability-dropdown/testing": [
+				"src/app/applicability/components/applicability-dropdown/testing"
+			],
+			"@osee/applicability/persisted-applicability-dropdown": [
+				"src/app/applicability/components/persisted-applicability-dropdown"
+			],
+			"@osee/applicability/persisted-applicability-dropdown/testing": [
+				"src/app/applicability/components/persisted-applicability-dropdown/testing"
+			],
+			"@osee/shared/components/testing": [
+				"src/app/shared/components/testing"
+			],
+			"@osee/messaging/shared/testing": [
+				"src/app/ple/messaging/shared/testing"
+			],
+			"@osee/shared/transactions-legacy/testing": [
+				"src/app/shared/transactions-legacy/testing"
+			],
+			"@osee/about": ["src/app/about"],
+			"@osee/auth": ["src/app/auth"],
+			"@osee/auth/testing": ["src/app/auth/testing"],
+			"@osee/diff/views": ["src/app/diff-views"],
+			"@osee/environments": ["src/environments"],
+			"@osee/interceptors": ["src/app/interceptors"],
+			"@osee/layout": ["src/app/layout"],
+			"@osee/layout/container": ["src/app/layout/lib/containers"],
+			"@osee/layout/notification": ["src/app/layout/lib/notification"],
+			"@osee/layout/routing": ["src/app/layout/lib/routing"],
+			"@osee/auto-login": ["src/app/auto-login"],
+			"@osee/page-not-found": ["src/app/page-not-found"],
+			"@osee/plconfig": ["src/app/ple/plconfig/lib"],
+			"@osee/ci-dashboard/navigation": [
+				"src/app/ci-dashboard/lib/navigation"
+			],
+			"@osee/ci-dashboard/testing": ["src/app/ci-dashboard/lib/testing"],
+			"@osee/artifact-with-relations/services": [
+				"src/app/artifact-with-relations/services"
+			],
+			"@osee/artifact-with-relations/testing": [
+				"src/app/artifact-with-relations/testing"
+			],
+			"@osee/artifact-with-relations/types": [
+				"src/app/artifact-with-relations/types"
+			],
+			"@osee/commit/components": ["src/app/commit/components"],
+			"@osee/commit/services": ["src/app/commit/services"],
+			"@osee/commit/testing": ["src/app/commit/testing"],
+			"@osee/commit/types": ["src/app/commit/types"],
+			"@osee/configuration-management/components": [
+				"src/app/configuration-management/components"
+			],
+			"@osee/configuration-management/services": [
+				"src/app/configuration-management/services"
+			],
+			"@osee/configuration-management/testing": [
+				"src/app/configuration-management/testing"
+			],
+			"@osee/configuration-management/types": [
+				"src/app/configuration-management/types"
+			],
+			"@osee/messaging/connection-view": [
+				"src/app/ple/messaging/connection-view/lib"
+			],
+			"@osee/messaging/connection-view/testing": [
+				"src/app/ple/messaging/connection-view/lib/testing"
+			],
+			"@osee/messaging/cross-reference": [
+				"src/app/ple/messaging/cross-reference/lib"
+			],
+			"@osee/messaging/help": [
+				"src/app/ple/messaging/messaging-help/lib"
+			],
+			"@osee/messaging/help/testing": [
+				"src/app/ple/messaging/messaging-help/lib/testing"
+			],
+			"@osee/messaging/import": ["src/app/ple/messaging/import/lib"],
+			"@osee/messaging/import/testing": [
+				"src/app/ple/messaging/import/lib/testing"
+			],
+			"@osee/messaging/message-tables": [
+				"src/app/ple/messaging/message-tables/lib"
+			],
+			"@osee/messaging/message-tables/menus": [
+				"src/app/ple/messaging/message-tables/lib/menus"
+			],
+			"@osee/messaging/message-tables/testing": [
+				"src/app/ple/messaging/message-tables/lib/testing"
+			],
+			"@osee/messaging/reports/diff-report": [
+				"src/app/ple/messaging/reports/lib/diff-report"
+			],
+			"@osee/messaging/reports/trace-report": [
+				"src/app/ple/messaging/reports/lib/trace-report"
+			],
+			"@osee/messaging/reports/unreferenced-report": [
+				"src/app/ple/messaging/reports/lib/unreferenced-report"
+			],
+			"@osee/messaging/reports/impacted-connections-report": [
+				"src/app/ple/messaging/reports/lib/impacted-connections-report"
+			],
+			"@osee/messaging/structure-tables": [
+				"src/app/ple/messaging/structure-tables/lib"
+			],
+			"@osee/messaging/structure-tables/menus": [
+				"src/app/ple/messaging/structure-tables/lib/menus"
+			],
+			"@osee/messaging/structure-tables/testing": [
+				"src/app/ple/messaging/structure-tables/lib/testing"
+			],
+			"@osee/messaging/structure-tables/services": [
+				"src/app/ple/messaging/structure-tables/lib/services"
+			],
+			"@osee/messaging/type-detail": [
+				"src/app/ple/messaging/type-detail/lib"
+			],
+			"@osee/messaging/type-element-search": [
+				"src/app/ple/messaging/type-element-search/lib"
+			],
+			"@osee/messaging/type-element-search/testing": [
+				"src/app/ple/messaging/type-element-search/lib/testing"
+			],
+			"@osee/messaging/types-interface": [
+				"src/app/ple/messaging/types-interface/lib"
+			],
+			"@osee/messaging/types-interface/menus": [
+				"src/app/ple/messaging/types-interface/lib/menus"
+			],
+			"@osee/messaging/types-interface/testing": [
+				"src/app/ple/messaging/types-interface/lib/testing"
+			],
+			"@osee/messaging/transports/dropdown": [
+				"src/app/ple/messaging/transports/components/dropdown"
+			],
+			"@osee/messaging/transports/forms": [
+				"src/app/ple/messaging/transports/components/forms"
+			],
+			"@osee/messaging/transports/dialogs": [
+				"src/app/ple/messaging/transports/components/dialogs"
+			],
+			"@osee/messaging/transports/dropdown/testing": [
+				"src/app/ple/messaging/transports/components/dropdown/testing"
+			],
+			"@osee/messaging/types/dropdown": [
+				"src/app/ple/messaging/types/components/dropdown"
+			],
+			"@osee/messaging/types/dropdown/testing": [
+				"src/app/ple/messaging/types/components/dropdown/testing"
+			],
+			"@osee/messaging/types/persisted-relation-selector": [
+				"src/app/ple/messaging/types/components/persisted-platform-type-relation-selector"
+			],
+			"@osee/messaging/types/persisted-relation-selector/testing": [
+				"src/app/ple/messaging/types/components/persisted-platform-type-relation-selector/testing"
+			],
+			"@osee/messaging/nodes/dropdown": [
+				"src/app/ple/messaging/nodes/components/dropdown"
+			],
+			"@osee/messaging/nodes/dropdown/testing": [
+				"src/app/ple/messaging/nodes/components/dropdown/testing"
+			],
+			"@osee/messaging/nodes/persisted-publisher-node-dropdown": [
+				"src/app/ple/messaging/nodes/components/persisted-publisher-node-dropdown"
+			],
+			"@osee/messaging/nodes/persisted-publisher-node-dropdown/testing": [
+				"src/app/ple/messaging/nodes/components/persisted-publisher-node-dropdown/testing"
+			],
+			"@osee/messaging/nodes/persisted-subscriber-node-dropdown": [
+				"src/app/ple/messaging/nodes/components/persisted-subscriber-node-dropdown"
+			],
+			"@osee/messaging/nodes/persisted-subscriber-node-dropdown/testing": [
+				"src/app/ple/messaging/nodes/components/persisted-subscriber-node-dropdown/testing"
+			],
+			"@osee/messaging/nodes/search": [
+				"src/app/ple/messaging/nodes/components/search"
+			],
+			"@osee/messaging/nodes/search/testing": [
+				"src/app/ple/messaging/nodes/components/search/testing"
+			],
+			"@osee/messaging/nodes/review": [
+				"src/app/ple/messaging/nodes/components/review"
+			],
+			"@osee/messaging/nodes/components/internal": [
+				"src/app/ple/messaging/nodes/components/internal"
+			],
+			"@osee/messaging/units/dropdown": [
+				"src/app/ple/messaging/units/components/unit-dropdown"
+			],
+			"@osee/messaging/units/persisted-unit-dropdown": [
+				"src/app/ple/messaging/units/components/persisted-unit-dropdown"
+			],
+			"@osee/messaging/units/persisted-unit-dropdown/testing": [
+				"src/app/ple/messaging/units/components/persisted-unit-dropdown/testing"
+			],
+			"@osee/messaging/units/dropdown/testing": [
+				"src/app/ple/messaging/units/components/unit-dropdown/testing"
+			],
+			"@osee/messaging/units/services": [
+				"src/app/ple/messaging/units/services"
+			],
+			"@osee/messaging/units/services/testing": [
+				"src/app/ple/messaging/units/services/testing"
+			],
+			"@osee/messaging/structure-category/structure-category-dropdown": [
+				"src/app/ple/messaging/structure-category/components/structure-category-dropdown"
+			],
+			"@osee/messaging/structure-category/structure-category-dropdown/testing": [
+				"src/app/ple/messaging/structure-category/components/structure-category-dropdown/testing"
+			],
+			"@osee/messaging/structure-category/persisted-structure-category-dropdown": [
+				"src/app/ple/messaging/structure-category/components/persisted-structure-category-dropdown"
+			],
+			"@osee/messaging/structure-category/persisted-structure-category-dropdown/testing": [
+				"src/app/ple/messaging/structure-category/components/persisted-structure-category-dropdown/testing"
+			],
+			"@osee/messaging/structure-category/services": [
+				"src/app/ple/messaging/structure-category/services"
+			],
+			"@osee/messaging/structure-category/services/testing": [
+				"src/app/ple/messaging/structure-category/services/testing"
+			],
+			"@osee/messaging/message-periodicity/message-periodicity-dropdown": [
+				"src/app/ple/messaging/message-periodicity/components/message-periodicity-dropdown"
+			],
+			"@osee/messaging/message-periodicity/message-periodicity-dropdown/testing": [
+				"src/app/ple/messaging/message-periodicity/components/message-periodicity-dropdown/testing"
+			],
+			"@osee/messaging/message-periodicity/persisted-message-periodicity-dropdown": [
+				"src/app/ple/messaging/message-periodicity/components/persisted-message-periodicity-dropdown"
+			],
+			"@osee/messaging/message-periodicity/persisted-message-periodicity-dropdown/testing": [
+				"src/app/ple/messaging/message-periodicity/components/persisted-message-periodicity-dropdown/testing"
+			],
+			"@osee/messaging/message-periodicity/services": [
+				"src/app/ple/messaging/message-periodicity/services"
+			],
+			"@osee/messaging/message-periodicity/services/testing": [
+				"src/app/ple/messaging/message-periodicity/services/testing"
+			],
+			"@osee/messaging/message-type/message-type-dropdown": [
+				"src/app/ple/messaging/message-type/components/message-type-dropdown"
+			],
+			"@osee/messaging/message-type/message-type-dropdown/testing": [
+				"src/app/ple/messaging/message-type/components/message-type-dropdown/testing"
+			],
+			"@osee/messaging/message-type/persisted-message-type-dropdown": [
+				"src/app/ple/messaging/message-type/components/persisted-message-type-dropdown"
+			],
+			"@osee/messaging/message-type/persisted-message-type-dropdown/testing": [
+				"src/app/ple/messaging/message-type/components/persisted-message-type-dropdown/testing"
+			],
+			"@osee/messaging/message-type/services": [
+				"src/app/ple/messaging/message-type/services"
+			],
+			"@osee/messaging/rate/rate-dropdown": [
+				"src/app/ple/messaging/rate/components/rate-dropdown"
+			],
+			"@osee/messaging/rate/rate-dropdown/testing": [
+				"src/app/ple/messaging/rate/components/rate-dropdown/testing"
+			],
+			"@osee/messaging/rate/persisted-rate-dropdown": [
+				"src/app/ple/messaging/rate/components/persisted-rate-dropdown"
+			],
+			"@osee/messaging/rate/persisted-rate-dropdown/testing": [
+				"src/app/ple/messaging/rate/components/persisted-rate-dropdown/testing"
+			],
+			"@osee/messaging/rate/services": [
+				"src/app/ple/messaging/rate/services"
+			],
+			"@osee/toolbar": ["src/app/layout/lib/toolbar"],
+			"@osee/toolbar/component": [
+				"src/app/layout/lib/toolbar/osee-toolbar/osee-toolbar.component"
+			],
+			"@osee/shared/utils": ["src/app/shared/utils"],
+			"@osee/shared/resolvers": ["src/app/shared/resolvers"],
+			"@osee/shared/components": ["src/app/shared/components"],
+			"@osee/shared/directives": ["src/app/shared/directives"],
+			"@osee/shared/matchers": ["src/app/shared/matchers"],
+			"@osee/shared/services": ["src/app/shared/services"],
+			"@osee/shared/services/help": ["src/app/shared/services/help"],
+			"@osee/shared/services/layout": ["src/app/shared/services/layout"],
+			"@osee/shared/services/network": [
+				"src/app/shared/services/network"
+			],
+			"@osee/shared/validators": ["src/app/shared/validators"],
+			"@osee/shared/testing": ["src/app/shared/testing"],
+			"@osee/shared/transactions-legacy": [
+				"src/app/shared/transactions-legacy"
+			],
+			"@osee/shared/types": ["src/app/shared/types"],
+			"@osee/applicability/types": ["src/app/applicability/types"],
+			"@osee/shared/types/auth": ["src/app/shared/types/auth"],
+			"@osee/shared/types/change-report": [
+				"src/app/shared/types/change-report"
+			],
+			"@osee/shared/types/configuration-management": [
+				"src/app/shared/types/configuration-management"
+			],
+			"@osee/shared/types/constants": ["src/app/shared/types/constants"],
+			"@osee/transactions/types": ["src/app/transactions/types"],
+			"@osee/transactions/operators": ["src/app/transactions/operators"],
+			"@osee/transactions/functions": ["src/app/transactions/functions"],
+			"@osee/transactions/services": ["src/app/transactions/services"],
+			"@osee/transactions/services/testing": [
+				"src/app/transactions/services/testing"
+			],
+			"@osee/transactions/testing": ["src/app/transactions/testing"],
+			"@osee/transaction-history/types": [
+				"src/app/transaction-history/types"
+			],
+			"@osee/transaction-history/testing": [
+				"src/app/transaction-history/testing"
+			],
+			"@osee/transaction-history/services": [
+				"src/app/transaction-history/services"
+			],
+			"@osee/transaction-history/services/testing": [
+				"src/app/transaction-history/services/testing"
+			],
+			"@osee/messaging/shared": ["src/app/ple/messaging/shared"],
+			"@osee/messaging/shared/attr": [
+				"src/app/ple/messaging/shared/attr"
+			],
+			"@osee/messaging/shared/types": [
+				"src/app/ple/messaging/shared/types"
+			],
+			"@osee/messaging/shared/headers": [
+				"src/app/ple/messaging/shared/headers"
+			],
+			"@osee/messaging/shared/headers/testing": [
+				"src/app/ple/messaging/shared/headers/testing"
+			],
+			"@osee/messaging/shared/dropdowns": [
+				"src/app/ple/messaging/shared/dropdowns"
+			],
+			"@osee/messaging/shared/dropdowns/testing": [
+				"src/app/ple/messaging/shared/dropdowns/testing"
+			],
+			"@osee/messaging/shared/headers/*": [
+				"src/app/ple/messaging/shared/headers/*"
+			],
+			"@osee/messaging/shared/constants": [
+				"src/app/ple/messaging/shared/constants"
+			],
+			"@osee/messaging/shared/tokens": [
+				"src/app/ple/messaging/shared/tokens"
+			],
+			"@osee/messaging/shared/enumerations": [
+				"src/app/ple/messaging/shared/enumerations"
+			],
+			"@osee/messaging/shared/directives": [
+				"src/app/ple/messaging/shared/directives"
+			],
+			"@osee/messaging/shared/functions": [
+				"src/app/ple/messaging/shared/functions"
+			],
+			"@osee/messaging/shared/main-content": [
+				"src/app/ple/messaging/shared/main-content"
+			],
+			"@osee/messaging/shared/main-content/testing": [
+				"src/app/ple/messaging/shared/main-content/testing"
+			],
+			"@osee/messaging/shared/forms": [
+				"src/app/ple/messaging/shared/forms"
+			],
+			"@osee/messaging/shared/datasources": [
+				"src/app/ple/messaging/shared/datasources"
+			],
+			"@osee/messaging/shared/dialogs": [
+				"src/app/ple/messaging/shared/dialogs"
+			],
+			"@osee/messaging/shared/dialogs/preferences": [
+				"src/app/ple/messaging/shared/dialogs/preferences"
+			],
+			"@osee/messaging/shared/dialogs/warnings": [
+				"src/app/ple/messaging/shared/dialogs/warnings"
+			],
+			"@osee/messaging/shared/dialogs/free-text": [
+				"src/app/ple/messaging/shared/dialogs/free-text"
+			],
+			"@osee/messaging/shared/services": [
+				"src/app/ple/messaging/shared/services"
+			],
+			"@osee/messaging/shared/preferences": [
+				"src/app/ple/messaging/shared/preferences"
+			],
+			"@osee/messaging/shared/query": [
+				"src/app/ple/messaging/shared/query"
+			],
+			"@osee/messaging/shared/table-headers": [
+				"src/app/ple/messaging/shared/table-headers"
+			]
+		}
+	},
+	"exclude": ["src/**/*.spec.ts", "src/test.ts"]
+}

@@ -10,25 +10,28 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import {
-	HttpTestingController,
-	HttpClientTestingModule,
-} from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { CreateParameterService } from './create-parameter.service';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('CreateParameterService', () => {
 	let service: CreateParameterService;
-	let httpTestingController: HttpTestingController;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule, RouterTestingModule],
+			imports: [RouterTestingModule],
+			providers: [
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+			],
 		});
 		service = TestBed.inject(CreateParameterService);
-		httpTestingController = TestBed.inject(HttpTestingController);
 	});
 
 	it('should be created', () => {

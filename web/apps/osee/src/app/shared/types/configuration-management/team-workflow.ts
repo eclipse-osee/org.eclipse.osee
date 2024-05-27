@@ -16,7 +16,7 @@ import {
 } from '@osee/artifact-with-relations/types';
 import { NamedId } from '../named-id';
 
-export interface teamWorkflow {
+export type teamWorkflow = {
 	id: number;
 	Name: string;
 	AtsId: string;
@@ -50,44 +50,44 @@ export interface teamWorkflow {
 	previousStates: teamWorkflowState[];
 	toStates: teamWorkflowState[];
 	currentState: teamWorkflowState;
-}
+};
 
-export interface teamWorkflowState {
+export type teamWorkflowState = {
 	state: string;
 	rules: string[];
 	committable: boolean;
-}
+};
 export class teamWorkflowImpl implements teamWorkflow {
-	id: number = 0;
-	Name: string = '';
-	AtsId: string = '';
-	ActionAtsId: string = '';
-	TeamWfAtsId: string = '';
-	ArtifactType: string = '';
-	actionLocation: string = '';
-	'ats.Actionable Item Reference': string = '';
-	'ats.Log': string = '';
-	'ats.Id': string = '';
-	'ats.Created Date': string = '';
-	'ats.Created by': string = '';
-	'ats.Current State Type': string = '';
-	'ats.Change Type': string = '';
-	'ats.Workflow Definition': string = '';
-	'ats.Percent Complete': number = 0;
-	'ats.Workflow Definition Reference': string = '';
-	'ats.State': string = '';
-	'ats.Current State': string = '';
-	'ats.Team Definition Reference': string = '';
-	'ats.Description': string = '';
-	TeamName: string = '';
+	id = 0;
+	Name = '';
+	AtsId = '';
+	ActionAtsId = '';
+	TeamWfAtsId = '';
+	ArtifactType = '';
+	actionLocation = '';
+	'ats.Actionable Item Reference' = '';
+	'ats.Log' = '';
+	'ats.Id' = '';
+	'ats.Created Date' = '';
+	'ats.Created by' = '';
+	'ats.Current State Type' = '';
+	'ats.Change Type' = '';
+	'ats.Workflow Definition' = '';
+	'ats.Percent Complete' = 0;
+	'ats.Workflow Definition Reference' = '';
+	'ats.State' = '';
+	'ats.Current State' = '';
+	'ats.Team Definition Reference' = '';
+	'ats.Description' = '';
+	TeamName = '';
 	Assignees: teamWorkflowUser[] = [];
-	ChangeType: string = '';
-	Priority: string = '';
-	State: string = '';
-	CreatedDate: string = '';
-	CreatedBy: string = '';
-	TargetedVersion: string = '';
-	TargetedVersionId: string = '';
+	ChangeType = '';
+	Priority = '';
+	State = '';
+	CreatedDate = '';
+	CreatedBy = '';
+	TargetedVersion = '';
+	TargetedVersionId = '';
 	previousStates: teamWorkflowState[] = [];
 	toStates: teamWorkflowState[] = [];
 	currentState: teamWorkflowState = {
@@ -99,14 +99,14 @@ export class teamWorkflowImpl implements teamWorkflow {
 
 type teamWorkflowUser = { id: `${number}`; name: string };
 
-export interface teamWorkflowDetails extends teamWorkflow {
+export type teamWorkflowDetails = {
 	artifact: artifactWithRelations;
 	leads: NamedId[];
 	parentBranch: NamedId;
-	workingBranch: { id: string; name: string; branchState: string };
+	workingBranch: { id: `${number}`; name: string; branchState: string };
 	branchesToCommitTo: NamedId[];
 	branchEditable: boolean;
-}
+} & teamWorkflow;
 
 export class teamWorkflowDetailsImpl
 	extends teamWorkflowImpl
@@ -115,9 +115,9 @@ export class teamWorkflowDetailsImpl
 	artifact: artifactWithRelations = artifactWithRelationsSentinel;
 	leads: NamedId[] = [];
 	parentBranch: NamedId = { id: '-1', name: '' };
-	workingBranch = { id: '-1', name: '', branchState: '' };
+	workingBranch = { id: '-1' as `${number}`, name: '', branchState: '' };
 	branchesToCommitTo: NamedId[] = [];
-	branchEditable: boolean = false;
+	branchEditable = false;
 }
 
 export type workDefinition = {
@@ -157,20 +157,20 @@ export type teamWorkflowToken = {
 	atsId: string;
 };
 
-export interface TeamWorkflowSearchCriteria {
+export type TeamWorkflowSearchCriteria = {
 	search?: string;
 	assignees?: `${number}`[];
 	originators?: `${number}`[];
 	inProgressOnly?: boolean;
 	searchByArtId?: boolean;
-}
+};
 
 export class TeamWorkflowSearchCriteriaImpl
 	implements TeamWorkflowSearchCriteria
 {
-	search: string = '';
+	search = '';
 	assignees: `${number}`[] = [];
 	originators: `${number}`[] = [];
-	inProgressOnly: boolean = true;
+	inProgressOnly = true;
 	searchById?: boolean = false;
 }

@@ -10,25 +10,28 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import {
-	HttpTestingController,
-	HttpClientTestingModule,
-} from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { CreateCommandWithParameterArtifactService } from './create-command-with-parameter-artifact.service';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('CreateCommandWithParameterArtifactService', () => {
 	let service: CreateCommandWithParameterArtifactService;
-	let httpTestingController: HttpTestingController;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule, RouterTestingModule],
+			imports: [RouterTestingModule],
+			providers: [
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+			],
 		});
 		service = TestBed.inject(CreateCommandWithParameterArtifactService);
-		httpTestingController = TestBed.inject(HttpTestingController);
 	});
 
 	it('should be created', () => {

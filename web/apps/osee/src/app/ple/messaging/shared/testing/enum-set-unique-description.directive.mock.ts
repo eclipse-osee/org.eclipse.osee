@@ -34,12 +34,25 @@ import { enumerationSet } from '../types/enum';
 export class MockEnumSetUniqueDescriptionDirective implements AsyncValidator {
 	@Input('oseeEnumSetUniqueDescription')
 	enumSet: enumerationSet = {
-		name: '',
+		name: {
+			id: '-1',
+			value: '',
+			typeId: '1152921504606847088',
+			gammaId: '-1',
+		},
 		applicability: {
 			id: '1',
 			name: 'Base',
 		},
-		description: '',
+		description: {
+			id: '-1',
+			value: '',
+			typeId: '1152921504606847090',
+			gammaId: '-1',
+		},
+		enumerations: [],
+		id: '-1',
+		gammaId: '-1',
 	};
 	validate(
 		control: AbstractControl<any, any>

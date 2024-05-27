@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, SecurityContext } from '@angular/core';
+import { Component, SecurityContext, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -49,6 +49,9 @@ const _currNavItem: navigationElement =
 	templateUrl: './server-health.component.html',
 })
 export class ServerHealthComponent {
+	private serverHealthHttpService = inject(ServerHealthHttpService);
+	private sanitizer = inject(DomSanitizer);
+
 	get importantNavItems() {
 		return _navItems.filter((c) => c.label !== 'Http Headers');
 	}
@@ -60,11 +63,6 @@ export class ServerHealthComponent {
 	get currNavItem() {
 		return _currNavItem;
 	}
-
-	constructor(
-		private serverHealthHttpService: ServerHealthHttpService,
-		private sanitizer: DomSanitizer
-	) {}
 
 	prometheusUrl = this.serverHealthHttpService.PrometheusUrl.pipe(
 		map((prometheusUrl) => {

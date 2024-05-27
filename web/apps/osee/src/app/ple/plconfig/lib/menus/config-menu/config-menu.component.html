@@ -13,14 +13,16 @@
 <button
 	mat-menu-item
 	(click)="openConfigMenu(config().id, editable())">
-	<mat-icon color="primary">edit</mat-icon>Open Config Menu
+	<mat-icon class="tw-text-osee-blue-9">edit</mat-icon>Open Config Menu
 </button>
 @if (hasViewChanges(config())) {
 	<button
 		mat-menu-item
 		[matMenuTriggerFor]="configDiffMenu"
 		[matMenuTriggerData]="{ config: config() }">
-		<mat-icon color="accent">pageview</mat-icon>View Diff for
+		<mat-icon class="tw-text-osee-yellow-10 dark:tw-text-osee-amber-9"
+			>pageview</mat-icon
+		>View Diff for
 		{{ config().name }}
 	</button>
 }
@@ -49,7 +51,7 @@
 				mat-menu-item
 				[matMenuTriggerFor]="arrayDiffMenu"
 				[matMenuTriggerData]="{
-					array: config.changes.productApplicabilities
+					array: config.changes.productApplicabilities,
 				}">
 				Product Applicabilities
 			</button>

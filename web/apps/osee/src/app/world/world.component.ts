@@ -227,7 +227,7 @@ class WorldComponent implements AfterViewInit {
 			filter: string
 		) => {
 			const filterLower = filter.toLowerCase();
-			for (let key of Object.keys(row)) {
+			for (const key of Object.keys(row)) {
 				if (row[key].value.toLowerCase().includes(filterLower)) {
 					return true;
 				}

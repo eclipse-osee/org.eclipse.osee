@@ -18,10 +18,11 @@ import type {
 	subMessage,
 	element,
 	MimUserGlobalPreferences,
+	displayableStructureFields,
 } from '@osee/messaging/shared/types';
 
 export const MimPreferencesMock: MimPreferences<
-	structure & message & subMessage & element
+	displayableStructureFields & message & subMessage & element
 > = {
 	id: '61106791',
 	name: 'Joe Smith',
@@ -81,10 +82,6 @@ export const MimPreferencesMock: MimPreferences<
 		},
 		{
 			name: 'bytesPerSecondMaximum',
-			enabled: false,
-		},
-		{
-			name: 'GenerationIndicator',
 			enabled: false,
 		},
 		{

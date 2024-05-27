@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -19,15 +20,18 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithGammas;
+import org.eclipse.osee.accessor.types.AttributePojo;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.rest.model.transaction.Attribute;
 import org.eclipse.osee.orcs.rest.model.transaction.CreateArtifact;
@@ -35,26 +39,42 @@ import org.eclipse.osee.orcs.rest.model.transaction.CreateArtifact;
 /**
  * @author Luciano T. Vaglienti
  */
-public class InterfaceMessageToken extends ArtifactAccessorResult {
+public class InterfaceMessageToken extends ArtifactAccessorResultWithGammas {
    public static final InterfaceMessageToken SENTINEL = new InterfaceMessageToken();
 
-   private String InterfaceMessageNumber; //required
-   private String InterfaceMessagePeriodicity; //required
-   private String InterfaceMessageRate;
-   private Boolean InterfaceMessageWriteAccess; //required
-   private String InterfaceMessageType; //required
-   private Boolean interfaceMessageExclude;
-   private String interfaceMessageIoMode;
-   private String interfaceMessageModeCode;
-   private String interfaceMessageRateVer;
-   private String interfaceMessagePriority;
-   private String interfaceMessageProtocol;
-   private String interfaceMessageRptWordCount;
-   private String interfaceMessageRptCmdWord;
-   private Boolean interfaceMessageRunBeforeProc;
-   private String interfaceMessageVer;
+   private AttributePojo<String> InterfaceMessageNumber =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessageNumber, GammaId.SENTINEL, "", "");
+   private AttributePojo<String> InterfaceMessagePeriodicity =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessagePeriodicity, GammaId.SENTINEL, "", "");
+   private AttributePojo<String> InterfaceMessageRate =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessageRate, GammaId.SENTINEL, "", "");
+   private AttributePojo<Boolean> InterfaceMessageWriteAccess =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessageWriteAccess, GammaId.SENTINEL, false, "");
+   private AttributePojo<String> InterfaceMessageType =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessageType, GammaId.SENTINEL, "", "");
+   private AttributePojo<Boolean> interfaceMessageExclude =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessageExclude, GammaId.SENTINEL, false, "");
+   private AttributePojo<String> interfaceMessageIoMode =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessageIoMode, GammaId.SENTINEL, "", "");
+   private AttributePojo<String> interfaceMessageModeCode =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessageModeCode, GammaId.SENTINEL, "", "");
+   private AttributePojo<String> interfaceMessageRateVer =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessageRateVer, GammaId.SENTINEL, "", "");
+   private AttributePojo<String> interfaceMessagePriority =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessagePriority, GammaId.SENTINEL, "", "");
+   private AttributePojo<String> interfaceMessageProtocol =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessageProtocol, GammaId.SENTINEL, "", "");
+   private AttributePojo<String> interfaceMessageRptWordCount =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessageRptWordCount, GammaId.SENTINEL, "", "");
+   private AttributePojo<String> interfaceMessageRptCmdWord =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessageRptCmdWord, GammaId.SENTINEL, "", "");
+   private AttributePojo<Boolean> interfaceMessageRunBeforeProc =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessageRunBeforeProc, GammaId.SENTINEL, false, "");
+   private AttributePojo<String> interfaceMessageVer =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessageVer, GammaId.SENTINEL, "", "");
 
-   private String Description;
+   private AttributePojo<String> Description =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.Description, GammaId.SENTINEL, "", "");
    private List<InterfaceSubMessageToken> subMessages = new LinkedList<InterfaceSubMessageToken>();
    private List<InterfaceNode> publisherNodes = new LinkedList<>();
    private List<InterfaceNode> subscriberNodes = new LinkedList<>();
@@ -67,28 +87,38 @@ public class InterfaceMessageToken extends ArtifactAccessorResult {
    public InterfaceMessageToken(ArtifactReadable art) {
       super(art);
       this.setId(art.getId());
-      this.setName(art.getName());
-      this.setDescription(art.getSoleAttributeValue(CoreAttributeTypes.Description, ""));
-      this.setInterfaceMessageNumber(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceMessageNumber, ""));
+      this.setName(AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.Name, "")));
+      this.setDescription(AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.Description, "")));
+      this.setInterfaceMessageNumber(
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceMessageNumber, "")));
       this.setInterfaceMessagePeriodicity(
-         art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessagePeriodicity, ""));
-      this.setInterfaceMessageRate(art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRate, ""));
-      this.setInterfaceMessageType(art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageType, ""));
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceMessagePeriodicity, "")));
+      this.setInterfaceMessageRate(
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceMessageRate, "")));
+      this.setInterfaceMessageType(
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceMessageType, "")));
       this.setInterfaceMessageWriteAccess(
-         art.getSoleAttributeValue(CoreAttributeTypes.InterfaceMessageWriteAccess, false));
-      this.setInterfaceMessageExclude(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceMessageExclude, false));
-      this.setInterfaceMessageIoMode(art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageIoMode, ""));
-      this.setInterfaceMessageModeCode(art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageModeCode, ""));
-      this.setInterfaceMessageRateVer(art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRateVer, ""));
-      this.setInterfaceMessagePriority(art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessagePriority, ""));
-      this.setInterfaceMessageProtocol(art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageProtocol, ""));
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceMessageWriteAccess, false)));
+      this.setInterfaceMessageExclude(
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceMessageExclude, false)));
+      this.setInterfaceMessageIoMode(
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceMessageIoMode, "")));
+      this.setInterfaceMessageModeCode(
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceMessageModeCode, "")));
+      this.setInterfaceMessageRateVer(
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceMessageRateVer, "")));
+      this.setInterfaceMessagePriority(
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceMessagePriority, "")));
+      this.setInterfaceMessageProtocol(
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceMessageProtocol, "")));
       this.setInterfaceMessageRptWordCount(
-         art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRptWordCount, ""));
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceMessageRptWordCount, "")));
       this.setInterfaceMessageRptCmdWord(
-         art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageRptCmdWord, ""));
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceMessageRptCmdWord, "")));
       this.setInterfaceMessageRunBeforeProc(
-         art.getSoleAttributeValue(CoreAttributeTypes.InterfaceMessageRunBeforeProc, false));
-      this.setInterfaceMessageVer(art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageVer, ""));
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceMessageRunBeforeProc, false)));
+      this.setInterfaceMessageVer(
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceMessageVer, "")));
       this.setSubMessages(
          art.getRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage).getList().stream().filter(
             a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new InterfaceSubMessageToken(a)).collect(
@@ -102,7 +132,7 @@ public class InterfaceMessageToken extends ArtifactAccessorResult {
    }
 
    public InterfaceMessageToken(Long id, String name) {
-      super(id, name);
+      super(id, AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.Name, GammaId.SENTINEL, name, ""));
       this.setInterfaceMessageNumber("");
       this.setInterfaceMessagePeriodicity("");
       this.setInterfaceMessageRate("");
@@ -127,7 +157,7 @@ public class InterfaceMessageToken extends ArtifactAccessorResult {
    /**
     * @return the interfaceMessageNumber
     */
-   public String getInterfaceMessageNumber() {
+   public AttributePojo<String> getInterfaceMessageNumber() {
       return InterfaceMessageNumber;
    }
 
@@ -135,13 +165,19 @@ public class InterfaceMessageToken extends ArtifactAccessorResult {
     * @param interfaceMessageNumber the interfaceMessageNumber to set
     */
    public void setInterfaceMessageNumber(String interfaceMessageNumber) {
+      InterfaceMessageNumber = AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessageNumber,
+         GammaId.SENTINEL, interfaceMessageNumber, "");
+   }
+
+   @JsonProperty
+   public void setInterfaceMessageNumber(AttributePojo<String> interfaceMessageNumber) {
       InterfaceMessageNumber = interfaceMessageNumber;
    }
 
    /**
     * @return the interfaceMessagePeriodicity
     */
-   public String getInterfaceMessagePeriodicity() {
+   public AttributePojo<String> getInterfaceMessagePeriodicity() {
       return InterfaceMessagePeriodicity;
    }
 
@@ -149,13 +185,19 @@ public class InterfaceMessageToken extends ArtifactAccessorResult {
     * @param interfaceMessagePeriodicity the interfaceMessagePeriodicity to set
     */
    public void setInterfaceMessagePeriodicity(String interfaceMessagePeriodicity) {
+      InterfaceMessagePeriodicity = AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessagePeriodicity,
+         GammaId.SENTINEL, interfaceMessagePeriodicity, "");
+   }
+
+   @JsonProperty
+   public void setInterfaceMessagePeriodicity(AttributePojo<String> interfaceMessagePeriodicity) {
       InterfaceMessagePeriodicity = interfaceMessagePeriodicity;
    }
 
    /**
     * @return the interfaceMessageRate
     */
-   public String getInterfaceMessageRate() {
+   public AttributePojo<String> getInterfaceMessageRate() {
       return InterfaceMessageRate;
    }
 
@@ -163,13 +205,19 @@ public class InterfaceMessageToken extends ArtifactAccessorResult {
     * @param interfaceMessageRate the interfaceMessageRate to set
     */
    public void setInterfaceMessageRate(String interfaceMessageRate) {
+      InterfaceMessageRate = AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessageRate,
+         GammaId.SENTINEL, interfaceMessageRate, "");
+   }
+
+   @JsonProperty
+   public void setInterfaceMessageRate(AttributePojo<String> interfaceMessageRate) {
       InterfaceMessageRate = interfaceMessageRate;
    }
 
    /**
     * @return the interfaceMessageWriteAccess
     */
-   public Boolean getInterfaceMessageWriteAccess() {
+   public AttributePojo<Boolean> getInterfaceMessageWriteAccess() {
       return InterfaceMessageWriteAccess;
    }
 
@@ -177,13 +225,19 @@ public class InterfaceMessageToken extends ArtifactAccessorResult {
     * @param interfaceMessageWriteAccess the interfaceMessageWriteAccess to set
     */
    public void setInterfaceMessageWriteAccess(Boolean interfaceMessageWriteAccess) {
+      InterfaceMessageWriteAccess = AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessageWriteAccess,
+         GammaId.SENTINEL, interfaceMessageWriteAccess, "");
+   }
+
+   @JsonProperty
+   public void setInterfaceMessageWriteAccess(AttributePojo<Boolean> interfaceMessageWriteAccess) {
       InterfaceMessageWriteAccess = interfaceMessageWriteAccess;
    }
 
    /**
     * @return the interfaceMessageType
     */
-   public String getInterfaceMessageType() {
+   public AttributePojo<String> getInterfaceMessageType() {
       return InterfaceMessageType;
    }
 
@@ -191,6 +245,12 @@ public class InterfaceMessageToken extends ArtifactAccessorResult {
     * @param interfaceMessageType the interfaceMessageType to set
     */
    public void setInterfaceMessageType(String interfaceMessageType) {
+      InterfaceMessageType = AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessageType,
+         GammaId.SENTINEL, interfaceMessageType, "");
+   }
+
+   @JsonProperty
+   public void setInterfaceMessageType(AttributePojo<String> interfaceMessageType) {
       InterfaceMessageType = interfaceMessageType;
    }
 
@@ -208,7 +268,7 @@ public class InterfaceMessageToken extends ArtifactAccessorResult {
    /**
     * @return the description
     */
-   public String getDescription() {
+   public AttributePojo<String> getDescription() {
       return Description;
    }
 
@@ -216,6 +276,12 @@ public class InterfaceMessageToken extends ArtifactAccessorResult {
     * @param description the description to set
     */
    public void setDescription(String description) {
+      this.Description =
+         AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.Description, GammaId.SENTINEL, description, "");
+   }
+
+   @JsonProperty
+   public void setDescription(AttributePojo<String> description) {
       this.Description = description;
    }
 
@@ -249,109 +315,169 @@ public class InterfaceMessageToken extends ArtifactAccessorResult {
       this.subscriberNodes = subscriberNodes;
    }
 
-   public Boolean getInterfaceMessageExclude() {
+   public AttributePojo<Boolean> getInterfaceMessageExclude() {
       return interfaceMessageExclude;
    }
 
    public void setInterfaceMessageExclude(Boolean interfaceMessageExclude) {
+      this.interfaceMessageExclude = AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessageExclude,
+         GammaId.SENTINEL, interfaceMessageExclude, "");
+   }
+
+   @JsonProperty
+   public void setInterfaceMessageExclude(AttributePojo<Boolean> interfaceMessageExclude) {
       this.interfaceMessageExclude = interfaceMessageExclude;
    }
 
-   public String getInterfaceMessageIoMode() {
+   public AttributePojo<String> getInterfaceMessageIoMode() {
       return interfaceMessageIoMode;
    }
 
    public void setInterfaceMessageIoMode(String interfaceMessageIoMode) {
+      this.interfaceMessageIoMode = AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessageIoMode,
+         GammaId.SENTINEL, interfaceMessageIoMode, "");
+   }
+
+   @JsonProperty
+   public void setInterfaceMessageIoMode(AttributePojo<String> interfaceMessageIoMode) {
       this.interfaceMessageIoMode = interfaceMessageIoMode;
    }
 
-   public String getInterfaceMessageModeCode() {
+   public AttributePojo<String> getInterfaceMessageModeCode() {
       return interfaceMessageModeCode;
    }
 
    public void setInterfaceMessageModeCode(String interfaceMessageModeCode) {
+      this.interfaceMessageModeCode = AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessageModeCode,
+         GammaId.SENTINEL, interfaceMessageModeCode, "");
+   }
+
+   @JsonProperty
+   public void setInterfaceMessageModeCode(AttributePojo<String> interfaceMessageModeCode) {
       this.interfaceMessageModeCode = interfaceMessageModeCode;
    }
 
-   public String getInterfaceMessageRateVer() {
+   public AttributePojo<String> getInterfaceMessageRateVer() {
       return interfaceMessageRateVer;
    }
 
    public void setInterfaceMessageRateVer(String interfaceMessageRateVer) {
+      this.interfaceMessageRateVer = AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessageRateVer,
+         GammaId.SENTINEL, interfaceMessageRateVer, "");
+   }
+
+   @JsonProperty
+   public void setInterfaceMessageRateVer(AttributePojo<String> interfaceMessageRateVer) {
       this.interfaceMessageRateVer = interfaceMessageRateVer;
    }
 
-   public String getInterfaceMessagePriority() {
+   public AttributePojo<String> getInterfaceMessagePriority() {
       return interfaceMessagePriority;
    }
 
    public void setInterfaceMessagePriority(String interfaceMessagePriority) {
+      this.interfaceMessagePriority = AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessagePriority,
+         GammaId.SENTINEL, interfaceMessagePriority, "");
+   }
+
+   @JsonProperty
+   public void setInterfaceMessagePriority(AttributePojo<String> interfaceMessagePriority) {
       this.interfaceMessagePriority = interfaceMessagePriority;
    }
 
-   public String getInterfaceMessageProtocol() {
+   public AttributePojo<String> getInterfaceMessageProtocol() {
       return interfaceMessageProtocol;
    }
 
    public void setInterfaceMessageProtocol(String interfaceMessageProtocol) {
+      this.interfaceMessageProtocol = AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessageProtocol,
+         GammaId.SENTINEL, interfaceMessageProtocol, "");
+   }
+
+   @JsonProperty
+   public void setInterfaceMessageProtocol(AttributePojo<String> interfaceMessageProtocol) {
       this.interfaceMessageProtocol = interfaceMessageProtocol;
    }
 
-   public String getInterfaceMessageRptWordCount() {
+   public AttributePojo<String> getInterfaceMessageRptWordCount() {
       return interfaceMessageRptWordCount;
    }
 
    public void setInterfaceMessageRptWordCount(String interfaceMessageRptWordCount) {
+      this.interfaceMessageRptWordCount = AttributePojo.valueOf(Id.SENTINEL,
+         CoreAttributeTypes.InterfaceMessageRptWordCount, GammaId.SENTINEL, interfaceMessageRptWordCount, "");
+   }
+
+   @JsonProperty
+   public void setInterfaceMessageRptWordCount(AttributePojo<String> interfaceMessageRptWordCount) {
       this.interfaceMessageRptWordCount = interfaceMessageRptWordCount;
    }
 
-   public String getInterfaceMessageRptCmdWord() {
+   public AttributePojo<String> getInterfaceMessageRptCmdWord() {
       return interfaceMessageRptCmdWord;
    }
 
    public void setInterfaceMessageRptCmdWord(String interfaceMessageRptCmdWord) {
+      this.interfaceMessageRptCmdWord = AttributePojo.valueOf(Id.SENTINEL,
+         CoreAttributeTypes.InterfaceMessageRptCmdWord, GammaId.SENTINEL, interfaceMessageRptCmdWord, "");
+   }
+
+   @JsonProperty
+   public void setInterfaceMessageRptCmdWord(AttributePojo<String> interfaceMessageRptCmdWord) {
       this.interfaceMessageRptCmdWord = interfaceMessageRptCmdWord;
    }
 
-   public Boolean getInterfaceMessageRunBeforeProc() {
+   public AttributePojo<Boolean> getInterfaceMessageRunBeforeProc() {
       return interfaceMessageRunBeforeProc;
    }
 
    public void setInterfaceMessageRunBeforeProc(Boolean interfaceMessageRunBeforeProc) {
+      this.interfaceMessageRunBeforeProc = AttributePojo.valueOf(Id.SENTINEL,
+         CoreAttributeTypes.InterfaceMessageRunBeforeProc, GammaId.SENTINEL, interfaceMessageRunBeforeProc, "");
+   }
+
+   @JsonProperty
+   public void setInterfaceMessageRunBeforeProc(AttributePojo<Boolean> interfaceMessageRunBeforeProc) {
       this.interfaceMessageRunBeforeProc = interfaceMessageRunBeforeProc;
    }
 
-   public String getInterfaceMessageVer() {
+   public AttributePojo<String> getInterfaceMessageVer() {
       return interfaceMessageVer;
    }
 
    public void setInterfaceMessageVer(String interfaceMessageVer) {
+      this.interfaceMessageVer = AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceMessageVer,
+         GammaId.SENTINEL, interfaceMessageVer, "");
+   }
+
+   @JsonProperty
+   public void setInterfaceMessageVer(AttributePojo<String> interfaceMessageVer) {
       this.interfaceMessageVer = interfaceMessageVer;
    }
 
    public CreateArtifact createArtifact(String key, ApplicabilityId applicId) {
       // @formatter:off
       Map<AttributeTypeToken, String> values = new HashMap<>();
-      values.put(CoreAttributeTypes.Description, this.getDescription());
-      values.put(CoreAttributeTypes.InterfaceMessageNumber, this.getInterfaceMessageNumber());
-      values.put(CoreAttributeTypes.InterfaceMessagePeriodicity, this.getInterfaceMessagePeriodicity());
-      values.put(CoreAttributeTypes.InterfaceMessageRate, this.getInterfaceMessageRate());
-      values.put(CoreAttributeTypes.InterfaceMessageWriteAccess, Boolean.toString(this.getInterfaceMessageWriteAccess()));
-      values.put(CoreAttributeTypes.InterfaceMessageType, this.getInterfaceMessageType());
-      values.put(CoreAttributeTypes.InterfaceMessageExclude, Boolean.toString(this.getInterfaceMessageExclude()));
-      values.put(CoreAttributeTypes.InterfaceMessageIoMode, this.getInterfaceMessageIoMode());
-      values.put(CoreAttributeTypes.InterfaceMessageModeCode, this.getInterfaceMessageModeCode());
-      values.put(CoreAttributeTypes.InterfaceMessageRateVer, this.getInterfaceMessageRateVer());
-      values.put(CoreAttributeTypes.InterfaceMessagePriority, this.getInterfaceMessagePriority());
-      values.put(CoreAttributeTypes.InterfaceMessageProtocol, this.getInterfaceMessageProtocol());
-      values.put(CoreAttributeTypes.InterfaceMessageRptWordCount, this.getInterfaceMessageRptWordCount());
-      values.put(CoreAttributeTypes.InterfaceMessageRptCmdWord, this.getInterfaceMessageRptCmdWord());
-      values.put(CoreAttributeTypes.InterfaceMessageRunBeforeProc, Boolean.toString(this.getInterfaceMessageRunBeforeProc()));
-      values.put(CoreAttributeTypes.InterfaceMessageVer, this.getInterfaceMessageVer());
+      values.put(CoreAttributeTypes.Description, this.getDescription().getValue());
+      values.put(CoreAttributeTypes.InterfaceMessageNumber, this.getInterfaceMessageNumber().getValue());
+      values.put(CoreAttributeTypes.InterfaceMessagePeriodicity, this.getInterfaceMessagePeriodicity().getValue());
+      values.put(CoreAttributeTypes.InterfaceMessageRate, this.getInterfaceMessageRate().getValue());
+      values.put(CoreAttributeTypes.InterfaceMessageWriteAccess, Boolean.toString(this.getInterfaceMessageWriteAccess().getValue()));
+      values.put(CoreAttributeTypes.InterfaceMessageType, this.getInterfaceMessageType().getValue());
+      values.put(CoreAttributeTypes.InterfaceMessageExclude, Boolean.toString(this.getInterfaceMessageExclude().getValue()));
+      values.put(CoreAttributeTypes.InterfaceMessageIoMode, this.getInterfaceMessageIoMode().getValue());
+      values.put(CoreAttributeTypes.InterfaceMessageModeCode, this.getInterfaceMessageModeCode().getValue());
+      values.put(CoreAttributeTypes.InterfaceMessageRateVer, this.getInterfaceMessageRateVer().getValue());
+      values.put(CoreAttributeTypes.InterfaceMessagePriority, this.getInterfaceMessagePriority().getValue());
+      values.put(CoreAttributeTypes.InterfaceMessageProtocol, this.getInterfaceMessageProtocol().getValue());
+      values.put(CoreAttributeTypes.InterfaceMessageRptWordCount, this.getInterfaceMessageRptWordCount().getValue());
+      values.put(CoreAttributeTypes.InterfaceMessageRptCmdWord, this.getInterfaceMessageRptCmdWord().getValue());
+      values.put(CoreAttributeTypes.InterfaceMessageRunBeforeProc, Boolean.toString(this.getInterfaceMessageRunBeforeProc().getValue()));
+      values.put(CoreAttributeTypes.InterfaceMessageVer, this.getInterfaceMessageVer().getValue());
       // @formatter:on
 
       CreateArtifact art = new CreateArtifact();
-      art.setName(this.getName());
+      art.setName(this.getName().getValue());
       art.setTypeId(CoreArtifactTypes.InterfaceMessage.getIdString());
 
       List<Attribute> attrs = new LinkedList<>();

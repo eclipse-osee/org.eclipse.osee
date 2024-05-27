@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ArtifactService } from '../http/artifact.service';
 import { NamedId } from '@osee/shared/types';
 
@@ -18,7 +18,7 @@ import { NamedId } from '@osee/shared/types';
 	providedIn: 'root',
 })
 export class ArtifactUiService {
-	constructor(private artifactService: ArtifactService) {}
+	private artifactService = inject(ArtifactService);
 
 	getArtifactTypes(filter: string) {
 		return this.artifactService.getArtifactTypes(filter);

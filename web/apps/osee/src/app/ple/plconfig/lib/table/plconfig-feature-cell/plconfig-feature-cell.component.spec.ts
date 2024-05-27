@@ -13,8 +13,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PlconfigFeatureCellComponent } from './plconfig-feature-cell.component';
-import { DialogService } from 'src/app/ple/plconfig/lib/services/dialog.service';
-import { DialogServiceMock } from 'src/app/ple/plconfig/lib/testing/mockDialogService.mock';
+import { DialogService } from '../../services/dialog.service';
+import { DialogServiceMock } from '../../testing/mockDialogService.mock';
 
 describe('PlconfigFeatureCellComponent', () => {
 	let component: PlconfigFeatureCellComponent;

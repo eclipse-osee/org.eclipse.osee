@@ -17,7 +17,7 @@ export const UserContextRelationsServiceMock: Partial<UserContextRelationsServic
 		get commands() {
 			return of([
 				{
-					id: '1000001',
+					id: '1000001' as `${number}`,
 					name: 'Test Artifact',
 					contextGroup: 'Test Context',
 					attributes: {
@@ -25,7 +25,7 @@ export const UserContextRelationsServiceMock: Partial<UserContextRelationsServic
 						'http method': 'GET',
 					},
 					parameter: {
-						id: '1000002',
+						id: '1000002' as `${number}`,
 						name: 'Test Parameter',
 						typeAsString: 'ParameterString',
 						attributes: {

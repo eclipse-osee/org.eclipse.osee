@@ -16,7 +16,7 @@ import { UserDataAccountService } from './user-data-account.service';
 
 export const RoleGuard = (
 	next: ActivatedRouteSnapshot,
-	state: RouterStateSnapshot
+	_state: RouterStateSnapshot
 ) => {
 	return inject(UserDataAccountService).userHasRoles(next.data.requiredRoles);
 };

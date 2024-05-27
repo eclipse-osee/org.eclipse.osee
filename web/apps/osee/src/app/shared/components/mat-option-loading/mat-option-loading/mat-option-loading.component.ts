@@ -19,14 +19,13 @@ import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
-	Host,
 	Input,
 	OnChanges,
-	Optional,
 	SimpleChanges,
 	TemplateRef,
 	contentChild,
 	viewChild,
+	inject,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatAutocomplete } from '@angular/material/autocomplete';
@@ -75,10 +74,12 @@ import { paginationMode } from '../internal/pagination-options';
 	changeDetection: ChangeDetectionStrategy.OnPush, //lessen the amount of redrawing necessary to cause less "bounciness"
 })
 export class MatOptionLoadingComponent<T> implements OnChanges {
+	private _parentSelect = inject(MatSelect, { host: true, optional: true })!;
+
 	/**
 	 * Total number of items that should come from the paginated data source
 	 */
-	@Input() count: number = -1;
+	@Input() count = -1;
 
 	/**
 	 * Input data source that is used to display available options, and also the desired observable to paginate
@@ -113,12 +114,12 @@ export class MatOptionLoadingComponent<T> implements OnChanges {
 	/**
 	 * Number of rows to expect per each query.
 	 */
-	@Input() paginationSize: number = 5;
+	@Input() paginationSize = 5;
 
 	/**
 	 * Rate Limit Api requests to once per x ms. Auto mode only.
 	 */
-	@Input() rateLimit: number = 500;
+	@Input() rateLimit = 500;
 
 	@Input() noneOption: T | undefined = undefined;
 
@@ -169,7 +170,7 @@ export class MatOptionLoadingComponent<T> implements OnChanges {
 				// observable stays hot, the it will not move on to the next page.
 				// If the options aren't paginating, make sure there's a take(1) on the source
 				// observable and that it's completing.
-				concatMap(([pageNum, complete]) => {
+				concatMap(([pageNum, _complete]) => {
 					if (this._isNotObservable(query)) {
 						return query.call(this, pageNum).pipe(
 							tap((results) => {
@@ -226,11 +227,6 @@ export class MatOptionLoadingComponent<T> implements OnChanges {
 			err ? of('Error when fetching data from OSEE server') : of()
 		)
 	);
-	constructor(
-		@Host()
-		@Optional()
-		private _parentSelect: MatSelect
-	) {}
 
 	ngOnChanges(changes: SimpleChanges): void {
 		//turn subscription on or off based on auto mode to keep the polling off in manual/no-paginate modes.

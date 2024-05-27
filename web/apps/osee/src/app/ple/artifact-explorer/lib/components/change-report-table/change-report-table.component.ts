@@ -11,7 +11,13 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, NgClass } from '@angular/common';
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+	Component,
+	Input,
+	OnChanges,
+	SimpleChanges,
+	inject,
+} from '@angular/core';
 import {
 	MatCell,
 	MatCellDef,
@@ -57,12 +63,10 @@ import { ChangeReportService } from './services/change-report.service';
 	],
 })
 export class ChangeReportTableComponent implements OnChanges {
-	@Input() branchId: string = '';
+	private headerService = inject(HeaderService);
+	private crService = inject(ChangeReportService);
 
-	constructor(
-		private headerService: HeaderService,
-		private crService: ChangeReportService
-	) {}
+	@Input() branchId = '';
 
 	ngOnChanges(changes: SimpleChanges): void {
 		if (changes.branchId) {

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatCheckbox, MatCheckboxChange } from '@angular/material/checkbox';
@@ -37,10 +37,8 @@ import { SetReference } from '../../../types';
 	templateUrl: './set-dropdown-multi.component.html',
 })
 export class SetDropdownMultiComponent {
-	constructor(
-		private ciSetsService: CiSetsService,
-		private diffService: CiSetDiffService
-	) {}
+	private ciSetsService = inject(CiSetsService);
+	private diffService = inject(CiSetDiffService);
 
 	activeOnly = toSignal(this.ciSetsService.activeOnly);
 

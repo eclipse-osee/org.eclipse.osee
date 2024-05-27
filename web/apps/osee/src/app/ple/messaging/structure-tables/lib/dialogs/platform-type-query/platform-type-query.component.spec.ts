@@ -31,12 +31,11 @@ import { PlatformTypeQueryComponent } from './platform-type-query.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 import { UserDataAccountService } from '@osee/auth';
-import { TransactionBuilderService } from '@osee/shared/transactions';
-import { transactionBuilderMock } from '@osee/shared/transactions/testing';
+import { TransactionBuilderService } from '@osee/shared/transactions-legacy';
+import { transactionBuilderMock } from '@osee/shared/transactions-legacy/testing';
 import {
 	MimPreferencesServiceMock,
 	typesServiceMock,
-	enumsServiceMock,
 	enumerationSetServiceMock,
 	platformTypesMock,
 } from '@osee/messaging/shared/testing';
@@ -44,13 +43,12 @@ import { userDataAccountServiceMock } from '@osee/auth/testing';
 import {
 	MimPreferencesService,
 	TypesService,
-	EnumsService,
 	EnumerationSetService,
 } from '@osee/messaging/shared/services';
 import { ApplicabilityListService } from '@osee/shared/services';
 import { applicabilityListServiceMock } from '@osee/shared/testing';
 import { MockUnitDropdownComponent } from '@osee/messaging/shared/dropdowns/testing';
-import { UnitDropdownComponent } from '@osee/messaging/shared/dropdowns';
+import { UnitDropdownComponent } from '@osee/messaging/units/dropdown';
 
 describe('PlatformTypeQueryComponent', () => {
 	let component: PlatformTypeQueryComponent;
@@ -94,7 +92,6 @@ describe('PlatformTypeQueryComponent', () => {
 						useValue: userDataAccountServiceMock,
 					},
 					{ provide: TypesService, useValue: typesServiceMock },
-					{ provide: EnumsService, useValue: enumsServiceMock },
 					{
 						provide: EnumerationSetService,
 						useValue: enumerationSetServiceMock,
@@ -152,7 +149,7 @@ describe('PlatformTypeQueryComponent', () => {
 		await testSelect('default-val', 'false', 1, '=');
 		const input = await loader.getHarness(MatInputHarness);
 		await input.setValue('8');
-		const slider = await loader.getHarness(MatSliderHarness);
+		const _slider = await loader.getHarness(MatSliderHarness);
 		component.name = 'abcd'; // no enumerations are in the mock currently
 		const queryButton = await loader.getHarness(
 			MatButtonHarness.with({ selector: '.query-button' })

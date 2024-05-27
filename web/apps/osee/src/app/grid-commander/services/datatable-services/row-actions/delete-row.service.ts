@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { of, take, switchMap, tap } from 'rxjs';
 import { UiService } from '@osee/shared/services';
 import { RowObj } from '../../../types/grid-commander-types/table-data-types';
@@ -21,11 +21,11 @@ import { GCBranchIdService } from '../../fetch-data-services/branch/gc-branch-id
 	providedIn: 'root',
 })
 export class DeleteRowService {
-	constructor(
-		private executedCommandsArtifactService: ExecutedCommandsArtifactService,
-		private uiService: UiService,
-		private branchIdService: GCBranchIdService
-	) {}
+	private executedCommandsArtifactService = inject(
+		ExecutedCommandsArtifactService
+	);
+	private uiService = inject(UiService);
+	private branchIdService = inject(GCBranchIdService);
 
 	createModifiedObjectToDelete(rowObj: RowObj) {
 		return of(rowObj['Artifact Id'].toString());

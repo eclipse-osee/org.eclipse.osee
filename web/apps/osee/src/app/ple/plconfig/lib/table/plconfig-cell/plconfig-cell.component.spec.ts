@@ -14,8 +14,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PlconfigCellComponent } from './plconfig-cell.component';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { PlConfigCurrentBranchService } from 'src/app/ple/plconfig/lib/services/pl-config-current-branch.service';
-import { plCurrentBranchServiceMock } from 'src/app/ple/plconfig/lib/testing/mockPlCurrentBranchService.mock';
+import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
+import { plCurrentBranchServiceMock } from '../../testing/mockPlCurrentBranchService.mock';
 
 describe('PlconfigCellComponent', () => {
 	let component: PlconfigCellComponent;

@@ -13,7 +13,7 @@
 
 import type { subMessage, message } from '@osee/messaging/shared/types';
 
-export interface RemoveSubMessageDialogData {
+export type RemoveSubMessageDialogData = {
 	submessage: subMessage;
 	message: message;
-}
+};
