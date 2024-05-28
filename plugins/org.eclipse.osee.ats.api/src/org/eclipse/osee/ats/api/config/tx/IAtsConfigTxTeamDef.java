@@ -89,4 +89,6 @@ public interface IAtsConfigTxTeamDef {
 
    IAtsConfigTxTeamDef andWorkPackages(String artName, String... workPackageNames);
 
+   IAtsConfigTxTeamDef andTags(String... tags);
+
 }

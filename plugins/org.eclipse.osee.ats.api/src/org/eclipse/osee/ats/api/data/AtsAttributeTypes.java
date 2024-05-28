@@ -223,7 +223,7 @@ public interface AtsAttributeTypes {
    AttributeTypeString TeamWorkflowArtifactType = ats.createString(1152921504606847148L, "ats.Team Workflow Artifact Type", TEXT_PLAIN, "Specific Artifact Type to use in creation of Team Workflow", Config);
    AttributeTypeDate TestDate = ats.createDateNoTag(153597844730396747L, "lba.Test Date", MediaType.TEXT_PLAIN, "", Edit);
    AttributeTypeString TestNumber = ats.createString(2762697107597452065L, "Test Number", MediaType.TEXT_PLAIN, "", Edit);
-AttributeTypeString TestRunToSourceLocator = ats.createString(130595201919637916L, "ats.Test Run To Source Locator", TEXT_PLAIN, "Enter clear and concise title that can be generally understood.", Edit);
+   AttributeTypeString TestRunToSourceLocator = ats.createString(130595201919637916L, "ats.Test Run To Source Locator", TEXT_PLAIN, "Enter clear and concise title that can be generally understood.", Edit);
    AttributeTypeString Title = CoreAttributeTypes.Name;
    AttributeTypeString QuantityUnderReview = ats.createString(489717926240421171L, "ats.Quantity Under Review", TEXT_PLAIN, "Total Pages, LOCs, Documents, etc Changed", Edit);
    AttributeTypeInteger UnplannedPoints = ats.createInteger(284254492767020802L, "ats.Unplanned Points", TEXT_PLAIN, "", Edit);
@@ -237,6 +237,7 @@ AttributeTypeString TestRunToSourceLocator = ats.createString(130595201919637916
    AttributeTypeArtifactId VersionReference = ats.createArtifactId(3865529427237311670L, "ats.Version Reference", TEXT_PLAIN, "", Config);
    AttributeTypeString WcafeImpact = ats.createString(238328342584350L, "ats.WCAFE Impact", TEXT_PLAIN, "Warning, Caution, Advisory, Fault or Exceedence Impact", Read);
    AttributeTypeDouble WeeklyBenefit = ats.createDouble(1152921504606847186L, "ats.Weekly Benefit", TEXT_PLAIN, "Estimated number of hours that will be saved over a single year if this change is completed.", Edit);
+   AttributeTypeString WebExportReviewed = ats.createString(482443496392184729L, "ats.Web Export Reviewed", TEXT_PLAIN, "List of review tags configured on Team Definition", Edit);
    AttributeTypeString Workaround = ats.createString(1311070965L, "ats.Workaround", TEXT_PLAIN, "", Edit);
    AttributeTypeString WorkPackage = ats.createString(1152921504606847206L, "ats.Work Package", TEXT_PLAIN, "Designated accounting work package for completing workflow.", DisplayHint.SingleLine, Edit);
    AttributeTypeString WorkPackageId = ats.createString(1152921504606847872L, "ats.Work Package Id", TEXT_PLAIN, "", Read);

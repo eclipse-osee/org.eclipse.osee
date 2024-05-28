@@ -123,6 +123,7 @@ public class AtsColumnTokensDefault {
    public static CoreCodeColumnTokenDefault TitleColumn = new CoreCodeColumnTokenDefault("framework.artifact.name.Title", CoreAttributeTypes.Name);
    public static CoreCodeColumnTokenDefault TypeColumn = new CoreCodeColumnTokenDefault("ats.column.type", "Type", 150, ColumnType.String, ColumnAlign.Left, Show.Yes, MultiEdit.No, ActionRollup.No, InheritParent.No, null);
    public static CoreCodeColumnTokenDefault WorkDefinitionColumn = new CoreCodeColumnTokenDefault("ats.column.workDefinition", "Work Definition", 150, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.No, InheritParent.No, null);
+   public static CoreCodeColumnTokenDefault WebExportReviewed = new CoreCodeColumnTokenDefault("ats.column.web.export.reviewed", AtsAttributeTypes.WebExportReviewed);
 
    // @formatter:on
 

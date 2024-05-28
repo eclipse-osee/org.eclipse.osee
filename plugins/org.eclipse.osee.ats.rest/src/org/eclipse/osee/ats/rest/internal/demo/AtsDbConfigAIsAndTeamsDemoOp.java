@@ -243,7 +243,8 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
          .andLeads(DemoUsers.Joe_Smith) //
          .andMembers(DemoUsers.Joe_Smith) //
          .andWorkDef(DemoWorkDefinitions.WorkDef_Team_Demo_Change_Request) //
-         .andTeamWorkflowArtifactType(AtsArtifactTypes.DemoChangeRequestTeamWorkflow);
+         .andTeamWorkflowArtifactType(AtsArtifactTypes.DemoChangeRequestTeamWorkflow) //
+         .andTags("WebExportReviewOptions=Prog 1;Prog 2");
 
       sawPlTeam.createChildTeamDef(sawPlTeam.getTeamDef(), DemoArtifactToken.SAW_PL_Code_TeamDef) //
          .andProgram(DemoArtifactToken.SAW_PL_Program) //
