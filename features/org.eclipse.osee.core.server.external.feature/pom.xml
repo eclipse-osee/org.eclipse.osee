@@ -36,6 +36,7 @@
   							   <plugin id="snakeyaml"/>
   							   <plugin id="autolink"/>
   							   <plugin id="flexmark"/>
+  							   <plugin id="com.google.protobuf"/>
   							   <plugin id="flexmark-ext-gfm-tasklist"/>
 							   <plugin id="flexmark-ext-autolink"/>
 							   <plugin id="flexmark-ext-gitlab"/>

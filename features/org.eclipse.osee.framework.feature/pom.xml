@@ -35,6 +35,7 @@
 								<plugin id="flexmark-ext-tables"/>
 								<plugin id="jackson-dataformat-yaml"/>
 								<plugin id="snakeyaml"/>
+								<plugin id="com.google.protobuf"/>
 						                <plugin	id="jackson-datatype-jsr310"/>
 						           	<plugin id="swagger-models"/>
 						                <plugin id="commons-lang3"/>
