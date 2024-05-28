@@ -223,6 +223,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(ReviewedBy)
       .zeroOrOne(ReviewedByDate)
       .zeroOrOne(UnplannedWork)
+      .any(WebExportReviewed)
       .zeroOrOne(AtsAttributeTypes.WorkPackage)
       .zeroOrOne(WorkPackageReference)
       .zeroOrOne(WorkflowDefinitionReference)

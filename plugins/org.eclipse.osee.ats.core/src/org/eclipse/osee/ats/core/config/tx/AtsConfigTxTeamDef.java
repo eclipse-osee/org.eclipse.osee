@@ -226,4 +226,12 @@ public class AtsConfigTxTeamDef extends AbstractAtsConfigTxObject<IAtsConfigTxTe
       return this;
    }
 
+   @Override
+   public IAtsConfigTxTeamDef andTags(String... tags) {
+      for (String tag : tags) {
+         changes.addAttribute(teamDef, CoreAttributeTypes.StaticId, tag);
+      }
+      return this;
+   }
+
 }

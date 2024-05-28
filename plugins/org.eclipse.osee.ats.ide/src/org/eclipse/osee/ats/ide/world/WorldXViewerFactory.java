@@ -92,6 +92,7 @@ import org.eclipse.osee.ats.ide.column.SiblingTeamDefColumnUI;
 import org.eclipse.osee.ats.ide.column.TargetedVersionColumnUI;
 import org.eclipse.osee.ats.ide.column.TaskRelatedArtifactTypeColumnUI;
 import org.eclipse.osee.ats.ide.column.TitleColumnUI;
+import org.eclipse.osee.ats.ide.column.WebExportReviewedColumnUI;
 import org.eclipse.osee.ats.ide.column.WorkDaysNeededColumnUI;
 import org.eclipse.osee.ats.ide.column.WorkPackageTextColumnUI;
 import org.eclipse.osee.ats.ide.column.WorkingBranchArchivedColumnUI;
@@ -394,6 +395,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          TargetedVersionColumnUI.getInstance(),
          TaskRelatedArtifactTypeColumnUI.getInstance(),
          TitleColumnUI.getInstance(),
+         WebExportReviewedColumnUI.getInstance(),
          WorkDaysNeededColumnUI.getInstance(),
          WorkPackageTextColumnUI.getInstance(),
          WorkingBranchArchivedColumnUI.getInstance(),
