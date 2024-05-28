@@ -13,8 +13,9 @@
 import { Injectable } from '@angular/core';
 import { TransactionService } from '@osee/shared/transactions';
 import { iif, of, shareReplay, switchMap, take } from 'rxjs';
-import { ActionService, BranchInfoService } from '@osee/shared/services';
+import { BranchInfoService } from '@osee/shared/services';
 import { ChangeReportHttpService } from './change-report-http.service';
+import { ActionService } from '@osee/configuration-management/services';
 
 @Injectable({
 	providedIn: 'root',

@@ -12,19 +12,21 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { apiURL } from '@osee/environments';
 import {
-	HttpParamsType,
-	mergeConflict,
-	validateCommitResult,
-	branch,
-	commitResponse,
-	response,
-	mergeData,
-	viewedId,
 	ConflictUpdateData,
 	CreateBranchDetails,
 	CreateBranchResponse,
+	mergeConflict,
+	mergeData,
+	validateCommitResult,
+} from '@osee/commit/types';
+import { apiURL } from '@osee/environments';
+import {
+	HttpParamsType,
+	branch,
+	commitResponse,
+	response,
+	viewedId,
 } from '@osee/shared/types';
 import { workType } from '@osee/shared/types/configuration-management';
 

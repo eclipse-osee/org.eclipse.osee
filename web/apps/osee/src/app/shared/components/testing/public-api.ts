@@ -11,9 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export * from '../mat-option-loading/testing/mat-option-loading.component.mock';
-export * from '../action-state-button/action-drop-down/action-drop-down.mock.component';
 export * from '../branch-picker/branch-picker/branch-picker.mock.component';
 export * from '../branch-undo-button/branch-undo-button.component.mock';
 export * from '../two-layer-add-button/two-layer-add-button.harness';
 export * from '../applicability-selector/testing/applicability-selector.component.mock';
-export * from '../action-state-button/current-action-drop-down/current-action-drop-down.component.mock';

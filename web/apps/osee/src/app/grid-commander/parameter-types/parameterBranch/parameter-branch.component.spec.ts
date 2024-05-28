@@ -12,18 +12,14 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import {
-	BranchPickerComponent,
-	CurrentActionDropDownComponent,
-} from '@osee/shared/components';
+import { BranchPickerComponent } from '@osee/shared/components';
 
 import { ParameterBranchComponent } from './parameter-branch.component';
-import {
-	BranchPickerStub,
-	CurrentActionDropdownMockComponent,
-} from '@osee/shared/components/testing';
+import { BranchPickerStub } from '@osee/shared/components/testing';
 import { ParameterDataService } from '../../services/data-services/selected-command-data/parameter-data/parameter-data.service';
 import { parameterDataServiceMock } from '../../services/data-services/selected-command-data/parameter-data/parameter-data.service.mock';
+import { CurrentActionDropdownMockComponent } from '@osee/configuration-management/testing';
+import { CurrentActionDropDownComponent } from '@osee/configuration-management/components';
 
 describe('ParameterBranchComponent', () => {
 	let component: ParameterBranchComponent;

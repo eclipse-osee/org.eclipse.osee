@@ -12,7 +12,6 @@
  **********************************************************************/
 export * from './NamedId.response.mock';
 export * from './XResultData.response.mock';
-export * from './action.service.mock';
 export * from './branch-info.response.mock';
 export * from './branch-info.service.mock';
 export * from './branch-listing.response.mock';
@@ -27,8 +26,5 @@ export * from './help-pages.response.mock';
 export * from './applicability-list.service.mock';
 export * from './applicability-list-ui.service.mock';
 export * from './artifact-ui.service.mock';
-export * from './commit-branch.mock';
-export * from './commit-branch.service.mock';
 export * from './views-routed-ui.service.mock';
 export * from './branch-routed-ui.service.mock';
-export * from './current-action.service.mock';

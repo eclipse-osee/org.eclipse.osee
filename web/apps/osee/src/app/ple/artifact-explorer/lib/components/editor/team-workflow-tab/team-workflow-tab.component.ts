@@ -15,11 +15,8 @@ import { teamWorkflowDetailsImpl } from '@osee/shared/types/configuration-manage
 import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, repeat, switchMap, tap } from 'rxjs';
-import { ActionService, UiService } from '@osee/shared/services';
-import {
-	ActionDropDownComponent,
-	AttributesEditorComponent,
-} from '@osee/shared/components';
+import { UiService } from '@osee/shared/services';
+import { AttributesEditorComponent } from '@osee/shared/components';
 import { TeamWorkflowService } from '../../../services/team-workflow.service';
 import { MatIcon } from '@angular/material/icon';
 import { NgClass } from '@angular/common';
@@ -31,6 +28,8 @@ import {
 } from '@osee/shared/types';
 import { TransactionService } from '@osee/shared/transactions';
 import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
+import { ActionDropDownComponent } from '@osee/configuration-management/components';
+import { ActionService } from '@osee/configuration-management/services';
 
 @Component({
 	selector: 'osee-team-workflow-tab',

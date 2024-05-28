@@ -17,16 +17,10 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import {
-	CurrentActionDropDownComponent,
 	BranchPickerComponent,
 	ViewSelectorComponent,
 } from '@osee/shared/components';
-import {
-	ActionService,
-	CurrentActionService,
-	CurrentBranchInfoService,
-	UiService,
-} from '@osee/shared/services';
+import { CurrentBranchInfoService, UiService } from '@osee/shared/services';
 import { concatMap, filter, from, map, take, tap } from 'rxjs';
 import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
 import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
@@ -35,7 +29,12 @@ import { ArtifactHierarchyComponent } from '../artifact-hierarchy/artifact-hiera
 import { ArtifactSearchPanelComponent } from '../artifact-search-panel/artifact-search-panel.component';
 import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
 import { MatButton } from '@angular/material/button';
-import { CreateActionService } from '@osee/configuration-management/create-action/services';
+import { CurrentActionDropDownComponent } from '@osee/configuration-management/components';
+import {
+	ActionService,
+	CreateActionService,
+	CurrentActionService,
+} from '@osee/configuration-management/services';
 
 @Component({
 	selector: 'osee-artifact-hierarchy-panel',

@@ -15,6 +15,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { CurrentActionDropDownComponent } from '@osee/configuration-management/components';
 import {
 	ApplicabilityTableComponent,
 	EditDefinitionsDropdownComponent,
@@ -22,7 +23,6 @@ import {
 } from '@osee/plconfig';
 import {
 	BranchPickerComponent,
-	CurrentActionDropDownComponent,
 	ViewSelectorComponent,
 } from '@osee/shared/components';
 import { Observable, Subject, combineLatest, iif, of } from 'rxjs';

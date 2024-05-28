@@ -13,12 +13,10 @@
 import { Component, Input, OnInit, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
-import {
-	CurrentActionDropDownComponent,
-	BranchPickerComponent,
-} from '@osee/shared/components';
+import { BranchPickerComponent } from '@osee/shared/components';
 import { CiDashboardUiService } from '../../services/ci-dashboard-ui.service';
 import { SetDropdownComponent } from './set-dropdown/set-dropdown.component';
+import { CurrentActionDropDownComponent } from '@osee/configuration-management/components';
 
 @Component({
 	selector: 'osee-ci-dashboard-controls',

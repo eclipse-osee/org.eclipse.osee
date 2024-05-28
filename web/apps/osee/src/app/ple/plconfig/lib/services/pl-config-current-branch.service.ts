@@ -63,12 +63,7 @@ import {
 	editConfiguration,
 } from '../types/pl-config-configurations';
 import { modifyFeature, writeFeature } from '../types/pl-config-features';
-import {
-	ActionService,
-	UiService,
-	ViewsRoutedUiService,
-	ViewsUiService,
-} from '@osee/shared/services';
+import { UiService } from '@osee/shared/services';
 import { PlConfigBranchService } from './pl-config-branch-service.service';
 import { PlConfigUIStateService } from './pl-config-uistate.service';
 import {
@@ -89,6 +84,7 @@ import {
 	applicWithConstraints,
 	featureConstraintData,
 } from './../types/pl-config-feature-constraints';
+import { ActionService } from '@osee/configuration-management/services';
 
 @Injectable({
 	providedIn: 'root',
