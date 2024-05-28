@@ -51,11 +51,17 @@
 			"@osee/artifact-with-relations/types": [
 				"src/app/artifact-with-relations/types"
 			],
-			"@osee/configuration-management/create-action/services": [
-				"src/app/configuration-management/create-action/services"
+			"@osee/commit/components": ["src/app/commit/components"],
+			"@osee/commit/services": ["src/app/commit/services"],
+			"@osee/commit/types": ["src/app/commit/types"],
+			"@osee/configuration-management/components": [
+				"src/app/configuration-management/components"
 			],
-			"@osee/configuration-management/create-action/types": [
-				"src/app/configuration-management/create-action/types"
+			"@osee/configuration-management/services": [
+				"src/app/configuration-management/services"
+			],
+			"@osee/configuration-management/types": [
+				"src/app/configuration-management/types"
 			],
 			"@osee/messaging/connection-view": [
 				"src/app/ple/messaging/connection-view/lib"

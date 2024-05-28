@@ -28,19 +28,15 @@ import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { PlconfigComponent } from './plconfig.component';
-import {
-	ActionDropdownStub,
-	BranchPickerStub,
-} from '@osee/shared/components/testing';
+import { BranchPickerStub } from '@osee/shared/components/testing';
 import {
 	EditDefinitionsDropdownComponent,
 	ApplicabilityTableComponent,
 } from '@osee/plconfig';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import {
-	ActionDropDownComponent,
-	BranchPickerComponent,
-} from '@osee/shared/components';
+import { BranchPickerComponent } from '@osee/shared/components';
+import { ActionDropdownStub } from '@osee/configuration-management/testing';
+import { ActionDropDownComponent } from '@osee/configuration-management/components';
 
 describe('PlconfigComponent', () => {
 	let component: PlconfigComponent;

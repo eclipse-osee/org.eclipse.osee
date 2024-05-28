@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './ple_aware/http/action.service';
 export * from './ple_aware/http/attribute.service';
 export * from './ple_aware/http/branch-info.service';
 export * from './ple_aware/http/difference-report.service';
@@ -19,9 +18,7 @@ export * from './ple_aware/httpui/artifact-ui.service';
 export * from './ple_aware/ui/event/branch-commit-event.service';
 export * from './ple_aware/ui/header.service';
 export * from './ple_aware/ui/ui.service';
-export * from './ple_aware/httpui/commit-branch.service';
 export * from './ple_aware/httpui/current-branch-info.service';
-export * from './ple_aware/httpui/current-action.service';
 export * from './ple_aware/http/applicability-list.service';
 export * from './ple_aware/httpui/applicability-list-ui.service';
 export * from './ple_aware/ui/branch/branch-routed-ui.service';

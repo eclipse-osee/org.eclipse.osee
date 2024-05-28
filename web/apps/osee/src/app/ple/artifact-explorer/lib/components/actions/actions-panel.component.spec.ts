@@ -12,11 +12,11 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActionsPanelComponent } from './actions-panel.component';
-import { ActionService } from '@osee/shared/services';
-import { actionServiceMock } from '@osee/shared/testing';
 import { UserDataAccountService } from '@osee/auth';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { ActionService } from '@osee/configuration-management/services';
+import { actionServiceMock } from '@osee/configuration-management/testing';
 
 describe('ActionsPanelComponent', () => {
 	let component: ActionsPanelComponent;

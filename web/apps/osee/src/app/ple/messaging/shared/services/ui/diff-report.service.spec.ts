@@ -12,11 +12,7 @@
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
 import { TestScheduler } from 'rxjs/testing';
-import {
-	ActionService,
-	BranchInfoService,
-	UiService,
-} from '@osee/shared/services';
+import { BranchInfoService, UiService } from '@osee/shared/services';
 import type { branchSummary } from '../../types/DifferenceReport';
 
 import { DiffReportService } from './diff-report.service';
@@ -26,11 +22,12 @@ import {
 } from '@osee/messaging/shared/testing';
 import {
 	BranchInfoServiceMock,
-	actionServiceMock,
 	testBranchInfo,
 	testBranchActions,
 } from '@osee/shared/testing';
 import { DiffReportHttpService } from '../http/diff-report-http.service';
+import { ActionService } from '@osee/configuration-management/services';
+import { actionServiceMock } from '@osee/configuration-management/testing';
 
 describe('DiffReportService', () => {
 	let service: DiffReportService;

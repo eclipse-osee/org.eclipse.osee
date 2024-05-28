@@ -11,12 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import {
-	CurrentActionDropDownComponent,
-	BranchPickerComponent,
-} from '@osee/shared/components';
+import { BranchPickerComponent } from '@osee/shared/components';
 import { map } from 'rxjs/operators';
 import { ParameterDataService } from '../../services/data-services/selected-command-data/parameter-data/parameter-data.service';
+import { CurrentActionDropDownComponent } from '@osee/configuration-management/components';
 
 @Component({
 	selector: 'osee-parameter-branch',

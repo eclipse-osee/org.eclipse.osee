@@ -14,10 +14,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ArtifactHierarchyPanelComponent } from './artifact-hierarchy-panel.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import {
-	BranchPickerStub,
-	CurrentActionDropdownMockComponent,
-} from '@osee/shared/components/testing';
+import { BranchPickerStub } from '@osee/shared/components/testing';
 import { ViewSelectorMockComponent } from '@osee/messaging/shared/testing';
 import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
 import { artifactHierarchyPathServiceMock } from '../../../testing/artifact-hierarchy-path.service.mock';
@@ -29,20 +26,21 @@ import { MatIconModule } from '@angular/material/icon';
 import { ArtifactSearchComponent } from '../artifact-search-panel/artifact-search/artifact-search.component';
 import { ArtifactHierarchyOptionsMockComponent } from '../artifact-hierarchy-options/artifact-hierarchy-oprions.component.mock';
 import { ArtifactSearchMockComponent } from '../artifact-search-panel/artifact-search-panel.component.mock';
+import { CurrentBranchInfoService } from '@osee/shared/services';
+import { of } from 'rxjs';
+import { testBranchInfo } from '@osee/shared/testing';
+import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
+import {
+	CurrentActionDropdownMockComponent,
+	actionServiceMock,
+	createActionServiceMock,
+	currentActionServiceMock,
+} from '@osee/configuration-management/testing';
 import {
 	ActionService,
+	CreateActionService,
 	CurrentActionService,
-	CurrentBranchInfoService,
-} from '@osee/shared/services';
-import { of } from 'rxjs';
-import {
-	actionServiceMock,
-	currentActionServiceMock,
-	testBranchInfo,
-} from '@osee/shared/testing';
-import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
-import { createActionServiceMock } from '@osee/configuration-management/create-action/testing';
-import { CreateActionService } from '@osee/configuration-management/create-action/services';
+} from '@osee/configuration-management/services';
 
 describe('ArtifactHierarchyPanelComponent', () => {
 	let component: ArtifactHierarchyPanelComponent;

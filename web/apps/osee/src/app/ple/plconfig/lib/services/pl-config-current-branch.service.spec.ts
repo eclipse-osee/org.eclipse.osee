@@ -11,7 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
-import { ActionService, UiService } from '@osee/shared/services';
+import { ActionService } from '@osee/configuration-management/services';
+import { UiService } from '@osee/shared/services';
 import {
 	MockXResultData,
 	testBranchActions,

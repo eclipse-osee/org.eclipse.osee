@@ -16,8 +16,8 @@ import {
 	ErrorStateMatcher,
 	ShowOnDirtyErrorStateMatcher,
 } from '@angular/material/core';
+import { CrossReferenceDropdownComponent } from '@osee/messaging/shared/dropdowns';
 import { Subject } from 'rxjs';
-import { CrossReferenceDropdownComponent } from 'src/app/ple/messaging/shared/dropdowns/public-api';
 
 @Component({
 	selector: 'osee-cross-reference-dropdown',

@@ -12,14 +12,14 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TeamWorkflowTabComponent } from './team-workflow-tab.component';
-import { ActionService } from '@osee/shared/services';
-import { actionServiceMock } from '@osee/shared/testing';
 import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
 import { ArtifactExplorerHttpServiceMock } from '../../../testing/artifact-explorer-http.service.mock';
 import { TeamWorkflowService } from '../../../services/team-workflow.service';
 import { teamWorkflowServiceMock } from '../../../testing/team-workflow.service.mock';
 import { TransactionService } from '@osee/shared/transactions';
 import { transactionServiceMock } from '@osee/shared/transactions/testing';
+import { ActionService } from '@osee/configuration-management/services';
+import { actionServiceMock } from '@osee/configuration-management/testing';
 
 describe('TeamWorkflowTabComponent', () => {
 	let component: TeamWorkflowTabComponent;

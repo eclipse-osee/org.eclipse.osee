@@ -14,7 +14,6 @@ import { Injectable } from '@angular/core';
 import { switchMap, reduce, shareReplay, map } from 'rxjs/operators';
 import { combineLatest } from 'rxjs';
 import {
-	ActionService,
 	BranchInfoService,
 	CurrentBranchInfoService,
 } from '@osee/shared/services';
@@ -23,6 +22,7 @@ import type {
 	diffReportSummaryItem,
 } from '@osee/messaging/shared/types';
 import { DiffReportHttpService } from '../http/diff-report-http.service';
+import { ActionService } from '@osee/configuration-management/services';
 
 @Injectable({
 	providedIn: 'root',

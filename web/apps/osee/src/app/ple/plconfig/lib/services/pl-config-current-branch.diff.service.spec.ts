@@ -13,7 +13,7 @@
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { TestScheduler } from 'rxjs/testing';
-import { ActionService, UiService } from '@osee/shared/services';
+import { UiService } from '@osee/shared/services';
 import {
 	testApplicabilityTag,
 	testBranchApplicability,
@@ -30,6 +30,7 @@ import {
 	testWorkFlow,
 	changeReportMock,
 } from '@osee/shared/testing';
+import { ActionService } from '@osee/configuration-management/services';
 
 describe('PlConfigCurrentBranchService diffs', () => {
 	let service: PlConfigCurrentBranchService;

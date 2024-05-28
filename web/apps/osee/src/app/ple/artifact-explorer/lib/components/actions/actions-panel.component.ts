@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, signal } from '@angular/core';
-import { ActionService } from '@osee/shared/services';
+import { ActionService } from '@osee/configuration-management/services';
 import { ArtifactExplorerExpansionPanelComponent } from '../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
 import { UserDataAccountService } from '@osee/auth';
 import {

@@ -17,18 +17,18 @@ import {
 	ViewSelectorMockComponent,
 } from '@osee/messaging/shared/testing';
 import {
-	ActionDropdownStub,
 	BranchPickerStub,
 	UndoButtonBranchMockComponent,
 } from '@osee/shared/components/testing';
 
 import { MessagingControlsComponent } from './messaging-controls.component';
 import {
-	ActionDropDownComponent,
 	BranchPickerComponent,
 	UndoButtonBranchComponent,
 	ViewSelectorComponent,
 } from '@osee/shared/components';
+import { ActionDropdownStub } from '@osee/configuration-management/testing';
+import { ActionDropDownComponent } from '@osee/configuration-management/components';
 
 describe('MessagingControlsComponent', () => {
 	let component: MessagingControlsComponent;

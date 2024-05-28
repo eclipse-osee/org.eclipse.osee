@@ -14,7 +14,7 @@ import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
-import { CurrentActionService } from '@osee/shared/services';
+import { CurrentActionService } from '@osee/configuration-management/services';
 import { CompoundApplicabilityDropdownComponent } from '../compound-applicability-dropdown/compound-applicability-dropdown.component';
 import { ConfigurationDropdownComponent } from '../configuration-dropdown/configuration-dropdown.component';
 import { ConfigurationGroupDropdownComponent } from '../configuration-group-dropdown/configuration-group-dropdown.component';
