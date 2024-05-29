@@ -53,6 +53,8 @@ public class WfeGoalSection {
 
       boolean admin = AtsApiService.get().getUserService().isAtsAdmin();
 
+      new XButtonViaAction(new OpenInstructionsAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(
+         sectionBody, 2);
       new XButtonViaAction(
          new SelectWebExportCustomizationAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(sectionBody,
             2);

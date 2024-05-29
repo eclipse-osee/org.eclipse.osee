@@ -17,7 +17,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.OseeData;
+import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -206,4 +209,12 @@ public class OseeMarkdownEditor extends AbstractArtifactEditor {
       }, forcePend);
    }
 
+   public static void openOseeInfInOseeData(String oseeInfFilename, String filename, Class<?> classname,
+      String editorId) throws PartInitException {
+      String md = OseeInf.getResourceContents(oseeInfFilename, classname);
+      OseeData.writeToFile(filename, md);
+      IFile iFile = OseeData.getIFile(filename);
+      IWorkbenchPage page = AWorkbench.getActivePage();
+      page.openEditor(new FileEditorInput(iFile), editorId);
+   }
 }
