@@ -75,16 +75,18 @@ public class OmeEditComposite extends Composite {
          GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
          textWidget.getStyledText().setLayoutData(gd);
 
-         // Add listeners for osee links
-         XTextOseeImageLinkListener oseeImageLinkListener =
-            new XTextOseeImageLinkListener(textWidget, ((ArtOmeData) omeData).getArtifact().getBranch());
-         XTextOseeLinkListener oseeLinkListener =
-            new XTextOseeLinkListener(textWidget, ((ArtOmeData) omeData).getArtifact().getBranch());
-         XTextOseeLinkErrorListener oseeLinkErrorListener =
-            new XTextOseeLinkErrorListener(textWidget, ((ArtOmeData) omeData).getArtifact().getBranch());
-         textWidget.getStyledText().addModifyListener(oseeImageLinkListener);
-         textWidget.getStyledText().addModifyListener(oseeLinkListener);
-         textWidget.getStyledText().addModifyListener(oseeLinkErrorListener);
+         if (omeData instanceof ArtOmeData) {
+            // Add listeners for osee links
+            XTextOseeImageLinkListener oseeImageLinkListener =
+               new XTextOseeImageLinkListener(textWidget, ((ArtOmeData) omeData).getArtifact().getBranch());
+            XTextOseeLinkListener oseeLinkListener =
+               new XTextOseeLinkListener(textWidget, ((ArtOmeData) omeData).getArtifact().getBranch());
+            XTextOseeLinkErrorListener oseeLinkErrorListener =
+               new XTextOseeLinkErrorListener(textWidget, ((ArtOmeData) omeData).getArtifact().getBranch());
+            textWidget.getStyledText().addModifyListener(oseeImageLinkListener);
+            textWidget.getStyledText().addModifyListener(oseeLinkListener);
+            textWidget.getStyledText().addModifyListener(oseeLinkErrorListener);
+         }
 
          textWidget.addXModifiedListener(new XModifiedListener() {
 
