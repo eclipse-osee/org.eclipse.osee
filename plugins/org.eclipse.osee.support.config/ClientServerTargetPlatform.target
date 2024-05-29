@@ -686,8 +686,9 @@
 <plugin id="flexmark-ext-tables"/>
 <plugin id="flexmark-ext-toc"/>
 <plugin id="flexmark-util-options"/>
-	<plugin id="com.sun.jna.platform.source"/>
-	<plugin id="com.sun.jna.source"/>
+<plugin id="com.google.protobuf"/>
+<plugin id="com.sun.jna.platform.source"/>
+<plugin id="com.sun.jna.source"/>
 </includeBundles>
 <environment>
 <os>win32</os>
