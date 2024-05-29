@@ -99,7 +99,7 @@ public class HtmlExportTable {
                      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher(row);
                   String csvRow = "";
                   while (thM.find()) {
-                     String cellStr = removeLeadTrailSpaces(thM.group(1));
+                     String cellStr = removeLeadTrailSpacesCsv(thM.group(1));
                      String excelTextPrefix = excelTextFields && !cellStr.contains(",") ? "=" : "";
                      csvRow += excelTextPrefix + "\"" + cellStr + "\"" + speratorChar;
                   }
@@ -210,11 +210,12 @@ public class HtmlExportTable {
       return Result.FalseResult;
    }
 
-   private String removeLeadTrailSpaces(String inStr) {
+   private String removeLeadTrailSpacesCsv(String inStr) {
       String str = inStr;
       str = str.replaceAll("^ *", "");
       str = str.replaceAll(" *$", "");
-      str = str.replaceAll("\"", "'");
+      // Escape double quotes for CSV compliance
+      str = str.replaceAll("\"", "\"\"");
       str = str.replaceAll("\n", " ");
       return str;
    }
