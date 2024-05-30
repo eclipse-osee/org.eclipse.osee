@@ -24,12 +24,10 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
@@ -71,8 +69,6 @@ public class BranchCreationHandler extends CommandHandler {
                BranchId branch = parentTransactionId.getBranch();
                if (branch.equals(CoreBranches.SYSTEM_ROOT)) {
                   BranchManager.createTopLevelBranch(dialog.getEntry());
-                  ServiceUtil.accessControlService().setPermission(UserManager.getUser(DemoUsers.Joe_Smith),
-                     branch, PermissionEnum.FULLACCESS);
                } else {
                   if (dialog.isChecked()) {
                      BranchManager.createWorkingBranchFromTx(parentTransactionId, dialog.getEntry(), null);
@@ -111,8 +107,7 @@ public class BranchCreationHandler extends CommandHandler {
          return false;
       }
 
-      enabled = ServiceUtil.accessControlService().hasBranchPermission(branch, PermissionEnum.READ,
-         null).isSuccess();
+      enabled = ServiceUtil.accessControlService().hasBranchPermission(branch, PermissionEnum.READ, null).isSuccess();
       return enabled;
    }
 }
