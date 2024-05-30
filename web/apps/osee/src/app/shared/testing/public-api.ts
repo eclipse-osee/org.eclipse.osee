@@ -18,7 +18,6 @@ export * from './branch-listing.response.mock';
 export * from './change-report.mock';
 export * from './configuration-management.response.mock';
 export * from './difference-report.service.mock';
-export * from './new-action.response.mock';
 export * from './single-diff.component.mock';
 export * from './user.response.mock';
 export * from './help-http.service.mock';

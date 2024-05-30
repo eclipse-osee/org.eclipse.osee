@@ -113,24 +113,26 @@
 	@if ({ count: searchResultsCount | async }; as _count) {
 		@if (paginatedSearchResults | async; as _currentResults) {
 			@if (!useCount() || _count.count !== null) {
-				<osee-paginated-mat-list
-					[allItems]="allSearchResults()"
-					[currentPageItems]="_currentResults"
-					[count]="_count.count || -1"
-					[pageSize]="pageSize"
-					(paginate)="nextPage()">
-					<ng-template let-item>
-						<button
-							class="tw-flex tw-h-full tw-w-full tw-items-center tw-gap-2 tw-text-left"
-							(click)="selectSearchResult(item)"
-							(contextmenu)="openContextMenu($event, item)">
-							<mat-icon [class]="getIconClasses(item.icon)">{{
-								item.icon.icon
-							}}</mat-icon>
-							{{ item.name }}
-						</button>
-					</ng-template>
-				</osee-paginated-mat-list>
+				<div class="tw-max-h-80 tw-overflow-auto">
+					<osee-paginated-mat-list
+						[allItems]="allSearchResults()"
+						[currentPageItems]="_currentResults"
+						[count]="_count.count || -1"
+						[pageSize]="pageSize"
+						(paginate)="nextPage()">
+						<ng-template let-item>
+							<button
+								class="tw-flex tw-h-full tw-w-full tw-items-center tw-gap-2 tw-text-left"
+								(click)="selectSearchResult(item)"
+								(contextmenu)="openContextMenu($event, item)">
+								<mat-icon [class]="getIconClasses(item.icon)">{{
+									item.icon.icon
+								}}</mat-icon>
+								{{ item.name }}
+							</button>
+						</ng-template>
+					</osee-paginated-mat-list>
+				</div>
 			}
 		}
 	}

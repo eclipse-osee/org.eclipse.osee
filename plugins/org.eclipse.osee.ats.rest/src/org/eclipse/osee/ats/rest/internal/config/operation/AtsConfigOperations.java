@@ -28,7 +28,7 @@ public class AtsConfigOperations {
 
    public BranchData createBranch(BranchData bd) {
       atsApi.getBranchService().validate(bd, atsApi);
-      if (bd.isValidate() || bd.getResults().isErrors()) {
+      if (bd.isValidate() && bd.getResults().isErrors()) {
          return bd;
       }
 

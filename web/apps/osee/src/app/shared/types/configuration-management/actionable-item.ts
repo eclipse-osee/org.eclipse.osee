@@ -12,9 +12,12 @@
  **********************************************************************/
 import { NamedId } from '../named-id';
 
-export interface actionableItemInterface extends NamedId {}
+export interface actionableItemInterface extends NamedId {
+	workType: string;
+}
 
 export class actionableItem implements actionableItemInterface {
 	id = '';
 	name = '';
+	workType = '';
 }

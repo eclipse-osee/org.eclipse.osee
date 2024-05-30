@@ -11,4 +11,5 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export * from './commit-branch-button/commit-branch-button.component';
+export * from './commit-manager-dialog/commit-manager-dialog.component';
 export * from './merge-manager-dialog/merge-manager-dialog.component';

@@ -13,7 +13,7 @@
 import { Injectable } from '@angular/core';
 import { ArtifactUiService } from '@osee/shared/services';
 import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
-import { buffer, shareReplay } from 'rxjs';
+import { shareReplay } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root',

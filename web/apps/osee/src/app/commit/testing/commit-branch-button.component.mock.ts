@@ -10,6 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './commit-branch.mock';
-export * from './commit-branch.service.mock';
-export * from './commit-branch-button.component.mock';
+import { Component, input } from '@angular/core';
+
+@Component({
+	selector: 'osee-commit-branch-button',
+	template: '<div>Dummy</div>',
+	standalone: true,
+})
+export class CommitBranchButtonMockComponent {
+	branchId = input.required<string>();
+	disabled = input(false);
+}

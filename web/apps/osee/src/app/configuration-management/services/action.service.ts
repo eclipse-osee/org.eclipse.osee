@@ -38,7 +38,11 @@ import {
 	teamWorkflowDetails,
 } from '@osee/shared/types/configuration-management';
 import { ARTIFACTTYPEID } from '@osee/shared/types/constants';
-import { CreateNewActionInterface } from '@osee/configuration-management/types';
+import {
+	CreateNewActionInterface,
+	actionBranchData,
+	branchCommitStatus,
+} from '@osee/configuration-management/types';
 
 @Injectable({
 	providedIn: 'root',
@@ -80,17 +84,20 @@ export class ActionService {
 	}
 
 	public getTeamWorkflowsForUser(
+		search: string,
 		userId: `${number}`,
 		count?: number,
 		pageNum?: number
 	) {
 		const criteria = new TeamWorkflowSearchCriteriaImpl();
+		criteria.search = search;
 		criteria.assignees = [userId];
 		return this.searchTeamWorkflows(criteria, count, pageNum);
 	}
 
-	public getTeamWorkflowsForUserCount(userId: `${number}`) {
+	public getTeamWorkflowsForUserCount(search: string, userId: `${number}`) {
 		const criteria = new TeamWorkflowSearchCriteriaImpl();
+		criteria.search = search;
 		criteria.assignees = [userId];
 		const params = this.createParams(criteria);
 		return this.http.get<number>(apiURL + '/ats/teamwf/search/count', {
@@ -238,7 +245,7 @@ export class ActionService {
 	public createAction(body: CreateNewActionInterface) {
 		return this.http.post<newActionResponse>(apiURL + '/ats/action', body);
 	}
-	public createBranch(
+	public createActionAndWorkingBranch(
 		body: CreateNewActionInterface
 	): Observable<newActionResponse> {
 		return this.http.post<newActionResponse>(
@@ -246,6 +253,14 @@ export class ActionService {
 			body
 		);
 	}
+
+	public createWorkingBranchForAction(body: actionBranchData) {
+		return this.http.post<actionBranchData>(
+			apiURL + '/ats/config/branch',
+			body
+		);
+	}
+
 	public commitBranch(
 		teamWf: string,
 		branchId: string | number
@@ -273,6 +288,12 @@ export class ActionService {
 	public getBranchApproved(teamWf: string | number): Observable<boolean> {
 		return this.http.get<boolean>(
 			apiURL + '/ats/action/' + teamWf + '/approval'
+		);
+	}
+
+	public getBranchCommitStatus(teamWf: string | number) {
+		return this.http.get<branchCommitStatus[]>(
+			apiURL + '/ats/teamwf/' + teamWf + '/commitstatus'
 		);
 	}
 }

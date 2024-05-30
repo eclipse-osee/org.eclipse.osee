@@ -10,5 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+export * from './action-branch-data';
+export * from './action-commit-status';
 export * from './create-action';
 export * from './create-new-action';

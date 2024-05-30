@@ -54,32 +54,32 @@ export class CommitBranchService {
 		return this.branchInfoService.getMergeData(branchId);
 	}
 
-	getMergeBranch(branchId: string, parentBranchId: string) {
+	getMergeBranch(sourceBranchId: string, destBranchId: string) {
 		return this.branchInfoService.getMergeBranchId(
-			branchId,
-			parentBranchId
+			sourceBranchId,
+			destBranchId
 		);
 	}
 
-	createMergeBranch(sourceBranch: branch, parentBranch: branch) {
+	createMergeBranch(sourceBranch: branch, destBranch: branch) {
 		const details: CreateBranchDetails = new CreateMergeBranchDetails(
 			sourceBranch,
-			parentBranch
+			destBranch
 		);
 		return this.branchInfoService.createBranch(details);
 	}
 
-	loadMergeConflicts(branchId: string, parentBranchId: string) {
+	loadMergeConflicts(sourceBranchId: string, destBranchId: string) {
 		return this.branchInfoService.loadMergeConflicts(
-			branchId,
-			parentBranchId
+			sourceBranchId,
+			destBranchId
 		);
 	}
 
-	validateCommit(branch: branch) {
+	validateCommit(sourceBranchId: string, destBranchId: string) {
 		return this.branchInfoService.validateCommit(
-			branch.id,
-			branch.parentBranch.id
+			sourceBranchId,
+			destBranchId
 		);
 	}
 

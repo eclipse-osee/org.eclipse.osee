@@ -108,7 +108,7 @@ export class CreateActionDialogComponent {
 			tap((types) => {
 				types.forEach((t) => {
 					if (t.name === this.data.defaultWorkType) {
-						this.workType = t;
+						this.workType.set(t);
 						this.data.createBranchDefault = t.createBranchDefault;
 						return;
 					}
@@ -125,12 +125,12 @@ export class CreateActionDialogComponent {
 			) || []
 	);
 	points = this.createActionService.getPoints();
-	workType: WorkType = {
+	workType = signal<WorkType>({
 		name: '',
 		humanReadableName: '',
 		description: '',
 		createBranchDefault: false,
-	};
+	});
 	selectedAssignees: user[] = [];
 	targetedVersions = this.actionableItemId.pipe(
 		filter((id) => id !== ''),
@@ -200,6 +200,13 @@ export class CreateActionDialogComponent {
 	private _selectActionableItem(ai: actionableItem) {
 		this.data.actionableItem = ai;
 		this.actionableItemId.next(ai.id);
+		const _workType = this.workTypes()?.find(
+			(type) => type.name === ai.workType
+		);
+		if (_workType && _workType.name !== this.workType.name) {
+			this.workType.set(_workType);
+			this.data.createBranchDefault = _workType.createBranchDefault;
+		}
 	}
 
 	selectWorkType(selection: MatAutocompleteSelectedEvent) {
@@ -207,9 +214,9 @@ export class CreateActionDialogComponent {
 	}
 
 	private _selectWorkType(workType: WorkType) {
-		this.workType = workType;
-		this.createActionService.workTypeValue = this.workType.name;
-		this.data.createBranchDefault = this.workType.createBranchDefault;
+		this.workType.set(workType);
+		this.createActionService.workTypeValue = this.workType().name;
+		this.data.createBranchDefault = this.workType().createBranchDefault;
 		this._selectActionableItem(new actionableItem());
 	}
 

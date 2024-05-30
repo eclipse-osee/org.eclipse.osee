@@ -46,14 +46,48 @@
 					{{ teamWorkflow().currentState.state }}
 				</div>
 				<div><span>Assignees:</span> {{ assigneesString() }}</div>
+				<div>
+					<span>Targeted Version:</span>
+					{{ teamWorkflow().TargetedVersion }}
+				</div>
 			</div>
 		</osee-artifact-explorer-expansion-panel>
-		<div class="tw-flex tw-items-center tw-gap-4 tw-pl-4">
-			<span class="tw-font-bold">Current State:</span>
-			<osee-action-dropdown
-				[teamWorkflow]="teamWorkflow()"
-				[commitAllowed]="false"
-				(update)="updateTeamWorkflow()" />
+		<div class="tw-flex tw-items-center tw-justify-between tw-px-4">
+			<div class="tw-flex tw-items-center tw-gap-4">
+				<span class="tw-font-bold">Current State:</span>
+				<osee-action-dropdown
+					[teamWorkflow]="teamWorkflow()"
+					[commitAllowed]="false"
+					(update)="updateTeamWorkflow()" />
+			</div>
+			@if (
+				teamWorkflow().currentState.committable ||
+				teamWorkflow().workingBranch.id !== '-1'
+			) {
+				@if (teamWorkflow().workingBranch.id === '-1') {
+					<osee-create-action-working-branch-button
+						[teamWorkflow]="teamWorkflow()" />
+				} @else {
+					<button
+						mat-raised-button
+						class="tw-text-background-background"
+						[ngClass]="
+							allBranchesCommitted()
+								? 'tw-bg-success'
+								: 'tw-bg-primary'
+						"
+						[matTooltip]="
+							allBranchesCommitted()
+								? 'All commits are complete'
+								: 'There are ' +
+								  teamWorkflow().branchesToCommitTo.length +
+								  ' branches left to commit to'
+						"
+						(click)="openCommitManager()">
+						Open Commit Manager
+					</button>
+				}
+			}
 		</div>
 		@for (state of previousStates(); track $index) {
 			<osee-artifact-explorer-expansion-panel

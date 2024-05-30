@@ -17,7 +17,6 @@ import {
 	BranchInfoServiceMock,
 	MockUserResponse,
 	branchRoutedUiServiceMock,
-	testnewActionResponse,
 } from '@osee/shared/testing';
 import {
 	BranchInfoService,
@@ -27,7 +26,10 @@ import { UserDataAccountService } from '@osee/auth';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
 import { CreateAction } from '@osee/configuration-management/types';
 import { ActionService } from './action.service';
-import { actionServiceMock } from '@osee/configuration-management/testing';
+import {
+	actionServiceMock,
+	testnewActionResponse,
+} from '@osee/configuration-management/testing';
 
 describe('CreateActionService', () => {
 	let service: CreateActionService;

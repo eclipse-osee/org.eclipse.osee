@@ -26,7 +26,7 @@ import { CreateActionService } from '@osee/configuration-management/services';
 	template: `<button
 		mat-raised-button
 		(click)="addAction()"
-		color="primary">
+		class="tw-bg-primary tw-text-background-background">
 		<mat-icon>add</mat-icon>Create Action
 	</button>`,
 })

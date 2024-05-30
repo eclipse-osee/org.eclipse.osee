@@ -33,10 +33,10 @@ import {
 	testBranchActions,
 	testDataTransitionResponse,
 	testDataVersion,
-	testnewActionResponse,
 	MockXResultData,
 } from '@osee/shared/testing';
 import { CreateNewActionInterface } from '@osee/configuration-management/types';
+import { testnewActionResponse } from '@osee/configuration-management/testing';
 
 const testNewActionData: CreateNewActionInterface = {
 	title: 'title',
@@ -167,7 +167,7 @@ describe('ActionService', () => {
 	});
 
 	it('should create branch', () => {
-		service.createBranch(testNewActionData).subscribe();
+		service.createActionAndWorkingBranch(testNewActionData).subscribe();
 		const req = httpTestingController.expectOne(
 			apiURL + '/ats/action/branch'
 		);

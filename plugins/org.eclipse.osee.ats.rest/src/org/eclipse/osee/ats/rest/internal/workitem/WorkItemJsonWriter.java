@@ -35,6 +35,7 @@ import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -62,6 +63,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactWithRelations;
 import org.eclipse.osee.framework.core.data.AttributeReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IRelationLink;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -505,9 +507,18 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       List<ArtifactToken> leads =
          orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.User).andRelatedTo(
             AtsRelationTypes.TeamLead_Team, teamWf.getTeamDefinition().getArtifactId()).asArtifactTokens();
+      BranchId parentBranch = BranchId.SENTINEL;
+      CommitConfigItem parentBranchConfig =
+         atsApi.getBranchService().getParentBranchConfigArtifactConfiguredToCommitTo(teamWf);
+      if (parentBranchConfig != null) {
+         parentBranch = parentBranchConfig.getBaselineBranchId();
+      }
 
       writer.writeObjectField("artifact", new ArtifactWithRelations(artReadable, orcsApi.tokenService(), false));
       writer.writeObjectField("leads", leads);
+      writer.writeObjectField("parentBranch", parentBranch);
+      writer.writeObjectField("workingBranch", atsApi.getBranchService().getBranch(teamWf));
+      writer.writeObjectField("branchesToCommitTo", atsApi.getBranchService().getBranchesLeftToCommit(teamWf));
 
    }
 }

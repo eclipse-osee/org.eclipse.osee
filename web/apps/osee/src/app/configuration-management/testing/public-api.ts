@@ -16,3 +16,4 @@ export * from './create-action.service.mock';
 export * from './create-action-button.component.mock';
 export * from './current-action.service.mock';
 export * from './current-action-drop-down.component.mock';
+export * from './new-action.response.mock';

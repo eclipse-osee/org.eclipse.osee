@@ -32,6 +32,10 @@ public class BranchData {
    ArtifactToken author = ArtifactToken.SENTINEL;
    String creationComment;
 
+   public BranchData() {
+      // Needed for jax-rs serialization
+   }
+
    public String getBranchName() {
       return branchName;
    }
