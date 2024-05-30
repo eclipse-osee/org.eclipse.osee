@@ -10,9 +10,7 @@
 * Contributors:
 *     Boeing - initial API and implementation
 -->
-<mat-list
-	role="list"
-	class="tw-max-h-80 tw-overflow-auto">
+<mat-list role="list">
 	@for (item of allItems(); track $index) {
 		<mat-list-item
 			role="listitem"
@@ -29,7 +27,7 @@
 		</div>
 	}
 	@if (
-		(useCount() && allItems().length < count()) ||
+		(useCount() && allItems().length > 0 && allItems().length < count()) ||
 		(!useCount() && currentPageItems().length === pageSize())
 	) {
 		<mat-list-item>

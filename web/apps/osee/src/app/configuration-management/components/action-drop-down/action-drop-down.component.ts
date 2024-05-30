@@ -92,31 +92,34 @@ export class ActionDropDownComponent {
 		switchMap((currentBranch) =>
 			this.branchService.getBranch(currentBranch.parentBranch.id).pipe(
 				switchMap((parentBranch) =>
-					this.commitBranchService.validateCommit(currentBranch).pipe(
-						switchMap((validateResults) => {
-							if (validateResults.conflictCount > 0) {
-								return this.dialog
-									.open(MergeManagerDialogComponent, {
-										data: {
-											sourceBranch: currentBranch,
-											parentBranch: parentBranch,
-											validateResults: validateResults,
-										},
-										minWidth: '60%',
-									})
-									.afterClosed()
-									.pipe(take(1));
-							}
-							return of(true);
-						}),
-						switchMap((commit) =>
-							iif(
-								() => commit === true,
-								this.actionService.doCommitBranch,
-								of()
+					this.commitBranchService
+						.validateCommit(currentBranch.id, parentBranch.id)
+						.pipe(
+							switchMap((validateResults) => {
+								if (validateResults.conflictCount > 0) {
+									return this.dialog
+										.open(MergeManagerDialogComponent, {
+											data: {
+												sourceBranch: currentBranch,
+												parentBranch: parentBranch,
+												validateResults:
+													validateResults,
+											},
+											minWidth: '60%',
+										})
+										.afterClosed()
+										.pipe(take(1));
+								}
+								return of(true);
+							}),
+							switchMap((commit) =>
+								iif(
+									() => commit === true,
+									this.actionService.doCommitBranch,
+									of()
+								)
 							)
 						)
-					)
 				)
 			)
 		)

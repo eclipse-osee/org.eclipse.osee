@@ -70,7 +70,7 @@ export class MergeManagerTableComponent {
 	@Input({ required: true }) mergeData!: mergeData[];
 	@Input({ required: true }) mergeBranchId!: string;
 	@Input({ required: true }) branchId!: string;
-	@Input({ required: true }) parentBranchId!: string;
+	@Input({ required: true }) destBranchId!: string;
 
 	matMenuTrigger = viewChild.required(MatMenuTrigger);
 
@@ -102,7 +102,7 @@ export class MergeManagerTableComponent {
 				data,
 				this.mergeBranchId,
 				this.branchId,
-				this.parentBranchId
+				this.destBranchId
 			)
 			.subscribe();
 	}
@@ -115,7 +115,7 @@ export class MergeManagerTableComponent {
 				data,
 				this.mergeBranchId,
 				this.branchId,
-				this.parentBranchId
+				this.destBranchId
 			)
 			.subscribe();
 	}
@@ -128,7 +128,7 @@ export class MergeManagerTableComponent {
 				data,
 				this.mergeBranchId,
 				this.branchId,
-				this.parentBranchId
+				this.destBranchId
 			)
 			.subscribe();
 	}
@@ -156,7 +156,7 @@ export class MergeManagerTableComponent {
 						updatedData,
 						this.mergeBranchId,
 						this.branchId,
-						this.parentBranchId
+						this.destBranchId
 					);
 				})
 			)

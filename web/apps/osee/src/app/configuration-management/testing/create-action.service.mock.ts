@@ -13,12 +13,12 @@
 import { of } from 'rxjs';
 import {
 	MockUserResponse,
-	testnewActionResponse,
 	testWorkType,
 	testAgilePoints,
 } from '@osee/shared/testing';
 import { CreateAction } from '@osee/configuration-management/types';
 import { CreateActionService } from '@osee/configuration-management/services';
+import { testnewActionResponse } from './new-action.response.mock';
 
 export const createActionServiceMock: Partial<CreateActionService> = {
 	getPoints() {
@@ -32,10 +32,12 @@ export const createActionServiceMock: Partial<CreateActionService> = {
 		{
 			id: '123',
 			name: 'First ARB',
+			workType: 'ARB',
 		},
 		{
 			id: '456',
 			name: 'Second ARB',
+			workType: 'ARB',
 		},
 	]),
 	workTypes: of([testWorkType]),

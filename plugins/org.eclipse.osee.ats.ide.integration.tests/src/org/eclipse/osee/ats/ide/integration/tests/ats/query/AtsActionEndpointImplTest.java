@@ -604,6 +604,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       Date needBy = new Date();
       data.setNeedByDateLong(String.valueOf(needBy.getTime()));
       data.setPriority("3");
+      data.setVersionId(DemoArtifactToken.SAW_Product_Line);
       IAtsActionableItem ai =
          AtsApiService.get().getActionableItemService().getActionableItemById(DemoArtifactToken.SAW_Code_AI);
       data.setAiIds(Arrays.asList(ai.getIdString()));

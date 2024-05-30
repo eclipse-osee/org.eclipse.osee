@@ -13,18 +13,30 @@
 <osee-artifact-explorer-expansion-panel
 	title="My Actions"
 	[openDefault]="true">
-	<osee-paginated-mat-list
-		[allItems]="teamWorkflows()"
-		[currentPageItems]="paginatedTeamWorkflows()"
-		[count]="teamWorkflowCount()"
-		[pageSize]="pageSize"
-		(paginate)="nextPage()">
-		<ng-template let-item>
-			<button
-				class="tw-h-full tw-w-full tw-max-w-sm tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap tw-text-left"
-				(click)="openInTab(item.id)">
-				{{ item.atsId + ' - ' + item.name }}
-			</button>
-		</ng-template>
-	</osee-paginated-mat-list>
+	<mat-form-field
+		class="tw-w-full"
+		subscriptSizing="dynamic">
+		<mat-label>Filter Actions</mat-label>
+		<input
+			matInput
+			type="text"
+			[ngModel]="searchText | async"
+			(keyup)="updateFilter($event)" />
+	</mat-form-field>
+	<div class="tw-max-h-96 tw-overflow-auto">
+		<osee-paginated-mat-list
+			[allItems]="teamWorkflows()"
+			[currentPageItems]="paginatedTeamWorkflows()"
+			[count]="teamWorkflowCount()"
+			[pageSize]="pageSize"
+			(paginate)="nextPage()">
+			<ng-template let-item>
+				<button
+					class="tw-h-full tw-w-full tw-max-w-sm tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap tw-text-left"
+					(click)="openInTab(item.id)">
+					{{ item.atsId + ' - ' + item.name }}
+				</button>
+			</ng-template>
+		</osee-paginated-mat-list>
+	</div>
 </osee-artifact-explorer-expansion-panel>

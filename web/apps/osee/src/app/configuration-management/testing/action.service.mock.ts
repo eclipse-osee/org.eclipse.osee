@@ -25,8 +25,8 @@ import {
 	testDataVersion,
 	testWorkFlow,
 	testWorkType,
-	testnewActionResponse,
 } from '@osee/shared/testing';
+import { testnewActionResponse } from './new-action.response.mock';
 
 export const actionServiceMock: Partial<ActionService> = {
 	getActionableItems(workType: string) {
@@ -38,7 +38,7 @@ export const actionServiceMock: Partial<ActionService> = {
 	createAction(body: CreateNewActionInterface) {
 		return of(testnewActionResponse);
 	},
-	createBranch(body: CreateNewActionInterface) {
+	createActionAndWorkingBranch(body: CreateNewActionInterface) {
 		return of(testnewActionResponse);
 	},
 	commitBranch(teamWf: string, branchId: string | number) {
@@ -48,6 +48,7 @@ export const actionServiceMock: Partial<ActionService> = {
 		return of(testWorkFlow);
 	},
 	getTeamWorkflowsForUser(
+		search: string,
 		userId: `${number}`,
 		count?: number,
 		pageNum?: number

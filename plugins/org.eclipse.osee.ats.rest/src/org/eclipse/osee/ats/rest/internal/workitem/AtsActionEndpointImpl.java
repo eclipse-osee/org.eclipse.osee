@@ -587,6 +587,13 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          ActionResult actionResult = atsApi.getActionService().createAction(newActionData, changes);
          result.setResults(actionResult.getResults());
 
+         if (newActionData.getVersionId().isValid()) {
+            IAtsVersion version =
+               atsApi.getVersionService().getVersionById(ArtifactId.valueOf(newActionData.getVersionId()));
+            IAtsTeamWorkflow teamWorkflow = actionResult.getTeamWfs().iterator().next();
+            atsApi.getVersionService().setTargetedVersion(teamWorkflow, version, changes);
+         }
+
          TransactionId transaction = changes.executeIfNeeded();
          if (transaction != null && transaction.isInvalid()) {
             result.getResults().errorf("TransactionId came back as inValid.  Action not created.");

@@ -46,6 +46,7 @@ export interface teamWorkflow {
 	CreatedDate: string;
 	CreatedBy: string;
 	TargetedVersion: string;
+	TargetedVersionId: string;
 	previousStates: teamWorkflowState[];
 	toStates: teamWorkflowState[];
 	currentState: teamWorkflowState;
@@ -86,6 +87,7 @@ export class teamWorkflowImpl implements teamWorkflow {
 	CreatedDate: string = '';
 	CreatedBy: string = '';
 	TargetedVersion: string = '';
+	TargetedVersionId: string = '';
 	previousStates: teamWorkflowState[] = [];
 	toStates: teamWorkflowState[] = [];
 	currentState: teamWorkflowState = {
@@ -100,6 +102,9 @@ type teamWorkflowUser = { id: `${number}`; name: string };
 export interface teamWorkflowDetails extends teamWorkflow {
 	artifact: artifactWithRelations;
 	leads: NamedId[];
+	parentBranch: NamedId;
+	workingBranch: { id: string; name: string; branchState: string };
+	branchesToCommitTo: NamedId[];
 }
 
 export class teamWorkflowDetailsImpl
@@ -108,6 +113,9 @@ export class teamWorkflowDetailsImpl
 {
 	artifact: artifactWithRelations = artifactWithRelationsSentinel;
 	leads: NamedId[] = [];
+	parentBranch: NamedId = { id: '-1', name: '' };
+	workingBranch = { id: '-1', name: '', branchState: '' };
+	branchesToCommitTo: NamedId[] = [];
 }
 
 export type workDefinition = {

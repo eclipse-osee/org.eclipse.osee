@@ -17,6 +17,7 @@ import { UserDataAccountService } from '@osee/auth';
 import {
 	BehaviorSubject,
 	combineLatest,
+	debounceTime,
 	filter,
 	map,
 	switchMap,
@@ -26,6 +27,15 @@ import { ArtifactExplorerTabService } from '../../services/artifact-explorer-tab
 import { teamWorkflowToken } from '@osee/shared/types/configuration-management';
 import { PaginatedMatListComponent } from '../shared/paginated-mat-list/paginated-mat-list.component';
 import { toSignal } from '@angular/core/rxjs-interop';
+import {
+	MatFormField,
+	MatLabel,
+	MatSuffix,
+} from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
+import { MatIcon } from '@angular/material/icon';
+import { AsyncPipe } from '@angular/common';
+import { MatInput } from '@angular/material/input';
 
 @Component({
 	selector: 'osee-actions-panel',
@@ -33,6 +43,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
 	imports: [
 		ArtifactExplorerExpansionPanelComponent,
 		PaginatedMatListComponent,
+		MatFormField,
+		FormsModule,
+		MatLabel,
+		MatInput,
+		AsyncPipe,
 	],
 	templateUrl: './actions-panel.component.html',
 })
@@ -40,13 +55,25 @@ export class ActionsPanelComponent {
 	pageNum = new BehaviorSubject<number>(1);
 	pageSize = 20;
 
+	searchText = new BehaviorSubject<string>('');
+
 	teamWorkflows = signal<teamWorkflowToken[]>([]);
 
 	paginatedTeamWorkflows = toSignal(
-		combineLatest([this.userService.user, this.pageNum]).pipe(
-			switchMap(([user, pageNum]) =>
+		combineLatest([
+			this.userService.user,
+			this.pageNum,
+			this.searchText,
+		]).pipe(
+			debounceTime(250),
+			switchMap(([user, pageNum, search]) =>
 				this.actionService
-					.getTeamWorkflowsForUser(user.id, this.pageSize, pageNum)
+					.getTeamWorkflowsForUser(
+						search,
+						user.id,
+						this.pageSize,
+						pageNum
+					)
 					.pipe(
 						tap((results) =>
 							this.teamWorkflows.update((current) => [
@@ -61,9 +88,10 @@ export class ActionsPanelComponent {
 	);
 
 	teamWorkflowCount = toSignal(
-		this.userService.user.pipe(
-			switchMap((user) =>
-				this.actionService.getTeamWorkflowsForUserCount(user.id)
+		combineLatest([this.userService.user, this.searchText]).pipe(
+			debounceTime(250),
+			switchMap(([user, search]) =>
+				this.actionService.getTeamWorkflowsForUserCount(search, user.id)
 			)
 		),
 		{ initialValue: -1 }
@@ -87,5 +115,12 @@ export class ActionsPanelComponent {
 
 	nextPage() {
 		this.pageNum.next(this.pageNum.getValue() + 1);
+	}
+
+	updateFilter(event: KeyboardEvent) {
+		this.teamWorkflows.set([]);
+		this.pageNum.next(1);
+		const filterValue = (event.target as HTMLInputElement).value;
+		this.searchText.next(filterValue);
 	}
 }

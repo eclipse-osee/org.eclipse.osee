@@ -12,7 +12,7 @@
  **********************************************************************/
 import { of } from 'rxjs';
 import { WorldHttpService } from './world-http.service';
-import { world, worldRow } from 'src/app/world/world';
+import { world } from '../world';
 
 export const worldHttpServiceMock: Partial<WorldHttpService> = {
 	getWorldData(collId: string, custId: string) {

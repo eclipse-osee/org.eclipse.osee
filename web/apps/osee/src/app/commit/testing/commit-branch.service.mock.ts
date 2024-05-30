@@ -11,7 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CommitBranchService } from '@osee/commit/services';
-import { branch } from '@osee/shared/types';
 import { of } from 'rxjs';
 import { mergeDataMock } from './commit-branch.mock';
 
@@ -19,10 +18,10 @@ export const commitBranchServiceMock: Partial<CommitBranchService> = {
 	getMergeData(branchId: string) {
 		return of(mergeDataMock);
 	},
-	getMergeBranch(branchId: string, parentBranchId: string) {
+	getMergeBranch(sourceBranchId: string, destBranchId: string) {
 		return of({ id: '123', viewId: '-1' });
 	},
-	validateCommit(branch: branch) {
+	validateCommit(sourceBranchId: string, destBranchId: string) {
 		return of({
 			commitable: true,
 			conflictCount: 0,

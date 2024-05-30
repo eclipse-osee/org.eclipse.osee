@@ -23,6 +23,7 @@ import { commitResponse, transitionResponse } from '@osee/shared/types';
 import { MockXResultData } from './XResultData.response.mock';
 import { MockUserResponse } from './user.response.mock';
 import { artifactWithRelationsMock } from '@osee/artifact-with-relations/testing';
+import { testBranchInfo } from './branch-info.response.mock';
 
 export const testBranchActions: action[] = [
 	{
@@ -78,6 +79,7 @@ export const testWorkFlow: teamWorkflow = {
 	CreatedDate: '03/08/2021',
 	CreatedBy: 'Example User',
 	TargetedVersion: 'SAW PL ARB',
+	TargetedVersionId: '1111',
 	previousStates: [],
 	toStates: [],
 	currentState: {
@@ -91,6 +93,9 @@ export const teamWorkflowDetailsMock: teamWorkflowDetails = {
 	...testWorkFlow,
 	artifact: artifactWithRelationsMock,
 	leads: [MockUserResponse],
+	parentBranch: { id: '4', name: 'Parent Branch' },
+	workingBranch: { id: '555', name: 'Working Branch', branchState: '0' },
+	branchesToCommitTo: [testBranchInfo],
 };
 
 export const teamWorkflowTokenMock: teamWorkflowToken = {
@@ -103,10 +108,12 @@ export const testARB = [
 	{
 		id: '123',
 		name: 'First ARB',
+		workType: 'ARB',
 	},
 	{
 		id: '456',
 		name: 'second ARB',
+		workType: 'ARB',
 	},
 ];
 

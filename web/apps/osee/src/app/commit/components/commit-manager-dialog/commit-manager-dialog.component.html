@@ -1,0 +1,69 @@
+<!--
+ * Copyright (c) 2024 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ -->
+<div mat-dialog-content>
+	<h1 mat-dialog-title>Commit Manager</h1>
+	<div class="tw-flex tw-flex-col tw-gap-4 tw-px-6">
+		<div>
+			<span class="tw-font-bold">Committing Branch:</span>
+			{{ teamWorkflow().workingBranch.name }}
+		</div>
+
+		<table
+			mat-table
+			[dataSource]="branches() || []"
+			class="mat-elevation-z1 tw-w-full">
+			@for (header of headers; track header) {
+				<ng-container [matColumnDef]="header">
+					<th
+						mat-header-cell
+						*matHeaderCellDef
+						class="tw-text-primary-600">
+						{{ header }}
+					</th>
+					<td
+						mat-cell
+						*matCellDef="let item; let i = index">
+						@if (header === 'Branch Name') {
+							{{ item.branch.name }}
+						} @else if (header === 'Commit Status') {
+							{{ getCommitStatusText(item.commitStatus) }}
+						} @else if (header === ' ') {
+							<osee-commit-branch-button
+								[sourceBranchId]="
+									teamWorkflow().workingBranch.id
+								"
+								[destBranchId]="item.branch.id"
+								[teamWorkflowId]="'' + teamWorkflow().id"
+								[disabled]="isCommitButtonDisabled(item)" />
+						}
+					</td>
+				</ng-container>
+			}
+			<tr
+				mat-header-row
+				*matHeaderRowDef="headers"></tr>
+			<tr
+				mat-row
+				*matRowDef="let row; columns: headers"></tr>
+		</table>
+	</div>
+</div>
+<mat-dialog-actions align="end">
+	<button
+		mat-raised-button
+		cdkFocusInitial
+		class="tw-bg-primary tw-text-background-background"
+		mat-dialog-close>
+		Close
+	</button>
+</mat-dialog-actions>

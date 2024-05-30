@@ -124,32 +124,34 @@ export class CreateActionService {
 					})
 				);
 		}
-		return this.actionService.createBranch(new CreateNewAction(value)).pipe(
-			switchMap((branchResponse) =>
-				iif(
-					() => category !== '0',
-					this.branchService.setBranchCategory(
-						branchResponse.workingBranchId.id,
-						category
-					),
-					of(branchResponse)
-				).pipe(
-					map(() => branchResponse),
-					tap((resp) => {
-						this.uiService.updated = true;
-						if (resp.results.success) {
-							const _branchType =
-								resp.workingBranchId.branchType === '2'
-									? 'baseline'
-									: 'working';
-							this.branchedRouter.position = {
-								type: _branchType,
-								id: resp.workingBranchId.id,
-							};
-						}
-					})
+		return this.actionService
+			.createActionAndWorkingBranch(new CreateNewAction(value))
+			.pipe(
+				switchMap((branchResponse) =>
+					iif(
+						() => category !== '0',
+						this.branchService.setBranchCategory(
+							branchResponse.workingBranchId.id,
+							category
+						),
+						of(branchResponse)
+					).pipe(
+						map(() => branchResponse),
+						tap((resp) => {
+							this.uiService.updated = true;
+							if (resp.results.success) {
+								const _branchType =
+									resp.workingBranchId.branchType === '2'
+										? 'baseline'
+										: 'working';
+								this.branchedRouter.position = {
+									type: _branchType,
+									id: resp.workingBranchId.id,
+								};
+							}
+						})
+					)
 				)
-			)
-		);
+			);
 	}
 }

@@ -12,10 +12,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.branch;
 
+import java.util.Arrays;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.branch.BranchData;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.CreateBranchData;
@@ -35,14 +37,14 @@ public class AtsBranchOperations {
 
    public BranchData createBranch(BranchData bd) {
       atsApi.getBranchService().validate(bd, atsApi);
-      if (bd.isValidate() || bd.getResults().isErrors()) {
+      if (bd.isValidate() && bd.getResults().isErrors()) {
          return bd;
       }
 
       CreateBranchData cbd = new CreateBranchData();
       BranchType type = bd.getBranchType();
       ArtifactToken assocArt = bd.getAssociatedArt();
-      if (type.equals(BranchType.BASELINE) && bd.getAssociatedArt().isInvalid()) {
+      if (type.equals(BranchType.BASELINE) && assocArt.isInvalid()) {
          assocArt = AtsArtifactToken.AtsCmAccessControl;
       } else if (assocArt.isInvalid()) {
          bd.getResults().errorf("Associated Artifact is invalid for %s branch", bd.getBranchType());
@@ -55,7 +57,8 @@ public class AtsBranchOperations {
       cbd.setInheritAccess(true);
       cbd.setParentBranch(bd.getParent());
       cbd.setCategories(orcsApi.getQueryFactory().branchQuery().getBranchCategories(bd.getParent()));
-      orcsApi.getBranchOps().createBranch(cbd);
+      Branch newBranch = orcsApi.getBranchOps().createBranch(cbd);
+      bd.getResults().setIds(Arrays.asList(newBranch.getIdString()));
       return bd;
    }
 

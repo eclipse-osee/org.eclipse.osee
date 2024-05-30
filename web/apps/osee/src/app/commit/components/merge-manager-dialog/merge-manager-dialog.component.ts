@@ -11,8 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, NgClass } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { MatButton } from '@angular/material/button';
 import {
 	MAT_DIALOG_DATA,
@@ -23,7 +23,7 @@ import {
 } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
-import { branch, branchSentinel } from '@osee/shared/types';
+import { branch } from '@osee/shared/types';
 import {
 	BehaviorSubject,
 	combineLatest,
@@ -55,32 +55,42 @@ import { validateCommitResult } from '@osee/commit/types';
 	templateUrl: './merge-manager-dialog.component.html',
 	styles: ['tooltip-width {max-width: unset}'],
 })
-export class MergeManagerDialogComponent implements OnInit {
-	sourceBranch = new BehaviorSubject<branch>(branchSentinel);
-	parentBranch = new BehaviorSubject<branch>(branchSentinel);
-	validateCommitResults = new BehaviorSubject<validateCommitResult>({
-		commitable: false,
-		conflictCount: 0,
-		conflictsResolved: 0,
-	});
+export class MergeManagerDialogComponent {
 	private _updateMergeBranchId = new BehaviorSubject<boolean>(false);
 
+	commitBranchService = inject(CommitBranchService);
+	dialogRef = inject(MatDialogRef<MergeManagerDialogComponent>);
+	dialogData = signal(
+		inject<{
+			sourceBranch: branch;
+			destBranch: branch;
+			validateResults: validateCommitResult;
+		}>(MAT_DIALOG_DATA)
+	);
+	sourceBranch = computed(() => this.dialogData().sourceBranch);
+	destBranch = computed(() => this.dialogData().destBranch);
+	validateCommitResults = computed(() => this.dialogData().validateResults);
+
+	sourceBranch$ = toObservable(this.sourceBranch);
+	destBranch$ = toObservable(this.destBranch);
+	validateCommitResults$ = toObservable(this.validateCommitResults);
+
 	mergeBranchId = combineLatest([
-		this.sourceBranch,
-		this.parentBranch,
+		this.sourceBranch$,
+		this.destBranch$,
 		this._updateMergeBranchId,
 	]).pipe(
 		filter(
-			([sourceBranch, parentBranch, _]) =>
+			([sourceBranch, destBranch, _]) =>
 				sourceBranch.id != '' &&
 				sourceBranch.id != '-1' &&
-				parentBranch.id != '' &&
-				parentBranch.id != '-1'
+				destBranch.id != '' &&
+				destBranch.id != '-1'
 		),
-		switchMap(([sourceBranch, parentBranch, _]) =>
+		switchMap(([sourceBranch, destBranch, _]) =>
 			this.commitBranchService.getMergeBranch(
 				sourceBranch.id,
-				parentBranch.id
+				destBranch.id
 			)
 		),
 		map((id) => id.id),
@@ -101,46 +111,37 @@ export class MergeManagerDialogComponent implements OnInit {
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
-	mergeStatus = this.sourceBranch.pipe(
-		filter((branch) => branch.id !== '' && branch.id !== '-1'),
-		switchMap((branch) =>
-			this.commitBranchService.validateCommit(branch).pipe(
-				repeat({
-					delay: () => this.commitBranchService.updatedMergeData,
-				})
-			)
+	mergeStatus = combineLatest([this.sourceBranch$, this.destBranch$]).pipe(
+		filter(
+			([sourceBranch, destBranch]) =>
+				sourceBranch.id !== '' &&
+				sourceBranch.id !== '-1' &&
+				destBranch.id !== '' &&
+				destBranch.id !== '-1'
+		),
+		switchMap(([sourceBranch, destBranch]) =>
+			this.commitBranchService
+				.validateCommit(sourceBranch.id, destBranch.id)
+				.pipe(
+					repeat({
+						delay: () => this.commitBranchService.updatedMergeData,
+					})
+				)
 		)
 	);
 
-	constructor(
-		public dialogRef: MatDialogRef<MergeManagerDialogComponent>,
-		@Inject(MAT_DIALOG_DATA)
-		public data: {
-			sourceBranch: branch;
-			parentBranch: branch;
-			validateResults: validateCommitResult;
-		},
-		private commitBranchService: CommitBranchService
-	) {}
-
-	ngOnInit(): void {
-		this.sourceBranch.next(this.data.sourceBranch);
-		this.parentBranch.next(this.data.parentBranch);
-		this.validateCommitResults.next(this.data.validateResults);
-	}
-
 	createMergeBranch() {
-		combineLatest([this.sourceBranch, this.parentBranch])
+		combineLatest([this.sourceBranch$, this.destBranch$])
 			.pipe(
-				switchMap(([sourceBranch, parentBranch]) =>
+				switchMap(([sourceBranch, destBranch]) =>
 					this.commitBranchService
-						.createMergeBranch(sourceBranch, parentBranch)
+						.createMergeBranch(sourceBranch, destBranch)
 						.pipe(
 							switchMap((_) =>
 								this.commitBranchService
 									.loadMergeConflicts(
 										sourceBranch.id,
-										parentBranch.id
+										destBranch.id
 									)
 									.pipe(
 										tap((_) => {

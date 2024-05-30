@@ -139,4 +139,9 @@ public interface AtsTeamWfEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public Collection<IAtsAbstractReview> getReviews(@PathParam("id") String id);
 
+   @GET
+   @Path("{id}/commitstatus")
+   @Produces(MediaType.APPLICATION_JSON)
+   public Collection<TeamWorkflowBranchCommitStatus> getBranchCommitStatus(@PathParam("id") ArtifactId teamWfId);
+
 }

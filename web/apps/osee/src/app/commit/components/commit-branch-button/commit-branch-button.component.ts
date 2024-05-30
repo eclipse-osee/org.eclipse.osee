@@ -11,27 +11,36 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { NgClass } from '@angular/common';
-import { Component, Input, signal } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { BranchRoutedUIService, UiService } from '@osee/shared/services';
-import { of, switchMap, take, tap } from 'rxjs';
+import { combineLatest, of, switchMap, take, tap } from 'rxjs';
 import { CommitBranchService } from '@osee/commit/services';
 import { MergeManagerDialogComponent } from '../merge-manager-dialog/merge-manager-dialog.component';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-commit-branch-button',
 	standalone: true,
 	imports: [NgClass, MatButton],
-	templateUrl: './commit-branch-button.component.html',
+	template: `<button
+		class="tw-min-w-fit"
+		[ngClass]="{ 'tw-bg-primary tw-text-background': !disabled() }"
+		mat-raised-button
+		[disabled]="disabled()"
+		(click)="commitBranch()">
+		Commit Branch
+	</button>`,
 })
 export class CommitBranchButtonComponent {
-	@Input({ required: true }) branchId!: string;
-	@Input() set disabled(value: boolean) {
-		this._disabled.set(value);
-	}
+	sourceBranchId = input.required<string>();
+	destBranchId = input.required<string>();
+	disabled = input(false);
+	teamWorkflowId = input<string>('');
 
-	_disabled = signal(false);
+	sourceBranchId$ = toObservable(this.sourceBranchId);
+	destBranchId$ = toObservable(this.destBranchId);
 
 	constructor(
 		public dialog: MatDialog,
@@ -41,73 +50,102 @@ export class CommitBranchButtonComponent {
 	) {}
 
 	commitBranch() {
-		return this.commitBranchService
-			.getBranch(this.branchId)
+		combineLatest([this.sourceBranchId$, this.destBranchId$])
 			.pipe(
-				switchMap((sourceBranch) =>
-					this.commitBranchService
-						.getBranch(sourceBranch.parentBranch.id)
-						.pipe(
-							switchMap((parentBranch) =>
-								this.commitBranchService
-									.validateCommit(sourceBranch)
-									.pipe(
-										switchMap((results) => {
-											if (results.conflictCount > 0) {
-												return this.dialog
-													.open(
-														MergeManagerDialogComponent,
-														{
-															data: {
-																sourceBranch:
-																	sourceBranch,
-																parentBranch:
-																	parentBranch,
-																validateResults:
-																	results,
-															},
-															minWidth: '60%',
-														}
-													)
-													.afterClosed()
-													.pipe(take(1));
-											}
-											return of(true);
-										}),
-										switchMap((commit) => {
-											if (commit) {
-												return this.commitBranchService
-													.commitBranch(
-														sourceBranch.id,
-														sourceBranch
-															.parentBranch.id
-													)
-													.pipe(
-														tap((commitResp) => {
-															if (
-																commitResp.success
-															) {
-																this.uiService.updated =
-																	true;
-																this.branchedRouter.position =
-																	{
-																		type: 'baseline',
-																		id: commitResp
-																			.tx
-																			.branchId,
-																	};
-															} else {
-																this.uiService.ErrorText =
-																	'Error committing branch';
-															}
-														})
-													);
-											}
-											return of();
-										})
+				take(1),
+				switchMap(([sourceBranchId, destBranchId]) =>
+					this.commitBranchService.getBranch(sourceBranchId).pipe(
+						switchMap((sourceBranch) =>
+							this.commitBranchService
+								.getBranch(destBranchId)
+								.pipe(
+									switchMap((destBranch) =>
+										this.commitBranchService
+											.validateCommit(
+												sourceBranchId,
+												destBranchId
+											)
+											.pipe(
+												switchMap((results) => {
+													if (
+														results.conflictCount >
+														0
+													) {
+														return this.dialog
+															.open(
+																MergeManagerDialogComponent,
+																{
+																	data: {
+																		sourceBranch:
+																			sourceBranch,
+																		destBranch:
+																			destBranch,
+																		validateResults:
+																			results,
+																	},
+																	minWidth:
+																		'60%',
+																}
+															)
+															.afterClosed()
+															.pipe(take(1));
+													}
+													return of(true);
+												}),
+												switchMap((commit) => {
+													if (commit) {
+														return this.commitBranchService
+															.commitBranch(
+																sourceBranch.id,
+																destBranch.id
+															)
+															.pipe(
+																tap(
+																	(
+																		commitResp
+																	) => {
+																		if (
+																			commitResp.success
+																		) {
+																			this.uiService.updated =
+																				true;
+																			if (
+																				this
+																					.uiService
+																					.id
+																					.value ===
+																				sourceBranchId
+																			) {
+																				this.branchedRouter.position =
+																					{
+																						type: 'baseline',
+																						id: commitResp
+																							.tx
+																							.branchId,
+																					};
+																			}
+																			if (
+																				this.teamWorkflowId() !==
+																				''
+																			) {
+																				this.uiService.updatedArtifact =
+																					this.teamWorkflowId();
+																			}
+																		} else {
+																			this.uiService.ErrorText =
+																				'Error committing branch';
+																		}
+																	}
+																)
+															);
+													}
+													return of();
+												})
+											)
 									)
-							)
+								)
 						)
+					)
 				)
 			)
 			.subscribe();

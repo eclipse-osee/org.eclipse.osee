@@ -25,6 +25,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.ai.ActionableItemToken;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -32,7 +33,6 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.CreateNewActionField;
 import org.eclipse.osee.ats.rest.util.AbstractConfigResource;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -51,7 +51,7 @@ public class ActionableItemResource extends AbstractConfigResource {
    @GET
    @Path("all")
    @Produces({MediaType.APPLICATION_JSON})
-   public List<ArtifactToken> get(@QueryParam("workType") String workType,
+   public List<ActionableItemToken> get(@QueryParam("workType") String workType,
       @QueryParam("orderByName") boolean orderByName) {
       QueryBuilder query =
          orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andTypeEquals(AtsArtifactTypes.ActionableItem);
@@ -61,8 +61,7 @@ public class ActionableItemResource extends AbstractConfigResource {
       if (orderByName) {
          query = query.setOrderByAttribute(CoreAttributeTypes.Name);
       }
-      return query.asArtifacts().stream().map(a -> ArtifactToken.valueOf(a.getId(), a.getName())).collect(
-         Collectors.toList());
+      return query.asArtifacts().stream().map(a -> new ActionableItemToken(a)).collect(Collectors.toList());
 
    }
 

@@ -10,29 +10,26 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { MockXResultData } from '@osee/shared/testing';
 import { newActionResponse } from '@osee/shared/types/configuration-management';
-import { MockXResultData } from './XResultData.response.mock';
-import { branch } from '@osee/shared/types';
-
-const BranchListingBranch: branch = {
-	name: 'name',
-	idIntValue: 0,
-	id: '0',
-	viewId: '0',
-	associatedArtifact: '0',
-	baselineTx: '0',
-	parentTx: '0',
-	parentBranch: { id: '0', viewId: '0' },
-	branchState: '0',
-	branchType: '0',
-	inheritAccessControl: false,
-	archived: false,
-	shortName: 'name',
-};
 
 export const testnewActionResponse: newActionResponse = {
 	action: null,
 	results: MockXResultData,
 	teamWfs: [],
-	workingBranchId: BranchListingBranch,
+	workingBranchId: {
+		name: 'name',
+		idIntValue: 0,
+		id: '0',
+		viewId: '0',
+		associatedArtifact: '0',
+		baselineTx: '0',
+		parentTx: '0',
+		parentBranch: { id: '0', viewId: '0' },
+		branchState: '0',
+		branchType: '0',
+		inheritAccessControl: false,
+		archived: false,
+		shortName: 'name',
+	},
 };

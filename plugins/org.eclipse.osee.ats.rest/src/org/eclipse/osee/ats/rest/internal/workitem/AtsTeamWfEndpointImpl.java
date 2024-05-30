@@ -14,9 +14,11 @@
 package org.eclipse.osee.ats.rest.internal.workitem;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,6 +27,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.commit.CommitStatus;
 import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -39,16 +42,19 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.AtsTeamWfEndpointApi;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.TeamWorkflowBranchCommitStatus;
 import org.eclipse.osee.ats.api.workflow.TeamWorkflowToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.dto.DiffReportEndpointDto;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -152,6 +158,10 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
       }
       if (inProgressOnly) {
          query.andAttributeIs(AtsAttributeTypes.CurrentStateType, StateType.Working.toString());
+      }
+      if (Strings.isValid(search)) {
+         query = query.and(Arrays.asList(CoreAttributeTypes.Name, AtsAttributeTypes.AtsId), search,
+            QueryOption.CONTAINS_MATCH_OPTIONS);
       }
       if (pageNum != 0L && pageSize != 0L) {
          query = query.isOnPage(pageNum, pageSize);
@@ -346,5 +356,25 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
       Collection<IAtsAbstractReview> reviews = atsApi.getWorkItemService().getReviews((IAtsTeamWorkflow) workItem);
 
       return reviews;
+   }
+
+   @Override
+   public Collection<TeamWorkflowBranchCommitStatus> getBranchCommitStatus(ArtifactId teamWfId) {
+      IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemByAnyId(teamWfId.getIdString());
+      if (workItem == null || !workItem.isTeamWorkflow()) {
+         return Collections.emptyList();
+      }
+      //      atsApi.getBranchService().getCommitStatus(teamWf, destinationBranch)
+      Collection<BranchId> branchIds = atsApi.getBranchService().getBranchesToCommitTo((IAtsTeamWorkflow) workItem);
+      List<BranchToken> branches = orcsApi.getQueryFactory().branchQuery().andIds(branchIds).getResultsAsId().getList();
+
+      List<TeamWorkflowBranchCommitStatus> commitStatus = new LinkedList<>();
+
+      for (BranchToken branch : branches) {
+         CommitStatus status = atsApi.getBranchService().getCommitStatus((IAtsTeamWorkflow) workItem, branch);
+         commitStatus.add(new TeamWorkflowBranchCommitStatus(branch, status));
+      }
+
+      return commitStatus;
    }
 }
