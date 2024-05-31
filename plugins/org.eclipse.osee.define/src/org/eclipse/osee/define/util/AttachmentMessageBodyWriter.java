@@ -19,7 +19,6 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.List;
-import java.util.Map;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -73,19 +72,20 @@ public class AttachmentMessageBodyWriter implements MessageBodyWriter<Attachment
     * <code>outputSream</code>.
     */
 
-   @SuppressWarnings("unchecked")
    @Override
    public void writeTo(Attachment attachment, Class<?> type, Type genericType, Annotation[] annotations,
       MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream outputStream)
       throws IOException, WebApplicationException {
 
-      httpHeaders.putAll((Map<? extends String, ? extends List<Object>>) attachment.getHeaders());
+      @SuppressWarnings("unchecked")
+      final var attachmentHeaders = (MultivaluedMap<String, Object>) (Object) attachment.getHeaders();
+
+      httpHeaders.putAll(attachmentHeaders);
       httpHeaders.put("Content-Disposition", List.of(attachment.getContentDisposition().toString()));
       try (var stream = attachment.getDataHandler().getInputStream();) {
          stream.transferTo(outputStream);
       }
    }
-
 }
 
 /* EOF */
