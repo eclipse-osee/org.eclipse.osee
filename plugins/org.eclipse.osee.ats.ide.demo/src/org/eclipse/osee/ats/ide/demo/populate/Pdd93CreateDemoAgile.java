@@ -241,23 +241,31 @@ public class Pdd93CreateDemoAgile {
       newTeam.setName(DemoArtifactToken.CIS_Agile_Team.getName());
       newTeam.setId(DemoArtifactToken.CIS_Agile_Team.getId());
       newTeam.setProgramId(aProgram.getIdString());
-      Response response = agileEp.createTeam(newTeam);
-      Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
 
-      IAtsChangeSet changes = AtsApiService.get().createChangeSet("Config Agile Team with points attr type");
-      Artifact sawAgileTeam = AtsApiService.get().getQueryServiceIde().getArtifact(DemoArtifactToken.CIS_Agile_Team);
-      changes.setSoleAttributeValue(sawAgileTeam, AtsAttributeTypes.PointsAttributeType,
-         AtsAttributeTypes.Points.getName());
-      changes.execute();
+      Response response = null;
+      try {
+         response = agileEp.createTeam(newTeam);
+         Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
 
-      // Create Backlog
-      JaxNewAgileBacklog backlog = new JaxNewAgileBacklog();
-      backlog.setName(DemoArtifactToken.CIS_Backlog.getName());
-      backlog.setId(DemoArtifactToken.CIS_Backlog.getId());
-      backlog.setTeamId(newTeam.getId());
-      response = agileEp.createBacklog(DemoArtifactToken.CIS_Agile_Team.getId(), backlog);
-      Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
-      response.close();
+         IAtsChangeSet changes = AtsApiService.get().createChangeSet("Config Agile Team with points attr type");
+         Artifact sawAgileTeam = AtsApiService.get().getQueryServiceIde().getArtifact(DemoArtifactToken.CIS_Agile_Team);
+         changes.setSoleAttributeValue(sawAgileTeam, AtsAttributeTypes.PointsAttributeType,
+            AtsAttributeTypes.Points.getName());
+         changes.execute();
+
+         // Create Backlog
+         JaxNewAgileBacklog backlog = new JaxNewAgileBacklog();
+         backlog.setName(DemoArtifactToken.CIS_Backlog.getName());
+         backlog.setId(DemoArtifactToken.CIS_Backlog.getId());
+         backlog.setTeamId(newTeam.getId());
+         response = agileEp.createBacklog(DemoArtifactToken.CIS_Agile_Team.getId(), backlog);
+         Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
+      } finally {
+
+         if (response != null) {
+            response.close();
+         }
+      }
    }
 
    private IAgileProgram createAgileProgram() {
@@ -274,132 +282,139 @@ public class Pdd93CreateDemoAgile {
       // Create Team
       JaxNewAgileTeam newTeam = getJaxAgileTeam();
       newTeam.setProgramId(aProgram.getIdString());
-      Response response = agileEp.createTeam(newTeam);
-      Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
-
-      IAtsChangeSet changes = AtsApiService.get().createChangeSet("Config Agile Team with points attr type");
-      Artifact sawAgileTeam = AtsApiService.get().getQueryServiceIde().getArtifact(DemoArtifactToken.SAW_Agile_Team);
-      changes.setSoleAttributeValue(sawAgileTeam, AtsAttributeTypes.PointsAttributeType,
-         AtsAttributeTypes.Points.getName());
-      changes.execute();
-
-      // Assign ATS Team to Agile Team
-      Artifact agileTeam = AtsApiService.get().getQueryServiceIde().getArtifact(newTeam.getId());
-      for (ArtifactToken tok : Arrays.asList(DemoArtifactToken.SAW_SW, DemoArtifactToken.SAW_HW,
-         DemoArtifactToken.SAW_Code, DemoArtifactToken.SAW_Test, DemoArtifactToken.SAW_SW_Design,
-         DemoArtifactToken.SAW_Requirements)) {
-         Artifact sawTeamDef = AtsApiService.get().getQueryServiceIde().getArtifact(tok);
-         Conditions.assertNotNull(sawTeamDef, "sawCodeArt");
-         agileTeam.addRelation(AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam, sawTeamDef);
-         agileTeam.persist("Assigne ATS Team to Agile Team");
-      }
-
-      // Add team members to agile team
-      Artifact joeUser = AtsApiService.get().getQueryServiceIde().getArtifact(DemoUsers.Joe_Smith);
-      agileTeam.addRelation(CoreRelationTypes.Users_User, joeUser);
-      Artifact kayUser = AtsApiService.get().getQueryServiceIde().getArtifact(DemoUsers.Kay_Jones);
-      agileTeam.addRelation(CoreRelationTypes.Users_User, kayUser);
-      agileTeam.persist("Add Team Members to Agile Team");
-
-      // Create Backlog
-      JaxNewAgileBacklog backlog = getBacklog();
-      response = agileEp.createBacklog(DemoArtifactToken.SAW_Agile_Team.getId(), backlog);
-      Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
-
-      // Add items to backlog
-      Collection<IAtsWorkItem> items = new ArrayList<>();
-      for (IAtsWorkItem workItem : AtsApiService.get().getQueryService().createQuery(
-         WorkItemType.TeamWorkflow).isOfType(AtsArtifactTypes.DemoCodeTeamWorkflow,
-            AtsArtifactTypes.DemoReqTeamWorkflow, AtsArtifactTypes.DemoTestTeamWorkflow).getItems()) {
-         if (!workItem.getName().equals(DemoArtifactToken.SAW_NotesAnnotations_Code_TeamWf.getName())) {
-            items.add(workItem);
-         }
-      }
-      Assert.isTrue(items.size() > 0);
-
-      JaxAgileItem item = new JaxAgileItem();
-      item.setBacklogId(backlog.getId());
-      item.setSetBacklog(true);
-      for (IAtsWorkItem workItem : items) {
-         item.getIds().add(workItem.getId());
-      }
-      AgileWriterResult result = agileEp.updateItems(item);
-      Conditions.assertFalse(result.getResults().isErrors(), result.getResults().toString());
-
-      // Set backlog as user_defined member order
-      Artifact backlogArt = AtsApiService.get().getQueryServiceIde().getArtifact(backlog.getId());
-      RelationManager.setRelationOrder(backlogArt, AtsRelationTypes.Goal_Member, RelationSide.SIDE_B,
-         RelationSorter.USER_DEFINED, backlogArt.getRelatedArtifacts(AtsRelationTypes.Goal_Member));
-      backlogArt.persist("Set Backlog Order");
-
-      // Create Sprints
-      JaxNewAgileSprint sprint1 = newSprint(DemoArtifactToken.SAW_Sprint_1);
-      try (Response sprint1Response = agileEp.createSprint(sprint1.getTeamId(), sprint1)) {
+      Response response = null;
+      try {
+         response = agileEp.createTeam(newTeam);
          Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
-      }
-      JaxNewAgileSprint sprint2 = newSprint(DemoArtifactToken.SAW_Sprint_2);
-      try (Response sprint2Response = agileEp.createSprint(sprint2.getTeamId(), sprint2)) {
+
+         IAtsChangeSet changes = AtsApiService.get().createChangeSet("Config Agile Team with points attr type");
+         Artifact sawAgileTeam = AtsApiService.get().getQueryServiceIde().getArtifact(DemoArtifactToken.SAW_Agile_Team);
+         changes.setSoleAttributeValue(sawAgileTeam, AtsAttributeTypes.PointsAttributeType,
+            AtsAttributeTypes.Points.getName());
+         changes.execute();
+
+         // Assign ATS Team to Agile Team
+         Artifact agileTeam = AtsApiService.get().getQueryServiceIde().getArtifact(newTeam.getId());
+         for (ArtifactToken tok : Arrays.asList(DemoArtifactToken.SAW_SW, DemoArtifactToken.SAW_HW,
+            DemoArtifactToken.SAW_Code, DemoArtifactToken.SAW_Test, DemoArtifactToken.SAW_SW_Design,
+            DemoArtifactToken.SAW_Requirements)) {
+            Artifact sawTeamDef = AtsApiService.get().getQueryServiceIde().getArtifact(tok);
+            Conditions.assertNotNull(sawTeamDef, "sawCodeArt");
+            agileTeam.addRelation(AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam, sawTeamDef);
+            agileTeam.persist("Assigne ATS Team to Agile Team");
+         }
+
+         // Add team members to agile team
+         Artifact joeUser = AtsApiService.get().getQueryServiceIde().getArtifact(DemoUsers.Joe_Smith);
+         agileTeam.addRelation(CoreRelationTypes.Users_User, joeUser);
+         Artifact kayUser = AtsApiService.get().getQueryServiceIde().getArtifact(DemoUsers.Kay_Jones);
+         agileTeam.addRelation(CoreRelationTypes.Users_User, kayUser);
+         agileTeam.persist("Add Team Members to Agile Team");
+
+         // Create Backlog
+         JaxNewAgileBacklog backlog = getBacklog();
+         response = agileEp.createBacklog(DemoArtifactToken.SAW_Agile_Team.getId(), backlog);
          Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
-      }
 
-      // Add items to Sprint
-      JaxAgileItem completedItems = new JaxAgileItem();
-      completedItems.setSprintId(DemoArtifactToken.SAW_Sprint_1.getId());
-      completedItems.setSetSprint(true);
+         // Add items to backlog
+         Collection<IAtsWorkItem> items = new ArrayList<>();
+         for (IAtsWorkItem workItem : AtsApiService.get().getQueryService().createQuery(
+            WorkItemType.TeamWorkflow).isOfType(AtsArtifactTypes.DemoCodeTeamWorkflow,
+               AtsArtifactTypes.DemoReqTeamWorkflow, AtsArtifactTypes.DemoTestTeamWorkflow).getItems()) {
+            if (!workItem.getName().equals(DemoArtifactToken.SAW_NotesAnnotations_Code_TeamWf.getName())) {
+               items.add(workItem);
+            }
+         }
+         Assert.isTrue(items.size() > 0);
 
-      JaxAgileItem inworkItems = new JaxAgileItem();
-      inworkItems.setSprintId(DemoArtifactToken.SAW_Sprint_2.getId());
-      inworkItems.setSetSprint(true);
+         JaxAgileItem item = new JaxAgileItem();
+         item.setBacklogId(backlog.getId());
+         item.setSetBacklog(true);
+         for (IAtsWorkItem workItem : items) {
+            item.getIds().add(workItem.getId());
+         }
+         AgileWriterResult result = agileEp.updateItems(item);
+         Conditions.assertFalse(result.getResults().isErrors(), result.getResults().toString());
 
-      for (IAtsWorkItem workItem : items) {
-         if (workItem.getCurrentStateType().isCompleted()) {
-            completedItems.getIds().add(workItem.getId());
-         } else {
-            inworkItems.getIds().add(workItem.getId());
+         // Set backlog as user_defined member order
+         Artifact backlogArt = AtsApiService.get().getQueryServiceIde().getArtifact(backlog.getId());
+         RelationManager.setRelationOrder(backlogArt, AtsRelationTypes.Goal_Member, RelationSide.SIDE_B,
+            RelationSorter.USER_DEFINED, backlogArt.getRelatedArtifacts(AtsRelationTypes.Goal_Member));
+         backlogArt.persist("Set Backlog Order");
+
+         // Create Sprints
+         JaxNewAgileSprint sprint1 = newSprint(DemoArtifactToken.SAW_Sprint_1);
+         try (Response sprint1Response = agileEp.createSprint(sprint1.getTeamId(), sprint1)) {
+            Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
+         }
+         JaxNewAgileSprint sprint2 = newSprint(DemoArtifactToken.SAW_Sprint_2);
+         try (Response sprint2Response = agileEp.createSprint(sprint2.getTeamId(), sprint2)) {
+            Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
+         }
+
+         // Add items to Sprint
+         JaxAgileItem completedItems = new JaxAgileItem();
+         completedItems.setSprintId(DemoArtifactToken.SAW_Sprint_1.getId());
+         completedItems.setSetSprint(true);
+
+         JaxAgileItem inworkItems = new JaxAgileItem();
+         inworkItems.setSprintId(DemoArtifactToken.SAW_Sprint_2.getId());
+         inworkItems.setSetSprint(true);
+
+         for (IAtsWorkItem workItem : items) {
+            if (workItem.getCurrentStateType().isCompleted()) {
+               completedItems.getIds().add(workItem.getId());
+            } else {
+               inworkItems.getIds().add(workItem.getId());
+            }
+         }
+         result = agileEp.updateItems(inworkItems);
+         Conditions.assertFalse(result.getResults().isErrors(), result.getResults().toString());
+         result = agileEp.updateItems(completedItems);
+         Conditions.assertFalse(result.getResults().isErrors(), result.getResults().toString());
+
+         Artifact sprint1Art = AtsApiService.get().getQueryServiceIde().getArtifact(sprint1.getId());
+         RelationManager.setRelationOrder(sprint1Art, AtsRelationTypes.AgileSprintToItem_AtsItem, RelationSide.SIDE_B,
+            RelationSorter.USER_DEFINED, sprint1Art.getRelatedArtifacts(AtsRelationTypes.AgileSprintToItem_AtsItem));
+         sprint1Art.persist("Set sort order for Sprint 1");
+
+         Artifact sprint2Art = AtsApiService.get().getQueryServiceIde().getArtifact(sprint2.getId());
+         RelationManager.setRelationOrder(sprint2Art, AtsRelationTypes.AgileSprintToItem_AtsItem, RelationSide.SIDE_B,
+            RelationSorter.USER_DEFINED, sprint2Art.getRelatedArtifacts(AtsRelationTypes.AgileSprintToItem_AtsItem));
+         sprint2Art.persist("Set sort order for Sprint 2");
+
+         /**
+          * Setup Agile Team Story Names (this maps an assignee name to a story name for Agile Teams using stories
+          * instead of assignees in kanban
+          */
+         changes = AtsApiService.get().createChangeSet("Config Agile Team with points attr type - 2");
+         changes.addAttribute(agileTeam, AtsAttributeTypes.KanbanStoryName,
+            DemoUsers.Jason_Michael.getName() + ":Jason Rockstar Michael");
+         changes.execute();
+
+         // Transition First Sprint to completed
+         IAtsWorkItem sprint = AtsApiService.get().getQueryService().createQuery(WorkItemType.WorkItem).andIds(
+            DemoArtifactToken.SAW_Sprint_1.getId()).getItems().iterator().next();
+         TransitionData transData = new TransitionData("Transition Agile Stprint", Arrays.asList(sprint),
+            TeamState.Completed.getName(), null, null, null, TransitionOption.OverrideAssigneeCheck);
+         TransitionResults results = AtsApiService.get().getWorkItemService().transition(transData);
+         if (results.isErrors()) {
+            throw new OseeStateException("Exception transitioning sprint: %s", results.toString());
+         }
+
+         // Create Feature Groups
+         for (String name : Arrays.asList("Communications", "UI", "Documentation", "Framework")) {
+            JaxNewAgileFeatureGroup featureGroup = newFeatureGroup(name);
+            try (Response featGroup = agileEp.createFeatureGroup(DemoArtifactToken.SAW_Program.getId(), featureGroup)) {
+               Assert.isTrue(Response.Status.CREATED.getStatusCode() == featGroup.getStatus());
+            }
+         }
+         setupSprint2ForBurndown(DemoArtifactToken.SAW_Sprint_2.getId());
+      } finally {
+         if (response != null) {
+            response.close();
          }
       }
-      result = agileEp.updateItems(inworkItems);
-      Conditions.assertFalse(result.getResults().isErrors(), result.getResults().toString());
-      result = agileEp.updateItems(completedItems);
-      Conditions.assertFalse(result.getResults().isErrors(), result.getResults().toString());
-
-      Artifact sprint1Art = AtsApiService.get().getQueryServiceIde().getArtifact(sprint1.getId());
-      RelationManager.setRelationOrder(sprint1Art, AtsRelationTypes.AgileSprintToItem_AtsItem, RelationSide.SIDE_B,
-         RelationSorter.USER_DEFINED, sprint1Art.getRelatedArtifacts(AtsRelationTypes.AgileSprintToItem_AtsItem));
-      sprint1Art.persist("Set sort order for Sprint 1");
-
-      Artifact sprint2Art = AtsApiService.get().getQueryServiceIde().getArtifact(sprint2.getId());
-      RelationManager.setRelationOrder(sprint2Art, AtsRelationTypes.AgileSprintToItem_AtsItem, RelationSide.SIDE_B,
-         RelationSorter.USER_DEFINED, sprint2Art.getRelatedArtifacts(AtsRelationTypes.AgileSprintToItem_AtsItem));
-      sprint2Art.persist("Set sort order for Sprint 2");
-
-      /**
-       * Setup Agile Team Story Names (this maps an assignee name to a story name for Agile Teams using stories instead
-       * of assignees in kanban
-       */
-      changes = AtsApiService.get().createChangeSet("Config Agile Team with points attr type - 2");
-      changes.addAttribute(agileTeam, AtsAttributeTypes.KanbanStoryName,
-         DemoUsers.Jason_Michael.getName() + ":Jason Rockstar Michael");
-      changes.execute();
-
-      // Transition First Sprint to completed
-      IAtsWorkItem sprint = AtsApiService.get().getQueryService().createQuery(WorkItemType.WorkItem).andIds(
-         DemoArtifactToken.SAW_Sprint_1.getId()).getItems().iterator().next();
-      TransitionData transData = new TransitionData("Transition Agile Stprint", Arrays.asList(sprint),
-         TeamState.Completed.getName(), null, null, null, TransitionOption.OverrideAssigneeCheck);
-      TransitionResults results = AtsApiService.get().getWorkItemService().transition(transData);
-      if (results.isErrors()) {
-         throw new OseeStateException("Exception transitioning sprint: %s", results.toString());
-      }
-
-      // Create Feature Groups
-      for (String name : Arrays.asList("Communications", "UI", "Documentation", "Framework")) {
-         JaxNewAgileFeatureGroup featureGroup = newFeatureGroup(name);
-         try (Response featGroup = agileEp.createFeatureGroup(DemoArtifactToken.SAW_Program.getId(), featureGroup)) {
-            Assert.isTrue(Response.Status.CREATED.getStatusCode() == featGroup.getStatus());
-         }
-      }
-      setupSprint2ForBurndown(DemoArtifactToken.SAW_Sprint_2.getId());
    }
 
    private void setupSprint2ForBurndown(long secondSprintId) {
