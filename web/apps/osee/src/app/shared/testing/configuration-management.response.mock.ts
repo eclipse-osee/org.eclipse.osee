@@ -96,6 +96,7 @@ export const teamWorkflowDetailsMock: teamWorkflowDetails = {
 	parentBranch: { id: '4', name: 'Parent Branch' },
 	workingBranch: { id: '555', name: 'Working Branch', branchState: '0' },
 	branchesToCommitTo: [testBranchInfo],
+	branchEditable: true,
 };
 
 export const teamWorkflowTokenMock: teamWorkflowToken = {

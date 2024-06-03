@@ -15,7 +15,7 @@ import { teamWorkflowDetailsImpl } from '@osee/shared/types/configuration-manage
 import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, repeat, switchMap, take, tap } from 'rxjs';
-import { UiService } from '@osee/shared/services';
+import { BranchRoutedUIService, UiService } from '@osee/shared/services';
 import { AttributesEditorComponent } from '@osee/shared/components';
 import { TeamWorkflowService } from '../../../services/team-workflow.service';
 import { MatIcon } from '@angular/material/icon';
@@ -37,6 +37,8 @@ import { CommitManagerDialogComponent } from '@osee/commit/components';
 import { MatButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ExplorerPanel } from '../../../types/artifact-explorer';
 
 @Component({
 	selector: 'osee-team-workflow-tab',
@@ -87,6 +89,9 @@ export class TeamWorkflowTabComponent {
 	twService = inject(TeamWorkflowService);
 	txService = inject(TransactionService);
 	uiService = inject(UiService);
+	routeUrl = inject(ActivatedRoute);
+	router = inject(Router);
+	branchedRouter = inject(BranchRoutedUIService);
 	dialog = inject(MatDialog);
 
 	assigneesString = computed(() =>
@@ -229,5 +234,17 @@ export class TeamWorkflowTabComponent {
 				)
 			)
 			.subscribe();
+	}
+
+	openInArtifactExplorer() {
+		const panel: ExplorerPanel = 'Artifacts';
+		this.router.navigate([], {
+			queryParams: { panel: panel },
+			relativeTo: this.routeUrl,
+		});
+		this.branchedRouter.position = {
+			id: this.teamWorkflow().workingBranch.id,
+			type: 'working',
+		};
 	}
 }

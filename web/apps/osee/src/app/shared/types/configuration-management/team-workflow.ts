@@ -105,6 +105,7 @@ export interface teamWorkflowDetails extends teamWorkflow {
 	parentBranch: NamedId;
 	workingBranch: { id: string; name: string; branchState: string };
 	branchesToCommitTo: NamedId[];
+	branchEditable: boolean;
 }
 
 export class teamWorkflowDetailsImpl
@@ -116,6 +117,7 @@ export class teamWorkflowDetailsImpl
 	parentBranch: NamedId = { id: '-1', name: '' };
 	workingBranch = { id: '-1', name: '', branchState: '' };
 	branchesToCommitTo: NamedId[] = [];
+	branchEditable: boolean = false;
 }
 
 export type workDefinition = {

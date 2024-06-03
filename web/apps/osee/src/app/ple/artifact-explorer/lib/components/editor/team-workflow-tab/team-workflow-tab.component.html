@@ -68,24 +68,44 @@
 					<osee-create-action-working-branch-button
 						[teamWorkflow]="teamWorkflow()" />
 				} @else {
-					<button
-						mat-raised-button
-						class="tw-text-background-background"
-						[ngClass]="
-							allBranchesCommitted()
-								? 'tw-bg-success'
-								: 'tw-bg-primary'
-						"
-						[matTooltip]="
-							allBranchesCommitted()
-								? 'All commits are complete'
-								: 'There are ' +
-								  teamWorkflow().branchesToCommitTo.length +
-								  ' branches left to commit to'
-						"
-						(click)="openCommitManager()">
-						Open Commit Manager
-					</button>
+					<div class="tw-flex tw-items-center tw-gap-2">
+						<button
+							mat-raised-button
+							class="tw-text-background-background"
+							[ngClass]="
+								allBranchesCommitted()
+									? 'tw-bg-success'
+									: 'tw-bg-primary'
+							"
+							[matTooltip]="
+								allBranchesCommitted()
+									? 'All commits are complete'
+									: 'There are ' +
+									  teamWorkflow().branchesToCommitTo.length +
+									  ' branches left to commit to'
+							"
+							(click)="openCommitManager()">
+							Open Commit Manager
+						</button>
+						<div
+							[matTooltip]="
+								teamWorkflow().branchEditable
+									? 'Open branch in Artifact Explorer'
+									: 'Branch is not editable'
+							">
+							<button
+								mat-raised-button
+								class="tw-flex tw-justify-center [&_*]:tw-m-0"
+								[ngClass]="{
+									'tw-bg-primary tw-text-background':
+										teamWorkflow().branchEditable
+								}"
+								(click)="openInArtifactExplorer()"
+								[disabled]="!teamWorkflow().branchEditable">
+								<mat-icon>padding</mat-icon>
+							</button>
+						</div>
+					</div>
 				}
 			}
 		</div>
