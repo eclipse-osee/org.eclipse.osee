@@ -14,7 +14,9 @@
 package org.eclipse.osee.jdbc;
 
 import java.sql.JDBCType;
+
 import org.eclipse.osee.framework.jdk.core.type.NamedBase;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Ryan D. Brooks
@@ -24,21 +26,23 @@ public class SqlColumn extends NamedBase {
 	private final JDBCType type;
 	private final boolean isNull;
 	private final SqlTable table;
+	private final String valueConstraint;
 
 	public SqlColumn(SqlTable table, String name, JDBCType type) {
-		this(table, name, type, false, 0);
+		this(table, name, type, false, 0, Strings.EMPTY_STRING);
 	}
 
 	public SqlColumn(SqlTable table, String name, JDBCType type, boolean isNull) {
-		this(table, name, type, isNull, 0);
+		this(table, name, type, isNull, 0, Strings.EMPTY_STRING);
 	}
 
-	public SqlColumn(SqlTable table, String name, JDBCType type, boolean isNull, int length) {
+	public SqlColumn(SqlTable table, String name, JDBCType type, boolean isNull, int length, String valueConstraint) {
 		super(name);
 		this.table = table;
 		this.length = length;
 		this.type = type;
 		this.isNull = isNull;
+		this.valueConstraint = valueConstraint;
 	}
 
 	public JDBCType getType() {
@@ -55,5 +59,9 @@ public class SqlColumn extends NamedBase {
 
 	public SqlTable getTable() {
 		return table;
+	}
+
+	public String getValueConstraint() {
+		return valueConstraint;
 	}
 }

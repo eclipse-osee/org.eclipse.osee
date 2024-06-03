@@ -14,7 +14,9 @@
 package org.eclipse.osee.orcs;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
+
 import java.sql.JDBCType;
+
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -47,7 +49,7 @@ public class OseeDb {
    public static final SqlColumn ATTRIBUTE_ATRR_ID = ATTRIBUTE_TABLE.addColumn("ATTR_ID", JDBCType.BIGINT);
    public static final SqlColumn ATTRIBUTE_GAMMA_ID = ATTRIBUTE_TABLE.addColumn("GAMMA_ID", JDBCType.BIGINT);
    public static final SqlColumn ATTRIBUTE_ART_ID = ATTRIBUTE_TABLE.addColumn("ART_ID", JDBCType.BIGINT);
-   public static final SqlColumn ATTRIBUTE_ATTR_TYPE_ID = ATTRIBUTE_TABLE.addColumn("ATTR_TYPE_ID", JDBCType.BIGINT);
+   public static final SqlColumn ATTRIBUTE_ATTR_TYPE_ID = ATTRIBUTE_TABLE.addColumnWithValueConstraint("ATTR_TYPE_ID", JDBCType.BIGINT, false, "ATTR_TYPE_ID > 0");
    public static final SqlColumn ATTRIBUTE_VALUE = ATTRIBUTE_TABLE.addVarCharColumn("VALUE", 4000);
    public static final SqlColumn ATTRIBUTE_URI = ATTRIBUTE_TABLE.addVarCharColumn("URI", 200);
    static {
