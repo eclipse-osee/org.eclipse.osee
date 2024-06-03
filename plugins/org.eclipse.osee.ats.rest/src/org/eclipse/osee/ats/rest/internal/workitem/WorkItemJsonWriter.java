@@ -67,6 +67,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IRelationLink;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -507,18 +508,25 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       List<ArtifactToken> leads =
          orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.User).andRelatedTo(
             AtsRelationTypes.TeamLead_Team, teamWf.getTeamDefinition().getArtifactId()).asArtifactTokens();
+      BranchId branch = atsApi.getBranchService().getBranch(teamWf);
       BranchId parentBranch = BranchId.SENTINEL;
+      BranchState branchState = BranchState.DELETED; // Setting to deleted by default so branchEditable returns false if a working branch hasn't been created yet.
       CommitConfigItem parentBranchConfig =
          atsApi.getBranchService().getParentBranchConfigArtifactConfiguredToCommitTo(teamWf);
       if (parentBranchConfig != null) {
          parentBranch = parentBranchConfig.getBaselineBranchId();
       }
+      if (branch.isValid()) {
+         branchState = atsApi.getBranchService().getBranchState(branch);
+      }
 
       writer.writeObjectField("artifact", new ArtifactWithRelations(artReadable, orcsApi.tokenService(), false));
       writer.writeObjectField("leads", leads);
       writer.writeObjectField("parentBranch", parentBranch);
-      writer.writeObjectField("workingBranch", atsApi.getBranchService().getBranch(teamWf));
+      writer.writeObjectField("workingBranch", branch);
       writer.writeObjectField("branchesToCommitTo", atsApi.getBranchService().getBranchesLeftToCommit(teamWf));
+      writer.writeObjectField("branchEditable",
+         branchState.equals(BranchState.CREATED) || branchState.equals(BranchState.MODIFIED));
 
    }
 }

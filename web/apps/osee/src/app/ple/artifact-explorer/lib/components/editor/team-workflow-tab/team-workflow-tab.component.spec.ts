@@ -20,6 +20,8 @@ import { TransactionService } from '@osee/shared/transactions';
 import { transactionServiceMock } from '@osee/shared/transactions/testing';
 import { ActionService } from '@osee/configuration-management/services';
 import { actionServiceMock } from '@osee/configuration-management/testing';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('TeamWorkflowTabComponent', () => {
 	let component: TeamWorkflowTabComponent;
@@ -41,6 +43,10 @@ describe('TeamWorkflowTabComponent', () => {
 				{
 					provide: TransactionService,
 					useValue: transactionServiceMock,
+				},
+				{
+					provide: ActivatedRoute,
+					useValue: { queryParamMap: of(new Map<string, string>()) },
 				},
 			],
 		}).compileComponents();
