@@ -17,10 +17,12 @@ import java.sql.JDBCType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.eclipse.osee.framework.jdk.core.type.ChainingArrayList;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedBase;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
@@ -93,13 +95,17 @@ public class SqlTable extends NamedBase {
    public SqlColumn addColumn(String name, JDBCType type, boolean isNull) {
       return columns.addAndReturn(new SqlColumn(this, name, type, isNull));
    }
+   
+   public SqlColumn addColumnWithValueConstraint(String name, JDBCType type, boolean isNull, String valueConstraint) {
+	   return columns.addAndReturn(new SqlColumn(this, name, type, isNull, 0, valueConstraint));
+   };
 
    public SqlColumn addVarCharColumn(String name, int length) {
-      return columns.addAndReturn(new SqlColumn(this, name, JDBCType.VARCHAR, true, length));
+      return columns.addAndReturn(new SqlColumn(this, name, JDBCType.VARCHAR, true, length, Strings.EMPTY_STRING));
    }
 
    public SqlColumn addVarCharColumn(String name, int length, boolean isNull) {
-      return columns.addAndReturn(new SqlColumn(this, name, JDBCType.VARCHAR, false, length));
+      return columns.addAndReturn(new SqlColumn(this, name, JDBCType.VARCHAR, false, length, Strings.EMPTY_STRING));
    }
 
    public void setPrimaryKeyConstraint(SqlColumn... columns) {

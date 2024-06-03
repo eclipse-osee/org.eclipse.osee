@@ -16,6 +16,7 @@ package org.eclipse.osee.jdbc.internal;
 import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__MAX_TX_ROW_COUNT;
 import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__MAX_VARCHAR_LENGTH;
 import static org.eclipse.osee.jdbc.JdbcException.newJdbcException;
+
 import java.sql.CallableStatement;
 import java.sql.JDBCType;
 import java.sql.PreparedStatement;
@@ -27,6 +28,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -612,10 +614,20 @@ public final class JdbcClientImpl implements JdbcClient {
          strB.append(column.getLength());
          strB.append(")");
       }
+      
+      
       if (column.getName().equals("BUILD_ID")) {
          strB.append(" DEFAULT 0");
       } else if (!column.isNull()) {
          strB.append(" NOT NULL");
+      }
+      
+      if (!column.getValueConstraint().isEmpty()) {
+    	  if (getDbType().equals(JdbcDbType.oracle)) {
+              strB.append("CONSTRAINT " + column.getName()+"_CK CHECK ("+column.getValueConstraint()+")");
+           } else {
+         	  strB.append(" CHECK ("+column.getValueConstraint()+")");
+           }
       }
       return strB.toString();
    }
