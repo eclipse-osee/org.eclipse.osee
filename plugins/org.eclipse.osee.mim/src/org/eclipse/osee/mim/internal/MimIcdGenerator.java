@@ -840,7 +840,7 @@ public class MimIcdGenerator {
          "Description",
          "ICDCN"};
 
-      writer.writeRow(0, headers, CELLSTYLE.BOLD);
+      writer.writeRow(0, headers, CELLSTYLE.BOLD, CELLSTYLE.WRAP, CELLSTYLE.CENTERH);
 
       Object date =
          structure.getId() == 0 ? Strings.EMPTY_STRING : orcsApi.getQueryFactory().transactionQuery().andTxId(
@@ -873,15 +873,15 @@ public class MimIcdGenerator {
       writer.writeCell(1, 5,  values[5], getCellColor(structReadable, info.message, CoreAttributeTypes.InterfaceMessageRate.getId()).equals(
          CELLSTYLE.NONE) ? getCellColor(structReadable, info.message,
             CoreAttributeTypes.InterfaceMessagePeriodicity.getId()) : getCellColor(structReadable, info.message,
-               CoreAttributeTypes.InterfaceMessageRate.getId()));
-      writer.writeCell(1, 6,  values[6], getCellColor(structReadable, CoreAttributeTypes.InterfaceMinSimultaneity.getId()));
-      writer.writeCell(1, 7,  values[7], getCellColor(structReadable, CoreAttributeTypes.InterfaceMaxSimultaneity.getId()));
-      writer.writeCell(1, 8,  values[8], getCellColor(structReadable, info.numElementsChanged));
-      writer.writeCell(1, 9,  values[9], getCellColor(structReadable, info.structureSizeChanged));
-      writer.writeCell(1, 10, values[10], getCellColor(structReadable, false));
-      writer.writeCell(1, 11, values[11], getCellColor(structReadable, info.message, CoreAttributeTypes.InterfaceMessageNumber.getId()));
-      writer.writeCell(1, 12, values[12], getCellColor(structReadable, info.submessage, CoreAttributeTypes.InterfaceSubMessageNumber.getId()));
-      writer.writeCell(1, 13, values[13], getCellColor(structReadable, CoreAttributeTypes.InterfaceTaskFileType.getId()));
+               CoreAttributeTypes.InterfaceMessageRate.getId()), CELLSTYLE.CENTERH);
+      writer.writeCell(1, 6,  values[6], getCellColor(structReadable, CoreAttributeTypes.InterfaceMinSimultaneity.getId()), CELLSTYLE.CENTERH);
+      writer.writeCell(1, 7,  values[7], getCellColor(structReadable, CoreAttributeTypes.InterfaceMaxSimultaneity.getId()), CELLSTYLE.CENTERH);
+      writer.writeCell(1, 8,  values[8], getCellColor(structReadable, info.numElementsChanged), CELLSTYLE.CENTERH);
+      writer.writeCell(1, 9,  values[9], getCellColor(structReadable, info.structureSizeChanged), CELLSTYLE.CENTERH);
+      writer.writeCell(1, 10, values[10], getCellColor(structReadable, false), CELLSTYLE.CENTERH);
+      writer.writeCell(1, 11, values[11], getCellColor(structReadable, info.message, CoreAttributeTypes.InterfaceMessageNumber.getId()), CELLSTYLE.CENTERH);
+      writer.writeCell(1, 12, values[12], getCellColor(structReadable, info.submessage, CoreAttributeTypes.InterfaceSubMessageNumber.getId()), CELLSTYLE.CENTERH);
+      writer.writeCell(1, 13, values[13], getCellColor(structReadable, CoreAttributeTypes.InterfaceTaskFileType.getId()), CELLSTYLE.CENTERH);
       writer.writeCell(1, 14, values[14], getCellColor(structReadable, CoreAttributeTypes.Description.getId()), CELLSTYLE.WRAP);
       writer.writeCell(1, 15, values[15], getCellColor(structReadable, false));
       //@formatter:on
@@ -917,6 +917,7 @@ public class MimIcdGenerator {
          "Number of Bytes",
          "Ending Word",
          "Ending Byte",
+         "ICDCN",
          "Type",
          "Attribute Name",
          "Units",
@@ -925,8 +926,7 @@ public class MimIcdGenerator {
          "Description",
          "Enumerated Literals",
          "Notes",
-         "Default Value",
-         "ICDCN",};
+         "Default Value"};
       for (InterfaceSubMessageToken subMessage : subMessages) {
 
          List<InterfaceStructureToken> structs = new LinkedList<>();
@@ -955,7 +955,7 @@ public class MimIcdGenerator {
             resultWidths = printFirstRowInStructureSheet(writer, struct, info);
             columnWidths = getMaxLengthsArray(columnWidths, resultWidths);
 
-            writer.writeRow(3, elementHeaders, CELLSTYLE.BOLD);
+            writer.writeRow(3, elementHeaders, CELLSTYLE.BOLD, CELLSTYLE.WRAP, CELLSTYLE.CENTERH);
             if (struct.getId() == 0) {
                for (InterfaceStructureElementToken element : struct.getElements()) {
                   PlatformTypeToken platformType = element.getPlatformType();
@@ -987,11 +987,15 @@ public class MimIcdGenerator {
                writer.setColumnWidthInCharacters(i, columnWidths[i], 15000);
             }
 
-            writer.setColumnWidthInCharacters(1, 20, 10000); // Full Sheet Name/Begin Byte
-            writer.setColumnWidthInCharacters(3, 20, 10000); // Most Recent Update/Ending Word
-            writer.setColumnWidth(10, Math.max(writer.getColumnWidth(10), 15000)); // Element Description
-            writer.setColumnWidth(10, Math.max(writer.getColumnWidth(10), 15000)); // Element Description
-            writer.setColumnWidth(12, Math.max(writer.getColumnWidth(12), 10000)); // Element Notes
+            writer.setColumnWidthInCharacters(0, 10, 3000);
+            writer.setColumnWidthInCharacters(1, 10, 3000);
+            writer.setColumnWidthInCharacters(2, 10, 3000);
+            writer.setColumnWidthInCharacters(3, 10, 3000);
+            writer.setColumnWidthInCharacters(4, 10, 3000);
+            writer.setColumnWidth(9, Math.min(writer.getColumnWidth(9), 5000)); // Valid Range
+            writer.setColumnWidthInCharacters(10, 10, 4000); // Alterable
+            writer.setColumnWidth(11, Math.max(writer.getColumnWidth(10), 15000)); // Element Description
+            writer.setColumnWidth(13, Math.max(writer.getColumnWidth(12), 10000)); // Element Notes
             writer.setColumnWidth(14, Math.max(writer.getColumnWidth(14), 15000)); // Structure Description
          }
       }
@@ -1043,6 +1047,7 @@ public class MimIcdGenerator {
          byteSize,
          endWord,
          endByte,
+         "",
          dataType,
          elementName,
          units,
@@ -1052,19 +1057,20 @@ public class MimIcdGenerator {
          "n/a",
          notes};
 
-      writer.writeCell(rowIndex.get(), 0, values[0]);
-      writer.writeCell(rowIndex.get(), 1, values[1]);
-      writer.writeCell(rowIndex.get(), 2, values[2]);
-      writer.writeCell(rowIndex.get(), 3, values[3]);
-      writer.writeCell(rowIndex.get(), 4, values[4]);
+      writer.writeCell(rowIndex.get(), 0, values[0], CELLSTYLE.CENTERH, CELLSTYLE.LIGHT_BLUE);
+      writer.writeCell(rowIndex.get(), 1, values[1], CELLSTYLE.CENTERH, CELLSTYLE.LIGHT_BLUE);
+      writer.writeCell(rowIndex.get(), 2, values[2], CELLSTYLE.CENTERH, CELLSTYLE.LIGHT_BLUE);
+      writer.writeCell(rowIndex.get(), 3, values[3], CELLSTYLE.CENTERH, CELLSTYLE.LIGHT_BLUE);
+      writer.writeCell(rowIndex.get(), 4, values[4], CELLSTYLE.CENTERH, CELLSTYLE.LIGHT_BLUE);
       writer.writeCell(rowIndex.get(), 5, values[5]);
       writer.writeCell(rowIndex.get(), 6, values[6]);
       writer.writeCell(rowIndex.get(), 7, values[7]);
       writer.writeCell(rowIndex.get(), 8, values[8]);
       writer.writeCell(rowIndex.get(), 9, values[9]);
-      writer.writeCell(rowIndex.get(), 10, values[10], CELLSTYLE.WRAP);
-      writer.writeCell(rowIndex.get(), 11, values[11]);
+      writer.writeCell(rowIndex.get(), 10, values[10]);
+      writer.writeCell(rowIndex.get(), 11, values[11], CELLSTYLE.WRAP);
       writer.writeCell(rowIndex.get(), 12, values[12]);
+      writer.writeCell(rowIndex.get(), 13, values[13]);
 
       this.logicalTypes.add(dataType + ";" + byteSize);
       this.units.add(units);
@@ -1168,7 +1174,7 @@ public class MimIcdGenerator {
          CELLSTYLE.GREEN) ? CELLSTYLE.GREEN : enumChanged || enumLiteralsChanged ? CELLSTYLE.YELLOW : CELLSTYLE.NONE;
 
       CELLSTYLE byteStyle = elementAdded || getCellColor(elementToken.getArtifactReadable(), false).equals(
-         CELLSTYLE.GREEN) ? CELLSTYLE.GREEN : bytesChanged ? CELLSTYLE.YELLOW : CELLSTYLE.NONE;
+         CELLSTYLE.GREEN) ? CELLSTYLE.GREEN : bytesChanged ? CELLSTYLE.YELLOW : CELLSTYLE.LIGHT_BLUE;
 
       CELLSTYLE logicalTypeStyle = elementToken.isInterfaceElementBlockData() ? getStructureCellColor(structure,
          elementToken.getArtifactReadable(), CoreAttributeTypes.Description.getId(),
@@ -1192,16 +1198,16 @@ public class MimIcdGenerator {
          byteSize, // 2
          endWord, // 3
          endByte, // 4
-         dataType, // 5
-         elementToken.getName(), // 6
-         units, // 7
-         validRange, // 8
-         alterable, // 9
-         description, // 10
-         enumLiterals.trim(), // 11
-         notes, // 12
-         defaultValue, //13
-         icdcns}; // 14
+         icdcns, // 5
+         dataType, // 6
+         elementToken.getName(), // 7
+         units, // 8
+         validRange, // 9
+         alterable, // 10
+         description, // 11
+         enumLiterals.trim(), // 12
+         notes, // 13
+         defaultValue}; // 14
 
       if (startIndex < endIndex) {
          for (int i = startIndex; i < endIndex + 1; i++) {
@@ -1220,7 +1226,7 @@ public class MimIcdGenerator {
             values[4] = endByte;
 
             // Replace uses of $index with the current array index
-            values[10] = description.replace("$index", Integer.toString(i));
+            values[11] = description.replace("$index", Integer.toString(i));
 
             // elementToken inherited header information from its parent up in createStructureInfo() if applicable.
             // These values are not set on these elements naturally.
@@ -1243,26 +1249,26 @@ public class MimIcdGenerator {
                elementName += " " + i;
             }
 
-            values[6] = elementName;
+            values[7] = elementName;
 
             //@formatter:off
-            writer.writeCell(rowIndex.get(), 0, values[0], arrByteStyle);
-            writer.writeCell(rowIndex.get(), 1, values[1], arrByteStyle);
-            writer.writeCell(rowIndex.get(), 2, values[2], arrByteStyle);
-            writer.writeCell(rowIndex.get(), 3, values[3], arrByteStyle);
-            writer.writeCell(rowIndex.get(), 4, values[4], arrByteStyle);
-            writer.writeCell(rowIndex.get(), 5, values[5], arrLogicalTypeStyle);
+            writer.writeCell(rowIndex.get(), 0, values[0], arrByteStyle, CELLSTYLE.CENTERH);
+            writer.writeCell(rowIndex.get(), 1, values[1], arrByteStyle, CELLSTYLE.CENTERH);
+            writer.writeCell(rowIndex.get(), 2, values[2], arrByteStyle, CELLSTYLE.CENTERH);
+            writer.writeCell(rowIndex.get(), 3, values[3], arrByteStyle, CELLSTYLE.CENTERH);
+            writer.writeCell(rowIndex.get(), 4, values[4], arrByteStyle, CELLSTYLE.CENTERH);
+            writer.writeCell(rowIndex.get(), 5, values[5]);
+            writer.writeCell(rowIndex.get(), 6, values[6], arrLogicalTypeStyle);
             if (!elementToken.isInterfaceElementBlockData()) {
-               writer.writeCell(rowIndex.get(), 6, values[6], getStructureCellColor(structure, elementToken.getArtifactReadable(), CoreAttributeTypes.Name.getId(), i));
-               writer.writeCell(rowIndex.get(), 7, values[7], arrPTypeStyle.equals(CELLSTYLE.GREEN) || arrPTypeStyle.equals(CELLSTYLE.YELLOW) ? arrPUnitsStyle : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeUnits.getId(), i));
-               writer.writeCell(rowIndex.get(), 8, values[8], arrPTypeStyle.equals(CELLSTYLE.GREEN) || arrPTypeStyle.equals(CELLSTYLE.YELLOW) ? arrPRangeStyle : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeMinval.getId(), i).equals(CELLSTYLE.YELLOW) ? CELLSTYLE.YELLOW : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeMaxval.getId(), i), CELLSTYLE.WRAP);
-               writer.writeCell(rowIndex.get(), 9, values[9], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfaceElementAlterable.getId(), i));
-               writer.writeCell(rowIndex.get(), 10, values[10], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.Description.getId(), i), CELLSTYLE.WRAP);
-               writer.writeCell(rowIndex.get(), 11, values[11], arrEnumStyle, CELLSTYLE.WRAP);
-               writer.writeCell(rowIndex.get(), 12, values[12], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.Notes.getId(), i), CELLSTYLE.WRAP);
-               writer.writeCell(rowIndex.get(), 13, values[13], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfaceDefaultValue.getId(), i));
+               writer.writeCell(rowIndex.get(), 7, values[7], getStructureCellColor(structure, elementToken.getArtifactReadable(), CoreAttributeTypes.Name.getId(), i));
+               writer.writeCell(rowIndex.get(), 8, values[8], arrPTypeStyle.equals(CELLSTYLE.GREEN) || arrPTypeStyle.equals(CELLSTYLE.YELLOW) ? arrPUnitsStyle : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeUnits.getId(), i));
+               writer.writeCell(rowIndex.get(), 9, values[9], arrPTypeStyle.equals(CELLSTYLE.GREEN) || arrPTypeStyle.equals(CELLSTYLE.YELLOW) ? arrPRangeStyle : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeMinval.getId(), i).equals(CELLSTYLE.YELLOW) ? CELLSTYLE.YELLOW : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeMaxval.getId(), i), CELLSTYLE.WRAP);
+               writer.writeCell(rowIndex.get(), 10, values[10], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfaceElementAlterable.getId(), i), CELLSTYLE.CENTERH);
+               writer.writeCell(rowIndex.get(), 11, values[11], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.Description.getId(), i), CELLSTYLE.WRAP);
+               writer.writeCell(rowIndex.get(), 12, values[12], arrEnumStyle, CELLSTYLE.WRAP);
+               writer.writeCell(rowIndex.get(), 13, values[13], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.Notes.getId(), i), CELLSTYLE.WRAP);
+               writer.writeCell(rowIndex.get(), 14, values[14], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfaceDefaultValue.getId(), i));
             }
-            writer.writeCell(rowIndex.get(), 14, values[14]);
             //@formatter:on
 
             byteLocation = byteLocation + byteSize;
@@ -1272,7 +1278,7 @@ public class MimIcdGenerator {
             endByte = Math.max(0, Math.floorMod(byteLocation + byteSize - 1, 4));
 
             if (elementToken.isInterfaceElementBlockData()) {
-               writer.addMergedRegion(rowIndex.get(), rowIndex.get(), 5, 12);
+               writer.addMergedRegion(rowIndex.get(), rowIndex.get(), 6, 13);
             }
 
             rowIndex.getAndAdd(1);
@@ -1289,7 +1295,7 @@ public class MimIcdGenerator {
                      arrayDescriptions.get(elementToken.getArtifactId()).stream().filter(
                         d -> d.getOrdinal() <= elementIndexLong).collect(Collectors.toList());
                   if (descriptions.size() > 0) {
-                     values[10] = descriptions.get(descriptions.size() - 1).getName();
+                     values[11] = descriptions.get(descriptions.size() - 1).getName();
                   }
                }
                if (!elementToken.getInterfaceElementWriteArrayHeaderName()) {
@@ -1300,33 +1306,33 @@ public class MimIcdGenerator {
                   } else {
                      elementName += elementToken.getInterfaceElementArrayIndexDelimiterOne() + elementIndex;
                   }
-                  values[6] = elementName;
+                  values[7] = elementName;
                }
             }
          }
 
          //@formatter:off
-         writer.writeCell(rowIndex.get(), 0, values[0], byteStyle);
-         writer.writeCell(rowIndex.get(), 1, values[1], byteStyle);
-         writer.writeCell(rowIndex.get(), 2, values[2], byteStyle);
-         writer.writeCell(rowIndex.get(), 3, values[3], byteStyle);
-         writer.writeCell(rowIndex.get(), 4, values[4], byteStyle);
-         writer.writeCell(rowIndex.get(), 5, values[5], logicalTypeStyle);
+         writer.writeCell(rowIndex.get(), 0, values[0], byteStyle, CELLSTYLE.CENTERH);
+         writer.writeCell(rowIndex.get(), 1, values[1], byteStyle, CELLSTYLE.CENTERH);
+         writer.writeCell(rowIndex.get(), 2, values[2], byteStyle, CELLSTYLE.CENTERH);
+         writer.writeCell(rowIndex.get(), 3, values[3], byteStyle, CELLSTYLE.CENTERH);
+         writer.writeCell(rowIndex.get(), 4, values[4], byteStyle, CELLSTYLE.CENTERH);
+         writer.writeCell(rowIndex.get(), 5, values[5]);
+         writer.writeCell(rowIndex.get(), 6, values[6], logicalTypeStyle);
          if (!elementToken.isInterfaceElementBlockData()) {
-            writer.writeCell(rowIndex.get(), 6, values[6], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.Name.getId(), 0));
-            writer.writeCell(rowIndex.get(), 7, values[7], pTypeStyle.equals(CELLSTYLE.GREEN) || pTypeStyle.equals(CELLSTYLE.YELLOW) ? pUnitsStyle : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeUnits.getId(), 0));
-            writer.writeCell(rowIndex.get(), 8, values[8], pTypeStyle.equals(CELLSTYLE.GREEN) || pTypeStyle.equals(CELLSTYLE.YELLOW) ? pRangeStyle : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeMinval.getId(), 0).equals(CELLSTYLE.YELLOW) ? CELLSTYLE.YELLOW : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeMaxval.getId(), 0), CELLSTYLE.WRAP);
-            writer.writeCell(rowIndex.get(), 9, values[9], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfaceElementAlterable.getId(), 0));
-            writer.writeCell(rowIndex.get(), 10, values[10], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.Description.getId(), 0), CELLSTYLE.WRAP);
-            writer.writeCell(rowIndex.get(), 11, values[11], enumStyle, CELLSTYLE.WRAP);
-            writer.writeCell(rowIndex.get(), 12, values[12], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.Notes.getId(), 0), CELLSTYLE.WRAP);
-            writer.writeCell(rowIndex.get(), 13, values[13], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfaceDefaultValue.getId(), 0));
+            writer.writeCell(rowIndex.get(), 7, values[7], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.Name.getId(), 0));
+            writer.writeCell(rowIndex.get(), 8, values[8], pTypeStyle.equals(CELLSTYLE.GREEN) || pTypeStyle.equals(CELLSTYLE.YELLOW) ? pUnitsStyle : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeUnits.getId(), 0));
+            writer.writeCell(rowIndex.get(), 9, values[9], pTypeStyle.equals(CELLSTYLE.GREEN) || pTypeStyle.equals(CELLSTYLE.YELLOW) ? pRangeStyle : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeMinval.getId(), 0).equals(CELLSTYLE.YELLOW) ? CELLSTYLE.YELLOW : getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfacePlatformTypeMaxval.getId(), 0), CELLSTYLE.WRAP);
+            writer.writeCell(rowIndex.get(), 10, values[10], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfaceElementAlterable.getId(), 0),CELLSTYLE.CENTERH);
+            writer.writeCell(rowIndex.get(), 11, values[11], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.Description.getId(), 0), CELLSTYLE.WRAP);
+            writer.writeCell(rowIndex.get(), 12, values[12], enumStyle, CELLSTYLE.WRAP);
+            writer.writeCell(rowIndex.get(), 13, values[13], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.Notes.getId(), 0), CELLSTYLE.WRAP);
+            writer.writeCell(rowIndex.get(), 14, values[14], getStructureCellColor(structure,elementToken.getArtifactReadable(), CoreAttributeTypes.InterfaceDefaultValue.getId(), 0));
          }
-         writer.writeCell(rowIndex.get(), 14, values[14]);
          //@formatter:on
 
          if (elementToken.isInterfaceElementBlockData()) {
-            writer.addMergedRegion(rowIndex.get(), rowIndex.get(), 5, 12);
+            writer.addMergedRegion(rowIndex.get(), rowIndex.get(), 6, 13);
          }
 
          rowIndex.getAndAdd(1);
