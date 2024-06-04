@@ -74,6 +74,10 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 -   Run:
     -   `pnpm -v`
 
+### Set pnpm Store
+-   Run:
+    -   `pnpm config set store <path/to/.pnpm-store>`
+
 ### Install Angular CLI
 
 -   Run:
