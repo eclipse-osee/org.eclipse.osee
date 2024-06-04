@@ -284,6 +284,10 @@ public class ExcelWorkbookWriter {
                font.setColor(IndexedColors.BLUE.getIndex());
                font.setUnderline(Font.U_SINGLE);
                break;
+            case LIGHT_BLUE:
+               style.setFillForegroundColor(IndexedColors.LIGHT_CORNFLOWER_BLUE.getIndex());
+               style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+               break;
             case LIGHT_GREY:
                style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
                style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
@@ -329,6 +333,7 @@ public class ExcelWorkbookWriter {
       CENTERV,
       GREEN,
       HYPERLINK,
+      LIGHT_BLUE,
       LIGHT_GREY,
       LIGHT_RED,
       NONE,
