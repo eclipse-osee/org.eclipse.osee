@@ -14,25 +14,31 @@
 package org.eclipse.osee.ats.ide.editor.tab.workflow.section.goal;
 
 import org.eclipse.osee.ats.api.util.AtsImage;
+import org.eclipse.osee.ats.api.workflow.world.WorldResults;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
-import org.eclipse.swt.program.Program;
+import org.eclipse.osee.framework.core.util.JsonUtil;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 
 /**
  * @author Donald G. Dunne
  */
-public class OpenWebViewSavedAction extends AbstractWebExportAction {
+public class OpenWebViewJsonPublishedAction extends AbstractWebExportAction {
 
-   public OpenWebViewSavedAction(GoalArtifact goalArt, WorkflowEditor editor) {
-      super("Open Web View - Saved", goalArt, editor, AtsImage.GLOBE);
+   public OpenWebViewJsonPublishedAction(GoalArtifact goalArt, WorkflowEditor editor) {
+      super("Open Web Json Data - Published (admin)", goalArt, editor, AtsImage.GLOBE);
    }
 
    @Override
    public void runWithException() {
-      String webServer = AtsApiService.get().getWebBasepath();
-      String url = String.format("%s/world?collId=%s", webServer, goalArt.getIdString());
-      Program.launch(url);
+      if (AtsApiService.get().getStoreService().isProductionDb()) {
+         WorldResults wr =
+            AtsApiService.get().getServerEndpoints().getWorldEndpoint().getCollectionJsonCustomizedPublished(
+               goalArt.getArtifactId());
+         ResultsEditor.open("Results", getText(), AHTML.simpleJsonPage(JsonUtil.toJson(wr)));
+      }
    }
 
 }

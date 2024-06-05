@@ -22,16 +22,16 @@ import org.eclipse.swt.program.Program;
 /**
  * @author Donald G. Dunne
  */
-public class OpenWebViewJsonSavedAction extends AbstractWebExportAction {
+public class OpenWebViewPublishedAction extends AbstractWebExportAction {
 
-   public OpenWebViewJsonSavedAction(GoalArtifact goalArt, WorkflowEditor editor) {
-      super("Open Web Json Data - Saved (admin)", goalArt, editor, AtsImage.GLOBE);
+   public OpenWebViewPublishedAction(GoalArtifact goalArt, WorkflowEditor editor) {
+      super("Open Web View - Published", goalArt, editor, AtsImage.GLOBE);
    }
 
    @Override
    public void runWithException() {
-      String server = AtsApiService.get().getApplicationServerBase();
-      String url = String.format("%s/ats/world/coll/%s/worldresults", server, goalArt.getIdString());
+      String webServer = AtsApiService.get().getWebBasepath();
+      String url = String.format("%s/world?collId=%s", webServer, goalArt.getIdString());
       Program.launch(url);
    }
 
