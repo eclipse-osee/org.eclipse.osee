@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
+import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IArtifactResolver;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsHealthService;
@@ -148,6 +149,14 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
    JdbcService getJdbcService();
 
    String getApplicationServerBase();
+
+   default String getApplicationServerWebBase() {
+      return getApplicationServerBase() + "/osee";
+   }
+
+   default String getWebBasepath() {
+      return getConfigValue(AtsUtil.WEB_BASEPATH_KEY);
+   }
 
    Collection<IAgileSprintHtmlOperation> getAgileSprintHtmlReportOperations();
 

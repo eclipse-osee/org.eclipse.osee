@@ -122,6 +122,8 @@ public class AtsDbConfigBase {
 
       getOrCreateAtsConfig(atsApi);
 
+      atsApi.setConfigValue(AtsUtil.WEB_BASEPATH_KEY, "http://localhost:4200/");
+
       createUserCreationDisabledConfig();
 
       createAndconfigureProcessesBranchAndDemoPeerChecklist();

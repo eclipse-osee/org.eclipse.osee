@@ -36,8 +36,8 @@ public class OpenWebViewLegacyHtmlAction extends AbstractWebExportAction {
          return;
       }
 
-      String url = String.format("%s/ats/world/coll/%s/ui/%s", AtsApiService.get().getApplicationServerBase(),
-         goalArt.getIdString(), custGuid);
+      String server = AtsApiService.get().getApplicationServerBase();
+      String url = String.format("%s/ats/world/coll/%s/ui/%s", server, goalArt.getIdString(), custGuid);
       Program.launch(url);
    }
 
