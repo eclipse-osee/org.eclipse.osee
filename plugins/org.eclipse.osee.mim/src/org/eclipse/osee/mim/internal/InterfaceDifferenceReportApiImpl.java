@@ -328,8 +328,9 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
          }
 
          // For platform types, attribute changes should be added to the element's attribute change list
+         // Do not add attributes for new platform types because those should have been included during the relation change processing above.
          // Do not add platform type name changes since the name is not important to the ICD
-         if (CoreArtifactTypes.InterfacePlatformType.equals(artType)) {
+         if (CoreArtifactTypes.InterfacePlatformType.equals(artType) && !item.isAdded()) {
             List<ChangeReportRowDto> attrChanges = item.getAttributeChanges().stream().filter(
                a -> !CoreAttributeTypes.Name.getName().equals(a.getItemType())).collect(Collectors.toList());
             elementItems.stream().forEach(e -> e.getAttributeChanges().addAll(attrChanges));
