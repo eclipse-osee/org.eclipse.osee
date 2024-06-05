@@ -36,7 +36,10 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -49,6 +52,7 @@ public class ExcelWorkbookWriter {
 
    private final OutputStream outputStream;
    private final Workbook workbook;
+   private final WorkbookFormat format;
 
    private final Map<String, Sheet> sheets;
    private final Map<String, CellStyle> cellStyles;
@@ -59,6 +63,7 @@ public class ExcelWorkbookWriter {
    public ExcelWorkbookWriter(OutputStream outputStream, WorkbookFormat format) {
       this.outputStream = outputStream;
       this.workbook = format.equals(WorkbookFormat.XLS) ? new HSSFWorkbook() : new XSSFWorkbook();
+      this.format = format;
       this.sheets = new HashMap<>();
       this.cellStyles = new HashMap<>();
    }
@@ -92,6 +97,15 @@ public class ExcelWorkbookWriter {
       } else {
          throw new OseeArgumentException("No sheet found with name " + sheetName);
       }
+   }
+
+   public void setTabColor(CELLSTYLE style) {
+      if (!isXSSF() || style == null || style.equals(CELLSTYLE.NONE)) {
+         return;
+      }
+      XSSFSheet sheet = (XSSFSheet) activeSheet;
+      IndexedColors color = getIndexedColor(style);
+      sheet.setTabColor(new XSSFColor(color, ((XSSFWorkbook) workbook).getStylesSource().getIndexedColors()));
    }
 
    public List<String> getSheetNames() {
@@ -277,7 +291,7 @@ public class ExcelWorkbookWriter {
                style.setVerticalAlignment(VerticalAlignment.CENTER);
                break;
             case GREEN:
-               style.setFillForegroundColor(IndexedColors.LIGHT_GREEN.getIndex());
+               style.setFillForegroundColor(getIndexedColor(s).getIndex());
                style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
                break;
             case HYPERLINK:
@@ -285,22 +299,31 @@ public class ExcelWorkbookWriter {
                font.setUnderline(Font.U_SINGLE);
                break;
             case LIGHT_BLUE:
-               style.setFillForegroundColor(IndexedColors.LIGHT_CORNFLOWER_BLUE.getIndex());
+               style.setFillForegroundColor(getIndexedColor(s).getIndex());
+               style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+               break;
+            case LIGHT_BLUE_XLSX:
+               if (!isXSSF()) {
+                  break;
+               }
+               byte[] rgb = new byte[] {(byte) 217, (byte) 225, (byte) 242}; // Matches Excel's Accent 1 20%
+               XSSFColor color = new XSSFColor(rgb, getXSSFWorkbook().getStylesSource().getIndexedColors());
+               ((XSSFCellStyle) style).setFillForegroundColor(color);
                style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
                break;
             case LIGHT_GREY:
-               style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+               style.setFillForegroundColor(getIndexedColor(s).getIndex());
                style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
                break;
             case LIGHT_RED:
-               style.setFillForegroundColor(IndexedColors.CORAL.getIndex());
+               style.setFillForegroundColor(getIndexedColor(s).getIndex());
                style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
                break;
             case WRAP:
                style.setWrapText(true);
                break;
             case YELLOW:
-               style.setFillForegroundColor(IndexedColors.LIGHT_YELLOW.getIndex());
+               style.setFillForegroundColor(getIndexedColor(s).getIndex());
                style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
                break;
             default:
@@ -312,6 +335,23 @@ public class ExcelWorkbookWriter {
       cellStyles.put(styleString, style);
 
       return style;
+   }
+
+   private IndexedColors getIndexedColor(CELLSTYLE style) {
+      switch (style) {
+         case GREEN:
+            return IndexedColors.LIGHT_GREEN;
+         case LIGHT_BLUE:
+            return IndexedColors.LIGHT_CORNFLOWER_BLUE;
+         case LIGHT_GREY:
+            return IndexedColors.GREY_25_PERCENT;
+         case LIGHT_RED:
+            return IndexedColors.CORAL;
+         case YELLOW:
+            return IndexedColors.LIGHT_YELLOW;
+         default:
+            return IndexedColors.WHITE;
+      }
    }
 
    public Sheet getActiveSheet() {
@@ -338,6 +378,7 @@ public class ExcelWorkbookWriter {
       LIGHT_RED,
       NONE,
       WRAP,
+      LIGHT_BLUE_XLSX,
       YELLOW
    }
 
@@ -356,6 +397,14 @@ public class ExcelWorkbookWriter {
          throw new OseeArgumentException(
             "No sheet is active. Please create a sheet or set a sheet as active before writing.");
       }
+   }
+
+   private boolean isXSSF() {
+      return this.format.equals(WorkbookFormat.XLSX);
+   }
+
+   private XSSFWorkbook getXSSFWorkbook() {
+      return (XSSFWorkbook) workbook;
    }
 
 }

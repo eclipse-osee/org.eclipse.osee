@@ -527,6 +527,9 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
    @Override
    public InterfaceStructureToken getMessageHeaderStructure(BranchId branch, InterfaceConnection connection,
       InterfaceMessageToken message) {
+      if (message.isInvalid()) {
+         return InterfaceStructureToken.SENTINEL;
+      }
       boolean shouldValidate = connection.getTransportType().isByteAlignValidation();
       int validationSize = connection.getTransportType().getByteAlignValidationSize();
       ApplicabilityToken applic = message.getApplicability();
