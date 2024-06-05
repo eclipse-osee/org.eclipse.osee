@@ -14,11 +14,14 @@
 package org.eclipse.osee.ats.ide.editor.tab.workflow.section.goal;
 
 import org.eclipse.osee.ats.api.util.AtsImage;
+import org.eclipse.osee.ats.api.workflow.world.WorldResults;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
+import org.eclipse.osee.framework.core.util.JsonUtil;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.swt.program.Program;
+import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 
 /**
  * @author Donald G. Dunne
@@ -36,9 +39,11 @@ public class OpenWebViewJsonLiveAction extends AbstractWebExportAction {
          return;
       }
 
-      String server = AtsApiService.get().getApplicationServerBase();
-      String url = String.format("%s/ats/world/coll/%s/json/%s", server, goalArt.getIdString(), custGuid);
-      Program.launch(url);
+      if (AtsApiService.get().getStoreService().isProductionDb()) {
+         WorldResults wr = AtsApiService.get().getServerEndpoints().getWorldEndpoint().getCollectionJsonCustomized(
+            goalArt.getArtifactId(), custGuid);
+         ResultsEditor.open("Results", getText(), AHTML.simpleJsonPage(JsonUtil.toJson(wr)));
+      }
    }
 
 }

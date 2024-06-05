@@ -221,7 +221,7 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
          rd.errorf("Customization %s does not exist", customizeGuid);
       } else {
          rd.logf("Customization: %s - %s", customization.getName(), customization.getGuid());
-
+         rd.log("Retrieved world json data live from collector artifact with customization");
          getCustomizedJsonTable(atsApiServer, customization, collectorItems, wr, rd);
       }
       return wr;
