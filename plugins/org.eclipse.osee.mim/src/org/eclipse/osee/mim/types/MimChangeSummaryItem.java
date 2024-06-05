@@ -136,6 +136,10 @@ public class MimChangeSummaryItem {
       return attributeChanges.stream().filter(attr -> attr.getItemTypeId().equals(attributeId)).findAny().isPresent();
    }
 
+   public void removeAttributeChanges(List<Long> attributeIds) {
+      attributeChanges.removeIf(a -> attributeIds.contains(a.getItemTypeId()));
+   }
+
    public List<ChangeReportRowDto> getRelationChanges() {
       return relationChanges;
    }

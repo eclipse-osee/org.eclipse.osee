@@ -587,6 +587,19 @@ public class MimIcdGenerator {
          int firstRow = rowIndex;
          writer.writeCell(rowIndex, 4, "Modified", CELLSTYLE.YELLOW, CELLSTYLE.CENTERV);
          writer.writeCell(rowIndex, 5, "Attributes", CELLSTYLE.CENTERV);
+
+         // For elements, remove attribute changes that should not show in the ICD
+         if (item.getArtType().equals(CoreArtifactTypes.InterfaceDataElement) || item.getArtType().equals(
+            CoreArtifactTypes.InterfaceDataElementArray)) {
+            item.removeAttributeChanges(Arrays.asList(CoreAttributeTypes.InterfaceElementArrayHeader.getId(),
+               CoreAttributeTypes.InterfaceElementWriteArrayHeaderName.getId(),
+               CoreAttributeTypes.InterfaceElementArrayIndexOrder.getId(),
+               CoreAttributeTypes.InterfaceElementBlockData.getId(),
+               CoreAttributeTypes.InterfaceElementArrayIndexDelimiterOne.getId(),
+               CoreAttributeTypes.InterfaceElementArrayIndexDelimiterTwo.getId(),
+               CoreAttributeTypes.InterfacePlatformTypeValidRangeDescription.getId()));
+         }
+
          for (ChangeReportRowDto change : item.getAttributeChanges()) {
             writer.writeCell(rowIndex, 6, change.getItemType());
             writer.writeCell(rowIndex, 7, change.getIsValue(), CELLSTYLE.WRAP);
