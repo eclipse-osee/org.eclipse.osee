@@ -274,7 +274,9 @@ class WorldComponent implements AfterViewInit {
 		this.params
 			.pipe(
 				take(1),
-				tap((params) => this.openLink(`/world?collId=${params.collId}`))
+				tap((params) =>
+					this.openLink(`/osee/world?collId=${params.collId}`)
+				)
 			)
 			.subscribe();
 	}

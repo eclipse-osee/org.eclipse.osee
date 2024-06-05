@@ -30,8 +30,8 @@ public class OpenWebViewJsonSavedAction extends AbstractWebExportAction {
 
    @Override
    public void runWithException() {
-      String url = String.format("%s/ats/world/coll/%s/worldresults", AtsApiService.get().getApplicationServerBase(),
-         goalArt.getIdString());
+      String server = AtsApiService.get().getApplicationServerBase();
+      String url = String.format("%s/ats/world/coll/%s/worldresults", server, goalArt.getIdString());
       Program.launch(url);
    }
 

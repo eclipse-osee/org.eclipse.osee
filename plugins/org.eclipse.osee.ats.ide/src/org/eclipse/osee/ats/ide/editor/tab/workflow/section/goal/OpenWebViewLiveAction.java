@@ -36,9 +36,8 @@ public class OpenWebViewLiveAction extends AbstractWebExportAction {
          return;
       }
 
-      String server = AtsApiService.get().getApplicationServerBase();
-      server = server.replaceFirst(":[0-9]+$", ":4200");
-      String url = String.format("%s/world?collId=%s&custId=%s", server, goalArt.getIdString(), custGuid);
+      String webServer = AtsApiService.get().getWebBasepath();
+      String url = String.format("%s/world?collId=%s&custId=%s", webServer, goalArt.getIdString(), custGuid);
       Program.launch(url);
    }
 

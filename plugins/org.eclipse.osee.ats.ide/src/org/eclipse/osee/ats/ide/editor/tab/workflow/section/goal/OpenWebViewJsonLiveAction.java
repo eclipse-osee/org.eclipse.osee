@@ -36,8 +36,8 @@ public class OpenWebViewJsonLiveAction extends AbstractWebExportAction {
          return;
       }
 
-      String url = String.format("%s/ats/world/coll/%s/json/%s", AtsApiService.get().getApplicationServerBase(),
-         goalArt.getIdString(), custGuid);
+      String server = AtsApiService.get().getApplicationServerBase();
+      String url = String.format("%s/ats/world/coll/%s/json/%s", server, goalArt.getIdString(), custGuid);
       Program.launch(url);
    }
 

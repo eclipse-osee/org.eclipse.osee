@@ -37,9 +37,8 @@ public class OpenDifferencesWebViewAction extends AbstractWebExportAction {
          return;
       }
 
-      String server = AtsApiService.get().getApplicationServerBase();
-      server = server.replaceFirst(":[0-9]+$", ":4200");
-      String url = String.format("%s/world?collId=%s&custId=%s&diff=true", server, goalArt.getIdString(), custGuid);
+      String webServer = AtsApiService.get().getWebBasepath();
+      String url = String.format("%s/world?collId=%s&custId=%s&diff=true", webServer, goalArt.getIdString(), custGuid);
       Program.launch(url);
    }
 
