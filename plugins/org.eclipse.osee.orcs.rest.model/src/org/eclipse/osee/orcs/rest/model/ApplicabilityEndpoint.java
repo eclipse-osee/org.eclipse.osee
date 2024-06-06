@@ -29,7 +29,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityUseResultToken;
-import org.eclipse.osee.framework.core.applicability.BatConfigFile;
+import org.eclipse.osee.framework.core.applicability.BatFile;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.applicability.ProductTypeDefinition;
 import org.eclipse.osee.framework.core.data.ApplicabilityData;
@@ -474,6 +474,6 @@ public interface ApplicabilityEndpoint {
    @GET
    @Path("block")
    @Produces(MediaType.APPLICATION_JSON)
-   Collection<BatConfigFile> getBlockApplicabilityToolConfiguration(
+   Collection<BatFile> getBlockApplicabilityToolConfiguration(
       @QueryParam("productType") @DefaultValue("") String productType);
 }

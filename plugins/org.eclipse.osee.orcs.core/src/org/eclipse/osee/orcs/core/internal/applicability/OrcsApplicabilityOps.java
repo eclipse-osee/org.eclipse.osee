@@ -43,6 +43,7 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
 import org.eclipse.osee.framework.core.applicability.BatConfigFile;
+import org.eclipse.osee.framework.core.applicability.BatGroupFile;
 import org.eclipse.osee.framework.core.applicability.BranchViewDefinition;
 import org.eclipse.osee.framework.core.applicability.ExtendedFeatureDefinition;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
@@ -3453,31 +3454,50 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       return prefix + content;
    }
 
-   @Override
-   public Collection<BatConfigFile> getBatConfigurationFile(BranchId branchId, ArtifactReadable art,
+   private BatConfigFile getCIConfigurationFile(BranchId branchId, ArtifactReadable art,
       List<ArtifactReadable> featureArts) {
-      /**
-       * @TODO implement groups once supported in BAT tool
-       */
       Map<String, List<String>> namedViewApplicabilityMap =
          orcsApi.getQueryFactory().applicabilityQuery().getNamedViewApplicabilityMap(branchId, art);
       orcsApi.jaxRsApi().getObjectMapper();
       BatConfigFile configFile = new BatConfigFile(art, namedViewApplicabilityMap, featureArts);
+      return configFile;
+   }
+
+   private BatGroupFile getCIConfigurationGroupFile(BranchId branchId, ArtifactReadable art,
+      List<ArtifactReadable> featureArts) {
+      Map<String, List<String>> namedViewApplicabilityMap =
+         orcsApi.getQueryFactory().applicabilityQuery().getNamedViewApplicabilityMap(branchId, art);
+      orcsApi.jaxRsApi().getObjectMapper();
+      BatGroupFile configFile = new BatGroupFile(art, namedViewApplicabilityMap, featureArts);
+      return configFile;
+   }
+
+   @Override
+   public Collection<BatConfigFile> getBatConfigurationFile(BranchId branchId, ArtifactReadable art,
+      List<ArtifactReadable> featureArts) {
       List<BatConfigFile> configFiles = new ArrayList<>();
-      configFiles.add(configFile);
+      configFiles.add(getCIConfigurationFile(branchId, art, featureArts));
       return configFiles;
    }
 
    @Override
-   public Collection<BatConfigFile> getBatConfigurationGroupFile(BranchId branchId, ArtifactReadable art,
+   public Collection<BatGroupFile> getBatConfigurationGroupFile(BranchId branchId, ArtifactReadable art,
       List<ArtifactReadable> featureArts) {
-      Map<String, List<String>> namedViewApplicabilityMap =
-         orcsApi.getQueryFactory().applicabilityQuery().getNamedViewApplicabilityMap(branchId, art);
-      orcsApi.jaxRsApi().getObjectMapper();
-      BatConfigFile configFile = new BatConfigFile(art, namedViewApplicabilityMap, featureArts);
-      List<BatConfigFile> configFiles = new ArrayList<>();
-      configFiles.add(configFile);
+      List<BatGroupFile> configFiles = new ArrayList<>();
+      configFiles.add(getCIConfigurationGroupFile(branchId, art, featureArts));
       return configFiles;
+   }
+
+   @Override
+   public BatConfigFile getPatConfigurationFile(BranchId branchId, ArtifactReadable art,
+      List<ArtifactReadable> featureArts) {
+      return getCIConfigurationFile(branchId, art, featureArts);
+   }
+
+   @Override
+   public BatGroupFile getPatConfigurationGroupFile(BranchId branchId, ArtifactReadable art,
+      List<ArtifactReadable> featureArts) {
+      return getCIConfigurationGroupFile(branchId, art, featureArts);
    }
 
    @Override

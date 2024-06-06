@@ -31,6 +31,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.applicability.ApplicabilityUseResultToken;
 import org.eclipse.osee.framework.core.applicability.BatConfigFile;
+import org.eclipse.osee.framework.core.applicability.BatFile;
+import org.eclipse.osee.framework.core.applicability.BatGroupFile;
 import org.eclipse.osee.framework.core.applicability.FeatureDefinition;
 import org.eclipse.osee.framework.core.applicability.ProductTypeDefinition;
 import org.eclipse.osee.framework.core.data.ApplicabilityData;
@@ -648,9 +650,11 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    @Override
    public String getBazelPlatformConfigurations() {
       return ops.getConfigurationPlatformBazelFile(branch,
-         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).asArtifacts(),
+         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).follow(
+            CoreRelationTypes.PlConfigurationGroup_Group).asArtifacts(),
          orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andRelatedTo(
-            CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder).asArtifacts(),
+            CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder).follow(
+               CoreRelationTypes.PlConfigurationGroup_BranchView).asArtifacts(),
          orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.Feature).asArtifacts());
    }
 
@@ -658,7 +662,8 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    public String getBazelPlatformConfigurationGroups() {
       return ops.getConfigurationGroupBazelFile(branch,
          orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andRelatedTo(
-            CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder).asArtifacts(),
+            CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder).follow(
+               CoreRelationTypes.PlConfigurationGroup_BranchView).asArtifacts(),
          orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.Feature).asArtifacts());
    }
 
@@ -666,8 +671,10 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    public String getBazelConfigurations() {
       return ops.getConfigurationBazelFile(branch,
          orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andRelatedTo(
-            CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder).asArtifacts(),
-         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).asArtifacts());
+            CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder).follow(
+               CoreRelationTypes.PlConfigurationGroup_BranchView).asArtifacts(),
+         orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.BranchView).follow(
+            CoreRelationTypes.PlConfigurationGroup_Group).asArtifacts());
    }
 
    @Override
@@ -687,7 +694,8 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
             configurationQuery =
                configurationQuery.andAttributeIs(CoreAttributeTypes.ProductApplicability, productType);
          }
-         List<ArtifactReadable> configurations = configurationQuery.asArtifacts();
+         List<ArtifactReadable> configurations =
+            configurationQuery.follow(CoreRelationTypes.PlConfigurationGroup_Group).asArtifacts();
          QueryBuilder configurationGroupQuery =
             orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andRelatedTo(
                CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder);
@@ -695,7 +703,8 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
             configurationGroupQuery =
                configurationGroupQuery.andAttributeIs(CoreAttributeTypes.ProductApplicability, productType);
          }
-         List<ArtifactReadable> configurationGroups = configurationGroupQuery.asArtifacts();
+         List<ArtifactReadable> configurationGroups =
+            configurationGroupQuery.follow(CoreRelationTypes.PlConfigurationGroup_BranchView).asArtifacts();
          ZipEntry configurationFile = new ZipEntry("config/BUILD.bazel");
          configurationFile.setTime(0);
          zipOutputStream.putNextEntry(configurationFile);
@@ -747,7 +756,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
             ZipEntry batFile = new ZipEntry("config_files/" + configurationGroup.getName().replace(" ", "_") + ".json");
             batFile.setTime(0);
             zipOutputStream.putNextEntry(batFile);
-            Collection<BatConfigFile> batConfigFile =
+            Collection<BatGroupFile> batConfigFile =
                ops.getBatConfigurationGroupFile(branch, configurationGroup, features);
             ObjectMapper mapper = new ObjectMapper();
             byte[] valueToWrite = mapper.writeValueAsBytes(batConfigFile);
@@ -796,7 +805,8 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
             configurationQuery =
                configurationQuery.andAttributeIs(CoreAttributeTypes.ProductApplicability, productType);
          }
-         List<ArtifactReadable> configurations = configurationQuery.asArtifacts();
+         List<ArtifactReadable> configurations =
+            configurationQuery.follow(CoreRelationTypes.PlConfigurationGroup_Group).asArtifacts();
          QueryBuilder configurationGroupQuery =
             orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andRelatedTo(
                CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder);
@@ -804,10 +814,12 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
             configurationGroupQuery =
                configurationGroupQuery.andAttributeIs(CoreAttributeTypes.ProductApplicability, productType);
          }
-         List<ArtifactReadable> configurationGroups = configurationGroupQuery.asArtifacts();
+         List<ArtifactReadable> configurationGroups =
+            configurationGroupQuery.follow(CoreRelationTypes.PlConfigurationGroup_BranchView).asArtifacts();
 
+         //write out files needed for bat to run
          for (ArtifactReadable configuration : configurations) {
-            ZipEntry batFile = new ZipEntry(configuration.getName().replace(" ", "_") + ".json");
+            ZipEntry batFile = new ZipEntry("bat/" + configuration.getName().replace(" ", "_") + ".json");
             batFile.setTime(0);
             zipOutputStream.putNextEntry(batFile);
             Collection<BatConfigFile> batConfigFile = ops.getBatConfigurationFile(branch, configuration, features);
@@ -817,11 +829,33 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
             zipOutputStream.closeEntry();
          }
          for (ArtifactReadable configurationGroup : configurationGroups) {
+            ZipEntry batFile = new ZipEntry("bat/" + configurationGroup.getName().replace(" ", "_") + ".json");
+            batFile.setTime(0);
+            zipOutputStream.putNextEntry(batFile);
+            Collection<BatGroupFile> batConfigFile =
+               ops.getBatConfigurationGroupFile(branch, configurationGroup, features);
+            ObjectMapper mapper = new ObjectMapper();
+            byte[] valueToWrite = mapper.writeValueAsBytes(batConfigFile);
+            zipOutputStream.write(valueToWrite);
+            zipOutputStream.closeEntry();
+         }
+
+         //write out files needed for pat to run
+         for (ArtifactReadable configuration : configurations) {
+            ZipEntry batFile = new ZipEntry(configuration.getName().replace(" ", "_") + ".json");
+            batFile.setTime(0);
+            zipOutputStream.putNextEntry(batFile);
+            BatConfigFile batConfigFile = ops.getPatConfigurationFile(branch, configuration, features);
+            ObjectMapper mapper = new ObjectMapper();
+            byte[] valueToWrite = mapper.writeValueAsBytes(batConfigFile);
+            zipOutputStream.write(valueToWrite);
+            zipOutputStream.closeEntry();
+         }
+         for (ArtifactReadable configurationGroup : configurationGroups) {
             ZipEntry batFile = new ZipEntry(configurationGroup.getName().replace(" ", "_") + ".json");
             batFile.setTime(0);
             zipOutputStream.putNextEntry(batFile);
-            Collection<BatConfigFile> batConfigFile =
-               ops.getBatConfigurationGroupFile(branch, configurationGroup, features);
+            BatGroupFile batConfigFile = ops.getPatConfigurationGroupFile(branch, configurationGroup, features);
             ObjectMapper mapper = new ObjectMapper();
             byte[] valueToWrite = mapper.writeValueAsBytes(batConfigFile);
             zipOutputStream.write(valueToWrite);
@@ -842,7 +876,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public Collection<BatConfigFile> getBlockApplicabilityToolConfiguration(String productType) {
+   public Collection<BatFile> getBlockApplicabilityToolConfiguration(String productType) {
       QueryBuilder featureQuery = orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.Feature);
       if (!productType.isEmpty()) {
          featureQuery = featureQuery.andAttributeIs(CoreAttributeTypes.ProductApplicability, productType);
@@ -853,7 +887,8 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       if (!productType.isEmpty()) {
          configurationQuery = configurationQuery.andAttributeIs(CoreAttributeTypes.ProductApplicability, productType);
       }
-      List<ArtifactReadable> configurations = configurationQuery.asArtifacts();
+      List<ArtifactReadable> configurations =
+         configurationQuery.follow(CoreRelationTypes.PlConfigurationGroup_Group).asArtifacts();
       QueryBuilder configurationGroupQuery =
          orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(CoreArtifactTypes.GroupArtifact).andRelatedTo(
             CoreRelationTypes.DefaultHierarchical_Parent, CoreArtifactTokens.PlCfgGroupsFolder);
@@ -861,11 +896,12 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
          configurationGroupQuery =
             configurationGroupQuery.andAttributeIs(CoreAttributeTypes.ProductApplicability, productType);
       }
-      List<ArtifactReadable> configurationGroups = configurationGroupQuery.asArtifacts();
-      Collection<BatConfigFile> groupFiles = configurationGroups.stream().flatMap(
+      List<ArtifactReadable> configurationGroups =
+         configurationGroupQuery.follow(CoreRelationTypes.PlConfigurationGroup_BranchView).asArtifacts();
+      Collection<BatFile> groupFiles = configurationGroups.stream().flatMap(
          group -> ops.getBatConfigurationGroupFile(branch, group, features).stream()).collect(Collectors.toList());
 
-      Collection<BatConfigFile> configFiles = configurations.stream().flatMap(
+      Collection<BatFile> configFiles = configurations.stream().flatMap(
          configuration -> ops.getBatConfigurationFile(branch, configuration, features).stream()).collect(
             Collectors.toList());
 

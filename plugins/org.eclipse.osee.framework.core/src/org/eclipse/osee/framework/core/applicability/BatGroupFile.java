@@ -19,27 +19,24 @@ import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 
-public class BatConfigFile extends BatFile {
+public class BatGroupFile extends BatFile {
 
    private String name = "";
-   private String group = "";
+   private List<String> configs = new ArrayList<String>();
    private final List<String> features = new ArrayList<String>();
    private final List<BatMatchText> substitutions = new ArrayList<BatMatchText>();
-   public BatConfigFile() {
+   public BatGroupFile() {
       // for jax-rs doubt it'll be used
    }
 
-   public BatConfigFile(ArtifactReadable configOrGroup, Map<String, List<String>> namedViewApplicabilityMap, List<ArtifactReadable> featureArts) {
+   public BatGroupFile(ArtifactReadable configOrGroup, Map<String, List<String>> namedViewApplicabilityMap, List<ArtifactReadable> featureArts) {
       this.setName(configOrGroup.getName().replace(" ", "_"));
       this.addFeatures(featureArts.stream().map(
          f -> f.getName() + "=" + org.eclipse.osee.framework.jdk.core.util.Collections.toString(",",
             namedViewApplicabilityMap.get(f.getName()))).collect(Collectors.toList()));
-      ArtifactReadable group = configOrGroup.getRelated(CoreRelationTypes.PlConfigurationGroup_Group).getOneOrDefault(
-         ArtifactReadable.SENTINEL);
-      if (group.isValid()) {
-
-         this.setGroup(group.getName());
-      }
+      List<ArtifactReadable> configs =
+         configOrGroup.getRelated(CoreRelationTypes.PlConfigurationGroup_BranchView).getList();
+      this.setConfigs(configs.stream().map(x -> x.getName().replace(" ", "_")).collect(Collectors.toList()));
    }
 
    /**
@@ -87,12 +84,12 @@ public class BatConfigFile extends BatFile {
    /**
     * @return the group
     */
-   public String getGroup() {
-      return group;
+   public List<String> getConfigs() {
+      return configs;
    }
 
-   public void setGroup(String group) {
-      this.group = group;
+   public void setConfigs(List<String> configs) {
+      this.configs = configs;
    }
 
 }
