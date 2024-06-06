@@ -62,7 +62,6 @@ public class TransactionBuilderDataFactory {
    private final OrcsTokenService tokenService;
    private final IResourceManager resourceManager;
    private BranchId currentBranch;
-   private TransactionId currentTransaction;
    private final HashMap<ArtifactId, ArtifactSortContainer> workingArtsById = new HashMap<>();
    private final ArrayList<ChangeItem> attributeChanges = new ArrayList<>();
    private final ArrayList<ChangeItem> relationChanges = new ArrayList<>();
@@ -82,7 +81,6 @@ public class TransactionBuilderDataFactory {
    }
 
    public TransactionBuilderData loadFromChanges(TransactionId txId1, TransactionId txId2) {
-
       Objects.requireNonNull(txId1, "The given start transaction cannot be null");
       Objects.requireNonNull(txId2, "The given end transaction cannot be null");
 
@@ -99,11 +97,13 @@ public class TransactionBuilderDataFactory {
                ChangeVersion net = change.getNetChange();
                ModificationType mt = net.getModType();
                if (ModificationType.NEW.equals(mt)) {
-                  tbd = newArtifact(change, tbd);
+                  tbd = newArtifact(change, tbd, txId2);
                } else if (ModificationType.MODIFIED.equals(mt)) {
-                  tbd = modifyArtifact(change, tbd);
+                  tbd = modifyArtifact(change, tbd, txId2);
                } else if (ModificationType.DELETED.equals(mt)) {
                   tbd = deleteArtifact(change, tbd);
+               } else if (ModificationType.MERGED.equals(mt)) {
+                  tbd = modifyArtifact(change, tbd, txId2);
                }
             } else if (ct.isAttributeChange()) {
                attributeChanges.add(change);
@@ -212,8 +212,8 @@ public class TransactionBuilderDataFactory {
       return tbd;
    }
 
-   private TransactionBuilderData modifyArtifact(ChangeItem change, TransactionBuilderData tbd) {
-      ArtifactSortContainer artSort = addArtFromChange(change);
+   private TransactionBuilderData modifyArtifact(ChangeItem change, TransactionBuilderData tbd, TransactionId txId) {
+      ArtifactSortContainer artSort = addArtFromChange(change, txId);
       List<ModifyArtifact> artifacts = tbd.getModifyArtifacts();
       if (artifacts == null) {
          artifacts = new ArrayList<>();
@@ -228,8 +228,8 @@ public class TransactionBuilderDataFactory {
       return tbd;
    }
 
-   private TransactionBuilderData newArtifact(ChangeItem change, TransactionBuilderData tbd) {
-      addArtFromChange(change);
+   private TransactionBuilderData newArtifact(ChangeItem change, TransactionBuilderData tbd, TransactionId txId) {
+      addArtFromChange(change, txId);
       List<CreateArtifact> artifacts = tbd.getCreateArtifacts();
       if (artifacts == null) {
          artifacts = new ArrayList<>();
@@ -238,7 +238,7 @@ public class TransactionBuilderDataFactory {
       return tbd;
    }
 
-   private ArtifactSortContainer addArtFromChange(ChangeItem change) {
+   private ArtifactSortContainer addArtFromChange(ChangeItem change, TransactionId txId) {
       ArtifactSortContainer artSort;
       ArtifactReadable art;
       ArtifactId artId = change.getArtId();
@@ -250,8 +250,12 @@ public class TransactionBuilderDataFactory {
             results.error("current branch is invalid");
             throw new OseeCoreException("Branch in TransactionBuilderDataFactory invalid");
          }
-         art = orcsApi.getQueryFactory().fromBranch(currentBranch).fromTransaction(currentTransaction).andId(
-            artId).asArtifact();
+         try {
+            art = orcsApi.getQueryFactory().fromBranch(currentBranch).fromTransaction(txId).andId(artId).asArtifact();
+         } catch (Exception ex) {
+            results.errorf("Exception to find artifact for art id: ", artId.toString());
+            throw new OseeCoreException("Artifact ID %s not found", artId.toString());
+         }
          if (!art.isValid()) {
             results.errorf("Can't find artifact for art id: ", artId.toString());
             throw new OseeCoreException("Artifact for art id %s failed in query", artId.toString());
@@ -275,7 +279,7 @@ public class TransactionBuilderDataFactory {
                workingArtsById.put(artId, artSortCreate);
                return artSortCreate;
             }
-         } else if (modType.equals(ModificationType.MODIFIED)) {
+         } else if (modType.equals(ModificationType.MODIFIED) || modType.equals(ModificationType.MERGED)) {
             artSort = new ArtifactSortContainerModify(art);
             ModifyArtifact modifiedArt = new ModifyArtifact();
             modifiedArt.setId(art.getIdString());
@@ -285,6 +289,7 @@ public class TransactionBuilderDataFactory {
             artSort = new ArtifactSortContainer(art);
             workingArtsById.put(artId, artSort);
          }
+
       }
       return artSort;
    }
@@ -445,7 +450,7 @@ public class TransactionBuilderDataFactory {
                }
             }
          } else {
-            results.errorf("change %s has invalid net change", change.toString());
+            results.logf("change %s has invalid net change", change.toString());
          }
       } else {
          results.errorf("unhandled data for art %s setting type %s", art, attrType);
@@ -615,8 +620,8 @@ public class TransactionBuilderDataFactory {
    private void modifyArtifacts(JsonNode root, Map<String, ArtifactToken> artifactsByName, TransactionBuilder tx) {
       if (root.has("modifyArtifacts")) {
          for (JsonNode artifactJson : root.get("modifyArtifacts")) {
-            ArtifactToken artifact = orcsApi.getQueryFactory().fromBranch(tx.getBranch()).andUuid(
-               artifactJson.get("id").asLong()).asArtifactToken();
+            ArtifactToken artifact = orcsApi.getQueryFactory().fromBranch(tx.getBranch()).andId(
+               ArtifactId.valueOf(artifactJson.get("id").asLong())).asArtifactToken();
             artifactsByName.put(artifact.getName(), artifact);
 
             if (artifactJson.has("applicabilityId")) {
@@ -721,6 +726,11 @@ public class TransactionBuilderDataFactory {
          for (JsonNode attribute : artifactJson.get(attributesNodeName)) {
             AttributeTypeGeneric<?> attributeType = getAttributeType(attribute);
             JsonNode value = attribute.get("value");
+            if (value == null) {
+               throw new OseeCoreException("No data for Attribute: %s in Artifact: %s", attributeType.toString(),
+                  artifactJson.get("id").asLong());
+            }
+
             boolean hasGamma = attribute.has("gamma");
             if (value.isArray()) {
                ArrayList<String> values = new ArrayList<>();
