@@ -116,4 +116,9 @@ public class RelationTypeSide extends NamedIdBase implements RelationTypeToken {
    public ArtifactTypeToken getRelationArtifactType() {
       return type.getRelationArtifactType();
    }
+
+   @Override
+   public RelationTypeToken getOldRelationTypeToken() {
+      return type.getOldRelationTypeToken();
+   }
 }
