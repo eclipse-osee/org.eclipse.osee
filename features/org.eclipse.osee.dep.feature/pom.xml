@@ -34,6 +34,7 @@
 							        <plugin	id="jackson-datatype-jsr310"/>
 							        <plugin id="commons-lang3"/>
 							        <plugin id="flexmark"/>
+							        <plugin id="org.xerial.sqlite-jdbc"/>
 								<plugin id="flexmark-util-builder"/>
 								<plugin id="flexmark-util-ast"/>
 								<plugin id="flexmark-util-dependency"/>
