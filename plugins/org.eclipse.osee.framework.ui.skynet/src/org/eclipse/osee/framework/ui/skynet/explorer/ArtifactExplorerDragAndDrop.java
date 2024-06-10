@@ -34,10 +34,8 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
@@ -58,8 +56,8 @@ import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactResolverFactory;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactResolverFactory.ArtifactCreationStrategy;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
-import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.update.InterArtifactExplorerDropHandlerOperation;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.swt.dnd.DND;
@@ -117,64 +115,47 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
       }
    }
 
-   /**
-    * Do the minimum check to see if valid. After drop, perform the full permissions check.
-    */
    private boolean isValidForArtifactDrop(DropTargetEvent event) {
       boolean valid = false;
       if (ArtifactTransfer.getInstance().isSupportedType(event.currentDataType)) {
-         valid = true;
+
+         Artifact dropTarget = getSelectedArtifact(event);
+         ArtifactData toBeDropped = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
+         if (dropTarget != null && toBeDropped != null) {
+            try {
+               Artifact[] artifactsBeingDropped = toBeDropped.getArtifacts();
+               List<Artifact> artsOnSameBranchAsDestination = new LinkedList<>();
+               BranchId destinationBranch = dropTarget.getBranch();
+               for (Artifact art : artifactsBeingDropped) {
+                  if (art.isOnBranch(destinationBranch)) {
+                     artsOnSameBranchAsDestination.add(art);
+                  }
+               }
+
+               valid = ServiceUtil.accessControlService().hasRelationTypePermission(dropTarget,
+                  CoreRelationTypes.DefaultHierarchical_Child, artsOnSameBranchAsDestination, PermissionEnum.WRITE,
+                  null).isSuccess();
+
+               // if we are deparenting ourself, make sure our parent's child side can be modified
+               if (valid) {
+                  for (Artifact art : artsOnSameBranchAsDestination) {
+                     if (art.hasParent()) {
+                        valid = ServiceUtil.accessControlService().hasRelationTypePermission(art.getParent(),
+                           CoreRelationTypes.DefaultHierarchical_Child, Collections.emptyList(), PermissionEnum.WRITE,
+                           null).isSuccess();
+                     }
+                     if (!valid) {
+                        break;
+                     }
+                  }
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+               valid = false;
+            }
+         }
       }
       return valid;
-   }
-
-   private XResultData validateDrop(DropTargetEvent event) {
-      XResultData rd = new XResultData();
-      Artifact dropTarget = getSelectedArtifact(event);
-      if (dropTarget == null) {
-         rd.errorf("dropTarget == NULL\\n");
-         return rd;
-      }
-      rd.logf("dropTarget %s\n", dropTarget.toStringWithId());
-      ArtifactData toBeDropped = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
-      if (toBeDropped == null) {
-         rd.errorf("toBeDropped == NULL\\n");
-         return rd;
-      }
-      rd.logf("toBeDropped %s\n", toBeDropped.getArtifacts()[0].toStringWithId());
-      try {
-         Artifact[] artifactsBeingDropped = toBeDropped.getArtifacts();
-         List<Artifact> artsOnSameBranchAsDestination = new LinkedList<>();
-         BranchId destinationBranch = dropTarget.getBranch();
-         for (Artifact art : artifactsBeingDropped) {
-            if (art.isOnBranch(destinationBranch)) {
-               artsOnSameBranchAsDestination.add(art);
-            }
-         }
-
-         boolean valid = ServiceUtil.accessControlService().hasRelationTypePermission(dropTarget,
-            CoreRelationTypes.DefaultHierarchical_Child, artsOnSameBranchAsDestination, PermissionEnum.WRITE,
-            null).isSuccess();
-         if (!valid) {
-            rd.errorf("Artifacts are not on the same branch");
-            return rd;
-         }
-
-         // if we are deparenting ourself, make sure our parent's child side can be modified
-         for (Artifact art : artsOnSameBranchAsDestination) {
-            if (art.hasParent()) {
-               valid = ServiceUtil.accessControlService().hasRelationTypePermission(art.getParent(),
-                  CoreRelationTypes.DefaultHierarchical_Child, Collections.emptyList(), PermissionEnum.WRITE,
-                  null).isSuccess();
-            }
-            if (!valid) {
-               rd.errorf("User does not have access to perform this operation\n");
-            }
-         }
-      } catch (OseeCoreException ex) {
-         rd.errorf("Exception performing drop %s\n", Lib.exceptionToString(ex));
-      }
-      return rd;
    }
 
    private Artifact getSelectedArtifact(DropTargetEvent event) {
@@ -186,12 +167,6 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
 
    @Override
    public void performDrop(final DropTargetEvent event) {
-
-      XResultData rd = validateDrop(event);
-      if (rd.isErrors()) {
-         XResultDataUI.report(rd, "Perform Drop");
-         return;
-      }
       Artifact parentArtifact = getSelectedArtifact(event);
 
       if (parentArtifact == null && selectedBranch != null) {
@@ -286,8 +261,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
       }
    }
 
-   private void importSimilarArtifact(Artifact parentArtifact, File importFile, ArtifactImportWizard wizard,
-      String fileName) {
+   private void importSimilarArtifact(Artifact parentArtifact, File importFile, ArtifactImportWizard wizard, String fileName) {
       {
          String promptMsg = String.format(
             "Artifact [%s] has same base file name as [%s]. \n\nDo you want to update the exisiting file? \nIf 'NO' selected, you'll be taken to the Artifact Import Wizard",
