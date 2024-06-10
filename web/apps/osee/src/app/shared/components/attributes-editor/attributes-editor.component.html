@@ -44,7 +44,8 @@
 					@if (attribute.name === 'Markdown Content') {
 						<osee-markdown-editor
 							[(mdContent)]="attribute.value"
-							(mdContentChange)="emitUpdatedAttributes()" />
+							(mdContentChange)="emitUpdatedAttributes()"
+							[disabled]="!editable()" />
 					} @else {
 						<mat-form-field
 							class="tw-w-full"

@@ -15,6 +15,7 @@ import {
 	Component,
 	ElementRef,
 	computed,
+	input,
 	model,
 	signal,
 	viewChild,
@@ -63,6 +64,8 @@ import { mdExamples } from './markdown-editor-examples';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MarkdownEditorComponent {
+	disabled = input(false);
+
 	mdContent = model.required<string>();
 	_history = toObservable(this.mdContent).pipe(
 		scan((acc, curr) => {

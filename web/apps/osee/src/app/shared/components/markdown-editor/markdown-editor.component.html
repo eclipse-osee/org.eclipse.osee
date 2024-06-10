@@ -72,6 +72,7 @@
 						matInput
 						cdkTextareaAutosize
 						[(ngModel)]="mdContent"
+						[disabled]="disabled()"
 						placeholder="Start typing Markdown text..."
 						class="placeholder:tw-font-mat-bold placeholder:tw-opacity-50"
 						ngPreserveWhitespaces></textarea>
