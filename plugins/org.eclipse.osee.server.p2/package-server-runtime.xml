@@ -81,6 +81,12 @@
 
 	<target name="postgreSqlLaunch">
 		<createLaunch filepath="${server-path}/runPostgreSqlLocal.sh" cm.cfg.uri="etc/osee.postgresql.json" serverport="8089" launcher="${equinox-launcher-jar}" extraVMArgs="-Dosee.authentication.protocol=trustAll" />
+
+		<copy file="${server-path}/runPostgreSqlLocal.sh" tofile="${server-path}/runPostgreSqlLocal.bat" overwrite="true" />
+		<replaceregexp file="${server-path}/runPostgreSqlLocal.bat" match="\\" replace="^" flags="g" />
+
+		<copy file="${project-base-path}/initializeDB.bat" tofile="${server-path}/initializeDB.bat" overwrite="true" />
+		<copy file="${project-base-path}/initializeDB.sh" tofile="${server-path}/initializeDB.sh" overwrite="true" />
 	</target>
 
 	<target name="hsqlLaunch">
