@@ -100,6 +100,8 @@ public class MimIcdGenerator {
    private final Map<String, String> logicalTypeMaxRange;
    private final Map<ArtifactId, Pair<String, String>> releaseArtifacts =
       new HashMap<ArtifactId, Pair<String, String>>();
+   private final Map<ArtifactId, List<Pair<ArtifactId, String>>> msgHeaderICDCNs =
+      new HashMap<ArtifactId, List<Pair<ArtifactId, String>>>();
 
    public MimIcdGenerator(MimApi mimApi) {
       this.mimApi = mimApi;
@@ -261,7 +263,7 @@ public class MimIcdGenerator {
       createUnitsAndTypesSheet(writer); // Create sheet but do not write until the end to allow for list population
       createStructureNamesSheet(writer); // Create sheet but do not write until the end to allow for header diff processing
       createStructureSummarySheet(writer); // Create sheet but do not write until the end to allow for header diff processing
-      writeStructureSheets(writer, subMessagesWithHeaders, structureLinks);
+      writeStructureSheets(writer, subMessagesWithHeaders, structureLinks, messages);
       writeUnitsAndTypesSheet(writer, branch, view, primaryNode, secondaryNode);
       writeStructureNamesSheet(writer, structureLinks);
       writeStructureSummarySheet(writer, messages, structureLinks);
@@ -273,6 +275,13 @@ public class MimIcdGenerator {
    private void createStructureInfo(BranchId branch, BranchId parentBranch, ArtifactId view,
       List<ArtifactReadable> messages) {
       for (ArtifactReadable message : messages) {
+         MimChangeSummaryItem msgDiffItem = diffs.get(message.getArtifactId());
+         boolean txRateChanged =
+            msgDiffItem != null && msgDiffItem.hasAttributeChanges(CoreAttributeTypes.InterfaceMessageRate.getId());
+         boolean msgPeriodicityChanged = msgDiffItem != null && msgDiffItem.hasAttributeChanges(
+            CoreAttributeTypes.InterfaceMessagePeriodicity.getId());
+         boolean msgNumChanged =
+            msgDiffItem != null && msgDiffItem.hasAttributeChanges(CoreAttributeTypes.InterfaceMessageNumber.getId());
          ArtifactReadable sendingNode =
             message.getRelated(CoreRelationTypes.InterfaceMessagePubNode_Node).getOneOrDefault(
                ArtifactReadable.SENTINEL);
@@ -312,9 +321,43 @@ public class MimIcdGenerator {
          if (message.getSoleAttributeAsString(CoreAttributeTypes.InterfaceMessageType, "Error").equals("Operational")) {
             subMessages.add(0, messageHeaders.get(ArtifactId.valueOf(message.getId())));
          }
-
+         if (msgDiffItem != null && (txRateChanged || msgPeriodicityChanged)) {
+            msgHeaderICDCNs.put(message.getArtifactId(), new ArrayList<Pair<ArtifactId, String>>(Arrays.asList(
+               new Pair<ArtifactId, String>(message.getArtifactId(), getRelatedWorkFlow(msgDiffItem.getItemTxIds())))));
+         }
          for (InterfaceSubMessageToken subMessage : subMessages) {
 
+            MimChangeSummaryItem subMsgDiffItem = diffs.get(subMessage.getArtifactId());
+            if (subMsgDiffItem != null) {
+               if (subMsgDiffItem.isAdded() || subMsgDiffItem.isAddedDueToApplicChange()) {
+                  if (msgHeaderICDCNs.containsKey(message.getArtifactId())) {
+                     List<Pair<ArtifactId, String>> list = msgHeaderICDCNs.get(message.getArtifactId());
+
+                     Optional<Pair<ArtifactId, String>> currentSubMsgPair =
+                        list.stream().filter(a -> a.getFirst().equals(subMessage.getArtifactId())).findFirst();
+
+                     if (currentSubMsgPair.isPresent()) {
+
+                        String currentList = currentSubMsgPair.get().getSecond();
+                        String subMsgLevelICDCN = getRelatedWorkFlow(subMsgDiffItem.getItemTxIds());
+                        if (!currentList.contains(subMsgLevelICDCN)) {
+                           currentList = currentList + "," + subMsgLevelICDCN;
+                        }
+
+                     } else {
+
+                        list.add(new Pair<ArtifactId, String>(subMessage.getArtifactId(),
+                           getRelatedWorkFlow(subMsgDiffItem.getItemTxIds())));
+
+                     }
+
+                  } else {
+                     msgHeaderICDCNs.put(message.getArtifactId(), new ArrayList<Pair<ArtifactId, String>>(
+                        Arrays.asList(new Pair<ArtifactId, String>(subMessage.getArtifactId(),
+                           getRelatedWorkFlow(subMsgDiffItem.getItemTxIds())))));
+                  }
+               }
+            }
             List<InterfaceStructureToken> structures = new LinkedList<>();
             if (subMessage.getId() == 0) {
                structures.add(messageHeaderStructures.get(subMessage.getName()));
@@ -325,6 +368,57 @@ public class MimIcdGenerator {
             }
 
             for (InterfaceStructureToken struct : structures) {
+               MimChangeSummaryItem structDiffItem = diffs.get(struct.getArtifactId());
+               if (structDiffItem != null) {
+                  if (structDiffItem.isAdded() || structDiffItem.isAddedDueToApplicChange() || structDiffItem.hasAttributeChanges(
+                     CoreAttributeTypes.InterfaceMinSimultaneity.getId()) || structDiffItem.hasAttributeChanges(
+                        CoreAttributeTypes.InterfaceMinSimultaneity.getId())) {
+                     if (msgHeaderICDCNs.containsKey(message.getArtifactId())) {
+                        List<Pair<ArtifactId, String>> list = msgHeaderICDCNs.get(message.getArtifactId());
+                        Optional<Pair<ArtifactId, String>> currentSubMsgPair =
+                           list.stream().filter(a -> a.getFirst().equals(subMessage.getArtifactId())).findFirst();
+
+                        if (currentSubMsgPair.isPresent()) {
+
+                           String currentList = currentSubMsgPair.get().getSecond();
+                           String structLevelICDCN = getRelatedWorkFlow(structDiffItem.getItemTxIds());
+                           if (!currentList.contains(structLevelICDCN)) {
+                              currentList = currentList + "," + structLevelICDCN;
+                           }
+                           if (!(structDiffItem.isAdded() || structDiffItem.isAddedDueToApplicChange())) {
+                              Set<TransactionId> simTxIds = new HashSet<>();
+                              if (structDiffItem.hasAttributeChanges(
+                                 CoreAttributeTypes.InterfaceMinSimultaneity.getId())) {
+                                 simTxIds.add(structDiffItem.getAttributeChanges(
+                                    CoreAttributeTypes.InterfaceMinSimultaneity.getId()).get(0).getTxId());
+                              }
+                              if (structDiffItem.hasAttributeChanges(
+                                 CoreAttributeTypes.InterfaceMaxSimultaneity.getId())) {
+                                 simTxIds.add(structDiffItem.getAttributeChanges(
+                                    CoreAttributeTypes.InterfaceMaxSimultaneity.getId()).get(0).getTxId());
+                              }
+                              if (simTxIds.size() > 0) {
+                                 String simICDCNs = getRelatedWorkFlow(simTxIds);
+                                 if (!currentList.contains(structLevelICDCN)) {
+                                    currentList = currentList + "," + simICDCNs;
+                                 }
+                              }
+                           }
+
+                        } else {
+
+                           list.add(new Pair<ArtifactId, String>(subMessage.getArtifactId(),
+                              getRelatedWorkFlow(structDiffItem.getItemTxIds())));
+
+                        }
+                     } else {
+                        msgHeaderICDCNs.put(message.getArtifactId(), new ArrayList<Pair<ArtifactId, String>>(
+                           Arrays.asList(new Pair<ArtifactId, String>(subMessage.getArtifactId(),
+                              getRelatedWorkFlow(structDiffItem.getItemTxIds())))));
+                     }
+                  }
+
+               }
                List<InterfaceStructureElementToken> flatElements = new LinkedList<>();
                for (InterfaceStructureElementToken element : struct.getElements()) {
                   if (element.getInterfaceElementArrayHeader()) {
@@ -368,8 +462,6 @@ public class MimIcdGenerator {
                      flatElements.add(element);
                   }
                }
-               MimChangeSummaryItem msgDiffItem = diffs.get(message.getArtifactId());
-               MimChangeSummaryItem structDiffItem = diffs.get(struct.getArtifactId());
 
                Integer sizeInBytes = 0;
                int elementCount = 0;
@@ -410,16 +502,19 @@ public class MimIcdGenerator {
                   struct.getInterfaceTaskFileType() == 0 ? "n/a" : struct.getInterfaceTaskFileType() + "";
                String desc = struct.getDescription();
 
-               boolean txRateChanged = msgDiffItem != null && msgDiffItem.hasAttributeChanges(
-                  CoreAttributeTypes.InterfaceMessageRate.getId());
-               boolean msgNumChanged = msgDiffItem != null && msgDiffItem.hasAttributeChanges(
-                  CoreAttributeTypes.InterfaceMessageNumber.getId());
                boolean numElementsChanged = false;
                boolean sizeInBytesChanged = false;
 
-               structureChanged = structureChanged || structDiffItem != null || txRateChanged || msgNumChanged;
-               String icdcn = structDiffItem != null ? icdcn = getRelatedWorkFlow(structDiffItem.getItemTxIds()) : "";
-
+               structureChanged =
+                  structureChanged || structDiffItem != null || txRateChanged || msgPeriodicityChanged || msgNumChanged;
+               Set<TransactionId> structTxIds = new HashSet<>();
+               if (msgDiffItem != null && (txRateChanged || msgPeriodicityChanged || msgNumChanged)) {
+                  structTxIds.addAll(msgDiffItem.getItemTxIds());
+               }
+               if (structDiffItem != null) {
+                  structTxIds.addAll(structDiffItem.getItemTxIds());
+               }
+               String icdcn = (!structTxIds.isEmpty()) ? getRelatedWorkFlow(structTxIds) : "";
                txRates.add(msgRateText);
                categories.add(cat);
 
@@ -971,7 +1066,23 @@ public class MimIcdGenerator {
    private int[] printFirstRowInHeaderStructureSheet(ExcelWorkbookWriter writer, InterfaceStructureToken structure,
       InterfaceStructureToken diffStructure, StructureInfo info, boolean isAdded) {
       ArtifactReadable structReadable = structure.getArtifactReadable();
-
+      String icdcn = info.icdcn;
+      if (msgHeaderICDCNs.containsKey(info.message.getArtifactId())) {
+         boolean first = true;
+         if (!icdcn.isEmpty()) {
+            first = false;
+         }
+         for (Pair<ArtifactId, String> pair : msgHeaderICDCNs.get(info.message.getArtifactId())) {
+            if (first) {
+               icdcn = pair.getSecond();
+               first = false;
+            } else {
+               if (!icdcn.contains(pair.getSecond())) {
+                  icdcn = icdcn + "," + pair.getSecond();
+               }
+            }
+         }
+      }
       Object date =
          structure.getId() == 0 ? Strings.EMPTY_STRING : orcsApi.getQueryFactory().transactionQuery().andTxId(
             structure.getArtifactReadable().getTransaction()).getResults().getAtMostOneOrDefault(
@@ -993,7 +1104,7 @@ public class MimIcdGenerator {
          info.subMsgNum, // 12
          info.taskfile, // 13
          info.description, // 14
-         info.icdcn}; // 15
+         icdcn}; // 15
 
       boolean changed = false;
 
@@ -1077,7 +1188,7 @@ public class MimIcdGenerator {
    }
 
    private void writeStructureSheets(ExcelWorkbookWriter writer, List<InterfaceSubMessageToken> subMessages,
-      SortedMap<InterfaceStructureToken, String> structureLinks) {
+      SortedMap<InterfaceStructureToken, String> structureLinks, List<ArtifactReadable> messages) {
       String[] structureHeaders = {
          "Sheet Type",
          "Full Sheet Name",
@@ -1149,7 +1260,29 @@ public class MimIcdGenerator {
                writer.writeRow(3, elementHeaders, CELLSTYLE.BOLD, CELLSTYLE.WRAP, CELLSTYLE.CENTERH);
 
                for (int i = 0; i < struct.getElements().size(); i++) {
+                  String icdcns = "";
+                  if (isAdded && msgHeaderICDCNs.containsKey(info.message.getArtifactId())) {
+                     icdcns = msgHeaderICDCNs.get(info.message.getArtifactId()).get(0).getSecond();
+                  }
+
                   InterfaceStructureElementToken element = struct.getElements().get(i);
+
+                  if (!isAdded && msgHeaderICDCNs.containsKey(
+                     info.message.getArtifactId()) && element.getName().contains(
+                        "Number of Structures in Submessage")) {
+                     String subMsgNum = element.getName().substring(element.getName().lastIndexOf(" ") + 1);
+                     List<ArtifactId> subMsgsChanged =
+                        msgHeaderICDCNs.get(info.message.getArtifactId()).stream().map(a -> a.getFirst()).collect(
+                           Collectors.toList());
+                     Optional<ArtifactReadable> subMsg = info.message.getRelated(
+                        CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage).getList().stream().filter(
+                           a -> a.getSoleAttributeAsString(CoreAttributeTypes.InterfaceSubMessageNumber).equals(
+                              subMsgNum)).findFirst();
+                     if (subMsg.isPresent() && subMsgsChanged.contains(subMsg.get().getArtifactId())) {
+                        icdcns = msgHeaderICDCNs.get(info.message.getArtifactId()).stream().filter(
+                           a -> a.getFirst().equals(subMsg.get().getArtifactId())).findFirst().get().getSecond();
+                     }
+                  }
                   Integer byteSize = (int) element.getElementSizeInBytes();
                   InterfaceStructureElementToken diffElement =
                      parentHeader != null && parentHeader.getId() != -1L && parentHeader.getElements().size() > i ? parentHeader.getElements().get(
@@ -1160,7 +1293,7 @@ public class MimIcdGenerator {
                   }
 
                   resultWidths = printHeaderStructureElementRow(writer, rowIndex, struct, element, diffElement,
-                     byteLocation, byteSize, isAdded);
+                     byteLocation, byteSize, isAdded, icdcns);
                   columnWidths = getMaxLengthsArray(columnWidths, resultWidths);
                   byteLocation = byteLocation + byteSize;
                   rowIndex.getAndAdd(1);
@@ -1213,7 +1346,6 @@ public class MimIcdGenerator {
       if (!releaseArtifacts.isEmpty() && !txIds.isEmpty()) {
          List<TransactionReadable> txRs =
             orcsApi.getQueryFactory().transactionQuery().andTxIds(txIds).getResults().getList();
-
          if (!txRs.isEmpty()) {
 
             List<ArtifactReadable> commitArts = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(
@@ -1232,7 +1364,8 @@ public class MimIcdGenerator {
 
    private int[] printHeaderStructureElementRow(ExcelWorkbookWriter writer, AtomicInteger rowIndex,
       InterfaceStructureToken structure, InterfaceStructureElementToken element,
-      InterfaceStructureElementToken diffElement, Integer byteLocation, Integer byteSize, boolean isAdded) {
+      InterfaceStructureElementToken diffElement, Integer byteLocation, Integer byteSize, boolean isAdded,
+      String icdcn) {
       PlatformTypeToken platformType = element.getPlatformType();
       Integer beginWord = Math.floorDiv(byteLocation, 4);
       Integer beginByte = Math.floorMod(byteLocation, 4);
@@ -1253,7 +1386,7 @@ public class MimIcdGenerator {
          byteSize, // 2
          endWord, // 3
          endByte, // 4
-         "", // 5
+         icdcn, // 5
          dataType, // 6
          elementName, // 7
          units, // 8
