@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 Boeing.
+ * Copyright (c) 2024 Boeing.
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -15,11 +15,11 @@ package org.eclipse.osee.ats.ide.util.widgets;
 /**
  * @author Donald G. Dunne
  */
-public class XHyperlabelFoundInVersionSelection extends XHyperlabelVersionSelection {
+public class XHyperlabelIntroducedInVersionSelection extends XHyperlabelVersionSelection {
 
-   public static final String LABEL = "Found-In Version";
+   public static final String LABEL = "Introduced-In Version";
 
-   public XHyperlabelFoundInVersionSelection() {
+   public XHyperlabelIntroducedInVersionSelection() {
       super(LABEL);
    }
 
