@@ -977,6 +977,23 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
    }
 
    @Override
+   public int getAllByFilterAndCount(BranchId branch, String filter, Collection<FollowRelation> followRelations,
+      Collection<AttributeTypeId> followAttributes, ArtifactId viewId) {
+      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
+      QueryBuilder query =
+         orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andIsOfType(artifactType);
+      if (followAttributes.size() > 0) {
+         query = query.followSearch(
+            followAttributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),
+            filter);
+      }
+      for (FollowRelation rel : followRelations) {
+         query = buildFollowRelationQuery(query, rel);
+      }
+      return query.getCount();
+   }
+
+   @Override
    public int getAllByRelationAndCount(BranchId branch, RelationTypeSide relation, ArtifactId relatedId) {
       return this.getAllByRelationAndCount(branch, relation, relatedId, ArtifactId.SENTINEL);
    }

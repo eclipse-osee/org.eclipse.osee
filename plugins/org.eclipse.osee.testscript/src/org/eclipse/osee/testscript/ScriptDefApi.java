@@ -88,5 +88,9 @@ public interface ScriptDefApi {
    Collection<ScriptDefToken> getAllByFilter(BranchId branch, String filter, Collection<FollowRelation> followRelations,
       long pageCount, long pageSize, AttributeTypeId orderByAttribute, Collection<AttributeTypeId> followAttributes);
 
-   int getCountWithFilter(BranchId branch, ArtifactId viewId, String filter);
+   int getCountWithFilter(BranchId branch, ArtifactId viewId, String filter, Collection<AttributeTypeId> attributes);
+
+   int getAllByFilterAndCount(BranchId branch, String filter, Collection<FollowRelation> followRelations,
+      Collection<AttributeTypeId> followAttributes, ArtifactId viewId);
+
 }

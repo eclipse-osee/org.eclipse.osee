@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2023 Boeing
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -16,98 +16,98 @@ import { DefReference, ResultReference } from '../types';
 export const scriptDefHeaderDetails: headerDetail<DefReference>[] = [
 	{
 		header: 'name',
-		description: 'Name of test script',
+		description: '',
 		humanReadable: 'Script Name',
 	},
 	{
 		header: 'team',
-		description: 'Team assigned to script',
+		description: '',
 		humanReadable: 'Team Name',
 	},
 	{
 		header: 'subsystem',
-		description: 'Subsystem associated with script',
+		description: '',
 		humanReadable: 'Subsystem',
 	},
 	{
 		header: 'safety',
-		description: 'Is script marked safety',
+		description: '',
 		humanReadable: 'Safety',
 	},
 	{
 		header: 'notes',
-		description: 'Customer Notes',
+		description: '',
 		humanReadable: 'Notes',
 	},
 	{
 		header: 'statusBy',
-		description: 'User statusing script',
+		description: '',
 		humanReadable: 'Status By',
 	},
 	{
 		header: 'statusDate',
-		description: 'Date script was statused',
+		description: '',
 		humanReadable: 'Status Date',
 	},
 	{
 		header: 'latestResult',
-		description: 'Pass/Fail status from the latest run',
+		description: '',
 		humanReadable: 'Result',
 	},
 	{
 		header: 'latestScriptHealth',
-		description: 'Script health based on latest run',
+		description: '',
 		humanReadable: 'Script Health',
 	},
 
 	{
 		header: 'latestPassedCount',
-		description: 'Number of passing test points',
+		description: '',
 		humanReadable: 'Passed Count',
 	},
 	{
 		header: 'latestFailedCount',
-		description: 'Number of failed test points',
+		description: '',
 		humanReadable: 'Failed Count',
 	},
 	{
 		header: 'latestScriptAborted',
-		description: 'Was the latest run aborted',
+		description: '',
 		humanReadable: 'Script Aborted',
 	},
 	{
 		header: 'machineName',
-		description: 'Machine the script war run on',
+		description: '',
 		humanReadable: 'Machine',
 	},
 	{
 		header: 'latestMachineName',
-		description: 'Latest machine the script war run on',
+		description: '',
 		humanReadable: 'Runtime Machine Name',
 	},
 	{
 		header: 'latestElapsedTime',
-		description: 'Scripts runtime',
+		description: '',
 		humanReadable: 'Elapsed Time',
 	},
 	{
 		header: 'scheduledMachine',
-		description: 'Machine scheduled to run script',
+		description: '',
 		humanReadable: 'Scheduled Machine',
 	},
 	{
 		header: 'scheduledTime',
-		description: 'Time scheduled to run script',
+		description: '',
 		humanReadable: 'Scheduled Time',
 	},
 	{
 		header: 'scheduled',
-		description: 'Is script scheduled to be run',
+		description: '',
 		humanReadable: 'Scheduled',
 	},
 	{
 		header: 'fullScriptName',
-		description: 'Full qualified name of test script',
+		description: '',
 		humanReadable: 'Full ScriptName',
 	},
 ];
@@ -115,12 +115,12 @@ export const scriptDefHeaderDetails: headerDetail<DefReference>[] = [
 export const scriptDefListHeaderDetails: headerDetail<DefReference>[] = [
 	{
 		header: 'name',
-		description: 'Name of test script',
+		description: '',
 		humanReadable: 'Script Name',
 	},
 	{
 		header: 'fullScriptName',
-		description: 'Full qualified name of test script',
+		description: '',
 		humanReadable: 'Full ScriptName',
 	},
 ];
@@ -133,7 +133,7 @@ export const scriptResHeaderDetails: headerDetail<ResultReference>[] = [
 	},
 	{
 		header: 'name',
-		description: 'Name of test script',
+		description: '',
 		humanReadable: 'Script Name',
 	},
 	{
@@ -148,22 +148,22 @@ export const scriptResHeaderDetails: headerDetail<ResultReference>[] = [
 	},
 	{
 		header: 'executionDate',
-		description: 'Date script was executed',
+		description: '',
 		humanReadable: 'Execution Date',
 	},
 	{
 		header: 'executionEnvironment',
-		description: 'Environment script was executed in',
+		description: '',
 		humanReadable: 'Execution Environment',
 	},
 	{
 		header: 'machineName',
-		description: 'Machine the script executed on',
+		description: 'Machine the script ran on',
 		humanReadable: 'Machine',
 	},
 	{
 		header: 'javaVersion',
-		description: 'Java Version',
+		description: '',
 		humanReadable: 'Java Version',
 	},
 
@@ -209,7 +209,7 @@ export const scriptResHeaderDetails: headerDetail<ResultReference>[] = [
 	},
 	{
 		header: 'executedBy',
-		description: 'User who executed test script',
+		description: '',
 		humanReadable: 'Executed By',
 	},
 ];
@@ -217,7 +217,7 @@ export const scriptResHeaderDetails: headerDetail<ResultReference>[] = [
 export const scriptResListHeaderDetails: headerDetail<ResultReference>[] = [
 	{
 		header: 'executionDate',
-		description: 'Date test script was executed',
+		description: '',
 		humanReadable: 'Date',
 	},
 ];

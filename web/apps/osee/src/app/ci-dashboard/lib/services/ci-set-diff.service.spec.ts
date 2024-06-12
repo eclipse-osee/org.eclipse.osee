@@ -21,7 +21,10 @@ describe('CiSetDiffService', () => {
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			providers: [
-				{ provide: TmoHttpService, useValue: tmoHttpServiceMock },
+				{
+					provide: TmoHttpService,
+					useValue: tmoHttpServiceMock,
+				},
 			],
 		});
 		service = TestBed.inject(CiSetDiffService);

@@ -14,9 +14,11 @@
 package org.eclipse.osee.testscript.internal;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.testscript.ScriptResultApi;
 import org.eclipse.osee.testscript.ScriptResultEndpoint;
@@ -54,6 +56,16 @@ public class ScriptResultEndpointImpl implements ScriptResultEndpoint {
    }
 
    @Override
+   public Collection<ScriptResultToken> getScriptResultsByDef(ArtifactId scriptDefId) {
+      try {
+         return this.scriptResultTypeApi.getAllByRelation(branch,
+            CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef, scriptDefId);
+      } catch (Exception ex) {
+         return new LinkedList<ScriptResultToken>();
+      }
+   }
+
+   @Override
    public Collection<ScriptResultToken> getAllForBatch(ArtifactId batchId, String filter, ArtifactId viewId,
       long pageNum, long pageSize, AttributeTypeToken orderByAttributeType) {
       return this.scriptResultTypeApi.getAllForBatch(branch, viewId, batchId, filter, pageNum, pageSize,
@@ -66,9 +78,9 @@ public class ScriptResultEndpointImpl implements ScriptResultEndpoint {
    }
 
    @Override
-   public ScriptResultToken getScriptResultWithDetails(ArtifactId scriptDefTypeId, String filter, int pageNum,
+   public ScriptResultToken getScriptResultWithDetails(ArtifactId scriptResultId, String filter, int pageNum,
       int count) {
-      return scriptResultTypeApi.getWithTestPointsAndFilter(branch, scriptDefTypeId, filter, pageNum, count);
+      return scriptResultTypeApi.getWithTestPointsAndFilter(branch, scriptResultId, filter, pageNum, count);
    }
 
 }

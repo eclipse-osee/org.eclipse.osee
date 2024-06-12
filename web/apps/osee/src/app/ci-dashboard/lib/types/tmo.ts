@@ -23,7 +23,7 @@ export const setReferenceSentinel: SetReference = {
 };
 
 export interface DefReference {
-	id?: string;
+	id: string;
 	name: string;
 	fullScriptName: String;
 	executionDate: Date;
@@ -61,7 +61,7 @@ export interface DefReference {
 }
 
 export interface ResultReference {
-	id?: string;
+	id: string;
 	name: string;
 	processorId: string;
 	runtimeVersion: string;
@@ -91,17 +91,98 @@ export interface ResultReference {
 	userName: string;
 	email: string;
 	witnesses: string[];
-	testPoints: TestPoint[];
+	testPoints: TestPointReference[];
 }
 
-export interface TestCaseReference {
-	key: string;
-	value: string;
-}
+export const defReferenceSentinel: DefReference = {
+	id: '',
+	name: '',
+	fullScriptName: '',
+	executionDate: new Date(),
+	executionEnvironment: '',
+	machineName: '',
+	revision: '',
+	repositoryType: '',
+	team: '',
+	lastAuthor: '',
+	lastModified: new Date(),
+	modifiedFlag: '',
+	user: '',
+	notes: '',
+	safety: false,
+	scheduled: false,
+	scheduledTime: new Date(),
+	scheduledMachine: '',
+	statusBy: '',
+	statusDate: new Date(),
+	subsystem: '',
+	description: '',
+	latestProcessorId: '',
+	latestExecutionDate: new Date(),
+	latestExecutionEnvironment: '',
+	latestMachineName: '',
+	latestPassedCount: 0,
+	latestFailedCount: 0,
+	latestInteractiveCount: 0,
+	latestScriptAborted: false,
+	latestElapsedTime: 0,
+	latestResult: '',
+	latestScriptHealth: 0,
+	latestExecutedBy: '',
+	latestUserName: '',
+};
 
-export interface TestPoint {
-	key: string;
-	value: string;
+export const resultReferenceSentinel: ResultReference = {
+	id: '',
+	name: '',
+	processorId: '',
+	runtimeVersion: '',
+	executionDate: new Date(),
+	executionEnvironment: '',
+	machineName: '',
+	passedCount: 0,
+	totalTestPoints: 0,
+	failedCount: 0,
+	interactiveCount: 0,
+	scriptAborted: false,
+	elapsedTime: 0,
+	startDate: new Date(),
+	endDate: new Date(),
+	osArchitecture: '',
+	osName: '',
+	osVersion: '',
+	oseeServerJar: '',
+	oseeServer: '',
+	oseeVersion: '',
+	result: '',
+	scriptHealth: 0,
+	witnesses: [''],
+	email: '',
+	userId: '',
+	userName: '',
+	executedBy: '',
+	javaVersion: '',
+	qualificationLevel: '',
+	testPoints: [],
+};
+
+export interface TestPointReference {
+	id: string;
+	name: string;
+	testNumber: number;
+	result: string;
+	overallResult: string;
+	resultType: string;
+	interactive: boolean;
+	groupName: string;
+	groupType: string;
+	groupOperator: string;
+	expected: string;
+	actual: string;
+	requirement: string;
+	elapsedTime: number;
+	transmissionCount: number;
+	notes: string;
 }
 
 export interface ScriptBatch {

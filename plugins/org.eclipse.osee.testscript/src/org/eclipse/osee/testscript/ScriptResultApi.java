@@ -13,10 +13,12 @@
 
 package org.eclipse.osee.testscript;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.testscript.internal.ScriptResultToken;
 
 /**
@@ -72,6 +74,10 @@ public interface ScriptResultApi {
 
    Collection<ScriptResultToken> getAllByFilter(BranchId branch, ArtifactId viewId, String filter, long pageNum,
       long pageSize, AttributeTypeId orderByAttribute);
+
+   Collection<ScriptResultToken> getAllByRelation(BranchId branch, RelationTypeSide relation, ArtifactId relatedId)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException;
 
    int getCountWithFilter(BranchId branch, ArtifactId viewId, String filter);
 }

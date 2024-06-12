@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2023 Boeing
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -12,21 +12,24 @@
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
 
-import { TmoService } from './tmo.service';
+import { CiDetailsService } from './ci-details.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TmoHttpService } from './tmo-http.service';
 import { tmoHttpServiceMock } from './tmo-http.service.mock';
 
-describe('TmoService', () => {
-	let service: TmoService;
+describe('CiDetailsService', () => {
+	let service: CiDetailsService;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [],
 			providers: [
-				{ provide: TmoHttpService, useValue: tmoHttpServiceMock },
+				{
+					provide: TmoHttpService,
+					useValue: tmoHttpServiceMock,
+				},
 			],
 		});
-		service = TestBed.inject(TmoService);
+		service = TestBed.inject(CiDetailsService);
 	});
 
 	it('should be created', () => {

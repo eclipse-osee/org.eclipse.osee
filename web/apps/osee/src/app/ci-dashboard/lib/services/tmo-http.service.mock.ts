@@ -16,25 +16,28 @@ import {
 	defReferenceMock,
 	resultReferenceMock,
 	scriptBatchResultMock,
-	testCaseReferenceMock,
 	testPointReferenceMock,
 } from '../testing/tmo.response.mock';
 
 export const tmoHttpServiceMock: Partial<TmoHttpService> = {
-	getScriptDefList() {
+	getScriptDefList(branchId: string | number, setId: string | number) {
 		return of(defReferenceMock);
 	},
 
-	getScriptResultList() {
+	getScriptDef(branchId: string | number, defId: string | number) {
+		return of(defReferenceMock[0]);
+	},
+
+	getAllScriptResults(branchId: string | number) {
 		return of(resultReferenceMock);
 	},
 
-	getTestCaseList() {
-		return of(testCaseReferenceMock);
+	getScriptResults(branchId: string | number, defId: string | number) {
+		return of(resultReferenceMock);
 	},
 
-	getTestPointList() {
-		return of(testPointReferenceMock);
+	getScriptResult(branchId: string | number, resId: string | number) {
+		return of(resultReferenceMock[0]);
 	},
 
 	getBatches(

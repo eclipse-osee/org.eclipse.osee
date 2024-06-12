@@ -10,5 +10,5 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './tmo.service.mock';
+export * from './ci-details.service.mock';
 export * from './ci-dashboard-controls.component.mock';

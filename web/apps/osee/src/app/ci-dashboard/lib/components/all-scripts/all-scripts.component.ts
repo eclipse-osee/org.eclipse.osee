@@ -10,21 +10,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, OnInit, Input } from '@angular/core';
-
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { UiService } from '@osee/shared/services';
+import { Component, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { ScriptTableComponent } from './script-table/script-table.component';
-import { SetReference, setReferenceSentinel } from '../../../lib/types/tmo';
 import { BranchPickerComponent } from '../../../../shared/components/branch-picker/branch-picker/branch-picker.component';
 import { CiDashboardControlsComponent } from '../../../lib/components/ci-dashboard-controls/ci-dashboard-controls.component';
-import { TmoService } from '../../../lib/services/tmo.service';
+import { CiDashboardUiService } from '../../services/ci-dashboard-ui.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-all-scripts',
 	standalone: true,
-	templateUrl: './all-scripts.component.html',
+	template: `<osee-ci-dashboard-controls />
+		<div class="tw-h-[76vh] tw-px-4"><osee-script-table /></div>`,
 	imports: [
 		AsyncPipe,
 		RouterLink,
@@ -33,25 +32,11 @@ import { TmoService } from '../../../lib/services/tmo.service';
 		CiDashboardControlsComponent,
 	],
 })
-export class AllScriptsComponent implements OnInit {
-	selectedSet = this.tmoService.setId.value;
+export class AllScriptsComponent {
+	uiService = inject(CiDashboardUiService);
 
-	constructor(
-		private route: ActivatedRoute,
-		private routerState: UiService,
-		private tmoService: TmoService
-	) {}
-
-	ngOnInit(): void {
-		this.route.paramMap.subscribe((params) => {
-			this.routerState.idValue = params.get('branchId') || '';
-			this.routerState.typeValue =
-				(params.get('branchType') as 'working' | 'baseline' | '') || '';
-		});
-	}
-
-	@Input() set: SetReference = setReferenceSentinel;
-	@Input('master') masterName = '';
+	branchId = toSignal(this.uiService.branchId);
+	branchType = toSignal(this.uiService.branchType);
 }
 
 export default AllScriptsComponent;

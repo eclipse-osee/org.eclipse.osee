@@ -14,11 +14,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { DefReference, ScriptBatch, SetDiff } from '../types/tmo';
 import { ResultReference } from '../types/tmo';
-import { TestCaseReference } from '../types/tmo';
-import { TestPoint } from '../types/tmo';
 import { apiURL } from '@osee/environments';
 import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
 import { FilesService } from '@osee/shared/services';
+import { Observable } from 'rxjs';
+import { HttpParamsType } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',
@@ -35,21 +35,57 @@ export class TmoHttpService {
 		);
 	}
 
-	getScriptResultList(branchId: string | number) {
+	getScriptDefListPagination(
+		branchId: string | number,
+		setId: string | number,
+		pageNum?: number,
+		pageSize?: number
+	): Observable<DefReference[]> {
+		let params: HttpParamsType = {};
+		if (pageNum) {
+			params = { ...params, pageNum: pageNum };
+		}
+		if (pageSize) {
+			params = { ...params, count: pageSize };
+		}
+		return this.http.get<DefReference[]>(
+			`${apiURL}/script/tmo/${branchId}/def/set/${setId}`,
+			{
+				params: params,
+			}
+		);
+	}
+
+	getFilteredScriptDefCount(
+		branchId: string | number,
+		setId: string | number
+	) {
+		return this.http.get<number>(
+			`${apiURL}/script/tmo/${branchId}/def/set/${setId}/count`
+		);
+	}
+
+	getScriptDef(branchId: string | number, defId: string | number) {
+		return this.http.get<DefReference>(
+			`${apiURL}/script/tmo/${branchId}/def/${defId}`
+		);
+	}
+
+	getAllScriptResults(branchId: string | number) {
 		return this.http.get<ResultReference[]>(
 			`${apiURL}/script/tmo/${branchId}/result`
 		);
 	}
 
-	getTestCaseList(branchId: string | number) {
-		return this.http.get<TestCaseReference[]>(
-			`${apiURL}/script/tmo/${branchId}/case`
+	getScriptResults(branchId: string | number, defId: string | number) {
+		return this.http.get<ResultReference[]>(
+			`${apiURL}/script/tmo/${branchId}/result/def/${defId}`
 		);
 	}
 
-	getTestPointList(branchId: string | number) {
-		return this.http.get<TestPoint[]>(
-			`${apiURL}/script/tmo/${branchId}/point`
+	getScriptResult(branchId: string | number, resId: string | number) {
+		return this.http.get<ResultReference>(
+			`${apiURL}/script/tmo/${branchId}/result/${resId}/details`
 		);
 	}
 
