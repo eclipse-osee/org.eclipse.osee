@@ -138,6 +138,7 @@ public interface AtsAttributeTypes {
    AttributeTypeDate Holiday = ats.createDate(72064629481881851L, "ats.Holiday", TEXT_CALENDAR, "", Edit);
    AttributeTypeDouble HoursPerWorkDay = ats.createDouble(1152921504606847187L, "ats.Hours Per Work Day", TEXT_PLAIN, "", Config);
    AttributeTypeDouble HoursSpent = ats.createDouble(2676491969719166786L, "ats.Hours Spent", TEXT_PLAIN, "",Edit);
+   AttributeTypeString HowFound = ats.createString(3332731819447462964L, "ats.How Found", MediaType.TEXT_PLAIN, "", Edit);
    AttributeTypeString HowToReproduceProblem = ats.createString(836807199L, "ats.How to reproduce the problem", TEXT_PLAIN, "", Edit);
    AttributeTypeBoolean IsDcs = ats.createBoolean(3199233956221339044L, "ats.Is DCS", TEXT_PLAIN, "Is Direct Commercial Sale", Edit);
    AttributeTypeString ImpactToMissionOrCrew = ats.createString(1442232314L, "ats.Impact to Mission or Crew", TEXT_PLAIN, "", Edit);

@@ -245,6 +245,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(FunctionalArea)
       .zeroOrOne(GitRepoName)
       .zeroOrOne(GitBranchName)
+      .zeroOrOne(HowFound)
       .zeroOrOne(HowToReproduceProblem)
       .zeroOrOne(LegacyPcrId)
       .zeroOrOne(ImpactToMissionOrCrew)
