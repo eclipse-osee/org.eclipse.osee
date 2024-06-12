@@ -82,6 +82,7 @@ public class AtsXWidgetProvider extends BaseXWidgetProvider {
       register(XGoalCombo.class);
       register(XHyperlabelActionableItemSelection.class);
       register(XHyperlabelFoundInVersionSelection.class);
+      register(XHyperlabelIntroducedInVersionSelection.class);
       register(XHyperlabelGroupSelection.class);
       register(XHyperlabelTeamDefinitionSelection.class);
       register(XHyperlabelVersionSelection.class);

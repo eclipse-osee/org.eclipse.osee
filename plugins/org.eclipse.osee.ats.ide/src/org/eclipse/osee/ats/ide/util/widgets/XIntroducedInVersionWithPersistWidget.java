@@ -27,7 +27,7 @@ public class XIntroducedInVersionWithPersistWidget extends XHyperlabelVersionSel
       AtsRelationTypes.TeamWorkflowToIntroducedInVersion_Version;
 
    public XIntroducedInVersionWithPersistWidget() {
-      this("Introduced In Version");
+      this(XHyperlabelIntroducedInVersionSelection.LABEL);
    }
 
    public XIntroducedInVersionWithPersistWidget(String label) {
