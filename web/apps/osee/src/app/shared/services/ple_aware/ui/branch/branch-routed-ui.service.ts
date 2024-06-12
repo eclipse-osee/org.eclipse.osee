@@ -80,7 +80,7 @@ export class BranchRoutedUIService {
 			baseUrl = this.router.url;
 		}
 		const [initialURL, idURL] = baseUrl;
-		let remainingURL = idURL.includes(
+		let remainingURL = idURL?.includes(
 			'/' + this.branchService.id.getValue() + '/'
 		)
 			? idURL
