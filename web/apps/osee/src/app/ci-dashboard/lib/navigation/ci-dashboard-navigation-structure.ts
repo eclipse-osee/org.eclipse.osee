@@ -47,6 +47,18 @@ export const ciNavigationStructure: navigationElement[] = [
 				children: [],
 			},
 			{
+				label: 'Scripts',
+				cypressLabel: 'ci-scripts',
+				pageTitle: 'OSEE - Continuous Integration',
+				isDropdown: false,
+				isDropdownOpen: false,
+				requiredRoles: [],
+				routerLink: '/ci/details',
+				icon: '',
+				description: '',
+				children: [],
+			},
+			{
 				label: 'Dashboard',
 				cypressLabel: 'ci-dashboard',
 				pageTitle: 'OSEE - Continuous Integration',

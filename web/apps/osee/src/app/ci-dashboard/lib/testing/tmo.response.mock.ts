@@ -14,8 +14,7 @@ import {
 	DefReference,
 	SetReference,
 	ResultReference,
-	TestCaseReference,
-	TestPoint,
+	TestPointReference,
 	ScriptBatch,
 } from '../types';
 
@@ -103,17 +102,24 @@ export const resultReferenceMock: ResultReference[] = [
 	},
 ];
 
-export const testCaseReferenceMock: TestCaseReference[] = [
+export const testPointReferenceMock: TestPointReference[] = [
 	{
-		key: 'key1',
-		value: 'value1',
-	},
-];
-
-export const testPointReferenceMock: TestPoint[] = [
-	{
-		key: 'key1',
-		value: 'value1',
+		id: '645',
+		name: 'Bob',
+		testNumber: 2,
+		result: '2',
+		overallResult: '5',
+		resultType: 'Code',
+		interactive: false,
+		groupName: 'GroupOne',
+		groupType: 'GroupType',
+		groupOperator: 'OR',
+		expected: 'PASS',
+		actual: 'FAIL',
+		requirement: 'REQ123',
+		elapsedTime: 452435,
+		transmissionCount: 3,
+		notes: 'notes',
 	},
 ];
 

@@ -873,7 +873,7 @@ public interface CoreArtifactTypes {
       .exactlyOne(MachineName)
       .exactlyOne(Revision)
       .exactlyOne(RepositoryType)
-      .zeroOrOne(TeamName)
+      .exactlyOne(TeamName)
       .exactlyOne(LastAuthor)
       .exactlyOne(LastModifiedDate)
       .exactlyOne(ModifiedFlag)

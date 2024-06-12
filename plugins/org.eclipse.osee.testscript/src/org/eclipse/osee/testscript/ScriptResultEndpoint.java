@@ -49,6 +49,14 @@ public interface ScriptResultEndpoint {
    int getCount(@QueryParam("filter") String filter, @QueryParam("viewId") ArtifactId viewId);
 
    @GET()
+   @Path("def/{defId}")
+   @Produces(MediaType.APPLICATION_JSON)
+   /**
+    * @return all Script Results types matching criteria for Set and Definition
+    */
+   Collection<ScriptResultToken> getScriptResultsByDef(@PathParam("defId") ArtifactId scriptDefId);
+
+   @GET()
    @Path("batch/{batchId}")
    @Produces(MediaType.APPLICATION_JSON)
    /**

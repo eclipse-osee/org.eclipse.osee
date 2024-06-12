@@ -13,10 +13,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AllScriptsComponent } from './all-scripts.component';
-import { RouterTestingModule } from '@angular/router/testing';
-import { tmoServiceMock } from '../../../lib/testing/tmo.service.mock';
-import { TmoService } from '../../../lib/services/tmo.service';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { ciDetailsServiceMock } from '../../testing/ci-details.service.mock';
+import { CiDetailsService } from '../../services/ci-details.service';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { CiDashboardControlsMockComponent } from '../../testing/ci-dashboard-controls.component.mock';
 import { ScriptTableComponent } from './script-table/script-table.component';
 
@@ -33,13 +32,14 @@ describe('AllScriptsComponent', () => {
 				],
 			},
 		}).configureTestingModule({
-			imports: [
-				AllScriptsComponent,
-				ScriptTableComponent,
-				RouterTestingModule,
-				NoopAnimationsModule,
+			imports: [AllScriptsComponent, ScriptTableComponent],
+			providers: [
+				{
+					provide: CiDetailsService,
+					useValue: ciDetailsServiceMock,
+				},
+				provideNoopAnimations(),
 			],
-			providers: [{ provide: TmoService, useValue: tmoServiceMock }],
 		});
 		fixture = TestBed.createComponent(AllScriptsComponent);
 		component = fixture.componentInstance;

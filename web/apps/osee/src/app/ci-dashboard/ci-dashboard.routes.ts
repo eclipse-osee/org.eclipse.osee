@@ -31,6 +31,11 @@ export const routes: Routes = [
 			import('./lib/components/all-scripts/all-scripts.routes'),
 	},
 	{
+		path: 'details',
+		title: 'CI Dashboard',
+		loadChildren: () => import('./lib/components/details/details.routes'),
+	},
+	{
 		path: 'dashboard',
 		title: 'CI Dashboard',
 		loadChildren: () =>

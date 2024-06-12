@@ -51,15 +51,30 @@ public class ScriptDefEndpointImpl implements ScriptDefEndpoint {
    }
 
    @Override
-   public Collection<ScriptDefToken> getScriptDefBySet(ArtifactId scriptSetId) {
+   public Collection<ScriptDefToken> getScriptDefBySet(ArtifactId scriptSetId, long pageNum, long pageSize) {
       try {
          String filter = scriptSetId.getIdString();
          if (scriptSetId.isValid()) {
             return scriptDefApi.getAllByFilter(branch, filter,
-               FollowRelation.followList(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults), 0L, 0L,
-               AttributeTypeId.SENTINEL, Arrays.asList(CoreAttributeTypes.SetId));
+               FollowRelation.followList(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults), pageNum,
+               pageSize, AttributeTypeId.SENTINEL, Arrays.asList(CoreAttributeTypes.SetId));
          }
          return List.of();
+      } catch (Exception ex) {
+         throw OseeCoreException.wrap(ex);
+      }
+   }
+
+   @Override
+   public int getCountForSet(ArtifactId scriptSetId, ArtifactId viewId) {
+      try {
+         String filter = scriptSetId.getIdString();
+         if (scriptSetId.isValid()) {
+            return scriptDefApi.getAllByFilterAndCount(branch, filter,
+               FollowRelation.followList(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults),
+               Arrays.asList(CoreAttributeTypes.SetId), viewId);
+         }
+         return 0;
       } catch (Exception ex) {
          throw OseeCoreException.wrap(ex);
       }
@@ -72,6 +87,6 @@ public class ScriptDefEndpointImpl implements ScriptDefEndpoint {
 
    @Override
    public int getCount(String filter, ArtifactId viewId) {
-      return scriptDefApi.getCountWithFilter(branch, viewId, filter);
+      return scriptDefApi.getCountWithFilter(branch, viewId, filter, Arrays.asList(CoreAttributeTypes.Name));
    }
 }

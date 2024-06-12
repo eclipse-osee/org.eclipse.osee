@@ -10,8 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe } from '@angular/common';
-import { Component, OnDestroy, viewChild } from '@angular/core';
+import { Component, inject, viewChild } from '@angular/core';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { scriptDefHeaderDetails } from '../../../table-headers/script-headers';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatMenuTrigger } from '@angular/material/menu';
@@ -30,16 +31,66 @@ import {
 import { MatTooltip } from '@angular/material/tooltip';
 import { HeaderService, UiService } from '@osee/shared/services';
 import { SplitStringPipe } from '@osee/shared/utils';
-import { TmoService } from '../../../services/tmo.service';
-import { scriptDefHeaderDetails } from '../../../table-headers/script-def-headers';
-import type { DefReference, SetReference } from '../../../types/tmo';
+import { CiDetailsService } from '../../../services/ci-details.service';
+import type { DefReference } from '../../../types/tmo';
+import { CiDashboardUiService } from '../../../services/ci-dashboard-ui.service';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'osee-script-table',
 	standalone: true,
-	templateUrl: './script-table.component.html',
+	template: `<div
+		class="mat-elevation-z8 tw-h-[76vh] tw-w-screen tw-overflow-auto">
+		<ng-container *ngIf="scriptDefs | async as _defs">
+			<mat-table [dataSource]="_defs">
+				<ng-container
+					[matColumnDef]="header"
+					*ngFor="let header of headers">
+					<th
+						mat-header-cell
+						*matHeaderCellDef
+						class="tw-text-center tw-align-middle tw-font-medium tw-text-primary-600"
+						[matTooltip]="
+							(getTableHeaderByName(header) | async)
+								?.description || ''
+						">
+						{{
+							(getTableHeaderByName(header) | async)
+								?.humanReadable || ''
+						}}
+					</th>
+					<td
+						mat-cell
+						*matCellDef="let def"
+						class="tw-align-middle">
+						<ng-container *ngIf="header === 'name'">
+							<button
+								mat-list-item
+								(click)="resultList(def.id)"
+								class="tw-text-blue-500 tw-underline">
+								{{ def[header] }}
+							</button>
+						</ng-container>
+						<ng-container *ngIf="header !== 'name'">
+							{{ def[header] }}
+						</ng-container>
+					</td>
+				</ng-container>
+				<tr
+					mat-header-row
+					*matHeaderRowDef="headers; sticky: true"></tr>
+				<tr
+					mat-row
+					*matRowDef="let row; columns: headers; let i = index"
+					class="odd:tw-bg-selected-button even:tw-bg-background-background"
+					[attr.data-cy]="'script-def-table-row-' + row.name"></tr>
+			</mat-table>
+		</ng-container>
+	</div>`,
 	imports: [
 		AsyncPipe,
+		NgFor,
+		NgIf,
 		FormsModule,
 		MatTable,
 		MatColumnDef,
@@ -55,30 +106,29 @@ import type { DefReference, SetReference } from '../../../types/tmo';
 		SplitStringPipe,
 	],
 })
-export class ScriptTableComponent implements OnDestroy {
+export class ScriptTableComponent {
+	ciDetailsService = inject(CiDetailsService);
+	ciDashboardService = inject(CiDashboardUiService);
+	headerService = inject(HeaderService);
+	dialog = inject(MatDialog);
+	router = inject(Router);
+
 	matMenuTrigger = viewChild.required(MatMenuTrigger);
 
-	noneOption = { name: 'None' } as SetReference;
+	scriptDefs = this.ciDetailsService.scriptDefs;
+	ciSetId = this.ciDashboardService.ciSetId;
 
-	scriptDefs = this.tmoService.scriptDefs;
+	protected filter = this.ciDetailsService.filter;
 
-	constructor(
-		private tmoService: TmoService,
-		private headerService: HeaderService,
-		private ui: UiService,
-		public dialog: MatDialog
-	) {}
-
-	getTableHeaderByName(header: keyof DefReference) {
-		return this.headerService.getHeaderByName(
-			scriptDefHeaderDetails,
-			header
-		);
+	resultList(defId: string) {
+		let url = this.router.url;
+		url = url.replace('allScripts', 'details');
+		this.ciDetailsService.CiDefId = defId;
+		this.router.navigateByUrl(url);
 	}
 
 	applyFilter(event: Event) {
 		const filterValue = (event.target as HTMLInputElement).value;
-		this.FilterValue = filterValue;
 	}
 
 	menuPosition = {
@@ -96,37 +146,27 @@ export class ScriptTableComponent implements OnDestroy {
 		this.matMenuTrigger().openMenu();
 	}
 
+	getTableHeaderByName(header: keyof DefReference) {
+		return this.headerService.getHeaderByName(
+			scriptDefHeaderDetails,
+			header
+		);
+	}
+
 	headers: (keyof DefReference)[] = [
 		'name',
 		'team',
 		'subsystem',
 		'safety',
-		'notes',
 		'statusBy',
 		'statusDate',
 		'latestResult',
-		'latestScriptHealth',
 		'latestPassedCount',
 		'latestFailedCount',
 		'latestScriptAborted',
 		'machineName',
-		'latestMachineName',
 		'latestElapsedTime',
-		'scheduledMachine',
-		'scheduledTime',
-		'scheduled',
 		'fullScriptName',
+		'notes',
 	];
-
-	ngOnDestroy(): void {
-		this.FilterValue = '';
-	}
-
-	get filterValue() {
-		return this.tmoService.filterValue;
-	}
-
-	set FilterValue(value: string) {
-		this.tmoService.FilterValue = value;
-	}
 }

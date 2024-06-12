@@ -16,6 +16,7 @@ package org.eclipse.osee.testscript.internal;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -26,6 +27,7 @@ import org.eclipse.osee.accessor.ArtifactAccessor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -239,6 +241,13 @@ public class ScriptResultApiImpl implements ScriptResultApi {
       } catch (Exception ex) {
          return new LinkedList<ScriptResultToken>();
       }
+   }
+
+   @Override
+   public Collection<ScriptResultToken> getAllByRelation(BranchId branch, RelationTypeSide relation,
+      ArtifactId relatedId) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+      InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.accessor.getAllByRelation(branch, relation, relatedId, ArtifactId.SENTINEL);
    }
 
    @Override

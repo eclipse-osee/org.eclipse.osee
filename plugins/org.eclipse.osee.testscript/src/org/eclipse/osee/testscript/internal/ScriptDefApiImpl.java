@@ -14,7 +14,6 @@
 package org.eclipse.osee.testscript.internal;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -204,8 +203,15 @@ public class ScriptDefApiImpl implements ScriptDefApi {
    }
 
    @Override
-   public int getCountWithFilter(BranchId branch, ArtifactId viewId, String filter) {
-      return this.accessor.getAllByFilterAndCount(branch, filter, Arrays.asList(CoreAttributeTypes.Name), viewId);
+   public int getCountWithFilter(BranchId branch, ArtifactId viewId, String filter,
+      Collection<AttributeTypeId> attributes) {
+      return this.accessor.getAllByFilterAndCount(branch, filter, attributes, viewId);
+   }
+
+   @Override
+   public int getAllByFilterAndCount(BranchId branch, String filter, Collection<FollowRelation> followRelations,
+      Collection<AttributeTypeId> followAttributes, ArtifactId viewId) {
+      return this.accessor.getAllByFilterAndCount(branch, filter, followRelations, followAttributes, viewId);
    }
 
 }

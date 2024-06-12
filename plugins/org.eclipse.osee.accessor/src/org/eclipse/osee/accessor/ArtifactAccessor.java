@@ -356,6 +356,9 @@ public interface ArtifactAccessor<T> {
       String filter, Collection<AttributeTypeId> attributes, Collection<FollowRelation> followRelations,
       Collection<AttributeTypeId> followAttributes, ArtifactId viewId);
 
+   int getAllByFilterAndCount(BranchId branch, String filter, Collection<FollowRelation> followRelations,
+      Collection<AttributeTypeId> followAttributes, ArtifactId viewId);
+
    Collection<T> getAllByQuery(BranchId branch, AttributeQuery query)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException;
