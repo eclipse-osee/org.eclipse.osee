@@ -515,10 +515,13 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
    public InterfaceStructureToken getMessageHeaderStructure(BranchId branch, ArtifactId connectionId,
       ArtifactId messageId, ArtifactId viewId) {
       InterfaceMessageToken message = interfaceMessageApi.getWithRelations(branch, messageId,
-         FollowRelation.followList(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage,
-            CoreRelationTypes.InterfaceSubMessageContent_Structure,
-            CoreRelationTypes.InterfaceStructureContent_DataElement,
-            CoreRelationTypes.InterfaceElementPlatformType_PlatformType),
+         Arrays.asList(FollowRelation.follow(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage),
+            FollowRelation.follow(CoreRelationTypes.InterfaceSubMessageContent_Structure),
+            FollowRelation.follow(CoreRelationTypes.InterfaceStructureContent_DataElement),
+            FollowRelation.fork(CoreRelationTypes.InterfaceElementPlatformType_PlatformType),
+            FollowRelation.follow(CoreRelationTypes.InterfaceElementArrayElement_ArrayElement),
+            FollowRelation.fork(CoreRelationTypes.InterfaceElementArrayIndexDescriptionSet_Set),
+            FollowRelation.follow(CoreRelationTypes.InterfaceElementPlatformType_PlatformType)),
          viewId);
       InterfaceConnection connection = this.interfaceConnectionApi.get(branch, connectionId);
       return this.getMessageHeaderStructure(branch, connection, message);
