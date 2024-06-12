@@ -135,6 +135,7 @@ export class MatOptionLoadingComponent<T> implements OnChanges {
 			(_) =>
 				this.paginationMode === 'AUTO' &&
 				this.cdkVirtualScrollViewPort() !== undefined &&
+				this.cdkVirtualScrollViewPort()!.getViewportSize() !== 0 &&
 				this.cdkVirtualScrollViewPort()!.getRenderedRange().end ===
 					this.cdkVirtualScrollViewPort()!.getDataLength()
 		),

@@ -238,13 +238,13 @@ export class TeamWorkflowTabComponent {
 
 	openInArtifactExplorer() {
 		const panel: ExplorerPanel = 'Artifacts';
-		this.router.navigate([], {
-			queryParams: { panel: panel },
-			relativeTo: this.routeUrl,
-		});
 		this.branchedRouter.position = {
 			id: this.teamWorkflow().workingBranch.id,
 			type: 'working',
 		};
+		this.router.navigate([], {
+			queryParams: { panel: panel },
+			relativeTo: this.routeUrl,
+		});
 	}
 }
