@@ -222,7 +222,7 @@ public class DispoAnnotationData {
       this.isAnalyze = isAnalyzed;
    }
 
-   public void setNeedsModify(boolean isAnalyzed) {
+   public void setNeedsModify(boolean needsModify) {
       this.needsModify = needsModify;
    }
 
