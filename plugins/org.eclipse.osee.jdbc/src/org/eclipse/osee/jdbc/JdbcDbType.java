@@ -17,6 +17,7 @@ import static org.eclipse.osee.jdbc.JdbcException.newJdbcException;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
  * @author Roberto E. Escobar
@@ -219,6 +220,171 @@ public class JdbcDbType extends BaseId {
          return "as bigint)";
       }
       return " ";
+   }
+
+   public String json_agg(String sqlToAggregate) {
+      String result = "";
+      if (matches(postgresql)) {
+         result += "jsonb_agg (";
+      }
+      if (matches(oracle)) {
+         result += "json_arrayagg (";
+      }
+      result += sqlToAggregate;
+      result += ")";
+      return result;
+   }
+
+   public String jsonb_array(String... data) {
+      String result = "";
+      if (matches(postgresql)) {
+         result += "jsonb_build_array(";
+         for (int i = 0; i < data.length; i++) {
+            result += " " + data[i] + " ";
+            if (i < data.length - 1) {
+               result += ",";
+            }
+         }
+         result += ")";
+      }
+      if (matches(oracle)) {
+         result += "json_array(";
+         for (int i = 0; i < data.length; i++) {
+            result += " " + data[i] + " ";
+            if (i < data.length - 1) {
+               result += ",";
+            }
+         }
+         result += ")";
+      }
+      return result;
+   }
+
+   public String jsonb_object(String... data) {
+      if (data.length % 2 != 0) {
+         throw new OseeArgumentException("Improper count of keys to create json object", (Object[]) data);
+      }
+      String result = "";
+      if (matches(postgresql)) {
+         result += "jsonb_build_object (";
+         for (int i = 0; i < data.length; i++) {
+            boolean keyOrValue = i % 2 != 0;
+            if (!keyOrValue) {
+               result += " '" + data[i] + "' ,";
+            } else {
+               result += " " + data[i] + " ";
+               if (i < data.length - 2) {
+                  result += ",";
+               }
+            }
+         }
+      }
+      if (matches(oracle)) {
+         result += "json_object (";
+         for (int i = 0; i < data.length; i++) {
+            boolean keyOrValue = i % 2 != 0;
+            if (!keyOrValue) {
+               result += " key '" + data[i] + "' ";
+            } else {
+               result += " value " + data[i] + " ";
+               if (i < data.length - 2) {
+                  result += ",";
+               }
+            }
+         }
+      }
+      result += ")";
+      return result;
+   }
+
+   public String json_object(String... data) {
+      if (data.length % 2 != 0) {
+         throw new OseeArgumentException("Improper count of keys to create json object", (Object[]) data);
+      }
+      String result = "";
+      if (matches(postgresql)) {
+         result += "json_build_object (";
+         for (int i = 0; i < data.length; i++) {
+            boolean keyOrValue = i % 2 != 0;
+            if (!keyOrValue) {
+               result += " '" + data[i] + "' ,";
+            } else {
+               result += " " + data[i] + " ";
+               if (i < data.length - 2) {
+                  result += ",";
+               }
+            }
+         }
+      }
+      if (matches(oracle)) {
+         result += "json_object (";
+         for (int i = 0; i < data.length; i++) {
+            boolean keyOrValue = i % 2 != 0;
+            if (!keyOrValue) {
+               result += " key '" + data[i] + "' ";
+            } else {
+               result += " value " + data[i] + " ";
+               if (i < data.length - 2) {
+                  result += ",";
+               }
+            }
+         }
+      }
+      result += ")";
+      return result;
+   }
+
+   public String cast(String value, String type) {
+      String result = "";
+      if (matches(postgresql) || matches(oracle)) {
+         result += "CAST( " + value + " AS " + type + ")";
+      }
+      return result;
+   }
+
+   public String longToString() {
+      String result = "";
+      if (matches(postgresql)) {
+         result += "TEXT";
+      }
+      if (matches(oracle)) {
+         result += "varchar(20)";
+      }
+      return result;
+   }
+
+   public String split_part(String stringToSplit, String characterToSplitBy, long index) {
+      String result = "";
+      if (matches(postgresql)) {
+         result += "split_part(" + stringToSplit + ", '" + characterToSplitBy + "', " + index + ")";
+      }
+      if (matches(oracle)) {
+         result +=
+            "substr(" + stringToSplit + ", " + index + ", " + "instr(" + stringToSplit + ", '" + characterToSplitBy + "')" + "-2" + ")";
+      }
+      return result;
+   }
+
+   public String booleanTrue() {
+      String result = "";
+      if (matches(postgresql)) {
+         result += "true";
+      }
+      if (matches(oracle)) {
+         result += "1";
+      }
+      return result;
+   }
+
+   public String booleanFalse() {
+      String result = "";
+      if (matches(postgresql)) {
+         result += "false";
+      }
+      if (matches(oracle)) {
+         result += "0";
+      }
+      return result;
    }
 
 }

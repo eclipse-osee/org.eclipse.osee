@@ -68,6 +68,8 @@ public interface OrcsApplicability {
 
    FeatureDefinition getFeature(String feature, BranchId branch);
 
+   Collection<FeatureDefinition> getFeatures(BranchId branch, AttributeTypeToken orderByAttribute);
+
    Collection<FeatureDefinition> getFeatures(BranchId branch);
 
    Collection<FeatureDefinition> getFeaturesByProductApplicability(BranchId branch, String productApplicability);
@@ -77,6 +79,10 @@ public interface OrcsApplicability {
    CreateViewDefinition getView(String view, BranchId branch);
 
    Collection<CreateViewDefinition> getViewDefinitions(BranchId branch);
+
+   Collection<CreateViewDefinition> getViewDefinitionsOrdered(BranchId branch, AttributeTypeToken orderByAttributeType);
+
+   Collection<CreateViewDefinition> getViewDefinitionsByIds(BranchId branch, Collection<ArtifactId> ids);
 
    Collection<CreateViewDefinition> getViewsDefinitionsByProductApplicability(BranchId branch,
       String productApplicability);
@@ -92,6 +98,8 @@ public interface OrcsApplicability {
    List<FeatureDefinition> getFeatureDefinitionData(BranchId branch);
 
    XResultData createApplicabilityForView(ArtifactId viewId, String applicability, BranchId branch);
+
+   XResultData setFeatureForView(ArtifactId viewId, ArtifactId featureId, String[] applicability, BranchId branch);
 
    XResultData createCfgGroup(ConfigurationGroupDefinition group, BranchId branch);
 
@@ -118,6 +126,8 @@ public interface OrcsApplicability {
    XResultData startWatcher(BlockApplicabilityStageRequest data, BranchId branch);
 
    XResultData stopWatcher();
+
+   List<ConfigurationGroupDefinition> getConfigurationGroupsForView(ArtifactId view, BranchId branch);
 
    ConfigurationGroupDefinition getConfigurationGroup(String cfgGroup, BranchId branch);
 
