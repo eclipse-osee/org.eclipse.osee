@@ -306,7 +306,7 @@ public class ConflictManagerInternal {
             GammaId sourceGamma = GammaId.valueOf(chStmt.getLong("source_gamma"));
             GammaId destGamma = GammaId.valueOf(chStmt.getLong("dest_gamma"));
             AttributeTypeGeneric<?> attrTypeId = AttributeTypeManager.getAttributeType(chStmt.getLong("attr_type_id"));
-            String sourceValue = chStmt.getString("source_value") != null ? chStmt.getString(
+            String sourceValue = !chStmt.getString("source_value").isEmpty() ? chStmt.getString(
                "source_value") : chStmt.getString("dest_value");
 
             if (attrId.notEqual(nextAttrId) && isAttributeConflictValid(destGamma, sourceBranch)) {

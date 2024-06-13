@@ -197,7 +197,11 @@ public final class JdbcStatementImpl implements JdbcStatement {
    @Override
    public String getString(String columnName) throws JdbcException {
       try {
-         return rSet.getString(columnName);
+         String rtn = rSet.getString(columnName);
+         if (rtn != null) {
+            return rtn;
+         }
+         return "";
       } catch (SQLException ex) {
          throw newJdbcException(ex);
       }
