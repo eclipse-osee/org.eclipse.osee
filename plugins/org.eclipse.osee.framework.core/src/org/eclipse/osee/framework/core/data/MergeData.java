@@ -25,6 +25,17 @@ public class MergeData {
    private final Long conflictId;
    private final AttributeMergeData attrMergeData;
 
+   public MergeData() {
+      // Needed for jax-rs
+      this.artId = ArtifactId.SENTINEL;
+      this.artType = ArtifactTypeToken.SENTINEL;
+      this.name = "";
+      this.conflictType = ConflictType.ATTRIBUTE;
+      this.conflictStatus = ConflictStatus.UNTOUCHED;
+      this.conflictId = -1L;
+      this.attrMergeData = new AttributeMergeData();
+   }
+
    public MergeData(ArtifactId artId, ArtifactTypeToken artType, String name, ConflictType conflictType, ConflictStatus conflictStatus, Long conflictId, AttributeMergeData attrMergeData) {
       this.artId = artId;
       this.artType = artType;

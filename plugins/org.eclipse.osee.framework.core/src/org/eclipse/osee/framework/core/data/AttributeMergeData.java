@@ -26,6 +26,21 @@ public class AttributeMergeData {
    private final String sourceGammaId;
    private final String destGammaId;
 
+   public AttributeMergeData() {
+      // Needed for jax-rs
+      this.attrType = AttributeTypeToken.SENTINEL;
+      this.attrId = AttributeId.SENTINEL;
+      this.attrTypeName = "";
+      this.sourceValue = "";
+      this.mergeValue = "";
+      this.destValue = "";
+      this.sourceUri = "";
+      this.mergeUri = "";
+      this.destUri = "";
+      this.sourceGammaId = "";
+      this.destGammaId = "";
+   }
+
    public AttributeMergeData(AttributeTypeToken attrType, AttributeId attrId, String sourceValue, String mergeValue, String destValue, String sourceUri, String mergeUri, String destUri, String sourceGammaId, String destGammaId) {
       this.attrType = attrType;
       this.attrId = attrId;
