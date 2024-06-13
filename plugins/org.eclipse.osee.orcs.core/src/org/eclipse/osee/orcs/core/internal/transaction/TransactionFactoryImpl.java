@@ -437,7 +437,7 @@ String query =
    "tuple2s as (SELECT 0 as id, tuple_type as type_id, '' as extra1, e1 as extra2,e2 as extra3, 0 as extra4, 0 as extra5, '' as extra6, event_type from tuple2Combined ),\r\n"+
    "tuple3s as (SELECT 0 as id, tuple_type as type_id, '' as extra1, e1 as extra2, e2 as extra3, e3 as extra4, 0 as extra5, '' as extra6, event_type from tuple3Combined), \r\n"+
    "tuple4s as (SELECT 0 as id, tuple_type as type_id, '' as extra1, e1 as extra2, e2 as extra3, e3 as extra4, e4 as extra5, '' as extra6, event_type from tuple4Combined)\r\n"+
-   "SELECT * from attr UNION SELECT * from arts UNION SELECT * FROM rels UNION SELECT * from tuple2s UNION SELECT * from tuple3s UNION SELECT * from tuple4s UNION SELECT * from oldRels ORDER BY event_type\r\n";
+   "select * from (SELECT * from attr UNION SELECT * from arts UNION SELECT * FROM rels UNION SELECT * from tuple2s UNION SELECT * from tuple3s UNION SELECT * from tuple4s UNION SELECT * from oldRels) t1 ORDER BY event_type\r\n";
 //@formatter:on
       TransactionBuilder tx = createTransaction(branch, "Undoing " + transaction.getIdString());
       List<ArtifactToken> createdArts = new LinkedList<>();
