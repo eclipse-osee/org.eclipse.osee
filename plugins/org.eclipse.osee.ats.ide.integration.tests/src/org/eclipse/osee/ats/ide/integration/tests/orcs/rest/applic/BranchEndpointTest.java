@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.integration.tests.orcs.rest.applic;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,15 +35,24 @@ import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.ConflictData;
+import org.eclipse.osee.framework.core.data.ConflictUpdateData;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.JsonArtifact;
 import org.eclipse.osee.framework.core.data.JsonRelation;
 import org.eclipse.osee.framework.core.data.JsonRelations;
+import org.eclipse.osee.framework.core.data.MergeData;
 import org.eclipse.osee.framework.core.data.TransactionResult;
+import org.eclipse.osee.framework.core.data.UpdateBranchData;
 import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.core.data.ValidateCommitResult;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.ConflictStatus;
+import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranchCategoryTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -630,10 +640,13 @@ public class BranchEndpointTest {
          // since the only change to the artifact is on branchIdTwo (given) we don't expect to see it as an other modified branch
          Assert.assertTrue(branchesModded.isEmpty());
          try (Response res = branchEndpoint.purgeBranch(setUpBranchId, false)) {
+            //
          }
          try (Response res = branchEndpoint.purgeBranch(testBranchIdOne, false)) {
+            //
          }
          try (Response res = branchEndpoint.purgeBranch(testBranchIdTwo, false)) {
+            //
          }
       }
 
@@ -663,4 +676,252 @@ public class BranchEndpointTest {
       }
       Assert.assertTrue(allBranchesContained);
    }
+
+   @Test
+   public void testUpdateBranchFromParent_NoChanges() {
+      // The validateCommitBranch method in branchEndpoint does not work on HSQL. Only run when testing using Postgres.
+      // Add -DpostgresqlDB to your run config in order to run the updateBranchFromParent tests.
+      if (System.getProperty("postgresqlDB") == null) {
+         return;
+      }
+
+      BranchId testBranch = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
+      UpdateBranchData branchData = branchEndpoint.updateBranchFromParent(testBranch);
+      Assert.assertEquals("Branch is up to date", branchData.getResults().getResults().get(0));
+      Response res = branchEndpoint.purgeBranch(testBranch, false);
+      res.close();
+   }
+
+   @Test
+   public void testUpdateBranchFromParent_ParentChanged() {
+      if (System.getProperty("postgresqlDB") == null) {
+         return;
+      }
+
+      BranchId testBranch = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
+      branchEndpoint.associateBranchToArtifact(testBranch, ArtifactId.valueOf("12345"));
+
+      // Make a change to the parent branch
+      BranchId testBranch2 = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
+      setArtifactEndpoint(testBranch2);
+      ArtifactToken newArtifact =
+         workingBranchArtifactEndpoint.createArtifact(testBranch2, CoreArtifactTypes.SoftwareRequirementMarkdown,
+            CoreArtifactTokens.SoftwareRequirementsFolder, "Test Requirement");
+      BranchCommitOptions options = new BranchCommitOptions();
+      options.setArchive(false);
+      options.setCommitter(UserManager.getUser());
+      branchEndpoint.commitBranch(testBranch2, DemoBranches.SAW_PL, options);
+
+      // Perform update
+      UpdateBranchData branchData = branchEndpoint.updateBranchFromParent(testBranch);
+
+      // Check that a new branch ID and correct result message were returned
+      Assert.assertTrue(branchData.getNewBranchId().isValid());
+      Assert.assertEquals("Updated branch from SAW Product Line", branchData.getResults().getResults().get(0));
+
+      // Check that the associated artifact was assigned to the new branch
+      Branch newBranch = branchEndpoint.getBranchById(branchData.getNewBranchId());
+      Assert.assertEquals("12345", newBranch.getAssociatedArtifact().getIdString());
+
+      // Check that the original working branch was deleted
+      Branch originalTestBranch = branchEndpoint.getBranchById(testBranch);
+      Assert.assertTrue(originalTestBranch.getName().startsWith("TestBranch - for update"));
+      Assert.assertEquals(BranchState.DELETED, originalTestBranch.getBranchState());
+
+      // Check that the new artifact is now on the new working branch
+      setArtifactEndpoint(branchData.getNewBranchId());
+      ArtifactToken newArtifactOnNewBranch = workingBranchArtifactEndpoint.getArtifactTokenOrSentinel(newArtifact);
+      Assert.assertEquals(newArtifact.getIdString(), newArtifactOnNewBranch.getIdString());
+
+      Response res = branchEndpoint.purgeBranch(testBranch, false);
+      res.close();
+      res = branchEndpoint.purgeBranch(testBranch2, false);
+      res.close();
+      res = branchEndpoint.purgeBranch(branchData.getNewBranchId(), false);
+      res.close();
+   }
+
+   @Test
+   public void testUpdateBranchFromParent_BranchChanged_NoParentChange() {
+      if (System.getProperty("postgresqlDB") == null) {
+         return;
+      }
+
+      BranchId testBranch = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
+      branchEndpoint.associateBranchToArtifact(testBranch, ArtifactId.valueOf("55555"));
+
+      // Create new artifact on the first test branch
+      setArtifactEndpoint(testBranch);
+      workingBranchArtifactEndpoint.createArtifact(testBranch, CoreArtifactTypes.SoftwareRequirementMarkdown,
+         CoreArtifactTokens.SoftwareRequirementsFolder, "Test MD Requirement");
+
+      // Perform update
+      UpdateBranchData branchData = branchEndpoint.updateBranchFromParent(testBranch);
+
+      // Check that the branch is still up to date since there have been no changes to the parent branch
+      Assert.assertEquals("Branch is up to date", branchData.getResults().getResults().get(0));
+
+      Response res = branchEndpoint.purgeBranch(testBranch, false);
+      res.close();
+   }
+
+   @Test
+   public void testUpdateBranchFromParent_BranchChanged_ParentChanged() {
+      if (System.getProperty("postgresqlDB") == null) {
+         return;
+      }
+
+      BranchId testBranch = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
+      branchEndpoint.associateBranchToArtifact(testBranch, ArtifactId.valueOf("112233"));
+
+      // Create a new artifact on the second test branch and commit to the parent branch
+      BranchId testBranch2 = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
+      setArtifactEndpoint(testBranch2);
+      workingBranchArtifactEndpoint.createArtifact(testBranch2, CoreArtifactTypes.SoftwareRequirementMarkdown,
+         CoreArtifactTokens.SoftwareRequirementsFolder, "Test Requirement");
+      BranchCommitOptions options = new BranchCommitOptions();
+      options.setArchive(false);
+      options.setCommitter(UserManager.getUser());
+      branchEndpoint.commitBranch(testBranch2, DemoBranches.SAW_PL, options);
+
+      // Create new artifact on the first test branch
+      setArtifactEndpoint(testBranch);
+      ArtifactToken newArtifact =
+         workingBranchArtifactEndpoint.createArtifact(testBranch, CoreArtifactTypes.SoftwareRequirementMarkdown,
+            CoreArtifactTokens.SoftwareRequirementsFolder, "Test MD Requirement");
+
+      // Perform update
+      UpdateBranchData branchData = branchEndpoint.updateBranchFromParent(testBranch);
+
+      // Check that the branch was updated
+      Assert.assertTrue(branchData.getNewBranchId().isValid());
+      Assert.assertEquals("Updated branch from SAW Product Line", branchData.getResults().getResults().get(0));
+
+      // Check that the associated artifact was assigned to the new branch
+      Branch newBranch = branchEndpoint.getBranchById(branchData.getNewBranchId());
+      Assert.assertEquals("TestBranch", newBranch.getName());
+      Assert.assertEquals("112233", newBranch.getAssociatedArtifact().getIdString());
+
+      // Check that the artifact we created earlier is on the new branch
+      setArtifactEndpoint(newBranch);
+      ArtifactToken newArtifactNewBranch = workingBranchArtifactEndpoint.getArtifactTokenOrSentinel(newArtifact);
+      Assert.assertTrue(newArtifactNewBranch.isValid());
+      Assert.assertEquals("Test MD Requirement", newArtifactNewBranch.getName());
+
+      Branch originalTestBranch = branchEndpoint.getBranchById(testBranch);
+      Assert.assertTrue(originalTestBranch.getName().startsWith("TestBranch - for update"));
+      Assert.assertEquals(BranchState.REBASELINED, originalTestBranch.getBranchState());
+
+      Response res = branchEndpoint.purgeBranch(testBranch, false);
+      res.close();
+      res = branchEndpoint.purgeBranch(testBranch2, false);
+      res.close();
+      res = branchEndpoint.purgeBranch(branchData.getNewBranchId(), false);
+      res.close();
+   }
+
+   @Test
+   public void testUpdateBranchFromParent_MergeConflict() {
+      if (System.getProperty("postgresqlDB") == null) {
+         return;
+      }
+
+      // Create a new artifact and commit to the parent branch
+      BranchId testBranch2 = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
+      setArtifactEndpoint(testBranch2);
+      ArtifactToken artifact =
+         workingBranchArtifactEndpoint.createArtifact(testBranch2, CoreArtifactTypes.SoftwareRequirementMarkdown,
+            CoreArtifactTokens.SoftwareRequirementsFolder, "Test Requirement");
+      BranchCommitOptions options = new BranchCommitOptions();
+      options.setArchive(false);
+      options.setCommitter(UserManager.getUser());
+      branchEndpoint.commitBranch(testBranch2, DemoBranches.SAW_PL, options);
+
+      // Create test branch
+      BranchId testBranch = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
+      branchEndpoint.associateBranchToArtifact(testBranch, ArtifactId.valueOf("332211"));
+
+      // Create test branch and modify the new artifact to cause a conflict
+      BranchId testBranch3 = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
+      setArtifactEndpoint(testBranch3);
+      workingBranchArtifactEndpoint.setSoleAttributeValue(testBranch3, artifact, CoreAttributeTypes.Name,
+         "New Artifact Name");
+      branchEndpoint.commitBranch(testBranch3, DemoBranches.SAW_PL, options);
+
+      // Modify the artifact on the other test branch
+      setArtifactEndpoint(testBranch);
+      workingBranchArtifactEndpoint.setSoleAttributeValue(testBranch, artifact, CoreAttributeTypes.Name,
+         "Different Artifact Name");
+
+      // Perform update
+      UpdateBranchData branchData = branchEndpoint.updateBranchFromParent(testBranch);
+      BranchId newBranchId = branchData.getNewBranchId();
+      Assert.assertTrue(branchData.isNeedsMerge());
+
+      // Check that a merge branch was created
+      BranchId mergeBranchId = branchEndpoint.getMergeBranchId(testBranch, newBranchId);
+      Assert.assertTrue(mergeBranchId.isValid());
+
+      // Check that the test branch is still being rebased
+      Assert.assertEquals(BranchState.REBASELINE_IN_PROGRESS,
+         branchEndpoint.getBranchById(testBranch).getBranchState());
+
+      // Perform update again
+      branchData = branchEndpoint.updateBranchFromParent(testBranch);
+
+      // The result should still indicate needing a merge
+      Assert.assertTrue(branchData.isNeedsMerge());
+      Assert.assertEquals(newBranchId, branchData.getNewBranchId());
+      Assert.assertEquals(mergeBranchId, branchData.getMergeBranchId());
+
+      // Resolve the merge conflicts
+      setArtifactEndpoint(mergeBranchId);
+      ValidateCommitResult validateResults = branchEndpoint.validateCommitBranch(testBranch, newBranchId);
+      List<ConflictData> conflicts = branchEndpoint.getConflicts(testBranch, newBranchId, false);
+      List<MergeData> merges = branchEndpoint.getMergeData(mergeBranchId);
+      Assert.assertEquals(1, validateResults.getConflictCount());
+      Assert.assertEquals(0, validateResults.getConflictsResolved());
+      Assert.assertEquals(1, conflicts.size());
+      Assert.assertEquals(1, merges.size());
+
+      workingBranchArtifactEndpoint.setSoleAttributeValue(mergeBranchId, artifact, CoreAttributeTypes.Name,
+         "Another Artifact Name");
+
+      MergeData mergeData = merges.get(0);
+      ConflictUpdateData updateData = new ConflictUpdateData(ConflictType.ATTRIBUTE, ConflictStatus.RESOLVED,
+         GammaId.valueOf(mergeData.getAttrMergeData().getSourceGammaId()), mergeBranchId,
+         GammaId.valueOf(mergeData.getAttrMergeData().getDestGammaId()), mergeData.getConflictId());
+      branchEndpoint.updateConflictStatus(testBranch, newBranchId, Arrays.asList(updateData));
+
+      validateResults = branchEndpoint.validateCommitBranch(testBranch, newBranchId);
+
+      Assert.assertEquals(1, validateResults.getConflictCount());
+      Assert.assertEquals(1, validateResults.getConflictsResolved());
+
+      // Perform update again
+      branchData = branchEndpoint.updateBranchFromParent(testBranch);
+      Assert.assertFalse(branchData.isNeedsMerge());
+
+      // Check that the test branch has been rebaselined
+      Assert.assertEquals(BranchState.REBASELINED, branchEndpoint.getBranchById(testBranch).getBranchState());
+
+      // Check that the associated artifact has been set on the new branch
+      Branch newBranch = branchEndpoint.getBranchById(branchData.getNewBranchId());
+      Assert.assertEquals("332211", newBranch.getAssociatedArtifact().getIdString());
+
+      Response res = branchEndpoint.purgeBranch(testBranch, false);
+      res.close();
+      res = branchEndpoint.purgeBranch(testBranch2, false);
+      res.close();
+      res = branchEndpoint.purgeBranch(testBranch3, false);
+      res.close();
+      res = branchEndpoint.purgeBranch(newBranchId, false);
+      res.close();
+   }
+
+   private void setArtifactEndpoint(BranchId branch) {
+      OseeClient oseeclient = OsgiUtil.getService(DemoChoice.class, OseeClient.class);
+      workingBranchArtifactEndpoint = oseeclient.getArtifactEndpoint(branch);
+   }
+
 }

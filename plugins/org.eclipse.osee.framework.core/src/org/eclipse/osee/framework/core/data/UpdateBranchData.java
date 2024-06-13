@@ -23,6 +23,7 @@ public class UpdateBranchData {
    private BranchId fromBranch = BranchId.SENTINEL;
    private BranchId toBranch = BranchId.SENTINEL;
    private BranchId newBranchId = BranchId.SENTINEL;
+   private BranchId mergeBranchId = BranchId.SENTINEL;
    private String fromName;
    private String toName;
    private boolean needsMerge;
@@ -82,4 +83,13 @@ public class UpdateBranchData {
    public void setNewBranchId(BranchId newBranchId) {
       this.newBranchId = newBranchId;
    }
+
+   public BranchId getMergeBranchId() {
+      return mergeBranchId;
+   }
+
+   public void setMergeBranchId(BranchId mergeBranchId) {
+      this.mergeBranchId = mergeBranchId;
+   }
+
 }

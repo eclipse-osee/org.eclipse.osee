@@ -14,6 +14,7 @@
 package org.eclipse.osee.orcs.data;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.OrcsTokenService;
@@ -36,6 +37,7 @@ import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -130,6 +132,15 @@ public class CommitBranchUtil {
    private static final String getMergeBranchId =
       "select merge_branch_id from osee_merge where source_branch_id = ? and dest_branch_id = ?";
 
+   private static final String getMergeBranchIds = "select merge_branch_id from osee_merge where source_branch_id = ?";
+
+   private static final String getMergeBranches =
+      "select merge_branch_id, dest_branch_id from osee_merge where source_branch_id = ?";
+
+   private static final String getHeadTxIgnoreBranchCategory =
+      "SELECT MAX(txs.transaction_id) from osee_branch_category bc, osee_txs txs " + //
+         "WHERE txs.gamma_id NOT IN (SELECT gamma_id from osee_branch_category where branch_id = ?) AND bc.branch_id = ? AND txs.branch_id = ?";
+
    public static List<MergeData> getMergeData(BranchId mergeBranchId, JdbcClient jdbcClient,
       OrcsTokenService tokenService) {
       List<MergeData> mergeData = new ArrayList<>();
@@ -186,6 +197,50 @@ public class CommitBranchUtil {
          stmt.close();
       }
       return mergeBranchId;
+   }
+
+   public static boolean hasMergeBranch(OrcsApi orcsApi, BranchId sourceBranch) {
+      BranchId mergeBranchId = BranchId.SENTINEL;
+      try (JdbcStatement stmt = orcsApi.getJdbcService().getClient().getStatement()) {
+         stmt.runPreparedQuery(getMergeBranchIds, sourceBranch);
+         if (stmt.next()) {
+            mergeBranchId = BranchId.valueOf(stmt.getLong("merge_branch_id"));
+         }
+         stmt.close();
+      }
+      return mergeBranchId.isValid();
+   }
+
+   /**
+    * @param orcsApi
+    * @param sourceBranch
+    * @return Pair (mergeBranchId, destBranchId)
+    */
+   public static List<Pair<BranchId, BranchId>> getMergeBranchesForSource(OrcsApi orcsApi, BranchId sourceBranch) {
+      List<Pair<BranchId, BranchId>> branches = new LinkedList<>();
+      try (JdbcStatement stmt = orcsApi.getJdbcService().getClient().getStatement()) {
+         stmt.runPreparedQuery(getMergeBranches, sourceBranch);
+         while (stmt.next()) {
+            BranchId mergeBranchId = BranchId.valueOf(stmt.getLong("merge_branch_id"));
+            BranchId destBranchId = BranchId.valueOf(stmt.getLong("dest_branch_id"));
+            if (mergeBranchId.isValid() && destBranchId.isValid()) {
+               branches.add(new Pair<BranchId, BranchId>(mergeBranchId, destBranchId));
+            }
+         }
+         stmt.close();
+      }
+      return branches;
+   }
+
+   /**
+    * @param orcsApi
+    * @param sourceBranch
+    * @return The transaction id of the most recent transaction that is not a branch category change. This is used to
+    * get the most recent tx that changed branch content rather than metadata.
+    */
+   public static TransactionId getHeadTxIgnoreBranchCategory(OrcsApi orcsApi, BranchId sourceBranch) {
+      return TransactionId.valueOf(orcsApi.getJdbcService().getClient().fetch(-1L, getHeadTxIgnoreBranchCategory,
+         sourceBranch, sourceBranch, sourceBranch));
    }
 
    public static TransactionToken getCommitTransaction(OrcsApi orcsApi, BranchId sourceBranch, BranchId destBranch) {

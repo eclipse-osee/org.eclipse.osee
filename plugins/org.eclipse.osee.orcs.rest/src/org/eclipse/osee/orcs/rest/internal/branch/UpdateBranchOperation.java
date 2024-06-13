@@ -48,7 +48,8 @@ public class UpdateBranchOperation {
             return branchData;
          }
 
-         Branch fromBranch = orcsApi.getQueryFactory().branchQuery().andId(fromBranchId).getResults().getOneOrNull();
+         Branch fromBranch =
+            orcsApi.getQueryFactory().branchQuery().andId(fromBranchId).getResults().getOneOrDefault(Branch.SENTINEL);
          if (fromBranch.isInvalid()) {
             branchData.getResults().errorf("Update Branch fromBranch can't be found [%s]", this.fromBranchId);
             return branchData;

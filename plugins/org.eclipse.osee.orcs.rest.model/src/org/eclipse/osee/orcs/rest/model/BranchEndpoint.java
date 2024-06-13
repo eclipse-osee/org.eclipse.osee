@@ -281,6 +281,11 @@ public interface BranchEndpoint {
    UpdateBranchData updateBranch(@PathParam("branch") BranchId branch, UpdateBranchData branchData);
 
    @POST
+   @Path("{branch}/updatefromparent")
+   @Produces(MediaType.APPLICATION_JSON)
+   UpdateBranchData updateBranchFromParent(@PathParam("branch") BranchId branchId);
+
+   @POST
    @Path("{branch}/permission/{permission}/{subject}")
    void setBranchPermission(@PathParam("subject") ArtifactId subject, @PathParam("branch") BranchId branch,
       @PathParam("permission") PermissionEnum permission);

@@ -400,6 +400,138 @@ public class BranchEndpointImpl implements BranchEndpoint {
       return op.run();
    }
 
+   @Override
+   public UpdateBranchData updateBranchFromParent(BranchId branchId) {
+      Branch branch = getBranchById(branchId);
+      Branch parentBranch = getBranchById(branch.getParentBranch());
+      TransactionId branchTx = CommitBranchUtil.getHeadTxIgnoreBranchCategory(orcsApi, branch);
+      TransactionId parentBranchTx = orcsApi.getQueryFactory().transactionQuery().andIsHead(
+         branch.getParentBranch()).getResultsAsIds().getExactlyOne();
+
+      UpdateBranchData branchData = new UpdateBranchData();
+      branchData.setToName(
+         String.format("%s - for update - %s", Strings.truncate(branch.getName(), 100), Lib.getDateTimeString()));
+      branchData.setToBranch(branch);
+      branchData.setFromBranch(branch.getParentBranch());
+
+      if (branchTx.isInvalid()) {
+         branchData.getResults().errorf("Branch Tx is invalid for branch id %s", branchId);
+      }
+      if (parentBranchTx.isInvalid()) {
+         branchData.getResults().errorf("Branch Tx is invalid for branch id %s", branch.getParentBranch());
+      }
+      if (branchData.getResults().isErrors()) {
+         return branchData;
+      }
+
+      if (branch.getParentTx().getId().equals(parentBranchTx.getId())) {
+         branchData.getResults().addRaw("Branch is up to date");
+         return branchData;
+      }
+
+      if (branch.getBranchState().equals(BranchState.COMMITTED)) {
+         branchData.getResults().error("Can not update. Branch has already been committed.");
+         return branchData;
+      }
+
+      List<Pair<BranchId, BranchId>> mergeBranches = CommitBranchUtil.getMergeBranchesForSource(orcsApi, branch);
+
+      // If a merge branch exists for this branch and the branch is not currently being updated, the other
+      // merge must be completed or abandoned before updating.
+      if ((!branch.getBranchState().equals(
+         BranchState.REBASELINE_IN_PROGRESS) && mergeBranches.size() > 0) || (branch.getBranchState().equals(
+            BranchState.REBASELINE_IN_PROGRESS) && mergeBranches.size() > 1)) {
+         branchData.getResults().error(
+            "A merge is already in progress for this branch. That merge must be completed or abandoned before updating this branch.");
+         return branchData;
+      }
+
+      // Check if update has already been started
+      if (branch.getBranchState().equals(BranchState.REBASELINE_IN_PROGRESS)) {
+         // If a merge branch exists, get the branch being merged into. Since we already checked the number of merge branches
+         // above, we can assume there is only one merge branch in the list.
+         if (!mergeBranches.isEmpty()) {
+            branchData.setMergeBranchId(mergeBranches.get(0).getFirst());
+            branchData.setNewBranchId(mergeBranches.get(0).getSecond());
+
+            // If there are still merge conflicts, return with the merge id and new branch id
+            ValidateCommitResult validateResults = validateCommitBranch(branchId, branchData.getNewBranchId());
+            if (validateResults.getConflictCount() > validateResults.getConflictsResolved()) {
+               branchData.setNeedsMerge(true);
+               return branchData;
+            }
+
+            // If all conflicts have been resolved, continue on to the commit.
+         } else {
+            // If the branch is being rebaselined and there is no merge branch, create a new working branch and continue
+            branchData = updateBranch(branch.getParentBranch(), branchData);
+         }
+      } else {
+         // Mark current working branch as REBASELINE_IN_PROGRESS
+         setBranchState(branchId, BranchState.REBASELINE_IN_PROGRESS);
+
+         // Create the new working branch
+         branchData = updateBranch(branch.getParentBranch(), branchData);
+      }
+
+      // Check if the source branch has any changes. If not, set the new branch as the current working branch and delete the source branch.
+      if (branch.getBaselineTx().equals(branchTx)) {
+         String originalBranchName = branch.getName();
+         setBranchName(branchId, branchData.getToName());
+         setBranchName(branchData.getNewBranchId(), originalBranchName);
+         associateBranchToArtifact(branchData.getNewBranchId(), branch.getAssociatedArtifact());
+
+         setBranchState(branchId, BranchState.DELETE_IN_PROGRESS);
+         archiveBranch(branchId);
+         setBranchState(branchId, BranchState.DELETED);
+
+         branchData.getResults().clear();
+         branchData.getResults().addRaw("Updated branch from " + parentBranch.getShortName());
+
+         return branchData;
+      }
+
+      // If there are conflicts, create a merge branch and return that to the client to perform the merge
+      ValidateCommitResult validateResults = validateCommitBranch(branchId, branchData.getNewBranchId());
+      if (validateResults.getConflictCount() > validateResults.getConflictsResolved()) {
+         NewBranch mergeBranchData = new NewBranch();
+         mergeBranchData.setBranchName("Merge " + branch.getName() + " <=> " + parentBranch.getName());
+         mergeBranchData.setParentBranchId(branchId);
+         mergeBranchData.setAssociatedArtifact(branch.getAssociatedArtifact());
+         mergeBranchData.setBranchType(BranchType.MERGE);
+         mergeBranchData.setSourceTransactionId(TransactionToken.SENTINEL);
+         mergeBranchData.setMergeBaselineTransaction(TransactionToken.valueOf(branch.getBaselineTx(), branchId));
+         mergeBranchData.setMergeDestinationBranchId(branchData.getNewBranchId());
+         mergeBranchData.setCreationComment("Creating merge branch");
+         mergeBranchData.setMergeAddressingQueryId(0L);
+         mergeBranchData.setTxCopyBranchType(false);
+         BranchId mergeBranchId = createBranch(mergeBranchData);
+
+         branchData.setNeedsMerge(true);
+         branchData.setMergeBranchId(mergeBranchId);
+         getConflicts(branchId, branchData.getNewBranchId(), true); // Load conflicts
+         return branchData;
+      }
+
+      // If there are no conflicts, continue with the commit
+      BranchCommitOptions options = new BranchCommitOptions();
+      orcsApi.userService().getUser();
+      options.setCommitter(orcsApi.userService().getUser());
+      options.setArchive(true);
+      commitBranch(branchId, branchData.getNewBranchId(), options);
+
+      String originalBranchName = branch.getName();
+      setBranchName(branchId, branchData.getToName());
+      setBranchName(branchData.getNewBranchId(), originalBranchName);
+      associateBranchToArtifact(branchData.getNewBranchId(), branch.getAssociatedArtifact());
+      setBranchState(branchId, BranchState.REBASELINED);
+
+      branchData.getResults().clear();
+      branchData.getResults().addRaw("Updated branch from " + parentBranch.getShortName());
+
+      return branchData;
+   }
+
    private BranchId createBranch(CreateBranchData createData, NewBranch data) {
       createBranchData(createData, data);
 
