@@ -101,7 +101,7 @@ export class ActionDropDownComponent {
 										.open(MergeManagerDialogComponent, {
 											data: {
 												sourceBranch: currentBranch,
-												parentBranch: parentBranch,
+												destBranch: parentBranch,
 												validateResults:
 													validateResults,
 											},
