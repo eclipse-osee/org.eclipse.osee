@@ -121,6 +121,7 @@ describe('AddElementDialogComponent', () => {
 		},
 		mode: 'add',
 		allowArray: true,
+		arrayChild: false,
 	};
 	let loader: HarnessLoader;
 	let nestedDialog: DebugElement;

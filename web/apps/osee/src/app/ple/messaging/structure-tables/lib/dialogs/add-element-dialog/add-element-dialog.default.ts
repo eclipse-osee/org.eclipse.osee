@@ -45,19 +45,22 @@ export class DefaultAddElementDialog implements ElementDialog {
 	type = new PlatformTypeSentinel();
 	mode: ElementDialogMode = 'add';
 	allowArray = true;
+	arrayChild: boolean = false;
 
 	constructor(
 		id?: string,
 		name?: string,
 		element?: Partial<element>,
 		mode?: ElementDialogMode,
-		allowArray?: boolean
+		allowArray?: boolean,
+		arrayChild?: boolean
 	) {
 		this.id = id ? id : this.id;
 		this.name = name ? name : this.name;
 		this.mode = mode ? mode : this.mode;
 		this.allowArray =
 			allowArray !== undefined ? allowArray : this.allowArray;
+		this.arrayChild = arrayChild || false;
 		if (element) {
 			this.element = element;
 		}

@@ -32,6 +32,7 @@ export class MockElementFormComponent implements Partial<ElementFormComponent> {
 		type: new PlatformTypeSentinel(),
 		mode: 'add',
 		allowArray: true,
+		arrayChild: false,
 	};
 	@Input() reset!: number | null;
 

@@ -127,6 +127,7 @@ export class ElementFormComponent implements OnInit, OnChanges {
 		type: new PlatformTypeSentinel(),
 		mode: 'add',
 		allowArray: true,
+		arrayChild: false,
 	};
 	//do not reference
 	@Input() reset!: number | null;
@@ -138,6 +139,7 @@ export class ElementFormComponent implements OnInit, OnChanges {
 		type: new PlatformTypeSentinel(),
 		mode: 'add',
 		allowArray: true,
+		arrayChild: false,
 	};
 	@Output() dataChange = this._dataChange.pipe(skip(1));
 	private queryMode = new BehaviorSubject<boolean>(false);
@@ -431,6 +433,7 @@ export class ElementFormComponent implements OnInit, OnChanges {
 			type: element.platformType,
 			mode: 'edit',
 			allowArray: false,
+			arrayChild: true,
 		};
 		// Lazy loading the Edit Element Dialog to avoid a circular dependency
 		const { EditElementDialogComponent } = await import(

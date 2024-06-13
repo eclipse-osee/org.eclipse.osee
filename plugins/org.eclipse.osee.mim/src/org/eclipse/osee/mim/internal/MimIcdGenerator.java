@@ -438,11 +438,11 @@ public class MimIcdGenerator {
                            InterfaceStructureElementToken arrayElementCopy =
                               new InterfaceStructureElementToken(arrayElement.getArtifactReadable());
                            String arrayElementName =
-                              element.getInterfaceElementWriteArrayHeaderName() ? element.getName() + " " + i + " " + arrayElement.getName() : arrayElement.getName() + " " + i;
+                              element.getInterfaceElementWriteArrayHeaderName() || arrayElement.getInterfaceElementWriteArrayHeaderName() ? element.getName() + " " + i + " " + arrayElement.getName() : arrayElement.getName() + " " + i;
                            arrayElementCopy.setName(arrayElementName);
                            // Inherit some properties from the header in order to print the indices correctly later
                            arrayElementCopy.setInterfaceElementWriteArrayHeaderName(
-                              element.getInterfaceElementWriteArrayHeaderName());
+                              element.getInterfaceElementWriteArrayHeaderName() || arrayElement.getInterfaceElementWriteArrayHeaderName());
                            arrayElementCopy.setArrayChild(true);
                            arrayElementCopy.setInterfaceElementArrayIndexOrder(
                               element.getInterfaceElementArrayIndexOrder());
@@ -451,9 +451,13 @@ public class MimIcdGenerator {
                            arrayElementCopy.setInterfaceElementArrayIndexDelimiterTwo(
                               element.getInterfaceElementArrayIndexDelimiterTwo());
 
-                           // If $parentindex is used in the element description, replace it with the parent array index.
+                           // If $parentindex is used in the element name, description, or notes, replace it with the parent array index.
+                           arrayElementCopy.setName(
+                              arrayElementCopy.getName().replace("$parentindex", Integer.toString(i)));
                            arrayElementCopy.setDescription(
                               arrayElementCopy.getDescription().replace("$parentindex", Integer.toString(i)));
+                           arrayElementCopy.setNotes(
+                              arrayElementCopy.getNotes().replace("$parentindex", Integer.toString(i)));
 
                            flatElements.add(arrayElementCopy);
                         }
