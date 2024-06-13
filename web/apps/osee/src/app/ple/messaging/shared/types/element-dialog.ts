@@ -20,6 +20,7 @@ export interface ElementDialog {
 	type: PlatformType;
 	mode: ElementDialogMode;
 	allowArray: boolean;
+	arrayChild: boolean;
 }
 
 export type ElementDialogMode = 'add' | 'edit';

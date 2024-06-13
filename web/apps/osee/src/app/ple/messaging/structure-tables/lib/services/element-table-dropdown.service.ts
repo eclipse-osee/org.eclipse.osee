@@ -155,7 +155,7 @@ export class ElementTableDropdownService {
 			.subscribe();
 	}
 
-	openEditElementDialog(element: element) {
+	openEditElementDialog(element: element, isArrayChild: boolean) {
 		const dialogData: ElementDialog = {
 			id: '',
 			name: '',
@@ -163,6 +163,7 @@ export class ElementTableDropdownService {
 			type: element.platformType,
 			mode: 'edit',
 			allowArray: false,
+			arrayChild: isArrayChild,
 		};
 		let dialogRef = this.dialog.open(EditElementDialogComponent, {
 			data: dialogData,

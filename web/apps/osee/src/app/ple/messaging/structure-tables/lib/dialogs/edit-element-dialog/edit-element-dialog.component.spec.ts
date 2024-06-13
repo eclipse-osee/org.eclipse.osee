@@ -77,6 +77,7 @@ describe('EditElementDialogComponent', () => {
 		},
 		mode: 'edit',
 		allowArray: false,
+		arrayChild: false,
 	};
 	beforeEach(async () => {
 		await TestBed.overrideComponent(EditElementDialogComponent, {

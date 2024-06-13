@@ -122,10 +122,6 @@
 			>
 		</mat-form-field>
 	</div>
-	@if (!data.allowArray && data.element.interfaceElementArrayHeader) {
-		<br />
-		<ng-template *ngTemplateOutlet="arrayFields"></ng-template>
-	}
 	@if (data.allowArray) {
 		@if (data.mode === 'add') {
 			<mat-slide-toggle
@@ -138,6 +134,21 @@
 				Array Header
 			</mat-slide-toggle>
 		}
+	}
+
+	@if (data.arrayChild || data.element.interfaceElementArrayHeader) {
+		<br />
+		<mat-slide-toggle
+			labelPosition="before"
+			name="arrayWriteHeaderNameToggle"
+			[(ngModel)]="data.element.interfaceElementWriteArrayHeaderName"
+			data-cy="field-array-write-header-name-toggle"
+			class="tw-py-2">
+			Use Array Header Name in Reports
+		</mat-slide-toggle>
+	}
+
+	@if (data.allowArray) {
 		@if (data.element.interfaceElementArrayHeader) {
 			@if (data.element.interfaceElementArrayHeader) {
 				<br />
@@ -177,7 +188,11 @@
 				<mat-icon color="success">add</mat-icon>
 			</button>
 		}
+	} @else if (data.element.interfaceElementArrayHeader) {
+		<br />
+		<ng-template *ngTemplateOutlet="arrayFields"></ng-template>
 	}
+
 	@if (!data.element.interfaceElementArrayHeader) {
 		@if (availableTypes | async; as _availableTypes) {
 			@if (_typeState | async; as typeState) {
@@ -262,14 +277,6 @@
 </form>
 
 <ng-template #arrayFields>
-	<mat-slide-toggle
-		labelPosition="before"
-		name="arrayWriteHeaderNameToggle"
-		[(ngModel)]="data.element.interfaceElementWriteArrayHeaderName"
-		data-cy="field-array-write-header-name-toggle"
-		class="tw-py-2">
-		Use Array Header Name in Reports
-	</mat-slide-toggle>
 	@if (!data.element.interfaceElementWriteArrayHeaderName) {
 		<br />
 		<div class="tw-flex tw-w-full tw-gap-12">

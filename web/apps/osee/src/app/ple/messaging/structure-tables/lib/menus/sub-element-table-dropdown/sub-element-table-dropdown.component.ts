@@ -149,7 +149,7 @@ export class SubElementTableDropdownComponent {
 	}
 
 	openEditElementDialog(element: element) {
-		this.elementDropdownService.openEditElementDialog(element);
+		this.elementDropdownService.openEditElementDialog(element, false);
 	}
 
 	openEnumDialog(id: string) {
