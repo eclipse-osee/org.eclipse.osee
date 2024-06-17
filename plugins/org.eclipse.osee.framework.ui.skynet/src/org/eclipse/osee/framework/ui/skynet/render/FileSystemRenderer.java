@@ -674,10 +674,14 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
    @Override
    public void open(@Nullable List<Artifact> artifacts, @NonNull PresentationType presentationType) {
 
-      final var safePresentationType = Conditions.requireNonNull(presentationType, "presentationType");
+      var safePresentationType = Conditions.requireNonNull(presentationType, "presentationType");
 
-      if (presentationType.matches(PresentationType.DEFAULT_OPEN)) {
-         presentationType = PresentationType.PREVIEW;
+      /*
+       * This check is so that a double click will open the artifact in the configured default editor.
+       */
+
+      if (safePresentationType.matches(PresentationType.DEFAULT_OPEN)) {
+         safePresentationType = PresentationType.PREVIEW;
       }
 
       try {
@@ -998,7 +1002,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
                branchNameFilenameSegment,
                artifacts
             );
-      
+
       final var filenameSpecification =
          new FilenameSpecification(Strings.EMPTY_STRING, filenameFormat, extension, filenameSegments);
 
