@@ -30,11 +30,14 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * The Renderer Options that may be set via a Command Parameter Map are:
  * <ul>
- * <li>{@link RendererOption#TEMPLATE_OPTION}</li>
  * <li>{@link RendererOption#OPEN_OPTION}</li>
- * <li>{@link RendererOption#VIEW}</li>
+ * <li>{@link RendererOption#PUBLISHING_FORMAT}</li>
  * <li>{@link RendererOption#RENDER_LOCATION}</li>
+ * <li>{@link RendererOption#TEMPLATE_OPTION}</li>
+ * <li>{@link RendererOption#VIEW}</li>
  * </ul>
+ * The allowed options are specified in plugins/org.eclispe.osee.framework.ui.skynet/plugin.xml. The command parameter
+ * &quot;id&quot; attribute should be set to the same value as the {@link RendererOption} member's key value.
  *
  * @author Morgan E. Cook
  * @author Loren K. Ashley
@@ -200,7 +203,7 @@ public enum RendererOption {
     * This option is used to specify the output format of the publish.
     */
 
-   PUBLISHING_FORMAT("Publishing Format", OptionType.FormatIndicator),
+   PUBLISHING_FORMAT("PublishingFormat", OptionType.FormatIndicator),
 
    /**
     * This option is used to specify the Publishing Template Manager's identifier for a Publishing Template to the
