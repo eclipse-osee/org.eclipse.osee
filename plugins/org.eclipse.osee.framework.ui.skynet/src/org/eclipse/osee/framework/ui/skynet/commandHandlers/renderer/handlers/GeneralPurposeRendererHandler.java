@@ -19,6 +19,7 @@ import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemp
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.publishing.EnumRendererMap;
+import org.eclipse.osee.framework.core.publishing.FormatIndicator;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.renderer.RenderLocation;
@@ -38,6 +39,9 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
  * <dd>Set to the publishing template selection option. See {@link PublishingTemplateRequest}. This parameter is
  * optional. The specified value will be set into the {@link RendererOption#TEMPLATE_OPTION} for the selected
  * renderer.</dd>
+ * <dt>PublishingFormat</dt>
+ * <dd>Set to the {@link FormatIndicator#name()} of the publishing format used by the command. This parameter is
+ * optional. The default command action is to publish a Word document.</dd>
  * <dt>RenderLocation</dt>
  * <dd>Set to the {@link RenderLocation#name()} of the location where the renderer should perform the render. This
  * parameter is optional. The specified value will be set into the {@link RendererOption#RENDER_LOCATION} for the
@@ -59,6 +63,7 @@ public class GeneralPurposeRendererHandler extends AbstractEditorHandler {
       RendererMap rendererOptions = new EnumRendererMap();
 
       String presentationTypeString = event.getParameter(PresentationType.class.getSimpleName());
+      String formatIndicatorKey = event.getParameter(RendererOption.PUBLISHING_FORMAT.getKey());
       String renderLocationKey = event.getParameter(RendererOption.RENDER_LOCATION.getKey());
       String template = event.getParameter(RendererOption.TEMPLATE_OPTION.getKey());
       String openOption = event.getParameter(RendererOption.OPEN_OPTION.getKey());
@@ -88,6 +93,25 @@ public class GeneralPurposeRendererHandler extends AbstractEditorHandler {
                              .segment( "Presentation Type", presentationTypeString )
                              .toString()
                    );
+      }
+
+      if( formatIndicatorKey != null ) {
+         try {
+            var formatIndicator = FormatIndicator.valueOf(formatIndicatorKey);
+            rendererOptions.setRendererOption(RendererOption.PUBLISHING_FORMAT, formatIndicator);
+         } catch (Exception e) {
+            //@formatter:off
+            throw
+               new OseeCoreException
+                      (
+                         new Message()
+                                .title( "Command parameter Publishing Format when specified must be a valid FormatIndicator enumeration member name." )
+                                .indentInc()
+                                .segment( "PublishingFormat", formatIndicatorKey )
+                                .toString()
+                      );
+            //@formatter:on
+         }
       }
 
       if (template != null) {

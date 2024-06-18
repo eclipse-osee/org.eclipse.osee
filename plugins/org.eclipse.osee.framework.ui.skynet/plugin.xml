@@ -1668,6 +1668,11 @@
                optional="true">
             </commandParameter>
             <commandParameter
+               id="PublishingFormat"
+               name="Publishing Format"
+               optional="true">
+            </commandParameter>
+            <commandParameter
                id="open.option"
                name="Open Option"
                optional="true">

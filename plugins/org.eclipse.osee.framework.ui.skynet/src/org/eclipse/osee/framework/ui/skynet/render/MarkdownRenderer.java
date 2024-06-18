@@ -154,8 +154,9 @@ public class MarkdownRenderer extends FileSystemRenderer {
                          MarkdownRenderer.imageDescriptor,
                          Map.of
                             (
-                               RendererOption.OPEN_OPTION.getKey(),     RendererOption.OPEN_IN_MARKDOWN_EDITOR_VALUE.getKey(),
-                               RendererOption.TEMPLATE_OPTION.getKey(), RendererOption.PREVIEW_ALL_RECURSE_VALUE.getKey()
+                               RendererOption.OPEN_OPTION.getKey(),       RendererOption.OPEN_IN_MARKDOWN_EDITOR_VALUE.getKey(),
+                               RendererOption.PUBLISHING_FORMAT.getKey(), FormatIndicator.MARKDOWN.name(),
+                               RendererOption.TEMPLATE_OPTION.getKey(),   RendererOption.PREVIEW_ALL_RECURSE_VALUE.getKey()
                             )
                       ),
 
@@ -166,8 +167,9 @@ public class MarkdownRenderer extends FileSystemRenderer {
                          MarkdownRenderer.imageDescriptor,
                          Map.of
                             (
-                               RendererOption.OPEN_OPTION.getKey(),     RendererOption.OPEN_IN_MARKDOWN_EDITOR_VALUE.getKey(),
-                               RendererOption.TEMPLATE_OPTION.getKey(), RendererOption.PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE.getKey()
+                               RendererOption.OPEN_OPTION.getKey(),       RendererOption.OPEN_IN_MARKDOWN_EDITOR_VALUE.getKey(),
+                               RendererOption.PUBLISHING_FORMAT.getKey(), FormatIndicator.MARKDOWN.name(),
+                               RendererOption.TEMPLATE_OPTION.getKey(),   RendererOption.PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE.getKey()
                             )
                       )
 
@@ -188,6 +190,7 @@ public class MarkdownRenderer extends FileSystemRenderer {
       //@formatter:off
       super.presentationTypeKnockOuts      = MarkdownRenderer.PRESENTATION_TYPE_KNOCK_OUTS;
       super.previewAttributeTypeKnockOuts  = MarkdownRenderer.PREVIEW_ATTRIBUTE_TYPE_KNOCK_OUTS;
+      super.publishingFormat               = FormatIndicator.MARKDOWN;
       super.artifactTypesAreRequired       = MarkdownRenderer.ARTIFACT_TYPES_ARE_REQUIRED;
       super.applicabilityTestArtifactTypes = MarkdownRenderer.APPLICABILITY_TEST_ARTIFACT_TYPES;
       super.defaultFileExtension           = MarkdownRenderer.DEFAULT_ASSOCIATED_FILE_EXTENSION;
@@ -234,6 +237,7 @@ public class MarkdownRenderer extends FileSystemRenderer {
    private static final ArtifactTypeToken[]  APPLICABILITY_TEST_ARTIFACT_TYPES =
       new ArtifactTypeToken[]
       {
+         CoreArtifactTypes.Folder,
          CoreArtifactTypes.Markdown
       };
    //@formatter:on

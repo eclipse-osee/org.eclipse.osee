@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.publishing.FilenameFormat;
 import org.eclipse.osee.framework.core.publishing.FilenameSpecification;
+import org.eclipse.osee.framework.core.publishing.FormatIndicator;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.publishing.RendererUtil;
@@ -137,6 +138,8 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
     */
 
    protected AttributeTypeToken[] previewAttributeTypeKnockOuts;
+
+   protected FormatIndicator publishingFormat;
 
    /**
     * The main type of artifact the renderer is for.
@@ -490,9 +493,13 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       * Knock Outs, NO_MATCH (-1)
       */
 
-     if(     presentationType.isOneOf( this.presentationTypeKnockOuts )
-         || this.artifactTypesAreRequired ^ artifact.isOfType( this.applicabilityTestArtifactTypes ) ) {
-
+     if(    presentationType.isOneOf( this.presentationTypeKnockOuts )
+         || ( this.artifactTypesAreRequired ^ artifact.isOfType( this.applicabilityTestArtifactTypes ) )
+         || (
+                  rendererOptions.isRendererOptionSet( RendererOption.PUBLISHING_FORMAT )
+               && !rendererOptions.getRendererOptionValue( RendererOption.PUBLISHING_FORMAT ).equals( this.publishingFormat )
+            )
+       ) {
         return IRenderer.NO_MATCH;
      }
 
