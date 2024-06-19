@@ -16,6 +16,7 @@ import {
 	ConflictUpdateData,
 	CreateBranchDetails,
 	CreateBranchResponse,
+	UpdateBranchData,
 	mergeConflict,
 	mergeData,
 	validateCommitResult,
@@ -96,6 +97,13 @@ export class BranchInfoService {
 		return this.http.post<commitResponse>(
 			apiURL + '/orcs/branches/' + branchId + '/commit/' + parentBranchId,
 			body
+		);
+	}
+
+	public updateFromParent(branchId: string) {
+		return this.http.post<UpdateBranchData>(
+			apiURL + '/orcs/branches/' + branchId + '/updatefromparent',
+			null
 		);
 	}
 

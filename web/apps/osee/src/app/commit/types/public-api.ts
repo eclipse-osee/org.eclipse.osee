@@ -11,3 +11,5 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export * from './commit-branch';
+export * from './merge-dialog';
+export * from './update-branch-data';

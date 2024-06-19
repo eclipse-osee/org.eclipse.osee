@@ -10,7 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './commit-branch-button/commit-branch-button.component';
-export * from './commit-manager-dialog/commit-manager-dialog.component';
-export * from './merge-manager-dialog/merge-manager-dialog.component';
-export * from './update-from-parent-button/update-from-parent-button.component';
+import { NamedId, response } from '@osee/shared/types';
+
+export type UpdateBranchData = {
+	needsMerge: boolean;
+	newBranchId: NamedId;
+	results: response;
+};
