@@ -153,6 +153,10 @@ export class CommitBranchService {
 		);
 	}
 
+	updateFromParent(branchId: string) {
+		return this.branchInfoService.updateFromParent(branchId);
+	}
+
 	set updateMergeData(value: boolean) {
 		this._updatedMergeData.next(value);
 	}

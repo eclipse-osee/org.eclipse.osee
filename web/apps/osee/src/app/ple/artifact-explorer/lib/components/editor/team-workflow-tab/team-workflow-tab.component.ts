@@ -33,12 +33,14 @@ import {
 	CreateActionWorkingBranchButtonComponent,
 } from '@osee/configuration-management/components';
 import { ActionService } from '@osee/configuration-management/services';
-import { CommitManagerDialogComponent } from '@osee/commit/components';
+import {
+	CommitManagerDialogComponent,
+	UpdateFromParentButtonComponent,
+} from '@osee/commit/components';
 import { MatButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ExplorerPanel } from '../../../types/artifact-explorer';
 
 @Component({
 	selector: 'osee-team-workflow-tab',
@@ -49,6 +51,7 @@ import { ExplorerPanel } from '../../../types/artifact-explorer';
 		CreateActionWorkingBranchButtonComponent,
 		ActionDropDownComponent,
 		AttributesEditorComponent,
+		UpdateFromParentButtonComponent,
 		MatButton,
 		MatIcon,
 		MatTooltip,
@@ -237,14 +240,13 @@ export class TeamWorkflowTabComponent {
 	}
 
 	openInArtifactExplorer() {
-		const panel: ExplorerPanel = 'Artifacts';
+		this.router.navigate([], {
+			queryParams: { panel: 'Artifacts' },
+			relativeTo: this.routeUrl,
+		});
 		this.branchedRouter.position = {
 			id: this.teamWorkflow().workingBranch.id,
 			type: 'working',
 		};
-		this.router.navigate([], {
-			queryParams: { panel: panel },
-			relativeTo: this.routeUrl,
-		});
 	}
 }

@@ -84,7 +84,11 @@
 				}"
 				[disabled]="!_mergeStatus.commitable"
 				(click)="commitBranch()">
-				Commit Branch
+				{{
+					mergeDialogType() === 'merge'
+						? 'Commit Branch'
+						: 'Continue Update'
+				}}
 			</button>
 		}
 	</div>

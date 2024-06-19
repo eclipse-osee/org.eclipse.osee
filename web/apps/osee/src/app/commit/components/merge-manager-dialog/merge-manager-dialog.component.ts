@@ -36,7 +36,7 @@ import {
 } from 'rxjs';
 import { MergeManagerTableComponent } from './merge-manager-table/merge-manager-table.component';
 import { CommitBranchService } from '@osee/commit/services';
-import { validateCommitResult } from '@osee/commit/types';
+import { mergeDialogType, validateCommitResult } from '@osee/commit/types';
 
 @Component({
 	selector: 'osee-merge-manager-dialog',
@@ -65,11 +65,13 @@ export class MergeManagerDialogComponent {
 			sourceBranch: branch;
 			destBranch: branch;
 			validateResults: validateCommitResult;
+			mergeDialogType: mergeDialogType;
 		}>(MAT_DIALOG_DATA)
 	);
 	sourceBranch = computed(() => this.dialogData().sourceBranch);
 	destBranch = computed(() => this.dialogData().destBranch);
 	validateCommitResults = computed(() => this.dialogData().validateResults);
+	mergeDialogType = computed(() => this.dialogData().mergeDialogType);
 
 	sourceBranch$ = toObservable(this.sourceBranch);
 	destBranch$ = toObservable(this.destBranch);
