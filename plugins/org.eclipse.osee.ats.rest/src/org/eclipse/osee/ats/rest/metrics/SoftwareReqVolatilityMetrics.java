@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -32,6 +33,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -133,10 +135,21 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
                isReqWf = workDef.getName().contains("Requirements");
             }
 
-            if (isReqWf && workflow.isCompleted()) {
-               if (allTime || (workflow.getCompletedDate().after(startDate) && workflow.getCompletedDate().before(
-                  endDate))) {
-                  reqWorkflows.add(workflow);
+            if (isReqWf) {
+               if (workflow.getStateDefinition().getName().equals("Demonstrate")) {
+                  if (allTime) {
+                     reqWorkflows.add(workflow);
+                  } else if (getStateStartedDate(workflow, "Demonstrate").after(
+                     startDate) && getStateStartedDate(workflow, "Demonstrate").before(endDate)) {
+                     reqWorkflows.add(workflow);
+                  }
+               } else if (workflow.isCompleted()) {
+                  if (allTime) {
+                     reqWorkflows.add(workflow);
+                  } else if ((workflow.getCompletedDate().after(startDate) && workflow.getCompletedDate().before(
+                     endDate))) {
+                     reqWorkflows.add(workflow);
+                  }
                }
             }
          } catch (Exception ex) {
@@ -192,11 +205,17 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
 
       for (IAtsTeamWorkflow reqWorkflow : reqWorkflows) {
          List<ChangeItem> changeItems = getChangeItems(reqWorkflow);
-         Date completedDate = new Date();
+         Date closedDate = new Date();
+         Date demonstrateDate = new Date();
          try {
-            completedDate = reqWorkflow.getCompletedDate();
-            if (!completedDate.equals(new Date(0L))) {
-               buffer[6] = completedDate;
+            closedDate = getStateStartedDate(reqWorkflow, "Closed");
+            demonstrateDate = getStateStartedDate(reqWorkflow, "Demonstrate");
+            if (closedDate != null && !closedDate.equals(new Date(0L))) {
+               buffer[6] = closedDate;
+            } else if (reqWorkflow.getCompletedDate() != null && !reqWorkflow.getCompletedDate().equals(new Date(0L))) {
+               buffer[6] = reqWorkflow.getCompletedDate();
+            } else if (demonstrateDate != null && !demonstrateDate.equals(new Date(0L))) {
+               buffer[6] = demonstrateDate;
             } else {
                buffer[6] = "";
             }
@@ -239,7 +258,9 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
 
          for (ChangeItem changeItem : changeItems) {
             if (changeItem.getChangeType().equals(ChangeType.Attribute) && changeItem.getIgnoreType().equals(
-               ChangeIgnoreType.NONE) && changeItem.getItemTypeId().equals(CoreAttributeTypes.WordTemplateContent)) {
+               ChangeIgnoreType.NONE) && (changeItem.getItemTypeId().equals(
+                  CoreAttributeTypes.WordTemplateContent) || changeItem.getItemTypeId().equals(
+                     CoreAttributeTypes.PlainTextContent))) {
                attrChangeItems.add(changeItem);
             } else if (changeItem.getChangeType().equals(ChangeType.Artifact)) {
                artChangeItems.put(changeItem.getArtId(), changeItem);
@@ -343,5 +364,15 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
          }
       }
       writer.endSheet();
+   }
+
+   private Date getStateStartedDate(IAtsWorkItem teamWf, String stateName) {
+      try {
+         IAtsLogItem stateStartedData = atsApi.getWorkItemService().getStateStartedData(teamWf, stateName);
+         return stateStartedData.getDate();
+      } catch (Exception ex) {
+         //Do Nothing
+      }
+      return null;
    }
 }
