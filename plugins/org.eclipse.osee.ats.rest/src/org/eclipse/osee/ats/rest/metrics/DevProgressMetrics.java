@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -28,6 +29,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
@@ -35,8 +37,13 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 
@@ -50,11 +57,20 @@ public final class DevProgressMetrics implements StreamingOutput {
    private final Date startDate;
    private final Date endDate;
    private final boolean allTime;
+   private final Pattern noArtifactRegex = Pattern.compile("(?:Test|Code)\\s\"([^\"]+)\"\\sfor\\s([^\"\\n]+)");
+
+   private final List<ArtifactTypeToken> validMetricsTypes =
+      Arrays.asList(CoreArtifactTypes.SoftwareRequirementMsWord, CoreArtifactTypes.SoftwareRequirementPlainText,
+         CoreArtifactTypes.SoftwareRequirementFunctionMsWord, CoreArtifactTypes.SoftwareRequirementProcedureMsWord,
+         CoreArtifactTypes.ImplementationDetailsMsWord, CoreArtifactTypes.ImplementationDetailsPlainText,
+         CoreArtifactTypes.ImplementationDetailsProcedureMsWord, CoreArtifactTypes.ImplementationDetailsFunctionMsWord);
 
    private ExcelXmlWriter writer;
 
-   Pattern UI_NAME = Pattern.compile("\\{.*\\}");
+   private BranchId baselineBranch;
+
    Pattern UI_DELETED = Pattern.compile("^.*\\(Deleted\\)$");
+   Pattern UI_NAME = Pattern.compile("\\{.*\\}");
 
    private final DevProgressItemId[] actionColumns = {
       DevProgressItemId.ACT,
@@ -120,6 +136,7 @@ public final class DevProgressMetrics implements StreamingOutput {
       ArtifactToken versionId = atsApi.getQueryService().getArtifactFromTypeAndAttribute(AtsArtifactTypes.Version,
          CoreAttributeTypes.Name, targetVersion, atsApi.getAtsBranch());
       IAtsVersion version = atsApi.getVersionService().getVersionById(versionId);
+      baselineBranch = version.getBaselineBranch();
       Collection<IAtsTeamWorkflow> workflowArts = atsApi.getVersionService().getTargetedForTeamWorkflows(version);
       List<IAtsAction> actionableItems = new ArrayList<>();
 
@@ -130,12 +147,18 @@ public final class DevProgressMetrics implements StreamingOutput {
             }
             if ((workflow.isWorkType(WorkType.Requirements) || workflow.isWorkType(
                WorkType.Code)) || workflow.isWorkType(WorkType.Test)) {
+
                if (allTime) {
                   actionableItems.add(workflow.getParentAction());
-               } else if ((workflow.getCreatedDate().before(endDate))) {
-                  if ((workflow.isCompleted() && workflow.getCompletedDate() != null && workflow.getCompletedDate().before(
-                     startDate)) || (workflow.isCancelled() && workflow.getCancelledDate() != null && workflow.getCancelledDate().before(
-                        startDate))) {
+               } else if (workflow.getCreatedDate().before(endDate)) {
+                  if (workflow.getStateDefinition().getName().equals("Demonstrate") && workflow.getCreatedDate().before(
+                     startDate)) {
+                     continue;
+                  } else if (workflow.isCompleted() && workflow.getCompletedDate() != null && workflow.getCompletedDate().before(
+                     startDate)) {
+                     continue;
+                  } else if (workflow.isCancelled() && workflow.getCancelledDate() != null && workflow.getCreatedDate().before(
+                     startDate)) {
                      continue;
                   }
                   actionableItems.add(workflow.getParentAction());
@@ -173,45 +196,77 @@ public final class DevProgressMetrics implements StreamingOutput {
          buffer[5] = createdDate;
          fillTeamWfData(buffer, endDate, actionItem);
       }
+
+      if (actionableItems.isEmpty()) {
+         buffer[0] =
+            String.format("No Actions Found for Program: [%s], Target Version: [%s]", programVersion, targetVersion);
+         try {
+            writer.writeRow(buffer);
+         } catch (IOException ex) {
+            OseeCoreException.wrapAndThrow(ex);
+         }
+      }
+
       writer.endSheet();
    }
 
    private void fillTeamWfData(Object[] buffer, Date rowDate, IAtsAction actionItem) {
-      double scale = Math.pow(10, 2);
-      IAtsTeamWorkflow requirementsWorkflow = IAtsTeamWorkflow.SENTINEL;
-      IAtsTeamWorkflow codeWorkflow = IAtsTeamWorkflow.SENTINEL;
-      IAtsTeamWorkflow testWorkflow = IAtsTeamWorkflow.SENTINEL;
-      for (IAtsTeamWorkflow teamWorkflow : actionItem.getTeamWorkflows()) {
-         if (teamWorkflow.isWorkType(WorkType.Requirements)) {
-            if (requirementsWorkflow.equals(IAtsTeamWorkflow.SENTINEL)) {
-               requirementsWorkflow = teamWorkflow;
-            } else if (requirementsWorkflow.isCancelled() && !teamWorkflow.isCancelled()) {
-               requirementsWorkflow = teamWorkflow;
-            }
-         } else if (teamWorkflow.isWorkType(WorkType.Code)) {
-            if (codeWorkflow.equals(IAtsTeamWorkflow.SENTINEL)) {
-               codeWorkflow = teamWorkflow;
-            } else if (codeWorkflow.isCancelled() && !teamWorkflow.isCancelled()) {
-               codeWorkflow = teamWorkflow;
-            }
-         } else if (teamWorkflow.isWorkType(WorkType.Test)) {
-            if (testWorkflow.equals(IAtsTeamWorkflow.SENTINEL)) {
-               testWorkflow = teamWorkflow;
-            } else if (testWorkflow.isCancelled() && !teamWorkflow.isCancelled()) {
-               testWorkflow = teamWorkflow;
-            }
+
+      Collection<IAtsTeamWorkflow> allTeamWorkflows = actionItem.getTeamWorkflows();
+      Collection<IAtsTeamWorkflow> reqWorkflows = new ArrayList<>();
+
+      for (IAtsTeamWorkflow teamWf : allTeamWorkflows) {
+         if (teamWf.isWorkType(WorkType.Requirements) && teamWf.isValid() && !teamWf.isCancelled()) {
+            reqWorkflows.add(teamWf);
          }
       }
-      int reqTasks = 0;
-      double reqAddModTasks = 0;
-      double reqDeletedTasks = 0;
 
-      //Code Workflow Parsing
+      for (IAtsTeamWorkflow reqWorkflow : reqWorkflows) {
+
+         IAtsTeamWorkflow codeWorkflow = IAtsTeamWorkflow.SENTINEL;
+         IAtsTeamWorkflow testWorkflow = IAtsTeamWorkflow.SENTINEL;
+
+         allTeamWorkflows.remove(reqWorkflow);
+
+         Collection<ArtifactToken> derivedTo =
+            atsApi.getRelationResolver().getRelated(reqWorkflow, AtsRelationTypes.Derive_To);
+
+         for (ArtifactToken subWorkflows : derivedTo) {
+            IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(subWorkflows);
+            if (teamWf.isWorkType(WorkType.Code) && teamWf.isValid() && !teamWf.isCancelled()) {
+               codeWorkflow = teamWf;
+               allTeamWorkflows.remove(codeWorkflow);
+            } else if (teamWf.isWorkType(WorkType.Test) && teamWf.isValid() && !teamWf.isCancelled()) {
+               testWorkflow = teamWf;
+               allTeamWorkflows.remove(testWorkflow);
+            }
+         }
+         writeCodeWf(buffer, rowDate, codeWorkflow);
+         writeTestReqWf(buffer, rowDate, testWorkflow, reqWorkflow);
+      }
+
+      for (IAtsTeamWorkflow teamWf : allTeamWorkflows) {
+         IAtsTeamWorkflow codeWorkflow = IAtsTeamWorkflow.SENTINEL;
+         IAtsTeamWorkflow testWorkflow = IAtsTeamWorkflow.SENTINEL;
+
+         if (teamWf.isWorkType(WorkType.Code) && teamWf.isValid() && !teamWf.isCancelled()) {
+            codeWorkflow = teamWf;
+            writeCodeWf(buffer, rowDate, codeWorkflow);
+         } else if (teamWf.isWorkType(WorkType.Test) && teamWf.isValid() && !teamWf.isCancelled()) {
+            testWorkflow = teamWf;
+            writeTestReqWf(buffer, rowDate, testWorkflow, IAtsTeamWorkflow.SENTINEL);
+         }
+      }
+   }
+
+   private void writeCodeWf(Object[] buffer, Date rowDate, IAtsTeamWorkflow codeWorkflow) {
       if (!codeWorkflow.equals(IAtsTeamWorkflow.SENTINEL) && !getStateAtDate(codeWorkflow, rowDate).isEmpty()) {
+         double scale = Math.pow(10, 2);
          Collection<IAtsTask> tasks = getTaskList(codeWorkflow, rowDate);
          double[] deletedCounts = getDeletedTaskCount(codeWorkflow, rowDate, tasks);
          buffer[6] = "Code";
          calculateStates(buffer, codeWorkflow, rowDate);
+
          double tasksCompleted = getTaskCompleted(codeWorkflow, rowDate, tasks);
          int tasksCancelled = getTaskCancelled(codeWorkflow, rowDate, tasks);
          double addModStat = tasks.size() - deletedCounts[0];
@@ -226,12 +281,21 @@ public final class DevProgressMetrics implements StreamingOutput {
          buffer[22] = deletedCounts[0];
          buffer[23] = deletedCounts[1];
          buffer[24] = deletedCounts[2];
+
          try {
             writer.writeRow(buffer);
          } catch (IOException ex) {
             OseeCoreException.wrapAndThrow(ex);
          }
       }
+   }
+
+   private void writeTestReqWf(Object[] buffer, Date rowDate, IAtsTeamWorkflow testWorkflow,
+      IAtsTeamWorkflow reqWorkflow) {
+      double scale = Math.pow(10, 2);
+      int reqTasks = 0;
+      double reqAddModTasks = 0;
+      double reqDeletedTasks = 0;
 
       //Test Workflow Parsing
       if (!testWorkflow.equals(IAtsTeamWorkflow.SENTINEL) && !getStateAtDate(testWorkflow, rowDate).isEmpty()) {
@@ -239,6 +303,7 @@ public final class DevProgressMetrics implements StreamingOutput {
          double[] deletedCounts = getDeletedTaskCount(testWorkflow, rowDate, tasks);
          buffer[6] = "Test";
          calculateStates(buffer, testWorkflow, rowDate);
+
          reqTasks = tasks.size();
          reqAddModTasks = tasks.size() - deletedCounts[0];
          reqDeletedTasks = deletedCounts[0];
@@ -264,11 +329,12 @@ public final class DevProgressMetrics implements StreamingOutput {
       }
 
       //Requirements Workflow Parsing
-      if (!requirementsWorkflow.equals(
-         IAtsTeamWorkflow.SENTINEL) && !getStateAtDate(requirementsWorkflow, rowDate).isEmpty()) {
-         String stateAtDate = getStateAtDate(requirementsWorkflow, rowDate);
+      if (!reqWorkflow.equals(IAtsTeamWorkflow.SENTINEL) && !getStateAtDate(reqWorkflow, rowDate).isEmpty()) {
+         String stateAtDate = getStateAtDate(reqWorkflow, rowDate);
+
          buffer[6] = "Requirements";
-         calculateStates(buffer, requirementsWorkflow, rowDate);
+         calculateStates(buffer, reqWorkflow, rowDate);
+
          buffer[16] = reqTasks;
          buffer[19] = reqAddModTasks;
          buffer[22] = reqDeletedTasks;
@@ -300,90 +366,7 @@ public final class DevProgressMetrics implements StreamingOutput {
             OseeCoreException.wrapAndThrow(ex);
          }
       }
-   }
 
-   private String getStateAtDate(IAtsWorkItem teamWf, Date iterationDate) {
-      if (allTime) {
-         return teamWf.getCurrentStateName();
-      }
-      String stateName = teamWf.getCurrentStateName();
-      Date stateStartDate = new GregorianCalendar(1916, 7, 15).getTime();
-      try {
-         Date newStateStartDate = atsApi.getWorkItemService().getStateStartedData(teamWf, stateName).getDate();
-         if (newStateStartDate.after(iterationDate)) {
-            for (String visitedState : teamWf.getLog().getVisitedStateNames()) {
-               newStateStartDate = atsApi.getWorkItemService().getStateStartedData(teamWf, visitedState).getDate();
-               if (newStateStartDate.before(iterationDate) && newStateStartDate.after(stateStartDate)) {
-                  stateName = visitedState;
-                  stateStartDate = newStateStartDate;
-               }
-            }
-         }
-      } catch (Exception ex) {
-         //Do Nothing
-      }
-      return stateName;
-   }
-
-   private Date getStateStartedDate(IAtsWorkItem teamWf, Date iterationDate, String stateName) {
-      try {
-         IAtsLogItem stateStartedData = atsApi.getWorkItemService().getStateStartedData(teamWf, stateName);
-         if (stateStartedData.getDate().before(iterationDate)) {
-            return stateStartedData.getDate();
-         }
-      } catch (Exception ex) {
-         //DO NOTHING
-      }
-      return null;
-   }
-
-   private Collection<IAtsTask> getTaskList(IAtsTeamWorkflow teamWorkflow, Date iterationDate) {
-      Collection<IAtsTask> tasks = new ArrayList<IAtsTask>();
-      Collection<String> taskUINames = new ArrayList<String>();
-      for (IAtsTask task : atsApi.getTaskService().getTasks(teamWorkflow)) {
-         Matcher m = UI_NAME.matcher(task.getName());
-         if (m.find()) {
-            String taskUIName = m.group();
-            if (task.getCreatedDate().before(iterationDate) && !taskUINames.contains(taskUIName)) {
-               taskUINames.add(taskUIName);
-               tasks.add(task);
-            }
-         }
-      }
-      return tasks;
-   }
-
-   private double[] getDeletedTaskCount(IAtsTeamWorkflow teamWorkflow, Date iterationDate, Collection<IAtsTask> tasks) {
-      double[] deletedCounts = new double[3];
-      double deletedCount = 0;
-      double deletedCompleteCount = 0;
-      double deletedCancelledCount = 0;
-      for (IAtsTask task : tasks) {
-         if (task.getCreatedDate().after(iterationDate)) {
-            continue;
-         }
-         Matcher m = UI_DELETED.matcher(task.getName());
-         if (m.find()) {
-            try {
-               deletedCount++;
-               StateDefinition state = stateNameToDefinition(task, iterationDate);
-               if (task.isCompleted() && (allTime || task.getCompletedDate().before(iterationDate))) {
-                  deletedCompleteCount++;
-               } else if (task.isCancelled() && (allTime || task.getCancelledDate().before(iterationDate))) {
-                  deletedCancelledCount++;
-               } else if (state.getRecommendedPercentComplete() != null && state.getRecommendedPercentComplete() > 0) {
-                  deletedCompleteCount += (state.getRecommendedPercentComplete() / 100);
-               }
-
-            } catch (Exception Ex) {
-               //Do Nothing
-            }
-         }
-      }
-      deletedCounts[0] = deletedCount;
-      deletedCounts[1] = deletedCompleteCount;
-      deletedCounts[2] = deletedCancelledCount;
-      return deletedCounts;
    }
 
    private void calculateStates(Object[] buffer, IAtsTeamWorkflow workflow, Date rowDate) {
@@ -453,6 +436,129 @@ public final class DevProgressMetrics implements StreamingOutput {
       }
    }
 
+   private String getStateAtDate(IAtsWorkItem teamWf, Date iterationDate) {
+      if (allTime) {
+         return teamWf.getCurrentStateName();
+      }
+      String stateName = teamWf.getCurrentStateName();
+      Date stateStartDate = new GregorianCalendar(1916, 7, 15).getTime();
+      try {
+         Date newStateStartDate = atsApi.getWorkItemService().getStateStartedData(teamWf, stateName).getDate();
+         if (newStateStartDate.after(iterationDate)) {
+            for (String visitedState : teamWf.getLog().getVisitedStateNames()) {
+               newStateStartDate = atsApi.getWorkItemService().getStateStartedData(teamWf, visitedState).getDate();
+               if (newStateStartDate.before(iterationDate) && newStateStartDate.after(stateStartDate)) {
+                  stateName = visitedState;
+                  stateStartDate = newStateStartDate;
+               }
+            }
+         }
+      } catch (Exception ex) {
+         //Do Nothing
+      }
+      return stateName;
+   }
+
+   private Date getStateStartedDate(IAtsWorkItem teamWf, Date iterationDate, String stateName) {
+      try {
+         IAtsLogItem stateStartedData = atsApi.getWorkItemService().getStateStartedData(teamWf, stateName);
+         if (stateStartedData.getDate().before(iterationDate)) {
+            return stateStartedData.getDate();
+         }
+      } catch (Exception ex) {
+         //Do Nothing
+      }
+      return null;
+   }
+
+   private Date getStateStartedDate(IAtsWorkItem teamWf, String stateName) {
+      try {
+         IAtsLogItem stateStartedData = atsApi.getWorkItemService().getStateStartedData(teamWf, stateName);
+         return stateStartedData.getDate();
+      } catch (Exception ex) {
+         //Do Nothing
+      }
+      return null;
+   }
+
+   private Collection<IAtsTask> getTaskList(IAtsTeamWorkflow teamWorkflow, Date iterationDate) {
+      Collection<IAtsTask> tasks = new ArrayList<IAtsTask>();
+      Collection<String> taskUINames = new ArrayList<String>();
+
+      for (IAtsTask task : atsApi.getTaskService().getTasks(teamWorkflow)) {
+         String taskUIName = task.getName();
+
+         if (taskUIName.contains("Unknown Name")) {
+            continue;
+         }
+
+         ArtifactId artRef;
+         if (task.getCreatedDate().before(iterationDate) && !taskUINames.contains(taskUIName)) {
+            artRef = atsApi.getAttributeResolver().getSoleAttributeValue(task,
+               AtsAttributeTypes.TaskToChangedArtifactReference, ArtifactId.SENTINEL);
+            if (artRef.isValid()) {
+               try {
+                  ArtifactTypeToken artifactType = atsApi.getQueryService().getArtifact(artRef, baselineBranch,
+                     DeletionFlag.INCLUDE_DELETED).getArtifactType();
+                  if (validMetricsTypes.contains(artifactType)) {
+                     taskUINames.add(taskUIName);
+                     tasks.add(task);
+                     continue;
+                  } else if (artifactType.isValid()) {
+                     continue;
+                  }
+               } catch (Exception ex) {
+                  Matcher m = UI_NAME.matcher(taskUIName);
+                  if (m.find()) {
+                     taskUINames.add(taskUIName);
+                     tasks.add(task);
+                  }
+                  continue;
+               }
+            }
+            Matcher matcher = noArtifactRegex.matcher(taskUIName);
+            if (matcher.find()) {
+               taskUINames.add(taskUIName);
+               tasks.add(task);
+            }
+         }
+      }
+      return tasks;
+   }
+
+   private double[] getDeletedTaskCount(IAtsTeamWorkflow teamWorkflow, Date iterationDate, Collection<IAtsTask> tasks) {
+      double[] deletedCounts = new double[3];
+      double deletedCount = 0;
+      double deletedCompleteCount = 0;
+      double deletedCancelledCount = 0;
+      for (IAtsTask task : tasks) {
+         if (task.getCreatedDate().after(iterationDate)) {
+            continue;
+         }
+         Matcher m = UI_DELETED.matcher(task.getName());
+         if (m.find()) {
+            try {
+               deletedCount++;
+               StateDefinition state = stateNameToDefinition(task, iterationDate);
+               if (state.getRecommendedPercentComplete() != null && state.getRecommendedPercentComplete() > 0) {
+                  deletedCompleteCount += (state.getRecommendedPercentComplete() / 100);
+               } else if (task.isCompleted() && (allTime || task.getCompletedDate().before(iterationDate))) {
+                  deletedCompleteCount++;
+               } else if (task.isCancelled() && (allTime || task.getCancelledDate().before(iterationDate))) {
+                  deletedCancelledCount++;
+               }
+
+            } catch (Exception Ex) {
+               //Do Nothing
+            }
+         }
+      }
+      deletedCounts[0] = deletedCount;
+      deletedCounts[1] = deletedCompleteCount;
+      deletedCounts[2] = deletedCancelledCount;
+      return deletedCounts;
+   }
+
    private double getTaskCompleted(IAtsTeamWorkflow teamWorkflow, Date iterationDate, Collection<IAtsTask> tasks) {
       double completedTasks = 0;
       for (IAtsTask task : tasks) {
@@ -462,12 +568,12 @@ public final class DevProgressMetrics implements StreamingOutput {
                throw new OseeCoreException(
                   "In DevProgressMetrics.getTaskCompleted, the local variable \"state\" is null which is dereferenced");
             }
-            if ((task.isCompleted() && task.getCompletedDate().before(iterationDate)) || state.getName().equals(
-               "No_Change")) {
-               completedTasks++;
-            } else if (state.getRecommendedPercentComplete() != null && state.getRecommendedPercentComplete() > 0 && !state.getName().equals(
+            if (state.getRecommendedPercentComplete() != null && state.getRecommendedPercentComplete() > 0 && !state.getName().equals(
                "Cancelled")) {
                completedTasks += (state.getRecommendedPercentComplete() / 100.0);
+            } else if ((task.isCompleted() && task.getCompletedDate().before(iterationDate)) || state.getName().equals(
+               "No_Change")) {
+               completedTasks++;
             }
          } catch (Exception Ex) {
             //Do Nothing
