@@ -35,6 +35,5 @@ Import-Package: javax.servlet,
  org.eclipse.osee.orcs.data,
  org.eclipse.osee.orcs.search,
  org.osgi.framework
-Export-Package: org.eclipse.osee.framework.core.server,
- org.eclipse.osee.framework.core.server.publishing
+Export-Package: org.eclipse.osee.framework.core.server
 Service-Component: OSGI-INF/*.xml
