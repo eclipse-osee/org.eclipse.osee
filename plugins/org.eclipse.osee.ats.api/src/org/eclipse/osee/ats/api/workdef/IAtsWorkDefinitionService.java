@@ -134,4 +134,6 @@ public interface IAtsWorkDefinitionService {
       return null;
    }
 
+   void internalClearCaches();
+
 }

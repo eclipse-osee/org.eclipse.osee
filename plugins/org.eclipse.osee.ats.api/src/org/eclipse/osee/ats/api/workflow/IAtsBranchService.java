@@ -205,4 +205,6 @@ public interface IAtsBranchService {
 
    BranchToken getWorkingBranchPend(IAtsTeamWorkflow teamWf);
 
+   void internalClearCaches();
+
 }

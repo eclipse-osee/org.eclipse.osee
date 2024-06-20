@@ -22,7 +22,6 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -452,6 +451,16 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
+   public void deleteByAttributeIdIfExists(ArtifactId sourceArtifact, AttributeId attrId) {
+      validateBuilder();
+      Artifact asArtifact = getForWrite(sourceArtifact);
+      Attribute<Object> attribute = asArtifact.getAttributeByIdOrNull(attrId);
+      if (attribute != null) {
+         attribute.delete();
+      }
+   }
+
+   @Override
    public void deleteSoleAttribute(ArtifactId sourceArtifact, AttributeTypeToken attributeType) {
       checkPermissionsForLoginId(attributeType);
       validateBuilder();
@@ -485,7 +494,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB) {
       validateBuilder();
       if (relType.isNewRelationTable()) {
-			relate(relType, artA, artB, ArtifactId.SENTINEL, "end", ArtifactId.SENTINEL);
+         relate(relType, artA, artB, ArtifactId.SENTINEL, "end", ArtifactId.SENTINEL);
       } else {
          txManager.relate(txData, artA, relType, artB);
       }
@@ -495,7 +504,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, String rationale) {
       validateBuilder();
       if (relType.isNewRelationTable()) {
-			relate(relType, artA, artB, ArtifactId.SENTINEL, "end", ArtifactId.SENTINEL);
+         relate(relType, artA, artB, ArtifactId.SENTINEL, "end", ArtifactId.SENTINEL);
       } else {
          txManager.relate(txData, artA, relType, artB, rationale);
       }
@@ -505,7 +514,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, RelationSorter sortType) {
       validateBuilder();
       if (relType.isNewRelationTable()) {
-			relate(relType, artA, artB, ArtifactId.SENTINEL, "end", ArtifactId.SENTINEL);
+         relate(relType, artA, artB, ArtifactId.SENTINEL, "end", ArtifactId.SENTINEL);
       } else {
          txManager.relate(txData, artA, relType, artB, sortType);
       }
@@ -521,7 +530,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
             "In TransactionBuilderImpl.related, parameter \"relType\" is null which is dereferenced");
       }
       if (relType.isNewRelationTable()) {
-			relate(relType, artA, artB, ArtifactId.SENTINEL, "end", ArtifactId.SENTINEL);
+         relate(relType, artA, artB, ArtifactId.SENTINEL, "end", ArtifactId.SENTINEL);
       } else {
          txManager.relate(txData, artA, relType, artB, rationale, sortType);
       }
@@ -529,8 +538,8 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ArtifactId relatedArtifact,
-			String insertType, ArtifactId afterArtifact) {
-		relate(relType, artA, artB, relatedArtifact, insertType, afterArtifact);
+      String insertType, ArtifactId afterArtifact) {
+      relate(relType, artA, artB, relatedArtifact, insertType, afterArtifact);
    }
 
    @Override
@@ -553,48 +562,49 @@ public class TransactionBuilderImpl implements TransactionBuilder {
          List<ArtifactId> related = artifactA.getRelatedIds(rts);
          if (related.indexOf(afterArtifactId) + 1 > related.size() - 1) {
             insertType = "end";
-		}
+         }
       }
-		relate(relType, artA, artB, relatedArtifact, insertType, afterArtifactId);
+      relate(relType, artA, artB, relatedArtifact, insertType, afterArtifactId);
 
    }
 
    private void relate(RelationTypeToken relType, ArtifactId artA, ArtifactId artB, ArtifactId relationArt,
-			String insertType, ArtifactId afterArtifact) {
+      String insertType, ArtifactId afterArtifact) {
       int minOrder = 0;
       int maxOrder = 0;
       int relOrder = 0;
       int afterIndex = 0;
-		int beforeIndex = 0;
+      int beforeIndex = 0;
       RelationTypeMultiplicity mult = relType.getMultiplicity();
       if (mult.equals(RelationTypeMultiplicity.MANY_TO_MANY) || mult.equals(RelationTypeMultiplicity.ONE_TO_MANY)) {
-         
+
          if (txData.relationSideAExists(relType, artA)) {
             minOrder = txData.getNewRelations().get(relType, artA).getRelOrders().firstKey();
             maxOrder = txData.getNewRelations().get(relType, artA).getRelOrders().lastKey();
          } else {
-        	 /*
-        	  * This is first relate on this tx for this relType/ArtA.  
-        	  * Check ahead for potential collisions and reorder before processing the rest of the relations
-        	  */
-			 validateRelationsRelTypeArtA(relType, artA); 
-        	 TreeMap<Integer, Pair<ArtifactId, GammaId>> relOrders = getRelationSideAData(relType, artA);
-        	 if (relOrders.size() > 0 ) {
-             minOrder = relOrders.firstKey();
-             maxOrder = relOrders.lastKey();
-				if (afterArtifact.isValid()) {
-					afterIndex = orcsApi.getJdbcService().getClient().fetch(0,
-							OseeSql.GET_CURRENT_REL_ORDER_FOR_TYPE_AND_ART_A_AND_ART_B.getSql(), getBranch(), artA,
-							relType.getId(), afterArtifact);
-					beforeIndex = relOrders.higherKey(afterIndex);
-				}
-        	 }
+            /*
+             * This is first relate on this tx for this relType/ArtA. Check ahead for potential collisions and reorder
+             * before processing the rest of the relations
+             */
+            validateRelationsRelTypeArtA(relType, artA);
+            TreeMap<Integer, Pair<ArtifactId, GammaId>> relOrders = getRelationSideAData(relType, artA);
+            if (relOrders.size() > 0) {
+               minOrder = relOrders.firstKey();
+               maxOrder = relOrders.lastKey();
+               if (afterArtifact.isValid()) {
+                  afterIndex = orcsApi.getJdbcService().getClient().fetch(0,
+                     OseeSql.GET_CURRENT_REL_ORDER_FOR_TYPE_AND_ART_A_AND_ART_B.getSql(), getBranch(), artA,
+                     relType.getId(), afterArtifact);
+                  beforeIndex = relOrders.higherKey(afterIndex);
+               }
+            }
             txData.addRelationSideA(relType, artA, relOrders);
          }
          if (insertType.equals("start")) {
             relOrder = txData.calculateHeadInsertionOrderIndex(minOrder);
             int i;
-            for (i = 0; i < 100 & txData.getNewRelations().get(relType,artA).getRelOrders().keySet().contains(relOrder); i++) {
+            for (i = 0; i < 100 & txData.getNewRelations().get(relType, artA).getRelOrders().keySet().contains(
+               relOrder); i++) {
                relOrder = txData.calculateHeadInsertionOrderIndex(relOrder);
             }
             if (i > 99) {
@@ -605,17 +615,18 @@ public class TransactionBuilderImpl implements TransactionBuilder {
          } else if (insertType.equals("insert")) {
             relOrder = txData.calculateInsertionOrderIndex(afterIndex, beforeIndex);
             int i;
-            for (i = 0; i < 100 & txData.getNewRelations().get(relType,artA).getRelOrders().keySet().contains(relOrder); i++) {
-				if (relOrder == afterIndex) { // encountered collision...reorder
-					throw new OseeArgumentException("Collision Occurred Calculating new RelOrder for relType:"
-							+ relType.toString() + " a_art_id=" + artA.toString() + " b_art_id=" + artB.toString());
-				} else if (relOrder < beforeIndex) {
+            for (i = 0; i < 100 & txData.getNewRelations().get(relType, artA).getRelOrders().keySet().contains(
+               relOrder); i++) {
+               if (relOrder == afterIndex) { // encountered collision...reorder
+                  throw new OseeArgumentException(
+                     "Collision Occurred Calculating new RelOrder for relType:" + relType.toString() + " a_art_id=" + artA.toString() + " b_art_id=" + artB.toString());
+               } else if (relOrder < beforeIndex) {
                   relOrder = txData.calculateInsertionOrderIndex(relOrder, beforeIndex);
                } else if (relOrder > afterIndex) {
                   relOrder = txData.calculateInsertionOrderIndex(afterIndex, relOrder);
-				} else {
-					throw new OseeArgumentException("Error Calculating new RelOrder for relType:" + relType.toString()
-							+ " a_art_id=" + artA.toString() + " b_art_id=" + artB.toString());
+               } else {
+                  throw new OseeArgumentException(
+                     "Error Calculating new RelOrder for relType:" + relType.toString() + " a_art_id=" + artA.toString() + " b_art_id=" + artB.toString());
                }
             }
             if (i > 99) {
@@ -626,7 +637,8 @@ public class TransactionBuilderImpl implements TransactionBuilder {
          } else {
             relOrder = txData.calculateEndInsertionOrderIndex(maxOrder);
             int i;
-            for (i = 0; i < 100 & txData.getNewRelations().get(relType,artA).getRelOrders().keySet().contains(relOrder); i++) {
+            for (i = 0; i < 100 & txData.getNewRelations().get(relType, artA).getRelOrders().keySet().contains(
+               relOrder); i++) {
                relOrder = txData.calculateEndInsertionOrderIndex(relOrder);
             }
             if (i > 99) {
@@ -639,74 +651,76 @@ public class TransactionBuilderImpl implements TransactionBuilder {
       txManager.relate(txData, artA, relType, artB, relationArt, relOrder, RelationSorter.USER_DEFINED);
    }
 
-	@Override
-	public void validateRelationsRelTypeArtA(RelationTypeToken relType, ArtifactId artA) {
-		Integer conflicts = 0;
-		if (!orcsApi.getJdbcService().getClient().getDbType().equals(JdbcDbType.hsql)) {
-			conflicts = orcsApi.getJdbcService().getClient().fetch(0,
-				OseeSql.GET_REL_ORDER_CONFLICTS_REL_TYPE_ART_A.getSql(), relType.getId(), artA.getId());
-		}
-		if (conflicts > 0) {
-			int result = reOrderRelTypeArtA(relType, artA);
-		}
-	}
+   @Override
+   public void validateRelationsRelTypeArtA(RelationTypeToken relType, ArtifactId artA) {
+      Integer conflicts = 0;
+      if (!orcsApi.getJdbcService().getClient().getDbType().equals(JdbcDbType.hsql)) {
+         conflicts = orcsApi.getJdbcService().getClient().fetch(0,
+            OseeSql.GET_REL_ORDER_CONFLICTS_REL_TYPE_ART_A.getSql(), relType.getId(), artA.getId());
+      }
+      if (conflicts > 0) {
+         reOrderRelTypeArtA(relType, artA);
+      }
+   }
 
-	@Override
-	public void validateRelationsAll() {
-		List<RelationDataSideA> conflicts = new ArrayList<>();
-    	Consumer<JdbcStatement> consumer = stmt -> {
-			conflicts.add(new RelationDataSideA(ArtifactId.valueOf(stmt.getLong("a_art_id")),orcsApi.tokenService().getRelationType(stmt.getLong("rel_type")),  null));
-		};
-		orcsApi.getJdbcService().getClient().runQueryWithMaxFetchSize(consumer,
-				OseeSql.GET_REL_ORDER_CONFLICTS.getSql());
-		for (RelationDataSideA conflict : conflicts) {
-			reOrderRelTypeArtA(conflict.getRelType(), conflict.getArtA());
-		}
-    }
+   @Override
+   public void validateRelationsAll() {
+      List<RelationDataSideA> conflicts = new ArrayList<>();
+      Consumer<JdbcStatement> consumer = stmt -> {
+         conflicts.add(new RelationDataSideA(ArtifactId.valueOf(stmt.getLong("a_art_id")),
+            orcsApi.tokenService().getRelationType(stmt.getLong("rel_type")), null));
+      };
+      orcsApi.getJdbcService().getClient().runQueryWithMaxFetchSize(consumer, OseeSql.GET_REL_ORDER_CONFLICTS.getSql());
+      for (RelationDataSideA conflict : conflicts) {
+         reOrderRelTypeArtA(conflict.getRelType(), conflict.getArtA());
+      }
+   }
 
-	private int reOrderRelTypeArtA(RelationTypeToken relType, ArtifactId artA) {
-		
-		List<Object[]> reOrderData = reOrderRelations(relType, artA, getRelationSideAData(relType, artA));
-		
-		int resultsCount = orcsApi.getJdbcService().getClient()
-				.runBatchUpdate(OseeSql.UPDATE_REL_ORDER_FOR_TYPE_AND_ART_A.getSql(), reOrderData);
-		
-		return resultsCount;
-	}
+   private int reOrderRelTypeArtA(RelationTypeToken relType, ArtifactId artA) {
 
-	private TreeMap<Integer, Pair<ArtifactId, GammaId>> getRelationSideAData(RelationTypeToken relType,	ArtifactId artA) {
-		
-		TreeMap<Integer, Pair<ArtifactId, GammaId>> relOrders = new TreeMap<Integer, Pair<ArtifactId, GammaId>>();
-		
-		Consumer<JdbcStatement> consumer = stmt -> {
-			relOrders.put(stmt.getInt("rel_order"), new Pair<>(ArtifactId.valueOf(stmt.getLong("b_art_id")),
-					GammaId.valueOf(stmt.getLong("gamma_id"))));
-		};
-		orcsApi.getJdbcService().getClient().runQueryWithMaxFetchSize(consumer,
-				OseeSql.GET_ALL_REL_ORDER_FOR_TYPE_AND_ART_A.getSql(), relType.getId(), artA.getId());
-		return relOrders;
-	}
+      List<Object[]> reOrderData = reOrderRelations(relType, artA, getRelationSideAData(relType, artA));
 
-	private List<Object[]> reOrderRelations(RelationTypeToken relType, ArtifactId artA,
-			TreeMap<Integer, Pair<ArtifactId, GammaId>> relOrders) {
+      int resultsCount = orcsApi.getJdbcService().getClient().runBatchUpdate(
+         OseeSql.UPDATE_REL_ORDER_FOR_TYPE_AND_ART_A.getSql(), reOrderData);
 
-		int min_value = relOrders.firstKey();
-		int max_value = relOrders.lastKey();
-		int range = max_value - min_value;
-		int pad = (int) (long) range / relOrders.size();
-		int rel_order = min_value;
-		List<Object[]> updateStatements = new ArrayList<>();
-		for (Entry<Integer, Pair<ArtifactId, GammaId>> entry : relOrders.entrySet()) {
-			updateStatements.add(
-					new Object[] { rel_order, relType.getId(), artA.getId(), entry.getValue().getSecond().getId() });
-			rel_order = rel_order + pad;
-			while (relOrders.containsKey(rel_order)) {
-				rel_order = rel_order + 1;
-			}
-		}
-		return updateStatements;
+      return resultsCount;
+   }
 
-	}
+   private TreeMap<Integer, Pair<ArtifactId, GammaId>> getRelationSideAData(RelationTypeToken relType,
+      ArtifactId artA) {
+
+      TreeMap<Integer, Pair<ArtifactId, GammaId>> relOrders = new TreeMap<Integer, Pair<ArtifactId, GammaId>>();
+
+      Consumer<JdbcStatement> consumer = stmt -> {
+         relOrders.put(stmt.getInt("rel_order"),
+            new Pair<>(ArtifactId.valueOf(stmt.getLong("b_art_id")), GammaId.valueOf(stmt.getLong("gamma_id"))));
+      };
+      orcsApi.getJdbcService().getClient().runQueryWithMaxFetchSize(consumer,
+         OseeSql.GET_ALL_REL_ORDER_FOR_TYPE_AND_ART_A.getSql(), relType.getId(), artA.getId());
+      return relOrders;
+   }
+
+   private List<Object[]> reOrderRelations(RelationTypeToken relType, ArtifactId artA,
+      TreeMap<Integer, Pair<ArtifactId, GammaId>> relOrders) {
+
+      int min_value = relOrders.firstKey();
+      int max_value = relOrders.lastKey();
+      int range = max_value - min_value;
+      int pad = range / relOrders.size();
+      int rel_order = min_value;
+      List<Object[]> updateStatements = new ArrayList<>();
+      for (Entry<Integer, Pair<ArtifactId, GammaId>> entry : relOrders.entrySet()) {
+         updateStatements.add(
+            new Object[] {rel_order, relType.getId(), artA.getId(), entry.getValue().getSecond().getId()});
+         rel_order = rel_order + pad;
+         while (relOrders.containsKey(rel_order)) {
+            rel_order = rel_order + 1;
+         }
+      }
+      return updateStatements;
+
+   }
+
    @Override
    public void setRelations(ArtifactId artA, RelationTypeToken relType, Iterable<? extends ArtifactId> artBs) {
       validateBuilder();
@@ -1113,9 +1127,9 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, ArtifactId relatedArtifact,
-			String insertType, ArtifactId afterArtifact, GammaId gammaId) {
+      String insertType, ArtifactId afterArtifact, GammaId gammaId) {
       addGamma(gammaId);
-		relate(artA, relType, artB, relatedArtifact, insertType, afterArtifact);
+      relate(artA, relType, artB, relatedArtifact, insertType, afterArtifact);
    }
 
    @Override

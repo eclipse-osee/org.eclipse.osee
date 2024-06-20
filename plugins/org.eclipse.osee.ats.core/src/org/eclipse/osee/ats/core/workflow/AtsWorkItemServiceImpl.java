@@ -852,4 +852,9 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
       return true;
    }
 
+   @Override
+   public void internalClearCaches() {
+      idToStateMgr.clear();
+   }
+
 }

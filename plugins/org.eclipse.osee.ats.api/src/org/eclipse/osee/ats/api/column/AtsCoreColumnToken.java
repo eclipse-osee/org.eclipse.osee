@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Donald G. Dunne
  */
-public abstract class AtsCoreColumnToken {
+public class AtsCoreColumnToken {
 
    // WARNING: These fields can NOT be changed without updating any json in AtsConfig "views=" attribute values in dbs.
    private String name;

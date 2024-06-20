@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -92,10 +91,6 @@ public interface IAtsActionService {
 
    Collection<CreateNewActionField> getCreateActionFields(Collection<IAtsActionableItem> actionableItems);
 
-   default IAtsGoal createGoal(ArtifactToken token, IAtsTeamDefinition teamDef, AtsApi atsApi, IAtsChangeSet changes) {
-      return createGoal(token.getName(), token.getArtifactType(),
-         atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Goal), teamDef, changes,
-         null);
-   }
+   IAtsGoal createGoal(ArtifactToken token, IAtsTeamDefinition teamDef, AtsApi atsApi, IAtsChangeSet changes);
 
 }

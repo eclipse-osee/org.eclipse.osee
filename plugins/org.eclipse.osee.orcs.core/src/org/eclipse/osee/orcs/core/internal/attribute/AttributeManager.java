@@ -96,5 +96,9 @@ public interface AttributeManager extends AttributeContainer {
 
    <T> Attribute<T> getAttributeById(AttributeId attributeId);
 
+   <T> Attribute<T> getAttributeByIdOrNull(AttributeId attributeId);
+
    <T> Attribute<T> getAttributeById(AttributeId attributeId, DeletionFlag includeDeleted);
+
+   <T> Attribute<T> getAttributeByIdOrNull(AttributeId attributeId, DeletionFlag includeDeleted);
 }

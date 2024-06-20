@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.api.workflow.world.WorldResults;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.framework.jdk.core.result.ResultRows;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -47,11 +46,6 @@ public interface AtsWorldEndpointApi {
    @Path("cust")
    @Produces(MediaType.APPLICATION_JSON)
    Collection<CustomizeData> getCustomizations();
-
-   @GET
-   @Path("custconv")
-   @Produces(MediaType.APPLICATION_JSON)
-   XResultData getCustomizationsConv();
 
    @GET
    @Path("my/{userArtId}")

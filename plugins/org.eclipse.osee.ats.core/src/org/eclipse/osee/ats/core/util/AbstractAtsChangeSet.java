@@ -610,6 +610,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
       }
    }
 
+   @Override
    public void addAnnotation(ArtifactToken art, ArtifactAnnotation annotation) {
       addAttribute(art, CoreAttributeTypes.Annotation, annotation.toXml());
    }

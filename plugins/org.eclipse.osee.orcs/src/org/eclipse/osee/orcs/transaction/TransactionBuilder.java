@@ -305,4 +305,6 @@ public interface TransactionBuilder {
 
    public List<GammaId> getGammaIdsFailed();
 
+   void deleteByAttributeIdIfExists(ArtifactId artifact, AttributeId attrId);
+
 }

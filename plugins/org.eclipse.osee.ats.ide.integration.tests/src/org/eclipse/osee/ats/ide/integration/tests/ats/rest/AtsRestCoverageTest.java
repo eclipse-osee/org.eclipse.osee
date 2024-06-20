@@ -69,10 +69,14 @@ public class AtsRestCoverageTest {
       rd.log(matchedItems.toString());
 
       XResultData rd2 = new XResultData();
-      rd2.log("ATS REST Test Coverage Report (AtsRestCoverageTest)\n");
+      rd2.log("ATS REST Test Coverage Report (AtsRestCoverageTest)\n\n");
+      rd2.log("This report is to help improve ATS REST testing over time.");
+      rd2.log("Actuals come from OSEE_ACIVITY where calls are logged during tests");
+      rd2.log("Expected come from ats_?wadl which is scrubbed for the available REST calls for ATS");
+      rd2.log("See \"Unmatched\" at the end to improve coverage");
       rd2.logf("\nExpected: %s\n", data.expected.size());
       rd2.logf("Matched: %s\n", match);
-      rd2.logf("Unmatched: %s (see \"Unmatched\" below)\n\n", data.expected.size() - match);
+      rd2.logf("Unmatched: %s\n\n", data.expected.size() - match);
 
       float percent = 0;
       if (match != 0) {
@@ -112,7 +116,7 @@ public class AtsRestCoverageTest {
          // if {} is in expected, try to matchup with path params / ids
          if (cleanUrl.contains("{")) {
             String cleanPatternStr = cleanUrl;
-            cleanPatternStr = cleanPatternStr.replaceAll("\\{.*?\\}", "[0-9]+");
+            cleanPatternStr = cleanPatternStr.replaceAll("\\{.*?\\}", "[0-9a-z]+");
             cleanPatternStr = cleanPatternStr + "$";
             rd.logf("Cln Pattern: %s\n", cleanPatternStr);
             Pattern cleanPattern = Pattern.compile(cleanPatternStr);

@@ -749,9 +749,27 @@ public class AtsActionService implements IAtsActionService {
    }
 
    @Override
+   public IAtsGoal createGoal(ArtifactToken token, IAtsTeamDefinition teamDef, AtsApi atsApi, IAtsChangeSet changes) {
+      return createGoal(token.getName(), token, token.getArtifactType(),
+         atsApi.getWorkDefinitionService().getWorkDefinition(AtsWorkDefinitionTokens.WorkDef_Goal), teamDef, changes,
+         workItemListener);
+   }
+
+   @Override
    public IAtsGoal createGoal(String title, ArtifactTypeToken artifactType, WorkDefinition workDefinition,
       IAtsTeamDefinition teamDef, IAtsChangeSet changes, IWorkItemListener workItemListener) {
-      ArtifactToken art = changes.createArtifact(artifactType, title);
+      return createGoal(title, ArtifactId.SENTINEL, artifactType, workDefinition, teamDef, changes, workItemListener);
+   }
+
+   private IAtsGoal createGoal(String title, ArtifactId id, ArtifactTypeToken artifactType,
+      WorkDefinition workDefinition, IAtsTeamDefinition teamDef, IAtsChangeSet changes,
+      IWorkItemListener workItemListener) {
+      ArtifactToken art = null;
+      if (id.isValid()) {
+         art = changes.createArtifact(artifactType, title, id.getId());
+      } else {
+         art = changes.createArtifact(artifactType, title);
+      }
       IAtsGoal goal = atsApi.getWorkItemService().getGoal(art);
 
       if (goal == null) {

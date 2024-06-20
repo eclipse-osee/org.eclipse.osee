@@ -288,4 +288,6 @@ public interface IAtsWorkItemService {
 
    boolean isAllowSiblingCreation(IAtsWorkItem workItem);
 
+   void internalClearCaches();
+
 }
