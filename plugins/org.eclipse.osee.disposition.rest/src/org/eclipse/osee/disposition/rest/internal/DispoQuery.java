@@ -54,7 +54,11 @@ public interface DispoQuery {
 
    List<String> getDispoSets(BranchId branch, String type);
 
+   ArtifactReadable findSetArtifact(BranchId branch, String id);
+
    DispoSet findDispoSetsById(BranchId branch, String id);
+
+   List<ArtifactReadable> findItemArtifacts(BranchId branch, String setId);
 
    List<DispoItem> findDispoItems(BranchId branch, String setId, boolean isDetailed);
 

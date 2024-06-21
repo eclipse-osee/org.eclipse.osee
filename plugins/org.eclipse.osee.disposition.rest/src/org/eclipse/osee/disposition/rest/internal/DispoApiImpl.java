@@ -58,12 +58,15 @@ import org.eclipse.osee.disposition.rest.internal.importer.coverage.CoverageAdap
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.DispoOseeTypes;
 import org.eclipse.osee.framework.core.executor.ExecutorAdmin;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -1051,52 +1054,100 @@ public class DispoApiImpl implements DispoApi {
    @Override
    public void copyDispoSet(BranchId branch, String destSetId, BranchId sourceBranch, String sourceSetId,
       CopySetParams params) {
-      DispoConfig dispoConfig = getDispoConfig(branch);
-      // If the the validResolutions is empty the copyAllDispositions will
-      Set<String> validResolutions = new HashSet<>();
-      dispoConfig.getValidResolutions().forEach(res -> {
-         validResolutions.add(res.getValue());
-      });
+      boolean wasUpdated = false;
 
-      List<DispoItem> sourceItems = getDispoItems(sourceBranch, sourceSetId);
-      Map<String, Set<DispoItemData>> namesToDestItems = new HashMap<>();
-      for (DispoItem itemArt : getDispoItems(branch, destSetId)) {
-         DispoItemData itemData = DispoUtil.itemArtToItemData(itemArt, true, true);
+      DispoSet destDispoSet = getQuery().findDispoSetsById(branch, destSetId);
 
-         String name = itemData.getName();
-         Set<DispoItemData> itemsWithSameName = namesToDestItems.get(name);
-         if (itemsWithSameName == null) {
-            Set<DispoItemData> set = new HashSet<>();
-            set.add(itemData);
-            namesToDestItems.put(name, set);
-         } else {
-            itemsWithSameName.add(itemData);
-            namesToDestItems.put(name, itemsWithSameName);
+      if (destDispoSet.getDispoType().equalsIgnoreCase(DispoStrings.CODE_COVERAGE)) {
+         DispoConfig dispoConfig = getDispoConfig(branch);
+         // If the the validResolutions is empty the copyAllDispositions will
+         Set<String> validResolutions = new HashSet<>();
+         dispoConfig.getValidResolutions().forEach(res -> {
+            validResolutions.add(res.getValue());
+         });
+
+         List<DispoItem> sourceItems = getDispoItems(sourceBranch, sourceSetId);
+         Map<String, Set<DispoItemData>> namesToDestItems = new HashMap<>();
+         for (DispoItem itemArt : getDispoItems(branch, destSetId)) {
+            DispoItemData itemData = DispoUtil.itemArtToItemData(itemArt, true, true);
+
+            String name = itemData.getName();
+            Set<DispoItemData> itemsWithSameName = namesToDestItems.get(name);
+            if (itemsWithSameName == null) {
+               Set<DispoItemData> set = new HashSet<>();
+               set.add(itemData);
+               namesToDestItems.put(name, set);
+            } else {
+               itemsWithSameName.add(itemData);
+               namesToDestItems.put(name, itemsWithSameName);
+            }
          }
-      }
-      HashMap<String, String> reruns = new HashMap<>();
-      Map<String, DispoItem> namesToToEditItems = new HashMap<>();
-      OperationReport report = new OperationReport();
+         HashMap<String, String> reruns = new HashMap<>();
+         Map<String, DispoItem> namesToToEditItems = new HashMap<>();
+         OperationReport report = new OperationReport();
 
-      DispoSetCopier copier = new DispoSetCopier(dispoConnector);
-      if (!params.getAnnotationParam().isNone()) {
-         List<DispoItem> copyResults = copier.copyAllDispositions(namesToDestItems, sourceItems, true, reruns,
-            params.getAllowOnlyValidResolutionTypes(), validResolutions, report);
-         for (DispoItem item : copyResults) {
-            namesToToEditItems.put(item.getName(), item);
+         DispoSetCopier copier = new DispoSetCopier(dispoConnector);
+         if (!params.getAnnotationParam().isNone()) {
+            List<DispoItem> copyResults = copier.copyAllDispositions(namesToDestItems, sourceItems, true, reruns,
+               params.getAllowOnlyValidResolutionTypes(), validResolutions, report);
+            for (DispoItem item : copyResults) {
+               namesToToEditItems.put(item.getName(), item);
+            }
          }
-      }
 
-      copier.copyCategories(namesToDestItems, sourceItems, namesToToEditItems, params.getCategoryParam());
-      copier.copyAssignee(namesToDestItems, sourceItems, namesToToEditItems, params.getAssigneeParam());
-      copier.copyNotes(namesToDestItems, sourceItems, namesToToEditItems, params.getNoteParam());
+         copier.copyCategories(namesToDestItems, sourceItems, namesToToEditItems, params.getCategoryParam());
+         copier.copyAssignee(namesToDestItems, sourceItems, namesToToEditItems, params.getAssigneeParam());
+         copier.copyNotes(namesToDestItems, sourceItems, namesToToEditItems, params.getNoteParam());
 
-      String operation = String.format("Copy Set from Program [%s] and Set [%s]", sourceBranch, sourceSetId);
-      if (!namesToToEditItems.isEmpty() && !report.getStatus().isFailed()) {
-         editDispoItems(branch, destSetId, namesToToEditItems.values(), false, operation);
-         storage.updateOperationSummary(branch, destSetId, report);
+         String operation = String.format("Copy Set from Program [%s] and Set [%s]", sourceBranch, sourceSetId);
+         if (!namesToToEditItems.isEmpty() && !report.getStatus().isFailed()) {
+            editDispoItems(branch, destSetId, namesToToEditItems.values(), false, operation);
+            storage.updateOperationSummary(branch, destSetId, report);
+         }
+         storeRerunData(branch, destSetId, reruns);
+      } else {
+         TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch,
+            String.format("Merge CI Dispositions from branch [%s] set [%s] to branch [%s] set [%s]", sourceBranch,
+               sourceSetId, branch, destSetId));
+
+         List<String> destItemNames = new ArrayList<>();
+         List<ArtifactReadable> sourceItemArtifacts = getQuery().findItemArtifacts(sourceBranch, sourceSetId);
+         List<ArtifactReadable> destItemArtifacts = getQuery().findItemArtifacts(branch, destSetId);
+         ArtifactReadable setArtifact = getQuery().findSetArtifact(branch, destSetId);
+
+         for (ArtifactReadable destItemArt : destItemArtifacts) {
+            destItemNames.add(destItemArt.getName());
+         }
+
+         for (ArtifactReadable sourceItemArt : sourceItemArtifacts) {
+            if (destItemNames.contains(sourceItemArt.getName())) {
+               continue;
+            }
+            wasUpdated = true;
+
+            ArtifactToken copiedItem = tx.createArtifact(setArtifact, CoreArtifactTypes.DispositionableItem,
+               sourceItemArt.getSoleAttributeValue(CoreAttributeTypes.Name));
+
+            for (AttributeTypeToken attributeTypeToken : sourceItemArt.getExistingAttributeTypes()) {
+               if (copiedItem.isAttributeTypeValid(attributeTypeToken)) {
+                  if (attributeTypeToken.isEnumerated() && sourceItemArt.getSoleAttributeValue(
+                     attributeTypeToken) == null) {
+                     tx.setSoleAttributeValue(copiedItem, attributeTypeToken, "");
+                  } else {
+                     tx.setSoleAttributeValue(copiedItem, attributeTypeToken,
+                        sourceItemArt.getSoleAttributeValue(attributeTypeToken, orcsApi.tokenService().getAttributeType(
+                           attributeTypeToken).getBaseAttributeTypeDefaultValue()));
+                  }
+               }
+            }
+            DispoOseeTypes.DispoItemVersion.getBaseAttributeTypeDefaultValue();
+         }
+
+         if (wasUpdated) {
+            tx.commit();
+         }
+
       }
-      storeRerunData(branch, destSetId, reruns);
    }
 
    private void storeRerunData(BranchId branch, String destSetId, HashMap<String, String> reruns) {

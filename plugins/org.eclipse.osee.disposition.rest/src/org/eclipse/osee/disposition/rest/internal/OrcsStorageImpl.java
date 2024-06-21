@@ -192,6 +192,11 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
+   public ArtifactReadable findSetArtifact(BranchId branch, String setId) {
+      return findDispoArtifact(branch, setId);
+   }
+
+   @Override
    public DispoSet findDispoSetsById(BranchId branch, String setId) {
       ArtifactReadable result = findDispoArtifact(branch, setId);
       return new DispoSetArtifact(result);
@@ -202,6 +207,17 @@ public class OrcsStorageImpl implements Storage {
          .fromBranch(branch)//
          .andUuid(Long.valueOf(artId))//
          .getResults().getExactlyOne();
+   }
+
+   @Override
+   public List<ArtifactReadable> findItemArtifacts(BranchId branch, String setId) {
+      ArtifactReadable setArt = findDispoArtifact(branch, setId);
+
+      List<ArtifactReadable> toReturn = new ArrayList<>();
+      for (ArtifactReadable art : setArt.getChildren()) {
+         toReturn.add(art);
+      }
+      return toReturn;
    }
 
    @Override
