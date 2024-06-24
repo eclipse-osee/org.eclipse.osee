@@ -100,6 +100,19 @@ public class ArtifactQuery {
    }
 
    /**
+    * @return artifact unless it's been deleted; else return Sentinel
+    */
+   public static ArtifactToken getArtifactFromTokenOrSentinel(ArtifactToken artifactToken) {
+      ArtifactToken art = ArtifactToken.SENTINEL;
+      try {
+         art = getArtifactFromToken(artifactToken);
+      } catch (ArtifactDoesNotExist ex) {
+         // do nothing
+      }
+      return art;
+   }
+
+   /**
     * search for exactly one artifact by one its id - otherwise throw an exception
     *
     * @param artId the id of the desired artifact
@@ -980,4 +993,5 @@ public class ArtifactQuery {
       }
       return org.eclipse.osee.framework.jdk.core.util.Collections.exactlyOne(artifacts);
    }
+
 }

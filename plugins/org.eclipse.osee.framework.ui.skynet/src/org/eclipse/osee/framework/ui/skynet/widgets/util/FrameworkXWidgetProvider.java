@@ -81,6 +81,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkArtifactRefIdEntry
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabel;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelDateDam;
+import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelEnumeratedArt;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelEnumeratedArtDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueSelectionDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueStringSel;
@@ -138,6 +139,7 @@ public final class FrameworkXWidgetProvider {
       register(XHyperlinkArtifactRefIdEntryWidget.class);
       register(XHyperlinkLabelDate.class);
       register(XHyperlinkLabelDateDam.class);
+      register(XHyperlinkLabelEnumeratedArt.class);
       register(XHyperlinkLabelEnumeratedArtDam.class);
       register(XHyperlinkLabelValueSelectionDam.class);
       register(XHyperlinkLabelValueStringSel.class);
@@ -209,6 +211,9 @@ public final class FrameworkXWidgetProvider {
             }
             if (rItem.getAttributeType2().isValid()) {
                xWidget.setAttributeType2(rItem.getAttributeType2());
+            }
+            if (rItem.getEnumeratedArt().isValid()) {
+               xWidget.setEnumeratedArt(rItem.getEnumeratedArt());
             }
             xWidget.setOseeImage(rItem.getOseeImage());
             xWidget.setTeamId(rItem.getTeamId());

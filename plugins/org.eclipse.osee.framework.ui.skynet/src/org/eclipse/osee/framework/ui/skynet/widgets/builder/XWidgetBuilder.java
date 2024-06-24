@@ -427,4 +427,14 @@ public class XWidgetBuilder {
       currItem.getParameters().put(key, obj);
       return this;
    }
+
+   public XWidgetBuilder andSingleSelect() {
+      currItem.getXOptionHandler().add(XOption.SINGLE_SELECT);
+      return this;
+   }
+
+   public XWidgetBuilder andMultiSelect() {
+      currItem.getXOptionHandler().add(XOption.MULTI_SELECT);
+      return this;
+   }
 }

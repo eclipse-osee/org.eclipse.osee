@@ -44,9 +44,7 @@ import org.eclipse.osee.framework.ui.swt.Widgets;
 public class XHyperlinkLabelEnumeratedArt extends XHyperlinkLabelValueSelection implements EnumeratedArtifactWidget {
 
    public static final String WIDGET_ID = XHyperlinkLabelEnumeratedArt.class.getSimpleName();
-
    protected ArtifactTypeToken artifactType = ArtifactTypeToken.SENTINEL;
-   protected ArtifactToken enumeratedArt = null;
    protected List<String> checked = new ArrayList<>();
 
    public XHyperlinkLabelEnumeratedArt() {
@@ -66,12 +64,21 @@ public class XHyperlinkLabelEnumeratedArt extends XHyperlinkLabelValueSelection 
    public boolean handleSelection() {
       try {
          String title = "Select " + attributeType.getUnqualifiedName();
+         ArtifactToken enumArt = checkEnumeratedArtifact();
+         if (enumArt.isInvalid()) {
+            AWorkbench.popupf("Enumerated Artifact %s does not exist", getEnumeratedArt().toStringWithId());
+            return false;
+         }
          Collection<String> selectable = getSelectable();
          if (selectable.isEmpty()) {
             AWorkbench.popupf("No [%s] options configured for this workflow", label);
             return false;
          }
-         if (artifactType.getMax(attributeType) != 1) {
+         boolean multiSelect = isMultiSelect();
+         if (artifactType.isValid() && attributeType.isValid()) {
+            multiSelect = artifactType.getMax(attributeType) > 1;
+         }
+         if (multiSelect) {
             FilteredCheckboxTreeDialog<String> dialog = new FilteredCheckboxTreeDialog<String>(title, title,
                new ArrayTreeContentProvider(), new StringLabelProvider(), new StringNameComparator());
             dialog.setInput(selectable);
@@ -142,25 +149,26 @@ public class XHyperlinkLabelEnumeratedArt extends XHyperlinkLabelValueSelection 
       return status;
    }
 
+   public ArtifactToken checkEnumeratedArtifact() {
+      ArtifactToken enumArt = getEnumeratedArt();
+      if (enumArt == null) {
+         return ArtifactToken.SENTINEL;
+      }
+      if (enumArt.isValid()) {
+         enumArt = ArtifactQuery.getArtifactFromTokenOrSentinel(enumArt);
+      }
+      return enumArt;
+   }
+
    public Collection<String> getSelectable() {
       ArtifactToken enumArt = getEnumeratedArt();
       if (enumArt != null && enumArt.isValid()) {
-         Artifact art = ArtifactQuery.getArtifactFromToken(enumArt);
-         if (art != null) {
-            return art.getAttributesToStringList(CoreAttributeTypes.IdValue);
+         ArtifactToken art = ArtifactQuery.getArtifactFromTokenOrSentinel(enumArt);
+         if (art.isValid()) {
+            return ((Artifact) art).getAttributesToStringList(CoreAttributeTypes.IdValue);
          }
       }
       return Collections.emptyList();
-   }
-
-   @Override
-   public ArtifactToken getEnumeratedArt() {
-      return enumeratedArt;
-   }
-
-   @Override
-   public void setEnumeratedArt(ArtifactToken enumeratedArt) {
-      this.enumeratedArt = enumeratedArt;
    }
 
    @Override
@@ -181,6 +189,15 @@ public class XHyperlinkLabelEnumeratedArt extends XHyperlinkLabelValueSelection 
       this.checked.clear();
       this.checked.addAll(checked);
       refresh();
+   }
+
+   public String getFirstSelected() {
+      String first = "";
+      List<String> selected = getCurrentSelected();
+      if (selected.size() > 0) {
+         first = selected.iterator().next();
+      }
+      return first;
    }
 
 }
