@@ -34,6 +34,7 @@ const config: PlaywrightTestConfig = {
 	reporter: [
 		[process.env['GITHUB_ACTION'] ? 'github' : 'list'],
 		['junit', { outputFile: join(__dirname, 'results/junit.xml') }],
+		['json', { outputFile: 'results/results.json' }],
 	],
 	projects: [
 		{
