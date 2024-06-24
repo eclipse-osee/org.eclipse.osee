@@ -334,11 +334,5 @@
 		"strictInputAccessModifiers": true,
 		"strictTemplates": true
 	},
-	"include": ["**/*.d.ts", "**/*.ts"],
-	"exclude": [
-		"node_modules/cypress",
-		"./cypress.config.ts",
-		"cypress",
-		"cypress/**/*"
-	]
+	"include": ["**/*.d.ts", "**/*.ts"]
 }

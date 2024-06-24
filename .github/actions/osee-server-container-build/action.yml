@@ -1,0 +1,80 @@
+name: OSEE Docker Image Build
+description: Creates an osee docker image
+inputs:
+  SERVER_PATH:
+    description: "Location of osee server"
+    required: false
+    default: "osee_server"
+  IMAGE_NAME:
+    description: "Name of osee server image"
+    required: false
+    default: "osee-server"
+  IMAGE_DIRECTORY:
+    description: "Directory where docker image is stored"
+    required: false
+    default: ".github/docker/osee-server/Dockerfile"
+
+outputs:
+  latest_docker_ref:
+    description: The latest docker ref for this image
+    value: ${{steps.latest_ref.outputs.latest_ref}}
+
+runs:
+    using: composite
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Create Download Path
+        shell: bash
+        run: mkdir -p ${{ inputs.SERVER_PATH }}
+      
+      - name: create docker ref
+        id: docker_ref
+        uses: ./.github/actions/docker-current-ref
+
+      - name: create artifact ref
+        id: artifact_ref
+        uses: ./.github/actions/artifact-current-ref
+      
+      - name: Download Binaries
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.IMAGE_NAME }}${{steps.artifact_ref.outputs.artifact_current_ref}}-binaries
+          path: ${{ inputs.SERVER_PATH }}
+        
+      - name: Set Up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ github.token }}
+
+      - name: Get Current Timestamp
+        shell: bash
+        id: date
+        run: echo "timestamp=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
+
+      - name: Build And Push Docker Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ inputs.IMAGE_DIRECTORY }}
+          build-args: |
+            IMAGE_DIRECTORY=${{ inputs.IMAGE_DIRECTORY }}
+            SERVER_PATH=${{ inputs.SERVER_PATH }}
+            SERVER_ZIP=org.eclipse.osee.server.runtime.zip
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}${{steps.docker_ref.outputs.docker_current_ref}}:${{ github.sha }}
+            ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}${{steps.docker_ref.outputs.docker_current_ref}}:${{ steps.date.outputs.timestamp }}
+            ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}${{steps.docker_ref.outputs.docker_current_ref}}:latest
+      
+      - name: Output latest ref
+        id: latest_ref
+        shell: bash
+        run: echo "latest_ref=ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}${{steps.docker_ref.outputs.docker_current_ref}}:latest" >> "$GITHUB_OUTPUT"
+

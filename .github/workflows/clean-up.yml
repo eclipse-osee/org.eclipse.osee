@@ -1,0 +1,71 @@
+name: PR cleanup
+
+on:
+  pull_request:
+    types: [closed]
+
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  packages: delete
+
+env:
+  ARTIFACT_PATH: "plugins/org.eclipse.osee.server.p2/target/org.eclipse.osee.server.runtime.zip"
+  SERVER_PATH: "osee_server"
+  SERVER_ZIP: "org.eclipse.osee.server.runtime.zip"
+  IMAGE_DIRECTORY: ".github/docker/osee-server/Dockerfile"
+
+jobs:
+  cleanup_platform_specific:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: create artifact ref
+        id: artifact_ref
+        uses: ./.github/actions/artifact-current-ref
+
+      - uses: geekyeggo/delete-artifact@v5
+        with:
+          name: bat-${{matrix.os}}${{steps.artifact_ref.outputs.artifact_current_ref}}
+      - uses: geekyeggo/delete-artifact@v5
+        with:
+          name: pat-${{matrix.os}}${{steps.artifact_ref.outputs.artifact_current_ref}}
+  cleanup_docker:
+    runs-on: ubuntu-latest
+    steps:
+        - name: Checkout Repository
+          uses: actions/checkout@v4
+
+        - name: create docker ref
+          id: docker_ref
+          uses: ./.github/actions/docker-current-ref
+
+        - name: cleanup osee server
+          uses: chipkent/action-cleanup-package@v1.0.1
+          with:
+            package-name: ghcr.io/${{ github.repository }}/osee-server${{steps.docker_ref.outputs.docker_current_ref}}
+        
+        - name: cleanup postgres
+          uses: chipkent/action-cleanup-package@v1.0.1
+          with:
+            package-name: ghcr.io/${{ github.repository }}/osee-postgres${{steps.docker_ref.outputs.docker_current_ref}}
+        
+        - name: create artifact ref
+          id: artifact_ref
+          uses: ./.github/actions/artifact-current-ref
+        
+        - uses: geekyeggo/delete-artifact@v5
+          with:
+            name: osee-server${{steps.artifact_ref.outputs.artifact_current_ref}}-binaries
+
+        - uses: geekyeggo/delete-artifact@v5
+          with:
+            name: compose-file${{steps.artifact_ref.outputs.artifact_current_ref}}

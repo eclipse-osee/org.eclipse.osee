@@ -20,7 +20,7 @@ load("@aspect_bazel_lib//lib:diff_test.bzl", "diff_test")
 apply_applicability(
     name="example_processed_markdown_files",
     srcs=[":test.md","//rules_osee_examples/module_example/deeply/nested/folder:test2.md"],
-    applic_config = ":PRODUCT_A.json"
+    applic_config = "@my_product_line//config_files:resolved_config"
 )
 # The following would be called like so:
 # bazel build //:example_processed_markdown_files_resolved --platforms=@my_product_line//platforms/configurations:Product_A
@@ -53,7 +53,9 @@ pkg_files(
 pkg_zip(
     name="example_zipped_markdown_files",
     srcs = ["example_packaged_markdown_files"],
-    out="example_zipped_markdown_files.zip"
+    out="example_zipped_markdown_files.zip",
+    stamp=0,
+    timestamp=315532800
 )
 diff_test(
     name = "applic_test",
