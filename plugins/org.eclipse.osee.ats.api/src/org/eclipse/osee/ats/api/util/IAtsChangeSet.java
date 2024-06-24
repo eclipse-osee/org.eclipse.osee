@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationId;
@@ -213,5 +214,7 @@ public interface IAtsChangeSet {
    void initalizeWorkflow(IAtsWorkItem workItem, IStateToken state, Collection<AtsUser> assignees);
 
    void updateForTransition(IAtsWorkItem workItem, IStateToken toState, Collection<AtsUser> toStateAssigees);
+
+   void addAttributes(ArtifactToken art, AttributeTypeString attrType, String... names);
 
 }

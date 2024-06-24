@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.UserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.conditions.ConditionalRule;
 import org.eclipse.osee.framework.core.enums.OseeImage;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.WidgetHint;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.ISelectableValueProvider;
@@ -73,11 +74,11 @@ public class XWidgetRendererItem {
    private RelationTypeSide relationTypeSide;
    private ComputedCharacteristicToken<?> computedCharacteristic;
    private boolean horizontalLabel;
-   private Object defaultValueObj;
+   private Object defaultValueObj = null;
    private ISelectableValueProvider valueProvider;
    private Collection<? extends Object> values = new ArrayList<Object>();
    private List<ConditionalRule> conditions = new ArrayList<>();
-   private ArtifactToken enumeratedArt;
+   private ArtifactToken enumeratedArt = ArtifactToken.SENTINEL;
    private ArtifactId teamId = ArtifactId.SENTINEL;
    private List<WidgetHint> widgetHints = new ArrayList<>();
    private OseeImage oseeImage;
@@ -415,6 +416,7 @@ public class XWidgetRendererItem {
    }
 
    public void setEnumeratedArt(ArtifactToken enumeratedArt) {
+      Conditions.requireNonNull(enumeratedArt, "Enumerated Art");
       this.enumeratedArt = enumeratedArt;
    }
 

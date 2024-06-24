@@ -129,10 +129,11 @@ public interface AtsAttributeTypes {
    AttributeTypeString ExternalReference = ats.createString(52148954699L, "ats.External Reference", TEXT_PLAIN, "Associated External PCR Number", Edit);
    AttributeTypeString WorldResultsJson = ats.createString(8910159741989007159L, "ats.World Results Json", TEXT_PLAIN, "", Edit);
    AttributeTypeString WorldResultsCustId = ats.createString(3432929579057647175L, "ats.World Results Customize Guid", TEXT_PLAIN, "", Edit);
-   AttributeTypeString FlightNumber = ats.createString(5486142454969512441L, "Flight Number", MediaType.TEXT_PLAIN, "", Edit);
-   AttributeTypeString FullName = ats.createString(1152921504606847198L, "ats.Full Name", TEXT_PLAIN, "Expanded and descriptive name.", Edit);
-   AttributeTypeString FunctionalArea = ats.createString(5540854390791380448L, "ats.Functional Area", TEXT_PLAIN, "", Read);
    AttributeTypeArtifactId FeatureImpactReference = ats.createArtifactId(1148992834242L, "ats.Feature Impacted", TEXT_PLAIN, "", Read);
+   AttributeTypeString FlightNumber = ats.createString(5486142454969512441L, "Flight Number", MediaType.TEXT_PLAIN, "", Edit);
+   AttributeTypeString FoundLocation = ats.createString(3472510495612824478L, "ats.Found Location", TEXT_PLAIN, "", Edit);
+   AttributeTypeString FoundVersion = ats.createString(275716497L, "ats.Found Version", TEXT_PLAIN, "", Edit);   AttributeTypeString FullName = ats.createString(1152921504606847198L, "ats.Full Name", TEXT_PLAIN, "Expanded and descriptive name.", Edit);
+   AttributeTypeString FunctionalArea = ats.createString(5540854390791380448L, "ats.Functional Area", TEXT_PLAIN, "", Read);
    AttributeTypeString GoalOrderVote = ats.createString(1152921504606847211L, "ats.Goal Order Vote", TEXT_PLAIN, "Vote for order item belongs to within goal.", Edit);
    AttributeTypeString HoldReason = ats.createString(5465485151546987972L, "ats.Hold Reason", TEXT_PLAIN, "Reason for action being held", Edit);
    AttributeTypeDate Holiday = ats.createDate(72064629481881851L, "ats.Holiday", TEXT_CALENDAR, "", Edit);

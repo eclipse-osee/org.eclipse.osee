@@ -153,20 +153,12 @@ public class SwtXWidgetRenderer {
       if (xWidget instanceof LabelAfterWidget) {
          ((LabelAfterWidget) xWidget).setLabelAfter(rItem.getXOptionHandler().contains(XOption.LABEL_AFTER));
       }
-      if (rItem.getDefaultValueObj() != null) {
-         xWidget.setDefaultValueObj(rItem.getDefaultValueObj());
-      }
+      xWidget.setDefaultValueObj(rItem.getDefaultValueObj());
       xWidget.setValueProvider(rItem.getValueProvider());
-
-      if (rItem.getArtifactType().isValid()) {
-         xWidget.setArtifactType(rItem.getArtifactType());
-      }
-      if (rItem.getAttributeType().isValid()) {
-         xWidget.setAttributeType(rItem.getAttributeType());
-      }
-      if (rItem.getAttributeType2().isValid()) {
-         xWidget.setAttributeType2(rItem.getAttributeType2());
-      }
+      xWidget.setArtifactType(rItem.getArtifactType());
+      xWidget.setAttributeType(rItem.getAttributeType());
+      xWidget.setAttributeType2(rItem.getAttributeType2());
+      xWidget.setEnumeratedArt(rItem.getEnumeratedArt());
       xWidget.setOseeImage(rItem.getOseeImage());
       xWidget.setTeamId(rItem.getTeamId());
       xWidget.setValues(rItem.getValues());

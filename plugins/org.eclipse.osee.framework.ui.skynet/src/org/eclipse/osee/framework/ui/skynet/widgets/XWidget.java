@@ -27,11 +27,13 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.conditions.ConditionalRule;
 import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.WidgetHint;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -95,6 +97,7 @@ public abstract class XWidget {
    private List<WidgetHint> widgetHints = new ArrayList<>();
    private OseeImage oseeImage;
    private final Map<String, Object> parameters = new HashMap<String, Object>();
+   protected ArtifactToken enumeratedArt = ArtifactToken.SENTINEL;
 
    public XWidget(String label) {
       this.label = label;
@@ -597,6 +600,15 @@ public abstract class XWidget {
 
    public void addParameter(String key, Object value) {
       parameters.put(key, value);
+   }
+
+   public ArtifactToken getEnumeratedArt() {
+      return enumeratedArt;
+   }
+
+   public void setEnumeratedArt(ArtifactToken enumeratedArt) {
+      Conditions.requireNonNull(enumeratedArt, "Enumerated Art");
+      this.enumeratedArt = enumeratedArt;
    }
 
 }

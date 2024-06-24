@@ -57,7 +57,7 @@ public class WidgetDefinition extends LayoutItem {
    private String defaultValue;
    private Double min;
    private Double max;
-   private ArtifactToken enumeratedArt;
+   private ArtifactToken enumeratedArt = ArtifactToken.SENTINEL;
    private OseeImage oseeImage;
 
    public WidgetDefinition(String name) {
@@ -217,6 +217,7 @@ public class WidgetDefinition extends LayoutItem {
    }
 
    public WidgetDefinition andEnumeratedArt(ArtifactToken enumeratedArt) {
+      Conditions.requireNonNull(enumeratedArt, "Enumerated Art");
       this.enumeratedArt = enumeratedArt;
       return this;
    }
@@ -226,6 +227,7 @@ public class WidgetDefinition extends LayoutItem {
    }
 
    public void setEnumeratedArt(ArtifactToken enumeratedArt) {
+      Conditions.requireNonNull(enumeratedArt, "Enumerated Art");
       this.enumeratedArt = enumeratedArt;
    }
 

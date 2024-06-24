@@ -48,6 +48,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
+import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -598,6 +599,13 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
          String query = String.format("INSERT INTO osee_sequence (last_sequence, sequence_name) VALUES (%s, '%s')",
             entry.getValue(), entry.getKey());
          atsApi.getQueryService().runUpdate(query);
+      }
+   }
+
+   @Override
+   public void addAttributes(ArtifactToken art, AttributeTypeString attrType, String... names) {
+      for (String name : names) {
+         addAttribute(art, attrType, name);
       }
    }
 
