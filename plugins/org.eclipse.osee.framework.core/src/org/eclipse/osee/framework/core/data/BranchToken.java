@@ -274,6 +274,15 @@ public interface BranchToken extends BranchId, NamedId {
       return Strings.truncate(this.getName(), length);
    }
 
+   /**
+    * Gets the provided branch name truncated to {@link BranchToken#SHORT_NAME_LIMIT} number of characters.
+    *
+    * @return the provided branch name truncated to {@link BranchToken#SHORT_NAME_LIMIT} number of characters.
+    */
+   public static String getShortName(String name) {
+      return Strings.truncate(name, SHORT_NAME_LIMIT);
+   }
+
 }
 
 /* EOF */
