@@ -31,7 +31,9 @@ import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.MergeData;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.UpdateFromParentData;
 import org.eclipse.osee.framework.core.data.ValidateCommitResult;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -140,6 +142,49 @@ public class CommitBranchUtil {
    private static final String getHeadTxIgnoreBranchCategory =
       "SELECT MAX(txs.transaction_id) from osee_branch_category bc, osee_txs txs " + //
          "WHERE txs.gamma_id NOT IN (SELECT gamma_id from osee_branch_category where branch_id = ?) AND bc.branch_id = ? AND txs.branch_id = ?";
+
+   private static final String getUpdateFromParentData = "WITH branch1 as (" + //
+      "SELECT branch_id, branch_name, parent_branch_id, branch_state, parent_transaction_id, baseline_transaction_id, associated_art_id " + //
+      "FROM osee_branch WHERE branch_id = ?" + //
+      "), " + //
+      "branch2 (branch_id, branch_name) as (" + //
+      "SELECT br.branch_id, br.branch_name " + //
+      "FROM osee_branch br, branch1 br1 WHERE br.branch_id = br1.parent_branch_id " + //
+      "), " + //
+      "parentTx (parent_tx_id) as (" + //
+      "SELECT MAX(transaction_id) FROM osee_tx_details tx, branch2 br2 WHERE tx.branch_id = br2.branch_id " + //
+      "), " + //
+      "headTxNoCategory (branch_tx_id) as (" + getHeadTxIgnoreBranchCategory + ") " + //
+      "SELECT br1.branch_id br1_id, br1.branch_name br1_name, br1.branch_state br1_state, br1.baseline_transaction_id br1_baseline_tx, " + //
+      "br1.parent_transaction_id br1_parent_tx, br1.associated_art_id br1_art, " + //
+      "br2.branch_id br2_id, br2.branch_name br2_name, " + //
+      "pTx.parent_tx_id, br1Tx.branch_tx_id br1_tx_id " + //
+      "FROM branch1 br1, branch2 br2, parentTx pTx, headTxNoCategory br1Tx";
+
+   public static UpdateFromParentData getUpdateFromParentData(OrcsApi orcsApi, BranchId branchId) {
+      UpdateFromParentData branchData = new UpdateFromParentData();
+      try (JdbcStatement stmt = orcsApi.getJdbcService().getClient().getStatement()) {
+         stmt.runPreparedQuery(getUpdateFromParentData, branchId, branchId, branchId, branchId);
+         if (stmt.next()) {
+            BranchId sourceBranchId = BranchId.valueOf(stmt.getLong("br1_id"));
+            String sourceBranchName = stmt.getString("br1_name");
+            BranchState sourceBranchState = BranchState.valueOf(stmt.getInt("br1_state"));
+            TransactionId sourceBranchBaselineTx = TransactionId.valueOf(stmt.getLong("br1_baseline_tx"));
+            TransactionId sourceBranchHeadTxNoCategory = TransactionId.valueOf(stmt.getLong("br1_tx_id"));
+            ArtifactId sourceBranchAssociatedArtifact = ArtifactId.valueOf(stmt.getLong("br1_art"));
+            BranchId parentBranchId = BranchId.valueOf(stmt.getLong("br2_id"));
+            String parentBranchName = stmt.getString("br2_name");
+            TransactionId parentBranchTxId = TransactionId.valueOf(stmt.getLong("br1_parent_tx"));
+            TransactionId parentBranchHeadTx = TransactionId.valueOf(stmt.getLong("parent_tx_id"));
+
+            branchData = new UpdateFromParentData(sourceBranchId, sourceBranchName, sourceBranchState,
+               sourceBranchBaselineTx, sourceBranchHeadTxNoCategory, sourceBranchAssociatedArtifact, parentBranchId,
+               parentBranchName, parentBranchTxId, parentBranchHeadTx);
+         }
+         stmt.close();
+      }
+      return branchData;
+   }
 
    public static List<MergeData> getMergeData(BranchId mergeBranchId, JdbcClient jdbcClient,
       OrcsTokenService tokenService) {
