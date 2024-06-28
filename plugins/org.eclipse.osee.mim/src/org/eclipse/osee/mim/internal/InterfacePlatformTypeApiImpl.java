@@ -378,11 +378,14 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
    @Override
    public String getUniqueIdentifier(String logicalType, String min, String max, String validRange, String units,
       String defaultValue, int bytes) {
-      if (logicalType.equals("boolean")) {
+      if (logicalType.equals("boolean") && bytes == 1 && min.equals("0") && max.equals("1")) {
          return "boolean";
       }
       String identifier = "";
       switch (logicalType) {
+         case "boolean":
+            identifier += "Boolean";
+            break;
          case "character":
             identifier += "Char";
             break;

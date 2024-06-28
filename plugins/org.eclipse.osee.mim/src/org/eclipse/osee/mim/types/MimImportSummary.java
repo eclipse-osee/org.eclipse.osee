@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MimImportSummary {
+   private String txComment;
    private final List<InterfaceNode> nodes;
    private final List<InterfaceConnection> connections;
    private final List<InterfaceMessageToken> messages;
@@ -39,8 +40,10 @@ public class MimImportSummary {
    private final Map<String, List<String>> platformTypeEnumSetRelations;
    private final Map<String, List<String>> enumSetEnumRelations;
    private final Map<String, List<String>> connectionCrossReferenceRelations;
+   private final List<String> errors;
 
    public MimImportSummary() {
+      txComment = "MIM Import";
       nodes = new LinkedList<>();
       connections = new LinkedList<>();
       messages = new LinkedList<>();
@@ -62,6 +65,15 @@ public class MimImportSummary {
       platformTypeEnumSetRelations = new HashMap<>();
       enumSetEnumRelations = new HashMap<>();
       connectionCrossReferenceRelations = new HashMap<>();
+      errors = new LinkedList<>();
+   }
+
+   public String getTxComment() {
+      return txComment;
+   }
+
+   public void setTxComment(String txComment) {
+      this.txComment = txComment;
    }
 
    public List<InterfaceNode> getNodes() {
@@ -146,6 +158,14 @@ public class MimImportSummary {
 
    public Map<String, List<String>> getConnectionCrossReferenceRelations() {
       return connectionCrossReferenceRelations;
+   }
+
+   public boolean isError() {
+      return !errors.isEmpty();
+   }
+
+   public List<String> getErrors() {
+      return errors;
    }
 
 }

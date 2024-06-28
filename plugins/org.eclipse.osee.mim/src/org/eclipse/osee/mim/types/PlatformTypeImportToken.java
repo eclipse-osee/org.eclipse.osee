@@ -14,8 +14,20 @@
 package org.eclipse.osee.mim.types;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.orcs.rest.model.transaction.Attribute;
+import org.eclipse.osee.orcs.rest.model.transaction.CreateArtifact;
 
 /**
  * Class used to represent a platform type, as well as internal operations for a platform type.
@@ -186,6 +198,40 @@ public class PlatformTypeImportToken extends ArtifactAccessorResult {
 
    public void setEnumSet(InterfaceEnumerationSet enumSet) {
       this.enumSet = enumSet;
+   }
+
+   public CreateArtifact createArtifact(String key, ApplicabilityId applicId) {
+      Map<AttributeTypeToken, String> values = new HashMap<>();
+      values.put(CoreAttributeTypes.Description, this.getDescription());
+      values.put(CoreAttributeTypes.InterfaceLogicalType, this.getInterfaceLogicalType());
+      values.put(CoreAttributeTypes.InterfacePlatformTypeBitSize, this.getInterfacePlatformTypeBitSize());
+      values.put(CoreAttributeTypes.InterfacePlatformTypeMinval, this.getInterfacePlatformTypeMinval());
+      values.put(CoreAttributeTypes.InterfacePlatformTypeMaxval, this.getInterfacePlatformTypeMaxval());
+      values.put(CoreAttributeTypes.InterfacePlatformTypeUnits, this.getInterfacePlatformTypeUnits());
+      values.put(CoreAttributeTypes.InterfaceDefaultValue, this.getInterfaceDefaultValue());
+      values.put(CoreAttributeTypes.InterfacePlatformTypeValidRangeDescription,
+         this.getInterfacePlatformTypeValidRangeDescription());
+
+      CreateArtifact art = new CreateArtifact();
+      art.setName(this.getName());
+      art.setTypeId(CoreArtifactTypes.InterfacePlatformType.getIdString());
+
+      List<Attribute> attrs = new LinkedList<>();
+
+      for (AttributeTypeToken type : CoreArtifactTypes.InterfacePlatformType.getValidAttributeTypes()) {
+         String value = values.get(type);
+         if (Strings.isInValid(value)) {
+            continue;
+         }
+         Attribute attr = new Attribute(type.getIdString());
+         attr.setValue(Arrays.asList(value));
+         attrs.add(attr);
+      }
+
+      art.setAttributes(attrs);
+      art.setApplicabilityId(applicId.getIdString());
+      art.setkey(key);
+      return art;
    }
 
 }

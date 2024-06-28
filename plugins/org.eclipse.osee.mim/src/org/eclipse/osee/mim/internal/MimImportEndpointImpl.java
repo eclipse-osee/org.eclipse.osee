@@ -18,12 +18,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.MimApi;
 import org.eclipse.osee.mim.MimImportApi;
 import org.eclipse.osee.mim.MimImportEndpoint;
+import org.eclipse.osee.mim.types.MIMImportUtil;
 import org.eclipse.osee.mim.types.MimImportSummary;
 import org.eclipse.osee.mim.types.MimImportToken;
+import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderData;
 
 /**
  * @author Ryan T. Baldwin
@@ -56,6 +59,15 @@ public class MimImportEndpointImpl implements MimImportEndpoint {
          System.out.println(ex);
          return new MimImportSummary();
       }
+   }
+
+   @Override
+   public TransactionBuilderData getTxBuilderDataFromImportSummary(BranchId branch, ApplicabilityId applicId,
+      MimImportSummary summary) {
+      if (applicId == null) {
+         applicId = ApplicabilityId.BASE;
+      }
+      return MIMImportUtil.getTxBuilderDataFromImportSummary(branch, applicId, summary);
    }
 
    @Override
