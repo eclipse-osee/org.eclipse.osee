@@ -12,7 +12,19 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.orcs.rest.model.transaction.Attribute;
+import org.eclipse.osee.orcs.rest.model.transaction.CreateArtifact;
 
 /**
  * @author Ryan T. Baldwin
@@ -126,6 +138,38 @@ public class InterfaceElementImportToken extends ArtifactAccessorResult {
 
    public void setInterfaceDefaultValue(String interfaceDefaultValue) {
       InterfaceDefaultValue = interfaceDefaultValue;
+   }
+
+   public CreateArtifact createArtifact(String key, ApplicabilityId applicId) {
+      Map<AttributeTypeToken, String> values = new HashMap<>();
+      values.put(CoreAttributeTypes.Description, this.getDescription());
+      values.put(CoreAttributeTypes.InterfaceDefaultValue, this.getInterfaceDefaultValue());
+      values.put(CoreAttributeTypes.InterfaceElementAlterable, this.getInterfaceElementAlterable().toString());
+      values.put(CoreAttributeTypes.Notes, this.getNotes());
+      values.put(CoreAttributeTypes.InterfaceElementEnumLiteral, this.getEnumLiteral());
+      values.put(CoreAttributeTypes.InterfaceElementIndexStart, this.getInterfaceElementIndexStart().toString());
+      values.put(CoreAttributeTypes.InterfaceElementIndexEnd, this.getInterfaceElementIndexEnd().toString());
+
+      CreateArtifact art = new CreateArtifact();
+      art.setName(this.getName());
+      art.setTypeId(CoreArtifactTypes.InterfaceDataElement.getIdString());
+
+      List<Attribute> attrs = new LinkedList<>();
+
+      for (AttributeTypeToken type : CoreArtifactTypes.InterfaceDataElement.getValidAttributeTypes()) {
+         String value = values.get(type);
+         if (Strings.isInValid(value)) {
+            continue;
+         }
+         Attribute attr = new Attribute(type.getIdString());
+         attr.setValue(Arrays.asList(value));
+         attrs.add(attr);
+      }
+
+      art.setAttributes(attrs);
+      art.setApplicabilityId(applicId.getIdString());
+      art.setkey(key);
+      return art;
    }
 
 }
