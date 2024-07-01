@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { ScriptTableComponent } from './script-table/script-table.component';
@@ -31,6 +31,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 		BranchPickerComponent,
 		CiDashboardControlsComponent,
 	],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AllScriptsComponent {
 	uiService = inject(CiDashboardUiService);

@@ -12,10 +12,17 @@
  **********************************************************************/
 import { of } from 'rxjs';
 import { DashboardHttpService } from '../services/dashboard-http.service';
-import { teamStatsMock } from '../testing/dashboard.response.mock';
+import {
+	teamStatsMock,
+	timelineStatsMock,
+} from '../testing/dashboard.response.mock';
 
 export const dashboardHttpServiceMock: Partial<DashboardHttpService> = {
 	getTeamStats(branchId: string) {
 		return of(teamStatsMock);
+	},
+
+	getTimelineStats(branchId: string) {
+		return of(timelineStatsMock);
 	},
 };

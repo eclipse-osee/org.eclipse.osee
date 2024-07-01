@@ -49,6 +49,8 @@ export class TimelineResultsChartComponent {
 		},
 		scales: {
 			y: {
+				beginAtZero: true,
+				stacked: true,
 				ticks: {
 					precision: 0,
 				},
@@ -96,9 +98,7 @@ export class TimelineResultsChartComponent {
 					fill: 'origin',
 				},
 				{
-					data: results.map(
-						(result) => result.passedCount + result.failedCount
-					),
+					data: results.map((result) => result.failedCount),
 					backgroundColor: '#C34F37',
 					borderColor: '#C34F37',
 					pointBackgroundColor: '#C34F37',

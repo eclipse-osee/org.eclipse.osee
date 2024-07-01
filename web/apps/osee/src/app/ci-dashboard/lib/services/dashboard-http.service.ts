@@ -12,7 +12,7 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { CIStats } from '../types/ci-stats';
+import { CIStats, CITimelineStats } from '../types/ci-stats';
 import { apiURL } from '@osee/environments';
 
 @Injectable({
@@ -30,6 +30,12 @@ export class DashboardHttpService {
 	getSubsystemStats(branchId: string, ciSet: string) {
 		return this.http.get<CIStats[]>(
 			`${apiURL}/script/dashboard/${branchId}/${ciSet}/subsystemstats`
+		);
+	}
+
+	getTimelineStats(branchId: string, ciSet: string) {
+		return this.http.get<CITimelineStats[]>(
+			`${apiURL}/script/dashboard/${branchId}/${ciSet}/timelinestats`
 		);
 	}
 }

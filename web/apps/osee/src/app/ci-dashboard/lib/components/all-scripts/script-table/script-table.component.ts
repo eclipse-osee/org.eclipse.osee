@@ -10,7 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, inject, viewChild } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	inject,
+	viewChild,
+} from '@angular/core';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { scriptDefHeaderDetails } from '../../../table-headers/script-headers';
 import { FormsModule } from '@angular/forms';
@@ -105,6 +110,7 @@ import { Router } from '@angular/router';
 		MatRowDef,
 		SplitStringPipe,
 	],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ScriptTableComponent {
 	ciDetailsService = inject(CiDetailsService);

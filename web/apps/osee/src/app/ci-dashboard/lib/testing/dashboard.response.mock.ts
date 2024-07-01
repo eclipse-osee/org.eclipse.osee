@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CIStats } from '../types/ci-stats';
+import { CIStats, CITimelineStats } from '../types/ci-stats';
 
 export const teamStatsMock: CIStats[] = [
 	{
@@ -23,6 +23,7 @@ export const teamStatsMock: CIStats[] = [
 		testPointsFail: 2000,
 		scriptsRan: 140,
 		scriptsNotRan: 1,
+		scriptsExecutionDate: new Date(),
 	},
 	{
 		name: 'Team 2',
@@ -34,5 +35,22 @@ export const teamStatsMock: CIStats[] = [
 		testPointsFail: 20000,
 		scriptsRan: 211,
 		scriptsNotRan: 0,
+		scriptsExecutionDate: new Date(),
+	},
+];
+
+export const timelineStatMock: CITimelineStats = {
+	name: 'Team 1',
+	ciStats: teamStatsMock,
+};
+
+export const timelineStatsMock: CITimelineStats[] = [
+	{
+		name: 'Team 1',
+		ciStats: teamStatsMock,
+	},
+	{
+		name: 'Team 2',
+		ciStats: teamStatsMock,
 	},
 ];
