@@ -11,31 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { artifactWithRelations } from '@osee/artifact-with-relations/types';
-import { artifactContextMenuOption } from './artifact-explorer';
-
-export const DEFAULT_ARTIFACT_CONTEXT_MENU_OPTIONS: artifactContextMenuOption[] =
-	[
-		{
-			name: 'Create Child Artifact',
-			icon: {
-				icon: 'add',
-				color: 'success',
-				lightShade: '500',
-				darkShade: '500',
-				variant: '',
-			},
-		},
-		{
-			name: 'Delete Artifact',
-			icon: {
-				icon: 'delete',
-				color: 'warning',
-				lightShade: '500',
-				darkShade: '500',
-				variant: '',
-			},
-		},
-	];
 
 export const DEFAULT_HIERARCHY_ROOT_ARTIFACT: artifactWithRelations = {
 	id: '197818',
@@ -52,4 +27,5 @@ export const DEFAULT_HIERARCHY_ROOT_ARTIFACT: artifactWithRelations = {
 	attributes: [],
 	relations: [],
 	editable: false,
+	operationTypes: [],
 };

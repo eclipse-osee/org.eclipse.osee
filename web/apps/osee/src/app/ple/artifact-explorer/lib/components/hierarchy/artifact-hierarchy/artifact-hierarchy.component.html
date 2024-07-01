@@ -12,69 +12,68 @@
 -->
 @if (branchId$ | async; as branchId) {
 	@if (branchType$ | async; as branchType) {
-		@if (artifacts | async; as artifacts) {
-			@if (latestPaths | async; as paths) {
-				<!-- artifacts -->
-				@for (artifact of artifacts; track trackById) {
-					<div
-						(contextmenu)="
-							openContextMenu(
-								$event,
-								DEFAULT_HIERARCHY_ROOT_ARTIFACT
-							)
-						"
-						class="tw-flex tw-py-1 tw-pl-4"
-						[ngClass]="
-							artifactIsExpanded(artifact.id)
-								? 'tw-bg-background-hover'
-								: ''
-						">
-						<button
-							(click)="toggleExpandButton(artifact.id)"
-							class="tw-flex tw-items-center hover:tw-text-primary">
-							<osee-expand-icon
-								[open]="artifactIsExpanded(artifact.id)" />
-						</button>
-						<!-- artifact icon and name button -->
-						<button
-							(contextmenu)="openContextMenu($event, artifact)"
-							cdkDrag
-							[cdkDragData]="artifact"
-							class="tw-flex tw-items-center hover:tw-text-primary"
-							(click)="addTab(artifact)">
-							<div class="tw-flex tw-items-center tw-pl-4">
-								<mat-icon
-									[class]="getIconClasses(artifact.icon)">
-									{{ artifact.icon.icon }}
-								</mat-icon>
-							</div>
-							<div class="tw-pl-2">
-								{{ artifact.name }}
-							</div>
-						</button>
-					</div>
-					<!-- child artifacts -->
-					@if (artifactIsExpanded(artifact.id)) {
-						<div class="tw-pl-8">
-							@if (paths.length > 0) {
-								<osee-artifact-hierarchy
-									[artifactId]="artifact.id"
-									[paths]="paths" />
-							} @else {
-								<osee-artifact-hierarchy
-									[artifactId]="artifact.id" />
-							}
+		@if (artifactWithDirRelations | async; as artWithRel) {
+			@if (artifacts | async; as artifacts) {
+				@if (latestPaths | async; as paths) {
+					<!-- artifacts -->
+					@for (artifact of artifacts; track trackById) {
+						<div
+							(contextmenu)="openContextMenu($event, artWithRel)"
+							class="tw-flex tw-py-1 tw-pl-4"
+							[ngClass]="
+								artifactIsExpanded(artifact.id)
+									? 'tw-bg-background-hover'
+									: ''
+							">
+							<button
+								(click)="toggleExpandButton(artifact.id)"
+								class="tw-flex tw-items-center hover:tw-text-primary">
+								<osee-expand-icon
+									[open]="artifactIsExpanded(artifact.id)" />
+							</button>
+							<!-- artifact icon and name button -->
+							<button
+								(contextmenu)="
+									openContextMenu($event, artifact)
+								"
+								cdkDrag
+								[cdkDragData]="artifact"
+								class="tw-flex tw-items-center hover:tw-text-primary"
+								(click)="addTab(artifact)">
+								<div class="tw-flex tw-items-center tw-pl-4">
+									<mat-icon
+										[class]="getIconClasses(artifact.icon)">
+										{{ artifact.icon.icon }}
+									</mat-icon>
+								</div>
+								<div class="tw-pl-2">
+									{{ artifact.name }}
+								</div>
+							</button>
 						</div>
+						<!-- child artifacts -->
+						@if (artifactIsExpanded(artifact.id)) {
+							<div class="tw-pl-8">
+								@if (paths.length > 0) {
+									<osee-artifact-hierarchy
+										[artifactId]="artifact.id"
+										[paths]="paths" />
+								} @else {
+									<osee-artifact-hierarchy
+										[artifactId]="artifact.id" />
+								}
+							</div>
+						}
 					}
-				}
-				<!-- relations (toggled via option) -->
-				@if (paths.length > 0) {
-					<osee-artifact-hierarchy-relations
-						[relation$]="relation$"
-						[paths]="paths" />
-				} @else {
-					<osee-artifact-hierarchy-relations
-						[relation$]="relation$" />
+					<!-- relations (toggled via option) -->
+					@if (paths.length > 0) {
+						<osee-artifact-hierarchy-relations
+							[relation$]="relation$"
+							[paths]="paths" />
+					} @else {
+						<osee-artifact-hierarchy-relations
+							[relation$]="relation$" />
+					}
 				}
 			}
 		}
@@ -89,20 +88,23 @@
 	<ng-template
 		matMenuContent
 		let-artifactId="artifactId"
-		let-parentArtifactId="parentArtifactId">
+		let-parentArtifactId="parentArtifactId"
+		let-operationTypes="operationTypes">
 		@if (getSiblingArtifactId(artifactId) | async; as siblingArtifactId) {
-			<osee-artifact-options-context-menu
+			<osee-artifact-operations-context-menu
 				[artifactId]="artifactId"
 				[parentArtifactId]="parentArtifactId"
-				[siblingArtifactId]="
-					siblingArtifactId
-				"></osee-artifact-options-context-menu>
+				[siblingArtifactId]="siblingArtifactId"
+				[operationTypes]="
+					operationTypes
+				"></osee-artifact-operations-context-menu>
 		} @else {
-			<osee-artifact-options-context-menu
+			<osee-artifact-operations-context-menu
 				[artifactId]="artifactId"
-				[parentArtifactId]="
-					parentArtifactId
-				"></osee-artifact-options-context-menu>
+				[parentArtifactId]="parentArtifactId"
+				[operationTypes]="
+					operationTypes
+				"></osee-artifact-operations-context-menu>
 		}
 	</ng-template>
 </mat-menu>

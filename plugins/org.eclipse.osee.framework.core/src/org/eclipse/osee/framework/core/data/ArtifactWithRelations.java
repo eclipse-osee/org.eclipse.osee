@@ -16,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -63,6 +64,10 @@ public class ArtifactWithRelations {
 
    public MaterialIcon getIcon() {
       return this.artReadable.getArtifactType().getIcon();
+   }
+
+   public Set<OperationTypeToken> getOperationTypes() {
+      return this.artReadable.getArtifactType().getOperationTypes();
    }
 
    @JsonIgnore
@@ -138,10 +143,8 @@ public class ArtifactWithRelations {
 
       public ArtifactRelation(RelationTypeToken rel) {
          this.relationTypeToken = rel;
-         this.sideA =
-            new ArtifactRelationSide(this.relationTypeToken.getSideName(RelationSide.SIDE_A), true, false);
-         this.sideB =
-            new ArtifactRelationSide(this.relationTypeToken.getSideName(RelationSide.SIDE_B), false, true);
+         this.sideA = new ArtifactRelationSide(this.relationTypeToken.getSideName(RelationSide.SIDE_A), true, false);
+         this.sideB = new ArtifactRelationSide(this.relationTypeToken.getSideName(RelationSide.SIDE_B), false, true);
       }
 
       public List<ArtifactRelationSide> getRelationSides() {

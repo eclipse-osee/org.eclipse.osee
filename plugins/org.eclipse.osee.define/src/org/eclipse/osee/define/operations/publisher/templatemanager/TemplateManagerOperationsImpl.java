@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.define.operations.api.publisher.templatemanager.TemplateManagerOperations;
 import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateKeyGroups;
 import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateKeyType;
@@ -27,6 +29,7 @@ import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Conditions.ValueType;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
 
@@ -109,8 +112,7 @@ public class TemplateManagerOperationsImpl implements TemplateManagerOperations 
     * @param dataAccessOperations the {@link DataAccessOperations} handle.
     */
 
-   private TemplateManagerOperationsImpl(JdbcService jdbcService, Log logger, DataAccessOperations dataAccessOperations,
-      OrcsTokenService orcsTokenService) {
+   private TemplateManagerOperationsImpl(JdbcService jdbcService, Log logger, DataAccessOperations dataAccessOperations, OrcsTokenService orcsTokenService) {
 
       this.jdbcService = jdbcService;
 
@@ -301,7 +303,7 @@ public class TemplateManagerOperationsImpl implements TemplateManagerOperations 
     */
 
    @Override
-   public PublishingTemplateKeyGroups getPublishingTemplateKeyGroups() {
+   public PublishingTemplateKeyGroups getPublishingTemplateKeyGroups(@NonNull String filterBySafeName) {
       //@formatter:off
       var publishingTemplateKeyGroupList =
          new ArrayList<>
@@ -310,13 +312,25 @@ public class TemplateManagerOperationsImpl implements TemplateManagerOperations 
                       .getPublishingTemplateKeyGroups()
                       .getPublishingTemplateKeyGroupList()
                 );
-      //@formatter:on
 
       Collections.sort(publishingTemplateKeyGroupList);
 
       var publishingTemplateSafeNames = new PublishingTemplateKeyGroups(publishingTemplateKeyGroupList);
 
-      return publishingTemplateSafeNames;
+      var filteredList =
+         Strings.isValidAndNonBlank(filterBySafeName)
+            ? new PublishingTemplateKeyGroups
+               (
+                  publishingTemplateSafeNames
+                     .getPublishingTemplateKeyGroupList()
+                     .stream()
+                     .filter( key -> Strings.containsIgnoreCase(key.getSafeName().getKey(), filterBySafeName))
+                     .collect(Collectors.toList())
+               )
+            : publishingTemplateSafeNames;
+
+      return filteredList;
+      //@formatter:on
    }
 
 }

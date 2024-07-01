@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
  *
  * @author David W. Miller
  * @author Loren K. Ashley
+ * @author Jaden W. Puckett
  */
 
 @Path("word")
@@ -284,6 +285,19 @@ public interface PublishingEndpoint {
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
    @Path("markdownToHtml")
    Response convertMarkdownToHtml(String markdownContent);
+
+   /**
+    * Publishes Markdown artifacts, converts the Markdown to HTML, and returns HTML attachment.
+    *
+    * @param publishMarkdownAsHtmlRequestData the {@link PublishingRequestData}.
+    * @return {@link Attachment} containing HTML content.
+    */
+   @POST
+   @Path("publishMarkdownAsHtml")
+   @Consumes({MediaType.MULTIPART_FORM_DATA})
+   @Produces({MediaType.TEXT_HTML})
+   Attachment publishMarkdownAsHtml(
+      @Multipart(value = "publishMarkdownAsHtmlRequestData", type = MediaType.APPLICATION_JSON) PublishingRequestData publishMarkdownAsHtmlRequestData);
 }
 
 /* EOF */

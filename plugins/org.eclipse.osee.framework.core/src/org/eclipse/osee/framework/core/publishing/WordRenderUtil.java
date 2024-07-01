@@ -1578,7 +1578,7 @@ public class WordRenderUtil {
             break;
       }
 
-      if( includeMetadata ) {
+      if( includeMetadata && !formatIndicator.isMarkdown()) {
 
          /*
           * Add metadata attributes to the Word ML output
@@ -1632,6 +1632,23 @@ public class WordRenderUtil {
             )
          .ifPresent( publishingAppender::append );
 
+      if( includeMetadata && formatIndicator.isMarkdown()) {
+
+         /*
+          * Add metadata attributes to the Markdown output
+          */
+
+         WordRenderUtil.processMetadataOptions
+            (
+               formatIndicator,
+               metadataOptionsArray,
+               applicabilityTokens,
+               artifact,
+               publishingAppender
+            );
+
+      }
+
       /*
        * When the first artifact in a section does not have word template content and a footer is present, the footer
        * will not have been appended to the output. Append the footer here.
@@ -1643,6 +1660,8 @@ public class WordRenderUtil {
 
          publishingAppender.append(footer);
       }
+
+      publishingAppender.endArtifact();
 
       if( artifactPostProcess != null ) {
          artifactPostProcess.accept(artifact);

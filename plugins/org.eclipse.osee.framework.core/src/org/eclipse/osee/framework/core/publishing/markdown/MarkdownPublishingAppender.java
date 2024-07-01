@@ -341,4 +341,10 @@ public class MarkdownPublishingAppender extends PublishingAppenderBase {
    public void startText() {
    }
 
+   @Override
+   public void endArtifact() {
+      this.append("\n");
+      this.append("___");
+      this.append("\n\n");
+   }
 }

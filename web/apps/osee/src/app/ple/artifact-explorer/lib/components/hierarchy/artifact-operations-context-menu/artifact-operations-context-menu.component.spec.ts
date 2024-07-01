@@ -12,7 +12,7 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ArtifactOptionsContextMenuComponent } from './artifact-options-context-menu.component';
+import { ArtifactOperationsContextMenuComponent } from './artifact-operations-context-menu.component';
 import { TransactionService } from '@osee/shared/transactions';
 import { transactionServiceMock } from '@osee/shared/transactions/testing';
 import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
@@ -20,13 +20,13 @@ import { artifactHierarchyPathServiceMock } from '../../../testing/artifact-hier
 import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
 import { ArtifactExplorerHttpServiceMock } from '../../../testing/artifact-explorer-http.service.mock';
 
-describe('ArtifactOptionsContextMenuComponent', () => {
-	let component: ArtifactOptionsContextMenuComponent;
-	let fixture: ComponentFixture<ArtifactOptionsContextMenuComponent>;
+describe('ArtifactOperationsContextMenuComponent', () => {
+	let component: ArtifactOperationsContextMenuComponent;
+	let fixture: ComponentFixture<ArtifactOperationsContextMenuComponent>;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [ArtifactOptionsContextMenuComponent],
+			imports: [ArtifactOperationsContextMenuComponent],
 			providers: [
 				{
 					provide: TransactionService,
@@ -43,7 +43,9 @@ describe('ArtifactOptionsContextMenuComponent', () => {
 			],
 		}).compileComponents();
 
-		fixture = TestBed.createComponent(ArtifactOptionsContextMenuComponent);
+		fixture = TestBed.createComponent(
+			ArtifactOperationsContextMenuComponent
+		);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

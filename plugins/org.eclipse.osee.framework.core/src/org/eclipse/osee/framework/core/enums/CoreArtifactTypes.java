@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.publishing.RequiredIndicator;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
 import org.eclipse.osee.framework.core.util.toggles.CuiNamesConfiguration;
 import org.eclipse.osee.framework.core.util.toggles.TogglesFactory;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
  * @author Ryan D. Brooks
@@ -53,7 +54,7 @@ public interface CoreArtifactTypes {
     * </dl>
     */
 
-   ArtifactTypeToken Artifact = osee.add(osee.artifactType(1L, "Artifact", false, new MaterialIcon("article"))
+   ArtifactTypeToken Artifact = osee.add(osee.artifactType(1L, "Artifact", false, new MaterialIcon("article"), Collections.asHashSet(CoreOperationTypes.CreateChildArtifact, CoreOperationTypes.DeleteArtifact))
       .any(Annotation)
       .zeroOrOne(ContentUrl)
       .zeroOrOne(Description)
@@ -291,7 +292,7 @@ public interface CoreArtifactTypes {
       .exactlyOne(FeatureValueType, FeatureValueType.String)
       .any(Value));
 
-   ArtifactTypeToken Folder = osee.add(osee.artifactType(11L, "Folder",  false, new MaterialIcon("folder", MaterialColors.YELLOW, MaterialShades.S500), Artifact));
+   ArtifactTypeToken Folder = osee.add(osee.artifactType(11L, "Folder",  false, new MaterialIcon("folder", MaterialColors.YELLOW, MaterialShades.S500), Collections.asHashSet(CoreOperationTypes.PublishMarkdownRecursiveWithChildrenWithSpecifiedTemplate), Artifact));
 
    ArtifactTypeToken GeneralData = osee.add(osee.artifactType(12L, "General Data", false, new MaterialIcon("dataset"), Controlled)
       .any(GeneralStringData)

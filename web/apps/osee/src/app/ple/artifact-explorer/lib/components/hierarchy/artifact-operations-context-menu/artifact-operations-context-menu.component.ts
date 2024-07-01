@@ -24,23 +24,25 @@ import { combineLatest, filter, map, of, switchMap, take, tap } from 'rxjs';
 import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
 import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
 import { ArtifactIconService } from '../../../services/artifact-icon.service';
-import { artifactContextMenuOption } from '../../../types/artifact-explorer';
-import { DEFAULT_ARTIFACT_CONTEXT_MENU_OPTIONS } from '../../../types/artifact-explorer-constants';
-import { CreateChildArtifactDialogComponent } from '../create-child-artifact-dialog/create-child-artifact-dialog.component';
-import { DeleteArtifactDialogComponent } from '../delete-artifact-dialog/delete-artifact-dialog.component';
-import { artifactTypeIcon } from '@osee/artifact-with-relations/types';
+import { CreateChildArtifactDialogComponent } from './dialogs/create-child-artifact-dialog/create-child-artifact-dialog.component';
+import { DeleteArtifactDialogComponent } from './dialogs/delete-artifact-dialog/delete-artifact-dialog.component';
+import {
+	artifactTypeIcon,
+	operationType,
+} from '@osee/artifact-with-relations/types';
+import { PublishMarkdownDialogComponent } from './dialogs/publish-markdown-dialog/publish-markdown-dialog.component';
 
 @Component({
-	selector: 'osee-artifact-options-context-menu',
+	selector: 'osee-artifact-operations-context-menu',
 	standalone: true,
 	imports: [AsyncPipe, MatMenuItem, MatIcon],
-	templateUrl: './artifact-options-context-menu.component.html',
+	templateUrl: './artifact-operations-context-menu.component.html',
 })
-export class ArtifactOptionsContextMenuComponent {
+export class ArtifactOperationsContextMenuComponent {
 	artifactId = input.required<string>();
 	parentArtifactId = input.required<`${number}`>();
 	siblingArtifactId = input<`${number}`>('0');
-	options = of(DEFAULT_ARTIFACT_CONTEXT_MENU_OPTIONS);
+	operationTypes = input<operationType[]>([]);
 
 	constructor(
 		public dialog: MatDialog,
@@ -52,6 +54,7 @@ export class ArtifactOptionsContextMenuComponent {
 	) {}
 
 	branchId$ = this.uiService.id;
+	viewId$ = this.uiService.viewId;
 
 	private _branchType = toSignal(this.uiService.type, {
 		initialValue: 'baseline',
@@ -68,20 +71,117 @@ export class ArtifactOptionsContextMenuComponent {
 		);
 	}
 
-	selectOption(option: artifactContextMenuOption) {
+	selectOption(operationType: operationType) {
 		if (this._branchEditable()) {
-			switch (option.name) {
-				case 'Create Child Artifact':
-					this.createChildArtifact(option);
+			switch (operationType.id) {
+				case '6996644113326307731':
+					this.createChildArtifact(operationType);
 					break;
-				case 'Delete Artifact':
-					this.deleteArtifact(option);
+				case '9075821926072512558':
+					this.deleteArtifact(operationType);
+					break;
+				case '8972650019222132280':
+					this.publishMarkdown(operationType);
 					break;
 			}
 		}
 	}
 
-	private createChildArtifact(option: artifactContextMenuOption) {
+	private publishMarkdown(operationType: operationType) {
+		combineLatest([this.branchId$, this.viewId$])
+			.pipe(
+				take(1),
+				switchMap(([branchId, viewId]) =>
+					this.dialog
+						.open(PublishMarkdownDialogComponent, {
+							data: {
+								templateId: '',
+								operationType: operationType,
+							},
+							minWidth: '60%',
+						})
+						.afterClosed()
+						.pipe(
+							filter(
+								(data) =>
+									data &&
+									data?.templateId !== '0' &&
+									data?.templateId !== undefined
+							),
+							switchMap((data) =>
+								this.artExpHttpService
+									.publishMarkdown({
+										publishMarkdownAsHtmlRequestData: {
+											artifactIds: [this.artifactId()],
+											publishingRendererOptions: {
+												Branch: {
+													id: branchId,
+													viewId: viewId,
+												},
+												PublishingFormat: {
+													formatIndicator: 'markdown',
+												},
+											},
+											publishingTemplateRequest: {
+												byOptions: false,
+												formatIndicator: 'markdown',
+												templateId: data.templateId,
+											},
+										},
+									})
+									.pipe(
+										take(1),
+										map((response) => {
+											// Extract file name from Content-Disposition header
+											const contentDisposition =
+												response.headers.get(
+													'Content-Disposition'
+												);
+											// Default name
+											let fileName =
+												'markdownPublish.html';
+
+											// Look for filename after "filename=" and before any trailing ";" in the Content-Disposition header
+											if (contentDisposition) {
+												const matches =
+													/filename="?([^;"]+)"?/.exec(
+														contentDisposition
+													);
+												if (
+													matches != null &&
+													matches[1]
+												) {
+													fileName = matches[1];
+												}
+											}
+
+											// Create a blob URL and trigger the download
+											const blob = response.body as Blob;
+											const link =
+												document.createElement('a');
+											link.href =
+												window.URL.createObjectURL(
+													blob
+												);
+											link.download = fileName;
+											link.click();
+											window.URL.revokeObjectURL(
+												link.href
+											);
+										}),
+										tap(
+											() =>
+												(this.uiService.updated = true)
+										)
+									)
+							)
+						)
+				)
+			)
+			.subscribe();
+	}
+
+	private createChildArtifact(operationType: operationType) {
 		this.branchId$
 			.pipe(
 				take(1),
@@ -93,7 +193,7 @@ export class ArtifactOptionsContextMenuComponent {
 								artifactTypeId: '0',
 								parentArtifactId: this.artifactId(),
 								attributes: [],
-								option: option,
+								operationType: operationType,
 							},
 							minWidth: '60%',
 						})
@@ -161,7 +261,7 @@ export class ArtifactOptionsContextMenuComponent {
 			.subscribe();
 	}
 
-	private deleteArtifact(option: artifactContextMenuOption) {
+	private deleteArtifact(operationType: operationType) {
 		combineLatest([this.branchId$, this.uiService.viewId])
 			.pipe(
 				take(1),
@@ -179,7 +279,7 @@ export class ArtifactOptionsContextMenuComponent {
 									.open(DeleteArtifactDialogComponent, {
 										data: {
 											artifact: artifact,
-											option: option,
+											operationType: operationType,
 										},
 										minWidth: '60%',
 									})

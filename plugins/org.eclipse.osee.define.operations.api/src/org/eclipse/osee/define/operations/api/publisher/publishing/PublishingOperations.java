@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
  *
  * @author Morgan E. Cook
  * @author Loren K. Ashley
+ * @author Jaden W. Puckett
  */
 public interface PublishingOperations {
 
@@ -141,4 +142,13 @@ public interface PublishingOperations {
 
    public WordUpdateChange updateWordArtifacts(WordUpdateData data);
 
+   /**
+    * Publishes the artifact(s) (along with its children) whose {@link ArtifactId} is specified in the
+    * {@link PublishingRequestData}. The whole document will be rendered as Markdown, but converted to HTML using the
+    * {@link MarkdownConverter} at the end.
+    *
+    * @param publishMarkdownAsHtmlRequestData {@link PublishingRequestData} for the Markdown publish as HTML.
+    * @return HTML {@link Attachment}.
+    */
+   public Attachment publishMarkdownAsHtml(PublishingRequestData publishMarkdownAsHtmlRequestData);
 }

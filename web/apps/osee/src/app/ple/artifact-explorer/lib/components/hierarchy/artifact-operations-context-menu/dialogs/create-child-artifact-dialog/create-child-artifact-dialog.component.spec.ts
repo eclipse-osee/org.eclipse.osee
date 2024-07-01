@@ -14,13 +14,13 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CreateChildArtifactDialogComponent } from './create-child-artifact-dialog.component';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
-import { ArtifactExplorerHttpServiceMock } from '../../../testing/artifact-explorer-http.service.mock';
+import { ArtifactExplorerHttpService } from '../../../../../services/artifact-explorer-http.service';
+import { ArtifactExplorerHttpServiceMock } from '../../../../../testing/artifact-explorer-http.service.mock';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ArtifactService } from '../../../../../../shared/services/ple_aware/http/artifact.service';
-import { artifactServiceMock } from '../../../../../../shared/services/ple_aware/http/artifact.service.mock';
+import { ArtifactService } from '../../../../../../../../shared/services/ple_aware/http/artifact.service';
+import { artifactServiceMock } from '../../../../../../../../shared/services/ple_aware/http/artifact.service.mock';
 import { FormDirective } from '@osee/shared/directives';
-import { artifactTypeIconMock } from '@osee/artifact-with-relations/testing';
+import { operationTypeMock } from '../../../../../testing/artifact-explorer.data.mock';
 
 describe('CreateChildArtifactDialogComponent', () => {
 	let component: CreateChildArtifactDialogComponent;
@@ -42,11 +42,7 @@ describe('CreateChildArtifactDialogComponent', () => {
 						artifactTypeId: '0',
 						parentArtifactId: '1111',
 						attributes: [],
-						option: {
-							name: 'create',
-							icon: artifactTypeIconMock,
-							excludedArtifactTypes: [],
-						},
+						operationType: operationTypeMock,
 					},
 				},
 				{

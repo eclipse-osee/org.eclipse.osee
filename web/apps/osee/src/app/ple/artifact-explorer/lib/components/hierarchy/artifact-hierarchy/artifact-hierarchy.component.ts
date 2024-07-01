@@ -39,12 +39,12 @@ import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-
 import { ArtifactHierarchyArtifactsExpandedService } from '../../../services/artifact-hierarchy-artifacts-expanded.service';
 import { ArtifactIconService } from '../../../services/artifact-icon.service';
 import { ArtifactHierarchyRelationsComponent } from '../artifact-hierarchy-relations/artifact-hierarchy-relations.component';
-import { ArtifactOptionsContextMenuComponent } from '../artifact-options-context-menu/artifact-options-context-menu.component';
 import {
 	artifactWithRelations,
 	artifactTypeIcon,
 } from '@osee/artifact-with-relations/types';
 import { DEFAULT_HIERARCHY_ROOT_ARTIFACT } from '../../../types/artifact-explorer-constants';
+import { ArtifactOperationsContextMenuComponent } from '../artifact-operations-context-menu/artifact-operations-context-menu.component';
 
 @Component({
 	selector: 'osee-artifact-hierarchy',
@@ -54,7 +54,7 @@ import { DEFAULT_HIERARCHY_ROOT_ARTIFACT } from '../../../types/artifact-explore
 		AsyncPipe,
 		BranchPickerComponent,
 		ArtifactHierarchyRelationsComponent,
-		ArtifactOptionsContextMenuComponent,
+		ArtifactOperationsContextMenuComponent,
 		MatIcon,
 		MatListItemIcon,
 		CdkDrag,
@@ -230,6 +230,7 @@ export class ArtifactHierarchyComponent {
 		this.matMenuTrigger().menuData = {
 			artifactId: artifact.id,
 			parentArtifactId: this.artifactId,
+			operationTypes: artifact.operationTypes,
 		};
 		this.matMenuTrigger().openMenu();
 	}

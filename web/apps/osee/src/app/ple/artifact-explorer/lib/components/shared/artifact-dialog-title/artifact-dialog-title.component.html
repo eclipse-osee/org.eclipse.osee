@@ -14,11 +14,11 @@
 	mat-dialog-title
 	class="before:tw-h-0">
 	<div class="tw-flex tw-flex-row tw-items-center">
-		<mat-icon [class]="getIconClasses(_option.value.icon)">
-			{{ _option.value.icon.icon }}
+		<mat-icon [class]="getIconClasses(operationType().materialIcon)">
+			{{ operationType().materialIcon.icon }}
 		</mat-icon>
 		<div class="tw-pl-4">
-			{{ _option.value.name }}
+			{{ operationType().name }}
 		</div>
 	</div>
 </h1>

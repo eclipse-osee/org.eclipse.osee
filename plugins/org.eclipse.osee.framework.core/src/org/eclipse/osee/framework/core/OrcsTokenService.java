@@ -24,11 +24,13 @@ import org.eclipse.osee.framework.core.data.AttributeTypeJoin;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
+import org.eclipse.osee.framework.core.data.OperationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeJoin;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.Tuple4Type;
+import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 
 /**
  * @author Ryan D. Brooks
@@ -66,6 +68,12 @@ public interface OrcsTokenService {
     * @return singleton full relation type token with the given id or throw OseeTypeDoesNotExist if not found
     */
    RelationTypeToken getRelationType(Long id);
+
+   /**
+    * @return singleton full operation type token with the given id or throw OseeTypeDoesNotExist if not found
+    * @throws OseeTypeDoesNotExist when: operation type is not available/does not exist.
+    */
+   OperationTypeToken getOperationType(Long id);
 
    /**
     * @return singleton full tuple 2 type token with the given id or throw OseeTypeDoesNotExist if not found
@@ -140,6 +148,11 @@ public interface OrcsTokenService {
    void registerRelationType(RelationTypeToken relationType);
 
    /**
+    * Register the given operation type token by its id. Throws OseeArgumentException if that id is already registered.
+    */
+   void registerOperationType(OperationTypeToken operationtype);
+
+   /**
     * Register the given tuple2 type token by its id. Throws OseeArgumentException if that id is already registered.
     */
    void registerTuple2Type(Tuple2Type<?, ?> tupleType);
@@ -168,6 +181,11 @@ public interface OrcsTokenService {
     * Get unmodifiable list of RelationTypes.
     */
    Collection<RelationTypeToken> getRelationTypes();
+
+   /**
+    * Get unmodifiable list of OperationTypes.
+    */
+   Collection<OperationTypeToken> getOperationTypes();
 
    /**
     * Get unmodifiable list of AttributeTypes.

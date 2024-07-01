@@ -39,9 +39,19 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
       this(id, namespace, name, isAbstract, null, icon, superTypes);
    }
 
+   public AttributeMultiplicity(Long id, NamespaceToken namespace, String name, boolean isAbstract, MaterialIcon icon, Set<OperationTypeToken> operationTypes, List<ArtifactTypeToken> superTypes) {
+      this(id, namespace, name, isAbstract, null, icon, operationTypes, superTypes);
+   }
+
    public AttributeMultiplicity(Long id, NamespaceToken namespace, String name, boolean isAbstract, OseeImage image, MaterialIcon icon, List<ArtifactTypeToken> superTypes) {
       ArtifactTypeToken artifactType =
-         ArtifactTypeToken.create(id, namespace, name, isAbstract, this, image, icon, superTypes);
+         ArtifactTypeToken.create(id, namespace, name, isAbstract, this, image, icon, null, superTypes);
+      this.artifactType = artifactType;
+   }
+
+   public AttributeMultiplicity(Long id, NamespaceToken namespace, String name, boolean isAbstract, OseeImage image, MaterialIcon icon, Set<OperationTypeToken> operationTypes, List<ArtifactTypeToken> superTypes) {
+      ArtifactTypeToken artifactType =
+         ArtifactTypeToken.create(id, namespace, name, isAbstract, this, image, icon, operationTypes, superTypes);
       this.artifactType = artifactType;
    }
 
@@ -58,9 +68,19 @@ public final class AttributeMultiplicity extends ConcurrentHashMap<AttributeType
       this(id, namespace, name, isAbstract, icon, Arrays.asList(superTypes));
    }
 
+   public AttributeMultiplicity(Long id, NamespaceToken namespace, String name, boolean isAbstract, MaterialIcon icon, Set<OperationTypeToken> operationTypes, ArtifactTypeToken... superTypes) {
+      this(id, namespace, name, isAbstract, icon, operationTypes, Arrays.asList(superTypes));
+   }
+
    public AttributeMultiplicity(Long id, NamespaceToken namespace, String name, boolean isAbstract, ArtifactTypeToken... superTypes) {
       ArtifactTypeToken artifactType =
          ArtifactTypeToken.create(id, namespace, name, isAbstract, this, Arrays.asList(superTypes));
+      this.artifactType = artifactType;
+   }
+
+   public AttributeMultiplicity(Long id, NamespaceToken namespace, String name, boolean isAbstract, Set<OperationTypeToken> operationTypes, ArtifactTypeToken... superTypes) {
+      ArtifactTypeToken artifactType =
+         ArtifactTypeToken.create(id, namespace, name, isAbstract, this, operationTypes, Arrays.asList(superTypes));
       this.artifactType = artifactType;
    }
 

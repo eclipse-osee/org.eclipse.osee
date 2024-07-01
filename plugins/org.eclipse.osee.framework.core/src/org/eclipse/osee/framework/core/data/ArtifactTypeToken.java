@@ -18,7 +18,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeSet;
 import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -120,25 +122,40 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
 
    public MaterialIcon getIcon();
 
+   public Set<OperationTypeToken> getOperationTypes();
+
    public NamespaceToken getNamespace();
 
    public static ArtifactTypeToken create(Long id, NamespaceToken namespace, String name, boolean isAbstract,
       AttributeMultiplicity attributeTypes, List<ArtifactTypeToken> superTypes) {
-      return create(id, namespace, name, isAbstract, attributeTypes, null, null, superTypes);
+      return create(id, namespace, name, isAbstract, attributeTypes, null, null, null, superTypes);
+   }
+
+   public static ArtifactTypeToken create(Long id, NamespaceToken namespace, String name, boolean isAbstract,
+      AttributeMultiplicity attributeTypes, Set<OperationTypeToken> operationTypes,
+      List<ArtifactTypeToken> superTypes) {
+      return create(id, namespace, name, isAbstract, attributeTypes, null, null, operationTypes, superTypes);
    }
 
    public static ArtifactTypeToken create(Long id, NamespaceToken namespace, String name, boolean isAbstract,
       AttributeMultiplicity attributeTypes, OseeImage image, List<ArtifactTypeToken> superTypes) {
-      return create(id, namespace, name, isAbstract, attributeTypes, image, null, superTypes);
+      return create(id, namespace, name, isAbstract, attributeTypes, image, null, null, superTypes);
    }
 
    public static ArtifactTypeToken create(Long id, NamespaceToken namespace, String name, boolean isAbstract,
       AttributeMultiplicity attributeTypes, MaterialIcon icon, List<ArtifactTypeToken> superTypes) {
-      return create(id, namespace, name, isAbstract, attributeTypes, null, icon, superTypes);
+      return create(id, namespace, name, isAbstract, attributeTypes, null, icon, null, superTypes);
    }
 
    public static ArtifactTypeToken create(Long id, NamespaceToken namespace, String name, boolean isAbstract,
-      AttributeMultiplicity attributeTypes, OseeImage image, MaterialIcon icon, List<ArtifactTypeToken> superTypes) {
+      AttributeMultiplicity attributeTypes, MaterialIcon icon, Set<OperationTypeToken> operationTypes,
+      List<ArtifactTypeToken> superTypes) {
+      return create(id, namespace, name, isAbstract, attributeTypes, null, icon, operationTypes, superTypes);
+   }
+
+   public static ArtifactTypeToken create(Long id, NamespaceToken namespace, String name, boolean isAbstract,
+      AttributeMultiplicity attributeTypes, OseeImage image, MaterialIcon icon, Set<OperationTypeToken> operationTypes,
+      List<ArtifactTypeToken> superTypes) {
       final class ArtifactTypeTokenImpl extends NamedIdBase implements ArtifactTypeToken {
          private final boolean isAbstract;
          private final List<ArtifactTypeToken> superTypes;
@@ -147,8 +164,9 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
          private final NamespaceToken namespace;
          private final OseeImage image;
          private MaterialIcon icon;
+         private final TreeSet<OperationTypeToken> operationTypes;
 
-         public ArtifactTypeTokenImpl(Long id, NamespaceToken namespace, String name, boolean isAbstract, AttributeMultiplicity attributeTypes, OseeImage image, MaterialIcon icon, List<ArtifactTypeToken> superTypes) {
+         public ArtifactTypeTokenImpl(Long id, NamespaceToken namespace, String name, boolean isAbstract, AttributeMultiplicity attributeTypes, OseeImage image, MaterialIcon icon, Set<OperationTypeToken> operationTypes, List<ArtifactTypeToken> superTypes) {
             super(id, name);
             this.isAbstract = isAbstract;
             this.superTypes = superTypes;
@@ -156,6 +174,12 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
             this.namespace = namespace;
             this.image = image;
             this.icon = icon;
+
+            this.operationTypes = new TreeSet<>();
+            if (operationTypes != null) {
+               this.operationTypes.addAll(operationTypes);
+            }
+
             if (superTypes.size() > 1 && this.superTypes.contains(Artifact)) {
                throw new OseeArgumentException("Multiple super types for artifact type [%s] and and supertype Artifact",
                   name);
@@ -168,6 +192,13 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
                if (this.icon == null && superType.getIcon() != null) {
                   this.icon = superType.getIcon();
                }
+
+               // Add unique superType's operation types
+               this.operationTypes.addAll(superType.getOperationTypes());
+            }
+            // Add unique operation types that belong to the artifact's attributes
+            for (Entry<AttributeTypeToken, ArtifactTypeAttributeTypeMetaData<?>> attr : attributeTypes.entrySet()) {
+               this.operationTypes.addAll(attr.getKey().getOperationTypes());
             }
          }
 
@@ -284,10 +315,16 @@ public interface ArtifactTypeToken extends NamedId, ArtifactTypeId {
          }
 
          @Override
+         public Set<OperationTypeToken> getOperationTypes() {
+            return operationTypes;
+         }
+
+         @Override
          public NamespaceToken getNamespace() {
             return namespace;
          }
       }
-      return new ArtifactTypeTokenImpl(id, namespace, name, isAbstract, attributeTypes, image, icon, superTypes);
+      return new ArtifactTypeTokenImpl(id, namespace, name, isAbstract, attributeTypes, image, icon, operationTypes,
+         superTypes);
    }
 }

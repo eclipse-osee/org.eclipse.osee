@@ -10,13 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { MatDialogTitle } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
-import { BehaviorSubject } from 'rxjs';
 import { ArtifactIconService } from '../../../services/artifact-icon.service';
-import { artifactContextMenuOption } from '../../../types/artifact-explorer';
-import { artifactTypeIcon } from '@osee/artifact-with-relations/types';
+import {
+	artifactTypeIcon,
+	operationType,
+} from '@osee/artifact-with-relations/types';
 
 @Component({
 	selector: 'osee-artifact-dialog-title',
@@ -27,19 +28,7 @@ import { artifactTypeIcon } from '@osee/artifact-with-relations/types';
 export class ArtifactDialogTitleComponent {
 	constructor(private artifactIconService: ArtifactIconService) {}
 
-	@Input() set option(option: artifactContextMenuOption) {
-		this._option.next(option);
-	}
-	protected _option = new BehaviorSubject<artifactContextMenuOption>({
-		name: '',
-		icon: {
-			icon: '',
-			color: '',
-			lightShade: '',
-			darkShade: '',
-			variant: '',
-		},
-	});
+	operationType = input.required<operationType>();
 
 	getIconClasses(icon: artifactTypeIcon) {
 		return (

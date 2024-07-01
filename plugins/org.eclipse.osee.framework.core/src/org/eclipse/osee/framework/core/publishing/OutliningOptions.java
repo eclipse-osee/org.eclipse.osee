@@ -419,7 +419,7 @@ public class OutliningOptions implements ToMessage {
     * <dt>&quot;&lt;folders-only-heading-artifact-type&gt;&quot;</dt>
     * <dd>Only artifact types of or derived from {@link CoreArtifactTypes#Folder} can be rendered as outline
     * headings.</dd>
-    * <dt>&quot;&lt;folders-and-headers-only-artifact-type&gt;&quot;</dt>
+    * <dt>&quot;&lt;folders-and-headers-only-heading-artifact-type&gt;&quot;</dt>
     * <dd>Only artifact types of or derived from {@link CoreArtifactTypes#Folder} or
     * {@link CoreArtifactTypes#AbstractHeading} can be rendered as outline headings.</dd>
     * <dt>&quot;&lt;format-heading-artifact-type&gt;&quot;</dt>

@@ -157,11 +157,11 @@ public class TemplateManagerEndpointImpl implements TemplateManagerEndpoint {
     */
 
    @Override
-   public PublishingTemplateKeyGroups getPublishingTemplateKeyGroups() {
+   public PublishingTemplateKeyGroups getPublishingTemplateKeyGroups(@NonNull String filterBySafeName) {
 
       try {
          PublishingPermissions.verifyNonGroup();
-         return this.templateManagerOperations.getPublishingTemplateKeyGroups();
+         return this.templateManagerOperations.getPublishingTemplateKeyGroups(filterBySafeName);
       } catch (UserNotAuthorizedForPublishingException e) {
          throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
       } catch (Exception e) {

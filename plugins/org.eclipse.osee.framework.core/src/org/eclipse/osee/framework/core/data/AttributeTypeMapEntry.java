@@ -71,6 +71,7 @@ public class AttributeTypeMapEntry extends AttributeTypeGeneric<Map.Entry<String
          TaggerTypeToken.SENTINEL,
          FileExtension.JSON.getFileExtension(),
          Map.entry(defaultKey,defaultValue),
+         null,
          DisplayHint.MultiLine
       );
 

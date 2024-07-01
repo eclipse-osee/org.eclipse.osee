@@ -13,6 +13,7 @@
 import {
 	artifactWithRelations,
 	artifactTypeIcon,
+	operationType,
 } from '@osee/artifact-with-relations/types';
 import { attribute } from '@osee/shared/types';
 
@@ -49,7 +50,7 @@ export interface createChildArtifactDialogData {
 	artifactTypeId: string;
 	parentArtifactId: string;
 	attributes: attribute[];
-	option: artifactContextMenuOption;
+	operationType: operationType;
 }
 
 export type TabType =
@@ -58,12 +59,63 @@ export type TabType =
 	| 'MarkdownEditor'
 	| 'TeamWorkflow';
 
-export interface artifactContextMenuOption {
-	name: string;
-	icon: artifactTypeIcon;
-}
 export type ExplorerPanel = 'Actions' | 'Artifacts' | 'Branches';
+
 export interface deleteArtifactDialogData {
 	artifact: artifactWithRelations;
-	option: artifactContextMenuOption;
+	operationType: operationType;
+}
+
+// Publishing
+export interface publishMarkdownDialogData {
+	templateId: string;
+	operationType: operationType;
+}
+
+export interface publishingTemplateKeyGroups {
+	publishingTemplateKeyGroupList: publishingTemplateKey[];
+}
+
+export interface publishingTemplateKey {
+	identifier: key;
+	matchCriteria: {
+		key: key[];
+	};
+	name: key;
+	safeName: key;
+}
+
+export interface key {
+	key: string;
+	keyType: string;
+}
+
+export interface publishMarkdownAsHtmlRequestData {
+	publishMarkdownAsHtmlRequestData: publishingRequestData;
+}
+
+export interface publishingRequestData {
+	artifactIds: string[];
+	publishingRendererOptions: publishingRendererOptions;
+	publishingTemplateRequest: publishingTemplateRequest;
+}
+
+export interface publishingRendererOptions {
+	Branch: publishingRendererOptionsBranch;
+	PublishingFormat: publishingRendererOptionsPublishingFormat;
+}
+
+export interface publishingRendererOptionsBranch {
+	id: string;
+	viewId: string;
+}
+
+export interface publishingRendererOptionsPublishingFormat {
+	formatIndicator: string;
+}
+
+export interface publishingTemplateRequest {
+	byOptions: boolean;
+	formatIndicator: string;
+	templateId: string;
 }

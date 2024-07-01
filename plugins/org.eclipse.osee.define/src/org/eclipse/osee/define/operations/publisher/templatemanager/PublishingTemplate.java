@@ -190,7 +190,7 @@ class PublishingTemplate implements ToMessage {
       if (templateContentMap.isEmpty()) {
          //@formatter:off
          message
-            .title( "PublishingTemplate::create, publishing template does not have content for any format." )
+            .title( "PublishingTemplate::create, publishing template does not have content for any format. Add/fill a content map attribute on the template artifact." )
             .indentInc()
             .segment( "Artifact Identifier", artifactReadable.getIdString() )
             .segment( "Artifact Name",       artifactReadable.getName()     );

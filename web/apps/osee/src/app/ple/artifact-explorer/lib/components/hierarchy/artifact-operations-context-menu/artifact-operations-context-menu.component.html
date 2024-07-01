@@ -10,17 +10,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-@if (options | async; as options) {
+@if (operationTypes(); as operationTypes) {
 	<div class="tw-flex tw-flex-col tw-text-foreground-base">
-		@for (option of options; track option) {
+		@for (operationType of operationTypes; track operationType) {
 			<button
 				mat-menu-item
 				[disabled]="!_branchEditable()"
-				(click)="selectOption(option)">
-				<mat-icon [class]="getIconClasses(option.icon)">{{
-					option.icon.icon
-				}}</mat-icon>
-				{{ option.name }}
+				(click)="selectOption(operationType)">
+				<mat-icon
+					[class]="getIconClasses(operationType.materialIcon)"
+					>{{ operationType.materialIcon.icon }}</mat-icon
+				>
+				{{ operationType.name }}
 			</button>
 		}
 	</div>

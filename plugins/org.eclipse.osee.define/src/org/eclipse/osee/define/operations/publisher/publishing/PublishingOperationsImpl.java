@@ -29,6 +29,7 @@ import org.eclipse.osee.define.operations.api.publisher.datarights.DataRightsOpe
 import org.eclipse.osee.define.operations.api.publisher.publishing.PublishingOperations;
 import org.eclipse.osee.define.operations.api.publisher.templatemanager.TemplateManagerOperations;
 import org.eclipse.osee.define.operations.api.utils.AttachmentFactory;
+import org.eclipse.osee.define.operations.markdown.MarkdownConverter;
 import org.eclipse.osee.define.rest.api.ArtifactUrlServer;
 import org.eclipse.osee.define.rest.api.publisher.publishing.LinkHandlerResult;
 import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingRequestData;
@@ -53,6 +54,7 @@ import org.eclipse.osee.framework.core.publishing.ProcessRecursively;
 import org.eclipse.osee.framework.core.publishing.PublishingArtifact;
 import org.eclipse.osee.framework.core.publishing.PublishingArtifactLoader;
 import org.eclipse.osee.framework.core.publishing.PublishingErrorLog;
+import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
 import org.eclipse.osee.framework.core.publishing.WordTemplateContentData;
@@ -228,9 +230,7 @@ public class PublishingOperationsImpl implements PublishingOperations {
    private final String permanentLinkUrl;
    private final TemplateManagerOperations templateManagerOperations;
 
-   private PublishingOperationsImpl(OrcsApi orcsApi, AtsApi atsApi, Log logger, EventAdmin eventAdmin,
-      DataAccessOperations dataAccessOperations, DataRightsOperations dataRightsOperations,
-      TemplateManagerOperations templateManagerOperations) {
+   private PublishingOperationsImpl(OrcsApi orcsApi, AtsApi atsApi, Log logger, EventAdmin eventAdmin, DataAccessOperations dataAccessOperations, DataRightsOperations dataRightsOperations, TemplateManagerOperations templateManagerOperations) {
       this.orcsApi = orcsApi;
       this.atsApi = atsApi;
       this.logger = logger;
@@ -489,11 +489,33 @@ public class PublishingOperationsImpl implements PublishingOperations {
    public Attachment msWordPreview(PublishingRequestData msWordPreviewRequestData) {
 
       //@formatter:off
+      var publishingRendererOptions = msWordPreviewRequestData.getPublishingRendererOptions();
+      var firstArtifactId = msWordPreviewRequestData.getArtifactIds().get(0);
+
+      var inputStream = processPublishingRequest(msWordPreviewRequestData, publishingRendererOptions);
+
+      var attachment =
+         this.attachmentFactory.create
+            (
+               inputStream,
+               publishingRendererOptions.getRendererOptionValue( RendererOption.PUBLISH_IDENTIFIER),
+               publishingRendererOptions.getRendererOptionValue( RendererOption.BRANCH ),
+               firstArtifactId
+            );
+
+      return attachment;
+      //@formatter:on
+   }
+
+   private ByteArrayInputStream processPublishingRequest(PublishingRequestData publishingRequestData,
+      RendererMap publishingRendererOptions) {
+
+      //@formatter:off
       Conditions.require
          (
-            msWordPreviewRequestData,
+            publishingRequestData,
             ValueType.PARAMETER,
-            "msWordPreviewRequestData",
+            "publishingRequestData",
             "cannot be null",
             Objects::isNull,
             NullPointerException::new,
@@ -502,11 +524,8 @@ public class PublishingOperationsImpl implements PublishingOperations {
             IllegalArgumentException::new
          );
 
-      var publishingTemplateRequest = msWordPreviewRequestData.getPublishingTemplateRequest();
-      var publishingRendererOptions = msWordPreviewRequestData.getPublishingRendererOptions();
-      var publishArtifacts = msWordPreviewRequestData.getArtifactIds();
-
-      var firstArtifactId = msWordPreviewRequestData.getArtifactIds().get(0);
+      var publishingTemplateRequest = publishingRequestData.getPublishingTemplateRequest();
+      var publishArtifacts = publishingRequestData.getArtifactIds();
 
       var publishingTemplate =
          this.templateManagerOperations
@@ -518,7 +537,7 @@ public class PublishingOperationsImpl implements PublishingOperations {
             new Message()
                    .title( "PublishingOperationsImpl::msWordPreviewInternal: Failed to find a publishing template." )
                    .indentInc()
-                   .toMessage( msWordPreviewRequestData )
+                   .toMessage( publishingRequestData )
                    .toString()
                    ;
 
@@ -562,27 +581,16 @@ public class PublishingOperationsImpl implements PublishingOperations {
                       new Message()
                              .title( "PublishingOperationsImpl::msWordPreviewIntenal, Failed to publish document." )
                              .indentInc()
-                             .toMessage( msWordPreviewRequestData )
+                             .toMessage( publishingRequestData )
                              .reasonFollows( e )
                              .toString(),
                              e
                    );
       }
 
-      var inputStream = new ByteArrayInputStream( outputStream.getBuffer(), 0, outputStream.size() );
-
-      var attachment =
-         this.attachmentFactory.create
-            (
-               inputStream,
-               publishingRendererOptions.getRendererOptionValue( RendererOption.PUBLISH_IDENTIFIER),
-               publishingRendererOptions.getRendererOptionValue( RendererOption.BRANCH ),
-               firstArtifactId
-            );
-
-      return attachment;
+      return new ByteArrayInputStream( outputStream.getBuffer(), 0, outputStream.size() );
+      //@formatter:on
    }
-   //@formatter:on
 
    @Override
    public Attachment msWordWholeWordContentPublish(BranchId branchId, ArtifactId viewId, ArtifactId artifactId,
@@ -706,6 +714,50 @@ public class PublishingOperationsImpl implements PublishingOperations {
       WordUpdateArtifact updateArt = new WordUpdateArtifact(logger, orcsApi, eventAdmin);
 
       return updateArt.updateArtifacts(wordUpdateData);
+   }
+
+   /**
+    * {@inheritDoc}
+    *
+    * @param publishMarkdownAsHtmlRequestData the {@link PublishingRequestData} structure containing the publishing
+    * parameters.
+    * @return an {@link InputStream} containing the Word ML XML containing the published artifacts.
+    * @throws IllegalArgumentException when the parameter <code>msWordPreviewRequestData</code> is <code>null</code> or
+    * invalid according to {@link PublishingRequestData#isValid}.
+    */
+
+   @Override
+   public Attachment publishMarkdownAsHtml(PublishingRequestData publishMarkdownAsHtmlRequestData) {
+
+      //@formatter:off
+      var publishingRendererOptions = publishMarkdownAsHtmlRequestData.getPublishingRendererOptions();
+      var firstArtifactId = publishMarkdownAsHtmlRequestData.getArtifactIds().get(0);
+
+      var inputStream = processPublishingRequest(publishMarkdownAsHtmlRequestData, publishingRendererOptions);
+
+      // Convert Markdown to HTML
+
+      MarkdownConverter mdConverter = new MarkdownConverter();
+      ByteArrayInputStream htmlInputStream = mdConverter.convertToHtmlStream(inputStream);
+
+      // Create attachment
+
+      Attachment attachment = new AttachmentFactory
+         (
+            "MsWordPreview",
+            "html",
+            this.dataAccessOperations
+         )
+         .create
+            (
+               htmlInputStream,
+               publishingRendererOptions.getRendererOptionValue( RendererOption.PUBLISH_IDENTIFIER),
+               publishingRendererOptions.getRendererOptionValue( RendererOption.BRANCH ),
+               firstArtifactId
+            );
+
+      return attachment;
+      //@formatter:on
    }
 
 }

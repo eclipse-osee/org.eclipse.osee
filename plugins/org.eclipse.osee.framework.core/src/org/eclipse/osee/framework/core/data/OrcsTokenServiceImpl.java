@@ -36,6 +36,7 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    private final Map<Long, ArtifactTypeToken> artifactTypes = new ConcurrentHashMap<>();
    private final Map<Long, AttributeTypeGeneric<?>> attributeTypes = new ConcurrentHashMap<>();
    private final Map<Long, RelationTypeToken> relationTypes = new ConcurrentHashMap<>();
+   private final Map<Long, OperationTypeToken> operationTypes = new ConcurrentHashMap<>();
 
    private final Map<Long, ArtifactTypeJoin> artifactTypeJoins = new ConcurrentHashMap<>();
    private final Map<Long, AttributeTypeJoin> attributeTypeJoins = new ConcurrentHashMap<>();
@@ -124,6 +125,15 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
          }
       }
       throw new OseeTypeDoesNotExist("Relation type [%s] is not available.", name);
+   }
+
+   @Override
+   public OperationTypeToken getOperationType(Long id) {
+      OperationTypeToken operationType = operationTypes.get(id);
+      if (operationType == null) {
+         throw new OseeTypeDoesNotExist("Operation type [%s] is not available.", id);
+      }
+      return operationType;
    }
 
    @Override
@@ -259,6 +269,15 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    }
 
    @Override
+   public void registerOperationType(OperationTypeToken operationType) {
+      OperationTypeToken existingType = operationTypes.putIfAbsent(operationType.getId(), operationType);
+      if (existingType != null) {
+         throw new OseeArgumentException("The operation type %s with the same id as %s has already been registered.",
+            existingType, operationType);
+      }
+   }
+
+   @Override
    public void registerArtifactTypeJoin(ArtifactTypeJoin typeJoin) {
       registerOrcsTypeJoin(typeJoin, artifactTypeJoins);
    }
@@ -343,6 +362,11 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    @Override
    public Collection<RelationTypeToken> getRelationTypes() {
       return Collections.unmodifiableCollection(relationTypes.values());
+   }
+
+   @Override
+   public Collection<OperationTypeToken> getOperationTypes() {
+      return Collections.unmodifiableCollection(operationTypes.values());
    }
 
    @Override

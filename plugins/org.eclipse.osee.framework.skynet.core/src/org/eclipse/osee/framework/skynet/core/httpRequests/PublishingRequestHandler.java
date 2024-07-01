@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.publishing.PublishingTemplate;
 import org.eclipse.osee.framework.core.publishing.WordTemplateContentData;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Message;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 
@@ -139,7 +140,8 @@ public class PublishingRequestHandler {
 
    public static PublishingTemplateKeyGroups getPublishingTemplateKeyGroups() {
       try {
-         return PublishingRequestHandler.instance.templateManagerEndpoint.getPublishingTemplateKeyGroups();
+         return PublishingRequestHandler.instance.templateManagerEndpoint.getPublishingTemplateKeyGroups(
+            Strings.EMPTY_STRING);
       } catch (Exception e) {
          //@formatter:off
          throw

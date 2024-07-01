@@ -79,6 +79,7 @@ import org.eclipse.osee.framework.core.publishing.CuiCategoryIndicator;
 import org.eclipse.osee.framework.core.publishing.CuiTypeIndicator;
 import org.eclipse.osee.framework.core.publishing.FormatIndicator;
 import org.eclipse.osee.framework.core.util.toggles.CuiNamesConfiguration;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -871,7 +872,7 @@ public interface CoreAttributeTypes {
 
    AttributeTypeString PlainTextContent = osee.createString(1152921504606847866L, "Plain Text Content", MediaType.TEXT_PLAIN, "plain text file");
 
-   AttributeTypeString MarkdownContent = osee.createString(1152921504606847900L, "Markdown Content", "text/markdown", "text in markdown format", DisplayHint.MultiLine);
+   AttributeTypeString MarkdownContent = osee.createString(1152921504606847900L, "Markdown Content", "text/markdown", "text in markdown format", Collections.asHashSet(CoreOperationTypes.PublishMarkdownRecursiveWithChildrenWithSpecifiedTemplate), DisplayHint.MultiLine);
 
    AttributeTypeBoolean PotentialSecurityImpact = osee.createBoolean(1152921504606847109L, "Potential Security Impact", MediaType.TEXT_PLAIN, "");
 

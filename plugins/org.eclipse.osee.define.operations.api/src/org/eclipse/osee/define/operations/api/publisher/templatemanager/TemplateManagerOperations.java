@@ -57,10 +57,12 @@ public interface TemplateManagerOperations {
     * for building client GUI list of publishing templates for selection by the user. The selection list will be
     * ambiguous for publishing templates with the same safe name.
     *
+    * @param filterBySafeName String to filter the list of {@link PublishingTemplateKeyGroups} returned. Can not be
+    * null. Must pass String.
     * @return a POJO containing a list of the publishing template safe names.
     */
 
-   public PublishingTemplateKeyGroups getPublishingTemplateKeyGroups();
+   public PublishingTemplateKeyGroups getPublishingTemplateKeyGroups(String filterBySafeName);
 
 }
 

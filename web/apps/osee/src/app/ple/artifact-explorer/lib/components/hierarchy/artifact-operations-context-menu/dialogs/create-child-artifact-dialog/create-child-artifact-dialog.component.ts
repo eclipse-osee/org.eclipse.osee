@@ -50,9 +50,9 @@ import {
 	map,
 	switchMap,
 } from 'rxjs';
-import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
-import { ArtifactIconService } from '../../../services/artifact-icon.service';
-import { createChildArtifactDialogData } from '../../../types/artifact-explorer';
+import { ArtifactExplorerHttpService } from '../../../../../services/artifact-explorer-http.service';
+import { ArtifactIconService } from '../../../../../services/artifact-icon.service';
+import { createChildArtifactDialogData } from '../../../../../types/artifact-explorer';
 import { artifactTypeIcon } from '@osee/artifact-with-relations/types';
 
 function controlContainerFactory(controlContainer?: ControlContainer) {

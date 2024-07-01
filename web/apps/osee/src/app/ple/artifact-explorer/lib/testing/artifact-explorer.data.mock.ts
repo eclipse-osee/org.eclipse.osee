@@ -10,10 +10,48 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { artifactContextMenuOption } from '../types/artifact-explorer';
+import { operationType } from '@osee/artifact-with-relations/types';
 import { artifactTypeIconMock } from '@osee/artifact-with-relations/testing';
+import {
+	publishingTemplateKeyGroups,
+	publishMarkdownDialogData,
+} from '../types/artifact-explorer';
 
-export const artifactContextMenuOptionMock: artifactContextMenuOption = {
+export const operationTypeMock: operationType = {
+	id: '1',
 	name: 'create',
-	icon: artifactTypeIconMock,
+	description: 'create something',
+	materialIcon: artifactTypeIconMock,
+};
+
+export const publishMarkdownDialogDataMock: publishMarkdownDialogData = {
+	templateId: '',
+	operationType: operationTypeMock,
+};
+
+export const publishingTemplateKeyGroupsMock: publishingTemplateKeyGroups = {
+	publishingTemplateKeyGroupList: [
+		{
+			identifier: {
+				key: 'AT-111111',
+				keyType: 'IDENTIFIER',
+			},
+			matchCriteria: {
+				key: [
+					{
+						key: 'org.eclipse.osee.framework.ui.skynet.render.MarkdownRenderer PREVIEW PREVIEW_ALL_RECURSE',
+						keyType: 'MATCH_CRITERIA',
+					},
+				],
+			},
+			name: {
+				key: 'PREVIEW_ALL_RECURSE',
+				keyType: 'NAME',
+			},
+			safeName: {
+				key: 'PREVIEW_ALL_RECURSE',
+				keyType: 'SAFE_NAME',
+			},
+		},
+	],
 };

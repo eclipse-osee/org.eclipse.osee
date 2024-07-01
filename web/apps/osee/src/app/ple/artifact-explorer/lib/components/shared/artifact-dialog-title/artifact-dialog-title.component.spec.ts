@@ -13,6 +13,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ArtifactDialogTitleComponent } from './artifact-dialog-title.component';
+import { operationTypeMock } from '@osee/artifact-with-relations/types';
 
 describe('ArtifactDialogTitleComponent', () => {
 	let component: ArtifactDialogTitleComponent;
@@ -25,6 +26,7 @@ describe('ArtifactDialogTitleComponent', () => {
 
 		fixture = TestBed.createComponent(ArtifactDialogTitleComponent);
 		component = fixture.componentInstance;
+		fixture.componentRef.setInput('operationType', operationTypeMock);
 		fixture.detectChanges();
 	});
 

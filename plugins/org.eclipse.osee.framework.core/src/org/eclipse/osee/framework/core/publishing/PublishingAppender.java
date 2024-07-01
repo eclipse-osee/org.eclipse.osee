@@ -218,7 +218,7 @@ public interface PublishingAppender {
 
    /**
     * Appends the heading for a new outlining sub-section.
-    * 
+    *
     * @param bookmark a two element array with the opening an closing strings to book mark the heading.
     * @param headingNumber the heading number.
     * @param headingLevel the level of the heading.
@@ -261,6 +261,8 @@ public interface PublishingAppender {
    public void startTableRow();
 
    public void startText();
+
+   public void endArtifact();
 
 }
 
