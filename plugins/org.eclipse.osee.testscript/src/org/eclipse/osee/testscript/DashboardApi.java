@@ -13,28 +13,16 @@
 
 package org.eclipse.osee.testscript;
 
-import org.eclipse.osee.orcs.OrcsApi;
+import java.util.Collection;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.testscript.internal.CITimelineStatsToken;
 
 /**
  * @author Stephen J. Molaro
  */
-public interface ScriptApi {
-   OrcsApi getOrcsApi();
+public interface DashboardApi {
 
-   ScriptSetApi getScriptProgramApi();
-
-   ScriptBatchApi getScriptBatchApi();
-
-   ScriptDefApi getScriptDefApi();
-
-   ScriptResultApi getScriptResultApi();
-
-   TestCaseApi getTestCaseApi();
-
-   TestPointApi getTestPointApi();
-
-   TmoImportApi getTmoImportApi();
-
-   DashboardApi getDashboardApi();
+   Collection<CITimelineStatsToken> getTimelineStats(BranchId branch, ArtifactId ciSet, ArtifactId viewId);
 
 }

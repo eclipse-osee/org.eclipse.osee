@@ -14,6 +14,7 @@
 package org.eclipse.osee.testscript;
 
 import java.util.Collection;
+import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -54,7 +55,7 @@ public interface ScriptResultEndpoint {
    /**
     * @return all Script Results types matching criteria for Set and Definition
     */
-   Collection<ScriptResultToken> getScriptResultsByDef(@PathParam("defId") ArtifactId scriptDefId);
+   List<ScriptResultToken> getScriptResultsByDef(@PathParam("defId") ArtifactId scriptDefId);
 
    @GET()
    @Path("batch/{batchId}")

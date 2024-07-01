@@ -25,6 +25,12 @@ export const routes: Routes = [
 		outlet: 'toolbar',
 	},
 	{
+		path: 'timeline',
+		title: 'CI Dashboard',
+		loadChildren: () =>
+			import('./lib/components/timelines/timelines.routes'),
+	},
+	{
 		path: 'allScripts',
 		title: 'CI Dashboard',
 		loadChildren: () =>

@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.testscript.internal;
 
+import java.util.Date;
+
 /**
  * @author Ryan T. Baldwin
  */
@@ -27,8 +29,9 @@ public class CIStatsToken {
    private int testPointsFail;
    private int scriptsRan;
    private int scriptsNotRan;
+   private Date scriptsExecutionDate;
 
-   public CIStatsToken(String name, int scriptsPass, int scriptsFail, int scriptsAbort, int scriptsDispo, int testPointsPass, int testPointsFail, int scriptsRan, int scriptsNotRan) {
+   public CIStatsToken(String name, int scriptsPass, int scriptsFail, int scriptsAbort, int scriptsDispo, int testPointsPass, int testPointsFail, int scriptsRan, int scriptsNotRan, Date scriptsExecutionDate) {
       this.name = name;
       this.scriptsPass = scriptsPass;
       this.scriptsFail = scriptsFail;
@@ -38,6 +41,7 @@ public class CIStatsToken {
       this.testPointsFail = testPointsFail;
       this.scriptsRan = scriptsRan;
       this.scriptsNotRan = scriptsNotRan;
+      this.scriptsExecutionDate = scriptsExecutionDate;
    }
 
    public CIStatsToken(String name) {
@@ -50,6 +54,20 @@ public class CIStatsToken {
       this.testPointsFail = 0;
       this.scriptsRan = 0;
       this.scriptsNotRan = 0;
+      this.scriptsExecutionDate = new Date();
+   }
+
+   public CIStatsToken(String name, Date scriptsExectionDate) {
+      this.name = name;
+      this.scriptsPass = 0;
+      this.scriptsFail = 0;
+      this.scriptsAbort = 0;
+      this.scriptsDispo = 0;
+      this.testPointsPass = 0;
+      this.testPointsFail = 0;
+      this.scriptsRan = 0;
+      this.scriptsNotRan = 0;
+      this.scriptsExecutionDate = scriptsExectionDate;
    }
 
    public String getName() {
@@ -154,6 +172,14 @@ public class CIStatsToken {
 
    public void addScriptsNotRan(int scriptsNotRan) {
       this.scriptsNotRan += scriptsNotRan;
+   }
+
+   public Date getScriptsExecutionDate() {
+      return scriptsExecutionDate;
+   }
+
+   public void setScriptsExecutionDate(Date scriptsExectionDate) {
+      this.scriptsExecutionDate = scriptsExectionDate;
    }
 
 }

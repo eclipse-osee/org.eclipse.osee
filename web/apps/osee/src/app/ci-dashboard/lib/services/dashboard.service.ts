@@ -44,11 +44,25 @@ export class DashboardService {
 		)
 	);
 
+	private _timelineStats = combineLatest([
+		this.uiService.branchId,
+		this.uiService.ciSetId,
+	]).pipe(
+		filter(([branchId, ciSetId]) => branchId !== '' && ciSetId !== ''),
+		switchMap(([branchId, ciSetId]) =>
+			this.dashboardHttpService.getTimelineStats(branchId, ciSetId)
+		)
+	);
+
 	get teamStats() {
 		return this._teamStats;
 	}
 
 	get subsystemStats() {
 		return this._subsystemStats;
+	}
+
+	get timelineStats() {
+		return this._timelineStats;
 	}
 }

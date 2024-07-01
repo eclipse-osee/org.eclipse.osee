@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.testscript.internal.CIStatsToken;
+import org.eclipse.osee.testscript.internal.CITimelineStatsToken;
 
 /**
  * @author Ryan T. Baldwin
@@ -42,6 +43,12 @@ public interface DashboardEndpoint {
    @Path("{branch}/{ciSet}/subsystemstats")
    @Produces(MediaType.APPLICATION_JSON)
    public Collection<CIStatsToken> getSubsystemStats(@PathParam("branch") BranchId branch,
+      @PathParam("ciSet") ArtifactId ciSet, @QueryParam("viewId") ArtifactId viewId);
+
+   @GET
+   @Path("{branch}/{ciSet}/timelinestats")
+   @Produces(MediaType.APPLICATION_JSON)
+   public Collection<CITimelineStatsToken> getTimelineStats(@PathParam("branch") BranchId branch,
       @PathParam("ciSet") ArtifactId ciSet, @QueryParam("viewId") ArtifactId viewId);
 
 }

@@ -185,4 +185,9 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
 
    }
 
+   @Override
+   public Collection<CITimelineStatsToken> getTimelineStats(BranchId branch, ArtifactId ciSet, ArtifactId viewId) {
+      return this.testScriptApi.getDashboardApi().getTimelineStats(branch, ciSet, viewId);
+   }
+
 }

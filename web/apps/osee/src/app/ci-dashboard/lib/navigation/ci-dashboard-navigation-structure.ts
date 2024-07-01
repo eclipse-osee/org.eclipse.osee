@@ -35,6 +35,18 @@ export const ciNavigationStructure: navigationElement[] = [
 		children: [
 			// Level-2
 			{
+				label: 'Timeline',
+				cypressLabel: 'ci-timeline',
+				pageTitle: 'OSEE - Continuous Integration',
+				isDropdown: false,
+				isDropdownOpen: false,
+				requiredRoles: [],
+				routerLink: '/ci/timeline',
+				icon: '',
+				description: '',
+				children: [],
+			},
+			{
 				label: 'All Scripts',
 				cypressLabel: 'ci-allscripts',
 				pageTitle: 'OSEE - Continuous Integration',

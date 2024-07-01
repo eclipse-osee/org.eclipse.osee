@@ -13,8 +13,12 @@
 
 package org.eclipse.osee.testscript.internal;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -56,10 +60,12 @@ public class ScriptResultEndpointImpl implements ScriptResultEndpoint {
    }
 
    @Override
-   public Collection<ScriptResultToken> getScriptResultsByDef(ArtifactId scriptDefId) {
+   public List<ScriptResultToken> getScriptResultsByDef(ArtifactId scriptDefId) {
       try {
-         return this.scriptResultTypeApi.getAllByRelation(branch,
-            CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef, scriptDefId);
+         List<ScriptResultToken> scriptResults = new ArrayList<>(this.scriptResultTypeApi.getAllByRelation(branch,
+            CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef, scriptDefId));
+         Collections.sort(scriptResults, Comparator.comparing(ScriptResultToken::getExecutionDate));
+         return scriptResults;
       } catch (Exception ex) {
          return new LinkedList<ScriptResultToken>();
       }

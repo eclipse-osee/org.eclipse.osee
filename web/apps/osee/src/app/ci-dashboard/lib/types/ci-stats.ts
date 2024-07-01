@@ -20,6 +20,7 @@ export type CIStats = {
 	testPointsFail: number;
 	scriptsRan: number;
 	scriptsNotRan: number;
+	scriptsExecutionDate: Date;
 };
 
 export const teamStatsSentinel: CIStats = {
@@ -32,4 +33,15 @@ export const teamStatsSentinel: CIStats = {
 	testPointsFail: 0,
 	scriptsRan: 0,
 	scriptsNotRan: 0,
+	scriptsExecutionDate: new Date(),
+};
+
+export type CITimelineStats = {
+	name: string;
+	ciStats: CIStats[];
+};
+
+export const timelineStatsSentinel: CITimelineStats = {
+	name: '',
+	ciStats: [teamStatsSentinel],
 };
