@@ -50,7 +50,8 @@ public class ParallelConfigurationView extends XNavigateItemAction {
       Branch,
       AllowCreate,
       AllowCommit,
-      Released;
+      Released,
+      ArtId;
    };
 
    public ParallelConfigurationView() {
@@ -62,7 +63,9 @@ public class ParallelConfigurationView extends XNavigateItemAction {
       IAtsTeamDefinition teamDef;
       TeamDefinitionDialog dialog = new TeamDefinitionDialog(TITLE, "Select Team");
       dialog.setMultiSelect(false);
-      dialog.setInput(AtsApiService.get().getTeamDefinitionService().getTeamDefHoldingVersions());
+      Collection<IAtsTeamDefinition> teamDefs =
+         AtsApiService.get().getTeamDefinitionService().getTeamDefHoldingVersions();
+      dialog.setInput(teamDefs);
       if (dialog.open() == Window.OK) {
          teamDef = dialog.getSelectedFirst();
 
@@ -105,7 +108,9 @@ public class ParallelConfigurationView extends XNavigateItemAction {
          new XViewerColumn(Columns.AllowCommit.name(), Columns.AllowCommit.name(), 126, XViewerAlign.Left, true,
             SortDataType.String, false, ""),
          new XViewerColumn(Columns.Released.name(), Columns.Released.name(), 126, XViewerAlign.Left, true,
-            SortDataType.String, false, ""));
+            SortDataType.String, false, ""),
+         new XViewerColumn(Columns.ArtId.name(), Columns.ArtId.name(), 126, XViewerAlign.Left, true, SortDataType.Long,
+            false, ""));
 
       return new ResultsEditorTableTab("Versions", columns, rows);
    }
@@ -129,6 +134,7 @@ public class ParallelConfigurationView extends XNavigateItemAction {
          values.add(String.valueOf(version.isAllowCreateBranch()));
          values.add(String.valueOf(version.isAllowCommitBranch()));
          values.add(String.valueOf(version.isReleased()));
+         values.add(String.valueOf(version.getIdString()));
       }
 
       @Override

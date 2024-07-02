@@ -27,6 +27,8 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorOutlineProvider;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
@@ -237,6 +239,19 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
+         }
+      });
+
+      new ToolItem(toolBar, SWT.SEPARATOR);
+
+      ToolItem expand = new ToolItem(toolBar, SWT.PUSH);
+      expand.setImage(ImageManager.getImage(FrameworkImage.EXPAND_ALL));
+      expand.setToolTipText("Expand All");
+      expand.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent event) {
+            ExpandAllAction expandAll = new ExpandAllAction(resultsXViewer);
+            expandAll.run();
          }
       });
 
