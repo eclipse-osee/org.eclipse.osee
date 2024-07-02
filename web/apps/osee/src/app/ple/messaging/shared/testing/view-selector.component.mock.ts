@@ -13,7 +13,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-	selector: 'osee-view-selector',
+	selector: 'osee-current-view-selector',
 	template: '<p>Dummy</p>',
 	standalone: true,
 })

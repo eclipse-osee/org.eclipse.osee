@@ -23,7 +23,7 @@ import {
 } from '@osee/plconfig';
 import {
 	BranchPickerComponent,
-	ViewSelectorComponent,
+	CurrentViewSelectorComponent,
 } from '@osee/shared/components';
 import { Observable, Subject, combineLatest, iif, of } from 'rxjs';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
@@ -41,7 +41,10 @@ import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 		CurrentActionDropDownComponent,
 		EditDefinitionsDropdownComponent,
 		ApplicabilityTableComponent,
-		ViewSelectorComponent,
+		CurrentViewSelectorComponent,
+	],
+	styles: [
+		':host{ height: 94vh; min-height: calc(94vh - 10%); max-height: 94vh; width: 100vw; min-width: calc(100vw - 10%); display: inline-block;}',
 	],
 })
 export class PlconfigComponent implements OnInit, OnDestroy {

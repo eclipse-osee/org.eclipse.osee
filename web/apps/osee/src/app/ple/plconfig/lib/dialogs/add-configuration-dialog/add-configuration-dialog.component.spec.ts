@@ -11,22 +11,15 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
-import {
-	MatDialogModule,
-	MatDialogRef,
-	MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatListModule } from '@angular/material/list';
-import { MatSelectModule } from '@angular/material/select';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigTypesService } from '../../services/pl-config-types.service';
 import { plConfigTypesServiceMock } from '../../testing/pl-config-types.service.mock';
 
+import { ViewSelectorComponent } from '@osee/shared/components';
+import { MockViewSelectorComponent } from '@osee/shared/components/testing';
 import { AddConfigurationDialogComponent } from './add-configuration-dialog.component';
 
 describe('AddConfigurationDialogComponent', () => {
@@ -42,39 +35,40 @@ describe('AddConfigurationDialogComponent', () => {
 			[],
 			['cfgGroups']
 		);
-		await TestBed.configureTestingModule({
-			imports: [
-				MatFormFieldModule,
-				MatListModule,
-				MatDialogModule,
-				MatInputModule,
-				MatSelectModule,
-				AddConfigurationDialogComponent,
-				NoopAnimationsModule,
-				FormsModule,
-			],
-			providers: [
-				{ provide: PlConfigBranchService, useValue: branchService },
-				{
-					provide: PlConfigCurrentBranchService,
-					useValue: currentBranchService,
-				},
-				{
-					provide: PlConfigTypesService,
-					useValue: plConfigTypesServiceMock,
-				},
-				{ provide: MatDialogRef, useValue: {} },
-				{
-					provide: MAT_DIALOG_DATA,
-					useValue: {
-						currentBranch: '3182843164128526558',
-						copyFrom: { id: '0', name: '' },
-						title: '',
-						group: { id: '0', name: '', configurations: [] },
+		await TestBed.overrideComponent(AddConfigurationDialogComponent, {
+			remove: {
+				imports: [ViewSelectorComponent],
+			},
+			add: {
+				imports: [MockViewSelectorComponent],
+			},
+		})
+			.configureTestingModule({
+				imports: [AddConfigurationDialogComponent],
+				providers: [
+					provideNoopAnimations(),
+					{ provide: PlConfigBranchService, useValue: branchService },
+					{
+						provide: PlConfigCurrentBranchService,
+						useValue: currentBranchService,
 					},
-				},
-			],
-		}).compileComponents();
+					{
+						provide: PlConfigTypesService,
+						useValue: plConfigTypesServiceMock,
+					},
+					{ provide: MatDialogRef, useValue: {} },
+					{
+						provide: MAT_DIALOG_DATA,
+						useValue: {
+							currentBranch: '3182843164128526558',
+							copyFrom: { id: '0', name: '' },
+							title: '',
+							group: { id: '0', name: '', configurations: [] },
+						},
+					},
+				],
+			})
+			.compileComponents();
 	});
 
 	beforeEach(() => {

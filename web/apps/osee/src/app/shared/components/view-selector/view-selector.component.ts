@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2023 Boeing
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,57 +11,76 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, computed, inject, model } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import {
 	MatAutocomplete,
 	MatAutocompleteTrigger,
+	MatOption,
 } from '@angular/material/autocomplete';
-import { MatOption } from '@angular/material/core';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import {
-	ApplicabilityListUIService,
-	ViewsRoutedUiService,
-} from '@osee/shared/services';
+import { ApplicabilityListUIService } from '@osee/shared/services';
 import { applic } from '@osee/shared/types/applicability';
 import {
-	BehaviorSubject,
-	combineLatest,
-	filter,
-	from,
-	of,
-	scan,
-	switchMap,
-} from 'rxjs';
+	provideOptionalControlContainerNgForm,
+	writableSlice,
+} from '@osee/shared/utils';
+import { combineLatest, filter, from, of, scan, switchMap } from 'rxjs';
 
 @Component({
 	selector: 'osee-view-selector',
 	standalone: true,
 	imports: [
-		AsyncPipe,
-		FormsModule,
 		MatFormField,
 		MatLabel,
 		MatInput,
-		MatAutocomplete,
 		MatAutocompleteTrigger,
+		MatAutocomplete,
+		FormsModule,
 		MatOption,
+		AsyncPipe,
 	],
-	templateUrl: './view-selector.component.html',
-	styles: [],
+	template: `<mat-form-field
+		appearance="fill"
+		subscriptSizing="dynamic"
+		class="tw-w-full">
+		<mat-label>Select a View</mat-label>
+		<input
+			type="text"
+			matInput
+			[(ngModel)]="filterText"
+			[matAutocomplete]="auto"
+			name="autocomplete-text" />
+		<mat-autocomplete
+			autoActiveFirstOption
+			#auto="matAutocomplete">
+			@if (views | async; as _views) {
+				@for (option of _views; track option) {
+					<mat-option
+						[value]="option.name"
+						(click)="selectView(option)">
+						{{ option.name }}
+					</mat-option>
+				}
+			}
+		</mat-autocomplete>
+	</mat-form-field>`,
+	viewProviders: [provideOptionalControlContainerNgForm()],
 })
 export class ViewSelectorComponent {
-	constructor(
-		private applicService: ApplicabilityListUIService,
-		private viewsService: ViewsRoutedUiService
-	) {}
+	private applicService = inject(ApplicabilityListUIService);
 
-	filterText = new BehaviorSubject<string>('');
+	public view = model.required<applic>();
+	protected viewId = computed(() => this.view().id);
+	private viewId$ = toObservable(this.viewId);
+	protected filterText = writableSlice(this.view, 'name');
 
-	noneOption = { id: '-1', name: 'None' } as applic;
+	private filterText$ = toObservable(this.filterText);
+	protected noneOption = { id: '-1', name: 'None' };
 
-	views = combineLatest([this.applicService.views, this.filterText]).pipe(
+	views = combineLatest([this.applicService.views, this.filterText$]).pipe(
 		switchMap(([applics, filterText]) =>
 			from(applics).pipe(
 				filter((a) =>
@@ -75,7 +94,7 @@ export class ViewSelectorComponent {
 		)
 	);
 
-	selectedView = combineLatest([this.views, this.viewsService.viewId]).pipe(
+	selectedView = combineLatest([this.views, this.viewId$]).pipe(
 		switchMap(([views, viewId]) => {
 			const view = views.find((v) => v.id === viewId);
 			return view ? of(view) : of(this.noneOption);
@@ -83,11 +102,6 @@ export class ViewSelectorComponent {
 	);
 
 	selectView(view: applic) {
-		this.viewsService.ViewId = view.id;
-	}
-
-	applyFilter(text: Event) {
-		const value = (text.target as HTMLInputElement).value;
-		this.filterText.next(value);
+		this.view.set(view);
 	}
 }

@@ -10,14 +10,14 @@
 * Contributors:
 *     Boeing - initial API and implementation
 -->
-@if ((editable | async) === 'true') {
+@if (editable()) {
 	<h1 mat-dialog-title>Editing Feature: {{ data.feature.name }}</h1>
 }
-@if ((editable | async) === 'false') {
+@if (!editable()) {
 	<h1 mat-dialog-title>Feature Details</h1>
 }
 <div mat-dialog-content>
-	@if ((editable | async) === 'true') {
+	@if (editable()) {
 		<div>
 			<mat-form-field class="tw-w-full tw-text-lg">
 				<mat-label>Description</mat-label>
@@ -26,7 +26,7 @@
 					type="text"
 					[(ngModel)]="data.feature.description"
 					#input
-					[disabled]="(editable | async) === 'false'"
+					[disabled]="!editable()"
 					data-cy="field-description"
 					[attr.data-cy-value]="
 						'field-description-' + data.feature.description
@@ -37,7 +37,7 @@
 				<mat-label>Select a Value Type</mat-label>
 				<mat-select
 					[(ngModel)]="data.feature.valueType"
-					[disabled]="(editable | async) === 'false'"
+					[disabled]="!editable()"
 					data-cy="field-valueType"
 					[attr.data-cy-value]="
 						'field-valueType-' + data.feature.valueType
@@ -56,7 +56,7 @@
 				[(ngModel)]="data.feature.multiValued"
 				labelPosition="before"
 				(change)="selectMultiValued()"
-				[disabled]="(editable | async) === 'false'"
+				[disabled]="!editable()"
 				class="tw-text-lg"
 				data-cy="field-multiValued"
 				[attr.data-cy-value]="
@@ -78,7 +78,7 @@
 						#input
 						[(ngModel)]="data.feature.values[i]"
 						(keyup)="data.feature.setValueStr()"
-						[disabled]="(editable | async) === 'false'"
+						[disabled]="!editable()"
 						[attr.data-cy]="'field-value-' + i"
 						[attr.data-cy-value]="
 							'field-value-' + data.feature.values[i]
@@ -86,12 +86,12 @@
 				</mat-form-field>
 			}
 			<br />
-			@if ((editable | async) === 'true') {
+			@if (editable()) {
 				<div>
 					<button
 						mat-stroked-button
 						(click)="increaseValueArray()"
-						[disabled]="(editable | async) === 'false'"
+						[disabled]="!editable()"
 						class="tw-w-full tw-text-lg"
 						data-cy="add-value-btn">
 						Add a Value
@@ -103,7 +103,7 @@
 				<mat-label>Select a Default Value</mat-label>
 				<mat-select
 					[(ngModel)]="data.feature.defaultValue"
-					[disabled]="(editable | async) === 'false'"
+					[disabled]="!editable()"
 					data-cy="field-defaultValue"
 					[attr.data-cy-value]="
 						'field-defaultValue-' + data.feature.defaultValue
@@ -146,7 +146,7 @@
 			</div>
 		</div>
 	}
-	@if ((editable | async) === 'false') {
+	@if (!editable()) {
 		<div>
 			<div>
 				<mat-label
@@ -237,21 +237,24 @@
 		</div>
 	}
 </div>
-<div mat-dialog-actions>
+<div
+	mat-dialog-actions
+	align="end">
 	<button
 		mat-button
 		(click)="onNoClick()">
-		@if ((editable | async) === 'true') {
+		@if (editable()) {
 			<div data-cy="cancel-btn">Cancel</div>
 		}
-		@if ((editable | async) === 'false') {
+		@if (!editable()) {
 			<div data-cy="ok-btn">Ok</div>
 		}
 	</button>
-	@if ((editable | async) === 'true') {
+	@if (editable()) {
 		<div>
 			<button
 				mat-button
+				color="primary"
 				[mat-dialog-close]="data"
 				cdkFocusInitial
 				data-cy="submit-btn">

@@ -25,7 +25,7 @@ import { MessagingControlsComponent } from './messaging-controls.component';
 import {
 	BranchPickerComponent,
 	UndoButtonBranchComponent,
-	ViewSelectorComponent,
+	CurrentViewSelectorComponent,
 } from '@osee/shared/components';
 import { ActionDropdownStub } from '@osee/configuration-management/testing';
 import { ActionDropDownComponent } from '@osee/configuration-management/components';
@@ -48,7 +48,7 @@ describe('MessagingControlsComponent', () => {
 				imports: [
 					ActionDropDownComponent,
 					BranchPickerComponent,
-					ViewSelectorComponent,
+					CurrentViewSelectorComponent,
 					UndoButtonBranchComponent,
 				],
 			},

@@ -90,7 +90,7 @@ import type {
 } from '@osee/messaging/shared/types';
 import {
 	TwoLayerAddButtonComponent,
-	ViewSelectorComponent,
+	CurrentViewSelectorComponent,
 } from '@osee/shared/components';
 import { applic } from '@osee/shared/types/applicability';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
@@ -172,7 +172,7 @@ import { SubMessageTableComponent } from '../sub-message-table/sub-message-table
 		HighlightFilteredTextDirective,
 		SubMessageTableComponent,
 		TwoLayerAddButtonComponent,
-		ViewSelectorComponent,
+		CurrentViewSelectorComponent,
 		MessagingControlsComponent,
 	],
 })

@@ -26,7 +26,7 @@ import {
 } from '@osee/messaging/shared/services';
 import { PageEvent } from '@angular/material/paginator';
 import { NamedId } from '@osee/shared/types';
-import { ViewSelectorComponent } from '@osee/shared/components';
+import { CurrentViewSelectorComponent } from '@osee/shared/components';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -35,7 +35,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 	imports: [
 		NamedIdListEditorComponent,
 		MessagingControlsComponent,
-		ViewSelectorComponent,
+		CurrentViewSelectorComponent,
 		AsyncPipe,
 	],
 	templateUrl: './list-configuration.component.html',

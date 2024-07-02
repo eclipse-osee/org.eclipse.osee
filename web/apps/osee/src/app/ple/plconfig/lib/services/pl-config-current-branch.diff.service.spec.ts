@@ -656,18 +656,5 @@ describe('PlConfigCurrentBranchService diffs', () => {
 				});
 			});
 		});
-		it('should filter differences', () => {
-			scheduler.run(({ expectObservable, cold }) => {
-				ui.diffMode = true;
-				ui.difference = changeReportMock;
-				expectObservable(service.branchApplicability).toBe(
-					'(aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa)',
-					{
-						a: diffBranchApplic,
-						b: testBranchApplicability,
-					}
-				);
-			});
-		});
 	});
 });

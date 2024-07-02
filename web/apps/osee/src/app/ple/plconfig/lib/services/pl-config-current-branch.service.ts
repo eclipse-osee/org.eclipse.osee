@@ -11,80 +11,58 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
+import { UiService } from '@osee/shared/services';
+import { SideNavService } from '@osee/shared/services/layout';
+import { applic } from '@osee/shared/types/applicability';
 import {
-	from,
-	iif,
-	zip,
-	Observable,
-	of,
-	combineLatest,
-	OperatorFunction,
-} from 'rxjs';
-import {
-	switchMap,
-	repeatWhen,
-	share,
-	mergeMap,
-	filter,
-	tap,
-	take,
-	shareReplay,
-	distinct,
-	distinctUntilChanged,
-	map,
-	reduce,
-	scan,
-	startWith,
-	concatMap,
-} from 'rxjs/operators';
-import {
+	ModificationType,
 	changeInstance,
 	changeTypeNumber,
 	difference,
 	ignoreType,
-	ModificationType,
+	itemTypeIdRelation,
+	transactionToken,
 } from '@osee/shared/types/change-report';
 import {
 	ARTIFACTTYPEIDENUM,
 	ATTRIBUTETYPEIDENUM,
+	RELATIONTYPEIDENUM,
 } from '@osee/shared/types/constants';
+import { Observable, combineLatest, concat, from, iif, of } from 'rxjs';
 import {
-	ConfigGroup,
-	PlConfigApplicUIBranchMapping,
-	PlConfigApplicUIBranchMappingImpl,
-	view,
-	viewWithChanges,
-} from '../types/pl-config-applicui-branch-mapping';
+	concatMap,
+	debounceTime,
+	distinctUntilChanged,
+	filter,
+	map,
+	reduce,
+	repeat,
+	repeatWhen,
+	share,
+	shareReplay,
+	startWith,
+	switchMap,
+	take,
+	tap,
+} from 'rxjs/operators';
+import { configurationValue, plConfigTable } from '../types/pl-config-table';
+import { extendedFeatureWithChanges } from '../types/features/base';
+import { viewWithChanges } from '../types/pl-config-applicui-branch-mapping';
 import { ConfigurationGroupDefinition } from '../types/pl-config-cfggroups';
 import {
 	configGroup,
-	configGroupWithChanges,
 	configuration,
 	editConfiguration,
 } from '../types/pl-config-configurations';
 import { modifyFeature, writeFeature } from '../types/pl-config-features';
-import { UiService } from '@osee/shared/services';
-import { PlConfigBranchService } from './pl-config-branch-service.service';
-import { PlConfigUIStateService } from './pl-config-uistate.service';
-import {
-	ExtendedNameValuePair,
-	ExtendedNameValuePairWithChanges,
-} from '../types/base-types/ExtendedNameValuePair';
-import {
-	extendedFeature,
-	extendedFeatureWithChanges,
-} from '../types/features/base';
-import { SideNavService } from '@osee/shared/services/layout';
-import { applic } from '@osee/shared/types/applicability';
-import { transactionToken } from '@osee/shared/types/change-report';
-import { NamedId } from '@osee/shared/types';
-import { PlConfigTypesService } from './pl-config-types.service';
 import { productType } from '../types/pl-config-product-types';
 import {
 	applicWithConstraints,
 	featureConstraintData,
 } from './../types/pl-config-feature-constraints';
-import { ActionService } from '@osee/configuration-management/services';
+import { PlConfigBranchService } from './pl-config-branch-service.service';
+import { PlConfigTypesService } from './pl-config-types.service';
+import { PlConfigUIStateService } from './pl-config-uistate.service';
 
 @Injectable({
 	providedIn: 'root',
@@ -102,219 +80,6 @@ export class PlConfigCurrentBranchService {
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
-	private _branchApplicabilityNoChanges: Observable<PlConfigApplicUIBranchMapping> =
-		combineLatest([
-			this.uiStateService.branchId,
-			this.uiService.viewId,
-		]).pipe(
-			switchMap(([branchId, viewId]) => {
-				return iif(
-					() => branchId !== '',
-					this.branchService
-						.getBranchApplicability(branchId, viewId)
-						.pipe(
-							switchMap((resp) => {
-								if (resp === null) {
-									return of(
-										new PlConfigApplicUIBranchMappingImpl()
-									);
-								} else {
-									return of(resp);
-								}
-							}),
-							repeatWhen((_) => this.uiStateService.updateReq),
-							share()
-						),
-					of(new PlConfigApplicUIBranchMappingImpl())
-				);
-			}),
-			shareReplay({ bufferSize: 1, refCount: true })
-		);
-	private _branchApplicability = combineLatest([
-		this.uiStateService.branchId,
-		this.uiStateService.isInDiff,
-		this._branchApplicabilityNoChanges,
-		this.differences,
-	]).pipe(
-		switchMap(([branchId, mode, applic, differences]) =>
-			iif(
-				() =>
-					mode &&
-					applic !== new PlConfigApplicUIBranchMappingImpl() &&
-					differences !== undefined &&
-					differences.length !== 0,
-				this._parseDifferences(differences, branchId, applic),
-				of(applic)
-			)
-		),
-		share(),
-		shareReplay({ bufferSize: 1, refCount: true })
-	);
-
-	private _editable = this._branchApplicabilityNoChanges.pipe(
-		map((applic) => `${applic.editable}`)
-	);
-
-	private _viewsWithGroup = this._branchApplicabilityNoChanges.pipe(
-		switchMap((a) =>
-			of(a).pipe(
-				map((applic) => applic.groups),
-				concatMap((groups) =>
-					from(groups).pipe(
-						map((group) => group.configurations),
-						concatMap((views) => from(views))
-					)
-				),
-				distinct(),
-				take(a.groups.map((g) => g.configurations).flat().length),
-				reduce((acc, curr) => [...acc, curr], [] as string[])
-			)
-		)
-	);
-	private _viewsWithNoGroup = combineLatest([
-		this.branchApplicability,
-		this._viewsWithGroup,
-	]).pipe(
-		switchMap(([applic, groupedViews]) =>
-			of(applic.views).pipe(
-				map((views) =>
-					views.filter(
-						(v) =>
-							!groupedViews.includes(v.id) &&
-							v.hasFeatureApplicabilities == true
-					)
-				)
-			)
-		)
-	);
-	private _grouping = combineLatest([
-		this.branchApplicability,
-		this._viewsWithNoGroup,
-	]).pipe(
-		switchMap(([applic, unGroupedViews]) =>
-			of(applic).pipe(
-				concatMap((a) =>
-					from(a.groups).pipe(
-						map((applicabilityGroup) => {
-							return {
-								group: applicabilityGroup,
-								views: applic.views.filter((a) =>
-									applicabilityGroup.configurations.includes(
-										a.id
-									)
-								),
-							};
-						})
-					)
-				),
-				take(applic.groups.length),
-				reduce(
-					(acc, curr) => [...acc, curr],
-					unGroupedViews.length > 0
-						? [
-								{
-									group: {
-										configurations: [],
-										id: '-1',
-										name: 'No Group',
-										description: '',
-									},
-									views: unGroupedViews,
-								},
-						  ]
-						: ([] as { group: configGroup; views: view[] }[])
-				),
-				map((data) =>
-					data.sort(
-						(a, b) =>
-							Number(a && a.group && a.group.id) -
-							Number(b && b.group && b.group.id)
-					)
-				)
-			)
-		),
-		shareReplay({ bufferSize: 1, refCount: true })
-	);
-	private _topLevelHeaders = this._grouping.pipe(
-		switchMap((response) =>
-			iif(
-				() => response.length === 0,
-				of([]),
-				of(response).pipe(
-					mergeMap((grouping) =>
-						from(grouping).pipe(
-							switchMap((val) =>
-								iif(
-									() => val.group.name !== 'No Group',
-									of(val),
-									of({
-										group: {
-											id: '-1',
-											name: '',
-											description: '',
-											configurations: [],
-										},
-										views: [],
-									})
-								)
-							)
-						)
-					),
-					scan(
-						(acc, curr) => {
-							return [...acc, curr];
-						},
-						[] as { group: configGroup; views: view[] }[]
-					)
-				)
-			)
-		),
-		switchMap((cumulative) => {
-			if (cumulative.length === 0) {
-				return of([]);
-			}
-			if (cumulative.length > 1) {
-				if (
-					(cumulative.find((a) => a.group.id === '-1')?.views || [])
-						.length === 0
-				) {
-					return of([' ', 'Groups']);
-				} else {
-					return of([' ', 'Configurations', 'Groups']);
-				}
-			}
-			return of([' ', 'Configurations']);
-		}),
-		shareReplay({ bufferSize: 1, refCount: true })
-	);
-	private _secondaryHeaders = this._grouping.pipe(
-		switchMap((response) => {
-			if (response.length === 0) {
-				return of([]);
-			} else {
-				return of(response).pipe(
-					mergeMap((grouping) =>
-						from(grouping).pipe(
-							switchMap((grouping) =>
-								of(grouping.group).pipe(
-									map((group) => group.name)
-								)
-							)
-						)
-					),
-					distinct(),
-					scan(
-						(acc, cur) => {
-							acc = this.makeHeaderUnique([...acc, cur]);
-							return acc;
-						},
-						['  '] as string[]
-					)
-				);
-			}
-		}),
-		shareReplay({ bufferSize: 1, refCount: true })
-	);
 
 	private _productTypes = this.uiStateService.branchId.pipe(
 		filter((id) => id !== '' && id !== '-1' && id !== undefined),
@@ -324,273 +89,46 @@ export class PlConfigCurrentBranchService {
 				.pipe(shareReplay({ bufferSize: 1, refCount: true }))
 		)
 	);
-	private _secondaryHeaderLength = this._grouping.pipe(
-		switchMap((response) =>
-			of(response).pipe(
-				mergeMap((grouping) => from(grouping).pipe()),
-				distinct(),
-				scan(
-					(acc, cur) => {
-						acc.push(
-							cur !== undefined &&
-								cur.group !== undefined &&
-								cur.group.id !== '-1'
-								? cur.views.filter(
-										(v) => v.hasFeatureApplicabilities
-								  ).length + 1
-								: cur.views.filter(
-										(v) => v.hasFeatureApplicabilities
-								  ).length
-						);
-						return acc;
-					},
-					[1] as number[]
-				)
-			)
+
+	private _features = this.uiService.id.pipe(
+		filter((id) => id !== '' && id !== '-1' && id !== undefined),
+		switchMap((id) =>
+			this.branchService
+				.getFeatures(id)
+				.pipe(shareReplay({ bufferSize: 1, refCount: true }))
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
-	private _headers = this._grouping.pipe(
-		switchMap((response) =>
-			iif(
-				() => response.length === 0,
-				of([]),
-				of(response).pipe(
-					mergeMap((grouping) =>
-						from(grouping).pipe(
-							switchMap((grouping) =>
-								iif(
-									() => grouping.group.name !== 'No Group',
-									from(grouping.views).pipe(
-										startWith({
-											id: '',
-											name: grouping.group.name,
-											hasFeatureApplicabilities: false,
-											productApplicabilities: [],
-										}),
-										switchMap((view) =>
-											of({
-												columnId: Math.random()
-													.toString(36)
-													.slice(2),
-												name: view.name,
-											})
-										)
-									),
-									from(grouping.views).pipe(
-										filter(
-											(val) =>
-												val.hasFeatureApplicabilities ===
-												true
-										),
-										switchMap((view) =>
-											of({
-												columnId: Math.random()
-													.toString(36)
-													.slice(2),
-												name: view.name,
-											})
-										)
-									)
-								)
-							)
-						)
-					),
-					scan((acc, cur) => [...acc, cur], [
-						{ columnId: '0', name: 'feature' },
-					] as { columnId: string; name: string }[])
-				)
-			)
+	private _views = this.uiService.id.pipe(
+		filter((id) => id !== '' && id !== '-1' && id !== undefined),
+		switchMap((id) =>
+			this.branchService
+				.getViewsOrderedByName(id)
+				.pipe(shareReplay({ bufferSize: 1, refCount: true }))
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
-	private _viewCount = this._grouping.pipe(
-		switchMap((response) =>
-			iif(
-				() => response.length === 0,
-				of(0),
-				of(response).pipe(
-					mergeMap((responseGrouping) =>
-						from(responseGrouping).pipe(
-							filter(
-								(grouping) => grouping.group.name === 'No Group'
-							),
-							map(
-								(group) =>
-									group.views.filter(
-										(v) => v.hasFeatureApplicabilities
-									).length
-							)
-						)
-					)
-				)
-			)
-		),
-		shareReplay({ bufferSize: 1, refCount: true })
-	);
-	private _groupCount = this._grouping.pipe(
-		switchMap((grouping) =>
-			iif(
-				() => grouping.length === 0,
-				of(0),
-				of(grouping).pipe(
-					mergeMap((grouping) =>
-						from(grouping).pipe(
-							map((group) => group.views.length + 1)
-						)
-					),
-					scan((acc, curr) => acc + curr, 0)
-				)
-			)
-		),
-		shareReplay({ bufferSize: 1, refCount: true })
-	);
-	private _groupList = this._grouping.pipe(
-		switchMap((response) =>
-			of(response).pipe(
-				mergeMap((responseGrouping) =>
-					from(responseGrouping).pipe(
-						switchMap((grouping) =>
-							iif(
-								() => grouping.group.name !== 'No Group',
-								of(grouping.group),
-								of({
-									id: '-1',
-									name: '',
-									description: '',
-									configurations: [],
-								})
-							).pipe()
-						)
-					)
-				)
-			)
-		),
-
-		distinctUntilChanged(),
-		scan((acc, curr) => [...acc, curr], [] as configGroup[]),
-		map((scanned) => {
-			return scanned.filter((val) => val.id !== '-1');
-		}),
-		shareReplay({ bufferSize: 1, refCount: true })
-	);
-
-	private _branchApplicEditable = this._branchApplicabilityNoChanges.pipe(
-		map((applic) => applic.editable)
-	);
-	private _branchApplicFeatures = this._branchApplicabilityNoChanges.pipe(
-		map((applic) => applic.features)
-	);
-	private _branchApplicViews = this._branchApplicabilityNoChanges.pipe(
-		switchMap((applic) =>
-			of(applic).pipe(
-				//keep reference to the base applicability
-				concatMap((applic) =>
-					from(applic.views).pipe(
-						//iterate over views
-						map((view) => {
-							return {
-								...view,
-								group: applic.groups
-									.filter((a) =>
-										a.configurations.some(
-											(b) => b === view.id
-										)
-									)
-									.map((c) => {
-										return {
-											id: c.id,
-											name: c.name,
-											description: c.description,
-										};
-									}),
-							};
-						})
-					)
-				),
-				reduce(
-					(acc, curr) => [...acc, curr],
-					[] as {
-						id: string;
-						name: string;
-						description: string;
-						hasFeatureApplicabilities: boolean;
-						productApplicabilities?: string[];
-						show?: boolean;
-						group?: ConfigGroup[];
-					}[]
-				)
-			)
-		)
-		//map((applic)=>applic.views)
-	);
-
-	private _groups = this._branchApplicabilityNoChanges.pipe(
-		map((applic) => applic.groups.map((a) => a.id))
-	);
 	constructor(
 		private uiStateService: PlConfigUIStateService,
 		private branchService: PlConfigBranchService,
 		private typesService: PlConfigTypesService,
-		private actionService: ActionService,
 		private sideNavService: SideNavService,
 		private uiService: UiService
 	) {}
-	public get branchApplicability() {
-		return this._branchApplicability;
-	}
-
-	public get editable() {
-		return this._editable;
-	}
 	public get applicsWithFeatureConstraints() {
 		return this._applicsWithFeatureConstraints;
-	}
-	public get groupList() {
-		return this._groupList;
-	}
-
-	public get groupCount() {
-		return this._groupCount;
 	}
 
 	public get productTypes() {
 		return this._productTypes;
 	}
 
-	get viewCount() {
-		return this._viewCount;
+	public get features() {
+		return this._features;
 	}
-
-	get headers() {
-		return this._headers;
-	}
-
-	get secondaryHeaders() {
-		return this._secondaryHeaders;
-	}
-
-	get secondaryHeaderLength() {
-		return this._secondaryHeaderLength;
-	}
-
-	get grouping() {
-		return this._grouping;
-	}
-
-	get topLevelHeaders() {
-		return this._topLevelHeaders;
-	}
-	public get branchApplicEditable() {
-		return this._branchApplicEditable;
-	}
-
-	public get branchApplicFeatures() {
-		return this._branchApplicFeatures;
-	}
-	public get branchApplicViews() {
-		return this._branchApplicViews;
+	public get views() {
+		return this._views;
 	}
 	get differences() {
 		return this.uiStateService.differences;
@@ -623,8 +161,146 @@ export class PlConfigCurrentBranchService {
 		);
 	}
 
-	public getCfgGroupDetail(cfgGroup: string) {
+	public getCfgGroupsForView(viewId: string) {
 		return this.uiStateService.branchId.pipe(
+			take(1),
+			filter((val) => val !== ''),
+			switchMap((id) =>
+				this.branchService
+					.getCfgGroupsForView(id, viewId)
+					.pipe(repeat({ delay: () => this.uiService.update }))
+			),
+			shareReplay({ bufferSize: 1, refCount: true })
+		);
+	}
+
+	public getView(viewId: string, useDiffs: boolean = false) {
+		const query = this.uiStateService.branchId.pipe(
+			take(1),
+			filter((val) => val !== ''),
+			switchMap((id) =>
+				this.branchService
+					.getView(id, viewId)
+					.pipe(repeat({ delay: () => this.uiService.update }))
+			),
+			shareReplay({ bufferSize: 1, refCount: true })
+		);
+		if (useDiffs) {
+			const ___differences = combineLatest([
+				this.uiStateService.isInDiff,
+				this.differences,
+			]).pipe(
+				take(1),
+				map(([mode, diffs]) =>
+					diffs !== undefined && diffs.length !== 0 && mode
+						? diffs
+						: []
+				)
+			);
+			const ___diffsmultiemit = ___differences.pipe(
+				concatMap((d) => from(d)),
+				filter(
+					(val) =>
+						val.ignoreType !==
+						ignoreType.DELETED_AND_DNE_ON_DESTINATION
+				)
+			);
+			const ___viewsAttrChanges = ___diffsmultiemit.pipe(
+				filter((d) => d.changeType.id === '222'), //filter to only be attributes
+				filter(
+					(d) =>
+						d.itemTypeId === ATTRIBUTETYPEIDENUM.NAME ||
+						d.itemTypeId === ATTRIBUTETYPEIDENUM.DESCRIPTION ||
+						d.itemTypeId === ATTRIBUTETYPEIDENUM.PRODUCT_TYPE
+				)
+			);
+			const ___viewAttrChanges = ___viewsAttrChanges.pipe(
+				filter((d) => d.artId === viewId),
+				map((d) => d)
+			);
+
+			const ___viewsRelChanges = ___diffsmultiemit.pipe(
+				filter((d) => d.changeType.id === '333'), //filter to only be relations
+				filter(
+					(d) =>
+						(d.itemTypeId as itemTypeIdRelation).id ===
+						RELATIONTYPEIDENUM.PRODUCT_LINE_CONFIGURATION_GROUP
+				)
+			);
+			const __viewRelChanges = ___viewsRelChanges.pipe(
+				filter((d) => viewId === d.artIdB),
+				map((d) => d)
+			);
+
+			const __changes = concat(___viewAttrChanges, __viewRelChanges).pipe(
+				reduce(
+					(acc, curr) => [...acc, curr],
+					[] as changeInstance<
+						string | number | boolean | null | undefined
+					>[]
+				)
+			);
+
+			const setup = query.pipe(
+				map((q) => {
+					const queryWithChanges: viewWithChanges = {
+						deleted: false,
+						added: false,
+						changes: {
+							name: undefined,
+							hasFeatureApplicabilities: undefined,
+							productApplicabilities: undefined,
+						},
+						...q,
+					};
+					return queryWithChanges;
+				})
+			);
+			const process = combineLatest([setup, __changes]).pipe(
+				map(([q, d]) => {
+					d.forEach((change) => {
+						if (change.changeType.id === '222') {
+							this.updateViewAttributes(change, q);
+						}
+						if (change.changeType.id === '333') {
+							//TODO: currently not enough information on the create view definition to ascertain whether or not the relation has been deleted or added.
+						}
+					});
+					return q;
+				})
+			);
+			return process;
+		}
+		return query;
+	}
+
+	public getViewsByIds(viewIds: string[]) {
+		return this.uiStateService.branchId.pipe(
+			take(1),
+			filter((val) => val !== ''),
+			switchMap((id) =>
+				this.branchService
+					.getViewsByIds(id, viewIds)
+					.pipe(repeat({ delay: () => this.uiService.update }))
+			),
+			shareReplay({ bufferSize: 1, refCount: true })
+		);
+	}
+
+	public getFeatureById(featureId: string) {
+		return this.uiStateService.branchId.pipe(
+			take(1),
+			filter((val) => val !== ''),
+			switchMap((id) =>
+				this.branchService
+					.getFeatureById(id, featureId)
+					.pipe(repeat({ delay: () => this.uiService.update }))
+			),
+			shareReplay({ bufferSize: 1, refCount: true })
+		);
+	}
+	public getCfgGroupDetail(cfgGroup: string, useDiffs: boolean = false) {
+		const query = this.uiStateService.branchId.pipe(
 			filter((val) => val !== ''),
 			switchMap((branchId) =>
 				this.branchService.getCfgGroupDetail(branchId, cfgGroup).pipe(
@@ -633,6 +309,89 @@ export class PlConfigCurrentBranchService {
 				)
 			)
 		);
+		if (useDiffs) {
+			const ___differences = combineLatest([
+				this.uiStateService.isInDiff,
+				this.differences,
+			]).pipe(
+				take(1),
+				map(([mode, diffs]) =>
+					diffs !== undefined && diffs.length !== 0 && mode
+						? diffs
+						: []
+				)
+			);
+			const ___diffsmultiemit = ___differences.pipe(
+				concatMap((d) => from(d)),
+				filter(
+					(val) =>
+						val.ignoreType !==
+						ignoreType.DELETED_AND_DNE_ON_DESTINATION
+				)
+			);
+			const ___viewsAttrChanges = ___diffsmultiemit.pipe(
+				filter((d) => d.changeType.id === '222'), //filter to only be attributes
+				filter(
+					(d) =>
+						d.itemTypeId === ATTRIBUTETYPEIDENUM.NAME ||
+						d.itemTypeId === ATTRIBUTETYPEIDENUM.DESCRIPTION ||
+						d.itemTypeId === ATTRIBUTETYPEIDENUM.PRODUCT_TYPE //TODO groups don't actually have product type???
+				)
+			);
+			const ___viewAttrChanges = ___viewsAttrChanges.pipe(
+				filter((d) => d.artId === cfgGroup),
+				map((d) => d)
+			);
+
+			const ___viewsRelChanges = ___diffsmultiemit.pipe(
+				filter((d) => d.changeType.id === '333'), //filter to only be relations
+				filter(
+					(d) =>
+						(d.itemTypeId as itemTypeIdRelation).id ===
+						RELATIONTYPEIDENUM.PRODUCT_LINE_CONFIGURATION_GROUP
+				)
+			);
+			const __viewRelChanges = ___viewsRelChanges.pipe(
+				filter((d) => cfgGroup === d.artId),
+				map((d) => d)
+			);
+
+			const __changes = concat(___viewAttrChanges, __viewRelChanges).pipe(
+				reduce(
+					(acc, curr) => [...acc, curr],
+					[] as changeInstance<
+						string | number | boolean | null | undefined
+					>[]
+				)
+			);
+
+			const setup = query.pipe(
+				map((q) => {
+					const queryWithChanges: configGroup = {
+						deleted: false,
+						added: false,
+						changes: {},
+						...q,
+					};
+					return queryWithChanges;
+				})
+			);
+			const process = combineLatest([setup, __changes]).pipe(
+				map(([q, d]) => {
+					d.forEach((change) => {
+						if (change.changeType.id === '222') {
+							this.updateGroupAttributes(change, q);
+						}
+						if (change.changeType.id === '333') {
+							//TODO: need to use getViewByIds() to fetch the list of configurations TBD
+						}
+					});
+					return q;
+				})
+			);
+			return process;
+		}
+		return query;
 	}
 	public editConfiguration(featureId: string, body: string) {
 		return this.uiStateService.branchId.pipe(
@@ -652,11 +411,7 @@ export class PlConfigCurrentBranchService {
 		);
 	}
 	// Modifies feature value for configuration
-	public modifyConfiguration(
-		featureId: string,
-		body: string,
-		groups: configGroup[]
-	) {
+	public modifyConfiguration(featureId: string, body: string) {
 		return this.editConfiguration(featureId, body).pipe(
 			tap((response) => {
 				if (response.success) {
@@ -664,6 +419,25 @@ export class PlConfigCurrentBranchService {
 					this.uiStateService.error = '';
 				}
 			})
+		);
+	}
+
+	public setApplicability(featureId: string, viewId: string, body: string[]) {
+		return this.uiStateService.branchId.pipe(
+			take(1),
+			filter((val) => val !== ''),
+			switchMap((id) =>
+				this.branchService
+					.setApplicability(id, featureId, viewId, body)
+					.pipe(
+						tap((response) => {
+							if (response.success) {
+								this.uiStateService.updateReqConfig = true;
+								this.uiStateService.error = '';
+							}
+						})
+					)
+			)
 		);
 	}
 	public editConfigurationDetails(body: editConfiguration) {
@@ -901,110 +675,751 @@ export class PlConfigCurrentBranchService {
 			)
 		);
 	}
-	makeHeaderUnique(names: string[]) {
-		let newArray: string[] = [];
-		for (let name of names) {
-			newArray.push(name + ' ');
+
+	public getFeatureValues(
+		configId: string,
+		featureId: string,
+		pageSize: number,
+		pageNum: string | number,
+		filter?: string
+	) {
+		return this.uiService.id.pipe(
+			take(1),
+			switchMap((branchId) =>
+				this.branchService.getFeatureValues(
+					branchId,
+					configId,
+					featureId,
+					pageNum,
+					pageSize,
+					filter
+				)
+			)
+		);
+	}
+
+	public getFeatureValuesCount(
+		configId: string,
+		featureId: string,
+		filter?: string
+	) {
+		return this.uiService.id.pipe(
+			take(1),
+			switchMap((branchId) =>
+				this.branchService.getFeatureValuesCount(
+					branchId,
+					configId,
+					featureId,
+					filter
+				)
+			)
+		);
+	}
+
+	private __applicabilityTableData = combineLatest([
+		this.uiService.id,
+		this.uiStateService.filter$,
+		this.uiService.viewId,
+		this.uiStateService.currentPage$,
+		this.uiStateService.currentPageSize$,
+	]).pipe(
+		filter(([branchId, filter, viewId, page, pageSize]) => branchId !== ''),
+		debounceTime(500),
+		distinctUntilChanged(),
+		switchMap(([branchId, filter, viewId, page, pageSize]) =>
+			this.branchService
+				.getApplicabilityTable(
+					branchId,
+					viewId,
+					page + 1,
+					pageSize,
+					filter
+				)
+				.pipe(repeat({ delay: () => this.uiService.update }))
+		),
+		shareReplay({ bufferSize: 1, refCount: true })
+	);
+
+	private _applicabilityTableData = combineLatest([
+		this.uiStateService.branchId,
+		this.uiStateService.isInDiff,
+		this.__applicabilityTableData,
+		this.differences,
+	]).pipe(
+		switchMap(([branchId, mode, applic, differences]) =>
+			iif(
+				() =>
+					mode &&
+					applic.table.length !== 0 &&
+					differences !== undefined &&
+					differences.length !== 0,
+				this.__parseDifferences(
+					differences as changeInstance[],
+					branchId,
+					applic
+				).pipe(
+					switchMap((diffedTable) =>
+						this.__parseTupleDifferences(
+							differences as changeInstance[],
+							branchId,
+							diffedTable
+						)
+					)
+				),
+				of(applic)
+			)
+		),
+		share(),
+		shareReplay({ bufferSize: 1, refCount: true })
+	);
+
+	private _applicabilityTableDataCount = combineLatest([
+		this.uiService.id,
+		this.uiStateService.filter$,
+		this.uiService.viewId,
+	]).pipe(
+		filter(([branchId, filter, viewId]) => branchId !== ''),
+		debounceTime(500),
+		distinctUntilChanged(),
+		switchMap(([branchId, filter, viewId]) =>
+			this.branchService
+				.getApplicabilityTableCount(branchId, viewId, filter)
+				.pipe(repeat({ delay: () => this.uiService.update }))
+		),
+		shareReplay({ bufferSize: 1, refCount: true })
+	);
+
+	private __parseDifferences(
+		differences: changeInstance[],
+		branchId: string,
+		tableData: plConfigTable
+	) {
+		let _tableData = structuredClone(tableData); //do not mutate the underlying observable data
+		const _differences = differences.filter(
+			(v) => v.ignoreType !== ignoreType.DELETED_AND_DNE_ON_DESTINATION
+		);
+		const _artDifferences = _differences.filter(
+			(v) => v.changeType.id === changeTypeNumber.ARTIFACT_CHANGE
+		);
+		const _attrDifferences = _differences.filter(
+			(v) => v.changeType.id === changeTypeNumber.ATTRIBUTE_CHANGE
+		);
+		const _relDifferences = _differences.filter(
+			(v) => v.changeType.id === changeTypeNumber.RELATION_CHANGE
+		);
+		const _t2Differences = _differences.filter(
+			(v) => v.changeType.id === changeTypeNumber.TUPLE_CHANGE
+		);
+		//parse artifacts
+		_artDifferences.forEach((change) => {
+			/**
+			 * FEATURES
+			 *
+			 *
+			 *
+			 */
+			if (
+				change.itemTypeId === ARTIFACTTYPEIDENUM.FEATURE &&
+				change.currentVersion.transactionToken.id !== '-1' &&
+				change.deleted
+			) {
+				//mark entire row as deleted
+				const featureIndex = _tableData.table.findIndex(
+					(v) => v.id === change.artId
+				);
+				if (featureIndex !== -1) {
+					_tableData.table[featureIndex].deleted = true;
+				} else {
+					_tableData.table.push({
+						id: change.artId,
+						name: 'DELETED_FEATURE',
+						configurationValues: [],
+						attributes: [],
+						deleted: true,
+					});
+				}
+			}
+			if (
+				change.itemTypeId === ARTIFACTTYPEIDENUM.FEATURE &&
+				change.currentVersion.transactionToken.id !== '-1' &&
+				change.currentVersion.modType === ModificationType.NEW &&
+				change.currentVersion.value === null
+			) {
+				//TODO change this null change to "" once fix for JdbcStatement to normalize oracle's behavior with postgres
+				//mark entire row as added
+				const featureIndex = _tableData.table.findIndex(
+					(v) => v.id === change.artId
+				);
+				if (featureIndex !== -1) {
+					_tableData.table[featureIndex].added = true;
+				}
+			}
+			/**
+			 * END FEATURES
+			 *
+			 *
+			 *
+			 */
+			/**
+			 * CONFIGURATIONS
+			 *
+			 *
+			 *
+			 */
+			if (
+				(change.itemTypeId === ARTIFACTTYPEIDENUM.CONFIGURATION ||
+					change.itemTypeId ===
+						ARTIFACTTYPEIDENUM.CONFIGURATION_GROUP) &&
+				change.currentVersion.transactionToken.id !== '-1' &&
+				change.deleted
+			) {
+				//mark entire row as deleted
+				const configIndex = _tableData.headers.findIndex(
+					(v) => v.id === change.artId
+				);
+				if (configIndex !== -1) {
+					_tableData.headers[configIndex].deleted = true;
+				} else {
+					_tableData.headers.push({
+						id: change.artId,
+						name: 'DELETED_CONFIG',
+						deleted: true,
+						gammaId: '',
+						applicability: {
+							id: '',
+							name: 'DELETED_CONFIG',
+							gammaId: '',
+						},
+						typeId: '-1',
+					});
+				}
+			}
+			if (
+				(change.itemTypeId === ARTIFACTTYPEIDENUM.CONFIGURATION ||
+					change.itemTypeId ===
+						ARTIFACTTYPEIDENUM.CONFIGURATION_GROUP) &&
+				change.currentVersion.transactionToken.id !== '-1' &&
+				change.currentVersion.modType === ModificationType.NEW &&
+				change.currentVersion.value === null
+			) {
+				//TODO change this null change to "" once fix for JdbcStatement to normalize oracle's behavior with postgres
+				//mark entire row as added
+				const configIndex = _tableData.headers.findIndex(
+					(v) => v.id === change.artId
+				);
+				if (configIndex !== -1) {
+					_tableData.headers[configIndex].added = true;
+				}
+			}
+			/**
+			 * END CONFIGURATIONS
+			 *
+			 *
+			 *
+			 */
+		});
+		//parse attributes
+		_attrDifferences.forEach((change) => {
+			if (_tableData.table.map((x) => x.id).includes(change.artId)) {
+				const featureIndex = _tableData.table.findIndex(
+					(v) => v.id === change.artId
+				);
+				if (featureIndex === -1) {
+					return;
+				}
+				if (_tableData.table[featureIndex].changes === undefined) {
+					_tableData.table[featureIndex].changes = {};
+				}
+				if (!_tableData.table[featureIndex].deleted) {
+					let _changes: difference = {
+						currentValue: change.currentVersion.value,
+						previousValue: change.baselineVersion.value,
+						transactionToken:
+							change.currentVersion.transactionToken,
+					};
+					if (change.itemTypeId === ATTRIBUTETYPEIDENUM.NAME) {
+						//TODO handle this better. This definitely isn't undefined per previous line(s)
+						//@ts-ignore
+						_tableData.table[featureIndex].changes.name = _changes;
+					}
+					if (
+						change.itemTypeId === ATTRIBUTETYPEIDENUM.DEFAULTVALUE
+					) {
+						//TODO handle this better. This definitely isn't undefined per previous line(s)
+						//@ts-ignore
+						_tableData.table[featureIndex].changes.defaultValue =
+							_changes;
+					}
+					if (change.itemTypeId === ATTRIBUTETYPEIDENUM.DESCRIPTION) {
+						//TODO handle this better. This definitely isn't undefined per previous line(s)
+						//@ts-ignore
+						_tableData.table[featureIndex].changes.description =
+							_changes;
+					}
+					if (
+						change.itemTypeId === ATTRIBUTETYPEIDENUM.PRODUCT_TYPE
+					) {
+						if (
+							//@ts-ignore
+							_tableData.table[featureIndex].changes
+								.productApplicabilities === undefined
+						) {
+							//@ts-ignore
+							_tableData.table[
+								featureIndex
+							].changes.productApplicabilities = {};
+							//@ts-ignore
+							_tableData.table[
+								featureIndex
+							].changes.productApplicabilities.currentValue = [];
+							//@ts-ignore
+							_tableData.table[
+								featureIndex
+							].changes.productApplicabilities.previousValue = [];
+							//@ts-ignore
+							_tableData.table[
+								featureIndex
+							].changes.productApplicabilities.transactionToken =
+								change.currentVersion.transactionToken;
+						}
+						//TODO handle this better. This definitely isn't undefined per previous line(s)
+						//@ts-ignore
+						_tableData.table[
+							featureIndex
+						].changes.productApplicabilities.currentValue.push(
+							change.currentVersion.value as string
+						);
+					}
+					if (change.itemTypeId === ATTRIBUTETYPEIDENUM.MULTIVALUED) {
+						//TODO handle this better. This definitely isn't undefined per previous line(s)
+						//@ts-ignore
+						_tableData.table[featureIndex].changes.multiValued =
+							_changes;
+					}
+					if (
+						change.itemTypeId === ATTRIBUTETYPEIDENUM.DEFAULTVALUE
+					) {
+						//TODO handle this better. This definitely isn't undefined per previous line(s)
+						//@ts-ignore
+						_tableData.table[featureIndex].changes.defaultValue =
+							_changes;
+					}
+				} else {
+					let _changes: difference = {
+						currentValue: change.destinationVersion.value,
+						previousValue: change.baselineVersion.value,
+						transactionToken:
+							change.currentVersion.transactionToken,
+					};
+					if (change.itemTypeId === ATTRIBUTETYPEIDENUM.NAME) {
+						//TODO handle this better. This definitely isn't undefined per previous line(s)
+						_tableData.table[featureIndex].name =
+							_changes.previousValue as string;
+						//@ts-ignore
+						_tableData.table[featureIndex].changes.name = _changes;
+					}
+					if (
+						change.itemTypeId === ATTRIBUTETYPEIDENUM.DEFAULTVALUE
+					) {
+						//TODO handle this better. This definitely isn't undefined per previous line(s)
+						//@ts-ignore
+						_tableData.table[featureIndex].changes.defaultValue =
+							_changes;
+					}
+					if (change.itemTypeId === ATTRIBUTETYPEIDENUM.DESCRIPTION) {
+						//TODO handle this better. This definitely isn't undefined per previous line(s)
+						//@ts-ignore
+						_tableData.table[featureIndex].changes.description =
+							_changes;
+					}
+					if (
+						change.itemTypeId === ATTRIBUTETYPEIDENUM.PRODUCT_TYPE
+					) {
+						if (
+							//@ts-ignore
+							_tableData.table[featureIndex].changes
+								.productApplicabilities === undefined
+						) {
+							//@ts-ignore
+							_tableData.table[
+								featureIndex
+							].changes.productApplicabilities = {};
+							//@ts-ignore
+							_tableData.table[
+								featureIndex
+							].changes.productApplicabilities.currentValue = [];
+							//@ts-ignore
+							_tableData.table[
+								featureIndex
+							].changes.productApplicabilities.previousValue = [];
+							//@ts-ignore
+							_tableData.table[
+								featureIndex
+							].changes.productApplicabilities.transactionToken =
+								change.currentVersion.transactionToken;
+						}
+						//TODO handle this better. This definitely isn't undefined per previous line(s)
+						//@ts-ignore
+						_tableData.table[
+							featureIndex
+						].changes.productApplicabilities.currentValue.push(
+							change.destinationVersion.value as string
+						);
+					}
+					if (change.itemTypeId === ATTRIBUTETYPEIDENUM.MULTIVALUED) {
+						//TODO handle this better. This definitely isn't undefined per previous line(s)
+						//@ts-ignore
+						_tableData.table[featureIndex].changes.multiValued =
+							_changes;
+					}
+				}
+			}
+		});
+		//not parsing relations as it's hard to display in table
+		//tuples will be parsed later
+		return of(_tableData);
+	}
+	private __parseTupleDifferences(
+		differences: changeInstance[],
+		branchId: string,
+		tableData: plConfigTable
+	) {
+		let _tableData = structuredClone(tableData); //do not mutate the underlying observable data
+		const _differences = differences.filter(
+			(v) => v.ignoreType !== ignoreType.DELETED_AND_DNE_ON_DESTINATION
+		);
+		const _t2Differences = _differences
+			.filter((v) => v.changeType.id === changeTypeNumber.TUPLE_CHANGE)
+			.sort((a, b) =>
+				a.deleted && b.deleted
+					? 0
+					: a.deleted && !b.deleted
+					  ? 1
+					  : !a.deleted && b.deleted
+					    ? -1
+					    : 0
+			);
+		const _uniqueDifferences = [...new Set(_t2Differences)];
+		const __differences = concat(from(_uniqueDifferences));
+		const _appTokens = __differences.pipe(
+			map((x) => {
+				return {
+					change: x,
+					token: this.__getAppTokenFromDifference(x),
+				};
+			})
+		);
+		const _applics = _appTokens.pipe(
+			concatMap(({ change, token }) =>
+				combineLatest([
+					//pair[0] is the feature name
+					//pair[1] is the feature value
+					this.__getNameValuePairFromAppToken(branchId, token[1]),
+					of(change),
+					of(token),
+				])
+			),
+			map(([pair, change, token]) => {
+				return {
+					change: change,
+					applic: {
+						featureName: pair[0],
+						featureValue: pair[1],
+					},
+					token: token,
+				};
+			})
+		);
+		return _applics.pipe(
+			reduce((acc, curr) => {
+				acc = this._processTupleModTypeNew(curr, acc);
+				acc = this._processTupleModTypeDeleted(curr, acc);
+				return acc;
+			}, _tableData),
+			startWith(_tableData)
+		);
+	}
+	private _processTupleModTypeNew(
+		value: {
+			change: changeInstance;
+			applic: { featureName: string; featureValue: string };
+			token: string[];
+		},
+		data: plConfigTable
+	) {
+		const featureNames = data.table.map((x) => x.name.trim());
+		const configIds = data.headers.map((x) => x.id);
+		const _tableData = structuredClone(data);
+		if (
+			value.change.currentVersion.modType === ModificationType.NEW &&
+			featureNames.includes(value.applic.featureName) &&
+			configIds.includes(value.token[0])
+		) {
+			// mark the value in features[featureIndex].configurations(configValue index) as added
+			if (
+				_tableData.table.find(
+					(f) =>
+						f.name.trim() === value.applic.featureName.trim() &&
+						f.configurationValues.find(
+							(c) => c.id === value.token[0]
+						) !== undefined &&
+						f.configurationValues.find(
+							(c) =>
+								c.applicability.name.trim() ===
+									value.applic.featureName +
+										' = ' +
+										value.applic.featureValue &&
+								c.id === value.token[0]
+						)
+				) !== undefined
+			) {
+				//@ts-ignore
+				_tableData.table
+					.find(
+						(f) =>
+							f.name.trim() === value.applic.featureName.trim() &&
+							f.configurationValues.find(
+								(c) => c.id === value.token[0]
+							) !== undefined &&
+							f.configurationValues.find(
+								(c) =>
+									c.applicability.name.trim() ===
+										value.applic.featureName +
+											' = ' +
+											value.applic.featureValue &&
+									c.id === value.token[0]
+							) !== undefined
+					)
+					.configurationValues.find(
+						(c) =>
+							c.applicability.name.trim() ===
+								value.applic.featureName +
+									' = ' +
+									value.applic.featureValue &&
+							c.id === value.token[0]
+					).added = true;
+				//@ts-ignore
+				_tableData.table
+					.find(
+						(f) =>
+							f.name.trim() === value.applic.featureName.trim() &&
+							f.configurationValues.find(
+								(c) => c.id === value.token[0]
+							) !== undefined &&
+							f.configurationValues.find(
+								(c) =>
+									c.applicability.name.trim() ===
+										value.applic.featureName +
+											' = ' +
+											value.applic.featureValue &&
+									c.id === value.token[0]
+							) !== undefined
+					)
+					.configurationValues.find(
+						(c) =>
+							c.applicability.name.trim() ===
+								value.applic.featureName +
+									' = ' +
+									value.applic.featureValue &&
+							c.id === value.token[0]
+					).applicability.added = true;
+			}
 		}
-		return newArray;
+		return _tableData;
 	}
 
-	findViewByName(viewName: string) {
-		return this.grouping.pipe(
-			take(1),
-			switchMap((response) =>
-				of(response).pipe(
-					take(1),
-					mergeMap((responseGrouping) =>
-						from(responseGrouping).pipe(
-							mergeMap((grouping) =>
-								from(grouping.views).pipe(
-									switchMap((view) =>
-										iif(
-											() => view.name === viewName,
-											of(view),
-											of(undefined)
-										)
-									)
-								)
-							)
+	private _processTupleModTypeDeleted(
+		value: {
+			change: changeInstance;
+			applic: { featureName: string; featureValue: string };
+			token: string[];
+		},
+		data: plConfigTable
+	) {
+		//logic:
+		// if feature not found add whole new row with a value for each configuration
+		// if configuration not found add another configuration for the feature
+		const featureNames = data.table.map((x) => x.name.trim());
+		const featureIds = data.table.map((x) => x.id);
+		const configIds = data.headers.map((x) => x.id);
+		const _tableData = structuredClone(data);
+		if (value.change.currentVersion.modType === ModificationType.DELETED) {
+			if (
+				featureNames.includes(value.applic.featureName) &&
+				configIds.includes(value.token[0]) &&
+				_tableData.table.find(
+					(f) =>
+						f.name.trim() === value.applic.featureName.trim() &&
+						f.configurationValues !== undefined &&
+						f.configurationValues.find(
+							(c) => c.id === value.token[0]
+						) !== undefined &&
+						f.configurationValues.find(
+							(c) =>
+								c.applicability.name.trim() ===
+									value.applic.featureName +
+										' = ' +
+										value.applic.featureValue &&
+								c.id === value.token[0]
 						)
+				) !== undefined
+			) {
+				//just mark it as deleted
+				//@ts-ignore
+				_tableData.table
+					.find(
+						(f) =>
+							f.name.trim() === value.applic.featureName.trim() &&
+							f.configurationValues !== undefined &&
+							f.configurationValues.find(
+								(c) => c.id === value.token[0]
+							) !== undefined &&
+							f.configurationValues.find(
+								(c) =>
+									c.applicability.name.trim() ===
+										value.applic.featureName +
+											' = ' +
+											value.applic.featureValue &&
+									c.id === value.token[0]
+							) !== undefined
 					)
-				)
-			),
-			scan(
-				(acc, curr) => {
-					if (curr !== undefined) {
-						acc = curr;
-					}
-					return acc;
-				},
-				undefined as view | viewWithChanges | undefined
-			)
-		);
-	}
-	findViewById(viewId: string) {
-		return this.grouping.pipe(
-			take(1),
-			switchMap((response) =>
-				of(response).pipe(
-					take(1),
-					mergeMap((responseGrouping) =>
-						from(responseGrouping).pipe(
-							mergeMap((grouping) =>
-								from(grouping.views).pipe(
-									switchMap((view) =>
-										iif(
-											() => view.id === viewId,
-											of(view),
-											of(undefined)
-										)
-									)
-								)
-							)
-						)
+					.configurationValues.find(
+						(c) =>
+							c.applicability.name.trim() ===
+								value.applic.featureName +
+									' = ' +
+									value.applic.featureValue &&
+							c.id === value.token[0]
+					).deleted = true;
+				//@ts-ignore
+				_tableData.table
+					.find(
+						(f) =>
+							f.name.trim() === value.applic.featureName.trim() &&
+							f.configurationValues !== undefined &&
+							f.configurationValues.find(
+								(c) => c.id === value.token[0]
+							) !== undefined &&
+							f.configurationValues.find(
+								(c) =>
+									c.applicability.name.trim() ===
+										value.applic.featureName +
+											' = ' +
+											value.applic.featureValue &&
+									c.id === value.token[0]
+							) !== undefined
 					)
-				)
-			),
-			scan(
-				(acc, curr) => {
-					if (curr !== undefined) {
-						acc = curr;
-					}
-					return acc;
-				},
-				undefined as view | viewWithChanges | undefined
-			)
-		);
+					.configurationValues.find(
+						(c) =>
+							c.applicability.name.trim() ===
+								value.applic.featureName +
+									' = ' +
+									value.applic.featureValue &&
+							c.id === value.token[0]
+					).applicability.deleted = true;
+			} else if (featureNames.includes(value.applic.featureName)) {
+				const header =
+					_tableData.headers.find((x) => x.id === value.token[0])
+						?.name || '';
+				_tableData.table
+					.find(
+						(f) => f.name.trim() === value.applic.featureName.trim()
+					)
+					?.configurationValues.push({
+						id: value.token[0],
+						name: header,
+						gammaId: '',
+						applicability: {
+							deleted: true,
+							gammaId: '',
+							id: value.token[1],
+							name:
+								value.applic.featureName +
+								' = ' +
+								value.applic.featureValue,
+						},
+						typeId: '-1',
+						deleted: true,
+					});
+			} else if (featureIds.includes(value.token[0])) {
+				const configValues: configurationValue[] =
+					_tableData.headers.map((x) => {
+						return {
+							id: x.id,
+							name: x.name,
+							gammaId: '',
+							typeId: x.typeId,
+							applicability: {
+								id: value.token[1],
+								name:
+									value.applic.featureName +
+									' = ' +
+									value.applic.featureValue,
+								gammaId: '',
+								deleted: true,
+							},
+							deleted: true,
+						};
+					});
+				//covered by above check
+				//@ts-ignore
+				_tableData.table.find(
+					(f) => f.id === value.token[0]
+				).configurationValues = configValues;
+				//@ts-ignore
+				_tableData.table.find((f) => f.id === value.token[0]).deleted =
+					true;
+			} else {
+				const configValues: configurationValue[] =
+					_tableData.headers.map((x) => {
+						return {
+							id: x.id,
+							name: x.name,
+							gammaId: '',
+							typeId: x.typeId,
+							applicability: {
+								id: value.token[1],
+								name:
+									value.applic.featureName +
+									' = ' +
+									value.applic.featureValue,
+								gammaId: '',
+								deleted: true,
+							},
+							deleted: true,
+						};
+					});
+				_tableData.table.push({
+					id: '',
+					name: value.applic.featureName,
+					configurationValues: configValues,
+					attributes: [],
+					deleted: true,
+				});
+			}
+		}
+		return _tableData;
 	}
 
-	findGroup(groupName: string) {
-		return this.groupList.pipe(
-			switchMap((response) =>
-				of(response).pipe(
-					mergeMap((responseGrouping) =>
-						from(responseGrouping).pipe(
-							switchMap((grouping) =>
-								iif(
-									() => grouping.name === groupName,
-									of(grouping),
-									of(undefined)
-								)
-							)
-						)
-					)
-				)
-			),
-			scan(
-				(acc, curr) => {
-					if (curr !== undefined) {
-						acc = curr;
-					}
-					return acc;
-				},
-				undefined as configGroup | configGroupWithChanges | undefined
-			)
+	private __getNameValuePairFromAppToken(branchId: string, appId: string) {
+		return this.branchService.getApplicabilityToken(branchId, appId).pipe(
+			filter((appToken) => appToken.id !== '1'),
+			map((appToken) => appToken.name.split(' = '))
 		);
+	}
+	private __getAppTokenFromDifference(change: changeInstance) {
+		return typeof change.currentVersion.value === 'string' &&
+			change.currentVersion.value !== null &&
+			change.currentVersion.value.split('|', 2).length === 2
+			? change.currentVersion.value.split('|', 2)[1].split(', ')
+			: [];
+	}
+	get applicabilityTableData() {
+		return this._applicabilityTableData;
+	}
+
+	get applicabilityTableDataCount() {
+		return this._applicabilityTableDataCount;
 	}
 
 	updateFeatureAttributes(
@@ -1191,10 +1606,7 @@ export class PlConfigCurrentBranchService {
 			}
 		}
 	}
-	updateGroupAttributes(
-		change: changeInstance,
-		group: configGroupWithChanges
-	) {
+	updateGroupAttributes(change: changeInstance, group: configGroup) {
 		if (group.changes === undefined) {
 			group.changes = {};
 		}
@@ -1208,13 +1620,13 @@ export class PlConfigCurrentBranchService {
 				group.name === (change.currentVersion.value as string) &&
 				!group.deleted
 			) {
-				group.changes.name = changes;
+				group.changes.name = changes as difference<string>;
 			}
 			if (group.deleted) {
 				group.name = change.currentVersion.value as string;
 				group.changes.name = {
-					currentValue: change.destinationVersion.value,
-					previousValue: change.baselineVersion.value,
+					currentValue: change.destinationVersion.value as string,
+					previousValue: change.baselineVersion.value as string,
 					transactionToken: change.currentVersion.transactionToken,
 				};
 			}
@@ -1281,871 +1693,24 @@ export class PlConfigCurrentBranchService {
 					view.changes.productApplicabilities?.push(changes);
 				}
 			}
+		} else if (change.itemTypeId === ATTRIBUTETYPEIDENUM.DESCRIPTION) {
+			if (
+				view.description === (change.currentVersion.value as string) &&
+				!view.deleted
+			) {
+				view.changes.description = changes as difference<string>;
+			}
+			if (view.deleted) {
+				view.description = change.currentVersion.value as string;
+				view.changes.description = {
+					currentValue: change.destinationVersion.value as string,
+					previousValue: change.baselineVersion.value as string,
+					transactionToken: change.currentVersion.transactionToken,
+				};
+			}
 		} else {
 		}
 		return view;
-	}
-	processTupleChanges(
-		changes: changeInstance[],
-		applic: PlConfigApplicUIBranchMapping,
-		branchId: string
-	) {
-		return zip(
-			from(
-				changes.sort((a, b) =>
-					a.deleted && b.deleted
-						? 0
-						: a.deleted && !b.deleted
-						  ? 1
-						  : !a.deleted && b.deleted
-						    ? -1
-						    : 0
-				)
-			)
-		).pipe(
-			concatMap(([change]) =>
-				of(
-					typeof change.currentVersion.value === 'string' &&
-						change.currentVersion.value !== null &&
-						change.currentVersion.value.split('|', 2).length === 2
-						? change.currentVersion.value
-								.split('|', 2)[1]
-								.split(', ')
-						: []
-				).pipe(
-					filter(([id, appId]) => appId !== '1' && appId !== '-1'),
-					concatMap(([id, appId]) =>
-						this.branchService
-							.getApplicabilityToken(branchId, appId)
-							.pipe(
-								filter((appToken) => appToken.id !== '1'),
-								tap((appToken) => {
-									const [name, value] =
-										appToken.name.split(' = ');
-									if (
-										change.currentVersion.modType ===
-										ModificationType.NEW
-									) {
-										if (
-											applic.features.some(
-												(feature) =>
-													feature.name === name
-											)
-										) {
-											if (
-												applic.views.some(
-													(view) => view.id === id
-												)
-											) {
-												let viewToChange =
-													applic.views.find(
-														(view) => view.id === id
-													) as view & viewWithChanges;
-												let feature =
-													applic.features.find(
-														(feature) =>
-															feature.name ===
-															name
-													) as extendedFeatureWithChanges &
-														extendedFeature;
-												let view =
-													feature?.configurations.find(
-														(view) =>
-															view.name ===
-															viewToChange.name
-													) as ExtendedNameValuePairWithChanges;
-												if (
-													view !== undefined &&
-													view.changes === undefined
-												) {
-													if (
-														feature?.multiValued &&
-														feature.changes !==
-															undefined
-													) {
-														(
-															applic.features
-																.find(
-																	(feature) =>
-																		feature.name ===
-																		name
-																)!
-																.configurations.find(
-																	(view) =>
-																		view.name ===
-																		viewToChange.name
-																) as ExtendedNameValuePairWithChanges
-														).changes = {
-															value: {
-																currentValue:
-																	view.value,
-																previousValue:
-																	view.value
-																		.replace(
-																			value,
-																			''
-																		)
-																		.replace(
-																			/,\s*$/,
-																			''
-																		),
-																transactionToken:
-																	change
-																		.currentVersion
-																		.transactionToken,
-															},
-														};
-													} else if (
-														view !== undefined
-													) {
-														(
-															applic.features
-																.find(
-																	(feature) =>
-																		feature.name ===
-																		name
-																)!
-																.configurations.find(
-																	(view) =>
-																		view.name ===
-																		viewToChange.name
-																) as ExtendedNameValuePairWithChanges
-														).changes = {
-															value: {
-																currentValue:
-																	value,
-																previousValue:
-																	'',
-																transactionToken:
-																	change
-																		.currentVersion
-																		.transactionToken,
-															},
-														};
-													}
-												} else {
-													if (
-														feature.multiValued &&
-														view !== undefined &&
-														view.changes !==
-															undefined
-													) {
-														(
-															applic.features
-																.find(
-																	(feature) =>
-																		feature.name ===
-																		name
-																)!
-																.configurations.find(
-																	(view) =>
-																		view.name ===
-																		viewToChange.name
-																) as ExtendedNameValuePairWithChanges
-														).changes.value.currentValue =
-															view.value;
-														(
-															applic.features
-																.find(
-																	(feature) =>
-																		feature.name ===
-																		name
-																)!
-																.configurations.find(
-																	(view) =>
-																		view.name ===
-																		viewToChange.name
-																) as ExtendedNameValuePairWithChanges
-														).changes.value.previousValue =
-															(
-																view.changes
-																	.value
-																	.previousValue as string
-															)
-																.replace(
-																	value,
-																	''
-																)
-																.replace(
-																	/,\s*$/,
-																	''
-																);
-													} else if (
-														view !== undefined &&
-														view.changes !==
-															undefined
-													) {
-														(
-															applic.features
-																.find(
-																	(feature) =>
-																		feature.name ===
-																		name
-																)!
-																.configurations.find(
-																	(view) =>
-																		view.name ===
-																		viewToChange.name
-																) as ExtendedNameValuePairWithChanges
-														).changes.value.currentValue =
-															value;
-													}
-												}
-											}
-											if (
-												applic.groups.some(
-													(view) => view.id === id
-												)
-											) {
-												let viewToChange =
-													applic.groups.find(
-														(view) => view.id === id
-													) as configGroup &
-														configGroupWithChanges;
-												let feature =
-													applic.features.find(
-														(feature) =>
-															feature.name ===
-															name
-													) as extendedFeatureWithChanges &
-														extendedFeature;
-												let view =
-													feature?.configurations.find(
-														(view) =>
-															view.name ===
-															viewToChange.name
-													) as ExtendedNameValuePairWithChanges;
-												if (
-													view !== undefined &&
-													view.changes === undefined
-												) {
-													if (
-														feature?.multiValued &&
-														view.changes !==
-															undefined
-													) {
-														(
-															applic.features
-																.find(
-																	(feature) =>
-																		feature.name ===
-																		name
-																)!
-																.configurations.find(
-																	(view) =>
-																		view.name ===
-																		viewToChange.name
-																) as ExtendedNameValuePairWithChanges
-														).changes = {
-															value: {
-																currentValue:
-																	view.value,
-																previousValue:
-																	view.value
-																		.replace(
-																			value,
-																			''
-																		)
-																		.replace(
-																			/,\s*$/,
-																			''
-																		),
-																transactionToken:
-																	change
-																		.currentVersion
-																		.transactionToken,
-															},
-														};
-													} else if (
-														view !== undefined
-													) {
-														(
-															applic.features
-																.find(
-																	(feature) =>
-																		feature.name ===
-																		name
-																)!
-																.configurations.find(
-																	(view) =>
-																		view.name ===
-																		viewToChange.name
-																) as ExtendedNameValuePairWithChanges
-														).changes = {
-															value: {
-																currentValue:
-																	value,
-																previousValue:
-																	'',
-																transactionToken:
-																	change
-																		.currentVersion
-																		.transactionToken,
-															},
-														};
-													}
-												} else {
-													if (
-														feature.multiValued &&
-														view !== undefined &&
-														view.changes !==
-															undefined
-													) {
-														(
-															applic.features
-																.find(
-																	(feature) =>
-																		feature.name ===
-																		name
-																)!
-																.configurations.find(
-																	(view) =>
-																		view.name ===
-																		viewToChange.name
-																) as ExtendedNameValuePairWithChanges
-														).changes.value.currentValue =
-															view.value;
-														(
-															applic.features
-																.find(
-																	(feature) =>
-																		feature.name ===
-																		name
-																)!
-																.configurations.find(
-																	(view) =>
-																		view.name ===
-																		viewToChange.name
-																) as ExtendedNameValuePairWithChanges
-														).changes.value.previousValue =
-															(
-																view.changes
-																	.value
-																	.previousValue as string
-															)
-																.replace(
-																	value,
-																	''
-																)
-																.replace(
-																	/,\s*$/,
-																	''
-																);
-													} else if (
-														view !== undefined &&
-														view.changes !==
-															undefined
-													) {
-														(
-															applic.features
-																.find(
-																	(feature) =>
-																		feature.name ===
-																		name
-																)!
-																.configurations.find(
-																	(view) =>
-																		view.name ===
-																		viewToChange.name
-																) as ExtendedNameValuePairWithChanges
-														).changes.value.currentValue =
-															value;
-													}
-												}
-											}
-										}
-									} else if (
-										change.currentVersion.modType ===
-										ModificationType.DELETED
-									) {
-										if (
-											applic.features.some(
-												(feature) =>
-													feature.name === name
-											)
-										) {
-											if (
-												applic.views.some(
-													(view) => view.id === id
-												)
-											) {
-												let viewToChange =
-													applic.views.find(
-														(view) => view.id === id
-													) as view | viewWithChanges;
-												let feature =
-													applic.features.find(
-														(feature) =>
-															feature.name ===
-															name
-													) as
-														| extendedFeatureWithChanges
-														| extendedFeature;
-												let view =
-													feature?.configurations.find(
-														(view) =>
-															view.name ===
-															viewToChange.name
-													) as ExtendedNameValuePairWithChanges;
-												if (
-													view !== undefined &&
-													view.changes === undefined
-												) {
-													if (view.id) {
-														(
-															applic.features
-																.find(
-																	(feature) =>
-																		feature.name ===
-																		name
-																)!
-																.configurations.find(
-																	(view) =>
-																		view.name ===
-																		viewToChange.name
-																) as ExtendedNameValuePairWithChanges
-														).changes = {
-															value: {
-																currentValue:
-																	'',
-																previousValue:
-																	view.value
-																		.replace(
-																			value,
-																			''
-																		)
-																		.replace(
-																			/,\s*$/,
-																			''
-																		),
-																transactionToken:
-																	change
-																		.currentVersion
-																		.transactionToken,
-															},
-														};
-														(
-															applic.features
-																.find(
-																	(feature) =>
-																		feature.name ===
-																		name
-																)!
-																.configurations.find(
-																	(view) =>
-																		view.name ===
-																		viewToChange.name
-																) as ExtendedNameValuePairWithChanges
-														).value = view.value
-															.replace(value, '')
-															.replace(
-																/,\s*$/,
-																''
-															);
-													} else if (
-														view !== undefined
-													) {
-														(
-															applic.features
-																.find(
-																	(feature) =>
-																		feature.name ===
-																		name
-																)!
-																.configurations.find(
-																	(view) =>
-																		view.name ===
-																		viewToChange.name
-																) as ExtendedNameValuePairWithChanges
-														).changes = {
-															value: {
-																currentValue:
-																	view.value
-																		.replace(
-																			value,
-																			''
-																		)
-																		.replace(
-																			/,\s*$/,
-																			''
-																		),
-																previousValue:
-																	view.value
-																		.replace(
-																			value,
-																			''
-																		)
-																		.replace(
-																			/,\s*$/,
-																			''
-																		),
-																transactionToken:
-																	change
-																		.currentVersion
-																		.transactionToken,
-															},
-														};
-													}
-												} else {
-													if (
-														feature.multiValued &&
-														view !== undefined &&
-														view.changes !==
-															undefined
-													) {
-														(
-															applic.features
-																.find(
-																	(feature) =>
-																		feature.name ===
-																		name
-																)!
-																.configurations.find(
-																	(view) =>
-																		view.name ===
-																		viewToChange.name
-																) as ExtendedNameValuePairWithChanges
-														).changes.value.previousValue =
-															(
-																view.changes
-																	.value
-																	.previousValue as string
-															)
-																.replace(
-																	value,
-																	''
-																)
-																.replace(
-																	/,\s*$/,
-																	''
-																);
-														if (view.id) {
-															(
-																applic.features
-																	.find(
-																		(
-																			feature
-																		) =>
-																			feature.name ===
-																			name
-																	)!
-																	.configurations.find(
-																		(
-																			view
-																		) =>
-																			view.name ===
-																			viewToChange.name
-																	) as ExtendedNameValuePairWithChanges
-															).value = view.value
-																.replace(
-																	value,
-																	''
-																)
-																.replace(
-																	/,\s*$/,
-																	''
-																);
-														}
-													} else if (
-														view !== undefined &&
-														view.changes !==
-															undefined
-													) {
-														(
-															applic.features
-																.find(
-																	(feature) =>
-																		feature.name ===
-																		name
-																)!
-																.configurations.find(
-																	(view) =>
-																		view.name ===
-																		viewToChange.name
-																) as ExtendedNameValuePairWithChanges
-														).changes.value.previousValue =
-															value;
-														if (view.id) {
-															(
-																applic.features
-																	.find(
-																		(
-																			feature
-																		) =>
-																			feature.name ===
-																			name
-																	)!
-																	.configurations.find(
-																		(
-																			view
-																		) =>
-																			view.name ===
-																			viewToChange.name
-																	) as ExtendedNameValuePairWithChanges
-															).value = value;
-														}
-													}
-												}
-											}
-											if (
-												applic.groups.some(
-													(view) => view.id === id
-												)
-											) {
-												let viewToChange =
-													applic.groups.find(
-														(view) => view.id === id
-													) as
-														| configGroup
-														| configGroupWithChanges;
-												let feature =
-													applic.features.find(
-														(feature) =>
-															feature.name ===
-															name
-													) as
-														| extendedFeatureWithChanges
-														| extendedFeature;
-												let view =
-													feature?.configurations.find(
-														(view) =>
-															view.name ===
-															viewToChange.name
-													) as ExtendedNameValuePairWithChanges;
-												if (
-													view !== undefined &&
-													view.changes === undefined
-												) {
-													if (view.id) {
-														(
-															applic.features
-																.find(
-																	(feature) =>
-																		feature.name ===
-																		name
-																)!
-																.configurations.find(
-																	(view) =>
-																		view.name ===
-																		viewToChange.name
-																) as ExtendedNameValuePairWithChanges
-														).changes = {
-															value: {
-																currentValue:
-																	'',
-																previousValue:
-																	view.value
-																		.replace(
-																			value,
-																			''
-																		)
-																		.replace(
-																			/,\s*$/,
-																			''
-																		),
-																transactionToken:
-																	change
-																		.currentVersion
-																		.transactionToken,
-															},
-														};
-														(
-															applic.features
-																.find(
-																	(feature) =>
-																		feature.name ===
-																		name
-																)!
-																.configurations.find(
-																	(view) =>
-																		view.name ===
-																		viewToChange.name
-																) as ExtendedNameValuePairWithChanges
-														).value = view.value
-															.replace(value, '')
-															.replace(
-																/,\s*$/,
-																''
-															);
-													} else {
-														(
-															applic.features
-																.find(
-																	(feature) =>
-																		feature.name ===
-																		name
-																)!
-																.configurations.find(
-																	(view) =>
-																		view.name ===
-																		viewToChange.name
-																) as ExtendedNameValuePairWithChanges
-														).changes = {
-															value: {
-																currentValue:
-																	view.value
-																		.replace(
-																			value,
-																			''
-																		)
-																		.replace(
-																			/,\s*$/,
-																			''
-																		),
-																previousValue:
-																	view.value
-																		.replace(
-																			value,
-																			''
-																		)
-																		.replace(
-																			/,\s*$/,
-																			''
-																		),
-																transactionToken:
-																	change
-																		.currentVersion
-																		.transactionToken,
-															},
-														};
-													}
-												} else {
-													if (
-														feature.multiValued &&
-														view !== undefined &&
-														view.changes !==
-															undefined
-													) {
-														(
-															applic.features
-																.find(
-																	(feature) =>
-																		feature.name ===
-																		name
-																)!
-																.configurations.find(
-																	(view) =>
-																		view.name ===
-																		viewToChange.name
-																) as ExtendedNameValuePairWithChanges
-														).changes.value.previousValue =
-															(
-																view.changes
-																	.value
-																	.previousValue as string
-															)
-																.replace(
-																	value,
-																	''
-																)
-																.replace(
-																	/,\s*$/,
-																	''
-																);
-														if (view.id) {
-															(
-																applic.features
-																	.find(
-																		(
-																			feature
-																		) =>
-																			feature.name ===
-																			name
-																	)!
-																	.configurations.find(
-																		(
-																			view
-																		) =>
-																			view.name ===
-																			viewToChange.name
-																	) as ExtendedNameValuePairWithChanges
-															).value = view.value
-																.replace(
-																	value,
-																	''
-																)
-																.replace(
-																	/,\s*$/,
-																	''
-																);
-														}
-													} else if (
-														view !== undefined &&
-														view.changes !==
-															undefined
-													) {
-														(
-															applic.features
-																.find(
-																	(feature) =>
-																		feature.name ===
-																		name
-																)!
-																.configurations.find(
-																	(view) =>
-																		view.name ===
-																		viewToChange.name
-																) as ExtendedNameValuePairWithChanges
-														).changes.value.previousValue =
-															value;
-														if (view.id) {
-															(
-																applic.features
-																	.find(
-																		(
-																			feature
-																		) =>
-																			feature.name ===
-																			name
-																	)!
-																	.configurations.find(
-																		(
-																			view
-																		) =>
-																			view.name ===
-																			viewToChange.name
-																	) as ExtendedNameValuePairWithChanges
-															).value = value;
-														}
-													}
-												}
-											}
-										}
-									}
-								})
-							)
-					),
-					filter((value) => value.id !== '1' && value.id !== '-1'),
-					distinct()
-				)
-			),
-			scan((acc, curr) => [...acc, curr], [] as NamedId[])
-		);
-	}
-	isACfgGroup(name: string) {
-		return this.groupList.pipe(
-			switchMap((response) =>
-				of(response).pipe(
-					mergeMap((responseGrouping) =>
-						from(responseGrouping).pipe(
-							switchMap((grouping) =>
-								iif(
-									() => grouping.name === name,
-									of(true),
-									of(false)
-								)
-							)
-						)
-					)
-				)
-			),
-			scan((acc, curr) => {
-				if (curr !== false) {
-					acc = curr;
-				}
-				return acc;
-			}, false as boolean)
-		);
 	}
 
 	createProductType(productType: productType) {
@@ -2204,768 +1769,6 @@ export class PlConfigCurrentBranchService {
 							)
 					  )
 					: of(response)
-			)
-		);
-	}
-	private _parseDifferences(
-		differences: changeInstance[] | undefined,
-		branchId: string,
-		_oldBranchApplicability: PlConfigApplicUIBranchMapping
-	) {
-		let applic = JSON.parse(
-			JSON.stringify(_oldBranchApplicability)
-		) as PlConfigApplicUIBranchMapping;
-		return of(differences).pipe(
-			filter(
-				(val) => val !== undefined && val.length !== 0
-			) as OperatorFunction<
-				changeInstance[] | undefined,
-				changeInstance[]
-			>,
-			switchMap((differenceArray) =>
-				of(differenceArray).pipe(
-					map((differenceArray) =>
-						differenceArray.sort(
-							(a, b) =>
-								['111', '222', '333', '444'].indexOf(
-									a.changeType.id
-								) -
-								['111', '222', '333', '444'].indexOf(
-									b.changeType.id
-								)
-						)
-					),
-					concatMap((differences) =>
-						from(differences).pipe(
-							filter(
-								(val) =>
-									val.ignoreType !==
-									ignoreType.DELETED_AND_DNE_ON_DESTINATION
-							),
-							concatMap((change) =>
-								iif(
-									() =>
-										change.changeType.id ===
-										changeTypeNumber.ARTIFACT_CHANGE,
-									iif(
-										() =>
-											change.itemTypeId ===
-												ARTIFACTTYPEIDENUM.CONFIGURATION &&
-											change.currentVersion
-												.transactionToken.id !== '-1',
-										iif(
-											() =>
-												change.deleted &&
-												!applic.views
-													.map((a) => a.id)
-													.includes(change.artId),
-											of(change).pipe(
-												tap(() => {
-													applic.features.forEach(
-														(feature) => {
-															feature.configurations.push(
-																{
-																	id: change.artId,
-																	name: '',
-																	value: feature.defaultValue,
-																	values: [
-																		feature.defaultValue,
-																	],
-																}
-															);
-														}
-													);
-													applic.views.push({
-														id: change.artId,
-														name: '',
-														description: '',
-														hasFeatureApplicabilities:
-															false,
-														productApplicabilities:
-															[],
-														added: false,
-														deleted: true,
-														changes: {},
-													});
-												})
-											),
-											iif(
-												() =>
-													change.currentVersion
-														.modType ===
-														ModificationType.NEW &&
-													change.currentVersion
-														.value === null &&
-													applic.views.some(
-														(val) =>
-															val.id ===
-															change.artId
-													),
-												of(change).pipe(
-													tap(() => {
-														if (
-															applic.views.find(
-																(val) =>
-																	val.id ===
-																	change.artId
-															) !== undefined
-														) {
-															(
-																applic.views.find(
-																	(val) =>
-																		val.id ===
-																		change.artId
-																) as viewWithChanges
-															).added = true;
-															(
-																applic.views.find(
-																	(val) =>
-																		val.id ===
-																		change.artId
-																) as viewWithChanges
-															).changes = {};
-														}
-													})
-												),
-												iif(
-													() =>
-														applic.views.find(
-															(val) =>
-																val.productApplicabilities?.includes(
-																	change
-																		.currentVersion
-																		.value as string
-																)
-														) !== undefined,
-													of(change).pipe(
-														tap(() => {
-															if (
-																(
-																	applic.views.find(
-																		(val) =>
-																			val.id ===
-																			change.artId
-																	) as viewWithChanges
-																).changes ===
-																undefined
-															) {
-																(
-																	applic.views.find(
-																		(val) =>
-																			val.id ===
-																			change.artId
-																	) as viewWithChanges
-																).changes = {};
-															}
-															if (
-																(
-																	applic.views.find(
-																		(val) =>
-																			val.id ===
-																			change.artId
-																	) as viewWithChanges
-																).changes
-																	.productApplicabilities ===
-																undefined
-															) {
-																(
-																	applic.views.find(
-																		(val) =>
-																			val.id ===
-																			change.artId
-																	) as viewWithChanges
-																).changes.productApplicabilities =
-																	[];
-															}
-															if (
-																!(
-																	(
-																		applic.views.find(
-																			(
-																				val
-																			) =>
-																				val.id ===
-																				change.artId
-																		) as viewWithChanges
-																	).changes
-																		.productApplicabilities as difference[]
-																).some(
-																	(val) =>
-																		val.currentValue ===
-																		change
-																			.currentVersion
-																			.value
-																)
-															) {
-																(
-																	(
-																		applic.views.find(
-																			(
-																				val
-																			) =>
-																				val.id ===
-																				change.artId
-																		) as viewWithChanges
-																	).changes
-																		.productApplicabilities as difference[]
-																).push({
-																	currentValue:
-																		change
-																			.currentVersion
-																			.value,
-																	previousValue:
-																		change
-																			.baselineVersion
-																			.value,
-																	transactionToken:
-																		change
-																			.currentVersion
-																			.transactionToken,
-																});
-															}
-														})
-													),
-													iif(
-														() =>
-															change
-																.currentVersion
-																.modType ===
-																ModificationType.DELETED &&
-															change
-																.currentVersion
-																.value === null,
-														of(change).pipe(
-															tap(() => {
-																(
-																	applic.views.find(
-																		(val) =>
-																			val.id ===
-																			change.artId
-																	) as viewWithChanges
-																).deleted =
-																	true;
-															})
-														),
-														of()
-													)
-												)
-											)
-										),
-										iif(
-											() =>
-												change.itemTypeId ===
-													ARTIFACTTYPEIDENUM.CONFIGURATION_GROUP &&
-												change.currentVersion
-													.transactionToken.id !==
-													'-1',
-											iif(
-												() =>
-													change.deleted &&
-													!applic.groups
-														.map((a) => a.id)
-														.includes(change.artId),
-												of(change).pipe(
-													tap(() => {
-														applic.features.forEach(
-															(feature) => {
-																feature.configurations.push(
-																	{
-																		id: change.artId,
-																		name: '',
-																		value: feature.defaultValue,
-																		values: [
-																			feature.defaultValue,
-																		],
-																	}
-																);
-															}
-														);
-														applic.groups.push({
-															id: change.artId,
-															name: '',
-															description: '',
-															configurations: [],
-															deleted: true,
-														});
-													})
-												),
-												iif(
-													() =>
-														change.currentVersion
-															.modType ===
-															ModificationType.NEW &&
-														change.currentVersion
-															.value === null,
-													of(change).pipe(
-														tap(() => {
-															if (
-																applic.groups.find(
-																	(val) =>
-																		val.id ===
-																		change.artId
-																) !== undefined
-															) {
-																(
-																	applic.groups.find(
-																		(val) =>
-																			val.id ===
-																			change.artId
-																	) as configGroupWithChanges
-																).added = true;
-																(
-																	applic.groups.find(
-																		(val) =>
-																			val.id ===
-																			change.artId
-																	) as configGroupWithChanges
-																).changes = {};
-															}
-														})
-													),
-													iif(
-														() =>
-															change
-																.currentVersion
-																.modType ===
-																ModificationType.DELETED &&
-															change
-																.currentVersion
-																.value === null,
-														of(change).pipe(
-															tap(() => {
-																if (
-																	applic.groups.find(
-																		(val) =>
-																			val.id ===
-																			change.artId
-																	) !==
-																	undefined
-																) {
-																	(
-																		applic.groups.find(
-																			(
-																				val
-																			) =>
-																				val.id ===
-																				change.artId
-																		) as configGroupWithChanges
-																	).deleted =
-																		true;
-																}
-															})
-														),
-														of()
-													)
-												)
-											),
-											iif(
-												() =>
-													change.itemTypeId ===
-														ARTIFACTTYPEIDENUM.FEATURE &&
-													change.currentVersion
-														.transactionToken.id !==
-														'-1',
-												iif(
-													() =>
-														change.deleted &&
-														!applic.features
-															.map((a) => a.id)
-															.includes(
-																change.artId
-															),
-													of(change).pipe(
-														tap(() => {
-															let configurations: ExtendedNameValuePair[] =
-																[];
-															applic.views.forEach(
-																(view) => {
-																	configurations.push(
-																		{
-																			id: view.id,
-																			name: view.name,
-																			value: '',
-																			values: [],
-																		}
-																	);
-																}
-															);
-															applic.groups.forEach(
-																(group) => {
-																	configurations.push(
-																		{
-																			id: group.id,
-																			name: group.name,
-																			value: '',
-																			values: [],
-																		}
-																	);
-																}
-															);
-															applic.features.push(
-																{
-																	id: change.artId,
-																	name: '',
-																	description:
-																		'',
-																	defaultValue:
-																		'',
-																	multiValued:
-																		false,
-																	deleted:
-																		true,
-																	configurations:
-																		configurations,
-																	type: null,
-																	valueType:
-																		'',
-																	values: [],
-																	productApplicabilities:
-																		[],
-																	setValueStr() {},
-																	setProductAppStr() {},
-																}
-															);
-														})
-													),
-													iif(
-														() =>
-															change
-																.currentVersion
-																.modType ===
-																ModificationType.NEW &&
-															change
-																.currentVersion
-																.value === null,
-														of(change).pipe(
-															tap(() => {
-																if (
-																	applic.features.find(
-																		(val) =>
-																			val.id ===
-																			change.artId
-																	)
-																) {
-																	(
-																		applic.features.find(
-																			(
-																				val
-																			) =>
-																				val.id ===
-																				change.artId
-																		) as extendedFeatureWithChanges
-																	).added =
-																		true;
-																}
-															})
-														),
-														iif(
-															() =>
-																change
-																	.currentVersion
-																	.modType ===
-																	ModificationType.DELETED &&
-																change
-																	.currentVersion
-																	.value ===
-																	null,
-															of(change).pipe(
-																tap(() => {
-																	if (
-																		applic.features.find(
-																			(
-																				val
-																			) =>
-																				val.id ===
-																				change.artId
-																		) !==
-																		undefined
-																	) {
-																		(
-																			applic.features.find(
-																				(
-																					val
-																				) =>
-																					val.id ===
-																					change.artId
-																			) as extendedFeatureWithChanges
-																		).deleted =
-																			true;
-																	}
-																})
-															),
-															of()
-														)
-													)
-												),
-												of()
-											)
-										)
-									),
-									iif(
-										() =>
-											change.changeType.id ===
-											changeTypeNumber.ATTRIBUTE_CHANGE,
-										iif(
-											() =>
-												applic.features
-													.map((a) => a.id)
-													.includes(change.artId),
-											of(change).pipe(
-												tap(() => {
-													if (
-														(
-															applic.features.find(
-																(val) =>
-																	val.id ===
-																	change.artId
-															) as extendedFeatureWithChanges
-														).changes === undefined
-													) {
-														(
-															applic.features.find(
-																(val) =>
-																	val.id ===
-																	change.artId
-															) as extendedFeatureWithChanges
-														).changes = {};
-													}
-													this.updateFeatureAttributes(
-														change,
-														applic.features.find(
-															(val) =>
-																val.id ===
-																change.artId
-														) as extendedFeatureWithChanges
-													);
-													if (
-														change.itemTypeId ===
-														ATTRIBUTETYPEIDENUM.DEFAULTVALUE
-													) {
-														(
-															applic.features.find(
-																(val) =>
-																	val.id ===
-																	change.artId
-															) as extendedFeatureWithChanges
-														).configurations.map(
-															(config) => {
-																if (
-																	config.id !==
-																	undefined
-																) {
-																	config.value =
-																		change
-																			.currentVersion
-																			.value as string;
-																	config.values =
-																		[
-																			change
-																				.currentVersion
-																				.value as string,
-																		];
-																}
-																return config;
-															}
-														);
-													}
-												})
-											),
-											iif(
-												() =>
-													applic.views
-														.map((a) => a.id)
-														.includes(change.artId),
-												of(change).pipe(
-													tap(() => {
-														if (
-															(
-																applic.views.find(
-																	(val) =>
-																		val.id ===
-																		change.artId
-																) as viewWithChanges
-															).changes ===
-															undefined
-														) {
-															(
-																applic.views.find(
-																	(val) =>
-																		val.id ===
-																		change.artId
-																) as viewWithChanges
-															).changes = {};
-														}
-														this.updateViewAttributes(
-															change,
-															applic.views.find(
-																(val) =>
-																	val.id ===
-																	change.artId
-															) as viewWithChanges
-														);
-														if (
-															change.deleted &&
-															change.itemTypeId ===
-																ATTRIBUTETYPEIDENUM.NAME
-														) {
-															applic.features.forEach(
-																(feature) => {
-																	if (
-																		feature.configurations.find(
-																			(
-																				val
-																			) =>
-																				val.id ===
-																				change.artId
-																		) !==
-																		undefined
-																	) {
-																		(
-																			feature.configurations.find(
-																				(
-																					val
-																				) =>
-																					val.id ===
-																					change.artId
-																			) as ExtendedNameValuePair
-																		).name =
-																			change
-																				.currentVersion
-																				.value as string;
-																	}
-																}
-															);
-														}
-													})
-												),
-												iif(
-													() =>
-														applic.groups
-															.map((a) => a.id)
-															.includes(
-																change.artId
-															),
-													of(change).pipe(
-														tap(() => {
-															if (
-																(
-																	applic.groups.find(
-																		(val) =>
-																			val.id ===
-																			change.artId
-																	) as configGroupWithChanges
-																).changes ===
-																undefined
-															) {
-																(
-																	applic.groups.find(
-																		(val) =>
-																			val.id ===
-																			change.artId
-																	) as configGroupWithChanges
-																).changes = {};
-															}
-															this.updateGroupAttributes(
-																change,
-																applic.groups.find(
-																	(val) =>
-																		val.id ===
-																		change.artId
-																) as configGroupWithChanges
-															);
-															if (
-																change.deleted &&
-																change.itemTypeId ===
-																	ATTRIBUTETYPEIDENUM.NAME
-															) {
-																applic.features.forEach(
-																	(
-																		feature
-																	) => {
-																		(
-																			feature.configurations.find(
-																				(
-																					val
-																				) =>
-																					val.id ===
-																					change.artId
-																			) as ExtendedNameValuePair
-																		).name =
-																			change
-																				.currentVersion
-																				.value as string;
-																	}
-																);
-															}
-														})
-													),
-													of()
-												)
-											)
-										),
-										iif(
-											() =>
-												change.changeType.id ===
-												changeTypeNumber.RELATION_CHANGE,
-											of(),
-											iif(
-												() =>
-													change.changeType.id ===
-													changeTypeNumber.TUPLE_CHANGE,
-												iif(
-													() =>
-														typeof change
-															.currentVersion
-															.value ===
-															'string' &&
-														change.currentVersion.value.includes(
-															'Tuple2|'
-														),
-													//first token is view/group
-													//second token is applicability token
-													iif(
-														() =>
-															change.itemTypeId ===
-															'2', //filter to only be Applicability Definitions
-														of(change),
-														of() //other tuples DNC currently
-													),
-													of()
-												),
-												of()
-											)
-										)
-									)
-								)
-							)
-						)
-					),
-					take(
-						differenceArray.filter(
-							(val) =>
-								val.ignoreType !==
-								ignoreType.DELETED_AND_DNE_ON_DESTINATION
-						).length
-					),
-					reduce(
-						(acc, curr) => [...acc, curr],
-						[] as changeInstance[]
-					),
-					switchMap((changes) =>
-						this.processTupleChanges(
-							changes.filter(
-								(val) =>
-									val.changeType.id ===
-										changeTypeNumber.TUPLE_CHANGE &&
-									val.ignoreType !==
-										ignoreType.DELETED_AND_DNE_ON_DESTINATION
-							),
-							applic,
-							branchId
-						)
-					),
-					switchMap((val) => of(applic))
-				)
 			)
 		);
 	}

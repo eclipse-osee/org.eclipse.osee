@@ -14,10 +14,7 @@ import { NamedIdAndDescription } from '@osee/shared/types';
 import { difference } from '@osee/shared/types/change-report';
 import { showable } from './base-types/showable';
 import { extendedFeature, extendedFeatureWithChanges } from './features/base';
-import {
-	configGroup,
-	configGroupWithChanges,
-} from './pl-config-configurations';
+import { configGroup } from './pl-config-configurations';
 import { branchInfo } from '@osee/shared/types';
 
 export interface PlConfigApplicUIBranchMapping {
@@ -25,7 +22,7 @@ export interface PlConfigApplicUIBranchMapping {
 	branch: branchInfo;
 	editable: boolean;
 	features: (extendedFeature | extendedFeatureWithChanges)[];
-	groups: (configGroup | configGroupWithChanges)[];
+	groups: configGroup[];
 	parentBranch: branchInfo;
 	views: (view | viewWithChanges)[];
 }
@@ -41,7 +38,7 @@ export class PlConfigApplicUIBranchMappingImpl
 	};
 	editable: boolean = false;
 	features: (extendedFeature | extendedFeatureWithChanges)[] = [];
-	groups: (configGroup | configGroupWithChanges)[] = [];
+	groups: configGroup[] = [];
 	parentBranch: branchInfo = {
 		idIntValue: 0,
 		name: '',
@@ -63,16 +60,17 @@ export interface viewWithChanges extends view {
 	changes: {
 		name?: difference;
 		hasFeatureApplicabilities?: difference;
+		description?: difference<string>;
 		productApplicabilities?: difference[];
 	};
 }
 export interface viewWithChangesAndGroups extends viewWithChanges {
-	groups: (configGroup | configGroupWithChanges)[];
+	groups: configGroup[];
 }
 export interface viewWithGroups extends view {
-	groups: (configGroup | configGroupWithChanges)[];
+	groups: configGroup[];
 }
 export interface viewWithDescription extends view {
-	groups: (configGroup | configGroupWithChanges)[];
+	groups: configGroup[];
 	description: string;
 }

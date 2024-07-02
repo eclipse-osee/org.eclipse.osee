@@ -10,20 +10,18 @@
 * Contributors:
 *     Boeing - initial API and implementation
 -->
-@if ({ editable: (_editable | async) }; as edit) {
-	<button
-		mat-menu-item
-		(click)="openConfigMenu(config.name, edit.editable || 'false')">
-		<mat-icon color="primary">edit</mat-icon>Open Config Menu
-	</button>
-}
-@if (hasViewChanges(config)) {
+<button
+	mat-menu-item
+	(click)="openConfigMenu(config().id, editable())">
+	<mat-icon color="primary">edit</mat-icon>Open Config Menu
+</button>
+@if (hasViewChanges(config())) {
 	<button
 		mat-menu-item
 		[matMenuTriggerFor]="configDiffMenu"
-		[matMenuTriggerData]="{ config: config }">
+		[matMenuTriggerData]="{ config: config() }">
 		<mat-icon color="accent">pageview</mat-icon>View Diff for
-		{{ config.name }}
+		{{ config().name }}
 	</button>
 }
 <mat-menu #configDiffMenu="matMenu">
@@ -35,6 +33,15 @@
 				mat-menu-item
 				(click)="viewDiff(true, config.changes.name, 'Name')">
 				Name
+			</button>
+		}
+		@if (config.changes.description !== undefined) {
+			<button
+				mat-menu-item
+				(click)="
+					viewDiff(true, config.changes.description, 'Description')
+				">
+				Description
 			</button>
 		}
 		@if (config.changes.productApplicabilities !== undefined) {

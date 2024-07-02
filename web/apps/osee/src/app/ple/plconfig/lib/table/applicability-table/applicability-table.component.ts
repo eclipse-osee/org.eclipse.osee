@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, NgClass } from '@angular/common';
-import { Component, effect, signal, viewChild } from '@angular/core';
+import { Component, computed, effect, inject, viewChild } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatOption } from '@angular/material/core';
@@ -30,8 +30,8 @@ import {
 	MatMenuContent,
 	MatMenuTrigger,
 } from '@angular/material/menu';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSelect, MatSelectChange } from '@angular/material/select';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatSelect } from '@angular/material/select';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
 import {
 	MatCell,
@@ -48,26 +48,10 @@ import {
 	MatTableDataSource,
 } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
-import {
-	OperatorFunction,
-	combineLatest,
-	from,
-	iif,
-	of,
-	throwError,
-} from 'rxjs';
-import {
-	distinct,
-	filter,
-	map,
-	mergeMap,
-	reduce,
-	share,
-	shareReplay,
-	switchMap,
-	take,
-	tap,
-} from 'rxjs/operators';
+import { CurrentBranchInfoService, branchImpl } from '@osee/shared/services';
+import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
+import { OperatorFunction } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { ConfigGroupMenuComponent } from '../../menus/config-group-menu/config-group-menu.component';
 import { ConfigMenuComponent } from '../../menus/config-menu/config-menu.component';
 import { FeatureMenuComponent } from '../../menus/feature-menu/feature-menu.component';
@@ -75,25 +59,222 @@ import { ValueMenuComponent } from '../../menus/value-menu/value-menu.component'
 import { DialogService } from '../../services/dialog.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
-import { ExtendedNameValuePairWithChanges } from '../../types/base-types/ExtendedNameValuePair';
+import { view } from '../../types/pl-config-applicui-branch-mapping';
+import { configGroup } from '../../types/pl-config-configurations';
 import {
-	extendedFeature,
-	extendedFeatureWithChanges,
-	trackableFeature,
-} from '../../types/features/base';
-import {
-	PlConfigApplicUIBranchMappingImpl,
-	view,
-	viewWithChanges,
-} from '../../types/pl-config-applicui-branch-mapping';
-import {
-	configGroup,
-	configGroupWithChanges,
-} from '../../types/pl-config-configurations';
+	configurationValue,
+	plconfigTableEntry,
+} from '../../types/pl-config-table';
+import { PlconfigCellComponent } from '../plconfig-cell/plconfig-cell.component';
+import { PlconfigFeatureCellComponent } from '../plconfig-feature-cell/plconfig-feature-cell.component';
+import { PLConfigFilterComponent } from '../plconfig-filter/plconfig-filter.component';
 
 @Component({
 	selector: 'osee-plconfig-applicability-table',
-	templateUrl: './applicability-table.component.html',
+	template: `<osee-plconfig-filter></osee-plconfig-filter>
+		<div
+			class="tw-h-[72vh] tw-w-[100vw] tw-overflow-auto [&::-webkit-scrollbar-corner]:tw-bg-background-app-bar [&::-webkit-scrollbar-thumb]:tw-bg-primary [&::-webkit-scrollbar-track]:tw-border-r-[10px] [&::-webkit-scrollbar-track]:tw-bg-background-app-bar [&::-webkit-scrollbar]:tw-bg-background-app-bar">
+			<table
+				mat-table
+				[dataSource]="dataSource"
+				matSort
+				matSortActive="feature"
+				matSortDirection="asc"
+				class="mat-elevation-z8 tw-w-full tw-min-w-[100vw] tw-max-w-[100vw] tw-border-separate tw-overflow-auto">
+				@for (column of topHeaders(); track column; let idx = $index) {
+					<ng-container [matColumnDef]="column">
+						<th
+							mat-header-cell
+							*matHeaderCellDef
+							[attr.colspan]="topHeaderLengths()[idx]"
+							class="tw-border-b-2 tw-border-r-2 tw-border-solid tw-border-foreground-divider tw-text-center tw-text-sm tw-font-bold tw-tracking-tighter tw-text-primary-600">
+							{{ column }}
+						</th>
+					</ng-container>
+				}
+				@for (
+					column of groupHeaders();
+					track column;
+					let idx = $index
+				) {
+					<ng-container [matColumnDef]="column">
+						<th
+							mat-header-cell
+							*matHeaderCellDef
+							[attr.colspan]="groupHeaderLengths()[idx]"
+							class="tw-border-b-2 tw-border-r-2 tw-border-solid tw-border-foreground-divider tw-text-center tw-text-sm tw-font-bold tw-tracking-tighter tw-text-primary-600">
+							{{ column.trim() }}
+						</th>
+					</ng-container>
+				}
+				@for (column of viewHeaders(); track column) {
+					<ng-container
+						[matColumnDef]="column.id"
+						[sticky]="column.id === '-1'">
+						<th
+							mat-header-cell
+							*matHeaderCellDef
+							[ngClass]="{
+								'tw-text-primary-darker': column.typeId === '6',
+								'tw-text-primary':
+									column.typeId !== '6' && !column.added,
+								'tw-bg-success-300 tw-text-success-300-contrast':
+									column.added,
+								'tw-bg-warning-100': column.deleted
+							}"
+							class="tw-cursor-pointer tw-border-b-2 tw-border-r-2 tw-border-solid tw-border-foreground-divider tw-text-center tw-font-bold"
+							(click)="openConfigMenu(column)"
+							(contextmenu)="
+								openContextMenu(
+									$event,
+									column.typeId === '6' ? 'GROUP' : 'CONFIG',
+									column.id
+								)
+							">
+							{{ column.name }}
+						</th>
+						@if (column.typeId !== '-1' && column.id !== '-1') {
+							<!-- Configuration/Group -->
+							<td
+								mat-cell
+								*matCellDef="let element"
+								class="tw-border-b-0 tw-border-r-2 tw-border-solid tw-border-foreground-divider tw-px-1">
+								<osee-plconfig-cell
+									[feature]="element"
+									[configId]="column.id"
+									[editMode]="editable()"
+									[allowEdits]="
+										column.typeId !== '6' &&
+										element.id !== '-1'
+									" />
+							</td>
+						} @else {
+							<!-- Feature -->
+							<td
+								*matCellDef="let element"
+								mat-cell
+								class="tw-border-b-0 tw-border-r-2 tw-border-solid tw-border-foreground-divider tw-px-1 tw-text-inherit"
+								(contextmenu)="
+									openContextMenu($event, 'FEATURE', element)
+								">
+								<osee-plconfig-feature-cell
+									[feature]="element" />
+							</td>
+						}
+					</ng-container>
+				}
+				<tr
+					mat-header-row
+					*matHeaderRowDef="topHeaders(); sticky: true"></tr>
+				<tr
+					mat-header-row
+					*matHeaderRowDef="groupHeaders(); sticky: true"></tr>
+				<tr
+					mat-header-row
+					*matHeaderRowDef="viewHeaderIds(); sticky: true"></tr>
+				<tr
+					mat-row
+					*matRowDef="let row; columns: viewHeaderIds()"
+					class="tw-h-12"
+					[class]="
+						row.added
+							? 'even:tw-bg-success-100 odd:tw-bg-success-300 odd:tw-text-success-300-constrast even:tw-text-success-100-contrast tw-font-bold'
+							: row.deleted
+							  ? 'even:tw-bg-warning-100 odd:tw-bg-warning-100 even:tw-text-warning-100-contrast odd:tw-text-warning-100-contrast tw-font-bold'
+							  : row.changes
+							    ? 'odd:tw-bg-accent-100 even:tw-bg-accent-200 odd:tw-text-accent-100-contrast even:tw-text-accent-200-contrast'
+							    : 'even:tw-bg-background-card odd:tw-bg-background-background'
+					"></tr>
+			</table>
+		</div>
+		<mat-paginator
+			[pageSizeOptions]="pageSizeOptions()"
+			[length]="tableCount()"
+			[pageIndex]="pageIndex()"
+			[pageSize]="pageSize()"
+			(page)="setPage($event)"></mat-paginator>
+		<mat-menu #featureMenu="matMenu">
+			<ng-template
+				matMenuContent
+				let-feature="feature">
+				<osee-plconfig-feature-menu
+					[feature]="feature"></osee-plconfig-feature-menu>
+			</ng-template>
+		</mat-menu>
+		<mat-menu #configMenu="matMenu">
+			<ng-template
+				matMenuContent
+				let-config="config">
+				<osee-plconfig-config-menu
+					[config]="
+						(config | async) || {
+							name: '',
+							description: '',
+							hasFeatureApplicabilities: false,
+							id: ''
+						}
+					"></osee-plconfig-config-menu>
+			</ng-template>
+		</mat-menu>
+		<mat-menu #configGroupMenu="matMenu">
+			<ng-template
+				matMenuContent
+				let-group="group">
+				<osee-plconfig-config-group-menu
+					[group]="
+						(group | async) || {
+							name: '',
+							description: '',
+							id: '',
+							configurations: []
+						}
+					"></osee-plconfig-config-group-menu>
+			</ng-template>
+		</mat-menu>
+		<mat-menu #valueMenu="matMenu">
+			<ng-template
+				matMenuContent
+				let-value="value">
+				<osee-plconfig-value-menu
+					[value]="value"></osee-plconfig-value-menu>
+			</ng-template>
+		</mat-menu>
+		<div
+			#featureMenuTrigger="matMenuTrigger"
+			style="visibility: hidden; position: fixed"
+			[style.left]="menuPosition.x"
+			[style.top]="menuPosition.y"
+			[matMenuTriggerFor]="featureMenu"
+			class="featureMenu">
+			LinkMenu
+		</div>
+		<div
+			#configMenuTrigger="matMenuTrigger"
+			style="visibility: hidden; position: fixed"
+			[style.left]="menuPosition.x"
+			[style.top]="menuPosition.y"
+			[matMenuTriggerFor]="configMenu"
+			class="configMenuTrigger">
+			NodeMenu
+		</div>
+		<div
+			#configGroupMenuTrigger="matMenuTrigger"
+			style="visibility: hidden; position: fixed"
+			[style.left]="menuPosition.x"
+			[style.top]="menuPosition.y"
+			[matMenuTriggerFor]="configGroupMenu"
+			class="configGroupMenuTrigger">
+			GraphMenu
+		</div>
+		<div
+			#valueMenuTrigger="matMenuTrigger"
+			style="visibility: hidden; position: fixed"
+			[style.left]="menuPosition.x"
+			[style.top]="menuPosition.y"
+			[matMenuTriggerFor]="valueMenu"
+			class="valueMenuTrigger">
+			GraphMenu
+		</div>`,
 	standalone: true,
 	imports: [
 		FormsModule,
@@ -130,27 +311,135 @@ import {
 		ConfigMenuComponent,
 		ConfigGroupMenuComponent,
 		ValueMenuComponent,
+		PLConfigFilterComponent,
+		PlconfigCellComponent,
+		PlconfigFeatureCellComponent,
 	],
 })
 export class ApplicabilityTableComponent {
-	private branchApplicability =
-		this.currentBranchService.branchApplicability.pipe(
-			share(),
-			shareReplay({ refCount: true, bufferSize: 1 }),
+	private uiStateService = inject(PlConfigUIStateService);
+	private currentBranchService = inject(PlConfigCurrentBranchService);
+	private dialog = inject(MatDialog);
+	private dialogService = inject(DialogService);
+	//TODO add real prefs
+	private _branchInfoService = inject(CurrentBranchInfoService);
+	private _branch = toSignal(
+		this._branchInfoService.currentBranch.pipe(takeUntilDestroyed()),
+		{
+			initialValue: new branchImpl(),
+		}
+	);
+	protected editable = computed(() => this._branch().branchType === '0');
+	private _completeTable =
+		this.currentBranchService.applicabilityTableData.pipe(
 			takeUntilDestroyed()
 		);
-	private branchApplicabilitySignal = toSignal(this.branchApplicability, {
-		initialValue: new PlConfigApplicUIBranchMappingImpl(),
+	protected completeTable = toSignal(this._completeTable, {
+		initialValue: { table: [], headers: [], headerLengths: [] },
 	});
+
+	private _tableCount =
+		this.currentBranchService.applicabilityTableDataCount.pipe(
+			takeUntilDestroyed()
+		);
+	protected tableCount = toSignal(this._tableCount, { initialValue: 0 });
+	protected pageIndex = this.uiStateService.currentPage;
+	protected pageSize = this.uiStateService.currentPageSize;
+
+	protected pageSizeOptions = computed(() => {
+		const startingOptions = [this.pageSize()];
+		//ensure there are atleast 5 entries between the current page and 0
+		const pageOptions =
+			this.pageSize() >= 5
+				? Array.from(
+						{ length: (this.pageSize() - 0) / 5 + 1 },
+						(value, index) => 0 + index * 5
+				  )
+				: [];
+		//ensure there is atleast 5 entries between the current page index and max table count
+		const countOptions =
+			this.tableCount() >= 5 &&
+			this.pageSize() < this.tableCount() &&
+			this.tableCount() - this.pageSize() > 5
+				? Array.from(
+						{
+							length:
+								(this.tableCount() - this.pageSize()) / 5 + 1,
+						},
+						(value, index) => this.pageSize() + index * 5
+				  )
+				: [];
+		const combined =
+			this.tableCount() < this.pageSize()
+				? pageOptions
+						.concat(startingOptions)
+						.concat([this.tableCount()])
+						.concat(countOptions)
+				: pageOptions.concat(startingOptions).concat(countOptions);
+		const set = new Set(combined);
+		return Array.from(set);
+	});
+	topHeaders = computed(() => {
+		if (
+			Math.max(
+				this.completeTable().headerLengths.reduce(
+					(acc, curr) => acc + curr,
+					0
+				) - this.completeTable().headerLengths[0],
+				0
+			) > 0
+		) {
+			return ['       ', 'Configurations', 'Configuration Groups'];
+		}
+		return ['       ', 'Configurations'];
+	});
+	topHeaderLengths = computed(() => [
+		1,
+		this.completeTable().headerLengths[0],
+		Math.max(
+			this.completeTable().headerLengths.reduce(
+				(acc, curr) => acc + curr,
+				0
+			) - this.completeTable().headerLengths[0],
+			0
+		),
+	]);
+	groups = computed(() =>
+		this.completeTable().headers.filter(
+			(x) => x.typeId === ARTIFACTTYPEIDENUM.CONFIGURATION_GROUP
+		)
+	);
+	numOfGroups = computed(() => this.groups().length);
+	groupHeaders = computed(() => [
+		'    ',
+		...this.groups().map((x) => x.name + ' '),
+	]);
+	groupHeaderLengths = computed(() => [
+		this.completeTable().headerLengths[0] !== 0 ? 1 : 0,
+		...this.completeTable().headerLengths,
+	]);
+
+	viewHeaders = computed<configurationValue[]>(() => [
+		{
+			id: '-1',
+			name: 'Feature',
+			gammaId: '-1',
+			typeId: '-1',
+			applicability: { id: '-1', gammaId: '-1', name: '' },
+		},
+		...this.completeTable().headers.filter((x) => x.id !== '-1'),
+	]);
+	viewHeaderIds = computed(() => this.viewHeaders().map((x) => x.id));
+	hasNoGroup = computed(
+		() => this.numOfGroups() !== this.completeTable().headerLengths.length
+	);
 	private sort = viewChild.required(MatSort);
 	private paginator = viewChild.required(MatPaginator);
-	protected filter = signal('');
-	protected dataSource = new MatTableDataSource<
-		extendedFeature | extendedFeatureWithChanges
-	>();
+	private _filter = this.uiStateService.filter;
+	protected dataSource = new MatTableDataSource<plconfigTableEntry>();
 	private _updateDataSourceWithData = effect(
 		() => {
-			this.dataSource.data = this.branchApplicabilitySignal().features;
+			this.dataSource.data = this.completeTable().table;
 		},
 		{ allowSignalWrites: true }
 	);
@@ -168,27 +457,15 @@ export class ApplicabilityTableComponent {
 	);
 	private _updateDataSourceWithFilter = effect(
 		() => {
-			this.dataSource.filter = this.filter();
-			if (this.dataSource.paginator) {
+			if (this.dataSource.paginator && this._filter()) {
 				this.dataSource.paginator.firstPage();
 			}
 		},
 		{ allowSignalWrites: true }
 	);
 
-	topLevelHeaders = this.currentBranchService.topLevelHeaders;
-	secondaryHeaders = this.currentBranchService.secondaryHeaders;
-	secondaryHeaderLength = this.currentBranchService.secondaryHeaderLength;
-	headers = this.currentBranchService.headers;
-	columnIds = this.headers.pipe(map((a) => a.map((b) => b.columnId)));
 	errors = this.uiStateService.errors;
-	viewCount = this.currentBranchService.viewCount;
-	groupCount = this.currentBranchService.groupCount;
-	groupList = this.currentBranchService.groupList;
-	_editable = this.currentBranchService.editable;
-	applicsWithFeatureConstraint$ =
-		this.currentBranchService.applicsWithFeatureConstraints;
-	feature$ = this.currentBranchService.branchApplicFeatures;
+
 	menuPosition = {
 		x: '0',
 		y: '0',
@@ -205,373 +482,24 @@ export class ApplicabilityTableComponent {
 	valueTrigger = viewChild.required('valueMenuTrigger', {
 		read: MatMenuTrigger,
 	});
-	constructor(
-		private uiStateService: PlConfigUIStateService,
-		private currentBranchService: PlConfigCurrentBranchService,
-		public dialog: MatDialog,
-		private dialogService: DialogService
-	) {}
-	valueTracker(index: any, item: any) {
-		return index;
-	}
-	applicIsNotPermitted(
-		columnName: string,
-		feature: trackableFeature,
-		featureValue: string
-	) {
-		// 2 cases to check for:
-		//
-		// #1: if the input applic matches a childApplic in a feature constraint, and the parentApplic of the same
-		// constraint shares a feature but not value with an applic on the current config (column), disable the input applicability option
-		//
-		// #2: if the input applic matches the feature but not value of parentApplic in a feature constraint, and the childApplic of the same
-		//constraint matches an applic on the current config (column), disable the input applicablity option
-		let isChildApplicMatch = false;
-		let isParentApplicWrongValueMatch = false;
-		return combineLatest([
-			this.applicsWithFeatureConstraint$,
-			this.feature$,
-		]).pipe(
-			switchMap(([childApplics, features]) =>
-				of(childApplics).pipe(
-					map((childApplics) => {
-						// find a parentApplic that shares the feature but NOT the value of the input applic
-						const foundParent = childApplics.find(
-							(childApplic) =>
-								childApplic.constraints[0].name
-									.toLowerCase()
-									.includes(feature.name.toLowerCase()) &&
-								!childApplic.constraints[0].name
-									.toLowerCase()
-									.includes(featureValue.toLowerCase())
-						);
-						// find a childApplic that matches the applic of the input applic
-						const foundChild = childApplics.find(
-							(childApplic) =>
-								childApplic.name
-									.toLowerCase()
-									.includes(feature.name.toLowerCase()) &&
-								childApplic.name
-									.toLowerCase()
-									.includes(featureValue.toLowerCase())
-						);
-						if (foundParent) {
-							isParentApplicWrongValueMatch = true;
-							return foundParent;
-						} else if (foundChild) {
-							isChildApplicMatch = true;
-							return foundChild;
-						} else {
-							return undefined;
-						}
-					}),
-					filter((childApplic) => childApplic !== undefined),
-					switchMap((childApplic) =>
-						of(
-							features
-								.map((feature) => {
-									return (
-										(isParentApplicWrongValueMatch &&
-											childApplic &&
-											feature.configurations.some(
-												(config) => {
-													// if the childApplic within the same feature constraint as the found parentApplic matches an existing applicability
-													// within the current config, do not allow the input option to be selectable
-													return (
-														config.name
-															.toLowerCase()
-															.includes(
-																columnName.toLowerCase()
-															) &&
-														childApplic.name
-															.toLowerCase()
-															.includes(
-																config.value.toLowerCase()
-															) &&
-														childApplic.name
-															.toLowerCase()
-															.includes(
-																feature.name.toLowerCase()
-															)
-													);
-												}
-											)) ||
-										(isChildApplicMatch &&
-											childApplic &&
-											feature.configurations.some(
-												(config) => {
-													// if the parentApplic matches the feature but not value of an applic on the current configuration, mark the current value as unselectable
-													return (
-														config.name
-															.toLowerCase()
-															.includes(
-																columnName.toLowerCase()
-															) &&
-														!childApplic.constraints[0].name
-															.toLowerCase()
-															.includes(
-																config.value.toLowerCase()
-															) &&
-														childApplic.constraints[0].name
-															.toLowerCase()
-															.includes(
-																feature.name.toLowerCase()
-															)
-													);
-												}
-											))
-									);
-								})
-								.reduce(
-									(acc, curr) => (acc = acc || curr),
-									false
-								)
-						)
-					)
-				)
-			)
-		);
-	}
-	modifyProduct(
-		configuration: string,
-		feature: trackableFeature,
-		event: MatSelectChange
-	) {
-		this.requestConfigurationChange(configuration, feature, event);
-	}
-	modifyConfiguration(
-		configuration: string,
-		feature: trackableFeature,
-		event: MatSelectChange
-	) {
-		this.requestConfigurationChange(configuration, feature, event);
-	}
-	requestConfigurationChange(
-		configuration: string,
-		feature: trackableFeature,
-		event: HTMLInputElement | MatSelectChange
-	) {
-		combineLatest([
-			this.branchApplicability.pipe(
-				take(1),
-				switchMap((app) =>
-					of(app.features).pipe(
-						map((features) =>
-							features.find((value) => value.id === feature.id)
-						),
-						filter(
-							(feature) => feature !== undefined
-						) as OperatorFunction<
-							extendedFeature | undefined,
-							extendedFeature
-						>,
-						map((featureValue) => featureValue.values)
-					)
-				)
-			),
-			this.branchApplicability.pipe(
-				take(1),
-				switchMap((app) =>
-					of(app.views).pipe(
-						map((views) =>
-							views.find(
-								(value) =>
-									value.name.toLowerCase() ===
-									configuration.toLowerCase()
-							)
-						),
-						filter(
-							(feature) => feature !== undefined
-						) as OperatorFunction<view | undefined, view>,
-						map((view) => view.id)
-					)
-				)
-			),
-			this.groupList,
-		])
-			.pipe(
-				take(1),
-				switchMap(([latestFeatures, latestViews, groupList]) =>
-					of(latestFeatures, latestViews, groupList).pipe(
-						switchMap((latest) =>
-							iif(
-								() => feature.multiValued,
-								of(event.value as string[]),
-								of([event.value as string])
-							).pipe(
-								switchMap((values) =>
-									of(values).pipe(
-										mergeMap((values) =>
-											from(values).pipe(
-												switchMap((value) =>
-													iif(
-														() =>
-															latestFeatures.findIndex(
-																(v) =>
-																	v.toLowerCase() ===
-																	value.toLowerCase()
-															) === -1,
-														throwError(() => {
-															this.uiStateService.error =
-																'Error: ' +
-																value +
-																' is not a valid value.';
-														}),
-														of(value)
-													)
-												)
-											)
-										)
-									)
-								)
-							)
-						),
-						distinct(),
-						reduce((acc, curr) => [...acc, curr], [] as string[]),
-						switchMap((v) =>
-							this.currentBranchService
-								.modifyConfiguration(
-									latestViews,
-									feature.name + ' = ' + v,
-									groupList
-								)
-								.pipe(take(1))
-						)
-					)
-				)
-			)
-			.subscribe();
-	}
-	isSticky(header: string) {
-		return header === 'feature';
-	}
-	isCorrectConfiguration(
-		configName: { name: string; value: string },
-		column: string
-	) {
-		return configName.name === column;
-	}
-	isAddedCfg(configName: string) {
-		return this.currentBranchService.findViewByName(configName).pipe(
-			filter((val) => val !== undefined) as OperatorFunction<
-				view | viewWithChanges | undefined,
-				view | viewWithChanges
-			>,
-			take(1),
-			filter(
-				(val) => (val as viewWithChanges)?.changes !== undefined
-			) as OperatorFunction<view | viewWithChanges, viewWithChanges>,
-			map((val) => val.added)
-		);
-	}
 
-	isDeletedCfg(configName: string) {
-		return this.currentBranchService.findViewByName(configName).pipe(
-			filter((val) => val !== undefined) as OperatorFunction<
-				view | viewWithChanges | undefined,
-				view | viewWithChanges
-			>,
-			take(1),
-			filter(
-				(val) => (val as viewWithChanges)?.changes !== undefined
-			) as OperatorFunction<view | viewWithChanges, viewWithChanges>,
-			map((val) => val.deleted)
-		);
-	}
-
-	hasChangesCfg(configName: string) {
-		return this.currentBranchService.findViewByName(configName).pipe(
-			filter((val) => val !== undefined) as OperatorFunction<
-				view | viewWithChanges | undefined,
-				view | viewWithChanges
-			>,
-			take(1),
-			map((val) => (val as viewWithChanges).changes !== undefined)
-		);
-	}
-
-	isDeletedCfgGroup(configName: string) {
-		return this.currentBranchService.findGroup(configName).pipe(
-			filter((val) => val !== undefined) as OperatorFunction<
-				configGroup | configGroupWithChanges | undefined,
-				configGroup | configGroupWithChanges
-			>,
-			take(1),
-			filter(
-				(val) => (val as configGroupWithChanges)?.changes !== undefined
-			) as OperatorFunction<
-				configGroup | configGroupWithChanges,
-				configGroupWithChanges
-			>,
-			map((val) => val.deleted)
-		);
-	}
-
-	isAddedCfgGroup(configName: string) {
-		return this.currentBranchService.findGroup(configName).pipe(
-			filter((val) => val !== undefined) as OperatorFunction<
-				configGroup | configGroupWithChanges | undefined,
-				configGroup | configGroupWithChanges
-			>,
-			take(1),
-			filter(
-				(val) => (val as configGroupWithChanges)?.changes !== undefined
-			) as OperatorFunction<
-				configGroup | configGroupWithChanges,
-				configGroupWithChanges
-			>,
-			map((val) => val.added)
-		);
-	}
-
-	hasChangesCfgGroup(configName: string) {
-		return this.currentBranchService.findGroup(configName).pipe(
-			filter((val) => val !== undefined) as OperatorFunction<
-				configGroup | configGroupWithChanges | undefined,
-				configGroup | configGroupWithChanges
-			>,
-			take(1),
-			map((val) => (val as configGroupWithChanges).changes !== undefined)
-		);
-	}
-	isACfgGroup(name: string) {
-		return this.currentBranchService.isACfgGroup(name);
-	}
-	isCompoundApplic(name: string) {
-		return name.includes(' | ') || name.includes(' & ');
-	}
-	getCompoundApplicLines(name: string) {
-		if (!this.isCompoundApplic(name)) {
-			return [name];
-		}
-		const operator = name.includes('|') ? '|' : '&';
-		const names = name.split(operator);
-		let returnedArray =
-			names.length == 2
-				? [names[0].trim() + ' ' + operator, names[1].trim()]
-				: [];
-		if (returnedArray.length == 0) {
-			//loop to split comp applic into applic array (if there are more than 2 applicabilities)
-			for (let i = 0; i < names.length; i++) {
-				//if last name, don't return operator
-				if (i == names.length - 1) {
-					returnedArray.push(names[i].trim());
-				} else {
-					returnedArray.push(names[i].trim() + ' ' + operator);
-				}
-			}
-		}
-		return returnedArray;
-	}
-	displayFeatureMenu(feature: extendedFeature) {
+	displayFeatureMenu(feature: string) {
 		//do not display feature menu for compound applicabilities
-		if (!this.isCompoundApplic(feature.name)) {
-			this.dialogService.displayFeatureMenu(feature).subscribe();
+		if (feature !== '' && feature !== '-1' && feature !== '0') {
+			this.dialogService.displayFeatureDialog(feature).subscribe();
 		}
 	}
 
-	openConfigMenu(header: string, editable: string) {
-		this.dialogService.openConfigMenu(header, editable).subscribe();
+	openConfigMenu(config: configurationValue) {
+		if (config.typeId !== '6') {
+			this.dialogService
+				.openEditConfigDialog(config.id, this.editable())
+				.subscribe();
+			return;
+		}
+		this.dialogService
+			.openEditConfigGroupDialog(config.id, true)
+			.subscribe();
 	}
 
 	openContextMenu<T>(
@@ -595,14 +523,11 @@ export class ApplicabilityTableComponent {
 			case 'CONFIG':
 				this.configTrigger().menuData = {
 					config: this.currentBranchService
-						.findViewByName(data as unknown as string)
+						.getView(data as unknown as string, true)
 						.pipe(
 							filter(
 								(val) => val !== undefined
-							) as OperatorFunction<
-								view | viewWithChanges | undefined,
-								view | viewWithChanges
-							>
+							) as OperatorFunction<view, view>
 						),
 				};
 				this.configTrigger().openMenu();
@@ -613,15 +538,13 @@ export class ApplicabilityTableComponent {
 			case 'GROUP':
 				this.configGroupTrigger().menuData = {
 					group: this.currentBranchService
-						.findGroup(data as unknown as string)
+						.getCfgGroupDetail(data as unknown as string, true)
 						.pipe(
 							filter(
 								(val) => val !== undefined
 							) as OperatorFunction<
-								| configGroup
-								| configGroupWithChanges
-								| undefined,
-								configGroup | configGroupWithChanges
+								configGroup | undefined,
+								configGroup
 							>
 						),
 				};
@@ -644,19 +567,8 @@ export class ApplicabilityTableComponent {
 				break;
 		}
 	}
-
-	getUniqueConfigurations(
-		configurations: ExtendedNameValuePairWithChanges[]
-	) {
-		return configurations.filter(
-			(v, i, a) => a.map((z) => z.name).indexOf(v.name) == i
-		);
-	}
-
-	/**istanbul ignore next */
-	sortMultiValue(values: string[]) {
-		return values
-			.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()))
-			.toString();
+	setPage(event: PageEvent) {
+		this.uiStateService.currentPageSize.set(event.pageSize);
+		this.uiStateService.currentPage.set(event.pageIndex);
 	}
 }
