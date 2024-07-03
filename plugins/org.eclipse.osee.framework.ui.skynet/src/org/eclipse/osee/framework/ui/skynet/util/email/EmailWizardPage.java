@@ -13,9 +13,11 @@
 
 package org.eclipse.osee.framework.ui.skynet.util.email;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.Plugin;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -27,6 +29,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.EmailGroup;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -35,17 +38,15 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.utility.EmailUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
-import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
@@ -74,8 +75,8 @@ public class EmailWizardPage extends WizardPage {
    private XText subjectText;
    private final String subject;
 
-   protected EmailWizardPage(String pageName, List<EmailGroup> groups, List<Object> initialAddress, String subject) {
-      super(pageName);
+   protected EmailWizardPage(String pageName, String title, String subject, List<EmailGroup> groups, List<Object> initialAddress) {
+      super(pageName, title, null);
       this.groups = groups;
       this.initialAddress = initialAddress;
       this.subject = subject;
@@ -83,18 +84,20 @@ public class EmailWizardPage extends WizardPage {
 
    @Override
    public void createControl(Composite parent) {
-      setTitle("Email Action");
-      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.EMAIL));
 
       Composite composite = new Composite(parent, SWT.NONE);
       GridLayout gl = new GridLayout();
       gl.numColumns = 2;
       composite.setLayout(gl);
       GridData gd = new GridData(GridData.FILL_BOTH);
+      gd.widthHint = 200;
       composite.setLayoutData(gd);
 
       subjectText = new XText("Subject");
       subjectText.createWidgets(composite, 2);
+      gd = new GridData(SWT.FILL, SWT.NONE, true, false);
+      gd.widthHint = 100;
+      subjectText.getStyledText().setLayoutData(gd);
       if (Strings.isValid(subject)) {
          subjectText.set(subject);
       }
@@ -170,17 +173,12 @@ public class EmailWizardPage extends WizardPage {
       label.setText("(select and right-click to delete)");
 
       Button toButton = new Button(toComp, SWT.NONE);
-      toButton.setText("To->   ");
-      toButton.setSize(1000, 5);
-      toButton.addSelectionListener(new SelectionListener() {
+      toButton.setText("  To->   ");
+      toButton.setSize(100, 5);
+      toButton.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
-            widgetDefaultSelected(e);
-         }
-
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
             IStructuredSelection sel = (IStructuredSelection) namesList.getViewer().getSelection();
             for (Object obj : sel.toList()) {
                if (isEmailObjectValid(obj)) {
@@ -205,15 +203,9 @@ public class EmailWizardPage extends WizardPage {
 
       Button ccButton = new Button(toComp, SWT.NONE);
       ccButton.setText("  Cc->   ");
-      ccButton.addSelectionListener(new SelectionListener() {
-
+      ccButton.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            widgetDefaultSelected(e);
-         }
-
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
             IStructuredSelection sel = (IStructuredSelection) namesList.getViewer().getSelection();
             for (Object obj : sel.toList()) {
                if (isEmailObjectValid(obj)) {
@@ -235,15 +227,10 @@ public class EmailWizardPage extends WizardPage {
 
       Button bccButton = new Button(toComp, SWT.NONE);
       bccButton.setText("  Bcc->  ");
-      bccButton.addSelectionListener(new SelectionListener() {
+      bccButton.addSelectionListener(new SelectionAdapter() {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
-            widgetDefaultSelected(e);
-         }
-
-         @Override
-         public void widgetDefaultSelected(SelectionEvent e) {
             IStructuredSelection sel = (IStructuredSelection) namesList.getViewer().getSelection();
             for (Object obj : sel.toList()) {
                if (isEmailObjectValid(obj)) {
@@ -283,7 +270,30 @@ public class EmailWizardPage extends WizardPage {
       gd.heightHint = 75;
       text.setLayoutData(gd);
 
+      Button viewFinalMessage = new Button(composite, SWT.NONE);
+      viewFinalMessage.setText("Preview Message");
+      viewFinalMessage.addSelectionListener(new SelectionAdapter() {
+
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            viewFinalMessage();
+         }
+
+      });
+
+      composite.layout();
       setControl(composite);
+   }
+
+   public void viewFinalMessage() {
+      try {
+         String finalHtml = ((EmailWizard) getWizard()).getFinalHtml();
+         File outFile = new File("workflowEmailPreview.html");
+         Lib.writeStringToFile(finalHtml, outFile);
+         Program.launch(outFile.getAbsolutePath());
+      } catch (Exception ex) {
+         OseeLog.log(Plugin.class, Level.SEVERE, Lib.exceptionToString(ex));
+      }
    }
 
    private boolean isEmailObjectValid(Object obj) {

@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.notify.ArtifactEmailWizard;
+import org.eclipse.osee.ats.ide.notify.WorkflowEmailWizard;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -44,7 +44,7 @@ public class EmailActionAction extends AbstractAtsAction {
    }
 
    private void performEmail() {
-      ArtifactEmailWizard wizard = new ArtifactEmailWizard(
+      WorkflowEmailWizard wizard = new WorkflowEmailWizard(
          (AbstractWorkflowArtifact) selectedAtsArtifacts.getSelectedWorkflowArtifacts().iterator().next());
       WizardDialog dialog = new WizardDialog(Displays.getActiveShell(), wizard);
       dialog.create();

@@ -20,20 +20,25 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.util.Overview.PreviewStyle;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.util.EmailGroup;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.util.email.EmailWizard;
 
 /**
  * @author Donald G. Dunne
  */
-public class ArtifactEmailWizard extends EmailWizard {
+public class WorkflowEmailWizard extends EmailWizard {
 
-   public ArtifactEmailWizard(AbstractWorkflowArtifact sma) {
+   public WorkflowEmailWizard(AbstractWorkflowArtifact sma) {
       this(sma, null);
    }
 
-   public ArtifactEmailWizard(AbstractWorkflowArtifact sma, List<Object> toAddress) {
-      super(AtsNotificationManagerUI.getPreviewHtml(sma, PreviewStyle.HYPEROPEN, PreviewStyle.NO_SUBSCRIBE_OR_FAVORITE),
-         " Regarding " + sma.getArtifactTypeName() + " - " + sma.getName(), getEmailableGroups(sma), toAddress);
+   public WorkflowEmailWizard(AbstractWorkflowArtifact sma, List<Object> toAddress) {
+      super(//
+         AtsNotificationManagerUI.getPreviewHtml(sma, PreviewStyle.HYPEROPEN, PreviewStyle.NO_SUBSCRIBE_OR_FAVORITE), //
+         Strings.truncate(String.format("Email Workflow %s - [%s]", sma.getAtsId(), sma.toString()), 80, true), //
+         " Regarding " + sma.getArtifactTypeName() + " - " + sma.getName(), //
+         getEmailableGroups(sma), //
+         toAddress);
    }
 
    public static List<EmailGroup> getEmailableGroups(IAtsWorkItem workItem) {

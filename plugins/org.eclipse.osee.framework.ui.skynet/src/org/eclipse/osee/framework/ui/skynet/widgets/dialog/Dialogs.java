@@ -77,7 +77,7 @@ public class Dialogs {
          AWorkbench.popup("ERROR", "Save data is empty.  Nothing to email.");
          return Result.FalseResult;
       }
-      EmailWizard ew = new EmailWizard(text, title, null, null);
+      EmailWizard ew = new EmailWizard(text, title, title, null, null);
       WizardDialog dialog = new WizardDialog(Displays.getActiveShell(), ew);
       dialog.create();
       if (dialog.open() == Window.OK) {

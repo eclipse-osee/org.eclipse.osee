@@ -115,8 +115,6 @@ public class Overview {
 
    public void addHeader(AbstractWorkflowArtifact awa, PreviewStyle... styles) {
       startBorderTable(100, false, "");
-      addRelationsBlock(awa);
-      addNotes(awa);
       addTable(getLabelValue("Title", awa.getName()));
       this.html.append(AHTML.multiColumnTable(new String[] {
          AHTML.getLabelStr(labelFont, "State: ") + awa.getCurrentStateName(),
@@ -144,8 +142,7 @@ public class Overview {
                AHTML.getLabelStr(labelFont, "Parent State: ") + ((TaskArtifact) awa).getCurrentStateName()}));
          }
          this.html.append(AHTML.multiColumnTable(new String[] {
-            AHTML.getLabelStr(labelFont, "Task Owner: ") + AtsObjects.toString("; ",
-               awa.getAssignees())}));
+            AHTML.getLabelStr(labelFont, "Task Owner: ") + AtsObjects.toString("; ", awa.getAssignees())}));
       }
       endBorderTable();
    }
@@ -154,7 +151,7 @@ public class Overview {
       this.html.append(AHTML.newline());
 
       if (PreviewStyle.contains(styles, PreviewStyle.HYPEROPEN)) {
-         this.html.append("Start OSEE, select the ATS perspective and search by the Id shown.");
+         this.html.append("Start OSEE, select the OSEE perspective and search by the Id shown.");
       }
    }
 
@@ -163,14 +160,6 @@ public class Overview {
       addRelationTable("Supercedes", CoreRelationTypes.Supercedes_SupercededBy, artifact);
       addRelationTable("Supports", CoreRelationTypes.SupportingInfo_IsSupportedBy, artifact);
       addRelationTable("Is Supported By", CoreRelationTypes.SupportingInfo_SupportingInfo, artifact);
-   }
-
-   public void addNotes(AbstractWorkflowArtifact artifact) {
-      String notesHtml = AtsApiService.get().getWorkItemService().getStateNoteService().getTable(artifact, null);
-      if (notesHtml.equals("")) {
-         return;
-      }
-      this.html.append(notesHtml);
    }
 
    public static String getGenericArtifactTable(String name, Collection<Artifact> arts) {
