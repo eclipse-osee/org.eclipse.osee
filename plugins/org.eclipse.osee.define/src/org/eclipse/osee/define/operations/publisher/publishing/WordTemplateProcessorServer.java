@@ -236,8 +236,7 @@ public class WordTemplateProcessorServer implements ToMessage {
 
    protected final OrcsTokenService tokenService;
 
-   public WordTemplateProcessorServer(OrcsApi orcsApi, AtsApi atsApi, DataAccessOperations dataAccessOperations,
-      DataRightsOperations dataRightsOperations) {
+   public WordTemplateProcessorServer(OrcsApi orcsApi, AtsApi atsApi, DataAccessOperations dataAccessOperations, DataRightsOperations dataRightsOperations) {
 
       this.startTime = System.currentTimeMillis();
 
@@ -734,16 +733,17 @@ public class WordTemplateProcessorServer implements ToMessage {
             this.formatIndicator,
             this.renderer,
             this.tokenService,
-            ( allowedOutlineTypes   ) -> this.allowedOutlineTypes                  = allowedOutlineTypes,
-            ( contentAttributeType  ) -> this.contentAttributeType                 = contentAttributeType,
-            ( excludedArtifactTypes ) -> this.excludedArtifactTypeArtifactAcceptor = WordRenderUtil.getExcludedArtifactTypeArtifactAcceptor( excludedArtifactTypes ),
-            ( headingArtifactType   ) -> this.headingArtifactTypeToken             = headingArtifactType,
-            ( headingAttributeType  ) -> this.headingAttributeTypeToken            = headingAttributeType,
-            ( includeHeadings       ) -> this.includeHeadings                      = includeHeadings,
-            ( initialOutlineNumber  ) -> this.initialOutlineNumber                 = initialOutlineNumber,
-            ( overrideOutlineNumber ) -> this.overrideOutlineNumber                = overrideOutlineNumber,
-            ( recurseChildren       ) -> this.recurseChildren                      = recurseChildren,
-            ( templateFooter        ) -> this.templateFooter                       = templateFooter
+            ( allowedOutlineTypes       ) -> this.allowedOutlineTypes                  = allowedOutlineTypes,
+            ( contentAttributeType      ) -> this.contentAttributeType                 = contentAttributeType,
+            ( excludedArtifactTypes     ) -> this.excludedArtifactTypeArtifactAcceptor = WordRenderUtil.getExcludedArtifactTypeArtifactAcceptor( excludedArtifactTypes ),
+            ( headingArtifactType       ) -> this.headingArtifactTypeToken             = headingArtifactType,
+            ( headingAttributeType      ) -> this.headingAttributeTypeToken            = headingAttributeType,
+            ( includeHeadings           ) -> this.includeHeadings                      = includeHeadings,
+            ( includeMetadataAttributes ) -> this.includeMetadataAttributes            = includeMetadataAttributes,
+            ( initialOutlineNumber      ) -> this.initialOutlineNumber                 = initialOutlineNumber,
+            ( overrideOutlineNumber     ) -> this.overrideOutlineNumber                = overrideOutlineNumber,
+            ( recurseChildren           ) -> this.recurseChildren                      = recurseChildren,
+            ( templateFooter            ) -> this.templateFooter                       = templateFooter
          );
       //@formatter:on
 
@@ -759,8 +759,6 @@ public class WordTemplateProcessorServer implements ToMessage {
                this.tokenService
             );
       //@formatter:on
-
-      this.includeMetadataAttributes = IncludeMetadataAttributes.ALWAYS;
 
       return this;
 

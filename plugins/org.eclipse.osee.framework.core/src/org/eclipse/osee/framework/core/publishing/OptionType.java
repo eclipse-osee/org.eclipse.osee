@@ -143,6 +143,15 @@ public enum OptionType {
            NO_DEFAULT_VALUE()
         ),
 
+     IncludeMetadataAttributes
+        (
+           IncludeMetadataAttributes.class,
+           IsCollection.NO,
+           CanCopy.YES,
+           new IncludeMetadataAttributesDeserializer(),
+           NO_DEFAULT_VALUE()
+        ),
+
      Integer
         (
            Integer.class,
@@ -314,8 +323,7 @@ public enum OptionType {
     * @param defaultValue the default value for the {@link OptionType} member.
     */
 
-   private OptionType(Class<?> implementationClass, IsCollection isCollection, CanCopy canCopy,
-      JsonDeserializer<?> jsonDeserializer, Object defaultValue) {
+   private OptionType(Class<?> implementationClass, IsCollection isCollection, CanCopy canCopy, JsonDeserializer<?> jsonDeserializer, Object defaultValue) {
       this.implementationClass = implementationClass;
       this.isCollection = isCollection.isYes();
       this.canCopy = canCopy.isYes();

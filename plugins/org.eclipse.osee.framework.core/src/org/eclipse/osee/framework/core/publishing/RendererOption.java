@@ -173,6 +173,15 @@ public enum RendererOption {
    OUTLINING_OPTION_OVERRIDE_INCLUDE_HEADINGS("IncludeHeadings", OptionType.IncludeHeadings),
 
    /**
+    * This {@link RenderOption} is used to override the Outlining Option &quot;IncludeMetadataAttributes&quot; in the
+    * publishing template.
+    *
+    * @see OutliningOptions#includeMetadataAttributes
+    */
+
+   OUTLINING_OPTION_OVERRIDE_INCLUDE_METADATA_ATTRIBUTES("IncludeMetadataAttributes", OptionType.IncludeMetadataAttributes),
+
+   /**
     * This {@link RendererOption} is used to override the Outlining Option &quot;OutlineNumber&quot; in the publishing
     * template.
     *

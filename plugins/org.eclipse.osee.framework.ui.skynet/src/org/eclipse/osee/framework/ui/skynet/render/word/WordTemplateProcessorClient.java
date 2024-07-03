@@ -625,16 +625,17 @@ public class WordTemplateProcessorClient {
             this.formatIndicator,
             this.renderer,
             this.tokenService,
-            ( allowedOutlineTypes   ) -> this.allowedOutlineTypes                  = allowedOutlineTypes,
-            ( contentAttributeType  ) -> this.contentAttributeType                 = contentAttributeType,
-            ( excludeArtifactTypes  ) -> this.excludedArtifactTypeArtifactAcceptor = WordRenderUtil.getExcludedArtifactTypeArtifactAcceptor( excludeArtifactTypes ),
-            ( headingArtifactType   ) -> this.headingArtifactTypeToken             = headingArtifactType,
-            ( headingAttributeType  ) -> this.headingAttributeTypeToken            = headingAttributeType,
-            ( includeHeadings       ) -> this.includeHeadings                      = includeHeadings,
-            ( initialOutlineNumber  ) -> this.initialOutlineNumber                 = initialOutlineNumber,
-            ( overrideOutlineNumber ) -> this.overrideOutlineNumber                = overrideOutlineNumber,
-            ( recurseChildren       ) -> this.recurseChildren                      = recurseChildren,
-            ( templateFooter        ) -> this.templateFooter                       = templateFooter
+            ( allowedOutlineTypes       ) -> this.allowedOutlineTypes                  = allowedOutlineTypes,
+            ( contentAttributeType      ) -> this.contentAttributeType                 = contentAttributeType,
+            ( excludeArtifactTypes      ) -> this.excludedArtifactTypeArtifactAcceptor = WordRenderUtil.getExcludedArtifactTypeArtifactAcceptor( excludeArtifactTypes ),
+            ( headingArtifactType       ) -> this.headingArtifactTypeToken             = headingArtifactType,
+            ( headingAttributeType      ) -> this.headingAttributeTypeToken            = headingAttributeType,
+            ( includeHeadings           ) -> this.includeHeadings                      = includeHeadings,
+            ( includeMetadataAttributes ) -> this.includeMetadataAttributes            = includeMetadataAttributes,
+            ( initialOutlineNumber      ) -> this.initialOutlineNumber                 = initialOutlineNumber,
+            ( overrideOutlineNumber     ) -> this.overrideOutlineNumber                = overrideOutlineNumber,
+            ( recurseChildren           ) -> this.recurseChildren                      = recurseChildren,
+            ( templateFooter            ) -> this.templateFooter                       = templateFooter
          );
       //@formatter:on
 
@@ -650,8 +651,6 @@ public class WordTemplateProcessorClient {
                this.tokenService
             );
       //@formatter:on
-
-      this.includeMetadataAttributes = IncludeMetadataAttributes.ALWAYS;
 
       return this;
    }
