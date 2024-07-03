@@ -470,7 +470,9 @@ public class RelationManager {
       Conditions.checkNotNull(relation, "relationLink",
          "A relation link of type [%s] does exist in the cache between a artifact %s and b artifact %s", relationType,
          artifactA.toStringWithId(), artifactB.toStringWithId());
-      ArtifactPersistenceManager.performDeleteRelationChecks(artifactA, relationType, new XResultData());
+      XResultData rd =
+         ArtifactPersistenceManager.performDeleteRelationChecks(artifactA, relationType, new XResultData());
+      rd.exceptionIfErrors("Delete Relation(s)");
       relation.delete(true);
 
       updateOrderListOnDelete(artifactA, relationType, RelationSide.SIDE_B,

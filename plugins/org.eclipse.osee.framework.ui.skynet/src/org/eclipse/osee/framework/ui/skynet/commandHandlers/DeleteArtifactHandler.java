@@ -26,8 +26,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
+import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPersistenceManagerUI;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
-import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -48,11 +48,7 @@ public class DeleteArtifactHandler extends CommandHandler {
                TransactionManager.createTransaction(artifactsArray[0].getBranch(), "Delete Artifact Handler");
             XResultData rd =
                ArtifactPersistenceManager.deleteArtifact(transaction, false, new XResultData(), artifactsArray);
-            if (XResultDataUI.reportIfErrors(rd, "Deleate Artifact Handler")) {
-               transaction.cancel();
-            } else {
-               transaction.execute();
-            }
+            ArtifactPersistenceManagerUI.cancelTxAndExceptionUiIfErrors(rd, "Deleate Artifact Handler", transaction);
          }
       }
       return null;

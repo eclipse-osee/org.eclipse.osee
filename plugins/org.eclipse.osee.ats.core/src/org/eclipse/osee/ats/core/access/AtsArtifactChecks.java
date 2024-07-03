@@ -73,7 +73,7 @@ public class AtsArtifactChecks implements ArtifactCheck {
       if (isDeletionChecksEnabled()) {
          if (Admin_Only_Relation_Type_Ids.contains(
             relationType.getId()) && !AtsApiService.get().getUserService().isAtsAdmin()) {
-            results.errorf("Deletion of relation type [%s] off artifact [%s] is only permitted by ATS Admin",
+            results.errorf("Deletion of Relation Type [%s] off artifact [%s] is only permitted by ATS Admin\n",
                relationType, artifact);
          }
       }
@@ -119,12 +119,12 @@ public class AtsArtifactChecks implements ArtifactCheck {
       Collection<ArtifactToken> artifacts, XResultData results) {
       for (ArtifactToken art : artifacts) {
          if ((!isAtsAdmin && !isAtsDeleteWorkflowAdmin) && isWorkflowOrAction(art) && !isTask(art)) {
-            results.errorf("Deletion of [%s] is only permitted by ATS Admin or ATS Delete Workflow Admin; %s invalid",
+            results.errorf("Deletion of [%s] is only permitted by ATS Admin or ATS Delete Workflow Admin [%s]\n",
                atsApi.getStoreService().getArtifactTypeName(art), art.toStringWithId());
          }
          String error = isWorkflowOrActionPermittedByAnyone(atsApi, art, artifacts);
          if (Strings.isValid(error)) {
-            results.errorf("Deletion of artifact type [%s] object %s is not permitted. Error: [%s]",
+            results.errorf("Deletion of Artifact Type [%s] object %s is not permitted. [%s]\n",
                atsApi.getStoreService().getArtifactTypeName(art), art.toStringWithId(), error);
          }
       }
@@ -135,7 +135,7 @@ public class AtsArtifactChecks implements ArtifactCheck {
       if (art.isOfType(AtsArtifactTypes.Action)) {
          for (IAtsTeamWorkflow teamWf : atsApi.getWorkItemService().getTeams(art)) {
             if (!allArtifacts.contains(teamWf.getStoreObject())) {
-               return String.format("Can't delete action %s without deleting workflow %s, use ATS World Editor",
+               return String.format("Can't delete Action %s without deleting workflow %s, use ATS World Editor",
                   art.toStringWithId(), teamWf.toStringWithId());
             }
          }
@@ -216,7 +216,7 @@ public class AtsArtifactChecks implements ArtifactCheck {
             AtsAttributeTypes.TeamDefinitionReference, ids, atsApi.getAtsBranch(), 5);
          if (artifactListFromIds.size() > 0) {
             results.errorf(
-               "Team Definition (or children Team Definitions) [%s] selected to delete have related Team Workflows; Delete or re-assign Team Workflows first.",
+               "Team Definition (or children Team Definitions) [%s] selected to delete have related Team Workflows; Delete or re-assign Team Workflows first.\n",
                ids);
          }
          if (!isAtsAdmin) {
@@ -234,7 +234,7 @@ public class AtsArtifactChecks implements ArtifactCheck {
                   AtsAttributeTypes.WorkflowDefinitionReference, art.getIdString(), atsApi.getAtsBranch());
             if (artifactListFromTypeAndAttribute.size() > 0) {
                results.errorf(
-                  "ATS WorkDefinition [%s] selected to delete has ats.WorkDefinitionReference attributes set to it's name in %d artifact.  These must be changed first.",
+                  "ATS WorkDefinition [%s] selected to delete has ats.WorkDefinitionReference attributes set to it's name in %d artifact.  These must be changed first.\n",
                   art, artifactListFromTypeAndAttribute.size());
             }
             if (!isAtsAdmin) {
@@ -262,7 +262,7 @@ public class AtsArtifactChecks implements ArtifactCheck {
             new UserRelatedToAtsObjectSearch(atsApi.getUserService().getUserById(user), false, atsApi);
          if (srch.getResults().size() > 0) {
             results.errorf(
-               "User name: \"%s\" userId: \"%s\" selected to delete has related ATS Objects; Un-relate to ATS first before deleting.",
+               "User name: \"%s\" userId: \"%s\" selected to delete has related ATS Objects; Un-relate to ATS first before deleting.\n",
                user.getName(), user.getUserId());
          }
       }

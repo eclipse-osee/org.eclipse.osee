@@ -37,12 +37,20 @@ public class ArtifactPersistenceManager {
     * @param transaction if the transaction is null then persist is not called
     * @param overrideDeleteCheck if <b>true</b> deletes without checking preconditions
     * @param artifacts The artifacts to delete.
+    * @return Note: This method does NOT exception, but instead fills XResultData with errors, if any. It's up to the UI
+    * to handle the errors appropriately.
     */
-   public static XResultData deleteArtifact(SkynetTransaction transaction, boolean overrideDeleteCheck, XResultData rd, final Artifact... artifacts) {
+   public static XResultData deleteArtifact(SkynetTransaction transaction, boolean overrideDeleteCheck, XResultData rd,
+      final Artifact... artifacts) {
       return deleteArtifactCollection(transaction, overrideDeleteCheck, rd, Arrays.asList(artifacts));
    }
 
-   public static XResultData deleteArtifactCollection(SkynetTransaction transaction, boolean overrideDeleteCheck, XResultData rd, final Collection<Artifact> artifacts) {
+   /**
+    * @return Note: This method does NOT exception, but instead fills XResultData with errors, if any. It's up to the UI
+    * to handle the errors appropriately.
+    */
+   public static XResultData deleteArtifactCollection(SkynetTransaction transaction, boolean overrideDeleteCheck,
+      XResultData rd, final Collection<Artifact> artifacts) {
       if (rd == null) {
          rd = new XResultData();
       }
@@ -53,7 +61,7 @@ public class ArtifactPersistenceManager {
       bulkLoadRelatives(artifacts);
 
       if (!overrideDeleteCheck) {
-         performDeleteChecks(artifacts, rd);
+         performDeleteArtifactChecks(artifacts, rd);
       }
 
       boolean reorderRelations = true;
@@ -64,12 +72,13 @@ public class ArtifactPersistenceManager {
    }
 
    // Confirm artifacts are fit to delete
-   private static XResultData performDeleteChecks(Collection<Artifact> artifacts, XResultData rd) {
+   public static XResultData performDeleteArtifactChecks(Collection<Artifact> artifacts, XResultData rd) {
       return ServiceUtil.getOseeClient().getAccessControlService().isDeleteable(artifacts, rd);
    }
 
    // Confirm relations are fit to delete
-   public static XResultData performDeleteRelationChecks(Artifact artifact, RelationTypeToken relationType, XResultData rd) {
+   public static XResultData performDeleteRelationChecks(Artifact artifact, RelationTypeToken relationType,
+      XResultData rd) {
       return ServiceUtil.getOseeClient().getAccessControlService().isDeleteableRelation(artifact, relationType, rd);
    }
 
@@ -85,7 +94,8 @@ public class ArtifactPersistenceManager {
       ArtifactQuery.getArtifactListFrom(relatives, branch);
    }
 
-   private static XResultData deleteTrace(Artifact artifact, SkynetTransaction transaction, boolean reorderRelations, XResultData rd) {
+   private static XResultData deleteTrace(Artifact artifact, SkynetTransaction transaction, boolean reorderRelations,
+      XResultData rd) {
       if (!artifact.isDeleted()) {
          // This must be done first since the the actual deletion of an
          // artifact clears out the link manager
@@ -107,4 +117,12 @@ public class ArtifactPersistenceManager {
       }
       return rd;
    }
+
+   public static void cancelTxAndExceptionIfErrors(XResultData rd, String title, SkynetTransaction transaction) {
+      if (rd.isErrors()) {
+         transaction.cancel();
+         rd.exceptionIfErrors(title);
+      }
+   }
+
 }
