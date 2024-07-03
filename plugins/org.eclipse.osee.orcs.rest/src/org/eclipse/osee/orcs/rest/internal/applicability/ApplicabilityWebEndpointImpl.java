@@ -85,49 +85,50 @@ public class ApplicabilityWebEndpointImpl implements ApplicabilityWebEndpoint {
       String emptyArray = dbUtils.jsonb_array();
       //@formatter:off
       String sql = "WITH\n" +
-"artConfiguration AS (\n"+
-      "SELECT art.art_id, art.gamma_id, art.art_type_id,"+emptyArray+" as related FROM osee_artifact art, osee_txs txs\r\n" +
-      "   WHERE\r\n" +
-      "   txs.tx_current =? AND \r\n" +
-      "   txs.gamma_id = art.gamma_id AND \r\n" +
-      "   txs.branch_id = ? AND\r\n" +
-      "   art.art_type_id = ?\r\n" +
-      "),\r\n" +
-      "artGroup AS (\r\n" +
-      "   SELECT art.art_id, art.gamma_id, art.art_type_id,"+dbUtils.json_agg("rel.b_art_id")+" as related FROM osee_artifact art, osee_txs txs, osee_relation_link rel\r\n" +
-      "   WHERE\r\n" +
-      "   txs.tx_current =? AND \r\n" +
-      "   txs.gamma_id = art.gamma_id AND \r\n" +
-      "   txs.branch_id = ? AND\r\n" +
-      "   art.art_type_id = ? AND\r\n" +
-      "   rel.a_art_id = art.art_id AND\r\n" +
-      "   rel.rel_link_type_id = ? \r\n"+
-      "   GROUP BY art.art_id, art.gamma_id, art.art_type_id"+
-      "),\n"+
-      "artConfigs AS (\r\n" +
+         "artConfiguration AS (\n"+
+         "SELECT art.art_id, art.gamma_id, art.art_type_id,"+emptyArray+" as related FROM osee_artifact art, osee_txs txs\r\n" +
+         "   WHERE\r\n" +
+         "   txs.tx_current =? AND \r\n" +
+         "   txs.gamma_id = art.gamma_id AND \r\n" +
+         "   txs.branch_id = ? AND\r\n" +
+         "   art.art_type_id = ?\r\n" +
+         "),\r\n" +
+         "artGroup AS (\r\n" +
+         "   SELECT art.art_id, art.gamma_id, art.art_type_id,"+dbUtils.json_agg("rel.b_art_id")+" as related FROM osee_artifact art, osee_txs txs, osee_relation_link rel\r\n" +
+         "   WHERE\r\n" +
+         "   txs.tx_current =? AND \r\n" +
+         "   txs.gamma_id = art.gamma_id AND \r\n" +
+         "   txs.branch_id = ? AND\r\n" +
+         "   art.art_type_id = ? AND\r\n" +
+         "   rel.a_art_id = art.art_id AND\r\n" +
+         "   rel.rel_link_type_id = ? \r\n"+
+         "   GROUP BY art.art_id, art.gamma_id, art.art_type_id"+
+         "),\n"+
+         "artConfigs AS (\r\n" +
          "SELECT * from artConfiguration UNION ALL SELECT * from artGroup),\n"+
-      "attrConfigs AS (\r\n" +
-      "SELECT attr.* FROM artConfigs cfg, osee_attribute attr, osee_txs txs WHERE \r\n" +
-      "   attr.art_id = cfg.art_id and \r\n" +
-      "   txs.gamma_id = attr.gamma_id and \r\n" +
-      "   txs.tx_current =? and \r\n" +
-      "   txs.branch_id = ? AND"+
-      "   attr.attr_type_id = ? ),\r\n" +
-      "artFeatures AS (\r\n" +
-      "   SELECT * from osee_artifact art, osee_txs txs\r\n" +
-      "   WHERE\r\n" +
-      "   txs.tx_current =? AND \r\n" +
-      "   txs.gamma_id = art.gamma_id AND \r\n" +
-      "   txs.branch_id = ? AND\r\n" +
-      "   art.art_type_id = ?\r\n" +
-      "   ),\r\n" +
-      "attrFeatures AS (\r\n" +
-      "   SELECT attr.* FROM artFeatures feat, osee_attribute attr, osee_txs txs WHERE \r\n" +
-      "   attr.art_id = feat.art_id and \r\n" +
-      "   txs.gamma_id = attr.gamma_id and \r\n" +
-      "   txs.tx_current =? and \r\n" +
-      "   txs.branch_id = ?\r\n" +
-      "),\n"+
+         "attrConfigs AS (\r\n" +
+         "SELECT attr.* FROM artConfigs cfg, osee_attribute attr, osee_txs txs WHERE \r\n" +
+         "   attr.art_id = cfg.art_id and \r\n" +
+         "   txs.gamma_id = attr.gamma_id and \r\n" +
+         "   txs.tx_current =? and \r\n" +
+         "   txs.branch_id = ? AND"+
+         "   attr.attr_type_id = ? ),\r\n" +
+         "artFeatures AS (\r\n" +
+         "   SELECT * from osee_artifact art, osee_txs txs\r\n" +
+         "   WHERE\r\n" +
+         "   txs.tx_current =? AND \r\n" +
+         "   txs.gamma_id = art.gamma_id AND \r\n" +
+         "   txs.branch_id = ? AND\r\n" +
+         "   art.art_type_id = ?\r\n" +
+         "   ),\r\n" +
+         "attrFeatures AS (\r\n" +
+         "   SELECT attrFeature.art_id, "+featureArray+" as attributes FROM artFeatures feat, osee_attribute attrFeature, osee_txs txs WHERE \r\n" +
+         "   attrFeature.art_id = feat.art_id and \r\n" +
+         "   txs.gamma_id = attrFeature.gamma_id and \r\n" +
+         "   txs.tx_current =? and \r\n" +
+         "   txs.branch_id = ?\r\n" +
+         "   GROUP BY attrFeature.art_id \r\n" +
+         "),\n"+
          "nonCompoundApplicabilities as (\n" +
          "SELECT t2_2.e1 as id,"+keyValueSplit+" as name,\n" +
          configurationArray +" as configuration_values\n" +
@@ -189,24 +190,15 @@ public class ApplicabilityWebEndpointImpl implements ApplicabilityWebEndpoint {
          "      cfg.art_id = t2_1.e1 \n" +
          "      group by kv2.value, t2_2.e1\n" +
          "   ),\n" +
-         "   withAttributes AS (\n" +
-         "   SELECT nca.*,\n" +
-         featureArray+
-         "  as attributes \n" +
-         "      FROM nonCompoundApplicabilities nca,attrFeatures attrFeature WHERE \n" +
-         "      attrFeature.art_id = nca.id \n" +
-         filterAttrSql+
-         "      GROUP BY nca.id, nca.name, nca.configuration_values\n" +
-         "   ),\n" + //TODO maybe look into splitting out attribute search here to be name only?
          "   allApplicabilities AS (\n" +
-         "      SELECT * from compoundApplicabilities UNION ALL SELECT * from withAttributes\n" +
+         "      SELECT id, name, configuration_values, attributes from nonCompoundApplicabilities ca, attrFeatures af where ca.id = af.art_id UNION ALL SELECT id, name, configuration_values, attributes from compoundApplicabilities\n" +
          "   ),\n" +
          "   applicabilities AS (\n" +
          "   SELECT applic.*,row_number() over ("+paginationOrdering+") rn from allApplicabilities applic\n" +
          "   )\n" +
          "   SELECT * from applicabilities "
          + paginationSql;
-    //@formatter:on
+      //@formatter:on
       List<FeatureValue> features = new ArrayList<FeatureValue>();
       Consumer<JdbcStatement> consumer = stmt -> {
          Long id = stmt.getLong("id");
@@ -439,7 +431,7 @@ public class ApplicabilityWebEndpointImpl implements ApplicabilityWebEndpoint {
          "   ft.constrained, \r\n" +
          "   ft.constrained_by \r\n" +
          "   from feature_with_pages ft "+
-        paginationSql;
+         paginationSql;
       /**
        * params:
        * TxCurrent.Current,
@@ -551,11 +543,12 @@ public class ApplicabilityWebEndpointImpl implements ApplicabilityWebEndpoint {
          "   art.art_type_id = ?\r\n" +
          "   ),\r\n" +
          "attrFeatures AS (\r\n" +
-         "   SELECT attr.* FROM artFeatures feat, osee_attribute attr, osee_txs txs WHERE \r\n" +
-         "   attr.art_id = feat.art_id and \r\n" +
-         "   txs.gamma_id = attr.gamma_id and \r\n" +
-         "   txs.tx_current = ? and \r\n" +
+         "   SELECT attrFeature.art_id, "+featureArray+" as attributes FROM artFeatures feat, osee_attribute attrFeature, osee_txs txs WHERE \r\n" +
+         "   attrFeature.art_id = feat.art_id and \r\n" +
+         "   txs.gamma_id = attrFeature.gamma_id and \r\n" +
+         "   txs.tx_current =? and \r\n" +
          "   txs.branch_id = ?\r\n" +
+         "   GROUP BY attrFeature.art_id \r\n" +
          "),\n"+
          "nonCompoundApplicabilities as (\n" +
          "SELECT t2_2.e1 as id,"+keyValueSplit+" as name,\n" +
@@ -618,23 +611,14 @@ public class ApplicabilityWebEndpointImpl implements ApplicabilityWebEndpoint {
          "      cfg.art_id = t2_1.e1 \n" +
          "      group by kv2.value, t2_2.e1\n" +
          "   ),\n" +
-         "   withAttributes AS (\n" +
-         "   SELECT nca.*,\n" +
-         featureArray+
-         "  as attributes \n" +
-         "      FROM nonCompoundApplicabilities nca,attrFeatures attrFeature WHERE \n" +
-         "      attrFeature.art_id = nca.id \n" +
-         filterAttrSql+
-         "      GROUP BY nca.id, nca.name, nca.configuration_values\n" +
-         "   ),\n" + //TODO maybe look into splitting out attribute search here to be name only?
          "   allApplicabilities AS (\n" +
-         "      SELECT * from compoundApplicabilities UNION ALL SELECT * from withAttributes\n" +
+         "      SELECT id, name, configuration_values, attributes from nonCompoundApplicabilities ca, attrFeatures af where ca.id = af.art_id UNION ALL SELECT id, name, configuration_values, attributes from compoundApplicabilities\n" +
          "   ),\n" +
          "   applicabilities AS (\n" +
          "   SELECT applic.* from allApplicabilities applic\n" +
          "   )\n" +
          "   SELECT COUNT(*) from applicabilities ";
-    //@formatter:on
+      //@formatter:on
       List<Object> firstChunk = new ArrayList<Object>(25);
       firstChunk.add(TxCurrent.CURRENT);
       firstChunk.add(branch);

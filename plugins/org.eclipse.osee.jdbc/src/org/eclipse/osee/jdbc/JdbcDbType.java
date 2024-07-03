@@ -231,6 +231,9 @@ public class JdbcDbType extends BaseId {
          result += "json_arrayagg (";
       }
       result += sqlToAggregate;
+      if (matches(oracle)) {
+         result += " returning clob ";
+      }
       result += ")";
       return result;
    }
@@ -255,7 +258,7 @@ public class JdbcDbType extends BaseId {
                result += ",";
             }
          }
-         result += ")";
+         result += " returning clob)";
       }
       return result;
    }
@@ -292,6 +295,7 @@ public class JdbcDbType extends BaseId {
                }
             }
          }
+         result += " returning clob ";
       }
       result += ")";
       return result;
@@ -329,6 +333,7 @@ public class JdbcDbType extends BaseId {
                }
             }
          }
+         result += " returning clob ";
       }
       result += ")";
       return result;
