@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
  */
 public interface IXTaskViewer {
 
-   public IAtsTeamWorkflow getTeamWf();
+   public IAtsTeamWorkflow getTeamWfArt();
 
    public boolean isTasksEditable();
 

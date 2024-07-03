@@ -128,7 +128,7 @@ public class WfeTasksTab extends WfeAbstractTab implements IArtifactEventListene
    private final ReloadJobChangeAdapter reloadAdapter;
    private final AtsApiIde client;
    private final IAtsTeamWorkflow teamWf;
-   private final TeamWorkFlowArtifact teamArt;
+   private final TeamWorkFlowArtifact teamWfArt;
    private final WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
    private WorldAssigneeFilter worldAssigneeFilter = null;
    private Action filterCompletedAction, filterMyAssigneeAction;
@@ -139,7 +139,7 @@ public class WfeTasksTab extends WfeAbstractTab implements IArtifactEventListene
       this.teamWf = teamWf;
       this.client = client;
       reloadAdapter = new ReloadJobChangeAdapter(editor);
-      teamArt = (TeamWorkFlowArtifact) teamWf.getStoreObject();
+      teamWfArt = (TeamWorkFlowArtifact) teamWf.getStoreObject();
       refreshTabName();
    }
 
@@ -429,8 +429,8 @@ public class WfeTasksTab extends WfeAbstractTab implements IArtifactEventListene
                @Override
                public void run() {
                   Set<ArtifactToken> arts = new HashSet<>();
-                  arts.add(teamArt);
-                  arts.addAll(teamArt.getRelatedArtifacts(AtsRelationTypes.TeamWfToTask_Task));
+                  arts.add(teamWfArt);
+                  arts.addAll(teamWfArt.getRelatedArtifacts(AtsRelationTypes.TeamWfToTask_Task));
                   ArtifactQuery.reloadArtifacts(arts);
                }
             };
@@ -603,7 +603,7 @@ public class WfeTasksTab extends WfeAbstractTab implements IArtifactEventListene
    @Override
    public void relationsModifed(Collection<Artifact> relModifiedArts, Collection<Artifact> goalMemberReordered,
       Collection<Artifact> sprintMemberReordered) {
-      if (relModifiedArts.contains(teamArt)) {
+      if (relModifiedArts.contains(teamWfArt)) {
          refresh();
       }
    }
@@ -720,8 +720,8 @@ public class WfeTasksTab extends WfeAbstractTab implements IArtifactEventListene
    }
 
    @Override
-   public IAtsTeamWorkflow getTeamWf() {
-      return teamArt;
+   public IAtsTeamWorkflow getTeamWfArt() {
+      return teamWfArt;
    }
 
    @Override
@@ -732,7 +732,7 @@ public class WfeTasksTab extends WfeAbstractTab implements IArtifactEventListene
    @Override
    public String getEditorTitle() {
       try {
-         return String.format("Table Report - Tasks for [%s]", getTeamWf());
+         return String.format("Table Report - Tasks for [%s]", getTeamWfArt());
       } catch (Exception ex) {
          // do nothing
       }

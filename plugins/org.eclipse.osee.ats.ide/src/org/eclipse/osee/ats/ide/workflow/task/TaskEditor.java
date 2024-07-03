@@ -37,7 +37,7 @@ public class TaskEditor extends WorldEditor implements IXTaskViewer {
    boolean loading = false;
 
    @Override
-   public IAtsTeamWorkflow getTeamWf() {
+   public IAtsTeamWorkflow getTeamWfArt() {
       return null;
    }
 

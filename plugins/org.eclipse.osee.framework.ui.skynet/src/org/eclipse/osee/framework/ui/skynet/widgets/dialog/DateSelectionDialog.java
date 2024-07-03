@@ -89,7 +89,21 @@ public class DateSelectionDialog extends MessageDialog {
    /**
     * @param selectedDate the selectedDate to set
     */
-   public void setSelectedDate(Date initialDate) {
+   public void setSelectedDate(Date selectedDate) {
+      this.selectedDate = selectedDate;
+   }
+
+   /**
+    * @return the initialDate
+    */
+   public Date getInitialDate() {
+      return initialDate;
+   }
+
+   /**
+    * @param initialDate the initialDate to set
+    */
+   public void setInitialDate(Date initialDate) {
       this.initialDate = initialDate;
    }
 

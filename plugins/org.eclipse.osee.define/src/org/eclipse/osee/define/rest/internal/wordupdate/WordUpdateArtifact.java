@@ -92,7 +92,8 @@ public class WordUpdateArtifact {
       return queryFactory.fromBranch(branch).andGuid(guid).getResults().getExactlyOne();
    }
 
-   private Document extractJaxpDocument(WordUpdateData data) throws ParserConfigurationException, SAXException, IOException {
+   private Document extractJaxpDocument(WordUpdateData data)
+      throws ParserConfigurationException, SAXException, IOException {
       Document document;
       InputStream stream = new ByteArrayInputStream(data.getWordData());
       try {
@@ -103,7 +104,8 @@ public class WordUpdateArtifact {
       return document;
    }
 
-   private WordUpdateChange wordArtifactUpdate(WordUpdateData data, Collection<WordExtractorData> extractorDatas, Element oleDataElement) {
+   private WordUpdateChange wordArtifactUpdate(WordUpdateData data, Collection<WordExtractorData> extractorDatas,
+      Element oleDataElement) {
       List<String> deletedArtifacts = Lists.newArrayList();
       WordUpdateChange updateChange = new WordUpdateChange();
       try {
@@ -202,11 +204,10 @@ public class WordUpdateArtifact {
 
       } catch (Exception ex) {
          throw OseeCoreException.wrap(ex);
-      } finally {
-         if (!deletedArtifacts.isEmpty()) {
+      }
+      if (!deletedArtifacts.isEmpty()) {
             throw new OseeStateException("The following deleted artifacts could not be saved [%s]",
                Collections.toString(",", deletedArtifacts));
-         }
       }
       return updateChange;
    }

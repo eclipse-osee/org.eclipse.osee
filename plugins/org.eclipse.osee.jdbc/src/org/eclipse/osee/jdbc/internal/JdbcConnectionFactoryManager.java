@@ -49,23 +49,13 @@ public class JdbcConnectionFactoryManager {
 
    private MetaData getMetaData(JdbcConnectionFactory proxiedFactory, JdbcConnectionInfo dbInfo) {
       MetaData metaData = new MetaData();
-      Connection connection = null;
-      try {
-         connection = proxiedFactory.getConnection(dbInfo);
+      try (Connection connection = proxiedFactory.getConnection(dbInfo)) {
          DatabaseMetaData metadata = connection.getMetaData();
          metaData.setTxIsolationLevelSupported(
             metadata.supportsTransactionIsolationLevel(Connection.TRANSACTION_READ_COMMITTED));
          metaData.setValidationQuery(JdbcDbType.getDbType(metadata).getValidationSql());
       } catch (SQLException ex) {
          throw JdbcException.newJdbcException(ex);
-      } finally {
-         if (connection != null) {
-            try {
-               connection.close();
-            } catch (SQLException ex) {
-               throw JdbcException.newJdbcException(ex);
-            }
-         }
       }
       return metaData;
    }

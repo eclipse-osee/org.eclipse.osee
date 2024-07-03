@@ -492,33 +492,43 @@ public final class JdbcClientImpl implements JdbcClient {
    public void runTransaction(JdbcConnection jdbcConnection, JdbcTransaction dbWork) throws JdbcException {
       JdbcConnectionImpl connection = (JdbcConnectionImpl) jdbcConnection;
       boolean initialAutoCommit = true;
-      Exception saveException = null;
+
       try {
          initialAutoCommit = connection.getAutoCommit();
          connection.setAutoCommit(false);
          dbWork.handleTxWork(connection);
-
          connection.commit();
-      } catch (Exception ex) {
-         saveException = ex;
-         try {
-            connection.rollback();
-         } finally {
-            try {
-               connection.destroy();
-            } finally {
-               dbWork.handleTxException(ex);
-            }
-         }
+
+      } catch (Exception e) {
+         rollbackAndDestroy(connection);
+         handleTxException(dbWork, e);
+
+         throw OseeCoreException.wrap(e);
       } finally {
          if (!connection.isClosed()) {
             connection.setAutoCommit(initialAutoCommit);
             connection.close();
          }
+
          dbWork.handleTxFinally();
-         if (saveException != null) {
-            throw OseeCoreException.wrap(saveException);
-         }
+      }
+   }
+
+   private static void rollbackAndDestroy(JdbcConnectionImpl connection) {
+      try {
+         connection.rollback();
+      } catch (Exception e) {
+         //eat exception
+      } finally {
+        connection.destroy();
+      }
+   }
+
+   private static void handleTxException(JdbcTransaction dbWork, Exception e) {
+      try {
+         dbWork.handleTxException(e);
+      } catch (Exception ex) {
+         //eat exception
       }
    }
 

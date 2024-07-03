@@ -120,7 +120,7 @@ public class TaskComposite extends WorldComposite {
    private void performDrop(DropTargetEvent e) {
       if (e.data instanceof ArtifactData) {
          try {
-            if (iXTaskViewer.getTeamWf() == null) {
+            if (iXTaskViewer.getTeamWfArt() == null) {
                return;
             }
             List<TaskArtifact> taskArts = new LinkedList<>();
@@ -133,7 +133,7 @@ public class TaskComposite extends WorldComposite {
                AWorkbench.popup("No Tasks To Drop");
                return;
             }
-            TaskMover mover = new TaskMover(iXTaskViewer.getTeamWf(), taskArts);
+            TaskMover mover = new TaskMover(iXTaskViewer.getTeamWfArt(), taskArts);
             mover.moveTasks();
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -160,6 +160,6 @@ public class TaskComposite extends WorldComposite {
 
    @Override
    public Collection<TeamWorkFlowArtifact> getSelectedTeamWorkflowArtifacts() {
-      return Arrays.asList((TeamWorkFlowArtifact) getIXTaskViewer().getTeamWf());
+      return Arrays.asList((TeamWorkFlowArtifact) getIXTaskViewer().getTeamWfArt());
    }
 }
