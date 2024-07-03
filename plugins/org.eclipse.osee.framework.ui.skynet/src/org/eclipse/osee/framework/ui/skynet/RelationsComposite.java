@@ -38,20 +38,27 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ISelectedArtifacts;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.RelationOrderContributionItem.SelectionListener;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -61,8 +68,8 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MenuEvent;
 import org.eclipse.swt.events.MenuListener;
+import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -79,6 +86,7 @@ import org.eclipse.swt.widgets.TreeColumn;
  * @author Ryan D. Brooks
  */
 public class RelationsComposite extends Composite implements ISelectedArtifacts {
+   private static final String DELETE_ARTIFACTS = "Delete Artifact(s)";
    private TreeViewer treeViewer;
    private Tree tree;
    private NeedSelectedArtifactListener needSelectedArtifactListener;
@@ -152,22 +160,13 @@ public class RelationsComposite extends Composite implements ISelectedArtifacts 
       });
 
       treeViewer.addDoubleClickListener(new DoubleClickListener());
-      tree.addMouseListener(new MouseListener() {
+      tree.addMouseListener(new MouseAdapter() {
 
          @Override
          public void mouseUp(MouseEvent e) {
             packColumnData();
          }
 
-         @Override
-         public void mouseDown(MouseEvent e) {
-            // do nothing
-         }
-
-         @Override
-         public void mouseDoubleClick(MouseEvent e) {
-            // do nothing
-         }
       });
       tree.addKeyListener(new KeySelectedListener());
 
@@ -444,18 +443,27 @@ public class RelationsComposite extends Composite implements ISelectedArtifacts 
       try {
          Set<Artifact> artifactsToBeDeleted = getSelectedArtifacts();
 
+         XResultData rd =
+            ArtifactPersistenceManager.performDeleteArtifactChecks(artifactsToBeDeleted, new XResultData());
+         if (rd.isErrors()) {
+            XResultDataUI.report(rd, DELETE_ARTIFACTS);
+            return;
+         }
+
          //Ask if they are sure they want all artifacts to be deleted
          if (!artifactsToBeDeleted.isEmpty()) {
-            if (MessageDialog.openConfirm(Displays.getActiveShell(), "Delete Artifact (s)",
+            SkynetTransaction transaction =
+               TransactionManager.createTransaction(artifact.getBranch(), DELETE_ARTIFACTS);
+            if (MessageDialog.openConfirm(Displays.getActiveShell(), DELETE_ARTIFACTS,
                "Delete Artifact (s)?\n\n\"" + Collections.toString(",",
                   artifactsToBeDeleted) + "\"\n\nNOTE: This will delete the artifact from the system.  Use \"Delete Relation\" to remove this artifact from the relation.")) {
 
                for (Artifact artifact : artifactsToBeDeleted) {
-                  artifact.deleteAndPersist(getClass().getSimpleName());
+                  artifact.deleteAndPersist(transaction);
                }
             }
+            transaction.execute();
          }
-
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -463,12 +471,12 @@ public class RelationsComposite extends Composite implements ISelectedArtifacts 
    }
 
    private void performDeleteRelation() {
-      Object[] objects = ((IStructuredSelection) treeViewer.getSelection()).toArray();
-      for (Object object : objects) {
-         if (hasWriteRelationTypePermission(artifact, object)) {
-            if (object instanceof WrapperForRelationLink) {
-               WrapperForRelationLink wrapper = (WrapperForRelationLink) object;
-               try {
+      try {
+         Object[] objects = ((IStructuredSelection) treeViewer.getSelection()).toArray();
+         for (Object object : objects) {
+            if (hasWriteRelationTypePermission(artifact, object)) {
+               if (object instanceof WrapperForRelationLink) {
+                  WrapperForRelationLink wrapper = (WrapperForRelationLink) object;
                   RelationManager.deleteRelation(wrapper.getRelationType(), wrapper.getArtifactA(),
                      wrapper.getArtifactB());
                   Object parent = ((ITreeContentProvider) treeViewer.getContentProvider()).getParent(wrapper);
@@ -477,21 +485,26 @@ public class RelationsComposite extends Composite implements ISelectedArtifacts 
                   } catch (org.eclipse.swt.SWTException ex) {
                      OseeLog.log(Activator.class, Level.SEVERE, ex);
                   }
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
-               }
-            } else if (object instanceof RelationTypeSideSorter) {
-               RelationTypeSideSorter group = (RelationTypeSideSorter) object;
-               try {
+               } else if (object instanceof RelationTypeSideSorter) {
+                  RelationTypeSideSorter group = (RelationTypeSideSorter) object;
                   RelationManager.deleteRelations(artifact, group.getRelationType(), group.getSide());
-                  refreshParent(group);
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+                  try {
+                     refreshParent(group);
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(Activator.class, Level.SEVERE, ex);
+                  }
                }
             }
          }
+         editor.onDirtied();
+      } catch (Exception ex) {
+         XResultData rd = new XResultData();
+         rd.log("<h3>Error Deleting Relation</h3>");
+         rd.logf("%s\n\n", ex.getLocalizedMessage());
+         rd.logf("%s\n\n", Lib.exceptionToString(ex));
+         ResultsEditor.open("Error Deleting Relation", rd);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-      editor.onDirtied();
    }
 
    public void refresh() {

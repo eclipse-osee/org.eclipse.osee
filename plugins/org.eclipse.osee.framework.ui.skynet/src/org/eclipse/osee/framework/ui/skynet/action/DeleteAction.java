@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
@@ -98,7 +97,7 @@ public class DeleteAction extends Action {
             protected IStatus run(final IProgressMonitor monitor) {
                IStatus toReturn = Status.CANCEL_STATUS;
 
-               monitor.beginTask("Delete artifact", artifactsToBeDeleted.size());
+               monitor.beginTask("Delete Artifact", artifactsToBeDeleted.size());
 
                String artIdStr = artifactsToBeDeleted.size() + " Artifacts";
                if (artifactsToBeDeleted.size() == 1) {
@@ -110,11 +109,7 @@ public class DeleteAction extends Action {
                   String.format("Delete Artifact Action - %s", artIdStr));
                XResultData rd =
                   ArtifactPersistenceManager.deleteArtifact(transaction, false, new XResultData(), artifactsArray);
-               if (XResultDataUI.reportIfErrors(rd, getName())) {
-                  transaction.cancel();
-               } else {
-                  transaction.execute();
-               }
+               ArtifactPersistenceManager.cancelTxAndExceptionIfErrors(rd, "Delete Artifact", transaction);
                return toReturn;
             }
          };

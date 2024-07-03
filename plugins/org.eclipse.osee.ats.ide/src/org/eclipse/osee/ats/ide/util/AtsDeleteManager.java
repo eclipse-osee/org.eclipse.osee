@@ -49,7 +49,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
+import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPersistenceManagerUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
@@ -158,10 +158,7 @@ public class AtsDeleteManager {
                      TransactionManager.createTransaction(AtsApiService.get().getAtsBranch(), "Delete ATS Objects");
                   XResultData rd = ArtifactPersistenceManager.deleteArtifactCollection(transaction, false,
                      new XResultData(), allDeleteArts);
-                  if (XResultDataUI.reportIfErrors(rd, "Exception " + getName())) {
-                     transaction.cancel();
-                     return;
-                  }
+                  ArtifactPersistenceManagerUI.cancelTxAndExceptionUiIfErrors(rd, "Delete ATS Objects", transaction);
                   transaction.execute();
                }
                if (deleteOptions.contains(DeleteOption.Prompt)) {

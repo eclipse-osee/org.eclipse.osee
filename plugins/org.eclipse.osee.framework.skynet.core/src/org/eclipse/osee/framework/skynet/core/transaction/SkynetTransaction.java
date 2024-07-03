@@ -81,8 +81,6 @@ import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
  * @author Jeff C. Phillips
  */
 public final class SkynetTransaction extends TransactionOperation<BranchId> {
-   private static final String ATTR_ID_SEQ = "SKYNET_ATTR_ID_SEQ";
-   private static final String REL_LINK_ID_SEQ = "SKYNET_REL_LINK_ID_SEQ";
    public static boolean USE_LONG_IDS = ArtifactToken.USE_LONG_IDS;
 
    private final CompositeKeyHashMap<Class<? extends BaseTransactionData>, Id, BaseTransactionData> transactionDataItems =
@@ -107,19 +105,19 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
    }
 
    private AttributeId getNewAttributeId(Artifact artifact, Attribute<?> attribute) {
-	   if (USE_LONG_IDS) {
-	         return AttributeId.valueOf(Lib.generateUuid());
-	      } else {
-	         return AttributeId.valueOf(ConnectionHandler.getNextSequence(OseeData.ATTR_ID_SEQ, true));
-	      }
+      if (USE_LONG_IDS) {
+         return AttributeId.valueOf(Lib.generateUuid());
+      } else {
+         return AttributeId.valueOf(ConnectionHandler.getNextSequence(OseeData.ATTR_ID_SEQ, true));
+      }
    }
 
    private RelationId getNewRelationId() {
-	   if (USE_LONG_IDS) {
-	         return RelationId.valueOf(Lib.generateUuid());
-	      } else {
-	         return RelationId.valueOf(ConnectionHandler.getNextSequence(OseeData.REL_LINK_ID_SEQ, true));
-	      }
+      if (USE_LONG_IDS) {
+         return RelationId.valueOf(Lib.generateUuid());
+      } else {
+         return RelationId.valueOf(ConnectionHandler.getNextSequence(OseeData.REL_LINK_ID_SEQ, true));
+      }
    }
 
    private User getAuthor() {
@@ -420,7 +418,8 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
          getArtifactReferences());
    }
 
-   public static synchronized TransactionRecord internalCreateTransaction(BranchId branch, User userToBlame, String comment) {
+   public static synchronized TransactionRecord internalCreateTransaction(BranchId branch, User userToBlame,
+      String comment) {
       if (comment == null) {
          comment = "";
       }
@@ -459,6 +458,7 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
 
    public void cancel() {
       getTxMonitor().cancel(getBranch(), this);
+      ArtifactQuery.reloadArtifacts(modifiedArtifacts);
    }
 
    public static boolean isOverrideAccess() {

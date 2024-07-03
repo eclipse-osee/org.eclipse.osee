@@ -1415,17 +1415,17 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
 
    public final void delete() {
       XResultData rd = ArtifactPersistenceManager.deleteArtifact(null, false, new XResultData(), this);
-      rd.exceptionIfErrors("Exception deleting artifact");
+      rd.exceptionIfErrors("Delete Artifact");
    }
 
    public final void deleteAndPersist(SkynetTransaction transaction, boolean overrideChecks) {
       XResultData rd = ArtifactPersistenceManager.deleteArtifact(transaction, overrideChecks, new XResultData(), this);
-      rd.exceptionIfErrors("Exception deleting artifact");
+      ArtifactPersistenceManager.cancelTxAndExceptionIfErrors(rd, "Delete Artifact", transaction);
    }
 
    public final void deleteAndPersist(SkynetTransaction transaction) {
       XResultData rd = ArtifactPersistenceManager.deleteArtifact(transaction, false, new XResultData(), this);
-      rd.exceptionIfErrors("Exception deleting artifact");
+      ArtifactPersistenceManager.cancelTxAndExceptionIfErrors(rd, "Delete Artifact", transaction);
    }
 
    /**
@@ -1582,14 +1582,14 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       Pair<Artifact, Artifact> sides = determineArtifactSides(artifact, relationTypeSide);
       XResultData rd =
          ArtifactPersistenceManager.performDeleteRelationChecks(artifact, relationTypeSide, new XResultData());
-      rd.exceptionIfErrors("deleteRelation");
+      rd.exceptionIfErrors("Delete Relation(s)");
       RelationManager.deleteRelation(relationTypeSide, sides.getFirst(), sides.getSecond());
    }
 
    public final void deleteRelations(RelationTypeSide relationSide) {
       for (Artifact art : getRelatedArtifacts(relationSide)) {
          XResultData rd = ArtifactPersistenceManager.performDeleteRelationChecks(art, relationSide, new XResultData());
-         rd.exceptionIfErrors("deleteRelation");
+         rd.exceptionIfErrors("Delete Relation(s)");
          deleteRelation(relationSide, art);
       }
    }

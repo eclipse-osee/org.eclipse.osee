@@ -148,18 +148,6 @@ public class SearchComposite extends Composite implements Listener {
       byIdCheckbox.setData(new GridData());
       byIdCheckbox.setToolTipText("Enter numeric Artifact Ids (comma delimited)");
       byIdCheckbox.setFont(getFont());
-      byIdCheckbox.addSelectionListener(new SelectionAdapter() {
-
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            Object object = e.getSource();
-            if (object instanceof Button) {
-               Button button = (Button) object;
-               boolean selected = button.getSelection();
-               System.err.println("By Id " + selected);
-            }
-         }
-      });
 
       incDeletedCheckbox = new Button(checkOptionsComp, SWT.CHECK);
       incDeletedCheckbox.setText("Include Deleted");
