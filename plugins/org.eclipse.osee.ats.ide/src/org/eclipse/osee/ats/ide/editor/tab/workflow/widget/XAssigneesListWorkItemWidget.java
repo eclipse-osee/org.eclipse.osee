@@ -18,7 +18,7 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.ide.internal.Activator;
-import org.eclipse.osee.ats.ide.notify.ArtifactEmailWizard;
+import org.eclipse.osee.ats.ide.notify.WorkflowEmailWizard;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -56,7 +56,7 @@ public class XAssigneesListWorkItemWidget extends AbstractXAssigneesListWidget i
    @Override
    public void handleEmailSelection() {
       try {
-         ArtifactEmailWizard wizard = new ArtifactEmailWizard(awa);
+         WorkflowEmailWizard wizard = new WorkflowEmailWizard(awa);
          WizardDialog dialog = new WizardDialog(Displays.getActiveShell(), wizard);
          dialog.create();
          dialog.open();

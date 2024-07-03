@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.util.OseeEmail;
 import org.eclipse.osee.framework.core.util.OseeEmail.BodyType;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.EmailGroup;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeEmailIde;
@@ -36,12 +37,14 @@ public class EmailWizard extends Wizard {
    private String subject = null;
    private List<EmailGroup> emailableGroups;
    private List<Object> initialAddress = null;
+   private final String title;
 
    /**
     * @param initialAddress - User, AtsEmailGroup or String
     */
-   public EmailWizard(String htmlMessage, String subject, List<EmailGroup> emailableGroups, List<Object> initialAddress) {
+   public EmailWizard(String htmlMessage, String title, String subject, List<EmailGroup> emailableGroups, List<Object> initialAddress) {
       this.htmlMessage = htmlMessage;
+      this.title = title;
       this.subject = subject;
       this.emailableGroups = emailableGroups;
       this.initialAddress = initialAddress;
@@ -49,7 +52,7 @@ public class EmailWizard extends Wizard {
 
    @Override
    public void addPages() {
-      wizardPage = new EmailWizardPage("Page1", emailableGroups, initialAddress, subject);
+      wizardPage = new EmailWizardPage("Page1", title, subject, emailableGroups, initialAddress);
       addPage(wizardPage);
    }
 
@@ -70,11 +73,8 @@ public class EmailWizard extends Wizard {
             UserManager.getUser().getEmail(), UserManager.getUser().getEmail(), useSubject, "", BodyType.Html);
          emailMessage.setRecipients(Message.RecipientType.CC, wizardPage.getCcAddresses());
          emailMessage.setRecipients(Message.RecipientType.BCC, wizardPage.getBccAddresses());
-         String otherText = wizardPage.getText();
-         if (!otherText.equals("")) {
-            emailMessage.setHTMLBody("<p>" + AHTML.textToHtml(
-               wizardPage.getText()) + "</p><p>--------------------------------------------------------</p>");
-         }
+         String finalHtml = getFinalHtml();
+         emailMessage.setHTMLBody(finalHtml);
          // Remove hyperlinks cause they won't work in email.
          emailMessage.addHTMLBody(htmlMessage);
          emailMessage.send();
@@ -86,6 +86,18 @@ public class EmailWizard extends Wizard {
       }
 
       return true;
+   }
+
+   public String getFinalHtml() {
+      StringBuilder sb = new StringBuilder();
+      String otherText = wizardPage.getText();
+      if (Strings.isValid(otherText)) {
+         sb.append("<p>" + AHTML.textToHtml(
+            wizardPage.getText()) + "</p><p>--------------------------------------------------------</p>");
+      }
+      sb.append(htmlMessage);
+      String finalHtml = sb.toString();
+      return finalHtml;
    }
 
    public void setEmailableGroups(ArrayList<EmailGroup> emailableGroups) {

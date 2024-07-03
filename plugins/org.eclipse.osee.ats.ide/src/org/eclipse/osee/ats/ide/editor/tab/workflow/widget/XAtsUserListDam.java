@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
-import org.eclipse.osee.ats.ide.notify.ArtifactEmailWizard;
+import org.eclipse.osee.ats.ide.notify.WorkflowEmailWizard;
 import org.eclipse.osee.ats.ide.util.AtsUserLabelProvider;
 import org.eclipse.osee.ats.ide.util.UserCheckTreeDialog;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
@@ -145,7 +145,7 @@ public class XAtsUserListDam extends XListViewer implements AttributeWidget {
          @Override
          public void widgetSelected(SelectionEvent e) {
             try {
-               ArtifactEmailWizard wizard = new ArtifactEmailWizard(awa);
+               WorkflowEmailWizard wizard = new WorkflowEmailWizard(awa);
                List<String> emails = new LinkedList<>();
                for (AtsUser user : isDirty().isTrue() ? getSelectedUsers() : getStoredAtsUsers()) {
                   emails.add(user.getEmail());
