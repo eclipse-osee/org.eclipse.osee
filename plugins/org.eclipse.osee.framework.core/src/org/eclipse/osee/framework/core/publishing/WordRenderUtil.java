@@ -1550,8 +1550,17 @@ public class WordRenderUtil {
       boolean includeMetadata = false;
 
       switch( includeMetadataAttributes ) {
+
          case ALWAYS:
             includeMetadata = true;
+            break;
+
+         case NEVER:
+            includeMetadata = false;
+            break;
+
+         case NOT_FOR_HEADINGS:
+            includeMetadata = !outlineSectionResult.isStarted();
             break;
 
          case ONLY_WITH_MAIN_CONTENT:

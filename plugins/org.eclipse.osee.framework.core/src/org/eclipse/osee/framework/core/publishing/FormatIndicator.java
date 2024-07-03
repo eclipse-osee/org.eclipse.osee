@@ -152,7 +152,7 @@ public enum FormatIndicator implements ToMessage {
    }
 
    /**
-    * Gets the {@link FormatIndicator> for format name used in the publishing and data rights configuration artifacts.
+    * Gets the {@link FormatIndicator} for format name used in the publishing and data rights configuration artifacts.
     *
     * @param formatName the name of the format.
     * @return when a {@link FormatIndicator} is defined for the <code>formatName</code> an {@link Optional} containing
