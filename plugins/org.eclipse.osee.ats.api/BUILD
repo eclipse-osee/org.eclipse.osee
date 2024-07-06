@@ -15,7 +15,7 @@ java_library(
                 "//org.eclipse.osee.orcs.core","//org.eclipse.osee.activity.api",
                 "//org.eclipse.osee.framework.resource.management",
                 "//org.eclipse.osee.define.rest.api","//org.eclipse.osee.orcs.rest.model",
-                "//org.eclipse.osee.framework.core.model"],
+                "//org.eclipse.osee.framework.core.model","//org.eclipse.osee.accessor"],
         visibility = ["//visibility:public"]
 )
 

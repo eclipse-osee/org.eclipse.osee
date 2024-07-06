@@ -50,6 +50,7 @@ load("@rules_jvm_external//:specs.bzl", "maven")
 
 maven_install(
     artifacts = [
+    	"org.apache.commons:commons-compress:1.26.0",
         "com.fasterxml.jackson.core:jackson-core:2.10.3",
         "com.fasterxml.jackson.core:jackson-databind:2.10.3",
         "com.fasterxml.jackson.core:jackson-annotations:2.10.3",
@@ -103,6 +104,7 @@ maven_install(
 	"org.apache.cxf:cxf-rt-rs-security-jose-jaxrs:3.3.12",
 	"org.apache.cxf:cxf-tools-wadlto-jaxrs:2.6.17",
 	"org.hsqldb:hsqldb:2.6.1",
+	"com.google.protobuf:protobuf-java:4.26.1",
 	"javax.servlet:javax.servlet-api:3.1.0",
 	"io.swagger.core.v3:swagger-core:2.2.7",
         "io.swagger.core.v3:swagger-jaxrs2:2.2.7",
@@ -127,6 +129,7 @@ maven_install(
 	"org.eclipse.jetty:jetty-util:9.4.51.v20230217",
 	"org.eclipse.jetty:jetty-util-ajax:9.4.51.v20230217",
  	"org.eclipse.jetty:jetty-servlet:9.4.51.v20230217",
+ 	"com.intellij:annotations:12.0"
 	],
 
     repositories = [
@@ -513,3 +516,120 @@ http_jar(
       url = "https://ci.eclipse.org/osee/job/osee_nightly/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/plugins/org.apache.poi.ooxml.schemas_4.1.1.v20221112-0806.jar",
       downloaded_file_name = "org.apache.poi.ooxml.schemas_4.1.1.v20221112-0806.jar"
 )
+
+http_jar(
+      name = "flexmark",
+      url = "https://ci.eclipse.org/osee/job/osee_nightly/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/plugins/flexmark_0.64.8.jar",
+      downloaded_file_name = "flexmark_0.64.8.jar"
+)
+
+http_jar(
+      name = "flexmark_ext_autolink",
+      url = "https://ci.eclipse.org/osee/job/osee_nightly/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/plugins/flexmark-ext-autolink_0.64.8.jar",
+      downloaded_file_name = "flexmark-ext-autolink_0.64.8.jar"
+)
+
+http_jar(
+      name = "flexmark_ext_gfm_tasklist",
+      url = "https://ci.eclipse.org/osee/job/osee_nightly/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/plugins/flexmark-ext-gfm-tasklist_0.64.8.jar",
+      downloaded_file_name = "flexmark-ext-gfm-tasklist_0.64.8.jar"
+)
+
+http_jar(
+      name = "flexmark_ext_gitlab",
+      url = "https://ci.eclipse.org/osee/job/osee_nightly/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/plugins/flexmark-ext-gitlab_0.64.8.jar",
+      downloaded_file_name = "flexmark-ext-gitlab_0.64.8.jar"
+)
+
+http_jar(
+      name = "flexmark_ext_tables",
+      url = "https://ci.eclipse.org/osee/job/osee_nightly/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/plugins/flexmark-ext-tables_0.64.8.jar",
+      downloaded_file_name = "flexmark-ext-tables_0.64.8.jar"
+)
+
+http_jar(
+      name = "flexmark_ext_toc",
+      url = "https://ci.eclipse.org/osee/job/osee_nightly/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/plugins/flexmark-ext-toc_0.64.8.jar",
+      downloaded_file_name = "flexmark-ext-toc_0.64.8.jar"
+)
+
+http_jar(
+      name = "flexmark_util_format",
+      url = "https://ci.eclipse.org/osee/job/osee_nightly/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/plugins/flexmark-util-format_0.64.8.jar",
+      downloaded_file_name = "flexmark-util-format_0.64.8.jar"
+)
+
+http_jar(
+      name = "flexmark_util_collection",
+      url = "https://ci.eclipse.org/osee/job/osee_nightly/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/plugins/flexmark-util-collection_0.64.8.jar",
+      downloaded_file_name = "flexmark-util-collection_0.64.8.jar"
+)
+
+http_jar(
+      name = "flexmark_util_misc",
+      url = "https://ci.eclipse.org/osee/job/osee_nightly/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/plugins/flexmark-util-misc_0.64.8.jar",
+      downloaded_file_name = "flexmark-util-misc_0.64.8.jar"
+)
+
+http_jar(
+      name = "flexmark_util_ast",
+      url = "https://ci.eclipse.org/osee/job/osee_nightly/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/plugins/flexmark-util-ast_0.64.8.jar",
+      downloaded_file_name = "flexmark-util-ast_0.64.8.jar"
+)
+
+http_jar(
+      name = "flexmark_util_sequence",
+      url = "https://ci.eclipse.org/osee/job/osee_nightly/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/plugins/flexmark-util-sequence_0.64.8.jar",
+      downloaded_file_name = "flexmark-util-sequence_0.64.8.jar"
+)
+
+http_jar(
+      name = "flexmark_util_data",
+      url = "https://ci.eclipse.org/osee/job/osee_nightly/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/plugins/flexmark-util-data_0.64.8.jar",
+      downloaded_file_name = "flexmark-util-data_0.64.8.jar"
+)
+
+http_jar(
+      name = "flexmark_util_visitor",
+      url = "https://ci.eclipse.org/osee/job/osee_nightly/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/plugins/flexmark-util-visitor_0.64.8.jar",
+      downloaded_file_name = "flexmark-util-visitor_0.64.8.jar"
+)
+
+http_jar(
+      name = "flexmark_util_html",
+      url = "https://ci.eclipse.org/osee/job/osee_nightly/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/plugins/flexmark-util-html_0.64.8.jar",
+      downloaded_file_name = "flexmark-util-html_0.64.8.jar"
+)
+
+http_jar(
+      name = "flexmark_util_dependency",
+      url = "https://ci.eclipse.org/osee/job/osee_nightly/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/plugins/flexmark-util-dependency_0.64.8.jar",
+      downloaded_file_name = "flexmark-util-dependency_0.64.8.jar"
+)
+
+http_jar(
+      name = "flexmark_util_builder",
+      url = "https://ci.eclipse.org/osee/job/osee_nightly/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/plugins/flexmark-util-builder_0.64.8.jar",
+      downloaded_file_name = "flexmark-util-builder_0.64.8.jar"
+)
+
+http_jar(
+      name = "flexmark_util_options",
+      url = "https://ci.eclipse.org/osee/job/osee_nightly/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/plugins/flexmark-util-options_0.64.8.jar",
+      downloaded_file_name = "flexmark-util-options_0.64.8.jar"
+)
+
+http_jar(
+      name = "autolink",
+      url = "https://ci.eclipse.org/osee/job/osee_nightly/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/plugins/autolink_0.6.0.jar",
+      downloaded_file_name = "autolink_0.6.0.jar"
+)
+
+http_jar(
+      name = "annotations",
+      url = "https://ci.eclipse.org/osee/job/osee_nightly/lastSuccessfulBuild/artifact/org.eclipse.osee/plugins/org.eclipse.osee.server.p2/target/repository/plugins/annotations_24.0.1.jar",
+      downloaded_file_name = "annotations_24.0.1.jar"
+)
+
+
+
