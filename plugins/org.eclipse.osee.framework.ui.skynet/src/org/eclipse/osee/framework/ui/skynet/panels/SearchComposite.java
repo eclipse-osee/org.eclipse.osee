@@ -386,6 +386,8 @@ public class SearchComposite extends Composite implements Listener {
          public void handleEvent(Event event) {
             searchArea.setText("");
             searchArea.paste();
+            entryChanged = true;
+            updateFromSourceField();
             executeSearch.notifyListeners(SWT.Selection, null);
          }
       });
