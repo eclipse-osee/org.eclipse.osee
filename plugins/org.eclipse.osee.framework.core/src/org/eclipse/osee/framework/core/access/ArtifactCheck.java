@@ -41,14 +41,24 @@ public interface ArtifactCheck {
    /**
     * @return error(s) of which artifact(s) and why relation(s) can not be deleted
     */
-   default public XResultData isDeleteableRelation(ArtifactToken artifact, RelationTypeToken relationType, XResultData rd) {
+   default public XResultData isDeleteableRelation(ArtifactToken artifact, RelationTypeToken relationType,
+      XResultData rd) {
       return rd;
    }
 
    /**
     * @return error(s) of which artifact(s) and why relation(s) can not be deleted
     */
-   default public XResultData isModifiableAttribute(ArtifactToken artifact, AttributeTypeToken attributeType, XResultData rd) {
+   default public XResultData isAddableRelation(ArtifactToken artifact, RelationTypeToken relationType,
+      XResultData rd) {
+      return rd;
+   }
+
+   /**
+    * @return error(s) of which artifact(s) and why relation(s) can not be deleted
+    */
+   default public XResultData isModifiableAttribute(ArtifactToken artifact, AttributeTypeToken attributeType,
+      XResultData rd) {
       return rd;
    }
 
