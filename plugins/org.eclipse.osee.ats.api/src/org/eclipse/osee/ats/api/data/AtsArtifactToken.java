@@ -67,6 +67,7 @@ public final class AtsArtifactToken {
 
    // Artifactory
    public static ArtifactToken ArtifactoryConfig = ArtifactToken.valueOf(11397386, "Artifactory Config", COMMON, CoreArtifactTypes.GeneralData);
+   public static ArtifactToken GitlabConfig = ArtifactToken.valueOf(11571821, "Gitlab Config", COMMON, CoreArtifactTypes.GeneralData);
 
    // @formatter:on
 

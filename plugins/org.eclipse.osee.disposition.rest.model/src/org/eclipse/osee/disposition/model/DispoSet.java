@@ -27,7 +27,9 @@ public interface DispoSet extends Identifiable<String> {
 
    String getImportPath();
 
-   String getServerImportPath();
+   String getCoveragePartition();
+
+   String getCoverageImportApi();
 
    boolean serverImportPathExists();
 
