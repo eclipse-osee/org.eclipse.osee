@@ -13,7 +13,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { apiURL } from '@osee/environments';
-import { transactionResult } from '@osee/shared/types/change-report';
+import { TmoImportResult } from '../types/tmo-import';
 
 @Injectable({
 	providedIn: 'root',
@@ -31,14 +31,14 @@ export class CiDashboardImportHttpService {
 	}
 
 	importSingleFile(branchId: string, ciSetId: string, formData: FormData) {
-		return this.http.post<transactionResult>(
+		return this.http.post<TmoImportResult>(
 			apiURL + '/script/tmo/' + branchId + '/import/file/' + ciSetId,
 			formData
 		);
 	}
 
 	importBatch(branchId: string, ciSetId: string, formData: FormData) {
-		return this.http.post<transactionResult>(
+		return this.http.post<TmoImportResult>(
 			apiURL + '/script/tmo/' + branchId + '/import/batch/' + ciSetId,
 			formData
 		);

@@ -10,9 +10,7 @@
 * Contributors:
 *     Boeing - initial API and implementation
 -->
-<osee-ci-dashboard-controls [actionButton]="true"></osee-ci-dashboard-controls>
-@if (importResult | async) {}
-@if (ciSet | async) {}
+<osee-ci-dashboard-controls [actionButton]="true" />
 <div class="tw-p-4">
 	@if (branchId() && branchType() === 'working' && ciSetIdValid()) {
 		<div
@@ -39,20 +37,20 @@
 				</button>
 			}
 		</div>
-		@if (txResult | async; as _txResult) {
+		@if (txResult().tx.id !== '0') {
 			<div class="tw-pb-4 tw-pl-4 tw-pt-8">
 				{{
-					_txResult.results.success
+					txResult().results.success
 						? 'Upload successful'
 						: 'Upload failed'
 				}}
 			</div>
-			@if (_txResult.results.results.length > 0) {
+			@if (txResult().results.results.length > 0) {
 				<div class="tw-pl-4">
 					Results:
 					<ul class="tw-pl-4">
 						@for (
-							result of _txResult.results.results;
+							result of txResult().results.results;
 							track result
 						) {
 							<li>

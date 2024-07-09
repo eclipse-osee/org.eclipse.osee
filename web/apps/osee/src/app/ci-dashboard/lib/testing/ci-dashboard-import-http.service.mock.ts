@@ -10,19 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CiDashboardImportHttpService } from './ci-dashboard-import-http.service';
-import { transactionResultMock } from '@osee/shared/transactions/testing';
+import { CiDashboardImportHttpService } from '../services/ci-dashboard-import-http.service';
 import { of } from 'rxjs';
+import { tmoImportResultMock } from './tmo.response.mock';
 
 export const ciDashboardImportHttpServiceMock: Partial<CiDashboardImportHttpService> =
 	{
 		importBatch(branchId, ciSetId, formData) {
-			return of(transactionResultMock);
+			return of(tmoImportResultMock);
 		},
 		importFile(branchId, ciSetId, file) {
-			return of(transactionResultMock);
+			return of(tmoImportResultMock);
 		},
 		importSingleFile(branchId, ciSetId, formData) {
-			return of(transactionResultMock);
+			return of(tmoImportResultMock);
 		},
 	};

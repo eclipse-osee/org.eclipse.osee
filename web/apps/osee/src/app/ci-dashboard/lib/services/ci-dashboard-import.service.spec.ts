@@ -13,7 +13,7 @@
 import { TestBed } from '@angular/core/testing';
 import { CiDashboardImportService } from './ci-dashboard-import.service';
 import { CiDashboardImportHttpService } from './ci-dashboard-import-http.service';
-import { ciDashboardImportHttpServiceMock } from './ci-dashboard-import-http.service.mock';
+import { ciDashboardImportHttpServiceMock } from '../testing/ci-dashboard-import-http.service.mock';
 
 describe('CiDashboardImportService', () => {
 	let service: CiDashboardImportService;

@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderData;
 import org.eclipse.osee.testscript.ScriptImportEndpoint;
 import org.eclipse.osee.testscript.TmoImportApi;
@@ -56,12 +55,12 @@ public class ScriptImportEndpointImpl implements ScriptImportEndpoint {
    }
 
    @Override
-   public TransactionResult importFile(InputStream stream, ArtifactId ciSetId) {
+   public TmoImportResult importFile(InputStream stream, ArtifactId ciSetId) {
       return this.tmoImportApi.importFile(stream, branch, ciSetId);
    }
 
    @Override
-   public TransactionResult importBatch(InputStream stream, ArtifactId ciSetId) {
+   public TmoImportResult importBatch(InputStream stream, ArtifactId ciSetId) {
       return this.tmoImportApi.importBatch(stream, branch, ciSetId);
    }
 

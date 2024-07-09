@@ -10,22 +10,31 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe } from '@angular/common';
-import { Component, WritableSignal, signal } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	computed,
+	effect,
+	signal,
+} from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { transactionResult } from '@osee/shared/types/change-report';
-import { BehaviorSubject, map, switchMap, tap } from 'rxjs';
+import { take, tap } from 'rxjs';
 import { CiDashboardImportService } from '../../services/ci-dashboard-import.service';
 import { CiDashboardUiService } from '../../services/ci-dashboard-ui.service';
 import { CiDashboardControlsComponent } from '../ci-dashboard-controls/ci-dashboard-controls.component';
+import {
+	TmoImportResult,
+	tmoImportResultSentinel,
+} from '../../types/tmo-import';
 
 @Component({
 	selector: 'osee-ci-dashboard-import',
 	standalone: true,
-	imports: [AsyncPipe, CiDashboardControlsComponent, MatButton, MatIcon],
+	imports: [CiDashboardControlsComponent, MatButton, MatIcon],
 	templateUrl: './ci-dashboard-import.component.html',
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class CiDashboardImportComponent {
 	constructor(
@@ -35,28 +44,23 @@ export default class CiDashboardImportComponent {
 
 	branchId = toSignal(this.uiService.branchId);
 	branchType = toSignal(this.uiService.branchType);
-	ciSetIdValid = toSignal(
-		this.uiService.ciSetId.pipe(
-			map((id) => id !== undefined && id !== '' && id !== '-1')
-		),
-		{ initialValue: false }
+	ciSetId = toSignal(this.uiService.ciSetId);
+	ciSetIdValid = computed(() => {
+		const set = this.ciSetId();
+		return set !== undefined && set !== '' && set !== '-1';
+	});
+
+	private _ciSetEffect = effect(
+		() => {
+			this.ciSetId();
+			this.importResult.set(tmoImportResultSentinel);
+		},
+		{ allowSignalWrites: true }
 	);
 
-	ciSet = this.uiService.ciSetId.pipe(
-		tap((_) => this.txResult.next(undefined))
-	);
-
-	selectedFile: WritableSignal<File | undefined> = signal(undefined);
-
-	importResult = toObservable(this.selectedFile).pipe(
-		switchMap((file) => this.importService.importFile(file)),
-		tap((res) => {
-			this.importService.StartImport = false;
-			this.txResult.next(res);
-		})
-	);
-
-	txResult = new BehaviorSubject<transactionResult | undefined>(undefined);
+	selectedFile = signal<File | undefined>(undefined);
+	private importResult = signal<TmoImportResult>(tmoImportResultSentinel);
+	txResult = computed(() => this.importResult()?.txResult);
 
 	selectFile(event: Event) {
 		const target = event.target as HTMLInputElement;
@@ -67,9 +71,15 @@ export default class CiDashboardImportComponent {
 	}
 
 	startImport() {
-		if (this.selectedFile === undefined) {
+		if (this.selectedFile() === undefined) {
 			return;
 		}
-		this.importService.StartImport = true;
+		this.importService
+			.importFile(this.selectedFile())
+			.pipe(
+				take(1),
+				tap((res) => this.importResult.set(res))
+			)
+			.subscribe();
 	}
 }

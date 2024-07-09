@@ -13,7 +13,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import CiDashboardImportComponent from './ci-dashboard-import.component';
 import { CiDashboardControlsMockComponent } from '@osee/ci-dashboard/testing';
-import { ciDashboardImportHttpServiceMock } from '../../services/ci-dashboard-import-http.service.mock';
+import { ciDashboardImportHttpServiceMock } from '../../testing/ci-dashboard-import-http.service.mock';
 import { CiDashboardImportHttpService } from '../../services/ci-dashboard-import-http.service';
 import { AsyncPipe, NgIf } from '@angular/common';
 

@@ -10,6 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { TmoImportResult } from '../types/tmo-import';
 import {
 	DefReference,
 	SetReference,
@@ -17,6 +18,7 @@ import {
 	TestPointReference,
 	ScriptBatch,
 } from '../types';
+import { transactionResultMock } from '@osee/shared/transactions/testing';
 
 export const setsMock: SetReference[] = [
 	{
@@ -133,3 +135,8 @@ export const scriptBatchResultMock: ScriptBatch[] = [
 		testEnvBatchId: '827345',
 	},
 ];
+
+export const tmoImportResultMock: TmoImportResult = {
+	txResult: transactionResultMock,
+	workflows: [],
+};

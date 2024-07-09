@@ -22,10 +22,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.apache.cxf.jaxrs.ext.multipart.Multipart;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderData;
 import org.eclipse.osee.testscript.internal.ScriptDefToken;
+import org.eclipse.osee.testscript.internal.TmoImportResult;
 
 /**
  * @author Ryan T. Baldwin
@@ -38,13 +38,13 @@ public interface ScriptImportEndpoint {
    @Path("file/{ciSetId}")
    @Produces(MediaType.APPLICATION_JSON)
    @Consumes(MediaType.MULTIPART_FORM_DATA)
-   TransactionResult importFile(@Multipart("file") InputStream stream, @PathParam("ciSetId") ArtifactId ciSetId);
+   TmoImportResult importFile(@Multipart("file") InputStream stream, @PathParam("ciSetId") ArtifactId ciSetId);
 
    @POST()
    @Path("batch/{ciSetId}")
    @Produces(MediaType.APPLICATION_JSON)
    @Consumes(MediaType.MULTIPART_FORM_DATA)
-   TransactionResult importBatch(@Multipart("file") InputStream stream, @PathParam("ciSetId") ArtifactId ciSetId);
+   TmoImportResult importBatch(@Multipart("file") InputStream stream, @PathParam("ciSetId") ArtifactId ciSetId);
 
    @POST()
    @Path("builderdata/{ciSetId}")
