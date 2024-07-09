@@ -66,7 +66,7 @@ public class ArtifactPersistenceManager {
 
       boolean reorderRelations = true;
       for (Artifact artifact : artifacts) {
-         deleteTrace(artifact, transaction, reorderRelations, rd);
+         deleteRelations(artifact, transaction, reorderRelations, rd);
       }
       return rd;
    }
@@ -74,6 +74,12 @@ public class ArtifactPersistenceManager {
    // Confirm artifacts are fit to delete
    public static XResultData performDeleteArtifactChecks(Collection<Artifact> artifacts, XResultData rd) {
       return ServiceUtil.getOseeClient().getAccessControlService().isDeleteable(artifacts, rd);
+   }
+
+   // Confirm relations are fit to add
+   public static XResultData performAddRelationChecks(Artifact artifact, RelationTypeToken relationType,
+      XResultData rd) {
+      return ServiceUtil.getOseeClient().getAccessControlService().isAddableRelation(artifact, relationType, rd);
    }
 
    // Confirm relations are fit to delete
@@ -94,13 +100,13 @@ public class ArtifactPersistenceManager {
       ArtifactQuery.getArtifactListFrom(relatives, branch);
    }
 
-   private static XResultData deleteTrace(Artifact artifact, SkynetTransaction transaction, boolean reorderRelations,
-      XResultData rd) {
+   private static XResultData deleteRelations(Artifact artifact, SkynetTransaction transaction,
+      boolean reorderRelations, XResultData rd) {
       if (!artifact.isDeleted()) {
          // This must be done first since the the actual deletion of an
          // artifact clears out the link manager
          for (Artifact childArtifact : artifact.getChildren()) {
-            deleteTrace(childArtifact, transaction, false, rd);
+            deleteRelations(childArtifact, transaction, false, rd);
          }
          try {
             // calling deCache here creates a race condition when the handleRelationModifiedEvent listeners fire - RS

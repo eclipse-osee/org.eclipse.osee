@@ -499,7 +499,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     * Creates an instance of <code>Attribute</code> of the given attribute type. This method should not be called by
     * applications. Use addAttribute() instead
     */
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings({"unchecked", "deprecation"})
    private <T> Attribute<T> createAttribute(AttributeTypeId attributeType) {
       Conditions.checkValid(attributeType);
       Class<? extends Attribute<T>> attributeClass =
@@ -1460,6 +1460,11 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       if (relationTypeSide.getRelationType().isNewRelationTable()) {
          relOrder = getNewRelOrder(getRelations(relationTypeSide), relationTypeSide, null, artifact);
       }
+
+      XResultData rd =
+         ArtifactPersistenceManager.performAddRelationChecks(artifact, relationTypeSide, new XResultData());
+      rd.exceptionIfErrors("Add Relation(s)");
+
       RelationManager.addRelation(sorterId, relationTypeSide.getRelationType(), sides.getFirst(), sides.getSecond(),
          rationale, relOrder, ArtifactId.SENTINEL);
    }
@@ -1467,6 +1472,11 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    public final void addRelation(RelationSorter sorterId, RelationTypeSide relationTypeSide, Artifact artifact,
       int relOrder, ArtifactId relArtId) {
       Pair<Artifact, Artifact> sides = determineArtifactSides(artifact, relationTypeSide);
+
+      XResultData rd =
+         ArtifactPersistenceManager.performAddRelationChecks(artifact, relationTypeSide, new XResultData());
+      rd.exceptionIfErrors("Add Relation(s)");
+
       RelationManager.addRelation(sorterId, relationTypeSide.getRelationType(), sides.getFirst(), sides.getSecond(), "",
          relOrder, relArtId);
    }
@@ -1478,28 +1488,37 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    }
 
    public final void addRelation(RelationSorter sorterId, RelationTypeSide relationSide, Artifact artifact) {
+      XResultData rd = ArtifactPersistenceManager.performAddRelationChecks(artifact, relationSide, new XResultData());
+      rd.exceptionIfErrors("Add Relation(s)");
       addRelation(sorterId, relationSide, artifact, null);
    }
 
-   public final void addRelation(RelationSorter sorterId, RelationTypeSide relationEnumeration, Artifact targetArtifact,
-      boolean insertAfterTarget, Artifact itemToAdd, String rationale) {
-      boolean sideA = relationEnumeration.getSide().isSideA();
-      Artifact artifactA = sideA ? itemToAdd : this;
-      Artifact artifactB = sideA ? this : itemToAdd;
+   public final void addRelation(RelationSorter sorterId, RelationTypeSide relationSide, Artifact targetArtifact,
+      boolean insertAfterTarget, Artifact artToAdd, String rationale) {
+      boolean sideA = relationSide.getSide().isSideA();
+      Artifact artifactA = sideA ? artToAdd : this;
+      Artifact artifactB = sideA ? this : artToAdd;
 
-      RelationManager.addRelation(sorterId, relationEnumeration, artifactA, artifactB, rationale, 0,
-         ArtifactId.SENTINEL);
-      setRelationOrder(relationEnumeration, targetArtifact, insertAfterTarget, itemToAdd);
+      XResultData rd =
+         ArtifactPersistenceManager.performAddRelationChecks(targetArtifact, relationSide, new XResultData());
+      rd.exceptionIfErrors("Add Relation(s)");
+
+      RelationManager.addRelation(sorterId, relationSide, artifactA, artifactB, rationale, 0, ArtifactId.SENTINEL);
+      setRelationOrder(relationSide, targetArtifact, insertAfterTarget, artToAdd);
    }
 
-   public final void addRelation(RelationSorter sorterId, RelationTypeSide relationEnumeration, Artifact targetArtifact,
-      boolean insertAfterTarget, Artifact itemToAdd, int relOrder, ArtifactId relArtId) {
-      boolean sideA = relationEnumeration.getSide().isSideA();
-      Artifact artifactA = sideA ? itemToAdd : this;
-      Artifact artifactB = sideA ? this : itemToAdd;
+   public final void addRelation(RelationSorter sorterId, RelationTypeSide relationSide, Artifact targetArtifact,
+      boolean insertAfterTarget, Artifact artToAdd, int relOrder, ArtifactId relArtId) {
+      boolean sideA = relationSide.getSide().isSideA();
+      Artifact artifactA = sideA ? artToAdd : this;
+      Artifact artifactB = sideA ? this : artToAdd;
 
-      RelationManager.addRelation(sorterId, relationEnumeration, artifactA, artifactB, "", relOrder, relArtId);
-      setRelationOrder(relationEnumeration, targetArtifact, insertAfterTarget, itemToAdd);
+      XResultData rd =
+         ArtifactPersistenceManager.performAddRelationChecks(targetArtifact, relationSide, new XResultData());
+      rd.exceptionIfErrors("Add Relation(s)");
+
+      RelationManager.addRelation(sorterId, relationSide, artifactA, artifactB, "", relOrder, relArtId);
+      setRelationOrder(relationSide, targetArtifact, insertAfterTarget, artToAdd);
    }
 
    public final void setRelationOrder(RelationTypeSide relationSide, List<Artifact> artifactsInNewOrder) {

@@ -183,7 +183,8 @@ public abstract class AbstractAccessControlService implements IAccessControlServ
    }
 
    @Override
-   public XResultData hasBranchPermission(ArtifactToken subject, BranchToken branch, PermissionEnum permission, XResultData rd) {
+   public XResultData hasBranchPermission(ArtifactToken subject, BranchToken branch, PermissionEnum permission,
+      XResultData rd) {
       ensurePopulated();
       if (rd == null) {
          rd = new XResultData();
@@ -269,12 +270,14 @@ public abstract class AbstractAccessControlService implements IAccessControlServ
    }
 
    @Override
-   public XResultData hasArtifactPermission(Collection<? extends ArtifactToken> artifacts, PermissionEnum permission, XResultData rd) {
+   public XResultData hasArtifactPermission(Collection<? extends ArtifactToken> artifacts, PermissionEnum permission,
+      XResultData rd) {
       return hasArtifactPermission(getUser(), artifacts, permission, rd);
    }
 
    @Override
-   public XResultData hasArtifactPermission(ArtifactToken subject, Collection<? extends ArtifactToken> artifacts, PermissionEnum permission, XResultData rd) {
+   public XResultData hasArtifactPermission(ArtifactToken subject, Collection<? extends ArtifactToken> artifacts,
+      PermissionEnum permission, XResultData rd) {
       ensurePopulated();
       if (rd == null) {
          rd = new XResultData();
@@ -333,13 +336,15 @@ public abstract class AbstractAccessControlService implements IAccessControlServ
    ////////////////////////////////////
 
    @Override
-   public XResultData hasAttributeTypePermission(Collection<? extends ArtifactToken> artifacts, AttributeTypeToken attributeType, PermissionEnum permission, XResultData rd) {
+   public XResultData hasAttributeTypePermission(Collection<? extends ArtifactToken> artifacts,
+      AttributeTypeToken attributeType, PermissionEnum permission, XResultData rd) {
       ArtifactToken currentUser = getUser();
       return hasAttributeTypePermission(currentUser, artifacts, attributeType, permission, rd);
    }
 
    @Override
-   public XResultData hasAttributeTypePermission(ArtifactToken subject, Collection<? extends ArtifactToken> artifacts, AttributeTypeToken attributeType, PermissionEnum permission, XResultData rd) {
+   public XResultData hasAttributeTypePermission(ArtifactToken subject, Collection<? extends ArtifactToken> artifacts,
+      AttributeTypeToken attributeType, PermissionEnum permission, XResultData rd) {
       ensurePopulated();
       if (isInDbInit()) {
          rd.log("In DB Init; All permission enabled");
@@ -374,7 +379,8 @@ public abstract class AbstractAccessControlService implements IAccessControlServ
 
    abstract protected boolean isInDbInit();
 
-   private AccessResult checkBaseBranchAndArtAcl(ArtifactToken subject, PermissionEnum permission, XResultData rd, ArtifactToken artifact) {
+   private AccessResult checkBaseBranchAndArtAcl(ArtifactToken subject, PermissionEnum permission, XResultData rd,
+      ArtifactToken artifact) {
       ensurePopulated();
       AccessResult result = new AccessResult(rd);
       if (artifact.isInvalid()) {
@@ -412,12 +418,15 @@ public abstract class AbstractAccessControlService implements IAccessControlServ
    ////////////////////////////////////
 
    @Override
-   public XResultData hasRelationTypePermission(ArtifactToken artifact, RelationTypeToken relationType, Collection<? extends ArtifactToken> related, PermissionEnum permission, XResultData rd) {
+   public XResultData hasRelationTypePermission(ArtifactToken artifact, RelationTypeToken relationType,
+      Collection<? extends ArtifactToken> related, PermissionEnum permission, XResultData rd) {
       return hasRelationTypePermission(getUser(), artifact, relationType, related, permission, rd);
    }
 
    @Override
-   public XResultData hasRelationTypePermission(ArtifactToken subject, ArtifactToken artifact, RelationTypeToken relationType, Collection<? extends ArtifactToken> related, PermissionEnum permission, XResultData rd) {
+   public XResultData hasRelationTypePermission(ArtifactToken subject, ArtifactToken artifact,
+      RelationTypeToken relationType, Collection<? extends ArtifactToken> related, PermissionEnum permission,
+      XResultData rd) {
       Conditions.assertNotNull(related, "Related should be collection or empty collection, not null");
       ensurePopulated();
       if (rd == null) {
@@ -566,7 +575,16 @@ public abstract class AbstractAccessControlService implements IAccessControlServ
    }
 
    @Override
-   public XResultData isDeleteableRelation(ArtifactToken artifact, RelationTypeToken relationType, XResultData results) {
+   public XResultData isAddableRelation(ArtifactToken artifact, RelationTypeToken relationType, XResultData results) {
+      for (ArtifactCheck check : getArtifactChecks()) {
+         check.isAddableRelation(artifact, relationType, results);
+      }
+      return results;
+   }
+
+   @Override
+   public XResultData isDeleteableRelation(ArtifactToken artifact, RelationTypeToken relationType,
+      XResultData results) {
       for (ArtifactCheck check : getArtifactChecks()) {
          check.isDeleteableRelation(artifact, relationType, results);
       }
