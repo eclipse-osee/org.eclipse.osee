@@ -242,12 +242,12 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public ArtifactId createSet(BranchId branch, String importPath, String setName) {
+   public ArtifactId createSet(BranchId branch, String importPath, String setName, String partitionName) {
       TransactionBuilder tx = getTxFactory().createTransaction(branch, "Create Dispo Set");
       ArtifactId creatdArtId = tx.createArtifact(CoreArtifactTypes.DispositionSet, setName);
-
+      tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.CoveragePartition, partitionName);
       tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.CoverageImportPath, importPath);
-      tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.ServerImportPath, importPath);
+      tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.CoverageImportApi, importPath);
       tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.CoverageImportState, DispoSetStatus.NONE);
       tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.CoverageConfig, "codeCoverage");
       tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.CoverageNotesJson, JsonUtil.toJson(""));
@@ -262,9 +262,9 @@ public class OrcsStorageImpl implements Storage {
    public ArtifactId createDispoSet(BranchId branch, DispoSet descriptor) {
       TransactionBuilder tx = getTxFactory().createTransaction(branch, "Create Dispo Set");
       ArtifactId creatdArtId = tx.createArtifact(CoreArtifactTypes.DispositionSet, descriptor.getName());
-
+      tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.CoveragePartition, descriptor.getCoveragePartition());
       tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.CoverageImportPath, descriptor.getImportPath());
-      tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.ServerImportPath, descriptor.getImportPath());
+      tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.CoverageImportApi, descriptor.getImportPath());
       tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.CoverageImportState, descriptor.getImportState());
       tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.CoverageConfig, descriptor.getDispoType());
       tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.CoverageNotesJson,
@@ -311,10 +311,10 @@ public class OrcsStorageImpl implements Storage {
       DispoSetArtifact origSetAs = new DispoSetArtifact(dispoSet);
       TransactionBuilder tx = getTxFactory().createTransaction(branch, "Update Local Import Path for Coverage Set");
       if (!setId.serverImportPathExists()) {
-         tx.createAttribute(dispoSet, CoreAttributeTypes.ServerImportPath, localImportPath);
+         tx.createAttribute(dispoSet, CoreAttributeTypes.CoverageImportApi, localImportPath);
       } else {
-         if (localImportPath != null && !localImportPath.equals(origSetAs.getServerImportPath())) {
-            tx.setSoleAttributeFromString(dispoSet, CoreAttributeTypes.ServerImportPath, localImportPath);
+         if (localImportPath != null && !localImportPath.equals(origSetAs.getCoverageImportApi())) {
+            tx.setSoleAttributeFromString(dispoSet, CoreAttributeTypes.CoverageImportApi, localImportPath);
          }
       }
       tx.commit();
@@ -327,7 +327,8 @@ public class OrcsStorageImpl implements Storage {
 
       String name = newData.getName();
       String importPath = newData.getImportPath();
-      String serverImportPath = newData.getServerImportPath();
+      String coverageImportApi = newData.getCoverageImportApi();
+      String coveragePartition = newData.getCoveragePartition();
       String ciSet = newData.getCiSet();
       String rerunList = newData.getRerunList();
       Date time = newData.getTime();
@@ -343,7 +344,13 @@ public class OrcsStorageImpl implements Storage {
       }
       if (importPath != null && !importPath.equals(origSetAs.getImportPath())) {
          tx.setSoleAttributeFromString(dispoSet, CoreAttributeTypes.CoverageImportPath, importPath);
-         tx.setSoleAttributeFromString(dispoSet, CoreAttributeTypes.ServerImportPath, importPath);
+         tx.setSoleAttributeFromString(dispoSet, CoreAttributeTypes.CoverageImportApi, importPath);
+      }
+      if (coverageImportApi != null && !coverageImportApi.equals(origSetAs.getCoverageImportApi())) {
+         tx.setSoleAttributeFromString(dispoSet, CoreAttributeTypes.CoverageImportApi, coverageImportApi);
+      }
+      if (coveragePartition != null && !coveragePartition.equals(origSetAs.getCoveragePartition())) {
+         tx.setSoleAttributeFromString(dispoSet, CoreAttributeTypes.CoveragePartition, coveragePartition);
       }
       if (notesList != null && !notesList.equals(origSetAs.getNotesList())) {
          tx.setSoleAttributeFromString(dispoSet, CoreAttributeTypes.CoverageNotesJson,

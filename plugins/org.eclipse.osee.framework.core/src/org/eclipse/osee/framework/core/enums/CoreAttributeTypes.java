@@ -851,7 +851,7 @@ public interface CoreAttributeTypes {
 
    PartitionAttributeType Partition = osee.createEnum(new PartitionAttributeType());
 
-//   AttributeTypeString CoveragePartition = osee.createString(1152921504608470507L, "Name of Partition for Coverage", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString CoveragePartition = osee.createString(1152921504608470507L, "Name of Partition for Coverage", MediaType.TEXT_PLAIN, "");
 
    AttributeTypeInteger CoveredCount = osee.createInteger(1152921504608470508L, "Covered Count", MediaType.TEXT_PLAIN, "Number of points that were manually covered");
 
@@ -1145,7 +1145,7 @@ public interface CoreAttributeTypes {
 
    AttributeTypeString CoverageImportPath = osee.createString(1152921504606847881L, "Import Path", MediaType.TEXT_PLAIN, "");
 
-   AttributeTypeString ServerImportPath = osee.createString(1152921504606847894L, "Import Url", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString CoverageImportApi = osee.createString(1152921504606847894L, "Import Url", MediaType.TEXT_PLAIN, "");
 
    DispoImportStateAttributeType CoverageImportState = osee.createEnum(new DispoImportStateAttributeType());
 

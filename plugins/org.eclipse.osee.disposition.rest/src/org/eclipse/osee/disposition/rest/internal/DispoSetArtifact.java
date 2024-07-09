@@ -52,16 +52,25 @@ public class DispoSetArtifact extends BaseIdentity<String> implements DispoSet {
    }
 
    @Override
-   public String getServerImportPath() {
-      if (artifact.getAttributeCount(CoreAttributeTypes.ServerImportPath) == 1) {
-         return artifact.getSoleAttributeAsString(CoreAttributeTypes.ServerImportPath);
+   public String getCoveragePartition() {
+      if (artifact.getAttributeCount(CoreAttributeTypes.CoveragePartition) == 1) {
+         return artifact.getSoleAttributeAsString(CoreAttributeTypes.CoveragePartition);
+      }
+      return "";
+
+   }
+
+   @Override
+   public String getCoverageImportApi() {
+      if (artifact.getAttributeCount(CoreAttributeTypes.CoverageImportApi) == 1) {
+         return artifact.getSoleAttributeAsString(CoreAttributeTypes.CoverageImportApi);
       }
       return "";
    }
 
    @Override
    public boolean serverImportPathExists() {
-      if (artifact.getAttributeCount(CoreAttributeTypes.ServerImportPath) == 1) {
+      if (artifact.getAttributeCount(CoreAttributeTypes.CoverageImportApi) == 1) {
          return true;
       }
       return false;

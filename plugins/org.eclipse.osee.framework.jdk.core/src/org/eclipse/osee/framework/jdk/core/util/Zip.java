@@ -61,7 +61,8 @@ public class Zip {
       }
    }
 
-   public static void compressDirectory(File directory, String zipTarget, boolean includeSubDirectories) throws IOException, IllegalArgumentException {
+   public static void compressDirectory(File directory, String zipTarget, boolean includeSubDirectories)
+      throws IOException, IllegalArgumentException {
       if (directory.isDirectory() != true) {
          throw new IllegalArgumentException(String.format("Error source is not a directory: [%s]", directory));
       }
@@ -77,7 +78,8 @@ public class Zip {
       }
    }
 
-   private static void compressDirectory(String basePath, File source, ZipOutputStream outputStream, boolean includeSubDirectories) throws IOException {
+   private static void compressDirectory(String basePath, File source, ZipOutputStream outputStream,
+      boolean includeSubDirectories) throws IOException {
       File[] children = source.listFiles();
       if (children != null) {
          for (File file : children) {
@@ -199,6 +201,44 @@ public class Zip {
                   outputStream = new BufferedOutputStream(new FileOutputStream(target));
                   Lib.inputStreamToOutputStream(zipInputStream, outputStream);
                }
+            } finally {
+               Lib.close(outputStream);
+            }
+         }
+      } finally {
+         Lib.close(zipInputStream);
+      }
+   }
+
+   public static void decompressStream(InputStream inputStream, File targetDirectory, String subDirName)
+      throws IOException {
+      ZipInputStream zipInputStream = null;
+      try {
+         zipInputStream = new ZipInputStream(inputStream);
+         if (!targetDirectory.exists()) {
+            targetDirectory.mkdirs();
+         }
+         ZipEntry entry = null;
+
+         while ((entry = zipInputStream.getNextEntry()) != null) {
+            String zipEntryName = entry.getName();
+
+            OutputStream outputStream = null;
+            try {
+               if (!entry.isDirectory() && (zipEntryName.contains("/" + subDirName + "/") || zipEntryName.startsWith(
+                  subDirName + "/"))) {
+                  int subDirIndex = zipEntryName.indexOf(subDirName);
+                  zipEntryName = zipEntryName.substring(subDirIndex);
+                  File target = new File(targetDirectory, zipEntryName);
+
+                  File parent = target.getParentFile();
+                  if (parent != null && !parent.exists()) {
+                     parent.mkdirs();
+                  }
+                  outputStream = new BufferedOutputStream(new FileOutputStream(target));
+                  Lib.inputStreamToOutputStream(zipInputStream, outputStream);
+               }
+
             } finally {
                Lib.close(outputStream);
             }

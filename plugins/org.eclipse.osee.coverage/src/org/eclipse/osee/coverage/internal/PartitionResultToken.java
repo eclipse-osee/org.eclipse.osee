@@ -60,7 +60,7 @@ public class PartitionResultToken extends ArtifactAccessorResult {
       this.setName(art.getName());
       this.setCoverageCreatedDate(art.getSoleAttributeValue(CoreAttributeTypes.CoverageCreatedDate, new Date()));
       this.setCoverageImportPath(art.getSoleAttributeAsString(CoreAttributeTypes.CoverageImportPath, ""));
-      this.setServerImportPath(art.getSoleAttributeAsString(CoreAttributeTypes.ServerImportPath, ""));
+      this.setServerImportPath(art.getSoleAttributeAsString(CoreAttributeTypes.CoverageImportApi, ""));
       this.setCoverageImportState(art.getSoleAttributeAsString(CoreAttributeTypes.CoverageImportState, ""));
       this.setCoverageNotesJson(art.getSoleAttributeAsString(CoreAttributeTypes.CoverageNotesJson, ""));
       this.setCoverageOperationSummary(art.getSoleAttributeAsString(CoreAttributeTypes.CoverageOperationSummary, ""));

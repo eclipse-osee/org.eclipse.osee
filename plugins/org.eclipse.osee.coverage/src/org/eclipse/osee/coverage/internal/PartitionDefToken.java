@@ -48,7 +48,7 @@ public class PartitionDefToken extends ArtifactAccessorResult {
    private Date lastModified = new Date();
    private String modifiedFlag = "";
    private String coverageImportPath = "";
-   private String serverImportPath = "";
+   private String coverageImportApi = "";
    private Date latestExecutionDate = new Date();
    private int latestPassedCount = 0;
    private int latestFailedCount = 0;
@@ -75,7 +75,7 @@ public class PartitionDefToken extends ArtifactAccessorResult {
       this.setLastModified(art.getSoleAttributeValue(CoreAttributeTypes.LastModifiedDate, new Date()));
       this.setModifiedFlag(art.getSoleAttributeAsString(CoreAttributeTypes.ModifiedFlag, ""));
       this.setCoverageImportPath(art.getSoleAttributeAsString(CoreAttributeTypes.CoverageImportPath, ""));
-      this.setServerImportPath(art.getSoleAttributeAsString(CoreAttributeTypes.ServerImportPath, ""));
+      this.setCoverageImportApi(art.getSoleAttributeAsString(CoreAttributeTypes.CoverageImportApi, ""));
       this.setDescription(art.getSoleAttributeAsString(CoreAttributeTypes.Description, ""));
       this.setNotes(art.getSoleAttributeAsString(CoreAttributeTypes.Notes, ""));
       this.setErrors("");
@@ -106,7 +106,7 @@ public class PartitionDefToken extends ArtifactAccessorResult {
       this.setLastModified(new Date());
       this.setModifiedFlag("");
       this.setCoverageImportPath("");
-      this.setServerImportPath("");
+      this.setCoverageImportApi("");
       this.setLatestExecutionDate(new Date());
       this.setLatestPassedCount(0);
       this.setLatestFailedCount(0);
@@ -213,17 +213,17 @@ public class PartitionDefToken extends ArtifactAccessorResult {
    }
 
    /**
-    * @return get the serverImportPath
+    * @return get the coverageImportApi
     */
-   public String getServerImportPath() {
-      return serverImportPath;
+   public String getCoverageImportApi() {
+      return coverageImportApi;
    }
 
    /**
-    * @param set the serverImportPath to serverImportPath
+    * @param set the coverageImportApi to coverageImportApi
     */
-   public void setServerImportPath(String team) {
-      this.serverImportPath = serverImportPath;
+   public void setCoverageImportApi(String coverageImportApi) {
+      this.coverageImportApi = coverageImportApi;
    }
 
    /**
@@ -374,7 +374,7 @@ public class PartitionDefToken extends ArtifactAccessorResult {
       values.put(CoreAttributeTypes.LastModifiedDate, Long.toString(this.getLastModified().getTime()));
       values.put(CoreAttributeTypes.ModifiedFlag, getModifiedFlag()); // TODO should this be a boolean?
       values.put(CoreAttributeTypes.CoverageImportPath, this.getCoverageImportPath());
-      values.put(CoreAttributeTypes.ServerImportPath, this.getServerImportPath());
+      values.put(CoreAttributeTypes.CoverageImportApi, this.getCoverageImportApi());
       values.put(CoreAttributeTypes.Description, this.getDescription());
       values.put(CoreAttributeTypes.Notes, this.getNotes());
 

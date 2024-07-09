@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.zip.ZipInputStream;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
@@ -93,6 +94,8 @@ public class DispoApiImpl implements DispoApi {
    private DispoImporterFactory importerFactory;
    private OrcsApi orcsApi;
    private AtsApi atsApi;
+
+   private static final Pattern gitlabApiPattern = Pattern.compile("^.*projects.*?jobs.*?artifacts$");
 
    private volatile DispoApiConfiguration config;
 
@@ -174,8 +177,8 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public ArtifactId createSet(BranchId branch, String importPath, String setName) {
-      return getWriter().createSet(branch, importPath, setName);
+   public ArtifactId createSet(BranchId branch, String importPath, String setName, String partitionName) {
+      return getWriter().createSet(branch, importPath, setName, partitionName);
    }
 
    @Override
@@ -229,12 +232,42 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public void importDispoSet(BranchId branch, String dispoSetId, String importPath) {
-      String operation = DispoStrings.Operation_Import;
+   public void importDispoSet(BranchId branch, String dispoSetId) {
       DispoSet dispSetToEdit = getQuery().findDispoSetsById(branch, dispoSetId);
-      DispoSetData newSet = new DispoSetData();
-      newSet.setOperation(operation);
       if (dispSetToEdit != null) {
+         String operation = DispoStrings.Operation_Import;
+         DispoSetData newSet = new DispoSetData();
+         newSet.setOperation(operation);
+         runOperation(branch, dispSetToEdit, newSet, false);
+      }
+   }
+
+   @Override
+   public void importDispoSet(BranchId branch, String dispoSetId, String coverageImportApi, String partition) {
+      DispoSet dispSetToEdit = getQuery().findDispoSetsById(branch, dispoSetId);
+
+      if (dispSetToEdit != null) {
+         String operation = DispoStrings.Operation_Import;
+         DispoSetData newSet = new DispoSetData();
+         boolean editImportInfo = false;
+         String currPartition = dispSetToEdit.getCoveragePartition();
+         String currImportApi = dispSetToEdit.getCoverageImportApi();
+
+         newSet.setOperation(operation);
+
+         //Ensure older sets have these attributes when they are re-imported
+         if (currPartition == null || !partition.equals(currPartition)) {
+            editImportInfo = true;
+            newSet.setCoveragePartition(partition);
+         }
+         if (currImportApi == null || !coverageImportApi.equals(currImportApi)) {
+            editImportInfo = true;
+            newSet.setCoverageImportApi(coverageImportApi);
+         }
+
+         if (editImportInfo) {
+            getWriter().updateDispoSet(branch, dispSetToEdit.getGuid(), newSet);
+         }
          runOperation(branch, dispSetToEdit, newSet, false);
       }
    }
@@ -418,7 +451,7 @@ public class DispoApiImpl implements DispoApi {
       if (set != null) {
          DispoSet dispoSet = getQuery().findDispoSetsById(branch, set.getIdString());
          if (dispoSet != null) {
-            String importPath = dispoSet.getServerImportPath();
+            String importPath = dispoSet.getCoverageImportApi();
             String name = dispoItemToEdit.getName().replaceAll(config.getFileExtRegex(), ".LIS");
             return importPath + File.separator + "vcast" + File.separator + name;
          }
@@ -745,24 +778,27 @@ public class DispoApiImpl implements DispoApi {
       OperationReport report = new OperationReport();
       String operation = newSet.getOperation();
       if (operation.equals(DispoStrings.Operation_Import)) {
-         logger.info("Beginning Coverage Import on branch [%s] set [%s]", branch.toString(), setToEdit.getIdString());
-
          try {
             HashMap<String, DispoItem> nameToItemMap = getItemsMap(branch, setToEdit);
 
             DispoImporterApi importer;
 
             if (setToEdit.getDispoType().equalsIgnoreCase(DispoStrings.CODE_COVERAGE)) {
-               logger.info("Importing LIS files...");
                importer = importerFactory.createImporter(ImportFormat.LIS, dispoConnector);
             } else {
                importer = importerFactory.createImporter(ImportFormat.TMO, dispoConnector);
             }
 
             File importDirectory;
-            if (setToEdit.getImportPath().contains("https")) {
-               logger.info("Beginning Import...");
-               importDirectory = importData(branch, setToEdit, setToEdit.getImportPath());
+
+            if (gitlabApiPattern.matcher(setToEdit.getCoverageImportApi()).matches()) {
+               importDirectory = importDataFromGit(branch, setToEdit, setToEdit.getCoverageImportApi(),
+                  setToEdit.getCoveragePartition());
+            } else if (gitlabApiPattern.matcher(setToEdit.getImportPath()).matches()) {
+               importDirectory =
+                  importDataFromGit(branch, setToEdit, setToEdit.getImportPath(), setToEdit.getCoveragePartition());
+            } else if (setToEdit.getImportPath().contains("artifactory")) { //TODO: Remove after Artifactory is no longer in use.
+               importDirectory = importDataArtifactory(branch, setToEdit, setToEdit.getImportPath());
             } else {
                importDirectory = new File(setToEdit.getImportPath());
             }
@@ -785,7 +821,6 @@ public class DispoApiImpl implements DispoApi {
             List<DispoItem> itemsToCreate = new ArrayList<>();
             List<DispoItem> itemsToEdit = new ArrayList<>();
 
-            logger.info("Determining Items to Create/Update...");
             for (DispoItem item : itemsFromParse) {
                // if the ID is non-empty then we are updating an item instead of creating a new one
                if (item.getGuid() == null) {
@@ -796,7 +831,6 @@ public class DispoApiImpl implements DispoApi {
                }
             }
 
-            logger.info("Creating/Updating Items...");
             if (!report.getStatus().isFailed()) {
                if (itemsToCreate.size() > 0) {
                   createDispoItems(branch, setToEdit.getGuid(), itemsToCreate);
@@ -806,8 +840,6 @@ public class DispoApiImpl implements DispoApi {
                }
             }
 
-            logger.info("Updating Coverage Status for Items on branch [%s] set [%s]", branch.toString(),
-               setToEdit.getIdString());
             updateAllDispoItems(branch, setToEdit.getGuid());
 
          } catch (Exception ex) {
@@ -816,11 +848,8 @@ public class DispoApiImpl implements DispoApi {
             }
             throw new OseeCoreException(ex);
          }
-         logger.info("Finishing Coverage Import on branch [%s] set [%s]", branch.toString(), setToEdit.getIdString());
       }
 
-      logger.info("Generating Note for Operation Documentation for branch [%s] set [%s]", branch.toString(),
-         setToEdit.getIdString());
       // Create the Note to document the Operation
       List<Note> notesList = setToEdit.getNotesList();
       Note genOpNotes = generateOperationNotes(operation);
@@ -831,18 +860,16 @@ public class DispoApiImpl implements DispoApi {
       newSet.setTime(newDate);
 
       // Generate report
-      logger.info("Generating Coverage Report for branch [%s] set [%s]", branch.toString(), setToEdit.getIdString());
       getWriter().updateOperationSummary(branch, setToEdit.getGuid(), report);
 
       //Update Disposition Set
-      logger.info("Updating Coverage Set Status for branch [%s] set [%s]", branch.toString(), setToEdit.getIdString());
       getWriter().updateDispoSet(branch, setToEdit.getGuid(), newSet);
-
-      logger.info("Finished Updating Coverage for branch [%s] set [%s]", branch.toString(), setToEdit.getIdString());
 
    }
 
-   private File importData(BranchId branch, DispoSet setId, String dataSource) {
+   //TODO: Remove after Artifactory is no longer in use.
+   private File importDataArtifactory(BranchId branch, DispoSet setId, String dataSource) {
+
       String folderPath = getLocalFolderPath(branch.getIdString(), setId.getIdString());
       File setFolder = new File(folderPath);
       File parent = setFolder.getParentFile();
@@ -853,9 +880,32 @@ public class DispoApiImpl implements DispoApi {
          setFolder.mkdirs();
       }
 
-      String fullPath = folderPath + getZipFileName(dataSource);
+      String fullPath = "";
 
-      downloadFile(dataSource, fullPath);
+      fullPath = folderPath + getZipFileName(dataSource);
+      downloadArtifactoryFile(dataSource, fullPath);
+
+      getWriter().updateOrCreateServerImportPath(branch, setId, fullPath);
+
+      return new File(fullPath);
+   }
+
+   private File importDataFromGit(BranchId branch, DispoSet setId, String apiCall, String partitionName) {
+
+      String folderPath = getLocalFolderPath(branch.getIdString(), setId.getIdString());
+      File setFolder = new File(folderPath);
+      File parent = setFolder.getParentFile();
+      if (parent != null && !parent.exists() && !parent.mkdirs()) {
+         throw new OseeStateException("Couldn't create dir: " + parent);
+      }
+      if (!setFolder.exists()) {
+         setFolder.mkdirs();
+      }
+
+      String fullPath = "";
+
+      fullPath = folderPath + partitionName;
+      downloadGitLabFile(apiCall, fullPath, partitionName);
 
       getWriter().updateOrCreateServerImportPath(branch, setId, fullPath);
 
@@ -878,11 +928,10 @@ public class DispoApiImpl implements DispoApi {
       }
    }
 
-   private StringBuilder downloadFile(String artifactoryUrl, String downloadLocation) {
+   //TODO: Remove after Artifactory is no longer in use.
+   private StringBuilder downloadArtifactoryFile(String artifactoryUrl, String downloadLocation) {
       StringBuilder response = new StringBuilder();
-      String personalAccessToken = getPersonalAccessToken();
-
-      HttpURLConnection conn = null;
+      String personalAccessToken = getArtifactoryPersonalAccessToken();
 
       try {
          if (!artifactoryUrl.endsWith(".zip")) {
@@ -916,15 +965,61 @@ public class DispoApiImpl implements DispoApi {
          }
       } catch (Exception ex) {
          throw new OseeCoreException("Artifactory Operation Failed", ex);
-      } finally {
-         if (conn != null) {
-            conn.disconnect();
-         }
       }
       return response;
    }
 
-   private String getPersonalAccessToken() {
+   private StringBuilder downloadGitLabFile(String gitlabUrl, String downloadLocation, String partitionName) {
+      StringBuilder response = new StringBuilder();
+      String personalAccessToken = String.format("Bearer %s", getGitlabPersonalAccessToken());
+      String fullGitlabUrl = gitlabUrl;
+
+      if (!gitlabUrl.contains("https")) {
+         fullGitlabUrl = String.format("%s%s", getGitlabBaseApiUrl(), gitlabUrl);
+      }
+
+      try {
+         URL repositoryUrl = new URL(fullGitlabUrl);
+
+         HttpURLConnection connection = (HttpURLConnection) repositoryUrl.openConnection();
+         connection.addRequestProperty("Authorization", personalAccessToken);
+         connection.setRequestProperty("Connection", "keep-alive");
+         connection.setRequestMethod("GET");
+         connection.connect();
+         String fileZip = String.format("%s%svcast.zip", downloadLocation, File.separator);
+
+         try (InputStream stream = connection.getInputStream();) {
+            File unzipLocation = new File(downloadLocation);
+            Zip.decompressStream(stream, unzipLocation.getParentFile(), partitionName + "/vcast");
+
+            connection.disconnect();
+            stream.close();
+
+            File vcastDir = new File(String.format("%s%svcast", downloadLocation, File.separator));
+            if (vcastDir.exists()) {
+               Zip.compressDirectory(vcastDir, fileZip, true);
+            }
+         }
+      } catch (Exception ex) {
+         throw new OseeCoreException("Gitlab Operation Failed", ex);
+      }
+      return response;
+   }
+
+   private String getGitlabPersonalAccessToken() {
+      ArtifactReadable gitlabConfig =
+         orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andId(AtsArtifactToken.GitlabConfig).asArtifact();
+      return gitlabConfig.getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData);
+   }
+
+   private String getGitlabBaseApiUrl() {
+      ArtifactReadable gitlabConfig =
+         orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andId(AtsArtifactToken.GitlabConfig).asArtifact();
+      return gitlabConfig.getSoleAttributeAsString(CoreAttributeTypes.ContentUrl);
+   }
+
+   //TODO: Remove after Artifactory is no longer in use.
+   private String getArtifactoryPersonalAccessToken() {
       ArtifactReadable artifactoryConfig = orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andId(
          AtsArtifactToken.ArtifactoryConfig).asArtifact();
       return artifactoryConfig.getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData);

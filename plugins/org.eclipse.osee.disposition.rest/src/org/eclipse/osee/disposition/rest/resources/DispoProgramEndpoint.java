@@ -226,11 +226,11 @@ public class DispoProgramEndpoint {
       BranchToken programId = dispoApi.getDispoProgramIdByName(programName);
       String setId = dispoApi.getDispoSetIdByName(programId, setName);
       if (setId != null) {
-         dispoApi.importDispoSet(programId, setId, importPath);
+         dispoApi.importDispoSet(programId, setId);
       } else {
-         ArtifactId createdSetId = dispoApi.createSet(programId, importPath, setName);
+         ArtifactId createdSetId = dispoApi.createSet(programId, importPath, setName, "");
          setId = dispoApi.getDispoSetById(programId, ArtifactId.valueOf(createdSetId).getIdString()).getIdString();
-         dispoApi.importDispoSet(programId, setId, importPath);
+         dispoApi.importDispoSet(programId, setId);
       }
       if (!sourceSet.isEmpty()) {
          String sourceSetId;
@@ -256,6 +256,71 @@ public class DispoProgramEndpoint {
                "Data Import Successful. Failed to import manual dispositions from [%s].", sourceSet)).build();
          }
       }
+      return Response.status(Status.OK).build();
+   }
+
+   @Path("{programName}/set/{setName}/project/{projectId}/job/{jobId}/import")
+   @PUT
+   @Consumes(MediaType.APPLICATION_JSON)
+   public Response puttDispoSetByName(@PathParam("programName") String programName,
+      @PathParam("setName") String setName, @PathParam("projectId") String projectId, @PathParam("jobId") String jobId,
+      String partition) {
+
+      if (!programName.contains("(DISPO)")) {
+         programName = String.format("(DISPO)%s", programName);
+      }
+
+      String coverageImportApi = String.format("projects/%s/jobs/%s/artifacts/", projectId, jobId);
+
+      BranchToken programId = dispoApi.getDispoProgramIdByName(programName);
+      String setId = dispoApi.getDispoSetIdByName(programId, setName);
+      if (setId != null) {
+         dispoApi.importDispoSet(programId, setId, coverageImportApi, partition);
+      } else {
+         ArtifactId createdSetId = dispoApi.createSet(programId, coverageImportApi, setName, partition);
+         setId = dispoApi.getDispoSetById(programId, ArtifactId.valueOf(createdSetId).getIdString()).getIdString();
+         dispoApi.importDispoSet(programId, setId);
+      }
+      return Response.status(Status.OK).build();
+   }
+
+   @Path("{programName}/set/{setName}/sourceProgram/{sourceProgramName}/sourceSet/{sourceSetName}/merge")
+   @PUT
+   @Consumes(MediaType.APPLICATION_JSON)
+   public Response puttDispoSetByName(@PathParam("programName") String programName,
+      @PathParam("setName") String setName, @PathParam("sourceProgramName") String sourceProgramName,
+      @PathParam("sourceSetName") String sourceSetName) {
+
+      if (!programName.contains("(DISPO)")) {
+         programName = String.format("(DISPO)%s", programName);
+      }
+      BranchToken programId = dispoApi.getDispoProgramIdByName(programName);
+      String setId = dispoApi.getDispoSetIdByName(programId, setName);
+
+      if (!sourceProgramName.contains("(DISPO)")) {
+         sourceProgramName = String.format("(DISPO)%s", sourceProgramName);
+      }
+      BranchToken sourceProgramId = dispoApi.getDispoProgramIdByName(sourceProgramName);
+      String sourceSetId = dispoApi.getDispoSetIdByName(sourceProgramId, sourceSetName);
+
+      if (setId != null) {
+         if (sourceSetId != null) {
+            CopySetParams params = new CopySetParams();
+            params.setAnnotationParam(CopySetParamOption.OVERRIDE);
+            params.setCategoryParam(CopySetParamOption.OVERRIDE_EMPTY);
+            params.setAssigneeParam(CopySetParamOption.OVERRIDE_EMPTY);
+            params.setNoteParam(CopySetParamOption.OVERRIDE_EMPTY);
+            params.setAllowOnlyValidResolutionTypes(false);
+            dispoApi.copyDispoSet(programId, setId, sourceProgramId, sourceSetId, params);
+         } else {
+            return Response.status(Status.PRECONDITION_FAILED).entity(
+               String.format("Failed to find set [%s] on branch [%s].", sourceSetName, sourceProgramName)).build();
+         }
+      } else {
+         return Response.status(Status.PRECONDITION_FAILED).entity(
+            String.format("Failed to find set [%s] on branch [%s].", setName, programName)).build();
+      }
+
       return Response.status(Status.OK).build();
    }
 

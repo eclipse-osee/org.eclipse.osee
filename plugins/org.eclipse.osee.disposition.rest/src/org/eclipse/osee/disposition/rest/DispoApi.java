@@ -75,7 +75,7 @@ public interface DispoApi {
    // Writes
    Long createDispoProgram(String name);
 
-   ArtifactId createSet(BranchId branch, String importPath, String setName);
+   ArtifactId createSet(BranchId branch, String importPath, String setName, String partitionName);
 
    ArtifactId createDispoSet(BranchId branch, DispoSetDescriptorData descriptor);
 
@@ -93,7 +93,9 @@ public interface DispoApi {
 
    void editDispoSet(BranchId branch, String dispoSetId, DispoSetData newDispoSet);
 
-   void importDispoSet(BranchId branch, String dispoSetId, String importPath);
+   void importDispoSet(BranchId branch, String dispoSetId);
+
+   void importDispoSet(BranchId branch, String dispoSetId, String coverageImportApi, String partition);
 
    void importAllDispoSets(BranchId branch, String filterState);
 

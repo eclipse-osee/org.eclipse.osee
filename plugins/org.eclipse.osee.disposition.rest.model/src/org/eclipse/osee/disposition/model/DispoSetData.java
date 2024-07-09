@@ -28,7 +28,9 @@ public class DispoSetData extends DispoSetDescriptorData implements DispoSet {
    private String operation;
    private List<Note> notesList;
    private String importState;
+   private String coverageImportApi;
    private OperationReport operationSummary;
+   private String coveragePartition;
    private String ciSet;
    private String rerunList;
    private Date time;
@@ -81,6 +83,15 @@ public class DispoSetData extends DispoSetDescriptorData implements DispoSet {
       return operationSummary;
    }
 
+   public void setCoveragePartition(String coveragePartition) {
+      this.coveragePartition = coveragePartition;
+   }
+
+   @Override
+   public String getCoveragePartition() {
+      return coveragePartition;
+   }
+
    public void setCiSet(String ciSet) {
       this.ciSet = ciSet;
    }
@@ -114,8 +125,12 @@ public class DispoSetData extends DispoSetDescriptorData implements DispoSet {
    }
 
    @Override
-   public String getServerImportPath() {
-      return null;
+   public String getCoverageImportApi() {
+      return coverageImportApi;
+   }
+
+   public void setCoverageImportApi(String coverageImportApi) {
+      this.coverageImportApi = coverageImportApi;
    }
 
    @Override

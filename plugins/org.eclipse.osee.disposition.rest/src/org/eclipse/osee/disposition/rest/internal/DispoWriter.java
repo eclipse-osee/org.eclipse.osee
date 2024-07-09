@@ -28,7 +28,7 @@ public interface DispoWriter {
 
    Long createDispoProgram(String name);
 
-   ArtifactId createSet(BranchId branch, String importPath, String setName);
+   ArtifactId createSet(BranchId branch, String importPath, String setName, String partitionName);
 
    ArtifactId createDispoSet(BranchId branch, DispoSet descriptor);
 
