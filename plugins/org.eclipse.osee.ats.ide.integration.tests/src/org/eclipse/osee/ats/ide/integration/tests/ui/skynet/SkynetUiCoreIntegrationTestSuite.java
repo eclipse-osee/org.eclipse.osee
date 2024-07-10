@@ -25,7 +25,6 @@ import org.junit.runners.Suite;
    EmailGroupsBlamTest.class,
    InterArtifactDropTest.class,
    PlainTextEditTest.class,
-   // RelationIntegrityCheckTest moved to LongRunningTestSuite
    ReplaceWithBaselineTest.class,
    StringGuidsToArtifactListOperationTest.class,
    TemplateArtifactValidatorTest.class,
