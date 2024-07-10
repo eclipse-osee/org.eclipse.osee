@@ -23,7 +23,6 @@ import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -41,8 +40,6 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
@@ -315,54 +312,15 @@ public class LisFileParser implements DispoImporterApi {
       Collection<VCastInstrumentedFile> instrumentedFiles = new ArrayList<>();
       try {
          /**
-          * Note: the LIS_file field of the instrumentedFiles may have a fictious absolute path - but the path is
+          * Note: the LIS_file field of the instrumentedFiles may have a fictitious absolute path - but the path is
           * ignored and only the file name is used.
           */
-         Map<String, File> idToFileName = getDispoFileNamesById();
-         instrumentedFiles = dataStore.getAllInstrumentedFiles(idToFileName);
+         instrumentedFiles = dataStore.getAllInstrumentedFiles();
       } catch (OseeCoreException ex) {
          report.addEntry("SQL", String.format("SQL error while reading functions for directory: [%s]", vCastDir),
             ERROR);
       }
       return instrumentedFiles;
-   }
-
-   public Map<String, File> getDispoFileNamesById() {
-      File vcastFolder = new File(vCastDir);
-      FileFilter fileFilter = new WildcardFileFilter("*.LIS");
-      File[] lisFiles = vcastFolder.listFiles(fileFilter);
-      Map<String, File> idToLisFile = new HashMap<String, File>();
-      if (lisFiles != null) {
-         for (int i = 0; i < lisFiles.length; i++) {
-            boolean fileFound = false;
-            String[] parts = lisFiles[i].getName().split("\\.");
-            for (String s : parts) {
-               if (Pattern.matches("\\-?\\d+", s) && !s.equals("2")) {
-                  if (idToLisFile.containsKey(s)) {
-                     if (FileUtils.isFileNewer(lisFiles[i], idToLisFile.get(s))) {
-                        idToLisFile.remove(s);
-                        idToLisFile.put(s, lisFiles[i]);
-                     }
-                  } else {
-                     idToLisFile.put(s, lisFiles[i]);
-                  }
-                  fileFound = true;
-                  break;
-               }
-            }
-            if (!fileFound) {
-               if (idToLisFile.containsKey("2")) {
-                  if (FileUtils.isFileNewer(lisFiles[i], idToLisFile.get("2"))) {
-                     idToLisFile.remove("2");
-                     idToLisFile.put("2", lisFiles[i]);
-                  }
-               } else {
-                  idToLisFile.put("2", lisFiles[i]);
-               }
-            }
-         }
-      }
-      return idToLisFile;
    }
 
    private void processInstrumented(VCastDataStore dataStore, VCastInstrumentedFile instrumentedFile,
@@ -426,7 +384,6 @@ public class LisFileParser implements DispoImporterApi {
       VCastSourceFileJoin sourceFileJoin = dataStore.getSourceFileJoin(lisFile);
       Objects.requireNonNull(sourceFileJoin, "sourceFileJoin can not be null");
       itemName = sourceFileJoin.getDisplayName() + "." + function.getName();
-
       newItem.setName(itemName);
       newItem.setFileNumber(Integer.toString(fileNum));
       newItem.setMethodNumber(Integer.toString(functionNum));
@@ -1023,7 +980,6 @@ public class LisFileParser implements DispoImporterApi {
    }
 
    private void keepExistingAnnotation(DispoItemData item, DispoAnnotationData existingAnnotation) {
-
       String location = existingAnnotation.getLocationRefs();
       if (location.contains("(P")) {
          Discrepancy matchingDiscrepancy = matchDiscrepancy(location, item.getDiscrepanciesList());

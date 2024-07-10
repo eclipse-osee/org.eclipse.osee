@@ -13,10 +13,8 @@
 
 package org.eclipse.osee.vcast.internal;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -137,19 +135,21 @@ public class VCastDataStoreImpl implements VCastDataStore {
    }
 
    @Override
-   public Collection<VCastInstrumentedFile> getAllInstrumentedFiles(Map<String, File> idToFileName) {
+   public Collection<VCastInstrumentedFile> getAllInstrumentedFiles() {
       Collection<VCastInstrumentedFile> toReturn = new ArrayList<>();
 
       JdbcStatement stmt = getStatement();
       try {
-         stmt.runPreparedQuery("SELECT * FROM instrumented_files if");
+         stmt.runPreparedQuery(
+            "SELECT if.id as id, if.source_file_id as source_file_id, if.project_id as project_id, if.unit_index as unit_index, if.coverage_type as coverage_type, if.checksum as checksum, lf.path as path FROM instrumented_files if left outer join lis_files lf on (if.source_file_id = lf.source_file_id)");
          while (stmt.next()) {
             Integer id = stmt.getInt("id");
             Integer source_file_id = stmt.getInt("source_file_id");
             Integer project_id = stmt.getInt("project_id");
             Integer unit_index = stmt.getInt("unit_index");
             Integer coverage_type = stmt.getInt("coverage_type");
-            String LIS_file = idToFileName.get(source_file_id.toString()).getName();
+            String path = stmt.getString("path");
+            String LIS_file = parseLisFilePath(path);
             Integer checksum = stmt.getInt("checksum");
             toReturn.add(new VCastInstrumentedFile(id, source_file_id, project_id, unit_index,
                VCastCoverageType.valueOf(coverage_type), LIS_file, checksum));
@@ -160,28 +160,17 @@ public class VCastDataStoreImpl implements VCastDataStore {
       return toReturn;
    }
 
-   @Override
-   public Collection<VCastInstrumentedFile> getAllInstrumentedFiles() {
-      Collection<VCastInstrumentedFile> toReturn = new ArrayList<>();
+   //Strip path to get .LIS file name. Path provided by cover.db shows where .LIS files were originally generated.
+   private String parseLisFilePath(String lisFilePath) {
+      int lastSlashIndex = lisFilePath.lastIndexOf('/');
+      int lastBackslashIndex = lisFilePath.lastIndexOf('\\');
+      int lastIndex = Math.max(lastSlashIndex, lastBackslashIndex);
 
-      JdbcStatement stmt = getStatement();
-      try {
-         stmt.runPreparedQuery("SELECT * FROM instrumented_files if");
-         while (stmt.next()) {
-            Integer id = stmt.getInt("id");
-            Integer source_file_id = stmt.getInt("source_file_id");
-            Integer project_id = stmt.getInt("project_id");
-            Integer unit_index = stmt.getInt("unit_index");
-            Integer coverage_type = stmt.getInt("coverage_type");
-            String LIS_file = stmt.getString("LIS_file");
-            Integer checksum = stmt.getInt("checksum");
-            toReturn.add(new VCastInstrumentedFile(id, source_file_id, project_id, unit_index,
-               VCastCoverageType.valueOf(coverage_type), LIS_file, checksum));
-         }
-      } finally {
-         stmt.close();
+      if (lastIndex == -1) {
+         return lisFilePath;
+      } else {
+         return lisFilePath.substring(lastIndex + 1);
       }
-      return toReturn;
    }
 
    @Override
