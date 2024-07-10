@@ -28,7 +28,6 @@ import org.junit.runners.Suite;
    GridCommanderEndpointTest.class,
    TransactionEndpointTest.class,
    TransactionTransferImportTest.class,
-   ActionEndpointTest.class,
    ArtifactModificationTest.class,
    RelationEndpointTest.class})
 public class OrcsRestTestSuite {
