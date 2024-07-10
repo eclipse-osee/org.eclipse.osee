@@ -10,7 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input, OnInit, computed } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	computed,
+	effect,
+	inject,
+	input,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { BranchPickerComponent } from '@osee/shared/components';
@@ -26,31 +33,62 @@ import { CurrentActionDropDownComponent } from '@osee/configuration-management/c
 		SetDropdownComponent,
 		CurrentActionDropDownComponent,
 	],
-	templateUrl: './ci-dashboard-controls.component.html',
+	changeDetection: ChangeDetectionStrategy.OnPush,
+	template: `<div
+		class="tw-flex tw-w-full tw-items-center tw-justify-between tw-p-4">
+		<div class="tw-flex tw-w-full tw-flex-row tw-items-end tw-gap-4">
+			@if (branchPicker()) {
+				<osee-branch-picker
+					class="tw-min-w-[350px] tw-max-w-lg"></osee-branch-picker>
+			}
+
+			@if (branchIdValid() && branchType()) {
+				<div>
+					@if (ciSetSelector()) {
+						<osee-set-dropdown />
+					}
+				</div>
+			}
+
+			<!-- Any content can be inserted between the CI Set selector and the action controls -->
+			<ng-content></ng-content>
+		</div>
+		@if (actionButton()) {
+			<div class="tw-min-w-[210px]">
+				<osee-current-action-drop-down />
+			</div>
+		}
+	</div>`,
 })
-export class CiDashboardControlsComponent implements OnInit {
-	@Input() branchPicker: boolean = true;
-	@Input() ciSetSelector: boolean = true;
-	@Input() actionButton: boolean = false;
+export class CiDashboardControlsComponent {
+	branchPicker = input(true);
+	ciSetSelector = input(true);
+	actionButton = input(false);
 
-	constructor(
-		private route: ActivatedRoute,
-		private uiService: CiDashboardUiService
-	) {}
+	private route = inject(ActivatedRoute);
+	private uiService = inject(CiDashboardUiService);
 
-	ngOnInit(): void {
-		this.route.paramMap.subscribe((params) => {
+	private _paramMap = toSignal(this.route.paramMap);
+	private _paramEffect = effect(
+		() => {
+			const params = this._paramMap();
+			if (!params) {
+				return;
+			}
 			this.uiService.BranchId = params.get('branchId') || '';
 			this.uiService.BranchType =
 				(params.get('branchType') as 'working' | 'baseline' | '') || '';
 			this.uiService.CiSetId = params.get('ciSet') || '-1';
-		});
-	}
+		},
+		{
+			allowSignalWrites: true,
+		}
+	);
 
-	protected _branchType = toSignal(this.uiService.branchType);
-	protected _branchId = toSignal(this.uiService.branchId);
+	branchType = toSignal(this.uiService.branchType);
+	private _branchId = toSignal(this.uiService.branchId);
 
-	changedBranchId = computed(
+	branchIdValid = computed(
 		() =>
 			this._branchId() !== '' &&
 			this._branchId() !== '-1' &&

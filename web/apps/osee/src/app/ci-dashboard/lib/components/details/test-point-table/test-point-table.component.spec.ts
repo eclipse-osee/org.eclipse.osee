@@ -14,8 +14,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TestPointTableComponent } from './test-point-table.component';
 import { CiDetailsService } from '../../../services/ci-details.service';
 import { ciDetailsServiceMock } from '../../../testing/ci-details.service.mock';
+import { resultReferenceMock } from '../../../testing/tmo.response.mock';
 
-describe('TestPointGraphComponent', () => {
+describe('TestPointTableComponent', () => {
 	let component: TestPointTableComponent;
 	let fixture: ComponentFixture<TestPointTableComponent>;
 
@@ -28,6 +29,7 @@ describe('TestPointGraphComponent', () => {
 		});
 		fixture = TestBed.createComponent(TestPointTableComponent);
 		component = fixture.componentInstance;
+		fixture.componentRef.setInput('scriptResult', resultReferenceMock);
 		fixture.detectChanges();
 	});
 

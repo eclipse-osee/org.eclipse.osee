@@ -20,7 +20,6 @@ import {
 	share,
 	shareReplay,
 	switchMap,
-	tap,
 } from 'rxjs';
 import { CiDashboardUiService } from './ci-dashboard-ui.service';
 import { TmoHttpService } from './tmo-http.service';
@@ -39,7 +38,6 @@ export class CiDetailsService {
 	private _currentPageSize$ = new BehaviorSubject<number>(10);
 
 	private _ciDefId = signal('-1');
-	private _ciResultId = signal('-1');
 
 	filter = signal('');
 
@@ -106,15 +104,12 @@ export class CiDetailsService {
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
-	scriptResult = combineLatest([
-		this.branchId,
-		toObservable(this.ciResultId),
-	]).pipe(
-		filter(([brid, resId]) => brid !== '' && resId !== '-1'),
-		switchMap(([brId, resId]) =>
-			this.tmoHttpService.getScriptResult(brId, resId)
-		)
-	);
+	getScriptResult(resultId: string) {
+		return this.branchId.pipe(
+			filter((id) => id !== '' && id !== '-1'),
+			switchMap((id) => this.tmoHttpService.getScriptResult(id, resultId))
+		);
+	}
 
 	get scriptResults() {
 		return this._scriptResults;
@@ -126,14 +121,6 @@ export class CiDetailsService {
 
 	set CiDefId(id: string) {
 		this._ciDefId.set(id);
-	}
-
-	get ciResultId() {
-		return this._ciResultId;
-	}
-
-	set CiResultId(id: string) {
-		this._ciResultId.set(id);
 	}
 
 	get branchId() {

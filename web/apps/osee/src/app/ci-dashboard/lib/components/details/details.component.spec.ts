@@ -13,16 +13,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import DetailsComponent from './details.component';
-import { ScriptListComponent } from './script-list/script-list.component';
-import { ResultListComponent } from './result-list/result-list.component';
-import { TestPointTableComponent } from './test-point-table/test-point-table.component';
-import { ScriptTimelineComponent } from './script-timeline/script-timeline.component';
-import { RunInfoComponent } from './run-info/run-info.component';
 import { CiDashboardControlsMockComponent } from '../../testing/ci-dashboard-controls.component.mock';
 import { CiDetailsService } from '../../services/ci-details.service';
 import { ciDetailsServiceMock } from '../../testing/ci-details.service.mock';
-import { provideRouter } from '@angular/router';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { ScriptListComponent } from './script-list/script-list.component';
+import { ResultListComponent } from './result-list/result-list.component';
+import { AsyncPipe } from '@angular/common';
+import { ScriptTimelineComponent } from './script-timeline/script-timeline.component';
 
 describe('DetailsComponent', () => {
 	let component: DetailsComponent;
@@ -35,16 +33,14 @@ describe('DetailsComponent', () => {
 					CiDashboardControlsMockComponent,
 					ScriptListComponent,
 					ResultListComponent,
-					TestPointTableComponent,
 					ScriptTimelineComponent,
-					RunInfoComponent,
+					AsyncPipe,
 				],
 			},
 		}).configureTestingModule({
 			imports: [DetailsComponent],
 			providers: [
 				{ provide: CiDetailsService, useValue: ciDetailsServiceMock },
-				provideRouter([]),
 				provideNoopAnimations(),
 			],
 		});

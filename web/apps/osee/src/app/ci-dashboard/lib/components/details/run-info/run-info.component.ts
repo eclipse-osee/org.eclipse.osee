@@ -10,7 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	inject,
+	input,
+} from '@angular/core';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatList } from '@angular/material/list';
@@ -41,63 +46,65 @@ import { scriptResHeaderDetails } from '../../../table-headers/script-headers';
 @Component({
 	selector: 'osee-run-info',
 	standalone: true,
-	template: `<ng-container *ngIf="scriptResult | async as _result">
-		<div class="mat-elevation-z8 tw-max-h-96 tw-overflow-scroll">
-			<mat-table
-				[dataSource]="rowKeys"
-				class="tw-overflow-scroll">
-				<ng-container matColumnDef="key">
-					<th
-						mat-header-cell
-						*matHeaderCellDef
-						class="tw-text-center tw-align-middle tw-font-medium tw-text-primary-600">
-						Key
-					</th>
-					<td
-						mat-cell
-						*matCellDef="let rowValue"
-						class="tw-align-middle">
-						{{
-							(getTableRowHeaderByName(rowValue) | async)
-								?.humanReadable || ''
-						}}
-					</td>
-				</ng-container>
-				<ng-container matColumnDef="value">
-					<th
-						mat-header-cell
-						*matHeaderCellDef
-						class="tw-text-center tw-align-middle tw-font-medium tw-text-primary-600">
-						Value
-					</th>
-					<td
-						mat-cell
-						*matCellDef="let rowValue"
-						class="tw-align-middle">
-						<ng-container
-							*ngIf="
+	template: `
+		@if (scriptResult()) {
+			<div class="mat-elevation-z8 tw-max-h-96 tw-overflow-scroll">
+				<mat-table
+					[dataSource]="rowKeys"
+					class="tw-overflow-scroll">
+					<ng-container matColumnDef="key">
+						<th
+							mat-header-cell
+							*matHeaderCellDef
+							class="tw-text-center tw-align-middle tw-font-medium tw-text-primary-600">
+							Key
+						</th>
+						<td
+							mat-cell
+							*matCellDef="let rowValue"
+							class="tw-align-middle">
+							{{
 								(getTableRowHeaderByName(rowValue) | async)
-									?.header as _rowHeaderIndex
-							">
-							{{ _result[_rowHeaderIndex] }}
-						</ng-container>
-					</td>
-				</ng-container>
-				<tr
-					mat-row
-					*matRowDef="let row; columns: headers; let i = index"
-					class="odd:tw-bg-selected-button even:tw-bg-background-background"
-					[attr.data-cy]="'script-result-table-row-' + row.name"></tr>
-				<tr
-					mat-header-row
-					*matHeaderRowDef="headers; sticky: true"></tr>
-			</mat-table>
-		</div>
-	</ng-container>`,
+									?.humanReadable || ''
+							}}
+						</td>
+					</ng-container>
+					<ng-container matColumnDef="value">
+						<th
+							mat-header-cell
+							*matHeaderCellDef
+							class="tw-text-center tw-align-middle tw-font-medium tw-text-primary-600">
+							Value
+						</th>
+						<td
+							mat-cell
+							*matCellDef="let rowValue"
+							class="tw-align-middle">
+							@if (
+								(getTableRowHeaderByName(rowValue) | async)
+									?.header;
+								as _rowHeaderIndex
+							) {
+								{{ scriptResult()[_rowHeaderIndex] }}
+							}
+						</td>
+					</ng-container>
+					<tr
+						mat-row
+						*matRowDef="let row; columns: headers; let i = index"
+						class="odd:tw-bg-selected-button even:tw-bg-background-background"
+						[attr.data-cy]="
+							'script-result-table-row-' + row.name
+						"></tr>
+					<tr
+						mat-header-row
+						*matHeaderRowDef="headers; sticky: true"></tr>
+				</mat-table>
+			</div>
+		}
+	`,
 	imports: [
 		AsyncPipe,
-		NgFor,
-		NgIf,
 		FormsModule,
 		MatTable,
 		MatColumnDef,
@@ -121,10 +128,10 @@ import { scriptResHeaderDetails } from '../../../table-headers/script-headers';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RunInfoComponent {
+	scriptResult = input.required<ResultReference>();
+
 	ciDetailsService = inject(CiDetailsService);
 	headerService = inject(HeaderService);
-
-	scriptResult = this.ciDetailsService.scriptResult;
 
 	headers: string[] = ['key', 'value'];
 

@@ -12,7 +12,6 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CiDashboardControlsComponent } from './ci-dashboard-controls.component';
-import { NgIf } from '@angular/common';
 import { BranchPickerStub } from '@osee/shared/components/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
@@ -23,7 +22,7 @@ describe('CiDashboardControlsComponent', () => {
 	beforeEach(() => {
 		TestBed.overrideComponent(CiDashboardControlsComponent, {
 			set: {
-				imports: [NgIf, BranchPickerStub],
+				imports: [BranchPickerStub],
 			},
 		}).configureTestingModule({
 			imports: [
