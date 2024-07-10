@@ -952,16 +952,18 @@ public class WordRenderUtil {
    private static Optional<CharSequence>
       processAttributes
          (
-                     FormatIndicator              formatIndicator,
-            @NonNull List<AttributeOptions>       attributeOptionsList,
-                     InternalAttributeProcessor   internalAttributeProcessor,
-                     AttributeTypeFunction        attributeTypeFunction,
-                     OrderedAttributeTypeSupplier orderedAttributeTypeSupplier,
-                     AttributeTypeTokenAcceptor   attributeTypeTokenAcceptor,
-                     ArtifactReadable             artifact,
-                     Optional<CharSequence>       mainContentOptional,
-                     AttributeTypeToken           contentAttributeType,
-                     boolean                      renderAllAttributes
+                     FormatIndicator                  formatIndicator,
+            @NonNull List<AttributeOptions>           attributeOptionsList,
+                     InternalAttributeProcessor       internalAttributeProcessor,
+                     AttributeTypeFunction            attributeTypeFunction,
+                     OrderedAttributeTypeSupplier     orderedAttributeTypeSupplier,
+                     AttributeTypeTokenAcceptor       attributeTypeTokenAcceptor,
+                     ArtifactReadable                 artifact,
+                     Optional<CharSequence>           mainContentOptional,
+                     OutlineSectionResult             outlineSectionResult,
+                     IncludeMainContentForHeadings    includeMainContentForHeadings,
+                     AttributeTypeToken               contentAttributeType,
+                     boolean                          renderAllAttributes
          ) {
 
       final var safeAttributeOptionsList = Conditions.requireNonNull( attributeOptionsList, "attributeOptionsList" );
@@ -1339,9 +1341,6 @@ public class WordRenderUtil {
       final var safeAllowedOutlineTypes = Conditions.requireNonNull(allowedOutlineTypes,"allowedOutlineTypes");
       final var safeIncludeBookmark = Conditions.requireNonNull(includeBookmark,"includeBookmark");
 
-      if( artifact.getId().longValue() == 200042 ) {
-         System.out.println("Snoopy");
-      }
       /*
        * Exclusions
        */
@@ -1437,6 +1436,7 @@ public class WordRenderUtil {
             Function<CharSequence,CharSequence>         headingTextFunction ,
             ArtifactAcceptor                            includeBookmarkArtifactAcceptor,
             IncludeHeadings                             includeHeadings,
+            IncludeMainContentForHeadings               includeMainContentForHeadings,
             IncludeMetadataAttributes                   includeMetadataAttributes,
             Consumer<PublishingArtifact>                invalidAttributesHandler,
             MetadataOptions[]                           metadataOptionsArray,
@@ -1516,32 +1516,34 @@ public class WordRenderUtil {
        */
 
       var mainContentOptional =
-         WordRenderUtil.processMainContentAttribute
-            (
-               formatIndicator,
-               attributeOptionsList,
-               ( lPublishingAppender, lAttributeOptions, lAttributeType, lAllAttributes ) ->
-                  attributeProcessor.process
-                     (
-                        artifact,
-                        lPublishingAppender,
-                        lAttributeOptions,
-                        lAttributeType,
-                        lAllAttributes,
-                        presentationType,
-                        publishInline,
-                        footer,
-                        !outlineSectionResult.isStarted() && includeBookmarkArtifactAcceptor.isOk(artifact)
-                           ? IncludeBookmark.YES
-                           : IncludeBookmark.NO
-                     ),
-               ( attributeTypeToken ) ->
-                      includeHeadings.isNever()
-                  || !allowedOutlineTypes.isAllowed( artifact, headingArtifactTypeToken )
-                  || !attributeTypeToken.equals( headingAttributeTypeToken ),
-               artifact,
-               contentAttributeType
-            );
+         !outlineSectionResult.isStarted() || includeMainContentForHeadings.isAlways()
+            ? WordRenderUtil.processMainContentAttribute
+               (
+                  formatIndicator,
+                  attributeOptionsList,
+                  ( lPublishingAppender, lAttributeOptions, lAttributeType, lAllAttributes ) ->
+                     attributeProcessor.process
+                        (
+                           artifact,
+                           lPublishingAppender,
+                           lAttributeOptions,
+                           lAttributeType,
+                           lAllAttributes,
+                           presentationType,
+                           publishInline,
+                           footer,
+                           !outlineSectionResult.isStarted() && includeBookmarkArtifactAcceptor.isOk(artifact)
+                              ? IncludeBookmark.YES
+                              : IncludeBookmark.NO
+                        ),
+                  ( attributeTypeToken ) ->
+                         includeHeadings.isNever()
+                     || !allowedOutlineTypes.isAllowed( artifact, headingArtifactTypeToken )
+                     || !attributeTypeToken.equals( headingAttributeTypeToken ),
+                  artifact,
+                  contentAttributeType
+               )
+            : Optional.<CharSequence>empty();
 
       /*
        * Optionally process metadata attributes
@@ -1623,7 +1625,9 @@ public class WordRenderUtil {
                                          || !attributeTypeToken.equals( headingAttributeTypeToken ),
                artifact,
                mainContentOptional,
-               headingAttributeTypeToken,
+               outlineSectionResult,
+               includeMainContentForHeadings,
+               contentAttributeType,
                allAttributes
             )
          .ifPresent( publishingAppender::append );

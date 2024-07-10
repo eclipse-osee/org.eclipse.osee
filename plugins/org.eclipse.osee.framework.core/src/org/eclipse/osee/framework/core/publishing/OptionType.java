@@ -143,6 +143,15 @@ public enum OptionType {
            NO_DEFAULT_VALUE()
         ),
 
+     IncludeMainContentForHeadings
+        (
+           IncludeMainContentForHeadings.class,
+           IsCollection.NO,
+           CanCopy.YES,
+           new IncludeMainContentForHeadingsDeserializer(),
+           NO_DEFAULT_VALUE()
+        ),
+
      IncludeMetadataAttributes
         (
            IncludeMetadataAttributes.class,

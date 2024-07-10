@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.publishing.EnumRendererMap;
 import org.eclipse.osee.framework.core.publishing.FormatIndicator;
 import org.eclipse.osee.framework.core.publishing.IncludeHeadings;
+import org.eclipse.osee.framework.core.publishing.IncludeMainContentForHeadings;
 import org.eclipse.osee.framework.core.publishing.RendererMap;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.core.renderer.RenderLocation;
@@ -207,6 +208,13 @@ public class PublishingOutlineNumberingTest {
                new Object[] { RenderLocation.CLIENT, ",Headings,FoldersOnly,ExcludeHeaders"                                              },
 
                /*
+                * Include Main Content For Headings
+                */
+
+               new Object[] { RenderLocation.CLIENT, ",IncludeMainContentForHeadingsAlways"                                              },
+               new Object[] { RenderLocation.CLIENT, ",IncludeMainContentForHeadingsNever"                                               },
+
+               /*
                 * Server Tests
                 */
 
@@ -249,7 +257,14 @@ public class PublishingOutlineNumberingTest {
                new Object[] { RenderLocation.SERVER, ",IncludeHeadings,Headers,MainContentDescendants,Annotation"                        },
                new Object[] { RenderLocation.SERVER, ",IncludeHeadings,FoldersInHeadersTree,NonHeadingDescendants"                       },
 
-               new Object[] { RenderLocation.SERVER, ",Headings,FoldersOnly,ExcludeHeaders"                                              }
+               new Object[] { RenderLocation.SERVER, ",Headings,FoldersOnly,ExcludeHeaders"                                              },
+
+               /*
+                * Include Main Content For Headings
+                */
+
+               new Object[] { RenderLocation.SERVER, ",IncludeMainContentForHeadingsAlways"                                              },
+               new Object[] { RenderLocation.SERVER, ",IncludeMainContentForHeadingsNever"                                               }
 
             );
    }
@@ -1673,7 +1688,151 @@ public class PublishingOutlineNumberingTest {
                      {
                      }
                   }
-               )
+               ),
+
+               /*
+                * Include Main Content For Headings Always Test
+                *
+                * Only folders are allowed as headings.
+                * Only headings with main content descendants are allowed.
+                *
+                * Five                      (1) - Header         <- Included, is a Header
+                *    Five One               (2) - Header         <- Included, is a Header
+                *       Five One One        (3) - Header         <- Included, is a Header
+                *          Five One One One (4) - Header         <- Included, is a Header
+                *    Five Two               (2) - Header         <- Included, is a Header
+                *       Five Two One        (3) - Requirement    <- Included, has main content
+                */
+
+               Map.entry
+                  (
+                     /* test key */
+                     ",IncludeMainContentForHeadingsAlways",
+                     new Object[]
+                     {
+                        /* artifact roots */
+                        new int[] { 5 },
+                        /* test parameters */
+                        new EnumRendererMap
+                               (
+                                  RendererOption.PUBLISHING_FORMAT,                                              FormatIndicator.WORD_ML,
+                                  RendererOption.TEMPLATE_OPTION,                                                "PUBLISHING_OUTLINE_NUMBER_TEST_TEMPLATE_A",
+                                  RendererOption.OUTLINING_OPTION_OVERRIDE_HEADING_ARTIFACT_TYPE,                "<any-heading-artifact-type>",
+                                  RendererOption.OUTLINING_OPTION_OVERRIDE_INCLUDE_MAIN_CONTENT_FOR_HEADINGS,    IncludeMainContentForHeadings.ALWAYS
+                               ),
+                        /* expected paragraph counts */
+                        List.of                                                                //body
+                           (
+                              List.of( 4, 0 ),                                                 //child paragraph count
+                              List.of(),                                                       //section a
+                              List.of                                                         //section b
+                              (
+                                 List.of( 3 ),
+                                 List.of(                                                      //section 5
+                                    List.of( 2, 2 ),
+                                    List.of(                                             //section 5.1
+                                       List.of( 2 ),
+                                       List.of                                          //section 5.1.1
+                                       (
+                                          List.of( 2 ),
+                                          List.of()                                           //section 5.1.1.1
+                                       )
+                                    ),
+                                    List.of(                                              //section 5.2
+                                       List.of( 3 ),
+                                       List.of(                                           //section 5.2.1
+
+                                       )
+                                    )
+                                 )
+                              )
+                           ),
+                        /* expected heading numbers */
+                        new String[][]
+                        {
+                           { "Heading1", "1",       "Name: Five (1)"             },
+                           { "Heading2", "1.1",     "Name: Five One (2)"         },
+                           { "Heading3", "1.1.1",   "Name: Five One One (3)"     },
+                           { "Heading4", "1.1.1.1", "Name: Five One One One (4)" },
+                           { "Heading2", "1.2",     "Name: Five Two (2)"         },
+                           { "Heading3", "1.2.1",   "Name: Five Two One (3)"     }
+                        },
+                        Pair.createNonNullImmutable("WordTemplateContent: This is the Five Two One. (3)(Requirement)", true)
+                     }
+                  ),
+
+                  /*
+                   * Include Main Content For Headings Never Test
+                   *
+                   * Only folders are allowed as headings.
+                   * Only headings with main content descendants are allowed.
+                   *
+                   * Five                      (1) - Header         <- Included, is a Header
+                   *    Five One               (2) - Header         <- Included, is a Header
+                   *       Five One One        (3) - Header         <- Included, is a Header
+                   *          Five One One One (4) - Header         <- Included, is a Header
+                   *    Five Two               (2) - Header         <- Included, is a Header
+                   *       Five Two One        (3) - Requirement    <- Included, exclude main content
+                   */
+
+                  Map.entry
+                     (
+                        /* test key */
+                        ",IncludeMainContentForHeadingsNever",
+                        new Object[]
+                        {
+                           /* artifact roots */
+                           new int[] { 5 },
+                           /* test parameters */
+                           new EnumRendererMap
+                                  (
+                                     RendererOption.PUBLISHING_FORMAT,                                              FormatIndicator.WORD_ML,
+                                     RendererOption.TEMPLATE_OPTION,                                                "PUBLISHING_OUTLINE_NUMBER_TEST_TEMPLATE_A",
+                                     RendererOption.OUTLINING_OPTION_OVERRIDE_HEADING_ARTIFACT_TYPE,                "<any-heading-artifact-type>",
+                                     RendererOption.OUTLINING_OPTION_OVERRIDE_INCLUDE_MAIN_CONTENT_FOR_HEADINGS,    IncludeMainContentForHeadings.NEVER
+                                  ),
+                           /* expected paragraph counts */
+                         List.of                                                                //body
+                         (
+                            List.of( 4, 0 ),                                                 //child paragraph count
+                            List.of(),                                                       //section a
+                            List.of                                                         //section b
+                            (
+                               List.of( 3 ),
+                               List.of(                                                      //section 5
+                                  List.of( 2, 2 ),
+                                  List.of(                                             //section 5.1
+                                     List.of( 2 ),
+                                     List.of                                          //section 5.1.1
+                                     (
+                                        List.of( 2 ),
+                                        List.of()                                           //section 5.1.1.1
+                                     )
+                                  ),
+                                  List.of(                                              //section 5.2
+                                     List.of( 1 ),
+                                     List.of(                                           //section 5.2.1
+
+                                     )
+                                  )
+                               )
+                            )
+                           ),
+                           /* expected heading numbers */
+                           new String[][]
+                           {
+                              { "Heading1", "1",       "Name: Five (1)"             },
+                              { "Heading2", "1.1",     "Name: Five One (2)"         },
+                              { "Heading3", "1.1.1",   "Name: Five One One (3)"     },
+                              { "Heading4", "1.1.1.1", "Name: Five One One One (4)" },
+                              { "Heading2", "1.2",     "Name: Five Two (2)"         },
+                              { "Heading3", "1.2.1",   "Name: Five Two One (3)"     }
+                           },
+                           Pair.createNonNullImmutable("WordTemplateContent: This is the Five Two One. (3)(Requirement)", false)
+                        }
+                     )
+
+
 
          );
 
@@ -2940,12 +3099,6 @@ public class PublishingOutlineNumberingTest {
                                        .append( "   \"AttributeOptions\" :"                                 ).append( "\n" )
                                        .append( "      ["                                                   ).append( "\n" )
                                        .append( "        {"                                                 ).append( "\n" )
-                                       .append( "         \"AttrType\"   : \"<format-content-attribute>\"," ).append( "\n" )
-                                       .append( "         \"FormatPost\" : \"\","                           ).append( "\n" )
-                                       .append( "         \"FormatPre\"  : \"\","                           ).append( "\n" )
-                                       .append( "         \"Label\"      : \"\""                            ).append( "\n" )
-                                       .append( "        },"                                                ).append( "\n" )
-                                       .append( "        {"                                                 ).append( "\n" )
                                        .append( "         \"AttrType\"   : \"Description\","                ).append( "\n" )
                                        .append( "         \"FormatPost\" : \"\","                           ).append( "\n" )
                                        .append( "         \"FormatPre\"  : \"\","                           ).append( "\n" )
@@ -3009,6 +3162,8 @@ public class PublishingOutlineNumberingTest {
 
    private final List<?> expectedCounts;
 
+   private final Pair<String, Boolean> expectString;
+
    /**
     * Constructor saves the parameters for the test.
     *
@@ -3045,6 +3200,12 @@ public class PublishingOutlineNumberingTest {
 
       this.testName = renderLocation.name() + testKey;
       this.publishingXmlUtils = new PublishingXmlUtils();
+
+      if (testParameters.length > i) {
+         this.expectString = (Pair<String, Boolean>) testParameters[i++];
+      } else {
+         this.expectString = null;
+      }
    }
 
    @BeforeClass
@@ -3319,6 +3480,9 @@ public class PublishingOutlineNumberingTest {
             this.getFactories( depth.length )
          );
 
+      if (expectString != null) {
+         Assert.assertTrue(documentString.contains(expectString.getFirst()) ^ !expectString.getSecond()) ;
+      }
    }
 
    static Pair<?,?>[] factoriesByDepth =

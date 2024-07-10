@@ -57,6 +57,7 @@ import org.eclipse.osee.framework.core.publishing.FormatIndicator;
 import org.eclipse.osee.framework.core.publishing.IncludeBookmark;
 import org.eclipse.osee.framework.core.publishing.IncludeDeleted;
 import org.eclipse.osee.framework.core.publishing.IncludeHeadings;
+import org.eclipse.osee.framework.core.publishing.IncludeMainContentForHeadings;
 import org.eclipse.osee.framework.core.publishing.IncludeMetadataAttributes;
 import org.eclipse.osee.framework.core.publishing.OutlineNumber;
 import org.eclipse.osee.framework.core.publishing.OutliningOptions;
@@ -172,6 +173,8 @@ public class WordTemplateProcessorServer implements ToMessage {
    protected HashMap<String, ArtifactReadable> hyperlinkedIds = new HashMap<>();
 
    protected IncludeHeadings includeHeadings;
+
+   protected IncludeMainContentForHeadings includeMainContentForHeadings;
 
    /**
     * Flag used to control whether the error log is appended to the publish.
@@ -733,17 +736,18 @@ public class WordTemplateProcessorServer implements ToMessage {
             this.formatIndicator,
             this.renderer,
             this.tokenService,
-            ( allowedOutlineTypes       ) -> this.allowedOutlineTypes                  = allowedOutlineTypes,
-            ( contentAttributeType      ) -> this.contentAttributeType                 = contentAttributeType,
-            ( excludedArtifactTypes     ) -> this.excludedArtifactTypeArtifactAcceptor = WordRenderUtil.getExcludedArtifactTypeArtifactAcceptor( excludedArtifactTypes ),
-            ( headingArtifactType       ) -> this.headingArtifactTypeToken             = headingArtifactType,
-            ( headingAttributeType      ) -> this.headingAttributeTypeToken            = headingAttributeType,
-            ( includeHeadings           ) -> this.includeHeadings                      = includeHeadings,
-            ( includeMetadataAttributes ) -> this.includeMetadataAttributes            = includeMetadataAttributes,
-            ( initialOutlineNumber      ) -> this.initialOutlineNumber                 = initialOutlineNumber,
-            ( overrideOutlineNumber     ) -> this.overrideOutlineNumber                = overrideOutlineNumber,
-            ( recurseChildren           ) -> this.recurseChildren                      = recurseChildren,
-            ( templateFooter            ) -> this.templateFooter                       = templateFooter
+            ( allowedOutlineTypes                  ) -> this.allowedOutlineTypes                  = allowedOutlineTypes,
+            ( contentAttributeType                 ) -> this.contentAttributeType                 = contentAttributeType,
+            ( excludedArtifactTypes                ) -> this.excludedArtifactTypeArtifactAcceptor = WordRenderUtil.getExcludedArtifactTypeArtifactAcceptor( excludedArtifactTypes ),
+            ( headingArtifactType                  ) -> this.headingArtifactTypeToken             = headingArtifactType,
+            ( headingAttributeType                 ) -> this.headingAttributeTypeToken            = headingAttributeType,
+            ( includeHeadings                      ) -> this.includeHeadings                      = includeHeadings,
+            ( includeMainContentForHeadings        ) -> this.includeMainContentForHeadings        = includeMainContentForHeadings,
+            ( includeMetadataAttributes            ) -> this.includeMetadataAttributes            = includeMetadataAttributes,
+            ( initialOutlineNumber                 ) -> this.initialOutlineNumber                 = initialOutlineNumber,
+            ( overrideOutlineNumber                ) -> this.overrideOutlineNumber                = overrideOutlineNumber,
+            ( recurseChildren                      ) -> this.recurseChildren                      = recurseChildren,
+            ( templateFooter                       ) -> this.templateFooter                       = templateFooter
          );
       //@formatter:on
 
@@ -1019,6 +1023,7 @@ public class WordTemplateProcessorServer implements ToMessage {
                ( lambdaHeadingText ) -> this.headingTextProcessor( lambdaHeadingText, artifact ),
                IncludeBookmark.NO.getArtifactAcceptor(),
                this.includeHeadings,
+               this.includeMainContentForHeadings,
                this.includeMetadataAttributes,
                this::nonTemplateArtifactHandler,
                this.publishingTemplate.getPublishOptions().getMetadataOptions(),

@@ -58,6 +58,7 @@ import org.eclipse.osee.framework.core.publishing.DataRightContentBuilder;
 import org.eclipse.osee.framework.core.publishing.FormatIndicator;
 import org.eclipse.osee.framework.core.publishing.IncludeBookmark;
 import org.eclipse.osee.framework.core.publishing.IncludeHeadings;
+import org.eclipse.osee.framework.core.publishing.IncludeMainContentForHeadings;
 import org.eclipse.osee.framework.core.publishing.IncludeMetadataAttributes;
 import org.eclipse.osee.framework.core.publishing.OutlineNumber;
 import org.eclipse.osee.framework.core.publishing.OutliningOptions;
@@ -160,6 +161,8 @@ public class WordTemplateProcessorClient {
 
    private IncludeHeadings includeHeadings;
 
+   private IncludeMainContentForHeadings includeMainContentForHeadings;
+
    private IncludeMetadataAttributes includeMetadataAttributes;
 
    private String initialOutlineNumber = null;
@@ -236,6 +239,7 @@ public class WordTemplateProcessorClient {
       this.headingArtifactTypeToken = null;
       this.headingAttributeTypeToken = null;
       this.includeHeadings = null;
+      this.includeMainContentForHeadings = null;
       this.includeMetadataAttributes = null;
       this.initialOutlineNumber = null;
       this.maximumOutlineDepth = null;
@@ -625,17 +629,18 @@ public class WordTemplateProcessorClient {
             this.formatIndicator,
             this.renderer,
             this.tokenService,
-            ( allowedOutlineTypes       ) -> this.allowedOutlineTypes                  = allowedOutlineTypes,
-            ( contentAttributeType      ) -> this.contentAttributeType                 = contentAttributeType,
-            ( excludeArtifactTypes      ) -> this.excludedArtifactTypeArtifactAcceptor = WordRenderUtil.getExcludedArtifactTypeArtifactAcceptor( excludeArtifactTypes ),
-            ( headingArtifactType       ) -> this.headingArtifactTypeToken             = headingArtifactType,
-            ( headingAttributeType      ) -> this.headingAttributeTypeToken            = headingAttributeType,
-            ( includeHeadings           ) -> this.includeHeadings                      = includeHeadings,
-            ( includeMetadataAttributes ) -> this.includeMetadataAttributes            = includeMetadataAttributes,
-            ( initialOutlineNumber      ) -> this.initialOutlineNumber                 = initialOutlineNumber,
-            ( overrideOutlineNumber     ) -> this.overrideOutlineNumber                = overrideOutlineNumber,
-            ( recurseChildren           ) -> this.recurseChildren                      = recurseChildren,
-            ( templateFooter            ) -> this.templateFooter                       = templateFooter
+            ( allowedOutlineTypes                 ) -> this.allowedOutlineTypes                  = allowedOutlineTypes,
+            ( contentAttributeType                ) -> this.contentAttributeType                 = contentAttributeType,
+            ( excludeArtifactTypes                ) -> this.excludedArtifactTypeArtifactAcceptor = WordRenderUtil.getExcludedArtifactTypeArtifactAcceptor( excludeArtifactTypes ),
+            ( headingArtifactType                 ) -> this.headingArtifactTypeToken             = headingArtifactType,
+            ( headingAttributeType                ) -> this.headingAttributeTypeToken            = headingAttributeType,
+            ( includeHeadings                     ) -> this.includeHeadings                      = includeHeadings,
+            ( includeMainContentForHeadings       ) -> this.includeMainContentForHeadings        = includeMainContentForHeadings,
+            ( includeMetadataAttributes           ) -> this.includeMetadataAttributes            = includeMetadataAttributes,
+            ( initialOutlineNumber                ) -> this.initialOutlineNumber                 = initialOutlineNumber,
+            ( overrideOutlineNumber               ) -> this.overrideOutlineNumber                = overrideOutlineNumber,
+            ( recurseChildren                     ) -> this.recurseChildren                      = recurseChildren,
+            ( templateFooter                      ) -> this.templateFooter                       = templateFooter
          );
       //@formatter:on
 
@@ -817,6 +822,7 @@ public class WordTemplateProcessorClient {
                ( lambdaHeadingText ) -> this.headingTextProcessor( lambdaHeadingText, artifact ),
                IncludeBookmark.NO.getArtifactAcceptor(),
                this.includeHeadings,
+               this.includeMainContentForHeadings,
                this.includeMetadataAttributes,
                this::nonTemplateArtifactHandler,
                this.publishingTemplate.getPublishOptions().getMetadataOptions(),
