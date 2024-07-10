@@ -13,9 +13,7 @@
 
 package org.eclipse.osee.vcast;
 
-import java.io.File;
 import java.util.Collection;
-import java.util.Map;
 import org.eclipse.osee.vcast.model.VCastBranchCoverage;
 import org.eclipse.osee.vcast.model.VCastBranchData;
 import org.eclipse.osee.vcast.model.VCastFunction;
@@ -47,8 +45,6 @@ public interface VCastDataStore {
    Collection<VCastBranchData> getAllBranchData();
 
    Collection<VCastFunction> getAllFunctions();
-
-   Collection<VCastInstrumentedFile> getAllInstrumentedFiles(Map<String, File> idToFileName);
 
    Collection<VCastInstrumentedFile> getAllInstrumentedFiles();
 
