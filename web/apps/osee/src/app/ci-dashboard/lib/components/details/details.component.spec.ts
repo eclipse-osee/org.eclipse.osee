@@ -19,8 +19,11 @@ import { ciDetailsServiceMock } from '../../testing/ci-details.service.mock';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { ScriptListComponent } from './script-list/script-list.component';
 import { ResultListComponent } from './result-list/result-list.component';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { ScriptTimelineComponent } from './script-timeline/script-timeline.component';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
 
 describe('DetailsComponent', () => {
 	let component: DetailsComponent;
@@ -35,6 +38,11 @@ describe('DetailsComponent', () => {
 					ResultListComponent,
 					ScriptTimelineComponent,
 					AsyncPipe,
+					NgClass,
+					MatFormField,
+					MatLabel,
+					MatIcon,
+					MatInput,
 				],
 			},
 		}).configureTestingModule({

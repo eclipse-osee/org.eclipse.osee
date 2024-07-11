@@ -23,7 +23,7 @@ import {
 } from 'rxjs';
 import { CiDashboardUiService } from './ci-dashboard-ui.service';
 import { TmoHttpService } from './tmo-http.service';
-import { toObservable } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 
 @Injectable({
 	providedIn: 'root',
@@ -48,7 +48,8 @@ export class CiDetailsService {
 		filter(([brid, setId]) => brid !== '' && setId !== '-1'),
 		switchMap(([brid, setId]) =>
 			this.tmoHttpService.getScriptDefList(brid, setId)
-		)
+		),
+		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
 	_scriptDefs = combineLatest([

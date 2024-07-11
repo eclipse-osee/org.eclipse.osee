@@ -16,7 +16,7 @@ import {
 	inject,
 	output,
 } from '@angular/core';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HeaderService } from '@osee/shared/services';
 import { CiDetailsService } from '../../../services/ci-details.service';
@@ -40,7 +40,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 	selector: 'osee-result-list',
 	standalone: true,
 	template: `@if (scriptResults | async; as _results) {
-		<div class="mat-elevation-z8 tw-max-h-96 tw-overflow-scroll">
+		<div class="mat-elevation-z8 tw-max-h-96 tw-w-full tw-overflow-auto">
 			<mat-table [dataSource]="_results">
 				@for (header of headers; track $index) {
 					<ng-container [matColumnDef]="header">
@@ -67,6 +67,25 @@ import { MatTooltip } from '@angular/material/tooltip';
 									(click)="setResultId(result.id)">
 									{{ result[header] }}
 								</button>
+							} @else if (header === 'failedCount') {
+								<div
+									class="tw-m-auto tw-h-5 tw-w-5 tw-rounded-full"
+									[ngClass]="{
+										'tw-bg-accent': result.scriptAborted,
+										'tw-bg-warning':
+											!result.scriptAborted &&
+											result.failedCount > 0,
+										'tw-bg-success':
+											!result.scriptAborted &&
+											result.failedCount === 0
+									}"
+									[matTooltip]="
+										result.scriptAborted
+											? 'Aborted'
+											: result.failedCount > 0
+											  ? 'Failed'
+											  : 'Passed'
+									"></div>
 							} @else {
 								{{ result[header] }}
 							}
@@ -79,13 +98,14 @@ import { MatTooltip } from '@angular/material/tooltip';
 				<tr
 					mat-row
 					*matRowDef="let row; columns: headers; let i = index"
-					class="odd:tw-bg-selected-button even:tw-bg-background-background"
+					class="odd:tw-bg-selected-button tw-w-full even:tw-bg-background-background"
 					[attr.data-cy]="'script-result-table-row-' + row.name"></tr>
 			</mat-table>
 		</div>
 	}`,
 	imports: [
 		AsyncPipe,
+		NgClass,
 		FormsModule,
 		MatTable,
 		MatColumnDef,
@@ -104,11 +124,11 @@ import { MatTooltip } from '@angular/material/tooltip';
 export class ResultListComponent {
 	ciDetailsService = inject(CiDetailsService);
 	headerService = inject(HeaderService);
-	resultId = output<string>();
+	resultId = output<`${number}`>();
 
 	scriptResults = this.ciDetailsService.scriptResults;
 
-	setResultId(resId: string) {
+	setResultId(resId: `${number}`) {
 		this.resultId.emit(resId);
 	}
 
@@ -119,5 +139,5 @@ export class ResultListComponent {
 		);
 	}
 
-	headers: (keyof ResultReference)[] = ['executionDate'];
+	headers: (keyof ResultReference)[] = ['executionDate', 'failedCount'];
 }

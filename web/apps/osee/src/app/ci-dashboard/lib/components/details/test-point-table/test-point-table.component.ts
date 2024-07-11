@@ -13,6 +13,7 @@
 import {
 	ChangeDetectionStrategy,
 	Component,
+	effect,
 	inject,
 	input,
 } from '@angular/core';
@@ -29,6 +30,7 @@ import {
 	MatRow,
 	MatRowDef,
 	MatTable,
+	MatTableDataSource,
 } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
 import { HeaderService } from '@osee/shared/services';
@@ -38,9 +40,8 @@ import { testPointDetails } from '../../../table-headers/test-point-headers';
 @Component({
 	selector: 'osee-test-point-table',
 	standalone: true,
-	template: ` <div
-		class="mat-elevation-z8 tw-max-h-96 tw-overflow-scroll tw-overflow-x-auto">
-		<mat-table [dataSource]="scriptResult().testPoints">
+	template: ` <div class="mat-elevation-z8">
+		<mat-table [dataSource]="datasource">
 			@for (header of headers; track $index) {
 				<ng-container [matColumnDef]="header">
 					<th
@@ -93,8 +94,19 @@ import { testPointDetails } from '../../../table-headers/test-point-headers';
 })
 export class TestPointTableComponent {
 	scriptResult = input.required<ResultReference>();
+	filterText = input<string>('');
 
 	headerService = inject(HeaderService);
+
+	datasource = new MatTableDataSource<TestPointReference>();
+
+	private _filterEffect = effect(
+		() => (this.datasource.filter = this.filterText())
+	);
+
+	private _dataEffect = effect(
+		() => (this.datasource.data = this.scriptResult().testPoints)
+	);
 
 	getTableHeaderByName(header: keyof TestPointReference) {
 		return this.headerService.getHeaderByName(testPointDetails, header);

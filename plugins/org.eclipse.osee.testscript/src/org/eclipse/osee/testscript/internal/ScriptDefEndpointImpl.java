@@ -17,7 +17,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -57,7 +56,7 @@ public class ScriptDefEndpointImpl implements ScriptDefEndpoint {
          if (scriptSetId.isValid()) {
             return scriptDefApi.getAllByFilter(branch, filter,
                FollowRelation.followList(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults), pageNum,
-               pageSize, AttributeTypeId.SENTINEL, Arrays.asList(CoreAttributeTypes.SetId));
+               pageSize, CoreAttributeTypes.Name, Arrays.asList(CoreAttributeTypes.SetId));
          }
          return List.of();
       } catch (Exception ex) {

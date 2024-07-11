@@ -220,4 +220,9 @@ export const scriptResListHeaderDetails: headerDetail<ResultReference>[] = [
 		description: '',
 		humanReadable: 'Date',
 	},
+	{
+		header: 'failedCount',
+		description: '',
+		humanReadable: 'Status',
+	},
 ];

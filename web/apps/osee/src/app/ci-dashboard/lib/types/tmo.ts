@@ -133,7 +133,7 @@ export const defReferenceSentinel: DefReference = {
 };
 
 export const resultReferenceSentinel: ResultReference = {
-	id: '',
+	id: '-1',
 	name: '',
 	processorId: '',
 	runtimeVersion: '',

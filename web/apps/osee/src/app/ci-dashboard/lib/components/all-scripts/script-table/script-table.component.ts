@@ -40,6 +40,7 @@ import { CiDetailsService } from '../../../services/ci-details.service';
 import type { DefReference } from '../../../types/tmo';
 import { CiDashboardUiService } from '../../../services/ci-dashboard-ui.service';
 import { Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-script-table',
@@ -121,7 +122,7 @@ export class ScriptTableComponent {
 
 	matMenuTrigger = viewChild.required(MatMenuTrigger);
 
-	scriptDefs = this.ciDetailsService.scriptDefs;
+	scriptDefs = this.ciDetailsService.scriptDefs.pipe(takeUntilDestroyed());
 	ciSetId = this.ciDashboardService.ciSetId;
 
 	protected filter = this.ciDetailsService.filter;

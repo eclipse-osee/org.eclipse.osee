@@ -16,15 +16,8 @@ import {
 	inject,
 	input,
 } from '@angular/core';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatList } from '@angular/material/list';
-import { MatDivider } from '@angular/material/divider';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatInput } from '@angular/material/input';
-import { MatFormField } from '@angular/material/form-field';
-import { MatIcon } from '@angular/material/icon';
 import {
 	MatCell,
 	MatCellDef,
@@ -48,10 +41,8 @@ import { scriptResHeaderDetails } from '../../../table-headers/script-headers';
 	standalone: true,
 	template: `
 		@if (scriptResult()) {
-			<div class="mat-elevation-z8 tw-max-h-96 tw-overflow-scroll">
-				<mat-table
-					[dataSource]="rowKeys"
-					class="tw-overflow-scroll">
+			<div class="mat-elevation-z8 tw-max-h-96 tw-overflow-auto">
+				<mat-table [dataSource]="rowKeys">
 					<ng-container matColumnDef="key">
 						<th
 							mat-header-cell
@@ -90,15 +81,15 @@ import { scriptResHeaderDetails } from '../../../table-headers/script-headers';
 						</td>
 					</ng-container>
 					<tr
+						mat-header-row
+						*matHeaderRowDef="headers; sticky: true"></tr>
+					<tr
 						mat-row
 						*matRowDef="let row; columns: headers; let i = index"
 						class="odd:tw-bg-selected-button even:tw-bg-background-background"
 						[attr.data-cy]="
 							'script-result-table-row-' + row.name
 						"></tr>
-					<tr
-						mat-header-row
-						*matHeaderRowDef="headers; sticky: true"></tr>
 				</mat-table>
 			</div>
 		}
@@ -117,13 +108,6 @@ import { scriptResHeaderDetails } from '../../../table-headers/script-headers';
 		MatHeaderRowDef,
 		MatRow,
 		MatRowDef,
-		MatList,
-		MatDivider,
-		MatDialogModule,
-		MatPaginator,
-		MatInput,
-		MatFormField,
-		MatIcon,
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })

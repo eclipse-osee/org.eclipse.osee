@@ -13,23 +13,16 @@
 import {
 	ChangeDetectionStrategy,
 	Component,
-	Output,
+	effect,
 	inject,
-	output,
-	signal,
+	input,
+	viewChild,
 } from '@angular/core';
-import { NgFor, NgIf, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { HeaderService } from '@osee/shared/services';
-import { MatFormField } from '@angular/material/form-field';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatDivider } from '@angular/material/divider';
-import { MatList } from '@angular/material/list';
 import { FormsModule } from '@angular/forms';
-import { MatInput } from '@angular/material/input';
-import { MatIcon } from '@angular/material/icon';
 import { CiDetailsService } from '../../../services/ci-details.service';
-import { Subject } from 'rxjs';
 import { DefReference } from '../../../types';
 import { scriptDefListHeaderDetails } from '../../../table-headers/script-headers';
 import {
@@ -43,64 +36,70 @@ import {
 	MatRow,
 	MatRowDef,
 	MatTable,
+	MatTableDataSource,
 } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { tap } from 'rxjs';
 
 @Component({
 	selector: 'osee-script-list',
 	standalone: true,
-	template: `<ng-container *ngIf="scriptDefs | async as _defs">
-		<div class="mat-elevation-z8 tw-max-h-96 tw-overflow-scroll">
-			<mat-table [dataSource]="_defs">
-				<ng-container
-					[matColumnDef]="header"
-					*ngFor="let header of headers">
-					<th
-						mat-header-cell
-						*matHeaderCellDef
-						class="tw-text-center tw-align-middle tw-font-medium tw-text-primary-600"
-						[matTooltip]="
-							(getTableHeaderByName(header) | async)
-								?.description || ''
-						">
-						{{
-							(getTableHeaderByName(header) | async)
-								?.humanReadable || ''
-						}}
-					</th>
-					<td
-						mat-cell
-						*matCellDef="let def"
-						class="tw-align-middle focus:tw-bg-blue-300">
-						<button
-							mat-button
-							(click)="setResultList(def.id)">
-							{{ def[header] }}
-						</button>
-					</td>
-				</ng-container>
-				<tr
-					mat-header-row
-					*matHeaderRowDef="headers; sticky: true"></tr>
-				<tr
-					mat-row
-					*matRowDef="let row; columns: headers; let i = index"
-					class="odd:tw-bg-selected-button even:tw-bg-background-background"
-					[attr.data-cy]="'script-def-table-row-' + row.name"></tr>
-			</mat-table>
-		</div>
+	template: ` @if (scriptDefs | async) {
+			<div
+				class="mat-elevation-z8 tw-max-h-96 tw-w-full tw-overflow-auto">
+				<mat-table
+					[dataSource]="datasource"
+					[fixedLayout]="true"
+					class="tw-w-full">
+					@for (header of headers; track $index) {
+						<ng-container [matColumnDef]="header">
+							<th
+								mat-header-cell
+								*matHeaderCellDef
+								class="tw-text-center tw-align-middle tw-font-medium tw-text-primary-600"
+								[matTooltip]="
+									(getTableHeaderByName(header) | async)
+										?.description || ''
+								">
+								{{
+									(getTableHeaderByName(header) | async)
+										?.humanReadable || ''
+								}}
+							</th>
+							<td
+								mat-cell
+								*matCellDef="let def"
+								class="tw-align-middle">
+								<button
+									mat-button
+									(click)="setResultList(def.id)">
+									{{ def[header] }}
+								</button>
+							</td>
+						</ng-container>
+					}
+					<tr
+						mat-header-row
+						*matHeaderRowDef="headers; sticky: true"
+						class="tw-w-full"></tr>
+					<tr
+						mat-row
+						*matRowDef="let row; columns: headers; let i = index"
+						class="odd:tw-bg-selected-button tw-w-full even:tw-bg-background-background"
+						[attr.data-cy]="
+							'script-def-table-row-' + row.name
+						"></tr>
+				</mat-table>
+			</div>
+		}
 		<mat-paginator
-			[pageSizeOptions]="[10, 15, 20, 25, 50, 75, 100, 200, 500]"
-			[pageSize]="currentPageSize | async"
-			[pageIndex]="currentPage | async"
-			(page)="setPage($event)"
-			[length]="scriptCount | async"
-			[disabled]="false"></mat-paginator>
-	</ng-container>`,
+			[pageSizeOptions]="[10, 25, 50, 100, 200, 500]"
+			[pageSize]="100"
+			[length]="datasource.data.length"
+			[disabled]="false"></mat-paginator>`,
 	imports: [
 		AsyncPipe,
-		NgFor,
-		NgIf,
 		FormsModule,
 		MatTable,
 		MatColumnDef,
@@ -113,36 +112,35 @@ import { MatTooltip } from '@angular/material/tooltip';
 		MatHeaderRowDef,
 		MatRow,
 		MatRowDef,
-		MatList,
-		MatDivider,
-		MatDialogModule,
 		MatPaginator,
-		MatInput,
-		MatFormField,
-		MatIcon,
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ScriptListComponent {
+	filterText = input<string>('');
+
 	ciDetailsService = inject(CiDetailsService);
 	headerService = inject(HeaderService);
 
-	scriptDefs = this.ciDetailsService.scriptDefs;
-	scriptCount = this.ciDetailsService.scriptDefCount;
-	currentPage = this.ciDetailsService.currentPage;
-	currentPageSize = this.ciDetailsService.currentPageSize;
+	private paginator = viewChild.required(MatPaginator);
 
-	filter = output();
-	_filterChange = new Subject<string>();
-	@Output() filterChange = this._filterChange;
-	selectDef = this.ciDetailsService.ciDefId;
+	datasource = new MatTableDataSource<DefReference>();
+
+	private _filterEffect = effect(
+		() => (this.datasource.filter = this.filterText())
+	);
+
+	private _paginatorEffect = effect(
+		() => (this.datasource.paginator = this.paginator())
+	);
+
+	scriptDefs = this.ciDetailsService.scriptDefs.pipe(
+		takeUntilDestroyed(),
+		tap((defs) => (this.datasource.data = defs))
+	);
 
 	setResultList(defId: string) {
 		this.ciDetailsService.CiDefId = defId;
-	}
-
-	updateFilter(f: string) {
-		this._filterChange.next(f);
 	}
 
 	getTableHeaderByName(header: keyof DefReference) {
