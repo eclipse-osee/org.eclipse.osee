@@ -15,6 +15,7 @@ package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 
 /**
@@ -24,6 +25,9 @@ public interface RelationDataFactory {
 
    RelationData createRelationData(RelationTypeToken relationType, BranchId branch, ArtifactId aArtifact,
       ArtifactId bArtifact, String rationale);
+
+   RelationData createRelationData(RelationTypeToken relationType, BranchId branch, ArtifactId aArtifact,
+      ArtifactId bArtifact, String rationale, RelationId id);
 
    RelationData createRelationData(RelationTypeToken relationType, BranchId branch, ArtifactId aArtifact,
       ArtifactId bArtifact, ArtifactId relArtifact, int order);

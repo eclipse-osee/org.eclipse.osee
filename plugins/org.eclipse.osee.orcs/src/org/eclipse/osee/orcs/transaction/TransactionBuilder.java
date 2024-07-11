@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.OrcsTypeJoin;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -80,6 +81,8 @@ public interface TransactionBuilder {
    ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, ArtifactId artifactId,
       ApplicabilityId appId);
 
+   ArtifactToken createArtifactWithNoName(ArtifactTypeToken artifactType, ArtifactId artifactId, ApplicabilityId appId);
+
    ArtifactToken createArtifact(ArtifactToken token);
 
    ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, String guid);
@@ -115,6 +118,9 @@ public interface TransactionBuilder {
    <T> AttributeId createAttribute(ArtifactId art, AttributeTypeToken attributeType, T value);
 
    <T> AttributeId createAttribute(ArtifactId art, AttributeTypeToken attributeType, AttributeId attributeId, T value);
+
+   <T> AttributeId createAttributeFromString(ArtifactId artifact, AttributeTypeToken attributeType, String value,
+      AttributeId attributeId);
 
    <T> AttributeId createAttributeFromString(ArtifactId art, AttributeTypeToken attributeType, String value);
 
@@ -186,6 +192,8 @@ public interface TransactionBuilder {
    void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB);
 
    void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, String rationale);
+
+   void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, String rationale, RelationId id);
 
    void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, RelationSorter sortType);
 

@@ -84,6 +84,8 @@ public interface AttributeManager extends AttributeContainer {
 
    <T> Attribute<T> createAttribute(AttributeTypeToken attributeType, AttributeId attributeId, T value);
 
+   <T> Attribute<T> createAttributeFromString(AttributeTypeToken attributeType, String value, AttributeId attributeId);
+
    <T> Attribute<T> createAttributeFromString(AttributeTypeToken attributeType, String value);
 
    <T> List<Attribute<T>> getAttributes();

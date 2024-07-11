@@ -80,6 +80,19 @@ public class ArtifactFactory {
       return artifact;
    }
 
+   public Artifact createArtifactWithNoName(OrcsSession session, BranchId branch, ArtifactTypeToken artifactType,
+      ArtifactId artifactId, ApplicabilityId appId) {
+      ArtifactData artifactData;
+      if (artifactId != null) {
+         artifactData = factory.create(branch, artifactType, artifactId, appId);
+      } else {
+         artifactData = factory.create(branch, artifactType, (String) null, appId);
+      }
+      Artifact artifact = createArtifact(session, artifactData);
+      artifact.setLoaded(false);
+      return artifact;
+   }
+
    public Artifact copyArtifact(OrcsSession session, Artifact source, Collection<AttributeTypeToken> types,
       BranchId ontoBranch) {
       ArtifactData artifactData = factory.copy(ontoBranch, source.getOrcsData());

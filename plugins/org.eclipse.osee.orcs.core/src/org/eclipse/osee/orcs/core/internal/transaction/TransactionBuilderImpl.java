@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.OrcsTypeJoin;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -194,6 +195,14 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
+   public ArtifactToken createArtifactWithNoName(ArtifactTypeToken artifactType, ArtifactId artifactId,
+      ApplicabilityId appId) {
+      validateBuilder();
+      ArtifactToken token = txManager.createArtifactWithNoName(txData, artifactType, artifactId, appId);
+      return token;
+   }
+
+   @Override
    public ArtifactToken createArtifact(ArtifactTypeToken artifactType, String name, String guid) {
       validateBuilder();
       return txManager.createArtifact(txData, artifactType, name, guid);
@@ -304,6 +313,15 @@ public class TransactionBuilderImpl implements TransactionBuilder {
       validateBuilder();
       Artifact asArtifact = getForWrite(sourceArtifact);
       return asArtifact.createAttribute(attributeType, attributeId, value);
+   }
+
+   @Override
+   public <T> AttributeId createAttributeFromString(ArtifactId artifact, AttributeTypeToken attributeType, String value,
+      AttributeId attributeId) {
+      checkPermissionsForLoginId(attributeType);
+      validateBuilder();
+      Artifact asArtifact = getForWrite(artifact);
+      return asArtifact.createAttributeFromString(attributeType, value, attributeId);
    }
 
    @Override
@@ -507,6 +525,16 @@ public class TransactionBuilderImpl implements TransactionBuilder {
          relate(relType, artA, artB, ArtifactId.SENTINEL, "end", ArtifactId.SENTINEL);
       } else {
          txManager.relate(txData, artA, relType, artB, rationale);
+      }
+   }
+
+   @Override
+   public void relate(ArtifactId artA, RelationTypeToken relType, ArtifactId artB, String rationale, RelationId id) {
+      validateBuilder();
+      if (relType.isNewRelationTable()) {
+         relate(relType, artA, artB, ArtifactId.SENTINEL, "end", ArtifactId.SENTINEL);
+      } else {
+         txManager.relate(txData, artA, relType, artB, rationale, id);
       }
    }
 

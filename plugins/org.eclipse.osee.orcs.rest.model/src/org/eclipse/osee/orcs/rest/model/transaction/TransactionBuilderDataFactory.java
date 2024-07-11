@@ -33,9 +33,11 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -272,7 +274,6 @@ public class TransactionBuilderDataFactory {
                CreateArtifact createdArt = new CreateArtifact();
                createdArt.setId(art.getIdString());
                createdArt.setApplicabilityId(change.getCurrentVersion().getApplicabilityToken().getIdString());
-               createdArt.setName(art.getName());
                createdArt.setTypeId(change.getItemTypeId().getIdString());
                createdArt.setkey(art.getIdString());
                artSortCreate.setCreateArtifact(createdArt);
@@ -346,6 +347,7 @@ public class TransactionBuilderDataFactory {
             }
             DeleteAttribute attr = new DeleteAttribute();
             attr.setTypeId(change.getItemTypeId().getIdString());
+            attr.setId(change.getItemId().getIdString());
             attrs.add(attr);
          } else {
             results.errorf("incorrect default sort container for deleted attribute %s", change.getItemId().toString());
@@ -368,17 +370,7 @@ public class TransactionBuilderDataFactory {
                art.setAttributes(attrs);
             }
 
-            // check to see if there is already a SetAttribute for the TypeId
-            // if so, the new value should already be in the list
-            boolean found = false;
-            for (Attribute attr : attrs) {
-               if (attr.getTypeId().equals(change.getItemTypeId().getIdString())) {
-                  found = true;
-               }
-            }
-            if (!found) {
-               attrs.add((Attribute) setupTransferArtifact(change, sortArt.getArtifact(), Attribute::new));
-            }
+            attrs.add((Attribute) setupTransferArtifact(change, sortArt.getArtifact(), Attribute::new));
 
          } else if (sortArt instanceof ArtifactSortContainerModify) {
             ModifyArtifact art = ((ArtifactSortContainerModify) sortArt).getModifyArt();
@@ -387,17 +379,7 @@ public class TransactionBuilderDataFactory {
                attrs = new ArrayList<>();
                art.setSetAttributes(attrs);
             }
-            // check to see if there is already a SetAttribute for the TypeId
-            // if so, the new value should already be in the list
-            boolean found = false;
-            for (SetAttribute attr : attrs) {
-               if (attr.getTypeId().equals(change.getItemTypeId().getIdString())) {
-                  found = true;
-               }
-            }
-            if (!found) {
-               attrs.add((SetAttribute) setupTransferArtifact(change, sortArt.getArtifact(), SetAttribute::new));
-            }
+            attrs.add((SetAttribute) setupTransferArtifact(change, sortArt.getArtifact(), SetAttribute::new));
          } else {
             results.errorf("incorrect default sort container for modified attribute %s", change.getItemId().toString());
          }
@@ -410,7 +392,7 @@ public class TransactionBuilderDataFactory {
       AttributeTypeGeneric<?> attrType = orcsApi.tokenService().getAttributeType(change.getItemTypeId().getId());
       AttributeTransfer item = attrTrans.apply(attrType.getIdString());
       ChangeVersion cv = change.getNetChange();
-
+      item.setId(change.getItemId().toString());
       if (cv != null && cv.isValid()) {
          String value = cv.getValue();
          String uri = cv.getUri();
@@ -501,18 +483,7 @@ public class TransactionBuilderDataFactory {
                attrs = new ArrayList<>();
                art.setAttributes(attrs);
             }
-            // check to see if there is already a SetAttribute for the TypeId
-            // if so, the new value should already be in the list
-            boolean found = false;
-            for (Attribute attr : attrs) {
-               if (attr.getTypeId().equals(change.getItemTypeId().getIdString())) {
-                  found = true;
-                  addToTransferArtifact(change, sortArt.getArtifact(), attr);
-               }
-            }
-            if (!found) {
-               attrs.add((Attribute) setupTransferArtifact(change, sortArt.getArtifact(), Attribute::new));
-            }
+            attrs.add((Attribute) setupTransferArtifact(change, sortArt.getArtifact(), Attribute::new));
          } else if (sortArt instanceof ArtifactSortContainerModify) {
             ModifyArtifact art = ((ArtifactSortContainerModify) sortArt).getModifyArt();
             List<AddAttribute> attrs = art.getAddAttributes();
@@ -520,16 +491,7 @@ public class TransactionBuilderDataFactory {
                attrs = new ArrayList<>();
                art.setAddAttributes(attrs);
             }
-            boolean found = false;
-            for (AddAttribute attr : attrs) {
-               if (attr.getTypeId().equals(change.getItemTypeId().getIdString())) {
-                  found = true;
-                  // TODO add multivalue modify
-               }
-            }
-            if (!found) {
-               attrs.add((AddAttribute) setupTransferArtifact(change, sortArt.getArtifact(), AddAttribute::new));
-            }
+            attrs.add((AddAttribute) setupTransferArtifact(change, sortArt.getArtifact(), AddAttribute::new));
          } else {
             results.errorf("incorrect default sort container for modified attribute %s", change.getItemId().toString());
          }
@@ -560,6 +522,7 @@ public class TransactionBuilderDataFactory {
       dr.setaArtId(change.getArtId().getIdString());
       dr.setbArtId(change.getArtIdB().toString());
       dr.setTypeId(change.getItemTypeId().getIdString());
+      dr.setId(change.getItemId().getIdString());
       rels.add(dr);
       return tbd;
    }
@@ -574,6 +537,7 @@ public class TransactionBuilderDataFactory {
       dr.setaArtId(change.getArtId().getIdString());
       dr.setbArtId(change.getArtIdB().toString());
       dr.setTypeId(change.getItemTypeId().getIdString());
+      dr.setId(change.getItemId().getIdString());
       rels.add(dr);
       return tbd;
    }
@@ -601,17 +565,27 @@ public class TransactionBuilderDataFactory {
             ArtifactTypeToken artifactType = getArtifactType(artifactJson);
             if (artifactJson.has("id")) {
                artId = ArtifactId.valueOf(artifactJson.get("id").asLong());
-               artifact = tx.createArtifact(artifactType, artifactJson.get("name").asText(), artId, appId);
+               if (artifactJson.has("name")) {
+                  artifact = tx.createArtifact(artifactType, artifactJson.get("name").asText(), artId, appId);
+                  readAttributes(tx, artifactJson, artifact, "attributes");
+               } else {
+                  artifact = tx.createArtifactWithNoName(artifactType, artId, appId);
+                  addAttributes(tx, artifactJson, artifact, "attributes");
+               }
             } else {
-               artifact = tx.createArtifact(artifactType, artifactJson.get("name").asText(), appId);
+               if (artifactJson.has("name")) {
+                  artifact = tx.createArtifact(artifactType, artifactJson.get("name").asText(), appId);
+                  readAttributes(tx, artifactJson, artifact, "attributes");
+               } else {
+                  artifact = tx.createArtifactWithNoName(artifactType, null, appId);
+                  addAttributes(tx, artifactJson, artifact, "attributes");
+               }
             }
-            artifactsByName.put(artifact.getName(), artifact);
 
             if (artifactJson.has("key")) {
                artifactsByKeys.put(artifactJson.get("key").asText(), artifact);
             }
-
-            readAttributes(tx, artifactJson, artifact, "attributes");
+            artifactsByName.put(artifact.getName(), artifact);
             readrelations(tx, artifactsByName, artifactsByKeys, artifactJson, artifact);
          }
       }
@@ -696,7 +670,11 @@ public class TransactionBuilderDataFactory {
             if (relationType.isNewRelationTable() && !hasGamma) {
                tx.relate(artA, relationType, artB, relatedArtifact, afterArtifact);
             } else if (!hasGamma) {
-               tx.relate(artA, relationType, artB, rationale);
+               if (relation.has("id")) {
+                  tx.relate(artA, relationType, artB, rationale, RelationId.valueOf(relation.get("id").asText()));
+               } else {
+                  tx.relate(artA, relationType, artB, rationale);
+               }
             } else if (relationType.isNewRelationTable()) {
                tx.relate(artA, relationType, artB, relatedArtifact, afterArtifact,
                   GammaId.valueOf(relation.get("gamma").asText()));
@@ -753,7 +731,6 @@ public class TransactionBuilderDataFactory {
                         gammas.add(GammaId.valueOf(gammaValue.asText()));
                      }
                   }
-
                }
                if (!values.isEmpty() && !hasGamma) {
                   tx.setAttributesFromStrings(artifact, attributeType, values);
@@ -783,12 +760,24 @@ public class TransactionBuilderDataFactory {
          for (JsonNode attribute : artifactJson.get(attributesNodeName)) {
             AttributeTypeGeneric<?> attributeType = getAttributeType(attribute);
             JsonNode value = attribute.get("value");
-            if (value.isArray()) {
-               for (JsonNode attrValue : value) {
-                  tx.createAttributeFromString(artifact, attributeType, attrValue.asText());
+            //Check if attribute ID is included in JSON
+            if (attribute.has("id") && AttributeId.valueOf(attribute.get("id").asText()).isValid()) {
+               AttributeId attrId = AttributeId.valueOf(attribute.get("id").asText());
+               if (value.isArray()) {
+                  for (JsonNode attrValue : value) {
+                     tx.createAttributeFromString(artifact, attributeType, attrValue.asText(), attrId);
+                  }
+               } else {
+                  tx.createAttributeFromString(artifact, attributeType, value.asText(), attrId);
                }
             } else {
-               tx.createAttributeFromString(artifact, attributeType, value.asText());
+               if (value.isArray()) {
+                  for (JsonNode attrValue : value) {
+                     tx.createAttributeFromString(artifact, attributeType, attrValue.asText());
+                  }
+               } else {
+                  tx.createAttributeFromString(artifact, attributeType, value.asText());
+               }
             }
          }
       }
@@ -801,6 +790,8 @@ public class TransactionBuilderDataFactory {
             if (attribute.has("gamma")) {
                tx.deleteAttributes(artifact, getAttributeType(attribute),
                   GammaId.valueOf(attribute.get("gamma").asText()));
+            } else if (attribute.has("id")) {
+               tx.deleteByAttributeId(artifact, AttributeId.valueOf(attribute.get("id").asText()));
             } else {
                tx.deleteAttributes(artifact, getAttributeType(attribute));
             }
