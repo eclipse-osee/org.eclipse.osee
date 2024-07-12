@@ -28,35 +28,21 @@
 						</goals>
 						<configuration>
 							<excludes>
-								<plugin id="flexmark-ext-gfm-tasklist"/>
-								<plugin id="flexmark-ext-autolink"/>
-								<plugin id="flexmark-ext-gitlab"/>
-								<plugin id="flexmark-ext-toc"/>
-								<plugin id="flexmark-ext-tables"/>
+								<plugin id="org.apache.ws.xmlschema.core"/>
 								<plugin id="jackson-dataformat-yaml"/>
-								<plugin id="snakeyaml"/>
+								<plugin id="org.yaml.snakeyaml"/>
 								<plugin id="com.google.protobuf"/>
-						                <plugin	id="jackson-datatype-jsr310"/>
-						           	<plugin id="swagger-models"/>
-						                <plugin id="commons-lang3"/>
-						                <plugin id="autolink"/>
-						           	<plugin id="flexmark"/>
-								<plugin id="flexmark-util-builder"/>
-								<plugin id="flexmark-util-ast"/>
-								<plugin id="flexmark-util-dependency"/>
-								<plugin id="flexmark-util-collection"/>
-								<plugin id="flexmark-util-data"/>
-								<plugin id="flexmark-util-format"/>
-								<plugin id="flexmark-util-misc"/>
-								<plugin id="flexmark-util-sequence"/>
-								<plugin id="flexmark-util-visitor"/>
-								<plugin id="flexmark-util-options"/>
-								<plugin id="flexmark-util-html"/>
+						        <plugin	id="jackson-datatype-jsr310"/>
+						        <plugin id="io.swagger.core.v3.swagger-models"/>
+						        <plugin id="commons-lang3"/>
+						        <plugin id="autolink"/>
+						        <plugin id="flexmark"/>
+						        <plugin id="org.yaml.snakeyaml_1.33.0"/> 
+						        <plugin id="javassist"/>
+						        <plugin id="org.nibor.autolink"/>
+						        <plugin id="com.vladsch.flexmark"/> 
+						        <plugin id="org.jetbrains.annotations"/>     	
 								<plugin id="annotations"/>
-						               	<plugin id="swagger-integration"/>
-                			                   	<plugin id="swagger-annotations"/>
-							   	<plugin id="swagger-core"/>
-							   	<plugin id="swagger-jaxrs2"/>
 							   	<plugin id="org.hsqldb"/>
   							   	<plugin id="com.sun.xml.txw2"/>
 							   	<plugin id="com.sun.istack.commons-runtime"/>
@@ -78,9 +64,6 @@
 							   	<plugin id="javax.xml.soap" />
 							   	<plugin id="javax.xml" />
 							   	<plugin id="javax.transaction" />
-							   	<plugin id="com.fasterxml.jackson.core.jackson-core" />
-							   	<plugin id="com.fasterxml.jackson.core.jackson-annotations" />
-							   	<plugin id="com.fasterxml.jackson.core.jackson-databind" />
 							   	<plugin id="ch.qos.logback.classic" />
 							   	<plugin id="ch.qos.logback.core" />
 							   	<plugin id="org.eclipse.equinox.ds" />

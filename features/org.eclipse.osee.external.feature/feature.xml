@@ -91,7 +91,7 @@
          version="0.0.0"
          unpack="false"/>
          
-     <plugin
+    <plugin
          id="org.eclipse.equinox.http.jetty"
          download-size="0"
          install-size="0"
@@ -228,12 +228,6 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="javax.activation"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="org.apache.commons.net"
@@ -278,13 +272,6 @@
 
    <plugin
          id="javax.xml"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="javax.xml.bind"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -361,8 +348,6 @@
          version="0.0.0"
          unpack="false"/>
 
-
-
    <plugin
          id="javax.ws.rs"
          download-size="0"
@@ -405,15 +390,6 @@
          version="0.0.0"
          unpack="false"/>
 
-
-
-   <plugin
-         id="org.hsqldb"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>   
-
    <plugin
          id="javax.annotation"
          download-size="0"
@@ -422,34 +398,20 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.aries.blueprint"
+         id="org.apache.aries.blueprint.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.apache.aries.blueprint.annotation"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-     <plugin
          id="org.osgi.service.blueprint"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="org.codehaus.stax2"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
          
-   <plugin
+    <plugin
          id="org.eclipse.osgi.services"
          download-size="0"
          install-size="0"
@@ -485,12 +447,6 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="com.ctc.wstx"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="org.apache.cxf.cxf-rt-rs-security-oauth2"
@@ -505,22 +461,15 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/> 
-         
+
    <plugin
-         id="com.sun.xml.fastinfoset"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-         
-    <plugin
          id="org.apache.cxf.cxf-rt-rs-client"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
  
-     <plugin
+    <plugin
          id="org.apache.cxf.cxf-rt-frontend-jaxrs"
          download-size="0"
          install-size="0"

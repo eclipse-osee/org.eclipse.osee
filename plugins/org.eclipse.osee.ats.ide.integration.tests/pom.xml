@@ -56,7 +56,7 @@
 							</requirement>
 							<requirement>
 								<type>eclipse-plugin</type>
-								<id>org.hsqldb</id>
+								<id>org.hsqldb.hsqldb</id>
 								<versionRange>0.0.0</versionRange>
 							</requirement>
 						</extraRequirements>

@@ -1,0 +1,12 @@
+<project name="Creates an Eclipse Project from an External JAR" default="run">
+
+
+       <target name="run">
+  <exec executable="/bin/bash">
+    <arg value="extractJars.sh"/>
+    
+  </exec>
+</target>
+
+
+	</project>	

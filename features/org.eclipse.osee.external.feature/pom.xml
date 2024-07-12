@@ -29,17 +29,13 @@
 						<configuration>
 							<excludes>
 							<plugin id="commons-lang3"/>
-							   <plugin id="org.hsqldb"/>
-							   <plugin id="org.apache.cxf.cxf-rt-transports-http" />
-							   <plugin id="org.apache.cxf.cxf-rt-rs-client" />
-							   <plugin id="org.apache.cxf.cxf-rt-security" />							   
-							   <plugin id="org.apache.cxf.cxf-rt-rs-security-oauth2" />
-							   <plugin id="org.apache.cxf.cxf-rt-rs-security-oauth" />
-								<plugin id="org.apache.cxf.cxf-rt-frontend-jaxrs" />
-								<plugin id="org.apache.cxf.cxf-rt-rs-security-jose-jaxrs" />
-						      <plugin id="org.apache.cxf.cxf-core" />
+							        <plugin id="org.hsqldb"/>
 								<plugin id="org.apache.xerces" />
 								<plugin id="javax.xml.bind" />
+								<plugin id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base"/>
+								<plugin id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider"/>
+								<plugin id="org.apache.aries.blueprint.core"/>
+								<plugin id="org.osgi.service.blueprint"/>
 								<plugin id="org.antlr.runtime" />
 								<plugin id="javax.xml" />
 								<plugin id="org.hsqldb"/>								
@@ -47,14 +43,11 @@
 								<plugin id="javax.activation" />
 								<plugin id="org.eclipse.osgi.services" />																
 								<plugin id="org.apache.ws.xmlschema.core" />
-								<plugin id="com.fasterxml.jackson.core.jackson-core" />
-							   <plugin id="com.fasterxml.jackson.core.jackson-annotations" />
-							   <plugin id="com.fasterxml.jackson.core.jackson-databind" />
-							   <plugin id="ch.qos.logback.classic" />
-							   <plugin id="ch.qos.logback.core" />
-							   <plugin id="org.eclipse.equinox.ds" />
-							   <plugin id="com.google.guava" />
-							   <plugin id="javax.mail" />
+							        <plugin id="ch.qos.logback.classic" />
+							        <plugin id="ch.qos.logback.core" />
+							        <plugin id="org.eclipse.equinox.ds" />
+							        <plugin id="com.google.guava" />
+							        <plugin id="javax.mail" />
 								<plugin id="javax.annotation" />
 								<plugin id="org.apache.cxf.cxf-rt-rs-security-jose" />
 								<plugin id="org.apache.cxf.cxf-rt-rs-json-basic" />
