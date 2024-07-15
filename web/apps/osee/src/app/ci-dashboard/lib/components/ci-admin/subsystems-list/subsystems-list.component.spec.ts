@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2023 Boeing
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,25 +11,19 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import SubsystemsComponent from './subsystems.component';
-import { NgIf } from '@angular/common';
-import { CiDashboardControlsMockComponent } from '@osee/ci-dashboard/testing';
-import { DashboardHttpService } from '../../services/dashboard-http.service';
-import { dashboardHttpServiceMock } from '../../services/dashboard-http.service.mock';
+import { SubsystemsListComponent } from './subsystems-list.component';
+import { DashboardHttpService } from '../../../services/dashboard-http.service';
+import { dashboardHttpServiceMock } from '../../../services/dashboard-http.service.mock';
 import { TransactionService } from '@osee/shared/transactions';
 import { transactionServiceMock } from '@osee/shared/transactions/testing';
 
-describe('SubsystemsComponent', () => {
-	let component: SubsystemsComponent;
-	let fixture: ComponentFixture<SubsystemsComponent>;
+describe('SubsystemsListComponent', () => {
+	let component: SubsystemsListComponent;
+	let fixture: ComponentFixture<SubsystemsListComponent>;
 
-	beforeEach(() => {
-		TestBed.overrideComponent(SubsystemsComponent, {
-			set: {
-				imports: [NgIf, CiDashboardControlsMockComponent],
-			},
-		}).configureTestingModule({
-			imports: [SubsystemsComponent],
+	beforeEach(async () => {
+		await TestBed.configureTestingModule({
+			imports: [SubsystemsListComponent],
 			providers: [
 				{
 					provide: DashboardHttpService,
@@ -40,8 +34,9 @@ describe('SubsystemsComponent', () => {
 					useValue: transactionServiceMock,
 				},
 			],
-		});
-		fixture = TestBed.createComponent(SubsystemsComponent);
+		}).compileComponents();
+
+		fixture = TestBed.createComponent(SubsystemsListComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

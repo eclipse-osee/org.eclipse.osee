@@ -21,7 +21,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -188,6 +190,29 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
    @Override
    public Collection<CITimelineStatsToken> getTimelineStats(BranchId branch, ArtifactId ciSet, ArtifactId viewId) {
       return this.testScriptApi.getDashboardApi().getTimelineStats(branch, ciSet, viewId);
+   }
+
+   @Override
+   public Collection<ArtifactAccessorResult> getSubsystems(BranchId branch, String filter, long pageNum, long pageSize,
+      AttributeTypeToken orderByAttributeType) {
+      return this.testScriptApi.getDashboardApi().getSubsystems(branch, filter, pageNum, pageSize,
+         orderByAttributeType);
+   }
+
+   @Override
+   public Integer getSubsystemsCount(BranchId branch, String filter) {
+      return this.testScriptApi.getDashboardApi().getSubsystemsCount(branch, filter);
+   }
+
+   @Override
+   public Collection<ArtifactAccessorResult> getTeams(BranchId branch, String filter, long pageNum, long pageSize,
+      AttributeTypeToken orderByAttributeType) {
+      return this.testScriptApi.getDashboardApi().getTeams(branch, filter, pageNum, pageSize, orderByAttributeType);
+   }
+
+   @Override
+   public Integer getTeamsCount(BranchId branch, String filter) {
+      return this.testScriptApi.getDashboardApi().getTeamsCount(branch, filter);
    }
 
 }

@@ -886,7 +886,7 @@ public interface CoreArtifactTypes {
       .zeroOrOne(ScheduledMachine)
       .zeroOrOne(StatusBy)
       .zeroOrOne(StatusDate)
-      .exactlyOne(ScriptSubsystem)
+      .exactlyOne(CoreAttributeTypes.ScriptSubsystem)
       );
 
    ArtifactTypeToken TestScriptResults = osee.add(osee.artifactType(8756764538L, "Test Script Results", false, Artifact)
@@ -1005,6 +1005,10 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken TestPointGroupTypes = osee.add(osee.artifactType(8756764542L, "Test Point Group Types", false, Artifact));
 
    ArtifactTypeToken MachineNames = osee.add(osee.artifactType(2044731485L, "MachineNames", false, Artifact));
+
+   ArtifactTypeToken ScriptSubsystem = osee.add(osee.artifactType(8118955419802171756L, "Script Subsystem", false, Artifact));
+
+   ArtifactTypeToken ScriptTeam = osee.add(osee.artifactType(5998567390818041112L, "Script Team", false, Artifact));
 
    //Coverage Tool
    ArtifactTypeToken CoverageProgram = osee.add(osee.artifactType(875676453598L, "Coverage Program", false, Artifact)

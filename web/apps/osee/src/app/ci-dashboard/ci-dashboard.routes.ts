@@ -17,6 +17,9 @@ import { ciNavigationStructure } from '@osee/ci-dashboard/navigation';
 const importNav = ciNavigationStructure[0].children.find(
 	(page) => page.routerLink === '/ci/import'
 );
+const adminNav = ciNavigationStructure[0].children.find(
+	(page) => page.routerLink === '/ci/admin'
+);
 
 export const routes: Routes = [
 	{
@@ -56,6 +59,13 @@ export const routes: Routes = [
 			import(
 				'./lib/components/ci-dashboard-import/ci-dashboard-import.routes'
 			),
+	},
+	{
+		path: 'admin',
+		title: 'CI Dashboard',
+		canActivate: [RoleGuard],
+		data: { requiredRoles: adminNav?.requiredRoles },
+		loadChildren: () => import('./lib/components/ci-admin/ci-admin.routes'),
 	},
 	{
 		path: 'results',
