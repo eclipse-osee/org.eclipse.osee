@@ -14,12 +14,11 @@
 package org.eclipse.osee.orcs.db.internal.health;
 
 import java.util.Map;
-
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
 
@@ -35,7 +34,7 @@ public final class DatabaseHealthResource {
    }
 
    @Path("purgeunused")
-   @GET
+   @DELETE
    @Produces(MediaType.TEXT_HTML)
    public String deleteObsoleteData() {
       PurgeUnusedBackingDataAndTransactions app = new PurgeUnusedBackingDataAndTransactions(jdbcClient);

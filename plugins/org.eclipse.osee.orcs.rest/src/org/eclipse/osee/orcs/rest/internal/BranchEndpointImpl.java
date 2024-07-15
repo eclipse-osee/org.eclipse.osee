@@ -838,10 +838,10 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    @Override
    public Response purgeDeletedBranches(int expireTimeInDays, int branchCount) {
-      Response response = asResponse(false);
+      List<BranchId> branchesPurged = new ArrayList<>();
       String DELETED_BRANCHES_OLDER_THAN = "select branch_id from " //
          + "(select row_number() over (order by max_time) rn, branch_id from " //
-         + "  (select b.branch_name, tx.branch_id, max(tx.time) max_time from osee_branch b, osee_tx_details tx " + "   where branch_state = " + BranchState.DELETED.getIdIntValue() + " and b.branch_id = tx.branch_id and tx.time < %s and archived = 1 and " + "         branch_type = " + BranchType.WORKING.getIdIntValue() + "         and not exists (select null from osee_branch b2 where b2.parent_transaction_id in " + "  							(select transaction_id from osee_tx_details txd2 where txd2.branch_id = b.branch_id)) " + "   group by b.branch_name, tx.branch_id" + "  )" + ") " + "where rn < " + branchCount;
+         + "  (select b.branch_name, tx.branch_id, max(tx.time) max_time from osee_branch b, osee_tx_details tx " + "   where branch_state = " + BranchState.DELETED.getIdIntValue() + " and b.branch_id = tx.branch_id and tx.time < %s and archived = 1 and " + "         branch_type = " + BranchType.WORKING.getIdIntValue() + "         and not exists (select null from osee_branch b2 where b2.parent_transaction_id in " + "  							(select transaction_id from osee_tx_details txd2 where txd2.branch_id = b.branch_id)) " + "   group by b.branch_name, tx.branch_id" + "  ) t1 " + ") t2 " + "where rn < " + branchCount;
 
       Set<BranchId> setOfBranchIds = new HashSet<>();
       String query = String.format(DELETED_BRANCHES_OLDER_THAN,
@@ -850,13 +850,14 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
       for (BranchId branchId : setOfBranchIds.stream().collect(Collectors.toList())) {
          try (Response purgeResponse = purgeBranch(branchId, false);) {
-            if (!purgeResponse.getStatusInfo().equals(Status.OK)) {
-               response.close();
+            if (!(purgeResponse.getStatusInfo().getStatusCode() == Status.OK.getStatusCode())) {
                throw new OseeCoreException("Error purging deleted branch id: " + branchId);
+            } else {
+               branchesPurged.add(branchId);
             }
          }
       }
-      return response;
+      return Response.status(Status.OK.getStatusCode(), "Purged: " + branchesPurged.toString()).build();
    }
 
    @Override
