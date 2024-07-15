@@ -1,0 +1,35 @@
+name: OSEE Build Validation
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate_osee_build_linux:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/eclipse-osee/org.eclipse.osee/maven-node:20240715184012
+
+    services:
+      postgres:
+        image: ghcr.io/eclipse-osee/org.eclipse.osee/osee-postgres:20240711202911
+        env:
+          POSTGRES_PASSWORD: osee
+          POSTGRES_USER: osee
+          POSTGRES_DB: osee
+          POSTGRES_HOST_AUTH_METHOD: trust  # REMOVE THIS once the postgres driver has been updated.
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Build And Test OSEE Binaries
+        uses: ./.github/actions/build-osee-binary

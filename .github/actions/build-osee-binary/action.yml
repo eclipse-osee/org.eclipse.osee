@@ -1,0 +1,213 @@
+name: Build OSEE Binary
+description: 'This action builds the osee binary the using supplied configuration inputs.'
+inputs:
+  ANGULAR_BUILD_TYPE:
+    description: 'The type of angular build to run.'
+    required: false
+    default: 'forced_sso_java_release'
+  BUILD_ALIAS:
+    description: 'The build alias applied to OSEE build.'
+    required: false
+    default: '-TEMP'
+  OSEE_VERSION:
+    description: 'The version applied to the OSEE build.'
+    required: false
+    default: 'no_update'
+  SKIP_ANGULAR_BUILD:
+    description: 'Whether or not to skip the OSEE Angular build.'
+    required: false
+    default: 'false'
+  SKIP_JAVA_BUILD:
+    description: 'Whether or not to skip the OSEE Java build.'
+    required: false
+    default: 'false'
+
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set environment variables
+      shell: bash
+      run: |
+        : Set environment variables
+        echo "MAVEN_OPTS=-Dmaven.repo.local=${GITHUB_WORKSPACE}/.m2/repository" >> $GITHUB_ENV
+        echo "MAVEN_CLI_OPTS=--batch-mode --errors --quiet --no-transfer-progress -Dhttps.protocols=TLSv1.2 -Djavax.net.ssl.trustStore=${GITHUB_WORKSPACE}/keystore.jks -Djavax.net.ssl.trustStorePassword=secret -Dorg.slf4j.simpleLogger.showDateTime=true -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss,SSS" >> $GITHUB_ENV
+        echo "_JAVA_OPTIONS=-Xms9G -Xmx9G -XX:MaxMetaspaceSize=4G" >> $GITHUB_ENV
+        echo "JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF-8 -Djava.awt.headless=true" >> $GITHUB_ENV
+        echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE" >> $GITHUB_ENV
+
+    - name: Cache Maven Dependencies
+      if: inputs.SKIP_JAVA_BUILD == 'false'
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.m2/repository
+          /root/.m2/repository
+          ${{ env.GITHUB_WORKSPACE }}/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+
+    - name: Cache pnpm Dependencies
+      if: inputs.SKIP_ANGULAR_BUILD == 'false'
+      uses: actions/cache@v4
+      with:
+        path: ${{ env.GITHUB_WORKSPACE }}/.pnpm-store
+        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-store-
+
+    - name: Download IP Zip From GitHub
+      shell: bash
+      run: |
+        : Download IP Zip From GitHub
+        mkdir ${GITHUB_WORKSPACE}/Latest_Zip_And_Cert
+        cd Latest_Zip_And_Cert
+        curl -kLJO https://raw.githubusercontent.com/Louie-Maven/ip/main/org.eclipse.ip.p2-1.0.0.zip
+
+    - name: Update OSEE Version
+      if: inputs.OSEE_VERSION != 'no_update'
+      shell: bash
+      run: |
+        : Update OSEE Version
+
+        OSEE_VERSION="${{ inputs.OSEE_VERSION }}"
+        OSEE_VERSION_ESCAPED=${OSEE_VERSION//./\\\.}
+
+        sed -i "s/1\.0\.0\.qualifier/${OSEE_VERSION_ESCAPED}\.qualifier/g" */*/META-INF/MANIFEST.MF */*/feature.xml */*/category.xml */*/*.product
+        sed -i "s/1\.0\.0-SNAPSHOT/${OSEE_VERSION_ESCAPED}-SNAPSHOT/g" */*/pom.xml
+
+        echo "Versions updated to ${OSEE_VERSION}"
+
+    - name: Check User And Export Displays
+      if: inputs.SKIP_JAVA_BUILD == 'false'
+      shell: bash
+      run: |
+        : Check User And Export Displays
+        whoami
+        Xvfb :99 &
+        # Check if Xvfb is running
+        for i in {1..10}; do
+          if xdpyinfo -display :99 >/dev/null 2>&1; then
+            echo "Xvfb started successfully"
+            break
+          fi
+          echo "Waiting for Xvfb to start..."
+          sleep 1
+        done
+        if ! xdpyinfo -display :99 >/dev/null 2>&1; then
+          echo "Xvfb failed to start" >&2
+          exit 1
+        fi
+        echo "DISPLAY=:99" >> $GITHUB_ENV
+
+    - name: Check That Xvfb Is Still Running
+      if: inputs.SKIP_JAVA_BUILD == 'false'
+      shell: bash
+      run: |
+        : Check That Xvfb Is Still Running
+        if ps aux | grep '[X]vfb' > /dev/null; then
+          echo "Xvfb is running."
+        else
+          echo "Xvfb is not running."
+          exit 1
+        fi
+
+    - name: Grab General Certs
+      shell: bash
+      run: |
+        : Grab General Certs
+        cd ${GITHUB_WORKSPACE}/Latest_Zip_And_Cert
+        openssl s_client -connect eclipse.org:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > eclipse-org.pem
+        openssl s_client -connect s3.amazonaws.com:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > s3-amazonaws-com.pem
+        openssl s_client -connect api.adoptium.net:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > api-adoptium-net.pem
+        openssl s_client -connect github.com:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > github-com.pem
+        openssl s_client -connect raw.githubusercontent.com:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > githubusercontent.pem
+        openssl s_client -connect repo.maven.apache.org:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > repo-maven-apache-org.pem
+        openssl s_client -connect oss.sonatype.org:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > oss-sonatype-org.pem
+
+    - name: Add General Certs
+      shell: bash
+      run: |
+        : Add General Certs
+        keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias eclipsePem -file ${GITHUB_WORKSPACE}/Latest_Zip_And_Cert/eclipse-org.pem -noprompt
+        keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias s3Pem -file ${GITHUB_WORKSPACE}/Latest_Zip_And_Cert/s3-amazonaws-com.pem -noprompt
+        keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias adoptiumPem -file ${GITHUB_WORKSPACE}/Latest_Zip_And_Cert/api-adoptium-net.pem -noprompt
+        keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias githubPem -file ${GITHUB_WORKSPACE}/Latest_Zip_And_Cert/github-com.pem -noprompt
+        keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias githubUserContentPem -file ${GITHUB_WORKSPACE}/Latest_Zip_And_Cert/githubusercontent.pem -noprompt
+        keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias repoMavenPem -file ${GITHUB_WORKSPACE}/Latest_Zip_And_Cert/repo-maven-apache-org.pem -noprompt
+        keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias ossSonyatypePem -file ${GITHUB_WORKSPACE}/Latest_Zip_And_Cert/oss-sonatype-org.pem -noprompt
+
+    - name: Set Angular Build Information
+      if: inputs.SKIP_ANGULAR_BUILD == 'false'
+      shell: bash
+      run: |
+        : Set Angular Build Information
+        pwd
+        ls -al ${GITHUB_WORKSPACE}/web/apps/osee/src/app/about
+        echo "export const BuildNum = 'SHA - ${{ github.sha }} | Build Date - ${{ github.event.head_commit.timestamp }} | GitHub Job URL - ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}';" > ${GITHUB_WORKSPACE}/web/apps/osee/src/app/about/version.ts
+        echo "export const version = '1.0.0';" >> ${GITHUB_WORKSPACE}/web/apps/osee/src/app/about/version.ts
+
+    - name: Prepare For Angular Build
+      if: inputs.SKIP_ANGULAR_BUILD == 'false'
+      shell: bash
+      run: |
+        : Prepare For Angular Build
+        pnpm config set store-dir ${GITHUB_WORKSPACE}/.pnpm-store
+        node -v
+        npm config set strict-ssl false
+        npm config list
+        pnpm install --prefer-offline
+
+    - name: osee.web Testing
+      if: inputs.SKIP_ANGULAR_BUILD == 'false'
+      shell: bash
+      run: |
+        : osee.web Testing
+        pnpm -r run test --browsers=ChromeHeadlessNoSandbox --watch=false
+
+    - name: Osee Web Build
+      if: inputs.SKIP_ANGULAR_BUILD == 'false'
+      shell: bash
+      run: |
+        : Osee Web Build
+        echo "ANGULAR_BUILD_TYPE - ${{ inputs.ANGULAR_BUILD_TYPE }}"
+        pnpm -r run build -c ${{ inputs.ANGULAR_BUILD_TYPE }}
+
+    - name: Copy Web To Deploy
+      if: inputs.SKIP_ANGULAR_BUILD == 'false'
+      shell: bash
+      run: |
+        : Copy Web To Deploy
+        cp -r ${GITHUB_WORKSPACE}/web/apps/osee/dist/osee/production/. ${GITHUB_WORKSPACE}/plugins/org.eclipse.osee.web.deploy/OSEE-INF/web/dist
+
+    - name: Show Maven Effective Settings
+      if: inputs.SKIP_JAVA_BUILD == 'false'
+      shell: bash
+      run: |
+        : Show Maven Effective Settings
+        mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:effective-settings -s /settings.xml
+
+    - name: parent/extras Build
+      if: inputs.SKIP_JAVA_BUILD == 'false'
+      shell: bash
+      run: |
+        : parent/extras Build
+        cd ${GITHUB_WORKSPACE}/plugins/org.eclipse.osee.parent/extras
+        mvn $MAVEN_CLI_OPTS verify -s /settings.xml -Dnot_ci_eclipse=true -Dexternal-eclipse-ip-site=${GITHUB_WORKSPACE}/Latest_Zip_And_Cert/org.eclipse.ip.p2-1.0.0.zip -T 1C
+
+    - name: dep.parent Build
+      if: inputs.SKIP_JAVA_BUILD == 'false'
+      shell: bash
+      run: |
+        : dep.parent Build
+        cd ${GITHUB_WORKSPACE}/plugins/org.eclipse.osee.dep.parent
+        mvn $MAVEN_CLI_OPTS verify -s /settings.xml -Declipse-ip-site=file:${GITHUB_WORKSPACE}/../org.eclipse.ip/org.eclipse.ip.p2/target/repository -Dbuild-alias=${{ inputs.BUILD_ALIAS }} -Dskip-help-tests=true -Dtycho.disableP2Mirrors=true -T 1C
+
+    - name: osee.parent Build
+      if: inputs.SKIP_JAVA_BUILD == 'false'
+      shell: bash
+      run: |
+        : osee.parent Build
+        cd ${GITHUB_WORKSPACE}/plugins/org.eclipse.osee.parent
+        mvn $MAVEN_CLI_OPTS verify -s /settings.xml -Dbuild-alias=${{ inputs.BUILD_ALIAS }} -Dorg.eclipse.swt.browser.UseWebKitGTK=true -DpostgresqlDB

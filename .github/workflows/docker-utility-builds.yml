@@ -1,0 +1,71 @@
+name: Docker Utility Builds
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/docker/utility/**'
+
+
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+permissions:
+  packages: write
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        directory:
+          - maven-node
+          - osee-postgres
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Set Up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check For Changes In ${{ matrix.directory }}
+        id: check_changes
+        run: |
+          if git diff --name-only HEAD^ HEAD | grep '^.github/docker/utility/${{ matrix.directory }}/'; then
+            echo "Changed"
+            echo "image_changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "Not Changed"
+            echo "image_changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Get Current Timestamp
+        id: date
+        run: echo "timestamp=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
+
+      - name: Build And Push Docker Image
+        if: steps.check_changes.outputs.image_changed == 'true'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: .github/docker/utility/${{ matrix.directory }}/Dockerfile
+          build-args: |
+            IMAGE_DIRECTORY=.github/docker/utility/${{ matrix.directory }}
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}/${{ matrix.directory }}:${{ github.sha }}
+            ghcr.io/${{ github.repository }}/${{ matrix.directory }}:${{ steps.date.outputs.timestamp }}
+            ghcr.io/${{ github.repository }}/${{ matrix.directory }}:latest
