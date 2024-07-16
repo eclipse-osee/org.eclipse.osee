@@ -19,5 +19,8 @@ Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.orcs.transaction
 Require-Bundle: org.eclipse.osee.framework.core,
  org.junit,
- org.mockito
+ org.mockito,
+ net.bytebuddy.byte-buddy,
+ net.bytebuddy.byte-buddy-agent,
+ org.objenesis
 Export-Package: org.eclipse.osee.orcs.db.mocks

@@ -9,6 +9,9 @@ Fragment-Host: org.eclipse.osee.framework.core.server
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.junit,
  org.hamcrest.core,
- org.mockito;visibility:=reexport
+ org.mockito;visibility:=reexport,
+ net.bytebuddy.byte-buddy,
+ net.bytebuddy.byte-buddy-agent,
+ org.objenesis
 Import-Package: org.eclipse.osee.framework.core.model.cache,
  org.eclipse.osee.framework.core.model.type

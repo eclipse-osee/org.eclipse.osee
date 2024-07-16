@@ -9,7 +9,9 @@ Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.junit,
  org.hamcrest.core,
  org.mockito;visibility:=reexport,
- org.objenesis
+ org.objenesis,
+ net.bytebuddy.byte-buddy,
+ net.bytebuddy.byte-buddy-agent
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Import-Package: org.eclipse.osee.ats.api.workdef.model,
  org.eclipse.osee.framework.core.util.result

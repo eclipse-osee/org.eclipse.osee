@@ -9,7 +9,9 @@ Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.junit;bundle-version="4.11.0",
  org.hamcrest.core,
  org.mockito;visibility:=reexport,
- org.objenesis
+ org.objenesis,
+ net.bytebuddy.byte-buddy,
+ net.bytebuddy.byte-buddy-agent
 Export-Package: org.eclipse.osee.framework.skynet.core
 Import-Package: org.apache.commons.lang,
  org.eclipse.osee.framework.core.client,

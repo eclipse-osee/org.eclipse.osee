@@ -10,4 +10,7 @@ Fragment-Host: org.eclipse.osee.cache.admin
 Import-Package: org.mockito,
  org.mockito.invocation,
  org.mockito.stubbing
-Require-Bundle: org.junit
+Require-Bundle: org.junit,
+ net.bytebuddy.byte-buddy,
+ net.bytebuddy.byte-buddy-agent,
+ org.objenesis
