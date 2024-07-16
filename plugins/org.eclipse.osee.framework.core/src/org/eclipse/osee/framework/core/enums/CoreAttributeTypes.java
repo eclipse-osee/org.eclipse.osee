@@ -183,7 +183,7 @@ public interface CoreAttributeTypes {
               4024614255972662076L,
               MediaType.TEXT_PLAIN,
               NamespaceToken.OSEE,
-              TaggerTypeToken.SENTINEL
+              TaggerTypeToken.PlainTextTagger
            );
 
    /**
@@ -212,7 +212,7 @@ public interface CoreAttributeTypes {
               DataClassificationRationaleType::getConfiguredNameAndDescription,
               6697327397016528458L,
               MediaType.TEXT_PLAIN,
-              TaggerTypeToken.SENTINEL,
+              TaggerTypeToken.PlainTextTagger,
               NamespaceToken.OSEE,
               org.eclipse.osee.framework.core.enums.FileExtension.TXT.getFileExtension(),
               DisplayHint.MultiLine
@@ -244,7 +244,7 @@ public interface CoreAttributeTypes {
             DataRightsBasisType::getConfiguredNameAndDescription,
             72057594037928276L,
             MediaType.TEXT_PLAIN,
-            TaggerTypeToken.SENTINEL,
+            TaggerTypeToken.PlainTextTagger,
             NamespaceToken.OSEE,
             org.eclipse.osee.framework.core.enums.FileExtension.TXT.getFileExtension(),
             DisplayHint.MultiLine
@@ -282,7 +282,7 @@ public interface CoreAttributeTypes {
             1152921504606847317L,
             MediaType.TEXT_PLAIN,
             NamespaceToken.OSEE,
-            TaggerTypeToken.SENTINEL
+            TaggerTypeToken.PlainTextTagger
          );
 
    /**
