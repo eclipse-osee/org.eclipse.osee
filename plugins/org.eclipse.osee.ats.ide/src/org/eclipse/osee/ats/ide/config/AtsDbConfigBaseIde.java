@@ -41,13 +41,14 @@ public class AtsDbConfigBaseIde implements IDbInitializationTask {
       AtsUser currentUser = AtsApiService.get().getUserService().getCurrentUser();
       Conditions.assertNotEquals(currentUser.getIdIntValue(), SystemUser.OseeSystem.getIdIntValue(),
          "Should not be OSEE System user");
-      AtsApiService.get().reloadServerAndClientCaches();
-      AtsApiService.get().clearCaches();
 
       XResultData results = AtsApiService.get().getServerEndpoints().getConfigEndpoint().atsDbInit();
       if (results.isErrors()) {
          throw new OseeStateException(results.toString());
       }
+
+      AtsApiService.get().reloadServerAndClientCaches();
+      AtsApiService.get().clearCaches();
 
    }
 

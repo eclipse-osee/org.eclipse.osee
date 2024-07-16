@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.ide.workflow.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
-import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.Named;
@@ -41,11 +40,6 @@ public interface IPopulateDemoDatabaseTest {
    @Test
    public default void testPopulate() {
       Assert.assertTrue(true);
-   }
-
-   default void testTaskContents(TaskArtifact task, String currentStateName, String relatedToState) {
-      Assert.assertEquals(currentStateName, task.getCurrentStateName());
-      Assert.assertEquals(relatedToState, task.getSoleAttributeValue(AtsAttributeTypes.RelatedToState, ""));
    }
 
    default void testReviewContents(IAtsAbstractReview review, String title, String currentStateName,

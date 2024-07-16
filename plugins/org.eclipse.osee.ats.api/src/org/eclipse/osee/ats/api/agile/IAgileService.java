@@ -17,6 +17,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.insertion.JaxInsertion;
+import org.eclipse.osee.ats.api.insertion.JaxInsertionActivity;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -199,5 +201,13 @@ public interface IAgileService {
    XResultData sortAgileBacklogOrSprint(ArtifactToken backlog);
 
    IAgileSprint getSprint(IAtsWorkItem workItem);
+
+   JaxInsertion createInsertion(JaxInsertion jaxInsertion, IAtsChangeSet changes);
+
+   JaxInsertion getInsertion(ArtifactId artifact);
+
+   JaxInsertionActivity createInsertionActivity(JaxInsertionActivity jaxInsertionActivity, IAtsChangeSet changes);
+
+   JaxInsertionActivity getInsertionActivity(ArtifactId artifact);
 
 }

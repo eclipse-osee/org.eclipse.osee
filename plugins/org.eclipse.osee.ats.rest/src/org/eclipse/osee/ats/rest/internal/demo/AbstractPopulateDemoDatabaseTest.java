@@ -23,7 +23,9 @@ import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -44,6 +46,24 @@ public abstract class AbstractPopulateDemoDatabaseTest {
 
    public abstract void run();
 
+   public void testTaskContents(IAtsTask task, String currentStateName, String relatedToState) {
+      assertEquals(currentStateName, task.getCurrentStateName());
+      assertEquals(relatedToState,
+         atsApi.getAttributeResolver().getSoleAttributeValue(task, AtsAttributeTypes.RelatedToState, ""));
+   }
+
+   protected void assertEquals(boolean expected, boolean actual) {
+      if (expected != actual) {
+         rd.errorf("Expected %s but actual was %s\n", expected, actual);
+      }
+   }
+
+   protected void assertEquals(long expected, long actual) {
+      if (expected != actual) {
+         rd.errorf("Expected %s but actual was %s\n", expected, actual);
+      }
+   }
+
    protected void assertEquals(int expected, int actual) {
       if (expected != actual) {
          rd.errorf("Expected %s but actual was %s\n", expected, actual);
@@ -51,8 +71,12 @@ public abstract class AbstractPopulateDemoDatabaseTest {
    }
 
    protected void assertNotNull(Object obj) {
-      if (obj == null) {
-         rd.errorf("Object should not be null\n");
+      DemoUtil.assertNotNull(obj, rd);
+   }
+
+   protected void assertEquals(String message, Integer expected, Integer actual) {
+      if (!expected.equals(actual)) {
+         rd.error(message);
       }
    }
 
@@ -79,7 +103,7 @@ public abstract class AbstractPopulateDemoDatabaseTest {
       assertEquals(actionableItemStr, atsApi.getActionableItemService().getActionableItemsStr(teamWf));
    }
 
-   private void assertEquals(String expected, String actual) {
+   protected void assertEquals(String expected, String actual) {
       if (!expected.equals(actual)) {
          rd.errorf("Expected %s but actual was %s\n", expected, actual);
       }

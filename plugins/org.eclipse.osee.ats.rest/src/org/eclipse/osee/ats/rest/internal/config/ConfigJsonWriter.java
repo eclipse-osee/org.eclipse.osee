@@ -108,7 +108,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
       try {
          writer = jsonFactory.createGenerator(entityStream);
          writer.writeStartArray();
-         addProgramObject(atsApiServer, orcsApi, config, annotations, writer,
+         addConfigObject(atsApiServer, orcsApi, config, annotations, writer,
             JsonUtil.hasAnnotation(IdentityView.class, annotations));
          writer.writeEndArray();
       } finally {
@@ -118,7 +118,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
       }
    }
 
-   public static void addProgramObject(AtsApi atsApi, OrcsApi orcsApi, IAtsObject atsObject, Annotation[] annotations,
+   public static void addConfigObject(AtsApi atsApi, OrcsApi orcsApi, IAtsObject atsObject, Annotation[] annotations,
       JsonGenerator writer, boolean identityView) throws IOException, JsonGenerationException, JsonProcessingException {
       ArtifactReadable artifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(atsObject);
       writer.writeStartObject();
@@ -131,7 +131,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
             writer.writeArrayFieldStart("version");
             for (ArtifactReadable verArt : artifact.getRelated(AtsRelationTypes.TeamDefinitionToVersion_Version)) {
                IAtsVersion version = atsApi.getVersionService().getVersionById(verArt);
-               addProgramObject(atsApi, orcsApi, version, annotations, writer, true);
+               addConfigObject(atsApi, orcsApi, version, annotations, writer, true);
             }
             writer.writeEndArray();
          }
@@ -180,7 +180,6 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
          }
       } else if (atsObject instanceof IAtsProgram) {
          IAtsProgram program = (IAtsProgram) atsObject;
-         writer.writeStringField("Namespace", atsApi.getProgramService().getNamespace(program));
          writer.writeBooleanField("Active", program.isActive());
          if (!identityView) {
             writer.writeArrayFieldStart("country");
