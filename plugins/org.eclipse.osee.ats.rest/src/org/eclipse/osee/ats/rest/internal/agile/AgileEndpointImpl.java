@@ -523,6 +523,9 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       IAgileTeam updatedTeam = atsApi.getAgileService().createAgileTeam(newTeam);
       JaxAgileTeam created = AgileFactory.createJaxTeam(updatedTeam);
 
+      if (uriInfo == null) {
+         return Response.created(URI.create("/teams/" + created.getIdString())).build();
+      }
       UriBuilder builder = uriInfo.getRequestUriBuilder();
       URI location = builder.path("teams").path(String.valueOf(created.getId())).build();
       Response response = Response.created(location).entity(created).build();
@@ -597,6 +600,10 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       newGroup.setActive(team.isActive());
       newGroup.setTeamId(team.getTeamId());
 
+      if (uriInfo == null) {
+         return Response.created(
+            URI.create("/teams/" + newGroup.getTeamId() + "/features/" + newGroup.getIdIntValue())).build();
+      }
       UriBuilder builder = uriInfo.getRequestUriBuilder();
       URI location = builder.path("teams").path(String.valueOf(newGroup.getTeamId())).path("features").path(
          String.valueOf(newGroup.getId())).build();
@@ -643,11 +650,14 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       IAgileSprint sprint = atsApi.getAgileService().createAgileSprint(newSprint.getTeamId(), newSprint.getName(), id);
       JaxAgileSprint created = toJaxSprint(sprint);
 
+      if (uriInfo == null) {
+         return Response.created(
+            URI.create("/teams/" + newSprint.getTeamId() + "/syncSprints/" + sprint.getIdString())).build();
+      }
       UriBuilder builder = uriInfo.getRequestUriBuilder();
       URI location = builder.path("teams").path(String.valueOf(newSprint.getTeamId())).path("syncSprints").path(
          String.valueOf(sprint.getId())).build();
       return Response.created(location).entity(created).build();
-
    }
 
    private JaxAgileSprint toJaxSprint(IAgileSprint sprint) {
@@ -954,6 +964,10 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
       backlog = atsApi.getAgileService().createAgileBacklog(newBacklog.getTeamId(), newBacklog.getName(), id);
       JaxAgileBacklog created = toJaxBacklog(backlog);
+      if (uriInfo == null) {
+         return Response.created(
+            URI.create("/teams/" + backlog.getTeamId() + "/backlog/" + created.getIdString())).build();
+      }
       UriBuilder builder = uriInfo.getRequestUriBuilder();
       URI location = builder.path("teams").path(String.valueOf(backlog.getTeamId())).path("backlog").build();
       return Response.created(location).entity(created).build();

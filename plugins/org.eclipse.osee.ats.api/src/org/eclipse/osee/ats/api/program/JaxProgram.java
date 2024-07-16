@@ -27,6 +27,10 @@ public class JaxProgram extends JaxNewAtsConfigObject implements IAtsProgram {
    long countryId;
    String closureState;
 
+   public JaxProgram() {
+      super(AtsArtifactTypes.Program);
+   }
+
    public long getCountryId() {
       return countryId;
    }
@@ -60,4 +64,5 @@ public class JaxProgram extends JaxNewAtsConfigObject implements IAtsProgram {
    public void setClosureState(String closureState) {
       this.closureState = closureState;
    }
+
 }

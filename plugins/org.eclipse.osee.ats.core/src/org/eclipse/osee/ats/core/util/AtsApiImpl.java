@@ -55,6 +55,7 @@ import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsActionService;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
+import org.eclipse.osee.ats.api.workflow.IAtsGroupService;
 import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemMetricsService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
@@ -65,6 +66,7 @@ import org.eclipse.osee.ats.core.action.AtsActionService;
 import org.eclipse.osee.ats.core.agile.AgileService;
 import org.eclipse.osee.ats.core.config.AbstractAtsConfigurationService;
 import org.eclipse.osee.ats.core.config.TeamDefinitionServiceImpl;
+import org.eclipse.osee.ats.core.group.AtsGroupService;
 import org.eclipse.osee.ats.core.internal.AtsWorkItemMetricsServiceImpl;
 import org.eclipse.osee.ats.core.internal.column.AtsColumnService;
 import org.eclipse.osee.ats.core.internal.log.AtsLogFactory;
@@ -132,6 +134,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    protected IAtsAccessService atsAccessService;
    protected IAgileService agileService;
    protected AtsJiraService jiraService;
+   protected IAtsGroupService groupService;
 
    Collection<IAgileSprintHtmlOperation> agileSprintHtmlReportOperations = new LinkedList<>();
 
@@ -609,6 +612,14 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    @Override
    public AtsJiraService getJiraService() {
       return jiraService;
+   }
+
+   @Override
+   public IAtsGroupService getGroupService() {
+      if (groupService == null) {
+         groupService = new AtsGroupService(this);
+      }
+      return groupService;
    }
 
 }
