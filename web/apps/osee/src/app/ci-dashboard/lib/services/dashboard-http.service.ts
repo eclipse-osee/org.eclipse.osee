@@ -43,16 +43,18 @@ export class DashboardHttpService {
 	getSubsystems(
 		branchId: string,
 		filter: string,
-		pageNum: number,
+		pageNum: string | number,
 		pageSize: number,
 		orderByAttributeId: string
 	) {
 		let params: HttpParamsType = {
-			filter: filter,
 			pageNum: pageNum,
 			pageSize: pageSize,
 			orderByAttributeType: orderByAttributeId,
 		};
+		if (filter) {
+			params = { ...params, filter };
+		}
 		return this.http.get<NamedId[]>(
 			`${apiURL}/script/dashboard/${branchId}/subsystems`,
 			{ params: params }
@@ -60,16 +62,20 @@ export class DashboardHttpService {
 	}
 
 	getSubsystemsCount(branchId: string, filter: string) {
+		let params: HttpParamsType = {};
+		if (filter) {
+			params = { ...params, filter };
+		}
 		return this.http.get<number>(
 			`${apiURL}/script/dashboard/${branchId}/subsystems/count`,
-			{ params: { filter: filter } }
+			{ params: params }
 		);
 	}
 
 	getTeams(
 		branchId: string,
 		filter: string,
-		pageNum: number,
+		pageNum: string | number,
 		pageSize: number,
 		orderByAttributeId: string
 	) {

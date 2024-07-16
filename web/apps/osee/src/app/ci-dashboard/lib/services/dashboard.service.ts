@@ -63,11 +63,12 @@ export class DashboardService {
 
 	getSubsystemsPaginated(
 		filterText: string,
-		pageNum: number,
+		pageNum: string | number,
 		pageSize: number,
 		orderByAttributeId: string
 	) {
 		return this.uiService.branchId.pipe(
+			take(1),
 			filter((branchId) => branchId !== '' && branchId !== '-1'),
 			switchMap((branchId) =>
 				this.dashboardHttpService.getSubsystems(
@@ -83,6 +84,7 @@ export class DashboardService {
 
 	getSubsystemsCount(filterText: string) {
 		return this.uiService.branchId.pipe(
+			take(1),
 			filter((branchId) => branchId !== '' && branchId !== '-1'),
 			switchMap((branchId) =>
 				this.dashboardHttpService.getSubsystemsCount(
@@ -114,11 +116,12 @@ export class DashboardService {
 
 	getTeamsPaginated(
 		filterText: string,
-		pageNum: number,
+		pageNum: string | number,
 		pageSize: number,
 		orderByAttributeId: string
 	) {
 		return this.uiService.branchId.pipe(
+			take(1),
 			filter((branchId) => branchId !== '' && branchId !== '-1'),
 			switchMap((branchId) =>
 				this.dashboardHttpService.getTeams(
@@ -134,6 +137,7 @@ export class DashboardService {
 
 	getTeamsCount(filterText: string) {
 		return this.uiService.branchId.pipe(
+			take(1),
 			filter((branchId) => branchId !== '' && branchId !== '-1'),
 			switchMap((branchId) =>
 				this.dashboardHttpService.getTeamsCount(branchId, filterText)
@@ -174,6 +178,34 @@ export class DashboardService {
 								{
 									typeId: ATTRIBUTETYPEIDENUM.NAME,
 									value: value.name,
+								},
+							],
+						},
+					],
+				})
+			),
+			tap((_) => (this.uiService.update = true))
+		);
+	}
+
+	updateAttribute(
+		artId: `${number}`,
+		attributeTypeId: `${number}`,
+		value: string
+	) {
+		return this.uiService.branchId.pipe(
+			take(1),
+			switchMap((branchId) =>
+				this.transactionService.performMutation({
+					branch: branchId,
+					txComment: `Modifying ${artId}`,
+					modifyArtifacts: [
+						{
+							id: artId,
+							setAttributes: [
+								{
+									typeId: attributeTypeId,
+									value: value,
 								},
 							],
 						},

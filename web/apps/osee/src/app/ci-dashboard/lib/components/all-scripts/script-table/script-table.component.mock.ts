@@ -11,12 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import { SubsystemsListComponent } from './subsystems-list.component';
+import { ScriptTableComponent } from './script-table.component';
 
 @Component({
-	selector: 'osee-subsystems-list',
+	selector: 'osee-script-table',
 	template: '<p>Dummy</p>',
 	standalone: true,
 })
-export class MockSubsystemListComponent
-	implements Partial<SubsystemsListComponent> {}
+export class ScriptTableMockComponent
+	implements Partial<ScriptTableComponent> {}

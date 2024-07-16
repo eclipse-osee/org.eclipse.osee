@@ -28,6 +28,7 @@ import org.eclipse.osee.accessor.ArtifactAccessor;
 import org.eclipse.osee.accessor.internal.ArtifactAccessorImpl;
 import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -291,7 +292,7 @@ public class DashboardApiImpl implements DashboardApi {
    public Collection<ArtifactAccessorResult> getSubsystems(BranchId branch, String filter, long pageNum, long pageSize,
       AttributeTypeToken orderByAttributeType) {
       ArtifactAccessor<ArtifactAccessorResult> accessor =
-         new ArtifactAccessorImpl<>(CoreArtifactTypes.ScriptSubsystem, orcsApi);
+         new ArtifactAccessorResultAccessor(CoreArtifactTypes.ScriptSubsystem, orcsApi);
       try {
          return accessor.getAllByFilter(branch, filter, Arrays.asList(CoreAttributeTypes.Name), pageNum, pageSize,
             orderByAttributeType);
@@ -313,7 +314,7 @@ public class DashboardApiImpl implements DashboardApi {
    public Collection<ArtifactAccessorResult> getTeams(BranchId branch, String filter, long pageNum, long pageSize,
       AttributeTypeToken orderByAttributeType) {
       ArtifactAccessor<ArtifactAccessorResult> accessor =
-         new ArtifactAccessorImpl<>(CoreArtifactTypes.ScriptTeam, orcsApi);
+         new ArtifactAccessorResultAccessor(CoreArtifactTypes.ScriptTeam, orcsApi);
       try {
          return accessor.getAllByFilter(branch, filter, Arrays.asList(CoreAttributeTypes.Name), pageNum, pageSize,
             orderByAttributeType);
@@ -329,6 +330,12 @@ public class DashboardApiImpl implements DashboardApi {
       ArtifactAccessor<ArtifactAccessorResult> accessor =
          new ArtifactAccessorImpl<>(CoreArtifactTypes.ScriptTeam, orcsApi);
       return accessor.getAllByFilterAndCount(branch, filter, Arrays.asList(CoreAttributeTypes.Name));
+   }
+
+   private class ArtifactAccessorResultAccessor extends ArtifactAccessorImpl<ArtifactAccessorResult> {
+      public ArtifactAccessorResultAccessor(ArtifactTypeToken type, OrcsApi orcsApi) {
+         super(type, orcsApi);
+      }
    }
 
 }

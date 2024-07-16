@@ -48,11 +48,11 @@ import { resultReferenceSentinel } from '../../types/tmo';
 					class="tw-flex tw-w-full tw-flex-grow tw-items-center tw-gap-4 tw-text-center">
 					<button
 						mat-icon-button
-						class=" tw-text-primary"
+						class="tw-text-primary"
 						(click)="setResult('-1')">
 						<mat-icon>arrow_back</mat-icon>
 					</button>
-					<h3 class="tw-m-0">
+					<h3 class="md-headline tw-m-0">
 						<span class="tw-font-bold">{{
 							selectedResult().name
 						}}</span>
@@ -79,7 +79,8 @@ import { resultReferenceSentinel } from '../../types/tmo';
 					</button>
 					<button
 						mat-icon-button
-						class="tw-text-primary"
+						class="hover:tw-text-primary"
+						[ngClass]="{ 'tw-text-primary': expandTestPoints() }"
 						(click)="toggleExpandTestPoints()"
 						[matTooltip]="
 							expandTestPoints() ? 'Shrink table' : 'Expand table'

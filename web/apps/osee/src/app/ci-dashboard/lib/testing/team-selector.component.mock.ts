@@ -10,13 +10,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
-import { SubsystemsListComponent } from './subsystems-list.component';
+import { Component, input } from '@angular/core';
+import { TeamSelectorComponent } from '../components/team-selector/team-selector.component';
+import { DefReference } from '../types/tmo';
 
 @Component({
-	selector: 'osee-subsystems-list',
+	selector: 'osee-team-selector',
 	template: '<p>Dummy</p>',
 	standalone: true,
 })
-export class MockSubsystemListComponent
-	implements Partial<SubsystemsListComponent> {}
+export class TeamSelectorMockComponent
+	implements Partial<TeamSelectorComponent>
+{
+	script = input.required<DefReference>();
+}

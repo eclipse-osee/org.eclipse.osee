@@ -23,7 +23,7 @@ export const setReferenceSentinel: SetReference = {
 };
 
 export interface DefReference {
-	id: string;
+	id: `${number}`;
 	name: string;
 	fullScriptName: String;
 	executionDate: Date;
@@ -43,7 +43,7 @@ export interface DefReference {
 	scheduledMachine: string;
 	statusBy: string;
 	statusDate: Date;
-	subsystem: String;
+	subsystem: string;
 	description: string;
 	latestProcessorId: string;
 	latestExecutionDate: Date;
@@ -95,7 +95,7 @@ export interface ResultReference {
 }
 
 export const defReferenceSentinel: DefReference = {
-	id: '',
+	id: '-1',
 	name: '',
 	fullScriptName: '',
 	executionDate: new Date(),

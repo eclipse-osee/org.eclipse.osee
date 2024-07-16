@@ -390,10 +390,12 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
       InvocationTargetException, NoSuchMethodException, SecurityException {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       QueryBuilder query =
-         orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andIsOfType(
-            artifactType).and(
-               attributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),
-               filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY);
+         orcsApi.getQueryFactory().fromBranch(branch, viewId).includeApplicabilityTokens().andIsOfType(artifactType);
+      if (Strings.isValid(filter)) {
+         query = query.and(
+            attributes.stream().map(a -> orcsApi.tokenService().getAttributeType(a)).collect(Collectors.toList()),
+            filter, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__ANY);
+      }
       if (orderByAttribute != null && orderByAttribute.isValid()) {
          query = query.setOrderByAttribute(orcsApi.tokenService().getAttributeType(orderByAttribute));
       }
