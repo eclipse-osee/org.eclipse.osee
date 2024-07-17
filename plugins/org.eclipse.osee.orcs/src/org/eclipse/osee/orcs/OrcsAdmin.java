@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.resource.management.IResourceManager;
 
 /**
  * @author Roberto E. Escobar
@@ -44,5 +45,7 @@ public interface OrcsAdmin {
    void registerMissingOrcsTypeJoins();
 
    void configForDemoPl(BranchId branch);
+
+   public IResourceManager getResourceManager();
 
 }

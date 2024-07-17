@@ -110,6 +110,11 @@ public class DataModuleFactory {
          public DataStoreAdmin getDataStoreAdmin() {
             return dataStoreAdmin;
          }
+
+         @Override
+         public IResourceManager getResourceManager() {
+            return resourceManager;
+         }
       };
    }
 }

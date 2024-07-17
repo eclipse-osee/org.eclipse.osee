@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.orcs.core.ds;
 
+import org.eclipse.osee.framework.resource.management.IResourceManager;
+
 /**
  * @author Roberto E. Escobar
  */
@@ -31,4 +33,6 @@ public interface DataModule {
    DataStoreAdmin getDataStoreAdmin();
 
    KeyValueStore getKeyValueStore();
+
+   IResourceManager getResourceManager();
 }

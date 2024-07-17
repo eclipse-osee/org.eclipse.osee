@@ -12,6 +12,9 @@
  **********************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -23,7 +26,9 @@ import java.util.stream.Collectors;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -38,9 +43,12 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.TupleTypeImpl;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
+import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
@@ -48,6 +56,7 @@ import org.eclipse.osee.framework.jdk.core.type.MultipleItemsExist;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -368,6 +377,74 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, "rest - delete artifact");
       tx.deleteArtifact(artifact);
       return tx.commit();
+   }
+
+   @Override
+   public Response purgeArtifact(BranchId branch, ArtifactId artifact) {
+
+      orcsApi.userService().requireRole(CoreUserGroups.AccountAdmin);
+      //First delete resources on server before removing associated attribute rows
+      String uriQuery = "select distinct uri from osee_attribute where art_id = ? and uri is not null";
+      List<String> filesToDelete = new ArrayList<>();
+
+      orcsApi.getJdbcService().getClient().runQuery(stmt -> filesToDelete.add(stmt.getString("uri")), uriQuery,
+         artifact.getId());
+
+      for (String loc : filesToDelete) {
+         if (loc.startsWith("attr:")) {
+            IResourceLocator resourceLocator = orcsApi.getAdminOps().getResourceManager().getResourceLocator(loc);
+            orcsApi.getAdminOps().getResourceManager().delete(resourceLocator);
+            if (orcsApi.getAdminOps().getResourceManager().exists(resourceLocator)) {
+               Response.status(IStatus.ERROR, "Failed to delete resource: " + loc);
+            }
+         }
+      }
+
+      //get all gammas associated with artifact to use in batch statement to delete rows
+      List<Object[]> gammaIds = new ArrayList<>();
+      List<Object> parameters = new ArrayList<>();
+      String gammaQuery = "select gamma_id from osee_artifact where art_id = ? union all " + //
+         "select gamma_id from osee_attribute where art_id = ? union all " + //"
+         "select gamma_id from osee_relation_link where a_art_id = ? union all " + //"
+         "select gamma_id from osee_relation_link where b_art_id = ? union all " + //"
+         "select gamma_id from osee_relation where a_art_id = ? union all " + //"
+         "select gamma_id from osee_relation where b_art_id = ? ";
+      parameters.add(artifact.getId());
+      parameters.add(artifact.getId());
+      parameters.add(artifact.getId());
+      parameters.add(artifact.getId());
+      parameters.add(artifact.getId());
+      parameters.add(artifact.getId());
+
+      for (Field field : CoreTupleTypes.class.getDeclaredFields()) {
+         TupleTypeImpl tupleImpl = null;
+         try {
+            tupleImpl = (TupleTypeImpl) field.get(Object.class);
+         } catch (IllegalArgumentException | IllegalAccessException ex) {
+            return Response.status(IStatus.ERROR, "Error parsing TupleTypes").build();
+         }
+         if (tupleImpl != null) {
+            ParameterizedType pt = (ParameterizedType) field.getAnnotatedType().getType();
+            for (int i = 0; i < pt.getActualTypeArguments().length; i++) {
+               Type type = pt.getActualTypeArguments()[i];
+               if (type == (ArtifactId.class)) {
+                  String table_name = tupleImpl.getClass().getSimpleName().equals(
+                     "Tuple2TypeImpl") ? "osee_tuple2" : tupleImpl.getClass().getSimpleName().equals(
+                        "Tuple3TypeImpl") ? "osee_tuple3" : "osee_tuple4";
+                  gammaQuery =
+                     gammaQuery + " union all select gamma_id from " + table_name + " where tuple_type = " + tupleImpl.getIdString() + " and e" + Integer.toString(
+                        i + 1) + " = ? ";
+
+                  parameters.add(artifact.getId());
+               }
+            }
+         }
+
+      }
+      orcsApi.getJdbcService().getClient().runQuery(stmt -> gammaIds.add(new Object[] {stmt.getLong("gamma_id")}),
+         gammaQuery, parameters.toArray());
+      return DeleteFromAllTablesWithGammaId.deleteAllGammas(orcsApi.getJdbcService().getClient(), gammaQuery,
+         parameters, gammaIds);
    }
 
    @Override

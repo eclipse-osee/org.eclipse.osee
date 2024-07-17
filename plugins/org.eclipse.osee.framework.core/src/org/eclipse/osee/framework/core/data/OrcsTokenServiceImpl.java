@@ -129,7 +129,7 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    @Override
    public <E1, E2> Tuple2Type<E1, E2> getTuple2Type(Long id) {
       Tuple2Type<E1, E2> tuple = (Tuple2Type<E1, E2>) tuple2Types.get(id);
-      if (tuple == null) {
+      if (tuple != null) {
          return tuple;
       }
       throw new OseeTypeDoesNotExist("Tuple 2 type [%s] is not available.", id);
@@ -138,7 +138,7 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    @Override
    public <E1, E2, E3> Tuple3Type<E1, E2, E3> getTuple3Type(Long id) {
       Tuple3Type<E1, E2, E3> tuple = (Tuple3Type<E1, E2, E3>) tuple3Types.get(id);
-      if (tuple == null) {
+      if (tuple != null) {
          return tuple;
       }
       throw new OseeTypeDoesNotExist("Tuple 3 type [%s] is not available.", id);
@@ -147,7 +147,7 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    @Override
    public <E1, E2, E3, E4> Tuple4Type<E1, E2, E3, E4> getTuple4Type(Long id) {
       Tuple4Type<E1, E2, E3, E4> tuple = (Tuple4Type<E1, E2, E3, E4>) tuple4Types.get(id);
-      if (tuple == null) {
+      if (tuple != null) {
          return tuple;
       }
       throw new OseeTypeDoesNotExist("Tuple 4 type [%s] is not available.", id);
