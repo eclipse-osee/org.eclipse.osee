@@ -101,6 +101,7 @@ export const resultReferenceMock: ResultReference[] = [
 		javaVersion: '21',
 		qualificationLevel: 'DEV',
 		testPoints: [],
+		definitionId: '2',
 	},
 ];
 

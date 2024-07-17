@@ -53,7 +53,7 @@ import { CurrentActionDropDownComponent } from '@osee/configuration-management/c
 			<!-- Any content can be inserted between the CI Set selector and the action controls -->
 			<ng-content></ng-content>
 		</div>
-		@if (actionButton()) {
+		@if (actionButton() && branchIdValid() && branchType()) {
 			<div class="tw-min-w-[210px]">
 				<osee-current-action-drop-down />
 			</div>

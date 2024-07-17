@@ -92,6 +92,7 @@ export interface ResultReference {
 	email: string;
 	witnesses: string[];
 	testPoints: TestPointReference[];
+	definitionId: `${number}`;
 }
 
 export const defReferenceSentinel: DefReference = {
@@ -164,6 +165,7 @@ export const resultReferenceSentinel: ResultReference = {
 	javaVersion: '',
 	qualificationLevel: '',
 	testPoints: [],
+	definitionId: '-1',
 };
 
 export interface TestPointReference {

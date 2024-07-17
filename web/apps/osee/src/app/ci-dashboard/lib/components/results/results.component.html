@@ -51,11 +51,11 @@
 							mat-cell
 							*matCellDef="let result">
 							@if (header === 'name') {
-								<a
-									href=""
+								<button
 									class="tw-text-primary"
-									>{{ result.name }}</a
-								>
+									(click)="navigateToResults(result)">
+									{{ result.name }}
+								</button>
 							}
 							@if (header === 'totalTestPoints') {
 								{{
