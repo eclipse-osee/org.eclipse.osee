@@ -89,7 +89,7 @@ public class AttributeSortSqlHandler extends SqlHandler<CriteriaAttributeSort> {
          if (criteria.getAttributeType().isDate() && OptionsUtil.getMaxTime(writer.getOptions()) != null) {
             writer.addParameter(OptionsUtil.getMaxTime(writer.getOptions()).getTime());
             writer.write(
-               " and " + writer.getJdbcClient().getDbType().getPostgresCastStart() + " value " + writer.getJdbcClient().getDbType().getPostgresCastBigIntEnd() + " > ?");
+               " and " + writer.getJdbcClient().getDbType().getPostgresCastStart() + attrAlias + ".value " + writer.getJdbcClient().getDbType().getPostgresCastBigIntEnd() + " > ?");
          }
       }
 
