@@ -24,7 +24,7 @@ import { CiDashboardUiService } from '../../services/ci-dashboard-ui.service';
 import { ScriptTimelineComponent } from './script-timeline/script-timeline.component';
 import { RunInfoComponent } from './run-info/run-info.component';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { BehaviorSubject, iif, of, shareReplay, switchMap } from 'rxjs';
+import { BehaviorSubject, iif, of, shareReplay, switchMap, take } from 'rxjs';
 import { CiDetailsService } from '../../services/ci-details.service';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
@@ -70,6 +70,13 @@ import { resultReferenceSentinel } from '../../types/tmo';
 							(keyup)="updateTestPointFilter($event)" />
 						<mat-icon matPrefix>filter_list</mat-icon>
 					</mat-form-field>
+					<button
+						mat-icon-button
+						class="tw-text-primary"
+						(click)="downloadTmo()"
+						[matTooltip]="'Download TMO'">
+						<mat-icon>download</mat-icon>
+					</button>
 					<button
 						mat-icon-button
 						class="tw-text-primary"
@@ -196,6 +203,13 @@ export default class DetailsComponent {
 
 	toggleExpandTestPoints() {
 		this.expandTestPoints.update((value) => !value);
+	}
+
+	downloadTmo() {
+		this.ciDetailsService
+			.downloadTmo(this.selectedResultId.value.toString())
+			.pipe(take(1))
+			.subscribe();
 	}
 
 	setResult(id: `${number}`) {

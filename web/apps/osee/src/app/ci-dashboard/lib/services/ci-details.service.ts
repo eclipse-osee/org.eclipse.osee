@@ -17,13 +17,18 @@ import {
 	debounceTime,
 	distinctUntilChanged,
 	filter,
+	map,
 	share,
 	shareReplay,
 	switchMap,
+	take,
+	tap,
 } from 'rxjs';
 import { CiDashboardUiService } from './ci-dashboard-ui.service';
 import { TmoHttpService } from './tmo-http.service';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { forkJoin } from 'rxjs';
+import { format } from 'date-fns';
 
 @Injectable({
 	providedIn: 'root',
@@ -49,6 +54,7 @@ export class CiDetailsService {
 		switchMap(([brid, setId]) =>
 			this.tmoHttpService.getScriptDefList(brid, setId)
 		),
+		takeUntilDestroyed(),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
@@ -72,6 +78,7 @@ export class CiDetailsService {
 				pageSize
 			)
 		),
+		takeUntilDestroyed(),
 		shareReplay({ bufferSize: 1, refCount: true }) //Same instance for multiple calls using it.
 	);
 
@@ -102,6 +109,7 @@ export class CiDetailsService {
 		switchMap(([brId, defId]) =>
 			this.tmoHttpService.getScriptResults(brId, defId)
 		),
+		takeUntilDestroyed(),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
@@ -109,6 +117,42 @@ export class CiDetailsService {
 		return this.branchId.pipe(
 			filter((id) => id !== '' && id !== '-1'),
 			switchMap((id) => this.tmoHttpService.getScriptResult(id, resultId))
+		);
+	}
+
+	downloadTmo(resultId: string) {
+		const tmoNameFromDef = this.scriptDef.pipe(
+			take(1),
+			map((x) => x.name)
+		);
+		const tmoNameFromResult = this.getScriptResult(resultId).pipe(
+			take(1),
+			map((x) => format(new Date(x.executionDate), '_yyyy-MM-dd'))
+		);
+		const tmoName = forkJoin([tmoNameFromDef, tmoNameFromResult]).pipe(
+			map(([def, result]) => (def += result))
+		);
+
+		const tmo = this.branchId.pipe(
+			take(1),
+			switchMap((brid) => this.tmoHttpService.downloadTmo(brid, resultId))
+		);
+
+		return combineLatest([tmo, tmoName]).pipe(
+			map(([res, name]) => {
+				if (res.size !== 0) {
+					const blob = new Blob([res], {
+						type: 'application/xml',
+					});
+					const url = URL.createObjectURL(blob);
+					const link = document.createElement('a');
+					link.href = url;
+					link.setAttribute('download', name + '.tmo');
+					document.body.appendChild(link);
+					link.click();
+					link.remove();
+				}
+			})
 		);
 	}
 
