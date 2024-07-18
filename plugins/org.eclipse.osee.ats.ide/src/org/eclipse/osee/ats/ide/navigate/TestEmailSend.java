@@ -54,10 +54,6 @@ public class TestEmailSend extends XNavigateItemAction {
       try {
          rd = new XResultData();
          rd.logf("%s\n\n", getName());
-         rd.log("1. Two basic \"Hello World\" emails should be sent; one from client and another from server.\n\n" //
-            + "   - If Abridged Email attribute is set on your user artifact, another two " //
-            + "emails should be sent from client and server with only basic information " //
-            + "about the change (eg: No title, description, etc).\n\n");
          User user = UserManager.getUser();
          if (user.isInvalid()) {
             rd.errorf(TITLE, "User [%s] is invalid", user);
@@ -77,18 +73,24 @@ public class TestEmailSend extends XNavigateItemAction {
          XResultDataUI.errorf(TITLE, "User email [%s] is invalid", user);
          return;
       }
+      rd.log("1. Two basic \"Hello World\" emails should be sent; one from client and another from server.\n\n");
 
       // Test Email Client
       String title = "Send Test Email - Client";
       rd.log(title);
       try {
          OseeEmail emailMessage = OseeEmailIde.create(Arrays.asList(email), email, email, title,
-            AHTML.simplePage(AHTML.bold("Hello World - this should be bold")), BodyType.Html);
+            AHTML.simplePage(AHTML.bold("Hello World - this should be bold")), BodyType.Html, Arrays.asList(email),
+            "Abridged - " + title);
          emailMessage.send();
          rd.log("Completed");
       } catch (Exception ex) {
          rd.error(Lib.exceptionToString(ex));
       }
+
+      rd.log("\n\n2. If Abridged Email attribute is set on your user artifact, another two " //
+         + "emails should be sent from client and server with only basic information " //
+         + "about the change (eg: Simple title, NO description, etc).\n\n");
 
       // Test Email Server
       String title2 = "Send Test Email - Server";

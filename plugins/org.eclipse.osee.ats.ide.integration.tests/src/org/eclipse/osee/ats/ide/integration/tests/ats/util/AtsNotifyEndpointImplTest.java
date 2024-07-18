@@ -14,7 +14,10 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.util;
 
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
+import org.eclipse.osee.ats.api.notify.TestEmail;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
+import org.eclipse.osee.framework.core.util.OseeEmail;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -27,8 +30,14 @@ public class AtsNotifyEndpointImplTest {
 
    @Test
    public void testAtsNotify() {
-      AtsNotifyEndpointApi notifyEndpoint = AtsApiService.get().getServerEndpoints().getNotifyEndpoint();
-      Assert.assertNotNull(notifyEndpoint);
+      AtsNotifyEndpointApi notifyEp = AtsApiService.get().getServerEndpoints().getNotifyEndpoint();
+      Assert.assertNotNull(notifyEp);
+
+      TestEmail email = new TestEmail();
+      email.setSubject("My Subject");
+      email.setEmail("d@d.com");
+      XResultData rd = notifyEp.sendTestEmail(email);
+      Assert.assertTrue(rd.toString().contains(OseeEmail.DEFAULT_MAIL_SERVER_NOT_CONFIGURED));
    }
 
 }
