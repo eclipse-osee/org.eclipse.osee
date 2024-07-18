@@ -381,9 +381,14 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
 
    @Override
    public InterfaceStructureToken get(BranchId branch, ArtifactId artId) {
+      return this.get(branch, artId, ArtifactId.SENTINEL);
+   }
+
+   @Override
+   public InterfaceStructureToken get(BranchId branch, ArtifactId artId, ArtifactId viewId) {
       InterfaceStructureToken structure;
       try {
-         structure = this.getAccessor().get(branch, artId, this.getFullFollowRelationDetails());
+         structure = this.getAccessor().get(branch, artId, this.getFullFollowRelationDetails(), viewId);
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);
