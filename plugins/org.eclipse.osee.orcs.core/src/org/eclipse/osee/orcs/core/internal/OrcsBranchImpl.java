@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.MimArtifactTokens;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -259,8 +260,8 @@ public class OrcsBranchImpl implements OrcsBranch {
       tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTokens.SubSystemRequirementsFolder);
       tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTokens.SoftwareRequirementsFolder);
       tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTokens.HardwareRequirementsFolder);
-      tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTokens.InterfaceMessagesFolder);
-      tx.createArtifact(CoreArtifactTokens.InterfaceMessagesFolder, CoreArtifactTokens.InterfacePlatformTypesFolder);
+      tx.createArtifact(DefaultHierarchyRoot, MimArtifactTokens.InterfaceMessagesFolder);
+      tx.createArtifact(MimArtifactTokens.InterfaceMessagesFolder, MimArtifactTokens.InterfacePlatformTypesFolder);
       tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTokens.SystemRequirementsFolderMarkdown);
       tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTokens.SubSystemRequirementsFolderMarkdown);
       tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTokens.SoftwareRequirementsFolderMarkdown);

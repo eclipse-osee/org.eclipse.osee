@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
+import org.eclipse.osee.framework.core.enums.MimArtifactTokens;
 import org.eclipse.osee.framework.core.enums.MimUserGroups;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -109,6 +110,24 @@ public class CreateSystemBranches {
 
       tx.createArtifact(oseeConfig, CoreArtifactTokens.DocumentTemplates);
       SetupPublishing.setup(tx);
+
+      // MIM Common Branch Artifacts
+      ArtifactId mimFolder = tx.createArtifact(oseeConfig, MimArtifactTokens.MimConfigFolder);
+
+      ArtifactId mimIcdReport = tx.createArtifact(mimFolder, MimArtifactTokens.MimIcdReport);
+      tx.setSoleAttributeValue(mimIcdReport, CoreAttributeTypes.EndpointUrl,
+         "/mim/branch/<branchId>/view/<viewId>/icd/<connectionId>?diff=<diffAvailable>");
+      tx.setSoleAttributeValue(mimIcdReport, CoreAttributeTypes.DiffAvailable, true);
+      tx.setSoleAttributeValue(mimIcdReport, CoreAttributeTypes.FileExtension, "xlsx");
+      tx.setSoleAttributeValue(mimIcdReport, CoreAttributeTypes.FileNamePrefix, "InterfaceWorkbook");
+      tx.setSoleAttributeValue(mimIcdReport, CoreAttributeTypes.HttpMethod, "GET");
+      tx.setSoleAttributeValue(mimIcdReport, CoreAttributeTypes.ProducesMediaType, "application/octet-stream");
+      tx.setSoleAttributeValue(mimIcdReport, CoreAttributeTypes.RequiresValidation, true);
+
+      ArtifactId mimIcdImport = tx.createArtifact(mimFolder, MimArtifactTokens.MimIcdImport);
+      tx.setSoleAttributeValue(mimIcdImport, CoreAttributeTypes.EndpointUrl, "/mim/import/icd/<branchId>");
+      tx.setSoleAttributeValue(mimIcdImport, CoreAttributeTypes.ConnectionRequired, false);
+
       tx.commit();
 
       List<IUserGroupArtifactToken> roles = superUser.getRoles();
@@ -141,6 +160,7 @@ public class CreateSystemBranches {
       if (!users.contains(userWithRoles)) {
          users.add(userWithRoles);
       }
+
       OseeProperties.setIsInTest(true);
       userService.setUserForCurrentThread(UserId.valueOf(userWithRoles));
       TransactionId txId = userService.createUsers(users, "Create System Users");
