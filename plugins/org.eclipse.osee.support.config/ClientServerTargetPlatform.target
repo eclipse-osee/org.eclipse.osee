@@ -716,6 +716,7 @@
 <plugin id="com.fasterxml.jackson.datatype.jackson-datatype-jsr310"/>
 <plugin id="org.yaml.snakeyaml"/>
 <plugin id="jakarta.xml.bind"/>
+<plugin id="org.nibor.autolink"/>
 </includeBundles>
 <environment>
 <os>win32</os>
