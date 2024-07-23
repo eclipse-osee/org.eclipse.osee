@@ -165,22 +165,20 @@ public class AssigneeColumnUI extends XViewerAtsCoreCodeXColumn {
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       try {
-         Set<IAtsTeamWorkflow> teamWfs = new HashSet<>();
+         Set<IAtsWorkItem> workItems = new HashSet<>();
          for (TreeItem item : treeItems) {
-            if (item.getData() instanceof IAtsTeamWorkflow) {
-               IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) item.getData();
+            if (item.getData() instanceof IAtsWorkItem) {
+               IAtsWorkItem teamWf = (IAtsWorkItem) item.getData();
                if (teamWf instanceof AbstractWorkflowArtifact) {
-                  teamWfs.add(teamWf);
+                  workItems.add(teamWf);
                }
-            } else if (item.getData() instanceof IAtsAction) {
-               teamWfs.add(AtsApiService.get().getWorkItemService().getFirstTeam(item.getData()));
             }
          }
-         if (teamWfs.isEmpty()) {
+         if (workItems.isEmpty()) {
             AWorkbench.popup("Invalid selection for setting assignees.");
             return;
          }
-         promptChangeAssignees(teamWfs);
+         promptChangeAssignees(workItems);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
