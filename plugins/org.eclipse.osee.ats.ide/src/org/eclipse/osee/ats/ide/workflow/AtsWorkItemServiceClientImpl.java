@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -91,12 +90,10 @@ public class AtsWorkItemServiceClientImpl extends AtsWorkItemServiceImpl impleme
                   }
                }
                if (backlog.isValid()) {
-                  ElapsedTime time = new ElapsedTime("Sort Backlog from IDE");
                   XResultData rd = atsApi.getServerEndpoints().getAgileEndpoint().sortBacklog(backlog.getToken());
                   if (Strings.isValid(rd.getTxId())) {
                      reloadBacklogIfItemChanged(transData);
                   }
-                  time.end();
                }
             } catch (Exception ex) {
                System.err.println(Lib.exceptionToString(ex));

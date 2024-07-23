@@ -12,8 +12,13 @@
  **********************************************************************/
 package org.eclipse.osee.ats.ide.workflow.transition;
 
+import java.util.HashSet;
+import java.util.Set;
+import org.eclipse.jface.window.Window;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
@@ -21,6 +26,7 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.CancelledReasonEnumDialog;
+import org.eclipse.osee.ats.ide.util.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -78,6 +84,41 @@ public class TransitionDataUi {
                      transData.setCancellationReason(cancelDialog.getEntry());
                      transData.setCancellationReasonAttrType(AtsAttributeTypes.CancelledReason);
                   }
+               }
+            }
+         }
+      }, true);
+   }
+
+   public static void getTransitionBy(TransitionData transData) {
+      Displays.ensureInDisplayThread(new Runnable() {
+
+         @Override
+         public void run() {
+            AtsApi atsApi = AtsApiService.get();
+            IAtsWorkItem workItem = transData.getWorkItems().iterator().next();
+            AtsUser currUser = atsApi.getUserService().getCurrentUser();
+            String toStateName = transData.getToStateName();
+            StateDefinition toState = workItem.getWorkDefinition().getStateByName(toStateName);
+            Set<AtsUser> users = new HashSet<>();
+            String title = "";
+            // If completed/cancelled, choose from implementers or current user
+            if (workItem.isCompletedOrCancelled() && toState.isWorking()) {
+               users.addAll(workItem.getImplementers());
+               users.add(currUser);
+               title = "Select new Assignee";
+            }
+            // Else if not assignee, choose from assignees or current user
+            else if (!workItem.getAssignees().contains(currUser)) {
+               users.addAll(workItem.getAssignees());
+               users.add(currUser);
+               title = "Not Assignee; Select Transition-By User";
+            }
+            if (!users.isEmpty()) {
+               UserListDialog diag = new UserListDialog(Displays.getActiveShell(), title, users);
+               if (diag.open() == Window.OK) {
+                  AtsUser user = diag.getSelectedFirst();
+                  transData.setTransitionUser(user);
                }
             }
          }
