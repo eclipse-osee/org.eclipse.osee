@@ -589,7 +589,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.postgresql.driver"
+         id="org.postgresql.jdbc"
          download-size="0"
          install-size="0"
          version="0.0.0"

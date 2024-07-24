@@ -11,7 +11,7 @@ After downloading, follow the PostgreSQL installation wizard instructions. Unles
 ### Configure PostgreSQL Connections
 By default, the PostgreSQL database server is configured to allow only local connections. If remote connections are to be allowed, edit postgresql.conf and pg_hba.conf to set the necessary permissions.
 
-To setup an unsecured database instance:
+To setup an unsecured database instance(only needed for older postgres driver):
 1.  Set `listen_addresses = '*'` in `postgresql.conf` (located in the `\PostgreSQL\[version]\data` directory)
 2.  Set `host all all 0.0.0.0/0 trust` in `pg_hba.conf` (located in the `\PostgreSQL\[version]\data` directory)
 3.  You may need to set all METHODs to trust
@@ -88,7 +88,7 @@ docker pull postgres:16.3
 Run the following command in Command Prompt.
 
 ```
-docker run --name osee-postgres -e POSTGRES_PASSWORD=osee -e POSTGRES_USER=osee -e POSTGRES_DB=osee -e POSTGRES_HOST_AUTH_METHOD=trust -d postgres:16.3
+docker run --name osee-postgres -e POSTGRES_PASSWORD=osee -e POSTGRES_USER=osee -e POSTGRES_DB=osee -d postgres:16.3
 ```
 **Note:** Running a PostgreSQL Docker Container in this configuration will store data within the container. In other words, if the container is destroyed, so is the data it contained. If you wish to run a container that uses a persistent data volume that will exist independently from the container, please run using the persistent data configuration below.
 
@@ -99,7 +99,7 @@ Create a folder named `postgresql_data` in your documents directory.
 Run the following command in Command Prompt after replacing `YOUR_USER_HERE` with your username.
 
 ```
-docker run --name osee-postgres -e POSTGRES_PASSWORD=osee -e POSTGRES_USER=osee -e POSTGRES_DB=osee -e POSTGRES_HOST_AUTH_METHOD=trust -e PGDATA=/var/lib/postgresql/data/pgdata -v C:\Users\YOUR_USER_HERE\Documents\postgresql_data:/var/lib/postgresql/data -d postgres:16.3
+docker run --name osee-postgres -e POSTGRES_PASSWORD=osee -e POSTGRES_USER=osee -e POSTGRES_DB=osee -e PGDATA=/var/lib/postgresql/data/pgdata -v C:\Users\YOUR_USER_HERE\Documents\postgresql_data:/var/lib/postgresql/data -d postgres:16.3
 ```
 
 Alternatively, you can create a data folder in another location by simply replace the path to the left of the ':' with the path to your folder.

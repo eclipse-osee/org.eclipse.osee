@@ -27,7 +27,6 @@
 				</property>
 			</activation>
 			<modules>
-				<module>../../plugins/org.postgresql.driver</module>		
 			
 				<module>../../plugins/org.eclipse.osee.framework.branch.gantt</module>
 				<module>../../plugins/org.eclipse.osee.framework.core.client</module>
@@ -87,7 +86,6 @@
 				</property>
 			</activation>
 			<modules>
-							<module>../../plugins/org.postgresql.driver</module>		
 			
 				<module>../../plugins/org.eclipse.osee.framework.branch.gantt</module>
 				<module>../../plugins/org.eclipse.osee.framework.core.client</module>

@@ -589,7 +589,7 @@
 <plugin id="org.objenesis"/>
 <plugin id="org.openoffice"/>
 <plugin id="org.osgi.service.blueprint"/>
-<plugin id="org.postgresql.driver"/>
+<plugin id="org.postgresql.jdbc"/>
 <plugin id="org.sat4j.core"/>
 <plugin id="org.sat4j.pb"/>
 <plugin id="org.slf4j.api" version="1.7.30.v20221112-0806"/>

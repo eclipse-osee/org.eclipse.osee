@@ -23,7 +23,11 @@
 						<phase>package</phase>
 						<configuration>
 							<artifacts>
-
+								<artifact>
+									<id>org.postgresql:postgresql:jar:42.3.10</id>
+									<source>true</source>
+								</artifact>
+								
 								<artifact>
 									<id>net.jini:jsk-lib:jar:2.2.2</id>
 									<source>true</source>

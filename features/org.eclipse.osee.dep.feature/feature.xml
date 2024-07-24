@@ -359,7 +359,13 @@
       <import plugin="com.lowagie.text" version="2.0.0" match="compatible"/>
    </requires>
   
-  
+   <plugin
+         id="org.postgresql.jdbc"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
   <plugin
          id="net.jini.jsk-lib"
          download-size="0"

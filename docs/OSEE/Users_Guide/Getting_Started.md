@@ -387,7 +387,7 @@ and Configuration](#Launch_.26_Configuration "wikilink").
 2.  Follow PostgreSQL installation instructions
   1.  Unless required, do not change the default port number (5432)
 3.  By default, the PostgreSQL database server is configured to allow only local connections. If remote connections are to be allowed, edit postgresql.conf and pg_hba.conf to set the necessary permissions.
-    1.  To setup an unsecured database instance:
+    1.  To setup an unsecured database instance(only for old postgres driver):
         1.  Set **listen_addresses = '\*'** in **postgresql.conf** (located in the \PostgreSQL\[version]\data directory)
         2.  Set **host all all 0.0.0.0/0 trust** in **pg_hba.conf** (located in the \PostgreSQL\[version]\data directory)
         3.  You may need to set all METHODs to trust
