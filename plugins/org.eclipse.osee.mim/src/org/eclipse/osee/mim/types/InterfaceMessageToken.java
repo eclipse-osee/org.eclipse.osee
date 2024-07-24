@@ -12,16 +12,25 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.orcs.rest.model.transaction.Attribute;
+import org.eclipse.osee.orcs.rest.model.transaction.CreateArtifact;
 
 /**
  * @author Luciano T. Vaglienti
@@ -318,6 +327,49 @@ public class InterfaceMessageToken extends ArtifactAccessorResult {
 
    public void setInterfaceMessageVer(String interfaceMessageVer) {
       this.interfaceMessageVer = interfaceMessageVer;
+   }
+
+   public CreateArtifact createArtifact(String key, ApplicabilityId applicId) {
+      // @formatter:off
+      Map<AttributeTypeToken, String> values = new HashMap<>();
+      values.put(CoreAttributeTypes.Description, this.getDescription());
+      values.put(CoreAttributeTypes.InterfaceMessageNumber, this.getInterfaceMessageNumber());
+      values.put(CoreAttributeTypes.InterfaceMessagePeriodicity, this.getInterfaceMessagePeriodicity());
+      values.put(CoreAttributeTypes.InterfaceMessageRate, this.getInterfaceMessageRate());
+      values.put(CoreAttributeTypes.InterfaceMessageWriteAccess, Boolean.toString(this.getInterfaceMessageWriteAccess()));
+      values.put(CoreAttributeTypes.InterfaceMessageType, this.getInterfaceMessageType());
+      values.put(CoreAttributeTypes.InterfaceMessageExclude, Boolean.toString(this.getInterfaceMessageExclude()));
+      values.put(CoreAttributeTypes.InterfaceMessageIoMode, this.getInterfaceMessageIoMode());
+      values.put(CoreAttributeTypes.InterfaceMessageModeCode, this.getInterfaceMessageModeCode());
+      values.put(CoreAttributeTypes.InterfaceMessageRateVer, this.getInterfaceMessageRateVer());
+      values.put(CoreAttributeTypes.InterfaceMessagePriority, this.getInterfaceMessagePriority());
+      values.put(CoreAttributeTypes.InterfaceMessageProtocol, this.getInterfaceMessageProtocol());
+      values.put(CoreAttributeTypes.InterfaceMessageRptWordCount, this.getInterfaceMessageRptWordCount());
+      values.put(CoreAttributeTypes.InterfaceMessageRptCmdWord, this.getInterfaceMessageRptCmdWord());
+      values.put(CoreAttributeTypes.InterfaceMessageRunBeforeProc, Boolean.toString(this.getInterfaceMessageRunBeforeProc()));
+      values.put(CoreAttributeTypes.InterfaceMessageVer, this.getInterfaceMessageVer());
+      // @formatter:on
+
+      CreateArtifact art = new CreateArtifact();
+      art.setName(this.getName());
+      art.setTypeId(CoreArtifactTypes.InterfaceMessage.getIdString());
+
+      List<Attribute> attrs = new LinkedList<>();
+
+      for (AttributeTypeToken type : CoreArtifactTypes.InterfaceMessage.getValidAttributeTypes()) {
+         String value = values.get(type);
+         if (Strings.isInValid(value)) {
+            continue;
+         }
+         Attribute attr = new Attribute(type.getIdString());
+         attr.setValue(Arrays.asList(value));
+         attrs.add(attr);
+      }
+
+      art.setAttributes(attrs);
+      art.setApplicabilityId(applicId.getIdString());
+      art.setkey(key);
+      return art;
    }
 
 }

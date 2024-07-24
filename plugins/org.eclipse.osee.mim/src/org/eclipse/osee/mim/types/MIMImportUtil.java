@@ -30,8 +30,26 @@ public class MIMImportUtil {
       data.setCreateArtifacts(new LinkedList<>());
       data.setAddRelations(new LinkedList<>());
 
-      // TODO create the rest of the MIM artifacts here
+      // Create Artifacts
 
+      for (TransportType transportType : summary.getTransportTypes()) {
+         data.getCreateArtifacts().add(transportType.createArtifact(transportType.getIdString(), applicId));
+      }
+      for (InterfaceConnection connection : summary.getConnections()) {
+         data.getCreateArtifacts().add(connection.createArtifact(connection.getIdString(), applicId));
+      }
+      for (InterfaceNode node : summary.getNodes()) {
+         data.getCreateArtifacts().add(node.createArtifact(node.getIdString(), applicId));
+      }
+      for (InterfaceMessageToken message : summary.getMessages()) {
+         data.getCreateArtifacts().add(message.createArtifact(message.getIdString(), applicId));
+      }
+      for (InterfaceSubMessageToken submessage : summary.getSubMessages()) {
+         data.getCreateArtifacts().add(submessage.createArtifact(submessage.getIdString(), applicId));
+      }
+      for (InterfaceStructureToken structure : summary.getStructures()) {
+         data.getCreateArtifacts().add(structure.createArtifact(structure.getIdString(), applicId));
+      }
       for (InterfaceElementImportToken element : summary.getElements()) {
          data.getCreateArtifacts().add(element.createArtifact(element.getIdString(), applicId));
       }
@@ -45,7 +63,54 @@ public class MIMImportUtil {
          data.getCreateArtifacts().add(enumeration.createArtifact(enumeration.getIdString(), applicId));
       }
 
-      // TODO create the rest of the MIM relations here
+      // Create Relations
+
+      for (String connectionId : summary.getConnectionTransportTypeRelations().keySet()) {
+         for (String transportTypeId : summary.getConnectionTransportTypeRelations().get(connectionId)) {
+            data.getAddRelations().add(
+               createAddRelation(CoreRelationTypes.InterfaceConnectionTransportType, connectionId, transportTypeId));
+         }
+      }
+
+      for (String connectionId : summary.getConnectionNodeRelations().keySet()) {
+         for (String nodeId : summary.getConnectionNodeRelations().get(connectionId)) {
+            data.getAddRelations().add(
+               createAddRelation(CoreRelationTypes.InterfaceConnectionNode, connectionId, nodeId));
+         }
+      }
+
+      for (String connectionId : summary.getConnectionMessageRelations().keySet()) {
+         for (String messageId : summary.getConnectionMessageRelations().get(connectionId)) {
+            data.getAddRelations().add(
+               createAddRelation(CoreRelationTypes.InterfaceConnectionMessage, connectionId, messageId));
+         }
+      }
+
+      for (String messageId : summary.getMessagePublisherNodeRelations().keySet()) {
+         for (String nodeId : summary.getMessagePublisherNodeRelations().get(messageId)) {
+            data.getAddRelations().add(createAddRelation(CoreRelationTypes.InterfaceMessagePubNode, messageId, nodeId));
+         }
+      }
+
+      for (String messageId : summary.getMessageSubscriberNodeRelations().keySet()) {
+         for (String nodeId : summary.getMessageSubscriberNodeRelations().get(messageId)) {
+            data.getAddRelations().add(createAddRelation(CoreRelationTypes.InterfaceMessageSubNode, messageId, nodeId));
+         }
+      }
+
+      for (String messageId : summary.getMessageSubmessageRelations().keySet()) {
+         for (String submessageId : summary.getMessageSubmessageRelations().get(messageId)) {
+            data.getAddRelations().add(
+               createAddRelation(CoreRelationTypes.InterfaceMessageSubMessageContent, messageId, submessageId));
+         }
+      }
+
+      for (String submessageId : summary.getSubMessageStructureRelations().keySet()) {
+         for (String structureId : summary.getSubMessageStructureRelations().get(submessageId)) {
+            data.getAddRelations().add(
+               createAddRelation(CoreRelationTypes.InterfaceSubMessageContent, submessageId, structureId));
+         }
+      }
 
       for (String structId : summary.getStructureElementRelations().keySet()) {
          for (String elementId : summary.getStructureElementRelations().get(structId)) {

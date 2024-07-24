@@ -14,15 +14,22 @@ package org.eclipse.osee.mim.types;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.orcs.rest.model.transaction.Attribute;
+import org.eclipse.osee.orcs.rest.model.transaction.CreateArtifact;
 
 public class TransportType extends ArtifactAccessorResult {
 
@@ -317,6 +324,70 @@ public class TransportType extends ArtifactAccessorResult {
     */
    public void setApplicability(ApplicabilityToken applicability) {
       this.applicability = applicability;
+   }
+
+   public CreateArtifact createArtifact(String key, ApplicabilityId applicId) {
+      // @formatter:off
+      Map<AttributeTypeToken, String> values = new HashMap<>();
+      values.put(CoreAttributeTypes.ByteAlignValidation, Boolean.toString(this.isByteAlignValidation()));
+      values.put(CoreAttributeTypes.ByteAlignValidationSize, Integer.toString(this.getByteAlignValidationSize()));
+      values.put(CoreAttributeTypes.MessageGeneration, Boolean.toString(this.isMessageGeneration()));
+      values.put(CoreAttributeTypes.MessageGenerationType, this.getMessageGenerationType());
+      values.put(CoreAttributeTypes.MinimumSubscriberMultiplicity, Integer.toString(this.getMinimumPublisherMultiplicity()));
+      values.put(CoreAttributeTypes.MaximumSubscriberMultiplicity, Integer.toString(this.getMaximumSubscriberMultiplicity()));
+      values.put(CoreAttributeTypes.MinimumPublisherMultiplicity, Integer.toString(this.getMinimumPublisherMultiplicity()));
+      values.put(CoreAttributeTypes.MaximumPublisherMultiplicity, Integer.toString(this.getMaximumPublisherMultiplicity()));
+      values.put(CoreAttributeTypes.DashedPresentation, Boolean.toString(this.getDashedPresentation()));
+      values.put(CoreAttributeTypes.SpareAutoNumbering, Boolean.toString(this.isSpareAutoNumbering()));
+      // @formatter:on
+
+      CreateArtifact art = new CreateArtifact();
+      art.setName(this.getName());
+      art.setTypeId(CoreArtifactTypes.TransportType.getIdString());
+
+      List<Attribute> attrs = new LinkedList<>();
+
+      for (AttributeTypeToken type : CoreArtifactTypes.TransportType.getValidAttributeTypes()) {
+         String value = values.get(type);
+         if (Strings.isInValid(value)) {
+            continue;
+         }
+         Attribute attr = new Attribute(type.getIdString());
+         attr.setValue(Arrays.asList(value));
+         attrs.add(attr);
+      }
+
+      // Multi-value attributes
+      if (this.getInterfaceLevelsToUse().size() > 0) {
+         Attribute attr = new Attribute(CoreAttributeTypes.InterfaceLevelsToUse.getIdString());
+         attr.setValue(this.getInterfaceLevelsToUse());
+         attrs.add(attr);
+      }
+      if (this.getAvailableMessageHeaders().size() > 0) {
+         Attribute attr = new Attribute(CoreAttributeTypes.AvailableMessageHeaders.getIdString());
+         attr.setValue(this.getAvailableMessageHeaders());
+         attrs.add(attr);
+      }
+      if (this.getAvailableSubmessageHeaders().size() > 0) {
+         Attribute attr = new Attribute(CoreAttributeTypes.AvailableSubmessageHeaders.getIdString());
+         attr.setValue(this.getAvailableSubmessageHeaders());
+         attrs.add(attr);
+      }
+      if (this.getAvailableStructureHeaders().size() > 0) {
+         Attribute attr = new Attribute(CoreAttributeTypes.AvailableStructureHeaders.getIdString());
+         attr.setValue(this.getAvailableStructureHeaders());
+         attrs.add(attr);
+      }
+      if (this.getAvailableElementHeaders().size() > 0) {
+         Attribute attr = new Attribute(CoreAttributeTypes.AvailableElementHeaders.getIdString());
+         attr.setValue(this.getAvailableElementHeaders());
+         attrs.add(attr);
+      }
+
+      art.setAttributes(attrs);
+      art.setApplicabilityId(applicId.getIdString());
+      art.setkey(key);
+      return art;
    }
 
 }

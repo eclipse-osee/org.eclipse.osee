@@ -39,6 +39,7 @@ public class MimApplication extends Application {
       resources.add(new MimUserPreferenceEndpointImpl(mimApi));
       resources.add(new MimReportsEndpointImpl(mimApi));
       resources.add(new MimImportEndpointImpl(mimApi));
+      resources.add(new MimDatabaseInitEndpointImpl(mimApi));
    }
 
    public void stop() {
