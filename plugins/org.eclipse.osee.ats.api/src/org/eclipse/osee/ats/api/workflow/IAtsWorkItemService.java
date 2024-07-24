@@ -198,6 +198,17 @@ public interface IAtsWorkItemService {
       return getAssignees(workItem).contains(AtsCoreUsers.UNASSIGNED_USER);
    }
 
+   default public boolean stateExists(IAtsWorkItem workItem, IStateToken state) {
+      return stateExists(workItem, state.getName());
+   }
+
+   default public boolean stateExists(IAtsWorkItem workItem, String state) {
+      if (getStateStartedData(workItem, state) != null) {
+         return true;
+      }
+      return false;
+   }
+
    default public long getTimeInState(IAtsWorkItem workItem, IStateToken state) {
       if (state == null) {
          return 0;

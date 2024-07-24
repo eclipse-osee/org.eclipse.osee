@@ -22,7 +22,7 @@ public enum SoftwareReqVolatilityId {
    Program("Program"),
    Build("Build"),
    Date("Creation Date"),
-   Completed("Completed Date"),
+   VerifyOrComplete("Verify/Complete Date"),
    AddedReq("Added (Software Reqs)"),
    ModifiedReq("Modified (Software Reqs)"),
    DeletedReq("Deleted (Software Reqs)"),
