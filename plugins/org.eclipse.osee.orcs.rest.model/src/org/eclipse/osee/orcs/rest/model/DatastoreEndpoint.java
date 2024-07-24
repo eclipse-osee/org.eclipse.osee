@@ -49,7 +49,6 @@ public interface DatastoreEndpoint {
 
    @POST
    @Path("synonyms")
-   @Consumes(MediaType.TEXT_PLAIN)
    void synonyms();
 
    @POST
