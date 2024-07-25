@@ -91,7 +91,6 @@ public class AtsDbConfigBase {
 
       // Clear server caches in case server has not been restarted after previous dbinit
       atsApi.getWorkDefinitionService().internalClearCaches();
-      atsApi.getWorkItemService().internalClearCaches();
       atsApi.getBranchService().internalClearCaches();
 
       XResultData results = createAtsFolders();

@@ -110,6 +110,7 @@ public interface AtsAttributeTypes {
    AttributeTypeString ControlAccount = ats.createString(3475568422796552185L, "ats.Control Account", TEXT_PLAIN, "", Edit);
    AttributeTypeString CreatedBy = ats.createString(1152921504606847174L, "ats.Created By", TEXT_PLAIN, "UserId of the user who created the workflow.", Read, UserUserId);
    AttributeTypeDate CreatedDate = ats.createDate(1152921504606847173L, "ats.Created Date", TEXT_CALENDAR, "Date the workflow was created.", Read);
+   // CurrentState attribute type is To-Be-Deleted
    AttributeTypeString CurrentState = ats.createString(1152921504606847192L, "ats.Current State", TEXT_PLAIN, "Current state of workflow state machine.", Read);
    AttributeTypeString CurrentStateName = ats.createString(4689644240272725681L, "ats.Current State Name", TEXT_PLAIN, "Current state name of workflow state machine.", Read);
    AttributeTypeString CurrentStateAssignee = ats.createString(1902418199157448550L, "ats.Current State Assignee", TEXT_PLAIN, "Current state assignees as user art id.", Read);
@@ -209,6 +210,7 @@ public interface AtsAttributeTypes {
    AttributeTypeString Ship = ats.createString(2066487546203415020L, "Ship", MediaType.TEXT_PLAIN, "", Edit);
    AttributeTypeString SignalDbSystemId = ats.createString(1153126013769613779L, "Signal Db System ID", TEXT_PLAIN, "",Config );
    AttributeTypeDate StartDate = ats.createDate(1152921504606847382L, "ats.Start Date", TEXT_CALENDAR, "", Edit);
+   // State attribute type is To-Be-Deleted
    AttributeTypeString State = ats.createString(1152921504606847191L, "ats.State", TEXT_PLAIN, "States of workflow state machine.", Read);
    AttributeTypeString StateNotes = ats.createString(1152921504606847203L, "ats.State Notes", MediaType.TEXT_XML, "", MultiLine, Read);
    AttributeTypeString SwEnhancement = ats.createString(1152921504606847227L, "ats.SW Enhancement", TEXT_PLAIN, "", Edit, Edit);

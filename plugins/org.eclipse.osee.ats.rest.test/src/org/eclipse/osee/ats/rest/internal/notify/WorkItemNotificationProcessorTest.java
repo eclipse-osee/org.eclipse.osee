@@ -42,7 +42,6 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
-import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.notify.WorkItemNotificationProcessor;
 import org.eclipse.osee.ats.rest.AtsApiServer;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -69,7 +68,6 @@ public class WorkItemNotificationProcessorTest {
    @Mock IAtsTeamWorkflow teamWf;
    @Mock ArtifactToken teamWfArt;
    @Mock IAtsPeerToPeerReview peerReview;
-   @Mock IAtsStateManager stateMgr;
    @Mock Log logger;
    @Mock AtsApiServer atsApiServer;
    @Mock OrcsApi orcsApi;

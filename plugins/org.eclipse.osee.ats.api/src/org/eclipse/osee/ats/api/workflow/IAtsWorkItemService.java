@@ -37,7 +37,6 @@ import org.eclipse.osee.ats.api.workflow.journal.JournalData;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.api.workflow.note.IAtsStateNoteService;
-import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -256,13 +255,6 @@ public interface IAtsWorkItemService {
       return null;
    }
 
-   /**
-    * This method is for backward compatibility and should NOT be used outside core ATS
-    */
-   IAtsStateManager getStateMgr(IAtsWorkItem workItem);
-
-   void internalClearStateManager(IAtsWorkItem workItem);
-
    default public String getWorkflowTitle(IAtsWorkItem workItem, String tabName) {
       String artifactTypeName = workItem.getArtifactTypeName();
       if (workItem.isChangeRequest()) {
@@ -298,7 +290,5 @@ public interface IAtsWorkItemService {
    }
 
    boolean isAllowSiblingCreation(IAtsWorkItem workItem);
-
-   void internalClearCaches();
 
 }

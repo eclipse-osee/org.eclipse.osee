@@ -41,7 +41,6 @@ import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
-import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.util.AtsRelationChange.RelationOperation;
 import org.eclipse.osee.framework.core.data.ArtifactAnnotation;
@@ -380,9 +379,6 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
       }
 
       setAttributeValues(workItem, AtsAttributeTypes.CurrentStateAssignee, newAssigneeIds);
-
-      atsApi.getWorkItemService().getStateMgr(workItem).createOrUpdateState(workItem.getCurrentStateName(),
-         newAssignees);
    }
 
    @Override
@@ -390,9 +386,6 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
       assigneesChanging(workItem);
 
       setAttributeValues(workItem, AtsAttributeTypes.CurrentStateAssignee, Arrays.asList(assignee.getIdString()));
-
-      atsApi.getWorkItemService().getStateMgr(workItem).createOrUpdateState(workItem.getCurrentStateName(),
-         Collections.singleton(assignee));
    }
 
    @Override
@@ -408,9 +401,6 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
       assigneesChanging(workItem);
 
       deleteAttributes(workItem, AtsAttributeTypes.CurrentStateAssignee);
-
-      atsApi.getWorkItemService().getStateMgr(workItem).createOrUpdateState(workItem.getCurrentStateName(),
-         Collections.emptyList());
    }
 
    @Override
@@ -481,10 +471,6 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
       setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateType, startState.getStateType().name());
       setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateName, startState.getName());
       setAssignees(workItem, assignees);
-
-      // Update StateManager for backwards compatibility
-      atsApi.getWorkItemService().getStateMgr(workItem).createOrUpdateState(startState.getName(), assignees);
-      atsApi.getWorkItemService().getStateMgr(workItem).setCurrentState(startState.getName());
    }
 
    @Override
@@ -497,10 +483,6 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
          setAssignees(workItem, toStateAssigees);
       }
       setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateType, toState.getStateType().name());
-
-      // Update StateManager for backwards compatibility
-      atsApi.getWorkItemService().getStateMgr(workItem).createOrUpdateState(toState.getName(), toStateAssigees);
-      atsApi.getWorkItemService().getStateMgr(workItem).setCurrentState(toState.getName());
    }
 
    /////////////////////////////////////////////
@@ -554,11 +536,6 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
          if (atsObject instanceof IAtsWorkItem) {
             IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
 
-            // Update StateManager for backwards compatibility
-            IAtsStateManager stateMgr = atsApi.getWorkItemService().getStateMgr(workItem);
-            Conditions.assertNotNull(stateMgr, "StateManager");
-            stateMgr.writeToStore(this);
-
             if (workItem.getLog().isDirty()) {
                atsApi.getLogFactory().writeToStore(workItem, atsApi.getAttributeResolver(), this);
             }
@@ -581,7 +558,6 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
       for (IAtsObject atsObject : new ArrayList<>(atsObjects)) {
          if (atsObject instanceof IAtsWorkItem) {
             atsApi.getWorkDefinitionService().internalClearWorkDefinition((IAtsWorkItem) atsObject);
-            atsApi.getWorkItemService().internalClearStateManager((IAtsWorkItem) atsObject);
             atsApi.getStoreService().clearCaches((IAtsWorkItem) atsObject);
          }
       }

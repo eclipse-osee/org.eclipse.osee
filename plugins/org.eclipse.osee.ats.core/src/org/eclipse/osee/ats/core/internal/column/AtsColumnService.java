@@ -414,7 +414,6 @@ public class AtsColumnService implements IAtsColumnService {
          legacyIdToId.put("attribute.ats.Category3", AtsAttributeTypes.Category3.getName());
          legacyIdToId.put("attribute.ats.Completed Date", AtsAttributeTypes.CompletedDate.getName());
          legacyIdToId.put("attribute.ats.Created Date", AtsAttributeTypes.CreatedDate.getName());
-         legacyIdToId.put("attribute.ats.Current State", AtsAttributeTypes.CurrentState.getName());
          legacyIdToId.put("attribute.ats.Description", AtsAttributeTypes.Description.getName());
          legacyIdToId.put("attribute.ats.End Date", AtsAttributeTypes.EndDate.getName());
          legacyIdToId.put("attribute.ats.Estimated Completion Date", AtsAttributeTypes.EstimatedCompletionDate.getName());

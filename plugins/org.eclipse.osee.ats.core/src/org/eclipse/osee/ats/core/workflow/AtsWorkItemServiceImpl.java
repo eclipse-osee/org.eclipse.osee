@@ -15,11 +15,9 @@ package org.eclipse.osee.ats.core.workflow;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
@@ -55,7 +53,6 @@ import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsWorkItemHook;
 import org.eclipse.osee.ats.api.workflow.journal.JournalData;
 import org.eclipse.osee.ats.api.workflow.note.IAtsStateNoteService;
-import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
@@ -63,7 +60,6 @@ import org.eclipse.osee.ats.core.agile.AgileBacklog;
 import org.eclipse.osee.ats.core.agile.AgileSprint;
 import org.eclipse.osee.ats.core.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.core.internal.AtsApiService;
-import org.eclipse.osee.ats.core.internal.state.StateManager;
 import org.eclipse.osee.ats.core.review.DecisionReviewOnTransitionToHook;
 import org.eclipse.osee.ats.core.review.PeerReviewOnTransitionToHook;
 import org.eclipse.osee.ats.core.review.hooks.AtsDecisionReviewPrepareWorkItemHook;
@@ -104,7 +100,6 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    public static final String ATS_DEFAULT_JOURNAL_URL = "/ats/ui/action/ID/journal/USERID";
    protected static Set<IAtsWorkItemHook> workflowHooks = new HashSet<>();
    private static Set<IAtsTransitionHook> transitionHooks = null;
-   private static Map<Long, StateManager> idToStateMgr = new HashMap<>();
 
    @Override
    public void addTransitionHook(IAtsTransitionHook hook) {
@@ -825,21 +820,6 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    }
 
    @Override
-   public synchronized IAtsStateManager getStateMgr(IAtsWorkItem workItem) {
-      StateManager stateMgr = idToStateMgr.get(workItem.getId());
-      if (stateMgr == null) {
-         stateMgr = new StateManager(workItem, atsApi);
-         idToStateMgr.put(workItem.getId(), stateMgr);
-      }
-      return stateMgr;
-   }
-
-   @Override
-   public void internalClearStateManager(IAtsWorkItem workItem) {
-      idToStateMgr.remove(workItem.getId());
-   }
-
-   @Override
    public boolean isAllowSiblingCreation(IAtsWorkItem workItem) {
       if (!workItem.getWorkDefinition().getHeaderDef().isShowSiblingLinks()) {
          return false;
@@ -850,11 +830,6 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          }
       }
       return true;
-   }
-
-   @Override
-   public void internalClearCaches() {
-      idToStateMgr.clear();
    }
 
 }

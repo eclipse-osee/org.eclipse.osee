@@ -291,7 +291,6 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
       parentAction = null;
       atsLog = null;
       atsApi.getWorkDefinitionService().internalClearWorkDefinition(this);
-      atsApi.getWorkItemService().internalClearStateManager(this);
    }
 
    @Override

@@ -45,7 +45,6 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
    static {
       xFlatAttributeTypes.add(CoreAttributeTypes.WorkTransition);
       xFlatAttributeTypes.add(CoreAttributeTypes.WorkData);
-      xFlatAttributeTypes.add(AtsAttributeTypes.State);
       xFlatAttributeTypes.add(AtsAttributeTypes.CurrentStateAssignee);
       xFlatAttributeTypes.add(AtsAttributeTypes.BitConfig);
       xFlatAttributeTypes.add(AtsAttributeTypes.CSCI);
