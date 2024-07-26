@@ -108,7 +108,7 @@ public class IcdImportApiImpl implements MimImportApi {
                n -> n.getId().equals(existingSecondaryNode.getId())).findAny().isPresent()).findFirst().orElse(
                   InterfaceConnection.SENTINEL);
       if (!connection.isValid()) {
-         connection = new InterfaceConnection(id, "");
+         connection = new InterfaceConnection(id, primaryNodeName + "_" + secondaryNodeName);
          incrementId();
          connection.setApplicability(ApplicabilityToken.BASE);
          connection.getNodes().add(primaryNode);
