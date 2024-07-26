@@ -281,7 +281,7 @@ public class DispoAnnotationData {
    }
 
    @JsonIgnore
-   public boolean isValid() {
+   public boolean isResolutionValid() {
       return (isConnected || isDefault) && isResolutionValid && isResolutionTypeValid();
    }
 
@@ -317,5 +317,9 @@ public class DispoAnnotationData {
 
    public void setIsRowCovered(boolean isRowCovered) {
       this.isRowCovered = isRowCovered;
+   }
+
+   public boolean isValid() {
+      return !this.equals(DispoAnnotationData.SENTINEL);
    }
 }

@@ -109,7 +109,7 @@ public class CoverageAdapter {
                DispoStrings.Exception_Handling_Resolution) && matchedDiscrepancy != null) {
             madeChange = true;
             DispoAnnotationData annotationToUpdate = findAnnotation(matchedDiscrepancy.getText(), annotations);
-            if (annotationToUpdate == DispoAnnotationData.SENTINEL) {
+            if (!annotationToUpdate.isValid()) {
                annotationToUpdate = new DispoAnnotationData();
                annotationToUpdate.setIndex(annotations.size());
                annotationToUpdate.setLocationRefs(lineNumberFromCoverage);

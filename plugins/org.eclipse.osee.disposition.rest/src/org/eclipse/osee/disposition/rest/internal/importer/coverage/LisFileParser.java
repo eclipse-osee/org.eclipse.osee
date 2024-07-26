@@ -248,7 +248,7 @@ public class LisFileParser implements DispoImporterApi {
             }
             if (uncovered.contains(discrepancy.getLocation())) {
                DispoAnnotationData uncoveredAnnotation = matchOldAnnotation(discrepancy, prevItems, item);
-               if (uncoveredAnnotation != DispoAnnotationData.SENTINEL) {
+               if (uncoveredAnnotation.isValid()) {
                   if (clearCoverage && (uncoveredAnnotation.getResolutionType().equalsIgnoreCase(
                      DispoStrings.Test_Unit_Resolution) || uncoveredAnnotation.getResolutionType().equalsIgnoreCase(
                         Exception_Handling_Resolution))) {
@@ -298,7 +298,7 @@ public class LisFileParser implements DispoImporterApi {
                discrepancies.remove(matchingDiscrepancyF.getId());
 
                DispoAnnotationData prevAnnotation = matchOldAnnotation(matchingDiscrepancyF, prevItems, item);
-               if (prevAnnotation != DispoAnnotationData.SENTINEL && !prevAnnotation.getResolutionType().equalsIgnoreCase(
+               if (prevAnnotation.isValid() && !prevAnnotation.getResolutionType().equalsIgnoreCase(
                   DispoStrings.Test_Unit_Resolution) && !prevAnnotation.getResolutionType().equalsIgnoreCase(
                      DispoStrings.Exception_Handling_Resolution)) {
                   lastManualResolutionType = prevAnnotation.getResolutionType();
@@ -314,7 +314,7 @@ public class LisFileParser implements DispoImporterApi {
          if (matchingDiscrepancy != null) {
 
             DispoAnnotationData prevAnnotation = matchOldAnnotation(matchingDiscrepancy, prevItems, item);
-            if (prevAnnotation != null && !prevAnnotation.getResolutionType().equalsIgnoreCase(
+            if (prevAnnotation != DispoAnnotationData.SENTINEL && !prevAnnotation.getResolutionType().equalsIgnoreCase(
                DispoStrings.Test_Unit_Resolution) && !prevAnnotation.getResolutionType().equalsIgnoreCase(
                   DispoStrings.Exception_Handling_Resolution)) {
                lastManualResolutionType = prevAnnotation.getResolutionType();
@@ -878,7 +878,7 @@ public class LisFileParser implements DispoImporterApi {
             item.setDiscrepanciesList(discrepancies);
 
             DispoAnnotationData prevAnnotation = matchOldAnnotation(matchingDiscrepancy, prevItems, item);
-            if (prevAnnotation != DispoAnnotationData.SENTINEL && !prevAnnotation.getResolutionType().equalsIgnoreCase(
+            if (prevAnnotation.isValid() && !prevAnnotation.getResolutionType().equalsIgnoreCase(
                DispoStrings.Test_Unit_Resolution) && !prevAnnotation.getResolutionType().equalsIgnoreCase(
                   DispoStrings.Exception_Handling_Resolution)) {
                lastManualResolutionType = prevAnnotation.getResolutionType();
@@ -909,7 +909,7 @@ public class LisFileParser implements DispoImporterApi {
             item.setDiscrepanciesList(discrepancies);
 
             DispoAnnotationData prevAnnotation = matchOldAnnotation(matchingDiscrepancy, prevItems, item);
-            if (prevAnnotation != DispoAnnotationData.SENTINEL && !prevAnnotation.getResolutionType().equalsIgnoreCase(
+            if (prevAnnotation.isValid() && !prevAnnotation.getResolutionType().equalsIgnoreCase(
                DispoStrings.Test_Unit_Resolution) && !prevAnnotation.getResolutionType().equalsIgnoreCase(
                   DispoStrings.Exception_Handling_Resolution)) {
                lastManualResolutionType = prevAnnotation.getResolutionType();
@@ -949,7 +949,7 @@ public class LisFileParser implements DispoImporterApi {
             if (matchingDiscrepancy != null) {
 
                DispoAnnotationData prevAnnotation = matchOldAnnotation(matchingDiscrepancy, prevItems, item);
-               if (prevAnnotation != DispoAnnotationData.SENTINEL && !prevAnnotation.getResolutionType().equalsIgnoreCase(
+               if (prevAnnotation.isValid() && !prevAnnotation.getResolutionType().equalsIgnoreCase(
                   DispoStrings.Test_Unit_Resolution) && !prevAnnotation.getResolutionType().equalsIgnoreCase(
                      DispoStrings.Exception_Handling_Resolution)) {
                   lastManualResolutionType = prevAnnotation.getResolutionType();

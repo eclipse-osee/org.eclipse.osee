@@ -182,7 +182,7 @@ public final class DispoUtil {
          if (!annotationData.getIdsOfCoveredDiscrepancies().isEmpty()) {
             annotation.setIdsOfCoveredDiscrepancies(annotationData.getIdsOfCoveredDiscrepancies());
          }
-         annotation.setIsConnected(Optional.ofNullable(annotationData.isValid()).get());
+         annotation.setIsConnected(Optional.ofNullable(annotationData.isResolutionValid()).get());
          annotation.setDeveloperNotes(Optional.ofNullable(annotationData.getDeveloperNotes()).get());
          annotation.setCustomerNotes(Optional.ofNullable(annotationData.getCustomerNotes()).get());
          annotation.setResolution(Optional.ofNullable(annotationData.getResolution()).get());
