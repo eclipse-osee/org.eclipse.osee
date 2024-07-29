@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Osee Ats Api (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ats.api;singleton:=true
+Automatic-Module-Name: org.eclipse.osee.ats.api
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment

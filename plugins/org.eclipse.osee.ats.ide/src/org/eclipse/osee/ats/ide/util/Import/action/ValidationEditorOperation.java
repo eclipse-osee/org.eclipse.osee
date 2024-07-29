@@ -76,8 +76,8 @@ public class ValidationEditorOperation {
                XViewerAlign.Left, true, SortDataType.String, false, ""));
             columns.add(new XViewerColumn(ActionColumns.Version.name(), ActionColumns.Version.name(), 80,
                XViewerAlign.Left, true, SortDataType.String, false, ""));
-            columns.add(new XViewerColumn(ActionColumns.EstimatedHours.name(), ActionColumns.EstimatedHours.name(),
-               40, XViewerAlign.Left, true, SortDataType.Integer, false, ""));
+            columns.add(new XViewerColumn(ActionColumns.EstimatedHours.name(), ActionColumns.EstimatedHours.name(), 40,
+               XViewerAlign.Left, true, SortDataType.Integer, false, ""));
             columns.add(new XViewerColumn(ActionColumns.AgilePoints.name(), ActionColumns.AgilePoints.name(), 40,
                XViewerAlign.Left, true, SortDataType.Integer, false, ""));
             columns.add(new XViewerColumn(ActionColumns.AgileTeamName.name(), ActionColumns.AgileTeamName.name(), 80,

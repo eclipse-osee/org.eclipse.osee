@@ -2,7 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ATS Core Test
 Bundle-SymbolicName: org.eclipse.osee.ats.core.test;singleton:=true
-Bundle-ActivationPolicy: lazy
+Automatic-Module-Name: org.eclipse.osee.ats.core.test
+undle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
 Fragment-Host: org.eclipse.osee.ats.core
 Bundle-RequiredExecutionEnvironment: JavaSE-11

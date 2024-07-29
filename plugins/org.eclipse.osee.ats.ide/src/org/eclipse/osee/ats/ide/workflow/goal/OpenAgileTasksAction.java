@@ -103,10 +103,10 @@ public class OpenAgileTasksAction extends Action {
 
          card = card.replaceFirst("PUT_ATSID_HERE",
             AtsApiService.get().getColumnService().getColumnText(AtsColumnTokensDefault.AtsIdColumn, workItem));
-         card = card.replaceFirst("PUT_AI_HERE",
-            AtsApiService.get().getColumnService().getColumnText(AtsColumnTokensDefault.ActionableItemsColumn, workItem));
-         card = card.replaceFirst("PUT_VERSION_HERE",
-            AtsApiService.get().getColumnService().getColumnText(AtsColumnTokensDefault.TargetedVersionColumn, workItem));
+         card = card.replaceFirst("PUT_AI_HERE", AtsApiService.get().getColumnService().getColumnText(
+            AtsColumnTokensDefault.ActionableItemsColumn, workItem));
+         card = card.replaceFirst("PUT_VERSION_HERE", AtsApiService.get().getColumnService().getColumnText(
+            AtsColumnTokensDefault.TargetedVersionColumn, workItem));
       }
       return card;
    }

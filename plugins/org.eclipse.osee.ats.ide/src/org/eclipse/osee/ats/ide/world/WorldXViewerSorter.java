@@ -46,10 +46,10 @@ public class WorldXViewerSorter extends XViewerSorter {
 
          if (sortXCol.equals(AssigneeColumnUI.getInstance())) {
             int compareInt = getComparator().compare(
-               AtsApiService.get().getColumnService().getColumnText(AtsColumnTokensDefault.AssigneeColumn, m1).replaceFirst(
-                  "\\(", ""),
-               AtsApiService.get().getColumnService().getColumnText(AtsColumnTokensDefault.AssigneeColumn, m2).replaceFirst(
-                  "\\(", ""));
+               AtsApiService.get().getColumnService().getColumnText(AtsColumnTokensDefault.AssigneeColumn,
+                  m1).replaceFirst("\\(", ""),
+               AtsApiService.get().getColumnService().getColumnText(AtsColumnTokensDefault.AssigneeColumn,
+                  m2).replaceFirst("\\(", ""));
             return getCompareBasedOnDirection(sortXCol, compareInt, viewer, o1, o2, sortXColIndex);
          }
          return super.compare(viewer, o1, o2, sortXColIndex);

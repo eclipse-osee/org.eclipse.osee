@@ -62,7 +62,7 @@ public class CreateAtsBaselineBranchBlam extends AbstractBlam {
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
 
-      BranchToken parentBranch = (BranchToken) variableMap.getBranch(PARENT_BRANCH);
+      BranchToken parentBranch = variableMap.getBranch(PARENT_BRANCH);
       if (parentBranch == null) {
          log("Must select Parent Branch");
          return;

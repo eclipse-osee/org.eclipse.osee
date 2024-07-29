@@ -77,7 +77,8 @@ public class WfeGoalSection {
 
       if (admin) {
          new XButtonViaAction(
-            new OpenWebViewJsonPublishedAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(sectionBody, 2);
+            new OpenWebViewJsonPublishedAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(sectionBody,
+               2);
       }
 
       new XButtonViaAction(new OpenWebViewPublishedAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(

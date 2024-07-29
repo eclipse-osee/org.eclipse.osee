@@ -32,12 +32,9 @@ public class ListAndBulletRule extends AbstractValidationRule {
 
    private final WorkType workType;
 
-   private final String formattingInstructionUrl;
-
-   public ListAndBulletRule(WorkType workType, AtsApi atsApi, String formattingInstructionUrl) {
+   public ListAndBulletRule(WorkType workType, AtsApi atsApi) {
       super(atsApi);
       this.workType = workType;
-      this.formattingInstructionUrl = formattingInstructionUrl;
    }
 
    @Override

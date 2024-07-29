@@ -35,14 +35,11 @@ public class ArchiveCommitedBranches extends AbstractAtsAction {
 
    private static final String MSG = "Archive Branch(es)";
    private final ISelectedAtsArtifacts selectedAtsArtifacts;
-   private boolean prompt = true;
-   private final boolean executeInCurrentThread;
 
-   public ArchiveCommitedBranches(ISelectedAtsArtifacts selectedAtsArtifacts, boolean executeInCurrentThread) {
+   public ArchiveCommitedBranches(ISelectedAtsArtifacts selectedAtsArtifacts) {
       super(MSG, ImageManager.getImageDescriptor(FrameworkImage.ARCHIVE));
       this.selectedAtsArtifacts = selectedAtsArtifacts;
       setToolTipText(getText());
-      this.executeInCurrentThread = executeInCurrentThread;
    }
 
    @Override
@@ -100,7 +97,4 @@ public class ArchiveCommitedBranches extends AbstractAtsAction {
       XResultDataUI.report(rd, getText());
    }
 
-   public void setPrompt(boolean prompt) {
-      this.prompt = prompt;
-   }
 }

@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
-import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -69,7 +67,7 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class AgileFeatureGroupColumnUI extends BackgroundLoadingPreComputedColumnUI implements IAtsWorldArtifactEventColumn, IAltLeftClickProvider, IMultiColumnEditProvider {
+public class AgileFeatureGroupColumnUI extends BackgroundLoadingPreComputedColumnUI implements IAtsWorldArtifactEventColumn {
 
    public static AgileFeatureGroupColumnUI instance = new AgileFeatureGroupColumnUI();
    private boolean preloaded = false;
