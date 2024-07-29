@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.demo;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.demo.DemoWorkflowTitles;
 import org.eclipse.osee.ats.api.review.DecisionReviewState;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.review.PeerToPeerReviewState;
@@ -70,7 +71,7 @@ public class Pdd92CreateDemoReviewsTest implements IPopulateDemoDatabaseTest {
       }
       Assert.assertNotNull(rev1);
       Assert.assertNotNull(rev2);
-      testReviewContents(rev1, "2 - Peer Review algorithm used in code", PeerToPeerReviewState.Review.getName(),
+      testReviewContents(rev1, DemoWorkflowTitles.PEER_REVIEW_2, PeerToPeerReviewState.Review.getName(),
          new String[] {DemoUsers.Joe_Smith.getName(), DemoUsers.Kay_Jones.getName()});
       testReviewContents(rev2, "1 - Peer Review first set of code changes", PeerToPeerReviewState.Prepare.getName(),
          new String[] {AtsCoreUsers.UNASSIGNED_USER.getName()});

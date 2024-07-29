@@ -157,4 +157,8 @@ public class UserRole {
    public void setDuplicateUser(Boolean duplicateUser) {
       this.duplicateUser = duplicateUser;
    }
+
+   public void addHoursSpent(double additionalHoursSpent) {
+      setHoursSpent(this.hoursSpent + additionalHoursSpent);
+   }
 }

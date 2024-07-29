@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.demo.DemoWorkflowTitles;
 import org.eclipse.osee.ats.api.review.DecisionReviewState;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
@@ -112,7 +113,7 @@ public class Pdd92CreateDemoReviews {
       // Create PeerToPeer review 2 and transition to Review state
       PeerToPeerReviewArtifact reviewArt2 =
          (PeerToPeerReviewArtifact) AtsApiService.get().getReviewService().createNewPeerToPeerReview(firstCodeArt,
-            "2 - Peer Review algorithm used in code", firstCodeArt.getCurrentStateName(), changes);
+            DemoWorkflowTitles.PEER_REVIEW_2, firstCodeArt.getCurrentStateName(), changes);
       changes.setSoleAttributeValue((ArtifactId) reviewArt2, AtsAttributeTypes.Description, "description");
 
       Result result1 = AtsApiService.get().getReviewService().transitionTo(reviewArt2, PeerToPeerReviewState.Review,

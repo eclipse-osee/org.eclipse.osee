@@ -112,4 +112,6 @@ public interface IAtsReviewService {
 
    boolean isFormalReview(IAtsWorkItem workItem);
 
+   void updateHoursSpentRoles(IAtsPeerToPeerReview peerRev, IAtsChangeSet changes);
+
 }

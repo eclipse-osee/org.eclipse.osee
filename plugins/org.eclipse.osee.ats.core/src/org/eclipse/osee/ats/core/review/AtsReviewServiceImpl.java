@@ -613,4 +613,13 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
          atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.ReviewFormalType, "")));
    }
 
+   @Override
+   public void updateHoursSpentRoles(IAtsPeerToPeerReview peerRev, IAtsChangeSet changes) {
+      double hoursSpent = 0.0;
+      for (UserRole role : peerRev.getRoleManager().getUserRoles()) {
+         hoursSpent += role.getHoursSpent() == null ? 0 : role.getHoursSpent();
+      }
+      AtsApiService.get().getWorkItemMetricsService().setHoursSpentRoles(peerRev, hoursSpent, changes);
+   }
+
 }

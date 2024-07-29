@@ -16,6 +16,7 @@ import java.util.Date;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
@@ -25,11 +26,13 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
  */
 public interface IAtsWorkItemMetricsService {
 
-   void updateMetrics(IAtsWorkItem workItem, IStateToken state, double additionalHours, int percentComplete, boolean logMetrics, AtsUser user, IAtsChangeSet changes);
+   void updateMetrics(IAtsWorkItem workItem, IStateToken state, double additionalHoursWorkflow, int percentComplete,
+      boolean logMetrics, AtsUser user, IAtsChangeSet changes);
 
-   void setMetrics(IAtsWorkItem workItem, double hours, int percentComplete, boolean logMetrics, AtsUser user, Date date, IAtsChangeSet changes);
+   void setMetrics(IAtsWorkItem workItem, double hoursSpentWorkflow, int percentComplete, boolean logMetrics,
+      AtsUser user, Date date, IAtsChangeSet changes);
 
-   void setHoursSpent(IAtsWorkItem workItem, double hoursSpent, IAtsChangeSet changes);
+   void setHoursSpentWorkflow(IAtsWorkItem workItem, double hoursSpent, IAtsChangeSet changes);
 
    Integer getPercentComplete(IAtsWorkItem workItem);
 
@@ -37,9 +40,13 @@ public interface IAtsWorkItemMetricsService {
 
    void logMetrics(IAtsWorkItem workItem, IStateToken state, AtsUser user, Date date, IAtsChangeSet changes);
 
-   void logMetrics(IAtsWorkItem workItem, String percent, String hours, IStateToken state, AtsUser user, Date date, IAtsChangeSet changes);
+   void logMetrics(IAtsWorkItem workItem, String percent, String hours, IStateToken state, AtsUser user, Date date,
+      IAtsChangeSet changes);
 
-   double getHoursSpent(IAtsWorkItem workItem);
+   /**
+    * @return hours spent as stored in workflow attribute
+    */
+   double getHoursSpentWorkflow(IAtsWorkItem workItem);
 
    double getHoursSpentTotal(IAtsObject atsObject);
 
@@ -59,5 +66,12 @@ public interface IAtsWorkItemMetricsService {
     * percent = all state's percents / number of states (minus completed/canceled)
     */
    int getPercentCompleteTotal(IAtsObject atsObject);
+
+   /**
+    * @return hours spent as stored in peer review roles attribute
+    */
+   double getHoursSpentRoles(IAtsPeerToPeerReview peerRev);
+
+   void setHoursSpentRoles(IAtsPeerToPeerReview peerRev, double hoursSpent, IAtsChangeSet changes);
 
 }

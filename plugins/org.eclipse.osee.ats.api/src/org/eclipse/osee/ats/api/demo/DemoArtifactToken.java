@@ -273,6 +273,9 @@ public final class DemoArtifactToken {
    public static final ArtifactToken ProblemInTree_TeamWf = ArtifactToken.valueOf(789987789, DemoWorkflowTitles.PROBLEM_IN_TREE, COMMON, AtsArtifactTypes.DemoTestTeamWorkflow);
    public static final ArtifactToken ProblemWithTheGraphView_TeamWf = ArtifactToken.valueOf(431354978, DemoWorkflowTitles.PROBLEM_WITH_THE_GRAPH_VIEW_ACTION, COMMON, AtsArtifactTypes.DemoReqTeamWorkflow);
    public static final ArtifactToken ProblemWithTheUserWindow_TeamWf = ArtifactToken.valueOf(456794312, DemoWorkflowTitles.PROBLEM_WITH_THE_USER_WINDOW, COMMON, AtsArtifactTypes.TeamWorkflow);
+
+
+   public static final ArtifactToken PeerReview2 = ArtifactToken.valueOf(414911237L, DemoWorkflowTitles.PEER_REVIEW_2, COMMON, AtsArtifactTypes.TeamWorkflow);
    // @formatter:on
 
    private DemoArtifactToken() {
