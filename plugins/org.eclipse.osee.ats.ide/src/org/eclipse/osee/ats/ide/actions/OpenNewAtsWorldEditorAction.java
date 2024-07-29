@@ -13,11 +13,10 @@
 
 package org.eclipse.osee.ats.ide.actions;
 
-import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.util.AtsImage;
-import org.eclipse.osee.ats.ide.world.IWorldEditorProvider;
+import org.eclipse.osee.ats.ide.world.WorldComposite;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -25,29 +24,19 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  */
 public class OpenNewAtsWorldEditorAction extends AbstractAtsAction {
 
-   private final IOpenNewAtsWorldEditorHandler openNewAtsWorldEditorHandler;
+   private final WorldComposite worldComposite;
 
-   public OpenNewAtsWorldEditorAction(IOpenNewAtsWorldEditorHandler openNewAtsWorldEditorHandler) {
+   public OpenNewAtsWorldEditorAction(WorldComposite worldComposite) {
       super();
-      this.openNewAtsWorldEditorHandler = openNewAtsWorldEditorHandler;
+      this.worldComposite = worldComposite;
       setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.GLOBE));
       setToolTipText("Open in ATS World Editor");
    }
 
-   public interface IOpenNewAtsWorldEditorHandler {
-      IWorldEditorProvider getWorldEditorProviderCopy();
-
-      CustomizeData getCustomizeDataCopy();
-   }
-
    @Override
    public void runWithException() {
-      IWorldEditorProvider provider = openNewAtsWorldEditorHandler.getWorldEditorProviderCopy();
-      if (provider != null) {
-         provider.setCustomizeData(openNewAtsWorldEditorHandler.getCustomizeDataCopy());
-         provider.setTableLoadOptions(TableLoadOption.NoUI);
-         WorldEditor.open(provider);
-      }
+      WorldEditor.open(new WorldEditorSimpleProvider("ATS World", worldComposite.getLoadedArtifacts(),
+         worldComposite.getCustomizeDataCopy()));
    }
 
 }
