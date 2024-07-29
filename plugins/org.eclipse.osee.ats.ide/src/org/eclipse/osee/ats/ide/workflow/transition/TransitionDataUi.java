@@ -18,6 +18,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.model.LayoutItem;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
@@ -27,6 +28,7 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.CancelledReasonEnumDialog;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.UserListDialog;
+import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -111,7 +113,15 @@ public class TransitionDataUi {
             // Else if not assignee, choose from assignees or current user
             else if (!workItem.getAssignees().contains(currUser)) {
                users.addAll(workItem.getAssignees());
-               users.add(currUser);
+               users.remove(AtsCoreUsers.UNASSIGNED_USER);
+               // Prompt to select if UnAssigned
+               if (users.isEmpty()) {
+                  users.addAll(atsApi.getUserService().getUsers(Active.Active));
+               }
+               // Else prompt for any assignee or current user
+               else {
+                  users.add(currUser);
+               }
                title = "Not Assignee; Select Transition-By User";
             }
             if (!users.isEmpty()) {
