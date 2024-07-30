@@ -4,11 +4,12 @@ on:
   push:
     branches:
       - main
+      - ghServerConatiner # REMOVE BEFORE MERGING
     paths:
       - '.github/docker/osee-server/**'
   schedule:
     - cron: '0 0 * * *'
-    
+
 concurrency:
   group: ${{ github.ref }}-${{ github.workflow }}
   cancel-in-progress: true
