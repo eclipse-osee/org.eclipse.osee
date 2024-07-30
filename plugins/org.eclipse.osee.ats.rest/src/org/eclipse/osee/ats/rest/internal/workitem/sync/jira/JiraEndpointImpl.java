@@ -37,6 +37,7 @@ public class JiraEndpointImpl implements JiraEndpoint {
    private final AtsApi atsApi;
    static final String JIRA_SEARCH = "/rest/api/2/search";
    static final String JIRA_ISSUE = "/rest/api/2/issue";
+   static final String JIRA_ISSUE_LINK = "/rest/api/2/issueLink";
 
    Pattern TOTAL_RESULTS = Pattern.compile("\"total\":\\s*([0-9]+)");
    Pattern MAX_RESULTS = Pattern.compile("\"maxResults\":\\s*([0-9]+)");
@@ -67,6 +68,12 @@ public class JiraEndpointImpl implements JiraEndpoint {
    public String editJira(String jsonPayload, String issueId) {
       String urlExtension = JIRA_ISSUE + "/" + issueId;
       return sendJiraRequest(jsonPayload, urlExtension, "PUT");
+   }
+
+   @Override
+   public String createJiraIssueLink(String jsonPayload) {
+      String urlExtension = JIRA_ISSUE_LINK;
+      return sendJiraRequest(jsonPayload, urlExtension, "POST");
    }
 
    private String sendJiraRequest(String jsonPayload, String urlExtension, String requestMethod) {

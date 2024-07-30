@@ -74,4 +74,17 @@ public interface JiraEndpoint {
    @Path("{issueId}/edit")
    @Consumes(MediaType.APPLICATION_JSON)
    public String editJira(@Encoded String jsonPayload, @PathParam("issueId") String issueId);
+
+   /**
+    * Takes a Json query and uses it to create an issue link in Jira.
+    *
+    * @author Stephen J. Molaro
+    * @param @Encoded String jsonPayload - Json query to create issue link in Jira. Format can be found at
+    * https://docs.atlassian.com/software/jira/docs/api/REST/8.9.1/
+    */
+   @POST
+   @Path("issueLink")
+   @Consumes(MediaType.APPLICATION_JSON)
+   public String createJiraIssueLink(@Encoded String jsonPayload);
+
 }
