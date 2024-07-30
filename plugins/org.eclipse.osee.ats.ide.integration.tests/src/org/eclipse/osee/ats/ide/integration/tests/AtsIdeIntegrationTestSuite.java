@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.ide.integration.tests.orcs.rest.applic.OrcsRestTestS
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.SkynetCoreIntegrationTestSuite;
 import org.eclipse.osee.ats.ide.integration.tests.synchronization.SynchronizationTestSuite;
 import org.eclipse.osee.ats.ide.integration.tests.ui.skynet.SkynetUiCoreIntegrationTestSuite;
+import org.eclipse.osee.ats.ide.integration.tests.ui.skynet.cloumn.SkynetUiColumnTestSuite;
 import org.eclipse.osee.ats.ide.integration.tests.util.DbInitTest;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime.Units;
@@ -45,6 +46,7 @@ import org.junit.runners.Suite;
     * search counts are used from populate and need to remain the same.
     */
    AtsTest_AllAts_Suite.class,
+   SkynetUiColumnTestSuite.class,
    DefineIntegrationTestSuite.class,
    ParallelTestSuite.class,
    FrameworkAccess_Suite.class,

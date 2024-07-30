@@ -58,7 +58,6 @@ public class AtsWorkItemMetricsServiceImplTest {
       changes.execute();
 
       hoursSpentWorkflow = metricsService.getHoursSpentWorkflow(rev);
-      System.err.println(hoursSpentWorkflow);
       Assert.assertEquals(3.4, hoursSpentWorkflow, 0.000);
       hoursSpentRoles = metricsService.getHoursSpentRoles(rev);
       Assert.assertEquals(2.0, hoursSpentRoles, 0.00);

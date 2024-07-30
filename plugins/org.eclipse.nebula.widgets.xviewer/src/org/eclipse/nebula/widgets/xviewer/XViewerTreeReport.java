@@ -5,7 +5,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,7 +17,6 @@ package org.eclipse.nebula.widgets.xviewer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.nebula.widgets.xviewer.util.internal.HtmlUtil;
@@ -81,7 +80,8 @@ public class XViewerTreeReport extends XViewerHtmlReport {
       return sb.toString();
    }
 
-   private void addRow(TreeItem item, List<String[]> rowData, IXViewerLabelProvider labelProv, List<XViewerColumn> showCols, int level) throws XViewerException {
+   private void addRow(TreeItem item, List<String[]> rowData, IXViewerLabelProvider labelProv,
+      List<XViewerColumn> showCols, int level) throws XViewerException {
       List<String> cellData = new ArrayList<>(showCols.size());
       boolean firstCell = true;
       for (XViewerColumn xCol : showCols) {
@@ -93,7 +93,10 @@ public class XViewerTreeReport extends XViewerHtmlReport {
             firstCell = false;
          }
          str.append(labelProv.getColumnText(item.getData(), xColToColumnIndex.get(xCol)));
-         String html = HtmlUtil.textToHtml(str.toString());
+         String html = xCol.getTreeViewHtml(str.toString());
+         if (html == null) {
+            html = HtmlUtil.textToHtml(str.toString());
+         }
          html = html.replaceAll("__INSERT_TAB_HERE__", "&nbsp;&nbsp;&nbsp;&nbsp;"); //$NON-NLS-1$ //$NON-NLS-2$
          cellData.add(html);
       }
