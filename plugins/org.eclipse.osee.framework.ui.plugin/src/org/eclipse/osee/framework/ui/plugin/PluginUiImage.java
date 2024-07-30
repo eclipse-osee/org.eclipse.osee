@@ -29,6 +29,7 @@ public enum PluginUiImage implements KeyedImage {
    CHECKBOX_ENABLED("chkbox_enabled.gif"),
    CHECKBOX_DISABLED("chkbox_disabled.gif"),
    OSEE_16("osee_16.png"),
+   SHADED("shaded.gif"),
    URL("www.gif"),
    GEAR("gear.gif");
 

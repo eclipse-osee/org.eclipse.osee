@@ -45,6 +45,7 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
    private final HistoryXViewer historyXViewer;
    private static Color lightGreyColor;
    private final Map<Object, Image> objectToImage = new HashMap<>(500);
+   private boolean shadeTransaction = false;
    private static Image transactionImage = null;
 
    public XHistoryLabelProvider(HistoryXViewer historyXViewer) {
@@ -172,7 +173,11 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
          Change change = (Change) element;
          long transactionId = change.getTxDelta().getEndTx().getId();
          if (historyXViewer.getXHistoryViewer().isShaded(transactionId)) {
-            return getLightGreyColor();
+            if ((shadeTransaction || historyXViewer.isSearch()) && columnIndex == 0) {
+               return getLightGreyColor();
+            } else if (!shadeTransaction && !historyXViewer.isSearch()) {
+               return getLightGreyColor();
+            }
          }
       }
       return super.getBackground(element, columnIndex);
@@ -190,6 +195,10 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
          Image result = ArtifactImageManager.getChangeTypeImage(change);
          objectToImage.put(change, result);
       }
+   }
+
+   public void toggleShadeTransaction() {
+      shadeTransaction = !shadeTransaction;
    }
 
 }

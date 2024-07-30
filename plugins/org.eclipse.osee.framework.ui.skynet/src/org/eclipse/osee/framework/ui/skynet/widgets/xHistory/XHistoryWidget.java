@@ -167,10 +167,20 @@ public class XHistoryWidget extends GenericXWidget {
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       toolBar.setLayoutData(gd);
 
-      ToolItem item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(ImageManager.getImage(PluginUiImage.REFRESH));
-      item.setToolTipText("Refresh");
-      item.addSelectionListener(new SelectionAdapter() {
+      ToolItem toggleShadingItem = new ToolItem(toolBar, SWT.PUSH);
+      toggleShadingItem.setImage(ImageManager.getImage(PluginUiImage.SHADED));
+      toggleShadingItem.setToolTipText("Toggle Shading from Line to Transaction cell");
+      toggleShadingItem.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            ((XHistoryLabelProvider) xHistoryViewer.getLabelProvider()).toggleShadeTransaction();
+            xHistoryViewer.refresh();
+         }
+      });
+      ToolItem refreshItem = new ToolItem(toolBar, SWT.PUSH);
+      refreshItem.setImage(ImageManager.getImage(PluginUiImage.REFRESH));
+      refreshItem.setToolTipText("Refresh");
+      refreshItem.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
             setInputData(artifact, true);
@@ -214,10 +224,10 @@ public class XHistoryWidget extends GenericXWidget {
          }
       });
 
-      item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(ImageManager.getImage(FrameworkImage.OPEN));
-      item.setToolTipText("Load by Artifact ID");
-      item.addSelectionListener(new SelectionAdapter() {
+      refreshItem = new ToolItem(toolBar, SWT.PUSH);
+      refreshItem.setImage(ImageManager.getImage(FrameworkImage.OPEN));
+      refreshItem.setToolTipText("Load by Artifact ID");
+      refreshItem.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
             EntryDialogWithBranchSelect dialog =
