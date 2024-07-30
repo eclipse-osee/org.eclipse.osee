@@ -17,19 +17,30 @@ inputs:
     description: 'Whether or not to skip the OSEE Angular build.'
     required: false
     default: 'false'
+  SKIP_ANGULAR_TESTS:
+    description: 'Whether or not to skip the OSEE Angular tests.'
+    required: false
+    default: 'false'
   SKIP_JAVA_BUILD:
     description: 'Whether or not to skip the OSEE Java build.'
     required: false
     default: 'false'
-
+  SKIP_JAVA_TESTS:
+    description: 'Whether or not to skip the OSEE Java tests.'
+    required: false
+    default: 'false'
+  SKIP_PRODUCT_BUILD:
+    description: 'Whether or not to skip the OSEE product build.'
+    required: false
+    default: 'false'
 
 runs:
   using: 'composite'
   steps:
-    - name: Set environment variables
+    - name: Set Environment Variables
       shell: bash
       run: |
-        : Set environment variables
+        : Set Environment Variables
         echo "MAVEN_OPTS=-Dmaven.repo.local=${GITHUB_WORKSPACE}/.m2/repository" >> $GITHUB_ENV
         echo "MAVEN_CLI_OPTS=--batch-mode --errors --quiet --no-transfer-progress -Dhttps.protocols=TLSv1.2 -Djavax.net.ssl.trustStore=${GITHUB_WORKSPACE}/keystore.jks -Djavax.net.ssl.trustStorePassword=secret -Dorg.slf4j.simpleLogger.showDateTime=true -Dorg.slf4j.simpleLogger.dateTimeFormat=HH:mm:ss,SSS" >> $GITHUB_ENV
         echo "_JAVA_OPTIONS=-Xms9G -Xmx9G -XX:MaxMetaspaceSize=4G" >> $GITHUB_ENV
@@ -56,14 +67,6 @@ runs:
         key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
         restore-keys: |
           ${{ runner.os }}-pnpm-store-
-
-    - name: Download IP Zip From GitHub
-      shell: bash
-      run: |
-        : Download IP Zip From GitHub
-        mkdir ${GITHUB_WORKSPACE}/Latest_Zip_And_Cert
-        cd Latest_Zip_And_Cert
-        curl -kLJO https://raw.githubusercontent.com/Louie-Maven/ip/main/org.eclipse.ip.p2-1.0.0.zip
 
     - name: Update OSEE Version
       if: inputs.OSEE_VERSION != 'no_update'
@@ -117,7 +120,8 @@ runs:
       shell: bash
       run: |
         : Grab General Certs
-        cd ${GITHUB_WORKSPACE}/Latest_Zip_And_Cert
+        mkdir ${GITHUB_WORKSPACE}/Latest_Certs
+        cd ${GITHUB_WORKSPACE}/Latest_Certs
         openssl s_client -connect eclipse.org:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > eclipse-org.pem
         openssl s_client -connect s3.amazonaws.com:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > s3-amazonaws-com.pem
         openssl s_client -connect api.adoptium.net:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > api-adoptium-net.pem
@@ -125,18 +129,22 @@ runs:
         openssl s_client -connect raw.githubusercontent.com:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > githubusercontent.pem
         openssl s_client -connect repo.maven.apache.org:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > repo-maven-apache-org.pem
         openssl s_client -connect oss.sonatype.org:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > oss-sonatype-org.pem
+        openssl s_client -connect nodejs.org:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > nodejs-org.pem
+        openssl s_client -connect registry.npmjs.org:443 -showcerts | sed -n '/-----BEGIN/,/-----END/p' > npmjs-org.pem
 
     - name: Add General Certs
       shell: bash
       run: |
         : Add General Certs
-        keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias eclipsePem -file ${GITHUB_WORKSPACE}/Latest_Zip_And_Cert/eclipse-org.pem -noprompt
-        keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias s3Pem -file ${GITHUB_WORKSPACE}/Latest_Zip_And_Cert/s3-amazonaws-com.pem -noprompt
-        keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias adoptiumPem -file ${GITHUB_WORKSPACE}/Latest_Zip_And_Cert/api-adoptium-net.pem -noprompt
-        keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias githubPem -file ${GITHUB_WORKSPACE}/Latest_Zip_And_Cert/github-com.pem -noprompt
-        keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias githubUserContentPem -file ${GITHUB_WORKSPACE}/Latest_Zip_And_Cert/githubusercontent.pem -noprompt
-        keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias repoMavenPem -file ${GITHUB_WORKSPACE}/Latest_Zip_And_Cert/repo-maven-apache-org.pem -noprompt
-        keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias ossSonyatypePem -file ${GITHUB_WORKSPACE}/Latest_Zip_And_Cert/oss-sonatype-org.pem -noprompt
+        keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias eclipsePem -file ${GITHUB_WORKSPACE}/Latest_Certs/eclipse-org.pem -noprompt
+        keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias s3Pem -file ${GITHUB_WORKSPACE}/Latest_Certs/s3-amazonaws-com.pem -noprompt
+        keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias adoptiumPem -file ${GITHUB_WORKSPACE}/Latest_Certs/api-adoptium-net.pem -noprompt
+        keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias githubPem -file ${GITHUB_WORKSPACE}/Latest_Certs/github-com.pem -noprompt
+        keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias githubUserContentPem -file ${GITHUB_WORKSPACE}/Latest_Certs/githubusercontent.pem -noprompt
+        keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias repoMavenPem -file ${GITHUB_WORKSPACE}/Latest_Certs/repo-maven-apache-org.pem -noprompt
+        keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias ossSonyatypePem -file ${GITHUB_WORKSPACE}/Latest_Certs/oss-sonatype-org.pem -noprompt
+        keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias nodejsPem -file ${GITHUB_WORKSPACE}/Latest_Certs/nodejs-org.pem -noprompt
+        keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias npmjsPem -file ${GITHUB_WORKSPACE}/Latest_Certs/npmjs-org.pem -noprompt
 
     - name: Set Angular Build Information
       if: inputs.SKIP_ANGULAR_BUILD == 'false'
@@ -160,7 +168,7 @@ runs:
         pnpm install --prefer-offline
 
     - name: osee.web Testing
-      if: inputs.SKIP_ANGULAR_BUILD == 'false'
+      if: inputs.SKIP_ANGULAR_BUILD == 'false' && inputs.SKIP_ANGULAR_TESTS == 'false'
       shell: bash
       run: |
         : osee.web Testing
@@ -188,13 +196,13 @@ runs:
         : Show Maven Effective Settings
         mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:effective-settings -s /settings.xml
 
-    - name: parent/extras Build
+    - name: osgi.parent Build With Ajax
       if: inputs.SKIP_JAVA_BUILD == 'false'
       shell: bash
       run: |
-        : parent/extras Build
-        cd ${GITHUB_WORKSPACE}/plugins/org.eclipse.osee.parent/extras
-        mvn $MAVEN_CLI_OPTS verify -s /settings.xml -Dnot_ci_eclipse=true -Dexternal-eclipse-ip-site=${GITHUB_WORKSPACE}/Latest_Zip_And_Cert/org.eclipse.ip.p2-1.0.0.zip -T 1C
+        : osgi.parent Build With Ajax
+        cd ${GITHUB_WORKSPACE}/plugins/org.eclipse.osee.osgi.converter.parent
+        mvn $MAVEN_CLI_OPTS verify -s /settings.xml -Drelease -Dbuild-alias=${{ inputs.BUILD_ALIAS }} -Dskip-help-tests=true -Dtycho.disableP2Mirrors=true -T 1C
 
     - name: dep.parent Build
       if: inputs.SKIP_JAVA_BUILD == 'false'
@@ -202,7 +210,7 @@ runs:
       run: |
         : dep.parent Build
         cd ${GITHUB_WORKSPACE}/plugins/org.eclipse.osee.dep.parent
-        mvn $MAVEN_CLI_OPTS verify -s /settings.xml -Declipse-ip-site=file:${GITHUB_WORKSPACE}/../org.eclipse.ip/org.eclipse.ip.p2/target/repository -Dbuild-alias=${{ inputs.BUILD_ALIAS }} -Dskip-help-tests=true -Dtycho.disableP2Mirrors=true -T 1C
+        mvn $MAVEN_CLI_OPTS verify -s /settings.xml -Dbuild-alias=${{ inputs.BUILD_ALIAS }} -Dskip-help-tests=true -Dtycho.disableP2Mirrors=true -T 1C
 
     - name: osee.parent Build
       if: inputs.SKIP_JAVA_BUILD == 'false'
@@ -210,4 +218,4 @@ runs:
       run: |
         : osee.parent Build
         cd ${GITHUB_WORKSPACE}/plugins/org.eclipse.osee.parent
-        mvn $MAVEN_CLI_OPTS verify -s /settings.xml -Dbuild-alias=${{ inputs.BUILD_ALIAS }} -Dorg.eclipse.swt.browser.UseWebKitGTK=true -DpostgresqlDB
+        mvn $MAVEN_CLI_OPTS verify -s /settings.xml -Dbuild-alias=${{ inputs.BUILD_ALIAS }} -Dorg.eclipse.swt.browser.UseWebKitGTK=true ${{ inputs.SKIP_JAVA_TESTS == 'true' && '-DskipTests -Dskip-help-tests' || '' }} ${{ inputs.SKIP_PRODUCT_BUILD == 'true' &&'-Dskip-osee-client-all-product' || '' }} -DpostgresqlDB=true

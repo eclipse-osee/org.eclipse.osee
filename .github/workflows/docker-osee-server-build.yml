@@ -1,0 +1,103 @@
+name: Docker OSEE Server Build
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/docker/osee-server/**'
+
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+permissions:
+  packages: write
+
+env:
+  ARTIFACT_PATH: "plugins/org.eclipse.osee.server.p2/target/org.eclipse.osee.server.runtime.zip"
+  SERVER_PATH: "osee_server"
+  SERVER_ZIP: "org.eclipse.osee.server.runtime.zip"
+  IMAGE_DIRECTORY: ".github/docker/osee-server/Dockerfile"
+
+jobs:
+  build_server_binaries:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/eclipse-osee/org.eclipse.osee/maven-node:20240717003623
+    strategy:
+      matrix:
+        include:
+          - IMAGE_NAME: "osee-server"
+            ANGULAR_BUILD_TYPE: "forced_sso_java_release"
+          - IMAGE_NAME: "osee-demo-server"
+            ANGULAR_BUILD_TYPE: "demo_java_release"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Build OSEE Binaries
+        uses: ./.github/actions/build-osee-binary
+        with:
+          SKIP_ANGULAR_TESTS: 'true'
+          SKIP_JAVA_TESTS: 'true'
+          SKIP_PRODUCT_BUILD: 'true'
+          ANGULAR_BUILD_TYPE: ${{ matrix.ANGULAR_BUILD_TYPE }}
+
+      - name: Archive Binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.IMAGE_NAME }}-binaries
+          path: ${{ env.ARTIFACT_PATH }}
+
+  docker_build_and_push:
+    runs-on: ubuntu-latest
+    needs: build_server_binaries
+    strategy:
+      matrix:
+        include:
+          - IMAGE_NAME: "osee-server"
+          - IMAGE_NAME: "osee-demo-server"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Create Download Path
+        run: mkdir -p ${SERVER_PATH}
+
+      - name: Download Binaries
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.IMAGE_NAME }}-binaries
+          path: ${{ env.SERVER_PATH }}
+
+      - name: Set Up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get Current Timestamp
+        id: date
+        run: echo "timestamp=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
+
+      - name: Build And Push Docker Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ${{ env.IMAGE_DIRECTORY }}
+          build-args: |
+            IMAGE_DIRECTORY=${{ env.IMAGE_DIRECTORY }}
+            SERVER_PATH=${{ env.SERVER_PATH }}
+            SERVER_ZIP=org.eclipse.osee.server.runtime.zip
+          push: ${{ github.event_name == 'push' }}
+          tags: |
+            ghcr.io/${{ github.repository }}/${{ matrix.IMAGE_NAME }}:${{ github.sha }}
+            ghcr.io/${{ github.repository }}/${{ matrix.IMAGE_NAME }}:${{ steps.date.outputs.timestamp }}
+            ghcr.io/${{ github.repository }}/${{ matrix.IMAGE_NAME }}:latest

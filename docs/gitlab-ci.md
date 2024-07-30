@@ -1,3 +1,8 @@
+<div style="border: 1px solid red; padding: 10px; background-color: #ffe6e6;">
+  <strong>Deprecation Warning:</strong>
+  This feature is deprecated as the team has elected to migrate to GitHub rather than GitLab. GitLab related templates will not be kept up to date moving forward. Please consider utilizing our GitHub Actions configurations under the ".github" directory.
+</div>
+
 # GitLab CI
 
 The `.gitlab-ci.yml` file in the project root defines the GitLab Runner CI pipeline that's run when pushing to GitLab.

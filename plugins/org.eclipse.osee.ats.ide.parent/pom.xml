@@ -16,56 +16,23 @@
 	<name>OSEE ATS - Parent (Incubation)</name>
 	<version>1.0.0-SNAPSHOT</version>
 
+	<modules>
+		<module>../../plugins/org.eclipse.osee.support.test.util</module>
+
+		<module>../../plugins/org.eclipse.osee.ats.ide.help.ui</module>
+		<module>../../plugins/org.eclipse.osee.ats.ide</module>
+
+		<module>../../plugins/org.eclipse.osee.ats.ide.demo</module>
+
+		<module>../../features/org.eclipse.osee.ats.ide.feature</module>
+
+		<module>../../features/org.eclipse.osee.ats.ide.demo.feature</module>
+		<module>../../plugins/org.eclipse.osee.ats.ide.integration.tests</module>
+
+		<module>../../plugins/org.eclipse.osee.ats.ide.p2</module>
+	</modules>
+
 	<profiles>
-
-		<profile>
-			<id>coverage-minimal</id>
-			<activation>
-				<property>
-					<name>skip-int-tests</name>
-				</property>
-			</activation>
-			<modules>
-			
-				<module>../../plugins/org.eclipse.osee.support.test.util</module>
-
-				<module>../../plugins/org.eclipse.osee.ats.ide.help.ui</module>
-				<module>../../plugins/org.eclipse.osee.ats.ide</module>
-
-				<module>../../plugins/org.eclipse.osee.ats.ide.demo</module>
-
-				<module>../../features/org.eclipse.osee.ats.ide.feature</module>
-
-				<module>../../features/org.eclipse.osee.ats.ide.demo.feature</module>
-				<module>../../plugins/org.eclipse.osee.ats.ide.p2</module>
-			</modules>
-		</profile>
-
-		<profile>
-			<id>coverage-release</id>
-			<activation>
-				<property>
-					<name>!skip-int-tests</name>
-				</property>
-			</activation>
-			<modules>
-				<module>../../plugins/org.eclipse.osee.support.test.util</module>
-
-				<module>../../plugins/org.eclipse.osee.ats.ide.help.ui</module>
-				<module>../../plugins/org.eclipse.osee.ats.ide</module>
-
-				<module>../../plugins/org.eclipse.osee.ats.ide.demo</module>
-
-				<module>../../features/org.eclipse.osee.ats.ide.feature</module>
-
-				<module>../../features/org.eclipse.osee.ats.ide.demo.feature</module>
-				<module>../../plugins/org.eclipse.osee.ats.ide.integration.tests</module>
-				
-				<module>../../plugins/org.eclipse.osee.ats.ide.p2</module>
-			</modules>
-		</profile>
-	
-	
 		<profile>
 			<id>ats-ide-help-test</id>
 			<activation>
