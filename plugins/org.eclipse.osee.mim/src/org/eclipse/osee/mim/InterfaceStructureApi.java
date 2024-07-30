@@ -34,6 +34,9 @@ public interface InterfaceStructureApi extends QueryCapableMIMAPI<InterfaceStruc
 
    InterfaceStructureToken get(BranchId branch, ArtifactId artId, ArtifactId viewId);
 
+   InterfaceStructureToken get(BranchId branch, InterfaceConnection connection, ArtifactId structureId,
+      ArtifactId viewId);
+
    Collection<InterfaceStructureToken> get(BranchId branch, Collection<ArtifactId> artIds,
       Collection<FollowRelation> followRelations);
 
