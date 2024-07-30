@@ -27,6 +27,8 @@ import javax.ws.rs.core.Response.Status.Family;
 import org.eclipse.osee.ats.ide.demo.DemoChoice;
 import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
+import org.eclipse.osee.client.test.framework.PostgresOnly;
+import org.eclipse.osee.client.test.framework.PostgresOnlyRule;
 import org.eclipse.osee.framework.core.JaxRsApi;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -78,6 +80,9 @@ import org.junit.Test;
  * @author Audrey Denk
  */
 public class BranchEndpointTest {
+
+   @Rule
+   public PostgresOnlyRule postgresOnly = new PostgresOnlyRule();
 
    @Rule
    public NotProductionDataStoreRule notProduction = new NotProductionDataStoreRule();
@@ -679,13 +684,10 @@ public class BranchEndpointTest {
    }
 
    @Test
+   @PostgresOnly
    public void testUpdateBranchFromParent_NoChanges() {
       // The validateCommitBranch method in branchEndpoint does not work on HSQL. Only run when testing using Postgres.
       // Add -DpostgresqlDB to your run config in order to run the updateBranchFromParent tests.
-      if (System.getProperty("postgresqlDB") == null) {
-         return;
-      }
-
       BranchId testBranch = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
       UpdateBranchData branchData = branchEndpoint.updateBranchFromParent(testBranch);
       Assert.assertEquals("Branch is up to date", branchData.getResults().getResults().get(0));
@@ -694,11 +696,8 @@ public class BranchEndpointTest {
    }
 
    @Test
+   @PostgresOnly
    public void testUpdateBranchFromParent_ParentChanged() {
-      if (System.getProperty("postgresqlDB") == null) {
-         return;
-      }
-
       BranchId testBranch = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
       try (Response res = branchEndpoint.associateBranchToArtifact(testBranch, ArtifactId.valueOf("12345"));) {
          // Empty block so resource gets closed
@@ -745,11 +744,8 @@ public class BranchEndpointTest {
    }
 
    @Test
+   @PostgresOnly
    public void testUpdateBranchFromParent_BranchChanged_NoParentChange() {
-      if (System.getProperty("postgresqlDB") == null) {
-         return;
-      }
-
       BranchId testBranch = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
       try (Response res = branchEndpoint.associateBranchToArtifact(testBranch, ArtifactId.valueOf("55555"))) {
          // Empty block to close resource
@@ -771,11 +767,8 @@ public class BranchEndpointTest {
    }
 
    @Test
+   @PostgresOnly
    public void testUpdateBranchFromParent_BranchChanged_ParentChanged() {
-      if (System.getProperty("postgresqlDB") == null) {
-         return;
-      }
-
       BranchId testBranch = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
       try (Response res = branchEndpoint.associateBranchToArtifact(testBranch, ArtifactId.valueOf("112233"));) {
          // Empty block to close resource
@@ -794,8 +787,8 @@ public class BranchEndpointTest {
       // Create new artifact on the first test branch
       setArtifactEndpoint(testBranch);
       ArtifactToken newArtifact =
-         workingBranchArtifactEndpoint.createArtifact(testBranch, CoreArtifactTypes.SoftwareRequirementMarkdown,
-            CoreArtifactTokens.SoftwareRequirementsFolder, "Test MD Requirement");
+         workingBranchArtifactEndpoint.createArtifact(testBranch, CoreArtifactTypes.SystemRequirementMarkdown,
+            CoreArtifactTokens.SystemRequirementsFolder, "Test MD Requirement");
 
       // Perform update
       UpdateBranchData branchData = branchEndpoint.updateBranchFromParent(testBranch);
@@ -828,11 +821,8 @@ public class BranchEndpointTest {
    }
 
    @Test
+   @PostgresOnly
    public void testUpdateBranchFromParent_MergeConflict() {
-      if (System.getProperty("postgresqlDB") == null) {
-         return;
-      }
-
       // Create a new artifact and commit to the parent branch
       BranchId testBranch2 = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
       setArtifactEndpoint(testBranch2);

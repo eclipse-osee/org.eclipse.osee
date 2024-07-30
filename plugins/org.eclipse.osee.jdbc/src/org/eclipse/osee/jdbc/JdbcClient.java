@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.jdbc;
 
+import java.sql.ResultSet;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -38,11 +39,13 @@ public interface JdbcClient {
 
    int runQuery(JdbcConnection connection, Consumer<JdbcStatement> consumer, String query, Object... data);
 
-   int runQueryWithMaxFetchSize(JdbcConnection connection, Consumer<JdbcStatement> consumer, String query, Object... data);
+   int runQueryWithMaxFetchSize(JdbcConnection connection, Consumer<JdbcStatement> consumer, String query,
+      Object... data);
 
    int runQuery(Consumer<JdbcStatement> consumer, int fetchSize, String query, Object... data);
 
-   int runQuery(JdbcConnection connection, Consumer<JdbcStatement> consumer, int fetchSize, String query, Object... data);
+   int runQuery(JdbcConnection connection, Consumer<JdbcStatement> consumer, int fetchSize, String query,
+      Object... data);
 
    int runQueryWithLimit(Consumer<JdbcStatement> consumer, int limit, String query, Object... data);
 
@@ -52,11 +55,14 @@ public interface JdbcClient {
 
    <R> R fetch(R defaultValue, Function<JdbcStatement, R> function, String query, Object... data);
 
-   <R> R fetch(JdbcConnection connection, R defaultValue, Function<JdbcStatement, R> function, String query, Object... data);
+   <R> R fetch(JdbcConnection connection, R defaultValue, Function<JdbcStatement, R> function, String query,
+      Object... data);
 
-   <R> R fetchOrException(Supplier<OseeCoreException> exSupplier, Function<JdbcStatement, R> function, String query, Object... data);
+   <R> R fetchOrException(Supplier<OseeCoreException> exSupplier, Function<JdbcStatement, R> function, String query,
+      Object... data);
 
-   <R> R fetchOrException(JdbcConnection connection, Supplier<OseeCoreException> exSupplier, Function<JdbcStatement, R> function, String query, Object... data);
+   <R> R fetchOrException(JdbcConnection connection, Supplier<OseeCoreException> exSupplier,
+      Function<JdbcStatement, R> function, String query, Object... data);
 
    <R> R fetchOrException(Class<R> clazz, Supplier<OseeCoreException> exSupplier, String query, Object... data);
 
@@ -67,6 +73,8 @@ public interface JdbcClient {
    OseePreparedStatement getBatchStatement(String query, int batchIncrementSize);
 
    int runPreparedUpdate(String query, Object... data);
+
+   ResultSet runPreparedUpdateReturnAuto(String query, Object... data);
 
    /**
     * <pre>
@@ -90,6 +98,8 @@ public interface JdbcClient {
    JdbcStatement getStatement(JdbcConnection connection);
 
    int runPreparedUpdate(JdbcConnection connection, String query, Object... data);
+
+   ResultSet runPreparedUpdateReturnAuto(JdbcConnection connection, String query, Object... data);
 
    int runBatchUpdate(JdbcConnection connection, String query, Iterable<Object[]> dataList);
 
@@ -127,9 +137,11 @@ public interface JdbcClient {
 
    void dropTable(SqlTable table);
 
-   void deferredForeignKeyConstraint(String constraintName, SqlTable table, SqlColumn column, SqlTable refTable, SqlColumn refColumn);
+   void deferredForeignKeyConstraint(String constraintName, SqlTable table, SqlColumn column, SqlTable refTable,
+      SqlColumn refColumn);
 
-   void alterForeignKeyConstraint(String constraintName, SqlTable table, SqlColumn column, SqlTable refTable, SqlColumn refColumn, String defered);
+   void alterForeignKeyConstraint(String constraintName, SqlTable table, SqlColumn column, SqlTable refTable,
+      SqlColumn refColumn, String defered);
 
    void createTable(SqlTable table);
 

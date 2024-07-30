@@ -10,11 +10,24 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './directives/highlight-filtered-text.directive';
-export * from './functions/undefinedOrNullCheck';
-export * from './functions/writableSlice';
-export * from './pipes/display-truncated-string-with-field-overflow.pipe';
-export * from './pipes/first-letter-lower.pipe';
-export * from './pipes/split-string.pipe';
-export * from './pipes/format-milliseconds.pipe';
-export * from './pipes/object-values.pipe';
+import { Routes } from '@angular/router';
+import { navigationStructure } from '@osee/layout/routing';
+
+const explorer = navigationStructure[0].children.find(
+	(page) => page.label === 'API Key Management'
+);
+
+const routes: Routes = [
+	{
+		path: '',
+		loadChildren: () => import('@osee/toolbar'),
+		outlet: 'toolbar',
+	},
+	{
+		path: '',
+		title: explorer?.pageTitle,
+		loadComponent: () => import('./api-key-management.component'),
+	},
+];
+
+export default routes;

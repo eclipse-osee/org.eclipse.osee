@@ -21,6 +21,7 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+
    ApplicabilityEndpointTest.class,
    ApplicabilityUiEndpointTest.class,
    ArtifactEndpointTest.class,
@@ -29,7 +30,8 @@ import org.junit.runners.Suite;
    TransactionEndpointTest.class,
    TransactionTransferImportTest.class,
    ArtifactModificationTest.class,
-   RelationEndpointTest.class})
+   RelationEndpointTest.class,
+   ApiKeyEndpointTest.class})
 public class OrcsRestTestSuite {
    // Test Suite
 }

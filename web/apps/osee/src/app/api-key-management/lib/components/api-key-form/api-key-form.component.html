@@ -1,0 +1,100 @@
+<!--
+* Copyright (c) 2024 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
+<div class="tw-container tw-mx-auto tw-p-4">
+	<h1 class="tw-mb-4 tw-text-2xl tw-font-bold tw-text-white">Add API Key</h1>
+	<form
+		class="tw-inline-flex tw-flex-col"
+		#apiKeyForm="ngForm">
+		<mat-form-field class="tw-pb-2">
+			<mat-label>API Key Name</mat-label>
+			<input
+				matInput
+				name="API Key Name"
+				type="text"
+				maxlength="20"
+				[(ngModel)]="keyName"
+				#keyNameForm="ngModel"
+				required />
+			@if (
+				keyNameForm?.invalid &&
+				keyNameForm?.errors?.required &&
+				(keyNameForm?.dirty || keyNameForm?.touched)
+			) {
+				<mat-error>API Key Name is required.</mat-error>
+			}
+		</mat-form-field>
+
+		<mat-form-field class="tw-pb-2">
+			<mat-label>Expiration Date</mat-label>
+			<input
+				matInput
+				name="Expiration Date"
+				type="date"
+				[min]="minDate"
+				[max]="maxDate"
+				[(ngModel)]="keyExpirationDate"
+				oseeHasValidDateRange
+				[minDate]="minDate"
+				[maxDate]="maxDate"
+				#keyExpirationDateForm="ngModel"
+				required />
+			@if (
+				keyExpirationDateForm?.invalid &&
+				(keyExpirationDateForm?.touched || keyExpirationDateForm?.dirty)
+			) {
+				<mat-error>
+					@if (keyExpirationDateForm?.errors?.required) {
+						Expiration date is required.
+					}
+					@if (keyExpirationDateForm?.errors?.dateRange) {
+						{{ keyExpirationDateForm?.errors?.dateRange }}
+					}
+				</mat-error>
+			}
+		</mat-form-field>
+
+		<div class="tw-pb-4">
+			<label class="tw-mb-2 tw-block tw-font-bold tw-text-white"
+				>API Key Scopes:</label
+			>
+			@for (scope of keyScopes(); track scope.id) {
+				<div>
+					<mat-checkbox
+						[(ngModel)]="scope.selected"
+						[name]="'API Key Scopes' + scope.id"
+						>{{ scope.name }}</mat-checkbox
+					>
+				</div>
+			}
+		</div>
+		<div class="tw-flex tw-w-full tw-justify-center tw-space-x-2">
+			<button
+				mat-raised-button
+				color="warn"
+				type="button"
+				(click)="closeForm()"
+				class="tw-font-bold">
+				Cancel
+			</button>
+			<button
+				mat-raised-button
+				color="primary"
+				type="submit"
+				[disabled]="apiKeyForm.invalid"
+				[mat-dialog-close]="valueToReturn()"
+				class="tw-font-bold">
+				Create
+			</button>
+		</div>
+	</form>
+</div>

@@ -332,5 +332,17 @@ export const navigationStructure: navigationElement[] = [
 			},
 		],
 	},
+	// {									// Uncomment When API Public
+	// 	label: 'API Key Management',
+	// 	cypressLabel: '',
+	// 	pageTitle: 'OSEE - API Key Management',
+	// 	isDropdown: false,
+	// 	isDropdownOpen: false,
+	// 	requiredRoles: [],
+	// 	routerLink: '/apiKey',
+	// 	icon: 'key',
+	// 	description: 'Management of OSEE API Keys',
+	// 	children: [],
+	// },
 	...ciNavigationStructure,
 ];

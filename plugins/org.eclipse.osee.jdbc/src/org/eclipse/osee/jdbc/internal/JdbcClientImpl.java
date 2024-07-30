@@ -16,7 +16,6 @@ package org.eclipse.osee.jdbc.internal;
 import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__MAX_TX_ROW_COUNT;
 import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__MAX_VARCHAR_LENGTH;
 import static org.eclipse.osee.jdbc.JdbcException.newJdbcException;
-
 import java.sql.CallableStatement;
 import java.sql.JDBCType;
 import java.sql.PreparedStatement;
@@ -28,7 +27,6 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -129,6 +127,23 @@ public final class JdbcClientImpl implements JdbcClient {
    }
 
    @Override
+   public ResultSet runPreparedUpdateReturnAuto(JdbcConnection connection, String query, Object... data)
+      throws JdbcException {
+      if (connection == null) {
+         return runPreparedUpdateReturnAuto(query, data);
+      }
+      ResultSet result;
+      try (PreparedStatement preparedStatement = ((JdbcConnectionImpl) connection).prepareStatementGen(query)) {
+         JdbcUtil.setInputParametersForStatement(preparedStatement, data);
+         preparedStatement.executeUpdate();
+         result = preparedStatement.getGeneratedKeys();
+      } catch (SQLException ex) {
+         throw newJdbcException(ex);
+      }
+      return result;
+   }
+
+   @Override
    public int runBatchUpdate(JdbcConnection connection, String query, Iterable<Object[]> dataList)
       throws JdbcException {
       if (connection == null) {
@@ -214,6 +229,13 @@ public final class JdbcClientImpl implements JdbcClient {
    public int runPreparedUpdate(String query, Object... data) throws JdbcException {
       try (JdbcConnection connection = getConnection()) {
          return runPreparedUpdate(connection, query, data);
+      }
+   }
+
+   @Override
+   public ResultSet runPreparedUpdateReturnAuto(String query, Object... data) throws JdbcException {
+      try (JdbcConnection connection = getConnection()) {
+         return runPreparedUpdateReturnAuto(connection, query, data);
       }
    }
 
@@ -614,20 +636,25 @@ public final class JdbcClientImpl implements JdbcClient {
          strB.append(column.getLength());
          strB.append(")");
       }
-      
-      
+
       if (column.getName().equals("BUILD_ID")) {
          strB.append(" DEFAULT 0");
       } else if (!column.isNull()) {
          strB.append(" NOT NULL");
       }
-      
+
+      if (column.isAutoIncrement()) {
+         if (getDbType().equals(JdbcDbType.oracle) || getDbType().equals(JdbcDbType.postgresql)) {
+            strB.append(" GENERATED ALWAYS AS IDENTITY");
+         }
+      }
+
       if (!column.getValueConstraint().isEmpty()) {
-    	  if (getDbType().equals(JdbcDbType.oracle)) {
-              strB.append("CONSTRAINT " + column.getName()+"_CK CHECK ("+column.getValueConstraint()+")");
-           } else {
-         	  strB.append(" CHECK ("+column.getValueConstraint()+")");
-           }
+         if (getDbType().equals(JdbcDbType.oracle)) {
+            strB.append("CONSTRAINT " + column.getName() + "_CK CHECK (" + column.getValueConstraint() + ")");
+         } else {
+            strB.append(" CHECK (" + column.getValueConstraint() + ")");
+         }
       }
       return strB.toString();
    }

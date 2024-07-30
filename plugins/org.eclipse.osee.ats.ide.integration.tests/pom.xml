@@ -38,6 +38,7 @@
 						<osee.application.server>http://localhost:${ats-server-port}</osee.application.server>
 						<org.eclipse.swt.browser.DefaultType>webkit</org.eclipse.swt.browser.DefaultType>
 						<user.name>3333</user.name>
+						<postgresqlDB>${postgresqlDB}</postgresqlDB>
 					</systemProperties>
 					<redirectTestOutputToFile>false</redirectTestOutputToFile>
 				</configuration>
@@ -159,7 +160,7 @@
 										<property name="xserver-use-demo-data" value="true" />
 
 										<if>
-											<isset property="postgresqlDB"/>
+        									<equals arg1="${postgresqlDB}" arg2="true" />
 											<then>
 												<echo message="Integration tests will be run with PostgreSQL."/>
 

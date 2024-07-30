@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.server.ide.api.SessionEndpoint;
 import org.eclipse.osee.framework.server.ide.api.client.ClientEndpoint;
+import org.eclipse.osee.orcs.rest.model.ApiKeyEndpoint;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityUiEndpoint;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
@@ -103,12 +104,14 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
    }
 
    @Override
-   public SearchResult getResults(RequestType request, BranchId branch, List<Predicate> predicates, QueryOptions options) {
+   public SearchResult getResults(RequestType request, BranchId branch, List<Predicate> predicates,
+      QueryOptions options) {
       SearchResponse result = performSearch(request, branch, predicates, options);
       return result;
    }
 
-   private SearchResponse performSearch(RequestType requestType, BranchId branch, List<Predicate> predicates, QueryOptions options) {
+   private SearchResponse performSearch(RequestType requestType, BranchId branch, List<Predicate> predicates,
+      QueryOptions options) {
       Conditions.checkNotNull(requestType, "RequestType");
       TransactionId fromTx = TransactionId.valueOf(0);
       if (options.isHistorical()) {
@@ -157,6 +160,11 @@ public class OseeClientImpl extends OseeApiBase implements OseeClient, QueryExec
    @Override
    public BranchEndpoint getBranchEndpoint() {
       return getOrcsEndpoint(BranchEndpoint.class);
+   }
+
+   @Override
+   public ApiKeyEndpoint getApiKeyEndpoint() {
+      return getOrcsEndpoint(ApiKeyEndpoint.class);
    }
 
    /**

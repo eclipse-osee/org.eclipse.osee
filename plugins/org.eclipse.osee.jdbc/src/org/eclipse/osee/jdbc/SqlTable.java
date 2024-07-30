@@ -17,7 +17,6 @@ import java.sql.JDBCType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.eclipse.osee.framework.jdk.core.type.ChainingArrayList;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedBase;
@@ -95,9 +94,13 @@ public class SqlTable extends NamedBase {
    public SqlColumn addColumn(String name, JDBCType type, boolean isNull) {
       return columns.addAndReturn(new SqlColumn(this, name, type, isNull));
    }
-   
+
+   public SqlColumn addAutoIncrementColumn(String name, JDBCType type) {
+      return columns.addAndReturn(new SqlColumn(this, name, type, false, true));
+   }
+
    public SqlColumn addColumnWithValueConstraint(String name, JDBCType type, boolean isNull, String valueConstraint) {
-	   return columns.addAndReturn(new SqlColumn(this, name, type, isNull, 0, valueConstraint));
+      return columns.addAndReturn(new SqlColumn(this, name, type, isNull, 0, valueConstraint));
    };
 
    public SqlColumn addVarCharColumn(String name, int length) {

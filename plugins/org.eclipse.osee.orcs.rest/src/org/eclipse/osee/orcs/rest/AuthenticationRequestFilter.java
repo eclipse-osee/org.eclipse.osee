@@ -27,7 +27,9 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.ext.Provider;
 import org.eclipse.osee.activity.ActivityConstants;
 import org.eclipse.osee.activity.api.ActivityLog;
+import org.eclipse.osee.framework.core.ApiKeyApi;
 import org.eclipse.osee.framework.core.JaxRsApi;
+import org.eclipse.osee.framework.core.data.ApiKey;
 import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.UserId;
@@ -43,6 +45,7 @@ import org.eclipse.osee.orcs.OrcsApi;
 public class AuthenticationRequestFilter implements ContainerRequestFilter {
 
    private OrcsApi orcsApi;
+   private ApiKeyApi apiKeyApi;
    private JaxRsApi jaxRsApi;
    private ActivityLog activityLog;
 
@@ -50,6 +53,10 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
       this.orcsApi = orcsApi;
       jaxRsApi = orcsApi.jaxRsApi();
       activityLog = orcsApi.getActivityLog();
+   }
+
+   public void bindApiKeyApi(ApiKeyApi apiKeyApi) {
+      this.apiKeyApi = apiKeyApi;
    }
 
    /**
@@ -82,9 +89,19 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
                   orcsApi.userService().setUserForCurrentThread(loginId);
                }
             } else if (authHeader.startsWith(OseeProperties.LOGIN_ID_AUTH_SCHEME)) {
-               String loginId = authHeader.substring(OseeProperties.LOGIN_ID_AUTH_SCHEME.length()).toLowerCase();
+               String apiKeyString = authHeader.substring(OseeProperties.LOGIN_ID_AUTH_SCHEME.length());
+               String loginIdLower = apiKeyString.toLowerCase();
 
-               orcsApi.userService().setUserForCurrentThread(loginId);
+               orcsApi.userService().setUserForCurrentThread(loginIdLower);
+
+               // Logic for API Keys Here
+               if (orcsApi.userService().getUser().isInvalid()) {
+                  ApiKey apiKey = apiKeyApi.getApiKey(apiKeyString);
+
+                  if (!apiKey.isExpired()) {
+                     orcsApi.userService().setUserForCurrentThread(apiKey.getUserArtId());
+                  }
+               }
 
             } else if (!exceptionList) {
                //TODO: ensure web clients to use Basic scheme then remove

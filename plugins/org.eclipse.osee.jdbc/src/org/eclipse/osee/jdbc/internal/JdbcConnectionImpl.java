@@ -20,6 +20,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcException;
 
@@ -60,7 +61,8 @@ public class JdbcConnectionImpl implements JdbcConnection {
       }
    }
 
-   protected PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
+   protected PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency)
+      throws SQLException {
       return conn.prepareStatement(sql, resultSetType, resultSetConcurrency);
    }
 
@@ -69,7 +71,12 @@ public class JdbcConnectionImpl implements JdbcConnection {
       return prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
    }
 
-   protected CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
+   protected PreparedStatement prepareStatementGen(String sql) throws SQLException {
+      return conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+   }
+
+   protected CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency)
+      throws SQLException {
       return conn.prepareCall(sql, resultSetType, resultSetConcurrency);
    }
 

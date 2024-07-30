@@ -14,9 +14,7 @@
 package org.eclipse.osee.orcs;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
-
 import java.sql.JDBCType;
-
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -49,7 +47,8 @@ public class OseeDb {
    public static final SqlColumn ATTRIBUTE_ATRR_ID = ATTRIBUTE_TABLE.addColumn("ATTR_ID", JDBCType.BIGINT);
    public static final SqlColumn ATTRIBUTE_GAMMA_ID = ATTRIBUTE_TABLE.addColumn("GAMMA_ID", JDBCType.BIGINT);
    public static final SqlColumn ATTRIBUTE_ART_ID = ATTRIBUTE_TABLE.addColumn("ART_ID", JDBCType.BIGINT);
-   public static final SqlColumn ATTRIBUTE_ATTR_TYPE_ID = ATTRIBUTE_TABLE.addColumnWithValueConstraint("ATTR_TYPE_ID", JDBCType.BIGINT, false, "ATTR_TYPE_ID > 0");
+   public static final SqlColumn ATTRIBUTE_ATTR_TYPE_ID =
+      ATTRIBUTE_TABLE.addColumnWithValueConstraint("ATTR_TYPE_ID", JDBCType.BIGINT, false, "ATTR_TYPE_ID > 0");
    public static final SqlColumn ATTRIBUTE_VALUE = ATTRIBUTE_TABLE.addVarCharColumn("VALUE", 4000);
    public static final SqlColumn ATTRIBUTE_URI = ATTRIBUTE_TABLE.addVarCharColumn("URI", 200);
    static {
@@ -676,6 +675,24 @@ public class OseeDb {
       OSEE_VALIDATE_GAMMA_ID.addColumn("GAMMA_ID", JDBCType.BIGINT);
    static {
       OSEE_VALIDATE_GAMMA_ID.setPrimaryKeyConstraint(OSEE_VALIDATE_GAMMA_ID_GAMMA_ID);
+   }
+
+   public static final SqlTable API_KEY_TABLE = new SqlTable("osee_api_key", "api");
+   public static final SqlColumn API_KEY_ID = API_KEY_TABLE.addAutoIncrementColumn("KEY_UID", JDBCType.BIGINT);
+   public static final SqlColumn API_KEY_NAME = API_KEY_TABLE.addVarCharColumn("KEY_NAME", 20, false);
+   public static final SqlColumn API_KEY_VALUE = API_KEY_TABLE.addVarCharColumn("API_KEY_VALUE", 4000, false);
+   public static final SqlColumn API_KEY_SCOPES = API_KEY_TABLE.addVarCharColumn("SCOPES", 4000);
+   public static final SqlColumn API_KEY_CREATION_DATE = API_KEY_TABLE.addColumn("CREATION_DATE", JDBCType.TIMESTAMP);
+   public static final SqlColumn API_KEY_EXPIRATION_DATE =
+      API_KEY_TABLE.addColumn("EXPIRATION_DATE", JDBCType.TIMESTAMP);
+   public static final SqlColumn API_KEY_USER_ARTIFACT_ID = API_KEY_TABLE.addColumn("USER_ART_ID", JDBCType.BIGINT);
+
+   static {
+      API_KEY_TABLE.setPrimaryKeyConstraint(API_KEY_ID);
+      API_KEY_TABLE.createIndex("OSEE_API_KEY__API_KEY_NAME_IDX", true, API_KEY_NAME);
+      API_KEY_TABLE.createIndex("API_KEYS_API_KEY_VALUE_IDX", true, API_KEY_VALUE);
+      API_KEY_TABLE.createIndex("OSEE_API_KEY__EXPIRATION_DATE_IDX", true, API_KEY_EXPIRATION_DATE);
+      API_KEY_TABLE.createIndex("OSEE_API_KEY__ARTIFACT_ID_IDX", true, API_KEY_USER_ARTIFACT_ID);
    }
 
    public static SqlTable getTxsTable(boolean isArchived) {

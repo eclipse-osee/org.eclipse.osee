@@ -18,6 +18,7 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.activity.api.ActivityLog;
+import org.eclipse.osee.framework.core.ApiKeyApi;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -39,9 +40,14 @@ public class OrcsApplication extends Application {
 
    private final Set<Object> singletons = new HashSet<>();
    private OrcsApi orcsApi;
+   private ApiKeyApi apiKeyApi;
    private IResourceManager resourceManager;
    private ActivityLog activityLog;
    private JdbcService jdbcService;
+
+   public void setApiKeyApi(ApiKeyApi apiKeyApi) {
+      this.apiKeyApi = apiKeyApi;
+   }
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -75,6 +81,7 @@ public class OrcsApplication extends Application {
       singletons.add(new IndexerEndpointImpl(orcsApi));
       singletons.add(new ResourcesEndpointImpl(resourceManager));
       singletons.add(new DatastoreEndpointImpl(orcsApi, activityLog, jdbcService));
+      singletons.add(new ApiKeyEndpointImpl(orcsApi, activityLog, jdbcService, apiKeyApi));
       singletons.add(new KeyValueResource(orcsApi));
 
       singletons.add(new LinkUpdateResource(orcsApi));

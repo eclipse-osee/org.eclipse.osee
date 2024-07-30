@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.orcs.db.internal;
 
+import static org.eclipse.osee.orcs.OseeDb.API_KEY_TABLE;
 import static org.eclipse.osee.orcs.OseeDb.ARTIFACT_TABLE;
 import static org.eclipse.osee.orcs.OseeDb.ATTRIBUTE_BINARY_TABLE;
 import static org.eclipse.osee.orcs.OseeDb.ATTRIBUTE_SOURCE_TABLE;
@@ -129,6 +130,7 @@ public final class DatabaseCreation {
       jdbcClient.createTable(OSEE_VALIDATE_GAMMA_ID);
       jdbcClient.createTable(ATTRIBUTE_SOURCE_TABLE);
       jdbcClient.createTable(ATTRIBUTE_BINARY_TABLE);
+      jdbcClient.createTable(API_KEY_TABLE);
    }
 
    private void dropTables() {
@@ -191,5 +193,6 @@ public final class DatabaseCreation {
       jdbcClient.dropTable(OSEE_VALIDATE_GAMMA_ID);
       jdbcClient.dropTable(ATTRIBUTE_SOURCE_TABLE);
       jdbcClient.dropTable(ATTRIBUTE_BINARY_TABLE);
+      jdbcClient.dropTable(API_KEY_TABLE);
    }
 }

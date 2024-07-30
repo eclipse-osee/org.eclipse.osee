@@ -1,0 +1,114 @@
+<!--
+* Copyright (c) 2024 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
+<div class="tw-inline-flex tw-flex-col tw-items-center tw-space-y-4 tw-p-4">
+	<div class="tw-flex tw-w-full tw-justify-between">
+		<h2 class="tw-m-0 tw-p-0 tw-text-2xl tw-font-bold">OSEE API Keys</h2>
+		<button
+			mat-raised-button
+			color="primary"
+			type="button"
+			(click)="openApiFormDialog()"
+			class="tw-font-semibold">
+			New API Key
+		</button>
+	</div>
+
+	@if (showKeyForm()) {
+		<osee-api-key-form></osee-api-key-form>
+	}
+
+	@if (apiKeyValue()) {
+		<div class="tw-flex tw-items-center tw-justify-center tw-space-x-2">
+			<span class="tw-font-bold">Your New API Key</span>
+			<button
+				(click)="closeApiKey()"
+				class="tw-flex tw-items-center tw-justify-center tw-text-red-600 hover:tw-text-gray-500">
+				<mat-icon>close</mat-icon>
+			</button>
+		</div>
+
+		<div
+			class="tw-align-center tw-flex tw-w-fit tw-justify-center tw-space-x-3 tw-rounded tw-border tw-border-gray-50 tw-px-4 tw-py-2">
+			<span class="tw-w-fit tw-font-mono tw-text-lg tw-text-accent">
+				{{
+					keyIsVisible()
+						? apiKeyValue()
+						: '••••••••••••••••••••••••••••••••'
+				}}
+			</span>
+
+			<button
+				(click)="toggleKeyVisibility()"
+				class="tw-flex tw-items-center tw-justify-center hover:tw-text-gray-500">
+				<mat-icon>
+					{{ keyIsVisible() ? 'visibility_off' : 'visibility' }}
+				</mat-icon>
+			</button>
+
+			<button
+				(click)="copyApiKey()"
+				class="tw-flex tw-items-center tw-justify-center hover:tw-text-gray-500">
+				<mat-icon>content_copy</mat-icon>
+			</button>
+		</div>
+
+		<span>Save this key securely. It will not be accessible again.</span>
+	}
+	<div class="tw-inline-flex tw-overflow-x-auto tw-rounded-lg tw-border">
+		<table>
+			<thead class="tw-rounded-t-lg tw-bg-gray-500">
+				<tr>
+					<th class="tw-px-4 tw-py-2">API Token Name</th>
+					<th class="tw-px-4 tw-py-2">Scopes</th>
+					<th class="tw-px-4 tw-py-2">Creation Date</th>
+					<th class="tw-px-4 tw-py-2">Expiration Date</th>
+					<th class="tw-px-4 tw-py-2">Action</th>
+				</tr>
+			</thead>
+			<tbody class="tw-divide-y tw-divide-gray-500">
+				@for (apiKey of apiKeys(); track apiKey) {
+					<tr>
+						<td class="tw-px-4 tw-py-2 tw-text-center">
+							{{ apiKey.name }}
+						</td>
+						<td class="tw-px-4 tw-py-2 tw-text-center">
+							{{ scopesToString(apiKey.scopes) }}
+						</td>
+						<td class="tw-px-4 tw-py-2 tw-text-center">
+							{{ apiKey.creationDate }}
+						</td>
+						<td class="tw-px-4 tw-py-2 tw-text-center">
+							{{ apiKey.expirationDate }}
+						</td>
+						<td class="tw-px-4 tw-py-2">
+							<button
+								class="tw-flex tw-items-center tw-justify-center tw-rounded tw-bg-warning-500 tw-p-2 tw-text-white hover:tw-bg-warning-700"
+								(click)="deleteApiKey(apiKey)">
+								<mat-icon>delete</mat-icon>
+							</button>
+						</td>
+					</tr>
+				}
+				@if (apiKeys().length === 0) {
+					<tr>
+						<td
+							class="tw-py-2 tw-text-center"
+							colspan="5">
+							You have no active Api Keys.
+						</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+</div>

@@ -59,6 +59,11 @@ export const routes: Routes = [
 		loadChildren: () => import('./grid-commander/grid-commander.routes'),
 	},
 	{
+		path: 'apiKey',
+		loadChildren: () =>
+			import('./api-key-management/api-key-management.routes'),
+	},
+	{
 		path: 'server/health',
 		canActivate: [RoleGuard],
 		data: { requiredRoles: serverHealth?.requiredRoles },
