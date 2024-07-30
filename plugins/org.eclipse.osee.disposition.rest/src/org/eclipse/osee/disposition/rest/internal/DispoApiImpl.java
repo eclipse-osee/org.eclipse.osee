@@ -95,7 +95,7 @@ public class DispoApiImpl implements DispoApi {
    private OrcsApi orcsApi;
    private AtsApi atsApi;
 
-   private static final Pattern gitlabApiPattern = Pattern.compile("^.*projects.*?jobs.*?artifacts$");
+   private static final Pattern gitlabApiPattern = Pattern.compile("^.*projects.*?jobs.*?artifacts/?$");
 
    private volatile DispoApiConfiguration config;
 

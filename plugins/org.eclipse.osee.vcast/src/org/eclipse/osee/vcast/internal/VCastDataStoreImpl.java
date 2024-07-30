@@ -618,10 +618,10 @@ public class VCastDataStoreImpl implements VCastDataStore {
       try {
          // @formatter:off
          String query =
-            "WITH temp as (SELECT sc.id as sc_id, mcdc.id as mcdc_id, sc.hit_count, sc.max_hit_count, sc.line, mcdc.id, mcdc.simplified_expr, mcdc.num_conditions"+
+            "WITH temp as (SELECT sc.id as sc_id, mcdc.id as cov_mcdc_id, sc.hit_count, sc.max_hit_count, sc.line, mcdc.id, mcdc.simplified_expr, mcdc.num_conditions"+
             " FROM statement_coverage sc left outer join mcdc_coverage mcdc on (sc.line = mcdc.line and sc.function_id = mcdc.function_id)"+
-            " where sc.function_id = ?) select temp.sc_id, temp.line, temp.mcdc_id, temp.hit_count, temp.max_hit_count, temp.simplified_expr, temp.num_conditions, mcdc_c.cond_index,"+
-            " mcdc_c.cond_variable, mcdc_c.cond_expr from temp left outer join mcdc_coverage_conditions mcdc_c on temp.mcdc_id = mcdc_c.mcdc_id";
+            " where sc.function_id = ?) select sc_id, line, mcdc_id, hit_count, max_hit_count, simplified_expr, num_conditions, cond_index,"+
+            " cond_variable, cond_expr from temp left outer join mcdc_coverage_conditions mcdc_c on temp.cov_mcdc_id = mcdc_c.mcdc_id";
          // @formatter:on
 
          stmt.runPreparedQuery(query, function.getId());
