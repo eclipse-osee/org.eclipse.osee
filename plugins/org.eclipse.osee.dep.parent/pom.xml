@@ -11,6 +11,10 @@
 
 	<modules>
 		<module>../../plugins/org.eclipse.oss.ajax</module>
+	  	<module>../../plugins/org.eclipse.nebula.widgets.xviewer</module>
+		<module>../../plugins/org.eclipse.nebula.widgets.xviewer.core</module>
+			<module>../../plugins/org.eclipse.nebula.widgets.xviewer.feature</module>
+	
 		<module>../../features/org.eclipse.osee.dep.feature</module>
 		<module>../../plugins/org.eclipse.osee.dep.p2</module>
 	</modules>
@@ -44,9 +48,10 @@
 		<orbit-site>https://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
 		  <eclipse-site>https://download.eclipse.org/releases/2020-06/202006171000/</eclipse-site>
 	<!--  	<eclipse-site>https://download.eclipse.org/releases/2020-06/202006171000</eclipse-site> -->
+			<nebula-site>https://download.eclipse.org/nebula/updates/release/${nebula-version}</nebula-site>
+		
 		<eclipse-ip-site>https://github.com/osee-dev/osee.external.releases/raw/master/org.eclipse.ip</eclipse-ip-site>
 		<papyrus-site>https://download.eclipse.org/modeling/mdt/papyrus/updates/releases/2020-06/202006171000/</papyrus-site>
-		<nebula-site>https://download.eclipse.org/nebula/updates/release/${nebula-version}</nebula-site>
 	<subversive-site>https://download.eclipse.org/technology/subversive/${subversive-version}/update-site</subversive-site>
 	<polarion-site>https://community.polarion.com/projects/subversive/download/eclipse/6.0/neon-site</polarion-site>
 	<emma-site>https://s3.amazonaws.com/update.eclemma.org</emma-site>
@@ -80,6 +85,12 @@
              <url>file:./../org.eclipse.oss.ajax.p2/target/repository</url>
           </repository>
     -->
+     <repository>
+		<id>nebula</id>
+		<layout>p2</layout>
+	        <url>${nebula-site}</url>
+           </repository>
+ 
           <repository>
                <id>osgi-repo</id>
                <layout>p2</layout>
@@ -128,11 +139,6 @@
 		<url>${eclipse-site}</url>
 	   </repository>
 	
-           <repository>
-		<id>nebula</id>
-		<layout>p2</layout>
-	        <url>${nebula-site}</url>
-           </repository>
 
            <repository>
 		<id>subversive</id>

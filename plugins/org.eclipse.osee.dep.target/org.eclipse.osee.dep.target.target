@@ -4,6 +4,8 @@
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.osee.dep.feature.feature.group"/>
 <unit id="org.eclipse.osee.dep.feature.source.feature.group"/>
+<unit id="org.eclipse.nebula.widgets.xviewer.feature.feature.group"/>
+<unit id="org.eclipse.nebula.widgets.xviewer.feature.source.feature.group"/>
 <repository location="file:${OSEE_REPO}/plugins/org.eclipse.osee.dep.p2/target/repository/"/>
 </location>
 </locations>

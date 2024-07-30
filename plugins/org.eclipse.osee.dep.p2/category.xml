@@ -6,6 +6,13 @@
    <feature url="features/org.eclipse.osee.dep.feature.source_1.0.0.qualifier.jar" id="org.eclipse.osee.dep.feature.source" version="1.0.0.qualifier">
       <category name="org.eclipse.osee.dep"/>
    </feature>
+   <feature url="features/org.eclipse.nebula.widgets.xviewer.feature_1.0.0.qualifier.jar" id="org.eclipse.nebula.widgets.xviewer.feature" version="1.0.0.qualifier">
+      <category name="org.eclipse.nebula.widgets.xviewer"/>
+   </feature>
+   <feature url="features/org.eclipse.nebula.widgets.xviewer.feature.source_1.0.0.qualifier.jar" id="org.eclipse.nebula.widgets.xviewer.feature.source" version="1.0.0.qualifier">
+      <category name="org.eclipse.nebula.widgets.xviewer"/>
+   </feature>
+
    <category-def name="org.eclipse.osee.dep" label="Eclipse OSEE Deps - (Incubation)">
       <description>
          Eclipse OSEE Runtime - (Incubation)

@@ -17,6 +17,10 @@
       %license
    </license>
 
+	<includes
+         id="org.eclipse.nebula.widgets.ganttchart.feature"
+         version="0.0.0"/>
+
    <includes
          id="org.eclipse.jgit.lfs"
          version="0.0.0"/>
@@ -233,13 +237,6 @@
          id="org.eclipse.rcp"
          version="0.0.0"/>
 
-   <includes
-         id="org.eclipse.nebula.widgets.ganttchart.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.eclipse.nebula.widgets.xviewer.feature"
-         version="0.0.0"/>
 
    <includes
          id="org.eclipse.e4.rcp"
@@ -796,26 +793,6 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="org.eclipse.nebula.widgets.ganttchart"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.nebula.widgets.xviewer"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.nebula.widgets.xviewer.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="org.eclipse.team.svn"
@@ -1044,13 +1021,6 @@
 
    <plugin
          id="lpg.runtime.java"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.nebula.widgets.cdatetime"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -2398,6 +2368,12 @@
          install-size="0"
          version="1.2.2.v20221203-1659"
          unpack="false"/>   
-                      
+   
+   <plugin
+         id="org.eclipse.nebula.widgets.ganttchart"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>                   
                   
 </feature>

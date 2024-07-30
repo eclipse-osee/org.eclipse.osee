@@ -18,6 +18,10 @@
    </license>
 
    <includes
+         id="org.eclipse.nebula.widgets.xviewer.feature"
+         version="0.0.0"/>
+
+   <includes
          id="org.eclipse.osee.framework.feature"
          version="0.0.0"/>
 

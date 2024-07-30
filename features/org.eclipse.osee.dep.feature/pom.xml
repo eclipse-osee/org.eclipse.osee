@@ -211,7 +211,6 @@
 								<feature id="org.eclipse.xtend.sdk" />
 								<feature id="org.eclipse.xtext.docs" />
 								<feature id="org.eclipse.nebula.widgets.ganttchart.feature" />
-								<feature id="org.eclipse.nebula.widgets.xviewer.feature" />
 								<feature id="org.eclipse.equinox.executable" />
 								<feature id="org.eclipse.equinox.p2.discovery.feature" />
 								<feature id="org.eclipse.equinox.p2.sdk" />

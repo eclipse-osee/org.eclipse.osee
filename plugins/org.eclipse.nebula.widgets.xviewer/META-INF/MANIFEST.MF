@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: XViewer Widget
+Bundle-SymbolicName: org.eclipse.nebula.widgets.xviewer;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.eclipse.nebula.widgets.xviewer.Activator
+Bundle-Vendor: Eclipse Nebula
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.ui.forms,
+ org.eclipse.swt
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Export-Package: org.eclipse.nebula.widgets.xviewer,
+ org.eclipse.nebula.widgets.xviewer.action,
+ org.eclipse.nebula.widgets.xviewer.column,
+ org.eclipse.nebula.widgets.xviewer.customize,
+ org.eclipse.nebula.widgets.xviewer.customize.dialog,
+ org.eclipse.nebula.widgets.xviewer.edit,
+ org.eclipse.nebula.widgets.xviewer.util
+Eclipse-ExtensibleAPI: true
+Import-Package: org.eclipse.nebula.widgets.xviewer.core.model,
+ org.eclipse.nebula.widgets.xviewer.core.util
