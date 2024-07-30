@@ -50,7 +50,6 @@ jobs:
           POSTGRES_PASSWORD: osee
           POSTGRES_USER: osee
           POSTGRES_DB: osee
-          POSTGRES_HOST_AUTH_METHOD: trust # REMOVE WHEN POSTGRES DRIVER HAS BEEN UPDATED
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
