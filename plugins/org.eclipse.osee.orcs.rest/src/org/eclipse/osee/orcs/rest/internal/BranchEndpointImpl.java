@@ -469,7 +469,9 @@ public class BranchEndpointImpl implements BranchEndpoint {
          }
       } else {
          // Mark current working branch as REBASELINE_IN_PROGRESS
-         setBranchState(branchId, BranchState.REBASELINE_IN_PROGRESS);
+         try (Response res = setBranchState(branchId, BranchState.REBASELINE_IN_PROGRESS);) {
+            // Empty block to close resource
+         }
 
          // Create the new working branch
          branchData = updateBranch(parentBranchId, branchData);
@@ -478,13 +480,18 @@ public class BranchEndpointImpl implements BranchEndpoint {
       // Check if the source branch has any changes. If not, set the new branch as the current working branch and delete the source branch.
       if (updateData.getSourceBranchBaselineTx().equals(branchTx)) {
          String originalBranchName = updateData.getSourceBranchName();
-         setBranchName(branchId, branchData.getToName());
-         setBranchName(branchData.getNewBranchId(), originalBranchName);
-         associateBranchToArtifact(branchData.getNewBranchId(), updateData.getSourceBranchAssociatedArtifact());
+         try (
+            Response res =
+               associateBranchToArtifact(branchData.getNewBranchId(), updateData.getSourceBranchAssociatedArtifact());
+            Response res2 = setBranchName(branchId, branchData.getToName());
+            Response res3 = setBranchName(branchData.getNewBranchId(), originalBranchName);
+            Response res4 = setBranchState(branchId, BranchState.DELETE_IN_PROGRESS);
+            Response res5 = archiveBranch(branchId);
+            Response res6 = setBranchState(branchId, BranchState.DELETED);
 
-         setBranchState(branchId, BranchState.DELETE_IN_PROGRESS);
-         archiveBranch(branchId);
-         setBranchState(branchId, BranchState.DELETED);
+         ) {
+            // Empty block to close resource
+         }
 
          branchData.getResults().clear();
          branchData.getResults().addRaw(
@@ -525,10 +532,13 @@ public class BranchEndpointImpl implements BranchEndpoint {
       commitBranch(branchId, branchData.getNewBranchId(), options);
 
       String originalBranchName = updateData.getSourceBranchName();
-      setBranchName(branchId, branchData.getToName());
-      setBranchName(branchData.getNewBranchId(), originalBranchName);
-      associateBranchToArtifact(branchData.getNewBranchId(), updateData.getSourceBranchAssociatedArtifact());
-      setBranchState(branchId, BranchState.REBASELINED);
+      try (Response res = setBranchName(branchId, branchData.getToName());
+         Response res2 = setBranchName(branchData.getNewBranchId(), originalBranchName);
+         Response res3 =
+            associateBranchToArtifact(branchData.getNewBranchId(), updateData.getSourceBranchAssociatedArtifact());
+         Response res4 = setBranchState(branchId, BranchState.REBASELINED);) {
+         //Empty block to close resources
+      }
 
       branchData.getResults().clear();
       branchData.getResults().addRaw(

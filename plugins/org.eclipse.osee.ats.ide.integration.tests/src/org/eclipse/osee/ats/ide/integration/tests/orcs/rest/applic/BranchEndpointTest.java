@@ -514,8 +514,9 @@ public class BranchEndpointTest {
 
       if (testBranch != null) {
          Assert.assertTrue(branchEndpoint.getBranchById(testBranch).getAssociatedArtifact().notEqual(testArtifact));
-         Response res = branchEndpoint.associateBranchToArtifact(testBranch, testArtifact);
-         res.close();
+         try (Response res = branchEndpoint.associateBranchToArtifact(testBranch, testArtifact);) {
+            // Empty block to close resource
+         }
 
          Assert.assertTrue(branchEndpoint.getBranchById(testBranch).getAssociatedArtifact().equals(testArtifact));
          // put db back to original state by purging the branch
@@ -699,7 +700,9 @@ public class BranchEndpointTest {
       }
 
       BranchId testBranch = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
-      branchEndpoint.associateBranchToArtifact(testBranch, ArtifactId.valueOf("12345"));
+      try (Response res = branchEndpoint.associateBranchToArtifact(testBranch, ArtifactId.valueOf("12345"));) {
+         // Empty block so resource gets closed
+      }
 
       // Make a change to the parent branch
       BranchId testBranch2 = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
@@ -748,7 +751,9 @@ public class BranchEndpointTest {
       }
 
       BranchId testBranch = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
-      branchEndpoint.associateBranchToArtifact(testBranch, ArtifactId.valueOf("55555"));
+      try (Response res = branchEndpoint.associateBranchToArtifact(testBranch, ArtifactId.valueOf("55555"))) {
+         // Empty block to close resource
+      }
 
       // Create new artifact on the first test branch
       setArtifactEndpoint(testBranch);
@@ -772,7 +777,9 @@ public class BranchEndpointTest {
       }
 
       BranchId testBranch = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
-      branchEndpoint.associateBranchToArtifact(testBranch, ArtifactId.valueOf("112233"));
+      try (Response res = branchEndpoint.associateBranchToArtifact(testBranch, ArtifactId.valueOf("112233"));) {
+         // Empty block to close resource
+      }
 
       // Create a new artifact on the second test branch and commit to the parent branch
       BranchId testBranch2 = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
@@ -839,7 +846,9 @@ public class BranchEndpointTest {
 
       // Create test branch
       BranchId testBranch = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
-      branchEndpoint.associateBranchToArtifact(testBranch, ArtifactId.valueOf("332211"));
+      try (Response res = branchEndpoint.associateBranchToArtifact(testBranch, ArtifactId.valueOf("332211"));) {
+         // Empty block to close resource
+      }
 
       // Create test branch and modify the new artifact to cause a conflict
       BranchId testBranch3 = branchEndpoint.createBranch(testDataInitialization(DemoBranches.SAW_PL));
