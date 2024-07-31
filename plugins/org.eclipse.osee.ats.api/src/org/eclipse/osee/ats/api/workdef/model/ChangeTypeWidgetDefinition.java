@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.api.workdef.model;
 
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -27,7 +28,8 @@ public class ChangeTypeWidgetDefinition extends WidgetDefinition {
    }
 
    public ChangeTypeWidgetDefinition(boolean isAttr, ChangeTypes... changeTypes) {
-      super("Change Type", (isAttr ? "XHyperlinkChangeTypeSelectionDam" : "XHyperlinkChangeTypeSelection"));
+      super("Change Type", AtsAttributeTypes.ChangeType,
+         (isAttr ? "XHyperlinkChangeTypeSelectionDam" : "XHyperlinkChangeTypeSelection"));
       if (changeTypes != null) {
          addParameter("ChangeType", Collections.toString(";", Collections.asList(changeTypes)));
       } else {

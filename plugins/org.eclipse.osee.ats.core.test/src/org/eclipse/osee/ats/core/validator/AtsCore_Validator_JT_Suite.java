@@ -23,17 +23,15 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    AtsCoreXWidgetValidatorProviderTest.class,
    AtsXWidgetValidatorTest.class,
-   AtsXTextValidatorTest.class,
    AtsXNumberValidatorTest.class,
    AtsXDateValidatorTest.class,
    AtsXListValidatorTest.class,
    AtsXComboBooleanValidatorTest.class,
-   AtsXComboValidatorTest.class,
    AtsXWidgetValidateManagerTest.class,
    WidgetStatusTest.class})
 /**
  * This test suite contains tests that can be run as stand-alone JUnit tests (JT)
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsCore_Validator_JT_Suite {

@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2021 Boeing
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -16,23 +16,28 @@ package org.eclipse.osee.ats.core.validator;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IValueProvider;
+import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 
 /**
- * @author Donald G. Dunne
+ * @author Vaibhav Patel
  */
-public class AtsXCheckBoxThreeStateValidator extends AtsXWidgetValidator {
+public class AtsDefaultAttrValidator extends AtsXWidgetValidator {
 
    @Override
-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
+   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+      StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
       WidgetResult result = WidgetResult.Success;
-      if ("XCheckBoxThreeStateDam".equals(widgetDef.getXWidgetName())) {
+      /*
+       * Required flags are checked here to avoid validating not required fields. Actual logic is implemented in the
+       * validateWidgetIsRequired method.
+       */
+      if ((widgetDef.getOptions().contains(WidgetOption.REQUIRED_FOR_COMPLETION) || widgetDef.getOptions().contains(
+         WidgetOption.REQUIRED_FOR_TRANSITION)) && widgetDef.getAttributeType() != AttributeTypeToken.SENTINEL) {
          result = validateWidgetIsRequired(provider, widgetDef, fromStateDef, toStateDef);
-         if (!result.isSuccess()) {
-            return result;
-         }
       }
       return result;
    }

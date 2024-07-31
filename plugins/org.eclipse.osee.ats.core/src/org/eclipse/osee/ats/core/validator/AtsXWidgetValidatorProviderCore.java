@@ -31,22 +31,12 @@ public class AtsXWidgetValidatorProviderCore implements IAtsXWidgetValidatorProv
       if (atsValidators == null) {
          atsValidators = new ArrayList<>();
          atsValidators.add(new AtsXNumberValidator());
-         atsValidators.add(new AtsXTextValidator());
+         atsValidators.add(new AtsDefaultAttrValidator());
          atsValidators.add(new AtsXDateValidator());
-         atsValidators.add(new AtsXComboValidator());
          atsValidators.add(new AtsXComboBooleanValidator());
          atsValidators.add(new AtsXListValidator());
-         atsValidators.add(new AtsXSignByAndDateWidgetValidator());
          atsValidators.add(new AtsXPointsAttrValidator());
-         atsValidators.add(new AtsXHyperlinkWfdForEnumAttrValidator());
-         atsValidators.add(new AtsXHyperlinkLabelDateValidator());
-         atsValidators.add(new AtsXHyperlinkLabelValueSelectionValidator());
-         atsValidators.add(new AtsXHyperlinkLabelEnumeratedArtValidator());
-         atsValidators.add(new AtsXCheckBoxThreeStateValidator());
-         atsValidators.add(new AtsXHyperlinkTriStateBooleanValidator());
          atsValidators.add(new AtsWalktrhoughAttrValidator());
-         atsValidators.add(new AtsXHyperlinkWithFilteredDialogValidator());
-         atsValidators.add(new AtsXHyperlinkMemberSelValidator());
          atsValidators.add(new AtsXUserRoleValidator());
          atsValidators.add(new AtsXCommitManagerValidator());
          atsValidators.add(new AtsOperationalImpactValidator());
