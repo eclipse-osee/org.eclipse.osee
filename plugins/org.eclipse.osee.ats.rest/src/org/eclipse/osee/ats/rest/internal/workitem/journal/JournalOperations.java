@@ -109,12 +109,30 @@ public class JournalOperations {
             for (AtsUser user : subscribedUsers) {
                atsApi.getNotificationService().sendNotifications(fromEmail, Collections.singleton(user.getEmail()),
                   getSubject(), getBody(user));
+
+               String abridgedEmail = atsApi.getUserService().getAbridgedEmail(user.getArtifactToken(), atsApi);
+               if (EmailUtil.isEmailValid(abridgedEmail)) {
+                  atsApi.getNotificationService().sendNotifications(fromEmail, Collections.singleton(abridgedEmail),
+                     getAbrigedSubject(), getAbridgedBody());
+               }
             }
          }
       } catch (Exception ex) {
          journalData.getResults().errorf("Exception sending Journal notification %s", Lib.exceptionToString(ex));
       }
       return journalData;
+   }
+
+   private String getAbrigedSubject() {
+      return String.format("Journal for \"%s\"", workItem.getAtsId());
+   }
+
+   private String getAbridgedBody() {
+      StringBuilder sb = new StringBuilder();
+      sb.append("<html><body>A journal entry has been added in OSEE and requires your response.<br/>");
+      sb.append("Please visit OSEE to review.<br/>");
+      sb.append("</body></html>");
+      return sb.toString();
    }
 
    private String getBody(AtsUser user) {

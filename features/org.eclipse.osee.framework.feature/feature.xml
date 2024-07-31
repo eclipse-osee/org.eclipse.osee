@@ -30,10 +30,23 @@
       <import plugin="org.apache.commons.dbcp" version="1.4.0" match="compatible"/>
       <import plugin="org.apache.commons.pool" version="1.6.0" match="compatible"/>
       <import plugin="org.jsoup"/>
-      <import plugin="org.hsqldb"/>
       <import plugin="org.hamcrest.core" version="1.3.0" match="greaterOrEqual" />		      
    </requires>
-
+  
+  <plugin
+	 id="org.hsqldb.hsqldb"
+	 download-size="0"
+	 install-size="0"
+	 version="0.0.0"
+	 unpack="false"/>
+   
+   <plugin
+	 id="org.apache.ws.xmlschema.core"
+	 download-size="0"
+	 install-size="0"
+	 version="0.0.0"
+	 unpack="false"/>
+		   
    <plugin
          id="com.google.protobuf"
          download-size="0"
@@ -42,34 +55,34 @@
          unpack="false"/>
 
   <plugin	
-		id="commons-lang3"
-		download-size="0"
-      install-size="0"
-      version="0.0.0"
-      unpack="false"/>
+	id="org.apache.commons.lang3"
+	download-size="0"
+        install-size="0"
+        version="0.0.0"
+        unpack="false"/>
 
   <plugin
-         id="jackson-datatype-jsr310"
+         id="com.fasterxml.jackson.datatype.jackson-datatype-jsr310"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
   
   <plugin
-         id="snakeyaml"
+         id="org.yaml.snakeyaml"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
- <plugin
-         id="jackson-dataformat-yaml"
+  <plugin
+         id="com.fasterxml.jackson.dataformat.jackson-dataformat-yaml"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
- <plugin
+  <plugin
          id="javax.validation"
          download-size="0"
          install-size="0"
@@ -77,53 +90,53 @@
          unpack="false"/>
 
    <plugin
-         id="swagger-annotations"
+         id="io.swagger.core.v3.swagger-annotations"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-     <plugin
-         id="swagger-core"
+   
+   <plugin
+         id="io.swagger.core.v3.swagger-core"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="swagger-jaxrs2"
+         id="io.swagger.core.v3.swagger-jaxrs2"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="swagger-integration"
+         id="io.swagger.core.v3.swagger-integration"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 	   
    <plugin
-         id="swagger-models"
+         id="io.swagger.core.v3.swagger-models"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
- <plugin
+   <plugin
          id="org.eclipse.sphinx.emf.serialization"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>  
 
- <plugin
+  <plugin
          id="org.apache.commons.math3"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
 
    <plugin
          id="org.apache.commons.collections4"
@@ -181,35 +194,28 @@
          version="0.0.0"
          unpack="false"/>
 
-  <plugin
-         id="com.sun.xml.txw2"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-	
-	<plugin
-         id="org.eclipse.jgit.ssh.jsch"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-  <plugin
-         id="jakarta.activation-api"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
  <plugin
          id="org.glassfish.jaxb.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+	
+   <plugin
+         id="org.eclipse.jgit.ssh.jsch"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
- <plugin
+   <plugin
+         id="jakarta.activation-api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.glassfish.jaxb.runtime"
          download-size="0"
          install-size="0"
@@ -217,18 +223,18 @@
          unpack="false"/>
 
    <plugin
-         id="org.glassfish.hk2.osgi-resource-locator"
+         id="jakarta.xml.bind"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-  <plugin
+         
+   <plugin
          id="jakarta.xml.bind-api"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
+         unpack="false"/>       
   
   <plugin
          id="com.sun.istack.commons-runtime"
@@ -249,6 +255,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+  
    <plugin
          id="javax.xml.bind"
          download-size="0"
@@ -324,7 +331,7 @@
          id="javax.activation"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.1.0.v201211130549"
          unpack="false"/>
   
    <plugin
@@ -375,18 +382,21 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>  
-         <plugin
+   
+   <plugin
          id="org.eclipse.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>				     
-    <plugin
+    
+   <plugin
          id="org.eclipse.ui.browser"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>								
+   
    <plugin
          id="org.apache.cxf.cxf-rt-rs-security-oauth2"
          download-size="0"
@@ -394,14 +404,14 @@
          version="0.0.0"
          unpack="false"/>
           
-    <plugin
+   <plugin
          id="org.apache.cxf.cxf-rt-rs-client"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
  
-     <plugin
+   <plugin
          id="org.apache.cxf.cxf-rt-frontend-jaxrs"
          download-size="0"
          install-size="0"
@@ -415,19 +425,20 @@
          version="0.0.0"
          unpack="false"/>
 
-	<plugin
+    <plugin
          id="javax.xml"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false" />
 
-	<plugin
+    <plugin
          id="javax.xml.stream"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false" />
+   
    <plugin
          id="javax.xml.rpc"
          download-size="0"
@@ -467,13 +478,13 @@
          install-size="0"
          version="0.0.0"/>
          
-    <plugin
+   <plugin
          id="org.eclipse.jdt.core"
          download-size="0"
          install-size="0"
          version="0.0.0"/>     
          
-    <plugin
+   <plugin
          id="org.eclipse.jdt.annotation"
          download-size="0"
          install-size="0"
@@ -486,14 +497,14 @@
          version="0.0.0"
          unpack="false"/>
 
-  <plugin
+   <plugin
          id="org.objenesis"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false" /> 
 
-  <plugin
+    <plugin
          id="org.mockito"
          download-size="0"
          install-size="0"
@@ -502,7 +513,7 @@
 			
    <plugin
          id="org.eclipse.osee.framework.skynet.core"
-	      download-size="0"
+	 download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
@@ -577,14 +588,14 @@
          version="0.0.0"
          unpack="false"/>
 
-    <plugin
-         id="org.postgresql.driver"
+   <plugin
+         id="org.postgresql.jdbc"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
    
-      <plugin
+   <plugin
          id="org.antlr.runtime"
          download-size="0"
          install-size="0"
@@ -648,133 +659,133 @@
          unpack="false"/>   
   
    <plugin
-         id="autolink"
+         id="org.nibor.autolink"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
   
    <plugin
-         id="flexmark-ext-gitlab"
+         id="com.vladsch.flexmark.ext-gitlab"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 	  
    <plugin
-         id="flexmark-ext-autolink"
+         id="com.vladsch.flexmark.ext-autolink"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
  
    <plugin
-         id="flexmark-ext-toc"
+         id="com.vladsch.flexmark.ext-toc"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
   
    <plugin
-         id="flexmark-ext-tables"
+         id="com.vladsch.flexmark.ext-tables"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
   
    <plugin
-         id="flexmark-ext-gfm-tasklist"
+         id="com.vladsch.flexmark.ext-gfm-tasklist"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
    
    <plugin
-         id="flexmark"
+         id="com.vladsch.flexmark"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
   <plugin
-         id="flexmark-util-format"
+         id="com.vladsch.flexmark.util-format"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
   <plugin
-         id="flexmark-util-dependency"
+         id="com.vladsch.flexmark.util-dependency"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
   <plugin
-         id="flexmark-util-html"
+         id="com.vladsch.flexmark.util-html"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="flexmark-util-ast"
+         id="com.vladsch.flexmark.util-ast"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="flexmark-util-sequence"
+         id="com.vladsch.flexmark.util-sequence"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="flexmark-util-builder"
+         id="com.vladsch.flexmark.util-builder"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="flexmark-util-collection"
+         id="com.vladsch.flexmark.util-collection"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="flexmark-util-data"
+         id="com.vladsch.flexmark.util-data"
          download-size="0"
          install-size="0"
          version="0.0.0"
-	      unpack="false"/>
+	 unpack="false"/>
 
    <plugin
-         id="flexmark-util-misc"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="flexmark-util-visitor"
+         id="com.vladsch.flexmark.util-misc"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="flexmark-util-options"
+         id="com.vladsch.flexmark.util-visitor"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="annotations"
+         id="com.vladsch.flexmark.util-options"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.jetbrains.annotations"
          download-size="0"
          install-size="0"
          version="0.0.0"

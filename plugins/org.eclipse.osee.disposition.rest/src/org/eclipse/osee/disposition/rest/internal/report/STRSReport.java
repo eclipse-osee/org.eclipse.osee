@@ -140,7 +140,7 @@ public class STRSReport {
       int reqCount = 0;
       int other = 0;
       for (DispoAnnotationData annotation : annotationList) {
-         if (annotation.isValid()) {
+         if (annotation.isResolutionValid()) {
             String resolutionType = annotation.getResolutionType();
             if (resolutionType != null) {
                if (resolutionType.equalsIgnoreCase("CODE")) {

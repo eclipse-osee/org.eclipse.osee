@@ -13,23 +13,13 @@
 import {
 	ChangeDetectionStrategy,
 	Component,
-	Output,
 	inject,
-	model,
-	signal,
+	output,
 } from '@angular/core';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { MatIcon } from '@angular/material/icon';
-import { MatFormField } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatDivider } from '@angular/material/divider';
-import { MatList } from '@angular/material/list';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HeaderService } from '@osee/shared/services';
 import { CiDetailsService } from '../../../services/ci-details.service';
-import { Subject } from 'rxjs';
 import { ResultReference } from '../../../types';
 import { scriptResListHeaderDetails } from '../../../table-headers/script-headers';
 import {
@@ -49,56 +39,73 @@ import { MatTooltip } from '@angular/material/tooltip';
 @Component({
 	selector: 'osee-result-list',
 	standalone: true,
-	template: `<ng-container *ngIf="scriptResults | async as _results">
-		<div class="mat-elevation-z8 tw-max-h-96 tw-overflow-scroll">
+	template: `@if (scriptResults | async; as _results) {
+		<div class="mat-elevation-z8 tw-max-h-96 tw-w-full tw-overflow-auto">
 			<mat-table [dataSource]="_results">
-				<ng-container
-					[matColumnDef]="header"
-					*ngFor="let header of headers">
-					<th
-						mat-header-cell
-						*matHeaderCellDef
-						class="tw-text-center tw-align-middle tw-font-medium tw-text-primary-600"
-						[matTooltip]="
-							(getTableHeaderByName(header) | async)
-								?.description || ''
-						">
-						{{
-							(getTableHeaderByName(header) | async)
-								?.humanReadable || ''
-						}}
-					</th>
-					<td
-						mat-cell
-						*matCellDef="let result"
-						class="tw-align-middle">
-						<ng-container *ngIf="header === 'executionDate'">
-							<button
-								mat-list-item
-								(click)="setResultId(result.id)">
+				@for (header of headers; track $index) {
+					<ng-container [matColumnDef]="header">
+						<th
+							mat-header-cell
+							*matHeaderCellDef
+							class="tw-text-center tw-align-middle tw-font-medium tw-text-primary-600"
+							[matTooltip]="
+								(getTableHeaderByName(header) | async)
+									?.description || ''
+							">
+							{{
+								(getTableHeaderByName(header) | async)
+									?.humanReadable || ''
+							}}
+						</th>
+						<td
+							mat-cell
+							*matCellDef="let result"
+							class="tw-align-middle">
+							@if (header === 'executionDate') {
+								<button
+									mat-list-item
+									(click)="setResultId(result.id)">
+									{{ result[header] }}
+								</button>
+							} @else if (header === 'failedCount') {
+								<div
+									class="tw-m-auto tw-h-5 tw-w-5 tw-rounded-full"
+									[ngClass]="{
+										'tw-bg-accent': result.scriptAborted,
+										'tw-bg-warning':
+											!result.scriptAborted &&
+											result.failedCount > 0,
+										'tw-bg-success':
+											!result.scriptAborted &&
+											result.failedCount === 0
+									}"
+									[matTooltip]="
+										result.scriptAborted
+											? 'Aborted'
+											: result.failedCount > 0
+											  ? 'Failed'
+											  : 'Passed'
+									"></div>
+							} @else {
 								{{ result[header] }}
-							</button>
-						</ng-container>
-						<ng-container *ngIf="header !== 'executionDate'">
-							{{ result[header] }}
-						</ng-container>
-					</td>
-				</ng-container>
+							}
+						</td>
+					</ng-container>
+				}
 				<tr
 					mat-header-row
 					*matHeaderRowDef="headers; sticky: true"></tr>
 				<tr
 					mat-row
 					*matRowDef="let row; columns: headers; let i = index"
-					class="odd:tw-bg-selected-button even:tw-bg-background-background"
+					class="odd:tw-bg-selected-button tw-w-full even:tw-bg-background-background"
 					[attr.data-cy]="'script-result-table-row-' + row.name"></tr>
 			</mat-table>
 		</div>
-	</ng-container>`,
+	}`,
 	imports: [
 		AsyncPipe,
-		NgFor,
-		NgIf,
+		NgClass,
 		FormsModule,
 		MatTable,
 		MatColumnDef,
@@ -111,24 +118,18 @@ import { MatTooltip } from '@angular/material/tooltip';
 		MatHeaderRowDef,
 		MatRow,
 		MatRowDef,
-		MatList,
-		MatDivider,
-		MatDialogModule,
-		MatPaginator,
-		MatInput,
-		MatFormField,
-		MatIcon,
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResultListComponent {
 	ciDetailsService = inject(CiDetailsService);
 	headerService = inject(HeaderService);
+	resultId = output<`${number}`>();
 
 	scriptResults = this.ciDetailsService.scriptResults;
 
-	setResultId(resId: string) {
-		this.ciDetailsService.CiResultId = resId;
+	setResultId(resId: `${number}`) {
+		this.resultId.emit(resId);
 	}
 
 	getTableHeaderByName(header: keyof ResultReference) {
@@ -138,5 +139,5 @@ export class ResultListComponent {
 		);
 	}
 
-	headers: (keyof ResultReference)[] = ['executionDate'];
+	headers: (keyof ResultReference)[] = ['executionDate', 'failedCount'];
 }

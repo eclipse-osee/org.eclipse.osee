@@ -43,6 +43,7 @@ export const tabsMock: tab[] = [
 			],
 			relations: [],
 			editable: true,
+			operationTypes: [],
 		},
 		branchId: '789',
 		viewId: '0',

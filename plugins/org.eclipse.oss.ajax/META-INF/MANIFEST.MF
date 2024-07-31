@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSS AJAX Libraries
+Bundle-SymbolicName: org.eclipse.oss.ajax
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Open System Engineering Environment
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Osee-JaxRs-Resource: src/*;path=/ajax/libs

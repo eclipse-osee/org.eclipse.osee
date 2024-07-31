@@ -33,7 +33,6 @@ import org.junit.runners.Suite;
    WordOutlineAndStyleTest.class,
    WordTrackedChangesTest.class,
    FrameworkImageTest.class,
-   OseeEmailTest.class,
    HtmlRendererTest.class,
    ArtifactRendererTest.class,
    WordApplicabilityTest.class})

@@ -21,6 +21,7 @@ export type artifactWithRelations = {
 	attributes: attribute[];
 	relations: artifactRelation[];
 	editable: boolean;
+	operationTypes: operationType[];
 };
 
 export type artifactTypeIcon = {
@@ -55,6 +56,26 @@ export interface relationTypeToken {
 	relationArtifactType: string;
 }
 
+export interface operationType {
+	id: `${number}`;
+	name: string;
+	description: string;
+	materialIcon: artifactTypeIcon;
+}
+
+export const operationTypeMock: operationType = {
+	id: '1',
+	name: '',
+	description: '',
+	materialIcon: {
+		icon: '',
+		color: '',
+		lightShade: '',
+		darkShade: '',
+		variant: '',
+	},
+};
+
 export type artifactTokenWithIcon = {
 	id: `${number}`;
 	name: string;
@@ -76,4 +97,5 @@ export const artifactWithRelationsSentinel: artifactWithRelations = {
 	attributes: [],
 	relations: [],
 	editable: false,
+	operationTypes: [],
 };

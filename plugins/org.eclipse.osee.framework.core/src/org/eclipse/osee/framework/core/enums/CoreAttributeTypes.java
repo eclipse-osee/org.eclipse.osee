@@ -79,6 +79,7 @@ import org.eclipse.osee.framework.core.publishing.CuiCategoryIndicator;
 import org.eclipse.osee.framework.core.publishing.CuiTypeIndicator;
 import org.eclipse.osee.framework.core.publishing.FormatIndicator;
 import org.eclipse.osee.framework.core.util.toggles.CuiNamesConfiguration;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -88,6 +89,8 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public interface CoreAttributeTypes {
 
    // @formatter:off
+   
+   AttributeTypeString AbridgedEmail = osee.createString(1867950456941316571L, "Abridged Email", MediaType.TEXT_PLAIN, "");
 
    AttributeTypeString AccessContextId = osee.createString(1152921504606847102L, "Access Context Id", MediaType.TEXT_PLAIN, "", DisplayHint.SingleLine);
 
@@ -183,7 +186,7 @@ public interface CoreAttributeTypes {
               4024614255972662076L,
               MediaType.TEXT_PLAIN,
               NamespaceToken.OSEE,
-              TaggerTypeToken.SENTINEL
+              TaggerTypeToken.PlainTextTagger
            );
 
    /**
@@ -212,7 +215,7 @@ public interface CoreAttributeTypes {
               DataClassificationRationaleType::getConfiguredNameAndDescription,
               6697327397016528458L,
               MediaType.TEXT_PLAIN,
-              TaggerTypeToken.SENTINEL,
+              TaggerTypeToken.PlainTextTagger,
               NamespaceToken.OSEE,
               org.eclipse.osee.framework.core.enums.FileExtension.TXT.getFileExtension(),
               DisplayHint.MultiLine
@@ -244,7 +247,7 @@ public interface CoreAttributeTypes {
             DataRightsBasisType::getConfiguredNameAndDescription,
             72057594037928276L,
             MediaType.TEXT_PLAIN,
-            TaggerTypeToken.SENTINEL,
+            TaggerTypeToken.PlainTextTagger,
             NamespaceToken.OSEE,
             org.eclipse.osee.framework.core.enums.FileExtension.TXT.getFileExtension(),
             DisplayHint.MultiLine
@@ -282,7 +285,7 @@ public interface CoreAttributeTypes {
             1152921504606847317L,
             MediaType.TEXT_PLAIN,
             NamespaceToken.OSEE,
-            TaggerTypeToken.SENTINEL
+            TaggerTypeToken.PlainTextTagger
          );
 
    /**
@@ -869,7 +872,7 @@ public interface CoreAttributeTypes {
 
    AttributeTypeString PlainTextContent = osee.createString(1152921504606847866L, "Plain Text Content", MediaType.TEXT_PLAIN, "plain text file");
 
-   AttributeTypeString MarkdownContent = osee.createString(1152921504606847900L, "Markdown Content", "text/markdown", "text in markdown format", DisplayHint.MultiLine);
+   AttributeTypeString MarkdownContent = osee.createString(1152921504606847900L, "Markdown Content", "text/markdown", "text in markdown format", Collections.asHashSet(CoreOperationTypes.PublishMarkdownRecursiveWithChildrenWithSpecifiedTemplate), DisplayHint.MultiLine);
 
    AttributeTypeBoolean PotentialSecurityImpact = osee.createBoolean(1152921504606847109L, "Potential Security Impact", MediaType.TEXT_PLAIN, "");
 

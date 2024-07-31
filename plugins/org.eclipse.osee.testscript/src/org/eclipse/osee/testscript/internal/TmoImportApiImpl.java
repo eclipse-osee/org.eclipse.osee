@@ -124,10 +124,11 @@ public class TmoImportApiImpl implements TmoImportApi {
    }
 
    @Override
-   public TransactionResult importFile(InputStream stream, BranchId branch, ArtifactId ciSetId) {
-      TransactionResult result = new TransactionResult();
+   public TmoImportResult importFile(InputStream stream, BranchId branch, ArtifactId ciSetId) {
+      TransactionResult txResult = new TransactionResult();
       XResultData resultData = new XResultData();
-      result.setResults(resultData);
+      txResult.setResults(resultData);
+      TmoImportResult result = new TmoImportResult(txResult);
       File file = getTempFile(ciSetId);
 
       try {
@@ -187,7 +188,7 @@ public class TmoImportApiImpl implements TmoImportApi {
       try {
          TransactionBuilder tx = txBdf.loadFromJson(mapper.writeValueAsString(txData));
          TransactionToken token = tx.commit();
-         result.setTx(token);
+         txResult.setTx(token);
          resultData.setIds(
             tx.getTxDataReadables().stream().map(readable -> readable.getIdString()).collect(Collectors.toList()));
       } catch (JsonProcessingException ex) {
@@ -195,7 +196,7 @@ public class TmoImportApiImpl implements TmoImportApi {
       }
 
       // If the tx failed, remove files.
-      if (result.isFailed()) {
+      if (txResult.isFailed()) {
          if (zipPath.exists()) {
             zipPath.delete();
          }
@@ -205,7 +206,7 @@ public class TmoImportApiImpl implements TmoImportApi {
    }
 
    @Override
-   public TransactionResult importBatch(InputStream stream, BranchId branch, ArtifactId ciSetId) {
+   public TmoImportResult importBatch(InputStream stream, BranchId branch, ArtifactId ciSetId) {
       String batchId = System.currentTimeMillis() + (int) (Math.random() * 100) + "";
       String testEnvBatchId = "";
       List<String> fileNames = new LinkedList<>();
@@ -214,9 +215,10 @@ public class TmoImportApiImpl implements TmoImportApi {
       SimpleDateFormat executionDateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
       TransactionBuilderDataFactory txBdf = new TransactionBuilderDataFactory(orcsApi);
       TransactionBuilder tx = null;
-      TransactionResult result = new TransactionResult();
+      TransactionResult txResult = new TransactionResult();
       XResultData resultData = new XResultData();
-      result.setResults(resultData);
+      txResult.setResults(resultData);
+      TmoImportResult result = new TmoImportResult(txResult);
       String batchFolderPath = getFolderPath(ciSetId, batchId);
       ObjectMapper mapper = new ObjectMapper();
       try (ZipInputStream zipStream = new ZipInputStream(stream)) {
@@ -337,13 +339,13 @@ public class TmoImportApiImpl implements TmoImportApi {
 
          if (tx != null) {
             TransactionToken token = tx.commit();
-            result.setTx(token);
+            txResult.setTx(token);
             resultData.setIds(
                tx.getTxDataReadables().stream().map(readable -> readable.getIdString()).collect(Collectors.toList()));
          }
 
          // If the tx failed, remove files.
-         if (result.isFailed()) {
+         if (txResult.isFailed()) {
             for (String fileName : fileNames) {
                File f = new File(fileName);
                if (f.exists()) {

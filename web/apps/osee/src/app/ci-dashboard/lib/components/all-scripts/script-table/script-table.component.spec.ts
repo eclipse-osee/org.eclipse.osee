@@ -12,19 +12,57 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ScriptTableComponent } from './script-table.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { CiDetailsService } from '../../../services/ci-details.service';
+import {
+	SubsystemSelectorMockComponent,
+	TeamSelectorMockComponent,
+	ciDetailsServiceMock,
+} from '@osee/ci-dashboard/testing';
+import { AsyncPipe } from '@angular/common';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+} from '@angular/material/table';
+import { MatTooltip } from '@angular/material/tooltip';
 
 describe('ScriptTableComponent', () => {
 	let component: ScriptTableComponent;
 	let fixture: ComponentFixture<ScriptTableComponent>;
 
 	beforeEach(() => {
-		TestBed.configureTestingModule({
-			imports: [
-				ScriptTableComponent,
-				HttpClientTestingModule,
-				NoopAnimationsModule,
+		TestBed.overrideComponent(ScriptTableComponent, {
+			set: {
+				imports: [
+					SubsystemSelectorMockComponent,
+					TeamSelectorMockComponent,
+					AsyncPipe,
+					MatTable,
+					MatColumnDef,
+					MatHeaderCell,
+					MatHeaderCellDef,
+					MatTooltip,
+					MatCell,
+					MatCellDef,
+					MatHeaderRow,
+					MatHeaderRowDef,
+					MatRow,
+					MatRowDef,
+				],
+			},
+		}).configureTestingModule({
+			imports: [ScriptTableComponent],
+			providers: [
+				provideNoopAnimations(),
+				{ provide: CiDetailsService, useValue: ciDetailsServiceMock },
 			],
 		});
 		fixture = TestBed.createComponent(ScriptTableComponent);

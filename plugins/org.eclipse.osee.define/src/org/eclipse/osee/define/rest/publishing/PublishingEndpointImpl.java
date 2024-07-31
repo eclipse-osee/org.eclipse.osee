@@ -572,6 +572,14 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
       }
    }
 
+   /**
+    * {@inheritDoc}
+    *
+    * @throws NotAuthorizedException when the user is not an active login user.
+    * @throws BadRequestException when the operation's method indicates any arguments were illegal.
+    * @throws ServerErrorException when an unaccounted for exception is thrown by the operations method.
+    */
+
    @Override
    public Response convertMarkdownToHtml(String markdownContent) {
       try {
@@ -579,8 +587,8 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
          if (markdownContent == null) {
             return Response.status(Response.Status.BAD_REQUEST).entity("Markdown content is null").build();
          }
-         MarkdownConverter mdConverter = new MarkdownConverter(markdownContent);
-         String html = mdConverter.toHtml();
+         MarkdownConverter mdConverter = new MarkdownConverter();
+         String html = mdConverter.convertToHtmlString(markdownContent);
          InputStream stream = new ByteArrayInputStream(html.getBytes(StandardCharsets.UTF_8));
          return Response.ok(stream).header("Content-Disposition", "attachment; filename=markdownToHtml.html").build();
       } catch (UserNotAuthorizedForPublishingException e) {
@@ -593,6 +601,36 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
       }
    }
 
+   @Override
+   public Attachment publishMarkdownAsHtml(PublishingRequestData publishMarkdownAsHtmlRequestData) {
+
+      var thread = Thread.currentThread();
+      var origThreadName = thread.getName();
+      thread.setName("PublishingEndpointImpl::msWordPreviewRequestData");
+
+      try {
+         PublishingPermissions.verifyNonGroup();
+         //@formatter:off
+         return
+            this.defineOperations
+               .getPublisherOperations()
+               .getPublishingOperations()
+               .publishMarkdownAsHtml
+                  (
+                     publishMarkdownAsHtmlRequestData
+                  );
+         //@formatter:on
+      } catch (UserNotAuthorizedForPublishingException e) {
+         throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
+      } catch (IllegalArgumentException iae) {
+         throw new BadRequestException(iae.getMessage(), Response.status(Response.Status.BAD_REQUEST).build(), iae);
+      } catch (Exception e) {
+         throw new ServerErrorException(e.getMessage(), Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(),
+            e);
+      } finally {
+         thread.setName(origThreadName);
+      }
+   }
 }
 
 /* EOF */

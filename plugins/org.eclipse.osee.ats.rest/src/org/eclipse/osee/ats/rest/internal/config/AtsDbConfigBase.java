@@ -89,6 +89,10 @@ public class AtsDbConfigBase {
    public XResultData run() {
       OseeInfo.setValue(atsApi.getJdbcService().getClient(), "osee.work.def.as.name", "true");
 
+      // Clear server caches in case server has not been restarted after previous dbinit
+      atsApi.getWorkDefinitionService().internalClearCaches();
+      atsApi.getBranchService().internalClearCaches();
+
       XResultData results = createAtsFolders();
       if (results.isErrors()) {
          return results;

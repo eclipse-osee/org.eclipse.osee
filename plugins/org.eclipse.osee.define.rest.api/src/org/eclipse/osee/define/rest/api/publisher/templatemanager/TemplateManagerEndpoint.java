@@ -15,14 +15,17 @@ package org.eclipse.osee.define.rest.api.publisher.templatemanager;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.apache.cxf.jaxrs.model.wadl.Description;
 import org.eclipse.osee.framework.core.publishing.PublishingTemplate;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * This interface defines the REST API end points for obtaining publishing templates.
@@ -101,8 +104,11 @@ public interface TemplateManagerEndpoint {
     * provided for building a client GUI list of publishing templates for selection by the user. The
     * {@link PublishingTemplateKeyGroup} objects within the {@link PublishingTemplateKeyGroups} object will be sorted by
     * the value of the safe name key. The selection list will be ambiguous for publishing templates with the same safe
-    * name.
+    * name. A non-empty filterBySafeName String can be passed in to filter the {@link PublishingTemplateKeyGroups} by
+    * {@link PublishingTemplateScalarKey} safeName.
     *
+    * @param filterBySafeName String that filters the returned {@link PublishingTemplateKeyGroups} by
+    * {@link PublishingTemplateScalarKey} safeName. Default value is {@code EMPTY_STRING}.
     * @return a list of the keys used for caching the Publishing Templates.
     */
 
@@ -117,7 +123,7 @@ public interface TemplateManagerEndpoint {
    @Path("getPublishingTemplateKeyGroups")
    @Produces({MediaType.APPLICATION_JSON})
    PublishingTemplateKeyGroups
-      getPublishingTemplateKeyGroups();
+      getPublishingTemplateKeyGroups(@QueryParam("filterBySafeName") @DefaultValue(Strings.EMPTY_STRING) String filterBySafeName);
    //@formatter:on
 
 }

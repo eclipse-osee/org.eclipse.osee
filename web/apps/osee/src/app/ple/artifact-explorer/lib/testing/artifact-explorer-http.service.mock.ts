@@ -16,6 +16,7 @@ import {
 	artifactTypeAttributesMock,
 	artifactWithRelationsMock,
 } from '@osee/artifact-with-relations/testing';
+import { publishingTemplateKeyGroupsMock } from './artifact-explorer.data.mock';
 
 export const ArtifactExplorerHttpServiceMock: Partial<ArtifactExplorerHttpService> =
 	{
@@ -30,5 +31,9 @@ export const ArtifactExplorerHttpServiceMock: Partial<ArtifactExplorerHttpServic
 
 		getArtifactTypeAttributes(artifactId) {
 			return of(artifactTypeAttributesMock);
+		},
+
+		getPublishingTemplateKeyGroups() {
+			return of(publishingTemplateKeyGroupsMock);
 		},
 	};

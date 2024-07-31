@@ -847,7 +847,7 @@ public class WorldXWidgetActionPage extends FormPage {
    }
 
    public void redisplayAsReviews() {
-      final List<Artifact> artifacts = worldComposite.getXViewer().getLoadedArtifacts();
+      final List<Artifact> artifacts = worldComposite.getLoadedArtifacts();
       Job job = new Job(REVIEWS) {
          @Override
          protected IStatus run(IProgressMonitor monitor) {

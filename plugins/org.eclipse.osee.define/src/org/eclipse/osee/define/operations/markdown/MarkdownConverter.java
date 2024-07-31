@@ -20,9 +20,9 @@ import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.util.OseeInf;
 
 /**
@@ -30,23 +30,19 @@ import org.eclipse.osee.framework.core.util.OseeInf;
  */
 
 public class MarkdownConverter {
-   private final String markdownContent;
+
    private MutableDataSet options;
 
-   public MarkdownConverter(String markdownContent) {
-      this.markdownContent = markdownContent;
-      this.setDefaultOptions();
+   public MarkdownConverter() {
+      setDefaultOptions();
    }
 
-   public String getMarkdownContent() {
-      return markdownContent;
+   public MarkdownConverter(MutableDataSet options) {
+      this.options = options;
    }
 
-   public String toHtml() {
-      Parser parser = Parser.builder(this.options).build();
-      HtmlRenderer renderer = HtmlRenderer.builder(this.options).build();
-      Node document = parser.parse(this.markdownContent);
-      return "<html><head>" + getCssStyles() + "</head><body>\n" + renderer.render(document) + "</body></html>";
+   public void setOptions(MutableDataSet options) {
+      this.options = options;
    }
 
    private void setDefaultOptions() {
@@ -55,14 +51,27 @@ public class MarkdownConverter {
          TocExtension.create(), AutolinkExtension.create()));
    }
 
-   protected void setOptions(MutableDataSet options) {
-      this.options = options;
+   public ByteArrayInputStream convertToHtmlStream(ByteArrayInputStream markdownInputStream) {
+      // Convert Markdown ByteArrayInputStream to String
+      String markdownContent = new String(markdownInputStream.readAllBytes(), StandardCharsets.UTF_8);
+
+      // Convert Markdown to HTML
+      String htmlContent = convertToHtmlString(markdownContent);
+
+      // Convert HTML String to ByteArrayInputStream
+      return new ByteArrayInputStream(htmlContent.getBytes(StandardCharsets.UTF_8));
+   }
+
+   public String convertToHtmlString(String markdownContent) {
+      Parser parser = Parser.builder(this.options).build();
+      HtmlRenderer renderer = HtmlRenderer.builder(this.options).build();
+      Node document = parser.parse(markdownContent);
+      return "<html><head>" + getCssStyles() + "</head><body>\n" + renderer.render(document) + "</body></html>";
    }
 
    private String getCssStyles() {
-      String temp = OseeInf.getResourceContents("markdownToHtmlStyles.css", getClass());
-      Pattern pattern = Pattern.compile("^\\s*/\\*{2}.*?\\*/\\s*", Pattern.DOTALL);
-      Matcher matcher = pattern.matcher(temp);
-      return "<style>\n" + matcher.replaceFirst("") + "\n</style>";
+      return "<style>\n" + OseeInf.getResourceContents("markdownToHtmlStyles.css",
+         MarkdownConverter.class) + "\n</style>";
    }
+
 }

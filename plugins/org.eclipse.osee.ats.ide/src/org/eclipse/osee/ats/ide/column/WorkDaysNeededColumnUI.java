@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.ide.column;
 
-import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
@@ -39,7 +38,7 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class WorkDaysNeededColumnUI extends XViewerAtsColumn implements IXViewerValueColumn, IAltLeftClickProvider {
+public class WorkDaysNeededColumnUI extends XViewerAtsColumn implements IXViewerValueColumn {
 
    public static WorkDaysNeededColumnUI instance = new WorkDaysNeededColumnUI();
 

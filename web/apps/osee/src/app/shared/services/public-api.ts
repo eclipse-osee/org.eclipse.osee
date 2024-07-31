@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './ple_aware/http/attribute.service';
 export * from './ple_aware/http/branch-info.service';
 export * from './ple_aware/http/difference-report.service';
 export * from './ple_aware/http/files.service';

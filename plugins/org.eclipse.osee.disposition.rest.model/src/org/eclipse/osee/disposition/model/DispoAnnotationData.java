@@ -39,7 +39,10 @@ public class DispoAnnotationData {
    private boolean isConnected;
    private List<String> idsOfCoveredDiscrepancies;
    private String resolution;
+   private String lastResolutionType;
    private String lastResolution;
+   private String lastManualResolutionType;
+   private String lastManualResolution;
    private boolean isResolutionValid;
    private String resolutionType;
    private boolean isDefault;
@@ -57,7 +60,30 @@ public class DispoAnnotationData {
    private int row; //Used for MCDC pair coverage to show this annotations row
    private boolean isRowCovered;
 
+   public static DispoAnnotationData SENTINEL = valueOf("-1");
+
+   public static DispoAnnotationData valueOf(String guid) {
+      final class DispoAnnotationDataImpl extends DispoAnnotationData {
+         private final String guid;
+
+         public DispoAnnotationDataImpl(String guid) {
+            this.guid = guid;
+         }
+
+         @Override
+         public String getGuid() {
+            return guid;
+         }
+      }
+      return new DispoAnnotationDataImpl(guid);
+   }
+
    public DispoAnnotationData() {
+      guid = GUID.create();
+      idsOfCoveredDiscrepancies = new ArrayList<>();
+   }
+
+   public DispoAnnotationData(String guid) {
       guid = GUID.create();
       idsOfCoveredDiscrepancies = new ArrayList<>();
    }
@@ -98,8 +124,20 @@ public class DispoAnnotationData {
       return resolution;
    }
 
+   public String getLastResolutionType() {
+      return lastResolutionType;
+   }
+
    public String getLastResolution() {
       return lastResolution;
+   }
+
+   public String getLastManualResolutionType() {
+      return lastManualResolutionType;
+   }
+
+   public String getLastManualResolution() {
+      return lastManualResolution;
    }
 
    public boolean getIsResolutionValid() {
@@ -202,8 +240,20 @@ public class DispoAnnotationData {
       this.resolution = resolution;
    }
 
+   public void setLastResolutionType(String lastResolutionType) {
+      this.lastResolutionType = lastResolutionType;
+   }
+
    public void setLastResolution(String lastResolution) {
       this.lastResolution = lastResolution;
+   }
+
+   public void setLastManualResolutionType(String lastManualResolutionType) {
+      this.lastManualResolutionType = lastManualResolutionType;
+   }
+
+   public void setLastManualResolution(String lastManualResolution) {
+      this.lastManualResolution = lastManualResolution;
    }
 
    public void setIsResolutionValid(boolean isResolutionValid) {
@@ -231,7 +281,7 @@ public class DispoAnnotationData {
    }
 
    @JsonIgnore
-   public boolean isValid() {
+   public boolean isResolutionValid() {
       return (isConnected || isDefault) && isResolutionValid && isResolutionTypeValid();
    }
 
@@ -267,5 +317,9 @@ public class DispoAnnotationData {
 
    public void setIsRowCovered(boolean isRowCovered) {
       this.isRowCovered = isRowCovered;
+   }
+
+   public boolean isValid() {
+      return !this.equals(DispoAnnotationData.SENTINEL);
    }
 }

@@ -255,8 +255,14 @@ public class XDynamicAttrValuesWidget extends XWidget implements WorldEditorWidg
             asFormatType = "BranchId (Long)";
             numFormat = NumberFormat.getNumberInstance();
          }
-         EntryDialog dialog = new EntryDialog("Enter " + attrType.getName(),
-            "Enter " + attrType.getName() + "  (As " + asFormatType + ")\n\nNote: String search is a whole word search");
+
+         String message =
+            "Enter " + attrType.getName() + "  (As " + asFormatType + ")\n\nNote: String search is a whole word search.";
+         if (attrType.isString()) {
+            message += "\nMultiple values can be entered with a semicolon.";
+         }
+         EntryDialog dialog = new EntryDialog("Enter " + attrType.getName(), message);
+
          dialog.setNumberFormat(numFormat);
          if (!attrValue.getValues().isEmpty()) {
             dialog.setEntry(attrValue.getValues().iterator().next());

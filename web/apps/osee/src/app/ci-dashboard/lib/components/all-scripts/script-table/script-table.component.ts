@@ -16,7 +16,7 @@ import {
 	inject,
 	viewChild,
 } from '@angular/core';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { scriptDefHeaderDetails } from '../../../table-headers/script-headers';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -34,53 +34,58 @@ import {
 	MatTable,
 } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
-import { HeaderService, UiService } from '@osee/shared/services';
-import { SplitStringPipe } from '@osee/shared/utils';
+import { HeaderService } from '@osee/shared/services';
 import { CiDetailsService } from '../../../services/ci-details.service';
 import type { DefReference } from '../../../types/tmo';
 import { CiDashboardUiService } from '../../../services/ci-dashboard-ui.service';
 import { Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { SubsystemSelectorComponent } from '../../subsystem-selector/subsystem-selector.component';
+import { TeamSelectorComponent } from '../../team-selector/team-selector.component';
 
 @Component({
 	selector: 'osee-script-table',
 	standalone: true,
 	template: `<div
 		class="mat-elevation-z8 tw-h-[76vh] tw-w-screen tw-overflow-auto">
-		<ng-container *ngIf="scriptDefs | async as _defs">
+		@if (scriptDefs | async; as _defs) {
 			<mat-table [dataSource]="_defs">
-				<ng-container
-					[matColumnDef]="header"
-					*ngFor="let header of headers">
-					<th
-						mat-header-cell
-						*matHeaderCellDef
-						class="tw-text-center tw-align-middle tw-font-medium tw-text-primary-600"
-						[matTooltip]="
-							(getTableHeaderByName(header) | async)
-								?.description || ''
-						">
-						{{
-							(getTableHeaderByName(header) | async)
-								?.humanReadable || ''
-						}}
-					</th>
-					<td
-						mat-cell
-						*matCellDef="let def"
-						class="tw-align-middle">
-						<ng-container *ngIf="header === 'name'">
-							<button
-								mat-list-item
-								(click)="resultList(def.id)"
-								class="tw-text-blue-500 tw-underline">
+				@for (header of headers; track $index) {
+					<ng-container [matColumnDef]="header">
+						<th
+							mat-header-cell
+							*matHeaderCellDef
+							class="tw-text-center tw-align-middle tw-font-medium tw-text-primary-600"
+							[matTooltip]="
+								(getTableHeaderByName(header) | async)
+									?.description || ''
+							">
+							{{
+								(getTableHeaderByName(header) | async)
+									?.humanReadable || ''
+							}}
+						</th>
+						<td
+							mat-cell
+							*matCellDef="let def"
+							class="tw-align-middle">
+							@if (header === 'name') {
+								<button
+									mat-list-item
+									(click)="resultList(def.id)"
+									class="tw-text-primary">
+									{{ def[header] }}
+								</button>
+							} @else if (header === 'subsystem') {
+								<osee-subsystem-selector [script]="def" />
+							} @else if (header === 'team') {
+								<osee-team-selector [script]="def" />
+							} @else {
 								{{ def[header] }}
-							</button>
-						</ng-container>
-						<ng-container *ngIf="header !== 'name'">
-							{{ def[header] }}
-						</ng-container>
-					</td>
-				</ng-container>
+							}
+						</td>
+					</ng-container>
+				}
 				<tr
 					mat-header-row
 					*matHeaderRowDef="headers; sticky: true"></tr>
@@ -90,12 +95,12 @@ import { Router } from '@angular/router';
 					class="odd:tw-bg-selected-button even:tw-bg-background-background"
 					[attr.data-cy]="'script-def-table-row-' + row.name"></tr>
 			</mat-table>
-		</ng-container>
+		}
 	</div>`,
 	imports: [
 		AsyncPipe,
-		NgFor,
-		NgIf,
+		SubsystemSelectorComponent,
+		TeamSelectorComponent,
 		FormsModule,
 		MatTable,
 		MatColumnDef,
@@ -108,7 +113,6 @@ import { Router } from '@angular/router';
 		MatHeaderRowDef,
 		MatRow,
 		MatRowDef,
-		SplitStringPipe,
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -121,7 +125,7 @@ export class ScriptTableComponent {
 
 	matMenuTrigger = viewChild.required(MatMenuTrigger);
 
-	scriptDefs = this.ciDetailsService.scriptDefs;
+	scriptDefs = this.ciDetailsService.scriptDefs.pipe(takeUntilDestroyed());
 	ciSetId = this.ciDashboardService.ciSetId;
 
 	protected filter = this.ciDetailsService.filter;

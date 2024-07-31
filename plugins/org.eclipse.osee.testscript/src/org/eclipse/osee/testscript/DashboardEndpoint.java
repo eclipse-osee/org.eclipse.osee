@@ -20,7 +20,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.testscript.internal.CIStatsToken;
@@ -50,5 +52,29 @@ public interface DashboardEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    public Collection<CITimelineStatsToken> getTimelineStats(@PathParam("branch") BranchId branch,
       @PathParam("ciSet") ArtifactId ciSet, @QueryParam("viewId") ArtifactId viewId);
+
+   @GET
+   @Path("{branch}/subsystems")
+   @Produces(MediaType.APPLICATION_JSON)
+   public Collection<ArtifactAccessorResult> getSubsystems(@PathParam("branch") BranchId branch,
+      @QueryParam("filter") String filter, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize,
+      @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
+
+   @GET
+   @Path("{branch}/subsystems/count")
+   @Produces(MediaType.APPLICATION_JSON)
+   public Integer getSubsystemsCount(@PathParam("branch") BranchId branch, @QueryParam("filter") String filter);
+
+   @GET
+   @Path("{branch}/teams")
+   @Produces(MediaType.APPLICATION_JSON)
+   public Collection<ArtifactAccessorResult> getTeams(@PathParam("branch") BranchId branch,
+      @QueryParam("filter") String filter, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize,
+      @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
+
+   @GET
+   @Path("{branch}/teams/count")
+   @Produces(MediaType.APPLICATION_JSON)
+   public Integer getTeamsCount(@PathParam("branch") BranchId branch, @QueryParam("filter") String filter);
 
 }

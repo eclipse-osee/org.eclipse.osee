@@ -35,8 +35,8 @@ public interface AtsNotifyEndpointApi {
 
    @Path("test")
    @POST
-   @Consumes(MediaType.TEXT_PLAIN)
+   @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public XResultData sendEmail(String email);
+   public XResultData sendTestEmail(TestEmail testEmail);
 
 }

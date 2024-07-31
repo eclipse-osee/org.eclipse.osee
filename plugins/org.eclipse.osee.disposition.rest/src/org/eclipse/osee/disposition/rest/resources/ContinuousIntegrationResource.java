@@ -221,13 +221,16 @@ public class ContinuousIntegrationResource {
       return response;
    }
 
-   private void initTempAnnotationData(DispoAnnotationData annotation, DispoAnnotationData temp) {
-      temp.setLocationRefs(annotation.getLocationRefs());
-      temp.setResolution(annotation.getResolution());
-      temp.setResolutionType(annotation.getResolutionType());
-      temp.setLastResolution(annotation.getLastResolution());
-      temp.setCustomerNotes(annotation.getCustomerNotes());
-      temp.setDeveloperNotes(annotation.getDeveloperNotes());
+   private void initTempAnnotationData(DispoAnnotationData annotation, DispoAnnotationData initData) {
+      initData.setLocationRefs(annotation.getLocationRefs());
+      initData.setResolution(annotation.getResolution());
+      initData.setResolutionType(annotation.getResolutionType());
+      initData.setLastResolutionType(annotation.getLastResolutionType());
+      initData.setLastResolution(annotation.getLastResolution());
+      initData.setLastManualResolutionType(annotation.getLastManualResolutionType());
+      initData.setLastManualResolution(annotation.getLastManualResolution());
+      initData.setCustomerNotes(annotation.getCustomerNotes());
+      initData.setDeveloperNotes(annotation.getDeveloperNotes());
    }
 
 }

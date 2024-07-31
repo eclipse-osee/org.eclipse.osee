@@ -21,17 +21,12 @@ export const ciDetailsServiceMock: Partial<CiDetailsService> = {
 	_scriptDefCount: of(0),
 	scriptDef: of(defReferenceMock[0]),
 	_scriptResults: of(resultReferenceMock),
-	scriptResult: of(resultReferenceMock[0]),
 
 	get scriptResults() {
 		return this._scriptResults;
 	},
 
 	get ciDefId() {
-		return signal('1');
-	},
-
-	get ciResultId() {
 		return signal('1');
 	},
 

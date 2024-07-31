@@ -50,6 +50,10 @@ export class CiDashboardUiService {
 		this._ciSetId.next(id);
 	}
 
+	set update(value: boolean) {
+		this.uiService.updated = value;
+	}
+
 	// Sets the current CI Set and adds the CI Set ID to the current url.
 	// Assumes the CI Set ID always belongs at the end of the url
 	routeToSet(id: string) {

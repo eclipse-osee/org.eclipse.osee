@@ -144,6 +144,7 @@ public class TransitionToMenu {
       TransitionData transData = new TransitionData("Transition-To " + toStateName, workItems, toStateName, null, null,
          null, TransitionOption.None);
       TransitionDataUi.getCancellationReason(transData);
+      TransitionDataUi.getTransitionBy(transData);
       final TransitionToOperation operation = new TransitionToOperation(transData);
       Operations.executeAsJob(operation, true, Job.SHORT, new JobChangeAdapter() {
 

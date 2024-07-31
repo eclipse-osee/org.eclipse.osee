@@ -110,7 +110,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       parentTeamArt = null;
       atsLog = null;
       AtsApiService.get().getWorkDefinitionService().internalClearWorkDefinition(this);
-      AtsApiService.get().getWorkItemService().internalClearStateManager(this);
    }
 
    @Override
@@ -141,10 +140,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          for (Artifact artifact : artifacts) {
             if (artifact instanceof AbstractWorkflowArtifact) {
                AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
-               if (AtsApiService.get().getWorkItemService().getStateMgr((IAtsWorkItem) artifact) == null) {
-                  rd.errorf("StateManager can not be null for %s", artifact.toStringWithId());
-               }
-
                if (awa.getLog().isDirty()) {
                   rd.error("Log is dirty");
                }
@@ -190,9 +185,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          getSmaArtifactsOneLevel(this, artifacts);
          for (Artifact artifact : artifacts) {
             artifact.reloadAttributesAndRelations();
-            if (artifact instanceof IAtsWorkItem) {
-               AtsApiService.get().getWorkItemService().internalClearStateManager(this);
-            }
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't revert artifact " + getAtsId(), ex);

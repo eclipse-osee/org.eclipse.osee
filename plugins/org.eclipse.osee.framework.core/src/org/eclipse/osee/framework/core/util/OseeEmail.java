@@ -165,7 +165,9 @@ public abstract class OseeEmail extends MimeMessage {
          InternetAddress newAddresses[] = new InternetAddress[addresses.length];
 
          for (int i = 0; i < addresses.length; i++) {
-            newAddresses[i] = new InternetAddress(addresses[i]);
+            if (!addresses[i].isEmpty()) {
+               newAddresses[i] = new InternetAddress(addresses[i]);
+            }
          }
 
          setRecipients(type, newAddresses);

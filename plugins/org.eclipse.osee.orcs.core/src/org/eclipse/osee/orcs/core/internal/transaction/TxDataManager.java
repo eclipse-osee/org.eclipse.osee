@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
@@ -327,6 +328,14 @@ public class TxDataManager {
       return asExternalArtifact(txData, artifact);
    }
 
+   public ArtifactReadable createArtifactWithNoName(TxData txData, ArtifactTypeToken artifactType,
+      ArtifactId artifactId, ApplicabilityId appId) {
+      checkChangesAllowed(txData);
+      Artifact artifact = artifactFactory.createArtifactWithNoName(txData.getSession(), txData.getBranch(),
+         artifactType, artifactId, appId);
+      return asExternalArtifact(txData, artifact);
+   }
+
    public ArtifactReadable copyArtifact(TxData txData, BranchId fromBranch, ArtifactId artifactId) {
       checkChangesAllowed(txData);
       Artifact source = getSourceArtifact(txData, fromBranch, artifactId);
@@ -423,6 +432,13 @@ public class TxDataManager {
       Artifact asArtifactA = getForWrite(txData, artA);
       Artifact asArtifactB = getForWrite(txData, artB);
       relationManager.relate(txData.getSession(), asArtifactA, type, asArtifactB, rationale);
+   }
+
+   public void relate(TxData txData, ArtifactId artA, RelationTypeToken type, ArtifactId artB, String rationale,
+      RelationId id) {
+      Artifact asArtifactA = getForWrite(txData, artA);
+      Artifact asArtifactB = getForWrite(txData, artB);
+      relationManager.relate(txData.getSession(), asArtifactA, type, asArtifactB, rationale, id);
    }
 
    public void relate(TxData txData, ArtifactId artA, RelationTypeToken type, ArtifactId artB,

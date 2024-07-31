@@ -19,6 +19,7 @@ import java.util.Map;
 
 public class MimImportSummary {
    private String txComment;
+   private final List<TransportType> transportTypes;
    private final List<InterfaceNode> nodes;
    private final List<InterfaceConnection> connections;
    private final List<InterfaceMessageToken> messages;
@@ -29,6 +30,7 @@ public class MimImportSummary {
    private final List<InterfaceEnumerationSet> enumSets;
    private final List<InterfaceEnumeration> enums;
    private final List<CrossReference> crossReferences;
+   private final Map<String, List<String>> connectionTransportTypeRelations;
    private final Map<String, List<String>> connectionNodeRelations;
    private final Map<String, List<String>> connectionMessageRelations;
    private final Map<String, List<String>> messagePublisherNodeRelations;
@@ -44,6 +46,7 @@ public class MimImportSummary {
 
    public MimImportSummary() {
       txComment = "MIM Import";
+      transportTypes = new LinkedList<>();
       nodes = new LinkedList<>();
       connections = new LinkedList<>();
       messages = new LinkedList<>();
@@ -54,6 +57,7 @@ public class MimImportSummary {
       enumSets = new LinkedList<>();
       enums = new LinkedList<>();
       crossReferences = new LinkedList<>();
+      connectionTransportTypeRelations = new HashMap<>();
       connectionNodeRelations = new HashMap<>();
       connectionMessageRelations = new HashMap<>();
       messagePublisherNodeRelations = new HashMap<>();
@@ -74,6 +78,10 @@ public class MimImportSummary {
 
    public void setTxComment(String txComment) {
       this.txComment = txComment;
+   }
+
+   public List<TransportType> getTransportTypes() {
+      return transportTypes;
    }
 
    public List<InterfaceNode> getNodes() {
@@ -114,6 +122,10 @@ public class MimImportSummary {
 
    public List<CrossReference> getCrossReferences() {
       return crossReferences;
+   }
+
+   public Map<String, List<String>> getConnectionTransportTypeRelations() {
+      return connectionTransportTypeRelations;
    }
 
    public Map<String, List<String>> getConnectionNodeRelations() {

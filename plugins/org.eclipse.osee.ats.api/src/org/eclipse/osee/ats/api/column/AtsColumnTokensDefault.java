@@ -61,7 +61,7 @@ public class AtsColumnTokensDefault {
    public static CoreAttrTokColTokenDefault CreatedDateColumn = new CoreAttrTokColTokenDefault(AtsAttributeTypes.CreatedDate);
    public static CoreAttrTokColTokenDefault DescriptionColumn = new CoreAttrTokColTokenDefault(AtsAttributeTypes.Description);
    public static CoreAttrTokColTokenDefault EstimatedHoursColumn = new CoreAttrTokColTokenDefault(AtsAttributeTypes.EstimatedHours);
-   public static CoreAttrTokColTokenDefault HoursSpent = new CoreAttrTokColTokenDefault(AtsAttributeTypes.HoursSpent);
+   public static CoreAttrTokColTokenDefault HoursSpent = new CoreAttrTokColTokenDefault(AtsAttributeTypes.HoursSpentWorkflow);
    public static CoreAttrTokColTokenDefault LegacyPcrIdColumn = new CoreAttrTokColTokenDefault(AtsAttributeTypes.LegacyPcrId);
    public static CoreAttrTokColTokenDefault NameColumn = new CoreAttrTokColTokenDefault(CoreAttributeTypes.Name);
    public static CoreAttrTokColTokenDefault NotesColumn = new CoreAttrTokColTokenDefault(AtsAttributeTypes.WorkflowNotes);

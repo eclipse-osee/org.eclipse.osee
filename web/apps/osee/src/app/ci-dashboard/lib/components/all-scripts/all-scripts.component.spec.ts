@@ -17,7 +17,7 @@ import { ciDetailsServiceMock } from '../../testing/ci-details.service.mock';
 import { CiDetailsService } from '../../services/ci-details.service';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { CiDashboardControlsMockComponent } from '../../testing/ci-dashboard-controls.component.mock';
-import { ScriptTableComponent } from './script-table/script-table.component';
+import { ScriptTableMockComponent } from './script-table/script-table.component.mock';
 
 describe('AllScriptsComponent', () => {
 	let component: AllScriptsComponent;
@@ -28,11 +28,11 @@ describe('AllScriptsComponent', () => {
 			set: {
 				imports: [
 					CiDashboardControlsMockComponent,
-					ScriptTableComponent,
+					ScriptTableMockComponent,
 				],
 			},
 		}).configureTestingModule({
-			imports: [AllScriptsComponent, ScriptTableComponent],
+			imports: [AllScriptsComponent],
 			providers: [
 				{
 					provide: CiDetailsService,

@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ATS Core Demo
 Bundle-SymbolicName: org.eclipse.osee.ats.core.demo;singleton:=true
+Automatic-Module-Name: org.eclipse.osee.ats.core.demo
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-11

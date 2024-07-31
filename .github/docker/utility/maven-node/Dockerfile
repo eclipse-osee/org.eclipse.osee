@@ -15,9 +15,10 @@ RUN apt-get -y update \
     && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
     # Set Node.js version
     && NODE_MAJOR=20 \
+    && NODE_MINOR=.9.0 \
     && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list \
     && apt-get update \
-    && apt-get -y install nodejs \
+    && apt-get -y install nodejs=${NODE_MAJOR}${NODE_MINOR}-1nodesource1 \
     && npm install -g @pnpm/exe \
     && rm -rf /var/lib/apt/lists/*
 

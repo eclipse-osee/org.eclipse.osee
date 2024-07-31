@@ -732,26 +732,22 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="org.apache.aries.blueprint"
+	  <plugin
+         id="org.apache.aries.blueprint.core"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.aries.proxy"
+         version="0.0.0"/> 	
+	  <plugin
+         id="org.apache.aries.proxy.api"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
+         version="0.0.0"/>
+         
+       <plugin
          id="org.apache.aries.util"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+         version="0.0.0"/>  
 
    <plugin
          id="org.eclipse.equinox.cm"

@@ -53,7 +53,7 @@ public final class AtsArtifactToken {
    public static ArtifactToken PeerAttachmentFolder = ArtifactToken.valueOf(8635196, "Peer Review Attachments", DemoBranches.Processes, CoreArtifactTypes.Folder);
    public static ArtifactToken WalkthroughAttachmentFolder = ArtifactToken.valueOf(8649004, "Walkthrough Attachments", DemoBranches.Processes, CoreArtifactTypes.Folder);
    public static ArtifactToken AtsHealthUsers = ArtifactToken.valueOf(11174519, "ATS Health Users", CoreBranches.COMMON, CoreArtifactTypes.UserGroup);
-   public static ArtifactToken WebExportGoal = ArtifactToken.valueOf(6761135732095558471L, "Web Export Goal", COMMON, AtsArtifactTypes.Goal);
+   public static ArtifactToken WebExportGoal = ArtifactToken.valueOf(676113573L, "Web Export Goal", COMMON, AtsArtifactTypes.Goal);
 
    // Safety Workflow configuration
    public static final ArtifactToken SafetyActionableItem = ArtifactToken.valueOf(7244546, "System Safety", COMMON, AtsArtifactTypes.ActionableItem);

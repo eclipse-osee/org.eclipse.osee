@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.core.data;
 
 import java.io.InputStream;
+import java.util.Set;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -24,8 +25,8 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.XmlTextInputStream;
  */
 public final class AttributeTypeString extends AttributeTypeGeneric<String> {
 
-   public AttributeTypeString(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension, DisplayHint... displayHints) {
-      super(id, namespace, name, mediaType, description, taggerType, fileExtension, "", displayHints);
+   public AttributeTypeString(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension, Set<OperationTypeToken> operationTypes, DisplayHint... displayHints) {
+      super(id, namespace, name, mediaType, description, taggerType, fileExtension, "", operationTypes, displayHints);
       for (DisplayHint hint : displayHints) {
          addDisplayHint(hint);
       }

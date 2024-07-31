@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.api.workdef.model.StateDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
-import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
@@ -72,7 +71,6 @@ public class TransitionManagerTest {
    @Mock private StateDefinition toStateDef;
    @Mock private IAtsWorkItemService workItemService;
    @Mock private IAtsTaskService taskService;
-   @Mock private IAtsStateManager teamWfStateMgr, taskStateMgr;
    // @formatter:on
 
    @Before

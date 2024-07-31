@@ -14,6 +14,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CIStats, CITimelineStats } from '../types/ci-stats';
 import { apiURL } from '@osee/environments';
+import { HttpParamsType, NamedId } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',
@@ -36,6 +37,64 @@ export class DashboardHttpService {
 	getTimelineStats(branchId: string, ciSet: string) {
 		return this.http.get<CITimelineStats[]>(
 			`${apiURL}/script/dashboard/${branchId}/${ciSet}/timelinestats`
+		);
+	}
+
+	getSubsystems(
+		branchId: string,
+		filter: string,
+		pageNum: string | number,
+		pageSize: number,
+		orderByAttributeId: string
+	) {
+		let params: HttpParamsType = {
+			pageNum: pageNum,
+			pageSize: pageSize,
+			orderByAttributeType: orderByAttributeId,
+		};
+		if (filter) {
+			params = { ...params, filter };
+		}
+		return this.http.get<NamedId[]>(
+			`${apiURL}/script/dashboard/${branchId}/subsystems`,
+			{ params: params }
+		);
+	}
+
+	getSubsystemsCount(branchId: string, filter: string) {
+		let params: HttpParamsType = {};
+		if (filter) {
+			params = { ...params, filter };
+		}
+		return this.http.get<number>(
+			`${apiURL}/script/dashboard/${branchId}/subsystems/count`,
+			{ params: params }
+		);
+	}
+
+	getTeams(
+		branchId: string,
+		filter: string,
+		pageNum: string | number,
+		pageSize: number,
+		orderByAttributeId: string
+	) {
+		let params: HttpParamsType = {
+			filter: filter,
+			pageNum: pageNum,
+			pageSize: pageSize,
+			orderByAttributeType: orderByAttributeId,
+		};
+		return this.http.get<NamedId[]>(
+			`${apiURL}/script/dashboard/${branchId}/teams`,
+			{ params: params }
+		);
+	}
+
+	getTeamsCount(branchId: string, filter: string) {
+		return this.http.get<number>(
+			`${apiURL}/script/dashboard/${branchId}/teams/count`,
+			{ params: { filter: filter } }
 		);
 	}
 }

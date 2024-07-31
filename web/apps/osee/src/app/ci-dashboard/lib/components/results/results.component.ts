@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -29,7 +29,7 @@ import {
 	MatTable,
 } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HeaderService } from '@osee/shared/services';
 import { FormatMillisecondsPipe } from '@osee/shared/utils';
 import { BehaviorSubject, combineLatest, switchMap, take, tap } from 'rxjs';
@@ -39,6 +39,7 @@ import { resultHeaderDetails } from '../../table-headers/result-headers';
 import { ResultReference } from '../../types';
 import { CiDashboardControlsComponent } from '../ci-dashboard-controls/ci-dashboard-controls.component';
 import { BatchDropdownComponent } from './batch-dropdown/batch-dropdown.component';
+import { CiDetailsService } from '../../services/ci-details.service';
 
 @Component({
 	selector: 'osee-results',
@@ -66,6 +67,9 @@ import { BatchDropdownComponent } from './batch-dropdown/batch-dropdown.componen
 	templateUrl: './results.component.html',
 })
 export default class ResultsComponent {
+	router = inject(Router);
+	detailsService = inject(CiDetailsService);
+
 	constructor(
 		private uiService: CiDashboardUiService,
 		private batchService: CiBatchService,
@@ -124,5 +128,13 @@ export default class ResultsComponent {
 
 	downloadBatch() {
 		this.batchService.downloadBatch().pipe(take(1)).subscribe();
+	}
+
+	navigateToResults(result: ResultReference) {
+		let url = this.router.url;
+		url = url.replace('results', 'details');
+		url = url.split('/').slice(0, -1).join('/'); // Remove batch id from url
+		this.detailsService.CiDefId = result.definitionId;
+		this.router.navigateByUrl(url);
 	}
 }

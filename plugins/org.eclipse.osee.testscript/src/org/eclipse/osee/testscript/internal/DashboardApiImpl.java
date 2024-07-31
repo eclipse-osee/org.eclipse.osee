@@ -14,6 +14,7 @@ package org.eclipse.osee.testscript.internal;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
+import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -23,10 +24,17 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.accessor.ArtifactAccessor;
+import org.eclipse.osee.accessor.internal.ArtifactAccessorImpl;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.core.ds.FollowRelation;
 import org.eclipse.osee.testscript.DashboardApi;
 import org.eclipse.osee.testscript.ScriptDefApi;
@@ -37,9 +45,11 @@ import org.eclipse.osee.testscript.ScriptDefApi;
 public class DashboardApiImpl implements DashboardApi {
 
    private final ScriptDefApi scriptDefApi;
+   private final OrcsApi orcsApi;
 
-   public DashboardApiImpl(ScriptDefApi scriptDefApi) {
+   public DashboardApiImpl(ScriptDefApi scriptDefApi, OrcsApi orcsApi) {
       this.scriptDefApi = scriptDefApi;
+      this.orcsApi = orcsApi;
    }
 
    @Override
@@ -276,6 +286,56 @@ public class DashboardApiImpl implements DashboardApi {
 
       return values;
 
+   }
+
+   @Override
+   public Collection<ArtifactAccessorResult> getSubsystems(BranchId branch, String filter, long pageNum, long pageSize,
+      AttributeTypeToken orderByAttributeType) {
+      ArtifactAccessor<ArtifactAccessorResult> accessor =
+         new ArtifactAccessorResultAccessor(CoreArtifactTypes.ScriptSubsystem, orcsApi);
+      try {
+         return accessor.getAllByFilter(branch, filter, Arrays.asList(CoreAttributeTypes.Name), pageNum, pageSize,
+            orderByAttributeType);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+         return Collections.emptyList();
+      }
+   }
+
+   @Override
+   public Integer getSubsystemsCount(BranchId branch, String filter) {
+      ArtifactAccessor<ArtifactAccessorResult> accessor =
+         new ArtifactAccessorImpl<>(CoreArtifactTypes.ScriptSubsystem, orcsApi);
+      return accessor.getAllByFilterAndCount(branch, filter, Arrays.asList(CoreAttributeTypes.Name));
+   }
+
+   @Override
+   public Collection<ArtifactAccessorResult> getTeams(BranchId branch, String filter, long pageNum, long pageSize,
+      AttributeTypeToken orderByAttributeType) {
+      ArtifactAccessor<ArtifactAccessorResult> accessor =
+         new ArtifactAccessorResultAccessor(CoreArtifactTypes.ScriptTeam, orcsApi);
+      try {
+         return accessor.getAllByFilter(branch, filter, Arrays.asList(CoreAttributeTypes.Name), pageNum, pageSize,
+            orderByAttributeType);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+         return Collections.emptyList();
+      }
+   }
+
+   @Override
+   public Integer getTeamsCount(BranchId branch, String filter) {
+      ArtifactAccessor<ArtifactAccessorResult> accessor =
+         new ArtifactAccessorImpl<>(CoreArtifactTypes.ScriptTeam, orcsApi);
+      return accessor.getAllByFilterAndCount(branch, filter, Arrays.asList(CoreAttributeTypes.Name));
+   }
+
+   private class ArtifactAccessorResultAccessor extends ArtifactAccessorImpl<ArtifactAccessorResult> {
+      public ArtifactAccessorResultAccessor(ArtifactTypeToken type, OrcsApi orcsApi) {
+         super(type, orcsApi);
+      }
    }
 
 }

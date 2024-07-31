@@ -213,6 +213,7 @@ public interface IAtsWorkItem extends IAtsObject {
       return Strings.truncate(Collections.toString("; ", getAssigneesStr()), length);
    }
 
+   @SuppressWarnings("unlikely-arg-type")
    default public boolean isUnAssigned() {
       return getAssignees().contains(SystemUser.UnAssigned);
    }

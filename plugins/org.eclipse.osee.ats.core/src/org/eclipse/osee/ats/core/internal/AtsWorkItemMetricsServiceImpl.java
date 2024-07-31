@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
+import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -57,14 +58,17 @@ public class AtsWorkItemMetricsServiceImpl implements IAtsWorkItemMetricsService
    }
 
    @Override
-   public void updateMetrics(IAtsWorkItem workItem, IStateToken state, double additionalHours, int percentComplete,
-      boolean logMetrics, AtsUser user, IAtsChangeSet changes) {
-      double hoursSpent = getHoursSpent(workItem);
-      double totalHours = hoursSpent + additionalHours;
+   public void updateMetrics(IAtsWorkItem workItem, IStateToken state, double additionalHoursWorkflow,
+      int percentComplete, boolean logMetrics, AtsUser user, IAtsChangeSet changes) {
+      double hoursSpent = getHoursSpentWorkflow(workItem);
+      double totalHours = hoursSpent + additionalHoursWorkflow;
       if (totalHours < 0.0) {
          totalHours = 0;
       }
-      setHoursSpent(workItem, totalHours, changes);
+      setHoursSpentWorkflow(workItem, totalHours, changes);
+      if (workItem.isPeerReview()) {
+         atsApi.getReviewService().updateHoursSpentRoles((IAtsPeerToPeerReview) workItem, changes);
+      }
       setPercentComplete(workItem, percentComplete, changes);
       if (logMetrics) {
          logMetrics(workItem, workItem.getCurrentState(), user, new Date(), changes);
@@ -72,24 +76,34 @@ public class AtsWorkItemMetricsServiceImpl implements IAtsWorkItemMetricsService
    }
 
    @Override
-   public double getHoursSpent(IAtsWorkItem workItem) {
-      return atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.HoursSpent, 0.0);
+   public double getHoursSpentWorkflow(IAtsWorkItem workItem) {
+      return atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.HoursSpentWorkflow, 0.0);
    }
 
    @Override
-   public void setMetrics(IAtsWorkItem workItem, double hoursSpent, int percentComplete, boolean logMetrics,
+   public double getHoursSpentRoles(IAtsPeerToPeerReview peerRev) {
+      return atsApi.getAttributeResolver().getSoleAttributeValue(peerRev, AtsAttributeTypes.HoursSpentRoles, 0.0);
+   }
+
+   @Override
+   public void setMetrics(IAtsWorkItem workItem, double hoursSpentWorkflow, int percentComplete, boolean logMetrics,
       AtsUser user, Date date, IAtsChangeSet changes) {
-      setHoursSpent(workItem, hoursSpent, changes);
+      setHoursSpentWorkflow(workItem, hoursSpentWorkflow, changes);
       setPercentComplete(workItem, percentComplete, changes);
       if (logMetrics) {
-         logMetrics(workItem, String.valueOf(percentComplete), String.valueOf(hoursSpent),
+         logMetrics(workItem, String.valueOf(percentComplete), String.valueOf(hoursSpentWorkflow),
             TeamState.valueOf(workItem.getCurrentStateName()), user, new Date(), changes);
       }
    }
 
    @Override
-   public void setHoursSpent(IAtsWorkItem workItem, double hoursSpent, IAtsChangeSet changes) {
-      changes.setSoleAttributeValue(workItem, AtsAttributeTypes.HoursSpent, hoursSpent);
+   public void setHoursSpentWorkflow(IAtsWorkItem workItem, double hoursSpent, IAtsChangeSet changes) {
+      changes.setSoleAttributeValue(workItem, AtsAttributeTypes.HoursSpentWorkflow, hoursSpent);
+   }
+
+   @Override
+   public void setHoursSpentRoles(IAtsPeerToPeerReview peerRev, double hoursSpent, IAtsChangeSet changes) {
+      changes.setSoleAttributeValue(peerRev, AtsAttributeTypes.HoursSpentRoles, hoursSpent);
    }
 
    @Override
@@ -113,8 +127,11 @@ public class AtsWorkItemMetricsServiceImpl implements IAtsWorkItemMetricsService
          }
       } else if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
-         hours = atsApi.getWorkItemMetricsService().getHoursSpent(workItem) + getHoursSpentFromTasks(
+         hours = atsApi.getWorkItemMetricsService().getHoursSpentWorkflow(workItem) + getHoursSpentFromTasks(
             atsObject) + getHoursSpentReview(atsObject);
+         if (atsObject instanceof IAtsPeerToPeerReview) {
+            hours += getHoursSpentRoles((IAtsPeerToPeerReview) atsObject);
+         }
       }
       return hours;
    }

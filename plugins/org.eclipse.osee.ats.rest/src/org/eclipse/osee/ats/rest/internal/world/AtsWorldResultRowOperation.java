@@ -47,6 +47,7 @@ public class AtsWorldResultRowOperation {
       ResultRows rows = new ResultRows();
       if (atsSearchData.getCustomizeData() == null || atsSearchData.getCustomizeData().getColumnData().getColumns().isEmpty()) {
          rows.getRd().error("CustomizeData can not be null or empty.");
+         return rows;
       }
 
       AtsSearchDataResults results = getArtifacts();

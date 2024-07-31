@@ -14,9 +14,12 @@
 package org.eclipse.osee.framework.ui.skynet.results;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
@@ -45,6 +48,7 @@ import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
 import org.eclipse.osee.framework.ui.skynet.results.table.IResultsXViewerRow;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
+import org.eclipse.swt.program.Program;
 
 /**
  * @author Donald G. Dunne
@@ -250,6 +254,24 @@ public class XResultDataUI {
          return true;
       }
       return false;
+   }
+
+   public static void errorf(String title, String formatStr, Object... objs) {
+      XResultData rd = new XResultData();
+      rd.errorf(formatStr, objs);
+      XResultDataUI.report(rd, title);
+   }
+
+   public static void reportAndOpen(XResultData rd, String title, String filename) {
+      String html = report(rd, title);
+      try {
+         String fName = System.getProperty("user.home") + File.separator + filename;
+         File outFile = new File(fName);
+         Lib.writeStringToFile(html, outFile);
+         Program.launch(outFile.getAbsolutePath());
+      } catch (IOException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, Lib.exceptionToString(ex));
+      }
    }
 
 }

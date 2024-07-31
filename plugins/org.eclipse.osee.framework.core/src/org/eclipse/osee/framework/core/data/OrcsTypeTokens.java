@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.core.data;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.ws.rs.core.MediaType;
@@ -137,6 +138,7 @@ public class OrcsTypeTokens {
    private final List<Tuple2Type<?, ?>> tuple2Types = new ArrayList<>();
    private final List<Tuple3Type<?, ?, ?>> tuple3Types = new ArrayList<>();
    private final List<Tuple4Type<?, ?, ?, ?>> tuple4Types = new ArrayList<>();
+   private final ChainingArrayList<@NonNull OperationTypeToken> operationTypes = new ChainingArrayList<>();
    private final NamespaceToken namespace;
 
    /**
@@ -160,6 +162,11 @@ public class OrcsTypeTokens {
       return new AttributeMultiplicity(id, namespace, name, isAbstract, icon, superTypes);
    }
 
+   public AttributeMultiplicity artifactType(Long id, String name, boolean isAbstract, MaterialIcon icon,
+      Set<OperationTypeToken> operationTypes, ArtifactTypeToken... superTypes) {
+      return new AttributeMultiplicity(id, namespace, name, isAbstract, icon, operationTypes, superTypes);
+   }
+
    public AttributeMultiplicity artifactType(Long id, String name, boolean isAbstract, OseeImage image,
       MaterialIcon icon, ArtifactTypeToken... superTypes) {
       return new AttributeMultiplicity(id, namespace, name, isAbstract, image, icon, Collections.asList(superTypes));
@@ -168,6 +175,11 @@ public class OrcsTypeTokens {
    public AttributeMultiplicity artifactType(Long id, String name, boolean isAbstract,
       ArtifactTypeToken... superTypes) {
       return new AttributeMultiplicity(id, namespace, name, isAbstract, superTypes);
+   }
+
+   public AttributeMultiplicity artifactType(Long id, String name, boolean isAbstract,
+      Set<OperationTypeToken> operationTypes, ArtifactTypeToken... superTypes) {
+      return new AttributeMultiplicity(id, namespace, name, isAbstract, operationTypes, superTypes);
    }
 
    public List<AttributeTypeGeneric<?>> getAttributeTypes() {
@@ -256,10 +268,17 @@ public class OrcsTypeTokens {
       return tuple;
    }
 
+   public OperationTypeToken add(long id, String name, String description, MaterialIcon icon) {
+      validateString(name);
+      validateString(description);
+      return operationTypes.addAndReturn(OperationTypeToken.create(id, name, description, icon));
+   }
+
    public void registerTypes(OrcsTokenService tokenService) {
       artifactTypes.forEach(tokenService::registerArtifactType);
       attributeTypes.forEach(tokenService::registerAttributeType);
       relationTypes.forEach(tokenService::registerRelationType);
+      operationTypes.forEach(tokenService::registerOperationType);
       tuple2Types.forEach(tokenService::registerTuple2Type);
       tuple3Types.forEach(tokenService::registerTuple3Type);
       tuple4Types.forEach(tokenService::registerTuple4Type);
@@ -570,33 +589,41 @@ public class OrcsTypeTokens {
     */
 
    public @NonNull AttributeTypeString createString(Long id, String name, String mediaType, String description,
-      TaggerTypeToken taggerType, String fileExtension, DisplayHint... displayHints) {
+      TaggerTypeToken taggerType, String fileExtension, Set<OperationTypeToken> operationTypes,
+      DisplayHint... displayHints) {
       validateString(name);
-      return attributeTypes.addAndReturn(
-         new AttributeTypeString(id, namespace, name, mediaType, description, taggerType, fileExtension, displayHints));
+      return attributeTypes.addAndReturn(new AttributeTypeString(id, namespace, name, mediaType, description,
+         taggerType, fileExtension, operationTypes, displayHints));
    }
 
    public @NonNull AttributeTypeString createString(Long id, String name, String mediaType, String description,
       DisplayHint... displayHints) {
       return createString(id, name, mediaType, description, determineTaggerType(mediaType),
-         defaultFileExtension(mediaType), displayHints);
+         defaultFileExtension(mediaType), null, displayHints);
+   }
+
+   public @NonNull AttributeTypeString createString(Long id, String name, String mediaType, String description,
+      Set<OperationTypeToken> operationTypes, DisplayHint... displayHints) {
+      return createString(id, name, mediaType, description, determineTaggerType(mediaType),
+         defaultFileExtension(mediaType), operationTypes, displayHints);
    }
 
    public @NonNull AttributeTypeString createString(Long id, String name, String mediaType, String description,
       String fileExtension, DisplayHint... displayHints) {
-      return createString(id, name, mediaType, description, determineTaggerType(mediaType), fileExtension,
+      return createString(id, name, mediaType, description, determineTaggerType(mediaType), fileExtension, null,
          displayHints);
    }
 
    public @NonNull AttributeTypeString createStringNoTag(Long id, String name, String mediaType, String description,
       DisplayHint... displayHints) {
       return createString(id, name, mediaType, description, TaggerTypeToken.SENTINEL, defaultFileExtension(mediaType),
-         displayHints);
+         null, displayHints);
    }
 
    public @NonNull AttributeTypeString createStringNoTag(Long id, String name, String mediaType, String description,
       String fileExtension, DisplayHint... displayHints) {
-      return createString(id, name, mediaType, description, TaggerTypeToken.SENTINEL, fileExtension, displayHints);
+      return createString(id, name, mediaType, description, TaggerTypeToken.SENTINEL, fileExtension, null,
+         displayHints);
    }
 
    public @NonNull AttributeTypeString createString(
@@ -606,7 +633,7 @@ public class OrcsTypeTokens {
       var nameAndDescription = attributeNameAndDescriptionSupplier.get();
       return attributeTypes.addAndReturn(
          new AttributeTypeString(identifier, namespaceToken, nameAndDescription.getFirst(), mediaType,
-            nameAndDescription.getSecond(), taggerTypeToken, fileExtension, displayHints));
+            nameAndDescription.getSecond(), taggerTypeToken, fileExtension, null, displayHints));
    }
 
    /*
@@ -714,7 +741,7 @@ public class OrcsTypeTokens {
    }
 
    public int size() {
-      return artifactTypes.size() + attributeTypes.size() + relationTypes.size() + tuple2Types.size() + tuple3Types.size() + tuple4Types.size();
+      return artifactTypes.size() + attributeTypes.size() + relationTypes.size() + tuple2Types.size() + tuple3Types.size() + tuple4Types.size() + operationTypes.size();
    }
 
    @Override

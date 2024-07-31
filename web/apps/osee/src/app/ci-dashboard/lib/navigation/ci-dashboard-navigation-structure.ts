@@ -130,6 +130,18 @@ export const ciNavigationStructure: navigationElement[] = [
 				description: '',
 				children: [],
 			},
+			{
+				label: 'Admin',
+				cypressLabel: 'ci-admin',
+				pageTitle: 'OSEE - Continuous Integration',
+				isDropdown: false,
+				isDropdownOpen: false,
+				requiredRoles: [UserRoles.CI_ADMIN],
+				routerLink: '/ci/admin',
+				icon: '',
+				description: '',
+				children: [],
+			},
 		],
 	},
 ];

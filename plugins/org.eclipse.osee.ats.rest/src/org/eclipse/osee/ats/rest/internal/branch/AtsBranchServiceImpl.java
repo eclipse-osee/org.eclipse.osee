@@ -59,8 +59,8 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    private final HashCollectionSet<ArtifactId, TransactionRecord> commitArtifactIdMap =
       new HashCollectionSet<>(true, HashSet::new);
 
-   public AtsBranchServiceImpl(AtsApi atsServices, OrcsApi orcsApi, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
-      super(atsServices, teamWorkflowProvidersLazy);
+   public AtsBranchServiceImpl(AtsApi atsApi, OrcsApi orcsApi, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
+      super(atsApi, teamWorkflowProvidersLazy);
       this.orcsApi = orcsApi;
       txQuery = orcsApi.getQueryFactory().transactionQuery();
    }
@@ -281,6 +281,12 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    public XResultData commitWorkingBranch(IAtsTeamWorkflow teamWf, boolean commitPopup, boolean overrideStateValidation,
       BranchId destinationBranch, boolean archiveWorkingBranch, XResultData rd) {
       return commitBranch(teamWf, destinationBranch, atsApi.getUserService().getCurrentUser(), rd);
+   }
+
+   @Override
+   public void internalClearCaches() {
+      super.internalClearCaches();
+      commitArtifactIdMap.clear();
    }
 
 }

@@ -28,6 +28,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -204,6 +205,11 @@ public interface ArtifactEndpoint {
    @Path("{artifact}")
    @Produces(MediaType.APPLICATION_JSON)
    TransactionToken deleteArtifact(@PathParam("branch") BranchId branch, @PathParam("artifact") ArtifactId artifact);
+
+   @DELETE
+   @Path("{artifact}/purge")
+   @Produces(MediaType.APPLICATION_JSON)
+   Response purgeArtifact(@PathParam("branch") BranchId branch, @PathParam("artifact") ArtifactId artifact);
 
    @PUT
    @Path("{artifact}/attribute/type/{attributeType}")

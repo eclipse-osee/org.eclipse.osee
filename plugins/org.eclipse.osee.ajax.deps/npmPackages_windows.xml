@@ -1,0 +1,36 @@
+<project name="Creates an Eclipse Project from an External JAR" default="run">
+
+
+       <target name="run">
+  
+	<property name="jar_dir" value="node_modules"/>
+	<echo>Moving files Windows</echo>
+
+        <move file="${jar_dir}/angular-ui-tree" tofile="${jar_dir}/angular-ui-tree/2.22.5"/>
+        <move file="${jar_dir}/split.js" tofile="${jar_dir}/splitjs/1.2.0"/>
+	    <move file="${jar_dir}/jsonforms/bootstrap" tofile="${jar_dir}/jsonforms"/>
+        
+	<copy todir="../org.eclipse.oss.ajax/src/splitjs">
+	    <fileset dir="${jar_dir}/splitjs"/>
+	</copy>
+	
+	<copy todir="../org.eclipse.oss.ajax/src/angular-ui-tree">
+        <fileset dir="${jar_dir}/angular-ui-tree"/>
+    </copy>
+	    
+    <copy todir="../org.eclipse.oss.ajax/src/angular-recursion">
+        <fileset dir="${jar_dir}/angular-recursion"/>	 
+    </copy>
+
+	<copy todir="../org.eclipse.oss.ajax/src/jsonforms">
+        <fileset dir="${jar_dir}/jsonforms"/>
+    </copy>
+    
+
+    <delete dir="node_modules"/>
+
+
+
+   </target>
+
+</project>	

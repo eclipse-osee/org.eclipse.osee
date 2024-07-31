@@ -42,6 +42,7 @@ import org.eclipse.swt.widgets.Control;
 /**
  * @author Donald G. Dunne
  */
+@SuppressWarnings("deprecation")
 public class FilteredTreeAtsUserDialog extends FilteredTreeDialog {
 
    private Collection<AtsUser> selectable;
@@ -164,7 +165,6 @@ public class FilteredTreeAtsUserDialog extends FilteredTreeDialog {
       this.enteredText = enteredText;
    }
 
-   @SuppressWarnings("deprecation")
    public static class AtsUserViewerSorter extends ViewerSorter {
 
       private final boolean reverse;

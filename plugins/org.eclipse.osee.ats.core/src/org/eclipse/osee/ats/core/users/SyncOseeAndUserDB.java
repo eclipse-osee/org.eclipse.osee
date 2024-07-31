@@ -362,15 +362,22 @@ public abstract class SyncOseeAndUserDB {
             return;
          }
 
-         String toEmail = user.getEmail();
-         String subject = String.format(
-            "ACTION REQUIRED - OSEE Account IN " + oseeDbName + " Will Be Disabled - %s Notification", firstOrLastStr);
-         atsApi.getNotificationService().sendNotifications(fromEmail, Collections.asList(toEmail), subject,
-            "Your OSEE account in " + oseeDbName + " has not been accessed in the past " //
+         List<String> emailList = new ArrayList<>();
+         emailList.add(user.getEmail());
+         String abridgedEmail = atsApi.getUserService().getAbridgedEmail(user, atsApi);
+         if (EmailUtil.isEmailValid(abridgedEmail)) {
+            emailList.add(abridgedEmail);
+         }
+         String subject = String.format("ACTION REQUIRED - %s OSEE Account Will Be Disabled - %s Notification",
+            oseeDbName, firstOrLastStr);
+
+         atsApi.getNotificationService().sendNotifications(fromEmail, emailList, subject,
+            "Your OSEE account has not been accessed in the past " //
                + firstOrLastDaysInt + " days.<br/><br/>" //
                + "<b>Please launch OSEE to continue account access.</b><br/><br/> " //
                + "Otherwise the account will be automatically disabled.<br/><br/>" //
                + "Account: " + user.toString());
+
          changes.addAttribute(userArt, CoreAttributeTypes.StaticId, firstOrLastStaticId);
          results.log("Sent");
       }

@@ -56,7 +56,7 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
 
    static @NonNull AttributeTypeString createString(Long id, NamespaceToken namespace, String name, String mediaType,
       String description, TaggerTypeToken taggerType, String fileExtension) {
-      return new AttributeTypeString(id, namespace, name, mediaType, description, taggerType, fileExtension);
+      return new AttributeTypeString(id, namespace, name, mediaType, description, taggerType, fileExtension, null);
    }
 
    /**
@@ -237,5 +237,7 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
       }
       return false;
    }
+
+   public Set<OperationTypeToken> getOperationTypes();
 
 }

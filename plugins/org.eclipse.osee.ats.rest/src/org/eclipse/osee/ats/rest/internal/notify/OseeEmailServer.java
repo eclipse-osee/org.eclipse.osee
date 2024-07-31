@@ -43,12 +43,14 @@ public class OseeEmailServer extends OseeEmail {
       return new OseeEmailServer();
    }
 
-   public static OseeEmailServer create(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject, String body, BodyType bodyType) {
+   public static OseeEmailServer create(Collection<String> toAddresses, String fromAddress, String replyToAddress,
+      String subject, String body, BodyType bodyType) {
       loadDefaultMailServer();
       return new OseeEmailServer(toAddresses, fromAddress, replyToAddress, subject, body, bodyType);
    }
 
-   public static OseeEmailServer create(String fromEmail, String toAddress, String subject, String body, BodyType bodyType) {
+   public static OseeEmailServer create(String fromEmail, String toAddress, String subject, String body,
+      BodyType bodyType) {
       loadDefaultMailServer();
       return new OseeEmailServer(fromEmail, toAddress, subject, body, bodyType);
    }

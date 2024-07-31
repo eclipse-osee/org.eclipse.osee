@@ -17,9 +17,9 @@ import java.io.File;
 import java.io.InputStream;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderData;
 import org.eclipse.osee.testscript.internal.ScriptDefToken;
+import org.eclipse.osee.testscript.internal.TmoImportResult;
 
 /**
  * @author Ryan T. Baldwin
@@ -34,7 +34,7 @@ public interface TmoImportApi {
 
    TransactionBuilderData getTxBuilderData(BranchId branch, ScriptDefToken scriptDef, boolean resetKey);
 
-   TransactionResult importFile(InputStream stream, BranchId branch, ArtifactId ciSetId);
+   TmoImportResult importFile(InputStream stream, BranchId branch, ArtifactId ciSetId);
 
-   TransactionResult importBatch(InputStream stream, BranchId branch, ArtifactId ciSetId);
+   TmoImportResult importBatch(InputStream stream, BranchId branch, ArtifactId ciSetId);
 }

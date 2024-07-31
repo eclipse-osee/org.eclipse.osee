@@ -6,19 +6,50 @@ on:
       - main
 
 jobs:
-  validate_osee_build_linux:
+  check-changes:
     runs-on: ubuntu-latest
+    outputs:
+      angular_changed: ${{ steps.angular_changes.outputs.any_modified }}
+      java_changed: ${{ steps.java_changes.outputs.any_modified }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Check For Angular Changes
+        id: angular_changes
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            web/**/*
+            pnpm-lock.yaml
+
+      - name: Check For Java Changes
+        id: java_changes
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            plugins/**/*
+            features/**/*
+
+      - name: Show Outputs
+        run: |
+          echo "Angular Changed: ${{ steps.angular_changes.outputs.any_modified }}"
+          echo "Java Changed: ${{ steps.java_changes.outputs.any_modified }}"
+
+  validate_osee_build_linux:
+    needs: check-changes
+    runs-on: ubuntu-latest
+    if: ${{ needs.check-changes.outputs.angular_changed == 'true' || needs.check-changes.outputs.java_changed == 'true' }}
     container:
-      image: ghcr.io/eclipse-osee/org.eclipse.osee/maven-node:20240715184012
+      image: ghcr.io/eclipse-osee/org.eclipse.osee/maven-node:20240717003623
 
     services:
       postgres:
-        image: ghcr.io/eclipse-osee/org.eclipse.osee/osee-postgres:20240711202911
+        image: ${{ needs.check-changes.outputs.java_changed == 'true' && 'ghcr.io/eclipse-osee/org.eclipse.osee/osee-postgres:20240711202911' || '' }}
         env:
           POSTGRES_PASSWORD: osee
           POSTGRES_USER: osee
           POSTGRES_DB: osee
-          POSTGRES_HOST_AUTH_METHOD: trust  # REMOVE THIS once the postgres driver has been updated.
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -28,8 +59,15 @@ jobs:
           - 5432:5432
 
     steps:
+      - name: Show Job Inputs
+        run: |
+          echo "${{ toJSON(needs.check-changes.outputs) }}"
+
       - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Build And Test OSEE Binaries
         uses: ./.github/actions/build-osee-binary
+        with:
+          SKIP_ANGULAR_BUILD: ${{ needs.check-changes.outputs.angular_changed == 'false' }}
+          SKIP_JAVA_BUILD: ${{ needs.check-changes.outputs.java_changed == 'false' }}

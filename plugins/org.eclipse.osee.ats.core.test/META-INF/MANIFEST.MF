@@ -2,14 +2,17 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ATS Core Test
 Bundle-SymbolicName: org.eclipse.osee.ats.core.test;singleton:=true
-Bundle-ActivationPolicy: lazy
+Automatic-Module-Name: org.eclipse.osee.ats.core.test
+undle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
 Fragment-Host: org.eclipse.osee.ats.core
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Require-Bundle: org.junit,
  org.hamcrest.core,
  org.mockito;visibility:=reexport,
- org.objenesis
+ org.objenesis,
+ net.bytebuddy.byte-buddy,
+ net.bytebuddy.byte-buddy-agent
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Import-Package: org.eclipse.osee.ats.api.workdef.model,
  org.eclipse.osee.framework.core.util.result

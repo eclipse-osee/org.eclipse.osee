@@ -24,8 +24,6 @@ export class CiDashboardImportService {
 		private importHttpService: CiDashboardImportHttpService
 	) {}
 
-	_startImport = new Subject();
-
 	importFile(file: File | undefined) {
 		if (file === undefined || file.name === '') {
 			return of();
@@ -33,23 +31,17 @@ export class CiDashboardImportService {
 		return combineLatest([
 			this.uiService.branchId,
 			this.uiService.ciSetId,
-			this._startImport,
 		]).pipe(
 			filter(
-				([branchId, ciSetId, start]) =>
+				([branchId, ciSetId]) =>
 					branchId !== '' &&
 					branchId !== '-1' &&
 					ciSetId !== '' &&
-					ciSetId !== '-1' &&
-					start === true
+					ciSetId !== '-1'
 			),
 			switchMap(([branchId, ciSetId]) =>
 				this.importHttpService.importFile(branchId, ciSetId, file)
 			)
 		);
-	}
-
-	set StartImport(start: boolean) {
-		this._startImport.next(start);
 	}
 }

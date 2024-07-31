@@ -21,7 +21,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.ats.api.AtsApi;
@@ -66,7 +65,9 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
 
    private ExcelXmlWriter writer;
 
-   Pattern UI_NAME = Pattern.compile("\\{.*\\}");
+   private final String VERIFY = "Verify";
+   private final String DEMONSTRATE = "Demonstrate";
+   private final String CLOSED = "Closed";
 
    private final SoftwareReqVolatilityId[] reportColumns = {
       SoftwareReqVolatilityId.ACT,
@@ -75,7 +76,7 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
       SoftwareReqVolatilityId.Program,
       SoftwareReqVolatilityId.Build,
       SoftwareReqVolatilityId.Date,
-      SoftwareReqVolatilityId.Completed,
+      SoftwareReqVolatilityId.VerifyOrComplete,
       SoftwareReqVolatilityId.AddedReq,
       SoftwareReqVolatilityId.ModifiedReq,
       SoftwareReqVolatilityId.DeletedReq,
@@ -135,21 +136,24 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
                isReqWf = workDef.getName().contains("Requirements");
             }
 
+            Date stateStartedDate = new Date();
+
             if (isReqWf) {
-               if (workflow.getStateDefinition().getName().equals("Demonstrate")) {
-                  if (allTime) {
-                     reqWorkflows.add(workflow);
-                  } else if (getStateStartedDate(workflow, "Demonstrate").after(
-                     startDate) && getStateStartedDate(workflow, "Demonstrate").before(endDate)) {
-                     reqWorkflows.add(workflow);
-                  }
+
+               //Record wf if any of these states. Prioritized as Verify > Demonstrate > Completed > Closed
+               if (atsApi.getWorkItemService().stateExists(workflow, VERIFY)) {
+                  stateStartedDate = getStateStartedDate(workflow, VERIFY);
+               } else if (atsApi.getWorkItemService().stateExists(workflow, DEMONSTRATE)) {
+                  stateStartedDate = getStateStartedDate(workflow, DEMONSTRATE);
                } else if (workflow.isCompleted()) {
-                  if (allTime) {
-                     reqWorkflows.add(workflow);
-                  } else if ((workflow.getCompletedDate().after(startDate) && workflow.getCompletedDate().before(
-                     endDate))) {
-                     reqWorkflows.add(workflow);
-                  }
+                  stateStartedDate = workflow.getCompletedDate();
+               } else if (atsApi.getWorkItemService().stateExists(workflow, CLOSED)) {
+                  stateStartedDate = getStateStartedDate(workflow, CLOSED);
+               } else {
+                  continue;
+               }
+               if (allTime || ((stateStartedDate.after(startDate) && stateStartedDate.before(endDate)))) {
+                  reqWorkflows.add(workflow);
                }
             }
          } catch (Exception ex) {
@@ -171,12 +175,15 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
       List<ChangeItem> changeItems = new ArrayList<>();
 
       try {
-         if (atsApi.getAttributeResolver().getAttributeCount(reqWorkflow, CoreAttributeTypes.BranchDiffData) == 1) {
+         boolean attributeExists =
+            atsApi.getAttributeResolver().hasAttribute(reqWorkflow, CoreAttributeTypes.BranchDiffData);
+         if (attributeExists) {
             changeReportData =
                atsApi.getAttributeResolver().getSoleAttributeValue(reqWorkflow, CoreAttributeTypes.BranchDiffData, "");
-         } else {
+         }
+         if (changeReportData.isEmpty()) {
             changeItems = orcsApi.getBranchOps().compareBranch(branch);
-            if (!changeItems.isEmpty()) {
+            if (!changeItems.isEmpty() && !attributeExists) {
                changeReportData = JsonUtil.toJson(changeItems);
                TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(atsApi.getAtsBranch(),
                   "Generate Diff for Requirement Metrics");
@@ -205,17 +212,16 @@ public final class SoftwareReqVolatilityMetrics implements StreamingOutput {
 
       for (IAtsTeamWorkflow reqWorkflow : reqWorkflows) {
          List<ChangeItem> changeItems = getChangeItems(reqWorkflow);
-         Date closedDate = new Date();
-         Date demonstrateDate = new Date();
          try {
-            closedDate = getStateStartedDate(reqWorkflow, "Closed");
-            demonstrateDate = getStateStartedDate(reqWorkflow, "Demonstrate");
-            if (closedDate != null && !closedDate.equals(new Date(0L))) {
-               buffer[6] = closedDate;
-            } else if (reqWorkflow.getCompletedDate() != null && !reqWorkflow.getCompletedDate().equals(new Date(0L))) {
+            //wf is 'Complete' if any of these states. Prioritized as Verify > Demonstrate > Completed > Closed
+            if (atsApi.getWorkItemService().stateExists(reqWorkflow, VERIFY)) {
+               buffer[6] = getStateStartedDate(reqWorkflow, VERIFY);
+            } else if (atsApi.getWorkItemService().stateExists(reqWorkflow, DEMONSTRATE)) {
+               buffer[6] = getStateStartedDate(reqWorkflow, DEMONSTRATE);
+            } else if (reqWorkflow.isCompleted()) {
                buffer[6] = reqWorkflow.getCompletedDate();
-            } else if (demonstrateDate != null && !demonstrateDate.equals(new Date(0L))) {
-               buffer[6] = demonstrateDate;
+            } else if (atsApi.getWorkItemService().stateExists(reqWorkflow, CLOSED)) {
+               buffer[6] = getStateStartedDate(reqWorkflow, CLOSED);
             } else {
                buffer[6] = "";
             }

@@ -1078,7 +1078,10 @@ public class DispoApiImpl implements DispoApi {
                if (annotation.getResolution().equals("")) {
                   annotation.setResolutionType(resolutionType);
                   annotation.setResolution(resolution);
+                  annotation.setLastResolutionType("N/A");
                   annotation.setLastResolution("N/A");
+                  annotation.setLastManualResolutionType("N/A");
+                  annotation.setLastManualResolution("N/A");
                   annotation.setIsResolutionValid(true);
                   annotation.setIsConnected(true);
                   annotation.setIsDefault(false);

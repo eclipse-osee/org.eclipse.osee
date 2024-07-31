@@ -588,4 +588,9 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       return op.run();
    }
 
+   @Override
+   public void internalClearCaches() {
+      bootstrappingWorkItemToWorkDefCache.clear();
+   }
+
 }

@@ -157,6 +157,7 @@ public class OutliningOptions implements ToMessage {
             @NonNull Consumer<ArtifactTypeToken>             headingArtifactTypeSetter,
             @NonNull Consumer<AttributeTypeToken>            headingAttributeTypeSetter,
             @NonNull Consumer<IncludeHeadings>               includeHeadingsSetter,
+            @NonNull Consumer<IncludeMainContentForHeadings> includeMainContentForHeadingsSetter,
             @NonNull Consumer<IncludeMetadataAttributes>     includeMetadataAttributesSetter,
             @NonNull Consumer<String>                        initialOutlineNumberSetter,
             @NonNull Consumer<Boolean>                       overrideOutlineNumberSetter,
@@ -164,21 +165,22 @@ public class OutliningOptions implements ToMessage {
             @NonNull Consumer<Boolean>                       templateFooterSetter
          ) {
 
-      final var safeOutliningOptionsArray           = Conditions.requireNonNull( outliningOptionsArray,           "outliningOptionsArray"           );
-      final var safeFormatIndicator                 = Conditions.requireNonNull( formatIndicator,                 "formatIndicator"                 );
-      final var safeRendererMap                     = Conditions.requireNonNull( rendererMap,                     "rendererMap"                     );
-      final var safeTokenService                    = Conditions.requireNonNull( tokenService,                    "tokenService"                    );
-      final var safeAllowedOutlineTypesSetter       = Conditions.requireNonNull( allowedOutlineTypesSetter,       "allowedOutlineTypesSetter"       );
-      final var safeContentAttributeTypeSetter      = Conditions.requireNonNull( contentAttributeTypeSetter,      "contentAttributeTypeSetter"      );
-      final var safeExcludeArtifactTypesSetter      = Conditions.requireNonNull( excludeArtifactTypesSetter,      "excludeArtifactTypesSetter"      );
-      final var safeHeadingArtifactTypeSetter       = Conditions.requireNonNull( headingArtifactTypeSetter,       "headingArtifactTypeSetter"       );
-      final var safeHeadingAttributeTypeSetter      = Conditions.requireNonNull( headingAttributeTypeSetter,      "headingAttributeTypeSetter"      );
-      final var safeIncludeHeadingsSetter           = Conditions.requireNonNull( includeHeadingsSetter,           "includeHeadingsSetter"           );
-      final var safeIncludeMetadataAttributesSetter = Conditions.requireNonNull( includeMetadataAttributesSetter, "includeMetadataAttributesSetter" );
-      final var safeInitialOutlineNumberSetter      = Conditions.requireNonNull( initialOutlineNumberSetter,      "initialOutlineNumberSetter"      );
-      final var safeOverrideOutlineNumberSetter     = Conditions.requireNonNull( overrideOutlineNumberSetter,     "overrideOutlineNumberSetter"     );
-      final var safeRecurseChildrenSetter           = Conditions.requireNonNull( recurseChildrenSetter,           "recurseChildrenSetter"           );
-      final var safeTemplateFooterSetter            = Conditions.requireNonNull( templateFooterSetter,            "templateFooterSetter"            );
+      final var safeOutliningOptionsArray                    = Conditions.requireNonNull( outliningOptionsArray,               "outliningOptionsArray"                );
+      final var safeFormatIndicator                          = Conditions.requireNonNull( formatIndicator,                     "formatIndicator"                      );
+      final var safeRendererMap                              = Conditions.requireNonNull( rendererMap,                         "rendererMap"                          );
+      final var safeTokenService                             = Conditions.requireNonNull( tokenService,                        "tokenService"                         );
+      final var safeAllowedOutlineTypesSetter                = Conditions.requireNonNull( allowedOutlineTypesSetter,           "allowedOutlineTypesSetter"            );
+      final var safeContentAttributeTypeSetter               = Conditions.requireNonNull( contentAttributeTypeSetter,          "contentAttributeTypeSetter"           );
+      final var safeExcludeArtifactTypesSetter               = Conditions.requireNonNull( excludeArtifactTypesSetter,          "excludeArtifactTypesSetter"           );
+      final var safeHeadingArtifactTypeSetter                = Conditions.requireNonNull( headingArtifactTypeSetter,           "headingArtifactTypeSetter"            );
+      final var safeHeadingAttributeTypeSetter               = Conditions.requireNonNull( headingAttributeTypeSetter,          "headingAttributeTypeSetter"           );
+      final var safeIncludeHeadingsSetter                    = Conditions.requireNonNull( includeHeadingsSetter,               "includeHeadingsSetter"                );
+      final var safeIncludeMainContentForHeadingsSetter      = Conditions.requireNonNull( includeMainContentForHeadingsSetter, "includeMainContentForHeadingsSetter"  );
+      final var safeIncludeMetadataAttributesSetter          = Conditions.requireNonNull( includeMetadataAttributesSetter,     "includeMetadataAttributesSetter"      );
+      final var safeInitialOutlineNumberSetter               = Conditions.requireNonNull( initialOutlineNumberSetter,          "initialOutlineNumberSetter"           );
+      final var safeOverrideOutlineNumberSetter              = Conditions.requireNonNull( overrideOutlineNumberSetter,         "overrideOutlineNumberSetter"          );
+      final var safeRecurseChildrenSetter                    = Conditions.requireNonNull( recurseChildrenSetter,               "recurseChildrenSetter"                );
+      final var safeTemplateFooterSetter                     = Conditions.requireNonNull( templateFooterSetter,                "templateFooterSetter"                 );
       //@formatter:on
 
       //@formatter:off
@@ -295,6 +297,19 @@ public class OutliningOptions implements ToMessage {
       safeIncludeHeadingsSetter.accept(includeHeadings);
 
       /*
+       * "IncludeMainContentForHeadings"
+       */
+
+      //@formatter:off
+      final var includeMainContentForHeadings =
+         safeRendererMap.isRendererOptionSet( RendererOption.OUTLINING_OPTION_OVERRIDE_INCLUDE_MAIN_CONTENT_FOR_HEADINGS )
+            ? (IncludeMainContentForHeadings) safeRendererMap.getRendererOptionValue( RendererOption.OUTLINING_OPTION_OVERRIDE_INCLUDE_MAIN_CONTENT_FOR_HEADINGS )
+            : outliningOptions.getIncludeMainContentForHeadings();
+      //@formatter:on
+
+      safeIncludeMainContentForHeadingsSetter.accept(includeMainContentForHeadings);
+
+      /*
        * IncludeMetadataAttributes
        */
 
@@ -404,7 +419,7 @@ public class OutliningOptions implements ToMessage {
     * <dt>&quot;&lt;folders-only-heading-artifact-type&gt;&quot;</dt>
     * <dd>Only artifact types of or derived from {@link CoreArtifactTypes#Folder} can be rendered as outline
     * headings.</dd>
-    * <dt>&quot;&lt;folders-and-headers-only-artifact-type&gt;&quot;</dt>
+    * <dt>&quot;&lt;folders-and-headers-only-heading-artifact-type&gt;&quot;</dt>
     * <dd>Only artifact types of or derived from {@link CoreArtifactTypes#Folder} or
     * {@link CoreArtifactTypes#AbstractHeading} can be rendered as outline headings.</dd>
     * <dt>&quot;&lt;format-heading-artifact-type&gt;&quot;</dt>
@@ -491,6 +506,20 @@ public class OutliningOptions implements ToMessage {
 
    @JsonProperty("IncludeHeadings")
    private IncludeHeadings includeHeadings;
+
+   /**
+    * Indicates when to include main content for a heading.
+    * <dl>
+    * <dt>&quot;Always&quot;</dt>
+    * <dd>Main content is always included with each heading.</dd>
+    * <dt>&quot;Never&quot;</dt>
+    * <dd>Main content is never included with each heading.</dd>
+    * </dl>
+    * The default value is &quot;Always&quot;.
+    */
+
+   @JsonProperty("IncludeMainContentForHeadings")
+   private IncludeMainContentForHeadings includeMainContentForHeadings;
 
    /**
     * Indicates when to include metadata attributes for an artifact.
@@ -635,6 +664,10 @@ public class OutliningOptions implements ToMessage {
          //@formatter:on
       }
 
+      if (this.includeMainContentForHeadings == null) {
+         this.includeMainContentForHeadings = IncludeMainContentForHeadings.ALWAYS;
+      }
+
       if (this.includeMetadataAttributes == null) {
          this.includeMetadataAttributes = IncludeMetadataAttributes.ALWAYS;
       }
@@ -718,6 +751,11 @@ public class OutliningOptions implements ToMessage {
    public IncludeHeadings getIncludeHeadings() {
       Conditions.requireMemberSet(this.includeHeadings, "includeHeadings");
       return this.includeHeadings;
+   }
+
+   public IncludeMainContentForHeadings getIncludeMainContentForHeadings() {
+      Conditions.requireMemberSet(this.includeMainContentForHeadings, "includeMainContentForHeadings");
+      return this.includeMainContentForHeadings;
    }
 
    public IncludeMetadataAttributes getIncludeMetadataAttributes() {
@@ -868,9 +906,17 @@ public class OutliningOptions implements ToMessage {
 
    public void setIncludeHeadings(IncludeHeadings includeHeadings) {
 
-      Conditions.requireNull(this.includeHeadings, "includeEmptyHeaders");
+      Conditions.requireNull(this.includeHeadings, "includeHeadings");
 
       this.includeHeadings = Conditions.requireNonNull(includeHeadings, "includeHeadings");
+   }
+
+   public void setIncludeMainContentForHeadings(IncludeMainContentForHeadings includeMainContentForHeadings) {
+
+      Conditions.requireNull(this.includeMainContentForHeadings, "includeMainContentForHeadings");
+
+      this.includeMainContentForHeadings =
+         Conditions.requireNonNull(includeMainContentForHeadings, "includeMainContentForHeadings");
    }
 
    public void setOutlineNumber(String outlineNumber) {
@@ -944,22 +990,23 @@ public class OutliningOptions implements ToMessage {
          .indent( indent )
          .title( "Outlining Options" )
          .indentInc()
-         .segment( "Content Attribute Type",      this.contentAttributeType      )
-         .segment( "Heading Artifact Type",       this.headingArtifactType       )
-         .segment( "Heading Attribute Type",      this.headingAttributeType      )
-         .segment( "Include Headings",            this.includeHeadings           )
-         .segment( "Include Metadata Attributes", this.includeMetadataAttributes )
-         .segment( "Outline Number",              this.outlineNumber             )
-         .segment( "Override Outline Number",     this.overrideOutlineNumber     )
-         .segment( "Recurse Children",            this.recurseChildren           )
-         .segment( "Template Footers",            this.templateFooter            )
+         .segment( "Content Attribute Type",               this.contentAttributeType                    )
+         .segment( "Heading Artifact Type",                this.headingArtifactType                     )
+         .segment( "Heading Attribute Type",               this.headingAttributeType                    )
+         .segment( "Include Headings",                     this.includeHeadings                         )
+         .segment( "Include Main Content For Headings",    this.includeMainContentForHeadings           )
+         .segment( "Include Metadata Attributes",          this.includeMetadataAttributes               )
+         .segment( "Outline Number",                       this.outlineNumber                           )
+         .segment( "Override Outline Number",              this.overrideOutlineNumber                   )
+         .segment( "Recurse Children",                     this.recurseChildren                         )
+         .segment( "Template Footers",                     this.templateFooter                          )
          .indentDec()
          .title( "Deprecated Outlining Options")
          .indentInc()
-         .segment( "Artifact Name",               this.artifactName              )
-         .segment( "Include Empty Headers",       this.includeEmptyHeaders       )
-         .segment( "Outline Only Header Folders", this.outlineOnlyHeaderFolders  )
-         .segment( "Outlining",                   this.outlining                 )
+         .segment( "Artifact Name",                        this.artifactName                            )
+         .segment( "Include Empty Headers",                this.includeEmptyHeaders                     )
+         .segment( "Outline Only Header Folders",          this.outlineOnlyHeaderFolders                )
+         .segment( "Outlining",                            this.outlining                               )
          .indentDec()
          ;
       //@formatter:on

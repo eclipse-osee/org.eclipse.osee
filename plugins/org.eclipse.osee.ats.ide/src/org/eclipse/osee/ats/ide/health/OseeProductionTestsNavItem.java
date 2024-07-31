@@ -263,8 +263,7 @@ public class OseeProductionTestsNavItem extends XNavigateItem {
          String title = entry.getKey();
          ElapsedTime time = new ElapsedTime(title);
          ResultSet<IAtsTeamDefinition> teamDefs = entry.getValue().getConfigObjectResultSet();
-         IAtsTeamDefinition teamDef = (IAtsTeamDefinition) entry.getValue().getConfigObjectResultSet().getOneOrDefault(
-            IAtsTeamDefinition.SENTINEL);
+         entry.getValue().getConfigObjectResultSet().getOneOrDefault(IAtsTeamDefinition.SENTINEL);
          boolean passed = true;
          Long ms = time.getTimeSpent();
          rd.logf(AHTML.addRowMultiColumnTable(ms.toString(), getPassFail(passed), title, "API",

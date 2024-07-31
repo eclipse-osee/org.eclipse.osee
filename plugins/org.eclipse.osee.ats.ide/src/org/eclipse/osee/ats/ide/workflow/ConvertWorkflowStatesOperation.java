@@ -77,8 +77,7 @@ public class ConvertWorkflowStatesOperation extends AbstractOperation {
       } else {
          try {
             for (AbstractWorkflowArtifact awa : workflows) {
-               convertCurrentState(awa);
-               convertStates(awa);
+               convertCurrentStateName(awa);
                convertCompletedFromState(awa);
                convertCancelledFromState(awa);
                convertLogStates(awa);
@@ -134,25 +133,8 @@ public class ConvertWorkflowStatesOperation extends AbstractOperation {
       }
    }
 
-   private void convertStateAttributes(AbstractWorkflowArtifact awa, AttributeTypeToken attrType) {
-      for (Attribute<Object> attribute : awa.getAttributes(attrType)) {
-         for (Entry<String, String> fromToState : fromStateToStateMap.entrySet()) {
-            if (((String) attribute.getValue()).startsWith(fromToState.getKey() + ";")) {
-               String fromStr = (String) attribute.getValue();
-               String toStr = fromStr.replaceFirst(fromToState.getKey() + ";", fromToState.getValue() + ";");
-               attribute.setValue(toStr);
-               rd.logf("Convert [%s] \n   [%s] to \n   [%s]\n", attrType.getName(), fromStr, toStr);
-            }
-         }
-      }
-   }
-
-   private void convertCurrentState(AbstractWorkflowArtifact awa) {
-      convertStateAttributes(awa, AtsAttributeTypes.CurrentState);
-   }
-
-   private void convertStates(AbstractWorkflowArtifact awa) {
-      convertStateAttributes(awa, AtsAttributeTypes.State);
+   private void convertCurrentStateName(AbstractWorkflowArtifact awa) {
+      convertExactMatchAttributeValue(awa, AtsAttributeTypes.CurrentStateName);
    }
 
    private void convertCompletedFromState(AbstractWorkflowArtifact awa) {

@@ -28,7 +28,6 @@ import static org.eclipse.osee.framework.jdk.core.util.Strings.emptyString;
 import static org.eclipse.osee.orcs.core.internal.util.OrcsConditions.checkBranch;
 import static org.eclipse.osee.orcs.core.internal.util.OrcsConditions.checkOnGraph;
 import static org.eclipse.osee.orcs.core.internal.util.OrcsConditions.checkRelateSelf;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,11 +38,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -228,6 +227,12 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    @Override
+   public void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, String rationale,
+      RelationId id) {
+      relate(session, aNode, type, bNode, rationale, PREEXISTING, id);
+   }
+
+   @Override
    public void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode,
       RelationSorter sortType) {
       relate(session, aNode, type, bNode, emptyString(), sortType);
@@ -237,6 +242,12 @@ public class RelationManagerImpl implements RelationManager {
    public void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, String rationale,
       RelationSorter sortType) {
       relate(session, aNode, type, bNode, rationale, sortType, 0, null, null);
+   }
+
+   @Override
+   public void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, String rationale,
+      RelationSorter sortType, RelationId id) {
+      relate(session, aNode, type, bNode, rationale, sortType, 0, null, null, id);
    }
 
    @Override
@@ -284,6 +295,51 @@ public class RelationManagerImpl implements RelationManager {
       }
    }
 
+   @Override
+   public void relate(OrcsSession session, Artifact aNode, RelationTypeToken type, Artifact bNode, String rationale,
+      RelationSorter sortType, int relOrder, ArtifactId relatedArtifact, TxData txData, RelationId id) {
+      checkBranch(aNode, bNode);
+      checkRelateSelf(aNode, bNode);
+      GraphData graph = getGraph(aNode, bNode);
+
+      validity.checkRelationTypeValid(type, aNode, SIDE_A);
+      validity.checkRelationTypeValid(type, bNode, SIDE_B);
+
+      // Check we can create the type on other side of each node
+      checkMultiplicityCanAdd(type, aNode, bNode, txData);
+      DeletionFlag delFlag = (type.isNewRelationTable()) ? INCLUDE_HARD_DELETED : INCLUDE_DELETED;
+      Relation relation;
+      if (type.isNewRelationTable()) {
+         relation = getRelation(aNode, type, bNode, relOrder, delFlag).getOneOrNull();
+      } else {
+         relation = getRelation(aNode, type, bNode, delFlag).getOneOrNull();
+      }
+      boolean updated = false;
+      if (relation == null) { //doesn't exist at all
+         if (type.isNewRelationTable()) {
+            relation = relationFactory.createRelation(aNode, type, bNode, relatedArtifact, relOrder);
+         } else {
+            relation = relationFactory.createRelation(aNode, type, bNode, rationale, id);
+         }
+         graph.<RelationNodeAdjacencies> getAdjacencies(aNode).add(type, relation);
+         graph.<RelationNodeAdjacencies> getAdjacencies(bNode).add(type, relation);
+         updated = true;
+      }
+      if (relation.isDeleted()) {
+         relation.unDelete();
+         updated = true;
+      }
+
+      if (updated) {
+         relation.setDirty();
+         if (!type.isNewRelationTable()) {
+            order(session, type, aNode, SIDE_A, sortType, OrderOp.ADD_TO_ORDER, Collections.singleton(bNode));
+         } else {
+            relation.setRelOrder(relOrder);
+         }
+      }
+   }
+
    private GraphData getGraph(Artifact aNode, Artifact bNode) {
       checkBranch(aNode, bNode);
       return aNode.getGraph().getTransaction().isOlderThan(
@@ -291,13 +347,13 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    private void checkMultiplicityCanAdd(RelationTypeToken type, Artifact aNode, Artifact bNode, TxData txData) {
-	   List<Relation> relations = getRelations(type, aNode, SIDE_A, EXCLUDE_DELETED, txData);
-	  
+      List<Relation> relations = getRelations(type, aNode, SIDE_A, EXCLUDE_DELETED, txData);
+
       int bSideCount = relations.stream().filter(a->a.getOrcsData().getVersion().getTxCurrent().equals(TxCurrent.CURRENT)).collect(Collectors.toList()).size();
       //int bSideCount = getRelations(type, aNode, SIDE_A, EXCLUDE_DELETED, txData).size();
 
       int bSideMax = validity.getMaximumRelationsAllowed(type, bNode.getArtifactType(), SIDE_B);
-      
+
       if (bSideCount >= bSideMax) {
          throw new OseeStateException("Relation type [%s] on [%s] exceeds max occurrence rule on [%s]", type, SIDE_B,
             aNode.getExceptionString());
@@ -464,12 +520,12 @@ public class RelationManagerImpl implements RelationManager {
       checkNotNull(type, "relationType");
       checkNotNull(side, "relationSide");
       checkNotNull(node, "node");
-      
+
       GraphData graph = node.getGraph();
       ensureRelationsInitialized(graph, node);
       RelationNodeAdjacencies adjacencies = graph.getAdjacencies(node);
       List<Relation> relations = adjacencies.getList(type, includeDeleted, node, side);
-     
+
       // Remove any deleted relations in txData if this is transaction
       if (txData != null) {
          for (Relation relation : txData.getRelations()) {

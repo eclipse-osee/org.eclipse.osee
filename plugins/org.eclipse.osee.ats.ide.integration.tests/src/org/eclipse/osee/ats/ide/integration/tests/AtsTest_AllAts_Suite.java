@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.ats.AtsTest_Ats_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.actions.AtsTest_Action_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.query.AtsTest_Query_Suite;
+import org.eclipse.osee.ats.ide.integration.tests.ats.rest.AtsRestCoverageTest;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.transition.TransitionManagerTest;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IdeClientSession;
@@ -42,7 +43,8 @@ import org.junit.runners.Suite;
    AtsApiServiceTest.class,
    // Long running tests at bottom for ease of development/re-run
    TransitionManagerTest.class,
-   AtsTest_Action_Suite.class //
+   AtsTest_Action_Suite.class,
+   AtsRestCoverageTest.class //
 })
 
 public class AtsTest_AllAts_Suite {

@@ -65,9 +65,9 @@
 <plugin id="org.aopalliance"/>
 <plugin id="org.apache.ant"/>
 <plugin id="org.apache.ant.source"/>
-<plugin id="org.apache.aries.blueprint"/>
+<plugin id="org.apache.aries.blueprint.core"/>
 <plugin id="org.apache.aries.blueprint.annotation"/>
-<plugin id="org.apache.aries.proxy"/>
+<plugin id="org.apache.aries.proxy.api"/>
 <plugin id="org.apache.aries.util"/>
 <plugin id="org.apache.batik.constants"/>
 <plugin id="org.apache.batik.constants.source"/>
@@ -589,7 +589,7 @@
 <plugin id="org.objenesis"/>
 <plugin id="org.openoffice"/>
 <plugin id="org.osgi.service.blueprint"/>
-<plugin id="org.postgresql.driver"/>
+<plugin id="org.postgresql.jdbc"/>
 <plugin id="org.sat4j.core"/>
 <plugin id="org.sat4j.pb"/>
 <plugin id="org.slf4j.api" version="1.7.30.v20221112-0806"/>
@@ -689,6 +689,34 @@
 <plugin id="com.google.protobuf"/>
 <plugin id="com.sun.jna.platform.source"/>
 <plugin id="com.sun.jna.source"/>
+<plugin id="io.swagger.core.v3.swagger-annotations"/>
+<plugin id="io.swagger.core.v3.swagger-core"/>
+<plugin id="io.swagger.core.v3.swagger-integration"/>
+<plugin id="io.swagger.core.v3.swagger-jaxrs2"/>
+<plugin id="io.swagger.core.v3.swagger-models"/>
+<plugin id="com.vladsch.flexmark.ext-autolink"/>
+<plugin id="com.vladsch.flexmark.ext-gfm-tasklist"/>
+<plugin id="com.vladsch.flexmark.ext-gitlab"/>
+<plugin id="com.vladsch.flexmark.ext-tables"/>
+<plugin id="com.vladsch.flexmark.ext-toc"/>
+<plugin id="com.vladsch.flexmark.util-ast"/>
+<plugin id="com.vladsch.flexmark.util-builder"/>
+<plugin id="com.vladsch.flexmark.util-collection"/>
+<plugin id="com.vladsch.flexmark.util-data"/>
+<plugin id="com.vladsch.flexmark.util-format"/>
+<plugin id="com.vladsch.flexmark.util-dependency"/>
+<plugin id="com.vladsch.flexmark.util-html"/>
+<plugin id="com.vladsch.flexmark.util-misc"/>
+<plugin id="com.vladsch.flexmark.util-options"/>
+<plugin id="com.vladsch.flexmark.util-sequence"/>
+<plugin id="com.vladsch.flexmark.util-visitor"/>
+<plugin id="com.vladsch.flexmark"/>
+<plugin id="org.hsqldb.hsqldb"/>
+<plugin id="com.fasterxml.jackson.dataformat.jackson-dataformat-yaml"/>
+<plugin id="com.fasterxml.jackson.datatype.jackson-datatype-jsr310"/>
+<plugin id="org.yaml.snakeyaml"/>
+<plugin id="jakarta.xml.bind"/>
+<plugin id="org.nibor.autolink"/>
 </includeBundles>
 <environment>
 <os>win32</os>

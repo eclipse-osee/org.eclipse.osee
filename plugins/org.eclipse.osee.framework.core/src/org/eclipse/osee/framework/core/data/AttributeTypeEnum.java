@@ -30,7 +30,7 @@ public class AttributeTypeEnum<T extends EnumToken> extends AttributeTypeGeneric
    private final List<T> enumTokens;
 
    public AttributeTypeEnum(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, int enumCount, DisplayHint... hints) {
-      super(id, namespace, name, mediaType, description, taggerType, "", null, hints);
+      super(id, namespace, name, mediaType, description, taggerType, "", null, null, hints);
       this.enumTokens = new ArrayList<T>(enumCount);
    }
 

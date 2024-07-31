@@ -44,6 +44,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 /**
  * @author Donald G. Dunne
  */
+@SuppressWarnings("deprecation")
 public class ExcelAtsTaskArtifactExtractor {
 
    private final AbstractWorkflowArtifact sma;

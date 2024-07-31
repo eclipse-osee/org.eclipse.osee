@@ -36,6 +36,8 @@ public class DeleteRelation {
    private String aArtId;
    @JsonProperty("bArtId")
    private String bArtId;
+   @JsonProperty("id")
+   private String id;
    @JsonIgnore
    private final Map<String, Object> additionalProperties = new LinkedHashMap<String, Object>();
 
@@ -79,4 +81,13 @@ public class DeleteRelation {
       this.additionalProperties.put(name, value);
    }
 
+   @JsonProperty("id")
+   public String getId() {
+      return id;
+   }
+
+   @JsonProperty("id")
+   public void setId(String id) {
+      this.id = id;
+   }
 }

@@ -46,5 +46,6 @@ public class DemoWorkflowTitles {
    public static final String CANT_SEE_THE_GRAPH_TREE = "Can't see the Graph View";
    public static final String PROBLEM_IN_TREE = "Problem in Diagram Tree";
    public static final String PROBLEM_WITH_THE_USER_WINDOW = "Problem with the user window";
+   public static final String PEER_REVIEW_2 = "2 - Peer Review algorithm used in code";
 
 }

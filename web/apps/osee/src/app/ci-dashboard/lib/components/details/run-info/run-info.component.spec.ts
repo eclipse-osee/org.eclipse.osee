@@ -16,6 +16,7 @@ import { RunInfoComponent } from './run-info.component';
 import { CommonModule } from '@angular/common';
 import { CiDetailsService } from '../../../services/ci-details.service';
 import { ciDetailsServiceMock } from '../../../testing/ci-details.service.mock';
+import { resultReferenceMock } from '../../../testing/tmo.response.mock';
 
 describe('RunInfoComponent', () => {
 	let component: RunInfoComponent;
@@ -30,6 +31,7 @@ describe('RunInfoComponent', () => {
 		});
 		fixture = TestBed.createComponent(RunInfoComponent);
 		component = fixture.componentInstance;
+		fixture.componentRef.setInput('scriptResult', resultReferenceMock);
 		fixture.detectChanges();
 	});
 

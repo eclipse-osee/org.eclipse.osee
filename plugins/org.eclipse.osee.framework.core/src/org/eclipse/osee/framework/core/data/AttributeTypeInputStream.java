@@ -28,7 +28,7 @@ public final class AttributeTypeInputStream extends AttributeTypeGeneric<InputSt
    public static final InputStream defaultValue = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
 
    public AttributeTypeInputStream(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension) {
-      super(id, namespace, name, mediaType, description, taggerType, fileExtension, defaultValue);
+      super(id, namespace, name, mediaType, description, taggerType, fileExtension, defaultValue, null);
    }
 
    @Override

@@ -246,7 +246,7 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    @Override
    public OrcsAdmin getAdminOps() {
       OrcsSession session = getSession();
-      return new OrcsAdminImpl(this, logger, session, module.getDataStoreAdmin());
+      return new OrcsAdminImpl(this, logger, session, module.getDataStoreAdmin(), module.getResourceManager());
    }
 
    @Override

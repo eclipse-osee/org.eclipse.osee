@@ -92,9 +92,7 @@ public class ConvertWorkflowStatesOperationTest {
       List<AbstractWorkflowArtifact> workflows = new ArrayList<>();
       Artifact teamWf = ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamWorkflow,
          AtsApiService.get().getAtsBranch(), "ConvertWorkflowStatesOperationTest.testDoWork");
-      teamWf.addAttribute(AtsAttributeTypes.CurrentState, "Endorse;");
-      teamWf.addAttribute(AtsAttributeTypes.State, "Analyze;");
-      teamWf.addAttribute(AtsAttributeTypes.State, "Endorse;");
+      teamWf.addAttribute(AtsAttributeTypes.CurrentStateName, "Endorse");
       teamWf.addAttribute(AtsAttributeTypes.CompletedFromState, "Analyze");
       teamWf.addAttribute(AtsAttributeTypes.CancelledFromState, "Endorse");
       teamWf.addAttribute(AtsAttributeTypes.Log, "log state=\"Endorse\", state=\"Analyze\"");
@@ -108,11 +106,7 @@ public class ConvertWorkflowStatesOperationTest {
       Operations.executeWorkAndCheckStatus(operation);
 
       Assert.assertFalse(rd.isErrors());
-      Assert.assertEquals("NewEndorse;", teamWf.getSoleAttributeValue(AtsAttributeTypes.CurrentState, ""));
-      List<String> stateNames = teamWf.getAttributesToStringList(AtsAttributeTypes.State);
-      Assert.assertEquals(2, stateNames.size());
-      Assert.assertTrue(stateNames.contains("NewAnalyze;"));
-      Assert.assertTrue(stateNames.contains("NewEndorse;"));
+      Assert.assertEquals("NewEndorse", teamWf.getSoleAttributeValue(AtsAttributeTypes.CurrentStateName, ""));
       Assert.assertEquals("NewAnalyze", teamWf.getSoleAttributeValue(AtsAttributeTypes.CompletedFromState, ""));
       Assert.assertEquals("NewEndorse", teamWf.getSoleAttributeValue(AtsAttributeTypes.CancelledFromState, ""));
       Assert.assertEquals("log state=\"NewEndorse\", state=\"NewAnalyze\"",
@@ -131,7 +125,7 @@ public class ConvertWorkflowStatesOperationTest {
       List<AbstractWorkflowArtifact> workflows = new ArrayList<>();
       Artifact teamWf = ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamWorkflow,
          AtsApiService.get().getAtsBranch(), "ConvertWorkflowStatesOperationTest.testDoWork_persist");
-      teamWf.addAttribute(AtsAttributeTypes.CurrentState, "Endorse;");
+      teamWf.addAttribute(AtsAttributeTypes.CurrentStateName, "Endorse");
       workflows.add((AbstractWorkflowArtifact) teamWf);
 
       boolean persist = true;
@@ -142,7 +136,7 @@ public class ConvertWorkflowStatesOperationTest {
       Operations.executeWorkAndCheckStatus(operation);
 
       Assert.assertFalse(rd.isErrors());
-      Assert.assertEquals("NewEndorse;", teamWf.getSoleAttributeValue(AtsAttributeTypes.CurrentState, ""));
+      Assert.assertEquals("NewEndorse", teamWf.getSoleAttributeValue(AtsAttributeTypes.CurrentStateName, ""));
 
       Assert.assertFalse(teamWf.isDirty());
    }

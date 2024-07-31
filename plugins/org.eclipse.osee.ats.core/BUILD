@@ -13,7 +13,7 @@ java_library(
         deps = ["java_deps","//org.eclipse.osee.framework.core.packages", "//org.eclipse.osee.jdbc",
                 "//org.eclipse.osee.orcs", "//org.eclipse.osee.jaxrs",
                 "//org.eclipse.osee.ats.api", "//org.eclipse.osee.framework.core.model",
-                "//org.eclipse.osee.orcs.core", "//org.eclipse.osee.orcs.rest.model"],
+                "//org.eclipse.osee.orcs.core","//org.eclipse.osee.framework.core.server", "//org.eclipse.osee.orcs.rest.model"],
         visibility = ["//visibility:public"]
 
 )

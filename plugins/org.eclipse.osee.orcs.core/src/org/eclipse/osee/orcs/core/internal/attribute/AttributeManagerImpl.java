@@ -72,6 +72,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
 
    }
 
+   @SuppressWarnings("unchecked")
    private <T> List<Attribute<T>> filterAttributes(List<Attribute<?>> attributes, DeletionFlag deletionFlag) {
 
       if (attributes == null) {
@@ -157,14 +158,27 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    @Override
+   public <T> Attribute<T> getAttributeByIdOrNull(AttributeId attributeId) {
+      return getAttributeByIdOrNull(attributeId, DeletionFlag.EXCLUDE_DELETED);
+   }
+
+   @Override
    public <T> Attribute<T> getAttributeById(AttributeId attributeId, DeletionFlag deletionFlag) {
+      Attribute<T> attribute = getAttributeByIdOrNull(attributeId, deletionFlag);
+      if (attribute == null) {
+         throw new AttributeDoesNotExist("Attribute[%s] does not exist for %s", attributeId.getIdString(),
+            getExceptionString());
+      }
+      return attribute;
+   }
+
+   @Override
+   public <T> Attribute<T> getAttributeByIdOrNull(AttributeId attributeId, DeletionFlag deletionFlag) {
       Attribute<T> attribute = null;
-      Optional<Attribute<T>> tryFind =
-         Iterables.tryFind(getAttributes(deletionFlag), OrcsPredicates.attributeId(attributeId));
+      List<Attribute<T>> attributes2 = getAttributes(deletionFlag);
+      Optional<Attribute<T>> tryFind = Iterables.tryFind(attributes2, OrcsPredicates.attributeId(attributeId));
       if (tryFind.isPresent()) {
          attribute = tryFind.get();
-      } else {
-         throw new AttributeDoesNotExist("Attribute[%s] does not exist for %s", attributeId, getExceptionString());
       }
       return attribute;
    }
@@ -481,6 +495,16 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
       Attribute<T> attr = attributeFactory.createAttributeWithDefaults(this, getOrcsData(), attributeType, attributeId);
       attr.setValue(value);
       return attr;
+   }
+
+   @Override
+   public <T> Attribute<T> createAttributeFromString(AttributeTypeToken attributeType, String value,
+      AttributeId attributeId) {
+      attributeCanBeCreated(attributeType);
+      Attribute<T> attribute =
+         attributeFactory.createAttributeWithDefaults(this, getOrcsData(), attributeType, attributeId);
+      attribute.setFromString(value);
+      return attribute;
    }
 
    @Override

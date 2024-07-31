@@ -309,6 +309,7 @@ public final class AtsBranchServiceIdeImpl implements AtsBranchServiceIde {
       WordChangeUtil.generateWordTemplateChangeReport(localChanges, PresentationType.DIFF, false, false);
    }
 
+   @SuppressWarnings("deprecation")
    @Override
    public void generateContextChangeReport(IAtsTeamWorkflow teamArt) {
       List<Change> localChanges = (List<Change>) getChangeData(teamArt, null).getChanges();

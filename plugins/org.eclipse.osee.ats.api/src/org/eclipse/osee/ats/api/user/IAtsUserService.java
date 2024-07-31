@@ -78,4 +78,6 @@ public interface IAtsUserService {
     */
    String getUserStorageString(Collection<AtsUser> users);
 
+   String getAbridgedEmail(ArtifactToken user, AtsApi atsApi);
+
 }

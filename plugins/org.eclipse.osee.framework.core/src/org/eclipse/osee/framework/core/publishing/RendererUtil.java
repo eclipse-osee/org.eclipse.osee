@@ -397,7 +397,7 @@ public class RendererUtil {
          RendererUtil.PATH_SPLITTER_PATTERN
             .splitAsStream( pathString )
             .map( FilenameFactory::makeNameSafer )
-            .filter( Strings::isBlank )
+            .filter( Strings::isValidAndNonBlank )
             .filter( ( segment ) -> Strings.notEquals( segment, RendererUtil.BAD_PATH_SEGMENTS ) )
             .collect( Collectors.toPath() )
             .orElse( java.nio.file.Path.of( ".") );

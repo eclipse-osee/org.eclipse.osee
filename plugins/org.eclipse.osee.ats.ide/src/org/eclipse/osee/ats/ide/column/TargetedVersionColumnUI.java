@@ -95,13 +95,15 @@ public class TargetedVersionColumnUI extends AbstractVersionSelectorUI implement
 
    @Override
    public String getColumnText(Object obj, XViewerColumn column, int columnIndex) {
-      String value = BackgroundLoadingPreComputedColumnUI.getColumnText(obj, loading, loaded, preComputedValueMap, this);
+      String value =
+         BackgroundLoadingPreComputedColumnUI.getColumnText(obj, loading, loaded, preComputedValueMap, this);
       return value;
    }
 
    @Override
    public String getText(Object obj, Long key, String cachedValue) {
-      String value = BackgroundLoadingPreComputedColumnUI.getColumnText(obj, loading, loaded, preComputedValueMap, this);
+      String value =
+         BackgroundLoadingPreComputedColumnUI.getColumnText(obj, loading, loaded, preComputedValueMap, this);
       return value;
    }
 

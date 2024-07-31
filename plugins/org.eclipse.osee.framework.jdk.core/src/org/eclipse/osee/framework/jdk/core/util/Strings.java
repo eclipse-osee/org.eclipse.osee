@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.framework.jdk.core.type.CharSequenceWindow;
 
 /**
@@ -31,6 +32,7 @@ import org.eclipse.osee.framework.jdk.core.type.CharSequenceWindow;
  * @author Donald G. Dunne
  * @author Karol M. Wilk
  * @author Loren K. Ashley
+ * @author Jaden W. Puckett
  */
 public class Strings {
 
@@ -838,5 +840,39 @@ public class Strings {
 
    private Strings() {
       // Utility class
+   }
+
+   /**
+    * Checks if the given search string is present within the given string, ignoring case considerations.
+    * <p>
+    * This method performs a case-insensitive search to determine if {@code searchString} is a substring of
+    * {@code string}.
+    * <ul>
+    * <li>If both {@code string} and {@code searchString} are null, it returns {@code true}.</li>
+    * <li>If {@code string} is null and {@code searchString} is not null, it returns {@code false}.</li>
+    * <li>If {@code searchString} is null, it returns {@code true}, as an empty search string is always considered
+    * found.</li>
+    * </ul>
+    *
+    * @param string the string to be searched, can be null.
+    * @param searchString the string to search for, can be null.
+    * @return {@code true} if {@code searchString} is found within {@code string}, ignoring case considerations;
+    * {@code true} if both {@code string} and {@code searchString} are null; {@code false} if {@code string} is null and
+    * {@code searchString} is not null.
+    */
+   public static boolean containsIgnoreCase(@Nullable String string, @Nullable String searchString) {
+      if ((string == null) && (searchString == null)) {
+         return true; //can always find nothing in nothing
+      }
+
+      if (string == null) {
+         return false; //can't find something in nothing
+      }
+
+      if (searchString == null) {
+         return true; //can always find nothing in something
+      }
+
+      return string.toLowerCase().contains(searchString.toLowerCase());
    }
 }

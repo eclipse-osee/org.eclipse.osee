@@ -342,8 +342,8 @@ public class UserServiceImpl implements UserService {
             userArtifact.getSoleAttributeValue(CoreAttributeTypes.Email, ""),
             userArtifact.getSoleAttributeValue(CoreAttributeTypes.UserId, ""),
             userArtifact.getSoleAttributeValue(CoreAttributeTypes.Active, false),
-            userArtifact.getAttributeValues(CoreAttributeTypes.LoginId), roles,
-            userArtifact.getSoleAttributeValue(CoreAttributeTypes.Phone, ""));
+            userArtifact.getAttributeValues(CoreAttributeTypes.LoginId),
+            roles, userArtifact.getSoleAttributeValue(CoreAttributeTypes.Phone, ""));
       } catch (Exception ex) {
          return UserToken.SENTINEL;
       }

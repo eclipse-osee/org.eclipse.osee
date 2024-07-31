@@ -85,7 +85,7 @@ public class ScriptResultApiImpl implements ScriptResultApi {
                resultToken = tmoToken.getScriptResults().get(0);
                zis.close();
                fis.close();
-               resultToken.setId(resultToken.getId());
+               resultToken.setId(resultId.getId());
                List<TestPointToken> testPoints = resultToken.getTestPoints();
                if (Strings.isValid(filter)) {
                   testPoints = testPoints.stream().filter(

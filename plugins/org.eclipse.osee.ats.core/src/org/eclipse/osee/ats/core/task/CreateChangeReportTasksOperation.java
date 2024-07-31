@@ -247,6 +247,11 @@ public class CreateChangeReportTasksOperation {
                return crtd;
             }
 
+            if (crtd.getWorkOrParentBranchId().isInvalid()) {
+               crtd.getResults().log("No Working or Parent Branch; Nothing to do");
+               return crtd;
+            }
+
             // Add task match for each task that is needed (matches to existing tasks will be later)
             Map<ArtifactId, ArtifactToken> idToArtifact = nameProvider.getTasksComputedAsNeeded(crtd, crttwd, atsApi);
             addIfDebug("============== Task Computed As Needed ================================\n");

@@ -583,6 +583,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
       return "true".equals(booleanValue);
    }
 
+   @Override
    public String getOseeInfo(String key) {
       return OseeInfo.getValue(jdbcService.getClient(), key);
    }

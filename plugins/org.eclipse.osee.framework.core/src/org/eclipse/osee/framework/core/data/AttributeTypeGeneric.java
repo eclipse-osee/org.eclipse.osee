@@ -31,9 +31,10 @@ public abstract class AttributeTypeGeneric<T> extends NamedIdDescription impleme
    private final NamespaceToken namespace;
    private final String fileExtension;
    private final T defaultValue;
+   private final Set<OperationTypeToken> operationTypes;
    protected final Set<DisplayHint> displayHints = new HashSet<DisplayHint>();
 
-   public AttributeTypeGeneric(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension, T defaultValue, DisplayHint... hints) {
+   public AttributeTypeGeneric(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, String fileExtension, T defaultValue, Set<OperationTypeToken> operationTypes, DisplayHint... hints) {
       super(id, name, description);
       this.namespace = namespace;
       this.mediaType = mediaType;
@@ -43,6 +44,7 @@ public abstract class AttributeTypeGeneric<T> extends NamedIdDescription impleme
       for (DisplayHint hint : hints) {
          this.displayHints.add(hint);
       }
+      this.operationTypes = operationTypes != null ? operationTypes : new HashSet<OperationTypeToken>();
    }
 
    public T getBaseAttributeTypeDefaultValue() {
@@ -104,6 +106,11 @@ public abstract class AttributeTypeGeneric<T> extends NamedIdDescription impleme
 
    public void addDisplayHint(DisplayHint displayHint) {
       displayHints.add(displayHint);
+   }
+
+   @Override
+   public Set<OperationTypeToken> getOperationTypes() {
+      return operationTypes;
    }
 
 }

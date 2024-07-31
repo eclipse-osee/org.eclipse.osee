@@ -8,7 +8,10 @@ Fragment-Host: org.eclipse.osee.jdbc
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Require-Bundle: org.mockito;visibility:=reexport,
- org.hamcrest.core
+ org.hamcrest.core,
+ net.bytebuddy.byte-buddy,
+ net.bytebuddy.byte-buddy-agent,
+ org.objenesis
 Import-Package: org.hsqldb,
  org.hsqldb.jdbc,
  org.hsqldb.persist,

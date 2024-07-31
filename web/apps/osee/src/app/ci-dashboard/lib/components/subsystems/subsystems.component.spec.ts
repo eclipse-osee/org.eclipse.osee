@@ -16,6 +16,8 @@ import { NgIf } from '@angular/common';
 import { CiDashboardControlsMockComponent } from '@osee/ci-dashboard/testing';
 import { DashboardHttpService } from '../../services/dashboard-http.service';
 import { dashboardHttpServiceMock } from '../../services/dashboard-http.service.mock';
+import { TransactionService } from '@osee/shared/transactions';
+import { transactionServiceMock } from '@osee/shared/transactions/testing';
 
 describe('SubsystemsComponent', () => {
 	let component: SubsystemsComponent;
@@ -32,6 +34,10 @@ describe('SubsystemsComponent', () => {
 				{
 					provide: DashboardHttpService,
 					useValue: dashboardHttpServiceMock,
+				},
+				{
+					provide: TransactionService,
+					useValue: transactionServiceMock,
 				},
 			],
 		});

@@ -83,6 +83,7 @@ export const artifactWithRelationsMock: artifactWithRelations = {
 							],
 							relations: [],
 							editable: true,
+							operationTypes: [],
 						},
 					],
 					isSideA: true,
@@ -92,4 +93,5 @@ export const artifactWithRelationsMock: artifactWithRelations = {
 		},
 	],
 	editable: true,
+	operationTypes: [],
 };

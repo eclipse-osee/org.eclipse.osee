@@ -15,7 +15,6 @@ package org.eclipse.osee.ats.core.workflow.transition;
 
 import static org.eclipse.osee.ats.api.workflow.transition.TransitionOption.OverrideIdeTransitionCheck;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -682,9 +681,6 @@ public class TransitionManager implements IExecuteListener {
       }
       attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CancelledFromState, fromState.getName(), changes);
 
-      AtsApiService.get().getWorkItemService().getStateMgr(workItem).createOrUpdateState(toState.getName(),
-         java.util.Collections.emptyList());
-
       // Mirror changes in StateManager WorkStates for legacy features
       validateUpdatePercentComplete(workItem, toState, changes);
    }
@@ -699,10 +695,6 @@ public class TransitionManager implements IExecuteListener {
       changes.deleteAttributes(workItem.getStoreObject(), AtsAttributeTypes.CancelledReasonDetails);
       attrResolver.deleteSoleAttribute(workItem, AtsAttributeTypes.CancelledFromState, changes);
 
-      // Mirror changes in StateManager WorkStates for legacy features
-      AtsApiService.get().getWorkItemService().getStateMgr(workItem).createOrUpdateState(toState.getName(),
-         Arrays.asList(transitionUser));
-
       validateUpdatePercentComplete(workItem, toState, changes);
    }
 
@@ -713,10 +705,6 @@ public class TransitionManager implements IExecuteListener {
       attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CompletedBy, cancelBy.getUserId(), changes);
       attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CompletedDate, cancelDate, changes);
       attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CompletedFromState, fromState.getName(), changes);
-
-      // Mirror changes in StateManager WorkStates for legacy features
-      AtsApiService.get().getWorkItemService().getStateMgr(workItem).createOrUpdateState(toState.getName(),
-         java.util.Collections.emptyList());
 
       validateUpdatePercentComplete(workItem, toState, changes);
    }
@@ -729,10 +717,6 @@ public class TransitionManager implements IExecuteListener {
          attrResolver.deleteSoleAttribute(workItem, AtsAttributeTypes.CompletedDate, changes);
          attrResolver.deleteSoleAttribute(workItem, AtsAttributeTypes.CompletedFromState, changes);
       }
-
-      // Mirror changes in StateManager WorkStates for legacy features
-      AtsApiService.get().getWorkItemService().getStateMgr(workItem).createOrUpdateState(toState.getName(),
-         java.util.Collections.emptyList());
 
       validateUpdatePercentComplete(workItem, toState, changes);
    }

@@ -36,8 +36,8 @@ public class PercentCompleteTasksColumnUI extends XViewerAtsColumn implements IX
    }
 
    private PercentCompleteTasksColumnUI() {
-      super(AtsColumnTokensDefault.PercentCompleteTasksColumn.getId(), "Task Percent Complete", 40, XViewerAlign.Center, false,
-         SortDataType.Percent, false,
+      super(AtsColumnTokensDefault.PercentCompleteTasksColumn.getId(), "Task Percent Complete", 40, XViewerAlign.Center,
+         false, SortDataType.Percent, false,
          "Percent Complete for the tasks related to the workflow.\n\nCalculation: total percent of all tasks / number of tasks");
    }
 
@@ -56,8 +56,8 @@ public class PercentCompleteTasksColumnUI extends XViewerAtsColumn implements IX
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof IAtsObject) {
-            return AtsApiService.get().getColumnService().getColumnText(AtsColumnTokensDefault.PercentCompleteTasksColumn,
-               (IAtsObject) element);
+            return AtsApiService.get().getColumnService().getColumnText(
+               AtsColumnTokensDefault.PercentCompleteTasksColumn, (IAtsObject) element);
          }
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);

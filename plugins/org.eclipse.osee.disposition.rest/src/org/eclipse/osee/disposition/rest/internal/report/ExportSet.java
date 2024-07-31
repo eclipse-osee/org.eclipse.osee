@@ -262,10 +262,10 @@ public class ExportSet {
                   Map<Boolean, String> coverageAndResolutionLevelC = new HashMap<>();
                   int dotIndex = annotationLocRef.indexOf(".");
                   String baseLocRef = annotationLocRef.substring(0, dotIndex);
-                  if (annotation.isValid()) {
+                  if (annotation.isResolutionValid()) {
                      coverageAndResolutionLevelC.put(true, annotation.getResolutionType());
                      hitForLevelC.put(baseLocRef, coverageAndResolutionLevelC);
-                  } else if (!annotation.isValid() && !hitForLevelC.containsKey(baseLocRef)) {
+                  } else if (!annotation.isResolutionValid() && !hitForLevelC.containsKey(baseLocRef)) {
                      coverageAndResolutionLevelC.put(false, annotation.getResolutionType());
                      hitForLevelC.put(baseLocRef, coverageAndResolutionLevelC);
                   }

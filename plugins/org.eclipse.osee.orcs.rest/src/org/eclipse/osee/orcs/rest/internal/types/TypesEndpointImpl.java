@@ -24,13 +24,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactWithRelationsAttribute;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.ArtifactWithRelationsAttribute;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.OrcsTokenServiceImpl;
+import org.eclipse.osee.framework.core.data.OperationTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -78,6 +78,10 @@ public class TypesEndpointImpl implements TypesEndpoint {
          rd.logf("   - Rel: [%s][%s] - [%s][%s] <-> [%s][%s]\n\n", relType.getName(), relType.getIdString(),
             artA.getName(), artA.getIdString(), artB.getName(), artB.getIdString());
       }
+      for (OperationTypeToken opType : orcsTokenService.getOperationTypes()) {
+         rd.logf("Operation: [Name]:[%s] - [Id]:[%s] - [Description]:[%s] - [Material Icon]:[%s]\n\n", opType.getName(),
+            opType.getIdString(), opType.getDescription(), opType.getMaterialIcon().getIcon());
+      }
       return rd;
    }
 
@@ -124,8 +128,7 @@ public class TypesEndpointImpl implements TypesEndpoint {
    @Override
    public Set<String> getAttributeEnums(AttributeId attributeId) {
       Set<String> enums = new HashSet<>();
-      OrcsTokenService tokenService = new OrcsTokenServiceImpl();
-      AttributeTypeGeneric<?> tok = tokenService.getAttributeType(attributeId.getId());
+      AttributeTypeGeneric<?> tok = orcsTokenService.getAttributeType(attributeId.getId());
       if (tok instanceof AttributeTypeEnum<?>) {
          enums = ((AttributeTypeEnum) tok).getEnumStrValues();
       }

@@ -32,7 +32,8 @@ public class UserTokenSerializer extends StdScalarSerializer<@NonNull UserToken>
    }
 
    @Override
-   public void serialize(UserToken userToken, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonGenerationException {
+   public void serialize(UserToken userToken, JsonGenerator jgen, SerializerProvider provider)
+      throws IOException, JsonGenerationException {
       jgen.writeStartObject();
       jgen.writeStringField("id", userToken.getIdString());
       jgen.writeStringField("name", userToken.getName());

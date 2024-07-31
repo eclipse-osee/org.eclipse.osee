@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 package org.eclipse.osee.ats.ide.search;
+
 import java.util.Collection;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;

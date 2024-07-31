@@ -84,6 +84,8 @@ public interface AttributeManager extends AttributeContainer {
 
    <T> Attribute<T> createAttribute(AttributeTypeToken attributeType, AttributeId attributeId, T value);
 
+   <T> Attribute<T> createAttributeFromString(AttributeTypeToken attributeType, String value, AttributeId attributeId);
+
    <T> Attribute<T> createAttributeFromString(AttributeTypeToken attributeType, String value);
 
    <T> List<Attribute<T>> getAttributes();
@@ -96,5 +98,9 @@ public interface AttributeManager extends AttributeContainer {
 
    <T> Attribute<T> getAttributeById(AttributeId attributeId);
 
+   <T> Attribute<T> getAttributeByIdOrNull(AttributeId attributeId);
+
    <T> Attribute<T> getAttributeById(AttributeId attributeId, DeletionFlag includeDeleted);
+
+   <T> Attribute<T> getAttributeByIdOrNull(AttributeId attributeId, DeletionFlag includeDeleted);
 }

@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 /**
  * @author Donald G. Dunne
  */
-public abstract class AtsCoreColumn {
+public class AtsCoreColumn {
 
    public static final String CELL_ERROR_PREFIX = "!Error";
    protected final AtsApi atsApi;
@@ -37,7 +37,9 @@ public abstract class AtsCoreColumn {
    }
 
    @JsonIgnore
-   public abstract String getColumnText(IAtsObject atsObject);
+   public String getColumnText(IAtsObject atsObject) {
+      return "";
+   }
 
    @JsonIgnore
    public String getColumnType() {

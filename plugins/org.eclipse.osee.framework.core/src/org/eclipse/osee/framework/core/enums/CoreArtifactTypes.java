@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.publishing.RequiredIndicator;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
 import org.eclipse.osee.framework.core.util.toggles.CuiNamesConfiguration;
 import org.eclipse.osee.framework.core.util.toggles.TogglesFactory;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
  * @author Ryan D. Brooks
@@ -53,7 +54,7 @@ public interface CoreArtifactTypes {
     * </dl>
     */
 
-   ArtifactTypeToken Artifact = osee.add(osee.artifactType(1L, "Artifact", false, new MaterialIcon("article"))
+   ArtifactTypeToken Artifact = osee.add(osee.artifactType(1L, "Artifact", false, new MaterialIcon("article"), Collections.asHashSet(CoreOperationTypes.CreateChildArtifact, CoreOperationTypes.DeleteArtifact))
       .any(Annotation)
       .zeroOrOne(ContentUrl)
       .zeroOrOne(Description)
@@ -291,7 +292,7 @@ public interface CoreArtifactTypes {
       .exactlyOne(FeatureValueType, FeatureValueType.String)
       .any(Value));
 
-   ArtifactTypeToken Folder = osee.add(osee.artifactType(11L, "Folder",  false, new MaterialIcon("folder", MaterialColors.YELLOW, MaterialShades.S500), Artifact));
+   ArtifactTypeToken Folder = osee.add(osee.artifactType(11L, "Folder",  false, new MaterialIcon("folder", MaterialColors.YELLOW, MaterialShades.S500), Collections.asHashSet(CoreOperationTypes.PublishMarkdownRecursiveWithChildrenWithSpecifiedTemplate), Artifact));
 
    ArtifactTypeToken GeneralData = osee.add(osee.artifactType(12L, "General Data", false, new MaterialIcon("dataset"), Controlled)
       .any(GeneralStringData)
@@ -782,6 +783,7 @@ public interface CoreArtifactTypes {
       .zeroOrOne(Country)
       .zeroOrOne(Dictionary)
       .zeroOrOne(Email)
+      .zeroOrOne(AbridgedEmail)
       .any(FavoriteBranch)
       .zeroOrOne(FaxPhone)
       .zeroOrOne(MobilePhone)
@@ -886,7 +888,7 @@ public interface CoreArtifactTypes {
       .zeroOrOne(ScheduledMachine)
       .zeroOrOne(StatusBy)
       .zeroOrOne(StatusDate)
-      .exactlyOne(ScriptSubsystem)
+      .exactlyOne(CoreAttributeTypes.ScriptSubsystem)
       );
 
    ArtifactTypeToken TestScriptResults = osee.add(osee.artifactType(8756764538L, "Test Script Results", false, Artifact)
@@ -1005,6 +1007,10 @@ public interface CoreArtifactTypes {
    ArtifactTypeToken TestPointGroupTypes = osee.add(osee.artifactType(8756764542L, "Test Point Group Types", false, Artifact));
 
    ArtifactTypeToken MachineNames = osee.add(osee.artifactType(2044731485L, "MachineNames", false, Artifact));
+
+   ArtifactTypeToken ScriptSubsystem = osee.add(osee.artifactType(8118955419802171756L, "Script Subsystem", false, Artifact));
+
+   ArtifactTypeToken ScriptTeam = osee.add(osee.artifactType(5998567390818041112L, "Script Team", false, Artifact));
 
    //Coverage Tool
    ArtifactTypeToken CoverageProgram = osee.add(osee.artifactType(875676453598L, "Coverage Program", false, Artifact)

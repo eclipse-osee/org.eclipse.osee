@@ -34,7 +34,6 @@ public class GenerateIdsAndArtId extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
       XResultData resultData = new XResultData();
-      @SuppressWarnings("java:S2245") //This random doesn't need to be truly random as it is not sensitive
       Random r = new Random();
       for (int i = 0; i < 10; i++) {
          long next = r.nextLong();

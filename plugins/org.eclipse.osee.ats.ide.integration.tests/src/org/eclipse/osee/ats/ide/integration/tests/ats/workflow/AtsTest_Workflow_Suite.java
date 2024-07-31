@@ -37,6 +37,7 @@ import org.junit.runners.Suite;
    ConvertWorkflowStatesOperationTest.class,
    AtsStateNoteServiceTest.class,
    WorkflowTypesTest.class,
+   AtsWorkItemMetricsServiceImplTest.class,
    // suites
    AtsTest_Workflow_Action_Suite.class,
    AtsTest_Workflow_Review_Suite.class,
@@ -45,6 +46,7 @@ import org.junit.runners.Suite;
    AtsTest_Workflow_Util_Suite.class
    //
 })
+
 public class AtsTest_Workflow_Suite {
    // do nothing
 }

@@ -95,6 +95,7 @@ java_library(
 			"@eclipse_debug_core//jar",
 			"@eclipse_search//jar",
 			"@eclipse_compare//jar",
+			"@eclipse_equinox_bidi//jar",
 			"@ext_jars//:eclipse_ui",
 			"@ext_jars//:swt",
 			"@ext_jars//:jface",

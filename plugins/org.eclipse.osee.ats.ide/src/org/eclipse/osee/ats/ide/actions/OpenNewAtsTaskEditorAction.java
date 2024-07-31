@@ -13,11 +13,10 @@
 
 package org.eclipse.osee.ats.ide.actions;
 
-import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.util.AtsImage;
-import org.eclipse.osee.ats.ide.workflow.task.ITaskEditorProvider;
 import org.eclipse.osee.ats.ide.workflow.task.TaskEditor;
-import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.ats.ide.workflow.task.TaskEditorSimpleProvider;
+import org.eclipse.osee.ats.ide.world.WorldComposite;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -25,29 +24,19 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  */
 public class OpenNewAtsTaskEditorAction extends AbstractAtsAction {
 
-   private final IOpenNewAtsTaskEditorHandler openNewAtsTaskEditorHandler;
+   private final WorldComposite worldComposite;
 
-   public OpenNewAtsTaskEditorAction(IOpenNewAtsTaskEditorHandler openNewAtsTaskEditorHandler) {
+   public OpenNewAtsTaskEditorAction(WorldComposite worldComposite) {
       super();
-      this.openNewAtsTaskEditorHandler = openNewAtsTaskEditorHandler;
+      this.worldComposite = worldComposite;
       setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.TASK));
       setToolTipText("Open New ATS Task Editor");
    }
 
-   public interface IOpenNewAtsTaskEditorHandler {
-      ITaskEditorProvider getTaskEditorProviderCopy();
-
-      CustomizeData getCustomizeDataCopy();
-   }
-
    @Override
    public void runWithException() {
-      ITaskEditorProvider provider = openNewAtsTaskEditorHandler.getTaskEditorProviderCopy();
-      if (provider != null) {
-         provider.setCustomizeData(openNewAtsTaskEditorHandler.getCustomizeDataCopy());
-         provider.setTableLoadOptions(TableLoadOption.NoUI);
-         TaskEditor.open(provider);
-      }
+      TaskEditor.open(new TaskEditorSimpleProvider("Tasks", worldComposite.getLoadedArtifacts(),
+         worldComposite.getCustomizeDataCopy()));
    }
 
 }

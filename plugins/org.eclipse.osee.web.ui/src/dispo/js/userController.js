@@ -342,12 +342,36 @@ app.controller('userController', [
         		return annotation.resolution;
         	}
         }
-        
+
+        $scope.getLastTextResolutionType = function(annotation) {
+        	if($scope.isCoverage) {
+        		return CoverageFactory.getLastTextResolutionType(annotation);
+        	} else {
+        		return annotation.lastResolutionType;
+        	}
+        }
+
         $scope.getLastTextResolution = function(annotation) {
         	if($scope.isCoverage) {
         		return CoverageFactory.getLastTextResolution(annotation);
         	} else {
         		return annotation.lastResolution;
+        	}
+        }
+        
+        $scope.getLastManualTextResolutionType = function(annotation) {
+        	if($scope.isCoverage) {
+        		return CoverageFactory.getLastManualTextResolutionType(annotation);
+        	} else {
+        		return annotation.lastManualResolutionType;
+        	}
+        }
+
+        $scope.getLastManualTextResolution = function(annotation) {
+        	if($scope.isCoverage) {
+        		return CoverageFactory.getLastManualTextResolution(annotation);
+        	} else {
+        		return annotation.lastManualResolution;
         	}
         }
 

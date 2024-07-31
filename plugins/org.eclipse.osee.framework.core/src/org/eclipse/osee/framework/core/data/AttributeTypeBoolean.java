@@ -18,11 +18,11 @@ package org.eclipse.osee.framework.core.data;
  */
 public final class AttributeTypeBoolean extends AttributeTypeGeneric<Boolean> {
    public AttributeTypeBoolean(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType) {
-      super(id, namespace, name, mediaType, description, taggerType, "", Boolean.FALSE);
+      super(id, namespace, name, mediaType, description, taggerType, "", Boolean.FALSE, null);
    }
 
    public AttributeTypeBoolean(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, DisplayHint... displayHints) {
-      super(id, namespace, name, mediaType, description, taggerType, "", Boolean.FALSE, displayHints);
+      super(id, namespace, name, mediaType, description, taggerType, "", Boolean.FALSE, null, displayHints);
    }
 
    @Override

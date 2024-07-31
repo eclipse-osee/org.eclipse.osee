@@ -23,7 +23,7 @@ export const setReferenceSentinel: SetReference = {
 };
 
 export interface DefReference {
-	id: string;
+	id: `${number}`;
 	name: string;
 	fullScriptName: String;
 	executionDate: Date;
@@ -43,7 +43,7 @@ export interface DefReference {
 	scheduledMachine: string;
 	statusBy: string;
 	statusDate: Date;
-	subsystem: String;
+	subsystem: string;
 	description: string;
 	latestProcessorId: string;
 	latestExecutionDate: Date;
@@ -92,10 +92,11 @@ export interface ResultReference {
 	email: string;
 	witnesses: string[];
 	testPoints: TestPointReference[];
+	definitionId: `${number}`;
 }
 
 export const defReferenceSentinel: DefReference = {
-	id: '',
+	id: '-1',
 	name: '',
 	fullScriptName: '',
 	executionDate: new Date(),
@@ -133,7 +134,7 @@ export const defReferenceSentinel: DefReference = {
 };
 
 export const resultReferenceSentinel: ResultReference = {
-	id: '',
+	id: '-1',
 	name: '',
 	processorId: '',
 	runtimeVersion: '',
@@ -164,6 +165,7 @@ export const resultReferenceSentinel: ResultReference = {
 	javaVersion: '',
 	qualificationLevel: '',
 	testPoints: [],
+	definitionId: '-1',
 };
 
 export interface TestPointReference {

@@ -18,7 +18,7 @@ package org.eclipse.osee.framework.core.data;
  */
 public final class AttributeTypeDouble extends AttributeTypeGeneric<Double> {
    public AttributeTypeDouble(Long id, NamespaceToken namespace, String name, String mediaType, String description, TaggerTypeToken taggerType, DisplayHint... displayHints) {
-      super(id, namespace, name, mediaType, description, taggerType, "", 0.0, displayHints);
+      super(id, namespace, name, mediaType, description, taggerType, "", 0.0, null, displayHints);
    }
 
    @Override

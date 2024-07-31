@@ -50,12 +50,22 @@ public interface UserToken extends ArtifactToken, UserId {
       return create(id, name, email, userId, active, Collections.emptyList());
    }
 
+   public static UserToken create(Long id, String name, String email, String userId, boolean active,
+      List<IUserGroupArtifactToken> roles) {
+      return new UserTokenImpl(id, name, userId, active, email, Arrays.asList(userId), roles, "");
+   }
+
    public static UserToken create(long id, String name, String email, String userId, boolean active,
       List<IUserGroupArtifactToken> roles) {
       return new UserTokenImpl(id, name, userId, active, email, Arrays.asList(userId), roles, "");
    }
 
    public static @NonNull UserToken create(long id, String name, String email, String userId, boolean active,
+      List<String> loginIds, List<IUserGroupArtifactToken> roles) {
+      return new UserTokenImpl(id, name, userId, active, email, loginIds, roles, "");
+   }
+
+   public static UserToken create(Long id, String name, String email, String userId, boolean active,
       List<String> loginIds, List<IUserGroupArtifactToken> roles) {
       return new UserTokenImpl(id, name, userId, active, email, loginIds, roles, "");
    }
@@ -187,5 +197,6 @@ public interface UserToken extends ArtifactToken, UserId {
          }
          return super.equals(obj);
       }
+
    }
 }

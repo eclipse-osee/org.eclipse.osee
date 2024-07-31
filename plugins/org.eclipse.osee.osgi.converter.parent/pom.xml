@@ -1,0 +1,32 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.eclipse.osee</groupId>
+	<artifactId>org.eclipse.osee.osgi.converter.parent</artifactId>
+	<packaging>pom</packaging>
+	<name>External OSGI and AJAX Deps</name>
+	<version>1.0.0</version>
+
+	<modules>
+		<module>../org.eclipse.osee.osgi.converter</module>
+        </modules>
+
+     <profiles>
+        <profile>
+          <activation>
+          <property>
+             <name>release</name>
+          </property>
+          </activation>
+          <modules>
+	         <module>../org.eclipse.osee.ajax.deps</module>   
+          </modules>
+        </profile>
+      </profiles>
+
+	<build>	
+	</build>
+
+</project>

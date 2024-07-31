@@ -19,6 +19,9 @@ public class AttributeTransfer {
    @JsonProperty("typeId")
    private String typeId;
 
+   @JsonProperty("id")
+   private String id;
+
    @JsonProperty("value")
    private List<String> value;
 
@@ -32,6 +35,16 @@ public class AttributeTransfer {
       this.typeId = typeId;
    }
 
+   @JsonProperty("id")
+   public String getId() {
+      return id;
+   }
+
+   @JsonProperty("id")
+   public void setId(String id) {
+      this.id = id;
+   }
+
    @JsonProperty("value")
    public List<String> getValue() {
       return value;
@@ -41,5 +54,4 @@ public class AttributeTransfer {
    public void setValue(List<String> value) {
       this.value = value;
    }
-
 }

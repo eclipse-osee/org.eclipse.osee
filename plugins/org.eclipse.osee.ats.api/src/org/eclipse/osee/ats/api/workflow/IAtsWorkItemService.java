@@ -37,7 +37,6 @@ import org.eclipse.osee.ats.api.workflow.journal.JournalData;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.api.workflow.note.IAtsStateNoteService;
-import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -198,6 +197,17 @@ public interface IAtsWorkItemService {
       return getAssignees(workItem).contains(AtsCoreUsers.UNASSIGNED_USER);
    }
 
+   default public boolean stateExists(IAtsWorkItem workItem, IStateToken state) {
+      return stateExists(workItem, state.getName());
+   }
+
+   default public boolean stateExists(IAtsWorkItem workItem, String state) {
+      if (getStateStartedData(workItem, state) != null) {
+         return true;
+      }
+      return false;
+   }
+
    default public long getTimeInState(IAtsWorkItem workItem, IStateToken state) {
       if (state == null) {
          return 0;
@@ -244,13 +254,6 @@ public interface IAtsWorkItemService {
       }
       return null;
    }
-
-   /**
-    * This method is for backward compatibility and should NOT be used outside core ATS
-    */
-   IAtsStateManager getStateMgr(IAtsWorkItem workItem);
-
-   void internalClearStateManager(IAtsWorkItem workItem);
 
    default public String getWorkflowTitle(IAtsWorkItem workItem, String tabName) {
       String artifactTypeName = workItem.getArtifactTypeName();

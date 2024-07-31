@@ -39,6 +39,9 @@ public class AddRelation {
    private String rationale;
    @JsonProperty("typeId")
    private String typeId;
+   @JsonProperty("id")
+   private String id;
+
    @JsonIgnore
    private final Map<String, Object> additionalProperties = new LinkedHashMap<String, Object>();
 
@@ -102,4 +105,13 @@ public class AddRelation {
       this.additionalProperties.put(name, value);
    }
 
+   @JsonProperty("id")
+   public String getId() {
+      return id;
+   }
+
+   @JsonProperty("id")
+   public void setId(String id) {
+      this.id = id;
+   }
 }

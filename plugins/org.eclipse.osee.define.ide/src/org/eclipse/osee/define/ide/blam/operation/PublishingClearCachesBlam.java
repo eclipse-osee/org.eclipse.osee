@@ -149,11 +149,12 @@ public class PublishingClearCachesBlam extends AbstractBlam {
     * @param xResultData status message are written to the {@link XResultData} object.
     */
 
-   private void clearServerCache(JaxRsApi jaxRsApi, Target target, String server, XResultData xResultData) {
+   private void clearServerCache(JaxRsApi jaxRsApi, Target target, String server, XResultData xResultData,
+      String userAuthId) {
 
       try {
 
-         var webTarget = jaxRsApi.newTargetUrl(String.format("http://%s%s", server, target.getUrlTail()));
+         var webTarget = jaxRsApi.newTargetUrl(String.format("%s%s", server, target.getUrlTail()));
 
          var response = webTarget.request().delete();
 
@@ -236,6 +237,7 @@ public class PublishingClearCachesBlam extends AbstractBlam {
       var oseeClient = OsgiUtil.getService(this.getClass(), OseeClient.class);
       var jaxRsApi = oseeClient.jaxRsApi();
       var xResultData = new XResultData();
+      var userAuthId = oseeClient.userService().getUser().getLoginIds().get(0);
 
       xResultData.log("Clear Publishing Template and Data Rights Configuration Caches All Servers");
 
@@ -254,7 +256,7 @@ public class PublishingClearCachesBlam extends AbstractBlam {
             (
                ( server ) -> Arrays
                                 .stream( Target.values() )
-                                .forEach( ( target ) -> this.clearServerCache( jaxRsApi, target, server, xResultData ) )
+                                .forEach( ( target ) -> this.clearServerCache( jaxRsApi, target, server, xResultData, userAuthId ) )
             )
          .count();
       //@formatter:on

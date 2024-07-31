@@ -18,9 +18,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.ColumnData;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations;
-import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.util.AtsImage;
-import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.world.WorldComposite;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.result.Manipulations;
@@ -34,7 +32,6 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
  */
 public class WorldViewColumnReport extends AbstractAtsAction {
 
-   private final AtsApi atsApi;
    private XResultData rd;
    private final WorldComposite worldComposite;
 
@@ -43,7 +40,6 @@ public class WorldViewColumnReport extends AbstractAtsAction {
       this.worldComposite = worldComposite;
       setText("Generate World View Column Report");
       setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.WORK_PACKAGE));
-      atsApi = AtsApiService.get();
    }
 
    @Override

@@ -65,7 +65,7 @@ public class DemoCreateValidationRulesOperation extends AbstractOperation {
 
       if (workType == WorkType.Code || workType == WorkType.Requirements) {
          //Requirement word format should use approved styles for lists and bullets
-         rules.add(new ListAndBulletRule(workType, AtsApiService.get(), ""));
+         rules.add(new ListAndBulletRule(workType, AtsApiService.get()));
       }
 
       if (workType == WorkType.Requirements) {

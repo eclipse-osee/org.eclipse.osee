@@ -680,4 +680,8 @@ public class WordMlPublishingAppender extends PublishingAppenderBase {
       this.append(WordCoreUtil.TEXT);
    }
 
+   @Override
+   public void endArtifact() {
+   }
+
 }

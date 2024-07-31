@@ -33,6 +33,14 @@ app.factory('CoverageFactory', function() {
         }
 	}
 	
+	CoverageFactory.getLastTextResolutionType = function(annotation) {
+		if (annotation.isLeaf && annotation.lastResolutionType!=annotation.resolutionType) {
+			return annotation.lastResolutionType;
+        } else {
+        	return "";
+        }
+	}
+	
 	CoverageFactory.getLastTextResolution = function(annotation) {
 		if (annotation.isLeaf && annotation.lastResolution!=annotation.resolution) {
 			return annotation.lastResolution;
@@ -40,6 +48,23 @@ app.factory('CoverageFactory', function() {
         	return "";
         }
 	}
+	
+	CoverageFactory.getLastManualTextResolutionType = function(annotation) {
+		if (annotation.isLeaf && annotation.lastManualResolutionType!=annotation.resolutionType) {
+			return annotation.lastManualResolutionType;
+        } else {
+        	return "";
+        }
+	}
+	
+	CoverageFactory.getLastManualTextResolution = function(annotation) {
+		if (annotation.isLeaf && annotation.lastManualResolution!=annotation.resolution) {
+			return annotation.lastManualResolution;
+        } else {
+        	return "";
+        }
+	}
+
     
 	var getReasonWhyIncomplete = function(annotation) {
 		var toReturn = [];

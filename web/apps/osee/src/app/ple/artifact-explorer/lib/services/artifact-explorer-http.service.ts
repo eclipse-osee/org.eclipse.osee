@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { apiURL } from '@osee/environments';
 import { Observable } from 'rxjs';
@@ -20,6 +20,10 @@ import {
 	artifactWithRelations,
 	artifactTokenWithIcon,
 } from '@osee/artifact-with-relations/types';
+import {
+	publishingTemplateKeyGroups,
+	publishMarkdownAsHtmlRequestData,
+} from '../types/artifact-explorer';
 
 @Injectable({
 	providedIn: 'root',
@@ -167,6 +171,43 @@ export class ArtifactExplorerHttpService {
 	public getArtifactTypeAttributes(artifactId: string) {
 		return this.http.get<attribute[]>(
 			apiURL + '/orcs/types/artifact/' + artifactId + '/attributes'
+		);
+	}
+
+	// Publishing
+
+	public getPublishingTemplateKeyGroups(filterBySafeName: string) {
+		let params: HttpParamsType = {};
+		if (filterBySafeName && filterBySafeName !== '') {
+			params = { ...params, filterBySafeName: filterBySafeName };
+		}
+		return this.http.get<publishingTemplateKeyGroups>(
+			apiURL + '/define/templatemanager/getPublishingTemplateKeyGroups',
+			{
+				params: params,
+			}
+		);
+	}
+
+	public publishMarkdown(
+		data: publishMarkdownAsHtmlRequestData
+	): Observable<HttpResponse<Blob>> {
+		const formData = new FormData();
+
+		// Serialize data to JSON and append to FormData
+		const jsonData = JSON.stringify(data.publishMarkdownAsHtmlRequestData);
+		formData.append(
+			'publishMarkdownAsHtmlRequestData',
+			new Blob([jsonData], { type: 'application/json' })
+		);
+
+		return this.http.post<Blob>(
+			apiURL + '/define/word/publishMarkdownAsHtml',
+			formData,
+			{
+				observe: 'response',
+				responseType: 'blob' as 'json',
+			}
 		);
 	}
 }

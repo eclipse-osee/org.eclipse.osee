@@ -795,4 +795,13 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       return branch;
    }
 
+   @Override
+   public void internalClearCaches() {
+      branchesInCommit.clear();
+      idToWorkingBranchCache.clear();
+      idToWorkingBranchCacheUpdated.clear();
+      workingBranchCommitInProgress.clear();
+      workingBranchCreatingInProgress.clear();
+   }
+
 }

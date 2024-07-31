@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
 import org.eclipse.osee.framework.jdk.core.result.XConsoleLogger;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
+import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.OseePreparedStatement;
 import org.eclipse.osee.logger.Log;
@@ -51,14 +52,16 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
  */
 public class OrcsAdminImpl implements OrcsAdmin {
    private final OrcsApi orcsApi;
+   private final IResourceManager resourceManager;
    private final Log logger;
    private final OrcsSession session;
    private final DataStoreAdmin dataStoreAdmin;
    private final QueryBuilder fromCommon;
    private final JdbcClient jdbcClient;
 
-   public OrcsAdminImpl(OrcsApi orcsApi, Log logger, OrcsSession session, DataStoreAdmin dataStoreAdmin) {
+   public OrcsAdminImpl(OrcsApi orcsApi, Log logger, OrcsSession session, DataStoreAdmin dataStoreAdmin, IResourceManager resourceManager) {
       this.orcsApi = orcsApi;
+      this.resourceManager = resourceManager;
       this.logger = logger;
       this.session = session;
       this.dataStoreAdmin = dataStoreAdmin;
@@ -167,5 +170,9 @@ public class OrcsAdminImpl implements OrcsAdmin {
       OseePreparedStatement batchStatement = jdbcClient.getBatchStatement(sql);
       artifacts.forEach(art -> batchStatement.addToBatch(artifactType, art));
       batchStatement.execute();
+   }
+
+   public IResourceManager getResourceManager() {
+      return resourceManager;
    }
 }

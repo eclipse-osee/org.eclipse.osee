@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -75,6 +76,7 @@ public class ScriptResultToken extends ArtifactAccessorResult {
    private List<ScriptLogToken> logs;
    private List<VersionInformationToken> versionInformation;
    private List<LoggingSummaryToken> loggingSummaries;
+   private ArtifactId definitionId = ArtifactId.SENTINEL;
 
    public ScriptResultToken(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -135,6 +137,9 @@ public class ScriptResultToken extends ArtifactAccessorResult {
             a -> !a.getExistingAttributeTypes().isEmpty()).map(a -> new LoggingSummaryToken(a)).collect(
                Collectors.toList()));
       this.setTotalTestPoints(this.getTestPoints().size());
+      this.setDefinitionId(this.getArtifactReadable().getRelated(
+         CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef).getOneOrDefault(
+            ArtifactReadable.SENTINEL).getArtifactId());
    }
 
    public ScriptResultToken(Long id, String name) {
@@ -618,6 +623,14 @@ public class ScriptResultToken extends ArtifactAccessorResult {
 
    public void setTotalTestPoints(int totalTestPoints) {
       this.totalTestPoints = totalTestPoints;
+   }
+
+   public ArtifactId getDefinitionId() {
+      return this.definitionId;
+   }
+
+   private void setDefinitionId(ArtifactId id) {
+      this.definitionId = id;
    }
 
    public CreateArtifact createArtifact(String key) {
