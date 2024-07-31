@@ -1133,34 +1133,28 @@ References
       -
         **Note:** *Tycho/Maven build support available for source code
         versions 0.9.9_SR6 and higher.*
-3.  Download and unzip 3rd party dependency P2 archived site:
-    <http://code.google.com/p/osee-external/downloads/detail?name=org.eclipse.ip.p2_1.0.0.v201203200040-DEV.zip&can=2&q=>
-4.  Build commands:
+3.  Build commands:
     1.  **cd org.eclipse.osee/plugins/org.eclipse.osee.parent**
-    2.  **mvn clean verify -Declipse-ip-site="file:\<PATH TO 3rd PARTY
-        P2 SITE\>"**
+    2.  **mvn clean verify **
     3.  If you run into any problems (to display debug and stack trace
         info)
           -
-            **mvn -e -X verify -Declipse-ip-site="file:\<PATH TO 3rd
-            PARTY P2 SITE\>"**
+            **mvn -e -X verify**
 
 `Assuming the following layout:`
 `/UserData/org.eclipse.osee`
-`/UserData/org.eclipse.ip.p2_1.0.0.v201203200040-DEV`
+
 
 `machine@user /UserData/org.eclipse.osee/plugins/org.eclipse.osee.parent:`
-`$mvn clean verify -Declipse-ip-site="file:../../../org.eclipse.ip.p2_1.0.0.v201203200040-DEV"`
+`$mvn clean verify`
 
 ### Interactive Build
 
-`☞ `**`Depends``   ``on``   ``org.eclipse.osee.ip.p2`**
 
   -
     To build all org.eclipse.osee artifacts
     1.  cd org.eclipse.osee/plugins/org.eclipse.osee.support.maven
-    2.  Issue maven build command: **mvn compile
-        -Declipse-ip-site="file:../../../org.eclipse.ip.p2_1.0.0.v201203200040-DEV"**
+    2.  Issue maven build command: **mvn compile**
     3.  Select build options when prompted
 
 ### Build Module Hierarchy (from highest to lowest)
