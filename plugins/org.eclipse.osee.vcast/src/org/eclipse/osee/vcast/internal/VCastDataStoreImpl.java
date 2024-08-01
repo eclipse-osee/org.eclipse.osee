@@ -640,7 +640,12 @@ public class VCastDataStoreImpl implements VCastDataStore {
 
             String variableFullName;
             boolean isMCDCPair = false;
-            if (variable != null) {
+
+            if (line == 0) {
+               continue;
+            }
+
+            if (mcdc_id != 0) {
                isMCDCPair = true;
                if (variable.isEmpty() || num_conditions == 1) {
                   num_conditions = -1;
