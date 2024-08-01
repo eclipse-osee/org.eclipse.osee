@@ -235,6 +235,13 @@ public interface ApplicabilityEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    XResultData createApplicabilityForView(@PathParam("id") ArtifactId id, String applicability);
 
+   @PUT
+   @Path("view/copyFeatureApplicValues")
+   @Produces(MediaType.APPLICATION_JSON)
+   XResultData copyFeatureApplicValues(@QueryParam("viewId") ArtifactId viewId,
+      @QueryParam("fromBranchId") BranchId fromBranchId, @QueryParam("fromViewId") ArtifactId fromViewId,
+      @QueryParam("overwrite") boolean overwrite);
+
    @DELETE
    @Path("view/{id}/applic")
    @Consumes(MediaType.APPLICATION_JSON)

@@ -233,6 +233,29 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
+   public XResultData copyFeatureApplicValues(ArtifactId viewId, BranchId fromBranchId, ArtifactId fromViewId,
+      boolean overwrite) {
+      XResultData results = isAccess();
+      List<FeatureDefinition> featureDefinitionData = getFeatureDefinitionData();
+      List<ApplicabilityToken> currentAppViews = getViewApplicabilityTokens(viewId);
+      for (ApplicabilityToken applicabilityToken : orcsApi.getQueryFactory().applicabilityQuery().getViewApplicabilityTokens(
+         fromViewId, fromBranchId)) {
+         if (!(applicabilityToken.getName().equals("Base") || applicabilityToken.getName().startsWith(
+            "Config =") || applicabilityToken.getName().startsWith("ConfigurationGroup ="))) {
+            String featureName =
+               applicabilityToken.getName().substring(0, applicabilityToken.getName().indexOf("=") - 1);
+            if (featureDefinitionData.stream().anyMatch(
+               a -> a.getName().equals(featureName)) && (!currentAppViews.stream().anyMatch(
+                  a -> a.getName().startsWith(featureName + " =") || overwrite))) {
+               System.out.println("added: " + applicabilityToken + " Results: " + createApplicabilityForView(viewId,
+                  applicabilityToken.getName()).toString());
+            }
+         }
+      }
+      return results;
+   }
+
+   @Override
    public XResultData createCompoundApplicabilityForBranch(String applicability) {
       XResultData results = isAccess();
       if (results.isErrors()) {
