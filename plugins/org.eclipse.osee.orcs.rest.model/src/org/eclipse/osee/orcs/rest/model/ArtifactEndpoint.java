@@ -211,6 +211,14 @@ public interface ArtifactEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    Response purgeArtifact(@PathParam("branch") BranchId branch, @PathParam("artifact") ArtifactId artifact);
 
+   @DELETE
+   @Path("attributesOfType")
+   @Produces(MediaType.APPLICATION_JSON)
+   TransactionToken deleteAttributesOfType(@PathParam("branch") BranchId branch,
+      @QueryParam("artifact") @DefaultValue("-1") ArtifactId artifact,
+      @QueryParam("artifactType") @DefaultValue("-1") ArtifactTypeToken artifactType,
+      @QueryParam("attributeType") @DefaultValue("-1") AttributeTypeToken attributeType);
+
    @PUT
    @Path("{artifact}/attribute/type/{attributeType}")
    @Consumes(MediaType.TEXT_PLAIN)

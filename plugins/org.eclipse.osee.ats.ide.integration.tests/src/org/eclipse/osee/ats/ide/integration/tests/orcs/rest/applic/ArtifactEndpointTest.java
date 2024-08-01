@@ -50,6 +50,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
+import org.eclipse.osee.orcs.rest.model.AttributeEndpoint;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMethod;
@@ -243,6 +244,25 @@ public class ArtifactEndpointTest {
       List<ArtifactId> artifacts = artifactEndpoint.getArtifactIdsByAttribute(CoreAttributeTypes.Name, "TestUser", true,
          CoreArtifactTypes.PlainText);
       Assert.assertTrue(artifacts.isEmpty());
+   }
+
+   @Test
+   public void deleteAttributesOfType() {
+
+      ArtifactToken testArtifact = createTestArtifact();
+
+      artifactEndpoint.setSoleAttributeValue(COMMON, testArtifact, CoreAttributeTypes.Annotation, "1234");
+
+      AttributeEndpoint attributesBeforeDelete = artifactEndpoint.getAttributes(testArtifact);
+      Assert.assertTrue(attributesBeforeDelete.getAttributes(testArtifact).stream().anyMatch(
+         a -> a.getAttrTypeId().equals(CoreAttributeTypes.Annotation)));
+      artifactEndpoint.deleteAttributesOfType(COMMON, ArtifactId.SENTINEL, CoreArtifactTypes.PlainText,
+         CoreAttributeTypes.Annotation);
+      AttributeEndpoint attributesAfterDelete = artifactEndpoint.getAttributes(testArtifact);
+
+      Assert.assertFalse(attributesAfterDelete.getAttributes(testArtifact).stream().anyMatch(
+         a -> a.getAttrTypeId().equals(CoreAttributeTypes.Annotation)));
+
    }
 
    @Test

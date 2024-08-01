@@ -448,6 +448,35 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    }
 
    @Override
+   public TransactionToken deleteAttributesOfType(BranchId branch, ArtifactId artifact, ArtifactTypeToken artifactType,
+      AttributeTypeToken attributeType) {
+      List<ArtifactReadable> artifacts = new ArrayList<>();
+      TransactionToken rtn = TransactionToken.SENTINEL;
+      if (attributeType.isInvalid()) {
+         return rtn;
+      }
+      String txComment = "Remove all attributes of type: " + attributeType.getName() + " from ";
+
+      if (artifact.isValid()) {
+         artifacts.add(orcsApi.getQueryFactory().fromBranch(branch).andId(artifact).asArtifactOrSentinel());
+         txComment = txComment + " artifact: " + artifact.getIdString();
+      } else {
+         if (artifactType.isValid()) {
+            artifacts.addAll(orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(artifactType).asArtifacts());
+            txComment = txComment + " all artifacts of type: " + artifactType.getName();
+         }
+      }
+      if (!artifacts.isEmpty()) {
+         TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, txComment);
+         for (ArtifactReadable artifactToChange : artifacts) {
+            tx.deleteAttributes(artifactToChange, attributeType);
+         }
+         rtn = tx.commit();
+      }
+      return rtn;
+   }
+
+   @Override
    public TransactionToken setSoleAttributeValue(BranchId branch, ArtifactId artifact, AttributeTypeToken attributeType,
       String value) {
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, "rest - setSoleAttributeValue");
