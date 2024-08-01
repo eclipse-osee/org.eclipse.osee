@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.skynet.core.access;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.ApiKeyApi;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IUserGroup;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
@@ -214,6 +215,11 @@ public class UserServiceImpl implements UserService {
    @Override
    public void setUserLoading(boolean loading) {
       this.loading = loading;
+   }
+
+   @Override
+   public void setUserFromBasic(String credential, ApiKeyApi apiKeyApi) {
+      throw new UnsupportedOperationException();
    }
 
 }

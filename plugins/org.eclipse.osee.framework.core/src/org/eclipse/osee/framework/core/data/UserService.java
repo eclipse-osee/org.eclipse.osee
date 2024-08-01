@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.core.data;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
+import org.eclipse.osee.framework.core.ApiKeyApi;
 import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.exception.OseeAccessDeniedException;
 
@@ -243,6 +244,30 @@ public interface UserService {
       }
       return userGroupOrNull;
    }
+
+   // @formatter:off
+   /**
+    * Sets the user for current thread using either a login ID or an API key.
+    * <p>
+    * This method first checks the cache for a user associated with the provided credential.
+    * If the user is not found in the cache, it queries the database and updates the cache.
+    * </p>
+    * <p>
+    * This method supports two authentication mechanisms:
+    * <ul>
+    *   <li>Login ID-based authentication</li>
+    *   <li>API key-based authentication</li>
+    * </ul>
+    * </p>
+    * <p>
+    * <strong>Note:</strong> When login ID-based authentication is deprecated, the related code should be removed.
+    * </p>
+    *
+    * @param credential The login ID or API key used to identify the user.
+    * @param apiKeyApi An instance of ApiKeyApi to retrieve API keys.
+    */
+   // @formatter:on
+   void setUserFromBasic(String credential, ApiKeyApi apiKeyApi);
 
 }
 

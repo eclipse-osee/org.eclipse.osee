@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import org.eclipse.osee.framework.core.ApiKeyApi;
+import org.eclipse.osee.framework.core.data.ApiKey;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -174,7 +176,8 @@ public class UserServiceImpl implements UserService {
       return this.getUser().getRoles();
    }
 
-   private ArtifactToken getOrCreate(ArtifactToken userGroup, Map<ArtifactToken, ArtifactToken> userGroupToArtifact, TransactionBuilder tx, ArtifactToken userGroupHeader) {
+   private ArtifactToken getOrCreate(ArtifactToken userGroup, Map<ArtifactToken, ArtifactToken> userGroupToArtifact,
+      TransactionBuilder tx, ArtifactToken userGroupHeader) {
       ArtifactToken userGroupArt = userGroupToArtifact.get(userGroup);
       if (userGroupArt == null) {
          userGroupArt = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(userGroup).getArtifactOrNull();
@@ -291,16 +294,24 @@ public class UserServiceImpl implements UserService {
 
    @Override
    public void setUserForCurrentThread(String loginId) {
-      ensureLoaded();
-      UserToken user = loginIdToUser.get(loginId);
-      if (user == null) {
-         List<ArtifactReadable> userArtifacts = query.andAttributeIs(CoreAttributeTypes.LoginId, loginId).asArtifacts();
-         if (userArtifacts.size() == 1) {
-            user = toUser(userArtifacts.get(0));
+      loginId = loginId.toLowerCase();
+
+      if (Strings.isValid(loginId)) {
+         ensureLoaded();
+         UserToken user = loginIdToUser.get(loginId);
+         if (user == null) {
+            List<ArtifactReadable> userArtifacts =
+               query.andAttributeIs(CoreAttributeTypes.LoginId, loginId).asArtifacts();
+            if (userArtifacts.size() == 1) {
+               user = toUser(userArtifacts.get(0));
+               if (user.isValid()) {
+                  loginIdToUser.put(loginId, user);
+               }
+            }
          }
-      }
-      if (user != null && user.isValid()) {
-         threadToUser.put(Thread.currentThread(), user);
+         if (user != null && user.isValid()) {
+            threadToUser.put(Thread.currentThread(), user);
+         }
       }
    }
 
@@ -314,13 +325,55 @@ public class UserServiceImpl implements UserService {
             if (userArtifacts.size() == 1) {
                user = toUser(userArtifacts.get(0));
                if (user.isValid()) {
-                  accountIdToUser.put(user, user);
+                  accountIdToUser.put(accountId, user);
                }
             }
          }
          if (user != null && user.isValid()) {
             threadToUser.put(Thread.currentThread(), user);
          }
+      }
+   }
+
+   @Override
+   public void setUserFromBasic(String credential, ApiKeyApi apiKeyApi) {
+      if (!Strings.isValid(credential)) {
+         return;
+      }
+      ensureLoaded();
+
+      UserToken user = loginIdToUser.get(credential);
+
+      if (user == null) {
+         ApiKey apiKey = apiKeyApi.getApiKey(credential);
+
+         if (apiKey != null && !apiKey.isExpired()) {
+            UserId userArtId = apiKey.getUserArtId();
+            user = accountIdToUser.get(userArtId);
+
+            if (user == null) {
+               List<ArtifactReadable> userArtifacts = query.andId(userArtId).asArtifacts();
+               if (userArtifacts.size() == 1) {
+                  user = toUser(userArtifacts.get(0));
+                  if (user.isValid()) {
+                     accountIdToUser.put(userArtId, user);
+                  }
+               }
+            }
+         } else {
+            List<ArtifactReadable> userArtifacts =
+               query.andAttributeIs(CoreAttributeTypes.LoginId, credential).asArtifacts();
+            if (userArtifacts.size() == 1) {
+               user = toUser(userArtifacts.get(0));
+               if (user.isValid()) {
+                  loginIdToUser.put(credential, user);
+               }
+            }
+         }
+      }
+
+      if (user != null && user.isValid()) {
+         threadToUser.put(Thread.currentThread(), user);
       }
    }
 
@@ -342,8 +395,8 @@ public class UserServiceImpl implements UserService {
             userArtifact.getSoleAttributeValue(CoreAttributeTypes.Email, ""),
             userArtifact.getSoleAttributeValue(CoreAttributeTypes.UserId, ""),
             userArtifact.getSoleAttributeValue(CoreAttributeTypes.Active, false),
-            userArtifact.getAttributeValues(CoreAttributeTypes.LoginId),
-            roles, userArtifact.getSoleAttributeValue(CoreAttributeTypes.Phone, ""));
+            userArtifact.getAttributeValues(CoreAttributeTypes.LoginId), roles,
+            userArtifact.getSoleAttributeValue(CoreAttributeTypes.Phone, ""));
       } catch (Exception ex) {
          return UserToken.SENTINEL;
       }

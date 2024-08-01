@@ -35,6 +35,6 @@ public class OseeAccountClientRequestFilter implements ClientRequestFilter {
    public void filter(ClientRequestContext context) {
 
       String loginId = System.getProperty("user.name");
-      context.getHeaders().putSingle(HttpHeaders.AUTHORIZATION, OseeProperties.LOGIN_ID_AUTH_SCHEME + loginId);
+      context.getHeaders().putSingle(HttpHeaders.AUTHORIZATION, OseeProperties.BASIC_AUTH_SCHEME + loginId);
    }
 }

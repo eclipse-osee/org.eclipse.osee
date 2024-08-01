@@ -180,8 +180,8 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
       }
 
       String userId;
-      if (authHeader.startsWith(OseeProperties.LOGIN_ID_AUTH_SCHEME)) {
-         userId = authHeader.substring(OseeProperties.LOGIN_ID_AUTH_SCHEME.length());
+      if (authHeader.startsWith(OseeProperties.BASIC_AUTH_SCHEME)) {
+         userId = authHeader.substring(OseeProperties.BASIC_AUTH_SCHEME.length());
       } else {
          userId = authHeader;
       }

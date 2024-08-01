@@ -29,7 +29,6 @@ import org.eclipse.osee.activity.ActivityConstants;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.ApiKeyApi;
 import org.eclipse.osee.framework.core.JaxRsApi;
-import org.eclipse.osee.framework.core.data.ApiKey;
 import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.UserId;
@@ -88,20 +87,10 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
                   String loginId = jaxRsApi.readValue(payloadJson, jwtLoginKey).toLowerCase();
                   orcsApi.userService().setUserForCurrentThread(loginId);
                }
-            } else if (authHeader.startsWith(OseeProperties.LOGIN_ID_AUTH_SCHEME)) {
-               String apiKeyString = authHeader.substring(OseeProperties.LOGIN_ID_AUTH_SCHEME.length());
-               String loginIdLower = apiKeyString.toLowerCase();
+            } else if (authHeader.startsWith(OseeProperties.BASIC_AUTH_SCHEME)) {
+               String credential = authHeader.substring(OseeProperties.BASIC_AUTH_SCHEME.length());
 
-               orcsApi.userService().setUserForCurrentThread(loginIdLower);
-
-               // Logic for API Keys Here
-               if (orcsApi.userService().getUser().isInvalid()) {
-                  ApiKey apiKey = apiKeyApi.getApiKey(apiKeyString);
-
-                  if (!apiKey.isExpired()) {
-                     orcsApi.userService().setUserForCurrentThread(apiKey.getUserArtId());
-                  }
-               }
+               orcsApi.userService().setUserFromBasic(credential, apiKeyApi);
 
             } else if (!exceptionList) {
                //TODO: ensure web clients to use Basic scheme then remove
