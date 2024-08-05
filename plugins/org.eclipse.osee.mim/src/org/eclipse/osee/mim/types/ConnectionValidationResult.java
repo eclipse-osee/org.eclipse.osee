@@ -26,6 +26,7 @@ public class ConnectionValidationResult {
    private final ArtifactId viewId;
    private final String connectionName;
    private final List<String> structureByteAlignmentErrors = new LinkedList<>();
+   private final List<String> structureWordAlignmentErrors = new LinkedList<>();
    private final List<String> duplicateStructureNameErrors = new LinkedList<>();
    private final List<String> messageTypeErrors = new LinkedList<>();
 
@@ -61,6 +62,10 @@ public class ConnectionValidationResult {
 
    public List<String> getMessageTypeErrors() {
       return messageTypeErrors;
+   }
+
+   public List<String> getStructureWordAlignmentErrors() {
+      return structureWordAlignmentErrors;
    }
 
 }

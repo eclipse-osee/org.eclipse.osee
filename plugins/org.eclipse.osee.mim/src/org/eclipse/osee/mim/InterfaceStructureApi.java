@@ -140,4 +140,7 @@ public interface InterfaceStructureApi extends QueryCapableMIMAPI<InterfaceStruc
       long pageSize);
 
    int getAllwithNoSubMessageRelationsCount(BranchId branch, String filter);
+
+   InterfaceStructureToken parseStructure(BranchId branch, ArtifactId connectionId, InterfaceStructureToken structure,
+      ArtifactId viewId, List<InterfaceStructureElementToken> defaultElements);
 }

@@ -16,6 +16,7 @@ export interface ConnectionValidationResult {
 	connectionName: string;
 	passed: boolean;
 	structureByteAlignmentErrors: string[];
+	structureWordAlignmentErrors: string[];
 	duplicateStructureNameErrors: string[];
 	messageTypeErrors: string[];
 }
@@ -26,6 +27,7 @@ export const connectionValidationResultSentinel: ConnectionValidationResult = {
 	connectionName: '',
 	passed: true,
 	structureByteAlignmentErrors: [],
+	structureWordAlignmentErrors: [],
 	duplicateStructureNameErrors: [],
 	messageTypeErrors: [],
 };

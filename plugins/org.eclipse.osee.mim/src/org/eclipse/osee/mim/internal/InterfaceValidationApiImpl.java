@@ -22,8 +22,8 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
+import org.eclipse.osee.mim.InterfaceStructureApi;
 import org.eclipse.osee.mim.InterfaceValidationApi;
 import org.eclipse.osee.mim.types.ConnectionValidationResult;
 import org.eclipse.osee.mim.types.InterfaceConnection;
@@ -37,10 +37,10 @@ import org.eclipse.osee.orcs.core.ds.FollowRelation;
 public class InterfaceValidationApiImpl implements InterfaceValidationApi {
 
    private final InterfaceConnectionViewApi connectionApi;
-   private final JdbcClient jdbcClient;
-   InterfaceValidationApiImpl(InterfaceConnectionViewApi connectionApi, JdbcClient jdbcClient) {
+   private final InterfaceStructureApi structureApi;
+   InterfaceValidationApiImpl(InterfaceConnectionViewApi connectionApi, InterfaceStructureApi structureApi) {
       this.connectionApi = connectionApi;
-      this.jdbcClient = jdbcClient;
+      this.structureApi = structureApi;
    }
 
    @Override
@@ -72,19 +72,25 @@ public class InterfaceValidationApiImpl implements InterfaceValidationApi {
          }
 
          // Get all the structs for this message while we're here
-         message.getSubMessages().stream().map(subMsg -> subMsg.getArtifactReadable().getRelated(
-            CoreRelationTypes.InterfaceSubMessageContent_Structure).getList().stream().map(
-               art -> new InterfaceStructureToken(art)).collect(Collectors.toList())).forEach(
-                  structs -> structures.addAll(structs));
+         structures.addAll(message.getSubMessages().stream().flatMap(subMsg -> subMsg.getArtifactReadable().getRelated(
+            CoreRelationTypes.InterfaceSubMessageContent_Structure).getList().stream()).map(
+               art -> new InterfaceStructureToken(art)).map(
+                  struct -> structureApi.parseStructure(branch, connectionId, struct, viewId,
+                     struct.getElements())).collect(Collectors.toList()));
       }
 
       // All structures must be byte aligned based on transport type settings
       // Structures should not have duplicate names or abbreviations
       Set<String> structureSheetNames = new HashSet<>();
       for (InterfaceStructureToken structure : structures) {
+         structure.getElements().stream().filter(a -> a.getId() == -1L).collect(Collectors.toList());
          if (structure.getIncorrectlySized()) {
             result.getStructureByteAlignmentErrors().add(structure.getName());
          }
+         if (structure.getElements().stream().anyMatch(a -> a.getId() == -1L)) {
+            result.getStructureWordAlignmentErrors().add(structure.getName());
+         }
+         ;
          String structureSheetName =
             structure.getNameAbbrev().isEmpty() ? structure.getName() : structure.getNameAbbrev();
          if (structureSheetNames.contains(structureSheetName)) {

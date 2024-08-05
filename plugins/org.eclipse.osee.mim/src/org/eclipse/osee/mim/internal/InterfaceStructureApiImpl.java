@@ -144,7 +144,8 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
       return this.parseStructure(branch, connection, structure, ArtifactId.SENTINEL, defaultElements);
    }
 
-   private InterfaceStructureToken parseStructure(BranchId branch, ArtifactId connectionId,
+   @Override
+   public InterfaceStructureToken parseStructure(BranchId branch, ArtifactId connectionId,
       InterfaceStructureToken structure, ArtifactId viewId, List<InterfaceStructureElementToken> defaultElements) {
       InterfaceConnection connection = this.interfaceConnectionApi.get(branch, connectionId);
       return this.parseStructure(branch, connection, structure, viewId, defaultElements);
@@ -200,7 +201,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
                      previousElement.setValidationSize(validationSize);
                      tempElements.add(previousElement);
                   }
-                  if (currentElement.getInterfacePlatformTypeWordSize() > 1 && (previousElement.getEndWord() + 1) % currentElement.getInterfacePlatformTypeWordSize() != 0) {
+                  if (!currentElement.isInterfaceElementBlockData() && currentElement.getInterfacePlatformTypeWordSize() > 1 && (previousElement.getEndWord() + 1) % currentElement.getInterfacePlatformTypeWordSize() != 0) {
                      /**
                       * Make sure elements of size larger than 2 words start on m*n indexed words
                       */
@@ -238,7 +239,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
                      tempElement.setValidationSize(validationSize);
                      tempElements.add(tempElement);
                   }
-                  if (!isArray && currentElement.getEndWord() % 2 != 1 && shouldValidate) {
+                  if (!currentElement.isInterfaceElementBlockData() && !isArray && currentElement.getEndWord() % 2 != 1 && shouldValidate) {
                      /**
                       * Rule for making sure next element on next structure sent is on boundary of 2n
                       */
@@ -267,7 +268,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
                previousElement = currentElement;
 
                if (!elementIterator.hasNext()) {
-                  if (!isArray && currentElement.getEndByte() != ((validationSize / 2) - 1)) {
+                  if (!currentElement.isInterfaceElementBlockData() && !isArray && currentElement.getEndByte() != ((validationSize / 2) - 1)) {
                      /**
                       * Rule for making sure last element ends on last byte of word(no partials)
                       */
@@ -281,7 +282,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
                      tempElement.setValidationSize(validationSize);
                      tempElements.add(tempElement);
                   }
-                  if (!isArray && currentElement.getEndWord() % 2 != 1 && shouldValidate) {
+                  if (!currentElement.isInterfaceElementBlockData() && !isArray && currentElement.getEndWord() % 2 != 1 && shouldValidate) {
                      /**
                       * Rule for making sure next element on next structure sent is on boundary of 2n
                       */
@@ -434,6 +435,7 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
    public InterfaceStructureToken getRelated(BranchId branch, ArtifactId connectionId, ArtifactId subMessageId,
       ArtifactId structureId, ArtifactId viewId) {
       InterfaceStructureToken structure;
+
       try {
          structure = this.getAccessor().getByRelation(branch, structureId,
             CoreRelationTypes.InterfaceSubMessageContent_SubMessage, subMessageId, this.getFullFollowRelationDetails(),

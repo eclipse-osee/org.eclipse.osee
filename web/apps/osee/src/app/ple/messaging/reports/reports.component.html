@@ -173,8 +173,14 @@
 									[ngTemplateOutletContext]="{
 										label: 'Structures are byte aligned',
 										errors: _results.structureByteAlignmentErrors
-									}"></ng-container>
-								<ng-container
+									}"></ng-container
+								><ng-container
+									[ngTemplateOutlet]="validationResults"
+									[ngTemplateOutletContext]="{
+										label: 'Structures are word aligned',
+										errors: _results.structureWordAlignmentErrors
+									}"></ng-container
+								><ng-container
 									[ngTemplateOutlet]="validationResults"
 									[ngTemplateOutletContext]="{
 										label: 'Structure names are unique',
