@@ -97,7 +97,7 @@ public class CreateTasksOperation {
          }
          IAtsTeamWorkflow teamWf = getTeamWorkflow(teamWfId);
          if (teamWf == null) {
-            results.errorf("Team Workflow id %s does not exist", teamWfId);
+            results.errorf("Team Workflow id %s does not exist\n", teamWfId);
             continue;
          }
          taskWorkDef = null;
@@ -107,7 +107,7 @@ public class CreateTasksOperation {
          if (taskWorkDefTok.isValid()) {
             taskWorkDef = atsApi.getWorkDefinitionService().getWorkDefinition(taskWorkDefTok);
             if (taskWorkDef == null) {
-               results.errorf("Task Work Def Token %s is not defined", newTaskData.getTaskWorkDef());
+               results.errorf("Task Work Def Token %s is not defined\n", newTaskData.getTaskWorkDef());
                continue;
             }
          }
@@ -178,7 +178,7 @@ public class CreateTasksOperation {
             for (JaxAttribute attribute : jTask.getAttributes()) {
                AttributeTypeId attrType = attribute.getAttrType();
                if (attrType == null || attrType.isInvalid()) {
-                  results.errorf("Attribute Type [%s] not valid for Task creation in %s", attrType, jTask);
+                  results.errorf("Attribute Type [%s] not valid for Task creation in %s\n", attrType, jTask);
                }
             }
 
@@ -201,8 +201,10 @@ public class CreateTasksOperation {
                   List<Long> notFoundIds = new ArrayList<>();
                   notFoundIds.addAll(relation.getRelatedIds());
                   notFoundIds.removeAll(foundWorkItemIds);
-                  results.errorf("Relation [%s] Work Item Ids [%s] has unfound Work Item(s) in db for task %s",
-                     relation.getRelationTypeName(), notFoundIds, jTask);
+                  if (!notFoundIds.isEmpty()) {
+                     results.errorf("Relation [%s] Work Item Ids [%s] has unfound Work Item(s) in db for task %s\n",
+                        relation.getRelationTypeName(), notFoundIds, jTask);
+                  }
                }
             }
          }
