@@ -466,7 +466,7 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
    }
 
    public static void setOverrideAccess(boolean overrideAccess) {
-      if (OseeProperties.isInTest()) {
+      if (OseeProperties.isInDbInit() || OseeProperties.isInTest()) {
          SkynetTransaction.overrideAccess = overrideAccess;
       } else {
          throw new OseeArgumentException("Access Control can not be overridden in production");
