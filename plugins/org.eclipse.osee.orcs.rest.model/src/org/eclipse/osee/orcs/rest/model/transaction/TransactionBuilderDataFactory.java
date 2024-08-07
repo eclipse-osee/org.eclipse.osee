@@ -85,7 +85,6 @@ public class TransactionBuilderDataFactory {
    public TransactionBuilderData loadFromChanges(TransactionId txId1, TransactionId txId2) {
       Objects.requireNonNull(txId1, "The given start transaction cannot be null");
       Objects.requireNonNull(txId2, "The given end transaction cannot be null");
-
       List<ChangeItem> changes = orcsApi.getTransactionFactory().compareTxs(txId1, txId2);
       if (changes.isEmpty()) {
          throw new OseeCoreException("Change report is empty");
@@ -94,7 +93,6 @@ public class TransactionBuilderDataFactory {
       for (ChangeItem change : changes) {
          if (isGoodChange(change)) {
             ChangeType ct = change.getChangeType();
-
             if (ct.isArtifactChange()) {
                ChangeVersion net = change.getNetChange();
                ModificationType mt = net.getModType();
@@ -253,7 +251,8 @@ public class TransactionBuilderDataFactory {
             throw new OseeCoreException("Branch in TransactionBuilderDataFactory invalid");
          }
          try {
-            art = orcsApi.getQueryFactory().fromBranch(currentBranch).fromTransaction(txId).andId(artId).asArtifact();
+            art = orcsApi.getQueryFactory().fromBranch(currentBranch).fromTransaction(
+               txId).includeDeletedArtifacts().andId(artId).asArtifact();
          } catch (Exception ex) {
             results.errorf("Exception to find artifact for art id: ", artId.toString());
             throw new OseeCoreException("Artifact ID %s not found", artId.toString());
@@ -334,7 +333,11 @@ public class TransactionBuilderDataFactory {
    private TransactionBuilderData deleteAttribute(ChangeItem change, TransactionBuilderData tbd) {
       ArtifactSortContainer sortArt = workingArtsById.get(change.getArtId());
       if (sortArt == null) {
-         results.errorf("artifact not in change report: %s", change.getArtId());
+         List<Long> artifacts = tbd.getDeleteArtifacts();
+         if (!artifacts.contains(change.getArtId().getId())) {
+            results.errorf("artifact for deleted attribute not in deleted artifact list: %s", change.getArtId());
+         }
+
       } else {
          if (sortArt instanceof ArtifactSortContainerCreate) {
             results.errorf("must not delete attribute in creation container: %s", change);
@@ -359,7 +362,7 @@ public class TransactionBuilderDataFactory {
    private TransactionBuilderData modifyAttribute(ChangeItem change, TransactionBuilderData tbd) {
       ArtifactSortContainer sortArt = workingArtsById.get(change.getArtId());
       if (sortArt == null) {
-         results.errorf("artifact not in change report: %s", change.getArtId());
+         results.errorf("artifact for modified attribute not in change report: %s", change.getArtId());
       } else {
          if (sortArt instanceof ArtifactSortContainerCreate) {
             results.warningf("modify attribute in create artifact, change: %s", change);
@@ -369,8 +372,11 @@ public class TransactionBuilderDataFactory {
                attrs = new ArrayList<>();
                art.setAttributes(attrs);
             }
-
-            attrs.add((Attribute) setupTransferArtifact(change, sortArt.getArtifact(), Attribute::new));
+            try {
+               attrs.add((Attribute) setupTransferArtifact(change, sortArt.getArtifact(), Attribute::new));
+            } catch (AttributeValueDoesNotExist ex) {
+               results.warningf(ex.getMessage());
+            }
 
          } else if (sortArt instanceof ArtifactSortContainerModify) {
             ModifyArtifact art = ((ArtifactSortContainerModify) sortArt).getModifyArt();
@@ -379,7 +385,11 @@ public class TransactionBuilderDataFactory {
                attrs = new ArrayList<>();
                art.setSetAttributes(attrs);
             }
-            attrs.add((SetAttribute) setupTransferArtifact(change, sortArt.getArtifact(), SetAttribute::new));
+            try {
+               attrs.add((SetAttribute) setupTransferArtifact(change, sortArt.getArtifact(), SetAttribute::new));
+            } catch (AttributeValueDoesNotExist ex) {
+               results.warningf(ex.getMessage());
+            }
          } else {
             results.errorf("incorrect default sort container for modified attribute %s", change.getItemId().toString());
          }
@@ -432,7 +442,8 @@ public class TransactionBuilderDataFactory {
                }
             }
          } else {
-            results.logf("change %s has invalid net change", change.toString());
+            throw new AttributeValueDoesNotExist(
+               "Invalid value in artifact: " + art.getArtifactId().getIdString() + ", attribute type: " + change.getItemTypeId().getId());
          }
       } else {
          results.errorf("unhandled data for art %s setting type %s", art, attrType);
@@ -474,7 +485,7 @@ public class TransactionBuilderDataFactory {
    private TransactionBuilderData newAttribute(ChangeItem change, TransactionBuilderData tbd) {
       ArtifactSortContainer sortArt = workingArtsById.get(change.getArtId());
       if (sortArt == null) {
-         results.errorf("artifact not in change report: %s", change.getArtId());
+         results.errorf("artifact for new attribute not in change report: %s", change.getArtId());
       } else {
          if (sortArt instanceof ArtifactSortContainerCreate) {
             CreateArtifact art = ((ArtifactSortContainerCreate) sortArt).getCreateArt();
@@ -483,7 +494,11 @@ public class TransactionBuilderDataFactory {
                attrs = new ArrayList<>();
                art.setAttributes(attrs);
             }
-            attrs.add((Attribute) setupTransferArtifact(change, sortArt.getArtifact(), Attribute::new));
+            try {
+               attrs.add((Attribute) setupTransferArtifact(change, sortArt.getArtifact(), Attribute::new));
+            } catch (AttributeValueDoesNotExist ex) {
+               results.warningf(ex.getMessage());
+            }
          } else if (sortArt instanceof ArtifactSortContainerModify) {
             ModifyArtifact art = ((ArtifactSortContainerModify) sortArt).getModifyArt();
             List<AddAttribute> attrs = art.getAddAttributes();
@@ -491,7 +506,11 @@ public class TransactionBuilderDataFactory {
                attrs = new ArrayList<>();
                art.setAddAttributes(attrs);
             }
-            attrs.add((AddAttribute) setupTransferArtifact(change, sortArt.getArtifact(), AddAttribute::new));
+            try {
+               attrs.add((AddAttribute) setupTransferArtifact(change, sortArt.getArtifact(), AddAttribute::new));
+            } catch (AttributeValueDoesNotExist ex) {
+               results.warningf(ex.getMessage());
+            }
          } else {
             results.errorf("incorrect default sort container for modified attribute %s", change.getItemId().toString());
          }
