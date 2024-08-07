@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.ats.ide.workflow.transition;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.window.Window;
@@ -109,6 +110,9 @@ public class TransitionDataUi {
                users.addAll(workItem.getImplementers());
                users.add(currUser);
                title = "Select new Assignee";
+            } else if (workItem.getAssignees().contains(AtsCoreUsers.UNASSIGNED_USER)) {
+               transData.setToAssignees(Arrays.asList(atsApi.getUserService().getCurrentUser()));
+               return;
             }
             // Else if not assignee, choose from assignees or current user
             else if (!workItem.getAssignees().contains(currUser)) {

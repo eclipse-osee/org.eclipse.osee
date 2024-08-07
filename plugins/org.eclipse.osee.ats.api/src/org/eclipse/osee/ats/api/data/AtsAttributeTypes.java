@@ -210,12 +210,14 @@ public interface AtsAttributeTypes {
    AttributeTypeString RuleDefinition = ats.createString(1152921504606847150L, "ats.Rule Definition", TEXT_PLAIN, "", Config);
    AttributeTypeString Ship = ats.createString(2066487546203415020L, "Ship", MediaType.TEXT_PLAIN, "", Edit);
    AttributeTypeString SignalDbSystemId = ats.createString(1153126013769613779L, "Signal Db System ID", TEXT_PLAIN, "",Config );
+   AttributeTypeBoolean SignalImpact = ats.createBoolean(2380093348200994L, "ats.Signal Impact", TEXT_PLAIN, "", Edit);
+   AttributeTypeString SoftwareAnalysis = ats.createString(434811736846145L, "ats.Software Analysis", TEXT_PLAIN, "", Edit, Edit);
    AttributeTypeDate StartDate = ats.createDate(1152921504606847382L, "ats.Start Date", TEXT_CALENDAR, "", Edit);
    // State attribute type is To-Be-Deleted
    AttributeTypeString State = ats.createString(1152921504606847191L, "ats.State", TEXT_PLAIN, "States of workflow state machine.", Read);
    AttributeTypeString StateNotes = ats.createString(1152921504606847203L, "ats.State Notes", MediaType.TEXT_XML, "", MultiLine, Read);
    AttributeTypeString SwEnhancement = ats.createString(1152921504606847227L, "ats.SW Enhancement", TEXT_PLAIN, "", Edit, Edit);
-   AttributeTypeBoolean SignalImpact = ats.createBoolean(2380093348200994L, "ats.Signal Impact", TEXT_PLAIN, "", Edit);
+   AttributeTypeString SystemAnalysis = ats.createString(2620866653693740L, "ats.System Analysis", TEXT_PLAIN, "", Edit, Edit);
    AttributeTypeLong TaskSetId = ats.createLong(2412431655932432L, "ats.Task Set Id", TEXT_PLAIN, "",Config);
    AttributeTypeBoolean TaskAutoGen = ats.createBoolean(395202732487784L, "ats.Task Auto Gen", TEXT_PLAIN, "", Read);
    AttributeTypeString TaskAutoGenVersion = ats.createString(29374282544622L, "ats.Task Auto Gen Version", TEXT_PLAIN, "Version of Task Auto Generation", Read);

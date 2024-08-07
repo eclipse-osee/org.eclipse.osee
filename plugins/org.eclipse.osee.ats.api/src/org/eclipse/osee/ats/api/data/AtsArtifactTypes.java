@@ -275,6 +275,8 @@ public interface AtsArtifactTypes {
       .zeroOrOne(RootCause)
       .zeroOrOne(SignedOffBy)
       .zeroOrOne(SignedOffByDate)
+      .zeroOrOne(SoftwareAnalysis)
+      .zeroOrOne(SystemAnalysis)
       .zeroOrOne(TeamDefinitionReference)
       .zeroOrOne(ValidationRequired)
       .zeroOrOne(WeeklyBenefit)
