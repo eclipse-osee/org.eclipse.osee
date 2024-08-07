@@ -43,7 +43,7 @@ public final class JaxRsExceptions {
       if (response == null) {
          message = "Error mapping response exception - response was null";
       } else {
-         if (response.hasEntity()) {
+         if (response.getEntity() != null) {
             if (response.getStatus() == Response.Status.NOT_MODIFIED.getStatusCode()) {
                return null;
             }
