@@ -25,6 +25,8 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataFactory;
@@ -39,10 +41,12 @@ public class ArtifactFactory {
 
    private final ArtifactDataFactory factory;
    private final AttributeFactory attributeFactory;
+   private final OrcsApi orcsApi;
 
-   public ArtifactFactory(ArtifactDataFactory factory, AttributeFactory attributeFactory) {
+   public ArtifactFactory(ArtifactDataFactory factory, AttributeFactory attributeFactory, OrcsApi orcsApi) {
       this.factory = factory;
       this.attributeFactory = attributeFactory;
+      this.orcsApi = orcsApi;
    }
 
    public Artifact createArtifact(final OrcsSession session, ArtifactData artifactData) {
@@ -66,6 +70,7 @@ public class ArtifactFactory {
 
    public Artifact createArtifact(OrcsSession session, BranchId branch, ArtifactTypeToken artifactType,
       ArtifactId artifactId) {
+      checkArtifactId(artifactId, "unknown", artifactType);
       ArtifactData artifactData = factory.create(branch, artifactType, artifactId);
       Artifact artifact = createArtifact(session, artifactData);
       artifact.setLoaded(true);
@@ -74,6 +79,7 @@ public class ArtifactFactory {
 
    public Artifact createArtifact(OrcsSession session, BranchId branch, ArtifactTypeToken artifactType,
       ArtifactId artifactId, ApplicabilityId appId) {
+      checkArtifactId(artifactId, "unknown", artifactType);
       ArtifactData artifactData = factory.create(branch, artifactType, artifactId, appId);
       Artifact artifact = createArtifact(session, artifactData);
       artifact.setLoaded(true);
@@ -93,6 +99,13 @@ public class ArtifactFactory {
       return artifact;
    }
 
+   private void checkArtifactId(ArtifactId artifactId, String name, ArtifactTypeToken artType) {
+      if (orcsApi.getQueryFactory().artIdExists(artifactId)) {
+         throw new OseeArgumentException("Artifact with Id [%s] already exists; Name [%s] Type [%s]",
+            artifactId.getIdString(), name, artType.toStringWithId());
+      }
+   }
+
    public Artifact copyArtifact(OrcsSession session, Artifact source, Collection<AttributeTypeToken> types,
       BranchId ontoBranch) {
       ArtifactData artifactData = factory.copy(ontoBranch, source.getOrcsData());
@@ -100,7 +113,7 @@ public class ArtifactFactory {
       Collection<AttributeTypeToken> typesToCopy = getAllowedTypes(copy, types);
       for (AttributeTypeToken attributeType : typesToCopy) {
          for (AttributeReadable<?> attributeSource : source.getAttributes(attributeType)) {
-            AttributeData data = getAttributeData(attributeSource);
+            AttributeData<?> data = getAttributeData(attributeSource);
             attributeFactory.copyAttribute(data, ontoBranch, copy);
          }
       }
@@ -149,7 +162,7 @@ public class ArtifactFactory {
       Artifact copy = createArtifact(session, artifactData);
       for (AttributeTypeToken attributeType : source.getExistingAttributeTypes()) {
          for (AttributeReadable<?> attributeSource : source.getAttributes(attributeType)) {
-            AttributeData data = getAttributeData(attributeSource);
+            AttributeData<?> data = getAttributeData(attributeSource);
             attributeFactory.cloneAttribute(data, copy);
          }
       }
@@ -157,7 +170,7 @@ public class ArtifactFactory {
       return copy;
    }
 
-   private AttributeData getAttributeData(AttributeReadable<?> source) {
+   private AttributeData<?> getAttributeData(AttributeReadable<?> source) {
       return ((Attribute<?>) source).getOrcsData();
    }
 

@@ -35,22 +35,28 @@ import org.junit.Test;
  */
 public class ArtifactTest {
 
-   public static final ArtifactToken TestSoftReq = ArtifactToken.valueOf(3842588L, ArtifactTest.class.getSimpleName(),
+   public static final ArtifactToken TestSoftReq1 = ArtifactToken.valueOf(3842588L, ArtifactTest.class.getSimpleName(),
+      DemoBranches.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirementMsWord);
+   public static final ArtifactToken TestSoftReq2 = ArtifactToken.valueOf(3434532L, ArtifactTest.class.getSimpleName(),
       DemoBranches.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirementMsWord);
 
    @BeforeClass
    @AfterClass
    public static void setupCleanup() {
-      Artifact robotReq = ArtifactQuery.getArtifactOrNull(TestSoftReq, DeletionFlag.EXCLUDE_DELETED);
+      Artifact robotReq = ArtifactQuery.getArtifactOrNull(TestSoftReq1, DeletionFlag.EXCLUDE_DELETED);
       if (robotReq != null) {
          robotReq.purgeFromBranch();
+      }
+      Artifact robotReq2 = ArtifactQuery.getArtifactOrNull(TestSoftReq2, DeletionFlag.EXCLUDE_DELETED);
+      if (robotReq2 != null) {
+         robotReq2.purgeFromBranch();
       }
    }
 
    @Test
    public void testSetAttributeValues() {
 
-      Artifact robotReq = ArtifactTypeManager.addArtifact(TestSoftReq);
+      Artifact robotReq = ArtifactTypeManager.addArtifact(TestSoftReq1);
       robotReq.persist(getClass().getSimpleName());
 
       Collection<String> parts = robotReq.getAttributeValues(CoreAttributeTypes.Partition);
@@ -82,7 +88,7 @@ public class ArtifactTest {
 
       // Before persist
       SkynetTransaction tx = TransactionManager.createTransaction(DemoBranches.SAW_Bld_1, getClass().getSimpleName());
-      robotReq = ArtifactTypeManager.addArtifact(TestSoftReq);
+      robotReq = ArtifactTypeManager.addArtifact(TestSoftReq2);
 
       parts = robotReq.getAttributeValues(CoreAttributeTypes.Partition);
       Assert.assertEquals(1, parts.size());

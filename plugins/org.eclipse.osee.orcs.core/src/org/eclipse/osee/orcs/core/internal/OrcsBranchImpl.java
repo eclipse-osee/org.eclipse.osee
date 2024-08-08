@@ -14,7 +14,7 @@
 package org.eclipse.osee.orcs.core.internal;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.DefaultHierarchyRoot;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Folder;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.InterfaceMessagesFolder;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.MimArtifactTokens;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -250,34 +249,35 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
+   public BranchToken createProgramBranch(BranchToken branch, BranchToken parent) {
+      BranchToken newBranch = createBaselineBranch(branch, parent, ArtifactId.SENTINEL);
+      setBranchPermission(userService.getUser(), newBranch, PermissionEnum.FULLACCESS);
+      return newBranch;
+   }
+
+   @Override
    public BranchToken createProgramBranch(BranchToken branch) {
       BranchToken newBranch = createTopLevelBranch(branch);
       setBranchPermission(userService.getUser(), branch, PermissionEnum.FULLACCESS);
 
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, "Create Program Hierarchy");
-
-      tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTokens.SystemRequirementsFolder);
-      tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTokens.SubSystemRequirementsFolder);
-      tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTokens.SoftwareRequirementsFolder);
-      tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTokens.HardwareRequirementsFolder);
-      tx.createArtifact(DefaultHierarchyRoot, MimArtifactTokens.InterfaceMessagesFolder);
-      tx.createArtifact(MimArtifactTokens.InterfaceMessagesFolder, MimArtifactTokens.InterfacePlatformTypesFolder);
-      tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTokens.SystemRequirementsFolderMarkdown);
-      tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTokens.SubSystemRequirementsFolderMarkdown);
-      tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTokens.SoftwareRequirementsFolderMarkdown);
-
-      for (String name : new String[] {
-         "Verification Tests",
-         "Validation Tests",
-         "Integration Tests",
-         "Applicability Tests"}) {
-         tx.createArtifact(DefaultHierarchyRoot, Folder, name);
-
-         tx.createArtifact(DefaultHierarchyRoot, CoreArtifactTokens.GitRepoFolder);
-
-      }
-      tx.createArtifact(CoreArtifactTokens.CustomerReqFolder);
+      tx.createOrIntroduceArtifact(DefaultHierarchyRoot, CoreArtifactTokens.SystemRequirementsFolder);
+      tx.createOrIntroduceArtifact(DefaultHierarchyRoot, CoreArtifactTokens.SubSystemRequirementsFolder);
+      tx.createOrIntroduceArtifact(DefaultHierarchyRoot, CoreArtifactTokens.SoftwareRequirementsFolder);
+      tx.createOrIntroduceArtifact(DefaultHierarchyRoot, CoreArtifactTokens.HardwareRequirementsFolder);
+      tx.createOrIntroduceArtifact(DefaultHierarchyRoot, CoreArtifactTokens.InterfaceMessagesFolder);
+      tx.createOrIntroduceArtifact(InterfaceMessagesFolder, CoreArtifactTokens.InterfacePlatformTypesFolder);
+      tx.createOrIntroduceArtifact(DefaultHierarchyRoot, CoreArtifactTokens.SystemRequirementsFolderMarkdown);
+      tx.createOrIntroduceArtifact(DefaultHierarchyRoot, CoreArtifactTokens.SubSystemRequirementsFolderMarkdown);
+      tx.createOrIntroduceArtifact(DefaultHierarchyRoot, CoreArtifactTokens.SoftwareRequirementsFolderMarkdown);
+      tx.createOrIntroduceArtifact(DefaultHierarchyRoot, CoreArtifactTokens.VerificationTestsFolder);
+      tx.createOrIntroduceArtifact(DefaultHierarchyRoot, CoreArtifactTokens.ValidationTestsFolder);
+      tx.createOrIntroduceArtifact(DefaultHierarchyRoot, CoreArtifactTokens.IntegrationTestsFolder);
+      tx.createOrIntroduceArtifact(DefaultHierarchyRoot, CoreArtifactTokens.ApplicabilityTestsFolder);
+      tx.createOrIntroduceArtifact(DefaultHierarchyRoot, CoreArtifactTokens.GitRepoFolder);
+      tx.createOrIntroduceArtifact(DefaultHierarchyRoot, CoreArtifactTokens.CustomerReqFolder);
       tx.commit();
+
       return newBranch;
    }
 

@@ -59,10 +59,10 @@ public class CreateDemoBranches {
    }
 
    public void populate() {
-      //      orcsApi.userService().createUsers(DemoUsers.values(), "Create Demo Users");
 
-      createDemoProgramBranch(SAW_Bld_1);
-      createDemoProgramBranch(CIS_Bld_1);
+      createDefaultProgramBranch(DemoBranches.Default_Reqts);
+      branchOps.createProgramBranch(SAW_Bld_1, DemoBranches.Default_Reqts);
+      branchOps.createProgramBranch(CIS_Bld_1, DemoBranches.Default_Reqts);
 
       branchOps.createBaselineBranch(DemoBranches.SAW_PL, SAW_Bld_1, ArtifactId.SENTINEL);
 
@@ -203,26 +203,25 @@ public class CreateDemoBranches {
       tx.createAttribute(featureDefinition, CoreAttributeTypes.GeneralStringData, featureDefJson);
    }
 
-   private static void configureFeature(TransactionBuilder tx, String featureName, ArtifactId[] products, String... featureValues) {
+   private static void configureFeature(TransactionBuilder tx, String featureName, ArtifactId[] products,
+      String... featureValues) {
       for (int i = 0; i < products.length; i++) {
          tx.addTuple2(CoreTupleTypes.ViewApplicability, products[i], featureName + " = " + featureValues[i]);
       }
    }
 
-   private static void configureApplicabilityValues(TransactionBuilder tx, ArtifactId featureId, String featureName, List<String> featureValues) {
+   private static void configureApplicabilityValues(TransactionBuilder tx, ArtifactId featureId, String featureName,
+      List<String> featureValues) {
       for (String value : featureValues) {
          tx.addTuple2(CoreTupleTypes.ApplicabilityDefinition, featureId, featureName + " = " + value);
       }
    }
 
-   private void createDemoProgramBranch(BranchToken branch) {
+   private void createDefaultProgramBranch(BranchToken branch) {
       branchOps.createProgramBranch(branch);
-
-      TransactionBuilder tx = txFactory.createTransaction(branch, "Create SAW Product Decomposition");
-
-      ArtifactId sawProduct = tx.createArtifact(CoreArtifactTokens.DefaultHierarchyRoot, CoreArtifactTypes.Component,
-         CoreArtifactTokens.SAW_PRODUCT_DECOMP);
-
+      TransactionBuilder tx = txFactory.createTransaction(branch, "Create Product Decomposition");
+      ArtifactId sawProduct =
+         tx.createArtifact(CoreArtifactTokens.DefaultHierarchyRoot, CoreArtifactTokens.ProductDecomposition);
       for (String subsystem : DemoSubsystems.getSubsystems()) {
          tx.createArtifact(sawProduct, CoreArtifactTypes.Component, subsystem);
       }

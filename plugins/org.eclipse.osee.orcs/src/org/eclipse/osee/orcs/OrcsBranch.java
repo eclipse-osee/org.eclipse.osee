@@ -106,4 +106,6 @@ public interface OrcsBranch {
 
    XResultData deleteBranchCategory(BranchId branch, BranchCategoryToken category);
 
+   BranchToken createProgramBranch(BranchToken branch, BranchToken parent);
+
 }

@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -138,6 +139,7 @@ public class CreateArtifactWithIdBlam extends AbstractBlam {
          return;
       }
 
+      final AtomicBoolean cancelled = new AtomicBoolean(false);
       Displays.ensureInDisplayThread(new Runnable() {
 
          @Override
@@ -151,17 +153,26 @@ public class CreateArtifactWithIdBlam extends AbstractBlam {
             "Name: [%s]\n\n" + //
             "WARNING, WARNING, WARNING: And you confirm you have checked the id does not already exist?", artifactType,
                   brch, artId, name))) {
-               return;
+               cancelled.set(true);
             }
 
+         }
+      }, true);
+
+      if (!cancelled.get()) {
+         Artifact artifact = null;
+         try {
             SkynetTransaction transaction = TransactionManager.createTransaction(branchToken, getName());
-            Artifact artifact = ArtifactTypeManager.addArtifact(artifactType, branchToken, name, artId);
+            artifact = ArtifactTypeManager.addArtifact(artifactType, branchToken, name, artId);
             transaction.addArtifact(artifact);
             transaction.execute();
-
-            ArtifactEditor.editArtifact(artifact);
+         } catch (Exception ex) {
+            logException(ex);
+            return;
          }
-      });
+
+         ArtifactEditor.editArtifact(artifact);
+      }
    }
 
 }

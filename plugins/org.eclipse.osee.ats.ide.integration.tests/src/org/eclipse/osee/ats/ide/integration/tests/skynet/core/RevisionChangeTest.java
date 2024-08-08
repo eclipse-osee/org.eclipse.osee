@@ -76,8 +76,7 @@ public class RevisionChangeTest {
       navigationToModifyApplic = ArtifactQuery.getArtifactFromTypeAndName(Component, "Navigation", SAW_PL);
 
       workingBranch = BranchManager.createWorkingBranch(SAW_PL, "Test Working Branch");
-      sawProductDecomp =
-         ArtifactQuery.getArtifactFromTypeAndName(Component, CoreArtifactTokens.SAW_PRODUCT_DECOMP, workingBranch);
+      sawProductDecomp = ArtifactQuery.getArtifactFromId(CoreArtifactTokens.ProductDecomposition, workingBranch);
 
       newSoftReq = ArtifactTypeManager.addArtifact(SoftwareRequirementMsWord, workingBranch);
       newSoftReq.setName("New Software Requirement");
@@ -269,7 +268,7 @@ public class RevisionChangeTest {
 
       assertTrue(foundArtMod);
       assertTrue(foundCorrectArtApplic);
-      assertEquals(applicMods.size(), 4);
+      assertEquals(applicMods.size(), 5);
    }
 
    /**
@@ -332,7 +331,7 @@ public class RevisionChangeTest {
             txs.add(tx);
          }
       }
-      assertEquals(txs.size(), 4);
+      assertEquals(txs.size(), 5);
 
       changes.clear();
       txs.clear();
@@ -344,7 +343,7 @@ public class RevisionChangeTest {
             txs.add(tx);
          }
       }
-      assertEquals(txs.size(), 4);
+      assertEquals(txs.size(), 5);
 
       changes.clear();
       txs.clear();
@@ -368,7 +367,7 @@ public class RevisionChangeTest {
             txs.add(tx);
          }
       }
-      assertEquals(txs.size(), 4);
+      assertEquals(txs.size(), 5);
    }
 
    @After

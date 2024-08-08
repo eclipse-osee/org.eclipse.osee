@@ -13,10 +13,14 @@
 
 package org.eclipse.osee.orcs.core.internal.search;
 
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
 import org.eclipse.osee.orcs.core.ds.QueryData;
@@ -88,5 +92,20 @@ public class QueryFactoryImpl implements QueryFactory {
    @Override
    public ApplicabilityQuery applicabilityQuery() {
       return new ApplicabilityQueryImpl(applicabilityDsQuery, this, orcsApi);
+   }
+
+   @Override
+   public boolean artIdExists(ArtifactId artifactId) {
+      int artifactCount =
+         orcsApi.getJdbcService().getClient().fetch(0, OseeSql.ARTIFACT_ID_COUNT.getSql(), artifactId.getIdString());
+      return artifactCount > 0;
+   }
+
+   @Override
+   public Collection<BranchId> getBranches(ArtifactId sourceArtifact) {
+      List<BranchId> ids = new LinkedList<>();
+      orcsApi.getJdbcService().getClient().runQuery(stmt -> ids.add(BranchId.valueOf(stmt.getLong("branch_id"))),
+         OseeSql.ARTIFACT_ID_BRANCHES.getSql(), sourceArtifact.getIdString());
+      return ids;
    }
 }

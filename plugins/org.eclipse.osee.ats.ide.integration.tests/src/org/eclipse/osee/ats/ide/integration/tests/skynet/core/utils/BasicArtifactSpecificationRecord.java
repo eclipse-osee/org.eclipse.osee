@@ -99,30 +99,17 @@ public class BasicArtifactSpecificationRecord implements ArtifactSpecificationRe
     * @throws IllegalArgumentException when the name in <code>artifactToken</code> is blank.
     */
 
-   //@formatter:off
-   public
-      BasicArtifactSpecificationRecord
-         (
-            @NonNull Integer                                        identifier,
-            @NonNull Integer                                        hierarchicalParentIdentifier,
-            @NonNull ArtifactToken                                  artifactToken,
-            @NonNull List<@NonNull AttributeSpecificationRecord>    attributeSpecifications,
-            @NonNull List<@NonNull RelationshipSpecificationRecord> relationshipSpecificationRecords
-         ) {
+   public BasicArtifactSpecificationRecord( //
+      @NonNull Integer identifier, //
+      @NonNull Integer hierarchicalParentIdentifier, //
+      @NonNull ArtifactToken artifactToken, @NonNull //
+      List<@NonNull AttributeSpecificationRecord> attributeSpecifications, //
+      @NonNull List<@NonNull RelationshipSpecificationRecord> relationshipSpecificationRecords) {
 
-         this
-            (
-               identifier,
-               hierarchicalParentIdentifier,
-               null,
-               null,
-               artifactToken,
-               attributeSpecifications,
-               relationshipSpecificationRecords
-            );
+      this(identifier, hierarchicalParentIdentifier, null, null, artifactToken, attributeSpecifications,
+         relationshipSpecificationRecords);
 
-      }
-      //@formatter:on
+   }
 
    /**
     * Private constructor used by public constructor to initialize member values.

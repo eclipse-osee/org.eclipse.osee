@@ -349,7 +349,10 @@ public class RelationManagerImpl implements RelationManager {
    private void checkMultiplicityCanAdd(RelationTypeToken type, Artifact aNode, Artifact bNode, TxData txData) {
       List<Relation> relations = getRelations(type, aNode, SIDE_A, EXCLUDE_DELETED, txData);
 
-      int bSideCount = relations.stream().filter(a->a.getOrcsData().getVersion().getTxCurrent().equals(TxCurrent.CURRENT)).collect(Collectors.toList()).size();
+      int bSideCount =
+         relations.stream().filter(a -> a.getOrcsData().getVersion().getTxCurrent().equals(TxCurrent.CURRENT)).collect(
+            Collectors.toList()).size();
+
       //int bSideCount = getRelations(type, aNode, SIDE_A, EXCLUDE_DELETED, txData).size();
 
       int bSideMax = validity.getMaximumRelationsAllowed(type, bNode.getArtifactType(), SIDE_B);
@@ -359,7 +362,9 @@ public class RelationManagerImpl implements RelationManager {
             aNode.getExceptionString());
       }
 
-      int aSideCount = getRelations(type, bNode, SIDE_B, EXCLUDE_DELETED, txData).stream().filter(a->a.getOrcsData().getVersion().getTxCurrent().equals(TxCurrent.CURRENT)).collect(Collectors.toList()).size();
+      int aSideCount = getRelations(type, bNode, SIDE_B, EXCLUDE_DELETED, txData).stream().filter(
+         a -> a.getOrcsData().getVersion().getTxCurrent().equals(TxCurrent.CURRENT)).collect(
+            Collectors.toList()).size();
       int aSideMax = validity.getMaximumRelationsAllowed(type, aNode.getArtifactType(), SIDE_A);
 
       if (aSideCount >= aSideMax) {

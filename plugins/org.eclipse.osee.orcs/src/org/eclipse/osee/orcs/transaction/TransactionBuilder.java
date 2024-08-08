@@ -92,7 +92,7 @@ public interface TransactionBuilder {
    /**
     * If parent is invalid, the artifact will be created with no parent
     */
-   ArtifactToken createArtifact(ArtifactId parent, ArtifactToken configsFolder);
+   ArtifactToken createArtifact(ArtifactId parent, ArtifactToken artifact);
 
    void deleteArtifact(ArtifactId sourceArtifact);
 
@@ -105,6 +105,7 @@ public interface TransactionBuilder {
    ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId sourceArtifact,
       Collection<AttributeTypeToken> attributesToDuplicate);
 
+   // Fix server implementation of introduce
    ArtifactToken introduceArtifact(BranchId fromBranch, ArtifactId sourceArtifact);
 
    ArtifactToken replaceWithVersion(ArtifactReadable sourceArtifact, ArtifactReadable destination);
@@ -314,5 +315,7 @@ public interface TransactionBuilder {
    public List<GammaId> getGammaIdsFailed();
 
    void deleteByAttributeIdIfExists(ArtifactId artifact, AttributeId attrId);
+
+   void createOrIntroduceArtifact(ArtifactId parent, ArtifactToken sourceArtifact);
 
 }

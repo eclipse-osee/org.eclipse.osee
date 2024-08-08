@@ -123,7 +123,6 @@ public final class TestUtil {
    private static ArtifactToken createChildArtifactToken(BranchId parentBranchId, ArtifactId parentArtifactId,
       ArtifactId childArtifactId, ArtifactTypeToken childArtifactTypeToken, String childName) {
 
-      //@formatter:off
       Artifact parentArtifact;
 
       try {
@@ -133,26 +132,14 @@ public final class TestUtil {
       }
 
       var childArtifact =
-         ArtifactId.SENTINEL.equals( childArtifactId )
-            ? ArtifactTypeManager.addArtifact
-                 (
-                   childArtifactTypeToken,
-                   BranchToken.valueOf( parentBranchId ),
-                   childName
-                 )
-            : ArtifactTypeManager.addArtifact
-                 (
-                   childArtifactTypeToken,
-                   BranchToken.valueOf( parentBranchId ),
-                   childName,
-                   childArtifactId
-                 );
+         ArtifactId.SENTINEL.equals(childArtifactId) ? ArtifactTypeManager.addArtifact(childArtifactTypeToken,
+            BranchToken.valueOf(parentBranchId), childName) : ArtifactTypeManager.addArtifact(childArtifactTypeToken,
+               BranchToken.valueOf(parentBranchId), childName, childArtifactId);
 
       parentArtifact.addChild(RelationSorter.USER_DEFINED, childArtifact);
-      parentArtifact.persist("TestUti::createChildArtifactToken");
+      parentArtifact.persist("TestUtil::createChildArtifactToken");
 
       return childArtifact;
-      //@formatter:on
    }
 
    /**

@@ -12,7 +12,6 @@
  **********************************************************************/
 package org.eclipse.osee.ats.ide.integration.tests.orcs.rest.applic;
 
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Component;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -95,10 +94,10 @@ public class TransactionEndpointTest {
     */
    @Test
    public void testGetArtifactHistory() {
-      ArtifactId sawProductDecomp = ArtifactQuery.getArtifactFromTypeAndName(Component,
-         CoreArtifactTokens.SAW_PRODUCT_DECOMP, DemoBranches.SAW_PL);
+      ArtifactId productDecomp =
+         ArtifactQuery.getArtifactFromId(CoreArtifactTokens.ProductDecomposition, DemoBranches.SAW_PL);
 
-      List<ChangeItem> changeItems = transactionEndpoint.getArtifactHistory(sawProductDecomp, DemoBranches.SAW_PL);
+      List<ChangeItem> changeItems = transactionEndpoint.getArtifactHistory(productDecomp, DemoBranches.SAW_PL);
 
       assertFalse(changeItems.isEmpty());
 

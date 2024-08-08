@@ -41,7 +41,6 @@ public final class MarkdownHtmlColumnUITest {
       swReq.addAttribute(CoreAttributeTypes.MarkdownContent, "## My first heading\n");
       swReq.persist(getClass().getSimpleName());
       String html = col.getHtml(swReq);
-      System.err.println(html);
       Assert.assertTrue(html.contains(">My first heading</h2>"));
    }
 

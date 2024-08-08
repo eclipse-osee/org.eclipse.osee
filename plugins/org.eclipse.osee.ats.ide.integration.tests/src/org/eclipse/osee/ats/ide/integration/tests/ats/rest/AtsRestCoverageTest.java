@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
+import org.junit.Assert;
 
 /**
  * Calculate and report test coverage of ATS REST calls. <br/>
@@ -37,6 +38,7 @@ public class AtsRestCoverageTest {
 
    RestData data = new RestData();
    XResultData rd = new XResultData();
+   private final float MINIMUM_PERCENT_COVERAGE = Float.valueOf(41);
 
    @org.junit.Test
    public void test() {
@@ -44,10 +46,12 @@ public class AtsRestCoverageTest {
       getExpectedPathsFromServices();
       setSkips();
       matchup();
-      report();
+      float percentCoverage = report();
+      Assert.assertTrue("ATS REST Coverage should not drop below " + MINIMUM_PERCENT_COVERAGE + ". Add REST tests!\n",
+         percentCoverage > MINIMUM_PERCENT_COVERAGE);
    }
 
-   private void report() {
+   private float report() {
       int match = 0;
       for (ActualUrl actUrl : data.actuals) {
          if (actUrl.isMatch()) {
@@ -86,6 +90,7 @@ public class AtsRestCoverageTest {
       rd2.merge(rd);
 
       XResultDataUI.reportAndOpen(rd2, "ATS REST Test Coverage", "atsCoverage.html");
+      return percent;
    }
 
    private void setSkips() {

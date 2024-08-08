@@ -91,8 +91,7 @@ public class TestDocumentBuilder {
        * @param relationTypeToken the {@link RelationTypeToken} for the relationship type.
        */
 
-      RelationshipSourceTargetTypeRecord(Artifact sourceArtifact, Artifact targetArtifact,
-         RelationTypeToken relationTypeToken) {
+      RelationshipSourceTargetTypeRecord(Artifact sourceArtifact, Artifact targetArtifact, RelationTypeToken relationTypeToken) {
          this.sourceArtifact = Objects.requireNonNull(sourceArtifact);
          this.targetArtifact = Objects.requireNonNull(targetArtifact);
          this.relationTypeToken = Objects.requireNonNull(relationTypeToken);
@@ -393,37 +392,23 @@ public class TestDocumentBuilder {
     * artifacts by {@link ArtifactInfoRecord} identifiers. The {@link ArtifactToken} for the obtained or created
     * artifact will be added to the map with the identifier of this {@link ArtifactInfoRecord} as the key.
     */
+   private ArtifactToken getOrCreateArtifactToken(ArtifactSpecificationRecordWrapper builderRecordWrapper,
+      RelationEndpoint relationEndpoint, BranchId parentBranchId,
+      Map<Integer, ArtifactId> hierarchicalParentArtifactIdMap,
+      Map<ArtifactId, ArtifactSpecificationRecordWrapper> builderRecordWrapperByArtifactIdMap) {
 
-   //@formatter:off
-   private ArtifactToken
-      getOrCreateArtifactToken
-        (
-           ArtifactSpecificationRecordWrapper                  builderRecordWrapper,
-           RelationEndpoint                      relationEndpoint,
-           BranchId                              parentBranchId,
-           Map<Integer, ArtifactId>              hierarchicalParentArtifactIdMap,
-           Map<ArtifactId, ArtifactSpecificationRecordWrapper> builderRecordWrapperByArtifactIdMap
-        )
-   {
-      var artifactToken =
-         TestUtil.getOrCreateChildArtifactTokenByName
-            (
-               relationEndpoint,
-               parentBranchId,
-               hierarchicalParentArtifactIdMap.get( builderRecordWrapper.getHierarchicalParentIdentifier() ),
-               builderRecordWrapper.getArtifactId(),
-               builderRecordWrapper.getArtifactTypeToken(),
-               builderRecordWrapper.getName()
-            );
+      ArtifactToken artifactToken = TestUtil.getOrCreateChildArtifactTokenByName(relationEndpoint, parentBranchId,
+         hierarchicalParentArtifactIdMap.get(builderRecordWrapper.getHierarchicalParentIdentifier()),
+         builderRecordWrapper.getArtifactId(), builderRecordWrapper.getArtifactTypeToken(),
+         builderRecordWrapper.getName());
 
-      hierarchicalParentArtifactIdMap.put( builderRecordWrapper.getIdentifier(), artifactToken );
-      builderRecordWrapperByArtifactIdMap.put( artifactToken, builderRecordWrapper );
+      hierarchicalParentArtifactIdMap.put(builderRecordWrapper.getIdentifier(), artifactToken);
+      builderRecordWrapperByArtifactIdMap.put(artifactToken, builderRecordWrapper);
 
       builderRecordWrapper.setArtifactToken(artifactToken);
 
       return artifactToken;
    }
-   //@formatter:on
 
    /**
     * Gets or creates the test attribute for the test artifact. The test artifact must be obtained before calling this

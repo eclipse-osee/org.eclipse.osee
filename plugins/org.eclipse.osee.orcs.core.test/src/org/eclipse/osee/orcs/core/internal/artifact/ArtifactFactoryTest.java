@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataFactory;
@@ -37,6 +38,7 @@ import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.relation.RelationFactory;
+import org.eclipse.osee.orcs.search.QueryFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -72,6 +74,8 @@ public class ArtifactFactoryTest {
    @Mock private Artifact source;
    @Mock private Artifact destination;
    @Mock private OrcsSession session;
+   @Mock private OrcsApi orcsApi;
+   @Mock private QueryFactory queryFactory;
 
    @Mock private ArtifactData otherArtifactData;
    // @formatter:on
@@ -84,7 +88,7 @@ public class ArtifactFactoryTest {
    public void init() {
       MockitoAnnotations.initMocks(this);
 
-      artifactFactory = new ArtifactFactory(dataFactory, attributeFactory);
+      artifactFactory = new ArtifactFactory(dataFactory, attributeFactory, orcsApi);
 
       guid = GUID.create();
 
@@ -93,6 +97,8 @@ public class ArtifactFactoryTest {
       types.add(CoreAttributeTypes.City);
       types.add(CoreAttributeTypes.Annotation);
 
+      when(orcsApi.getQueryFactory()).thenReturn(queryFactory);
+      when(queryFactory.artIdExists(any())).thenReturn(false);
       when(artifactData.getGuid()).thenReturn(guid);
       when(artifactData.getType()).thenReturn(Artifact);
       when(artifactData.getVersion()).thenReturn(artifactVersion);

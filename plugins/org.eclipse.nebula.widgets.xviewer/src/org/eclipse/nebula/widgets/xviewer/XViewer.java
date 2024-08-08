@@ -54,8 +54,6 @@ import org.eclipse.nebula.widgets.xviewer.customize.FilterDataUI;
 import org.eclipse.nebula.widgets.xviewer.customize.SearchDataUI;
 import org.eclipse.nebula.widgets.xviewer.edit.XViewerEditAdapter;
 import org.eclipse.nebula.widgets.xviewer.util.Pair;
-import org.eclipse.nebula.widgets.xviewer.util.internal.ElapsedTime;
-import org.eclipse.nebula.widgets.xviewer.util.internal.ElapsedTime.Units;
 import org.eclipse.nebula.widgets.xviewer.util.internal.HtmlUtil;
 import org.eclipse.nebula.widgets.xviewer.util.internal.XViewerLib;
 import org.eclipse.nebula.widgets.xviewer.util.internal.XViewerLog;
@@ -360,9 +358,7 @@ public class XViewer extends TreeViewer {
 
                @Override
                protected IStatus run(IProgressMonitor monitor) {
-                  ElapsedTime time = new ElapsedTime("performPreCompute");
                   performPreCompute(inputObjects);
-                  time.end(Units.SEC);
                   return Status.OK_STATUS;
                }
 
@@ -373,9 +369,7 @@ public class XViewer extends TreeViewer {
                @Override
                public void done(IJobChangeEvent event) {
                   Display.getDefault().asyncExec(() -> {
-                     ElapsedTime time = new ElapsedTime("performLoad");
                      performLoad(input, xViewer);
-                     time.end(Units.SEC);
                   });
                }
             });

@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
+import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -62,11 +63,13 @@ public class ArtifactTypeManager {
       return addArtifact(artifactType, branch, name, null, null);
    }
 
-   public static Artifact addArtifact(ArtifactTypeToken artifactType, BranchToken branch, String name, Long artifactId) {
+   public static Artifact addArtifact(ArtifactTypeToken artifactType, BranchToken branch, String name,
+      Long artifactId) {
       return addArtifact(artifactType, branch, name, null, artifactId);
    }
 
-   public static Artifact addArtifact(ArtifactTypeToken artifactType, BranchToken branch, String name, ArtifactId artifact) {
+   public static Artifact addArtifact(ArtifactTypeToken artifactType, BranchToken branch, String name,
+      ArtifactId artifact) {
       return addArtifact(artifactType, branch, name, null, artifact.getId());
    }
 
@@ -74,7 +77,8 @@ public class ArtifactTypeManager {
       return getFactory(artifactType).makeNewArtifact(branch, artifactType, name, guid);
    }
 
-   public static Artifact addArtifact(ArtifactTypeToken artifactType, BranchToken branch, String name, String guid, Long uuid) {
+   public static Artifact addArtifact(ArtifactTypeToken artifactType, BranchToken branch, String name, String guid,
+      Long uuid) {
       return getFactory(artifactType).makeNewArtifact(branch, artifactType, name, guid, uuid);
    }
 
@@ -83,11 +87,14 @@ public class ArtifactTypeManager {
          artifactToken.getId());
    }
 
-   private static final String COUNT_ARTIFACT_OCCURRENCE =
-      "select count(1) from (select DISTINCT(art_id) FROM osee_artifact where art_type_id = ?) t1";
+   public static boolean artIdExists(ArtifactId artId) {
+      int artifactCount = ConnectionHandler.getJdbcClient().fetch(0, OseeSql.ARTIFACT_ID_COUNT.getSql(), artId);
+      return artifactCount > 0;
+   }
 
    public static void purgeArtifactType(ArtifactTypeId artifactType) {
-      int artifactCount = ConnectionHandler.getJdbcClient().fetch(0, COUNT_ARTIFACT_OCCURRENCE, artifactType);
+      int artifactCount =
+         ConnectionHandler.getJdbcClient().fetch(0, OseeSql.ARTIFACT_TYPE_COUNT.getSql(), artifactType);
 
       if (artifactCount != 0) {
          throw new OseeArgumentException(
@@ -103,7 +110,8 @@ public class ArtifactTypeManager {
     * @param purgeArtifactTypes types to be converted and purged
     * @param newArtifactType new type to convert any existing artifacts of the old type
     */
-   public static void purgeArtifactTypesWithCheck(Collection<? extends ArtifactTypeId> purgeArtifactTypes, ArtifactTypeToken newArtifactType) {
+   public static void purgeArtifactTypesWithCheck(Collection<? extends ArtifactTypeId> purgeArtifactTypes,
+      ArtifactTypeToken newArtifactType) {
       for (ArtifactTypeId purgeArtifactType : purgeArtifactTypes) {
          // find all artifact of this type on all branches and make a unique list for type change (since it is not by branch)
          Set<Artifact> artifacts = new LinkedHashSet<>();

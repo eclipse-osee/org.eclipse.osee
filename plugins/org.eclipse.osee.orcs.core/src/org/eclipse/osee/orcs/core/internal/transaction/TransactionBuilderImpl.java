@@ -154,6 +154,17 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
+   public void createOrIntroduceArtifact(ArtifactId parent, ArtifactToken sourceArtifact) {
+      if (orcsApi.getQueryFactory().artIdExists(sourceArtifact)) {
+         Collection<BranchId> branches = orcsApi.getQueryFactory().getBranches(sourceArtifact);
+         // Fix server implementation of introduce
+         introduceArtifact(branches.iterator().next(), sourceArtifact);
+      } else {
+         createArtifact(parent, sourceArtifact);
+      }
+   }
+
+   @Override
    public ArtifactToken createArtifact(ArtifactId parent, ArtifactTypeToken artifactType, String name) {
       validateBuilder();
       ArtifactToken child = createArtifact(artifactType, name);

@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.orcs.search;
 
+import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -36,5 +37,9 @@ public interface QueryFactory {
    TupleQuery tupleQuery();
 
    ApplicabilityQuery applicabilityQuery();
+
+   boolean artIdExists(ArtifactId artifactId);
+
+   Collection<BranchId> getBranches(ArtifactId sourceArtifact);
 
 }

@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
@@ -316,6 +317,10 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
 
    public BlamEditor getEditor() {
       return editor;
+   }
+
+   protected void logException(Exception ex) {
+      log(Lib.exceptionToString(ex));
    }
 
 }

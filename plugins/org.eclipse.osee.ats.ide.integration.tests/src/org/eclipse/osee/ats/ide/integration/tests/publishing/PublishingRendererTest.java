@@ -144,8 +144,7 @@ public class PublishingRendererTest {
          this.testIsRegex = false;
       }
 
-      Check(ErrorTitleSupplier errorTitleSupplier, CheckStringSupplier checkStringSupplier, CheckFilter checkFilter,
-         boolean testIsRegex) {
+      Check(ErrorTitleSupplier errorTitleSupplier, CheckStringSupplier checkStringSupplier, CheckFilter checkFilter, boolean testIsRegex) {
          this(errorTitleSupplier, checkStringSupplier, checkFilter);
          this.testIsRegex = testIsRegex;
       }
@@ -661,8 +660,9 @@ public class PublishingRendererTest {
    //@formatter:on
 
    //@formatter:off
-   private static MapList<Integer,ArtifactSpecificationRecord> artifactSpecifications =
-      MapList.ofEntries
+   private MapList<Integer,ArtifactSpecificationRecord> getArtifactSpecifications() {
+      long artId = Lib.generateArtifactIdAsInt();
+      return MapList.ofEntries
          (
             /*
              * Artifacts for the test branch.
@@ -817,7 +817,7 @@ public class PublishingRendererTest {
                               //CoreArtifactTypes.HeadingMsWord,                                                  /* Artifact Type                          (ArtifactTypeToken)                     */
                               ArtifactToken.valueOf
                                      (
-                                        232323L,
+                                        artId,
                                         "Hardware",
                                         CoreArtifactTypes.HeadingMsWord
                                      ),
@@ -953,7 +953,7 @@ public class PublishingRendererTest {
                                              CoreAttributeTypes.WordTemplateContent,                            /* Test Attribute Type                    (AttributeTypeGeneric<?>)               */
                                              List.of                                                            /* Test Attribute Values                  (List<Object>)                          */
                                                 (
-                                                   beginWordString + "Notes are great for small topics, and the link" + beginLinkInsert + "232323" + endLinkInsert + " too." + endWordString
+                                                   beginWordString + "Notes are great for small topics, and the link" + beginLinkInsert + artId + endLinkInsert + " too." + endWordString
                                                 ),
                                              AttributeSetters.stringAttributeSetter                             /* AttributeSetter                        (BiConsumer<Attribute<?>,Object>)       */
                                            )
@@ -1116,6 +1116,7 @@ public class PublishingRendererTest {
                      )
                )
          );
+   }
 
 
    private void basicDocumentCheck(String filePath, String document, String pubString, boolean merge,
@@ -1344,7 +1345,7 @@ public class PublishingRendererTest {
       testDocumentBuilder.buildDocument
          (
             PublishingRendererTest.branchSpecifications,
-            PublishingRendererTest.artifactSpecifications
+            getArtifactSpecifications()
          );
       //@formatter:on
 
@@ -1387,23 +1388,7 @@ public class PublishingRendererTest {
                )
             .get();
 
-      PublishingRendererTest.builderRecordMap =
-         PublishingRendererTest
-            .artifactSpecifications
-            .stream( PublishingRendererTest.baselineBranchSpecificationRecordIdentifier )
-            .map( ArtifactSpecificationRecord::getIdentifier )
-            .collect
-               (
-                  Collectors.toMap
-                     (
-                        Function.identity(),
-                        ( builderRecordIdentifier ) -> testDocumentBuilder.getArtifact
-                                                     (
-                                                        PublishingRendererTest.baselineBranchSpecificationRecordIdentifier,
-                                                        builderRecordIdentifier
-                                                     )
-                     )
-               );
+      PublishingRendererTest.builderRecordMap = getBuildRecordMap(testDocumentBuilder);
 
       // Establish default option settings
       //@formatter:off
@@ -1429,6 +1414,13 @@ public class PublishingRendererTest {
          ArtifactQuery.getArtifactFromId(this.documentFolderArtifactId, this.baselineBranch);
 
       this.setUpDocChanges(documentFolderArtifact);
+   }
+
+   private Map<Integer, Optional<Artifact>> getBuildRecordMap(TestDocumentBuilder testDocumentBuilder) {
+      return getArtifactSpecifications().stream(PublishingRendererTest.baselineBranchSpecificationRecordIdentifier).map(
+         ArtifactSpecificationRecord::getIdentifier).collect(
+            Collectors.toMap(Function.identity(), (builderRecordIdentifier) -> testDocumentBuilder.getArtifact(
+               PublishingRendererTest.baselineBranchSpecificationRecordIdentifier, builderRecordIdentifier)));
    }
 
    // Add changes to the Document
