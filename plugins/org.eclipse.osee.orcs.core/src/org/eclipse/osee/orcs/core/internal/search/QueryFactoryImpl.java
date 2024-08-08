@@ -97,7 +97,7 @@ public class QueryFactoryImpl implements QueryFactory {
    @Override
    public boolean artIdExists(ArtifactId artifactId) {
       int artifactCount =
-         orcsApi.getJdbcService().getClient().fetch(0, OseeSql.ARTIFACT_ID_COUNT.getSql(), artifactId.getIdString());
+         orcsApi.getJdbcService().getClient().fetch(0, OseeSql.ARTIFACT_ID_COUNT.getSql(), artifactId.getId());
       return artifactCount > 0;
    }
 
