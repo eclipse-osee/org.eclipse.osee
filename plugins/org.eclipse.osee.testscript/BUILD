@@ -17,7 +17,7 @@ java_library(
 	       "//org.eclipse.osee.orcs.rest.model","//org.eclipse.osee.console.admin","//org.eclipse.osee.define.rest.api",
 	       "//org.eclipse.osee.define","//org.eclipse.osee.ats.api","//org.eclipse.osee.ats.core",
                "//org.eclipse.osee.framework.core.server","//org.eclipse.osee.template.engine", 
-               "//org.eclipse.osee.ats.rest","//org.eclipse.osee.accessor"],
+               "//org.eclipse.osee.ats.rest","//org.eclipse.osee.accessor","//org.eclipse.nebula.widgets.xviewer"],
        visibility = ["//visibility:public"]
 
 )
@@ -52,7 +52,6 @@ java_library(
                 "@maven//:io_swagger_core_v3_swagger_jaxrs2",
     		"@maven//:org_apache_cxf_cxf_rt_frontend_jaxrs",
     		"@maven//:io_swagger_core_v3_swagger_models",		
-		"@ext_jars//:nebula",
 		"@ext_jars//:apache_commons_lang",
                 ],
 )

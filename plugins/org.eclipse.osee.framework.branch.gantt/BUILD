@@ -14,7 +14,9 @@ java_library(
 	 	"//org.eclipse.osee.framework.core.model",
 	 	"//org.eclipse.osee.framework.skynet.core",
 		"//org.eclipse.osee.framework.ui.swt",
-	        "//org.eclipse.osee.accessor"
+	        "//org.eclipse.osee.accessor",
+	        "//org.eclipse.nebula.widgets.xviewer",
+	        "//org.eclipse.nebula.widgets.xviewer.core" 
 		],
 	visibility = ["//visibility:public"]
 )
@@ -54,11 +56,13 @@ java_library(
                 "@maven//:org_apache_activemq_activemq_all",
 		"@maven//:org_mockito_mockito_core",
 	        "@maven//:org_hamcrest_hamcrest_core",
+	        "@eclipse_equinox_registry//jar",
+	        "@eclipse_core_runtime//jar",
 		"@ext_jars//:eclipse_ui",
 		"@ext_jars//:swt",
 		"@ext_jars//:jface",
 	        "@eclipse_equinox_common//jar",
+		"@ext_jars//:nebula",
 		"@ext_jars//:apache_commons_lang",
-		"@ext_jars//:nebula"
 	],
 )

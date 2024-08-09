@@ -82,6 +82,5 @@ java_library(
 		"@eclipse_draw2d//jar",
 		"@eclipse_gef//jar",
 		"@ext_jars//:apache_commons_lang",
-		"@ext_jars//:nebula"
 	],
 )

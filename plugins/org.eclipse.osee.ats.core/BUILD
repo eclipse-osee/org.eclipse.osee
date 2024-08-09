@@ -12,6 +12,8 @@ java_library(
 	srcs = glob(["**/*.java"]),
         deps = ["java_deps","//org.eclipse.osee.framework.core.packages", "//org.eclipse.osee.jdbc",
                 "//org.eclipse.osee.orcs", "//org.eclipse.osee.jaxrs",
+                "//org.eclipse.nebula.widgets.xviewer",
+		"//org.eclipse.nebula.widgets.xviewer.core",
                 "//org.eclipse.osee.ats.api", "//org.eclipse.osee.framework.core.model",
                 "//org.eclipse.osee.orcs.core","//org.eclipse.osee.framework.core.server", "//org.eclipse.osee.orcs.rest.model"],
         visibility = ["//visibility:public"]
@@ -57,7 +59,6 @@ java_library(
                 "@maven//:org_antlr_antlr_runtime",
                 "@maven//:com_google_guava_guava",
 		"@maven//:org_apache_cxf_cxf_rt_frontend_jaxrs",
-		"@ext_jars//:nebula",
 		"@ext_jars//:apache_commons_lang",
 		"@eclipse_osgi//jar",
 		"@eclipse_osgi_services//jar"

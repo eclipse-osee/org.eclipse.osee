@@ -21,7 +21,9 @@ java_library(
 		"//org.eclipse.osee.orcs.core",
 	        "//org.eclipse.osee.console.admin",
 		"//org.eclipse.osee.activity.api",
-		"//org.eclipse.osee.framework.server.ide.api"
+		"//org.eclipse.osee.framework.server.ide.api",
+		"//org.eclipse.nebula.widgets.xviewer",
+		"//org.eclipse.nebula.widgets.xviewer.core"
 	],
 	visibility = ["//visibility:public"]
 )
@@ -56,6 +58,5 @@ java_library(
       "@eclipse_osgi_services//jar",
       "@eclipse_core_jobs//jar",
       "@eclipse_equinox_common//jar",
-		"@ext_jars//:nebula",
                 ],
 )

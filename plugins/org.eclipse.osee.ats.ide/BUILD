@@ -46,7 +46,10 @@ java_library(
 	 	"//org.eclipse.osee.framework.ui.ws",
 	 	"//org.eclipse.osee.framework.skynet.core",
 	 	"//org.eclipse.osee.account.rest.client",
-	 	"//org.eclipse.osee.framework.core.packages"
+	 	"//org.eclipse.osee.framework.core.packages",
+	 	"//org.eclipse.nebula.widgets.xviewer",
+		"//org.eclipse.nebula.widgets.xviewer.core"
+	 	
 	],
 	visibility = ["//visibility:public"]
 )
@@ -81,7 +84,6 @@ java_library(
 		"@maven//:org_mockito_mockito_core",
 		"@maven//:org_hamcrest_hamcrest_core",
                 "@ext_jars//:junit",
-		"@ext_jars//:nebula",
 		"@ext_jars//:apache_commons_lang",
 		"@ext_jars//:eclipse_ui",
 		"@ext_jars//:swt",
@@ -99,7 +101,6 @@ java_library(
 		"@eclipse_zest_core//jar",
 		"@eclipse_zest_layouts//jar",
 		"@eclipse_draw2d//jar",
-		"@ext_jars//:nebula_xviewer"
 	],
 )
 

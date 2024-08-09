@@ -89,6 +89,5 @@ java_library(
 			"@eclipse_gef//jar",
 			"@eclipse_emf_transaction//jar",
 			"@ext_jars//:apache_commons_lang",
-			"@ext_jars//:nebula"
 	],
 )

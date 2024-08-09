@@ -40,7 +40,9 @@ java_library(
 	 	"//org.eclipse.osee.ats.api",
 	 	"//org.eclipse.osee.framework.ui.ws",
 	 	"//org.eclipse.osee.ote.define",
-	 	"//org.eclipse.osee.framework.ui.skynet"
+	 	"//org.eclipse.osee.framework.ui.skynet",
+	 	"//org.eclipse.nebula.widgets.xviewer",
+	 	"//org.eclipse.nebula.widgets.xviewer.core"
 	],
 	visibility = ["//visibility:public"]
 )
@@ -92,7 +94,6 @@ java_library(
 		"@ext_jars//:swt",
 		"@ext_jars//:jface",
 		"@ext_jars//:apache_commons_lang",
-		"@ext_jars//:nebula",
 		"@eclipse_core_commands//jar", 
 		"@eclipse_core_jobs//jar", 
 		"@eclipse_core_resources//jar",
@@ -102,6 +103,5 @@ java_library(
 		"@eclipse_equinox_registry//jar",
 		"@eclipse_osgi//jar",
 		"@eclipse_osgi_services//jar", 
-		"@ext_jars//:nebula_xviewer"
                 ],
 )

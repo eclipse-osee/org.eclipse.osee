@@ -3,7 +3,7 @@ load("//:osgi.bzl", "osgi_jar_converter")
 
 java_test(
 	name = "AtsIdeIntegrationTestSuite",
-	srcs = glob(["**/*.java"]),
+	srcs = glob(["src/**/*.java"]),
 	resources = ["all_files"],
 	deps = ["java_deps",
 	 	"//org.eclipse.osee.framework.core.model",
@@ -48,7 +48,10 @@ java_test(
 	 	"//org.eclipse.osee.framework.ui.ws",
 	 	"//org.eclipse.osee.framework.skynet.core",
 	 	"//org.eclipse.osee.account.rest.client",
-	 	"//org.eclipse.osee.framework.core.packages"
+	 	"//org.eclipse.osee.framework.core.packages",
+	       	"//org.eclipse.nebula.widgets.xviewer",
+		"//org.eclipse.nebula.widgets.xviewer.core"
+	 	
 	],
 	visibility = ["//visibility:public"]
 )
@@ -83,7 +86,6 @@ java_library(
                 "@maven//:org_apache_activemq_activemq_all",
 		"@maven//:org_mockito_mockito_core",
 		"@maven//:org_hamcrest_hamcrest_core",
-		"@ext_jars//:nebula",
 		"@ext_jars//:apache_commons_lang",
 		"@ext_jars//:eclipse_ui",
 		"@ext_jars//:swt",
@@ -94,7 +96,6 @@ java_library(
 		"@eclipse_core_jobs//jar",
 		"@eclipse_core_resources//jar",
 		"@eclipse_osgi//jar",
-		"@ext_jars//:nebula_xviewer"
 	],
 )
 

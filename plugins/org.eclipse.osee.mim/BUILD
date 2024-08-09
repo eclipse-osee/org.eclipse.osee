@@ -53,7 +53,6 @@ java_library(
     		"@maven//:org_apache_cxf_cxf_rt_frontend_jaxrs",
     		"@maven//:io_swagger_core_v3_swagger_models",
 		"@maven//:com_google_protobuf_protobuf_java",
-		"@ext_jars//:nebula",
 		"@ext_jars//:apache_commons_lang",
                 ],
 )

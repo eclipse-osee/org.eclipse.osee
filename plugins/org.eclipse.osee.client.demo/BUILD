@@ -86,7 +86,6 @@ java_library(
 		"@maven//:org_hamcrest_hamcrest_core",
 		"@eclipse_equinox_common//jar",
 		"@eclipse_core_filesystem//jar",
-		"@ext_jars//:nebula",
 		"@ext_jars//:apache_commons_lang",
 		"@ext_jars//:eclipse_ui",
 		"@ext_jars//:swt",

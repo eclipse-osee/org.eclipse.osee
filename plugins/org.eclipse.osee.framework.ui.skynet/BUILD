@@ -38,7 +38,9 @@ java_library(
 		"//org.eclipse.osee.framework.skynet.core",
 		"//org.eclipse.osee.framework.ui.plugin",
 		"//org.eclipse.osee.ats.api",
-		"//org.eclipse.osee.framework.ui.ws"
+		"//org.eclipse.osee.framework.ui.ws",
+		"//org.eclipse.nebula.widgets.xviewer",
+		"//org.eclipse.nebula.widgets.xviewer.core"
 		],
 	visibility = ["//visibility:public"]
 )
@@ -100,7 +102,5 @@ java_library(
 			"@ext_jars//:swt",
 			"@ext_jars//:jface",
 			"@ext_jars//:apache_commons_lang",
-			"@ext_jars//:nebula",
-			"@ext_jars//:nebula_xviewer"
 	],
 )

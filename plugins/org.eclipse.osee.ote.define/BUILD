@@ -74,6 +74,5 @@ java_library(
 		"@ext_jars//:swt",
 		"@ext_jars//:jface",
 		"@ext_jars//:apache_commons_lang",
-		"@ext_jars//:nebula"
                 ],
 )

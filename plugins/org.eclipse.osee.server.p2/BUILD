@@ -56,7 +56,9 @@ filegroup(
 	    "//org.eclipse.osee.orcs:osgi_jar",
 	    "//org.eclipse.osee.testscript:osgi_jar",
             "//org.eclipse.osee.template.engine:osgi_jar",
-            "//org.eclipse.osee.vcast:osgi_jar"
+            "//org.eclipse.osee.vcast:osgi_jar",
+            "//org.eclipse.nebula.widgets.xviewer:osgi_jar",
+            "//org.eclipse.nebula.widgets.xviewer.core:osgi_jar"
            ],
 visibility = ["//visibility:public"]   
 )
@@ -168,7 +170,6 @@ filegroup(
 	    "@maven//:com_google_protobuf_protobuf_java",
 	    "@ext_jars//:emf",
 	    "@ext_jars//:apache_commons_lang",
-            "@ext_jars//:nebula",
 	    "@ext_jars//:rmf",
 	    "@ext_jars//:jgit",
 	    "@ext_jars//:swt",

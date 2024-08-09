@@ -1,7 +1,10 @@
 java_test(
      name = "AllAtsCoreTestSuite",
      srcs = glob(["**/*.java"]),
-     deps = ["java_deps","//org.eclipse.osee.ats.api","//org.eclipse.osee.ats.core","//org.eclipse.osee.framework.core.packages"],
+     deps = ["java_deps","//org.eclipse.osee.ats.api","//org.eclipse.osee.ats.core","//org.eclipse.osee.framework.core.packages",
+             "//org.eclipse.nebula.widgets.xviewer",
+             "//org.eclipse.nebula.widgets.xviewer.core"
+             ],
 )
 
 java_library(
@@ -21,7 +24,6 @@ java_library(
                 "@maven//:com_google_guava_guava",
 	        "@maven//:org_apache_cxf_cxf_rt_frontend_jaxrs",
 		"@maven//:org_mockito_mockito_core",
-		"@ext_jars//:nebula",
 		"@ext_jars//:apache_commons_lang",
 		"@ext_jars//:junit"
                 ],

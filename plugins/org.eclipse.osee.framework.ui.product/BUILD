@@ -74,6 +74,5 @@ java_library(
                         "@ext_jars//:graphiti",
 			"@eclipse_equinox_common//jar",
 			"@ext_jars//:apache_commons_lang",
-			"@ext_jars//:nebula"
 	],
 )
