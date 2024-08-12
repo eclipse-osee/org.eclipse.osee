@@ -13,10 +13,9 @@
 
 package org.eclipse.osee.orcs.rest.model;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import java.util.Map;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -29,6 +28,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
@@ -44,6 +44,9 @@ import org.eclipse.osee.framework.core.util.ArtifactSearchOptions;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResponse;
 import org.eclipse.osee.orcs.search.ArtifactTable;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
  * @author Ryan D. Brooks
@@ -211,6 +214,21 @@ public interface ArtifactEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    Response purgeArtifact(@PathParam("branch") BranchId branch, @PathParam("artifact") ArtifactId artifact);
 
+   /**
+    * Deletes attributes of a specified attribute type from all artifacts on branch of a specified artifact type. 
+    * The attributes to be deleted are determined based on the artifact type defined in the code. The endpoint 
+    * allows specifying the artifact and/or artifact type to delete attribute data from.
+    * 
+    * @param branch        The branch ID from which to delete attributes.
+    * @param artifact      The artifact ID to specify the artifact type from which to delete attributes. 
+    *                      If not provided, defaults to -1.
+    * @param artifactType  The artifact type token/id to specify the type of artifact from which to delete attributes.
+    *                      If not provided, defaults to -1.
+    * @param attributeType The attribute type token specifying the type of attribute to be deleted. 
+    *                      If not provided, defaults to -1.
+    * 
+    * @return A {@link TransactionToken} indicating the transaction's success or failure.
+    */
    @DELETE
    @Path("attributesOfType")
    @Produces(MediaType.APPLICATION_JSON)

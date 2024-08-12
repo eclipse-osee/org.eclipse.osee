@@ -20,11 +20,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.core.Response;
+
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.eclipse.osee.define.operations.api.DefineOperations;
 import org.eclipse.osee.define.operations.markdown.MarkdownConverter;
@@ -631,6 +633,51 @@ public class PublishingEndpointImpl implements PublishingEndpoint {
          thread.setName(origThreadName);
       }
    }
+   
+   @Override
+   public String cleanAllMarkdownArtifactsForBranch(BranchId branchId) {
+	   
+	   try {
+		  PublishingPermissions.verify();
+	      //@formatter:off
+	      return
+	         this.defineOperations
+	            .getPublisherOperations()
+	            .getPublishingOperations()
+	            .cleanAllMarkdownArtifactsForBranch(branchId);
+	      //@formatter:on
+	   } catch (UserNotAuthorizedForPublishingException e) {
+	      throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
+	   } catch (IllegalArgumentException iae) {
+	      throw new BadRequestException(iae.getMessage(), Response.status(Response.Status.BAD_REQUEST).build(), iae);
+	   } catch (Exception e) {
+	      throw new ServerErrorException(e.getMessage(), Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(),
+	         e);
+	   }
+   }
+   
+   @Override
+   public String removeMarkdownBoldSymbolsFromAllMarkdownArtifactsForBranch(BranchId branchId) {
+	   
+	   try {
+	      PublishingPermissions.verify();
+	      //@formatter:off
+	      return
+	         this.defineOperations
+	            .getPublisherOperations()
+	            .getPublishingOperations()
+	            .removeMarkdownBoldSymbolsFromAllMarkdownArtifactsForBranch(branchId);
+	      //@formatter:on
+	   } catch (UserNotAuthorizedForPublishingException e) {
+	      throw new NotAuthorizedException(e.getMessage(), Response.status(Response.Status.UNAUTHORIZED).build(), e);
+	   } catch (IllegalArgumentException iae) {
+	      throw new BadRequestException(iae.getMessage(), Response.status(Response.Status.BAD_REQUEST).build(), iae);
+	   } catch (Exception e) {
+	      throw new ServerErrorException(e.getMessage(), Response.status(Response.Status.INTERNAL_SERVER_ERROR).build(),
+	         e);
+	   }
+   }
+   
 }
 
 /* EOF */

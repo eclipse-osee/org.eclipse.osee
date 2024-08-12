@@ -15,6 +15,7 @@ package org.eclipse.osee.define.operations.api.publisher.publishing;
 
 import java.util.List;
 import java.util.Set;
+
 import org.apache.cxf.jaxrs.ext.multipart.Attachment;
 import org.eclipse.osee.define.rest.api.publisher.publishing.LinkHandlerResult;
 import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingRequestData;
@@ -151,4 +152,24 @@ public interface PublishingOperations {
     * @return HTML {@link Attachment}.
     */
    public Attachment publishMarkdownAsHtml(PublishingRequestData publishMarkdownAsHtmlRequestData);
+   
+   /**
+    * Cleans all Markdown artifacts for the specified branch by removing special characters from
+    * both the content and names of the artifacts. Special characters are replaced with appropriate
+    * alternatives or removed entirely. Admin role is required.
+    *
+    * @param branchId the ID of the branch to process
+    * @return a log of the processing results, including details about processed and cleaned artifacts
+    */
+   public String cleanAllMarkdownArtifactsForBranch(BranchId branchId);
+   
+   /**
+    * Removes Markdown bold symbols from all Markdown artifacts for the specified branch.
+    * This method processes both the content and names of the artifacts to remove Markdown bold
+    * symbols and then logs the results. Admin role is required.
+    *
+    * @param branchId the ID of the branch to process
+    * @return a log of the processing results, including details about processed and cleaned artifacts
+    */
+   public String removeMarkdownBoldSymbolsFromAllMarkdownArtifactsForBranch(BranchId branchId);
 }
