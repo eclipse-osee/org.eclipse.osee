@@ -12,6 +12,12 @@
  **********************************************************************/
 package org.eclipse.osee.define.operations.markdown;
 
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+
+import org.eclipse.osee.framework.core.util.OseeInf;
+
 import com.vladsch.flexmark.ext.autolink.AutolinkExtension;
 import com.vladsch.flexmark.ext.gfm.tasklist.TaskListExtension;
 import com.vladsch.flexmark.ext.tables.TablesExtension;
@@ -20,10 +26,6 @@ import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.data.MutableDataSet;
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import org.eclipse.osee.framework.core.util.OseeInf;
 
 /**
  * @author Jaden W. Puckett
@@ -66,7 +68,7 @@ public class MarkdownConverter {
       Parser parser = Parser.builder(this.options).build();
       HtmlRenderer renderer = HtmlRenderer.builder(this.options).build();
       Node document = parser.parse(markdownContent);
-      return "<html><head>" + getCssStyles() + "</head><body>\n" + renderer.render(document) + "</body></html>";
+      return "<html><head><meta charset=\"UTF-8\">" + getCssStyles() + "</head><body>\n" + renderer.render(document) + "</body></html>";
    }
 
    private String getCssStyles() {
