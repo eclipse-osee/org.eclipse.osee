@@ -41,6 +41,7 @@ public class OseeDb {
       ARTIFACT_TABLE.createIndex("OSEE_ART__ART_ID_IDX", true, ARTIFACT_ART_ID);
       ARTIFACT_TABLE.createIndex("OSEE_ART__GUID_IDX", true, ARTIFACT_GUID);
       ARTIFACT_TABLE.createIndex("OSEE_ART__ART_TYPE_ID_IDX", true, ARTIFACT_ART_TYPE_ID);
+      ARTIFACT_TABLE.setUniqueKeyConstraint("OSEE_ART__ART_ID_UNIQUE", "ART_ID");
    }
 
    public static final SqlTable ATTRIBUTE_TABLE = new SqlTable("osee_attribute", "att", ObjectType.ATTRIBUTE);

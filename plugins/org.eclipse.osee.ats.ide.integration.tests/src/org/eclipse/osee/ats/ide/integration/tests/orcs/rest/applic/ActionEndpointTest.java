@@ -21,11 +21,13 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Set;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status.Family;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -52,6 +54,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperation;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
+import org.eclipse.osee.orcs.rest.model.transaction.CreateArtifact;
 import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderData;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -124,6 +127,11 @@ public class ActionEndpointTest {
       // Original Created Transaction Content to purge
       try {
          purge(tx);
+         Set<Long> artIds = new HashSet<>();
+         for (CreateArtifact cArt : txData.getCreateArtifacts()) {
+            artIds.add(Long.valueOf(cArt.getId()));
+         }
+         purgeArts(artIds);
       } catch (Exception ex) {
          fail("Error purging transactions: " + ex);
       }
@@ -164,6 +172,17 @@ public class ActionEndpointTest {
          }
       } catch (Exception ex) {
          throw new OseeCoreException("Failed to Purge the Action after import: " + ex);
+      }
+   }
+
+   /**
+    * Cleanup osee_artifact so there is no constraint error when import back in. This can be replaced by
+    * purgeTxsAndBackingData when available
+    */
+   private void purgeArts(Set<Long> artIds) {
+      AtsApi atsApi = AtsApiService.get();
+      for (Long artId : artIds) {
+         atsApi.getJdbcService().getClient().runPreparedUpdate("delete from osee_artifact where art_id = ?", artId);
       }
    }
 

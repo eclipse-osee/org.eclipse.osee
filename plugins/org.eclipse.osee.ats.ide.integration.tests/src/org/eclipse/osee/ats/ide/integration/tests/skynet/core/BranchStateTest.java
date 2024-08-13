@@ -99,7 +99,7 @@ public class BranchStateTest {
       BranchId workingBranch = null;
       try {
          workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
-         assertEquals(BranchState.MODIFIED, BranchManager.getState(workingBranch));
+         assertEquals(BranchState.CREATED, BranchManager.getState(workingBranch));
          assertTrue(BranchManager.isEditable(workingBranch));
       } finally {
          if (workingBranch != null) {
@@ -114,7 +114,7 @@ public class BranchStateTest {
       BranchToken workingBranch = null;
       try {
          workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
-         assertEquals(BranchState.MODIFIED, BranchManager.getState(workingBranch));
+         assertEquals(BranchState.CREATED, BranchManager.getState(workingBranch));
          assertTrue(BranchManager.isEditable(workingBranch));
 
          Artifact change = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, workingBranch,
@@ -141,7 +141,7 @@ public class BranchStateTest {
          OseeEventManager.getPreferences().setPendRunning(true);
 
          workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
-         assertEquals(BranchState.MODIFIED, BranchManager.getState(workingBranch));
+         assertEquals(BranchState.CREATED, BranchManager.getState(workingBranch));
          assertTrue(BranchManager.isEditable(workingBranch));
 
          branchEventListenerAsync.reset();
@@ -172,7 +172,7 @@ public class BranchStateTest {
       boolean branchPurged = false;
       try {
          workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
-         assertEquals(BranchState.MODIFIED, BranchManager.getState(workingBranch));
+         assertEquals(BranchState.CREATED, BranchManager.getState(workingBranch));
          assertTrue(BranchManager.isEditable(workingBranch));
 
          Branch fullBranch = BranchManager.getBranch(workingBranch);
@@ -197,7 +197,7 @@ public class BranchStateTest {
       Artifact change = null;
       try {
          workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
-         assertEquals(BranchState.MODIFIED, BranchManager.getState(workingBranch));
+         assertEquals(BranchState.CREATED, BranchManager.getState(workingBranch));
          assertTrue(BranchManager.isEditable(workingBranch));
 
          change = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirementMsWord, workingBranch,
@@ -250,7 +250,7 @@ public class BranchStateTest {
          UpdateBranchOperation operation = new UpdateBranchOperation(workingBranch, resolverOperation);
          Asserts.assertOperation(operation, IStatus.OK);
 
-         Assert.assertEquals(BranchState.REBASELINED, BranchManager.getState(workingBranch));
+         Assert.assertEquals(BranchState.DELETED, BranchManager.getState(workingBranch));
          Assert.assertEquals(Artifact.SENTINEL, BranchManager.getAssociatedArtifact(workingBranch));
 
          BranchToken newWorkingBranch = operation.getNewBranch();
@@ -387,7 +387,7 @@ public class BranchStateTest {
          // Check that we have a merge branch
          mergeBranch = BranchManager.getMergeBranch(workingBranch, destinationBranch);
          assertTrue("MergeBranch was not editable", BranchManager.isEditable(mergeBranch));
-         assertEquals("Merge Branch should be in Modified State", BranchState.MODIFIED,
+         assertEquals("Merge Branch should be in Created State", BranchState.CREATED,
             BranchManager.getState(mergeBranch));
 
          // Run FinishBranchUpdate and check
