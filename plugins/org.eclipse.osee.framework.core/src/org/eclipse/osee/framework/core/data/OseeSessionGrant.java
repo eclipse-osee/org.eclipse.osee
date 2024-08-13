@@ -36,7 +36,6 @@ public class OseeSessionGrant {
 
    private Properties sqlProperties;
    private Properties dbConnectionProperties;
-   private String useOracleHints;
 
    public OseeSessionGrant() {
       super();
@@ -166,13 +165,4 @@ public class OseeSessionGrant {
    public String getDbUrl() {
       return dbUrl;
    }
-
-   public void setUseOracleHints(String useOracleHints) {
-      this.useOracleHints = useOracleHints;
-   }
-
-   public String getUseOracleHints() {
-      return useOracleHints;
-   }
-
 }

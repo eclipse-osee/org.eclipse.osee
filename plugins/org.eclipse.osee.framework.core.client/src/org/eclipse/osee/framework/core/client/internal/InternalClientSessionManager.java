@@ -123,7 +123,6 @@ public class InternalClientSessionManager {
                oseeSessionGrant.setAuthenticationProtocol(credential.getAuthenticationProtocol());
                oseeSessionGrant.setSessionId("-1");
                oseeSessionGrant.setUserToken(SystemUser.OseeSystem);
-               oseeSessionGrant.setUseOracleHints(credential.getUseOracleHints());
             } else {
                oseeSessionGrant = getSessionEndpoint().createIdeClientSession(credential);
             }
@@ -138,7 +137,6 @@ public class InternalClientSessionManager {
             oseeSession.setClientPort(String.valueOf(HttpServer.getDefaultServicePort()));
             oseeSession.setClientVersion(OseeCodeVersion.getVersion());
             oseeSession.setAuthenticationProtocol(oseeSessionGrant.getAuthenticationProtocol());
-            oseeSession.setUseOracleHints(String.valueOf(oseeSessionGrant.getUseOracleHints()));
          } catch (Exception ex) {
             OseeLog.reportStatus(new BaseStatus(STATUS_ID, Level.SEVERE, ex));
             OseeCoreException.wrapAndThrow(ex);

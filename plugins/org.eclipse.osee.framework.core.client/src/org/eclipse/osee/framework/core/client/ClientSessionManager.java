@@ -86,11 +86,6 @@ public class ClientSessionManager {
       return getSessionGrant().isDbIsProduction();
    }
 
-   public static boolean useOracleHints() {
-      return Strings.isValid(getSessionGrant().getUseOracleHints()) ? Boolean.valueOf(
-         getSessionGrant().getUseOracleHints()) : false;
-   }
-
    public static Properties getSqlProperties() {
       return getSessionGrant().getSqlProperties();
    }

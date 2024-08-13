@@ -59,10 +59,6 @@ public final class ServiceUtil {
       return getService(OseeClient.class);
    }
 
-   public static boolean useOracleHints() {
-      return ClientSessionManager.useOracleHints();
-   }
-
    public static String getSql(OseeSql sqlEnum) {
       Properties properties = ClientSessionManager.getSqlProperties();
       String sql = properties.getProperty(sqlEnum.toString());

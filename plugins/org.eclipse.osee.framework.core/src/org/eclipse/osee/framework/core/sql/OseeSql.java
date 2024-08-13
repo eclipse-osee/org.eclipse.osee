@@ -139,19 +139,6 @@ public enum OseeSql {
       return sqlProperties;
    }
 
-   public static boolean useOracleHints(Properties properties) {
-      boolean useOracleHints = false;
-      String useOracleHintsStr = (String) properties.get("useOracleHints");
-      if (org.eclipse.osee.framework.jdk.core.util.Strings.isValid(useOracleHintsStr)) {
-         try {
-            useOracleHints = Boolean.valueOf(useOracleHintsStr);
-         } catch (Exception ex) {
-            // do nothing
-         }
-      }
-      return useOracleHints;
-   }
-
    public static class Strings {
       private static final String HintsOrdered = "/*+ ordered */";
 
