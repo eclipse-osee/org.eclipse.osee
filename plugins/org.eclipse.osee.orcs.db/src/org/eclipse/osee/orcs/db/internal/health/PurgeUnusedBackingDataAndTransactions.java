@@ -13,12 +13,32 @@
 
 package org.eclipse.osee.orcs.db.internal.health;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.function.BiConsumer;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+import org.eclipse.osee.framework.core.data.OseeClient;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.jdbc.OseePreparedStatement;
+import org.eclipse.osee.jdbc.SqlTable;
+import org.eclipse.osee.orcs.OseeDb;
 
 /**
  * Purge artifact, attribute, and relation versions that are not addressed or nonexistent and purge empty transactions.
@@ -31,13 +51,9 @@ public class PurgeUnusedBackingDataAndTransactions {
    private static final String OBSOLETE_TAGS =
       "select gamma_id from osee_search_tags tag where not exists (select 1 from osee_attribute att where tag.gamma_id = att.gamma_id) %s";
 
-   private static final String GAMMAS_CHECKED_NOT_ADDRESSED =
-      "insert into osee_validate_gamma_id(gamma_id) select gamma_id from (select gamma_id, %s rn from %s where gamma_id not in (select gamma_id from osee_validate_gamma_id)) t2 where rn between 0 and 1000";
-   private static final String GAMMAS_CHECKED_INVALID_ART_REFERENCES =
-      "insert into osee_validate_gamma_id(gamma_id) select gamma_id from (select gamma_id, art_id, %s rn from (select distinct gamma_id, %s art_id from %s where gamma_id not in (select gamma_id from osee_validate_gamma_id)) t1 ) t2 where rn between 0 and 1000";
-
    private static final String NOT_ADDRESSED_GAMMAS =
-      "with art as (select gamma_id from (select gamma_id, %s rn from %s where gamma_id not in (select gamma_id from osee_validate_gamma_id)) t2 where rn between 0 and 1000) " + "select gamma_id from art t1 where not exists (select 1 from osee_txs txs1 where t1.gamma_id = txs1.gamma_id union all select 1 from osee_txs_archived txs2 where t1.gamma_id = txs2.gamma_id)";
+      "select gamma_id from %s art where not exists (select gamma_id from osee_txs txs where txs.gamma_id = art.gamma_id) " + //
+         "and not exists (select gamma_id from osee_txs_archived txs where txs.gamma_id = art.gamma_id) fetch first 1000 rows only";
 
    private static final String EMPTY_TRANSACTIONS =
       "select branch_id, transaction_id from osee_tx_details txd where transaction_id <> 1 and not exists (select 1 from osee_txs txs1 where txs1.branch_id = txd.branch_id and txs1.transaction_id = txd.transaction_id) and not exists (select 1 from osee_txs_archived txs2 where txs2.branch_id = txd.branch_id and txs2.transaction_id = txd.transaction_id) and not exists (select 1 from osee_branch br where br.parent_branch_id = txd.branch_id and br.parent_transaction_id = txd.transaction_id)";
@@ -57,7 +73,7 @@ public class PurgeUnusedBackingDataAndTransactions {
       "DELETE FROM osee_tx_details WHERE branch_id = ? and transaction_id = ?";
 
    private static final String GET_INVALID_ART_REFERENCES =
-      "with gammas_to_check(gamma_id, art_id) as (select gamma_id, art_id from (select gamma_id, art_id, %s rn from (select distinct gamma_id, %s art_id from %s where gamma_id not in (select gamma_id from osee_validate_gamma_id) ) t1 ) t2 where rn between 0 and 1000) " + //
+      "with gammas_to_check(gamma_id, art_id) as (select gamma_id, art_id from (select gamma_id, art_id, %s rn from (select distinct gamma_id, %s art_id from %s where gamma_id not in (select gamma_id from osee_validate_gamma_id) ) t1 ) t2 where rn between 0 and 10000) " + //
          "select * from gammas_to_check gtc where not exists (select 1 from osee_artifact art where art.art_id = gtc.art_id)";
 
    private static final String GET_INVALID_ART_REFERENCES_ACL =
@@ -67,55 +83,75 @@ public class PurgeUnusedBackingDataAndTransactions {
 
    private final JdbcClient jdbcClient;
 
+   List<String> insertStatements = new ArrayList<>();
+   List<String> uriResourcesToDelete = new ArrayList<>();
+
    public PurgeUnusedBackingDataAndTransactions(JdbcClient jdbcClient) {
       this.jdbcClient = jdbcClient;
    }
 
-   private int purgeNotAddressedGammas(JdbcConnection connection, String tableName) {
-      String selectSql = String.format(NOT_ADDRESSED_GAMMAS, jdbcClient.getDbType().getRowNum(), tableName);
-      String gammasCheckSql =
-         String.format(GAMMAS_CHECKED_NOT_ADDRESSED, jdbcClient.getDbType().getRowNum(), tableName);
-      return purgeGammas(connection, selectSql, tableName, gammasCheckSql);
+   private int purgeNotAddressedGammas(JdbcConnection connection, SqlTable tableName) {
+      String selectSql = String.format(NOT_ADDRESSED_GAMMAS, tableName);
+      return purgeGammas(connection, selectSql, tableName);
    }
 
-   private int purgeAddressedButNonexistentGammas(JdbcConnection connection, String tableName) {
-      return purgeData(connection, String.format(NONEXISTENT_GAMMAS, tableName),
-         String.format(DELETE_GAMMAS_BY_BRANCH, tableName), this::addBranchGamma, Strings.EMPTY_STRING);
+   private int purgeGammasByList(JdbcConnection connection, SqlTable table, List<Long> gammasToDelete) {
+      String purgeSQL = String.format(DELETE_GAMMAS, table);
+      String insertSelectSql = table.getSelectInsertString(" where gamma_id = ?");
+
+      List<Object[]> data = gammasToDelete.stream().map(a -> new Object[] {a}).collect(Collectors.toList());
+
+      for (Object[] gamma : data) {
+         jdbcClient.runQuery(stmt -> insertStatements.add(stmt.getString("insertString")), insertSelectSql, gamma);
+      }
+
+      jdbcClient.runBatchUpdate(purgeSQL, data);
+
+      return 0;
+   }
+
+   private int purgeAddressedButNonexistentGammas(JdbcConnection connection, SqlTable table) {
+      return purgeData(connection, String.format(NONEXISTENT_GAMMAS, table),
+         String.format(DELETE_GAMMAS_BY_BRANCH, table), this::addBranchGamma, table);
    }
 
    private int purgeEmptyTransactions(JdbcConnection connection) {
-      return purgeData(connection, EMPTY_TRANSACTIONS, DELETE_EMPTY_TRANSACTIONS, this::addTx, Strings.EMPTY_STRING);
+      return purgeData(connection, EMPTY_TRANSACTIONS, DELETE_EMPTY_TRANSACTIONS, this::addTx, OseeDb.TX_DETAILS_TABLE);
    }
 
    private int deleteObsoleteTags(JdbcConnection connection) {
       return purgeGammas(connection, String.format(OBSOLETE_TAGS, jdbcClient.getDbType().getLimitRowsReturned(1000)),
-         "osee_search_tags", Strings.EMPTY_STRING);
+         OseeDb.OSEE_SEARCH_TAGS_TABLE);
    }
 
-   private int purgeInvalidArtifactReferences(JdbcConnection connection, String table, String artColumn) {
+   private int purgeInvalidArtifactReferences(JdbcConnection connection, SqlTable table, String artColumn) {
       String selectSql =
          String.format(GET_INVALID_ART_REFERENCES, jdbcClient.getDbType().getRowNum(), artColumn, table);
-      String gammasCheckSql =
-         String.format(GAMMAS_CHECKED_INVALID_ART_REFERENCES, jdbcClient.getDbType().getRowNum(), artColumn, table);
-      return purgeGammas(connection, selectSql, table, gammasCheckSql);
+      return purgeGammas(connection, selectSql, table);
    }
 
    private int purgeInvalidArtfactReferencesAcl(JdbcConnection connection) {
-      return purgeData(connection, GET_INVALID_ART_REFERENCES_ACL, DELETE_ACL, this::addArt, Strings.EMPTY_STRING);
+      return purgeData(connection, GET_INVALID_ART_REFERENCES_ACL, DELETE_ACL, this::addArt,
+         OseeDb.OSEE_ARTIFACT_ACL_TABLE);
    }
 
-   private int purgeGammas(JdbcConnection connection, String selectSql, String table, String insertCheckedGammas) {
-      return purgeData(connection, selectSql, String.format(DELETE_GAMMAS, table), this::addGamma, insertCheckedGammas);
+   private int purgeGammas(JdbcConnection connection, String selectSql, SqlTable table) {
+      return purgeData(connection, selectSql, String.format(DELETE_GAMMAS, table), this::addGamma, table);
    }
 
    private int purgeData(JdbcConnection connection, String selectSql, String purgeSQL,
-      BiConsumer<OseePreparedStatement, JdbcStatement> consumer, String insertCheckedGammas) {
-      OseePreparedStatement purgeStmt = jdbcClient.getBatchStatement(connection, purgeSQL);
-      jdbcClient.runQueryWithMaxFetchSize(connection, stmt -> consumer.accept(purgeStmt, stmt), selectSql);
-      if (!insertCheckedGammas.isEmpty()) {
-         jdbcClient.runPreparedUpdate(insertCheckedGammas);
+      BiConsumer<OseePreparedStatement, JdbcStatement> consumer, SqlTable table) {
+
+      String insertSelectSql = table.getSelectInsertString(" where gamma_id = ?");
+      List<Object[]> data = new LinkedList<>();
+
+      jdbcClient.runQuery(stmt -> data.add(new Object[] {stmt.getLong("gamma_id")}), selectSql);
+      for (Object[] gamma : data) {
+         jdbcClient.runQuery(stmt -> insertStatements.add(stmt.getString("insertString")), insertSelectSql, gamma);
       }
-      return purgeStmt.execute();
+
+      int purgedRows = jdbcClient.runBatchUpdate(purgeSQL, data);
+      return purgedRows;
    }
 
    private void addBranchGamma(OseePreparedStatement purgeStmt, JdbcStatement stmt) {
@@ -134,19 +170,30 @@ public class PurgeUnusedBackingDataAndTransactions {
       purgeStmt.addToBatch(stmt.getLong("art_id"));
    }
 
-   public int[] purge() {
+   public int[] purgeUnused() {
+      String serverPath = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER_DATA);
+      if (serverPath == null) {
+         serverPath = System.getProperty("user.home");
+      }
+      if (serverPath.equals("null")) {
+         return null;
+      }
+      Path purgeFolder = Paths.get(serverPath + "\\purge");
+      if (Files.exists(purgeFolder)) {
+         serverPath = serverPath + "\\purge";
+      }
       int i = 0;
       int[] counts = new int[11];
       try (JdbcConnection connection = jdbcClient.getConnection()) {
-         counts[i++] = purgeNotAddressedGammas(connection, "osee_artifact");
-         counts[i++] = purgeNotAddressedGammas(connection, "osee_attribute");
-         counts[i++] = purgeNotAddressedGammas(connection, "osee_relation_link");
-         counts[i++] = purgeNotAddressedGammas(connection, "osee_relation");
-         counts[i++] = purgeInvalidArtifactReferences(connection, "osee_relation_link", "a_art_id");
-         counts[i++] = purgeInvalidArtifactReferences(connection, "osee_relation_link", "b_art_id");
-         counts[i++] = purgeInvalidArtifactReferences(connection, "osee_relation", "a_art_id");
-         counts[i++] = purgeInvalidArtifactReferences(connection, "osee_relation", "b_art_id");
-         counts[i++] = purgeInvalidArtifactReferences(connection, "osee_attribute", "art_id");
+         counts[i++] = purgeNotAddressedGammas(connection, OseeDb.ARTIFACT_TABLE);
+         counts[i++] = purgeNotAddressedGammas(connection, OseeDb.ATTRIBUTE_TABLE);
+         counts[i++] = purgeNotAddressedGammas(connection, OseeDb.RELATION_TABLE);
+         counts[i++] = purgeNotAddressedGammas(connection, OseeDb.RELATION_TABLE2);
+         counts[i++] = purgeInvalidArtifactReferences(connection, OseeDb.RELATION_TABLE, "a_art_id");
+         counts[i++] = purgeInvalidArtifactReferences(connection, OseeDb.RELATION_TABLE, "b_art_id");
+         counts[i++] = purgeInvalidArtifactReferences(connection, OseeDb.RELATION_TABLE2, "a_art_id");
+         counts[i++] = purgeInvalidArtifactReferences(connection, OseeDb.RELATION_TABLE2, "b_art_id");
+         counts[i++] = purgeInvalidArtifactReferences(connection, OseeDb.ATTRIBUTE_TABLE, "art_id");
          counts[i++] = purgeInvalidArtfactReferencesAcl(connection);
          counts[i++] = deleteObsoleteTags(connection);
          /**
@@ -156,6 +203,116 @@ public class PurgeUnusedBackingDataAndTransactions {
          //counts[i++] = purgeAddressedButNonexistentGammas(connection, "osee_txs_archived");
          //counts[i++] = purgeEmptyTransactions(connection);
       }
+      Date date = new Date();
+      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_hhmmss");
+      String fileName = serverPath + "\\insertStatements_" + dateFormat.format(date) + ".zip";
+      File file = new File(fileName);
+      try {
+         file.createNewFile();
+
+         FileOutputStream fop = new FileOutputStream(file);
+         ZipOutputStream zipOut = new ZipOutputStream(fop);
+
+         try (Writer writer = new OutputStreamWriter(zipOut)) {
+            PrintWriter textWriter = new PrintWriter(writer);
+            addFileToZip(zipOut, OseeDb.ARTIFACT_TABLE.getName(), insertStatements, textWriter);
+            addFileToZip(zipOut, OseeDb.ATTRIBUTE_TABLE.getName(), insertStatements, textWriter);
+            addFileToZip(zipOut, OseeDb.RELATION_TABLE.getName(), insertStatements, textWriter);
+            addFileToZip(zipOut, OseeDb.RELATION_TABLE2.getName(), insertStatements, textWriter);
+            addFileToZip(zipOut, OseeDb.OSEE_SEARCH_TAGS_TABLE.getName(), insertStatements, textWriter);
+            zipOut.putNextEntry(new ZipEntry("ServerResourcesToDelete.txt"));
+            for (String string : uriResourcesToDelete) {
+               textWriter.println(string);
+            }
+            textWriter.flush();
+            zipOut.closeEntry();
+         }
+         fop.flush();
+         fop.close();
+      } catch (IOException ex) {
+         throw OseeCoreException.wrap(ex);
+      }
       return counts;
+   }
+
+   public int[] purgeListOfGammas(List<Long> gammasToPurge, List<String> additionalStatements, String filePrefix) {
+      String serverPath = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER_DATA);
+      if (serverPath == null) {
+         serverPath = System.getProperty("user.home");
+      }
+      if (serverPath.equals("null")) {
+         return null;
+      }
+      Path purgeFolder = Paths.get(serverPath + "\\purge");
+      if (Files.exists(purgeFolder)) {
+         serverPath = serverPath + "\\purge";
+      }
+      int i = 0;
+      int[] counts = new int[11];
+      if (gammasToPurge.size() > 0) {
+         try (JdbcConnection connection = jdbcClient.getConnection()) {
+            counts[i++] = purgeGammasByList(connection, OseeDb.ARTIFACT_TABLE, gammasToPurge);
+            counts[i++] = purgeGammasByList(connection, OseeDb.ATTRIBUTE_TABLE, gammasToPurge);
+            counts[i++] = purgeGammasByList(connection, OseeDb.RELATION_TABLE, gammasToPurge);
+            counts[i++] = purgeGammasByList(connection, OseeDb.RELATION_TABLE2, gammasToPurge);
+            counts[i++] = purgeGammasByList(connection, OseeDb.OSEE_SEARCH_TAGS_TABLE, gammasToPurge);
+         }
+      }
+      insertStatements.addAll(additionalStatements);
+      Date date = new Date();
+      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_hhmmss");
+      String fileName = serverPath + "\\" + filePrefix + "_" + dateFormat.format(date) + ".zip";
+      File file = new File(fileName);
+      try {
+         file.createNewFile();
+         FileOutputStream fop = new FileOutputStream(file);
+         ZipOutputStream zipOut = new ZipOutputStream(fop);
+
+         try (Writer writer = new OutputStreamWriter(zipOut)) {
+            PrintWriter textWriter = new PrintWriter(writer);
+            addFileToZip(zipOut, OseeDb.ARTIFACT_TABLE.getName(), insertStatements, textWriter);
+            addFileToZip(zipOut, OseeDb.ATTRIBUTE_TABLE.getName(), insertStatements, textWriter);
+            addFileToZip(zipOut, OseeDb.RELATION_TABLE.getName(), insertStatements, textWriter);
+            addFileToZip(zipOut, OseeDb.RELATION_TABLE2.getName(), insertStatements, textWriter);
+            if (additionalStatements.size() > 0) {
+               zipOut.putNextEntry(new ZipEntry("additionalInsertStatements.sql"));
+               for (String string : additionalStatements) {
+                  textWriter.println(string);
+               }
+               textWriter.flush();
+               zipOut.closeEntry();
+            }
+
+            zipOut.putNextEntry(new ZipEntry("ServerResourcesToDelete.txt"));
+            for (String string : uriResourcesToDelete) {
+               textWriter.println(string);
+            }
+            textWriter.flush();
+            zipOut.closeEntry();
+         }
+         fop.flush();
+         fop.close();
+      } catch (IOException ex) {
+         throw OseeCoreException.wrap(ex);
+      }
+      return counts;
+   }
+
+   private void addFileToZip(ZipOutputStream zipOut, String tableName, List<String> purge, PrintWriter textWriter)
+      throws IOException {
+      zipOut.putNextEntry(new ZipEntry("insert_" + tableName + ".sql"));
+      for (String string : purge.stream().filter(a -> a.contains("INSERT INTO " + tableName + " (")).collect(
+         Collectors.toList())) {
+         if (string.contains("osee_attribute")) {
+            String uri = string.substring(string.lastIndexOf(",") + 2, string.lastIndexOf("'"));
+            if (!uri.isBlank()) {
+               uriResourcesToDelete.add(uri);
+            }
+         }
+         textWriter.println(string);
+      }
+      textWriter.flush();
+      zipOut.closeEntry();
+
    }
 }

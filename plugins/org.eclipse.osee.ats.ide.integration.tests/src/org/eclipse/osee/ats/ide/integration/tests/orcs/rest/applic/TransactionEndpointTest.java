@@ -65,9 +65,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperation;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
 import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderData;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -712,5 +714,14 @@ public class TransactionEndpointTest {
    private void purge(TransactionToken transactionId) throws Exception {
       IOperation operation = PurgeTransactionOperation.getPurgeTransactionOperation(transactionId);
       Asserts.assertOperation(operation, IStatus.OK);
+   }
+
+   @Test
+   public void testPurgeUnusedBackingData() {
+      JdbcClient client = AtsApiService.get().getJdbcService().getClient();
+      int initialRowCount = client.fetch(0, "SELECT count(1) FROM osee_attribute");
+      transactionEndpoint.purgeUnusedBackingDataAndTransactions();
+      int afterRowCount = client.fetch(0, "SELECT count(1) FROM osee_attribute");
+      Assert.assertNotEquals(initialRowCount, afterRowCount);
    }
 }

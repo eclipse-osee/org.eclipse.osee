@@ -36,7 +36,6 @@ public class SqlTable extends NamedBase {
    private final int indexLevel;
    private String insertSql;
    private String tableExtras;
-
    public SqlTable(String tableName, String aliasPrefix) {
       this(tableName, aliasPrefix, -1);
    }
@@ -202,5 +201,26 @@ public class SqlTable extends NamedBase {
       Collections.appendToBuilder(columns, ", ", strB);
       strB.append(") VALUES (");
       return strB;
+   }
+
+   public String getSelectInsertString(String whereClause) {
+      String insertSelectSql = getInsertIntoSqlWithValues(columns.toArray());
+      String firstString = "select '" + insertSelectSql.substring(0, insertSelectSql.lastIndexOf("(") + 1) + "'||";
+      String params = insertSelectSql.substring(insertSelectSql.lastIndexOf("(") + 1, insertSelectSql.lastIndexOf(")"));
+      boolean first = true;
+      for (String string : params.split(",")) {
+         if (first) {
+            first = false;
+         } else {
+            firstString = firstString + "||','||";
+         }
+         if (string.contains("'")) {
+            firstString = firstString + "''''||" + string.replace("'", "") + "||''''";
+         } else {
+            firstString = firstString + string;
+         }
+      }
+      firstString = firstString + "||');' insertString from " + getName() + whereClause;
+      return firstString;
    }
 }

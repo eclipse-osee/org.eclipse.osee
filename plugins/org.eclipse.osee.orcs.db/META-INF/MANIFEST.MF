@@ -52,3 +52,4 @@ Import-Package: com.google.common.base,
  org.eclipse.osee.orcs.data,
  org.eclipse.osee.orcs.search,
  org.osgi.framework
+Export-Package: org.eclipse.osee.orcs.db.internal.health
