@@ -255,14 +255,12 @@ public class XDynamicAttrValuesWidget extends XWidget implements WorldEditorWidg
             asFormatType = "BranchId (Long)";
             numFormat = NumberFormat.getNumberInstance();
          }
-
          String message =
             "Enter " + attrType.getName() + "  (As " + asFormatType + ")\n\nNote: String search is a whole word search.";
          if (attrType.isString()) {
             message += "\nMultiple values can be entered with a semicolon.";
          }
          EntryDialog dialog = new EntryDialog("Enter " + attrType.getName(), message);
-
          dialog.setNumberFormat(numFormat);
          if (!attrValue.getValues().isEmpty()) {
             dialog.setEntry(attrValue.getValues().iterator().next());
@@ -274,9 +272,9 @@ public class XDynamicAttrValuesWidget extends XWidget implements WorldEditorWidg
       } else if (attrType.isBoolean()) {
          asFormatType = "Boolean";
          String[] buttonLabels = new String[] {"true", "false", "Cancel"};
-         MessageDialog dialog = new MessageDialog(Displays.getActiveShell(), attrType.getName(), null,
+         MessageDialog msgDialog = new MessageDialog(Displays.getActiveShell(), attrType.getName(), null,
             attrType.getName() + "\n\nAs " + asFormatType, MessageDialog.QUESTION, 3, buttonLabels);
-         int selectedNum = dialog.open();
+         int selectedNum = msgDialog.open();
          if (selectedNum == 0) {
             setAttrValueAndUpdateLink(attrValue, attrType, "true");
          } else if (selectedNum == 1) {
@@ -288,9 +286,16 @@ public class XDynamicAttrValuesWidget extends XWidget implements WorldEditorWidg
    }
 
    private void setAttrValueAndUpdateLink(AttributeValue attrValue, AttributeTypeToken attrType, String value) {
-      attrValue.setValues(Collections.asList(value));
-      Hyperlink hyperLinkLabel = attrTypeToValuesLabel.get(attrType);
-      hyperLinkLabel.setText(value);
+      if (attrType.isString()) {
+         String[] valueSplit = value.split(";");
+         attrValue.setValues(Collections.asList(valueSplit));
+         Hyperlink hyperLinkLabel = attrTypeToValuesLabel.get(attrType);
+         hyperLinkLabel.setText(String.join(";", valueSplit));
+      } else {
+         attrValue.setValues(Collections.asList(value));
+         Hyperlink hyperLinkLabel = attrTypeToValuesLabel.get(attrType);
+         hyperLinkLabel.setText(value);
+      }
       updateLayout();
    }
 
