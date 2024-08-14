@@ -14,6 +14,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.KeyManagementException;
@@ -115,7 +117,7 @@ public class HealthUtils {
    }
 
    public static boolean isUrlReachable(String urlStr, String authId) {
-      setErrorMsg("");
+      clearErrorMsg();
       HttpURLConnection conn = null;
       try {
          URL url = new URL(urlStr);
@@ -150,7 +152,7 @@ public class HealthUtils {
    }
 
    public static String makeHttpRequestWithStringResult(String urlStr, String authId) {
-      setErrorMsg("");
+      clearErrorMsg();
       StringBuilder response = new StringBuilder();
       HttpURLConnection conn = null;
       try {
@@ -173,6 +175,12 @@ public class HealthUtils {
          conn.setConnectTimeout(5000);
          conn.setReadTimeout(5000);
 
+         int responseCode = conn.getResponseCode();
+
+         if (responseCode == 401) {
+            setErrorMsg("401 Unauthorized error. AuthId: " + authId);
+         }
+
          try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"))) {
             String responseLine;
             while ((responseLine = br.readLine()) != null) {
@@ -180,7 +188,12 @@ public class HealthUtils {
             }
          }
       } catch (IOException | NoSuchAlgorithmException | KeyManagementException ex) {
-         setErrorMsg("Exception occurred: " + ex.getMessage());
+         try (StringWriter sw = new StringWriter(); PrintWriter pw = new PrintWriter(sw);) {
+            String stackTrace = sw.toString();
+            setErrorMsg("Exception occurred: " + ex.getMessage() + "\nStackTrace:\n" + stackTrace);
+         } catch (IOException e) {
+            setErrorMsg("StringWriter exception occurred: " + ex.getMessage());
+         }
       } finally {
          if (conn != null) {
             conn.disconnect();
@@ -190,7 +203,7 @@ public class HealthUtils {
    }
 
    public static <T> T makeHttpRequest(String urlStr, String authId, Class<T> responseType, T defaultValue) {
-      setErrorMsg("");
+      clearErrorMsg();
       StringBuilder response = new StringBuilder();
       HttpURLConnection conn = null;
 
@@ -214,6 +227,12 @@ public class HealthUtils {
          conn.setConnectTimeout(5000);
          conn.setReadTimeout(5000);
 
+         int responseCode = conn.getResponseCode();
+
+         if (responseCode == 401) {
+            setErrorMsg("401 Unauthorized error. AuthId: " + authId);
+         }
+
          try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"))) {
             String responseLine;
             while ((responseLine = br.readLine()) != null) {
@@ -221,8 +240,13 @@ public class HealthUtils {
             }
          }
       } catch (IOException | NoSuchAlgorithmException | KeyManagementException ex) {
-         setErrorMsg("Exception occurred: " + ex.getMessage());
-         return defaultValue;
+         try (StringWriter sw = new StringWriter(); PrintWriter pw = new PrintWriter(sw);) {
+            String stackTrace = sw.toString();
+            setErrorMsg("Exception occurred: " + ex.getMessage() + "\nStackTrace:\n" + stackTrace);
+            return defaultValue;
+         } catch (IOException e) {
+            setErrorMsg("StringWriter exception occurred: " + ex.getMessage());
+         }
       } finally {
          if (conn != null) {
             conn.disconnect();
@@ -264,7 +288,14 @@ public class HealthUtils {
    }
 
    public static void setErrorMsg(String message) {
-      errorMsg = message;
+      if (!errorMsg.isEmpty()) {
+         errorMsg += "\n";
+      }
+      errorMsg += message;
+   }
+
+   public static void clearErrorMsg() {
+      errorMsg = "";
    }
 
    public static String getErrorMsg() {
