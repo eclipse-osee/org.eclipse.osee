@@ -41,8 +41,6 @@ public class HealthUtils {
    public static final String OSEE_HEALTH_SERVERS_KEY = "osee.health.servers";
    public static final String OSEE_HEALTH_BALANCERS_KEY = "osee.health.balancers";
    public static final String OSEE_HEALTH_CURL_SERVER = "osee.health.curl.server";
-   public static final String GREEN_DOT = "greenDot.png";
-   public static final String RED_DOT = "redDot.png";
    private static String errorMsg = ""; //clear the errorMsg before setting it in a method
 
    private HealthUtils() {
@@ -178,7 +176,7 @@ public class HealthUtils {
          int responseCode = conn.getResponseCode();
 
          if (responseCode == 401) {
-            setErrorMsg("401 Unauthorized error. AuthId: " + authId);
+            setErrorMsg("401 Unauthorized error. AuthId: " + authId + ". ");
          }
 
          try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"))) {

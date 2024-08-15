@@ -71,8 +71,7 @@ public class AuthenticationRequestFilter implements ContainerRequestFilter {
          || requestContext.getUriInfo().getRequestUri().getPath().startsWith("/osee/") //
          || requestContext.getUriInfo().getRequestUri().getPath().startsWith("/dispo/") //
          || requestContext.getUriInfo().getRequestUri().getPath().startsWith("/coverage/") //
-         || requestContext.getUriInfo().getRequestUri().getPath().startsWith("/health/") //
-         || requestContext.getUriInfo().getRequestUri().getPath().startsWith("/server/health/");
+         || requestContext.getUriInfo().getRequestUri().getPath().startsWith("/health/http/headers");
       try {
          String authHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
 
