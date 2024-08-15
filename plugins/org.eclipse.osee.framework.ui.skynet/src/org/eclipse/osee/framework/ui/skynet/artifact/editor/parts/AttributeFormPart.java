@@ -34,9 +34,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorProviders;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.IArtifactEditorProvider;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactStoredWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.ArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabelDam;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
@@ -53,6 +56,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.FontManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -60,6 +64,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.AbstractFormPart;
 import org.eclipse.ui.forms.events.ExpansionEvent;
@@ -159,6 +164,8 @@ public class AttributeFormPart extends AbstractFormPart {
          List<AttributeTypeToken> types = AttributeTypeUtil.getTypesWithData(artifact);
          addWidgetForAttributeType(types);
 
+         addOtherWidgets(composite);
+
          layoutControls(composite);
 
          XWidgetUtility.setLabelFontsBold(allXWidgets);
@@ -168,6 +175,64 @@ public class AttributeFormPart extends AbstractFormPart {
       } finally {
          composite.setVisible(true);
       }
+   }
+
+   private Composite addOtherWidgets(Composite parent) {
+
+      boolean applicable = false;
+      for (IArtifactEditorProvider widgetProvider : ArtifactEditorProviders.getXWidgetProviders()) {
+         if (widgetProvider.isApplicable(editor.getArtifactFromEditorInput())) {
+            applicable = true;
+            break;
+         }
+      }
+      if (!applicable) {
+         return null;
+      }
+
+      boolean isEditable = !editor.getEditorInput().getArtifact().isReadOnly();
+      FormToolkit toolkit = getManagedForm().getToolkit();
+      Artifact artifact = editor.getArtifactFromEditorInput();
+
+      Composite internalComposite = toolkit.createComposite(parent, SWT.WRAP);
+      GridLayout layout = new GridLayout(1, false);
+      layout.marginLeft = 20;
+      internalComposite.setLayout(layout);
+      GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+      gd.widthHint = 100;
+      gd.minimumWidth = 100;
+      internalComposite.setLayoutData(gd);
+
+      Group groupComp = new Group(internalComposite, SWT.None);
+      groupComp.setToolTipText("Other Meta-Data not stored as attribute");
+      groupComp.setText("Other");
+      GridLayout gLayout = new GridLayout(1, false);
+      layout.marginLeft = 10;
+      groupComp.setLayout(gLayout);
+      groupComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      groupComp.setFont(FontManager.getCourierNew12Bold());
+
+      List<XWidget> widgets = new ArrayList<>();
+      for (IArtifactEditorProvider widgetProvider : ArtifactEditorProviders.getXWidgetProviders()) {
+         try {
+            widgetProvider.addOtherWidgets(artifact, isEditable, editor, groupComp, widgets);
+         } catch (OseeCoreException ex) {
+            toolkit.createLabel(composite, String.format("Error creating controls for: [%s] [%s]",
+               widgetProvider.getClass().getSimpleName(), ex.getLocalizedMessage()));
+         }
+      }
+
+      allXWidgets.addAll(widgets);
+
+      for (XWidget xWidget : widgets) {
+         if (xWidget instanceof ArtifactWidget) {
+            ((ArtifactWidget) xWidget).setArtifact(artifact);
+         }
+         xWidget.addXModifiedListener(new XWidgetValidationListener());
+         decorator.addWidget(xWidget);
+      }
+
+      return internalComposite;
    }
 
    public void addWidgetForAttributeType(Collection<AttributeTypeToken> attributeTypes) {
@@ -214,7 +279,8 @@ public class AttributeFormPart extends AbstractFormPart {
       }
    }
 
-   private Composite createAttributeTypeControls(Composite parent, Artifact artifact, AttributeTypeToken attributeType, boolean isEditable, boolean isExpandable, int leftMargin) {
+   private Composite createAttributeTypeControls(Composite parent, Artifact artifact, AttributeTypeToken attributeType,
+      boolean isEditable, boolean isExpandable, int leftMargin) {
       FormToolkit toolkit = getManagedForm().getToolkit();
       Composite internalComposite = toolkit.createComposite(parent, SWT.WRAP);
 
@@ -281,7 +347,8 @@ public class AttributeFormPart extends AbstractFormPart {
       xWidget.addXModifiedListener(new XWidgetValidationListener());
    }
 
-   private Composite createAttributeTypeControlsInSection(Composite parent, AttributeTypeToken attributeType, boolean isEditable, int leftMargin) {
+   private Composite createAttributeTypeControlsInSection(Composite parent, AttributeTypeToken attributeType,
+      boolean isEditable, int leftMargin) {
       FormToolkit toolkit = getManagedForm().getToolkit();
 
       int style = ExpandableComposite.SHORT_TITLE_BAR | ExpandableComposite.TREE_NODE;

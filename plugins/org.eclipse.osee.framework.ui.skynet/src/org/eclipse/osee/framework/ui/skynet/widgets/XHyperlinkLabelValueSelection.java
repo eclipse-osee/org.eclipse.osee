@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseListener;
@@ -63,7 +62,6 @@ public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
       } else {
          comp.setLayoutData(new GridData());
       }
-      comp.setBackground(Displays.getSystemColor(SWT.COLOR_CYAN));
       if (toolkit != null) {
          toolkit.adapt(comp);
       }
@@ -212,6 +210,10 @@ public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
             toolkit.adapt(comp);
          }
       }
+   }
+
+   public Composite getComposite() {
+      return comp;
    }
 
 }

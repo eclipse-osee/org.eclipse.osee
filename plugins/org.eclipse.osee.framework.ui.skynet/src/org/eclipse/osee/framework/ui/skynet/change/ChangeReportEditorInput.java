@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.ui.skynet.change;
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.Adaptable;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -31,7 +31,7 @@ import org.eclipse.ui.IPersistableElement;
 public class ChangeReportEditorInput implements IEditorInput, IPersistableElement, Adaptable {
 
    private final ChangeUiData changeData;
-   private BranchId branch;
+   private BranchToken branch;
    private boolean transactionTabActive = false;
    private boolean notLoaded = false;
    private Integer numTransactions;
@@ -40,7 +40,7 @@ public class ChangeReportEditorInput implements IEditorInput, IPersistableElemen
       this(changeData, null);
    }
 
-   public ChangeReportEditorInput(ChangeUiData changeData, BranchId branch) {
+   public ChangeReportEditorInput(ChangeUiData changeData, BranchToken branch) {
       this.changeData = changeData;
       this.branch = branch;
    }
@@ -120,11 +120,11 @@ public class ChangeReportEditorInput implements IEditorInput, IPersistableElemen
       ChangeReportEditorInputFactory.saveState(memento, this);
    }
 
-   public BranchId getBranch() {
+   public BranchToken getBranch() {
       return branch;
    }
 
-   public void setBranch(BranchId branch) {
+   public void setBranch(BranchToken branch) {
       this.branch = branch;
    }
 

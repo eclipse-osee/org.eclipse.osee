@@ -66,8 +66,6 @@ public interface ApplicabilityQuery {
 
    String getViewTable(BranchId branch, String filter, ArtifactId view);
 
-   ArtifactId getVersionConfig(ArtifactId art, BranchId branch);
-
    List<BranchId> getAffectedBranches(Long injectDateMs, Long removalDateMs, List<ApplicabilityId> applicabilityIds,
       BranchId branch);
 

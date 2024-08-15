@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -91,11 +92,6 @@ public class FilteredTreeDialog extends MessageDialog {
       // provided for subclass implementation
    }
 
-   /**
-    * Sets the input. Convenience method.
-    *
-    * @param object the input.
-    */
    public void setInput(Object input) {
       this.input = input;
       if (treeViewer != null) {
@@ -103,11 +99,6 @@ public class FilteredTreeDialog extends MessageDialog {
       }
    }
 
-   /**
-    * Sets the initial selection. Convenience method.
-    *
-    * @param object the initial selection.
-    */
    public void setInitialSelections(Collection<? extends Object> initialSelections) {
       this.initialSelections = initialSelections;
       if (treeViewer != null) {
@@ -181,6 +172,9 @@ public class FilteredTreeDialog extends MessageDialog {
             }
          }
       });
+      if (!getSelectable().isEmpty()) {
+         treeViewer.getViewer().setInput(getSelectable());
+      }
       if (input != null) {
          treeViewer.getViewer().setInput(input);
       }
@@ -190,6 +184,10 @@ public class FilteredTreeDialog extends MessageDialog {
       updateStatusLabel();
 
       return parent;
+   }
+
+   public Collection<Object> getSelectable() {
+      return Collections.emptyList();
    }
 
    public List<TreeItem> getVisibleItems() {

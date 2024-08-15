@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.ui.skynet.branch;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,11 +24,13 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -95,6 +98,14 @@ public class ViewApplicabilityUtil {
          return applEndpoint;
       }
       return null;
+   }
+
+   public static Collection<ArtifactToken> getBranchViewTokens(BranchToken branch) {
+      Conditions.assertNotNull(branch, "BranchToken must be valid");
+      if (branch.isValid()) {
+         return getApplicabilityEndpoint(branch).getViews();
+      }
+      return Collections.emptyList();
    }
 
    public static Map<Long, String> getBranchViews(BranchId branch) {

@@ -29,6 +29,10 @@ public class ArtifactImage {
    private String imageName;
    private String baseUrl;
 
+   public ArtifactImage() {
+      // for jax-rs
+   }
+
    public ArtifactImage(ArtifactTypeToken artifactType, String imageName, String baseUrl) {
       this.artifactType = artifactType;
       this.imageName = imageName;

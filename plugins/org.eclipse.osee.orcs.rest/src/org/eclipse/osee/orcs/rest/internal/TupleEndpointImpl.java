@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.Tuple4Type;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.TupleEndpoint;

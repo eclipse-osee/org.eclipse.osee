@@ -38,7 +38,11 @@ public class AtsRestCoverageTest {
 
    RestData data = new RestData();
    XResultData rd = new XResultData();
-   private final float MINIMUM_PERCENT_COVERAGE = Float.valueOf(41);
+   /**
+    * This number should not be reduced, ask if you do not know how to create tests for new REST calls.<br/>
+    * Please increase this number as percent coverage goes up.
+    */
+   private final float MINIMUM_PERCENT_COVERAGE = Float.valueOf(43);
 
    @org.junit.Test
    public void test() {
@@ -97,13 +101,14 @@ public class AtsRestCoverageTest {
       List<ActualUrl> skips = new ArrayList<>();
       for (ActualUrl actUrl : data.actuals) {
          for (String skipStr : Arrays.asList("datastore", "session", "branch", "resources", "branches")) {
-            if (actUrl.actualUrl.contains(skipStr)) {
+            if (actUrl.actualUrl.startsWith(skipStr)) {
                skips.add(actUrl);
+               rd.logf("Skipped %s\n", actUrl);
                break;
             }
          }
       }
-      rd.logf("Skipped %s urls", skips.size());
+      rd.logf("Skipped %s urls\n", skips.size());
       data.actuals.removeAll(skips);
 
       for (ActualUrl rUrl : data.actuals) {

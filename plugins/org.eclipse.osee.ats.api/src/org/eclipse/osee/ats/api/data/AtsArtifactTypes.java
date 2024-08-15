@@ -128,6 +128,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(AllowCreateBranch, Boolean.TRUE)
       .zeroOrOne(AllowWebExport)
       .zeroOrOne(BaselineBranchId)
+      .zeroOrOne(VersionBranchView)
       .zeroOrOne(ClosureState, null)
       .zeroOrOne(EstimatedReleaseDate)
       .zeroOrOne(FullName)

@@ -15,9 +15,9 @@ package org.eclipse.osee.framework.ui.skynet.search;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -134,12 +134,12 @@ public class QuickSearchViewApplicability {
    }
 
    private boolean changeView() {
-      Map<Long, String> branchViews = ViewApplicabilityUtil.getBranchViews(quickSearch.getBranch());
+      Collection<ArtifactToken> branchViews = ViewApplicabilityUtil.getBranchViewTokens(quickSearch.getBranch());
       ViewBranchViewFilterTreeDialog dialog =
          new ViewBranchViewFilterTreeDialog("Branch View", "Branch View", branchViews);
-      Collection<String> values = new ArrayList<>();
-      values.add("<Clear View Selection>");
-      values.addAll(branchViews.values());
+      Collection<ArtifactToken> values = new ArrayList<>();
+      values.add(ArtifactToken.CLEAR_SELECTION);
+      values.addAll(branchViews);
       dialog.setInput(values);
       dialog.setMultiSelect(false);
       int result = dialog.open();

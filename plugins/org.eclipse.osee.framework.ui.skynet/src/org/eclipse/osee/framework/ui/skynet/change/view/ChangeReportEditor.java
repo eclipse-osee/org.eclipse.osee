@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -50,7 +51,7 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
    private BranchTransactionActionBarContributor branchTransactionActionBarContributor;
    private final EventRelay eventRelay;
    private BranchTransactionPage branchTransactionPage;
-   private ArtifactId viewId = ArtifactId.SENTINEL;
+   private ArtifactToken viewId = ArtifactToken.SENTINEL;
 
    public ChangeReportEditor() {
       eventRelay = new EventRelay();
@@ -156,7 +157,7 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
       return viewId;
    }
 
-   public void setViewId(ArtifactId viewId) {
+   public void setViewId(ArtifactToken viewId) {
       this.viewId = viewId;
    }
 

@@ -19,12 +19,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.branch.BranchData;
@@ -53,6 +47,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -149,7 +144,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    }
 
    @Override
-   public List<AtsCoreAttrTokColumnToken> generateAttrTypeViews() throws Exception {
+   public List<AtsCoreAttrTokColumnToken> generateAttrTypeViews() {
       Map<String, AttributeTypeToken> idToToken = new HashMap<>();
       for (AttributeTypeToken attrType : orcsApi.tokenService().getAttributeTypes()) {
          idToToken.put(attrType.getName(), attrType);
@@ -295,20 +290,13 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    }
 
    @Override
-   @POST
-   @Path("branch")
-   @Consumes(MediaType.APPLICATION_JSON)
-   @Produces(MediaType.APPLICATION_JSON)
    public BranchData createBranch(BranchData branchData) {
       AtsConfigOperations ops = new AtsConfigOperations(atsApi);
       return ops.createBranch(branchData);
    }
 
    @Override
-   @POST
-   @Path("configForDemoPl/{branch}")
-   @Produces(MediaType.APPLICATION_JSON)
-   public XResultData configForDemoPl(@PathParam("branch") BranchId branch) {
+   public XResultData configForDemoPl(BranchId branch) {
       try {
          orcsApi.getAdminOps().configForDemoPl(branch);
       } catch (Exception ex) {
@@ -317,6 +305,33 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
          return rd;
       }
       return XResultData.EMPTY_RD;
+   }
+
+   @Override
+   public ArtifactId getBranchView(ArtifactId version) {
+      IAtsVersion ver = atsApi.getVersionService().getVersionById(version, false);
+      if (ver != null) {
+         return atsApi.getBranchService().getBranchView(ver);
+      }
+      return ArtifactId.SENTINEL;
+   }
+
+   @Override
+   public Collection<ArtifactToken> getBranchViews(ArtifactId version) {
+      IAtsVersion ver = atsApi.getVersionService().getVersionById(version);
+      if (ver != null) {
+         return atsApi.getBranchService().getBranchViews(ver);
+      }
+      return Collections.emptyList();
+   }
+
+   @Override
+   public TransactionToken setBranchView(ArtifactId version, ArtifactId branchView) {
+      IAtsVersion ver = atsApi.getVersionService().getVersionById(version);
+      if (ver != null) {
+         return atsApi.getBranchService().setBranchView(ver, branchView);
+      }
+      return TransactionToken.SENTINEL;
    }
 
 }

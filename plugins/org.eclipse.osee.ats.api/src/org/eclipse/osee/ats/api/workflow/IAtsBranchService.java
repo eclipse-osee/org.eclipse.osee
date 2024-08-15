@@ -22,7 +22,9 @@ import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.commit.CommitOverrideOperations;
 import org.eclipse.osee.ats.api.commit.CommitStatus;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -206,5 +208,17 @@ public interface IAtsBranchService {
    BranchToken getWorkingBranchPend(IAtsTeamWorkflow teamWf);
 
    void internalClearCaches();
+
+   /**
+    * @return ArifactTokens that represent BranchViews from version's configured baseline branch
+    */
+   Collection<ArtifactToken> getBranchViews(IAtsVersion version);
+
+   /**
+    * @return ArifactToken that represent BranchView selected for the given version. Stored in tuple table.
+    */
+   ArtifactToken getBranchView(IAtsVersion version);
+
+   TransactionToken setBranchView(IAtsVersion version, ArtifactId branchView);
 
 }

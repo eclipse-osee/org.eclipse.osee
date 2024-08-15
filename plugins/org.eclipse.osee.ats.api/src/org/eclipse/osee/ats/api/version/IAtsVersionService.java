@@ -63,7 +63,12 @@ public interface IAtsVersionService {
 
    Collection<IAtsVersion> getVersions(IAtsTeamDefinition teamDef);
 
+   /**
+    * @return cached Version if available, else loads
+    */
    Version getVersionById(ArtifactId versionId);
+
+   Version getVersionById(ArtifactId versionId, boolean useCached);
 
    Version createVersion(String title, long id, IAtsChangeSet changes);
 
@@ -112,5 +117,7 @@ public interface IAtsVersionService {
    Version getVersionById(IAtsVersion versionId);
 
    boolean hasVersions(IAtsTeamDefinition teamDef);
+
+   IAtsVersion getVersion(ArtifactId verArt);
 
 }

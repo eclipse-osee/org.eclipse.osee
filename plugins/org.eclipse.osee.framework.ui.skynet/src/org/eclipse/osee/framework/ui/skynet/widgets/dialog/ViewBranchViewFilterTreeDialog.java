@@ -13,13 +13,13 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Collection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
@@ -35,11 +35,11 @@ import org.eclipse.swt.widgets.Control;
  * @author Megumi Telles
  */
 public class ViewBranchViewFilterTreeDialog extends FilteredTreeDialog {
-   private Long selection;
+   private ArtifactToken selection;
    XCheckBox showAll = new XCheckBox("Show All Branch Views");
-   private final Map<Long, String> branchViews;
+   private final Collection<ArtifactToken> branchViews;
 
-   public ViewBranchViewFilterTreeDialog(String title, String message, Map<Long, String> branchViews) {
+   public ViewBranchViewFilterTreeDialog(String title, String message, Collection<ArtifactToken> branchViews) {
       super(title, message, new ArrayTreeContentProvider(), new StringLabelProvider());
       this.branchViews = branchViews;
    }
@@ -57,14 +57,11 @@ public class ViewBranchViewFilterTreeDialog extends FilteredTreeDialog {
                   selection = null;
                } else {
                   Object selElement = sel.getFirstElement();
-                  for (Entry<Long, String> entry : branchViews.entrySet()) {
-                     if (entry.getValue().equals(selElement)) {
-                        selection = entry.getKey();
-                        break;
-                     }
+                  if (selElement != null) {
+                     selection = (ArtifactToken) selElement;
                   }
                   if (selection == null) {
-                     selection = Id.SENTINEL;
+                     selection = ArtifactToken.SENTINEL;
                   }
                }
                updateStatusLabel();
@@ -81,6 +78,11 @@ public class ViewBranchViewFilterTreeDialog extends FilteredTreeDialog {
    }
 
    @Override
+   public Collection<Object> getSelectable() {
+      return Collections.castAll(branchViews);
+   }
+
+   @Override
    protected Result isComplete() {
       try {
          if (selection == null) {
@@ -92,7 +94,7 @@ public class ViewBranchViewFilterTreeDialog extends FilteredTreeDialog {
       return Result.TrueResult;
    }
 
-   public Long getSelection() {
+   public ArtifactToken getSelection() {
       return selection;
    }
 

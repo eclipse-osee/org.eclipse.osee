@@ -49,8 +49,6 @@ public interface CoreTupleTypes {
       osee.add(ProductLineFamily, 11L, ArtifactId::valueOf, KeyedString);
    public static final Tuple2Type<ArtifactId, ApplicabilityId> ArtifactReferenceApplicabilityType =
       osee.add(ProductLineFamily, 13L, ArtifactId::valueOf, ApplicabilityId::valueOf);
-   public static final Tuple2Type<ArtifactId, ArtifactId> VersionConfig =
-      osee.add(ProductLineFamily, 12L, ArtifactId::valueOf, ArtifactId::valueOf);
 
    public static final Tuple2Type<ArtifactTypeJoin, ArtifactTypeToken> ArtifactTypeJoin =
       osee.add(JoinFamily, 14L, TupleTypeImpl.ArtifactTypeJoin, ArtifactType);

@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.data.ArtifactImage;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -102,7 +103,7 @@ public interface AtsConfigEndpointApi {
    @GET
    @Path("genAttrTypeViews")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<AtsCoreAttrTokColumnToken> generateAttrTypeViews() throws Exception;
+   public List<AtsCoreAttrTokColumnToken> generateAttrTypeViews();
 
    @GET
    @Path("alive")
@@ -186,5 +187,21 @@ public interface AtsConfigEndpointApi {
    @Path("configForDemoPl/{branch}")
    @Produces(MediaType.APPLICATION_JSON)
    public XResultData configForDemoPl(@PathParam("branch") BranchId branch);
+
+   @GET
+   @Path("version/{version}/branchview")
+   @Produces(MediaType.APPLICATION_JSON)
+   public ArtifactId getBranchView(@PathParam("version") ArtifactId version);
+
+   @GET
+   @Path("version/{version}/branchviews")
+   @Produces(MediaType.APPLICATION_JSON)
+   public Collection<ArtifactToken> getBranchViews(@PathParam("version") ArtifactId version);
+
+   @POST
+   @Path("version/{version}/branchview")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public TransactionToken setBranchView(@PathParam("version") ArtifactId version, ArtifactId branchView);
 
 }

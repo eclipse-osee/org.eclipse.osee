@@ -381,11 +381,13 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
       this.editor = editor;
    }
 
-   public void setInputData(final BranchToken sourceBranch, final BranchToken destBranch, final TransactionToken tranId, final MergeView mergeView, final TransactionToken commitTrans, boolean showConflicts) {
+   public void setInputData(final BranchToken sourceBranch, final BranchToken destBranch, final TransactionToken tranId,
+      final MergeView mergeView, final TransactionToken commitTrans, boolean showConflicts) {
       setInputData(sourceBranch, destBranch, tranId, mergeView, commitTrans, "", showConflicts);
    }
 
-   public void setInputData(final BranchToken sourceBranch, final BranchToken destBranch, final TransactionToken tranId, final MergeView mergeView, final TransactionToken commitTx, String loadingText, final boolean showConflicts) {
+   public void setInputData(final BranchToken sourceBranch, final BranchToken destBranch, final TransactionToken tranId,
+      final MergeView mergeView, final TransactionToken commitTx, String loadingText, final boolean showConflicts) {
       this.sourceBranch = sourceBranch;
       this.destBranch = destBranch;
       this.tranId = tranId;
@@ -642,7 +644,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
          Conflict[] conflicts = getConflicts();
          if (conflicts.length > 0) {
             Conflict firstConflict = conflicts[0];
-            BranchId sourceBranch = firstConflict.getSourceBranch();
+            BranchToken sourceBranch = firstConflict.getSourceBranch();
             if (sourceBranch != null) {
                try {
                   ChangeUiUtil.open(sourceBranch);

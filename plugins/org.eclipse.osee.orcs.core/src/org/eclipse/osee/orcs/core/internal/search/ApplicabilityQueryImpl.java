@@ -482,15 +482,6 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    }
 
    @Override
-   public ArtifactId getVersionConfig(ArtifactId art, BranchId branch) {
-      Iterable<Long> tuple2 = tupleQuery.getTuple2Raw(CoreTupleTypes.VersionConfig, branch, art);
-      if (tuple2.iterator().hasNext()) {
-         return ArtifactId.valueOf(tuple2.iterator().next());
-      }
-      return ArtifactId.SENTINEL;
-   }
-
-   @Override
    public List<BranchId> getAffectedBranches(Long injectDateMs, Long removalDateMs,
       List<ApplicabilityId> applicabilityIds, BranchId branch) {
       ArrayList<BranchId> toReturn = new ArrayList<>();

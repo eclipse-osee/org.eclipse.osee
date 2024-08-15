@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
@@ -52,9 +53,11 @@ class CheckArtifactBeforeReveal extends AbstractOperation {
          throw new OseeStateException("The artifact [%s] has been deleted.", artifact.getName());
       }
       if (toUse.isNotRootedInDefaultRoot()) {
-         throw new OseeStateException("Artifact [%s] is not rooted in the default hierarchical root",
-            artifact.getName());
+         AWorkbench.popup("Artifact Not in Default Hierarchy", String.format(
+            "Artifact [%s] is not in the Default Hierarchy tree,\nand thus can not be shown in the Artifact Explorer",
+            artifact.getName()));
+      } else {
+         artifactData.setArtifact(toUse);
       }
-      artifactData.setArtifact(toUse);
    }
 }

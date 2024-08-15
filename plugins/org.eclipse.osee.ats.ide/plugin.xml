@@ -359,14 +359,6 @@
       </factory>
    </extension>
    <extension
-         id="AtsArtifactEditorProvider"
-         name="AtsArtifactEditorProvider"
-         point="org.eclipse.osee.framework.ui.skynet.ArtifactEditorProvider">
-      <ArtifactEditorProvider
-            classname="org.eclipse.osee.ats.ide.util.widgets.AtsArtifactEditorProvider">
-      </ArtifactEditorProvider>
-   </extension>
-   <extension
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
       <Operation
             className="org.eclipse.osee.ats.ide.operation.PurgeUserBlam">

@@ -333,11 +333,6 @@ public interface ApplicabilityEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    TransactionToken setApplicabilityReference(List<ApplicabilityData> appDatas);
 
-   @GET
-   @Path("versionConfig/{version}")
-   @Produces(MediaType.APPLICATION_JSON)
-   ArtifactId getVersionConfig(@PathParam("version") ArtifactId version);
-
    /**
     * Copy missing tuples of type CoreTupleTypes.ViewApplicability from parent branch onto this branch
     */

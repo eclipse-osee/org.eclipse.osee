@@ -15,10 +15,10 @@ package org.eclipse.osee.framework.ui.skynet.change.view;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
@@ -100,10 +100,10 @@ public class ChangeReportPageViewApplicability {
       return "<form><p><b>Branch View:</b> " + viewText + "</p></form>";
    }
 
-   private BranchId getBranch() {
+   private BranchToken getBranch() {
       Conditions.assertNotNull(editor, "Change Editor");
       ChangeReportEditorInput editorInput = editor.getEditorInput();
-      BranchId branch = BranchId.SENTINEL;
+      BranchToken branch = BranchToken.SENTINEL;
       if (editorInput != null) {
          branch = editorInput.getBranch();
          if (branch == null) {
@@ -120,23 +120,23 @@ public class ChangeReportPageViewApplicability {
       }
       // bug[tw23643] resolves UI issue of not displaying transaction(s) change report on working branches
       if (branch == null) {
-         branch = BranchId.SENTINEL;
+         branch = BranchToken.SENTINEL;
       }
       return branch;
    }
 
    private boolean changeView() {
-      Map<Long, String> branchViews = ViewApplicabilityUtil.getBranchViews(getBranch());
+      Collection<ArtifactToken> branchViews = ViewApplicabilityUtil.getBranchViewTokens(getBranch());
       ViewBranchViewFilterTreeDialog dialog =
          new ViewBranchViewFilterTreeDialog("Branch View", "Branch View", branchViews);
-      Collection<String> values = new ArrayList<>();
-      values.add("<Clear View Selection>");
-      values.addAll(branchViews.values());
+      Collection<ArtifactToken> values = new ArrayList<>();
+      values.add(ArtifactToken.CLEAR_SELECTION);
+      values.addAll(branchViews);
       dialog.setInput(values);
       dialog.setMultiSelect(false);
       int result = dialog.open();
       if (result == Window.OK) {
-         editor.setViewId(ArtifactId.valueOf(dialog.getSelection()));
+         editor.setViewId(dialog.getSelection());
          return true;
       }
       return false;

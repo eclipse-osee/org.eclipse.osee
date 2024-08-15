@@ -13,7 +13,9 @@
 
 package org.eclipse.osee.framework.ui.skynet.artifact.editor;
 
+import java.util.Collection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -21,5 +23,9 @@ import org.eclipse.swt.widgets.Composite;
  */
 public interface IArtifactEditorProvider {
 
-   public void contributeToHeader(Artifact artifact, Composite composite);
+   public void addOtherWidgets(Artifact artifact, boolean isEditable, ArtifactEditor editor, Composite composite,
+      Collection<XWidget> widgets);
+
+   public boolean isApplicable(Artifact artifact);
+
 }

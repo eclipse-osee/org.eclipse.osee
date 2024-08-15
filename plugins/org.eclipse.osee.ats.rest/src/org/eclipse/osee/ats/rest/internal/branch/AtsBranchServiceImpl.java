@@ -13,20 +13,28 @@
 
 package org.eclipse.osee.ats.rest.internal.branch;
 
+import java.rmi.activation.Activator;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.branch.BranchData;
 import org.eclipse.osee.ats.api.commit.CommitConfigItem;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.core.util.AbstractAtsBranchService;
 import org.eclipse.osee.ats.rest.internal.workitem.operations.AtsBranchCommitOperation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
@@ -43,6 +51,7 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
 import org.eclipse.osee.orcs.data.TransactionReadable;
@@ -287,6 +296,44 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    public void internalClearCaches() {
       super.internalClearCaches();
       commitArtifactIdMap.clear();
+   }
+
+   @Override
+   public Collection<ArtifactToken> getBranchViews(IAtsVersion version) {
+      BranchToken baselineBranch = atsApi.getBranchService().getBranch(version);
+      if (baselineBranch.isValid()) {
+         List<ArtifactToken> branchViews = new ArrayList<>();
+         for (ArtifactReadable art : orcsApi.getQueryFactory().applicabilityQuery().getViewsForBranch(baselineBranch)) {
+            branchViews.add(ArtifactToken.valueOf(art.getId(), art.getName()));
+         }
+         return branchViews;
+      }
+      return java.util.Collections.emptyList();
+   }
+
+   @Override
+   public ArtifactToken getBranchView(IAtsVersion version) {
+      ArtifactToken branchView = ArtifactToken.SENTINEL;
+      BranchToken baselineBranch = atsApi.getBranchService().getBranch(version);
+      if (baselineBranch.isValid()) {
+         try {
+            ArtifactId branchViewArtId = atsApi.getAttributeResolver().getSoleAttributeValue(version,
+               AtsAttributeTypes.VersionBranchView, ArtifactId.SENTINEL);
+            if (branchViewArtId.isValid()) {
+               branchView = atsApi.getQueryService().getArtifact(branchViewArtId, baselineBranch);
+            }
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+      }
+      return branchView;
+   }
+
+   @Override
+   public TransactionToken setBranchView(IAtsVersion version, ArtifactId branchView) {
+      IAtsChangeSet changes = atsApi.createChangeSet("Set Branch View");
+      changes.setSoleAttributeValue(version, AtsAttributeTypes.VersionBranchView, branchView);
+      return changes.executeIfNeeded();
    }
 
 }

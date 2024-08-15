@@ -15,16 +15,20 @@ package org.eclipse.osee.ats.ide.branch.internal;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.branch.BranchData;
 import org.eclipse.osee.ats.api.commit.CommitConfigItem;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.core.util.AbstractAtsBranchService;
+import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -38,7 +42,9 @@ import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
@@ -232,6 +238,35 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    public XResultData commitWorkingBranch(IAtsTeamWorkflow teamWf, boolean commitPopup, boolean overrideStateValidation,
       BranchId destinationBranch, boolean archiveWorkingBranch, XResultData rd) {
       throw new UnsupportedOperationException("Not supported on client");
+   }
+
+   @Override
+   public Collection<ArtifactToken> getBranchViews(IAtsVersion version) {
+      return atsApi.getServerEndpoints().getConfigEndpoint().getBranchViews(version.getArtifactId());
+   }
+
+   @Override
+   public ArtifactToken getBranchView(IAtsVersion version) {
+      ArtifactToken branchView = ArtifactToken.SENTINEL;
+      BranchToken baselineBranch = atsApi.getBranchService().getBranch(version);
+      try {
+         ArtifactId versionBranchView =
+            atsApi.getServerEndpoints().getConfigEndpoint().getBranchView(version.getArtifactId());
+         if (versionBranchView.isValid()) {
+            ArtifactToken branchViewArt = ArtifactQuery.getArtifactTokenFromId(baselineBranch, versionBranchView);
+            if (branchViewArt.isValid()) {
+               branchView = branchViewArt;
+            }
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return branchView;
+   }
+
+   @Override
+   public TransactionToken setBranchView(IAtsVersion version, ArtifactId branchView) {
+      return atsApi.getServerEndpoints().getConfigEndpoint().setBranchView(version.getArtifactId(), branchView);
    }
 
 }

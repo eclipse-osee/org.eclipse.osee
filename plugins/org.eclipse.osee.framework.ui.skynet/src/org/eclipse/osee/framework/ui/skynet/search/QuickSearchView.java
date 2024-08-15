@@ -90,7 +90,7 @@ public class QuickSearchView extends GenericViewPart {
    private QuickSearchApplicabilityToken applicability;
    private ApplicabilityToken applicabilityId = ApplicabilityToken.SENTINEL;
    private ArtifactId viewId = ArtifactId.SENTINEL;
-   private BranchId branch = BranchId.SENTINEL;
+   private BranchToken branch = BranchToken.SENTINEL;
 
    @Override
    public void init(IViewSite site, IMemento memento) throws PartInitException {
@@ -211,7 +211,7 @@ public class QuickSearchView extends GenericViewPart {
             @Override
             public void handleEvent(Event event) {
                try {
-                  BranchId selectedBranch = branchSelect.getData();
+                  BranchToken selectedBranch = branchSelect.getData();
                   if (selectedBranch != null && !BranchId.SENTINEL.equals(selectedBranch)) {
                      branch = selectedBranch;
                      setViewId(ArtifactId.SENTINEL);
@@ -441,7 +441,7 @@ public class QuickSearchView extends GenericViewPart {
       }
    }
 
-   public BranchId getBranch() {
+   public BranchToken getBranch() {
       return branch;
    }
 

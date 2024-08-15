@@ -15,11 +15,11 @@ package org.eclipse.osee.framework.ui.skynet.change;
 
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.ui.IElementFactory;
@@ -52,10 +52,10 @@ public class ChangeReportEditorInputFactory implements IElementFactory {
             TransactionToken endTx = TransactionManager.getTransaction(endTxId);
             TransactionDelta txDelta = new TransactionDelta(startTx, endTx);
             toReturn = ChangeUiUtil.createInput(compareType, txDelta, false);
-            String branchUuid = memento.getString(BRANCH_ID_KEY);
-            if (Strings.isNumeric(branchUuid)) {
+            String branchId = memento.getString(BRANCH_ID_KEY);
+            if (Strings.isNumeric(branchId)) {
                try {
-                  toReturn.setBranch(BranchId.valueOf(branchUuid));
+                  toReturn.setBranch(BranchManager.getBranchToken(Long.valueOf(branchId)));
                } catch (Exception ex) {
                   // do nothing
                }

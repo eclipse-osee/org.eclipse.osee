@@ -13,12 +13,11 @@
 
 package org.eclipse.osee.framework.ui.skynet.explorer;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ViewBranchViewFilterTreeDialog;
@@ -93,7 +92,7 @@ public class ArtifactExplorerViewApplicability {
    private String getArtifactViewApplicabiltyText() {
       String viewName = Widgets.NOT_SET;
       if (explorer != null) {
-         BranchId branch = explorer.getBranch();
+         BranchToken branch = explorer.getBranch();
          if (branch.isValid()) {
             if (!ViewApplicabilityUtil.isBranchOfProductLine(branch)) {
                button.setEnabled(false);
@@ -110,13 +109,9 @@ public class ArtifactExplorerViewApplicability {
    }
 
    private boolean changeView() {
-      Map<Long, String> branchViews = ViewApplicabilityUtil.getBranchViews(explorer.getBranch());
+      Collection<ArtifactToken> branchViews = ViewApplicabilityUtil.getBranchViewTokens(explorer.getBranch());
       ViewBranchViewFilterTreeDialog dialog =
          new ViewBranchViewFilterTreeDialog("Branch View", "Branch View", branchViews);
-      Collection<String> values = new ArrayList<>();
-      values.add("<Clear View Selection>");
-      values.addAll(branchViews.values());
-      dialog.setInput(values);
       dialog.setMultiSelect(false);
       int result = dialog.open();
       if (result == Window.OK) {

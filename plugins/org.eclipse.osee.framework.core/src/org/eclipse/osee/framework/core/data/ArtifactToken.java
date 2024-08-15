@@ -36,6 +36,8 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, HasArtifa
    public static final ArtifactToken SENTINEL = valueOf(ArtifactId.SENTINEL, BranchToken.SENTINEL);
    public static final String USE_LONG_IDS_KEY = "use.long.ids";
    public static boolean USE_LONG_IDS = Boolean.valueOf(System.getProperty(USE_LONG_IDS_KEY, "false"));
+   public static final ArtifactToken CLEAR_SELECTION =
+      ArtifactToken.valueOf(ArtifactId.SENTINEL, "<Clear View Selection>");
 
    @Override
    default String getGuid() {

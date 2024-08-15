@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.branch.BranchData;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.CreateBranchData;
@@ -59,7 +60,7 @@ public class AtsBranchOperations {
       cbd.setCategories(orcsApi.getQueryFactory().branchQuery().getBranchCategories(bd.getParent()));
       Branch newBranch = orcsApi.getBranchOps().createBranch(cbd);
       bd.getResults().setIds(Arrays.asList(newBranch.getIdString()));
-      bd.setNewBranch(cbd.getNewBranch());
+      bd.setNewBranch(BranchId.valueOf(newBranch.getId()));
       return bd;
    }
 

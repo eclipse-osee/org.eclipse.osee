@@ -69,6 +69,7 @@ public class XResultData {
    private String txId = "";
    private final CountingMap<String> keyToTimeSpentMap = new CountingMap<>();
    private final Map<String, Date> keyTimeStart = new HashMap<>();
+   private Boolean result;
 
    public XResultData() {
       this(false);
@@ -489,6 +490,14 @@ public class XResultData {
       keyTimeStart.remove(key);
       System.err.println("keyTimeStart " + keyTimeStart);
       System.err.println("keyToTimeSpentMap " + keyToTimeSpentMap);
+   }
+
+   public Boolean getResult() {
+      return result == null ? false : result;
+   }
+
+   public void setResult(Boolean result) {
+      this.result = result;
    }
 
 }

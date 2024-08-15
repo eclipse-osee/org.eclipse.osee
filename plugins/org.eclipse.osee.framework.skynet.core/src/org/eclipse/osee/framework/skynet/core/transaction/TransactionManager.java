@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.RelationId;
@@ -274,12 +275,17 @@ public final class TransactionManager {
       return transactions;
    }
 
-   public static TransactionId getTransaction(BranchId branch, Attribute<Object> attr) {
+   public static TransactionToken getTransaction(BranchToken branch, Attribute<Object> attr) {
+      return getTransaction(branch, attr.getGammaId());
+   }
+
+   public static TransactionToken getTransaction(BranchToken branch, GammaId gammaId) {
       JdbcClient jdbcClient = ConnectionHandler.getJdbcClient();
-      return jdbcClient.fetchOrException(
-         () -> new TransactionDoesNotExist("A transaction from attr gamma id %d was not found.", attr.getGammaId()),
+      TransactionId txId = jdbcClient.fetchOrException(
+         () -> new TransactionDoesNotExist("A transaction from attr gamma id %d was not found.", gammaId),
          stmt -> TransactionId.valueOf(stmt.getLong("transaction_id")), TX_GET_TRANSACTION_FROM_ATTR_ID, branch.getId(),
-         attr.getGammaId());
+         gammaId);
+      return getTransaction(txId);
    }
 
    /**
@@ -464,4 +470,5 @@ public final class TransactionManager {
       }
       transaction.execute();
    }
+
 }

@@ -16,11 +16,13 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -76,7 +78,8 @@ public class ChangeReportHandler extends CommandHandler {
                if (selectedObject instanceof TransactionToken) {
                   ChangeUiUtil.open((TransactionToken) selectedObject);
                } else if (selectedObject instanceof BranchId) {
-                  ChangeUiUtil.open((BranchId) selectedObject);
+                  BranchToken selBranch = BranchManager.getBranch((BranchId) selectedObject);
+                  ChangeUiUtil.open(selBranch);
                }
             }
          } catch (Exception ex) {

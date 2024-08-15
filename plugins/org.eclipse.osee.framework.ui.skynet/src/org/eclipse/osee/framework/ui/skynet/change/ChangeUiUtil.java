@@ -40,15 +40,15 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.progress.UIJob;
 
 public final class ChangeUiUtil {
-   public static void open(BranchId branch) {
+   public static void open(BranchToken branch) {
       open(branch, false);
    }
 
-   public static void open(BranchId branch, boolean showTransactionTab) {
+   public static void open(BranchToken branch, boolean showTransactionTab) {
       open(branch, showTransactionTab, 0);
    }
 
-   public static void open(BranchId branch, boolean showTransactionTab, Integer numTransactions) {
+   public static void open(BranchToken branch, boolean showTransactionTab, Integer numTransactions) {
       Conditions.checkNotNull(branch, "Branch");
       Branch brch = BranchManager.getBranch(branch);
       if (permissionsDeniedWithDialog(brch)) {
@@ -107,7 +107,7 @@ public final class ChangeUiUtil {
       return createInput(CompareType.COMPARE_SPECIFIC_TRANSACTIONS, txDelta, loadOnOpen);
    }
 
-   private static ChangeReportEditorInput createInput(BranchId branch, boolean loadOnOpen) {
+   private static ChangeReportEditorInput createInput(BranchToken branch, boolean loadOnOpen) {
       if (BranchManager.isArchived(branch) || BranchManager.getState(branch).equals(BranchState.COMMITTED)) {
          TransactionToken startTx = BranchManager.getBaseTransaction(branch);
          TransactionToken endTx = TransactionManager.getHeadTransaction(branch);

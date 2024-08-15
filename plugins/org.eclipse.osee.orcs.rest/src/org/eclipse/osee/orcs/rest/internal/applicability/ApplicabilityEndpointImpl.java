@@ -311,11 +311,6 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public ArtifactId getVersionConfig(ArtifactId version) {
-      return applicabilityQuery.getVersionConfig(version, branch);
-   }
-
-   @Override
    public String getViewTable(String filter, ArtifactId view) {
       String pleAccess = orcsApi.getSystemProperties().getValue("ple.access");
       boolean isSingleAccess = pleAccess.isEmpty() ? false : pleAccess.equals("SINGLE") ? true : false;
@@ -777,6 +772,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
          try {
             zipOutputStream.close();
          } catch (IOException e) {
+            // do nothing
          }
       }
       return Response.ok(byteArrayOutputStream.toByteArray()).type("application/zip").header("Content-Disposition",
@@ -838,6 +834,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
          try {
             zipOutputStream.close();
          } catch (IOException e) {
+            // do nothing
          }
       }
       return Response.ok(byteArrayOutputStream.toByteArray()).type("application/zip").header("Content-Disposition",

@@ -83,6 +83,10 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
          layouts = super.getDynamicXWidgetLayoutData(artType, attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);
          layoutData.setXWidgetName(XHyperlinkWorkDefDam.class.getSimpleName());
+      } else if (attributeType.matches(AtsAttributeTypes.VersionBranchView)) {
+         layouts = super.getDynamicXWidgetLayoutData(artType, attributeType);
+         XWidgetRendererItem layoutData = layouts.get(0);
+         layoutData.setXWidgetName(XHyperlinkBranchViewSelect.class.getSimpleName());
       } else if (artRefAttributeTypes.contains(attributeType)) {
          layouts = super.getDynamicXWidgetLayoutData(artType, attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);

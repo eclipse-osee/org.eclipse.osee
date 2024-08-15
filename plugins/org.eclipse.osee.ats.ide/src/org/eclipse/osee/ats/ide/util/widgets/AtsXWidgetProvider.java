@@ -168,6 +168,7 @@ public class AtsXWidgetProvider extends BaseXWidgetProvider {
       register(XDynamicAttrValuesWidget.class);
       register(XValidateReqChangesButton.class);
       register(XSprintHyperlinkWidgetDam.class);
+      register(XHyperlinkBranchViewSelect.class);
    }
 
    @Override

@@ -22,7 +22,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    ProgramEndpointImplTest.class,
-   AtsConfigEndpointImplClientIntegrationTest.class,
+   AtsConfigEndpointImplTest.class,
    AtsActionableItemToTeamDefinitionTest.class,
    TeamResourceTest.class,
    VersionResourceTest.class,

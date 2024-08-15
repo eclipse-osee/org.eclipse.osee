@@ -79,12 +79,22 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    }
 
    @Override
+   public IAtsVersion getVersion(ArtifactId verArt) {
+      return getVersionById(verArt);
+   }
+
+   @Override
    public Version getVersionById(ArtifactId versionId) {
+      return getVersionById(versionId, true);
+   }
+
+   @Override
+   public Version getVersionById(ArtifactId versionId, boolean useCached) {
       Version version = null;
       if (versionId instanceof Version) {
          version = (Version) versionId;
       }
-      if (version == null) {
+      if (version == null && useCached) {
          version = atsApi.getConfigService().getConfigurations().getIdToVersion().get(versionId.getId());
       }
       if (version == null) {

@@ -94,7 +94,7 @@ public final class DemoArtifactToken {
    public static final IAtsActionableItemArtifactToken SAW_PL_MIM_AI = AtsActionableItemArtifactToken.valueOf(1791969526L, "SAW PL MIM");
 
    public static final IAtsVersionArtifactToken SAW_Product_Line = AtsVersionArtifactToken.valueOf(33244422L, "SAW Product Line");
-   public static final IAtsVersionArtifactToken SAW_Hardening_Branch = AtsVersionArtifactToken.valueOf(44432231L, "SAW Hardening Branch");
+   public static final IAtsVersionArtifactToken SAW_PL_Hardening_Branch = AtsVersionArtifactToken.valueOf(44432231L, "SAW PL Hardening Branch");
 
    //////////////////////////////////
    // SAW Leagacy Configuration

@@ -18,8 +18,10 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -59,7 +61,8 @@ public class BranchTransactionHandler extends CommandHandler {
                diag.setNumberFormat(NumberFormat.getInstance());
                diag.setEntry("499");
                if (diag.open() == Window.OK) {
-                  ChangeUiUtil.open((BranchId) selectedObject, true, Integer.valueOf(diag.getEntry()));
+                  BranchToken selBranch = BranchManager.getBranch((BranchId) selectedObject);
+                  ChangeUiUtil.open(selBranch, true, Integer.valueOf(diag.getEntry()));
                }
             }
          } catch (Exception ex) {

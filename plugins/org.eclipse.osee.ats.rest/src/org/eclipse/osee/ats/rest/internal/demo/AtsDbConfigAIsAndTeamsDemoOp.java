@@ -230,7 +230,7 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
          .andWorkDef(AtsWorkDefinitionTokens.WorkDef_Team_Default) //
          .andVersion(DemoArtifactToken.SAW_Product_Line, ReleasedOption.UnReleased, DemoBranches.SAW_PL,
             NextRelease.Next) //
-         .andVersion(DemoArtifactToken.SAW_Hardening_Branch, ReleasedOption.UnReleased,
+         .andVersion(DemoArtifactToken.SAW_PL_Hardening_Branch, ReleasedOption.UnReleased,
             DemoBranches.SAW_PL_Hardening_Branch, NextRelease.Next) //
          .andWorkPackages("SAW PL Work Packages", "Top Work Package A", "Top Work Package B") //
          .andRelatedPeerWorkflowDefinition(AtsWorkDefinitionTokens.WorkDef_Review_PeerToPeer_Demo);

@@ -240,6 +240,7 @@ public interface AtsAttributeTypes {
    AttributeTypeString ValidateChangesRanBy = ats.createString(5308411842127935014L, "ats.LBA Validate Changes Ran By", TEXT_PLAIN, "", Read, UserUserId);
    AttributeTypeDate ValidateChangesRanDate = ats.createDate(5754481976934354664L, "ats.LBA Validate Changes Ran Date", TEXT_PLAIN, "", Read);
    AttributeTypeBoolean VerificationCodeInspection = ats.createBoolean(3454966334779726518L, "ats.Verification Code Inspection", TEXT_PLAIN, "", Edit);
+   AttributeTypeArtifactId VersionBranchView = ats.createArtifactId(823579282833235L, "ats.Version Branch View", TEXT_PLAIN, "Selected PLE Branch View (Config)", Config);
    AttributeTypeBoolean VersionLocked = ats.createBoolean(1152921504606847156L, "ats.Version Locked", TEXT_PLAIN, "True if version artifact is locked.", Config);
    AttributeTypeArtifactId VersionReference = ats.createArtifactId(3865529427237311670L, "ats.Version Reference", TEXT_PLAIN, "", Config);
    AttributeTypeString WcafeImpact = ats.createString(238328342584350L, "ats.WCAFE Impact", TEXT_PLAIN, "Warning, Caution, Advisory, Fault or Exceedence Impact", Read);
