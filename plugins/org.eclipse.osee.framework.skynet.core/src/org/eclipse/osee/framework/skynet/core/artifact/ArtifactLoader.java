@@ -63,11 +63,13 @@ public final class ArtifactLoader {
    private static final OrcsTokenService tokenService =
       OsgiUtil.getService(ArtifactLoader.class, OrcsTokenService.class);
 
-   public static List<Artifact> loadArtifacts(Collection<? extends ArtifactId> artIds, BranchId branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted) {
+   public static List<Artifact> loadArtifacts(Collection<? extends ArtifactId> artIds, BranchId branch,
+      LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted) {
       return loadArtifacts(artIds, branch, loadLevel, reload, allowDeleted, TransactionId.SENTINEL);
    }
 
-   public static List<Artifact> loadArtifacts(Collection<? extends ArtifactId> artIds, BranchId branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, TransactionId transactionId) {
+   public static List<Artifact> loadArtifacts(Collection<? extends ArtifactId> artIds, BranchId branch,
+      LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, TransactionId transactionId) {
       List<ArtifactToken> toLoad = new LinkedList<>();
       for (ArtifactId artId : new HashSet<>(artIds)) {
          toLoad.add(ArtifactToken.valueOf(artId, BranchManager.getBranchToken(branch)));
@@ -84,7 +86,8 @@ public final class ArtifactLoader {
 
    }
 
-   private static void loadActiveArtifacts(List<ArtifactToken> toLoad, Set<Artifact> artifacts, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, BranchId branch, boolean isArchived) {
+   private static void loadActiveArtifacts(List<ArtifactToken> toLoad, Set<Artifact> artifacts, LoadLevel loadLevel,
+      LoadType reload, DeletionFlag allowDeleted, BranchId branch, boolean isArchived) {
       if (!toLoad.isEmpty()) {
          int numRequested = toLoad.size();
          Iterator<ArtifactToken> iterator = toLoad.iterator();
@@ -135,7 +138,8 @@ public final class ArtifactLoader {
       }
    }
 
-   private static boolean determineIfIShouldLoad(Set<Artifact> artifacts, DeletionFlag allowDeleted, ConcurrentHashMap<ArtifactToken, ReentrantLock> locks, ArtifactToken artifact, Artifact active) {
+   private static boolean determineIfIShouldLoad(Set<Artifact> artifacts, DeletionFlag allowDeleted,
+      ConcurrentHashMap<ArtifactToken, ReentrantLock> locks, ArtifactToken artifact, Artifact active) {
       boolean doNotLoad = false;
       //not in the cache
       if (active == null) {
@@ -177,7 +181,9 @@ public final class ArtifactLoader {
       }
    }
 
-   private static void loadArtifactsFromQueryId(Collection<Artifact> loadedItems, Long queryId, LoadLevel loadLevel, ISearchConfirmer confirmer, int fetchSize, LoadType reload, TransactionId transactionId, DeletionFlag allowDeleted, BranchToken branch, boolean isArchived) {
+   private static void loadArtifactsFromQueryId(Collection<Artifact> loadedItems, Long queryId, LoadLevel loadLevel,
+      ISearchConfirmer confirmer, int fetchSize, LoadType reload, TransactionId transactionId,
+      DeletionFlag allowDeleted, BranchToken branch, boolean isArchived) {
       OseeSql sqlKey;
       boolean historical = transactionId.isValid();
 
@@ -234,7 +240,8 @@ public final class ArtifactLoader {
    /**
     * loads or reloads artifacts based on artifact ids and branch uuids
     */
-   private static void loadArtifacts(List<ArtifactToken> toLoad, LoadLevel loadLevel, TransactionId transactionId, LoadType reload, DeletionFlag allowDeleted, Set<Artifact> artifacts, BranchId branch, boolean isArchived) {
+   private static void loadArtifacts(List<ArtifactToken> toLoad, LoadLevel loadLevel, TransactionId transactionId,
+      LoadType reload, DeletionFlag allowDeleted, Set<Artifact> artifacts, BranchId branch, boolean isArchived) {
       if (toLoad != null && !toLoad.isEmpty()) {
 
          Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery();
@@ -245,7 +252,9 @@ public final class ArtifactLoader {
       }
    }
 
-   private static void loadArtifacts(Collection<Artifact> loadedItems, Id4JoinQuery joinQuery, LoadLevel loadLevel, ISearchConfirmer confirmer, LoadType reload, TransactionId transactionId, DeletionFlag allowDeleted, BranchId branch, boolean isArchived) {
+   private static void loadArtifacts(Collection<Artifact> loadedItems, Id4JoinQuery joinQuery, LoadLevel loadLevel,
+      ISearchConfirmer confirmer, LoadType reload, TransactionId transactionId, DeletionFlag allowDeleted,
+      BranchId branch, boolean isArchived) {
       if (!joinQuery.isEmpty()) {
          Collection<Artifact> data;
          if (loadedItems.isEmpty()) {
@@ -299,7 +308,8 @@ public final class ArtifactLoader {
    /**
     * This method is called only after the cache has been checked
     */
-   private static Artifact retrieveShallowArtifact(JdbcStatement chStmt, LoadType reload, boolean historical, BranchToken branch, boolean isArchived) {
+   private static Artifact retrieveShallowArtifact(JdbcStatement chStmt, LoadType reload, boolean historical,
+      BranchToken branch, boolean isArchived) {
       ArtifactId artifactId = ArtifactId.valueOf(chStmt.getLong("id2"));
 
       TransactionToken transactionId = TransactionToken.SENTINEL;
@@ -319,8 +329,12 @@ public final class ArtifactLoader {
       }
 
       if (reload == LoadType.RELOAD_CACHE) {
+         /*
+          * boolean useBackingData is set to false not to create a new row for artifact in OSEE_TXS table when attribute
+          * is changed. Otherwise, change report will not display the synthetic artifact.
+          */
          artifact.internalSetPersistenceData(GammaId.valueOf(chStmt.getLong("gamma_id")), transactionId,
-            ModificationType.valueOf(chStmt.getInt("mod_type")), appId, historical, true);
+            ModificationType.valueOf(chStmt.getInt("mod_type")), appId, historical, false);
       }
       return artifact;
    }
@@ -337,7 +351,8 @@ public final class ArtifactLoader {
       }
    }
 
-   private static void loadArtifactsData(Long queryId, Collection<Artifact> artifacts, LoadLevel loadLevel, LoadType reload, TransactionId transactionId, DeletionFlag allowDeleted, boolean isArchived) {
+   private static void loadArtifactsData(Long queryId, Collection<Artifact> artifacts, LoadLevel loadLevel,
+      LoadType reload, TransactionId transactionId, DeletionFlag allowDeleted, boolean isArchived) {
       if (reload == LoadType.RELOAD_CACHE) {
          for (Artifact artifact : artifacts) {
             artifact.prepareForReload();
