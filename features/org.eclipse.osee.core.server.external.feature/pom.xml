@@ -25,6 +25,7 @@
 						</goals>
 						<configuration>
 							<excludes>
+							   <plugin id="org.slf4j.api"/>
 							   <plugin id="swagger-models"/>
                 			   <plugin id="swagger-integration"/>
                 			   <plugin id="swagger-annotations"/>
@@ -36,6 +37,7 @@
   							   <plugin id="snakeyaml"/>
   							   <plugin id="autolink"/>
   							   <plugin id="flexmark"/>
+  							   <plugin id="jakarta.xml.bind"/>
   							   <plugin id="com.google.protobuf"/>
 						       <plugin id="annotations"/>
   							   <plugin id="jackson-datatype-jsr310"/>

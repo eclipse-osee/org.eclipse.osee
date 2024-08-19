@@ -38,7 +38,6 @@
       <import plugin="org.apache.commons.pool" version="1.6.0" match="compatible"/>
       <import plugin="com.jcraft.jsch" version="0.1.44" match="greaterOrEqual"/>
       <import plugin="org.apache.commons.logging" version="1.1.1" match="equivalent"/>
-      <import plugin="org.slf4j.api" version="1.6.1" match="greaterOrEqual"/>
       <import plugin="javax.wsdl"/>
    </requires>
      
@@ -312,26 +311,12 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="org.slf4j.api"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="org.slf4j.jcl"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="ch.qos.logback.slf4j"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
          unpack="false"/>
 
    <plugin

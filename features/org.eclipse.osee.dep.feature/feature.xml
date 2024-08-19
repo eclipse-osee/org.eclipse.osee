@@ -44,11 +44,11 @@
    <includes
          id="org.eclipse.jgit"
          version="0.0.0"/>
-
+   
    <includes
          id="org.eclipse.egit"
          version="0.0.0"/>
-
+   
    <includes
          id="org.eclipse.equinox.core.feature"
          version="0.0.0"/>
@@ -463,10 +463,10 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.commons.compress"
+         id="org.apache.commons.commons-compress"
          download-size="0"
          install-size="0"
-         version="1.6.0.v201310281400"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
@@ -635,7 +635,7 @@
          id="ch.qos.logback.slf4j"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.1.2.v20160301-0943"
          fragment="true"
          unpack="false"/>
 
@@ -692,11 +692,18 @@
          id="com.google.guava"
          download-size="0"
          install-size="0"
-         version="30.1.0.v20221112-0806"
+         version="32.1.2.jre"
          unpack="false"/>
 
    <plugin
          id="com.google.gson"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+  
+  <plugin
+         id="com.google.guava.failureaccess"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -752,7 +759,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.commons.io"
+         id="org.apache.commons.commons-io"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -844,24 +851,17 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.egit"
+         id="org.apache.sshd.osgi"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.apache.sshd.osgi"
-         download-size="0"
-         install-size="0"
-         version="2.8.0.v20211227-1750"
-         unpack="false"/>
-
-   <plugin
          id="org.apache.sshd.sftp"
          download-size="0"
          install-size="0"
-         version="2.8.0.v20211227-1750"
+         version="0.0.0"
          unpack="false"/>
 
 
@@ -885,7 +885,14 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
+    <!--
+    <plugin
+         id="slf4j.api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+        -->        
    <plugin
          id="com.lowagie.text"
          download-size="0"
@@ -974,14 +981,14 @@
          id="ch.qos.logback.core"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.1.2.v20200204-2150"
          unpack="false"/>
 
    <plugin
          id="ch.qos.logback.classic"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.1.2.v20171220-1825"
          unpack="false"/>
 
    <plugin
@@ -1881,7 +1888,7 @@
          unpack="false"/>
 
    <plugin
-         id="javax.xml.soap"
+         id="jakarta.xml.soap-api"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -1989,7 +1996,7 @@
          id="javax.activation"
          download-size="0"
          install-size="0"
-         version="1.1.0.v201211130549"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
@@ -2334,20 +2341,27 @@
          version="0.0.0"
          unpack="false"/>
   
-  <plugin
+   <plugin
          id="org.glassfish.pfl.pfl-dynamic"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
          
-  <plugin
+   <plugin
          id="jakarta.xml.bind-api"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/> 
-   
+ 
+   <plugin
+         id="jakarta.validation.jakarta.validation-api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+           
    <plugin
          id="jakarta.xml.bind"
          download-size="0"
@@ -2363,17 +2377,12 @@
          unpack="false"/>   
    
    <plugin
-         id="javax.activation"
-         download-size="0"
-         install-size="0"
-         version="1.2.2.v20221203-1659"
-         unpack="false"/>   
-   
-   <plugin
          id="org.eclipse.nebula.widgets.ganttchart"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>                   
+         unpack="false"/>  
+         
+                          
                   
 </feature>

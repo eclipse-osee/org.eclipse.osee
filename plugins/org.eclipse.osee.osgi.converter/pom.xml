@@ -23,6 +23,16 @@
 						<phase>package</phase>
 						<configuration>
 							<artifacts>
+							
+								<artifact>
+									<id>org.apache.commons:commons-compress:jar:1.26.0</id>
+									<source>true</source>
+								</artifact>
+								
+								<artifact>
+									<id>com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:jar:2.15.2</id>
+									<source>true</source>
+								</artifact>
 								<artifact>
 									<id>org.postgresql:postgresql:jar:42.3.10</id>
 									<source>true</source>
@@ -52,6 +62,7 @@
 									<id>org.apache.cxf:cxf-rt-rs-client:jar:3.4.10</id>
 									<source>true</source>
 								</artifact>
+																
 								
 								<artifact>
 									<id>org.hsqldb:hsqldb:2.6.1</id>

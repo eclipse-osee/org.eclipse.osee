@@ -219,13 +219,6 @@
          unpack="false"/>
 
    <plugin
-         id="javax.xml.bind"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="javax.xml.ws"
          download-size="0"
          install-size="0"
@@ -247,7 +240,7 @@
          unpack="false"/>
 
    <plugin
-         id="javax.xml.soap"
+         id="jakarta.xml.soap-api"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -267,12 +260,6 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="org.eclipse.egit"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="org.eclipse.jgit"
@@ -296,10 +283,10 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.commons.compress"
+         id="org.apache.commons.commons-compress"
          download-size="0"
          install-size="0"
-         version="1.6.0.v201310281400"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
@@ -529,12 +516,19 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
+   
    <plugin
          id="org.slf4j.api"
          download-size="0"
          install-size="0"
          version="0.0.0"
+         unpack="false"/>
+   <plugin
+         id="ch.qos.logback.slf4j"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
          unpack="false"/>
 
    <plugin
@@ -706,14 +700,6 @@
          unpack="false"/>
 
    <plugin
-         id="ch.qos.logback.slf4j"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.osee.logger"
          download-size="0"
          install-size="0"
@@ -745,7 +731,7 @@
          id="com.google.guava"
          download-size="0"
          install-size="0"
-         version="30.1.0.v20221112-0806"
+         version="32.1.2.jre"
          unpack="false"/>
 
    <plugin
@@ -819,7 +805,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.commons.io"
+         id="org.apache.commons.commons-io"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -1365,6 +1351,13 @@
          version="0.0.0"
          unpack="false"/>
   
+   <plugin
+         id="org.nibor.autolink"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+  
   <plugin
          id="org.xerial.sqlite-jdbc"
          download-size="0"
@@ -1372,13 +1365,6 @@
          version="0.0.0"
          unpack="false"/>  
   
-   <plugin
-         id="org.nibor.autolink"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
   <plugin
          id="com.vladsch.flexmark.ext-gitlab"
          download-size="0"
@@ -1504,5 +1490,20 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+ 
+    <plugin
+         id="jakarta.validation.jakarta.validation-api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+    
+    <plugin
+         id="com.google.guava.failureaccess"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+        
                   
 </feature>
