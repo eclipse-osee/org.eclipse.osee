@@ -71,3 +71,4 @@ jobs:
         with:
           SKIP_ANGULAR_BUILD: ${{ needs.check-changes.outputs.angular_changed == 'false' }}
           SKIP_JAVA_BUILD: ${{ needs.check-changes.outputs.java_changed == 'false' }}
+          RUN_ANGULAR_STATIC_ANALYSIS: true

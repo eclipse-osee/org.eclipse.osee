@@ -21,6 +21,10 @@ inputs:
     description: 'Whether or not to skip the OSEE Angular tests.'
     required: false
     default: 'false'
+  RUN_ANGULAR_STATIC_ANALYSIS:
+    description: 'Whether or not to run the OSEE Angular static analysis like linting and formatting.'
+    required: false
+    default: 'false'
   SKIP_JAVA_BUILD:
     description: 'Whether or not to skip the OSEE Java build.'
     required: false
@@ -146,16 +150,6 @@ runs:
         keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias nodejsPem -file ${GITHUB_WORKSPACE}/Latest_Certs/nodejs-org.pem -noprompt
         keytool -importcert -keystore ${GITHUB_WORKSPACE}/keystore.jks -storepass secret -keypass secret -alias npmjsPem -file ${GITHUB_WORKSPACE}/Latest_Certs/npmjs-org.pem -noprompt
 
-    - name: Set Angular Build Information
-      if: inputs.SKIP_ANGULAR_BUILD == 'false'
-      shell: bash
-      run: |
-        : Set Angular Build Information
-        pwd
-        ls -al ${GITHUB_WORKSPACE}/web/apps/osee/src/app/about
-        echo "export const BuildNum = 'SHA - ${{ github.sha }} | Build Date - ${{ github.event.head_commit.timestamp }} | GitHub Job URL - ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}';" > ${GITHUB_WORKSPACE}/web/apps/osee/src/app/about/version.ts
-        echo "export const version = '1.0.0';" >> ${GITHUB_WORKSPACE}/web/apps/osee/src/app/about/version.ts
-
     - name: Prepare For Angular Build
       if: inputs.SKIP_ANGULAR_BUILD == 'false'
       shell: bash
@@ -167,12 +161,31 @@ runs:
         npm config list
         pnpm install --prefer-offline
 
-    - name: osee.web Testing
+    - name: Osee Web Static Analysis
+      if: inputs.SKIP_ANGULAR_BUILD == 'false' && inputs.SKIP_ANGULAR_TESTS == 'false' && inputs.RUN_ANGULAR_STATIC_ANALYSIS == 'true'
+      shell: bash
+      run: |
+        : Osee Web Static Analysis
+        pnpm -r run lint
+        pnpm -r run prettier:check
+        pnpm -r run stylelint
+
+    - name: Osee Web Testing
       if: inputs.SKIP_ANGULAR_BUILD == 'false' && inputs.SKIP_ANGULAR_TESTS == 'false'
       shell: bash
       run: |
-        : osee.web Testing
+        : Osee Web Testing
         pnpm -r run test --browsers=ChromeHeadlessNoSandbox --watch=false
+
+    - name: Set Angular Build Information
+      if: inputs.SKIP_ANGULAR_BUILD == 'false'
+      shell: bash
+      run: |
+        : Set Angular Build Information
+        pwd
+        ls -al ${GITHUB_WORKSPACE}/web/apps/osee/src/app/about
+        echo "export const BuildNum = 'SHA - ${{ github.sha }} | Build Date - ${{ github.event.head_commit.timestamp }} | GitHub Job URL - ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}';" > ${GITHUB_WORKSPACE}/web/apps/osee/src/app/about/version.ts
+        echo "export const version = '1.0.0';" >> ${GITHUB_WORKSPACE}/web/apps/osee/src/app/about/version.ts
 
     - name: Osee Web Build
       if: inputs.SKIP_ANGULAR_BUILD == 'false'
