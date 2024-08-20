@@ -212,7 +212,6 @@ public class EntryDialog extends MessageDialog {
       if (fillVertically) {
          text.setFillVertically(true);
          text.setHeight(textHeight == null ? 200 : textHeight);
-         text.setFont(getFont());
       }
       text.createWidgets(areaComposite, 2);
       text.setFocus();
