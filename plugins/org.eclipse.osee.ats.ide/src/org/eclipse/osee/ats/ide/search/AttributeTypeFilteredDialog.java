@@ -36,10 +36,10 @@ import org.eclipse.swt.widgets.Control;
 public class AttributeTypeFilteredDialog extends FilteredListDialog<AttributeTypeToken> {
 
    private AttrValueType attrValueType = AttrValueType.Value;
-   private final AttributeTypeToken selectedType = AttributeTypeToken.SENTINEL;
    private Button existsButton;
    private Button notExistsButton;
    private Button existsValue;
+   private Button notExistsValue;
 
    public AttributeTypeFilteredDialog(Collection<AttributeTypeToken> attributeTypes) {
       super("Select Attribute Type", "Select Attribute Type", new AttributeTypeLabelProvider());
@@ -54,67 +54,55 @@ public class AttributeTypeFilteredDialog extends FilteredListDialog<AttributeTyp
       composite.setLayoutData(new GridData());
 
       existsButton = new Button(composite, SWT.CHECK);
-      existsButton.setText("Exists");
-      existsButton.setToolTipText("Select to add Exists Attribute Type to query");
+      notExistsButton = new Button(composite, SWT.CHECK);
+      existsValue = new Button(composite, SWT.CHECK);
+      notExistsValue = new Button(composite, SWT.CHECK);
+
+      existsButton.setText("Attribute exist");
+      existsButton.setToolTipText("Select to add Attribute exist Type to query");
       existsButton.setSelection(false);
       existsButton.addSelectionListener(new SelectionAdapter() {
+
          @Override
          public void widgetSelected(SelectionEvent e) {
-            boolean selected = existsButton.getSelection();
-            if (selected) {
-               notExistsButton.setSelection(false);
-               existsValue.setSelection(false);
-            }
-            if (selected) {
-               attrValueType = AttrValueType.AttrExists;
-            } else {
-               attrValueType = null;
-            }
+            attrValueType = AttrValueType.AttrExists;
             updateButtons();
          }
       });
 
-      notExistsButton = new Button(composite, SWT.CHECK);
-      notExistsButton.setText("Not Exists");
-      notExistsButton.setToolTipText("Select to add Not Exists Attribute Type to query");
+      notExistsButton.setText("Attribute does not exist");
       notExistsButton.setSelection(false);
       notExistsButton.addSelectionListener(new SelectionAdapter() {
+
          @Override
          public void widgetSelected(SelectionEvent e) {
-            boolean selected = notExistsButton.getSelection();
-            if (selected) {
-               existsButton.setSelection(false);
-               existsValue.setSelection(false);
-            }
-            if (selected) {
-               attrValueType = AttrValueType.AttrNotExists;
-            } else {
-               attrValueType = null;
-            }
+            attrValueType = AttrValueType.AttrNotExists;
             updateButtons();
          }
       });
 
-      existsValue = new Button(composite, SWT.CHECK);
-      existsValue.setText("Exists Value");
-      existsValue.setToolTipText("Select to add Exists Value Attribute Type to query");
+      existsValue.setText("Attribute exists with value");
       existsValue.setSelection(false);
       existsValue.addSelectionListener(new SelectionAdapter() {
+
          @Override
          public void widgetSelected(SelectionEvent e) {
-            boolean selected = existsValue.getSelection();
-            if (selected) {
-               existsButton.setSelection(false);
-               notExistsButton.setSelection(false);
-            }
-            if (selected) {
-               attrValueType = AttrValueType.AttrExistsValue;
-            } else {
-               attrValueType = null;
-            }
+            attrValueType = AttrValueType.AttrExistsValue;
             updateButtons();
          }
       });
+
+      notExistsValue.setText("Attribute value does not exist");
+      notExistsValue.setSelection(false);
+      notExistsValue.addSelectionListener(new SelectionAdapter() {
+
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            attrValueType = AttrValueType.AttrNotExistsValue;
+            updateButtons();
+         }
+      });
+
       return control;
    }
 
@@ -168,10 +156,7 @@ public class AttributeTypeFilteredDialog extends FilteredListDialog<AttributeTyp
    }
 
    public AttributeTypeToken getSelectedType() {
-      if (selectedType.isInvalid()) {
-         return getSelected();
-      }
-      return selectedType;
+      return getSelected();
    }
 
    public final AttrValueType getAttrValueType() {

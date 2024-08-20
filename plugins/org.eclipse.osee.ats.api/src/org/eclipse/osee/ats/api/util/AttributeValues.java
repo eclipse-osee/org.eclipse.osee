@@ -26,7 +26,8 @@ public class AttributeValues {
       Value,
       AttrExists,
       AttrNotExists,
-      AttrExistsValue
+      AttrExistsValue,
+      AttrNotExistsValue
    }
 
    List<AttributeValue> attributes = new ArrayList<>();

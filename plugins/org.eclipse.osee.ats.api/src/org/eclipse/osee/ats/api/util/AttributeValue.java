@@ -85,6 +85,10 @@ public class AttributeValue {
       return attrValueType == AttrValueType.AttrExistsValue;
    }
 
+   public boolean isNotExistsValue() {
+      return attrValueType == AttrValueType.AttrNotExistsValue;
+   }
+
    public final AttrValueType getAttrValueType() {
       return attrValueType;
    }
