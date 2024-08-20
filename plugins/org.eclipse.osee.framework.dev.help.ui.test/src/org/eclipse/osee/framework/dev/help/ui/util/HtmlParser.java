@@ -31,6 +31,11 @@ public class HtmlParser {
 
    private static final XMLInputFactory xmlInputFactory = XMLInputFactory.newFactory();
 
+   static {
+      // Disable DTD support to prevent XXE attacks and reduce 429 errors and external entity resolution for all instances
+      xmlInputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+   }
+
    private static final String LINK_NODE = "link";
    private static final String HREF_TAG = "href";
    private static final String SRC_TAG = "src";
