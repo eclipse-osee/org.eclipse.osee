@@ -25,7 +25,8 @@ public class AttributeValues {
    public static enum AttrValueType {
       Value,
       AttrExists,
-      AttrNotExists
+      AttrNotExists,
+      AttrExistsValue
    }
 
    List<AttributeValue> attributes = new ArrayList<>();
