@@ -40,6 +40,7 @@ import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.actions.OpenNewAtsWorldEditorSelectedAction;
+import org.eclipse.osee.ats.ide.actions.ShowSprintsAction;
 import org.eclipse.osee.ats.ide.actions.SprintReportAction;
 import org.eclipse.osee.ats.ide.actions.WorldViewColumnReport;
 import org.eclipse.osee.ats.ide.config.AtsBulkLoad;
@@ -395,6 +396,7 @@ public class WfeMembersTab extends WfeAbstractTab implements IWorldEditor, ISele
       toolBarMgr.removeAll();
       if (workItem.isBacklog()) {
          IAgileBacklog backlog = AtsApiService.get().getAgileService().getAgileBacklog(workItem.getStoreObject());
+         toolBarMgr.add(new ShowSprintsAction(backlog));
          toolBarMgr.add(new SprintReportAction(backlog, true));
       }
       if (workItem.isSprint()) {
