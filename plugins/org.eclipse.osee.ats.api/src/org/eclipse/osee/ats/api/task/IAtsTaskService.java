@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.task.create.ChangeReportTaskNameProviderToken;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.task.create.IAtsChangeReportTaskNameProvider;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.util.IAtsChangeSetListener;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -90,5 +91,7 @@ public interface IAtsTaskService {
    boolean removeDeReferencedNote(IAtsTask task, IAtsChangeSet changes);
 
    Collection<IAtsTaskProvider> getTaskProviders();
+
+   NewTaskSet createTasks(NewTaskSet taskSet, IAtsChangeSetListener changeSetListener);
 
 }

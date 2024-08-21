@@ -30,7 +30,7 @@ public class NewTaskSet {
    private XResultData results;
    private String commitComment;
    private String asUserId;
-   private TransactionToken transaction;
+   private TransactionToken transaction = TransactionToken.SENTINEL;
 
    public NewTaskSet() {
       results = new XResultData();

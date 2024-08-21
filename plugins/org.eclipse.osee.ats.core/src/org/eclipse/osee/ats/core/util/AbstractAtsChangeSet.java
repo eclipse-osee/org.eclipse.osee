@@ -37,7 +37,7 @@ import org.eclipse.osee.ats.api.notify.AtsWorkItemNotificationEvent;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.util.IExecuteListener;
+import org.eclipse.osee.ats.api.util.IAtsChangeSetListener;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
@@ -73,7 +73,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    protected final Set<ArtifactId> artifacts = new CopyOnWriteArraySet<>();
    protected final Set<IAtsObject> deleteAtsObjects = new CopyOnWriteArraySet<>();
    protected final Set<ArtifactId> deleteArtifacts = new CopyOnWriteArraySet<>();
-   protected final Set<IExecuteListener> listeners = new CopyOnWriteArraySet<>();
+   protected final Set<IAtsChangeSetListener> listeners = new CopyOnWriteArraySet<>();
    protected final AtsUser asUser;
    protected final AtsNotificationCollector notifications = new AtsNotificationCollector();
    protected final List<IAtsWorkItem> workItemsCreated = new ArrayList<>();
@@ -166,7 +166,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    }
 
    @Override
-   public void addExecuteListener(IExecuteListener listener) {
+   public void addExecuteListener(IAtsChangeSetListener listener) {
       Conditions.checkNotNull(listener, "listener");
       listeners.add(listener);
    }
@@ -544,7 +544,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    }
 
    protected void executeNotifyListeners() {
-      for (IExecuteListener listener : listeners) {
+      for (IAtsChangeSetListener listener : listeners) {
          listener.changesStored(this);
       }
    }

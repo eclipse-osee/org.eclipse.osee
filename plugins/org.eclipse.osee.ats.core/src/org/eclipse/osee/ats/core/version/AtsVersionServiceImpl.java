@@ -34,7 +34,7 @@ import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.util.IExecuteListener;
+import org.eclipse.osee.ats.api.util.IAtsChangeSetListener;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.version.Version;
@@ -213,9 +213,9 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
       return version;
    }
 
-   protected IExecuteListener getPostPersistExecutionListener(IAtsTeamWorkflow teamWf, IAtsVersion newVersion,
+   protected IAtsChangeSetListener getPostPersistExecutionListener(IAtsTeamWorkflow teamWf, IAtsVersion newVersion,
       ArtifactId previousVersion) {
-      return new IExecuteListener() {
+      return new IAtsChangeSetListener() {
 
          @Override
          public void changesStored(IAtsChangeSet changes) {

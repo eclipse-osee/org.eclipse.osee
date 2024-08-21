@@ -43,6 +43,8 @@ import org.eclipse.osee.ats.ide.actions.OpenNewAtsWorldEditorSelectedAction;
 import org.eclipse.osee.ats.ide.actions.ShowSprintsAction;
 import org.eclipse.osee.ats.ide.actions.SprintReportAction;
 import org.eclipse.osee.ats.ide.actions.WorldViewColumnReport;
+import org.eclipse.osee.ats.ide.actions.task.CreateTasksFromActions;
+import org.eclipse.osee.ats.ide.actions.task.RestoreTasksFromActions;
 import org.eclipse.osee.ats.ide.config.AtsBulkLoad;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.WfeAbstractTab;
@@ -579,6 +581,9 @@ public class WfeMembersTab extends WfeAbstractTab implements IWorldEditor, ISele
          new MenuItem(fMenu, SWT.SEPARATOR);
          wfeMembersTabActions = new WfeMembersTabActions(membersTab);
          wfeMembersTabActions.createActions(fMenu);
+         new MenuItem(fMenu, SWT.SEPARATOR);
+         addActionToMenu(fMenu, new CreateTasksFromActions(worldComposite));
+         addActionToMenu(fMenu, new RestoreTasksFromActions(worldComposite));
          return fMenu;
       }
 

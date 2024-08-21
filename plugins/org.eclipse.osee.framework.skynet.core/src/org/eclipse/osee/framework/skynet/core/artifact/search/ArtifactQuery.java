@@ -619,7 +619,9 @@ public class ArtifactQuery {
          ArtifactQueryBuilder query = new ArtifactQueryBuilder(artIds, entrySet.getKey(), INCLUDE_DELETED, ALL);
 
          reloadedArts.addAll(query.reloadArtifacts(artIds.size()));
-         OseeEventManager.kickLocalArtifactReloadEvent(query, reloadedArts);
+         if (!reloadedArts.isEmpty()) {
+            OseeEventManager.kickLocalArtifactReloadEvent(query, reloadedArts);
+         }
          artIds.clear();
       }
       return reloadedArts;

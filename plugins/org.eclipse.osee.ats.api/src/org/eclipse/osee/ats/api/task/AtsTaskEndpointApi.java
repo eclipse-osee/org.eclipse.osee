@@ -22,6 +22,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
+import org.eclipse.osee.ats.api.task.create.TasksFromAction;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 
 /**
@@ -50,5 +51,17 @@ public interface AtsTaskEndpointApi {
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    public ChangeReportTaskData create(ChangeReportTaskData data);
+
+   @PUT
+   @Path("createTasksFromActions")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public TasksFromAction create(TasksFromAction tfa);
+
+   @PUT
+   @Path("restoreActionsFromTasks")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public TasksFromAction restore(TasksFromAction tfa);
 
 }

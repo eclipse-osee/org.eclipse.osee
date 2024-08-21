@@ -16,7 +16,7 @@ package org.eclipse.osee.ats.api.util;
 /**
  * @author Donald G Dunne
  */
-public interface IExecuteListener {
+public interface IAtsChangeSetListener {
 
    public void changesStored(IAtsChangeSet changes);
 

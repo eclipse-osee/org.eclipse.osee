@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.util.IAtsChangeSetListener;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -66,9 +67,15 @@ public class CreateTasksOperation {
    private Date createdByDate;
    private final Map<Long, IAtsTeamWorkflow> idToTeamWf = new HashMap<>();
    private WorkDefinition taskWorkDef;
+   private final IAtsChangeSetListener changeSetListener;
 
    public CreateTasksOperation(NewTaskSet newTaskSet, AtsApi atsApi) {
+      this(newTaskSet, null, atsApi);
+   }
+
+   public CreateTasksOperation(NewTaskSet newTaskSet, IAtsChangeSetListener changeSetListener, AtsApi atsApi) {
       this.newTaskSet = newTaskSet;
+      this.changeSetListener = changeSetListener;
       this.atsApi = atsApi;
    }
 
@@ -242,6 +249,12 @@ public class CreateTasksOperation {
 
       IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet(newTaskSet.getCommitComment(), asUser);
       run(changes);
+      if (changeSetListener != null) {
+         changeSetListener.changesStored(changes);
+      }
+      if (newTaskSet.getResults().isErrors()) {
+         return newTaskSet;
+      }
       TransactionToken trans = changes.executeIfNeeded();
 
       if (trans != null && trans.isValid()) {

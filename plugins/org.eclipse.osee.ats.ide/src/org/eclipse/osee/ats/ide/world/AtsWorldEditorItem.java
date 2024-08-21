@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.world;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.jface.action.Action;
+import org.eclipse.osee.ats.ide.actions.task.CreateTasksFromActions;
 import org.eclipse.osee.ats.ide.export.AtsExportAction;
 import org.eclipse.osee.ats.ide.search.AtsSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.ide.workflow.duplicate.DuplicateWorkflowViaWorldEditorAction;
@@ -33,7 +34,8 @@ public class AtsWorldEditorItem implements IAtsWorldEditorItem {
    public List<? extends Action> getWorldEditorMenuActions(IWorldEditorProvider worldEditorProvider,
       WorldEditor worldEditor) {
       return Arrays.asList(new AtsExportAction(worldEditor.getWorldComposite().getWorldXViewer()),
-         new DuplicateWorkflowViaWorldEditorAction(worldEditor.getWorldComposite().getWorldXViewer()));
+         new DuplicateWorkflowViaWorldEditorAction(worldEditor.getWorldComposite().getWorldXViewer()),
+         new CreateTasksFromActions(worldEditor.getWorldComposite().getWorldXViewer()));
    }
 
    @Override

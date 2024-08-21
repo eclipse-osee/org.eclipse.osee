@@ -44,7 +44,7 @@ import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.util.AtsUtil;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.util.IExecuteListener;
+import org.eclipse.osee.ats.api.util.IAtsChangeSetListener;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
@@ -87,7 +87,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
  *
  * @author Donald G. Dunne
  */
-public class TransitionManager implements IExecuteListener {
+public class TransitionManager implements IAtsChangeSetListener {
 
    private Date transitionOnDate;
    private final IAtsUserService userService;
@@ -140,7 +140,7 @@ public class TransitionManager implements IExecuteListener {
    public TransitionResults handleAllAndPersist() {
       TransitionResults results = handleAll();
       if (results.isEmpty()) {
-         if (getChangeSet() != null) {
+         if (getChangeSet() != null && transData.isExecute()) {
             logTimeStart("30 - ChangeSet.execute");
             TransactionId transactionId = getChangeSet().execute();
             results.setTransaction(transactionId);

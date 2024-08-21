@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.task.NewTaskSet;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskNameProviderToken;
 import org.eclipse.osee.ats.api.task.create.IAtsChangeReportTaskNameProvider;
+import org.eclipse.osee.ats.api.util.IAtsChangeSetListener;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -42,6 +43,7 @@ import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -62,6 +64,11 @@ public class AtsTaskService extends AbstractAtsTaskServiceCore implements IAtsTa
    public AtsTaskService(AtsApiIde atsClient) {
       super(atsClient);
       this.atsApi = atsClient;
+   }
+
+   @Override
+   public NewTaskSet createTasks(NewTaskSet taskSet, IAtsChangeSetListener changeSetListener) {
+      throw new OseeStateException("Not Implemented on IDE");
    }
 
    @Override

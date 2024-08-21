@@ -38,7 +38,6 @@ public class JaxAtsWorkItem extends JaxAtsObject {
    protected Date createdDate;
    protected String createdByUserId;
    protected String workDef;
-   protected String title;
    protected String atsId;
    protected String currentState;
    protected StateType stateType;
@@ -161,11 +160,11 @@ public class JaxAtsWorkItem extends JaxAtsObject {
    }
 
    public String getTitle() {
-      return title;
+      return getName();
    }
 
    public void setTitle(String title) {
-      this.title = title;
+      setName(title);
    }
 
    public String getCurrentState() {

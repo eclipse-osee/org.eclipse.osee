@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.task.create.ChangeReportTaskData;
 import org.eclipse.osee.ats.api.task.create.ChangeReportTaskNameProviderToken;
 import org.eclipse.osee.ats.api.task.create.IAtsChangeReportTaskNameProvider;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.util.IAtsChangeSetListener;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.task.AbstractAtsTaskServiceCore;
@@ -33,7 +34,6 @@ import org.eclipse.osee.ats.core.task.CreateTasksOperation;
 import org.eclipse.osee.ats.core.workflow.Task;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 
 /**
  * @author Donald G. Dunne
@@ -68,15 +68,20 @@ public class AtsTaskService extends AbstractAtsTaskServiceCore {
 
    @Override
    public NewTaskSet createTasks(NewTaskSet newTaskSet) {
-      CreateTasksOperation operation = new CreateTasksOperation(newTaskSet, atsApi);
+      return createTasks(newTaskSet, (IAtsChangeSetListener) null);
+   }
+
+   @Override
+   public NewTaskSet createTasks(NewTaskSet newTaskSet, IAtsChangeSetListener changeSetListener) {
+      CreateTasksOperation operation = new CreateTasksOperation(newTaskSet, changeSetListener, atsApi);
       operation.validate();
 
       if (newTaskSet.getResults().isErrors()) {
-         throw new OseeStateException("Error validating task creation - " + newTaskSet.getResults().toString());
+         return newTaskSet;
       }
       operation.run();
       if (newTaskSet.getResults().isErrors()) {
-         throw new OseeStateException("Error creating tasks - " + newTaskSet.toString());
+         return newTaskSet;
       }
       List<IAtsTask> tasks = new LinkedList<>();
       for (JaxAtsTask task : operation.getTasks()) {

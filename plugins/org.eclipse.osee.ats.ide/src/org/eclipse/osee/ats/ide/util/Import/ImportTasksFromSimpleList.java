@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -131,8 +132,12 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                   if (taskWorkDef.isValid()) {
                      newTaskData.setTaskWorkDef(taskWorkDef);
                   }
-                  atsApi.getTaskService().createTasks(
+                  NewTaskSet createTasks = atsApi.getTaskService().createTasks(
                      NewTaskSet.create(newTaskData, commitComment, atsApi.getUserService().getCurrentUserId()));
+                  if (createTasks.isErrors()) {
+                     XResultDataUI.report(createTasks.getResults(), getName());
+                     return;
+                  }
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   return;

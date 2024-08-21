@@ -57,6 +57,7 @@ public class TransitionData {
    @JsonIgnore
    private IAtsChangeSet changes;
    private boolean debug = false;
+   private boolean execute = true;
 
    public TransitionData() {
       // for jax-rs
@@ -256,6 +257,14 @@ public class TransitionData {
          return true;
       }
       return false;
+   }
+
+   public void setExecute(boolean execute) {
+      this.execute = execute;
+   }
+
+   public boolean isExecute() {
+      return execute;
    }
 
 }

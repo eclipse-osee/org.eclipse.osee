@@ -110,6 +110,7 @@ public class WfeDetailsTab extends WfeAbstractTab {
       } else {
          details.put("Action Id", parentAction.getAtsId());
       }
+      details.put("Workflow Id", workItem.getAtsId());
       if (!workItem.isOfType(AtsArtifactTypes.TeamWorkflow) && workItem.getParentTeamWorkflow() != null) {
          details.put("Parent Team Workflow Id", workItem.getParentTeamWorkflow().getAtsId());
       }

@@ -42,7 +42,7 @@ public class AtsRestCoverageTest {
     * This number should not be reduced, ask if you do not know how to create tests for new REST calls.<br/>
     * Please increase this number as percent coverage goes up.
     */
-   private final float MINIMUM_PERCENT_COVERAGE = Float.valueOf(43);
+   private final float MINIMUM_PERCENT_COVERAGE = Float.valueOf(44);
 
    @org.junit.Test
    public void test() {

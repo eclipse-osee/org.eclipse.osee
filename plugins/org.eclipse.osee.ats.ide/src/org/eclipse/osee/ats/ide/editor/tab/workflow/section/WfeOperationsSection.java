@@ -34,6 +34,8 @@ import org.eclipse.osee.ats.ide.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.ide.actions.ShowBranchChangeDataAction;
 import org.eclipse.osee.ats.ide.actions.ShowWorkDefinitionAction;
 import org.eclipse.osee.ats.ide.actions.SubscribedAction;
+import org.eclipse.osee.ats.ide.actions.task.CreateTasksFromActions;
+import org.eclipse.osee.ats.ide.actions.task.RestoreTasksFromActions;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.section.goal.WfeGoalSection;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.util.WfeReloadAction;
@@ -160,6 +162,13 @@ public class WfeOperationsSection extends SectionPart {
          new XButtonViaAction(
             new CreateActionFromTaskAction(Collections.singleton((TaskArtifact) editor.getWorkItem()))).createWidgets(
                sectionBody, 2);
+         new XButtonViaAction(
+            new RestoreTasksFromActions(Collections.singleton((TaskArtifact) editor.getWorkItem()))).createWidgets(
+               sectionBody, 2);
+      }
+      if (editor.getWorkItem().isTeamWorkflow()) {
+         new XButtonViaAction(new CreateTasksFromActions(
+            Collections.singleton((TeamWorkFlowArtifact) editor.getWorkItem()))).createWidgets(sectionBody, 2);
       }
       section.setClient(sectionBody);
    }

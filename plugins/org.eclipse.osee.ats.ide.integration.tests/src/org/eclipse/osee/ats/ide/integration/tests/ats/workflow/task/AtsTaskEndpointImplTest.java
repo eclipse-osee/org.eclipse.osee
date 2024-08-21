@@ -18,20 +18,26 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.JaxAttribute;
 import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskSet;
+import org.eclipse.osee.ats.api.task.create.TasksFromAction;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
+import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
+import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
 import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -39,6 +45,7 @@ import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -256,6 +263,45 @@ public class AtsTaskEndpointImplTest {
       }
       task.setAssigneeUserIds(assigneeUserIds);
       return task;
+   }
+
+   @Test
+   public void testCreateAndRestoreTasksFromAction() {
+      AtsApi atsApi = AtsApiService.get();
+      AtsTestUtil.cleanupAndReset("TasksFromAction");
+      IAtsTeamWorkflow sourceTeamWf = AtsTestUtil.getTeamWf();
+      String startState = sourceTeamWf.getCurrentStateName();
+      IAtsTeamWorkflow destTeamWf = AtsTestUtil.getTeamWf2();
+
+      TasksFromAction tfa = new TasksFromAction();
+      tfa.setCreatedBy(atsApi.getUserService().getCurrentUser().getArtifactId());
+      tfa.setReason("Moving to EPIC");
+      tfa.setDestTeamWf(destTeamWf.getArtifactToken());
+      tfa.getSourceTeamWfs().add(sourceTeamWf.getArtifactToken());
+      tfa = atsApi.getServerEndpoints().getTaskEp().create(tfa);
+
+      ((Artifact) sourceTeamWf.getStoreObject()).reloadAttributesAndRelations();
+      ((Artifact) destTeamWf.getStoreObject()).reloadAttributesAndRelations();
+      Assert.assertTrue(tfa.getRd().isSuccess());
+      Assert.assertEquals(TeamState.Cancelled.getName(), sourceTeamWf.getCurrentStateName());
+      Collection<IAtsTask> tasks = atsApi.getTaskService().getTasks(destTeamWf);
+      Assert.assertTrue(tasks.size() == 1);
+      IAtsTask task = tasks.iterator().next();
+      Assert.assertEquals(sourceTeamWf.getName(), task.getName());
+      Assert.assertTrue(atsApi.getRelationResolver().areRelated(sourceTeamWf, AtsRelationTypes.Derive_To, task));
+      Assert.assertTrue(
+         atsApi.getRelationResolver().areRelated(sourceTeamWf, CoreRelationTypes.SupportingInfo_IsSupportedBy, task));
+
+      TasksFromAction tfa2 = new TasksFromAction();
+      tfa2.setCreatedBy(atsApi.getUserService().getCurrentUser().getArtifactId());
+      tfa2.getSourceTasks().add(task.getArtifactToken());
+      tfa2 = atsApi.getServerEndpoints().getTaskEp().restore(tfa2);
+      Assert.assertTrue(tfa.getRd().isSuccess());
+
+      ((Artifact) sourceTeamWf.getStoreObject()).reloadAttributesAndRelations();
+      Assert.assertEquals(startState, sourceTeamWf.getCurrentStateName());
+
+      AtsTestUtil.cleanup();
    }
 
 }

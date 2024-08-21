@@ -13,9 +13,12 @@
 
 package org.eclipse.osee.ats.ide.actions;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
+import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -28,5 +31,15 @@ public interface ISelectedAtsArtifacts {
    List<Artifact> getSelectedAtsArtifacts();
 
    List<TaskArtifact> getSelectedTaskArtifacts();
+
+   default Collection<TeamWorkFlowArtifact> getSelectedTeamWorkflowArtifacts() {
+      List<TeamWorkFlowArtifact> teamWfs = new ArrayList<>();
+      for (Artifact art : getSelectedWorkflowArtifacts()) {
+         if (art instanceof TeamWorkFlowArtifact) {
+            teamWfs.add((TeamWorkFlowArtifact) art);
+         }
+      }
+      return teamWfs;
+   }
 
 }
