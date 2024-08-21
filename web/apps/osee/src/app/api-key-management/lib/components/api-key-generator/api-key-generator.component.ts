@@ -32,7 +32,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 @Component({
 	selector: 'osee-api-key-generator',
 	standalone: true,
-	imports: [MatIcon, ApiKeyFormComponent, MatButton],
+	imports: [MatIcon, MatButton],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	templateUrl: './api-key-generator.component.html',
 })
@@ -45,7 +45,6 @@ export class ApiKeyGeneratorComponent {
 
 	apiKeyValue: WritableSignal<string | null> = signal(null);
 	keyIsVisible = signal<boolean>(false);
-	showKeyForm = signal<boolean>(true);
 	apiKeys = signal<ApiKey[]>([]);
 
 	private destroy$ = new Subject<void>();
@@ -61,10 +60,6 @@ export class ApiKeyGeneratorComponent {
 				})
 			)
 		);
-	}
-
-	toggleKeyForm(): void {
-		this.showKeyForm.set(!this.showKeyForm());
 	}
 
 	closeApiKey(): void {
