@@ -17,6 +17,8 @@
 	<version>1.0.0-SNAPSHOT</version>
 
 	<modules>
+		<module>../../plugins/org.eclipse.nebula.widgets.xviewer.tests</module>
+	
 		<module>../../plugins/org.eclipse.osee.support.test.util</module>
 
 		<module>../../plugins/org.eclipse.osee.ats.ide.help.ui</module>
@@ -27,7 +29,6 @@
 		<module>../../features/org.eclipse.osee.ats.ide.feature</module>
 
 		<module>../../features/org.eclipse.osee.ats.ide.demo.feature</module>
-		<module>../../plugins/org.eclipse.osee.ats.ide.integration.tests</module>
 
 		<module>../../plugins/org.eclipse.osee.ats.ide.p2</module>
 	</modules>
