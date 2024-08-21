@@ -42,12 +42,23 @@
 				<stylesheet url="book.css" />
 			</wikitext-to-eclipse-help>
 
-			<!-- Copy Referenced Images And Replace Image Source -->
-			<property name="bin.dir" value="${basedir}/bin"/>
+			<!-- Output target/classes Directory Contents -->
+			<echo message="Listing all files and directories:"/>
+				<fileset id="all.files" dir="${basedir}/target/classes">
+					<include name="**/*"/>
+				</fileset>
+				<pathconvert pathsep=" || " property="file.list">
+					<fileset refid="all.files"/>
+				</pathconvert>
+			<echo message="${file.list}"/>
 
-			<java classname="org.eclipse.osee.framework.dev.help.ui.ImageExtractor" fork="true">
+
+			<!-- Copy Referenced Images And Replace Image Source -->
+			<property name="classes.dir" value="${basedir}/target/classes"/>
+
+			<java classname="org.eclipse.osee.framework.dev.help.ui.ImageExtractor" fork="true" failonerror="true">
 				<classpath>
-					<pathelement location="${bin.dir}"/>
+					<pathelement location="${classes.dir}"/>
 				</classpath>
 			</java>
 

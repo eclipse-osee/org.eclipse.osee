@@ -49,7 +49,7 @@
 
 					<execution>
 						<id>help-build</id>
-						<phase>generate-sources</phase>
+						<phase>process-classes</phase>
 						<configuration>
 							<target>
 								<property name="plugin_classpath" refid="maven.plugin.classpath" />
