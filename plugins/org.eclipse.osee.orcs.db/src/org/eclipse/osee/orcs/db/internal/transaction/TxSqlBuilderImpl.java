@@ -132,6 +132,9 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
       if (!isNewAndDeleted(data)) {
          if (isOtherChange || isApplicOnly) {
             boolean reuseGamma = reuseGamma(data);
+            if (isApplicOnly) {
+               data.setModType(ModificationType.MODIFIED);
+            }
             updateTxValues(data);
             if (!isApplicOnly && !reuseGamma) {
                updateGamma(data);
