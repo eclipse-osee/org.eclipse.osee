@@ -11,9 +11,13 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CurrentActionService } from '@osee/configuration-management/services';
-import { teamWorkflowDetailsMock } from '@osee/shared/testing';
+import {
+	teamWorkflowDetailsMock,
+	teamWorkflowTokenMock,
+} from '@osee/shared/testing';
 import { of } from 'rxjs';
 
 export const currentActionServiceMock: Partial<CurrentActionService> = {
 	branchWorkFlow: of(teamWorkflowDetailsMock),
+	branchWorkflowToken: of(teamWorkflowTokenMock),
 };

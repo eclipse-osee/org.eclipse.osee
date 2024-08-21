@@ -79,6 +79,12 @@ export class ActionDropDownComponent {
 
 	transitionApproved = toSignal(
 		this.teamWorkflow$.pipe(
+			filter(
+				(action) =>
+					action.TeamWfAtsId !== undefined &&
+					action.TeamWfAtsId !== '' &&
+					action.TeamWfAtsId != '-1'
+			),
 			switchMap((action) =>
 				this.actionService.isTransitionApproved(action)
 			),

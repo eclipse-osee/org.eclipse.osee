@@ -124,4 +124,17 @@ export class ArtifactHierarchyPanelComponent {
 			)
 			.subscribe();
 	}
+
+	displayWorkflowButtons = toSignal(
+		this.currentActionService.branchWorkflowToken.pipe(
+			map(
+				(branchWorkflowToken) =>
+					branchWorkflowToken.id !== undefined &&
+					branchWorkflowToken.id !== '-1'
+			)
+		),
+		{
+			initialValue: false,
+		}
+	);
 }

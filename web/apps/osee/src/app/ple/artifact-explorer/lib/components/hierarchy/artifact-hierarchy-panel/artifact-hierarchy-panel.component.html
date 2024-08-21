@@ -25,17 +25,19 @@
 			<osee-view-selector />
 			@if (branchId() !== '' && branchId() !== '570') {
 				<div class="tw-flex tw-items-center tw-gap-1">
-					<osee-current-action-drop-down />
-					@if (branchType() === 'working') {
-						<button
-							mat-raised-button
-							class="tw-flex tw-justify-center tw-bg-primary tw-text-background [&_*]:tw-m-0"
-							(click)="openTeamWorkflowTab()"
-							matTooltip="Open Team Workflow in tab">
-							<mat-icon class="material-icons-outlined"
-								>assignment</mat-icon
-							>
-						</button>
+					@if (displayWorkflowButtons()) {
+						<osee-current-action-drop-down />
+						@if (branchType() === 'working') {
+							<button
+								mat-raised-button
+								class="tw-flex tw-justify-center tw-bg-primary tw-text-background [&_*]:tw-m-0"
+								(click)="openTeamWorkflowTab()"
+								matTooltip="Open Team Workflow in tab">
+								<mat-icon class="material-icons-outlined"
+									>assignment</mat-icon
+								>
+							</button>
+						}
 					}
 				</div>
 			}
