@@ -35,8 +35,7 @@ public class XViewerDiffsBetweenColumnsColumn extends XViewerComputedColumn {
 
    private XViewerDiffsBetweenColumnsColumn(String id) {
       super(id, XViewerText.get("column.diffsBetweenColumns.name"), 30, XViewerAlign.Left, false, SortDataType.String, //$NON-NLS-1$
-         false,
-         XViewerText.get("column.diffsBetweenColumns.description")); //$NON-NLS-1$
+         false, XViewerText.get("column.diffsBetweenColumns.description")); //$NON-NLS-1$
    }
 
    @Override

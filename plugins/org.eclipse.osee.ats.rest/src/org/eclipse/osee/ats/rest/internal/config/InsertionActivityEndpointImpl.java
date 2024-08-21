@@ -97,7 +97,8 @@ public class InsertionActivityEndpointImpl extends BaseConfigEndpointImpl<JaxIns
    }
 
    @Override
-   protected void create(JaxInsertionActivity jaxInsertionActivity, ArtifactId insertionActivityArtId, IAtsChangeSet changes) {
+   protected void create(JaxInsertionActivity jaxInsertionActivity, ArtifactId insertionActivityArtId,
+      IAtsChangeSet changes) {
       ArtifactReadable insertionActivityArt = (ArtifactReadable) insertionActivityArtId;
       if (insertionActivityArt.getRelatedCount(AtsRelationTypes.InsertionToInsertionActivity_Insertion) == 0) {
          ArtifactReadable insertionArt =

@@ -52,8 +52,8 @@ public class PublishingMarkdownConversionTest {
       String markdown = "# Header 1";
       String expectedHtml = "<h1 id=\"header-1\">Header 1</h1>";
       try {
-         String html =
-            PublishingMarkdownConversionTest.publishingEndpoint.convertMarkdownToHtml(markdown).readEntity(String.class);
+         String html = PublishingMarkdownConversionTest.publishingEndpoint.convertMarkdownToHtml(markdown).readEntity(
+            String.class);
          String trimmedHtml = trimHtml(html);
          assertEquals(expectedHtml, trimmedHtml);
       } catch (Exception e) {
@@ -66,8 +66,8 @@ public class PublishingMarkdownConversionTest {
       String markdown = "**Bold Text**";
       String expectedHtml = "<p><strong>Bold Text</strong></p>";
       try {
-         String html =
-            PublishingMarkdownConversionTest.publishingEndpoint.convertMarkdownToHtml(markdown).readEntity(String.class);
+         String html = PublishingMarkdownConversionTest.publishingEndpoint.convertMarkdownToHtml(markdown).readEntity(
+            String.class);
          String trimmedHtml = trimHtml(html);
          assertEquals(expectedHtml, trimmedHtml);
       } catch (Exception e) {
@@ -80,8 +80,8 @@ public class PublishingMarkdownConversionTest {
       String markdown = "*Italic Text*";
       String expectedHtml = "<p><em>Italic Text</em></p>";
       try {
-         String html =
-            PublishingMarkdownConversionTest.publishingEndpoint.convertMarkdownToHtml(markdown).readEntity(String.class);
+         String html = PublishingMarkdownConversionTest.publishingEndpoint.convertMarkdownToHtml(markdown).readEntity(
+            String.class);
          String trimmedHtml = trimHtml(html);
          assertEquals(expectedHtml, trimmedHtml);
       } catch (Exception e) {
@@ -94,8 +94,8 @@ public class PublishingMarkdownConversionTest {
       String markdown = "[Link](http://example.com)";
       String expectedHtml = "<p><a href=\"http://example.com\">Link</a></p>";
       try {
-         String html =
-            PublishingMarkdownConversionTest.publishingEndpoint.convertMarkdownToHtml(markdown).readEntity(String.class);
+         String html = PublishingMarkdownConversionTest.publishingEndpoint.convertMarkdownToHtml(markdown).readEntity(
+            String.class);
          String trimmedHtml = trimHtml(html);
          assertEquals(expectedHtml, trimmedHtml);
       } catch (Exception e) {
@@ -109,8 +109,8 @@ public class PublishingMarkdownConversionTest {
       String expectedHtml =
          "<table>\n<thead>\n<tr><th align=\"center\">Header 1</th><th align=\"left\">Header 2</th><th align=\"right\">Header 3</th></tr>\n</thead>\n<tbody>\n<tr><td align=\"center\">Cell 1</td><td align=\"left\">Cell 2</td><td align=\"right\">Cell 3</td></tr>\n</tbody>\n</table>";
       try {
-         String html =
-            PublishingMarkdownConversionTest.publishingEndpoint.convertMarkdownToHtml(markdown).readEntity(String.class);
+         String html = PublishingMarkdownConversionTest.publishingEndpoint.convertMarkdownToHtml(markdown).readEntity(
+            String.class);
          String trimmedHtml = trimHtml(html);
          assertEquals(expectedHtml, trimmedHtml);
       } catch (Exception e) {
@@ -124,8 +124,8 @@ public class PublishingMarkdownConversionTest {
       String expectedHtml =
          "<ul>\n<li class=\"task-list-item\"><input type=\"checkbox\" class=\"task-list-item-checkbox\" checked=\"checked\" disabled=\"disabled\" readonly=\"readonly\" />&nbsp;Task 1</li>\n<li class=\"task-list-item\"><input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled=\"disabled\" readonly=\"readonly\" />&nbsp;Task 2</li>\n</ul>";
       try {
-         String html =
-            PublishingMarkdownConversionTest.publishingEndpoint.convertMarkdownToHtml(markdown).readEntity(String.class);
+         String html = PublishingMarkdownConversionTest.publishingEndpoint.convertMarkdownToHtml(markdown).readEntity(
+            String.class);
          String trimmedHtml = trimHtml(html);
          assertEquals(expectedHtml, trimmedHtml);
       } catch (Exception e) {
@@ -138,8 +138,8 @@ public class PublishingMarkdownConversionTest {
       String markdown = "- Item 1\n- Item 2";
       String expectedHtml = "<ul>\n<li>Item 1</li>\n<li>Item 2</li>\n</ul>";
       try {
-         String html =
-            PublishingMarkdownConversionTest.publishingEndpoint.convertMarkdownToHtml(markdown).readEntity(String.class);
+         String html = PublishingMarkdownConversionTest.publishingEndpoint.convertMarkdownToHtml(markdown).readEntity(
+            String.class);
          String trimmedHtml = trimHtml(html);
          assertEquals(expectedHtml, trimmedHtml);
       } catch (Exception e) {
@@ -152,8 +152,8 @@ public class PublishingMarkdownConversionTest {
       String markdown = "---";
       String expectedHtml = "<hr />";
       try {
-         String html =
-            PublishingMarkdownConversionTest.publishingEndpoint.convertMarkdownToHtml(markdown).readEntity(String.class);
+         String html = PublishingMarkdownConversionTest.publishingEndpoint.convertMarkdownToHtml(markdown).readEntity(
+            String.class);
          String trimmedHtml = trimHtml(html);
          assertEquals(expectedHtml, trimmedHtml);
       } catch (Exception e) {

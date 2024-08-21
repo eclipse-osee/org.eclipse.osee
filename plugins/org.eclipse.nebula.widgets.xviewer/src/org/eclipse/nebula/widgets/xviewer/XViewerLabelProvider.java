@@ -118,7 +118,8 @@ public abstract class XViewerLabelProvider implements ITableLabelProvider, ITabl
       }
    }
 
-   public static String getPrecomputedText(Object element, XViewerColumn xViewerColumn, IXViewerPreComputedColumn preComputedColumn, boolean debugLoading) {
+   public static String getPrecomputedText(Object element, XViewerColumn xViewerColumn,
+      IXViewerPreComputedColumn preComputedColumn, boolean debugLoading) {
       Long key = preComputedColumn.getKey(element);
       String cachedValue = xViewerColumn.getPreComputedValue(key);
       Long startTime = debugLoading ? (new Date()).getTime() : 0L;

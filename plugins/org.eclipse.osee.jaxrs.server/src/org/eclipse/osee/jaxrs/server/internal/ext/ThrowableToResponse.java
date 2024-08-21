@@ -49,7 +49,8 @@ class ThrowableToResponse {
     * @return the {@link Response} object for the specified exception.
     */
 
-   static Response toResponse(Throwable throwable, UriInfo uriInfo, ExceptionRegistryOperations exceptionRegistryOperations, Log logger) {
+   static Response toResponse(Throwable throwable, UriInfo uriInfo,
+      ExceptionRegistryOperations exceptionRegistryOperations, Log logger) {
 
       StatusType status;
 

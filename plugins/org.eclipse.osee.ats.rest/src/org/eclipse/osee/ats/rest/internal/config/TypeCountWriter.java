@@ -42,7 +42,8 @@ public class TypeCountWriter {
       this.orcsApi = orcsApi;
    }
 
-   public void write(BranchId branch, Set<ArtifactId> newArts, Set<ArtifactId> modifiedArts, Set<ArtifactId> deletedArts, List<Long> artTypes, List<Long> attrTypes, OutputStream outputStream) {
+   public void write(BranchId branch, Set<ArtifactId> newArts, Set<ArtifactId> modifiedArts,
+      Set<ArtifactId> deletedArts, List<Long> artTypes, List<Long> attrTypes, OutputStream outputStream) {
       try {
          Writer writer = new OutputStreamWriter(outputStream, "UTF-8");
          ExcelXmlWriter sheetWriter = new ExcelXmlWriter(writer);

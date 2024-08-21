@@ -56,7 +56,8 @@ public class ReportResource {
 
    @GET
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-   public Response getTypeCount(@QueryParam("branch") BranchId branch, @QueryParam("artTypes") List<Long> artTypes, @QueryParam("attrTypes") List<Long> attrTypes) {
+   public Response getTypeCount(@QueryParam("branch") BranchId branch, @QueryParam("artTypes") List<Long> artTypes,
+      @QueryParam("attrTypes") List<Long> attrTypes) {
       List<ChangeItem> changes = getChanges(branch);
       Set<ArtifactId> newArts = new HashSet<>();
       Set<ArtifactId> modArts = new HashSet<>();
@@ -83,7 +84,8 @@ public class ReportResource {
          "application/xml").build();
    }
 
-   private void buildArtIdToChangeMap(List<ChangeItem> changes, Map<ArtifactId, Pair<ChangeItem, Set<ChangeItem>>> artToChanges) {
+   private void buildArtIdToChangeMap(List<ChangeItem> changes,
+      Map<ArtifactId, Pair<ChangeItem, Set<ChangeItem>>> artToChanges) {
       for (ChangeItem change : changes) {
          ArtifactId artifact = change.getArtId();
          ChangeType changeType = change.getChangeType();
@@ -109,7 +111,8 @@ public class ReportResource {
       }
    }
 
-   private void buildLists(Map<ArtifactId, Pair<ChangeItem, Set<ChangeItem>>> artToChanges, Set<ArtifactId> newArts, Set<ArtifactId> modArts, Set<ArtifactId> deletedArts) {
+   private void buildLists(Map<ArtifactId, Pair<ChangeItem, Set<ChangeItem>>> artToChanges, Set<ArtifactId> newArts,
+      Set<ArtifactId> modArts, Set<ArtifactId> deletedArts) {
       for (ArtifactId artifact : artToChanges.keySet()) {
          Pair<ChangeItem, Set<ChangeItem>> pair = artToChanges.get(artifact);
          ChangeItem artChange = pair.getFirst();

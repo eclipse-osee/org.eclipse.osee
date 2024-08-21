@@ -53,12 +53,14 @@ public final class Engines {
       //
    }
 
-   public static ArtifactQuerySqlContextFactoryImpl createArtifactSqlContext(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, TaggingEngine taggingEngine) {
+   public static ArtifactQuerySqlContextFactoryImpl createArtifactSqlContext(Log logger, SqlJoinFactory joinFactory,
+      JdbcClient jdbcClient, TaggingEngine taggingEngine) {
       SqlHandlerFactory handlerFactory = createArtifactSqlHandlerFactory(taggingEngine.getTagProcessor());
       return new ArtifactQuerySqlContextFactoryImpl(joinFactory, jdbcClient, handlerFactory);
    }
 
-   public static ObjectQueryCallableFactory newArtifactQueryEngine(QuerySqlContextFactory sqlContextFactory, Log logger, TaggingEngine taggingEngine, ExecutorAdmin executorAdmin, DataLoaderFactory objectLoader) {
+   public static ObjectQueryCallableFactory newArtifactQueryEngine(QuerySqlContextFactory sqlContextFactory, Log logger,
+      TaggingEngine taggingEngine, ExecutorAdmin executorAdmin, DataLoaderFactory objectLoader) {
       AttributeDataMatcher matcher = new AttributeDataMatcher(logger, taggingEngine);
       QueryFilterFactoryImpl filterFactory = new QueryFilterFactoryImpl(logger, executorAdmin, matcher);
       return new ObjectQueryCallableFactory(logger, objectLoader, sqlContextFactory, filterFactory);
@@ -69,23 +71,27 @@ public final class Engines {
       return new TaggingEngine(tagProcessor);
    }
 
-   public static QuerySqlContextFactory newSqlContextFactory(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlTable table, String idColumn, SqlHandlerFactory handlerFactory, ObjectQueryType type) {
+   public static QuerySqlContextFactory newSqlContextFactory(Log logger, SqlJoinFactory joinFactory,
+      JdbcClient jdbcClient, SqlTable table, String idColumn, SqlHandlerFactory handlerFactory, ObjectQueryType type) {
       return new QuerySqlContextFactoryImpl(logger, joinFactory, jdbcClient, handlerFactory, table, idColumn, type);
    }
 
-   public static QuerySqlContextFactory newBranchSqlContextFactory(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient) {
+   public static QuerySqlContextFactory newBranchSqlContextFactory(Log logger, SqlJoinFactory joinFactory,
+      JdbcClient jdbcClient) {
       SqlHandlerFactory handlerFactory = createBranchSqlHandlerFactory(logger);
       return newSqlContextFactory(logger, joinFactory, jdbcClient, OseeDb.BRANCH_TABLE, "branch_id", handlerFactory,
          ObjectQueryType.BRANCH);
    }
 
-   public static QuerySqlContextFactory newTxSqlContextFactory(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient) {
+   public static QuerySqlContextFactory newTxSqlContextFactory(Log logger, SqlJoinFactory joinFactory,
+      JdbcClient jdbcClient) {
       SqlHandlerFactory handlerFactory = createTxSqlHandlerFactory(logger);
       return newSqlContextFactory(logger, joinFactory, jdbcClient, OseeDb.TX_DETAILS_TABLE, "transaction_id",
          handlerFactory, ObjectQueryType.TX);
    }
 
-   public static QueryEngineIndexer newIndexingEngine(Log logger, JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, TaggingEngine taggingEngine, ExecutorAdmin executorAdmin, IResourceManager resourceManager) {
+   public static QueryEngineIndexer newIndexingEngine(Log logger, JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory,
+      TaggingEngine taggingEngine, ExecutorAdmin executorAdmin, IResourceManager resourceManager) {
       IndexedResourceLoader resourceLoader = new GammaQueueIndexerDataSourceLoader(logger, jdbcClient, resourceManager);
       IndexerCallableFactory callableFactory =
          new IndexerCallableFactoryImpl(logger, jdbcClient, taggingEngine, resourceLoader);

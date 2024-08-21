@@ -36,17 +36,20 @@ public interface TupleEndpoint {
    @POST
    @Path("tuple2")
    @Produces(MediaType.APPLICATION_JSON)
-   <E1, E2> GammaId addTuple2(@QueryParam("tupleType") Tuple2Type<E1, E2> tupleType, @QueryParam("e1") E1 e1, @QueryParam("e2") E2 e2);
+   <E1, E2> GammaId addTuple2(@QueryParam("tupleType") Tuple2Type<E1, E2> tupleType, @QueryParam("e1") E1 e1,
+      @QueryParam("e2") E2 e2);
 
    @POST
    @Path("tuple3")
    @Produces(MediaType.APPLICATION_JSON)
-   <E1, E2, E3> GammaId addTuple3(@QueryParam("tupleType") Tuple3Type<E1, E2, E3> tupleType, @QueryParam("e1") E1 e1, @QueryParam("e2") E2 e2, @QueryParam("e3") E3 e3);
+   <E1, E2, E3> GammaId addTuple3(@QueryParam("tupleType") Tuple3Type<E1, E2, E3> tupleType, @QueryParam("e1") E1 e1,
+      @QueryParam("e2") E2 e2, @QueryParam("e3") E3 e3);
 
    @POST
    @Path("tuple4")
    @Produces(MediaType.APPLICATION_JSON)
-   <E1, E2, E3, E4> GammaId addTuple4(@QueryParam("tupleType") Tuple4Type<E1, E2, E3, E4> tupleType, @QueryParam("e1") E1 e1, @QueryParam("e2") E2 e2, @QueryParam("e3") E3 e3, @QueryParam("e4") E4 e4);
+   <E1, E2, E3, E4> GammaId addTuple4(@QueryParam("tupleType") Tuple4Type<E1, E2, E3, E4> tupleType,
+      @QueryParam("e1") E1 e1, @QueryParam("e2") E2 e2, @QueryParam("e3") E3 e3, @QueryParam("e4") E4 e4);
 
    @DELETE
    @Path("{tupleTable}/{gammaId}")

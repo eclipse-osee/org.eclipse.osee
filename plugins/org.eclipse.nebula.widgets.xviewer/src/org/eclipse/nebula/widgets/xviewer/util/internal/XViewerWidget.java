@@ -59,8 +59,7 @@ public abstract class XViewerWidget {
    }
 
    protected boolean displayLabel = true;
-   private final Set<XViewerWidgetModifiedListener> modifiedListeners =
-      new LinkedHashSet<>();
+   private final Set<XViewerWidgetModifiedListener> modifiedListeners = new LinkedHashSet<>();
    private MouseListener mouseLabelListener;
 
    /**

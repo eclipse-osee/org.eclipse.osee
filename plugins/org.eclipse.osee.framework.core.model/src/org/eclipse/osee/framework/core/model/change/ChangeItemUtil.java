@@ -310,7 +310,8 @@ public final class ChangeItemUtil {
    }
 
    public static boolean replacedWithVerAndNotRessurected(ChangeItem changeItem) {
-      if (hasBeenReplacedWithVersion(changeItem) && !isResurrected(changeItem) && !hasApplicabilityOnlyChange(changeItem)) {
+      if (hasBeenReplacedWithVersion(
+         changeItem) && !isResurrected(changeItem) && !hasApplicabilityOnlyChange(changeItem)) {
          changeItem.setIgnoreType(ChangeIgnoreType.REPLACED_WITH_VERSION_AND_NOT_RESURRECTED);
          return true;
       }

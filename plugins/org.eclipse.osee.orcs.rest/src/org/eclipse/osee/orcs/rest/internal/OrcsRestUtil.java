@@ -74,29 +74,26 @@ public final class OrcsRestUtil {
       data.setTxType(tx.getTxType());
       return data;
    }
-   
+
    private static boolean isSearchedFile(String filename, String subname, String ext) {
-      if(filename.length() + 1 < subname.length() + ext.length())
-         return false;
-      
+      if (filename.length() + 1 < subname.length() + ext.length()) return false;
+
       boolean getname = false;
       boolean getext = false;
-      
-      if(subname.isEmpty())
+
+      if (subname.isEmpty())
          getname = true;
-      else if(filename.contains(subname))
-         getname = true;        
-         
-      if(ext.isEmpty())
+      else if (filename.contains(subname)) getname = true;
+
+      if (ext.isEmpty())
          getext = true;
-      else if(filename.substring(filename.length() - ext.length()-1, filename.length()).equals("." + ext))
-         getext = true;
-      
-      if(getname && getext)
-         return true;
-      return false;      
+      else if (filename.substring(filename.length() - ext.length() - 1, filename.length()).equals(
+         "." + ext)) getext = true;
+
+      if (getname && getext) return true;
+      return false;
    }
-   
+
    public static File newFile(File destinationDir, ZipEntry zipEntry) throws IOException {
       File destFile = new File(destinationDir, zipEntry.getName());
       String destDirPath = destinationDir.getCanonicalPath();
@@ -107,42 +104,41 @@ public final class OrcsRestUtil {
       }
       return destFile;
    }
-   
+
    /*
-    * get the latest file name from folder. Search for all name if subname is empty
-    * Search for all files if ext is empty
+    * get the latest file name from folder. Search for all name if subname is empty Search for all files if ext is empty
     */
-   public static  String getLatestFile(String folder, String subname, String ext) {
+   public static String getLatestFile(String folder, String subname, String ext) {
 
       File dir = new File(folder);
       File[] files = dir.listFiles();
       if (files == null || files.length == 0) {
-          return null;
+         return null;
       }
 
       File lastModifiedFile = files[0];
       int index = -1;
       for (int i = 0; i < files.length; i++) {
-         if(isSearchedFile(files[i].getName(), subname, ext)) {
+         if (isSearchedFile(files[i].getName(), subname, ext)) {
             index = i;
             lastModifiedFile = files[i];
             break;
          }
       }
-      
+
       for (int i = index + 1; i < files.length; i++) {
-          if (isSearchedFile(files[i].getName(), subname, ext) && lastModifiedFile.lastModified() < files[i].lastModified()) {
-              lastModifiedFile = files[i];
-          }
+         if (isSearchedFile(files[i].getName(), subname,
+            ext) && lastModifiedFile.lastModified() < files[i].lastModified()) {
+            lastModifiedFile = files[i];
+         }
       }
       String k = lastModifiedFile.toString();
       String name = lastModifiedFile.getName();
 
       //Path p = Paths.get(k);
       //String file = p.getFileName().toString();
-      
-      if(index > -1)
-         return name;
+
+      if (index > -1) return name;
       return null;
-  }
+   }
 }

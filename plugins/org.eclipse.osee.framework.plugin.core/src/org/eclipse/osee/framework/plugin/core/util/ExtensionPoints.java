@@ -33,7 +33,8 @@ import org.osgi.framework.Bundle;
  * @author Ryan D. Brooks
  */
 public class ExtensionPoints {
-   public static List<IConfigurationElement> getExtensionElements(Plugin plugin, String extensionPointName, String elementName) {
+   public static List<IConfigurationElement> getExtensionElements(Plugin plugin, String extensionPointName,
+      String elementName) {
       Bundle bundle = plugin.getBundle();
       return getExtensionElements(bundle.getSymbolicName() + "." + extensionPointName, elementName);
    }
@@ -69,7 +70,8 @@ public class ExtensionPoints {
     * @param extensionPointId <plugin>.Point Id
     * @param extensionPointUniqueIds array of unique ids
     */
-   public static List<IExtension> getExtensionsByUniqueId(String extensionPointId, Collection<String> extensionPointUniqueIds) {
+   public static List<IExtension> getExtensionsByUniqueId(String extensionPointId,
+      Collection<String> extensionPointUniqueIds) {
       List<IExtension> extensions = new ArrayList<>();
       for (String entensionPointUniqueId : extensionPointUniqueIds) {
          IExtension extension = Platform.getExtensionRegistry().getExtension(entensionPointUniqueId);

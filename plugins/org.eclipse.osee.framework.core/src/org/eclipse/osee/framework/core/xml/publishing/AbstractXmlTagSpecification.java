@@ -83,8 +83,7 @@ class AbstractXmlTagSpecification extends AbstractXmlNameSpecification {
     * @throws IllegalArgumentException when <code>tagName</code> is <code>null</code> or blank.
     */
 
-   AbstractXmlTagSpecification(@NonNull AbstractXmlNamespaceSpecification abstractXmlNamespaceSpecification,
-      @NonNull String tagName) {
+   AbstractXmlTagSpecification(@NonNull AbstractXmlNamespaceSpecification abstractXmlNamespaceSpecification, @NonNull String tagName) {
       this(abstractXmlNamespaceSpecification, tagName, Set.of());
    }
 
@@ -101,8 +100,7 @@ class AbstractXmlTagSpecification extends AbstractXmlNameSpecification {
     * </ul>
     */
 
-   AbstractXmlTagSpecification(@NonNull AbstractXmlNamespaceSpecification abstractXmlNamespaceSpecification,
-      @NonNull String tagName, @NonNull Set<@NonNull XmlAttributeSpecification> wordXmlAttributes) {
+   AbstractXmlTagSpecification(@NonNull AbstractXmlNamespaceSpecification abstractXmlNamespaceSpecification, @NonNull String tagName, @NonNull Set<@NonNull XmlAttributeSpecification> wordXmlAttributes) {
 
       super(abstractXmlNamespaceSpecification, tagName);
 

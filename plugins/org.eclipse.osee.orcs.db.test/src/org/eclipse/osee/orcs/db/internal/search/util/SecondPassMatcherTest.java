@@ -204,7 +204,9 @@ public class SecondPassMatcherTest {
       return data;
    }
 
-   private static void addTest(Collection<Object[]> testData, StreamMatcher matcher, String data, String toSearch, QueryOption caseType, QueryOption delimiter, QueryOption order, QueryOption countType, boolean findAllMatchLocations, List<MatchLocation> expectedLocs) {
+   private static void addTest(Collection<Object[]> testData, StreamMatcher matcher, String data, String toSearch,
+      QueryOption caseType, QueryOption delimiter, QueryOption order, QueryOption countType,
+      boolean findAllMatchLocations, List<MatchLocation> expectedLocs) {
       testData.add(new Object[] {
          matcher,
          data,

@@ -32,7 +32,8 @@ public class NativeDocumentExtractor extends AbstractArtifactExtractor {
    }
 
    @Override
-   protected XResultData extractFromSource(OrcsApi orcsApi, XResultData results, URI source, RoughArtifactCollector collector) {
+   protected XResultData extractFromSource(OrcsApi orcsApi, XResultData results, URI source,
+      RoughArtifactCollector collector) {
       String extension = Lib.getExtension(source.toASCIIString());
       String name = Lib.removeExtension(new File(source).getName());
 

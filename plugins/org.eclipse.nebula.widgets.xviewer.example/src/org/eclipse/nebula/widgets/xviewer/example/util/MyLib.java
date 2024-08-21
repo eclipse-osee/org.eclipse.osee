@@ -59,11 +59,11 @@ public class MyLib {
       if (!PlatformUI.isWorkbenchRunning()) {
          MyLog.log(Activator.class, Level.SEVERE, message);
       } else {
-			ensureInDisplayThread(() -> {
-				MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), title,
-						message);
-			});
-	      }
+         ensureInDisplayThread(() -> {
+            MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), title,
+               message);
+         });
+      }
    }
 
    public static GridLayout getZeroMarginLayout(int numColumns, boolean equalColumnWidth) {

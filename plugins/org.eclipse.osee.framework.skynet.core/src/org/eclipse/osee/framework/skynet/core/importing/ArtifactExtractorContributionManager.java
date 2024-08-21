@@ -45,8 +45,7 @@ public class ArtifactExtractorContributionManager {
    public List<IArtifactExtractorDelegate> getAllDelegates() {
       List<IArtifactExtractorDelegate> contentHandlers = new ArrayList<>();
       ExtensionDefinedObjects<IArtifactExtractorDelegate> contributions =
-         new ExtensionDefinedObjects<>(PARSER_DELEGATE_EXTENSION, PARSER_DELEGATE_ELEMENT,
-            CLASS_NAME_ATTRIBUTE, true);
+         new ExtensionDefinedObjects<>(PARSER_DELEGATE_EXTENSION, PARSER_DELEGATE_ELEMENT, CLASS_NAME_ATTRIBUTE, true);
       for (IArtifactExtractorDelegate delegate : contributions.getObjects()) {
          contentHandlers.add(delegate);
       }

@@ -51,8 +51,7 @@ public class DoubleEnumMap<Kp extends Enum<Kp>, Ks extends Enum<Ks>, V> implemen
     * Creates a {@link DoubleEnumMap}.
     */
 
-   public DoubleEnumMap(@NonNull Class<Kp> enumerationPrimaryKeyClass,
-      @NonNull Class<Ks> enumerationSecondaryKeyClass) {
+   public DoubleEnumMap(@NonNull Class<Kp> enumerationPrimaryKeyClass, @NonNull Class<Ks> enumerationSecondaryKeyClass) {
 
       final var safeEnumerationPrimaryKeyClass =
          Conditions.requireNonNull(enumerationPrimaryKeyClass, "enumerationPrimaryKeyClass");

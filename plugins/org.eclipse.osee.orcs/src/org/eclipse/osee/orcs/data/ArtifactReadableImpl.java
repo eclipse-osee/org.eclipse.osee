@@ -76,8 +76,7 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    private final HashCollection<AttributeId, ArtifactReadable> referenceAttributes = new HashCollection<>();
    private final HashCollection<AttributeTypeToken, ArtifactReadable> referenceAttributeByType = new HashCollection<>();
 
-   public ArtifactReadableImpl(Long id, ArtifactTypeToken artifactType, BranchToken branch, ArtifactId view,
-      ApplicabilityToken applicability, TransactionId txId, ModificationType modType, QueryFactory queryFactory) {
+   public ArtifactReadableImpl(Long id, ArtifactTypeToken artifactType, BranchToken branch, ArtifactId view, ApplicabilityToken applicability, TransactionId txId, ModificationType modType, QueryFactory queryFactory) {
       super(id);
       this.artifactType = artifactType;
       this.branch = branch;
@@ -90,8 +89,7 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       this.queryFactory = queryFactory;
    }
 
-   public ArtifactReadableImpl(Long id, ArtifactTypeToken artifactType, BranchToken branch, ArtifactId view,
-      ApplicabilityId applicability, TransactionId txId, ModificationType modType, QueryFactory queryFactory) {
+   public ArtifactReadableImpl(Long id, ArtifactTypeToken artifactType, BranchToken branch, ArtifactId view, ApplicabilityId applicability, TransactionId txId, ModificationType modType, QueryFactory queryFactory) {
       super(id);
       this.artifactType = artifactType;
       this.branch = branch;

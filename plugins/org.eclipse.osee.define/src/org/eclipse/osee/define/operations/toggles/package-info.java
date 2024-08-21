@@ -12,8 +12,8 @@
  **********************************************************************/
 
 /**
- * This package contains an implementation of the {@link ToggleAccessor} interface for for obtaining the value of configuration
- * toggles from the database.
+ * This package contains an implementation of the {@link ToggleAccessor} interface for for obtaining the value of
+ * configuration toggles from the database.
  */
 
 package org.eclipse.osee.define.operations.toggles;

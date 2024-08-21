@@ -295,7 +295,8 @@ public class ApplicabilityGrammarParser extends Parser {
 
    // $ANTLR start "config_applicability"
    // ApplicabilityGrammar.g:46:1: config_applicability : ( 'CONFIGURATION' | 'CONFIGURATION NOT' ) '[' ( expressions )+ ']' ;
-   public final ApplicabilityGrammarParser.config_applicability_return config_applicability() throws RecognitionException {
+   public final ApplicabilityGrammarParser.config_applicability_return config_applicability()
+      throws RecognitionException {
       ApplicabilityGrammarParser.config_applicability_return retval =
          new ApplicabilityGrammarParser.config_applicability_return();
       retval.start = input.LT(1);
@@ -396,7 +397,8 @@ public class ApplicabilityGrammarParser extends Parser {
 
    // $ANTLR start "configurationgroup_applicability"
    // ApplicabilityGrammar.g:48:1: configurationgroup_applicability : ( 'CONFIGURATIONGROUP' | 'CONFIGURATIONGROUP NOT' ) '[' ( expressions )+ ']' ;
-   public final ApplicabilityGrammarParser.configurationgroup_applicability_return configurationgroup_applicability() throws RecognitionException {
+   public final ApplicabilityGrammarParser.configurationgroup_applicability_return configurationgroup_applicability()
+      throws RecognitionException {
       ApplicabilityGrammarParser.configurationgroup_applicability_return retval =
          new ApplicabilityGrammarParser.configurationgroup_applicability_return();
       retval.start = input.LT(1);
@@ -497,7 +499,8 @@ public class ApplicabilityGrammarParser extends Parser {
 
    // $ANTLR start "feature_applicability"
    // ApplicabilityGrammar.g:50:1: feature_applicability : 'FEATURE[' ( expressions )+ ']' ;
-   public final ApplicabilityGrammarParser.feature_applicability_return feature_applicability() throws RecognitionException {
+   public final ApplicabilityGrammarParser.feature_applicability_return feature_applicability()
+      throws RecognitionException {
       ApplicabilityGrammarParser.feature_applicability_return retval =
          new ApplicabilityGrammarParser.feature_applicability_return();
       retval.start = input.LT(1);

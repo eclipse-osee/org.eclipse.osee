@@ -37,7 +37,8 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
    }
 
    @Override
-   protected ArtifactData createData(Object conditions, ArtifactObjectFactory factory, JdbcStatement chStmt, Options options) {
+   protected ArtifactData createData(Object conditions, ArtifactObjectFactory factory, JdbcStatement chStmt,
+      Options options) {
       ArtifactData toReturn = null;
 
       ArtifactId artifactId = ArtifactId.valueOf(chStmt.getLong("id2"));

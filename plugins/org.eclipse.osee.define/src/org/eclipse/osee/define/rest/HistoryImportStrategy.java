@@ -33,11 +33,13 @@ public interface HistoryImportStrategy {
     * R: renaming of a file<br/>
     * T: change in the type of the file<br/>
     */
-   ArtifactId getCodeUnit(BranchId branch, TransactionBuilder tx, String commitSHA, ChangeType changeType, String path, String newPath);
+   ArtifactId getCodeUnit(BranchId branch, TransactionBuilder tx, String commitSHA, ChangeType changeType, String path,
+      String newPath);
 
    boolean hasChangeIdAlredyImported(String changeId);
 
-   void handleCodeUnit(BranchId branch, ArtifactId codeUnit, TransactionBuilder tx, ArtifactId repository, ArtifactId commit, ChangeType changeType, String path);
+   void handleCodeUnit(BranchId branch, ArtifactId codeUnit, TransactionBuilder tx, ArtifactId repository,
+      ArtifactId commit, ChangeType changeType, String path);
 
    ArtifactId findCodeUnit(ArtifactId repository, String path);
 

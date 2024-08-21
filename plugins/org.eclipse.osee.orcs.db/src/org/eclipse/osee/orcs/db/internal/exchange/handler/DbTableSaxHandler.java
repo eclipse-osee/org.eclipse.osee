@@ -40,7 +40,8 @@ import org.eclipse.osee.orcs.db.internal.util.ZipBinaryResource;
  */
 public class DbTableSaxHandler extends BaseDbSaxHandler {
 
-   public static DbTableSaxHandler createWithLimitedCache(Log logger, JdbcClient jdbcClient, IResourceManager resourceManager, IOseeExchangeDataProvider exportDataProvider, int cacheLimit) {
+   public static DbTableSaxHandler createWithLimitedCache(Log logger, JdbcClient jdbcClient,
+      IResourceManager resourceManager, IOseeExchangeDataProvider exportDataProvider, int cacheLimit) {
       return new DbTableSaxHandler(logger, jdbcClient, resourceManager, exportDataProvider, false, cacheLimit);
    }
 

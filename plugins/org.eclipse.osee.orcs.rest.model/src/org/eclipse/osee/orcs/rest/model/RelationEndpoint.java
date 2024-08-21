@@ -44,7 +44,8 @@ public interface RelationEndpoint {
    @GET
    @Path("getRelatedHierarchy/{artifact}")
    @Produces({MediaType.APPLICATION_JSON})
-   List<ArtifactToken> getRelatedHierarchy(@PathParam("artifact") ArtifactId artifact, @DefaultValue("-1") @QueryParam("view") ArtifactId view);
+   List<ArtifactToken> getRelatedHierarchy(@PathParam("artifact") ArtifactId artifact,
+      @DefaultValue("-1") @QueryParam("view") ArtifactId view);
 
    /**
     * Find the recursive related artifacts of the given artifact
@@ -57,7 +58,9 @@ public interface RelationEndpoint {
    @GET
    @Path("getRelatedRecursive/{artifact}/relationTypeToken/{relationType}")
    @Produces({MediaType.APPLICATION_JSON})
-   List<ArtifactToken> getRelatedRecursive(@PathParam("artifact") ArtifactId artifact, @PathParam("relationType") RelationTypeToken relationType, @DefaultValue("-1") @QueryParam("view") ArtifactId view);
+   List<ArtifactToken> getRelatedRecursive(@PathParam("artifact") ArtifactId artifact,
+      @PathParam("relationType") RelationTypeToken relationType,
+      @DefaultValue("-1") @QueryParam("view") ArtifactId view);
 
    /**
     * Create a relation between the given artifacts of the given relation type
@@ -70,7 +73,8 @@ public interface RelationEndpoint {
    @POST
    @Path("createRelationByType/sideA/{sideA}/sideB/{sideB}/relationTypeToken/{relationType}")
    @Consumes({MediaType.TEXT_PLAIN})
-   Response createRelationByType(@PathParam("sideA") ArtifactId sideA, @PathParam("sideB") ArtifactId sideB, @PathParam("relationType") RelationTypeToken relationType);
+   Response createRelationByType(@PathParam("sideA") ArtifactId sideA, @PathParam("sideB") ArtifactId sideB,
+      @PathParam("relationType") RelationTypeToken relationType);
 
    /**
     * Convert specific relation on an artifact to its newer version
@@ -84,6 +88,8 @@ public interface RelationEndpoint {
    @Path("convert/artifact/{artifactA}/{oldRelationType}/{newRelationType}")
    @Consumes({MediaType.TEXT_PLAIN})
    @Produces({MediaType.APPLICATION_JSON})
-   List<RelationTypeToken> convertRelations(@PathParam("artifactA") ArtifactId artifactA, @PathParam("oldRelationType") RelationTypeToken oldRelationType, @PathParam("newRelationType") RelationTypeToken newRelationType);
+   List<RelationTypeToken> convertRelations(@PathParam("artifactA") ArtifactId artifactA,
+      @PathParam("oldRelationType") RelationTypeToken oldRelationType,
+      @PathParam("newRelationType") RelationTypeToken newRelationType);
 
 }

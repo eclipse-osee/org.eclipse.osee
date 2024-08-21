@@ -96,7 +96,8 @@ public class AddRequirementData implements IDbInitializationTask {
       }
    }
 
-   private void importRequirements(BranchId branch, ArtifactTypeToken requirementType, ArtifactToken folderArt, File file) throws Exception {
+   private void importRequirements(BranchId branch, ArtifactTypeToken requirementType, ArtifactToken folderArt,
+      File file) throws Exception {
       if (DEBUG) {
          OseeLog.logf(AddRequirementData.class, Level.INFO, "Importing \"%s\" requirements on branch \"%s\"",
             folderArt.toStringWithId(), branch);
@@ -238,7 +239,8 @@ public class AddRequirementData implements IDbInitializationTask {
 
    }
 
-   private Collection<Artifact> getArtTypeRequirements(boolean DEBUG, ArtifactTypeToken artifactType, String artifactNameStr, BranchId branch) {
+   private Collection<Artifact> getArtTypeRequirements(boolean DEBUG, ArtifactTypeToken artifactType,
+      String artifactNameStr, BranchId branch) {
       if (DEBUG) {
          OseeLog.logf(AddRequirementData.class, Level.INFO, "Getting [%s] requirement(s) from Branch [%s]",
             artifactNameStr, branch.getIdString());

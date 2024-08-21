@@ -77,7 +77,8 @@ public interface DataRightsOperations {
     * @implNote This method is for REST API calls and Operations calls.
     */
 
-   DataRightResult getDataRights(BranchId branchIdentifier, String overrideClassification, List<ArtifactId> artifactIdentifiers);
+   DataRightResult getDataRights(BranchId branchIdentifier, String overrideClassification,
+      List<ArtifactId> artifactIdentifiers);
 
    /**
     * Gets the data rights, page orientation, and sequence flags for the specified publish artifacts.
@@ -92,7 +93,8 @@ public interface DataRightsOperations {
     * @implNote This method is for Operations calls only.
     */
 
-   DataRightResult getDataRights(List<ArtifactId> artifactIdentifiers, Map<ArtifactId, ArtifactReadable> artifactMap, String overrideClassification);
+   DataRightResult getDataRights(List<ArtifactId> artifactIdentifiers, Map<ArtifactId, ArtifactReadable> artifactMap,
+      String overrideClassification);
 
 }
 

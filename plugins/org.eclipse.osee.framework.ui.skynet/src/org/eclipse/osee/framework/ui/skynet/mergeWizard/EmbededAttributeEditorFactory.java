@@ -28,7 +28,8 @@ public class EmbededAttributeEditorFactory {
    private final static String VALID_FLOAT_REG_EX = "^[0-9\\.]+$";
    private final static String VALID_INTEGER_REG_EX = "^[0-9]+$";
 
-   public static IEmbeddedAttributeEditor getEmbeddedEditor(AttributeTypeGeneric<?> attributeType, String displayName, final Collection<?> attributeHolder, boolean persist) {
+   public static IEmbeddedAttributeEditor getEmbeddedEditor(AttributeTypeGeneric<?> attributeType, String displayName,
+      final Collection<?> attributeHolder, boolean persist) {
       try {
          if (attributeType.isDate()) {
             return new EmbeddedDateAttributeEditor(null, attributeHolder, displayName, attributeType, persist);

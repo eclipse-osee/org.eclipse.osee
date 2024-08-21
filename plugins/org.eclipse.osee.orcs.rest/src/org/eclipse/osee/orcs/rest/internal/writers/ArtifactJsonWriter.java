@@ -79,7 +79,9 @@ public class ArtifactJsonWriter implements MessageBodyWriter<Object> {
    }
 
    @Override
-   public void writeTo(Object object, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
+   public void writeTo(Object object, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
+      MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
+      throws IOException, WebApplicationException {
       JsonGenerator writer = null;
       if (type.isAssignableFrom(ArtifactReadable.class)) {
          ArtifactReadable artifact = (ArtifactReadable) object;

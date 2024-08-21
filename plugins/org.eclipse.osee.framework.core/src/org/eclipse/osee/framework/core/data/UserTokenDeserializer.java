@@ -65,8 +65,7 @@ public class UserTokenDeserializer extends StdDeserializer<@NonNull UserToken> {
          }
 
          return UserToken.create(readTree.get("id").asLong(), readTree.get("name").textValue(),
-            readTree.get("email").textValue(), readTree.get("userId").textValue(),
-            active, loginIds, userGroups);
+            readTree.get("email").textValue(), readTree.get("userId").textValue(), active, loginIds, userGroups);
       }
 
       return null;

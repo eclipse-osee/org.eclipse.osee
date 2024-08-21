@@ -89,7 +89,8 @@ public class RelationOrderData {
       return lists.get(type, side);
    }
 
-   public void addOrderList(RelationTypeToken relationType, RelationSide relationSide, RelationSorter sorterId, List<String> guidList) {
+   public void addOrderList(RelationTypeToken relationType, RelationSide relationSide, RelationSorter sorterId,
+      List<String> guidList) {
       lists.put(relationType, relationSide, new Pair<>(sorterId, guidList));
    }
 
@@ -107,11 +108,13 @@ public class RelationOrderData {
       return lists.size();
    }
 
-   public void store(RelationTypeToken type, RelationSide side, RelationSorter requestedSorterId, List<Artifact> relativeSequence) {
+   public void store(RelationTypeToken type, RelationSide side, RelationSorter requestedSorterId,
+      List<Artifact> relativeSequence) {
       storeFromGuids(type, side, requestedSorterId, Artifacts.toGuids(relativeSequence));
    }
 
-   public void storeFromGuids(RelationTypeToken type, RelationSide side, RelationSorter requestedSorterId, List<String> relativeSequence) {
+   public void storeFromGuids(RelationTypeToken type, RelationSide side, RelationSorter requestedSorterId,
+      List<String> relativeSequence) {
       boolean isDifferentSorterId = isDifferentSorterId(type, side, requestedSorterId);
       boolean changingRelatives = isRelativeOrderChange(type, side, requestedSorterId, relativeSequence);
       if (isDifferentSorterId || changingRelatives) {
@@ -135,7 +138,8 @@ public class RelationOrderData {
       return sorterId.equals(type.getOrder()) && isDifferentSorterId(type, side, sorterId);
    }
 
-   protected boolean isRelativeOrderChange(RelationTypeToken type, RelationSide side, RelationSorter sorterId, List<String> relativeSequence) {
+   protected boolean isRelativeOrderChange(RelationTypeToken type, RelationSide side, RelationSorter sorterId,
+      List<String> relativeSequence) {
       return sorterId.equals(USER_DEFINED) && !relativeSequence.equals(getOrderList(type, side));
    }
 
@@ -157,7 +161,8 @@ public class RelationOrderData {
       private static final long serialVersionUID = 5242452476694174988L;
 
       @Override
-      public int compare(Entry<Pair<RelationTypeToken, RelationSide>, Pair<RelationSorter, List<String>>> o1, Entry<Pair<RelationTypeToken, RelationSide>, Pair<RelationSorter, List<String>>> o2) {
+      public int compare(Entry<Pair<RelationTypeToken, RelationSide>, Pair<RelationSorter, List<String>>> o1,
+         Entry<Pair<RelationTypeToken, RelationSide>, Pair<RelationSorter, List<String>>> o2) {
          int result = o1.getKey().getFirst().compareTo(o2.getKey().getFirst());
          if (result == 0) {
             result = o1.getKey().getSecond().compareTo(o2.getKey().getSecond());

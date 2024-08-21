@@ -31,7 +31,8 @@ public interface Transport extends ConnectionStatus {
 
    <E extends FrameworkEvent> void send(final Sender sender, final E event);
 
-   <E extends FrameworkEvent, L extends IEventListener, H extends EventHandlerLocal<L, E>> void sendLocal(Sender sender, E event);
+   <E extends FrameworkEvent, L extends IEventListener, H extends EventHandlerLocal<L, E>> void sendLocal(Sender sender,
+      E event);
 
    void sendRemote(RemoteEvent remoteEvent);
 

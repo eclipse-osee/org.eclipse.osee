@@ -165,7 +165,8 @@ public class BlockApplicabilityOps {
       return beginApplic;
    }
 
-   public XResultData applyApplicabilityToFiles(XResultData results, boolean commentNonApplicableBlocks, String sourcePath, String stagePath, String customStageDir) {
+   public XResultData applyApplicabilityToFiles(XResultData results, boolean commentNonApplicableBlocks,
+      String sourcePath, String stagePath, String customStageDir) {
       HashSet<String> excludedFiles = new HashSet<>();
       excludedFiles.add("Staging");
       if (customStageDir != null && !customStageDir.equals("")) {
@@ -189,7 +190,8 @@ public class BlockApplicabilityOps {
       return results;
    }
 
-   public XResultData refreshStagedFiles(XResultData results, String sourcePath, String stagePath, String customStageDir, List<String> files) {
+   public XResultData refreshStagedFiles(XResultData results, String sourcePath, String stagePath,
+      String customStageDir, List<String> files) {
       File sourceDir = new File(sourcePath);
       File stageDir = new File(stagePath, sourceDir.getName());
 
@@ -292,7 +294,8 @@ public class BlockApplicabilityOps {
       return toInsert;
    }
 
-   private String getValidFeatureContent(String fullText, boolean isInTable, HashMap<String, List<String>> featureIdValuesMap, ArrayList<String> featureOperators) {
+   private String getValidFeatureContent(String fullText, boolean isInTable,
+      HashMap<String, List<String>> featureIdValuesMap, ArrayList<String> featureOperators) {
       Matcher match = ELSE_PATTERN.matcher(fullText);
       String beginningText = fullText;
       String elseText = "";
@@ -401,7 +404,8 @@ public class BlockApplicabilityOps {
 
    }
 
-   private String getValidConfigurationContent(ApplicabilityType type, String fullText, HashMap<String, List<String>> configIdValuesMap) {
+   private String getValidConfigurationContent(ApplicabilityType type, String fullText,
+      HashMap<String, List<String>> configIdValuesMap) {
       Matcher match = ELSE_PATTERN.matcher(fullText);
       String beginningText = fullText;
       String elseText = "";
@@ -472,7 +476,8 @@ public class BlockApplicabilityOps {
       }
    }
 
-   private String createFeatureExpression(HashMap<String, List<String>> featureIdValuesMap, ArrayList<String> featureOperators) {
+   private String createFeatureExpression(HashMap<String, List<String>> featureIdValuesMap,
+      ArrayList<String> featureOperators) {
 
       String myFeatureExpression = "";
       Iterator<String> iterator = featureOperators.iterator();

@@ -28,13 +28,15 @@ public interface IAtsTaskProvider {
    /**
     * Add additional attributes to taskMatch if this task is applicable to this provider
     */
-   void addToAutoGeneratingTask(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, ChangeReportTaskMatch taskMatch, JaxAtsTask task);
+   void addToAutoGeneratingTask(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd,
+      ChangeReportTaskMatch taskMatch, JaxAtsTask task);
 
    boolean isAutoGen(IAtsTask task);
 
    /**
     * @return AutoGenVersion to set if this is task that is applicable to this provider
     */
-   AutoGenVersion getAutoGenTaskVersionToSet(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd, ChangeReportTaskMatch taskMatch);
+   AutoGenVersion getAutoGenTaskVersionToSet(ChangeReportTaskData crtd, ChangeReportTaskTeamWfData crttwd,
+      ChangeReportTaskMatch taskMatch);
 
 }

@@ -61,25 +61,25 @@ public class SearchDataUI {
       gd.widthHint = 100;
       searchText.setLayoutData(gd);
 
-      searchText.addListener(SWT.KeyUp, e->  {
-            if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR || searchRealTime) {
-               String newText = searchText.getText();
-               if (newText.trim().length() == 0) {
-                  search = false;
-                  match = Pattern.compile(searchText.getText()).matcher(""); //$NON-NLS-1$
-               } else {
-                  regex = true;
-                  if (!regularExpression.getSelection()) {
-                     regex = false;
-                     newText = newText.replace("*", ".*"); //$NON-NLS-1$ //$NON-NLS-2$
-                     newText = ".*" + newText + ".*"; //$NON-NLS-1$ //$NON-NLS-2$
-                  }
-                  match =
-                     Pattern.compile(newText, Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher(""); //$NON-NLS-1$
-                  search = true;
+      searchText.addListener(SWT.KeyUp, e -> {
+         if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR || searchRealTime) {
+            String newText = searchText.getText();
+            if (newText.trim().length() == 0) {
+               search = false;
+               match = Pattern.compile(searchText.getText()).matcher(""); //$NON-NLS-1$
+            } else {
+               regex = true;
+               if (!regularExpression.getSelection()) {
+                  regex = false;
+                  newText = newText.replace("*", ".*"); //$NON-NLS-1$ //$NON-NLS-2$
+                  newText = ".*" + newText + ".*"; //$NON-NLS-1$ //$NON-NLS-2$
                }
-               xViewer.refresh();
+               match =
+                  Pattern.compile(newText, Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher(""); //$NON-NLS-1$
+               search = true;
             }
+            xViewer.refresh();
+         }
       });
 
       Label searchLabel = new Label(bar, SWT.NONE);
@@ -91,10 +91,10 @@ public class SearchDataUI {
       regularExpression.setToolTipText(XViewerText.get("regex.prompt.tooltip")); //$NON-NLS-1$
       regularExpression.setLayoutData(new GridData(SWT.RIGHT, SWT.NONE, false, false));
       searchLabel.addListener(SWT.MouseUp, event -> {
-            searchText.setText(""); //$NON-NLS-1$
-            search = false;
-            match = Pattern.compile(searchText.getText()).matcher(""); //$NON-NLS-1$
-            xViewer.refresh();
+         searchText.setText(""); //$NON-NLS-1$
+         search = false;
+         match = Pattern.compile(searchText.getText()).matcher(""); //$NON-NLS-1$
+         xViewer.refresh();
       });
    }
 

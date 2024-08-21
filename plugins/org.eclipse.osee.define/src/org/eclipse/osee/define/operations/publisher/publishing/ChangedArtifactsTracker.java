@@ -92,8 +92,7 @@ public class ChangedArtifactsTracker {
     * <code>publishingErrorLog</code> are <code>node</code>.
     */
 
-   public ChangedArtifactsTracker(AtsApi atsApi, DataAccessOperations dataAccessOperations,
-      PublishingErrorLog publishingErrorLog) {
+   public ChangedArtifactsTracker(AtsApi atsApi, DataAccessOperations dataAccessOperations, PublishingErrorLog publishingErrorLog) {
       Objects.requireNonNull(atsApi, "ChangedArtifactsTracker::new, parameter \"atsApi\" cannot be null.");
       Objects.requireNonNull(dataAccessOperations,
          "ChangedArtifactsTracker::new, parameter \"dataAccessOperations\" cannot be null.");

@@ -71,7 +71,8 @@ public class JaxRsStaticResourceRequestFilter implements ContainerRequestFilter 
       }
    }
 
-   private Response newResponse(ServletContext servletContext, MultivaluedMap<String, String> headers, List<MediaType> acceptableMediaTypes, Resource resource) throws IOException {
+   private Response newResponse(ServletContext servletContext, MultivaluedMap<String, String> headers,
+      List<MediaType> acceptableMediaTypes, Resource resource) throws IOException {
       final URLConnection connection = resource.getUrl().openConnection();
 
       long lastModified = connection.getLastModified();

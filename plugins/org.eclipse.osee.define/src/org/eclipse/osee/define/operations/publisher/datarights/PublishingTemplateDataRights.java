@@ -252,7 +252,8 @@ public class PublishingTemplateDataRights {
     * been set.
     */
 
-   public void setCuiCategoryIndicatorCuiTypeIndicatorPairSet(CuiCategoryIndicatorCuiTypeIndicatorPair[] cuiCategoryIndicatorCuiTypeIndicatorPairSet) {
+   public void setCuiCategoryIndicatorCuiTypeIndicatorPairSet(
+      CuiCategoryIndicatorCuiTypeIndicatorPair[] cuiCategoryIndicatorCuiTypeIndicatorPairSet) {
       if (Objects.nonNull(this.cuiCategoryIndicatorCuiTypeIndicatorPairSet)) {
          throw new IllegalStateException(
             "PublishingTemplateDataRights::setCuiCategoryIndicatorCuiTypeIndicatorPairSet, member \"this.cuiCategoryIndicatorCuiTypeIndicatorPairSet\" has already been set.");
@@ -274,7 +275,8 @@ public class PublishingTemplateDataRights {
     * {@link #cuiLimitedDisseminationControlIndicatorSetTrigraphCountryCodeIndicatorSetPair} has already been set.
     */
 
-   public void setCuiLimitedDisseminationControlIndicatorSetTrigraphCountryCodeIndicatorSetPair(CuiLimitedDisseminationControlIndicatorSetTrigraphCountryCodeIndicatorSetPair cuiLimitedDisseminationControlIndicatorSetTrigraphCountryCodeIndicatorSetPair) {
+   public void setCuiLimitedDisseminationControlIndicatorSetTrigraphCountryCodeIndicatorSetPair(
+      CuiLimitedDisseminationControlIndicatorSetTrigraphCountryCodeIndicatorSetPair cuiLimitedDisseminationControlIndicatorSetTrigraphCountryCodeIndicatorSetPair) {
       if (Objects.nonNull(this.cuiLimitedDisseminationControlIndicatorSetTrigraphCountryCodeIndicatorSetPair)) {
          throw new IllegalStateException(
             "PublishingTemplateDataRights::setCuiLimitedDisseminationControlIndicatorSetTrigraphCountryCodeIndicatorSetPair, member \"this.cuiLimitedDisseminationControlIndicatorSetTrigraphCountryCodeIndicatorSetPair\" has already been set.");

@@ -26,7 +26,8 @@ public interface VersionObjectFactory extends OrcsDataFactory {
 
    VersionData createDefaultVersionData();
 
-   VersionData createVersion(BranchId branch, TransactionId txId, GammaId gamma, TxCurrent txCurrent, boolean historical);
+   VersionData createVersion(BranchId branch, TransactionId txId, GammaId gamma, TxCurrent txCurrent,
+      boolean historical);
 
    VersionData createCopy(VersionData other);
 

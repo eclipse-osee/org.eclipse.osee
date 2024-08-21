@@ -61,7 +61,8 @@ public class PublishingTemplateMatchCriterionListBuilder {
     * <code>null</code>.
     */
 
-   public PublishingTemplateMatchCriterionListBuilder appendAlways(PublishingTemplateMatchCriterion publishingTemplateMatchCriterion) {
+   public PublishingTemplateMatchCriterionListBuilder appendAlways(
+      PublishingTemplateMatchCriterion publishingTemplateMatchCriterion) {
       this.list.add(Objects.requireNonNull(publishingTemplateMatchCriterion));
       return this;
    }
@@ -74,7 +75,8 @@ public class PublishingTemplateMatchCriterionListBuilder {
     * @return the {@link PublishingTemplateMatchCriterionListBuilder}.
     */
 
-   public PublishingTemplateMatchCriterionListBuilder appendIfMatchByNames(PublishingTemplateMatchCriterion publishingTemplateMatchCriterion) {
+   public PublishingTemplateMatchCriterionListBuilder appendIfMatchByNames(
+      PublishingTemplateMatchCriterion publishingTemplateMatchCriterion) {
       if (this.matchPreviewTemplatesByName) {
          this.list.add(publishingTemplateMatchCriterion);
       }
@@ -89,7 +91,8 @@ public class PublishingTemplateMatchCriterionListBuilder {
     * @return the {@link PublishingTemplateMatchCriterionListBuilder}.
     */
 
-   public PublishingTemplateMatchCriterionListBuilder appendIfNotMatchByNames(PublishingTemplateMatchCriterion publishingTemplateMatchCriterion) {
+   public PublishingTemplateMatchCriterionListBuilder appendIfNotMatchByNames(
+      PublishingTemplateMatchCriterion publishingTemplateMatchCriterion) {
       if (!this.matchPreviewTemplatesByName) {
          this.list.add(publishingTemplateMatchCriterion);
       }

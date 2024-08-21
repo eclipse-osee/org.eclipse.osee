@@ -43,8 +43,7 @@ public class MarkdownOutlineExtractor extends AbstractArtifactExtractor {
    private final ArtifactTypeToken contentArtifactTypeToken;
    private final ArtifactTypeToken headingArtifactTypeToken;
 
-   public MarkdownOutlineExtractor(ArtifactTypeToken headingArtifactTypeToken,
-      ArtifactTypeToken contentArtifactTypeToken) {
+   public MarkdownOutlineExtractor(ArtifactTypeToken headingArtifactTypeToken, ArtifactTypeToken contentArtifactTypeToken) {
       this.headingArtifactTypeToken = headingArtifactTypeToken;
       this.contentArtifactTypeToken = contentArtifactTypeToken;
    }

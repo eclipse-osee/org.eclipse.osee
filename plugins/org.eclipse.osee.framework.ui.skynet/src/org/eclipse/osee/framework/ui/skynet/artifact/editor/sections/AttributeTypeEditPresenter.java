@@ -32,7 +32,8 @@ public class AttributeTypeEditPresenter {
 
       void showInformation(String title, String message);
 
-      Collection<AttributeTypeToken> getSelections(OperationType operationType, String title, String message, List<AttributeTypeToken> input);
+      Collection<AttributeTypeToken> getSelections(OperationType operationType, String title, String message,
+         List<AttributeTypeToken> input);
 
       void addWidgetFor(Collection<AttributeTypeToken> attributeTypes);
 
@@ -100,7 +101,8 @@ public class AttributeTypeEditPresenter {
       }
    }
 
-   private Collection<AttributeTypeToken> selectItems(OperationType operationType, String title, String operationName, List<AttributeTypeToken> input) {
+   private Collection<AttributeTypeToken> selectItems(OperationType operationType, String title, String operationName,
+      List<AttributeTypeToken> input) {
       Collection<AttributeTypeToken> selectedItems = Collections.emptyList();
       if (input.isEmpty()) {
          String message = String.format("No attribute types available to %s.", operationName);

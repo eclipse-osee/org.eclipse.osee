@@ -163,7 +163,8 @@ public class CuiLimitedDisseminationControlIndicatorSetTrigraphCountryCodeIndica
     * set.
     */
 
-   public void setCuiLimitedDisseminationControlIndicatorSet(CuiLimitedDisseminationControlIndicator[] cuiLimitedDisseminationControlIndicatorSet) {
+   public void setCuiLimitedDisseminationControlIndicatorSet(
+      CuiLimitedDisseminationControlIndicator[] cuiLimitedDisseminationControlIndicatorSet) {
       if (Objects.nonNull(this.cuiLimitedDisseminationControlIndicatorSet)) {
          throw new IllegalStateException(
             "CuiLimitedDisseminationControlIndicatorSetTrigraphCountryCodeIndicatorSetPair::setCuiLimitedDisseminationControlIndicatorSet, member \"this.cuiLimitedDisseminationControlIndicatorSet\" has already been set.");

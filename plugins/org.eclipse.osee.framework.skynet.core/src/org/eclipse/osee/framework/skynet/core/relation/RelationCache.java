@@ -90,7 +90,8 @@ public class RelationCache {
       return linksFound;
    }
 
-   private void findRelations(Collection<RelationLink> linksFound, ArtifactToken artifact, RelationTypeToken relationType, RelationMatcher matcher) {
+   private void findRelations(Collection<RelationLink> linksFound, ArtifactToken artifact,
+      RelationTypeToken relationType, RelationMatcher matcher) {
       List<RelationLink> sourceLink = relationsByType.get(artifact, relationType);
       RelationFilterUtil.filter(sourceLink, linksFound, matcher);
    }
@@ -107,7 +108,8 @@ public class RelationCache {
    /**
     * Find RelationById Related On ArtA or ArtB
     */
-   public RelationLink getByRelIdOnArtifact(RelationId relLinkId, ArtifactId aArtifactId, ArtifactId bArtifactId, BranchToken branch) {
+   public RelationLink getByRelIdOnArtifact(RelationId relLinkId, ArtifactId aArtifactId, ArtifactId bArtifactId,
+      BranchToken branch) {
       RelationMatcher relIdMatcher = RelationFilterUtil.createFindFirstRelationLinkIdMatcher(relLinkId);
       List<RelationLink> links = new ArrayList<>();
       findRelations(links, ArtifactToken.valueOf(aArtifactId, branch), relIdMatcher);
@@ -117,11 +119,13 @@ public class RelationCache {
       return links.isEmpty() ? null : links.iterator().next();
    }
 
-   public RelationLink getLoadedRelation(ArtifactToken artifact, ArtifactId aArtifactId, ArtifactId bArtifactId, RelationTypeToken relationType, DeletionFlag deletionFlag) {
+   public RelationLink getLoadedRelation(ArtifactToken artifact, ArtifactId aArtifactId, ArtifactId bArtifactId,
+      RelationTypeToken relationType, DeletionFlag deletionFlag) {
       return getLoadedRelation(artifact, aArtifactId.getId(), bArtifactId.getId(), relationType, deletionFlag);
    }
 
-   public RelationLink getLoadedRelation(ArtifactToken artifact, long aArtifactId, long bArtifactId, RelationTypeToken relationType, DeletionFlag deletionFlag) {
+   public RelationLink getLoadedRelation(ArtifactToken artifact, long aArtifactId, long bArtifactId,
+      RelationTypeToken relationType, DeletionFlag deletionFlag) {
       Set<RelationLink> itemsFound = new HashSet<>();
 
       RelationMatcher artIdMatcher = new RelationMatcher() {
@@ -155,7 +159,8 @@ public class RelationCache {
       return size != 0 ? relations.iterator().next() : null;
    }
 
-   public RelationLink getLoadedRelation(RelationTypeToken relationType, ArtifactId aArtifactId, ArtifactId bArtifactId, BranchId branch) {
+   public RelationLink getLoadedRelation(RelationTypeToken relationType, ArtifactId aArtifactId, ArtifactId bArtifactId,
+      BranchId branch) {
       RelationMatcher bArtIdMatcher =
          RelationFilterUtil.createFindFirstRelatedArtIdMatcher(bArtifactId, RelationSide.SIDE_B);
       List<RelationLink> links = new ArrayList<>();

@@ -229,7 +229,8 @@ public class LdapConnection implements Closeable {
       return groups;
    }
 
-   private void findSubGroups(Set<LdapGroup> groups, Set<String> groupDns, VariablePattern groupNamePattern, String memberOfField, LdapEntry entry) throws NamingException {
+   private void findSubGroups(Set<LdapGroup> groups, Set<String> groupDns, VariablePattern groupNamePattern,
+      String memberOfField, LdapEntry entry) throws NamingException {
       String currentGroupDn = entry.getDistinguishedName();
       boolean wasAdded = groupDns.add(currentGroupDn);
       if (wasAdded) {

@@ -171,7 +171,8 @@ public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation
       getJdbcClient().runBatchUpdate(connection, UPDATE_TXS_NOT_CURRENT, txNotCurrentData);
    }
 
-   private void fetchTxNotCurrent(JdbcConnection connection, BranchId branchId, BaseTransactionData transactionData, List<Object[]> results) {
+   private void fetchTxNotCurrent(JdbcConnection connection, BranchId branchId, BaseTransactionData transactionData,
+      List<Object[]> results) {
       try (JdbcStatement chStmt = getJdbcClient().getStatement(connection)) {
 
          String query = ServiceUtil.getSql(transactionData.getSelectTxNotCurrentSql());

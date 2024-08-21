@@ -122,24 +122,28 @@ public abstract class AbstractAtsAccessContextProvider implements IAtsAccessCont
    }
 
    @Override
-   public XResultData hasAttributeTypeContextWriteAccess(AtsUser atsUser, Collection<? extends ArtifactToken> artifacts, AttributeTypeToken attributeType, XResultData rd) {
+   public XResultData hasAttributeTypeContextWriteAccess(AtsUser atsUser, Collection<? extends ArtifactToken> artifacts,
+      AttributeTypeToken attributeType, XResultData rd) {
       checkContextWrite(artifacts, attributeType, RelationTypeSide.SENTINEL, rd);
       return rd;
    }
 
    @Override
-   public XResultData hasArtifactContextWriteAccess(AtsUser atsUser, Collection<? extends ArtifactToken> artifacts, XResultData rd) {
+   public XResultData hasArtifactContextWriteAccess(AtsUser atsUser, Collection<? extends ArtifactToken> artifacts,
+      XResultData rd) {
       checkContextWrite(artifacts, AttributeTypeToken.SENTINEL, RelationTypeSide.SENTINEL, rd);
       return rd;
    }
 
    @Override
-   public XResultData hasRelationContextWriteAccess(AtsUser atsUser, ArtifactToken artifact, RelationTypeToken relationType, XResultData rd) {
+   public XResultData hasRelationContextWriteAccess(AtsUser atsUser, ArtifactToken artifact,
+      RelationTypeToken relationType, XResultData rd) {
       checkContextWrite(Collections.singleton(artifact), AttributeTypeToken.SENTINEL, relationType, rd);
       return rd;
    }
 
-   private XResultData checkContextWrite(Collection<? extends ArtifactToken> artifacts, AttributeTypeToken attrType, RelationTypeToken relType, XResultData rd) {
+   private XResultData checkContextWrite(Collection<? extends ArtifactToken> artifacts, AttributeTypeToken attrType,
+      RelationTypeToken relType, XResultData rd) {
       Collection<AccessContextToken> contextIds =
          atsApi.getAtsAccessService().getContextIds(artifacts.iterator().next().getBranch());
 

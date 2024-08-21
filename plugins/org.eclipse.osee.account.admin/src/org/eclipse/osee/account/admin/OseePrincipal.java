@@ -40,7 +40,8 @@ public interface OseePrincipal extends Principal, Identity<Long> {
 
    Map<String, String> getProperties();
 
-   public static OseePrincipal valueOf(String login, Account data, boolean authenticated, Set<String> roles, Map<String, String> properties) {
+   public static OseePrincipal valueOf(String login, Account data, boolean authenticated, Set<String> roles,
+      Map<String, String> properties) {
       final class OseePrincipalImpl extends BaseIdentity<Long> implements OseePrincipal {
          private final String login;
          private final Account data;

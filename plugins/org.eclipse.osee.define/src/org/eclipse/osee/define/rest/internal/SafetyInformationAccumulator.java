@@ -150,7 +150,8 @@ public final class SafetyInformationAccumulator {
       return SafetyCriticalityLookup.getDALLevelFromSeverityCategory(inputSafetyCriticality);
    }
 
-   private void processSubsystemFunction(ArtifactReadable subsystemFunction, String[] currentRowValues) throws IOException {
+   private void processSubsystemFunction(ArtifactReadable subsystemFunction, String[] currentRowValues)
+      throws IOException {
       writeCell(subsystemFunction.getName(), currentRowValues, SafetyReportGenerator.SUBSYSTEM_FUNCTION_INDEX);
       String sevCat =
          subsystemFunction.getSoleAttributeAsString(CoreAttributeTypes.SeverityCategory, "Error: not available");
@@ -166,7 +167,8 @@ public final class SafetyInformationAccumulator {
       currentRow[col] = value;
    }
 
-   private void processSubsystemRequirement(ArtifactReadable subsystemRequirement, String criticality, String[] currentRowValues) throws IOException {
+   private void processSubsystemRequirement(ArtifactReadable subsystemRequirement, String criticality,
+      String[] currentRowValues) throws IOException {
       writeCell(subsystemRequirement.getSoleAttributeAsString(CoreAttributeTypes.Subsystem, ""), currentRowValues,
          SafetyReportGenerator.SUBSYSTEM_INDEX);
       writeCell(subsystemRequirement.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""), currentRowValues,
@@ -180,7 +182,8 @@ public final class SafetyInformationAccumulator {
       writer.writeRow((Object[]) currentRowValues);
    }
 
-   private String writeCriticality(ArtifactReadable art, AttributeTypeToken thisType, String[] currentRowValues, int col) {
+   private String writeCriticality(ArtifactReadable art, AttributeTypeToken thisType, String[] currentRowValues,
+      int col) {
       String current = art.getSoleAttributeAsString(thisType, "Error");
       if ("Error".equals(current)) {
          writeCell("Error: invalid content", currentRowValues, col);
@@ -195,7 +198,8 @@ public final class SafetyInformationAccumulator {
       return current;
    }
 
-   private void processSoftwareRequirement(ArtifactReadable softwareRequirement, String[] currentRowValues) throws IOException {
+   private void processSoftwareRequirement(ArtifactReadable softwareRequirement, String[] currentRowValues)
+      throws IOException {
       writeCell(softwareRequirement.getName(), currentRowValues, SafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX);
       String softwareRequirementDAL = writeCriticality(softwareRequirement, CoreAttributeTypes.LegacyDal,
          currentRowValues, SafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 1);

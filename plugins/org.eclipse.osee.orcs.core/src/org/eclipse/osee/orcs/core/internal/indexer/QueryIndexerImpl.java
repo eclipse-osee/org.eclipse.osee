@@ -47,7 +47,8 @@ public class QueryIndexerImpl implements QueryIndexer {
    }
 
    @Override
-   public CancellableCallable<Integer> indexBranches(final Set<Branch> branches, final boolean indexOnlyMissing, final IndexerCollector... collector) {
+   public CancellableCallable<Integer> indexBranches(final Set<Branch> branches, final boolean indexOnlyMissing,
+      final IndexerCollector... collector) {
       return new CancellableCallable<Integer>() {
          @Override
          public Integer call() throws Exception {

@@ -120,7 +120,8 @@ public final class TraceabilityEndpointImpl implements TraceabilityEndpoint {
    }
 
    @Override
-   public TransactionToken copyCertBaselineData(BranchId destinationBranch, String repositoryName, BranchId sourceBranch) {
+   public TransactionToken copyCertBaselineData(BranchId destinationBranch, String repositoryName,
+      BranchId sourceBranch) {
       return traceOps.copyCertBaselineData(destinationBranch, repositoryName, sourceBranch);
    }
 

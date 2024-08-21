@@ -51,7 +51,8 @@ public class ArtifactAclOperations {
       return hasArtifactAclPermission(accessService.getUser(), artifact, permission, rd);
    }
 
-   public XResultData hasArtifactAclPermission(ArtifactToken subject, Collection<? extends ArtifactToken> artifacts, PermissionEnum permission, XResultData rd) {
+   public XResultData hasArtifactAclPermission(ArtifactToken subject, Collection<? extends ArtifactToken> artifacts,
+      PermissionEnum permission, XResultData rd) {
       if (rd == null) {
          rd = new XResultData();
       }
@@ -61,7 +62,8 @@ public class ArtifactAclOperations {
       return rd;
    }
 
-   public XResultData hasArtifactAclPermission(ArtifactToken subject, ArtifactToken artifact, PermissionEnum permission, XResultData rd) {
+   public XResultData hasArtifactAclPermission(ArtifactToken subject, ArtifactToken artifact, PermissionEnum permission,
+      XResultData rd) {
       if (rd == null) {
          rd = new XResultData();
       }
@@ -117,7 +119,8 @@ public class ArtifactAclOperations {
       return userPermission;
    }
 
-   public void populateArtifactAccessControlListEntry(ArtifactId subjectId, ArtifactToken artifact, PermissionEnum permission, ArtifactTypeToken subjectArtifactType) {
+   public void populateArtifactAccessControlListEntry(ArtifactId subjectId, ArtifactToken artifact,
+      PermissionEnum permission, ArtifactTypeToken subjectArtifactType) {
       if (permission != null) {
          // Check for lock by User
          if (permission.equals(PermissionEnum.USER_LOCK)) {

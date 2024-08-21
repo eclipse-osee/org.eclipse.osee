@@ -113,7 +113,8 @@ public class MetadataExportItem extends AbstractXmlExportItem {
       return toReturn;
    }
 
-   private void processMetaData(Appendable appendable, DatabaseMetaData metaData, String schema, String[] tableTypes, String targetTable) throws Exception {
+   private void processMetaData(Appendable appendable, DatabaseMetaData metaData, String schema, String[] tableTypes,
+      String targetTable) throws Exception {
       ResultSet resultSet = null;
       try {
 
@@ -141,7 +142,8 @@ public class MetadataExportItem extends AbstractXmlExportItem {
       }
    }
 
-   private void processColumnMetaData(Appendable appendable, DatabaseMetaData metaData, String schema, String tableName) throws SQLException, IOException {
+   private void processColumnMetaData(Appendable appendable, DatabaseMetaData metaData, String schema, String tableName)
+      throws SQLException, IOException {
       ResultSet resultSet = null;
       try {
          try {

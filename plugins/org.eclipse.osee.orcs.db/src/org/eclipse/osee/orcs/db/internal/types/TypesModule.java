@@ -46,17 +46,20 @@ public class TypesModule {
       return new OrcsTypesDataStore() {
 
          @Override
-         public Callable<Void> purgeArtifactsByArtifactType(OrcsSession session, Collection<? extends ArtifactTypeToken> typesToPurge) {
+         public Callable<Void> purgeArtifactsByArtifactType(OrcsSession session,
+            Collection<? extends ArtifactTypeToken> typesToPurge) {
             return new PurgeArtifactTypeDatabaseTxCallable(logger, session, jdbcClient, typesToPurge);
          }
 
          @Override
-         public Callable<Void> purgeAttributesByAttributeType(OrcsSession session, Collection<? extends AttributeTypeId> typesToPurge) {
+         public Callable<Void> purgeAttributesByAttributeType(OrcsSession session,
+            Collection<? extends AttributeTypeId> typesToPurge) {
             return new PurgeAttributeTypeDatabaseTxCallable(logger, session, jdbcClient, joinFactory, typesToPurge);
          }
 
          @Override
-         public Callable<Void> purgeRelationsByRelationType(OrcsSession session, Collection<? extends RelationTypeToken> typesToPurge) {
+         public Callable<Void> purgeRelationsByRelationType(OrcsSession session,
+            Collection<? extends RelationTypeToken> typesToPurge) {
             return new PurgeRelationTypeDatabaseTxCallable(logger, session, jdbcClient, typesToPurge);
          }
       };

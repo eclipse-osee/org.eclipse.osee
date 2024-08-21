@@ -36,7 +36,8 @@ public final class ArtifactResolverFactory {
       // Static Factory
    }
 
-   public static IArtifactImportResolver createAlwaysNewArtifacts(TransactionBuilder transaction, ArtifactTypeToken primaryArtifactType) {
+   public static IArtifactImportResolver createAlwaysNewArtifacts(TransactionBuilder transaction,
+      ArtifactTypeToken primaryArtifactType) {
       ArtifactTypeToken secondaryArtifactType = CoreArtifactTypes.HeadingMsWord;
       if (primaryArtifactType.equals(CoreArtifactTypes.SubsystemRequirementHtml) || primaryArtifactType.equals(
          CoreArtifactTypes.SystemRequirementHtml)) {
@@ -45,13 +46,17 @@ public final class ArtifactResolverFactory {
       return createAlwaysNewArtifacts(transaction, primaryArtifactType, secondaryArtifactType);
    }
 
-   public static IArtifactImportResolver createAlwaysNewArtifacts(TransactionBuilder transaction, ArtifactTypeToken primaryArtifactType, ArtifactTypeToken secondaryArtifactType) {
+   public static IArtifactImportResolver createAlwaysNewArtifacts(TransactionBuilder transaction,
+      ArtifactTypeToken primaryArtifactType, ArtifactTypeToken secondaryArtifactType) {
       IRoughArtifactTranslator translator = new RoughArtifactTranslatorImpl();
       return new NewArtifactImportResolver(transaction, translator, primaryArtifactType, secondaryArtifactType,
          CoreArtifactTypes.DocumentDescriptionMsWord, CoreArtifactTypes.DesignDescriptionMsWord);
    }
 
-   public static IArtifactImportResolver createResolver(TransactionBuilder transaction, ArtifactCreationStrategy strategy, ArtifactTypeToken primaryArtifactType, Collection<AttributeTypeToken> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
+   public static IArtifactImportResolver createResolver(TransactionBuilder transaction,
+      ArtifactCreationStrategy strategy, ArtifactTypeToken primaryArtifactType,
+      Collection<AttributeTypeToken> nonChangingAttributes, boolean createNewIfNotExist,
+      boolean deleteUnmatchedArtifacts) {
       IArtifactImportResolver toReturn;
       switch (strategy) {
          case CREATE_ON_DIFFERENT_ATTRIBUTES:

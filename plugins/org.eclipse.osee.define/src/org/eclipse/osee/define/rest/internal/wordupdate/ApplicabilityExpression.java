@@ -63,7 +63,8 @@ public class ApplicabilityExpression {
       return toReturn;
    }
 
-   public String getValidFeatureContent(String text, HashMap<String, List<String>> featureIdValuesMap, ArrayList<String> featureOperators, ArtifactReadable featureDefArt) {
+   public String getValidFeatureContent(String text, HashMap<String, List<String>> featureIdValuesMap,
+      ArrayList<String> featureOperators, ArtifactReadable featureDefArt) {
       parseContent(text, true);
 
       String toReturn = null;
@@ -114,7 +115,8 @@ public class ApplicabilityExpression {
       }
    }
 
-   private String createFeatureExpression(HashMap<String, List<String>> featureIdValuesMap, ArrayList<String> featureOperators, ArtifactReadable featureDefArt) {
+   private String createFeatureExpression(HashMap<String, List<String>> featureIdValuesMap,
+      ArrayList<String> featureOperators, ArtifactReadable featureDefArt) {
       String myFeatureExpression = "";
       Iterator<String> iterator = featureOperators.iterator();
 

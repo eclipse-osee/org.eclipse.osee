@@ -26,7 +26,8 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
  */
 public class BranchOperationsUtil {
 
-   public static XResultData validateBranchCommit(IAtsTeamWorkflow teamWf, BranchToken commitToBranch, boolean overrideStateValidation, XResultData rd, AtsApi atsApi) {
+   public static XResultData validateBranchCommit(IAtsTeamWorkflow teamWf, BranchToken commitToBranch,
+      boolean overrideStateValidation, XResultData rd, AtsApi atsApi) {
       if (rd == null) {
          rd = new XResultData();
       }

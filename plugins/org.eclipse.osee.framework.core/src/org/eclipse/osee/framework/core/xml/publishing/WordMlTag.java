@@ -452,8 +452,7 @@ public enum WordMlTag implements XmlTagSpecification {
     * </ul>
     */
 
-   private WordMlTag(@NonNull XmlNamespaceSpecification xmlNamespaceSpecification, @NonNull String tagName,
-      @NonNull Set<@NonNull XmlAttributeSpecification> xmlAttributeSpecifications) {
+   private WordMlTag(@NonNull XmlNamespaceSpecification xmlNamespaceSpecification, @NonNull String tagName, @NonNull Set<@NonNull XmlAttributeSpecification> xmlAttributeSpecifications) {
       //@formatter:off
       this.abstractTagSpecification =
          new AbstractXmlTagSpecification

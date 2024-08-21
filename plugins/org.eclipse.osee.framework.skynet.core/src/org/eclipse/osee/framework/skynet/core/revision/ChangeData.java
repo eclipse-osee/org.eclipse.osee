@@ -127,7 +127,8 @@ public class ChangeData {
    /**
     * Return artifacts of kind and modType.
     */
-   public Collection<Artifact> getArtifacts(KindType kindType, Collection<AttributeTypeId> artifactTypesToIgnore, ModificationType... modificationType) {
+   public Collection<Artifact> getArtifacts(KindType kindType, Collection<AttributeTypeId> artifactTypesToIgnore,
+      ModificationType... modificationType) {
       if (kindType == KindType.RelationOnly) {
          return getArtifactsRelationOnly(modificationType);
       }

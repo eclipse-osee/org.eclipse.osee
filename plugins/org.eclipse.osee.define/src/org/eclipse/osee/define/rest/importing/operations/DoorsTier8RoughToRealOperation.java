@@ -116,7 +116,8 @@ public class DoorsTier8RoughToRealOperation {
       transaction.setRelationsAndOrder(parentArtifact, CoreRelationTypes.DefaultHierarchical_Child, sortedChildren);
    }
 
-   public void resolve(TransactionBuilder transaction, RoughArtifact roughArtifact, BranchId branch, ArtifactId realParentId, ArtifactId rootId) {
+   public void resolve(TransactionBuilder transaction, RoughArtifact roughArtifact, BranchId branch,
+      ArtifactId realParentId, ArtifactId rootId) {
       ArtifactToken parentArtifact = findParentArtifact(roughArtifact, branch);
       if (parentArtifact != null) {
          ArtifactTypeToken artifactType = roughArtifact.getType();

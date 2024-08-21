@@ -73,7 +73,8 @@ public class GroveThingCreationException extends RuntimeException {
     * @param parents the parent {@link GroveThing}s of the {@link GroveThing} being created.
     */
 
-   public static String buildMessage(String reason, Identifier identifier, int primaryRank, int nativeRank, GroveThing... parents) {
+   public static String buildMessage(String reason, Identifier identifier, int primaryRank, int nativeRank,
+      GroveThing... parents) {
       //@formatter:off
       var message =
          new Message()

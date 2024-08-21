@@ -139,7 +139,8 @@ public class SprintPageBuilder {
       return numFound;
    }
 
-   private void updateFeatureGroupSum(ArtifactReadable item, TreeMap<String, FeatureGroupSum> featureSums, double points) {
+   private void updateFeatureGroupSum(ArtifactReadable item, TreeMap<String, FeatureGroupSum> featureSums,
+      double points) {
       String featureGroupName = null;
       ArtifactReadable featureGroup =
          item.getRelated(AtsRelationTypes.AgileFeatureToItem_AgileFeatureGroup).getAtMostOneOrDefault(

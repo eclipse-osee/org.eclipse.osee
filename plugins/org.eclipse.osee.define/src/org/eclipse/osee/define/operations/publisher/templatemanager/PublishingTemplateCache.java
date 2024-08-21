@@ -126,8 +126,7 @@ class PublishingTemplateCache {
     * @param dataAccessOperations a handle to the {@link DataAccessOperations} for database access.
     */
 
-   private PublishingTemplateCache(Log logger, DataAccessOperations dataAccessOperations,
-      OrcsTokenService orcsTokenService) {
+   private PublishingTemplateCache(Log logger, DataAccessOperations dataAccessOperations, OrcsTokenService orcsTokenService) {
       this.logger = logger;
       this.dataAccessOperations = dataAccessOperations;
       this.orcsTokenService = orcsTokenService;

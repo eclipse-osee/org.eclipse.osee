@@ -72,7 +72,8 @@ public class AccountsResource {
    @Path("preferences/{id}")
    @PermitAll
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-   public Response editPreferences(@PathParam("id") String userUuid, @QueryParam("key") String key, @QueryParam("itemId") String itemId, String newValue) {
+   public Response editPreferences(@PathParam("id") String userUuid, @QueryParam("key") String key,
+      @QueryParam("itemId") String itemId, String newValue) {
       ArtifactId artifactId = ArtifactId.valueOf(userUuid);
       return Response.ok().entity(accountOps.editAccountWebPreferencesData(artifactId, key, itemId, newValue)).build();
    }
@@ -99,7 +100,8 @@ public class AccountsResource {
    @Path(AccountContexts.ACCOUNT_ID_TEMPLATE)
    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-   public AccountInfoData createAccount(@PathParam(AccountContexts.ACCOUNT_ID_PARAM) String username, AccountInput accountInput) {
+   public AccountInfoData createAccount(@PathParam(AccountContexts.ACCOUNT_ID_PARAM) String username,
+      AccountInput accountInput) {
       return accountOps.createAccount(username, accountInput);
    }
 

@@ -76,7 +76,8 @@ public class ArtifactAndChildrenRelationTypesAccessType implements AccessType {
    }
 
    @Override
-   public AccessTypeMatch computeMatch(ArtifactToken otherArt, AttributeTypeToken attrType, RelationTypeToken relType, IParentProvider parentProvider) {
+   public AccessTypeMatch computeMatch(ArtifactToken otherArt, AttributeTypeToken attrType, RelationTypeToken relType,
+      IParentProvider parentProvider) {
       boolean match = false;
       boolean computed = false;
       if (otherArt.equals(artifact)) {

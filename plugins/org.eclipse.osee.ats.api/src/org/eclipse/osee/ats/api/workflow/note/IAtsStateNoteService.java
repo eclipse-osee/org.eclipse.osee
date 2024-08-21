@@ -24,7 +24,8 @@ public interface IAtsStateNoteService {
 
    void addNote(IAtsWorkItem workItem, AtsStateNote note, IAtsChangeSet changes);
 
-   void addNote(IAtsWorkItem workItem, AtsStateNoteType type, String state, String msg, Date date, UserId user, IAtsChangeSet changes);
+   void addNote(IAtsWorkItem workItem, AtsStateNoteType type, String state, String msg, Date date, UserId user,
+      IAtsChangeSet changes);
 
    List<AtsStateNote> getNotes(IAtsWorkItem workItem);
 

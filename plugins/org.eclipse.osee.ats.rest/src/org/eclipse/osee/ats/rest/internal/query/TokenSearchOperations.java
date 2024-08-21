@@ -40,7 +40,9 @@ import org.eclipse.osee.orcs.OrcsApi;
  */
 public class TokenSearchOperations {
 
-   public static HashCollection<ArtifactId, ArtifactToken> getArtifactTokenListFromRelated(BranchToken branch, Collection<ArtifactId> artifacts, ArtifactTypeId artifactType, RelationTypeSide relationType, OrcsApi orcsApi, JdbcClient jdbcClient) {
+   public static HashCollection<ArtifactId, ArtifactToken> getArtifactTokenListFromRelated(BranchToken branch,
+      Collection<ArtifactId> artifacts, ArtifactTypeId artifactType, RelationTypeSide relationType, OrcsApi orcsApi,
+      JdbcClient jdbcClient) {
       List<Long> artIds = new LinkedList<>();
       String ids = "";
       for (ArtifactId art : artifacts) {
@@ -103,7 +105,9 @@ public class TokenSearchOperations {
     * @return ArtifactTokens in artifacts that have attribute matching value in database. Excludes binary attribute
     * values.
     */
-   public static Collection<ArtifactToken> getArtifactTokensMatchingAttrValue(BranchId branch, Collection<ArtifactToken> artifacts, AttributeTypeToken attributeType, Object value, OrcsApi orcsApi, JdbcService jdbcService) {
+   public static Collection<ArtifactToken> getArtifactTokensMatchingAttrValue(BranchId branch,
+      Collection<ArtifactToken> artifacts, AttributeTypeToken attributeType, Object value, OrcsApi orcsApi,
+      JdbcService jdbcService) {
       List<Long> artIds = new LinkedList<>();
       Map<Long, ArtifactToken> artIdToTokenMap = new HashMap<>();
       String ids = "";

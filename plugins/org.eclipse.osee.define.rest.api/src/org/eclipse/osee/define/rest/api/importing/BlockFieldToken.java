@@ -35,11 +35,13 @@ public class BlockFieldToken extends NamedIdBase {
       this.parser = parser;
    }
 
-   public static BlockFieldToken valueOf(long id, String name, String typeRegex, String contentRegex, Function<BlockFieldToken, BlockField> parser, AttributeTypeToken oseeType) {
+   public static BlockFieldToken valueOf(long id, String name, String typeRegex, String contentRegex,
+      Function<BlockFieldToken, BlockField> parser, AttributeTypeToken oseeType) {
       return new BlockFieldToken(id, name, typeRegex, contentRegex, parser, oseeType);
    }
 
-   public static BlockFieldToken valueOf(long id, String name, String typeRegex, String contentRegex, Function<BlockFieldToken, BlockField> parser) {
+   public static BlockFieldToken valueOf(long id, String name, String typeRegex, String contentRegex,
+      Function<BlockFieldToken, BlockField> parser) {
       return valueOf(id, name, typeRegex, contentRegex, parser, AttributeTypeToken.SENTINEL);
    }
 

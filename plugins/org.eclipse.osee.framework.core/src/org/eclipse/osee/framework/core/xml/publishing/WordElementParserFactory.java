@@ -23,8 +23,7 @@ public class WordElementParserFactory<P extends AbstractElement, L extends Abstr
    BiFunction<P, Element, C> childFactory;
    XmlTagSpecification childTag;
 
-   WordElementParserFactory(Function<P, L> listFactory, BiFunction<P, Element, C> childFactory,
-      XmlTagSpecification childTag) {
+   WordElementParserFactory(Function<P, L> listFactory, BiFunction<P, Element, C> childFactory, XmlTagSpecification childTag) {
       this.listFactory = listFactory;
       this.childFactory = childFactory;
       this.childTag = childTag;

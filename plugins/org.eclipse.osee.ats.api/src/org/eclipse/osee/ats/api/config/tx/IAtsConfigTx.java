@@ -34,9 +34,11 @@ public interface IAtsConfigTx {
 
    TransactionId execute();
 
-   IAtsConfigTxVersion createVersion(String name, ReleasedOption released, BranchToken branch, NextRelease nextRelease, IAtsTeamDefinition teamDef);
+   IAtsConfigTxVersion createVersion(String name, ReleasedOption released, BranchToken branch, NextRelease nextRelease,
+      IAtsTeamDefinition teamDef);
 
-   IAtsConfigTxVersion createVersion(IAtsVersionArtifactToken versionTok, ReleasedOption released, BranchToken branch, NextRelease nextRelease, IAtsTeamDefinition teamDef);
+   IAtsConfigTxVersion createVersion(IAtsVersionArtifactToken versionTok, ReleasedOption released, BranchToken branch,
+      NextRelease nextRelease, IAtsTeamDefinition teamDef);
 
    IAtsTeamDefinition getTeamDef(ArtifactId teamDef);
 
@@ -44,7 +46,8 @@ public interface IAtsConfigTx {
 
    IAtsConfigTxProgram createProgram(IAtsProgramArtifactToken program);
 
-   IAtsConfigTxActionableItem createActionableItem(IAtsActionableItem parent, IAtsActionableItemArtifactToken actionableItem);
+   IAtsConfigTxActionableItem createActionableItem(IAtsActionableItem parent,
+      IAtsActionableItemArtifactToken actionableItem);
 
    IAtsActionableItem getActionableItem(ArtifactId artifact);
 

@@ -70,7 +70,8 @@ public class ResServiceContributionItem extends OseeStatusContributionItem imple
    }
 
    @Override
-   public void handleRemoteEventManagerEvent(Sender sender, final RemoteEventServiceEventType remoteEventServiceEventType) {
+   public void handleRemoteEventManagerEvent(Sender sender,
+      final RemoteEventServiceEventType remoteEventServiceEventType) {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {

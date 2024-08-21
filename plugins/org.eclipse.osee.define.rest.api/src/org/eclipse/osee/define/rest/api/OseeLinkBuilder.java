@@ -110,7 +110,8 @@ public class OseeLinkBuilder {
       + "FABRRRQAUUUUAFFFFABRRRQB/9k=";
    //@formatter:on
 
-   private String getLinkId(LinkType destLinkType, ArtifactReadable artifact, TransactionId tx, PresentationType presentationType, String permanentUrl) {
+   private String getLinkId(LinkType destLinkType, ArtifactReadable artifact, TransactionId tx,
+      PresentationType presentationType, String permanentUrl) {
       String toReturn;
       if (destLinkType == LinkType.OSEE_SERVER_LINK) {
          toReturn = XmlEncoderDecoder.textToXml(getOseeLink(artifact, presentationType, permanentUrl)).toString();
@@ -224,14 +225,16 @@ public class OseeLinkBuilder {
       return url.toString();
    }
 
-   public String getWordMlLink(LinkType destLinkType, ArtifactReadable artifact, TransactionId txId, PresentationType presentationType, String permanentUrl) {
+   public String getWordMlLink(LinkType destLinkType, ArtifactReadable artifact, TransactionId txId,
+      PresentationType presentationType, String permanentUrl) {
       String linkId = getLinkId(destLinkType, artifact, txId, presentationType, permanentUrl);
       String linkText = getLinkText(destLinkType, artifact);
 
       return WordCoreUtil.getLink(destLinkType, linkId, linkText).toString();
    }
 
-   public String getWordMlLink(LinkType destLinkType, ArtifactReadable artifact, TransactionId txId, String permanentUrl) {
+   public String getWordMlLink(LinkType destLinkType, ArtifactReadable artifact, TransactionId txId,
+      String permanentUrl) {
       return getWordMlLink(destLinkType, artifact, txId, PresentationType.DEFAULT_OPEN, permanentUrl);
    }
 

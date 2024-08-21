@@ -35,30 +35,36 @@ public class BranchDataFactory {
       this.queryFactory = queryFactory;
    }
 
-   public CreateBranchData createBaselineBranchData(BranchToken branch, BranchToken parent, ArtifactId associatedArtifact) {
+   public CreateBranchData createBaselineBranchData(BranchToken branch, BranchToken parent,
+      ArtifactId associatedArtifact) {
       return createBranchData(branch, parent, associatedArtifact, BranchType.BASELINE);
    }
 
-   public CreateBranchData createWorkingBranchData(BranchToken branch, BranchToken parent, ArtifactId associatedArtifact) {
+   public CreateBranchData createWorkingBranchData(BranchToken branch, BranchToken parent,
+      ArtifactId associatedArtifact) {
       return createBranchData(branch, parent, associatedArtifact, BranchType.WORKING);
    }
 
-   private CreateBranchData createBranchData(BranchToken branch, BranchToken parent, ArtifactId associatedArtifact, BranchType branchType) {
+   private CreateBranchData createBranchData(BranchToken branch, BranchToken parent, ArtifactId associatedArtifact,
+      BranchType branchType) {
       TransactionQuery txQuery = queryFactory.transactionQuery();
       TransactionToken fromTx = txQuery.andIsHead(parent).getTokens().getExactlyOne();
       String creationComment = String.format("New Branch from %s (%s)", parent.getName(), fromTx.getIdString());
       return createBranchData(branch, parent, branchType, creationComment, fromTx, associatedArtifact, false);
    }
 
-   public CreateBranchData createCopyTxBranchData(BranchToken branch, TransactionId fromTransaction, ArtifactId associatedArtifact) {
+   public CreateBranchData createCopyTxBranchData(BranchToken branch, TransactionId fromTransaction,
+      ArtifactId associatedArtifact) {
       return createBranchData(branch, fromTransaction, associatedArtifact, BranchType.WORKING, "copied");
    }
 
-   public CreateBranchData createPortBranchData(BranchToken branch, TransactionId fromTransaction, ArtifactId associatedArtifact) {
+   public CreateBranchData createPortBranchData(BranchToken branch, TransactionId fromTransaction,
+      ArtifactId associatedArtifact) {
       return createBranchData(branch, fromTransaction, associatedArtifact, BranchType.PORT, "ported");
    }
 
-   private CreateBranchData createBranchData(BranchToken branch, TransactionId fromTransaction, ArtifactId associatedArtifact, BranchType branchType, String verb) {
+   private CreateBranchData createBranchData(BranchToken branch, TransactionId fromTransaction,
+      ArtifactId associatedArtifact, BranchType branchType, String verb) {
       TransactionQuery txQuery = queryFactory.transactionQuery();
       BranchQuery branchQuery = queryFactory.branchQuery();
       TransactionToken fromTx = txQuery.andTxId(fromTransaction).getTokens().getExactlyOne();
@@ -69,7 +75,8 @@ public class BranchDataFactory {
       return createBranchData(branch, parent, branchType, creationComment, fromTx, associatedArtifact, true);
    }
 
-   private CreateBranchData createBranchData(BranchToken branch, BranchId parent, BranchType branchType, String creationComment, TransactionToken sysRootHeadTx, ArtifactId associatedArtifact, boolean bCopyTx) {
+   private CreateBranchData createBranchData(BranchToken branch, BranchId parent, BranchType branchType,
+      String creationComment, TransactionToken sysRootHeadTx, ArtifactId associatedArtifact, boolean bCopyTx) {
       CreateBranchData createData = new CreateBranchData(branch);
       createData.setName(branch.getName());
       createData.setBranchType(branchType);

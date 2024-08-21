@@ -66,7 +66,8 @@ public class RelationTypeAccessType implements AccessType {
    }
 
    @Override
-   public AccessTypeMatch computeMatch(ArtifactToken otherArt, AttributeTypeToken attrType, RelationTypeToken relType, IParentProvider parentProvider) {
+   public AccessTypeMatch computeMatch(ArtifactToken otherArt, AttributeTypeToken attrType, RelationTypeToken relType,
+      IParentProvider parentProvider) {
       if (otherArt.getArtifactType().inheritsFrom(artifactType)) {
          if (relType.equals(relationType)) {
             if (allowDeny == AllowDeny.Allow) {

@@ -184,7 +184,8 @@ public class IntroduceArtifactOperation {
       }
    }
 
-   private boolean doesRelatedArtifactExist(Artifact destinationArtifact, ArtifactId aArtifactId, ArtifactId bArtifactId) {
+   private boolean doesRelatedArtifactExist(Artifact destinationArtifact, ArtifactId aArtifactId,
+      ArtifactId bArtifactId) {
       ArtifactId otherId = destinationArtifact.equals(aArtifactId.getId()) ? bArtifactId : aArtifactId;
       Artifact otherArtifact = ArtifactQuery.checkArtifactFromId(otherId, destinationBranch);
 

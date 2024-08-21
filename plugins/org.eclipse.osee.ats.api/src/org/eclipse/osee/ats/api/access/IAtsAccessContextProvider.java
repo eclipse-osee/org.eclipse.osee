@@ -27,15 +27,18 @@ public interface IAtsAccessContextProvider {
 
    boolean isApplicable(AtsUser atsUser, Object object);
 
-   default public XResultData hasArtifactContextWriteAccess(AtsUser atsUser, Collection<? extends ArtifactToken> artifacts, XResultData rd) {
+   default public XResultData hasArtifactContextWriteAccess(AtsUser atsUser,
+      Collection<? extends ArtifactToken> artifacts, XResultData rd) {
       return rd;
    }
 
-   default public XResultData hasAttributeTypeContextWriteAccess(AtsUser atsUser, Collection<? extends ArtifactToken> artifacts, AttributeTypeToken attributeType, XResultData rd) {
+   default public XResultData hasAttributeTypeContextWriteAccess(AtsUser atsUser,
+      Collection<? extends ArtifactToken> artifacts, AttributeTypeToken attributeType, XResultData rd) {
       return rd;
    }
 
-   default public XResultData hasRelationContextWriteAccess(AtsUser atsUser, ArtifactToken artifact, RelationTypeToken relationType, XResultData rd) {
+   default public XResultData hasRelationContextWriteAccess(AtsUser atsUser, ArtifactToken artifact,
+      RelationTypeToken relationType, XResultData rd) {
       return rd;
    }
 

@@ -158,214 +158,214 @@ public class RelationManagerImplTest {
    private ArtifactTypeToken artifactType1;
    private ArtifactTypeToken artifactType2;
    private RelationData relData;
-   
+
    @Before
    public void setUp() {
       MockitoAnnotations.initMocks(this);
       manager = new RelationManagerImpl(logger, validity, resolver, relationFactory, orderFactory, provider);
-      
+
       relData = new RelationData() {
-		
-		@Override
-		public Long getId() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		
-		@Override
-		public VersionData getVersion() {
-			// TODO Auto-generated method stub
-			VersionData ver = new VersionDataImpl();
-			ver.setTxCurrent(TxCurrent.CURRENT);
-			return ver;
-		}
-		
-		@Override
-		public void setUseBackingData(boolean useBackingData) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-		@Override
-		public void setType(RelationTypeToken type) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-		@Override
-		public void setModType(ModificationType modType) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-		@Override
-		public void setLocalId(Id id) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-		@Override
-		public void setBaseType(RelationTypeToken originalType) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-		@Override
-		public void setBaseModType(ModificationType modType) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-		@Override
-		public void setApplicabilityId(ApplicabilityId applicId) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-		@Override
-		public boolean isExistingVersionUsed() {
-			// TODO Auto-generated method stub
-			return false;
-		}
-		
-		@Override
-		public boolean isDirty() {
-			// TODO Auto-generated method stub
-			return false;
-		}
-		
-		@Override
-		public boolean hasTypeUuidChange() {
-			// TODO Auto-generated method stub
-			return false;
-		}
-		
-		@Override
-		public boolean hasModTypeChange() {
-			// TODO Auto-generated method stub
-			return false;
-		}
-		
-		@Override
-		public RelationTypeToken getType() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		
-		@Override
-		public ModificationType getPreviousModType() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		
-		@Override
-		public ModificationType getModType() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		
-		@Override
-		public Id getLocalId() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		
-		@Override
-		public DirtyState getDirtyState() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		
-		@Override
-		public RelationTypeToken getBaseType() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		
-		@Override
-		public ModificationType getBaseModType() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		
-		@Override
-		public ApplicabilityId getApplicabilityId() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		
-		@Override
-		public DirtyState calculateDirtyState(boolean dirty) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		
-		@Override
-		public void setRelationArtifact(ArtifactId relationArtifact) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-		@Override
-		public void setRelOrder(int relOrder) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-		@Override
-		public void setRationale(String rationale) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-		@Override
-		public void setArtIdB(ArtifactId artIdB) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-		@Override
-		public void setArtIdA(ArtifactId artIdA) {
-			// TODO Auto-generated method stub
-			
-		}
-		
-		@Override
-		public ArtifactId getRelationArtifact() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		
-		@Override
-		public int getRelOrder() {
-			// TODO Auto-generated method stub
-			return 0;
-		}
-		
-		@Override
-		public String getRationale() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		
-		@Override
-		public ArtifactId getArtifactIdB() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		
-		@Override
-		public ArtifactId getArtifactIdA() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		
-		@Override
-		public ArtifactId getArtIdOn(RelationSide side) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-	};
+
+         @Override
+         public Long getId() {
+            // TODO Auto-generated method stub
+            return null;
+         }
+
+         @Override
+         public VersionData getVersion() {
+            // TODO Auto-generated method stub
+            VersionData ver = new VersionDataImpl();
+            ver.setTxCurrent(TxCurrent.CURRENT);
+            return ver;
+         }
+
+         @Override
+         public void setUseBackingData(boolean useBackingData) {
+            // TODO Auto-generated method stub
+
+         }
+
+         @Override
+         public void setType(RelationTypeToken type) {
+            // TODO Auto-generated method stub
+
+         }
+
+         @Override
+         public void setModType(ModificationType modType) {
+            // TODO Auto-generated method stub
+
+         }
+
+         @Override
+         public void setLocalId(Id id) {
+            // TODO Auto-generated method stub
+
+         }
+
+         @Override
+         public void setBaseType(RelationTypeToken originalType) {
+            // TODO Auto-generated method stub
+
+         }
+
+         @Override
+         public void setBaseModType(ModificationType modType) {
+            // TODO Auto-generated method stub
+
+         }
+
+         @Override
+         public void setApplicabilityId(ApplicabilityId applicId) {
+            // TODO Auto-generated method stub
+
+         }
+
+         @Override
+         public boolean isExistingVersionUsed() {
+            // TODO Auto-generated method stub
+            return false;
+         }
+
+         @Override
+         public boolean isDirty() {
+            // TODO Auto-generated method stub
+            return false;
+         }
+
+         @Override
+         public boolean hasTypeUuidChange() {
+            // TODO Auto-generated method stub
+            return false;
+         }
+
+         @Override
+         public boolean hasModTypeChange() {
+            // TODO Auto-generated method stub
+            return false;
+         }
+
+         @Override
+         public RelationTypeToken getType() {
+            // TODO Auto-generated method stub
+            return null;
+         }
+
+         @Override
+         public ModificationType getPreviousModType() {
+            // TODO Auto-generated method stub
+            return null;
+         }
+
+         @Override
+         public ModificationType getModType() {
+            // TODO Auto-generated method stub
+            return null;
+         }
+
+         @Override
+         public Id getLocalId() {
+            // TODO Auto-generated method stub
+            return null;
+         }
+
+         @Override
+         public DirtyState getDirtyState() {
+            // TODO Auto-generated method stub
+            return null;
+         }
+
+         @Override
+         public RelationTypeToken getBaseType() {
+            // TODO Auto-generated method stub
+            return null;
+         }
+
+         @Override
+         public ModificationType getBaseModType() {
+            // TODO Auto-generated method stub
+            return null;
+         }
+
+         @Override
+         public ApplicabilityId getApplicabilityId() {
+            // TODO Auto-generated method stub
+            return null;
+         }
+
+         @Override
+         public DirtyState calculateDirtyState(boolean dirty) {
+            // TODO Auto-generated method stub
+            return null;
+         }
+
+         @Override
+         public void setRelationArtifact(ArtifactId relationArtifact) {
+            // TODO Auto-generated method stub
+
+         }
+
+         @Override
+         public void setRelOrder(int relOrder) {
+            // TODO Auto-generated method stub
+
+         }
+
+         @Override
+         public void setRationale(String rationale) {
+            // TODO Auto-generated method stub
+
+         }
+
+         @Override
+         public void setArtIdB(ArtifactId artIdB) {
+            // TODO Auto-generated method stub
+
+         }
+
+         @Override
+         public void setArtIdA(ArtifactId artIdA) {
+            // TODO Auto-generated method stub
+
+         }
+
+         @Override
+         public ArtifactId getRelationArtifact() {
+            // TODO Auto-generated method stub
+            return null;
+         }
+
+         @Override
+         public int getRelOrder() {
+            // TODO Auto-generated method stub
+            return 0;
+         }
+
+         @Override
+         public String getRationale() {
+            // TODO Auto-generated method stub
+            return null;
+         }
+
+         @Override
+         public ArtifactId getArtifactIdB() {
+            // TODO Auto-generated method stub
+            return null;
+         }
+
+         @Override
+         public ArtifactId getArtifactIdA() {
+            // TODO Auto-generated method stub
+            return null;
+         }
+
+         @Override
+         public ArtifactId getArtIdOn(RelationSide side) {
+            // TODO Auto-generated method stub
+            return null;
+         }
+      };
       String sessionId = GUID.create();
       when(session.getGuid()).thenReturn(sessionId);
 
@@ -395,7 +395,7 @@ public class RelationManagerImplTest {
 
       when(relation4.getIdForSide(RelationSide.SIDE_A)).thenReturn(artifactId11);
       when(relation4.getIdForSide(RelationSide.SIDE_B)).thenReturn(artifactId66);
-      
+
       when(relation1.getOrcsData()).thenReturn(relData);
       when(relation2.getOrcsData()).thenReturn(relData);
       when(relation3.getOrcsData()).thenReturn(relData);

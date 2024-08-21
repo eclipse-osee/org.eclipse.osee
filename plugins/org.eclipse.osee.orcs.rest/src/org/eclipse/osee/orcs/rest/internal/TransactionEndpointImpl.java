@@ -93,11 +93,11 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       this.tupleQuery = orcsApi.getQueryFactory().tupleQuery();
    }
    public static enum Columns {
-	   Source,
-	   Date,
-	   File
+      Source,
+      Date,
+      File
    };
-   
+
    protected void setUriInfo(UriInfo uriInfo) {
       this.uriInfo = uriInfo;
    }
@@ -405,106 +405,106 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
       }
       return results;
    }
-   
+
    @Override
-   public XResultData getExportData(String strexportId) {  
-		// Rest Call for Export Data can filter by exportId leave blank to get all data
-		XResultData results = new XResultData();
-		XResultTable exportData = new XResultTable();
-		List<XResultTableColumn> dataColumns = Arrays.asList(
-				new XResultTableColumn(Columns.Source.name(), Columns.Source.name(), 100, XResultTableDataType.String),
-				new XResultTableColumn(Columns.Date.name(), Columns.Date.name(), 100, XResultTableDataType.String),
-				new XResultTableColumn(Columns.File.name(), Columns.File.name(), 100, XResultTableDataType.String));
-		List<String> sources = new ArrayList<>();
-		List<String> dates = new ArrayList<>();
-		List<String> files = new ArrayList<>();
-		try {
-			String transferPath = orcsApi.getSystemProperties().getValue(OseeClient.OSEE_APPLICATION_SERVER_DATA)
-					+ File.separator + TransferDataStoreImpl.transferDir + File.separator;
-			File directoryPath = new File(transferPath);
-			FilenameFilter filefilter = new FilenameFilter() {
-				@Override
-				public boolean accept(File dir, String name) {
-					String lowercaseName = name.toLowerCase();
-					if (!lowercaseName.endsWith(".zip")) {
-						return false;
-					}
-					if (strexportId == null) {
-						return true;
-					}
-					if (lowercaseName.contains(strexportId)) {
-						return true;
-					}
-					return false;
-				}
-			};
+   public XResultData getExportData(String strexportId) {
+      // Rest Call for Export Data can filter by exportId leave blank to get all data
+      XResultData results = new XResultData();
+      XResultTable exportData = new XResultTable();
+      List<XResultTableColumn> dataColumns = Arrays.asList(
+         new XResultTableColumn(Columns.Source.name(), Columns.Source.name(), 100, XResultTableDataType.String),
+         new XResultTableColumn(Columns.Date.name(), Columns.Date.name(), 100, XResultTableDataType.String),
+         new XResultTableColumn(Columns.File.name(), Columns.File.name(), 100, XResultTableDataType.String));
+      List<String> sources = new ArrayList<>();
+      List<String> dates = new ArrayList<>();
+      List<String> files = new ArrayList<>();
+      try {
+         String transferPath = orcsApi.getSystemProperties().getValue(
+            OseeClient.OSEE_APPLICATION_SERVER_DATA) + File.separator + TransferDataStoreImpl.transferDir + File.separator;
+         File directoryPath = new File(transferPath);
+         FilenameFilter filefilter = new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+               String lowercaseName = name.toLowerCase();
+               if (!lowercaseName.endsWith(".zip")) {
+                  return false;
+               }
+               if (strexportId == null) {
+                  return true;
+               }
+               if (lowercaseName.contains(strexportId)) {
+                  return true;
+               }
+               return false;
+            }
+         };
 
-			List<String> filelist = Arrays.asList(directoryPath.list(filefilter));
-			String exportId = "";
-			String date = "";
-			String file = "";
-			String[] export;
-			String data = "";
-			if (filelist.size() > 0) {
-				for (int i = 0; i < filelist.size(); i++) {
-					data = filelist.get(i).toString();
-					file = data;
-					export = data.split("-");
-					exportId = export[1];
-					date = convertTimestamp(export[2]);
-					sources.add(exportId);
-					dates.add(date);
-					files.add(file);
-				}
-				if (sources != null) {
-					exportData.setName("TFG Data");
-					exportData.getColumns().addAll(dataColumns);
-					for (int x = 0; x < sources.size(); x++) {
-						exportData.getRows().add(new XResultTableRow(String.valueOf(sources.get(x)),
-								String.valueOf(dates.get(x)), String.valueOf(files.get(x))));
-					}
-					Set<String> uniqueSet = new HashSet<>(sources); // Create HashSet from list
-					ArrayList<String> sortedSources = new ArrayList<>(uniqueSet);
-					Collections.sort(sortedSources);
-					results.setInfoCount(filelist.size());
-					
-					 					results.getTables().add(exportData);
-					results.setTitle("Transfer File: Export Directory Data");
-					results.getResults().addAll(filelist);
-				}
-			}
-			List<TransactionId> exportIdList = new ArrayList<>();
-	         int intDbType = TransferDBType.SOURCE.ordinal();
-	         tupleQuery.getTuple4E1FromTupleType(ExportedBranch, TransferTupleTypes.LongExportedDBType,
-	            Long.valueOf(intDbType), exportIdList::add);
+         List<String> filelist = Arrays.asList(directoryPath.list(filefilter));
+         String exportId = "";
+         String date = "";
+         String file = "";
+         String[] export;
+         String data = "";
+         if (filelist.size() > 0) {
+            for (int i = 0; i < filelist.size(); i++) {
+               data = filelist.get(i).toString();
+               file = data;
+               export = data.split("-");
+               exportId = export[1];
+               date = convertTimestamp(export[2]);
+               sources.add(exportId);
+               dates.add(date);
+               files.add(file);
+            }
+            if (sources != null) {
+               exportData.setName("TFG Data");
+               exportData.getColumns().addAll(dataColumns);
+               for (int x = 0; x < sources.size(); x++) {
+                  exportData.getRows().add(new XResultTableRow(String.valueOf(sources.get(x)),
+                     String.valueOf(dates.get(x)), String.valueOf(files.get(x))));
+               }
+               Set<String> uniqueSet = new HashSet<>(sources); // Create HashSet from list
+               ArrayList<String> sortedSources = new ArrayList<>(uniqueSet);
+               Collections.sort(sortedSources);
+               results.setInfoCount(filelist.size());
 
-	         List<String> idlist = new ArrayList<String>();
-	         for (TransactionId transId : exportIdList) {
-	            idlist.add(transId.getIdString());
-	         }
-	         if (exportIdList.size() > 0) {			            
-	            results.setIds(idlist);
-	         }
-		} catch (Exception ex) {
-			results.error(ex.getMessage().toString());
-		}
-		return results;
+               results.getTables().add(exportData);
+               results.setTitle("Transfer File: Export Directory Data");
+               results.getResults().addAll(filelist);
+            }
+         }
+         List<TransactionId> exportIdList = new ArrayList<>();
+         int intDbType = TransferDBType.SOURCE.ordinal();
+         tupleQuery.getTuple4E1FromTupleType(ExportedBranch, TransferTupleTypes.LongExportedDBType,
+            Long.valueOf(intDbType), exportIdList::add);
+
+         List<String> idlist = new ArrayList<String>();
+         for (TransactionId transId : exportIdList) {
+            idlist.add(transId.getIdString());
+         }
+         if (exportIdList.size() > 0) {
+            results.setIds(idlist);
+         }
+      } catch (Exception ex) {
+         results.error(ex.getMessage().toString());
+      }
+      return results;
    }
-   
+
    public static String convertTimestamp(String timestampString) {
-	   // Extract year, month, day, hour, minute
-	   int year = Integer.parseInt(timestampString.substring(0, 4));
-	   int month = Integer.parseInt(timestampString.substring(4, 6)) - 1; // Months are 0-indexed
-	   int day = Integer.parseInt(timestampString.substring(6, 8));
-	   int hour = Integer.parseInt(timestampString.substring(8, 10));
-	   int minute = Integer.parseInt(timestampString.substring(10, 12));
+      // Extract year, month, day, hour, minute
+      int year = Integer.parseInt(timestampString.substring(0, 4));
+      int month = Integer.parseInt(timestampString.substring(4, 6)) - 1; // Months are 0-indexed
+      int day = Integer.parseInt(timestampString.substring(6, 8));
+      int hour = Integer.parseInt(timestampString.substring(8, 10));
+      int minute = Integer.parseInt(timestampString.substring(10, 12));
 
-	   // Create a Date object from milliseconds
-	   Date date = new Date(year - 1900, month, day, hour, minute);
+      // Create a Date object from milliseconds
+      Date date = new Date(year - 1900, month, day, hour, minute);
 
-	   // Format date using SimpleDateFormat
-	   SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm");
-	   return sdf.format(date);
+      // Format date using SimpleDateFormat
+      SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+      return sdf.format(date);
    }
 
    @Override

@@ -42,7 +42,8 @@ public class ClientEndpoint extends AbstractClientService {
    @GET
    @Path("{application-guid}/logo")
    @Produces({"image/png", "image/jpeg", "image/gif"})
-   public Response getApplicationLogo(@Context final UriInfo uriInfo, @PathParam("application-guid") final String applicationGuid) {
+   public Response getApplicationLogo(@Context final UriInfo uriInfo,
+      @PathParam("application-guid") final String applicationGuid) {
       return Response.ok(new StreamingOutput() {
 
          @Override

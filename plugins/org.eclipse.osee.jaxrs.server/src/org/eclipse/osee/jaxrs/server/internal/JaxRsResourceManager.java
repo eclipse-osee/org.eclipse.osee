@@ -306,7 +306,8 @@ public final class JaxRsResourceManager implements BundleListener {
       return resourceUrls;
    }
 
-   private void addResource(Set<String> paths, Bundle bundle, String resourceBase, String alias, URL url, boolean secure) {
+   private void addResource(Set<String> paths, Bundle bundle, String resourceBase, String alias, URL url,
+      boolean secure) {
       int index = resourceBase.lastIndexOf('/');
       String path = index != -1 ? resourceBase.substring(0, index) : "/";
       String resourceName = index != -1 ? resourceBase.substring(index + 1) : resourceBase;

@@ -31,7 +31,8 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class LdapClient implements ContextConfigProvider {
 
    public interface LdapConnectionFactory {
-      LdapConnection createConnection(ContextConfigProvider provider, LdapAuthenticationType authType, Hashtable<String, String> properties) throws NamingException, LoginException, PrivilegedActionException;
+      LdapConnection createConnection(ContextConfigProvider provider, LdapAuthenticationType authType,
+         Hashtable<String, String> properties) throws NamingException, LoginException, PrivilegedActionException;
    }
 
    private static final String LDAP_SSL_SCHEME = "ldaps:";
@@ -105,7 +106,8 @@ public class LdapClient implements ContextConfigProvider {
       return props;
    }
 
-   public LdapConnection getConnection(LdapAuthenticationType authType, String username, String password) throws NamingException, LoginException, PrivilegedActionException {
+   public LdapConnection getConnection(LdapAuthenticationType authType, String username, String password)
+      throws NamingException, LoginException, PrivilegedActionException {
       Hashtable<String, String> env = getContextConfig();
       env.put(Context.SECURITY_AUTHENTICATION, authType.getContextAuthenticationName());
       if (LdapAuthenticationType.GSSAPI != authType) {

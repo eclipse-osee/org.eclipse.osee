@@ -60,7 +60,8 @@ public class ConfigsJsonWriter implements MessageBodyWriter<Collection<IAtsConfi
    }
 
    @Override
-   public long getSize(Collection<IAtsConfigObject> data, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+   public long getSize(Collection<IAtsConfigObject> data, Class<?> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType) {
       return -1;
    }
 
@@ -94,7 +95,9 @@ public class ConfigsJsonWriter implements MessageBodyWriter<Collection<IAtsConfi
    }
 
    @Override
-   public void writeTo(Collection<IAtsConfigObject> programs, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
+   public void writeTo(Collection<IAtsConfigObject> programs, Class<?> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
+      throws IOException, WebApplicationException {
       try (JsonGenerator writer = jsonFactory.createGenerator(entityStream)) {
          writer.writeStartArray();
          for (IAtsConfigObject program : programs) {

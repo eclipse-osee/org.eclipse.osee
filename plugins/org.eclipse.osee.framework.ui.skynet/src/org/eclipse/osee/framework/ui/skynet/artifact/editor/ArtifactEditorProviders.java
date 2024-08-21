@@ -22,9 +22,8 @@ import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 public final class ArtifactEditorProviders {
 
    public static Collection<IArtifactEditorProvider> getXWidgetProviders() {
-      ExtensionDefinedObjects<IArtifactEditorProvider> contributions =
-         new ExtensionDefinedObjects<>(
-            "org.eclipse.osee.framework.ui.skynet.ArtifactEditorProvider", "ArtifactEditorProvider", "classname", true);
+      ExtensionDefinedObjects<IArtifactEditorProvider> contributions = new ExtensionDefinedObjects<>(
+         "org.eclipse.osee.framework.ui.skynet.ArtifactEditorProvider", "ArtifactEditorProvider", "classname", true);
       return contributions.getObjects();
    }
 

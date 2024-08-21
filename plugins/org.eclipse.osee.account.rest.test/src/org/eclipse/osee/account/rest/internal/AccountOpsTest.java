@@ -358,7 +358,8 @@ public class AccountOpsTest {
       return new Date(Math.abs(System.currentTimeMillis() - RandomUtils.nextLong()));
    }
 
-   private static AccountSession mockAccess(long id, String token, Date created, Date accessed, String accessFrom, String accessDetails) {
+   private static AccountSession mockAccess(long id, String token, Date created, Date accessed, String accessFrom,
+      String accessDetails) {
       AccountSession access = Mockito.mock(AccountSession.class);
       when(access.getAccountId()).thenReturn(id);
       when(access.getSessionToken()).thenReturn(token);
@@ -369,7 +370,8 @@ public class AccountOpsTest {
       return access;
    }
 
-   private static void assertAccess(AccountSessionDetailsData actual, Long id, Date created, Date accessed, String accessFrom, String accessDetails) {
+   private static void assertAccess(AccountSessionDetailsData actual, Long id, Date created, Date accessed,
+      String accessFrom, String accessDetails) {
       assertEquals(accessDetails, actual.getAccessDetails());
       assertEquals(accessFrom, actual.getAccessedFrom());
       assertEquals(id, actual.getAccountId());
@@ -387,7 +389,8 @@ public class AccountOpsTest {
       return account;
    }
 
-   private static void assertAccount(AccountInfoData data, ArtifactId id, String name, String email, String username, boolean active) {
+   private static void assertAccount(AccountInfoData data, ArtifactId id, String name, String email, String username,
+      boolean active) {
       assertEquals(id.getId(), data.getAccountId());
       assertEquals(name, data.getName());
       assertEquals(email, data.getEmail());

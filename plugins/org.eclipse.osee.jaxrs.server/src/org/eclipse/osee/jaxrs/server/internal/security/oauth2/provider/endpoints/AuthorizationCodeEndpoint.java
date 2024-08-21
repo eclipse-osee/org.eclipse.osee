@@ -79,7 +79,8 @@ public class AuthorizationCodeEndpoint extends AuthorizationCodeGrantService {
     * Override fixes OAuthAuthorizationData creation
     */
 
-   protected OAuthAuthorizationData createAuthorizationData(Client client, MultivaluedMap<String, String> params, UserSubject subject, String redirectUri, List<OAuthPermission> perms) {
+   protected OAuthAuthorizationData createAuthorizationData(Client client, MultivaluedMap<String, String> params,
+      UserSubject subject, String redirectUri, List<OAuthPermission> perms) {
       OAuthAuthorizationData secData =
          super.createAuthorizationData(client, params, redirectUri, subject, perms, perms, canSupportPublicClients);
       secData.setApplicationName(client.getApplicationName());

@@ -78,13 +78,13 @@ public class ColumnFilterDialog extends DialogWithEntry {
          });
          dateRangeTypeCombo.setInput(DateRangeType.values());
          dateRangeTypeCombo.addSelectionChangedListener(event -> {
-               String text2 = dateRangeTypeCombo.getCombo().getText();
-               dateRangeType = DateRangeType.get(text2);
-               updateDate2Composite();
+            String text2 = dateRangeTypeCombo.getCombo().getText();
+            dateRangeType = DateRangeType.get(text2);
+            updateDate2Composite();
          });
 
          date1Widget = new DateTime(widgetComp, SWT.CALENDAR);
-         date1Widget.addListener(SWT.Selection, e-> setDate1Selection());
+         date1Widget.addListener(SWT.Selection, e -> setDate1Selection());
 
          // set initial date
          Calendar cal = Calendar.getInstance();
@@ -92,7 +92,7 @@ public class ColumnFilterDialog extends DialogWithEntry {
          date1 = cal.getTime();
 
          time1Widget = new DateTime(widgetComp, SWT.TIME);
-         time1Widget.addListener(SWT.Selection, e-> setDate1Selection());
+         time1Widget.addListener(SWT.Selection, e -> setDate1Selection());
          time1Widget.setHours(0);
          time1Widget.setMinutes(0);
          time1Widget.setSeconds(0);
@@ -109,10 +109,10 @@ public class ColumnFilterDialog extends DialogWithEntry {
       if (isBetweenDates()) {
 
          date2Widget = new DateTime(widgetComp, SWT.CALENDAR);
-         date2Widget.addListener(SWT.Selection, e-> setDate2Selection());
+         date2Widget.addListener(SWT.Selection, e -> setDate2Selection());
 
          time2Widget = new DateTime(widgetComp, SWT.TIME);
-         time2Widget.addListener(SWT.Selection, e-> setDate2Selection());
+         time2Widget.addListener(SWT.Selection, e -> setDate2Selection());
          time2Widget.setHours(0);
          time2Widget.setMinutes(0);
          time2Widget.setSeconds(0);

@@ -23,7 +23,8 @@ public class RelationOrderUtil {
 
    private static final long SPACING = (long) Math.pow(2.0, 18.0);
 
-   public static int getRelOrder(RelationTypeToken relType, String insertType, int afterIndex, int beforeIndex, int minOrder, int maxOrder) {
+   public static int getRelOrder(RelationTypeToken relType, String insertType, int afterIndex, int beforeIndex,
+      int minOrder, int maxOrder) {
       int relOrder = 0;
       RelationTypeMultiplicity mult = relType.getMultiplicity();
       if (mult.equals(RelationTypeMultiplicity.MANY_TO_MANY) || mult.equals(RelationTypeMultiplicity.ONE_TO_MANY)) {

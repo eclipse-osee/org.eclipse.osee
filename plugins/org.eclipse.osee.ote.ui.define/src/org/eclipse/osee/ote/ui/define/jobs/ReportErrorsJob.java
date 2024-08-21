@@ -62,7 +62,8 @@ public class ReportErrorsJob extends UIJob {
       openError(title, message, null, objectsWithErrors);
    }
 
-   public static void openError(final String title, final String message, final IJobChangeListener listener, final Object... objectsWithErrors) {
+   public static void openError(final String title, final String message, final IJobChangeListener listener,
+      final Object... objectsWithErrors) {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {

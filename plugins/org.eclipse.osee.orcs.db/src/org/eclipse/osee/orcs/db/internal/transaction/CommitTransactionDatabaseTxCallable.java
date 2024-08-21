@@ -113,7 +113,8 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
       process(TxWritePhaseEnum.AFTER_TX_WRITE);
    }
 
-   private TransactionReadable createTransactionRecord(BranchId branch, UserToken author, String comment, TransactionId transaction) {
+   private TransactionReadable createTransactionRecord(BranchId branch, UserToken author, String comment,
+      TransactionId transaction) {
 
       TransactionDetailsType txType = TransactionDetailsType.NonBaselined;
       Date transactionTime = GlobalTime.GreenwichMeanTimestamp();

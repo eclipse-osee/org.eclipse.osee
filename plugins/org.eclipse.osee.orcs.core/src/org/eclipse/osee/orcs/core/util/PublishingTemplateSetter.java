@@ -47,7 +47,8 @@ public interface PublishingTemplateSetter {
     * @return the Publishing Template Manager's identifier for the Publishing Template.
     */
 
-   String set(ArtifactToken parent, String name, String content, String rendererOptions, List<Map.Entry<String, String>> publishingTemplateContentMapEntries, List<String> matchCriteria);
+   String set(ArtifactToken parent, String name, String content, String rendererOptions,
+      List<Map.Entry<String, String>> publishingTemplateContentMapEntries, List<String> matchCriteria);
 }
 
 /* EOF */

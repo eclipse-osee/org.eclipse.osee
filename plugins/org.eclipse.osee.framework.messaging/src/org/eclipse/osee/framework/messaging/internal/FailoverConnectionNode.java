@@ -62,7 +62,8 @@ public class FailoverConnectionNode implements ConnectionNode, Runnable {
    }
 
    @Override
-   public void send(MessageID messageId, Object message, Properties properties, OseeMessagingStatusCallback statusCallback) {
+   public void send(MessageID messageId, Object message, Properties properties,
+      OseeMessagingStatusCallback statusCallback) {
       attemptSmartConnect();
       if (lastConnectedState) {
          try {
@@ -95,14 +96,16 @@ public class FailoverConnectionNode implements ConnectionNode, Runnable {
    }
 
    @Override
-   public void subscribe(MessageID messageId, OseeMessagingListener listener, OseeMessagingStatusCallback statusCallback) {
+   public void subscribe(MessageID messageId, OseeMessagingListener listener,
+      OseeMessagingStatusCallback statusCallback) {
       savedSubscribes.add(new SavedSubscribe(messageId, listener, statusCallback));
       attemptSmartConnect();
       connectionNode.subscribe(messageId, listener, statusCallback);
    }
 
    @Override
-   public void subscribe(MessageID messageId, OseeMessagingListener listener, String selector, OseeMessagingStatusCallback statusCallback) {
+   public void subscribe(MessageID messageId, OseeMessagingListener listener, String selector,
+      OseeMessagingStatusCallback statusCallback) {
       savedSubscribes.add(new SavedSubscribe(messageId, listener, statusCallback));
       attemptSmartConnect();
       connectionNode.subscribe(messageId, listener, selector, statusCallback);
@@ -128,7 +131,8 @@ public class FailoverConnectionNode implements ConnectionNode, Runnable {
    }
 
    @Override
-   public void unsubscribe(MessageID messageId, OseeMessagingListener listener, OseeMessagingStatusCallback statusCallback) {
+   public void unsubscribe(MessageID messageId, OseeMessagingListener listener,
+      OseeMessagingStatusCallback statusCallback) {
       savedSubscribes.remove(new SavedSubscribe(messageId, listener, statusCallback));
       connectionNode.unsubscribe(messageId, listener, statusCallback);
    }

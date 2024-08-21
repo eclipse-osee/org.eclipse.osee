@@ -64,7 +64,8 @@ public class ReportsEndpointImpl implements ReportsEndpoint {
       this.orcsApi = Objects.requireNonNull(orcsApi);
    }
 
-   public Response applicabilityImpact(BranchId branch, String publish, List<ArtifactTypeToken> artTypes, List<AttributeTypeToken> attrTypes) {
+   public Response applicabilityImpact(BranchId branch, String publish, List<ArtifactTypeToken> artTypes,
+      List<AttributeTypeToken> attrTypes) {
       boolean publishUpdates = (publish.equals("true")) ? true : false;
       try {
          PublishingPermissions.verifyNonGroup();

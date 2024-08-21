@@ -271,7 +271,8 @@ public class ConvertWorkDefinitionOperations {
       System.gc();
    }
 
-   private int setNewWorkDefRefIfNecessary(XResultData rd, int updatedCount, IAtsChangeSet changes, ArtifactToken artifact, AttributeTypeToken oldAttrType, AttributeTypeToken newAttrType) {
+   private int setNewWorkDefRefIfNecessary(XResultData rd, int updatedCount, IAtsChangeSet changes,
+      ArtifactToken artifact, AttributeTypeToken oldAttrType, AttributeTypeToken newAttrType) {
       String oldWorkDefName = atsApi.getAttributeResolver().getSoleAttributeValue(artifact, oldAttrType, "");
       if (Strings.isValid(oldWorkDefName)) {
 

@@ -67,7 +67,8 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
    }
 
    @Override
-   protected XResultData extractFromSource(OrcsApi orcsApi, XResultData results, URI source, RoughArtifactCollector collector) throws Exception {
+   protected XResultData extractFromSource(OrcsApi orcsApi, XResultData results, URI source,
+      RoughArtifactCollector collector) throws Exception {
       XMLReader xmlReader = XMLReaderFactory.createXMLReader();
       xmlReader.setContentHandler(new ExcelSaxHandler(new ExcelRowProcessor(orcsApi, results, collector), true));
       xmlReader.parse(new InputSource(new InputStreamReader(source.toURL().openStream(), "UTF-8")));

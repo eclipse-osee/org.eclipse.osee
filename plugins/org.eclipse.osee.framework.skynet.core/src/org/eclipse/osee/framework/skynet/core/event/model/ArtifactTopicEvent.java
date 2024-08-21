@@ -194,7 +194,8 @@ public class ArtifactTopicEvent extends TopicEvent implements HasBranchId {
       return java.util.Collections.emptyList();
    }
 
-   public Collection<Artifact> getRelationOrderArtifacts(RelationTypeToken relationType, ArtifactTypeToken artifactType) {
+   public Collection<Artifact> getRelationOrderArtifacts(RelationTypeToken relationType,
+      ArtifactTypeToken artifactType) {
       Collection<Artifact> reordered = new HashSet<>(relationReorderRecords.size());
       for (EventTopicRelationReorderTransfer reorder : relationReorderRecords) {
          if (relationType == null || relationType.equals(reorder.getRelTypeUuid())) {

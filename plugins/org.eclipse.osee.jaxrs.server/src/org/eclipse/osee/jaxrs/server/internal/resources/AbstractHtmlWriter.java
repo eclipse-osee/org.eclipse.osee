@@ -47,7 +47,9 @@ public abstract class AbstractHtmlWriter<T> extends AbstractMessageBodyWriter<T>
    }
 
    @Override
-   public final void writeTo(T data, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
+   public final void writeTo(T data, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
+      MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
+      throws IOException, WebApplicationException {
       ViewModel model = asViewModel(data);
       MessageBodyWriter<ViewModel> writer =
          providers.getMessageBodyWriter(ViewModel.class, genericType, annotations, mediaType);

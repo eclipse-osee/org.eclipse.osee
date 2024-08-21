@@ -49,7 +49,8 @@ public class ArtifactTypeFilter extends SearchFilter {
    }
 
    @Override
-   public void loadFromStorageString(FilterTableViewer filterViewer, String type, String value, String storageString, boolean isNotEnabled) {
+   public void loadFromStorageString(FilterTableViewer filterViewer, String type, String value, String storageString,
+      boolean isNotEnabled) {
       ISearchPrimitive primitive = ArtifactTypeSearch.getPrimitive(storageString);
       filterViewer.addItem(primitive, getFilterName(), type, value);
    }

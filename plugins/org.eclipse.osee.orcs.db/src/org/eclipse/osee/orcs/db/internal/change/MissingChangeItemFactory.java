@@ -23,5 +23,6 @@ import org.eclipse.osee.orcs.search.ApplicabilityQuery;
  * @author John Misinco
  */
 public interface MissingChangeItemFactory {
-   Collection<ChangeItem> createMissingChanges(List<ChangeItem> changes, TransactionToken sourceTx, TransactionToken destTx, ApplicabilityQuery applicQuery);
+   Collection<ChangeItem> createMissingChanges(List<ChangeItem> changes, TransactionToken sourceTx,
+      TransactionToken destTx, ApplicabilityQuery applicQuery);
 }

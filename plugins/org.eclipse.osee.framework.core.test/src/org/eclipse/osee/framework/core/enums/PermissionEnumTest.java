@@ -46,7 +46,8 @@ public class PermissionEnumTest {
       }
    }
 
-   private static void add(Collection<PermissionTestData> tests, PermissionEnum permissionEnum1, PermissionEnum permissionEnum2, boolean expectedMatches, PermissionEnum expectedMostRestrictive) {
+   private static void add(Collection<PermissionTestData> tests, PermissionEnum permissionEnum1,
+      PermissionEnum permissionEnum2, boolean expectedMatches, PermissionEnum expectedMostRestrictive) {
       tests.add(new PermissionTestData(permissionEnum1, permissionEnum2, expectedMatches, expectedMostRestrictive));
    }
 

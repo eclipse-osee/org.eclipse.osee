@@ -53,7 +53,8 @@ public class TemplateContributions {
 
    @GET
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-   public Collection<JaxRsTemplateContribution> getTemplateContributions(@Context final HttpHeaders httpHeaders, @Context final UriInfo uriInfo) {
+   public Collection<JaxRsTemplateContribution> getTemplateContributions(@Context final HttpHeaders httpHeaders,
+      @Context final UriInfo uriInfo) {
       final Map<String, JaxRsTemplateContribution> contribs = new HashMap<>();
       registry.accept(new TemplateVisitor() {
 
@@ -124,7 +125,8 @@ public class TemplateContributions {
       return build.toASCIIString();
    }
 
-   private JaxRsTemplateContribution getOrCreateInfo(Map<String, JaxRsTemplateContribution> map, String bundleName, String bundleVersion) {
+   private JaxRsTemplateContribution getOrCreateInfo(Map<String, JaxRsTemplateContribution> map, String bundleName,
+      String bundleVersion) {
       String key = key(bundleName, bundleVersion);
       JaxRsTemplateContribution info = map.get(key);
       if (info == null) {

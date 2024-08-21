@@ -71,7 +71,8 @@ public class ReportsOperationsImpl implements ReportsOperations {
    }
 
    @Override
-   public StreamingOutput applicabilityImpact(BranchId branch, String publish, List<ArtifactTypeToken> artTypes, List<AttributeTypeToken> attrTypes) {
+   public StreamingOutput applicabilityImpact(BranchId branch, String publish, List<ArtifactTypeToken> artTypes,
+      List<AttributeTypeToken> attrTypes) {
 
       boolean publishUpdates = (publish.equals("true")) ? true : false;
 

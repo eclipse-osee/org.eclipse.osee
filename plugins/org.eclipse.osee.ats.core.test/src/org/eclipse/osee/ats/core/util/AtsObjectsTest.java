@@ -39,8 +39,7 @@ public class AtsObjectsTest {
       List<IAtsObject> objs = new ArrayList<>();
       objs.add(AtsCoreUsers.SYSTEM_USER);
       objs.add(AtsCoreUsers.UNASSIGNED_USER);
-      Assert.assertEquals(Arrays.asList(SystemUser.OseeSystem, SystemUser.UnAssigned),
-         AtsObjects.toIds(objs));
+      Assert.assertEquals(Arrays.asList(SystemUser.OseeSystem, SystemUser.UnAssigned), AtsObjects.toIds(objs));
    }
 
    @Test

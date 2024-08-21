@@ -64,7 +64,8 @@ public class XWidgetParser {
       return data;
    }
 
-   public static List<XWidgetRendererItem> extractlayoutDatas(SwtXWidgetRenderer dynamicXWidgetLayout, Element xWidgets) {
+   public static List<XWidgetRendererItem> extractlayoutDatas(SwtXWidgetRenderer dynamicXWidgetLayout,
+      Element xWidgets) {
       NodeList widgets = xWidgets.getElementsByTagName(SwtXWidgetRenderer.XWIDGET);
       List<XWidgetRendererItem> layoutDatas = new ArrayList<>(widgets.getLength());
 

@@ -26,7 +26,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public final class PromptFactory implements IPromptFactory {
 
    @Override
-   public IHandlePromptChange createPrompt(Collection<? extends Artifact> artifacts, AttributeTypeToken attributeType, String displayName, boolean persist) {
+   public IHandlePromptChange createPrompt(Collection<? extends Artifact> artifacts, AttributeTypeToken attributeType,
+      String displayName, boolean persist) {
       IHandlePromptChange promptChange;
 
       if (attributeType.equals(AtsAttributeTypes.ReviewedBy) || attributeType.equals(

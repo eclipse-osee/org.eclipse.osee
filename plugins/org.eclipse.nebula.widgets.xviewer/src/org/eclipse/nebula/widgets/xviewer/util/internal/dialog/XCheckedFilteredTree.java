@@ -42,7 +42,7 @@ public class XCheckedFilteredTree extends XFilteredTree {
 
       getFilterControl().addListener(SWT.Modify, e -> restoreChecked(treeViewer.getTree().getItems()));
 
-      getViewer().getTree().addListener(SWT.Paint, e-> restoreChecked(treeViewer.getTree().getItems()));
+      getViewer().getTree().addListener(SWT.Paint, e -> restoreChecked(treeViewer.getTree().getItems()));
       return control;
    }
 

@@ -117,17 +117,16 @@ public class MyXViewerTest {
       ToolItem refreshItem = new ToolItem(toolBar, SWT.PUSH);
       refreshItem.setImage(MyImageCache.getImage("refresh.gif"));
       refreshItem.setToolTipText("Refresh");
-		refreshItem.addListener(SWT.Selection, e -> {
-			List<Object> tasks = new ArrayList<>();
-			for (int x = 0; x < 1; x++) {
-				tasks.addAll(getTestTasks());
-			}
-			/**
-			 * Note: setInputXViewer must be called instead of setInput for XViewer to
-			 * operate properly
-			 */
-			myXviewer.setInputXViewer(tasks);
-		});
+      refreshItem.addListener(SWT.Selection, e -> {
+         List<Object> tasks = new ArrayList<>();
+         for (int x = 0; x < 1; x++) {
+            tasks.addAll(getTestTasks());
+         }
+         /**
+          * Note: setInputXViewer must be called instead of setInput for XViewer to operate properly
+          */
+         myXviewer.setInputXViewer(tasks);
+      });
 
       Action dropDownAction = myXviewer.getCustomizeAction();
       new ActionContributionItem(dropDownAction).fill(toolBar, 0);
@@ -135,32 +134,32 @@ public class MyXViewerTest {
       ToolItem descriptionItem = new ToolItem(toolBar, SWT.PUSH);
       descriptionItem.setImage(MyImageCache.getImage("descriptionView.gif"));
       descriptionItem.setToolTipText("Show Description View");
-		descriptionItem.addListener(SWT.Selection, e -> {
-			myXviewer.getCustomizeMgr().loadCustomization(MyDefaultCustomizations.getDescriptionCustomization());
-			myXviewer.refresh();
-		});
+      descriptionItem.addListener(SWT.Selection, e -> {
+         myXviewer.getCustomizeMgr().loadCustomization(MyDefaultCustomizations.getDescriptionCustomization());
+         myXviewer.refresh();
+      });
 
       ToolItem completeItem = new ToolItem(toolBar, SWT.PUSH);
       completeItem.setImage(MyImageCache.getImage("completionView.gif"));
       completeItem.setToolTipText("Show Completion View");
-		completeItem.addListener(SWT.Selection, e -> {
-			myXviewer.getCustomizeMgr().loadCustomization(MyDefaultCustomizations.getCompletionCustomization());
-			myXviewer.refresh();
-		});
+      completeItem.addListener(SWT.Selection, e -> {
+         myXviewer.getCustomizeMgr().loadCustomization(MyDefaultCustomizations.getCompletionCustomization());
+         myXviewer.refresh();
+      });
 
       ToolItem refreshSingleColumn = new ToolItem(toolBar, SWT.PUSH);
       refreshSingleColumn.setImage(MyImageCache.getImage("columnRefresh.gif"));
       refreshSingleColumn.setToolTipText("Example of Refreshing a Single Column");
       refreshSingleColumn.addListener(SWT.Selection, e -> {
-            @SuppressWarnings("unchecked")
-            List<Object> items = (List<Object>) myXviewer.getInput();
-            for (Object item : items) {
-               SomeTask task = (SomeTask) item;
-               task.setTaskType(TaskType.Refreshed);
-            }
+         @SuppressWarnings("unchecked")
+         List<Object> items = (List<Object>) myXviewer.getInput();
+         for (Object item : items) {
+            SomeTask task = (SomeTask) item;
+            task.setTaskType(TaskType.Refreshed);
+         }
 
-            String columnId = MyXViewerFactory.Task_Type.getId();
-            myXviewer.refreshColumn(columnId);
+         String columnId = MyXViewerFactory.Task_Type.getId();
+         myXviewer.refreshColumn(columnId);
       });
 
    }
@@ -173,9 +172,8 @@ public class MyXViewerTest {
 
    private static List<ISomeTask> getTestTasks() {
       List<ISomeTask> tasks = new ArrayList<>();
-      SomeTask task =
-         new SomeTask(RunDb.Test_Db, TaskType.Backup, getDate(), "org.eclipse.osee.test1", "10:03", "run to test this",
-            "Suite A", "mark@eclipse.com", 50, 50000);
+      SomeTask task = new SomeTask(RunDb.Test_Db, TaskType.Backup, getDate(), "org.eclipse.osee.test1", "10:03",
+         "run to test this", "Suite A", "mark@eclipse.com", 50, 50000);
       tasks.add(task);
 
       for (int x = 0; x < 5; x++) {

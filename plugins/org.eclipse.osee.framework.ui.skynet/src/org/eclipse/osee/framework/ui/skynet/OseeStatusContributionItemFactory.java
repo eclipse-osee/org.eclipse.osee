@@ -38,7 +38,8 @@ public final class OseeStatusContributionItemFactory {
       createItem(manager, OseeTargetContributionItem.class);
    }
 
-   private static void createItem(IStatusLineManager manager, Class<? extends OseeStatusContributionItem> contribClazz) {
+   private static void createItem(IStatusLineManager manager,
+      Class<? extends OseeStatusContributionItem> contribClazz) {
       boolean wasFound = false;
       for (IContributionItem item : manager.getItems()) {
          if (contribClazz.isAssignableFrom(item.getClass())) {

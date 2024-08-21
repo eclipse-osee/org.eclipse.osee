@@ -281,7 +281,8 @@ public class ResultsEditorConverterTest {
       return new MockResultsEditorTableTab(tabName, new String[] {"1", "2", "3"}, rows);
    }
 
-   private void checkArgException(ResultsEditorConverter converter, String type, Writer writer, IResultsEditorProvider provider) {
+   private void checkArgException(ResultsEditorConverter converter, String type, Writer writer,
+      IResultsEditorProvider provider) {
       try {
          converter.convert(type, null, null);
          Assert.fail("This line should not be executed");

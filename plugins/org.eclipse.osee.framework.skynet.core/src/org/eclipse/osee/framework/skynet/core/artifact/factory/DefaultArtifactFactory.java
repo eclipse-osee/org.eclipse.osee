@@ -28,7 +28,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 public final class DefaultArtifactFactory extends ArtifactFactory {
 
    @Override
-   public Artifact getArtifactInstance(Long id, String guid, BranchToken branch, ArtifactTypeToken artifactType, boolean inDataStore) {
+   public Artifact getArtifactInstance(Long id, String guid, BranchToken branch, ArtifactTypeToken artifactType,
+      boolean inDataStore) {
       return new Artifact(id, guid, branch, artifactType);
    }
 

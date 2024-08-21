@@ -55,7 +55,8 @@ public final class SystemSafetyResource {
    @Path("safety")
    @GET
    @Produces(MediaType.APPLICATION_XML)
-   public Response getSystemSafetyReport(@QueryParam("branch") BranchId branchId, @QueryParam("code_root") String codeRoot, @DefaultValue("on") @QueryParam("style") String validate) {
+   public Response getSystemSafetyReport(@QueryParam("branch") BranchId branchId,
+      @QueryParam("code_root") String codeRoot, @DefaultValue("on") @QueryParam("style") String validate) {
       StreamingOutput streamingOutput =
          new SafetyStreamingOutput(activityLog, orcsApi, branchId, ArtifactId.SENTINEL, codeRoot, validate);
       ResponseBuilder builder = Response.ok(streamingOutput);
@@ -73,7 +74,8 @@ public final class SystemSafetyResource {
    @Path("safety/swreqts")
    @GET
    @Produces(MediaType.APPLICATION_XML)
-   public Response getReqtsOnlySafetyReport(@QueryParam("branch") BranchId branchId, @QueryParam("view") ArtifactId view) {
+   public Response getReqtsOnlySafetyReport(@QueryParam("branch") BranchId branchId,
+      @QueryParam("view") ArtifactId view) {
       StreamingOutput reqtsOutput = new SafetyReqtsOnlyStreamingOutput(activityLog, orcsApi, branchId, view);
       ResponseBuilder builder = Response.ok(reqtsOutput);
       builder.header("Content-Disposition", "attachment; filename=" + "Safety_Reqts_Only_Report.xml");
@@ -90,7 +92,9 @@ public final class SystemSafetyResource {
    @Path("view/safety")
    @GET
    @Produces(MediaType.APPLICATION_XML)
-   public Response getSystemSafetyReportWithView(@QueryParam("branch") BranchId branchId, @QueryParam("code_root") String codeRoot, @QueryParam("view") ArtifactId view, @DefaultValue("on") @QueryParam("style") String validate) {
+   public Response getSystemSafetyReportWithView(@QueryParam("branch") BranchId branchId,
+      @QueryParam("code_root") String codeRoot, @QueryParam("view") ArtifactId view,
+      @DefaultValue("on") @QueryParam("style") String validate) {
       StreamingOutput streamingOutput =
          new SafetyStreamingOutput(activityLog, orcsApi, branchId, view, codeRoot, validate);
       ResponseBuilder builder = Response.ok(streamingOutput);

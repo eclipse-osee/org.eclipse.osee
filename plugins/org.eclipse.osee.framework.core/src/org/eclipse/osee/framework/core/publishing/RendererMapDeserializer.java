@@ -54,7 +54,8 @@ public class RendererMapDeserializer extends StdDeserializer<@NonNull RendererMa
     */
 
    @Override
-   public @NonNull RendererMap deserialize(JsonParser jsonParser, DeserializationContext arg1) throws IOException, JacksonException {
+   public @NonNull RendererMap deserialize(JsonParser jsonParser, DeserializationContext arg1)
+      throws IOException, JacksonException {
       return RendererMap.deserialize(Objects.requireNonNull(jsonParser));
    }
 

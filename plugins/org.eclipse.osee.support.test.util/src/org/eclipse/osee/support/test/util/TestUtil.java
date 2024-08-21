@@ -83,7 +83,8 @@ public class TestUtil {
       severeLoggingEnd(monitorLog, ignoreLogging);
    }
 
-   public static void severeLoggingEnd(SevereLoggingMonitor monitorLog, Collection<String> ignoreLogging) throws Exception {
+   public static void severeLoggingEnd(SevereLoggingMonitor monitorLog, Collection<String> ignoreLogging)
+      throws Exception {
       OseeLog.unregisterLoggerListener(monitorLog);
       Collection<IHealthStatus> healthStatuses = monitorLog.getAllLogs();
       int numExceptions = 0;

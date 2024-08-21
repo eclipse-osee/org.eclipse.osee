@@ -161,7 +161,8 @@ public class EventTransport implements Transport, IFrameworkEventListener {
    }
 
    @Override
-   public <E extends FrameworkEvent, L extends IEventListener, H extends EventHandlerLocal<L, E>> void sendLocal(final Sender sender, final E event) {
+   public <E extends FrameworkEvent, L extends IEventListener, H extends EventHandlerLocal<L, E>> void sendLocal(
+      final Sender sender, final E event) {
       EventHandlerLocal<L, E> handler = handlers.getLocalHandler(event);
       Conditions.checkNotNull(handler, "localEventHandler", "No local event handler available for event [%s]",
          event.getClass().getName());

@@ -106,8 +106,8 @@ public class XViewerStyledStringLableProviderTest extends XViewer {
          "Suite A", "steve", 100));
       tasks.add(new SomeTask(RunDb.Test_Db, TaskType.Data_Exchange, "org.eclipse.osee.test14", "6:11",
          "how can this solve the problem", "Suite A", "steve", 50));
-      tasks.add(new SomeTask(RunDb.Production_Db, TaskType.Backup, "org.eclipse.osee.test6", "5:13",
-         "run to test this", "Suite B", "john", 50));
+      tasks.add(new SomeTask(RunDb.Production_Db, TaskType.Backup, "org.eclipse.osee.test6", "5:13", "run to test this",
+         "Suite B", "john", 50));
       tasks.add(new SomeTask(RunDb.Test_Db, TaskType.Db_Health, "org.eclipse.osee.test12", "23:15", "run to test this",
          "Suite A", "mike", 50));
       tasks.add(new SomeTask(RunDb.Production_Db, TaskType.Backup, "org.eclipse.osee.test13", "4:01",

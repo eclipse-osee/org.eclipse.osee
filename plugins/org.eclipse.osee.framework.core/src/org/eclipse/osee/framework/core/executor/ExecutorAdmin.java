@@ -43,7 +43,8 @@ public interface ExecutorAdmin {
     */
    <T> Future<T> submitAndWait(String name, Callable<T> task, long timeout, TimeUnit unit);
 
-   ScheduledFuture<?> scheduleAtFixedRate(String name, Runnable task, long initialDelay, long executionRate, TimeUnit timeUnit);
+   ScheduledFuture<?> scheduleAtFixedRate(String name, Runnable task, long initialDelay, long executionRate,
+      TimeUnit timeUnit);
 
    ScheduledFuture<?> scheduleWithFixedDelay(String name, Runnable task, long initialDelay, long delay, TimeUnit unit);
 

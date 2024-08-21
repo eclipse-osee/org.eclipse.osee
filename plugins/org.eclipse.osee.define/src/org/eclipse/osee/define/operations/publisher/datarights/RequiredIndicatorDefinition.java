@@ -273,7 +273,8 @@ public class RequiredIndicatorDefinition {
     * set.
     */
 
-   public void setRequiredIndicatorFrequencyIndicatorSet(RequiredIndicatorFrequencyIndicator[] requiredIndicatorFrequencyIndicatorSet) {
+   public void setRequiredIndicatorFrequencyIndicatorSet(
+      RequiredIndicatorFrequencyIndicator[] requiredIndicatorFrequencyIndicatorSet) {
       if (Objects.nonNull(this.requiredIndicatorFrequencyIndicatorSet)) {
          throw new IllegalStateException(
             "RequiredIndicatorDefinition::setRequiredIndicatorFrequencyIndicatorSet, member \"this.requiredIndicatorFrequencyIndicatorSet\" has already been set.");

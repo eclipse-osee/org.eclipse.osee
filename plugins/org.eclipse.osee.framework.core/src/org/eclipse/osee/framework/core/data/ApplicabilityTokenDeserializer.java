@@ -34,7 +34,8 @@ public class ApplicabilityTokenDeserializer extends StdDeserializer<Applicabilit
    }
 
    @Override
-   public ApplicabilityToken deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+   public ApplicabilityToken deserialize(JsonParser jp, DeserializationContext ctxt)
+      throws IOException, JsonProcessingException {
       JsonNode readTree = jp.getCodec().readTree(jp);
       if (readTree != null) {
          return ApplicabilityToken.valueOf(readTree.get("id").asLong(), readTree.get("name").asText(""));

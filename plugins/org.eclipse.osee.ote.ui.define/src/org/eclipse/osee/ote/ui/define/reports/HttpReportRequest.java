@@ -117,7 +117,8 @@ public class HttpReportRequest implements IHttpServerRequest {
       return toReturn.toArray(new ArtifactTestRunOperator[toReturn.size()]);
    }
 
-   private void addData(HttpRequest httpRequest, ArtifactTestRunOperator[] source, List<ArtifactTestRunOperator> destination) {
+   private void addData(HttpRequest httpRequest, ArtifactTestRunOperator[] source,
+      List<ArtifactTestRunOperator> destination) {
       String previewSize = httpRequest.getParameter(PREVIEW_SIZE);
       if (Strings.isValid(previewSize)) {
          int size = 5;

@@ -94,7 +94,8 @@ public class ConvertStateNotesFromXmlToJson extends AbstractConvertGuidToId {
       }
    }
 
-   private List<AtsStateNote> convertToJsonAndStore(IAtsWorkItem workItem, List<AtsStateNoteXml> xmlNotes, IAttribute<Object> stateNoteAttr, IAtsChangeSet changes) {
+   private List<AtsStateNote> convertToJsonAndStore(IAtsWorkItem workItem, List<AtsStateNoteXml> xmlNotes,
+      IAttribute<Object> stateNoteAttr, IAtsChangeSet changes) {
       List<AtsStateNote> notes = new ArrayList<>();
       for (AtsStateNoteXml xNote : xmlNotes) {
          try {

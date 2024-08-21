@@ -124,7 +124,8 @@ public class XViewerSorter extends ViewerSorter {
       return s1.compareTo(s2);
    }
 
-   public int getCompareBasedOnDirection(XViewerColumn sortXCol, int compareInt, Viewer viewer, Object o1, Object o2, int sortXColIndex) {
+   public int getCompareBasedOnDirection(XViewerColumn sortXCol, int compareInt, Viewer viewer, Object o1, Object o2,
+      int sortXColIndex) {
       List<XViewerColumn> sortXCols = treeViewer.getCustomizeMgr().getSortXCols();
       int returnInt = (sortXCol.isSortForward() ? 1 : -1) * compareInt;
       if (returnInt == 0 && sortXCols.size() > sortXColIndex + 1) {

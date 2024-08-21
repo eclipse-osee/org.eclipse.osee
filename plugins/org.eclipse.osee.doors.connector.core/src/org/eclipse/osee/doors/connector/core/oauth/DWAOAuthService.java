@@ -189,7 +189,8 @@ public class DWAOAuthService {
     * @param username to authenticate
     * @param password to authenticate
     */
-   public void doAuthentication(final String authorizationURL, final Token token, final String username, final String password) {
+   public void doAuthentication(final String authorizationURL, final Token token, final String username,
+      final String password) {
       createSession();
 
       GetMethod authorizeGetMethod = new GetMethod(authorizationURL);
@@ -251,7 +252,8 @@ public class DWAOAuthService {
       }
    }
 
-   private String getSignature(final HttpMethodBase request, final Token token, final Map<String, String> oauth_params) {
+   private String getSignature(final HttpMethodBase request, final Token token,
+      final Map<String, String> oauth_params) {
       String baseString = this.config.getBaseStringExtractor().extract(request, oauth_params);
       String signature =
          this.config.getSignatureService().getSignature(baseString, this.consumer_secret, token.getSecret());

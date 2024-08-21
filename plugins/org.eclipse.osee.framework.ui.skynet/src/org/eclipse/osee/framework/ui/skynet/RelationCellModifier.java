@@ -47,9 +47,8 @@ public class RelationCellModifier implements ICellModifier {
          WrapperForRelationLink relLink = (WrapperForRelationLink) element;
          RelationTypeSide relationTypeSide = new RelationTypeSide(relLink.getRelationType(), relLink.getRelationSide());
 
-         boolean canModify =
-            ServiceUtil.accessControlService().hasRelationTypePermission(relLink.getArtifactA(),
-               relationTypeSide, Arrays.asList(relLink.getArtifactB()), PermissionEnum.WRITE, null).isSuccess();
+         boolean canModify = ServiceUtil.accessControlService().hasRelationTypePermission(relLink.getArtifactA(),
+            relationTypeSide, Arrays.asList(relLink.getArtifactB()), PermissionEnum.WRITE, null).isSuccess();
 
          return canModify;
       }

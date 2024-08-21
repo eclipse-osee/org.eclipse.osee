@@ -99,7 +99,8 @@ public class AgileProgramOperations {
       return feature;
    }
 
-   public IAgileProgramFeature createAgileProgramFeature(IAgileProgramBacklogItem programBacklogItem, JaxAgileProgramFeature feature) {
+   public IAgileProgramFeature createAgileProgramFeature(IAgileProgramBacklogItem programBacklogItem,
+      JaxAgileProgramFeature feature) {
       ArtifactId agileProgramBacklogItemArt = atsApi.getQueryService().getArtifact(programBacklogItem.getId());
 
       IAtsChangeSet changes = atsApi.createChangeSet("Create new Agile Program");
@@ -142,7 +143,8 @@ public class AgileProgramOperations {
       return progBacklog;
    }
 
-   public IAgileProgramBacklog createAgileProgramBacklog(IAgileProgram agileProgram, JaxAgileProgramBacklog jaxProgramBacklog) {
+   public IAgileProgramBacklog createAgileProgramBacklog(IAgileProgram agileProgram,
+      JaxAgileProgramBacklog jaxProgramBacklog) {
       ArtifactId programArt = atsApi.getQueryService().getArtifact(agileProgram.getId());
 
       IAtsChangeSet changes = atsApi.createChangeSet("Create new Program Backlog");
@@ -155,7 +157,8 @@ public class AgileProgramOperations {
       return getAgileProgramBacklog(atsApi, programBacklogArt);
    }
 
-   public IAgileProgramBacklogItem createAgileProgramBacklogItem(IAgileProgramBacklog agileProgramBacklog, JaxAgileProgramBacklogItem jaxProgramBacklogItem) {
+   public IAgileProgramBacklogItem createAgileProgramBacklogItem(IAgileProgramBacklog agileProgramBacklog,
+      JaxAgileProgramBacklogItem jaxProgramBacklogItem) {
       ArtifactId programArt = atsApi.getQueryService().getArtifact(agileProgramBacklog.getId());
 
       IAtsChangeSet changes = atsApi.createChangeSet("Create new Program Backlog Item");

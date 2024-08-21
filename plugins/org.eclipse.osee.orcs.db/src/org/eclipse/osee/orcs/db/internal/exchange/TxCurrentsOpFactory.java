@@ -30,14 +30,16 @@ public class TxCurrentsOpFactory {
       //Static utility
    }
 
-   public static Callable<?> createTxCurrentsAndModTypesOp(Log logger, OrcsSession session, JdbcClient db, boolean archived) {
+   public static Callable<?> createTxCurrentsAndModTypesOp(Log logger, OrcsSession session, JdbcClient db,
+      boolean archived) {
       return new CompositeDatastoreTxCallable(logger, session, db, //
          buildFixOperation(logger, session, db, archived, "1/3 ", "osee_artifact", "art_id"), //
          buildFixOperation(logger, session, db, archived, "2/3 ", "osee_attribute", "attr_id"), //
          buildFixOperation(logger, session, db, archived, "3/3 ", "osee_relation_link", "rel_link_id"));
    }
 
-   private static AbstractDatastoreTxCallable<?> buildFixOperation(Log logger, OrcsSession session, JdbcClient db, boolean archived, String operationName, String tableName, String columnName) {
+   private static AbstractDatastoreTxCallable<?> buildFixOperation(Log logger, OrcsSession session, JdbcClient db,
+      boolean archived, String operationName, String tableName, String columnName) {
       return new InvalidTxCurrentsAndModTypesCallable(logger, session, db, operationName, tableName, columnName, true,
          archived);
    }

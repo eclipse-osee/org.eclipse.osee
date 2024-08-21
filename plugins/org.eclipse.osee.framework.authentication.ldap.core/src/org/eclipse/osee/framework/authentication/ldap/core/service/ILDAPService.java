@@ -12,7 +12,6 @@
  **********************************************************************/
 package org.eclipse.osee.framework.authentication.ldap.core.service;
 
-
 /**
  * The clients using LDAP authentication extension (org.eclipse.osee.framework.authentication.ldap.core.service) should
  * provide a class which implements this interface to configure the LDAP connectivity.
@@ -26,6 +25,7 @@ public interface ILDAPService {
     * @return LDAP user name
     */
    String getLDAPUsername();
+
    /**
     * Getter for password.
     * 
@@ -47,11 +47,11 @@ public interface ILDAPService {
     */
    String getLDAPPort();
 
-    /**
-     * Getter for LDAP search base
-     *
-     * @return LDAP search base where user search needs to be performed
-     */
-    String getLDAPSearchBase();
+   /**
+    * Getter for LDAP search base
+    *
+    * @return LDAP search base where user search needs to be performed
+    */
+   String getLDAPSearchBase();
 
 }

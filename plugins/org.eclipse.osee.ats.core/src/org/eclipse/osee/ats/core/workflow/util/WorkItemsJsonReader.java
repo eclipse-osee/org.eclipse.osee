@@ -64,7 +64,9 @@ public class WorkItemsJsonReader implements MessageBodyReader<Collection<IAtsWor
    }
 
    @Override
-   public Collection<IAtsWorkItem> readFrom(Class<Collection<IAtsWorkItem>> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException, WebApplicationException {
+   public Collection<IAtsWorkItem> readFrom(Class<Collection<IAtsWorkItem>> type, Type genericType,
+      Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, String> httpHeaders,
+      InputStream entityStream) throws IOException, WebApplicationException {
       try {
          String jsonStr = Lib.inputStreamToString(entityStream);
          return getWorkItemsFromJson(jsonStr);
@@ -73,7 +75,8 @@ public class WorkItemsJsonReader implements MessageBodyReader<Collection<IAtsWor
       }
    }
 
-   public static Collection<IAtsWorkItem> getWorkItemsFromJson(String jsonStr) throws IOException, JsonParseException, JsonMappingException {
+   public static Collection<IAtsWorkItem> getWorkItemsFromJson(String jsonStr)
+      throws IOException, JsonParseException, JsonMappingException {
       List<Long> ids = getWorkItemIdsFromJson(jsonStr);
 
       List<IAtsWorkItem> items = new LinkedList<>();
@@ -84,7 +87,8 @@ public class WorkItemsJsonReader implements MessageBodyReader<Collection<IAtsWor
       return items;
    }
 
-   public static List<Long> getWorkItemIdsFromJson(String jsonStr) throws IOException, JsonParseException, JsonMappingException {
+   public static List<Long> getWorkItemIdsFromJson(String jsonStr)
+      throws IOException, JsonParseException, JsonMappingException {
       ObjectMapper objectMapper = new ObjectMapper();
       TypeFactory typeFactory = objectMapper.getTypeFactory();
 

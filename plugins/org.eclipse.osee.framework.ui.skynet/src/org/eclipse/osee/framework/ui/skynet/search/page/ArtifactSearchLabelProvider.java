@@ -108,7 +108,8 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
       return result.getMatchCount(element);
    }
 
-   private StyledString getArtifactText(IArtifactDecoratorPreferences decoration, Artifact artifact, StyledString coloredName) {
+   private StyledString getArtifactText(IArtifactDecoratorPreferences decoration, Artifact artifact,
+      StyledString coloredName) {
       if (artifact.isDeleted()) {
          coloredName.append(' ').append("<Deleted>", DELETED_ARTIFACT_STYLE);
       }
@@ -194,7 +195,8 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
 
    private static final int MIN_MATCH_CONTEXT = 10; // minimal number of characters shown after and before a match
 
-   private int appendShortenedGap(String content, int start, int end, int charsToCut, boolean isFirst, StyledString str) {
+   private int appendShortenedGap(String content, int start, int end, int charsToCut, boolean isFirst,
+      StyledString str) {
       int gapLength = end - start;
       if (!isFirst) {
          gapLength -= MIN_MATCH_CONTEXT;

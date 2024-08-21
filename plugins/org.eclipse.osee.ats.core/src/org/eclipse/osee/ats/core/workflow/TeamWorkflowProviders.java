@@ -25,8 +25,7 @@ import org.eclipse.osee.logger.Log;
 public class TeamWorkflowProviders implements ITeamWorkflowProvidersLazy {
 
    private Log logger;
-   private static final List<ITeamWorkflowProvider> teamWorkflowProviders =
-      new CopyOnWriteArrayList<>();
+   private static final List<ITeamWorkflowProvider> teamWorkflowProviders = new CopyOnWriteArrayList<>();
 
    public void setLogger(Log logger) {
       this.logger = logger;

@@ -132,12 +132,14 @@ public class ComputeNetChangeTest {
       ChangeItemUtil.computeNetChanges(items);
    }
 
-   private static TestData createTest(Long itemId, ChangeVersion base, ChangeVersion first, ChangeVersion current, ChangeVersion destination, ChangeVersion expected, boolean isRemoved) {
+   private static TestData createTest(Long itemId, ChangeVersion base, ChangeVersion first, ChangeVersion current,
+      ChangeVersion destination, ChangeVersion expected, boolean isRemoved) {
       return new TestData(ChangeTestUtility.createItem(itemId, base, first, current, destination, null), expected,
          isRemoved);
    }
 
-   private static TestData createTest(Long itemId, ChangeVersion base, ChangeVersion first, ChangeVersion current, ChangeVersion destination, ChangeVersion net, ChangeVersion expected, boolean isRemoved) {
+   private static TestData createTest(Long itemId, ChangeVersion base, ChangeVersion first, ChangeVersion current,
+      ChangeVersion destination, ChangeVersion net, ChangeVersion expected, boolean isRemoved) {
       return new TestData(ChangeTestUtility.createItem(itemId, base, first, current, destination, net), expected,
          isRemoved);
    }

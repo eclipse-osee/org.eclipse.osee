@@ -67,7 +67,8 @@ public class ArtifactAndChildrenArtifactTypesAccessType implements AccessType {
    }
 
    @Override
-   public AccessTypeMatch computeMatch(ArtifactToken otherArt, AttributeTypeToken attrType, RelationTypeToken relType, IParentProvider parentProvider) {
+   public AccessTypeMatch computeMatch(ArtifactToken otherArt, AttributeTypeToken attrType, RelationTypeToken relType,
+      IParentProvider parentProvider) {
       boolean match = false;
       boolean computed = false;
       if (otherArt.equals(artifact)) {
@@ -95,7 +96,8 @@ public class ArtifactAndChildrenArtifactTypesAccessType implements AccessType {
       return AccessTypeMatch.NotComputed;
    }
 
-   protected static boolean checkIfDecendentOf(ArtifactToken decendent, ArtifactToken artToMatch, IParentProvider parentProvider) {
+   protected static boolean checkIfDecendentOf(ArtifactToken decendent, ArtifactToken artToMatch,
+      IParentProvider parentProvider) {
       if (decendent.equals(artToMatch)) {
          return true;
       }

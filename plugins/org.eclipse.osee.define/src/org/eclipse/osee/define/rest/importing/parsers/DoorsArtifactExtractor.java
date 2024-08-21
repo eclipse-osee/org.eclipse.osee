@@ -111,12 +111,14 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
    }
 
    @Override
-   public XResultData extractFromSource(OrcsApi orcsApi, XResultData results, URI source, RoughArtifactCollector collector) throws Exception {
+   public XResultData extractFromSource(OrcsApi orcsApi, XResultData results, URI source,
+      RoughArtifactCollector collector) throws Exception {
       doExtraction(orcsApi, results, source, collector, "");
       return results;
    }
 
-   public void doExtraction(OrcsApi orcsApi, XResultData results, URI source, RoughArtifactCollector collector, String documentApplicabilty) {
+   public void doExtraction(OrcsApi orcsApi, XResultData results, URI source, RoughArtifactCollector collector,
+      String documentApplicabilty) {
 
       InputStream htmlStream = null;
       try {
@@ -204,7 +206,8 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       return toReturn;
    }
 
-   private ResultSet<?> getAttributes(OrcsApi orcsApi, BranchId branch, ArtifactId theArtifact, AttributeTypeToken attr) {
+   private ResultSet<?> getAttributes(OrcsApi orcsApi, BranchId branch, ArtifactId theArtifact,
+      AttributeTypeToken attr) {
       return orcsApi.getQueryFactory().fromBranch(branch).andId(theArtifact).getArtifact().getAttributes(attr);
    }
 
@@ -504,7 +507,8 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       }
    }
 
-   private int findNextListItem(char[] theChars, int iPos, boolean isNumeric, boolean isLowerCase, int currentNumber, String currentLetter, listData listData) {
+   private int findNextListItem(char[] theChars, int iPos, boolean isNumeric, boolean isLowerCase, int currentNumber,
+      String currentLetter, listData listData) {
       //@formatter:off
       /****************************************************************************
        * Now the tricky part.  We are looking for
@@ -743,7 +747,8 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       }
    }
 
-   private void parseAndStoreEnum(OrcsApi orcsApi, RoughArtifact roughArtifact, String data, AttributeTypeEnum<?> type) {
+   private void parseAndStoreEnum(OrcsApi orcsApi, RoughArtifact roughArtifact, String data,
+      AttributeTypeEnum<?> type) {
       StringTokenizer theTokens = new StringTokenizer(data, " ");
       String singleItem = "";
       while (theTokens.hasMoreTokens()) {

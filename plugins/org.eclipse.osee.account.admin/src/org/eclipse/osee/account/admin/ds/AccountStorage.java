@@ -51,7 +51,8 @@ public interface AccountStorage {
 
    ResultSet<AccountSession> getAccountSessionBySessionToken(String sessionToken);
 
-   AccountSession createAccountSession(String sessionToken, Account account, String accessDetails, String remoteAddress);
+   AccountSession createAccountSession(String sessionToken, Account account, String accessDetails,
+      String remoteAddress);
 
    void deleteAccountSessionBySessionToken(String sessionToken);
 

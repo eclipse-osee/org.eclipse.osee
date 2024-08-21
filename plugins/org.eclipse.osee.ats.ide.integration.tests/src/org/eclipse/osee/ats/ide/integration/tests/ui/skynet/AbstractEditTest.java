@@ -114,8 +114,7 @@ public abstract class AbstractEditTest {
 
    private Artifact artifact;
 
-   protected AbstractEditTest(BranchToken branch, String editFile, ArtifactTypeToken artType,
-      FileSystemRenderer renderer) {
+   protected AbstractEditTest(BranchToken branch, String editFile, ArtifactTypeToken artType, FileSystemRenderer renderer) {
       this.branch = branch;
       this.editFile = editFile;
       this.artType = artType;

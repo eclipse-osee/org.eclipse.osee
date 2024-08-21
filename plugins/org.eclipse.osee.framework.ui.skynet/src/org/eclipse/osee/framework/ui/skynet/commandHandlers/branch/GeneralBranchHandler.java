@@ -87,8 +87,7 @@ public abstract class GeneralBranchHandler extends CommandHandler {
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
       List<? extends BranchId> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
-      return !branches.isEmpty() && (ServiceUtil.accessControlService().isOseeAdmin() || canEnableBranches(
-         branches));
+      return !branches.isEmpty() && (ServiceUtil.accessControlService().isOseeAdmin() || canEnableBranches(branches));
    }
 
    private boolean canEnableBranches(List<? extends BranchId> branches) {

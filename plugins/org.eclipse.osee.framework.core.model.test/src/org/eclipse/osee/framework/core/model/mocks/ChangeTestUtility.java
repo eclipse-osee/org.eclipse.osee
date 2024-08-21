@@ -46,7 +46,8 @@ public final class ChangeTestUtility {
       checkChange(null, expected, actual);
    }
 
-   public static ChangeItem createItem(Long itemId, ChangeVersion base, ChangeVersion first, ChangeVersion current, ChangeVersion destination, ChangeVersion net) {
+   public static ChangeItem createItem(Long itemId, ChangeVersion base, ChangeVersion first, ChangeVersion current,
+      ChangeVersion destination, ChangeVersion net) {
       ChangeItem change = new ChangeItem();
       change.setItemId(CoreArtifactTokens.DefaultHierarchyRoot);
       change.setItemTypeId(CoreArtifactTypes.Artifact);

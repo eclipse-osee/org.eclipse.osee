@@ -157,8 +157,8 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
             permiss = new MenuPermissions((Artifact) null);
          }
          boolean isBranchEditable =
-            BranchManager.isEditable(getBranch()) && ServiceUtil.accessControlService().hasBranchPermission(
-               getBranch(), PermissionEnum.WRITE, null).isSuccess();
+            BranchManager.isEditable(getBranch()) && ServiceUtil.accessControlService().hasBranchPermission(getBranch(),
+               PermissionEnum.WRITE, null).isSuccess();
 
          boolean locked = permiss.isLocked();
          if (isArtifact) {
@@ -279,8 +279,8 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
                   parent = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(getBranch());
                }
 
-               XResultData rd = ServiceUtil.accessControlService().hasArtifactPermission(parent,
-                  PermissionEnum.WRITE, AccessControlArtifactUtil.getXResultAccessHeader("New Child Error", parent));
+               XResultData rd = ServiceUtil.accessControlService().hasArtifactPermission(parent, PermissionEnum.WRITE,
+                  AccessControlArtifactUtil.getXResultAccessHeader("New Child Error", parent));
                if (rd.isErrors()) {
                   XResultDataDialog.open(rd, "New Child Error",
                      "You do not have permissions to add related to artifact %s", parent.toStringWithId());
@@ -317,7 +317,8 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
          CoreRelationTypes.DefaultHierarchical_Child);
    }
 
-   public static Artifact handleCreateChild(Artifact parent, Collection<? extends ArtifactTypeToken> validArtifactTypes, TreeViewer treeViewer, RelationTypeSide relationTypeSide) {
+   public static Artifact handleCreateChild(Artifact parent, Collection<? extends ArtifactTypeToken> validArtifactTypes,
+      TreeViewer treeViewer, RelationTypeSide relationTypeSide) {
       FilteredTreeArtifactTypeEntryDialog dialog = getDialog(validArtifactTypes);
       if (dialog.open() == Window.OK) {
          ArtifactTypeToken type = dialog.getSelection();
@@ -346,7 +347,8 @@ public class ArtifactExplorerMenu implements ISelectedArtifacts {
       return null;
    }
 
-   private static FilteredTreeArtifactTypeEntryDialog getDialog(Collection<? extends ArtifactTypeToken> validArtifactTypes) {
+   private static FilteredTreeArtifactTypeEntryDialog getDialog(
+      Collection<? extends ArtifactTypeToken> validArtifactTypes) {
       List<ArtifactTypeToken> artifactTypes = new ArrayList<>();
       for (ArtifactTypeToken artifactType : validArtifactTypes) {
          if (!artifactType.isAbstract() && ArtifactTypeManager.isUserCreationAllowed(artifactType)) {

@@ -38,13 +38,15 @@ import org.eclipse.osee.orcs.core.internal.graph.GraphData;
  */
 public class OrcsMockUtility {
 
-   public static Artifact createTestArtifact(GraphData graph, BranchId branch, ArtifactTypeToken artifactType, Long artifactId, String name) {
+   public static Artifact createTestArtifact(GraphData graph, BranchId branch, ArtifactTypeToken artifactType,
+      Long artifactId, String name) {
       Artifact artifact = createTestArtifact(branch, artifactType, ArtifactId.valueOf(artifactId), name);
       artifact.setGraph(graph);
       return artifact;
    }
 
-   public static Artifact createTestArtifact(BranchId branch, ArtifactTypeToken artifactType, ArtifactId artifactId, String name) {
+   public static Artifact createTestArtifact(BranchId branch, ArtifactTypeToken artifactType, ArtifactId artifactId,
+      String name) {
       AttributeFactory attributeFactory = mock(AttributeFactory.class);
 
       VersionData version = new VersionDataImpl();

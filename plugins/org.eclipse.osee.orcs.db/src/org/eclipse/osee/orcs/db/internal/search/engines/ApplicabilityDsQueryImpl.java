@@ -54,7 +54,8 @@ public class ApplicabilityDsQueryImpl implements ApplicabilityDsQuery {
    }
 
    @Override
-   public List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokens(List<? extends ArtifactId> artIds, BranchId branch) {
+   public List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokens(List<? extends ArtifactId> artIds,
+      BranchId branch) {
       List<Pair<ArtifactId, ApplicabilityToken>> result = new ArrayList<>();
       try (IdJoinQuery idJoin = sqlJoinFactory.createIdJoinQuery()) {
          for (ArtifactId artId : artIds) {

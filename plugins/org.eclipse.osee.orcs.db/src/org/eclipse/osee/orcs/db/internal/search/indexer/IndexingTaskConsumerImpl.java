@@ -60,7 +60,8 @@ public class IndexingTaskConsumerImpl implements IndexingTaskConsumer {
 
    @Override
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public Future<?> submitTaskId(OrcsSession session, OrcsTokenService tokenService, IndexerCollector collector, final Long queryId) throws Exception {
+   public Future<?> submitTaskId(OrcsSession session, OrcsTokenService tokenService, IndexerCollector collector,
+      final Long queryId) throws Exception {
       Callable<?> callable = factory.createIndexerTaskCallable(session, tokenService, collector, queryId);
       if (collector != null) {
          collector.onIndexTaskSubmit(queryId);

@@ -56,11 +56,13 @@ public final class OseeSystemArtifacts {
       return getOrCreateCachedArtifact(artifactType, artifactName, branch, null, false);
    }
 
-   private static Artifact getOrCreateCachedArtifact(ArtifactTypeToken artifactType, String artifactName, BranchToken branch, String guid, boolean create) {
+   private static Artifact getOrCreateCachedArtifact(ArtifactTypeToken artifactType, String artifactName,
+      BranchToken branch, String guid, boolean create) {
       return getOrCreateCachedArtifact(artifactType, artifactName, branch, guid, null, create);
    }
 
-   private static Artifact getOrCreateCachedArtifact(ArtifactTypeToken artifactType, String artifactName, BranchToken branch, String guid, Long uuid, boolean create) {
+   private static Artifact getOrCreateCachedArtifact(ArtifactTypeToken artifactType, String artifactName,
+      BranchToken branch, String guid, Long uuid, boolean create) {
       Artifact artifact = ArtifactQuery.checkArtifactFromTypeAndName(artifactType, artifactName, branch);
       if (artifact == null && create) {
          if (Strings.isValid(guid) && uuid != null && uuid > 0) {

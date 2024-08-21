@@ -31,7 +31,7 @@ public class VersionDataImpl implements VersionData {
    private boolean historical = IS_HISTORICAL_DEFAULT;
    private TransactionId stripeId = TransactionId.SENTINEL;
    private TxCurrent txCurrent = TxCurrent.SENTINEL;
-   
+
    public VersionDataImpl() {
       super();
    }
@@ -150,12 +150,12 @@ public class VersionDataImpl implements VersionData {
       return copy;
    }
 
-public TxCurrent getTxCurrent() {
-	return txCurrent;
-}
+   public TxCurrent getTxCurrent() {
+      return txCurrent;
+   }
 
-public void setTxCurrent(TxCurrent txCurrent) {
-	this.txCurrent = txCurrent;
-}
+   public void setTxCurrent(TxCurrent txCurrent) {
+      this.txCurrent = txCurrent;
+   }
 
 }

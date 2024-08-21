@@ -46,8 +46,8 @@ public class XCheckFilteredTreeDialog extends MessageDialog {
    private final ViewerSorter viewerSorter;
 
    public XCheckFilteredTreeDialog(String dialogTitle, String dialogMessage, PatternFilter patternFilter, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerSorter viewerSorter) {
-      super(Display.getCurrent().getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.NONE, new String[] {
-    	  XViewerText.get("button.ok"), XViewerText.get("button.cancel")}, 0); //$NON-NLS-1$ //$NON-NLS-2$
+      super(Display.getCurrent().getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.NONE,
+         new String[] {XViewerText.get("button.ok"), XViewerText.get("button.cancel")}, 0); //$NON-NLS-1$ //$NON-NLS-2$
       this.contentProvider = contentProvider;
       this.labelProvider = labelProvider;
       this.patternFilter = patternFilter;
@@ -106,9 +106,8 @@ public class XCheckFilteredTreeDialog extends MessageDialog {
       aiComp.setLayout(XViewerLib.getZeroMarginLayout());
       aiComp.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      treeViewer =
-         new XCheckedFilteredTree(aiComp,
-            SWT.MULTI | SWT.CHECK | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter);
+      treeViewer = new XCheckedFilteredTree(aiComp,
+         SWT.MULTI | SWT.CHECK | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter);
       treeViewer.getViewer().getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       treeViewer.getViewer().setContentProvider(contentProvider);
       treeViewer.getViewer().setLabelProvider(labelProvider);

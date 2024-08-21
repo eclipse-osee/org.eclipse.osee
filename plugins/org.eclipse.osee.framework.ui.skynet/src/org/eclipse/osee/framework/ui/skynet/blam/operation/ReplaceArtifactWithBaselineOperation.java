@@ -64,8 +64,8 @@ public class ReplaceArtifactWithBaselineOperation extends AbstractOperation {
                Artifact sourceArtifact =
                   ArtifactQuery.getHistoricalArtifactOrNull(artifact, txRecord, DeletionFlag.INCLUDE_DELETED);
                if (sourceArtifact != null) {
-                  try (Response res = TransactionEndpoint.replaceWithBaselineTxVersion(branch, txRecord,
-                     sourceArtifact, ReplaceArtifactWithBaselineOperation.class.getSimpleName())) {
+                  try (Response res = TransactionEndpoint.replaceWithBaselineTxVersion(branch, txRecord, sourceArtifact,
+                     ReplaceArtifactWithBaselineOperation.class.getSimpleName())) {
                      monitor.done();
                   }
                } else {

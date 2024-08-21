@@ -77,7 +77,8 @@ public final class TraceabilityOperationsImpl implements TraceabilityOperations 
    }
 
    @Override
-   public void generateTraceReport(BranchId branchId, String codeRoot, String traceRoot, Writer providedWriter, ArtifactTypeToken artifactType, AttributeTypeToken attributeType) {
+   public void generateTraceReport(BranchId branchId, String codeRoot, String traceRoot, Writer providedWriter,
+      ArtifactTypeToken artifactType, AttributeTypeToken attributeType) {
       TraceReportGenerator generator = new TraceReportGenerator(artifactType, attributeType);
       try {
          generator.generate(orcsApi, branchId, codeRoot, traceRoot, providedWriter);
@@ -133,7 +134,8 @@ public final class TraceabilityOperationsImpl implements TraceabilityOperations 
    }
 
    @Override
-   public ArtifactId baselineFiles(BranchId branch, ArtifactReadable repoArtifact, CertBaselineData baselineData, TransactionBuilder tx, String password) {
+   public ArtifactId baselineFiles(BranchId branch, ArtifactReadable repoArtifact, CertBaselineData baselineData,
+      TransactionBuilder tx, String password) {
 
       ArtifactId baselineEvent = tx.createArtifact(CertificationBaselineEvent, baselineData.eventName);
 
@@ -174,7 +176,8 @@ public final class TraceabilityOperationsImpl implements TraceabilityOperations 
    }
 
    @Override
-   public ArtifactId baselineFiles(BranchId branch, ArtifactReadable repoArtifact, CertBaselineData baselineData, String password) {
+   public ArtifactId baselineFiles(BranchId branch, ArtifactReadable repoArtifact, CertBaselineData baselineData,
+      String password) {
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, "rest - baseline  files");
       ArtifactId baselineEvent = baselineFiles(branch, repoArtifact, baselineData, password);
       tx.commit();
@@ -196,7 +199,8 @@ public final class TraceabilityOperationsImpl implements TraceabilityOperations 
       return ArtifactId.SENTINEL;
    }
 
-   private void updateLGitLatestTuple(ArtifactId repository, BranchId branch, TransactionBuilder tx, ArtifactId codeUnit, ArtifactId baselineCommit) {
+   private void updateLGitLatestTuple(ArtifactId repository, BranchId branch, TransactionBuilder tx,
+      ArtifactId codeUnit, ArtifactId baselineCommit) {
       ArtifactId[] commitWraper = new ArtifactId[1];
       tupleQuery.getTuple4E3E4FromE1E2(GitLatest, branch, repository, codeUnit,
          (changeCommit, ignore) -> commitWraper[0] = changeCommit);
@@ -214,7 +218,8 @@ public final class TraceabilityOperationsImpl implements TraceabilityOperations 
    }
 
    @Override
-   public TransactionToken copyCertBaselineData(BranchId destinationBranch, String repositoryName, BranchId sourceBranch) {
+   public TransactionToken copyCertBaselineData(BranchId destinationBranch, String repositoryName,
+      BranchId sourceBranch) {
       TransactionBuilder tx =
          orcsApi.getTransactionFactory().createTransaction(destinationBranch, "rest - copy cert baseline data");
       ArtifactReadable sourceRepo = gitOps.getRepoArtifact(sourceBranch, repositoryName);

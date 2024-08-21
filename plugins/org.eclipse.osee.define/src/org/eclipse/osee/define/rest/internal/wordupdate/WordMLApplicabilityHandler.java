@@ -249,7 +249,8 @@ public class WordMLApplicabilityHandler {
       }
    }
 
-   private int addApplicabilityBlock(ApplicabilityType type, Matcher matcher, String applicabilityExpression, int searchIndex, String fullWordMl) {
+   private int addApplicabilityBlock(ApplicabilityType type, Matcher matcher, String applicabilityExpression,
+      int searchIndex, String fullWordMl) {
       ApplicabilityBlock beginApplic = new ApplicabilityBlock(type);
       //Remove extra space
       String applicExpText = WordCoreUtil.textOnly(applicabilityExpression).toLowerCase().replace(" [", "[");

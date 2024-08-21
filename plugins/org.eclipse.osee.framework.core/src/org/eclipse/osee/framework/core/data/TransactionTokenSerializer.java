@@ -31,7 +31,8 @@ public class TransactionTokenSerializer extends StdScalarSerializer<@NonNull Tra
    }
 
    @Override
-   public void serialize(TransactionToken transaction, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonGenerationException {
+   public void serialize(TransactionToken transaction, JsonGenerator jgen, SerializerProvider provider)
+      throws IOException, JsonGenerationException {
       jgen.writeStartObject();
       jgen.writeStringField("id", transaction.getIdString());
       jgen.writeStringField("branchId", transaction.getBranchIdString());

@@ -60,7 +60,8 @@ public class TxModule {
       this.activityLog = activityLog;
    }
 
-   public TxDataStore createTransactionStore(DataLoaderFactory dataLoaderFactory, QueryEngineIndexer indexer, OrcsTokenService tokenService) {
+   public TxDataStore createTransactionStore(DataLoaderFactory dataLoaderFactory, QueryEngineIndexer indexer,
+      OrcsTokenService tokenService) {
       final TransactionProcessorProviderImpl processors = new TransactionProcessorProviderImpl();
       processors.add(TxWritePhaseEnum.BEFORE_TX_WRITE, new ComodificationCheck(dataLoaderFactory));
       processors.add(TxWritePhaseEnum.AFTER_TX_WRITE, new TransactionIndexer(logger, indexer, tokenService));
@@ -75,7 +76,8 @@ public class TxModule {
          }
 
          @Override
-         public Callable<Integer> purgeTransactions(OrcsSession session, Collection<? extends TransactionId> transactionsToPurge) {
+         public Callable<Integer> purgeTransactions(OrcsSession session,
+            Collection<? extends TransactionId> transactionsToPurge) {
             return new PurgeTransactionTxCallable(activityLog, session, jdbcClient, sqlJoinFactory,
                transactionsToPurge);
          }
@@ -92,14 +94,16 @@ public class TxModule {
          }
 
          @Override
-         public void setTransactionCommitArtifact(OrcsSession session, TransactionId transaction, ArtifactId commitArt) {
+         public void setTransactionCommitArtifact(OrcsSession session, TransactionId transaction,
+            ArtifactId commitArt) {
             checkNotNull(transaction, "transaction");
             checkNotNull(commitArt, "commitArt");
             jdbcClient.runPreparedUpdate(UPDATE_TRANSACTION_COMMIT_ART_ID, commitArt, transaction);
          }
 
          @Override
-         public Callable<List<ChangeItem>> getArtifactHistory(OrcsSession session, QueryFactory queryFactory, ArtifactId artifact, BranchId branch) {
+         public Callable<List<ChangeItem>> getArtifactHistory(OrcsSession session, QueryFactory queryFactory,
+            ArtifactId artifact, BranchId branch) {
             return new LoadArtifactHistory(logger, session, queryFactory, tokenService, jdbcClient, artifact, branch);
          }
       };

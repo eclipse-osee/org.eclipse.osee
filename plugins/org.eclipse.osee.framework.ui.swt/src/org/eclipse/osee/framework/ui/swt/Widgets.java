@@ -237,7 +237,8 @@ public final class Widgets {
     *
     * @return Return grid data reference
     */
-   public static GridData positionGridItem(Control control, boolean grabHExcess, boolean grabVExcess, int halign, int valign, int hspan) {
+   public static GridData positionGridItem(Control control, boolean grabHExcess, boolean grabVExcess, int halign,
+      int valign, int hspan) {
       final GridData gd = new GridData();
       gd.grabExcessHorizontalSpace = grabHExcess;
       gd.grabExcessVerticalSpace = grabVExcess;
@@ -253,7 +254,8 @@ public final class Widgets {
     *
     * @return Return grid data reference
     */
-   public static GridData positionGridItem(final Control control, final boolean grabHExcess, final boolean grabVExcess, final int halign, final int valign, final int hspan, final int vspan) {
+   public static GridData positionGridItem(final Control control, final boolean grabHExcess, final boolean grabVExcess,
+      final int halign, final int valign, final int hspan, final int vspan) {
 
       final GridData gd = new GridData();
       gd.grabExcessHorizontalSpace = grabHExcess;
@@ -286,7 +288,8 @@ public final class Widgets {
     *
     * @return return grid data reference
     */
-   public static GridData positionGridItem(final Control control, final boolean grabHExcess, final int halign, final int valign) {
+   public static GridData positionGridItem(final Control control, final boolean grabHExcess, final int halign,
+      final int valign) {
       final GridData gd = new GridData();
       gd.grabExcessHorizontalSpace = grabHExcess;
       gd.horizontalAlignment = halign;
@@ -300,7 +303,8 @@ public final class Widgets {
     *
     * @return return grid data reference
     */
-   public static GridData positionGridItem(Control control, boolean grabHExcess, int halign, int valign, int hspan, int vspan) {
+   public static GridData positionGridItem(Control control, boolean grabHExcess, int halign, int valign, int hspan,
+      int vspan) {
       final GridData gd = new GridData();
       gd.grabExcessHorizontalSpace = grabHExcess;
       gd.horizontalAlignment = halign;
@@ -316,7 +320,8 @@ public final class Widgets {
     *
     * @return return grid data reference
     */
-   public static GridData positionGridItem(Control control, boolean grabHExcess, int halign, int valign, int hspan, int vspan, int width) {
+   public static GridData positionGridItem(Control control, boolean grabHExcess, int halign, int valign, int hspan,
+      int vspan, int width) {
       final GridData gd = new GridData();
       gd.grabExcessHorizontalSpace = grabHExcess;
       gd.horizontalAlignment = halign;
@@ -333,7 +338,8 @@ public final class Widgets {
     *
     * @return return grid data reference
     */
-   public static GridData positionGridItem(Control control, boolean grabHExcess, int halign, int valign, int hspan, int vspan, int width, int height) {
+   public static GridData positionGridItem(Control control, boolean grabHExcess, int halign, int valign, int hspan,
+      int vspan, int width, int height) {
       final GridData gd = new GridData();
       gd.grabExcessHorizontalSpace = grabHExcess;
       gd.horizontalAlignment = halign;
@@ -346,7 +352,8 @@ public final class Widgets {
       return gd;
    }
 
-   public static GridData positionGridItem(Control control, boolean grabHExcess, boolean grabVExcess, int halign, int valign, int hspan, int vspan, int width, int height) {
+   public static GridData positionGridItem(Control control, boolean grabHExcess, boolean grabVExcess, int halign,
+      int valign, int hspan, int vspan, int width, int height) {
       final GridData gd = new GridData();
       gd.grabExcessHorizontalSpace = grabHExcess;
       gd.grabExcessVerticalSpace = grabVExcess;
@@ -503,7 +510,8 @@ public final class Widgets {
       return layout;
    }
 
-   public static RowLayout setRowLayout(final Composite item, final int style, final boolean wrap, final boolean pack, boolean fill) {
+   public static RowLayout setRowLayout(final Composite item, final int style, final boolean wrap, final boolean pack,
+      boolean fill) {
       final RowLayout layout = setRowLayout(item, style, wrap, pack);
       layout.fill = fill;
       layout.center = true;
@@ -526,7 +534,8 @@ public final class Widgets {
       item.setLayout(layout);
    }
 
-   public static GridLayout setGridLayout(Composite item, int numColumns, int columnSpacing, int verticalSpacing, boolean equal, int hpad) {
+   public static GridLayout setGridLayout(Composite item, int numColumns, int columnSpacing, int verticalSpacing,
+      boolean equal, int hpad) {
       final GridLayout layout = new GridLayout();
       layout.numColumns = numColumns;
       layout.horizontalSpacing = columnSpacing;
@@ -539,7 +548,8 @@ public final class Widgets {
       return layout;
    }
 
-   public static GridLayout setGridLayout(Composite item, int numColumns, int columnSpacing, int verticalSpacing, boolean equal, int hpad, int vpad) {
+   public static GridLayout setGridLayout(Composite item, int numColumns, int columnSpacing, int verticalSpacing,
+      boolean equal, int hpad, int vpad) {
       final GridLayout layout = new GridLayout();
       layout.numColumns = numColumns;
       layout.horizontalSpacing = columnSpacing;
@@ -684,7 +694,8 @@ public final class Widgets {
       attachToParent(control, edge, percent, offset, SWT.DEFAULT, SWT.DEFAULT);
    }
 
-   public static void attachToParent(final Control control, final int edge, final int percent, final int offset, int width, int height) {
+   public static void attachToParent(final Control control, final int edge, final int percent, final int offset,
+      int width, int height) {
       final Object ld = control.getLayoutData();
       final FormData fd = ld != null ? (FormData) ld : new FormData();
       switch (edge) {
@@ -717,11 +728,13 @@ public final class Widgets {
     * @param itemToAttachToEdge the secondary control's edge
     * @param offset the number of pixels between the two controls' edges
     */
-   public static void attachToControl(final Control control, final Control itemToAttachTo, final int edge, final int itemToAttachToEdge, final int offset) {
+   public static void attachToControl(final Control control, final Control itemToAttachTo, final int edge,
+      final int itemToAttachToEdge, final int offset) {
       attachToControl(control, itemToAttachTo, edge, itemToAttachToEdge, offset, SWT.DEFAULT, SWT.DEFAULT);
    }
 
-   public static void attachToControl(final Control control, final Control itemToAttachTo, final int edge, final int itemToAttachToEdge, final int offset, final int width, final int height) {
+   public static void attachToControl(final Control control, final Control itemToAttachTo, final int edge,
+      final int itemToAttachToEdge, final int offset, final int width, final int height) {
       final Object ld = control.getLayoutData();
       final FormData fd = ld != null ? (FormData) ld : new FormData();
       switch (edge) {

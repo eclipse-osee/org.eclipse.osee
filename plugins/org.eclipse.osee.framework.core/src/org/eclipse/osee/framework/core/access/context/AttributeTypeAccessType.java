@@ -66,7 +66,8 @@ public class AttributeTypeAccessType implements AccessType {
    }
 
    @Override
-   public AccessTypeMatch computeMatch(ArtifactToken otherArt, AttributeTypeToken attrType, RelationTypeToken relType, IParentProvider parentProvider) {
+   public AccessTypeMatch computeMatch(ArtifactToken otherArt, AttributeTypeToken attrType, RelationTypeToken relType,
+      IParentProvider parentProvider) {
       if (otherArt.getArtifactType().inheritsFrom(artifactType)) {
          if (attributeType.equals(attrType)) {
             if (allowDeny == AllowDeny.Allow) {

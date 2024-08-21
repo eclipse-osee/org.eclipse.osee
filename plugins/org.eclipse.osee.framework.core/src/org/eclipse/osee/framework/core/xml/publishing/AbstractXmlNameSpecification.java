@@ -23,8 +23,7 @@ class AbstractXmlNameSpecification extends AbstractXmlNamespaceSpecification {
    final @NonNull String name;
    final @NonNull String fullName;
 
-   AbstractXmlNameSpecification(@NonNull AbstractXmlNamespaceSpecification abstractXmlNamespaceSpecification,
-      @NonNull String name) {
+   AbstractXmlNameSpecification(@NonNull AbstractXmlNamespaceSpecification abstractXmlNamespaceSpecification, @NonNull String name) {
       //@formatter:off
       this
          (

@@ -52,7 +52,8 @@ public class RemoveTrackChangesHandler implements IStatusHandler {
 
                MoreChangesHandlingDialog dialog =
                   new MoreChangesHandlingDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                     "Confirm Removal Of Track Changes ", null, message, MessageDialog.QUESTION, new String[] {
+                     "Confirm Removal Of Track Changes ", null, message, MessageDialog.QUESTION,
+                     new String[] {
                         IDialogConstants.YES_LABEL,
                         IDialogConstants.YES_TO_ALL_LABEL,
                         IDialogConstants.NO_LABEL},

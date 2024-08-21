@@ -94,7 +94,9 @@ public class NewTaskData {
       return ntd;
    }
 
-   public static NewTaskData create(IAtsTeamWorkflow teamWf, List<String> titles, List<AtsUser> assignees, Date createdDate, AtsUser createdBy, String relatedToState, String taskWorkDef, Map<AttributeTypeToken, List<Object>> attributes) {
+   public static NewTaskData create(IAtsTeamWorkflow teamWf, List<String> titles, List<AtsUser> assignees,
+      Date createdDate, AtsUser createdBy, String relatedToState, String taskWorkDef,
+      Map<AttributeTypeToken, List<Object>> attributes) {
       NewTaskData newTaskData = new NewTaskData();
       newTaskData.setTeamWfId(teamWf.getId());
       if (createdDate == null) {

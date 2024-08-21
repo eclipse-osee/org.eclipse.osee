@@ -106,7 +106,8 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
    }
 
    @Override
-   protected @NonNull XResultData extractFromSource(OrcsApi orcsApi, @NonNull XResultData results, URI source, RoughArtifactCollector collector) throws IOException {
+   protected @NonNull XResultData extractFromSource(OrcsApi orcsApi, @NonNull XResultData results, URI source,
+      RoughArtifactCollector collector) throws IOException {
       Objects.requireNonNull(results, "WordOutlineExtractor::extractFromSource, parameter \"results\" cannot be null.");
 
       Reader reader = null;

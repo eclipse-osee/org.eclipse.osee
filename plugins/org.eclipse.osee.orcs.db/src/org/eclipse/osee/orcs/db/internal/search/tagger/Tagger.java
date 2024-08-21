@@ -25,6 +25,7 @@ public interface Tagger {
 
    void tagIt(InputStream provider, TagCollector collector) throws Exception;
 
-   List<MatchLocation> find(InputStream provider, String toSearch, boolean matchAllLocations, QueryOption... options) throws Exception;
+   List<MatchLocation> find(InputStream provider, String toSearch, boolean matchAllLocations, QueryOption... options)
+      throws Exception;
 
 }

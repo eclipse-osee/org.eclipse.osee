@@ -49,7 +49,8 @@ public class OrcsWriterExcelReader {
       inputStreamReader.close();
    }
 
-   public void run(InputStream source) throws SAXException, IOException, UnsupportedEncodingException, MalformedURLException {
+   public void run(InputStream source)
+      throws SAXException, IOException, UnsupportedEncodingException, MalformedURLException {
       collector = new OwCollector();
       XMLReader xmlReader = XMLReaderFactory.createXMLReader();
       xmlReader.setContentHandler(new ExcelSaxHandler(new ExcelRowProcessor(collector, result), true));

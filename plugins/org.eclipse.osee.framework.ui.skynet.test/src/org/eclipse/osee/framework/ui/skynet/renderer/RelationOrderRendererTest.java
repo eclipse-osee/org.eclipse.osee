@@ -78,7 +78,8 @@ public class RelationOrderRendererTest {
       checkRelationOrderRenderer(getExpected(expectedData), orderData);
    }
 
-   private void addData(RelationOrderData orderData, List<Object[]> expectedData, RelationTypeToken relationType, RelationSide side, RelationSorter expectedSorterId, String... guids) {
+   private void addData(RelationOrderData orderData, List<Object[]> expectedData, RelationTypeToken relationType,
+      RelationSide side, RelationSorter expectedSorterId, String... guids) {
       List<String> guidList = Arrays.asList(guids);
       orderData.addOrderList(relationType, side, expectedSorterId, guidList);
       expectedData.add(new Object[] {

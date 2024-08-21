@@ -149,7 +149,8 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
       }
    }
 
-   private void addComparison(IProgressMonitor monitor, Appendable appendable, CompareData compareData, boolean merge) throws IOException {
+   private void addComparison(IProgressMonitor monitor, Appendable appendable, CompareData compareData, boolean merge)
+      throws IOException {
       boolean first = true;
       double workAmount = 0.20 / compareData.entrySet().size();
       monitor.setTaskName("Creating Diff Script");

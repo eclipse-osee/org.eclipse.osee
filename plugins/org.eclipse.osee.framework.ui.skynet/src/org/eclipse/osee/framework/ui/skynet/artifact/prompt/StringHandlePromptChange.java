@@ -75,7 +75,8 @@ public class StringHandlePromptChange implements IHandlePromptChange {
       return true;
    }
 
-   private static void setInitialText(Collection<? extends Artifact> artifacts, EntryDialog entryDialog, NumberFormat format, AttributeTypeId attributeType) {
+   private static void setInitialText(Collection<? extends Artifact> artifacts, EntryDialog entryDialog,
+      NumberFormat format, AttributeTypeId attributeType) {
       if (artifacts.size() == 1) {
          Object smaObj = artifacts.iterator().next().getSoleAttributeValue(attributeType, "");
          String initialText = smaObj.equals("") ? "" : formatObject(smaObj, format);
@@ -85,7 +86,8 @@ public class StringHandlePromptChange implements IHandlePromptChange {
       }
    }
 
-   private static void updateSmaAttributes(final Collection<? extends Artifact> artifacts, AttributeTypeToken attributeType, NumberFormat format, EntryDialog entryDialog) {
+   private static void updateSmaAttributes(final Collection<? extends Artifact> artifacts,
+      AttributeTypeToken attributeType, NumberFormat format, EntryDialog entryDialog) {
       for (Artifact artifact : artifacts) {
          String value = entryDialog.getEntry();
          String safeValue = getSafeValue(value, format, attributeType);

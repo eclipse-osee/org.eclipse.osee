@@ -52,13 +52,16 @@ public final class ArtifactResolverFactory {
       return createAlwaysNewArtifacts(primaryArtifactType, secondaryArtifactType);
    }
 
-   public static IArtifactImportResolver createAlwaysNewArtifacts(ArtifactTypeToken primaryArtifactType, ArtifactTypeToken secondaryArtifactType) {
+   public static IArtifactImportResolver createAlwaysNewArtifacts(ArtifactTypeToken primaryArtifactType,
+      ArtifactTypeToken secondaryArtifactType) {
       IRoughArtifactTranslator translator = new RoughArtifactTranslatorImpl();
       return new NewArtifactImportResolver(translator, primaryArtifactType, secondaryArtifactType,
          CoreArtifactTypes.DocumentDescriptionMsWord, CoreArtifactTypes.DesignDescriptionMsWord);
    }
 
-   public static IArtifactImportResolver createResolver(ArtifactCreationStrategy strategy, ArtifactTypeToken primaryArtifactType, Collection<AttributeTypeToken> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
+   public static IArtifactImportResolver createResolver(ArtifactCreationStrategy strategy,
+      ArtifactTypeToken primaryArtifactType, Collection<AttributeTypeToken> nonChangingAttributes,
+      boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
       IArtifactImportResolver toReturn;
       switch (strategy) {
          case CREATE_ON_DIFFERENT_ATTRIBUTES:
@@ -81,7 +84,9 @@ public final class ArtifactResolverFactory {
       return toReturn;
    }
 
-   public static IArtifactImportResolver createResolver(ArtifactCreationStrategy strategy, ArtifactTypeToken primaryArtifactType, Collection<AttributeTypeToken> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts, Artifact dropTarget) {
+   public static IArtifactImportResolver createResolver(ArtifactCreationStrategy strategy,
+      ArtifactTypeToken primaryArtifactType, Collection<AttributeTypeToken> nonChangingAttributes,
+      boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts, Artifact dropTarget) {
 
       return new DropTargetAttributeBasedResolver(new RoughArtifactTranslatorImpl(), primaryArtifactType,
          CoreArtifactTypes.HeadingMsWord, nonChangingAttributes, createNewIfNotExist, deleteUnmatchedArtifacts,

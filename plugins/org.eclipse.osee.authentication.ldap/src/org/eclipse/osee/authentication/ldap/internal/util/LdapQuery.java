@@ -105,7 +105,8 @@ public final class LdapQuery {
       return ResultSets.newResultSet(results);
    }
 
-   private void search(List<LdapEntry> results, DirContext connection, String searchPath, String expressionFilter, String[] filterArgs, String[] attributesToReturn, LdapSearchScope searchScope) throws NamingException {
+   private void search(List<LdapEntry> results, DirContext connection, String searchPath, String expressionFilter,
+      String[] filterArgs, String[] attributesToReturn, LdapSearchScope searchScope) throws NamingException {
       long startTime = System.currentTimeMillis();
       long endTime = startTime;
       boolean traceEnabled = logger.isTraceEnabled();

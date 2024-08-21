@@ -43,7 +43,9 @@ public class ImplicitGrantEndpoint extends ImplicitGrantService {
       this.clientLogoUriResolver = clientLogoUriResolver;
    }
 
-   protected Response createGrant(MultivaluedMap<String, String> params, Client client, String redirectUri, List<String> requestedScope, List<String> approvedScope, UserSubject userSubject, ServerAccessToken preAuthorizedToken) {
+   protected Response createGrant(MultivaluedMap<String, String> params, Client client, String redirectUri,
+      List<String> requestedScope, List<String> approvedScope, UserSubject userSubject,
+      ServerAccessToken preAuthorizedToken) {
       try (Response response = super.createGrant((OAuthRedirectionState) params, client, requestedScope, approvedScope,
          userSubject, preAuthorizedToken)) {
 
@@ -117,7 +119,8 @@ public class ImplicitGrantEndpoint extends ImplicitGrantService {
     * Override fixes OAuthAuthorizationData creation
     */
 
-   protected OAuthAuthorizationData createAuthorizationData(Client client, MultivaluedMap<String, String> params, UserSubject subject, String redirectUri, List<OAuthPermission> perms) {
+   protected OAuthAuthorizationData createAuthorizationData(Client client, MultivaluedMap<String, String> params,
+      UserSubject subject, String redirectUri, List<OAuthPermission> perms) {
       OAuthAuthorizationData secData = super.createAuthorizationData(client, params, redirectUri, subject, perms, perms,
          useRegisteredRedirectUriIfPossible);
 

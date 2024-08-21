@@ -61,7 +61,8 @@ public class InRelationFilter extends SearchFilter {
    }
 
    @Override
-   public void loadFromStorageString(FilterTableViewer filterViewer, String type, String value, String storageString, boolean isNotEnabled) {
+   public void loadFromStorageString(FilterTableViewer filterViewer, String type, String value, String storageString,
+      boolean isNotEnabled) {
       ISearchPrimitive primitive = InRelationSearch.getPrimitive(storageString, tokenService);
       filterViewer.addItem(primitive, getFilterName(), type, value);
    }

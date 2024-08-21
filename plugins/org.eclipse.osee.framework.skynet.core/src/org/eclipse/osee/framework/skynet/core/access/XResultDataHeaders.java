@@ -39,7 +39,8 @@ public class XResultDataHeaders {
       return rd;
    }
 
-   public static XResultData getXResultAccessHeader(String title, Collection<? extends ArtifactToken> artifacts, AttributeTypeToken attributeType, XResultData rd) {
+   public static XResultData getXResultAccessHeader(String title, Collection<? extends ArtifactToken> artifacts,
+      AttributeTypeToken attributeType, XResultData rd) {
       if (rd == null) {
          rd = new XResultData();
       }
@@ -50,7 +51,8 @@ public class XResultDataHeaders {
       return rd;
    }
 
-   public static XResultData getXResultAccessHeader(String title, Collection<? extends ArtifactToken> artifacts, RelationTypeSide relTypeSide, XResultData rd) {
+   public static XResultData getXResultAccessHeader(String title, Collection<? extends ArtifactToken> artifacts,
+      RelationTypeSide relTypeSide, XResultData rd) {
       if (rd == null) {
          rd = new XResultData();
       }
@@ -71,7 +73,8 @@ public class XResultDataHeaders {
       return rd;
    }
 
-   public static XResultData getXResultAccessHeader(String title, Collection<? extends ArtifactToken> artifacts, XResultData rd) {
+   public static XResultData getXResultAccessHeader(String title, Collection<? extends ArtifactToken> artifacts,
+      XResultData rd) {
       return null;
    }
 

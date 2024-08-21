@@ -89,7 +89,8 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
       }
    }
 
-   private void detectAndCollectErrors(IProgressMonitor monitor, TxCurrent txChange, ModificationType modificationType) {
+   private void detectAndCollectErrors(IProgressMonitor monitor, TxCurrent txChange,
+      ModificationType modificationType) {
       monitor.setTaskName("Loading Artifacts that were Introduced as Deleted");
       loadData(COMMITTED_NEW_AND_DELETED_ARTIFACTS, txChange, modificationType);
       checkForCancelledStatus(monitor);

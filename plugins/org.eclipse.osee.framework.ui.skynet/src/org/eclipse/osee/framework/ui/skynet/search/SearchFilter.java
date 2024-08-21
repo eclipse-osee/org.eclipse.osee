@@ -40,6 +40,7 @@ public abstract class SearchFilter {
 
    public abstract String getSearchDescription();
 
-   public abstract void loadFromStorageString(FilterTableViewer filterViewer, String type, String value, String storageString, boolean isNotEnabled);
+   public abstract void loadFromStorageString(FilterTableViewer filterViewer, String type, String value,
+      String storageString, boolean isNotEnabled);
 
 }

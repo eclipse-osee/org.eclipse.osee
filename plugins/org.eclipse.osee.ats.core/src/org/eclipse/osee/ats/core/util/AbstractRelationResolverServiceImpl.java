@@ -81,7 +81,8 @@ public abstract class AbstractRelationResolverServiceImpl implements IRelationRe
    }
 
    @Override
-   public Collection<ArtifactToken> getRelated(IAtsObject atsObject, RelationTypeSide relationType, ArtifactTypeToken artifactType) {
+   public Collection<ArtifactToken> getRelated(IAtsObject atsObject, RelationTypeSide relationType,
+      ArtifactTypeToken artifactType) {
       return getRelated(atsObject.getStoreObject(), relationType, artifactType);
    }
 

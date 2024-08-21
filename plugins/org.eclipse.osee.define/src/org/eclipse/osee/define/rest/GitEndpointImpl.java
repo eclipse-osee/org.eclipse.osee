@@ -38,7 +38,8 @@ public class GitEndpointImpl implements GitEndpoint {
    }
 
    @Override
-   public ArtifactId updateGitTrackingBranch(BranchId branch, String repositoryName, boolean fetch, boolean shallowImport, String gitBranchName) {
+   public ArtifactId updateGitTrackingBranch(BranchId branch, String repositoryName, boolean fetch,
+      boolean shallowImport, String gitBranchName) {
       return gitOps.updateGitTrackingBranch(branch, gitOps.getRepoArtifact(branch, repositoryName), gitBranchName,
          fetch, null, false, shallowImport);
    }

@@ -237,7 +237,8 @@ public class XViewerDataManager {
       refresh();
    }
 
-   private void removeArtifactsFromDataItemList(List<DataItem> sourceList, final Collection<Artifact> artifactsToRemove) {
+   private void removeArtifactsFromDataItemList(List<DataItem> sourceList,
+      final Collection<Artifact> artifactsToRemove) {
       List<DataItem> itemsToRemove = new ArrayList<>();
       for (DataItem item : sourceList) {
          Object object = item.getData();

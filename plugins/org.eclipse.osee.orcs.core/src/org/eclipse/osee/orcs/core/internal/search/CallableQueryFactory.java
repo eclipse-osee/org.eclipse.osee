@@ -56,7 +56,8 @@ public class CallableQueryFactory {
       return proxyManager.asExternalArtifacts(null, results);
    }
 
-   public ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> createSearchWithMatches(OrcsSession session, QueryData queryData) {
+   public ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> createSearchWithMatches(OrcsSession session,
+      QueryData queryData) {
       GraphBuilder handler = builderFactory.createGraphBuilder(provider);
       ArtifactMatchDataHandler matchHandler = new ArtifactMatchDataHandler(handler, proxyManager);
       OptionsUtil.setLoadLevel(queryData.getOptions(), LoadLevel.ALL);

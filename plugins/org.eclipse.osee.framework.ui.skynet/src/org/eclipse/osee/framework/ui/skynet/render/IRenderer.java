@@ -131,7 +131,8 @@ public interface IRenderer extends RendererMap {
     * @return a list of the provided {@link AttributeTypeToken}s arranged in the rendering order for the attributes.
     */
 
-   public List<AttributeTypeToken> getOrderedAttributeTypes(Artifact artifact, Collection<? extends AttributeTypeToken> attributeTypes);
+   public List<AttributeTypeToken> getOrderedAttributeTypes(Artifact artifact,
+      Collection<? extends AttributeTypeToken> attributeTypes);
 
    /**
     * The {@link RendererManager} uses the following process to find applicable renderers:
@@ -196,7 +197,8 @@ public interface IRenderer extends RendererMap {
     * @param footer a footer for the attribute in Word ML.
     */
 
-   void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, PublishingAppender producer, String format, String label, String footer);
+   void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType,
+      PublishingAppender producer, String format, String label, String footer);
 
    /**
     * Generates a text representation of an artifact's attribute value.
@@ -209,7 +211,8 @@ public interface IRenderer extends RendererMap {
     * @return {@link String} representation of the artifact's attribute value.
     */
 
-   String renderAttributeAsString(AttributeTypeId attributeType, Artifact artifact, PresentationType presentationType, String defaultValue);
+   String renderAttributeAsString(AttributeTypeId attributeType, Artifact artifact, PresentationType presentationType,
+      String defaultValue);
 
    /**
     * Predicate to determine if the {@link IRenderer} implementation's method {@link #getComparator} will return a valid

@@ -68,7 +68,8 @@ public class PurgeTransactionOperation extends AbstractOperation {
       this.transEventAndIds = transEventAndIds;
    }
 
-   private static Pair<TransactionEvent, Map<String, Long>> createPurgeTransactionEvent(Collection<TransactionToken> purgedTransactions) {
+   private static Pair<TransactionEvent, Map<String, Long>> createPurgeTransactionEvent(
+      Collection<TransactionToken> purgedTransactions) {
       TransactionEvent transactionEvent = new TransactionEvent();
       transactionEvent.setEventType(TransactionEventType.Purged);
       Map<String, Long> guidToId = new HashMap<>();

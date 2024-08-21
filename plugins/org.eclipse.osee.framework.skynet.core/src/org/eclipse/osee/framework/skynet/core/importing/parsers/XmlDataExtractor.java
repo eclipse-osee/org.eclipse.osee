@@ -32,7 +32,8 @@ import org.xml.sax.helpers.XMLReaderFactory;
 public class XmlDataExtractor extends AbstractArtifactExtractor {
 
    @Override
-   protected void extractFromSource(OperationLogger logger, URI source, RoughArtifactCollector collector) throws Exception {
+   protected void extractFromSource(OperationLogger logger, URI source, RoughArtifactCollector collector)
+      throws Exception {
       ArtifactTypeToken primaryArtifactType =
          ServiceUtil.getOrcsTokenService().getArtifactType(Lib.removeExtension(new File(source).getName()));
       XMLReader xmlReader = XMLReaderFactory.createXMLReader();

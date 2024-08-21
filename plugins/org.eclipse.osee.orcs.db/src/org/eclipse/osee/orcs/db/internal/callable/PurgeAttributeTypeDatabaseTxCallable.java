@@ -84,7 +84,8 @@ public final class PurgeAttributeTypeDatabaseTxCallable extends AbstractDatastor
       return gammas;
    }
 
-   private List<Object[]> retrieveBranchAndGammaIds(JdbcConnection connection, Collection<? extends AttributeTypeId> types) {
+   private List<Object[]> retrieveBranchAndGammaIds(JdbcConnection connection,
+      Collection<? extends AttributeTypeId> types) {
       List<Object[]> gammasAndBranchIds = new LinkedList<>();
 
       try (IdJoinQuery joinQuery = joinFactory.createIdJoinQuery();

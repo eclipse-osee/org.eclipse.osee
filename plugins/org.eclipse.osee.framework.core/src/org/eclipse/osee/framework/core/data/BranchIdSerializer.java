@@ -31,7 +31,8 @@ public class BranchIdSerializer extends StdScalarSerializer<@NonNull BranchId> {
    }
 
    @Override
-   public void serialize(BranchId branch, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonGenerationException {
+   public void serialize(BranchId branch, JsonGenerator jgen, SerializerProvider provider)
+      throws IOException, JsonGenerationException {
       jgen.writeStartObject();
       jgen.writeStringField("id", branch.getIdString());
       jgen.writeStringField("viewId", branch.getViewId().getIdString());

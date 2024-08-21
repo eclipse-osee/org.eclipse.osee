@@ -42,7 +42,8 @@ public interface Attribute<T> extends OrcsWriteable, AttributeReadable<T>, HasOr
 
    /////////
 
-   void internalInitialize(Reference<AttributeContainer> containerReference, AttributeData<T> attributeData, boolean isDirty, boolean setDefaultValue, OrcsTokenService tokenService);
+   void internalInitialize(Reference<AttributeContainer> containerReference, AttributeData<T> attributeData,
+      boolean isDirty, boolean setDefaultValue, OrcsTokenService tokenService);
 
    ArtifactToken getContainer();
 

@@ -38,13 +38,12 @@ public class Pdd84CreateProblemInTreeActionTest implements IPopulateDemoDatabase
       Pdd84CreateProblemInTreeAction create = new Pdd84CreateProblemInTreeAction();
       create.run();
 
-      IAtsTeamWorkflow teamWf =
-         AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.ProblemInTree_TeamWf);
+      IAtsTeamWorkflow teamWf = AtsApiService.get().getQueryService().getTeamWf(DemoArtifactToken.ProblemInTree_TeamWf);
       Assert.assertNotNull(teamWf);
 
-      testTeamContents(teamWf, DemoArtifactToken.ProblemInTree_TeamWf.getName(), "3", "",
-         TeamState.Endorse.getName(), DemoArtifactToken.CIS_Test_AI.getName(), DemoUsers.Kay_Jones.getName(),
-         AtsArtifactTypes.DemoTestTeamWorkflow, DemoTestUtil.getTeamDef(DemoArtifactToken.CIS_Test));
+      testTeamContents(teamWf, DemoArtifactToken.ProblemInTree_TeamWf.getName(), "3", "", TeamState.Endorse.getName(),
+         DemoArtifactToken.CIS_Test_AI.getName(), DemoUsers.Kay_Jones.getName(), AtsArtifactTypes.DemoTestTeamWorkflow,
+         DemoTestUtil.getTeamDef(DemoArtifactToken.CIS_Test));
 
       DemoUtil.setPopulateDbSuccessful(true);
    }

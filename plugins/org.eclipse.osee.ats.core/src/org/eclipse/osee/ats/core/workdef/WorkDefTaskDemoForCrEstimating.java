@@ -60,7 +60,8 @@ public class WorkDefTaskDemoForCrEstimating extends WorkDefTaskDefault {
                new WidgetDefinition("Estimated Points", "XEstimatedPointsWidget", REQUIRED_FOR_TRANSITION, AUTO_SAVE), //
                new WidgetDefinition(EstimatedCompletionDate, "XDateDam", AUTO_SAVE) //
             ), //
-            new SignByAndDateWidgetDefinition("Reviewed By", AtsAttributeTypes.ReviewedBy, AtsAttributeTypes.ReviewedByDate));
+            new SignByAndDateWidgetDefinition("Reviewed By", AtsAttributeTypes.ReviewedBy,
+               AtsAttributeTypes.ReviewedByDate));
 
       bld.andState(2, "Completed", StateType.Completed) //
          .andColor(StateColor.DARK_GREEN);

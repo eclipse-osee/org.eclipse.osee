@@ -37,7 +37,8 @@ public class InterfaceMessageEndpointImpl implements InterfaceMessageEndpoint {
    }
 
    @Override
-   public Collection<InterfaceMessageToken> getAllMessages(String filter, ArtifactId viewId, long pageNum, long pageSize, AttributeTypeToken orderByAttributeTypeId) {
+   public Collection<InterfaceMessageToken> getAllMessages(String filter, ArtifactId viewId, long pageNum,
+      long pageSize, AttributeTypeToken orderByAttributeTypeId) {
       if (Strings.isValid(filter)) {
          return this.messageApi.getAllForConnectionAndFilter(branch, connectionId, filter, viewId, pageNum, pageSize,
             orderByAttributeTypeId);

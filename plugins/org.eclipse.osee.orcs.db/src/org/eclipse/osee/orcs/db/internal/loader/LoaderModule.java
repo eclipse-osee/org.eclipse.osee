@@ -53,7 +53,8 @@ public class LoaderModule {
       return new DataFactoryImpl(idFactory, factory);
    }
 
-   public DynamicLoadProcessor createDynamicLoadProcessor(OrcsTokenService tokenService, AttributeDataProxyFactory proxyFactory) {
+   public DynamicLoadProcessor createDynamicLoadProcessor(OrcsTokenService tokenService,
+      AttributeDataProxyFactory proxyFactory) {
       return new DynamicLoadProcessor(logger, tokenService, proxyFactory);
    }
 
@@ -61,7 +62,8 @@ public class LoaderModule {
       return new DataLoaderFactoryImpl(logger, jdbcClient, sqlObjectLoader, joinFactory);
    }
 
-   public SqlObjectLoader createSqlObjectLoader(OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicLoadProcessor, OrcsTokenService tokenService) {
+   public SqlObjectLoader createSqlObjectLoader(OrcsObjectFactory objectFactory,
+      DynamicLoadProcessor dynamicLoadProcessor, OrcsTokenService tokenService) {
       SqlHandlerFactory handlerFactory = LoaderSqlHandlerFactoryUtil.createHandlerFactory();
       return new SqlObjectLoader(logger, jdbcClient, joinFactory, handlerFactory, objectFactory, dynamicLoadProcessor,
          tokenService);

@@ -67,7 +67,8 @@ public final class AttributeTypeEditDisplay implements AttributeTypeEditPresente
    }
 
    @Override
-   public Collection<AttributeTypeToken> getSelections(OperationType operationType, String title, String message, List<AttributeTypeToken> input) {
+   public Collection<AttributeTypeToken> getSelections(OperationType operationType, String title, String message,
+      List<AttributeTypeToken> input) {
       Collection<AttributeTypeToken> toReturn = Collections.emptyList();
       CheckedTreeSelectionDialog dialog = createDialog(title, message, getImage(operationType));
       dialog.setInput(input);

@@ -33,7 +33,8 @@ public abstract class AbstractArtifactExtractor implements IArtifactExtractor {
       // Protect Constructor
    }
 
-   protected abstract void extractFromSource(OperationLogger logger, URI source, RoughArtifactCollector collector) throws Exception;
+   protected abstract void extractFromSource(OperationLogger logger, URI source, RoughArtifactCollector collector)
+      throws Exception;
 
    @Override
    public String toString() {

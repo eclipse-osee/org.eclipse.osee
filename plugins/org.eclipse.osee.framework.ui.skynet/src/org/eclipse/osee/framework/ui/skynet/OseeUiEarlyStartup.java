@@ -145,7 +145,8 @@ public class OseeUiEarlyStartup implements IStartup {
                   }
 
                   @Override
-                  public void perspectiveChanged(IWorkbenchPage page, IPerspectiveDescriptor perspective, String changeId) {
+                  public void perspectiveChanged(IWorkbenchPage page, IPerspectiveDescriptor perspective,
+                     String changeId) {
                      if (page instanceof ViewPart) {
                         ResServiceContributionItem.addToViewpart((ViewPart) page);
                         WorkspaceContributionItem.addToViewpart((ViewPart) page);

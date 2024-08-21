@@ -125,7 +125,8 @@ public class DataRightsEndpointImpl implements DataRightsEndpoint {
     */
 
    @Override
-   public DataRightResult getDataRights(BranchId branchIdentifier, String overrideClassification, List<ArtifactId> artifactIdentifiers) {
+   public DataRightResult getDataRights(BranchId branchIdentifier, String overrideClassification,
+      List<ArtifactId> artifactIdentifiers) {
 
       try {
          PublishingPermissions.verifyNonGroup();

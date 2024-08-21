@@ -94,13 +94,15 @@ public final class Operations {
       return executeAsJob(operation, user, Job.LONG, null, rule);
    }
 
-   public static Job executeAsJob(IOperation operation, boolean user, int priority, IJobChangeListener jobChangeListener, ISchedulingRule rule) {
+   public static Job executeAsJob(IOperation operation, boolean user, int priority,
+      IJobChangeListener jobChangeListener, ISchedulingRule rule) {
       Job job = new OperationJob(operation);
       job.addJobChangeListener(new JobChangeLogger(operation.getLogger()));
       return scheduleJob(job, user, priority, jobChangeListener, rule);
    }
 
-   public static Job executeAsJob(IOperation operation, boolean user, int priority, IJobChangeListener jobChangeListener) {
+   public static Job executeAsJob(IOperation operation, boolean user, int priority,
+      IJobChangeListener jobChangeListener) {
       return executeAsJob(operation, user, priority, jobChangeListener, null);
    }
 
@@ -108,7 +110,8 @@ public final class Operations {
       return scheduleJob(job, user, priority, jobChangeListener, null);
    }
 
-   private static Job scheduleJob(Job job, boolean user, int priority, IJobChangeListener jobChangeListener, ISchedulingRule rule) {
+   private static Job scheduleJob(Job job, boolean user, int priority, IJobChangeListener jobChangeListener,
+      ISchedulingRule rule) {
       job.setUser(user);
       job.setPriority(priority);
       if (jobChangeListener != null) {

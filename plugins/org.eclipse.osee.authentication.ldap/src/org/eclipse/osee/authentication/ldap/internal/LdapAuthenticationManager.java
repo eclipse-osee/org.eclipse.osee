@@ -101,7 +101,8 @@ public final class LdapAuthenticationManager {
       return authenticatedUser;
    }
 
-   private AuthenticatedUser authenticateConnectWithLdapSystemCredentials(String username, String password) throws LoginException, NamingException, PrivilegedActionException {
+   private AuthenticatedUser authenticateConnectWithLdapSystemCredentials(String username, String password)
+      throws LoginException, NamingException, PrivilegedActionException {
       LdapConnection connection = null;
       try {
          connection = client.getConnection(systemAuthType, systemUserName, systemPassword);
@@ -120,7 +121,8 @@ public final class LdapAuthenticationManager {
       }
    }
 
-   private AuthenticatedUser authenticateConnectWithUserCredentials(String username, String password) throws LoginException, NamingException, PrivilegedActionException {
+   private AuthenticatedUser authenticateConnectWithUserCredentials(String username, String password)
+      throws LoginException, NamingException, PrivilegedActionException {
       LdapConnection connection = null;
       try {
          connection = client.getConnection(LdapAuthenticationType.SIMPLE, username, password);
@@ -151,7 +153,8 @@ public final class LdapAuthenticationManager {
       return roles;
    }
 
-   private AuthenticatedUser createPrincipal(boolean isAuthenticated, LdapAccount account, Set<String> roles) throws NamingException {
+   private AuthenticatedUser createPrincipal(boolean isAuthenticated, LdapAccount account, Set<String> roles)
+      throws NamingException {
       AuthenticatedUser authenticated;
       if (isAuthenticated) {
          String displayName = account.getDisplayName();
@@ -164,7 +167,8 @@ public final class LdapAuthenticationManager {
       return authenticated;
    }
 
-   private AuthenticatedUser newAuthenticated(final String displayName, final String emailAddress, final String userName, final Set<String> roles) {
+   private AuthenticatedUser newAuthenticated(final String displayName, final String emailAddress,
+      final String userName, final Set<String> roles) {
       return new AuthenticatedUser() {
 
          @Override

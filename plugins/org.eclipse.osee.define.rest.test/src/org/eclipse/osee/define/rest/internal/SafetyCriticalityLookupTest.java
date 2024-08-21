@@ -24,8 +24,7 @@ import org.junit.rules.ExpectedException;
  * @author David W. Miller
  */
 public class SafetyCriticalityLookupTest {
-   private final DoubleKeyHashMap<String, String, String> criticalityTable =
-      new DoubleKeyHashMap<>();
+   private final DoubleKeyHashMap<String, String, String> criticalityTable = new DoubleKeyHashMap<>();
 
    @Rule
    public ExpectedException thrown = ExpectedException.none();

@@ -126,7 +126,8 @@ public class LinkUtil {
       saveWebPreferences(webPrefs, global, getStoreArtifact(global));
    }
 
-   public static void saveWebPreferences(AccountWebPreferences webPrefs, boolean global, Artifact useArtifact) throws Exception {
+   public static void saveWebPreferences(AccountWebPreferences webPrefs, boolean global, Artifact useArtifact)
+      throws Exception {
       saveWebPrefsToArtifactAndKickEvent(global, useArtifact, webPrefs);
    }
 
@@ -151,7 +152,8 @@ public class LinkUtil {
       return changed;
    }
 
-   private static void saveWebPrefsToArtifactAndKickEvent(boolean global, Artifact useArtifact, AccountWebPreferences webPrefs) throws Exception {
+   private static void saveWebPrefsToArtifactAndKickEvent(boolean global, Artifact useArtifact,
+      AccountWebPreferences webPrefs) throws Exception {
       String json = JsonUtil.toJson(webPrefs);
       useArtifact.setSoleAttributeValue(CoreAttributeTypes.WebPreferences, json);
       TransactionId trans = useArtifact.persist("Add web preferences links to " + useArtifact.toStringWithId());

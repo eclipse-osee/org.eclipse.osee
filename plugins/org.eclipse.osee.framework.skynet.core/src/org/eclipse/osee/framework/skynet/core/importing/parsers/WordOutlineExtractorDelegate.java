@@ -109,7 +109,9 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
     * Core of processing different WordML content "chunks".
     */
    @Override
-   public final void processContent(OperationLogger logger, RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph) {
+   public final void processContent(OperationLogger logger, RoughArtifactCollector collector, boolean forceBody,
+      boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content,
+      boolean isParagraph) {
       if (Strings.isValid(content) && initalized) {
 
          if (!possibleTableOfContents) {
@@ -163,7 +165,8 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
     * Gets content and attempts to extract outline number and title, if it fails with regular regex, it tries
     * specializedOutlineNumberTitleExtract()
     */
-   private boolean processOutlineNumberAndName(String content, StringBuilder outlineNumberStorage, StringBuilder outlineName, String paragraphStyle) {
+   private boolean processOutlineNumberAndName(String content, StringBuilder outlineNumberStorage,
+      StringBuilder outlineName, String paragraphStyle) {
       Matcher listItemMatcher = LIST_ITEM_REGEX.matcher(content);
       if (listItemMatcher.find()) { // wx:val grab
 
@@ -250,7 +253,8 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
     * Specializes in extraction of "1.0 scope" type of outline number and names. Outline name can also be spread out
     * over multiple {@code <w:t> } elements.<br/>
     */
-   private void specializedOutlineNumberTitleExtract(String paragraph, StringBuilder outlineNumberStorage, StringBuilder outlineTitleStorage, String paragraphStyle) {
+   private void specializedOutlineNumberTitleExtract(String paragraph, StringBuilder outlineNumberStorage,
+      StringBuilder outlineTitleStorage, String paragraphStyle) {
       StringBuilder wtStorage = new StringBuilder(paragraph.length());
       Matcher wtElementMatcher = WT_ELEMENT_REGEX.matcher(paragraph);
       while (wtElementMatcher.find()) {
@@ -275,7 +279,8 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
 
    }
 
-   private void processSpecializedOutlineNumberAndTitle(String currentOutlineNumber, String formOfOutlineTitle, StringBuilder outlineNumberStorage, StringBuilder outlineTitleStorage, String paragraphStyle) {
+   private void processSpecializedOutlineNumberAndTitle(String currentOutlineNumber, String formOfOutlineTitle,
+      StringBuilder outlineNumberStorage, StringBuilder outlineTitleStorage, String paragraphStyle) {
       boolean valid = determineIfValid(currentOutlineNumber, paragraphStyle);
       lastDeterminedContentType = valid ? ContentType.OUTLINE_TITLE : ContentType.CONTENT;
 
@@ -320,7 +325,8 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    /**
     * Checks if another artifact with the same outlineNumber was created
     */
-   private RoughArtifact setUpNewArtifact(RoughArtifactCollector collector, String outlineNumber, OperationLogger logger) {
+   private RoughArtifact setUpNewArtifact(RoughArtifactCollector collector, String outlineNumber,
+      OperationLogger logger) {
       RoughArtifact duplicateArtifact = duplicateCatcher.get(outlineNumber);
       if (duplicateArtifact == null) {
          RoughArtifact roughArtifact = new RoughArtifact();

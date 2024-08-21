@@ -32,7 +32,8 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
  */
 public class WordTemplateAttributeUpdater {
 
-   public XResultData replaceAttribute(OrcsApi orcsApi, BranchId branch, XResultData results, String source, ArtifactId artToUpdate) {
+   public XResultData replaceAttribute(OrcsApi orcsApi, BranchId branch, XResultData results, String source,
+      ArtifactId artToUpdate) {
       ArtifactReadable art = orcsApi.getQueryFactory().fromBranch(branch).andId(artToUpdate).asArtifact();
       AttributeId attrId = art.getSoleAttributeId(CoreAttributeTypes.WordTemplateContent);
       if (art.isValid()) {

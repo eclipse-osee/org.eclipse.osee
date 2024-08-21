@@ -113,7 +113,8 @@ public final class ImageManager {
     * @param baseImageName must refer to an image that is already mapped to this key in the image registry
     * @return the overlay keyed image
     */
-   public synchronized static KeyedImage setupImageWithOverlay(KeyedImage baseImageEnum, KeyedImage overlay, Location location) {
+   public synchronized static KeyedImage setupImageWithOverlay(KeyedImage baseImageEnum, KeyedImage overlay,
+      Location location) {
       String baseImageName = setupImage(baseImageEnum);
       String overlayImageKey = baseImageName + "_" + overlay.getImageKey();
 

@@ -519,7 +519,8 @@ public class LdapConfigurationBuilder {
          return LdapSearchScope.parse(toReturn);
       }
 
-      private LdapReferralHandlingType getRefType(Map<String, Object> props, String key, LdapReferralHandlingType defaultValue) {
+      private LdapReferralHandlingType getRefType(Map<String, Object> props, String key,
+         LdapReferralHandlingType defaultValue) {
          String toReturn = get(props, key, defaultValue);
          return LdapReferralHandlingType.parse(toReturn);
       }
@@ -529,7 +530,8 @@ public class LdapConfigurationBuilder {
          return LdapCredentialsSource.parse(toReturn);
       }
 
-      private LdapAuthenticationType getAuthType(Map<String, Object> props, String key, LdapAuthenticationType defaultValue) {
+      private LdapAuthenticationType getAuthType(Map<String, Object> props, String key,
+         LdapAuthenticationType defaultValue) {
          String toReturn = get(props, key, defaultValue);
          return LdapAuthenticationType.parse(toReturn);
       }

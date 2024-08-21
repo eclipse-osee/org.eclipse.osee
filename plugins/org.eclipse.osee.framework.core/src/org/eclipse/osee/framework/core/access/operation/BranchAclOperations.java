@@ -42,7 +42,8 @@ public class BranchAclOperations {
       return hasBranchAclPermission(accessService.getUser(), branch, permission, rd);
    }
 
-   public XResultData hasBranchAclPermission(ArtifactToken subject, BranchToken branch, PermissionEnum permission, XResultData rd) {
+   public XResultData hasBranchAclPermission(ArtifactToken subject, BranchToken branch, PermissionEnum permission,
+      XResultData rd) {
       if (rd == null) {
          rd = new XResultData();
       }
@@ -77,7 +78,8 @@ public class BranchAclOperations {
       return userPermission;
    }
 
-   public void populateBranchAccessControlListEntry(ArtifactId subjectId, ArtifactTypeToken subjectArtifactType, BranchToken branch, PermissionEnum permission) {
+   public void populateBranchAccessControlListEntry(ArtifactId subjectId, ArtifactTypeToken subjectArtifactType,
+      BranchToken branch, PermissionEnum permission) {
       BranchAccessObject branchAccessObject = BranchAccessObject.valueOf(branch);
 
       cache.accessControlListCache.put(subjectId.getId(), branchAccessObject, permission);

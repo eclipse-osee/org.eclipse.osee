@@ -37,7 +37,8 @@ public class TypeColumnTest {
 
       TeamWorkFlowArtifact reqArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
-      Assert.assertEquals("SAW Requirements Workflow", columnService.getColumnText(AtsColumnTokensDefault.TypeColumn, reqArt));
+      Assert.assertEquals("SAW Requirements Workflow",
+         columnService.getColumnText(AtsColumnTokensDefault.TypeColumn, reqArt));
 
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);

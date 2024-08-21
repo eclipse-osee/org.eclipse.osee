@@ -41,7 +41,8 @@ public class DoorsIdResolver extends NewArtifactImportResolver {
    }
 
    @Override
-   public ArtifactToken resolve(RoughArtifact roughArtifact, BranchId branch, ArtifactId realParentId, ArtifactId rootId) {
+   public ArtifactToken resolve(RoughArtifact roughArtifact, BranchId branch, ArtifactId realParentId,
+      ArtifactId rootId) {
       ArtifactToken realArtifact = findExistingArtifact(roughArtifact, branch);
 
       if (realArtifact == null) {

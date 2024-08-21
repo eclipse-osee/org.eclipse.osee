@@ -62,7 +62,8 @@ public final class DataRightsSwReqAndCodeResource {
     */
    @GET
    @Produces(MediaType.APPLICATION_XML)
-   public Response getDataRightspReport(@QueryParam("branch") BranchId branch, @QueryParam("code_root") String codeRoot) {
+   public Response getDataRightspReport(@QueryParam("branch") BranchId branch,
+      @QueryParam("code_root") String codeRoot) {
       TraceMatch match = new TraceMatch("\\^SRS\\s*([^;]+);?", null);
       TraceAccumulator traceAccumulator = new TraceAccumulator(".*\\.(java|ada|ads|adb|c|h)", match);
       StreamingOutput streamingOutput =
@@ -135,7 +136,8 @@ public final class DataRightsSwReqAndCodeResource {
    @Path("software/{sourceBranch}/{destinationBranch}")
    @POST
    @Produces(MediaType.TEXT_HTML)
-   public String copySWReqDataRights(@PathParam("sourceBranch") BranchId sourceBranch, @PathParam("destinationBranch") BranchId destinationBranch) {
+   public String copySWReqDataRights(@PathParam("sourceBranch") BranchId sourceBranch,
+      @PathParam("destinationBranch") BranchId destinationBranch) {
       return copyDataRights(sourceBranch, destinationBranch, CoreArtifactTypes.AbstractSoftwareRequirement);
    }
 
@@ -148,7 +150,8 @@ public final class DataRightsSwReqAndCodeResource {
    @Path("ssd/{sourceBranch}/{destinationBranch}")
    @POST
    @Produces(MediaType.TEXT_HTML)
-   public String copySSDDataRights(@PathParam("sourceBranch") BranchId sourceBranch, @PathParam("destinationBranch") BranchId destinationBranch) {
+   public String copySSDDataRights(@PathParam("sourceBranch") BranchId sourceBranch,
+      @PathParam("destinationBranch") BranchId destinationBranch) {
       return copyDataRights(sourceBranch, destinationBranch, CoreArtifactTypes.SubsystemDesignMsWord);
    }
 
@@ -188,7 +191,8 @@ public final class DataRightsSwReqAndCodeResource {
       return strb.toString();
    }
 
-   private void appendDetails(String msg, StringBuilder strb, ArtifactReadable art, String subsystem, String classification) {
+   private void appendDetails(String msg, StringBuilder strb, ArtifactReadable art, String subsystem,
+      String classification) {
       strb.append(
          msg + "|" + subsystem + "|" + classification + " |" + art.getArtifactType() + "| " + art.getName() + "| " + art.getId() + "| " + art.getLastModifiedTransaction() + "<br />");
    }
@@ -197,7 +201,8 @@ public final class DataRightsSwReqAndCodeResource {
       return orcsApi.getTransactionFactory().createTransaction(branchId, comment);
    }
 
-   private void setBestValue(TransactionBuilder txBuilder, ArtifactReadable source, ArtifactReadable dest, AttributeTypeToken attributeType, StringBuilder strb) {
+   private void setBestValue(TransactionBuilder txBuilder, ArtifactReadable source, ArtifactReadable dest,
+      AttributeTypeToken attributeType, StringBuilder strb) {
       String value = dest.getSoleAttributeValue(attributeType, "");
       String sourceValue = source.getSoleAttributeValue(attributeType, AttributeId.UNSPECIFIED);
       if (sourceValue.equals(AttributeId.UNSPECIFIED)) {

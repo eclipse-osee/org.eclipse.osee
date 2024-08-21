@@ -43,7 +43,8 @@ public final class Jobs {
       runInJob(name, runnable, clazz, pluginId, true);
    }
 
-   public static void runInJob(String name, IExceptionableRunnable runnable, Class<?> clazz, String pluginId, boolean user) {
+   public static void runInJob(String name, IExceptionableRunnable runnable, Class<?> clazz, String pluginId,
+      boolean user) {
       startJob(new CatchAndReleaseJob(name, runnable, clazz, pluginId), user);
    }
 

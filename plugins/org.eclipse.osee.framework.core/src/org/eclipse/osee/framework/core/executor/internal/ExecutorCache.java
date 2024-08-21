@@ -24,8 +24,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
  */
 public class ExecutorCache {
 
-   private final ConcurrentHashMap<String, ListeningExecutorService> executors =
-      new ConcurrentHashMap<>();
+   private final ConcurrentHashMap<String, ListeningExecutorService> executors = new ConcurrentHashMap<>();
 
    public void put(String id, ListeningExecutorService service) {
       if (executors.putIfAbsent(id, service) != null) {

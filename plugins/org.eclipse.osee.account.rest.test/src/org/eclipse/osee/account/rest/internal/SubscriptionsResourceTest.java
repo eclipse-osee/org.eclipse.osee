@@ -218,20 +218,23 @@ public class SubscriptionsResourceTest {
       verify(manager).getSubscriptionMembersOfSubscriptionById(GROUP_ID);
    }
 
-   private static void checkSubscription(SubscriptionData actual, String guid, String name, String accountName, boolean active) {
+   private static void checkSubscription(SubscriptionData actual, String guid, String name, String accountName,
+      boolean active) {
       assertEquals(guid, actual.getGuid());
       assertEquals(name, actual.getName());
       assertEquals(accountName, actual.getAccountName());
       assertEquals(active, actual.isActive());
    }
 
-   private static void checkSubscriptionGroup(SubscriptionGroupData actual, String guid, String name, SubscriptionGroupId groupId) {
+   private static void checkSubscriptionGroup(SubscriptionGroupData actual, String guid, String name,
+      SubscriptionGroupId groupId) {
       assertEquals(guid, actual.getGuid());
       assertEquals(name, actual.getName());
       assertEquals(groupId, actual.getSubscriptionGroupId());
    }
 
-   private static void checkAccount(AccountInfoData actual, String name, ArtifactId accountId, String username, String email, boolean active) {
+   private static void checkAccount(AccountInfoData actual, String name, ArtifactId accountId, String username,
+      String email, boolean active) {
       assertEquals(name, actual.getName());
       assertEquals(accountId.getId(), actual.getAccountId());
       assertEquals(username, actual.getUserName());

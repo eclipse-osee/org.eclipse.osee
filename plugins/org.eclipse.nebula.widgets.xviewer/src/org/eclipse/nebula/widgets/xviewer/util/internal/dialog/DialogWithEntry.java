@@ -88,19 +88,19 @@ public class DialogWithEntry extends MessageDialog {
       if (fillVertically) { // Create error label
          Button button = new Button(headerComp, SWT.PUSH);
          button.setText(XViewerText.get("button.clear")); //$NON-NLS-1$
-         button.addListener(SWT.Selection, e-> text.setText(""));
+         button.addListener(SWT.Selection, e -> text.setText(""));
          // Create error label
          fontButton = new Button(headerComp, SWT.CHECK);
          fontButton.setText(XViewerText.get("DialogWithEntry.button.font")); //$NON-NLS-1$
-         fontButton.addListener(SWT.Selection, e-> {
-               if (fontButton.getSelection()) {
-                  if (font == null) {
-                     font = new Font(Display.getCurrent(), "Courier New", 8, SWT.NORMAL); //$NON-NLS-1$
-                  }
-                  text.setFont(font);
-               } else {
-                  text.setFont(null);
+         fontButton.addListener(SWT.Selection, e -> {
+            if (fontButton.getSelection()) {
+               if (font == null) {
+                  font = new Font(Display.getCurrent(), "Courier New", 8, SWT.NORMAL); //$NON-NLS-1$
                }
+               text.setFont(font);
+            } else {
+               text.setFont(null);
+            }
          });
       }
 

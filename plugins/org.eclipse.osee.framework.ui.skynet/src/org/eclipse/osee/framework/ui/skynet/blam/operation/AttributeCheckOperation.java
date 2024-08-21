@@ -97,7 +97,8 @@ public class AttributeCheckOperation extends AbstractOperation {
       return mostPopular;
    }
 
-   private void compareAllChildrenWithPopularValue(List<Artifact> allDescendants, String popularValue, Artifact folder, IProgressMonitor monitor) {
+   private void compareAllChildrenWithPopularValue(List<Artifact> allDescendants, String popularValue, Artifact folder,
+      IProgressMonitor monitor) {
       if (!allDescendants.isEmpty()) {
          BranchId branch = allDescendants.get(0).getBranch();
          SkynetTransaction transaction = TransactionManager.createTransaction(branch, "Attribute Check Blam");

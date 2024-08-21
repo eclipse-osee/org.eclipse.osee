@@ -33,7 +33,8 @@ import org.eclipse.swt.widgets.Display;
 public class MarkdownCompare implements IComparator {
 
    @Override
-   public void compare(IProgressMonitor monitor, CompareDataCollector collector, PresentationType presentationType, ArtifactDelta artifactDelta, String pathPrefix) throws MultipleAttributesExist {
+   public void compare(IProgressMonitor monitor, CompareDataCollector collector, PresentationType presentationType,
+      ArtifactDelta artifactDelta, String pathPrefix) throws MultipleAttributesExist {
       Artifact startArtifact = artifactDelta.getStartArtifact();
       Artifact endArtifact = artifactDelta.getEndArtifact();
 
@@ -60,12 +61,14 @@ public class MarkdownCompare implements IComparator {
    }
 
    @Override
-   public void compare(CompareDataCollector collector, Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, String pathPrefix) {
+   public void compare(CompareDataCollector collector, Artifact baseVersion, Artifact newerVersion, IFile baseFile,
+      IFile newerFile, PresentationType presentationType, String pathPrefix) {
       throw new OseeCoreException("The Markdown renderer does not support the compare operation");
    }
 
    @Override
-   public void compareArtifacts(IProgressMonitor monitor, CompareDataCollector collector, PresentationType presentationType, Collection<ArtifactDelta> artifactDeltas, String pathPrefix) {
+   public void compareArtifacts(IProgressMonitor monitor, CompareDataCollector collector,
+      PresentationType presentationType, Collection<ArtifactDelta> artifactDeltas, String pathPrefix) {
       for (ArtifactDelta artifactDelta : artifactDeltas) {
          compare(monitor, collector, presentationType, artifactDelta, pathPrefix);
       }

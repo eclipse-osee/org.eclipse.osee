@@ -107,21 +107,21 @@ public class XViewerCustomMenu {
    public void init(final XViewer xviewer) {
       this.xViewer = xviewer;
       setupActions();
-      xViewer.getTree().addListener(SWT.KeyUp, e-> {
-          if (e.keyCode == 'c' && e.stateMask == (SWT.CONTROL | SWT.SHIFT)) {
-              performCopyColumnCells();
-           } else if (e.keyCode == 'b' && e.stateMask == (SWT.CONTROL | SWT.SHIFT)) {
-              performViewOrCopyCell(Option.Copy);
-           } else if (e.keyCode == 'v' && e.stateMask == (SWT.CONTROL | SWT.SHIFT)) {
-              performViewOrCopyCell(Option.View);
-           } else if (e.keyCode == 'c' && e.stateMask == SWT.CONTROL) {
-              performCopy();
-           }
+      xViewer.getTree().addListener(SWT.KeyUp, e -> {
+         if (e.keyCode == 'c' && e.stateMask == (SWT.CONTROL | SWT.SHIFT)) {
+            performCopyColumnCells();
+         } else if (e.keyCode == 'b' && e.stateMask == (SWT.CONTROL | SWT.SHIFT)) {
+            performViewOrCopyCell(Option.Copy);
+         } else if (e.keyCode == 'v' && e.stateMask == (SWT.CONTROL | SWT.SHIFT)) {
+            performViewOrCopyCell(Option.View);
+         } else if (e.keyCode == 'c' && e.stateMask == SWT.CONTROL) {
+            performCopy();
+         }
       });
-      xViewer.getTree().addListener(SWT.Dispose, e-> {
-            if (clipboard != null) {
-               clipboard.dispose();
-            }
+      xViewer.getTree().addListener(SWT.Dispose, e -> {
+         if (clipboard != null) {
+            clipboard.dispose();
+         }
       });
       xViewer.getMenuManager().addMenuListener(new IMenuListener() {
          @Override
@@ -136,9 +136,9 @@ public class XViewerCustomMenu {
          }
       });
       xViewer.getTree().addListener(SWT.MenuDetect, event -> {
-            Point pt = Display.getCurrent().map(null, xViewer.getTree(), new Point(event.x, event.y));
-            Rectangle clientArea = xViewer.getTree().getClientArea();
-            headerMouseClick = clientArea.y <= pt.y && pt.y < (clientArea.y + xViewer.getTree().getHeaderHeight());
+         Point pt = Display.getCurrent().map(null, xViewer.getTree(), new Point(event.x, event.y));
+         Rectangle clientArea = xViewer.getTree().getClientArea();
+         headerMouseClick = clientArea.y <= pt.y && pt.y < (clientArea.y + xViewer.getTree().getHeaderHeight());
       });
    }
 
@@ -206,7 +206,8 @@ public class XViewerCustomMenu {
       mm.add(editMenuManager);
    }
 
-   public static MenuManager createEditMenuManager(final XViewer xViewer, String name, final Collection<TreeItem> selectedTreeItems, Set<TreeColumn> editableColumns) {
+   public static MenuManager createEditMenuManager(final XViewer xViewer, String name,
+      final Collection<TreeItem> selectedTreeItems, Set<TreeColumn> editableColumns) {
       MenuManager editMenuManager = new MenuManager(name, XViewerText.get("menu.edit")); //$NON-NLS-1$
       if (editableColumns.isEmpty()) {
          editMenuManager.add(new Action(XViewerText.get("menu.edit.no_columns")) { //$NON-NLS-1$
@@ -252,7 +253,7 @@ public class XViewerCustomMenu {
       setupActions();
       final MenuItem item = new MenuItem(popupMenu, SWT.CASCADE);
       item.setText(XViewerText.get("menu.view_report")); //$NON-NLS-1$
-      item.addListener(SWT.Selection, e->viewTableReport.run());
+      item.addListener(SWT.Selection, e -> viewTableReport.run());
    }
 
    public void addFilterMenuBlock(Menu popupMenu) {
@@ -264,25 +265,25 @@ public class XViewerCustomMenu {
    public void createFilterByColumnMenuItem(Menu popupMenu) {
       final MenuItem item = new MenuItem(popupMenu, SWT.CASCADE);
       item.setText(XViewerText.get("menu.column_filter")); //$NON-NLS-1$
-      item.addListener(SWT.Selection, e->performFilterByColumn());
+      item.addListener(SWT.Selection, e -> performFilterByColumn());
    }
 
    public void createFilterByValueMenuItem(Menu popupMenu) {
       final MenuItem item = new MenuItem(popupMenu, SWT.CASCADE);
       item.setText(XViewerText.get("menu.value_filter")); //$NON-NLS-1$
-      item.addListener(SWT.Selection, e->performFilterByValue());
+      item.addListener(SWT.Selection, e -> performFilterByValue());
    }
 
    public void createClearAllFiltersMenuItem(Menu popupMenu) {
       final MenuItem item = new MenuItem(popupMenu, SWT.CASCADE);
       item.setText(XViewerText.get("menu.clear_filters")); //$NON-NLS-1$
-      item.addListener(SWT.Selection, e->xViewer.getCustomizeMgr().clearFilters());
+      item.addListener(SWT.Selection, e -> xViewer.getCustomizeMgr().clearFilters());
    }
 
    public void createClearAllSortingMenuItem(Menu popupMenu) {
       final MenuItem item = new MenuItem(popupMenu, SWT.CASCADE);
       item.setText(XViewerText.get("menu.clear_sorts")); //$NON-NLS-1$
-      item.addListener(SWT.Selection, e-> xViewer.getCustomizeMgr().clearSorter());
+      item.addListener(SWT.Selection, e -> xViewer.getCustomizeMgr().clearSorter());
    }
 
    public void addCopyViewMenuBlock(Menu popupMenu) {
@@ -294,23 +295,23 @@ public class XViewerCustomMenu {
    public void createCopyRowsMenuItem(Menu popupMenu) {
       final MenuItem item = new MenuItem(popupMenu, SWT.CASCADE);
       item.setText(XViewerText.get("menu.copy_row")); //$NON-NLS-1$
-      item.addListener(SWT.Selection, e->performCopy());
+      item.addListener(SWT.Selection, e -> performCopy());
    }
 
    public void createCopyCellsMenuItem(Menu popupMenu) {
       final MenuItem item = new MenuItem(popupMenu, SWT.CASCADE);
       item.setText(XViewerText.get("menu.copy_column")); //$NON-NLS-1$
-      item.addListener(SWT.Selection, e->performCopyColumnCells());
+      item.addListener(SWT.Selection, e -> performCopyColumnCells());
    }
 
    public void createViewSelectedCellMenuItem(Menu popupMenu) {
       setupActions();
       final MenuItem item = new MenuItem(popupMenu, SWT.CASCADE);
       item.setText(XViewerText.get("menu.copy_celldata")); //$NON-NLS-1$
-      item.addListener(SWT.Selection, e->copySelectedCell.run());
+      item.addListener(SWT.Selection, e -> copySelectedCell.run());
       final MenuItem item1 = new MenuItem(popupMenu, SWT.CASCADE);
       item1.setText(XViewerText.get("menu.view_celldata")); //$NON-NLS-1$
-      item1.addListener(SWT.Selection, e->viewSelectedCell.run());
+      item1.addListener(SWT.Selection, e -> viewSelectedCell.run());
    }
 
    private static PatternFilter patternFilter = new XViewerPatternFilter();
@@ -590,8 +591,6 @@ public class XViewerCustomMenu {
       viewLoadingReport = new ViewLoadingReportAction(xViewer);
       columnMultiEdit = new ColumnMultiEditAction(xViewer);
    }
-
-
 
    private void performRemoveSelectedRows() {
       try {

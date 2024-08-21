@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 
 public interface ReportsOperations {
 
-   public StreamingOutput applicabilityImpact(BranchId branch, String publish, List<ArtifactTypeToken> artTypes, List<AttributeTypeToken> attrTypes);
+   public StreamingOutput applicabilityImpact(BranchId branch, String publish, List<ArtifactTypeToken> artTypes,
+      List<AttributeTypeToken> attrTypes);
 
 }

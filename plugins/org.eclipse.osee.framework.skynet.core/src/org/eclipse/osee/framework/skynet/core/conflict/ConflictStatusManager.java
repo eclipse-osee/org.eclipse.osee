@@ -50,7 +50,8 @@ public class ConflictStatusManager {
       }
    }
 
-   public static ConflictStatus computeStatus(GammaId sourceGamma, GammaId destGamma, BranchId branch, Id objectID, int conflictType, ConflictStatus passedStatus, TransactionId transactionId) {
+   public static ConflictStatus computeStatus(GammaId sourceGamma, GammaId destGamma, BranchId branch, Id objectID,
+      int conflictType, ConflictStatus passedStatus, TransactionId transactionId) {
       //Check for a value in the table, if there is not one in there then
       //add it with an unedited setting and return unedited
       //If gammas are out of date, update the gammas and down grade markedMerged to Edited

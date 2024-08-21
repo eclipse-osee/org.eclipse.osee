@@ -56,7 +56,8 @@ public class RelationOrderMergeUtility {
       return mergedData;
    }
 
-   private static Collection<Pair<RelationTypeToken, RelationSide>> getAllTypeSides(RelationOrderData leftData, RelationOrderData rightData) {
+   private static Collection<Pair<RelationTypeToken, RelationSide>> getAllTypeSides(RelationOrderData leftData,
+      RelationOrderData rightData) {
       Collection<Pair<RelationTypeToken, RelationSide>> rts = new HashSet<>();
       rts.addAll(leftData.getAvailableTypeSides());
       rts.addAll(rightData.getAvailableTypeSides());

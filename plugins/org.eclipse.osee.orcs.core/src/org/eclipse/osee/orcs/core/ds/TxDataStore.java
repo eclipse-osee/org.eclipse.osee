@@ -38,6 +38,7 @@ public interface TxDataStore {
 
    void setTransactionCommitArtifact(OrcsSession session, TransactionId trans, ArtifactId commitArt);
 
-   Callable<List<ChangeItem>> getArtifactHistory(OrcsSession session, QueryFactory queryFactory, ArtifactId artifact, BranchId branch);
+   Callable<List<ChangeItem>> getArtifactHistory(OrcsSession session, QueryFactory queryFactory, ArtifactId artifact,
+      BranchId branch);
 
 }

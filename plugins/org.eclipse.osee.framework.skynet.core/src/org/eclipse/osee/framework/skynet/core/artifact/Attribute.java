@@ -54,7 +54,8 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
    private AttributeTypeId attributeTypeToken;
    private ApplicabilityId applicabilityId;
 
-   void internalInitialize(AttributeTypeId attributeType, Artifact artifact, ModificationType modificationType, ApplicabilityId applicabilityId, boolean markDirty, boolean setDefaultValue) {
+   void internalInitialize(AttributeTypeId attributeType, Artifact artifact, ModificationType modificationType,
+      ApplicabilityId applicabilityId, boolean markDirty, boolean setDefaultValue) {
       this.attributeTypeToken = attributeType;
       this.artifactRef = new WeakReference<>(artifact);
       internalSetModType(modificationType, false, markDirty);
@@ -104,7 +105,9 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
       return attributeChange;
    }
 
-   public void internalInitialize(AttributeTypeId attributeType, Artifact artifact, ModificationType modificationType, ApplicabilityId applicabilityId, AttributeId attributeId, GammaId gammaId, boolean markDirty, boolean setDefaultValue) {
+   public void internalInitialize(AttributeTypeId attributeType, Artifact artifact, ModificationType modificationType,
+      ApplicabilityId applicabilityId, AttributeId attributeId, GammaId gammaId, boolean markDirty,
+      boolean setDefaultValue) {
       internalInitialize(attributeType, artifact, modificationType, applicabilityId, markDirty, setDefaultValue);
       this.attrId = attributeId;
       this.gammaId = gammaId;

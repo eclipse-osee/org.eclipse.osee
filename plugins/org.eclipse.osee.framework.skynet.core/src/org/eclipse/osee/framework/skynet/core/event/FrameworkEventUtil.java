@@ -162,7 +162,8 @@ public final class FrameworkEventUtil {
       return getPersistTopicEvent(remArtifactTopicEvent, ServiceUtil.getOrcsTokenService());
    }
 
-   public static ArtifactTopicEvent getPersistTopicEvent(RemoteArtifactTopicEvent remArtifactTopicEvent, OrcsTokenService tokenService) {
+   public static ArtifactTopicEvent getPersistTopicEvent(RemoteArtifactTopicEvent remArtifactTopicEvent,
+      OrcsTokenService tokenService) {
       Map<String, String> properties = remArtifactTopicEvent.getProperties();
 
       BranchId branchId = JsonUtil.readValue(properties.get(RemoteArtifactTopicEvent.BRANCH_ID), BranchId.class);
@@ -253,7 +254,8 @@ public final class FrameworkEventUtil {
       return event;
    }
 
-   public static DefaultBasicUuidRelationReorder getDefaultBasicGuidRelationReorder(RemoteBasicGuidRelationReorder1 guidRelOrder, OrcsTokenService tokenService) {
+   public static DefaultBasicUuidRelationReorder getDefaultBasicGuidRelationReorder(
+      RemoteBasicGuidRelationReorder1 guidRelOrder, OrcsTokenService tokenService) {
       DefaultBasicUuidRelationReorder guidArt = new DefaultBasicUuidRelationReorder(
          RelationOrderModType.getType(guidRelOrder.getModTypeGuid()), BranchId.valueOf(guidRelOrder.getBranchGuid()),
          guidRelOrder.getRelTypeGuid(), getBasicGuidArtifact(guidRelOrder.getParentArt(), tokenService));
@@ -283,7 +285,8 @@ public final class FrameworkEventUtil {
       return event;
    }
 
-   public static RemoteBasicGuidRelationReorder1 getRemoteBasicGuidRelationReorder1(DefaultBasicUuidRelationReorder guidOrderRel) {
+   public static RemoteBasicGuidRelationReorder1 getRemoteBasicGuidRelationReorder1(
+      DefaultBasicUuidRelationReorder guidOrderRel) {
       RemoteBasicGuidRelationReorder1 event = new RemoteBasicGuidRelationReorder1();
       event.setBranchGuid(guidOrderRel.getBranch());
       event.setRelTypeGuid(guidOrderRel.getRelTypeGuid());
@@ -292,7 +295,8 @@ public final class FrameworkEventUtil {
       return event;
    }
 
-   public static EventBasicGuidRelation getEventBasicGuidRelation(RemoteBasicGuidRelation1 guidRel, OrcsTokenService tokenService) {
+   public static EventBasicGuidRelation getEventBasicGuidRelation(RemoteBasicGuidRelation1 guidRel,
+      OrcsTokenService tokenService) {
       RelationEventType eventType = RelationEventType.getType(guidRel.getModTypeGuid());
       if (eventType == null) {
          OseeLog.log(Activator.class, Level.WARNING,
@@ -319,17 +323,20 @@ public final class FrameworkEventUtil {
       return event;
    }
 
-   public static EventBasicGuidArtifact getEventBasicGuidArtifact(EventModType modType, RemoteBasicGuidArtifact1 remGuidArt, OrcsTokenService tokenService) {
+   public static EventBasicGuidArtifact getEventBasicGuidArtifact(EventModType modType,
+      RemoteBasicGuidArtifact1 remGuidArt, OrcsTokenService tokenService) {
       return new EventBasicGuidArtifact(modType, remGuidArt.getBranch(),
          tokenService.getArtifactType(remGuidArt.getArtTypeGuid()), remGuidArt.getArtGuid());
    }
 
-   public static EventChangeTypeBasicGuidArtifact getEventChangeTypeBasicGuidArtifact(EventModType modType, RemoteBasicGuidArtifact1 remGuidArt, OrcsTokenService tokenService) {
+   public static EventChangeTypeBasicGuidArtifact getEventChangeTypeBasicGuidArtifact(EventModType modType,
+      RemoteBasicGuidArtifact1 remGuidArt, OrcsTokenService tokenService) {
       return new EventChangeTypeBasicGuidArtifact(remGuidArt.getBranch(), remGuidArt.getArtifactType(),
          tokenService.getArtifactType(remGuidArt.getToArtTypeGuid()), remGuidArt.getArtGuid());
    }
 
-   public static EventModifiedBasicGuidArtifact getEventModifiedBasicGuidArtifact(EventModType modType, RemoteBasicGuidArtifact1 remGuidArt, OrcsTokenService tokenService) {
+   public static EventModifiedBasicGuidArtifact getEventModifiedBasicGuidArtifact(EventModType modType,
+      RemoteBasicGuidArtifact1 remGuidArt, OrcsTokenService tokenService) {
       List<AttributeChange> attributeChanges = new ArrayList<>();
       for (RemoteAttributeChange1 remAttrChg : remGuidArt.getAttributes()) {
          attributeChanges.add(getAttributeChange(remAttrChg));
@@ -338,12 +345,14 @@ public final class FrameworkEventUtil {
          tokenService.getArtifactType(remGuidArt.getArtTypeGuid()), remGuidArt.getArtGuid(), attributeChanges);
    }
 
-   private static DefaultBasicGuidArtifact getBasicGuidArtifact(RemoteBasicGuidArtifact1 remGuidArt, OrcsTokenService tokenService) {
+   private static DefaultBasicGuidArtifact getBasicGuidArtifact(RemoteBasicGuidArtifact1 remGuidArt,
+      OrcsTokenService tokenService) {
       return new DefaultBasicGuidArtifact(remGuidArt.getBranch(),
          tokenService.getArtifactType(remGuidArt.getArtTypeGuid()), remGuidArt.getArtGuid());
    }
 
-   public static RemoteBasicGuidArtifact1 getRemoteBasicGuidArtifact(String modTypeGuid, DefaultBasicGuidArtifact guidArt, Collection<AttributeChange> attributeChanges) {
+   public static RemoteBasicGuidArtifact1 getRemoteBasicGuidArtifact(String modTypeGuid,
+      DefaultBasicGuidArtifact guidArt, Collection<AttributeChange> attributeChanges) {
       RemoteBasicGuidArtifact1 remoteGuidArt = new RemoteBasicGuidArtifact1();
       remoteGuidArt.setArtGuid(guidArt.getGuid());
       remoteGuidArt.setBranch(guidArt.getBranch());
@@ -415,7 +424,9 @@ public final class FrameworkEventUtil {
       return event;
    }
 
-   public static EventTopicArtifactTransfer artifactTransferFactory(BranchId branch, ArtifactToken artifactToken, ArtifactTypeId artifactTypeId, EventModType eventModType, ArtifactTypeId fromArtType, Collection<EventTopicAttributeChangeTransfer> arrayList, EventTopicTransferType transferType) {
+   public static EventTopicArtifactTransfer artifactTransferFactory(BranchId branch, ArtifactToken artifactToken,
+      ArtifactTypeId artifactTypeId, EventModType eventModType, ArtifactTypeId fromArtType,
+      Collection<EventTopicAttributeChangeTransfer> arrayList, EventTopicTransferType transferType) {
       EventTopicArtifactTransfer artifactTransfer = new EventTopicArtifactTransfer();
       artifactTransfer.setBranch(branch);
       artifactTransfer.setArtifactId(artifactToken);
@@ -427,7 +438,8 @@ public final class FrameworkEventUtil {
       return artifactTransfer;
    }
 
-   public static EventTopicRelationTransfer relationTransferFactory(RelationEventType relationEventType, Artifact artA, Artifact artB, RelationId relationId, Long relTypeId, GammaId relationGammaId, String rationale) {
+   public static EventTopicRelationTransfer relationTransferFactory(RelationEventType relationEventType, Artifact artA,
+      Artifact artB, RelationId relationId, Long relTypeId, GammaId relationGammaId, String rationale) {
       EventTopicRelationTransfer transfer = new EventTopicRelationTransfer();
       transfer.setArtAId(artA);
       transfer.setArtAIdType(artA.getArtifactType());
@@ -442,7 +454,8 @@ public final class FrameworkEventUtil {
       return transfer;
    }
 
-   public static EventTopicRelationReorderTransfer relationReorderTransferFactory(EventTopicArtifactTransfer parentArt, BranchId branch, Long relTypeUuid, RelationOrderModType modType) {
+   public static EventTopicRelationReorderTransfer relationReorderTransferFactory(EventTopicArtifactTransfer parentArt,
+      BranchId branch, Long relTypeUuid, RelationOrderModType modType) {
       EventTopicRelationReorderTransfer transfer = new EventTopicRelationReorderTransfer();
       transfer.setParentArt(parentArt);
       transfer.setBranch(branch);
@@ -451,7 +464,8 @@ public final class FrameworkEventUtil {
       return transfer;
    }
 
-   public static EventTopicAttributeChangeTransfer attributeChangeTransferFactory(AttributeTypeId attrTypeId, Long modType, AttributeId attrId, GammaId gammaId, List<Object> data, ApplicabilityId applicabilityId) {
+   public static EventTopicAttributeChangeTransfer attributeChangeTransferFactory(AttributeTypeId attrTypeId,
+      Long modType, AttributeId attrId, GammaId gammaId, List<Object> data, ApplicabilityId applicabilityId) {
       EventTopicAttributeChangeTransfer attrChange = new EventTopicAttributeChangeTransfer();
       attrChange.setAttrTypeId(attrTypeId);
       attrChange.setModType(modType);
@@ -462,7 +476,8 @@ public final class FrameworkEventUtil {
       return attrChange;
    }
 
-   public static EventTopicArtifactTransfer defaultGuidArtifactToTransfer(DefaultBasicGuidArtifact guidArt, EventModType eventModType) {
+   public static EventTopicArtifactTransfer defaultGuidArtifactToTransfer(DefaultBasicGuidArtifact guidArt,
+      EventModType eventModType) {
       EventTopicArtifactTransfer artifactTransfer = artifactTransferFactory(guidArt.getBranch(),
          ArtifactQuery.getArtifactFromId(guidArt.getGuid(), guidArt.getBranch(), DeletionFlag.allowDeleted(true)),
          guidArt.getArtifactType(), eventModType, null, null, EventTopicTransferType.BASE);
@@ -483,7 +498,8 @@ public final class FrameworkEventUtil {
       return guidArt;
    }
 
-   public static EventTopicRelationReorderTransfer relationReorderBasicToTransfer(DefaultBasicUuidRelationReorder basicRelationReorder, EventModType eventModType) {
+   public static EventTopicRelationReorderTransfer relationReorderBasicToTransfer(
+      DefaultBasicUuidRelationReorder basicRelationReorder, EventModType eventModType) {
       EventTopicRelationReorderTransfer transfer = relationReorderTransferFactory(
          defaultGuidArtifactToTransfer(basicRelationReorder.getParentArt(), eventModType),
          basicRelationReorder.getBranch(), basicRelationReorder.getRelTypeGuid(), basicRelationReorder.getModType());

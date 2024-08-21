@@ -39,8 +39,8 @@ public class XViewerValueColumn extends XViewerColumn implements IXViewerValueCo
     */
    @Override
    public XViewerValueColumn copy() {
-      XViewerValueColumn copyColumn = new XViewerValueColumn(getId(), getName(), getWidth(), getAlign(), isShow(), getSortDataType(),
-         isMultiColumnEditable(), getDescription());
+      XViewerValueColumn copyColumn = new XViewerValueColumn(getId(), getName(), getWidth(), getAlign(), isShow(),
+         getSortDataType(), isMultiColumnEditable(), getDescription());
       copyColumn.setSortForward(isSortForward());
       return copyColumn;
    }
@@ -75,7 +75,8 @@ public class XViewerValueColumn extends XViewerColumn implements IXViewerValueCo
 
    //This method will only be called be the XViewerStyledTextLabelProvider
    @Override
-   public StyledString getStyledText(Object element, XViewerColumn viewerColumn, int columnIndex) throws XViewerException {
+   public StyledString getStyledText(Object element, XViewerColumn viewerColumn, int columnIndex)
+      throws XViewerException {
       return new StyledString(getColumnText(element, viewerColumn, columnIndex));
    }
 

@@ -117,7 +117,8 @@ public class ConvertAtsAisAndTeamDefsOperation {
       return rd;
    }
 
-   private void cleanupAndDeleteArt(String typeName, ArtifactToken artToDelete, Collection<ArtifactToken> referencedArts, //
+   private void cleanupAndDeleteArt(String typeName, ArtifactToken artToDelete,
+      Collection<ArtifactToken> referencedArts, //
       Map<String, ArtifactToken> keepArtsMap, AttributeTypeToken attrType, XResultData rd, IAtsChangeSet changes) {
       ArtifactToken topArt = null;
       for (Entry<String, ArtifactToken> entry : keepArtsMap.entrySet()) {

@@ -110,7 +110,8 @@ public class DispoItemDataCopierTest {
       assertEquals("10", annotationOneSecondItem.getLocationRefs());
    }
 
-   private void addAnnotation(String locationRef, List<DispoAnnotationData> annotationsList, Map<String, Discrepancy> discrepanciesList) {
+   private void addAnnotation(String locationRef, List<DispoAnnotationData> annotationsList,
+      Map<String, Discrepancy> discrepanciesList) {
       DispoAnnotationData newAnnotation = new DispoAnnotationData();
       newAnnotation.setLocationRefs(locationRef);
       newAnnotation.setResolution("C1234");

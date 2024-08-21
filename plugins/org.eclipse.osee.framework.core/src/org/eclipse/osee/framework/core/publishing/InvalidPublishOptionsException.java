@@ -110,7 +110,8 @@ public class InvalidPublishOptionsException extends RuntimeException {
     * @return {@link String} message describing the exception condition.
     */
 
-   public static String buildMessage(String jsonPublishOptionsString, String publishingTemplateIdentifier, String publishingTemplateName) {
+   public static String buildMessage(String jsonPublishOptionsString, String publishingTemplateIdentifier,
+      String publishingTemplateName) {
       //@formatter:off
       return
          new StringBuilder( 1024 )

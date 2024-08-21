@@ -55,11 +55,13 @@ public abstract class CommitHandler extends CommandHandler {
       this.useParentBranch = useParentBranch;
    }
 
-   public static TransactionResult commitBranch(final ConflictManagerExternal conflictManager, final boolean showArchiveCheck, final boolean archiveSourceBranch) {
+   public static TransactionResult commitBranch(final ConflictManagerExternal conflictManager,
+      final boolean showArchiveCheck, final boolean archiveSourceBranch) {
       return commitBranch(conflictManager, showArchiveCheck, archiveSourceBranch, false);
    }
 
-   public static TransactionResult commitBranch(final ConflictManagerExternal conflictManager, final boolean showArchiveCheck, final boolean archiveSourceBranch, boolean skipPrompts) {
+   public static TransactionResult commitBranch(final ConflictManagerExternal conflictManager,
+      final boolean showArchiveCheck, final boolean archiveSourceBranch, boolean skipPrompts) {
       TransactionResult result = new TransactionResult();
       AtomicBoolean checkBox = new AtomicBoolean(archiveSourceBranch);
       BranchState state = BranchManager.getState(conflictManager.getSourceBranch());
@@ -140,8 +142,7 @@ public abstract class CommitHandler extends CommandHandler {
 
       if (branches.size() == 1) {
          BranchToken branch = branches.iterator().next();
-         return useParentBranchValid(
-            branch) || !useParentBranch && ServiceUtil.accessControlService().isOseeAdmin();
+         return useParentBranchValid(branch) || !useParentBranch && ServiceUtil.accessControlService().isOseeAdmin();
       }
       return false;
    }

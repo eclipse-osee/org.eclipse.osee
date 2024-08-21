@@ -61,11 +61,11 @@ public final class OsgiUtil {
       try {
          framework.start();
       } catch (BundleException ex1) {
-         throw new OseeCoreException("Bundle Exception has occured: "+ex1);
+         throw new OseeCoreException("Bundle Exception has occured: " + ex1);
       }
       return framework.getBundleContext();
    }
-   
+
    public static <T> T getService(Class<?> classFromBundle, Class<T> serviceClass) {
 
       BundleContext context = FrameworkUtil.getBundle(classFromBundle).getBundleContext();

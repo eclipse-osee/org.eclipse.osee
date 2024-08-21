@@ -124,7 +124,8 @@ public class OverlayUtil extends CompositeImageDescriptor {
       int overHeight = overImg.getBounds().height;
       overlayImageDescriptor.destroyResource(overImg);
 
-      return new Point(baseWidth > overWidth ? baseWidth : overWidth, baseHeight > overHeight ? baseHeight : overHeight);
+      return new Point(baseWidth > overWidth ? baseWidth : overWidth,
+         baseHeight > overHeight ? baseHeight : overHeight);
    }
 
 }

@@ -72,7 +72,8 @@ public final class ChangeManager {
    /**
     * Gets all requested change types for the given artifact
     */
-   public static Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor, ChangeType... loadChangeTypes) {
+   public static Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor,
+      ChangeType... loadChangeTypes) {
       return revsionChangeLoader.getChangesPerArtifact(artifact, monitor, loadChangeTypes);
    }
 
@@ -80,7 +81,8 @@ public final class ChangeManager {
     * Gets the artifact, attribute, and relation changes for the specified number of transactions related to the given
     * artifact
     */
-   public static Collection<? extends Change> getChangesPerArtifact(Artifact artifact, int numberTransactionsToShow, IProgressMonitor monitor) {
+   public static Collection<? extends Change> getChangesPerArtifact(Artifact artifact, int numberTransactionsToShow,
+      IProgressMonitor monitor) {
       return revsionChangeLoader.getChangesPerArtifact(artifact, numberTransactionsToShow, monitor, ChangeType.Artifact,
          ChangeType.Attribute, ChangeType.Relation);
    }
@@ -107,7 +109,8 @@ public final class ChangeManager {
       return new ChangeDataLoader(changes, txDelta);
    }
 
-   public static IOperation compareTwoBranchesHead(BranchId sourceBranch, BranchId destinationBranch, Collection<Change> changes) {
+   public static IOperation compareTwoBranchesHead(BranchId sourceBranch, BranchId destinationBranch,
+      Collection<Change> changes) {
       TransactionToken startTx = TransactionManager.getHeadTransaction(sourceBranch);
       TransactionToken endTx = TransactionManager.getHeadTransaction(destinationBranch);
       return new ChangeDataLoader(changes, new TransactionDelta(startTx, endTx));

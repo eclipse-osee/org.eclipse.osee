@@ -283,11 +283,13 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
       monitor.worked(calculateWork(0.10));
    }
 
-   private void displayData(int x, StringBuffer sbFull, Appendable builder, boolean verify, DoubleKeyHashMap<Long, Long, LocalRelationLink> map) throws IOException {
+   private void displayData(int x, StringBuffer sbFull, Appendable builder, boolean verify,
+      DoubleKeyHashMap<Long, Long, LocalRelationLink> map) throws IOException {
       displayData(x, sbFull, builder, verify, map.allValues());
    }
 
-   private void displayData(int x, StringBuffer sbFull, Appendable builder, boolean verify, Collection<LocalRelationLink> map) throws IOException {
+   private void displayData(int x, StringBuffer sbFull, Appendable builder, boolean verify,
+      Collection<LocalRelationLink> map) throws IOException {
       Integer count = 0;
       String header = String.format(HEADER[x], map.size());
       sbFull.append(AHTML.addRowSpanMultiColumnTable(header, COLUMN_HEADERS.length));

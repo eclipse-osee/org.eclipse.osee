@@ -35,7 +35,8 @@ public class SecondPassMatcher implements StreamMatcher {
    }
 
    @Override
-   public List<MatchLocation> findInStream(InputStream inputStream, String toSearch, boolean findAllMatchLocations, QueryOption... options) {
+   public List<MatchLocation> findInStream(InputStream inputStream, String toSearch, boolean findAllMatchLocations,
+      QueryOption... options) {
       CheckedOptions checkedOptions = new CheckedOptions(options);
 
       TokenOrderProcessor processor = processorFactory.createTokenProcessor(checkedOptions);
@@ -59,7 +60,8 @@ public class SecondPassMatcher implements StreamMatcher {
       }
    }
 
-   private void searchStream(TokenOrderProcessor processor, InputStream inputStream, CheckedOptions options, boolean findAllMatchLocations) {
+   private void searchStream(TokenOrderProcessor processor, InputStream inputStream, CheckedOptions options,
+      boolean findAllMatchLocations) {
       SecondPassScanner inputStreamScanner = new SecondPassScanner(inputStream, options.getDelimiter());
       try {
          int numTokensProcessed = 0;

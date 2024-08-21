@@ -60,7 +60,8 @@ public class WorkItemArrayJsonWriter implements MessageBodyWriter<WorkItemArray>
    }
 
    @Override
-   public long getSize(WorkItemArray data, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+   public long getSize(WorkItemArray data, Class<?> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType) {
       return -1;
    }
 
@@ -80,7 +81,9 @@ public class WorkItemArrayJsonWriter implements MessageBodyWriter<WorkItemArray>
    }
 
    @Override
-   public void writeTo(WorkItemArray workItemArray, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
+   public void writeTo(WorkItemArray workItemArray, Class<?> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
+      throws IOException, WebApplicationException {
       JsonGenerator writer = null;
       try {
          writer = jsonFactory.createGenerator(entityStream);

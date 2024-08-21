@@ -40,7 +40,8 @@ public class AttributeXWidgetManager {
       return extensionObjects.getObjects();
    }
 
-   public static IAttributeXWidgetProvider getAttributeXWidgetProvider(ArtifactTypeToken artType, AttributeTypeToken attributeType) {
+   public static IAttributeXWidgetProvider getAttributeXWidgetProvider(ArtifactTypeToken artType,
+      AttributeTypeToken attributeType) {
       for (IAttributeXWidgetProvider provider : instance.getProviders()) {
          List<XWidgetRendererItem> datas = provider.getDynamicXWidgetLayoutData(artType, attributeType);
          if (!datas.isEmpty()) {

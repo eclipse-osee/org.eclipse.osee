@@ -28,7 +28,8 @@ public interface QueryIndexer {
 
    CancellableCallable<Integer> indexAllFromQueue(IndexerCollector... collector);
 
-   CancellableCallable<Integer> indexBranches(Set<Branch> branches, boolean indexOnlyMissing, IndexerCollector... collector);
+   CancellableCallable<Integer> indexBranches(Set<Branch> branches, boolean indexOnlyMissing,
+      IndexerCollector... collector);
 
    Callable<List<Future<?>>> indexResources(Iterable<Long> gammaIds, IndexerCollector... collector);
 

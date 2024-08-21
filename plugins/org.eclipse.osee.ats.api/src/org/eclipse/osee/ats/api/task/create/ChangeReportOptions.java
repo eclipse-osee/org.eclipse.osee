@@ -134,7 +134,8 @@ public class ChangeReportOptions {
    /**
     * Add toSiblingTeam using overridden ChangeReportOptionsToTeam
     */
-   public ChangeReportOptionsToTeam andToSiblingTeam(ArtifactToken toSiblingTeam, ArtifactToken toAi, ChangeReportTaskNameProviderToken nameProviderId) {
+   public ChangeReportOptionsToTeam andToSiblingTeam(ArtifactToken toSiblingTeam, ArtifactToken toAi,
+      ChangeReportTaskNameProviderToken nameProviderId) {
       ChangeReportOptionsToTeam toTeamData = andToSiblingTeam(toSiblingTeam, toAi);
       toTeamData.setNameProviderId(nameProviderId);
       return toTeamData;
@@ -147,7 +148,8 @@ public class ChangeReportOptions {
       return toTeamData;
    }
 
-   public ChangeReportOptionsToTeam andToSiblingWorkType(WorkType workType, ChangeReportTaskNameProviderToken nameProviderId) {
+   public ChangeReportOptionsToTeam andToSiblingWorkType(WorkType workType,
+      ChangeReportTaskNameProviderToken nameProviderId) {
       ChangeReportOptionsToTeam toTeamData = andToSiblingWorkType(workType);
       toTeamData.setNameProviderId(nameProviderId);
       return toTeamData;

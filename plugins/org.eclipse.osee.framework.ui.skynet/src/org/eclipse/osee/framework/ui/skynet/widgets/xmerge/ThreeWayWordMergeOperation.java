@@ -117,7 +117,8 @@ public class ThreeWayWordMergeOperation extends AbstractOperation {
          rendererOptions);
    }
 
-   private static void createMergeDiffFile(final Collection<IFile> outputFiles, Artifact baseVersion, Artifact newerVersion) throws Exception {
+   private static void createMergeDiffFile(final Collection<IFile> outputFiles, Artifact baseVersion,
+      Artifact newerVersion) throws Exception {
       ArtifactDelta artifactDelta = new ArtifactDelta(baseVersion, newerVersion);
 
       CompareDataCollector colletor = new CompareDataCollector() {
@@ -133,7 +134,8 @@ public class ThreeWayWordMergeOperation extends AbstractOperation {
       RendererManager.diff(colletor, artifactDelta, "", rendererOptions);
    }
 
-   private static void changeAuthorinWord(String newAuthor, IFile iFile, int revisionNumber, String rsidNumber, String baselineRsid) throws Exception {
+   private static void changeAuthorinWord(String newAuthor, IFile iFile, int revisionNumber, String rsidNumber,
+      String baselineRsid) throws Exception {
       File file = iFile.getLocation().toFile();
       String fileValue = Lib.fileToString(file);
 
@@ -167,7 +169,8 @@ public class ThreeWayWordMergeOperation extends AbstractOperation {
       resetRsidIds(fileValue, rsidNumber, baselineRsid, file);
    }
 
-   private static void resetRsidIds(String fileValue, String rsidNumber, String baselineRsid, File file) throws IOException {
+   private static void resetRsidIds(String fileValue, String rsidNumber, String baselineRsid, File file)
+      throws IOException {
       ChangeSet changeSet = new ChangeSet(fileValue);
       Matcher matcher = annotationTag.matcher(fileValue);
 

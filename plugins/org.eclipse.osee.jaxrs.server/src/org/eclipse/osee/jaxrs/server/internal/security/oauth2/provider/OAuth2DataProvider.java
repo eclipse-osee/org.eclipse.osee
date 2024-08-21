@@ -297,7 +297,8 @@ public class OAuth2DataProvider implements AuthorizationCodeDataProvider {
    }
 
    @Override
-   public ServerAccessToken getPreauthorizedToken(Client client, List<String> requestedScopes, UserSubject subject, String grantType) {
+   public ServerAccessToken getPreauthorizedToken(Client client, List<String> requestedScopes, UserSubject subject,
+      String grantType) {
       // This is an optimization useful in cases where a client requests an authorization code:
       // if a user has already provided a given client with a pre-authorized token then challenging
       // a user with yet another form asking for the authorization is redundant
@@ -328,7 +329,8 @@ public class OAuth2DataProvider implements AuthorizationCodeDataProvider {
 
    }
 
-   private ServerAccessToken getTokenHelper(Client client, String grantType, OAuthToken accessToken, ServerAccessToken token) {
+   private ServerAccessToken getTokenHelper(Client client, String grantType, OAuthToken accessToken,
+      ServerAccessToken token) {
       boolean isExpired;
       switch (accessToken.getType()) {
          case BEARER_TOKEN:

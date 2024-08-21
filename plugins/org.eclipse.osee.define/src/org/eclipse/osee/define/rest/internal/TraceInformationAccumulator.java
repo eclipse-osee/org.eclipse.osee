@@ -142,7 +142,8 @@ public class TraceInformationAccumulator {
       return toReturn;
    }
 
-   private int processSoftwareReqtSubItem(ArtifactReadable softwareReqt, RelationTypeSide type, int location) throws IOException {
+   private int processSoftwareReqtSubItem(ArtifactReadable softwareReqt, RelationTypeSide type, int location)
+      throws IOException {
       List<ArtifactReadable> items = softwareReqt.getRelated(type).getList();
       if (items.size() > 0) {
          for (ArtifactReadable ar : items) {

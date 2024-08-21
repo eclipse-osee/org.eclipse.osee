@@ -45,8 +45,8 @@ public class DateSelectionDialog extends MessageDialog {
    }
 
    public DateSelectionDialog(String dialogTitle, String dialogMessage, Date selectedDate) {
-      this(Display.getCurrent().getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.NONE, new String[] {
-    	  XViewerText.get("button.ok"), XViewerText.get("button.cancel")}, 0, selectedDate); //$NON-NLS-1$ //$NON-NLS-2$
+      this(Display.getCurrent().getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.NONE,
+         new String[] {XViewerText.get("button.ok"), XViewerText.get("button.cancel")}, 0, selectedDate); //$NON-NLS-1$ //$NON-NLS-2$
    }
 
    @Override
@@ -69,15 +69,15 @@ public class DateSelectionDialog extends MessageDialog {
          dp.setMonth(cal.get(Calendar.MONTH));
          dp.setDay(cal.get(Calendar.DAY_OF_YEAR));
       }
-      dp.addListener(SWT.Selection, e->  {
-            Calendar cal = Calendar.getInstance();
-            cal.set(dp.getYear(), dp.getMonth(), dp.getDay());
-            selectedDate = cal.getTime();
+      dp.addListener(SWT.Selection, e -> {
+         Calendar cal = Calendar.getInstance();
+         cal.set(dp.getYear(), dp.getMonth(), dp.getDay());
+         selectedDate = cal.getTime();
       });
 
       Button clearButton = new Button(filterComp, SWT.PUSH);
       clearButton.setText(XViewerText.get("button.clear")); //$NON-NLS-1$
-      clearButton.addListener(SWT.Selection, e-> selectedDate = null);
+      clearButton.addListener(SWT.Selection, e -> selectedDate = null);
 
       // set selected date if != null
       return filterComp;

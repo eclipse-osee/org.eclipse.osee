@@ -119,7 +119,8 @@ public abstract class BaseTransactionData {
    /**
     * Should be called by child classes during their implementation of addInsertToBatch.
     */
-   protected final void internalAddInsertToBatch(InsertDataCollector collector, int insertPriority, String insertSql, Object... data) {
+   protected final void internalAddInsertToBatch(InsertDataCollector collector, int insertPriority, String insertSql,
+      Object... data) {
       collector.internalAddInsertToBatch(insertPriority, insertSql, data);
    }
 
@@ -164,10 +165,10 @@ public abstract class BaseTransactionData {
    protected abstract void internalAddToEvents(ArtifactTopicEvent artifactTopicEvent);
 
    protected GammaId getNextGammaIdFromSequence() {
-	   if (USE_LONG_IDS) {
-	         return GammaId.valueOf(Lib.generateUuid());
-	      } else {
-	         return GammaId.valueOf(ConnectionHandler.getNextSequence(OseeData.GAMMA_ID_SEQ, true));
-	      }
+      if (USE_LONG_IDS) {
+         return GammaId.valueOf(Lib.generateUuid());
+      } else {
+         return GammaId.valueOf(ConnectionHandler.getNextSequence(OseeData.GAMMA_ID_SEQ, true));
+      }
    }
 }

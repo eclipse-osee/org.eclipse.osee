@@ -86,7 +86,8 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
    }
 
    @Override
-   public long getSize(IAtsConfigObject data, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+   public long getSize(IAtsConfigObject data, Class<?> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType) {
       return -1;
    }
 
@@ -100,7 +101,9 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
    }
 
    @Override
-   public void writeTo(IAtsConfigObject config, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
+   public void writeTo(IAtsConfigObject config, Class<?> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
+      throws IOException, WebApplicationException {
       JsonGenerator writer = null;
       try {
          writer = jsonFactory.createGenerator(entityStream);
@@ -115,7 +118,8 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
       }
    }
 
-   public static void addProgramObject(AtsApi atsApi, OrcsApi orcsApi, IAtsObject atsObject, Annotation[] annotations, JsonGenerator writer, boolean identityView) throws IOException, JsonGenerationException, JsonProcessingException {
+   public static void addProgramObject(AtsApi atsApi, OrcsApi orcsApi, IAtsObject atsObject, Annotation[] annotations,
+      JsonGenerator writer, boolean identityView) throws IOException, JsonGenerationException, JsonProcessingException {
       ArtifactReadable artifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(atsObject);
       writer.writeStartObject();
       writer.writeNumberField("id", atsObject.getId());
@@ -241,7 +245,9 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
       writer.writeEndObject();
    }
 
-   public static void addAttributeData(JsonGenerator writer, ArtifactReadable artifact, List<WorkItemWriterOptions> options, AtsApi atsApi, OrcsApi orcsApi) throws IOException, JsonGenerationException, JsonProcessingException {
+   public static void addAttributeData(JsonGenerator writer, ArtifactReadable artifact,
+      List<WorkItemWriterOptions> options, AtsApi atsApi, OrcsApi orcsApi)
+      throws IOException, JsonGenerationException, JsonProcessingException {
       Collection<AttributeTypeToken> attrTypes = getAttributeTypes(artifact);
       ResultSet<? extends AttributeReadable<Object>> attributes = artifact.getAttributes();
       boolean fieldsAsIds = options.contains(WorkItemWriterOptions.KeysAsIds);
@@ -288,7 +294,9 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
       return types;
    }
 
-   public static void addAttributeDataWithIds(JsonGenerator writer, ArtifactReadable artifact, List<WorkItemWriterOptions> options, AtsApi atsApi, OrcsApi orcsApi) throws IOException, JsonGenerationException, JsonProcessingException {
+   public static void addAttributeDataWithIds(JsonGenerator writer, ArtifactReadable artifact,
+      List<WorkItemWriterOptions> options, AtsApi atsApi, OrcsApi orcsApi)
+      throws IOException, JsonGenerationException, JsonProcessingException {
 
       ResultSet<? extends AttributeReadable<Object>> attributes = artifact.getAttributes();
       boolean keysAsIds = options.contains(WorkItemWriterOptions.KeysAsIds);
@@ -335,7 +343,8 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
       }
    }
 
-   private static HashCollection<String, AttributeReadable<Object>> getAttributeMap(ResultSet<? extends AttributeReadable<Object>> attributes) {
+   private static HashCollection<String, AttributeReadable<Object>> getAttributeMap(
+      ResultSet<? extends AttributeReadable<Object>> attributes) {
       HashCollection<String, AttributeReadable<Object>> attrIdToAttrsMap = new HashCollection<>();
       for (AttributeReadable<Object> attr : attributes) {
          attrIdToAttrsMap.put(attr.getAttributeType().getIdString(), attr);
@@ -343,7 +352,8 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
       return attrIdToAttrsMap;
    }
 
-   private static void writeObjectValue(JsonGenerator writer, boolean datesAsLong, boolean isDateType, Object value) throws IOException, JsonGenerationException, JsonProcessingException {
+   private static void writeObjectValue(JsonGenerator writer, boolean datesAsLong, boolean isDateType, Object value)
+      throws IOException, JsonGenerationException, JsonProcessingException {
       if (isDateType) {
          if (datesAsLong) {
             writer.writeString(String.valueOf(((Date) value).getTime()));
@@ -355,7 +365,8 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
       }
    }
 
-   private static void writeObjectValueField(JsonGenerator writer, boolean datesAsLong, boolean isDateType, Object value) throws IOException, JsonGenerationException, JsonProcessingException {
+   private static void writeObjectValueField(JsonGenerator writer, boolean datesAsLong, boolean isDateType,
+      Object value) throws IOException, JsonGenerationException, JsonProcessingException {
       if (isDateType) {
          if (datesAsLong) {
             writer.writeStringField("value", String.valueOf(((Date) value).getTime()));
@@ -367,7 +378,8 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
       }
    }
 
-   private static void addArtifactIdentity(JsonGenerator writer, ArtifactReadable workArt) throws IOException, JsonGenerationException, JsonProcessingException {
+   private static void addArtifactIdentity(JsonGenerator writer, ArtifactReadable workArt)
+      throws IOException, JsonGenerationException, JsonProcessingException {
       writer.writeStartObject();
       writer.writeNumberField("id", workArt.getId());
       writer.writeStringField("name", workArt.getName());

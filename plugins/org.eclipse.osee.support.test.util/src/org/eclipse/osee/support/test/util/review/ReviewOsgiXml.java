@@ -200,7 +200,8 @@ public class ReviewOsgiXml {
       }
    }
 
-   public void validateBind(String filecontents, String bind, String unbind, String iface, String className, boolean addRemove) {
+   public void validateBind(String filecontents, String bind, String unbind, String iface, String className,
+      boolean addRemove) {
 
       String ifaceClass = iface;
       ifaceClass = ifaceClass.replaceAll("^.*\\.", "");

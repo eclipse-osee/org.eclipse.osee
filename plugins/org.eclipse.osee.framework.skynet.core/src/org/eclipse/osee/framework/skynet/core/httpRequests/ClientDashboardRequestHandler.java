@@ -165,7 +165,8 @@ public class ClientDashboardRequestHandler implements IHttpServerRequest {
       }
    }
 
-   private void sendResults(String results, HttpRequest httpRequest, final HttpResponse httpResponse) throws IOException {
+   private void sendResults(String results, HttpRequest httpRequest, final HttpResponse httpResponse)
+      throws IOException {
       try {
          httpResponse.setContentEncoding("UTF-8");
          httpResponse.setContentType("text/plain");

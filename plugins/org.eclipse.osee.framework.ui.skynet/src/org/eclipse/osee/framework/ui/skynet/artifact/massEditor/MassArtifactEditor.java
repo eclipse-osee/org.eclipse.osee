@@ -93,7 +93,8 @@ public class MassArtifactEditor extends AbstractArtifactEditor {
       onDirtied();
    }
 
-   public static void editArtifacts(final String name, final Collection<? extends Artifact> artifacts, TableLoadOption... tableLoadOptions) {
+   public static void editArtifacts(final String name, final Collection<? extends Artifact> artifacts,
+      TableLoadOption... tableLoadOptions) {
       Set<TableLoadOption> options = new HashSet<>();
       options.addAll(Arrays.asList(tableLoadOptions));
       Displays.ensureInDisplayThread(new Runnable() {
@@ -103,8 +104,8 @@ public class MassArtifactEditor extends AbstractArtifactEditor {
             try {
                Set<Artifact> accessibleArts = new HashSet<>();
                for (Artifact artifact : artifacts) {
-                  if (ServiceUtil.accessControlService().hasArtifactPermission(artifact,
-                     PermissionEnum.READ, null).isErrors()) {
+                  if (ServiceUtil.accessControlService().hasArtifactPermission(artifact, PermissionEnum.READ,
+                     null).isErrors()) {
                      OseeLog.log(Activator.class, Level.INFO,
                         "The user " + UserManager.getUser() + " does not have read access to " + artifact);
                      accessControlFilteredResults = true;

@@ -38,7 +38,8 @@ public interface InterfaceRateApi {
 
    Collection<ArtifactAccessorResult> getAll(BranchId branch, ArtifactId viewId, long pageNum, long pageSize);
 
-   Collection<ArtifactAccessorResult> getAll(BranchId branch, long pageNum, long pageSize, AttributeTypeId orderByAttribute);
+   Collection<ArtifactAccessorResult> getAll(BranchId branch, long pageNum, long pageSize,
+      AttributeTypeId orderByAttribute);
 
    Collection<ArtifactAccessorResult> getAll(BranchId branch, ArtifactId viewId, long pageNum, long pageSize,
       AttributeTypeId orderByAttribute);

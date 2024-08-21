@@ -32,13 +32,16 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
  */
 public interface TraceabilityOperations {
 
-   void generateTraceReport(BranchId branchId, String codeRoot, String traceRoot, Writer providedWriter, ArtifactTypeToken artifactType, AttributeTypeToken attributeType);
+   void generateTraceReport(BranchId branchId, String codeRoot, String traceRoot, Writer providedWriter,
+      ArtifactTypeToken artifactType, AttributeTypeToken attributeType);
 
    TraceData getSrsToImpd(BranchId branch, ArtifactTypeId excludeType);
 
-   ArtifactId baselineFiles(BranchId branch, ArtifactReadable repoArtifact, CertBaselineData baselineData, String password);
+   ArtifactId baselineFiles(BranchId branch, ArtifactReadable repoArtifact, CertBaselineData baselineData,
+      String password);
 
-   ArtifactId baselineFiles(BranchId branch, ArtifactReadable repoArtifact, CertBaselineData baselineData, TransactionBuilder tx, String password);
+   ArtifactId baselineFiles(BranchId branch, ArtifactReadable repoArtifact, CertBaselineData baselineData,
+      TransactionBuilder tx, String password);
 
    CertBaselineData getBaselineData(ArtifactReadable baselineArtifact);
 

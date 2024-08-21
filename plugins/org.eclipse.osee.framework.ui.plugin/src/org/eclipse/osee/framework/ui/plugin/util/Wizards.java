@@ -50,7 +50,8 @@ public final class Wizards {
 
    }
 
-   public static final void initAndOpen(IWorkbenchWizard wizard, IWorkbenchWindow workbenchWindow, IStructuredSelection selection) {
+   public static final void initAndOpen(IWorkbenchWizard wizard, IWorkbenchWindow workbenchWindow,
+      IStructuredSelection selection) {
 
       wizard.init(workbenchWindow.getWorkbench(), selection);
 

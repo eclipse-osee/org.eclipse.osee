@@ -45,7 +45,9 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  */
 public class AttributeLoader {
 
-   static void loadAttributeData(Long queryId, CompositeKeyHashMap<ArtifactId, Id, Artifact> tempCache, boolean historical, DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel, boolean isArchived, OrcsTokenService tokenservice) {
+   static void loadAttributeData(Long queryId, CompositeKeyHashMap<ArtifactId, Id, Artifact> tempCache,
+      boolean historical, DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel, boolean isArchived,
+      OrcsTokenService tokenservice) {
       if (loadLevel == ARTIFACT_DATA || loadLevel == RELATION_DATA) {
          return;
       }
@@ -129,7 +131,8 @@ public class AttributeLoader {
       }
    }
 
-   private static Artifact getArtifact(AttrData current, boolean historical, CompositeKeyHashMap<ArtifactId, Id, Artifact> tempCache) {
+   private static Artifact getArtifact(AttrData current, boolean historical,
+      CompositeKeyHashMap<ArtifactId, Id, Artifact> tempCache) {
       Artifact artifact = null;
       Id key2 = historical ? current.stripeId : current.branch;
       artifact = tempCache.get(current.artifactId, key2);
@@ -182,7 +185,8 @@ public class AttributeLoader {
          current.applicabilityId, markDirty, current.value, current.uri);
    }
 
-   private static String getSql(DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel, boolean historical, boolean isArchived) {
+   private static String getSql(DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel, boolean historical,
+      boolean isArchived) {
       OseeSql sqlKey;
       if (historical && isArchived) {
          sqlKey = OseeSql.LOAD_HISTORICAL_ARCHIVED_ATTRIBUTES;

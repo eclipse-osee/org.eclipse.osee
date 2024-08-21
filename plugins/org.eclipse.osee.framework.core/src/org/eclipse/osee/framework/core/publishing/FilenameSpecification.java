@@ -57,8 +57,7 @@ public class FilenameSpecification {
     * @param segments a possibly empty array of {@link CharSequence}s to be used as filename segments.
     */
 
-   public FilenameSpecification(@NonNull String key, @NonNull FilenameFormat filenameFormat,
-      @NonNull CharSequence extension, @NonNull CharSequence... segments) {
+   public FilenameSpecification(@NonNull String key, @NonNull FilenameFormat filenameFormat, @NonNull CharSequence extension, @NonNull CharSequence... segments) {
       this.key = Conditions.requireNonNull(key, "key");
       this.filenameFormat = Conditions.requireNonNull(filenameFormat, "filenameFormat");
       this.extension = Conditions.requireNonNull(extension, "extension");

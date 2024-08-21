@@ -206,8 +206,8 @@ public class WordUpdateArtifact {
          throw OseeCoreException.wrap(ex);
       }
       if (!deletedArtifacts.isEmpty()) {
-            throw new OseeStateException("The following deleted artifacts could not be saved [%s]",
-               Collections.toString(",", deletedArtifacts));
+         throw new OseeStateException("The following deleted artifacts could not be saved [%s]",
+            Collections.toString(",", deletedArtifacts));
       }
       return updateChange;
    }

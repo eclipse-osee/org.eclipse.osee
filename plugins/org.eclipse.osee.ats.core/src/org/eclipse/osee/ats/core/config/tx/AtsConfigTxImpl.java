@@ -89,7 +89,8 @@ public class AtsConfigTxImpl implements IAtsConfigTx {
    }
 
    @Override
-   public IAtsConfigTxActionableItem createActionableItem(IAtsActionableItem parent, IAtsActionableItemArtifactToken ai) {
+   public IAtsConfigTxActionableItem createActionableItem(IAtsActionableItem parent,
+      IAtsActionableItemArtifactToken ai) {
       ArtifactToken newAiArt = atsApi.getQueryService().getArtifact(ai);
       if (newAiArt == null || newAiArt.isInvalid()) {
          checkUsedIds(ai);
@@ -121,7 +122,8 @@ public class AtsConfigTxImpl implements IAtsConfigTx {
    }
 
    @Override
-   public IAtsConfigTxVersion createVersion(IAtsVersionArtifactToken versionTok, ReleasedOption released, BranchToken branch, NextRelease nextRelease, IAtsTeamDefinition teamDef) {
+   public IAtsConfigTxVersion createVersion(IAtsVersionArtifactToken versionTok, ReleasedOption released,
+      BranchToken branch, NextRelease nextRelease, IAtsTeamDefinition teamDef) {
       checkUsedIds(versionTok);
       ArtifactToken verArt = changes.createArtifact(AtsArtifactTypes.Version, versionTok.getName(), versionTok.getId());
       changes.setSoleAttributeValue(verArt, AtsAttributeTypes.Released, released != ReleasedOption.UnReleased);
@@ -138,7 +140,8 @@ public class AtsConfigTxImpl implements IAtsConfigTx {
    }
 
    @Override
-   public IAtsConfigTxVersion createVersion(String name, ReleasedOption released, BranchToken branch, NextRelease nextRelease, IAtsTeamDefinition teamDef) {
+   public IAtsConfigTxVersion createVersion(String name, ReleasedOption released, BranchToken branch,
+      NextRelease nextRelease, IAtsTeamDefinition teamDef) {
       return createVersion(AtsVersionArtifactToken.valueOf(Lib.generateArtifactIdAsInt(), name), released, branch,
          nextRelease, teamDef);
    }

@@ -38,7 +38,8 @@ public interface IAtsHealthCheck {
     * @param changes if not null, then fix if possible
     * @return true if implemented
     */
-   public default boolean check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi, IAtsChangeSet changes, IAtsOperationCache cache) {
+   public default boolean check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results,
+      AtsApi atsApi, IAtsChangeSet changes, IAtsOperationCache cache) {
       return false;
    }
 

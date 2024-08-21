@@ -110,7 +110,8 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
       return targetDbMetadata;
    }
 
-   private void processMetaData(Map<String, MetaData> targetDbMetadata, DatabaseMetaData dbMetaData, String targetTable) throws SQLException {
+   private void processMetaData(Map<String, MetaData> targetDbMetadata, DatabaseMetaData dbMetaData, String targetTable)
+      throws SQLException {
       try (ResultSet resultSet = dbMetaData.getTables(null, null, null, new String[] {"TABLE"})) {
          if (resultSet != null) {
             while (resultSet.next()) {
@@ -127,7 +128,8 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
       }
    }
 
-   private void processColumnMetaData(MetaData currentMetadata, DatabaseMetaData dbMetaData, String schema, String tableName) throws SQLException {
+   private void processColumnMetaData(MetaData currentMetadata, DatabaseMetaData dbMetaData, String schema,
+      String tableName) throws SQLException {
       ResultSet resultSet = null;
 
       try {

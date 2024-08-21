@@ -95,7 +95,8 @@ public class RelationTypeValidity {
       return toReturn;
    }
 
-   public boolean isRelationTypeValid(RelationTypeToken relationType, ArtifactTypeToken artifactType, RelationSide relationSide) {
+   public boolean isRelationTypeValid(RelationTypeToken relationType, ArtifactTypeToken artifactType,
+      RelationSide relationSide) {
       Conditions.checkNotNull(artifactType, "artifactType");
       Conditions.checkNotNull(relationSide, "relationSide");
       return getRelationSideMax(relationType, artifactType, relationSide) > 0;
@@ -125,7 +126,8 @@ public class RelationTypeValidity {
       return result;
    }
 
-   private int getRelationSideMax(RelationTypeToken relationType, ArtifactTypeToken artifactType, RelationSide relationSide) {
+   private int getRelationSideMax(RelationTypeToken relationType, ArtifactTypeToken artifactType,
+      RelationSide relationSide) {
       int toReturn = 0;
       if (relationType.isArtifactTypeAllowed(relationSide, artifactType)) {
          toReturn = relationType.getMultiplicity().getLimit(relationSide);

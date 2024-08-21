@@ -115,7 +115,8 @@ public class AccessStoreOperations implements IAccessStoreOperations {
       }
    }
 
-   private void persistPermissionForArtifact(AccessControlData data, ArtifactAccessObject artifactAccessObject, boolean recurse, AccessTopicEventPayload event) {
+   private void persistPermissionForArtifact(AccessControlData data, ArtifactAccessObject artifactAccessObject,
+      boolean recurse, AccessTopicEventPayload event) {
       ArtifactToken subject = data.getSubject();
       PermissionEnum permission = data.getPermission();
 

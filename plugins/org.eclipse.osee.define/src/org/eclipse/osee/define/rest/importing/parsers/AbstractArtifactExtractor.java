@@ -39,7 +39,8 @@ public abstract class AbstractArtifactExtractor implements IArtifactExtractor {
       // Protect Constructor
    }
 
-   protected abstract @NonNull XResultData extractFromSource(OrcsApi orcsApi, @NonNull XResultData results, @NonNull URI source, RoughArtifactCollector collector) throws Exception;
+   protected abstract @NonNull XResultData extractFromSource(OrcsApi orcsApi, @NonNull XResultData results,
+      @NonNull URI source, RoughArtifactCollector collector) throws Exception;
 
    @Override
    public String toString() {
@@ -73,7 +74,8 @@ public abstract class AbstractArtifactExtractor implements IArtifactExtractor {
    }
 
    @Override
-   public final @NonNull XResultData process(OrcsApi orcsApi, @NonNull XResultData results, URI source, RoughArtifactCollector collector) throws Exception {
+   public final @NonNull XResultData process(OrcsApi orcsApi, @NonNull XResultData results, URI source,
+      RoughArtifactCollector collector) throws Exception {
       Objects.requireNonNull(results, "AbstractArtifactExtractor::process, parameter \"results\" cannot be null.");
       checkDelegate();
       delegate.initialize();

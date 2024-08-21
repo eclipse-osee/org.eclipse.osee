@@ -141,7 +141,8 @@ public final class OseeEventManager {
    }
 
    // Kick LOCAL and REMOTE topic event with payload
-   public static void kickAccessTopicEvent(Object source, AccessTopicEventPayload payload, AccessTopicEvent accesstopicEvent) {
+   public static void kickAccessTopicEvent(Object source, AccessTopicEventPayload payload,
+      AccessTopicEvent accesstopicEvent) {
       try {
          TopicEvent topicEvent = EventUtil.createTopic(accesstopicEvent, TransactionId.SENTINEL, payload);
          kickTopicEvent(source, topicEvent);

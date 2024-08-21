@@ -209,9 +209,9 @@ public class TxData implements HasSession, HasBranchId {
       return newRelations.containsKey(relType, artA);
    }
 
-	public void addRelationSideA(RelationTypeToken relType, ArtifactId artA,
-			TreeMap<Integer, Pair<ArtifactId, GammaId>> relOrders) {
-		newRelations.put(relType, artA, new RelationDataSideA(artA, relType, relOrders));
+   public void addRelationSideA(RelationTypeToken relType, ArtifactId artA,
+      TreeMap<Integer, Pair<ArtifactId, GammaId>> relOrders) {
+      newRelations.put(relType, artA, new RelationDataSideA(artA, relType, relOrders));
    }
 
    public int calculateHeadInsertionOrderIndex(int currentHeadIndex) {

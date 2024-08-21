@@ -31,7 +31,8 @@ public class WholeWordDocumentExtractor extends AbstractArtifactExtractor {
    }
 
    @Override
-   protected void extractFromSource(OperationLogger logger, URI source, RoughArtifactCollector collector) throws Exception {
+   protected void extractFromSource(OperationLogger logger, URI source, RoughArtifactCollector collector)
+      throws Exception {
       if (source == null) {
          throw new OseeArgumentException("importFile can not be null");
       }

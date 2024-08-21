@@ -57,12 +57,14 @@ public class CreateTasksDefinitionBuilder extends NamedIdBase {
       return this;
    }
 
-   public CreateTasksDefinitionBuilder andStaticTask(String title, String desc, StateToken relatedToState, Long... assigneeAccountId) {
+   public CreateTasksDefinitionBuilder andStaticTask(String title, String desc, StateToken relatedToState,
+      Long... assigneeAccountId) {
       return andStaticTask(title, desc, relatedToState, AtsWorkDefinitionTokens.WorkDef_Team_Default,
          assigneeAccountId);
    }
 
-   public CreateTasksDefinitionBuilder andStaticTask(String name, String desc, StateToken relatedToState, AtsWorkDefinitionToken workDef, Long... assigneeAccountId) {
+   public CreateTasksDefinitionBuilder andStaticTask(String name, String desc, StateToken relatedToState,
+      AtsWorkDefinitionToken workDef, Long... assigneeAccountId) {
       Conditions.assertNotNullOrEmpty(name, "title can not be empty");
       StaticTaskDefinition taskDef = new StaticTaskDefinition();
       taskDef.setName(name);

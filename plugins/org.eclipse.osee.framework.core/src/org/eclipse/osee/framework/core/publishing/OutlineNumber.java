@@ -126,8 +126,7 @@ public class OutlineNumber {
     * <code>sectionNumberWhenMaximumOutlineLevelExceeded</code> are <code>null</code>.
     */
 
-   public OutlineNumber(int maximumOutlineLevel, int outlineLevelInitialValue, @NonNull TrailingDot trailingDot,
-      @NonNull SectionNumberWhenMaximumOutlineLevelExceeded sectionNumberWhenMaximumOutlineLevelExceeded) {
+   public OutlineNumber(int maximumOutlineLevel, int outlineLevelInitialValue, @NonNull TrailingDot trailingDot, @NonNull SectionNumberWhenMaximumOutlineLevelExceeded sectionNumberWhenMaximumOutlineLevelExceeded) {
 
       this.trailingDot = Conditions.requireNonNull(trailingDot, "trailingDot");
 

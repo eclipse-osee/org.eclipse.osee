@@ -215,18 +215,17 @@ public interface ArtifactEndpoint {
    Response purgeArtifact(@PathParam("branch") BranchId branch, @PathParam("artifact") ArtifactId artifact);
 
    /**
-    * Deletes attributes of a specified attribute type from all artifacts on branch of a specified artifact type. 
-    * The attributes to be deleted are determined based on the artifact type defined in the code. The endpoint 
-    * allows specifying the artifact and/or artifact type to delete attribute data from.
+    * Deletes attributes of a specified attribute type from all artifacts on branch of a specified artifact type. The
+    * attributes to be deleted are determined based on the artifact type defined in the code. The endpoint allows
+    * specifying the artifact and/or artifact type to delete attribute data from.
     * 
-    * @param branch        The branch ID from which to delete attributes.
-    * @param artifact      The artifact ID to specify the artifact type from which to delete attributes. 
-    *                      If not provided, defaults to -1.
-    * @param artifactType  The artifact type token/id to specify the type of artifact from which to delete attributes.
-    *                      If not provided, defaults to -1.
-    * @param attributeType The attribute type token specifying the type of attribute to be deleted. 
-    *                      If not provided, defaults to -1.
-    * 
+    * @param branch The branch ID from which to delete attributes.
+    * @param artifact The artifact ID to specify the artifact type from which to delete attributes. If not provided,
+    * defaults to -1.
+    * @param artifactType The artifact type token/id to specify the type of artifact from which to delete attributes. If
+    * not provided, defaults to -1.
+    * @param attributeType The attribute type token specifying the type of attribute to be deleted. If not provided,
+    * defaults to -1.
     * @return A {@link TransactionToken} indicating the transaction's success or failure.
     */
    @DELETE

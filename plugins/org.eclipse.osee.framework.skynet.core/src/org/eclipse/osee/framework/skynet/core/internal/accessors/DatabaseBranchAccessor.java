@@ -101,7 +101,8 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
       return branch;
    }
 
-   private static Branch createOrUpdate(IOseeCache<Branch> cache, JdbcStatement stmt, Map<MergeBranch, Long> mergeIdMap) {
+   private static Branch createOrUpdate(IOseeCache<Branch> cache, JdbcStatement stmt,
+      Map<MergeBranch, Long> mergeIdMap) {
       Long branchId = stmt.getLong("branch_id");
       String name = stmt.getString("branch_name");
       BranchType branchType = BranchType.valueOf(stmt.getInt("branch_type"));

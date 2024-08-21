@@ -53,7 +53,8 @@ public class AtsStateNoteServiceImpl implements IAtsStateNoteService {
    }
 
    @Override
-   public void addNote(IAtsWorkItem workItem, AtsStateNoteType type, String state, String msg, Date date, UserId user, IAtsChangeSet changes) {
+   public void addNote(IAtsWorkItem workItem, AtsStateNoteType type, String state, String msg, Date date, UserId user,
+      IAtsChangeSet changes) {
       AtsStateNote note =
          new AtsStateNote(type.getName(), state, String.valueOf(date.getTime()), UserId.valueOf(user.getId()), msg);
       addNote(workItem, note, changes);

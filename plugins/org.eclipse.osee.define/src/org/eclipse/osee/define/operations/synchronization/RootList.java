@@ -84,8 +84,7 @@ public class RootList implements Iterable<ArtifactReadable>, ToMessage {
     * @param synchronizationArtifactType the type of synchronization artifact to be produced.
     */
 
-   private RootList(OrcsApi orcsApi, Direction direction,
-      SynchronizationArtifactBuilder synchronizationArtifactBuilder) {
+   private RootList(OrcsApi orcsApi, Direction direction, SynchronizationArtifactBuilder synchronizationArtifactBuilder) {
       this.orcsApi = orcsApi;
       this.orcsTokenService = orcsApi.tokenService();
       this.direction = direction;

@@ -258,7 +258,7 @@ public class FilteredTreeComposite extends Composite {
       treeViewer = doCreateTreeViewer(parent, style);
       GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
       treeViewer.getControl().setLayoutData(data);
-      treeViewer.getControl().addListener(SWT.Dispose, e->refreshJob.cancel());
+      treeViewer.getControl().addListener(SWT.Dispose, e -> refreshJob.cancel());
       if (treeViewer instanceof NotifyingTreeViewer) {
          patternFilter.setUseCache(true);
       }
@@ -286,7 +286,8 @@ public class FilteredTreeComposite extends Composite {
    private TreeItem getFirstMatchingItem(TreeItem[] items) {
       if (items.length > 0) {
          TreeItem treeItem = items[0];
-         if (patternFilter.isLeafMatch(treeViewer, treeItem.getData()) && patternFilter.isElementSelectable(treeItem.getData())) {
+         if (patternFilter.isLeafMatch(treeViewer,
+            treeItem.getData()) && patternFilter.isElementSelectable(treeItem.getData())) {
             return treeItem;
          }
          return getFirstMatchingItem(treeItem.getItems());
@@ -390,7 +391,8 @@ public class FilteredTreeComposite extends Composite {
           *
           * @return true if canceled
           */
-         private boolean recursiveExpand(TreeItem[] items, IProgressMonitor monitor, long cancelTime, int[] numItemsLeft) {
+         private boolean recursiveExpand(TreeItem[] items, IProgressMonitor monitor, long cancelTime,
+            int[] numItemsLeft) {
             boolean canceled = false;
             for (int i = 0; !canceled && i < items.length; i++) {
                TreeItem item = items[i];
@@ -439,10 +441,8 @@ public class FilteredTreeComposite extends Composite {
             if (filterTextString.length() == 0 || filterTextString.equals(initialText)) {
                e.result = initialText;
             } else {
-               e.result =
-                  NLS.bind(WorkbenchMessages.FilteredTree_AccessibleListenerFiltered, new String[] {
-                     filterTextString,
-                     String.valueOf(getFilteredItemsCount())});
+               e.result = NLS.bind(WorkbenchMessages.FilteredTree_AccessibleListenerFiltered,
+                  new String[] {filterTextString, String.valueOf(getFilteredItemsCount())});
             }
          }
 
@@ -473,62 +473,62 @@ public class FilteredTreeComposite extends Composite {
          }
       });
 
-      filterText.addListener(SWT.FocusIn, e-> {
-            /*
-             * Running in an asyncExec because the selectAll() does not appear to work when using mouse to give focus to
-             * text.
-             */
-            Display display = filterText.getDisplay();
-            display.asyncExec(() -> {
-				if (!filterText.isDisposed() && getInitialText().equals(filterText.getText().trim())) {
-					filterText.selectAll();
-				}
-            });
+      filterText.addListener(SWT.FocusIn, e -> {
+         /*
+          * Running in an asyncExec because the selectAll() does not appear to work when using mouse to give focus to
+          * text.
+          */
+         Display display = filterText.getDisplay();
+         display.asyncExec(() -> {
+            if (!filterText.isDisposed() && getInitialText().equals(filterText.getText().trim())) {
+               filterText.selectAll();
+            }
+         });
       });
 
-      filterText.addListener(SWT.KeyDown, e-> {
-            // on a CR we want to transfer focus to the list
-            boolean hasItems = getViewer().getTree().getItemCount() > 0;
-            if (hasItems && e.keyCode == SWT.ARROW_DOWN) {
-               treeViewer.getTree().setFocus();
-            } else if (e.character == SWT.CR) {
-               return;
-            }
+      filterText.addListener(SWT.KeyDown, e -> {
+         // on a CR we want to transfer focus to the list
+         boolean hasItems = getViewer().getTree().getItemCount() > 0;
+         if (hasItems && e.keyCode == SWT.ARROW_DOWN) {
+            treeViewer.getTree().setFocus();
+         } else if (e.character == SWT.CR) {
+            return;
+         }
       });
 
       // enter key set focus to tree
-      filterText.addListener(SWT.Traverse, e-> {
-            if (e.detail == SWT.TRAVERSE_RETURN) {
-               e.doit = false;
-               if (getViewer().getTree().getItemCount() == 0) {
-                  Display.getCurrent().beep();
-               } else {
-                  // if the initial filter text hasn't changed, do not try
-                  // to match
-                  boolean hasFocus = getViewer().getTree().setFocus();
-                  boolean textChanged = !getInitialText().equals(filterText.getText().trim());
-                  if (hasFocus && textChanged && filterText.getText().trim().length() > 0) {
-                     TreeItem item = getFirstMatchingItem(getViewer().getTree().getItems());
-                     if (item != null) {
-                        getViewer().getTree().setSelection(new TreeItem[] {item});
-                        ISelection sel = getViewer().getSelection();
-                        getViewer().setSelection(sel, true);
-                     }
+      filterText.addListener(SWT.Traverse, e -> {
+         if (e.detail == SWT.TRAVERSE_RETURN) {
+            e.doit = false;
+            if (getViewer().getTree().getItemCount() == 0) {
+               Display.getCurrent().beep();
+            } else {
+               // if the initial filter text hasn't changed, do not try
+               // to match
+               boolean hasFocus = getViewer().getTree().setFocus();
+               boolean textChanged = !getInitialText().equals(filterText.getText().trim());
+               if (hasFocus && textChanged && filterText.getText().trim().length() > 0) {
+                  TreeItem item = getFirstMatchingItem(getViewer().getTree().getItems());
+                  if (item != null) {
+                     getViewer().getTree().setSelection(new TreeItem[] {item});
+                     ISelection sel = getViewer().getSelection();
+                     getViewer().setSelection(sel, true);
                   }
                }
             }
+         }
       });
 
-      filterText.addListener(SWT.Modify, e->textChanged());
+      filterText.addListener(SWT.Modify, e -> textChanged());
 
       // if we're using a field with built in cancel we need to listen for
       // default selection changes (which tell us the cancel button has been
       // pressed)
       if ((filterText.getStyle() & SWT.CANCEL) != 0) {
          filterText.addListener(SWT.DefaultSelection, e -> {
-               if (e.detail == SWT.CANCEL) {
-                  clearText();
-               }
+            if (e.detail == SWT.CANCEL) {
+               clearText();
+            }
          });
       }
 
@@ -600,11 +600,11 @@ public class FilteredTreeComposite extends Composite {
          filterToolBar.createControl(parent);
 
          IAction clearTextAction = new Action("", IAction.AS_PUSH_BUTTON) {//$NON-NLS-1$
-               @Override
-               public void run() {
-                  clearText();
-               }
-            };
+            @Override
+            public void run() {
+               clearText();
+            }
+         };
 
          clearTextAction.setToolTipText(WorkbenchMessages.FilteredTree_ClearToolTip);
          clearTextAction.setImageDescriptor(XViewerImageCache.getImageDescriptor("clear.gif")); //$NON-NLS-1$

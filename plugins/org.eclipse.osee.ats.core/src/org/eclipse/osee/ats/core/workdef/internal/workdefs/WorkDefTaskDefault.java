@@ -45,7 +45,7 @@ public class WorkDefTaskDefault extends AbstractWorkDef {
 
       bld.andState(1, "InWork", StateType.Working).isStartState() //
          .andToStates(StateToken.Completed, StateToken.Cancelled) //
-         
+
          .andColor(StateColor.BLACK) //
          .andLayout( //
             new WidgetDefinition(AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //

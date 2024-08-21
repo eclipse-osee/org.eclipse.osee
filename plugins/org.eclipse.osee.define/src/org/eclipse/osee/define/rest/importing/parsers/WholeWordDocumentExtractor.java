@@ -33,7 +33,8 @@ public class WholeWordDocumentExtractor extends AbstractArtifactExtractor {
    }
 
    @Override
-   protected @NonNull XResultData extractFromSource(OrcsApi orcsApi, @NonNull XResultData results, @NonNull URI source, RoughArtifactCollector collector) throws Exception {
+   protected @NonNull XResultData extractFromSource(OrcsApi orcsApi, @NonNull XResultData results, @NonNull URI source,
+      RoughArtifactCollector collector) throws Exception {
 
       Objects.requireNonNull(results,
          "WholeWordDocumentExtractor::extractFromSource, parameter \"results\" cannot be null.");

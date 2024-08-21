@@ -61,7 +61,8 @@ public class RelationFilterUtil {
       return toReturn;
    }
 
-   public static void filter(Collection<RelationLink> source, Collection<RelationLink> destination, RelationMatcher matcher) {
+   public static void filter(Collection<RelationLink> source, Collection<RelationLink> destination,
+      RelationMatcher matcher) {
       if (source != null) {
          if (matcher != null) {
             for (RelationLink link : source) {

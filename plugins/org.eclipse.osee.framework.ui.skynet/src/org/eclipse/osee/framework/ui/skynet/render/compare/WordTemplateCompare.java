@@ -52,7 +52,8 @@ public class WordTemplateCompare extends AbstractWordCompare {
     * report by combining each of the difference reports together for a single report.
     */
    @Override
-   public void compareArtifacts(IProgressMonitor monitor, CompareDataCollector collector, PresentationType presentationType, Collection<ArtifactDelta> artifactDeltas, String pathPrefix) {
+   public void compareArtifacts(IProgressMonitor monitor, CompareDataCollector collector,
+      PresentationType presentationType, Collection<ArtifactDelta> artifactDeltas, String pathPrefix) {
       if (artifactDeltas.isEmpty()) {
          throw new OseeArgumentException("The artifactDelts must not be empty");
       }
@@ -122,7 +123,8 @@ public class WordTemplateCompare extends AbstractWordCompare {
       collector.onCompare(data);
    }
 
-   private void addArtifactDeltas(IProgressMonitor monitor, Collection<ArtifactDelta> artifactDeltas, CompareData data) {
+   private void addArtifactDeltas(IProgressMonitor monitor, Collection<ArtifactDelta> artifactDeltas,
+      CompareData data) {
       double workAmount = 0.70 / artifactDeltas.size();
 
       for (ArtifactDelta artifactDelta : artifactDeltas) {

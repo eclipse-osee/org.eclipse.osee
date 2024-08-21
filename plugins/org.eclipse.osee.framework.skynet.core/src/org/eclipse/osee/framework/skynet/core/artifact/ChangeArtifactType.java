@@ -76,7 +76,8 @@ public class ChangeArtifactType {
    private final Map<GammaId, ArtifactId> gammaToArtId = new HashMap<>();
    private static final boolean useNewEvents = FrameworkEventUtil.USE_NEW_EVENTS;
 
-   public static void changeArtifactType(Collection<? extends Artifact> inputArtifacts, ArtifactTypeToken newArtifactType, boolean prompt) {
+   public static void changeArtifactType(Collection<? extends Artifact> inputArtifacts,
+      ArtifactTypeToken newArtifactType, boolean prompt) {
       ChangeArtifactType app = new ChangeArtifactType();
       if (inputArtifacts.isEmpty()) {
          throw new OseeArgumentException("The artifact list can not be empty");
@@ -96,7 +97,8 @@ public class ChangeArtifactType {
     * memory/database changes in such a manner that they stay in sync therefore, if any part of this blam fails, then
     * the type should not be changed
     */
-   private void internalChangeArtifactType(Collection<? extends Artifact> inputArtifacts, ArtifactTypeToken newArtifactType, boolean prompt) {
+   private void internalChangeArtifactType(Collection<? extends Artifact> inputArtifacts,
+      ArtifactTypeToken newArtifactType, boolean prompt) {
 
       createAttributeRelationTransactions(inputArtifacts, newArtifactType);
       boolean changeOk = !prompt;
@@ -136,7 +138,8 @@ public class ChangeArtifactType {
       }
    }
 
-   private void createAttributeRelationTransactions(Collection<? extends Artifact> inputArtifacts, ArtifactTypeToken newArtifactType) {
+   private void createAttributeRelationTransactions(Collection<? extends Artifact> inputArtifacts,
+      ArtifactTypeToken newArtifactType) {
       IdJoinQuery artifactJoin = populateArtIdsInJoinIdTable(inputArtifacts);
       IdJoinQuery branchJoin = populateBranchIdsJoinIdTable();
       IdJoinQuery gammaJoin = populateGammaIdsJoinIdTable(artifactJoin);
@@ -250,7 +253,8 @@ public class ChangeArtifactType {
       }
    }
 
-   private void changeArtifactTypeOutsideofHistory(Collection<? extends Artifact> inputArtifacts, ArtifactTypeToken newArtifactType) {
+   private void changeArtifactTypeOutsideofHistory(Collection<? extends Artifact> inputArtifacts,
+      ArtifactTypeToken newArtifactType) {
       List<Object[]> insertData = new ArrayList<>();
 
       String UPDATE = "UPDATE osee_artifact SET art_type_id = ? WHERE art_id = ?";

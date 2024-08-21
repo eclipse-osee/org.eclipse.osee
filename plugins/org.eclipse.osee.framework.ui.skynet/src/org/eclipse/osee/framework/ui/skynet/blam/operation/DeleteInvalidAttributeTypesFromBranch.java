@@ -67,7 +67,8 @@ public class DeleteInvalidAttributeTypesFromBranch extends AbstractBlam {
 
    }
 
-   private void deleteInvalidAttributeType(List<Artifact> artifacts, AttributeTypeToken attrType, SkynetTransaction transaction) {
+   private void deleteInvalidAttributeType(List<Artifact> artifacts, AttributeTypeToken attrType,
+      SkynetTransaction transaction) {
       for (Artifact art : artifacts) {
          if (!art.isAttributeTypeValid(attrType)) {
             delete(art, attrType);

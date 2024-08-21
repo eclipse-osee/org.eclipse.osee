@@ -58,7 +58,8 @@ public interface IAccessControlService extends ArtifactCheck {
 
    XResultData hasBranchPermission(BranchToken branch, PermissionEnum permission, XResultData rd);
 
-   XResultData hasBranchPermission(ArtifactToken subject, BranchToken branch, PermissionEnum permission, XResultData rd);
+   XResultData hasBranchPermission(ArtifactToken subject, BranchToken branch, PermissionEnum permission,
+      XResultData rd);
 
    ////////////////////////////////////
    // Artifact Permission
@@ -74,10 +75,12 @@ public interface IAccessControlService extends ArtifactCheck {
    XResultData hasArtifactPermission(ArtifactToken artifact, PermissionEnum permission, XResultData rd);
 
    // Check rollup permission for current user including Branch ACL, Artifact ACL and Branch Context.
-   XResultData hasArtifactPermission(Collection<? extends ArtifactToken> artifacts, PermissionEnum permission, XResultData rd);
+   XResultData hasArtifactPermission(Collection<? extends ArtifactToken> artifacts, PermissionEnum permission,
+      XResultData rd);
 
    // Check rollup permission for current user including Branch ACL, Artifact ACL and Branch Context.
-   XResultData hasArtifactPermission(ArtifactToken subject, Collection<? extends ArtifactToken> artifact, PermissionEnum permission, XResultData rd);
+   XResultData hasArtifactPermission(ArtifactToken subject, Collection<? extends ArtifactToken> artifact,
+      PermissionEnum permission, XResultData rd);
 
    // Return artifact or sentinel
    ArtifactToken getSubjectFromLockedObject(ArtifactToken artifact);
@@ -97,12 +100,14 @@ public interface IAccessControlService extends ArtifactCheck {
    /**
     * Check rollup permission for current user including Branch ACL, Artifact ACL and Branch Context for Attr Type
     */
-   XResultData hasAttributeTypePermission(Collection<? extends ArtifactToken> artifacts, AttributeTypeToken attributeType, PermissionEnum permission, XResultData rd);
+   XResultData hasAttributeTypePermission(Collection<? extends ArtifactToken> artifacts,
+      AttributeTypeToken attributeType, PermissionEnum permission, XResultData rd);
 
    /**
     * Check rollup permission for current user including Branch ACL, Artifact ACL and Branch Context for Attr Type
     */
-   XResultData hasAttributeTypePermission(ArtifactToken subject, Collection<? extends ArtifactToken> artifacts, AttributeTypeToken attributeType, PermissionEnum permission, XResultData rd);
+   XResultData hasAttributeTypePermission(ArtifactToken subject, Collection<? extends ArtifactToken> artifacts,
+      AttributeTypeToken attributeType, PermissionEnum permission, XResultData rd);
 
    ////////////////////////////////////
    // Relation Permission
@@ -113,14 +118,16 @@ public interface IAccessControlService extends ArtifactCheck {
     *
     * @param related list to relate or null to check permission without specific artifacts
     */
-   XResultData hasRelationTypePermission(ArtifactToken user, ArtifactToken artifact, RelationTypeToken relationType, Collection<? extends ArtifactToken> related, PermissionEnum permission, XResultData rd);
+   XResultData hasRelationTypePermission(ArtifactToken user, ArtifactToken artifact, RelationTypeToken relationType,
+      Collection<? extends ArtifactToken> related, PermissionEnum permission, XResultData rd);
 
    /**
     * Check rollup permission for current user including Branch ACL, Artifact ACL and Branch Context for Rel Type
     *
     * @param related list to relate or null to check permission without specific artifacts
     */
-   XResultData hasRelationTypePermission(ArtifactToken artifact, RelationTypeToken relationType, Collection<? extends ArtifactToken> related, PermissionEnum permission, XResultData rd);
+   XResultData hasRelationTypePermission(ArtifactToken artifact, RelationTypeToken relationType,
+      Collection<? extends ArtifactToken> related, PermissionEnum permission, XResultData rd);
 
    ////////////////////////////////////
    // Supporting Methods

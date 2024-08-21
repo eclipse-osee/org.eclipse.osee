@@ -53,7 +53,8 @@ public class SourceToRoughArtifactOperation extends AbstractOperation {
    /**
     * used recursively when originally passed a directory, thus an array of files is accepted
     */
-   private void extractArtifacts(IProgressMonitor monitor, double workPercentage, File[] files, RoughArtifactCollector collector, RoughArtifact parentArtifact) {
+   private void extractArtifacts(IProgressMonitor monitor, double workPercentage, File[] files,
+      RoughArtifactCollector collector, RoughArtifact parentArtifact) {
       int workAmount = calculateWork(workPercentage);
       for (File file : files) {
          if (file.isFile()) {

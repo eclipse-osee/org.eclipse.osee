@@ -1,4 +1,5 @@
 package org.eclipse.osee.framework.core.data;
+
 /*********************************************************************
  * Copyright (c) 2017 Boeing
  *

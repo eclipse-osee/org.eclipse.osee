@@ -44,7 +44,8 @@ public interface IOseeAccessProvider {
     *
     * @return XResultData with errors if not allowed
     */
-   default XResultData hasArtifactContextWriteAccess(ArtifactToken subject, Collection<? extends ArtifactToken> artifacts, XResultData rd) {
+   default XResultData hasArtifactContextWriteAccess(ArtifactToken subject,
+      Collection<? extends ArtifactToken> artifacts, XResultData rd) {
       return XResultData.EMPTY_RD;
    }
 
@@ -53,7 +54,8 @@ public interface IOseeAccessProvider {
     *
     * @return XResultData with errors if not allowed
     */
-   default XResultData hasAttributeTypeContextWriteAccess(ArtifactToken subject, Collection<? extends ArtifactToken> artifacts, AttributeTypeToken attributeType, XResultData rd) {
+   default XResultData hasAttributeTypeContextWriteAccess(ArtifactToken subject,
+      Collection<? extends ArtifactToken> artifacts, AttributeTypeToken attributeType, XResultData rd) {
       return XResultData.EMPTY_RD;
    }
 
@@ -62,7 +64,8 @@ public interface IOseeAccessProvider {
     *
     * @return XResultData with errors if not allowed
     */
-   default XResultData hasRelationContextWriteAccess(ArtifactToken subject, ArtifactToken artifact, RelationTypeToken relationType, XResultData rd) {
+   default XResultData hasRelationContextWriteAccess(ArtifactToken subject, ArtifactToken artifact,
+      RelationTypeToken relationType, XResultData rd) {
       return XResultData.EMPTY_RD;
    }
 

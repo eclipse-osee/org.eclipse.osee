@@ -97,7 +97,8 @@ public class ImportOperationsImpl implements ImportOperations {
    }
 
    @Override
-   public XResultData rectifyWordImport(BranchId branch, String wordURI, ArtifactId parent, Integer tier, String doorsIds) {
+   public XResultData rectifyWordImport(BranchId branch, String wordURI, ArtifactId parent, Integer tier,
+      String doorsIds) {
       XResultData results = new XResultData();
       Conditions.checkNotNull(branch, "branch query param");
       Conditions.checkNotNull(wordURI, "selected_types query param");
@@ -110,7 +111,8 @@ public class ImportOperationsImpl implements ImportOperations {
    }
 
    @Override
-   public XResultData importSetup(BranchId branch, String baseDir, Integer startBranch, boolean handleRelations, boolean singleBranch) {
+   public XResultData importSetup(BranchId branch, String baseDir, Integer startBranch, boolean handleRelations,
+      boolean singleBranch) {
       return null;
    }
 

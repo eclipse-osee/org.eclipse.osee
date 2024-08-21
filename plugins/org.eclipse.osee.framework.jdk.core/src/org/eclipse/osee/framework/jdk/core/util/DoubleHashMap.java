@@ -101,8 +101,7 @@ public class DoubleHashMap<Kp, Ks, V> implements DoubleMap<Kp, Ks, V> {
     * @param secondaryLoadFactor the load factor for secondary maps.
     */
 
-   public DoubleHashMap(int primaryInitialCapacity, float primaryLoadFactor, int secondaryInitialCapacity,
-      float secondaryLoadFactor) {
+   public DoubleHashMap(int primaryInitialCapacity, float primaryLoadFactor, int secondaryInitialCapacity, float secondaryLoadFactor) {
       this.primaryMap = new HashMap<>(primaryInitialCapacity, primaryLoadFactor);
       this.secondaryInitialCapacity = secondaryInitialCapacity;
       this.secondaryLoadFactor = secondaryLoadFactor;

@@ -150,7 +150,8 @@ public class UpdateMergeBranch extends AbstractDbTxOperation {
    private final static String INSERT_ARTIFACT_GAMMAS =
       "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current, branch_id, app_id) SELECT ?, arv1.gamma_id, txs1.mod_type, ?, ?, txs1.app_id FROM osee_artifact arv1, osee_txs txs1, osee_join_id4 ald1 WHERE txs1.branch_id = ? AND txs1.tx_current in (1,2) AND txs1.gamma_id = arv1.gamma_id AND arv1.art_id = ald1.id2 and ald1.query_id = ?";
 
-   private void addArtifactsToBranch(JdbcConnection connection, BranchId sourceBranch, BranchId destBranch, BranchId mergeBranch, Collection<ArtifactId> artIds) {
+   private void addArtifactsToBranch(JdbcConnection connection, BranchId sourceBranch, BranchId destBranch,
+      BranchId mergeBranch, Collection<ArtifactId> artIds) {
       if (artIds == null || artIds.isEmpty()) {
          throw new IllegalArgumentException("Artifact IDs can not be null or empty");
       }
@@ -169,7 +170,8 @@ public class UpdateMergeBranch extends AbstractDbTxOperation {
       }
    }
 
-   private void insertGammas(JdbcConnection connection, String sql, TransactionId baseTx, Long queryId, BranchId sourceBranch, BranchId mergeBranch) {
+   private void insertGammas(JdbcConnection connection, String sql, TransactionId baseTx, Long queryId,
+      BranchId sourceBranch, BranchId mergeBranch) {
       getJdbcClient().runPreparedUpdate(connection, sql, baseTx, TxCurrent.CURRENT, mergeBranch, sourceBranch, queryId);
    }
 

@@ -44,7 +44,8 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       return new BranchDataSaxHandler(logger, service, true, 0);
    }
 
-   public static BranchDataSaxHandler newLimitedCacheBranchDataSaxHandler(Log logger, JdbcClient service, int cacheLimit) {
+   public static BranchDataSaxHandler newLimitedCacheBranchDataSaxHandler(Log logger, JdbcClient service,
+      int cacheLimit) {
       return new BranchDataSaxHandler(logger, service, false, cacheLimit);
    }
 
@@ -183,7 +184,8 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       return newValue.intValue();
    }
 
-   private Collection<BranchData> checkTargetDbBranches(JdbcConnection connection, Collection<BranchData> selectedBranches) {
+   private Collection<BranchData> checkTargetDbBranches(JdbcConnection connection,
+      Collection<BranchData> selectedBranches) {
       Map<Long, BranchData> idToBranchData = new HashMap<>();
       for (BranchData data : selectedBranches) {
          idToBranchData.put(data.getId(), data);

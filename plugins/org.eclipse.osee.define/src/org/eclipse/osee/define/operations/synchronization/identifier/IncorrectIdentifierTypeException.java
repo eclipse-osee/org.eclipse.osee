@@ -198,7 +198,8 @@ public class IncorrectIdentifierTypeException extends RuntimeException {
     * member of.
     */
 
-   public static String buildMessage(Identifier identifier, String message, IdentifierTypeGroup missingIdentifierTypeGroup, IdentifierTypeGroup... expectedIdentifierTypeGroups) {
+   public static String buildMessage(Identifier identifier, String message,
+      IdentifierTypeGroup missingIdentifierTypeGroup, IdentifierTypeGroup... expectedIdentifierTypeGroups) {
       //@formatter:off
       return
          new Message()

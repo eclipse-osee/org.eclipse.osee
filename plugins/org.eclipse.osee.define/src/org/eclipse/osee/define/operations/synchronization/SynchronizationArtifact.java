@@ -566,7 +566,8 @@ public class SynchronizationArtifact implements AutoCloseable, ToMessage {
     * @return the {@link GroveThing} for the Synchronization Artifact Specification of Spec Object that was created.
     */
 
-   private GroveThing createCommonObject(ArtifactReadable nativeArtifactReadable, IdentifierType identifierType, GroveThing specificationGroveThing, GroveThing parentCommonObjectGroveThing) {
+   private GroveThing createCommonObject(ArtifactReadable nativeArtifactReadable, IdentifierType identifierType,
+      GroveThing specificationGroveThing, GroveThing parentCommonObjectGroveThing) {
 
       //@formatter:off
       assert
@@ -603,7 +604,8 @@ public class SynchronizationArtifact implements AutoCloseable, ToMessage {
     * @param nativeRelationTypeToken the type of relationship to create.
     */
 
-   private void createRelationship(GroveThing sourceSpecObjectGroveThing, GroveThing targetSpecObjectGroveThing, RelationTypeToken nativeRelationTypeToken) {
+   private void createRelationship(GroveThing sourceSpecObjectGroveThing, GroveThing targetSpecObjectGroveThing,
+      RelationTypeToken nativeRelationTypeToken) {
 
       var specRelationGrove = this.getForest().getGrove(IdentifierType.SPEC_RELATION);
       var specRelationTypeGroveThing = this.getSpecRelationTypeGroveThing(nativeRelationTypeToken.getId());
@@ -656,7 +658,8 @@ public class SynchronizationArtifact implements AutoCloseable, ToMessage {
     * @param nativeRelationTypeToken the relationship type to create relationships for.
     */
 
-   private void createRelationshipsForSide(RelationSide relationSide, GroveThing specObjectGroveThing, RelationTypeToken nativeRelationTypeToken) {
+   private void createRelationshipsForSide(RelationSide relationSide, GroveThing specObjectGroveThing,
+      RelationTypeToken nativeRelationTypeToken) {
       //@formatter:off
 
       assert
@@ -732,7 +735,8 @@ public class SynchronizationArtifact implements AutoCloseable, ToMessage {
     * @return the newly created or existing associated {@link GroveThing}.
     */
 
-   private GroveThing getOrCreateCommonObjectType(ArtifactTypeToken nativeArtifactTypeToken, IdentifierType identifierType) {
+   private GroveThing getOrCreateCommonObjectType(ArtifactTypeToken nativeArtifactTypeToken,
+      IdentifierType identifierType) {
       return this.commonObjectTypeContainerMap.get(nativeArtifactTypeToken, identifierType).orElseGet(() -> {
          var newCommonObjectTypeGroveThing = this.forest.createGroveThing(identifierType);
          newCommonObjectTypeGroveThing.setNativeThings(nativeArtifactTypeToken);
@@ -900,7 +904,8 @@ public class SynchronizationArtifact implements AutoCloseable, ToMessage {
     * SpecObjectGroveThing that is the hierarchical parent of the OSEE artifact to be added.
     */
 
-   private void processArtifactReadable(ArtifactReadable artifactReadable, GroveThing specificationGroveThing, GroveThing parentCommonObjectGroveThing) {
+   private void processArtifactReadable(ArtifactReadable artifactReadable, GroveThing specificationGroveThing,
+      GroveThing parentCommonObjectGroveThing) {
       //@formatter:off
 
       var specRelationTypeGrove = this.getForest().getGrove(IdentifierType.SPEC_RELATION_TYPE);
@@ -1044,7 +1049,8 @@ public class SynchronizationArtifact implements AutoCloseable, ToMessage {
     * @param attributeTypeToken the native {@link AttributeTypeToken} that defines the enumeration members.
     */
 
-   private void processEnumeratedDataTypeDefinition(GroveThing dataTypeDefinitionGroveThing, AttributeTypeToken attributeTypeToken) {
+   private void processEnumeratedDataTypeDefinition(GroveThing dataTypeDefinitionGroveThing,
+      AttributeTypeToken attributeTypeToken) {
 
       assert (attributeTypeToken.isEnumerated());
 

@@ -141,7 +141,8 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
       return parseState;
    }
 
-   private void handleStartElement(OseeLinkBuilder linkBuilder, final List<WordExtractorData> artifactElements, Element element, WordExtractorData extractorData) {
+   private void handleStartElement(OseeLinkBuilder linkBuilder, final List<WordExtractorData> artifactElements,
+      Element element, WordExtractorData extractorData) {
       Element newArtifactElement;
       numberOfStartTags++;
       newArtifactElement = document.createElement("WordAttribute.WORD_TEMPLATE_CONTENT");

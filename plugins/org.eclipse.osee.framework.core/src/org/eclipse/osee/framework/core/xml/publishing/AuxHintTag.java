@@ -71,8 +71,7 @@ public enum AuxHintTag implements XmlTagSpecification {
     * </ul>
     */
 
-   private AuxHintTag(@NonNull XmlNamespaceSpecification xmlNamespaceSpecification, @NonNull String tagName,
-      @NonNull Set<@NonNull XmlAttributeSpecification> xmlAttributeSpecifications) {
+   private AuxHintTag(@NonNull XmlNamespaceSpecification xmlNamespaceSpecification, @NonNull String tagName, @NonNull Set<@NonNull XmlAttributeSpecification> xmlAttributeSpecifications) {
       //@formatter:off
       this.abstractTagSpecification =
          new AbstractXmlTagSpecification

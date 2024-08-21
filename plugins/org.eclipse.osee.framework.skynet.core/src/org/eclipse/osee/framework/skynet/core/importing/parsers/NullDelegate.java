@@ -39,7 +39,9 @@ public final class NullDelegate implements IArtifactExtractorDelegate {
    }
 
    @Override
-   public void processContent(OperationLogger logger, RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph) {
+   public void processContent(OperationLogger logger, RoughArtifactCollector collector, boolean forceBody,
+      boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content,
+      boolean isParagraph) {
       //
    }
 

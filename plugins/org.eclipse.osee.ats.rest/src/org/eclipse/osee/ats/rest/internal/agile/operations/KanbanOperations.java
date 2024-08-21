@@ -153,7 +153,8 @@ public class KanbanOperations {
       return jSprint;
    }
 
-   private void addAssigneesToTask(IAgileItem aItem, JaxKbTask task, IAtsWorkItem workItem, KanbanRowType rowType, Set<ArtifactToken> teamMembers) {
+   private void addAssigneesToTask(IAgileItem aItem, JaxKbTask task, IAtsWorkItem workItem, KanbanRowType rowType,
+      Set<ArtifactToken> teamMembers) {
       Set<String> assigneeIds = new HashSet<>();
       Set<String> assigneeNames = new HashSet<>();
       if (rowType == KanbanRowType.BY_ASSIGNEE) {
@@ -162,8 +163,8 @@ public class KanbanOperations {
          assigneeNames = aItemToRowMap.get(aItem.getId());
       } else {
          @SuppressWarnings("unchecked")
-         Set<AtsUser> assigneeImplementers = Collections.setUnion(workItem.getAssignees(),
-            atsApi.getImplementerService().getImplementers(workItem));
+         Set<AtsUser> assigneeImplementers =
+            Collections.setUnion(workItem.getAssignees(), atsApi.getImplementerService().getImplementers(workItem));
          for (AtsUser user : assigneeImplementers) {
             if (!AtsCoreUsers.isSystemUser(user)) {
                teamMembers.add(user.getStoreObject());
@@ -212,13 +213,14 @@ public class KanbanOperations {
    }
 
    @SuppressWarnings("unchecked")
-   private void addRowsByAssignees(JaxKbSprint jSprint, JaxKbTask task, IAgileItem aItem, IAtsWorkItem workItem, Set<ArtifactToken> teamMembers) {
+   private void addRowsByAssignees(JaxKbSprint jSprint, JaxKbTask task, IAgileItem aItem, IAtsWorkItem workItem,
+      Set<ArtifactToken> teamMembers) {
       // "rowIdToName" : {
       //   "jod6us" : "John Doe",
       //   "sam5us" : "Sam Smith"
       //  },
-      Set<AtsUser> assigneeImplementers = Collections.setUnion(workItem.getAssignees(),
-         atsApi.getImplementerService().getImplementers(workItem));
+      Set<AtsUser> assigneeImplementers =
+         Collections.setUnion(workItem.getAssignees(), atsApi.getImplementerService().getImplementers(workItem));
       Set<String> assigneeNames = new HashSet<>(assigneeImplementers.size());
       Set<String> assigneeIds = new HashSet<>(assigneeImplementers.size());
       for (AtsUser user : assigneeImplementers) {
@@ -264,7 +266,8 @@ public class KanbanOperations {
       return values;
    }
 
-   private Collection<String> getAssigneeUserIdsString(IAtsWorkItem workItem, AtsApi atsApi, Set<ArtifactToken> teamMembers) {
+   private Collection<String> getAssigneeUserIdsString(IAtsWorkItem workItem, AtsApi atsApi,
+      Set<ArtifactToken> teamMembers) {
       List<AtsUser> assignees = workItem.getAssignees();
       Set<String> ids = new HashSet<>();
       // Make sure team includes any assigned even if not configured as part of team
@@ -278,7 +281,8 @@ public class KanbanOperations {
       return ids;
    }
 
-   private Collection<String> getImplementerUserIdsString(IAtsWorkItem workItem, AtsApi atsApi, Set<ArtifactToken> teamMembers) {
+   private Collection<String> getImplementerUserIdsString(IAtsWorkItem workItem, AtsApi atsApi,
+      Set<ArtifactToken> teamMembers) {
       if (workItem.isCancelled()) {
          return java.util.Collections.singleton(workItem.getCancelledBy().getStoreObject().getIdString());
       }
@@ -301,7 +305,8 @@ public class KanbanOperations {
       return ids;
    }
 
-   private void addAvailableStates(JaxKbSprint items, IAgileItem aItem, IAtsWorkItem workItem, ArtifactToken artifact, AtsApi atsApi, Collection<String> ignoreStates) {
+   private void addAvailableStates(JaxKbSprint items, IAgileItem aItem, IAtsWorkItem workItem, ArtifactToken artifact,
+      AtsApi atsApi, Collection<String> ignoreStates) {
       try {
          WorkDefinition workDef = workItem.getWorkDefinition();
          for (StateDefinition stateDef : atsApi.getWorkDefinitionService().getStatesOrderedByOrdinal(workDef)) {
@@ -331,7 +336,8 @@ public class KanbanOperations {
       }
    }
 
-   private JaxKbTask createJaxKbTask(IAgileItem aItem, IAtsWorkItem wItem, ArtifactToken artifact, IAgileTeam agileTeam, AtsApi atsApi) {
+   private JaxKbTask createJaxKbTask(IAgileItem aItem, IAtsWorkItem wItem, ArtifactToken artifact, IAgileTeam agileTeam,
+      AtsApi atsApi) {
       JaxKbTask task = new JaxKbTask();
       task.setName(aItem.getName());
       task.setGuid(aItem.getIdString());

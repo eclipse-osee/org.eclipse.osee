@@ -79,7 +79,8 @@ public class CommitTestRunJob extends Job {
       return toReturn;
    }
 
-   private Artifact[] commitSelectedArtifacts(IProgressMonitor monitor, String comment, Object[] items) throws Exception {
+   private Artifact[] commitSelectedArtifacts(IProgressMonitor monitor, String comment, Object[] items)
+      throws Exception {
       Map<BranchToken, List<Artifact>> commitMap = getArtifactsByBranch(items);
       List<Artifact> committedList = new ArrayList<>();
       for (BranchToken branch : commitMap.keySet()) {

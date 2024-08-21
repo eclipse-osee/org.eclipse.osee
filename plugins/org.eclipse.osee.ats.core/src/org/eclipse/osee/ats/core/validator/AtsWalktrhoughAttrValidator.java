@@ -29,7 +29,8 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 public class AtsWalktrhoughAttrValidator extends AtsXWidgetValidator {
 
    @Override
-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
+   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+      StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
       WidgetResult result = WidgetResult.Success;
       if (widgetDef.getOptions().contains(WidgetOption.WALKTHROUGH) && widgetDef.getOptions().contains(
          WidgetOption.REQUIRED_FOR_TRANSITION)) {

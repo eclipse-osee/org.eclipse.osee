@@ -27,8 +27,7 @@ import org.eclipse.osee.jdbc.JdbcException;
  */
 public class PooledConnectionProvider implements JdbcConnectionProvider {
 
-   private final ConcurrentHashMap<String, LazyObject<DataSource>> dataSourceCache =
-      new ConcurrentHashMap<>();
+   private final ConcurrentHashMap<String, LazyObject<DataSource>> dataSourceCache = new ConcurrentHashMap<>();
 
    private final PoolFactory poolFactory;
 

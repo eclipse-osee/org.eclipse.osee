@@ -346,7 +346,8 @@ public class OAuth2ServerProvider {
       }
    }
 
-   private static AbstractClientService bind(AbstractClientService object, ClientProvider dataProvider, SubjectProvider subjectProvider) {
+   private static AbstractClientService bind(AbstractClientService object, ClientProvider dataProvider,
+      SubjectProvider subjectProvider) {
       object.setDataProvider(dataProvider);
       object.setResourceOwnerNameProvider(subjectProvider);
       object.setSessionAuthenticityTokenProvider(subjectProvider);
@@ -354,12 +355,14 @@ public class OAuth2ServerProvider {
       return object;
    }
 
-   private static AbstractAccessTokenValidator bind(AbstractAccessTokenValidator object, OAuthDataProvider dataProvider) {
+   private static AbstractAccessTokenValidator bind(AbstractAccessTokenValidator object,
+      OAuthDataProvider dataProvider) {
       object.setDataProvider(dataProvider);
       return object;
    }
 
-   private static AbstractOAuthService bind(RedirectionBasedGrantService object, OAuthDataProvider dataProvider, SubjectProvider subjectProvider) {
+   private static AbstractOAuthService bind(RedirectionBasedGrantService object, OAuthDataProvider dataProvider,
+      SubjectProvider subjectProvider) {
       object.setResourceOwnerNameProvider(subjectProvider);
       object.setSessionAuthenticityTokenProvider(subjectProvider);
       object.setSubjectCreator(subjectProvider);
@@ -367,13 +370,15 @@ public class OAuth2ServerProvider {
       return object;
    }
 
-   private static AuthorizationCodeGrantHandler bind(AuthorizationCodeGrantHandler object, OAuthDataProvider dataProvider, CodeVerifierTransformer codeVerifier) {
+   private static AuthorizationCodeGrantHandler bind(AuthorizationCodeGrantHandler object,
+      OAuthDataProvider dataProvider, CodeVerifierTransformer codeVerifier) {
       object.setCodeVerifierTransformer(codeVerifier);
       bind(object, dataProvider);
       return object;
    }
 
-   private static ResourceOwnerGrantHandler bind(ResourceOwnerGrantHandler handler, OAuthDataProvider dataProvider, ResourceOwnerLoginHandler loginHandler) {
+   private static ResourceOwnerGrantHandler bind(ResourceOwnerGrantHandler handler, OAuthDataProvider dataProvider,
+      ResourceOwnerLoginHandler loginHandler) {
       handler.setLoginHandler(loginHandler);
       bind(handler, dataProvider);
       return handler;

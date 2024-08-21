@@ -26,7 +26,8 @@ import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 public class AtsXNumberValidator extends AtsXWidgetValidator {
 
    @Override
-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
+   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+      StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
       WidgetResult result = WidgetResult.Success;
       String name = widgetDef.getXWidgetName();
 

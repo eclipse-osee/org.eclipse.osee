@@ -44,7 +44,8 @@ public class XmlTagger extends AbstractTagger {
    }
 
    @Override
-   public List<MatchLocation> find(InputStream provider, String toSearch, boolean matchAllLocations, QueryOption... options) throws Exception {
+   public List<MatchLocation> find(InputStream provider, String toSearch, boolean matchAllLocations,
+      QueryOption... options) throws Exception {
       List<MatchLocation> toReturn;
       if (Strings.isValid(toSearch)) {
          InputStream inputStream = null;

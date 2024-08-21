@@ -67,7 +67,8 @@ public class InterfaceUnitApiImpl implements InterfaceUnitApi {
    }
 
    @Override
-   public Collection<ArtifactAccessorResult> getAll(BranchId branch, ArtifactId viewId, AttributeTypeId orderByAttribute) {
+   public Collection<ArtifactAccessorResult> getAll(BranchId branch, ArtifactId viewId,
+      AttributeTypeId orderByAttribute) {
       return this.getAll(branch, viewId, 0L, 0L, orderByAttribute);
    }
 
@@ -120,13 +121,14 @@ public class InterfaceUnitApiImpl implements InterfaceUnitApi {
    }
 
    @Override
-   public Collection<ArtifactAccessorResult> getAllByFilter(BranchId branch, String filter, long pageNum, long pageSize) {
+   public Collection<ArtifactAccessorResult> getAllByFilter(BranchId branch, String filter, long pageNum,
+      long pageSize) {
       return this.getAllByFilter(branch, ArtifactId.SENTINEL, filter, pageNum, pageSize);
    }
 
    @Override
-   public Collection<ArtifactAccessorResult> getAllByFilter(BranchId branch, ArtifactId viewId, String filter, long pageNum,
-      long pageSize) {
+   public Collection<ArtifactAccessorResult> getAllByFilter(BranchId branch, ArtifactId viewId, String filter,
+      long pageNum, long pageSize) {
       return this.getAllByFilter(branch, viewId, filter, pageNum, pageSize, AttributeTypeId.SENTINEL);
    }
 
@@ -137,8 +139,8 @@ public class InterfaceUnitApiImpl implements InterfaceUnitApi {
    }
 
    @Override
-   public Collection<ArtifactAccessorResult> getAllByFilter(BranchId branch, ArtifactId viewId, String filter, long pageNum,
-      long pageSize, AttributeTypeId orderByAttribute) {
+   public Collection<ArtifactAccessorResult> getAllByFilter(BranchId branch, ArtifactId viewId, String filter,
+      long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
       try {
          return this.accessor.getAllByFilter(branch, filter, attributes, pageNum, pageSize, orderByAttribute);
       } catch (Exception ex) {

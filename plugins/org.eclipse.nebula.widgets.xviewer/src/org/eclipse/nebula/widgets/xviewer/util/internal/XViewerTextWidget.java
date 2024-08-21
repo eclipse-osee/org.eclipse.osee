@@ -163,11 +163,11 @@ public class XViewerTextWidget extends XViewerWidget {
 
    private void addModificationListener() {
       sText.addListener(SWT.Modify, e -> {
-            if (sText != null) {
-               text = sText.getText();
-               setLabelError();
-               notifyXModifiedListeners();
-            }
+         if (sText != null) {
+            text = sText.getText();
+            setLabelError();
+            notifyXModifiedListeners();
+         }
       });
    }
 
@@ -219,19 +219,19 @@ public class XViewerTextWidget extends XViewerWidget {
       Menu menu = new Menu(sText.getShell());
       MenuItem cut = new MenuItem(menu, SWT.NONE);
       cut.setText(XViewerText.get("menu.cut")); //$NON-NLS-1$
-      cut.addListener(SWT.Selection, e-> {
-            sText.cut();
-            sText.redraw();
+      cut.addListener(SWT.Selection, e -> {
+         sText.cut();
+         sText.redraw();
       });
       MenuItem copy = new MenuItem(menu, SWT.NONE);
       copy.setText(XViewerText.get("menu.copy")); //$NON-NLS-1$
-      copy.addListener(SWT.Selection, e-> sText.copy());
+      copy.addListener(SWT.Selection, e -> sText.copy());
 
       MenuItem paste = new MenuItem(menu, SWT.NONE);
       paste.setText(XViewerText.get("menu.paste")); //$NON-NLS-1$
-      paste.addListener(SWT.Selection, e->  {
-            sText.paste();
-            sText.redraw();
+      paste.addListener(SWT.Selection, e -> {
+         sText.paste();
+         sText.redraw();
       });
       return menu;
    }

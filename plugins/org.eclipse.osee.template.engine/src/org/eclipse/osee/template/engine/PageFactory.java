@@ -31,13 +31,15 @@ public final class PageFactory {
       return page;
    }
 
-   public static PageCreator newPageCreator(IResourceRegistry registry, ResourceToken valuesResource, String... keyValues) {
+   public static PageCreator newPageCreator(IResourceRegistry registry, ResourceToken valuesResource,
+      String... keyValues) {
       PageCreator page = newPageCreator(registry, keyValues);
       page.readKeyValuePairs(valuesResource);
       return page;
    }
 
-   public static PageCreator newPageCreatorWithRules(IResourceRegistry registry, ResourceToken valuesResource, AppendableRule<?>... rules) {
+   public static PageCreator newPageCreatorWithRules(IResourceRegistry registry, ResourceToken valuesResource,
+      AppendableRule<?>... rules) {
       PageCreator page = newPageCreator(registry);
       page.addSubstitution(rules);
       page.readKeyValuePairs(valuesResource);
@@ -50,7 +52,8 @@ public final class PageFactory {
       return page;
    }
 
-   public static PageCreator newPageCreator(IResourceRegistry registry, ResourceToken valuesResource, Iterable<String> keyValues) {
+   public static PageCreator newPageCreator(IResourceRegistry registry, ResourceToken valuesResource,
+      Iterable<String> keyValues) {
       PageCreator page = newPageCreator(registry, keyValues);
       page.readKeyValuePairs(valuesResource);
       return page;
@@ -65,28 +68,33 @@ public final class PageFactory {
       return page.realizePage(templateResource);
    }
 
-   public static String realizePage(IResourceRegistry registry, ResourceToken templateResource, AppendableRule<?>... rules) {
+   public static String realizePage(IResourceRegistry registry, ResourceToken templateResource,
+      AppendableRule<?>... rules) {
       PageCreator page = newPageCreator(registry);
       page.addSubstitution(rules);
       return page.realizePage(templateResource);
    }
 
-   public static void realizePage(IResourceRegistry registry, ResourceToken templateResource, Appendable output, String... keyValues) {
+   public static void realizePage(IResourceRegistry registry, ResourceToken templateResource, Appendable output,
+      String... keyValues) {
       PageCreator page = newPageCreator(registry, keyValues);
       page.realizePage(templateResource, output);
    }
 
-   public static String realizePage(IResourceRegistry registry, ResourceToken templateResource, ResourceToken valuesResource, String... keyValues) {
+   public static String realizePage(IResourceRegistry registry, ResourceToken templateResource,
+      ResourceToken valuesResource, String... keyValues) {
       PageCreator page = newPageCreator(registry, valuesResource, keyValues);
       return page.realizePage(templateResource);
    }
 
-   public static String realizePage(IResourceRegistry registry, ResourceToken templateResource, Iterable<String> keyValues) {
+   public static String realizePage(IResourceRegistry registry, ResourceToken templateResource,
+      Iterable<String> keyValues) {
       PageCreator page = newPageCreator(registry, keyValues);
       return page.realizePage(templateResource);
    }
 
-   public static String realizePage(IResourceRegistry registry, ResourceToken templateResource, ResourceToken valuesResource, Iterable<String> keyValues) {
+   public static String realizePage(IResourceRegistry registry, ResourceToken templateResource,
+      ResourceToken valuesResource, Iterable<String> keyValues) {
       PageCreator page = newPageCreator(registry, valuesResource, keyValues);
       return page.realizePage(templateResource);
    }
@@ -108,7 +116,8 @@ public final class PageFactory {
       return realizePage(null, name, clazz, rules);
    }
 
-   public static String realizePage(IResourceRegistry registry, String name, Class<?> clazz, AppendableRule<?>... rules) {
+   public static String realizePage(IResourceRegistry registry, String name, Class<?> clazz,
+      AppendableRule<?>... rules) {
       ResourceToken templateResource = new ClassBasedResourceToken(name, clazz);
       return realizePage(registry, templateResource, rules);
    }

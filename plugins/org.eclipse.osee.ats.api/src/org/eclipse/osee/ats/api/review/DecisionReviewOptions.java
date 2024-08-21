@@ -74,7 +74,8 @@ public class DecisionReviewOptions {
          atsApi.getAttributeResolver().getSoleAttributeValue(decRev, getAttributeType(), ""), atsApi);
    }
 
-   public static void validateDecisionOptions(TransitionResults results, IAtsDecisionReview decRev, String decisionOptions, AtsApi atsApi) {
+   public static void validateDecisionOptions(TransitionResults results, IAtsDecisionReview decRev,
+      String decisionOptions, AtsApi atsApi) {
       for (String decsionOpt : decisionOptions.split("[\n\r]+")) {
          DecisionReviewOption state = new DecisionReviewOption("");
          Result result = state.setFromXml(decsionOpt);

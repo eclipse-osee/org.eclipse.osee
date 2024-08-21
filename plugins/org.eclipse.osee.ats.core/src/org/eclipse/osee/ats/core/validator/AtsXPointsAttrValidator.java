@@ -30,7 +30,8 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 public class AtsXPointsAttrValidator extends AtsXWidgetValidator {
 
    @Override
-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
+   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+      StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsApi) {
       WidgetResult result = WidgetResult.Success;
       if ("XEstimatedPointsWidget".equals(widgetDef.getXWidgetName())) {
          boolean found = false;

@@ -128,7 +128,8 @@ public class BranchDataFactoryTest {
       assertData(result, branch.getName(), branch, BranchType.PORT, comment, txRecord, ArtifactId.SENTINEL, true);
    }
 
-   private static void assertData(CreateBranchData actual, String branchName, BranchId branch, BranchType type, String comment, TransactionId fromTx, ArtifactId associatedArtifact, boolean isCopyFromTx) {
+   private static void assertData(CreateBranchData actual, String branchName, BranchId branch, BranchType type,
+      String comment, TransactionId fromTx, ArtifactId associatedArtifact, boolean isCopyFromTx) {
       assertEquals(branchName, actual.getName());
       assertEquals(branch, actual.getBranch());
 

@@ -27,7 +27,8 @@ public interface ApplicabilityDsQuery {
 
    ApplicabilityToken getApplicabilityToken(ArtifactId artId, BranchId branch);
 
-   List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokens(List<? extends ArtifactId> artIds, BranchId branch);
+   List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokens(List<? extends ArtifactId> artIds,
+      BranchId branch);
 
    Set<ArtifactId> getExcludedArtifacts(BranchId branch, ArtifactId view);
 

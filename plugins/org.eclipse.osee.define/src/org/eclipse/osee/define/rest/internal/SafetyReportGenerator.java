@@ -83,7 +83,8 @@ public class SafetyReportGenerator {
       currentRow[col] = value;
    }
 
-   public void runOperation(OrcsApi providedOrcs, BranchId branchId, String codeRoot, Writer providedWriter) throws IOException {
+   public void runOperation(OrcsApi providedOrcs, BranchId branchId, String codeRoot, Writer providedWriter)
+      throws IOException {
       ISheetWriter writer = new ExcelXmlWriter(providedWriter);
 
       init(providedOrcs, branchId, writer);
@@ -159,7 +160,8 @@ public class SafetyReportGenerator {
       return "";
    }
 
-   private void writeSFHAInfo(ArtifactReadable systemFunction, String sevCat, ISheetWriter writer, String[] currentRowValues, int col) throws IOException {
+   private void writeSFHAInfo(ArtifactReadable systemFunction, String sevCat, ISheetWriter writer,
+      String[] currentRowValues, int col) throws IOException {
       ResultSet<ArtifactReadable> results = systemFunction.getRelated(CoreRelationTypes.Assessment_SafetyAssessment);
       if (results.isEmpty()) {
          writeCell("No SFHA Hazards found", currentRowValues, col);

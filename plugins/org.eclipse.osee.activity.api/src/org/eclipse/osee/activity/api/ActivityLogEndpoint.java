@@ -54,7 +54,8 @@ public interface ActivityLogEndpoint {
    @POST
    @Path("/entry/{activity-type}/{parent-id}/{status}")
    @Produces({MediaType.APPLICATION_JSON})
-   ActivityEntryId createEntry(@PathParam("activity-type") ActivityTypeId type, @PathParam("parent-id") Long parentId, @PathParam("status") Integer status, String message);
+   ActivityEntryId createEntry(@PathParam("activity-type") ActivityTypeId type, @PathParam("parent-id") Long parentId,
+      @PathParam("status") Integer status, String message);
 
    /**
     * Create a new activity type with the given token fields. If id is not valid then a new one will be generated and

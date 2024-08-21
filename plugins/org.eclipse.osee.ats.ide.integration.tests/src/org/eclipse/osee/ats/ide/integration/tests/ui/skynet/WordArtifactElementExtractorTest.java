@@ -193,8 +193,8 @@ public class WordArtifactElementExtractorTest {
    private void multiArtifactTest(List<WordExtractorData> actuals, List<String> expected)
       throws IOException, XMLStreamException {
       for (int i = 0; i < actuals.size(); i++) {
-         String artContent = WordCoreUtil.textOnly(Lib.inputStreamToString(new ByteArrayInputStream(
-            WordTemplateRenderer.getFormattedContent(actuals.get(i).getParentEelement()))));
+         String artContent = WordCoreUtil.textOnly(Lib.inputStreamToString(
+            new ByteArrayInputStream(WordTemplateRenderer.getFormattedContent(actuals.get(i).getParentEelement()))));
          Assert.assertTrue("expected:*" + expected.get(i) + "* got:*" + artContent + "*",
             expected.get(i).equals(artContent));
       }

@@ -40,7 +40,8 @@ public class OrphanSearchFilter extends NotInRelationFilter {
    }
 
    @Override
-   public void loadFromStorageString(FilterTableViewer filterViewer, String type, String value, String storageString, boolean isNotEnabled) {
+   public void loadFromStorageString(FilterTableViewer filterViewer, String type, String value, String storageString,
+      boolean isNotEnabled) {
       // do nothing
    }
 

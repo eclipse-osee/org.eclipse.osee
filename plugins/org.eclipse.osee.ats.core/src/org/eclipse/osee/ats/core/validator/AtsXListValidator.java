@@ -26,7 +26,8 @@ import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
 public class AtsXListValidator extends AtsXWidgetValidator {
 
    @Override
-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
+   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+      StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices) {
       WidgetResult result = WidgetResult.Success;
       if ("XListDam".equals(widgetDef.getXWidgetName())) {
          result = validateWidgetIsRequired(provider, widgetDef, fromStateDef, toStateDef);

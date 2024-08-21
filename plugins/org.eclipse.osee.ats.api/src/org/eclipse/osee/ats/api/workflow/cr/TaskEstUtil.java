@@ -104,7 +104,8 @@ public class TaskEstUtil {
    /**
     * Create dynamic TEDs from children UserGroups off given teamDef where UserGroup has TaskEst static id
     */
-   public static void getTaskDefsFromUserGroupsOff(IAtsTeamDefinitionArtifactToken teamDef, List<TaskEstDefinition> taskDefs, AtsApi atsApi) {
+   public static void getTaskDefsFromUserGroupsOff(IAtsTeamDefinitionArtifactToken teamDef,
+      List<TaskEstDefinition> taskDefs, AtsApi atsApi) {
       for (ArtifactToken childArt : atsApi.getRelationResolver().getChildren(teamDef)) {
          if (atsApi.getAttributeResolver().getAttributesToStringList(childArt, CoreAttributeTypes.StaticId).contains(
             TaskEstUtil.TASK_EST_STATIC_ID)) {

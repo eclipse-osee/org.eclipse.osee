@@ -52,7 +52,8 @@ public interface JaxRsApi {
     * Deserialize a collection of the specified type containing elements of type elementClass from the JSON content
     * string
     */
-   <T, C extends Collection<T>> C readCollectionValue(String json, Class<? extends Collection> collectionClass, Class<T> elementClass);
+   <T, C extends Collection<T>> C readCollectionValue(String json, Class<? extends Collection> collectionClass,
+      Class<T> elementClass);
 
    /**
     * Deserialize a map of the specified key and value types from the JSON content string
@@ -97,8 +98,7 @@ public interface JaxRsApi {
    JsonFactory getFactory();
 
    /**
-    * Must only be called once on the client during startup. May be called by the server with a null
-    * UserService.
+    * Must only be called once on the client during startup. May be called by the server with a null UserService.
     * 
     * @param userService May be null if running on server
     */

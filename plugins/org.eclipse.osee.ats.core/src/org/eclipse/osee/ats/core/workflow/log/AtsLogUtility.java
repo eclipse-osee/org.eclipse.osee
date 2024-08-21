@@ -30,7 +30,8 @@ public class AtsLogUtility {
       return getHtml(atsLog, storageProvider, true, userService);
    }
 
-   public static String getHtml(IAtsLog atsLog, ILogStorageProvider storageProvider, boolean showLogTitle, IAtsUserService userService) {
+   public static String getHtml(IAtsLog atsLog, ILogStorageProvider storageProvider, boolean showLogTitle,
+      IAtsUserService userService) {
       return new AtsLogHtml(atsLog, storageProvider, userService, showLogTitle).get();
    }
 

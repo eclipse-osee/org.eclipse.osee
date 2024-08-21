@@ -65,7 +65,8 @@ public abstract class AbstractAtsEventServiceImpl implements IAtsEventService, E
    }
 
    @Override
-   public void postAtsWorkItemTopicEvent(AtsTopicEvent event, Collection<IAtsWorkItem> workItems, TransactionId transaction) {
+   public void postAtsWorkItemTopicEvent(AtsTopicEvent event, Collection<IAtsWorkItem> workItems,
+      TransactionId transaction) {
       try {
          // Send event locally using OSGI events
          HashMap<String, Object> properties = new HashMap<>();

@@ -72,19 +72,19 @@ public class EnumStringMultiSelectionDialog extends CheckedTreeSelectionDialog {
       addSelectedRadioButton = new Button(comp, SWT.CHECK);
       addSelectedRadioButton.setSelection(true);
       addSelectedRadioButton.addListener(SWT.Selection, e -> {
-            if (addSelectedRadioButton.getSelection()) {
-               selected = Selection.AddSelection;
-            }
+         if (addSelectedRadioButton.getSelection()) {
+            selected = Selection.AddSelection;
+         }
       });
 
       if (enableReplace) {
          (new Label(comp, SWT.None)).setText(XViewerText.get("EnumStringMultiSelectionDialog.label.replace")); //$NON-NLS-1$
 
          replaceAllRadioButton = new Button(comp, SWT.CHECK);
-         replaceAllRadioButton.addListener(SWT.Selection, e-> {
-               if (replaceAllRadioButton.getSelection()) {
-                  selected = Selection.ReplaceAll;
-               }
+         replaceAllRadioButton.addListener(SWT.Selection, e -> {
+            if (replaceAllRadioButton.getSelection()) {
+               selected = Selection.ReplaceAll;
+            }
          });
       }
 
@@ -92,10 +92,10 @@ public class EnumStringMultiSelectionDialog extends CheckedTreeSelectionDialog {
          (new Label(comp, SWT.None)).setText(XViewerText.get("EnumStringMultiSelectionDialog.label.remove")); //$NON-NLS-1$
 
          deleteSelectedRadioButton = new Button(comp, SWT.CHECK);
-         deleteSelectedRadioButton.addListener(SWT.Selection, e->  {
-               if (deleteSelectedRadioButton.getSelection()) {
-                  selected = Selection.DeleteSelected;
-               }
+         deleteSelectedRadioButton.addListener(SWT.Selection, e -> {
+            if (deleteSelectedRadioButton.getSelection()) {
+               selected = Selection.DeleteSelected;
+            }
          });
       }
       return c;

@@ -77,12 +77,14 @@ public class CreateChangeReportTasksDefinitionBuilder extends CreateTasksDefinit
       return this;
    }
 
-   public CreateChangeReportTasksDefinitionBuilder andToSiblingTeamAi(IAtsTeamDefinitionArtifactToken teamDef, IAtsActionableItemArtifactToken ai) {
+   public CreateChangeReportTasksDefinitionBuilder andToSiblingTeamAi(IAtsTeamDefinitionArtifactToken teamDef,
+      IAtsActionableItemArtifactToken ai) {
       createTasksDef.getChgRptOptions().andToSiblingTeam(teamDef, ai);
       return this;
    }
 
-   public CreateChangeReportTasksDefinitionBuilder andToSiblingTeamAi(IAtsTeamDefinitionArtifactToken teamDef, IAtsActionableItemArtifactToken ai, ChangeReportTaskNameProviderToken nameProviderId) {
+   public CreateChangeReportTasksDefinitionBuilder andToSiblingTeamAi(IAtsTeamDefinitionArtifactToken teamDef,
+      IAtsActionableItemArtifactToken ai, ChangeReportTaskNameProviderToken nameProviderId) {
       createTasksDef.getChgRptOptions().andToSiblingTeam(teamDef, ai, nameProviderId);
       return this;
    }
@@ -92,7 +94,8 @@ public class CreateChangeReportTasksDefinitionBuilder extends CreateTasksDefinit
       return this;
    }
 
-   public CreateChangeReportTasksDefinitionBuilder andToSiblingWorkType(WorkType workType, ChangeReportTaskNameProviderToken nameProviderId) {
+   public CreateChangeReportTasksDefinitionBuilder andToSiblingWorkType(WorkType workType,
+      ChangeReportTaskNameProviderToken nameProviderId) {
       createTasksDef.getChgRptOptions().andToSiblingWorkType(workType, nameProviderId);
       return this;
    }

@@ -55,10 +55,10 @@ public interface PartitionChartDataApi {
    Collection<PartitionChartDataToken> getAll(BranchId branch, ArtifactId viewId, List<FollowRelation> followRelations,
       long pageNum, long pageSize, AttributeTypeId orderByAttribute);
 
-   Collection<PartitionChartDataToken> getAll(BranchId branch, Collection<FollowRelation> followRelations, String filter,
-      Collection<AttributeTypeId> attributes, long pageCount, long pageSize, AttributeTypeId orderByAttribute)
-      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
-      NoSuchMethodException, SecurityException;
+   Collection<PartitionChartDataToken> getAll(BranchId branch, Collection<FollowRelation> followRelations,
+      String filter, Collection<AttributeTypeId> attributes, long pageCount, long pageSize,
+      AttributeTypeId orderByAttribute) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+      InvocationTargetException, NoSuchMethodException, SecurityException;
 
    Collection<PartitionChartDataToken> getAllByFilter(BranchId branch, String filter);
 

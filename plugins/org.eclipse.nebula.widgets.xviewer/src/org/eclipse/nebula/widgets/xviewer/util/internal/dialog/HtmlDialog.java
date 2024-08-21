@@ -43,7 +43,8 @@ public class HtmlDialog extends MessageDialog {
    private final String html;
 
    public HtmlDialog(String title, String message, String html) {
-      super(Display.getCurrent().getActiveShell(), title, null, message, SWT.NONE, new String[] {XViewerText.get("button.ok"), XViewerText.get("button.cancel")}, 0); //$NON-NLS-1$ //$NON-NLS-2$
+      super(Display.getCurrent().getActiveShell(), title, null, message, SWT.NONE,
+         new String[] {XViewerText.get("button.ok"), XViewerText.get("button.cancel")}, 0); //$NON-NLS-1$ //$NON-NLS-2$
       this.html = html;
    }
 
@@ -79,14 +80,14 @@ public class HtmlDialog extends MessageDialog {
       Menu menu = new Menu(b.getShell());
       MenuItem item = new MenuItem(menu, SWT.NONE);
       item.setText(XViewerText.get("HtmlDialog.menu.view_source")); //$NON-NLS-1$
-      item.addListener(SWT.Selection, e->  {
-            String file = System.getProperty("user.home") + File.separator + "out.html"; //$NON-NLS-1$ //$NON-NLS-2$
-            try {
-               XViewerLib.writeStringToFile(html, new File(file));
-            } catch (IOException ex) {
-               XViewerLog.logAndPopup(Activator.class, Level.SEVERE, ex);
-            }
-            Program.launch(file);
+      item.addListener(SWT.Selection, e -> {
+         String file = System.getProperty("user.home") + File.separator + "out.html"; //$NON-NLS-1$ //$NON-NLS-2$
+         try {
+            XViewerLib.writeStringToFile(html, new File(file));
+         } catch (IOException ex) {
+            XViewerLog.logAndPopup(Activator.class, Level.SEVERE, ex);
+         }
+         Program.launch(file);
       });
       return menu;
    }

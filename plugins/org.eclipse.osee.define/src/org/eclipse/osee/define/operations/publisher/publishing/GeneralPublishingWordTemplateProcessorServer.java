@@ -42,8 +42,7 @@ public class GeneralPublishingWordTemplateProcessorServer extends WordTemplatePr
     * @param atsApi handle to the {@link AtsApi} used by super class to access logging facilities.
     */
 
-   public GeneralPublishingWordTemplateProcessorServer(OrcsApi orcsApi, AtsApi atsApi,
-      DataAccessOperations dataAccessOperations, DataRightsOperations dataRightsOperations) {
+   public GeneralPublishingWordTemplateProcessorServer(OrcsApi orcsApi, AtsApi atsApi, DataAccessOperations dataAccessOperations, DataRightsOperations dataRightsOperations) {
       super(orcsApi, atsApi, dataAccessOperations, dataRightsOperations);
    }
 

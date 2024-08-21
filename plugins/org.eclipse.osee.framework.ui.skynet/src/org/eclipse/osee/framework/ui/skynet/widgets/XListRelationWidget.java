@@ -1,4 +1,5 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
+
 /*********************************************************************
  * Copyright (c) 2021 Boeing
  *

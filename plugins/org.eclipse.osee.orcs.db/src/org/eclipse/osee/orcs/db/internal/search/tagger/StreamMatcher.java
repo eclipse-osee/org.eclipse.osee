@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
  */
 public interface StreamMatcher {
 
-   List<MatchLocation> findInStream(InputStream inputStream, String toSearch, boolean findAllMatchLocations, QueryOption... options);
+   List<MatchLocation> findInStream(InputStream inputStream, String toSearch, boolean findAllMatchLocations,
+      QueryOption... options);
 
 }

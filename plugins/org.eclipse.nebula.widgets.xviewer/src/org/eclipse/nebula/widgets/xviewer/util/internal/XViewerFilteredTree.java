@@ -44,7 +44,7 @@ public class XViewerFilteredTree extends FilteredTreeComposite {
       comp.setLayout(XViewerLib.getZeroMarginLayout(3, false));
       comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-      (new Label(comp, SWT.NONE)).setText(XViewerText.get("label.filter") + " ");  //$NON-NLS-1$//$NON-NLS-2$
+      (new Label(comp, SWT.NONE)).setText(XViewerText.get("label.filter") + " "); //$NON-NLS-1$//$NON-NLS-2$
       super.createFilterControls(comp);
 
       return comp;

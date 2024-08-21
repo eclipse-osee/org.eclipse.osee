@@ -32,7 +32,8 @@ import org.xml.sax.helpers.XMLReaderFactory;
 public class XmlDataExtractor extends AbstractArtifactExtractor {
 
    @Override
-   protected XResultData extractFromSource(OrcsApi orcsApi, XResultData results, URI source, RoughArtifactCollector collector) throws Exception {
+   protected XResultData extractFromSource(OrcsApi orcsApi, XResultData results, URI source,
+      RoughArtifactCollector collector) throws Exception {
       ArtifactTypeToken primaryArtifactType = null;
 
       for (ArtifactTypeToken type : orcsApi.tokenService().getArtifactTypes()) {

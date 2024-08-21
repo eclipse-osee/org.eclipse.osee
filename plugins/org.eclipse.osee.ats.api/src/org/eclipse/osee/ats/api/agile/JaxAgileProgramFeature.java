@@ -23,7 +23,8 @@ public class JaxAgileProgramFeature extends JaxAtsObject {
 
    private long programBacklogItemId;
 
-   public static JaxAgileProgramFeature construct(IAgileProgramBacklogItem programBacklogItem, ArtifactToken programFeature) {
+   public static JaxAgileProgramFeature construct(IAgileProgramBacklogItem programBacklogItem,
+      ArtifactToken programFeature) {
       return construct(programBacklogItem.getId(), programFeature);
    }
 

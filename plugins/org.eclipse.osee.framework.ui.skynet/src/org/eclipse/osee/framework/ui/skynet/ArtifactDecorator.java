@@ -71,12 +71,12 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
    private final String storageKey;
 
    public ArtifactDecorator(String storageKey) {
-	      this.viewer = null;
-	      this.storageKey = storageKey;
-	      isSearch = false;
-	      addDecoratorInstance(this);
+      this.viewer = null;
+      this.storageKey = storageKey;
+      isSearch = false;
+      addDecoratorInstance(this);
    }
-   
+
    public ArtifactDecorator(String storageKey, boolean isSearch) {
       this.viewer = null;
       this.storageKey = storageKey;
@@ -99,7 +99,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
          saveAction(showArtBranch, "artifact.decorator.show.artBranch");
          saveAction(showArtVersion, "artifact.decorator.show.artVersion");
          if (!isSearch) {
-        	 saveAction(showRelations, "artifact.decorator.show.relations");
+            saveAction(showRelations, "artifact.decorator.show.relations");
          }
          if (attributesAction != null) {
             Collection<AttributeTypeToken> items = attributesAction.getSelected();
@@ -118,7 +118,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
          loadAction(showArtBranch, "artifact.decorator.show.artBranch");
          loadAction(showArtVersion, "artifact.decorator.show.artVersion");
          if (!isSearch) {
-        	 loadAction(showRelations, "artifact.decorator.show.relations");
+            loadAction(showRelations, "artifact.decorator.show.relations");
          }
          if (attributesAction != null) {
             String value = getSetting("artifact.decorator.attrTypes");
@@ -192,7 +192,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
          manager.add(showArtType);
          manager.add(showArtBranch);
          if (!isSearch) {
-        	 manager.add(showRelations);
+            manager.add(showRelations);
          }
       }
       showArtIds.updateText();
@@ -200,7 +200,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
       showArtVersion.updateText();
       showArtBranch.updateText();
       if (!isSearch) {
-    	  showRelations.updateText();
+         showRelations.updateText();
       }
 
       if (manager != null) {

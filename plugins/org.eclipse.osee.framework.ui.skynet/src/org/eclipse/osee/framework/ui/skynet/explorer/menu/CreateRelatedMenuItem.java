@@ -95,9 +95,10 @@ public class CreateRelatedMenuItem implements SelectionListener {
                relationTypeSide = RelationTypeSide.create(relationType, RelationSide.SIDE_A);
             }
 
-            XResultData rd = ServiceUtil.accessControlService().hasRelationTypePermission(existingArtifact,
-               relationTypeSide, null, PermissionEnum.WRITE, AccessControlArtifactUtil.getXResultAccessHeader("New Related",
-                  Collections.singleton(existingArtifact), relationTypeSide));
+            XResultData rd =
+               ServiceUtil.accessControlService().hasRelationTypePermission(existingArtifact, relationTypeSide, null,
+                  PermissionEnum.WRITE, AccessControlArtifactUtil.getXResultAccessHeader("New Related",
+                     Collections.singleton(existingArtifact), relationTypeSide));
 
             if (rd.isSuccess()) {
                handleCreateRelated(existingArtifact, relationType, relationTypeSide, relationSide);
@@ -154,7 +155,8 @@ public class CreateRelatedMenuItem implements SelectionListener {
 
    }
 
-   private void handleCreateRelated(Artifact existingArtifact, RelationTypeToken relationType, RelationTypeSide relationTypeSide, RelationSide relationSide) {
+   private void handleCreateRelated(Artifact existingArtifact, RelationTypeToken relationType,
+      RelationTypeSide relationTypeSide, RelationSide relationSide) {
       // get valid artifact types for this relation
       List<ArtifactTypeToken> artifactTypes = new ArrayList<>();
       BranchToken branch = BranchManager.getBranchToken(artifactExplorer.getBranch());
@@ -189,7 +191,8 @@ public class CreateRelatedMenuItem implements SelectionListener {
       }
    }
 
-   private void createRelatedArtifact(Artifact existingArtifact, RelationTypeSide relationTypeSide, BranchToken branch, ArtifactTypeToken type, String name) {
+   private void createRelatedArtifact(Artifact existingArtifact, RelationTypeSide relationTypeSide, BranchToken branch,
+      ArtifactTypeToken type, String name) {
       SkynetTransaction transaction = TransactionManager.createTransaction(branch,
          String.format("Created new %s \"%s\" in artifact explorer", type.getName(), name));
       Artifact newArtifact = ArtifactTypeManager.addArtifact(type, branch, name);
@@ -222,8 +225,8 @@ public class CreateRelatedMenuItem implements SelectionListener {
 
          MenuPermissions permiss = new MenuPermissions(artifact);
 
-         boolean hasPermission = ServiceUtil.accessControlService().hasRelationTypePermission(artifact,
-            relationSide, Collections.emptyList(), PermissionEnum.WRITE, null).isSuccess();
+         boolean hasPermission = ServiceUtil.accessControlService().hasRelationTypePermission(artifact, relationSide,
+            Collections.emptyList(), PermissionEnum.WRITE, null).isSuccess();
 
          menuItem.setEnabled(permiss.isWritePermission() && hasPermission);
       } else if (obj instanceof Artifact) {

@@ -1216,7 +1216,8 @@ public class Forest implements ToMessage {
     * @return a new {@link GroveThing}.
     */
 
-   public GroveThing createGroveThingFromForeignThing(IdentifierType groveIdentifierType, ForeignThingFamily foreignThingFamily) {
+   public GroveThing createGroveThingFromForeignThing(IdentifierType groveIdentifierType,
+      ForeignThingFamily foreignThingFamily) {
 
       if (!Direction.IMPORT.equals(this.direction)) {
          throw new IllegalStateException();
@@ -1329,7 +1330,8 @@ public class Forest implements ToMessage {
     * empty {@link Optional}.
     */
 
-   public Optional<Identifier> getPrimaryIdentifierByForeignIdentifierString(IdentifierType identifierType, String foreignIdentifierString) {
+   public Optional<Identifier> getPrimaryIdentifierByForeignIdentifierString(IdentifierType identifierType,
+      String foreignIdentifierString) {
       return this.identifierFactory.getPrimaryIdentifierByForeignIdentifierString(identifierType,
          foreignIdentifierString);
    }

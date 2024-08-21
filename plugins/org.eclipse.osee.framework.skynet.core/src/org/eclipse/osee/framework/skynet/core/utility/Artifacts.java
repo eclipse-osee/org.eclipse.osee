@@ -58,7 +58,8 @@ public final class Artifacts {
     * Recurses default hierarchy and collections children of parentArtifact that are of type class
     */
    @SuppressWarnings("unchecked")
-   public static <A extends Artifact> void getChildrenOfType(Artifact parentArtifact, Collection<A> children, Class<A> clazz, boolean recurse) {
+   public static <A extends Artifact> void getChildrenOfType(Artifact parentArtifact, Collection<A> children,
+      Class<A> clazz, boolean recurse) {
       for (Artifact child : parentArtifact.getChildren()) {
          if (child.getClass().equals(clazz)) {
             children.add((A) child);
@@ -73,7 +74,8 @@ public final class Artifacts {
     * @return Set of type class that includes parentArtifact and children and will recurse children if true
     */
    @SuppressWarnings("unchecked")
-   public static <A extends Artifact> Set<A> getChildrenOfTypeSet(Artifact parentArtifact, Class<A> clazz, boolean recurse) {
+   public static <A extends Artifact> Set<A> getChildrenOfTypeSet(Artifact parentArtifact, Class<A> clazz,
+      boolean recurse) {
       Set<A> children = new HashSet<>();
       for (Artifact child : parentArtifact.getChildren()) {
          if (child.getClass().equals(clazz)) {

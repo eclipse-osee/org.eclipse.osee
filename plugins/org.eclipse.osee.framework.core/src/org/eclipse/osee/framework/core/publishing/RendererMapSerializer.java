@@ -53,7 +53,8 @@ public class RendererMapSerializer extends StdScalarSerializer<@NonNull Renderer
     */
 
    @Override
-   public void serialize(@NonNull RendererMap rendererMap, @NonNull JsonGenerator jsonGenerator, @Nullable SerializerProvider serializerProvider) throws IOException {
+   public void serialize(@NonNull RendererMap rendererMap, @NonNull JsonGenerator jsonGenerator,
+      @Nullable SerializerProvider serializerProvider) throws IOException {
       Objects.requireNonNull(rendererMap).serialize(Objects.requireNonNull(jsonGenerator));
    }
 

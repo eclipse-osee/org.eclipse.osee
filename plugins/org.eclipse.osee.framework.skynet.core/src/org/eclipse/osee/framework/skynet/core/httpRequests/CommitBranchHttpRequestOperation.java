@@ -112,7 +112,8 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       }
    }
 
-   private void handleResponse(TransactionToken newTransaction, IProgressMonitor monitor, BranchId sourceBranch, BranchId destinationBranch) {
+   private void handleResponse(TransactionToken newTransaction, IProgressMonitor monitor, BranchId sourceBranch,
+      BranchId destinationBranch) {
       ServiceUtil.getOseeClient().getAccessControlService().removePermissions(sourceBranch);
 
       // Update commit artifact cache with new information

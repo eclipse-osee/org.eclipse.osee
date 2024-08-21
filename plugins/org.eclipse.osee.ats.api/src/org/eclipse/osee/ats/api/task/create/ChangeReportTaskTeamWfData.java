@@ -61,7 +61,8 @@ public class ChangeReportTaskTeamWfData {
       this.taskMatches.add(taskMatch);
    }
 
-   public ChangeReportTaskMatch addTaskMatch(ArtifactToken art, ChangeReportTaskMatchType changeReportTaskMatchType, boolean deleted, String format, Object... data) {
+   public ChangeReportTaskMatch addTaskMatch(ArtifactToken art, ChangeReportTaskMatchType changeReportTaskMatchType,
+      boolean deleted, String format, Object... data) {
       String taskName = String.format(format, data);
       for (ChangeReportTaskMatch existTaskMatch : taskMatches) {
          if (existTaskMatch.getTaskName().equals(taskName)) {

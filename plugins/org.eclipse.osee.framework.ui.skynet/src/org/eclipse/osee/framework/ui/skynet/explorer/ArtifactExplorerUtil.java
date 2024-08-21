@@ -79,7 +79,8 @@ public class ArtifactExplorerUtil {
       }
    }
 
-   public static void refreshBranchWarning(ArtifactExplorer artifactExplorer, TreeViewer treeViewer, BranchToken branch, BranchWarningComposite branchWarningComposite) {
+   public static void refreshBranchWarning(ArtifactExplorer artifactExplorer, TreeViewer treeViewer, BranchToken branch,
+      BranchWarningComposite branchWarningComposite) {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {

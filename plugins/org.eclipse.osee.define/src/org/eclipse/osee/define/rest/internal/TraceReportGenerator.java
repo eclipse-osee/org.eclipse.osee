@@ -72,8 +72,12 @@ public class TraceReportGenerator {
    private final String[] columnHeadingsComponent =
       {"Doors ID", "Paragraph #", "System Requirement Name", CoreArtifactTypes.Component.getName(), "ArtifactId"};
 
-   private final String[] columnHeadingsTest =
-      {"Doors ID", "Paragraph #", "System Requirement Name", CoreArtifactTypes.TestPlanElementMsWord.getName(), "ArtifactId"};
+   private final String[] columnHeadingsTest = {
+      "Doors ID",
+      "Paragraph #",
+      "System Requirement Name",
+      CoreArtifactTypes.TestPlanElementMsWord.getName(),
+      "ArtifactId"};
 
    private void init(OrcsApi orcsApi, ISheetWriter writer) {
       accumulator = new TraceInformationAccumulator(this, writer);
@@ -95,7 +99,8 @@ public class TraceReportGenerator {
       testTraces = new TraceAccumulator(testFile, traceMatch);
    }
 
-   public void generate(OrcsApi providedOrcs, BranchId branchId, String codeRoot, String traceRoot, Writer providedWriter) throws IOException {
+   public void generate(OrcsApi providedOrcs, BranchId branchId, String codeRoot, String traceRoot,
+      Writer providedWriter) throws IOException {
       ISheetWriter writer = new ExcelXmlWriter(providedWriter);
       if (Strings.isValid(codeRoot)) {
          File root = new File(codeRoot);

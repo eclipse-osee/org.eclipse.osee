@@ -27,8 +27,10 @@ public interface TupleObjectFactory extends VersionObjectFactory {
 
    TupleData createTuple2Data(VersionData version, BranchId branch, Tuple2Type<?, ?> tupleType, Long e1, Long e2);
 
-   TupleData createTuple3Data(VersionData version, BranchId branch, Tuple3Type<?, ?, ?> tupleType, Long e1, Long e2, Long e3);
+   TupleData createTuple3Data(VersionData version, BranchId branch, Tuple3Type<?, ?, ?> tupleType, Long e1, Long e2,
+      Long e3);
 
-   TupleData createTuple4Data(VersionData version, BranchId branch, Tuple4Type<?, ?, ?, ?> tupleType, Long e1, Long e2, Long e3, Long e4);
+   TupleData createTuple4Data(VersionData version, BranchId branch, Tuple4Type<?, ?, ?, ?> tupleType, Long e1, Long e2,
+      Long e3, Long e4);
 
 }

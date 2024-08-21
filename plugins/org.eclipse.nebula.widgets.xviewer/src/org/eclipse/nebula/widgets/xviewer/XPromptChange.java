@@ -41,15 +41,17 @@ public class XPromptChange {
    public static Date promptChangeDate(String displayName, Date currDate) {
       // prompt that current release is (get from attribute); want to change
       DateSelectionDialog diag =
-         new DateSelectionDialog(
-            XViewerText.get("XPromptChange.dialog.date_selection") + " " + displayName, XViewerText.get("XPromptChange.dialog.date_selection") + " " + displayName, currDate != null ? currDate : null); //$NON-NLS-1$//$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+         new DateSelectionDialog(XViewerText.get("XPromptChange.dialog.date_selection") + " " + displayName, //$NON-NLS-1$//$NON-NLS-2$
+            XViewerText.get("XPromptChange.dialog.date_selection") + " " + displayName, //$NON-NLS-1$//$NON-NLS-2$
+            currDate != null ? currDate : null);
       if (diag.open() == 0) {
          return diag.getSelectedDate();
       }
       return null;
    }
 
-   public static EnumStringSingleSelectionDialog promptChangeSingleSelectEnumeration(String displayName, Collection<String> enums, String currSelected) {
+   public static EnumStringSingleSelectionDialog promptChangeSingleSelectEnumeration(String displayName,
+      Collection<String> enums, String currSelected) {
       final EnumStringSingleSelectionDialog diag =
          new EnumStringSingleSelectionDialog(displayName, displayName, enums, currSelected);
       if (diag.open() == 0) {
@@ -58,7 +60,8 @@ public class XPromptChange {
       return null;
    }
 
-   public static EnumStringMultiSelectionDialog promptChangeMultiSelectEnumeration(String displayName, Collection<String> enums, Collection<String> currEnums) {
+   public static EnumStringMultiSelectionDialog promptChangeMultiSelectEnumeration(String displayName,
+      Collection<String> enums, Collection<String> currEnums) {
       final EnumStringMultiSelectionDialog diag = new EnumStringMultiSelectionDialog(displayName, enums, currEnums);
       if (diag.open() == 0) {
          return diag;
@@ -90,10 +93,10 @@ public class XPromptChange {
       return promptChangeString(displayName, currEntry, validationRegEx, Option.SINGLE_LINE);
    }
 
-   public static String promptChangeString(String displayName, String currEntry, String validationRegEx, Option option) {
-      DialogWithEntry ed =
-         new DialogWithEntry(
-            XViewerText.get("XPromptChange.dialog.entry") + " " + displayName, XViewerText.get("XPromptChange.dialog.entry") + " " + displayName); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+   public static String promptChangeString(String displayName, String currEntry, String validationRegEx,
+      Option option) {
+      DialogWithEntry ed = new DialogWithEntry(XViewerText.get("XPromptChange.dialog.entry") + " " + displayName, //$NON-NLS-1$//$NON-NLS-2$
+         XViewerText.get("XPromptChange.dialog.entry") + " " + displayName); //$NON-NLS-1$ //$NON-NLS-2$
       if (option == Option.MULTI_LINE) {
          ed.setFillVertically(true);
       }
@@ -111,11 +114,10 @@ public class XPromptChange {
    }
 
    public static Boolean promptChangeBoolean(String displayName, String toggleMessage, boolean currSelection) {
-      MessageDialogWithToggle md =
-         new MessageDialogWithToggle(Display.getCurrent().getActiveShell(), displayName, null, displayName,
-            MessageDialog.QUESTION,
-            new String[] {XViewerText.get("button.ok"), XViewerText.get("button.cancel")}, Window.OK, //$NON-NLS-1$ //$NON-NLS-2$
-            (toggleMessage != null ? toggleMessage : displayName), currSelection);
+      MessageDialogWithToggle md = new MessageDialogWithToggle(Display.getCurrent().getActiveShell(), displayName, null,
+         displayName, MessageDialog.QUESTION,
+         new String[] {XViewerText.get("button.ok"), XViewerText.get("button.cancel")}, Window.OK, //$NON-NLS-1$ //$NON-NLS-2$
+         (toggleMessage != null ? toggleMessage : displayName), currSelection);
       int result = md.open();
       if (result == Window.OK) {
          return md.getToggleState();

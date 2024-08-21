@@ -155,7 +155,8 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
       savePointManager.loadSavePoints(manifestHandler.getSourceDatabaseId(), manifestHandler.getSourceExportDate());
    }
 
-   private void processImportFiles(Iterable<? extends BranchId> branchesToImport, Collection<IExportItem> importItems) throws Exception {
+   private void processImportFiles(Iterable<? extends BranchId> branchesToImport, Collection<IExportItem> importItems)
+      throws Exception {
       final DbTableSaxHandler handler = DbTableSaxHandler.createWithLimitedCache(getLogger(), getJdbcClient(),
          resourceManager, exportDataProvider, 50000);
       handler.setSelectedBranchIds(branchesToImport);

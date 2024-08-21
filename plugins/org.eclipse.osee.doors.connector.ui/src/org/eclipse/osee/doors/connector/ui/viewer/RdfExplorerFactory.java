@@ -25,7 +25,8 @@ import org.eclipse.osee.doors.connector.core.ServiceProviderCatalog;
 public class RdfExplorerFactory {
 
    @SuppressWarnings("unchecked")
-   public static <T extends RdfExplorerItem> T getExplorerItem(String name, TreeViewer treeViewer, RdfExplorerItem rootItem, RdfExplorer rdfExplorer, DoorsArtifact item) {
+   public static <T extends RdfExplorerItem> T getExplorerItem(String name, TreeViewer treeViewer,
+      RdfExplorerItem rootItem, RdfExplorer rdfExplorer, DoorsArtifact item) {
       if (item instanceof ServiceProvider) {
          return (T) new RdfSevPro(name, treeViewer, rootItem, rdfExplorer, item);
       } else if (item instanceof ServiceProviderCatalog) {

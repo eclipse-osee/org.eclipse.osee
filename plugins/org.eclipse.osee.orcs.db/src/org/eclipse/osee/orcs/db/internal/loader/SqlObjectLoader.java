@@ -119,7 +119,8 @@ public class SqlObjectLoader {
       writer.build(handler);
    }
 
-   public void loadArtifacts(HasCancellation cancellation, LoadDataHandler handler, Id4JoinQuery join, CriteriaOrcsLoad criteria, LoadSqlContext loadContext, int fetchSize) {
+   public void loadArtifacts(HasCancellation cancellation, LoadDataHandler handler, Id4JoinQuery join,
+      CriteriaOrcsLoad criteria, LoadSqlContext loadContext, int fetchSize) {
       logger.trace("Sql Artifact Load - artifactJoinQuery[%s] loadSqlContext[%s]", join, loadContext);
       try {
          if (!join.isEmpty()) {
@@ -162,7 +163,8 @@ public class SqlObjectLoader {
       load(loadContext, stmtConsumer);
    }
 
-   public void loadTransactions(UserService userService, List<? super TransactionReadable> txs, QuerySqlContext queryContext) {
+   public void loadTransactions(UserService userService, List<? super TransactionReadable> txs,
+      QuerySqlContext queryContext) {
       Consumer<JdbcStatement> stmtConsumer = stmt -> {
          TransactionDataImpl tx = new TransactionDataImpl(stmt.getLong("transaction_id"));
          tx.setBranch(BranchId.valueOf(stmt.getLong("branch_id")));
@@ -178,7 +180,8 @@ public class SqlObjectLoader {
       load(queryContext, stmtConsumer);
    }
 
-   public void loadDynamicObjects(HasCancellation cancellation, LoadDataHandler handler, QuerySqlContext context, int fetchSize) {
+   public void loadDynamicObjects(HasCancellation cancellation, LoadDataHandler handler, QuerySqlContext context,
+      int fetchSize) {
       logger.trace("Sql Transaction Load - loadContext[%s] fetchSize[%s]", context, fetchSize);
       checkCancelled(cancellation);
 
@@ -194,7 +197,8 @@ public class SqlObjectLoader {
       options.remove("result.descriptor");
    }
 
-   private void loadArtifacts(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, LoadSqlContext loadContext, int fetchSize) {
+   private void loadArtifacts(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria,
+      LoadSqlContext loadContext, int fetchSize) {
       checkCancelled(cancellation);
       loadDescription(handler, loadContext);
 
@@ -234,7 +238,8 @@ public class SqlObjectLoader {
       load(artifactProcessor, artHandler, loadContext, fetchSize);
    }
 
-   protected void loadAttributes(LoadDataHandler handler, Criteria criteria, LoadSqlContext loadContext, int fetchSize) {
+   protected void loadAttributes(LoadDataHandler handler, Criteria criteria, LoadSqlContext loadContext,
+      int fetchSize) {
       LoadLevel loadLevel = OptionsUtil.getLoadLevel(loadContext.getOptions());
       if (isAttributeLoadingAllowed(loadLevel)) {
          OrcsDataHandler<AttributeData> attrHandler = asAttributeHandler(handler);
@@ -252,7 +257,8 @@ public class SqlObjectLoader {
       }
    }
 
-   protected void loadRelations2(LoadDataHandler handler, Criteria criteria, LoadSqlContext loadContext, int fetchSize) {
+   protected void loadRelations2(LoadDataHandler handler, Criteria criteria, LoadSqlContext loadContext,
+      int fetchSize) {
       LoadLevel loadLevel = OptionsUtil.getLoadLevel(loadContext.getOptions());
       if (isRelationLoadingAllowed(loadLevel)) {
          OrcsDataHandler<RelationData> relHandler = asRelationHandler(handler);
@@ -320,15 +326,18 @@ public class SqlObjectLoader {
       }
    }
 
-   private static LoadDescription createDescription(final OrcsSession session, final Options options, final ResultObjectDescription data) {
+   private static LoadDescription createDescription(final OrcsSession session, final Options options,
+      final ResultObjectDescription data) {
       return createDescription(session, options, null, TransactionId.SENTINEL, data);
    }
 
-   private static LoadDescription createDescription(final OrcsSession session, final Options options, final BranchId branch, final TransactionId transactionLoaded) {
+   private static LoadDescription createDescription(final OrcsSession session, final Options options,
+      final BranchId branch, final TransactionId transactionLoaded) {
       return createDescription(session, options, branch, transactionLoaded, null);
    }
 
-   private static LoadDescription createDescription(final OrcsSession session, final Options options, final BranchId branch, final TransactionId transactionLoaded, final ResultObjectDescription data) {
+   private static LoadDescription createDescription(final OrcsSession session, final Options options,
+      final BranchId branch, final TransactionId transactionLoaded, final ResultObjectDescription data) {
       return new LoadDescription() {
 
          @Override

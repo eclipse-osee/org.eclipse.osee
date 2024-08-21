@@ -235,7 +235,8 @@ public class OrderParserTest {
       add(typeSide, data, sorter, java.util.Collections.<String> emptyList());
    }
 
-   private void add(RelationTypeSide typeSide, Map<RelationTypeSide, OrderData> data, RelationSorter sorter, List<String> list) {
+   private void add(RelationTypeSide typeSide, Map<RelationTypeSide, OrderData> data, RelationSorter sorter,
+      List<String> list) {
       OrderData orderData = new OrderData(sorter, list);
       data.put(typeSide, orderData);
    }

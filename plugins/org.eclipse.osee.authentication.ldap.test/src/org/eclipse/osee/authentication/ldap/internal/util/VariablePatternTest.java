@@ -95,7 +95,8 @@ public class VariablePatternTest {
       return values;
    }
 
-   private static void addTest(Collection<Object[]> data, String pattern, String indexedPattern, String[] variables, Map<String, String> params, String[] values, String expanded) {
+   private static void addTest(Collection<Object[]> data, String pattern, String indexedPattern, String[] variables,
+      Map<String, String> params, String[] values, String expanded) {
       data.add(new Object[] {pattern, indexedPattern, variables, params, values, expanded});
    }
 }

@@ -111,7 +111,8 @@ public class UpdateBranchOperation extends AbstractOperation {
       }
    }
 
-   private void commitOldWorkingIntoNewWorkingBranch(IProgressMonitor monitor, BranchId originalBranch, BranchId newWorkingBranch, double workPercentage) throws Exception {
+   private void commitOldWorkingIntoNewWorkingBranch(IProgressMonitor monitor, BranchId originalBranch,
+      BranchId newWorkingBranch, double workPercentage) throws Exception {
       monitor.setTaskName("Checking for Conflicts");
       ConflictManagerExternal conflictManager = new ConflictManagerExternal(newWorkingBranch, originalBranch);
       IOperation operation;
@@ -124,7 +125,8 @@ public class UpdateBranchOperation extends AbstractOperation {
       doSubWork(operation, monitor, workPercentage);
    }
 
-   private void deleteOldAndSetNewAsWorking(IProgressMonitor monitor, BranchToken originalBranch, BranchId newWorkingBranch, double workPercentage) throws Exception {
+   private void deleteOldAndSetNewAsWorking(IProgressMonitor monitor, BranchToken originalBranch,
+      BranchId newWorkingBranch, double workPercentage) throws Exception {
       String originalBranchName = originalBranch.getName();
 
       BranchManager.setName(originalBranch, getUpdatedName(originalBranchName));

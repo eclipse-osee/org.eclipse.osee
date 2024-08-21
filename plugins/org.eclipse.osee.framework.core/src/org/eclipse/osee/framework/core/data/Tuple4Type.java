@@ -28,7 +28,9 @@ public interface Tuple4Type<E1, E2, E3, E4> extends TupleTypeId {
 
    Function<Long, E4> getValueOfE4();
 
-   public static <E1, E2, E3, E4> Tuple4Type<E1, E2, E3, E4> valueOf(TupleFamilyId family, Long tupleTypeId, Function<Long, E1> valueOfE1, Function<Long, E2> valueOfE2, Function<Long, E3> valueOfE3, Function<Long, E4> valueOfE4) {
+   public static <E1, E2, E3, E4> Tuple4Type<E1, E2, E3, E4> valueOf(TupleFamilyId family, Long tupleTypeId,
+      Function<Long, E1> valueOfE1, Function<Long, E2> valueOfE2, Function<Long, E3> valueOfE3,
+      Function<Long, E4> valueOfE4) {
       final class Tuple4TypeImpl extends TupleTypeImpl implements Tuple4Type<E1, E2, E3, E4> {
          private final Function<Long, E1> valueOfE1;
          private final Function<Long, E2> valueOfE2;

@@ -74,7 +74,8 @@ public class WorkItemsJsonWriter implements MessageBodyWriter<Collection<IAtsWor
    }
 
    @Override
-   public long getSize(Collection<IAtsWorkItem> data, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+   public long getSize(Collection<IAtsWorkItem> data, Class<?> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType) {
       return -1;
    }
 
@@ -93,7 +94,9 @@ public class WorkItemsJsonWriter implements MessageBodyWriter<Collection<IAtsWor
    }
 
    @Override
-   public void writeTo(Collection<IAtsWorkItem> workItems, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
+   public void writeTo(Collection<IAtsWorkItem> workItems, Class<?> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
+      throws IOException, WebApplicationException {
       JsonGenerator writer = null;
       try {
          writer = jsonFactory.createGenerator(entityStream);

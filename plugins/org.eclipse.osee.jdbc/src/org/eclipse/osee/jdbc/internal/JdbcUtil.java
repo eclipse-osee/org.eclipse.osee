@@ -44,11 +44,13 @@ public final class JdbcUtil {
       // Utility class
    }
 
-   public static <O extends Object> void setInputParametersForStatement(PreparedStatement preparedStatement, O... data) throws JdbcException {
+   public static <O extends Object> void setInputParametersForStatement(PreparedStatement preparedStatement, O... data)
+      throws JdbcException {
       setInputParametersForStatement(preparedStatement, 1, data);
    }
 
-   public static <O extends Object> void setInputParametersForStatement(PreparedStatement preparedStatement, int intialIndex, O... data) throws JdbcException {
+   public static <O extends Object> void setInputParametersForStatement(PreparedStatement preparedStatement,
+      int intialIndex, O... data) throws JdbcException {
       int preparedIndex = intialIndex;
       for (Object dataValue : data) {
          setInputParameterForStatement(preparedStatement, dataValue, preparedIndex++);
@@ -63,7 +65,8 @@ public final class JdbcUtil {
          || key.equalsIgnoreCase("component.name"));
    }
 
-   public static <O extends Object> void setInputParameterForStatement(PreparedStatement statement, O dataValue, int preparedIndex) throws JdbcException {
+   public static <O extends Object> void setInputParameterForStatement(PreparedStatement statement, O dataValue,
+      int preparedIndex) throws JdbcException {
       try {
          if (dataValue instanceof String) {
             checkStringDataLength(dataValue);
@@ -119,7 +122,8 @@ public final class JdbcUtil {
       }
    }
 
-   public static JdbcConnectionInfo newConnectionInfo(final String dbDriver, final String dbUri, final Properties dbProps, boolean appendPropsToUri) {
+   public static JdbcConnectionInfo newConnectionInfo(final String dbDriver, final String dbUri,
+      final Properties dbProps, boolean appendPropsToUri) {
       checkNotNullOrEmpty(dbDriver, "database driver");
       checkNotNullOrEmpty(dbUri, "database uri");
 
@@ -214,7 +218,8 @@ public final class JdbcUtil {
       return toReturn;
    }
 
-   public static PoolExhaustedAction getExhaustedAction(Map<String, Object> props, String key, PoolExhaustedAction defaultValue) {
+   public static PoolExhaustedAction getExhaustedAction(Map<String, Object> props, String key,
+      PoolExhaustedAction defaultValue) {
       String toReturn = get(props, key, String.valueOf(defaultValue));
       return PoolExhaustedAction.fromString(toReturn);
    }

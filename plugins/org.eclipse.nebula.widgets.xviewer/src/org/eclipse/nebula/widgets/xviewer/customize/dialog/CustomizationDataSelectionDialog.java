@@ -103,11 +103,11 @@ public class CustomizationDataSelectionDialog extends ListDialog {
       }
 
       getTableViewer().addSelectionChangedListener(event -> {
-            selectedCustData = getSelectedCustomizeData();
-            if (saveSharedCheck != null) {
-               saveSharedCheck.setSelection(!selectedCustData.isPersonal());
-               saveShared = !selectedCustData.isPersonal();
-            }
+         selectedCustData = getSelectedCustomizeData();
+         if (saveSharedCheck != null) {
+            saveSharedCheck.setSelection(!selectedCustData.isPersonal());
+            saveShared = !selectedCustData.isPersonal();
+         }
       });
       return c;
    }

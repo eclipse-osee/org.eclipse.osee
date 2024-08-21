@@ -32,8 +32,8 @@ public class AuxHintSubSectionList<P extends AbstractElement> extends AbstractEl
       new WordElementParserFactory<>(AuxHintSubSectionList::new, AuxHintSubSection::new, AuxHintTag.SUBSECTION);
 
    /**
-    * {@link WordElementParserFactory} instance for creating a {@link AuxHintSubSectionList} with a {@link AuxHintSubSection}
-    * parent.
+    * {@link WordElementParserFactory} instance for creating a {@link AuxHintSubSectionList} with a
+    * {@link AuxHintSubSection} parent.
     */
 
    public static WordElementParserFactory<AuxHintSubSection, AuxHintSubSectionList<AuxHintSubSection>, AuxHintSubSection> wordSubSectionParentFactory =

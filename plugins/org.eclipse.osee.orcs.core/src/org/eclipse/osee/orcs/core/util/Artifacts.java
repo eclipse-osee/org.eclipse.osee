@@ -27,7 +27,8 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
  */
 public class Artifacts {
 
-   public static ArtifactToken getOrCreate(ArtifactToken artifactToken, ArtifactId parent, TransactionBuilder tx, OrcsApi orcsApi) {
+   public static ArtifactToken getOrCreate(ArtifactToken artifactToken, ArtifactId parent, TransactionBuilder tx,
+      OrcsApi orcsApi) {
       ArtifactToken art = getOrCreate(artifactToken, tx, orcsApi);
       tx.addChild(parent, art);
       return art;

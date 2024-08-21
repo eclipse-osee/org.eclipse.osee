@@ -55,7 +55,7 @@ public class RelationLoadProcessor2 extends LoadProcessor<RelationData, Relation
       ArtifactId bArtId = ArtifactId.valueOf(chStmt.getLong("b_art_id"));
       RelationTypeToken relationType = tokenService.getRelationTypeOrCreate(chStmt.getLong("rel_type"));
       GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
-      TxCurrent txCurrent = TxCurrent.valueOf(chStmt.getInt("tx_current")); 
+      TxCurrent txCurrent = TxCurrent.valueOf(chStmt.getInt("tx_current"));
       ApplicabilityId applicId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
       int rel_order = chStmt.getInt("rel_order");
 
@@ -68,7 +68,7 @@ public class RelationLoadProcessor2 extends LoadProcessor<RelationData, Relation
          TransactionId txId = TransactionId.valueOf(chStmt.getLong("transaction_id"));
 
          VersionData version = factory.createVersion(branch, txId, gammaId, txCurrent, historical);
-      
+
          if (historical) {
             version.setStripeId(TransactionId.valueOf(chStmt.getLong("stripe_transaction_id")));
          }
@@ -77,8 +77,8 @@ public class RelationLoadProcessor2 extends LoadProcessor<RelationData, Relation
 
          ArtifactId relArtId = ArtifactId.valueOf(chStmt.getLong("rel_art_id"));
 
-         toReturn = factory.createRelationData(version, RelationId.valueOf(gammaId.getIdString()), relationType, modType, aArtId, bArtId,
-            relArtId, rel_order, applicId);
+         toReturn = factory.createRelationData(version, RelationId.valueOf(gammaId.getIdString()), relationType,
+            modType, aArtId, bArtId, relArtId, rel_order, applicId);
 
       } else {
          if (!historical) {

@@ -30,7 +30,7 @@ public interface VersionData extends Cloneable {
    TxCurrent getTxCurrent();
 
    void setTxCurrent(TxCurrent txCurrent);
-   
+
    TransactionId getTransactionId();
 
    void setTransactionId(TransactionId txId);

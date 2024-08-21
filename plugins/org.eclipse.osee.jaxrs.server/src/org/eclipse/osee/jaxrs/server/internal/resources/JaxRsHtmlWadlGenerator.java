@@ -68,17 +68,16 @@ public class JaxRsHtmlWadlGenerator extends WadlGenerator {
    @Override
    protected void doFilter(ContainerRequestContext context, Message m) {
       m.getExchange().put(WADL_TRANSFORMED_FLAG, Boolean.FALSE);
-      if("true".equals(System.getProperty("disable_wadl"))) {
-    	  try {
-                  context.setRequestUri(new URI(context.getUriInfo().getRequestUri().toString().replace("?_wadl", "404")));
-               } catch (Exception ex) {
-            	  // do nothing
-               }  
-          }
-      else {
-    	  super.doFilter(context, m);
+      if ("true".equals(System.getProperty("disable_wadl"))) {
+         try {
+            context.setRequestUri(new URI(context.getUriInfo().getRequestUri().toString().replace("?_wadl", "404")));
+         } catch (Exception ex) {
+            // do nothing
+         }
+      } else {
+         super.doFilter(context, m);
       }
-    
+
       Boolean wasTransformed = (Boolean) m.getExchange().get(WADL_TRANSFORMED_FLAG);
       if (wasTransformed) {
          Response response = m.getExchange().get(javax.ws.rs.core.Response.class);
@@ -91,7 +90,8 @@ public class JaxRsHtmlWadlGenerator extends WadlGenerator {
    }
 
    @Override
-   public StringBuilder generateWADL(String baseURI, List<ClassResourceInfo> cris, boolean isJson, Message m, UriInfo ui) {
+   public StringBuilder generateWADL(String baseURI, List<ClassResourceInfo> cris, boolean isJson, Message m,
+      UriInfo ui) {
       StringBuilder wadl = super.generateWADL(baseURI, cris, isJson, m, ui);
       StringBuilder toReturn = wadl;
       List<MediaType> acceptableMediaTypes = headers.getAcceptableMediaTypes();
@@ -124,7 +124,8 @@ public class JaxRsHtmlWadlGenerator extends WadlGenerator {
       return toReturn;
    }
 
-   private void transformWadl(StreamSource wadlSource, StreamSource templateSource, StreamResult output) throws Exception {
+   private void transformWadl(StreamSource wadlSource, StreamSource templateSource, StreamResult output)
+      throws Exception {
       TransformerFactory factory = TransformerFactory.newInstance();
       Templates template = factory.newTemplates(templateSource);
       Transformer xformer = template.newTransformer();

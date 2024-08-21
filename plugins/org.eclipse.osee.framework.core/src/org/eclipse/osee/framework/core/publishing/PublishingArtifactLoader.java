@@ -615,10 +615,7 @@ public class PublishingArtifactLoader implements ToMessage {
     * @param atsTeamWorkflowLoader the {@link AtsTeamWorkflowLoader} implementation to be used.
     */
 
-   public PublishingArtifactLoader(DataAccessOperations dataAccessOperations, PublishingErrorLog publishingErrorLog,
-      PublishingArtifactFactoryWithoutView publishingArtifactFactoryWithoutView,
-      PublishingArtifactFactoryWithView publishingArtifactFactoryWithView,
-      AtsTeamWorkflowLoader atsTeamWorkflowLoader) {
+   public PublishingArtifactLoader(DataAccessOperations dataAccessOperations, PublishingErrorLog publishingErrorLog, PublishingArtifactFactoryWithoutView publishingArtifactFactoryWithoutView, PublishingArtifactFactoryWithView publishingArtifactFactoryWithView, AtsTeamWorkflowLoader atsTeamWorkflowLoader) {
       this.dataAccessOperations = Objects.requireNonNull(dataAccessOperations);
       this.publishingErrorLog = Objects.requireNonNull(publishingErrorLog);
       this.publishingArtifactFactoryWithoutView = Objects.requireNonNull(publishingArtifactFactoryWithoutView);
@@ -2359,8 +2356,8 @@ public class PublishingArtifactLoader implements ToMessage {
     *
     * @param artifact the artifact to get the children of.
     * @param filterForView indicates whether or not to include non-applicable artifacts.
-    * @param cachedArtifactsOnly when {@link CachedArtifactsOnly#ALWAYS} only cached artifacts are returned and a database
-    * load won't be performed.
+    * @param cachedArtifactsOnly when {@link CachedArtifactsOnly#ALWAYS} only cached artifacts are returned and a
+    * database load won't be performed.
     * @return on success a {@link Result} with the hierarchically sorted {@link List} of the <code>artifact</code>'s
     * immediate children; otherwise, a {@link Result} with a {@link DataAccessException}.
     * @implNote When the children of <code>artifact</code> have already been found, the cached list of children are

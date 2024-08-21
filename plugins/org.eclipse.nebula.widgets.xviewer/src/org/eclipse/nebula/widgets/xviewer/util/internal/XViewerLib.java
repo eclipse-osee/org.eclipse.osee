@@ -67,8 +67,8 @@ public class XViewerLib {
          XViewerLog.log(Activator.class, Level.SEVERE, message);
       } else {
          ensureInDisplayThread(() -> {
-               MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), title,
-                  message);
+            MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), title,
+               message);
          });
       }
    }

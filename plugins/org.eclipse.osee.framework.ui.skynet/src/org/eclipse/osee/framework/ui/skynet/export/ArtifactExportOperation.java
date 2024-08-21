@@ -301,8 +301,7 @@ public class ArtifactExportOperation implements IRunnableWithProgress {
     * @throws NullPointerException when any of the parameters are <code>null</code>.
     */
 
-   public ArtifactExportOperation(@NonNull Path exportPath, @NonNull boolean cancelOnError,
-      @NonNull List<Artifact> exportArtifacts) {
+   public ArtifactExportOperation(@NonNull Path exportPath, @NonNull boolean cancelOnError, @NonNull List<Artifact> exportArtifacts) {
 
       this.rootExportPath = Conditions.requireNonNull(exportPath, "exportPath");
       this.cancelOnError = Conditions.requireNonNull(cancelOnError, "cancelOnError");

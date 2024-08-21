@@ -56,7 +56,9 @@ public class WorkItemJsonReader implements MessageBodyReader<IAtsWorkItem> {
    }
 
    @Override
-   public IAtsWorkItem readFrom(Class<IAtsWorkItem> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException, WebApplicationException {
+   public IAtsWorkItem readFrom(Class<IAtsWorkItem> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream)
+      throws IOException, WebApplicationException {
       try {
          String jsonStr = Lib.inputStreamToString(entityStream);
 

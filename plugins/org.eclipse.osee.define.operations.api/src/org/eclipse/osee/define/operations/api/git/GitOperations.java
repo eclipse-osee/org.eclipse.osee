@@ -32,7 +32,8 @@ public interface GitOperations {
 
    ArtifactId trackGitBranch(String gitRepoUrl, BranchId branch, String gitBranchName, boolean clone, String password);
 
-   ArtifactId updateGitTrackingBranch(BranchId branch, ArtifactReadable repoArtifact, String gitBranchName, boolean fetch, String password, boolean initialImport, boolean shallowImport);
+   ArtifactId updateGitTrackingBranch(BranchId branch, ArtifactReadable repoArtifact, String gitBranchName,
+      boolean fetch, String password, boolean initialImport, boolean shallowImport);
 
    ArtifactReadable getRepoArtifact(BranchId branch, String repositoryName);
 

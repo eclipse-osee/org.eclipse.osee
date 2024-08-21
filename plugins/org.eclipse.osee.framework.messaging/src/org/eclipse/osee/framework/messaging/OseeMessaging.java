@@ -18,8 +18,10 @@ package org.eclipse.osee.framework.messaging;
  */
 public interface OseeMessaging {
 
-   public void addListener(Component component, String topic, OseeMessagingListener listener, final OseeMessagingStatusCallback statusCallback);
+   public void addListener(Component component, String topic, OseeMessagingListener listener,
+      final OseeMessagingStatusCallback statusCallback);
 
-   public void sendMessage(Component component, String topic, Object body, final OseeMessagingStatusCallback statusCallback);
+   public void sendMessage(Component component, String topic, Object body,
+      final OseeMessagingStatusCallback statusCallback);
 
 }

@@ -54,7 +54,8 @@ public class Handlers {
     * Populates a list of TransactionIds from a IStructuredSelection. Returns an empty list if no TransactionIds were
     * found.
     */
-   public static List<TransactionToken> getTransactionsFromStructuredSelection(IStructuredSelection structuredSelection) {
+   public static List<TransactionToken> getTransactionsFromStructuredSelection(
+      IStructuredSelection structuredSelection) {
       return processSelectionObjects(TransactionToken.class, structuredSelection);
    }
 

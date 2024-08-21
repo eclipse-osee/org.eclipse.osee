@@ -66,7 +66,8 @@ public class ObjectQueryCallableFactory {
       return countingHandler.getCount();
    }
 
-   public CancellableCallable<Integer> createQuery(OrcsSession session, final QueryData queryData, final LoadDataHandler handler) {
+   public CancellableCallable<Integer> createQuery(OrcsSession session, final QueryData queryData,
+      final LoadDataHandler handler) {
       return new AbstractObjectSearchCallable(logger, session, queryData) {
 
          @Override

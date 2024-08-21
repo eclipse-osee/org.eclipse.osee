@@ -33,7 +33,8 @@ public class ChangeReportTaskNameProviderService {
       changeReportOptionNameProviders.add(provider);
    }
 
-   public static IAtsChangeReportTaskNameProvider getChangeReportOptionNameProvider(ChangeReportTaskNameProviderToken token) {
+   public static IAtsChangeReportTaskNameProvider getChangeReportOptionNameProvider(
+      ChangeReportTaskNameProviderToken token) {
       for (IAtsChangeReportTaskNameProvider provider : changeReportOptionNameProviders) {
          if (provider.getId().equals(token)) {
             return provider;

@@ -70,7 +70,8 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
    @Override
-   public XResultData setWorkPackage(@PathParam("workPackageId") long workPackageId, JaxWorkPackageData workPackageData) {
+   public XResultData setWorkPackage(@PathParam("workPackageId") long workPackageId,
+      JaxWorkPackageData workPackageData) {
       XResultData rd = new XResultData();
       ArtifactReadable workPackageArt = (ArtifactReadable) atsApi.getQueryService().getArtifact(workPackageId);
       if (workPackageArt == null) {
@@ -121,7 +122,8 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
    @Override
-   public XResultData deleteWorkPackageItems(@PathParam("workPackageId") long workPackageId, JaxWorkPackageData workPackageData) {
+   public XResultData deleteWorkPackageItems(@PathParam("workPackageId") long workPackageId,
+      JaxWorkPackageData workPackageData) {
       XResultData rd = new XResultData();
       AtsUser asUser = atsApi.getUserService().getUserByUserId(workPackageData.getAsUserId());
       if (asUser == null) {

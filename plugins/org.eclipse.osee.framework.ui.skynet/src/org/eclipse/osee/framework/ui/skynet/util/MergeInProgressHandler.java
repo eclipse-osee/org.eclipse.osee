@@ -46,7 +46,8 @@ public class MergeInProgressHandler {
    private static final int CANCEL = 3;
    private static final int FORCE_COMMIT = 4;
 
-   public static boolean handleMergeInProgress(final ConflictManagerExternal conflictManager, boolean archive, boolean isSkipPrompts) {
+   public static boolean handleMergeInProgress(final ConflictManagerExternal conflictManager, boolean archive,
+      boolean isSkipPrompts) {
       archiveBranch = archive;
       int userOption;
       if (!isSkipPrompts) {
@@ -58,7 +59,8 @@ public class MergeInProgressHandler {
       return handleCommitInProgressPostPrompt(conflictManager, userOption, isSkipPrompts);
    }
 
-   public static boolean handleCommitInProgressPostPrompt(final ConflictManagerExternal conflictManager, int userOption, boolean skipPrompts) {
+   public static boolean handleCommitInProgressPostPrompt(final ConflictManagerExternal conflictManager, int userOption,
+      boolean skipPrompts) {
       boolean toReturn = false;
       BranchId sourceBranch = conflictManager.getSourceBranch();
       BranchId destinationBranch = conflictManager.getDestinationBranch();
@@ -87,7 +89,8 @@ public class MergeInProgressHandler {
       return toReturn;
    }
 
-   public static void deleteMultipleMergeBranches(BranchId sourceBranch, List<BranchId> destBranches, boolean skipPrompts) {
+   public static void deleteMultipleMergeBranches(BranchId sourceBranch, List<BranchId> destBranches,
+      boolean skipPrompts) {
       if (skipPrompts || promptUser(sourceBranch, destBranches)) {
          for (BranchId branch : destBranches) {
             doDelete(sourceBranch, branch);
@@ -169,7 +172,8 @@ public class MergeInProgressHandler {
       return message.toString();
    }
 
-   private static String[] constructChoices(final ConflictManagerExternal conflictManager, boolean allConflictsResolved) {
+   private static String[] constructChoices(final ConflictManagerExternal conflictManager,
+      boolean allConflictsResolved) {
       String[] choices;
       boolean isAdmin = false;
       try {

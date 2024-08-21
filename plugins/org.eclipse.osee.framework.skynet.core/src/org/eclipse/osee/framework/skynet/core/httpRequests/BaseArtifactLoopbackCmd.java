@@ -85,5 +85,6 @@ public abstract class BaseArtifactLoopbackCmd implements IClientLoopbackCmd {
    public abstract boolean isApplicable(String cmd);
 
    @Override
-   public abstract void process(final Artifact artifact, final Map<String, String> parameters, final HttpResponse httpResponse);
+   public abstract void process(final Artifact artifact, final Map<String, String> parameters,
+      final HttpResponse httpResponse);
 }

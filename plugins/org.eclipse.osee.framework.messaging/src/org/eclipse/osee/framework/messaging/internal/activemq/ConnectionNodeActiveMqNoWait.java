@@ -136,7 +136,8 @@ class ConnectionNodeActiveMqNoWait implements ConnectionNodeFailoverSupport, Mes
    }
 
    @Override
-   public synchronized void send(MessageID messageId, Object message, Properties properties, OseeMessagingStatusCallback statusCallback) {
+   public synchronized void send(MessageID messageId, Object message, Properties properties,
+      OseeMessagingStatusCallback statusCallback) {
       execute.submit(new Send(messageId, message, properties, statusCallback));
    }
 
@@ -171,7 +172,8 @@ class ConnectionNodeActiveMqNoWait implements ConnectionNodeFailoverSupport, Mes
          }
       }
 
-      private synchronized void sendInternal(MessageID messageId, Object message, Properties properties, OseeMessagingStatusCallback statusCallback) throws JMSException {
+      private synchronized void sendInternal(MessageID messageId, Object message, Properties properties,
+         OseeMessagingStatusCallback statusCallback) throws JMSException {
          Topic destination = getOrCreateTopic(messageId);
          MessageProducer producer = getOrCreateProducer(destination);
          Message msg = activeMqUtil.createMessage(session, messageId.getSerializationClass(), message);
@@ -215,7 +217,8 @@ class ConnectionNodeActiveMqNoWait implements ConnectionNodeFailoverSupport, Mes
    }
 
    @Override
-   public synchronized void subscribe(MessageID messageId, OseeMessagingListener listener, OseeMessagingStatusCallback statusCallback) {
+   public synchronized void subscribe(MessageID messageId, OseeMessagingListener listener,
+      OseeMessagingStatusCallback statusCallback) {
       execute.submit(new Subscribe(messageId, listener, statusCallback));
    }
 
@@ -256,7 +259,8 @@ class ConnectionNodeActiveMqNoWait implements ConnectionNodeFailoverSupport, Mes
    }
 
    @Override
-   public void subscribe(MessageID messageId, OseeMessagingListener listener, String selector, OseeMessagingStatusCallback statusCallback) {
+   public void subscribe(MessageID messageId, OseeMessagingListener listener, String selector,
+      OseeMessagingStatusCallback statusCallback) {
       execute.submit(new SubscribeWithSelector(messageId, listener, selector, statusCallback));
    }
 
@@ -342,7 +346,8 @@ class ConnectionNodeActiveMqNoWait implements ConnectionNodeFailoverSupport, Mes
    }
 
    @Override
-   public void unsubscribe(MessageID messageId, OseeMessagingListener listener, OseeMessagingStatusCallback statusCallback) {
+   public void unsubscribe(MessageID messageId, OseeMessagingListener listener,
+      OseeMessagingStatusCallback statusCallback) {
       execute.submit(new Unsubscribe(messageId, listener, statusCallback));
    }
 

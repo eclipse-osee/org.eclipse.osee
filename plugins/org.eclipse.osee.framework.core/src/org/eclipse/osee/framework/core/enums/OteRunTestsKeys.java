@@ -39,5 +39,5 @@ public enum OteRunTestsKeys {
    uut_partition_array,
    uut_paths_array,
    uut_rate_array;
-   
+
 }

@@ -131,7 +131,8 @@ public abstract class AbstractJaxRsContainer<H extends HttpServlet, C extends Ab
    }
 
    @Override
-   public synchronized void addApplication(String componentName, String applicationContext, Bundle bundle, Application application) {
+   public synchronized void addApplication(String componentName, String applicationContext, Bundle bundle,
+      Application application) {
       logger.trace("Add Application - [%s] - application[%s]", this, componentName);
       startServlet();
       C container = getContextContainerInitIfNull(applicationContext);

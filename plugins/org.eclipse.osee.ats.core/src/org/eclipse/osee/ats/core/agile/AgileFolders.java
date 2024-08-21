@@ -49,7 +49,8 @@ public class AgileFolders {
       return atsApi.getQueryService().getArtifact(teamId);
    }
 
-   public static ArtifactId getOrCreateTopFeatureGroupFolder(AtsApi atsApi, long teamId, ArtifactId artifact, IAtsChangeSet changes) {
+   public static ArtifactId getOrCreateTopFeatureGroupFolder(AtsApi atsApi, long teamId, ArtifactId artifact,
+      IAtsChangeSet changes) {
       ArtifactId teamFolder = AgileFolders.getTeamFolder(atsApi, teamId);
       ArtifactId featureGroupFolder = null;
       for (ArtifactToken child : atsApi.getRelationResolver().getChildren(teamFolder)) {

@@ -59,7 +59,8 @@ public interface IAtsEventService {
    /**
     * Post the simplest AtsTopicEvent with only work item ids as the payload
     */
-   void postAtsWorkItemTopicEvent(AtsTopicEvent event, Collection<IAtsWorkItem> workItems, TransactionId transactionToken);
+   void postAtsWorkItemTopicEvent(AtsTopicEvent event, Collection<IAtsWorkItem> workItems,
+      TransactionId transactionToken);
 
    void registerAtsWorkItemTopicEvent(IAtsWorkItemTopicEventListener listener, AtsTopicEvent... events);
 

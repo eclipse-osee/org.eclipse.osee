@@ -43,7 +43,8 @@ public class OperationApplication implements IApplication {
    }
 
    @SuppressWarnings("unchecked")
-   private IOperation loadOperation(String bundleName, String className) throws IllegalAccessException, ClassNotFoundException {
+   private IOperation loadOperation(String bundleName, String className)
+      throws IllegalAccessException, ClassNotFoundException {
       try {
          Bundle bundle = Platform.getBundle(bundleName);
          if (bundle == null) {

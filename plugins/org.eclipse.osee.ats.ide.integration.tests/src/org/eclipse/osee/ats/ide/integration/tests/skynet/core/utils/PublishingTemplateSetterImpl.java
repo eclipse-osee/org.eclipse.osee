@@ -61,7 +61,8 @@ public class PublishingTemplateSetterImpl implements PublishingTemplateSetter {
     */
 
    @Override
-   public String set(ArtifactToken parent, String name, String content, String rendererOptions, List<Map.Entry<String, String>> publishingTemplateContentMapEntries, List<String> matchCriteria) {
+   public String set(ArtifactToken parent, String name, String content, String rendererOptions,
+      List<Map.Entry<String, String>> publishingTemplateContentMapEntries, List<String> matchCriteria) {
       //@formatter:off
       var templateArtifactToken =
          TestUtil

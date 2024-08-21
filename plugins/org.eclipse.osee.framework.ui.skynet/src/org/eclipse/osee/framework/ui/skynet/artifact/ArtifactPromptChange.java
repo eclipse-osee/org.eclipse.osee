@@ -37,7 +37,8 @@ public final class ArtifactPromptChange {
    }
 
    @SuppressWarnings("unchecked")
-   public static boolean promptChangeAttribute(AttributeTypeToken attributeType, final Collection<? extends Artifact> artifacts, boolean persist) {
+   public static boolean promptChangeAttribute(AttributeTypeToken attributeType,
+      final Collection<? extends Artifact> artifacts, boolean persist) {
       boolean result = false;
       ArtifactPrompt prompt = getArtifactPrompt();
       if (prompt != null) {

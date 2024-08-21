@@ -135,7 +135,8 @@ public class DatabaseHealth extends AbstractBlam {
          }
       }
 
-      private void executeOperation(IProgressMonitor monitor, DatabaseHealthOperation operation, double workPercentage, boolean isFix) throws Exception {
+      private void executeOperation(IProgressMonitor monitor, DatabaseHealthOperation operation, double workPercentage,
+         boolean isFix) throws Exception {
          checkForCancelledStatus(monitor);
          if (operation != null) {
             operation.setFixOperationEnabled(isFix);

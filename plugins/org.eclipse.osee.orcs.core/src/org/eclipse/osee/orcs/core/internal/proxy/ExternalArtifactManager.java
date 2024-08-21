@@ -35,6 +35,7 @@ public interface ExternalArtifactManager {
 
    <T> AttributeReadable<T> asExternalAttribute(OrcsSession session, Attribute<T> attribute);
 
-   <T> ResultSet<AttributeReadable<T>> asExternalAttributes(OrcsSession session, Iterable<? extends Attribute<T>> attributes);
+   <T> ResultSet<AttributeReadable<T>> asExternalAttributes(OrcsSession session,
+      Iterable<? extends Attribute<T>> attributes);
 
 }

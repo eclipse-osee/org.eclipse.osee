@@ -181,7 +181,8 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
       }
    }
 
-   public void insertSelectItems(Id4JoinQuery txJoin, JdbcConnection connection, String tableName, String artifactJoinSql, Long queryId) {
+   public void insertSelectItems(Id4JoinQuery txJoin, JdbcConnection connection, String tableName,
+      String artifactJoinSql, Long queryId) {
       String query = String.format(SELECT_ITEM_GAMMAS, getJdbcClient().getOrderedHint(), tableName, artifactJoinSql);
       try (JdbcStatement chStmt = getJdbcClient().getStatement(connection)) {
          chStmt.runPreparedQuery(query, queryId);

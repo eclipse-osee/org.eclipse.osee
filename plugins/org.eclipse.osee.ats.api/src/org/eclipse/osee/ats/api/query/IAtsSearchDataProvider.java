@@ -26,7 +26,8 @@ public interface IAtsSearchDataProvider {
 
    AtsSearchData createSearchData(String namespace, String searchName);
 
-   default AtsSearchData fromJson(String namespace, String jsonValue, Class<? extends AtsSearchData> searchDataClass, JaxRsApi jaxRsApi) {
+   default AtsSearchData fromJson(String namespace, String jsonValue, Class<? extends AtsSearchData> searchDataClass,
+      JaxRsApi jaxRsApi) {
       if (supportsNamespace(namespace)) {
          try {
             return jaxRsApi.readValue(jsonValue, searchDataClass);

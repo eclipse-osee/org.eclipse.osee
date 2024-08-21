@@ -27,5 +27,6 @@ import org.xml.sax.SAXException;
 public interface IElementExtractor {
    Element getOleDataElement();
 
-   Collection<WordExtractorData> extractElements() throws DOMException, ParserConfigurationException, SAXException, IOException;
+   Collection<WordExtractorData> extractElements()
+      throws DOMException, ParserConfigurationException, SAXException, IOException;
 }

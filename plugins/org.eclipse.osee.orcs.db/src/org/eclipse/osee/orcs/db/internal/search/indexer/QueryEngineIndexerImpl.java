@@ -73,19 +73,22 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
    }
 
    @Override
-   public CancellableCallable<Integer> indexBranches(OrcsSession session, OrcsTokenService tokenService, Set<Branch> branches, boolean indexOnlyMissing, IndexerCollector... collector) {
+   public CancellableCallable<Integer> indexBranches(OrcsSession session, OrcsTokenService tokenService,
+      Set<Branch> branches, boolean indexOnlyMissing, IndexerCollector... collector) {
       return new IndexBranchesDatabaseCallable(logger, session, jdbcClient, joinFactory, tokenService, consumer,
          merge(collector), branches, indexOnlyMissing);
    }
 
    @Override
-   public CancellableCallable<Integer> indexAllFromQueue(OrcsSession session, OrcsTokenService tokenService, IndexerCollector... collector) {
+   public CancellableCallable<Integer> indexAllFromQueue(OrcsSession session, OrcsTokenService tokenService,
+      IndexerCollector... collector) {
       return new IndexAllInQueueCallable(logger, session, jdbcClient, joinFactory, tokenService, consumer,
          merge(collector));
    }
 
    @Override
-   public CancellableCallable<List<Future<?>>> indexResources(OrcsSession session, OrcsTokenService tokenService, Iterable<Long> datas, IndexerCollector... collector) {
+   public CancellableCallable<List<Future<?>>> indexResources(OrcsSession session, OrcsTokenService tokenService,
+      Iterable<Long> datas, IndexerCollector... collector) {
       return new IndexerDatabaseCallable(logger, session, jdbcClient, joinFactory, tokenService, consumer,
          merge(collector), IndexerConstants.INDEXER_CACHE_ALL_ITEMS, IndexerConstants.INDEXER_CACHE_LIMIT, datas);
    }

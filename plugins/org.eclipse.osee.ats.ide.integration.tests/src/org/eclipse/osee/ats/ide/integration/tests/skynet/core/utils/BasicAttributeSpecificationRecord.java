@@ -57,8 +57,7 @@ public class BasicAttributeSpecificationRecord implements AttributeSpecification
     * @throws NullPointerException when any of the parameters are <code>null</code>.
     */
 
-   public BasicAttributeSpecificationRecord(@NonNull AttributeTypeGeneric<?> attributeType,
-      @NonNull List<Object> attributeValues, @NonNull BiConsumer<Attribute<?>, Object> attributeSetter) {
+   public BasicAttributeSpecificationRecord(@NonNull AttributeTypeGeneric<?> attributeType, @NonNull List<Object> attributeValues, @NonNull BiConsumer<Attribute<?>, Object> attributeSetter) {
 
       this.attributeType = Conditions.requireNonNull(attributeType, "attributeType");
       this.attributeValues = Conditions.requireNonNull(attributeValues, "attributeValues");

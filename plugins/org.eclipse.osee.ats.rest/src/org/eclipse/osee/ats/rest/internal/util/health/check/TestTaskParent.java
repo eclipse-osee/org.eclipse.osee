@@ -28,7 +28,8 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 public class TestTaskParent implements IAtsHealthCheck {
 
    @Override
-   public boolean check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi, IAtsChangeSet changes, IAtsOperationCache cache) {
+   public boolean check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi,
+      IAtsChangeSet changes, IAtsOperationCache cache) {
       if (workItem.isTask()) {
          if (atsApi.getRelationResolver().getRelatedOrSentinel(workItem,
             AtsRelationTypes.TeamWfToTask_TeamWorkflow).isInvalid()) {

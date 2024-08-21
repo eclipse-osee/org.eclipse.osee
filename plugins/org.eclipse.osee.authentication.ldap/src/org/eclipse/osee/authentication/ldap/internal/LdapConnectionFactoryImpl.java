@@ -40,7 +40,8 @@ public final class LdapConnectionFactoryImpl implements LdapConnectionFactory {
    }
 
    @Override
-   public LdapConnection createConnection(ContextConfigProvider provider, LdapAuthenticationType authType, Hashtable<String, String> properties) throws NamingException, LoginException, PrivilegedActionException {
+   public LdapConnection createConnection(ContextConfigProvider provider, LdapAuthenticationType authType,
+      Hashtable<String, String> properties) throws NamingException, LoginException, PrivilegedActionException {
       DirContext context;
       if (LdapAuthenticationType.GSSAPI == authType) {
          context = doKerberosLogin(properties);
@@ -50,7 +51,8 @@ public final class LdapConnectionFactoryImpl implements LdapConnectionFactory {
       return new LdapConnection(logger, provider, context);
    }
 
-   private DirContext doKerberosLogin(final Hashtable<String, String> env) throws LoginException, PrivilegedActionException {
+   private DirContext doKerberosLogin(final Hashtable<String, String> env)
+      throws LoginException, PrivilegedActionException {
       LoginContext context = new LoginContext(KERBEROS_LOGIN);
       context.login();
       Subject subject = context.getSubject();

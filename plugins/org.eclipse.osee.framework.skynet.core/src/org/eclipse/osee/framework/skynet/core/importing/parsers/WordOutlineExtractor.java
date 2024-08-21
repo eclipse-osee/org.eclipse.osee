@@ -102,7 +102,8 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
    }
 
    @Override
-   protected void extractFromSource(OperationLogger logger, URI source, RoughArtifactCollector collector) throws IOException {
+   protected void extractFromSource(OperationLogger logger, URI source, RoughArtifactCollector collector)
+      throws IOException {
       Reader reader = null;
       try {
          reader = new BufferedReader(new InputStreamReader(source.toURL().openStream(), "UTF-8"));

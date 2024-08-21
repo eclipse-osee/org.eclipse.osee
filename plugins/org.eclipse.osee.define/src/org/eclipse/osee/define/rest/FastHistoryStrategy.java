@@ -43,7 +43,8 @@ public class FastHistoryStrategy extends FullHistoryTolerant {
    }
 
    @Override
-   public void handleCodeUnit(BranchId branch, ArtifactId codeUnit, TransactionBuilder tx, ArtifactId repository, ArtifactId commit, ChangeType changeType, String path) {
+   public void handleCodeUnit(BranchId branch, ArtifactId codeUnit, TransactionBuilder tx, ArtifactId repository,
+      ArtifactId commit, ChangeType changeType, String path) {
       codeunitToCommitMap.put(codeUnit, commit);
       if (!pathToCodeunitMap.containsValue(
          codeUnit) && (changeType == ChangeType.ADD || changeType == ChangeType.COPY || changeType == ChangeType.RENAME)) {

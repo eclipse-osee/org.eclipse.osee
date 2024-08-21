@@ -36,11 +36,13 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
  */
 public class FormsUtil {
 
-   public static Pair<Label, Text> createLabelText(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr) {
+   public static Pair<Label, Text> createLabelText(XFormToolkit toolkit, Composite comp, String labelStr,
+      String valueStr) {
       return createLabelText(toolkit, comp, labelStr, valueStr, null);
    }
 
-   public static Pair<Label, Text> createLabelText(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr, String tooltip) {
+   public static Pair<Label, Text> createLabelText(XFormToolkit toolkit, Composite comp, String labelStr,
+      String valueStr, String tooltip) {
       Composite topLineComp = new Composite(comp, SWT.NONE);
       topLineComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       topLineComp.setLayout(ALayout.getZeroMarginLayout(2, false));
@@ -65,7 +67,8 @@ public class FormsUtil {
       return createLabelValue(toolkit, comp, labelStr, valueStr, null);
    }
 
-   public static Label createLabelValue(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr, String tooltip) {
+   public static Label createLabelValue(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr,
+      String tooltip) {
       Composite topLineComp = new Composite(comp, SWT.NONE);
       topLineComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       topLineComp.setLayout(ALayout.getZeroMarginLayout(2, false));

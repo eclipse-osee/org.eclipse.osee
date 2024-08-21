@@ -84,11 +84,13 @@ public final class InputFields {
       return add(key, type, label, tooltip, placeholder, value, false, false);
    }
 
-   public InputFields add(String key, InputType type, String label, String tooltip, String placeholder, String value, boolean hasError) {
+   public InputFields add(String key, InputType type, String label, String tooltip, String placeholder, String value,
+      boolean hasError) {
       return add(key, type, label, tooltip, placeholder, value, false, hasError);
    }
 
-   public InputFields add(String key, InputType type, String label, String tooltip, String placeholder, String value, boolean isDefault, boolean hasError) {
+   public InputFields add(String key, InputType type, String label, String tooltip, String placeholder, String value,
+      boolean isDefault, boolean hasError) {
       Data input = new Data();
       input.label = label;
       input.placeholder = placeholder;

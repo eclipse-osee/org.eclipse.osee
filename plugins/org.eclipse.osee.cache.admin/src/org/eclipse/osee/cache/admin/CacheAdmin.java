@@ -23,6 +23,7 @@ public interface CacheAdmin {
 
    <K, V> Cache<K, V> createCache(CacheConfiguration configuration) throws Exception;
 
-   <K, V> Cache<K, V> createLoadingCache(CacheConfiguration configuration, CacheDataLoader<K, V> dataLoader, CacheKeysLoader<K> keyLoader) throws Exception;
+   <K, V> Cache<K, V> createLoadingCache(CacheConfiguration configuration, CacheDataLoader<K, V> dataLoader,
+      CacheKeysLoader<K> keyLoader) throws Exception;
 
 }

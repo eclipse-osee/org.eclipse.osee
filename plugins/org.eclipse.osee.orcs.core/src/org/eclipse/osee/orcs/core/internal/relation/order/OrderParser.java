@@ -164,7 +164,8 @@ public class OrderParser {
       return writer.toString();
    }
 
-   private void writeEntry(XMLStreamWriter xmlWriter, RelationTypeSide typeAndSide, OrderData orderData) throws XMLStreamException {
+   private void writeEntry(XMLStreamWriter xmlWriter, RelationTypeSide typeAndSide, OrderData orderData)
+      throws XMLStreamException {
       xmlWriter.writeEmptyElement(START_TAG);
       // TODO don't store relation type by name - use type UUID
       xmlWriter.writeAttribute(RELATION_TYPE_TAG, typeAndSide.getName());

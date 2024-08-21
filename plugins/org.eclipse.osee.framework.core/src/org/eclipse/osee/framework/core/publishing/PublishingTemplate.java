@@ -93,8 +93,7 @@ public class PublishingTemplate implements ToMessage {
     * <code>publishingOptions</code> are <code>null</code>.
     */
 
-   public PublishingTemplate(@NonNull String identifier, @NonNull String name,
-      @NonNull PublishOptions publishingOptions, @Nullable String templateContent) {
+   public PublishingTemplate(@NonNull String identifier, @NonNull String name, @NonNull PublishOptions publishingOptions, @Nullable String templateContent) {
       this.identifier = Conditions.requireNonNull(identifier, "identifier");
       this.name = Conditions.requireNonNull(name, "name");
       this.publishingOptions = Conditions.requireNonNull(publishingOptions, "publishingOptions");

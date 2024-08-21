@@ -91,7 +91,8 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
       openViewUpon(null, null, null, commitTrans, true);
    }
 
-   private static void openViewUpon(final BranchId sourceBranch, final BranchId destBranch, final TransactionToken tranId, final TransactionToken commitTrans, final boolean showConflicts) {
+   private static void openViewUpon(final BranchId sourceBranch, final BranchId destBranch,
+      final TransactionToken tranId, final TransactionToken commitTrans, final boolean showConflicts) {
       Job job = new Job("Open Merge View") {
 
          @Override
@@ -155,7 +156,8 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
       setFocusWidget(mergeXWidget.getControl());
    }
 
-   public void explore(final BranchId sourceBranch, final BranchId destBranch, final TransactionToken transactionId, final TransactionToken commitTrans, boolean showConflicts) {
+   public void explore(final BranchId sourceBranch, final BranchId destBranch, final TransactionToken transactionId,
+      final TransactionToken commitTrans, boolean showConflicts) {
       this.sourceBranch = BranchManager.getBranchToken(sourceBranch);
       this.destBranch = BranchManager.getBranchToken(destBranch);
       this.transactionId = transactionId;

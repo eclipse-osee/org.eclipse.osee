@@ -38,7 +38,8 @@ public class DoorsWordOutlineExtractor extends WordOutlineExtractorDelegate {
    private int lastReqNumber = 1;
 
    @Override
-   protected void addChildRoughArtifact(OrcsApi orcsApi, XResultData results, String content, RoughArtifactCollector collector) {
+   protected void addChildRoughArtifact(OrcsApi orcsApi, XResultData results, String content,
+      RoughArtifactCollector collector) {
       StringBuilder newName = new StringBuilder();
       StringBuilder newContent = new StringBuilder();
       if (needsNewArt(content, newName, newContent)) {

@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.workdef.model.WidgetDefinition;
  */
 public interface IAtsXWidgetValidator {
 
-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef, StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices);
+   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, WidgetDefinition widgetDef,
+      StateDefinition fromStateDef, StateDefinition toStateDef, AtsApi atsServices);
 
 }

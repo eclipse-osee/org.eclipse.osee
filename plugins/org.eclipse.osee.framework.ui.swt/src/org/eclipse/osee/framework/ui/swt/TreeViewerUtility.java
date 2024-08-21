@@ -62,7 +62,8 @@ public class TreeViewerUtility {
    }
 
    @SuppressWarnings("unchecked")
-   private static <A extends Object> void traverseTree(Object[] items, ITreeContentProvider contentProvider, List<A> selectedTreeItems, Map<A, Object> selectionHash, Map<A, Object> expandedHash) {
+   private static <A extends Object> void traverseTree(Object[] items, ITreeContentProvider contentProvider,
+      List<A> selectedTreeItems, Map<A, Object> selectionHash, Map<A, Object> expandedHash) {
       for (Object item : items) {
          if (selectionHash.containsKey(item)) {
             selectedTreeItems.add((A) item);

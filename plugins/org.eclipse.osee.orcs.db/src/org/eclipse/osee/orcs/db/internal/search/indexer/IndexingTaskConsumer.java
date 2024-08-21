@@ -28,6 +28,7 @@ public interface IndexingTaskConsumer {
 
    int getWorkersInQueue();
 
-   Future<?> submitTaskId(OrcsSession session, OrcsTokenService tokenService, IndexerCollector collector, final Long queryId) throws Exception;
+   Future<?> submitTaskId(OrcsSession session, OrcsTokenService tokenService, IndexerCollector collector,
+      final Long queryId) throws Exception;
 
 }

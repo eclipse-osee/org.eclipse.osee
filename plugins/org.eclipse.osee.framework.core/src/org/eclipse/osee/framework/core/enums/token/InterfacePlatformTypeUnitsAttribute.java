@@ -42,7 +42,8 @@ public class InterfacePlatformTypeUnitsAttribute extends AttributeTypeEnum<Inter
       new InterfacePlatformTypeUnitsEnum(7, "feet/second²", "acceleration");
    public final InterfacePlatformTypeUnitsEnum Radians =
       new InterfacePlatformTypeUnitsEnum(8, "radians", "latitude / longitude");
-   public final InterfacePlatformTypeUnitsEnum UnitSquared = new InterfacePlatformTypeUnitsEnum(9, "unit²", "variance");
+   public final InterfacePlatformTypeUnitsEnum UnitSquared =
+      new InterfacePlatformTypeUnitsEnum(9, "unit²", "variance");
    public final InterfacePlatformTypeUnitsEnum Hertz = new InterfacePlatformTypeUnitsEnum(10, "hertz", "frequency");
    public final InterfacePlatformTypeUnitsEnum dBm = new InterfacePlatformTypeUnitsEnum(11, "dBm", "power");
    public final InterfacePlatformTypeUnitsEnum kW = new InterfacePlatformTypeUnitsEnum(12, "kW", "power");

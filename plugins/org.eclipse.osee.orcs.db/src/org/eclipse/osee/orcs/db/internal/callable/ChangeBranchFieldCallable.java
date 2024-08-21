@@ -51,22 +51,26 @@ public class ChangeBranchFieldCallable extends AbstractDatastoreTxCallable<Void>
       return null;
    }
 
-   public static Callable<Void> newBranchState(Log logger, OrcsSession session, JdbcClient jdbcClient, BranchId branch, BranchState branchState) {
+   public static Callable<Void> newBranchState(Log logger, OrcsSession session, JdbcClient jdbcClient, BranchId branch,
+      BranchState branchState) {
       Conditions.checkNotNull(branchState, "branchState");
       return new ChangeBranchFieldCallable(logger, session, jdbcClient, branch, "branch_state", branchState);
    }
 
-   public static Callable<Void> newBranchType(Log logger, OrcsSession session, JdbcClient jdbcClient, BranchId branch, BranchType branchType) {
+   public static Callable<Void> newBranchType(Log logger, OrcsSession session, JdbcClient jdbcClient, BranchId branch,
+      BranchType branchType) {
       Conditions.checkNotNull(branchType, "branchType");
       return new ChangeBranchFieldCallable(logger, session, jdbcClient, branch, "branch_type", branchType);
    }
 
-   public static Callable<Void> newBranchName(Log logger, OrcsSession session, JdbcClient jdbcClient, BranchId branch, String branchName) {
+   public static Callable<Void> newBranchName(Log logger, OrcsSession session, JdbcClient jdbcClient, BranchId branch,
+      String branchName) {
       Conditions.checkNotNullOrEmpty(branchName, "branchName");
       return new ChangeBranchFieldCallable(logger, session, jdbcClient, branch, "branch_name", branchName);
    }
 
-   public static Callable<Void> newAssocArtId(Log logger, OrcsSession session, JdbcClient jdbcClient, BranchId branch, ArtifactId associatedArt) {
+   public static Callable<Void> newAssocArtId(Log logger, OrcsSession session, JdbcClient jdbcClient, BranchId branch,
+      ArtifactId associatedArt) {
       return new ChangeBranchFieldCallable(logger, session, jdbcClient, branch, "associated_art_id", associatedArt);
    }
 }

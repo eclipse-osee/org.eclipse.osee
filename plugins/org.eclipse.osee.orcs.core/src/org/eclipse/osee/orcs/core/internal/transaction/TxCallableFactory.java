@@ -43,7 +43,8 @@ public class TxCallableFactory {
       this.txManager = txManager;
    }
 
-   public CancellableCallable<Integer> purgeTransactions(OrcsSession session, final Collection<? extends TransactionId> transactions) {
+   public CancellableCallable<Integer> purgeTransactions(OrcsSession session,
+      final Collection<? extends TransactionId> transactions) {
       return new AbstractTxCallable<Integer>("PurgeTransactions", session) {
          @Override
          protected Integer innerCall() throws Exception {
@@ -52,7 +53,8 @@ public class TxCallableFactory {
       };
    }
 
-   public Callable<Void> setTransactionComment(OrcsSession session, final TransactionId transaction, final String comment) {
+   public Callable<Void> setTransactionComment(OrcsSession session, final TransactionId transaction,
+      final String comment) {
       return new AbstractTxCallable<Void>("SetTxComment", session) {
          @Override
          protected Void innerCall() throws Exception {

@@ -32,8 +32,7 @@ import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
  */
 public class EventListenerRegistry {
 
-   private final Map<EventQosType, EventListeners> qosToListeners =
-      new ConcurrentHashMap<>();
+   private final Map<EventQosType, EventListeners> qosToListeners = new ConcurrentHashMap<>();
    private final Set<IEventListener> listenerSet = new HashSet<>();
 
    public void addListener(EventQosType qos, IEventListener listener) {

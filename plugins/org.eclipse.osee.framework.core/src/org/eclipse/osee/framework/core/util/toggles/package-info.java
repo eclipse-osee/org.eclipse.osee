@@ -13,8 +13,8 @@
 
 /**
  * This package contains a factory and class for obtaining the value of configuration toggles stored in the database.
- * The factory loads either an OSEE Server or an OSEE Client implementation for the {@link ToggleAccessor} interface. This
- * allows for an interface that can be used in the shared client and server code.
+ * The factory loads either an OSEE Server or an OSEE Client implementation for the {@link ToggleAccessor} interface.
+ * This allows for an interface that can be used in the shared client and server code.
  */
 
 package org.eclipse.osee.framework.core.util.toggles;

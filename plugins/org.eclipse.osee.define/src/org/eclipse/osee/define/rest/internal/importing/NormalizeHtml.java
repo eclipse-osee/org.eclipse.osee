@@ -101,7 +101,8 @@ public final class NormalizeHtml {
     * @parm inputHTML bosy of HTML without <body> </body> tags
     * @return wraped and normalized HTML
     */
-   public static String wrapAndNormalizeHTML(String htmlBody, boolean removeInitialStyle, boolean removeEmptyTags, boolean removeHeaderFooter) {
+   public static String wrapAndNormalizeHTML(String htmlBody, boolean removeInitialStyle, boolean removeEmptyTags,
+      boolean removeHeaderFooter) {
       htmlBody = HTMLHEAD + htmlBody + HTMLTAIL;
       return convertToNormalizedHTML(htmlBody, removeInitialStyle, removeEmptyTags, removeHeaderFooter);
    }
@@ -127,7 +128,8 @@ public final class NormalizeHtml {
     * @param removeEmptyTags Remove any empty (containing no text) style sections
     * @return Normalized HTML
     */
-   public static String convertToNormalizedHTML(String inputHTML, boolean removeInitialStyle, boolean removeEmptyTags, boolean removeHeaderFooter) {
+   public static String convertToNormalizedHTML(String inputHTML, boolean removeInitialStyle, boolean removeEmptyTags,
+      boolean removeHeaderFooter) {
       Document doc = Jsoup.parse(inputHTML);
       doc.quirksMode(QuirksMode.noQuirks);
       OutputSettings outputSettings = doc.outputSettings();

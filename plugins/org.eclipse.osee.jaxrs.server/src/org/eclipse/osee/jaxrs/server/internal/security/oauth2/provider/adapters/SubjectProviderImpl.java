@@ -303,7 +303,8 @@ public class SubjectProviderImpl implements SubjectProvider {
    }
 
    @Override
-   public String createSessionToken(MessageContext mc, MultivaluedMap<String, String> arg1, UserSubject subject, OAuthRedirectionState arg3) {
+   public String createSessionToken(MessageContext mc, MultivaluedMap<String, String> arg1, UserSubject subject,
+      OAuthRedirectionState arg3) {
       logger.debug("Create Session Token - subject[%s]", subject);
 
       String sessionAuthenticityToken = null;
@@ -329,7 +330,8 @@ public class SubjectProviderImpl implements SubjectProvider {
    }
 
    @Override
-   public UserSubject createUserSubject(MessageContext mc, MultivaluedMap<String, String> arg1) throws OAuthServiceException {
+   public UserSubject createUserSubject(MessageContext mc, MultivaluedMap<String, String> arg1)
+      throws OAuthServiceException {
       UserSubject subject = mc.getContent(UserSubject.class);
       if (subject == null) {
          SecurityContext securityContext = getSecurityContext(mc);

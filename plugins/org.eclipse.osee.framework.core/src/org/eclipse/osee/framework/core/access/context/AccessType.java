@@ -28,6 +28,7 @@ public interface AccessType {
       return false;
    }
 
-   public AccessTypeMatch computeMatch(ArtifactToken otherArt, AttributeTypeToken attrType, RelationTypeToken relType, IParentProvider parentProvider);
+   public AccessTypeMatch computeMatch(ArtifactToken otherArt, AttributeTypeToken attrType, RelationTypeToken relType,
+      IParentProvider parentProvider);
 
 }

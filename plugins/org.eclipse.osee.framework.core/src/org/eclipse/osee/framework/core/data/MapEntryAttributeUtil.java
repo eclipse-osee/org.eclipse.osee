@@ -365,7 +365,8 @@ public class MapEntryAttributeUtil {
        */
 
       @Override
-      public Map.Entry<String, String> deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+      public Map.Entry<String, String> deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
+         throws IOException {
          JsonNode jsonNode = jsonParser.getCodec().readTree(jsonParser);
          var key = jsonNode.get("key").asText();
          var value = jsonNode.get("value").asText();
@@ -410,7 +411,8 @@ public class MapEntryAttributeUtil {
        */
 
       @Override
-      public void serialize(Map.Entry<String, String> mapEntry, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+      public void serialize(Map.Entry<String, String> mapEntry, JsonGenerator jsonGenerator,
+         SerializerProvider serializerProvider) throws IOException {
          jsonGenerator.writeStartObject();
          jsonGenerator.writeStringField("key", mapEntry.getKey());
          jsonGenerator.writeStringField("value", mapEntry.getValue());

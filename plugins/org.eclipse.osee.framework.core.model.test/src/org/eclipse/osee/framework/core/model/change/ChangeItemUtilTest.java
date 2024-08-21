@@ -432,7 +432,8 @@ public class ChangeItemUtilTest {
       Assert.assertTrue(split.totalEquals(item));
    }
 
-   private Triplet<ChangeVersion, ChangeVersion, Boolean> createTriplet(Long long1, ModificationType mod1, Long long2, ModificationType mod2, boolean expected) {
+   private Triplet<ChangeVersion, ChangeVersion, Boolean> createTriplet(Long long1, ModificationType mod1, Long long2,
+      ModificationType mod2, boolean expected) {
       return new Triplet<>(//
          ChangeTestUtility.createChange(long1, mod1), //
          ChangeTestUtility.createChange(long2, mod2), //

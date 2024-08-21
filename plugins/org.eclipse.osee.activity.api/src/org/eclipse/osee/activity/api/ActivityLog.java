@@ -40,7 +40,8 @@ public interface ActivityLog {
 
    Long createEntry(ActivityTypeToken type, Long parentId, Integer status, Object... messageArgs);
 
-   Long createEntry(UserId accountId, Long clientId, ActivityTypeToken typeId, Long parentId, Integer status, String... messageArgs);
+   Long createEntry(UserId accountId, Long clientId, ActivityTypeToken typeId, Long parentId, Integer status,
+      String... messageArgs);
 
    Long createThrowableEntry(ActivityTypeToken type, Throwable throwable);
 
@@ -60,13 +61,15 @@ public interface ActivityLog {
 
    void endEntryAbnormally(Long entryId, Integer status);
 
-   Long createActivityThread(ActivityTypeToken type, UserId accountId, Long serverId, Long clientId, Object... messageArgs);
+   Long createActivityThread(ActivityTypeToken type, UserId accountId, Long serverId, Long clientId,
+      Object... messageArgs);
 
    /**
     * @param serverId id of server originating the message. -1 if a client originates the message
     * @return the new entry id which is the parent id for all direct child entries created on this thread
     */
-   Long createActivityThread(Long parentId, ActivityTypeToken type, UserId accountId, Long serverId, Long clientId, Object... messageArgs);
+   Long createActivityThread(Long parentId, ActivityTypeToken type, UserId accountId, Long serverId, Long clientId,
+      Object... messageArgs);
 
    void removeActivityThread();
 

@@ -50,7 +50,8 @@ public class Quad<F, S, T, Q> extends Triplet<F, S, T> {
     * @throws NullPointerException when any of the parameters are <code>null</code>.
     */
 
-   public static <F, S, T, Q> @NonNull Quad<F, S, T, Q> createNonNull(@NonNull F first, @NonNull S second, @NonNull T third, @NonNull Q fourth) {
+   public static <F, S, T, Q> @NonNull Quad<F, S, T, Q> createNonNull(@NonNull F first, @NonNull S second,
+      @NonNull T third, @NonNull Q fourth) {
       return new Quad<>(Objects.requireNonNull(first), Objects.requireNonNull(second), Objects.requireNonNull(third),
          Objects.requireNonNull(fourth));
    }
@@ -72,7 +73,8 @@ public class Quad<F, S, T, Q> extends Triplet<F, S, T> {
     * @throws NullPointerException when any of the parameters are <code>null</code>.
     */
 
-   public static <F, S, T, Q> @NonNull Quad<F, S, T, Q> createNonNullImmutable(@NonNull F first, @NonNull S second, @NonNull T third, @NonNull Q fourth) {
+   public static <F, S, T, Q> @NonNull Quad<F, S, T, Q> createNonNullImmutable(@NonNull F first, @NonNull S second,
+      @NonNull T third, @NonNull Q fourth) {
       return createNullable(Objects.requireNonNull(first), Objects.requireNonNull(second),
          Objects.requireNonNull(third), Objects.requireNonNull(fourth));
    }
@@ -92,7 +94,8 @@ public class Quad<F, S, T, Q> extends Triplet<F, S, T> {
     * <code>fourth</code>.
     */
 
-   public static <F, S, T, Q> @NonNull Quad<F, S, T, Q> createNullable(@Nullable F first, @Nullable S second, @Nullable T third, @Nullable Q fourth) {
+   public static <F, S, T, Q> @NonNull Quad<F, S, T, Q> createNullable(@Nullable F first, @Nullable S second,
+      @Nullable T third, @Nullable Q fourth) {
       return new Quad<>(first, second, third, fourth);
    }
 
@@ -112,7 +115,8 @@ public class Quad<F, S, T, Q> extends Triplet<F, S, T> {
     * <code>fourth</code>.
     */
 
-   public static <F, S, T, Q> @NonNull Quad<F, S, T, Q> createNullableImmutable(@Nullable F first, @Nullable S second, @Nullable T third, @Nullable Q fourth) {
+   public static <F, S, T, Q> @NonNull Quad<F, S, T, Q> createNullableImmutable(@Nullable F first, @Nullable S second,
+      @Nullable T third, @Nullable Q fourth) {
       //@formatter:off
       return
          new Quad<>( first, second, third, fourth ) {
@@ -228,7 +232,8 @@ public class Quad<F, S, T, Q> extends Triplet<F, S, T> {
     * <code>null</code>.
     */
 
-   public @Nullable F getFirstIfPresentOthers(@Nullable Consumer<@NonNull S> secondAction, @Nullable Consumer<@NonNull T> thirdAction, @Nullable Consumer<@NonNull Q> fourthAction) {
+   public @Nullable F getFirstIfPresentOthers(@Nullable Consumer<@NonNull S> secondAction,
+      @Nullable Consumer<@NonNull T> thirdAction, @Nullable Consumer<@NonNull Q> fourthAction) {
 
       Conditions.acceptWhenNonNull(this.second, secondAction);
       Conditions.acceptWhenNonNull(this.third, thirdAction);
@@ -256,7 +261,8 @@ public class Quad<F, S, T, Q> extends Triplet<F, S, T> {
     * </ul>
     */
 
-   public @NonNull F getFirstNonNullIfPresentOthers(@Nullable Consumer<@NonNull S> secondAction, @Nullable Consumer<@NonNull T> thirdAction, @Nullable Consumer<@NonNull Q> fourthAction) {
+   public @NonNull F getFirstNonNullIfPresentOthers(@Nullable Consumer<@NonNull S> secondAction,
+      @Nullable Consumer<@NonNull T> thirdAction, @Nullable Consumer<@NonNull Q> fourthAction) {
 
       Conditions.acceptWhenNonNull(this.second, secondAction);
       Conditions.acceptWhenNonNull(this.third, thirdAction);
@@ -307,7 +313,8 @@ public class Quad<F, S, T, Q> extends Triplet<F, S, T> {
     * parameter is <code>null</code>.
     */
 
-   public void ifPresent(@Nullable Consumer<@NonNull F> firstAction, @Nullable Consumer<@NonNull S> secondAction, @Nullable Consumer<@NonNull T> thirdAction, @Nullable Consumer<@NonNull Q> fourthAction) {
+   public void ifPresent(@Nullable Consumer<@NonNull F> firstAction, @Nullable Consumer<@NonNull S> secondAction,
+      @Nullable Consumer<@NonNull T> thirdAction, @Nullable Consumer<@NonNull Q> fourthAction) {
 
       Conditions.acceptWhenNonNull(this.first, firstAction);
       Conditions.acceptWhenNonNull(this.second, secondAction);
@@ -373,7 +380,8 @@ public class Quad<F, S, T, Q> extends Triplet<F, S, T> {
     * @return <code>false</code> when all values are of the expected {@link Class}; otherwise, <code>true</code>.
     */
 
-   public boolean typesKo(@NonNull Class<?> firstClass, @NonNull Class<?> secondClass, @NonNull Class<?> thirdClass, @NonNull Class<?> fourthClass) {
+   public boolean typesKo(@NonNull Class<?> firstClass, @NonNull Class<?> secondClass, @NonNull Class<?> thirdClass,
+      @NonNull Class<?> fourthClass) {
       return !this.typesOk(firstClass, secondClass, thirdClass, fourthClass);
    }
 
@@ -388,7 +396,8 @@ public class Quad<F, S, T, Q> extends Triplet<F, S, T> {
     * @return <code>true</code> when all values are of the expected {@link Class}; otherwise, <code>false</code>.
     */
 
-   public boolean typesOk(@NonNull Class<?> firstClass, @NonNull Class<?> secondClass, @NonNull Class<?> thirdClass, @NonNull Class<?> fourthClass) {
+   public boolean typesOk(@NonNull Class<?> firstClass, @NonNull Class<?> secondClass, @NonNull Class<?> thirdClass,
+      @NonNull Class<?> fourthClass) {
 
       var classOfFourth = Conditions.applyWhenNonNull(this.fourth, (q) -> q.getClass());
       //@formatter:off

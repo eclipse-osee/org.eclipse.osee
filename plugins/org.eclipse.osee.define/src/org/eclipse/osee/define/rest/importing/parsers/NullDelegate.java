@@ -42,7 +42,9 @@ public final class NullDelegate implements IArtifactExtractorDelegate {
    }
 
    @Override
-   public XResultData processContent(OrcsApi orcsApi, XResultData results, RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph) {
+   public XResultData processContent(OrcsApi orcsApi, XResultData results, RoughArtifactCollector collector,
+      boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle,
+      String content, boolean isParagraph) {
       return results;
    }
 

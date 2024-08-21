@@ -52,7 +52,9 @@ public final class RequirementTraceTableDelegate implements IArtifactExtractorDe
    }
 
    @Override
-   public XResultData processContent(OrcsApi orcsApi, XResultData results, RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph) {
+   public XResultData processContent(OrcsApi orcsApi, XResultData results, RoughArtifactCollector collector,
+      boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle,
+      String content, boolean isParagraph) {
       parser.handleAppendixATable(content);
       Collection<Pair<String, String>> output = parser.getTraces();
       if (output.size() > 0) {

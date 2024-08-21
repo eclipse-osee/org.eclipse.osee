@@ -41,7 +41,8 @@ public abstract class DynamicBlamOperation {
 
    }
 
-   public void executeOperation(Object[] actualParameters) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+   public void executeOperation(Object[] actualParameters)
+      throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
       mainMethod.invoke(this, actualParameters);
    }
 

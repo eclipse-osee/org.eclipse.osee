@@ -160,8 +160,7 @@ public class RendererManagerTest {
    private final DefaultOption defaultOption;
    private final Integer artifactIndex;
 
-   public RendererManagerTest(String subTestName, ArtifactTypeToken artifactType, PresentationType presentationType,
-      Class<? extends IRenderer> clazz, DefaultOption defaultOption, Integer artifactIndex) {
+   public RendererManagerTest(String subTestName, ArtifactTypeToken artifactType, PresentationType presentationType, Class<? extends IRenderer> clazz, DefaultOption defaultOption, Integer artifactIndex) {
       this.subTestName = subTestName;
       this.artifactType = artifactType;
       this.presentationType = presentationType;

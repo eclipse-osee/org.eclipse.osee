@@ -40,14 +40,14 @@ public class ArtifactReadableDeserializer extends StdDeserializer<@NonNull Artif
    }
 
    @Override
-   public ArtifactReadable deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+   public ArtifactReadable deserialize(JsonParser jp, DeserializationContext ctxt)
+      throws IOException, JsonProcessingException {
       JsonNode readTree = jp.getCodec().readTree(jp);
-      
+
       if (readTree != null) {
-         
-    	 return ArtifactReadableImpl.create(readTree.get("id").asLong(), readTree.get("name").asText());
-    	 
-         
+
+         return ArtifactReadableImpl.create(readTree.get("id").asLong(), readTree.get("name").asText());
+
       }
 
       return ArtifactReadable.SENTINEL;

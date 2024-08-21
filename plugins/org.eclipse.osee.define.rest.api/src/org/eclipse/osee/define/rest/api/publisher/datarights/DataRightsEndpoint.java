@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.publishing.DataRightResult;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.framework.core.publishing.DataRightResult;
 
-
 /**
  * The interface defines the REST API end points for obtaining the data rights for a sequence of artifacts.
  *

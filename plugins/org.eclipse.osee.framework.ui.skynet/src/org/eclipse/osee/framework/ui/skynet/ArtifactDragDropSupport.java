@@ -54,7 +54,8 @@ public class ArtifactDragDropSupport {
       performDragDrop(e, null, window, shell);
    }
 
-   private static void performDragDrop(DropTargetEvent e, Artifact[] artifacts, RelationExplorerWindow window, Shell shell) {
+   private static void performDragDrop(DropTargetEvent e, Artifact[] artifacts, RelationExplorerWindow window,
+      Shell shell) {
 
       if (ArtifactTransfer.getInstance().isSupportedType(e.currentDataType)) {
 

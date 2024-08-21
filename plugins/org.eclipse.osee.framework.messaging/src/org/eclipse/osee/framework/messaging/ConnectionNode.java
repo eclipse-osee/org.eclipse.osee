@@ -25,7 +25,8 @@ public interface ConnectionNode {
     * 
     * @param statusCallback Used to relay the status of the subscribe command ( success, failure, etc). Can not be null.
     */
-   void subscribe(MessageID messageId, OseeMessagingListener listener, final OseeMessagingStatusCallback statusCallback);
+   void subscribe(MessageID messageId, OseeMessagingListener listener,
+      final OseeMessagingStatusCallback statusCallback);
 
    /**
     * Subscribes listener to updates to message/s with the given id.
@@ -33,7 +34,8 @@ public interface ConnectionNode {
     * @param selector A string conforming to the SQL 92 syntax used for extra filtering of subscriptions
     * @param statusCallback Used to relay the status of the subscribe command ( success, failure, etc). Can not be null.
     */
-   void subscribe(MessageID messageId, OseeMessagingListener listener, String selector, final OseeMessagingStatusCallback statusCallback);
+   void subscribe(MessageID messageId, OseeMessagingListener listener, String selector,
+      final OseeMessagingStatusCallback statusCallback);
 
    /**
     * Subscribes listener to updates to message/s with the given id. A default status handler will be used to log
@@ -46,7 +48,8 @@ public interface ConnectionNode {
     * 
     * @param statusCallback Used to relay the status of the unsubscribe ( success, failure, etc). Can not be null.
     */
-   void unsubscribe(MessageID messageId, OseeMessagingListener listener, final OseeMessagingStatusCallback statusCallback);
+   void unsubscribe(MessageID messageId, OseeMessagingListener listener,
+      final OseeMessagingStatusCallback statusCallback);
 
    /**
     * Unsubscribes listener from updates for message with id equal to messageId. A default status handler will be used

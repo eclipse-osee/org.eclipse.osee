@@ -133,18 +133,21 @@ public class JaxRsOAuthResourceServerFilter implements ContainerRequestFilter {
       private static ClientAccessTokenValidator newTokenValidator() {
          return new ClientAccessTokenValidator() {
             @Override
-            public AccessTokenValidation validateAccessToken(MessageContext mc, final String authScheme, final String accessToken) throws OAuthServiceException {
+            public AccessTokenValidation validateAccessToken(MessageContext mc, final String authScheme,
+               final String accessToken) throws OAuthServiceException {
                return getRemoteTokenValidation(authScheme, accessToken);
             }
 
             @Override
-            public AccessTokenValidation validateAccessToken(MessageContext mc, String authScheme, String accessToken, MultivaluedMap<String, String> values) throws OAuthServiceException {
+            public AccessTokenValidation validateAccessToken(MessageContext mc, String authScheme, String accessToken,
+               MultivaluedMap<String, String> values) throws OAuthServiceException {
                return null;
             }
          };
       }
 
-      private static ClientAccessTokenValidator newCachingTokenValidator(int cacheMaxSize, long cacheEvictTimeoutMillis) {
+      private static ClientAccessTokenValidator newCachingTokenValidator(int cacheMaxSize,
+         long cacheEvictTimeoutMillis) {
          Conditions.checkExpressionFailOnTrue(cacheMaxSize <= 0, "Token Cache max size must be greater than 0");
          Conditions.checkExpressionFailOnTrue(cacheEvictTimeoutMillis > MAX_TOKEN_CACHE_EVICT_TIMEOUT_MILLIS,
             "Token cache evict timeout exceeds max - [%s]", Lib.asTimeString(MAX_TOKEN_CACHE_EVICT_TIMEOUT_MILLIS));
@@ -158,7 +161,8 @@ public class JaxRsOAuthResourceServerFilter implements ContainerRequestFilter {
 
          return new ClientAccessTokenValidator() {
             @Override
-            public AccessTokenValidation validateAccessToken(MessageContext mc, final String authScheme, final String accessToken) throws OAuthServiceException {
+            public AccessTokenValidation validateAccessToken(MessageContext mc, final String authScheme,
+               final String accessToken) throws OAuthServiceException {
                try {
                   return cache.get(accessToken, new Callable<AccessTokenValidation>() {
                      @Override
@@ -172,7 +176,8 @@ public class JaxRsOAuthResourceServerFilter implements ContainerRequestFilter {
             }
 
             @Override
-            public AccessTokenValidation validateAccessToken(MessageContext mc, String authScheme, String accessToken, MultivaluedMap<String, String> values) throws OAuthServiceException {
+            public AccessTokenValidation validateAccessToken(MessageContext mc, String authScheme, String accessToken,
+               MultivaluedMap<String, String> values) throws OAuthServiceException {
                return null;
             }
          };
@@ -189,7 +194,8 @@ public class JaxRsOAuthResourceServerFilter implements ContainerRequestFilter {
          }
 
          @Override
-         protected SecurityContext createSecurityContext(HttpServletRequest request, AccessTokenValidation accessTokenV) {
+         protected SecurityContext createSecurityContext(HttpServletRequest request,
+            AccessTokenValidation accessTokenV) {
             return OAuthUtil.getSecurityContext(accessTokenV, useUserSubject);
          }
 
@@ -199,7 +205,8 @@ public class JaxRsOAuthResourceServerFilter implements ContainerRequestFilter {
 
          private WebTarget target;
 
-         public AccessTokenValidation validateAccessToken(MessageContext mc, String authScheme, String accessToken) throws OAuthServiceException {
+         public AccessTokenValidation validateAccessToken(MessageContext mc, String authScheme, String accessToken)
+            throws OAuthServiceException {
             return null;
          }
 

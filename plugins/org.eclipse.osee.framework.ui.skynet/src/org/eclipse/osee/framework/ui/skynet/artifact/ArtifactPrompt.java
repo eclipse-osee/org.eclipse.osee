@@ -38,7 +38,8 @@ public final class ArtifactPrompt {
       this.promptFactory = promptFactory;
    }
 
-   public boolean promptChangeAttribute(AttributeTypeToken attributeType, final Collection<Artifact> artifacts, boolean persist) {
+   public boolean promptChangeAttribute(AttributeTypeToken attributeType, final Collection<Artifact> artifacts,
+      boolean persist) {
       boolean toReturn = false;
       XResultData rd =
          ServiceUtil.accessControlService().hasAttributeTypePermission(artifacts, attributeType, PermissionEnum.WRITE,

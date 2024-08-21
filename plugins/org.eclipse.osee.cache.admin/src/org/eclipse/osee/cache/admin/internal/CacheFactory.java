@@ -40,7 +40,8 @@ public class CacheFactory {
       return toReturn;
    }
 
-   public <K, V> Cache<K, V> createLoadingCache(final CacheConfiguration config, final CacheDataLoader<K, V> dataLoader, final CacheKeysLoader<K> keyLoader) throws Exception {
+   public <K, V> Cache<K, V> createLoadingCache(final CacheConfiguration config, final CacheDataLoader<K, V> dataLoader,
+      final CacheKeysLoader<K> keyLoader) throws Exception {
       Preconditions.checkNotNull(config, "cacheConfiguration");
       Preconditions.checkNotNull(dataLoader, "cacheDataLoader");
       Preconditions.checkNotNull(keyLoader, "cacheKeysLoader");

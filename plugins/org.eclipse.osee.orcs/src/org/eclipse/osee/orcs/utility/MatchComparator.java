@@ -37,7 +37,8 @@ public class MatchComparator implements Comparator<Match<ArtifactReadable, Attri
    }
 
    @Override
-   public int compare(Match<ArtifactReadable, AttributeReadable<?>> o1, Match<ArtifactReadable, AttributeReadable<?>> o2) {
+   public int compare(Match<ArtifactReadable, AttributeReadable<?>> o1,
+      Match<ArtifactReadable, AttributeReadable<?>> o2) {
       return comparator.compare(getNamed(o1), getNamed(o2));
    }
 }

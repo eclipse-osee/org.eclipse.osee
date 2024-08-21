@@ -56,7 +56,8 @@ public class JaxRsContributionsResource {
       return String.format("%s:%s", bundleName, bundleVersion);
    }
 
-   private JaxRsContributionInfo getOrCreateInfo(Map<String, JaxRsContributionInfo> map, String bundleName, String bundleVersion) {
+   private JaxRsContributionInfo getOrCreateInfo(Map<String, JaxRsContributionInfo> map, String bundleName,
+      String bundleVersion) {
       String key = key(bundleName, bundleVersion);
       JaxRsContributionInfo info = map.get(key);
       if (info == null) {
@@ -81,7 +82,8 @@ public class JaxRsContributionsResource {
       final Map<String, JaxRsContributionInfo> contribs = new HashMap<>();
       visitable.accept(new JaxRsVisitor() {
          @Override
-         public void onApplication(String applicationContext, String componentName, Bundle bundle, Application application) {
+         public void onApplication(String applicationContext, String componentName, Bundle bundle,
+            Application application) {
             Dictionary<String, String> headers = bundle.getHeaders();
 
             String bundleName = headers.get(Constants.BUNDLE_SYMBOLICNAME);

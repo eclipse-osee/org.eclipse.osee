@@ -45,8 +45,7 @@ import org.osgi.framework.ServiceReference;
 @Provider
 public class ViewModelWriter implements MessageBodyWriter<ViewModel> {
 
-   private final ConcurrentHashMap<String, ViewResolver<?>> resolvers =
-      new ConcurrentHashMap<>();
+   private final ConcurrentHashMap<String, ViewResolver<?>> resolvers = new ConcurrentHashMap<>();
 
    @Context
    private ResourceInfo resourceInfo;
@@ -73,12 +72,15 @@ public class ViewModelWriter implements MessageBodyWriter<ViewModel> {
    }
 
    @Override
-   public long getSize(ViewModel model, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+   public long getSize(ViewModel model, Class<?> type, Type genericType, Annotation[] annotations,
+      MediaType mediaType) {
       return -1;
    }
 
    @Override
-   public void writeTo(ViewModel model, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
+   public void writeTo(ViewModel model, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
+      MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
+      throws IOException, WebApplicationException {
       ViewWriter writer = resolve(model, mediaType);
       if (writer == null) {
          throw new OseeWebApplicationException(Status.NOT_FOUND, "Template [%s] could not be resolved",
@@ -102,7 +104,8 @@ public class ViewModelWriter implements MessageBodyWriter<ViewModel> {
       return toReturn;
    }
 
-   private ViewWriter resolve(ViewModel model, Class<?> resolvingClass, Iterable<MediaType> mediaTypes, Iterable<ViewResolver<?>> resolvers) {
+   private ViewWriter resolve(ViewModel model, Class<?> resolvingClass, Iterable<MediaType> mediaTypes,
+      Iterable<ViewResolver<?>> resolvers) {
       ViewWriter toReturn = null;
       for (ViewResolver<?> resolver : resolvers) {
          for (MediaType mediaType : mediaTypes) {
@@ -116,7 +119,8 @@ public class ViewModelWriter implements MessageBodyWriter<ViewModel> {
       return toReturn;
    }
 
-   private <T> ResolvedView<T> resolve(ViewModel model, Class<?> resourceClass, MediaType mediaType, ViewResolver<T> resolver) {
+   private <T> ResolvedView<T> resolve(ViewModel model, Class<?> resourceClass, MediaType mediaType,
+      ViewResolver<T> resolver) {
       ResolvedView<T> toReturn = null;
       T viewReference = resolver.resolve(model.getViewId(), mediaType);
       if (viewReference != null) {
@@ -166,7 +170,8 @@ public class ViewModelWriter implements MessageBodyWriter<ViewModel> {
       return produces;
    }
 
-   private static <T> ResolvedView<T> newResolved(ViewResolver<T> resolver, Class<?> resourceClass, MediaType mediaType, ViewModel model, T viewReference) {
+   private static <T> ResolvedView<T> newResolved(ViewResolver<T> resolver, Class<?> resourceClass, MediaType mediaType,
+      ViewModel model, T viewReference) {
       String viewId = model.getViewId();
       ResolvedView<T> toReturn = new ResolvedView<>(viewId, resolver, mediaType, viewReference);
       toReturn.asMap().putAll(model.asMap());

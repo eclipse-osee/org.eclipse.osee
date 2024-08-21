@@ -68,7 +68,8 @@ public class AttributeCollection extends AbstractTypeCollection<AttributeTypeTok
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public <T> ResultSet<Attribute<T>> getAttributeSetFromString(AttributeTypeId attributeType, DeletionFlag includeDeleted, String value) {
+   public <T> ResultSet<Attribute<T>> getAttributeSetFromString(AttributeTypeId attributeType,
+      DeletionFlag includeDeleted, String value) {
       Predicate deleteStateMatch = deletionFlagEquals(includeDeleted);
       Predicate stringEqualsMatch = attributeStringEquals(value);
       Predicate filter = and(deleteStateMatch, stringEqualsMatch);
@@ -76,7 +77,8 @@ public class AttributeCollection extends AbstractTypeCollection<AttributeTypeTok
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public <T> ResultSet<Attribute<T>> getAttributeSetFromValue(AttributeTypeId attributeType, DeletionFlag includeDeleted, T value) {
+   public <T> ResultSet<Attribute<T>> getAttributeSetFromValue(AttributeTypeId attributeType,
+      DeletionFlag includeDeleted, T value) {
       Predicate deleteStateMatch = deletionFlagEquals(includeDeleted);
       Predicate attributeValueEquals = attributeValueEquals(value);
       Predicate filter = and(attributeValueEquals, deleteStateMatch);

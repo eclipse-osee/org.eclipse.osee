@@ -240,7 +240,8 @@ public class Identifier {
     * {@link IdentifierGroup}.
     */
 
-   public Identifier requireInGroup(Supplier<CharSequence> messageSupplier, IdentifierTypeGroup... identifierTypeGroups) {
+   public Identifier requireInGroup(Supplier<CharSequence> messageSupplier,
+      IdentifierTypeGroup... identifierTypeGroups) {
       for (var identifierTypeGroup : identifierTypeGroups) {
          if (!this.identifierType.isInGroup(identifierTypeGroup)) {
             //@formatter:off

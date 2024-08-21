@@ -258,7 +258,8 @@ public interface SynchronizationArtifactBuilder {
     * Object; otherwise an empty {@link Optional}.
     */
 
-   Optional<ForeignThingFamily> getSpecObject(GroveThing specRelationGroveThing, RelationshipTerminal relationshipTerminal);
+   Optional<ForeignThingFamily> getSpecObject(GroveThing specRelationGroveThing,
+      RelationshipTerminal relationshipTerminal);
 
    /**
     * Gets the foreign identifier as a {@link String} of the foreign Spec Object Type referenced by the specified

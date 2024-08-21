@@ -48,7 +48,8 @@ public class PageFactoryViewResolver extends AbstractViewResolver<ResourceToken>
    }
 
    @Override
-   public void write(ViewModel model, ResourceToken view, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream output, Charset encoding) throws IOException {
+   public void write(ViewModel model, ResourceToken view, MediaType mediaType,
+      MultivaluedMap<String, Object> httpHeaders, OutputStream output, Charset encoding) throws IOException {
       PageCreator pageCreator = PageFactory.newPageCreator(registry.getResourceRegistry());
       for (Entry<String, Object> entry : model.asMap().entrySet()) {
          String key = entry.getKey();

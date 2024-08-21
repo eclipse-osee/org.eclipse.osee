@@ -43,7 +43,8 @@ public class CacheAdminImpl implements CacheAdmin {
    }
 
    @Override
-   public <K, V> Cache<K, V> createLoadingCache(CacheConfiguration configuration, CacheDataLoader<K, V> accessor, CacheKeysLoader<K> keyLoader) throws Exception {
+   public <K, V> Cache<K, V> createLoadingCache(CacheConfiguration configuration, CacheDataLoader<K, V> accessor,
+      CacheKeysLoader<K> keyLoader) throws Exception {
       return cacheFactory.createLoadingCache(configuration, accessor, keyLoader);
    }
 

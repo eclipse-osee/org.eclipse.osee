@@ -31,7 +31,8 @@ public final class RelationManagerFactory {
       // Static Factory
    }
 
-   public static RelationManager createRelationManager(Log logger, OrcsTokenService tokenService, RelationFactory relationFactory, RelationNodeLoader loader, QueryModuleProvider provider) {
+   public static RelationManager createRelationManager(Log logger, OrcsTokenService tokenService,
+      RelationFactory relationFactory, RelationNodeLoader loader, QueryModuleProvider provider) {
       OrderParser orderParser = new OrderParser(tokenService);
       SorterProvider sorterProvider = new SorterProvider();
       OrderManagerFactory orderManagerFactory = new OrderManagerFactory(orderParser, sorterProvider);

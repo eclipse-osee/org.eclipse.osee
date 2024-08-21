@@ -71,7 +71,8 @@ public class QueryModule {
       return queryIndexer;
    }
 
-   public QueryEngine createQueryEngine(DataLoaderFactory loaderFactory, OrcsTokenService tokenService, SqlObjectLoader sqlObjectLoader, KeyValueStore keyValue, IResourceManager resourceManager) {
+   public QueryEngine createQueryEngine(DataLoaderFactory loaderFactory, OrcsTokenService tokenService,
+      SqlObjectLoader sqlObjectLoader, KeyValueStore keyValue, IResourceManager resourceManager) {
       ArtifactQuerySqlContextFactoryImpl artifactSqlContextFactory =
          Engines.createArtifactSqlContext(logger, sqlJoinFactory, jdbcClient, taggingEngine);
       ObjectQueryCallableFactory factory1 =

@@ -69,27 +69,31 @@ public class AccessContext extends NamedIdBase {
    }
 
    public void denyEditArtifactAndChildrenArtifactTypes(ArtifactToken artifact, ArtifactTypeToken... childArtTypes) {
-      typeAccess.add(
-         new ArtifactAndChildrenArtifactTypesAccessType(AllowDeny.Deny, artifact, Collections.asHashSet(childArtTypes)));
+      typeAccess.add(new ArtifactAndChildrenArtifactTypesAccessType(AllowDeny.Deny, artifact,
+         Collections.asHashSet(childArtTypes)));
    }
 
    public void allowEditArtifactAndChildrenArtifactTypes(ArtifactToken artifact, ArtifactTypeToken... childArtTypes) {
-      typeAccess.add(
-         new ArtifactAndChildrenArtifactTypesAccessType(AllowDeny.Allow, artifact, Collections.asHashSet(childArtTypes)));
+      typeAccess.add(new ArtifactAndChildrenArtifactTypesAccessType(AllowDeny.Allow, artifact,
+         Collections.asHashSet(childArtTypes)));
    }
 
    /**
     * Deny children of artifact where relation type equals and art type on both sides
     */
-   public void denyEditArtifactAndChildrenRelationTypes(ArtifactToken artifact, RelationTypeToken relationType, ArtifactTypeToken artAandBType) {
-      typeAccess.add(new ArtifactAndChildrenRelationTypesAccessType(AllowDeny.Deny, artifact, relationType, artAandBType));
+   public void denyEditArtifactAndChildrenRelationTypes(ArtifactToken artifact, RelationTypeToken relationType,
+      ArtifactTypeToken artAandBType) {
+      typeAccess.add(
+         new ArtifactAndChildrenRelationTypesAccessType(AllowDeny.Deny, artifact, relationType, artAandBType));
    }
 
    /**
     * Allow children of artifact where relation type equals and art type on both sides
     */
-   public void allowEditArtifactAndChildrenRelationTypes(ArtifactToken artifact, RelationTypeToken relationType, ArtifactTypeToken artAandBType) {
-      typeAccess.add(new ArtifactAndChildrenRelationTypesAccessType(AllowDeny.Allow, artifact, relationType, artAandBType));
+   public void allowEditArtifactAndChildrenRelationTypes(ArtifactToken artifact, RelationTypeToken relationType,
+      ArtifactTypeToken artAandBType) {
+      typeAccess.add(
+         new ArtifactAndChildrenRelationTypesAccessType(AllowDeny.Allow, artifact, relationType, artAandBType));
    }
 
    public void allowEditRelationType(RelationTypeToken relationType) {
@@ -100,13 +104,14 @@ public class AccessContext extends NamedIdBase {
       typeAccess.add(new RelationTypeAccessType(AllowDeny.Allow, relationType, artifactType));
    }
 
-   public void allowEditAttributeTypeOfArtifactType(QualificationMethodAttributeType attributeType, ArtifactTypeToken artifactType) {
+   public void allowEditAttributeTypeOfArtifactType(QualificationMethodAttributeType attributeType,
+      ArtifactTypeToken artifactType) {
       typeAccess.add(new AttributeTypeAccessType(AllowDeny.Allow, attributeType, artifactType));
    }
 
    public void allowEditArtifactAndChildrenRelationTypes(ArtifactToken artifact, RelationTypeToken relationType) {
-      typeAccess.add(
-         new ArtifactAndChildrenRelationTypesAccessType(AllowDeny.Allow, artifact, relationType, CoreArtifactTypes.Artifact));
+      typeAccess.add(new ArtifactAndChildrenRelationTypesAccessType(AllowDeny.Allow, artifact, relationType,
+         CoreArtifactTypes.Artifact));
    }
 
    public AccessContextToken getAccessToken() {

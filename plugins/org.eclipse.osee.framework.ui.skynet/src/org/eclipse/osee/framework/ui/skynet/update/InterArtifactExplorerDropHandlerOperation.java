@@ -130,8 +130,8 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
    }
 
    private XResultData isAccessAllowed(BranchToken sourceBranch, BranchToken destinationBranch) {
-      XResultData rd = ServiceUtil.accessControlService().hasBranchPermission(destinationBranch,
-         PermissionEnum.WRITE, AccessControlArtifactUtil.getXResultAccessHeader("Drag/Drop Artifact", sourceBranch));
+      XResultData rd = ServiceUtil.accessControlService().hasBranchPermission(destinationBranch, PermissionEnum.WRITE,
+         AccessControlArtifactUtil.getXResultAccessHeader("Drag/Drop Artifact", sourceBranch));
       if (rd.isErrors()) {
          return rd;
       }

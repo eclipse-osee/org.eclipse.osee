@@ -79,7 +79,8 @@ public class DatabaseIntegrityCheckApplication implements IApplication {
       return Status.OK_STATUS;
    }
 
-   private void executeCheck(SummaryTab data, DatabaseHealthOperation operation, File reportsDirectory) throws Exception {
+   private void executeCheck(SummaryTab data, DatabaseHealthOperation operation, File reportsDirectory)
+      throws Exception {
       operation.setFixOperationEnabled(false);
       Operations.executeWorkAndCheckStatus(operation);
 
@@ -91,7 +92,8 @@ public class DatabaseIntegrityCheckApplication implements IApplication {
       data.add(operation, summaryLinks);
    }
 
-   private void writeReport(DatabaseHealthOperation operation, File reportsDirectory, List<String> summaryLinks) throws Exception {
+   private void writeReport(DatabaseHealthOperation operation, File reportsDirectory, List<String> summaryLinks)
+      throws Exception {
       String detailedReport = operation.getDetailedReport().toString();
       if (Strings.isValid(detailedReport)) {
          XResultData result = new XResultData();

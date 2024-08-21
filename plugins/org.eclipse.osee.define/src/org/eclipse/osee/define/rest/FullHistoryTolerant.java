@@ -63,7 +63,8 @@ public class FullHistoryTolerant implements HistoryImportStrategy {
    }
 
    @Override
-   public ArtifactId getCodeUnit(BranchId branch, TransactionBuilder tx, String commitSHA, ChangeType changeType, String path, String newPath) {
+   public ArtifactId getCodeUnit(BranchId branch, TransactionBuilder tx, String commitSHA, ChangeType changeType,
+      String path, String newPath) {
       ArtifactId codeUnit = ArtifactId.SENTINEL;
 
       if (changeType == ChangeType.MODIFY) {
@@ -206,7 +207,8 @@ public class FullHistoryTolerant implements HistoryImportStrategy {
    }
 
    @Override
-   public void handleCodeUnit(BranchId branch, ArtifactId codeUnit, TransactionBuilder tx, ArtifactId repository, ArtifactId commit, ChangeType changeType, String path) {
+   public void handleCodeUnit(BranchId branch, ArtifactId codeUnit, TransactionBuilder tx, ArtifactId repository,
+      ArtifactId commit, ChangeType changeType, String path) {
       tx.addTuple4(GitCommitFile, repository, codeUnit, commit, changeType);
 
       ArtifactId[] commitWraper = new ArtifactId[] {ArtifactId.SENTINEL};

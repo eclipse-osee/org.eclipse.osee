@@ -162,7 +162,8 @@ public class AttributeDefinitionConverter {
     * @param reqifAttributeDefinition the foreign {@link AttributeDefinition} to be initialized.
     */
 
-   private static void convertAttributeDefinitionReqIfAttributeDefinition(GroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
+   private static void convertAttributeDefinitionReqIfAttributeDefinition(GroveThing attributeDefinitionGroveThing,
+      AttributeDefinition reqifAttributeDefinition) {
       var nativeAttributeTypeToken = (AttributeTypeToken) attributeDefinitionGroveThing.getNativeThing();
 
       var description = nativeAttributeTypeToken.getDescription();
@@ -192,7 +193,8 @@ public class AttributeDefinitionConverter {
     * @param reqifAttributeDefinition the foreign {@link AttributeDefinition} to set the default value of.
     */
 
-   private static void convertAttributeDefinitionReqIfAttributeDefinitionBoolean(GroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
+   private static void convertAttributeDefinitionReqIfAttributeDefinitionBoolean(
+      GroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
 
       var nativeAttributeTypeToken = (AttributeTypeToken) attributeDefinitionGroveThing.getNativeThing();
 
@@ -228,7 +230,8 @@ public class AttributeDefinitionConverter {
     * @param reqifAttributeDefinition the foreign {@link AttributeDefinition} to set the default value of.
     */
 
-   private static void convertAttributeDefinitionReqIfAttributeDefinitionDate(GroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
+   private static void convertAttributeDefinitionReqIfAttributeDefinitionDate(GroveThing attributeDefinitionGroveThing,
+      AttributeDefinition reqifAttributeDefinition) {
 
       var nativeAttributeTypeToken = (AttributeTypeToken) attributeDefinitionGroveThing.getNativeThing();
 
@@ -264,7 +267,8 @@ public class AttributeDefinitionConverter {
     * @param reqifAttributeDefinition the foreign {@link AttributeDefinition} to set the default value of.
     */
 
-   private static void convertAttributeDefinitionReqIfAttributeDefinitionDouble(GroveThing attributeDefinitionGroveThing, org.eclipse.rmf.reqif10.AttributeDefinition reqifAttributeDefinition) {
+   private static void convertAttributeDefinitionReqIfAttributeDefinitionDouble(
+      GroveThing attributeDefinitionGroveThing, org.eclipse.rmf.reqif10.AttributeDefinition reqifAttributeDefinition) {
 
       var nativeAttributeTypeToken = (AttributeTypeToken) attributeDefinitionGroveThing.getNativeThing();
 
@@ -300,7 +304,8 @@ public class AttributeDefinitionConverter {
     * @param reqifAttributeDefinition the foreign {@link AttributeDefinition} to set the default value of.
     */
 
-   private static void convertAttributeDefinitionReqIfAttributeDefinitionIntegerForArtifactId(GroveThing attributeDefinitionGroveThing, org.eclipse.rmf.reqif10.AttributeDefinition reqifAttributeDefinition) {
+   private static void convertAttributeDefinitionReqIfAttributeDefinitionIntegerForArtifactId(
+      GroveThing attributeDefinitionGroveThing, org.eclipse.rmf.reqif10.AttributeDefinition reqifAttributeDefinition) {
 
       var nativeAttributeTypeToken = (AttributeTypeToken) attributeDefinitionGroveThing.getNativeThing();
 
@@ -336,7 +341,8 @@ public class AttributeDefinitionConverter {
     * @param reqifAttributeDefinition the foreign {@link AttributeDefinition} to set the default value of.
     */
 
-   private static void convertAttributeDefinitionReqIfAttributeDefinitionIntegerForBranchId(GroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
+   private static void convertAttributeDefinitionReqIfAttributeDefinitionIntegerForBranchId(
+      GroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
 
       var nativeAttributeTypeToken = (AttributeTypeToken) attributeDefinitionGroveThing.getNativeThing();
 
@@ -372,7 +378,8 @@ public class AttributeDefinitionConverter {
     * @param reqifAttributeDefinition the foreign {@link AttributeDefinition} to set the default value of.
     */
 
-   private static void convertAttributeDefinitionReqIfAttributeDefinitionIntegerForInteger(GroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
+   private static void convertAttributeDefinitionReqIfAttributeDefinitionIntegerForInteger(
+      GroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
 
       var nativeAttributeTypeToken = (AttributeTypeToken) attributeDefinitionGroveThing.getNativeThing();
 
@@ -408,7 +415,8 @@ public class AttributeDefinitionConverter {
     * @param reqifAttributeDefinition the foreign {@link AttributeDefinition} to set the default value of.
     */
 
-   private static void convertAttributeDefinitionReqIfAttributeDefinitionIntegerForLong(GroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
+   private static void convertAttributeDefinitionReqIfAttributeDefinitionIntegerForLong(
+      GroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
 
       var nativeAttributeTypeToken = (AttributeTypeToken) attributeDefinitionGroveThing.getNativeThing();
 
@@ -444,7 +452,8 @@ public class AttributeDefinitionConverter {
     * @param reqifAttributeDefinition the foreign {@link AttributeDefinition} to set the default value of.
     */
 
-   private static void convertAttributeDefinitionReqIfAttributeDefinitionString(GroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
+   private static void convertAttributeDefinitionReqIfAttributeDefinitionString(
+      GroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
 
       var nativeAttributeTypeToken = (AttributeTypeToken) attributeDefinitionGroveThing.getNativeThing();
 
@@ -482,7 +491,8 @@ public class AttributeDefinitionConverter {
     * @param reqifAttributeDefinition the foreign {@link AttributeDefinition} to set the default value of.
     */
 
-   private static void convertAttributeDefinitionReqIfAttributeDefinitionXHTML(GroveThing attributeDefinitionGroveThing, AttributeDefinition reqifAttributeDefinition) {
+   private static void convertAttributeDefinitionReqIfAttributeDefinitionXHTML(GroveThing attributeDefinitionGroveThing,
+      AttributeDefinition reqifAttributeDefinition) {
 
       var nativeAttributeTypeToken = (AttributeTypeToken) attributeDefinitionGroveThing.getNativeThing();
 

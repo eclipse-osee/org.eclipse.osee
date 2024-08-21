@@ -47,7 +47,8 @@ public class Triplet<F, S, T> extends Pair<F, S> {
     * @throws NullPointerException when any of the parameters are <code>null</code>.
     */
 
-   public static <F, S, T> @NonNull Triplet<F, S, T> createNonNull(@NonNull F first, @NonNull S second, @NonNull T third) {
+   public static <F, S, T> @NonNull Triplet<F, S, T> createNonNull(@NonNull F first, @NonNull S second,
+      @NonNull T third) {
       return new Triplet<>(Objects.requireNonNull(first), Objects.requireNonNull(second),
          Objects.requireNonNull(third));
    }
@@ -67,7 +68,8 @@ public class Triplet<F, S, T> extends Pair<F, S> {
     * @throws NullPointerException when any of the parameters are <code>null</code>.
     */
 
-   public static <F, S, T> @NonNull Triplet<F, S, T> createNonNullImmutable(@NonNull F first, @NonNull S second, @NonNull T third) {
+   public static <F, S, T> @NonNull Triplet<F, S, T> createNonNullImmutable(@NonNull F first, @NonNull S second,
+      @NonNull T third) {
       return createNullableImmutable(Objects.requireNonNull(first), Objects.requireNonNull(second),
          Objects.requireNonNull(third));
    }
@@ -85,7 +87,8 @@ public class Triplet<F, S, T> extends Pair<F, S> {
     * <code>third</code>.
     */
 
-   public static <F, S, T> @NonNull Triplet<F, S, T> createNullable(@Nullable F first, @Nullable S second, @Nullable T third) {
+   public static <F, S, T> @NonNull Triplet<F, S, T> createNullable(@Nullable F first, @Nullable S second,
+      @Nullable T third) {
       return new Triplet<>(first, second, third);
    }
 
@@ -103,7 +106,8 @@ public class Triplet<F, S, T> extends Pair<F, S> {
     * <code>third</code>.
     */
 
-   public static <F, S, T> @NonNull Triplet<F, S, T> createNullableImmutable(@Nullable F first, @Nullable S second, @Nullable T third) {
+   public static <F, S, T> @NonNull Triplet<F, S, T> createNullableImmutable(@Nullable F first, @Nullable S second,
+      @Nullable T third) {
       //@formatter:off
       return
          new Triplet<>( first, second, third ) {
@@ -208,7 +212,8 @@ public class Triplet<F, S, T> extends Pair<F, S> {
     * <code>null</code>.
     */
 
-   public @Nullable F getFirstIfPresentOthers(@Nullable Consumer<@NonNull S> secondAction, @Nullable Consumer<@NonNull T> thirdAction) {
+   public @Nullable F getFirstIfPresentOthers(@Nullable Consumer<@NonNull S> secondAction,
+      @Nullable Consumer<@NonNull T> thirdAction) {
 
       Conditions.acceptWhenNonNull(this.second, secondAction);
       Conditions.acceptWhenNonNull(this.third, thirdAction);
@@ -232,7 +237,8 @@ public class Triplet<F, S, T> extends Pair<F, S> {
     * </ul>
     */
 
-   public @NonNull F getFirstNonNullIfPresentOthers(@Nullable Consumer<@NonNull S> secondAction, @Nullable Consumer<@NonNull T> thirdAction) {
+   public @NonNull F getFirstNonNullIfPresentOthers(@Nullable Consumer<@NonNull S> secondAction,
+      @Nullable Consumer<@NonNull T> thirdAction) {
 
       Conditions.acceptWhenNonNull(this.second, secondAction);
       Conditions.acceptWhenNonNull(this.third, thirdAction);
@@ -281,7 +287,8 @@ public class Triplet<F, S, T> extends Pair<F, S> {
     * parameter is <code>null</code>.
     */
 
-   public void ifPresent(@Nullable Consumer<@NonNull F> firstAction, @Nullable Consumer<@NonNull S> secondAction, @Nullable Consumer<@NonNull T> thirdAction) {
+   public void ifPresent(@Nullable Consumer<@NonNull F> firstAction, @Nullable Consumer<@NonNull S> secondAction,
+      @Nullable Consumer<@NonNull T> thirdAction) {
 
       Conditions.acceptWhenNonNull(this.first, firstAction);
       Conditions.acceptWhenNonNull(this.second, secondAction);

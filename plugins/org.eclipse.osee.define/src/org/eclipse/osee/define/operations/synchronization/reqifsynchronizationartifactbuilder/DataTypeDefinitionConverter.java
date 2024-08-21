@@ -233,7 +233,8 @@ class DataTypeDefinitionConverter {
     * @param reqifDatatypeDefinition the {@link DatatypeDefinition} to have attributes set.
     */
 
-   private static void convertDataTypeDefinitionReqIfDatatypeDefinition(GroveThing dataTypeDefinitionGroveThing, DatatypeDefinition reqifDatatypeDefinition) {
+   private static void convertDataTypeDefinitionReqIfDatatypeDefinition(GroveThing dataTypeDefinitionGroveThing,
+      DatatypeDefinition reqifDatatypeDefinition) {
       var nativeDataTypeKey = (NativeDataTypeKey) dataTypeDefinitionGroveThing.getNativeThing();
       var nativeDataType = nativeDataTypeKey.getNativeDataType();
 
@@ -251,7 +252,8 @@ class DataTypeDefinitionConverter {
     * @param reqifDatatypeDefinition the {@link DatatypeDefinition} to have attributes set.
     */
 
-   private static void convertDataTypeDefinitionReqIfDatatypeDefinitionInteger(GroveThing dataTypeDefinitionGroveThing, DatatypeDefinition reqifDatatypeDefinition) {
+   private static void convertDataTypeDefinitionReqIfDatatypeDefinitionInteger(GroveThing dataTypeDefinitionGroveThing,
+      DatatypeDefinition reqifDatatypeDefinition) {
 
       assert (reqifDatatypeDefinition instanceof DatatypeDefinitionInteger);
 
@@ -277,7 +279,8 @@ class DataTypeDefinitionConverter {
     * @param reqifDatatypeDefinition the {@link DatatypeDefinition} to have attributes set.
     */
 
-   private static void convertDataTypeDefinitionReqIfDatatypeDefinitionReal(GroveThing dataTypeDefinitionGroveThing, DatatypeDefinition reqifDatatypeDefinition) {
+   private static void convertDataTypeDefinitionReqIfDatatypeDefinitionReal(GroveThing dataTypeDefinitionGroveThing,
+      DatatypeDefinition reqifDatatypeDefinition) {
 
       assert (reqifDatatypeDefinition instanceof DatatypeDefinitionReal);
 
@@ -304,7 +307,8 @@ class DataTypeDefinitionConverter {
     * @param reqifDatatypeDefinition the {@link DatatypeDefinition} to have attributes set.
     */
 
-   private static void convertDataTypeDefinitionReqIfDatatypeDefinitionString(GroveThing dataTypeDefinitionGroveThing, DatatypeDefinition reqifDatatypeDefinition) {
+   private static void convertDataTypeDefinitionReqIfDatatypeDefinitionString(GroveThing dataTypeDefinitionGroveThing,
+      DatatypeDefinition reqifDatatypeDefinition) {
 
       assert (reqifDatatypeDefinition instanceof DatatypeDefinitionString);
 

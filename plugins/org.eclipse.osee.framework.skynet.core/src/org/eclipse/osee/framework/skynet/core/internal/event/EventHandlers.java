@@ -30,7 +30,8 @@ public class EventHandlers {
    private final Map<Class<? extends RemoteEvent>, EventHandlerRemote<? extends RemoteEvent>> remoteHandlers =
       new HashMap<>();
 
-   public void addLocalHandler(Class<? extends FrameworkEvent> clazz, EventHandlerLocal<? extends IEventListener, ? extends FrameworkEvent> handler) {
+   public void addLocalHandler(Class<? extends FrameworkEvent> clazz,
+      EventHandlerLocal<? extends IEventListener, ? extends FrameworkEvent> handler) {
       handlers.put(clazz, handler);
    }
 
@@ -52,7 +53,8 @@ public class EventHandlers {
    }
 
    @SuppressWarnings("unchecked")
-   public <H extends EventHandlerLocal<? extends IEventListener, ? extends FrameworkEvent>> H getLocalHandler(FrameworkEvent event) {
+   public <H extends EventHandlerLocal<? extends IEventListener, ? extends FrameworkEvent>> H getLocalHandler(
+      FrameworkEvent event) {
       return (H) handlers.get(event.getClass());
    }
 

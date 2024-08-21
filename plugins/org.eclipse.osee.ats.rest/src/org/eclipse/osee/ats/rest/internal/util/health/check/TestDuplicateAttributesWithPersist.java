@@ -38,7 +38,8 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 public class TestDuplicateAttributesWithPersist implements IAtsHealthCheck {
 
    @Override
-   public boolean check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi, IAtsChangeSet changes, IAtsOperationCache cache) {
+   public boolean check(ArtifactToken artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi,
+      IAtsChangeSet changes, IAtsOperationCache cache) {
       // Test for null attribute values
       for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(workItem)) {
          if (attr.getAttributeType().getDescription().startsWith(AttributeTypeToken.MISSING_TYPE)) {

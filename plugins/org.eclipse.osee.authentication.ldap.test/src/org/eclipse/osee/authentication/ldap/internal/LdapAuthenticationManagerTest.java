@@ -123,7 +123,8 @@ public class LdapAuthenticationManagerTest {
    }
 
    @Test
-   public void testLdapAuthenticationWithSystemCredentials() throws LoginException, NamingException, PrivilegedActionException {
+   public void testLdapAuthenticationWithSystemCredentials()
+      throws LoginException, NamingException, PrivilegedActionException {
       when(request.getUserName()).thenReturn(USERNAME);
       when(request.getPassword()).thenReturn(PASSWORD);
 
@@ -167,7 +168,8 @@ public class LdapAuthenticationManagerTest {
    }
 
    @Test
-   public void testLdapAuthenticationWithSystemCredentialsFailedPassword() throws LoginException, NamingException, PrivilegedActionException {
+   public void testLdapAuthenticationWithSystemCredentialsFailedPassword()
+      throws LoginException, NamingException, PrivilegedActionException {
       when(request.getUserName()).thenReturn(USERNAME);
       when(request.getPassword()).thenReturn(PASSWORD);
 
@@ -212,7 +214,8 @@ public class LdapAuthenticationManagerTest {
    }
 
    @Test
-   public void testLdapAuthenticationWithUserCredentials() throws LoginException, NamingException, PrivilegedActionException {
+   public void testLdapAuthenticationWithUserCredentials()
+      throws LoginException, NamingException, PrivilegedActionException {
       when(request.getUserName()).thenReturn(USERNAME);
       when(request.getPassword()).thenReturn(PASSWORD);
 
@@ -258,7 +261,8 @@ public class LdapAuthenticationManagerTest {
    }
 
    @Test
-   public void testLdapAuthenticationConvertUserNameToLowerCase() throws LoginException, NamingException, PrivilegedActionException {
+   public void testLdapAuthenticationConvertUserNameToLowerCase()
+      throws LoginException, NamingException, PrivilegedActionException {
       when(request.getUserName()).thenReturn(USERNAME);
       when(request.getPassword()).thenReturn(PASSWORD);
 

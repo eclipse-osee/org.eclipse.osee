@@ -54,20 +54,20 @@ public class FilterDataUI {
       gd.widthHint = 100;
       filterText.setLayoutData(gd);
 
-      filterText.addListener(SWT.KeyUp, e->  {
-			if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR || filterRealTime) {
-				// System.out.println(e.keyCode);
-				String newText = filterText.getText();
-				xViewer.getCustomizeMgr().setFilterText(newText, isRegularExpression());
-			}
+      filterText.addListener(SWT.KeyUp, e -> {
+         if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR || filterRealTime) {
+            // System.out.println(e.keyCode);
+            String newText = filterText.getText();
+            xViewer.getCustomizeMgr().setFilterText(newText, isRegularExpression());
+         }
       });
 
       Label filterLabel = new Label(comp, SWT.NONE);
       filterLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.NONE, false, false));
       filterLabel.setImage(XViewerLib.getImage("clear.gif")); //$NON-NLS-1$
       filterLabel.addListener(SWT.MouseUp, event -> {
-            filterText.setText(""); //$NON-NLS-1$
-            xViewer.getCustomizeMgr().setFilterText("", isRegularExpression()); //$NON-NLS-1$
+         filterText.setText(""); //$NON-NLS-1$
+         xViewer.getCustomizeMgr().setFilterText("", isRegularExpression()); //$NON-NLS-1$
       });
 
       regularExpression = new Button(comp, SWT.CHECK);
@@ -75,7 +75,7 @@ public class FilterDataUI {
       regularExpression.setToolTipText(XViewerText.get("regex.prompt.tooltip")); //$NON-NLS-1$
       regularExpression.setLayoutData(new GridData(SWT.RIGHT, SWT.NONE, false, false));
       regularExpression.addListener(SWT.Selection, e -> {
-            xViewer.getCustomizeMgr().setFilterText(filterText.getText(), isRegularExpression());
+         xViewer.getCustomizeMgr().setFilterText(filterText.getText(), isRegularExpression());
       });
 
    }

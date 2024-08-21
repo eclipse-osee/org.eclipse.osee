@@ -169,7 +169,8 @@ public class MockBundleContext implements BundleContext {
    }
 
    @Override
-   public <S> ServiceRegistration<S> registerService(Class<S> clazz, ServiceFactory<S> factory, Dictionary<String, ?> properties) {
+   public <S> ServiceRegistration<S> registerService(Class<S> clazz, ServiceFactory<S> factory,
+      Dictionary<String, ?> properties) {
       return null;
    }
 

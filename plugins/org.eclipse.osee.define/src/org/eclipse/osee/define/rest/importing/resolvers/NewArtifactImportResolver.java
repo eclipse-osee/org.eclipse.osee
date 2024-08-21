@@ -58,7 +58,8 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
    }
 
    @Override
-   public ArtifactId resolve(final RoughArtifact roughArtifact, final BranchId branch, ArtifactId realParent, ArtifactId root) {
+   public ArtifactId resolve(final RoughArtifact roughArtifact, final BranchId branch, ArtifactId realParent,
+      ArtifactId root) {
       ArtifactTypeToken artifactType = getArtifactType(roughArtifact);
 
       roughArtifact.getResults().logf("New artifact resolved: [%s].", roughArtifact.getName());

@@ -27,8 +27,7 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 public class ClientLoopbackHandler implements IHttpServerRequest {
 
    private static final ExtensionDefinedObjects<IClientLoopbackCmd> commands =
-      new ExtensionDefinedObjects<>(Activator.PLUGIN_ID + ".ClientLoopbackCmd", "ClientLoopbackCmd",
-         "className");
+      new ExtensionDefinedObjects<>(Activator.PLUGIN_ID + ".ClientLoopbackCmd", "ClientLoopbackCmd", "className");
 
    @Override
    public String getRequestType() {

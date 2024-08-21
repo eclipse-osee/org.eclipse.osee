@@ -146,8 +146,7 @@ public class PublisherOperationsImpl implements PublisherOperations {
     * {@link DataAccessOperations} implementation using {@link ArtifactReadableImpl} objects.
     */
 
-   private PublisherOperationsImpl(DataAccessOperations dataAccessOperations, DataRightsOperations dataRightsOperations,
-      PublishingOperations publishingOperations, TemplateManagerOperations templateManagerOperations) {
+   private PublisherOperationsImpl(DataAccessOperations dataAccessOperations, DataRightsOperations dataRightsOperations, PublishingOperations publishingOperations, TemplateManagerOperations templateManagerOperations) {
       this.dataAccessOperations = dataAccessOperations;
       this.dataRightsOperations = dataRightsOperations;
       this.publishingOperations = publishingOperations;

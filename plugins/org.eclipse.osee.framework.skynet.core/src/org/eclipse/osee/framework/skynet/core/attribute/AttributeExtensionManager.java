@@ -83,7 +83,8 @@ public class AttributeExtensionManager {
       return toReturn;
    }
 
-   private Map<String, Pair<String, String>> loadExtensions(String extensionPointId, String[] elementNames, String classNameAttribute) {
+   private Map<String, Pair<String, String>> loadExtensions(String extensionPointId, String[] elementNames,
+      String classNameAttribute) {
       Map<String, Pair<String, String>> toReturn = new HashMap<>();
       for (String elementName : elementNames) {
          List<IConfigurationElement> elements = ExtensionPoints.getExtensionElements(extensionPointId, elementName);

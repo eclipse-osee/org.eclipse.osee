@@ -88,7 +88,8 @@ public class ImportOutfileOperation {
       }
    }
 
-   private void launchFindCommitableJob(IProgressMonitor monitor, String commitComment, final Artifact[] artifacts) throws Exception {
+   private void launchFindCommitableJob(IProgressMonitor monitor, String commitComment, final Artifact[] artifacts)
+      throws Exception {
       // Find Commit Allowed
       FindCommitableJob job = new FindCommitableJob(artifacts);
       job.setUser(false);
@@ -108,7 +109,8 @@ public class ImportOutfileOperation {
       return Collections.toString(Arrays.asList(artifacts), ",\n", Named::getName);
    }
 
-   private void commitSelectedArtifacts(IProgressMonitor monitor, String commitComment, Object[] items) throws Exception {
+   private void commitSelectedArtifacts(IProgressMonitor monitor, String commitComment, Object[] items)
+      throws Exception {
       Map<BranchToken, List<Artifact>> commitMap = getArtifactsByBranch(items);
       for (BranchToken branch : commitMap.keySet()) {
          monitor.setTaskName(String.format("Committing Artifacts into Branch: [%s]", branch.getName()));
@@ -132,7 +134,8 @@ public class ImportOutfileOperation {
       return branchMap;
    }
 
-   public static void commitTestRunTx(IProgressMonitor monitor, String commitComment, BranchId branch, Artifact... artifacts) {
+   public static void commitTestRunTx(IProgressMonitor monitor, String commitComment, BranchId branch,
+      Artifact... artifacts) {
       monitor.setTaskName("Persist Test Runs");
       Date uploadDate = new Date();
       for (Artifact artifact : artifacts) {

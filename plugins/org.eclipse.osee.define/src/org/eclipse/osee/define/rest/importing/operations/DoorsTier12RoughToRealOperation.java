@@ -69,7 +69,8 @@ public class DoorsTier12RoughToRealOperation {
       return results;
    }
 
-   public void resolve(TransactionBuilder transaction, RoughArtifact roughArtifact, BranchId branch, ArtifactId realParentId, ArtifactId rootId) {
+   public void resolve(TransactionBuilder transaction, RoughArtifact roughArtifact, BranchId branch,
+      ArtifactId realParentId, ArtifactId rootId) {
       ArtifactReadable targetArtifact = findApplicableArtifact(roughArtifact, branch);
       if (targetArtifact != null && targetArtifact.isValid()) {
          try {

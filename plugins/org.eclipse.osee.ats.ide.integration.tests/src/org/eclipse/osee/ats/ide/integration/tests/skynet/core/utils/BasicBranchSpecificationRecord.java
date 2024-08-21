@@ -135,8 +135,7 @@ public class BasicBranchSpecificationRecord implements BranchSpecificationRecord
     * @throws IllegalArgumentException when <code>testBranchName</code> is blank.
     */
 
-   public BasicBranchSpecificationRecord(@NonNull Integer identifier, @NonNull String testBranchName,
-      @NonNull String testBranchCreationComment) {
+   public BasicBranchSpecificationRecord(@NonNull Integer identifier, @NonNull String testBranchName, @NonNull String testBranchCreationComment) {
       //@formatter:off
       this
          (
@@ -162,8 +161,7 @@ public class BasicBranchSpecificationRecord implements BranchSpecificationRecord
     * blank.
     */
 
-   public BasicBranchSpecificationRecord(@NonNull Integer identifier, @NonNull String testBranchName,
-      @NonNull String testBranchCreationComment, @NonNull Integer parentTestBranchIdentifier) {
+   public BasicBranchSpecificationRecord(@NonNull Integer identifier, @NonNull String testBranchName, @NonNull String testBranchCreationComment, @NonNull Integer parentTestBranchIdentifier) {
 
       //@formatter:off
       this.identifier =

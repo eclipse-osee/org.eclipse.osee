@@ -55,8 +55,7 @@ public class RelationshipSpecificationRecordWrapper implements RelationshipSpeci
     * @throws NullPointerException when any parameters are <code>null</code>.
     */
 
-   RelationshipSpecificationRecordWrapper(@NonNull Artifact sourceArtifact,
-      @NonNull RelationshipSpecificationRecord relationshipSpecificationRecord) {
+   RelationshipSpecificationRecordWrapper(@NonNull Artifact sourceArtifact, @NonNull RelationshipSpecificationRecord relationshipSpecificationRecord) {
 
       //@formatter:off
       this.sourceArtifact =

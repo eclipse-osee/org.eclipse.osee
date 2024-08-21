@@ -520,7 +520,7 @@ public final class JdbcClientImpl implements JdbcClient {
       } catch (Exception e) {
          //eat exception
       } finally {
-        connection.destroy();
+         connection.destroy();
       }
    }
 

@@ -52,7 +52,9 @@ public interface IArtifactExtractorDelegate {
     * and initialize it with data from the content, or to append the content to the last, or a prior created
     * RoughArtifact.
     */
-   public void processContent(OperationLogger logger, RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph);
+   public void processContent(OperationLogger logger, RoughArtifactCollector collector, boolean forceBody,
+      boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content,
+      boolean isParagraph);
 
    public void finish();
 

@@ -113,7 +113,7 @@ public interface TransactionEndpoint {
    @POST
    @Path("xfer/upload")
    @Produces(MediaType.APPLICATION_JSON)
-   XResultData uploadTransferFile(InputStream zip); 
+   XResultData uploadTransferFile(InputStream zip);
 
    @POST
    @Path("xfer/apply")
@@ -138,7 +138,7 @@ public interface TransactionEndpoint {
    @Consumes(MediaType.TEXT_PLAIN)
    @Produces({MediaType.APPLICATION_JSON})
    XResultData getExportData(@QueryParam("exportId") String exportId);
-   
+
    @GET
    @Path("xfer/download")
    @Produces(MediaType.APPLICATION_OCTET_STREAM)

@@ -235,7 +235,8 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       console.writeln("Number of txs rows updated: [%s]", updateAddressing.execute());
    }
 
-   private void writeAddressingBackup(long obsoleteGammaId, long transactionId, long netGammaId, int modType, TxCurrent txCurrent) {
+   private void writeAddressingBackup(long obsoleteGammaId, long transactionId, long netGammaId, int modType,
+      TxCurrent txCurrent) {
       StringBuilder strB = new StringBuilder(30);
 
       strB.append(obsoleteGammaId);
@@ -262,7 +263,8 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       }
    }
 
-   private void initNextConceptualRelation(long relationTypeId, ArtifactId artifactAId, ArtifactId artifactBId, long gammaId, String rationale) {
+   private void initNextConceptualRelation(long relationTypeId, ArtifactId artifactAId, ArtifactId artifactBId,
+      long gammaId, String rationale) {
       obsoleteGammas.clear();
       previousRelationTypeId = relationTypeId;
       previousArtifactAId = artifactAId;

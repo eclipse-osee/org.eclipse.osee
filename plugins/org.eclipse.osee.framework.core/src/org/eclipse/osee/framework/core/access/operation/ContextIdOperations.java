@@ -31,7 +31,8 @@ public class ContextIdOperations {
       this.accessControlService = accessControlServiceImpl;
    }
 
-   public void hasRelationContextWriteAccess(ArtifactToken subject, ArtifactToken artifact, RelationTypeToken relationType, Collection<? extends ArtifactToken> related, XResultData rd) {
+   public void hasRelationContextWriteAccess(ArtifactToken subject, ArtifactToken artifact,
+      RelationTypeToken relationType, Collection<? extends ArtifactToken> related, XResultData rd) {
       for (IOseeAccessProvider provider : accessControlService.getOseeAccessProviders()) {
          if (provider.isApplicable(subject, artifact.getBranch())) {
             provider.hasRelationContextWriteAccess(subject, artifact, relationType, rd);
@@ -39,7 +40,8 @@ public class ContextIdOperations {
       }
    }
 
-   public XResultData hasArtifactContextWriteAccess(ArtifactToken subject, Collection<? extends ArtifactToken> artifacts, XResultData rd) {
+   public XResultData hasArtifactContextWriteAccess(ArtifactToken subject,
+      Collection<? extends ArtifactToken> artifacts, XResultData rd) {
       for (IOseeAccessProvider provider : accessControlService.getOseeAccessProviders()) {
          if (provider.isApplicable(subject, artifacts.iterator().next().getBranch())) {
             provider.hasArtifactContextWriteAccess(subject, artifacts, rd);
@@ -48,7 +50,8 @@ public class ContextIdOperations {
       return rd;
    }
 
-   public XResultData hasAttributeTypeContextWriteAccess(ArtifactToken subject, Collection<? extends ArtifactToken> artifacts, AttributeTypeToken attributeType, XResultData rd) {
+   public XResultData hasAttributeTypeContextWriteAccess(ArtifactToken subject,
+      Collection<? extends ArtifactToken> artifacts, AttributeTypeToken attributeType, XResultData rd) {
       for (IOseeAccessProvider provider : accessControlService.getOseeAccessProviders()) {
          if (provider.isApplicable(subject, artifacts.iterator().next())) {
             provider.hasAttributeTypeContextWriteAccess(subject, artifacts, attributeType, rd);

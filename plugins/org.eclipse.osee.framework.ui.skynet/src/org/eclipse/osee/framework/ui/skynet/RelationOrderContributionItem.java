@@ -46,7 +46,8 @@ public class RelationOrderContributionItem extends ContributionItem {
    private static final String MENU_TEXT = "&Order Relations";
 
    public static interface SelectionListener {
-      public void onSelected(final RelationTypeSideSorter sorter, final RelationSorter wasId, final RelationSorter isId);
+      public void onSelected(final RelationTypeSideSorter sorter, final RelationSorter wasId,
+         final RelationSorter isId);
    }
 
    private final ISelectionProvider selectionProvider;
@@ -122,7 +123,8 @@ public class RelationOrderContributionItem extends ContributionItem {
       return result;
    }
 
-   private void notifyListeners(final RelationTypeSideSorter sorter, final RelationSorter wasId, final RelationSorter isId) {
+   private void notifyListeners(final RelationTypeSideSorter sorter, final RelationSorter wasId,
+      final RelationSorter isId) {
       for (SelectionListener listener : listeners) {
          try {
             listener.onSelected(sorter, wasId, isId);

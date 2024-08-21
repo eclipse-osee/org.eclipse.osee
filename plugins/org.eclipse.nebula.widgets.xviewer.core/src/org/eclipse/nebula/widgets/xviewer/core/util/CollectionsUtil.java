@@ -109,14 +109,14 @@ public class CollectionsUtil {
     * Returns the unique union of the given lists
     */
    @SafeVarargs
-	public static <T> Set<T> setUnion(Collection<T>... lists) {
-		Set<T> union = new HashSet<>(lists[0].size() * 2);
+   public static <T> Set<T> setUnion(Collection<T>... lists) {
+      Set<T> union = new HashSet<>(lists[0].size() * 2);
 
-		for (int x = 0; x < lists.length; x++) {
-			union.addAll(lists[x]);
-		}
-		return union;
-	}
+      for (int x = 0; x < lists.length; x++) {
+         union.addAll(lists[x]);
+      }
+      return union;
+   }
 
    /**
     * Return true if same objects exist in listA and listB
@@ -199,7 +199,8 @@ public class CollectionsUtil {
     * @param castOption if ALL, cast all and throw exception if cast fails; if MATCHING, only cast those of type clazz
     */
    @SuppressWarnings("unchecked")
-   private static <A extends Object> List<A> cast(Class<A> clazz, Collection<? extends Object> objects, CastOption castOption) {
+   private static <A extends Object> List<A> cast(Class<A> clazz, Collection<? extends Object> objects,
+      CastOption castOption) {
       List<A> results = new ArrayList<>(objects.size());
       for (Object object : objects) {
          if ((castOption == CastOption.ALL) || ((castOption == CastOption.MATCHING) && (object.getClass().isAssignableFrom(

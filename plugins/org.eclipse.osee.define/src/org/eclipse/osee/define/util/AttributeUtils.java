@@ -39,7 +39,8 @@ public class AttributeUtils {
     */
 
    @SuppressWarnings("unchecked")
-   public static List<String> getStringAttributeValues(ArtifactReadable artifactReadable, AttributeTypeToken attributeTypeToken) {
+   public static List<String> getStringAttributeValues(ArtifactReadable artifactReadable,
+      AttributeTypeToken attributeTypeToken) {
       return (List<String>) (Object) artifactReadable.getAttributeValues(attributeTypeToken);
    }
 
@@ -57,7 +58,8 @@ public class AttributeUtils {
     */
 
    @SuppressWarnings("unchecked")
-   public static List<Map.Entry<String, String>> getMapEntryAttributeValues(ArtifactReadable artifactReadable, AttributeTypeToken attributeTypeToken) {
+   public static List<Map.Entry<String, String>> getMapEntryAttributeValues(ArtifactReadable artifactReadable,
+      AttributeTypeToken attributeTypeToken) {
       return (List<Map.Entry<String, String>>) (Object) artifactReadable.getAttributeValues(attributeTypeToken);
    }
 }

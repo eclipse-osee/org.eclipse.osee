@@ -68,7 +68,8 @@ public class CreateTasksRuleRunner {
       return results;
    }
 
-   private void createMissingTasks(IAtsTeamWorkflow teamWf, CreateTasksDefinition tasksDef, List<StaticTaskDefinition> missingTasks, XResultData results) {
+   private void createMissingTasks(IAtsTeamWorkflow teamWf, CreateTasksDefinition tasksDef,
+      List<StaticTaskDefinition> missingTasks, XResultData results) {
       NewTaskSet newTaskSet = NewTaskSet.create("CreateTasksRuleRunner", atsApi.getUserService().getCurrentUserId());
       NewTaskData newTaskData = NewTaskData.create(newTaskSet, teamWf);
       Date createdDate = new Date();
@@ -84,8 +85,7 @@ public class CreateTasksRuleRunner {
             jTask.getAssigneeAccountIds().add(ArtifactId.valueOf(accountId));
          }
          if (createTaskDef.getWorkDefTok().isValid()) {
-            WorkDefinition workDef =
-               atsApi.getWorkDefinitionService().getWorkDefinition(createTaskDef.getWorkDefTok());
+            WorkDefinition workDef = atsApi.getWorkDefinitionService().getWorkDefinition(createTaskDef.getWorkDefTok());
             if (workDef != null) {
                jTask.setWorkDef(workDef.getIdString());
             }

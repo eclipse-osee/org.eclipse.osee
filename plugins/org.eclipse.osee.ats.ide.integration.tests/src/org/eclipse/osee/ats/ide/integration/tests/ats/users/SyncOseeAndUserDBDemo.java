@@ -62,13 +62,13 @@ public class SyncOseeAndUserDBDemo extends SyncOseeAndUserDB {
          AtsUser userByToken = atsApi.getUserService().getUserByToken(DemoUsers.Keith_Johnson);
          userByToken.setActive(false);
          return userByToken;
-      } else { 
-    	 AtsUser userByToken = atsApi.getUserService().getUserByUserId(userId); 
-    	 if (userByToken != null) {
-    		 return userByToken;
-    	 } else {
-    		  return null;
-    	 }    	   
+      } else {
+         AtsUser userByToken = atsApi.getUserService().getUserByUserId(userId);
+         if (userByToken != null) {
+            return userByToken;
+         } else {
+            return null;
+         }
       }
    }
 

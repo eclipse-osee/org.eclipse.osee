@@ -41,7 +41,8 @@ public class IndexerCallableFactoryImpl implements IndexerCallableFactory {
    }
 
    @Override
-   public Callable<?> createIndexerTaskCallable(OrcsSession session, OrcsTokenService tokenService, IndexerCollector collector, Long queueId) {
+   public Callable<?> createIndexerTaskCallable(OrcsSession session, OrcsTokenService tokenService,
+      IndexerCollector collector, Long queueId) {
       return new IndexingTaskDatabaseTxCallable(logger, session, jdbcClient, loader, taggingEngine, collector, queueId,
          IndexerConstants.INDEXER_CACHE_ALL_ITEMS, IndexerConstants.INDEXER_CACHE_LIMIT, tokenService);
    }

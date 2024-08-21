@@ -50,8 +50,7 @@ public class BasicRelationshipSpecificationRecord implements RelationshipSpecifi
     * entry.
     */
 
-   public BasicRelationshipSpecificationRecord(@NonNull RelationTypeToken relationTypeToken,
-      @NonNull List<@NonNull Integer> targetArtifactSpecificationRecordIdentifiers) {
+   public BasicRelationshipSpecificationRecord(@NonNull RelationTypeToken relationTypeToken, @NonNull List<@NonNull Integer> targetArtifactSpecificationRecordIdentifiers) {
 
       //@formatter:off
       this.relationTypeToken =

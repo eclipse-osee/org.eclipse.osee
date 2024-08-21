@@ -80,7 +80,8 @@ public class ConvertFavoriteBranchGuidToId extends AbstractConvertGuidToId {
       }
    }
 
-   private void convertAttributeToId(XResultData data, boolean reportOnly, TransactionBuilder tx, ArtifactReadable art, ResultSet<? extends AttributeReadable<?>> favBranchAttrValues) {
+   private void convertAttributeToId(XResultData data, boolean reportOnly, TransactionBuilder tx, ArtifactReadable art,
+      ResultSet<? extends AttributeReadable<?>> favBranchAttrValues) {
       for (AttributeReadable<?> attr : favBranchAttrValues) {
          String value = attr.toString();
          if (GUID.isValid(value)) {
@@ -93,7 +94,8 @@ public class ConvertFavoriteBranchGuidToId extends AbstractConvertGuidToId {
       }
    }
 
-   private void convert(XResultData data, boolean reportOnly, TransactionBuilder tx, ArtifactReadable art, AttributeReadable<?> attr, String value) {
+   private void convert(XResultData data, boolean reportOnly, TransactionBuilder tx, ArtifactReadable art,
+      AttributeReadable<?> attr, String value) {
       BranchId branch = null;
       try {
          branch = getBranch(value);
@@ -107,7 +109,8 @@ public class ConvertFavoriteBranchGuidToId extends AbstractConvertGuidToId {
       }
    }
 
-   private void addId(XResultData data, boolean reportOnly, TransactionBuilder tx, ArtifactReadable art, AttributeReadable<?> attr, BranchId branch) {
+   private void addId(XResultData data, boolean reportOnly, TransactionBuilder tx, ArtifactReadable art,
+      AttributeReadable<?> attr, BranchId branch) {
       numChanges++;
       data.logf("Adding id attribute of value %s to artifact type [%s] name [%s] id [%s]\n", branch,
          art.getArtifactType(), art.getName(), art.getIdString());
@@ -122,7 +125,8 @@ public class ConvertFavoriteBranchGuidToId extends AbstractConvertGuidToId {
       }
    }
 
-   private void removeAttrForNonExistentBranch(XResultData data, boolean reportOnly, TransactionBuilder tx, ArtifactReadable art, AttributeReadable<?> attr, String value) {
+   private void removeAttrForNonExistentBranch(XResultData data, boolean reportOnly, TransactionBuilder tx,
+      ArtifactReadable art, AttributeReadable<?> attr, String value) {
       try {
          data.logf("No Branch found with value [%s]. Recommend removing attribute.\n", value);
          if (!reportOnly) {

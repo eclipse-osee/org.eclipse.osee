@@ -67,7 +67,8 @@ public class CsvArtifact {
    /**
     * Creates a new un-persisted CsvArtifact
     */
-   public static CsvArtifact generateCsvArtifact(String staticId, String artifactName, String csvData, BranchToken branch) {
+   public static CsvArtifact generateCsvArtifact(String staticId, String artifactName, String csvData,
+      BranchToken branch) {
       Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, branch);
       artifact.setName(artifactName);
       artifact.setSoleAttributeValue(CoreAttributeTypes.Extension, "csv");

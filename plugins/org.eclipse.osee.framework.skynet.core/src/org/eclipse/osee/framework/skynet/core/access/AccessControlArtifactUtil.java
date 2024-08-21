@@ -29,11 +29,13 @@ public class AccessControlArtifactUtil {
       return XResultDataHeaders.getXResultAccessHeader(title, artifact, null);
    }
 
-   public static XResultData getXResultAccessHeader(String title, Collection<? extends ArtifactToken> artifacts, AttributeTypeToken attributeType) {
+   public static XResultData getXResultAccessHeader(String title, Collection<? extends ArtifactToken> artifacts,
+      AttributeTypeToken attributeType) {
       return XResultDataHeaders.getXResultAccessHeader(title, artifacts, attributeType, null);
    }
 
-   public static XResultData getXResultAccessHeader(String title, Collection<? extends ArtifactToken> artifacts, RelationTypeSide relTypeSide) {
+   public static XResultData getXResultAccessHeader(String title, Collection<? extends ArtifactToken> artifacts,
+      RelationTypeSide relTypeSide) {
       return XResultDataHeaders.getXResultAccessHeader(title, artifacts, relTypeSide, null);
    }
 

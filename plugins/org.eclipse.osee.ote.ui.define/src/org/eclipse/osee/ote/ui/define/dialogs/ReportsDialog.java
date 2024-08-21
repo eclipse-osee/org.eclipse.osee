@@ -385,7 +385,8 @@ public class ReportsDialog extends TitleAreaDialog {
       return toReturn;
    }
 
-   private void updatePanel(final PanelEnum panelId, final URI uri, final String description, final List<IFile> oldIFiles) {
+   private void updatePanel(final PanelEnum panelId, final URI uri, final String description,
+      final List<IFile> oldIFiles) {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
@@ -418,7 +419,8 @@ public class ReportsDialog extends TitleAreaDialog {
       });
    }
 
-   private void generatePreview(final OutputFormat outputFormat, final String reportId, final ITestRunReport report) throws URISyntaxException {
+   private void generatePreview(final OutputFormat outputFormat, final String reportId, final ITestRunReport report)
+      throws URISyntaxException {
       String urlRequest = HttpReportRequest.getUrl(reportId, outputFormat.name(), "local", getPreviewSize());
       String fileName = OutputFactory.getOutputFilename(outputFormat, reportId);
       switch (outputFormat) {
@@ -431,7 +433,8 @@ public class ReportsDialog extends TitleAreaDialog {
       }
    }
 
-   private void remoteFileToLocal(final OutputFormat outputFormat, final String urlRequest, final String fileName, final ITestRunReport report) {
+   private void remoteFileToLocal(final OutputFormat outputFormat, final String urlRequest, final String fileName,
+      final ITestRunReport report) {
       RemoteResourceRequestJob requestJob = new RemoteResourceRequestJob(urlRequest, fileName);
       requestJob.addJobChangeListener(new PreviewUpdateJobChangeListener(report, outputFormat));
       requestJob.schedule();

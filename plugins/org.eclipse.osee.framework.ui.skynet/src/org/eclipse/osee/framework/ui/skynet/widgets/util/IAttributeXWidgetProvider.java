@@ -25,5 +25,6 @@ public interface IAttributeXWidgetProvider {
    /**
     * Return widget layout data or empty list if this provider doesn't provide for this attribute type
     */
-   public List<XWidgetRendererItem> getDynamicXWidgetLayoutData(ArtifactTypeToken artType, AttributeTypeToken attributeType);
+   public List<XWidgetRendererItem> getDynamicXWidgetLayoutData(ArtifactTypeToken artType,
+      AttributeTypeToken attributeType);
 }

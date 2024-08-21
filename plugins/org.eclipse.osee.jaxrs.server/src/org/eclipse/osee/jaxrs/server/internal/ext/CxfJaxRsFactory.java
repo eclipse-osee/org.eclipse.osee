@@ -171,7 +171,8 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
       return new CXFNonSpringServlet();
    }
 
-   public Server newCxfServer(CXFNonSpringServlet servlet, String applicationPath, Application application, JaxRsProviders providers) {
+   public Server newCxfServer(CXFNonSpringServlet servlet, String applicationPath, Application application,
+      JaxRsProviders providers) {
       String contextName = servlet.getServletName();
       Bus bus = servlet.getBus();
       if (bus == null) {

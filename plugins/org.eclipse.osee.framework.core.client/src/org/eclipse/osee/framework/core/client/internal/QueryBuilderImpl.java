@@ -42,8 +42,7 @@ public class QueryBuilderImpl implements QueryBuilder {
    private final List<Predicate> predicates;
    private final QueryExecutor executor;
 
-   public QueryBuilderImpl(BranchId branch, List<Predicate> predicates, QueryOptions options,
-      PredicateFactory predicateFactory, QueryExecutor executor) {
+   public QueryBuilderImpl(BranchId branch, List<Predicate> predicates, QueryOptions options, PredicateFactory predicateFactory, QueryExecutor executor) {
       this.branch = branch;
       this.predicates = predicates;
       this.options = options;

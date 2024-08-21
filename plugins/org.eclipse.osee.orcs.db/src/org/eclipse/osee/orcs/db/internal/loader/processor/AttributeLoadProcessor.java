@@ -46,7 +46,8 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
    }
 
    @Override
-   protected AttributeData createData(Object conditions, AttributeObjectFactory factory, JdbcStatement chStmt, Options options) {
+   protected AttributeData createData(Object conditions, AttributeObjectFactory factory, JdbcStatement chStmt,
+      Options options) {
       AttributeData toReturn = null;
 
       BranchId branch = BranchId.create(chStmt.getLong("branch_id"), OptionsUtil.getFromBranchView(options));
@@ -107,7 +108,8 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
          return previousBranchId.equals(branch) && previousArtId.equals(artifactId) && previousAttrId.equals(attrId);
       }
 
-      void saveConditions(BranchId branch, ArtifactId artifactId, AttributeId attrId, GammaId gammaId, ModificationType modType) {
+      void saveConditions(BranchId branch, ArtifactId artifactId, AttributeId attrId, GammaId gammaId,
+         ModificationType modType) {
          previousBranchId = branch;
          previousArtId = artifactId;
          previousAttrId = attrId;

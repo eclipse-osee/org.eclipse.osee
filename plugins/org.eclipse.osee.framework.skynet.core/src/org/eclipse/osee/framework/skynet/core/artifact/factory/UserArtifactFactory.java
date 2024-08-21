@@ -30,7 +30,8 @@ public class UserArtifactFactory extends ArtifactFactory {
    }
 
    @Override
-   public Artifact getArtifactInstance(Long id, String guid, BranchToken branch, ArtifactTypeToken artifactType, boolean inDataStore) {
+   public Artifact getArtifactInstance(Long id, String guid, BranchToken branch, ArtifactTypeToken artifactType,
+      boolean inDataStore) {
       return new User(id, guid, branch);
    }
 

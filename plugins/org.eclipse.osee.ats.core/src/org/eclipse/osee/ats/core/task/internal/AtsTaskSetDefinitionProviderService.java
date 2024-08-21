@@ -42,9 +42,9 @@ public class AtsTaskSetDefinitionProviderService implements IAtsTaskSetDefinitio
 
    public synchronized void ensureLoaded() {
       // Add default 
-         if (!taskSetDefProviderProcessed.contains(atsTaskSetDefProv)) {
-            atsTaskSetDefProv = new AtsTaskSetDefinitionProvider();
-            taskSetDefProviders.add(atsTaskSetDefProv);
+      if (!taskSetDefProviderProcessed.contains(atsTaskSetDefProv)) {
+         atsTaskSetDefProv = new AtsTaskSetDefinitionProvider();
+         taskSetDefProviders.add(atsTaskSetDefProv);
       }
       // Add any not processed
       for (IAtsTaskSetDefinitionProvider workDefProvider : taskSetDefProviders) {

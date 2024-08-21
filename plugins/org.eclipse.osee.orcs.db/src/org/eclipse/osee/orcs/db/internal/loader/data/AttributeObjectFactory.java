@@ -26,9 +26,11 @@ import org.eclipse.osee.orcs.core.ds.VersionData;
  */
 public interface AttributeObjectFactory extends VersionObjectFactory {
 
-   <T> AttributeData<T> createAttributeData(VersionData version, AttributeId id, AttributeTypeGeneric<?> attributeType, ModificationType modType, ArtifactId artId, T value, String uri, ApplicabilityId applicId);
+   <T> AttributeData<T> createAttributeData(VersionData version, AttributeId id, AttributeTypeGeneric<?> attributeType,
+      ModificationType modType, ArtifactId artId, T value, String uri, ApplicabilityId applicId);
 
-   <T> AttributeData<T> createAttributeData(VersionData version, AttributeId id, AttributeTypeGeneric<?> attributeType, ModificationType modType, ArtifactId artId, ApplicabilityId applicId);
+   <T> AttributeData<T> createAttributeData(VersionData version, AttributeId id, AttributeTypeGeneric<?> attributeType,
+      ModificationType modType, ArtifactId artId, ApplicabilityId applicId);
 
    <T> AttributeData<T> createCopy(AttributeData<T> source);
 }
