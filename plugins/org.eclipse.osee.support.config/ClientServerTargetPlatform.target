@@ -717,6 +717,8 @@
 <plugin id="org.yaml.snakeyaml"/>
 <plugin id="jakarta.xml.bind"/>
 <plugin id="org.nibor.autolink"/>
+<plugin id="jakarta.xml.soap-api"/>
+<plugin id="jakarta.validation.jakarta.validation-api"/>
 </includeBundles>
 <environment>
 <os>win32</os>

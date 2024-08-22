@@ -63,8 +63,8 @@
 				<module>../../plugins/org.eclipse.osee.client.test.framework.p2</module>
 
 				<module>../../features/org.eclipse.osee.client.feature</module>
-		      <module>../../plugins/org.eclipse.osee.ats.ide.integration.tests</module>
-		      <module>../../features/org.eclipse.osee.ats.ide.integration.tests.feature</module>
+		                <module>../../plugins/org.eclipse.osee.ats.ide.integration.tests</module>
+		                <module>../../features/org.eclipse.osee.ats.ide.integration.tests.feature</module>
 
 				<module>../../plugins/org.eclipse.osee.client.p2</module>
 				
