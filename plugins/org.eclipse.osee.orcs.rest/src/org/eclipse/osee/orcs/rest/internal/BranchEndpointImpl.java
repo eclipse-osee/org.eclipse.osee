@@ -765,20 +765,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
    @Override
    public Response setBranchState(BranchId branchId, BranchState newState) {
       Branch branch = getBranchById(branchId);
-      boolean modified = false;
-      if (isDifferent(branch.getBranchState(), newState)) {
-         Callable<?> op = branchOps.changeBranchState(branch, newState);
-         executeCallable(op);
-         modified = true;
-
-         try {
-            activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
-               String.format("Branch Operation Branch State Changed {branchId: %s prevState: %s newState: %s}",
-                  branchId, branch.getBranchType(), newState));
-         } catch (OseeCoreException ex) {
-            OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
-         }
-      }
+      boolean modified = branchOps.setBranchState(branchId, newState);
       return asResponse(modified);
    }
 

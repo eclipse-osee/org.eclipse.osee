@@ -250,7 +250,7 @@ public class BranchStateTest {
          UpdateBranchOperation operation = new UpdateBranchOperation(workingBranch, resolverOperation);
          Asserts.assertOperation(operation, IStatus.OK);
 
-         Assert.assertEquals(BranchState.DELETED, BranchManager.getState(workingBranch));
+         Assert.assertEquals(BranchState.REBASELINED, BranchManager.getState(workingBranch));
          Assert.assertEquals(Artifact.SENTINEL, BranchManager.getAssociatedArtifact(workingBranch));
 
          BranchToken newWorkingBranch = operation.getNewBranch();

@@ -108,4 +108,6 @@ public interface OrcsBranch {
 
    BranchToken createProgramBranch(BranchToken branch, BranchToken parent);
 
+   boolean setBranchState(BranchId branchId, BranchState newState);
+
 }

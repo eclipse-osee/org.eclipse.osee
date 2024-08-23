@@ -13,11 +13,14 @@
 
 package org.eclipse.osee.orcs.core.internal;
 
+import static org.eclipse.osee.framework.core.data.CoreActivityTypes.BRANCH_OPERATION;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.DefaultHierarchyRoot;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.InterfaceMessagesFolder;
+import static org.eclipse.osee.framework.jdk.core.util.Compare.isDifferent;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Callable;
+import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.Branch;
@@ -32,6 +35,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -107,12 +111,14 @@ public class OrcsBranchImpl implements OrcsBranch {
          branchData.setFromTransaction(txData);
          branchStore.createBranch(branchData, userService, orcsApi.tokenService());
       }
-      if (branchData.getCategories() != null) {
+      if (!branchData.getCategories().isEmpty()) {
          for (BranchCategoryToken bc : branchData.getCategories()) {
             orcsApi.getBranchOps().setBranchCategory(branchData.getBranch(), bc);
          }
+         // Reset to CREATED since inheriting branch category does not qualify as MODIFIED
+         orcsApi.getBranchOps().setBranchState(branchData.getBranch(), BranchState.CREATED);
       }
-      return queryFactory.branchQuery().andId(branchData.getBranch()).getResults().getExactlyOne();
+      return queryFactory.branchQuery().andId(branchData.getNewBranch()).getResults().getExactlyOne();
    }
 
    @Override
@@ -297,6 +303,26 @@ public class OrcsBranchImpl implements OrcsBranch {
       tx.deleteBranchCategory(branch, category);
       tx.commit();
       return result;
+   }
+
+   @Override
+   public boolean setBranchState(BranchId branchId, BranchState newState) {
+      boolean modified = false;
+      try {
+         Branch branch = queryFactory.branchQuery().andId(branchId).getResults().getExactlyOne();
+         if (isDifferent(branch.getBranchState(), newState)) {
+            Callable<?> op = changeBranchState(branch, newState);
+            op.call();
+            modified = true;
+
+            orcsApi.getActivityLog().createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
+               String.format("Branch Operation Branch State Changed {branchId: %s prevState: %s newState: %s}",
+                  branchId, branch.getBranchType(), newState));
+         }
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
+      }
+      return modified;
    }
 
 }
