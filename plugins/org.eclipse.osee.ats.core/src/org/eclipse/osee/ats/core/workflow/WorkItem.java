@@ -237,14 +237,11 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public String getCancelledReason() {
-      String ret = "";
-      if (artifact instanceof IAtsWorkItem) {
-         ret = atsApi.getAttributeResolver().getSoleAttributeValueAsString(artifact, AtsAttributeTypes.CancelledReason,
-            "");
-         if (Strings.isInValid(ret)) {
-            ret = atsApi.getAttributeResolver().getSoleAttributeValueAsString(artifact,
-               AtsAttributeTypes.CancelledReasonEnum, "");
-         }
+      String ret =
+         atsApi.getAttributeResolver().getSoleAttributeValueAsString(artifact, AtsAttributeTypes.CancelledReason, "");
+      if (Strings.isInValid(ret)) {
+         ret = atsApi.getAttributeResolver().getSoleAttributeValueAsString(artifact,
+            AtsAttributeTypes.CancelledReasonEnum, "");
       }
       return ret;
    }
