@@ -22,7 +22,7 @@ public class EnableIfCondition extends ConditionalRule {
    private AttributeTypeToken attrType;
    private Object value;
 
-   public EnableIfCondition(AttributeTypeToken attrType, Object value) {
+   public EnableIfCondition(AttributeTypeToken attrType, Object... value) {
       this.attrType = attrType;
       this.value = value;
    }

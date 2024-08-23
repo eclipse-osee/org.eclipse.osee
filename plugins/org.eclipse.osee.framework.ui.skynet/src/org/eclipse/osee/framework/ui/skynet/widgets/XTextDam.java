@@ -17,8 +17,6 @@ import java.lang.ref.WeakReference;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.conditions.ConditionalRule;
-import org.eclipse.osee.framework.core.data.conditions.EnableIfCondition;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -28,7 +26,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.widgets.Composite;
@@ -177,22 +174,6 @@ public class XTextDam extends XText implements AttributeWidget, EditorWidget {
    @Override
    public void setEditorData(EditorData editorData) {
       this.editorData = editorData;
-   }
-
-   @Override
-   public void validate() {
-      if (Widgets.isAccessible(sText)) {
-         for (ConditionalRule rule : getConditions()) {
-            if (rule instanceof EnableIfCondition) {
-               EnableIfCondition condition = (EnableIfCondition) rule;
-               Object currValue = getArtifact().getSoleAttributeValueAsString(condition.getAttrType(), "");
-               Object value = condition.getValue();
-               boolean enabled = currValue.equals(value);
-               setEnabled(enabled);
-            }
-         }
-      }
-      super.validate();
    }
 
 }
