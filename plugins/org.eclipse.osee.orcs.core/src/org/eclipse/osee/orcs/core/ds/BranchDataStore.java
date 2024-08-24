@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.data.ArchiveOperation;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 
 /**
@@ -59,20 +58,22 @@ public interface BranchDataStore {
    Callable<URI> importBranch(OrcsSession session, URI fileToImport, List<? extends BranchId> branches,
       PropertyStore options);
 
-   Callable<Void> changeBranchState(OrcsSession session, BranchId branch, BranchState branchState);
+   XResultData changeBranchState(OrcsSession session, BranchId branch, BranchState branchState);
 
-   Callable<Void> changeBranchType(OrcsSession session, BranchId branch, BranchType branchType);
+   XResultData changeBranchType(OrcsSession session, BranchId branch, BranchType branchType);
 
-   Callable<Void> changeBranchName(OrcsSession session, BranchId branch, String branchName);
+   XResultData changeBranchName(OrcsSession session, BranchId branch, String branchName);
 
-   Callable<Void> changeBranchAssociatedArt(OrcsSession session, BranchId branch, ArtifactId assocArt);
+   XResultData changeBranchAssociatedArt(OrcsSession session, BranchId branch, ArtifactId assocArt);
 
-   Callable<Void> archiveUnArchiveBranch(OrcsSession session, BranchId branch, ArchiveOperation op);
-
-   Callable<Void> deleteBranch(OrcsSession session, BranchId branch);
+   XResultData deleteBranch(OrcsSession session, BranchId branch);
 
    void setBranchPermission(ArtifactId subject, BranchId branch, PermissionEnum permission);
 
    XResultData createBranchValidation(CreateBranchData branchData, UserService userService,
       OrcsTokenService tokenService);
+
+   XResultData unArchiveBranch(OrcsSession session, BranchId branch);
+
+   XResultData archiveBranch(OrcsSession session, BranchId branch);
 }

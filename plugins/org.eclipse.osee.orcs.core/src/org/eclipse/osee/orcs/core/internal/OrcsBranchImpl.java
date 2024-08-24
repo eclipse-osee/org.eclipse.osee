@@ -16,7 +16,6 @@ package org.eclipse.osee.orcs.core.internal;
 import static org.eclipse.osee.framework.core.data.CoreActivityTypes.BRANCH_OPERATION;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.DefaultHierarchyRoot;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.InterfaceMessagesFolder;
-import static org.eclipse.osee.framework.jdk.core.util.Compare.isDifferent;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -35,7 +34,6 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -48,7 +46,6 @@ import org.eclipse.osee.orcs.core.ds.BranchDataStore;
 import org.eclipse.osee.orcs.core.internal.branch.BranchDataFactory;
 import org.eclipse.osee.orcs.core.internal.branch.CommitBranchCallable;
 import org.eclipse.osee.orcs.core.internal.branch.PurgeBranchCallable;
-import org.eclipse.osee.orcs.data.ArchiveOperation;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TransactionQuery;
@@ -147,12 +144,17 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Callable<Void> archiveUnarchiveBranch(BranchId branch, ArchiveOperation archiveOp) {
-      return branchStore.archiveUnArchiveBranch(session, branch, archiveOp);
+   public XResultData archiveBranch(BranchId branch) {
+      return branchStore.archiveBranch(session, branch);
    }
 
    @Override
-   public Callable<Void> deleteBranch(BranchId branch) {
+   public XResultData unarchiveBranch(BranchId branch) {
+      return branchStore.unArchiveBranch(session, branch);
+   }
+
+   @Override
+   public XResultData deleteBranch(BranchId branch) {
       return branchStore.deleteBranch(session, branch);
    }
 
@@ -187,28 +189,28 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Callable<Void> changeBranchState(BranchId branch, BranchState branchState) {
+   public XResultData changeBranchState(BranchId branch, BranchState branchState) {
       return branchStore.changeBranchState(session, branch, branchState);
    }
 
    @Override
-   public Callable<Void> changeBranchType(BranchId branch, BranchType branchType) {
+   public XResultData changeBranchType(BranchId branch, BranchType branchType) {
       return branchStore.changeBranchType(session, branch, branchType);
    }
 
    @Override
-   public Callable<Void> changeBranchName(BranchId branch, String branchName) {
+   public XResultData changeBranchName(BranchId branch, String branchName) {
       return branchStore.changeBranchName(session, branch, branchName);
    }
 
    @Override
-   public Callable<Void> associateBranchToArtifact(BranchId branch, ArtifactId associatedArtifact) {
+   public XResultData associateBranchToArtifact(BranchId branch, ArtifactId associatedArtifact) {
       Conditions.checkNotNull(associatedArtifact, "associatedArtifact");
       return branchStore.changeBranchAssociatedArt(session, branch, associatedArtifact);
    }
 
    @Override
-   public Callable<Void> unassociateBranch(BranchId branch) {
+   public XResultData unassociateBranch(BranchId branch) {
       return branchStore.changeBranchAssociatedArt(session, branch, ArtifactId.SENTINEL);
    }
 
@@ -307,22 +309,15 @@ public class OrcsBranchImpl implements OrcsBranch {
 
    @Override
    public boolean setBranchState(BranchId branchId, BranchState newState) {
-      boolean modified = false;
-      try {
-         Branch branch = queryFactory.branchQuery().andId(branchId).getResults().getExactlyOne();
-         if (isDifferent(branch.getBranchState(), newState)) {
-            Callable<?> op = changeBranchState(branch, newState);
-            op.call();
-            modified = true;
-
-            orcsApi.getActivityLog().createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
-               String.format("Branch Operation Branch State Changed {branchId: %s prevState: %s newState: %s}",
-                  branchId, branch.getBranchType(), newState));
-         }
-      } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+      Branch branch = orcsApi.getQueryFactory().branchQuery().andId(branchId).getResults().getExactlyOne();
+      XResultData rd = branchStore.changeBranchState(session, branchId, newState);
+      if (rd.isSuccess()) {
+         orcsApi.getActivityLog().createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
+            String.format("Branch Operation Branch State Changed {branchId: %s prevState: %s newState: %s}", branchId,
+               branch.getBranchType(), newState));
+         return true;
       }
-      return modified;
+      return false;
    }
 
 }

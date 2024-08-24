@@ -83,7 +83,6 @@ import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
-import org.eclipse.osee.orcs.data.ArchiveOperation;
 import org.eclipse.osee.orcs.data.CommitBranchUtil;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.data.TransactionReadable;
@@ -600,8 +599,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       }
 
       if (options.isArchive()) {
-         Callable<?> op2 = branchOps.archiveUnarchiveBranch(srcBranch, ArchiveOperation.ARCHIVE);
-         executeCallable(op2);
+         branchOps.archiveBranch(srcBranch);
       }
 
       try {
@@ -626,8 +624,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       boolean modified = false;
       if (!branch.isArchived()) {
          try {
-            Callable<?> op = branchOps.archiveUnarchiveBranch(branch, ArchiveOperation.ARCHIVE);
-            executeCallable(op);
+            branchOps.archiveBranch(branch);
          } catch (Exception ex) {
             orcsApi.getActivityLog().createThrowableEntry(CoreActivityTypes.BRANCH_OPERATION, ex,
                "Archive of branch " + branchId.getIdString());
@@ -685,8 +682,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       boolean modified = false;
       if (branch.isArchived()) {
          try {
-            Callable<?> op = branchOps.archiveUnarchiveBranch(branch, ArchiveOperation.UNARCHIVE);
-            executeCallable(op);
+            branchOps.unarchiveBranch(branch);
          } catch (Exception ex) {
             orcsApi.getActivityLog().createThrowableEntry(CoreActivityTypes.BRANCH_OPERATION, ex,
                "Unarchive of branch " + branchId.getIdString());
@@ -728,8 +724,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       Branch branch = getBranchById(branchId);
       boolean modified = false;
       if (isDifferent(branch.getName(), newName)) {
-         Callable<?> op = branchOps.changeBranchName(branch, newName);
-         executeCallable(op);
+         branchOps.changeBranchName(branch, newName);
          modified = true;
          try {
             activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
@@ -755,8 +750,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
          } catch (OseeCoreException ex) {
             OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
          }
-         Callable<?> op = branchOps.changeBranchType(branch, newType);
-         executeCallable(op);
+         branchOps.changeBranchType(branch, newType);
          modified = true;
       }
       return asResponse(modified);
@@ -764,7 +758,6 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    @Override
    public Response setBranchState(BranchId branchId, BranchState newState) {
-      Branch branch = getBranchById(branchId);
       boolean modified = branchOps.setBranchState(branchId, newState);
       return asResponse(modified);
    }
@@ -786,8 +779,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
          } catch (OseeCoreException ex) {
             OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
          }
-         Callable<?> op = branchOps.associateBranchToArtifact(branch, artifact);
-         executeCallable(op);
+         branchOps.associateBranchToArtifact(branch, artifact);
          modified = true;
       }
       return asResponse(modified);
@@ -869,8 +861,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       Branch branch = getBranchById(branchId);
       boolean modified = false;
       if (branch.getAssociatedArtifact().isValid()) {
-         Callable<?> op = branchOps.unassociateBranch(branch);
-         executeCallable(op);
+         branchOps.unassociateBranch(branch);
          modified = true;
          try {
             activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,

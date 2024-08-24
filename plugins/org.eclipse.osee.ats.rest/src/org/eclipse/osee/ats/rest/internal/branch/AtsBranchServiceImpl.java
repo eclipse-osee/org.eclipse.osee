@@ -53,7 +53,6 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArchiveOperation;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.TransactionQuery;
@@ -161,7 +160,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    @Override
    public void archiveBranch(BranchId branch) {
       try {
-         orcsApi.getBranchOps().archiveUnarchiveBranch(branch, ArchiveOperation.ARCHIVE).call();
+         orcsApi.getBranchOps().archiveBranch(branch);
       } catch (Exception ex) {
          throw OseeCoreException.wrap(ex);
       }
@@ -198,7 +197,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    @Override
    public void setBranchName(BranchToken branch, String name) {
       try {
-         orcsApi.getBranchOps().changeBranchName(branch, name).call();
+         orcsApi.getBranchOps().changeBranchName(branch, name);
       } catch (Exception ex) {
          throw OseeCoreException.wrap(ex);
       }
@@ -256,7 +255,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    @Override
    public void setAssociatedArtId(BranchId branch, ArtifactId artifact) {
       try {
-         orcsApi.getBranchOps().associateBranchToArtifact(branch, artifact).call();
+         orcsApi.getBranchOps().associateBranchToArtifact(branch, artifact);
       } catch (Exception ex) {
          throw new OseeWrappedException(ex, "Error setting associated branch %s to artifact %s", branch, artifact);
       }
