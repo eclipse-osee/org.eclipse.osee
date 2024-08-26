@@ -826,6 +826,7 @@ public class WordTemplateProcessorClient {
                this.includeMetadataAttributes,
                this::nonTemplateArtifactHandler,
                this.publishingTemplate.getPublishOptions().getMetadataOptions(),
+               this.publishingTemplate.getRelationTableOptions(),
                this.tokenService,
                presentationType,
                publishingAppender,

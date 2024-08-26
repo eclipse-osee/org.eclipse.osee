@@ -1027,6 +1027,7 @@ public class WordTemplateProcessorServer implements ToMessage {
                this.includeMetadataAttributes,
                this::nonTemplateArtifactHandler,
                this.publishingTemplate.getPublishOptions().getMetadataOptions(),
+               this.publishingTemplate.getRelationTableOptions(),
                this.tokenService,
                PresentationType.PREVIEW,
                publishingAppender,

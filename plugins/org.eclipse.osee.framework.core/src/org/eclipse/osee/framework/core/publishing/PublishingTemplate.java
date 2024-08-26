@@ -19,6 +19,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.osee.framework.core.publishing.relation.table.RelationTableOptions;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -72,6 +73,12 @@ public class PublishingTemplate implements ToMessage {
    private String templateContent;
 
    /**
+    * Configuration options for relation table generation.
+    */
+
+   private RelationTableOptions relationTableOptions;
+
+   /**
     * Creates a new empty {@link PublishingTemplate} for JSON deserialization.
     */
 
@@ -80,6 +87,7 @@ public class PublishingTemplate implements ToMessage {
       this.name = null;
       this.publishingOptions = null;
       this.templateContent = null;
+      this.relationTableOptions = null;
    }
 
    /**
@@ -89,15 +97,17 @@ public class PublishingTemplate implements ToMessage {
     * @param name the Publishing Template's name.
     * @param publishingOptions the Publishing Template's {@link PublishOptions}.
     * @param templateContent the Publishing Template's content.
+    * @param relationTableOptions the Publishing Template's relation table configuration options.
     * @throws NullPointerException when any of the parameters <code>identifier</code>, <code>name</code>, or
     * <code>publishingOptions</code> are <code>null</code>.
     */
 
-   public PublishingTemplate(@NonNull String identifier, @NonNull String name, @NonNull PublishOptions publishingOptions, @Nullable String templateContent) {
+   public PublishingTemplate(@NonNull String identifier, @NonNull String name, @NonNull PublishOptions publishingOptions, @Nullable String templateContent, @NonNull RelationTableOptions relationTableOptions) {
       this.identifier = Conditions.requireNonNull(identifier, "identifier");
       this.name = Conditions.requireNonNull(name, "name");
       this.publishingOptions = Conditions.requireNonNull(publishingOptions, "publishingOptions");
       this.templateContent = Objects.nonNull(templateContent) ? templateContent : Strings.EMPTY_STRING;
+      this.relationTableOptions = Objects.requireNonNull(relationTableOptions, "relationTableOptions");
    }
 
    /**
@@ -135,6 +145,10 @@ public class PublishingTemplate implements ToMessage {
 
       if (Objects.isNull(this.templateContent)) {
          this.templateContent = Strings.EMPTY_STRING;
+      }
+
+      if (Objects.isNull(this.relationTableOptions)) {
+         this.relationTableOptions = new RelationTableOptions();
       }
    }
 
@@ -195,6 +209,24 @@ public class PublishingTemplate implements ToMessage {
             "PublishingTemplate::getTemplateContent, the member \"templateContent\" has not been set.");
       }
       return this.templateContent;
+   }
+
+   /**
+    * Gets the Relation Table Options.
+    *
+    * @return the content.
+    * @throws IllegalStateException when the member {@link #relationTableOptions} has not been set.
+    */
+
+   public RelationTableOptions getRelationTableOptions() {
+      if (Objects.isNull(this.templateContent)) {
+         throw new IllegalStateException(
+            
+            
+            
+            "PublishingTemplate::getRelationTableOptions, the member \"relationTableOptions\" has not been set.");
+      }
+      return this.relationTableOptions;
    }
 
    /**
