@@ -37,6 +37,16 @@ public class ProductLineConfig {
       List<ConfigurationValue> groups =
          internalHeaders.stream().filter(x -> x.getTypeId().equals(CoreArtifactTypes.GroupArtifact)).collect(
             Collectors.toList());
+      //we are going to act like having no group is a group with a -1 Id
+      for (ConfigurationValue group : groups) {
+         List<ConfigurationValue> groupHeaders = internalHeaders.stream().filter(
+            x -> x.getId().equals(group.getId()) || group.getRelated().contains(ArtifactId.valueOf(x.getId()))).sorted(
+               (a, b) -> Long.valueOf(a.getTypeId().getId() - b.getTypeId().getId()).intValue()).sorted(
+                  (a, b) -> a.getApplicability().getName().compareTo(b.getApplicability().getName())).collect(
+                     Collectors.toList());
+         headers.addAll(groupHeaders);
+         headerLengths.add(groupHeaders.size());
+      }
       //initialize the group map with a 'No Group' that has all configurationValues that have no related group and aren't a group themselves
       List<ConfigurationValue> noConfig =
          Stream.concat(Stream.of(ConfigurationValue.NO_GROUP), internalHeaders.stream().filter(x -> {
@@ -48,16 +58,6 @@ public class ProductLineConfig {
          headerLengths.add(noConfig.size() - 1);
          headers.addAll(noConfig);
 
-      }
-      //we are going to act like having no group is a group with a -1 Id
-      for (ConfigurationValue group : groups) {
-         List<ConfigurationValue> groupHeaders = internalHeaders.stream().filter(
-            x -> x.getId().equals(group.getId()) || group.getRelated().contains(ArtifactId.valueOf(x.getId()))).sorted(
-               (a, b) -> Long.valueOf(a.getTypeId().getId() - b.getTypeId().getId()).intValue()).sorted(
-                  (a, b) -> a.getApplicability().getName().compareTo(b.getApplicability().getName())).collect(
-                     Collectors.toList());
-         headers.addAll(groupHeaders);
-         headerLengths.add(groupHeaders.size());
       }
    }
 

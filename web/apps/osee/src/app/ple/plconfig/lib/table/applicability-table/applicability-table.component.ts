@@ -380,30 +380,57 @@ export class ApplicabilityTableComponent {
 		return Array.from(set);
 	});
 	topHeaders = computed(() => {
-		if (
+		const index = this.completeTable().headers.findIndex(
+			(x) => x.id === '-1'
+		);
+		if (index !== -1) {
+			if (
+				Math.max(
+					this.completeTable().headerLengths.reduce(
+						(acc, curr) => acc + curr,
+						0
+						//@ts-expect-error
+					) - this.completeTable().headerLengths.at(-1),
+					0
+				) > 0
+			) {
+				return ['       ', 'Configuration Groups', 'Configurations'];
+			}
+			return ['       ', 'Configurations'];
+		}
+		return ['       ', 'Configuration Groups'];
+	});
+	topHeaderLengths = computed(() => {
+		const index = this.completeTable().headers.findIndex(
+			(x) => x.id === '-1'
+		);
+		if (index !== -1) {
+			return [
+				1,
+				Math.max(
+					this.completeTable()
+						.headerLengths.slice(
+							0,
+							this.completeTable().headerLengths.length - 1
+						)
+						.reduce((acc, curr) => acc + curr, 0),
+					0
+				),
+				this.completeTable().headerLengths.at(-1),
+			];
+		}
+		return [
+			1,
+			this.completeTable().headerLengths[0],
 			Math.max(
 				this.completeTable().headerLengths.reduce(
 					(acc, curr) => acc + curr,
 					0
 				) - this.completeTable().headerLengths[0],
 				0
-			) > 0
-		) {
-			return ['       ', 'Configurations', 'Configuration Groups'];
-		}
-		return ['       ', 'Configurations'];
+			),
+		];
 	});
-	topHeaderLengths = computed(() => [
-		1,
-		this.completeTable().headerLengths[0],
-		Math.max(
-			this.completeTable().headerLengths.reduce(
-				(acc, curr) => acc + curr,
-				0
-			) - this.completeTable().headerLengths[0],
-			0
-		),
-	]);
 	groups = computed(() =>
 		this.completeTable().headers.filter(
 			(x) => x.typeId === ARTIFACTTYPEIDENUM.CONFIGURATION_GROUP
@@ -414,10 +441,21 @@ export class ApplicabilityTableComponent {
 		'    ',
 		...this.groups().map((x) => x.name + ' '),
 	]);
-	groupHeaderLengths = computed(() => [
-		this.completeTable().headerLengths[0] !== 0 ? 1 : 0,
-		...this.completeTable().headerLengths,
-	]);
+	groupHeaderLengths = computed(() => {
+		const index = this.completeTable().headers.findIndex(
+			(x) => x.id === '-1'
+		);
+		if (index !== -1) {
+			return [
+				this.completeTable().headerLengths.at(-1) !== 0 ? 1 : 0,
+				...this.completeTable().headerLengths,
+			];
+		}
+		return [
+			this.completeTable().headerLengths[0] !== 0 ? 1 : 0,
+			...this.completeTable().headerLengths,
+		];
+	});
 
 	viewHeaders = computed<configurationValue[]>(() => [
 		{

@@ -48,7 +48,10 @@ import {
 } from '@osee/messaging/shared/services';
 import type { message } from '@osee/messaging/shared/types';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
-import { TwoLayerAddButtonHarness } from '@osee/shared/components/testing';
+import {
+	MockCurrentViewSelectorComponent,
+	TwoLayerAddButtonHarness,
+} from '@osee/shared/components/testing';
 import { TwoLayerAddButtonComponent } from '@osee/shared/components';
 import {
 	CurrentMessageServiceMock,
@@ -56,7 +59,6 @@ import {
 	enumsServiceMock,
 	messagesMock,
 	MessagingControlsMockComponent,
-	ViewSelectorMockComponent,
 } from '@osee/messaging/shared/testing';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MockSingleDiffComponent } from '@osee/shared/testing';
@@ -100,7 +102,7 @@ describe('MessageTableComponent', () => {
 					MockSingleDiffComponent,
 					HighlightFilteredTextDirective,
 					TwoLayerAddButtonComponent,
-					ViewSelectorMockComponent,
+					MockCurrentViewSelectorComponent,
 				],
 				providers: [
 					{
@@ -148,7 +150,7 @@ describe('MessageTableComponent', () => {
 					MessageTableComponent,
 					MockSubMessageTableComponent,
 					MockAddMessageDialogComponent,
-					ViewSelectorMockComponent,
+					MockCurrentViewSelectorComponent,
 				],
 				declarations: [],
 				providers: [

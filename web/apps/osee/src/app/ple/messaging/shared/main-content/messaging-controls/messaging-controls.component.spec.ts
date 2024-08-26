@@ -12,12 +12,10 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PreferencesUIService } from '@osee/messaging/shared/services';
-import {
-	preferencesUiServiceMock,
-	ViewSelectorMockComponent,
-} from '@osee/messaging/shared/testing';
+import { preferencesUiServiceMock } from '@osee/messaging/shared/testing';
 import {
 	BranchPickerStub,
+	MockViewSelectorComponent,
 	UndoButtonBranchMockComponent,
 } from '@osee/shared/components/testing';
 
@@ -40,7 +38,7 @@ describe('MessagingControlsComponent', () => {
 				imports: [
 					ActionDropdownStub,
 					BranchPickerStub,
-					ViewSelectorMockComponent,
+					MockViewSelectorComponent,
 					UndoButtonBranchMockComponent,
 				],
 			},

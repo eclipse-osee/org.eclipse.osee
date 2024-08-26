@@ -17,4 +17,4 @@ import { Component } from '@angular/core';
 	template: '<p>Dummy</p>',
 	standalone: true,
 })
-export class ViewSelectorMockComponent {}
+export class MockCurrentViewSelectorComponent {}

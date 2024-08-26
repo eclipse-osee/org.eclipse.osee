@@ -45,7 +45,10 @@ import { EditElementFieldComponent } from '../../fields/edit-element-field/edit-
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import type { structure } from '@osee/messaging/shared/types';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
-import { TwoLayerAddButtonHarness } from '@osee/shared/components/testing';
+import {
+	MockCurrentViewSelectorComponent,
+	TwoLayerAddButtonHarness,
+} from '@osee/shared/components/testing';
 import { TwoLayerAddButtonComponent } from '@osee/shared/components';
 import {
 	preferencesUiServiceMock,
@@ -53,7 +56,6 @@ import {
 	editAuthServiceMock,
 	structuresMock,
 	structuresMockWithChanges,
-	ViewSelectorMockComponent,
 	MessagingControlsMockComponent,
 } from '@osee/messaging/shared/testing';
 import { CdkVirtualForOf, ScrollingModule } from '@angular/cdk/scrolling';
@@ -132,7 +134,7 @@ describe('StructureTableComponent', () => {
 						SubElementTableComponentMock,
 						EditElementFieldComponent,
 						EditStructureFieldComponentMock,
-						ViewSelectorMockComponent,
+						MockCurrentViewSelectorComponent,
 						MockSingleDiffComponent,
 						AddElementDialogComponent,
 						HighlightFilteredTextDirective,
