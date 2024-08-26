@@ -59,7 +59,8 @@ public class BidsOperations {
       }
       IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(bids.getTeamWf());
       if (teamWf == null) {
-         bids.getResults().errorf("Invalid ATS Id [%s]\n", bids.getTeamWf());
+         bids.getResults().errorf("Invalid Team Workflow [%s]\n", bids.getTeamWf());
+         return bids;
       }
       if (bids.getResults().isErrors()) {
          return bids;
@@ -151,15 +152,14 @@ public class BidsOperations {
       BuildImpactDatas bids = new BuildImpactDatas();
       IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) atsApi.getWorkItemService().getWorkItemByAtsId(atsId);
       if (teamWf == null) {
-         bids.getResults().errorf("Invalid ATS Id [%s]", bids.getTeamWf());
+         bids.getResults().errorf("Invalid ATS Id [%s]", atsId);
       }
       if (bids.getResults().isErrors()) {
          return bids;
       }
       if (teamWf != null) {
-         bids.setTeamWf(teamWf.getStoreObject());
+         bids.setTeamWf(teamWf.getArtifactToken());
       }
-
       if (teamWf == null) {
          throw new RuntimeException("teamWf is null");
       }
@@ -174,7 +174,7 @@ public class BidsOperations {
          return bids;
       }
       for (ArtifactToken view : orcsApi.getQueryFactory().applicabilityQuery().getViewsForBranch(branch)) {
-         bids.addConfig(view);
+         bids.addConfig(view.getToken());
       }
 
       for (ArtifactToken bidArt : atsApi.getRelationResolver().getRelated(teamWf,
@@ -185,7 +185,7 @@ public class BidsOperations {
          for (Object obj : atsApi.getAttributeResolver().getAttributeValues(bidArt, AtsAttributeTypes.BitConfig)) {
             ArtifactId configArt = (ArtifactId) obj;
             ArtifactToken config = bids.getIdToConfig().get(configArt.getId());
-            bid.getConfigs().add(config);
+            bid.getConfigs().add(config.getToken());
          }
 
          bid.setState(atsApi.getAttributeResolver().getSoleAttributeValue(bidArt, AtsAttributeTypes.BitState, ""));
@@ -221,13 +221,13 @@ public class BidsOperations {
    }
 
    public BuildImpactDatas deleteBids(BuildImpactDatas bids) {
-      if (bids.getTeamWf() == null) {
+      if (bids.getTeamWf().isInvalid()) {
          bids.getResults().errorf("Must specify Team Workflow\n", bids.getTeamWf());
          return bids;
       }
       IAtsTeamWorkflow teamWf = atsApi.getWorkItemService().getTeamWf(bids.getTeamWf());
       if (teamWf == null) {
-         bids.getResults().errorf("Invalid ATS Id [%s]\n", bids.getTeamWf());
+         bids.getResults().errorf("Invalid Team Workflow [%s]\n", bids.getTeamWf());
       }
       if (bids.getResults().isErrors()) {
          return bids;

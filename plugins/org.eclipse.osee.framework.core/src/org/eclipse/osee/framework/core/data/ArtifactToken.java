@@ -179,7 +179,7 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, HasArtifa
    }
 
    public default ArtifactToken getToken() {
-      return ArtifactToken.valueOf(getId(), getName(), getBranch());
+      return ArtifactToken.valueOf(getId(), getName(), getBranch(), getArtifactType());
    }
 
 }

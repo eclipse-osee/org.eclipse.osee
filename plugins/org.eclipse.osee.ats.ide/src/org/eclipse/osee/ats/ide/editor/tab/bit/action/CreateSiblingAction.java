@@ -120,7 +120,7 @@ public class CreateSiblingAction extends Action {
          protected IStatus run(IProgressMonitor monitor) {
 
             BuildImpactDatas bids = new BuildImpactDatas();
-            bids.setTeamWf(teamWf.getStoreObject());
+            bids.setTeamWf(teamWf.getArtifactToken());
             for (IAtsActionableItem ai : aias) {
                BuildImpactData bid = new BuildImpactData();
                bid.setBids(bids);

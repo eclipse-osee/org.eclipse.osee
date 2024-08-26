@@ -72,7 +72,7 @@ public class DeleteProgramVersionAction extends Action {
       ProgramVersionTreeDialog dialog = new ProgramVersionTreeDialog("Select Program/Version",
          "Select Program/Version\n\nNOTE: Items with workflows can not be deleted and are not shown.", pvers);
       if (dialog.open() == Window.OK) {
-         newBids.setTeamWf(teamWf.getStoreObject());
+         newBids.setTeamWf(teamWf.getArtifactToken());
          for (ProgramVersion pVer : dialog.getChecked()) {
             BuildImpactData bid = new BuildImpactData();
             bid.setBids(newBids);

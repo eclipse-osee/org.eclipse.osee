@@ -65,7 +65,7 @@ public class NewProgramVersionAction extends Action {
       ProgramVersionTreeDialog dialog = new ProgramVersionTreeDialog(pvers);
       if (dialog.open() == Window.OK) {
          BuildImpactDatas bids = new BuildImpactDatas();
-         bids.setTeamWf(teamWf.getStoreObject());
+         bids.setTeamWf(teamWf.getArtifactToken());
          bids.setBidArtType(wfeBitTab.getBuildImpactDataType());
          for (ProgramVersion pVer : dialog.getChecked()) {
             BuildImpactData bid = new BuildImpactData();

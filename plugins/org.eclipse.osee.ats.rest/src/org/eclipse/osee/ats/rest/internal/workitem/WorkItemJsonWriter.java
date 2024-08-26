@@ -491,7 +491,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       writer.writeArrayFieldStart("rules");
       for (String rule : atsApi.getWorkDefinitionService().getWidgetsFromLayoutItems(state).stream().flatMap(
          layout -> layout.getOptions().getXOptions().stream()).map(option -> option.name()).collect(
-            Collectors.toList())) {
+            Collectors.toSet())) {
          writer.writeString(rule);
       }
 
