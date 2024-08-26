@@ -16,10 +16,8 @@ package org.eclipse.osee.framework.core.data;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import org.eclipse.osee.framework.core.enums.EnumToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
@@ -90,8 +88,11 @@ public class AttributeTypeEnum<T extends EnumToken> extends AttributeTypeGeneric
       throw new OseeArgumentException("[%s] is not a valid enum name for [%s]", enumName, this);
    }
 
-   public Set<String> getEnumStrValues() {
-      Set<String> enumStringValues = new HashSet<String>();
+   /**
+    * @return Enum values as Strings in ordinal order
+    */
+   public List<String> getEnumStrValues() {
+      List<String> enumStringValues = new ArrayList<String>();
       for (T enumToken : enumTokens) {
          enumStringValues.add(enumToken.getName());
       }
@@ -152,4 +153,5 @@ public class AttributeTypeEnum<T extends EnumToken> extends AttributeTypeGeneric
       addEnum(enumeration);
       return enumeration;
    }
+
 }

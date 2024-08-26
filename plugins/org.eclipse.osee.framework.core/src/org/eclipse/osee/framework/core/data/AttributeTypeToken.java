@@ -191,6 +191,7 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
       return getDisplayHints().contains(DisplayHint.NoGeneralRender);
    }
 
+   @SuppressWarnings("unchecked")
    default <T extends EnumToken> AttributeTypeEnum<T> toEnum() {
       if (this.isEnumerated()) {
          try {
