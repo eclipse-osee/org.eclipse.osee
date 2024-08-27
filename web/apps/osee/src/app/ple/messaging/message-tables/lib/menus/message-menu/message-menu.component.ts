@@ -24,7 +24,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { applic } from '@osee/applicability/types';
-import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dialogs/free-text';
 import {
 	CurrentMessagesService,
 	HeaderService,
@@ -42,6 +41,7 @@ import { DeleteMessageDialogComponent } from '../../dialogs/delete-message-dialo
 import { RemoveMessageDialogComponent } from '../../dialogs/remove-message-dialog/remove-message-dialog.component';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatDivider } from '@angular/material/divider';
+import { EditViewFreeTextFieldDialogComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-message-menu',
@@ -450,6 +450,7 @@ export class MessageMenuComponent {
 					original: this.message().description.value,
 					type: 'Description',
 					return: this.message().description.value,
+					editable: this.inEditMode(),
 				},
 				minHeight: '60%',
 				minWidth: '60%',

@@ -12,16 +12,16 @@
  **********************************************************************/
 import { Component, inject, OnDestroy } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
-import {
-	MessagingControlsComponent,
-	NamedIdListEditorComponent,
-} from '@osee/messaging/shared/main-content';
+import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
 import { UiService } from '@osee/shared/services';
 import { filter, Subject, takeUntil, tap } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { PageEvent } from '@angular/material/paginator';
 import { NamedId } from '@osee/shared/types';
-import { CurrentViewSelectorComponent } from '@osee/shared/components';
+import {
+	NamedIdListEditorComponent,
+	CurrentViewSelectorComponent,
+} from '@osee/shared/components';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CurrentUnitsService } from '@osee/messaging/units/services';
 import { CurrentStructureCategoriesService } from '@osee/messaging/structure-category/services';

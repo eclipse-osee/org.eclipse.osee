@@ -32,7 +32,6 @@ import {
 } from '@angular/material/menu';
 import { RouterLink } from '@angular/router';
 import { applic, applicabilitySentinel } from '@osee/applicability/types';
-import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dialogs/free-text';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 import {
 	EditViewFreeTextDialog,
@@ -46,6 +45,7 @@ import { AddStructureDialog } from '../../dialogs/add-structure-dialog/add-struc
 import { AddStructureDialogComponent } from '../../dialogs/add-structure-dialog/add-structure-dialog.component';
 import { DeleteStructureDialogComponent } from '../../dialogs/delete-structure-dialog/delete-structure-dialog.component';
 import { RemoveStructureDialogComponent } from '../../dialogs/remove-structure-dialog/remove-structure-dialog.component';
+import { EditViewFreeTextFieldDialogComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-structure-menu',
@@ -465,6 +465,7 @@ export class StructureMenuComponent {
 					),
 					type: 'Description',
 					return: this.structure().description.value,
+					editable: this.isEditing(),
 				},
 				minHeight: '60%',
 				minWidth: '60%',

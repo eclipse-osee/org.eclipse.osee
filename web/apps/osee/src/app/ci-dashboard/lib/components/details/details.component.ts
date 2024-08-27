@@ -52,13 +52,13 @@ import { resultReferenceSentinel } from '../../types/tmo';
 						(click)="setResult('-1')">
 						<mat-icon>arrow_back</mat-icon>
 					</button>
-					<h3 class="md-headline tw-m-0">
+					<div class="md-headline tw-m-0">
 						<span class="tw-font-bold">{{
 							selectedResult().name
 						}}</span>
 						-
 						{{ selectedResult().executionDate }}
-					</h3>
+					</div>
 				</div>
 				<div class="tw-flex tw-w-full tw-flex-shrink tw-gap-4">
 					<mat-form-field

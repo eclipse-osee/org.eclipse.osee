@@ -16,7 +16,6 @@ import { DefReference, ScriptBatch, SetDiff } from '../types/tmo';
 import { ResultReference } from '../types/tmo';
 import { apiURL } from '@osee/environments';
 import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
-import { FilesService } from '@osee/shared/services';
 import { Observable } from 'rxjs';
 import { HttpParamsType } from '@osee/shared/types';
 
@@ -25,7 +24,6 @@ import { HttpParamsType } from '@osee/shared/types';
 })
 export class TmoHttpService {
 	private http = inject(HttpClient);
-	private fileService = inject(FilesService);
 
 	getScriptDefList(branchId: string | number, setId: string | number) {
 		return this.http.get<DefReference[]>(

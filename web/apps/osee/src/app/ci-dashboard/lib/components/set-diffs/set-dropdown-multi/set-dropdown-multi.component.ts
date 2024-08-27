@@ -20,7 +20,7 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatSelect } from '@angular/material/select';
 import { CiSetDiffService } from '../../../services/ci-set-diff.service';
 import { CiSetsService } from '../../../services/ci-sets.service';
-import { SetReference } from '../../../types';
+import { CISet } from '../../../types';
 
 @Component({
 	selector: 'osee-set-dropdown-multi',
@@ -50,11 +50,11 @@ export class SetDropdownMultiComponent {
 		this.ciSetsService.ActiveOnly = event.checked;
 	}
 
-	updateSets(val: SetReference[]) {
+	updateSets(val: CISet[]) {
 		this.diffService.SelectedSets = val;
 	}
 
-	compareSets(set1: SetReference, set2: SetReference) {
+	compareSets(set1: CISet, set2: CISet) {
 		return set1 && set2 ? set1.id === set2.id : false;
 	}
 }

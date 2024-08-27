@@ -48,7 +48,7 @@ import {
 	artifactRelationSide,
 } from '@osee/artifact-with-relations/types';
 import { RelationDeleteDialogComponent } from '../relation-delete-dialog/relation-delete-dialog.component';
-import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
+import { ExpansionPanelComponent } from '@osee/shared/components';
 import { TransactionService } from '@osee/transactions/services';
 
 @Component({
@@ -57,7 +57,7 @@ import { TransactionService } from '@osee/transactions/services';
 	imports: [
 		NgClass,
 		AsyncPipe,
-		ArtifactExplorerExpansionPanelComponent,
+		ExpansionPanelComponent,
 		MatIcon,
 		CdkDropList,
 		MatList,

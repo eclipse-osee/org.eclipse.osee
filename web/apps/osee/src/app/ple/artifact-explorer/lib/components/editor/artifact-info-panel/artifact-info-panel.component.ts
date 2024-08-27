@@ -12,19 +12,14 @@
  **********************************************************************/
 import { NgClass } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { ExpandIconComponent } from '@osee/shared/components';
 import { BehaviorSubject } from 'rxjs';
 import { artifactTab } from '../../../types/artifact-explorer';
-import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
+import { ExpansionPanelComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-artifact-info-panel',
 	standalone: true,
-	imports: [
-		NgClass,
-		ArtifactExplorerExpansionPanelComponent,
-		ExpandIconComponent,
-	],
+	imports: [NgClass, ExpansionPanelComponent],
 	templateUrl: './artifact-info-panel.component.html',
 })
 export class ArtifactInfoPanelComponent {

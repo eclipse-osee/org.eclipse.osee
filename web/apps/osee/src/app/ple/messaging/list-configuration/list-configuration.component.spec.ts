@@ -14,7 +14,7 @@ import { AsyncPipe, NgIf } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
-import { NamedIdListEditorComponent } from '@osee/messaging/shared/main-content';
+import { NamedIdListEditorComponent } from '@osee/shared/components';
 import {
 	MessagingControlsMockComponent,
 	messageTypesServiceMock,

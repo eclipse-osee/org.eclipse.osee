@@ -10,16 +10,31 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export type SetReference = {
-	id: string;
-	name: string;
-	active: boolean;
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
+import { attribute } from '@osee/attributes/types';
+
+export type CISet = {
+	id: `${number}`;
+	gammaId: `${number}`;
+	name: Required<attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>>;
+	active: Required<attribute<boolean, typeof ATTRIBUTETYPEIDENUM.ACTIVE>>;
 };
 
-export const setReferenceSentinel: SetReference = {
-	id: '',
-	name: '',
-	active: false,
+export const CISetSentinel: CISet = {
+	id: '-1',
+	gammaId: '-1',
+	name: {
+		id: '-1',
+		gammaId: '-1',
+		typeId: '1152921504606847088',
+		value: '',
+	},
+	active: {
+		id: '-1',
+		gammaId: '-1',
+		typeId: '1152921504606847065',
+		value: false,
+	},
 };
 
 export type DefReference = {

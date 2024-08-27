@@ -27,7 +27,7 @@ import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarc
 import { ArtifactHierarchyOptionsComponent } from '../artifact-hierarchy-options/artifact-hierarchy-options.component';
 import { ArtifactHierarchyComponent } from '../artifact-hierarchy/artifact-hierarchy.component';
 import { ArtifactSearchPanelComponent } from '../artifact-search-panel/artifact-search-panel.component';
-import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
+import { ExpansionPanelComponent } from '@osee/shared/components';
 import { MatButton } from '@angular/material/button';
 import { CurrentActionDropDownComponent } from '@osee/configuration-management/components';
 import {
@@ -48,7 +48,7 @@ import {
 		CurrentViewSelectorComponent,
 		CurrentActionDropDownComponent,
 		ArtifactSearchPanelComponent,
-		ArtifactExplorerExpansionPanelComponent,
+		ExpansionPanelComponent,
 		MatTooltip,
 		MatIcon,
 		MatButton,

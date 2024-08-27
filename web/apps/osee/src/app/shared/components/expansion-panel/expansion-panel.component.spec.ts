@@ -11,34 +11,20 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TeamsListComponent } from './teams-list.component';
-import { DashboardHttpService } from '../../../services/dashboard-http.service';
-import { dashboardHttpServiceMock } from '../../../services/dashboard-http.service.mock';
-import { TransactionService } from '@osee/transactions/services';
-import { transactionServiceMock } from '@osee/transactions/services/testing';
+import { ExpansionPanelComponent } from './expansion-panel.component';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
-describe('TeamsListComponent', () => {
-	let component: TeamsListComponent;
-	let fixture: ComponentFixture<TeamsListComponent>;
+describe('ExpansionPanelComponent', () => {
+	let component: ExpansionPanelComponent;
+	let fixture: ComponentFixture<ExpansionPanelComponent>;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [TeamsListComponent],
-			providers: [
-				provideNoopAnimations(),
-				{
-					provide: DashboardHttpService,
-					useValue: dashboardHttpServiceMock,
-				},
-				{
-					provide: TransactionService,
-					useValue: transactionServiceMock,
-				},
-			],
+			imports: [ExpansionPanelComponent],
+			providers: [provideNoopAnimations()],
 		}).compileComponents();
 
-		fixture = TestBed.createComponent(TeamsListComponent);
+		fixture = TestBed.createComponent(ExpansionPanelComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

@@ -15,6 +15,9 @@ import CiAdminComponent from './ci-admin.component';
 import { CiDashboardControlsMockComponent } from '@osee/ci-dashboard/testing';
 import { MockSubsystemListComponent } from './subsystems-list/subsystems-list.component.mock';
 import { MockTeamsListComponent } from './teams-list/teams-list.component.mock';
+import { MockCISetsTableComponent } from './ci-sets-table/ci-sets-table.component.mock';
+import { ExpansionPanelComponent } from '@osee/shared/components';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 describe('CiAdminComponent', () => {
 	let component: CiAdminComponent;
@@ -24,7 +27,9 @@ describe('CiAdminComponent', () => {
 		await TestBed.overrideComponent(CiAdminComponent, {
 			set: {
 				imports: [
+					ExpansionPanelComponent,
 					CiDashboardControlsMockComponent,
+					MockCISetsTableComponent,
 					MockSubsystemListComponent,
 					MockTeamsListComponent,
 				],
@@ -32,6 +37,7 @@ describe('CiAdminComponent', () => {
 		})
 			.configureTestingModule({
 				imports: [CiAdminComponent],
+				providers: [provideNoopAnimations()],
 			})
 			.compileComponents();
 

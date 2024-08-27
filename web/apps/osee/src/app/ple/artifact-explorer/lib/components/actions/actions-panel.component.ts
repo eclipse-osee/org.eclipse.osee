@@ -28,14 +28,14 @@ import {
 	tap,
 } from 'rxjs';
 import { ArtifactExplorerTabService } from '../../services/artifact-explorer-tab.service';
-import { ArtifactExplorerExpansionPanelComponent } from '../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
+import { ExpansionPanelComponent } from '@osee/shared/components';
 import { PaginatedMatListComponent } from '../shared/paginated-mat-list/paginated-mat-list.component';
 
 @Component({
 	selector: 'osee-actions-panel',
 	standalone: true,
 	imports: [
-		ArtifactExplorerExpansionPanelComponent,
+		ExpansionPanelComponent,
 		PaginatedMatListComponent,
 		MatFormField,
 		FormsModule,

@@ -105,7 +105,7 @@ public class ScriptSetApiImpl implements ScriptSetApi {
       try {
          Collection<ScriptSetToken> sets = this.accessor.getAll(branch, pageNum, pageSize, orderByAttribute);
          if (activeOnly) {
-            sets = sets.stream().filter(set -> set.getActive()).collect(Collectors.toList());
+            sets = sets.stream().filter(set -> set.getActive().getValue()).collect(Collectors.toList());
          }
          return sets;
       } catch (Exception ex) {
@@ -158,7 +158,7 @@ public class ScriptSetApiImpl implements ScriptSetApi {
          Collection<ScriptSetToken> sets =
             this.accessor.getAllByFilter(branch, filter, attributes, pageNum, pageSize, orderByAttribute);
          if (activeOnly) {
-            sets = sets.stream().filter(set -> set.getActive()).collect(Collectors.toList());
+            sets = sets.stream().filter(set -> set.getActive().getValue()).collect(Collectors.toList());
          }
          return sets;
       } catch (Exception ex) {

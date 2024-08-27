@@ -59,6 +59,7 @@ describe('EditViewFreeTextFieldDialogComponent', () => {
 						original: 'abcdef',
 						type: 'Description',
 						return: 'abcdef',
+						editable: true,
 					},
 				},
 				{

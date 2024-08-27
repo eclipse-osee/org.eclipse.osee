@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { teamWorkflowDetailsImpl } from '@osee/shared/types/configuration-management';
-import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
+import { ExpansionPanelComponent } from '@osee/shared/components';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, repeat, switchMap, take, tap } from 'rxjs';
 import { BranchRoutedUIService, UiService } from '@osee/shared/services';
@@ -45,7 +45,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 	standalone: true,
 	imports: [
 		NgClass,
-		ArtifactExplorerExpansionPanelComponent,
+		ExpansionPanelComponent,
 		CreateActionWorkingBranchButtonComponent,
 		ActionDropDownComponent,
 		AttributesEditorComponent,

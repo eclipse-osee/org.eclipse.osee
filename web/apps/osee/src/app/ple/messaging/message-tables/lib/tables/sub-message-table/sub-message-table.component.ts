@@ -51,7 +51,6 @@ import { Router, RouterLink } from '@angular/router';
 import { PersistedApplicabilityDropdownComponent } from '@osee/applicability/persisted-applicability-dropdown';
 import { applic, applicabilitySentinel } from '@osee/applicability/types';
 import { PersistedStringAttributeInputComponent } from '@osee/attributes/persisted-string-attribute-input';
-import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dialogs/free-text';
 import {
 	CurrentMessagesService,
 	HeaderService,
@@ -76,6 +75,7 @@ import { DeleteSubmessageDialogComponent } from '../../dialogs/delete-submessage
 import { RemoveSubmessageDialogComponent } from '../../dialogs/remove-submessage-dialog/remove-submessage-dialog.component';
 import { SubMessageImpactsValidatorDirective } from '../../sub-message-impacts-validator.directive';
 import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
+import { EditViewFreeTextFieldDialogComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-messaging-sub-message-table',
@@ -337,6 +337,7 @@ export class SubMessageTableComponent implements OnChanges {
 					original: submessage.description.value,
 					type: 'Description',
 					return: submessage.description.value,
+					editable: this.editMode,
 				},
 				minHeight: '60%',
 				minWidth: '60%',

@@ -136,15 +136,21 @@ export class SubElementArrayTableDropdownComponent {
 	}
 
 	openDescriptionDialog(element: element) {
-		this.elementDropdownService.openDescriptionDialog(element);
+		this.elementDropdownService.openDescriptionDialog(
+			element,
+			this.editMode
+		);
 	}
 
 	openEnumLiteralDialog(element: element) {
-		this.elementDropdownService.openEnumLiteralDialog(element);
+		this.elementDropdownService.openEnumLiteralDialog(
+			element,
+			this.editMode
+		);
 	}
 
 	openNotesDialog(element: element) {
-		this.elementDropdownService.openNotesDialog(element);
+		this.elementDropdownService.openNotesDialog(element, this.editMode);
 	}
 
 	getHeaderByName(value: string) {
