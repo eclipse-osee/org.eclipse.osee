@@ -18,8 +18,8 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osee.ats.api.util.AttributeValues.AttrValueType;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredListDialog;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -36,7 +36,10 @@ import org.eclipse.swt.widgets.Control;
 public class AttributeTypeFilteredDialog extends FilteredListDialog<AttributeTypeToken> {
 
    private AttrValueType attrValueType = AttrValueType.Value;
-   private AttributeTypeToken selectedType = AttributeTypeToken.SENTINEL;
+   private final AttributeTypeToken selectedType = AttributeTypeToken.SENTINEL;
+   private Button existsButton;
+   private Button notExistsButton;
+   private Button existsValue;
 
    public AttributeTypeFilteredDialog(Collection<AttributeTypeToken> attributeTypes) {
       super("Select Attribute Type", "Select Attribute Type", new AttributeTypeLabelProvider());
@@ -50,57 +53,66 @@ public class AttributeTypeFilteredDialog extends FilteredListDialog<AttributeTyp
       composite.setLayout(new GridLayout());
       composite.setLayoutData(new GridData());
 
-      final Button existsButton = new Button(composite, SWT.CHECK);
+      existsButton = new Button(composite, SWT.CHECK);
       existsButton.setText("Exists");
       existsButton.setToolTipText("Select to add Exists Attribute Type to query");
       existsButton.setSelection(false);
       existsButton.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            Object[] selectedElements = getSelectedElements();
-            if (selectedElements.length == 0) {
-               AWorkbench.popup("Must Select an Attribute Type");
-               return;
+            boolean selected = existsButton.getSelection();
+            if (selected) {
+               notExistsButton.setSelection(false);
+               existsValue.setSelection(false);
             }
-            selectedType = (AttributeTypeToken) selectedElements[0];
-            attrValueType = AttrValueType.AttrExists;
-            close();
+            if (selected) {
+               attrValueType = AttrValueType.AttrExists;
+            } else {
+               attrValueType = null;
+            }
+            updateButtons();
          }
       });
 
-      final Button notExistsButton = new Button(composite, SWT.CHECK);
+      notExistsButton = new Button(composite, SWT.CHECK);
       notExistsButton.setText("Not Exists");
       notExistsButton.setToolTipText("Select to add Not Exists Attribute Type to query");
       notExistsButton.setSelection(false);
       notExistsButton.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            Object[] selectedElements = getSelectedElements();
-            if (selectedElements.length == 0) {
-               AWorkbench.popup("Must Select an Attribute Type");
-               return;
+            boolean selected = notExistsButton.getSelection();
+            if (selected) {
+               existsButton.setSelection(false);
+               existsValue.setSelection(false);
             }
-            selectedType = (AttributeTypeToken) selectedElements[0];
-            attrValueType = AttrValueType.AttrNotExists;
-            close();
+            if (selected) {
+               attrValueType = AttrValueType.AttrNotExists;
+            } else {
+               attrValueType = null;
+            }
+            updateButtons();
          }
       });
 
-      final Button existsValue = new Button(composite, SWT.CHECK);
+      existsValue = new Button(composite, SWT.CHECK);
       existsValue.setText("Exists Value");
       existsValue.setToolTipText("Select to add Exists Value Attribute Type to query");
       existsValue.setSelection(false);
       existsValue.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            Object[] selectedElements = getSelectedElements();
-            if (selectedElements.length == 0) {
-               AWorkbench.popup("Must Select an Attribute Type");
-               return;
+            boolean selected = existsValue.getSelection();
+            if (selected) {
+               existsButton.setSelection(false);
+               notExistsButton.setSelection(false);
             }
-            selectedType = (AttributeTypeToken) selectedElements[0];
-            attrValueType = AttrValueType.AttrExistsValue;
-            close();
+            if (selected) {
+               attrValueType = AttrValueType.AttrExistsValue;
+            } else {
+               attrValueType = null;
+            }
+            updateButtons();
          }
       });
       return control;
@@ -142,6 +154,17 @@ public class AttributeTypeFilteredDialog extends FilteredListDialog<AttributeTyp
          return null;
       }
 
+   }
+
+   public void updateButtons() {
+      Button okButton = getOkButton();
+      if (Widgets.isAccessible(okButton)) {
+         boolean enabled = false;
+         if (getSelectedType().isValid() && attrValueType != null) {
+            enabled = true;
+         }
+         okButton.setEnabled(enabled);
+      }
    }
 
    public AttributeTypeToken getSelectedType() {
