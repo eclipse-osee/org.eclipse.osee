@@ -19,6 +19,7 @@ import java.util.Map;
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
+import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -32,6 +33,23 @@ public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem
 
    private final ArtifactReadable artifact;
    private Boolean isIncludeDetails;
+
+   public static DispoItemArtifact SENTINEL = valueOf(ArtifactReadable.SENTINEL);
+
+   public static DispoItemArtifact valueOf(ArtifactReadable artifact) {
+      final class DispoItemArtifactImpl extends DispoItemArtifact {
+
+         public DispoItemArtifactImpl(ArtifactReadable artifact) {
+            super(artifact);
+         }
+
+         @Override
+         public String getName() {
+            return artifact.getName();
+         }
+      }
+      return new DispoItemArtifactImpl(artifact);
+   }
 
    public DispoItemArtifact(ArtifactReadable artifact) {
       super(artifact.getIdString());
@@ -148,5 +166,10 @@ public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem
    @Override
    public String getTeam() {
       return artifact.getSoleAttributeAsString(CoreAttributeTypes.CoverageTeam, "");
+   }
+
+   @Override
+   public Boolean isValid() {
+      return !this.equals(DispoItemData.SENTINEL);
    }
 }

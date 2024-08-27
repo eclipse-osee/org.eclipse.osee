@@ -49,6 +49,24 @@ public class DispoItemData implements DispoItem {
    private Boolean isIncludeDetails;
    private String team;
 
+   public static DispoItemData SENTINEL = valueOf("-1");
+
+   public static DispoItemData valueOf(String guid) {
+      final class DispoItemDataImpl extends DispoItemData {
+         private final String guid;
+
+         public DispoItemDataImpl(String guid) {
+            this.guid = guid;
+         }
+
+         @Override
+         public String getGuid() {
+            return guid;
+         }
+      }
+      return new DispoItemDataImpl(guid);
+   }
+
    public DispoItemData() {
       this.assignee = "UnAssigned";
       this.creationDate = new Date();
@@ -269,6 +287,11 @@ public class DispoItemData implements DispoItem {
 
    public void setTeam(String team) {
       this.team = team;
+   }
+
+   @Override
+   public Boolean isValid() {
+      return !this.equals(DispoItemData.SENTINEL);
    }
 
 }
