@@ -418,9 +418,6 @@
 			"@osee/messaging/shared/dialogs/warnings": [
 				"src/app/ple/messaging/shared/dialogs/warnings"
 			],
-			"@osee/messaging/shared/dialogs/free-text": [
-				"src/app/ple/messaging/shared/dialogs/free-text"
-			],
 			"@osee/messaging/shared/services": [
 				"src/app/ple/messaging/shared/services"
 			],

@@ -11,7 +11,7 @@
 *     Boeing - initial API and implementation
 -->
 <h1 mat-dialog-title>
-	@if ((editMode | async) === true) {
+	@if (data.editable) {
 		Editing
 	} @else {
 		Viewing
@@ -19,7 +19,7 @@
 	{{ data.type }}
 </h1>
 <mat-dialog-content>
-	@if ((editMode | async) === true) {
+	@if (data.editable) {
 		<mat-form-field class="tw-h-full tw-w-full">
 			<mat-label>{{ data.type }}</mat-label>
 			<textarea
@@ -40,7 +40,7 @@
 		data-cy="cancel-btn">
 		Cancel
 	</button>
-	@if ((editMode | async) === true) {
+	@if (data.editable) {
 		<button
 			mat-flat-button
 			class="primary-button"

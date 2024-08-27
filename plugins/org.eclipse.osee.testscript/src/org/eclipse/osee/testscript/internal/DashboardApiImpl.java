@@ -27,6 +27,7 @@ import java.util.List;
 import org.eclipse.osee.accessor.ArtifactAccessor;
 import org.eclipse.osee.accessor.internal.ArtifactAccessorImpl;
 import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -289,9 +290,9 @@ public class DashboardApiImpl implements DashboardApi {
    }
 
    @Override
-   public Collection<ArtifactAccessorResult> getSubsystems(BranchId branch, String filter, long pageNum, long pageSize,
-      AttributeTypeToken orderByAttributeType) {
-      ArtifactAccessor<ArtifactAccessorResult> accessor =
+   public Collection<ArtifactAccessorResultWithoutGammas> getSubsystems(BranchId branch, String filter, long pageNum,
+      long pageSize, AttributeTypeToken orderByAttributeType) {
+      ArtifactAccessor<ArtifactAccessorResultWithoutGammas> accessor =
          new ArtifactAccessorResultAccessor(CoreArtifactTypes.ScriptSubsystem, orcsApi);
       try {
          return accessor.getAllByFilter(branch, filter, Arrays.asList(CoreAttributeTypes.Name), pageNum, pageSize,
@@ -305,15 +306,15 @@ public class DashboardApiImpl implements DashboardApi {
 
    @Override
    public Integer getSubsystemsCount(BranchId branch, String filter) {
-      ArtifactAccessor<ArtifactAccessorResult> accessor =
+      ArtifactAccessor<ArtifactAccessorResultWithoutGammas> accessor =
          new ArtifactAccessorImpl<>(CoreArtifactTypes.ScriptSubsystem, orcsApi);
       return accessor.getAllByFilterAndCount(branch, filter, Arrays.asList(CoreAttributeTypes.Name));
    }
 
    @Override
-   public Collection<ArtifactAccessorResult> getTeams(BranchId branch, String filter, long pageNum, long pageSize,
-      AttributeTypeToken orderByAttributeType) {
-      ArtifactAccessor<ArtifactAccessorResult> accessor =
+   public Collection<ArtifactAccessorResultWithoutGammas> getTeams(BranchId branch, String filter, long pageNum,
+      long pageSize, AttributeTypeToken orderByAttributeType) {
+      ArtifactAccessor<ArtifactAccessorResultWithoutGammas> accessor =
          new ArtifactAccessorResultAccessor(CoreArtifactTypes.ScriptTeam, orcsApi);
       try {
          return accessor.getAllByFilter(branch, filter, Arrays.asList(CoreAttributeTypes.Name), pageNum, pageSize,
@@ -332,7 +333,7 @@ public class DashboardApiImpl implements DashboardApi {
       return accessor.getAllByFilterAndCount(branch, filter, Arrays.asList(CoreAttributeTypes.Name));
    }
 
-   private class ArtifactAccessorResultAccessor extends ArtifactAccessorImpl<ArtifactAccessorResult> {
+   private class ArtifactAccessorResultAccessor extends ArtifactAccessorImpl<ArtifactAccessorResultWithoutGammas> {
       public ArtifactAccessorResultAccessor(ArtifactTypeToken type, OrcsApi orcsApi) {
          super(type, orcsApi);
       }

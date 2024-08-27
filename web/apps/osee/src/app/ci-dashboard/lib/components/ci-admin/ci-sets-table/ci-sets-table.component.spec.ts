@@ -11,24 +11,25 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ArtifactExplorerExpansionPanelComponent } from './artifact-explorer-expansion-panel.component';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { CiSetsTableComponent } from './ci-sets-table.component';
+import { CiSetsService } from '../../../services/ci-sets.service';
+import { ciSetServiceMock } from '@osee/ci-dashboard/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
-describe('ArtifactExplorerExpansionPanelComponent', () => {
-	let component: ArtifactExplorerExpansionPanelComponent;
-	let fixture: ComponentFixture<ArtifactExplorerExpansionPanelComponent>;
+describe('CiSetsTableComponent', () => {
+	let component: CiSetsTableComponent;
+	let fixture: ComponentFixture<CiSetsTableComponent>;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [
-				ArtifactExplorerExpansionPanelComponent,
-				NoopAnimationsModule,
+			imports: [CiSetsTableComponent],
+			providers: [
+				provideNoopAnimations(),
+				{ provide: CiSetsService, useValue: ciSetServiceMock },
 			],
 		}).compileComponents();
 
-		fixture = TestBed.createComponent(
-			ArtifactExplorerExpansionPanelComponent
-		);
+		fixture = TestBed.createComponent(CiSetsTableComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

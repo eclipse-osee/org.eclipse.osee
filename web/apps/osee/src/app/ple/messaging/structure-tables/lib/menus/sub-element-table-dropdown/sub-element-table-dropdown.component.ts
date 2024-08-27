@@ -193,18 +193,24 @@ export class SubElementTableDropdownComponent {
 	}
 
 	openDescriptionDialog(element: element) {
-		this.elementDropdownService.openDescriptionDialog(element);
+		this.elementDropdownService.openDescriptionDialog(
+			element,
+			this.editMode
+		);
 	}
 
 	/**
 	 * Need to verify if type is required
 	 */
 	openEnumLiteralDialog(element: element) {
-		this.elementDropdownService.openEnumLiteralDialog(element);
+		this.elementDropdownService.openEnumLiteralDialog(
+			element,
+			this.editMode
+		);
 	}
 
 	openNotesDialog(element: element) {
-		this.elementDropdownService.openNotesDialog(element);
+		this.elementDropdownService.openNotesDialog(element, this.editMode);
 	}
 
 	getHeaderByName(value: string) {

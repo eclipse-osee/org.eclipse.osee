@@ -13,7 +13,6 @@
 import { Injectable, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { applic } from '@osee/applicability/types';
-import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dialogs/free-text';
 import {
 	PlatformTypeActionsService,
 	WarningDialogService,
@@ -32,6 +31,7 @@ import { DefaultAddElementDialog } from '../dialogs/add-element-dialog/add-eleme
 import { EditElementDialogComponent } from '../dialogs/edit-element-dialog/edit-element-dialog.component';
 import { RemoveElementDialogData } from '../dialogs/remove-element-dialog/remove-element-dialog';
 import { RemoveElementDialogComponent } from '../dialogs/remove-element-dialog/remove-element-dialog.component';
+import { EditViewFreeTextFieldDialogComponent } from '@osee/shared/components';
 
 @Injectable({
 	providedIn: 'any',
@@ -213,7 +213,7 @@ export class ElementTableDropdownService {
 			.subscribe();
 	}
 
-	openDescriptionDialog(element: element) {
+	openDescriptionDialog(element: element, editMode: boolean) {
 		const previousElement = structuredClone(element);
 		this.dialog
 			.open(EditViewFreeTextFieldDialogComponent, {
@@ -221,6 +221,7 @@ export class ElementTableDropdownService {
 					original: structuredClone(element.description.value),
 					type: 'Description',
 					return: element.description.value,
+					editable: editMode,
 				},
 				minHeight: '60%',
 				minWidth: '60%',
@@ -257,7 +258,7 @@ export class ElementTableDropdownService {
 	/**
 	 * Need to verify if type is required
 	 */
-	openEnumLiteralDialog(element: element) {
+	openEnumLiteralDialog(element: element, editMode: boolean) {
 		const previousElement = structuredClone(element);
 		this.dialog
 			.open(EditViewFreeTextFieldDialogComponent, {
@@ -265,6 +266,7 @@ export class ElementTableDropdownService {
 					original: structuredClone(element.enumLiteral.value),
 					type: 'Enum Literal',
 					return: element.enumLiteral.value,
+					editable: editMode,
 				},
 				minHeight: '60%',
 				minWidth: '60%',
@@ -298,7 +300,7 @@ export class ElementTableDropdownService {
 			.subscribe();
 	}
 
-	openNotesDialog(element: element) {
+	openNotesDialog(element: element, editMode: boolean) {
 		const previousElement = structuredClone(element);
 		this.dialog
 			.open(EditViewFreeTextFieldDialogComponent, {
@@ -306,6 +308,7 @@ export class ElementTableDropdownService {
 					original: structuredClone(element.notes.value),
 					type: 'Notes',
 					return: element.notes.value,
+					editable: editMode,
 				},
 				minHeight: '60%',
 				minWidth: '60%',

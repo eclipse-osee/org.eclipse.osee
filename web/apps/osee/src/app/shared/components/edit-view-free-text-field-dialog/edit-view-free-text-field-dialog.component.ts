@@ -26,7 +26,6 @@ import {
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
-import { PreferencesUIService } from '@osee/messaging/shared/services';
 import type { EditViewFreeTextDialog } from '@osee/messaging/shared/types';
 
 @Component({
@@ -55,7 +54,4 @@ export class EditViewFreeTextFieldDialogComponent {
 			MatDialogRef
 		);
 	data = inject<EditViewFreeTextDialog>(MAT_DIALOG_DATA);
-	private preferencesService = inject(PreferencesUIService);
-
-	editMode = this.preferencesService.inEditMode;
 }

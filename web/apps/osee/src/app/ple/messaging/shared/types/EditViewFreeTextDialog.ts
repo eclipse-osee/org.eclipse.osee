@@ -14,4 +14,5 @@ export type EditViewFreeTextDialog = {
 	original: string;
 	type: string;
 	return: string;
+	editable: boolean;
 };

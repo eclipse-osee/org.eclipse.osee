@@ -13,10 +13,7 @@
 import { NgClass } from '@angular/common';
 import { Component, Input, inject, viewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import {
-	AttributesEditorComponent,
-	ExpandIconComponent,
-} from '@osee/shared/components';
+import { AttributesEditorComponent } from '@osee/shared/components';
 import { FormDirective } from '@osee/shared/directives';
 import {
 	legacyAttributeType,
@@ -26,7 +23,7 @@ import {
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { artifactTab } from '../../../types/artifact-explorer';
 import { MatIcon } from '@angular/material/icon';
-import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
+import { ExpansionPanelComponent } from '@osee/shared/components';
 import { attribute } from '@osee/shared/types';
 import { TransactionService } from '@osee/transactions/services';
 
@@ -39,8 +36,7 @@ import { TransactionService } from '@osee/transactions/services';
 		AttributesEditorComponent,
 		FormDirective,
 		MatIcon,
-		ArtifactExplorerExpansionPanelComponent,
-		ExpandIconComponent,
+		ExpansionPanelComponent,
 	],
 	templateUrl: './attributes-editor-panel.component.html',
 })

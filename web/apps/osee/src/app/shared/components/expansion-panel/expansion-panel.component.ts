@@ -17,10 +17,10 @@ import {
 	MatExpansionPanelHeader,
 	MatExpansionPanelTitle,
 } from '@angular/material/expansion';
-import { ExpandIconComponent } from '@osee/shared/components';
+import { ExpandIconComponent } from '../expand-icon/expand-icon.component';
 
 @Component({
-	selector: 'osee-artifact-explorer-expansion-panel',
+	selector: 'osee-expansion-panel',
 	standalone: true,
 	imports: [
 		MatExpansionPanel,
@@ -29,9 +29,22 @@ import { ExpandIconComponent } from '@osee/shared/components';
 		NgClass,
 		ExpandIconComponent,
 	],
-	templateUrl: './artifact-explorer-expansion-panel.component.html',
+	template: `<mat-expansion-panel
+		[expanded]="panelOpen()"
+		class="[&>div>div]:tw-px-0"
+		hideToggle>
+		<mat-expansion-panel-header
+			(click)="togglePanel()"
+			[ngClass]="panelOpen() ? 'tw-shadow-md' : ''">
+			<mat-panel-title class="tw-flex tw-gap-4">
+				<osee-expand-icon [open]="panelOpen()" />
+				<div class="tw-font-bold">{{ title() }}</div>
+			</mat-panel-title>
+		</mat-expansion-panel-header>
+		<ng-content></ng-content>
+	</mat-expansion-panel>`,
 })
-export class ArtifactExplorerExpansionPanelComponent implements OnInit {
+export class ExpansionPanelComponent implements OnInit {
 	openDefault = input(false);
 	title = input('');
 	panelOpen = signal(false);

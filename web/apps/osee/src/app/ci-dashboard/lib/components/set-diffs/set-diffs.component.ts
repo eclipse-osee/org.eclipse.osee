@@ -105,7 +105,10 @@ export default class SetDiffsComponent {
 			this.groupHeaders.set([' ']);
 			this.headers.set(this.defaultHeaders);
 			for (const set of sets) {
-				this.groupHeaders.update((headers) => [...headers, set.name]);
+				this.groupHeaders.update((headers) => [
+					...headers,
+					set.name.value,
+				]);
 				const mappedHeaders = this.setDiffHeaders.map(
 					(h) => `${h}-${set.id}` as const
 				);

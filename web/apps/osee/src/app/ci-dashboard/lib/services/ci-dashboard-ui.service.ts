@@ -48,6 +48,10 @@ export class CiDashboardUiService {
 		this._ciSetId.next(id);
 	}
 
+	get updateRequired() {
+		return this.uiService.update;
+	}
+
 	set update(value: boolean) {
 		this.uiService.updated = value;
 	}

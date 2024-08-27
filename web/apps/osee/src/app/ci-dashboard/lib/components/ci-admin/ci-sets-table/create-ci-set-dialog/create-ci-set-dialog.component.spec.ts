@@ -11,34 +11,39 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { SubsystemsListComponent } from './subsystems-list.component';
-import { DashboardHttpService } from '../../../services/dashboard-http.service';
-import { dashboardHttpServiceMock } from '../../../services/dashboard-http.service.mock';
-import { TransactionService } from '@osee/transactions/services';
-import { transactionServiceMock } from '@osee/transactions/services/testing';
+import { CreateCiSetDialogComponent } from './create-ci-set-dialog.component';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { CISet, CISetSentinel } from '../../../../types/tmo';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
-describe('SubsystemsListComponent', () => {
-	let component: SubsystemsListComponent;
-	let fixture: ComponentFixture<SubsystemsListComponent>;
+describe('CreateCiSetDialogComponent', () => {
+	let component: CreateCiSetDialogComponent;
+	let fixture: ComponentFixture<CreateCiSetDialogComponent>;
+	const dialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
+	const dialogData: CISet = {
+		...CISetSentinel,
+		name: {
+			id: '1234',
+			gammaId: '3456',
+			typeId: '1152921504606847088',
+			value: 'Test Set',
+		},
+	};
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [SubsystemsListComponent],
+			imports: [CreateCiSetDialogComponent],
 			providers: [
 				provideNoopAnimations(),
 				{
-					provide: DashboardHttpService,
-					useValue: dashboardHttpServiceMock,
+					provide: MatDialogRef,
+					useValue: dialogRef,
 				},
-				{
-					provide: TransactionService,
-					useValue: transactionServiceMock,
-				},
+				{ provide: MAT_DIALOG_DATA, useValue: dialogData },
 			],
 		}).compileComponents();
 
-		fixture = TestBed.createComponent(SubsystemsListComponent);
+		fixture = TestBed.createComponent(CreateCiSetDialogComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

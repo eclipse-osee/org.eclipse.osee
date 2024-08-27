@@ -12,11 +12,11 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SetDropdownMultiComponent } from './set-dropdown-multi.component';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { CiSetsService } from '../../../services/ci-sets.service';
+import { ciSetServiceMock } from '@osee/ci-dashboard/testing';
 import { TmoHttpService } from '../../../services/tmo-http.service';
 import { tmoHttpServiceMock } from '../../../services/tmo-http.service.mock';
-import { CiSetsHttpService } from '../../../services/ci-sets-http.service';
-import { ciSetsHttpServiceMock } from '../../../services/ci-sets-http.service.mock';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('SetDropdownMultiComponent', () => {
 	let component: SetDropdownMultiComponent;
@@ -26,8 +26,8 @@ describe('SetDropdownMultiComponent', () => {
 		TestBed.configureTestingModule({
 			imports: [SetDropdownMultiComponent, NoopAnimationsModule],
 			providers: [
+				{ provide: CiSetsService, useValue: ciSetServiceMock },
 				{ provide: TmoHttpService, useValue: tmoHttpServiceMock },
-				{ provide: CiSetsHttpService, useValue: ciSetsHttpServiceMock },
 			],
 		});
 		fixture = TestBed.createComponent(SetDropdownMultiComponent);

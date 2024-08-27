@@ -23,9 +23,9 @@ import {
 	MatListItemIcon,
 } from '@angular/material/list';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
-import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dialogs/free-text';
 import { NamedId } from '@osee/shared/types';
 import { Subject, filter, take, tap } from 'rxjs';
+import { EditViewFreeTextFieldDialogComponent } from '../edit-view-free-text-field-dialog/edit-view-free-text-field-dialog.component';
 
 @Component({
 	selector: 'osee-named-id-list-editor',
@@ -72,6 +72,7 @@ export class NamedIdListEditorComponent {
 					original: namedIdToModify.name,
 					type: 'Name',
 					return: namedIdToModify.name,
+					editable: this.allowedToEdit,
 				},
 				minHeight: '60%',
 				minWidth: '60%',
@@ -102,6 +103,7 @@ export class NamedIdListEditorComponent {
 					original: '',
 					type: 'Name',
 					return: returnVal,
+					editable: this.allowedToEdit,
 				},
 				minHeight: '60%',
 				minWidth: '60%',
