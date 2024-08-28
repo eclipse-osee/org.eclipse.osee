@@ -30,7 +30,7 @@ import {
 	artifactTypeIcon,
 	operationType,
 } from '@osee/artifact-with-relations/types';
-import { PublishMarkdownDialogComponent } from './dialogs/publish-markdown-dialog/publish-markdown-dialog.component';
+import { PublishMarkdownAsHtmlDialogComponent } from './dialogs/publish-markdown-as-html-dialog/publish-markdown-as-html-dialog.component';
 
 @Component({
 	selector: 'osee-artifact-operations-context-menu',
@@ -81,19 +81,19 @@ export class ArtifactOperationsContextMenuComponent {
 					this.deleteArtifact(operationType);
 					break;
 				case '8972650019222132280':
-					this.publishMarkdown(operationType);
+					this.publishMarkdownAsHtml(operationType);
 					break;
 			}
 		}
 	}
 
-	private publishMarkdown(operationType: operationType) {
+	private publishMarkdownAsHtml(operationType: operationType) {
 		combineLatest([this.branchId$, this.viewId$])
 			.pipe(
 				take(1),
 				switchMap(([branchId, viewId]) =>
 					this.dialog
-						.open(PublishMarkdownDialogComponent, {
+						.open(PublishMarkdownAsHtmlDialogComponent, {
 							data: {
 								templateId: '',
 								operationType: operationType,
@@ -110,7 +110,7 @@ export class ArtifactOperationsContextMenuComponent {
 							),
 							switchMap((data) =>
 								this.artExpHttpService
-									.publishMarkdown({
+									.publishMarkdownAsHtml({
 										publishMarkdownAsHtmlRequestData: {
 											artifactIds: [this.artifactId()],
 											publishingRendererOptions: {

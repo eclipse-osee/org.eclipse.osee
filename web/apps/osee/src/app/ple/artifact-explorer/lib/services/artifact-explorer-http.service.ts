@@ -189,7 +189,7 @@ export class ArtifactExplorerHttpService {
 		);
 	}
 
-	public publishMarkdown(
+	public publishMarkdownAsHtml(
 		data: publishMarkdownAsHtmlRequestData
 	): Observable<HttpResponse<Blob>> {
 		const formData = new FormData();
