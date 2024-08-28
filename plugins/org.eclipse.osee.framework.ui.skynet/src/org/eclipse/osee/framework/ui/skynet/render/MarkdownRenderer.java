@@ -23,6 +23,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.define.rest.api.publisher.publishing.PublishingRequestData;
 import org.eclipse.osee.define.rest.api.publisher.templatemanager.PublishingTemplateRequest;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -427,9 +428,10 @@ public class MarkdownRenderer extends FileSystemRenderer {
       var publishingRequestData =
          new PublishingRequestData
                 (
-                   publishingTemplateRequest, /* Publishing Template Request */
-                   this,                      /* Renderer Options            */
-                   artifactIdentifiers        /* Artifacts To Publish        */
+                   publishingTemplateRequest,                                                                                   /* Publishing Template Request */
+                   this,                                                                                                        /* Renderer Options            */
+                   artifactIdentifiers,                                                                                         /* Artifacts To Publish        */
+                   String.format("http://%s:%s/", ClientSessionManager.getClientName(), ClientSessionManager.getClientPort())   /* User's Machine's Base URL   */
                 );
       //@formatter:on
 

@@ -571,7 +571,8 @@ public class PublishingOperationsImpl implements PublishingOperations {
              .configure
                 (
                    publishingTemplate,
-                   publishingRendererOptions
+                   publishingRendererOptions,
+                   publishingRequestData.getDesktopClientLoopbackUrl()
                 )
              .applyTemplate
                 (

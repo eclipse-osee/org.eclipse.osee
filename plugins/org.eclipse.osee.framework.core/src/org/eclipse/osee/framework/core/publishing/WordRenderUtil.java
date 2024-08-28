@@ -1825,7 +1825,7 @@ public class WordRenderUtil {
             PresentationType                   presentationType,
             String                             label,
             String                             footer,
-            String                             permanentLinkUrl,
+            String                             desktopClientLoopbackUrl,
             boolean                            artifactIsChanged,
             IncludeBookmark                    includeBookmark,
             TransactionToken                   historicalArtifactTransactionToken,
@@ -1857,7 +1857,7 @@ public class WordRenderUtil {
       wtcData.setLinkType(rendererMap.getRendererOptionValue(RendererOption.LINK_TYPE));
       wtcData.setPresentationType(presentationType);
       wtcData.setTxId(historicalArtifactTransactionToken);
-      wtcData.setPermanentLinkUrl(permanentLinkUrl);
+      wtcData.setDesktopClientLoopbackUrl(desktopClientLoopbackUrl);
       wtcData.setArtIsChanged(artifactIsChanged);
       wtcData.setIncludeBookmark(safeIncludeBookmark);
 

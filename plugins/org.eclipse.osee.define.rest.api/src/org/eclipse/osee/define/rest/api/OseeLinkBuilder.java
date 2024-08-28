@@ -226,16 +226,16 @@ public class OseeLinkBuilder {
    }
 
    public String getWordMlLink(LinkType destLinkType, ArtifactReadable artifact, TransactionId txId,
-      PresentationType presentationType, String permanentUrl) {
-      String linkId = getLinkId(destLinkType, artifact, txId, presentationType, permanentUrl);
+      PresentationType presentationType, String desktopClientLoopbackUrl) {
+      String linkId = getLinkId(destLinkType, artifact, txId, presentationType, desktopClientLoopbackUrl);
       String linkText = getLinkText(destLinkType, artifact);
 
       return WordCoreUtil.getLink(destLinkType, linkId, linkText).toString();
    }
 
    public String getWordMlLink(LinkType destLinkType, ArtifactReadable artifact, TransactionId txId,
-      String permanentUrl) {
-      return getWordMlLink(destLinkType, artifact, txId, PresentationType.DEFAULT_OPEN, permanentUrl);
+      String desktopClientLoopbackUrl) {
+      return getWordMlLink(destLinkType, artifact, txId, PresentationType.DEFAULT_OPEN, desktopClientLoopbackUrl);
    }
 
 }

@@ -30,7 +30,6 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.define.operations.api.publisher.datarights.DataRightsOperations;
-import org.eclipse.osee.define.rest.api.ArtifactUrlServer;
 import org.eclipse.osee.define.rest.api.AttributeAlphabeticalComparator;
 import org.eclipse.osee.define.rest.api.OseeHierarchyComparator;
 import org.eclipse.osee.framework.core.OrcsTokenService;
@@ -203,7 +202,7 @@ public class WordTemplateProcessorServer implements ToMessage {
 
    protected boolean overrideOutlineNumber;
 
-   protected final String permanentLinkUrl;
+   protected String desktopClientLoopbackUrl;
 
    /**
     * Tracks artifacts that have been processed by {@link ArtifactId} and GUID.
@@ -275,7 +274,7 @@ public class WordTemplateProcessorServer implements ToMessage {
       this.outlineNumber = null;
       this.overrideClassification = null;
       this.overrideOutlineNumber = false;
-      this.permanentLinkUrl = new ArtifactUrlServer(this.orcsApi).getSelectedPermanentLinkUrl();
+      this.desktopClientLoopbackUrl = null;
       this.processedArtifactTracker = new ProcessedArtifactTracker();
       //@formatter:off
       this.publishingArtifactLoader =
@@ -541,7 +540,8 @@ public class WordTemplateProcessorServer implements ToMessage {
 
    }
 
-   public WordTemplateProcessorServer configure(PublishingTemplate publishingTemplate, RendererMap publishingOptions) {
+   public WordTemplateProcessorServer configure(PublishingTemplate publishingTemplate, RendererMap publishingOptions,
+      String desktopClientLoopbackUrl) {
 
       /*
        * Publishing Template
@@ -554,6 +554,13 @@ public class WordTemplateProcessorServer implements ToMessage {
        */
 
       this.renderer = publishingOptions;
+
+      /**
+       * The base URL of the user's machine used by {@link WordMlLinkWordMlLinkHandler} to replace 'OSEE_LINK' (artifact
+       * links) in the Word Template Content with loopback links to the user's desktop client.
+       */
+
+      this.desktopClientLoopbackUrl = desktopClientLoopbackUrl;
 
       /*
        * All Attributes
@@ -1297,7 +1304,7 @@ public class WordTemplateProcessorServer implements ToMessage {
               presentationType,
               label,
               footer,
-              this.permanentLinkUrl,
+              this.desktopClientLoopbackUrl,
               this.publishingArtifactLoader.isChangedArtifact(artifact),
               includeBookmark,
               artifact.isHistorical()

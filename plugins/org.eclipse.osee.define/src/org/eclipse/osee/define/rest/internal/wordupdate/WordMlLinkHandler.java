@@ -133,7 +133,7 @@ public class WordMlLinkHandler {
     */
 
    public static String link(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source, String content,
-      TransactionId txId, Set<String> unknownGuids, PresentationType presentationType, String permanentUrl,
+      TransactionId txId, Set<String> unknownGuids, PresentationType presentationType, String desktopClientLoopbackUrl,
       IncludeBookmark includeBookmark) {
 
       LinkType linkType = checkLinkType(destLinkType);
@@ -153,7 +153,7 @@ public class WordMlLinkHandler {
 
       if (!matchMap.isEmpty()) {
          modified = modifiedContent(queryFactory, linkType, source, content, matchMap, false, txId, unknownGuids,
-            presentationType, permanentUrl);
+            presentationType, desktopClientLoopbackUrl);
       }
 
       if (includeBookmark.isYes() && (linkType != LinkType.OSEE_SERVER_LINK)) {
@@ -329,7 +329,7 @@ public class WordMlLinkHandler {
 
    private static String modifiedContent(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source,
       String original, HashCollection<String, MatchRange> matchMap, boolean isUnlinking, TransactionId txId,
-      Set<String> unknown, PresentationType presentationType, String permanentUrl) {
+      Set<String> unknown, PresentationType presentationType, String desktopClientLoopbackUrl) {
       BranchId branch = source.getBranch();
       ChangeSet changeSet = new ChangeSet(original);
       List<ArtifactReadable> artifactsFromSearch = null;
@@ -380,8 +380,9 @@ public class WordMlLinkHandler {
                   var replaceWith = WordCoreUtil.getOseeLinkMarker(artifact.getGuid());
                   changeSet.replace(match.start(), match.end(), replaceWith);
                } else {
+               // Replace with user's desktop client loopback url
                   var replaceWith =
-                     linkBuilder.getWordMlLink(destLinkType, artifact, txId, presentationType, permanentUrl);
+                     linkBuilder.getWordMlLink(destLinkType, artifact, txId, presentationType, desktopClientLoopbackUrl);
                   changeSet.replace(match.start(), match.end(), replaceWith);
                }
             }
@@ -393,8 +394,9 @@ public class WordMlLinkHandler {
                   var replaceWith = WordCoreUtil.getOseeLinkMarker(artifact.getIdString());
                   changeSet.replace(match.start(), match.end(), replaceWith);
                } else {
+                  // Replace with user's desktop client loopback url
                   var replaceWith =
-                     linkBuilder.getWordMlLink(destLinkType, artifact, txId, presentationType, permanentUrl);
+                     linkBuilder.getWordMlLink(destLinkType, artifact, txId, presentationType, desktopClientLoopbackUrl);
                   changeSet.replace(match.start(), match.end(), replaceWith);
                }
             }

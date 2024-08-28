@@ -44,7 +44,7 @@ public class WordTemplateContentData implements ToMessage {
 
    private @Nullable String oseeLink;
 
-   private String permanentLinkUrl;
+   private String desktopClientLoopbackUrl;
 
    private PresentationType presentationType;
 
@@ -99,8 +99,8 @@ public class WordTemplateContentData implements ToMessage {
       return oseeLink;
    }
 
-   public String getPermanentLinkUrl() {
-      return permanentLinkUrl;
+   public String getDesktopClientLoopbackUrl() {
+      return desktopClientLoopbackUrl;
    }
 
    public PresentationType getPresentationType() {
@@ -153,13 +153,13 @@ public class WordTemplateContentData implements ToMessage {
    public boolean isValid() {
       //@formatter:off
       return
-            Objects.nonNull( this.artId            )
-         && Objects.nonNull( this.branch           )
-         && Objects.nonNull( this.footer           )
-         && Objects.nonNull( this.permanentLinkUrl )
-         && Objects.nonNull( this.presentationType )
-         && Objects.nonNull( this.txId             )
-         && Objects.nonNull( this.viewId           )
+            Objects.nonNull( this.artId              )
+         && Objects.nonNull( this.branch             )
+         && Objects.nonNull( this.footer             )
+         && Objects.nonNull( this.desktopClientLoopbackUrl )
+         && Objects.nonNull( this.presentationType   )
+         && Objects.nonNull( this.txId               )
+         && Objects.nonNull( this.viewId             )
          ;
       //@formatter:on
    }
@@ -247,20 +247,21 @@ public class WordTemplateContentData implements ToMessage {
    }
 
    /**
-    * Sets the permanent link URL. Used for deserialization.
+    * Sets the base URL of the user's machine, which is used for handling links and creating loopback URLs in Word
+    * documents. Used for deserialization.
     *
-    * @param permanentLinkUrl the permanent link URL. Maybe an empty {@link String} but not <code>null</code>.
-    * @throws NullPointerException when the parameter <code>permanentLinkUrl</code> is <code>null</code>.
-    * @throws IllegalStateException when the member {@link #permanentLinkUrl} has already been set.
+    * @param desktopClientLoopbackUrl a {@link String} representing the user's machine base URL.
+    * @throws NullPointerException when the parameter <code>desktopClientLoopbackUrl</code> is <code>null</code>.
+    * @throws IllegalStateException when the member {@link #desktopClientLoopbackUrl} has already been set.
     */
 
-   public void setPermanentLinkUrl(String permanentLinkUrl) {
-      if (Objects.nonNull(this.permanentLinkUrl)) {
+   public void setDesktopClientLoopbackUrl(String desktopClientLoopbackUrl) {
+      if (Objects.nonNull(this.desktopClientLoopbackUrl)) {
          throw new IllegalStateException(
-            "WordTemplateContentData::setPermanentLinkUrl, member \"permanentLinkUrl\" has already been set.");
+            "WordTemplateContentData::desktopClientLoopbackUrl, member \"desktopClientLoopbackUrl\" has already been set.");
       }
-      this.permanentLinkUrl = Objects.requireNonNull(permanentLinkUrl,
-         "WordTemplateContentData::setPermanentLinkUrl, parameter \"permanentLinkUrl\" cannot be null.");
+      this.desktopClientLoopbackUrl = Objects.requireNonNull(desktopClientLoopbackUrl,
+         "WordTemplateContentData::setDesktopClientLoopbackUrl, parameter \"desktopClientLoopbackUrl\" cannot be null.");
    }
 
    /**
@@ -328,19 +329,19 @@ public class WordTemplateContentData implements ToMessage {
       outMessage
          .indent( indent )
          .title( "WordTemplateContentData" )
-         .indentInc()
-         .segment( "artId",            this.artId            )
-         .segment( "artIsChanged",     this.artIsChanged     )
-         .segment( "branch",           this.branch           )
-         .segment( "footer",           this.footer           )
-         .segment( "isEdit",           this.isEdit           )
-         .segment( "linkType",         this.linkType         )
-         .segment( "oseeLink",         this.oseeLink         )
-         .segment( "permanentLinkUrl", this.permanentLinkUrl )
-         .segment( "presentationType", this.presentationType )
-         .segment( "sessionId",        this.sessionId        )
-         .segment( "txId",             this.txId             )
-         .segment( "viewId",           this.viewId           )
+         .indentInc()                     
+         .segment( "artId",               this.artId               )
+         .segment( "artIsChanged",        this.artIsChanged        )
+         .segment( "branch",              this.branch              )
+         .segment( "footer",              this.footer              )
+         .segment( "isEdit",              this.isEdit              )
+         .segment( "linkType",            this.linkType            )
+         .segment( "oseeLink",            this.oseeLink            )
+         .segment( "desktopClientLoopbackUrl",  this.desktopClientLoopbackUrl  )
+         .segment( "presentationType",    this.presentationType    )
+         .segment( "sessionId",           this.sessionId           )
+         .segment( "txId",                this.txId                )
+         .segment( "viewId",              this.viewId              )
          .indentDec()
          ;
       //@formatter:on
