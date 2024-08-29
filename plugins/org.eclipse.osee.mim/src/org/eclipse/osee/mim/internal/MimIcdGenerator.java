@@ -129,10 +129,10 @@ public class MimIcdGenerator {
       this.logicalTypeMaxRange.put("sShort", "-32,768 to 32,767");
       this.logicalTypeMaxRange.put("uShort", "0 to 2^16-1");
       this.logicalTypeMaxRange.put("enumeration", "See Enumerated Literals");
-      this.logicalTypeMaxRange.put("float", "-Inf to Inf");
+      this.logicalTypeMaxRange.put("float", "-3.4e+38 to 3.4e+38");
       this.logicalTypeMaxRange.put("sInteger", "-2^31 to 2^31-1");
       this.logicalTypeMaxRange.put("uInteger", "0 to 2^32-1");
-      this.logicalTypeMaxRange.put("double", "0.0 to 604800.0");
+      this.logicalTypeMaxRange.put("double", "-1.8e+308 to 1.8e+308");
       this.logicalTypeMaxRange.put("uLong", "0 to 2^64-1");
    }
 
