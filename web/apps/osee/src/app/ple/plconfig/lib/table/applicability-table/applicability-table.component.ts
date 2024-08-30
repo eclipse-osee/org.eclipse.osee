@@ -51,7 +51,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { CurrentBranchInfoService, branchImpl } from '@osee/shared/services';
 import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
 import { OperatorFunction } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { filter, tap } from 'rxjs/operators';
 import { ConfigGroupMenuComponent } from '../../menus/config-group-menu/config-group-menu.component';
 import { ConfigMenuComponent } from '../../menus/config-menu/config-menu.component';
 import { FeatureMenuComponent } from '../../menus/feature-menu/feature-menu.component';
@@ -369,13 +369,10 @@ export class ApplicabilityTableComponent {
 						(value, index) => this.pageSize() + index * 5
 				  )
 				: [];
-		const combined =
-			this.tableCount() < this.pageSize()
-				? pageOptions
-						.concat(startingOptions)
-						.concat([this.tableCount()])
-						.concat(countOptions)
-				: pageOptions.concat(startingOptions).concat(countOptions);
+		const combined = pageOptions
+			.concat(startingOptions)
+			.concat([this.tableCount()])
+			.concat(countOptions);
 		const set = new Set(combined);
 		return Array.from(set);
 	});
@@ -483,13 +480,17 @@ export class ApplicabilityTableComponent {
 	);
 	private _updateDataSourceWithSorter = effect(
 		() => {
-			this.dataSource.sort = this.sort();
+			if (this.dataSource.sort === null) {
+				this.dataSource.sort = this.sort();
+			}
 		},
 		{ allowSignalWrites: true }
 	);
 	private _updateDataSourceWithPaginator = effect(
 		() => {
-			this.dataSource.paginator = this.paginator();
+			if (this.dataSource.paginator === null) {
+				this.dataSource.paginator = this.paginator();
+			}
 		},
 		{ allowSignalWrites: true }
 	);

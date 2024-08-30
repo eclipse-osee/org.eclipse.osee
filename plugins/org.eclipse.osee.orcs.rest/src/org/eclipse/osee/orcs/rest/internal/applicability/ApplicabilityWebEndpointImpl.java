@@ -71,7 +71,7 @@ public class ApplicabilityWebEndpointImpl implements ApplicabilityWebEndpoint {
       JdbcDbType dbUtils = orcsApi.getJdbcService().getClient().getDbType();
       String paginationSql = pageNum != 0L && pageSize != 0L ? "WHERE rn between ? and ?" : "";
       String filterSql = !filter.isBlank() & filter.contains("=") ? "kv.value LIKE ? AND\n" : "";
-      String filterAttrSql = !filter.isBlank() & !filter.contains("=") ? "AND attrFeature.value LIKE ? \n" : "";
+      String filterAttrSql = !filter.isBlank() & !filter.contains("=") ? " WHERE "+dbUtils.jsonObjectContains("?", "attributes", "value") : "";
       String viewSql = viewId.isValid() ? "attrConfiguration.art_id = ? AND\n" : "";
       String configurationArray = dbUtils.json_agg(dbUtils.jsonb_object("id", "attrConfiguration.art_id", "name",
          "attrConfiguration.value", "gamma_id", "cfg.gamma_id", "type_id", "cfg.art_type_id", "applicability",
@@ -94,12 +94,15 @@ public class ApplicabilityWebEndpointImpl implements ApplicabilityWebEndpoint {
          "   art.art_type_id = ?\r\n" +
          "),\r\n" +
          "artGroup AS (\r\n" +
-         "   SELECT art.art_id, art.gamma_id, art.art_type_id,"+dbUtils.json_agg("rel.b_art_id")+" as related FROM osee_artifact art, osee_txs txs, osee_relation_link rel\r\n" +
+         "   SELECT art.art_id, art.gamma_id, art.art_type_id,"+dbUtils.json_agg("rel.b_art_id")+" as related FROM osee_artifact art, osee_txs txs, osee_relation_link rel, osee_txs relTxs \r\n" +
          "   WHERE\r\n" +
          "   txs.tx_current =? AND \r\n" +
          "   txs.gamma_id = art.gamma_id AND \r\n" +
          "   txs.branch_id = ? AND\r\n" +
          "   art.art_type_id = ? AND\r\n" +
+         "   relTxs.tx_current = ? AND\r\n" +
+         "   relTxs.branch_id = ? AND\r\n" +
+         "   relTxs.gamma_id = rel.gamma_id AND\r\n" +
          "   rel.a_art_id = art.art_id AND\r\n" +
          "   rel.rel_link_type_id = ? \r\n"+
          "   GROUP BY art.art_id, art.gamma_id, art.art_type_id"+
@@ -129,6 +132,9 @@ public class ApplicabilityWebEndpointImpl implements ApplicabilityWebEndpoint {
          "   txs.branch_id = ?\r\n" +
          "   GROUP BY attrFeature.art_id \r\n" +
          "),\n"+
+         "attrFeaturesFiltered AS (\r\n"+
+         "SELECT af.* FROM attrFeatures af "+
+         filterAttrSql+"), "+
          "nonCompoundApplicabilities as (\n" +
          "SELECT t2_2.e1 as id,"+keyValueSplit+" as name,\n" +
          configurationArray +" as configuration_values\n" +
@@ -191,7 +197,7 @@ public class ApplicabilityWebEndpointImpl implements ApplicabilityWebEndpoint {
          "      group by kv2.value, t2_2.e1\n" +
          "   ),\n" +
          "   allApplicabilities AS (\n" +
-         "      SELECT id, name, configuration_values, attributes from nonCompoundApplicabilities ca, attrFeatures af where ca.id = af.art_id UNION ALL SELECT id, name, configuration_values, attributes from compoundApplicabilities\n" +
+         "      SELECT id, name, configuration_values, attributes from nonCompoundApplicabilities ca, attrFeaturesFiltered af where ca.id = af.art_id UNION ALL SELECT id, name, configuration_values, attributes from compoundApplicabilities\n" +
          "   ),\n" +
          "   applicabilities AS (\n" +
          "   SELECT applic.*,row_number() over ("+paginationOrdering+") rn from allApplicabilities applic\n" +
@@ -215,6 +221,8 @@ public class ApplicabilityWebEndpointImpl implements ApplicabilityWebEndpoint {
       firstChunk.add(TxCurrent.CURRENT);
       firstChunk.add(branch);
       firstChunk.add(CoreArtifactTypes.GroupArtifact.getId());
+      firstChunk.add(TxCurrent.CURRENT);
+      firstChunk.add(branch);
       firstChunk.add(CoreRelationTypes.PlConfigurationGroup.getId());
       firstChunk.add(TxCurrent.CURRENT);
       firstChunk.add(branch);
@@ -224,6 +232,11 @@ public class ApplicabilityWebEndpointImpl implements ApplicabilityWebEndpoint {
       firstChunk.add(CoreArtifactTypes.Feature.getId());
       firstChunk.add(TxCurrent.CURRENT);
       firstChunk.add(branch);
+      List<Object> filterAttrList = new ArrayList<Object>();
+      if (!filter.isBlank() & !filter.contains("=")) {
+         filterAttrList.add(orcsApi.getJdbcService().getClient().getDbType().getJsonObjectContainsParameter(filter));
+      }
+      firstChunk.addAll(filterAttrList);
       firstChunk.add(CoreTupleTypes.ViewApplicability.getId());
       firstChunk.add(CoreTupleTypes.ApplicabilityDefinition.getId());
       firstChunk.add(0);
@@ -257,10 +270,6 @@ public class ApplicabilityWebEndpointImpl implements ApplicabilityWebEndpoint {
 
       List<Object> fourthChunk = new ArrayList<Object>();
       fourthChunk.add(CoreAttributeTypes.Name.getId());
-      List<Object> filterAttrList = new ArrayList<Object>();
-      if (!filter.isBlank() & !filter.contains("=")) {
-         filterAttrList.add("%" + filter + "%");
-      }
       List<Object> pagination = new ArrayList<Object>();
       if (pageNum != 0L && pageSize != 0L) {
          Long tempLowerBound = (pageNum - 1) * pageSize;
@@ -277,8 +286,7 @@ public class ApplicabilityWebEndpointImpl implements ApplicabilityWebEndpoint {
                   Stream.concat(filterList.stream(),
                      Stream.concat(thirdChunk.stream(),
                         Stream.concat(viewList.stream(),
-                           Stream.concat(fourthChunk.stream(),
-                              Stream.concat(filterAttrList.stream(), pagination.stream()))))))))).collect(
+                           Stream.concat(fourthChunk.stream(),pagination.stream())))))))).collect(
                                  Collectors.toList()).toArray();
       orcsApi.getJdbcService().getClient().runQuery(consumer, sql, paramsArray);
       return new ProductLineConfig(features);
@@ -489,18 +497,17 @@ public class ApplicabilityWebEndpointImpl implements ApplicabilityWebEndpoint {
 
    @Override
    public long getTableCount(String filter, ArtifactId viewId) {
+
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
-      String pleAccess = orcsApi.getSystemProperties().getValue("ple.access");
-      if (!pleAccess.isEmpty() && pleAccess.equals("SINGLE") && viewId.isInvalid()) {
-         return 0L;
-      }
+      
       JdbcDbType dbUtils = orcsApi.getJdbcService().getClient().getDbType();
       String filterSql = !filter.isBlank() & filter.contains("=") ? "kv.value LIKE ? AND\n" : "";
-      String filterAttrSql = !filter.isBlank() & !filter.contains("=") ? "AND attrFeature.value LIKE ? \n" : "";
-      String viewSql = viewId.isValid() ? "attrConfiguration.art_id = ? AND \n" : "";
+      String filterAttrSql = !filter.isBlank() & !filter.contains("=") ? " WHERE "+dbUtils.jsonObjectContains("?", "attributes", "value") : "";
+      String viewSql = viewId.isValid() ? "attrConfiguration.art_id = ? AND\n" : "";
       String configurationArray = dbUtils.json_agg(dbUtils.jsonb_object("id", "attrConfiguration.art_id", "name",
          "attrConfiguration.value", "gamma_id", "cfg.gamma_id", "type_id", "cfg.art_type_id", "applicability",
-         dbUtils.json_object("id", "kv.key", "name", "kv.value", "gamma_id", "t2_1.gamma_id")));
+         dbUtils.json_object("id", "kv.key", "name", "kv.value", "gamma_id", "t2_1.gamma_id"), "related",
+         "cfg.related"));
       String featureArray = dbUtils.json_agg(dbUtils.jsonb_object("id", "attrFeature.attr_id", "type_id",
          dbUtils.cast("attrFeature.attr_type_id", dbUtils.longToString()), "gamma_id", "attrFeature.gamma_id", "value",
          "attrFeature.value"));
@@ -508,8 +515,8 @@ public class ApplicabilityWebEndpointImpl implements ApplicabilityWebEndpoint {
       String emptyArray = dbUtils.jsonb_array();
       //@formatter:off
       String sql = "WITH\n" +
-         "artConfiguration AS (\r\n" +
-         "SELECT art.*,"+emptyArray+"as related FROM osee_artifact art, osee_txs txs\r\n" +
+         "artConfiguration AS (\n"+
+         "SELECT art.art_id, art.gamma_id, art.art_type_id,"+emptyArray+" as related FROM osee_artifact art, osee_txs txs\r\n" +
          "   WHERE\r\n" +
          "   txs.tx_current =? AND \r\n" +
          "   txs.gamma_id = art.gamma_id AND \r\n" +
@@ -517,27 +524,32 @@ public class ApplicabilityWebEndpointImpl implements ApplicabilityWebEndpoint {
          "   art.art_type_id = ?\r\n" +
          "),\r\n" +
          "artGroup AS (\r\n" +
-         "   SELECT art.*,"+emptyArray+" as related FROM osee_artifact art, osee_txs txs\r\n" +
+         "   SELECT art.art_id, art.gamma_id, art.art_type_id,"+dbUtils.json_agg("rel.b_art_id")+" as related FROM osee_artifact art, osee_txs txs, osee_relation_link rel, osee_txs relTxs\r\n" +
          "   WHERE\r\n" +
          "   txs.tx_current =? AND \r\n" +
          "   txs.gamma_id = art.gamma_id AND \r\n" +
          "   txs.branch_id = ? AND\r\n" +
-         "   art.art_type_id = ?\r\n" +
-         "),\r\n" +
+         "   art.art_type_id = ? AND\r\n" +       
+         "   relTxs.tx_current = ? AND\r\n" +
+         "   relTxs.branch_id = ? AND\r\n" +
+         "   relTxs.gamma_id = rel.gamma_id AND\r\n" +
+         "   rel.a_art_id = art.art_id AND\r\n" +
+         "   rel.rel_link_type_id = ? \r\n"+
+         "   GROUP BY art.art_id, art.gamma_id, art.art_type_id"+
+         "),\n"+
          "artConfigs AS (\r\n" +
-         "SELECT * from artConfiguration UNION ALL SELECT * from artGroup),\r\n" +
+         "SELECT * from artConfiguration UNION ALL SELECT * from artGroup),\n"+
          "attrConfigs AS (\r\n" +
          "SELECT attr.* FROM artConfigs cfg, osee_attribute attr, osee_txs txs WHERE \r\n" +
          "   attr.art_id = cfg.art_id and \r\n" +
          "   txs.gamma_id = attr.gamma_id and \r\n" +
-         "   txs.tx_current = ? and \r\n" +
+         "   txs.tx_current =? and \r\n" +
          "   txs.branch_id = ? AND"+
-         "   attr.attr_type_id = ?"+
-         "   ),\r\n" +
+         "   attr.attr_type_id = ? ),\r\n" +
          "artFeatures AS (\r\n" +
          "   SELECT * from osee_artifact art, osee_txs txs\r\n" +
          "   WHERE\r\n" +
-         "   txs.tx_current = ? AND \r\n" +
+         "   txs.tx_current =? AND \r\n" +
          "   txs.gamma_id = art.gamma_id AND \r\n" +
          "   txs.branch_id = ? AND\r\n" +
          "   art.art_type_id = ?\r\n" +
@@ -550,6 +562,9 @@ public class ApplicabilityWebEndpointImpl implements ApplicabilityWebEndpoint {
          "   txs.branch_id = ?\r\n" +
          "   GROUP BY attrFeature.art_id \r\n" +
          "),\n"+
+         "attrFeaturesFiltered AS (\r\n"+
+         "SELECT af.* FROM attrFeatures af "+
+         filterAttrSql+"), "+
          "nonCompoundApplicabilities as (\n" +
          "SELECT t2_2.e1 as id,"+keyValueSplit+" as name,\n" +
          configurationArray +" as configuration_values\n" +
@@ -587,8 +602,8 @@ public class ApplicabilityWebEndpointImpl implements ApplicabilityWebEndpoint {
          "      FROM \n" +
          "      osee_tuple2 t2_1, osee_txs txs1, osee_key_value kv,\n" +
          "      osee_tuple2 t2_2, osee_txs txs2, osee_key_value kv2,\n" +
-         "      attrConfigs attrConfiguration,\r\n" +
-         "      artConfigs cfg\n"+
+         "      attrConfigs attrConfiguration,\n" +
+         "      artConfigs cfg\n" +
          "      WHERE \n" +
          "      t2_1.e2 = t2_2.e2 AND \n" +
          "      t2_1.tuple_type = ? AND\n" +
@@ -612,7 +627,7 @@ public class ApplicabilityWebEndpointImpl implements ApplicabilityWebEndpoint {
          "      group by kv2.value, t2_2.e1\n" +
          "   ),\n" +
          "   allApplicabilities AS (\n" +
-         "      SELECT id, name, configuration_values, attributes from nonCompoundApplicabilities ca, attrFeatures af where ca.id = af.art_id UNION ALL SELECT id, name, configuration_values, attributes from compoundApplicabilities\n" +
+         "      SELECT id, name, configuration_values, attributes from nonCompoundApplicabilities ca, attrFeaturesFiltered af where ca.id = af.art_id UNION ALL SELECT id, name, configuration_values, attributes from compoundApplicabilities\n" +
          "   ),\n" +
          "   applicabilities AS (\n" +
          "   SELECT applic.* from allApplicabilities applic\n" +
@@ -628,12 +643,21 @@ public class ApplicabilityWebEndpointImpl implements ApplicabilityWebEndpoint {
       firstChunk.add(CoreArtifactTypes.GroupArtifact.getId());
       firstChunk.add(TxCurrent.CURRENT);
       firstChunk.add(branch);
+      firstChunk.add(CoreRelationTypes.PlConfigurationGroup.getId());
+      firstChunk.add(TxCurrent.CURRENT);
+      firstChunk.add(branch);
       firstChunk.add(CoreAttributeTypes.Name.getId());
       firstChunk.add(TxCurrent.CURRENT);
       firstChunk.add(branch);
       firstChunk.add(CoreArtifactTypes.Feature.getId());
       firstChunk.add(TxCurrent.CURRENT);
       firstChunk.add(branch);
+      //move feature here
+      List<Object> filterAttrList = new ArrayList<Object>();
+      if (!filter.isBlank() & !filter.contains("=")) {
+         filterAttrList.add("%" + filter + "%");
+      }
+      firstChunk.addAll(filterAttrList);
       firstChunk.add(CoreTupleTypes.ViewApplicability.getId());
       firstChunk.add(CoreTupleTypes.ApplicabilityDefinition.getId());
       firstChunk.add(0);
@@ -667,20 +691,19 @@ public class ApplicabilityWebEndpointImpl implements ApplicabilityWebEndpoint {
 
       List<Object> fourthChunk = new ArrayList<Object>();
       fourthChunk.add(CoreAttributeTypes.Name.getId());
-      List<Object> filterAttrList = new ArrayList<Object>();
-      if (!filter.isBlank() & !filter.contains("=")) {
-         filterAttrList.add("%" + filter + "%");
-      }
+      List<Object> pagination = new ArrayList<Object>();
+      
       Object[] paramsArray = Stream.concat(firstChunk.stream(),
          Stream.concat(filterList.stream(),
             Stream.concat(viewList.stream(),
                Stream.concat(secondChunk.stream(),
                   Stream.concat(filterList.stream(),
                      Stream.concat(thirdChunk.stream(),
-                        Stream.concat(viewList.stream(),
-                           Stream.concat(fourthChunk.stream(), filterAttrList.stream())))))))).collect(
-                              Collectors.toList()).toArray();
+                        Stream.concat(viewList.stream(),fourthChunk.stream()
+                           ))))))).collect(
+                                 Collectors.toList()).toArray();
       return orcsApi.getJdbcService().getClient().fetch(-1, sql, paramsArray);
+
    }
 
    @Override
