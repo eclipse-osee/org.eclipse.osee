@@ -85,8 +85,8 @@ public class BranchCriteriaFactory {
       return new CriteriaAssociatedArtId(artId);
    }
 
-   public Criteria createBranchCategoryCriteria(BranchCategoryToken category) {
-      return new CriteriaBranchCategory(category);
+   public Criteria createBranchCategoryCriteria(BranchCategoryToken category, boolean includeCategory) {
+      return new CriteriaBranchCategory(category, includeCategory);
    }
 
    public Criteria createMapAssocArtToRelatedAttributesCriteria(String value, BranchId relatedBranch,
