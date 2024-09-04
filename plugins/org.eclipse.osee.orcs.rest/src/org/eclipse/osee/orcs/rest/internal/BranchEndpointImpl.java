@@ -67,7 +67,6 @@ import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.dto.ChangeReportRowDto;
-import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -84,7 +83,6 @@ import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
-import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.data.CommitBranchUtil;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.data.TransactionReadable;
@@ -483,14 +481,14 @@ public class BranchEndpointImpl implements BranchEndpoint {
          String originalBranchName = updateData.getSourceBranchName();
          try (
             Response res =
-            associateBranchToArtifact(branchData.getNewBranchId(), updateData.getSourceBranchAssociatedArtifact());
+               associateBranchToArtifact(branchData.getNewBranchId(), updateData.getSourceBranchAssociatedArtifact());
             Response res2 = setBranchName(branchId, branchData.getToName());
             Response res3 = setBranchName(branchData.getNewBranchId(), originalBranchName);
             Response res4 = setBranchState(branchId, BranchState.DELETE_IN_PROGRESS);
             Response res5 = archiveBranch(branchId);
             Response res6 = setBranchState(branchId, BranchState.DELETED);
 
-            ) {
+         ) {
             // Empty block to close resource
          }
 
@@ -810,46 +808,20 @@ public class BranchEndpointImpl implements BranchEndpoint {
    public Response purgeBranch(BranchId branchId, boolean recurse) {
       orcsApi.userService().requireRole(CoreUserGroups.AccountAdmin);
       boolean modified = false;
-
-      String SELECT_IMPACTED_GAMMAS_ON_BRANCH_AFTER_BASELINE_TX =
-         "select gamma_id from osee_txs where branch_id = ? and transaction_id > ? union select gamma_id from osee_txs_archived where branch_id = ? and transaction_id > ?";
-
-      List<String> insertTxStatements = new ArrayList<>();
-      List<Long> impactedGammaIds = new ArrayList<>();
-      List<Long> unusedGammas = new ArrayList<>();
-
       Branch branch = getBranchById(branchId);
       if (branch != null) {
-         orcsApi.getJdbcService().getClient().runQuery(stmt -> insertTxStatements.add(stmt.getString("insertString")),
-            OseeDb.TX_DETAILS_TABLE.getSelectInsertString(" where branch_id = ?"), branchId);
-
-         orcsApi.getJdbcService().getClient().runQuery(stmt -> insertTxStatements.add(stmt.getString("insertString")),
-            OseeDb.TXS_TABLE.getSelectInsertString(" where branch_id = ?"), branchId);
-
-         orcsApi.getJdbcService().getClient().runQuery(stmt -> impactedGammaIds.add(stmt.getLong("gamma_id")),
-            SELECT_IMPACTED_GAMMAS_ON_BRANCH_AFTER_BASELINE_TX, branchId, branch.getBaselineTx(),branchId, branch.getBaselineTx());
-
          Callable<?> op = branchOps.purgeBranch(branch, recurse);
          executeCallable(op);
          modified = true;
       }
-      if (modified) {
-         String recoveryFileNamePrefix = "delete_branch_" + branch.getIdString() + "_";
-         //Purge unused gammas if job was successful
-         //recovery files are created and stored inside PurgeUnusedBackingDataAndTransactions
-         try {
-            for (Long gamma : impactedGammaIds) {
-               orcsApi.getJdbcService().getClient().runQuery(stmt -> unusedGammas.add(stmt.getLong("gamma_id")),
-                  OseeSql.UNUSED_IMPACTED_GAMMAS_AFTER_PURGE.getSql(), gamma, gamma, gamma, 0);
-            }
-            orcsApi.getTransactionFactory().purgeUnusedBackingDataAndTransactions(unusedGammas, insertTxStatements,
-               recoveryFileNamePrefix);
-         } catch (Exception ex) {
-            OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
-         }
+
+      try {
          activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
             String.format("Branch Operation Purge Branch {branchId: %s}", branchId));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
       }
+
       return asResponse(modified);
    }
 
@@ -1020,7 +992,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
    public BranchToken createProgramBranch(BranchId branch, String branchName) {
       BranchToken branchToken =
          branch.isValid() ? BranchToken.create(branch, branchName) : BranchToken.create(branchName);
-         return branchOps.createProgramBranch(branchToken);
+      return branchOps.createProgramBranch(branchToken);
    }
 
    @Override

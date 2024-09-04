@@ -14,10 +14,8 @@
 package org.eclipse.osee.orcs.rest.internal.health;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -27,17 +25,13 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import org.eclipse.osee.activity.api.ActivityLog;
-import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
-import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.db.internal.health.PurgeUnusedBackingDataAndTransactions;
-import org.eclipse.osee.orcs.db.internal.health.Rel2HealthOperation;
 import org.eclipse.osee.orcs.rest.internal.health.operations.HealthActiveMq;
 import org.eclipse.osee.orcs.rest.internal.health.operations.HealthBalancers;
 import org.eclipse.osee.orcs.rest.internal.health.operations.HealthDbTablespace;
@@ -290,28 +284,5 @@ public final class HealthEndpointImpl {
       HealthSqlTableSize size = new HealthSqlTableSize(orcsApi);
       size.querySqlHealthTableSize();
       return size;
-   }
-
-   @Path("purgeunused")
-   @DELETE
-   @Produces(MediaType.TEXT_PLAIN)
-   public XResultData deleteObsoleteData() {
-      orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
-      XResultData rd = new XResultData();
-      PurgeUnusedBackingDataAndTransactions app =
-         new PurgeUnusedBackingDataAndTransactions(orcsApi.getJdbcService().getClient());
-
-      int[] purgeUnused = app.purgeUnused();
-      rd.log(Arrays.toString(purgeUnused));
-      return rd;
-
-   }
-
-   @GET
-   @Path("rel2/validate")
-   @Produces(MediaType.TEXT_HTML)
-   public String validateRel2Table() {
-      new Rel2HealthOperation(orcsApi.getJdbcService().getClient());
-      return "<html><div>Relations Valid</div></html>";
    }
 }

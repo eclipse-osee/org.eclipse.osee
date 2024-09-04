@@ -89,17 +89,8 @@ public class TxModule {
 
          @Override
          public int[] purgeUnusedBackingDataAndTransactions() {
-            PurgeUnusedBackingDataAndTransactions op;
-            op = new PurgeUnusedBackingDataAndTransactions(jdbcClient);
-            return op.purgeUnused();
-         }
-
-         @Override
-         public int[] purgeUnusedBackingDataAndTransactions(List<Long> gammasToPurge, List<String> additionalStatements,
-            String prefixRecoveryFile) {
-            PurgeUnusedBackingDataAndTransactions op;
-            op = new PurgeUnusedBackingDataAndTransactions(jdbcClient);
-            return op.purgeListOfGammas(gammasToPurge, additionalStatements, prefixRecoveryFile);
+            PurgeUnusedBackingDataAndTransactions op = new PurgeUnusedBackingDataAndTransactions(jdbcClient);
+            return op.purge();
          }
 
          @Override

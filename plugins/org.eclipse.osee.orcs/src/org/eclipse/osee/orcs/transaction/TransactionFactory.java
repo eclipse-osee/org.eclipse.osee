@@ -39,9 +39,6 @@ public interface TransactionFactory {
 
    int[] purgeUnusedBackingDataAndTransactions();
 
-   int[] purgeUnusedBackingDataAndTransactions(List<Long> gammasToPurge, List<String> additionalStatements,
-      String prefixRecoveryFile);
-
    Callable<Void> setTransactionComment(TransactionId transaction, String comment);
 
    List<ChangeItem> compareTxs(TransactionId txId1, TransactionId txId2);
