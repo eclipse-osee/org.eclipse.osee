@@ -15,7 +15,6 @@ package org.eclipse.osee.orcs.rest.internal;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asResponse;
 import static org.eclipse.osee.orcs.rest.model.transaction.TransferTupleTypes.ExportedBranch;
 import static org.eclipse.osee.orcs.rest.model.transaction.TransferTupleTypes.TransferFile;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -39,11 +38,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.OseeClient;
@@ -155,8 +152,8 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
    @Override
    public Response purgeUnusedBackingDataAndTransactions() {
       orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
-      orcsApi.getTransactionFactory().purgeUnusedBackingDataAndTransactions();
-      return Response.ok().build();
+      int[] rtn = orcsApi.getTransactionFactory().purgeUnusedBackingDataAndTransactions();
+      return Response.ok().entity(Arrays.toString(rtn)).build();
    }
 
    @Override
