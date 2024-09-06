@@ -31,6 +31,6 @@ page in our documentation.
 # Important Links
 
 - [OSEE Project Website](https://eclipse.dev/osee/)
-- [org.eclipse.osee -  Gerrit Source Code Repository](https://git.eclipse.org/r/plugins/gitiles/osee/org.eclipse.osee)
+- [org.eclipse.osee -  GitHub Source Code Repository](https://github.com/eclipse-osee/org.eclipse.osee)
 - [Eclipse Foundation’s Terms of Use](https://www.eclipse.org/legal/termsofuse.php)
 - [Link to Sign the ECA](https://www.eclipse.org/legal/ECA.php)

@@ -36,9 +36,8 @@
 `    $  cd /c/Code/`
 `    $  mkdir git_main`
 `    $  cd git_main`
-`    $  git clone https://{username}@git.eclipse.org/r/osee/org.eclipse.osee git --branch dev --depth 1`
+`    $  git clone https://github.com/eclipse-osee/org.eclipse.osee.git --branch main --depth 1`
 
-  - Note: Replace {username} with your eclipse username
   - Download and install the org.eclipse version of OSEE from the OSEE
     site
       - Website for download: [Eclipse Nightly Build
