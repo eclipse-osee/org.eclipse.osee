@@ -38,8 +38,8 @@ public interface CoreOperationTypes {
    /*
     * Publishing
     */
-   OperationTypeToken PublishMarkdownRecursiveWithChildrenWithSpecifiedTemplate =
-      osee.add(8972650019222132280L, "Publish Markdown", "Publish Markdown recursive with children with specified template",
+   OperationTypeToken PublishMarkdownAsHtmlWithSpecifiedTemplate =
+      osee.add(8972650019222132280L, "Publish Markdown as HTML", "Publish Markdown as HTML with specified template",
          new MaterialIcon("description", MaterialColors.BLUE, MaterialShades.S700));
 
    //@formatter:on

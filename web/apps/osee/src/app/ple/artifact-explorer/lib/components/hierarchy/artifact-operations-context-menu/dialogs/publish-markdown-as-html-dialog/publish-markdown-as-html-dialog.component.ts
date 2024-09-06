@@ -68,11 +68,11 @@ import { MatButton } from '@angular/material/button';
 		MatButton,
 		MatDialogActions,
 	],
-	templateUrl: './publish-markdown-dialog.component.html',
+	templateUrl: './publish-markdown-as-html-dialog.component.html',
 })
-export class PublishMarkdownDialogComponent {
+export class PublishMarkdownAsHtmlDialogComponent {
 	constructor(
-		public dialogRef: MatDialogRef<PublishMarkdownDialogComponent>,
+		public dialogRef: MatDialogRef<PublishMarkdownAsHtmlDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: publishMarkdownDialogData,
 		private artifactIconService: ArtifactIconService
 	) {}
