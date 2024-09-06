@@ -28,7 +28,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -1161,21 +1160,18 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
 
       if (branchTokens.size() > 1) {
          //@formatter:off
-         throw
-            new IllegalArgumentException
-                   (
-                      new Message()
-                             .title( "FileSystemRenderer::renderToFile, All of the artifacts must be on the same branch for mass processing." )
-                             .indentInc()
-                             .segmentIndexed( "Branches Found",   branchTokens, BranchToken::getShortName )
-                             .toString()
-                   );
+         throw new IllegalArgumentException(
+            new Message()
+               .title("FileSystemRenderer::renderToFile, All of the artifacts must be on the same branch for mass processing.")
+               .indentInc()
+               .segmentIndexed("Branches Found", branchTokens, BranchToken::getShortName)
+               .toString()
+         );
          //@formatter:on
       }
 
       if (artifactsNoNulls.isEmpty()) {
          this.setRendererOption(RendererOption.BRANCH, BranchId.valueOf(Id.SENTINEL));
-         this.setRendererOption(RendererOption.VIEW, ArtifactId.SENTINEL);
          this.setRendererOption(RendererOption.BRANCH_NAME, "SENTINEL");
 
          return artifactsNoNulls;
@@ -1190,24 +1186,24 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
             : null;
       //@formatter:on
 
-      var branchId = BranchId.valueOf(branchToken.getId());
-      var viewId = ArtifactId.valueOf(branchToken.getViewId());
+      // Ensure branchToken is not null before using it
+      if (branchToken != null) {
+         var branchId = BranchId.valueOf(branchToken.getId());
 
-      //@formatter:off
-      var branchName =
-         Objects.nonNull( branchToken )
-            ? branchToken.getName()
-            : null;
+         //@formatter:off
+         var branchName =
+            Strings.isValidAndNonBlank(branchToken.getName())
+               ? branchToken.getName()
+               : branchId.getIdString();
+         //@formatter:on
 
-      branchName =
-         Strings.isValidAndNonBlank(branchName)
-            ? branchName
-            : branchId.getIdString();
-      //@formatter:on
-
-      this.setRendererOption(RendererOption.BRANCH, branchId);
-      this.setRendererOption(RendererOption.VIEW, viewId);
-      this.setRendererOption(RendererOption.BRANCH_NAME, branchName);
+         this.setRendererOption(RendererOption.BRANCH, branchId);
+         this.setRendererOption(RendererOption.BRANCH_NAME, branchName);
+      } else {
+         // Handle the case when branchToken is null
+         this.setRendererOption(RendererOption.BRANCH, BranchId.valueOf(Id.SENTINEL));
+         this.setRendererOption(RendererOption.BRANCH_NAME, "UNKNOWN");
+      }
 
       return artifactsNoNulls;
    }
