@@ -24,7 +24,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.framework.ui.swt.ToStringContainsPatternFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -34,7 +33,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.dialogs.PatternFilter;
 
 public class CheckBoxStateFilteredTreeDialog<T> extends MessageDialog {
 
@@ -48,7 +46,6 @@ public class CheckBoxStateFilteredTreeDialog<T> extends MessageDialog {
    private final ViewerComparator viewerComparator;
    private boolean showSelectButtons = false;
    private boolean expandChecked = false;
-   private PatternFilter patternFilter;
    private Collection<T> selectables;
    private boolean singleSelect = false;
 
@@ -62,11 +59,6 @@ public class CheckBoxStateFilteredTreeDialog<T> extends MessageDialog {
       this.contentProvider = contentProvider;
       this.labelProvider = labelProvider;
       this.viewerComparator = viewerSorter;
-      if (patternFilter == null) {
-         this.patternFilter = new ToStringContainsPatternFilter();
-      } else {
-         patternFilter = new PatternFilter();
-      }
       setShellStyle(getShellStyle() | SWT.RESIZE);
    }
 
@@ -236,10 +228,6 @@ public class CheckBoxStateFilteredTreeDialog<T> extends MessageDialog {
 
    public void setExpandChecked(boolean expandChecked) {
       this.expandChecked = expandChecked;
-   }
-
-   public void setPatternFilter(PatternFilter patternFilter) {
-      this.patternFilter = patternFilter;
    }
 
    @SuppressWarnings("unchecked")
