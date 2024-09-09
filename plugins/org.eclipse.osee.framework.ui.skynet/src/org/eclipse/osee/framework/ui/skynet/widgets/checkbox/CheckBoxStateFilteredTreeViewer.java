@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.osee.framework.ui.skynet.util.IsEnabled;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTree;
+import org.eclipse.osee.framework.ui.swt.ToStringContainsPatternFilter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.dialogs.PatternFilter;
@@ -45,7 +46,11 @@ public class CheckBoxStateFilteredTreeViewer<T> extends FilteredTree implements 
    private boolean singleSelect = false;
 
    public CheckBoxStateFilteredTreeViewer(Composite parent, int style) {
-      super(parent, style, new PatternFilter(), true);
+      this(parent, style, new ToStringContainsPatternFilter());
+   }
+
+   public CheckBoxStateFilteredTreeViewer(Composite parent, int style, PatternFilter patternFilter) {
+      super(parent, style, patternFilter, true);
       if (treeViewer == null) {
          throw new RuntimeException("treeViewer is null");
       }
