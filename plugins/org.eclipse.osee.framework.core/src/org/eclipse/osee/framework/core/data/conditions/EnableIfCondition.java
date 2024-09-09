@@ -43,4 +43,33 @@ public class EnableIfCondition extends ConditionalRule {
       this.value = value;
    }
 
+   //   @Override
+   //   public boolean isEnabled(ArtifactToken artifact) {
+   //      //      List<Boolean> enabledAll = new ArrayList<Boolean>();
+   //      //      for (ConditionalRule rule : getConditions()) {
+   //      //         boolean enabled = false;
+   //      //         if (rule instanceof EnableIfCondition) {
+   //      //            EnableIfCondition condition = (EnableIfCondition) rule;
+   //      //            Object currValue =
+   //      //               ((ArtifactStoredWidget) this).getArtifact().getSoleAttributeValueAsString(condition.getAttrType(), "");
+   //      //            Object value = condition.getValue();
+   //      //            if (value instanceof Object[]) {
+   //      //               Object[] values = (Object[]) value;
+   //      //               for (Object val : values) {
+   //      //                  if (currValue.equals(val)) {
+   //      //                     enabled = true;
+   //      //                     break;
+   //      //                  }
+   //      //               }
+   //      //            } else {
+   //      //               if (currValue.equals(value)) {
+   //      //                  enabled = true;
+   //      //               }
+   //      //            }
+   //      //            enabledAll.add(enabled);
+   //      //         }
+   //      //      }
+   //      return true;
+   //   }
+
 }

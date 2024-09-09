@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.conditions.ConditionalRule;
-import org.eclipse.osee.framework.core.data.conditions.EnableIfCondition;
 import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -233,34 +232,15 @@ public abstract class XWidget {
          }
       }
       if (Widgets.isAccessible(control) && getConditions().size() > 0) {
-         List<Boolean> enabledAll = new ArrayList<Boolean>();
          for (ConditionalRule rule : getConditions()) {
-            boolean enabled = false;
-            control.setEnabled(enabled);
-            setEditable(enabled);
-            if (rule instanceof EnableIfCondition) {
-               EnableIfCondition condition = (EnableIfCondition) rule;
-               Object currValue = ((ArtifactStoredWidget) this).getArtifact().getSoleAttributeValueAsString(
-                  condition.getAttrType(), "");
-               Object value = condition.getValue();
-               if (value instanceof Object[]) {
-                  Object[] values = (Object[]) value;
-                  for (Object val : values) {
-                     if (currValue.equals(val)) {
-                        enabled = true;
-                        break;
-                     }
-                  }
-               } else {
-                  if (currValue.equals(value)) {
-                     enabled = true;
-                  }
+            if (this instanceof ArtifactStoredWidget) {
+               if (rule.isDisabled(((ArtifactStoredWidget) this).getArtifact())) {
+                  control.setEnabled(false);
+                  setEditable(false);
+                  break;
                }
-               enabledAll.add(enabled);
             }
          }
-         control.setEnabled(!enabledAll.stream().filter(a -> a == false).findAny().isPresent());
-         setEditable(!enabledAll.stream().filter(a -> a == false).findAny().isPresent());
       }
 
    }
