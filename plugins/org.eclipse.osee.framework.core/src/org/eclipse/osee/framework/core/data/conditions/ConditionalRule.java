@@ -12,18 +12,18 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data.conditions;
 
-import org.eclipse.osee.framework.core.data.ArtifactToken;
+import java.util.List;
 
 /**
  * @author Donald G. Dunne
  */
 public abstract class ConditionalRule {
 
-   public boolean isDisabled(ArtifactToken artifact) {
-      return !isEnabled(artifact);
+   public boolean isDisabled(List<String> currentValues) {
+      return !isEnabled(currentValues);
    }
 
-   public boolean isEnabled(ArtifactToken artifact) {
+   public boolean isEnabled(List<String> currentValues) {
       return true;
    }
 
