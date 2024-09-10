@@ -260,7 +260,8 @@ public class PublishingRendererTest {
                                       PresentationType.PREVIEW.name(),                                          /* Presentation Type   */
                                       RendererOption.PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE.getKey()           /* Option */
                                    )
-                         )
+                         ),
+                         null
                       ),
 
                new PublishingTemplate
@@ -282,7 +283,8 @@ public class PublishingRendererTest {
                             ),
                          List.of                                                                                /* Match Criteria             */
                            (
-                           )
+                           ),
+                         null
                       ),
 
                new PublishingTemplate
@@ -304,7 +306,8 @@ public class PublishingRendererTest {
                             ),
                          List.of                                                                                /* Match Criteria             */
                            (
-                           )
+                           ),
+                         null
                       ),
 
                new PublishingTemplate
@@ -326,7 +329,8 @@ public class PublishingRendererTest {
                             ),
                          List.of                                                                                /* Match Criteria             */
                             (
-                            )
+                            ),
+                         null
                       ),
 
                new PublishingTemplate
@@ -348,7 +352,8 @@ public class PublishingRendererTest {
                             ),
                          List.of                                                                                /* Match Criteria             */
                             (
-                            )
+                            ),
+                         null
                       ),
 
                new PublishingTemplate
@@ -370,7 +375,8 @@ public class PublishingRendererTest {
                             ),
                          List.of                                                                                /* Match Criteria             */
                             (
-                            )
+                            ),
+                         null
                       ),
 
                new PublishingTemplate
@@ -392,7 +398,8 @@ public class PublishingRendererTest {
                             ),
                          List.of                                                                                /* Match Criteria             */
                             (
-                            )
+                            ),
+                         null
                       ),
 
                new PublishingTemplate
@@ -414,7 +421,8 @@ public class PublishingRendererTest {
                             ),
                          List.of                                                                                /* Match Criteria             */
                             (
-                            )
+                            ),
+                         null
                       )
 
             );

@@ -263,7 +263,7 @@ public class MapEntryWidget extends Composite {
          this.keyText.setEditable(true);
          this.valueText.setEditable(true);
       } else {
-         this.valueText.setText("--to-large--");
+         this.valueText.setText("--too-large--");
          this.largeText = value;
          this.keyText.setEditable(false);
          this.valueText.setEditable(false);
