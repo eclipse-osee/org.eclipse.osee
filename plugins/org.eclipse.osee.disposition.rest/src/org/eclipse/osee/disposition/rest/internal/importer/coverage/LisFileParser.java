@@ -1091,7 +1091,7 @@ public class LisFileParser implements DispoImporterApi {
          }
       }
 
-      addAnnotation(item.getAnnotationsList(), existingAnnotation);
+      DispoUtil.addAnnotation(item.getAnnotationsList(), existingAnnotation);
 
    }
 
@@ -1125,7 +1125,7 @@ public class LisFileParser implements DispoImporterApi {
       newAnnotation.setIsResolutionValid(false);
       newAnnotation.setCustomerNotes(text);
 
-      boolean annotAdded = addAnnotation(item.getAnnotationsList(), newAnnotation);
+      boolean annotAdded = DispoUtil.addAnnotation(item.getAnnotationsList(), newAnnotation);
 
       if (annotAdded) {
          dispoConnector.connectAnnotation(newAnnotation, item.getDiscrepanciesList());
@@ -1148,13 +1148,9 @@ public class LisFileParser implements DispoImporterApi {
       newAnnotation.setLastResolution(uncoveredAnnotation.getResolution());
       newAnnotation.setLastManualResolutionType(uncoveredAnnotation.getLastManualResolutionType());
       newAnnotation.setLastManualResolution(uncoveredAnnotation.getLastManualResolution());
-      if (uncoveredAnnotation.getLastManualResolution().contains("Modify")) {
-         newAnnotation.setIsResolutionValid(false);
-         newAnnotation.setNeedsModify(true);
-      } else {
-         newAnnotation.setIsResolutionValid(true);
-         newAnnotation.setNeedsModify(false);
-      }
+      newAnnotation.setIsResolutionValid(false);
+      newAnnotation.setAndGetNeedsModify();
+
       newAnnotation.setCustomerNotes(text);
 
       if (location.contains("(P")) {
@@ -1194,7 +1190,7 @@ public class LisFileParser implements DispoImporterApi {
       newAnnotation.setIsResolutionValid(true);
       newAnnotation.setCustomerNotes(text);
 
-      addAnnotation(item.getAnnotationsList(), newAnnotation);
+      DispoUtil.addAnnotation(item.getAnnotationsList(), newAnnotation);
    }
 
    private void addAnnotationForOverloadedMcdcLine(DispoItemData item, String location, String text,
@@ -1219,7 +1215,7 @@ public class LisFileParser implements DispoImporterApi {
       newAnnotation.setCustomerNotes(text);
       newAnnotation.setDeveloperNotes(developerNotes);
 
-      boolean annotAdded = addAnnotation(item.getAnnotationsList(), newAnnotation);
+      boolean annotAdded = DispoUtil.addAnnotation(item.getAnnotationsList(), newAnnotation);
 
       if (annotAdded && !newAnnotation.getIsResolutionValid()) {
          dispoConnector.connectAnnotation(newAnnotation, item.getDiscrepanciesList());
@@ -1260,7 +1256,7 @@ public class LisFileParser implements DispoImporterApi {
          }
       }
 
-      boolean annotAdded = addAnnotation(item.getAnnotationsList(), newAnnotation);
+      boolean annotAdded = DispoUtil.addAnnotation(item.getAnnotationsList(), newAnnotation);
 
       if (annotAdded && !newAnnotation.getIsResolutionValid()) {
          dispoConnector.connectAnnotation(newAnnotation, item.getDiscrepanciesList());
@@ -1313,7 +1309,7 @@ public class LisFileParser implements DispoImporterApi {
             continue;
          }
 
-         if (pairAnnotation.getIsResolutionValid() || pairAnnotation.getNeedsModify()) {
+         if (pairAnnotation.getIsResolutionValid() || pairAnnotation.setAndGetNeedsModify()) {
             for (int pair : pairAnnotation.getPairedWith()) {
                int sideARow = pairAnnotation.getRow();
                DispoAnnotationData associatedPair = pairAnnotations.get(pair);
@@ -1370,7 +1366,7 @@ public class LisFileParser implements DispoImporterApi {
       List<String> possiblePairs = new ArrayList<>();
 
       for (DispoAnnotationData pairAnnotation : pairAnnotations.values()) {
-         addAnnotation(item.getAnnotationsList(), pairAnnotation);
+         DispoUtil.addAnnotation(item.getAnnotationsList(), pairAnnotation);
 
          for (int pair : pairAnnotation.getPairedWith()) {
             int sideARow = pairAnnotation.getRow();
@@ -1380,28 +1376,6 @@ public class LisFileParser implements DispoImporterApi {
          }
       }
       return String.format("Possible Pairs: %s", possiblePairs.toString());
-   }
-
-   private boolean addAnnotation(List<DispoAnnotationData> annotationsList, DispoAnnotationData newAnnotation) {
-      boolean recordAnnotation = true;
-      int newIndex = annotationsList.size();
-
-      for (DispoAnnotationData annotData : annotationsList) {
-         if (annotData.getLocationRefs().equals(newAnnotation.getLocationRefs())) {
-            if (!annotData.getResolutionType().isEmpty() && newAnnotation.getResolutionType().isEmpty()) {
-               recordAnnotation = false;
-            } else {
-               newIndex = annotData.getIndex();
-               annotationsList.remove(annotData);
-            }
-            break;
-         }
-      }
-      if (recordAnnotation) {
-         newAnnotation.setIndex(newIndex);
-         annotationsList.add(newIndex, newAnnotation);
-      }
-      return recordAnnotation;
    }
 
    private Collection<VCastResult> getResultFiles(VCastDataStore dataStore) {

@@ -93,20 +93,22 @@ public final class DispoUtil {
 
    public static DispoAnnotationData getById(List<DispoAnnotationData> list, String id) {
       for (DispoAnnotationData annotation : list) {
-         if (annotation.getGuid() != null && annotation.getGuid().equals(id)) {
+         String guid = annotation.getGuid();
+         if (guid != null && !guid.isEmpty() && guid.equals(id)) {
             return annotation;
          }
       }
-      return null;
+      return DispoAnnotationData.SENTINEL;
    }
 
    public static DispoAnnotationData getByLocation(List<DispoAnnotationData> list, String location) {
       for (DispoAnnotationData annotation : list) {
-         if (annotation.getLocationRefs() != null && annotation.getLocationRefs().equals(location)) {
+         String locationRefs = annotation.getLocationRefs();
+         if (locationRefs != null && !locationRefs.isEmpty() && locationRefs.equals(location)) {
             return annotation;
          }
       }
-      return null;
+      return DispoAnnotationData.SENTINEL;
    }
 
    public static DispoItemData itemArtToItemData(DispoItem dispoItemArt, boolean isIncludeDiscrepancies) {
@@ -438,5 +440,36 @@ public final class DispoUtil {
 
    public static boolean isResolutionValid(String resolution) {
       return getValidCoverageTypes().contains(resolution);
+   }
+
+   public static boolean addAnnotation(List<DispoAnnotationData> annotationsList, DispoAnnotationData newAnnotation) {
+      boolean recordAnnotation = true;
+      int newIndex = annotationsList.size();
+
+      for (DispoAnnotationData annotData : annotationsList) {
+         if (annotData.getLocationRefs().equals(newAnnotation.getLocationRefs())) {
+            if (!isAnnotationValueBlank(annotData) && isAnnotationValueBlank(newAnnotation)) {
+               recordAnnotation = false;
+            } else {
+               newIndex = annotData.getIndex();
+               annotationsList.remove(annotData);
+            }
+            break;
+         }
+      }
+      if (recordAnnotation) {
+         newAnnotation.setIndex(newIndex);
+         annotationsList.add(newIndex, newAnnotation);
+      }
+      return recordAnnotation;
+   }
+
+   public static boolean isAnnotationValueBlank(DispoAnnotationData annotation) {
+      String resolutionType = annotation.getResolutionType();
+      if (resolutionType.isEmpty() || resolutionType.isBlank() || resolutionType.equals("None")) {
+         return true;
+      } else {
+         return false;
+      }
    }
 }
