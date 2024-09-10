@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -1199,10 +1200,28 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
 
          this.setRendererOption(RendererOption.BRANCH, branchId);
          this.setRendererOption(RendererOption.BRANCH_NAME, branchName);
+
+         ArtifactId branchTokenViewId = ArtifactId.valueOf(branchToken.getViewId());
+
+         // Check if RendererOption.VIEW is not set
+         if (this.getRendererOptionValue(RendererOption.VIEW).equals(ArtifactId.SENTINEL)) {
+            // If branchTokenViewId is set, set RendererOption.VIEW to branchTokenViewId
+            if (!branchTokenViewId.equals(null) && !branchTokenViewId.getId().equals(Id.SENTINEL)) {
+               this.setRendererOption(RendererOption.VIEW, branchTokenViewId);
+            } else {
+               // Set RendererOption.VIEW to ArtifactId.SENTINEL if neither RendererOption.VIEW nor branchTokenViewId are set
+               this.setRendererOption(RendererOption.VIEW, ArtifactId.SENTINEL);
+            }
+         }
       } else {
          // Handle the case when branchToken is null
          this.setRendererOption(RendererOption.BRANCH, BranchId.valueOf(Id.SENTINEL));
          this.setRendererOption(RendererOption.BRANCH_NAME, "UNKNOWN");
+
+         // Ensure RendererOption.VIEW is set even if branchToken is null
+         if (this.getRendererOptionValue(RendererOption.VIEW).equals(ArtifactId.SENTINEL)) {
+            this.setRendererOption(RendererOption.VIEW, ArtifactId.SENTINEL);
+         }
       }
 
       return artifactsNoNulls;
