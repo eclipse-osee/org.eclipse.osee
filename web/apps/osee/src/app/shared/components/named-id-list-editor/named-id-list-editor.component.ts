@@ -10,7 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input, Output, inject } from '@angular/core';
+import {
+	Component,
+	effect,
+	inject,
+	input,
+	output,
+	signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatDivider } from '@angular/material/divider';
@@ -24,7 +31,7 @@ import {
 } from '@angular/material/list';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { NamedId } from '@osee/shared/types';
-import { Subject, filter, take, tap } from 'rxjs';
+import { filter, take, tap } from 'rxjs';
 import { EditViewFreeTextFieldDialogComponent } from '../edit-view-free-text-field-dialog/edit-view-free-text-field-dialog.component';
 
 @Component({
@@ -45,25 +52,26 @@ import { EditViewFreeTextFieldDialogComponent } from '../edit-view-free-text-fie
 	styles: [],
 })
 export class NamedIdListEditorComponent {
-	@Input() name = '';
-	@Input() dataToDisplay: NamedId[] = [];
-	@Input() count = 0;
+	name = input('');
+	dataToDisplay = input<NamedId[]>([]);
+	count = input(0);
 
-	@Input() pageSize = 10;
+	pageSize = input(10);
 
-	@Input() pageIndex = 1;
-	@Input() allowedToEdit = false;
+	pageIndex = input(1);
+	allowedToEdit = input(false);
 
-	@Output() pageEvent = new Subject<PageEvent>();
+	pageEvent = output<PageEvent>();
 
-	filter = '';
-	_filterChange = new Subject<string>();
-	@Output() filterChange = this._filterChange;
+	filterChange = output<string>();
 
-	@Output() namedIdEdit = new Subject<NamedId>();
+	namedIdEdit = output<NamedId>();
 
-	@Output() createNew = new Subject<string>();
+	createNew = output<string>();
 	_dialog = inject(MatDialog);
+
+	filter = signal('');
+	private _filterEffect = effect(() => this.filterChange.emit(this.filter()));
 
 	openNameDialog(namedIdToModify: NamedId) {
 		this._dialog
@@ -82,17 +90,13 @@ export class NamedIdListEditorComponent {
 				take(1),
 				filter((v) => v !== 'ok' && v !== 'cancel' && v !== undefined),
 				tap((v) => {
-					this.namedIdEdit.next({
+					this.namedIdEdit.emit({
 						id: namedIdToModify.id,
 						name: v.return,
 					});
 				})
 			)
 			.subscribe();
-	}
-
-	updateFilter(f: string) {
-		this._filterChange.next(f);
 	}
 
 	addNamedId() {
@@ -113,7 +117,7 @@ export class NamedIdListEditorComponent {
 				take(1),
 				filter((v) => v !== 'ok' && v !== 'cancel' && v !== undefined),
 				tap((v) => {
-					this.createNew.next(v.return);
+					this.createNew.emit(v.return);
 				})
 			)
 			.subscribe();
