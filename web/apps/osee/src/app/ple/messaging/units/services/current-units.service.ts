@@ -11,9 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable, inject } from '@angular/core';
-import { NamedId } from '@osee/shared/types';
 import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
-import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 import {
 	combineLatest,
 	debounceTime,
@@ -23,11 +21,11 @@ import {
 	shareReplay,
 	switchMap,
 	take,
-	tap,
 } from 'rxjs';
 import { UnitsService } from './units.service';
 import { UnitsUiService } from './units-ui.service';
-import { TransactionService } from '@osee/transactions/services';
+import { CurrentTransactionService } from '@osee/transactions/services';
+import { unit } from '@osee/messaging/units/types';
 
 @Injectable({
 	providedIn: 'root',
@@ -35,6 +33,7 @@ import { TransactionService } from '@osee/transactions/services';
 export class CurrentUnitsService {
 	private unitsService = inject(UnitsService);
 	private uiService = inject(UnitsUiService);
+	private _currentTx = inject(CurrentTransactionService);
 
 	private _units = combineLatest([
 		this.uiService.BranchId,
@@ -70,8 +69,6 @@ export class CurrentUnitsService {
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
-
-	private transactionService = inject(TransactionService);
 
 	get current() {
 		return this._units;
@@ -149,50 +146,25 @@ export class CurrentUnitsService {
 		this.uiService.filterString = f;
 	}
 
-	modifyUnit(value: NamedId) {
-		return this.uiService.BranchId.pipe(
-			take(1),
-			switchMap((id) =>
-				this.transactionService.performMutation({
-					branch: id,
-					txComment: `Modifying ${value.id}`,
-					modifyArtifacts: [
-						{
-							id: value.id,
-							setAttributes: [
-								{
-									typeId: ATTRIBUTETYPEIDENUM.NAME,
-									value: value.name,
-								},
-							],
-						},
-					],
-				})
-			),
-			tap((_) => {
-				this.uiService.update = true;
-			})
+	createUnit(unit: unit) {
+		const { id, gammaId, applicability, ...remainingAttributes } = unit;
+		const attributeKeys = Object.keys(
+			remainingAttributes
+		) as (keyof typeof remainingAttributes)[];
+		const attributes = attributeKeys.map((k) => remainingAttributes[k]);
+		return this._currentTx.createArtifactAndMutate(
+			`Creating Unit ${unit.name.value}`,
+			ARTIFACTTYPEIDENUM.UNIT,
+			applicability,
+			[],
+			...attributes
 		);
 	}
 
-	createUnit(value: string) {
-		return this.uiService.BranchId.pipe(
-			take(1),
-			switchMap((id) =>
-				this.transactionService.performMutation({
-					branch: id,
-					txComment: `Creating Unit ${value}`,
-					createArtifacts: [
-						{
-							typeId: ARTIFACTTYPEIDENUM.UNIT,
-							name: value,
-						},
-					],
-				})
-			),
-			tap((_) => {
-				this.uiService.update = true;
-			})
-		);
+	deleteUnit(unit: unit) {
+		return this._currentTx
+			.deleteArtifactAndMutate(`Delete Unit ${unit.name.value}`, unit.id)
+			.pipe(take(1))
+			.subscribe();
 	}
 }

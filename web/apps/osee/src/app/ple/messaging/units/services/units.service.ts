@@ -13,8 +13,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { apiURL } from '@osee/environments';
-import { HttpParamsType, NamedId } from '@osee/shared/types';
+import { HttpParamsType } from '@osee/shared/types';
 import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
+import { unit } from '@osee/messaging/units/types';
 
 @Injectable({
 	providedIn: 'root',
@@ -43,7 +44,7 @@ export class UnitsService {
 			params = { ...params, filter: filter };
 		}
 		params = { ...params, orderByAttributeType: ATTRIBUTETYPEIDENUM.NAME };
-		return this.http.get<NamedId[]>(
+		return this.http.get<unit[]>(
 			apiURL + '/mim/branch/' + branchId + '/units',
 			{
 				params: params,
@@ -51,7 +52,7 @@ export class UnitsService {
 		);
 	}
 	getOne(branchId: string, unitId: string) {
-		return this.http.get<NamedId>(
+		return this.http.get<unit>(
 			apiURL + '/mim/branch/' + branchId + '/units/' + unitId
 		);
 	}

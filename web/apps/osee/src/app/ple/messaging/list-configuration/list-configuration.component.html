@@ -18,17 +18,7 @@
 @if (branchId() && branchType()) {
 	<div class="tw-flex tw-flex-col tw-gap-2">
 		<osee-expansion-panel title="Units">
-			<osee-named-id-list-editor
-				[name]="'Units'"
-				[allowedToEdit]="branchType() === 'working'"
-				[dataToDisplay]="(units | async) || []"
-				[pageIndex]="(unitsPageIndex | async) || 0"
-				[pageSize]="(unitsPageSize | async) || 10"
-				[count]="(unitsCount | async) || 0"
-				(pageEvent)="updateUnitsPages($event)"
-				(filterChange)="unitsFilterChange($event)"
-				(namedIdEdit)="updateUnit($event)"
-				(createNew)="createUnit($event)"></osee-named-id-list-editor>
+			<osee-units-table />
 		</osee-expansion-panel>
 		<osee-expansion-panel title="Rates">
 			<osee-named-id-list-editor
