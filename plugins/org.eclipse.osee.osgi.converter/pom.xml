@@ -24,12 +24,12 @@
 						<configuration>
 							<artifacts>
 							  
-							    <artifact>
+							        <artifact>
 									<id>com.sun.xml.fastinfoset:FastInfoset:jar:1.2.13</id>									
 									<source>true</source>
 								</artifact>
 	                     
-						        <artifact>
+						                <artifact>
 									<id>org.glassfish.hk2:osgi-resource-locator:jar:2.5.0-b33</id>									
 									<source>true</source>
 								</artifact>
