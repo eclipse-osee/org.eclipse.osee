@@ -23,7 +23,17 @@
 						<phase>package</phase>
 						<configuration>
 							<artifacts>
-							
+							  
+							    <artifact>
+									<id>com.sun.xml.fastinfoset:FastInfoset:jar:1.2.13</id>									
+									<source>true</source>
+								</artifact>
+	                     
+						        <artifact>
+									<id>org.glassfish.hk2:osgi-resource-locator:jar:2.5.0-b33</id>									
+									<source>true</source>
+								</artifact>
+								
 								<artifact>
 									<id>org.apache.commons:commons-compress:jar:1.26.0</id>
 									<source>true</source>
