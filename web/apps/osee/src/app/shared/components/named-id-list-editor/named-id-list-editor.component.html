@@ -14,14 +14,13 @@
 	<input
 		type="text"
 		matInput
-		[placeholder]="'Filter ' + name"
+		[placeholder]="'Filter ' + name()"
 		[(ngModel)]="filter"
-		(ngModelChange)="updateFilter($any($event))"
 		#input />
 </mat-form-field>
 <mat-action-list>
-	@for (artifact of dataToDisplay; track artifact.id) {
-		@if (allowedToEdit) {
+	@for (artifact of dataToDisplay(); track artifact.id) {
+		@if (allowedToEdit()) {
 			<button
 				mat-list-item
 				(click)="openNameDialog(artifact)">
@@ -43,11 +42,11 @@
 			matListItemIcon>
 			add
 		</mat-icon>
-		Add New {{ name }}
+		Add New {{ name() }}
 	</button>
 </mat-action-list>
 <mat-paginator
-	[length]="count"
-	[pageIndex]="pageIndex"
-	[pageSize]="pageSize"
-	(page)="pageEvent.next($event)"></mat-paginator>
+	[length]="count()"
+	[pageIndex]="pageIndex()"
+	[pageSize]="pageSize()"
+	(page)="pageEvent.emit($event)"></mat-paginator>
