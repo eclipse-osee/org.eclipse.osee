@@ -10,36 +10,76 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NamedId } from '@osee/shared/types';
-export const unitsMock: NamedId[] = [
-	{ id: '1', name: 'Bd' },
-	{ id: '2', name: 'DI' },
-	{ id: '3', name: 'Feet^2' },
-	{ id: '4', name: 'Nm' },
-	{ id: '5', name: 'dB' },
-	{ id: '6', name: 'days' },
-	{ id: '7', name: 'degrees' },
-	{ id: '8', name: 'degrees/second' },
-	{ id: '9', name: 'direction cosine' },
-	{ id: '10', name: 'direction cosine/second' },
-	{ id: '11', name: 'feet' },
-	{ id: '12', name: 'feet/second' },
-	{ id: '13', name: 'feet/second²' },
-	{ id: '14', name: 'feet²/second²' },
-	{ id: '15', name: 'hertz' },
-	{ id: '16', name: 'hours' },
-	{ id: '17', name: 'in HG' },
-	{ id: '18', name: 'kW' },
-	{ id: '19', name: 'minutes' },
-	{ id: '20', name: 'n/a' },
-	{ id: '21', name: 'nanoseconds' },
-	{ id: '22', name: 'radians' },
-	{ id: '23', name: 'radians/sec' },
-	{ id: '24', name: 'seconds' },
-	{ id: '25', name: 'unit²' },
-	{ id: '26', name: 'volts' },
-	{ id: '27', name: 'years' },
-	{ id: '28', name: '°C' },
-	{ id: '29', name: '°F' },
-	{ id: '30', name: '°R' },
+import { applicabilitySentinel } from '@osee/applicability/types';
+import { unit } from '@osee/messaging/units/types';
+
+export const unitsMock: unit[] = [
+	{
+		id: '1',
+		gammaId: '1',
+		name: {
+			id: '11',
+			gammaId: '11',
+			typeId: '1152921504606847088',
+			value: 'dB',
+		},
+		measurement: {
+			id: '111',
+			gammaId: '111',
+			typeId: '2478822847543373494',
+			value: 'decibels',
+		},
+		applicability: applicabilitySentinel,
+	},
+	{
+		id: '2',
+		gammaId: '2',
+		name: {
+			id: '22',
+			gammaId: '22',
+			typeId: '1152921504606847088',
+			value: 'DI',
+		},
+		measurement: {
+			id: '222',
+			gammaId: '222',
+			typeId: '2478822847543373494',
+			value: '',
+		},
+		applicability: applicabilitySentinel,
+	},
+	{
+		id: '3',
+		gammaId: '3',
+		name: {
+			id: '33',
+			gammaId: '33',
+			typeId: '1152921504606847088',
+			value: 'Feet^2',
+		},
+		measurement: {
+			id: '333',
+			gammaId: '333',
+			typeId: '2478822847543373494',
+			value: 'Length',
+		},
+		applicability: applicabilitySentinel,
+	},
+	{
+		id: '4',
+		gammaId: '4',
+		name: {
+			id: '44',
+			gammaId: '44',
+			typeId: '1152921504606847088',
+			value: 'minutes',
+		},
+		measurement: {
+			id: '444',
+			gammaId: '444',
+			typeId: '2478822847543373494',
+			value: 'Time',
+		},
+		applicability: applicabilitySentinel,
+	},
 ];

@@ -10,5 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './units.service.mock';
-export * from './unit.response.mock';
+import { hasApplic } from '@osee/applicability/types';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
+import { attribute } from '@osee/attributes/types';
+
+export type unit = {
+	id: `${number}`;
+	gammaId: `${number}`;
+} & UnitAttr &
+	hasApplic;
+
+type UnitAttr = {
+	name: Required<attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>>;
+	measurement: Required<
+		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEUNITMEASUREMENT>
+	>;
+};

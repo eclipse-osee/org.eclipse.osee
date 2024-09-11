@@ -10,5 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './units.service.mock';
-export * from './unit.response.mock';
+
+import { Component } from '@angular/core';
+import { UnitsTableComponent } from '../units-table.component';
+
+@Component({
+	selector: 'osee-unit-dropdown',
+	template: '<p>Dummy</p>',
+	standalone: true,
+})
+export class MockUnitsTableComponent implements Partial<UnitsTableComponent> {}

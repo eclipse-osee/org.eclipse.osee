@@ -1,0 +1,91 @@
+<!--
+* Copyright (c) 2024 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
+<mat-form-field class="tw-w-full">
+	<input
+		type="text"
+		matInput
+		placeholder="Filter CI Sets"
+		[(ngModel)]="filter"
+		#input />
+</mat-form-field>
+<div class="tw-max-h-96 tw-overflow-auto">
+	<table
+		mat-table
+		[dataSource]="(units | async) || []">
+		@for (header of headers; track $index) {
+			<ng-container [matColumnDef]="header">
+				<th
+					mat-header-cell
+					*matHeaderCellDef
+					class="tw-text-primary-600">
+					{{ header }}
+				</th>
+				<td
+					mat-cell
+					*matCellDef="let unit">
+					@if (header === 'Name') {
+						<form #defaultForm="ngForm">
+							<osee-persisted-string-attribute-input
+								[artifactId]="unit.id"
+								[value]="unit.name"
+								[artifactApplicability]="unit.applicability" />
+						</form>
+					} @else if (header === 'Measurement') {
+						<form #defaultForm="ngForm">
+							<osee-persisted-string-attribute-input
+								[artifactId]="unit.id"
+								[value]="unit.measurement"
+								[artifactApplicability]="unit.applicability" />
+						</form>
+					} @else if (header === ' ') {
+						<button
+							mat-icon-button
+							(click)="deleteUnit(unit)"
+							[matTooltip]="'Delete ' + unit.name.value">
+							<mat-icon class="tw-text-osee-red-8"
+								>delete</mat-icon
+							>
+						</button>
+					}
+				</td>
+			</ng-container>
+		}
+		<tr
+			mat-header-row
+			*matHeaderRowDef="headers; sticky: true"></tr>
+		<tr
+			mat-row
+			*matRowDef="let row; columns: headers"
+			class="odd:tw-bg-selected-button even:tw-bg-background-background"></tr>
+	</table>
+</div>
+<mat-toolbar>
+	<span class="tw-flex-auto"></span>
+	<mat-paginator
+		[pageSizeOptions]="[10, 15, 20, 25, 50, 75, 100, 200, 500]"
+		[pageSize]="(unitsPageSize | async) || 10"
+		[pageIndex]="(unitsPageIndex | async) || 0"
+		(page)="setPage($event)"
+		[length]="(unitsCount | async) || 0"></mat-paginator>
+	<div
+		class="tw-pr-4"
+		matTooltip="Add a CI Set
+			">
+		<button
+			mat-mini-fab
+			class="tertiary-fab"
+			(click)="openNewUnitDialog()">
+			<mat-icon>add</mat-icon>
+		</button>
+	</div>
+</mat-toolbar>

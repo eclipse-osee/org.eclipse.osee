@@ -24,11 +24,11 @@ import {
 	CurrentViewSelectorComponent,
 } from '@osee/shared/components';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { CurrentUnitsService } from '@osee/messaging/units/services';
 import { CurrentStructureCategoriesService } from '@osee/messaging/structure-category/services';
 import { CurrentMessagePeriodicityService } from '@osee/messaging/message-periodicity/services';
 import { CurrentMessageTypesService } from '@osee/messaging/message-type/services';
 import { CurrentRatesService } from '@osee/messaging/rate/services';
+import { UnitsTableComponent } from '@osee/messaging/units/table';
 
 @Component({
 	selector: 'osee-list-configuration',
@@ -39,6 +39,7 @@ import { CurrentRatesService } from '@osee/messaging/rate/services';
 		CurrentViewSelectorComponent,
 		AsyncPipe,
 		ExpansionPanelComponent,
+		UnitsTableComponent,
 	],
 	templateUrl: './list-configuration.component.html',
 })
@@ -46,8 +47,6 @@ export class ListConfigurationComponent implements OnDestroy {
 	private _uiService = inject(UiService);
 
 	private _route = inject(ActivatedRoute);
-
-	private _currentUnitsService = inject(CurrentUnitsService);
 
 	private _currentRatesService = inject(CurrentRatesService);
 
@@ -75,27 +74,8 @@ export class ListConfigurationComponent implements OnDestroy {
 		takeUntil(this._destroyed)
 	);
 	setup = this.routeSetup.subscribe();
-	units = this._currentUnitsService.current;
-	unitsCount = this._currentUnitsService.count;
-	unitsPageSize = this._currentUnitsService.currentPageSize;
-	unitsPageIndex = this._currentUnitsService.currentPage;
 	ngOnDestroy(): void {
 		this._destroyed.next();
-	}
-	updateUnitsPages(pg: PageEvent) {
-		this._currentUnitsService.page = pg.pageIndex;
-		this._currentUnitsService.pageSize = pg.pageSize;
-	}
-	unitsFilterChange(f: string) {
-		this._currentUnitsService.page = 0;
-		this._currentUnitsService.filter = f;
-	}
-	updateUnit(value: NamedId) {
-		this._currentUnitsService.modifyUnit(value).subscribe();
-	}
-
-	createUnit(value: string) {
-		this._currentUnitsService.createUnit(value).subscribe();
 	}
 
 	rates = this._currentRatesService.current;

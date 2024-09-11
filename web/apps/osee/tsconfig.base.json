@@ -171,8 +171,14 @@
 			"@osee/messaging/units/persisted-unit-dropdown": [
 				"src/app/ple/messaging/units/components/persisted-unit-dropdown"
 			],
+			"@osee/messaging/units/table": [
+				"src/app/ple/messaging/units/components/units-table"
+			],
 			"@osee/messaging/units/services": [
 				"src/app/ple/messaging/units/services"
+			],
+			"@osee/messaging/units/types": [
+				"src/app/ple/messaging/units/types"
 			],
 			"@osee/messaging/structure-category/structure-category-dropdown": [
 				"src/app/ple/messaging/structure-category/components/structure-category-dropdown"

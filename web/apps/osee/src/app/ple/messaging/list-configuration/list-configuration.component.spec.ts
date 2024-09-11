@@ -27,11 +27,10 @@ import { MessageTypesService } from '@osee/messaging/message-type/services';
 import { RatesService } from '@osee/messaging/rate/services';
 import { CurrentStructureCategoriesService } from '@osee/messaging/structure-category/services';
 import { CurrentStructureCategoriesServiceMock } from '@osee/messaging/structure-category/services/testing';
-import { UnitsService } from '@osee/messaging/units/services';
-import { unitsServiceMock } from '@osee/messaging/units/services/testing';
 import { TransactionService } from '@osee/transactions/services';
 import { transactionServiceMock } from '@osee/transactions/services/testing';
 import { ListConfigurationComponent } from './list-configuration.component';
+import { MockUnitsTableComponent } from '@osee/messaging/units/table/testing';
 import { MockCurrentViewSelectorComponent } from '@osee/shared/components/testing';
 
 describe('ListConfigurationComponent', () => {
@@ -45,10 +44,6 @@ describe('ListConfigurationComponent', () => {
 					{
 						provide: TransactionService,
 						useValue: transactionServiceMock,
-					},
-					{
-						provide: UnitsService,
-						useValue: unitsServiceMock,
 					},
 					{
 						provide: RatesService,
@@ -67,6 +62,7 @@ describe('ListConfigurationComponent', () => {
 					MockCurrentViewSelectorComponent,
 					MessagingControlsMockComponent,
 					NamedIdListEditorComponent,
+					MockUnitsTableComponent,
 					AsyncPipe,
 					NgIf,
 				],
@@ -79,10 +75,6 @@ describe('ListConfigurationComponent', () => {
 					{
 						provide: TransactionService,
 						useValue: transactionServiceMock,
-					},
-					{
-						provide: UnitsService,
-						useValue: unitsServiceMock,
 					},
 					{
 						provide: RatesService,
