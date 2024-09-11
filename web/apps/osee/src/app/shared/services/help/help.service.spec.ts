@@ -55,6 +55,7 @@ describe('HelpService', () => {
 					routerLink: 'page/1',
 					icon: '',
 					description: '',
+					usesBranch: false,
 					children: [
 						{
 							label: 'Help Page 1',
@@ -65,8 +66,9 @@ describe('HelpService', () => {
 							requiredRoles: [],
 							routerLink: 'page/11',
 							icon: '',
-							children: [],
 							description: '',
+							usesBranch: false,
+							children: [],
 						},
 					],
 				},

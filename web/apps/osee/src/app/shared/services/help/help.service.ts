@@ -51,6 +51,7 @@ export class HelpService {
 			routerLink: 'page/' + helpPage.id,
 			icon: '',
 			description: '',
+			usesBranch: false,
 			children: helpPage.children.map((c) =>
 				this.helpPageToNavElement(c)
 			),
