@@ -21,6 +21,7 @@ export type navigationElement = {
 	routerLink: string;
 	icon: string;
 	description: string;
+	usesBranch: boolean;
 	children: navigationElement[];
 };
 
@@ -35,4 +36,5 @@ export const defaultNavigationElement: navigationElement = {
 	icon: '',
 	description: '',
 	children: [],
+	usesBranch: false,
 };

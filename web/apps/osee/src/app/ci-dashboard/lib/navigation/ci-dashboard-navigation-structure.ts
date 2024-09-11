@@ -32,6 +32,7 @@ export const ciNavigationStructure: navigationElement[] = [
 		routerLink: '/ci/allScripts',
 		icon: 'ssid_chart',
 		description: '',
+		usesBranch: false,
 		children: [
 			// Level-2
 			{
@@ -44,6 +45,7 @@ export const ciNavigationStructure: navigationElement[] = [
 				routerLink: '/ci/timeline',
 				icon: '',
 				description: '',
+				usesBranch: false,
 				children: [],
 			},
 			{
@@ -56,6 +58,7 @@ export const ciNavigationStructure: navigationElement[] = [
 				routerLink: '/ci/allScripts',
 				icon: '',
 				description: '',
+				usesBranch: false,
 				children: [],
 			},
 			{
@@ -68,6 +71,7 @@ export const ciNavigationStructure: navigationElement[] = [
 				routerLink: '/ci/details',
 				icon: '',
 				description: '',
+				usesBranch: false,
 				children: [],
 			},
 			{
@@ -80,6 +84,7 @@ export const ciNavigationStructure: navigationElement[] = [
 				routerLink: '/ci/dashboard',
 				icon: '',
 				description: '',
+				usesBranch: false,
 				children: [],
 			},
 			{
@@ -92,6 +97,7 @@ export const ciNavigationStructure: navigationElement[] = [
 				routerLink: '/ci/subsystems',
 				icon: '',
 				description: '',
+				usesBranch: false,
 				children: [],
 			},
 			{
@@ -104,6 +110,7 @@ export const ciNavigationStructure: navigationElement[] = [
 				routerLink: '/ci/results',
 				icon: '',
 				description: '',
+				usesBranch: false,
 				children: [],
 			},
 			{
@@ -116,6 +123,7 @@ export const ciNavigationStructure: navigationElement[] = [
 				routerLink: '/ci/diffs',
 				icon: '',
 				description: '',
+				usesBranch: false,
 				children: [],
 			},
 			{
@@ -128,6 +136,7 @@ export const ciNavigationStructure: navigationElement[] = [
 				routerLink: '/ci/import',
 				icon: '',
 				description: '',
+				usesBranch: false,
 				children: [],
 			},
 			{
@@ -140,6 +149,7 @@ export const ciNavigationStructure: navigationElement[] = [
 				routerLink: '/ci/admin',
 				icon: '',
 				description: '',
+				usesBranch: false,
 				children: [],
 			},
 		],

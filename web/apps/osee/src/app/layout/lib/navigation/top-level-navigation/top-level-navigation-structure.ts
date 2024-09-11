@@ -33,6 +33,7 @@ export const navigationStructure: navigationElement[] = [
 		routerLink: '/ple',
 		icon: 'conveyor_belt',
 		description: '',
+		usesBranch: false,
 		children: [
 			// Level-2
 			{
@@ -45,6 +46,7 @@ export const navigationStructure: navigationElement[] = [
 				routerLink: '/ple',
 				icon: '',
 				description: '',
+				usesBranch: false,
 				children: [],
 			},
 			{
@@ -57,6 +59,7 @@ export const navigationStructure: navigationElement[] = [
 				routerLink: '/ple/help',
 				icon: '',
 				description: '',
+				usesBranch: false,
 				children: [
 					{
 						label: 'BAT Tool Help',
@@ -68,6 +71,7 @@ export const navigationStructure: navigationElement[] = [
 						routerLink: '/ple/help/bat',
 						icon: 'sports_cricket',
 						description: '',
+						usesBranch: false,
 						children: [],
 					},
 				],
@@ -82,6 +86,7 @@ export const navigationStructure: navigationElement[] = [
 				routerLink: '/ple/artifact/explorer',
 				icon: '',
 				description: '',
+				usesBranch: true,
 				children: [],
 			},
 			{
@@ -94,6 +99,7 @@ export const navigationStructure: navigationElement[] = [
 				routerLink: '/ple/messaging',
 				icon: '',
 				description: '',
+				usesBranch: false,
 				children: [
 					// Level-3
 					{
@@ -106,6 +112,7 @@ export const navigationStructure: navigationElement[] = [
 						routerLink: '/ple/messaging',
 						icon: 'home',
 						description: '',
+						usesBranch: false,
 						children: [],
 					},
 					{
@@ -118,6 +125,7 @@ export const navigationStructure: navigationElement[] = [
 						routerLink: '/ple/messaging/connections',
 						icon: 'device_hub',
 						description: '',
+						usesBranch: true,
 						children: [],
 					},
 					{
@@ -130,6 +138,7 @@ export const navigationStructure: navigationElement[] = [
 						routerLink: '/ple/messaging/types',
 						icon: 'view_module',
 						description: '',
+						usesBranch: true,
 						children: [],
 					},
 					{
@@ -142,6 +151,7 @@ export const navigationStructure: navigationElement[] = [
 						routerLink: '/ple/messaging/structureNames',
 						icon: 'line_style',
 						description: '',
+						usesBranch: true,
 						children: [],
 					},
 					{
@@ -154,6 +164,7 @@ export const navigationStructure: navigationElement[] = [
 						routerLink: '/ple/messaging/typeSearch',
 						icon: 'search',
 						description: '',
+						usesBranch: true,
 						children: [],
 					},
 					{
@@ -166,6 +177,7 @@ export const navigationStructure: navigationElement[] = [
 						routerLink: '/ple/messaging/reports',
 						icon: 'insert_drive_file',
 						description: '',
+						usesBranch: true,
 						children: [],
 					},
 					{
@@ -178,6 +190,7 @@ export const navigationStructure: navigationElement[] = [
 						routerLink: '/ple/messaging/crossreference',
 						icon: 'compare_arrows',
 						description: '',
+						usesBranch: true,
 						children: [],
 					},
 					{
@@ -190,6 +203,7 @@ export const navigationStructure: navigationElement[] = [
 						routerLink: '/ple/messaging/help',
 						icon: 'help_outline',
 						description: '',
+						usesBranch: false,
 						children: [],
 					},
 					{
@@ -202,6 +216,7 @@ export const navigationStructure: navigationElement[] = [
 						routerLink: '/ple/messaging/transports',
 						icon: 'timeline',
 						description: '',
+						usesBranch: true,
 						children: [],
 					},
 					{
@@ -214,6 +229,7 @@ export const navigationStructure: navigationElement[] = [
 						routerLink: '/ple/messaging/import',
 						icon: 'cloud_upload',
 						description: '',
+						usesBranch: true,
 						children: [],
 					},
 					{
@@ -226,6 +242,7 @@ export const navigationStructure: navigationElement[] = [
 						routerLink: '/ple/messaging/lists',
 						icon: 'view_list',
 						description: '',
+						usesBranch: true,
 						children: [],
 					},
 				],
@@ -240,6 +257,7 @@ export const navigationStructure: navigationElement[] = [
 				routerLink: '/ple/plconfig',
 				icon: '',
 				description: '',
+				usesBranch: false,
 				children: [],
 			},
 		],
@@ -254,6 +272,7 @@ export const navigationStructure: navigationElement[] = [
 		routerLink: '/server/health',
 		icon: 'monitor_heart',
 		description: '',
+		usesBranch: false,
 		children: [
 			{
 				label: 'Server Health Dashboard',
@@ -266,6 +285,7 @@ export const navigationStructure: navigationElement[] = [
 				icon: 'healing',
 				description:
 					'Provides OSEE Server Health Information and Links',
+				usesBranch: false,
 				children: [],
 			},
 			{
@@ -278,6 +298,7 @@ export const navigationStructure: navigationElement[] = [
 				routerLink: '/server/health/status',
 				icon: 'router',
 				description: 'OSEE Server Status',
+				usesBranch: false,
 				children: [],
 			},
 			{
@@ -290,6 +311,7 @@ export const navigationStructure: navigationElement[] = [
 				routerLink: '/server/health/balancers',
 				icon: 'device_hub',
 				description: 'OSEE Server Load Balancer Status',
+				usesBranch: false,
 				children: [],
 			},
 
@@ -303,6 +325,7 @@ export const navigationStructure: navigationElement[] = [
 				routerLink: '/server/health/usage',
 				icon: 'people',
 				description: 'OSEE Server Usage Report In The Last 1 Month',
+				usesBranch: false,
 				children: [],
 			},
 			{
@@ -315,6 +338,7 @@ export const navigationStructure: navigationElement[] = [
 				routerLink: '/server/health/database',
 				icon: 'table_chart',
 				description: 'OSEE Database Information',
+				usesBranch: false,
 				children: [],
 			},
 			{
@@ -328,6 +352,7 @@ export const navigationStructure: navigationElement[] = [
 				icon: 'rss_feed',
 				description:
 					'OSEE Server and Web Client Communication Protocols',
+				usesBranch: false,
 				children: [],
 			},
 		],

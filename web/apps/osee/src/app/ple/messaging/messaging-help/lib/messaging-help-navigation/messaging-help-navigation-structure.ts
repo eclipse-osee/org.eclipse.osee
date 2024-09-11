@@ -27,6 +27,7 @@ export const helpNavigationStructure: navigationElement[] = [
 		routerLink: 'overview',
 		icon: 'home',
 		description: '',
+		usesBranch: false,
 		children: [],
 	},
 	{
@@ -39,6 +40,7 @@ export const helpNavigationStructure: navigationElement[] = [
 		routerLink: 'icdrevision',
 		icon: 'edit',
 		description: '',
+		usesBranch: false,
 		children: [
 			{
 				label: 'Start an ICD Revision',
@@ -50,6 +52,7 @@ export const helpNavigationStructure: navigationElement[] = [
 				routerLink: 'icdrevision',
 				icon: 'edit',
 				description: '',
+				usesBranch: false,
 				children: [],
 			},
 			{
@@ -62,6 +65,7 @@ export const helpNavigationStructure: navigationElement[] = [
 				routerLink: 'edit_structure',
 				icon: 'edit',
 				description: '',
+				usesBranch: false,
 				children: [],
 			},
 			{
@@ -74,6 +78,7 @@ export const helpNavigationStructure: navigationElement[] = [
 				routerLink: 'add_element',
 				icon: 'add',
 				description: '',
+				usesBranch: false,
 				children: [],
 			},
 			{
@@ -86,6 +91,7 @@ export const helpNavigationStructure: navigationElement[] = [
 				routerLink: 'add_edit_types',
 				icon: 'add',
 				description: '',
+				usesBranch: false,
 				children: [],
 			},
 			{
@@ -99,6 +105,7 @@ export const helpNavigationStructure: navigationElement[] = [
 				routerLink: 'add_msg_submsg_struct',
 				icon: 'add',
 				description: '',
+				usesBranch: false,
 				children: [],
 			},
 			{
@@ -111,6 +118,7 @@ export const helpNavigationStructure: navigationElement[] = [
 				routerLink: 'using_cross_ref_mgr',
 				icon: 'sync_alt',
 				description: '',
+				usesBranch: false,
 				children: [],
 			},
 		],
@@ -125,6 +133,7 @@ export const helpNavigationStructure: navigationElement[] = [
 		routerLink: 'connections',
 		icon: 'device_hub',
 		description: '',
+		usesBranch: false,
 		children: [],
 	},
 	{
@@ -137,6 +146,7 @@ export const helpNavigationStructure: navigationElement[] = [
 		routerLink: 'type_view_page',
 		icon: 'view_module',
 		description: '',
+		usesBranch: false,
 		children: [],
 	},
 	{
@@ -149,6 +159,7 @@ export const helpNavigationStructure: navigationElement[] = [
 		routerLink: 'structures',
 		icon: 'line_style',
 		description: '',
+		usesBranch: false,
 		children: [],
 	},
 	{
@@ -161,6 +172,7 @@ export const helpNavigationStructure: navigationElement[] = [
 		routerLink: 'find_elements_by_type',
 		icon: 'search',
 		description: '',
+		usesBranch: false,
 		children: [],
 	},
 	{
@@ -173,6 +185,7 @@ export const helpNavigationStructure: navigationElement[] = [
 		routerLink: 'reports',
 		icon: 'insert_drive_file',
 		description: '',
+		usesBranch: false,
 		children: [],
 	},
 	{
@@ -185,6 +198,7 @@ export const helpNavigationStructure: navigationElement[] = [
 		routerLink: 'traceability',
 		icon: 'sync_alt',
 		description: '',
+		usesBranch: false,
 		children: [],
 	},
 	{
@@ -197,6 +211,7 @@ export const helpNavigationStructure: navigationElement[] = [
 		routerLink: 'user_settings',
 		icon: 'settings',
 		description: '',
+		usesBranch: false,
 		children: [],
 	},
 ];
