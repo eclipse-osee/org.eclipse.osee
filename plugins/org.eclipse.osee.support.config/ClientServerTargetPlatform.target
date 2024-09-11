@@ -449,6 +449,7 @@
 <plugin id="org.eclipse.osgi.source"/>
 <plugin id="org.eclipse.osgi.util"/>
 <plugin id="org.eclipse.osgi.util.source"/>
+<plugin id="org.eclipse.oss.ajax"/>
 <plugin id="org.eclipse.pde"/>
 <plugin id="org.eclipse.pde.api.tools"/>
 <plugin id="org.eclipse.pde.api.tools.annotations"/>
