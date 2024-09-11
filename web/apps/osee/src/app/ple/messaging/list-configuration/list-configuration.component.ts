@@ -19,6 +19,7 @@ import { ActivatedRoute } from '@angular/router';
 import { PageEvent } from '@angular/material/paginator';
 import { NamedId } from '@osee/shared/types';
 import {
+	ExpansionPanelComponent,
 	NamedIdListEditorComponent,
 	CurrentViewSelectorComponent,
 } from '@osee/shared/components';
@@ -37,6 +38,7 @@ import { CurrentRatesService } from '@osee/messaging/rate/services';
 		MessagingControlsComponent,
 		CurrentViewSelectorComponent,
 		AsyncPipe,
+		ExpansionPanelComponent,
 	],
 	templateUrl: './list-configuration.component.html',
 })

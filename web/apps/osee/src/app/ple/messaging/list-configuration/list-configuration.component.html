@@ -16,65 +16,77 @@
 	}
 </osee-messaging-controls>
 @if (branchId() && branchType()) {
-	<div class="tw-flex tw-flex-row">
-		<osee-named-id-list-editor
-			[name]="'Units'"
-			[allowedToEdit]="branchType() === 'working'"
-			[dataToDisplay]="(units | async) || []"
-			[pageIndex]="(unitsPageIndex | async) || 0"
-			[pageSize]="(unitsPageSize | async) || 10"
-			[count]="(unitsCount | async) || 0"
-			(pageEvent)="updateUnitsPages($event)"
-			(filterChange)="unitsFilterChange($event)"
-			(namedIdEdit)="updateUnit($event)"
-			(createNew)="createUnit($event)"></osee-named-id-list-editor>
-		<osee-named-id-list-editor
-			[name]="'Rates'"
-			[allowedToEdit]="branchType() === 'working'"
-			[dataToDisplay]="(rates | async) || []"
-			[pageIndex]="(ratesPageIndex | async) || 0"
-			[pageSize]="(ratesPageSize | async) || 10"
-			[count]="(ratesCount | async) || 0"
-			(pageEvent)="updateRatesPages($event)"
-			(filterChange)="ratesFilterChange($event)"
-			(namedIdEdit)="updateRate($event)"
-			(createNew)="createRate($event)"></osee-named-id-list-editor>
-		<osee-named-id-list-editor
-			[name]="'Message Types'"
-			[allowedToEdit]="branchType() === 'working'"
-			[dataToDisplay]="(messageTypes | async) || []"
-			[pageIndex]="(messageTypesPageIndex | async) || 0"
-			[pageSize]="(messageTypesPageSize | async) || 10"
-			[count]="(messageTypesCount | async) || 0"
-			(pageEvent)="updateMessageTypesPages($event)"
-			(filterChange)="messageTypesFilterChange($event)"
-			(namedIdEdit)="updateMessageType($event)"
-			(createNew)="createMessageType($event)"></osee-named-id-list-editor>
-		<osee-named-id-list-editor
-			[name]="'Structure Categories'"
-			[allowedToEdit]="branchType() === 'working'"
-			[dataToDisplay]="(structureCategories | async) || []"
-			[pageIndex]="(structureCategoriesPageIndex | async) || 0"
-			[pageSize]="(structureCategoriesPageSize | async) || 10"
-			[count]="(structureCategoriesCount | async) || 0"
-			(pageEvent)="updateStructureCategoriesPages($event)"
-			(filterChange)="structureCategoriesFilterChange($event)"
-			(namedIdEdit)="updateStructureCategory($event)"
-			(createNew)="
-				createStructureCategory($event)
-			"></osee-named-id-list-editor>
-		<osee-named-id-list-editor
-			[name]="'Message Periodicities'"
-			[allowedToEdit]="branchType() === 'working'"
-			[dataToDisplay]="(messagePeriodicities | async) || []"
-			[pageIndex]="(messagePeriodicitiesPageIndex | async) || 0"
-			[pageSize]="(messagePeriodicitiesPageSize | async) || 10"
-			[count]="(messagePeriodicitiesCount | async) || 0"
-			(pageEvent)="updateMessagePeriodicitiesPages($event)"
-			(filterChange)="messagePeriodicitiesFilterChange($event)"
-			(namedIdEdit)="updateMessagePeriodicity($event)"
-			(createNew)="
-				createMessagePeriodicity($event)
-			"></osee-named-id-list-editor>
+	<div class="tw-flex tw-flex-col tw-gap-2">
+		<osee-expansion-panel title="Units">
+			<osee-named-id-list-editor
+				[name]="'Units'"
+				[allowedToEdit]="branchType() === 'working'"
+				[dataToDisplay]="(units | async) || []"
+				[pageIndex]="(unitsPageIndex | async) || 0"
+				[pageSize]="(unitsPageSize | async) || 10"
+				[count]="(unitsCount | async) || 0"
+				(pageEvent)="updateUnitsPages($event)"
+				(filterChange)="unitsFilterChange($event)"
+				(namedIdEdit)="updateUnit($event)"
+				(createNew)="createUnit($event)"></osee-named-id-list-editor>
+		</osee-expansion-panel>
+		<osee-expansion-panel title="Rates">
+			<osee-named-id-list-editor
+				[name]="'Rates'"
+				[allowedToEdit]="branchType() === 'working'"
+				[dataToDisplay]="(rates | async) || []"
+				[pageIndex]="(ratesPageIndex | async) || 0"
+				[pageSize]="(ratesPageSize | async) || 10"
+				[count]="(ratesCount | async) || 0"
+				(pageEvent)="updateRatesPages($event)"
+				(filterChange)="ratesFilterChange($event)"
+				(namedIdEdit)="updateRate($event)"
+				(createNew)="createRate($event)"></osee-named-id-list-editor>
+		</osee-expansion-panel>
+		<osee-expansion-panel title="Message Types">
+			<osee-named-id-list-editor
+				[name]="'Message Types'"
+				[allowedToEdit]="branchType() === 'working'"
+				[dataToDisplay]="(messageTypes | async) || []"
+				[pageIndex]="(messageTypesPageIndex | async) || 0"
+				[pageSize]="(messageTypesPageSize | async) || 10"
+				[count]="(messageTypesCount | async) || 0"
+				(pageEvent)="updateMessageTypesPages($event)"
+				(filterChange)="messageTypesFilterChange($event)"
+				(namedIdEdit)="updateMessageType($event)"
+				(createNew)="
+					createMessageType($event)
+				"></osee-named-id-list-editor>
+		</osee-expansion-panel>
+		<osee-expansion-panel title="Structure Categories">
+			<osee-named-id-list-editor
+				[name]="'Structure Categories'"
+				[allowedToEdit]="branchType() === 'working'"
+				[dataToDisplay]="(structureCategories | async) || []"
+				[pageIndex]="(structureCategoriesPageIndex | async) || 0"
+				[pageSize]="(structureCategoriesPageSize | async) || 10"
+				[count]="(structureCategoriesCount | async) || 0"
+				(pageEvent)="updateStructureCategoriesPages($event)"
+				(filterChange)="structureCategoriesFilterChange($event)"
+				(namedIdEdit)="updateStructureCategory($event)"
+				(createNew)="
+					createStructureCategory($event)
+				"></osee-named-id-list-editor>
+		</osee-expansion-panel>
+		<osee-expansion-panel title="Message Periodicities">
+			<osee-named-id-list-editor
+				[name]="'Message Periodicities'"
+				[allowedToEdit]="branchType() === 'working'"
+				[dataToDisplay]="(messagePeriodicities | async) || []"
+				[pageIndex]="(messagePeriodicitiesPageIndex | async) || 0"
+				[pageSize]="(messagePeriodicitiesPageSize | async) || 10"
+				[count]="(messagePeriodicitiesCount | async) || 0"
+				(pageEvent)="updateMessagePeriodicitiesPages($event)"
+				(filterChange)="messagePeriodicitiesFilterChange($event)"
+				(namedIdEdit)="updateMessagePeriodicity($event)"
+				(createNew)="
+					createMessagePeriodicity($event)
+				"></osee-named-id-list-editor>
+		</osee-expansion-panel>
 	</div>
 }
