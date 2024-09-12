@@ -12,11 +12,19 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data.conditions;
 
+import java.util.List;
+
 /**
  * @author Donald G. Dunne
  */
 public abstract class ConditionalRule {
 
-   // place holder for future shared code from future rules
+   public boolean isDisabled(List<String> currentValues) {
+      return !isEnabled(currentValues);
+   }
+
+   public boolean isEnabled(List<String> currentValues) {
+      return true;
+   }
 
 }

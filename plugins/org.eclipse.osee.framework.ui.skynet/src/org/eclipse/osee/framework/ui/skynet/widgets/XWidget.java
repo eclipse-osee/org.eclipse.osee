@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.conditions.ConditionalRule;
+import org.eclipse.osee.framework.core.data.conditions.EnableIfCondition;
 import org.eclipse.osee.framework.core.enums.OseeImage;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -231,6 +232,22 @@ public abstract class XWidget {
             }
          }
       }
+      if (Widgets.isAccessible(control) && getConditions().size() > 0) {
+         for (ConditionalRule rule : getConditions()) {
+            if (this instanceof ArtifactStoredWidget && rule instanceof EnableIfCondition) {
+               if (rule.isDisabled(((ArtifactStoredWidget) this).getArtifact().getAttributesToStringList(
+                  ((EnableIfCondition) rule).getAttrType()))) {
+                  control.setEnabled(false);
+                  setEditable(false);
+                  break;
+               } else {
+                  control.setEnabled(true);
+                  setEditable(true);
+               }
+            }
+         }
+      }
+
    }
 
    /**
