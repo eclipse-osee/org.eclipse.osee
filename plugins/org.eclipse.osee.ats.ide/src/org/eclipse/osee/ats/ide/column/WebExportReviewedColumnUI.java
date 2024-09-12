@@ -31,7 +31,6 @@ import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.xviewer.column.XViewerAtsCoreCodeXColumn;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -109,6 +108,9 @@ public class WebExportReviewedColumnUI extends XViewerAtsCoreCodeXColumn {
          FilteredCheckboxTreeDialog<String> dialog = new FilteredCheckboxTreeDialog<String>("Select Reviewed",
             "Select Reviewed", new ArrayTreeContentProvider(), new StringLabelProvider(), null, true);
          dialog.setInput(options);
+         List<String> selected =
+            atsApi.getAttributeResolver().getAttributesToStringList(workItem, AtsAttributeTypes.WebExportReviewed);
+         dialog.setInitialSelections(selected);
          if (dialog.open() != Window.CANCEL) {
             IAtsChangeSet changes = atsApi.createChangeSet("Set");
 
@@ -116,16 +118,13 @@ public class WebExportReviewedColumnUI extends XViewerAtsCoreCodeXColumn {
             if (clear) {
                options.removeAll(dialog.getChecked());
                for (IAtsWorkItem wi : workItems) {
-                  changes.setAttributeValues(wi, AtsAttributeTypes.WebExportReviewed, Collections.castAll(options));
+                  changes.deleteAttributes(wi, AtsAttributeTypes.WebExportReviewed);
                }
             } else {
+               List<String> checked = new ArrayList<String>();
+               checked.addAll(dialog.getChecked());
                for (IAtsWorkItem wi : workItems) {
-                  for (String selected : dialog.getChecked()) {
-                     if (!AtsApiService.get().getAttributeResolver().getAttributesToStringList(workItem,
-                        AtsAttributeTypes.WebExportReviewed).contains(selected)) {
-                        changes.addAttribute(wi, AtsAttributeTypes.WebExportReviewed, selected);
-                     }
-                  }
+                  changes.setAttributeValuesAsStrings(wi, AtsAttributeTypes.WebExportReviewed, checked);
                }
             }
             changes.executeIfNeeded();
