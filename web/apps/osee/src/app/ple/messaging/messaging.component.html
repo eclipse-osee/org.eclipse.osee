@@ -18,10 +18,9 @@
 		@for (item of navItems | async; track item) {
 			<a
 				mat-flat-button
-				class="primary-button"
 				[routerLink]="item.routerLink"
 				queryParamsHandling="merge"
-				class="tw-w-landing-button tw-px-4 tw-py-7"
+				class="tw-w-landing-button tw-bg-primary tw-px-4 tw-py-7 tw-text-background"
 				[attr.data-cy]="item.cypressLabel"
 				><mat-icon class="material-icons-outlined">{{
 					item.icon

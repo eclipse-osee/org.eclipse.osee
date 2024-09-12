@@ -1,5 +1,5 @@
-<!--
- * Copyright (c) 2022 Boeing
+/*********************************************************************
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -9,8 +9,12 @@
  *
  * Contributors:
  *     Boeing - initial API and implementation
- -->
-<div class="tw-flex tw-flex-col">
-	<osee-branch-type-selector></osee-branch-type-selector>
-	<osee-branch-selector></osee-branch-selector>
-</div>
+ **********************************************************************/
+
+package org.eclipse.osee.ats.api.util;
+
+public enum PeerReviewBranchFilter {
+   ALL,
+   NO_PR,
+   PR_ONLY
+}

@@ -108,6 +108,12 @@ export class CreateActionDialogComponent {
 			) || []
 	);
 	workTypesFilter = signal('');
+	workType = signal<WorkType>({
+		name: '',
+		humanReadableName: '',
+		description: '',
+		createBranchDefault: false,
+	});
 	workTypes = toSignal(
 		this.createActionService.workTypes.pipe(
 			tap((types) => {
@@ -130,12 +136,6 @@ export class CreateActionDialogComponent {
 			) || []
 	);
 	points = this.createActionService.getPoints();
-	workType = signal<WorkType>({
-		name: '',
-		humanReadableName: '',
-		description: '',
-		createBranchDefault: false,
-	});
 	selectedAssignees: user[] = [];
 	targetedVersions = this.actionableItemId.pipe(
 		filter((id) => id !== ''),

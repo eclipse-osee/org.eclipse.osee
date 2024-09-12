@@ -43,13 +43,15 @@ public interface AtsProductLineEndpointApi {
    public List<BranchToken> getBranches(@QueryParam("type") @DefaultValue("-1") BranchType type,
       @QueryParam("workType") @DefaultValue("None") String workType,
       @QueryParam("category") @DefaultValue("-1") BranchCategoryToken category,
+      @QueryParam("excludeCategory") @DefaultValue("-1") BranchCategoryToken excludeCategory,
       @QueryParam("filter") @DefaultValue("") String filter, @QueryParam("pageNum") @DefaultValue("-1") long pageNum,
       @QueryParam("count") @DefaultValue("-1") long pageSize);
-   
+
    @GET
    @Path("branches/pr")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<BranchSelected> getPeerReviewWorkingBranchListAll(@QueryParam("type") @DefaultValue("-1") BranchType type,
+   public List<BranchSelected> getPeerReviewWorkingBranchListAll(
+      @QueryParam("type") @DefaultValue("-1") BranchType type,
       @QueryParam("workType") @DefaultValue("None") String workType,
       @QueryParam("category") @DefaultValue("-1") BranchCategoryToken category,
       @QueryParam("prBranch") @DefaultValue("-1") BranchId prBranch,
@@ -62,6 +64,7 @@ public interface AtsProductLineEndpointApi {
    public int getBranchCount(@QueryParam("type") @DefaultValue("-1") BranchType type,
       @QueryParam("workType") @DefaultValue("None") String workType,
       @QueryParam("category") @DefaultValue("-1") BranchCategoryToken category,
+      @QueryParam("excludeCategory") @DefaultValue("-1") BranchCategoryToken excludeCategory,
       @QueryParam("filter") @DefaultValue("") String filter);
 
    /**

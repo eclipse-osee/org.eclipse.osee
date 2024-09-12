@@ -10,7 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
+import { workType } from '@osee/shared/types/configuration-management';
 
 @Component({
 	selector: 'osee-branch-picker',
@@ -18,4 +19,8 @@ import { Component } from '@angular/core';
 	standalone: true,
 })
 // eslint-disable-next-line @angular-eslint/component-class-suffix
-export class BranchPickerStub {}
+export class BranchPickerStub {
+	category = input<`${number}`>('-1');
+	excludeCategory = input<`${number}`>('-1');
+	workType = input<workType>('None');
+}
