@@ -22,7 +22,7 @@ import {
 	toSignal,
 } from '@angular/core/rxjs-interop';
 import { MatBadge } from '@angular/material/badge';
-import { MatButton, MatFabButton } from '@angular/material/button';
+import { MatButton, MatMiniFabButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
@@ -40,7 +40,7 @@ import { AddStructureDialogComponent } from '../dialogs/add-structure-dialog/add
 	selector: 'osee-structure-table-toolbar-add-actions',
 	standalone: true,
 	imports: [
-		MatFabButton,
+		MatMiniFabButton,
 		MatIcon,
 		MatTooltip,
 		MatButton,
@@ -86,7 +86,7 @@ import { AddStructureDialogComponent } from '../dialogs/add-structure-dialog/add
 						: 'Add a structure'
 				">
 				<button
-					mat-fab
+					mat-mini-fab
 					class="tertiary-fab"
 					[disabled]="isEditing() === false"
 					(click)="openAddStructureDialog()">

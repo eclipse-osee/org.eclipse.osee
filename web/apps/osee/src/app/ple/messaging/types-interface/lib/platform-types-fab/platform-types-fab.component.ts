@@ -12,7 +12,7 @@
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { MatFabButton } from '@angular/material/button';
+import { MatMiniFabButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { PlatformType } from '@osee/messaging/shared/types';
@@ -23,10 +23,10 @@ import { CurrentTypesService } from '../services/current-types.service';
 @Component({
 	selector: 'osee-platform-types-fab',
 	standalone: true,
-	imports: [MatFabButton, MatIcon, AsyncPipe],
+	imports: [MatMiniFabButton, MatIcon, AsyncPipe],
 	template: `@if ((inEditMode | async) === true) {
 		<button
-			mat-fab
+			mat-mini-fab
 			class="tertiary-fab"
 			(click)="openNewTypeDialog()"
 			data-cy="add-type-bottom-button">
