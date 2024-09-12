@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -114,7 +115,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
 
          getJdbcClient().runPreparedUpdate(connection, UPDATE_MERGE_COMMIT_TX, newTx, sourceBranch, destinationBranch);
 
-         manageBranchStates();
+         manageBranchStates(storedBranchState);
          if (mergeBranch.isValid()) {
             getJdbcClient().runPreparedUpdate(UPDATE_CONFLICT_STATUS, ConflictStatus.COMMITTED.getValue(),
                ConflictStatus.RESOLVED.getValue(), mergeBranch);
@@ -182,12 +183,22 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       getJdbcClient().runBatchUpdate(connection, OseeDb.TXS_TABLE.getInsertSql(), insertData);
    }
 
-   private void manageBranchStates() {
+   private void manageBranchStates(BranchState storedBranchState) {
       updateBranchState(BranchState.MODIFIED, destinationBranch);
 
       BranchState sourceBranchState = sourceBranch.getBranchState();
-      if (!sourceBranchState.isCreationInProgress() && !sourceBranchState.isRebaselined() && !sourceBranchState.isRebaselineInProgress() && !sourceBranchState.isCommitted()) {
+      Branch destBranch =
+         orcsApi.getQueryFactory().branchQuery().andId(destinationBranch).getResults().getAtMostOneOrDefault(
+            Branch.SENTINEL);
+      if (!destBranch.getBranchType().equals(BranchType.WORKING) // 
+         && !sourceBranchState.isCreationInProgress() // 
+         && !sourceBranchState.isRebaselined() //
+         && !sourceBranchState.isRebaselineInProgress() && !sourceBranchState.isCommitted()) {
          updateBranchState(BranchState.COMMITTED, sourceBranch);
+      } else { //if merging onto a working branch, set source back to original state
+         if (destBranch.getBranchType().equals(BranchType.WORKING)) {
+            updateBranchState(storedBranchState, sourceBranch);
+         }
       }
       if (mergeBranch.isValid()) {
          updateBranchState(BranchState.COMMITTED, mergeBranch);

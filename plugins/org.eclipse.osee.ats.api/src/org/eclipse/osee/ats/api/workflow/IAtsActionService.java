@@ -75,6 +75,8 @@ public interface IAtsActionService {
 
    ActionResult createAction(NewActionData newActionData, IAtsChangeSet changes);
 
+   NewActionResult createActionAndWorkingBranch(NewActionData newActionData);
+   
    String getActionStateJson(Collection<IAtsWorkItem> workItemsByLegacyPcrId2);
 
    /**

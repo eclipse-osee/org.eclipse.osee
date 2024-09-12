@@ -23,6 +23,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.BranchCategoryToken;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchSelected;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
@@ -41,6 +43,16 @@ public interface AtsProductLineEndpointApi {
    public List<BranchToken> getBranches(@QueryParam("type") @DefaultValue("-1") BranchType type,
       @QueryParam("workType") @DefaultValue("None") String workType,
       @QueryParam("category") @DefaultValue("-1") BranchCategoryToken category,
+      @QueryParam("filter") @DefaultValue("") String filter, @QueryParam("pageNum") @DefaultValue("-1") long pageNum,
+      @QueryParam("count") @DefaultValue("-1") long pageSize);
+   
+   @GET
+   @Path("branches/pr")
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<BranchSelected> getPeerReviewWorkingBranchListAll(@QueryParam("type") @DefaultValue("-1") BranchType type,
+      @QueryParam("workType") @DefaultValue("None") String workType,
+      @QueryParam("category") @DefaultValue("-1") BranchCategoryToken category,
+      @QueryParam("prBranch") @DefaultValue("-1") BranchId prBranch,
       @QueryParam("filter") @DefaultValue("") String filter, @QueryParam("pageNum") @DefaultValue("-1") long pageNum,
       @QueryParam("count") @DefaultValue("-1") long pageSize);
 
