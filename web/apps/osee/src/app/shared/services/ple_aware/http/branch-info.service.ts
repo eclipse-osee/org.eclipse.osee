@@ -43,7 +43,8 @@ export class BranchInfoService {
 
 	public getBranches(
 		type: string,
-		category: string,
+		category: `${number}`,
+		excludeCategory: `${number}`,
 		workType: workType,
 		filter?: string,
 		pageSize?: number,
@@ -52,8 +53,11 @@ export class BranchInfoService {
 		let params: HttpParamsType = {};
 		params = { ...params, workType: workType };
 		params = { ...params, type: type };
-		if (category.length > 0) {
-			params = { ...params, category: category };
+		if (category !== '-1') {
+			params = { ...params, category };
+		}
+		if (excludeCategory !== '-1') {
+			params = { ...params, excludeCategory };
 		}
 		if (filter) {
 			params = { ...params, filter: filter };
@@ -71,15 +75,19 @@ export class BranchInfoService {
 
 	public getBranchCount(
 		type: string,
-		category: string,
+		category: `${number}`,
+		excludeCategory: `${number}`,
 		workType: workType,
 		filter?: string
 	) {
 		let params: HttpParamsType = {};
 		params = { ...params, workType: workType };
 		params = { ...params, type: type };
-		if (category.length > 0) {
-			params = { ...params, category: category };
+		if (category !== '-1') {
+			params = { ...params, category };
+		}
+		if (excludeCategory !== '-1') {
+			params = { ...params, excludeCategory };
 		}
 		if (filter) {
 			params = { ...params, filter: filter };

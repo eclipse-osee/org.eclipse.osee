@@ -18,9 +18,7 @@ import {
 } from '@osee/configuration-management/types';
 import {
 	BranchInfoService,
-	BranchRoutedUIService,
 	CurrentBranchInfoService,
-	UiService,
 } from '@osee/shared/services';
 import {
 	BehaviorSubject,
@@ -40,8 +38,6 @@ import { ActionService } from './action.service';
 export class CreateActionService {
 	private actionService = inject(ActionService);
 	private branchService = inject(BranchInfoService);
-	private uiService = inject(UiService);
-	private branchedRouter = inject(BranchRoutedUIService);
 	private accountService = inject(UserDataAccountService);
 	private currentBranchService = inject(CurrentBranchInfoService);
 
@@ -133,22 +129,7 @@ export class CreateActionService {
 							category
 						),
 						of(branchResponse)
-					).pipe(
-						map(() => branchResponse),
-						tap((resp) => {
-							this.uiService.updated = true;
-							if (resp.results.success) {
-								const _branchType =
-									resp.workingBranchId.branchType === '2'
-										? 'baseline'
-										: 'working';
-								this.branchedRouter.position = {
-									type: _branchType,
-									id: resp.workingBranchId.id,
-								};
-							}
-						})
-					)
+					).pipe(map(() => branchResponse))
 				)
 			);
 	}

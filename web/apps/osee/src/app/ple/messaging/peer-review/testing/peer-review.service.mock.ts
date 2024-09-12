@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2023 Boeing
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,8 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './action-drop-down/action-drop-down.component';
-export * from './create-action-button/create-action-button.component';
-export * from './create-action-working-branch-button/create-action-working-branch-button.component';
-export * from './current-action-drop-down/current-action-drop-down.component';
-export * from './create-action-button/create-action-dialog/create-action-dialog.component';
+import { PeerReviewService } from '../services/peer-review.service';
+
+export const PeerReviewServiceMock: Partial<PeerReviewService> = {};

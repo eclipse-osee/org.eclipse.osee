@@ -56,15 +56,17 @@ export class BranchListService {
 	private _branches = combineLatest([
 		this._type,
 		this.categoryService.branchCategory,
+		this.categoryService.excludeBranchCategory,
 		this._branchFilter,
 		this.workTypeService.workType,
 	]).pipe(
-		switchMap(([type, category, filter, workType]) =>
+		switchMap(([type, category, excludeCategory, filter, workType]) =>
 			iif(
 				() => type !== '-1',
 				this.branchService.getBranches(
 					type,
 					category,
+					excludeCategory,
 					workType,
 					filter
 				),
@@ -113,14 +115,16 @@ export class BranchListService {
 		return combineLatest([
 			this._type,
 			this.categoryService.branchCategory,
+			this.categoryService.excludeBranchCategory,
 			this.workTypeService.workType,
 			this.pageSizeService.pageSize,
 		]).pipe(
 			take(1),
-			switchMap(([type, category, workType, pageSize]) =>
+			switchMap(([type, category, excludeCategory, workType, pageSize]) =>
 				this.branchService.getBranches(
 					type,
 					category,
+					excludeCategory,
 					workType,
 					filter,
 					pageSize,
@@ -134,13 +138,15 @@ export class BranchListService {
 		return combineLatest([
 			this._type,
 			this.categoryService.branchCategory,
+			this.categoryService.excludeBranchCategory,
 			this.workTypeService.workType,
 		]).pipe(
 			take(1),
-			switchMap(([type, category, workType]) =>
+			switchMap(([type, category, excludeCategory, workType]) =>
 				this.branchService.getBranchCount(
 					type,
 					category,
+					excludeCategory,
 					workType,
 					filter
 				)

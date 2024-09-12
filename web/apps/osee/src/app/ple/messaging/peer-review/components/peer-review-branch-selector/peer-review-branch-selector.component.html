@@ -1,0 +1,67 @@
+<!--
+* Copyright (c) 2024 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
+<mat-form-field
+	appearance="fill"
+	subscriptSizing="dynamic"
+	class="branch-form-field tw-w-full">
+	<mat-label>Select a Peer Review Branch</mat-label>
+	<input
+		type="text"
+		matInput
+		#input
+		[ngModel]="{ name: filter() }"
+		(ngModelChange)="updateFilter($event)"
+		placeholder="Peer Review Branches"
+		[errorStateMatcher]="errorMatcher"
+		id="branches-input"
+		name="branches-input"
+		#branchesInput="ngModel"
+		[matAutocomplete]="autoBranches" />
+	<mat-autocomplete
+		autoActiveFirstOption="true"
+		autoSelectActiveOption="true"
+		#autoBranches="matAutocomplete"
+		[displayWith]="displayFn"
+		(optionSelected)="selectBranch($event.option.value)">
+		@if (branches() && branchCount()) {
+			<osee-mat-option-loading
+				[data]="branches()"
+				objectName="Branches"
+				[paginationSize]="pageSize()"
+				paginationMode="AUTO"
+				[count]="branchCount()">
+				<ng-template let-option>
+					<mat-option
+						[value]="option"
+						[id]="option.id">
+						{{ option.name }}
+					</mat-option>
+				</ng-template>
+			</osee-mat-option-loading>
+		} @else if (branchCount() === 0) {
+			<mat-option
+				id="-1"
+				disabled
+				[value]="{ id: '-1', name: 'invalid' }">
+				No branches available
+			</mat-option>
+		} @else {
+			<mat-option
+				id="-1"
+				disabled
+				[value]="{ id: '-1', name: 'invalid' }">
+				Loading...
+			</mat-option>
+		}
+	</mat-autocomplete>
+</mat-form-field>

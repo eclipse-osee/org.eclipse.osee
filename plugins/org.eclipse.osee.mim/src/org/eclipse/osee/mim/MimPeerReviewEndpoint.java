@@ -41,6 +41,5 @@ public interface MimPeerReviewEndpoint {
    @GET
    @Path("{branchId}/appliedBranches")
    @Produces(MediaType.APPLICATION_JSON)
-   @Consumes(MediaType.APPLICATION_JSON)
-   List<BranchId> getAppliedBranches(BranchId prBranch);
- }
+   List<BranchId> getAppliedBranches(@PathParam("branchId") BranchId prBranch);
+}
