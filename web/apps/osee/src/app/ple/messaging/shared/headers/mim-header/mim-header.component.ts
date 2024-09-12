@@ -26,10 +26,23 @@ import { debounceTime, switchMap } from 'rxjs/operators';
 
 @Component({
 	selector: 'osee-messaging-header',
-	templateUrl: './mim-header.component.html',
 	styles: [],
 	standalone: true,
 	imports: [MatAnchor, RouterLink, AsyncPipe],
+	template: `<p class="tw-line-clamp-1 tw-truncate">
+		@for (link of route | async; track link) {
+			@if (link.displayName !== '') {
+				<a
+					mat-button
+					type="button"
+					[routerLink]="link.routerLink"
+					queryParamsHandling="merge"
+					>{{ link.displayName }}</a
+				>
+				/
+			}
+		}
+	</p>`,
 })
 export class MimHeaderComponent {
 	private _routeService = inject(MimRouteService);
