@@ -11,8 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Input, inject } from '@angular/core';
-import { MatAnchor } from '@angular/material/button';
+import { Component, inject, input } from '@angular/core';
+import { MatAnchor, MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { RouterLink, RouterOutlet } from '@angular/router';
@@ -39,24 +39,67 @@ import { iif, of, switchMap } from 'rxjs';
 		MatAnchor,
 		MatIcon,
 		MatTooltip,
+		MatButton,
+		MatIconButton,
 		CurrentActionDropDownComponent,
 		BranchPickerComponent,
 		UndoButtonBranchComponent,
 		CurrentViewSelectorComponent,
 	],
-	templateUrl: './messaging-controls.component.html',
+	template: `<div
+		class="tw-flex tw-flex-row tw-items-end tw-justify-between tw-gap-4 tw-py-4 tw-pl-4 tw-pr-8">
+		@if (branchControls()) {
+			<osee-branch-picker
+				class="tw-min-w-[350px] tw-max-w-lg"
+				category="3"
+				workType="MIM"></osee-branch-picker>
+		}
+
+		<!-- Any content can be inserted between the branch picker and the action controls -->
+		<ng-content></ng-content>
+
+		<div
+			class="tw-ml-auto tw-flex tw-min-w-[480px] tw-flex-row tw-items-center tw-justify-end tw-gap-2">
+			@if (
+				actionControls() && (branchId | async) && (branchType | async)
+			) {
+				@if ((inEditMode | async) === true) {
+					<osee-undo-button-branch></osee-undo-button-branch>
+				}
+				@if (diff()) {
+					@if (inDiffMode | async; as _diff) {
+						<button
+							mat-icon-button
+							[routerLink]="diffRouteLink()"
+							queryParamsHandling="merge"
+							matTooltip="Show differences between current branch and product line">
+							@if (_diff === 'false') {
+								<mat-icon>change_history</mat-icon>
+							}
+							@if (_diff === 'true') {
+								<mat-icon>visibility_off</mat-icon>
+							}
+						</button>
+					}
+				}
+				<osee-current-action-drop-down
+					category="3"
+					workType="MIM" />
+			}
+		</div>
+	</div>`,
 })
 export class MessagingControlsComponent {
 	private preferencesService = inject(PreferencesUIService);
 	private ui = inject(UiService);
 	private mimRoutes = inject(MimRouteService);
 
-	@Input() branchControls = true;
-	@Input() actionControls = false;
-	@Input() diff = false;
+	branchControls = input(true);
+	actionControls = input(false);
+	diff = input(false);
 	//the type below is driven by angular itself
 	//eslint-disable-next-line @typescript-eslint/no-explicit-any
-	@Input() diffRouteLink: string | any | null | undefined = null;
+	diffRouteLink = input<string | any | null | undefined>(null);
 
 	inEditMode = this.preferencesService.inEditMode;
 	branchId = this.ui.id;
