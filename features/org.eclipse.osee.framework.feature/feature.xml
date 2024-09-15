@@ -16,6 +16,10 @@
    <license url="%licenseURL">
       %license
    </license>
+
+   <includes
+         id="net.sourceforge.vrapper"
+         version="0.0.0"/> 
   
    <requires>
       <import feature="org.eclipse.emf.ecore" version="2.5.0" match="greaterOrEqual"/>
