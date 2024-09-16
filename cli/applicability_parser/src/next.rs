@@ -202,7 +202,7 @@ mod tests {
         use applicability_parser_types::{
             applic_tokens::{ApplicTokens, ApplicabilityNoTag},
             applicability_parser_syntax_tag::{
-                ApplicabilityParserSyntaxTag, ApplicabilitySyntaxTag, ApplicabilitySyntaxTagNot,
+                ApplicabilityParserSyntaxTag, ApplicabilitySyntaxTag, ApplicabilitySyntaxTagNot, LineEnding,
             },
         };
         use nom::{
@@ -227,7 +227,8 @@ mod tests {
                             " Some Text Here \n".to_string()
                         )],
                         ApplicabilityTagTypes::Feature,
-                        vec![]
+                        vec![],
+                        LineEnding::StartLineEnding
                     ))
                 ))
             )
@@ -251,7 +252,8 @@ mod tests {
                             " Some Text Here \n".to_string()
                         )],
                         ApplicabilityTagTypes::Configuration,
-                        vec![]
+                        vec![],
+                        LineEnding::StartLineEnding
                     ))
                 ))
             )
@@ -285,7 +287,8 @@ mod tests {
                             " Some Text Here \n".to_string()
                         )],
                         ApplicabilityTagTypes::Feature,
-                        vec![]
+                        vec![],
+                        LineEnding::StartLineEnding
                     )),
                 ))
             )
@@ -318,7 +321,8 @@ mod tests {
                             " Some Text Here \n".to_string()
                         )],
                         ApplicabilityTagTypes::Configuration,
-                        vec![]
+                        vec![],
+                        LineEnding::StartLineEnding
                     )),
                 ))
             )

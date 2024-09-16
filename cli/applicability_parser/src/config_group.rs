@@ -14,7 +14,7 @@ use applicability::applic_tag::ApplicabilityTagTypes;
 use applicability_parser_types::{
     applic_tokens::ApplicTokens,
     applicability_parser_syntax_tag::{
-        ApplicabilityParserSyntaxTag, ApplicabilitySyntaxTag, ApplicabilitySyntaxTagNot,
+        ApplicabilityParserSyntaxTag, ApplicabilitySyntaxTag, ApplicabilitySyntaxTagNot, LineEnding,
     },
 };
 use nom::{
@@ -170,14 +170,21 @@ pub fn parse_config_group<'a>(
     map(
         combined_parser,
         |(
-            (tokens, _ln1, contents),
-            (_potential_else, else_contents, (_potential_end1, _potential_end2)),
+            (tokens, start_tag_line_ending, contents),
+            (_potential_else, else_contents, (_end_tag, end_tag_line_ending)),
         )| {
+            let line_ending = match(start_tag_line_ending,end_tag_line_ending){
+                (None, None) => LineEnding::NoLineEndings,
+                (None, Some(_)) => LineEnding::EndLineEnding,
+                (Some(_), None) => LineEnding::StartLineEnding,
+                (Some(_), Some(_)) => LineEnding::StartAndEndLineEnding,
+            };
             ApplicabilityParserSyntaxTag::Tag(ApplicabilitySyntaxTag(
                 tokens,
                 contents,
                 ApplicabilityTagTypes::ConfigurationGroup,
                 else_contents,
+                line_ending
             ))
         },
     )
@@ -189,7 +196,7 @@ mod parse_config_group_tests {
         applic_tokens::{
             ApplicTokens, ApplicabilityAndTag, ApplicabilityNoTag, ApplicabilityOrTag,
         },
-        applicability_parser_syntax_tag::{ApplicabilityParserSyntaxTag, ApplicabilitySyntaxTag},
+        applicability_parser_syntax_tag::{ApplicabilityParserSyntaxTag, ApplicabilitySyntaxTag, LineEnding},
     };
 
     use super::parse_config_group;
@@ -199,7 +206,7 @@ mod parse_config_group_tests {
         let mut parser = parse_config_group("``", "``");
         assert_eq!(
             parser(
-                "`` ConfigurationGroup[SOMETHING] \n Some Text Here \n`` End ConfigurationGroup ``"
+                "`` ConfigurationGroup[SOMETHING] ``\n Some Text Here \n`` End ConfigurationGroup ``"
             ),
             Ok((
                 "",
@@ -209,10 +216,11 @@ mod parse_config_group_tests {
                         value: "Included".to_string()
                     }))],
                     vec![ApplicabilityParserSyntaxTag::Text(
-                        "Some Text Here \n".to_string()
+                        " Some Text Here \n".to_string()
                     ),],
                     ApplicabilityTagTypes::ConfigurationGroup,
-                    vec![]
+                    vec![],
+                    LineEnding::StartLineEnding
                 ))
             ))
         )
@@ -221,7 +229,7 @@ mod parse_config_group_tests {
     fn anded_config_group() {
         let mut parser = parse_config_group("``", "``");
         assert_eq!(
-            parser("`` ConfigurationGroup[SOMETHING & SOMETHING_ELSE] \n Some Text Here \n`` End ConfigurationGroup ``"),
+            parser("`` ConfigurationGroup[SOMETHING & SOMETHING_ELSE] ``\n Some Text Here \n`` End ConfigurationGroup ``"),
             Ok((
                 "",
                 ApplicabilityParserSyntaxTag::Tag(ApplicabilitySyntaxTag(
@@ -232,9 +240,10 @@ mod parse_config_group_tests {
                         tag: "SOMETHING_ELSE".to_string(),
                         value: "Included".to_string()
                     }))],
-                    vec![ApplicabilityParserSyntaxTag::Text("Some Text Here \n".to_string()),],
+                    vec![ApplicabilityParserSyntaxTag::Text(" Some Text Here \n".to_string()),],
                     ApplicabilityTagTypes::ConfigurationGroup,
-                    vec![]
+                    vec![],
+                    LineEnding::StartLineEnding
                 ))
             ))
         )
@@ -244,7 +253,7 @@ mod parse_config_group_tests {
     fn ored_config_group() {
         let mut parser = parse_config_group("``", "``");
         assert_eq!(
-            parser("`` ConfigurationGroup[SOMETHING | SOMETHING_ELSE] \n Some Text Here \n`` End ConfigurationGroup ``"),
+            parser("`` ConfigurationGroup[SOMETHING | SOMETHING_ELSE] ``\n Some Text Here \n`` End ConfigurationGroup ``"),
             Ok((
                 "",
                 ApplicabilityParserSyntaxTag::Tag(ApplicabilitySyntaxTag(
@@ -255,9 +264,10 @@ mod parse_config_group_tests {
                         tag: "SOMETHING_ELSE".to_string(),
                         value: "Included".to_string()
                     }))],
-                    vec![ApplicabilityParserSyntaxTag::Text("Some Text Here \n".to_string()),],
+                    vec![ApplicabilityParserSyntaxTag::Text(" Some Text Here \n".to_string()),],
                     ApplicabilityTagTypes::ConfigurationGroup,
-                    vec![]
+                    vec![],
+                    LineEnding::StartLineEnding
                 ))
             ))
         )
@@ -275,14 +285,21 @@ pub fn parse_config_group_not<'a>(
     map(
         combined_parser,
         |(
-            (tokens, _ln1, contents),
-            (_potential_else, else_contents, (_potential_end1, _potential_end2)),
+            (tokens, start_tag_line_ending, contents),
+            (_potential_else, else_contents, (_end_tag, end_tag_line_ending)),
         )| {
+            let line_ending = match(start_tag_line_ending,end_tag_line_ending){
+                (None, None) => LineEnding::NoLineEndings,
+                (None, Some(_)) => LineEnding::EndLineEnding,
+                (Some(_), None) => LineEnding::StartLineEnding,
+                (Some(_), Some(_)) => LineEnding::StartAndEndLineEnding,
+            };
             ApplicabilityParserSyntaxTag::TagNot(ApplicabilitySyntaxTagNot(
                 tokens,
                 contents,
                 ApplicabilityTagTypes::ConfigurationGroup,
                 else_contents,
+                line_ending
             ))
         },
     )
@@ -295,7 +312,7 @@ mod parse_config_group_not_tests {
             ApplicTokens, ApplicabilityAndTag, ApplicabilityNoTag, ApplicabilityOrTag,
         },
         applicability_parser_syntax_tag::{
-            ApplicabilityParserSyntaxTag, ApplicabilitySyntaxTagNot,
+            ApplicabilityParserSyntaxTag, ApplicabilitySyntaxTagNot, LineEnding,
         },
     };
 
@@ -305,7 +322,7 @@ mod parse_config_group_not_tests {
     fn simple_config_group() {
         let mut parser = parse_config_group_not("``", "``");
         assert_eq!(
-            parser("`` ConfigurationGroup Not[SOMETHING] \n Some Text Here \n`` End ConfigurationGroup ``"),
+            parser("`` ConfigurationGroup Not[SOMETHING] ``\n Some Text Here \n`` End ConfigurationGroup ``"),
             Ok((
                 "",
                 ApplicabilityParserSyntaxTag::TagNot(ApplicabilitySyntaxTagNot(
@@ -313,9 +330,10 @@ mod parse_config_group_not_tests {
                         tag: "SOMETHING".to_string(),
                         value: "Included".to_string()
                     }))],
-                    vec![ApplicabilityParserSyntaxTag::Text("Some Text Here \n".to_string()),],
+                    vec![ApplicabilityParserSyntaxTag::Text(" Some Text Here \n".to_string()),],
                     ApplicabilityTagTypes::ConfigurationGroup,
-                    vec![]
+                    vec![],
+                    LineEnding::StartLineEnding
                 ))
             ))
         )
@@ -325,7 +343,7 @@ mod parse_config_group_not_tests {
         let mut parser = parse_config_group_not("``", "``");
         assert_eq!(
             parser(
-                "`` ConfigurationGroup Not[SOMETHING & SOMETHING_ELSE] \n Some Text Here \n`` End ConfigurationGroup ``"
+                "`` ConfigurationGroup Not[SOMETHING & SOMETHING_ELSE] ``\n Some Text Here \n`` End ConfigurationGroup ``"
             ),
             Ok((
                 "",
@@ -337,9 +355,10 @@ mod parse_config_group_not_tests {
                         tag: "SOMETHING_ELSE".to_string(),
                         value: "Included".to_string()
                     }))],
-                    vec![ApplicabilityParserSyntaxTag::Text("Some Text Here \n".to_string()),],
+                    vec![ApplicabilityParserSyntaxTag::Text(" Some Text Here \n".to_string()),],
                     ApplicabilityTagTypes::ConfigurationGroup,
-                    vec![]
+                    vec![],
+                    LineEnding::StartLineEnding
                 ))
             ))
         )
@@ -350,7 +369,7 @@ mod parse_config_group_not_tests {
         let mut parser = parse_config_group_not("``", "``");
         assert_eq!(
             parser(
-                "`` ConfigurationGroup Not[SOMETHING | SOMETHING_ELSE] \n Some Text Here \n`` End ConfigurationGroup ``"
+                "`` ConfigurationGroup Not[SOMETHING | SOMETHING_ELSE] ``\n Some Text Here \n`` End ConfigurationGroup ``"
             ),
             Ok((
                 "",
@@ -362,9 +381,10 @@ mod parse_config_group_not_tests {
                         tag: "SOMETHING_ELSE".to_string(),
                         value: "Included".to_string()
                     }))],
-                    vec![ApplicabilityParserSyntaxTag::Text("Some Text Here \n".to_string()),],
+                    vec![ApplicabilityParserSyntaxTag::Text(" Some Text Here \n".to_string()),],
                     ApplicabilityTagTypes::ConfigurationGroup,
-                    vec![]
+                    vec![],
+                    LineEnding::StartLineEnding
                 ))
             ))
         )

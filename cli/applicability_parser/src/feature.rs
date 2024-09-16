@@ -14,7 +14,7 @@ use applicability::applic_tag::ApplicabilityTagTypes;
 use applicability_parser_types::{
     applic_tokens::ApplicTokens,
     applicability_parser_syntax_tag::{
-        ApplicabilityParserSyntaxTag, ApplicabilitySyntaxTag, ApplicabilitySyntaxTagNot,
+        ApplicabilityParserSyntaxTag, ApplicabilitySyntaxTag, ApplicabilitySyntaxTagNot, LineEnding,
     },
 };
 use nom::{
@@ -169,14 +169,21 @@ pub fn parse_feature<'a>(
     map(
         combined_parser,
         |(
-            (tokens, _ln1, contents),
-            (_potential_else, else_contents, (_potential_end1, _potential_end2)),
+            (tokens, start_tag_line_ending, contents),
+            (_potential_else, else_contents, (_end_tag, end_tag_line_ending)),
         )| {
+            let line_ending = match(start_tag_line_ending,end_tag_line_ending){
+                (None, None) => LineEnding::NoLineEndings,
+                (None, Some(_)) => LineEnding::EndLineEnding,
+                (Some(_), None) => LineEnding::StartLineEnding,
+                (Some(_), Some(_)) => LineEnding::StartAndEndLineEnding,
+            };
             ApplicabilityParserSyntaxTag::Tag(ApplicabilitySyntaxTag(
                 tokens,
                 contents,
                 ApplicabilityTagTypes::Feature,
                 else_contents,
+                line_ending
             ))
         },
     )
@@ -189,7 +196,7 @@ mod parse_feature_tests {
         applic_tokens::{
             ApplicTokens, ApplicabilityAndTag, ApplicabilityNoTag, ApplicabilityOrTag,
         },
-        applicability_parser_syntax_tag::{ApplicabilityParserSyntaxTag, ApplicabilitySyntaxTag},
+        applicability_parser_syntax_tag::{ApplicabilityParserSyntaxTag, ApplicabilitySyntaxTag, LineEnding},
     };
 
     use super::parse_feature;
@@ -198,7 +205,7 @@ mod parse_feature_tests {
     fn simple_feature() {
         let mut parser = parse_feature("``", "``");
         assert_eq!(
-            parser("`` Feature[SOMETHING] \n Some Text Here \n`` End Feature ``"),
+            parser("`` Feature[SOMETHING] ``\n Some Text Here \n`` End Feature ``"),
             Ok((
                 "",
                 ApplicabilityParserSyntaxTag::Tag(ApplicabilitySyntaxTag(
@@ -207,10 +214,11 @@ mod parse_feature_tests {
                         value: "Included".to_string()
                     }))],
                     vec![ApplicabilityParserSyntaxTag::Text(
-                        "Some Text Here \n".to_string()
+                        " Some Text Here \n".to_string()
                     ),],
                     ApplicabilityTagTypes::Feature,
-                    vec![]
+                    vec![],
+                    LineEnding::StartLineEnding
                 ))
             ))
         )
@@ -219,7 +227,7 @@ mod parse_feature_tests {
     fn anded_feature() {
         let mut parser = parse_feature("``", "``");
         assert_eq!(
-            parser("`` Feature[SOMETHING & SOMETHING_ELSE] \n Some Text Here \n`` End Feature ``"),
+            parser("`` Feature[SOMETHING & SOMETHING_ELSE] ``\n Some Text Here \n`` End Feature ``"),
             Ok((
                 "",
                 ApplicabilityParserSyntaxTag::Tag(ApplicabilitySyntaxTag(
@@ -234,10 +242,11 @@ mod parse_feature_tests {
                         }))
                     ],
                     vec![ApplicabilityParserSyntaxTag::Text(
-                        "Some Text Here \n".to_string()
+                        " Some Text Here \n".to_string()
                     ),],
                     ApplicabilityTagTypes::Feature,
-                    vec![]
+                    vec![],
+                    LineEnding::StartLineEnding
                 ))
             ))
         )
@@ -247,7 +256,7 @@ mod parse_feature_tests {
     fn ored_feature() {
         let mut parser = parse_feature("``", "``");
         assert_eq!(
-            parser("`` Feature[SOMETHING | SOMETHING_ELSE] \n Some Text Here \n`` End Feature ``"),
+            parser("`` Feature[SOMETHING | SOMETHING_ELSE] ``\n Some Text Here \n`` End Feature ``"),
             Ok((
                 "",
                 ApplicabilityParserSyntaxTag::Tag(ApplicabilitySyntaxTag(
@@ -262,10 +271,11 @@ mod parse_feature_tests {
                         }))
                     ],
                     vec![ApplicabilityParserSyntaxTag::Text(
-                        "Some Text Here \n".to_string()
+                        " Some Text Here \n".to_string()
                     ),],
                     ApplicabilityTagTypes::Feature,
-                    vec![]
+                    vec![],
+                    LineEnding::StartLineEnding
                 ))
             ))
         )
@@ -284,14 +294,21 @@ pub fn parse_feature_not<'a>(
     map(
         combined_parser,
         |(
-            (tokens, _ln1, contents),
-            (_potential_else, else_contents, (_potential_end1, _potential_end2)),
+            (tokens, start_tag_line_ending, contents),
+            (_potential_else, else_contents, (_end_tag, end_tag_line_ending)),
         )| {
+            let line_ending = match(start_tag_line_ending,end_tag_line_ending){
+                (None, None) => LineEnding::NoLineEndings,
+                (None, Some(_)) => LineEnding::EndLineEnding,
+                (Some(_), None) => LineEnding::StartLineEnding,
+                (Some(_), Some(_)) => LineEnding::StartAndEndLineEnding,
+            };
             ApplicabilityParserSyntaxTag::TagNot(ApplicabilitySyntaxTagNot(
                 tokens,
                 contents,
                 ApplicabilityTagTypes::Feature,
                 else_contents,
+                line_ending
             ))
         },
     )
@@ -304,7 +321,7 @@ mod parse_feature_not_tests {
             ApplicTokens, ApplicabilityAndTag, ApplicabilityNoTag, ApplicabilityOrTag,
         },
         applicability_parser_syntax_tag::{
-            ApplicabilityParserSyntaxTag, ApplicabilitySyntaxTagNot,
+            ApplicabilityParserSyntaxTag, ApplicabilitySyntaxTagNot, LineEnding,
         },
     };
 
@@ -314,7 +331,7 @@ mod parse_feature_not_tests {
     fn simple_feature() {
         let mut parser = parse_feature_not("``", "``");
         assert_eq!(
-            parser("`` Feature Not[SOMETHING] \n Some Text Here \n`` End Feature ``"),
+            parser("`` Feature Not[SOMETHING] ``\n Some Text Here \n`` End Feature ``"),
             Ok((
                 "",
                 ApplicabilityParserSyntaxTag::TagNot(ApplicabilitySyntaxTagNot(
@@ -323,10 +340,11 @@ mod parse_feature_not_tests {
                         value: "Included".to_string()
                     }))],
                     vec![ApplicabilityParserSyntaxTag::Text(
-                        "Some Text Here \n".to_string()
+                        " Some Text Here \n".to_string()
                     ),],
                     ApplicabilityTagTypes::Feature,
-                    vec![]
+                    vec![],
+                    LineEnding::StartLineEnding
                 ))
             ))
         )
@@ -336,7 +354,7 @@ mod parse_feature_not_tests {
         let mut parser = parse_feature_not("``", "``");
         assert_eq!(
             parser(
-                "`` Feature Not[SOMETHING & SOMETHING_ELSE] \n Some Text Here \n`` End Feature ``"
+                "`` Feature Not[SOMETHING & SOMETHING_ELSE] ``\n Some Text Here \n`` End Feature ``"
             ),
             Ok((
                 "",
@@ -352,10 +370,11 @@ mod parse_feature_not_tests {
                         }))
                     ],
                     vec![ApplicabilityParserSyntaxTag::Text(
-                        "Some Text Here \n".to_string()
+                        " Some Text Here \n".to_string()
                     ),],
                     ApplicabilityTagTypes::Feature,
-                    vec![]
+                    vec![],
+                    LineEnding::StartLineEnding
                 ))
             ))
         )
@@ -366,7 +385,7 @@ mod parse_feature_not_tests {
         let mut parser = parse_feature_not("``", "``");
         assert_eq!(
             parser(
-                "`` Feature Not[SOMETHING | SOMETHING_ELSE] \n Some Text Here \n`` End Feature ``"
+                "`` Feature Not[SOMETHING | SOMETHING_ELSE] ``\n Some Text Here \n`` End Feature ``"
             ),
             Ok((
                 "",
@@ -382,10 +401,11 @@ mod parse_feature_not_tests {
                         }))
                     ],
                     vec![ApplicabilityParserSyntaxTag::Text(
-                        "Some Text Here \n".to_string()
+                        " Some Text Here \n".to_string()
                     ),],
                     ApplicabilityTagTypes::Feature,
-                    vec![]
+                    vec![],
+                    LineEnding::StartLineEnding
                 ))
             ))
         )
