@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.rest.internal.util;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.config.WorkType;
@@ -25,17 +26,23 @@ import org.eclipse.osee.ats.api.util.AtsProductLineEndpointApi;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.Attribute;
 import org.eclipse.osee.ats.rest.internal.workitem.operations.ActionOperations;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchCategoryToken;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchSelected;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreBranchCategoryTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.search.BranchQuery;
 
 /**
@@ -63,6 +70,7 @@ public final class AtsProductLineEndpointImpl implements AtsProductLineEndpointA
       }
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
       query = category.isValid() ? query.andIsOfCategory(category) : query;
+      query = query.andIsNotOfCategory(CoreBranchCategoryTokens.PR);
       query = query.includeArchived(false).includeDeleted(false);
       query = type.getId() > -1 ? query.andIsOfType(type) : query; //BranchType.WORKING = 0 :(
       query = query.orderByName();
@@ -75,6 +83,51 @@ public final class AtsProductLineEndpointImpl implements AtsProductLineEndpointA
 
    }
 
+   
+   private List<Branch> getBranchesWithDetails(BranchType type, String workType, BranchCategoryToken category, String filter,
+      long pageNum, long pageSize) {
+      List<Pair<ArtifactTypeToken, AttributeTypeToken>> artAttrPairs = new ArrayList<>();
+      if (!WorkType.valueOfOrNone(workType).equals(WorkType.None)) { //check for valid workType
+         artAttrPairs.add(new Pair<ArtifactTypeToken, AttributeTypeToken>(AtsArtifactTypes.TeamDefinition,
+            AtsAttributeTypes.WorkType));
+         artAttrPairs.add(new Pair<ArtifactTypeToken, AttributeTypeToken>(AtsArtifactTypes.TeamWorkflow,
+            AtsAttributeTypes.TeamDefinitionReference));
+      }
+      BranchQuery query = orcsApi.getQueryFactory().branchQuery();
+      query = category.isValid() ? query.andIsOfCategory(category) : query;
+      query = query.includeArchived(false).includeDeleted(false);
+      query = type.getId() > -1 ? query.andIsOfType(type) : query; 
+      query = query.orderByName();
+      query = !filter.equals("") ? query.andNameLike(filter) : query;
+      query = pageNum > 0L && pageSize > 0L ? query.isOnPage(pageNum, pageSize) : query;
+      query = query.andStateIs(BranchState.MODIFIED, BranchState.CREATED);
+      query = type.equals(BranchType.WORKING) && !WorkType.valueOfOrNone(workType).equals(
+         WorkType.None) ? query.mapAssocArtIdToRelatedAttributes(workType, CoreBranches.COMMON, artAttrPairs) : query;
+      return query.getResults().getList();
+
+   }
+
+   @Override
+   public List<BranchSelected> getPeerReviewWorkingBranchListAll(BranchType type, String workType, BranchCategoryToken category, BranchId peerReviewBranchId,String filter,
+      long pageNum, long pageSize) {
+      List<BranchSelected> peerReviewBranchList = new ArrayList<>();
+      List<TransactionReadable> txs = new ArrayList<>();
+      Branch prBranch = orcsApi.getQueryFactory().branchQuery().andId(peerReviewBranchId).getResults().getAtMostOneOrDefault(Branch.SENTINEL);
+      
+      if (prBranch.isValid()) {
+         txs = orcsApi.getQueryFactory().transactionQuery().andBranch(peerReviewBranchId).getResults().getList();
+      }
+      List<ArtifactId> commitArtIds = txs.stream().filter(a->a.getCommitArt().getId() > 0 && a.getCommitArt().getId() > prBranch.getBaselineTx().getId()).map(b->b.getCommitArt()).collect(Collectors.toList());
+      for (Branch branch : getBranchesWithDetails(type,workType,category,filter, pageNum,pageSize)) {
+         if (commitArtIds.contains(branch.getAssociatedArtifact())) {
+            peerReviewBranchList.add(new BranchSelected(branch,true));
+         } else {
+            peerReviewBranchList.add(new BranchSelected(branch,false));
+         }
+      }
+      return peerReviewBranchList;
+   }
+   
    @Override
    public XResultData checkPlarbApproval(String id) {
       XResultData rd = new XResultData();

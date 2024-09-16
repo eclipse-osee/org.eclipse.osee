@@ -180,6 +180,11 @@ public interface BranchQuery extends BranchQueryBuilder<BranchQuery>, Query {
          public BranchQuery andIsOfCategory(BranchCategoryToken category) {
             return null;
          }
+         
+         @Override
+         public BranchQuery andIsNotOfCategory(BranchCategoryToken category) {
+            return null;
+         }
 
          @Override
          public List<GammaId> getBranchCategoryGammaId(BranchId branchId, BranchCategoryToken category) {
