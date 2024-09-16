@@ -81,6 +81,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     /// use applicability_parser_types::applicability_parser_syntax_tag::ApplicabilitySyntaxTag;
     /// use applicability_parser_types::applicability_parser_syntax_tag::ApplicabilityParserSyntaxTag::Text;
     /// use applicability_parser_types::applicability_parser_syntax_tag::ApplicabilityParserSyntaxTag::Tag;
+    /// use applicability_parser_types::applicability_parser_syntax_tag::LineEnding;
     /// use applicability_parser_types::applic_tokens::{ApplicabilityNoTag,ApplicTokens};
     /// use applicability::applic_tag::ApplicabilityTagTypes::Feature;
     /// use applicability::applic_tag::ApplicabilityTagTypes::Configuration;
@@ -100,7 +101,8 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///         Text("Engine 5 A2543".to_string())
     ///         ],
     ///     Feature,
-    ///     vec![]
+    ///     vec![],
+    ///     LineEnding::NoLineEndings
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -127,7 +129,8 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///         Text("Product A".to_string())
     ///         ],
     ///     Configuration,
-    ///     vec![]
+    ///     vec![],
+    ///     LineEnding::NoLineEndings
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -154,7 +157,8 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///         Text("Engine 5 A2543".to_string())
     ///         ],
     ///     Feature,
-    ///     vec![]
+    ///     vec![],
+    ///     LineEnding::NoLineEndings
     /// ).sanitize(
     /// vec![],
     /// "PRODUCT_A",
@@ -176,7 +180,8 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///         Text("Product A".to_string())
     ///         ],
     ///     Configuration,
-    ///     vec![]
+    ///     vec![],
+    ///     LineEnding::NoLineEndings
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -205,7 +210,8 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///     Feature,
     ///     vec![
     ///         Text("Engine 5 B5543".to_string())
-    ///         ]
+    ///         ],
+    ///     LineEnding::NoLineEndings
     /// ).sanitize(
     /// vec![],
     /// "PRODUCT_A",
@@ -229,7 +235,8 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///     Configuration,
     ///     vec![
     ///         Text("No Configuration".to_string())
-    ///         ]
+    ///         ],
+    ///     LineEnding::NoLineEndings
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -264,11 +271,13 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///                 Text("No JHU Controller".to_string())
     ///                 ],
     ///             Feature,
-    ///             vec![]
+    ///             vec![],
+    ///     LineEnding::NoLineEndings
     ///             ))
     ///         ],
     ///     Feature,
-    ///     vec![]
+    ///     vec![],
+    ///     LineEnding::NoLineEndings
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -307,11 +316,13 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///                 Text("No JHU Controller".to_string())
     ///                 ],
     ///             Feature,
-    ///             vec![]
+    ///             vec![],
+    ///     LineEnding::NoLineEndings
     ///             ))
     ///         ],
     ///     Configuration,
-    ///     vec![]
+    ///     vec![],
+    ///     LineEnding::NoLineEndings
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -352,11 +363,13 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///             Feature,
     ///             vec![
     ///                 Text("JHU Controller".to_string())
-    ///                 ]
+    ///                 ],
+    ///             LineEnding::NoLineEndings
     ///             ))
     ///         ],
     ///     Feature,
-    ///     vec![]
+    ///     vec![],
+    ///     LineEnding::NoLineEndings
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -437,6 +450,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     /// use applicability_parser_types::applicability_parser_syntax_tag::ApplicabilityParserSyntaxTag::TagNot;
     /// use applicability_parser_types::applic_tokens::{ApplicabilityNotTag,ApplicabilityNoTag,ApplicTokens};
     /// use applicability_parser_types::applicability_parser_syntax_tag::ApplicabilityParserSyntaxTag::Tag;
+    /// use applicability_parser_types::applicability_parser_syntax_tag::LineEnding;
     /// use applicability::applic_tag::ApplicabilityTagTypes::Feature;
     /// use applicability::applic_tag::ApplicabilityTagTypes::Configuration;
     /// use applicability::applic_tag::ApplicabilityTag;
@@ -455,7 +469,8 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///         Text("Engine 5 A2543".to_string())
     ///         ],
     ///     Feature,
-    ///     vec![]
+    ///     vec![],
+    ///     LineEnding::NoLineEndings
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -482,7 +497,8 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///         Text("Product A".to_string())
     ///         ],
     ///     Configuration,
-    ///     vec![]
+    ///     vec![],
+    ///     LineEnding::NoLineEndings
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -509,7 +525,8 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///         Text("Engine 5 A2543".to_string())
     ///         ],
     ///     Feature,
-    ///     vec![]
+    ///     vec![],
+    ///     LineEnding::NoLineEndings
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -536,7 +553,8 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///         Text("Product A".to_string())
     ///         ],
     ///     Configuration,
-    ///     vec![]
+    ///     vec![],
+    ///     LineEnding::NoLineEndings
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -565,7 +583,8 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///     Feature,
     ///     vec![
     ///         Text("Engine 5 A2543".to_string())
-    ///         ]
+    ///         ],
+    ///     LineEnding::NoLineEndings
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -594,7 +613,8 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///     Configuration,
     ///     vec![
     ///         Text("Product A".to_string())
-    ///         ]
+    ///         ],
+    ///     LineEnding::NoLineEndings
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -629,11 +649,13 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///                 Text("No JHU Controller".to_string())
     ///                 ],
     ///             Feature,
-    ///             vec![]
+    ///             vec![],
+    ///             LineEnding::NoLineEndings
     ///             ))
     ///         ],
     ///     Feature,
-    ///     vec![]
+    ///     vec![],
+    ///     LineEnding::NoLineEndings
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -672,11 +694,13 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///                 Text("No JHU Controller".to_string())
     ///                 ],
     ///             Feature,
-    ///             vec![]
+    ///             vec![],
+    ///             LineEnding::NoLineEndings
     ///             ))
     ///         ],
     ///     Feature,
-    ///     vec![]
+    ///     vec![],
+    ///     LineEnding::NoLineEndings
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -717,11 +741,13 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///             Feature,
     ///             vec![
     ///                 Text("JHU Controller".to_string())
-    ///                 ]
+    ///                 ],
+    ///             LineEnding::NoLineEndings
     ///             ))
     ///         ],
     ///     Feature,
-    ///     vec![]
+    ///     vec![],
+    ///     LineEnding::NoLineEndings
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -771,13 +797,15 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///                     ],
     ///                     Feature,
     ///                     vec![],
+    ///                     LineEnding::NoLineEndings
     ///                 ),
     ///             ),
     ///         ],
     ///         Configuration,
     ///         vec![
     ///             Text("\r\nMauris ut tortor id ipsum pharetra ultrices. \r\n".to_string())
-    ///         ]
+    ///         ],
+    ///         LineEnding::NoLineEndings
     ///         
     ///     ).sanitize(
     ///     vec![
@@ -828,13 +856,15 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///                     ],
     ///                     Feature,
     ///                     vec![],
+    ///                     LineEnding::NoLineEndings
     ///                 ),
     ///             ),
     ///         ],
     ///         Configuration,
     ///         vec![
     ///             Text("\r\nMauris ut tortor id ipsum pharetra ultrices. \r\n".to_string())
-    ///         ]
+    ///         ],
+    ///         LineEnding::NoLineEndings
     ///         
     ///     ).sanitize(
     ///     vec![
@@ -885,13 +915,15 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///                     ],
     ///                     Feature,
     ///                     vec![],
+    ///                     LineEnding::NoLineEndings
     ///                 ),
     ///             ),
     ///         ],
     ///         Configuration,
     ///         vec![
     ///             Text("\r\nMauris ut tortor id ipsum pharetra ultrices. \r\n".to_string())
-    ///         ]
+    ///         ],
+    ///         LineEnding::NoLineEndings
     ///         
     ///     ).sanitize(
     ///     vec![
