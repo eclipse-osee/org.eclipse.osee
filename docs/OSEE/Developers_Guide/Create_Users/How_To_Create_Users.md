@@ -86,15 +86,3 @@ curl -v --request POST '{application-server-url}/orcs/branch/570/relation/create
 #### OSEE Access Admin
 
 curl -v --request POST '{application-server-url}/orcs/branch/570/relation/createRelationByType/sideA/8033605/sideB/{User ID}/relationTypeToken/2305843009213694308' --header 'Authorization: Basic 3333'
-
-#### Requirements
-
-curl -v --request POST '{application-server-url}/orcs/branch/570/relation/createRelationByType/sideA/200059/sideB/{User ID}/relationTypeToken/2305843009213694308' --header 'Authorization: Basic 3333'
-
-#### Code
-
-curl -v --request POST '{application-server-url}/orcs/branch/570/relation/createRelationByType/sideA/200060/sideB/{User ID}/relationTypeToken/2305843009213694308' --header 'Authorization: Basic 3333'
-
-#### ARB
-
-curl -v --request POST '{application-server-url}/orcs/branch/570/relation/createRelationByType/sideA/150338509/sideB/{User ID}/relationTypeToken/2305843009213694313' --header 'Authorization: Basic 3333'

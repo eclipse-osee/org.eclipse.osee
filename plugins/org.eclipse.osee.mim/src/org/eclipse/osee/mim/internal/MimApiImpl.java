@@ -31,6 +31,7 @@ import org.eclipse.osee.mim.InterfaceUnitApi;
 import org.eclipse.osee.mim.InterfaceValidationApi;
 import org.eclipse.osee.mim.MimApi;
 import org.eclipse.osee.mim.MimArtifactsApi;
+import org.eclipse.osee.mim.MimPeerReviewApi;
 import org.eclipse.osee.mim.MimReportsApi;
 import org.eclipse.osee.mim.TransportTypeApi;
 import org.eclipse.osee.mim.types.InterfaceLogicalTypeBoolean;
@@ -78,6 +79,7 @@ public class MimApiImpl implements MimApi {
    private InterfaceValidationApi interfaceValidationApi;
    private MimArtifactsApi mimArtifactsApi;
    private MimReportsApi mimReportsApi;
+   private MimPeerReviewApi mimPeerReviewApi;
 
    public void bindOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -138,11 +140,16 @@ public class MimApiImpl implements MimApi {
       this.interfaceRateApi = new InterfaceRateApiImpl(orcsApi);
       this.interfaceMessageTypeApi = new InterfaceMessageTypeApiImpl(orcsApi);
       this.interfaceDifferenceReportApi = new InterfaceDifferenceReportApiImpl(orcsApi);
+      
       this.mimArtifactsApi = new MimArtifactsApiImpl(orcsApi);
       this.mimReportsApi = new MimReportsApiImpl(orcsApi);
+      
       this.crossReferenceApi = new CrossReferenceApiImpl(orcsApi);
       this.interfaceValidationApi =
          new InterfaceValidationApiImpl(this.interfaceConnectionViewApi, this.interfaceStructureApi);
+      
+
+      this.mimPeerReviewApi = new MimPeerReviewApiImpl(orcsApi, atsApi);
    }
 
    @Override
@@ -218,6 +225,11 @@ public class MimApiImpl implements MimApi {
    @Override
    public MimReportsApi getMimReportsApi() {
       return this.mimReportsApi;
+   }
+   
+   @Override
+   public MimPeerReviewApi getMimPeerReviewApi() {
+      return this.mimPeerReviewApi;
    }
 
    @Override
