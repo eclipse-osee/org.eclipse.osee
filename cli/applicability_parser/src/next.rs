@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-use crate::substitution::{parse_substitution, parse_substitution_as_str};
+use crate::substitution::{parse_substitution, parse_substitution_as_u8};
 
 use super::{
     config::{parse_config, parse_config_not},
@@ -53,7 +53,7 @@ pub fn next<'a>(
         let start_config_group = start_config_group_text_parser(custom_start_comment_syntax);
         let start_config_group_not = not_config_group_text_parser(custom_start_comment_syntax);
         let substitution_as_str =
-            parse_substitution_as_str(custom_start_comment_syntax, custom_end_comment_syntax);
+            parse_substitution_as_u8(custom_start_comment_syntax, custom_end_comment_syntax);
 
         let inner_parser = alt((
             start_feature,
@@ -154,7 +154,7 @@ pub fn next_inner<'a>(
             else_config_group_text_parser(custom_start_comment_syntax, custom_end_comment_syntax);
 
         let substitution_as_str =
-            parse_substitution_as_str(custom_start_comment_syntax, custom_end_comment_syntax);
+            parse_substitution_as_u8(custom_start_comment_syntax, custom_end_comment_syntax);
         //this is the next type to parse...
 
         let inner_parser = alt((
@@ -202,7 +202,7 @@ mod tests {
         use applicability_parser_types::{
             applic_tokens::{ApplicTokens, ApplicabilityNoTag},
             applicability_parser_syntax_tag::{
-                ApplicabilityParserSyntaxTag, ApplicabilitySyntaxTag, ApplicabilitySyntaxTagNot, LineEnding,
+                ApplicabilityParserSyntaxTag, ApplicabilitySyntaxTag, ApplicabilitySyntaxTagNot
             },
         };
         use nom::{
@@ -222,13 +222,15 @@ mod tests {
                         vec![ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag {
                             tag: "SOMETHING".to_string(),
                             value: "Included".to_string()
-                        }))],
+                        },0))],
                         vec![ApplicabilityParserSyntaxTag::Text(
                             " Some Text Here \n".to_string()
                         )],
                         ApplicabilityTagTypes::Feature,
                         vec![],
-                        LineEnding::StartLineEnding
+                        1,
+                        0,
+                        0
                     ))
                 ))
             )
@@ -247,13 +249,15 @@ mod tests {
                         vec![ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag {
                             tag: "SOMETHING".to_string(),
                             value: "Included".to_string()
-                        }))],
+                        },0))],
                         vec![ApplicabilityParserSyntaxTag::Text(
                             " Some Text Here \n".to_string()
                         )],
                         ApplicabilityTagTypes::Configuration,
                         vec![],
-                        LineEnding::StartLineEnding
+                        1,
+                        0,
+                        0
                     ))
                 ))
             )
@@ -282,13 +286,15 @@ mod tests {
                         vec![ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag {
                             tag: "SOMETHING".to_string(),
                             value: "Included".to_string()
-                        }))],
+                        },0))],
                         vec![ApplicabilityParserSyntaxTag::Text(
                             " Some Text Here \n".to_string()
                         )],
                         ApplicabilityTagTypes::Feature,
                         vec![],
-                        LineEnding::StartLineEnding
+                        1,
+                        0,
+                        0
                     )),
                 ))
             )
@@ -316,13 +322,15 @@ mod tests {
                         vec![ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag {
                             tag: "SOMETHING".to_string(),
                             value: "Included".to_string()
-                        }))],
+                        },0))],
                         vec![ApplicabilityParserSyntaxTag::Text(
                             " Some Text Here \n".to_string()
                         )],
                         ApplicabilityTagTypes::Configuration,
                         vec![],
-                        LineEnding::StartLineEnding
+                        1,
+                        0,
+                        0
                     )),
                 ))
             )

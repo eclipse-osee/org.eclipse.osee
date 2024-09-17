@@ -31,34 +31,54 @@ pub enum ApplicTokens {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ApplicabilityNoTag(pub ApplicabilityTag);
+pub struct ApplicabilityNoTag(pub ApplicabilityTag,
+    //# of line endings within the ApplicabilityTag
+pub u8);
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ApplicabilityNotTag(pub ApplicabilityTag);
+pub struct ApplicabilityNotTag(pub ApplicabilityTag,
+    //# of line endings within the ApplicabilityTag
+pub u8);
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ApplicabilityAndTag(pub ApplicabilityTag);
+pub struct ApplicabilityAndTag(pub ApplicabilityTag,
+    //# of line endings within the ApplicabilityTag
+pub u8);
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ApplicabilityNotAndTag(pub ApplicabilityTag);
+pub struct ApplicabilityNotAndTag(pub ApplicabilityTag,
+    //# of line endings within the ApplicabilityTag
+pub u8);
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ApplicabilityOrTag(pub ApplicabilityTag);
+pub struct ApplicabilityOrTag(pub ApplicabilityTag,
+    //# of line endings within the ApplicabilityTag
+pub u8);
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ApplicabilityNotOrTag(pub ApplicabilityTag);
+pub struct ApplicabilityNotOrTag(pub ApplicabilityTag,
+    //# of line endings within the ApplicabilityTag
+pub u8);
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ApplicabilityNestedAndTag(pub Vec<ApplicTokens>);
+pub struct ApplicabilityNestedAndTag(pub Vec<ApplicTokens>,
+    //# of line endings within the ApplicabilityTag
+pub u8);
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ApplicabilityNestedNotAndTag(pub Vec<ApplicTokens>);
+pub struct ApplicabilityNestedNotAndTag(pub Vec<ApplicTokens>,
+    //# of line endings within the ApplicabilityTag
+pub u8);
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ApplicabilityNestedOrTag(pub Vec<ApplicTokens>);
+pub struct ApplicabilityNestedOrTag(pub Vec<ApplicTokens>,
+    //# of line endings within the ApplicabilityTag
+pub u8);
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ApplicabilityNestedNotOrTag(pub Vec<ApplicTokens>);
+pub struct ApplicabilityNestedNotOrTag(pub Vec<ApplicTokens>,
+    //# of line endings within the ApplicabilityTag
+pub u8);
 
 impl From<ApplicTokens> for String {
     fn from(applic_tag: ApplicTokens) -> Self {

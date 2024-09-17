@@ -10,13 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-use nom::{
+ use nom::{
     bytes::complete::tag,
     character::complete::multispace0,
-    combinator::opt,
+    combinator::{map, map_parser, opt},
     sequence::{preceded, terminated, tuple},
     IResult,
 };
+
+use crate::counter::count_new_lines;
 
 use super::end::end_tag_parser;
 
@@ -25,54 +27,57 @@ use super::end::end_tag_parser;
 pub fn end_config_text_parser<'a>(
     custom_start_comment_syntax: &'a str,
     custom_end_comment_syntax: &'a str,
-) -> impl FnMut(&'a str) -> IResult<&str, &str> {
-    terminated(
+) -> impl FnMut(&'a str) -> IResult<&str, u8> {
+    map(tuple((
         preceded(
             tag(custom_start_comment_syntax),
-            preceded(multispace0, tag("End Configuration")),
+            terminated(map_parser(multispace0,count_new_lines()), tag("End Configuration")),
         ),
-        tuple((multispace0, opt(end_tag_parser(custom_end_comment_syntax)))),
-    )
+        tuple((map_parser(multispace0,count_new_lines()), opt(end_tag_parser(custom_end_comment_syntax)))),
+    )),|(first,(second, _remaining_string))|{first+second})
 }
 
 ///
 /// Returns a parser that will grab 0-n spaces, the word "Configuration" 0-n spaces "["
 pub fn start_config_text_parser<'a>(
     custom_start_comment_syntax: &'a str,
-) -> impl FnMut(&'a str) -> IResult<&str, &str> {
-    preceded(
+) -> impl FnMut(&'a str) -> IResult<&str, u8> {
+    map(preceded(
         tag(custom_start_comment_syntax),
-        preceded(
-            multispace0,
-            terminated(tag("Configuration"), preceded(multispace0, tag("["))),
-        ),
-    )
+        tuple((
+            map_parser(multispace0,count_new_lines()),
+            preceded(tag("Configuration"), terminated(map_parser(multispace0,count_new_lines()), tag("["))),
+        )),
+    ),|(first,second)|{first+second})
 }
 ///
 /// Returns a parser that will grab 0-n spaces, the word "Configuration Else"
 pub fn else_config_text_parser<'a>(
     custom_start_comment_syntax: &'a str,
     custom_end_comment_syntax: &'a str,
-) -> impl FnMut(&'a str) -> IResult<&str, &str> {
-    terminated(
+) -> impl FnMut(&'a str) -> IResult<&str, u8> {
+    map(tuple((
         preceded(
             tag(custom_start_comment_syntax),
-            preceded(multispace0, tag("Configuration Else")),
+            terminated(map_parser(multispace0,count_new_lines()), tag("Configuration Else")),
         ),
-        tuple((multispace0, opt(end_tag_parser(custom_end_comment_syntax)))),
-    )
+        terminated(map_parser(multispace0,count_new_lines()), opt(end_tag_parser(custom_end_comment_syntax))),
+    )),|(first,second)|{first+second})
 }
 
 ///
 /// Returns a parser that will grab 0-n spaces, the word "Configuration Not" 0-n spaces "["
 pub fn not_config_text_parser<'a>(
     custom_start_comment_syntax: &'a str,
-) -> impl FnMut(&'a str) -> IResult<&str, &str> {
-    preceded(
+) -> impl FnMut(&'a str) -> IResult<&str, u8> {
+    map(preceded(
         tag(custom_start_comment_syntax),
-        preceded(
-            multispace0,
-            terminated(tag("Configuration Not"), preceded(multispace0, tag("["))),
+        tuple((
+            map_parser(multispace0,count_new_lines()),
+            preceded(
+	    tag("Configuration Not"), 
+	    terminated(map_parser(multispace0,count_new_lines()), tag("["))),
+            ),
         ),
-    )
+    ),|(first,second)|{first+second})
 }
