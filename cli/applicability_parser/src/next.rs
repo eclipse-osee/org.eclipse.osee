@@ -202,7 +202,7 @@ mod tests {
         use applicability_parser_types::{
             applic_tokens::{ApplicTokens, ApplicabilityNoTag},
             applicability_parser_syntax_tag::{
-                ApplicabilityParserSyntaxTag, ApplicabilitySyntaxTag, ApplicabilitySyntaxTagNot
+                ApplicabilityParserSyntaxTag, ApplicabilitySyntaxTag, ApplicabilitySyntaxTagNot,
             },
         };
         use nom::{
@@ -219,10 +219,13 @@ mod tests {
                 Ok((
                     "",
                     ApplicabilityParserSyntaxTag::TagNot(ApplicabilitySyntaxTagNot(
-                        vec![ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag {
-                            tag: "SOMETHING".to_string(),
-                            value: "Included".to_string()
-                        },0))],
+                        vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                            ApplicabilityTag {
+                                tag: "SOMETHING".to_string(),
+                                value: "Included".to_string()
+                            },
+                            0
+                        ))],
                         vec![ApplicabilityParserSyntaxTag::Text(
                             " Some Text Here \n".to_string()
                         )],
@@ -230,7 +233,7 @@ mod tests {
                         vec![],
                         1,
                         0,
-                        0
+                        1
                     ))
                 ))
             )
@@ -246,10 +249,13 @@ mod tests {
                 Ok((
                     "",
                     ApplicabilityParserSyntaxTag::TagNot(ApplicabilitySyntaxTagNot(
-                        vec![ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag {
-                            tag: "SOMETHING".to_string(),
-                            value: "Included".to_string()
-                        },0))],
+                        vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                            ApplicabilityTag {
+                                tag: "SOMETHING".to_string(),
+                                value: "Included".to_string()
+                            },
+                            0
+                        ))],
                         vec![ApplicabilityParserSyntaxTag::Text(
                             " Some Text Here \n".to_string()
                         )],
@@ -257,7 +263,7 @@ mod tests {
                         vec![],
                         1,
                         0,
-                        0
+                        1
                     ))
                 ))
             )
@@ -283,10 +289,13 @@ mod tests {
                 Ok((
                     "",
                     ApplicabilityParserSyntaxTag::Tag(ApplicabilitySyntaxTag(
-                        vec![ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag {
-                            tag: "SOMETHING".to_string(),
-                            value: "Included".to_string()
-                        },0))],
+                        vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                            ApplicabilityTag {
+                                tag: "SOMETHING".to_string(),
+                                value: "Included".to_string()
+                            },
+                            0
+                        ))],
                         vec![ApplicabilityParserSyntaxTag::Text(
                             " Some Text Here \n".to_string()
                         )],
@@ -294,7 +303,7 @@ mod tests {
                         vec![],
                         1,
                         0,
-                        0
+                        1
                     )),
                 ))
             )
@@ -319,10 +328,13 @@ mod tests {
                 Ok((
                     "",
                     ApplicabilityParserSyntaxTag::Tag(ApplicabilitySyntaxTag(
-                        vec![ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag {
-                            tag: "SOMETHING".to_string(),
-                            value: "Included".to_string()
-                        },0))],
+                        vec![ApplicTokens::NoTag(ApplicabilityNoTag(
+                            ApplicabilityTag {
+                                tag: "SOMETHING".to_string(),
+                                value: "Included".to_string()
+                            },
+                            0
+                        ))],
                         vec![ApplicabilityParserSyntaxTag::Text(
                             " Some Text Here \n".to_string()
                         )],
@@ -330,7 +342,7 @@ mod tests {
                         vec![],
                         1,
                         0,
-                        0
+                        1
                     )),
                 ))
             )

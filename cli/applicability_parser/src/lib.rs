@@ -70,7 +70,7 @@ fn get_remaining_text(input: &str) -> IResult<&str, ApplicabilityParserSyntaxTag
 /// ``End Feature`` More text
 /// ``Configuration [SOME_CONFIGURATION]``
 /// configuration text
-/// ``End Configuration``","``","``"),Ok(("",vec![Text("Some other text\n".to_string()), Tag(ApplicabilitySyntaxTag([ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag { tag: "SOMETHING".to_string(), value: "Included".to_string() },0))].to_vec(), vec![Text("Some text here  \n".to_string())], Feature, [].to_vec(), 1,0,0)), Text(" More text\n".to_string()), Tag(ApplicabilitySyntaxTag([ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag { tag: "SOME_CONFIGURATION".to_string(), value: "Included".to_string() },0))].to_vec(), vec![Text("configuration text\n".to_string())], Configuration, [].to_vec(), 1,0,0)), Text("".to_string())])));
+/// ``End Configuration``","``","``"),Ok(("",vec![Text("Some other text\n".to_string()), Tag(ApplicabilitySyntaxTag([ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag { tag: "SOMETHING".to_string(), value: "Included".to_string() },0))].to_vec(), vec![Text("Some text here  \n".to_string())], Feature, [].to_vec(), 1,0,0)), Text(" More text\n".to_string()), Tag(ApplicabilitySyntaxTag([ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag { tag: "SOME_CONFIGURATION".to_string(), value: "Included".to_string() },0))].to_vec(), vec![Text("configuration text\n".to_string())], Configuration, [].to_vec(), 1,0,1)), Text("".to_string())])));
 /// ```
 pub fn parse_applicability<'a>(
     input: &'a str,

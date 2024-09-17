@@ -61,7 +61,8 @@ fn parse_end<'a>(
             )),
             opt(line_ending),
         )),
-        |s: (Option<u8>, Option<&str>)| (s.0.unwrap_or(0), vec![], s),
+        //first entry here is the else tag, which if you got to this point, else tag has 0 length
+        |s: (Option<u8>, Option<&str>)| (0, vec![], s),
     )
 }
 fn config_tag_parser<'a>(
@@ -241,7 +242,7 @@ mod parse_config_tests {
                     vec![],
                     1,
                     0,
-                    0
+                    1
                 ))
             ))
         )
@@ -267,7 +268,7 @@ mod parse_config_tests {
                     vec![],
                     1,
                     0,
-                    0
+                    1
                 ))
             ))
         )
@@ -294,7 +295,7 @@ mod parse_config_tests {
                     vec![],
                     1,
                     0,
-                    0
+                    1
                 ))
             ))
         )
@@ -388,7 +389,7 @@ mod parse_config_not_tests {
                     vec![],
                     1,
                     0,
-                    0
+                    1
                 ))
             ))
         )
@@ -416,7 +417,7 @@ mod parse_config_not_tests {
                     vec![],
                     1,
                     0,
-                    0
+                    1
                 ))
             ))
         )
@@ -445,7 +446,7 @@ mod parse_config_not_tests {
                     vec![],
                     1,
                     0,
-                    0
+                    1
                 ))
             ))
         )
