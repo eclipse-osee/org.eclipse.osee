@@ -65,4 +65,8 @@ const worldDataMock: world = {
 			Name: '2 - Peer Review algorithm used in code',
 		},
 	],
+	collectorArt: {
+		name: 'Web Export Goal',
+	},
+	atsId: 'TW15',
 };

@@ -211,6 +211,7 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
 
       WorldResults wr = new WorldResults();
       wr.setCollectorArt(collectorArt.getToken());
+      wr.setAtsId(atsApi.getAtsId(collectorArt));
       XResultData rd = wr.getRd();
       rd.logf("Collector: %s", collectorArt.toStringWithId());
 
@@ -236,6 +237,7 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
          wr.getRd().errorf("No Collector Artifact Found");
       } else {
          wr.setCollectorArt(collectorArt.getToken());
+         wr.setAtsId(atsApi.getAtsId(collectorArt));
          String json = atsApi.getAttributeResolver().getSoleAttributeValueAsString(collectorArt,
             AtsAttributeTypes.WorldResultsJson, "");
          if (Strings.isValid(json)) {
