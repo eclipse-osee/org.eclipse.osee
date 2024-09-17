@@ -255,7 +255,7 @@ class WorldComponent implements AfterViewInit {
 			.subscribe();
 	}
 
-	downloadJson() {
+	exportAsJson() {
 		if (!this.worldDataLoaded()) {
 			return;
 		}
@@ -271,7 +271,7 @@ class WorldComponent implements AfterViewInit {
 		link.remove();
 	}
 
-	openExport() {
+	exportAsHtml() {
 		this.params
 			.pipe(
 				take(1),
