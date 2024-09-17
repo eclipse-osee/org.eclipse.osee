@@ -17,6 +17,10 @@
       %license
    </license>
 
+   <includes
+         id="net.sourceforge.vrapper"
+         version="0.0.0"/> 
+
 	<includes
          id="org.eclipse.nebula.widgets.ganttchart.feature"
          version="0.0.0"/>

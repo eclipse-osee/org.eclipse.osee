@@ -28,6 +28,7 @@
 						</goals>
 						<configuration>
 							<excludes>
+							   
 								<plugin id="org.slf4j.api"/>
 							    <plugin id="net.jini.jsk-lib"/>
 								<plugin id="net.jini.jsk-platform"/>
@@ -235,6 +236,7 @@
 								<feature id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature" />
 								<feature id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature.source" />
 								<feature id="org.eclipse.papyrus.sdk.feature" />
+								<feature id="net.sourceforge.vrapper" />
 								<plugin id="net.jini" />
 							</excludes>
 						</configuration>

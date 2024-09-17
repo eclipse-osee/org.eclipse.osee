@@ -398,7 +398,6 @@ public class AtsActionService implements IAtsActionService {
 
          IAtsTeamWorkflow teamWf = actionResult.getTeamWfs().iterator().next();
          atsApi.getVersionService().setTargetedVersion(teamWf, version, changes);
-
          changes.execute();
 
          BranchData workingBranch = atsApi.getBranchService().createWorkingBranch(
@@ -545,9 +544,10 @@ public class AtsActionService implements IAtsActionService {
             artToken = listener.getArtifactToken(applicableAis);
          }
       }
-
+      
       if (artToken == null) {
-         teamWf = atsApi.getWorkItemService().getTeamWf(changes.createArtifact(artifactType, ""));
+         String name = (action.getName() == null) ? Strings.EMPTY_STRING : action.getName();
+         teamWf = atsApi.getWorkItemService().getTeamWf(changes.createArtifact(artifactType, name));
       } else {
          teamWf = atsApi.getWorkItemService().getTeamWf(changes.createArtifact(artToken));
       }
