@@ -48,11 +48,7 @@
    <includes
          id="org.eclipse.jgit"
          version="0.0.0"/>
-   
-   <includes
-         id="org.eclipse.egit"
-         version="0.0.0"/>
-   
+      
    <includes
          id="org.eclipse.equinox.core.feature"
          version="0.0.0"/>

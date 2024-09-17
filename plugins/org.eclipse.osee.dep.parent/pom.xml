@@ -163,6 +163,11 @@
 			<layout>p2</layout>
 			<url>https://vrapper.sourceforge.net/update-site/stable/ </url>
 	  </repository>
+ 	 <repository>
+			<id>egit</id>
+			<layout>p2</layout>
+			<url>https://repo.eclipse.org/content/unzip/releases.unzip/org/eclipse/jgit/org.eclipse.jgit.repository/5.13.3.202401111512-r/org.eclipse.jgit.repository-5.13.3.202401111512-r.zip-unzip/</url>
+	  </repository>	
          
 </repositories>
 
