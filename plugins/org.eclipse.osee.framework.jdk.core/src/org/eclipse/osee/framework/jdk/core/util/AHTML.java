@@ -498,7 +498,7 @@ public class AHTML {
    }
 
    public static String addHeaderRowMultiColumnTable(String[] str, Integer width[]) {
-      StringBuilder s = new StringBuilder("<tr>");
+      StringBuilder s = new StringBuilder("<thead><tr>");
       String widthStr = "";
       for (int i = 0; i < str.length; i++) {
          if (width != null) {
@@ -510,7 +510,7 @@ public class AHTML {
          s.append(str[i]);
          s.append("</th>");
       }
-      s.append("</tr>");
+      s.append("</tr></thead>");
       return s.toString();
    }
 
@@ -591,6 +591,35 @@ public class AHTML {
 
    public static String simpleJsonPage(String json) {
       return AHTML.pre(json);
+   }
+
+   public static String simplePageWithTableSortFilter(String title, String html) {
+      return pageEncoding(
+         "<html lang=\"en\">" + getTableSortFilterHeader() + "<body><h3>" + title + "</h3>" + html + "</body></html>");
+   }
+
+   public static String getTableSortFilterHeader() {
+      StringBuilder sb = new StringBuilder();
+      sb.append("<head>");
+      sb.append("    <meta charset=\"UTF-8\">");
+      sb.append("    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">");
+      sb.append("    <!-- Include DataTables CSS -->");
+      sb.append(
+         "    <link rel=\"stylesheet\" type=\"text/css\" href=\"https://cdn.datatables.net/1.11.5/css/jquery.dataTables.css\">");
+      sb.append("    <!-- Include jQuery -->");
+      sb.append(
+         "    <script type=\"text/javascript\" charset=\"utf8\" src=\"https://code.jquery.com/jquery-3.5.1.js\"></script>");
+      sb.append("    <!-- Include DataTables JS -->");
+      sb.append(
+         "    <script type=\"text/javascript\" charset=\"utf8\" src=\"https://cdn.datatables.net/1.11.5/js/jquery.dataTables.js\"></script>");
+      sb.append(
+         "    <script> $(document).ready(function() { $('#sorttable').DataTable({paging: false}); }); </script>");
+      sb.append("</head>");
+      return sb.toString();
+   }
+
+   public static Object beginMultiColumnTableWithTableSortFilter(int width, int border, String color) {
+      return "<table id=\"sorttable\" class=\"display\" border=\"" + border + "\" " + (color != null ? "color=\"" + color + "\"" : "") + "cellpadding=\"3\" cellspacing=\"0\" width=\"" + width + "%\">";
    }
 
 }
