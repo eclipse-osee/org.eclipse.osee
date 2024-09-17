@@ -18,10 +18,7 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatSelect } from '@angular/material/select';
 import { combineLatest, concatMap, filter, from, map, scan } from 'rxjs';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
-import {
-	extendedFeature,
-	extendedFeatureWithChanges,
-} from '../../types/features/base';
+import { trackableFeature } from '../../types/features/base';
 
 @Component({
 	selector: 'osee-separated-feature-selector',
@@ -38,23 +35,18 @@ import {
 	styles: [],
 })
 export class SeparatedFeatureSelectorComponent {
-	features = this.currentBranchService.branchApplicFeatures.pipe(
+	features = this.currentBranchService.features.pipe(
 		concatMap((features) => from(features)),
 		filter(
 			(feature) =>
 				!(feature.name.includes(' | ') || feature.name.includes(' & '))
 		),
-		scan(
-			(acc, curr) => [...acc, curr],
-			[] as (extendedFeature | extendedFeatureWithChanges)[]
-		)
+		scan((acc, curr) => [...acc, curr], [] as trackableFeature[])
 	);
 
-	@Input() selectedFeature?: extendedFeature & extendedFeatureWithChanges;
+	@Input() selectedFeature?: trackableFeature;
 
-	@Output() selectedFeatureChange = new EventEmitter<
-		extendedFeature & extendedFeatureWithChanges
-	>();
+	@Output() selectedFeatureChange = new EventEmitter<trackableFeature>();
 
 	selectedName = this.selectedFeatureChange.pipe(
 		map((feature) => feature.name)

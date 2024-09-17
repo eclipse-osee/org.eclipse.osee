@@ -18,7 +18,10 @@ import { PlConfigCurrentBranchService } from '../../services/pl-config-current-b
 import { defaultFeatureConstraint } from '../../types/pl-config-feature-constraints';
 import { testBranchApplicabilityIdName } from '../../testing/mockBranchService';
 import { of } from 'rxjs';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {
+	BrowserAnimationsModule,
+	provideNoopAnimations,
+} from '@angular/platform-browser/animations';
 import { ApplicabilityListUIService } from '@osee/shared/services';
 import { applicsMock } from '@osee/shared/testing';
 
@@ -28,11 +31,9 @@ describe('AddFeatureConstraintDialogComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [
-				AddFeatureConstraintDialogComponent,
-				BrowserAnimationsModule,
-			],
+			imports: [AddFeatureConstraintDialogComponent],
 			providers: [
+				provideNoopAnimations(),
 				{
 					provide: PlConfigCurrentBranchService,
 					useValue: {

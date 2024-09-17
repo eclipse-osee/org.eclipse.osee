@@ -16,13 +16,17 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { response } from '@osee/shared/types';
 import { of } from 'rxjs';
 import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { testBranchApplicability } from '../../testing/mockBranchService';
-import { response } from '@osee/shared/types';
 
+import { CurrentBranchInfoService } from '@osee/shared/services';
+import { testBranchInfo } from '@osee/shared/testing';
+import { DialogService } from 'src/app/ple/plconfig/lib/services/dialog.service';
+import { DialogServiceMock } from 'src/app/ple/plconfig/lib/testing/mockDialogService.mock';
 import { ConfigurationDropdownComponent } from './configuration-dropdown.component';
 
 describe('ConfigurationDropdownComponent', () => {
@@ -66,9 +70,14 @@ describe('ConfigurationDropdownComponent', () => {
 				MatIconModule,
 				MatButtonModule,
 				MatFormFieldModule,
-				NoopAnimationsModule,
 			],
 			providers: [
+				provideNoopAnimations(),
+				{ provide: DialogService, useValue: DialogServiceMock },
+				{
+					provide: CurrentBranchInfoService,
+					useValue: { currentBranch: of(testBranchInfo) },
+				},
 				{ provide: MatDialog, useValue: {} },
 				{
 					provide: PlConfigCurrentBranchService,

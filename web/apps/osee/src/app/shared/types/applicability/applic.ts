@@ -15,6 +15,11 @@ export interface applic {
 	name: string;
 }
 
+export type applicWithGamma = {
+	gammaId: string;
+	deleted?: boolean;
+	added?: boolean;
+} & applic;
 export interface hasApplic {
 	applicability: applic;
 }

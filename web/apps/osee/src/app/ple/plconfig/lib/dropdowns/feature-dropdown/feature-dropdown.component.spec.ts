@@ -22,6 +22,8 @@ import { testBranchApplicability } from '../../testing/mockBranchService';
 import { response } from '@osee/shared/types';
 
 import { FeatureDropdownComponent } from './feature-dropdown.component';
+import { CurrentBranchInfoService } from '@osee/shared/services';
+import { testBranchInfo } from '@osee/shared/testing';
 
 describe('FeatureDropdownComponent', () => {
 	let component: FeatureDropdownComponent;
@@ -61,13 +63,12 @@ describe('FeatureDropdownComponent', () => {
 			of(testResponse)
 		);
 		await TestBed.configureTestingModule({
-			imports: [
-				MatMenuModule,
-				MatIconModule,
-				MatButtonModule,
-				FeatureDropdownComponent,
-			],
+			imports: [FeatureDropdownComponent],
 			providers: [
+				{
+					provide: CurrentBranchInfoService,
+					useValue: { currentBranch: of(testBranchInfo) },
+				},
 				{
 					provide: PlConfigCurrentBranchService,
 					useValue: {

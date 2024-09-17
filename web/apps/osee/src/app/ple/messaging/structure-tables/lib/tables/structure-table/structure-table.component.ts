@@ -84,7 +84,7 @@ import type {
 } from '@osee/messaging/shared/types';
 import {
 	TwoLayerAddButtonComponent,
-	ViewSelectorComponent,
+	CurrentViewSelectorComponent,
 } from '@osee/shared/components';
 import { applic } from '@osee/shared/types/applicability';
 import { difference } from '@osee/shared/types/change-report';
@@ -158,7 +158,7 @@ import { SubElementTableComponent } from '../sub-element-table/sub-element-table
 		EditStructureFieldComponent,
 		AddStructureDialogComponent,
 		MessagingControlsComponent,
-		ViewSelectorComponent,
+		CurrentViewSelectorComponent,
 		SubElementTableComponent,
 		HighlightFilteredTextDirective,
 		StructureTableLongTextFieldComponent,

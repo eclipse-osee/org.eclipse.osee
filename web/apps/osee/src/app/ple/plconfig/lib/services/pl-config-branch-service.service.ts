@@ -11,23 +11,30 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { apiURL } from '@osee/environments';
+import { HttpParamsType, NamedId, branch, response } from '@osee/shared/types';
+import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
 import { Observable, of } from 'rxjs';
 import { share, tap } from 'rxjs/operators';
-import { apiURL } from '@osee/environments';
-import { PlConfigApplicUIBranchMapping } from '../types/pl-config-applicui-branch-mapping';
+import { trackableFeature } from '../types/features/base';
+import {
+	PlConfigApplicUIBranchMapping,
+	view,
+} from '../types/pl-config-applicui-branch-mapping';
 import { cfgGroup } from '../types/pl-config-branch';
 import { ConfigurationGroupDefinition } from '../types/pl-config-cfggroups';
 import {
+	configGroup,
 	configuration,
-	configurationGroup,
 	editConfiguration,
 } from '../types/pl-config-configurations';
+import {
+	applicWithConstraints,
+	featureConstraintData,
+} from '../types/pl-config-feature-constraints';
 import { modifyFeature, writeFeature } from '../types/pl-config-features';
-import { HttpParamsType, response } from '@osee/shared/types';
-import { NamedId, branch } from '@osee/shared/types';
-import { featureConstraintData } from './../types/pl-config-feature-constraints';
-import { applicWithConstraints } from './../types/pl-config-feature-constraints';
+import { plConfigTable } from '../types/pl-config-table';
 
 @Injectable({
 	providedIn: 'root',
@@ -36,7 +43,7 @@ export class PlConfigBranchService {
 	cachedBranch: string | number | undefined;
 	applicabilityTagCache = new Map<string, NamedId>();
 
-	constructor(private http: HttpClient) {}
+	private http = inject(HttpClient);
 	public getBranches(type: string): Observable<branch[]> {
 		return this.http.get<branch[]>(apiURL + '/ats/ple/branches/' + type);
 	}
@@ -66,6 +73,112 @@ export class PlConfigBranchService {
 	): Observable<applicWithConstraints[]> {
 		return this.http.get<applicWithConstraints[]>(
 			apiURL + '/orcs/branch/' + branchId + '/applic/constraints'
+		);
+	}
+
+	public getApplicabilityTable(
+		branchId: number | string,
+		viewId: number | string,
+		pageNum?: number | string,
+		count?: number | string,
+		filter?: number | string
+	) {
+		let params: HttpParamsType = {};
+		if (viewId !== '') {
+			params = {
+				...params,
+				viewId: viewId,
+			};
+		}
+		if (pageNum && count) {
+			params = { ...params, pageNum: pageNum, count: count };
+		}
+		if (filter && filter !== '') {
+			params = { ...params, filter: filter };
+		}
+		return this.http.get<plConfigTable>(
+			apiURL + '/orcs/branch/' + branchId + '/applicability',
+			{ params: params }
+		);
+	}
+
+	public getApplicabilityTableCount(
+		branchId: number | string,
+		viewId: number | string,
+		filter?: number | string
+	) {
+		let params: HttpParamsType = {};
+		if (viewId !== '') {
+			params = {
+				...params,
+				viewId: viewId,
+			};
+		}
+		if (filter && filter !== '') {
+			params = { ...params, filter: filter };
+		}
+		return this.http.get<number>(
+			apiURL + '/orcs/branch/' + branchId + '/applicability/count',
+			{ params: params }
+		);
+	}
+
+	public getFeatureValues(
+		branchId: number | string,
+		configId: number | string,
+		featureId: number | string,
+		pageNum?: number | string,
+		count?: number | string,
+		filter?: number | string
+	) {
+		let params: HttpParamsType = {};
+		if (pageNum && count) {
+			params = { ...params, pageNum: pageNum, count: count };
+		}
+		if (filter && filter !== '') {
+			params = { ...params, filter: filter };
+		}
+		return this.http.get<
+			{
+				e1: number;
+				e2: number;
+				gammaId: number;
+				value: string;
+				constrained: boolean;
+				constrainedBy: string;
+			}[]
+		>(
+			apiURL +
+				'/orcs/branch/' +
+				branchId +
+				'/applicability/feature/' +
+				featureId +
+				'/' +
+				configId,
+			{ params: params }
+		);
+	}
+
+	public getFeatureValuesCount(
+		branchId: number | string,
+		configId: number | string,
+		featureId: number | string,
+		filter?: number | string
+	) {
+		let params: HttpParamsType = {};
+		if (filter && filter !== '') {
+			params = { ...params, filter: filter };
+		}
+		return this.http.get<number>(
+			apiURL +
+				'/orcs/branch/' +
+				branchId +
+				'/applicability/feature/' +
+				featureId +
+				'/' +
+				configId +
+				'/count',
+			{ params: params }
 		);
 	}
 	public deleteFeatureConstraint(
@@ -123,7 +236,6 @@ export class PlConfigBranchService {
 			apiURL + '/orcs/branch/' + branchId + '/applic/constraintConflicts',
 			{ params: params }
 		);
-		// return of(['', '']);
 	}
 	public addConfiguration(
 		branchId: string | number | undefined,
@@ -235,6 +347,87 @@ export class PlConfigBranchService {
 			body
 		);
 	}
+	public setApplicability(
+		branchId: string | number | undefined,
+		featureId: string,
+		viewId: string,
+		applicabilities: string[]
+	) {
+		return this.http.put<response>(
+			apiURL +
+				'/orcs/branch/' +
+				branchId +
+				'/applicability/applic/' +
+				featureId +
+				'/' +
+				viewId,
+			applicabilities
+		);
+	}
+
+	public getCfgGroupsForView(
+		branchId: string | number | undefined,
+		viewId: string | number
+	) {
+		return this.http.get<cfgGroup[]>(
+			apiURL +
+				'/orcs/branch/' +
+				branchId +
+				'/applicability/views/' +
+				viewId +
+				'/groups'
+		);
+	}
+
+	public getView(
+		branchId: string | number | undefined,
+		viewId: string | number
+	) {
+		return this.http.get<view>(
+			apiURL + '/orcs/branch/' + branchId + '/applic/view/def/' + viewId
+		);
+	}
+	public getViewsByIds(
+		branchId: string | number | undefined,
+		viewIds: string[]
+	) {
+		return this.http.get<view[]>(
+			apiURL + '/orcs/branch/' + branchId + '/applicability/views',
+			{
+				params: {
+					id: viewIds,
+				},
+			}
+		);
+	}
+
+	public getViewsOrderedByName(branchId: string | number | undefined) {
+		return this.http.get<view[]>(
+			apiURL + '/orcs/branch/' + branchId + '/applicability/views',
+			{
+				params: { orderByAttribute: ATTRIBUTETYPEIDENUM.NAME },
+			}
+		);
+	}
+
+	public getFeatures(branchId: number | string) {
+		let params: HttpParamsType = {
+			orderByAttributeType: ATTRIBUTETYPEIDENUM.NAME,
+		};
+		return this.http.get<trackableFeature[]>(
+			apiURL + '/orcs/branch/' + branchId + '/applicability/features',
+			{ params: params }
+		);
+	}
+
+	public getFeatureById(
+		branchId: string | number,
+		featureId: string | number
+	) {
+		return this.http.get<trackableFeature>(
+			apiURL + '/orcs/branch/' + branchId + '/applic/feature/' + featureId
+		);
+	}
 	public getCfgGroups(
 		branchId: string | number | undefined
 	): Observable<cfgGroup[]> {
@@ -246,7 +439,7 @@ export class PlConfigBranchService {
 		branchId: string | number | undefined,
 		cfgGroupId: string | number | undefined
 	) {
-		return this.http.get<configurationGroup>(
+		return this.http.get<configGroup>(
 			apiURL +
 				'/orcs/branch/' +
 				branchId +

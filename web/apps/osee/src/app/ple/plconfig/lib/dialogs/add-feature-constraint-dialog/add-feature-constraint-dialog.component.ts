@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Inject, OnDestroy } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
 	MatAutocomplete,
@@ -58,7 +58,7 @@ import { featureConstraintData } from '../../types/pl-config-feature-constraints
 	templateUrl: './add-feature-constraint-dialog.component.html',
 	styles: [],
 })
-export class AddFeatureConstraintDialogComponent implements OnDestroy {
+export class AddFeatureConstraintDialogComponent {
 	constraintIsCompApplic = false;
 	preview = '';
 	hidePreview = true;
@@ -227,12 +227,5 @@ export class AddFeatureConstraintDialogComponent implements OnDestroy {
 					});
 			}
 		}
-	}
-
-	ngOnDestroy() {
-		this.data.featureConstraint.applicability1.id = '';
-		this.data.featureConstraint.applicability1.name = '';
-		this.data.featureConstraint.applicability2.id = '';
-		this.data.featureConstraint.applicability2.name = '';
 	}
 }

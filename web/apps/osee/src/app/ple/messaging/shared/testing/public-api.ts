@@ -70,7 +70,6 @@ export * from './warning-dialog.ui.service.mock';
 export * from './diff-report-http.service.mock';
 export * from './mim-reports.mock';
 export * from './messaging-controls.component.mock';
-export * from './view-selector.component.mock';
 export * from './units.service.mock';
 export * from './rates.service.mock';
 export * from './message-types.service.mock';

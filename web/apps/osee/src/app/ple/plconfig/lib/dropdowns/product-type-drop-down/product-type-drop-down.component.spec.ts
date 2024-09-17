@@ -11,16 +11,15 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigTypesService } from '../../services/pl-config-types.service';
 import { plCurrentBranchServiceMock } from '../../testing/mockPlCurrentBranchService.mock';
 import { plConfigTypesServiceMock } from '../../testing/pl-config-types.service.mock';
 
+import { CurrentBranchInfoService } from '@osee/shared/services';
+import { testBranchInfo } from '@osee/shared/testing';
+import { of } from 'rxjs';
 import { ProductTypeDropDownComponent } from './product-type-drop-down.component';
 
 describe('ProductTypeDropDownComponent', () => {
@@ -29,15 +28,13 @@ describe('ProductTypeDropDownComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [
-				MatDialogModule,
-				MatMenuModule,
-				NoopAnimationsModule,
-				MatIconModule,
-				MatButtonModule,
-				ProductTypeDropDownComponent,
-			],
+			imports: [ProductTypeDropDownComponent],
 			providers: [
+				provideNoopAnimations(),
+				{
+					provide: CurrentBranchInfoService,
+					useValue: { currentBranch: of(testBranchInfo) },
+				},
 				{
 					provide: PlConfigTypesService,
 					useValue: plConfigTypesServiceMock,

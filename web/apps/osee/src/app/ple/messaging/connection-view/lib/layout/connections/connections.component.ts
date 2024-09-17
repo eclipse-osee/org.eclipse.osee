@@ -14,7 +14,7 @@ import { AsyncPipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
-import { ViewSelectorComponent } from '@osee/shared/components';
+import { CurrentViewSelectorComponent } from '@osee/shared/components';
 import { applic } from '@osee/shared/types/applicability';
 import { iif, of } from 'rxjs';
 import { map, share, shareReplay, switchMap } from 'rxjs/operators';
@@ -30,7 +30,7 @@ import { GraphComponent } from '../graph/graph.component';
 		AsyncPipe,
 		GraphComponent,
 		MessagingControlsComponent,
-		ViewSelectorComponent,
+		CurrentViewSelectorComponent,
 		ConnectionsTableComponent,
 	],
 })

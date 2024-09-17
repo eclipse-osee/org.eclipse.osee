@@ -38,25 +38,8 @@
 	<br />
 	<mat-label class="dialog-font-size">Copy From:</mat-label>
 	<br />
-	<mat-form-field
-		class="tw-w-full tw-text-lg"
-		data-cy="field-copyFrom">
-		<mat-label>Select a Configuration</mat-label>
-		<mat-select
-			[(ngModel)]="data.copyFrom"
-			required>
-			@for (
-				option of (branchApplicability | async)?.views;
-				track option
-			) {
-				<mat-option
-					[value]="option"
-					[attr.data-cy]="'option-' + option.name">
-					{{ option.name }}
-				</mat-option>
-			}
-		</mat-select>
-	</mat-form-field>
+	<osee-view-selector [(view)]="data.copyFrom"></osee-view-selector>
+	<!-- TODO look into adding hasValidId Directive here -->
 	<br />
 	<mat-label class="tw-text-lg">Add a Configuration Group:</mat-label>
 	<br />

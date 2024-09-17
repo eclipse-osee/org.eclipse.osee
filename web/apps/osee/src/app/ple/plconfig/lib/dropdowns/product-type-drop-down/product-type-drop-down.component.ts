@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import {
@@ -28,6 +28,8 @@ import {
 	DefaultProductType,
 	ProductType,
 } from '../../types/pl-config-product-types';
+import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CurrentBranchInfoService, branchImpl } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-plconfig-product-type-dropdown',
@@ -44,7 +46,15 @@ import {
 	],
 })
 export class ProductTypeDropDownComponent {
-	editable = this.currentBranchService.branchApplicEditable;
+	//TODO add real prefs
+	private _branchInfoService = inject(CurrentBranchInfoService);
+	private _branch = toSignal(
+		this._branchInfoService.currentBranch.pipe(takeUntilDestroyed()),
+		{
+			initialValue: new branchImpl(),
+		}
+	);
+	protected editable = computed(() => this._branch().branchType === '0');
 	productTypes = this.currentBranchService.productTypes;
 	constructor(
 		private currentBranchService: PlConfigCurrentBranchService,
