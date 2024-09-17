@@ -61,7 +61,8 @@ fn parse_end<'a>(
             )),
             opt(line_ending),
         )),
-        |s: (Option<u8>, Option<&str>)| (s.0.unwrap_or(0), vec![], s),
+        //first entry here is the else tag, which if you got to this point, else tag has 0 length
+        |s: (Option<u8>, Option<&str>)| (0, vec![], s),
     )
 }
 
@@ -243,7 +244,7 @@ mod parse_config_group_tests {
                     vec![],
                     1,
                     0,
-                    0
+                    1
                 ))
             ))
         )
@@ -268,7 +269,7 @@ mod parse_config_group_tests {
                     vec![],
                     1,
                     0,
-                    0
+                    1
                 ))
             ))
         )
@@ -294,7 +295,7 @@ mod parse_config_group_tests {
                     vec![],
                     1,
                     0,
-                    0
+                    1
                 ))
             ))
         )
@@ -383,7 +384,7 @@ mod parse_config_group_not_tests {
                     vec![],
                     1,
                     0,
-                    0
+                    1
                 ))
             ))
         )
@@ -410,7 +411,7 @@ mod parse_config_group_not_tests {
                     vec![],
                     1,
                     0,
-                    0
+                    1
                 ))
             ))
         )
@@ -438,7 +439,7 @@ mod parse_config_group_not_tests {
                     vec![],
                     1,
                     0,
-                    0
+                    1
                 ))
             ))
         )
