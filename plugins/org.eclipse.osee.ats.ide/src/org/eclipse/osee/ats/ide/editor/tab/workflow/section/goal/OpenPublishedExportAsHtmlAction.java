@@ -27,10 +27,10 @@ import org.eclipse.swt.program.Program;
 /**
  * @author Donald G. Dunne
  */
-public class OpenWebExportAction extends AbstractWebExportAction {
+public class OpenPublishedExportAsHtmlAction extends AbstractWebExportAction {
 
-   public OpenWebExportAction(GoalArtifact goalArt, WorkflowEditor editor) {
-      super("Open Export View - Saved", goalArt, editor, AtsImage.RIGHT_ARROW_SM);
+   public OpenPublishedExportAsHtmlAction(GoalArtifact goalArt, WorkflowEditor editor) {
+      super("Open Published Export as HTML", goalArt, editor, AtsImage.RIGHT_ARROW_SM);
    }
 
    @Override

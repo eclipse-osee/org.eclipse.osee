@@ -75,16 +75,13 @@ public class WfeGoalSection {
       new XButtonViaAction(new PublishWebViewJsonAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(
          sectionBody, 2);
 
-      if (admin) {
-         new XButtonViaAction(
-            new OpenWebViewJsonPublishedAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(sectionBody,
-               2);
-      }
+      new XButtonViaAction(new OpenPublishedWebViewAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(
+         sectionBody, 2);
 
-      new XButtonViaAction(new OpenWebViewPublishedAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(
-         sectionBody, 2);
-      new XButtonViaAction(new OpenWebExportAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(
-         sectionBody, 2);
+      new XButtonViaAction(
+         new OpenPublishedExportAsJsonAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(sectionBody, 2);
+      new XButtonViaAction(
+         new OpenPublishedExportAsHtmlAction((GoalArtifact) editor.getWorkItem(), editor)).createWidgets(sectionBody, 2);
 
       section.setClient(sectionBody);
    }

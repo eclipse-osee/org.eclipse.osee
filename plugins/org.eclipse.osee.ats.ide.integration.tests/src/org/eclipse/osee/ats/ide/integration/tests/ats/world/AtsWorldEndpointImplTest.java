@@ -138,11 +138,11 @@ public class AtsWorldEndpointImplTest {
 
       String html = worldEp.getCollectionUI(backlog);
       Assert.assertNotNull(html);
-      Assert.assertTrue(html.startsWith("<h2>Collection - SAW Backlog<"));
+      Assert.assertTrue(html.startsWith("<h2>Collection: SAW Backlog<"));
 
       String html2 = worldEp.getCollectionUICustomized(backlog, GUID_LOCAL);
       Assert.assertNotNull(html2);
-      Assert.assertTrue(html2.startsWith("<h2>Collector - SAW Backlog - Customization: guid local<"));
+      Assert.assertTrue(html2.startsWith("<h2>Collector: SAW Backlog - Customization: guid local<"));
    }
 
    // /ats/world/search

@@ -44,15 +44,15 @@
 		<button
 			mat-button
 			class="tw-bg-primary tw-text-background-background"
-			(click)="openExport()">
-			Export
+			(click)="exportAsHtml()">
+			Export as HTML
 		</button>
 		@if (worldDataLoaded()) {
 			<button
 				mat-button
 				class="tw-bg-primary tw-text-background-background"
-				(click)="downloadJson()">
-				Download JSON
+				(click)="exportAsJson()">
+				Export as JSON
 			</button>
 		}
 	}

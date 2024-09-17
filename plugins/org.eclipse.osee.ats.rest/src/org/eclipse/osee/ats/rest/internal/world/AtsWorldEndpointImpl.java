@@ -338,7 +338,7 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
       if (collectorArt == null) {
          return AHTML.simplePage("Collector Art Does Not Exist " + collectorId);
       }
-      getDefaultUiTable(sb, "Collection - " + collectorArt.getName(), getCollection(collectorId));
+      getDefaultUiTable(sb, "Collection: " + collectorArt.getName(), getCollection(collectorId));
       return sb.toString();
    }
 
@@ -362,7 +362,7 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
       Collection<IAtsWorkItem> collectorItems = getCollection(collectorArt);
 
       String table = getCustomizedTable(atsApiServer,
-         "Collector - " + collectorArt.getName() + " - Customization: " + customization.getName(), customization,
+         "Collector: " + collectorArt.getName() + " - Customization: " + customization.getName(), customization,
          collectorItems);
       return table;
    }
