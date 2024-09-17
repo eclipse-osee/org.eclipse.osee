@@ -37,7 +37,12 @@ pub struct ApplicabilitySyntaxTag(
     pub Vec<ApplicabilityParserSyntaxTag>,
     pub ApplicabilityTagTypes,
     pub Vec<ApplicabilityParserSyntaxTag>,
-    pub LineEnding
+    /// start syntax tag line length, note: actual value is n+1
+    pub u8,
+    /// else syntax tag line length, note: actual value is n
+    pub u8,
+    /// end syntax tag line length, note: actual value is n+1
+    pub u8
 );
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct ApplicabilitySyntaxTagNot(
@@ -45,7 +50,12 @@ pub struct ApplicabilitySyntaxTagNot(
     pub Vec<ApplicabilityParserSyntaxTag>,
     pub ApplicabilityTagTypes,
     pub Vec<ApplicabilityParserSyntaxTag>,
-    pub LineEnding
+    /// start syntax tag line length, note: actual value is n+1
+    pub u8,
+    /// else syntax tag line length, note: actual value is n
+    pub u8,
+    /// end syntax tag line length, note: actual value is n+1
+    pub u8
 );
 
 pub type SubstitutionSyntaxTag = Vec<ApplicTokens>;

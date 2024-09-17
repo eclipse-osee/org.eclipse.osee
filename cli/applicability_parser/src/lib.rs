@@ -27,6 +27,7 @@ mod config;
 mod config_group;
 mod config_group_text;
 mod config_text;
+mod counter;
 mod end;
 mod feature;
 mod feature_text;
@@ -58,7 +59,6 @@ fn get_remaining_text(input: &str) -> IResult<&str, ApplicabilityParserSyntaxTag
 /// use applicability_parser_types::applicability_parser_syntax_tag::ApplicabilityParserSyntaxTag;
 /// use applicability_parser_types::applicability_parser_syntax_tag::ApplicabilityParserSyntaxTag::Tag;
 /// use applicability_parser_types::applicability_parser_syntax_tag::ApplicabilityParserSyntaxTag::Text;
-/// use applicability_parser_types::applicability_parser_syntax_tag::LineEnding;
 /// use applicability::applic_tag::ApplicabilityTagTypes::Configuration;
 /// use applicability::applic_tag::ApplicabilityTagTypes::Feature;
 /// use applicability::applic_tag::ApplicabilityTag;
@@ -70,7 +70,7 @@ fn get_remaining_text(input: &str) -> IResult<&str, ApplicabilityParserSyntaxTag
 /// ``End Feature`` More text
 /// ``Configuration [SOME_CONFIGURATION]``
 /// configuration text
-/// ``End Configuration``","``","``"),Ok(("",vec![Text("Some other text\n".to_string()), Tag(ApplicabilitySyntaxTag([ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag { tag: "SOMETHING".to_string(), value: "Included".to_string() }))].to_vec(), vec![Text("Some text here  \n".to_string())], Feature, [].to_vec(), LineEnding::StartLineEnding)), Text(" More text\n".to_string()), Tag(ApplicabilitySyntaxTag([ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag { tag: "SOME_CONFIGURATION".to_string(), value: "Included".to_string() }))].to_vec(), vec![Text("configuration text\n".to_string())], Configuration, [].to_vec(), LineEnding::StartLineEnding)), Text("".to_string())])));
+/// ``End Configuration``","``","``"),Ok(("",vec![Text("Some other text\n".to_string()), Tag(ApplicabilitySyntaxTag([ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag { tag: "SOMETHING".to_string(), value: "Included".to_string() },0))].to_vec(), vec![Text("Some text here  \n".to_string())], Feature, [].to_vec(), 1,0,0)), Text(" More text\n".to_string()), Tag(ApplicabilitySyntaxTag([ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag { tag: "SOME_CONFIGURATION".to_string(), value: "Included".to_string() },0))].to_vec(), vec![Text("configuration text\n".to_string())], Configuration, [].to_vec(), 1,0,0)), Text("".to_string())])));
 /// ```
 pub fn parse_applicability<'a>(
     input: &'a str,

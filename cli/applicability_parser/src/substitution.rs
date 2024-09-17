@@ -13,23 +13,25 @@
 use nom::{
     bytes::complete::tag,
     character::complete::multispace0,
-    combinator::map,
-    sequence::{preceded, terminated},
+    combinator::{map, map_parser},
+    sequence::{preceded, terminated, tuple},
     IResult,
 };
+
+use crate::counter::count_new_lines;
 
 use crate::{tag_parser::applicability_tag, ApplicabilityParserSyntaxTag};
 pub fn parse_substitution<'a>(
     custom_start_comment_syntax: &'a str,
     custom_end_comment_syntax: &'a str,
 ) -> impl FnMut(&'a str) -> IResult<&'a str, ApplicabilityParserSyntaxTag> {
-    let start = preceded(
+    let start = map(preceded(
         tag(custom_start_comment_syntax),
-        preceded(
-            multispace0,
-            terminated(tag("Eval"), preceded(multispace0, tag("["))),
-        ),
-    );
+        tuple((
+            map_parser(multispace0,count_new_lines()),
+            preceded(tag("Eval"), terminated(map_parser(multispace0,count_new_lines()), tag("["))),
+        )),
+    ),|(first,second)|{first+second});
     let right_brace = tag("]");
     let inner = applicability_tag(
         start,
@@ -39,12 +41,30 @@ pub fn parse_substitution<'a>(
         ApplicabilityParserSyntaxTag::Substitution(tokens)
     })
 }
-pub fn parse_substitution_as_str<'a>(
+pub fn parse_substitution_as_u8<'a>(
     custom_start_comment_syntax: &'a str,
     custom_end_comment_syntax: &'a str,
-) -> impl FnMut(&'a str) -> IResult<&'a str, &'a str> {
+) -> impl FnMut(&'a str) -> IResult<&'a str, u8> {
     move |input: &str| {
         let inner = parse_substitution(custom_start_comment_syntax, custom_end_comment_syntax);
-        map(inner, |_tokens| input)(input)
+        // anything not a Substitution Tag should be considered an error returning from parse_substitution
+        map(inner, |token| match token{
+            ApplicabilityParserSyntaxTag::Text(_) => 0,
+            ApplicabilityParserSyntaxTag::Tag(_) => 0,
+            ApplicabilityParserSyntaxTag::TagNot(_) => 0,
+            ApplicabilityParserSyntaxTag::Substitution(t) => t.iter().map(|x|match x{
+                applicability_parser_types::applic_tokens::ApplicTokens::NoTag(t) => t.1,
+                applicability_parser_types::applic_tokens::ApplicTokens::Not(t) => t.1,
+                applicability_parser_types::applic_tokens::ApplicTokens::And(t) => t.1,
+                applicability_parser_types::applic_tokens::ApplicTokens::NotAnd(t) => t.1,
+                applicability_parser_types::applic_tokens::ApplicTokens::Or(t) => t.1,
+                applicability_parser_types::applic_tokens::ApplicTokens::NotOr(t) => t.1,
+                applicability_parser_types::applic_tokens::ApplicTokens::NestedAnd(t) => t.1,
+                applicability_parser_types::applic_tokens::ApplicTokens::NestedNotAnd(t) => t.1,
+                applicability_parser_types::applic_tokens::ApplicTokens::NestedOr(t) => t.1,
+                applicability_parser_types::applic_tokens::ApplicTokens::NestedNotOr(t) => t.1,
+            }).sum(),
+            ApplicabilityParserSyntaxTag::SubstitutionNot(_) => 0,
+        })(input)
     }
 }
