@@ -21,7 +21,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import org.eclipse.osee.framework.core.data.AttributeId;
@@ -731,7 +730,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
 
    private void parseAndStoreEnum(RoughArtifact roughArtifact, String data, AttributeTypeEnum<?> type) {
       StringTokenizer theTokens = new StringTokenizer(data, " ");
-      Set<String> enums = type.getEnumStrValues();
+      Collection<String> enums = type.getEnumStrValues();
       String singleItem = "";
       while (theTokens.hasMoreTokens()) {
          singleItem += theTokens.nextToken();

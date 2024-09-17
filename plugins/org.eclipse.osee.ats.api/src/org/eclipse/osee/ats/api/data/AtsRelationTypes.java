@@ -187,6 +187,10 @@ public interface AtsRelationTypes {
    RelationTypeSide TeamDefinitionToVersion_TeamDefinition = RelationTypeSide.create(TeamDefinitionToVersion, SIDE_A);
    RelationTypeSide TeamDefinitionToVersion_Version = RelationTypeSide.create(TeamDefinitionToVersion, SIDE_B);
 
+   RelationTypeToken TeamDefinitionToBitProgram = ats.add(4081667618047771698L, "TeamDefinitionToBitProgram", ONE_TO_MANY, LEXICOGRAPHICAL_ASC, TeamDefinition, "Team Definition", Program, "Bit Program");
+   RelationTypeSide TeamDefinitionToBitProgram_TeamDefinition = RelationTypeSide.create(TeamDefinitionToBitProgram, SIDE_A);
+   RelationTypeSide TeamDefinitionToBitProgram_BitProgram = RelationTypeSide.create(TeamDefinitionToBitProgram, SIDE_B);
+
     // Use same relation as TeamDefinitionToVersion; This is here for readability and to document this in code
     RelationTypeSide TeamDefinitionToAtsConfigObject_TeamDefinition = TeamDefinitionToVersion_TeamDefinition;
     RelationTypeSide TeamDefinitionToAtsConfigObject_AtsConfigObject = TeamDefinitionToVersion_TeamDefinition.getOpposite();

@@ -130,7 +130,7 @@ public class TypesEndpointImpl implements TypesEndpoint {
       Set<String> enums = new HashSet<>();
       AttributeTypeGeneric<?> tok = orcsTokenService.getAttributeType(attributeId.getId());
       if (tok instanceof AttributeTypeEnum<?>) {
-         enums = ((AttributeTypeEnum) tok).getEnumStrValues();
+         enums.addAll(((AttributeTypeEnum<?>) tok).getEnumStrValues());
       }
       return enums;
    }

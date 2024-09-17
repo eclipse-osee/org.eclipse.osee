@@ -26,7 +26,7 @@ import org.eclipse.osee.orcs.core.ds.DataStoreAdmin;
 import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
 import org.eclipse.osee.orcs.core.ds.OrcsTypesDataStore;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
-import org.eclipse.osee.orcs.db.internal.branch.BranchModule;
+import org.eclipse.osee.orcs.db.internal.branch.BranchStoreImpl;
 import org.eclipse.osee.orcs.db.internal.branch.KeyValueModule;
 import org.eclipse.osee.orcs.db.internal.loader.LoaderModule;
 import org.eclipse.osee.orcs.db.internal.search.QueryModule;
@@ -95,8 +95,8 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
       queryModule = new QueryModule(logger, executorAdmin, jdbcClient, joinFactory);
       queryModule.startIndexer(resourceManager);
 
-      BranchModule branchModule =
-         new BranchModule(logger, jdbcClient, joinFactory, idManager, properties, executorAdmin, resourceManager);
+      BranchStoreImpl branchStore =
+         new BranchStoreImpl(logger, jdbcClient, joinFactory, idManager, properties, executorAdmin, resourceManager);
 
       TxModule txModule = new TxModule(logger, jdbcClient, joinFactory, idManager, activityLog);
 
@@ -111,7 +111,7 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
          // do nothing as value doesn't exist
       }
 
-      dataModuleFactory = new DataModuleFactory(logger, loaderModule, queryModule, branchModule, keyValueModule,
+      dataModuleFactory = new DataModuleFactory(logger, loaderModule, queryModule, branchStore, keyValueModule,
          txModule, adminModule, resourceManager);
    }
 

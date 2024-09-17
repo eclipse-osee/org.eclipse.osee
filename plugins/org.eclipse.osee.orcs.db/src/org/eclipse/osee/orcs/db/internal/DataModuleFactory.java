@@ -25,7 +25,7 @@ import org.eclipse.osee.orcs.core.ds.KeyValueStore;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.core.ds.TxDataStore;
-import org.eclipse.osee.orcs.db.internal.branch.BranchModule;
+import org.eclipse.osee.orcs.db.internal.branch.BranchStoreImpl;
 import org.eclipse.osee.orcs.db.internal.branch.KeyValueModule;
 import org.eclipse.osee.orcs.db.internal.loader.LoaderModule;
 import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
@@ -43,13 +43,13 @@ public class DataModuleFactory {
    private final Log logger;
    private final LoaderModule loaderModule;
    private final QueryModule queryModule;
-   private final BranchModule branchModule;
+   private final BranchStoreImpl branchModule;
    private final KeyValueModule keyValueModule;
    private final TxModule txModule;
    private final DataStoreAdmin dataStoreAdmin;
    private final IResourceManager resourceManager;
 
-   public DataModuleFactory(Log logger, LoaderModule loaderModule, QueryModule queryModule, BranchModule branchModule, KeyValueModule keyValueModule, TxModule txModule, DataStoreAdmin dataStoreAdmin, IResourceManager resourceManager) {
+   public DataModuleFactory(Log logger, LoaderModule loaderModule, QueryModule queryModule, BranchStoreImpl branchModule, KeyValueModule keyValueModule, TxModule txModule, DataStoreAdmin dataStoreAdmin, IResourceManager resourceManager) {
       this.logger = logger;
       this.loaderModule = loaderModule;
       this.queryModule = queryModule;
@@ -73,7 +73,7 @@ public class DataModuleFactory {
       final KeyValueStore keyValueStore = keyValueModule.createKeyValueStore();
       final QueryEngine queryEngine = queryModule.createQueryEngine(dataLoaderFactory, tokenService, sqlObjectLoader,
          keyValueStore, resourceManager);
-      final BranchDataStore branchDataStore = branchModule.createBranchDataStore(dataLoaderFactory);
+      branchModule.setDataLoaderFactory(dataLoaderFactory);
       final TxDataStore txDataStore = txModule.createTransactionStore(dataLoaderFactory, indexer, tokenService);
       return new DataModule() {
          @Override
@@ -93,7 +93,7 @@ public class DataModuleFactory {
 
          @Override
          public BranchDataStore getBranchDataStore() {
-            return branchDataStore;
+            return branchModule;
          }
 
          @Override

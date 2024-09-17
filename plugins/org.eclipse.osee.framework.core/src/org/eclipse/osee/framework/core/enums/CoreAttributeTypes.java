@@ -872,7 +872,7 @@ public interface CoreAttributeTypes {
 
    AttributeTypeString PlainTextContent = osee.createString(1152921504606847866L, "Plain Text Content", MediaType.TEXT_PLAIN, "plain text file");
 
-   AttributeTypeString MarkdownContent = osee.createString(1152921504606847900L, "Markdown Content", "text/markdown", "text in markdown format", Collections.asHashSet(CoreOperationTypes.PublishMarkdownRecursiveWithChildrenWithSpecifiedTemplate), DisplayHint.MultiLine);
+   AttributeTypeString MarkdownContent = osee.createString(1152921504606847900L, "Markdown Content", "text/markdown", "text in markdown format", Collections.asHashSet(CoreOperationTypes.PublishMarkdownAsHtmlWithSpecifiedTemplate), DisplayHint.MultiLine);
 
    AttributeTypeBoolean PotentialSecurityImpact = osee.createBoolean(1152921504606847109L, "Potential Security Impact", MediaType.TEXT_PLAIN, "");
 
@@ -919,6 +919,12 @@ public interface CoreAttributeTypes {
    AttributeTypeString PublishingTemplateDataRightsConfigurationNameReference = osee.createString(6329223727577326200L, "Data Rights Configuration", MediaType.TEXT_PLAIN, "Specifies the data rights configuration to use for a publish.", DisplayHint.SingleLine);
 
    AttributeTypeBoolean PublishInline = osee.createBoolean(1152921504606847122L, "PublishInline", MediaType.TEXT_PLAIN, "");
+   
+   AttributeTypeString PublishingRelationTableRelationTypeSide = osee.createString(872792546913538976L, "Relation Table Relation Type Side", "Relation table relation type name or id with relation type side name. String with \"|\" delimiter to specify relation type and associated relation type side.", MediaType.TEXT_PLAIN, DisplayHint.SingleLine);
+		   
+   AttributeTypeString PublishingRelationTableColumn = osee.createString(6633280446034676865L, "Relation Table Column", "Column specification to include in the relation table", MediaType.TEXT_PLAIN, DisplayHint.SingleLine);
+
+   AttributeTypeString PublishingRelationTableArtifactTypeNameOrId = osee.createString(2842593463578222826L, "Relation Table Artifact Type Name Or Id", "Artifact type to filter the table by", MediaType.TEXT_PLAIN, DisplayHint.SingleLine);
 
    QualificationMethodAttributeType QualificationMethod = osee.createEnum(new QualificationMethodAttributeType());
 

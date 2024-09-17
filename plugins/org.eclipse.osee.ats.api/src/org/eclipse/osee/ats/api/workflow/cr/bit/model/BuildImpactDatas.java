@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 public class BuildImpactDatas {
 
    private Collection<BuildImpactData> buildImpacts = new ArrayList<>();
-   private ArtifactToken teamWf;
+   private ArtifactToken teamWf = ArtifactToken.SENTINEL;
    @JsonIgnore
    private Map<ArtifactToken, BuildImpactData> teamWfToBidMap = new HashMap<>();
    private final XResultData results = new XResultData();

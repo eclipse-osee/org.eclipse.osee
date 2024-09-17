@@ -105,7 +105,7 @@ public class WordTemplateContentRendererHandler {
                      wtcData.getTxId(),
                      unknownGuids,
                      wtcData.getPresentationType(),
-                     wtcData.getPermanentLinkUrl(),
+                     wtcData.getDesktopClientLoopbackUrl(),
                      wtcData.getIncludeBookmark()
                   );
             //@formatter:on
@@ -137,7 +137,7 @@ public class WordTemplateContentRendererHandler {
                   wtcData.getTxId(),
                   unknownGuids,
                   wtcData.getPresentationType(),
-                  wtcData.getPermanentLinkUrl(),
+                  wtcData.getDesktopClientLoopbackUrl(),
                   wtcData.getIncludeBookmark()
                );
          //@formatter:on

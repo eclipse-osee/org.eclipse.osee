@@ -28,6 +28,7 @@
 						</goals>
 						<configuration>
 							<excludes>
+								<plugin id="org.eclipse.oss.ajax"/>
 								<plugin id="org.apache.ws.xmlschema.core"/>
 								<plugin id="jackson-dataformat-yaml"/>
 								<plugin id="org.yaml.snakeyaml"/>
@@ -96,6 +97,8 @@
 							   	<plugin id="javax.xml.stream" />
 							   	<plugin id="org.xerial.sqlite-jdbc"/>
 							   	<feature id="org.eclipse.wtp.capabilities.feature" />
+							   	<feature id="net.sourceforge.vrapper" />
+							   	
 							</excludes>
 						</configuration>
 					</execution>

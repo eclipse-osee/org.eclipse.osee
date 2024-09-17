@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
-import org.eclipse.osee.orcs.data.ArchiveOperation;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 
 /**
@@ -68,21 +67,19 @@ public interface OrcsBranch {
 
    void setBranchPermission(ArtifactId subject, BranchId branch, PermissionEnum permission);
 
-   Callable<Void> changeBranchState(BranchId branch, BranchState branchState);
+   XResultData changeBranchState(BranchId branch, BranchState branchState);
 
-   Callable<Void> changeBranchType(BranchId branch, BranchType branchType);
+   XResultData changeBranchType(BranchId branch, BranchType branchType);
 
-   Callable<Void> changeBranchName(BranchId branch, String name);
+   XResultData changeBranchName(BranchId branch, String name);
 
-   Callable<Void> associateBranchToArtifact(BranchId branch, ArtifactId associatedArtifact);
+   XResultData associateBranchToArtifact(BranchId branch, ArtifactId associatedArtifact);
 
-   Callable<Void> unassociateBranch(BranchId branch);
+   XResultData unassociateBranch(BranchId branch);
 
-   Callable<Void> deleteBranch(BranchId branch);
+   XResultData deleteBranch(BranchId branch);
 
    /////////////////////////////////////////////////////////////////////////
-
-   Callable<Void> archiveUnarchiveBranch(BranchId branch, ArchiveOperation archiveOp);
 
    Callable<List<BranchId>> purgeBranch(BranchId branch, boolean recurse);
 
@@ -109,5 +106,9 @@ public interface OrcsBranch {
    BranchToken createProgramBranch(BranchToken branch, BranchToken parent);
 
    boolean setBranchState(BranchId branchId, BranchState newState);
+
+   XResultData unarchiveBranch(BranchId branch);
+
+   XResultData archiveBranch(BranchId branch);
 
 }

@@ -114,7 +114,7 @@ public class WordTemplateProcessorClient {
 
    private static final String NESTED_TEMPLATE = "NestedTemplate";
 
-   private static final String staticPermanentLinkUrl =
+   private static final String staticdesktopClientLoopbackUrl =
       String.format("http://%s:%s/", ClientSessionManager.getClientName(), ClientSessionManager.getClientPort());
 
    public static final String STYLES = "<w:lists>.*?</w:lists><w:styles>.*?</w:styles>";
@@ -185,7 +185,7 @@ public class WordTemplateProcessorClient {
 
    //private CharSequence paragraphNumber = null;
 
-   private final String permanentLinkUrl;
+   private final String desktopClientLoopbackUrl;
 
    private PresentationType presentationType;
 
@@ -245,7 +245,7 @@ public class WordTemplateProcessorClient {
       this.maximumOutlineDepth = null;
       this.outlineNumber = null;
       this.overrideOutlineNumber = false;
-      this.permanentLinkUrl = WordTemplateProcessorClient.staticPermanentLinkUrl;
+      this.desktopClientLoopbackUrl = WordTemplateProcessorClient.staticdesktopClientLoopbackUrl;
       this.presentationType = null;
       this.primaryPublishingTemplate = null;
       this.processedArtifactTracker = new ProcessedArtifactTracker();
@@ -826,6 +826,7 @@ public class WordTemplateProcessorClient {
                this.includeMetadataAttributes,
                this::nonTemplateArtifactHandler,
                this.publishingTemplate.getPublishOptions().getMetadataOptions(),
+               this.publishingTemplate.getRelationTableOptions(),
                this.tokenService,
                presentationType,
                publishingAppender,
@@ -1152,7 +1153,7 @@ public class WordTemplateProcessorClient {
                presentationType,
                attributeOptions.getLabel(),
                footer,
-               this.permanentLinkUrl,
+               this.desktopClientLoopbackUrl,
                false,
                includeBookmark,
                artifact.isHistorical()

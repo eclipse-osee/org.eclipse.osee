@@ -57,20 +57,24 @@ public class ToStringContainsPatternFilter extends PatternFilter {
       if (text == null || text.isEmpty()) {
          return true;
       }
+      boolean match = true;
       try {
+         String value = "";
          if (viewer instanceof ContentViewer && ((ContentViewer) viewer).getLabelProvider() instanceof ILabelProvider) {
-            String value = ((ILabelProvider) ((ContentViewer) viewer).getLabelProvider()).getText(element);
+            value = ((ILabelProvider) ((ContentViewer) viewer).getLabelProvider()).getText(element);
             if (value == null) {
                value = "";
+            } else {
+               value = value.toLowerCase();
             }
-            return value.toLowerCase().contains(text);
          } else {
-            return element.toString().toLowerCase().contains(text);
+            value = element.toString().toLowerCase();
          }
+         match = value.contains(text);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-      return true;
+      return match;
    }
 
 }

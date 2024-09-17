@@ -13,9 +13,11 @@
 
 package org.eclipse.osee.framework.ui.skynet.artifact;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.AttributeTypeEnum;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -60,7 +62,7 @@ public class EnumSelectionDialog extends FilteredCheckboxTreeDialog<String> {
          attributeType.hasDisplayHint(DisplayHint.InOrder) ? null : new StringViewerSorter());
       this.attributeType = attributeType;
       this.artifacts = artifacts;
-      Set<String> options;
+      List<String> options;
       try {
          options = attributeType.getEnumStrValues();
          getOptions(attributeType, artifacts);
@@ -69,7 +71,7 @@ public class EnumSelectionDialog extends FilteredCheckboxTreeDialog<String> {
             selected = AttributeMultiplicitySelectionOption.ReplaceAll;
          }
       } catch (OseeCoreException ex) {
-         options = new HashSet<>();
+         options = new ArrayList<>();
          options.add(ex.getLocalizedMessage());
       }
 

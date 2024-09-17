@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.define.operations.publisher.templatemanager;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.List;
@@ -39,6 +41,7 @@ import org.eclipse.osee.framework.core.publishing.InvalidPublishOptionsException
 import org.eclipse.osee.framework.core.publishing.OutliningOptions;
 import org.eclipse.osee.framework.core.publishing.PublishOptions;
 import org.eclipse.osee.framework.core.publishing.WordCoreUtil;
+import org.eclipse.osee.framework.core.publishing.relation.table.RelationTableOptions;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Message;
@@ -197,6 +200,26 @@ class PublishingTemplate implements ToMessage {
          //@formatter:on
       }
 
+      /*
+       * Relation table attributes
+       */
+
+      // Returns empty list if any errors occur. Empty list means that each table will not filter on specified artifact types.
+      List<String> relationTableArtTypeNamesAndOrIds =
+         loadRelationTableArtifactTypeNamesAndOrIds(artifactReadable, orcsTokenService).getFirstNonNullIfPresentOthers(
+            message::copy);
+
+      // Returns empty list if any errors occur. Empty list means that each table will not have columns.
+      List<String> relationTableColumns =
+         loadRelationTableColumns(artifactReadable, orcsTokenService).getFirstNonNullIfPresentOthers(message::copy);
+
+      // Returns empty list if any errors occur. Empty list means that no relation table(s) will be generated. 
+      List<String> relationTableRelationSides = PublishingTemplate.loadRelationTableRelationTypeSides(artifactReadable,
+         orcsTokenService).getFirstNonNullIfPresentOthers(message::copy);
+
+      RelationTableOptions relationTableOptions =
+         new RelationTableOptions(relationTableArtTypeNamesAndOrIds, relationTableColumns, relationTableRelationSides);
+
       var messageString = message.isEmpty() ? null : message.toString();
 
       //@formatter:off
@@ -210,7 +233,8 @@ class PublishingTemplate implements ToMessage {
                        publishOptions,
                        safeName,
                        templateContentMap,
-                       messageString
+                       messageString,
+                       relationTableOptions
                     );
       //@formatter:on
 
@@ -466,6 +490,201 @@ class PublishingTemplate implements ToMessage {
    }
 
    /**
+    * Loads the relation table relation type-side list from the provided artifact.
+    * <p>
+    * This method retrieves a list of strings formatted as "<relationTypeNameOrId>|<relationTypeSideName>" from the
+    * specified artifact. It validates that each relation type exists using the provided {@code OrcsTokenService}. If
+    * any relation type cannot be found, or if the key or value is missing or blank, the entry is excluded from the
+    * resulting list, and an error message is appended to the returned {@code Message}.
+    * <p>
+    * If any error occurs during the processing, the method returns an empty list.
+    *
+    * @param artifactReadable the artifact from which to load the relation list
+    * @param orcsTokenService the service used to validate relation types
+    * @return a pair containing the relation table relation type-side list (or an empty list if an error occurs) and an
+    * optional message containing error information
+    */
+   private static Pair<@NonNull List<String>, @Nullable Message> loadRelationTableRelationTypeSides(
+      @NonNull ArtifactReadable artifactReadable, OrcsTokenService orcsTokenService) {
+
+      Message outMessage = new Message();
+      List<String> relationTableRelationTypeSides = new ArrayList<>();
+
+      try {
+         List<String> relationTypeSides =
+            artifactReadable.getAttributeValues(CoreAttributeTypes.PublishingRelationTableRelationTypeSide);
+
+         for (String relationTypeSide : relationTypeSides) {
+            String[] parts = relationTypeSide.split("\\|", 2);
+            if (parts.length != 2) {
+               outMessage.title(
+                  "PublishingTemplate::create, invalid format in relation table relation type side list entry: \"" + relationTypeSide + "\". Entry does not contain exactly one delimiter (\"|\").")//
+                  .indentInc()//
+                  .segment("Artifact Identifier", artifactReadable.getIdString())//
+                  .segment("Artifact Name", artifactReadable.getName())//
+                  .indentDec();
+               return Pair.createNullableImmutable(Collections.emptyList(), outMessage);
+            }
+
+            String relationTypeNameOrId = parts[0].trim();
+            String relationTypeSideName = parts[1].trim(); //TODO add validation that relation side name exists for the relation type
+
+            if (Objects.nonNull(relationTypeNameOrId) && !relationTypeNameOrId.isBlank()) {
+               if (Objects.isNull(relationTypeSideName) || relationTypeSideName.isBlank()) {
+                  outMessage.title(
+                     "PublishingTemplate::create, relation table relation type side name is null or blank. Please populate the relation type side name for: \"" + relationTypeNameOrId + "\" (the right side of the \"" + relationTypeNameOrId + "|\").")//
+                     .indentInc()//
+                     .segment("Artifact Identifier", artifactReadable.getIdString())//
+                     .segment("Artifact Name", artifactReadable.getName());
+                  return Pair.createNullableImmutable(Collections.emptyList(), outMessage); // Return empty list on error
+               }
+
+               try {
+                  if (Strings.isLong(relationTypeNameOrId)) {
+                     Long relTypeId = Long.parseLong(relationTypeNameOrId);
+                     orcsTokenService.getRelationType(relTypeId); // Throws error if not found
+                  } else {
+                     orcsTokenService.getRelationType(relationTypeNameOrId); // Throws error if not found
+                  }
+                  relationTableRelationTypeSides.add(relationTypeSide); // Add valid relationTypeSide
+               } catch (Exception e) {
+                  outMessage.title(
+                     "PublishingTemplate::create, failed for checking whether relation type exists. Error for relationTypeNameOrId (the left side of \"|\"): \"" + relationTypeNameOrId + "\"")//
+                     .indentInc()//
+                     .segment("Artifact Identifier", artifactReadable.getIdString())//
+                     .segment("Artifact Name", artifactReadable.getName())//
+                     .indentDec()//
+                     .reasonFollows(e);
+                  return Pair.createNullableImmutable(Collections.emptyList(), outMessage); // Return empty list on error
+               }
+            } else {
+               outMessage.title(
+                  "PublishingTemplate::create, relation table relation type name or id is null or blank. Please populate the relation type name or id (the left side of the \"|\").")//
+                  .indentInc()//
+                  .segment("Artifact Identifier", artifactReadable.getIdString())//
+                  .segment("Artifact Name", artifactReadable.getName());
+               return Pair.createNullableImmutable(Collections.emptyList(), outMessage); // Return empty list on error
+            }
+         }
+
+      } catch (Exception e) {
+         // If any error occurs during the processing, return an empty list.
+         outMessage.title("PublishingTemplate::create, failed to process relation table relation type-side list.")//
+            .indentInc()//
+            .segment("Artifact Identifier", artifactReadable.getIdString())//
+            .segment("Artifact Name", artifactReadable.getName())//
+            .indentDec()//
+            .reasonFollows(e);
+         return Pair.createNullableImmutable(Collections.emptyList(), outMessage);
+      }
+
+      return Pair.createNullableImmutable(relationTableRelationTypeSides, outMessage.isModified() ? outMessage : null);
+   }
+
+   /**
+    * Validates relation table artifact type names or IDs by checking their existence. Returns empty list if any errors
+    * occur.
+    * 
+    * @param artifactReadable The artifact object containing attribute values.
+    * @param orcsTokenService Service to fetch artifact types.
+    * @return A pair where the first element is a list of valid artifact type names or IDs, and the second element is a
+    * message object that contains error details, if any.
+    */
+   private static @NonNull Pair<@NonNull List<String>, @Nullable Message> loadRelationTableArtifactTypeNamesAndOrIds(
+      @NonNull ArtifactReadable artifactReadable, OrcsTokenService orcsTokenService) {
+
+      List<String> validArtifactTypeNamesOrIds = new ArrayList<>();
+      Message outMessage = new Message();
+
+      List<String> tempRelationTableArtTypeNamesAndOrIds =
+         artifactReadable.getAttributeValues(CoreAttributeTypes.PublishingRelationTableArtifactTypeNameOrId);
+
+      if (tempRelationTableArtTypeNamesAndOrIds != null) {
+         for (String nameOrId : tempRelationTableArtTypeNamesAndOrIds) {
+            try {
+               if (Strings.isLong(nameOrId)) {
+                  Long artTypeId = Long.parseLong(nameOrId);
+                  orcsTokenService.getArtifactType(artTypeId); // Throws error if not found
+               } else {
+                  orcsTokenService.getArtifactType(nameOrId); // Throws error if not found
+               }
+               validArtifactTypeNamesOrIds.add(nameOrId); // Add to valid list if no error
+            } catch (Exception e) {
+               // Log the error
+               outMessage.title(
+                  "PublishingTemplate::create, failed for checking whether relation table artifact type exists. Error for artifactTypeNameOrID: \"" + nameOrId + "\"").indentInc().segment(
+                     "Artifact Identifier", artifactReadable.getIdString()).segment("Artifact Name",
+                        artifactReadable.getName()).indentDec().reasonFollows(e);
+
+               // Return empty list and the message if an error occurs
+               return Pair.createNullableImmutable(new ArrayList<>(), outMessage);
+            }
+         }
+      }
+
+      // Return the list of valid artifact type names or IDs and an empty message if no errors
+      return Pair.createNullableImmutable(validArtifactTypeNamesOrIds, outMessage.isModified() ? outMessage : null);
+   }
+
+   /**
+    * Loads and validates the relation table columns for a given artifact.
+    * <p>
+    * The method checks each column name in the artifact's relation table columns. A column name is valid if it is
+    * either:
+    * <ul>
+    * <li>A predefined column defined in {@link RelationTableOptions}</li>
+    * <li>A valid attribute type name or ID found in the {@code orcsTokenService}</li>
+    * </ul>
+    * If a column name is invalid, the method will log an error and return an empty list of columns along with a message
+    * detailing the error. If all columns are valid, it returns the list of valid columns and an empty message.
+    * 
+    * @param artifactReadable the artifact containing the relation table columns
+    * @param orcsTokenService the service used to validate attribute types by name or ID
+    * @return a {@link Pair} containing a list of valid column names and an optional {@link Message} detailing any
+    * errors
+    */
+   private static @NonNull Pair<@NonNull List<String>, @Nullable Message> loadRelationTableColumns(
+      @NonNull ArtifactReadable artifactReadable, OrcsTokenService orcsTokenService) {
+
+      List<String> validColumns = new ArrayList<>();
+      Message outMessage = new Message();
+
+      List<String> tempRelationTableColumns =
+         artifactReadable.getAttributeValues(CoreAttributeTypes.PublishingRelationTableColumn);
+
+      if (tempRelationTableColumns != null) {
+         for (String relTabColumnOrAttributeType : tempRelationTableColumns) {
+            try {
+               // Columns can either be defined in relation table options or an attribute name/id
+               if (RelationTableOptions.isDefinedColumn(relTabColumnOrAttributeType)) {
+                  validColumns.add(relTabColumnOrAttributeType);
+               } else {
+                  if (Strings.isLong(relTabColumnOrAttributeType)) {
+                     Long attrTypeId = Long.parseLong(relTabColumnOrAttributeType);
+                     orcsTokenService.getAttributeType(attrTypeId); // Throws error if not found
+                  } else {
+                     orcsTokenService.getAttributeType(relTabColumnOrAttributeType); // Throws error if not found
+                  }
+                  validColumns.add(relTabColumnOrAttributeType); // Add to valid list if no error
+               }
+            } catch (Exception e) {
+               // Log the error
+               outMessage.title(
+                  "PublishingTemplate::create, failed for checking whether relation table column exists. Error for column name: \"" + relTabColumnOrAttributeType + "\"").indentInc().segment(
+                     "Artifact Identifier", artifactReadable.getIdString()).segment("Artifact Name",
+                        artifactReadable.getName()).indentDec().reasonFollows(e);
+
+               // Return empty list and the message if an error occurs
+               return Pair.createNullableImmutable(new ArrayList<>(), outMessage);
+            }
+         }
+      }
+
+      // Return the list of valid columns and an empty message if no errors
+      return Pair.createNullableImmutable(validColumns, outMessage.isModified() ? outMessage : null);
+   }
+
+   /**
     * Publishing Templates containing Word Markup Language content may have a supporting information relationship to
     * another artifact containing Word ML style definitions in the {@link CoreAttributeTypes.WholeWordContent}
     * attribute. When a supporting information relationship exists the Word ML style definitions will be read from the
@@ -680,12 +899,18 @@ class PublishingTemplate implements ToMessage {
     */
 
    private final @Nullable String status;
-
+   
    /**
     * Saves the template content for each defined format.
     */
 
    private final @NonNull Map<FormatIndicator, String> templateContentMap;
+   
+   /**
+    * Configuration options for relation table generation.
+    */
+   
+   private final @NonNull RelationTableOptions relationTableOptions;
 
    /**
     * Creates a new {@link PublishingTemplate} and generates the key extractors for the publishing template.
@@ -698,6 +923,7 @@ class PublishingTemplate implements ToMessage {
     * @param safeName the safe name of the artifact the publishing template was read from.
     * @param templateContentMap a {@link Map} of the publishing template content by the publishing format.
     * @param status a {@link String} describing any error that occurred while loading the publishing template.
+    * @param relationTableOptions the options that define the optional render table(s) displayed for each artifact.
     */
 
    //@formatter:off
@@ -710,17 +936,19 @@ class PublishingTemplate implements ToMessage {
          @NonNull  PublishOptions               publishOptions,
          @NonNull  PublishingTemplateScalarKey  safeName,
          @NonNull  Map<FormatIndicator, String> templateContentMap,
-         @Nullable String                       status
+         @Nullable String                       status,
+         @NonNull RelationTableOptions			relationTableOptions
       ) {
 
-      this.artifactReadable   = artifactReadable;
-      this.identifier         = identifier;
-      this.matchCriteria      = matchCriteria;
-      this.name               = name;
-      this.publishOptions     = publishOptions;
-      this.safeName           = safeName;
-      this.templateContentMap = templateContentMap;
-      this.status             = status;
+      this.artifactReadable                       = artifactReadable;
+      this.identifier                             = identifier;
+      this.matchCriteria                          = matchCriteria;
+      this.name                                   = name;
+      this.publishOptions                         = publishOptions;
+      this.safeName                               = safeName;
+      this.templateContentMap                     = templateContentMap;
+      this.status                                 = status;
+      this.relationTableOptions 			           = relationTableOptions;
 
       this.keyExtractors = new EnumMap<>( PublishingTemplateKeyType.class );
       this.keyExtractors.put( PublishingTemplateKeyType.IDENTIFIER,     this.getIdentifierKeyExtractor()    );
@@ -746,7 +974,8 @@ class PublishingTemplate implements ToMessage {
                    Conditions.requireNonNull( this.identifier.getKey() ),
                    Conditions.requireNonNull( this.name.getKey() ),
                    this.publishOptions,
-                   this.templateContentMap.get(formatIndicator)
+                   this.templateContentMap.get(formatIndicator),
+                   this.relationTableOptions
                 );
       //@formatter:on
    }
@@ -843,6 +1072,16 @@ class PublishingTemplate implements ToMessage {
 
    public PublishOptions getPublishOptions() {
       return this.publishOptions;
+   }
+
+   /**
+    * Gets the {@link RelationTableOptions} specified in the publishing template.
+    * 
+    * @return the relation table options.
+    */
+
+   public RelationTableOptions getRelationTableOptions() {
+      return relationTableOptions;
    }
 
    /**

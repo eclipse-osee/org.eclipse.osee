@@ -875,4 +875,22 @@ public class Strings {
 
       return string.toLowerCase().contains(searchString.toLowerCase());
    }
+
+   /**
+    * Checks if the provided string can be parsed as a long.
+    *
+    * @param str the string to check
+    * @return {@code true} if the string can be parsed as a long, {@code false} otherwise
+    */
+   public static boolean isLong(String str) {
+      if (str == null || str.isEmpty()) {
+         return false;
+      }
+      try {
+         Long.parseLong(str);
+         return true;
+      } catch (NumberFormatException e) {
+         return false;
+      }
+   }
 }

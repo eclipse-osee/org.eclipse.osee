@@ -20,7 +20,9 @@ import java.util.Objects;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
@@ -49,19 +51,20 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.widgets.TreeItem;
 
 /**
  * @author Donald G. Dunne
  */
-public class CreateSiblingAction extends Action {
+public class CreateBitTeamWorkflow extends Action {
 
    private final IAtsTeamWorkflow teamWf;
    private final AtsApi atsApi;
    private final WorkflowEditor editor;
 
-   public CreateSiblingAction(IAtsTeamWorkflow teamWf, WorkflowEditor editor) {
+   public CreateBitTeamWorkflow(IAtsTeamWorkflow teamWf, WorkflowEditor editor) {
       this.teamWf = teamWf;
       this.editor = editor;
       atsApi = AtsApiService.get();
@@ -77,9 +80,9 @@ public class CreateSiblingAction extends Action {
          return;
       }
       TreeItem item = items[0];
-      Object obj = item.getData();
-      if (obj instanceof BuildImpactData) {
-         BuildImpactData bid = (BuildImpactData) obj;
+      Object selectedItem = item.getData();
+      if (selectedItem instanceof BuildImpactData) {
+         BuildImpactData bid = (BuildImpactData) selectedItem;
          if (!bid.getState().equals(BuildImpactState.InWork.name())) {
             AWorkbench.popup("Build Impact selected must be in InWork state");
             return;
@@ -104,7 +107,7 @@ public class CreateSiblingAction extends Action {
             new ActionableItemTreeWithChildrenDialog(Active.Active, validAis);
          dialog.setAddIncludeAllCheckbox(false);
          if (dialog.open() == Window.OK) {
-            handleSelection(bid, dialog.getChecked(), bitTab);
+            handleSelection(bid, dialog.getChecked(), bitTab, selectedItem);
          }
       } else {
          AWorkbench.popup("Must Select a Single Build Impact");
@@ -112,7 +115,8 @@ public class CreateSiblingAction extends Action {
       }
    }
 
-   private void handleSelection(BuildImpactData selBid, Collection<IAtsActionableItem> aias, final WfeBitTab bitTab) {
+   private void handleSelection(BuildImpactData selBid, Collection<IAtsActionableItem> aias, final WfeBitTab bitTab,
+      Object selectedItem) {
 
       Job createSiblingJob = new Job("Creating Sibling Workflows") {
 
@@ -120,7 +124,7 @@ public class CreateSiblingAction extends Action {
          protected IStatus run(IProgressMonitor monitor) {
 
             BuildImpactDatas bids = new BuildImpactDatas();
-            bids.setTeamWf(teamWf.getStoreObject());
+            bids.setTeamWf(teamWf.getArtifactToken());
             for (IAtsActionableItem ai : aias) {
                BuildImpactData bid = new BuildImpactData();
                bid.setBids(bids);
@@ -155,8 +159,31 @@ public class CreateSiblingAction extends Action {
             return Status.OK_STATUS;
          }
       };
-      Operations.scheduleJob(createSiblingJob, true, Job.SHORT, null);
+      Operations.scheduleJob(createSiblingJob, true, Job.SHORT,
+         new CreateSiblingChangeAdapter(selectedItem, bitTab.getxViewer()));
 
+   }
+
+   private final class CreateSiblingChangeAdapter extends JobChangeAdapter {
+      private final Object selectedItem;
+      private final XBitViewer xBitViewer;
+
+      public CreateSiblingChangeAdapter(Object selectedItem, XBitViewer xBitViewer) {
+         this.selectedItem = selectedItem;
+         this.xBitViewer = xBitViewer;
+      }
+
+      @Override
+      public void done(IJobChangeEvent event) {
+         Displays.ensureInDisplayThread(new Runnable() {
+
+            @Override
+            public void run() {
+               xBitViewer.expandToLevel(selectedItem, 2);
+            }
+
+         });
+      }
    }
 
    @Override

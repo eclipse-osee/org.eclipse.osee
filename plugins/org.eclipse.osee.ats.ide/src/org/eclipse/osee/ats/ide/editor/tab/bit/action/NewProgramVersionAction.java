@@ -19,7 +19,8 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.program.JaxProgram;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -32,6 +33,7 @@ import org.eclipse.osee.ats.ide.util.widgets.dialog.ProgramVersion;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.ProgramVersionTreeDialog;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
@@ -55,17 +57,25 @@ public class NewProgramVersionAction extends Action {
    @Override
    public void run() {
       List<ProgramVersion> pvers = new ArrayList<>();
-      for (JaxProgram jProg : atsApi.getConfigService().getConfigurations().getIdToProgram().values()) {
-         for (ArtifactToken progVerArt : atsApi.getProgramService().getProgramVersions(jProg.getArtifactToken(),
-            false).getVersions()) {
-            IAtsVersion version = atsApi.getVersionService().getVersionById(progVerArt);
-            pvers.add(new ProgramVersion(jProg.getArtifactToken(), version, progVerArt.getToken()));
+      // TODO Convert to TeamDefinitionToBitProgram when relation goes through release
+      for (ArtifactToken art : atsApi.getRelationResolver().getRelated(teamWf.getTeamDefinition(),
+         AtsRelationTypes.TeamDefinitionToBitProgram_BitProgram)) {
+         if (art.isOfType(AtsArtifactTypes.Program)) {
+            addProgramVersion(pvers, art);
          }
       }
+      // Remove after conversion to above relation
+      for (ArtifactToken art : atsApi.getRelationResolver().getRelated(teamWf.getTeamDefinition(),
+         CoreRelationTypes.SupportingInfo_SupportingInfo)) {
+         if (art.isOfType(AtsArtifactTypes.Program)) {
+            addProgramVersion(pvers, art);
+         }
+      }
+
       ProgramVersionTreeDialog dialog = new ProgramVersionTreeDialog(pvers);
       if (dialog.open() == Window.OK) {
          BuildImpactDatas bids = new BuildImpactDatas();
-         bids.setTeamWf(teamWf.getStoreObject());
+         bids.setTeamWf(teamWf.getArtifactToken());
          bids.setBidArtType(wfeBitTab.getBuildImpactDataType());
          for (ProgramVersion pVer : dialog.getChecked()) {
             BuildImpactData bid = new BuildImpactData();
@@ -84,6 +94,13 @@ public class NewProgramVersionAction extends Action {
             atsApi.getEventService().postAtsWorkItemTopicEvent(AtsTopicEvent.WORK_ITEM_MODIFIED, Arrays.asList(teamWf),
                bids.getTransaction());
          }
+      }
+   }
+
+   private void addProgramVersion(List<ProgramVersion> pvers, ArtifactToken program) {
+      for (ArtifactToken progVerArt : atsApi.getProgramService().getProgramVersions(program, false).getVersions()) {
+         IAtsVersion version = atsApi.getVersionService().getVersionById(progVerArt);
+         pvers.add(new ProgramVersion(program, version, progVerArt.getToken()));
       }
    }
 

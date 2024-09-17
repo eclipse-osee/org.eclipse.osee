@@ -14,7 +14,7 @@
 package org.eclipse.osee.ats.ide.util.widgets.dialog;
 
 import java.util.Arrays;
-import java.util.Set;
+import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
@@ -65,10 +65,10 @@ public class CancelledReasonEnumDialog extends EntryDialog {
    }
 
    private String[] getCancelledReasonValues() {
-      Set<String> valuesSet = AtsAttributeTypes.CancelledReasonEnum.getEnumStrValues();
-      String[] values = valuesSet.toArray(new String[valuesSet.size()]);
-      Arrays.sort(values);
-      return values;
+      List<String> values = AtsAttributeTypes.CancelledReasonEnum.getEnumStrValues();
+      String[] valueArray = values.toArray(new String[values.size()]);
+      Arrays.sort(valueArray);
+      return valueArray;
    }
 
    public String getCancelledDetails() {

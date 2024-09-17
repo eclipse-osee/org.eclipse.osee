@@ -172,7 +172,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
 
    // Return default visible column widths.  Empty list or missing will use default token width.
    public List<Integer> getDefaultColumnWidths() {
-      return Arrays.asList(150, 75, 20, 40, 100, 150, 80, 75, 80, 40, 50, 80);
+      return Arrays.asList(150, 75, 20, 40, 100, 400, 80, 75, 80, 40, 50, 80);
    }
 
    protected List<XViewerColumn> getColumns(List<AtsCoreColumnToken> defaultVisibleColumns) {

@@ -123,6 +123,8 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
    private String host;
    private ThreadStats[] threadStats;
    private Long threadActivityParententryId;
+   @SuppressWarnings("java:S2245") //This random doesn't need to be truly random as it is not sensitive
+   private final Random random = new Random();
 
    public void setApplicationServerManager(IApplicationServerManager applicationServerManager) {
       this.applicationServerManager = applicationServerManager;
@@ -255,10 +257,8 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
       storage.cleanEntries(cleanerKeepDays);
    }
 
-   @SuppressWarnings("java:S2245") //This random doesn't need to be truly random as it is not sensitive
    private void setupCleaner() {
       // randomly pick a start time around midnight
-      Random random = new Random();
       Calendar start = Calendar.getInstance();
       start.set(Calendar.HOUR_OF_DAY, random.nextInt(4));
       start.set(Calendar.MINUTE, random.nextInt(180));

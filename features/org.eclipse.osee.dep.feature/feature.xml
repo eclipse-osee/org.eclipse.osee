@@ -17,6 +17,10 @@
       %license
    </license>
 
+   <includes
+         id="net.sourceforge.vrapper"
+         version="0.0.0"/> 
+
 	<includes
          id="org.eclipse.nebula.widgets.ganttchart.feature"
          version="0.0.0"/>
@@ -2383,6 +2387,18 @@
          version="0.0.0"
          unpack="false"/>  
          
-                          
-                  
+   <plugin
+         id="com.sun.xml.fastinfoset.FastInfoset"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>           
+                      
+   <plugin
+         id="org.glassfish.hk2.osgi-resource-locator"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+              
 </feature>

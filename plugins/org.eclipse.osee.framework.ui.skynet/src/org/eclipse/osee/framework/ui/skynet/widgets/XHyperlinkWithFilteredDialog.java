@@ -18,6 +18,7 @@ import java.util.Collection;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -118,7 +119,7 @@ public abstract class XHyperlinkWithFilteredDialog<T> extends XHyperlinkLabelVal
 
          if (isMultiSelect()) {
             FilteredCheckboxTreeDialog<T> dialog = new FilteredCheckboxTreeDialog<T>("Select " + label,
-               "Select " + label, new ArrayTreeContentProvider(), labelProvider, new StringNameComparator());
+               "Select " + label, new ArrayTreeContentProvider(), labelProvider, getComparator());
             dialog.setInput(getSelectable());
             T defaultSelected = getDefaultSelected();
             if (defaultSelected != null) {
@@ -131,7 +132,7 @@ public abstract class XHyperlinkWithFilteredDialog<T> extends XHyperlinkLabelVal
             }
          } else {
             FilteredTreeDialog dialog = new FilteredTreeDialog("Select " + label, "Select " + label,
-               new ArrayTreeContentProvider(), labelProvider, new StringNameComparator());
+               new ArrayTreeContentProvider(), labelProvider, getComparator());
             dialog.setInput(getSelectable());
             T defaultSelected = getDefaultSelected();
             if (defaultSelected != null) {
@@ -147,6 +148,10 @@ public abstract class XHyperlinkWithFilteredDialog<T> extends XHyperlinkLabelVal
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
+   }
+
+   protected ViewerComparator getComparator() {
+      return new StringNameComparator();
    }
 
    public void setSelected(T selected) {

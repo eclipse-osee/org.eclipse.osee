@@ -752,9 +752,10 @@ public class WordTemplateRenderer extends FileSystemRenderer {
       var publishingRequestData =
          new PublishingRequestData
                 (
-                   publishingTemplateRequest, /* Publishing Template Request */
-                   this,                      /* Renderer Options            */
-                   artifactIdentifiers        /* Artifact To Publish         */
+                   publishingTemplateRequest,                                                                                     /* Publishing Template Request */
+                   this,                                                                                                          /* Renderer Options            */
+                   artifactIdentifiers,                                                                                           /* Artifact To Publish         */
+                   String.format("http://%s:%s/", ClientSessionManager.getClientName(), ClientSessionManager.getClientPort())     /* User's Machine's Base URL   */
                 );
       //@formatter:on
 
@@ -998,7 +999,7 @@ public class WordTemplateRenderer extends FileSystemRenderer {
          wtcData.setPresentationType(presentationType);
          ArtifactId view = (ArtifactId) getRendererOptionValue(RendererOption.VIEW);
          wtcData.setViewId(view == null ? ArtifactId.SENTINEL : view);
-         wtcData.setPermanentLinkUrl(
+         wtcData.setDesktopClientLoopbackUrl(
             String.format("http://%s:%s/", ClientSessionManager.getClientName(), ClientSessionManager.getClientPort()));
 
          Pair<String, Set<String>> content = null;

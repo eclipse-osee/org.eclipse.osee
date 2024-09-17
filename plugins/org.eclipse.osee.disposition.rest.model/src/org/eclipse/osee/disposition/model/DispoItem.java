@@ -61,4 +61,6 @@ public interface DispoItem extends Identifiable<String> {
    String getTeam();
 
    Boolean getIsIncludeDetails();
+
+   Boolean isValid();
 }

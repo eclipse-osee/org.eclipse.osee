@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.jdk.core.util.ToMessage;
  * Data structure used to request a publish of a tree of artifacts.
  *
  * @author Loren K. Ashley
+ * @author Jaden W. Puckett
  */
 
 public class PublishingRequestData implements ToMessage {
@@ -48,6 +49,14 @@ public class PublishingRequestData implements ToMessage {
    private PublishingTemplateRequest publishingTemplateRequest;
 
    /**
+    * The base URL of the user's machine used by {@link WordMlLinkWordMlLinkHandler} to replace 'OSEE_LINK' (artifact
+    * links) in the Word Template Content with loopback links to the user's desktop client. Not required for all
+    * publishing operations.
+    */
+
+   private String desktopClientLoopbackUrl;
+
+   /**
     * Creates a new empty {@link PublishingRequestData} for JSON deserialization.
     */
 
@@ -55,11 +64,13 @@ public class PublishingRequestData implements ToMessage {
       this.publishingTemplateRequest = null;
       this.artifactIds = null;
       this.publishingRendererOptions = null;
+      this.desktopClientLoopbackUrl = "";
    }
 
    /**
     * Creates a new {@link PublishingRequestData} with data for serialization (client) or for making a Publishing
-    * Operations service call (server).
+    * Operations service call (server). The {@link #desktopClientLoopbackUrl} is not specified and is set to default
+    * empty string.
     *
     * @param publishingTemplateRequest the request data for the Publishing Template.
     * @param publishingRendererOptions the renderer options for the publish.
@@ -76,6 +87,49 @@ public class PublishingRequestData implements ToMessage {
          "PublishingRequest::new, parameter \"publishingRendererOptions\" cannot be null.");
       this.artifactIds =
          Objects.requireNonNull(artifactIds, "MsWordPreviewTemplate::new, parameter \"artifactIds\" cannot be null.");
+      this.desktopClientLoopbackUrl = "";
+   }
+
+   /**
+    * Creates a new {@link PublishingRequestData} with data for serialization (client) or for making a Publishing
+    * Operations service call (server).
+    *
+    * @param publishingTemplateRequest the request data for the Publishing Template.
+    * @param publishingRendererOptions the renderer options for the publish.
+    * @param artifactIds a list of the identifiers of the artifacts to be previewed.
+    * @param desktopClientLoopbackUrl the base URL of the user's machine used by {@link WordMlLinkWordMlLinkHandler} to
+    * replace 'OSEE_LINK' (artifact links) in the Word Template Content with loopback links to the user's desktop
+    * client.
+    * @throws NullPointerException when any of the parameters <code>publishingTemplateRequest</code>,
+    * <code>branchId</code>, or <code>artifactId</code> is <code>null</code>.
+    */
+
+   public PublishingRequestData(PublishingTemplateRequest publishingTemplateRequest, RendererMap publishingRendererOptions, List<ArtifactId> artifactIds, String desktopClientLoopbackUrl) {
+
+      this.publishingTemplateRequest = Objects.requireNonNull(publishingTemplateRequest,
+         "PublishingRequest::new, parameter \"publishingTemplateRequest\" cannot be null.");
+      this.publishingRendererOptions = Objects.requireNonNull(publishingRendererOptions,
+         "PublishingRequest::new, parameter \"publishingRendererOptions\" cannot be null.");
+      this.artifactIds =
+         Objects.requireNonNull(artifactIds, "MsWordPreviewTemplate::new, parameter \"artifactIds\" cannot be null.");
+      this.desktopClientLoopbackUrl = desktopClientLoopbackUrl != null ? desktopClientLoopbackUrl : "";
+   }
+
+   /**
+    * Predicate to test the validity of the {@link MsWordTemplateRequestData} object.
+    *
+    * @return <code>true</code> when all members are non-<code>null</code>, {@link #publishingTemplateRequest} is valid
+    * according to {@link PublishingTemplateRequest#isValid}, and {@link #artifactIds} is not empty; otherwise,
+    * <code>false</code>.
+    */
+
+   public boolean isValid() {
+      //@formatter:off
+      return
+            Objects.nonNull( this.publishingTemplateRequest ) && this.publishingTemplateRequest.isValid()
+         && Objects.nonNull( this.publishingRendererOptions )
+         && Objects.nonNull( this.artifactIds ) && !this.artifactIds.isEmpty();
+      //@formatter:on
    }
 
    /**
@@ -124,20 +178,31 @@ public class PublishingRequestData implements ToMessage {
    }
 
    /**
-    * Predicate to test the validity of the {@link MsWordTemplateRequestData} object.
+    * Retrieves the base URL of the user's machine, used for handling links and creating loopback URLs in Word
+    * documents.
     *
-    * @return <code>true</code> when all members are non-<code>null</code>, {@link #publishingTemplateRequest} is valid
-    * according to {@link PublishingTemplateRequest#isValid}, and {@link #artifactIds} is not empty; otherwise,
-    * <code>false</code>.
+    * @return the {@link String} representing the user's machine base URL.
+    * @throws IllegalStateException if the base URL has not been set.
     */
+   public String getDesktopClientLoopbackUrl() {
+      if (Objects.isNull(this.desktopClientLoopbackUrl)) {
+         throw new IllegalStateException("Desktop client loopback URL has not been set.");
+      }
+      return this.desktopClientLoopbackUrl;
+   }
 
-   public boolean isValid() {
-      //@formatter:off
-      return
-            Objects.nonNull( this.publishingTemplateRequest ) && this.publishingTemplateRequest.isValid()
-         && Objects.nonNull( this.publishingRendererOptions )
-         && Objects.nonNull( this.artifactIds ) && !this.artifactIds.isEmpty();
-      //@formatter:on
+   /**
+    * Sets the base URL of the user's machine, which is used for handling links and creating loopback URLs in Word
+    * documents. If null, set the url to empty string.
+    *
+    * @param desktopClientLoopbackUrl a {@link String} representing the user's machine base URL.
+    */
+   public void setDesktopClientLoopbackUrl(String desktopClientLoopbackUrl) {
+      if (desktopClientLoopbackUrl != null) {
+         this.desktopClientLoopbackUrl = desktopClientLoopbackUrl;
+      } else {
+         this.desktopClientLoopbackUrl = "";
+      }
    }
 
    /**
@@ -226,7 +291,6 @@ public class PublishingRequestData implements ToMessage {
    public String toString() {
       return this.toMessage(0, null).toString();
    }
-
 }
 
 /* EOF */

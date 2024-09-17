@@ -76,7 +76,6 @@ public class XBitLabelProvider extends XViewerLabelProvider {
                Long configId = Long.valueOf(configIdStr);
                ArtifactToken config = xBitViewer.getBids().getIdToConfig().get(configId);
                configs.add(config.getName());
-
             }
             return Collections.toString(",", configs);
          } else if (xViewerColumn.getName().equals(XBitXViewerFactory.State_Col.getName())) {

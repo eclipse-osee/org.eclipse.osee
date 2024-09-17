@@ -29,7 +29,9 @@ import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
+import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.branch.BranchData;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -41,6 +43,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionToken;
 import org.eclipse.osee.ats.api.workdef.AtsWorkDefinitionTokens;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
@@ -55,6 +58,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.api.workflow.IWorkItemListener;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
+import org.eclipse.osee.ats.api.workflow.NewActionResult;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.core.internal.util.AtsIdProvider;
 import org.eclipse.osee.ats.core.workflow.Action;
@@ -377,6 +381,34 @@ public class AtsActionService implements IAtsActionService {
       setArtifactIdentifyData(action, title, desc, changeType, priority, validationRequired, needByDate, changes);
       return action;
    }
+   
+   @Override
+   public NewActionResult createActionAndWorkingBranch(NewActionData newActionData) {
+      NewActionResult result = new NewActionResult();
+      try {
+         Collection<IAtsActionableItem> ais = new ArrayList<>();
+         ActionableItem ai =
+            atsApi.getQueryService().getConfigItem(Long.valueOf(newActionData.getAiIds().iterator().next()));
+         ais.add(ai);
+
+         IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName());
+         IAtsVersion version =
+            atsApi.getVersionService().getVersionById(ArtifactId.valueOf(newActionData.getVersionId()));
+         ActionResult actionResult = atsApi.getActionService().createAction(newActionData, changes);
+
+         IAtsTeamWorkflow teamWf = actionResult.getTeamWfs().iterator().next();
+         atsApi.getVersionService().setTargetedVersion(teamWf, version, changes);
+         changes.execute();
+
+         BranchData workingBranch = atsApi.getBranchService().createWorkingBranch(
+            teamWf);
+         result.setWorkingBranchId(workingBranch.getNewBranch());
+      } catch (Exception ex) {
+         result.getResults().errorf("Exception creating action [%s]", Lib.exceptionToString(ex));
+      }
+      return result;
+
+   }
 
    private IAtsTeamDefinition getTopTeamDef() {
       if (topTeamDefinition == null) {
@@ -512,9 +544,10 @@ public class AtsActionService implements IAtsActionService {
             artToken = listener.getArtifactToken(applicableAis);
          }
       }
-
+      
       if (artToken == null) {
-         teamWf = atsApi.getWorkItemService().getTeamWf(changes.createArtifact(artifactType, ""));
+         String name = (action.getName() == null) ? Strings.EMPTY_STRING : action.getName();
+         teamWf = atsApi.getWorkItemService().getTeamWf(changes.createArtifact(artifactType, name));
       } else {
          teamWf = atsApi.getWorkItemService().getTeamWf(changes.createArtifact(artToken));
       }

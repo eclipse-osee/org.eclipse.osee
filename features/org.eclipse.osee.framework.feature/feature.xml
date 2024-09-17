@@ -16,6 +16,10 @@
    <license url="%licenseURL">
       %license
    </license>
+
+   <includes
+         id="net.sourceforge.vrapper"
+         version="0.0.0"/> 
   
    <requires>
       <import feature="org.eclipse.emf.ecore" version="2.5.0" match="greaterOrEqual"/>
@@ -672,6 +676,12 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>          
+    
+   <plugin
+         id="org.eclipse.oss.ajax"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>      
          
    <plugin
          id="org.xerial.sqlite-jdbc"
@@ -822,6 +832,26 @@
 
   <plugin
          id="com.google.guava.failureaccess"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+  <plugin
+         id="com.sun.xml.fastinfoset.FastInfoset"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>         
+
+  <plugin
+         id="org.glassfish.jaxb.txw2"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+         
+  <plugin
+         id="org.glassfish.hk2.osgi-resource-locator"
          download-size="0"
          install-size="0"
          version="0.0.0"

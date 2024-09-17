@@ -292,7 +292,7 @@ public interface CoreArtifactTypes {
       .exactlyOne(FeatureValueType, FeatureValueType.String)
       .any(Value));
 
-   ArtifactTypeToken Folder = osee.add(osee.artifactType(11L, "Folder",  false, new MaterialIcon("folder", MaterialColors.YELLOW, MaterialShades.S500), Collections.asHashSet(CoreOperationTypes.PublishMarkdownRecursiveWithChildrenWithSpecifiedTemplate), Artifact));
+   ArtifactTypeToken Folder = osee.add(osee.artifactType(11L, "Folder",  false, new MaterialIcon("folder", MaterialColors.YELLOW, MaterialShades.S500), Collections.asHashSet(CoreOperationTypes.PublishMarkdownAsHtmlWithSpecifiedTemplate), Artifact));
 
    ArtifactTypeToken GeneralData = osee.add(osee.artifactType(12L, "General Data", false, new MaterialIcon("dataset"), Controlled)
       .any(GeneralStringData)
@@ -446,6 +446,10 @@ public interface CoreArtifactTypes {
     * <li>{@link CoreAttributeTypes#WholeWordContent}</li>
     * <li>{@link CoreAttributeTypes#PublishingTemplateContentByFormatMapEntry}</li>
     * <li>{@link CoreAttributeTyeps#PublishingTemplateDataRightsConfigurationNameReference}</li>
+    * <li>{@link CoreAttributeTyeps#PublishRelationTable}</li>
+    * <li>{@link CoreAttributeTyeps#PublishingRelationTableRelationTypeNameOrId}</li>
+    * <li>{@link CoreAttributeTyeps#PublishingRelationTableColumn}</li>
+    * <li>{@link CoreAttributeTyeps#PublishingRelationTableArtifactTypeId}</li>
     * </ul>
     * </dd>
     * </dl>
@@ -460,6 +464,9 @@ public interface CoreArtifactTypes {
                .zeroOrOne( WholeWordContent, "<w:p xmlns:w= \"http://schemas.microsoft.com/office/word/2003/wordml\"><w:r><w:t></w:t></w:r></w:p>" )
                .any( PublishingTemplateContentByFormatMapEntry )
                .zeroOrOne( PublishingTemplateDataRightsConfigurationNameReference )
+               .any( PublishingRelationTableRelationTypeSide )
+               .any( PublishingRelationTableColumn )
+               .any( PublishingRelationTableArtifactTypeNameOrId )
          );
 
    ArtifactTypeToken ReportTemplate = osee.add(osee.artifactType(63228787744062L, "Report Template", false, Artifact)

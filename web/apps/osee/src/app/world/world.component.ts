@@ -38,17 +38,9 @@ import {
 	MatTableDataSource,
 } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-	debounceTime,
-	filter,
-	map,
-	shareReplay,
-	switchMap,
-	take,
-	tap,
-} from 'rxjs';
+import { filter, map, shareReplay, switchMap, take, tap } from 'rxjs';
 import { WorldHttpService } from './services/world-http.service';
-import { world, worldRow, worldRowWithDiffs, worldWithDiffs } from './world';
+import { worldRow, worldRowWithDiffs, worldWithDiffs } from './world';
 import { NgClass } from '@angular/common';
 
 @Component({
@@ -108,6 +100,12 @@ class WorldComponent implements AfterViewInit {
 			shareReplay({ bufferSize: 1, refCount: true })
 		),
 		{ initialValue: { orderedHeaders: [], rows: [] } }
+	);
+
+	worldDataLoaded = computed(
+		() =>
+			this._worldData().orderedHeaders.length > 0 &&
+			this._worldData().rows.length > 0
 	);
 
 	private _worldDataStored = toSignal(
@@ -257,7 +255,23 @@ class WorldComponent implements AfterViewInit {
 			.subscribe();
 	}
 
-	openExport() {
+	exportAsJson() {
+		if (!this.worldDataLoaded()) {
+			return;
+		}
+		const json = JSON.stringify(this._worldData());
+		const link = document.createElement('a');
+		link.setAttribute(
+			'href',
+			'data:text/json;charset=UTF-8,' + encodeURIComponent(json)
+		);
+		link.setAttribute('download', 'world.json');
+		document.body.appendChild(link);
+		link.click();
+		link.remove();
+	}
+
+	exportAsHtml() {
 		this.params
 			.pipe(
 				take(1),

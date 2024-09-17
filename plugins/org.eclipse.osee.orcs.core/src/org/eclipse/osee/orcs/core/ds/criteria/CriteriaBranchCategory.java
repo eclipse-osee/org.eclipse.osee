@@ -24,9 +24,11 @@ import org.eclipse.osee.orcs.core.ds.Options;
 public class CriteriaBranchCategory extends Criteria implements BranchCriteria {
 
    private final BranchCategoryToken category;
+   private final boolean includeCategory;
 
-   public CriteriaBranchCategory(BranchCategoryToken category) {
+   public CriteriaBranchCategory(BranchCategoryToken category, boolean includeCategory) {
       this.category = category;
+      this.includeCategory = includeCategory;
    }
 
    public BranchCategoryToken getBranchCategory() {
@@ -41,5 +43,9 @@ public class CriteriaBranchCategory extends Criteria implements BranchCriteria {
    @Override
    public String toString() {
       return "CriteriaBranchCategory [branchCategory=" + category.getId() + "]";
+   }
+
+   public boolean isIncludeCategory() {
+      return includeCategory;
    }
 }

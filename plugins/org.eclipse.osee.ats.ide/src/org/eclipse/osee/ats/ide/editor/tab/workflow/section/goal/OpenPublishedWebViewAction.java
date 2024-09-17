@@ -22,10 +22,10 @@ import org.eclipse.swt.program.Program;
 /**
  * @author Donald G. Dunne
  */
-public class OpenWebViewPublishedAction extends AbstractWebExportAction {
+public class OpenPublishedWebViewAction extends AbstractWebExportAction {
 
-   public OpenWebViewPublishedAction(GoalArtifact goalArt, WorkflowEditor editor) {
-      super("Open Web View - Published", goalArt, editor, AtsImage.GLOBE);
+   public OpenPublishedWebViewAction(GoalArtifact goalArt, WorkflowEditor editor) {
+      super("Open Published Web View", goalArt, editor, AtsImage.GLOBE);
    }
 
    @Override

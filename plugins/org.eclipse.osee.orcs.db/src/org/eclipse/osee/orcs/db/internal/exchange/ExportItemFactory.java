@@ -71,6 +71,8 @@ public class ExportItemFactory {
    private final SystemProperties preferences;
    private final JdbcClient jdbcClient;
    private final IResourceManager resourceManager;
+   @SuppressWarnings("java:S2245") //This random doesn't need to be truly random as it is not sensitive
+   private final Random random = new Random();
 
    public ExportItemFactory(Log logger, SystemProperties preferences, JdbcClient jdbcClient, IResourceManager resourceManager) {
       this.logger = logger;
@@ -139,11 +141,9 @@ public class ExportItemFactory {
       }
    }
 
-   @SuppressWarnings("java:S2245") //This random doesn't need to be truly random as it is not sensitive
    private int createGammaJoin(JdbcClient jdbcClient, Long branchJoinId, PropertyStore options) {
       List<Object> bindList = new ArrayList<>();
-      Random rand = new Random();
-      int gammaJoinId = rand.nextInt();
+      int gammaJoinId = random.nextInt();
       StringBuilder sql = new StringBuilder(
          "INSERT INTO osee_join_id (id, query_id) SELECT DISTINCT(gamma_id), %s FROM osee_join_id, osee_txs txs WHERE query_id=? AND id = txs.branch_id");
       bindList.add(branchJoinId);

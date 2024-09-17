@@ -259,4 +259,11 @@ public class WidgetDefinition extends LayoutItem {
       this.userGroup = userGroup;
    }
 
+   public LayoutItem andCondition(ConditionalRule... rules) {
+      for (ConditionalRule rule : rules) {
+         conditions.add(rule);
+      }
+      return this;
+   }
+
 }

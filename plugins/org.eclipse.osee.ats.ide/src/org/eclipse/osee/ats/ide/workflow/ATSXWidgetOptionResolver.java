@@ -13,9 +13,9 @@
 
 package org.eclipse.osee.ats.ide.workflow;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -41,7 +41,7 @@ public final class ATSXWidgetOptionResolver extends DefaultXWidgetOptionResolver
 
       if (xWidgetData.getXWidgetName().contains(
          OPTIONS_FROM_ATTRIBUTE_VALIDITY) || xWidgetData.getXWidgetName().contains("ACTIVE_USER_COMMUNITIES")) {
-         Set<String> options = new HashSet<String>();
+         List<String> options = new ArrayList<String>();
          OrcsTokenService tokenService = ServiceUtil.getTokenService();
          AttributeTypeGeneric<?> attributeType = AttributeTypeGeneric.SENTINEL;
          try {

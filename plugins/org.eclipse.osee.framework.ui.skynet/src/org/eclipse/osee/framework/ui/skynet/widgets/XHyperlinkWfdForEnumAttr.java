@@ -13,14 +13,17 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.Collection;
+import java.util.List;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.DisplayHint;
+import org.eclipse.osee.framework.ui.plugin.util.NoOpViewerComparator;
 
 /**
  * @author Donald G. Dunne
  */
 public class XHyperlinkWfdForEnumAttr extends XHyperlinkWithFilteredDialog<String> implements AttributeTypeWidget {
 
-   private AttributeTypeToken attributeTypeToken = AttributeTypeToken.SENTINEL;
    private Collection<String> selectable = null;
 
    public XHyperlinkWfdForEnumAttr() {
@@ -32,19 +35,29 @@ public class XHyperlinkWfdForEnumAttr extends XHyperlinkWithFilteredDialog<Strin
       if (selectable != null) {
          return selectable;
       }
-      return attributeTypeToken.toEnum().getEnumStrValues();
+      List<String> enumStrValues = attributeType.toEnum().getEnumStrValues();
+      return enumStrValues;
+   }
+
+   @Override
+   protected ViewerComparator getComparator() {
+      if (attributeType.hasDisplayHint(DisplayHint.InOrder)) {
+         // Do not sort, use enum as supplied to dialogs
+         return NoOpViewerComparator.instance;
+      }
+      return super.getComparator();
    }
 
    @Override
    public AttributeTypeToken getAttributeType() {
-      return attributeTypeToken;
+      return attributeType;
    }
 
    @Override
-   public void setAttributeType(AttributeTypeToken attributeTypeToken) {
-      this.attributeTypeToken = attributeTypeToken;
-      if (attributeTypeToken.isValid()) {
-         this.label = this.attributeTypeToken.getUnqualifiedName();
+   public void setAttributeType(AttributeTypeToken attributeType) {
+      this.attributeType = attributeType;
+      if (attributeType.isValid()) {
+         this.label = this.attributeType.getUnqualifiedName();
       }
    }
 

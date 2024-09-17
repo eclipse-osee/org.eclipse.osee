@@ -42,6 +42,11 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.publishing.artifactacceptor.ArtifactAcceptor;
+import org.eclipse.osee.framework.core.publishing.relation.table.HtmlRelationTableAppender;
+import org.eclipse.osee.framework.core.publishing.relation.table.RelationTableAppender;
+import org.eclipse.osee.framework.core.publishing.relation.table.RelationTableBuilder;
+import org.eclipse.osee.framework.core.publishing.relation.table.RelationTableOptions;
+import org.eclipse.osee.framework.core.publishing.relation.table.WordRelationTableAppender;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.Triplet;
@@ -1440,6 +1445,7 @@ public class WordRenderUtil {
             IncludeMetadataAttributes                   includeMetadataAttributes,
             Consumer<PublishingArtifact>                invalidAttributesHandler,
             MetadataOptions[]                           metadataOptionsArray,
+            RelationTableOptions                        relationTableOptions,
             OrcsTokenService                            orcsTokenService,
             PresentationType                            presentationType,
             PublishingAppender                          publishingAppender,
@@ -1648,6 +1654,19 @@ public class WordRenderUtil {
             );
 
       }
+      
+      /*
+       * Add relation table(s) to the output
+       */
+      
+      WordRenderUtil.processRelationTable
+         (
+            formatIndicator, 
+            relationTableOptions, 
+            artifact,
+            publishingAppender, 
+            orcsTokenService
+         );
 
       /*
        * When the first artifact in a section does not have word template content and a footer is present, the footer
@@ -1669,7 +1688,67 @@ public class WordRenderUtil {
 
       return outlineSectionResult.isStarted();
    }
-   //@formatter:on
+
+//@formatter:on
+
+   /**
+    * Processes a relation table by building and appending the table content based on the specified format. This method
+    * determines the format of the relation table (HTML or Word) based on the provided {@code formatIndicator},
+    * constructs the appropriate {@link RelationTableAppender}, and then uses the {@link RelationTableBuilder} to build
+    * the table. The generated content is appended to the provided {@code publishingAppender}.
+    * 
+    * @param formatIndicator the format indicator specifying whether to generate HTML or Word table content
+    * @param relationTableOptions the options configuring the relation table, including artifact types, columns, and
+    * relation type sides
+    * @param artifact the publishing artifact associated with the relation table, used to retrieve related artifacts
+    * @param publishingAppender the appender used to add the generated table content to the publishing output
+    * @param orcsTokenService the service for retrieving relation types and attributes
+    * @throws IllegalArgumentException if the {@code formatIndicator} specifies an unsupported format
+    * @throws OseeCoreException if an error occurs during the processing of the relation table
+    */
+   public static void processRelationTable(FormatIndicator formatIndicator, RelationTableOptions relationTableOptions,
+      PublishingArtifact artifact, PublishingAppender publishingAppender, OrcsTokenService orcsTokenService) {
+
+      try {
+         RelationTableAppender tableAppender;
+
+         // Determine which appender to use based on the format indicator
+         switch (formatIndicator) {
+            case MARKDOWN:
+               tableAppender = new HtmlRelationTableAppender();
+               break;
+            case WORD_ML:
+               tableAppender = new WordRelationTableAppender();
+               break;
+            default:
+               throw new IllegalArgumentException("Unsupported format: " + formatIndicator);
+         }
+
+         RelationTableBuilder builder =
+            new RelationTableBuilder(relationTableOptions, artifact, orcsTokenService, tableAppender);
+         builder.buildRelationTable();
+
+         // Append the generated content to the publishing output
+         publishingAppender.append(tableAppender.getTable());
+
+      } catch (Exception e) {
+         //@formatter:off
+         throw new OseeCoreException(
+            new Message()
+              .title("WordRenderUtil::processRelationTable, failed to process relation table.")
+              .indentInc()
+              .segment("Publishing Artifact Name", artifact.getName())
+              .segment("Publishing Artifact ID", artifact.getArtifactId())
+              .segment("Publishing Relation Table Artifact Types", relationTableOptions.getRelationTableArtifactTypeNamesAndOrIds())
+              .segment("Publishing Relation Table Relation Type Sides", relationTableOptions.getRelationTableRelationTypeSides())
+              .segment("Publishing Relation Table Columns", relationTableOptions.getRelationTableColumns())
+              .reasonFollows(e)
+              .toString(),
+           e
+         );
+         //@formatter:on
+      }
+   }
 
    /**
     * The default attribute render for non-WordML attributes. Attributes are formatted with the "label" and "format"
@@ -1746,7 +1825,7 @@ public class WordRenderUtil {
             PresentationType                   presentationType,
             String                             label,
             String                             footer,
-            String                             permanentLinkUrl,
+            String                             desktopClientLoopbackUrl,
             boolean                            artifactIsChanged,
             IncludeBookmark                    includeBookmark,
             TransactionToken                   historicalArtifactTransactionToken,
@@ -1778,7 +1857,7 @@ public class WordRenderUtil {
       wtcData.setLinkType(rendererMap.getRendererOptionValue(RendererOption.LINK_TYPE));
       wtcData.setPresentationType(presentationType);
       wtcData.setTxId(historicalArtifactTransactionToken);
-      wtcData.setPermanentLinkUrl(permanentLinkUrl);
+      wtcData.setDesktopClientLoopbackUrl(desktopClientLoopbackUrl);
       wtcData.setArtIsChanged(artifactIsChanged);
       wtcData.setIncludeBookmark(safeIncludeBookmark);
 

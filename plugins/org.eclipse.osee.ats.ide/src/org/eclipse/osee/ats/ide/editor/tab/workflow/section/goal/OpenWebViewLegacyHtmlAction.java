@@ -31,7 +31,7 @@ import org.eclipse.swt.program.Program;
 public class OpenWebViewLegacyHtmlAction extends AbstractWebExportAction {
 
    public OpenWebViewLegacyHtmlAction(GoalArtifact goalArt, WorkflowEditor editor) {
-      super("Open Legacy Web View - Live (admin)", goalArt, editor, AtsImage.GLOBE);
+      super("Open Web View Legacy HTML - Live (admin)", goalArt, editor, AtsImage.GLOBE);
    }
 
    @Override

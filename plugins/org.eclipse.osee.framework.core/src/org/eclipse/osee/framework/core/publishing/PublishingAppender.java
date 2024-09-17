@@ -263,7 +263,6 @@ public interface PublishingAppender {
    public void startText();
 
    public void endArtifact();
-
 }
 
 /* EOF */

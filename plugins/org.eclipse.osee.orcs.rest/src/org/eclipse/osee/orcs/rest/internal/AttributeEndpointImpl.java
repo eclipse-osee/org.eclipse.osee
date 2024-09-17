@@ -18,6 +18,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -111,7 +112,7 @@ public class AttributeEndpointImpl implements AttributeEndpoint {
    private String[] getValidEnums(AttributeTypeToken type) {
       String[] empty = new String[] {"EMPTY"};
       if (type.isEnumerated()) {
-         Set<String> enums = type.toEnum().getEnumStrValues();
+         Collection<String> enums = type.toEnum().getEnumStrValues();
          if (enums.size() > 0) {
             return enums.toArray(new String[enums.size()]);
          } else {
@@ -317,7 +318,7 @@ public class AttributeEndpointImpl implements AttributeEndpoint {
       OrcsTokenService tokenService = new OrcsTokenServiceImpl();
       AttributeTypeGeneric<?> tok = tokenService.getAttributeType(attributeId.getId());
       if (tok instanceof AttributeTypeEnum<?>) {
-         enums = ((AttributeTypeEnum) tok).getEnumStrValues();
+         enums.addAll(((AttributeTypeEnum<?>) tok).getEnumStrValues());
       }
       return enums;
    }
