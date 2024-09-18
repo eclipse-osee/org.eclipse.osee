@@ -13,6 +13,7 @@
 import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { AsyncPipe } from '@angular/common';
 import { Component, Inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/core';
@@ -28,18 +29,11 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatListOption, MatSelectionList } from '@angular/material/list';
 import { MatSelect } from '@angular/material/select';
-import { Observable } from 'rxjs';
-import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
-import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
-import { PlConfigTypesService } from '../../services/pl-config-types.service';
-import {
-	ConfigGroup,
-	PlConfigApplicUIBranchMapping,
-} from '../../types/pl-config-applicui-branch-mapping';
-import { cfgGroup } from '../../types/pl-config-branch';
-import { PLEditConfigData } from '../../types/pl-edit-config-data';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ViewSelectorComponent } from '@osee/shared/components';
 import { UiService } from '@osee/shared/services';
+import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
+import { ConfigGroup } from '../../types/pl-config-applicui-branch-mapping';
+import { PLEditConfigData } from '../../types/pl-edit-config-data';
 
 @Component({
 	selector: 'osee-plconfig-edit-configuration-dialog',
@@ -62,27 +56,19 @@ import { UiService } from '@osee/shared/services';
 		MatButton,
 		MatDialogClose,
 		CdkTrapFocus,
+		ViewSelectorComponent,
 	],
 })
 export class EditConfigurationDialogComponent {
-	branchApplicability: Observable<PlConfigApplicUIBranchMapping>;
-	cfgGroups: Observable<cfgGroup[]>;
+	cfgGroups = this.currentBranchService.cfgGroups;
 	productApplicabilities = this.currentBranchService.productTypes;
 	viewId = toSignal(this.uiService.viewId);
 	constructor(
-		private typeService: PlConfigTypesService,
 		public dialogRef: MatDialogRef<EditConfigurationDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: PLEditConfigData,
-		private branchService: PlConfigBranchService,
 		private currentBranchService: PlConfigCurrentBranchService,
 		private uiService: UiService
-	) {
-		this.branchApplicability = this.branchService.getBranchApplicability(
-			data.currentBranch,
-			this.viewId() || ''
-		);
-		this.cfgGroups = this.currentBranchService.cfgGroups;
-	}
+	) {}
 	onNoClick(): void {
 		this.dialogRef.close();
 	}

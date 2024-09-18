@@ -12,16 +12,16 @@
 -->
 <button
 	mat-menu-item
-	(click)="displayFeatureMenu(feature)">
-	<mat-icon color="primary">edit</mat-icon>Open Feature Menu
+	(click)="displayFeatureMenu(feature().id)">
+	<mat-icon color="primary">edit</mat-icon>Open Feature Dialog
 </button>
-@if (hasFeatureChanges(feature)) {
+@if (hasFeatureChanges(feature())) {
 	<button
 		mat-menu-item
 		[matMenuTriggerFor]="featureDiffMenu"
-		[matMenuTriggerData]="{ feature: feature }">
+		[matMenuTriggerData]="{ feature: feature() }">
 		<mat-icon color="accent">pageview</mat-icon>View Diff for
-		{{ feature.name }}
+		{{ feature().name }}
 	</button>
 	<!--TODO IMPLEMENT DIFF VIEWER-->
 }
@@ -67,7 +67,8 @@
 				Name
 			</button>
 		}
-		@if (feature.changes.productApplicabilities !== undefined) {
+		<!-- TODO: disabling for now, until productApplicabilities is in the right shape -->
+		<!-- @if (feature.changes.productApplicabilities !== undefined) {
 			<button
 				mat-menu-item
 				[matMenuTriggerFor]="arrayDiffMenu"
@@ -76,7 +77,7 @@
 				}">
 				Product Applicabilities
 			</button>
-		}
+		} -->
 		@if (feature.changes.valueType !== undefined) {
 			<button
 				mat-menu-item

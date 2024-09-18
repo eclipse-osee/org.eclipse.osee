@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, computed, inject, input } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import {
 	MatMenu,
@@ -23,11 +23,10 @@ import { applic } from '@osee/shared/types/applicability';
 import { difference } from '@osee/shared/types/change-report';
 import { DialogService } from '../../services/dialog.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
-import {
-	configGroup,
-	configGroupWithChanges,
-} from '../../types/pl-config-configurations';
+import { configGroup } from '../../types/pl-config-configurations';
 import { ArrayDiffMenuComponent } from '../array-diff-menu/array-diff-menu.component';
+import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CurrentBranchInfoService, branchImpl } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-plconfig-config-group-menu',
@@ -45,19 +44,24 @@ import { ArrayDiffMenuComponent } from '../array-diff-menu/array-diff-menu.compo
 	],
 })
 export class ConfigGroupMenuComponent {
+	//TODO add real prefs
+	private _branchInfoService = inject(CurrentBranchInfoService);
+	private _branch = toSignal(
+		this._branchInfoService.currentBranch.pipe(takeUntilDestroyed()),
+		{
+			initialValue: new branchImpl(),
+		}
+	);
+	protected editable = computed(() => this._branch().branchType === '0');
 	constructor(
 		private dialogService: DialogService,
 		private currentBranchService: PlConfigCurrentBranchService
 	) {}
-	_editable = this.currentBranchService.editable;
-	@Input() group: configGroup | configGroupWithChanges = {
-		name: '',
-		description: '',
-		id: '',
-		configurations: [],
-	};
-	openConfigMenu(header: string, editable: string) {
-		this.dialogService.openConfigMenu(header, editable).subscribe();
+	group = input.required<configGroup>();
+	openConfigMenu(header: string, editable: boolean) {
+		this.dialogService
+			.openEditConfigGroupDialog(header, editable)
+			.subscribe();
 	}
 	viewDiff(open: boolean, value: difference, header: string) {
 		let current = value.currentValue as string | number | applic;
@@ -76,9 +80,7 @@ export class ConfigGroupMenuComponent {
 			transaction: value.transactionToken,
 		};
 	}
-	hasGroupChanges(
-		value: configGroup | configGroupWithChanges
-	): value is configGroupWithChanges {
-		return (value as configGroupWithChanges).changes !== undefined;
+	hasGroupChanges(value: configGroup): value is configGroup {
+		return (value as configGroup).changes !== undefined;
 	}
 }

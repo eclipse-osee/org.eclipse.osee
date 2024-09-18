@@ -10,16 +10,15 @@
 * Contributors:
 *     Boeing - initial API and implementation
 -->
-@if ((editable | async) === true) {
-	<button
-		mat-menu-item
-		#menuTrigger1="matMenuTrigger"
-		(mousedown)="toggleMenu(menuTrigger1)"
-		[matMenuTriggerFor]="mainMenu"
-		data-cy="change-config-group-dropdown-btn">
-		Change Configuration Groups
-	</button>
-}
+<button
+	mat-menu-item
+	#menuTrigger1="matMenuTrigger"
+	[disabled]="!editable()"
+	(mousedown)="toggleMenu(menuTrigger1)"
+	[matMenuTriggerFor]="mainMenu"
+	data-cy="change-config-group-dropdown-btn">
+	Change Configuration Groups
+</button>
 <mat-menu
 	class="tw-max-w-none"
 	#mainMenu="matMenu">
@@ -27,13 +26,14 @@
 		<button
 			mat-menu-item
 			(click)="addConfigurationGroup()"
+			[disabled]="!editable()"
 			data-cy="add-config-group-btn">
 			<mat-icon color="success">add_box</mat-icon>Add Configuration Group
 		</button>
 		<button
 			mat-menu-item
 			[matMenuTriggerFor]="deleteConfigGroupMenu"
-			*ngIf="(editable | async) === true"
+			[disabled]="!editable()"
 			data-cy="delete-config-group-btn">
 			<mat-icon color="warn">delete_forever</mat-icon>Delete Configuration
 			Group
@@ -47,6 +47,7 @@
 		<button
 			mat-menu-item
 			(click)="deleteGroup(group.id)"
+			[disabled]="!editable()"
 			[attr.data-cy]="'delete-config-group-' + group.name + '-btn'">
 			{{ group.name }}
 		</button>

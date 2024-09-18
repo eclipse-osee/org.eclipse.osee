@@ -17,13 +17,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 
-/**
- * @TODO implement groups once supported in BAT tool
- */
-public class BatConfigFile {
+public class BatConfigFile extends BatFile {
 
-   private String normalizedName = "";
+   private String name = "";
+   private String group = "";
    private final List<String> features = new ArrayList<String>();
    private final List<BatMatchText> substitutions = new ArrayList<BatMatchText>();
    public BatConfigFile() {
@@ -31,24 +30,30 @@ public class BatConfigFile {
    }
 
    public BatConfigFile(ArtifactReadable configOrGroup, Map<String, List<String>> namedViewApplicabilityMap, List<ArtifactReadable> featureArts) {
-      this.setNormalizedName(configOrGroup.getName().replace(" ", "_"));
+      this.setName(configOrGroup.getName().replace(" ", "_"));
       this.addFeatures(featureArts.stream().map(
          f -> f.getName() + "=" + org.eclipse.osee.framework.jdk.core.util.Collections.toString(",",
             namedViewApplicabilityMap.get(f.getName()))).collect(Collectors.toList()));
+      ArtifactReadable group = configOrGroup.getRelated(CoreRelationTypes.PlConfigurationGroup_Group).getOneOrDefault(
+         ArtifactReadable.SENTINEL);
+      if (group.isValid()) {
+
+         this.setGroup(group.getName());
+      }
    }
 
    /**
     * @return the normalizedName
     */
-   public String getNormalizedName() {
-      return normalizedName;
+   public String getName() {
+      return name;
    }
 
    /**
     * @param normalizedName the normalizedName to set
     */
-   public void setNormalizedName(String normalizedName) {
-      this.normalizedName = normalizedName;
+   public void setName(String normalizedName) {
+      this.name = normalizedName;
    }
 
    /**
@@ -77,6 +82,17 @@ public class BatConfigFile {
     */
    public void addSubstitutions(List<BatMatchText> substitutions) {
       this.substitutions.addAll(substitutions);
+   }
+
+   /**
+    * @return the group
+    */
+   public String getGroup() {
+      return group;
+   }
+
+   public void setGroup(String group) {
+      this.group = group;
    }
 
 }

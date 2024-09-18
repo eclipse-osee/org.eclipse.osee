@@ -11,7 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { MatLabel } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
@@ -21,15 +22,14 @@ import {
 	MatMenuItem,
 	MatMenuTrigger,
 } from '@angular/material/menu';
+import { CurrentBranchInfoService, branchImpl } from '@osee/shared/services';
 import { Observable, OperatorFunction, iif, of } from 'rxjs';
 import { filter, shareReplay, switchMap, take } from 'rxjs/operators';
+import { DialogService } from '../../services/dialog.service';
 import { AddConfigurationDialogComponent } from '../../dialogs/add-configuration-dialog/add-configuration-dialog.component';
 import { CopyConfigurationDialogComponent } from '../../dialogs/copy-configuration-dialog/copy-configuration-dialog.component';
-import { EditConfigurationDialogComponent } from '../../dialogs/edit-config-dialog/edit-config-dialog.component';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
-import { ConfigGroup } from '../../types/pl-config-applicui-branch-mapping';
-import { editConfiguration } from '../../types/pl-config-configurations';
 import {
 	PLAddConfigData,
 	PLEditConfigData,
@@ -54,12 +54,21 @@ export class ConfigurationDropdownComponent {
 	selectedBranch: Observable<string> = this.uiStateService.branchId.pipe(
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
-	configs = this.currentBranchService.branchApplicViews;
-	editable = this.currentBranchService.branchApplicEditable;
+	configs = this.currentBranchService.views;
+	//TODO add real prefs
+	private _branchInfoService = inject(CurrentBranchInfoService);
+	private _branch = toSignal(
+		this._branchInfoService.currentBranch.pipe(takeUntilDestroyed()),
+		{
+			initialValue: new branchImpl(),
+		}
+	);
+	protected editable = computed(() => this._branch().branchType === '0');
 
 	constructor(
 		private uiStateService: PlConfigUIStateService,
 		private currentBranchService: PlConfigCurrentBranchService,
+		private dialogService: DialogService,
 		public dialog: MatDialog
 	) {}
 
@@ -70,81 +79,8 @@ export class ConfigurationDropdownComponent {
 			.subscribe();
 	}
 
-	openEditDialog(
-		config: {
-			id: string;
-			name: string;
-			description: string;
-			hasFeatureApplicabilities: boolean;
-		},
-		productApplicabilities?: string[],
-		groups?: ConfigGroup[]
-	) {
-		this.selectedBranch
-			.pipe(
-				take(1),
-				switchMap((branchId) =>
-					of(
-						new PLEditConfigData(
-							branchId,
-							config,
-							undefined,
-							productApplicabilities,
-							true,
-							groups
-						)
-					).pipe(
-						take(1),
-						switchMap((dialogData) =>
-							this.dialog
-								.open(EditConfigurationDialogComponent, {
-									data: dialogData,
-									minWidth: '60%',
-								})
-								.afterClosed()
-								.pipe(
-									take(1),
-									filter(
-										(val) => val !== undefined
-									) as OperatorFunction<
-										PLEditConfigData | undefined,
-										PLEditConfigData
-									>,
-									switchMap((result) =>
-										iif(
-											() => result !== undefined,
-											of<editConfiguration>({
-												...result.currentConfig,
-												copyFrom:
-													(result.copyFrom.id &&
-														result.copyFrom.id) ||
-													'',
-												configurationGroup:
-													result.group.map(
-														(a) => a.id
-													),
-												productApplicabilities:
-													result.productApplicabilities ||
-													[],
-											}).pipe(
-												take(1),
-												switchMap((request) =>
-													this.currentBranchService
-														.editConfigurationDetails(
-															request
-														)
-														.pipe(take(1))
-												)
-											),
-											of(undefined)
-										)
-									)
-								)
-						)
-					)
-				)
-			)
-			.subscribe();
+	openEditDialog(configId: string) {
+		this.dialogService.openEditConfigDialog(configId, true).subscribe();
 	}
 
 	addConfiguration() {
@@ -153,7 +89,6 @@ export class ConfigurationDropdownComponent {
 				take(1),
 				switchMap((branchId) =>
 					of<PLAddConfigData>({
-						currentBranch: branchId?.toString(),
 						copyFrom: {
 							id: '0',
 							name: '',

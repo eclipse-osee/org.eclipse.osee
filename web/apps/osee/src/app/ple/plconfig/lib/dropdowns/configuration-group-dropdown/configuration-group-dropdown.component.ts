@@ -11,7 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import {
@@ -20,20 +21,11 @@ import {
 	MatMenuItem,
 	MatMenuTrigger,
 } from '@angular/material/menu';
-import { OperatorFunction, from, iif, of, throwError } from 'rxjs';
-import {
-	filter,
-	map,
-	mergeMap,
-	scan,
-	switchMap,
-	take,
-	tap,
-} from 'rxjs/operators';
+import { CurrentBranchInfoService, branchImpl } from '@osee/shared/services';
+import { OperatorFunction, iif, of } from 'rxjs';
+import { filter, switchMap, take } from 'rxjs/operators';
 import { AddConfigurationGroupDialogComponent } from '../../dialogs/add-configuration-group-dialog/add-configuration-group-dialog.component';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
-import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
-import { cfgGroup } from '../../types/pl-config-branch';
 import { addCfgGroup } from '../../types/pl-config-cfggroups';
 
 @Component({
@@ -51,12 +43,19 @@ import { addCfgGroup } from '../../types/pl-config-cfggroups';
 	],
 })
 export class ConfigurationGroupDropdownComponent {
-	editable = this.currentBranchService.branchApplicEditable;
+	//TODO add real prefs
+	private _branchInfoService = inject(CurrentBranchInfoService);
+	private _branch = toSignal(
+		this._branchInfoService.currentBranch.pipe(takeUntilDestroyed()),
+		{
+			initialValue: new branchImpl(),
+		}
+	);
+	protected editable = computed(() => this._branch().branchType === '0');
 	cfgGroups = this.currentBranchService.cfgGroups;
 	constructor(
 		private currentBranchService: PlConfigCurrentBranchService,
-		public dialog: MatDialog,
-		private uiStateService: PlConfigUIStateService
+		public dialog: MatDialog
 	) {}
 	public addConfigurationGroup() {
 		this.dialog

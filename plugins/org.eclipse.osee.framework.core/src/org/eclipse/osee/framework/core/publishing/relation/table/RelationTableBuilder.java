@@ -68,8 +68,6 @@ public class RelationTableBuilder {
     * @param relationTypeSide the relation type side in the format "RelationTypeNameOrId|RelationTypeSideName"
     */
    private void processRelationTypeSide(String relationTypeSide) {
-      appender.endTable(); // Ensure we start fresh for each relation type side
-
       String[] parts = relationTypeSide.split("\\|");
       if (parts.length != 2) {
          throw new IllegalArgumentException("Invalid format for relationTypeSide: " + relationTypeSide);

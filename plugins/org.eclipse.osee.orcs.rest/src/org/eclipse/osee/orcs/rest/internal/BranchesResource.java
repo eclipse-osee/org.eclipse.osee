@@ -29,7 +29,9 @@ import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.internal.applicability.ApplicabilityEndpointImpl;
+import org.eclipse.osee.orcs.rest.internal.applicability.ApplicabilityWebEndpointImpl;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
+import org.eclipse.osee.orcs.rest.model.ApplicabilityWebEndpoint;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
 import org.eclipse.osee.orcs.rest.model.GridCommanderEndpoint;
 import org.eclipse.osee.orcs.rest.model.RelationEndpoint;
@@ -97,5 +99,10 @@ public class BranchesResource {
    @Path("{branch}/gc")
    public GridCommanderEndpoint getGridCommander(@PathParam("branch") BranchId branch) {
       return new GridCommanderEndpointImpl(orcsApi, branch, uriInfo);
+   }
+
+   @Path("{branch}/applicability")
+   public ApplicabilityWebEndpoint getApplicabilityWeb(@PathParam("branch") BranchId branch) {
+      return new ApplicabilityWebEndpointImpl(orcsApi, branch);
    }
 }

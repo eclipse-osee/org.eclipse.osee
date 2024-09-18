@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.ats.ide.integration.tests.publishing;
+package org.eclipse.osee.ats.ide.integration.tests.publishing.markdown;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -26,7 +26,6 @@ import org.junit.Test;
  *
  * @author Jaden W. Puckett
  */
-
 public class PublishingMarkdownConversionTest {
 
    private static PublishingEndpoint publishingEndpoint;

@@ -12,7 +12,7 @@
  **********************************************************************/
 import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { AsyncPipe } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/core';
@@ -62,25 +62,17 @@ import { UiService } from '@osee/shared/services';
 	],
 })
 export class EditFeatureDialogComponent {
-	branchApplicability: Observable<PlConfigApplicUIBranchMapping>;
 	private _valueTypes: string[] = ['String', 'Integer', 'Decimal', 'Boolean'];
 	productApplicabilities = this.currentBranchService.productTypes;
-	editable: Observable<string>;
+	editable = signal(inject<PLEditFeatureData>(MAT_DIALOG_DATA).editable);
 	valueTypes: Observable<string[]> = of(this._valueTypes);
 	viewId = toSignal(this.uiService.viewId);
 	constructor(
 		public dialogRef: MatDialogRef<EditFeatureDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: PLEditFeatureData,
-		private branchService: PlConfigBranchService,
 		private currentBranchService: PlConfigCurrentBranchService,
 		private uiService: UiService
-	) {
-		this.branchApplicability = this.branchService.getBranchApplicability(
-			data.currentBranch,
-			this.viewId() || ''
-		);
-		this.editable = of(data.editable.toString());
-	}
+	) {}
 
 	onNoClick(): void {
 		this.dialogRef.close();

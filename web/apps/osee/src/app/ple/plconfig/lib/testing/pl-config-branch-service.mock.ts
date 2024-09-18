@@ -22,7 +22,7 @@ import { ConfigurationGroupDefinition } from '../types/pl-config-cfggroups';
 import {
 	configuration,
 	editConfiguration,
-	configurationGroup,
+	configGroup,
 } from '../types/pl-config-configurations';
 import { writeFeature, modifyFeature } from '../types/pl-config-features';
 import { branch, response } from '@osee/shared/types';
@@ -87,7 +87,7 @@ export const PlConfigBranchServiceMock: Partial<PlConfigBranchService> = {
 	getCfgGroupDetail: function (
 		branchId: string | number | undefined,
 		cfgGroupId: string | number | undefined
-	): Observable<configurationGroup> {
+	): Observable<configGroup> {
 		throw new Error('Function not implemented.');
 	},
 	addConfigurationGroup: function (

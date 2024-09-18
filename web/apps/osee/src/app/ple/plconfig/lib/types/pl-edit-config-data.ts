@@ -20,16 +20,12 @@ import {
 
 export class PLEditConfigData implements ConfigData {
 	constructor(
-		branch?: string,
 		currentConfig?: view,
 		ConfigurationToCopyFrom?: view,
 		productApplicabilities?: string[],
 		editable?: boolean,
 		groups?: ConfigGroup[]
 	) {
-		if (branch) {
-			this.currentBranch = branch;
-		}
 		if (currentConfig) {
 			this.currentConfig = { ...currentConfig, groups: [] };
 		}
@@ -75,7 +71,6 @@ export interface PLAddConfigData extends ConfigData {
 	description: string;
 }
 interface ConfigData {
-	currentBranch: string | undefined;
 	copyFrom: view;
 	group: ConfigGroup[];
 	productApplicabilities: string[];

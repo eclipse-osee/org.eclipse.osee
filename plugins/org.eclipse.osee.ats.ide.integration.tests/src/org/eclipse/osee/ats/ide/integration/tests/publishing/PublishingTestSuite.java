@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.integration.tests.publishing;
 import static org.junit.Assert.assertFalse;
 import org.eclipse.osee.ats.ide.integration.tests.AtsIdeIntegrationTestSuite;
 import org.eclipse.osee.ats.ide.integration.tests.DemoDbPopulateSuite;
+import org.eclipse.osee.ats.ide.integration.tests.publishing.markdown.PublishingMarkdownTestSuite;
 import org.eclipse.osee.ats.ide.integration.tests.util.DbInitTest;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
@@ -74,7 +75,7 @@ public class PublishingTestSuite extends Suite {
          PublishingDiffTest.class,
          PublishingIncludeFoldersTest.class,
          PublishingInlineTest.class,
-         PublishingMarkdownConversionTest.class,
+         PublishingMarkdownTestSuite.class,
          PublishingOutlineNumberingTest.class,
          PublishingPreviewAndMultiPreviewTest.class,
          PublishingRendererTest.class,

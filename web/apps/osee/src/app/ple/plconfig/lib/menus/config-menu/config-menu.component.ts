@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, computed, inject, input } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import {
 	MatMenu,
@@ -28,6 +28,8 @@ import {
 	viewWithChanges,
 } from '../../types/pl-config-applicui-branch-mapping';
 import { ArrayDiffMenuComponent } from '../array-diff-menu/array-diff-menu.component';
+import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CurrentBranchInfoService, branchImpl } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-plconfig-config-menu',
@@ -45,19 +47,22 @@ import { ArrayDiffMenuComponent } from '../array-diff-menu/array-diff-menu.compo
 	],
 })
 export class ConfigMenuComponent {
-	_editable = this.currentBranchService.editable;
-	@Input() config: view | viewWithChanges = {
-		name: '',
-		description: '',
-		hasFeatureApplicabilities: false,
-		id: '',
-	};
+	//TODO add real prefs
+	private _branchInfoService = inject(CurrentBranchInfoService);
+	private _branch = toSignal(
+		this._branchInfoService.currentBranch.pipe(takeUntilDestroyed()),
+		{
+			initialValue: new branchImpl(),
+		}
+	);
+	protected editable = computed(() => this._branch().branchType === '0');
+	config = input.required<view | viewWithChanges>();
 	constructor(
 		private dialogService: DialogService,
 		private currentBranchService: PlConfigCurrentBranchService
 	) {}
-	openConfigMenu(header: string, editable: string) {
-		this.dialogService.openConfigMenu(header, editable).subscribe();
+	openConfigMenu(header: string, editable: boolean) {
+		this.dialogService.openEditConfigDialog(header, editable).subscribe();
 	}
 	viewDiff(open: boolean, value: difference, header: string) {
 		let current = value.currentValue as string | number | applic;

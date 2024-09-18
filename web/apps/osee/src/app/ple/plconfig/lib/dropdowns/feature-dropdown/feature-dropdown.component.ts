@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import {
@@ -41,6 +41,8 @@ import {
 	modifyFeature,
 	writeFeature,
 } from '../../types/pl-config-features';
+import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CurrentBranchInfoService, branchImpl } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-plconfig-feature-dropdown',
@@ -60,10 +62,16 @@ export class FeatureDropdownComponent {
 	selectedBranch: Observable<string> = this.uiStateService.branchId.pipe(
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
-	editable = this.currentBranchService.branchApplicEditable;
-	features = this.currentBranchService.branchApplicFeatures;
-	featureConstraints =
-		this.currentBranchService.applicsWithFeatureConstraints;
+	//TODO add real prefs
+	private _branchInfoService = inject(CurrentBranchInfoService);
+	private _branch = toSignal(
+		this._branchInfoService.currentBranch.pipe(takeUntilDestroyed()),
+		{
+			initialValue: new branchImpl(),
+		}
+	);
+	protected editable = computed(() => this._branch().branchType === '0');
+	features = this.currentBranchService.features;
 
 	constructor(
 		private uiStateService: PlConfigUIStateService,
@@ -201,12 +209,5 @@ export class FeatureDropdownComponent {
 
 	toggleMenu(menuTrigger: MatMenuTrigger) {
 		menuTrigger.toggleMenu();
-	}
-
-	isCompoundApplic(name: string) {
-		if (name.includes(' | ') || name.includes(' & ')) {
-			return false;
-		}
-		return true;
 	}
 }

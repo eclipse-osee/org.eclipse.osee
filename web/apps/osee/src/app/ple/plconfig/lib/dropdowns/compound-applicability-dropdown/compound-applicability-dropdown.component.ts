@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, ViewContainerRef } from '@angular/core';
+import { Component, ViewContainerRef, computed, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import {
@@ -30,6 +30,8 @@ import {
 	PLAddCompoundApplicabilityData,
 	defaultCompoundApplicability,
 } from '../../types/pl-config-compound-applicabilities';
+import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CurrentBranchInfoService, branchImpl } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-compound-applicability-dropdown',
@@ -50,8 +52,16 @@ export class CompoundApplicabilityDropdownComponent {
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
-	editable = this.currentBranchService.branchApplicEditable;
-	features = this.currentBranchService.branchApplicFeatures;
+	//TODO add real prefs
+	private _branchInfoService = inject(CurrentBranchInfoService);
+	private _branch = toSignal(
+		this._branchInfoService.currentBranch.pipe(takeUntilDestroyed()),
+		{
+			initialValue: new branchImpl(),
+		}
+	);
+	protected editable = computed(() => this._branch().branchType === '0');
+	features = this.currentBranchService.features;
 
 	equalsSymbol = '=';
 

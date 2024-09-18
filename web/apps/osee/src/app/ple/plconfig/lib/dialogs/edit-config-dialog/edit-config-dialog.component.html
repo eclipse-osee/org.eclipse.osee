@@ -51,19 +51,8 @@
 			<br />
 			<mat-label class="tw-text-lg">Copy From:</mat-label>
 			<br />
-			<mat-form-field class="tw-w-full tw-text-lg">
-				<mat-label>Select a Configuration</mat-label>
-				<mat-select [(ngModel)]="data.copyFrom">
-					@for (
-						option of (branchApplicability | async)?.views;
-						track option
-					) {
-						<mat-option [value]="option">
-							{{ option.name }}
-						</mat-option>
-					}
-				</mat-select>
-			</mat-form-field>
+			<osee-view-selector [(view)]="data.copyFrom"></osee-view-selector>
+			<!-- TODO look into adding hasValidId Directive here -->
 			<br />
 			<mat-label class="tw-text-lg"
 				>Change Configuration Group:</mat-label
@@ -141,7 +130,9 @@
 		</div>
 	}
 </div>
-<div mat-dialog-actions>
+<div
+	mat-dialog-actions
+	align="end">
 	<button
 		mat-button
 		(click)="onNoClick()">
@@ -156,6 +147,7 @@
 		<div>
 			<button
 				mat-button
+				color="primary"
 				[mat-dialog-close]="data"
 				cdkFocusInitial
 				[disabled]="data.currentConfig.name.length === 0"
