@@ -59,7 +59,6 @@ public class AttributeTypeFilteredDialog extends FilteredListDialog<AttributeTyp
       notExistsValue = new Button(composite, SWT.CHECK);
 
       existsButton.setText("Attribute exist");
-      existsButton.setToolTipText("Select to add Attribute exist Type to query");
       existsButton.setSelection(false);
       existsButton.addSelectionListener(new SelectionAdapter() {
 
