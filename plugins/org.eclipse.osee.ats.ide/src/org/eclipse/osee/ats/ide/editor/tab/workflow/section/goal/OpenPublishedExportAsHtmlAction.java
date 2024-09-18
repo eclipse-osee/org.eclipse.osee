@@ -36,7 +36,7 @@ public class OpenPublishedExportAsHtmlAction extends AbstractWebExportAction {
    @Override
    public void runWithException() {
       String html =
-         goalArt.getAtsApi().getServerEndpoints().getWorldEndpoint().getCollectionExport(goalArt.getArtifactId());
+         goalArt.getAtsApi().getServerEndpoints().getWorldEndpoint().getCollectionExportAsHtml(goalArt.getArtifactId());
       File outFile = new File("exportSaved.html");
       try {
          Lib.writeStringToFile(html, outFile);

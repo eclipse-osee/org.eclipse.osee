@@ -29,6 +29,7 @@ public class WorldResults {
    private XResultData rd = new XResultData();
    private TransactionToken tx = TransactionToken.SENTINEL;
    private ArtifactToken collectorArt = ArtifactToken.SENTINEL;
+   private String atsId = "";
 
    public List<Map<String, String>> getRows() {
       return rows;
@@ -68,6 +69,14 @@ public class WorldResults {
 
    public void setCollectorArt(ArtifactToken collectorArt) {
       this.collectorArt = collectorArt;
+   }
+
+   public String getAtsId() {
+      return atsId;
+   }
+
+   public void setAtsId(String atsId) {
+      this.atsId = atsId;
    }
 
 }

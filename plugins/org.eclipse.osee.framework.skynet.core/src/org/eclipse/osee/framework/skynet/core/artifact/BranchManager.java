@@ -529,6 +529,11 @@ public final class BranchManager {
       return operation.getNewBranch();
    }
 
+   public static BranchToken createWorkingBranchFromBranchToken(BranchId parentBranch, BranchToken childBranchToken) {
+      TransactionToken parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
+      return createBranch(BranchType.WORKING, parentTransactionId, childBranchToken, ArtifactId.SENTINEL);
+   }
+
    public static BranchToken createPortBranchFromTx(TransactionToken parentTransactionId, String childBranchName,
       Artifact associatedArtifact) {
       String creationComment = String.format("New port branch, copy of %s from transaction %s",

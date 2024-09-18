@@ -39,11 +39,9 @@ public class OpenWebViewJsonLiveAction extends AbstractWebExportAction {
          return;
       }
 
-      if (AtsApiService.get().getStoreService().isProductionDb()) {
-         WorldResults wr = AtsApiService.get().getServerEndpoints().getWorldEndpoint().getCollectionJsonCustomized(
-            goalArt.getArtifactId(), custGuid);
-         ResultsEditor.open("Results", getText(), AHTML.simpleJsonPage(JsonUtil.toJson(wr)));
-      }
+      WorldResults wr = AtsApiService.get().getServerEndpoints().getWorldEndpoint().getCollectionJsonCustomized(
+         goalArt.getArtifactId(), custGuid);
+      ResultsEditor.open("Results", getText(), AHTML.simpleJsonPage(JsonUtil.toJson(wr)));
    }
 
 }

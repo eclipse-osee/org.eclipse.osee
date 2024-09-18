@@ -107,11 +107,11 @@ public class AtsLogHtmlTest {
    }
 
    private Object getHtmlStr(String dateString) {
-      return "<table border=\"1\" cellpadding=\"3\" cellspacing=\"0\" width=\"100%\"><tr><th>Event</th><th>State</th><th>Message</th><th>User</th><th>Date</th></tr><tr><td>Originated</td><td>.</td><td>.</td><td>Joe</td><td>" + dateString + "</td></tr><tr><td>StateEntered</td><td>Analyze</td><td>.</td><td>Joe</td><td>" + dateString + "</td></tr></table>";
+      return "<table border=\"1\" cellpadding=\"3\" cellspacing=\"0\" width=\"100%\"><thead><tr><th>Event</th><th>State</th><th>Message</th><th>User</th><th>Date</th></tr></thead><tr><td>Originated</td><td>.</td><td>.</td><td>Joe</td><td>" + dateString + "</td></tr><tr><td>StateEntered</td><td>Analyze</td><td>.</td><td>Joe</td><td>" + dateString + "</td></tr></table>";
    }
 
    private Object getHtmlStrWithTitle(String dateString) {
-      return "&nbsp;<font color=\"black\" face=\"Arial\" size=\"-1\"><b>This is the title</b></font><table border=\"1\" cellpadding=\"3\" cellspacing=\"0\" width=\"100%\"><tr><th>Event</th><th>State</th><th>Message</th><th>User</th><th>Date</th></tr><tr><td>Originated</td><td>.</td><td>.</td><td>Joe</td><td>" + dateString + "</td></tr><tr><td>StateEntered</td><td>Analyze</td><td>.</td><td>Joe</td><td>" + dateString + "</td></tr></table>";
+      return "&nbsp;<font color=\"black\" face=\"Arial\" size=\"-1\"><b>This is the title</b></font><table border=\"1\" cellpadding=\"3\" cellspacing=\"0\" width=\"100%\"><thead><tr><th>Event</th><th>State</th><th>Message</th><th>User</th><th>Date</th></tr></thead><tr><td>Originated</td><td>.</td><td>.</td><td>Joe</td><td>" + dateString + "</td></tr><tr><td>StateEntered</td><td>Analyze</td><td>.</td><td>Joe</td><td>" + dateString + "</td></tr></table>";
    }
 
    public Date getTestDate2011() {

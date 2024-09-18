@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 /**
  * @author David Diepenbrock
  * @author Ryan D. Brooks
+ * @author Jaden W. Puckett
  */
 public class Collections {
    public static Object[] EMPTY_ARRAY = new Object[0];
@@ -486,6 +487,23 @@ public class Collections {
          rd.errorf("Found, not expected [%s]\n", obj);
       }
       return rd;
+   }
+
+   /**
+    * Gets the next batch of elements from a list in a circular manner.
+    * 
+    * @param items The list of items to batch.
+    * @param batchSize The size of each batch.
+    * @param startIndex The current starting index for the batch.
+    * @return A list containing the next batch of elements.
+    */
+   public static <T> List<T> getNextBatch(List<T> items, int batchSize, int startIndex) {
+      List<T> batch = new ArrayList<>(batchSize);
+      int size = items.size();
+      for (int i = 0; i < batchSize; i++) {
+         batch.add(items.get((startIndex + i) % size));
+      }
+      return batch;
    }
 
 }

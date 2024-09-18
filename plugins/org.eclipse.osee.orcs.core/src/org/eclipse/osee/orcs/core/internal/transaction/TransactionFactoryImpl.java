@@ -14,6 +14,7 @@
 package org.eclipse.osee.orcs.core.internal.transaction;
 
 import com.google.common.collect.Lists;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -41,6 +42,7 @@ import org.eclipse.osee.framework.core.executor.CancellableCallable;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
 import org.eclipse.osee.framework.core.model.dto.ChangeReportRowDto;
+import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -52,6 +54,7 @@ import org.eclipse.osee.orcs.KeyValueOps;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.OseeDb;
 import org.eclipse.osee.orcs.core.ds.TxDataStore;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -181,11 +184,30 @@ public class TransactionFactoryImpl implements TransactionFactory {
 
    @Override
    public boolean purgeTxs(String txIds) {
-      boolean modified = false;
-      List<TransactionId> txsToDelete = Collections.fromString(txIds, TransactionId::valueOf);
 
+      boolean modified = false;
+      List<String> insertTxStatements = new ArrayList<>();
+      List<Long> impactedGammaIds = new ArrayList<>();
+      List<Long> unusedGammas = new ArrayList<>();
+      List<TransactionId> txsToDelete = Collections.fromString(txIds, TransactionId::valueOf);
+      String recoveryFileNamePrefix = "purgeTxs_";
+      //set up to create recovery files
+      for (TransactionId txIdToDelete : txsToDelete) {
+         BranchId branchId = orcsApi.getTransactionFactory().getTx(txIdToDelete).getBranch();
+         orcsApi.getJdbcService().getClient().runQuery(stmt -> insertTxStatements.add(stmt.getString("insertString")),
+            OseeDb.TX_DETAILS_TABLE.getSelectInsertString(" where branch_id = ? and transaction_id = ?"),
+            branchId, txIdToDelete);
+         orcsApi.getJdbcService().getClient().runQuery(stmt -> insertTxStatements.add(stmt.getString("insertString")),
+            OseeDb.TXS_TABLE.getSelectInsertString(" where branch_id = ? and transaction_id = ?"), branchId,
+            txIdToDelete);
+         orcsApi.getJdbcService().getClient().runQuery(stmt -> impactedGammaIds.add(stmt.getLong("gamma_id")),
+            OseeSql.SELECT_IMPACTED_GAMMAS_BY_BRANCH_TX.getSql(), branchId, txIdToDelete);
+      }
       if (!txsToDelete.isEmpty()) {
+         recoveryFileNamePrefix =
+            recoveryFileNamePrefix + txsToDelete.get(0) + "_" + txsToDelete.get(txsToDelete.size() - 1);
          ResultSet<? extends TransactionId> results = transactionQuery.andTxIds(txsToDelete).getResults();
+
          if (!results.isEmpty()) {
             checkAllTxsFound("Purge Transaction", txsToDelete, results);
             List<TransactionId> list = Lists.newArrayList(results);
@@ -195,6 +217,15 @@ public class TransactionFactoryImpl implements TransactionFactory {
                throw OseeCoreException.wrap(ex);
             }
             modified = true;
+            //Purge unused gammas if job was successful
+            //recovery files are created and stored inside PurgeUnusedBackingDataAndTransactions
+            for (Long gamma : impactedGammaIds) {
+               orcsApi.getJdbcService().getClient().runQuery(stmt -> unusedGammas.add(stmt.getLong("gamma_id")),
+                  OseeSql.UNUSED_IMPACTED_GAMMAS_AFTER_PURGE.getSql(), gamma, gamma, gamma, 0);
+
+            }
+            txDataStore.purgeUnusedBackingDataAndTransactions(unusedGammas, insertTxStatements,
+               recoveryFileNamePrefix);
          }
       }
       return modified;
@@ -238,6 +269,13 @@ public class TransactionFactoryImpl implements TransactionFactory {
    @Override
    public int[] purgeUnusedBackingDataAndTransactions() {
       return txDataStore.purgeUnusedBackingDataAndTransactions();
+   }
+
+   @Override
+   public int[] purgeUnusedBackingDataAndTransactions(List<Long> gammasToPurge, List<String> additionalStatements,
+      String prefixRecoveryFile) {
+      return txDataStore.purgeUnusedBackingDataAndTransactions(gammasToPurge, additionalStatements,
+         prefixRecoveryFile);
    }
 
    @Override

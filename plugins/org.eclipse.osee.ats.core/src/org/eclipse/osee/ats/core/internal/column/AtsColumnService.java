@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.AtsApi;
@@ -131,6 +132,23 @@ public class AtsColumnService implements IAtsColumnService {
          loadCoreAtsCodedColumns();
 
          loadRemainingAtsWorkflowAttributes();
+
+         loadLegacyIdColumns();
+      }
+   }
+
+   private void loadLegacyIdColumns() {
+      getIdFromLegacyId(""); // just loads the map
+      for (Entry<String, String> entry : legacyIdToId.entrySet()) {
+         String legacyId = entry.getKey();
+         if (legacyId.contains("created")) {
+            System.err.println("here");
+         }
+         String id = entry.getValue();
+         AtsCoreColumn atsCoreColumn = idToAtsColumn.get(id);
+         if (atsCoreColumn != null) {
+            idToAtsColumn.put(legacyId, atsCoreColumn);
+         }
       }
    }
 

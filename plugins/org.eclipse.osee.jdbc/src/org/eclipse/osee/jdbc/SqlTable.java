@@ -36,7 +36,6 @@ public class SqlTable extends NamedBase {
    private final int indexLevel;
    private String insertSql;
    private String tableExtras;
-
    public SqlTable(String tableName, String aliasPrefix) {
       this(tableName, aliasPrefix, -1);
    }
@@ -202,5 +201,32 @@ public class SqlTable extends NamedBase {
       Collections.appendToBuilder(columns, ", ", strB);
       strB.append(") VALUES (");
       return strB;
+   }
+   /*
+    * getSelectInsertString will be used to construct recovery sql files when purging data
+    * These will be select statements that result in insert statements to add to recovery files
+    * E.g. select 'insert into table1(col1,col2) values (val1,val2)' from table1 where <being deleted>';
+    * will result in the following line added to recovery files:
+    * insert into table1(col1,col2) values (val1,val2);
+    */
+   public String getSelectInsertString(String whereClause) {
+      String insertSelectSql = getInsertIntoSqlWithValues(columns.toArray());
+      String firstString = "select '" + insertSelectSql.substring(0, insertSelectSql.lastIndexOf("(") + 1) + "'||";
+      String params = insertSelectSql.substring(insertSelectSql.lastIndexOf("(") + 1, insertSelectSql.lastIndexOf(")"));
+      boolean first = true;
+      for (String string : params.split(",")) {
+         if (first) {
+            first = false;
+         } else {
+            firstString = firstString + "||','||";
+         }
+         if (string.contains("'")) {
+            firstString = firstString + "''''||" + string.replace("'", "") + "||''''";
+         } else {
+            firstString = firstString + string;
+         }
+      }
+      firstString = firstString + "||');' insertString from " + getName() + whereClause;
+      return firstString;
    }
 }

@@ -25,6 +25,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.publishing.FormatIndicator;
+import org.eclipse.osee.framework.core.publishing.relation.table.RelationTableOptions;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -284,6 +285,12 @@ public class PublishingTemplate {
    private final @Nullable Supplier<String> templateContentSupplier;
 
    /**
+    * Configuration options for relation table generation.
+    */
+
+   private final @Nullable RelationTableOptions relationTableOptions;
+
+   /**
     * When specified, will be used to create attribute values for the Publishing Template's Publishing Template Content
     * By Format Map Entry attribute. Each attribute value is a JSON record of the form:
     *
@@ -320,6 +327,8 @@ public class PublishingTemplate {
     * {@link CoreAttributeTypes#PublishingTemplateContentByFormatMapEntry}.
     * @param matchCriteria a list of {@link PublishingTemplateMatchCriterion} for the publishing template. The parameter
     * maybe <code>null</code>.
+    * @param relationTableOptions configuration options for relation table(s) that may be generated for each published
+    * artifact(s). The parameter may be <code>null</code>.
     * @throws NullPointerException when either of the parameters <code>parentArtifactToken</code> or <code>name</code>
     * are <code>null</code>.
     */
@@ -333,7 +342,8 @@ public class PublishingTemplate {
             @Nullable Supplier<String>                        publishOptionsSupplier,
             @Nullable Supplier<String>                        templateContentSupplier,
                       List<PublishingTemplateContentMapEntry> publishingTemplateContentMapEntries,
-                      List<PublishingTemplateMatchCriterion>  matchCriteria
+                      List<PublishingTemplateMatchCriterion>  matchCriteria,
+                      RelationTableOptions                    relationTableOptions
          ) {
    //@formatter:on
 
@@ -350,6 +360,8 @@ public class PublishingTemplate {
       this.publishingTemplateContentMapEntries = Objects.requireNonNull(publishingTemplateContentMapEntries);
 
       this.matchCriteria = matchCriteria;
+
+      this.relationTableOptions = relationTableOptions == null ? new RelationTableOptions() : relationTableOptions;
    }
 
    /**
@@ -487,11 +499,13 @@ public class PublishingTemplate {
                )
             .collect( Collectors.toList() );
 
-      var matchCriteria =
-         this.matchCriteria
-         .stream()
-         .map( PublishingTemplateMatchCriterion::getTemplateMatchCriteria )
-         .collect( Collectors.toCollection( ArrayList::new ) );
+      // Match criteria can be null
+      List<String> matchCriteria = 
+         this.matchCriteria != null 
+         ? this.matchCriteria.stream()
+             .map(PublishingTemplateMatchCriterion::getTemplateMatchCriteria)
+             .collect(Collectors.toCollection(ArrayList::new))
+         : new ArrayList<>();
 
       this.identifier =
          publishingTemplateSetter
@@ -502,7 +516,8 @@ public class PublishingTemplate {
                   templateContents,
                   publishOptionsContents,
                   publishingTemplateContentMapEntries,
-                  matchCriteria
+                  matchCriteria,
+                  this.relationTableOptions
                );
 
          //@formatter:on
