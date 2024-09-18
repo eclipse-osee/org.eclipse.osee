@@ -323,6 +323,9 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
          for (XViewerColumn header : headers) {
             String text = "";
             if (Strings.isValid(header.getId())) {
+               if (header.getId().contains("created")) {
+                  System.err.println("here");
+               }
                text = atsApi.getColumnService().getColumnText(configurations, header.getId(), workItem);
             }
             cells.put(header.getName(), text);
