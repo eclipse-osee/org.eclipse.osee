@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
+import org.eclipse.osee.framework.core.publishing.relation.table.RelationTableOptions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.LoadType;
@@ -62,7 +63,8 @@ public class PublishingTemplateSetterImpl implements PublishingTemplateSetter {
 
    @Override
    public String set(ArtifactToken parent, String name, String content, String rendererOptions,
-      List<Map.Entry<String, String>> publishingTemplateContentMapEntries, List<String> matchCriteria) {
+      List<Map.Entry<String, String>> publishingTemplateContentMapEntries, List<String> matchCriteria,
+      RelationTableOptions relationTableOptions) {
       //@formatter:off
       var templateArtifactToken =
          TestUtil
@@ -132,6 +134,45 @@ public class PublishingTemplateSetterImpl implements PublishingTemplateSetter {
                valueList,
                AttributeSetters.stringAttributeSetter
             );
+      }
+      
+      if (Objects.nonNull(relationTableOptions)) {
+         @SuppressWarnings("unchecked")
+         var artTypes = (List<Object>) (Object) relationTableOptions.getRelationTableArtifactTypeNamesAndOrIds();
+
+         @SuppressWarnings("unchecked")
+         var cols = (List<Object>) (Object) relationTableOptions.getRelationTableColumns();
+
+         @SuppressWarnings("unchecked")
+         var relTypeSides = (List<Object>) (Object) relationTableOptions.getRelationTableRelationTypeSides();
+         
+         if (Objects.nonNull(artTypes) && !artTypes.isEmpty()) {
+            TestUtil.setAttributeValues
+            (
+               templateArtifact,
+               CoreAttributeTypes.PublishingRelationTableArtifactTypeNameOrId,
+               artTypes,
+               AttributeSetters.stringAttributeSetter
+            );
+         }
+         if (Objects.nonNull(cols) && !cols.isEmpty()) {
+            TestUtil.setAttributeValues
+            (
+               templateArtifact,
+               CoreAttributeTypes.PublishingRelationTableColumn,
+               cols,
+               AttributeSetters.stringAttributeSetter
+            );
+         }
+         if (Objects.nonNull(relTypeSides) && !relTypeSides.isEmpty()) {
+            TestUtil.setAttributeValues
+            (
+               templateArtifact,
+               CoreAttributeTypes.PublishingRelationTableRelationTypeSide,
+               relTypeSides,
+               AttributeSetters.stringAttributeSetter
+            );
+         }
       }
 
       if (templateArtifact.isDirty()) {

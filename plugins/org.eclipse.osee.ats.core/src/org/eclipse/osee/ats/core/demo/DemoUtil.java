@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -59,6 +60,21 @@ public class DemoUtil {
    public static Collection<ArtifactToken> getSoftwareRequirements(boolean DEBUG, SoftwareRequirementStrs str,
       BranchToken branch) {
       return getArtTypeRequirements(DEBUG, CoreArtifactTypes.SoftwareRequirementMsWord, str.name(), branch);
+   }
+
+   public static Collection<ArtifactToken> getArtifactsFromType(boolean DEBUG, ArtifactTypeToken artifactType,
+      BranchToken branch) {
+      if (DEBUG) {
+         OseeLog.log(Activator.class, Level.INFO,
+            "Getting \"" + artifactType.getName() + "\" requirement(s) from Branch " + branch.getIdString());
+      }
+      Collection<ArtifactToken> arts =
+         AtsApiService.get().getQueryService().getArtifacts(BranchId.valueOf(branch.getId()), false, artifactType);
+
+      if (DEBUG) {
+         OseeLog.log(Activator.class, Level.INFO, "Found " + arts.size() + " Artifacts");
+      }
+      return arts;
    }
 
    public static Collection<ArtifactToken> getArtTypeRequirements(boolean DEBUG, ArtifactTypeToken artifactType,

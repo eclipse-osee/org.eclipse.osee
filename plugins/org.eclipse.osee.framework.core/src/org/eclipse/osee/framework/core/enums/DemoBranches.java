@@ -34,6 +34,13 @@ public final class DemoBranches {
    public static final BranchToken SAW_PL_Hardening_Branch = BranchToken.create(9, "SAW PL Hardening Branch");
    public static final BranchToken SAW_PL_Working_Branch = BranchToken.create(10, "SAW PL Working Branch");
 
+   /**
+    * Used when creating a working branch in the {@link DemoDbPopulateSuite}. Not initialized in the {@link DbInitTest}.
+    * Initialized in {@link ImportAndSetupMarkdownReqs} within the {@link DemoDbPopulateSuite}.
+    */
+   public static final BranchToken SAW_PL_Working_Branch_Markdown =
+      BranchToken.create(3932812339895768577L, "SAW Markdown Requirements Updates");
+
    public static final BranchToken CIS_Bld_1 = BranchToken.create(4, "CIS_Bld_1");
 
    public static List<BranchToken> DEMO_BRANCHES =
