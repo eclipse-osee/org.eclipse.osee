@@ -37,12 +37,15 @@ public class BranchCategorySqlHandler extends SqlHandler<CriteriaBranchCategory>
    @Override
    public void addTables(AbstractSqlWriter writer) {
       brAlias = writer.getMainTableAlias(OseeDb.BRANCH_TABLE);
-      brcAlias = writer.getMainTableAlias(OseeDb.BRANCH_CATEGORY);
-      txAlias = writer.getMainTableAlias(OseeDb.TXS_TABLE);
+      if (criteria.isIncludeCategory()) {
+         brcAlias = writer.getMainTableAlias(OseeDb.BRANCH_CATEGORY);
+         txAlias = writer.getMainTableAlias(OseeDb.TXS_TABLE);
+      }
    }
 
    @Override
    public void addPredicates(AbstractSqlWriter writer) {
+      if (criteria.isIncludeCategory()) {
       writer.write("%s.category = ? and ", brcAlias);
       writer.write("%s.branch_id = %s.branch_id and ", brAlias, brcAlias);
       writer.write("%s.branch_id = %s.branch_id and ", brAlias, txAlias);
@@ -50,6 +53,12 @@ public class BranchCategorySqlHandler extends SqlHandler<CriteriaBranchCategory>
       writer.write("%s.gamma_id = %s.gamma_id", brcAlias, txAlias);
       writer.addParameter(criteria.getBranchCategory());
       writer.addParameter(TxCurrent.CURRENT);
+      } else {
+         writer.write("not exists( select 1 from osee_branch_category brc, osee_txs brcTxs where brc.category = ? and %s.branch_id = brc.branch_id and %s.branch_id = brcTxs.branch_id and brcTxs.tx_current = ? and brc.gamma_id = brcTxs.gamma_id) ",brAlias,brAlias);
+         writer.addParameter(criteria.getBranchCategory());
+         writer.addParameter(TxCurrent.CURRENT);
+      }
+      
    }
 
    @Override

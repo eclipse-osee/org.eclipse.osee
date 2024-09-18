@@ -10,16 +10,15 @@
 * Contributors:
 *     Boeing - initial API and implementation
 -->
-@if ((editable | async) === true) {
-	<button
-		mat-menu-item
-		#menuTrigger1="matMenuTrigger"
-		(mousedown)="toggleMenu(menuTrigger1)"
-		[matMenuTriggerFor]="mainMenu"
-		data-cy="change-product-type-dropdown-btn">
-		Change Product Types
-	</button>
-}
+<button
+	mat-menu-item
+	#menuTrigger1="matMenuTrigger"
+	[disabled]="!editable()"
+	(mousedown)="toggleMenu(menuTrigger1)"
+	[matMenuTriggerFor]="mainMenu"
+	data-cy="change-product-type-dropdown-btn">
+	Change Product Types
+</button>
 <mat-menu
 	class="tw-max-w-none"
 	#mainMenu="matMenu">
@@ -27,26 +26,24 @@
 		<button
 			mat-menu-item
 			(click)="addProductType()"
+			[disabled]="!editable()"
 			data-cy="add-product-type-btn">
 			<mat-icon color="success">add_box</mat-icon>Add Product Type
 		</button>
-		@if ((editable | async) === true) {
-			<button
-				mat-menu-item
-				[matMenuTriggerFor]="editProductTypeMenu"
-				data-cy="edit-product-type-btn">
-				<mat-icon color="primary">edit</mat-icon>Edit Product Type
-			</button>
-		}
-		@if ((editable | async) === true) {
-			<button
-				mat-menu-item
-				[matMenuTriggerFor]="deleteProductTypeMenu"
-				data-cy="delete-product-type-btn">
-				<mat-icon color="warn">delete_forever</mat-icon>Delete Product
-				Type
-			</button>
-		}
+		<button
+			mat-menu-item
+			[disabled]="!editable()"
+			[matMenuTriggerFor]="editProductTypeMenu"
+			data-cy="edit-product-type-btn">
+			<mat-icon color="primary">edit</mat-icon>Edit Product Type
+		</button>
+		<button
+			mat-menu-item
+			[disabled]="!editable()"
+			[matMenuTriggerFor]="deleteProductTypeMenu"
+			data-cy="delete-product-type-btn">
+			<mat-icon color="warn">delete_forever</mat-icon>Delete Product Type
+		</button>
 	</ng-template>
 </mat-menu>
 <mat-menu
@@ -57,6 +54,7 @@
 			<button
 				mat-menu-item
 				(click)="editProductType(productType)"
+				[disabled]="!editable()"
 				[attr.data-cy]="
 					'edit-product-type-' +
 					productType.name.replace('/\s/g', '') +
@@ -75,6 +73,7 @@
 			<button
 				mat-menu-item
 				(click)="deleteProductType(productType.id)"
+				[disabled]="!editable()"
 				[attr.data-cy]="
 					'delete-product-type-' + productType.name + '-btn'
 				">

@@ -35,10 +35,7 @@ import {
 	viewWithChangesAndGroups,
 	viewWithGroups,
 } from '../../types/pl-config-applicui-branch-mapping';
-import {
-	configGroup,
-	configGroupWithChanges,
-} from '../../types/pl-config-configurations';
+import { configGroup } from '../../types/pl-config-configurations';
 import { PLEditConfigData } from '../../types/pl-edit-config-data';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { UiService } from '@osee/shared/services';
@@ -64,7 +61,7 @@ import { UiService } from '@osee/shared/services';
 })
 export class CopyConfigurationDialogComponent {
 	branchApplicability: Observable<PlConfigApplicUIBranchMapping>;
-	private _groups: Observable<(configGroup | configGroupWithChanges)[]>;
+	private _groups: Observable<configGroup[]>;
 	private _untouchedViews: Observable<(view | viewWithChanges)[]>;
 	views: Observable<(viewWithChangesAndGroups | viewWithGroups)[]>;
 	viewId = toSignal(this.uiService.viewId);

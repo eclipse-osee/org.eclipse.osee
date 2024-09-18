@@ -43,7 +43,6 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.jira.JiraByEpicData;
 import org.eclipse.osee.ats.api.agile.jira.JiraDiffData;
-import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -85,9 +84,7 @@ import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
@@ -518,34 +515,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Override
    public NewActionResult createActionAndWorkingBranch(NewActionData newActionData) {
 
-      NewActionResult result = new NewActionResult();
-      try {
-         Collection<IAtsActionableItem> ais = new ArrayList<>();
-         ActionableItem ai =
-            atsApi.getQueryService().getConfigItem(Long.valueOf(newActionData.getAiIds().iterator().next()));
-         ais.add(ai);
-
-         IAtsChangeSet changes = atsApi.createChangeSet(getClass().getSimpleName());
-         IAtsVersion version =
-            atsApi.getVersionService().getVersionById(ArtifactId.valueOf(newActionData.getVersionId()));
-         ActionResult actionResult = atsApi.getActionService().createAction(newActionData, changes);
-
-         IAtsTeamWorkflow teamWf = actionResult.getTeamWfs().iterator().next();
-         atsApi.getVersionService().setTargetedVersion(teamWf, version, changes);
-
-         changes.execute();
-
-         BranchId parentBranch = atsApi.getBranchService().getConfiguredBranchForWorkflow(teamWf);
-         BranchToken parentBranchToken =
-            orcsApi.getQueryFactory().branchQuery().andId(parentBranch).getResultsAsId().getExactlyOne();
-         Branch workingBranch = orcsApi.getBranchOps().createWorkingBranch(
-            BranchToken.create(teamWf.getAtsId() + " " + newActionData.getTitle()), parentBranchToken,
-            teamWf.getArtifactId());
-         result.setWorkingBranchId(workingBranch);
-      } catch (Exception ex) {
-         result.getResults().errorf("Exception creating action [%s]", Lib.exceptionToString(ex));
-      }
-      return result;
+      return atsApi.getActionService().createActionAndWorkingBranch(newActionData);
 
    }
 

@@ -25,12 +25,12 @@ import {
 	ratesServiceMock,
 	messageTypesServiceMock,
 	MessagingControlsMockComponent,
-	ViewSelectorMockComponent,
 } from '@osee/messaging/shared/testing';
 import { TransactionService } from '@osee/shared/transactions';
 import { transactionServiceMock } from '@osee/shared/transactions/testing';
 
 import { ListConfigurationComponent } from './list-configuration.component';
+import { MockViewSelectorComponent } from '@osee/shared/components/testing';
 
 describe('ListConfigurationComponent', () => {
 	let component: ListConfigurationComponent;
@@ -58,7 +58,7 @@ describe('ListConfigurationComponent', () => {
 					},
 				],
 				imports: [
-					ViewSelectorMockComponent,
+					MockViewSelectorComponent,
 					MessagingControlsMockComponent,
 					NamedIdListEditorComponent,
 					AsyncPipe,

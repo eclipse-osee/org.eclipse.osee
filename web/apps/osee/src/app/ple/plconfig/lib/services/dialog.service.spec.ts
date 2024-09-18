@@ -12,18 +12,19 @@
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { response } from '@osee/shared/types';
 import { of } from 'rxjs';
 import { TestScheduler } from 'rxjs/testing';
 import { plCurrentBranchServiceMock } from '../testing/mockPlCurrentBranchService.mock';
-import { response } from '@osee/shared/types';
 import { CfgGroupDialog } from '../types/pl-config-cfggroups';
 import { PLEditConfigData } from '../types/pl-edit-config-data';
 
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { CurrentBranchInfoService } from '@osee/shared/services';
+import { MockXResultData, testBranchInfo } from '@osee/shared/testing';
+import { modifyFeature, PLEditFeatureData } from '../types/pl-config-features';
 import { DialogService } from './dialog.service';
 import { PlConfigCurrentBranchService } from './pl-config-current-branch.service';
-import { modifyFeature, PLEditFeatureData } from '../types/pl-config-features';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { MockXResultData } from '@osee/shared/testing';
 
 describe('DialogService', () => {
 	let service: DialogService;
@@ -31,11 +32,16 @@ describe('DialogService', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [MatDialogModule, NoopAnimationsModule],
+			imports: [MatDialogModule],
 			providers: [
+				provideNoopAnimations(),
 				{
 					provide: PlConfigCurrentBranchService,
 					useValue: plCurrentBranchServiceMock,
+				},
+				{
+					provide: CurrentBranchInfoService,
+					useValue: { currentBranch: of(testBranchInfo) },
 				},
 			],
 		});
@@ -82,10 +88,9 @@ describe('DialogService', () => {
 				'open'
 			).and.returnValue(dialogRefSpy);
 			const expectedValues: { a: response } = { a: MockXResultData };
-			expectObservable(service.openConfigMenu('Product D', 'true')).toBe(
-				'(a|)',
-				expectedValues
-			);
+			expectObservable(
+				service.openEditConfigDialog('Product D', true)
+			).toBe('(a|)', expectedValues);
 		});
 	});
 	it('should open the config menu in group mode mode', () => {
@@ -115,10 +120,9 @@ describe('DialogService', () => {
 				'open'
 			).and.returnValue(dialogRefSpy);
 			const expectedValues: { a: response } = { a: MockXResultData };
-			expectObservable(service.openConfigMenu('abGroup', 'true')).toBe(
-				'(a|)',
-				expectedValues
-			);
+			expectObservable(
+				service.openEditConfigGroupDialog('abGroup', true)
+			).toBe('(a|)', expectedValues);
 		});
 	});
 
@@ -137,22 +141,10 @@ describe('DialogService', () => {
 				'open'
 			).and.returnValue(dialogRefSpy);
 			const expectedValues: { a: response } = { a: MockXResultData };
-			expectObservable(
-				service.displayFeatureMenu({
-					id: '',
-					name: '',
-					type: null,
-					description: '',
-					defaultValue: '',
-					values: [],
-					valueType: '',
-					configurations: [],
-					productApplicabilities: [],
-					multiValued: false,
-					setProductAppStr() {},
-					setValueStr() {},
-				})
-			).toBe('(a|)', expectedValues);
+			expectObservable(service.displayFeatureDialog('')).toBe(
+				'(a|)',
+				expectedValues
+			);
 		});
 	});
 });

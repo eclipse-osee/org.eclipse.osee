@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2023 Boeing
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,17 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import {
-	ApplicabilityListUIService,
-	ViewsRoutedUiService,
-} from '@osee/shared/services';
-import {
-	applicabilityListUIServiceMock,
-	viewsRoutedUiServiceMock,
-} from '@osee/shared/testing';
 
 import { ViewSelectorComponent } from './view-selector.component';
+import { ApplicabilityListUIService } from '@osee/shared/services';
+import { applicabilityListUIServiceMock } from '@osee/shared/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 describe('ViewSelectorComponent', () => {
 	let component: ViewSelectorComponent;
@@ -29,21 +23,22 @@ describe('ViewSelectorComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [ViewSelectorComponent, NoopAnimationsModule],
+			imports: [ViewSelectorComponent],
 			providers: [
+				provideNoopAnimations(),
 				{
 					provide: ApplicabilityListUIService,
 					useValue: applicabilityListUIServiceMock,
-				},
-				{
-					provide: ViewsRoutedUiService,
-					useValue: viewsRoutedUiServiceMock,
 				},
 			],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(ViewSelectorComponent);
 		component = fixture.componentInstance;
+		fixture.componentRef.setInput('view', {
+			id: '1',
+			name: 'Base',
+		});
 		fixture.detectChanges();
 	});
 

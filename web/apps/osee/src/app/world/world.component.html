@@ -10,52 +10,57 @@
  * Contributors:
  *     Boeing - initial API and implementation
  -->
-<div class="tw-flex tw-items-center tw-gap-4 tw-py-2">
-	<mat-form-field subscriptSizing="dynamic">
-		<input
-			matInput
-			type="text"
-			placeholder="Filter Table"
-			(keyup)="updateFilter($event)" />
-	</mat-form-field>
+<div class="tw-flex tw-w-full tw-justify-between">
+	<div class="tw-flex tw-items-center tw-gap-4 tw-py-2">
+		<mat-form-field subscriptSizing="dynamic">
+			<input
+				matInput
+				type="text"
+				placeholder="Filter Table"
+				(keyup)="updateFilter($event)" />
+		</mat-form-field>
 
-	@if (displayPublish()) {
-		<button
-			mat-button
-			class="tw-bg-primary tw-text-background-background"
-			(click)="toggleDiff()">
-			{{ showDiffs() ? 'Hide Changes' : 'Show Changes' }}
-		</button>
-
-		<button
-			mat-button
-			class="tw-bg-primary tw-text-background-background"
-			(click)="publish()">
-			Publish
-		</button>
-
-		<button
-			mat-button
-			class="tw-bg-primary tw-text-background-background"
-			(click)="openSaved()">
-			Open Published
-		</button>
-	} @else {
-		<button
-			mat-button
-			class="tw-bg-primary tw-text-background-background"
-			(click)="openExport()">
-			Export
-		</button>
-		@if (worldDataLoaded()) {
+		@if (displayPublish()) {
 			<button
 				mat-button
 				class="tw-bg-primary tw-text-background-background"
-				(click)="downloadJson()">
-				Download JSON
+				(click)="toggleDiff()">
+				{{ showDiffs() ? 'Hide Changes' : 'Show Changes' }}
 			</button>
+
+			<button
+				mat-button
+				class="tw-bg-primary tw-text-background-background"
+				(click)="publish()">
+				Publish
+			</button>
+
+			<button
+				mat-button
+				class="tw-bg-primary tw-text-background-background"
+				(click)="openSaved()">
+				Open Published
+			</button>
+		} @else {
+			<button
+				mat-button
+				class="tw-bg-primary tw-text-background-background"
+				(click)="exportAsHtml()">
+				Export as HTML
+			</button>
+			@if (worldDataLoaded()) {
+				<button
+					mat-button
+					class="tw-bg-primary tw-text-background-background"
+					(click)="exportAsJson()">
+					Export as JSON
+				</button>
+			}
 		}
-	}
+	</div>
+	<div class="tw-text-2xl">
+		<b>OSEE Goal:</b> {{ collectorId() }} - {{ collectorName() }}
+	</div>
 </div>
 
 <table

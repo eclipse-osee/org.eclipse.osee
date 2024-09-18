@@ -1,0 +1,24 @@
+{
+  "ElementType": "Artifact",
+  "OutliningOptions": [
+    {
+      "RecurseChildren": true,
+      "HeadingArtifactType": "<headers-only-heading-artifact-type>",
+      "IncludeMainContentForHeadings": "Never"
+    }
+  ],
+  "AttributeOptions" : 
+   [
+	   {
+		   "AttrType"   : "*",
+         "Label"      : "",
+         "FormatPre"  : "",
+         "FormatPost" : ""
+      }
+   ],
+  "MetadataOptions": [
+    {
+      "Type": "Artifact Id"
+    }
+  ]
+}

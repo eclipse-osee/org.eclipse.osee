@@ -10,27 +10,28 @@
 * Contributors:
 *     Boeing - initial API and implementation
 -->
-@if ((editable | async) === true) {
-	<button
-		mat-menu-item
-		#menuTrigger1="matMenuTrigger"
-		(mousedown)="toggleMenu(menuTrigger1)"
-		[matMenuTriggerFor]="mainMenu">
-		Change Compound Applicabities
-	</button>
-}
+<button
+	mat-menu-item
+	#menuTrigger1="matMenuTrigger"
+	[disabled]="!editable()"
+	(mousedown)="toggleMenu(menuTrigger1)"
+	[matMenuTriggerFor]="mainMenu">
+	Change Compound Applicabities
+</button>
 <mat-menu
 	class="tw-max-w-none"
 	#mainMenu="matMenu">
 	<ng-template matMenuContent>
 		<button
 			mat-menu-item
+			[disabled]="!editable()"
 			(click)="addCompApplic()">
 			<mat-icon color="success">add_box</mat-icon>Add Compound
 			Applicability
 		</button>
 		<button
 			mat-menu-item
+			[disabled]="!editable()"
 			[matMenuTriggerFor]="deleteMenu">
 			<mat-icon color="warn">delete_forever</mat-icon>Delete Compound
 			Applicability
@@ -45,6 +46,7 @@
 		@if (isCompoundApplic(feature.name)) {
 			<button
 				mat-menu-item
+				[disabled]="!editable()"
 				(click)="deleteCompApplic(feature)">
 				{{ feature.name }}
 			</button>

@@ -29,8 +29,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IUserGroup;
-import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
-import org.eclipse.osee.framework.core.data.UserGroupArtifactToken;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -76,7 +74,6 @@ public class XAbstractSignByAndDateButton extends XButtonWithLabelDam implements
 
    protected AttributeTypeToken dateAttrType;
    protected AttributeTypeToken byAttrType;
-   protected IUserGroupArtifactToken userGroupTok = UserGroupArtifactToken.SENTINEL;
 
    public XAbstractSignByAndDateButton(AttributeTypeToken attrType1, AttributeTypeToken attrType2) {
       super((attrType1.isDate() ? attrType2.getUnqualifiedName() : attrType1.getUnqualifiedName()), "Sign or Clear",
@@ -172,21 +169,21 @@ public class XAbstractSignByAndDateButton extends XButtonWithLabelDam implements
    }
 
    private void hasUserGroupAuthorization(XResultData rd) {
-      if (userGroupTok.getId() > 0) {
-         IUserGroup userGroup = AtsApiService.get().userService().getUserGroupOrNull(userGroupTok);
-         if (userGroup != null && userGroup.getId() > 0) {
-            if (!userGroup.isMember(UserManager.getUser())) {
+      if (userGroup.getId() > 0) {
+         IUserGroup group = AtsApiService.get().userService().getUserGroupOrNull(userGroup);
+         if (group != null && group.getId() > 0) {
+            if (!group.isMember(UserManager.getUser())) {
                StringBuilder sb = new StringBuilder();
                sb.append("You are not authorized to Sign.\n\n");
                sb.append("\n\nAuthorized Users Are:\n-----------------------------\n");
-               for (UserToken member : userGroup.getMembers()) {
+               for (UserToken member : group.getMembers()) {
                   sb.append(member.getName());
                   sb.append("\n");
                }
                rd.error(sb.toString());
             }
          } else {
-            rd.errorf("User Group %s Not Found", "User Group needs to be setup.", userGroupTok.toStringWithId());
+            rd.errorf("User Group %s Not Found", "User Group needs to be setup.", userGroup.toStringWithId());
          }
       }
    }
@@ -286,14 +283,6 @@ public class XAbstractSignByAndDateButton extends XButtonWithLabelDam implements
          setImage(img);
          getbutton().setImage(img);
       }
-   }
-
-   public IUserGroupArtifactToken getUserGroupTok() {
-      return userGroupTok;
-   }
-
-   public void setUserGroupTok(IUserGroupArtifactToken userGroupTok) {
-      this.userGroupTok = userGroupTok;
    }
 
 }

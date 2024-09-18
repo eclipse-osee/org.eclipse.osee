@@ -10,16 +10,15 @@
 * Contributors:
 *     Boeing - initial API and implementation
 -->
-@if ((editable | async) === true) {
-	<button
-		mat-menu-item
-		#menuTrigger1="matMenuTrigger"
-		(mousedown)="toggleMenu(menuTrigger1)"
-		[matMenuTriggerFor]="mainMenu"
-		data-cy="change-feature-dropdown-btn">
-		Change Features
-	</button>
-}
+<button
+	mat-menu-item
+	#menuTrigger1="matMenuTrigger"
+	[disabled]="!editable()"
+	(mousedown)="toggleMenu(menuTrigger1)"
+	[matMenuTriggerFor]="mainMenu"
+	data-cy="change-feature-dropdown-btn">
+	Change Features
+</button>
 <mat-menu
 	class="tw-max-w-none"
 	#mainMenu="matMenu">
@@ -27,32 +26,33 @@
 		<button
 			mat-menu-item
 			(click)="addFeature()"
+			[disabled]="!editable()"
 			data-cy="add-feature-btn">
 			<mat-icon color="success">add_box</mat-icon>Add Feature
 		</button>
-		@if ((editable | async) === true) {
-			<button
-				mat-menu-item
-				[matMenuTriggerFor]="editConfigMenu"
-				data-cy="edit-feature-btn">
-				<mat-icon color="primary">edit</mat-icon>Edit Feature
-			</button>
-		}
-		@if ((editable | async) === true) {
-			<button
-				mat-menu-item
-				[matMenuTriggerFor]="deleteConfigMenu"
-				data-cy="delete-feature-btn">
-				<mat-icon color="warn">delete_forever</mat-icon>Delete Feature
-			</button>
-		}
 		<button
 			mat-menu-item
+			[disabled]="!editable()"
+			[matMenuTriggerFor]="editConfigMenu"
+			data-cy="edit-feature-btn">
+			<mat-icon color="primary">edit</mat-icon>Edit Feature
+		</button>
+		<button
+			mat-menu-item
+			[disabled]="!editable()"
+			[matMenuTriggerFor]="deleteConfigMenu"
+			data-cy="delete-feature-btn">
+			<mat-icon color="warn">delete_forever</mat-icon>Delete Feature
+		</button>
+		<button
+			mat-menu-item
+			[disabled]="!editable()"
 			(click)="addFeatureConstraint()">
 			<mat-icon color="success">add_box</mat-icon>Add Feature Constraint
 		</button>
 		<button
 			mat-menu-item
+			[disabled]="!editable()"
 			(click)="editFeatureConstraints()">
 			<mat-icon color="primary">edit</mat-icon>Edit Feature Constraints
 		</button>
@@ -62,27 +62,25 @@
 	class="tw-max-w-none"
 	#deleteConfigMenu="matMenu">
 	@for (feature of features | async; track feature) {
-		@if (isCompoundApplic(feature.name)) {
-			<button
-				mat-menu-item
-				(click)="deleteFeature(feature)"
-				[attr.data-cy]="'delete-feature-' + feature.name + '-btn'">
-				{{ feature.name }}
-			</button>
-		}
+		<button
+			mat-menu-item
+			[disabled]="!editable()"
+			(click)="deleteFeature(feature)"
+			[attr.data-cy]="'delete-feature-' + feature.name + '-btn'">
+			{{ feature.name }}
+		</button>
 	}
 </mat-menu>
 <mat-menu
 	class="tw-max-w-none"
 	#editConfigMenu="matMenu">
 	@for (feature of features | async; track feature) {
-		@if (isCompoundApplic(feature.name)) {
-			<button
-				mat-menu-item
-				(click)="openEditDialog(feature)"
-				[attr.data-cy]="'edit-feature-' + feature.name + '-btn'">
-				{{ feature.name }}
-			</button>
-		}
+		<button
+			mat-menu-item
+			[disabled]="!editable()"
+			(click)="openEditDialog(feature)"
+			[attr.data-cy]="'edit-feature-' + feature.name + '-btn'">
+			{{ feature.name }}
+		</button>
 	}
 </mat-menu>

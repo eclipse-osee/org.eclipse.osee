@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 public class OpenWebViewJsonLiveAction extends AbstractWebExportAction {
 
    public OpenWebViewJsonLiveAction(GoalArtifact goalArt, WorkflowEditor editor) {
-      super("Open Web Json Data - Live (admin)", goalArt, editor, AtsImage.JSON);
+      super("Open Web View Json - Live (admin)", goalArt, editor, AtsImage.JSON);
    }
 
    @Override
@@ -39,11 +39,9 @@ public class OpenWebViewJsonLiveAction extends AbstractWebExportAction {
          return;
       }
 
-      if (AtsApiService.get().getStoreService().isProductionDb()) {
-         WorldResults wr = AtsApiService.get().getServerEndpoints().getWorldEndpoint().getCollectionJsonCustomized(
-            goalArt.getArtifactId(), custGuid);
-         ResultsEditor.open("Results", getText(), AHTML.simpleJsonPage(JsonUtil.toJson(wr)));
-      }
+      WorldResults wr = AtsApiService.get().getServerEndpoints().getWorldEndpoint().getCollectionJsonCustomized(
+         goalArt.getArtifactId(), custGuid);
+      ResultsEditor.open("Results", getText(), AHTML.simpleJsonPage(JsonUtil.toJson(wr)));
    }
 
 }

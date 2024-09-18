@@ -22,7 +22,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import {
+	NoopAnimationsModule,
+	provideNoopAnimations,
+} from '@angular/platform-browser/animations';
 import { SeparatedFeatureSelectorComponent } from '../../dropdowns/separated-feature-selector/separated-feature-selector.component';
 import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
@@ -51,11 +54,11 @@ describe('AddCompoundApplicabilityDialogComponent', () => {
 				MatSelectModule,
 				FormsModule,
 				AddCompoundApplicabilityDialogComponent,
-				NoopAnimationsModule,
 				MatSlideToggleModule,
 				SeparatedFeatureSelectorComponent,
 			],
 			providers: [
+				provideNoopAnimations(),
 				{ provide: PlConfigBranchService, useValue: branchService },
 				{
 					provide: PlConfigCurrentBranchService,

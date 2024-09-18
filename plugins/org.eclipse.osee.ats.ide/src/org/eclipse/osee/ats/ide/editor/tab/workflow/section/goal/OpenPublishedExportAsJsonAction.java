@@ -25,20 +25,18 @@ import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 /**
  * @author Donald G. Dunne
  */
-public class OpenWebViewJsonPublishedAction extends AbstractWebExportAction {
+public class OpenPublishedExportAsJsonAction extends AbstractWebExportAction {
 
-   public OpenWebViewJsonPublishedAction(GoalArtifact goalArt, WorkflowEditor editor) {
-      super("Open Web Json Data - Published (admin)", goalArt, editor, AtsImage.GLOBE);
+   public OpenPublishedExportAsJsonAction(GoalArtifact goalArt, WorkflowEditor editor) {
+      super("Open Published Export as JSON", goalArt, editor, AtsImage.RIGHT_ARROW_SM);
    }
 
    @Override
    public void runWithException() {
-      if (AtsApiService.get().getStoreService().isProductionDb()) {
-         WorldResults wr =
-            AtsApiService.get().getServerEndpoints().getWorldEndpoint().getCollectionJsonCustomizedPublished(
-               goalArt.getArtifactId());
-         ResultsEditor.open("Results", getText(), AHTML.simpleJsonPage(JsonUtil.toJson(wr)));
-      }
+      WorldResults wr =
+         AtsApiService.get().getServerEndpoints().getWorldEndpoint().getCollectionJsonCustomizedPublished(
+            goalArt.getArtifactId());
+      ResultsEditor.open("Results", getText(), AHTML.simpleJsonPage(JsonUtil.toJson(wr)));
    }
 
 }

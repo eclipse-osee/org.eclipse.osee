@@ -67,6 +67,7 @@ export class BranchListService {
 		)
 	);
 
+	//TODO align with current-branch-info.service?
 	private _currentBranch = this.ui.id.pipe(
 		switchMap((id) =>
 			iif(

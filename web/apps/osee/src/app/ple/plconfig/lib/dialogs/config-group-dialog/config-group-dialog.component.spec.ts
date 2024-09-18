@@ -20,7 +20,10 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import {
+	NoopAnimationsModule,
+	provideNoopAnimations,
+} from '@angular/platform-browser/animations';
 
 import { ConfigGroupDialogComponent } from './config-group-dialog.component';
 
@@ -36,10 +39,10 @@ describe('ConfigGroupDialogComponent', () => {
 				MatInputModule,
 				MatListModule,
 				ConfigGroupDialogComponent,
-				NoopAnimationsModule,
 				FormsModule,
 			],
 			providers: [
+				provideNoopAnimations(),
 				{ provide: MatDialogRef, useValue: {} },
 				{
 					provide: MAT_DIALOG_DATA,

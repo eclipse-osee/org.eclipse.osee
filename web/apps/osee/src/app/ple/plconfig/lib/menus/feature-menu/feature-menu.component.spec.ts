@@ -16,13 +16,13 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatMenuItemHarness } from '@angular/material/menu/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { DialogService } from '../../services/dialog.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { DialogServiceMock } from '../../testing/mockDialogService.mock';
 import { plCurrentBranchServiceMock } from '../../testing/mockPlCurrentBranchService.mock';
 
+import { provideRouter } from '@angular/router';
 import { FeatureMenuComponent } from './feature-menu.component';
 
 describe('FeatureMenuComponent', () => {
@@ -43,12 +43,10 @@ describe('FeatureMenuComponent', () => {
 			},
 		})
 			.configureTestingModule({
-				imports: [
-					MatMenuModule,
-					MatIconModule,
-					NoopAnimationsModule,
-					FeatureMenuComponent,
-					RouterTestingModule.withRoutes([
+				imports: [MatMenuModule, MatIconModule, FeatureMenuComponent],
+				declarations: [],
+				providers: [
+					provideRouter([
 						{
 							path: '',
 							component: FeatureMenuComponent,
@@ -76,9 +74,7 @@ describe('FeatureMenuComponent', () => {
 							outlet: 'rightSideNav',
 						},
 					]),
-				],
-				declarations: [],
-				providers: [
+					provideNoopAnimations(),
 					{ provide: DialogService, useValue: DialogServiceMock },
 					{
 						provide: PlConfigCurrentBranchService,
@@ -92,20 +88,9 @@ describe('FeatureMenuComponent', () => {
 	beforeEach(() => {
 		fixture = TestBed.createComponent(FeatureMenuComponent);
 		component = fixture.componentInstance;
-		component.feature = {
+		fixture.componentRef.setInput('feature', {
 			id: '1',
-			type: undefined,
 			name: 'abcd',
-			description: '',
-			valueType: '',
-			valueStr: '',
-			defaultValue: '',
-			values: [],
-			productApplicabilities: [],
-			multiValued: false,
-			configurations: [],
-			setValueStr() {},
-			setProductAppStr() {},
 			changes: {
 				name: {
 					currentValue: 'abcd',
@@ -113,7 +98,7 @@ describe('FeatureMenuComponent', () => {
 					transactionToken: { id: '1234', branchId: '8' },
 				},
 			},
-		};
+		});
 		fixture.detectChanges();
 		loader = TestbedHarnessEnvironment.loader(fixture);
 	});
@@ -133,10 +118,10 @@ describe('FeatureMenuComponent', () => {
 		await (await menu.getSubmenu())?.clickItem({ text: 'Name' });
 		expect(spy).toHaveBeenCalled();
 	});
-	it('should open the config group dialog', async () => {
+	it('should open the feature dialog', async () => {
 		const spy = spyOn(component, 'displayFeatureMenu').and.callThrough();
 		const menu = await loader.getHarness(
-			MatMenuItemHarness.with({ text: new RegExp('Open Feature Menu') })
+			MatMenuItemHarness.with({ text: new RegExp('Open Feature Dialog') })
 		);
 		await menu.click();
 		expect(spy).toHaveBeenCalled();

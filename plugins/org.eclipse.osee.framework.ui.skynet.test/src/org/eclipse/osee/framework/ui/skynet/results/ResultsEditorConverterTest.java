@@ -215,7 +215,7 @@ public class ResultsEditorConverterTest {
       builder.append("<div class=\"results\" id=\"div" + index + "\" style=\"display:none;\">");
 
       builder.append("<table border=\"1\" cellpadding=\"3\" cellspacing=\"0\" width=\"95%\">");
-      builder.append("<tr><th>1</th><th>2</th><th>3</th></tr>");
+      builder.append("<thead><tr><th>1</th><th>2</th><th>3</th></tr></thead>");
       builder.append("<tr><td>a</td><td>b</td><td>c</td></tr>");
       builder.append("<tr><td>e</td><td>d</td><td>f</td></tr>");
       builder.append("</table></div>");

@@ -18,7 +18,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import {
 	BranchPickerComponent,
-	ViewSelectorComponent,
+	CurrentViewSelectorComponent,
 } from '@osee/shared/components';
 import { CurrentBranchInfoService, UiService } from '@osee/shared/services';
 import { concatMap, filter, from, map, take, tap } from 'rxjs';
@@ -45,7 +45,7 @@ import {
 		BranchPickerComponent,
 		ArtifactHierarchyComponent,
 		ArtifactHierarchyOptionsComponent,
-		ViewSelectorComponent,
+		CurrentViewSelectorComponent,
 		CurrentActionDropDownComponent,
 		ArtifactSearchPanelComponent,
 		ArtifactExplorerExpansionPanelComponent,

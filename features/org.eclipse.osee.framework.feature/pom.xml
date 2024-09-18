@@ -97,6 +97,8 @@
 							   	<plugin id="javax.xml.stream" />
 							   	<plugin id="org.xerial.sqlite-jdbc"/>
 							   	<feature id="org.eclipse.wtp.capabilities.feature" />
+							   	<feature id="net.sourceforge.vrapper" />
+							   	
 							</excludes>
 						</configuration>
 					</execution>

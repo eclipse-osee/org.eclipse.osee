@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.data.UserGroupArtifactToken;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -29,6 +31,7 @@ public abstract class XButtonWithLabelDam extends XButton implements ArtifactWid
 
    protected Artifact artifact;
    protected Label resultsLabelWidget;
+   protected IUserGroupArtifactToken userGroup = UserGroupArtifactToken.SENTINEL;
 
    public XButtonWithLabelDam(String displayLabel, String toolTip, Image image) {
       super(displayLabel);
@@ -86,6 +89,14 @@ public abstract class XButtonWithLabelDam extends XButton implements ArtifactWid
    @Override
    public void saveToArtifact() {
       // do nothing
+   }
+
+   public IUserGroupArtifactToken getUserGroup() {
+      return userGroup;
+   }
+
+   public void setUserGroup(IUserGroupArtifactToken userGroup) {
+      this.userGroup = userGroup;
    }
 
 }

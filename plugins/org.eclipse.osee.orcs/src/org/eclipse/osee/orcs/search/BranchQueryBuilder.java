@@ -69,6 +69,8 @@ public interface BranchQueryBuilder<T> {
    T andAssociatedArtId(ArtifactId artId);
 
    T andIsOfCategory(BranchCategoryToken category);
+   
+   T andIsNotOfCategory(BranchCategoryToken category);
 
    T mapAssocArtIdToRelatedAttributes(String value, BranchId relatedBranch,
       List<Pair<ArtifactTypeToken, AttributeTypeToken>> artAttrPairs);
@@ -80,5 +82,6 @@ public interface BranchQueryBuilder<T> {
    T isOnPage(long page, long pageSize);
 
    T orderById();
+
 
 }

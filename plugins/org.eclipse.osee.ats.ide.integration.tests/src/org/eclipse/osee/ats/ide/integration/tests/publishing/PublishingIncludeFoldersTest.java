@@ -193,7 +193,8 @@ public class PublishingIncludeFoldersTest {
                                        .toString()
                              ),
                       List.of(),                                                                             /* Publishing Template Content Map Entries */
-                      List.of()                                                                              /* Match Criteria      */
+                      List.of(),                                                                             /* Match Criteria      */
+                      null
                    )
 
             );

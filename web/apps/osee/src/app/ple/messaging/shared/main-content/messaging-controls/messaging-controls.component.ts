@@ -24,7 +24,7 @@ import {
 import {
 	BranchPickerComponent,
 	UndoButtonBranchComponent,
-	ViewSelectorComponent,
+	CurrentViewSelectorComponent,
 } from '@osee/shared/components';
 import { UiService } from '@osee/shared/services';
 import { iif, of, switchMap } from 'rxjs';
@@ -42,7 +42,7 @@ import { iif, of, switchMap } from 'rxjs';
 		CurrentActionDropDownComponent,
 		BranchPickerComponent,
 		UndoButtonBranchComponent,
-		ViewSelectorComponent,
+		CurrentViewSelectorComponent,
 	],
 	templateUrl: './messaging-controls.component.html',
 })

@@ -30,11 +30,11 @@ import { EditAuthService } from '@osee/messaging/shared/services';
 import {
 	editAuthServiceMock,
 	MessagingControlsMockComponent,
-	ViewSelectorMockComponent,
 } from '@osee/messaging/shared/testing';
 import { MockSingleDiffComponent } from '@osee/shared/testing';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MockConnectionsTableComponent } from '@osee/messaging/connection-view/testing';
+import { MockViewSelectorComponent } from '@osee/shared/components/testing';
 
 describe('HostComponent', () => {
 	let component: ConnectionsComponent;
@@ -57,7 +57,7 @@ describe('HostComponent', () => {
 					MockSingleDiffComponent,
 					MockGraphComponent,
 					MockConnectionsTableComponent,
-					ViewSelectorMockComponent,
+					MockViewSelectorComponent,
 					MessagingControlsMockComponent,
 				],
 			},
@@ -75,7 +75,7 @@ describe('HostComponent', () => {
 					ConnectionsComponent,
 					MockGraphComponent,
 					MockConnectionsTableComponent,
-					ViewSelectorMockComponent,
+					MockViewSelectorComponent,
 					MessagingControlsMockComponent,
 				],
 				providers: [

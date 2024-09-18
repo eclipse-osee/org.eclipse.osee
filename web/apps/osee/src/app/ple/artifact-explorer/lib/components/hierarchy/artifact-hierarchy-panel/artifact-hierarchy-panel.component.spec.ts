@@ -14,8 +14,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ArtifactHierarchyPanelComponent } from './artifact-hierarchy-panel.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BranchPickerStub } from '@osee/shared/components/testing';
-import { ViewSelectorMockComponent } from '@osee/messaging/shared/testing';
+import {
+	BranchPickerStub,
+	MockCurrentViewSelectorComponent,
+} from '@osee/shared/components/testing';
 import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
 import { artifactHierarchyPathServiceMock } from '../../../testing/artifact-hierarchy-path.service.mock';
 import { CommonModule } from '@angular/common';
@@ -59,7 +61,7 @@ describe('ArtifactHierarchyPanelComponent', () => {
 					ArtifactSearchComponent,
 					CurrentActionDropdownMockComponent,
 					BranchPickerStub,
-					ViewSelectorMockComponent,
+					MockCurrentViewSelectorComponent,
 					ArtifactSearchMockComponent,
 					ArtifactExplorerExpansionPanelComponent,
 				],

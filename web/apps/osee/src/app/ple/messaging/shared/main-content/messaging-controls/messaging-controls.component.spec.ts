@@ -12,12 +12,10 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PreferencesUIService } from '@osee/messaging/shared/services';
-import {
-	preferencesUiServiceMock,
-	ViewSelectorMockComponent,
-} from '@osee/messaging/shared/testing';
+import { preferencesUiServiceMock } from '@osee/messaging/shared/testing';
 import {
 	BranchPickerStub,
+	MockViewSelectorComponent,
 	UndoButtonBranchMockComponent,
 } from '@osee/shared/components/testing';
 
@@ -25,7 +23,7 @@ import { MessagingControlsComponent } from './messaging-controls.component';
 import {
 	BranchPickerComponent,
 	UndoButtonBranchComponent,
-	ViewSelectorComponent,
+	CurrentViewSelectorComponent,
 } from '@osee/shared/components';
 import { ActionDropdownStub } from '@osee/configuration-management/testing';
 import { ActionDropDownComponent } from '@osee/configuration-management/components';
@@ -40,7 +38,7 @@ describe('MessagingControlsComponent', () => {
 				imports: [
 					ActionDropdownStub,
 					BranchPickerStub,
-					ViewSelectorMockComponent,
+					MockViewSelectorComponent,
 					UndoButtonBranchMockComponent,
 				],
 			},
@@ -48,7 +46,7 @@ describe('MessagingControlsComponent', () => {
 				imports: [
 					ActionDropDownComponent,
 					BranchPickerComponent,
-					ViewSelectorComponent,
+					CurrentViewSelectorComponent,
 					UndoButtonBranchComponent,
 				],
 			},

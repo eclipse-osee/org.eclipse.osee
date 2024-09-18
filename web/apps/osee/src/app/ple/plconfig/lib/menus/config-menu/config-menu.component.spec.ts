@@ -16,13 +16,16 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatMenuItemHarness } from '@angular/material/menu/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { DialogService } from '../../services/dialog.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { DialogServiceMock } from '../../testing/mockDialogService.mock';
 import { plCurrentBranchServiceMock } from '../../testing/mockPlCurrentBranchService.mock';
 
+import { provideRouter } from '@angular/router';
+import { CurrentBranchInfoService } from '@osee/shared/services';
+import { testBranchInfo } from '@osee/shared/testing';
+import { of } from 'rxjs';
 import { ConfigMenuComponent } from './config-menu.component';
 
 describe('ConfigMenuComponent', () => {
@@ -39,16 +42,18 @@ describe('ConfigMenuComponent', () => {
 						provide: PlConfigCurrentBranchService,
 						useValue: plCurrentBranchServiceMock,
 					},
+					{
+						provide: CurrentBranchInfoService,
+						useValue: { currentBranch: of(testBranchInfo) },
+					},
 				],
 			},
 		})
 			.configureTestingModule({
-				imports: [
-					MatMenuModule,
-					MatIconModule,
-					ConfigMenuComponent,
-					NoopAnimationsModule,
-					RouterTestingModule.withRoutes([
+				imports: [MatMenuModule, MatIconModule, ConfigMenuComponent],
+				declarations: [],
+				providers: [
+					provideRouter([
 						{
 							path: '',
 							component: ConfigMenuComponent,
@@ -76,9 +81,7 @@ describe('ConfigMenuComponent', () => {
 							outlet: 'rightSideNav',
 						},
 					]),
-				],
-				declarations: [],
-				providers: [
+					provideNoopAnimations(),
 					{ provide: DialogService, useValue: DialogServiceMock },
 					{
 						provide: PlConfigCurrentBranchService,
@@ -92,7 +95,7 @@ describe('ConfigMenuComponent', () => {
 	beforeEach(() => {
 		fixture = TestBed.createComponent(ConfigMenuComponent);
 		component = fixture.componentInstance;
-		component.config = {
+		fixture.componentRef.setInput('config', {
 			id: '1',
 			name: 'abcd',
 			description: '',
@@ -104,7 +107,7 @@ describe('ConfigMenuComponent', () => {
 					transactionToken: { id: '12', branchId: '8' },
 				},
 			},
-		};
+		});
 		fixture.detectChanges();
 		loader = TestbedHarnessEnvironment.loader(fixture);
 	});

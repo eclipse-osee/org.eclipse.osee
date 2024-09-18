@@ -18,6 +18,7 @@ export * from './snackbar-wrapper/snackbar-wrapper.component';
 export * from './two-layer-add-button/two-layer-add-button.component';
 export * from './applicability-selector/applicability-selector.component';
 export * from './view-selector/view-selector.component';
+export * from './current-view-selector/current-view-selector.component';
 export * from './attributes-editor/attributes-editor.component';
 export * from './markdown-editor/markdown-editor.component';
 export * from './expand-icon/expand-icon.component';

@@ -48,6 +48,7 @@ public class Pdd10SetupAndImportReqsTest implements IPopulateDemoDatabaseTest {
       Assert.assertEquals(DemoUsers.values().size(), users2.size());
 
       new Pdd10SetupAndImportReqs().run();
+
       DemoUtil.setPopulateDbSuccessful(true);
    }
 }

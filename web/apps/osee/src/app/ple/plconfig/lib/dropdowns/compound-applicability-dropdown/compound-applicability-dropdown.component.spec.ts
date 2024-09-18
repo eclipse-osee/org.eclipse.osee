@@ -11,12 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatMenuModule } from '@angular/material/menu';
 import { of } from 'rxjs';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { testBranchApplicability } from '../../testing/mockBranchService';
 
+import { CurrentBranchInfoService } from '@osee/shared/services';
+import { testBranchInfo } from '@osee/shared/testing';
 import { CompoundApplicabilityDropdownComponent } from './compound-applicability-dropdown.component';
 
 describe('CompoundApplicabilityDropdownComponent', () => {
@@ -27,17 +27,17 @@ describe('CompoundApplicabilityDropdownComponent', () => {
 		await TestBed.configureTestingModule({
 			providers: [
 				{
+					provide: CurrentBranchInfoService,
+					useValue: { currentBranch: of(testBranchInfo) },
+				},
+				{
 					provide: PlConfigCurrentBranchService,
 					useValue: {
 						branchApplicability: of(testBranchApplicability),
 					},
 				},
 			],
-			imports: [
-				MatDialogModule,
-				MatMenuModule,
-				CompoundApplicabilityDropdownComponent,
-			],
+			imports: [CompoundApplicabilityDropdownComponent],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(

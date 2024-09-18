@@ -13,13 +13,15 @@
 import { MockXResultData } from '@osee/shared/testing';
 import { of } from 'rxjs';
 import { DialogService } from '../services/dialog.service';
-import { extendedFeature } from '../types/features/base';
 
 export const DialogServiceMock: Partial<DialogService> = {
-	openConfigMenu(header: string, editable: string) {
+	openEditConfigDialog(configId: string, editable: boolean) {
 		return of(MockXResultData);
 	},
-	displayFeatureMenu(feature: extendedFeature) {
+	openEditConfigGroupDialog(groupId: string, editable: boolean) {
+		return of(MockXResultData);
+	},
+	displayFeatureDialog(featureid: string) {
 		return of(MockXResultData);
 	},
 };

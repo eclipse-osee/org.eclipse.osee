@@ -11,10 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
 import { of } from 'rxjs';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { PlConfigUIStateService } from '../../services/pl-config-uistate.service';
@@ -24,6 +21,8 @@ import {
 } from '../../testing/mockBranchService';
 
 import { ConfigurationGroupDropdownComponent } from './configuration-group-dropdown.component';
+import { CurrentBranchInfoService } from '@osee/shared/services';
+import { testBranchInfo } from '@osee/shared/testing';
 
 describe('ConfigurationGroupDropdownComponent', () => {
 	let component: ConfigurationGroupDropdownComponent;
@@ -41,14 +40,13 @@ describe('ConfigurationGroupDropdownComponent', () => {
 			['updateReqConfig']
 		);
 		await TestBed.configureTestingModule({
-			imports: [
-				MatMenuModule,
-				MatButtonModule,
-				MatIconModule,
-				ConfigurationGroupDropdownComponent,
-			],
+			imports: [ConfigurationGroupDropdownComponent],
 			providers: [
 				{ provide: MatDialog, useValue: {} },
+				{
+					provide: CurrentBranchInfoService,
+					useValue: { currentBranch: of(testBranchInfo) },
+				},
 				{
 					provide: PlConfigCurrentBranchService,
 					useValue: {
