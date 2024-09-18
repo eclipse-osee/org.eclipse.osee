@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.orcs.core.internal;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -22,9 +24,12 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.publishing.FormatIndicator;
 import org.eclipse.osee.framework.core.publishing.RendererOption;
+import org.eclipse.osee.framework.core.publishing.relation.table.RelationTableOptions;
 import org.eclipse.osee.framework.core.server.OseeInfo;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -143,7 +148,8 @@ public class SetupPublishing {
                                             PresentationType.SPECIALIZED_EDIT.name()                                       /* Presentation Type   */
                                          )
                                )
-                            .toList()
+                            .toList(),
+                         null
                       ),
 
                new PublishingTemplate
@@ -169,7 +175,8 @@ public class SetupPublishing {
                                          PresentationType.DIFF.name(),                                                     /* Presentation Type   */
                                          RendererOption.THREE_WAY_MERGE.getKey()                                           /* Option              */
                                       )
-                            )
+                            ),
+                         null
                       ),
 
                new PublishingTemplate
@@ -224,7 +231,8 @@ public class SetupPublishing {
                                             RendererOption.PREVIEW_ALL_VALUE.getKey()                                      /* Option              */
                                          )
                                )
-                            .toList()
+                            .toList(),
+                         null
                       ),
 
                new PublishingTemplate
@@ -279,7 +287,8 @@ public class SetupPublishing {
                                             RendererOption.PREVIEW_ALL_NO_ATTRIBUTES_VALUE.getKey()                        /* Option              */
                                          )
                                )
-                            .toList()
+                            .toList(),
+                         null
                       ),
 
                new PublishingTemplate
@@ -326,7 +335,8 @@ public class SetupPublishing {
                                             RendererOption.PREVIEW_ALL_RECURSE_VALUE.getKey()                              /* Option              */
                                          )
                                )
-                            .toList()
+                            .toList(),
+                         null
                       ),
 
                new PublishingTemplate
@@ -373,8 +383,42 @@ public class SetupPublishing {
                                             RendererOption.PREVIEW_ALL_RECURSE_NO_ATTRIBUTES_VALUE.getKey()                /* Option              */
                                          )
                                )
-                            .toList()
+                            .toList(),
+                         null
+                      ),
+                      
+               new PublishingTemplate
+                      (
+                         CoreArtifactTokens.DocumentTemplates,
+                         "PreviewAll_HeadingsNoMainContent_RelationTable",
+                         new PublishingTemplate.FileSupplierOseeInf( "templates/PreviewAllRecurse_HeadersOnlyHeading_HeadingsNoMainContent.json" ),
+                         null,
+                         List.of
+                            (
+                               new PublishingTemplateContentMapEntry
+                                      (
+                                         FormatIndicator.WORD_ML,
+                                         "templates/PREVIEW_ALL.xml"
+                                      ),
+                               new PublishingTemplateContentMapEntry
+                                      (
+                                         FormatIndicator.MARKDOWN,
+                                         "templates/EDIT_TEMPLATE.md"
+                                      )
+                            ),
+                         null,
+                         new RelationTableOptions
+                            (
+                               Collections.emptyList(), // No artifact type filter
+                               Collections.emptyList(), // Default columns
+                               Arrays.asList // Requirements trace relation tables (both higher and lower level)
+                                  (
+                                     CoreRelationTypes.RequirementTrace.getName() + "|" + CoreRelationTypes.RequirementTrace.getSideName(RelationSide.SIDE_A), 
+                                     CoreRelationTypes.RequirementTrace.getName() + "|" + CoreRelationTypes.RequirementTrace.getSideName(RelationSide.SIDE_B)
+                                  )
+                            )
                       )
+                      
             );
          }
       };
@@ -427,7 +471,16 @@ public class SetupPublishing {
             new PublishingTemplateSetter() {
 
                @Override
-               public String set(ArtifactToken parent, String name, String content, String rendererOptions, List<Map.Entry<String,String>> publishingTemplateContentMapEntries, List<String> matchCriteria) {
+               public String set
+               (
+                  ArtifactToken parent, 
+                  String name, 
+                  String content, 
+                  String rendererOptions, 
+                  List<Map.Entry<String,String>> publishingTemplateContentMapEntries, 
+                  List<String> matchCriteria, 
+                  RelationTableOptions relationTableOptions
+               ) {
 
                   Objects.requireNonNull(tx, "SetupPublishing::createPublishingTemplate, parameter \"tx\" cannot be null.");
 
@@ -466,6 +519,28 @@ public class SetupPublishing {
                                                        matchCriterion
                                                     )
                         );
+                  }
+                  
+                  if (Objects.nonNull(relationTableOptions)) {
+                     List<String> artTypes = relationTableOptions.getRelationTableArtifactTypeNamesAndOrIds();
+                     List<String> cols = relationTableOptions.getRelationTableColumns();
+                     List<String> relTypeSides = relationTableOptions.getRelationTableRelationTypeSides();
+                     
+                     if (Objects.nonNull(artTypes)) {
+                        for (String artType : artTypes) {
+                           tx.createAttribute(publishingTemplateArtifact, CoreAttributeTypes.PublishingRelationTableArtifactTypeNameOrId, artType);
+                        }
+                     }
+                     if (Objects.nonNull(cols)) {
+                        for (String col : cols) {
+                           tx.createAttribute(publishingTemplateArtifact, CoreAttributeTypes.PublishingRelationTableColumn, col);
+                        }
+                     }
+                     if (Objects.nonNull(relTypeSides)) {
+                        for (String relTypeSide : relTypeSides) {
+                           tx.createAttribute(publishingTemplateArtifact, CoreAttributeTypes.PublishingRelationTableRelationTypeSide, relTypeSide);
+                        }
+                     }
                   }
 
                   return "AT-".concat( publishingTemplateArtifact.getIdString() );

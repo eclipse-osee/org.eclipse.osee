@@ -211,6 +211,7 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
 
       WorldResults wr = new WorldResults();
       wr.setCollectorArt(collectorArt.getToken());
+      wr.setAtsId(atsApi.getAtsId(collectorArt));
       XResultData rd = wr.getRd();
       rd.logf("Collector: %s", collectorArt.toStringWithId());
 
@@ -236,6 +237,7 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
          wr.getRd().errorf("No Collector Artifact Found");
       } else {
          wr.setCollectorArt(collectorArt.getToken());
+         wr.setAtsId(atsApi.getAtsId(collectorArt));
          String json = atsApi.getAttributeResolver().getSoleAttributeValueAsString(collectorArt,
             AtsAttributeTypes.WorldResultsJson, "");
          if (Strings.isValid(json)) {
@@ -278,10 +280,10 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
    @GET
    @Path("coll/{collectorId}/export")
    @Produces(MediaType.TEXT_HTML)
-   public String getCollectionExport(@PathParam("collectorId") ArtifactId collectorId) {
+   public String getCollectionExportAsHtml(@PathParam("collectorId") ArtifactId collectorId) {
       WorldResults wr = getCollectionJsonCustomizedPublished(collectorId);
       StringBuilder sb = new StringBuilder();
-      sb.append(AHTML.beginMultiColumnTable(99, 4));
+      sb.append(AHTML.beginMultiColumnTableWithTableSortFilter(99, 2, "BLACK"));
       sb.append(AHTML.addHeaderRowMultiColumnTable(wr.getOrderedHeaders()));
       List<Map<String, String>> rows = wr.getRows();
       for (Map<String, String> row : rows) {
@@ -292,7 +294,8 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
          sb.append(AHTML.addRowMultiColumnTableCollection(rowCells));
       }
       sb.append(AHTML.endMultiColumnTable());
-      String html = AHTML.simplePage(wr.getCollectorArt().getName(), sb.toString());
+      String title = String.format("OSEE Goal: %s - %s", wr.getAtsId(), wr.getCollectorArt().getName());
+      String html = AHTML.simplePageWithTableSortFilter(title, sb.toString());
       return html;
    }
 
@@ -320,6 +323,9 @@ public class AtsWorldEndpointImpl implements AtsWorldEndpointApi {
          for (XViewerColumn header : headers) {
             String text = "";
             if (Strings.isValid(header.getId())) {
+               if (header.getId().contains("created")) {
+                  System.err.println("here");
+               }
                text = atsApi.getColumnService().getColumnText(configurations, header.getId(), workItem);
             }
             cells.put(header.getName(), text);

@@ -33,12 +33,10 @@ public class OpenPublishedExportAsJsonAction extends AbstractWebExportAction {
 
    @Override
    public void runWithException() {
-      if (AtsApiService.get().getStoreService().isProductionDb()) {
-         WorldResults wr =
-            AtsApiService.get().getServerEndpoints().getWorldEndpoint().getCollectionJsonCustomizedPublished(
-               goalArt.getArtifactId());
-         ResultsEditor.open("Results", getText(), AHTML.simpleJsonPage(JsonUtil.toJson(wr)));
-      }
+      WorldResults wr =
+         AtsApiService.get().getServerEndpoints().getWorldEndpoint().getCollectionJsonCustomizedPublished(
+            goalArt.getArtifactId());
+      ResultsEditor.open("Results", getText(), AHTML.simpleJsonPage(JsonUtil.toJson(wr)));
    }
 
 }

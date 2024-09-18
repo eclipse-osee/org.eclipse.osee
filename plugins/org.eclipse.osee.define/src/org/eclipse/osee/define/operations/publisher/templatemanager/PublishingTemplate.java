@@ -937,7 +937,7 @@ class PublishingTemplate implements ToMessage {
          @NonNull  PublishingTemplateScalarKey  safeName,
          @NonNull  Map<FormatIndicator, String> templateContentMap,
          @Nullable String                       status,
-         @NonNull RelationTableOptions			relationTableOptions
+         @NonNull  RelationTableOptions			relationTableOptions
       ) {
 
       this.artifactReadable                       = artifactReadable;

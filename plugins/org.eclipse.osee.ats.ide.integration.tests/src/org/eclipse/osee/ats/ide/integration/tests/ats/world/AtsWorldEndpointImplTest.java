@@ -241,7 +241,7 @@ public class AtsWorldEndpointImplTest {
       Assert.assertNotNull(worldResults);
       Assert.assertTrue(worldResults.getRd().isSuccess());
 
-      String html = atsApi.getServerEndpoints().getWorldEndpoint().getCollectionExport(AtsArtifactToken.WebExportGoal);
+      String html = atsApi.getServerEndpoints().getWorldEndpoint().getCollectionExportAsHtml(AtsArtifactToken.WebExportGoal);
       Assert.assertNotNull(html);
       Assert.assertTrue(html.contains(AtsArtifactToken.WebExportGoal.getName()));
    }

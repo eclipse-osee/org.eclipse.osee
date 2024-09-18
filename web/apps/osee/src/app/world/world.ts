@@ -13,6 +13,12 @@
 export type world = {
 	orderedHeaders: string[];
 	rows: worldRow[];
+	collectorArt: collectorArt;
+	atsId: string;
+};
+
+export type collectorArt = {
+	name: string;
 };
 
 export type worldRow = {
@@ -31,4 +37,6 @@ export type worldRowWithDiffs = {
 export type worldWithDiffs = {
 	orderedHeaders: string[];
 	rows: worldRowWithDiffs[];
+	collectorArt: collectorArt;
+	atsId: string;
 };

@@ -15,7 +15,6 @@ package org.eclipse.osee.orcs.rest.model;
 
 import java.io.InputStream;
 import java.util.List;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -27,7 +26,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -80,6 +78,7 @@ public interface TransactionEndpoint {
    Response purgeTxs(@PathParam("tx-ids") String txIds);
 
    @DELETE
+   @Path("purgeunused")
    Response purgeUnusedBackingDataAndTransactions();
 
    @PUT

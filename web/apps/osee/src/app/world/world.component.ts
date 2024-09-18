@@ -99,13 +99,24 @@ class WorldComponent implements AfterViewInit {
 			takeUntilDestroyed(),
 			shareReplay({ bufferSize: 1, refCount: true })
 		),
-		{ initialValue: { orderedHeaders: [], rows: [] } }
+		{
+			initialValue: {
+				orderedHeaders: [],
+				rows: [],
+				collectorArt: { name: '' },
+				atsId: '',
+			},
+		}
 	);
+
+	collectorName = computed(() => this._worldData().collectorArt.name);
+	collectorId = computed(() => this._worldData().atsId);
 
 	worldDataLoaded = computed(
 		() =>
 			this._worldData().orderedHeaders.length > 0 &&
-			this._worldData().rows.length > 0
+			this._worldData().rows.length > 0 &&
+			this._worldData().collectorArt.name.length > 0
 	);
 
 	private _worldDataStored = toSignal(
@@ -123,6 +134,8 @@ class WorldComponent implements AfterViewInit {
 		const dataWithDiffs: worldWithDiffs = {
 			orderedHeaders: this._worldData().orderedHeaders,
 			rows: [],
+			collectorArt: { name: '' },
+			atsId: '',
 		};
 
 		// Convert current rows to rows with diffs, with no changes initially.

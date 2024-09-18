@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.exception.RelTableInvalidException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.model.RelationEndpoint;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -88,5 +89,15 @@ public class RelationEndpointImpl implements RelationEndpoint {
       }
 
       return null;
+   }
+   
+   @Override
+   public String validateRel2Table() {
+   int count = orcsApi.getJdbcService().getClient().fetch(0,
+      "select count(*) from (select distinct rel_type, a_art_id, rel_order, cnt\n" + "from\n" + "(select rel_type, a_art_id, b_art_id, rel_order, count('x') over (partition by rel_type, a_art_id, rel_order) cnt\n" + "from osee_relation rel where rel_order > 0) t1\n" + "where cnt > 1) t2");
+   if (count > 0) {
+      throw new RelTableInvalidException("Invalid relations detected. Count: %s", count);
+   }
+      return "<html><div>Relations Valid</div></html>";
    }
 }

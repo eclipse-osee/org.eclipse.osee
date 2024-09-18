@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.framework.core.publishing.relation.table;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -49,13 +50,13 @@ public class RelationTableOptions {
    /**
     * List of predefined columns for displaying core data such as artifact ID and artifact name.
     */
-   private static final List<String> DEFINED_COLUMNS = Arrays.asList(ARTIFACT_ID, ARTIFACT_NAME);
+   private static final List<String> DEFINED_COLUMNS = new ArrayList<>(Arrays.asList(ARTIFACT_ID, ARTIFACT_NAME));
 
    /**
     * Default columns used if no specific columns are provided during object construction or if an error occurs while
     * loading column configurations.
     */
-   private static final List<String> DEFAULT_COLUMNS = Arrays.asList(ARTIFACT_ID, ARTIFACT_NAME);
+   private static final List<String> DEFAULT_COLUMNS = new ArrayList<>(Arrays.asList(ARTIFACT_ID, ARTIFACT_NAME));
 
    /**
     * List of relation type sides to be displayed in the relation table. Each entry uses a "|" (pipe) delimiter to
@@ -74,18 +75,21 @@ public class RelationTableOptions {
     * "(relationTypeNameOrId)|(relationTypeSideName)"
     */
    public RelationTableOptions(@NonNull List<String> relationTableArtifactTypeNamesAndOrIds, @NonNull List<String> relationTableColumns, @NonNull List<String> relationTableRelationTypeSides) {
-      this.relationTableArtifactTypeNamesAndOrIds = relationTableArtifactTypeNamesAndOrIds;
-      this.relationTableColumns = relationTableColumns.isEmpty() ? DEFAULT_COLUMNS : relationTableColumns;
-      this.relationTableRelationTypeSides = relationTableRelationTypeSides;
+      // Ensure ArrayList for each list
+      this.relationTableArtifactTypeNamesAndOrIds = new ArrayList<>(relationTableArtifactTypeNamesAndOrIds);
+      this.relationTableColumns =
+         relationTableColumns.isEmpty() ? new ArrayList<>(DEFAULT_COLUMNS) : new ArrayList<>(relationTableColumns);
+      this.relationTableRelationTypeSides = new ArrayList<>(relationTableRelationTypeSides);
    }
 
    /**
     * Constructs a new default {@link RelationTableOptions} object.
     */
    public RelationTableOptions() {
-      this.relationTableArtifactTypeNamesAndOrIds = Collections.emptyList();
-      this.relationTableColumns = DEFAULT_COLUMNS;
-      this.relationTableRelationTypeSides = Collections.emptyList();
+      // Ensure ArrayList for default constructor
+      this.relationTableArtifactTypeNamesAndOrIds = new ArrayList<>(Collections.emptyList());
+      this.relationTableColumns = new ArrayList<>(DEFAULT_COLUMNS);
+      this.relationTableRelationTypeSides = new ArrayList<>(Collections.emptyList());
    }
 
    /**

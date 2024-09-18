@@ -17,8 +17,6 @@ import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_3;
 import java.io.File;
-import java.io.InputStream;
-import java.net.URI;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -59,7 +57,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.IArtifactExtractor;
-import org.eclipse.osee.framework.skynet.core.importing.parsers.MarkdownOutlineExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.WordOutlineExtractor;
 import org.eclipse.osee.framework.skynet.core.importing.parsers.WordOutlineExtractorDelegate;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
@@ -102,6 +99,9 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
 
       // Import all requirements on SAW_Bld_1 Branch
       demoDbImportReqsTx();
+
+      // Import and setup all Markdown requirements on SAW Product Line
+      new ImportAndSetupMarkdownReqs().run();
 
       // Create traceability between System, Subsystem and Software requirements
       SkynetTransaction demoDbTraceability =
@@ -384,81 +384,9 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
          importWordXMLRequirements(SAW_Bld_1, CoreArtifactTypes.SoftwareRequirementMsWord, CoreArtifactTokens.SoftwareRequirementsFolder, OseeInf.getResourceAsFile("requirements/SAW-SoftwareRequirements.xml", getClass()));
          importWordXMLRequirements(SAW_Bld_1, CoreArtifactTypes.SystemRequirementMsWord, CoreArtifactTokens.SystemRequirementsFolder, OseeInf.getResourceAsFile("requirements/SAW-SystemRequirements.xml", getClass()));
          importWordXMLRequirements(SAW_Bld_1, CoreArtifactTypes.SubsystemRequirementMsWord, CoreArtifactTokens.SubSystemRequirementsFolder, OseeInf.getResourceAsFile("requirements/SAW-SubsystemRequirements.xml", getClass()));
-
-         importMarkdownRequirements(SAW_Bld_1, CoreArtifactTypes.SystemRequirementMarkdown, CoreArtifactTokens.SystemRequirementsFolderMarkdown, OseeInf.getResourceAsFile("requirements/SAW-SystemRequirements.md", getClass()));
-         importMarkdownRequirements(SAW_Bld_1, CoreArtifactTypes.SubsystemRequirementMarkdown, CoreArtifactTokens.SubSystemRequirementsFolderMarkdown, OseeInf.getResourceAsFile("requirements/SAW-SubsystemRequirements.md", getClass()));
-         importMarkdownRequirements(SAW_Bld_1, CoreArtifactTypes.SoftwareRequirementMarkdown, CoreArtifactTokens.SoftwareRequirementsFolderMarkdown, OseeInf.getResourceAsFile("requirements/SAW-SoftwareRequirements.md", getClass()));
-         importMarkdownRequirementImages(SAW_Bld_1, CoreArtifactTokens.SystemRequirementsFolderMarkdown);
          //@formatter:on
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, Lib.exceptionToString(ex));
-      }
-   }
-
-   private void importMarkdownRequirementImages(BranchToken branch, ArtifactToken parentFolderTok) {
-
-      SkynetTransaction transaction = TransactionManager.createTransaction(branch,
-         "Populate Demo DB - Create Markdown Requirement Image Artifact(s)");
-
-      Artifact parentFolderArt = ArtifactQuery.getArtifactFromTypeAndName(parentFolderTok.getArtifactType(),
-         "System Requirements - Markdown", branch);
-
-      // SAWTSR Image
-      File sawtsrFile = OseeInf.getResourceAsFile("requirements/SAWTSR.png", getClass());
-      Artifact sawtsrArt = ArtifactTypeManager.addArtifact(DemoArtifactToken.SAWTSR_Image_Markdown, branch);
-      sawtsrArt.setSoleAttributeValue(CoreAttributeTypes.Extension, "png");
-      // Set the native content attribute of general document artifact
-      URI source = sawtsrFile.toURI();
-      try {
-         InputStream inputStream = source.toURL().openStream();
-         sawtsrArt.setSoleAttributeValue(CoreAttributeTypes.NativeContent, inputStream);
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, Lib.exceptionToString(ex));
-      }
-
-      // Robot Data Flow Image
-      File robotDataFlowFile = OseeInf.getResourceAsFile("requirements/RobotDataFlow.png", getClass());
-      Artifact robotDataFlowArt =
-         ArtifactTypeManager.addArtifact(DemoArtifactToken.Robot_Data_Flow_Image_Markdown, branch);
-      robotDataFlowArt.setSoleAttributeValue(CoreAttributeTypes.Extension, "png");
-      // Set the native content attribute of general document artifact
-      source = robotDataFlowFile.toURI();
-      try {
-         InputStream inputStream = source.toURL().openStream();
-         robotDataFlowArt.setSoleAttributeValue(CoreAttributeTypes.NativeContent, inputStream);
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, Lib.exceptionToString(ex));
-      }
-
-      // Add the general document artifacts to the parent folder
-      parentFolderArt.addChild(sawtsrArt);
-      parentFolderArt.addChild(robotDataFlowArt);
-      transaction.addArtifact(sawtsrArt);
-      transaction.addArtifact(robotDataFlowArt);
-
-      transaction.execute();
-   }
-
-   private void importMarkdownRequirements(BranchId branch, ArtifactTypeToken requirementType, ArtifactToken folderTok,
-      File file) {
-      Artifact systemReqMd = ArtifactQuery.getArtifactFromId(folderTok, branch);
-
-      IArtifactImportResolver artifactResolver =
-         ArtifactResolverFactory.createAlwaysNewArtifacts(ArtifactTypeToken.SENTINEL);
-      IArtifactExtractor extractor = new MarkdownOutlineExtractor(CoreArtifactTypes.HeadingMarkdown, requirementType);
-
-      ArtifactImportOperationParameter importOptions = new ArtifactImportOperationParameter();
-      importOptions.setSourceFile(file);
-      importOptions.setDestinationArtifact(systemReqMd);
-      importOptions.setExtractor(extractor);
-      importOptions.setResolver(artifactResolver);
-
-      IOperation operation = ArtifactImportOperationFactory.completeOperation(importOptions);
-      Operations.executeWorkAndCheckStatus(operation);
-
-      // Validate that something was imported
-      if (systemReqMd.getChildren().isEmpty()) {
-         throw new IllegalStateException("Artifacts were not imported");
       }
    }
 

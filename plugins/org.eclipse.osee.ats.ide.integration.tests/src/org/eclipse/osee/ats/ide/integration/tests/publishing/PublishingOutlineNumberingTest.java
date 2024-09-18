@@ -3075,7 +3075,8 @@ public class PublishingOutlineNumberingTest {
                                       "PublishingOutlineNumberingTestTemplate.md"                            /* Template Content File Path */
                                    )
                          ),
-                      List.of()                                                                             /* Match Criteria      */
+                      List.of(),                                                                             /* Match Criteria      */
+                      null
                    ),
 
             new PublishingTemplate
@@ -3122,7 +3123,8 @@ public class PublishingOutlineNumberingTest {
                                       "PublishingOutlineNumberingTestTemplate.md"                            /* Template Content File Path */
                                    )
                          ),
-                      List.of()                                                                              /* Match Criteria      */
+                      List.of(),                                                                              /* Match Criteria      */
+                      null
                    )
 
             );

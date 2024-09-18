@@ -99,7 +99,9 @@ public enum OseeSql {
    UPDATE_REL_ORDER_FOR_TYPE_AND_ART_A("update osee_relation set rel_order = ? where rel_type = ? and a_art_id = ? and gamma_id = ?"),
    ARTIFACT_ID_COUNT("select count(*) from osee_artifact art where art.art_id = ?"),
    ARTIFACT_TYPE_COUNT("select count(*) from osee_artifact art where art.art_type_id = ?"),
-   ARTIFACT_ID_BRANCHES("select distinct(branch_id) from osee_txs txs, osee_artifact art where art.art_id = ? and art.gamma_id = txs.gamma_id");
+   ARTIFACT_ID_BRANCHES("select distinct(branch_id) from osee_txs txs, osee_artifact art where art.art_id = ? and art.gamma_id = txs.gamma_id"),
+   SELECT_IMPACTED_GAMMAS_BY_BRANCH_TX("select gamma_id from osee_txs where branch_id = ? and transaction_id = ?"),
+   UNUSED_IMPACTED_GAMMAS_AFTER_PURGE("SELECT gamma_id FROM ( SELECT ? as gamma_id, count(*) cnt FROM (select gamma_id from osee_txs where gamma_id = ? union all select gamma_id from osee_txs_archived where gamma_id = ? ) t1 ) t2 WHERE cnt = ? ");
 
    private final String sql;
    private final String hints;
