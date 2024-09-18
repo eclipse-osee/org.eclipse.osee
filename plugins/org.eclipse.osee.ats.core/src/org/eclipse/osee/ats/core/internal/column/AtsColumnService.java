@@ -140,13 +140,10 @@ public class AtsColumnService implements IAtsColumnService {
    private void loadLegacyIdColumns() {
       getIdFromLegacyId(""); // just loads the map
       for (Entry<String, String> entry : legacyIdToId.entrySet()) {
-         String legacyId = entry.getKey();
-         if (legacyId.contains("created")) {
-            System.err.println("here");
-         }
          String id = entry.getValue();
          AtsCoreColumn atsCoreColumn = idToAtsColumn.get(id);
          if (atsCoreColumn != null) {
+            String legacyId = entry.getKey();
             idToAtsColumn.put(legacyId, atsCoreColumn);
          }
       }
