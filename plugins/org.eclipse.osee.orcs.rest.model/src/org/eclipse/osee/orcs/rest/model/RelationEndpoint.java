@@ -91,5 +91,10 @@ public interface RelationEndpoint {
    List<RelationTypeToken> convertRelations(@PathParam("artifactA") ArtifactId artifactA,
       @PathParam("oldRelationType") RelationTypeToken oldRelationType,
       @PathParam("newRelationType") RelationTypeToken newRelationType);
+   
+ @GET
+ @Path("rel2/validate")
+ @Produces(MediaType.TEXT_HTML)
+ public String validateRel2Table() ;
 
 }
