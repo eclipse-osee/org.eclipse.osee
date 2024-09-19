@@ -28,7 +28,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.zip.ZipInputStream;
@@ -401,11 +400,11 @@ public class DispoApiImpl implements DispoApi {
                   isIncomplete = true;
                   isPass = false;
                }
-               if (annotation.getIsAnalyze()) {
+               if (annotation.setAndGetIsAnalyze()) {
                   isAnalysis = true;
                   isPass = false;
                }
-               if (annotation.getNeedsModify()) {
+               if (annotation.setAndGetNeedsModify()) {
                   needsModify = true;
                   isPass = false;
                }
@@ -531,7 +530,9 @@ public class DispoApiImpl implements DispoApi {
          List<DispoAnnotationData> annotationsList = dispoItem.getAnnotationsList();
          Map<String, Discrepancy> discrepanciesList = dispoItem.getDiscrepanciesList();
          DispoAnnotationData origAnnotation = DispoUtil.getById(annotationsList, annotationId);
-         Objects.requireNonNull(origAnnotation, "Original Annotation can not be null");
+         if (!origAnnotation.isValid()) {
+            return false;
+         }
          int indexOfAnnotation = origAnnotation.getIndex();
          boolean needToReconnect = false;
 
@@ -611,18 +612,6 @@ public class DispoApiImpl implements DispoApi {
       return wasUpdated;
    }
 
-   private String matchingDiscrepancyKey(String location, Map<String, Discrepancy> discrepancies) {
-      String toReturn = "";
-      for (String key : discrepancies.keySet()) {
-         Discrepancy discrepancy = discrepancies.get(key);
-         if (String.valueOf(discrepancy.getLocation()).equals(location)) {
-            toReturn = key;
-            break;
-         }
-      }
-      return toReturn;
-   }
-
    @Override
    public boolean deleteDispoAnnotation(BranchId branch, String itemId, String annotationId, String userName,
       boolean isCi) {
@@ -632,7 +621,7 @@ public class DispoApiImpl implements DispoApi {
          List<DispoAnnotationData> annotationsList = dispoItem.getAnnotationsList();
          Map<String, Discrepancy> discrepanciesList = dispoItem.getDiscrepanciesList();
          DispoAnnotationData annotationToRemove = DispoUtil.getById(annotationsList, annotationId);
-         if (annotationToRemove == null) {
+         if (!annotationToRemove.isValid()) {
             return wasUpdated;
          }
          annotationToRemove.disconnect();
@@ -1076,18 +1065,52 @@ public class DispoApiImpl implements DispoApi {
             List<DispoAnnotationData> newAnnotations = new ArrayList<>();
             newAnnotations = item.getAnnotationsList();
             for (DispoAnnotationData annotation : item.getAnnotationsList()) {
-               if (annotation.getResolution().equals("")) {
-                  annotation.setResolutionType(resolutionType);
-                  annotation.setResolution(resolution);
-                  annotation.setLastResolutionType("N/A");
-                  annotation.setLastResolution("N/A");
-                  annotation.setLastManualResolutionType("N/A");
-                  annotation.setLastManualResolution("N/A");
-                  annotation.setIsResolutionValid(true);
-                  annotation.setIsConnected(true);
-                  annotation.setIsDefault(false);
-                  dispoConnector.connectAnnotation(annotation, item.getDiscrepanciesList());
-                  newAnnotations.set(annotation.getIndex(), annotation);
+               if (DispoUtil.isAnnotationValueBlank(annotation)) {
+                  if (annotation.getIsParentPair()) {
+                     continue;
+                  }
+
+                  DispoAnnotationData newAnnotation =
+                     new DispoAnnotationData(annotation, resolutionType, resolution, true, false, true);
+
+                  dispoConnector.connectAnnotation(newAnnotation, item.getDiscrepanciesList());
+                  newAnnotations.set(newAnnotation.getIndex(), newAnnotation);
+
+                  //If it is an MCDC Pair Row and a pair is satisfied, the parent of that pair is satisfied.
+                  if (newAnnotation.getIsPairAnnotation()) {
+                     DispoAnnotationData parentAnnotation = getParentAnnotation(branch, item.getGuid(), newAnnotation);
+                     if (!parentAnnotation.getIsResolutionValid()) {
+                        String newParentResolutionType = resolutionType;
+                        String newParentResolution = resolution;
+
+                        List<String> satisfiedPairs = new ArrayList<>();
+                        for (int pairNumber : newAnnotation.getPairedWith()) {
+                           String pairLoc = String.format("%s.%d", parentAnnotation.getLocationRefs(), pairNumber);
+                           DispoAnnotationData pairAnnotation = DispoUtil.getByLocation(newAnnotations, pairLoc);
+                           if (pairAnnotation.getIsResolutionValid()) {
+                              if (newAnnotation.getRow() < pairNumber) {
+                                 satisfiedPairs.add(String.format("%s/%s", newAnnotation.getRow(), pairNumber));
+                              } else {
+                                 satisfiedPairs.add(String.format("%s/%s", pairNumber, newAnnotation.getRow()));
+                              }
+                              if (!pairAnnotation.getResolutionType().equals(newParentResolutionType)) {
+                                 newParentResolutionType =
+                                    newParentResolutionType + "/" + pairAnnotation.getResolutionType();
+                              }
+                              if (!pairAnnotation.getResolution().equals(newParentResolution)) {
+                                 newParentResolution = newParentResolution + "/" + pairAnnotation.getResolution();
+                              }
+                           }
+                        }
+                        if (!satisfiedPairs.isEmpty()) {
+                           DispoAnnotationData newParentAnnotation =
+                              new DispoAnnotationData(parentAnnotation, newParentResolutionType, newParentResolution,
+                                 String.format("Pairs Satisfied By: %s", satisfiedPairs.toString()), true, false, true);
+                           dispoConnector.connectAnnotation(newParentAnnotation, item.getDiscrepanciesList());
+                           newAnnotations.set(newParentAnnotation.getIndex(), newParentAnnotation);
+                        }
+                     }
+                  }
                }
             }
             newItem.setAnnotationsList(newAnnotations);
@@ -1097,6 +1120,23 @@ public class DispoApiImpl implements DispoApi {
          }
       }
       return toEdit;
+   }
+
+   private DispoAnnotationData getParentAnnotation(BranchId branch, String itemId, DispoAnnotationData pairAnnotation) {
+      DispoAnnotationData parentAnnotation = DispoAnnotationData.SENTINEL;
+
+      DispoItem dispoItem = getQuery().findDispoItemById(branch, itemId);
+      List<DispoAnnotationData> annotationsList = dispoItem.getAnnotationsList();
+
+      if (pairAnnotation.getIsPairAnnotation() && pairAnnotation.getIsResolutionValid()) {
+         String[] splitPairLoc = pairAnnotation.getLocationRefs().split("\\.", 3);
+         if (splitPairLoc.length >= 2) {
+            String parentLoc = String.format("%s.%s", splitPairLoc[0], splitPairLoc[1]);
+            parentAnnotation = DispoUtil.getByLocation(annotationsList, parentLoc);
+         }
+      }
+
+      return parentAnnotation;
    }
 
    private HashMap<String, DispoItem> getItemsMap(BranchId branch, DispoSet set) {

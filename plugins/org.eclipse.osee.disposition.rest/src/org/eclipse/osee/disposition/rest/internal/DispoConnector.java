@@ -81,11 +81,11 @@ public class DispoConnector {
                isIncomplete = true;
                isPass = false;
             }
-            if (annotation.getIsAnalyze()) {
+            if (annotation.setAndGetIsAnalyze()) {
                isAnalysis = true;
                isPass = false;
             }
-            if (annotation.getNeedsModify()) {
+            if (annotation.setAndGetNeedsModify()) {
                needsModify = true;
                isPass = false;
             }

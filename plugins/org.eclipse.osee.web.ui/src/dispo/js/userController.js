@@ -955,7 +955,7 @@ app.controller('userController', [
                 windowClass: 'massDispositionModal',
                 resolve: {
                 	coverageResolutionTypes: function() {
-                		return $scope.coverageResolutionTypes;
+                		return $scope.resolutionTypes;
                 	}
                 }
             });

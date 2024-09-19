@@ -34,7 +34,7 @@ app.factory('CoverageFactory', function() {
 	}
 	
 	CoverageFactory.getLastTextResolutionType = function(annotation) {
-		if (annotation.isLeaf && annotation.lastResolutionType!=annotation.resolutionType) {
+		if (annotation.isLeaf) {
 			return annotation.lastResolutionType;
         } else {
         	return "";
@@ -42,7 +42,7 @@ app.factory('CoverageFactory', function() {
 	}
 	
 	CoverageFactory.getLastTextResolution = function(annotation) {
-		if (annotation.isLeaf && annotation.lastResolution!=annotation.resolution) {
+		if (annotation.isLeaf) {
 			return annotation.lastResolution;
         } else {
         	return "";
@@ -50,7 +50,7 @@ app.factory('CoverageFactory', function() {
 	}
 	
 	CoverageFactory.getLastManualTextResolutionType = function(annotation) {
-		if (annotation.isLeaf && annotation.lastManualResolutionType!=annotation.resolutionType) {
+		if (annotation.isLeaf) {
 			return annotation.lastManualResolutionType;
         } else {
         	return "";
@@ -58,7 +58,7 @@ app.factory('CoverageFactory', function() {
 	}
 	
 	CoverageFactory.getLastManualTextResolution = function(annotation) {
-		if (annotation.isLeaf && annotation.lastManualResolution!=annotation.resolution) {
+		if (annotation.isLeaf) {
 			return annotation.lastManualResolution;
         } else {
         	return "";
