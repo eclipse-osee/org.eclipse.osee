@@ -19,6 +19,7 @@ members = [
     "cli/applicability_parser_types", 
     "cli/applicability_path", 
     "cli/applicability_sanitization",
+    "cli/applicability_sanitization_preserve_line_numbers",
     "cli/applicability_substitution",
     "cli/bat",
     "cli/pat"
