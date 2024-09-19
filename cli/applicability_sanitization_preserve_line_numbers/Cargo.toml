@@ -11,27 +11,16 @@
  #     Boeing - initial API and implementation
  ######################################################################
 [package]
-name = "bat"
-version = "1.1.1"
-description="The Block Applicability Tool(BAT) is a CLI processor for features,configurations and substitutions on arbitrary files."
+name = "applicability_sanitization_preserve_line_numbers"
+version = "0.1.0"
 edition = "2021"
-authors=["Luciano Vaglienti <luciano.t.vaglienti@boeing.com>"]
-license.workspace=true
+license.workspace = true
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-clap = { version = "4.4.6", features = ["derive"] }
-common-path = { version = "1.0.0" }
-serde = {version = "1.0.188", optional=false, features = ["derive"] }
-serde_json = "1.0.107"
-anyhow = { version = "1.0.82" }
-tracing = { version = "0.1.40" }
-tracing-subscriber = { version = "0.3.18" }
-tracing-appender = { version = "0.2.3" }
-clap-verbosity-flag = { version = "2.2.0" }
 applicability = {path="../applicability",features=["serde"]}
-applicability_parser = {path="../applicability_parser",features=["serde"]}
-applicability_parser_config = {path="../applicability_parser_config"}
+applicability_parser_types = {path="../applicability_parser_types"}
+applicability_match = {path="../applicability_match"}
 applicability_substitution = {path="../applicability_substitution"}
 applicability_sanitization = {path="../applicability_sanitization"}
