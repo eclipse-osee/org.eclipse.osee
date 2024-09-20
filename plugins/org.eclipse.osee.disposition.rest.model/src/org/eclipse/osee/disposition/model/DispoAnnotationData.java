@@ -31,32 +31,32 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 @XmlRootElement(name = "DispoAnnotationData")
 public class DispoAnnotationData {
 
-   private String guid;
+   private String guid = "";
    private int index;
-   private String developerNotes;
-   private String customerNotes;
+   private String developerNotes = "";
+   private String customerNotes = "";
    private String locationRefs = "";
    private boolean isConnected;
-   private List<String> idsOfCoveredDiscrepancies;
-   private String resolution;
-   private String lastResolutionType;
-   private String lastResolution;
-   private String lastManualResolutionType;
-   private String lastManualResolution;
+   private List<String> idsOfCoveredDiscrepancies = new ArrayList<String>();
+   private String resolutionType = "";
+   private String resolution = "";
+   private String lastResolutionType = "";
+   private String lastResolution = "";
+   private String lastManualResolutionType = "";
+   private String lastManualResolution = "";
    private boolean isResolutionValid;
-   private String resolutionType;
    private boolean isDefault;
    private boolean isAnalyze;
    private boolean needsModify;
-   private String resolutionMethodType;
-   private boolean isPairAnnotation = false; //For MCDC to determine if it is a pair annotation
+   private String resolutionMethodType = "";
+   private boolean isPairAnnotation; //For MCDC to determine if it is a pair annotation
 
    //These are used on Annotations that are parents to Pair Annotations.
-   private String possiblePairs; //Used for MCDC pair coverage, gets all of the possible pairs
-   private String satisfiedPairs; //Used for MCDC pair coverage, gets all of the satisfied pairs for a Pair Px
+   private String possiblePairs = ""; //Used for MCDC pair coverage, gets all of the possible pairs
+   private String satisfiedPairs = ""; //Used for MCDC pair coverage, gets all of the satisfied pairs for a Pair Px
 
    //These are used specifically on Pair Annotations.
-   private Collection<Integer> pairedWith; //Used for MCDC coverage to show what a pair annotation pairs with
+   private Collection<Integer> pairedWith = new ArrayList<Integer>(); //Used for MCDC coverage to show what a pair annotation pairs with
    private int row; //Used for MCDC pair coverage to show this annotations row
    private boolean isRowCovered;
 
@@ -83,9 +83,119 @@ public class DispoAnnotationData {
       idsOfCoveredDiscrepancies = new ArrayList<>();
    }
 
-   public DispoAnnotationData(String guid) {
-      guid = GUID.create();
-      idsOfCoveredDiscrepancies = new ArrayList<>();
+   public DispoAnnotationData(DispoAnnotationData annotationData) {
+      if (annotationData.getGuid() != null) {
+         this.guid = annotationData.getGuid();
+      } else {
+         this.guid = GUID.create();
+      }
+
+      if (annotationData.getResolutionType() != null) {
+         this.resolutionType = annotationData.getResolutionType();
+      }
+      if (annotationData.getResolution() != null) {
+         this.resolution = annotationData.getResolution();
+      }
+      if (annotationData.getLastResolutionType() != null) {
+         this.lastResolutionType = annotationData.getLastResolutionType();
+      }
+      if (annotationData.getLastResolution() != null) {
+         this.lastResolution = annotationData.getLastResolution();
+      }
+      if (annotationData.getLastManualResolutionType() != null) {
+         this.lastManualResolutionType = annotationData.getLastManualResolutionType();
+      }
+      if (annotationData.getLastManualResolution() != null) {
+         this.lastManualResolution = annotationData.getLastManualResolution();
+      }
+      if (annotationData.getDeveloperNotes() != null) {
+         this.developerNotes = annotationData.getDeveloperNotes();
+      }
+      if (annotationData.getCustomerNotes() != null) {
+         this.customerNotes = annotationData.getCustomerNotes();
+      }
+      if (annotationData.getLocationRefs() != null) {
+         this.locationRefs = annotationData.getLocationRefs();
+      }
+      if (annotationData.getIdsOfCoveredDiscrepancies() != null) {
+         this.idsOfCoveredDiscrepancies = annotationData.getIdsOfCoveredDiscrepancies();
+      }
+      if (annotationData.getResolutionMethodType() != null) {
+         this.resolutionMethodType = annotationData.getResolutionMethodType();
+      }
+      if (annotationData.getPossiblePairs() != null) {
+         this.possiblePairs = annotationData.getPossiblePairs();
+      }
+      if (annotationData.getSatisfiedPairs() != null) {
+         this.satisfiedPairs = annotationData.getSatisfiedPairs();
+      }
+      if (annotationData.getPairedWith() != null) {
+         this.pairedWith = annotationData.getPairedWith();
+      }
+      this.index = annotationData.getIndex();
+      this.isConnected = annotationData.getIsConnected();
+      this.isDefault = annotationData.getIsDefault();
+      this.isPairAnnotation = annotationData.getIsPairAnnotation();
+      this.isRowCovered = annotationData.getIsRowCovered();
+      this.row = annotationData.getRow();
+      this.isResolutionValid = annotationData.getIsResolutionValid();
+      this.isAnalyze = annotationData.setAndGetIsAnalyze();
+      this.needsModify = annotationData.setAndGetNeedsModify();
+   }
+
+   public DispoAnnotationData(DispoAnnotationData annotationData, String resolutionType, String resolution) {
+      this(annotationData);
+      if (resolutionType != null) {
+         this.resolutionType = resolutionType;
+      }
+      if (resolution != null) {
+         this.resolution = resolution;
+      }
+      this.isAnalyze = this.setAndGetIsAnalyze();
+      this.needsModify = this.setAndGetNeedsModify();
+   }
+
+   public DispoAnnotationData(DispoAnnotationData annotationData, String lastResolutionType, String lastResolution, String lastManualResolutionType, String lastManualResolution) {
+      this(annotationData);
+      if (lastResolutionType != null) {
+         this.lastResolutionType = lastResolutionType;
+      }
+      if (lastResolution != null) {
+         this.lastResolution = lastResolution;
+      }
+      if (lastManualResolutionType != null) {
+         this.lastManualResolutionType = lastManualResolutionType;
+      }
+      if (lastManualResolution != null) {
+         this.lastManualResolution = lastManualResolution;
+      }
+   }
+
+   public DispoAnnotationData(DispoAnnotationData annotationData, String resolutionType, String resolution, String lastResolutionType, String lastResolution, String lastManualResolutionType, String lastManualResolution, boolean isResolutionValid) {
+      this(annotationData, lastResolutionType, lastResolution, lastManualResolutionType, lastManualResolution);
+      if (resolutionType != null) {
+         this.resolutionType = resolutionType;
+      }
+      if (resolution != null) {
+         this.resolution = resolution;
+      }
+      this.isResolutionValid = isResolutionValid;
+      this.isAnalyze = this.setAndGetIsAnalyze();
+      this.needsModify = this.setAndGetNeedsModify();
+   }
+
+   public DispoAnnotationData(DispoAnnotationData annotationData, String resolutionType, String resolution, boolean isResolutionValid, boolean isDefault, boolean isConnected) {
+      this(annotationData, resolutionType, resolution);
+      this.isResolutionValid = isResolutionValid;
+      this.isDefault = isDefault;
+      this.isConnected = isConnected;
+   }
+
+   public DispoAnnotationData(DispoAnnotationData annotationData, String resolutionType, String resolution, String satisfiedPairs, boolean isResolutionValid, boolean isDefault, boolean isConnected) {
+      this(annotationData, resolutionType, resolution, isResolutionValid, isDefault, isConnected);
+      if (satisfiedPairs != null) {
+         this.satisfiedPairs = satisfiedPairs;
+      }
    }
 
    public String getGuid() {
@@ -121,6 +231,9 @@ public class DispoAnnotationData {
    }
 
    public String getResolution() {
+      if (resolution == null) {
+         this.resolution = "";
+      }
       return resolution;
    }
 
@@ -157,22 +270,24 @@ public class DispoAnnotationData {
       return isDefault;
    }
 
-   public boolean getIsAnalyze() {
+   //We retain this as this variable is used in JS.
+   public boolean setAndGetIsAnalyze() {
       if (resolutionType.contains(ANALYSIS)) {
-         isAnalyze = true;
+         this.isAnalyze = true;
       } else {
-         isAnalyze = false;
+         this.isAnalyze = false;
       }
-      return isAnalyze;
+      return this.isAnalyze;
    }
 
-   public boolean getNeedsModify() {
+   //We retain this as this variable is used in JS
+   public boolean setAndGetNeedsModify() {
       if (resolutionType.contains(MODIFY)) {
-         needsModify = true;
+         this.needsModify = true;
       } else {
-         needsModify = false;
+         this.needsModify = false;
       }
-      return needsModify;
+      return this.needsModify;
    }
 
    public String getResolutionMethodType() {
@@ -185,6 +300,14 @@ public class DispoAnnotationData {
 
    public String getSatisfiedPairs() {
       return satisfiedPairs;
+   }
+
+   public boolean getIsParentPair() {
+      if (locationRefs.contains("(P") && !locationRefs.contains(").")) {
+         return true;
+      } else {
+         return false;
+      }
    }
 
    public boolean getIsPairAnnotation() {
@@ -241,18 +364,58 @@ public class DispoAnnotationData {
    }
 
    public void setLastResolutionType(String lastResolutionType) {
+      if (lastResolutionType == null) {
+         return;
+      }
+      this.lastResolutionType = lastResolutionType;
+   }
+
+   public void setFilledLastResolutionType(String lastResolutionType) {
+      if (lastResolutionType == null || lastResolutionType.isEmpty() || lastResolutionType.isBlank()) {
+         return;
+      }
       this.lastResolutionType = lastResolutionType;
    }
 
    public void setLastResolution(String lastResolution) {
+      if (lastResolution == null) {
+         return;
+      }
+      this.lastResolution = lastResolution;
+   }
+
+   public void setFilledLastResolution(String lastResolution) {
+      if (lastResolution == null || lastResolution.isEmpty() || lastResolution.isBlank()) {
+         return;
+      }
       this.lastResolution = lastResolution;
    }
 
    public void setLastManualResolutionType(String lastManualResolutionType) {
+      if (lastManualResolutionType == null) {
+         return;
+      }
+      this.lastManualResolutionType = lastManualResolutionType;
+   }
+
+   public void setFilledLastManualResolutionType(String lastManualResolutionType) {
+      if (lastManualResolutionType == null || lastManualResolutionType.isEmpty() || lastManualResolutionType.isBlank()) {
+         return;
+      }
       this.lastManualResolutionType = lastManualResolutionType;
    }
 
    public void setLastManualResolution(String lastManualResolution) {
+      if (lastManualResolution == null) {
+         return;
+      }
+      this.lastManualResolution = lastManualResolution;
+   }
+
+   public void setFilledLastManualResolution(String lastManualResolution) {
+      if (lastManualResolution == null || lastManualResolution.isEmpty() || lastManualResolution.isBlank()) {
+         return;
+      }
       this.lastManualResolution = lastManualResolution;
    }
 
@@ -266,14 +429,6 @@ public class DispoAnnotationData {
 
    public void setIsDefault(boolean isDefault) {
       this.isDefault = isDefault;
-   }
-
-   public void setIsAnalyze(boolean isAnalyzed) {
-      this.isAnalyze = isAnalyzed;
-   }
-
-   public void setNeedsModify(boolean needsModify) {
-      this.needsModify = needsModify;
    }
 
    public void setResolutionMethodType(String resolutionMethodType) {

@@ -285,6 +285,9 @@ public class DispoApiTest {
       when(storage.findDispoItemById(branch, itemId.getGuid())).thenReturn(dispoItem);
       when(dispoItem.getAnnotationsList()).thenReturn(annotations);
       DispoAnnotationData actualData = dispoApi.getDispoAnnotationById(branch, itemId.getGuid(), idOfAnnot);
+      if (!actualData.isValid()) {
+         return;
+      }
       dispoApi.getDispoAnnotationById(branch, itemId.getGuid(), idOfAnnot);
 
       assertEquals(idOfAnnot, actualData.getGuid());

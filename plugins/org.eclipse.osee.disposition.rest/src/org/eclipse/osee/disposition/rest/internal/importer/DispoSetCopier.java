@@ -13,14 +13,12 @@
 
 package org.eclipse.osee.disposition.rest.internal.importer;
 
-import static org.eclipse.osee.disposition.model.DispoSummarySeverity.IGNORE;
 import static org.eclipse.osee.disposition.model.DispoSummarySeverity.UPDATE;
 import static org.eclipse.osee.disposition.model.DispoSummarySeverity.WARNING;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -69,21 +67,20 @@ public class DispoSetCopier {
          DispoItemData destItem = getCorrespondingDestItem(nameToDestItems, sourceItem);
 
          if (destItem != null) {
-            // Only try to copy over annotations if matching dest item is NOT PASS
-            if (!destItem.getStatus().equals(DispoStrings.Item_Pass)) {
+            if (Strings.isValid(destItem.getGuid()) || sourceItem.getStatus().equals(DispoStrings.Item_Pass)) {
                DispoItemData newItem = createNewItemWithCopiedAnnotations(destItem, sourceItem, isCoverageCopy, reruns,
                   report, allowOnlyValidResolutionTypes, validResolutionsTypes);
                if (newItem != null) {
                   modifiedItems.add(newItem);
 
-                  if (!newItem.getGuid().equals(sourceItem.getGuid())) {
-                     List<DispoAnnotationData> destAnnotationsList = destItem.getAnnotationsList();
-                     String message = String.format("Had %s Dispositions now has %s", destAnnotationsList.size(),
-                        newItem.getAnnotationsList().size());
+                  if (!newItem.getGuid().equals(
+                     sourceItem.getGuid()) && destItem.getAnnotationsList().size() != newItem.getAnnotationsList().size()) {
+                     String message = String.format("Had %s Dispositions now has %s",
+                        destItem.getAnnotationsList().size(), newItem.getAnnotationsList().size());
                      report.addEntry(destItem.getName(), message, UPDATE);
                   }
                }
-            } else if (!Strings.isValid(destItem.getGuid()) && !sourceItem.getStatus().equals(DispoStrings.Item_Pass)) {
+            } else {
                /**
                 * In the case of Coverage, the destination Item is the item created by a new import so we assign it the
                 * id of the source so that it will overwrite the source date with the new import data
@@ -91,7 +88,6 @@ public class DispoSetCopier {
                destItem.setGuid(sourceItem.getGuid());
                modifiedItems.add(destItem);
             }
-
          } else {
             report.addEntry(sourceItem.getName(), "No matching item found in the Destination Set", WARNING);
          }
@@ -125,119 +121,100 @@ public class DispoSetCopier {
       boolean isCoverageCopy, HashMap<String, String> reruns, OperationReport report,
       boolean allowOnlyValidResolutionTypes, Set<String> validResolutionTypes) {
       DispoItemData toReturn = null;
-      boolean isSameDiscrepancies = matchAllDiscrepancies(destItem, sourceItem);
-      if (!isSameDiscrepancies) {
-         report.addEntry(destItem.getName(),
-            String.format("Tried to copy from item id: [%s] but discrepancies were not the same", sourceItem.getGuid()),
-            WARNING);
-
-      }
-      toReturn = buildNewItem(destItem, sourceItem, isCoverageCopy, reruns, report, isSameDiscrepancies,
-         allowOnlyValidResolutionTypes, validResolutionTypes);
+      toReturn = buildNewItem(destItem, sourceItem, isCoverageCopy, reruns, report, allowOnlyValidResolutionTypes,
+         validResolutionTypes);
       return toReturn;
    }
 
    private DispoItemData buildNewItem(DispoItemData destItem, DispoItem sourceItem, boolean isCoverageCopy,
-      HashMap<String, String> reruns, OperationReport report, boolean isSameDiscrepancies,
-      boolean allowOnlyValidResolutionTypes, Set<String> validResolutionTypes) {
-      boolean isChangesMade = false;
-      DispoItemData newItem = initNewItem(destItem, sourceItem);
-      List<DispoAnnotationData> newAnnotations = newItem.getAnnotationsList();
+      HashMap<String, String> reruns, OperationReport report, boolean allowOnlyValidResolutionTypes,
+      Set<String> validResolutionTypes) {
       List<DispoAnnotationData> sourceAnnotations = sourceItem.getAnnotationsList();
-      Set<String> destDefaultAnnotationLocations = getDefaultAnnotations(newItem);
-      Map<String, Integer> nonDefaultAnnotationLocations = getNonDefaultAnnotations(newItem);
-      List<String> destDiscrepanciesTextOnly = discrepanciesTextOnly(destItem.getDiscrepanciesList());
+      Map<String, DispoAnnotationData> destAnnotationMap = getLocToAnnotationMap(destItem.getAnnotationsList());
 
       for (DispoAnnotationData sourceAnnotation : sourceAnnotations) {
          String sourceLocation = sourceAnnotation.getLocationRefs();
-
          if (sourceAnnotation.getGuid() == null) {
             sourceAnnotation.setId(String.valueOf(Lib.generateUuid()));
          }
-         // Check for ignore cases
-         if (DispoUtil.isDefaultAnotation(sourceAnnotation) || !Strings.isValid(sourceAnnotation.getResolutionType())) {
-            /**
-             * This means this annotation is TEST_UNIT, Exception_Handling, or just place holder, so don't copy it over,
-             * only log if the destination item doesn't have this annotation as a Default i.e means something changed
-             * user should be aware.Currently only for Coverage
-             */
-            if (!destDefaultAnnotationLocations.contains(sourceLocation)) {
-               if (!nonDefaultAnnotationLocations.containsKey(sourceLocation)) {
-                  newItem.setNeedsRerun(true);
-                  needsRerun.add(sourceAnnotation);
-               }
-               report.addEntry(destItem.getName(),
-                  String.format("Did not copy annotations for location(s) [%s] because they are default annotations",
-                     sourceAnnotation.getLocationRefs()),
-                  IGNORE);
+
+         if (!destAnnotationMap.containsKey(sourceLocation)) {
+            continue;
+         }
+         DispoAnnotationData destAnnotation = destAnnotationMap.get(sourceLocation);
+
+         if (sourceAnnotation.getCustomerNotes() == null || destAnnotation.getCustomerNotes() == null) {
+            continue;
+         }
+
+         if (!sourceAnnotation.getCustomerNotes().equals(
+            destAnnotation.getCustomerNotes()) || ((allowOnlyValidResolutionTypes && !validResolutionTypes.contains(
+               sourceAnnotation.getResolutionType())))) {
+            if (DispoUtil.isDefaultAnotation(
+               sourceAnnotation) || !Strings.isValid(sourceAnnotation.getResolutionType())) {
+               destItem.setNeedsRerun(true);
+               needsRerun.add(sourceAnnotation);
             }
-         } else if (destDefaultAnnotationLocations.contains(sourceLocation)) {
-            /**
-             * isCoverageCopy is true when annotation copier is called by a coverage import, this means we need to also
-             * check that the matching dest annotation isn't a DEFAULT resolution before copying over.
-             */
-            report.addEntry(destItem.getName(), String.format(
-               "Did not copy annotations for location(s) [%s] because the destination item already has a default annotations at these locations",
-               sourceAnnotation.getLocationRefs()), IGNORE);
+            continue;
+         }
 
-         } else if (newAnnotations.toString().contains(sourceAnnotation.getGuid())) {
-            report.addEntry(destItem.getName(), String.format(
-               "Did not copy annotations for location(s) [%s] because the destination item already has this Annotation [%s]",
-               sourceAnnotation.getLocationRefs(), sourceAnnotation.getGuid()), IGNORE);
+         //Initial Source Values
+         String sourceResolutionType = sourceAnnotation.getResolutionType();
+         String sourceResolution = sourceAnnotation.getResolution();
+         String sourceLastResolutionType = sourceAnnotation.getLastResolutionType();
+         String sourceLastResolution = sourceAnnotation.getLastResolution();
+         String sourceLastManualResolutionType = sourceAnnotation.getLastManualResolutionType();
+         String sourceLastManualResolution = sourceAnnotation.getLastManualResolution();
 
-         } else if (allowOnlyValidResolutionTypes && !validResolutionTypes.contains(
-            sourceAnnotation.getResolutionType())) {
-            report.addEntry(destItem.getName(), String.format(
-               "Did not copy annotations for location(s) [%s] because the resolution [%s] does not exist in the destination program",
-               sourceAnnotation.getLocationRefs(), sourceAnnotation.getResolutionType()), IGNORE);
+         DispoAnnotationData newDestAnnot = new DispoAnnotationData();
+
+         //If the source is blank, copy over all 'last resolution' fields
+         if (DispoUtil.isAnnotationValueBlank(sourceAnnotation)) {
+            if (DispoUtil.isAnnotationValueBlank(
+               destAnnotation) && (!sourceLastManualResolutionType.isEmpty() && !sourceLastManualResolutionType.isBlank() && sourceLastManualResolutionType != null)) {
+               //If dest is empty and there is a 'Last Manual Resolution' in source, copy it over as the resolution
+               newDestAnnot = new DispoAnnotationData(destAnnotation, sourceLastManualResolutionType,
+                  sourceLastManualResolution, sourceLastResolutionType, sourceLastResolution,
+                  sourceLastManualResolutionType, sourceLastManualResolution, true);
+            } else {
+               newDestAnnot = new DispoAnnotationData(destAnnotation, sourceLastResolutionType, sourceLastResolution,
+                  sourceLastManualResolutionType, sourceLastManualResolution);
+
+            }
+         } else if (DispoUtil.isDefaultAnotation(sourceAnnotation)) {
+            //else if the source is Test_Script or Exception_Handling
+
+            if (DispoUtil.isAnnotationValueBlank(
+               destAnnotation) && (!sourceLastManualResolutionType.isEmpty() && !sourceLastManualResolutionType.isBlank() && sourceLastManualResolutionType != null)) {
+               //If dest is empty and there is a 'Last Manual Resolution' in source, copy it over as the resolution
+               newDestAnnot = new DispoAnnotationData(destAnnotation, sourceLastManualResolutionType,
+                  sourceLastManualResolution, sourceResolutionType, sourceResolution, sourceLastManualResolutionType,
+                  sourceLastManualResolution, true);
+            } else {
+               //If the dest is also Test_Script or Exception Handling
+               //In all other cases, record the source's resolution in the 'Last Resolution' fields.
+
+               newDestAnnot = new DispoAnnotationData(destAnnotation, sourceResolutionType, sourceResolution,
+                  sourceLastManualResolutionType, sourceLastManualResolution);
+            }
          } else {
-            // Try to copy but check if Discrepancy is the same and present in the destination set
-            if (isCoveredDiscrepanciesExistInDest(destDiscrepanciesTextOnly, sourceItem, sourceAnnotation, report)) {
-               DispoAnnotationData newAnnotation = sourceAnnotation;
-               if (destDefaultAnnotationLocations.contains(sourceLocation)) {
-                  /**
-                   * The discrepancy of this manual disposition is now covered by a Default Annotation so this Manual
-                   * Annotation is invalid, mark as such by making the location Ref negative, don't bother connecting
-                   * the annotation
-                   */
-                  // Make location ref negative to indicate this
-                  String locationRefs = sourceAnnotation.getLocationRefs();
-                  Integer locationRefAsInt = Integer.valueOf(locationRefs);
-                  if (locationRefAsInt > 0) {
-                     newAnnotation.setLocationRefs(String.valueOf(locationRefAsInt * -1));
-                  }
-                  report.addEntry(destItem.getName(),
-                     String.format("The annotation was copied over but is no longer needed: [%s]", locationRefs),
-                     WARNING);
-               }
-               connector.connectAnnotation(newAnnotation, newItem.getDiscrepanciesList());
-               isChangesMade = true;
-               // Both the source and destination are dispositionable so copy the annotation
-               int nextIndex;
-               if (nonDefaultAnnotationLocations.containsKey(sourceLocation)) {
-                  nextIndex = nonDefaultAnnotationLocations.get(sourceLocation);
-                  newAnnotation.setIndex(nextIndex);
-                  newAnnotations.set(nextIndex, newAnnotation);
-               } else {
-                  nextIndex = newAnnotations.size();
-                  newAnnotation.setIndex(nextIndex);
-                  newAnnotations.add(nextIndex, newAnnotation);
-               }
+            //If the source is a manual resolution
+
+            if (DispoUtil.isAnnotationValueBlank(destAnnotation)) {
+               //Set resolution to source's manual disposition
+               newDestAnnot = new DispoAnnotationData(destAnnotation, sourceResolutionType, sourceResolution,
+                  sourceLastResolutionType, sourceLastResolution, sourceLastManualResolutionType,
+                  sourceLastManualResolution, sourceAnnotation.getIsResolutionValid());
+            } else {
+               //If they are both manual resolutions or the destination is default, set last resolutions to source resolution
+               newDestAnnot = new DispoAnnotationData(destAnnotation, sourceResolutionType, sourceResolution,
+                  sourceResolutionType, sourceResolution);
             }
          }
+         DispoUtil.addAnnotation(destItem.getAnnotationsList(), newDestAnnot);
       }
 
-      if (isChangesMade) {
-         newItem.setAnnotationsList(newAnnotations);
-         String newStatus = connector.getItemStatus(newItem);
-         newItem.setStatus(newStatus);
-      } else if (!isCoverageCopy) {
-         // We want to take the new import version of this item even though no changes were made, this will only occur if
-         // 1. All the Annotations from the source Item were default, in which case we can ignore those and take the ones from the new import
-         // 2. None of the non-default Annotations cover a Discrepancy in the new import, in which case don't copy them over: MIGHT CHANGE THIS
-         newItem = destItem;
-         newItem.setGuid(sourceItem.getGuid());
-      } else if (newItem.getNeedsRerun() != null && newItem.getNeedsRerun()) {
+      if (destItem.getNeedsRerun() != null && destItem.getNeedsRerun()) {
          report.addEntry(destItem.getName(), "Needs Rerun", UPDATE);
          if (reruns != null) {
             HashMap<String, String> tmpList = new FindReruns().createList(needsRerun);
@@ -245,34 +222,8 @@ public class DispoSetCopier {
                reruns.put(entry.getKey(), entry.getValue());
             }
          }
-      } else {
-         report.addEntry(destItem.getName(), "Nothing to copy", IGNORE);
-         newItem = null;
       }
-      return newItem;
-   }
-
-   private boolean isCoveredDiscrepanciesExistInDest(List<String> destDescrepanciesTextOnly, DispoItem sourceItem,
-      DispoAnnotationData annotation, OperationReport report) {
-      List<String> idsOfCoveredDiscrepancies = annotation.getIdsOfCoveredDiscrepancies();
-      Map<String, Discrepancy> sourceDiscrepancies = sourceItem.getDiscrepanciesList();
-      for (String id : idsOfCoveredDiscrepancies) {
-         Discrepancy coveredDiscrepancy = sourceDiscrepancies.get(id);
-         if (coveredDiscrepancy == null || !destDescrepanciesTextOnly.contains(coveredDiscrepancy.getText())) {
-            return false;
-         }
-      }
-
-      return true;
-   }
-
-   private List<String> discrepanciesTextOnly(Map<String, Discrepancy> discrepancies) {
-      List<String> toReturn = new ArrayList<>();
-      for (String key : discrepancies.keySet()) {
-         Discrepancy discrepancy = discrepancies.get(key);
-         toReturn.add(discrepancy.getText());
-      }
-      return toReturn;
+      return destItem;
    }
 
    private DispoItemData initNewItem(DispoItemData destItem, DispoItem sourceItem) {
@@ -289,59 +240,15 @@ public class DispoSetCopier {
       return newItem;
    }
 
-   private Map<String, Integer> getNonDefaultAnnotations(DispoItemData item) {
-      Map<String, Integer> nonDefaultAnnotationLocations = new HashMap<>();
-      List<DispoAnnotationData> annotations = item.getAnnotationsList();
+   private Map<String, DispoAnnotationData> getLocToAnnotationMap(List<DispoAnnotationData> annotations) {
+      Map<String, DispoAnnotationData> locToAnnotationMap = new HashMap<>();
       if (annotations == null) {
          annotations = new ArrayList<>();
       }
       for (DispoAnnotationData annotation : annotations) {
-         if (!annotation.getIsDefault()) {
-            nonDefaultAnnotationLocations.put(annotation.getLocationRefs(), annotation.getIndex());
-         }
+         locToAnnotationMap.put(annotation.getLocationRefs(), annotation);
       }
-
-      return nonDefaultAnnotationLocations;
-   }
-
-   private Set<String> getDefaultAnnotations(DispoItemData item) {
-      Set<String> defaultAnnotationLocations = new HashSet<>();
-      List<DispoAnnotationData> annotations = item.getAnnotationsList();
-      if (annotations == null) {
-         annotations = new ArrayList<>();
-      }
-      for (DispoAnnotationData annotation : annotations) {
-         if (DispoUtil.isDefaultAnotation(annotation)) {
-            defaultAnnotationLocations.add(annotation.getLocationRefs());
-         }
-      }
-
-      return defaultAnnotationLocations;
-   }
-
-   private boolean matchAllDiscrepancies(DispoItemData destItem, DispoItem sourceItem) {
-      Map<String, String> destLocationToText = generateLocationToTextMap(destItem);
-      boolean toReturn = true;
-
-      Map<String, Discrepancy> sourceDiscrepancies = sourceItem.getDiscrepanciesList();
-      for (String key : sourceDiscrepancies.keySet()) {
-         Discrepancy sourceDiscrepancy = sourceDiscrepancies.get(key);
-
-         String sourceLocation = sourceDiscrepancy.getLocation();
-         String destDicrepancyText = destLocationToText.get(sourceLocation);
-         if (destDicrepancyText == null) {
-            // No Discrepancy with that location in the destination item, return false
-            toReturn = false;
-            break;
-         } else if (sourceDiscrepancy.getText().equals(destDicrepancyText)) {
-            continue;
-         } else {
-            toReturn = false;
-            break;
-         }
-
-      }
-      return toReturn;
+      return locToAnnotationMap;
    }
 
    private Map<String, String> generateLocationToTextMap(DispoItem item) {
