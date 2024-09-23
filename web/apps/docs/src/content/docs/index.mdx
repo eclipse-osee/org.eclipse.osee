@@ -1,0 +1,42 @@
+---
+title: Open System Engineering Environment
+template: splash
+hero:
+  image:
+    alt: ""
+    dark: "../../assets/logos/OSEE_logo_dark_mode.png"
+    light: "../../assets/logos/OSEE_logo_light_mode.png"
+  actions:
+    - text: Read the docs
+      link: /org.eclipse.osee/getting-started/overview
+      icon: right-arrow
+    - text: View on GitHub
+      link: https://github.com/eclipse-osee/org.eclipse.osee
+      icon: external
+      variant: secondary
+---
+
+import { Card, CardGrid, LinkCard } from "@astrojs/starlight/components";
+
+The Open System Engineering Environment is a tightly integrated,
+extensible environment supporting Product Line Engineering in the
+context of an overall systems engineering approach. It is
+integrated around a simple data model providing
+full life cycle traceability. OSEE's feature set includes Product
+Line Engineering, configuration management, requirements
+management, message modeling, testing, validation, and project management.
+
+## Features
+
+<CardGrid>
+  <LinkCard
+    title="MIM"
+    href="/org.eclipse.osee/messaging/mim-overview"
+    description="The Message Interface Modeler (MIM) allows for easy, consistent management of messaging ICDs for communication between real-time systems."
+  />
+  <LinkCard
+    title="BAT"
+    href="/org.eclipse.osee/bat/bat-overview"
+    description="The Block Applicability Tool (BAT) processes files containing feature/configuration tags, and returns the files sanitized for a specific configuration."
+  />
+</CardGrid>
