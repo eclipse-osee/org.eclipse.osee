@@ -129,7 +129,7 @@ public class DispoConnectorTest {
       annotationOne.setLocationRefs("1zzz, 2zzz, 3zzz,4zzz,5zzz,12zzz,13zzz,14zzz,15zzz,16zzz,17zzz,18zzz,20zzz");
       annotationOne.setIsResolutionValid(true);
       annotationOne.setResolutionType("Modify_Code");
-      annotationOne.setNeedsModify(true);
+      annotationOne.setAndGetNeedsModify();
       annotationOne.setId(annotIdOne);
       List<String> idsOfCoveredDisc = new ArrayList<>();
       annotationOne.setIdsOfCoveredDiscrepancies(idsOfCoveredDisc);
