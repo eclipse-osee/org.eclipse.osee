@@ -178,9 +178,9 @@ public class PurgeUnusedBackingDataAndTransactions {
       if (serverPath.equals("null")) {
          return null;
       }
-      Path purgeFolder = Paths.get(serverPath + "\\purge");
+      Path purgeFolder = Paths.get(serverPath + File.separator+"purge");
       if (Files.exists(purgeFolder)) {
-         serverPath = serverPath + "\\purge";
+         serverPath = serverPath + File.separator+"purge";
       }
       int i = 0;
       int[] counts = new int[11];
@@ -205,7 +205,7 @@ public class PurgeUnusedBackingDataAndTransactions {
       }
       Date date = new Date();
       SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_hhmmss");
-      String fileName = serverPath + "\\insertStatements_" + dateFormat.format(date) + ".zip";
+      String fileName = serverPath + File.separator+"insertStatements_" + dateFormat.format(date) + ".zip";
       File file = new File(fileName);
       try {
          file.createNewFile();
@@ -243,9 +243,9 @@ public class PurgeUnusedBackingDataAndTransactions {
       if (serverPath.equals("null")) {
          return null;
       }
-      Path purgeFolder = Paths.get(serverPath + "\\purge");
+      Path purgeFolder = Paths.get(serverPath + File.separator+"purge");
       if (Files.exists(purgeFolder)) {
-         serverPath = serverPath + "\\purge";
+         serverPath = serverPath + File.separator+"purge";
       }
       int i = 0;
       int[] counts = new int[5];
@@ -261,7 +261,7 @@ public class PurgeUnusedBackingDataAndTransactions {
       insertStatements.addAll(additionalStatements);
       Date date = new Date();
       SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_hhmmss");
-      String fileName = serverPath + "\\" + filePrefix + "_" + dateFormat.format(date) + ".zip";
+      String fileName = serverPath + File.separator+"" + filePrefix + "_" + dateFormat.format(date) + ".zip";
       File file = new File(fileName);
       try {
          file.createNewFile();

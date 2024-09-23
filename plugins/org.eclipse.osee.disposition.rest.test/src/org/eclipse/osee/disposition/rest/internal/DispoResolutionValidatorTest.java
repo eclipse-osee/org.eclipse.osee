@@ -39,22 +39,22 @@ public class DispoResolutionValidatorTest {
 
       validator.validate(annotation);
 
-      Assert.assertFalse(annotation.getIsAnalyze());
-      Assert.assertTrue(annotation.getNeedsModify());
+      Assert.assertFalse(annotation.setAndGetIsAnalyze());
+      Assert.assertTrue(annotation.setAndGetNeedsModify());
       Assert.assertFalse(annotation.getIsResolutionValid());
 
       annotation.setResolution("something");
       validator.validate(annotation);
 
-      Assert.assertFalse(annotation.getIsAnalyze());
-      Assert.assertTrue(annotation.getNeedsModify());
+      Assert.assertFalse(annotation.setAndGetIsAnalyze());
+      Assert.assertTrue(annotation.setAndGetNeedsModify());
       Assert.assertTrue(annotation.getIsResolutionValid());
 
       annotation.setResolutionType(ANALYSIS);
       validator.validate(annotation);
 
-      Assert.assertTrue(annotation.getIsAnalyze());
-      Assert.assertFalse(annotation.getNeedsModify());
+      Assert.assertTrue(annotation.setAndGetIsAnalyze());
+      Assert.assertFalse(annotation.setAndGetNeedsModify());
       Assert.assertTrue(annotation.getIsResolutionValid());
 
    }
