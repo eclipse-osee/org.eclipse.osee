@@ -24,11 +24,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.disposition.model.CopySetParamOption;
-import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
-import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
 import org.eclipse.osee.disposition.rest.internal.report.FindReruns;
@@ -66,28 +64,14 @@ public class DispoSetCopier {
       for (DispoItem sourceItem : sourceItems) {
          DispoItemData destItem = getCorrespondingDestItem(nameToDestItems, sourceItem);
 
-         if (destItem != null) {
-            if (Strings.isValid(destItem.getGuid()) || sourceItem.getStatus().equals(DispoStrings.Item_Pass)) {
-               DispoItemData newItem = createNewItemWithCopiedAnnotations(destItem, sourceItem, isCoverageCopy, reruns,
-                  report, allowOnlyValidResolutionTypes, validResolutionsTypes);
-               if (newItem != null) {
-                  modifiedItems.add(newItem);
-
-                  if (!newItem.getGuid().equals(
-                     sourceItem.getGuid()) && destItem.getAnnotationsList().size() != newItem.getAnnotationsList().size()) {
-                     String message = String.format("Had %s Dispositions now has %s",
-                        destItem.getAnnotationsList().size(), newItem.getAnnotationsList().size());
-                     report.addEntry(destItem.getName(), message, UPDATE);
-                  }
-               }
-            } else {
-               /**
-                * In the case of Coverage, the destination Item is the item created by a new import so we assign it the
-                * id of the source so that it will overwrite the source date with the new import data
-                */
-               destItem.setGuid(sourceItem.getGuid());
-               modifiedItems.add(destItem);
+         if (destItem != null && destItem.isValid()) {
+            destItem.setGuid(sourceItem.getGuid());
+            DispoItemData newItem = createNewItemWithCopiedAnnotations(destItem, sourceItem, isCoverageCopy, reruns,
+               report, allowOnlyValidResolutionTypes, validResolutionsTypes);
+            if (newItem != null && newItem.isValid()) {
+               modifiedItems.add(newItem);
             }
+
          } else {
             report.addEntry(sourceItem.getName(), "No matching item found in the Destination Set", WARNING);
          }
@@ -223,21 +207,8 @@ public class DispoSetCopier {
             }
          }
       }
-      return destItem;
-   }
 
-   private DispoItemData initNewItem(DispoItemData destItem, DispoItem sourceItem) {
-      DispoItemData newItem = new DispoItemData();
-      newItem.setDiscrepanciesList(destItem.getDiscrepanciesList());
-      List<DispoAnnotationData> newList = destItem.getAnnotationsList();
-      newItem.setAnnotationsList(newList);
-      if (Strings.isValid(destItem.getGuid())) {
-         newItem.setGuid(destItem.getGuid());
-      } else {
-         newItem.setGuid(sourceItem.getGuid());
-      }
-      newItem.setName(destItem.getName());
-      return newItem;
+      return destItem;
    }
 
    private Map<String, DispoAnnotationData> getLocToAnnotationMap(List<DispoAnnotationData> annotations) {
@@ -249,16 +220,6 @@ public class DispoSetCopier {
          locToAnnotationMap.put(annotation.getLocationRefs(), annotation);
       }
       return locToAnnotationMap;
-   }
-
-   private Map<String, String> generateLocationToTextMap(DispoItem item) {
-      Map<String, String> locationToText = new HashMap<>();
-      Map<String, Discrepancy> discrepancies = item.getDiscrepanciesList();
-      for (String key : discrepancies.keySet()) {
-         Discrepancy discrepancy = discrepancies.get(key);
-         locationToText.put(discrepancy.getLocation(), discrepancy.getText());
-      }
-      return locationToText;
    }
 
    public void copyCategories(Map<String, Set<DispoItemData>> destinationItems, Collection<DispoItem> sourceItems,
