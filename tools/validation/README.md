@@ -5,6 +5,8 @@ To run the validateFiles script locally, you will need to set up a couple of var
 ### EXCLUDED_KEYWORDS:
 - Just make a text file with the list of keywords you are wanting to exclude 
 - Example bash command: ``` $EXCLUDED_KEYWORDS=$(cat EXCLUDED_KEYWORDS.txt) ```
+- Text file should just include the list of keywords seperated by semicolons
+- Example Txt Contents: "keyword1;keyword2;keyword3"
 
 ### FILES:
 - Determine what files you want to check for the list of keywords and make sure they are staged
