@@ -23,7 +23,9 @@
 				queryParamsHandling="merge"
 				class="tw-w-landing-button tw-px-4 tw-py-7"
 				[attr.data-cy]="item.cypressLabel"
-				><mat-icon>{{ item.icon }}</mat-icon
+				><mat-icon class="material-icons-outlined">{{
+					item.icon
+				}}</mat-icon
 				><span class="tw-ml-2">{{ item.label }}</span></a
 			>
 		}
