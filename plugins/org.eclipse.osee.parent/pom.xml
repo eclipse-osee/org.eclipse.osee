@@ -11,11 +11,11 @@
 
 <!-- To only test certain modules run: mvn clean install -Dskiptests, then comment out these 3 modules and activate a profile below -->
 
-      		<modules>
-			<module>../../plugins/org.eclipse.osee.dep.target</module>
-			<module>../../plugins/org.eclipse.osee.x.parent</module>
-			<module>../../plugins/org.eclipse.osee.ide.parent</module>
-		</modules>
+	<modules>
+		<module>../../plugins/org.eclipse.osee.dep.target</module>
+		<module>../../plugins/org.eclipse.osee.x.parent</module>
+		<module>../../plugins/org.eclipse.osee.ide.parent</module>
+	</modules>
 
 
 	<properties>
