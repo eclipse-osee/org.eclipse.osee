@@ -17,7 +17,6 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**
  * @author Angel Avila
@@ -69,7 +68,6 @@ public class DispoItemData implements DispoItem {
    }
 
    public DispoItemData() {
-      this.guid = GUID.create();
       this.assignee = "UnAssigned";
       this.creationDate = new Date();
       this.lastUpdate = new Date();
