@@ -34,41 +34,13 @@
 		<ant-jsch-version>1.8.2</ant-jsch-version>
 		<ant-commons-net-version>1.7.0</ant-commons-net-version>
 		<commons-net-version>1.4.1</commons-net-version>
-		<jacoco-version>0.5.3.201107060350</jacoco-version>
-		<pmd-version>2.5</pmd-version>
-		<checkstyle-version>2.6</checkstyle-version>
 		<javadoc-version>2.9.1</javadoc-version>
 		<build-helper-maven-plugin-version>1.7</build-helper-maven-plugin-version>
 		<maven-resources-version>2.5</maven-resources-version>
 
-		<jaxdoclet-version>0.9.0</jaxdoclet-version>
-		<jersey-version>1.17.1</jersey-version>
-		<jersey-wadlgen-version>1.17.1</jersey-wadlgen-version>
-		<jaxrs-version>1.1.1</jaxrs-version>
-		<maven-clean-version>2.5</maven-clean-version>
-		<xerces-version>2.6.1</xerces-version>
-
-		<jaxb2-maven-version>1.5</jaxb2-maven-version>
-      	<egit-site>http://download.eclipse.org/egit/updates-4.4/</egit-site>
-		<jasmine-version>1.3.1.0</jasmine-version>
-
-		<platform-version-name>mars</platform-version-name>
-		<orbit-version>R20181128170323</orbit-version>
-		<orbit-version2>R20220830213456</orbit-version2>
-		<subversive-version>1.0</subversive-version>
-		<polarion-version>3.0</polarion-version>
-
-
-		<orbit-site>https://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
-		<orbit-site2>https://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version2}/repository</orbit-site2>
-		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
 
 		<osee-create-help-docs>true</osee-create-help-docs>
-
 		<osee-application-server-launch-ant>../../plugins/org.eclipse.osee.parent/tools/osee-application-server.xml</osee-application-server-launch-ant>
-
-<!-- 		<cbi-jdt-repo.url>http://repo.eclipse.org/content/repositories/eclipse-releases/</cbi-jdt-repo.url> -->
-<!-- 		<cbi-jdt-version>3.10.0.v20140604-1726</cbi-jdt-version> -->
 	</properties>
 
 	<licenses>
@@ -122,14 +94,12 @@
 					<format>'v'yyyyMMddHHmm'${build-alias}'</format>
 					<archiveSite>true</archiveSite>
 					<environments>
-						<!-- <environment> <os>macosx</os> <ws>carbon</ws> <arch>x86</arch>
-							</environment> <environment> <os>macosx</os> <ws>cocoa</ws> <arch>x86</arch>
-							</environment> -->
 						<environment>
 							<os>macosx</os>
 							<ws>cocoa</ws>
-							<arch>x86_64</arch>
+							<arch>aarch64</arch>
 						</environment>
+
 						<environment>
 							<os>win32</os>
 							<ws>win32</ws>
@@ -157,14 +127,12 @@
                      </artifact>
                  </target>
 					<environments>
-						<!-- <environment> <os>macosx</os> <ws>carbon</ws> <arch>x86</arch>
-							</environment> <environment> <os>macosx</os> <ws>cocoa</ws> <arch>x86</arch>
-							</environment> -->
 						<environment>
 							<os>macosx</os>
 							<ws>cocoa</ws>
-							<arch>x86_64</arch>
+							<arch>aarch64</arch>
 						</environment>
+
 						<environment>
 							<os>win32</os>
 							<ws>win32</ws>
@@ -458,56 +426,11 @@
 				</property>
 			</activation>
 			<properties>
-			<!--	<nebula-site>http://download.eclipse.org/technology/nebula/snapshot</nebula-site>
-				<wikitext-site>http://download.eclipse.org/tools/mylyn/update/weekly</wikitext-site>
-				<subversive-site>http://download.eclipse.org/technology/subversive/${subversive-version}/update-site</subversive-site>
-				<polarion-site>http://community.polarion.com/projects/subversive/download/eclipse/${polarion-version}/update-site</polarion-site> -->
-
 
 			</properties>
 			<repositories>
-
-
-			<!--	<repository>
-					<id>nebula</id>
-					<layout>p2</layout>
-					<url>${nebula-site}</url>
-				</repository>
-				<repository> <id>wikitext</id> <layout>p2</layout> <url>${wikitext-site}</url>
-					</repository>
-				<repository>
-					<id>polarion</id>
-					<layout>p2</layout>
-					<url>${polarion-site}</url>
-				</repository>
-				<repository>
-					<id>subversive</id>
-					<layout>p2</layout>
-					<url>${subversive-site}</url>
-				</repository> -->
 			</repositories>
 		</profile>
-		<!--
-
-		<profile>
-			<id>osee-all</id>
-			<activation>
-				<property>
-					<name>!osee-build-stage</name>
-				</property>
-			</activation>
-			<properties>
-				<eclipse-ip-site>${git-repo-root}/org.eclipse.ip/org.eclipse.ip.p2/target/repository</eclipse-ip-site>
-			</properties>
-			<repositories>
-				<repository>
-					<id>eclipse-ip</id>
-					<layout>p2</layout>
-					<url>${eclipse-ip-site}</url>
-				</repository>
-			</repositories>
-		</profile>
- -->
 
 		<profile>
 			<id>osee-all-ide</id>
