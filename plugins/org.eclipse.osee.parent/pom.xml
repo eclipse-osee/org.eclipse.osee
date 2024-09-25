@@ -49,17 +49,18 @@
 		<xerces-version>2.6.1</xerces-version>
 
 		<jaxb2-maven-version>1.5</jaxb2-maven-version>
-      <egit-site>http://download.eclipse.org/egit/updates-4.4/</egit-site>
+      	<egit-site>http://download.eclipse.org/egit/updates-4.4/</egit-site>
 		<jasmine-version>1.3.1.0</jasmine-version>
 
 		<platform-version-name>mars</platform-version-name>
-<!-- 		<orbit-version>R20150124073747</orbit-version> -->
 		<orbit-version>R20181128170323</orbit-version>
+		<orbit-version2>R20220830213456</orbit-version2>
 		<subversive-version>1.0</subversive-version>
 		<polarion-version>3.0</polarion-version>
 
 
-		<orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
+		<orbit-site>https://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
+		<orbit-site2>https://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version2}/repository</orbit-site2>
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
 
 		<osee-create-help-docs>true</osee-create-help-docs>
