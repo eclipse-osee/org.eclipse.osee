@@ -28,7 +28,6 @@
 						</goals>
 						<configuration>
 							<excludes>
-						
 								<feature id="edu.umd.cs.findbugs.plugin.eclipse" />
 							</excludes>
 						</configuration>
