@@ -19,8 +19,8 @@
 
    <includes
          id="net.sourceforge.vrapper"
-         version="0.0.0"/> 
-  
+         version="0.0.0"/>
+
    <requires>
       <import feature="org.eclipse.emf.ecore" version="2.5.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.emf.common" version="2.5.0" match="greaterOrEqual"/>
@@ -34,23 +34,23 @@
       <import plugin="org.apache.commons.dbcp" version="1.4.0" match="compatible"/>
       <import plugin="org.apache.commons.pool" version="1.6.0" match="compatible"/>
       <import plugin="org.jsoup"/>
-      <import plugin="org.hamcrest.core" version="1.3.0" match="greaterOrEqual" />		      
+      <import plugin="org.hamcrest.core" version="1.3.0" match="greaterOrEqual" />
    </requires>
-  
+
   <plugin
 	 id="org.hsqldb.hsqldb"
 	 download-size="0"
 	 install-size="0"
 	 version="0.0.0"
 	 unpack="false"/>
-   
+
    <plugin
 	 id="org.apache.ws.xmlschema.core"
 	 download-size="0"
 	 install-size="0"
 	 version="0.0.0"
 	 unpack="false"/>
-		   
+
    <plugin
          id="com.google.protobuf"
          download-size="0"
@@ -58,7 +58,7 @@
          version="0.0.0"
          unpack="false"/>
 
-  <plugin	
+  <plugin
 	id="org.apache.commons.lang3"
 	download-size="0"
         install-size="0"
@@ -71,7 +71,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-  
+
   <plugin
          id="org.yaml.snakeyaml"
          download-size="0"
@@ -99,7 +99,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-   
+
    <plugin
          id="io.swagger.core.v3.swagger-core"
          download-size="0"
@@ -120,7 +120,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-	   
+
    <plugin
          id="io.swagger.core.v3.swagger-models"
          download-size="0"
@@ -133,7 +133,7 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>  
+         unpack="false"/>
 
   <plugin
          id="org.apache.commons.math3"
@@ -155,35 +155,35 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
- 
+
   <plugin
          id="org.apache.poi.ooxml"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.apache.poi.ooxml.schemas"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.apache.xmlbeans"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
     <plugin
          id="org.eclipse.rmf.reqif10"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
     <plugin
          id="org.eclipse.rmf.reqif10.serialization"
          download-size="0"
@@ -204,7 +204,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-	
+
    <plugin
          id="org.eclipse.jgit.ssh.jsch"
          download-size="0"
@@ -232,21 +232,21 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="jakarta.xml.bind-api"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>       
-  
+         unpack="false"/>
+
   <plugin
          id="com.sun.istack.commons-runtime"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="javax.transaction"
          download-size="0"
@@ -259,7 +259,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-   
+
    <plugin
          id="ch.qos.logback.slf4j"
          download-size="0"
@@ -267,7 +267,7 @@
          version="0.0.0"
          fragment="true"
          unpack="false"/>
-  
+
   <plugin
          id="ch.qos.logback.core"
          download-size="0"
@@ -281,13 +281,13 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-   
+
    <plugin
          id="org.slf4j.api"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>    
+         unpack="false"/>
 
    <plugin
          id="javassist"
@@ -309,14 +309,14 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.eclipse.ui.intro.universal"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.eclipse.ui.intro.quicklinks"
          download-size="0"
@@ -324,7 +324,7 @@
          version="0.0.0"
          unpack="false"/>
 
-   
+
    <plugin
          id="io.github.classgraph"
          download-size="0"
@@ -336,114 +336,114 @@
          id="javaewah"
          download-size="0"
          install-size="0"
-         version="1.1.7.v20200107-0831"
-         unpack="false" />   
-   
+         version="1.1.13.v20211029-0839"
+         unpack="false" />
+
   <plugin
          id="org.apache.commons.commons-compress"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false" />   
-                
+         unpack="false" />
+
    <plugin
          id="com.google.guava"
          download-size="0"
          install-size="0"
          version="32.1.2.jre"
          unpack="false"/>
-  
+
    <plugin
          id="javax.activation"
          download-size="0"
          install-size="0"
          version="1.1.0.v201211130549"
          unpack="false"/>
-  
+
    <plugin
          id="com.google.gson"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-  
+
    <plugin
          id="org.apache.cxf.cxf-rt-rs-security-jose"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-   
+
    <plugin
          id="org.apache.cxf.cxf-rt-rs-service-description"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-                    
+
   <plugin
          id="org.apache.cxf.cxf-rt-rs-security-jose-jaxrs"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-  
+
   <plugin
          id="org.apache.cxf.cxf-rt-rs-json-basic"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>         
-         
+         unpack="false"/>
+
     <plugin
          id="org.apache.cxf.cxf-core"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.apache.cxf.cxf-rt-transports-http"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>  
-   
+         unpack="false"/>
+
    <plugin
          id="org.eclipse.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>				     
-    
+         unpack="false"/>
+
    <plugin
          id="org.eclipse.ui.browser"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>								
-   
+         unpack="false"/>
+
    <plugin
          id="org.apache.cxf.cxf-rt-rs-security-oauth2"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-          
+
    <plugin
          id="org.apache.cxf.cxf-rt-rs-client"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
- 
+
    <plugin
          id="org.apache.cxf.cxf-rt-frontend-jaxrs"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/> 
-    
+         unpack="false"/>
+
     <plugin
          id="org.apache.cxf.cxf-rt-security"
          download-size="0"
@@ -464,58 +464,58 @@
          install-size="0"
          version="0.0.0"
          unpack="false" />
-   
+
    <plugin
          id="javax.xml.rpc"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>  
-     
+         unpack="false"/>
+
     <plugin
          id="jakarta.xml.soap-api"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/> 
-   
+         unpack="false"/>
+
    <plugin
          id="javax.xml.ws"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false" />   
-   
+         unpack="false" />
+
    <plugin
          id="org.eclipse.sdk"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
-           
+
    <plugin
          id="org.eclipse.jdt.launching"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
-     
+
    <plugin
          id="org.eclipse.jdt.debug"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
-         
+
    <plugin
          id="org.eclipse.jdt.core"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>     
-         
+         version="0.0.0"/>
+
    <plugin
          id="org.eclipse.jdt.annotation"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>          
-         
+         version="0.0.0"/>
+
    <plugin
          id="javax.annotation"
          download-size="0"
@@ -528,22 +528,22 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false" /> 
+         unpack="false" />
 
     <plugin
          id="org.mockito"
          download-size="0"
          install-size="0"
-         version="0.0.0" 
+         version="0.0.0"
          unpack="false"/>
-			
+
    <plugin
          id="org.eclipse.osee.framework.skynet.core"
 	 download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-      
+
    <plugin
          id="org.eclipse.osee.framework.templates"
          download-size="0"
@@ -620,14 +620,14 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-   
+
    <plugin
          id="org.antlr.runtime"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.eclipse.jetty.http"
          download-size="0"
@@ -668,70 +668,70 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>   
-         
+         unpack="false"/>
+
    <plugin
          id="org.eclipse.jetty.util.ajax"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>          
-    
+         unpack="false"/>
+
    <plugin
          id="org.eclipse.oss.ajax"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>      
-         
+         version="0.0.0"/>
+
    <plugin
          id="org.xerial.sqlite-jdbc"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>   
-  
+         unpack="false"/>
+
    <plugin
          id="org.nibor.autolink"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-  
+
    <plugin
          id="com.vladsch.flexmark.ext-gitlab"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-	  
+
    <plugin
          id="com.vladsch.flexmark.ext-autolink"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
- 
+
    <plugin
          id="com.vladsch.flexmark.ext-toc"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-  
+
    <plugin
          id="com.vladsch.flexmark.ext-tables"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-  
+
    <plugin
          id="com.vladsch.flexmark.ext-gfm-tasklist"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-   
+
    <plugin
          id="com.vladsch.flexmark"
          download-size="0"
@@ -821,7 +821,7 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>         
+         unpack="false"/>
 
    <plugin
          id="jakarta.validation.jakarta.validation-api"
@@ -841,7 +841,7 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>         
+         unpack="false"/>
 
   <plugin
          id="org.glassfish.jaxb.txw2"
@@ -849,7 +849,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
   <plugin
          id="org.glassfish.hk2.osgi-resource-locator"
          download-size="0"

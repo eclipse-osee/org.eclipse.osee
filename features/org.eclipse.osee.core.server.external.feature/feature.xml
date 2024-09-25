@@ -36,14 +36,14 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin	
+   <plugin
       id="org.apache.commons.lang3"
       download-size="0"
       install-size="0"
       version="0.0.0"
       unpack="false"/>
-      
-   <plugin	
+
+   <plugin
       id="com.fasterxml.jackson.datatype.jackson-datatype-jsr310"
       download-size="0"
       install-size="0"
@@ -77,7 +77,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-    
+
    <plugin
          id="io.swagger.core.v3.swagger-core"
          download-size="0"
@@ -98,7 +98,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-	   
+
    <plugin
          id="io.swagger.core.v3.swagger-models"
          download-size="0"
@@ -140,8 +140,8 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
-   <plugin 
+
+   <plugin
          id="org.eclipse.sphinx.emf.serialization"
          download-size="0"
          install-size="0"
@@ -160,7 +160,7 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/> 
+         unpack="false"/>
 
    <plugin
          id="org.glassfish.jaxb.runtime"
@@ -182,35 +182,35 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
   <plugin
          id="org.apache.poi.ooxml.schemas"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
- 
+
   <plugin
          id="org.apache.xmlbeans"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="jakarta.xml.bind-api"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-   
+
    <plugin
          id="jakarta.xml.bind"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-   
+
    <plugin
          id="com.sun.istack.commons-runtime"
          download-size="0"
@@ -293,7 +293,7 @@
          id="javaewah"
          download-size="0"
          install-size="0"
-         version="1.1.7.v20200107-0831"
+         version="1.1.13.v20211029-0839"
          unpack="false"/>
 
    <plugin
@@ -302,14 +302,14 @@
          install-size="0"
          version="1.1.0.v201211130549"
          unpack="false"/>
-   
+
    <plugin
          id="org.glassfish.jaxb.txw2"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-   
+
    <plugin
          id="org.apache.cxf.cxf-rt-rs-service-description"
          download-size="0"
@@ -516,7 +516,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-   
+
    <plugin
          id="org.slf4j.api"
          download-size="0"
@@ -941,8 +941,8 @@
          id="org.apache.aries.blueprint.core"
          download-size="0"
          install-size="0"
-         version="0.0.0"/> 	
-   
+         version="0.0.0"/>
+
    <plugin
          id="org.apache.aries.proxy.api"
          download-size="0"
@@ -1215,7 +1215,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.eclipse.osee.define.operations.api"
          download-size="0"
@@ -1307,28 +1307,28 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>  
-   
+         unpack="false"/>
+
    <plugin
          id="org.eclipse.osee.testscript"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>  
-   
+         unpack="false"/>
+
    <plugin
          id="org.eclipse.osee.coverage"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>  
-   
+         unpack="false"/>
+
    <plugin
          id="org.eclipse.osee.mim"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>             
+         unpack="false"/>
 
    <plugin
          id="org.apache.xerces"
@@ -1350,56 +1350,56 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-  
+
    <plugin
          id="org.nibor.autolink"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-  
+
   <plugin
          id="org.xerial.sqlite-jdbc"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>  
-  
+         unpack="false"/>
+
   <plugin
          id="com.vladsch.flexmark.ext-gitlab"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-	  
+
   <plugin
          id="com.vladsch.flexmark.ext-autolink"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
- 
+
   <plugin
          id="com.vladsch.flexmark.ext-toc"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-  
+
    <plugin
          id="com.vladsch.flexmark.ext-tables"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-  
+
   <plugin
          id="com.vladsch.flexmark.ext-gfm-tasklist"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-   
+
   <plugin
          id="com.vladsch.flexmark"
          download-size="0"
@@ -1490,26 +1490,26 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
- 
+
     <plugin
          id="jakarta.validation.jakarta.validation-api"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-    
+
     <plugin
          id="com.google.guava.failureaccess"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-        
+
    <plugin
          id="com.sun.xml.fastinfoset.FastInfoset"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>         
-                 
+         unpack="false"/>
+
 </feature>
