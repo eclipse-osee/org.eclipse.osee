@@ -20,7 +20,7 @@ import { AddSubMessageDialogComponent } from '../dialogs/add-sub-message-dialog/
 import { AddSubMessageDialog } from '../types/AddSubMessageDialog';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { MatBadge } from '@angular/material/badge';
-import { MatFabButton, MatButton } from '@angular/material/button';
+import { MatMiniFabButton, MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -30,7 +30,7 @@ import { applicabilitySentinel } from '@osee/applicability/types';
 	selector: 'osee-message-table-toolbar-add-actions',
 	standalone: true,
 	imports: [
-		MatFabButton,
+		MatMiniFabButton,
 		MatIcon,
 		MatTooltip,
 		MatButton,
@@ -76,7 +76,7 @@ import { applicabilitySentinel } from '@osee/applicability/types';
 						: 'Add a message'
 				">
 				<button
-					mat-fab
+					mat-mini-fab
 					class="tertiary-fab"
 					[disabled]="isEditing() === false"
 					(click)="openNewMessageDialog()">

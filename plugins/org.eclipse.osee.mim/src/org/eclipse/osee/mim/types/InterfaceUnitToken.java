@@ -102,11 +102,11 @@ public class InterfaceUnitToken extends ArtifactAccessorResultWithGammas {
 
       CreateArtifact art = new CreateArtifact();
       art.setName(this.getName().getValue());
-      art.setTypeId(CoreArtifactTypes.InterfaceMessage.getIdString());
+      art.setTypeId(CoreArtifactTypes.InterfaceUnit.getIdString());
 
       List<Attribute> attrs = new LinkedList<>();
 
-      for (AttributeTypeToken type : CoreArtifactTypes.InterfaceMessage.getValidAttributeTypes()) {
+      for (AttributeTypeToken type : CoreArtifactTypes.InterfaceUnit.getValidAttributeTypes()) {
          String value = values.get(type);
          if (Strings.isInValid(value)) {
             continue;
