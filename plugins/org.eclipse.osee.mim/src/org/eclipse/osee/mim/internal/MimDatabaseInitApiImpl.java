@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -48,6 +49,7 @@ import org.eclipse.osee.mim.types.InterfaceNode;
 import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.InterfaceStructureToken;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
+import org.eclipse.osee.mim.types.InterfaceUnitToken;
 import org.eclipse.osee.mim.types.MIMImportUtil;
 import org.eclipse.osee.mim.types.MimImportSummary;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
@@ -140,6 +142,12 @@ public class MimDatabaseInitApiImpl implements MimDatabaseInitApi {
       List<PlatformTypeToken> pTypes = createPlatformTypes(summary);
       summary.getPlatformTypes().addAll(pTypes);
 
+      summary.getUnits().addAll(createUnits());
+      summary.getMessagePeriodicities().addAll(createMessagePeriodicities());
+      summary.getMessageRates().addAll(createMessageRates());
+      summary.getMessageTypes().addAll(createMessageTypes());
+      summary.getStructureCategories().addAll(createStructureCategories());
+
       summary.getConnectionTransportTypeRelations().put(connection.getIdString(),
          Arrays.asList(transportType.getIdString()));
       summary.getConnectionNodeRelations().put(connection.getIdString(),
@@ -172,7 +180,7 @@ public class MimDatabaseInitApiImpl implements MimDatabaseInitApi {
    }
 
    private TransportType createTransportType() {
-      TransportType transportType = new TransportType(getRandomId(), "Demo Transport");
+      TransportType transportType = new TransportType(getRandomId(), "Ethernet");
       transportType.setByteAlignValidation(true);
       transportType.setByteAlignValidationSize(8);
       transportType.setMinimumPublisherMultiplicity(1);
@@ -186,15 +194,15 @@ public class MimDatabaseInitApiImpl implements MimDatabaseInitApi {
    }
 
    private InterfaceConnection createConnection() {
-      InterfaceConnection connection = new InterfaceConnection(getRandomId(), "Demo Connection");
+      InterfaceConnection connection = new InterfaceConnection(getRandomId(), "Connection A-B");
       connection.setDescription("This is a demo connection");
       return connection;
    }
 
    private List<InterfaceNode> createNodes() {
       List<InterfaceNode> nodes = new LinkedList<>();
-      InterfaceNode nodeA = new InterfaceNode(getRandomId(), "Demo Node A");
-      InterfaceNode nodeB = new InterfaceNode(getRandomId(), "Demo Node B");
+      InterfaceNode nodeA = new InterfaceNode(getRandomId(), "Node A");
+      InterfaceNode nodeB = new InterfaceNode(getRandomId(), "Node B");
 
       nodes.add(nodeA);
       nodes.add(nodeB);
@@ -284,6 +292,59 @@ public class MimDatabaseInitApiImpl implements MimDatabaseInitApi {
          summary.getEnums().stream().map(e -> e.getIdString()).collect(Collectors.toList()));
 
       return pTypes;
+   }
+
+   private List<InterfaceUnitToken> createUnits() {
+      List<InterfaceUnitToken> units = new LinkedList<>();
+
+      InterfaceUnitToken unit = new InterfaceUnitToken(getRandomId(), "Seconds");
+      unit.setMeasurement("Time");
+      units.add(unit);
+
+      unit = new InterfaceUnitToken(getRandomId(), "Meters");
+      unit.setMeasurement("Distance");
+      units.add(unit);
+
+      unit = new InterfaceUnitToken(getRandomId(), "Meters/second");
+      unit.setMeasurement("Speed");
+      units.add(unit);
+
+      unit = new InterfaceUnitToken(getRandomId(), "Hertz");
+      unit.setMeasurement("Frequency");
+      units.add(unit);
+
+      return units;
+   }
+
+   private List<ArtifactAccessorResultWithoutGammas> createMessagePeriodicities() {
+      List<ArtifactAccessorResultWithoutGammas> periodicities = new LinkedList<>();
+      periodicities.add(new ArtifactAccessorResultWithoutGammas(getRandomId(), "Periodic"));
+      periodicities.add(new ArtifactAccessorResultWithoutGammas(getRandomId(), "Aperiodic"));
+      return periodicities;
+   }
+
+   private List<ArtifactAccessorResultWithoutGammas> createMessageRates() {
+      List<ArtifactAccessorResultWithoutGammas> rates = new LinkedList<>();
+      rates.add(new ArtifactAccessorResultWithoutGammas(getRandomId(), "1"));
+      rates.add(new ArtifactAccessorResultWithoutGammas(getRandomId(), "5"));
+      rates.add(new ArtifactAccessorResultWithoutGammas(getRandomId(), "10"));
+      rates.add(new ArtifactAccessorResultWithoutGammas(getRandomId(), "25"));
+      rates.add(new ArtifactAccessorResultWithoutGammas(getRandomId(), "Aperiodic"));
+      return rates;
+   }
+
+   private List<ArtifactAccessorResultWithoutGammas> createMessageTypes() {
+      List<ArtifactAccessorResultWithoutGammas> messageTypes = new LinkedList<>();
+      messageTypes.add(new ArtifactAccessorResultWithoutGammas(getRandomId(), "Operational"));
+      messageTypes.add(new ArtifactAccessorResultWithoutGammas(getRandomId(), "Connection"));
+      return messageTypes;
+   }
+
+   private List<ArtifactAccessorResultWithoutGammas> createStructureCategories() {
+      List<ArtifactAccessorResultWithoutGammas> categories = new LinkedList<>();
+      categories.add(new ArtifactAccessorResultWithoutGammas(getRandomId(), "Misc"));
+      categories.add(new ArtifactAccessorResultWithoutGammas(getRandomId(), "Test"));
+      return categories;
    }
 
    private long getRandomId() {
