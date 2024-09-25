@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 
 public class MimImportSummary {
    private String txComment;
@@ -30,6 +31,11 @@ public class MimImportSummary {
    private final List<InterfaceEnumerationSet> enumSets;
    private final List<InterfaceEnumeration> enums;
    private final List<CrossReference> crossReferences;
+   private final List<InterfaceUnitToken> units;;
+   private final List<ArtifactAccessorResultWithoutGammas> messagePeriodicities;
+   private final List<ArtifactAccessorResultWithoutGammas> messageRates;
+   private final List<ArtifactAccessorResultWithoutGammas> messageTypes;
+   private final List<ArtifactAccessorResultWithoutGammas> structureCategories;
    private final Map<String, List<String>> connectionTransportTypeRelations;
    private final Map<String, List<String>> connectionNodeRelations;
    private final Map<String, List<String>> connectionMessageRelations;
@@ -57,6 +63,11 @@ public class MimImportSummary {
       enumSets = new LinkedList<>();
       enums = new LinkedList<>();
       crossReferences = new LinkedList<>();
+      units = new LinkedList<>();
+      messagePeriodicities = new LinkedList<>();
+      messageRates = new LinkedList<>();
+      messageTypes = new LinkedList<>();
+      structureCategories = new LinkedList<>();
       connectionTransportTypeRelations = new HashMap<>();
       connectionNodeRelations = new HashMap<>();
       connectionMessageRelations = new HashMap<>();
@@ -122,6 +133,26 @@ public class MimImportSummary {
 
    public List<CrossReference> getCrossReferences() {
       return crossReferences;
+   }
+
+   public List<InterfaceUnitToken> getUnits() {
+      return units;
+   }
+
+   public List<ArtifactAccessorResultWithoutGammas> getMessagePeriodicities() {
+      return messagePeriodicities;
+   }
+
+   public List<ArtifactAccessorResultWithoutGammas> getMessageRates() {
+      return messageRates;
+   }
+
+   public List<ArtifactAccessorResultWithoutGammas> getMessageTypes() {
+      return messageTypes;
+   }
+
+   public List<ArtifactAccessorResultWithoutGammas> getStructureCategories() {
+      return structureCategories;
    }
 
    public Map<String, List<String>> getConnectionTransportTypeRelations() {

@@ -13,11 +13,15 @@
 package org.eclipse.osee.mim.types;
 
 import java.util.LinkedList;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.orcs.rest.model.transaction.AddRelation;
+import org.eclipse.osee.orcs.rest.model.transaction.CreateArtifact;
 import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderData;
 
 public class MIMImportUtil {
@@ -61,6 +65,25 @@ public class MIMImportUtil {
       }
       for (InterfaceEnumeration enumeration : summary.getEnums()) {
          data.getCreateArtifacts().add(enumeration.createArtifact(enumeration.getIdString(), applicId));
+      }
+      for (InterfaceUnitToken unit : summary.getUnits()) {
+         data.getCreateArtifacts().add(unit.createArtifact(unit.getIdString(), applicId));
+      }
+      for (ArtifactAccessorResultWithoutGammas messagePeriodicity : summary.getMessagePeriodicities()) {
+         data.getCreateArtifacts().add(createNamedIdArtifact(CoreArtifactTypes.InterfaceMessagePeriodicity,
+            messagePeriodicity.getName(), applicId));
+      }
+      for (ArtifactAccessorResultWithoutGammas messageRate : summary.getMessageRates()) {
+         data.getCreateArtifacts().add(
+            createNamedIdArtifact(CoreArtifactTypes.InterfaceRate, messageRate.getName(), applicId));
+      }
+      for (ArtifactAccessorResultWithoutGammas messageType : summary.getMessageTypes()) {
+         data.getCreateArtifacts().add(
+            createNamedIdArtifact(CoreArtifactTypes.InterfaceMessageTypeEnum, messageType.getName(), applicId));
+      }
+      for (ArtifactAccessorResultWithoutGammas structureCategory : summary.getStructureCategories()) {
+         data.getCreateArtifacts().add(
+            createNamedIdArtifact(CoreArtifactTypes.InterfaceStructureCategory, structureCategory.getName(), applicId));
       }
 
       // Create Relations
@@ -146,5 +169,14 @@ public class MIMImportUtil {
       rel.setaArtId(artAId);
       rel.setbArtId(artBId);
       return rel;
+   }
+
+   private static CreateArtifact createNamedIdArtifact(ArtifactTypeToken artType, String name,
+      ApplicabilityId applicId) {
+      CreateArtifact art = new CreateArtifact();
+      art.setName(name);
+      art.setTypeId(artType.getIdString());
+      art.setApplicabilityId(applicId.getIdString());
+      return art;
    }
 }
