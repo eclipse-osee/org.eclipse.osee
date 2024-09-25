@@ -13,6 +13,7 @@
 package org.eclipse.osee.framework.ui.skynet.notify;
 
 import java.util.Collection;
+import java.util.Collections;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.OseeEmail;
 import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
@@ -24,12 +25,12 @@ public class OseeEmailIde extends OseeEmail {
    private OseeEmailIde() {
    }
 
-   private OseeEmailIde(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject, String body, BodyType bodyType) {
-      super(toAddresses, fromAddress, replyToAddress, subject, body, bodyType);
+   private OseeEmailIde(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject, String body, BodyType bodyType, Collection<String> toAbridgedAddresses, String abridgedSubject) {
+      super(toAddresses, fromAddress, replyToAddress, subject, body, bodyType, toAbridgedAddresses, abridgedSubject);
    }
 
-   private OseeEmailIde(String fromEmail, String toAddress, String subject, String body, BodyType bodyType) {
-      super(fromEmail, toAddress, subject, body, bodyType);
+   private OseeEmailIde(String toAddress, String fromEmail, String subject, String body, BodyType bodyType, String toAbridgedAddress, String abridgedSubject) {
+      super(fromEmail, toAddress, subject, body, bodyType, toAbridgedAddress, abridgedSubject);
    }
 
    @Override
@@ -37,9 +38,11 @@ public class OseeEmailIde extends OseeEmail {
       Thread.currentThread().setContextClassLoader(new ExportClassLoader(ServiceUtil.getPackageAdmin()));
    }
 
-   public static void emailHtml(String fromEmail, Collection<String> emails, String subject, String htmlBody) {
+   public static void emailHtml(String fromEmail, Collection<String> toAddresses, String subject, String htmlBody,
+      Collection<String> toAbridgedAddresses, String abridgedSubject) {
       // TODO : Ensure that abridged emails are addressed when this method is actually utilized.
-      OseeEmail emailMessage = new OseeEmailIde(emails, fromEmail, fromEmail, subject, htmlBody, BodyType.Html);
+      OseeEmail emailMessage = new OseeEmailIde(toAddresses, fromEmail, fromEmail, subject, htmlBody, BodyType.Html,
+         toAbridgedAddresses, abridgedSubject);
       emailMessage.send();
    }
 
@@ -49,15 +52,16 @@ public class OseeEmailIde extends OseeEmail {
    }
 
    public static OseeEmailIde create(Collection<String> toAddresses, String fromAddress, String replyToAddress,
-      String subject, String body, BodyType bodyType) {
+      String subject, String body, BodyType bodyType, Collection<String> toAbridgedAddresses, String abridgedSubject) {
       loadDefaultMailServer();
-      return new OseeEmailIde(toAddresses, fromAddress, replyToAddress, subject, body, bodyType);
+      return new OseeEmailIde(toAddresses, fromAddress, replyToAddress, subject, body, bodyType, toAbridgedAddresses,
+         abridgedSubject);
    }
 
-   public static OseeEmailIde create(String fromEmail, String toAddress, String subject, String body,
-      BodyType bodyType) {
+   public static OseeEmailIde create(String fromEmail, String toAddress, String subject, String body, BodyType bodyType,
+      String toAbridgedAddress, String abridgedSubject) {
       loadDefaultMailServer();
-      return new OseeEmailIde(fromEmail, toAddress, subject, body, bodyType);
+      return new OseeEmailIde(toAddress, fromEmail, subject, body, bodyType, toAbridgedAddress, abridgedSubject);
    }
 
    private static void loadDefaultMailServer() {
@@ -65,6 +69,12 @@ public class OseeEmailIde extends OseeEmail {
          defaultMailServer = OseeSystemArtifacts.getGlobalPreferenceArtifact().getSoleAttributeValue(
             CoreAttributeTypes.DefaultMailServer, "");
       }
+   }
+
+   @Override
+   protected OseeEmail createAbridgedEmail(OseeEmail email) {
+      return OseeEmailIde.create(email.getToAbridgedAddresses(), email.getFromAddress(), email.getReplyToAddress(),
+         email.getAbridgedSubject(), getAbridgedBodyText(), email.getBodyType(), Collections.emptyList(), "");
    }
 
 }
