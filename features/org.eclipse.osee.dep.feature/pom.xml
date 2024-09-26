@@ -28,7 +28,7 @@
 						</goals>
 						<configuration>
 							<excludes>
-							   
+
 								<plugin id="org.slf4j.api"/>
 							    <plugin id="net.jini.jsk-lib"/>
 								<plugin id="net.jini.jsk-platform"/>
@@ -66,7 +66,7 @@
 								<plugin id=" org.eclipse.ptp.rm.jaxb.java11" />
 								<plugin id="javax.transaction" />
 								<plugin id="org.apache.poi.ooxml.schemas" />
-								<plugin id="org.eclipse.osgi" />		
+								<plugin id="org.eclipse.osgi" />
 								<plugin id="org.eclipse.osgi.services" />
 								<plugin id="org.eclipse.m2e.maven.runtime" />
 								<plugin id="javax.mail" />
@@ -116,8 +116,8 @@
 								<feature id="org.eclipse.mylyn.context_feature" />
 								<feature id="org.eclipse.mylyn.team_feature" />
 								<plugin id="org.apache.xml.resolver" />
-								<plugin id="org.apache.xml.serializer" />	
-								<plugin id="org.apache.axis" />								
+								<plugin id="org.apache.xml.serializer" />
+								<plugin id="org.apache.axis" />
 								<plugin id="org.aopalliance" />
 								<plugin id="jms.libraries" />
 								<plugin id="org.eclipse.wst.xml.ui" />
@@ -128,7 +128,7 @@
 								<plugin id="javax.wsdl" />
 								<plugin id="org.eclipse.m2e.maven.runtime.slf4j.simple" />
 								<plugin id="org.eclipse.xtext" />
-								<plugin id="org.antlr.runtime" />							
+								<plugin id="org.antlr.runtime" />
 								<plugin id="javax.annotation" />
 								<plugin id="org.cyberneko.html" />
 								<plugin id="org.apache.commons.io" />
@@ -144,14 +144,14 @@
 								<plugin id="org.eclipse.wst.xml.core" />
 								<plugin id="org.apache.ws.xmlschema.core" />
 								<plugin id="org.uddi4j" />
-								<plugin id="org.eclipse.wst.internet.monitor.core" />	
-								<plugin id="org.eclipse.wst.common.project.facet.ui" />			
-								<plugin id="org.eclipse.jetty.webapp" />	
-								<plugin id="org.eclipse.jetty.xml" />								
+								<plugin id="org.eclipse.wst.internet.monitor.core" />
+								<plugin id="org.eclipse.wst.common.project.facet.ui" />
+								<plugin id="org.eclipse.jetty.webapp" />
+								<plugin id="org.eclipse.jetty.xml" />
 								<plugin id="org.eclipse.wst.sse.core" />
 								<plugin id="org.eclipse.wst.common.uriresolver" />
 								<plugin id="org.eclipse.wst.common.core" />
-								<plugin id="org.eclipse.wst.common.emf" />								
+								<plugin id="org.eclipse.wst.common.emf" />
 								<plugin id="org.eclipse.gmf.runtime.emf.core" />
 								<plugin id="org.eclipse.gmf.runtime.emf.clipboard.core" />
 								<plugin id="org.eclipse.gmf.runtime.emf.type.core" />
@@ -171,17 +171,17 @@
 								<plugin id="org.eclipse.uml2.common" />
 								<plugin id="org.eclipse.uml2.common.edit" />
 								<plugin id="org.apache.batik.pdf" />
-								<plugin id="org.eclipse.ocl.common" />		
-								<plugin id="javax.xml.soap" />								
+								<plugin id="org.eclipse.ocl.common" />
+								<plugin id="javax.xml.soap" />
 								<plugin id="org.hamcrest" />
 								<plugin id="javax.xml.bind" />
-								<plugin id="org.apache.xmlgraphics" />	
-								<plugin id="org.eclipse.wst.xsd.core" />					
+								<plugin id="org.apache.xmlgraphics" />
+								<plugin id="org.eclipse.wst.xsd.core" />
 								<plugin id="org.eclipse.ocl.ecore" />
-								<feature id="org.eclipse.graphiti.feature" />					
+								<feature id="org.eclipse.graphiti.feature" />
 								<feature id="org.eclipse.graphiti.feature.source" />
 								<feature id="org.eclipse.equinox.server.jetty" />
-								<feature id="org.eclipse.emf.doc" />								
+								<feature id="org.eclipse.emf.doc" />
 								<feature id="org.eclipse.xtext.runtime" />
 								<feature id="'org.eclipse.wst.xml_ui.feature" />
 								<feature id="org.eclipse.xtext.xbase" />
@@ -192,14 +192,14 @@
 							  	<feature id="org.eclipse.wst.server_userdoc.feature" />
 								<feature id="org.eclipse.wst.xsl.feature" />
 							        <plugin id="java_cup.runtime" />
-								<feature id="org.eclipse.wst.server_core.feature" />		
-							        <feature id="org.eclipse.wst.server_adapters.feature" />	
-							        <feature id="org.eclipse.m2e.feature" />	
-					                        <feature id="org.eclipse.wst.server_ui.feature" />																					
+								<feature id="org.eclipse.wst.server_core.feature" />
+							        <feature id="org.eclipse.wst.server_adapters.feature" />
+							        <feature id="org.eclipse.m2e.feature" />
+					                        <feature id="org.eclipse.wst.server_ui.feature" />
 								<feature id="org.eclipse.jgit.lfs" />
 								<feature id="org.eclipse.wst.xml_userdoc.feature" />
 								<feature id="org.eclipse.wst.web_ui.feature" />
-								<feature id="org.eclipse.wst.jsdt.feature" />							
+								<feature id="org.eclipse.wst.jsdt.feature" />
 								<feature id="org.eclipse.xsd.edit" />
 								<feature id="org.eclipse.wst.common_ui.feature" />
 								<feature id="org.eclipse.wst.common.fproj" />
@@ -235,6 +235,8 @@
 								<feature id="org.eclipse.ecf.filetransfer.httpclient4.feature.source" />
 								<feature id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature" />
 								<feature id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature.source" />
+								<feature id="org.eclipse.ecf.filetransfer.httpclient5.feature" />
+								<feature id="org.eclipse.ecf.filetransfer.httpclient5.feature.source" />
 								<feature id="org.eclipse.papyrus.sdk.feature" />
 								<feature id="net.sourceforge.vrapper" />
 								<plugin id="net.jini" />
@@ -243,9 +245,9 @@
 					</execution>
 				</executions>
 			</plugin>
-			
-			
-			
+
+
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
@@ -285,9 +287,9 @@
 						</goals>
 					</execution>
 				</executions>
-				
+
 			</plugin>
-			
+
 		</plugins>
 	</build>
 

@@ -152,7 +152,7 @@
 		<repository>
 			<id>ecf</id>
 			<layout>p2</layout>
-			<url>https://download.eclipse.org/rt/ecf/3.14.18/site.p2/3.14.9.v20200713-0653</url>
+			<url>https://download.eclipse.org/rt/ecf/3.14.34/site.p2/3.14.34.v20221105-0315</url>
 		</repository>
 
 		<repository>
