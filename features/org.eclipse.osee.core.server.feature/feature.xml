@@ -16,20 +16,20 @@
    <license url="%licenseURL">
       %license
    </license>
-         
-   <plugin  
+
+   <plugin
          id="org.objectweb.asm"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>     
-   
+         unpack="false"/>
+
    <plugin
          id="org.eclipse.oss.ajax"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
-                       
+
    <plugin
          id="javax.annotation"
          download-size="0"
@@ -177,7 +177,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.eclipse.osee.web.deploy"
          download-size="0"
@@ -204,7 +204,7 @@
          id="javax.activation"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.2.2.v20201119-1642"
          unpack="false"/>
 
    <plugin
@@ -459,7 +459,7 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/> 
+         unpack="false"/>
 
    <plugin
          id="org.apache.cxf.jaxrs.client"
@@ -467,20 +467,20 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-   
+
    <plugin
          id="org.apache.cxf.cxf-rt-rs-client"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
- 
+
      <plugin
          id="org.apache.cxf.cxf-rt-frontend-jaxrs"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/> 
+         unpack="false"/>
 
   <plugin
          id="org.apache.cxf.cxf-rt-rs-security-oauth2"
@@ -488,7 +488,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-  
+
    <plugin
          id="org.apache.cxf.jaxrs.model.wadl"
          download-size="0"
@@ -622,7 +622,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.eclipse.osee.define.rest.api"
          download-size="0"
@@ -636,13 +636,13 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
 	<plugin
          id="org.eclipse.osee.accessor"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>   
+         unpack="false"/>
    <plugin
          id="org.eclipse.osee.testscript"
          download-size="0"
@@ -654,13 +654,13 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>      
+         unpack="false"/>
    <plugin
          id="org.eclipse.osee.mim"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>          
+         unpack="false"/>
 
    <plugin
          id="org.eclipse.osee.app"
@@ -736,18 +736,18 @@
          id="org.apache.aries.blueprint.core"
          download-size="0"
          install-size="0"
-         version="0.0.0"/> 	
+         version="0.0.0"/>
 	  <plugin
          id="org.apache.aries.proxy.api"
          download-size="0"
          install-size="0"
          version="0.0.0"/>
-         
+
        <plugin
          id="org.apache.aries.util"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>  
+         version="0.0.0"/>
 
    <plugin
          id="org.eclipse.equinox.cm"
@@ -847,7 +847,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-        
+
    <plugin
          id="org.apache.cxf.core.config"
          download-size="0"
@@ -855,5 +855,5 @@
          version="0.0.0"
          fragment="true"
          unpack="false"/>
-         
+
 </feature>

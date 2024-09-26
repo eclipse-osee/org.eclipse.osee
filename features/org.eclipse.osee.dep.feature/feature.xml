@@ -2000,7 +2000,7 @@
          id="javax.activation"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.2.2.v20201119-1642"
          unpack="false"/>
 
    <plugin

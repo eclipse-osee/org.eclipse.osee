@@ -166,8 +166,8 @@ http_jar(
 
 http_jar(
       name = "javax_activation",
-      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.activation_1.1.0.v201211130549.jar&r=1",
-      downloaded_file_name = "javax.activation_1.1.0.v201211130549.jar"
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/javax.activation_1.2.2.v20201119-1642.jar&r=1",
+      downloaded_file_name = "javax.activation_1.2.2.v20201119-1642.jar"
 )
 
 http_jar(
