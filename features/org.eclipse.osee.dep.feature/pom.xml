@@ -230,11 +230,7 @@
 								<feature id="org.eclipse.ecf.filetransfer.feature.source" />
 								<feature id="org.eclipse.ecf.filetransfer.ssl.feature" />
 								<feature id="org.eclipse.ecf.filetransfer.ssl.feature.source" />
-								<feature id="org.eclipse.ecf.filetransfer.httpclient4.feature" />
 								<feature id="org.eclipse.equinox.core.feature" />
-								<feature id="org.eclipse.ecf.filetransfer.httpclient4.feature.source" />
-								<feature id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature" />
-								<feature id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature.source" />
 								<feature id="org.eclipse.ecf.filetransfer.httpclient5.feature" />
 								<feature id="org.eclipse.ecf.filetransfer.httpclient5.feature.source" />
 								<feature id="org.eclipse.papyrus.sdk.feature" />

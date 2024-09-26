@@ -316,22 +316,6 @@
             version="0.0.0"/>
 
       <includes
-            id="org.eclipse.ecf.filetransfer.httpclient4.feature"
-            version="0.0.0"/>
-
-      <includes
-            id="org.eclipse.ecf.filetransfer.httpclient4.feature.source"
-            version="0.0.0"/>
-
-      <includes
-            id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature"
-            version="0.0.0"/>
-
-      <includes
-            id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature.source"
-            version="0.0.0"/>
-
-      <includes
             id="org.eclipse.ecf.filetransfer.httpclient5.feature"
             version="0.0.0"/>
 
