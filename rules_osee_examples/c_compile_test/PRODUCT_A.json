@@ -2,6 +2,7 @@
     {
         "name":"PRODUCT_A",
         "group":"",
-        "features":["ENGINE_5=A2543","JHU_CONTROLLER=EXCLUDED","ROBOT_ARM_LIGHT=EXCLUDED","ROBOT_SPEAKER=SPKR_A"]
+        "features":["ENGINE_5=A2543","JHU_CONTROLLER=EXCLUDED","ROBOT_ARM_LIGHT=EXCLUDED","ROBOT_SPEAKER=SPKR_A"],
+        "substitutes":[]
     }
 ]
