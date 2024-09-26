@@ -69,3 +69,4 @@ crate.from_cargo(
 )
 use_repo(crate, "crates")
 register_toolchains("//:local_bat_toolchain")
+register_toolchains("//:local_bat_toolchain_win")
