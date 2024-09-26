@@ -24,6 +24,11 @@ export const routes: Routes = [
 			},
 			{
 				path: '',
+				loadComponent: () => import('@osee/toolbar/logo'),
+				outlet: 'toolbarLogo',
+			},
+			{
+				path: '',
 				loadComponent: () =>
 					import('./lib/message-filter/message-filter.component'),
 				outlet: 'navigationHeader',

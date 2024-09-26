@@ -19,7 +19,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterOutlet } from '@angular/router';
 import { ToolbarComponent } from './toolbar.component';
-import { MatIconMock } from '@osee/shared/testing';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
 	selector: 'osee-display-user',
@@ -38,10 +38,10 @@ describe('ToolbarComponent', () => {
 				imports: [
 					MatToolbarModule,
 					MatButtonModule,
-					MatIconMock,
 					RouterOutlet,
 					NgIf,
 					AsyncPipe,
+					MatIcon,
 					MatProgressSpinnerModule,
 					MockOseeUserComponent,
 				],

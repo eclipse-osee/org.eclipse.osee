@@ -16,7 +16,7 @@ import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatToolbar } from '@angular/material/toolbar';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { SideNavService } from '@osee/shared/services/layout';
 import { HttpLoadingService } from '@osee/shared/services/network';
 import { map } from 'rxjs';
@@ -33,7 +33,6 @@ import { DisplayUserComponent } from './user-display/display-user.component';
 		MatIconButton,
 		MatIcon,
 		MatProgressSpinner,
-		RouterLink,
 	],
 	styles: [],
 	template: `<mat-toolbar class="tw-relative tw-h-[6vh] tw-w-screen">
@@ -49,13 +48,7 @@ import { DisplayUserComponent } from './user-display/display-user.component';
 				</button>
 
 				@if (oseeToolbar) {
-					<a
-						class="tw-h-[55px] tw-w-[55px]"
-						routerLink="/">
-						<mat-icon
-							class="tw-h-[55px] tw-w-[55px] tw-text-black dark:tw-text-white"
-							svgIcon="osee_logo"></mat-icon>
-					</a>
+					<router-outlet name="toolbarLogo"></router-outlet>
 				}
 				<router-outlet
 					name="title"
