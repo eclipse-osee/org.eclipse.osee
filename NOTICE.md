@@ -600,6 +600,10 @@ org.eclipse.e4.tools.compat
 
  * License: Eclipse Public License - v 2.0
 
+org.eclipse.e4.tools.emf.ui
+
+ * License: Eclipse Public License - v 2.0
+
 org.eclipse.e4.tools.jdt.templates
 
  * License: Eclipse Public License - v 2.0

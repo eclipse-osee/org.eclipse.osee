@@ -208,6 +208,7 @@
 								<feature id="org.eclipse.core.runtime.feature" />
 								<feature id="org.eclipse.xtext.sdk" />
 								<feature id="org.eclipse.emf" />
+								<feature id="org.eclipse.e4.tools.emf.ui" />
 								<feature id="org.eclipse.egit.mylyn" />
 								<feature id="org.eclipse.emf.mwe2.language.sdk" />
 								<feature id="org.eclipse.emf.mwe2.runtime.sdk" />

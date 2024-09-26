@@ -410,7 +410,7 @@
             unpack="false"/>
 
       <plugin
-            id="org.apache.commons.math3"
+            id="org.eclipse.e4.tools.emf.ui"
             download-size="0"
             install-size="0"
             version="0.0.0"

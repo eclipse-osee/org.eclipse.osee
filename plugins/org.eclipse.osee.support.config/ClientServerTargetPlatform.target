@@ -189,6 +189,7 @@
 <plugin id="org.eclipse.e4.emf.xpath"/>
 <plugin id="org.eclipse.e4.emf.xpath.source"/>
 <plugin id="org.eclipse.e4.tools"/>
+<plugin id="org.eclipse.e4.tools.emf.ui"/>
 <plugin id="org.eclipse.e4.tools.compat"/>
 <plugin id="org.eclipse.e4.tools.jdt.templates"/>
 <plugin id="org.eclipse.e4.tools.services"/>
