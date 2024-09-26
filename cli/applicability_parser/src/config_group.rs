@@ -46,11 +46,11 @@ fn parse_end<'a>(
 ) -> impl FnMut(
     &'a str,
 ) -> IResult<
-    &str,
+    &'a str,
     (
         u8,
         Vec<ApplicabilityParserSyntaxTag>,
-        (Option<u8>, Option<&str>),
+        (Option<u8>, Option<&'a str>),
     ),
 > {
     map(
@@ -67,7 +67,7 @@ fn parse_end<'a>(
 }
 
 fn config_group_tag_parser<'a>(
-    starting_parser: impl FnMut(&'a str) -> IResult<&str, u8>,
+    starting_parser: impl FnMut(&'a str) -> IResult<&'a str, u8>,
     custom_end_comment_syntax: &'a str,
 ) -> impl FnMut(&'a str) -> IResult<&'a str, Vec<ApplicTokens>> {
     applicability_tag(starting_parser, end_tag_parser(custom_end_comment_syntax))
@@ -75,14 +75,14 @@ fn config_group_tag_parser<'a>(
 fn config_group_contents_parser<'a>(
     custom_start_comment_syntax: &'a str,
     custom_end_comment_syntax: &'a str,
-    starting_parser: impl FnMut(&'a str) -> IResult<&str, u8>,
+    starting_parser: impl FnMut(&'a str) -> IResult<&'a str, u8>,
 ) -> impl FnMut(
     &'a str,
 ) -> IResult<
     &'a str,
     (
         Vec<ApplicTokens>,
-        Option<&str>,
+        Option<&'a str>,
         Vec<ApplicabilityParserSyntaxTag>,
     ),
 > {
@@ -106,7 +106,7 @@ fn else_parser<'a>(
     (
         u8,
         Vec<ApplicabilityParserSyntaxTag>,
-        (Option<u8>, Option<&str>),
+        (Option<u8>, Option<&'a str>),
     ),
 > {
     let end_parser = tuple((
@@ -126,7 +126,7 @@ fn else_parser<'a>(
 fn config_group_parser<'a>(
     custom_start_comment_syntax: &'a str,
     custom_end_comment_syntax: &'a str,
-    starting_parser: impl FnMut(&'a str) -> IResult<&str, u8>,
+    starting_parser: impl FnMut(&'a str) -> IResult<&'a str, u8>,
 ) -> impl FnMut(
     &'a str,
 ) -> IResult<
@@ -134,13 +134,13 @@ fn config_group_parser<'a>(
     (
         (
             Vec<ApplicTokens>,
-            Option<&str>,
+            Option<&'a str>,
             Vec<ApplicabilityParserSyntaxTag>,
         ),
         (
             u8,
             Vec<ApplicabilityParserSyntaxTag>,
-            (Option<u8>, Option<&str>),
+            (Option<u8>, Option<&'a str>),
         ),
     ),
 > {

@@ -1257,8 +1257,8 @@ mod parse_applic_tags_tests {
     }
 }
 pub fn applicability_tag<'a>(
-    starting_parser: impl FnMut(&'a str) -> IResult<&str, u8>,
-    ending_parser: impl FnMut(&'a str) -> IResult<&str, &str>,
+    starting_parser: impl FnMut(&'a str) -> IResult<&'a str, u8>,
+    ending_parser: impl FnMut(&'a str) -> IResult<&'a str, &'a str>,
 ) -> impl FnMut(&'a str) -> IResult<&'a str, Vec<ApplicTokens>> {
     // theory of execution:
     // 1. parse ! or full text to start off until a space occurs
