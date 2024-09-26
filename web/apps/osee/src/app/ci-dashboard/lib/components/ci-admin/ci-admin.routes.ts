@@ -15,22 +15,22 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
 	{
 		path: '',
-		title: 'CI Dashboard',
+		title: 'Zenith - Admin',
 		loadComponent: () => import('./ci-admin.component'),
 	},
 	{
 		path: ':branchType',
-		title: 'CI Dashboard',
+		title: 'Zenith - Admin',
 		loadComponent: () => import('./ci-admin.component'),
 	},
 	{
 		path: ':branchType/:branchId',
-		title: 'CI Dashboard',
+		title: 'Zenith - Admin',
 		loadComponent: () => import('./ci-admin.component'),
 	},
 	{
 		path: ':branchType/:branchId/:ciSet',
-		title: 'CI Dashboard',
+		title: 'Zenith - Admin',
 		loadComponent: () => import('./ci-admin.component'),
 	},
 ];

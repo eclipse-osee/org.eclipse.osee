@@ -223,6 +223,9 @@
 			"@osee/toolbar/component": [
 				"src/app/layout/lib/toolbar/osee-toolbar/osee-toolbar.component"
 			],
+			"@osee/toolbar/logo": [
+				"src/app/layout/lib/toolbar/osee-logo/osee-logo.component"
+			],
 			"@osee/shared/directives": ["src/app/shared/directives"],
 			"@osee/shared/utils": ["src/app/shared/utils"],
 			"@osee/shared/resolvers": ["src/app/shared/resolvers"],
