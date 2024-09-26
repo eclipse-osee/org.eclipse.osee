@@ -6,7 +6,7 @@
 </locations>
 <includeBundles>
 <plugin id="javax.validation"/>
-<plugin id="io.github.classgraph"/>	
+<plugin id="io.github.classgraph"/>
 <plugin id="ch.qos.logback.classic"/>
 <plugin id="ch.qos.logback.core"/>
 <plugin id="ch.qos.logback.slf4j"/>
@@ -573,9 +573,9 @@
 <plugin id="org.junit"/>
 <plugin id="org.junit.source"/>
 <plugin id="org.mockito"/>
-<plugin id="org.objectweb.asm" version="8.0.1.v20200420-1007"/>
+<plugin id="org.objectweb.asm" version="9.3.0.v20220409-0157"/>
 <plugin id="org.objectweb.asm.source"/>
-<plugin id="org.objectweb.asm.tree" version="8.0.1.v20200420-1007"/>
+<plugin id="org.objectweb.asm.tree" version="9.3.0.v20220409-0157"/>
 <plugin id="org.objectweb.asm.tree.source"/>
 <plugin id="org.objenesis"/>
 <plugin id="org.openoffice"/>

@@ -40,105 +40,105 @@
       <import plugin="org.apache.commons.logging" version="1.1.1" match="equivalent"/>
       <import plugin="javax.wsdl"/>
    </requires>
-     
+
      <plugin
          id="org.apache.cxf.cxf-rt-rs-security-jose"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
      <plugin
          id="org.apache.cxf.cxf-rt-rs-security-jose-jaxrs"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>         
-     
+         unpack="false"/>
+
    <plugin
          id="javax.transaction"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-  
+
     <plugin
          id="org.apache.cxf.cxf-rt-rs-json-basic"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>     
-   
+         unpack="false"/>
+
     <plugin
          id="org.eclipse.equinox.common"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-   
+
     <plugin
          id="org.eclipse.equinox.security"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
     <plugin
          id="org.eclipse.equinox.event"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
     <plugin
          id="org.eclipse.equinox.http.jetty"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/> 
-               
+         unpack="false"/>
+
     <plugin
          id="org.eclipse.equinox.launcher"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/> 
-           
+         unpack="false"/>
+
     <plugin
          id="org.eclipse.equinox.preferences"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>   
-    
+         unpack="false"/>
+
     <plugin
          id="org.eclipse.equinox.console"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>                             
-   
+         unpack="false"/>
+
      <plugin
          id="org.eclipse.equinox.event"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>          
-   
+         unpack="false"/>
+
    <plugin
          id="org.eclipse.sdk"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-  
+
    <plugin
          id="com.fasterxml.jackson.core.jackson-core"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="com.fasterxml.jackson.core.jackson-annotations"
          download-size="0"
@@ -153,16 +153,16 @@
          install-size="0"
          version="0.0.0"
          fragment="true"
-         unpack="false"/>         
-        
+         unpack="false"/>
+
    <plugin
          id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base"
          download-size="0"
          install-size="0"
          version="0.0.0"
          fragment="true"
-         unpack="false"/>  
-         
+         unpack="false"/>
+
    <plugin
          id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider"
          download-size="0"
@@ -170,14 +170,14 @@
          version="0.0.0"
          fragment="true"
          unpack="false"/>
-         
+
    <plugin
          id="javax.servlet"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.apache.commons.logging"
          download-size="0"
@@ -344,7 +344,7 @@
          id="org.objectweb.asm"
          download-size="0"
          install-size="0"
-         version="8.0.1.v20200420-1007"
+         version="9.3.0.v20220409-0157"
          unpack="false"/>
 
      <plugin
@@ -360,7 +360,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.apache.commons.dbcp"
          download-size="0"
@@ -395,7 +395,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
     <plugin
          id="org.eclipse.osgi.services"
          download-size="0"
@@ -409,7 +409,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-     
+
    <plugin
          id="org.eclipse.osgi"
          download-size="0"
@@ -423,8 +423,8 @@
          install-size="0"
          version="0.0.0"
          fragment="true"
-         unpack="false"/>      
-         
+         unpack="false"/>
+
    <plugin
          id="org.apache.ws.xmlschema.core"
          download-size="0"
@@ -438,14 +438,14 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/> 
+         unpack="false"/>
 
    <plugin
          id="org.apache.cxf.cxf-rt-transports-http"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/> 
+         unpack="false"/>
 
    <plugin
          id="org.apache.cxf.cxf-rt-rs-client"
@@ -453,14 +453,14 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
- 
+
     <plugin
          id="org.apache.cxf.cxf-rt-frontend-jaxrs"
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/> 
-  
+         unpack="false"/>
+
     <plugin
          id="org.apache.cxf.cxf-rt-security"
          download-size="0"
