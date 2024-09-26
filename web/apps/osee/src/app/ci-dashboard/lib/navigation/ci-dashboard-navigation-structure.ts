@@ -30,7 +30,7 @@ export const ciNavigationStructure: navigationElement[] = [
 		isDropdownOpen: false,
 		requiredRoles: [],
 		routerLink: '/ci/allScripts',
-		icon: 'ssid_chart',
+		icon: 'insights',
 		description: '',
 		usesBranch: false,
 		children: [

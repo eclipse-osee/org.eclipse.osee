@@ -22,7 +22,7 @@ import { navigationElement } from '@osee/shared/types';
 import { concatMap, from, iif, of, reduce, skip, switchMap } from 'rxjs';
 
 const _navItems = navigationStructure[0].children.filter(
-	(c) => c.label === 'Messaging Configuration'
+	(c) => c.label === 'MIM'
 )[0].children;
 @Component({
 	selector: 'osee-messaging',
