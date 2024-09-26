@@ -15,7 +15,7 @@ import { RoleGuard } from '@osee/auth';
 import { navigationStructure } from '@osee/layout/routing';
 
 const messaging = navigationStructure[0].children.filter(
-	(c) => c.label === 'Messaging Configuration'
+	(c) => c.label === 'MIM'
 )[0];
 const transports = messaging.children.find(
 	(page) => page.label === 'Transport Type Manager'
@@ -35,7 +35,7 @@ const typeSearch = messaging.children.find(
 const connections = messaging.children.find(
 	(page) => page.label === 'Connection View'
 );
-const help = messaging.children.find((page) => page.label === 'Help');
+const help = messaging.children.find((page) => page.label === 'MIM Help');
 const lists = messaging.children.find(
 	(page) => page.label === 'Enumeration List Configuration'
 );
