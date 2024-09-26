@@ -47,6 +47,7 @@
 
 		<orbit-site>https://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
 		<orbit-site2>https://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version2}/repository</orbit-site2>
+		<orbit-site3>https://download.eclipse.org/tools/orbit/simrel/orbit-aggregation/release/4.29.0</orbit-site3>
 		<eclipse-site>https://download.eclipse.org/releases/2022-06/202206151000/</eclipse-site>
 
 		<nebula-site>https://download.eclipse.org/nebula/updates/release/${nebula-version}</nebula-site>
@@ -157,7 +158,7 @@
 		<repository>
 			<id>orbit202309</id>
 			<layout>p2</layout>
-			<url>https://download.eclipse.org/tools/orbit/simrel/orbit-aggregation/release/4.29.0</url>
+			<url>${orbit-site3}</url>
 		</repository>
 
 		<repository>
