@@ -15,7 +15,7 @@ java_import(
 		"javax.ws.rs_2.1.6.v20221203-1659.jar",
                 "javax.xml.bind_2.2.0.v201105210648.jar",
                 "javax.xml_1.4.1.v20220503-2331.jar",
-                "javax.activation_1.2.2.v20201119-1642.jar",
+                "javax.activation_1.1.0.v201211130549.jar",
                 "javax.xml.ws_2.1.0.v200902101523.jar",
                 "javax.xml.soap_1.3.0.v201105210645.jar",
                 "javax.servlet_3.1.0.v201410161800.jar",
