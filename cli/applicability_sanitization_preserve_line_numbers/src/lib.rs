@@ -41,10 +41,10 @@ pub trait SanitizeApplicabilityWithLinePreservation {
     /// * `config_name` - Name of the product line configuration/configuration group that the document is being processed for.
     /// * `substitutes` - The substitutions that are valid for a given product line configuration.
     /// * `parent_group` - Optional configuration group that has ownership over the current product line configuration.
-    /// By default, most product line configurations do not belong to a group.
-    /// A Configuration Group should not have a parent_group.
+    ///    By default, most product line configurations do not belong to a group.
+    ///    A Configuration Group should not have a parent_group.
     /// * `child_configurations` - The configurations that belong to this configuration group.
-    /// Configurations should not have this defined.
+    ///    Configurations should not have this defined.
     /// * `custom_start_comment_syntax` - Syntax that should be used to start a comment in the desired file format.
     /// * `custom_end_comment_syntax` - Syntax that should be used to end a comment in the desired file format.
     ///

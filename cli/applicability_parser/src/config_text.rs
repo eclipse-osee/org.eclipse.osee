@@ -27,7 +27,7 @@ use super::end::end_tag_parser;
 pub fn end_config_text_parser<'a>(
     custom_start_comment_syntax: &'a str,
     custom_end_comment_syntax: &'a str,
-) -> impl FnMut(&'a str) -> IResult<&str, u8> {
+) -> impl FnMut(&'a str) -> IResult<&'a str, u8> {
     map(
         tuple((
             preceded(
@@ -53,7 +53,7 @@ pub fn end_config_text_parser<'a>(
 /// Returns a parser that will grab 0-n spaces, the word "Configuration" 0-n spaces "["
 pub fn start_config_text_parser<'a>(
     custom_start_comment_syntax: &'a str,
-) -> impl FnMut(&'a str) -> IResult<&str, u8> {
+) -> impl FnMut(&'a str) -> IResult<&'a str, u8> {
     map(
         preceded(
             tag(custom_start_comment_syntax),
@@ -73,7 +73,7 @@ pub fn start_config_text_parser<'a>(
 pub fn else_config_text_parser<'a>(
     custom_start_comment_syntax: &'a str,
     custom_end_comment_syntax: &'a str,
-) -> impl FnMut(&'a str) -> IResult<&str, u8> {
+) -> impl FnMut(&'a str) -> IResult<&'a str, u8> {
     map(
         tuple((
             preceded(
@@ -99,7 +99,7 @@ pub fn else_config_text_parser<'a>(
 /// Returns a parser that will grab 0-n spaces, the word "Configuration Not" 0-n spaces "["
 pub fn not_config_text_parser<'a>(
     custom_start_comment_syntax: &'a str,
-) -> impl FnMut(&'a str) -> IResult<&str, u8> {
+) -> impl FnMut(&'a str) -> IResult<&'a str, u8> {
     map(
         preceded(
             tag(custom_start_comment_syntax),
