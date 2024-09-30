@@ -88,6 +88,7 @@ import { AddStructureDialogComponent } from '../dialogs/add-structure-dialog/add
 				<button
 					mat-mini-fab
 					class="tertiary-fab"
+					data-testid="add-structure"
 					[disabled]="isEditing() === false"
 					(click)="openAddStructureDialog()">
 					<mat-icon>add</mat-icon>

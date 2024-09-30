@@ -162,7 +162,9 @@ export class GraphComponent implements OnInit, OnDestroy {
 	}
 
 	createNewNode() {
-		const dialogRef = this.dialog.open(CreateNewNodeDialogComponent);
+		const dialogRef = this.dialog.open(CreateNewNodeDialogComponent, {
+			minWidth: '60vw',
+		});
 		dialogRef
 			.afterClosed()
 			.pipe(
