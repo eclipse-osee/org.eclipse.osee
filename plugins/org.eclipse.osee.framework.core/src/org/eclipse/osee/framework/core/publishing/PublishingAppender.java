@@ -240,6 +240,8 @@ public interface PublishingAppender {
          );
    //@formatter:on
 
+   public void endOutlineSubSection();
+
    public PublishingAppender startParagraph();
 
    public void startParagraphPresentation();
