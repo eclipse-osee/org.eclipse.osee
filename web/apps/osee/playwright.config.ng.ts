@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import type { PlaywrightTestConfig } from '@ngx-playwright/test';
+import { devices, type PlaywrightTestConfig } from '@ngx-playwright/test';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -24,10 +24,27 @@ const config: PlaywrightTestConfig = {
 
 	testDir: join(__dirname, 'playwright/specs'),
 	testMatch: '**/*.e2e-spec.ts',
+	workers: 1,
 
 	reporter: [
 		[process.env['GITHUB_ACTION'] ? 'github' : 'list'],
 		['junit', { outputFile: join(__dirname, 'results/junit.xml') }],
+	],
+	projects: [
+		{
+			name: 'chromium',
+			use: { ...devices['Desktop Chrome'] },
+		},
+		{
+			name: 'MIM Setup',
+			testDir: 'playwright/specs/mim/setup',
+		},
+		{
+			name: 'MIM Docs Screenshots',
+			use: { ...devices['Desktop Chrome'] },
+			testDir: 'playwright/specs/mim/docs-screenshots',
+			dependencies: ['MIM Setup'],
+		},
 	],
 };
 

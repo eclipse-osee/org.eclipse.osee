@@ -20,10 +20,8 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "OSEE",
+      favicon: "/favicon.ico",
       customCss: ["./src/tailwind.css"],
-      // logo: {
-      //   src: "./src/assets/logos/OSEE_logo.svg",
-      // },
       social: {
         github: "https://github.com/eclipse-osee/org.eclipse.osee",
       },
@@ -33,21 +31,31 @@ export default defineConfig({
           items: [{ label: "What is OSEE?", slug: "getting-started/overview" }],
         },
         {
-          label: "Messaging",
+          label: "MIM",
           items: [
-            { label: "MIM Overview", slug: "messaging/mim-overview" },
-            // { label: "Data Model", slug: "messaging/datamodel" },
-            // {
-            //   label: "Pages",
-            //   items: [
-            //     { label: "Connections", slug: "messaging/pages/connections" },
-            //   ],
-            // },
+            { label: "MIM Overview", slug: "mim/mim-overview" },
+            { label: "Data Model", slug: "mim/datamodel" },
+            { label: "Example ICD", slug: "mim/example-icd" },
+            {
+              label: "Guides",
+              items: [
+                { label: "Creating an ICD", slug: "mim/guides/create-icd" },
+              ],
+            },
+            {
+              label: "Pages",
+              items: [
+                {
+                  label: "Enumeration List Configuration",
+                  slug: "mim/pages/enum-list-config",
+                },
+              ],
+            },
           ],
         },
         {
           label: "BAT",
-          items: [{ label: "Overview", slug: "bat/bat-overview" }],
+          items: [{ label: "BAT Overview", slug: "bat/bat-overview" }],
         },
       ],
     }),
