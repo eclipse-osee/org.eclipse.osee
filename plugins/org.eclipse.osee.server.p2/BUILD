@@ -60,7 +60,7 @@ filegroup(
             "//org.eclipse.nebula.widgets.xviewer:osgi_jar",
             "//org.eclipse.nebula.widgets.xviewer.core:osgi_jar"
            ],
-visibility = ["//visibility:public"]   
+visibility = ["//visibility:public"]
 )
 
 genrule(
@@ -83,7 +83,7 @@ genrule(
   srcs = ["build_no","third_party_deps"],
   outs = ["plugins"],
   cmd = "mkdir s1p;cp -r $(locations build_no)/* s1p; cp -r $(locations //org.eclipse.osee.server.p2:third_party_deps) s1p;chmod -R 777 s1p; cp -r s1p $@;",
-  visibility = ["//visibility:public"]   
+  visibility = ["//visibility:public"]
 )
 
 filegroup(
@@ -197,7 +197,7 @@ filegroup(
 	    "@eclipse_core_expressions//jar",
 	    "@eclipse_core_contenttype//jar",
 	    "@eclipse_core_variables//jar",
-	    "@eclipse_equinox_http_jetty//jar",	    
+	    "@eclipse_equinox_http_jetty//jar",
 	    "@eclipse_equinox_http_servlet//jar",
 	    "@eclipse_text//jar",
 	    "@javax_mail//jar",
@@ -214,7 +214,7 @@ filegroup(
 	    "@equinox_security//jar",
 	    "@jcraft//jar",
 	    "@apache_commons_codec//jar",
-	    "@apache_xerces//jar",	 
+	    "@apache_xerces//jar",
 	    "@apache_xml_resolver//jar",
 	    "@google_guava//jar",
 	    "@antlr_runtime//jar",
@@ -246,12 +246,12 @@ filegroup(
 	    "@com.vladsch.flexmark.util-options//jar",
 	    "@org.nibor.autolink//jar",
 	    "@org.jetbrains.annotations//jar"
-         ],         
+         ],
 )
 
 #filegroup(
 #   name = "equinox_jar",
-#   srcs = ["plugins/org.eclipse.equinox.launcher_1.5.700.v20200207-2156.jar"]
+#   srcs = ["plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar"]
 #)
 
 #genrule(

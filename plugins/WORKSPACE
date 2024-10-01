@@ -351,8 +351,8 @@ http_jar(
 )
 http_jar(
       name = "eclipse_equinox_launcher",
-      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.equinox.launcher_1.5.700.v20200207-2156.jar&r=1",
-      downloaded_file_name = "org.eclipse.equinox.launcher_1.5.700.v20200207-2156.jar"
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar&r=1",
+      downloaded_file_name = "org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar"
 )
 
 http_jar(
