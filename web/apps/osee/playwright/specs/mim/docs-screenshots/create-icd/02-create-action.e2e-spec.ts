@@ -24,7 +24,7 @@ test('test', async ({ page }) => {
 
 	await page.screenshot({
 		animations: 'disabled',
-		path: 'screenshots/create-action-button',
+		path: 'screenshots/create-action-button.png',
 	});
 
 	await page.getByRole('button', { name: 'Create Action' }).click();
@@ -40,7 +40,7 @@ test('test', async ({ page }) => {
 
 	await page.screenshot({
 		animations: 'disabled',
-		path: 'screenshots/create-action-dialog',
+		path: 'screenshots/create-action-dialog.png',
 	});
 
 	await page.getByRole('button', { name: 'Create Action' }).click();

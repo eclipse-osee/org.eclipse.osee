@@ -40,6 +40,10 @@ export default defineConfig({
               label: "Guides",
               items: [
                 { label: "Creating an ICD", slug: "mim/guides/create-icd" },
+                {
+                  label: "Peer Review Workflow",
+                  slug: "mim/guides/peer-review",
+                },
               ],
             },
             {

@@ -20,6 +20,7 @@ const config: PlaywrightTestConfig = {
 	use: {
 		channel: 'chrome',
 		headless: true,
+		baseURL: 'http://localhost:4200/ple',
 	},
 
 	testDir: join(__dirname, 'playwright/specs'),
@@ -40,9 +41,15 @@ const config: PlaywrightTestConfig = {
 			testDir: 'playwright/specs/mim/setup',
 		},
 		{
-			name: 'MIM Docs Screenshots',
+			name: 'MIM Create ICD Screenshots',
 			use: { ...devices['Desktop Chrome'] },
 			testDir: 'playwright/specs/mim/docs-screenshots',
+			dependencies: ['MIM Setup'],
+		},
+		{
+			name: 'MIM Peer Review Screenshots',
+			use: { ...devices['Desktop Chrome'] },
+			testDir: 'playwright/specs/mim/docs-screenshots/peer-review',
 			dependencies: ['MIM Setup'],
 		},
 	],

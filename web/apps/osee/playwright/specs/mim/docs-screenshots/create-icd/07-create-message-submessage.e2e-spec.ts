@@ -24,7 +24,7 @@ test('test', async ({ page }) => {
 
 	await page.screenshot({
 		animations: 'disabled',
-		path: 'screenshots/message-table-add',
+		path: 'screenshots/message-table-add.png',
 	});
 
 	await page.locator('button').filter({ hasText: 'add' }).click();
@@ -47,7 +47,7 @@ test('test', async ({ page }) => {
 
 	await page.screenshot({
 		animations: 'disabled',
-		path: 'screenshots/create-message',
+		path: 'screenshots/create-message.png',
 	});
 
 	await page.getByRole('button', { name: 'Ok' }).click();
@@ -58,7 +58,7 @@ test('test', async ({ page }) => {
 
 	await page.screenshot({
 		animations: 'disabled',
-		path: 'screenshots/submessage-table-add',
+		path: 'screenshots/submessage-table-add.png',
 	});
 
 	await page.getByRole('button', { name: 'Add Submessage to:' }).click();
@@ -66,7 +66,7 @@ test('test', async ({ page }) => {
 
 	await page.screenshot({
 		animations: 'disabled',
-		path: 'create-submessage-dialog',
+		path: 'create-submessage-dialog.png',
 	});
 
 	await page.getByRole('button', { name: 'Create new Submessage' }).click();
@@ -77,7 +77,7 @@ test('test', async ({ page }) => {
 
 	await page.screenshot({
 		animations: 'disabled',
-		path: 'create-submessage-dialog-new',
+		path: 'create-submessage-dialog-new.png',
 	});
 
 	await page.getByRole('button', { name: 'Next' }).click();

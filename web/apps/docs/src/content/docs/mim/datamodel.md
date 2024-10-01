@@ -39,7 +39,7 @@ A Platform Type represents a specific instance of a logical type (eg. uInt, bool
 
 ## Enumeration Set
 
-Enumeration Sets are named sets of individual Enuerations. They are always related to a Platform Type with an "enumaration" logical type.
+Enumeration Sets are named sets of individual Enuerations. They are always related to a Platform Type with an "enumeration" logical type.
 
 ## Enumeration
 

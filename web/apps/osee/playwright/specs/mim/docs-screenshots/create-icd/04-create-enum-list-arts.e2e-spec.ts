@@ -25,7 +25,7 @@ test('test', async ({ page }) => {
 
 	await page.screenshot({
 		animations: 'disabled',
-		path: 'screenshots/enum-list-config',
+		path: 'screenshots/enum-list-config.png',
 	});
 
 	await page.getByRole('button', { name: 'Units' }).click();
