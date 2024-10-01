@@ -1,0 +1,292 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.eclipse.osee</groupId>
+    <artifactId>org.eclipse.osee.dep.parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../../plugins/org.eclipse.osee.dep.parent</relativePath>
+  </parent>
+  <artifactId>org.eclipse.osee.dep.feature</artifactId>
+  <packaging>eclipse-feature</packaging>
+  <name>OSEE Client Dep Feature (Incubation)</name>
+  <dependencies>
+    <dependency>
+      <groupId>org.eclipse.osee</groupId>
+      <artifactId>org.eclipse.oss.ajax</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+      <type>eclipse-plugin</type>
+      <scope>compile</scope>
+      <optional>false</optional>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho.extras</groupId>
+        <artifactId>tycho-source-feature-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>source-feature</id>
+            <phase>package</phase>
+            <goals>
+              <goal>source-feature</goal>
+            </goals>
+            <configuration>
+              <excludes>
+                <plugin id="org.slf4j.api" />
+                <plugin id="net.jini.jsk-lib" />
+                <plugin id="net.jini.jsk-platform" />
+                <plugin id="org.apache.ws.xmlschema.core" />
+                <plugin id="jackson-dataformat-yaml" />
+                <plugin id="jackson-datatype-jsr310" />
+                <plugin id="commons-lang3" />
+                <plugin id="javassist" />
+                <plugin id="annotations" />
+                <plugin id="autolink" />
+                <plugin id="javassist" />
+                <plugin id="org.assertj" />
+                <plugin id="jakarta.xml.bind" />
+                <plugin id="jackson-datatype-jsr310" />
+                <plugin id="jackson-annotations" />
+                <plugin id="jackson-core" />
+                <plugin id="jackson-databind" />
+                <plugin id="com.sun.xml.txw2" />
+                <plugin id="com.sun.istack.commons-runtime" />
+                <plugin id="org.glassfish.jaxb.core" />
+                <plugin id="org.glassfish.jaxb.runtime" />
+                <plugin id="jakarta.activation-api" />
+                <plugin id="org.glassfish.hk2.osgi-resource-locator" />
+                <plugin id="jakarta.xml.bind-api" />
+                <plugin id="org.apache.xerces" />
+                <plugin id="org.apache.aries.proxy" />
+                <plugin id="org.eclipse.egit" />
+                <plugin id="org.eclipse.oss.ajax" />
+                <plugin id="javax.xml.ws" />
+                <plugin id="org.hsqldb" />
+                <plugin id="org.eclipse.jpt.jaxb.core" />
+                <plugin id="org.eclipse.jpt.jaxb.eclipselink.core" />
+                <plugin id="org.eclipse.jst.ws.jaxb.core" />
+                <plugin id="org.eclipse.ptp.rm.jaxb.core" />
+                <plugin id=" org.eclipse.ptp.rm.jaxb.java11" />
+                <plugin id="javax.transaction" />
+                <plugin id="org.apache.poi.ooxml.schemas" />
+                <plugin id="org.eclipse.osgi" />
+                <plugin id="org.eclipse.osgi.services" />
+                <plugin id="org.eclipse.m2e.maven.runtime" />
+                <plugin id="javax.mail" />
+                <plugin id="org.bouncycastle.asn1" />
+                <plugin id="org.eclipse.m2e.archetype.common" />
+                <plugin id="org.eclipse.m2e.mwsaven.indexer" />
+                <plugin id="org.apache.sshd.sftp" />
+                <plugin id="org.eclipse.m2e.workspace.cli" />
+                <plugin id="org.bouncycastle.bcpg" />
+                <plugin id="org.bouncycastle.bcpkix" />
+                <plugin id="org.bouncycastle.bcprov" />
+                <plugin id="org.apache.sshd.client.subsystem.sftp" />
+                <feature id="org.eclipse.cdt.sdk" />
+                <feature id="org.eclipse.jgit.gpg.bc" />
+                <feature id="org.eclipse.mylyn.commons" />
+                <feature id="org.eclipse.mylyn.commons.identity" />
+                <feature id="org.eclipse.mylyn.commons.notifications" />
+                <feature id="org.eclipse.mylyn.commons.repositories" />
+                <feature id="org.eclipse.mylyn.commons.sdk" />
+                <feature id="org.eclipse.mylyn.discovery" />
+                <feature id="org.eclipse.mylyn.monitor" />
+                <feature id="org.polarion.eclipse.team.svn.connector.svnkit18" />
+                <feature id="org.eclipse.eclemma.feature" />
+                <feature id="org.eclipse.launchbar" />
+                <feature id="org.eclipse.tm.terminal.control.feature" />
+                <plugin id="javax.xml" />
+                <plugin id="com.google.guava" />
+                <plugin id="org.eclipse.xwt" />
+                <plugin id="org.eclipse.mylyn.commons.net" />
+                <plugin id="org.eclipse.mylyn.commons.core" />
+                <plugin id="org.eclipse.mylyn.commons.screenshots" />
+                <plugin id="ch.qos.logback.core" />
+                <plugin id="ch.qos.logback.classic" />
+                <plugin id="org.eclipse.equinox.ds" />
+                <plugin id="org.eclipse.equinox.util" />
+                <plugin id="javax.activation" />
+                <plugin id="com.sun.jna" />
+                <plugin id="com.sun.jna.platform" />
+                <plugin id="javaewah" />
+                <plugin id="org.apache.commons.compress" />
+                <plugin id="javax.xml.rpc" />
+                <plugin id="org.apache.commons.discovery" />
+                <feature id="org.eclipse.mylyn_feature" />
+                <feature id="edu.umd.cs.findbugs.plugin.eclipse" />
+                <feature id="org.eclipse.jgit.ssh.jsch" />
+                <feature id="org.eclipse.mylyn.context_feature" />
+                <feature id="org.eclipse.mylyn.team_feature" />
+                <plugin id="org.apache.xml.resolver" />
+                <plugin id="org.apache.xml.serializer" />
+                <plugin id="org.apache.axis" />
+                <plugin id="org.aopalliance" />
+                <plugin id="jms.libraries" />
+                <plugin id="org.eclipse.wst.xml.ui" />
+                <plugin id="org.eclipse.wst.common.emf" />
+                <plugin id="org.eclipse.jem.util" />
+                <plugin id="org.apache.cxf.core.config" />
+                <plugin id="javax.ws.rs" />
+                <plugin id="javax.wsdl" />
+                <plugin id="org.eclipse.m2e.maven.runtime.slf4j.simple" />
+                <plugin id="org.eclipse.xtext" />
+                <plugin id="org.antlr.runtime" />
+                <plugin id="javax.annotation" />
+                <plugin id="org.cyberneko.html" />
+                <plugin id="org.apache.commons.io" />
+                <plugin id="org.apache.commons.cli" />
+                <plugin id="org.eclipse.team.svn" />
+                <plugin id="org.eclipse.wst.sse.ui" />
+                <plugin id="org.eclipse.team.svn.core" />
+                <plugin id="ch.qos.logback.slf4j" />
+                <plugin id="org.jsoup" />
+                <plugin id="javax.xml.stream" />
+                <plugin id="org.eclipse.swt" />
+                <plugin id="org.eclipse.wst.common.project.facet.core" />
+                <plugin id="org.eclipse.wst.xml.core" />
+                <plugin id="org.apache.ws.xmlschema.core" />
+                <plugin id="org.uddi4j" />
+                <plugin id="org.eclipse.wst.internet.monitor.core" />
+                <plugin id="org.eclipse.wst.common.project.facet.ui" />
+                <plugin id="org.eclipse.jetty.webapp" />
+                <plugin id="org.eclipse.jetty.xml" />
+                <plugin id="org.eclipse.wst.sse.core" />
+                <plugin id="org.eclipse.wst.common.uriresolver" />
+                <plugin id="org.eclipse.wst.common.core" />
+                <plugin id="org.eclipse.wst.common.emf" />
+                <plugin id="org.eclipse.gmf.runtime.emf.core" />
+                <plugin id="org.eclipse.gmf.runtime.emf.clipboard.core" />
+                <plugin id="org.eclipse.gmf.runtime.emf.type.core" />
+                <plugin id="org.eclipse.gmf.runtime.emf.ui" />
+                <plugin id="org.eclipse.uml2.uml" />
+                <plugin id="org.apache.wsil4j" />
+                <plugin id="org.eclipse.uml2.uml.resources" />
+                <plugin id="org.eclipse.uml2.uml.edit" />
+                <plugin id="org.eclipse.uml2.uml.editor" />
+                <plugin id="org.eclipse.ocl.examples.emf.validation.validity.ui" />
+                <plugin id="org.eclipse.ocl.examples.emf.validation.validity" />
+                <plugin id="org.eclipse.nebula.widgets.cdatetime" />
+                <plugin id="org.eclipse.nebula.widgets.ganttchart" />
+                <plugin id="org.eclipse.uml2.uml.profile.standard" />
+                <plugin id="org.eclipse.uml2.uml.validation" />
+                <plugin id="org.eclipse.uml2.types" />
+                <plugin id="org.eclipse.uml2.common" />
+                <plugin id="org.eclipse.uml2.common.edit" />
+                <plugin id="org.apache.batik.pdf" />
+                <plugin id="org.eclipse.ocl.common" />
+                <plugin id="javax.xml.soap" />
+                <plugin id="org.hamcrest" />
+                <plugin id="javax.xml.bind" />
+                <plugin id="org.apache.xmlgraphics" />
+                <plugin id="org.eclipse.wst.xsd.core" />
+                <plugin id="org.eclipse.ocl.ecore" />
+                <feature id="org.eclipse.graphiti.feature" />
+                <feature id="org.eclipse.graphiti.feature.source" />
+                <feature id="org.eclipse.equinox.server.jetty" />
+                <feature id="org.eclipse.emf.doc" />
+                <feature id="org.eclipse.xtext.runtime" />
+                <feature id="'org.eclipse.wst.xml_ui.feature" />
+                <feature id="org.eclipse.xtext.xbase" />
+                <feature id="org.eclipse.xtext.ui" />
+                <feature id="org.eclipse.wst.common_core.feature" />
+                <feature id="org.eclipse.wst.xml.xpath2.processor.feature" />
+                <feature id="org.eclipse.wst.ws_core.feature" />
+                <feature id="org.eclipse.wst.server_userdoc.feature" />
+                <feature id="org.eclipse.wst.xsl.feature" />
+                <plugin id="java_cup.runtime" />
+                <feature id="org.eclipse.wst.server_core.feature" />
+                <feature id="org.eclipse.wst.server_adapters.feature" />
+                <feature id="org.eclipse.m2e.feature" />
+                <feature id="org.eclipse.wst.server_ui.feature" />
+                <feature id="org.eclipse.jgit.lfs" />
+                <feature id="org.eclipse.wst.xml_userdoc.feature" />
+                <feature id="org.eclipse.wst.web_ui.feature" />
+                <feature id="org.eclipse.wst.jsdt.feature" />
+                <feature id="org.eclipse.xsd.edit" />
+                <feature id="org.eclipse.wst.common_ui.feature" />
+                <feature id="org.eclipse.wst.common.fproj" />
+                <feature id="org.eclipse.jgit.http.apache" />
+                <plugin id="org.eclipse.uml2.codegen.ecore" />
+                <feature id="org.eclipse.core.runtime.feature" />
+                <feature id="org.eclipse.xtext.sdk" />
+                <feature id="org.eclipse.emf" />
+                <feature id="org.eclipse.e4.tools.emf.ui" />
+                <feature id="org.eclipse.e4.tools.services" />
+                <feature id="org.eclipse.egit.mylyn" />
+                <feature id="org.eclipse.emf.mwe2.language.sdk" />
+                <feature id="org.eclipse.emf.mwe2.runtime.sdk" />
+                <feature id="org.eclipse.sdk" />
+                <feature id="org.eclipse.xtend.sdk" />
+                <feature id="org.eclipse.xtext.docs" />
+                <feature id="org.eclipse.nebula.widgets.ganttchart.feature" />
+                <feature id="org.eclipse.equinox.executable" />
+                <feature id="org.eclipse.equinox.p2.discovery.feature" />
+                <feature id="org.eclipse.equinox.p2.sdk" />
+                <feature id="org.eclipse.equinox.core.sdk" />
+                <feature id="org.eclipse.equinox.sdk" />
+                <feature id="org.eclipse.equinox.core.feature" />
+                <feature id="org.eclipse.equinox.compendium.sdk" />
+                <feature id="org.eclipse.ecf.core.feature" />
+                <feature id="org.eclipse.ecf.core.feature.source" />
+                <feature id="org.eclipse.ecf.core.ssl.feature" />
+                <feature id="org.eclipse.ecf.core.ssl.feature.source" />
+                <feature id="org.eclipse.ecf.filetransfer.feature" />
+                <feature id="org.eclipse.ecf.filetransfer.feature.source" />
+                <feature id="org.eclipse.ecf.filetransfer.ssl.feature" />
+                <feature id="org.eclipse.ecf.filetransfer.ssl.feature.source" />
+                <feature id="org.eclipse.equinox.core.feature" />
+                <feature id="org.eclipse.ecf.filetransfer.httpclient5.feature" />
+                <feature id="org.eclipse.ecf.filetransfer.httpclient5.feature.source" />
+                <feature id="org.eclipse.papyrus.sdk.feature" />
+                <feature id="net.sourceforge.vrapper" />
+                <feature id="org.eclipse.jgit.ssh.apache" />
+                <plugin id="net.jini" />
+              </excludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>${maven-antrun-version}</version>
+        <executions>
+          <execution>
+            <id>rename-osee-repo</id>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <property name="plugin_classpath" refid="maven.plugin.classpath" />
+                <taskdef resource="net/sf/antcontrib/antlib.xml">
+                  <classpath>
+                    <pathelement path="${classpath}" />
+                    <pathelement path="${plugin_classpath}" />
+                  </classpath>
+                </taskdef>
+                <ant antfile="rename.xml" inheritRefs="true" />
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>ant-contrib</groupId>
+            <artifactId>ant-contrib</artifactId>
+            <version>${ant-contrib-version}</version>
+            <exclusions>
+              <exclusion>
+                <groupId>ant</groupId>
+                <artifactId>ant</artifactId>
+              </exclusion>
+            </exclusions>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
+</project>
