@@ -25,7 +25,7 @@ test('test', async ({ page }) => {
 
 	await page.screenshot({
 		animations: 'disabled',
-		path: 'screenshots/user-menu',
+		path: 'screenshots/user-menu.png',
 	});
 
 	await page.getByRole('menuitem', { name: 'Settings' }).click();
@@ -33,7 +33,7 @@ test('test', async ({ page }) => {
 
 	await page.screenshot({
 		animations: 'disabled',
-		path: 'screenshots/user-settings',
+		path: 'screenshots/user-settings.png',
 	});
 
 	await page.getByRole('button', { name: 'Ok' }).click();
@@ -43,7 +43,7 @@ test('test', async ({ page }) => {
 
 	await page.screenshot({
 		animations: 'disabled',
-		path: 'screenshots/create-node-connection-menu',
+		path: 'screenshots/create-node-connection-menu.png',
 	});
 
 	await page.getByRole('menuitem', { name: 'Create New Node' }).click();
@@ -53,7 +53,7 @@ test('test', async ({ page }) => {
 
 	await page.screenshot({
 		animations: 'disabled',
-		path: 'screenshots/create-node-dialog',
+		path: 'screenshots/create-node-dialog.png',
 	});
 
 	await page.getByText('Cancel Ok').click();
