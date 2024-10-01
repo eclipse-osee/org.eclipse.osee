@@ -136,8 +136,9 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.jsoup.select,
  org.osgi.framework,
  org.osgi.framework.wiring,
- org.osgi.service.event
-DynamicImport-Package: org.eclipse.jgit.transport
+ org.osgi.service.event,
+ org.eclipse.jgit.transport.sshd
+DynamicImport-Package: org.eclipse.jgit.transport, org.eclipse.jgit.transport.sshd
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.define.operations.publisher.dataaccess,
  org.eclipse.osee.define.operations.publisher.publishing,

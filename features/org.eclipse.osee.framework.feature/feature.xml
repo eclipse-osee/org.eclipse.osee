@@ -226,6 +226,13 @@
             unpack="false"/>
 
       <plugin
+         id="org.objectweb.asm"
+         download-size="0"
+         install-size="0"
+         version="9.3.0.v20220409-0157"
+         unpack="false"/>
+
+      <plugin
             id="org.apache.sshd.osgi"
             download-size="0"
             install-size="0"

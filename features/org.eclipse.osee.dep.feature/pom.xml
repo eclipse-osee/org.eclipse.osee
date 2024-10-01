@@ -81,7 +81,6 @@
 							        <plugin id="org.apache.sshd.client.subsystem.sftp" />
 								<feature id="org.eclipse.cdt.sdk" />
 								<feature id="org.eclipse.jgit.gpg.bc" />
-								<feature id="org.eclipse.jgit.ssh.apache" />
 								<feature id="org.eclipse.mylyn.commons" />
 								<feature id="org.eclipse.mylyn.commons.identity" />
 								<feature id="org.eclipse.mylyn.commons.notifications" />
@@ -237,6 +236,7 @@
 								<feature id="org.eclipse.ecf.filetransfer.httpclient5.feature.source" />
 								<feature id="org.eclipse.papyrus.sdk.feature" />
 								<feature id="net.sourceforge.vrapper" />
+								<feature id="org.eclipse.jgit.ssh.apache" />
 								<plugin id="net.jini" />
 							</excludes>
 						</configuration>

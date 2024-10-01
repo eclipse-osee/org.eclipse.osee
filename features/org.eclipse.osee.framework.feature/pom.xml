@@ -98,7 +98,8 @@
 							   	<plugin id="org.xerial.sqlite-jdbc"/>
 							   	<feature id="org.eclipse.wtp.capabilities.feature" />
 							   	<feature id="net.sourceforge.vrapper" />
-
+								<plugin id="org.objectweb.asm"/>
+								<plugin id="org.apache.sshd.sftp"/>
 							</excludes>
 						</configuration>
 					</execution>
