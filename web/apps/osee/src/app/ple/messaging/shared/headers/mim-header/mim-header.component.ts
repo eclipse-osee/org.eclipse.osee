@@ -30,7 +30,7 @@ import { debounceTime, switchMap } from 'rxjs/operators';
 	standalone: true,
 	imports: [MatAnchor, RouterLink, AsyncPipe],
 	template: `<p class="tw-line-clamp-1 tw-truncate">
-		@for (link of route | async; track link) {
+		@for (link of route | async; track link.routerLink) {
 			@if (link.displayName !== '') {
 				<a
 					mat-button

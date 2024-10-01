@@ -29,30 +29,30 @@ export const routes: Routes = [
 	},
 	{
 		path: 'timeline',
-		title: 'CI Dashboard',
+		title: 'Zenith',
 		loadChildren: () =>
 			import('./lib/components/timelines/timelines.routes'),
 	},
 	{
 		path: 'allScripts',
-		title: 'CI Dashboard',
+		title: 'Zenith',
 		loadChildren: () =>
 			import('./lib/components/all-scripts/all-scripts.routes'),
 	},
 	{
 		path: 'details',
-		title: 'CI Dashboard',
+		title: 'Zenith',
 		loadChildren: () => import('./lib/components/details/details.routes'),
 	},
 	{
 		path: 'dashboard',
-		title: 'CI Dashboard',
+		title: 'Zenith',
 		loadChildren: () =>
 			import('./lib/components/dashboard/dashboard.routes'),
 	},
 	{
 		path: 'import',
-		title: 'CI Dashboard',
+		title: 'Zenith',
 		canActivate: [RoleGuard],
 		data: { requiredRoles: importNav?.requiredRoles },
 		loadChildren: () =>
@@ -62,25 +62,25 @@ export const routes: Routes = [
 	},
 	{
 		path: 'admin',
-		title: 'CI Dashboard',
+		title: 'Zenith',
 		canActivate: [RoleGuard],
 		data: { requiredRoles: adminNav?.requiredRoles },
 		loadChildren: () => import('./lib/components/ci-admin/ci-admin.routes'),
 	},
 	{
 		path: 'results',
-		title: 'CI Dashboard',
+		title: 'Zenith',
 		loadChildren: () => import('./lib/components/results/results.routes'),
 	},
 	{
 		path: 'diffs',
-		title: 'CI Dashboard',
+		title: 'Zenith',
 		loadChildren: () =>
 			import('./lib/components/set-diffs/set-diffs.routes'),
 	},
 	{
 		path: 'subsystems',
-		title: 'CI Dashboard',
+		title: 'Zenith',
 		loadChildren: () =>
 			import('./lib/components/subsystems/subsystems.routes'),
 	},

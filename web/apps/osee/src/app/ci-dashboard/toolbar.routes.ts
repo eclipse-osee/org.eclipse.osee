@@ -25,6 +25,11 @@ export const routes: Routes = [
 					),
 				outlet: 'navigationHeader',
 			},
+			{
+				path: '',
+				loadComponent: () => import('./ci-logo/ci-logo.component'),
+				outlet: 'toolbarLogo',
+			},
 		],
 	},
 	{

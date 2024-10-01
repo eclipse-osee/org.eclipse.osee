@@ -24,6 +24,11 @@ export const routes: Routes = [
 					),
 				outlet: 'userMenu',
 			},
+			{
+				path: '',
+				loadComponent: () => import('@osee/toolbar/logo'),
+				outlet: 'toolbarLogo',
+			},
 		],
 	},
 	{

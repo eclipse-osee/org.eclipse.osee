@@ -27,14 +27,15 @@ import { ServerHealthPageHeaderComponent } from './shared/components/server-heal
 import { ServerHealthHttpService } from './shared/services/server-health-http.service';
 
 const _navItems: navigationElement[] =
-	navigationStructure[1].children.filter(
-		(c) => c.label !== 'Server Health Dashboard'
-	) || [];
+	navigationStructure
+		.filter((item) => item.label === 'Server Health')[0]
+		.children.filter((c) => c.label !== 'Server Health Dashboard') || [];
 
 const _currNavItem: navigationElement =
-	navigationStructure[1].children.find(
-		(c) => c.label === 'Server Health Dashboard'
-	) || defaultNavigationElement;
+	navigationStructure
+		.filter((item) => item.label === 'Server Health')[0]
+		.children.find((c) => c.label === 'Server Health Dashboard') ||
+	defaultNavigationElement;
 
 @Component({
 	selector: 'osee-server-health',

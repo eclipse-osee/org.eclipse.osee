@@ -22,6 +22,11 @@ export const routes: Routes = [
 					import('@osee/messaging/types-interface/menus'),
 				outlet: 'userMenu',
 			},
+			{
+				path: '',
+				loadComponent: () => import('@osee/toolbar/logo'),
+				outlet: 'toolbarLogo',
+			},
 		],
 	},
 	{

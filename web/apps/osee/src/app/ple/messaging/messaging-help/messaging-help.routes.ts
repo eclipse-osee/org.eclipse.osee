@@ -14,8 +14,8 @@ import { Routes } from '@angular/router';
 import { navigationStructure } from '@osee/layout/routing';
 
 const help = navigationStructure[0].children
-	.filter((c) => c.label === 'Messaging Configuration')[0]
-	.children.find((page) => page.label === 'Help');
+	.filter((c) => c.label === 'MIM')[0]
+	.children.find((page) => page.label === 'MIM Help');
 
 const routes: Routes = [
 	{

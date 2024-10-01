@@ -23,14 +23,14 @@ import { UserRoles } from '@osee/shared/types/auth';
 export const ciNavigationStructure: navigationElement[] = [
 	// Level-1
 	{
-		label: 'Continuous Integration',
+		label: 'Zenith',
 		cypressLabel: 'ci',
-		pageTitle: 'OSEE - Continuous Integration',
+		pageTitle: 'Zenith',
 		isDropdown: true,
 		isDropdownOpen: false,
 		requiredRoles: [],
 		routerLink: '/ci/allScripts',
-		icon: 'ssid_chart',
+		icon: 'landscape',
 		description: '',
 		usesBranch: false,
 		children: [
@@ -38,7 +38,7 @@ export const ciNavigationStructure: navigationElement[] = [
 			{
 				label: 'Timeline',
 				cypressLabel: 'ci-timeline',
-				pageTitle: 'OSEE - Continuous Integration',
+				pageTitle: 'Zenith - Timeline',
 				isDropdown: false,
 				isDropdownOpen: false,
 				requiredRoles: [],
@@ -51,7 +51,7 @@ export const ciNavigationStructure: navigationElement[] = [
 			{
 				label: 'All Scripts',
 				cypressLabel: 'ci-allscripts',
-				pageTitle: 'OSEE - Continuous Integration',
+				pageTitle: 'Zenith',
 				isDropdown: false,
 				isDropdownOpen: false,
 				requiredRoles: [],
@@ -64,7 +64,7 @@ export const ciNavigationStructure: navigationElement[] = [
 			{
 				label: 'Scripts',
 				cypressLabel: 'ci-scripts',
-				pageTitle: 'OSEE - Continuous Integration',
+				pageTitle: 'Zenith - Details',
 				isDropdown: false,
 				isDropdownOpen: false,
 				requiredRoles: [],
@@ -77,7 +77,7 @@ export const ciNavigationStructure: navigationElement[] = [
 			{
 				label: 'Dashboard',
 				cypressLabel: 'ci-dashboard',
-				pageTitle: 'OSEE - Continuous Integration',
+				pageTitle: 'Zenith - Dashboard',
 				isDropdown: false,
 				isDropdownOpen: false,
 				requiredRoles: [],
@@ -90,7 +90,7 @@ export const ciNavigationStructure: navigationElement[] = [
 			{
 				label: 'Subsystems',
 				cypressLabel: 'ci-subsystems',
-				pageTitle: 'OSEE - Continuous Integration',
+				pageTitle: 'Zenith - Subsystems',
 				isDropdown: false,
 				isDropdownOpen: false,
 				requiredRoles: [],
@@ -103,7 +103,7 @@ export const ciNavigationStructure: navigationElement[] = [
 			{
 				label: 'Results',
 				cypressLabel: 'ci-results',
-				pageTitle: 'OSEE - Continuous Integration',
+				pageTitle: 'Zenith - Results',
 				isDropdown: false,
 				isDropdownOpen: false,
 				requiredRoles: [],
@@ -116,7 +116,7 @@ export const ciNavigationStructure: navigationElement[] = [
 			{
 				label: 'Set Diffs',
 				cypressLabel: 'ci-set-diffs',
-				pageTitle: 'OSEE - Continuous Integration',
+				pageTitle: 'Zenith - Set Diffs',
 				isDropdown: false,
 				isDropdownOpen: false,
 				requiredRoles: [],
@@ -129,7 +129,7 @@ export const ciNavigationStructure: navigationElement[] = [
 			{
 				label: 'Import',
 				cypressLabel: 'ci-import',
-				pageTitle: 'OSEE - Continuous Integration',
+				pageTitle: 'Zenith - Import',
 				isDropdown: false,
 				isDropdownOpen: false,
 				requiredRoles: [UserRoles.CI_ADMIN],
@@ -142,7 +142,7 @@ export const ciNavigationStructure: navigationElement[] = [
 			{
 				label: 'Admin',
 				cypressLabel: 'ci-admin',
-				pageTitle: 'OSEE - Continuous Integration',
+				pageTitle: 'Zenith - Admin',
 				isDropdown: false,
 				isDropdownOpen: false,
 				requiredRoles: [UserRoles.CI_ADMIN],
