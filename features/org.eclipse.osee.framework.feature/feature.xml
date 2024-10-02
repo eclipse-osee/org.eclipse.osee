@@ -24,12 +24,6 @@
       <requires>
             <import feature="org.eclipse.emf.ecore" version="2.5.0" match="greaterOrEqual"/>
             <import feature="org.eclipse.emf.common" version="2.5.0" match="greaterOrEqual"/>
-            <import feature="org.eclipse.emf.ecore" version="2.5.0" match="greaterOrEqual"/>
-            <import feature="org.eclipse.emf.common" version="2.5.0" match="greaterOrEqual"/>
-            <import feature="org.eclipse.emf.ecore" version="2.5.0" match="greaterOrEqual"/>
-            <import feature="org.eclipse.emf.common" version="2.5.0" match="greaterOrEqual"/>
-            <import feature="org.eclipse.emf.ecore" version="2.5.0" match="greaterOrEqual"/>
-            <import feature="org.eclipse.emf.common" version="2.5.0" match="greaterOrEqual"/>
             <import feature="org.eclipse.osee.core.runtime.feature" version="0.9.5" match="greaterOrEqual"/>
             <import plugin="org.apache.commons.dbcp" version="1.4.0" match="compatible"/>
             <import plugin="org.apache.commons.pool" version="1.6.0" match="compatible"/>
