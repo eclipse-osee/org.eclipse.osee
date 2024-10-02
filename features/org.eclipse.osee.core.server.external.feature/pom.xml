@@ -51,6 +51,7 @@
 								<plugin id="jakarta.xml.bind-api"/>
 								<plugin id="org.eclipse.osgi.services" />
 								<plugin id="org.osgi.util.function" />
+								<plugin id="org.osgi.service.prefs" />
 								<plugin id="org.osgi.util.promise" />
 								<plugin id="com.google.gson" />
 								<plugin id="org.apache.commons.compress" />

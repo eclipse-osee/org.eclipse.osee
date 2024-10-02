@@ -43,6 +43,7 @@
 								<plugin id="javax.activation" />
 								<plugin id="org.eclipse.osgi.services" />
 								<plugin id="org.osgi.util.function" />
+								<plugin id="org.osgi.service.prefs" />
 								<plugin id="org.osgi.util.promise" />
 								<plugin id="org.apache.ws.xmlschema.core" />
 								<plugin id="ch.qos.logback.classic" />
