@@ -10,20 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { type PlaywrightTestConfig } from '@ngx-playwright/test';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import ngPlaywrightConfig from './playwright.config.ng';
+import { defineCollection } from "astro:content";
+import { docsSchema } from "@astrojs/starlight/schema";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
-const config: PlaywrightTestConfig = {
-	...ngPlaywrightConfig,
-	webServer: {
-		command: 'ng serve',
-		url: 'http://localhost:4200',
-		reuseExistingServer: !process.env.CI,
-	},
+export const collections = {
+  docs: defineCollection({ schema: docsSchema() }),
 };
-
-export default config;
