@@ -29,7 +29,7 @@
 						<configuration>
 							<excludes>
 							<plugin id="commons-lang3"/>
-							        <plugin id="org.hsqldb"/>
+								<plugin id="org.hsqldb"/>
 								<plugin id="org.apache.xerces" />
 								<plugin id="javax.xml.bind" />
 								<plugin id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base"/>
@@ -43,12 +43,13 @@
 								<plugin id="javax.activation" />
 								<plugin id="org.eclipse.osgi.services" />
 								<plugin id="org.osgi.util.function" />
+								<plugin id="org.osgi.util.promise" />
 								<plugin id="org.apache.ws.xmlschema.core" />
-							        <plugin id="ch.qos.logback.classic" />
-							        <plugin id="ch.qos.logback.core" />
-							        <plugin id="org.eclipse.equinox.ds" />
-							        <plugin id="com.google.guava" />
-							        <plugin id="javax.mail" />
+								<plugin id="ch.qos.logback.classic" />
+								<plugin id="ch.qos.logback.core" />
+								<plugin id="org.eclipse.equinox.ds" />
+								<plugin id="com.google.guava" />
+								<plugin id="javax.mail" />
 								<plugin id="javax.annotation" />
 								<plugin id="org.apache.cxf.cxf-rt-rs-security-jose" />
 								<plugin id="org.apache.cxf.cxf-rt-rs-json-basic" />

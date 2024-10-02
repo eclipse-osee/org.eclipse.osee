@@ -29,6 +29,7 @@
       <import plugin="org.eclipse.osee.console.admin"/>
       <import plugin="org.eclipse.osgi.services"/>
       <import plugin="org.osgi.util.function"/>
+      <import plugin="org.osgi.util.promise" version="1.2.0.202109301733" match="compatible"/>
    </requires>
 
    <plugin
