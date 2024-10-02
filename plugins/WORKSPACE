@@ -399,8 +399,8 @@ http_jar(
 
 http_jar(
       name = "eclipse_osgi_services",
-      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.osgi.services_3.8.0.v20190206-2147.jar&r=1",
-      downloaded_file_name = "org.eclipse.osgi.services_3.8.0.v20190206-2147.jar"
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.osgi.services_3.10.200.v20210723-0643.jar&r=1",
+      downloaded_file_name = "org.eclipse.osgi.services_3.10.200.v20210723-0643.jar"
 )
 
 http_jar(
