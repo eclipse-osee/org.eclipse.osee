@@ -25,6 +25,7 @@
       <import plugin="org.eclipse.equinox.registry" version="3.4.0" match="compatible"/>
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.eclipse.osgi.services"/>
+      <import plugin="org.osgi.util.function"/>
       <import plugin="org.eclipse.osgi.util"/>
       <import plugin="org.eclipse.osgi.compatibility.state"/>
       <import plugin="org.eclipse.core.runtime"/>

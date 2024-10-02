@@ -50,6 +50,7 @@
 								<plugin id="org.glassfish.hk2.osgi-resource-locator"/>
 								<plugin id="jakarta.xml.bind-api"/>
 								<plugin id="org.eclipse.osgi.services" />
+								<plugin id="org.osgi.util.function" />
 								<plugin id="com.google.gson" />
 								<plugin id="org.apache.commons.compress" />
 								<plugin id="javax.activation" />

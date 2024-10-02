@@ -38,10 +38,11 @@
 								<plugin id="org.osgi.service.blueprint"/>
 								<plugin id="org.antlr.runtime" />
 								<plugin id="javax.xml" />
-								<plugin id="org.hsqldb"/>								
+								<plugin id="org.hsqldb"/>
 								<plugin id="javax.transaction" />
 								<plugin id="javax.activation" />
-								<plugin id="org.eclipse.osgi.services" />																
+								<plugin id="org.eclipse.osgi.services" />
+								<plugin id="org.osgi.util.function" />
 								<plugin id="org.apache.ws.xmlschema.core" />
 							        <plugin id="ch.qos.logback.classic" />
 							        <plugin id="ch.qos.logback.core" />
@@ -53,7 +54,7 @@
 								<plugin id="org.apache.cxf.cxf-rt-rs-json-basic" />
 								<plugin id="com.jcraft.jsch" />
 								<plugin id="org.apache.xml.resolver" />
-								<plugin id="org.apache.xml.serializer" />								
+								<plugin id="org.apache.xml.serializer" />
 								<plugin id="org.aopalliance" />
 								<plugin id="jms.libraries" />
 								<plugin id="org.eclipse.sdk" />
