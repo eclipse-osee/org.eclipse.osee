@@ -14,200 +14,159 @@
 @if (branchId | async; as _branch) {
 	@if (_branch !== '0' && _branch !== ' ') {
 		@if (branchType | async; as _branchType) {
-			<div class="tw-pl-4">
-				@if (webReportRoutes | async; as routes) {
-					<h4>Web-Based Reports</h4>
-					<div
-						class="tw-flex tw-w-80 tw-flex-col tw-gap-4 tw-pb-4 tw-pl-4">
-						@if (_branchType === 'working') {
-							<a
-								mat-flat-button
-								class="primary-button"
-								[routerLink]="routes.diffRoute"
-								queryParamsHandling="merge">
-								Difference Report
-							</a>
-							<a
-								mat-flat-button
-								class="primary-button"
-								[routerLink]="routes.impactedConnectionsRoute"
-								queryParamsHandling="merge">
-								Validate Connection Impact
-							</a>
-						}
-						<a
-							mat-flat-button
-							class="primary-button"
-							[routerLink]="routes.nodeTraceRoute"
-							queryParamsHandling="merge">
-							Traceability Report
-						</a>
-						<a
-							mat-flat-button
-							class="primary-button"
-							[routerLink]="routes.unreferencedRoute"
-							queryParamsHandling="merge">
-							Unreferenced Artifacts Report
-						</a>
-					</div>
-				}
-				@if (reports | async; as _reports) {
-					<h4>Downloadable Reports</h4>
-					<div class="tw-pl-4">
-						<mat-form-field
-							class="tw-block tw-w-80"
-							appearance="fill">
-							<mat-label>{{
-								_reports.length > 0
-									? 'Select a Report'
-									: 'No reports available'
-							}}</mat-label>
-							<mat-select
-								(selectionChange)="selectReport($event)"
-								[disabled]="_reports.length === 0"
-								[(value)]="selectedReport">
-								@for (option of _reports; track option) {
-									<mat-option
-										[value]="option"
-										[id]="option.id">
-										{{ option.name }}
-									</mat-option>
-								}
-							</mat-select>
-						</mat-form-field>
-						@if (connections | async; as _connections) {
+			<div class="tw-w-full">
+				<div
+					class="tw-m-auto tw-flex tw-max-w-6xl tw-flex-wrap tw-justify-evenly tw-gap-8 tw-p-4">
+					@if (reports | async; as _reports) {
+						<div>
+							<h4>Downloadable Reports</h4>
 							<mat-form-field
 								class="tw-block tw-w-80"
 								appearance="fill">
 								<mat-label>{{
-									_connections.length > 0
-										? 'Select a Connection'
-										: 'No connections available'
+									_reports.length > 0
+										? 'Select a Report'
+										: 'No reports available'
 								}}</mat-label>
 								<mat-select
-									(selectionChange)="resetValidation()"
-									[disabled]="_connections.length === 0"
-									[(value)]="selectedConnection">
-									@for (
-										option of _connections;
-										track option
-									) {
+									(selectionChange)="selectReport($event)"
+									[disabled]="_reports.length === 0"
+									[(value)]="selectedReport">
+									@for (option of _reports; track option.id) {
 										<mat-option
 											[value]="option"
-											[id]="option.id!">
-											{{ option.name.value }}
-										</mat-option>
-									}
-								</mat-select>
-							</mat-form-field>
-						}
-						@if (applicViews | async; as _views) {
-							<mat-form-field
-								class="tw-block tw-w-80"
-								appearance="fill">
-								<mat-label>Select a view</mat-label>
-								<mat-select
-									(selectionChange)="resetValidation()"
-									[disabled]="_views.length === 0"
-									[(value)]="selectedApplic">
-									@for (option of _views; track option) {
-										<mat-option
-											[value]="option"
-											[id]="option.id!">
+											[id]="option.id">
 											{{ option.name }}
 										</mat-option>
 									}
 								</mat-select>
 							</mat-form-field>
-						}
-						@if (selectedReport?.httpMethod === 'POST') {
-							<p>Select a file or enter JSON</p>
-							<input
-								type="file"
-								(change)="selectFile($event)"
-								accept=".json,.csv,.txt"
-								class="tw-mb-2" />
-							<mat-form-field
-								appearance="fill"
-								class="tw-block tw-w-[500px]">
-								<mat-label>Enter JSON</mat-label>
-								<textarea
-									matInput
-									[(ngModel)]="requestBody"
-									placeholder="{...}"></textarea>
-							</mat-form-field>
-						}
-						@if (
-							selectedReport?.diffAvailable &&
-							_branchType !== 'baseline'
-						) {
-							<mat-checkbox
-								class="primary-checkbox tw-block"
-								[(ngModel)]="includeDiff"
-								cdkFocusInitial>
-								<mat-label
-									>Show differences in report</mat-label
-								>
-							</mat-checkbox>
-						}
-						@if (selectedReport?.requiresValidation) {
-							<mat-checkbox
-								class="primary-checkbox tw-block"
-								[(ngModel)]="bypassValidation"
-								cdkFocusInitial>
-								<mat-label
-									>Bypass Connection Validation</mat-label
-								>
-							</mat-checkbox>
-						}
-						@if (connectionValidationResults | async; as _results) {
-							@if (_results.branch !== '-1') {
+							@if (connections | async; as _connections) {
+								<mat-form-field
+									class="tw-block tw-w-80"
+									appearance="fill">
+									<mat-label>{{
+										_connections.length > 0
+											? 'Select a Connection'
+											: 'No connections available'
+									}}</mat-label>
+									<mat-select
+										(selectionChange)="resetValidation()"
+										[disabled]="_connections.length === 0"
+										[(value)]="selectedConnection">
+										@for (
+											option of _connections;
+											track option.id
+										) {
+											<mat-option
+												[value]="option"
+												[id]="option.id!">
+												{{ option.name.value }}
+											</mat-option>
+										}
+									</mat-select>
+								</mat-form-field>
+							}
+							<osee-view-selector [(view)]="selectedApplic" />
+							@if (selectedReport?.httpMethod === 'POST') {
+								<p>Select a file or enter JSON</p>
+								<input
+									type="file"
+									(change)="selectFile($event)"
+									accept=".json,.csv,.txt"
+									class="tw-mb-2" />
+								<mat-form-field
+									appearance="fill"
+									class="tw-block tw-w-[500px]">
+									<mat-label>Enter JSON</mat-label>
+									<textarea
+										matInput
+										[(ngModel)]="requestBody"
+										placeholder="{...}"></textarea>
+								</mat-form-field>
+							}
+							@if (
+								selectedReport?.diffAvailable &&
+								_branchType !== 'baseline'
+							) {
+								<mat-checkbox
+									class="primary-checkbox tw-block"
+									[(ngModel)]="includeDiff">
+									<mat-label
+										>Show differences in report</mat-label
+									>
+								</mat-checkbox>
+							}
+							@if (selectedReport?.requiresValidation) {
+								<mat-checkbox
+									class="primary-checkbox tw-block"
+									[(ngModel)]="bypassValidation">
+									<mat-label
+										>Bypass connection validation</mat-label
+									>
+								</mat-checkbox>
+							}
+							@if (
+								selectedReport?.supportsErrorColoring &&
+								selectedReport?.requiresValidation &&
+								bypassValidation()
+							) {
+								<osee-show-errors-checkbox
+									[validationResults]="
+										connectionValidationResults()
+									"
+									(showErrorColoring)="
+										setShowErrorColoring($event)
+									" />
+							}
+							@if (
+								connectionValidationResults().branch !== '-1'
+							) {
 								<div class="tw-text-md tw-pt-4 tw-font-bold">
 									Connection Validation
-									{{ _results.passed ? 'Passed' : 'Failed' }}
+									{{
+										connectionValidationResults().passed
+											? 'Passed'
+											: 'Failed'
+									}}
 								</div>
-								<ng-container
-									[ngTemplateOutlet]="validationResults"
-									[ngTemplateOutletContext]="{
-										label: 'Structures are byte aligned',
-										errors: _results.structureByteAlignmentErrors,
-									}"></ng-container
-								><ng-container
-									[ngTemplateOutlet]="validationResults"
-									[ngTemplateOutletContext]="{
-										label: 'Structures are word aligned',
-										errors: _results.structureWordAlignmentErrors,
-									}"></ng-container
-								><ng-container
-									[ngTemplateOutlet]="validationResults"
-									[ngTemplateOutletContext]="{
-										label: 'Structure names are unique',
-										errors: _results.duplicateStructureNameErrors,
-									}"></ng-container>
-								<ng-container
-									[ngTemplateOutlet]="validationResults"
-									[ngTemplateOutletContext]="{
-										label: 'All Messages have Message Type set',
-										errors: _results.messageTypeErrors,
-									}"></ng-container>
+								<osee-connection-validation-results
+									label="Structures are byte aligned"
+									[results]="
+										connectionValidationResults()
+											.structureByteAlignmentErrors
+									" />
+								<osee-connection-validation-results
+									label="Structures are word aligned"
+									[results]="
+										connectionValidationResults()
+											.structureWordAlignmentErrors
+									" />
+								<osee-connection-validation-results
+									label="Structure names are unique"
+									[results]="
+										connectionValidationResults()
+											.duplicateStructureNameErrors
+									" />
+								<osee-connection-validation-results
+									label="All Messages have Message Type set"
+									[results]="
+										connectionValidationResults()
+											.messageTypeErrors
+									" />
 							}
-						}
-						<div class="tw-flex tw-gap-4">
-							<button
-								mat-flat-button
-								class="primary-button"
-								(click)="validateConnection()"
-								[disabled]="
-									!selectedConnection ||
-									selectedConnection.id === '-1'
-								"
-								class="tw-mt-4">
-								Validate Connection
-							</button>
-							@if (
-								connectionValidationResults | async;
-								as _results
-							) {
+							<div class="jusity-between tw-flex tw-gap-4">
+								<button
+									mat-flat-button
+									class="primary-button"
+									(click)="validateConnection()"
+									[disabled]="
+										!selectedConnection ||
+										selectedConnection.id === '-1'
+									"
+									class="tw-mt-4">
+									Validate Connection
+								</button>
 								<button
 									mat-flat-button
 									class="primary-button"
@@ -217,42 +176,59 @@
 										!selectedConnection ||
 										selectedConnection.id === '-1' ||
 										(selectedReport.requiresValidation &&
-											!bypassValidation &&
-											(_results.branch === '-1' ||
-												!_results.passed))
+											!bypassValidation() &&
+											(connectionValidationResults()
+												.branch === '-1' ||
+												!connectionValidationResults()
+													.passed))
 									"
 									class="tw-mt-4">
 									Get Report
 								</button>
-							}
+							</div>
 						</div>
-					</div>
-				}
+					}
+					@if (webReportRoutes | async; as routes) {
+						<div class="tw-flex tw-flex-col tw-items-center">
+							<h4>Web-Based Reports</h4>
+							<div class="tw-flex tw-w-80 tw-flex-col tw-gap-4">
+								@if (_branchType === 'working') {
+									<a
+										mat-flat-button
+										class="primary-button"
+										[routerLink]="routes.diffRoute"
+										queryParamsHandling="merge">
+										Difference Report
+									</a>
+									<a
+										mat-flat-button
+										class="primary-button"
+										[routerLink]="
+											routes.impactedConnectionsRoute
+										"
+										queryParamsHandling="merge">
+										Validate Connection Impact
+									</a>
+								}
+								<a
+									mat-flat-button
+									class="primary-button"
+									[routerLink]="routes.nodeTraceRoute"
+									queryParamsHandling="merge">
+									Traceability Report
+								</a>
+								<a
+									mat-flat-button
+									class="primary-button"
+									[routerLink]="routes.unreferencedRoute"
+									queryParamsHandling="merge">
+									Unreferenced Artifacts Report
+								</a>
+							</div>
+						</div>
+					}
+				</div>
 			</div>
 		}
 	}
 }
-
-<ng-template
-	let-label="label"
-	let-errors="errors"
-	#validationResults>
-	@if (errors !== undefined) {
-		<ul class="tw-pl-4">
-			<li class="tw-flex tw-items-center tw-gap-2">
-				{{ label }}
-				@if (errors.length === 0) {
-					<mat-icon class="tw-text-osee-green-9">check</mat-icon>
-				}
-				@if (errors.length > 0) {
-					<mat-icon class="tw-text-osee-red-9">close</mat-icon>
-				}
-			</li>
-			@for (error of errors; track error) {
-				<li class="tw-pl-4">
-					{{ error }}
-				</li>
-			}
-		</ul>
-	}
-</ng-template>

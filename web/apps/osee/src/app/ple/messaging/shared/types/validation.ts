@@ -15,10 +15,10 @@ export type ConnectionValidationResult = {
 	viewId: string;
 	connectionName: string;
 	passed: boolean;
-	structureByteAlignmentErrors: string[];
-	structureWordAlignmentErrors: string[];
-	duplicateStructureNameErrors: string[];
-	messageTypeErrors: string[];
+	structureByteAlignmentErrors: Record<`${number}`, string>;
+	structureWordAlignmentErrors: Record<`${number}`, string>;
+	duplicateStructureNameErrors: Record<`${number}`, string>;
+	messageTypeErrors: Record<`${number}`, string>;
 };
 
 export const connectionValidationResultSentinel: ConnectionValidationResult = {
@@ -26,8 +26,8 @@ export const connectionValidationResultSentinel: ConnectionValidationResult = {
 	viewId: '-1',
 	connectionName: '',
 	passed: true,
-	structureByteAlignmentErrors: [],
-	structureWordAlignmentErrors: [],
-	duplicateStructureNameErrors: [],
-	messageTypeErrors: [],
+	structureByteAlignmentErrors: {},
+	structureWordAlignmentErrors: {},
+	duplicateStructureNameErrors: {},
+	messageTypeErrors: {},
 };

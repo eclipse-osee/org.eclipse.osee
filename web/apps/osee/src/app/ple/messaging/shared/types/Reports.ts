@@ -26,4 +26,5 @@ export type MimReport = {
 	producesMediaType: ProducesMediaType;
 	diffAvailable: boolean;
 	requiresValidation: boolean;
+	supportsErrorColoring: boolean;
 };

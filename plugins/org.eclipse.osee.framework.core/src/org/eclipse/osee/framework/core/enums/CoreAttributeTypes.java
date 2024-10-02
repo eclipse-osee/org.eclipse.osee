@@ -915,9 +915,9 @@ public interface CoreAttributeTypes {
    AttributeTypeString PublishingTemplateDataRightsConfigurationNameReference = osee.createString(6329223727577326200L, "Data Rights Configuration", MediaType.TEXT_PLAIN, "Specifies the data rights configuration to use for a publish.", DisplayHint.SingleLine);
 
    AttributeTypeBoolean PublishInline = osee.createBoolean(1152921504606847122L, "PublishInline", MediaType.TEXT_PLAIN, "");
-   
+
    AttributeTypeString PublishingRelationTableRelationTypeSide = osee.createString(872792546913538976L, "Relation Table Relation Type Side", "Relation table relation type name or id with relation type side name. String with \"|\" delimiter to specify relation type and associated relation type side.", MediaType.TEXT_PLAIN, DisplayHint.SingleLine);
-		   
+
    AttributeTypeString PublishingRelationTableColumn = osee.createString(6633280446034676865L, "Relation Table Column", "Column specification to include in the relation table", MediaType.TEXT_PLAIN, DisplayHint.SingleLine);
 
    AttributeTypeString PublishingRelationTableArtifactTypeNameOrId = osee.createString(2842593463578222826L, "Relation Table Artifact Type Name Or Id", "Artifact type to filter the table by", MediaType.TEXT_PLAIN, DisplayHint.SingleLine);
@@ -937,6 +937,8 @@ public interface CoreAttributeTypes {
    AttributeTypeBoolean RequireConfirmation = osee.createBooleanNoTag(188458869981239L, "Require Confirmation", MediaType.TEXT_PLAIN, "");
 
    AttributeTypeBoolean RequiresValidation = osee.createBoolean(2822557585371250127L, "Requires Validation", MediaType.TEXT_PLAIN, "Specifies if a report requires validation before running");
+
+   AttributeTypeBoolean SupportsErrorColoring = osee.createBoolean(2822557585371250128L, "Supports Error Coloring", MediaType.TEXT_PLAIN, "Specifies if a report supports error coloring");
 
    AttributeTypeBoolean Scheduled = osee.createBoolean(1152921504606847360L, "Scheduled", MediaType.TEXT_PLAIN, "Should the script be run again");
 
