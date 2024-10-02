@@ -11,8 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, OnInit, effect, inject, signal } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatAnchor, MatButton } from '@angular/material/button';
 import { MatCheckbox } from '@angular/material/checkbox';
@@ -33,18 +33,13 @@ import {
 	type MimReport,
 	type connection,
 } from '@osee/messaging/shared/types';
-import { ApplicabilityListService, UiService } from '@osee/shared/services';
+import { UiService } from '@osee/shared/services';
 import { applic } from '@osee/applicability/types';
-import { Subject, combineLatest, from, iif, of } from 'rxjs';
-import {
-	filter,
-	map,
-	scan,
-	shareReplay,
-	startWith,
-	switchMap,
-	tap,
-} from 'rxjs/operators';
+import { Subject, combineLatest, iif, of } from 'rxjs';
+import { filter, map, switchMap, tap } from 'rxjs/operators';
+import { ConnectionValidationResultsComponent } from './lib/connection-validation-results/connection-validation-results.component';
+import { ShowErrorsCheckboxComponent } from './lib/show-errors-checkbox/show-errors-checkbox.component';
+import { ViewSelectorComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-messaging-reports',
@@ -65,6 +60,9 @@ import {
 		MatCheckbox,
 		MatButton,
 		MatIcon,
+		ViewSelectorComponent,
+		ConnectionValidationResultsComponent,
+		ShowErrorsCheckboxComponent,
 	],
 })
 export class ReportsComponent implements OnInit {
@@ -73,7 +71,6 @@ export class ReportsComponent implements OnInit {
 	private reportsService = inject(ReportsService);
 	private validationService = inject(ValidationUiService);
 	private connectionService = inject(ConnectionService);
-	private applicService = inject(ApplicabilityListService);
 
 	/** Inserted by Angular inject() migration for backwards compatibility */
 	constructor(...args: unknown[]);
@@ -96,27 +93,40 @@ export class ReportsComponent implements OnInit {
 		});
 	}
 
-	bypassValidation = false;
+	bypassValidation = signal(false);
 
 	selectedReport: MimReport | undefined = undefined;
-	selectedApplic: applic = { id: '-1', name: 'None' };
+
+	selectedApplic = signal<applic>({ id: '-1', name: 'None' });
+	private _applicEffect = effect(
+		() => {
+			// Reset validation results when the selected view changes
+			this.selectedApplic();
+			this.resetValidation();
+		},
+		{ allowSignalWrites: true }
+	);
 
 	branchType = this.reportsService.branchType;
 	reports = this.reportsService.getReports();
 
 	startConnectionValidation = new Subject<boolean>();
-	connectionValidationResults = this.startConnectionValidation.pipe(
-		switchMap((start) =>
-			iif(
-				() => start === true,
-				this.validationService.validateConnection(
-					this.selectedConnection.id || '-1',
-					this.selectedApplic.id || '-1'
-				),
-				of(connectionValidationResultSentinel)
+	connectionValidationResults = toSignal(
+		this.startConnectionValidation.pipe(
+			switchMap((start) =>
+				iif(
+					() => start === true,
+					this.validationService.validateConnection(
+						this.selectedConnection.id || '-1',
+						this.selectedApplic().id || '-1'
+					),
+					of(connectionValidationResultSentinel)
+				)
 			)
 		),
-		shareReplay({ bufferSize: 1, refCount: true })
+		{
+			initialValue: connectionValidationResultSentinel,
+		}
 	);
 
 	webReportRoutes = combineLatest([
@@ -145,22 +155,9 @@ export class ReportsComponent implements OnInit {
 		switchMap((branchId) => this.connectionService.getConnections(branchId))
 	);
 
-	applicViews = this.branchId.pipe(
-		filter((v) => v !== ''),
-		switchMap((branchId) =>
-			this.applicService.getViews(branchId).pipe(
-				switchMap((applics) =>
-					from(applics).pipe(
-						startWith({ id: '-1', name: 'None' } as applic),
-						scan((acc, curr) => {
-							acc.push(curr);
-							return acc;
-						}, [] as applic[])
-					)
-				)
-			)
-		)
-	);
+	setShowErrorColoring(value: boolean) {
+		this.reportsService.ShowErrorColoring = value;
+	}
 
 	selectReport(event: MatSelectChange) {
 		this.selectedReport = event.value;
@@ -168,7 +165,7 @@ export class ReportsComponent implements OnInit {
 
 	getSelectedReport() {
 		this.reportsService
-			.downloadReport(this.selectedReport, this.selectedApplic.id)
+			.downloadReport(this.selectedReport, this.selectedApplic().id)
 			.subscribe();
 	}
 

@@ -27,5 +27,6 @@ export const mimReportsMock: MimReport[] = [
 		producesMediaType: ProducesMediaType.XML,
 		diffAvailable: true,
 		requiresValidation: false,
+		supportsErrorColoring: true,
 	},
 ];
