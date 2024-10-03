@@ -272,6 +272,13 @@
             unpack="false"/>
 
       <plugin
+            id="net.i2p.crypto.eddsa"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
             id="org.eclipse.jgit.ssh.apache"
             download-size="0"
             install-size="0"

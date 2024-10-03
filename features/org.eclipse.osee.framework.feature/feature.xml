@@ -220,11 +220,18 @@
             unpack="false"/>
 
       <plugin
-         id="org.objectweb.asm"
-         download-size="0"
-         install-size="0"
-         version="9.3.0.v20220409-0157"
-         unpack="false"/>
+            id="net.i2p.crypto.eddsa"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="org.objectweb.asm"
+            download-size="0"
+            install-size="0"
+            version="9.3.0.v20220409-0157"
+            unpack="false"/>
 
       <plugin
             id="org.apache.sshd.osgi"
