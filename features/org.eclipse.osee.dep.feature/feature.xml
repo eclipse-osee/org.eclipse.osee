@@ -338,6 +338,7 @@
       <requires>
             <import plugin="org.slf4j.api"/>
             <import plugin="javax.servlet"/>
+            <import plugin="jakarta.servlet-api" version="4.0.0"/>
             <import plugin="org.eclipse.core.runtime"/>
             <import plugin="org.eclipse.core.jobs"/>
             <import plugin="org.eclipse.core.contenttype"/>
@@ -865,6 +866,13 @@
             download-size="0"
             install-size="0"
             version="0.0.0"
+            unpack="false"/>
+
+      <plugin
+            id="jakarta.servlet-api"
+            download-size="0"
+            install-size="0"
+            version="4.0.0"
             unpack="false"/>
 
       <plugin

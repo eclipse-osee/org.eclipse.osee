@@ -81,6 +81,7 @@
 								<plugin id="org.postgresql.driver" />
 								<plugin id="org.eclipse.egit" />
 								<plugin id="javax.servlet" />
+								<plugin id="jakarta.servlet-api" />
 								<plugin id="javax.ws.rs" />
 								<plugin id="javax.wsdl" />
 								<plugin id="org.apache.cxf.cxf-rt-rs-security-jose-jaxrs" />
