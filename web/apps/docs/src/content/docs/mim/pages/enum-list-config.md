@@ -1,13 +1,13 @@
 ---
-title: Enumeration List Configuration Page
-description: Overview of the Enumeration List Configuration page
+title: List Configuration Page
+description: Overview of the List Configuration page
 ---
 
 **_This page is only available to MIM Administrators_**
 
-The Enumeration List Configuration page is used to create the various artifacts that populate certain dropdowns throughout MIM.
+The List Configuration page is used to create the various artifacts that populate certain dropdowns throughout MIM.
 
-![Enumeration List Configuration Page](../../../../assets/images/mim/enum-list-config.png)
+![List Configuration Page](../../../../assets/images/mim/enum-list-config.png)
 
 ## Units
 

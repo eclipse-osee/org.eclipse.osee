@@ -1,6 +1,6 @@
-## Add or Edit a Platform Type from Type View Page
+## Add or Edit a Platform Type from Platform Types Page
 
-1. Open up the “Type View“ page, found in the navigation pane which can be opened by clicking on the hamburger menu in the upper left corner of the page
+1. Open up the “Platform Types“ page, found in the navigation pane which can be opened by clicking on the hamburger menu in the upper left corner of the page
 
     > > ![OSEE Navigator](assets/images/mim/navigation.jpg)
 

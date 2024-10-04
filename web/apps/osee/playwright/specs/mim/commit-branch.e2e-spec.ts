@@ -15,7 +15,7 @@ import { test } from '@playwright/test';
 test('test', async ({ page }) => {
 	await page.goto('http://localhost:4200/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
-	await page.getByRole('link', { name: 'Connection View' }).click();
+	await page.getByRole('link', { name: 'Connections' }).click();
 	await page.getByLabel('Working').check();
 	await page.getByText('Select a Branch').click();
 	await page.getByText('MIM Demo').click();

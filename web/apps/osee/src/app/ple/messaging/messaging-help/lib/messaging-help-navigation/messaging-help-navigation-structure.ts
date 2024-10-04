@@ -137,9 +137,9 @@ export const helpNavigationStructure: navigationElement[] = [
 		children: [],
 	},
 	{
-		label: 'Type View Page',
+		label: 'Platform Types Page',
 		cypressLabel: 'help-type-view-page',
-		pageTitle: 'OSEE - MIM - Help - Type View Page',
+		pageTitle: 'OSEE - MIM - Help - Platform Types Page',
 		isDropdown: false,
 		isDropdownOpen: false,
 		requiredRoles: [],
