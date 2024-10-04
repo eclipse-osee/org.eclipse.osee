@@ -41,18 +41,33 @@ const config: PlaywrightTestConfig = {
 			testDir: 'playwright/specs/mim/setup',
 		},
 		{
-			name: 'MIM Create ICD Screenshots',
+			name: 'MIM Docs - Overview',
 			use: { ...devices['Desktop Chrome'] },
-			testDir: 'playwright/specs/mim/docs-screenshots',
+			testDir: 'playwright/specs/mim/docs-screenshots/overview',
 			dependencies: ['MIM Setup'],
 		},
 		{
-			name: 'MIM Peer Review Screenshots',
+			name: 'MIM Docs - Create ICD',
+			use: { ...devices['Desktop Chrome'] },
+			testDir: 'playwright/specs/mim/docs-screenshots/create-icd',
+			dependencies: ['MIM Setup'],
+		},
+		{
+			name: 'MIM Docs - Peer Review',
 			use: { ...devices['Desktop Chrome'] },
 			testDir: 'playwright/specs/mim/docs-screenshots/peer-review',
 			dependencies: ['MIM Setup'],
 		},
+		{
+			name: 'MIM Docs - Platform Types Page',
+			use: { ...devices['Desktop Chrome'] },
+			testDir:
+				'playwright/specs/mim/docs-screenshots/platform-types-page',
+			dependencies: ['MIM Setup'],
+		},
 	],
 };
+
+const mimProjects = [];
 
 export default config;

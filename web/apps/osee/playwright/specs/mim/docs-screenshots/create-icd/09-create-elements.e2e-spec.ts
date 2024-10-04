@@ -113,9 +113,9 @@ test('test', async ({ page }) => {
 		.click();
 	await page
 		.locator('div')
-		.filter({ hasText: /^Enter Enum Set Name$/ })
+		.filter({ hasText: /^Enumeration Set Name$/ })
 		.click();
-	await page.getByLabel('Enter Enum Set Name').fill('Demo Fault');
+	await page.getByLabel('Enumeration Set Name').fill('Demo Fault');
 	await page.locator('osee-enum-form').getByRole('button').click();
 	await page.getByText('Enter a name').click();
 	await page.getByLabel('Enter a name').fill('Warning');

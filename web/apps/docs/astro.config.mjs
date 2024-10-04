@@ -51,7 +51,11 @@ export default defineConfig({
               items: [
                 {
                   label: "List Configuration",
-                  slug: "mim/pages/enum-list-config",
+                  slug: "mim/pages/list-config",
+                },
+                {
+                  label: "Platform Types",
+                  slug: "mim/pages/platform-types",
                 },
               ],
             },

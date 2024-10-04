@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { test } from '@playwright/test';
+import { test } from '@ngx-playwright/test';
 
 test('test', async ({ page }) => {
 	await page.goto('http://localhost:4200/ple');
