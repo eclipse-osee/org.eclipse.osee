@@ -15,7 +15,7 @@ import { test } from '@ngx-playwright/test';
 test('test', async ({ page }) => {
 	await page.goto('http://localhost:4200/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
-	await page.getByRole('link', { name: 'Connection View' }).click();
+	await page.getByRole('link', { name: 'Connections' }).click();
 	await page.getByLabel('Working').check();
 	await page.getByPlaceholder('Branches').click();
 	await page.getByText('TW2 - New MIM ICD').click();

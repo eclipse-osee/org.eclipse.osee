@@ -17,7 +17,7 @@ test('test', async ({ page }) => {
 
 	// Commit MIM Demo branch to create baseline
 	await page.getByRole('link', { name: 'MIM' }).click();
-	await page.getByRole('link', { name: 'Connection View' }).click();
+	await page.getByRole('link', { name: 'Connections' }).click();
 	await page.getByLabel('Working').check();
 	await page.getByText('Select a Branch').click();
 	await page.getByText('MIM Demo').click();
