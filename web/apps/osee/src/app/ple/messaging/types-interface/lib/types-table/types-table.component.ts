@@ -79,8 +79,8 @@ import { AttributeToValuePipe } from '@osee/attributes/pipes';
 			(click)="uiService.select(row)"
 			[class]="
 				uiService.selected().id === row.id
-					? 'tw-bg-primary'
-					: 'even:tw-bg-background-background hover:tw-bg-background-hover hover:tw-font-extrabold'
+					? 'tw-bg-primary-300 dark:tw-bg-primary-700'
+					: 'even:tw-bg-background-background hover:tw-bg-background-hover'
 			"></mat-row>
 	</mat-table>`,
 	changeDetection: ChangeDetectionStrategy.OnPush,
