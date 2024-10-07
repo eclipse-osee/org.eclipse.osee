@@ -23,6 +23,8 @@ import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
@@ -73,7 +75,18 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
 
          AttributeTypeGeneric<?> attributeType = tokenService.getAttributeTypeOrCreate(chStmt.getLong("attr_type_id"));
 
-         Object value = chStmt.loadAttributeValue(attributeType);
+         Object value = null;
+         String error = "";
+         try {
+            value = chStmt.loadAttributeValue(attributeType);
+         } catch (Exception ex) {
+            // provide a better exception
+            error = String.format("Error loading ArtId [%s] AttrId [%s] AttrType %s: %s", artId.getIdString(),
+               attrId.toString(), attributeType.toStringWithId(), Lib.exceptionToString(ex));
+            logger.error(error);
+            throw new OseeArgumentException(error);
+         }
+
          String uri = chStmt.getString("uri");
 
          toReturn = factory.createAttributeData(version, attrId, attributeType, modType, artId, value, uri, applicId);
