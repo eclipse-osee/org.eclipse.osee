@@ -70,7 +70,10 @@ public class MimPeerReviewApiImpl implements MimPeerReviewApi {
    public List<BranchId> getAppliedBranches(BranchId prBranchId) {
       List<BranchId> appliedBranches = new ArrayList<>();
       String query =
-         "select wb.branch_id, wb.branch_name \r\n" + "from osee_branch b, osee_tx_details txd, osee_branch wb \r\n" + "where b.branch_id = ?\r\n" + "and b.branch_id = txd.branch_id and txd.transaction_id > b.baseline_transaction_id and txd.commit_art_id > ?\r\n" + "and wb.associated_art_id = txd.commit_art_id;\r\n";
+         "select wb.branch_id, wb.branch_name " + //
+         "from osee_branch b, osee_tx_details txd, osee_branch wb " + //
+         "where b.branch_id = ? " + //
+         "and b.branch_id = txd.branch_id and txd.transaction_id > b.baseline_transaction_id and txd.commit_art_id > ? and wb.associated_art_id = txd.commit_art_id";
       orcsApi.getJdbcService().getClient().runQuery(
          chStmt -> appliedBranches.add(BranchId.valueOf(chStmt.getLong("branch_id"))), query, prBranchId, 0);
       return appliedBranches;
