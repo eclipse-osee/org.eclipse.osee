@@ -12,7 +12,7 @@
 -->
 @if (enumObs | async; as enumerationSet) {
 	@if ((inEditMode | async) === true && isOnEditablePage === true) {
-		<h1 mat-dialog-title>Editing {{ enumerationSet.name }}</h1>
+		<h1 mat-dialog-title>Editing {{ enumerationSet.name.value }}</h1>
 		<mat-dialog-content>
 			<osee-edit-enum-set-field
 				[editable]="true"
@@ -20,7 +20,7 @@
 				(enumSetTx)="receiveTx($event)"></osee-edit-enum-set-field>
 		</mat-dialog-content>
 	} @else {
-		<h1 mat-dialog-title>Viewing {{ enumerationSet.name }}</h1>
+		<h1 mat-dialog-title>Viewing {{ enumerationSet.name.value }}</h1>
 		<mat-dialog-content>
 			<osee-edit-enum-set-field
 				[editable]="false"
@@ -37,8 +37,8 @@
 	</button>
 	@if (receivedTx | async; as result) {
 		<button
-			mat-raised-button
-			color="primary"
+			mat-flat-button
+			class="primary-button"
 			[mat-dialog-close]="result">
 			Ok
 		</button>

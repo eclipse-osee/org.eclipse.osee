@@ -10,9 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { response } from '@osee/shared/types';
+import { XResultData } from '@osee/shared/types';
 
-export const MockXResultData: response = {
+export const MockXResultData: XResultData = {
 	empty: false,
 	errorCount: 0,
 	errors: false,

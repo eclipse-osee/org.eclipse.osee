@@ -65,8 +65,8 @@ describe('ElementTableSearchComponent', () => {
 			await loader.getHarness(MatInputHarness)
 		).setValue('Hello World');
 		scheduler.run(() => {
-			let values = { a: 'Hello World' };
-			let marble = 'a';
+			const values = { a: 'Hello World' };
+			const marble = 'a';
 			scheduler.expectObservable(service.searchTerm).toBe(marble, values);
 		});
 	});

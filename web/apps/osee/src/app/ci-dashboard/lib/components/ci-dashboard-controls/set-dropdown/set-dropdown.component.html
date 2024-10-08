@@ -24,18 +24,18 @@
 			type="text"
 			matInput
 			[matAutocomplete]="auto"
-			[ngModel]="(selectedSet | async)?.name || ''"
+			[ngModel]="(selectedSet | async)?.name?.value || ''"
 			(keyup)="applyFilter($event)"
 			name="autocomplete-text" />
 		<mat-autocomplete
 			autoActiveFirstOption
 			#auto="matAutocomplete">
 			@if (sets | async; as _sets) {
-				@for (option of _sets; track option) {
+				@for (option of _sets; track option.id) {
 					<mat-option
-						[value]="option.name"
+						[value]="option.name.value"
 						(click)="selectSet(option)">
-						{{ option.name }}
+						{{ option.name.value }}
 					</mat-option>
 				}
 			}

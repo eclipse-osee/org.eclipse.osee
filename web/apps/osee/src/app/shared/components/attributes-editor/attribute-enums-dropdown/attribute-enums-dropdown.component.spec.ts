@@ -12,8 +12,12 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AttributeEnumsDropdownComponent } from './attribute-enums-dropdown.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('AttributeEnumsDropdownComponent', () => {
 	let component: AttributeEnumsDropdownComponent;
@@ -21,10 +25,10 @@ describe('AttributeEnumsDropdownComponent', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [
-				AttributeEnumsDropdownComponent,
-				HttpClientTestingModule,
-				BrowserAnimationsModule,
+			imports: [AttributeEnumsDropdownComponent, BrowserAnimationsModule],
+			providers: [
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
 			],
 		});
 		fixture = TestBed.createComponent(AttributeEnumsDropdownComponent);

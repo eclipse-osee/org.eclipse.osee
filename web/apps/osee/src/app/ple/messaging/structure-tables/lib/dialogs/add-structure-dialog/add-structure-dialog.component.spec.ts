@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import {} from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -24,56 +24,125 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatStepperModule } from '@angular/material/stepper';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { AddStructureDialog } from './add-structure-dialog';
 
 import { AddStructureDialogComponent } from './add-structure-dialog.component';
 
 import type { structure } from '@osee/messaging/shared/types';
-import {
-	MockApplicabilitySelectorComponent,
-	MockMatOptionLoadingComponent,
-} from '@osee/shared/components/testing';
-import {
-	CurrentStateServiceMock,
-	enumsServiceMock,
-} from '@osee/messaging/shared/testing';
+import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
+import { CurrentStateServiceMock } from '@osee/messaging/shared/testing';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
-import {
-	ApplicabilitySelectorComponent,
-	MatOptionLoadingComponent,
-} from '@osee/shared/components';
-import { EnumsService } from '@osee/messaging/shared/services';
+import { MatOptionLoadingComponent } from '@osee/shared/components';
+import { applicabilitySentinel } from '@osee/applicability/types';
+import { ApplicabilityDropdownComponent } from '@osee/applicability/applicability-dropdown';
+import { MockApplicabilityDropdownComponent } from '@osee/applicability/applicability-dropdown/testing';
+import { StructureCategoryDropdownComponent } from '@osee/messaging/structure-category/structure-category-dropdown';
+import { MockStructureCategoryDropdownComponent } from '@osee/messaging/structure-category/structure-category-dropdown/testing';
 
 describe('AddStructureDialogComponent', () => {
 	let component: AddStructureDialogComponent;
 	let fixture: ComponentFixture<AddStructureDialogComponent>;
-	let dialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
-	let dialogData: AddStructureDialog = {
+	const dialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
+	const dialogData: AddStructureDialog = {
 		id: '123456',
 		name: 'submessage',
 		structure: {
-			id: '',
-			name: '',
-			nameAbbrev: '',
-			description: '',
+			id: '-1',
+			gammaId: '-1',
+			name: {
+				id: '-1',
+				typeId: '1152921504606847088',
+				gammaId: '-1',
+				value: '',
+			},
+			nameAbbrev: {
+				id: '-1',
+				typeId: '8355308043647703563',
+				gammaId: '-1',
+				value: '',
+			},
+			description: {
+				id: '-1',
+				typeId: '1152921504606847090',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMaxSimultaneity: {
+				id: '-1',
+				typeId: '2455059983007225756',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMinSimultaneity: {
+				id: '-1',
+				typeId: '2455059983007225755',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceTaskFileType: {
+				id: '-1',
+				typeId: '2455059983007225760',
+				gammaId: '-1',
+				value: 0,
+			},
+			interfaceStructureCategory: {
+				id: '-1',
+				typeId: '2455059983007225764',
+				gammaId: '-1',
+				value: '',
+			},
+			applicability: applicabilitySentinel,
 			elements: [],
-			interfaceMaxSimultaneity: '1',
-			interfaceMinSimultaneity: '0',
-			interfaceStructureCategory: '',
-			interfaceTaskFileType: 0,
 		},
 	};
-	let dummyStructure: structure = {
+	const dummyStructure: structure = {
 		id: '10',
-		name: '',
-		nameAbbrev: '',
-		description: '',
+		gammaId: '-1',
+		name: {
+			id: '-1',
+			typeId: '1152921504606847088',
+			gammaId: '-1',
+			value: '',
+		},
+		nameAbbrev: {
+			id: '-1',
+			typeId: '8355308043647703563',
+			gammaId: '-1',
+			value: '',
+		},
+		description: {
+			id: '-1',
+			typeId: '1152921504606847090',
+			gammaId: '-1',
+			value: '',
+		},
+		interfaceMaxSimultaneity: {
+			id: '-1',
+			typeId: '2455059983007225756',
+			gammaId: '-1',
+			value: '',
+		},
+		interfaceMinSimultaneity: {
+			id: '-1',
+			typeId: '2455059983007225755',
+			gammaId: '-1',
+			value: '',
+		},
+		interfaceTaskFileType: {
+			id: '-1',
+			typeId: '2455059983007225760',
+			gammaId: '-1',
+			value: 0,
+		},
+		interfaceStructureCategory: {
+			id: '-1',
+			typeId: '2455059983007225764',
+			gammaId: '-1',
+			value: '',
+		},
+		applicability: applicabilitySentinel,
 		elements: [],
-		interfaceMaxSimultaneity: '1',
-		interfaceMinSimultaneity: '0',
-		interfaceStructureCategory: '',
-		interfaceTaskFileType: 0,
 	};
 
 	beforeEach(async () => {
@@ -81,7 +150,8 @@ describe('AddStructureDialogComponent', () => {
 			add: {
 				imports: [
 					MockMatOptionLoadingComponent,
-					MockApplicabilitySelectorComponent,
+					MockApplicabilityDropdownComponent,
+					MockStructureCategoryDropdownComponent,
 				],
 				providers: [
 					{
@@ -93,13 +163,13 @@ describe('AddStructureDialogComponent', () => {
 			remove: {
 				imports: [
 					MatOptionLoadingComponent,
-					ApplicabilitySelectorComponent,
+					ApplicabilityDropdownComponent,
+					StructureCategoryDropdownComponent,
 				],
 			},
 		})
 			.configureTestingModule({
 				imports: [
-					NoopAnimationsModule,
 					MatStepperModule,
 					MatDialogModule,
 					MatButtonModule,
@@ -111,15 +181,12 @@ describe('AddStructureDialogComponent', () => {
 				],
 				declarations: [],
 				providers: [
+					provideNoopAnimations(),
 					{ provide: MAT_DIALOG_DATA, useValue: dialogData },
 					{ provide: MatDialogRef, useValue: dialogRef },
 					{
 						provide: STRUCTURE_SERVICE_TOKEN,
 						useValue: CurrentStateServiceMock,
-					},
-					{
-						provide: EnumsService,
-						useValue: enumsServiceMock,
 					},
 				],
 			})
@@ -137,7 +204,11 @@ describe('AddStructureDialogComponent', () => {
 	});
 
 	it('should movetoStep', () => {
-		let stepper = jasmine.createSpyObj('stepper', {}, { selectedIndex: 0 });
+		const stepper = jasmine.createSpyObj(
+			'stepper',
+			{},
+			{ selectedIndex: 0 }
+		);
 		spyOn(stepper, 'selectedIndex').and.callThrough();
 		component.moveToStep(3, stepper);
 		expect(stepper.selectedIndex).toEqual(0);
@@ -154,9 +225,13 @@ describe('AddStructureDialogComponent', () => {
 	});
 
 	it('should movetoStep 3', () => {
-		let stepper = jasmine.createSpyObj('stepper', {}, { selectedIndex: 0 });
+		const stepper = jasmine.createSpyObj(
+			'stepper',
+			{},
+			{ selectedIndex: 0 }
+		);
 		spyOn(stepper, 'selectedIndex').and.callThrough();
-		let spy = spyOn(component, 'moveToStep').and.stub();
+		const spy = spyOn(component, 'moveToStep').and.stub();
 		component.moveToReview(stepper);
 		expect(spy).toHaveBeenCalled();
 		expect(spy).toHaveBeenCalledWith(3, stepper);

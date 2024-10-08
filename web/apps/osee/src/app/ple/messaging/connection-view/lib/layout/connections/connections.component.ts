@@ -11,11 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
 import { CurrentViewSelectorComponent } from '@osee/shared/components';
-import { applic } from '@osee/shared/types/applicability';
+import { applic } from '@osee/applicability/types';
 import { iif, of } from 'rxjs';
 import { map, share, shareReplay, switchMap } from 'rxjs/operators';
 import { CurrentGraphService } from '../../services/current-graph.service';
@@ -35,6 +35,9 @@ import { GraphComponent } from '../graph/graph.component';
 	],
 })
 export class ConnectionsComponent {
+	dialog = inject(MatDialog);
+	private graphService = inject(CurrentGraphService);
+
 	preferences = this.graphService.preferences;
 	inEditMode = this.graphService.preferences.pipe(
 		map((r) => r.inEditMode),
@@ -46,10 +49,6 @@ export class ConnectionsComponent {
 	);
 	sideNav = this.graphService.sideNavContent;
 	sideNavOpened = this.sideNav.pipe(map((value) => value.opened));
-	constructor(
-		public dialog: MatDialog,
-		private graphService: CurrentGraphService
-	) {}
 
 	branchId = this.graphService.branchId;
 	branchType = this.graphService.branchType;

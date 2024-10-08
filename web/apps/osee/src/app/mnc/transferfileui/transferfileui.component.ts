@@ -26,7 +26,7 @@ import {
 	MatTableModule,
 } from '@angular/material/table';
 import { UiService } from '@osee/shared/services';
-import { BehaviorSubject, map, noop } from 'rxjs';
+import { BehaviorSubject, map } from 'rxjs';
 import { TransferFileService } from '../../mnc/services/transfer-file/transfer-file.service';
 import { ExportTableComponent } from '../../mnc/transferfileui/export-table/export-table.component';
 import { GenerateExportComponent } from '../../mnc/transferfileui/generate-export/generate-export.component';
@@ -59,10 +59,10 @@ export class TransferfileuiComponent {
 	id = new BehaviorSubject<string>('');
 	_exportedData = this.fileService.exportData.pipe(
 		map((data) => {
-			let tempData: TransferData[] = [];
+			const tempData: TransferData[] = [];
 			if (data.tables.length !== 0) {
 				data.tables[0].rows.forEach((row) => {
-					let tempObj: TransferData = {
+					const tempObj: TransferData = {
 						source: '',
 						date: '',
 						file: '',
@@ -86,7 +86,7 @@ export class TransferfileuiComponent {
 		takeUntilDestroyed()
 	);
 	exportedData = toSignal(this._exportedData, { initialValue: [] });
-	errorMessage: string = '';
+	errorMessage = '';
 	onSearch() {
 		this.fileService.onEnter.next();
 	}

@@ -35,6 +35,7 @@ import {
 import { MatTooltip } from '@angular/material/tooltip';
 import { PlatformType } from '@osee/messaging/shared/types';
 import { PlMessagingTypesUIService } from '../services/pl-messaging-types-ui.service';
+import { AttributeToValuePipe } from '@osee/attributes/pipes';
 
 @Component({
 	selector: 'osee-types-table',
@@ -51,6 +52,7 @@ import { PlMessagingTypesUIService } from '../services/pl-messaging-types-ui.ser
 		MatCell,
 		MatCellDef,
 		MatTooltip,
+		AttributeToValuePipe,
 	],
 	template: `<mat-table [dataSource]="dataSource">
 		@for (column of displayedColumns(); track column; let idx = $index) {
@@ -64,7 +66,7 @@ import { PlMessagingTypesUIService } from '../services/pl-messaging-types-ui.ser
 					@if (column === 'applicability') {
 						{{ row[column].name }}
 					} @else {
-						{{ row[column] }}
+						{{ row[column] | attributeToValue }}
 					}
 				</mat-cell>
 			</ng-container>

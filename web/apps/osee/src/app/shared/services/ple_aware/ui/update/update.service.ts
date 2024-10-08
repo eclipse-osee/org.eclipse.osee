@@ -22,7 +22,6 @@ export class UpdateService {
 	private _updateArtifact = new Subject<string>();
 
 	private _updateOccurred = this._updateRequired.pipe(debounceTime(100));
-	constructor() {}
 
 	get update() {
 		return this._updateOccurred;

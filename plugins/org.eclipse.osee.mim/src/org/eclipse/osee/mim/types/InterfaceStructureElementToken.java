@@ -13,49 +13,70 @@
 package org.eclipse.osee.mim.types;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
-import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithGammas;
+import org.eclipse.osee.accessor.types.AttributePojo;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.orcs.rest.model.transaction.Attribute;
+import org.eclipse.osee.orcs.rest.model.transaction.CreateArtifact;
 
 /**
  * @author Luciano T. Vaglienti
  */
-public class InterfaceStructureElementToken extends ArtifactAccessorResult {
+public class InterfaceStructureElementToken extends ArtifactAccessorResultWithGammas {
    public static final InterfaceStructureElementToken SENTINEL = new InterfaceStructureElementToken();
 
-   private String enumLiteral;
-   private Boolean InterfaceElementAlterable;
-   private Boolean interfaceElementArrayHeader = false;
-   private Boolean interfaceElementWriteArrayHeaderName = false;
-   private String interfaceElementArrayIndexOrder = ElementArrayIndexOrder.OUTER_INNER.toString();
-   private String interfaceElementArrayIndexDelimiterOne = " ";
-   private String interfaceElementArrayIndexDelimiterTwo = " ";
-   private String Notes;
-   private String Description;
-   private Integer InterfaceElementIndexStart;
-   private Integer InterfaceElementIndexEnd;
+   private AttributePojo<String> enumLiteral =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceElementEnumLiteral, GammaId.SENTINEL, "", "");
+   private AttributePojo<Boolean> InterfaceElementAlterable =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceElementAlterable, GammaId.SENTINEL, false, "");
+   private AttributePojo<Boolean> interfaceElementArrayHeader =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceElementArrayHeader, GammaId.SENTINEL, false, "");
+   private AttributePojo<Boolean> interfaceElementWriteArrayHeaderName = AttributePojo.valueOf(Id.SENTINEL,
+      CoreAttributeTypes.InterfaceElementWriteArrayHeaderName, GammaId.SENTINEL, false, "");
+   private AttributePojo<String> interfaceElementArrayIndexOrder =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceElementArrayIndexOrder, GammaId.SENTINEL,
+         ElementArrayIndexOrder.OUTER_INNER.toString(), "");
+   private AttributePojo<String> interfaceElementArrayIndexDelimiterOne = AttributePojo.valueOf(Id.SENTINEL,
+      CoreAttributeTypes.InterfaceElementArrayIndexDelimiterOne, GammaId.SENTINEL, " ", "");
+   private AttributePojo<String> interfaceElementArrayIndexDelimiterTwo = AttributePojo.valueOf(Id.SENTINEL,
+      CoreAttributeTypes.InterfaceElementArrayIndexDelimiterTwo, GammaId.SENTINEL, " ", "");
+   private AttributePojo<String> Notes =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.Notes, GammaId.SENTINEL, "", "");
+   private AttributePojo<String> Description =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.Description, GammaId.SENTINEL, "", "");
+   private AttributePojo<Integer> InterfaceElementIndexStart =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceElementIndexStart, GammaId.SENTINEL, 0, "");
+   private AttributePojo<Integer> InterfaceElementIndexEnd =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceElementIndexEnd, GammaId.SENTINEL, 0, "");
    private List<InterfaceStructureElementToken> arrayElements = new LinkedList<>();
    private InterfaceEnumerationSet arrayDescriptionSet = InterfaceEnumerationSet.SENTINEL;
-   private boolean interfaceElementBlockData = false;
-
-   private String Units;
+   private AttributePojo<Boolean> interfaceElementBlockData =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceElementBlockData, GammaId.SENTINEL, false, "");
 
    private Double beginByte = 0.0;
    private Double beginWord = 0.0;
 
-   private ApplicabilityToken applicability;
+   private ApplicabilityToken applicability = ApplicabilityToken.BASE;
 
-   private String logicalType;
-   private String InterfacePlatformTypeMinval;
-   private String InterfacePlatformTypeMaxval;
-   private String InterfaceDefaultValue;
-   private String InterfacePlatformTypeBitSize;
+   private AttributePojo<String> InterfaceDefaultValue =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceDefaultValue, GammaId.SENTINEL, "", "");
    private boolean autogenerated = false;
    private boolean includedInCounts = true;
    private boolean isArrayChild = false;
@@ -76,48 +97,47 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
    public InterfaceStructureElementToken(ArtifactReadable art) {
       super(art);
       this.setId(art.getId());
-      this.setName(art.getSoleAttributeValue(CoreAttributeTypes.Name));
-      this.setInterfaceElementAlterable(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementAlterable, false));
+      this.setName(AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.Name, "")));
+      this.setInterfaceElementAlterable(
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceElementAlterable, false)));
       this.setInterfaceElementArrayHeader(
-         art.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementArrayHeader, false));
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceElementArrayHeader, false)));
       this.setInterfaceElementWriteArrayHeaderName(
-         art.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementWriteArrayHeaderName, false));
-      this.setInterfaceElementIndexStart(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexStart, 0));
-      this.setInterfaceElementIndexEnd(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementIndexEnd, 0));
-      this.setNotes(art.getSoleAttributeValue(CoreAttributeTypes.Notes, ""));
-      this.setDescription(art.getSoleAttributeValue(CoreAttributeTypes.Description, ""));
-      this.setEnumLiteral(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementEnumLiteral, ""));
-      this.setInterfaceDefaultValue(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceDefaultValue, ""));
-      this.setInterfaceElementArrayIndexOrder(art.getSoleAttributeValue(
-         CoreAttributeTypes.InterfaceElementArrayIndexOrder, ElementArrayIndexOrder.OUTER_INNER.toString()));
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceElementWriteArrayHeaderName, false)));
+      this.setInterfaceElementIndexStart(
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceElementIndexStart, 0)));
+      this.setInterfaceElementIndexEnd(
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceElementIndexEnd, 0)));
+      this.setNotes(AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.Notes, "")));
+      this.setDescription(AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.Description, "")));
+      this.setEnumLiteral(
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceElementEnumLiteral, "")));
+      this.setInterfaceDefaultValue(
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceDefaultValue, "")));
+      this.setInterfaceElementArrayIndexOrder(AttributePojo.valueOf(art.getSoleAttribute(
+         CoreAttributeTypes.InterfaceElementArrayIndexOrder, ElementArrayIndexOrder.OUTER_INNER.toString())));
       this.setInterfaceElementArrayIndexDelimiterOne(
-         art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceElementArrayIndexDelimiterOne, ""));
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceElementArrayIndexDelimiterOne, "")));
       this.setInterfaceElementArrayIndexDelimiterTwo(
-         art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceElementArrayIndexDelimiterTwo, ""));
-      this.setInterfaceElementBlockData(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceElementBlockData, false));
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceElementArrayIndexDelimiterTwo, "")));
+      this.setInterfaceElementBlockData(
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceElementBlockData, false)));
       ArtifactReadable pTypeArt =
          art.getRelated(CoreRelationTypes.InterfaceElementPlatformType_PlatformType).getOneOrDefault(
             ArtifactReadable.SENTINEL);
       this.setApplicability(
          !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
-      if (pTypeArt.isValid() && !pTypeArt.getExistingAttributeTypes().isEmpty() && !getInterfaceElementArrayHeader()) {
+      if (pTypeArt.isValid() && !pTypeArt.getExistingAttributeTypes().isEmpty() && !(getInterfaceElementArrayHeader().isValid() && getInterfaceElementArrayHeader().getValue())) {
          PlatformTypeToken pType = new PlatformTypeToken(pTypeArt);
          this.setPlatformType(pType);
-         this.setInterfacePlatformTypeBitSize(pType.getInterfacePlatformTypeBitSize());
-         this.setLogicalType(pType.getInterfaceLogicalType() != null ? pType.getInterfaceLogicalType() : "");
-         this.setInterfacePlatformTypeMinval(
-            pType.getInterfacePlatformTypeMinval() != null ? pType.getInterfacePlatformTypeMinval() : "");
-         this.setInterfacePlatformTypeMaxval(
-            pType.getInterfacePlatformTypeMaxval() != null ? pType.getInterfacePlatformTypeMaxval() : "");
-         this.setUnits(pType.getInterfacePlatformTypeUnits() != null ? pType.getInterfacePlatformTypeUnits() : "");
          if (pType.getEnumSet().isValid()) {
             this.setEnumLiteral(pType.getEnumSet().getDescription());
          }
-         if (getInterfaceDefaultValue().isEmpty()) {
+         if ((getInterfaceDefaultValue().isValid() && getInterfaceDefaultValue().getValue().isEmpty()) || getInterfaceDefaultValue().isInvalid()) {
             this.setInterfaceDefaultValue(
-               pType.getInterfaceDefaultValue() != null ? pType.getInterfaceDefaultValue() : "");
+               pType.getInterfaceDefaultValue() != null & pType.getInterfaceDefaultValue().isValid() ? pType.getInterfaceDefaultValue().getValue() : "");
          }
-      } else if (getInterfaceElementArrayHeader()) {
+      } else if (getInterfaceElementArrayHeader().isValid() && getInterfaceElementArrayHeader().getValue()) {
          PlatformTypeToken arrayHeaderType = new PlatformTypeToken(0L, "Element Array Header", "", "0", "", "", "");
          arrayHeaderType.setDescription("");
          arrayHeaderType.setInterfaceDefaultValue("");
@@ -127,20 +147,10 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
          arrayHeaderType.setInterfacePlatformTypeCompRate("");
          arrayHeaderType.setInterfacePlatformTypeMsbValue("");
          this.setPlatformType(arrayHeaderType);
-         this.setInterfacePlatformTypeBitSize(arrayHeaderType.getInterfacePlatformTypeBitSize());
-         this.setLogicalType(arrayHeaderType.getInterfaceLogicalType());
-         this.setInterfacePlatformTypeMinval(arrayHeaderType.getInterfacePlatformTypeMinval());
-         this.setInterfacePlatformTypeMaxval(arrayHeaderType.getInterfacePlatformTypeMaxval());
-         this.setInterfaceDefaultValue(arrayHeaderType.getInterfaceDefaultValue());
-         this.setUnits(arrayHeaderType.getInterfacePlatformTypeUnits());
+         this.setInterfaceDefaultValue(arrayHeaderType.getInterfaceDefaultValue().getValue());
       } else {
          this.setPlatformType(PlatformTypeToken.SENTINEL);
-         this.setInterfacePlatformTypeBitSize("0");
-         this.setLogicalType("");
-         this.setInterfacePlatformTypeMinval("0");
-         this.setInterfacePlatformTypeMaxval("0");
-         this.setInterfaceDefaultValue("0");
-         this.setUnits("");
+         this.setInterfaceDefaultValue("");
          this.getPlatformType().setDescription("");
       }
       this.setArrayElements(
@@ -161,23 +171,18 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
    }
 
    public InterfaceStructureElementToken(String name, String description, Double beginByte, Double beginWord, Integer size, boolean offset) {
-      super((long) -1, name);
+      super((long) -1, AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.Name, GammaId.SENTINEL, name, ""));
       this.setId((long) -1);
       this.setName(name);
       this.setDescription(description);
       this.setInterfaceElementAlterable(false);
       this.setInterfaceElementIndexStart(0);
-      this.setInterfacePlatformTypeBitSize("8");
       this.setInterfaceElementIndexEnd(size - 1);
       this.setNotes("");
       this.setBeginByte(beginByte);
       this.setBeginWord(beginWord);
       this.setApplicability(ApplicabilityToken.BASE);
-      this.setUnits("");
-      this.setLogicalType("autogenerated");
       this.setInterfaceDefaultValue("");
-      this.setInterfacePlatformTypeMaxval("0");
-      this.setInterfacePlatformTypeMinval("0");
       this.setAutogenerated(true);
       this.setIncludedInCounts(false); // Spares should not be included in structure byte counts
       this.setHasNegativeEndByteOffset(offset);
@@ -187,7 +192,7 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
    }
 
    public InterfaceStructureElementToken(Long id, String name, ApplicabilityToken applicability, PlatformTypeToken pType) {
-      super(id, name);
+      super(id, AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.Name, GammaId.SENTINEL, name, ""));
       this.setDescription("");
       this.setNotes("");
       this.setInterfaceElementAlterable(false);
@@ -195,12 +200,6 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
       this.setInterfaceElementIndexEnd(0);
       this.setApplicability(applicability);
       this.setPlatformType(pType);
-      this.setInterfacePlatformTypeBitSize(pType.getInterfacePlatformTypeBitSize());
-      this.setLogicalType(pType.getInterfaceLogicalType());
-      this.setInterfacePlatformTypeMinval(pType.getInterfacePlatformTypeMinval());
-      this.setInterfacePlatformTypeMaxval(pType.getInterfacePlatformTypeMaxval());
-      this.setInterfaceDefaultValue(pType.getInterfaceDefaultValue());
-      this.setUnits(pType.getInterfacePlatformTypeUnits());
       this.setAutogenerated(true);
       this.getPlatformType().setDescription("Autogenerated upon page load");
       this.setEnumLiteral("");
@@ -212,7 +211,7 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
     * @param name
     */
    public InterfaceStructureElementToken(Long id, String name) {
-      super(id, name);
+      super(id, AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.Name, GammaId.SENTINEL, name, ""));
    }
 
    /**
@@ -225,7 +224,7 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
    /**
     * @return the description
     */
-   public String getDescription() {
+   public AttributePojo<String> getDescription() {
       return Description;
    }
 
@@ -233,13 +232,19 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
     * @param description the description to set
     */
    public void setDescription(String description) {
-      Description = description;
+      this.Description =
+         AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.Description, GammaId.SENTINEL, description, "");
+   }
+
+   @JsonProperty
+   public void setDescription(AttributePojo<String> description) {
+      this.Description = description;
    }
 
    /**
     * @return the notes
     */
-   public String getNotes() {
+   public AttributePojo<String> getNotes() {
       return Notes;
    }
 
@@ -247,13 +252,18 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
     * @param notes the notes to set
     */
    public void setNotes(String notes) {
-      Notes = notes;
+      Notes = AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.Notes, GammaId.SENTINEL, notes, "");
+   }
+
+   @JsonProperty
+   public void setNotes(AttributePojo<String> notes) {
+      this.Notes = notes;
    }
 
    /**
     * @return the interfaceElementAlterable
     */
-   public Boolean getInterfaceElementAlterable() {
+   public AttributePojo<Boolean> getInterfaceElementAlterable() {
       return InterfaceElementAlterable;
    }
 
@@ -261,57 +271,98 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
     * @param interfaceElementAlterable the interfaceElementAlterable to set
     */
    public void setInterfaceElementAlterable(Boolean interfaceElementAlterable) {
+      InterfaceElementAlterable = AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceElementAlterable,
+         GammaId.SENTINEL, interfaceElementAlterable, "");
+   }
+
+   @JsonProperty
+   public void setInterfaceElementAlterable(AttributePojo<Boolean> interfaceElementAlterable) {
       InterfaceElementAlterable = interfaceElementAlterable;
    }
 
-   public Boolean getInterfaceElementArrayHeader() {
+   public AttributePojo<Boolean> getInterfaceElementArrayHeader() {
       return interfaceElementArrayHeader;
    }
 
    public void setInterfaceElementArrayHeader(Boolean interfaceElementArrayHeader) {
+      this.interfaceElementArrayHeader = AttributePojo.valueOf(Id.SENTINEL,
+         CoreAttributeTypes.InterfaceElementArrayHeader, GammaId.SENTINEL, interfaceElementArrayHeader, "");
+   }
+
+   @JsonProperty
+   public void setInterfaceElementArrayHeader(AttributePojo<Boolean> interfaceElementArrayHeader) {
       this.interfaceElementArrayHeader = interfaceElementArrayHeader;
    }
 
-   public Boolean getInterfaceElementWriteArrayHeaderName() {
+   public AttributePojo<Boolean> getInterfaceElementWriteArrayHeaderName() {
       return interfaceElementWriteArrayHeaderName;
    }
 
    public void setInterfaceElementWriteArrayHeaderName(Boolean interfaceElementWriteArrayHeaderName) {
+      this.interfaceElementWriteArrayHeaderName =
+         AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceElementWriteArrayHeaderName, GammaId.SENTINEL,
+            interfaceElementWriteArrayHeaderName, "");
+   }
+
+   @JsonProperty
+   public void setInterfaceElementWriteArrayHeaderName(AttributePojo<Boolean> interfaceElementWriteArrayHeaderName) {
       this.interfaceElementWriteArrayHeaderName = interfaceElementWriteArrayHeaderName;
    }
 
-   public String getInterfaceElementArrayIndexDelimiterOne() {
+   public AttributePojo<String> getInterfaceElementArrayIndexDelimiterOne() {
       return interfaceElementArrayIndexDelimiterOne;
    }
 
    public void setInterfaceElementArrayIndexDelimiterOne(String interfaceElementArrayIndexDelimiterOne) {
+      this.interfaceElementArrayIndexDelimiterOne =
+         AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceElementArrayIndexDelimiterOne, GammaId.SENTINEL,
+            interfaceElementArrayIndexDelimiterOne, "");
+   }
+
+   @JsonProperty
+   public void setInterfaceElementArrayIndexDelimiterOne(AttributePojo<String> interfaceElementArrayIndexDelimiterOne) {
       this.interfaceElementArrayIndexDelimiterOne = interfaceElementArrayIndexDelimiterOne;
    }
 
-   public String getInterfaceElementArrayIndexDelimiterTwo() {
+   public AttributePojo<String> getInterfaceElementArrayIndexDelimiterTwo() {
       return interfaceElementArrayIndexDelimiterTwo;
    }
 
    public void setInterfaceElementArrayIndexDelimiterTwo(String interfaceElementArrayIndexDelimiterTwo) {
+      this.interfaceElementArrayIndexDelimiterTwo =
+         AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceElementArrayIndexDelimiterTwo, GammaId.SENTINEL,
+            interfaceElementArrayIndexDelimiterTwo, "");
+   }
+
+   @JsonProperty
+   public void setInterfaceElementArrayIndexDelimiterTwo(AttributePojo<String> interfaceElementArrayIndexDelimiterTwo) {
       this.interfaceElementArrayIndexDelimiterTwo = interfaceElementArrayIndexDelimiterTwo;
    }
 
-   public String getInterfaceElementArrayIndexOrder() {
-      return interfaceElementArrayIndexOrder.toString();
+   public AttributePojo<String> getInterfaceElementArrayIndexOrder() {
+      return interfaceElementArrayIndexOrder;
    }
 
    public void setInterfaceElementArrayIndexOrder(String interfaceElementArrayIndexOrder) {
+      this.interfaceElementArrayIndexOrder = AttributePojo.valueOf(Id.SENTINEL,
+         CoreAttributeTypes.InterfaceElementArrayIndexOrder, GammaId.SENTINEL, interfaceElementArrayIndexOrder, "");
+   }
+
+   @JsonProperty
+   public void setInterfaceElementArrayIndexOrder(AttributePojo<String> interfaceElementArrayIndexOrder) {
       this.interfaceElementArrayIndexOrder = interfaceElementArrayIndexOrder;
    }
 
    public void setInterfaceElementArrayIndexOrder(ElementArrayIndexOrder interfaceElementArrayIndexOrder) {
-      this.interfaceElementArrayIndexOrder = interfaceElementArrayIndexOrder.toString();
+      this.interfaceElementArrayIndexOrder =
+         AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceElementArrayIndexOrder, GammaId.SENTINEL,
+            interfaceElementArrayIndexOrder.toString(), "");
    }
 
    /**
     * @return the interfaceElementIndexStart
     */
-   public Integer getInterfaceElementIndexStart() {
+   public AttributePojo<Integer> getInterfaceElementIndexStart() {
       return InterfaceElementIndexStart;
    }
 
@@ -319,13 +370,19 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
     * @param interfaceElementIndexStart the interfaceElementIndexStart to set
     */
    public void setInterfaceElementIndexStart(Integer interfaceElementIndexStart) {
+      InterfaceElementIndexStart = AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceElementIndexStart,
+         GammaId.SENTINEL, interfaceElementIndexStart, "");
+   }
+
+   @JsonProperty
+   public void setInterfaceElementIndexStart(AttributePojo<Integer> interfaceElementIndexStart) {
       InterfaceElementIndexStart = interfaceElementIndexStart;
    }
 
    /**
     * @return the interfaceElementIndexEnd
     */
-   public Integer getInterfaceElementIndexEnd() {
+   public AttributePojo<Integer> getInterfaceElementIndexEnd() {
       return InterfaceElementIndexEnd;
    }
 
@@ -333,6 +390,12 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
     * @param interfaceElementIndexEnd the interfaceElementIndexEnd to set
     */
    public void setInterfaceElementIndexEnd(Integer interfaceElementIndexEnd) {
+      InterfaceElementIndexEnd = AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceElementIndexEnd,
+         GammaId.SENTINEL, interfaceElementIndexEnd, "");
+   }
+
+   @JsonProperty
+   public void setInterfaceElementIndexEnd(AttributePojo<Integer> interfaceElementIndexEnd) {
       InterfaceElementIndexEnd = interfaceElementIndexEnd;
    }
 
@@ -410,73 +473,23 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
    }
 
    /**
-    * @return the logicalType
-    */
-   public String getLogicalType() {
-      return logicalType;
-   }
-
-   /**
-    * @param logicalType the logicalType to set
-    */
-   public void setLogicalType(String logicalType) {
-      this.logicalType = logicalType;
-   }
-
-   /**
-    * @return the interfacePlatformTypeMinval
-    */
-   public String getInterfacePlatformTypeMinval() {
-      return InterfacePlatformTypeMinval;
-   }
-
-   /**
-    * @param interfacePlatformTypeMinval the interfacePlatformTypeMinval to set
-    */
-   public void setInterfacePlatformTypeMinval(String interfacePlatformTypeMinval) {
-      InterfacePlatformTypeMinval = interfacePlatformTypeMinval;
-   }
-
-   /**
-    * @return the interfacePlatformTypeMaxval
-    */
-   public String getInterfacePlatformTypeMaxval() {
-      return InterfacePlatformTypeMaxval;
-   }
-
-   /**
-    * @param interfacePlatformTypeMaxval the interfacePlatformTypeMaxval to set
-    */
-   public void setInterfacePlatformTypeMaxval(String interfacePlatformTypeMaxval) {
-      InterfacePlatformTypeMaxval = interfacePlatformTypeMaxval;
-   }
-
-   /**
     * @return the InterfaceDefaultValue
     */
-   public String getInterfaceDefaultValue() {
+   public AttributePojo<String> getInterfaceDefaultValue() {
       return this.InterfaceDefaultValue;
    }
 
    /**
-    * @param InterfaceDefaultValue the InterfaceDefaultValue to set
+    * // * @param InterfaceDefaultValue the InterfaceDefaultValue to set
     */
    public void setInterfaceDefaultValue(String interfaceDefaultValue) {
+      this.InterfaceDefaultValue = AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceDefaultValue,
+         GammaId.SENTINEL, interfaceDefaultValue, "");
+   }
+
+   @JsonProperty
+   public void setInterfaceDefaultValue(AttributePojo<String> interfaceDefaultValue) {
       this.InterfaceDefaultValue = interfaceDefaultValue;
-   }
-
-   /**
-    * @return the units
-    */
-   public String getUnits() {
-      return Units;
-   }
-
-   /**
-    * @param units the units to set
-    */
-   public void setUnits(String units) {
-      Units = units;
    }
 
    /**
@@ -514,7 +527,7 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
     */
    @JsonIgnore
    public double getInterfacePlatformTypeBitSize() {
-      return Double.parseDouble(InterfacePlatformTypeBitSize);
+      return Double.parseDouble(this.platformType.getInterfacePlatformTypeBitSize().getValue());
    }
 
    /**
@@ -522,7 +535,7 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
     */
    @JsonIgnore
    public double getInterfacePlatformTypeByteSize() {
-      return Double.parseDouble(InterfacePlatformTypeBitSize) / 8;
+      return Double.parseDouble(this.platformType.getInterfacePlatformTypeBitSize().getValue()) / 8;
 
    }
 
@@ -539,14 +552,14 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
     */
    @JsonIgnore
    public int getArrayLength() {
-      return this.getInterfaceElementIndexEnd() - this.getInterfaceElementIndexStart() + 1;
+      return this.getInterfaceElementIndexEnd().getValue() - this.getInterfaceElementIndexStart().getValue() + 1;
    }
 
    /**
     * return size of element using array and type size
     */
    public double getElementSizeInBits() {
-      if (this.getInterfaceElementArrayHeader()) {
+      if (this.getInterfaceElementArrayHeader().isValid() && this.getInterfaceElementArrayHeader().getValue()) {
          return getArrayLength() * getArrayElements().stream().filter(e -> e.isIncludedInCounts()).collect(
             Collectors.summingDouble(InterfaceStructureElementToken::getElementSizeInBits));
       }
@@ -557,18 +570,11 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
     * return size of element using array and type size
     */
    public double getElementSizeInBytes() {
-      if (this.getInterfaceElementArrayHeader() && getArrayElements().size() > 0) {
+      if (this.getInterfaceElementArrayHeader().isValid() && this.getInterfaceElementArrayHeader().getValue() && getArrayElements().size() > 0) {
          return getArrayLength() * getArrayElements().stream().filter(e -> e.isIncludedInCounts()).collect(
             Collectors.summingDouble(InterfaceStructureElementToken::getElementSizeInBytes));
       }
       return this.getArrayLength() * this.getInterfacePlatformTypeBitSize() / 8;
-   }
-
-   /**
-    * @param interfacePlatformTypeBitSize the interfacePlatformTypeBitSize to set
-    */
-   public void setInterfacePlatformTypeBitSize(String interfacePlatformTypeBitSize) {
-      InterfacePlatformTypeBitSize = interfacePlatformTypeBitSize;
    }
 
    /**
@@ -612,7 +618,7 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
    /**
     * @return the enumLiteral
     */
-   public String getEnumLiteral() {
+   public AttributePojo<String> getEnumLiteral() {
       return enumLiteral;
    }
 
@@ -620,6 +626,12 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
     * @param enumLiteral the enumLiteral to set
     */
    public void setEnumLiteral(String enumLiteral) {
+      this.enumLiteral = AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceElementEnumLiteral,
+         GammaId.SENTINEL, enumLiteral, "");
+   }
+
+   @JsonProperty
+   public void setEnumLiteral(AttributePojo<String> enumLiteral) {
       this.enumLiteral = enumLiteral;
    }
 
@@ -673,12 +685,56 @@ public class InterfaceStructureElementToken extends ArtifactAccessorResult {
       this.arrayDescriptionSet = arrayDescriptionSet;
    }
 
-   public boolean isInterfaceElementBlockData() {
+   public AttributePojo<Boolean> isInterfaceElementBlockData() {
       return interfaceElementBlockData;
    }
 
-   public void setInterfaceElementBlockData(boolean interfaceElementBlockData) {
+   public AttributePojo<Boolean> getInterfaceElementBlockData() {
+      return interfaceElementBlockData;
+   }
+
+   public void setInterfaceElementBlockData(Boolean interfaceElementBlockData) {
+      this.interfaceElementBlockData = AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceElementBlockData,
+         GammaId.SENTINEL, interfaceElementBlockData, "");
+   }
+
+   @JsonProperty
+   public void setInterfaceElementBlockData(AttributePojo<Boolean> interfaceElementBlockData) {
       this.interfaceElementBlockData = interfaceElementBlockData;
+   }
+
+   public CreateArtifact createArtifact(String key, ApplicabilityId applicId) {
+      Map<AttributeTypeToken, String> values = new HashMap<>();
+      values.put(CoreAttributeTypes.Description, this.getDescription().getValue());
+      values.put(CoreAttributeTypes.InterfaceDefaultValue, this.getInterfaceDefaultValue().getValue());
+      values.put(CoreAttributeTypes.InterfaceElementAlterable,
+         this.getInterfaceElementAlterable().getValue().toString());
+      values.put(CoreAttributeTypes.Notes, this.getNotes().getValue());
+      values.put(CoreAttributeTypes.InterfaceElementEnumLiteral, this.getEnumLiteral().getValue());
+      values.put(CoreAttributeTypes.InterfaceElementIndexStart,
+         this.getInterfaceElementIndexStart().getValue().toString());
+      values.put(CoreAttributeTypes.InterfaceElementIndexEnd, this.getInterfaceElementIndexEnd().getValue().toString());
+
+      CreateArtifact art = new CreateArtifact();
+      art.setName(this.getName().getValue());
+      art.setTypeId(CoreArtifactTypes.InterfaceDataElement.getIdString());
+
+      List<Attribute> attrs = new LinkedList<>();
+
+      for (AttributeTypeToken type : CoreArtifactTypes.InterfaceDataElement.getValidAttributeTypes()) {
+         String value = values.get(type);
+         if (Strings.isInValid(value)) {
+            continue;
+         }
+         Attribute attr = new Attribute(type.getIdString());
+         attr.setValue(Arrays.asList(value));
+         attrs.add(attr);
+      }
+
+      art.setAttributes(attrs);
+      art.setApplicabilityId(applicId.getIdString());
+      art.setkey(key);
+      return art;
    }
 
 }

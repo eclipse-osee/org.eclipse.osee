@@ -10,32 +10,31 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import {
-	HttpTestingController,
-	HttpClientTestingModule,
-} from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { CreateCommandFormComponent } from './create-command-form.component';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('CreateCommandFormComponent', () => {
 	let component: CreateCommandFormComponent;
 	let fixture: ComponentFixture<CreateCommandFormComponent>;
-	let httpTestingController: HttpTestingController;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [
-				CreateCommandFormComponent,
-				HttpClientTestingModule,
-				RouterTestingModule,
+			imports: [CreateCommandFormComponent, RouterTestingModule],
+			providers: [
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
 			],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(CreateCommandFormComponent);
 		component = fixture.componentInstance;
-		httpTestingController = TestBed.inject(HttpTestingController);
 		fixture.detectChanges();
 	});
 

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CommonModule } from '@angular/common';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -24,6 +24,10 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { CommandGroups } from '../../types/grid-commander-types/gc-user-and-contexts-relationships';
 
 import { InputControlComponent } from './input-control.component';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('InputControlComponent', () => {
 	let component: InputControlComponent<CommandGroups>;
@@ -34,7 +38,6 @@ describe('InputControlComponent', () => {
 			imports: [
 				CommonModule,
 				FormsModule,
-				HttpClientTestingModule,
 				MatFormFieldModule,
 				MatAutocompleteModule,
 				MatDialogModule,
@@ -44,7 +47,11 @@ describe('InputControlComponent', () => {
 				RouterTestingModule,
 				InputControlComponent,
 			],
-			providers: [{ provide: MatDialogRef, useValue: {} }],
+			providers: [
+				{ provide: MatDialogRef, useValue: {} },
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+			],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(InputControlComponent);

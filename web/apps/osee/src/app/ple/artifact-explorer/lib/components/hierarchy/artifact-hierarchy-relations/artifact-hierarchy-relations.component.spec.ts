@@ -13,7 +13,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ArtifactHierarchyRelationsComponent } from './artifact-hierarchy-relations.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('ArtifactHierarchyRelationsComponent', () => {
 	let component: ArtifactHierarchyRelationsComponent;
@@ -21,9 +25,10 @@ describe('ArtifactHierarchyRelationsComponent', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [
-				ArtifactHierarchyRelationsComponent,
-				HttpClientTestingModule,
+			imports: [ArtifactHierarchyRelationsComponent],
+			providers: [
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
 			],
 		});
 		fixture = TestBed.createComponent(ArtifactHierarchyRelationsComponent);

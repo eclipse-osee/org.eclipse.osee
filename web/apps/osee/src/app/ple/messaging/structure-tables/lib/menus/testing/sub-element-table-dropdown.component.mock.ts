@@ -11,8 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Input } from '@angular/core';
-import type { element, structure } from '@osee/messaging/shared/types';
-import { applic } from '@osee/shared/types/applicability';
+import {
+	DisplayableElementProps,
+	PlatformType,
+	elementSentinel,
+	type element,
+	type structure,
+} from '@osee/messaging/shared/types';
+import { applic, applicabilitySentinel } from '@osee/applicability/types';
 
 @Component({
 	selector:
@@ -22,12 +28,59 @@ import { applic } from '@osee/shared/types/applicability';
 })
 // eslint-disable-next-line @angular-eslint/component-class-suffix
 export class MockSubElementTableComponent {
-	@Input() element!: element;
+	@Input() element: element = elementSentinel;
 
-	@Input() structure!: structure;
+	@Input() structure: structure = {
+		id: '-1',
+		gammaId: '-1',
+		name: {
+			id: '-1',
+			typeId: '1152921504606847088',
+			gammaId: '-1',
+			value: '',
+		},
+		nameAbbrev: {
+			id: '-1',
+			typeId: '8355308043647703563',
+			gammaId: '-1',
+			value: '',
+		},
+		description: {
+			id: '-1',
+			typeId: '1152921504606847090',
+			gammaId: '-1',
+			value: '',
+		},
+		interfaceMaxSimultaneity: {
+			id: '-1',
+			typeId: '2455059983007225756',
+			gammaId: '-1',
+			value: '',
+		},
+		interfaceMinSimultaneity: {
+			id: '-1',
+			typeId: '2455059983007225755',
+			gammaId: '-1',
+			value: '',
+		},
+		interfaceTaskFileType: {
+			id: '-1',
+			typeId: '2455059983007225760',
+			gammaId: '-1',
+			value: 0,
+		},
+		interfaceStructureCategory: {
+			id: '-1',
+			typeId: '2455059983007225764',
+			gammaId: '-1',
+			value: '',
+		},
+		applicability: applicabilitySentinel,
+		elements: [],
+	};
 
-	@Input() header!: string;
-	@Input() field?: string | number | boolean | applic;
+	@Input() header!: keyof DisplayableElementProps;
+	@Input() field?: string | number | boolean | PlatformType | applic;
 
 	@Input('branchId') _branchId: string = '';
 	@Input('branchType') _branchType: string = '';

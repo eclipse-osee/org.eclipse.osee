@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface executedCommand {
+export type executedCommand = {
 	id?: string;
 	name: string;
 	executionFrequency: number;
@@ -18,16 +18,16 @@ export interface executedCommand {
 	parameterizedCommand: string;
 	favorite?: boolean;
 	isValidated?: boolean;
-}
+};
 
-export interface parameterizedCommand {
+export type parameterizedCommand = {
 	name: string;
 	parameterValue: string;
 	contentURL?: string;
 	httpMethod?: string;
-}
+};
 
-export interface commandHistoryObject {
+export type commandHistoryObject = {
 	'Artifact Id': string;
 	Command: string;
 	Parameters: string;
@@ -35,4 +35,4 @@ export interface commandHistoryObject {
 	'Last Used': string;
 	Validated: string;
 	Favorite: string;
-}
+};

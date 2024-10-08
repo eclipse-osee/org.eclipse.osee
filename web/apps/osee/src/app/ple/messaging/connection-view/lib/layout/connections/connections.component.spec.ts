@@ -16,8 +16,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouteStateService } from '../../services/route-state-service.service';
 import { MockGraphComponent } from '../../testing/graph.component.mock';
-import { HarnessLoader } from '@angular/cdk/testing';
-import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 
 import { ConnectionsComponent } from './connections.component';
 import { CurrentGraphService } from '../../services/current-graph.service';
@@ -39,7 +37,6 @@ import { MockViewSelectorComponent } from '@osee/shared/components/testing';
 describe('HostComponent', () => {
 	let component: ConnectionsComponent;
 	let routeState: RouteStateService;
-	let loader: HarnessLoader;
 	let fixture: ComponentFixture<ConnectionsComponent>;
 
 	beforeEach(async () => {
@@ -96,7 +93,6 @@ describe('HostComponent', () => {
 		fixture = TestBed.createComponent(ConnectionsComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
-		loader = TestbedHarnessEnvironment.loader(fixture);
 	});
 
 	it('should create', () => {

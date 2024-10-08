@@ -12,52 +12,52 @@
  **********************************************************************/
 import { NamedId } from '@osee/shared/types';
 
-export interface gridCommanderUser extends NamedId {
+export type gridCommanderUser = {
 	usersContexts: UsersContext[];
-}
+} & NamedId;
 
-export interface UsersContext extends NamedId {
+export type UsersContext = {
 	commands: Command[];
 	attributes?: ContextAttributes[];
-}
+} & NamedId;
 
-export interface ContextAttributes {
+export type ContextAttributes = {
 	description: string;
 	//Can specify attributes in more detail if necessary
 	[key: string]: string;
-}
+};
 
-export interface CommandGroups {
+export type CommandGroups = {
 	contextGroup: string;
 	commands: Command[];
-}
+};
 
-export interface Command extends NamedId {
+export type Command = {
 	contextGroup: string;
 	idIntValue: number;
 	idString: string;
 	attributes: CommandAttributes;
 	parameter: Parameter | null;
-}
+} & NamedId;
 
-export interface CommandAttributes {
+export type CommandAttributes = {
 	description?: string;
 	'content url'?: string;
 	'http method'?: string;
 	'custom command'?: boolean;
-}
+};
 
-export interface Parameter extends NamedId {
+export type Parameter = {
 	idIntValue?: number;
 	idString?: string;
 	typeAsString: string;
 	attributes: ParameterAttributes;
-}
+} & NamedId;
 
-export interface ParameterAttributes {
+export type ParameterAttributes = {
 	description?: string;
 	'default value'?: string;
 	'content url'?: string;
-	'is validator used'?: Boolean;
+	'is validator used'?: boolean;
 	'validator type'?: string;
-}
+};

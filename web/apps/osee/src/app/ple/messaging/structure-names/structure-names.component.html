@@ -11,12 +11,11 @@
 *     Boeing - initial API and implementation
 -->
 <osee-messaging-controls>
-	@if (connection | async; as _connection) {
-		<osee-connection-dropdown
-			[connection]="_connection"
-			(connectionChange)="selectConnection($event)"
-			[showNoneOption]="true"></osee-connection-dropdown>
-	}
+	<osee-connection-dropdown
+		[(connection)]="connection"
+		[showNoneOption]="true"></osee-connection-dropdown>
+	<!-- @if (connection | async; as _connection) {
+	} -->
 </osee-messaging-controls>
 <mat-form-field class="tw-w-full tw-pb-4">
 	<mat-label>Filter Structures</mat-label>
@@ -32,14 +31,20 @@
 <mat-accordion
 	multi="true"
 	displayMode="flat">
-	@for (name of names | async; track name) {
+	@for (
+		name of names | async;
+		track name.name +
+			name.id +
+			name.paths.length +
+			computePathNames(name.paths)
+	) {
 		<mat-expansion-panel>
 			<mat-expansion-panel-header>
 				<mat-panel-title class="tw-line-clamp-1 tw-whitespace-nowrap">
 					{{ name.name }}
 				</mat-panel-title>
 			</mat-expansion-panel-header>
-			@for (path of name.paths; track path) {
+			@for (path of name.paths; track path.path) {
 				<a
 					mat-button
 					[routerLink]="((basePath | async) || '') + path.path"

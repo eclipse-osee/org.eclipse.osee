@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, combineLatest, iif, of } from 'rxjs';
 import {
 	debounceTime,
@@ -32,20 +32,17 @@ import { NamedId } from '@osee/shared/types';
 	providedIn: 'root',
 })
 export class ReportsService {
-	constructor(
-		private ui: UiService,
-		private http: HttpClient,
-		private fileService: FilesService
-	) {}
+	private ui = inject(UiService);
+	private http = inject(HttpClient);
+	private fileService = inject(FilesService);
 
 	private _connection = new BehaviorSubject<
 		Partial<connection> | Required<connection>
 	>({ id: '-1' });
-	private _requestBody: BehaviorSubject<string> = new BehaviorSubject('');
-	private _requestBodyFile: BehaviorSubject<File | undefined> =
-		new BehaviorSubject<File | undefined>(undefined);
-	private _includeDiff: BehaviorSubject<boolean> =
-		new BehaviorSubject<boolean>(false);
+	private _requestBody = new BehaviorSubject<string>('');
+	private _requestBodyFile = new BehaviorSubject<File | undefined>(undefined);
+	private _includeDiff = new BehaviorSubject<boolean>(false);
+	private _showErrorColoring = new BehaviorSubject<boolean>(false);
 
 	private _allCurrentPage$ = new BehaviorSubject<number>(0);
 
@@ -88,7 +85,7 @@ export class ReportsService {
 									'download',
 									report?.fileNamePrefix +
 										'_' +
-										connection?.name +
+										connection?.name.value +
 										'.' +
 										report?.fileExtension
 								);
@@ -114,9 +111,10 @@ export class ReportsService {
 			this.requestBody,
 			this.requestBodyFile,
 			this.includeDiff,
+			this.showErrorColoring,
 		]).pipe(
 			take(1),
-			switchMap(([input, file, includeDiff]) =>
+			switchMap(([input, file, includeDiff, showErrorColoring]) =>
 				iif(
 					() =>
 						report !== undefined &&
@@ -128,9 +126,10 @@ export class ReportsService {
 						report.httpMethod,
 						report.url
 							.replace('<branchId>', branchId)
-							.replace('<connectionId>', connection?.id!)
+							.replace('<connectionId>', connection?.id ?? '-1')
 							.replace('<diffAvailable>', includeDiff + '')
-							.replace('<viewId>', viewId),
+							.replace('<viewId>', viewId)
+							.replace('<showErrors>', showErrorColoring + ''),
 						file === undefined ? input : file
 					),
 					of(new Blob())
@@ -469,6 +468,14 @@ export class ReportsService {
 
 	set IncludeDiff(value: boolean) {
 		this._includeDiff.next(value);
+	}
+
+	get showErrorColoring() {
+		return this._showErrorColoring;
+	}
+
+	set ShowErrorColoring(value: boolean) {
+		this._showErrorColoring.next(value);
 	}
 
 	get currentPageSize(): Observable<number> {

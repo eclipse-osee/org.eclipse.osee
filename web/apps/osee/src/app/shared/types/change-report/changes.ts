@@ -12,6 +12,6 @@
  **********************************************************************/
 import { difference } from './change-report';
 
-export type hasChanges<T = any> = {
+export type hasChanges<T = never> = {
 	[K in keyof T]?: difference<T[K]>;
 };

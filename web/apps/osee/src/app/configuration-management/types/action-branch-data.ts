@@ -10,31 +10,31 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NamedId, response } from '@osee/shared/types';
+import { NamedId, XResultData } from '@osee/shared/types';
 import { user } from '@osee/shared/types/auth';
 import { teamWorkflowDetails } from '@osee/shared/types/configuration-management';
 
-export interface actionBranchData {
+export type actionBranchData = {
 	branchName: string;
 	parent: string;
 	applyAccess: boolean;
-	results?: response;
+	results?: XResultData;
 	validate: boolean;
 	branchType: number;
 	associatedArt: NamedId;
 	author: NamedId;
 	creationComment: string;
-}
+};
 
 export class ActionBranchDataImpl implements actionBranchData {
-	branchName: string = '';
-	parent: string = '-1';
-	applyAccess: boolean = false;
-	validate: boolean = false;
-	branchType: number = 0;
+	branchName = '';
+	parent = '-1';
+	applyAccess = false;
+	validate = false;
+	branchType = 0;
 	associatedArt: NamedId = { id: '-1', name: '' };
 	author: NamedId = { id: '-1', name: '' };
-	creationComment: string = '';
+	creationComment = '';
 
 	constructor(teamWf: teamWorkflowDetails, user: user, validate: boolean) {
 		this.branchName = teamWf.AtsId + ' - ' + teamWf.Name;

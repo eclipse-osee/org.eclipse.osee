@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
 	concatMap,
 	distinct,
@@ -32,17 +32,17 @@ import { GetUserContextRelationsService } from '../../fetch-data-services/user-c
 	providedIn: 'root',
 })
 export class UserContextRelationsService {
+	private getUserContextRelationsService = inject(
+		GetUserContextRelationsService
+	);
+	private uiService = inject(UiService);
+
 	contextData$ = this.getUserContextRelationsService
 		.getResponseUserContextData()
 		.pipe(
 			switchMap((userContexts) => this.setContextPriority(userContexts)),
 			repeatWhen(() => this.uiService.update)
 		);
-
-	constructor(
-		private getUserContextRelationsService: GetUserContextRelationsService,
-		private uiService: UiService
-	) {}
 
 	private _contexts = this.contextData$.pipe(
 		map((contexts) => contexts.map((context) => [context.name, context.id]))

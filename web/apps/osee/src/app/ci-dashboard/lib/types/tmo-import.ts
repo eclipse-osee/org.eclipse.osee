@@ -10,7 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { transactionResult } from '@osee/shared/types/change-report';
+
+import { transactionResult } from '@osee/transactions/types';
 
 export type TmoImportResult = {
 	txResult: transactionResult;

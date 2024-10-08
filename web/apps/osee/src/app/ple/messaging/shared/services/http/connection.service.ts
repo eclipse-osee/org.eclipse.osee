@@ -11,29 +11,35 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { of } from 'rxjs';
 import { apiURL } from '@osee/environments';
 import type { connection, _newConnection } from '../../types/connection';
 import {
 	ARTIFACTTYPEIDENUM,
-	ATTRIBUTETYPEIDENUM,
+	RELATIONTYPEIDENUM,
 } from '@osee/shared/types/constants';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
+import { TransactionBuilderService } from '@osee/shared/transactions-legacy';
 import {
-	TransactionBuilderService,
-	TransactionService,
-} from '@osee/shared/transactions';
-import { HttpParamsType, relation, transaction } from '@osee/shared/types';
+	legacyRelation,
+	legacyTransaction,
+	transaction,
+	createArtifact,
+} from '@osee/transactions/types';
+import { HttpParamsType } from '@osee/shared/types';
+import { TransactionService } from '@osee/transactions/services';
+import { createArtifact as _createArtifact } from '@osee/transactions/functions';
+import { nodeData } from '@osee/messaging/shared/types';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class ConnectionService {
-	constructor(
-		private http: HttpClient,
-		private builder: TransactionBuilderService,
-		private transactionService: TransactionService
-	) {}
+	private http = inject(HttpClient);
+	private builder = inject(TransactionBuilderService);
+
+	private transactionService = inject(TransactionService);
 
 	getConnections(branchId: string) {
 		return this.http.get<connection[]>(
@@ -98,7 +104,7 @@ export class ConnectionService {
 	 * @param type 0=primary 1=secondary
 	 */
 	createNodeRelation(nodeId: string, connectionId?: string) {
-		let relation: relation = {
+		const relation: legacyRelation = {
 			typeName: 'Interface Connection Node',
 			sideB: nodeId,
 			sideA: connectionId,
@@ -110,7 +116,7 @@ export class ConnectionService {
 		transportTypeId: string,
 		connectionId?: string
 	) {
-		const rel: relation = {
+		const rel: legacyRelation = {
 			typeName: 'Interface Connection Transport Type',
 			sideA: connectionId,
 			sideB: transportTypeId,
@@ -118,58 +124,155 @@ export class ConnectionService {
 		return of(rel);
 	}
 
-	createConnection(
-		branchId: string,
-		connection: _newConnection,
-		relations: relation[],
-		transaction?: transaction
-	) {
-		return of(
-			this.builder.createArtifact(
-				connection,
-				ARTIFACTTYPEIDENUM.CONNECTION,
-				relations,
-				transaction,
-				branchId,
-				'Create Connection and Relate to Nodes and Transport Type'
-			)
+	createConnection(connection: connection, tx: Required<transaction>) {
+		const {
+			id,
+			gammaId,
+			dashed,
+			added,
+			changes,
+			deleted,
+			applicability,
+			transportType,
+			nodes,
+			...remainingAttributes
+		} = connection;
+		const transportTypeRelation = {
+			typeId: RELATIONTYPEIDENUM.INTERFACECONNECTIONTRANSPORTTYPE,
+			sideB: transportType.id,
+		};
+		const nodeRelations = nodes
+			.filter((x) => x.id !== '-1' && x.id !== '0')
+			.map((x) => {
+				return {
+					typeId: RELATIONTYPEIDENUM.INTERFACECONNECTIONNODE,
+					sideB: x.id,
+				};
+			});
+		const hierarchicalRelation = {
+			typeId: RELATIONTYPEIDENUM.DEFAULT_HIERARCHICAL,
+			sideA: '8255184',
+		};
+		const attributeKeys = Object.keys(
+			remainingAttributes
+		) as (keyof typeof remainingAttributes)[];
+		const attributes = attributeKeys
+			.map((k) => remainingAttributes[k])
+			.filter((attr) => attr !== undefined && attr.id !== '');
+		const results = _createArtifact(
+			tx,
+			ARTIFACTTYPEIDENUM.CONNECTION,
+			applicability,
+			[...nodeRelations, transportTypeRelation, hierarchicalRelation],
+			undefined,
+			...attributes
 		);
+		tx = results.tx;
+
+		const createdNodes: createArtifact[] = [];
+		//create nodes and then perform mutation
+		nodes
+			.filter((v) => v.id === '-1')
+			.forEach((v) => {
+				const nodeResults = this._createNodeWithRelation(
+					v,
+					results._newArtifact.key,
+					tx
+				);
+				createdNodes.push(nodeResults.node);
+				tx = nodeResults.tx;
+			});
+		return {
+			connection: results._newArtifact,
+			nodes: createdNodes,
+			tx: tx,
+		};
 	}
 
+	private _createNodeWithRelation(
+		node: nodeData,
+		connectionId: string,
+		tx: Required<transaction>
+	) {
+		const {
+			id,
+			gammaId,
+			applicability,
+			deleted,
+			added,
+			changes,
+			...remainingAttributes
+		} = node;
+		const attributeKeys = Object.keys(
+			remainingAttributes
+		) as (keyof typeof remainingAttributes)[];
+		const attributes = attributeKeys
+			.map((k) => remainingAttributes[k])
+			.filter((attr) => attr !== undefined && attr.id !== '');
+		const connectionRel = {
+			typeId: RELATIONTYPEIDENUM.INTERFACECONNECTIONNODE,
+			sideA: connectionId,
+		};
+		const results = _createArtifact(
+			tx,
+			ARTIFACTTYPEIDENUM.NODE,
+			applicability,
+			[connectionRel],
+			undefined,
+			...attributes
+		);
+		return { node: results._newArtifact, tx: results.tx };
+	}
+
+	/**
+	 * NOTE: this still creates the transport type and hierarchical relations
+	 */
 	createConnectionNoRelations(
-		branchId: string,
-		connection: _newConnection,
-		transaction?: transaction,
-		key?: string
+		connection: connection,
+		tx: Required<transaction>,
+		key: string
 	) {
-		return of(
-			this.builder.createArtifact(
-				connection,
-				ARTIFACTTYPEIDENUM.CONNECTION,
-				[],
-				transaction,
-				branchId,
-				'Create Connection',
-				key
-			)
+		const {
+			id,
+			gammaId,
+			dashed,
+			added,
+			changes,
+			deleted,
+			applicability,
+			transportType,
+			nodes,
+			...remainingAttributes
+		} = connection;
+		const transportTypeRelation = {
+			typeId: RELATIONTYPEIDENUM.INTERFACECONNECTIONTRANSPORTTYPE,
+			sideB: transportType.id,
+		};
+		const hierarchicalRelation = {
+			typeId: RELATIONTYPEIDENUM.DEFAULT_HIERARCHICAL,
+			sideA: '8255184',
+		};
+		const attributeKeys = Object.keys(
+			remainingAttributes
+		) as (keyof typeof remainingAttributes)[];
+		const attributes = attributeKeys
+			.map((k) => remainingAttributes[k])
+			.filter((attr) => attr !== undefined && attr.id !== '');
+		const results = _createArtifact(
+			tx,
+			ARTIFACTTYPEIDENUM.CONNECTION,
+			applicability,
+			[transportTypeRelation, hierarchicalRelation],
+			key,
+			...attributes
 		);
-	}
-
-	changeConnection(branchId: string, connection: Partial<connection>) {
-		return of(
-			this.builder.modifyArtifact(
-				connection,
-				undefined,
-				branchId,
-				'Change connection attributes'
-			)
-		);
+		return results.tx;
 	}
 
 	deleteRelation(
 		branchId: string,
-		relation: relation,
-		transaction?: transaction
+		relation: legacyRelation,
+		transaction?: legacyTransaction
 	) {
 		return of(
 			this.builder.deleteRelation(
@@ -187,8 +290,8 @@ export class ConnectionService {
 
 	addRelation(
 		branchId: string,
-		relation: relation,
-		transaction?: transaction
+		relation: legacyRelation,
+		transaction?: legacyTransaction
 	) {
 		return of(
 			this.builder.addRelation(
@@ -205,7 +308,7 @@ export class ConnectionService {
 		);
 	}
 
-	performMutation(transaction: transaction) {
+	performMutation(transaction: legacyTransaction) {
 		return this.transactionService.performMutation(transaction);
 	}
 }

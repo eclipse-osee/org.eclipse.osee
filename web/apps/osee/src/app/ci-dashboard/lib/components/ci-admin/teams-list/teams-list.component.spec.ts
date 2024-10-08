@@ -14,8 +14,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TeamsListComponent } from './teams-list.component';
 import { DashboardHttpService } from '../../../services/dashboard-http.service';
 import { dashboardHttpServiceMock } from '../../../services/dashboard-http.service.mock';
-import { TransactionService } from '@osee/shared/transactions';
-import { transactionServiceMock } from '@osee/shared/transactions/testing';
+import { TransactionService } from '@osee/transactions/services';
+import { transactionServiceMock } from '@osee/transactions/services/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 describe('TeamsListComponent', () => {
 	let component: TeamsListComponent;
@@ -25,6 +26,7 @@ describe('TeamsListComponent', () => {
 		await TestBed.configureTestingModule({
 			imports: [TeamsListComponent],
 			providers: [
+				provideNoopAnimations(),
 				{
 					provide: DashboardHttpService,
 					useValue: dashboardHttpServiceMock,

@@ -10,7 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClientModule } from '@angular/common/http';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ParameterIntegerComponent } from './parameter-integer.component';
 
@@ -20,7 +23,8 @@ describe('ParameterIntegerComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [HttpClientModule, ParameterIntegerComponent],
+			imports: [ParameterIntegerComponent],
+			providers: [provideHttpClient(withInterceptorsFromDi())],
 		}).compileComponents();
 	});
 

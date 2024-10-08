@@ -16,9 +16,20 @@ import {
 	importSummaryMock,
 } from '../testing/import.response.mock';
 import { ImportHttpService } from './import-http.service';
+import { transactionResultMock } from '@osee/transactions/testing';
+import type { ImportSummary } from '@osee/messaging/shared/types';
 
 export const importHttpServiceMock: Partial<ImportHttpService> = {
-	getImportSummary(url: string, fileName: string, formData: FormData | File) {
+	performImport(branchId: string, summary: ImportSummary) {
+		return of(transactionResultMock);
+	},
+
+	getImportSummary(
+		url: string,
+		transportTypeId: `${number}`,
+		fileName: string,
+		formData: FormData | File
+	) {
 		return of(importSummaryMock);
 	},
 

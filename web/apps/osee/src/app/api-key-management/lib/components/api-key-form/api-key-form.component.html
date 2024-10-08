@@ -64,8 +64,8 @@
 		</mat-form-field>
 
 		<div class="tw-pb-4">
-			<label class="tw-mb-2 tw-block tw-font-bold tw-text-white"
-				>API Key Scopes:</label
+			<mat-label class="tw-mb-2 tw-block tw-font-bold tw-text-white"
+				>API Key Scopes:</mat-label
 			>
 			@for (scope of keyScopes(); track scope.id) {
 				<div>
@@ -80,19 +80,17 @@
 		<div class="tw-flex tw-w-full tw-justify-center tw-space-x-2">
 			<button
 				mat-raised-button
-				color="warn"
 				type="button"
 				(click)="closeForm()"
-				class="tw-font-bold">
+				class="error-button tw-font-bold">
 				Cancel
 			</button>
 			<button
-				mat-raised-button
-				color="primary"
+				mat-flat-button
 				type="submit"
 				[disabled]="apiKeyForm.invalid"
 				[mat-dialog-close]="valueToReturn()"
-				class="tw-font-bold">
+				class="primary-button tw-font-bold">
 				Create
 			</button>
 		</div>

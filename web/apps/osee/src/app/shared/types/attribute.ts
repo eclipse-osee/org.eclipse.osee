@@ -11,14 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-export interface attribute {
+export type attribute = {
 	name: string;
 	value: string;
 	typeId: `${number}`;
 	id: `${number}`;
 	storeType: storeType;
 	multiplicityId: string;
-}
+};
 
 export type storeType =
 	| 'Boolean'

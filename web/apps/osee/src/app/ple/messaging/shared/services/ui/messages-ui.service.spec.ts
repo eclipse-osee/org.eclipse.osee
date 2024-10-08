@@ -35,20 +35,6 @@ describe('UiService', () => {
 		expect(service).toBeTruthy();
 	});
 
-	it('should set filter value', () => {
-		scheduler.run(() => {
-			const expectedfilterValues = { a: 'a', b: 'b' };
-			const expectedMarble = 'a';
-			scheduler
-				.expectObservable(service.filter)
-				.toBe(expectedMarble, expectedfilterValues);
-			service.filterString = 'a';
-			service.filterString = 'a';
-			service.filterString = 'b';
-			service.filterString = 'a';
-		});
-	});
-
 	it('should set branch value', () => {
 		scheduler.run(() => {
 			const expectedfilterValues = { a: '1', b: '2' };

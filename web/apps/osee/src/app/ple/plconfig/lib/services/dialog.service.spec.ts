@@ -12,13 +12,12 @@
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { response } from '@osee/shared/types';
 import { of } from 'rxjs';
 import { TestScheduler } from 'rxjs/testing';
 import { plCurrentBranchServiceMock } from '../testing/mockPlCurrentBranchService.mock';
+import { XResultData } from '@osee/shared/types';
 import { CfgGroupDialog } from '../types/pl-config-cfggroups';
 import { PLEditConfigData } from '../types/pl-edit-config-data';
-
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { CurrentBranchInfoService } from '@osee/shared/services';
 import { MockXResultData, testBranchInfo } from '@osee/shared/testing';
@@ -61,33 +60,33 @@ describe('DialogService', () => {
 
 	it('should open the config menu in config mode', () => {
 		scheduler.run(({ expectObservable }) => {
-			let dialogRefSpy = jasmine.createSpyObj({
+			const dialogRefSpy = jasmine.createSpyObj({
 				afterClosed: of<PLEditConfigData>({
 					editable: true,
 					currentBranch: '',
 					currentConfig: {
-						id: '',
+						id: '-1',
 						name: '',
 						description: '',
 						hasFeatureApplicabilities: false,
 						groups: [],
 					},
 					copyFrom: {
-						id: '',
+						id: '-1',
 						name: '',
 						description: '',
 						hasFeatureApplicabilities: false,
 					},
-					group: [{ id: '', name: '', description: '' }],
+					group: [{ id: '-1', name: '', description: '' }],
 					productApplicabilities: [],
 				}),
 				close: null,
 			});
-			let dialogSpy = spyOn(
+			const _dialogSpy = spyOn(
 				TestBed.inject(MatDialog),
 				'open'
 			).and.returnValue(dialogRefSpy);
-			const expectedValues: { a: response } = { a: MockXResultData };
+			const expectedValues: { a: XResultData } = { a: MockXResultData };
 			expectObservable(
 				service.openEditConfigDialog('Product D', true)
 			).toBe('(a|)', expectedValues);
@@ -95,7 +94,7 @@ describe('DialogService', () => {
 	});
 	it('should open the config menu in group mode mode', () => {
 		scheduler.run(({ expectObservable }) => {
-			let dialogRefSpy = jasmine.createSpyObj({
+			const dialogRefSpy = jasmine.createSpyObj({
 				afterClosed: of<CfgGroupDialog>({
 					editable: true,
 					configGroup: {
@@ -115,11 +114,11 @@ describe('DialogService', () => {
 				}),
 				close: null,
 			});
-			let dialogSpy = spyOn(
+			const _dialogSpy = spyOn(
 				TestBed.inject(MatDialog),
 				'open'
 			).and.returnValue(dialogRefSpy);
-			const expectedValues: { a: response } = { a: MockXResultData };
+			const expectedValues: { a: XResultData } = { a: MockXResultData };
 			expectObservable(
 				service.openEditConfigGroupDialog('abGroup', true)
 			).toBe('(a|)', expectedValues);
@@ -128,7 +127,7 @@ describe('DialogService', () => {
 
 	it('should open the feature menu', () => {
 		scheduler.run(({ expectObservable }) => {
-			let dialogRefSpy = jasmine.createSpyObj({
+			const dialogRefSpy = jasmine.createSpyObj({
 				afterClosed: of<PLEditFeatureData>({
 					editable: true,
 					feature: new modifyFeature(),
@@ -136,11 +135,11 @@ describe('DialogService', () => {
 				}),
 				close: null,
 			});
-			let dialogSpy = spyOn(
+			const _dialogSpy = spyOn(
 				TestBed.inject(MatDialog),
 				'open'
 			).and.returnValue(dialogRefSpy);
-			const expectedValues: { a: response } = { a: MockXResultData };
+			const expectedValues: { a: XResultData } = { a: MockXResultData };
 			expectObservable(service.displayFeatureDialog('')).toBe(
 				'(a|)',
 				expectedValues

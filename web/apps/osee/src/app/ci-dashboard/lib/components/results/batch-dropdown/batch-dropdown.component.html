@@ -15,7 +15,7 @@
 	@if (
 		{
 			openedState: isOpen | async,
-			filter: filter | async
+			filter: filter | async,
 		};
 		as autoCompleteState
 	) {
@@ -57,7 +57,7 @@
 				@if (
 					{
 						options: batchOptions | async,
-						count: count | async
+						count: count | async,
 					};
 					as _batches
 				) {

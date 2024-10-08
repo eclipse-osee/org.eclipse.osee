@@ -10,14 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	OnDestroy,
+	OnInit,
+	inject,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
+import { StructureInterfaceComponent } from '@osee/messaging/structure-tables';
 import { combineLatest, iif, of } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { AsyncPipe } from '@angular/common';
-import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
-import { StructureTableComponent } from '@osee/messaging/structure-tables';
-import { CurrentStructureService } from '@osee/messaging/shared/services';
 
 @Component({
 	selector: 'osee-messaging-single-structure-table',
@@ -26,18 +31,16 @@ import { CurrentStructureService } from '@osee/messaging/shared/services';
 		':host{ height: 94vh; min-height: calc(94vh - 10%); max-height: 94vh; width: 100vw; min-width: calc(100vw - 10%); display: inline-block;}',
 	],
 	standalone: true,
-	imports: [StructureTableComponent, AsyncPipe],
+	imports: [StructureInterfaceComponent, AsyncPipe],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SingleStructureTableComponent implements OnInit, OnDestroy {
+	private route = inject(ActivatedRoute);
+	private router = inject(Router);
+	private structureService = inject(STRUCTURE_SERVICE_TOKEN);
+
 	breadCrumb = this.structureService.breadCrumbs;
 	structureId = this.structureService.singleStructureId;
-
-	constructor(
-		private route: ActivatedRoute,
-		private router: Router,
-		@Inject(STRUCTURE_SERVICE_TOKEN)
-		private structureService: CurrentStructureService
-	) {}
 
 	ngOnInit(): void {
 		combineLatest([
@@ -58,9 +61,9 @@ export class SingleStructureTableComponent implements OnInit, OnDestroy {
 					this.structureService.messageId =
 						paramMap.get('messageId') || '';
 					this.structureService.subMessageId =
-						paramMap.get('subMessageId') || '';
+						(paramMap.get('subMessageId') as `${number}`) || '-1';
 					this.structureService.connection =
-						paramMap.get('connection') || '';
+						(paramMap.get('connection') as `${number}`) || '-1';
 					this.structureService.singleStructureIdValue =
 						paramMap.get('structureId') || '';
 					this.structureService.difference = data?.diff;
@@ -76,9 +79,9 @@ export class SingleStructureTableComponent implements OnInit, OnDestroy {
 					this.structureService.messageId =
 						paramMap.get('messageId') || '';
 					this.structureService.subMessageId =
-						paramMap.get('subMessageId') || '';
+						(paramMap.get('subMessageId') as `${number}`) || '-1';
 					this.structureService.connection =
-						paramMap.get('connection') || '';
+						(paramMap.get('connection') as `${number}`) || '-1';
 					this.structureService.singleStructureIdValue =
 						paramMap.get('structureId') || '';
 					this.structureService.DiffMode = false;

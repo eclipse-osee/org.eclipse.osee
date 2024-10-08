@@ -15,12 +15,11 @@ import {
 	Component,
 	Input,
 	OnChanges,
-	Optional,
 	Output,
 	SimpleChanges,
 	inject,
 } from '@angular/core';
-import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import {
 	MatAutocomplete,
 	MatAutocompleteTrigger,
@@ -36,6 +35,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { ArtifactUiService } from '@osee/shared/services';
 import { NamedId } from '@osee/shared/types';
+import { provideOptionalControlContainerNgForm } from '@osee/shared/utils';
 import {
 	BehaviorSubject,
 	ReplaySubject,
@@ -47,10 +47,6 @@ import {
 	switchMap,
 } from 'rxjs';
 import { MatOptionLoadingComponent } from '../../mat-option-loading/mat-option-loading/mat-option-loading.component';
-
-function controlContainerFactory(controlContainer?: ControlContainer) {
-	return controlContainer;
-}
 
 let nextUniqueId = 0;
 
@@ -71,13 +67,7 @@ let nextUniqueId = 0;
 		MatOptionLoadingComponent,
 	],
 	templateUrl: './attribute-enums-dropdown.component.html',
-	viewProviders: [
-		{
-			provide: ControlContainer,
-			useFactory: controlContainerFactory,
-			deps: [[new Optional(), NgForm]],
-		},
-	],
+	viewProviders: [provideOptionalControlContainerNgForm()],
 })
 export class AttributeEnumsDropdownComponent implements OnChanges {
 	@Input() attributeId!: string;
@@ -90,12 +80,12 @@ export class AttributeEnumsDropdownComponent implements OnChanges {
 
 	private _isOpen = new BehaviorSubject<boolean>(false);
 
-	@Input() required: boolean = false;
+	@Input() required = false;
 	private _required = new BehaviorSubject<boolean>(false);
 
-	@Input() disabled: boolean = false;
-	@Input() hintHidden: boolean = false;
-	@Input() attributeValue: string = '';
+	@Input() disabled = false;
+	@Input() hintHidden = false;
+	@Input() attributeValue = '';
 
 	private _attributeValueChange = new Subject<string>();
 	@Output() attributeValueChange = this._attributeValueChange.pipe(

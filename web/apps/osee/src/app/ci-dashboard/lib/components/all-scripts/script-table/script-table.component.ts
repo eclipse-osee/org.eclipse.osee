@@ -137,8 +137,9 @@ export class ScriptTableComponent {
 		this.router.navigateByUrl(url);
 	}
 
-	applyFilter(event: Event) {
-		const filterValue = (event.target as HTMLInputElement).value;
+	applyFilter(_event: Event) {
+		//TODO: stephen,ryan finish this?
+		// const filterValue = (event.target as HTMLInputElement).value;
 	}
 
 	menuPosition = {

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarRef } from '@angular/material/snack-bar';
 import { UiService } from '@osee/shared/services';
@@ -24,10 +24,8 @@ import { filter, tap } from 'rxjs';
 	templateUrl: './snackbar-wrapper.component.html',
 })
 export class SnackbarWrapperComponent {
-	constructor(
-		private snackBar: MatSnackBar,
-		private uiService: UiService
-	) {}
+	private snackBar = inject(MatSnackBar);
+	private uiService = inject(UiService);
 
 	errors = this.uiService.errorText.pipe(
 		filter((text) => text !== ''),
@@ -50,15 +48,16 @@ export class SnackbarWrapperComponent {
 	templateUrl: './snackbar-wrapper-internal.component.html',
 })
 export class SnackbarWrapperInternalComponent {
-	constructor(
-		private uiService: UiService,
-		public snackbarRef: MatSnackBarRef<SnackbarWrapperInternalComponent>
-	) {}
+	private uiService = inject(UiService);
+	snackbarRef =
+		inject<MatSnackBarRef<SnackbarWrapperInternalComponent>>(
+			MatSnackBarRef
+		);
 
 	errorText = this.uiService.errorText;
 	errorDetails = this.uiService.errorDetails;
 
-	showDetails: boolean = false;
+	showDetails = false;
 
 	toggleDetails() {
 		this.showDetails = !this.showDetails;

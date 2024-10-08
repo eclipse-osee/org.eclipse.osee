@@ -12,10 +12,14 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ArtifactEditorComponent } from './artifact-editor.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { tab } from '../../../types/artifact-explorer';
 import { artifactWithRelationsMock } from '@osee/artifact-with-relations/testing';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('ArtifactEditorComponent', () => {
 	let component: ArtifactEditorComponent;
@@ -23,12 +27,11 @@ describe('ArtifactEditorComponent', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [
-				ArtifactEditorComponent,
-				HttpClientTestingModule,
-				BrowserAnimationsModule,
+			imports: [ArtifactEditorComponent, BrowserAnimationsModule],
+			providers: [
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
 			],
-			providers: [],
 		});
 
 		// tab input

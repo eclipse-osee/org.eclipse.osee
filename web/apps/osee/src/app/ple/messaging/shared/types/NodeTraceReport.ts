@@ -10,9 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface NodeTraceReportItem {
+export type NodeTraceReportItem = {
 	id: string;
 	name: string;
 	artifactType: string;
 	relatedItems: NodeTraceReportItem[];
-}
+};

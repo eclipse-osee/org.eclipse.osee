@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { UserDataAccountService } from '@osee/auth';
 import {
 	CreateAction,
@@ -18,9 +18,7 @@ import {
 } from '@osee/configuration-management/types';
 import {
 	BranchInfoService,
-	BranchRoutedUIService,
 	CurrentBranchInfoService,
-	UiService,
 } from '@osee/shared/services';
 import {
 	BehaviorSubject,
@@ -38,6 +36,11 @@ import { ActionService } from './action.service';
 	providedIn: 'root',
 })
 export class CreateActionService {
+	private actionService = inject(ActionService);
+	private branchService = inject(BranchInfoService);
+	private accountService = inject(UserDataAccountService);
+	private currentBranchService = inject(CurrentBranchInfoService);
+
 	private _workType = new BehaviorSubject<string>('');
 
 	private _createdTeamWorkflows = new Subject<`${number}`[]>();
@@ -54,15 +57,6 @@ export class CreateActionService {
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
-
-	constructor(
-		private actionService: ActionService,
-		private branchService: BranchInfoService,
-		private uiService: UiService,
-		private branchedRouter: BranchRoutedUIService,
-		private accountService: UserDataAccountService,
-		private currentBranchService: CurrentBranchInfoService
-	) {}
 
 	get user() {
 		return this.accountService.user;
@@ -135,22 +129,7 @@ export class CreateActionService {
 							category
 						),
 						of(branchResponse)
-					).pipe(
-						map(() => branchResponse),
-						tap((resp) => {
-							this.uiService.updated = true;
-							if (resp.results.success) {
-								const _branchType =
-									resp.workingBranchId.branchType === '2'
-										? 'baseline'
-										: 'working';
-								this.branchedRouter.position = {
-									type: _branchType,
-									id: resp.workingBranchId.id,
-								};
-							}
-						})
-					)
+					).pipe(map(() => branchResponse))
 				)
 			);
 	}

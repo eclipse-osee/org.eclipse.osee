@@ -19,8 +19,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { emptyNodeMock } from '@osee/messaging/shared/testing';
-import { MockApplicabilitySelectorComponent } from '@osee/shared/components/testing';
 import { NewNodeFormComponent } from './new-node-form.component';
+import { MockApplicabilityDropdownComponent } from '@osee/applicability/applicability-dropdown/testing';
 
 describe('NewNodeFormComponent', () => {
 	let component: NewNodeFormComponent;
@@ -36,7 +36,7 @@ describe('NewNodeFormComponent', () => {
 					FormsModule,
 					MatButtonModule,
 					MatSlideToggleModule,
-					MockApplicabilitySelectorComponent,
+					MockApplicabilityDropdownComponent,
 				],
 			},
 		})
@@ -49,14 +49,15 @@ describe('NewNodeFormComponent', () => {
 					MatButtonModule,
 					MatSlideToggleModule,
 					NoopAnimationsModule,
-					MockApplicabilitySelectorComponent,
+					MockApplicabilityDropdownComponent,
 				],
 			})
 			.compileComponents();
 
 		fixture = TestBed.createComponent(NewNodeFormComponent);
 		component = fixture.componentInstance;
-		component.node = emptyNodeMock;
+		fixture.componentRef.setInput('node', emptyNodeMock);
+		fixture.componentRef.setInput('fieldPrefix', '');
 		fixture.detectChanges();
 	});
 

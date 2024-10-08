@@ -15,6 +15,8 @@ package org.eclipse.osee.framework.ui.skynet.util.email;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import javax.mail.Message;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -69,8 +71,15 @@ public class EmailWizard extends Wizard {
             return true;
          }
          String useSubject = wizardPage.getSubject();
-         OseeEmail emailMessage = OseeEmailIde.create(Arrays.asList(wizardPage.getToAddresses()),
-            UserManager.getUser().getEmail(), UserManager.getUser().getEmail(), useSubject, "", BodyType.Html);
+         /**
+          * Do not handle abridged emails for EmailWizard. If desired to do this, the UI would need to be updated to
+          * allow/enforce a sanitized abridged subject.
+          */
+         Collection<String> toAbridgedAddresses = Collections.emptyList();
+         String abridgedSubject = "";
+         OseeEmail emailMessage =
+            OseeEmailIde.create(Arrays.asList(wizardPage.getToAddresses()), UserManager.getUser().getEmail(),
+               UserManager.getUser().getEmail(), useSubject, "", BodyType.Html, toAbridgedAddresses, abridgedSubject);
          emailMessage.setRecipients(Message.RecipientType.CC, wizardPage.getCcAddresses());
          emailMessage.setRecipients(Message.RecipientType.BCC, wizardPage.getBccAddresses());
          String finalHtml = getFinalHtml();

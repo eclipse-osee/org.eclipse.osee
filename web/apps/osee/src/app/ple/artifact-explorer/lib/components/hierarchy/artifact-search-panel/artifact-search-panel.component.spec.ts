@@ -13,8 +13,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ArtifactSearchPanelComponent } from './artifact-search-panel.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('ArtifactSearchPanelComponent', () => {
 	let component: ArtifactSearchPanelComponent;
@@ -22,10 +26,10 @@ describe('ArtifactSearchPanelComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [
-				ArtifactSearchPanelComponent,
-				NoopAnimationsModule,
-				HttpClientTestingModule,
+			imports: [ArtifactSearchPanelComponent, NoopAnimationsModule],
+			providers: [
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
 			],
 		}).compileComponents();
 

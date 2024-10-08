@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.util.OseeEmail;
 import org.eclipse.osee.framework.core.util.OseeEmail.BodyType;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -48,8 +49,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.builder.XWidgetBuilder;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -61,7 +64,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public class EmailGroupsBlam extends AbstractBlam {
    private XArtifactList templateList, groupsList;
    private XText bodyTextBox;
-   private XText subjectTextBox, replyToAddressTextBox;
+   private XText subjectTextBox, abridgedSubjectTextBox, replyToAddressTextBox;
    private XCheckBox isBodyHtmlCheckbox;
    private ExecutorService emailTheadPool;
    private final Collection<Future<String>> futures = new ArrayList<>(300);
@@ -78,6 +81,7 @@ public class EmailGroupsBlam extends AbstractBlam {
          @Override
          public void run() {
             data.setSubject(subjectTextBox.get());
+            data.setAbridgedSubject(abridgedSubjectTextBox.get());
             data.setReplyToAddress(replyToAddressTextBox.get());
             data.setFromAddress(UserManager.getUser().getEmail());
             data.setBody(bodyTextBox.get());
@@ -119,18 +123,23 @@ public class EmailGroupsBlam extends AbstractBlam {
    }
 
    private void sendEmailTo(EmailGroupsData data, final User user) {
-      final String emailAddress = user.getSoleAttributeValue(CoreAttributeTypes.Email, "");
+      String emailAddress = user.getSoleAttributeValue(CoreAttributeTypes.Email, "");
       if (!EmailUtil.isEmailValid(emailAddress)) {
          logf("ERROR: The email address \"%s\" for user %s is not valid.", emailAddress, user.getName());
-         return;
+         // if email invalid and no abridged subject, return
+         if (Strings.isInValid(data.getAbridgedSubject())) {
+            return;
+         }
       }
 
       final OseeEmail emailMessage = OseeEmailIde.create(Arrays.asList(emailAddress), data.getFromAddress(),
-         data.getReplyToAddress(), data.getSubject(), "", BodyType.Html);
+         data.getReplyToAddress(), data.getSubject(), data.getBody(), BodyType.Html,
+         Collections.singleton(user.getSoleAttributeValue(CoreAttributeTypes.AbridgedEmail, null)),
+         data.getAbridgedSubject());
       emailMessage.addHTMLBody(data.getHtmlResult(user));
-      String description = String.format("%s - [%s]", user, emailAddress);
-      logf(description);
-      futures.add(emailTheadPool.submit(new SendEmailCall(emailMessage, description)));
+      String logDescription = String.format("%s - [%s]", user, emailAddress);
+      logf(logDescription);
+      futures.add(emailTheadPool.submit(new SendEmailCall(emailMessage, logDescription)));
    }
 
    @Override
@@ -155,10 +164,12 @@ public class EmailGroupsBlam extends AbstractBlam {
          templateList.addXModifiedListener(listener);
       } else if (xWidget.getLabel().equals("Body")) {
          bodyTextBox = (XText) xWidget;
-      } else if (xWidget.getLabel().equals("Body is html")) {
+      } else if (xWidget.getLabel().equals("Body is HTML")) {
          isBodyHtmlCheckbox = (XCheckBox) xWidget;
       } else if (xWidget.getLabel().equals("Subject")) {
          subjectTextBox = (XText) xWidget;
+      } else if (xWidget.getLabel().equals("Abridged Subject")) {
+         abridgedSubjectTextBox = (XText) xWidget;
       } else if (xWidget.getLabel().equals("Reply-To Address")) {
          replyToAddressTextBox = (XText) xWidget;
          replyToAddressTextBox.set(UserManager.getUser().getEmail());
@@ -211,18 +222,23 @@ public class EmailGroupsBlam extends AbstractBlam {
    }
 
    @Override
-   public String getXWidgetsXml() {
+   public List<XWidgetRendererItem> getXWidgetItems() {
+      XWidgetBuilder wb = new XWidgetBuilder();
+      wb.andWidget("Groups", "XArtifactList").andMultiSelect().endWidget();
+      wb.andWidget("Template", "XArtifactList").endWidget();
+      wb.andXText("Reply-To Address").endWidget();
+      wb.andXText("Subject").endWidget();
+      wb.andXText("Abridged Subject").endWidget();
       // @formatter:off
-      return "<xWidgets>" +
-      "<XWidget xwidgetType=\"XArtifactList\" displayName=\"Groups\" multiSelect=\"true\" />" +
-      "<XWidget xwidgetType=\"XArtifactList\" displayName=\"Template\" />" +
-      "<XWidget xwidgetType=\"XText\" displayName=\"Reply-To Address\" />" +
-      "<XWidget xwidgetType=\"XText\" displayName=\"Subject\" />" +
-      "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Body is html\" defaultValue=\"true\" />" +
-      "<XWidget xwidgetType=\"XText\" displayName=\"Body\" fill=\"Vertically\" />" +
-      "<XWidget xwidgetType=\"XButtonPush\" displayName=\"Preview Message\" />" +
-      "</xWidgets>";
+      wb.andXLabel("      - If an Abridged Subject is included, emails will be sent to users with potential external email.").endWidget();
+      wb.andXLabel("      - Abridged Subject MUST be sanitized for general consumption.").endWidget();
+      wb.andXLabel("      - NOTE: Email Body will NOT be included in these emails, just the Abridged Subject.").endWidget();
+      wb.andXLabel("      - If no entry is given, NO abridged emails will be sent to users with Abridged Email set.").endWidget();
       // @formatter:on
+      wb.andXCheckbox("Body is HTML").andDefault(true).andHorizLabel().andLabelAfter().endWidget();
+      wb.andXText("Body").andFillVertically().endWidget();
+      wb.andXButtonPush("Preview Message").endWidget();
+      return wb.getItems();
    }
 
    @Override

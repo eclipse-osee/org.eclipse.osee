@@ -77,14 +77,14 @@ import { MatTooltip } from '@angular/material/tooltip';
 											result.failedCount > 0,
 										'tw-bg-success':
 											!result.scriptAborted &&
-											result.failedCount === 0
+											result.failedCount === 0,
 									}"
 									[matTooltip]="
 										result.scriptAborted
 											? 'Aborted'
 											: result.failedCount > 0
-											  ? 'Failed'
-											  : 'Passed'
+												? 'Failed'
+												: 'Passed'
 									"></div>
 							} @else {
 								{{ result[header] }}

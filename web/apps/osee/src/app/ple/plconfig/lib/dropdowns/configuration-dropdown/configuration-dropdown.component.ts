@@ -12,7 +12,6 @@
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { MatLabel } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
@@ -34,6 +33,7 @@ import {
 	PLAddConfigData,
 	PLEditConfigData,
 } from '../../types/pl-edit-config-data';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-plconfig-configuration-dropdown',
@@ -51,6 +51,11 @@ import {
 	],
 })
 export class ConfigurationDropdownComponent {
+	private uiStateService = inject(PlConfigUIStateService);
+	private currentBranchService = inject(PlConfigCurrentBranchService);
+	private dialogService = inject(DialogService);
+	dialog = inject(MatDialog);
+
 	selectedBranch: Observable<string> = this.uiStateService.branchId.pipe(
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
@@ -65,13 +70,6 @@ export class ConfigurationDropdownComponent {
 	);
 	protected editable = computed(() => this._branch().branchType === '0');
 
-	constructor(
-		private uiStateService: PlConfigUIStateService,
-		private currentBranchService: PlConfigCurrentBranchService,
-		private dialogService: DialogService,
-		public dialog: MatDialog
-	) {}
-
 	deleteConfig(config: { id: string; name: string }) {
 		this.currentBranchService
 			.deleteConfiguration(config.id)
@@ -84,62 +82,46 @@ export class ConfigurationDropdownComponent {
 	}
 
 	addConfiguration() {
-		this.selectedBranch
+		this.dialog
+			.open(AddConfigurationDialogComponent, {
+				data: {
+					copyFrom: {
+						id: '0',
+						name: '',
+						description: '',
+						hasFeatureApplicabilities: false,
+						productApplicabilities: [],
+					},
+					title: '',
+					description: '',
+					group: [],
+					productApplicabilities: [],
+				},
+				minWidth: '60%',
+			})
+			.afterClosed()
 			.pipe(
 				take(1),
-				switchMap((branchId) =>
-					of<PLAddConfigData>({
-						copyFrom: {
-							id: '0',
-							name: '',
-							description: '',
-							hasFeatureApplicabilities: false,
-							productApplicabilities: [],
-						},
-						title: '',
-						description: '',
-						group: [],
-						productApplicabilities: [],
-					}).pipe(
-						take(1),
-						switchMap((dialogData) =>
-							this.dialog
-								.open(AddConfigurationDialogComponent, {
-									data: dialogData,
-									minWidth: '60%',
-								})
-								.afterClosed()
-								.pipe(
-									take(1),
-									filter(
-										(val) => val !== undefined
-									) as OperatorFunction<
-										PLAddConfigData | undefined,
-										PLAddConfigData
-									>,
-									switchMap((result) =>
-										iif(
-											() => result !== undefined,
-											this.currentBranchService
-												.addConfiguration({
-													name: result.title,
-													description:
-														result.description,
-													copyFrom:
-														result.copyFrom.id,
-													configurationGroup:
-														result.group.map(
-															(a) => a.id
-														),
-													productApplicabilities:
-														result.productApplicabilities,
-												})
-												.pipe(take(1)),
-											of(undefined)
-										)
-									)
-								)
-						)
+				filter((val) => val !== undefined) as OperatorFunction<
+					PLAddConfigData | undefined,
+					PLAddConfigData
+				>,
+				switchMap((result) =>
+					iif(
+						() => result !== undefined,
+						this.currentBranchService
+							.addConfiguration({
+								name: result.title,
+								description: result.description,
+								copyFrom: result.copyFrom.id,
+								configurationGroup: result.group.map(
+									(a) => a.id
+								),
+								productApplicabilities:
+									result.productApplicabilities,
+							})
+							.pipe(take(1)),
+						of(undefined)
 					)
 				)
 			)

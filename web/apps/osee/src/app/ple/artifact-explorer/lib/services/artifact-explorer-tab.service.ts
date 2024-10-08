@@ -23,6 +23,9 @@ import { teamWorkflowToken } from '@osee/shared/types/configuration-management';
 	providedIn: 'root',
 })
 export class ArtifactExplorerTabService {
+	private eventService = inject(BranchCommitEventService);
+	private artifactIconService = inject(ArtifactIconService);
+
 	private tabs = signal<tab[]>([]);
 	private _selectedIndex = signal<number>(0);
 
@@ -30,10 +33,10 @@ export class ArtifactExplorerTabService {
 	branchId = toSignal(this.uiService.id, { initialValue: '' });
 	viewId = toSignal(this.uiService.viewId, { initialValue: '' });
 
-	constructor(
-		private eventService: BranchCommitEventService,
-		private artifactIconService: ArtifactIconService
-	) {
+	/** Inserted by Angular inject() migration for backwards compatibility */
+	constructor(...args: unknown[]);
+
+	constructor() {
 		this.eventService.events.subscribe((id) => {
 			this.tabs.update((current) =>
 				current.filter((tab) => tab.branchId !== id)
@@ -51,7 +54,7 @@ export class ArtifactExplorerTabService {
 	}
 
 	addChangeReportTab(tabTitle: string) {
-		let newTab: tab = {
+		const newTab: tab = {
 			tabId: this.generateTabId(),
 			tabType: 'ChangeReport',
 			tabTitle,

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, NgClass, NgStyle } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { PreferencesUIService } from '@osee/messaging/shared/services';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 import { tap } from 'rxjs';
@@ -25,16 +25,16 @@ import { tap } from 'rxjs';
 	imports: [HighlightFilteredTextDirective, NgStyle, NgClass, AsyncPipe],
 })
 export class SubElementTableNoEditFieldDynamicWidthComponent {
-	@Input() field: string = '';
-	@Input() width: string = '';
-	@Input() filter: string = '';
+	private preferencesService = inject(PreferencesUIService);
 
-	wordWrap: boolean = false;
+	@Input() field = '';
+	@Input() width = '';
+	@Input() filter = '';
+
+	wordWrap = false;
 	globalPrefs = this.preferencesService.globalPrefs.pipe(
 		tap((prefs) => (this.wordWrap = prefs.wordWrap))
 	);
-
-	constructor(private preferencesService: PreferencesUIService) {}
 
 	toggleExpanded() {
 		this.wordWrap = !this.wordWrap;

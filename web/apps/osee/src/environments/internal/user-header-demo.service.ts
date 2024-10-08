@@ -18,7 +18,7 @@ import { UserHeaderService } from '../user-header.service';
 	providedIn: 'root',
 })
 export class UserHeaderDemoService extends UserHeaderService {
-	useCustomHeaders: boolean = true;
+	useCustomHeaders = true;
 	private _headers: HttpHeaders;
 	get headers() {
 		return this._headers;

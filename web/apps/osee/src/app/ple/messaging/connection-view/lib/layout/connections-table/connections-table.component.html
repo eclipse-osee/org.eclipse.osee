@@ -38,7 +38,7 @@
 						@if (header === 'name') {
 							@if (
 								{
-									value: rowIsExpanded(connection.id)
+									value: rowIsExpanded(connection.id),
 								};
 								as _expanded
 							) {
@@ -50,9 +50,9 @@
 									[attr.data-cy]="
 										_expanded.value
 											? 'close-nodes-btn-' +
-											  connection.name
+												connection.name
 											: 'expand-nodes-btn-' +
-											  connection.name
+												connection.name
 									"
 									(click)="
 										toggleExpanded(

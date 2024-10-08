@@ -20,7 +20,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -56,7 +56,7 @@ public interface DashboardEndpoint {
    @GET
    @Path("{branch}/subsystems")
    @Produces(MediaType.APPLICATION_JSON)
-   public Collection<ArtifactAccessorResult> getSubsystems(@PathParam("branch") BranchId branch,
+   public Collection<ArtifactAccessorResultWithoutGammas> getSubsystems(@PathParam("branch") BranchId branch,
       @QueryParam("filter") String filter, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize,
       @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 
@@ -68,7 +68,7 @@ public interface DashboardEndpoint {
    @GET
    @Path("{branch}/teams")
    @Produces(MediaType.APPLICATION_JSON)
-   public Collection<ArtifactAccessorResult> getTeams(@PathParam("branch") BranchId branch,
+   public Collection<ArtifactAccessorResultWithoutGammas> getTeams(@PathParam("branch") BranchId branch,
       @QueryParam("filter") String filter, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize,
       @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 

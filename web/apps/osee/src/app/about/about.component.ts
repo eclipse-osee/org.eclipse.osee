@@ -24,7 +24,6 @@ import { BuildNum, version } from './version';
 export class AboutComponent {
 	buildNumber = BuildNum;
 	version = version;
-	constructor() {}
 }
 
 export default AboutComponent;

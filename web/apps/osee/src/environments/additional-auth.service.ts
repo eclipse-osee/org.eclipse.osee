@@ -18,8 +18,6 @@ import { of } from 'rxjs';
 	providedIn: 'root',
 })
 export class AdditionalAuthService {
-	constructor() {}
-
 	public getAuth() {
 		return of<user>();
 	}

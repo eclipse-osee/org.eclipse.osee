@@ -12,7 +12,7 @@
  **********************************************************************/
 import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { AsyncPipe } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
@@ -60,19 +60,20 @@ import { PLEditConfigData } from '../../types/pl-edit-config-data';
 	],
 })
 export class EditConfigurationDialogComponent {
+	dialogRef =
+		inject<MatDialogRef<EditConfigurationDialogComponent>>(MatDialogRef);
+	data = inject<PLEditConfigData>(MAT_DIALOG_DATA);
+	private currentBranchService = inject(PlConfigCurrentBranchService);
+	private uiService = inject(UiService);
+
 	cfgGroups = this.currentBranchService.cfgGroups;
 	productApplicabilities = this.currentBranchService.productTypes;
 	viewId = toSignal(this.uiService.viewId);
-	constructor(
-		public dialogRef: MatDialogRef<EditConfigurationDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: PLEditConfigData,
-		private currentBranchService: PlConfigCurrentBranchService,
-		private uiService: UiService
-	) {}
+
 	onNoClick(): void {
 		this.dialogRef.close();
 	}
-	valueTracker(index: any, item: any) {
+	valueTracker(index: number, _item: unknown) {
 		return index;
 	}
 	compareCfgGroup(o1: ConfigGroup, o2: ConfigGroup) {

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/core';
@@ -80,15 +80,13 @@ import { AddCoursesDialogComponent } from '../add-courses-dialog/add-courses-dia
 	],
 })
 export class AddRolesDialogComponent {
+	dialogRef = inject<MatDialogRef<AddCoursesDialogComponent>>(MatDialogRef);
+	private accountService = inject(UserDataAccountService);
+	private trainingRoleService = inject(TrainingRoleService);
+	data = inject<TrainingRoleRecord>(MAT_DIALOG_DATA);
+
 	userInfo: Observable<user> = this.accountService.user;
 	test_roles = this.trainingRoleService.getTrainingRoles();
-
-	constructor(
-		public dialogRef: MatDialogRef<AddCoursesDialogComponent>,
-		private accountService: UserDataAccountService,
-		private trainingRoleService: TrainingRoleService,
-		@Inject(MAT_DIALOG_DATA) public data: TrainingRoleRecord
-	) {}
 
 	onCancelClick() {
 		console.log(this.data);

@@ -66,14 +66,13 @@
 		</div>
 		<button
 			mat-mini-fab
-			color="primary"
 			(click)="addArrayValue()"
-			class="tw-float-right tw-mb-2">
+			class="tertiary-fab tw-float-right tw-mb-2">
 			<mat-icon>add</mat-icon>
 		</button>
-		<osee-applicability-selector
+		<osee-applicability-dropdown
 			[(applicability)]="crossReference.applicability">
-		</osee-applicability-selector>
+		</osee-applicability-dropdown>
 	</mat-dialog-content>
 </form>
 <mat-dialog-actions align="end">
@@ -83,9 +82,9 @@
 		Cancel
 	</button>
 	<button
-		mat-raised-button
+		mat-flat-button
 		[mat-dialog-close]="crossReference"
-		color="primary"
+		class="primary-button"
 		data-cy="submit-btn"
 		[disabled]="!crossRefForm.valid">
 		Ok

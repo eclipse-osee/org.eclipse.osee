@@ -11,11 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-import {
-	element,
-	elementWithChanges,
-	structure,
-} from '@osee/messaging/shared/types';
+import { element, structure } from '@osee/messaging/shared/types';
 import { difference } from '@osee/shared/types/change-report';
 import { ElementTableDropdownService } from '@osee/messaging/structure-tables/services';
 
@@ -34,11 +30,11 @@ export const elementTableDropdownServiceMock: Partial<ElementTableDropdownServic
 		) {},
 		openEditElementDialog(element: element) {},
 		openEnumDialog(id: string, editMode: boolean) {},
-		openDescriptionDialog(description: string, elementId: string) {},
-		openEnumLiteralDialog(enumLiteral: string, elementId: string) {},
-		openNotesDialog(notes: string, elementId: string) {},
+		openDescriptionDialog(element: element) {},
+		openEnumLiteralDialog(element: element) {},
+		openNotesDialog(element: element) {},
 		viewDiff<T>(value: difference<T> | undefined, header: string) {},
-		hasChanges(v: element | elementWithChanges): v is elementWithChanges {
+		hasChanges(v: element): v is Required<element> {
 			return (
 				(v as any).changes !== undefined ||
 				(v as any).added !== undefined ||

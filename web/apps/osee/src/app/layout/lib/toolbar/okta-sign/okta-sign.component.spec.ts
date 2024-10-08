@@ -34,9 +34,11 @@ describe('OktaSignComponent', () => {
 						provide: OKTA_AUTH,
 						useValue: {
 							signInWithRedirect() {
+								//eslint-disable-next-line @typescript-eslint/no-empty-function
 								return new Promise<void>(() => {});
 							},
 							signOut() {
+								//eslint-disable-next-line @typescript-eslint/no-empty-function
 								return new Promise<void>(() => {});
 							},
 						},

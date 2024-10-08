@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { shareReplay, switchMap, take } from 'rxjs/operators';
 import { UiService } from '@osee/shared/services';
 import { DifferenceBranchInfoService } from './difference-branch-info.service';
@@ -19,10 +19,8 @@ import { DifferenceBranchInfoService } from './difference-branch-info.service';
 	providedIn: 'root',
 })
 export class DiffReportBranchService {
-	constructor(
-		private differenceService: DifferenceBranchInfoService,
-		private uiService: UiService
-	) {}
+	private differenceService = inject(DifferenceBranchInfoService);
+	private uiService = inject(UiService);
 
 	get differences() {
 		return this.uiService.id.pipe(

@@ -11,10 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-	HttpClientTestingModule,
-	HttpTestingController,
-} from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { GcDatatableComponent } from './gc-datatable.component';
 import {
 	MatDialogModule,
@@ -26,11 +23,14 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { NoDataToDisplayComponent } from '../gc-datatable/no-data-to-display/no-data-to-display/no-data-to-display.component';
 import { MatCardModule } from '@angular/material/card';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('GcDatatableComponent', () => {
 	let component: GcDatatableComponent;
 	let fixture: ComponentFixture<GcDatatableComponent>;
-	let httpTestingController: HttpTestingController;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
@@ -40,7 +40,6 @@ describe('GcDatatableComponent', () => {
 				MatIconModule,
 				MatToolbarModule,
 				MatPaginatorModule,
-				HttpClientTestingModule,
 				GcDatatableComponent,
 				NoDataToDisplayComponent,
 			],
@@ -53,12 +52,13 @@ describe('GcDatatableComponent', () => {
 					},
 				},
 				{ provide: MatDialogRef, useValue: {} },
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
 			],
 		}).compileComponents();
 	});
 
 	beforeEach(() => {
-		httpTestingController = TestBed.inject(HttpTestingController);
 		fixture = TestBed.createComponent(GcDatatableComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();

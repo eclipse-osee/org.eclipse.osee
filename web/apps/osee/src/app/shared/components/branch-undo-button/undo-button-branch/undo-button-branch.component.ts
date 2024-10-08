@@ -10,22 +10,29 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
-import { MatButton } from '@angular/material/button';
+import { Component, inject } from '@angular/core';
+import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { CurrentBranchTransactionService } from '../internal/services/current-branch-transaction.service';
 
 @Component({
 	selector: 'osee-undo-button-branch',
-	templateUrl: './undo-button-branch.component.html',
 	styles: [],
 	standalone: true,
-	imports: [MatButton, MatIcon, MatTooltip],
+	imports: [MatButton, MatIconButton, MatIcon, MatTooltip],
+	template: `<button
+		mat-icon-button
+		(click)="undo()"
+		matTooltip="Undo the latest transaction via purging."
+		data-cy="undo-btn">
+		<mat-icon>undo</mat-icon>
+	</button>`,
 })
 export class UndoButtonBranchComponent {
+	private _undoService = inject(CurrentBranchTransactionService);
+
 	private _undoLatest = this._undoService.undoLatest;
-	constructor(private _undoService: CurrentBranchTransactionService) {}
 
 	undo() {
 		return this._undoLatest.subscribe();

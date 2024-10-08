@@ -10,22 +10,37 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface SetReference {
-	id: string;
-	name: string;
-	active: boolean;
-}
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
+import { attribute } from '@osee/attributes/types';
 
-export const setReferenceSentinel: SetReference = {
-	id: '',
-	name: '',
-	active: false,
+export type CISet = {
+	id: `${number}`;
+	gammaId: `${number}`;
+	name: Required<attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>>;
+	active: Required<attribute<boolean, typeof ATTRIBUTETYPEIDENUM.ACTIVE>>;
 };
 
-export interface DefReference {
+export const CISetSentinel: CISet = {
+	id: '-1',
+	gammaId: '-1',
+	name: {
+		id: '-1',
+		gammaId: '-1',
+		typeId: '1152921504606847088',
+		value: '',
+	},
+	active: {
+		id: '-1',
+		gammaId: '-1',
+		typeId: '1152921504606847065',
+		value: false,
+	},
+};
+
+export type DefReference = {
 	id: `${number}`;
 	name: string;
-	fullScriptName: String;
+	fullScriptName: string;
 	executionDate: Date;
 	executionEnvironment: string;
 	machineName: string;
@@ -58,9 +73,9 @@ export interface DefReference {
 	latestScriptHealth: number;
 	latestExecutedBy: string;
 	latestUserName: string;
-}
+};
 
-export interface ResultReference {
+export type ResultReference = {
 	id: string;
 	name: string;
 	processorId: string;
@@ -93,7 +108,7 @@ export interface ResultReference {
 	witnesses: string[];
 	testPoints: TestPointReference[];
 	definitionId: `${number}`;
-}
+};
 
 export const defReferenceSentinel: DefReference = {
 	id: '-1',
@@ -168,7 +183,7 @@ export const resultReferenceSentinel: ResultReference = {
 	definitionId: '-1',
 };
 
-export interface TestPointReference {
+export type TestPointReference = {
 	id: string;
 	name: string;
 	testNumber: number;
@@ -185,16 +200,16 @@ export interface TestPointReference {
 	elapsedTime: number;
 	transmissionCount: number;
 	notes: string;
-}
+};
 
-export interface ScriptBatch {
+export type ScriptBatch = {
 	id: string;
 	name: string;
 	batchId: string;
 	executionDate: Date;
 	machineName: string;
 	testEnvBatchId: string;
-}
+};
 
 export const scriptBatchSentinel: ScriptBatch = {
 	id: '-1',
@@ -208,11 +223,12 @@ export const scriptBatchSentinel: ScriptBatch = {
 export type SetDiff = {
 	name: string;
 	equal: boolean;
-	results: {
-		[key: string]: {
+	results: Record<
+		string,
+		{
 			passes: number;
 			fails: number;
 			abort: boolean;
-		};
-	};
+		}
+	>;
 };

@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { DiffTableComponent } from './diff-table/diff-table.component';
 import { SearchOptions } from './model/types';
 import { SearchCriteriaComponent } from './search-criteria/search-criteria.component';
@@ -24,7 +24,8 @@ import { AsyncPipe } from '@angular/common';
 	templateUrl: './diff-report.component.html',
 })
 export class DiffReportComponent {
-	constructor(private reportService: ReportService) {}
+	private reportService = inject(ReportService);
+
 	displayTable = this.reportService.displayTable;
 
 	startGeneratingReport(searchOptions: SearchOptions) {

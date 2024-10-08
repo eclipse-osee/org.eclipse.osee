@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Inject, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatDivider } from '@angular/material/divider';
 import { MatLabel } from '@angular/material/form-field';
@@ -23,19 +23,19 @@ import {
 	MatMenuTrigger,
 } from '@angular/material/menu';
 import { RouterLink } from '@angular/router';
-import {
-	CurrentStructureService,
-	HeaderService,
-} from '@osee/messaging/shared/services';
+import { applic, applicabilitySentinel } from '@osee/applicability/types';
+import { AttributeToValuePipe } from '@osee/attributes/pipes';
+import { HeaderService } from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 import {
+	DiffableElementProps,
+	DisplayableElementProps,
+	diffableElementHeaders,
 	elementSentinel,
 	type PlatformType,
 	type element,
-	type elementWithChanges,
 	type structure,
 } from '@osee/messaging/shared/types';
-import { applic } from '@osee/shared/types/applicability';
 import { difference } from '@osee/shared/types/change-report';
 import { iif, of, switchMap, take } from 'rxjs';
 import { RemoveElementDialogData } from '../../dialogs/remove-element-dialog/remove-element-dialog';
@@ -65,44 +65,80 @@ import { ElementTableDropdownService } from '../../services/element-table-dropdo
 		MatLabel,
 		MatMenu,
 		MatMenuContent,
+		AttributeToValuePipe,
 	],
 	templateUrl: './sub-element-table-dropdown.component.html',
 	styles: [],
 })
 export class SubElementTableDropdownComponent {
+	dialog = inject(MatDialog);
+	private structureService = inject(STRUCTURE_SERVICE_TOKEN);
+	private headerService = inject(HeaderService);
+	private elementDropdownService = inject(ElementTableDropdownService);
+
 	@Input() element: element = elementSentinel;
 
 	@Input() structure: structure = {
 		id: '-1',
-		name: '',
-		nameAbbrev: '',
-		description: '',
-		interfaceMaxSimultaneity: '',
-		interfaceMinSimultaneity: '',
-		interfaceTaskFileType: 0,
-		interfaceStructureCategory: '',
+		gammaId: '-1',
+		name: {
+			id: '-1',
+			typeId: '1152921504606847088',
+			gammaId: '-1',
+			value: '',
+		},
+		nameAbbrev: {
+			id: '-1',
+			typeId: '8355308043647703563',
+			gammaId: '-1',
+			value: '',
+		},
+		description: {
+			id: '-1',
+			typeId: '1152921504606847090',
+			gammaId: '-1',
+			value: '',
+		},
+		interfaceMaxSimultaneity: {
+			id: '-1',
+			typeId: '2455059983007225756',
+			gammaId: '-1',
+			value: '',
+		},
+		interfaceMinSimultaneity: {
+			id: '-1',
+			typeId: '2455059983007225755',
+			gammaId: '-1',
+			value: '',
+		},
+		interfaceTaskFileType: {
+			id: '-1',
+			typeId: '2455059983007225760',
+			gammaId: '-1',
+			value: 0,
+		},
+		interfaceStructureCategory: {
+			id: '-1',
+			typeId: '2455059983007225764',
+			gammaId: '-1',
+			value: '',
+		},
+		applicability: applicabilitySentinel,
+		elements: [],
 	};
 
-	@Input() header!: keyof element;
+	@Input() header!: keyof DisplayableElementProps;
 	@Input() field?: string | number | boolean | PlatformType | applic;
 
-	@Input('branchId') _branchId: string = '';
-	@Input('branchType') _branchType: string = '';
+	@Input('branchId') _branchId = '';
+	@Input('branchType') _branchType = '';
 
-	@Input() editMode: boolean = false;
-
-	constructor(
-		public dialog: MatDialog,
-		@Inject(STRUCTURE_SERVICE_TOKEN)
-		private structureService: CurrentStructureService,
-		private headerService: HeaderService,
-		private elementDropdownService: ElementTableDropdownService
-	) {}
+	@Input() editMode = false;
 
 	removeElement(element: element, structure: structure) {
 		const dialogData: RemoveElementDialogData = {
 			removeType: 'Structure',
-			elementName: element.name,
+			elementName: element.name.value,
 		};
 		this.dialog
 			.open(RemoveElementDialogComponent, {
@@ -156,25 +192,25 @@ export class SubElementTableDropdownComponent {
 		this.elementDropdownService.openEnumDialog(id, this.editMode);
 	}
 
-	openDescriptionDialog(description: string, elementId: string) {
+	openDescriptionDialog(element: element) {
 		this.elementDropdownService.openDescriptionDialog(
-			description,
-			elementId
+			element,
+			this.editMode
 		);
 	}
 
 	/**
 	 * Need to verify if type is required
 	 */
-	openEnumLiteralDialog(enumLiteral: string, elementId: string) {
+	openEnumLiteralDialog(element: element) {
 		this.elementDropdownService.openEnumLiteralDialog(
-			enumLiteral,
-			elementId
+			element,
+			this.editMode
 		);
 	}
 
-	openNotesDialog(notes: string, elementId: string) {
-		this.elementDropdownService.openNotesDialog(notes, elementId);
+	openNotesDialog(element: element) {
+		this.elementDropdownService.openNotesDialog(element, this.editMode);
 	}
 
 	getHeaderByName(value: string) {
@@ -185,7 +221,14 @@ export class SubElementTableDropdownComponent {
 		this.elementDropdownService.viewDiff(value, header);
 	}
 
-	hasChanges(v: element | elementWithChanges): v is elementWithChanges {
+	hasChanges(v: element): v is Required<element> {
 		return this.elementDropdownService.hasChanges(v);
+	}
+
+	protected isDiffableHeader(
+		value: keyof DisplayableElementProps
+	): value is keyof DiffableElementProps {
+		//@ts-expect-error this is valid
+		return diffableElementHeaders.includes(value);
 	}
 }

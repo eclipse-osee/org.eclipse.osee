@@ -11,20 +11,20 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import {
 	ConnectionService,
 	CrossReferenceHttpService,
 	PreferencesUIService,
 } from '@osee/messaging/shared/services';
 import {
-	connectionServiceMock,
 	CrossReferenceHttpServiceMock,
+	connectionServiceMock,
 	preferencesUiServiceMock,
 } from '@osee/messaging/shared/testing';
-import { TransactionService } from '@osee/shared/transactions';
-import { transactionServiceMock } from '@osee/shared/transactions/testing';
 
+import { TransactionService } from '@osee/transactions/services';
+import { transactionServiceMock } from '@osee/transactions/services/testing';
 import { CrossReferenceDropdownComponent } from './cross-reference-dropdown.component';
 
 describe('CrossReferenceDropdownComponent', () => {
@@ -56,11 +56,9 @@ describe('CrossReferenceDropdownComponent', () => {
 			},
 		})
 			.configureTestingModule({
-				imports: [
-					NoopAnimationsModule,
-					CrossReferenceDropdownComponent,
-				],
+				imports: [CrossReferenceDropdownComponent],
 				providers: [
+					provideNoopAnimations(),
 					{
 						provide: CrossReferenceHttpService,
 						useValue: CrossReferenceHttpServiceMock,

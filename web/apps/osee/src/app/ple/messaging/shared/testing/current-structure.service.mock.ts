@@ -12,30 +12,41 @@
  **********************************************************************/
 import { BehaviorSubject, Observable, of, ReplaySubject, Subject } from 'rxjs';
 import { MimPreferencesMock } from './mim-preferences.response.mock';
-import { applic } from '@osee/shared/types/applicability';
+import { applic } from '@osee/applicability/types';
 import { CurrentStructureService } from '../services/ui/current-structure.service';
 import { platformTypesMock } from './platform-types.response.mock';
 import { structuresMock } from './Structures.mock';
 import { messagesMock } from './messages.response.mock';
-import {
-	changeInstance,
-	transactionResult,
-} from '@osee/shared/types/change-report';
+import { changeInstance } from '@osee/shared/types/change-report';
 import type {
 	structure,
 	settingsDialogData,
 	PlatformType,
 	element,
 } from '@osee/messaging/shared/types';
-import { transactionToken } from '@osee/shared/types';
-import { transactionResultMock } from '@osee/shared/transactions/testing';
+import { transactionResult, transactionToken } from '@osee/transactions/types';
+import { transactionResultMock } from '@osee/transactions/testing';
 import type { MimQuery } from '@osee/messaging/shared/query';
+import { signal } from '@angular/core';
+import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
+import { attribute } from '@osee/attributes/types';
 
 let sideNavContentPlaceholder = new ReplaySubject<{
 	opened: boolean;
 	field: string;
-	currentValue: string | number | boolean | applic;
-	previousValue?: string | number | boolean | applic | undefined;
+	currentValue:
+		| string
+		| number
+		| boolean
+		| applic
+		| attribute<unknown, ATTRIBUTETYPEID>;
+	previousValue?:
+		| string
+		| number
+		| boolean
+		| applic
+		| undefined
+		| attribute<unknown, ATTRIBUTETYPEID>;
 	transaction?: transactionToken | undefined;
 	user?: string | undefined;
 	date?: string | undefined;
@@ -44,9 +55,6 @@ let _singleStructureId = new BehaviorSubject<string>('10');
 sideNavContentPlaceholder.next({ opened: false, field: '', currentValue: '' });
 export const CurrentStateServiceMock: Partial<CurrentStructureService> = {
 	createStructure(body: Partial<structure>) {
-		return of(transactionResultMock);
-	},
-	changeElementPlatformType(structureId, elementId, typeId) {
 		return of(transactionResultMock);
 	},
 	partialUpdateElement(body) {
@@ -90,7 +98,8 @@ export const CurrentStateServiceMock: Partial<CurrentStructureService> = {
 	messageId: '10',
 	subMessageId: '10',
 	connection: '10',
-	SubMessageId: new BehaviorSubject('10'),
+	structuresCount: of(10),
+	SubMessageId: signal('10'),
 	BranchId: new BehaviorSubject('10'),
 	branchType: new BehaviorSubject<'working' | 'baseline' | ''>('working'),
 	MessageId: new BehaviorSubject('10'),
@@ -111,10 +120,8 @@ export const CurrentStateServiceMock: Partial<CurrentStructureService> = {
 		date?: string;
 	}) {},
 	isInDiff: new BehaviorSubject<boolean>(false),
-	updatePlatformTypeValue(type: Partial<PlatformType>) {
-		return of(transactionResultMock);
-	},
-	expandedRows: of([]),
+	expandedRows: signal([]),
+	structureFilter: signal(''),
 	singleStructureId: _singleStructureId,
 	set singleStructureIdValue(value: string) {
 		_singleStructureId.next(value);

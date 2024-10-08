@@ -25,7 +25,7 @@ import {
 	configGroup,
 } from '../types/pl-config-configurations';
 import { writeFeature, modifyFeature } from '../types/pl-config-features';
-import { branch, response } from '@osee/shared/types';
+import { branch, XResultData } from '@osee/shared/types';
 
 export const PlConfigBranchServiceMock: Partial<PlConfigBranchService> = {
 	getBranches: function (type: string): Observable<branch[]> {
@@ -39,44 +39,44 @@ export const PlConfigBranchServiceMock: Partial<PlConfigBranchService> = {
 	addConfiguration: function (
 		branchId: string | number | undefined,
 		body: configuration
-	): Observable<response> {
+	): Observable<XResultData> {
 		throw new Error('Function not implemented.');
 	},
 	deleteConfiguration: function (
 		configurationId: string,
 		branchId?: string
-	): Observable<response> {
+	): Observable<XResultData> {
 		throw new Error('Function not implemented.');
 	},
 	editConfiguration: function (
 		branchId: string | number | undefined,
 		body: editConfiguration
-	): Observable<response> {
+	): Observable<XResultData> {
 		throw new Error('Function not implemented.');
 	},
 	addFeature: function (
 		branchId: string | number | undefined,
 		feature: writeFeature
-	): Observable<response> {
+	): Observable<XResultData> {
 		throw new Error('Function not implemented.');
 	},
 	modifyFeature: function (
 		branchId: string | number | undefined,
 		feature: modifyFeature
-	): Observable<response> {
+	): Observable<XResultData> {
 		throw new Error('Function not implemented.');
 	},
 	deleteFeature: function (
 		branchId: string | number | undefined,
 		featureId: string | number
-	): Observable<response> {
+	): Observable<XResultData> {
 		throw new Error('Function not implemented.');
 	},
 	modifyConfiguration: function (
 		branchId: string | number | undefined,
 		featureId: string,
 		body: string
-	): Observable<response> {
+	): Observable<XResultData> {
 		throw new Error('Function not implemented.');
 	},
 	getCfgGroups: function (
@@ -93,19 +93,19 @@ export const PlConfigBranchServiceMock: Partial<PlConfigBranchService> = {
 	addConfigurationGroup: function (
 		branchId: string | number | undefined,
 		cfgGroup: ConfigurationGroupDefinition
-	): Observable<response> {
+	): Observable<XResultData> {
 		throw new Error('Function not implemented.');
 	},
 	deleteConfigurationGroup: function (
 		branchId: string | number | undefined,
 		id: string
-	): Observable<response> {
+	): Observable<XResultData> {
 		throw new Error('Function not implemented.');
 	},
 	updateConfigurationGroup: function (
 		branchId: string | number | undefined,
 		cfgGroup: ConfigurationGroupDefinition
-	): Observable<response> {
+	): Observable<XResultData> {
 		throw new Error('Function not implemented.');
 	},
 	getApplicabilityToken: function (

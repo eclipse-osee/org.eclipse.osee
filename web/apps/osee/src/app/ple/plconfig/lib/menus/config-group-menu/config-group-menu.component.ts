@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Input, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import {
 	MatMenu,
@@ -19,7 +19,7 @@ import {
 	MatMenuItem,
 	MatMenuTrigger,
 } from '@angular/material/menu';
-import { applic } from '@osee/shared/types/applicability';
+import { applic } from '@osee/applicability/types';
 import { difference } from '@osee/shared/types/change-report';
 import { DialogService } from '../../services/dialog.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
@@ -53,10 +53,9 @@ export class ConfigGroupMenuComponent {
 		}
 	);
 	protected editable = computed(() => this._branch().branchType === '0');
-	constructor(
-		private dialogService: DialogService,
-		private currentBranchService: PlConfigCurrentBranchService
-	) {}
+	private dialogService = inject(DialogService);
+	private currentBranchService = inject(PlConfigCurrentBranchService);
+
 	group = input.required<configGroup>();
 	openConfigMenu(header: string, editable: boolean) {
 		this.dialogService

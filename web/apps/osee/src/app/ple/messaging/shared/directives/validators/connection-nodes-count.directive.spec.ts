@@ -10,11 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { ConnectionNodesCountDirective } from './connection-nodes-count.directive';
+import { TestBed } from '@angular/core/testing';
+import { NodesCountDirective } from './connection-nodes-count.directive';
 
 describe('ConnectionNodesCountDirective', () => {
 	it('should create an instance', () => {
-		const directive = new ConnectionNodesCountDirective();
-		expect(directive).toBeTruthy();
+		TestBed.runInInjectionContext(() => {
+			const directive = new NodesCountDirective();
+			expect(directive).toBeTruthy();
+		});
 	});
 });

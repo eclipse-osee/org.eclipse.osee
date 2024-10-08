@@ -10,15 +10,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { UiService } from '@osee/shared/services';
 import { PlatformType } from '@osee/messaging/shared/types';
+import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class PlMessagingTypesUIService {
+	private ui = inject(UiService);
+
 	private _filter = signal('');
 	private _singleLineAdjustment: BehaviorSubject<number> =
 		new BehaviorSubject<number>(0);
@@ -28,36 +31,7 @@ export class PlMessagingTypesUIService {
 	);
 
 	//TODO : migrate this to array once multi select options are thought out
-	private _selected = signal<PlatformType>({
-		id: '',
-		description: '',
-		interfaceLogicalType: '',
-		interfacePlatformType2sComplement: false,
-		interfacePlatformTypeAnalogAccuracy: '',
-		interfacePlatformTypeBitsResolution: '',
-		interfacePlatformTypeBitSize: '',
-		interfacePlatformTypeCompRate: '',
-		interfaceDefaultValue: '',
-		enumSet: {
-			name: '',
-			applicability: {
-				id: '1',
-				name: 'Base',
-			},
-			description: '',
-		},
-		interfacePlatformTypeMaxval: '',
-		interfacePlatformTypeMinval: '',
-		interfacePlatformTypeMsbValue: '',
-		interfacePlatformTypeUnits: '',
-		interfacePlatformTypeValidRangeDescription: '',
-		name: '',
-		applicability: {
-			id: '1',
-			name: 'Base',
-		},
-	});
-	constructor(private ui: UiService) {}
+	private _selected = signal<PlatformType>(new PlatformTypeSentinel());
 
 	get filter() {
 		return this._filter;
@@ -113,37 +87,7 @@ export class PlMessagingTypesUIService {
 	//TODO : migrate this to array once multi select options are thought out
 	select(value: PlatformType) {
 		this._selected.update((v) =>
-			v.id !== value.id
-				? value
-				: {
-						id: '',
-						description: '',
-						interfaceLogicalType: '',
-						interfacePlatformType2sComplement: false,
-						interfacePlatformTypeAnalogAccuracy: '',
-						interfacePlatformTypeBitsResolution: '',
-						interfacePlatformTypeBitSize: '',
-						interfacePlatformTypeCompRate: '',
-						interfaceDefaultValue: '',
-						enumSet: {
-							name: '',
-							applicability: {
-								id: '1',
-								name: 'Base',
-							},
-							description: '',
-						},
-						interfacePlatformTypeMaxval: '',
-						interfacePlatformTypeMinval: '',
-						interfacePlatformTypeMsbValue: '',
-						interfacePlatformTypeUnits: '',
-						interfacePlatformTypeValidRangeDescription: '',
-						name: '',
-						applicability: {
-							id: '1',
-							name: 'Base',
-						},
-				  }
+			v.id !== value.id ? value : new PlatformTypeSentinel()
 		);
 	}
 }

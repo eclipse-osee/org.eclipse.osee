@@ -10,14 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { branch, response } from '..';
+import { branch, XResultData } from '..';
 
-export interface newActionResponse {
+export type newActionResponse = {
 	action: null;
-	results: response;
+	results: XResultData;
 	teamWfs: newActionTeamWorkflow[];
 	workingBranchId: branch;
-}
+};
 
 type newActionTeamWorkflow = {
 	id: `${number}`;

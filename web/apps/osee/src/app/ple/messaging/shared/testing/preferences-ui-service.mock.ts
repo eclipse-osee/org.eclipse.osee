@@ -16,7 +16,7 @@ import {
 	testGlobalUserPrefs,
 } from './mim-preferences.response.mock';
 import { PreferencesUIService } from '@osee/messaging/shared/services';
-import { transactionResultMock } from '@osee/shared/transactions/testing';
+import { transactionResultMock } from '@osee/transactions/testing';
 
 export const preferencesUiServiceMock: Partial<PreferencesUIService> = {
 	createOrUpdateGlobalUserPrefs() {

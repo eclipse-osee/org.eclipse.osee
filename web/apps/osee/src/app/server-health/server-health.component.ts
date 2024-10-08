@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, SecurityContext } from '@angular/core';
+import { Component, SecurityContext, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -27,14 +27,15 @@ import { ServerHealthPageHeaderComponent } from './shared/components/server-heal
 import { ServerHealthHttpService } from './shared/services/server-health-http.service';
 
 const _navItems: navigationElement[] =
-	navigationStructure[1].children.filter(
-		(c) => c.label !== 'Server Health Dashboard'
-	) || [];
+	navigationStructure
+		.filter((item) => item.label === 'Server Health')[0]
+		.children.filter((c) => c.label !== 'Server Health Dashboard') || [];
 
 const _currNavItem: navigationElement =
-	navigationStructure[1].children.find(
-		(c) => c.label === 'Server Health Dashboard'
-	) || defaultNavigationElement;
+	navigationStructure
+		.filter((item) => item.label === 'Server Health')[0]
+		.children.find((c) => c.label === 'Server Health Dashboard') ||
+	defaultNavigationElement;
 
 @Component({
 	selector: 'osee-server-health',
@@ -49,6 +50,9 @@ const _currNavItem: navigationElement =
 	templateUrl: './server-health.component.html',
 })
 export class ServerHealthComponent {
+	private serverHealthHttpService = inject(ServerHealthHttpService);
+	private sanitizer = inject(DomSanitizer);
+
 	get importantNavItems() {
 		return _navItems.filter((c) => c.label !== 'Http Headers');
 	}
@@ -60,11 +64,6 @@ export class ServerHealthComponent {
 	get currNavItem() {
 		return _currNavItem;
 	}
-
-	constructor(
-		private serverHealthHttpService: ServerHealthHttpService,
-		private sanitizer: DomSanitizer
-	) {}
 
 	prometheusUrl = this.serverHealthHttpService.PrometheusUrl.pipe(
 		map((prometheusUrl) => {

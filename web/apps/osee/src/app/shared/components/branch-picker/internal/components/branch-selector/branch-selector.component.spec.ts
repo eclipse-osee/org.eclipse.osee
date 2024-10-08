@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -20,6 +20,10 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { MockMatOptionLoadingComponent } from '../../../../mat-option-loading/testing/mat-option-loading.component.mock';
 
 import { BranchSelectorComponent } from './branch-selector.component';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('BranchSelectorComponent', () => {
 	let component: BranchSelectorComponent;
@@ -29,13 +33,16 @@ describe('BranchSelectorComponent', () => {
 		await TestBed.configureTestingModule({
 			imports: [
 				RouterTestingModule,
-				HttpClientTestingModule,
 				MatFormFieldModule,
 				FormsModule,
 				MatSelectModule,
 				NoopAnimationsModule,
 				MockMatOptionLoadingComponent,
 				BranchSelectorComponent,
+			],
+			providers: [
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
 			],
 		}).compileComponents();
 	});

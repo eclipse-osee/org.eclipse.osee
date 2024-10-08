@@ -24,12 +24,13 @@ export class messageDataSource extends DataSource<
 		super();
 	}
 	connect(
-		collectionViewer: CollectionViewer
+		_collectionViewer: CollectionViewer
 	): Observable<readonly (message | messageWithChanges)[]> {
 		return this.messageService.messages.pipe(
 			takeUntil(this.messageService.done)
 		);
 	}
 
-	disconnect(collectionViewer: CollectionViewer): void {}
+	//eslint-disable-next-line @typescript-eslint/no-empty-function
+	disconnect(_collectionViewer: CollectionViewer): void {}
 }

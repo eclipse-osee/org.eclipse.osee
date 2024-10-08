@@ -22,8 +22,8 @@ public class NodeView {
    private InterfaceNode data;
 
    public NodeView(InterfaceNode node) {
-      this(node.getIdString(), node.getName());
-      this.setLabel(node.getName());
+      this(node.getIdString(), node.getName().getValue());
+      this.setLabel(node.getName().getValue());
       this.setData(node);
    }
 

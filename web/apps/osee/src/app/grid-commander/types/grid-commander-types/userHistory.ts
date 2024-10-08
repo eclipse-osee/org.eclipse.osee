@@ -13,18 +13,18 @@
 import { NamedId } from '@osee/shared/types';
 import { ResponseColumnSchema } from './table-data-types';
 
-export interface userHistory extends NamedId {
+export type userHistory = {
 	executedCommandHistory: string;
 	commandHistoryId: string;
 	columns: ResponseColumnSchema[];
 	data: string[][];
-}
+} & NamedId;
 
-export interface executedCommandHistory {
+export type executedCommandHistory = {
 	Command: string;
-	Parameters: any;
+	Parameters: unknown;
 	Favorite: string;
 	Validated: string;
 	name: string;
 	id?: string;
-}
+};

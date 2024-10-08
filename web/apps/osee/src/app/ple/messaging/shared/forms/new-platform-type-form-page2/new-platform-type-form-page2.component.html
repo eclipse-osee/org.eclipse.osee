@@ -10,112 +10,104 @@
 * Contributors:
 *     Boeing - initial API and implementation
 -->
-<form #platformTypeForm="ngForm">
-	@if (logicalTypeSubject | async; as __logicalType) {
-		@if (__logicalType.id !== '' && __logicalType.id !== '-1') {
-			<mat-dialog-content>
-				<osee-new-platform-type-form
-					[logicalType]="__logicalType"
-					(platformType)="
-						attributesUpdate($event)
-					"></osee-new-platform-type-form>
-				@if (__logicalType.name === 'enumeration') {
-					@if ((createNewEnum | async) !== true) {
-						<mat-form-field class="tw-w-full">
-							<mat-label>Select an Enumeration Set</mat-label>
-							<mat-select
-								[ngModel]="enumSetState | async"
-								name="enumSetSelect"
-								(ngModelChange)="updateEnumSet($event)"
-								[compareWith]="compareEnumSet">
-								<osee-mat-option-loading
-									[data]="enumSets"
-									objectName="Enumeration Sets">
-									<ng-template let-option>
-										<mat-option [value]="option">
-											{{ option.name }}
-										</mat-option>
-									</ng-template>
-								</osee-mat-option-loading>
-							</mat-select>
-							<button
-								mat-icon-button
-								matSuffix
-								(click)="toggleEnumCreationState($event)">
-								<mat-icon>{{
-									(createNewEnum | async) !== true
-										? 'add'
-										: 'remove'
-								}}</mat-icon>
-							</button>
-						</mat-form-field>
-					}
-					<div
-						[@detailExpand]="
-							(createNewEnum | async) === true &&
-							__logicalType.name === 'enumeration'
-								? 'expanded'
-								: 'collapsed'
-						">
-						@if ((createNewEnum | async) === true) {
-							@if (platformType | async; as attrs) {
-								@if (
-									attrs.interfacePlatformTypeBitSize !==
-										undefined &&
-									attrs.interfacePlatformTypeBitSize !== '0'
-								) {
-									<osee-enum-set-form
-										[bitSize]="
-											attrs.interfacePlatformTypeBitSize ||
-											'0'
-										"
-										(enumSet)="updateEnumSet($event)"
-										(closed)="
-											toggleEnumCreationState()
-										"></osee-enum-set-form>
-								} @else {
-									No Bit Size defined, please select a bit
-									size above.
-								}
-							} @else {
-								No Bit Size defined, please select a bit size
-								above.
-							}
-						}
-					</div>
+<div
+	#platformTypeFromLogicalTypeForm="ngModelGroup"
+	ngModelGroup="platformTypeFromLogicalTypeForm">
+	@if (logicalType().id !== '-1') {
+		<mat-dialog-content>
+			<osee-new-platform-type-form
+				[logicalType]="logicalType()"
+				[(platformType)]="platformType"></osee-new-platform-type-form>
+			@if (logicalType().name === 'enumeration') {
+				@if (createNewEnum() !== true) {
+					<mat-form-field class="tw-w-full">
+						<mat-label>Select an Enumeration Set</mat-label>
+						<mat-select
+							[(ngModel)]="enumSet"
+							name="enumSetSelect"
+							[compareWith]="compareEnumSet">
+							<osee-mat-option-loading
+								[data]="enumSets"
+								objectName="Enumeration Sets">
+								<ng-template let-option>
+									<mat-option [value]="option">
+										{{ option.name.value }}
+									</mat-option>
+								</ng-template>
+							</osee-mat-option-loading>
+						</mat-select>
+						<button
+							mat-icon-button
+							matSuffix
+							(click)="toggleEnumCreationState($event)">
+							<mat-icon>{{
+								createNewEnum() !== true ? 'add' : 'remove'
+							}}</mat-icon>
+						</button>
+					</mat-form-field>
 				}
-			</mat-dialog-content>
-		}
-		<mat-dialog-actions align="end">
-			<button
-				mat-button
-				matStepperPrevious>
-				Back
-			</button>
-			<button
-				mat-raised-button
-				matStepperNext
-				[disabled]="
-					platformTypeForm.pending ||
-					platformTypeForm.invalid ||
-					platformTypeForm.disabled
-				"
-				[color]="
-					platformTypeForm.pending ||
-					platformTypeForm.invalid ||
-					platformTypeForm.disabled
-						? ''
-						: 'primary'
-				"
-				[attr.data-cy]="
-					platformTypeForm.pending ||
-					platformTypeForm.invalid ||
-					platformTypeForm.disabled
-						? 'stepper-next-2-disabled'
-						: 'stepper-next-2'
-				">
-				Next
-			</button>
-		</mat-dialog-actions>
+				<div
+					[@detailExpand]="
+						createNewEnum() === true &&
+						logicalType().name === 'enumeration'
+							? 'expanded'
+							: 'collapsed'
+					">
+					@if (createNewEnum() === true) {
+						@if (
+							platformType().interfacePlatformTypeBitSize !==
+								undefined &&
+							platformType().interfacePlatformTypeBitSize
+								.value !== '0'
+						) {
+							<osee-enum-set-form
+								[bitSize]="
+									platformType().interfacePlatformTypeBitSize
+										.value || '0'
+								"
+								[(enumSet)]="enumSet"
+								(closed)="
+									toggleEnumCreationState()
+								"></osee-enum-set-form>
+						} @else {
+							No Bit Size defined, please select a bit size above.
+						}
+					}
+				</div>
+			}
+		</mat-dialog-content>
 	}
-</form>
+	<mat-dialog-actions align="end">
+		<button
+			mat-button
+			type="button"
+			matStepperPrevious>
+			Back
+		</button>
+		<button
+			mat-flat-button
+			matStepperNext
+			type="button"
+			[disabled]="
+				platformTypeFromLogicalTypeForm.pending ||
+				platformTypeFromLogicalTypeForm.invalid ||
+				platformTypeFromLogicalTypeForm.disabled
+			"
+			[color]="
+				platformTypeFromLogicalTypeForm.pending ||
+				platformTypeFromLogicalTypeForm.invalid ||
+				platformTypeFromLogicalTypeForm.disabled
+					? ''
+					: 'primary'
+			"
+			[attr.data-cy]="
+				platformTypeFromLogicalTypeForm.pending ||
+				platformTypeFromLogicalTypeForm.invalid ||
+				platformTypeFromLogicalTypeForm.disabled
+					? 'stepper-next-2-disabled'
+					: 'stepper-next-2'
+			">
+			Next
+		</button>
+	</mat-dialog-actions>
+</div>

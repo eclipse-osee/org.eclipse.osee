@@ -11,27 +11,27 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { UserDataAccountService } from '@osee/auth';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
 import {
 	TypesService,
 	MimPreferencesService,
 	EnumerationSetService,
-	EnumsService,
 } from '@osee/messaging/shared/services';
 import {
 	typesServiceMock,
 	MimPreferencesServiceMock,
 	enumerationSetServiceMock,
-	enumsServiceMock,
 } from '@osee/messaging/shared/testing';
 import { ApplicabilityListService } from '@osee/shared/services';
 import { applicabilityListServiceMock } from '@osee/shared/testing';
-import { TransactionBuilderService } from '@osee/shared/transactions';
-import { transactionBuilderMock } from '@osee/shared/transactions/testing';
+import { TransactionBuilderService } from '@osee/shared/transactions-legacy';
+import { transactionBuilderMock } from '@osee/shared/transactions-legacy/testing';
 
 import { TypeDetailComponent } from './type-detail.component';
+import { provideRouter } from '@angular/router';
+import { CurrentTransactionService } from '@osee/transactions/services';
+import { currentTransactionServiceMock } from '@osee/transactions/services/testing';
 
 describe('TypeDetailComponent', () => {
 	let component: TypeDetailComponent;
@@ -39,8 +39,9 @@ describe('TypeDetailComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [RouterTestingModule, TypeDetailComponent],
+			imports: [TypeDetailComponent],
 			providers: [
+				provideRouter([]),
 				{ provide: TypesService, useValue: typesServiceMock },
 				{
 					provide: MimPreferencesService,
@@ -58,10 +59,13 @@ describe('TypeDetailComponent', () => {
 					provide: UserDataAccountService,
 					useValue: userDataAccountServiceMock,
 				},
-				{ provide: EnumsService, useValue: enumsServiceMock },
 				{
 					provide: ApplicabilityListService,
 					useValue: applicabilityListServiceMock,
+				},
+				{
+					provide: CurrentTransactionService,
+					useValue: currentTransactionServiceMock,
 				},
 			],
 		}).compileComponents();

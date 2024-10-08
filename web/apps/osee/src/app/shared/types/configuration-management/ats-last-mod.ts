@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface atsLastMod {
+export type atsLastMod = {
 	atsId: string;
 	name: string;
 	id: string;
@@ -18,4 +18,4 @@ export interface atsLastMod {
 	siblings: string[];
 	opened: number;
 	closed: number;
-}
+};

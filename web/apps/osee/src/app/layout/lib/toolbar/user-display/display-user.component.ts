@@ -18,7 +18,7 @@ import {
 	trigger,
 } from '@angular/animations';
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { RouterOutlet } from '@angular/router';
@@ -57,9 +57,9 @@ import { OktaSignComponent } from '../okta-sign/okta-sign.component';
 	],
 })
 export class DisplayUserComponent {
-	userInfo: Observable<user> = this.accountService.user;
-	opened: boolean = false;
-	authScheme = environment.authScheme;
+	private accountService = inject(UserDataAccountService);
 
-	constructor(private accountService: UserDataAccountService) {}
+	userInfo: Observable<user> = this.accountService.user;
+	opened = false;
+	authScheme = environment.authScheme;
 }

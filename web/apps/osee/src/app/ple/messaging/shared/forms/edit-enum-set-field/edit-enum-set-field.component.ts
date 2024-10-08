@@ -18,6 +18,7 @@ import {
 	OnChanges,
 	Output,
 	SimpleChanges,
+	inject,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
@@ -34,6 +35,7 @@ import {
 	MatRowDef,
 	MatTable,
 } from '@angular/material/table';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 import {
 	EnumerationUIService,
@@ -41,21 +43,20 @@ import {
 	TypesUIService,
 } from '@osee/messaging/shared/services';
 import type { PlatformType, enumeration } from '@osee/messaging/shared/types';
-import { ApplicabilitySelectorComponent } from '@osee/shared/components';
+import { applic } from '@osee/applicability/types';
+import {
+	ARTIFACTTYPEIDENUM,
+	RELATIONTYPEIDENUM,
+} from '@osee/shared/types/constants';
 import {
 	createArtifact,
 	modifyArtifact,
 	modifyRelation,
-} from '@osee/shared/types';
-import { applic } from '@osee/shared/types/applicability';
-import {
-	ARTIFACTTYPEIDENUM,
-	ATTRIBUTETYPEIDENUM,
-	RELATIONTYPEIDENUM,
-} from '@osee/shared/types/constants';
+} from '@osee/transactions/types';
 import { BehaviorSubject, Subject, combineLatest, iif, of } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
 import { EnumFormComponent } from '../enum-form/enum-form.component';
+import { ApplicabilityDropdownComponent } from '@osee/applicability/applicability-dropdown';
 
 @Component({
 	selector: 'osee-edit-enum-set-field',
@@ -80,10 +81,14 @@ import { EnumFormComponent } from '../enum-form/enum-form.component';
 		MatRowDef,
 		AsyncPipe,
 		EnumFormComponent,
-		ApplicabilitySelectorComponent,
+		ApplicabilityDropdownComponent,
 	],
 })
 export class EditEnumSetFieldComponent implements OnChanges {
+	private enumSetService = inject(EnumerationUIService);
+	private preferenceService = inject(PreferencesUIService);
+	private typeService = inject(TypesUIService);
+
 	/*
 	 *@deprecated
 	 */
@@ -96,11 +101,11 @@ export class EditEnumSetFieldComponent implements OnChanges {
 	});
 	inEditMode = this.preferenceService.inEditMode;
 
-	@Input() editable: boolean = false;
+	@Input() editable = false;
 	_editable = new BehaviorSubject<boolean>(false);
 
 	//type enumset loading case 1: by id
-	@Input() platformTypeId: string = '-1';
+	@Input() platformTypeId = '-1';
 	private __platformTypeId = new BehaviorSubject<string>('');
 
 	//type enumset loading case 2: by type
@@ -110,7 +115,7 @@ export class EditEnumSetFieldComponent implements OnChanges {
 		new PlatformTypeSentinel()
 	);
 
-	@Input() shouldCreateNew: boolean = false;
+	@Input() shouldCreateNew = false;
 
 	private _shouldCreateNew = new BehaviorSubject<boolean>(false);
 
@@ -145,7 +150,7 @@ export class EditEnumSetFieldComponent implements OnChanges {
 	]).pipe(
 		map(([enumSet, shouldCreateNew]) => {
 			if (shouldCreateNew) {
-				delete enumSet.id;
+				enumSet.id = '-1';
 			}
 			return enumSet;
 		})
@@ -164,14 +169,14 @@ export class EditEnumSetFieldComponent implements OnChanges {
 				this._enumSetApplicUpdate,
 			]).pipe(
 				map(([name, description, applic]) => {
-					if (name !== '' && initial.name !== name) {
-						initial.name = name;
+					if (name !== '' && initial.name.value !== name) {
+						initial.name.value = name;
 					}
 					if (
 						description !== '' &&
-						initial.description !== description
+						initial.description.value !== description
 					) {
-						initial.description = description;
+						initial.description.value = description;
 					}
 					if (
 						applic.id !== '-1' &&
@@ -199,11 +204,11 @@ export class EditEnumSetFieldComponent implements OnChanges {
 						? combineLatest([
 								this._type,
 								this._shouldCreateNew,
-						  ]).pipe(
+							]).pipe(
 								map(([type, shouldBeNew]) => {
 									const addedArtifact = {
 										typeId: ARTIFACTTYPEIDENUM.ENUMSET,
-										name: enumerationSet?.name || '',
+										name: enumerationSet?.name.value || '',
 										key: 'ea95f2e8-6018-4975-917d-5d49ce56151a',
 										applicabilityId:
 											enumerationSet?.applicability.id,
@@ -245,7 +250,7 @@ export class EditEnumSetFieldComponent implements OnChanges {
 									}
 									return enumTx;
 								})
-						  )
+							)
 						: of(enumTx).pipe(
 								map((existingTx) => {
 									const modifiedArtifact = {
@@ -281,18 +286,13 @@ export class EditEnumSetFieldComponent implements OnChanges {
 									);
 									return existingTx;
 								})
-						  )
+							)
 				)
 			)
 		)
 	);
 
 	@Output('unique') _unique = new Subject<boolean>();
-	constructor(
-		private enumSetService: EnumerationUIService,
-		private preferenceService: PreferencesUIService,
-		private typeService: TypesUIService
-	) {}
 
 	ngOnChanges(changes: SimpleChanges) {
 		if (
@@ -360,6 +360,7 @@ export class EditEnumSetFieldComponent implements OnChanges {
 						typeId: typeof ATTRIBUTETYPEIDENUM.INTERFACEENUMORDINAL;
 						value: number;
 					}[];
+					key: string;
 					relations: {
 						typeId: typeof RELATIONTYPEIDENUM.INTERFACEENUMTOENUMSET;
 						sideA: string;

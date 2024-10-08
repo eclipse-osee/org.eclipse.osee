@@ -27,9 +27,7 @@ import { MatIcon } from '@angular/material/icon';
 	imports: [MatFabButton, MatIcon],
 })
 export class ScrollToTopButtonComponent {
-	@Input() scrollId: string = 'page-top';
-
-	constructor() {}
+	@Input() scrollId = 'page-top';
 
 	scrollToTop() {
 		document.getElementById(this.scrollId)?.scrollIntoView({

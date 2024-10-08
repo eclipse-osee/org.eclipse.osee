@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { apiURL } from '@osee/environments';
 import type { StructurePath } from '@osee/messaging/shared/types';
 import { HttpParamsType } from '@osee/shared/types';
@@ -20,7 +20,7 @@ import { HttpParamsType } from '@osee/shared/types';
 	providedIn: 'root',
 })
 export class StructureNamesService {
-	constructor(private http: HttpClient) {}
+	private http = inject(HttpClient);
 
 	getStructureNames(branchId: string, connectionId?: string) {
 		let params: HttpParamsType = {};

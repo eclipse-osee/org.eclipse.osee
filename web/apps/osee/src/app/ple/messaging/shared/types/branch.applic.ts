@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface branchApplicability {
+export type branchApplicability = {
 	associatedArtifactId: string;
 	branch: branch;
 	editable: boolean;
@@ -18,23 +18,23 @@ export interface branchApplicability {
 	groups: configurationGroup[];
 	parentBranch: branch;
 	views: view[];
-}
+};
 
-interface branch {
+type branch = {
 	id: string;
 	viewId: string;
 	idIntValue: number;
 	name: string;
-}
+};
 
-interface view {
+type view = {
 	hasFeatureApplicabilities: boolean;
 	productApplicabilities?: string[];
 	id: string;
 	name: string;
-}
+};
 
-interface feature {
+type feature = {
 	name: string;
 	description: string;
 	valueType: string;
@@ -49,12 +49,12 @@ interface feature {
 	idString?: string;
 	type: null | undefined;
 	configurations: [{ name: string; value: string }];
-}
+};
 
-interface configurationGroup {
+type configurationGroup = {
 	configurations: string[];
 	id: string;
 	name: string;
 	hasFeatureApplicabilities: boolean;
 	productApplicabilities: string[];
-}
+};

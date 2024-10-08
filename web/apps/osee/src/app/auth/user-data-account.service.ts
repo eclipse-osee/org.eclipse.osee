@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { combineLatest, from, iif, Observable, of } from 'rxjs';
 import { concatMap, reduce, shareReplay, take } from 'rxjs/operators';
 import { user, UserRoles } from '@osee/shared/types/auth';
@@ -26,11 +26,10 @@ import {
 	providedIn: 'root',
 })
 export class UserDataAccountService {
-	constructor(
-		private http: HttpClient,
-		private userHeaderService: UserHeaderService,
-		private authProvider: AdditionalAuthService
-	) {}
+	private http = inject(HttpClient);
+	private userHeaderService = inject(UserHeaderService);
+	private authProvider = inject(AdditionalAuthService);
+
 	private _devUser = of<user>({
 		id: '61106791',
 		name: 'Joe Smith',
@@ -75,7 +74,7 @@ export class UserDataAccountService {
 		environment.authScheme === 'DEMO'
 			? this.http.get<user>(OSEEAuthURL, {
 					headers: this.userHeaderService.headers,
-			  })
+				})
 			: this.http.get<user>(OSEEAuthURL);
 
 	private _noneAuth =

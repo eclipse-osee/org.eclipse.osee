@@ -20,7 +20,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
@@ -36,7 +36,7 @@ public interface InterfaceRateEndpoint {
    /**
     * @return all rates matching criteria
     */
-   Collection<ArtifactAccessorResult> getAllRates(@QueryParam("filter") String filter,
+   Collection<ArtifactAccessorResultWithoutGammas> getAllRates(@QueryParam("filter") String filter,
       @QueryParam("viewId") ArtifactId viewId, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize,
       @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 
@@ -54,6 +54,6 @@ public interface InterfaceRateEndpoint {
    /**
     * Gets a specific unit.
     */
-   ArtifactAccessorResult getRate(@PathParam("id") ArtifactId rateId);
+   ArtifactAccessorResultWithoutGammas getRate(@PathParam("id") ArtifactId rateId);
 
 }

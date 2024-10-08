@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, NgClass } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
 	MatAutocomplete,
@@ -57,6 +57,10 @@ import { BranchRoutedUIService } from '@osee/shared/services';
 	],
 })
 export class BranchSelectorComponent {
+	private routeState = inject(BranchRoutedUIService);
+	private branchListingService = inject(BranchListService);
+	private loadingService = inject(HttpLoadingService);
+
 	selectedBranchType = this.routeState.type;
 	selectedBranchId = '';
 	options = this.branchListingService.branches;
@@ -74,7 +78,7 @@ export class BranchSelectorComponent {
 				this._typeAhead.pipe(distinctUntilChanged(), debounceTime(500)),
 				this.selectedBranchType,
 			]).pipe(
-				switchMap(([filter, type]) =>
+				switchMap(([filter, _type]) =>
 					of((pageNum: string | number) =>
 						this.branchListingService.getFilteredPaginatedBranches(
 							pageNum,
@@ -94,7 +98,7 @@ export class BranchSelectorComponent {
 				this._typeAhead.pipe(distinctUntilChanged(), debounceTime(500)),
 				this.selectedBranchType,
 			]).pipe(
-				switchMap(([filter, type]) =>
+				switchMap(([filter, _type]) =>
 					this.branchListingService.getFilteredCount(filter)
 				)
 			)
@@ -103,11 +107,10 @@ export class BranchSelectorComponent {
 
 	@Input() errorMatcher: ErrorStateMatcher =
 		new ShowOnDirtyErrorStateMatcher();
-	constructor(
-		private routeState: BranchRoutedUIService,
-		private branchListingService: BranchListService,
-		private loadingService: HttpLoadingService
-	) {
+
+	/** Inserted by Angular inject() migration for backwards compatibility */
+	constructor(...args: unknown[]);
+	constructor() {
 		this.routeState.id.subscribe((val) => {
 			this.selectedBranchId = val;
 		});

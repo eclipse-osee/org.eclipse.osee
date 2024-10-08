@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { AsyncPipe } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -35,11 +35,11 @@ const _currNavItem: navigationElement =
 	templateUrl: './server-health-headers.component.html',
 })
 export class ServerHealthHeadersComponent {
+	private serverHealthHttpService = inject(ServerHealthHttpService);
+
 	get currNavItem() {
 		return _currNavItem;
 	}
-
-	constructor(private serverHealthHttpService: ServerHealthHttpService) {}
 
 	headers = this.serverHealthHttpService.HttpHeaders.pipe(
 		shareReplay({ bufferSize: 1, refCount: true }),

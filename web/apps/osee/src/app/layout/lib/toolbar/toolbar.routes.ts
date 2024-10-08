@@ -15,6 +15,13 @@ export const routes: Routes = [
 	{
 		path: '',
 		loadComponent: () => import('./osee-toolbar/osee-toolbar.component'),
+		children: [
+			{
+				path: '',
+				loadComponent: () => import('@osee/toolbar/logo'),
+				outlet: 'toolbarLogo',
+			},
+		],
 	},
 	{
 		path: '**',

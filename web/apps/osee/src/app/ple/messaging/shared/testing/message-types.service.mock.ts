@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { MessageTypesService } from '@osee/messaging/shared/services';
+import { MessageTypesService } from '@osee/messaging/message-type/services';
 import { messageTypesMock } from '@osee/messaging/shared/testing';
 import { of } from 'rxjs';
 

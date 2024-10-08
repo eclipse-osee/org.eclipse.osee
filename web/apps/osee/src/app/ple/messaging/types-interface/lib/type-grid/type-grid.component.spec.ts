@@ -10,8 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HarnessLoader } from '@angular/cdk/testing';
-import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
@@ -19,8 +17,6 @@ import { MockPlatformTypeCardComponent } from '@osee/messaging/shared/testing';
 import { BehaviorSubject, of } from 'rxjs';
 import { PlMessagingTypesUIService } from '../services/pl-messaging-types-ui.service';
 import { TypeGridComponent } from './type-grid.component';
-
-let loader: HarnessLoader;
 
 describe('TypeGridComponent', () => {
 	let component: TypeGridComponent;
@@ -56,7 +52,6 @@ describe('TypeGridComponent', () => {
 		fixture = TestBed.createComponent(TypeGridComponent);
 		component = fixture.componentInstance;
 		fixture.componentRef.setInput('platformTypes', []);
-		loader = TestbedHarnessEnvironment.loader(fixture);
 		fixture.detectChanges();
 	});
 

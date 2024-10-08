@@ -10,56 +10,64 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, combineLatest, from, iif, of } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { applic, applicabilitySentinel } from '@osee/applicability/types';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 import {
-	concatMap,
-	filter,
-	map,
-	reduce,
-	repeatWhen,
-	share,
-	shareReplay,
-	switchMap,
-	take,
-	tap,
-} from 'rxjs/operators';
-import { GraphService } from './graph.service';
-import { RouteStateService } from './route-state-service.service';
-import { applic } from '@osee/shared/types/applicability';
-import {
-	ARTIFACTTYPEIDENUM,
-	ATTRIBUTETYPEIDENUM,
-} from '@osee/shared/types/constants';
-import {
-	changeInstance,
-	changeTypeEnum,
-} from '@osee/shared/types/change-report';
-import { SideNavService } from '@osee/shared/services/layout';
-import { RELATIONTYPEIDENUM } from '@osee/shared/types/constants';
-import {
-	ConnectionService,
-	NodeService,
 	PreferencesUIService,
 	SharedConnectionUIService,
 } from '@osee/messaging/shared/services';
 import type {
 	connection,
-	connectionWithChanges,
-	node,
 	nodeData,
-	nodeDataWithChanges,
 	OseeEdge,
 	OseeNode,
 	transportType,
 } from '@osee/messaging/shared/types';
-import { relation, transactionToken } from '@osee/shared/types';
+import { SideNavService } from '@osee/shared/services/layout';
+import {
+	changeInstance,
+	changeTypeEnum,
+} from '@osee/shared/types/change-report';
+import {
+	ARTIFACTTYPEIDENUM,
+	RELATIONTYPEIDENUM,
+} from '@osee/shared/types/constants';
+import {
+	addRelations,
+	createArtifact,
+	deleteRelations,
+	modifyArtifact,
+} from '@osee/transactions/functions';
+import { CurrentTransactionService } from '@osee/transactions/services';
+import {
+	legacyRelation,
+	transaction,
+	transactionToken,
+} from '@osee/transactions/types';
 import { ClusterNode } from '@swimlane/ngx-graph';
+import { BehaviorSubject, combineLatest, iif, of } from 'rxjs';
+import {
+	filter,
+	map,
+	repeatWhen,
+	share,
+	shareReplay,
+	switchMap,
+} from 'rxjs/operators';
+import { GraphService } from './graph.service';
+import { RouteStateService } from './route-state-service.service';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class CurrentGraphService {
+	private graphService = inject(GraphService);
+	private routeStateService = inject(RouteStateService);
+	private sideNavService = inject(SideNavService);
+	private preferenceService = inject(PreferencesUIService);
+	private connectionUiService = inject(SharedConnectionUIService);
+
 	private _graph = combineLatest([
 		this.routeStateService.id,
 		this.connectionUiService.viewId,
@@ -98,18 +106,6 @@ export class CurrentGraphService {
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
-	private _nodeOptions = this.routeStateService.id.pipe(
-		share(),
-		filter((val) => val !== '' && val !== '-1'),
-		switchMap((val) =>
-			this.nodeService.getNodes(val).pipe(
-				repeatWhen((_) => this.updated),
-				share(),
-				shareReplay(1)
-			)
-		),
-		shareReplay(1)
-	);
 	private _branchPrefs = this.preferenceService.BranchPrefs;
 	private _preferences = this.preferenceService.preferences;
 
@@ -117,15 +113,8 @@ export class CurrentGraphService {
 	private _differences = new BehaviorSubject<changeInstance[] | undefined>(
 		undefined
 	);
-	constructor(
-		private graphService: GraphService,
-		private nodeService: NodeService,
-		private connectionService: ConnectionService,
-		private routeStateService: RouteStateService,
-		private sideNavService: SideNavService,
-		private preferenceService: PreferencesUIService,
-		private connectionUiService: SharedConnectionUIService
-	) {}
+
+	private _currentTx = inject(CurrentTransactionService);
 
 	get branchType() {
 		return this.connectionUiService.branchType;
@@ -151,10 +140,6 @@ export class CurrentGraphService {
 
 	set update(value: boolean) {
 		this.routeStateService.update = value;
-	}
-
-	get nodeOptions() {
-		return this._nodeOptions;
 	}
 
 	get preferences() {
@@ -184,265 +169,316 @@ export class CurrentGraphService {
 		return this.routeStateService.isInDiff;
 	}
 
-	getPaginatedNodes(pageNum: string | number, pageSize: number) {
-		return this.routeStateService.id.pipe(
-			take(1),
-			switchMap((id) =>
-				this.nodeService.getPaginatedNodes(id, pageNum, pageSize)
-			)
+	private _getConnectionAttributes(connection: connection) {
+		const {
+			id,
+			gammaId,
+			dashed,
+			added,
+			changes,
+			deleted,
+			applicability,
+			transportType,
+			nodes,
+			...remainingAttributes
+		} = connection;
+		const attributeKeys = Object.keys(
+			remainingAttributes
+		) as (keyof typeof remainingAttributes)[];
+		const attributes = attributeKeys
+			.map((k) => remainingAttributes[k])
+			.filter((attr) => attr !== undefined && attr.id !== '');
+		return attributes;
+	}
+
+	updateConnection(connection: connection, previousConnection: connection) {
+		const {
+			id,
+			gammaId,
+			dashed,
+			added,
+			changes,
+			deleted,
+			applicability,
+			transportType,
+			nodes,
+			...remainingAttributes
+		} = connection;
+		const attributeKeys = Object.keys(
+			remainingAttributes
+		) as (keyof typeof remainingAttributes)[];
+		const attributes = attributeKeys
+			.map((k) => remainingAttributes[k])
+			.filter((attr) => attr !== undefined && attr.id !== '');
+		const previousAttributes =
+			this._getConnectionAttributes(previousConnection);
+		const addAttributes = attributes.filter((v) => v.id === '-1');
+		const modifyAttributes = attributes
+			.filter((v) => v.id !== '-1')
+			.filter(
+				(v) =>
+					previousAttributes.filter(
+						(x) =>
+							x.id === v.id &&
+							x.typeId === v.typeId &&
+							x.gammaId === v.gammaId &&
+							x.value !== v.value
+					).length > 0
+			);
+		const deleteAttributes = previousAttributes.filter(
+			(v) => !attributes.map((x) => x.id).includes(v.id)
+		);
+		const relationstoAdd =
+			previousConnection.transportType.id !== transportType.id
+				? [
+						{
+							typeId: RELATIONTYPEIDENUM.INTERFACECONNECTIONTRANSPORTTYPE,
+							aArtId: previousConnection.id,
+							bArtId: transportType.id,
+						},
+					]
+				: [];
+		const relationsToRemove =
+			previousConnection.transportType.id !== transportType.id
+				? [
+						{
+							typeId: RELATIONTYPEIDENUM.INTERFACECONNECTIONTRANSPORTTYPE,
+							aArtId: previousConnection.id,
+							bArtId: previousConnection.transportType.id,
+						},
+					]
+				: [];
+		let tx = this._currentTx.createTransaction(
+			`Updating ${previousConnection.name.value}`
+		);
+		tx = modifyArtifact(tx, id, applicability, {
+			set: modifyAttributes,
+			add: addAttributes,
+			delete: deleteAttributes,
+		});
+		tx = addRelations(tx, relationstoAdd);
+		tx = deleteRelations(tx, relationsToRemove);
+		return of(tx).pipe(this._currentTx.performMutation());
+	}
+
+	unrelateConnection(nodeIds: `${number}`[], connectionId: `${number}`) {
+		const nodeRelations = nodeIds.map((id) => {
+			return {
+				typeId: RELATIONTYPEIDENUM.INTERFACECONNECTIONNODE,
+				aArtId: connectionId,
+				bArtId: id,
+			};
+		});
+		return this._currentTx.deleteRelationsAndMutate(
+			`Removing connection ${connectionId} from ${nodeIds.join(',')}`,
+			nodeRelations
 		);
 	}
 
-	getPaginatedNodesByName(
-		name: string,
-		pageNum: string | number,
-		pageSize: number
-	) {
-		return this.routeStateService.id.pipe(
-			take(1),
-			switchMap((id) =>
-				this.nodeService.getPaginatedNodesByName(
-					id,
-					name,
-					pageNum,
-					pageSize
-				)
-			)
+	private _getNodeAttributes(node: nodeData) {
+		const {
+			id,
+			gammaId,
+			added,
+			changes,
+			deleted,
+			applicability,
+			...remainingAttributes
+		} = node;
+		const attributeKeys = Object.keys(
+			remainingAttributes
+		) as (keyof typeof remainingAttributes)[];
+		const attributes = attributeKeys
+			.map((k) => remainingAttributes[k])
+			.filter((attr) => attr !== undefined && attr.id !== '');
+		return attributes;
+	}
+	updateNode(node: nodeData, previousNode: nodeData) {
+		const {
+			id,
+			gammaId,
+			added,
+			changes,
+			deleted,
+			applicability,
+			...remainingAttributes
+		} = node;
+		const attributeKeys = Object.keys(
+			remainingAttributes
+		) as (keyof typeof remainingAttributes)[];
+		const attributes = attributeKeys
+			.map((k) => remainingAttributes[k])
+			.filter((attr) => attr !== undefined && attr.id !== '');
+		const previousAttributes = this._getNodeAttributes(previousNode);
+		const addAttributes = attributes.filter((v) => v.id === '-1');
+		const modifyAttributes = attributes
+			.filter((v) => v.id !== '-1')
+			.filter(
+				(v) =>
+					previousAttributes.filter(
+						(x) =>
+							x.id === v.id &&
+							x.typeId === v.typeId &&
+							x.gammaId === v.gammaId &&
+							x.value !== v.value
+					).length > 0
+			);
+		const deleteAttributes = previousAttributes.filter(
+			(v) => !attributes.map((x) => x.id).includes(v.id)
+		);
+		return this._currentTx.modifyArtifactAndMutate(
+			`Modifying node ${previousNode.name.value}`,
+			previousNode.id,
+			applicability,
+			{
+				set: modifyAttributes,
+				add: addAttributes,
+				delete: deleteAttributes,
+			}
+		);
+	}
+	deleteNode(nodeId: `${number}`) {
+		return this._currentTx.deleteArtifactAndMutate(
+			`Deleting node ${nodeId}`,
+			nodeId
 		);
 	}
 
-	getNodesByNameCount(name: string) {
-		return this.routeStateService.id.pipe(
-			take(1),
-			switchMap((id) => this.nodeService.getNodesByNameCount(id, name))
-		);
-	}
-
-	updateConnection(
-		connection: Partial<connection>,
-		oldTransportTypeId: string
-	) {
-		const { transportType, ...edited } = connection;
-		return this.routeStateService.id.pipe(
-			take(1),
-			switchMap((branchId) =>
-				this.connectionService.changeConnection(branchId, edited)
-			),
-			switchMap((connectionTransaction) =>
-				transportType !== undefined
-					? this.connectionService
-							.createTransportTypeRelation(
-								oldTransportTypeId,
-								edited.id || ''
-							)
-							.pipe(
-								switchMap((createRel) =>
-									this.connectionService.deleteRelation(
-										connectionTransaction.branch,
-										createRel,
-										connectionTransaction
-									)
-								),
-								switchMap((tx) =>
-									this.connectionService.performMutation(tx)
-								),
-								filter((val) => val.results.txId !== '-1'),
-								switchMap((results) =>
-									this.connectionService.createTransportTypeRelation(
-										transportType?.id || '',
-										edited.id || ''
-									)
-								),
-								switchMap((createRel) =>
-									this.connectionService.addRelation(
-										connectionTransaction.branch,
-										createRel
-									)
-								)
-							)
-					: of(connectionTransaction)
-			),
-			switchMap((transaction) =>
-				this.connectionService.performMutation(transaction).pipe(
-					tap(() => {
-						this.update = true;
-					})
-				)
-			)
-		);
-	}
-
-	unrelateConnection(nodeId: string, id: string) {
-		return combineLatest([this.routeStateService.id, this.nodes]).pipe(
-			take(1),
-			switchMap(([branchId, nodesArray]) =>
-				from(nodesArray.edges).pipe(
-					//turn into multi-emission
-					filter(
-						(edge) =>
-							edge.source === nodeId || edge.target === nodeId
-					), //only emit source/target edges
-					switchMap((edge) =>
-						this.nodeService.getNode(branchId, nodeId).pipe(
-							//get node information
-							take(1),
-							switchMap((node) =>
-								this.connectionService
-									.createNodeRelation(node?.id || '', id)
-									.pipe(
-										//create primary relation if nodeId==source else nodeId==target create secondary relation
-										switchMap((relation) =>
-											this.connectionService
-												.deleteRelation(
-													branchId,
-													relation
-												)
-												.pipe(
-													//turn into transaction
-													switchMap((transaction) =>
-														this.connectionService
-															.performMutation(
-																transaction
-															)
-															.pipe(
-																tap(() => {
-																	this.update =
-																		true;
-																})
-															)
-													) //send to /orcs/tx
-												)
-										)
-									)
-							)
-						)
-					)
-				)
-			)
-		);
-	}
-
-	updateNode(node: Partial<node | nodeData>) {
-		return this.routeStateService.id.pipe(
-			take(1),
-			switchMap((branchId) =>
-				this.nodeService.changeNode(branchId, node).pipe(
-					take(1),
-					switchMap((transaction) =>
-						this.nodeService.performMutation(transaction).pipe(
-							tap(() => {
-								this.update = true;
-							})
-						)
-					)
-				)
-			)
-		);
-	}
-	deleteNode(nodeId: string) {
-		return this.routeStateService.id.pipe(
-			take(1),
-			switchMap((branchId) =>
-				this.nodeService.deleteArtifact(branchId, nodeId).pipe(
-					take(1),
-					switchMap((transaction) =>
-						this.nodeService.performMutation(transaction).pipe(
-							tap(() => {
-								this.update = true;
-							})
-						)
-					)
-				)
-			)
-		);
-	}
-
-	deleteNodeAndUnrelate(
-		nodeId: string,
-		edges: OseeEdge<connection | connectionWithChanges>[]
-	) {
+	deleteNodeAndUnrelate(nodeId: `${number}`) {
 		return this.deleteNode(nodeId);
 	}
 
-	createNewConnection(connection: connection, nodeIds: string[]) {
-		const { transportType, nodes, ...restOfConnection } = connection;
-		const transportTypeRelations =
-			this.connectionService.createTransportTypeRelation(
-				transportType.id || ''
-			);
-		const nodeRelations = from(nodeIds).pipe(
-			concatMap((id) =>
-				this.connectionService.createNodeRelation(id || '')
-			),
-			reduce((acc, curr) => [...acc, curr], [] as relation[])
+	createNewConnection(connection: connection) {
+		const {
+			id,
+			gammaId,
+			dashed,
+			added,
+			changes,
+			deleted,
+			applicability,
+			transportType,
+			nodes,
+			...remainingAttributes
+		} = connection;
+		const transportTypeRelation = {
+			typeId: RELATIONTYPEIDENUM.INTERFACECONNECTIONTRANSPORTTYPE,
+			sideB: transportType.id,
+		};
+		const nodeRelations = nodes
+			.filter((x) => x.id !== '-1' && x.id !== '0')
+			.map((x) => {
+				return {
+					typeId: RELATIONTYPEIDENUM.INTERFACECONNECTIONNODE,
+					sideB: x.id,
+				};
+			});
+		const hierarchicalRelation = {
+			typeId: RELATIONTYPEIDENUM.DEFAULT_HIERARCHICAL,
+			sideA: '8255184',
+		};
+		const attributeKeys = Object.keys(
+			remainingAttributes
+		) as (keyof typeof remainingAttributes)[];
+		const attributes = attributeKeys
+			.map((k) => remainingAttributes[k])
+			.filter((attr) => attr !== undefined && attr.id !== '');
+		let tx = this._currentTx.createTransaction(
+			`Creating connection ${connection.name.value}`
 		);
-		return combineLatest([
-			this.routeStateService.id,
-			transportTypeRelations,
-			nodeRelations,
-		]).pipe(
-			take(1),
-			switchMap(([id, transportRelation, nodesRel]) =>
-				this.connectionService.createConnection(id, restOfConnection, [
-					transportRelation,
-					...nodesRel,
-					{
-						typeId: RELATIONTYPEIDENUM.DEFAULT_HIERARCHICAL,
-						sideA: '8255184',
-					},
-				])
-			),
-			switchMap((tx) =>
-				this.connectionService.performMutation(tx).pipe(
-					tap(() => {
-						this.update = true;
-					})
-				)
-			)
+		const results = createArtifact(
+			tx,
+			ARTIFACTTYPEIDENUM.CONNECTION,
+			applicability,
+			[...nodeRelations, transportTypeRelation, hierarchicalRelation],
+			undefined,
+			...attributes
+		);
+		tx = results.tx;
+
+		//create nodes and then perform mutation
+		nodes
+			.filter((v) => v.id === '-1')
+			.forEach((v) => {
+				tx = this._createNodeWithRelation(
+					v,
+					results._newArtifact.key,
+					tx
+				);
+			});
+		return of(tx).pipe(this._currentTx.performMutation());
+	}
+
+	createNewNode(node: nodeData) {
+		const {
+			id,
+			gammaId,
+			applicability,
+			deleted,
+			added,
+			changes,
+			...remainingAttributes
+		} = node;
+		const attributeKeys = Object.keys(
+			remainingAttributes
+		) as (keyof typeof remainingAttributes)[];
+		const attributes = attributeKeys
+			.map((k) => remainingAttributes[k])
+			.filter((attr) => attr !== undefined && attr.id !== '');
+		return this._currentTx.createArtifactAndMutate(
+			`Creating node ${node.name.value}`,
+			ARTIFACTTYPEIDENUM.NODE,
+			applicability,
+			[],
+			...attributes
 		);
 	}
 
-	createNewNode(node: node | nodeData) {
-		return this.routeStateService.id.pipe(
-			take(1),
-			switchMap((branchId) =>
-				this.nodeService.createNode(branchId, node).pipe(
-					take(1),
-					switchMap((transaction) =>
-						this.nodeService.performMutation(transaction).pipe(
-							tap(() => {
-								this.update = true;
-							})
-						)
-					)
-				)
-			)
+	private _createNodeWithRelation(
+		node: nodeData,
+		connectionId: string,
+		tx: Required<transaction>
+	) {
+		const {
+			id,
+			gammaId,
+			applicability,
+			deleted,
+			added,
+			changes,
+			...remainingAttributes
+		} = node;
+		const attributeKeys = Object.keys(
+			remainingAttributes
+		) as (keyof typeof remainingAttributes)[];
+		const attributes = attributeKeys
+			.map((k) => remainingAttributes[k])
+			.filter((attr) => attr !== undefined && attr.id !== '');
+		const connectionRel = {
+			typeId: RELATIONTYPEIDENUM.INTERFACECONNECTIONNODE,
+			sideA: connectionId,
+		};
+		const results = createArtifact(
+			tx,
+			ARTIFACTTYPEIDENUM.NODE,
+			applicability,
+			[connectionRel],
+			undefined,
+			...attributes
 		);
+		return results.tx;
 	}
-
-	createNodeWithRelation(node: node | nodeData, connectionId: string) {
-		return combineLatest([
-			this.branchId,
-			this.createNodeConnectionRelation(connectionId),
-		]).pipe(
-			take(1),
-			switchMap(([branchId, relation]) =>
-				this.nodeService.createNode(branchId, node, [relation]).pipe(
-					take(1),
-					switchMap((tx) =>
-						this.nodeService.performMutation(tx).pipe(
-							tap(() => {
-								this.update = true;
-							})
-						)
-					)
-				)
-			)
+	createNodeWithRelation(node: nodeData, connectionId: string) {
+		let tx = this._currentTx.createTransaction(
+			`Creating node ${node.name.value} with relation to ${connectionId}`
 		);
+		tx = this._createNodeWithRelation(node, connectionId, tx);
+
+		return of(tx).pipe(this._currentTx.performMutation());
 	}
 
 	createNodeConnectionRelation(connectionId: string, nodeId?: string) {
-		let relation: relation = {
+		const relation: legacyRelation = {
 			typeName: 'Interface Connection Node',
 			sideA: connectionId,
 			sideB: nodeId,
@@ -451,25 +487,14 @@ export class CurrentGraphService {
 	}
 
 	relateNode(connectionId: string, nodeId: string) {
-		return this.branchId.pipe(
-			take(1),
-			switchMap((id) =>
-				this.createNodeConnectionRelation(connectionId, nodeId).pipe(
-					take(1),
-					switchMap((rel) =>
-						this.connectionService.addRelation(id, rel).pipe(
-							take(1),
-							switchMap((tx) =>
-								this.connectionService.performMutation(tx).pipe(
-									tap(() => {
-										this.update = true;
-									})
-								)
-							)
-						)
-					)
-				)
-			)
+		const relation = {
+			typeId: RELATIONTYPEIDENUM.INTERFACECONNECTIONNODE,
+			aArtId: connectionId,
+			bArtId: nodeId,
+		};
+		return this._currentTx.addRelationAndMutate(
+			`Adding connection-node relation between ${connectionId} and ${nodeId}`,
+			relation
 		);
 	}
 
@@ -483,7 +508,7 @@ export class CurrentGraphService {
 		edges: OseeEdge<connection>[];
 		clusters: ClusterNode[];
 	}) {
-		let returnObj: {
+		const returnObj: {
 			nodes: OseeNode<nodeData>[];
 			edges: OseeEdge<connection>[];
 			clusters: ClusterNode[];
@@ -501,15 +526,15 @@ export class CurrentGraphService {
 	private parseIntoNodesAndEdges(
 		changes: changeInstance[],
 		graph: {
-			nodes: OseeNode<nodeData | nodeDataWithChanges>[];
-			edges: OseeEdge<connection | connectionWithChanges>[];
+			nodes: OseeNode<nodeData>[];
+			edges: OseeEdge<connection>[];
 			clusters: ClusterNode[];
 		}
 	) {
-		let newNodes: changeInstance[] = [];
-		let newNodesId: string[] = [];
-		let newConnections: changeInstance[] = [];
-		let newConnectionsId: string[] = [];
+		const newNodes: changeInstance[] = [];
+		const newNodesId: string[] = [];
+		const newConnections: changeInstance[] = [];
+		const newConnectionsId: string[] = [];
 		changes.forEach((change) => {
 			//this loop is solely just for building a list of deleted nodes/connections
 			if (
@@ -530,10 +555,10 @@ export class CurrentGraphService {
 		});
 		changes.forEach((change) => {
 			if (graph.nodes.find((val) => val.data.id === change.artId)) {
-				let index = graph.nodes.indexOf(
+				const index = graph.nodes.indexOf(
 					graph.nodes.find(
 						(val) => val.data.id === change.artId
-					) as OseeNode<nodeData | nodeDataWithChanges>
+					) as OseeNode<nodeData>
 				);
 				graph.nodes[index] = this.nodeChange(
 					change,
@@ -542,10 +567,10 @@ export class CurrentGraphService {
 			} else if (
 				graph.edges.find((val) => val.data.id === change.artId)
 			) {
-				let index = graph.edges.indexOf(
+				const index = graph.edges.indexOf(
 					graph.edges.find(
 						(val) => val.data.id === change.artId
-					) as OseeEdge<connection | connectionWithChanges>
+					) as OseeEdge<connection>
 				);
 				graph.edges[index] = this.edgeChange(
 					change,
@@ -561,16 +586,16 @@ export class CurrentGraphService {
 		});
 		newNodes.sort((a, b) => Number(a.artId) - Number(b.artId));
 		newConnections.sort((a, b) => Number(a.artId) - Number(b.artId));
-		let nodes = this.splitByArtId(newNodes);
+		const nodes = this.splitByArtId(newNodes);
 		nodes.forEach((value) => {
 			if (value.length > 0) {
 				graph.nodes.push(this.fixNode(this.nodeDeletionChanges(value)));
 			}
 		});
-		let connections = this.splitByArtId(newConnections);
+		const connections = this.splitByArtId(newConnections);
 		connections.forEach((value) => {
 			if (value.length > 0) {
-				let edge = this.connectionDeletionChanges(value);
+				const edge = this.connectionDeletionChanges(value);
 				if (edge.id !== '') {
 					graph.edges.push(edge);
 				}
@@ -587,10 +612,10 @@ export class CurrentGraphService {
 	}
 
 	private splitByArtId(changes: changeInstance[]): changeInstance[][] {
-		let returnValue: changeInstance[][] = [];
+		const returnValue: changeInstance[][] = [];
 		let prev: Partial<changeInstance> | undefined = undefined;
 		let tempArray: changeInstance[] = [];
-		changes.forEach((value, index) => {
+		changes.forEach((value, _index) => {
 			if (prev !== undefined) {
 				if (prev.artId === value.artId) {
 					//condition where equal, add to array
@@ -616,20 +641,10 @@ export class CurrentGraphService {
 		return returnValue;
 	}
 
-	private isNodeDataWithChanges(
-		node: OseeNode<nodeData | nodeDataWithChanges>
-	): node is OseeNode<nodeDataWithChanges> {
-		return (
-			(node as OseeNode<nodeDataWithChanges>).data.changes !== undefined
-		);
-	}
-
-	private initializeNode(
-		node: OseeNode<nodeData | nodeDataWithChanges>
-	): OseeNode<nodeDataWithChanges> {
-		let tempNode: OseeNode<nodeDataWithChanges>;
-		if (!this.isNodeDataWithChanges(node)) {
-			tempNode = node as OseeNode<nodeDataWithChanges>;
+	private initializeNode(node: OseeNode<nodeData>): OseeNode<nodeData> {
+		let tempNode: OseeNode<nodeData>;
+		if (node.data.changes === undefined) {
+			tempNode = node as OseeNode<nodeData>;
 			tempNode.data.changes = {};
 			return tempNode;
 		} else {
@@ -639,40 +654,98 @@ export class CurrentGraphService {
 	}
 	private nodeChange(
 		change: changeInstance,
-		node: OseeNode<nodeData | nodeDataWithChanges>
-	): OseeNode<nodeDataWithChanges> {
+		node: OseeNode<nodeData>
+	): OseeNode<nodeData> {
 		return this.parseNodeChange(change, this.initializeNode(node));
 	}
 
-	private parseNodeChange(
-		change: changeInstance,
-		node: OseeNode<nodeDataWithChanges>
-	) {
+	private parseNodeChange(change: changeInstance, node: OseeNode<nodeData>) {
+		if (node.data.changes === undefined) {
+			node.data.changes = {};
+		}
 		if (change.changeType.name === changeTypeEnum.ATTRIBUTE_CHANGE) {
-			let changes = {
+			const changes = {
 				previousValue: change.baselineVersion.value,
 				currentValue: change.currentVersion.value,
 				transactionToken: change.currentVersion.transactionToken,
 			};
 			if (change.itemTypeId === ATTRIBUTETYPEIDENUM.NAME) {
-				node.data.changes.name = changes;
+				node.data.changes.name = {
+					previousValue: {
+						id: node.data.name.id,
+						typeId: node.data.name.typeId,
+						gammaId: change.baselineVersion.gammaId as `${number}`,
+						value: changes.previousValue as string,
+					},
+					currentValue: {
+						id: node.data.name.id,
+						typeId: node.data.name.typeId,
+						gammaId: change.currentVersion.gammaId as `${number}`,
+						value: changes.currentValue as string,
+					},
+					transactionToken: changes.transactionToken,
+				};
 			} else if (change.itemTypeId === ATTRIBUTETYPEIDENUM.DESCRIPTION) {
-				node.data.changes.description = changes;
+				node.data.changes.description = {
+					previousValue: {
+						id: node.data.description.id,
+						typeId: node.data.description.typeId,
+						gammaId: change.baselineVersion.gammaId as `${number}`,
+						value: changes.previousValue as string,
+					},
+					currentValue: {
+						id: node.data.description.id,
+						typeId: node.data.description.typeId,
+						gammaId: change.currentVersion.gammaId as `${number}`,
+						value: changes.currentValue as string,
+					},
+					transactionToken: changes.transactionToken,
+				};
 			} else if (
 				change.itemTypeId === ATTRIBUTETYPEIDENUM.INTERFACENODEADDRESS
 			) {
-				node.data.changes.interfaceNodeAddress = changes;
+				node.data.changes.interfaceNodeAddress = {
+					previousValue: {
+						id: node.data.interfaceNodeAddress.id,
+						typeId: node.data.interfaceNodeAddress.typeId,
+						gammaId: change.baselineVersion.gammaId as `${number}`,
+						value: changes.previousValue as string,
+					},
+					currentValue: {
+						id: node.data.interfaceNodeAddress.id,
+						typeId: node.data.interfaceNodeAddress.typeId,
+						gammaId: change.currentVersion.gammaId as `${number}`,
+						value: changes.currentValue as string,
+					},
+					transactionToken: changes.transactionToken,
+				};
 			} else if (
 				change.itemTypeId ===
 				ATTRIBUTETYPEIDENUM.INTERFACENODEBACKGROUNDCOLOR
 			) {
-				node.data.changes.interfaceNodeBackgroundColor = changes;
+				node.data.changes.interfaceNodeBackgroundColor = {
+					previousValue: {
+						id: node.data.interfaceNodeBackgroundColor.id,
+						typeId: node.data.interfaceNodeBackgroundColor.typeId,
+						gammaId: change.baselineVersion.gammaId as `${number}`,
+						value: changes.previousValue as string,
+					},
+					currentValue: {
+						id: node.data.interfaceNodeBackgroundColor.id,
+						typeId: node.data.interfaceNodeBackgroundColor.typeId,
+						gammaId: change.currentVersion.gammaId as `${number}`,
+						value: changes.currentValue as string,
+					},
+					transactionToken: changes.transactionToken,
+				};
 			}
 		} else if (change.changeType.name === changeTypeEnum.ARTIFACT_CHANGE) {
 			if (change.currentVersion.transactionToken.id !== '-1') {
 				node.data.changes.applicability = {
-					previousValue: change.baselineVersion.applicabilityToken,
-					currentValue: change.currentVersion.applicabilityToken,
+					previousValue: change.baselineVersion
+						.applicabilityToken as applic,
+					currentValue: change.currentVersion
+						.applicabilityToken as applic,
 					transactionToken: change.currentVersion.transactionToken,
 				};
 			}
@@ -682,12 +755,10 @@ export class CurrentGraphService {
 		return node;
 	}
 
-	private initializeEdge(
-		edge: OseeEdge<connection | connectionWithChanges>
-	): OseeEdge<connectionWithChanges> {
-		let tempEdge: OseeEdge<connectionWithChanges>;
+	private initializeEdge(edge: OseeEdge<connection>): OseeEdge<connection> {
+		let tempEdge: OseeEdge<connection>;
 		if (!this.isEdgeDataWithChanges(edge)) {
-			tempEdge = edge as OseeEdge<connectionWithChanges>;
+			tempEdge = edge as OseeEdge<connection>;
 			tempEdge.data.changes = {};
 			return tempEdge;
 		} else {
@@ -696,36 +767,62 @@ export class CurrentGraphService {
 		}
 	}
 	private isEdgeDataWithChanges(
-		edge: OseeEdge<connection | connectionWithChanges>
-	): edge is OseeEdge<connectionWithChanges> {
-		return (
-			(edge as OseeEdge<connectionWithChanges>).data.changes !== undefined
-		);
+		edge: OseeEdge<connection | connection>
+	): edge is OseeEdge<connection> {
+		return (edge as OseeEdge<connection>).data.changes !== undefined;
 	}
-	private edgeChange(
-		change: changeInstance,
-		edge: OseeEdge<connection | connectionWithChanges>
-	) {
+	private edgeChange(change: changeInstance, edge: OseeEdge<connection>) {
 		return this.parseEdgeChange(change, this.initializeEdge(edge));
 	}
 	private parseEdgeChange(
 		change: changeInstance,
-		edge: OseeEdge<connectionWithChanges>
+		edge: OseeEdge<connection>
 	) {
+		if (edge.data.changes === undefined) {
+			edge.data.changes = {};
+		}
 		if (change.changeType.name === changeTypeEnum.ATTRIBUTE_CHANGE) {
-			let changes = {
+			const changes = {
 				previousValue: change.baselineVersion.value,
 				currentValue: change.currentVersion.value,
 				transactionToken: change.currentVersion.transactionToken,
 			};
 			if (change.itemTypeId === ATTRIBUTETYPEIDENUM.NAME) {
-				edge.data.changes.name = changes;
+				edge.data.changes.name = {
+					previousValue: {
+						id: edge.data.name.id,
+						typeId: edge.data.name.typeId,
+						gammaId: change.baselineVersion.gammaId as `${number}`,
+						value: changes.previousValue as string,
+					},
+					currentValue: {
+						id: edge.data.name.id,
+						typeId: edge.data.name.typeId,
+						gammaId: change.currentVersion.gammaId as `${number}`,
+						value: changes.currentValue as string,
+					},
+					transactionToken: changes.transactionToken,
+				};
 			} else if (change.itemTypeId === ATTRIBUTETYPEIDENUM.DESCRIPTION) {
-				edge.data.changes.description = changes;
+				edge.data.changes.description = {
+					previousValue: {
+						id: edge.data.description.id,
+						typeId: edge.data.description.typeId,
+						gammaId: change.baselineVersion.gammaId as `${number}`,
+						value: changes.previousValue as string,
+					},
+					currentValue: {
+						id: edge.data.description.id,
+						typeId: edge.data.description.typeId,
+						gammaId: change.currentVersion.gammaId as `${number}`,
+						value: changes.currentValue as string,
+					},
+					transactionToken: changes.transactionToken,
+				};
 			} else if (
 				change.itemTypeId === ATTRIBUTETYPEIDENUM.INTERFACETRANSPORTTYPE
 			) {
-				edge.data.changes.transportType = changes;
+				// edge.data.changes.transportType = changes as difference<string>; //TODO fix this edge case doesn't exist anymore, types also need to be fixed here so change.itemTypeId infers the correct difference<T> type
 			}
 		} else if (change.changeType.name === changeTypeEnum.ARTIFACT_CHANGE) {
 			if (
@@ -736,9 +833,12 @@ export class CurrentGraphService {
 				edge.data.added = true;
 			}
 			if (change.currentVersion.transactionToken.id !== '-1') {
+				//TODO fix the api to return a sentinel applicability for diffs?
 				edge.data.changes.applicability = {
-					previousValue: change.baselineVersion.applicabilityToken,
-					currentValue: change.currentVersion.applicabilityToken,
+					previousValue: change.baselineVersion
+						.applicabilityToken as applic,
+					currentValue: change.currentVersion
+						.applicabilityToken as applic,
 					transactionToken: change.currentVersion.transactionToken,
 				};
 			}
@@ -747,26 +847,92 @@ export class CurrentGraphService {
 		}
 		return edge;
 	}
-	private nodeDeletionChanges(
-		changes: changeInstance[]
-	): OseeNode<nodeDataWithChanges> {
-		let tempNode: OseeNode<nodeDataWithChanges> = {
+	private nodeDeletionChanges(changes: changeInstance[]): OseeNode<nodeData> {
+		let tempNode: OseeNode<nodeData> = {
 			data: {
 				deleted: true,
-				id: '-1',
-				name: '',
-				interfaceNodeNumber: '',
-				interfaceNodeGroupId: '',
 				changes: {},
-				interfaceNodeAddress: '',
-				interfaceNodeBackgroundColor: '',
-				interfaceNodeBuildCodeGen: false,
-				interfaceNodeCodeGen: false,
-				interfaceNodeCodeGenName: '',
-				nameAbbrev: '',
-				interfaceNodeToolUse: false,
-				interfaceNodeType: '',
-				notes: '',
+				id: '-1',
+				gammaId: '-1',
+				name: {
+					id: '-1',
+					typeId: '1152921504606847088',
+					gammaId: '-1',
+					value: '',
+				},
+				description: {
+					id: '-1',
+					typeId: '1152921504606847090',
+					gammaId: '-1',
+					value: '',
+				},
+				applicability: applicabilitySentinel,
+				interfaceNodeNumber: {
+					id: '-1',
+					typeId: '5726596359647826657',
+					gammaId: '-1',
+					value: '',
+				},
+				interfaceNodeGroupId: {
+					id: '-1',
+					typeId: '5726596359647826658',
+					gammaId: '-1',
+					value: '',
+				},
+				interfaceNodeBackgroundColor: {
+					id: '-1',
+					typeId: '5221290120300474048',
+					gammaId: '-1',
+					value: '',
+				},
+				interfaceNodeAddress: {
+					id: '-1',
+					typeId: '5726596359647826656',
+					gammaId: '-1',
+					value: '',
+				},
+				interfaceNodeBuildCodeGen: {
+					id: '-1',
+					typeId: '5806420174793066197',
+					gammaId: '-1',
+					value: false,
+				},
+				interfaceNodeCodeGen: {
+					id: '-1',
+					typeId: '4980834335211418740',
+					gammaId: '-1',
+					value: false,
+				},
+				interfaceNodeCodeGenName: {
+					id: '-1',
+					typeId: '5390401355909179776',
+					gammaId: '-1',
+					value: '',
+				},
+				nameAbbrev: {
+					id: '-1',
+					typeId: '8355308043647703563',
+					gammaId: '-1',
+					value: '',
+				},
+				interfaceNodeToolUse: {
+					id: '-1',
+					typeId: '5863226088234748106',
+					gammaId: '-1',
+					value: false,
+				},
+				interfaceNodeType: {
+					id: '-1',
+					typeId: '6981431177168910500',
+					gammaId: '-1',
+					value: '',
+				},
+				notes: {
+					id: '-1',
+					typeId: '1152921504606847085',
+					gammaId: '-1',
+					value: '',
+				},
 			},
 			id: '-1',
 		};
@@ -778,41 +944,108 @@ export class CurrentGraphService {
 
 	private parseNodeDeletionChange(
 		change: changeInstance,
-		node: OseeNode<nodeDataWithChanges>
+		node: OseeNode<nodeData>
 	) {
+		if (node.data.changes === undefined) {
+			node.data.changes = {};
+		}
 		if (change.changeType.name === changeTypeEnum.ATTRIBUTE_CHANGE) {
-			let changes = {
+			const changes = {
 				previousValue: change.baselineVersion.value,
 				currentValue: change.destinationVersion.value,
 				transactionToken: change.currentVersion.transactionToken,
 			};
 			if (change.itemTypeId === ATTRIBUTETYPEIDENUM.NAME) {
-				node.data.changes.name = changes;
+				node.data.changes.name = {
+					previousValue: {
+						id: node.data.name.id,
+						typeId: node.data.name.typeId,
+						gammaId: change.baselineVersion.gammaId as `${number}`,
+						value: changes.previousValue as string,
+					},
+					currentValue: {
+						id: node.data.name.id,
+						typeId: node.data.name.typeId,
+						gammaId: change.destinationVersion
+							.gammaId as `${number}`,
+						value: changes.currentValue as string,
+					},
+					transactionToken: changes.transactionToken,
+				};
+				node.data.name.value = change.currentVersion.value as string;
 				node.label = change.currentVersion.value as string;
 			} else if (change.itemTypeId === ATTRIBUTETYPEIDENUM.DESCRIPTION) {
-				node.data.description = change.currentVersion.value as string;
-				node.data.changes.description = changes;
+				node.data.changes.description = {
+					previousValue: {
+						id: node.data.description.id,
+						typeId: node.data.description.typeId,
+						gammaId: change.baselineVersion.gammaId as `${number}`,
+						value: changes.previousValue as string,
+					},
+					currentValue: {
+						id: node.data.description.id,
+						typeId: node.data.description.typeId,
+						gammaId: change.destinationVersion
+							.gammaId as `${number}`,
+						value: changes.currentValue as string,
+					},
+					transactionToken: changes.transactionToken,
+				};
+				node.data.description.value = change.currentVersion
+					.value as string;
 			} else if (
 				change.itemTypeId === ATTRIBUTETYPEIDENUM.INTERFACENODEADDRESS
 			) {
-				node.data.interfaceNodeAddress = change.currentVersion
+				node.data.interfaceNodeAddress.value = change.currentVersion
 					.value as string;
-				node.data.changes.interfaceNodeAddress = changes;
+				node.data.changes.interfaceNodeAddress = {
+					previousValue: {
+						id: node.data.interfaceNodeAddress.id,
+						typeId: node.data.interfaceNodeAddress.typeId,
+						gammaId: change.baselineVersion.gammaId as `${number}`,
+						value: changes.previousValue as string,
+					},
+					currentValue: {
+						id: node.data.interfaceNodeAddress.id,
+						typeId: node.data.interfaceNodeAddress.typeId,
+						gammaId: change.destinationVersion
+							.gammaId as `${number}`,
+						value: changes.currentValue as string,
+					},
+					transactionToken: changes.transactionToken,
+				};
 			} else if (
 				change.itemTypeId ===
 				ATTRIBUTETYPEIDENUM.INTERFACENODEBACKGROUNDCOLOR
 			) {
-				node.data.interfaceNodeBackgroundColor = change.currentVersion
-					.value as string;
-				node.data.changes.interfaceNodeBackgroundColor = changes;
+				node.data.interfaceNodeBackgroundColor.value = change
+					.currentVersion.value as string;
+				node.data.changes.interfaceNodeBackgroundColor = {
+					previousValue: {
+						id: node.data.interfaceNodeBackgroundColor.id,
+						typeId: node.data.interfaceNodeBackgroundColor.typeId,
+						gammaId: change.baselineVersion.gammaId as `${number}`,
+						value: changes.previousValue as string,
+					},
+					currentValue: {
+						id: node.data.interfaceNodeBackgroundColor.id,
+						typeId: node.data.interfaceNodeBackgroundColor.typeId,
+						gammaId: change.destinationVersion
+							.gammaId as `${number}`,
+						value: changes.currentValue as string,
+					},
+					transactionToken: changes.transactionToken,
+				};
 			}
 		} else if (change.changeType.name === changeTypeEnum.ARTIFACT_CHANGE) {
 			node.data.applicability = change.currentVersion
 				.applicabilityToken as applic;
 			if (change.currentVersion.transactionToken.id !== '-1') {
 				node.data.changes.applicability = {
-					previousValue: change.baselineVersion.applicabilityToken,
-					currentValue: change.currentVersion.applicabilityToken,
+					previousValue: change.baselineVersion
+						.applicabilityToken as applic,
+					currentValue: change.currentVersion
+						.applicabilityToken as applic,
 					transactionToken: change.currentVersion.transactionToken,
 				};
 			}
@@ -823,25 +1056,93 @@ export class CurrentGraphService {
 	}
 	private nodeDeletionChange(
 		change: changeInstance,
-		node: OseeNode<nodeDataWithChanges>
-	): OseeNode<nodeDataWithChanges> {
+		node: OseeNode<nodeData>
+	): OseeNode<nodeData> {
 		node.id = change.artId;
 		if (node.data === undefined) {
 			node.data = {
 				id: '-1',
-				name: '',
-				interfaceNodeNumber: '',
-				interfaceNodeGroupId: '',
+				gammaId: '-1',
 				deleted: true,
-				interfaceNodeAddress: '',
-				interfaceNodeBackgroundColor: '',
-				interfaceNodeBuildCodeGen: false,
-				interfaceNodeCodeGen: false,
-				interfaceNodeCodeGenName: '',
-				nameAbbrev: '',
-				interfaceNodeToolUse: false,
-				interfaceNodeType: '',
-				notes: '',
+				name: {
+					id: '-1',
+					typeId: '1152921504606847088',
+					gammaId: '-1',
+					value: '',
+				},
+				description: {
+					id: '-1',
+					typeId: '1152921504606847090',
+					gammaId: '-1',
+					value: '',
+				},
+				applicability: applicabilitySentinel,
+				interfaceNodeNumber: {
+					id: '-1',
+					typeId: '5726596359647826657',
+					gammaId: '-1',
+					value: '',
+				},
+				interfaceNodeGroupId: {
+					id: '-1',
+					typeId: '5726596359647826658',
+					gammaId: '-1',
+					value: '',
+				},
+				interfaceNodeBackgroundColor: {
+					id: '-1',
+					typeId: '5221290120300474048',
+					gammaId: '-1',
+					value: '',
+				},
+				interfaceNodeAddress: {
+					id: '-1',
+					typeId: '5726596359647826656',
+					gammaId: '-1',
+					value: '',
+				},
+				interfaceNodeBuildCodeGen: {
+					id: '-1',
+					typeId: '5806420174793066197',
+					gammaId: '-1',
+					value: false,
+				},
+				interfaceNodeCodeGen: {
+					id: '-1',
+					typeId: '4980834335211418740',
+					gammaId: '-1',
+					value: false,
+				},
+				interfaceNodeCodeGenName: {
+					id: '-1',
+					typeId: '5390401355909179776',
+					gammaId: '-1',
+					value: '',
+				},
+				nameAbbrev: {
+					id: '-1',
+					typeId: '8355308043647703563',
+					gammaId: '-1',
+					value: '',
+				},
+				interfaceNodeToolUse: {
+					id: '-1',
+					typeId: '5863226088234748106',
+					gammaId: '-1',
+					value: false,
+				},
+				interfaceNodeType: {
+					id: '-1',
+					typeId: '6981431177168910500',
+					gammaId: '-1',
+					value: '',
+				},
+				notes: {
+					id: '-1',
+					typeId: '1152921504606847085',
+					gammaId: '-1',
+					value: '',
+				},
 				changes: {},
 			};
 		}
@@ -853,18 +1154,31 @@ export class CurrentGraphService {
 
 	private connectionDeletionChanges(
 		changes: changeInstance[]
-	): OseeEdge<connectionWithChanges> {
-		let tempEdge: OseeEdge<connectionWithChanges> = {
+	): OseeEdge<connection> {
+		let tempEdge: OseeEdge<connection> = {
 			id: '',
 			source: '',
 			target: '',
 			data: {
+				id: '-1',
+				gammaId: '-1',
 				added: false,
 				deleted: true,
 				dashed: false,
+				applicability: applicabilitySentinel,
 				changes: {},
-				name: '',
-				description: '',
+				name: {
+					id: '-1',
+					typeId: '1152921504606847088',
+					gammaId: '-1',
+					value: '',
+				},
+				description: {
+					id: '-1',
+					typeId: '1152921504606847090',
+					gammaId: '-1',
+					value: '',
+				},
 				transportType: {} as transportType,
 				nodes: [],
 			},
@@ -876,17 +1190,30 @@ export class CurrentGraphService {
 	}
 	private connectionDeletionChange(
 		change: changeInstance,
-		edge: OseeEdge<connectionWithChanges>
-	): OseeEdge<connectionWithChanges> {
+		edge: OseeEdge<connection>
+	): OseeEdge<connection> {
 		edge.id = 'a' + change.artId;
 		if (edge.data === undefined) {
 			edge.data = {
+				id: '-1',
+				gammaId: '-1',
 				added: false,
 				deleted: true,
 				dashed: false,
+				applicability: applicabilitySentinel,
 				changes: {},
-				name: '',
-				description: '',
+				name: {
+					id: '-1',
+					typeId: '1152921504606847088',
+					gammaId: '-1',
+					value: '',
+				},
+				description: {
+					id: '-1',
+					typeId: '1152921504606847090',
+					gammaId: '-1',
+					value: '',
+				},
 				transportType: {} as transportType,
 				nodes: [],
 			};
@@ -895,18 +1222,43 @@ export class CurrentGraphService {
 			edge.data.changes = {};
 		}
 		if (change.changeType.name === changeTypeEnum.ATTRIBUTE_CHANGE) {
-			let changes = {
+			const changes = {
 				previousValue: change.baselineVersion.value,
 				currentValue: change.currentVersion.value,
 				transactionToken: change.currentVersion.transactionToken,
 			};
 			if (change.itemTypeId === ATTRIBUTETYPEIDENUM.NAME) {
-				edge.data.changes.name = changes;
-				edge.data.name = change.currentVersion.value as string;
-				edge.label = change.currentVersion.value as string;
+				edge.data.changes.name = {
+					previousValue: {
+						id: edge.data.name.id,
+						typeId: edge.data.name.typeId,
+						gammaId: change.baselineVersion.gammaId as `${number}`,
+						value: changes.previousValue as string,
+					},
+					currentValue: {
+						id: edge.data.name.id,
+						typeId: edge.data.name.typeId,
+						gammaId: change.currentVersion.gammaId as `${number}`,
+						value: changes.currentValue as string,
+					},
+					transactionToken: changes.transactionToken,
+				};
 			} else if (change.itemTypeId === ATTRIBUTETYPEIDENUM.DESCRIPTION) {
-				edge.data.changes.description = changes;
-				edge.data.description = change.currentVersion.value as string;
+				edge.data.changes.description = {
+					previousValue: {
+						id: edge.data.description.id,
+						typeId: edge.data.description.typeId,
+						gammaId: change.baselineVersion.gammaId as `${number}`,
+						value: changes.previousValue as string,
+					},
+					currentValue: {
+						id: edge.data.description.id,
+						typeId: edge.data.description.typeId,
+						gammaId: change.currentVersion.gammaId as `${number}`,
+						value: changes.currentValue as string,
+					},
+					transactionToken: changes.transactionToken,
+				};
 			} else if (
 				change.itemTypeId === ATTRIBUTETYPEIDENUM.INTERFACETRANSPORTTYPE
 			) {
@@ -916,11 +1268,14 @@ export class CurrentGraphService {
 			}
 		} else if (change.changeType.name === changeTypeEnum.ARTIFACT_CHANGE) {
 			if (change.currentVersion.transactionToken.id !== '-1') {
+				//TODO fix this to allow null? weird that the api could return null here...potentially fix the differences api to instead return a -1 sentinel
 				edge.data.applicability = change.currentVersion
-					.applicabilityToken as applic | undefined;
+					.applicabilityToken as applic;
 				edge.data.changes.applicability = {
-					previousValue: change.baselineVersion.applicabilityToken,
-					currentValue: change.currentVersion.applicabilityToken,
+					previousValue: change.baselineVersion
+						.applicabilityToken as applic,
+					currentValue: change.currentVersion
+						.applicabilityToken as applic,
 					transactionToken: change.currentVersion.transactionToken,
 				};
 			}
@@ -929,9 +1284,14 @@ export class CurrentGraphService {
 		}
 		return edge;
 	}
-	private fixNode(node: OseeNode<nodeData | nodeDataWithChanges>) {
+	private fixNode(node: OseeNode<nodeData>) {
 		if (node.data.interfaceNodeBackgroundColor === undefined) {
-			node.data.interfaceNodeBackgroundColor = '';
+			node.data.interfaceNodeBackgroundColor = {
+				id: '-1',
+				typeId: '5221290120300474048',
+				gammaId: '-1',
+				value: '',
+			};
 		}
 		if (node.label === undefined) {
 			node.label = '';

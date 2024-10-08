@@ -26,9 +26,9 @@
 				(ngModelChange)="updateSets($event)"
 				multiple
 				[compareWith]="compareSets">
-				@for (option of _sets; track option) {
+				@for (option of _sets; track option.id) {
 					<mat-option [value]="option">
-						{{ option.name }}
+						{{ option.name.value }}
 					</mat-option>
 				}
 			</mat-select>

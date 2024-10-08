@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
 	BehaviorSubject,
 	combineLatest,
@@ -19,7 +19,6 @@ import {
 	Observable,
 	of,
 	switchMap,
-	tap,
 } from 'rxjs';
 import { executedCommand } from '../../../../types/grid-commander-types/executedCommand';
 import {
@@ -37,6 +36,11 @@ import { SelectedCommandDataService } from '../selected-command-data.service';
 	providedIn: 'root',
 })
 export class CommandFromUserHistoryService {
+	private dataTableService = inject(DataTableService);
+	private selectedCommandDataService = inject(SelectedCommandDataService);
+	private parameterDataService = inject(ParameterDataService);
+	private userHistoryService = inject(UserHistoryService);
+
 	parameter$ = this.parameterDataService.parameter$;
 	userHistory$ = this.userHistoryService.userHistory$;
 	selectedCommand$ = this.selectedCommandDataService.selectedCommandObject;
@@ -128,13 +132,6 @@ export class CommandFromUserHistoryService {
 		)
 	);
 
-	constructor(
-		private dataTableService: DataTableService,
-		private selectedCommandDataService: SelectedCommandDataService,
-		private parameterDataService: ParameterDataService,
-		private userHistoryService: UserHistoryService
-	) {}
-
 	matchesArtifactFromUserHistory(
 		usersHistory: userHistory,
 		executedCommandObject: Partial<executedCommand>
@@ -202,7 +199,7 @@ export class CommandFromUserHistoryService {
 		usersHistory: userHistory,
 		executedCommandObject: Partial<executedCommand>
 	) {
-		let commandFromHistory = this.filterUserHistory(
+		const commandFromHistory = this.filterUserHistory(
 			usersHistory,
 			executedCommandObject
 		).flat();
@@ -239,8 +236,8 @@ export class CommandFromUserHistoryService {
 	createNewExecutedCommandObj(
 		command: Command,
 		parameterizedCmdObj: string,
-		favorite: boolean = false,
-		validated: boolean = true
+		favorite = false,
+		validated = true
 	) {
 		return of({
 			name: command.name,
@@ -275,12 +272,11 @@ export class CommandFromUserHistoryService {
 	public get fromHistory() {
 		return this._fromHistory.value;
 	}
+	public set fromHistory(value: boolean) {
+		this._fromHistory.next(value);
+	}
 
 	public get fromHistoryAsObservable() {
 		return this._fromHistory.asObservable();
-	}
-
-	public set fromHistory(value: boolean) {
-		this._fromHistory.next(value);
 	}
 }

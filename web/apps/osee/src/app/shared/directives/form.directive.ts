@@ -11,7 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Directive, Output, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControlStatus, NgForm } from '@angular/forms';
 import { debounceTime, map } from 'rxjs';
 
@@ -19,8 +18,9 @@ import { debounceTime, map } from 'rxjs';
 	selector: '[oseeForm]',
 	standalone: true,
 })
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export class FormDirective<T> {
-	constructor(private readonly ngForm: NgForm) {}
+	private readonly ngForm = inject(NgForm);
 
 	@Output() public readonly formStatusChange =
 		this.ngForm.form.statusChanges.pipe(

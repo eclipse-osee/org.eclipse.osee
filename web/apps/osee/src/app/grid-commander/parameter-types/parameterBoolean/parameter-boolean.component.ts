@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { ParameterDataService } from '../../services/data-services/selected-command-data/parameter-data/parameter-data.service';
 
@@ -21,11 +21,11 @@ import { ParameterDataService } from '../../services/data-services/selected-comm
 	standalone: true,
 })
 export class ParameterBooleanComponent {
+	private parameterDataService = inject(ParameterDataService);
+
 	parameter$ = this.parameterDataService.parameter$;
 	paramString = '';
 	userPrompt$ = this.parameter$.pipe(
 		map((param) => param?.attributes.description)
 	);
-
-	constructor(private parameterDataService: ParameterDataService) {}
 }

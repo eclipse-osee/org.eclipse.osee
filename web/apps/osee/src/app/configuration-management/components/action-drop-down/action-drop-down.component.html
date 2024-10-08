@@ -27,8 +27,8 @@
 				$implicit: {
 					state: state,
 					isPrevious: true,
-					currentState: currentState()
-				}
+					currentState: currentState(),
+				},
 			}"></ng-container>
 	}
 	@for (state of nextStates(); track state.state) {
@@ -38,8 +38,8 @@
 				$implicit: {
 					state: state,
 					isPrevious: false,
-					currentState: currentState()
-				}
+					currentState: currentState(),
+				},
 			}"></ng-container>
 	}
 </mat-menu>
@@ -74,7 +74,7 @@
 						'tw-bg-foreground dark:tw-bg-background':
 							ctx.state.state !== 'Completed' &&
 							ctx.state.state !== 'Cancelled' &&
-							ctx.state.state !== 'Review'
+							ctx.state.state !== 'Review',
 					}">
 					{{ ctx.state.state }}
 				</span>
@@ -103,7 +103,7 @@
 						'tw-bg-foreground dark:tw-bg-background':
 							ctx.state.state !== 'Completed' &&
 							ctx.state.state !== 'Cancelled' &&
-							ctx.state.state !== 'Review'
+							ctx.state.state !== 'Review',
 					}"
 					class="tw-rounded-md tw-px-4 tw-py-1 tw-text-center tw-text-background dark:tw-text-foreground"
 					>{{ ctx.state.state }}</span
@@ -133,7 +133,7 @@
 						'tw-bg-foreground dark:tw-bg-background':
 							ctx.state.state !== 'Completed' &&
 							ctx.state.state !== 'Cancelled' &&
-							ctx.state.state !== 'Review'
+							ctx.state.state !== 'Review',
 					}"
 					class="tw-rounded-md tw-px-4 tw-py-1 tw-text-center tw-text-background dark:tw-text-foreground"
 					>{{ ctx.state.state }}</span

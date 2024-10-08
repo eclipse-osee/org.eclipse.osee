@@ -12,19 +12,19 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PlatformTypeActionsComponent } from './platform-type-actions.component';
 import {
 	EnumerationUIService,
 	PreferencesUIService,
-	TypesService,
+	TypesUIService,
 	WarningDialogService,
 } from '@osee/messaging/shared/services';
 import {
 	enumerationUiServiceMock,
 	preferencesUiServiceMock,
-	typesServiceMock,
+	typesUIServiceMock,
 	warningDialogServiceMock,
 } from '@osee/messaging/shared/testing';
+import { PlatformTypeActionsComponent } from './platform-type-actions.component';
 
 describe('PlatformTypeActionsComponent', () => {
 	let component: PlatformTypeActionsComponent;
@@ -56,7 +56,7 @@ describe('PlatformTypeActionsComponent', () => {
 						provide: WarningDialogService,
 						useValue: warningDialogServiceMock,
 					},
-					{ provide: TypesService, useValue: typesServiceMock },
+					{ provide: TypesUIService, useValue: typesUIServiceMock },
 					{
 						provide: EnumerationUIService,
 						useValue: enumerationUiServiceMock,

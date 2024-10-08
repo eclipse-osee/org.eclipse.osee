@@ -10,22 +10,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface healthStatus {
+export type healthStatus = {
 	servers: healthServer[];
-}
+};
 
-export interface healthServer {
-	serverAlive: Boolean;
-	dbAlive: Boolean;
+export type healthServer = {
+	serverAlive: boolean;
+	dbAlive: boolean;
 	name: string;
 	errorMsg: string;
-}
+};
 
-export interface remoteHealthDetails {
+export type remoteHealthDetails = {
 	healthDetails: healthDetails;
 	errorMsg: string;
-}
-export interface healthDetails {
+};
+export type healthDetails = {
 	uri: string;
 	startTime: string;
 	upTime: string;
@@ -45,7 +45,7 @@ export interface healthDetails {
 	threadStats: string[];
 	garbageCollectorStats: string[];
 	serverWithHealthInfo: string;
-}
+};
 
 export const defaultRemoteHealthDetails: remoteHealthDetails = {
 	healthDetails: {
@@ -72,20 +72,20 @@ export const defaultRemoteHealthDetails: remoteHealthDetails = {
 	errorMsg: '',
 };
 
-export interface remoteHealthLog {
+export type remoteHealthLog = {
 	healthLog: healthLog;
-}
+};
 
-export interface healthLog {
+export type healthLog = {
 	log: string;
-}
+};
 
-export interface remoteHealthJava {
+export type remoteHealthJava = {
 	healthJava: healthJava;
 	errorMsg: string;
-}
+};
 
-export interface healthJava {
+export type healthJava = {
 	vmName: string;
 	vmVendor: string;
 	vmVersion: string;
@@ -97,48 +97,48 @@ export interface healthJava {
 	osArch: string;
 	processArgs: string[];
 	processes: string[];
-}
-export interface remoteHealthTop {
+};
+export type remoteHealthTop = {
 	healthTop: healthTop;
 	errorMsg: string;
-}
+};
 
-export interface healthTop {
+export type healthTop = {
 	top: string;
-}
+};
 
-export interface healthBalancers {
+export type healthBalancers = {
 	balancers: healthBalancer[];
-}
+};
 
-export interface healthBalancer {
+export type healthBalancer = {
 	name: string;
 	alive: boolean;
 	errorMsg: string;
-}
+};
 
-export interface healthActiveMq {
+export type healthActiveMq = {
 	activeMqUrl: string;
 	active: boolean;
 	errorMsg: string;
-}
+};
 
-export interface healthUsage {
+export type healthUsage = {
 	allUsers: user[];
 	allSessions: session[];
 	versionTypeMap: versionTypeMap;
 	versionNameMap: versionNameMap;
 	errorMsg: string;
-}
+};
 
-export interface user {
+export type user = {
 	name: string;
 	email: string;
 	userId: string;
 	accountId: number;
-}
+};
 
-export interface session {
+export type session = {
 	user: user;
 	date: string;
 	version: string;
@@ -146,44 +146,38 @@ export interface session {
 	clientAddress: string;
 	clientMachineName: string;
 	port: string;
-}
+};
 
-export interface versionTypeMap {
-	[versionType: string]: user[];
-}
+export type versionTypeMap = Record<string, user[]>;
 
-export interface versionNameMap {
-	[versionName: string]: user[];
-}
+export type versionNameMap = Record<string, user[]>;
 
-export interface unknownJson {
-	[key: string]: unknown;
-}
+export type unknownJson = Record<string, unknown>;
 
-export interface healthSql {
+export type healthSql = {
 	errorMsg: string;
 	sqls: sql[];
-}
+};
 
-export interface sql {
+export type sql = {
 	sqlText: string;
 	elapsedTime: string;
 	executions: string;
 	elapsedTimeAverage: string;
 	percent: string;
-}
+};
 
-export interface healthSqlSize {
+export type healthSqlSize = {
 	errorMsg: string;
 	size: number;
-}
+};
 
-export interface healthTablespace {
+export type healthTablespace = {
 	errorMsg: string;
 	tablespaces: tablespace[];
-}
+};
 
-export interface tablespace {
+export type tablespace = {
 	tablespaceName: string;
 	maxTsPctUsed: string;
 	autoExtend: string;
@@ -193,4 +187,4 @@ export interface tablespace {
 	freeTsSize: string;
 	currTsSize: string;
 	maxTxSize: string;
-}
+};

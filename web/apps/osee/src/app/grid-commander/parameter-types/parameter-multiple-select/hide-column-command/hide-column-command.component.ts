@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, TitleCasePipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
 	MatChipListbox,
@@ -52,6 +52,9 @@ import { DataTableService } from '../../../services/datatable-services/datatable
 	],
 })
 export class HideColumnCommandComponent {
+	private dataTableService = inject(DataTableService);
+	private selectedCommandDataService = inject(SelectedCommandDataService);
+
 	columnOptions = this.dataTableService.columnOptions;
 	hideColumnsControl = this.dataTableService.hiddenColumns;
 
@@ -64,15 +67,12 @@ export class HideColumnCommandComponent {
 			)
 		);
 
-	constructor(
-		private dataTableService: DataTableService,
-		private selectedCommandDataService: SelectedCommandDataService
-	) {}
-
 	onSelectColToHide(event: MatSelectChange) {
-		event.value.length === 0
-			? this.dataTableService.updateHiddenColumns([])
-			: this.dataTableService.updateHiddenColumns(event.value);
+		if (event.value.length === 0) {
+			this.dataTableService.updateHiddenColumns([]);
+		} else {
+			this.dataTableService.updateHiddenColumns(event.value);
+		}
 	}
 
 	unhideCol(col: string) {

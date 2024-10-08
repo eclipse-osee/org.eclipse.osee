@@ -12,7 +12,6 @@
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import {
@@ -27,6 +26,7 @@ import { filter, switchMap, take } from 'rxjs/operators';
 import { AddConfigurationGroupDialogComponent } from '../../dialogs/add-configuration-group-dialog/add-configuration-group-dialog.component';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { addCfgGroup } from '../../types/pl-config-cfggroups';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-plconfig-configuration-group-dropdown',
@@ -43,6 +43,9 @@ import { addCfgGroup } from '../../types/pl-config-cfggroups';
 	],
 })
 export class ConfigurationGroupDropdownComponent {
+	private currentBranchService = inject(PlConfigCurrentBranchService);
+	dialog = inject(MatDialog);
+
 	//TODO add real prefs
 	private _branchInfoService = inject(CurrentBranchInfoService);
 	private _branch = toSignal(
@@ -53,10 +56,7 @@ export class ConfigurationGroupDropdownComponent {
 	);
 	protected editable = computed(() => this._branch().branchType === '0');
 	cfgGroups = this.currentBranchService.cfgGroups;
-	constructor(
-		private currentBranchService: PlConfigCurrentBranchService,
-		public dialog: MatDialog
-	) {}
+
 	public addConfigurationGroup() {
 		this.dialog
 			.open(AddConfigurationGroupDialogComponent, {
@@ -91,7 +91,7 @@ export class ConfigurationGroupDropdownComponent {
 		this.currentBranchService
 			.deleteConfigurationGroup(id)
 			.pipe(take(1))
-			.subscribe((response) => {});
+			.subscribe();
 	}
 	toggleMenu(menuTrigger: MatMenuTrigger) {
 		menuTrigger.toggleMenu();

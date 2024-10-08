@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { tap } from 'rxjs';
@@ -38,20 +38,18 @@ import { AsyncPipe } from '@angular/common';
 	],
 })
 export class CommandPaletteComponent {
+	private dialogModel = inject(MatDialog);
+	private commandGroupOptionsService = inject(CommandGroupOptionsService);
+	private selectedCommandDataService = inject(SelectedCommandDataService);
+	private parameterDataService = inject(ParameterDataService);
+	private commandPaletteInputService = inject(CommandPaletteInputService);
+
 	filteredCommandGroups$ =
 		this.commandPaletteInputService.filteredCommandGroups$;
 	isFilterEnabled$ = this.selectedCommandDataService.isFilterEnabled;
 	_commandNameInput = this.commandPaletteInputService.commandName;
 	isParamDefined$ = this.parameterDataService.isParameterTypeDefined;
 	helperDialogRef: MatDialogRef<HelperdialogComponent> | undefined;
-
-	constructor(
-		private dialogModel: MatDialog,
-		private commandGroupOptionsService: CommandGroupOptionsService,
-		private selectedCommandDataService: SelectedCommandDataService,
-		private parameterDataService: ParameterDataService,
-		private commandPaletteInputService: CommandPaletteInputService
-	) {}
 
 	_dialog(e?: Event) {
 		e?.stopPropagation();

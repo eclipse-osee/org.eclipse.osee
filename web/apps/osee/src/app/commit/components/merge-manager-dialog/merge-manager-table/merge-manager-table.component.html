@@ -23,7 +23,7 @@
 					'tw-text-center':
 						header === 'sourceValue' ||
 						header === 'destValue' ||
-						header === 'mergeValue'
+						header === 'mergeValue',
 				}"
 				[matTooltip]="
 					(getTableHeaderByName(header) | async)?.description || ''
@@ -55,7 +55,7 @@
 						'tw-bg-background-status-bar':
 							data.attrMergeData.sourceValue ===
 								data.attrMergeData.mergeValue &&
-							data.conflictStatus !== 'UNTOUCHED'
+							data.conflictStatus !== 'UNTOUCHED',
 					}"
 					(click)="selectSourceValue(data)">
 					@if (data.attrMergeData.storeType === 'Date') {
@@ -74,7 +74,7 @@
 						'tw-bg-background-status-bar':
 							data.attrMergeData.destValue ===
 								data.attrMergeData.mergeValue &&
-							data.conflictStatus !== 'UNTOUCHED'
+							data.conflictStatus !== 'UNTOUCHED',
 					}"
 					(click)="selectDestValue(data)">
 					@if (data.attrMergeData.storeType === 'Date') {
@@ -93,7 +93,7 @@
 						'tw-bg-success-200 dark:tw-bg-success-400':
 							data.conflictStatus === 'RESOLVED',
 						'tw-bg-warning-200 dark:tw-bg-warning-400':
-							data.conflictStatus !== 'RESOLVED'
+							data.conflictStatus !== 'RESOLVED',
 					}">
 					<button
 						class="tw-w-full"

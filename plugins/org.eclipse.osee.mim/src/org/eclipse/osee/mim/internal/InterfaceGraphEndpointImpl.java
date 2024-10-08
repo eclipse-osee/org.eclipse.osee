@@ -55,8 +55,8 @@ public class InterfaceGraphEndpointImpl implements InterfaceGraphEndpoint {
             graph.addNode(new NodeView(node));
 
             // If the node has a group id set, add it to the corresponding cluster
-            if (!node.getInterfaceNodeGroupId().isEmpty()) {
-               String clusterId = node.getInterfaceNodeGroupId();
+            if (!node.getInterfaceNodeGroupId().getValue().isEmpty()) {
+               String clusterId = node.getInterfaceNodeGroupId().getValue();
                ClusterView cluster =
                   graph.getClusters().stream().filter(c -> c.getId().equals(clusterId)).findFirst().orElse(null);
                if (cluster == null) {
@@ -82,7 +82,7 @@ public class InterfaceGraphEndpointImpl implements InterfaceGraphEndpoint {
                controllerNode.setName(connection.getName() + " Controller");
                controllerNode.setInterfaceNodeBackgroundColor("#FFFFFF");
                NodeView controllerNodeView = new NodeView(controllerNode);
-               controllerNodeView.setId(controllerNode.getName());
+               controllerNodeView.setId(controllerNode.getName().getValue());
                graph.addNode(controllerNodeView);
                controllerCluster.getChildNodeIds().add(controllerNodeView.getId());
 
@@ -91,7 +91,7 @@ public class InterfaceGraphEndpointImpl implements InterfaceGraphEndpoint {
                nodesClusterNode.setName(connection.getName() + " Nodes");
                nodesClusterNode.setInterfaceNodeBackgroundColor("#FFFFFF");
                NodeView nodesClusterNodeView = new NodeView(nodesClusterNode);
-               nodesClusterNodeView.setId(nodesClusterNode.getName());
+               nodesClusterNodeView.setId(nodesClusterNode.getName().getValue());
                graph.addNode(nodesClusterNodeView);
                nodesCluster.getChildNodeIds().add(nodesClusterNodeView.getId());
 

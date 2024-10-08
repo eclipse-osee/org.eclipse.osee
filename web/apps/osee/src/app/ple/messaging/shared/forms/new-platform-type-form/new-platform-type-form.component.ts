@@ -11,38 +11,39 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, NgTemplateOutlet, TitleCasePipe } from '@angular/common';
-import {
-	Component,
-	Input,
-	OnChanges,
-	Output,
-	SimpleChanges,
-} from '@angular/core';
-import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
+import { Component, input, model, inject } from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { FormsModule } from '@angular/forms';
 import { MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
+import { applic } from '@osee/applicability/types';
+import { attribute } from '@osee/attributes/types';
 import { UniquePlatformTypeAttributesDirective } from '@osee/messaging/shared/directives';
-import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 import { TypesService } from '@osee/messaging/shared/services';
 import type {
+	DisplayablePlatformTypeProps,
 	PlatformType,
+	PlatformTypeAttr,
 	enumerationSet,
 	logicalType,
 	logicalTypeFieldInfo,
 } from '@osee/messaging/shared/types';
 import { ParentErrorStateMatcher } from '@osee/shared/matchers';
-import { applic } from '@osee/shared/types/applicability';
-import { FirstLetterLowerPipe } from '@osee/shared/utils';
 import {
-	BehaviorSubject,
-	Subject,
+	FirstLetterLowerPipe,
+	provideOptionalControlContainerNgForm,
+	writableSlice,
+} from '@osee/shared/utils';
+import {
 	debounceTime,
 	distinctUntilChanged,
 	filter,
 	switchMap,
 	tap,
 } from 'rxjs';
-import { UnitDropdownComponent } from '../../dropdowns/unit-dropdown/unit-dropdown.component';
+import { NewPlatformTypeFieldComponent } from '../new-platform-type-field/new-platform-type-field.component';
+import { UnitDropdownComponent } from '@osee/messaging/units/dropdown';
+import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
 /**
  * Form that handles the selection of platform type attributes for a new platform type based on it's logical type.
  */
@@ -51,7 +52,7 @@ import { UnitDropdownComponent } from '../../dropdowns/unit-dropdown/unit-dropdo
 	standalone: true,
 	templateUrl: './new-platform-type-form.component.html',
 	styles: [],
-	viewProviders: [{ provide: ControlContainer, useExisting: NgForm }],
+	viewProviders: [provideOptionalControlContainerNgForm()],
 	imports: [
 		AsyncPipe,
 		FormsModule,
@@ -64,87 +65,125 @@ import { UnitDropdownComponent } from '../../dropdowns/unit-dropdown/unit-dropdo
 		FirstLetterLowerPipe,
 		NgTemplateOutlet,
 		UnitDropdownComponent,
+		NewPlatformTypeFieldComponent,
 	],
 })
-export class NewPlatformTypeFormComponent implements OnChanges {
+export class NewPlatformTypeFormComponent {
+	private typesService = inject(TypesService);
+
 	/**
 	 * Logical type to load needed attributes from
 	 */
-	@Input() logicalType: logicalType = {
+	logicalType = input<logicalType>({
 		id: '-1',
 		name: '',
-		idString: '-1',
-		idIntValue: -1,
-	};
-
-	logicalTypeSubject = new BehaviorSubject<logicalType>({
-		id: '-1',
-		name: '',
-		idString: '-1',
-		idIntValue: -1,
+		idString: '',
+		idIntValue: 0,
 	});
-
-	_formInfo = this.logicalTypeSubject.pipe(
-		filter((val) => val.id !== '' && val.id !== '-1'),
+	private _logicalType = toObservable(this.logicalType);
+	private _formInfo = this._logicalType.pipe(
+		filter((val) => val.id !== '-1'),
+		debounceTime(0),
+		distinctUntilChanged(),
+		debounceTime(500),
+		switchMap((type) => this.typesService.getLogicalTypeFormDetail(type.id))
+	);
+	protected formInfo = toSignal(this._formInfo, {
+		initialValue: { ...this.logicalType(), fields: [] },
+	});
+	__formInfo = this._logicalType.pipe(
+		filter((val) => val.id !== '-1'),
 		distinctUntilChanged(),
 		debounceTime(500),
 		switchMap((type) =>
 			this.typesService.getLogicalTypeFormDetail(type.id)
 		),
 		tap((form) => {
-			this._platformType.interfaceLogicalType = form.name;
+			this.interfaceLogicalTypeValue.set(form.name);
 			form.fields
 				.filter((f) => !f.editable)
 				.forEach((f) => {
-					this.updateInnerPlatformType(
+					this.updateInnerPlatformTypeWithRaw(
 						f.jsonPropertyName,
 						f.defaultValue
 					);
 				});
-			this.updateField();
 		})
 	);
 
-	protected _platformType: PlatformType = new PlatformTypeSentinel();
-	@Output() protected platformType = new Subject<PlatformType>();
+	platformType = model.required<PlatformType>();
+	private interfaceLogicalType = writableSlice(
+		this.platformType,
+		'interfaceLogicalType'
+	);
+	private interfaceLogicalTypeValue = writableSlice(
+		this.interfaceLogicalType,
+		'value'
+	);
 
 	parentMatcher = new ParentErrorStateMatcher();
 
-	constructor(private typesService: TypesService) {
-		//@ts-ignore
-		delete this._platformType.id;
-		//@ts-ignore
-		delete this._platformType.enumSet;
-	}
-	ngOnChanges(changes: SimpleChanges) {
-		if (
-			changes.logicalType !== undefined &&
-			changes.logicalType.currentValue !==
-				this.logicalTypeSubject.getValue() &&
-			changes.logicalType.currentValue !== undefined
-		) {
-			this.logicalTypeSubject.next(changes.logicalType.currentValue);
-		}
-	}
-	protected isLogicalTypeFieldInfo(
+	protected isLogicalTypeFieldInfo<U extends keyof PlatformTypeAttr>(
 		value: unknown
-	): value is logicalTypeFieldInfo<keyof PlatformType> {
-		return (value as any).jsonPropertyName !== undefined;
+	): value is logicalTypeFieldInfo<U> {
+		return (
+			(value as logicalTypeFieldInfo<'name'>).jsonPropertyName !==
+			undefined
+		);
+	}
+
+	protected isGeneralEditable<
+		U extends keyof Omit<
+			DisplayablePlatformTypeProps,
+			'id' | 'gammaId' | 'applicability' | 'enumSet'
+		>,
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	>(value: logicalTypeFieldInfo<any>): value is logicalTypeFieldInfo<U> {
+		return (
+			value.jsonPropertyName !== 'id' &&
+			value.jsonPropertyName !== 'gammaId' &&
+			value.jsonPropertyName !== 'applicability' &&
+			value.jsonPropertyName !== 'enumSet'
+		);
 	}
 	protected isString(
-		value: string | boolean | enumerationSet | applic | undefined
+		value:
+			| string
+			| boolean
+			| enumerationSet
+			| applic
+			| undefined
+			| attribute<unknown, ATTRIBUTETYPEID>
 	): value is string {
 		return typeof value === 'string';
 	}
-	updateField() {
-		this.platformType.next(this._platformType);
+	updateInnerPlatformTypeWithRaw<
+		T extends keyof PlatformTypeAttr = keyof PlatformTypeAttr,
+		//I give up on this type for right now, it's complicated
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	>(key: T, value: any) {
+		this.platformType.update((v) => {
+			if (value && value.value) {
+				v[key].value = value.value;
+			} else {
+				v[key].value = value;
+			}
+			return v;
+		});
 	}
-	updateInnerPlatformType<T extends keyof PlatformType = keyof PlatformType>(
-		key: T,
-		value: PlatformType[T]
-	) {
-		this._platformType[key] = value;
+	updateInnerPlatformType<
+		T extends keyof PlatformTypeAttr = keyof PlatformTypeAttr,
+		//I give up on this type for right now, it's complicated
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	>(key: T, value: any) {
+		this.platformType.update((v) => {
+			if (value && value.value) {
+				v[key].value = value.value;
+			} else {
+				v[key].value = value;
+			}
+			return v;
+		});
 	}
 }
-
 export default NewPlatformTypeFormComponent;

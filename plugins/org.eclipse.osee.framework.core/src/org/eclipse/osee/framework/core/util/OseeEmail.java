@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.core.util;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Properties;
 import java.util.logging.Level;
 import javax.activation.CommandMap;
@@ -43,6 +44,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
  * @author Donald G. Dunne
  */
 public abstract class OseeEmail extends MimeMessage {
+   public static final String DEFAULT_MAIL_SERVER_NOT_CONFIGURED = "Default Mail Server is not configured";
    protected static final String emailType = "mail.smtp.host";
    protected static final String HTMLHead = "<html><body>\n";
    protected static final String HTMLEnd = "</body></html>\n";
@@ -52,11 +54,15 @@ public abstract class OseeEmail extends MimeMessage {
 
    protected static String defaultMailServer;
    private String body = null;
-   private String bodyType = null;
+   private BodyType bodyType = null;
    private final Multipart mainMessage;
+   private Collection<String> toAbridgedAddresses;
+   private String abridgedSubject;
+   private String fromAddress;
+   private String replyToAddress;
    public static enum BodyType {
       Html,
-      Text
+      Text;
    };
 
    public OseeEmail() {
@@ -72,9 +78,15 @@ public abstract class OseeEmail extends MimeMessage {
     * @param replyToAddress - a valid address of who the message should reply to
     * @param subject - the subject of the message
     * @param textBody - the plain text of the body
+    * @param toAbridgedAddresses addresses to send abridged email with just abridgedSubject and no body
+    * @param abridgedSubject sanitized subject only showing generic data and ids (eg: Ats Id) and generic action
     */
-   public OseeEmail(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject, String body, BodyType bodyType) {
+   public OseeEmail(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject, String body, BodyType bodyType, Collection<String> toAbridgedAddresses, String abridgedSubject) {
       this();
+      this.fromAddress = fromAddress;
+      this.replyToAddress = replyToAddress;
+      this.toAbridgedAddresses = toAbridgedAddresses;
+      this.abridgedSubject = abridgedSubject;
       try {
          setRecipients(toAddresses.toArray(new String[toAddresses.size()]));
          setFrom(fromAddress);
@@ -94,8 +106,9 @@ public abstract class OseeEmail extends MimeMessage {
       }
    }
 
-   public OseeEmail(String fromEmail, String toAddress, String subject, String body, BodyType bodyType) {
-      this(Arrays.asList(toAddress), fromEmail, fromEmail, subject, body, bodyType);
+   public OseeEmail(String fromEmail, String toAddress, String subject, String body, BodyType bodyType, String toAbridgedEmail, String abridgedSubject) {
+      this(Arrays.asList(toAddress), fromEmail, fromEmail, subject, body, bodyType,
+         Collections.singleton(toAbridgedEmail), abridgedSubject);
    }
 
    /**
@@ -186,8 +199,6 @@ public abstract class OseeEmail extends MimeMessage {
 
    /**
     * Sets the address to reply to (if different than the from addresss)
-    *
-    * @param address - a valid address to reply to
     */
    public void setReplyTo(String address) throws MessagingException {
       InternetAddress replyAddresses[] = new InternetAddress[1];
@@ -197,32 +208,26 @@ public abstract class OseeEmail extends MimeMessage {
 
    /**
     * Gets the current Body Type of the message. NULL if one is not selected yet.
-    *
-    * @return A String representation of the current Body Type
     */
-   public String getBodyType() {
+   public BodyType getBodyType() {
       return bodyType;
    }
 
    /**
     * Sets the text in the body of the message.
-    *
-    * @param text - the text to for the body of the message
     */
    public void setBody(String text) {
       body = text;
-      bodyType = plainText;
+      bodyType = BodyType.Text;
    }
 
    /**
     * Adds text to the body if the Body Type is "plain". If the body doesn't exist yet, then calls setBody.
-    *
-    * @param text - the text to add to the body
     */
    public void addBody(String text) {
       if (bodyType == null) {
          setBody(text);
-      } else if (bodyType.equals(plainText)) {
+      } else if (bodyType.equals(BodyType.Text)) {
          body += text;
       }
    }
@@ -230,11 +235,9 @@ public abstract class OseeEmail extends MimeMessage {
    /**
     * Sets the text in the body of the HTML message. This will already add the &lthtml&gt&ltbody&gt and
     * &lt/body&gt&lt/html&gt tags.
-    *
-    * @param htmlText - the text for the body of the HTML message
     */
    public void setHTMLBody(String htmlText) {
-      bodyType = HTMLText;
+      bodyType = BodyType.Html;
       body = HTMLHead + htmlText;
    }
 
@@ -261,13 +264,16 @@ public abstract class OseeEmail extends MimeMessage {
       }
    }
 
-   /**
-    * Sends the message.
-    */
-   public void send() {
+   public void send(XResultData rd) {
       if (Strings.isValid(defaultMailServer)) {
-         new SendThread(this).start();
+         send();
+      } else {
+         rd.errorf(OseeEmail.DEFAULT_MAIL_SERVER_NOT_CONFIGURED);
       }
+   }
+
+   public void send() {
+      new SendThread(this).start();
    }
 
    private class SendThread extends Thread {
@@ -283,6 +289,11 @@ public abstract class OseeEmail extends MimeMessage {
          XResultData results = email.sendLocalThread();
          if (results.isFailed()) {
             OseeLog.log(OseeEmail.class, Level.SEVERE, results.toString());
+         }
+
+         if (email.hasAbridged()) {
+            OseeEmail aEmail = createAbridgedEmail(email);
+            aEmail.sendLocalThread();
          }
       }
    }
@@ -304,12 +315,12 @@ public abstract class OseeEmail extends MimeMessage {
          // Set class loader so can find the mail handlers
          setClassLoader();
          if (bodyType == null) {
-            bodyType = plainText;
+            bodyType = BodyType.Text;
             body = "";
-         } else if (bodyType.equals(HTMLText)) {
+         } else if (bodyType.equals(BodyType.Html)) {
             body += HTMLEnd;
          }
-         messageBodyPart.setContent(body, bodyType);
+         messageBodyPart.setContent(body, bodyType.equals(BodyType.Text) ? plainText : HTMLText);
          mainMessage.addBodyPart(messageBodyPart, 0);
          setContent(mainMessage);
          Transport.send(this);
@@ -326,6 +337,12 @@ public abstract class OseeEmail extends MimeMessage {
          Thread.currentThread().setContextClassLoader(original);
       }
       return results;
+   }
+
+   protected abstract OseeEmail createAbridgedEmail(OseeEmail email);
+
+   public boolean hasAbridged() {
+      return Strings.isValid(abridgedSubject) && !toAbridgedAddresses.isEmpty();
    }
 
    abstract public void setClassLoader();
@@ -365,6 +382,26 @@ public abstract class OseeEmail extends MimeMessage {
 
    public static void setDefaultMailServer(String defaultMailServer) {
       OseeEmail.defaultMailServer = defaultMailServer;
+   }
+
+   public String getFromAddress() {
+      return fromAddress;
+   }
+
+   public String getReplyToAddress() {
+      return replyToAddress;
+   }
+
+   public Collection<String> getToAbridgedAddresses() {
+      return toAbridgedAddresses;
+   }
+
+   public String getAbridgedSubject() {
+      return abridgedSubject;
+   }
+
+   protected String getAbridgedBodyText() {
+      return "<email body redacted for abridged email; see primary email account>";
    }
 
 }

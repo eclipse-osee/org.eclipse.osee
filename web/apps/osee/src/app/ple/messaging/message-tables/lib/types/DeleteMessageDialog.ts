@@ -12,6 +12,6 @@
  **********************************************************************/
 import type { message } from '@osee/messaging/shared/types';
 
-export interface DeleteMessageDialogData {
+export type DeleteMessageDialogData = {
 	message: message;
-}
+};

@@ -11,23 +11,17 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, model } from '@angular/core';
 import type { logicalType } from '@osee/messaging/shared/types';
 import { LogicalTypeSelectorComponent } from './logical-type-selector.component';
 
 @Component({
-	selector: 'osee-logical-type-selector',
+	selector: 'osee-logical-type-dropdown',
 	template: '<p>Dummy</p>',
 	standalone: true,
 })
 export class MockLogicalTypeSelectorComponent
 	implements Partial<LogicalTypeSelectorComponent>
 {
-	@Input() type: logicalType = {
-		id: '-1',
-		name: '',
-		idString: '-1',
-		idIntValue: -1,
-	};
-	@Output() typeChanged = new EventEmitter<logicalType>();
+	type = model.required<logicalType>();
 }

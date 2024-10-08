@@ -14,7 +14,7 @@
 package org.eclipse.osee.testscript;
 
 import java.util.Collection;
-import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -27,12 +27,12 @@ public interface DashboardApi {
 
    Collection<CITimelineStatsToken> getTimelineStats(BranchId branch, ArtifactId ciSet, ArtifactId viewId);
 
-   Collection<ArtifactAccessorResult> getSubsystems(BranchId branch, String filter, long pageNum, long pageSize,
-      AttributeTypeToken orderByAttributeType);
+   Collection<ArtifactAccessorResultWithoutGammas> getSubsystems(BranchId branch, String filter, long pageNum,
+      long pageSize, AttributeTypeToken orderByAttributeType);
 
    Integer getSubsystemsCount(BranchId branch, String filter);
 
-   Collection<ArtifactAccessorResult> getTeams(BranchId branch, String filter, long pageNum, long pageSize,
+   Collection<ArtifactAccessorResultWithoutGammas> getTeams(BranchId branch, String filter, long pageNum, long pageSize,
       AttributeTypeToken orderByAttributeType);
 
    Integer getTeamsCount(BranchId branch, String filter);

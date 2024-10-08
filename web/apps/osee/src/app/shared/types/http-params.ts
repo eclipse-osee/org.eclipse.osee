@@ -14,11 +14,8 @@ import { HttpParams } from '@angular/common/http';
 
 export type HttpParamsType =
 	| HttpParams
-	| {
-			[param: string]:
-				| string
-				| number
-				| boolean
-				| readonly (string | number | boolean)[];
-	  }
+	| Record<
+			string,
+			string | number | boolean | readonly (string | number | boolean)[]
+	  >
 	| undefined;

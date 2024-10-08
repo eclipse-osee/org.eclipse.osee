@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Signal } from '@angular/core';
+import { Component, Signal, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
 	MatButtonToggle,
@@ -45,12 +45,15 @@ import { TraceReportTableComponent } from './trace-report-table/trace-report-tab
 	templateUrl: './trace-report.component.html',
 })
 export class NodeTraceReportRequirementsComponent {
-	constructor(
-		private route: ActivatedRoute,
-		private ui: UiService,
-		private reportsService: ReportsService,
-		private branchService: CurrentBranchInfoService
-	) {
+	private route = inject(ActivatedRoute);
+	private ui = inject(UiService);
+	private reportsService = inject(ReportsService);
+	private branchService = inject(CurrentBranchInfoService);
+
+	/** Inserted by Angular inject() migration for backwards compatibility */
+	constructor(...args: unknown[]);
+
+	constructor() {
 		this.route.paramMap.subscribe((params) => {
 			this.ui.idValue = params.get('branchId') || '';
 			this.ui.typeValue =

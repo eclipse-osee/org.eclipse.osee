@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { apiURL } from '@osee/environments';
 import { ApiKey, keyScope } from '../types/apiKey';
 
@@ -19,7 +19,7 @@ import { ApiKey, keyScope } from '../types/apiKey';
 	providedIn: 'root',
 })
 export class ApiKeyService {
-	constructor(private http: HttpClient) {}
+	private http = inject(HttpClient);
 
 	getApiKeys() {
 		return this.http.get<Required<ApiKey>[]>(apiURL + `/orcs/apikeys`);
@@ -32,7 +32,7 @@ export class ApiKeyService {
 	}
 
 	createApiKey(apiKey: ApiKey) {
-		return this.http.post<{ [key: string]: string }>(
+		return this.http.post<Record<string, string>>(
 			apiURL + `/orcs/apikeys`,
 			apiKey
 		);

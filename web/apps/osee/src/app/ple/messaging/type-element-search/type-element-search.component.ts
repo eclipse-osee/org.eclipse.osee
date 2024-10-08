@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
 import { map } from 'rxjs/operators';
@@ -27,10 +27,8 @@ import { ElementTableComponent } from './lib/tables/element-table/element-table.
 	imports: [MessagingControlsComponent, ElementTableComponent],
 })
 export class TypeElementSearchComponent implements OnInit {
-	constructor(
-		private route: ActivatedRoute,
-		private routerState: RouterStateService
-	) {}
+	private route = inject(ActivatedRoute);
+	private routerState = inject(RouterStateService);
 
 	ngOnInit(): void {
 		this.route.params

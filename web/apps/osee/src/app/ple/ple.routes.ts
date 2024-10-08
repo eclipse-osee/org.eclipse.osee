@@ -14,13 +14,13 @@ import { Routes } from '@angular/router';
 import { navigationStructure } from '@osee/layout/routing';
 
 const ple = navigationStructure[0].children.find(
-	(page) => page.label === 'Product Line Engineering - Home'
+	(page) => page.label === 'Product Line Engineering Home'
 );
 const plconfig = navigationStructure[0].children.find(
 	(page) => page.label === 'Product Line Configuration'
 );
 const messaging = navigationStructure[0].children.find(
-	(page) => page.label === 'Messaging Configuration'
+	(page) => page.label === 'MIM'
 );
 
 const routes: Routes = [

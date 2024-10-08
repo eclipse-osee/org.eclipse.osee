@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { apiURL } from '@osee/environments';
 import { HelpPage } from '@osee/shared/types';
 
@@ -19,7 +19,7 @@ import { HelpPage } from '@osee/shared/types';
 	providedIn: 'root',
 })
 export class HelpHttpService {
-	constructor(private http: HttpClient) {}
+	private http = inject(HttpClient);
 
 	getHelpPage(id: string) {
 		return this.http.get<HelpPage>(apiURL + '/orcs/help/' + id);

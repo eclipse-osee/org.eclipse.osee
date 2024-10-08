@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import type { elementWithPathsAndButtons } from '@osee/messaging/shared/types';
 import { apiURL } from '@osee/environments';
 
@@ -19,7 +19,7 @@ import { apiURL } from '@osee/environments';
 	providedIn: 'root',
 })
 export class PlatformTypesService {
-	constructor(private http: HttpClient) {}
+	private http = inject(HttpClient);
 
 	getFilteredElements(filter: string, branchId: string) {
 		return this.http.get<elementWithPathsAndButtons[]>(

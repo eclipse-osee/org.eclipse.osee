@@ -12,7 +12,7 @@
  **********************************************************************/
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,38 +28,74 @@ import { of } from 'rxjs';
 import { TestScheduler } from 'rxjs/testing';
 import { AddSubMessageDialogComponent } from '../../dialogs/add-sub-message-dialog/add-sub-message-dialog.component';
 
-import { SubMessageTableComponent } from './sub-message-table.component';
-import { MockEditMessageFieldComponent } from '../../testing/edit-sub-message-field.component.mock';
 import { CurrentMessagesService } from '@osee/messaging/shared/services';
-import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 import {
 	CurrentMessageServiceMock,
 	messagesMock,
 	subMessagesMock,
 } from '@osee/messaging/shared/testing';
+import { subMessage } from '@osee/messaging/shared/types';
 import { MockSingleDiffComponent } from '@osee/shared/testing';
-import { applicabilitySentinel } from '@osee/shared/types/applicability';
+import { HighlightFilteredTextDirective } from '@osee/shared/utils';
+import { MockEditMessageFieldComponent } from '../../testing/edit-sub-message-field.component.mock';
+import { SubMessageTableComponent } from './sub-message-table.component';
+import { applicabilitySentinel } from '@osee/applicability/types';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('SubMessageTableComponent', () => {
 	let component: SubMessageTableComponent;
 	let fixture: ComponentFixture<SubMessageTableComponent>;
 	let loader: HarnessLoader;
 	let scheduler: TestScheduler;
-	let expectedData = [
+	const expectedData: subMessage[] = [
 		{
-			id: '',
-			name: 'Name',
-			description:
-				'description adslkfj;asjfadkljf;lajdfla;jsdfdlkasjf;lkajslfjad;ljfkladjsf;',
-			interfaceSubMessageNumber: '0',
-			interfaceMessageRate: '1Hz',
+			id: '1' as `${number}`,
+			gammaId: '-1' as `${number}`,
+			applicability: applicabilitySentinel,
+			name: {
+				id: '-1',
+				typeId: '1152921504606847088',
+				gammaId: '-1',
+				value: 'Name',
+			},
+			description: {
+				id: '-1',
+				typeId: '1152921504606847090',
+				gammaId: '-1',
+				value: 'description adslkfj;asjfadkljf;lajdfla;jsdfdlkasjf;lkajslfjad;ljfkladjsf;',
+			},
+			interfaceSubMessageNumber: {
+				id: '-1',
+				typeId: '2455059983007225769',
+				gammaId: '-1',
+				value: '0',
+			},
 		},
 		{
-			id: '',
-			name: 'Name2',
-			description: 'description2',
-			interfaceSubMessageNumber: '1',
-			interfaceMessageRate: '1Hz',
+			id: '2' as `${number}`,
+			gammaId: '-1' as `${number}`,
+			applicability: applicabilitySentinel,
+			name: {
+				id: '-1',
+				typeId: '1152921504606847088',
+				gammaId: '-1',
+				value: 'Name2',
+			},
+			description: {
+				id: '-1',
+				typeId: '1152921504606847090',
+				gammaId: '-1',
+				value: 'description2',
+			},
+			interfaceSubMessageNumber: {
+				id: '-1',
+				typeId: '2455059983007225769',
+				gammaId: '-1',
+				value: '1',
+			},
 		},
 	];
 
@@ -80,7 +116,6 @@ describe('SubMessageTableComponent', () => {
 				]),
 				MatMenuModule,
 				MatDialogModule,
-				HttpClientTestingModule,
 				NoopAnimationsModule,
 				HighlightFilteredTextDirective,
 				AddSubMessageDialogComponent,
@@ -92,6 +127,8 @@ describe('SubMessageTableComponent', () => {
 					provide: CurrentMessagesService,
 					useValue: CurrentMessageServiceMock,
 				},
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
 			],
 		}).compileComponents();
 	});
@@ -101,34 +138,278 @@ describe('SubMessageTableComponent', () => {
 		component = fixture.componentInstance;
 		component.element = {
 			id: '5',
-			name: 'blah',
-			description: 'abcdef',
-			interfaceMessageNumber: '1234',
-			interfaceMessagePeriodicity: 'Aperiodic',
-			interfaceMessageRate: '5Hz',
-			interfaceMessageType: 'Connection',
-			interfaceMessageWriteAccess: true,
+			gammaId: '-1',
+			name: {
+				id: '-1',
+				typeId: '1152921504606847088',
+				gammaId: '-1',
+				value: 'blah',
+			},
+			description: {
+				id: '-1',
+				typeId: '1152921504606847090',
+				gammaId: '-1',
+				value: 'abcdef',
+			},
+			interfaceMessageNumber: {
+				id: '-1',
+				typeId: '2455059983007225768',
+				gammaId: '-1',
+				value: '1234',
+			},
+			interfaceMessagePeriodicity: {
+				id: '-1',
+				typeId: '3899709087455064789',
+				gammaId: '-1',
+				value: 'Aperiodic',
+			},
+			interfaceMessageRate: {
+				id: '-1',
+				typeId: '2455059983007225763',
+				gammaId: '-1',
+				value: '5Hz',
+			},
+			interfaceMessageType: {
+				id: '-1',
+				typeId: '2455059983007225770',
+				gammaId: '-1',
+				value: 'Connection',
+			},
+			interfaceMessageWriteAccess: {
+				id: '-1',
+				typeId: '2455059983007225754',
+				gammaId: '-1',
+				value: true,
+			},
 			subMessages: [],
-			interfaceMessageExclude: false,
-			interfaceMessageIoMode: '',
-			interfaceMessageModeCode: '',
-			interfaceMessageRateVer: '',
-			interfaceMessagePriority: '',
-			interfaceMessageProtocol: '',
-			interfaceMessageRptWordCount: '',
-			interfaceMessageRptCmdWord: '',
-			interfaceMessageRunBeforeProc: false,
-			interfaceMessageVer: '',
+			interfaceMessageExclude: {
+				id: '-1',
+				typeId: '2455059983007225811',
+				gammaId: '-1',
+				value: false,
+			},
+			interfaceMessageIoMode: {
+				id: '-1',
+				typeId: '2455059983007225813',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMessageModeCode: {
+				id: '-1',
+				typeId: '2455059983007225810',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMessageRateVer: {
+				id: '-1',
+				typeId: '2455059983007225805',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMessagePriority: {
+				id: '-1',
+				typeId: '2455059983007225806',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMessageProtocol: {
+				id: '-1',
+				typeId: '2455059983007225809',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMessageRptWordCount: {
+				id: '-1',
+				typeId: '2455059983007225807',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMessageRptCmdWord: {
+				id: '-1',
+				typeId: '2455059983007225808',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMessageRunBeforeProc: {
+				id: '-1',
+				typeId: '2455059983007225812',
+				gammaId: '-1',
+				value: false,
+			},
+			interfaceMessageVer: {
+				id: '-1',
+				typeId: '2455059983007225804',
+				gammaId: '-1',
+				value: '',
+			},
 			publisherNodes: [
 				{
 					id: '100',
-					name: 'Node1',
+					gammaId: '-1',
+					name: {
+						id: '-1',
+						typeId: '1152921504606847088',
+						gammaId: '-1',
+						value: 'Node1',
+					},
+					description: {
+						id: '-1',
+						typeId: '1152921504606847090',
+						gammaId: '-1',
+						value: '',
+					},
+					applicability: applicabilitySentinel,
+					interfaceNodeNumber: {
+						id: '-1',
+						typeId: '5726596359647826657',
+						gammaId: '-1',
+						value: '',
+					},
+					interfaceNodeGroupId: {
+						id: '-1',
+						typeId: '5726596359647826658',
+						gammaId: '-1',
+						value: '',
+					},
+					interfaceNodeBackgroundColor: {
+						id: '-1',
+						typeId: '5221290120300474048',
+						gammaId: '-1',
+						value: '',
+					},
+					interfaceNodeAddress: {
+						id: '-1',
+						typeId: '5726596359647826656',
+						gammaId: '-1',
+						value: '',
+					},
+					interfaceNodeBuildCodeGen: {
+						id: '-1',
+						typeId: '5806420174793066197',
+						gammaId: '-1',
+						value: false,
+					},
+					interfaceNodeCodeGen: {
+						id: '-1',
+						typeId: '4980834335211418740',
+						gammaId: '-1',
+						value: false,
+					},
+					interfaceNodeCodeGenName: {
+						id: '-1',
+						typeId: '5390401355909179776',
+						gammaId: '-1',
+						value: '',
+					},
+					nameAbbrev: {
+						id: '-1',
+						typeId: '8355308043647703563',
+						gammaId: '-1',
+						value: '',
+					},
+					interfaceNodeToolUse: {
+						id: '-1',
+						typeId: '5863226088234748106',
+						gammaId: '-1',
+						value: false,
+					},
+					interfaceNodeType: {
+						id: '-1',
+						typeId: '6981431177168910500',
+						gammaId: '-1',
+						value: '',
+					},
+					notes: {
+						id: '-1',
+						typeId: '1152921504606847085',
+						gammaId: '-1',
+						value: '',
+					},
 				},
 			],
 			subscriberNodes: [
 				{
 					id: '101',
-					name: 'Node2',
+					gammaId: '-1',
+					name: {
+						id: '-1',
+						typeId: '1152921504606847088',
+						gammaId: '-1',
+						value: 'Node2',
+					},
+					description: {
+						id: '-1',
+						typeId: '1152921504606847090',
+						gammaId: '-1',
+						value: '',
+					},
+					applicability: applicabilitySentinel,
+					interfaceNodeNumber: {
+						id: '-1',
+						typeId: '5726596359647826657',
+						gammaId: '-1',
+						value: '',
+					},
+					interfaceNodeGroupId: {
+						id: '-1',
+						typeId: '5726596359647826658',
+						gammaId: '-1',
+						value: '',
+					},
+					interfaceNodeBackgroundColor: {
+						id: '-1',
+						typeId: '5221290120300474048',
+						gammaId: '-1',
+						value: '',
+					},
+					interfaceNodeAddress: {
+						id: '-1',
+						typeId: '5726596359647826656',
+						gammaId: '-1',
+						value: '',
+					},
+					interfaceNodeBuildCodeGen: {
+						id: '-1',
+						typeId: '5806420174793066197',
+						gammaId: '-1',
+						value: false,
+					},
+					interfaceNodeCodeGen: {
+						id: '-1',
+						typeId: '4980834335211418740',
+						gammaId: '-1',
+						value: false,
+					},
+					interfaceNodeCodeGenName: {
+						id: '-1',
+						typeId: '5390401355909179776',
+						gammaId: '-1',
+						value: '',
+					},
+					nameAbbrev: {
+						id: '-1',
+						typeId: '8355308043647703563',
+						gammaId: '-1',
+						value: '',
+					},
+					interfaceNodeToolUse: {
+						id: '-1',
+						typeId: '5863226088234748106',
+						gammaId: '-1',
+						value: false,
+					},
+					interfaceNodeType: {
+						id: '-1',
+						typeId: '6981431177168910500',
+						gammaId: '-1',
+						value: '',
+					},
+					notes: {
+						id: '-1',
+						typeId: '1152921504606847085',
+						gammaId: '-1',
+						value: '',
+					},
 				},
 			],
 			applicability: applicabilitySentinel,
@@ -184,8 +465,8 @@ describe('SubMessageTableComponent', () => {
 				'name'
 			);
 			await fixture.whenStable();
-			let menu = await loader.getHarness(MatMenuHarness);
-			let spy = spyOn(component, 'viewDiff').and.callThrough();
+			const menu = await loader.getHarness(MatMenuHarness);
+			const spy = spyOn(component, 'viewDiff').and.callThrough();
 			await menu.clickItem({ text: new RegExp('View Diff') });
 			expect(spy).toHaveBeenCalled();
 		});
@@ -200,20 +481,20 @@ describe('SubMessageTableComponent', () => {
 				' '
 			);
 			await fixture.whenStable();
-			let menu = await loader.getHarness(MatMenuHarness);
-			let spy = spyOn(
+			const menu = await loader.getHarness(MatMenuHarness);
+			const spy = spyOn(
 				component,
 				'openDescriptionDialog'
 			).and.callThrough();
-			let dialogRefSpy = jasmine.createSpyObj({
+			const dialogRefSpy = jasmine.createSpyObj({
 				afterClosed: of('ok'),
 				close: null,
 			});
-			let dialogSpy = spyOn(
+			const _dialogSpy = spyOn(
 				TestBed.inject(MatDialog),
 				'open'
 			).and.returnValue(dialogRefSpy);
-			let serviceSpy = spyOn(
+			const serviceSpy = spyOn(
 				TestBed.inject(CurrentMessagesService),
 				'partialUpdateSubMessage'
 			).and.callThrough();
@@ -232,12 +513,12 @@ describe('SubMessageTableComponent', () => {
 				' '
 			);
 			await fixture.whenStable();
-			let menu = await loader.getHarness(MatMenuHarness);
-			let spy = spyOn(
+			const menu = await loader.getHarness(MatMenuHarness);
+			const spy = spyOn(
 				component,
 				'openDescriptionDialog'
 			).and.callThrough();
-			let dialogRefSpy = jasmine.createSpyObj({
+			const dialogRefSpy = jasmine.createSpyObj({
 				afterClosed: of({
 					original: 'abcdef',
 					type: 'description',
@@ -245,11 +526,11 @@ describe('SubMessageTableComponent', () => {
 				}),
 				close: null,
 			});
-			let dialogSpy = spyOn(
+			const _dialogSpy = spyOn(
 				TestBed.inject(MatDialog),
 				'open'
 			).and.returnValue(dialogRefSpy);
-			let serviceSpy = spyOn(
+			const serviceSpy = spyOn(
 				TestBed.inject(CurrentMessagesService),
 				'partialUpdateSubMessage'
 			).and.callThrough();
@@ -268,17 +549,17 @@ describe('SubMessageTableComponent', () => {
 				' '
 			);
 			await fixture.whenStable();
-			let menu = await loader.getHarness(MatMenuHarness);
-			let spy = spyOn(component, 'removeSubMessage').and.callThrough();
-			let dialogRefSpy = jasmine.createSpyObj({
+			const menu = await loader.getHarness(MatMenuHarness);
+			const spy = spyOn(component, 'removeSubMessage').and.callThrough();
+			const dialogRefSpy = jasmine.createSpyObj({
 				afterClosed: of('ok'),
 				close: null,
 			});
-			let dialogSpy = spyOn(
+			const _dialogSpy = spyOn(
 				TestBed.inject(MatDialog),
 				'open'
 			).and.returnValue(dialogRefSpy);
-			let serviceSpy = spyOn(
+			const serviceSpy = spyOn(
 				TestBed.inject(CurrentMessagesService),
 				'removeSubMessage'
 			).and.callThrough();
@@ -299,17 +580,17 @@ describe('SubMessageTableComponent', () => {
 				' '
 			);
 			await fixture.whenStable();
-			let menu = await loader.getHarness(MatMenuHarness);
-			let spy = spyOn(component, 'removeSubMessage').and.callThrough();
-			let dialogRefSpy = jasmine.createSpyObj({
+			const menu = await loader.getHarness(MatMenuHarness);
+			const spy = spyOn(component, 'removeSubMessage').and.callThrough();
+			const dialogRefSpy = jasmine.createSpyObj({
 				afterClosed: of(),
 				close: null,
 			});
-			let dialogSpy = spyOn(
+			const _dialogSpy = spyOn(
 				TestBed.inject(MatDialog),
 				'open'
 			).and.returnValue(dialogRefSpy);
-			let serviceSpy = spyOn(
+			const serviceSpy = spyOn(
 				TestBed.inject(CurrentMessagesService),
 				'removeSubMessage'
 			).and.callThrough();
@@ -330,17 +611,17 @@ describe('SubMessageTableComponent', () => {
 				' '
 			);
 			await fixture.whenStable();
-			let menu = await loader.getHarness(MatMenuHarness);
-			let spy = spyOn(component, 'deleteSubMessage').and.callThrough();
-			let dialogRefSpy = jasmine.createSpyObj({
+			const menu = await loader.getHarness(MatMenuHarness);
+			const spy = spyOn(component, 'deleteSubMessage').and.callThrough();
+			const dialogRefSpy = jasmine.createSpyObj({
 				afterClosed: of('ok'),
 				close: null,
 			});
-			let dialogSpy = spyOn(
+			const _dialogSpy = spyOn(
 				TestBed.inject(MatDialog),
 				'open'
 			).and.returnValue(dialogRefSpy);
-			let serviceSpy = spyOn(
+			const serviceSpy = spyOn(
 				TestBed.inject(CurrentMessagesService),
 				'deleteSubMessage'
 			).and.callThrough();
@@ -361,17 +642,17 @@ describe('SubMessageTableComponent', () => {
 				' '
 			);
 			await fixture.whenStable();
-			let menu = await loader.getHarness(MatMenuHarness);
-			let spy = spyOn(component, 'deleteSubMessage').and.callThrough();
-			let dialogRefSpy = jasmine.createSpyObj({
+			const menu = await loader.getHarness(MatMenuHarness);
+			const spy = spyOn(component, 'deleteSubMessage').and.callThrough();
+			const dialogRefSpy = jasmine.createSpyObj({
 				afterClosed: of(),
 				close: null,
 			});
-			let dialogSpy = spyOn(
+			const _dialogSpy = spyOn(
 				TestBed.inject(MatDialog),
 				'open'
 			).and.returnValue(dialogRefSpy);
-			let serviceSpy = spyOn(
+			const serviceSpy = spyOn(
 				TestBed.inject(CurrentMessagesService),
 				'deleteSubMessage'
 			).and.callThrough();

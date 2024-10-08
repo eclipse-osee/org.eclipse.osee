@@ -13,11 +13,12 @@
 import { Component, inject, input } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { filter, switchMap, take } from 'rxjs';
+import { filter, switchMap, take, tap } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateActionDialogComponent } from './create-action-dialog/create-action-dialog.component';
 import { CreateAction } from '@osee/configuration-management/types';
 import { CreateActionService } from '@osee/configuration-management/services';
+import { BranchRoutedUIService, UiService } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-create-action-button',
@@ -35,6 +36,8 @@ export class CreateActionButtonComponent {
 	workType = input('');
 
 	createActionService = inject(CreateActionService);
+	private uiService = inject(UiService);
+	private branchedRouter = inject(BranchRoutedUIService);
 	dialog = inject(MatDialog);
 
 	addAction() {
@@ -44,7 +47,7 @@ export class CreateActionButtonComponent {
 					this.dialog
 						.open(CreateActionDialogComponent, {
 							data: new CreateAction(thisUser, this.workType()),
-							minWidth: '60%',
+							minWidth: '60vw',
 						})
 						.afterClosed()
 						.pipe(
@@ -57,7 +60,20 @@ export class CreateActionButtonComponent {
 									value,
 									this.category()
 								)
-							)
+							),
+							tap((resp) => {
+								this.uiService.updated = true;
+								if (resp.results.success) {
+									const _branchType =
+										resp.workingBranchId.branchType === '2'
+											? 'baseline'
+											: 'working';
+									this.branchedRouter.position = {
+										type: _branchType,
+										id: resp.workingBranchId.id,
+									};
+								}
+							})
 						)
 				)
 			)

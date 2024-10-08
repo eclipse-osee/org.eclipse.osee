@@ -22,14 +22,15 @@ import { environment, OSEEAuthURL } from './environment';
 	providedIn: 'root',
 })
 export class AdditionalAuthService {
-	constructor(private http: HttpClient) {}
+	private http = inject(HttpClient);
+
 	private _oktaAuthService = inject(OktaAuthStateService);
 	private _isOktaAuthenticated =
 		environment.authScheme === 'OKTA'
 			? this._oktaAuthService.authState$.pipe(
 					filter((s: AuthState) => !!s),
 					map((s: AuthState) => s.isAuthenticated ?? false)
-			  )
+				)
 			: of(false);
 	private _oktaAuth = this._isOktaAuthenticated.pipe(
 		filter((authenticated) => authenticated === true),

@@ -16,57 +16,79 @@
 	<mat-card-header>
 		<mat-card-title-group>
 			<mat-card-title>
-				{{ typeData.name }}
+				{{ typeData.name | attributeToValue }}
 			</mat-card-title>
 			<mat-card-subtitle>
-				{{ typeData.interfaceLogicalType }}
+				{{ typeData.interfaceLogicalType | attributeToValue }}
 			</mat-card-subtitle>
 		</mat-card-title-group>
 	</mat-card-header>
 	<mat-card-content class="mat-body-1">
-		@if (typeData.description) {
+		@if (typeData.description | attributeToValue) {
 			<div>
 				Description:<br />
-				{{ typeData.description }}
+				{{ typeData.description | attributeToValue }}
 			</div>
 		}
-		@if (typeData.interfacePlatformTypeMinval) {
+		@if (typeData.interfacePlatformTypeMinval | attributeToValue) {
 			<div>
 				Minimum Value:<br />
-				{{ typeData.interfacePlatformTypeMinval }}
+				{{ typeData.interfacePlatformTypeMinval | attributeToValue }}
 			</div>
 		}
-		@if (typeData.interfacePlatformTypeMaxval) {
+		@if (typeData.interfacePlatformTypeMaxval | attributeToValue) {
 			<div>
 				Maximum Value:<br />
-				{{ typeData.interfacePlatformTypeMaxval }}
+				{{ typeData.interfacePlatformTypeMaxval | attributeToValue }}
 			</div>
 		}
-		@if (typeData.interfacePlatformTypeBitSize) {
-			<div>Bit Size: {{ typeData.interfacePlatformTypeBitSize }}</div>
-		}
-		@if (typeData.interfaceDefaultValue) {
-			<div>Default Value: {{ typeData.interfaceDefaultValue }}</div>
-		}
-		@if (typeData.interfacePlatformTypeMsbValue) {
-			<div>MSB Value: {{ typeData.interfacePlatformTypeMsbValue }}</div>
-		}
-		@if (typeData.interfacePlatformTypeBitsResolution) {
+		@if (typeData.interfacePlatformTypeBitSize | attributeToValue) {
 			<div>
-				Resolution: {{ typeData.interfacePlatformTypeBitsResolution }}
+				Bit Size:
+				{{ typeData.interfacePlatformTypeBitSize | attributeToValue }}
 			</div>
 		}
-		@if (typeData.interfacePlatformTypeCompRate) {
-			<div>Comp Rate: {{ typeData.interfacePlatformTypeCompRate }}</div>
+		@if (typeData.interfaceDefaultValue | attributeToValue) {
+			<div>
+				Default Value:
+				{{ typeData.interfaceDefaultValue | attributeToValue }}
+			</div>
 		}
-		@if (typeData.interfacePlatformTypeAnalogAccuracy) {
+		@if (typeData.interfacePlatformTypeMsbValue | attributeToValue) {
+			<div>
+				MSB Value:
+				{{ typeData.interfacePlatformTypeMsbValue | attributeToValue }}
+			</div>
+		}
+		@if (typeData.interfacePlatformTypeBitsResolution | attributeToValue) {
+			<div>
+				Resolution:
+				{{
+					typeData.interfacePlatformTypeBitsResolution
+						| attributeToValue
+				}}
+			</div>
+		}
+		@if (typeData.interfacePlatformTypeCompRate | attributeToValue) {
+			<div>
+				Comp Rate:
+				{{ typeData.interfacePlatformTypeCompRate | attributeToValue }}
+			</div>
+		}
+		@if (typeData.interfacePlatformTypeAnalogAccuracy | attributeToValue) {
 			<div>
 				Analog Accuracy:
-				{{ typeData.interfacePlatformTypeAnalogAccuracy }}
+				{{
+					typeData.interfacePlatformTypeAnalogAccuracy
+						| attributeToValue
+				}}
 			</div>
 		}
-		@if (typeData.interfacePlatformTypeUnits) {
-			<div>Units: {{ typeData.interfacePlatformTypeUnits }}</div>
+		@if (typeData.interfacePlatformTypeUnits | attributeToValue) {
+			<div>
+				Units:
+				{{ typeData.interfacePlatformTypeUnits | attributeToValue }}
+			</div>
 		}
 	</mat-card-content>
 	<mat-card-actions class="tw-min-w-max">

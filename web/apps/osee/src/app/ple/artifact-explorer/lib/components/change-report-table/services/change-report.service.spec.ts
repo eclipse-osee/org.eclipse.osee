@@ -11,11 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
-import { TransactionService } from '@osee/shared/transactions';
-import {
-	transactionServiceMock,
-	transactionInfoMock,
-} from '@osee/shared/transactions/testing';
+import { TransactionHistoryService } from '@osee/transaction-history/services';
+import { transactionInfoServiceMock } from '@osee/transaction-history/services/testing';
 import { TestScheduler } from 'rxjs/testing';
 import { BranchInfoService } from '@osee/shared/services';
 import { changeReportHttpServiceMock } from '../mocks/change-report-http.service.mock';
@@ -30,6 +27,7 @@ import {
 } from '@osee/shared/testing';
 import { ActionService } from '@osee/configuration-management/services';
 import { actionServiceMock } from '@osee/configuration-management/testing';
+import { transactionInfoMock } from '@osee/transaction-history/testing';
 
 describe('ChangeReportService', () => {
 	let service: ChangeReportService;
@@ -44,8 +42,8 @@ describe('ChangeReportService', () => {
 				},
 				{ provide: ActionService, useValue: actionServiceMock },
 				{
-					provide: TransactionService,
-					useValue: transactionServiceMock,
+					provide: TransactionHistoryService,
+					useValue: transactionInfoServiceMock,
 				},
 				{
 					provide: BranchInfoService,

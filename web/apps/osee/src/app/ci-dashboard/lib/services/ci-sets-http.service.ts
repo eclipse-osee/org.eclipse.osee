@@ -11,20 +11,28 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { SetReference } from '../types';
+import { Injectable, inject } from '@angular/core';
+import { CISet } from '../types';
 import { apiURL } from '@osee/environments';
+import { HttpParamsType } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class CiSetsHttpService {
-	constructor(private http: HttpClient) {}
+	private http = inject(HttpClient);
 
-	getCiSets(branchId: string, activeOnly: boolean) {
-		return this.http.get<SetReference[]>(
-			`${apiURL}/script/tmo/${branchId}/set`,
-			{ params: { activeOnly: activeOnly } }
-		);
+	getCiSets(
+		branchId: string,
+		activeOnly: boolean,
+		orderByAttributeType?: `${number}`
+	) {
+		let params: HttpParamsType = { activeOnly };
+		if (orderByAttributeType) {
+			params = { ...params, orderByAttributeType };
+		}
+		return this.http.get<CISet[]>(`${apiURL}/script/tmo/${branchId}/set`, {
+			params,
+		});
 	}
 }

@@ -90,7 +90,7 @@ export type CreateBranchResponse = {
 	idIntValue: number;
 };
 
-export interface CreateBranchDetails {
+export type CreateBranchDetails = {
 	branchName: string;
 	parentBranch: string;
 	associatedArtifact: string;
@@ -102,7 +102,7 @@ export interface CreateBranchDetails {
 	mergeDestinationBranchId: string;
 	mergeSourceBranchId: string;
 	txCopyBranchType: boolean;
-}
+};
 
 export class CreateMergeBranchDetails implements CreateBranchDetails {
 	constructor(sourceBranch: branch, parentBranch: branch) {
@@ -116,10 +116,10 @@ export class CreateMergeBranchDetails implements CreateBranchDetails {
 		this.mergeDestinationBranchId = parentBranch.id;
 		this.mergeSourceBranchId = sourceBranch.id;
 	}
-	branchName: string = '';
-	parentBranch: string = '-1';
-	associatedArtifact: string = '-1';
-	branchType: string = '3';
+	branchName = '';
+	parentBranch = '-1';
+	associatedArtifact = '-1';
+	branchType = '3';
 	sourceTransaction: { id: string; branchId: string } = {
 		id: '-1',
 		branchId: '-1',
@@ -128,11 +128,11 @@ export class CreateMergeBranchDetails implements CreateBranchDetails {
 		id: '-1',
 		branchId: '-1',
 	};
-	creationComment: string = 'Creating merge branch';
-	mergeAddressingQueryId: string = '0';
-	mergeDestinationBranchId: string = '-1';
-	mergeSourceBranchId: string = '-1';
-	txCopyBranchType: boolean = false;
+	creationComment = 'Creating merge branch';
+	mergeAddressingQueryId = '0';
+	mergeDestinationBranchId = '-1';
+	mergeSourceBranchId = '-1';
+	txCopyBranchType = false;
 }
 
 export type ConflictType = 'ARTIFACT' | 'ATTRIBUTE' | 'RELATION';

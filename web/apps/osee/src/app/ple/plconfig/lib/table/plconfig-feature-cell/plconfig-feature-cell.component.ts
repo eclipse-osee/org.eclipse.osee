@@ -12,8 +12,8 @@
  **********************************************************************/
 import { Component, computed, inject, input } from '@angular/core';
 import { MatTooltip } from '@angular/material/tooltip';
-import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
 import { DialogService } from '../../services/dialog.service';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 import {
 	isValidPLConfigAttr,
 	plconfigTableEntry,
@@ -23,17 +23,13 @@ import {
 	selector: 'osee-plconfig-feature-cell',
 	standalone: true,
 	imports: [MatTooltip],
-	template: ` <div
+	template: ` <button
 		[matTooltip]="description()"
-		[class]="
-			feature().id !== '-1' && feature().id !== ''
-				? 'tw-cursor-pointer'
-				: 'tw-cursor-text'
-		"
+		[disabled]="feature().id === '-1'"
 		class="tw-text-inherit"
 		(click)="displayFeatureDialog()">
 		{{ feature().name }}
-	</div>`,
+	</button>`,
 })
 export class PlconfigFeatureCellComponent {
 	private dialogService = inject(DialogService);
@@ -52,11 +48,7 @@ export class PlconfigFeatureCellComponent {
 
 	displayFeatureDialog() {
 		//do not display feature menu for compound applicabilities
-		if (
-			this.feature().id !== '' &&
-			this.feature().id !== '-1' &&
-			this.feature().id !== '0'
-		) {
+		if (this.feature().id !== '-1' && this.feature().id !== '0') {
 			this.dialogService
 				.displayFeatureDialog(this.feature().id)
 				.subscribe();

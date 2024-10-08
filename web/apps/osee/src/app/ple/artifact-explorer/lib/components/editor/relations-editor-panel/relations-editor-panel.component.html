@@ -10,7 +10,7 @@
 * Contributors:
 *     Boeing - initial API and implementation
 -->
-<osee-artifact-explorer-expansion-panel title="Relations Editor">
+<osee-expansion-panel title="Relations Editor">
 	<div class="tw-pt-4">
 		@if (artWithRelation$ | async; as art) {
 			@for (
@@ -49,7 +49,7 @@
 									relation.relationSides[1].artifacts.length >
 										0
 										? 'tw-text-accent-700'
-										: 'tw-text-foreground-disabled'
+										: 'tw-text-foreground-disabled',
 								]"
 								>swap_horiz</mat-icon
 							>
@@ -74,7 +74,7 @@
 									dropdownsOpen.value.includes(
 										relation.relationTypeToken.id
 									)
-										? 'tw-h-auto '
+										? 'tw-h-auto'
 										: 'tw-h-0 tw-bg-inherit'
 								"
 								id="relationList"
@@ -109,7 +109,7 @@
 											[ngClass]="[
 												side.artifacts.length > 0
 													? 'tw-text-accent-700'
-													: 'tw-text-foreground-disabled'
+													: 'tw-text-foreground-disabled',
 											]"
 											>swap_horiz</mat-icon
 										>
@@ -168,7 +168,7 @@
 																				art,
 																				relation,
 																				side
-																		  )
+																			)
 																		: ''
 																">
 																<mat-icon
@@ -190,4 +190,4 @@
 			}
 		}
 	</div>
-</osee-artifact-explorer-expansion-panel>
+</osee-expansion-panel>

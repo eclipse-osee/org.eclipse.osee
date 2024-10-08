@@ -68,7 +68,10 @@ public class InterfaceNodeEndpointImpl implements InterfaceNodeEndpoint {
    }
 
    @Override
-   public Collection<InterfaceNode> getNodesByName(String name, long pageNum, long pageSize) {
+   public Collection<InterfaceNode> getNodesByName(String name, ArtifactId connectionId, long pageNum, long pageSize) {
+      if (connectionId != null && connectionId.isValid()) {
+         return this.interfaceNodeApi.getNodesForConnectionByName(branch, connectionId, name, pageNum, pageSize);
+      }
       return this.interfaceNodeApi.getNodesByName(branch, name, pageNum, pageSize);
    }
 

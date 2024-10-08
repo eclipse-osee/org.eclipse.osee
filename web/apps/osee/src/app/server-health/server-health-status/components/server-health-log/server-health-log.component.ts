@@ -16,7 +16,7 @@ import {
 	CdkVirtualScrollViewport,
 } from '@angular/cdk/scrolling';
 
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { scan, shareReplay, switchMap } from 'rxjs';
 import { ServerHealthHttpService } from '../../../shared/services/server-health-http.service';
@@ -34,7 +34,7 @@ import { AsyncPipe } from '@angular/common';
 	templateUrl: './server-health-log.component.html',
 })
 export class ServerHealthLogComponent {
-	constructor(private serverHealthHttpService: ServerHealthHttpService) {}
+	private serverHealthHttpService = inject(ServerHealthHttpService);
 
 	remoteHealthLog = this.serverHealthHttpService.RemoteLog.pipe(
 		switchMap((data) => split(data.healthLog.log)),
@@ -43,7 +43,7 @@ export class ServerHealthLogComponent {
 		takeUntilDestroyed()
 	);
 
-	trackByLine(index: number, item: string) {
+	trackByLine(_index: number, item: string) {
 		return item;
 	}
 

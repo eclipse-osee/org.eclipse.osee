@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Directive, forwardRef, Input } from '@angular/core';
+import { Directive, forwardRef, Input, inject } from '@angular/core';
 import {
 	AbstractControl,
 	AsyncValidator,
@@ -25,8 +25,8 @@ import {
 	PlatformTypeQuery,
 } from '@osee/messaging/shared/query';
 import { debounceTime, map, Observable, of, switchMap, take } from 'rxjs';
-import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
 import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 
 @Directive({
 	selector: '[oseeUniquePlatformTypeName]',
@@ -40,10 +40,11 @@ import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 	],
 })
 export class UniquePlatformTypeNameDirective implements AsyncValidator {
+	private queryService = inject(CurrentQueryService);
+
 	@Input() referencePlatform: PlatformType | Partial<PlatformType> =
 		new PlatformTypeSentinel();
 	private __referencePlatform = new PlatformTypeSentinel();
-	constructor(private queryService: CurrentQueryService) {}
 
 	validate(
 		control: AbstractControl<string, string>
@@ -70,7 +71,7 @@ export class UniquePlatformTypeNameDirective implements AsyncValidator {
 							.includes(this.referencePlatform.id || '-1')
 							? of<ValidationErrors>({
 									notUnique: { value: name },
-							  })
+								})
 							: of(null)
 					)
 				)

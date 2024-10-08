@@ -184,6 +184,20 @@ public class InterfaceNodeViewApiImpl implements InterfaceNodeViewApi {
    }
 
    @Override
+   public Collection<InterfaceNode> getNodesForConnectionByName(BranchId branch, ArtifactId connectionId, String name,
+      long pageNum, long pageSize) {
+      try {
+         return this.getAccessor().getAllByRelation(branch, CoreRelationTypes.InterfaceConnectionNode_Connection,
+            connectionId, name, Arrays.asList(CoreAttributeTypes.Name), new LinkedList<>(), pageNum, pageSize,
+            CoreAttributeTypes.Name, new LinkedList<>(), ArtifactId.SENTINEL);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         System.out.println(ex);
+      }
+      return new LinkedList<>();
+   }
+
+   @Override
    public Collection<InterfaceNode> getNodesByName(BranchId branch, String name, long pageNum, long pageSize) {
       try {
          return this.getAccessor().getAll(branch, new LinkedList<>(), name, Arrays.asList(CoreAttributeTypes.Name),

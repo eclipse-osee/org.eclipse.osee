@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { combineLatest, iif, map, of, switchMap, take } from 'rxjs';
 import { CommandGroupOptionsService } from '../data-services/commands/command-group-options.service';
 import { ExecutedCommandsService } from '../data-services/execution-services/executed-commands.service';
@@ -21,6 +21,11 @@ import { SelectedCommandDataService } from '../data-services/selected-command-da
 	providedIn: 'root',
 })
 export class CommandPaletteInputService {
+	private commandGroupOptService = inject(CommandGroupOptionsService);
+	private selectedCommandDataService = inject(SelectedCommandDataService);
+	private parameterDataService = inject(ParameterDataService);
+	private executedCommandsService = inject(ExecutedCommandsService);
+
 	filterString = this.commandGroupOptService.stringThatFiltersCommands;
 	filteredCommandGroups$ = this.commandGroupOptService.filteredCommandGroups;
 	private _predictiveText = combineLatest([
@@ -48,7 +53,7 @@ export class CommandPaletteInputService {
 								of('')
 							)
 						)
-				  )
+					)
 				: of('')
 		)
 	);
@@ -71,13 +76,6 @@ export class CommandPaletteInputService {
 		window.open(contentUrl.origin, '_blank');
 		this.executedCommandsService.updateCommand.subscribe();
 	}
-
-	constructor(
-		private commandGroupOptService: CommandGroupOptionsService,
-		private selectedCommandDataService: SelectedCommandDataService,
-		private parameterDataService: ParameterDataService,
-		private executedCommandsService: ExecutedCommandsService
-	) {}
 
 	public get predictiveText() {
 		return this._predictiveText;

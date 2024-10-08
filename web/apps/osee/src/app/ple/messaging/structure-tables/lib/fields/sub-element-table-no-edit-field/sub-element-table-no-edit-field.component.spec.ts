@@ -11,44 +11,26 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router, ActivatedRoute, convertToParamMap } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { of } from 'rxjs';
+import { provideRouter } from '@angular/router';
 
+import { elementsMock } from '@osee/messaging/shared/testing';
 import { SubElementTableNoEditFieldComponent } from './sub-element-table-no-edit-field.component';
 
 describe('SubElementTableNoEditFieldComponent', () => {
 	let component: SubElementTableNoEditFieldComponent;
 	let fixture: ComponentFixture<SubElementTableNoEditFieldComponent>;
-	let router: any;
 
 	beforeEach(async () => {
-		router = jasmine.createSpyObj(
-			'Router',
-			['navigate', 'createUrlTree', 'serializeUrl'],
-			['paramMap']
-		);
 		await TestBed.configureTestingModule({
-			imports: [RouterTestingModule],
-			providers: [
-				{ provide: Router, useValue: router },
-				{
-					provide: ActivatedRoute,
-					useValue: {
-						paramMap: of(
-							convertToParamMap({
-								branchId: '10',
-								branchType: 'working',
-							})
-						),
-					},
-				},
-			],
+			imports: [],
+			providers: [provideRouter([])],
 		}).compileComponents();
 	});
 
 	beforeEach(() => {
 		fixture = TestBed.createComponent(SubElementTableNoEditFieldComponent);
+		fixture.componentRef.setInput('header', 'name');
+		fixture.componentRef.setInput('element', elementsMock[0]);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

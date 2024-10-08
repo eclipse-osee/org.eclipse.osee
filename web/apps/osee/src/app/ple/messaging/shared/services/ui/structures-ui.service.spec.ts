@@ -33,20 +33,6 @@ describe('UiService', () => {
 		expect(service).toBeTruthy();
 	});
 
-	it('should set filter value', () => {
-		scheduler.run(() => {
-			const expectedfilterValues = { a: 'a', b: 'b' };
-			const expectedMarble = 'a';
-			scheduler
-				.expectObservable(service.filter)
-				.toBe(expectedMarble, expectedfilterValues);
-			service.filterString = 'a';
-			service.filterString = 'a';
-			service.filterString = 'b';
-			service.filterString = 'a';
-		});
-	});
-
 	it('should set branch value', () => {
 		scheduler.run(() => {
 			const expectedfilterValues = { a: '1', b: '2' };
@@ -72,20 +58,6 @@ describe('UiService', () => {
 			service.messageIdString = '1';
 			service.messageIdString = '2';
 			service.messageIdString = '1';
-		});
-	});
-
-	it('should set sub message value', () => {
-		scheduler.run(() => {
-			const expectedfilterValues = { a: '1', b: '2' };
-			const expectedMarble = 'a';
-			scheduler
-				.expectObservable(service.subMessageId)
-				.toBe(expectedMarble, expectedfilterValues);
-			service.subMessageIdString = '1';
-			service.subMessageIdString = '1';
-			service.subMessageIdString = '2';
-			service.subMessageIdString = '1';
 		});
 	});
 });

@@ -11,16 +11,16 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenuItem } from '@angular/material/menu';
 import { UiService } from '@osee/shared/services';
-import { TransactionService } from '@osee/shared/transactions';
+import { TransactionService } from '@osee/transactions/services';
 import { attribute } from '@osee/shared/types';
 import { RELATIONTYPEIDENUM } from '@osee/shared/types/constants';
-import { combineLatest, filter, map, of, switchMap, take, tap } from 'rxjs';
+import { combineLatest, filter, map, switchMap, take, tap } from 'rxjs';
 import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
 import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
 import { ArtifactIconService } from '../../../services/artifact-icon.service';
@@ -39,19 +39,18 @@ import { PublishMarkdownAsHtmlDialogComponent } from './dialogs/publish-markdown
 	templateUrl: './artifact-operations-context-menu.component.html',
 })
 export class ArtifactOperationsContextMenuComponent {
+	dialog = inject(MatDialog);
+	private uiService = inject(UiService);
+	private pathsService = inject(ArtifactHierarchyPathService);
+	private artExpHttpService = inject(ArtifactExplorerHttpService);
+	private artifacticonService = inject(ArtifactIconService);
+
 	artifactId = input.required<string>();
 	parentArtifactId = input.required<`${number}`>();
 	siblingArtifactId = input<`${number}`>('0');
 	operationTypes = input<operationType[]>([]);
 
-	constructor(
-		public dialog: MatDialog,
-		private transactionService: TransactionService,
-		private uiService: UiService,
-		private pathsService: ArtifactHierarchyPathService,
-		private artExpHttpService: ArtifactExplorerHttpService,
-		private artifacticonService: ArtifactIconService
-	) {}
+	private transactionService = inject(TransactionService);
 
 	branchId$ = this.uiService.id;
 	viewId$ = this.uiService.viewId;
@@ -241,7 +240,7 @@ export class ArtifactOperationsContextMenuComponent {
 											if (
 												txResult.results.success == true
 											) {
-												var firstId =
+												const firstId =
 													txResult.results.ids?.at(0);
 												if (firstId !== undefined)
 													this.pathsService.updatePaths(

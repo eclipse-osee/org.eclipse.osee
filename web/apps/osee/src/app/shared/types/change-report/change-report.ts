@@ -10,26 +10,26 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { applic } from '../applicability/applic';
+import { applic } from '../../../applicability/types/applic';
 import type { ARTIFACTTYPEID } from '../constants/ArtifactTypeId.enum';
-import type { ATTRIBUTETYPEID } from '../constants/AttributeTypeId.enum';
+import type { ATTRIBUTETYPEID } from '@osee/attributes/constants';
 import type { RELATIONTYPEID } from '../constants/RelationTypeId.enum';
 import { TupleTypeId } from '../constants/TupleTypeId';
-import { transactionToken } from './transaction-token';
+import { transactionToken } from '@osee/transactions/types';
 
 /**
  * Contains information on changes that have occurred on a branch, appears in an array on /orcs/branches/branch1/diff/branch2
  */
-export interface changeInstance<
+export type changeInstance<
 	T = string | number | boolean | null | undefined,
 	U = string | number | boolean | null | undefined,
 	V = string | number | boolean | null | undefined,
 	W = string | number | boolean | null | undefined,
 	X = string | number | boolean | null | undefined,
-> {
+> = {
 	ignoreType: ignoreType;
 	changeType: changeType;
-	artId: string;
+	artId: `${number}`;
 	itemId: string;
 	itemTypeId:
 		| ARTIFACTTYPEID
@@ -47,7 +47,7 @@ export interface changeInstance<
 	artIdB: string; //only needed on client so far
 	deleted: boolean;
 	applicabilityCopy: boolean; //only needed on client so far
-}
+};
 export const enum ignoreType {
 	NONE = 'NONE',
 	DELETED_AND_DNE_ON_DESTINATION = 'DELETED_AND_DNE_ON_DESTINATION',
@@ -73,7 +73,7 @@ export const enum ModificationType {
 /**
  * Contains information regarding the type of change occurring, i.e. whether it is an attribute change, artifact change, relation change,  etc.
  */
-export interface changeType {
+export type changeType = {
 	id: changeTypeNumber; //really a number
 	name: changeTypeEnum; //actual change type
 	typeId: number; //2834799904 data at top of ChangeType.java no idea if any use
@@ -81,7 +81,7 @@ export interface changeType {
 	notAttributeChange: boolean; //change is not an attribute change
 	idIntValue: number; //redundant
 	idString: string; //redundant
-}
+};
 export const enum changeTypeEnum {
 	ATTRIBUTE_CHANGE = 'AttributeChange',
 	ARTIFACT_CHANGE = 'ArtifactChange',
@@ -98,7 +98,7 @@ export const enum changeTypeNumber {
 /**
  * Useful info includes the {@link transactionToken transaction}, value, uri,whether or not the state is valid, and the {@link applic applicability token}
  */
-export interface version<T = string | number | boolean | null | undefined> {
+export type version<T = string | number | boolean | null | undefined> = {
 	transactionToken: transactionToken;
 	gammaId: string | null;
 	modType: ModificationType;
@@ -106,17 +106,17 @@ export interface version<T = string | number | boolean | null | undefined> {
 	uri: string;
 	valid: boolean;
 	applicabilityToken: applic | null;
-}
-export interface difference<
+};
+export type difference<
 	T = string | number | boolean | applic | null | undefined,
-> {
+> = {
 	user?: string;
 	timeOfChange?: string;
 	previousValue: T;
 	currentValue: T;
 	transactionToken: transactionToken;
-}
-export interface itemTypeIdRelation {
+};
+export type itemTypeIdRelation = {
 	id: RELATIONTYPEID;
 	name: string;
 	order: string;
@@ -124,9 +124,9 @@ export interface itemTypeIdRelation {
 	multiplicity: string;
 	idString: string;
 	idIntValue: number;
-}
+};
 
-export interface changeReportRow {
+export type changeReportRow = {
 	ids: string;
 	names: string;
 	itemType: string;
@@ -138,4 +138,4 @@ export interface changeReportRow {
 		id: string;
 		branchId: string;
 	};
-}
+};

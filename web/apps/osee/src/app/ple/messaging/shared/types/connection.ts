@@ -10,56 +10,68 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { applicabilitySentinel, type applic } from '@osee/applicability/types';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
+import { attribute } from '@osee/attributes/types';
+import type { hasChanges } from '@osee/shared/types/change-report';
 import type { Edge } from '@swimlane/ngx-graph';
-import type { difference } from '@osee/shared/types/change-report';
-import type { applic } from '@osee/shared/types/applicability';
-import { TransportType, type transportType } from './transportType';
 import { nodeData } from './node';
+import { TransportType, type transportType } from './transportType';
 
-export interface connection extends connectionAttributes, connectionRelations {
-	id?: string;
-	dashed?: boolean;
+export type _newConnection = {
 	applicability?: applic;
-}
+} & connectionAttributes &
+	Partial<connectionRelations>;
+export type connection = {
+	id: `${number}`;
+	gammaId: `${number}`;
+	dashed?: boolean;
+} & _connectionApplic &
+	connectionAttributes &
+	connectionRelations &
+	_connectionChanges;
+type _connectionApplic = {
+	applicability: applic;
+};
+type connectionAttributes = {
+	name: attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>;
+	description: attribute<string, typeof ATTRIBUTETYPEIDENUM.DESCRIPTION>;
+};
 
-interface connectionAttributes {
-	name: string;
-	description: string;
-}
-
-interface connectionRelations {
+type connectionRelations = {
 	transportType: transportType;
 	nodes: nodeData[];
-}
-export interface connectionWithChanges extends connection {
-	deleted: boolean;
-	added: boolean;
-	changes: {
-		name?: difference;
-		description?: difference;
-		transportType?: difference;
-		applicability?: difference;
-	};
-}
+};
 
-export interface _newConnection
-	extends connectionAttributes,
-		Partial<connectionRelations> {
-	applicability?: applic;
-}
-export interface newConnection {
-	connection: _newConnection;
-	nodeIds: string[];
-}
+type _connectionChanges = {
+	deleted?: boolean;
+	added?: boolean;
+	changes?: __connectionChanges;
+};
+export type __connectionChanges = {} & hasChanges<connectionAttributes> &
+	hasChanges<_connectionApplic> &
+	hasChanges<connectionRelations>;
 
-export interface OseeEdge<T> extends Omit<Edge, 'data'> {
+export type OseeEdge<T> = {
 	data: T;
-}
+} & Omit<Edge, 'data'>;
 
 export const connectionSentinel: connection = {
 	id: '-1',
-	name: '',
-	description: '',
+	gammaId: '-1',
+	name: {
+		id: '-1',
+		typeId: '1152921504606847088',
+		gammaId: '-1',
+		value: '',
+	},
+	description: {
+		id: '-1',
+		typeId: '1152921504606847090',
+		gammaId: '-1',
+		value: '',
+	},
 	nodes: [],
 	transportType: { ...new TransportType(), directConnection: false },
+	applicability: applicabilitySentinel,
 };

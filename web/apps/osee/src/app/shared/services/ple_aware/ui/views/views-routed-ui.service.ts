@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ViewsUiService } from '@osee/shared/services';
 
@@ -18,11 +18,14 @@ import { ViewsUiService } from '@osee/shared/services';
 	providedIn: 'root',
 })
 export class ViewsRoutedUiService {
-	constructor(
-		private viewsService: ViewsUiService,
-		private router: Router,
-		private route: ActivatedRoute
-	) {
+	private viewsService = inject(ViewsUiService);
+	private router = inject(Router);
+	private route = inject(ActivatedRoute);
+
+	/** Inserted by Angular inject() migration for backwards compatibility */
+	constructor(...args: unknown[]);
+
+	constructor() {
 		this.route.queryParamMap?.subscribe((queryParams) => {
 			const viewId = queryParams.get('view');
 			if (viewId !== null) {

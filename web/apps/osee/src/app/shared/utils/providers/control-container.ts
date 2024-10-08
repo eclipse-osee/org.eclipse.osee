@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Optional } from '@angular/core';
-import { ControlContainer, NgForm } from '@angular/forms';
+import { ControlContainer, NgForm, NgModelGroup } from '@angular/forms';
 
 function controlContainerFactory(controlContainer?: ControlContainer) {
 	return controlContainer;
@@ -21,5 +21,13 @@ export function provideOptionalControlContainerNgForm() {
 		provide: ControlContainer,
 		useFactory: controlContainerFactory,
 		deps: [[new Optional(), NgForm]],
+	};
+}
+
+export function provideOptionalControlContainerNgModelGroup() {
+	return {
+		provide: ControlContainer,
+		useFactory: controlContainerFactory,
+		deps: [[new Optional(), NgModelGroup]],
 	};
 }

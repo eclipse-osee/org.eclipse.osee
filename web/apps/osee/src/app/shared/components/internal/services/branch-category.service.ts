@@ -17,15 +17,22 @@ import { BehaviorSubject } from 'rxjs';
 	providedIn: 'root',
 })
 export class BranchCategoryService {
-	private _branchCategory: BehaviorSubject<string> =
-		new BehaviorSubject<string>('');
-	constructor() {}
+	private _branchCategory = new BehaviorSubject<`${number}`>('-1');
+	private _excludeBranchCategory = new BehaviorSubject<`${number}`>('-1');
 
 	get branchCategory() {
 		return this._branchCategory;
 	}
 
-	set category(value: string) {
-		this._branchCategory.next(value);
+	set category(category: `${number}`) {
+		this._branchCategory.next(category);
+	}
+
+	get excludeBranchCategory() {
+		return this._excludeBranchCategory;
+	}
+
+	set excludeCategory(category: `${number}`) {
+		this._excludeBranchCategory.next(category);
 	}
 }

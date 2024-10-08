@@ -28,21 +28,24 @@
 			(click)="addProductType()"
 			[disabled]="!editable()"
 			data-cy="add-product-type-btn">
-			<mat-icon color="success">add_box</mat-icon>Add Product Type
+			<mat-icon class="tw-text-osee-green-9">add_box</mat-icon>Add Product
+			Type
 		</button>
 		<button
 			mat-menu-item
 			[disabled]="!editable()"
 			[matMenuTriggerFor]="editProductTypeMenu"
 			data-cy="edit-product-type-btn">
-			<mat-icon color="primary">edit</mat-icon>Edit Product Type
+			<mat-icon class="tw-text-osee-blue-9">edit</mat-icon>Edit Product
+			Type
 		</button>
 		<button
 			mat-menu-item
 			[disabled]="!editable()"
 			[matMenuTriggerFor]="deleteProductTypeMenu"
 			data-cy="delete-product-type-btn">
-			<mat-icon color="warn">delete_forever</mat-icon>Delete Product Type
+			<mat-icon class="tw-text-osee-red-9">delete_forever</mat-icon>Delete
+			Product Type
 		</button>
 	</ng-template>
 </mat-menu>

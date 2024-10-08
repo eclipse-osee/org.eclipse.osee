@@ -11,16 +11,15 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { difference } from '@osee/shared/types/change-report';
-export interface ExtendedNameValuePair {
+export type ExtendedNameValuePair = {
 	id: string;
 	name: string;
 	value: string;
 	values: string[];
-}
+};
 
-export interface ExtendedNameValuePairWithChanges
-	extends ExtendedNameValuePair {
+export type ExtendedNameValuePairWithChanges = {
 	changes: {
 		value: difference;
 	};
-}
+} & ExtendedNameValuePair;

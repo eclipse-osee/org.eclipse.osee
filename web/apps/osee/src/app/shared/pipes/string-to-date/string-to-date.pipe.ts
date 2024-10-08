@@ -17,7 +17,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 	standalone: true,
 })
 export class StringToDatePipe implements PipeTransform {
-	transform(value: string, ...args: unknown[]): Date {
+	transform(value: string, ..._args: unknown[]): Date {
 		return new Date(value);
 	}
 }

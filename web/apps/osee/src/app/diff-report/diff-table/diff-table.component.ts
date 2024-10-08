@@ -19,7 +19,7 @@ import {
 } from '@angular/animations';
 import { SelectionModel } from '@angular/cdk/collections';
 import { AsyncPipe } from '@angular/common';
-import { Component, OnInit, effect, viewChild } from '@angular/core';
+import { Component, OnInit, effect, viewChild, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAnchor, MatButton } from '@angular/material/button';
 import { MatFormField, MatPrefix } from '@angular/material/form-field';
@@ -93,6 +93,8 @@ import { ReportService } from '../services/report.service';
 	],
 })
 export class DiffTableComponent implements OnInit {
+	private reportService = inject(ReportService);
+
 	loading = false;
 	private paginator = viewChild.required(MatPaginator);
 	private sort = viewChild.required(MatSort);
@@ -107,9 +109,9 @@ export class DiffTableComponent implements OnInit {
 		this.dataSource.sort = this.sort();
 	});
 	selection = new SelectionModel<Artifact>(true, []);
-	allRowsExpanded: boolean = false;
-	isExpansionDetailRow = (i: number, row: Object) =>
-		row.hasOwnProperty('detailRow');
+	allRowsExpanded = false;
+	isExpansionDetailRow = (_i: number, row: object) =>
+		Object.prototype.hasOwnProperty.call(row, 'detailRow');
 
 	newRow(workflow: workflow): NewRow {
 		return {
@@ -134,7 +136,7 @@ export class DiffTableComponent implements OnInit {
 
 	link = this.endPointUrl.pipe(map((endUrl) => apiURL + endUrl));
 
-	constructor(private reportService: ReportService) {
+	constructor() {
 		this.dataSource.filterPredicate = this.filterFunction;
 	}
 
@@ -168,8 +170,8 @@ export class DiffTableComponent implements OnInit {
 		'actions',
 	];
 
-	applyFilter(event: any) {
-		var filterValue = event.target.value;
+	applyFilter(event: Event) {
+		let filterValue = (event.target as HTMLInputElement).value;
 		filterValue = filterValue.trim();
 		filterValue = filterValue.toLowerCase();
 		this.dataSource.filter = filterValue;
@@ -188,8 +190,8 @@ export class DiffTableComponent implements OnInit {
 	);
 
 	getTestTd(test: test) {
-		var max = 50;
-		var trimmed = test.name.slice(test.name.lastIndexOf('.') + 1);
+		const max = 50;
+		let trimmed = test.name.slice(test.name.lastIndexOf('.') + 1);
 		if (trimmed.length > max) {
 			trimmed = '...' + trimmed.slice(-max);
 		}
@@ -197,7 +199,7 @@ export class DiffTableComponent implements OnInit {
 	}
 
 	filterFunction(data: workflow, filter: string): boolean {
-		let searchTerms = JSON.parse(filter);
+		const searchTerms = JSON.parse(filter);
 		return (
 			data.workflowID.toLowerCase().indexOf(searchTerms.workflowID) !==
 				-1 &&
@@ -225,7 +227,8 @@ export class DiffTableComponent implements OnInit {
 
 	getChangeReport(report: string) {
 		let data: string;
-		this.reportService.getReport(report).subscribe((resp: any) => {
+		this.reportService.getReport(report).subscribe((resp) => {
+			//@ts-expect-error Murshed can you make this make sense? are you just looking for resp.text()?
 			data = resp;
 			this.downloadAsXmlFile(
 				data,
@@ -234,23 +237,25 @@ export class DiffTableComponent implements OnInit {
 		});
 	}
 
-	updateRowsforCSV(results: Array<workflow>) {
-		var rows = [];
-		for (var i = 0; i < results.length; i++) {
-			var workflow = results[i];
-			var row = this.newRow(workflow);
+	updateRowsforCSV(results: workflow[]) {
+		const rows = [];
+		//TODO update to make this make sense?
+		//eslint-disable-next-line
+		for (let i = 0; i < results.length; i++) {
+			const workflow = results[i];
+			let row = this.newRow(workflow);
 			rows.push(row);
 			if (workflow.requirements.length) {
-				for (var k = 0; k < workflow.requirements.length; k++) {
+				for (let k = 0; k < workflow.requirements.length; k++) {
 					if (k) {
 						row = this.newRow(workflow);
 						rows.push(row);
 					}
-					var req = workflow.requirements[k];
+					const req = workflow.requirements[k];
 					row.requirement = req.name;
 					if (req.tests.length) {
 						row.test = this.getTestTd(req.tests[0]);
-						for (var j = 1; j < req.tests.length; j++) {
+						for (let j = 1; j < req.tests.length; j++) {
 							row = this.newRow(workflow);
 							rows.push(row);
 							row.requirement = req.name;
@@ -264,10 +269,10 @@ export class DiffTableComponent implements OnInit {
 	}
 
 	convertRowsToStringForCSV(rows: NewRow[], headerList: string[]) {
-		let array = typeof rows != 'object' ? JSON.parse(rows) : rows;
+		const array = typeof rows != 'object' ? JSON.parse(rows) : rows;
 		let str = '';
 		let column = 'S.No,';
-		let newHeaders = [
+		const newHeaders = [
 			'Action ID',
 			'WorkFlow ID',
 			'Program',
@@ -278,15 +283,15 @@ export class DiffTableComponent implements OnInit {
 			'Test',
 		];
 
-		for (let index in newHeaders) {
+		for (const index in newHeaders) {
 			column += newHeaders[index] + ',';
 		}
 		column = column.slice(0, -1);
 		str += column + '\r\n';
 		for (let i = 0; i < array.length; i++) {
 			let line = i + 1 + '';
-			for (let index in headerList) {
-				let head = headerList[index];
+			for (const index in headerList) {
+				const head = headerList[index];
 
 				line += ',' + this.stripData(array[i][head]);
 			}
@@ -310,11 +315,11 @@ export class DiffTableComponent implements OnInit {
 	}
 
 	downloadAsXmlFile(data: string, filename: string) {
-		let blob = new Blob([data], {
+		const blob = new Blob([data], {
 			type: 'text/xml;',
 		});
-		let dwldLink = document.createElement('a');
-		let url = URL.createObjectURL(blob);
+		const dwldLink = document.createElement('a');
+		const url = URL.createObjectURL(blob);
 		dwldLink.setAttribute('href', url);
 		dwldLink.setAttribute('download', filename);
 		dwldLink.style.visibility = 'hidden';
@@ -324,11 +329,11 @@ export class DiffTableComponent implements OnInit {
 	}
 
 	downloadAsCsvFile(csvData: string, filename: string) {
-		let blob = new Blob(['\ufeff' + csvData], {
+		const blob = new Blob(['\ufeff' + csvData], {
 			type: 'text/csv;charset=utf-8;',
 		});
-		let dwldLink = document.createElement('a');
-		let url = URL.createObjectURL(blob);
+		const dwldLink = document.createElement('a');
+		const url = URL.createObjectURL(blob);
 		dwldLink.setAttribute('href', url);
 		dwldLink.setAttribute('download', filename);
 		dwldLink.style.visibility = 'hidden';
@@ -338,7 +343,7 @@ export class DiffTableComponent implements OnInit {
 	}
 
 	exportDataAsCsv() {
-		let arrHeader = [
+		const arrHeader = [
 			'actionId',
 			'workflowID',
 			'program',
@@ -348,14 +353,14 @@ export class DiffTableComponent implements OnInit {
 			'requirement',
 			'test',
 		];
-		var updatedRows = this.updateRowsforCSV(this.dataSource.data);
-		let csvData = this.convertRowsToStringForCSV(updatedRows, arrHeader);
+		const updatedRows = this.updateRowsforCSV(this.dataSource.data);
+		const csvData = this.convertRowsToStringForCSV(updatedRows, arrHeader);
 		this.downloadAsCsvFile(csvData, 'TraceReport.csv');
 	}
 
 	exportAllDataAsCsv(url: string) {
 		let csvData: string;
-		this.reportService.downloadAllDatatoCsv(url).subscribe((resp: any) => {
+		this.reportService.downloadAllDatatoCsv(url).subscribe((resp) => {
 			csvData = resp;
 			this.downloadAsCsvFile(csvData, 'CompleteTraceReport.csv');
 		});
@@ -364,16 +369,16 @@ export class DiffTableComponent implements OnInit {
 	downloadChangeReports(url: string) {
 		this.reportService
 			.downloadChangeReports(url)
-			.subscribe((data: any) => this.getZipFile(data)),
-			() => console.log('Completed file download.');
+			.pipe(tap(() => console.log('Completed file download.')))
+			.subscribe((data: BlobPart) => this.getZipFile(data));
 	}
 
-	getZipFile(data: any) {
-		var a: any = document.createElement('a');
+	getZipFile(data: BlobPart) {
+		const a = document.createElement('a');
 		document.body.appendChild(a);
-		a.style = 'display: none';
-		var blob = new Blob([data], { type: 'application/zip' });
-		var url = window.URL.createObjectURL(blob);
+		a.setAttribute('style', 'display: none');
+		const blob = new Blob([data], { type: 'application/zip' });
+		const url = window.URL.createObjectURL(blob);
 		a.href = url;
 		a.download = 'changeReports.zip';
 		a.click();

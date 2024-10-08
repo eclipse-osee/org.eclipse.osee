@@ -19,7 +19,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltip } from '@angular/material/tooltip';
 import { CommitBranchService } from '@osee/commit/services';
 import { branch } from '@osee/shared/types';
-import { filter, iif, of, switchMap, take, tap } from 'rxjs';
+import { iif, of, switchMap, take, tap } from 'rxjs';
 import { MergeManagerDialogComponent } from '../merge-manager-dialog/merge-manager-dialog.component';
 import { BranchRoutedUIService, UiService } from '@osee/shared/services';
 

@@ -16,7 +16,7 @@ import {
 	ExtendedNameValuePairWithChanges,
 } from '../base-types/ExtendedNameValuePair';
 
-export interface feature {
+export type feature = {
 	name: string;
 	description: string;
 	valueType: string;
@@ -28,20 +28,20 @@ export interface feature {
 	multiValued: boolean;
 	setValueStr(): void;
 	setProductAppStr(): void;
-}
-export interface trackableFeature extends feature {
+};
+export type trackableFeature = {
 	id: string;
 	idIntValue?: number;
 	idString?: string;
 	type: null | undefined;
-}
-export interface extendedFeature extends trackableFeature {
+} & feature;
+export type extendedFeature = {
 	configurations: (
 		| ExtendedNameValuePair
 		| ExtendedNameValuePairWithChanges
 	)[];
-}
-export interface extendedFeatureWithChanges extends extendedFeature {
+} & trackableFeature;
+export type extendedFeatureWithChanges = {
 	added: boolean;
 	deleted: boolean;
 	changes: {
@@ -58,4 +58,4 @@ export interface extendedFeatureWithChanges extends extendedFeature {
 			values: difference[];
 		}[];
 	};
-}
+} & extendedFeature;

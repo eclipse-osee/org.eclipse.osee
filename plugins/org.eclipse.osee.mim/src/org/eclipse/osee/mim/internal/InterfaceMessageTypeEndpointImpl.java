@@ -14,7 +14,7 @@
 package org.eclipse.osee.mim.internal;
 
 import java.util.Collection;
-import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -35,7 +35,7 @@ public class InterfaceMessageTypeEndpointImpl implements InterfaceMessageTypeEnd
    }
 
    @Override
-   public Collection<ArtifactAccessorResult> getAllMessageTypes(String filter, ArtifactId viewId, long pageNum,
+   public Collection<ArtifactAccessorResultWithoutGammas> getAllMessageTypes(String filter, ArtifactId viewId, long pageNum,
       long pageSize, AttributeTypeToken orderByAttributeType) {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       if (Strings.isValid(filter)) {
@@ -45,7 +45,7 @@ public class InterfaceMessageTypeEndpointImpl implements InterfaceMessageTypeEnd
    }
 
    @Override
-   public ArtifactAccessorResult getMessageType(ArtifactId messageTypeId) {
+   public ArtifactAccessorResultWithoutGammas getMessageType(ArtifactId messageTypeId) {
       return messageTypeApi.get(branch, messageTypeId);
    }
 

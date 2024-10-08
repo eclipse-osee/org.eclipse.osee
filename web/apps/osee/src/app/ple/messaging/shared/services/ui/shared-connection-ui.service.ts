@@ -10,28 +10,29 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { combineLatest } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { SharedConnectionService } from '../http/shared-connection.service';
 import { MimRouteService } from './mim-route.service';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class SharedConnectionUIService {
+	private _mimRoute = inject(MimRouteService);
+	private _connectionService = inject(SharedConnectionService);
+
+	private _connectionId = toObservable(this._mimRoute.connectionId);
 	public readonly connection = combineLatest([
 		this._mimRoute.id,
-		this._mimRoute.connectionId,
+		this._connectionId,
 	]).pipe(
 		switchMap(([id, connection]) =>
 			this._connectionService.getConnection(id, connection)
 		)
 	);
-	constructor(
-		private _mimRoute: MimRouteService,
-		private _connectionService: SharedConnectionService
-	) {}
 
 	get viewId() {
 		return this._mimRoute.viewId;

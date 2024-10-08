@@ -10,7 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClientModule } from '@angular/common/http';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
@@ -24,11 +27,11 @@ describe('EditDefinitionsDropdownComponent', () => {
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			imports: [
-				HttpClientModule,
 				MatMenuModule,
 				MatDialogModule,
 				EditDefinitionsDropdownComponent,
 			],
+			providers: [provideHttpClient(withInterceptorsFromDi())],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(EditDefinitionsDropdownComponent);

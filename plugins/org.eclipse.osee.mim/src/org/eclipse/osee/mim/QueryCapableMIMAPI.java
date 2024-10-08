@@ -13,8 +13,8 @@
 package org.eclipse.osee.mim;
 
 import java.util.Collection;
-import org.eclipse.osee.accessor.types.AttributeQuery;
 import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.accessor.types.AttributeQuery;
 import org.eclipse.osee.framework.core.data.BranchId;
 
 public interface QueryCapableMIMAPI<T extends ArtifactAccessorResult> {

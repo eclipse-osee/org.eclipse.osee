@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, combineLatest, from, iif, of, Subject } from 'rxjs';
 import {
 	ResponseColumnSchema,
@@ -33,6 +33,8 @@ import { HistoryTableService } from './history/history-table.service';
 	providedIn: 'root',
 })
 export class DataTableService {
+	private historyTableService = inject(HistoryTableService);
+
 	//Flags for Action Icons to be displayed: --flags updated from the service that brings in the data to be used in the data table
 	canEditableViaActionIcon = new BehaviorSubject<boolean>(false);
 	canAddRowViaActionIcon = new BehaviorSubject<boolean>(false);
@@ -145,8 +147,6 @@ export class DataTableService {
 	updateHiddenColumns(value: string[]) {
 		this.hiddenColumns.next(value);
 	}
-
-	constructor(private historyTableService: HistoryTableService) {}
 
 	//will be used to set the combinedDataTable BS to the data that is returned from API
 	public set combinedDataTableResponseData(tabularData: ResponseTableData) {

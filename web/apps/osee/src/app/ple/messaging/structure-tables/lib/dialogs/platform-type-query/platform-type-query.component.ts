@@ -29,7 +29,8 @@ import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
 import { MatSlider, MatSliderThumb } from '@angular/material/slider';
-import { UnitDropdownComponent } from '@osee/messaging/shared/dropdowns';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
+import { attribute } from '@osee/attributes/types';
 import {
 	PlatformTypeQuery,
 	andBitSizeQuery,
@@ -44,6 +45,7 @@ import {
 	andUnitQuery,
 } from '@osee/messaging/shared/query';
 import type { PlatformType } from '@osee/messaging/shared/types';
+import { UnitDropdownComponent } from '@osee/messaging/units/dropdown';
 
 @Component({
 	selector: 'osee-messaging-platform-type-query',
@@ -71,8 +73,11 @@ import type { PlatformType } from '@osee/messaging/shared/types';
 })
 export class PlatformTypeQueryComponent {
 	@Input() platformTypes: PlatformType[] = [];
-	@Input() bitSizeSliderStepSize: number = 0.05;
-	unit = '';
+	@Input() bitSizeSliderStepSize = 0.05;
+	unit: attribute<
+		string,
+		typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEUNITS
+	> = { id: '-1', typeId: '4026643196432874344', gammaId: '-1', value: '' };
 	logicalType = '';
 	defaultVal = '';
 	maximumValue = '';
@@ -86,49 +91,49 @@ export class PlatformTypeQueryComponent {
 		return this.platformTypes
 			.filter(
 				(value) =>
-					value.interfacePlatformTypeMsbValue
+					value.interfacePlatformTypeMsbValue.value
 						.toLowerCase()
 						.includes(this.msbValue.toLowerCase()) &&
-					value.interfaceDefaultValue
+					value.interfaceDefaultValue.value
 						.toLowerCase()
 						.includes(this.defaultVal.toLowerCase()) &&
-					value.interfacePlatformTypeMaxval
+					value.interfacePlatformTypeMaxval.value
 						.toLowerCase()
 						.includes(this.maximumValue.toLowerCase()) &&
-					value.interfacePlatformTypeMinval
+					value.interfacePlatformTypeMinval.value
 						.toLowerCase()
 						.includes(this.minimumValue.toLowerCase()) &&
-					value.description
+					value.description.value
 						.toLowerCase()
 						.includes(this.description.toLowerCase())
 			)
-			.map((type) => type.interfaceLogicalType)
+			.map((type) => type.interfaceLogicalType.value)
 			.filter((v, i, a) => a.indexOf(v) === i);
 	}
 	get bitSizes() {
 		return this.platformTypes
 			.filter(
 				(value) =>
-					value.interfaceLogicalType
+					value.interfaceLogicalType.value
 						.toLowerCase()
 						.includes(this.logicalType.toLowerCase()) &&
-					value.interfacePlatformTypeMsbValue
+					value.interfacePlatformTypeMsbValue.value
 						.toLowerCase()
 						.includes(this.msbValue.toLowerCase()) &&
-					value.interfaceDefaultValue
+					value.interfaceDefaultValue.value
 						.toLowerCase()
 						.includes(this.defaultVal.toLowerCase()) &&
-					value.interfacePlatformTypeMaxval
+					value.interfacePlatformTypeMaxval.value
 						.toLowerCase()
 						.includes(this.maximumValue.toLowerCase()) &&
-					value.interfacePlatformTypeMinval
+					value.interfacePlatformTypeMinval.value
 						.toLowerCase()
 						.includes(this.minimumValue.toLowerCase()) &&
-					value.description
+					value.description.value
 						.toLowerCase()
 						.includes(this.description.toLowerCase())
 			)
-			.map((type) => Number(type.interfacePlatformTypeBitSize))
+			.map((type) => Number(type.interfacePlatformTypeBitSize.value))
 			.filter((v, i, a) => a.indexOf(v) === i);
 	}
 	get maxBitSize() {
@@ -142,23 +147,23 @@ export class PlatformTypeQueryComponent {
 		return this.platformTypes
 			.filter(
 				(value) =>
-					value.interfaceLogicalType
+					value.interfaceLogicalType.value
 						.toLowerCase()
 						.includes(this.logicalType.toLowerCase()) &&
-					value.interfacePlatformTypeMsbValue
+					value.interfacePlatformTypeMsbValue.value
 						.toLowerCase()
 						.includes(this.msbValue.toLowerCase()) &&
-					value.interfacePlatformTypeMaxval
+					value.interfacePlatformTypeMaxval.value
 						.toLowerCase()
 						.includes(this.maximumValue.toLowerCase()) &&
-					value.description
+					value.description.value
 						.toLowerCase()
 						.includes(this.description.toLowerCase()) &&
-					value.interfacePlatformTypeMinval
+					value.interfacePlatformTypeMinval.value
 						.toLowerCase()
 						.includes(this.minimumValue.toLowerCase())
 			)
-			.map((type) => type.interfaceDefaultValue)
+			.map((type) => type.interfaceDefaultValue.value)
 			.filter((v, i, a) => a.indexOf(v) === i);
 	}
 
@@ -166,23 +171,23 @@ export class PlatformTypeQueryComponent {
 		return this.platformTypes
 			.filter(
 				(value) =>
-					value.interfaceLogicalType
+					value.interfaceLogicalType.value
 						.toLowerCase()
 						.includes(this.logicalType.toLowerCase()) &&
-					value.interfacePlatformTypeMsbValue
+					value.interfacePlatformTypeMsbValue.value
 						.toLowerCase()
 						.includes(this.msbValue.toLowerCase()) &&
-					value.interfaceDefaultValue
+					value.interfaceDefaultValue.value
 						.toLowerCase()
 						.includes(this.defaultVal.toLowerCase()) &&
-					value.interfacePlatformTypeMinval
+					value.interfacePlatformTypeMinval.value
 						.toLowerCase()
 						.includes(this.minimumValue.toLowerCase()) &&
-					value.description
+					value.description.value
 						.toLowerCase()
 						.includes(this.description.toLowerCase())
 			)
-			.map((type) => type.interfacePlatformTypeMaxval)
+			.map((type) => type.interfacePlatformTypeMaxval.value)
 			.filter((v, i, a) => a.indexOf(v) === i);
 	}
 
@@ -190,23 +195,23 @@ export class PlatformTypeQueryComponent {
 		return this.platformTypes
 			.filter(
 				(value) =>
-					value.interfaceLogicalType
+					value.interfaceLogicalType.value
 						.toLowerCase()
 						.includes(this.logicalType.toLowerCase()) &&
-					value.interfacePlatformTypeMsbValue
+					value.interfacePlatformTypeMsbValue.value
 						.toLowerCase()
 						.includes(this.msbValue.toLowerCase()) &&
-					value.interfaceDefaultValue
+					value.interfaceDefaultValue.value
 						.toLowerCase()
 						.includes(this.defaultVal.toLowerCase()) &&
-					value.interfacePlatformTypeMaxval
+					value.interfacePlatformTypeMaxval.value
 						.toLowerCase()
 						.includes(this.maximumValue.toLowerCase()) &&
-					value.description
+					value.description.value
 						.toLowerCase()
 						.includes(this.description.toLowerCase())
 			)
-			.map((type) => type.interfacePlatformTypeMinval)
+			.map((type) => type.interfacePlatformTypeMinval.value)
 			.filter((v, i, a) => a.indexOf(v) === i);
 	}
 
@@ -214,23 +219,23 @@ export class PlatformTypeQueryComponent {
 		return this.platformTypes
 			.filter(
 				(value) =>
-					value.interfaceLogicalType
+					value.interfaceLogicalType.value
 						.toLowerCase()
 						.includes(this.logicalType.toLowerCase()) &&
-					value.interfaceDefaultValue
+					value.interfaceDefaultValue.value
 						.toLowerCase()
 						.includes(this.defaultVal.toLowerCase()) &&
-					value.interfacePlatformTypeMaxval
+					value.interfacePlatformTypeMaxval.value
 						.toLowerCase()
 						.includes(this.maximumValue.toLowerCase()) &&
-					value.interfacePlatformTypeMinval
+					value.interfacePlatformTypeMinval.value
 						.toLowerCase()
 						.includes(this.minimumValue.toLowerCase()) &&
-					value.description
+					value.description.value
 						.toLowerCase()
 						.includes(this.description.toLowerCase())
 			)
-			.map((type) => type.interfacePlatformTypeMsbValue)
+			.map((type) => type.interfacePlatformTypeMsbValue.value)
 			.filter((v, i, a) => a.indexOf(v) === i);
 	}
 
@@ -242,26 +247,26 @@ export class PlatformTypeQueryComponent {
 		return this.platformTypes
 			.filter(
 				(value) =>
-					value.interfaceLogicalType
+					value.interfaceLogicalType.value
 						.toLowerCase()
 						.includes(this.logicalType.toLowerCase()) &&
-					value.interfacePlatformTypeMsbValue
+					value.interfacePlatformTypeMsbValue.value
 						.toLowerCase()
 						.includes(this.msbValue.toLowerCase()) &&
-					value.interfaceDefaultValue
+					value.interfaceDefaultValue.value
 						.toLowerCase()
 						.includes(this.defaultVal.toLowerCase()) &&
-					value.interfacePlatformTypeMaxval
+					value.interfacePlatformTypeMaxval.value
 						.toLowerCase()
 						.includes(this.maximumValue.toLowerCase()) &&
-					value.interfacePlatformTypeMinval
+					value.interfacePlatformTypeMinval.value
 						.toLowerCase()
 						.includes(this.minimumValue.toLowerCase()) &&
-					value.description
+					value.description.value
 						.toLowerCase()
 						.includes(this.description.toLowerCase())
 			)
-			.map((type) => type.name)
+			.map((type) => type.name.value)
 			.filter((v, i, a) => a.indexOf(v) === i)
 			.filter((value) =>
 				value.toLowerCase().includes(this.name.toLowerCase())
@@ -272,26 +277,26 @@ export class PlatformTypeQueryComponent {
 		return this.platformTypes
 			.filter(
 				(value) =>
-					value.interfaceLogicalType
+					value.interfaceLogicalType.value
 						.toLowerCase()
 						.includes(this.logicalType.toLowerCase()) &&
-					value.interfacePlatformTypeMsbValue
+					value.interfacePlatformTypeMsbValue.value
 						.toLowerCase()
 						.includes(this.msbValue.toLowerCase()) &&
-					value.interfaceDefaultValue
+					value.interfaceDefaultValue.value
 						.toLowerCase()
 						.includes(this.defaultVal.toLowerCase()) &&
-					value.interfacePlatformTypeMaxval
+					value.interfacePlatformTypeMaxval.value
 						.toLowerCase()
 						.includes(this.maximumValue.toLowerCase()) &&
-					value.interfacePlatformTypeMinval
+					value.interfacePlatformTypeMinval.value
 						.toLowerCase()
 						.includes(this.minimumValue.toLowerCase()) &&
-					value.description
+					value.description.value
 						.toLowerCase()
 						.includes(this.description.toLowerCase())
 			)
-			.map((type) => type.description)
+			.map((type) => type.description.value)
 			.filter((v, i, a) => a.indexOf(v) === i)
 			.filter((value) =>
 				value.toLowerCase().includes(this.name.toLowerCase())
@@ -300,7 +305,8 @@ export class PlatformTypeQueryComponent {
 
 	get query() {
 		const queries: andQuery[] = [];
-		if (this.unit !== '') queries.push(new andUnitQuery(this.unit));
+		if (this.unit.id !== '-1')
+			queries.push(new andUnitQuery(this.unit.value));
 		if (this.bitSize !== 0)
 			queries.push(new andBitSizeQuery(this.bitSize.toString()));
 		if (this.logicalType !== '')

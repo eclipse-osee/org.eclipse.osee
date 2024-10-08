@@ -10,8 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HarnessLoader } from '@angular/cdk/testing';
-import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
@@ -29,7 +27,6 @@ import { of } from 'rxjs';
 describe('ApplicabilityTableComponent', () => {
 	let component: ApplicabilityTableComponent;
 	let fixture: ComponentFixture<ApplicabilityTableComponent>;
-	let loader: HarnessLoader;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
@@ -55,7 +52,6 @@ describe('ApplicabilityTableComponent', () => {
 		fixture = TestBed.createComponent(ApplicabilityTableComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
-		loader = TestbedHarnessEnvironment.loader(fixture);
 	});
 
 	it('should create', () => {

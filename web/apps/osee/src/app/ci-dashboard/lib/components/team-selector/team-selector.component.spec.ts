@@ -14,10 +14,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TeamSelectorComponent } from './team-selector.component';
 import { DashboardHttpService } from '../../services/dashboard-http.service';
 import { dashboardHttpServiceMock } from '../../services/dashboard-http.service.mock';
-import { TransactionService } from '@osee/shared/transactions';
-import { transactionServiceMock } from '@osee/shared/transactions/testing';
+
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { defReferenceMock } from '../../testing/tmo.response.mock';
+import { TransactionService } from '@osee/transactions/services';
+import { transactionServiceMock } from '@osee/transactions/services/testing';
 
 describe('TeamSelectorComponent', () => {
 	let component: TeamSelectorComponent;

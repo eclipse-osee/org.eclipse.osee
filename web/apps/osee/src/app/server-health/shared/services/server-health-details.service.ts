@@ -21,8 +21,6 @@ import {
 	providedIn: 'root',
 })
 export class ServerHealthDetailsService {
-	constructor() {}
-
 	private _remoteDetails = new BehaviorSubject<remoteHealthDetails>(
 		defaultRemoteHealthDetails
 	);

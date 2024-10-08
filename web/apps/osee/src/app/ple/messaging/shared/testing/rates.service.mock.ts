@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { RatesService } from '@osee/messaging/shared/services';
+import { RatesService } from '@osee/messaging/rate/services';
 import { ratesMock } from '@osee/messaging/shared/testing';
 import { of } from 'rxjs';
 

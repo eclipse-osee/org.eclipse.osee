@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
 	Observable,
 	switchMap,
@@ -36,20 +36,18 @@ import { user } from '@osee/shared/types/auth';
 	providedIn: 'root',
 })
 export class UserHistoryService {
+	private getUserHistoryService = inject(GetUserHistoryService);
+	private historyService = inject(HistoryService);
+	private accountService = inject(UserDataAccountService);
+	private uiService = inject(UiService);
+	private branchIdService = inject(GCBranchIdService);
+
 	private _user: Observable<user> = this.accountService.user;
 	private _defaultBranchId = this.branchIdService.branchId;
 	private _userHistory$: Observable<userHistory> = this.userHistoryResponse;
 	newCmdHistory: Partial<executedCommandHistory> = {
 		name: 'UsersCommandHistory',
 	};
-
-	constructor(
-		private getUserHistoryService: GetUserHistoryService,
-		private historyService: HistoryService,
-		private accountService: UserDataAccountService,
-		private uiService: UiService,
-		private branchIdService: GCBranchIdService
-	) {}
 
 	get userHistoryResponse() {
 		return this._user.pipe(
@@ -64,8 +62,8 @@ export class UserHistoryService {
 								'No history available' ||
 							val.commandHistoryId === ''
 								? this.createInitialHistory(user).pipe(
-										map((initialHx) => val)
-								  )
+										map((_) => val)
+									)
 								: of(val)
 						)
 					)

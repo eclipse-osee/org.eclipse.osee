@@ -14,7 +14,7 @@
 import {
 	ATTRIBUTETYPEIDENUM,
 	BASEATTRIBUTETYPEIDENUM,
-} from '@osee/shared/types/constants';
+} from '@osee/attributes/constants';
 export const ENUMATTRIBUTETYPEIDENUM = {
 	...BASEATTRIBUTETYPEIDENUM,
 	ORDINAL: ATTRIBUTETYPEIDENUM.INTERFACEENUMORDINAL,

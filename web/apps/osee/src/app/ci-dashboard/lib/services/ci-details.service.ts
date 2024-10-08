@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, inject } from '@angular/core';
 import {
 	BehaviorSubject,
 	combineLatest,
@@ -22,7 +22,6 @@ import {
 	shareReplay,
 	switchMap,
 	take,
-	tap,
 } from 'rxjs';
 import { CiDashboardUiService } from './ci-dashboard-ui.service';
 import { TmoHttpService } from './tmo-http.service';
@@ -34,10 +33,8 @@ import { format } from 'date-fns';
 	providedIn: 'root',
 })
 export class CiDetailsService {
-	constructor(
-		private ciDashboardUiService: CiDashboardUiService,
-		private tmoHttpService: TmoHttpService
-	) {}
+	private ciDashboardUiService = inject(CiDashboardUiService);
+	private tmoHttpService = inject(TmoHttpService);
 
 	private _currentPage$ = new BehaviorSubject<number>(0);
 	private _currentPageSize$ = new BehaviorSubject<number>(10);
@@ -65,7 +62,7 @@ export class CiDetailsService {
 		this.currentPageSize,
 	]).pipe(
 		filter(
-			([brid, setId, page, pageSize]) => brid !== '' && setId !== '-1'
+			([brid, setId, _page, _pageSize]) => brid !== '' && setId !== '-1'
 		),
 		share(),
 		debounceTime(500),
@@ -173,7 +170,7 @@ export class CiDetailsService {
 	}
 
 	set BranchId(branchId: string) {
-		this.ciDashboardUiService.BranchId;
+		this.ciDashboardUiService.BranchId = branchId;
 	}
 
 	get branchType() {

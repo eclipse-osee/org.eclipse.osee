@@ -20,10 +20,7 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
-import {
-	NoopAnimationsModule,
-	provideNoopAnimations,
-} from '@angular/platform-browser/animations';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { ConfigGroupDialogComponent } from './config-group-dialog.component';
 

@@ -40,7 +40,7 @@ describe('LogicalTypeSelectorComponent', () => {
 
 		fixture = TestBed.createComponent(LogicalTypeSelectorComponent);
 		component = fixture.componentInstance;
-		component.type = logicalTypeMock[0];
+		fixture.componentRef.setInput('type', logicalTypeMock[0]);
 		fixture.detectChanges();
 	});
 

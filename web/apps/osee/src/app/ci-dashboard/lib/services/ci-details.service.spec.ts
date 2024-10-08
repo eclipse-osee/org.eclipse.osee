@@ -13,7 +13,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { CiDetailsService } from './ci-details.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import {} from '@angular/common/http/testing';
 import { TmoHttpService } from './tmo-http.service';
 import { tmoHttpServiceMock } from './tmo-http.service.mock';
 

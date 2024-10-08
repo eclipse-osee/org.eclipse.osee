@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, NgClass, NgTemplateOutlet } from '@angular/common';
-import { Component, computed, input, output } from '@angular/core';
+import { Component, computed, input, output, inject } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -50,6 +50,11 @@ import { MergeManagerDialogComponent } from '@osee/commit/components';
 	],
 })
 export class ActionDropDownComponent {
+	private actionService = inject(ActionStateButtonService);
+	dialog = inject(MatDialog);
+	private commitBranchService = inject(CommitBranchService);
+	private branchService = inject(BranchInfoService);
+
 	teamWorkflow = input.required<teamWorkflowDetails>();
 	branch = input<branch>(branchSentinel);
 	commitAllowed = input(true);
@@ -130,13 +135,6 @@ export class ActionDropDownComponent {
 			)
 		)
 	);
-
-	constructor(
-		private actionService: ActionStateButtonService,
-		public dialog: MatDialog,
-		private commitBranchService: CommitBranchService,
-		private branchService: BranchInfoService
-	) {}
 
 	transition(state: teamWorkflowState) {
 		this.teamWorkflow$

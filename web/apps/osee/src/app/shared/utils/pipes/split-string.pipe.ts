@@ -17,7 +17,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 	standalone: true,
 })
 export class SplitStringPipe implements PipeTransform {
-	transform(value: unknown, splitOn: string = ';'): string[] {
+	transform(value: unknown, splitOn = ';'): string[] {
 		if (typeof value === 'string') {
 			return value.split(splitOn);
 		}

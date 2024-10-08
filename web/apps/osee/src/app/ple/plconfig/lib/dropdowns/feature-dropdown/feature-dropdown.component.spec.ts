@@ -11,15 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
 import { of } from 'rxjs';
 import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { testBranchApplicability } from '../../testing/mockBranchService';
-import { response } from '@osee/shared/types';
+import { XResultData } from '@osee/shared/types';
 
 import { FeatureDropdownComponent } from './feature-dropdown.component';
 import { CurrentBranchInfoService } from '@osee/shared/services';
@@ -30,7 +27,7 @@ describe('FeatureDropdownComponent', () => {
 	let fixture: ComponentFixture<FeatureDropdownComponent>;
 
 	beforeEach(async () => {
-		const testResponse: response = {
+		const testResponse: XResultData = {
 			empty: false,
 			errorCount: 0,
 			errors: false,
@@ -53,13 +50,13 @@ describe('FeatureDropdownComponent', () => {
 			'modifyFeature',
 			'addFeature',
 		]);
-		const addFeatureSpy = branchService.addFeature.and.returnValue(
+		const _addFeatureSpy = branchService.addFeature.and.returnValue(
 			of(testResponse)
 		);
-		const deleteFeatureSpy = branchService.deleteFeature.and.returnValue(
+		const _deleteFeatureSpy = branchService.deleteFeature.and.returnValue(
 			of(testResponse)
 		);
-		const modifyFeatureSpy = branchService.modifyFeature.and.returnValue(
+		const _modifyFeatureSpy = branchService.modifyFeature.and.returnValue(
 			of(testResponse)
 		);
 		await TestBed.configureTestingModule({

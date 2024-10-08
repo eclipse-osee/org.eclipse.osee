@@ -1,5 +1,5 @@
 import type { MIMATTRIBUTETYPEID } from '@osee/messaging/shared/attr';
-import type { PlatformType } from './platformType';
+import type { PlatformTypeAttr } from './platformType';
 
 /*********************************************************************
  * Copyright (c) 2021 Boeing
@@ -13,34 +13,27 @@ import type { PlatformType } from './platformType';
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface logicalType {
-	id: string;
+export type logicalType = {
+	id: `${number}`;
 	name: string;
 	idString: string;
 	idIntValue: number;
-}
+};
 
-export interface logicalTypeFormDetail<T> extends logicalType {
+export type logicalTypeFormDetail<
+	T extends Extract<keyof PlatformTypeAttr, string>,
+> = {
 	fields: logicalTypeFieldInfo<T>[];
-}
-export type logicalTypeFieldInfo<T> = {
-	attributeType: Capitalize<
-		Readonly<
-			Exclude<
-				Extract<keyof PlatformType, string>,
-				'enumSet' | 'interfacePlatform2sComplement'
-			>
-		>
-	>; //note: this isn't actually valid typing, but it shuts up typescript about string|undefined !== undefined due to the types of enumSet and 2s complement not being string
+} & logicalType;
+export type logicalTypeFieldInfo<
+	T extends Extract<keyof PlatformTypeAttr, string>,
+> = {
+	attributeType: Capitalize<T>; //note: this isn't actually valid typing, but it shuts up typescript about string|undefined !== undefined due to the types of enumSet and 2s complement not being string
 	attributeTypeId: MIMATTRIBUTETYPEID;
 	editable: boolean;
 	name: string;
 	required: boolean;
-	defaultValue: T extends keyof PlatformType
-		? PlatformType[Exclude<T, 'enumSet' | 'interfacePlatform2sComplement'>]
-		: never;
-	value?: T extends keyof PlatformType
-		? PlatformType[Exclude<T, 'enumSet' | 'interfacePlatform2sComplement'>]
-		: never;
-	jsonPropertyName: T extends keyof PlatformType ? T : never;
+	defaultValue: PlatformTypeAttr[T];
+	value?: PlatformTypeAttr[T];
+	jsonPropertyName: T;
 };

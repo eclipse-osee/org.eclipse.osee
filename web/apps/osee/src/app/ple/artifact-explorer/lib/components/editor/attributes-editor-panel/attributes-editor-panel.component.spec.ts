@@ -12,10 +12,14 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AttributesEditorPanelComponent } from './attributes-editor-panel.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { tab } from '../../../types/artifact-explorer';
 import { artifactWithRelationsMock } from '@osee/artifact-with-relations/testing';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('AttributesEditorPanelComponent', () => {
 	let component: AttributesEditorPanelComponent;
@@ -23,10 +27,10 @@ describe('AttributesEditorPanelComponent', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [
-				AttributesEditorPanelComponent,
-				HttpClientTestingModule,
-				BrowserAnimationsModule,
+			imports: [AttributesEditorPanelComponent, BrowserAnimationsModule],
+			providers: [
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
 			],
 		});
 

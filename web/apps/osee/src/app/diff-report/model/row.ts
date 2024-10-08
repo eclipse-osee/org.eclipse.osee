@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface NewRow {
+export type NewRow = {
 	actionId: string;
 	workflowID: string;
 	program: string;
@@ -19,4 +19,4 @@ export interface NewRow {
 	title: string;
 	requirement: string;
 	test: string;
-}
+};

@@ -11,17 +11,19 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
-	HttpClientTestingModule,
 	HttpTestingController,
+	provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { transaction } from '@osee/shared/types';
-import { transactionMock } from '@osee/shared/transactions/testing';
+import { transactionMock } from '@osee/transactions/testing';
 import { TestScheduler } from 'rxjs/testing';
 import { apiURL } from '@osee/environments';
 
 import { ConnectionService } from './connection.service';
-import { ethernetTransportType } from '@osee/messaging/shared/testing';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('ConnectionService', () => {
 	let service: ConnectionService;
@@ -30,7 +32,11 @@ describe('ConnectionService', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
+			imports: [],
+			providers: [
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+			],
 		});
 		service = TestBed.inject(ConnectionService);
 		httpTestingController = TestBed.inject(HttpTestingController);
@@ -51,7 +57,7 @@ describe('ConnectionService', () => {
 			describe('should create a valid node relation', () => {
 				it('should create a node relation', () => {
 					scheduler.run(() => {
-						let relation = {
+						const relation = {
 							typeName: 'Interface Connection Node',
 							sideB: '10',
 							sideA: undefined,
@@ -62,123 +68,6 @@ describe('ConnectionService', () => {
 							.expectObservable(service.createNodeRelation('10'))
 							.toBe(expectedMarble, expectedObservable);
 					});
-				});
-			});
-
-			it('should create a valid connection', () => {
-				scheduler.run(() => {
-					let extransaction: transaction = {
-						branch: '10',
-						txComment:
-							'Create Connection and Relate to Nodes and Transport Type',
-						createArtifacts: [
-							{
-								typeId: '126164394421696910',
-								name: 'connection',
-								applicabilityId: undefined,
-								attributes: [
-									{ typeName: 'Description', value: '' },
-								],
-								relations: [
-									{ typeName: 'blah', sideB: 'Hello' },
-									{ typeName: 'blah', sideB: 'Hello' },
-									{ typeName: 'blah', sideB: 'Hello' },
-								],
-								key: undefined,
-							},
-						],
-					};
-					const expectedfilterValues = { a: extransaction };
-					const expectedMarble = '(a|)';
-					scheduler
-						.expectObservable(
-							service.createConnection(
-								'10',
-								{ name: 'connection', description: '' },
-								[
-									{ typeName: 'blah', sideB: 'Hello' },
-									{ typeName: 'blah', sideB: 'Hello' },
-									{ typeName: 'blah', sideB: 'Hello' },
-								]
-							)
-						)
-						.toBe(expectedMarble, expectedfilterValues);
-				});
-			});
-
-			it('should create a valid connection with no relations', () => {
-				scheduler.run(() => {
-					let extransaction: transaction = {
-						branch: '10',
-						txComment: 'Create Connection',
-						createArtifacts: [
-							{
-								typeId: '126164394421696910',
-								name: 'connection',
-								applicabilityId: undefined,
-								attributes: [
-									{ typeName: 'Description', value: '' },
-									{
-										typeName: 'Interface Transport Type',
-										value: ethernetTransportType,
-									},
-								],
-								relations: [],
-								key: '10',
-							},
-						],
-					};
-					const expectedfilterValues = { a: extransaction };
-					const expectedMarble = '(a|)';
-					scheduler
-						.expectObservable(
-							service.createConnectionNoRelations(
-								'10',
-								{
-									name: 'connection',
-									description: '',
-									transportType: ethernetTransportType,
-								},
-								undefined,
-								'10'
-							)
-						)
-						.toBe(expectedMarble, expectedfilterValues);
-				});
-			});
-
-			it('should create a valid connection change', () => {
-				scheduler.run(() => {
-					let extransaction: transaction = {
-						branch: '10',
-						txComment: 'Change connection attributes',
-						modifyArtifacts: [
-							{
-								id: '1',
-								applicabilityId: undefined,
-								setAttributes: [
-									{ typeName: 'Name', value: 'connection' },
-									{ typeName: 'Description', value: '' },
-									{
-										typeName: 'Interface Transport Type',
-										value: ethernetTransportType,
-									},
-								],
-							},
-						],
-					};
-					const expectedfilterValues = { a: extransaction };
-					const expectedMarble = '(a|)';
-					scheduler
-						.expectObservable(
-							service.changeConnection('10', {
-								id: '1',
-								name: 'connection',
-								description: '',
-								transportType: ethernetTransportType,
-							})
-						)
-						.toBe(expectedMarble, expectedfilterValues);
 				});
 			});
 
@@ -197,12 +86,12 @@ describe('ConnectionService', () => {
 
 		it('should create a delete relation transaction', () => {
 			scheduler.run(() => {
-				let relation = {
+				const relation = {
 					typeName: 'Interface Connection Secondary Node',
 					sideB: '10',
 					sideA: undefined,
 				};
-				let transaction = transactionMock;
+				const transaction = transactionMock;
 				transaction.txComment = 'Unrelating Connection';
 				transaction.deleteRelations = [
 					{

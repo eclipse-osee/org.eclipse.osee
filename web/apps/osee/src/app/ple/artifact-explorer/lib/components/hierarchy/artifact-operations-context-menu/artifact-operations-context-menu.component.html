@@ -17,14 +17,13 @@
 				mat-menu-item
 				[disabled]="!_branchEditable()"
 				(click)="selectOption(operationType)"
-				class="tw-flex tw-w-full tw-items-center tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap tw-px-4 tw-py-2 tw-text-left">
+				class="tw-flex tw-w-full tw-items-center tw-truncate tw-px-4 tw-py-2 tw-text-left">
 				<mat-icon
 					[class]="getIconClasses(operationType.materialIcon)"
 					class="tw-pr-2"
 					>{{ operationType.materialIcon.icon }}</mat-icon
 				>
-				<div
-					class="tw-ellipsis tw-overflow-hidden tw-whitespace-nowrap">
+				<div class="tw-truncate">
 					{{ operationType.name }}
 				</div>
 			</button>

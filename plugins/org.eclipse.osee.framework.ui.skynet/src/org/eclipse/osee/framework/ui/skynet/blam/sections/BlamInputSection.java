@@ -110,8 +110,10 @@ public class BlamInputSection extends BaseBlamSection {
    }
 
    private void validate() {
-      for (XWidget widget : widgetPage.getDynamicXWidgetLayout().getXWidgets()) {
-         widget.validate();
+      if (widgetPage != null) {
+         for (XWidget widget : widgetPage.getDynamicXWidgetLayout().getXWidgets()) {
+            widget.validate();
+         }
       }
    }
 

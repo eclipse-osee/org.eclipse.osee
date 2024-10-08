@@ -14,6 +14,8 @@ import { TestBed } from '@angular/core/testing';
 import { CiSetsService } from './ci-sets.service';
 import { CiSetsHttpService } from './ci-sets-http.service';
 import { ciSetsHttpServiceMock } from './ci-sets-http.service.mock';
+import { CurrentTransactionService } from '@osee/transactions/services';
+import { currentTransactionServiceMock } from '@osee/transactions/services/testing';
 
 describe('CiSetsService', () => {
 	let service: CiSetsService;
@@ -22,6 +24,10 @@ describe('CiSetsService', () => {
 		TestBed.configureTestingModule({
 			providers: [
 				{ provide: CiSetsHttpService, useValue: ciSetsHttpServiceMock },
+				{
+					provide: CurrentTransactionService,
+					useValue: currentTransactionServiceMock,
+				},
 			],
 		});
 		service = TestBed.inject(CiSetsService);
