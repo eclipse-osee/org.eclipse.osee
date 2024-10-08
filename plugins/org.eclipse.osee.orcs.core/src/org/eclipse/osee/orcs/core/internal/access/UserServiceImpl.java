@@ -342,7 +342,8 @@ public class UserServiceImpl implements UserService {
       }
       ensureLoaded();
 
-      UserToken user = loginIdToUser.get(credential);
+      String lowerCaseCredential = credential.toLowerCase();
+      UserToken user = loginIdToUser.get(lowerCaseCredential);
 
       if (user == null) {
          ApiKey apiKey = apiKeyApi.getApiKey(credential);
@@ -362,11 +363,11 @@ public class UserServiceImpl implements UserService {
             }
          } else {
             List<ArtifactReadable> userArtifacts =
-               query.andAttributeIs(CoreAttributeTypes.LoginId, credential).asArtifacts();
+               query.andAttributeIs(CoreAttributeTypes.LoginId, lowerCaseCredential).asArtifacts();
             if (userArtifacts.size() == 1) {
                user = toUser(userArtifacts.get(0));
                if (user.isValid()) {
-                  loginIdToUser.put(credential, user);
+                  loginIdToUser.put(lowerCaseCredential, user);
                }
             }
          }
