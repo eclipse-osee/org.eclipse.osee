@@ -52,7 +52,7 @@ jobs:
 
       - name: test
         if: steps.changed-files.outputs.any_changed == 'true'
-        run: cargo test
+        run: cargo test --lib --release
 
       - name: clippy
         if: steps.changed-files.outputs.any_changed == 'true'

@@ -11,11 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 use nom::{
+    IResult,
     bytes::complete::tag,
     character::complete::multispace0,
     combinator::{eof, map, map_parser, opt},
     sequence::{preceded, terminated, tuple},
-    IResult,
 };
 
 use crate::counter::count_new_lines;

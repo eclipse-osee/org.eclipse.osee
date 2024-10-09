@@ -23,13 +23,20 @@ rust_library(
         "default",
         "derive",
         "serde"
-    ]
+    ],
+    proc_macro_deps = all_crate_deps(
+        proc_macro = True,
+    ),
 )
 
 rust_test(
     name="applicability_test",
     crate=":applicability",
-    size="small"
+    size="small",
+    deps = all_crate_deps(normal_dev=True) + [],
+    proc_macro_deps = all_crate_deps(
+        proc_macro_dev = True,
+    ),
 )
 
 rust_doc(

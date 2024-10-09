@@ -1,0 +1,446 @@
+/*********************************************************************
+ * Copyright (c) 2025 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+use applicability_lexer_base::{
+    comment::single_line::{EndCommentSingleLineTerminated, StartCommentSingleLineNonTerminated},
+    document_structure::DocumentStructureToken,
+    line_terminations::{carriage_return::CarriageReturn, eof::Eof, new_line::NewLine},
+    utils::locatable::Locatable,
+};
+use applicability_parser_errors::ApplicabilityParserError;
+use nom::{AsChar, Compare, Input, Mode, Parser};
+use std::result::Result::Err;
+
+pub trait IdentifySingleLineNonTerminatedComment {
+    fn identify_comment_single_line_non_terminated<I>(
+        &self,
+    ) -> impl Parser<I, Output = DocumentStructureToken<I>, Error = ApplicabilityParserError<I>>
+    where
+        I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync,
+        <I as Input>::Item: AsChar;
+}
+
+impl<T> IdentifySingleLineNonTerminatedComment for T
+where
+    T: StartCommentSingleLineNonTerminated
+        + EndCommentSingleLineTerminated
+        + CarriageReturn
+        + NewLine
+        + Eof,
+{
+    fn identify_comment_single_line_non_terminated<I>(
+        &self,
+    ) -> impl Parser<I, Output = DocumentStructureToken<I>, Error = ApplicabilityParserError<I>>
+    where
+        I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync,
+        <I as Input>::Item: AsChar,
+    {
+        SingleLineNonTerminatedCommentParser { doc: self }
+    }
+}
+
+struct SingleLineNonTerminatedCommentParser<'single_line_parser, T> {
+    doc: &'single_line_parser T,
+}
+
+impl<I: Input + Send + Sync, T> Parser<I> for SingleLineNonTerminatedCommentParser<'_, T>
+where
+    I: Input + for<'x> Compare<&'x str> + Locatable + Send + Sync,
+    <I as Input>::Item: AsChar,
+    T: StartCommentSingleLineNonTerminated
+        + EndCommentSingleLineTerminated
+        + CarriageReturn
+        + NewLine
+        + Eof,
+{
+    type Output = DocumentStructureToken<I>;
+    type Error = ApplicabilityParserError<I>;
+
+    fn process<OM: nom::OutputMode>(
+        &mut self,
+        input: I,
+    ) -> nom::PResult<OM, I, Self::Output, Self::Error> {
+        if !(self
+            .doc
+            .has_start_comment_single_line_non_terminated_support())
+        {
+            return Err(nom::Err::Error(OM::Error::bind(|| {
+                ApplicabilityParserError::Unsupported
+            })));
+        }
+        let mut start_comment_ending_position = 0;
+        let mut input_iter = input.iter_elements();
+        for i in 0..self
+            .doc
+            .start_comment_single_line_non_terminated_tag()
+            .chars()
+            .count()
+        {
+            match input_iter.next() {
+                Some(x) => {
+                    let is_present = self
+                        .doc
+                        .is_start_comment_single_line_non_terminated_predicate::<I>(x, i);
+                    if !is_present {
+                        return Err(nom::Err::Error(OM::Error::bind(|| {
+                            ApplicabilityParserError::MissingOrIncorrectStartComment
+                        })));
+                    }
+                    start_comment_ending_position += 1;
+                }
+                None => {
+                    return Err(nom::Err::Error(OM::Error::bind(|| {
+                        ApplicabilityParserError::MissingOrIncorrectStartComment
+                    })));
+                }
+            }
+        }
+        let post_start_input = input.take_from(start_comment_ending_position);
+        let carriage_return_search = input.position(|x| self.doc.is_carriage_return::<I>(x));
+        let new_line_search = input.position(|x| self.doc.is_new_line::<I>(x));
+        let end_comment_search = match self.doc.has_end_comment_single_line_terminated_support() {
+            true => post_start_input.position(|x| self.doc.is_end_comment_single_line::<I>(x)),
+            false => None,
+        };
+        let eof_search = input.input_len();
+        let new_line_position = match (carriage_return_search, new_line_search) {
+            (None, None) => None,
+            (None, Some(nl)) => Some(nl),
+            (Some(_), None) => None,
+            (Some(cr), Some(nl)) => {
+                if cr + 1 == nl {
+                    Some(nl)
+                } else {
+                    None
+                }
+            }
+        };
+        if new_line_position.is_none() && carriage_return_search.is_some() {
+            return Err(nom::Err::Error(OM::Error::bind(|| {
+                ApplicabilityParserError::IncorrectSequence
+            })));
+        }
+        let end_comment_position = match (new_line_position, end_comment_search) {
+            (None, None) => None,
+            (None, Some(_)) => None,
+            // Some(endc + start_comment_ending_position),
+            (Some(nl), None) => Some(nl),
+            (Some(nl), Some(endc)) => {
+                if nl + 1 == endc + start_comment_ending_position {
+                    // this needs to be an error
+                    // Some(endc + start_comment_ending_position)
+                    None
+                } else {
+                    Some(nl)
+                }
+            }
+        };
+        if end_comment_position.is_none() && end_comment_search.is_some() {
+            return Err(nom::Err::Error(OM::Error::bind(|| {
+                ApplicabilityParserError::IncorrectSequence
+            })));
+        }
+        let position_to_take = if let Some(x) = end_comment_position {
+            if x + 1 == eof_search {
+                eof_search
+            } else {
+                x + 1
+            }
+        } else {
+            eof_search
+        };
+        let remaining_input = input.take_from(position_to_take);
+        let remaining_input_position = remaining_input.get_position();
+        Ok((
+            remaining_input,
+            OM::Output::bind(|| {
+                let start_pos = input.get_position();
+                let resulting_input = input.take(position_to_take);
+                DocumentStructureToken::SingleLineComment(
+                    resulting_input,
+                    start_pos,
+                    remaining_input_position,
+                )
+            }),
+        ))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::marker::PhantomData;
+
+    use super::IdentifySingleLineNonTerminatedComment;
+    use applicability_lexer_base::{
+        comment::single_line::{
+            EndCommentSingleLineTerminated, StartCommentSingleLineNonTerminated,
+        },
+        document_structure::DocumentStructureToken,
+        line_terminations::{carriage_return::CarriageReturn, eof::Eof, new_line::NewLine},
+    };
+
+    use applicability_parser_errors::ApplicabilityParserError;
+    use nom::{
+        AsChar, Compare, Err, IResult, Input, Parser, bytes::tag, combinator::eof,
+        error::ParseError,
+    };
+    use nom_locate::LocatedSpan;
+
+    struct TestStruct<'a> {
+        _ph: PhantomData<&'a str>,
+    }
+    impl StartCommentSingleLineNonTerminated for TestStruct<'_> {
+        fn is_start_comment_single_line_non_terminated<I>(&self, input: <I as Input>::Item) -> bool
+        where
+            I: Input,
+            <I as Input>::Item: AsChar,
+        {
+            input.as_char() == '`'
+        }
+
+        fn start_comment_single_line_non_terminated_tag<'x>(&self) -> &'x str {
+            "``"
+        }
+
+        fn has_start_comment_single_line_non_terminated_support(&self) -> bool {
+            true
+        }
+    }
+    impl CarriageReturn for TestStruct<'_> {
+        fn is_carriage_return<I>(&self, input: <I as Input>::Item) -> bool
+        where
+            I: Input,
+            <I as Input>::Item: AsChar,
+        {
+            input.as_char() == '\r'
+        }
+
+        fn carriage_return<'x, I, O, E>(&self) -> impl Parser<I, Output = O, Error = E>
+        where
+            I: Input + Compare<&'x str>,
+            I::Item: AsChar,
+            E: ParseError<I>,
+            O: From<I>,
+        {
+            tag("\r").map(|x: I| x.into())
+        }
+    }
+    impl NewLine for TestStruct<'_> {
+        fn is_new_line<I>(&self, input: <I as Input>::Item) -> bool
+        where
+            I: Input,
+            <I as Input>::Item: AsChar,
+        {
+            input.as_char() == '\n'
+        }
+
+        fn new_line<'x, I, O, E>(&self) -> impl Parser<I, Output = O, Error = E>
+        where
+            I: Input + Compare<&'x str>,
+            I::Item: AsChar,
+            O: From<I>,
+            E: ParseError<I>,
+        {
+            tag("\n").map(|x: I| x.into())
+        }
+    }
+
+    impl Eof for TestStruct<'_> {
+        fn is_eof<I>(&self, input: <I as Input>::Item) -> bool
+        where
+            I: Input,
+            <I as Input>::Item: AsChar,
+        {
+            input.as_char().len() == 0
+        }
+
+        fn eof<'x, I, E>(&self) -> impl Parser<I, Output = I, Error = E>
+        where
+            I: Input + Compare<&'x str>,
+            <I as Input>::Item: AsChar,
+            E: ParseError<I>,
+        {
+            eof
+        }
+    }
+    impl EndCommentSingleLineTerminated for TestStruct<'_> {
+        fn is_end_comment_single_line<I>(&self, input: <I as Input>::Item) -> bool
+        where
+            I: Input,
+            <I as Input>::Item: AsChar,
+        {
+            input.as_char() == '`'
+        }
+
+        fn end_comment_single_line_tag<'x>(&self) -> &'x str {
+            "``"
+        }
+
+        fn has_end_comment_single_line_terminated_support(&self) -> bool {
+            true
+        }
+    }
+
+    #[test]
+    fn parse_empty_string() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.identify_comment_single_line_non_terminated();
+        let input: LocatedSpan<&str> = LocatedSpan::new("");
+        let result: IResult<
+            LocatedSpan<&str>,
+            DocumentStructureToken<LocatedSpan<&str>>,
+            ApplicabilityParserError<LocatedSpan<&str>>,
+        > = Err(Err::Error(
+            ApplicabilityParserError::MissingOrIncorrectStartComment,
+        ));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+
+    #[test]
+    fn parse_comment_windows_newline() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.identify_comment_single_line_non_terminated();
+        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text\r\n");
+        let result: IResult<
+            LocatedSpan<&str>,
+            DocumentStructureToken<LocatedSpan<&str>>,
+            ApplicabilityParserError<LocatedSpan<&str>>,
+        > = Ok((
+            unsafe { LocatedSpan::new_from_raw_offset(13, 2, "", ()) },
+            DocumentStructureToken::SingleLineComment(
+                LocatedSpan::new("``Some text\r\n"),
+                (0, 1),
+                (13, 2),
+            ),
+        ));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+    #[test]
+    fn parse_comment_eof() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.identify_comment_single_line_non_terminated();
+        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text");
+        let result: IResult<
+            LocatedSpan<&str>,
+            DocumentStructureToken<LocatedSpan<&str>>,
+            ApplicabilityParserError<LocatedSpan<&str>>,
+        > = Ok((
+            unsafe { LocatedSpan::new_from_raw_offset(11, 1, "", ()) },
+            DocumentStructureToken::SingleLineComment(
+                LocatedSpan::new("``Some text"),
+                (0, 1),
+                (11, 1),
+            ),
+        ));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+
+    #[test]
+    fn parse_comment_broken_newline() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.identify_comment_single_line_non_terminated();
+        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text\r");
+        let result: IResult<
+            LocatedSpan<&str>,
+            DocumentStructureToken<LocatedSpan<&str>>,
+            ApplicabilityParserError<LocatedSpan<&str>>,
+        > = Err(Err::Error(ApplicabilityParserError::IncorrectSequence));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+    #[test]
+    fn parse_comment_unix_newline() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.identify_comment_single_line_non_terminated();
+        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text\n");
+        let result: IResult<
+            LocatedSpan<&str>,
+            DocumentStructureToken<LocatedSpan<&str>>,
+            ApplicabilityParserError<LocatedSpan<&str>>,
+        > = Ok((
+            unsafe { LocatedSpan::new_from_raw_offset(12, 2, "", ()) },
+            DocumentStructureToken::SingleLineComment(
+                LocatedSpan::new("``Some text\n"),
+                (0, 1),
+                (12, 2),
+            ),
+        ));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+
+    #[test]
+    fn parse_comment_trailing_text_windows_newline() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.identify_comment_single_line_non_terminated();
+        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text\r\nOther text");
+        let result: IResult<
+            LocatedSpan<&str>,
+            DocumentStructureToken<LocatedSpan<&str>>,
+            ApplicabilityParserError<LocatedSpan<&str>>,
+        > = Ok((
+            unsafe { LocatedSpan::new_from_raw_offset(13, 2, "Other text", ()) },
+            DocumentStructureToken::SingleLineComment(
+                LocatedSpan::new("``Some text\r\n"),
+                (0, 1),
+                (13, 2),
+            ),
+        ));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+
+    #[test]
+    fn parse_comment_trailing_text_unix_newline() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.identify_comment_single_line_non_terminated();
+        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text\nOther text");
+        let result: IResult<
+            LocatedSpan<&str>,
+            DocumentStructureToken<LocatedSpan<&str>>,
+            ApplicabilityParserError<LocatedSpan<&str>>,
+        > = Ok((
+            unsafe { LocatedSpan::new_from_raw_offset(12, 2, "Other text", ()) },
+            DocumentStructureToken::SingleLineComment(
+                LocatedSpan::new("``Some text\n"),
+                (0, 1),
+                (12, 2),
+            ),
+        ));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+
+    #[test]
+    fn parse_comment_trailing_text_broken_newline() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.identify_comment_single_line_non_terminated();
+        let input: LocatedSpan<&str> = LocatedSpan::new("``Some text\rOther text");
+        let result: IResult<
+            LocatedSpan<&str>,
+            DocumentStructureToken<LocatedSpan<&str>>,
+            ApplicabilityParserError<LocatedSpan<&str>>,
+        > = Err(Err::Error(ApplicabilityParserError::IncorrectSequence));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+
+    #[test]
+    fn parse_comment_preceding_text() {
+        let config = TestStruct { _ph: PhantomData };
+        let mut parser = config.identify_comment_single_line_non_terminated();
+        let input: LocatedSpan<&str> = LocatedSpan::new("Other text``Some text``");
+        let result: IResult<
+            LocatedSpan<&str>,
+            DocumentStructureToken<LocatedSpan<&str>>,
+            ApplicabilityParserError<LocatedSpan<&str>>,
+        > = Err(Err::Error(
+            ApplicabilityParserError::MissingOrIncorrectStartComment,
+        ));
+        assert_eq!(parser.parse_complete(input), result)
+    }
+}

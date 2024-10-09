@@ -10,10 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+
+static EQUALS_FINDER: LazyLock<memmem::Finder> = LazyLock::new(|| memmem::Finder::new("="));
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
-pub struct ApplicabilityTag {
-    pub tag: String,
-    pub value: String,
+pub struct ApplicabilityTag<I1 = String, I2 = String> {
+    pub tag: I1,
+    pub value: I2,
 }
 impl From<String> for ApplicabilityTag {
     fn from(value: String) -> Self {
@@ -27,6 +29,64 @@ impl From<String> for ApplicabilityTag {
                 value: "Included".to_string(),
             },
         }
+    }
+}
+
+impl<'a> From<&'a str> for ApplicabilityTag<&'a str, String> {
+    fn from(value: &'a str) -> Self {
+        match value.split_once('=') {
+            Some((feat, val)) => ApplicabilityTag {
+                tag: feat,
+                value: val.to_string(),
+            },
+            None => ApplicabilityTag {
+                tag: value,
+                value: "Included".to_string(),
+            },
+        }
+    }
+}
+
+impl<'a> From<&'a str> for ApplicabilityTag<String> {
+    fn from(value: &'a str) -> Self {
+        Into::<ApplicabilityTag<&'a str, String>>::into(value).into()
+    }
+}
+
+impl From<ApplicabilityTag<&str>> for ApplicabilityTag<String> {
+    fn from(value: ApplicabilityTag<&str>) -> Self {
+        ApplicabilityTag {
+            tag: value.tag.to_string(),
+            value: value.value,
+        }
+    }
+}
+
+impl<'a> From<&'a [u8]> for ApplicabilityTag<&'a [u8], String> {
+    fn from(value: &'a [u8]) -> Self {
+        let finder = &*EQUALS_FINDER;
+        let potential_position = finder.find(value);
+        match potential_position {
+            Some(position) => {
+                let (feat, tag) = value.split_at(position);
+                ApplicabilityTag {
+                    tag: feat,
+                    value: unsafe { String::from_utf8_unchecked(tag.to_vec()) },
+                }
+            }
+            None => ApplicabilityTag {
+                tag: value,
+                value: "Included".to_string(),
+            },
+        }
+    }
+}
+impl<I, X> From<LocatedSpan<I, X>> for ApplicabilityTag<I, String>
+where
+    I: Into<ApplicabilityTag<I, String>>,
+{
+    fn from(value: LocatedSpan<I, X>) -> Self {
+        value.into_fragment().into()
     }
 }
 impl PartialEq<str> for ApplicabilityTag {
@@ -45,10 +105,17 @@ impl From<ApplicabilityTag> for String {
         applic.tag + "=" + &applic.value
     }
 }
+use std::sync::LazyLock;
+
+use memchr::memmem;
+use nom_locate::LocatedSpan;
 #[cfg(feature = "serde")]
-use serde::{de::Error, Deserialize};
+use serde::{Deserialize, de::Error};
 #[cfg(feature = "serde")]
-impl<'de> Deserialize<'de> for ApplicabilityTag {
+impl<'de, X> Deserialize<'de> for ApplicabilityTag<X>
+where
+    ApplicabilityTag<X>: From<String>,
+{
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,

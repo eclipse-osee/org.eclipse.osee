@@ -11,16 +11,16 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 use nom::{
+    IResult,
     bytes::complete::tag,
     character::complete::multispace0,
     combinator::{map, map_parser},
     sequence::{preceded, terminated, tuple},
-    IResult,
 };
 
 use crate::counter::count_new_lines;
 
-use crate::{tag_parser::applicability_tag, ApplicabilityParserSyntaxTag};
+use crate::{ApplicabilityParserSyntaxTag, tag_parser::applicability_tag};
 pub fn parse_substitution<'a>(
     custom_start_comment_syntax: &'a str,
     custom_end_comment_syntax: &'a str,
@@ -61,16 +61,36 @@ pub fn parse_substitution_as_u8<'a>(
             ApplicabilityParserSyntaxTag::Substitution(t) => t
                 .iter()
                 .map(|x| match x {
-                    applicability_parser_types::applic_tokens::ApplicTokens::NoTag(t) => t.1,
-                    applicability_parser_types::applic_tokens::ApplicTokens::Not(t) => t.1,
-                    applicability_parser_types::applic_tokens::ApplicTokens::And(t) => t.1,
-                    applicability_parser_types::applic_tokens::ApplicTokens::NotAnd(t) => t.1,
-                    applicability_parser_types::applic_tokens::ApplicTokens::Or(t) => t.1,
-                    applicability_parser_types::applic_tokens::ApplicTokens::NotOr(t) => t.1,
-                    applicability_parser_types::applic_tokens::ApplicTokens::NestedAnd(t) => t.1,
-                    applicability_parser_types::applic_tokens::ApplicTokens::NestedNotAnd(t) => t.1,
-                    applicability_parser_types::applic_tokens::ApplicTokens::NestedOr(t) => t.1,
-                    applicability_parser_types::applic_tokens::ApplicTokens::NestedNotOr(t) => t.1,
+                    applicability_parser_types::applic_tokens::ApplicTokens::NoTag(t) => {
+                        t.1.unwrap_or_default()
+                    }
+                    applicability_parser_types::applic_tokens::ApplicTokens::Not(t) => {
+                        t.1.unwrap_or_default()
+                    }
+                    applicability_parser_types::applic_tokens::ApplicTokens::And(t) => {
+                        t.1.unwrap_or_default()
+                    }
+                    applicability_parser_types::applic_tokens::ApplicTokens::NotAnd(t) => {
+                        t.1.unwrap_or_default()
+                    }
+                    applicability_parser_types::applic_tokens::ApplicTokens::Or(t) => {
+                        t.1.unwrap_or_default()
+                    }
+                    applicability_parser_types::applic_tokens::ApplicTokens::NotOr(t) => {
+                        t.1.unwrap_or_default()
+                    }
+                    applicability_parser_types::applic_tokens::ApplicTokens::NestedAnd(t) => {
+                        t.1.unwrap_or_default()
+                    }
+                    applicability_parser_types::applic_tokens::ApplicTokens::NestedNotAnd(t) => {
+                        t.1.unwrap_or_default()
+                    }
+                    applicability_parser_types::applic_tokens::ApplicTokens::NestedOr(t) => {
+                        t.1.unwrap_or_default()
+                    }
+                    applicability_parser_types::applic_tokens::ApplicTokens::NestedNotOr(t) => {
+                        t.1.unwrap_or_default()
+                    }
                 })
                 .sum(),
             ApplicabilityParserSyntaxTag::SubstitutionNot(_) => 0,

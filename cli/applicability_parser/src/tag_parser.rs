@@ -16,6 +16,7 @@ use applicability_parser_types::applic_tokens::{
     ApplicabilityNotAndTag, ApplicabilityNotOrTag, ApplicabilityNotTag, ApplicabilityOrTag,
 };
 use nom::{
+    AsChar, IResult, InputTakeAtPosition,
     branch::{alt, permutation},
     bytes::complete::tag,
     character::complete::{anychar, multispace0, multispace1},
@@ -23,7 +24,6 @@ use nom::{
     error::{ErrorKind, ParseError},
     multi::many_till,
     sequence::{preceded, separated_pair, terminated, tuple},
-    AsChar, IResult, InputTakeAtPosition,
 };
 
 use crate::counter::count_new_lines;
@@ -34,7 +34,7 @@ fn parse_not_and<'a>() -> impl FnMut(&'a str) -> IResult<&'a str, ApplicTokens> 
         |(parsed_characters, line_endings)| {
             ApplicTokens::NotAnd(ApplicabilityNotAndTag(
                 parsed_characters.into(),
-                line_endings,
+                Some(line_endings),
             ))
         },
     )
@@ -63,9 +63,9 @@ mod parse_not_and_nested_tests {
                             tag: "SOME_FEATURE".to_string(),
                             value: "Included".to_string()
                         },
-                        0
+                        Some(0)
                     ))],
-                    0
+                    Some(0)
                 ))
             ))
         );
@@ -81,12 +81,14 @@ fn parse_not_and_nested<'a>() -> impl FnMut(&'a str) -> IResult<&'a str, ApplicT
         |((_not_sign, spaces, _paren), parsed_tokens)| {
             ApplicTokens::NestedNotAnd(ApplicabilityNestedNotAndTag(
                 parsed_tokens,
-                spaces
-                    .matches('\n')
-                    .collect::<Vec<_>>()
-                    .len()
-                    .try_into()
-                    .unwrap(),
+                Some(
+                    spaces
+                        .matches('\n')
+                        .collect::<Vec<_>>()
+                        .len()
+                        .try_into()
+                        .unwrap(),
+                ),
             ))
         },
     )
@@ -95,13 +97,16 @@ fn parse_not_and_nested<'a>() -> impl FnMut(&'a str) -> IResult<&'a str, ApplicT
 fn parse_and_nested<'a>() -> impl FnMut(&'a str) -> IResult<&'a str, ApplicTokens> {
     map(
         preceded(tag("("), applicability_tag_inner()),
-        |parsed_tokens| ApplicTokens::NestedAnd(ApplicabilityNestedAndTag(parsed_tokens, 0)),
+        |parsed_tokens| ApplicTokens::NestedAnd(ApplicabilityNestedAndTag(parsed_tokens, Some(0))),
     )
 }
 
 fn parse_and<'a>() -> impl FnMut(&'a str) -> IResult<&'a str, ApplicTokens> {
     map(parse_until_new_word, |(parsed_characters, line_endings)| {
-        ApplicTokens::And(ApplicabilityAndTag(parsed_characters.into(), line_endings))
+        ApplicTokens::And(ApplicabilityAndTag(
+            parsed_characters.into(),
+            Some(line_endings),
+        ))
     })
 }
 
@@ -122,34 +127,45 @@ fn parse_and_tokens<'a>() -> impl FnMut(&'a str) -> IResult<&'a str, Vec<ApplicT
             )),
         )),
         |((first, second), token)| match token {
-            ApplicTokens::NoTag(t) => {
-                ApplicTokens::NoTag(ApplicabilityNoTag(t.0, t.1 + first + second))
-            }
-            ApplicTokens::Not(t) => {
-                ApplicTokens::Not(ApplicabilityNotTag(t.0, t.1 + first + second))
-            }
-            ApplicTokens::And(t) => {
-                ApplicTokens::And(ApplicabilityAndTag(t.0, t.1 + first + second))
-            }
-            ApplicTokens::NotAnd(t) => {
-                ApplicTokens::NotAnd(ApplicabilityNotAndTag(t.0, t.1 + first + second))
-            }
-            ApplicTokens::Or(t) => ApplicTokens::Or(ApplicabilityOrTag(t.0, t.1 + first + second)),
-            ApplicTokens::NotOr(t) => {
-                ApplicTokens::NotOr(ApplicabilityNotOrTag(t.0, t.1 + first + second))
-            }
-            ApplicTokens::NestedAnd(t) => {
-                ApplicTokens::NestedAnd(ApplicabilityNestedAndTag(t.0, t.1 + first + second))
-            }
-            ApplicTokens::NestedNotAnd(t) => {
-                ApplicTokens::NestedNotAnd(ApplicabilityNestedNotAndTag(t.0, t.1 + first + second))
-            }
-            ApplicTokens::NestedOr(t) => {
-                ApplicTokens::NestedOr(ApplicabilityNestedOrTag(t.0, t.1 + first + second))
-            }
-            ApplicTokens::NestedNotOr(t) => {
-                ApplicTokens::NestedNotOr(ApplicabilityNestedNotOrTag(t.0, t.1 + first + second))
-            }
+            ApplicTokens::NoTag(t) => ApplicTokens::NoTag(ApplicabilityNoTag(
+                t.0,
+                Some(t.1.unwrap_or_default() + first + second),
+            )),
+            ApplicTokens::Not(t) => ApplicTokens::Not(ApplicabilityNotTag(
+                t.0,
+                Some(t.1.unwrap_or_default() + first + second),
+            )),
+            ApplicTokens::And(t) => ApplicTokens::And(ApplicabilityAndTag(
+                t.0,
+                Some(t.1.unwrap_or_default() + first + second),
+            )),
+            ApplicTokens::NotAnd(t) => ApplicTokens::NotAnd(ApplicabilityNotAndTag(
+                t.0,
+                Some(t.1.unwrap_or_default() + first + second),
+            )),
+            ApplicTokens::Or(t) => ApplicTokens::Or(ApplicabilityOrTag(
+                t.0,
+                Some(t.1.unwrap_or_default() + first + second),
+            )),
+            ApplicTokens::NotOr(t) => ApplicTokens::NotOr(ApplicabilityNotOrTag(
+                t.0,
+                Some(t.1.unwrap_or_default() + first + second),
+            )),
+            ApplicTokens::NestedAnd(t) => ApplicTokens::NestedAnd(ApplicabilityNestedAndTag(
+                t.0,
+                Some(t.1.unwrap_or_default() + first + second),
+            )),
+            ApplicTokens::NestedNotAnd(t) => ApplicTokens::NestedNotAnd(
+                ApplicabilityNestedNotAndTag(t.0, Some(t.1.unwrap_or_default() + first + second)),
+            ),
+            ApplicTokens::NestedOr(t) => ApplicTokens::NestedOr(ApplicabilityNestedOrTag(
+                t.0,
+                Some(t.1.unwrap_or_default() + first + second),
+            )),
+            ApplicTokens::NestedNotOr(t) => ApplicTokens::NestedNotOr(ApplicabilityNestedNotOrTag(
+                t.0,
+                Some(t.1.unwrap_or_default() + first + second),
+            )),
         },
     );
     map(
@@ -175,7 +191,10 @@ mod parse_applic_or_tests {
             parser("JHU_CONTROLLER"),
             Ok((
                 "",
-                ApplicTokens::Or(ApplicabilityOrTag("JHU_CONTROLLER".to_string().into(), 0))
+                ApplicTokens::Or(ApplicabilityOrTag(
+                    "JHU_CONTROLLER".to_string().into(),
+                    Some(0)
+                ))
             ))
         )
     }
@@ -188,7 +207,7 @@ mod parse_applic_or_tests {
                 "",
                 ApplicTokens::NotOr(ApplicabilityNotOrTag(
                     "JHU_CONTROLLER".to_string().into(),
-                    0
+                    Some(0)
                 ))
             ))
         )
@@ -203,9 +222,9 @@ mod parse_applic_or_tests {
                 ApplicTokens::NestedNotOr(ApplicabilityNestedNotOrTag(
                     vec![ApplicTokens::NoTag(ApplicabilityNoTag(
                         "JHU_CONTROLLER".to_string().into(),
-                        0
+                        Some(0)
                     ))],
-                    0
+                    Some(0)
                 ))
             ))
         )
@@ -221,9 +240,9 @@ mod parse_applic_or_tests {
                 ApplicTokens::NestedOr(ApplicabilityNestedOrTag(
                     vec![ApplicTokens::NoTag(ApplicabilityNoTag(
                         "JHU_CONTROLLER".to_string().into(),
-                        0
+                        Some(0)
                     ))],
-                    0
+                    Some(0)
                 ))
             ))
         )
@@ -238,7 +257,7 @@ mod parse_applic_or_tests {
                 "",
                 vec![ApplicTokens::Or(ApplicabilityOrTag(
                     "ENGINE_5=A2543".to_string().into(),
-                    0
+                    Some(0)
                 ))]
             ))
         )
@@ -254,14 +273,14 @@ mod parse_applic_or_tests {
                     vec![
                         ApplicTokens::NoTag(ApplicabilityNoTag(
                             "JHU_CONTROLLER".to_string().into(),
-                            0
+                            Some(0)
                         )),
                         ApplicTokens::Or(ApplicabilityOrTag(
                             "ENGINE_5=A2543".to_string().into(),
-                            0
+                            Some(0)
                         ))
                     ],
-                    0
+                    Some(0)
                 ))
             ))
         )
@@ -278,23 +297,23 @@ mod parse_applic_or_tests {
                     vec![
                         ApplicTokens::NoTag(ApplicabilityNoTag(
                             "JHU_CONTROLLER".to_string().into(),
-                            0
+                            Some(0)
                         )),
                         ApplicTokens::NestedOr(ApplicabilityNestedOrTag(
                             vec![
                                 ApplicTokens::NoTag(ApplicabilityNoTag(
                                     "ENGINE_5=A2543".to_string().into(),
-                                    0
+                                    Some(0)
                                 )),
                                 ApplicTokens::Or(ApplicabilityOrTag(
                                     "ROBOT_SPEAKER=SPKR_B".to_string().into(),
-                                    0
+                                    Some(0)
                                 ))
                             ],
-                            0
+                            Some(0)
                         ))
                     ],
-                    0
+                    Some(0)
                 ))
             ))
         )
@@ -311,23 +330,23 @@ mod parse_applic_or_tests {
                     vec![
                         ApplicTokens::NoTag(ApplicabilityNoTag(
                             "JHU_CONTROLLER".to_string().into(),
-                            0
+                            Some(0)
                         )),
                         ApplicTokens::NestedOr(ApplicabilityNestedOrTag(
                             vec![
                                 ApplicTokens::NoTag(ApplicabilityNoTag(
                                     "ENGINE_5=A2543".to_string().into(),
-                                    0
+                                    Some(0)
                                 )),
                                 ApplicTokens::And(ApplicabilityAndTag(
                                     "ROBOT_SPEAKER=SPKR_B".to_string().into(),
-                                    0
+                                    Some(0)
                                 ))
                             ],
-                            0
+                            Some(0)
                         ))
                     ],
-                    0
+                    Some(0)
                 ))
             ))
         )
@@ -344,14 +363,14 @@ mod parse_applic_or_tests {
                     vec![
                         ApplicTokens::NoTag(ApplicabilityNoTag(
                             "JHU_CONTROLLER".to_string().into(),
-                            0
+                            Some(0)
                         )),
                         ApplicTokens::NotOr(ApplicabilityNotOrTag(
                             "ENGINE_5=A2543".to_string().into(),
-                            0
+                            Some(0)
                         ))
                     ],
-                    0
+                    Some(0)
                 ))
             ))
         )
@@ -368,14 +387,14 @@ mod parse_applic_or_tests {
                     vec![
                         ApplicTokens::NoTag(ApplicabilityNoTag(
                             "JHU_CONTROLLER".to_string().into(),
-                            0
+                            Some(0)
                         )),
                         ApplicTokens::And(ApplicabilityAndTag(
                             "ENGINE_5=A2543".to_string().into(),
-                            0
+                            Some(0)
                         ))
                     ],
-                    0
+                    Some(0)
                 ))
             ))
         )
@@ -392,14 +411,14 @@ mod parse_applic_or_tests {
                     vec![
                         ApplicTokens::NoTag(ApplicabilityNoTag(
                             "JHU_CONTROLLER".to_string().into(),
-                            0
+                            Some(0)
                         )),
                         ApplicTokens::NotAnd(ApplicabilityNotAndTag(
                             "ENGINE_5=A2543".to_string().into(),
-                            0
+                            Some(0)
                         ))
                     ],
-                    0
+                    Some(0)
                 ))
             ))
         )
@@ -411,7 +430,7 @@ fn parse_not_or<'a>() -> impl FnMut(&'a str) -> IResult<&'a str, ApplicTokens> {
         |(parsed_characters, line_endings)| {
             ApplicTokens::NotOr(ApplicabilityNotOrTag(
                 parsed_characters.into(),
-                line_endings,
+                Some(line_endings),
             ))
         },
     )
@@ -426,12 +445,14 @@ fn parse_not_or_nested<'a>() -> impl FnMut(&'a str) -> IResult<&'a str, ApplicTo
         |((_not_sign, spaces, _paren), parsed_tokens)| {
             ApplicTokens::NestedNotOr(ApplicabilityNestedNotOrTag(
                 parsed_tokens,
-                spaces
-                    .matches('\n')
-                    .collect::<Vec<_>>()
-                    .len()
-                    .try_into()
-                    .unwrap(),
+                Some(
+                    spaces
+                        .matches('\n')
+                        .collect::<Vec<_>>()
+                        .len()
+                        .try_into()
+                        .unwrap(),
+                ),
             ))
         },
     )
@@ -440,13 +461,16 @@ fn parse_not_or_nested<'a>() -> impl FnMut(&'a str) -> IResult<&'a str, ApplicTo
 fn parse_or_nested<'a>() -> impl FnMut(&'a str) -> IResult<&'a str, ApplicTokens> {
     map(
         preceded(tag("("), applicability_tag_inner()),
-        |parsed_tokens| ApplicTokens::NestedOr(ApplicabilityNestedOrTag(parsed_tokens, 0)),
+        |parsed_tokens| ApplicTokens::NestedOr(ApplicabilityNestedOrTag(parsed_tokens, Some(0))),
     )
 }
 
 fn parse_or<'a>() -> impl FnMut(&'a str) -> IResult<&'a str, ApplicTokens> {
     map(parse_until_new_word, |(parsed_characters, line_endings)| {
-        ApplicTokens::Or(ApplicabilityOrTag(parsed_characters.into(), line_endings))
+        ApplicTokens::Or(ApplicabilityOrTag(
+            parsed_characters.into(),
+            Some(line_endings),
+        ))
     })
 }
 
@@ -467,34 +491,45 @@ fn parse_or_tokens<'a>() -> impl FnMut(&'a str) -> IResult<&'a str, Vec<ApplicTo
             )),
         )),
         |((first, second), token)| match token {
-            ApplicTokens::NoTag(t) => {
-                ApplicTokens::NoTag(ApplicabilityNoTag(t.0, t.1 + first + second))
-            }
-            ApplicTokens::Not(t) => {
-                ApplicTokens::Not(ApplicabilityNotTag(t.0, t.1 + first + second))
-            }
-            ApplicTokens::And(t) => {
-                ApplicTokens::And(ApplicabilityAndTag(t.0, t.1 + first + second))
-            }
-            ApplicTokens::NotAnd(t) => {
-                ApplicTokens::NotAnd(ApplicabilityNotAndTag(t.0, t.1 + first + second))
-            }
-            ApplicTokens::Or(t) => ApplicTokens::Or(ApplicabilityOrTag(t.0, t.1 + first + second)),
-            ApplicTokens::NotOr(t) => {
-                ApplicTokens::NotOr(ApplicabilityNotOrTag(t.0, t.1 + first + second))
-            }
-            ApplicTokens::NestedAnd(t) => {
-                ApplicTokens::NestedAnd(ApplicabilityNestedAndTag(t.0, t.1 + first + second))
-            }
-            ApplicTokens::NestedNotAnd(t) => {
-                ApplicTokens::NestedNotAnd(ApplicabilityNestedNotAndTag(t.0, t.1 + first + second))
-            }
-            ApplicTokens::NestedOr(t) => {
-                ApplicTokens::NestedOr(ApplicabilityNestedOrTag(t.0, t.1 + first + second))
-            }
-            ApplicTokens::NestedNotOr(t) => {
-                ApplicTokens::NestedNotOr(ApplicabilityNestedNotOrTag(t.0, t.1 + first + second))
-            }
+            ApplicTokens::NoTag(t) => ApplicTokens::NoTag(ApplicabilityNoTag(
+                t.0,
+                Some(t.1.unwrap_or_default() + first + second),
+            )),
+            ApplicTokens::Not(t) => ApplicTokens::Not(ApplicabilityNotTag(
+                t.0,
+                Some(t.1.unwrap_or_default() + first + second),
+            )),
+            ApplicTokens::And(t) => ApplicTokens::And(ApplicabilityAndTag(
+                t.0,
+                Some(t.1.unwrap_or_default() + first + second),
+            )),
+            ApplicTokens::NotAnd(t) => ApplicTokens::NotAnd(ApplicabilityNotAndTag(
+                t.0,
+                Some(t.1.unwrap_or_default() + first + second),
+            )),
+            ApplicTokens::Or(t) => ApplicTokens::Or(ApplicabilityOrTag(
+                t.0,
+                Some(t.1.unwrap_or_default() + first + second),
+            )),
+            ApplicTokens::NotOr(t) => ApplicTokens::NotOr(ApplicabilityNotOrTag(
+                t.0,
+                Some(t.1.unwrap_or_default() + first + second),
+            )),
+            ApplicTokens::NestedAnd(t) => ApplicTokens::NestedAnd(ApplicabilityNestedAndTag(
+                t.0,
+                Some(t.1.unwrap_or_default() + first + second),
+            )),
+            ApplicTokens::NestedNotAnd(t) => ApplicTokens::NestedNotAnd(
+                ApplicabilityNestedNotAndTag(t.0, Some(t.1.unwrap_or_default() + first + second)),
+            ),
+            ApplicTokens::NestedOr(t) => ApplicTokens::NestedOr(ApplicabilityNestedOrTag(
+                t.0,
+                Some(t.1.unwrap_or_default() + first + second),
+            )),
+            ApplicTokens::NestedNotOr(t) => ApplicTokens::NestedNotOr(ApplicabilityNestedNotOrTag(
+                t.0,
+                Some(t.1.unwrap_or_default() + first + second),
+            )),
         },
     );
     map(
@@ -523,7 +558,7 @@ mod applic_tag_inner_tests {
                 "",
                 vec![ApplicTokens::NoTag(ApplicabilityNoTag(
                     "JHU_CONTROLLER".to_string().into(),
-                    0
+                    Some(0)
                 ))]
             ))
         )
@@ -538,7 +573,7 @@ mod applic_tag_inner_tests {
                 "",
                 vec![ApplicTokens::Not(ApplicabilityNotTag(
                     "JHU_CONTROLLER".to_string().into(),
-                    0
+                    Some(0)
                 ))]
             ))
         )
@@ -552,8 +587,14 @@ mod applic_tag_inner_tests {
             Ok((
                 "",
                 vec![
-                    ApplicTokens::NoTag(ApplicabilityNoTag("JHU_CONTROLLER".to_string().into(), 0)),
-                    ApplicTokens::And(ApplicabilityAndTag("ENGINE_5=A2543".to_string().into(), 0))
+                    ApplicTokens::NoTag(ApplicabilityNoTag(
+                        "JHU_CONTROLLER".to_string().into(),
+                        Some(0)
+                    )),
+                    ApplicTokens::And(ApplicabilityAndTag(
+                        "ENGINE_5=A2543".to_string().into(),
+                        Some(0)
+                    ))
                 ]
             ))
         )
@@ -567,19 +608,22 @@ mod applic_tag_inner_tests {
             Ok((
                 "",
                 vec![
-                    ApplicTokens::NoTag(ApplicabilityNoTag("JHU_CONTROLLER".to_string().into(), 0)),
+                    ApplicTokens::NoTag(ApplicabilityNoTag(
+                        "JHU_CONTROLLER".to_string().into(),
+                        Some(0)
+                    )),
                     ApplicTokens::NestedAnd(ApplicabilityNestedAndTag(
                         vec![
                             ApplicTokens::NoTag(ApplicabilityNoTag(
                                 "ENGINE_5=A2543".to_string().into(),
-                                0
+                                Some(0)
                             )),
                             ApplicTokens::And(ApplicabilityAndTag(
                                 "ROBOT_SPEAKER=SPKR_B".to_string().into(),
-                                0
+                                Some(0)
                             ))
                         ],
-                        0
+                        Some(0)
                     ))
                 ]
             ))
@@ -593,19 +637,22 @@ mod applic_tag_inner_tests {
             Ok((
                 "",
                 vec![
-                    ApplicTokens::NoTag(ApplicabilityNoTag("JHU_CONTROLLER".to_string().into(), 0)),
+                    ApplicTokens::NoTag(ApplicabilityNoTag(
+                        "JHU_CONTROLLER".to_string().into(),
+                        Some(0)
+                    )),
                     ApplicTokens::NestedAnd(ApplicabilityNestedAndTag(
                         vec![
                             ApplicTokens::NoTag(ApplicabilityNoTag(
                                 "ENGINE_5=A2543".to_string().into(),
-                                0
+                                Some(0)
                             )),
                             ApplicTokens::NotAnd(ApplicabilityNotAndTag(
                                 "ROBOT_SPEAKER=SPKR_B".to_string().into(),
-                                0
+                                Some(0)
                             ))
                         ],
-                        0
+                        Some(0)
                     ))
                 ]
             ))
@@ -620,19 +667,22 @@ mod applic_tag_inner_tests {
             Ok((
                 "",
                 vec![
-                    ApplicTokens::NoTag(ApplicabilityNoTag("JHU_CONTROLLER".to_string().into(), 0)),
+                    ApplicTokens::NoTag(ApplicabilityNoTag(
+                        "JHU_CONTROLLER".to_string().into(),
+                        Some(0)
+                    )),
                     ApplicTokens::NestedAnd(ApplicabilityNestedAndTag(
                         vec![
                             ApplicTokens::NoTag(ApplicabilityNoTag(
                                 "ENGINE_5=A2543".to_string().into(),
-                                0
+                                Some(0)
                             )),
                             ApplicTokens::Or(ApplicabilityOrTag(
                                 "ROBOT_SPEAKER=SPKR_B".to_string().into(),
-                                0
+                                Some(0)
                             ))
                         ],
-                        0
+                        Some(0)
                     ))
                 ]
             ))
@@ -646,19 +696,22 @@ mod applic_tag_inner_tests {
             Ok((
                 "",
                 vec![
-                    ApplicTokens::NoTag(ApplicabilityNoTag("JHU_CONTROLLER".to_string().into(), 0)),
+                    ApplicTokens::NoTag(ApplicabilityNoTag(
+                        "JHU_CONTROLLER".to_string().into(),
+                        Some(0)
+                    )),
                     ApplicTokens::NestedAnd(ApplicabilityNestedAndTag(
                         vec![
                             ApplicTokens::NoTag(ApplicabilityNoTag(
                                 "ENGINE_5=A2543".to_string().into(),
-                                0
+                                Some(0)
                             )),
                             ApplicTokens::NotOr(ApplicabilityNotOrTag(
                                 "ROBOT_SPEAKER=SPKR_B".to_string().into(),
-                                0
+                                Some(0)
                             ))
                         ],
-                        0
+                        Some(0)
                     ))
                 ]
             ))
@@ -673,19 +726,22 @@ mod applic_tag_inner_tests {
             Ok((
                 "",
                 vec![
-                    ApplicTokens::Not(ApplicabilityNotTag("JHU_CONTROLLER".to_string().into(), 0)),
+                    ApplicTokens::Not(ApplicabilityNotTag(
+                        "JHU_CONTROLLER".to_string().into(),
+                        Some(0)
+                    )),
                     ApplicTokens::NestedAnd(ApplicabilityNestedAndTag(
                         vec![
                             ApplicTokens::NoTag(ApplicabilityNoTag(
                                 "ENGINE_5=A2543".to_string().into(),
-                                0
+                                Some(0)
                             )),
                             ApplicTokens::And(ApplicabilityAndTag(
                                 "ROBOT_SPEAKER=SPKR_B".to_string().into(),
-                                0
+                                Some(0)
                             ))
                         ],
-                        0
+                        Some(0)
                     ))
                 ]
             ))
@@ -699,19 +755,22 @@ mod applic_tag_inner_tests {
             Ok((
                 "",
                 vec![
-                    ApplicTokens::Not(ApplicabilityNotTag("JHU_CONTROLLER".to_string().into(), 0)),
+                    ApplicTokens::Not(ApplicabilityNotTag(
+                        "JHU_CONTROLLER".to_string().into(),
+                        Some(0)
+                    )),
                     ApplicTokens::NestedAnd(ApplicabilityNestedAndTag(
                         vec![
                             ApplicTokens::NoTag(ApplicabilityNoTag(
                                 "ENGINE_5=A2543".to_string().into(),
-                                0
+                                Some(0)
                             )),
                             ApplicTokens::NotAnd(ApplicabilityNotAndTag(
                                 "ROBOT_SPEAKER=SPKR_B".to_string().into(),
-                                0
+                                Some(0)
                             ))
                         ],
-                        0
+                        Some(0)
                     ))
                 ]
             ))
@@ -726,19 +785,22 @@ mod applic_tag_inner_tests {
             Ok((
                 "",
                 vec![
-                    ApplicTokens::Not(ApplicabilityNotTag("JHU_CONTROLLER".to_string().into(), 0)),
+                    ApplicTokens::Not(ApplicabilityNotTag(
+                        "JHU_CONTROLLER".to_string().into(),
+                        Some(0)
+                    )),
                     ApplicTokens::NestedAnd(ApplicabilityNestedAndTag(
                         vec![
                             ApplicTokens::NoTag(ApplicabilityNoTag(
                                 "ENGINE_5=A2543".to_string().into(),
-                                0
+                                Some(0)
                             )),
                             ApplicTokens::Or(ApplicabilityOrTag(
                                 "ROBOT_SPEAKER=SPKR_B".to_string().into(),
-                                0
+                                Some(0)
                             ))
                         ],
-                        0
+                        Some(0)
                     ))
                 ]
             ))
@@ -752,19 +814,22 @@ mod applic_tag_inner_tests {
             Ok((
                 "",
                 vec![
-                    ApplicTokens::Not(ApplicabilityNotTag("JHU_CONTROLLER".to_string().into(), 0)),
+                    ApplicTokens::Not(ApplicabilityNotTag(
+                        "JHU_CONTROLLER".to_string().into(),
+                        Some(0)
+                    )),
                     ApplicTokens::NestedAnd(ApplicabilityNestedAndTag(
                         vec![
                             ApplicTokens::NoTag(ApplicabilityNoTag(
                                 "ENGINE_5=A2543".to_string().into(),
-                                0
+                                Some(0)
                             )),
                             ApplicTokens::NotOr(ApplicabilityNotOrTag(
                                 "ROBOT_SPEAKER=SPKR_B".to_string().into(),
-                                0
+                                Some(0)
                             ))
                         ],
-                        0
+                        Some(0)
                     ))
                 ]
             ))
@@ -779,8 +844,14 @@ mod applic_tag_inner_tests {
             Ok((
                 "",
                 vec![
-                    ApplicTokens::NoTag(ApplicabilityNoTag("JHU_CONTROLLER".to_string().into(), 0)),
-                    ApplicTokens::Or(ApplicabilityOrTag("ENGINE_5=A2543".to_string().into(), 0))
+                    ApplicTokens::NoTag(ApplicabilityNoTag(
+                        "JHU_CONTROLLER".to_string().into(),
+                        Some(0)
+                    )),
+                    ApplicTokens::Or(ApplicabilityOrTag(
+                        "ENGINE_5=A2543".to_string().into(),
+                        Some(0)
+                    ))
                 ]
             ))
         )
@@ -794,19 +865,22 @@ mod applic_tag_inner_tests {
             Ok((
                 "",
                 vec![
-                    ApplicTokens::NoTag(ApplicabilityNoTag("JHU_CONTROLLER".to_string().into(), 0)),
+                    ApplicTokens::NoTag(ApplicabilityNoTag(
+                        "JHU_CONTROLLER".to_string().into(),
+                        Some(0)
+                    )),
                     ApplicTokens::NestedOr(ApplicabilityNestedOrTag(
                         vec![
                             ApplicTokens::NoTag(ApplicabilityNoTag(
                                 "ENGINE_5=A2543".to_string().into(),
-                                0
+                                Some(0)
                             )),
                             ApplicTokens::And(ApplicabilityAndTag(
                                 "ROBOT_SPEAKER=SPKR_B".to_string().into(),
-                                0
+                                Some(0)
                             ))
                         ],
-                        0
+                        Some(0)
                     ))
                 ]
             ))
@@ -820,19 +894,22 @@ mod applic_tag_inner_tests {
             Ok((
                 "",
                 vec![
-                    ApplicTokens::NoTag(ApplicabilityNoTag("JHU_CONTROLLER".to_string().into(), 0)),
+                    ApplicTokens::NoTag(ApplicabilityNoTag(
+                        "JHU_CONTROLLER".to_string().into(),
+                        Some(0)
+                    )),
                     ApplicTokens::NestedOr(ApplicabilityNestedOrTag(
                         vec![
                             ApplicTokens::NoTag(ApplicabilityNoTag(
                                 "ENGINE_5=A2543".to_string().into(),
-                                0
+                                Some(0)
                             )),
                             ApplicTokens::NotAnd(ApplicabilityNotAndTag(
                                 "ROBOT_SPEAKER=SPKR_B".to_string().into(),
-                                0
+                                Some(0)
                             ))
                         ],
-                        0
+                        Some(0)
                     ))
                 ]
             ))
@@ -847,19 +924,22 @@ mod applic_tag_inner_tests {
             Ok((
                 "",
                 vec![
-                    ApplicTokens::NoTag(ApplicabilityNoTag("JHU_CONTROLLER".to_string().into(), 0)),
+                    ApplicTokens::NoTag(ApplicabilityNoTag(
+                        "JHU_CONTROLLER".to_string().into(),
+                        Some(0)
+                    )),
                     ApplicTokens::NestedOr(ApplicabilityNestedOrTag(
                         vec![
                             ApplicTokens::NoTag(ApplicabilityNoTag(
                                 "ENGINE_5=A2543".to_string().into(),
-                                0
+                                Some(0)
                             )),
                             ApplicTokens::Or(ApplicabilityOrTag(
                                 "ROBOT_SPEAKER=SPKR_B".to_string().into(),
-                                0
+                                Some(0)
                             ))
                         ],
-                        0
+                        Some(0)
                     ))
                 ]
             ))
@@ -873,19 +953,22 @@ mod applic_tag_inner_tests {
             Ok((
                 "",
                 vec![
-                    ApplicTokens::NoTag(ApplicabilityNoTag("JHU_CONTROLLER".to_string().into(), 0)),
+                    ApplicTokens::NoTag(ApplicabilityNoTag(
+                        "JHU_CONTROLLER".to_string().into(),
+                        Some(0)
+                    )),
                     ApplicTokens::NestedOr(ApplicabilityNestedOrTag(
                         vec![
                             ApplicTokens::NoTag(ApplicabilityNoTag(
                                 "ENGINE_5=A2543".to_string().into(),
-                                0
+                                Some(0)
                             )),
                             ApplicTokens::NotOr(ApplicabilityNotOrTag(
                                 "ROBOT_SPEAKER=SPKR_B".to_string().into(),
-                                0
+                                Some(0)
                             ))
                         ],
-                        0
+                        Some(0)
                     ))
                 ]
             ))
@@ -899,19 +982,22 @@ mod applic_tag_inner_tests {
             Ok((
                 "",
                 vec![
-                    ApplicTokens::NoTag(ApplicabilityNoTag("JHU_CONTROLLER".to_string().into(), 0)),
+                    ApplicTokens::NoTag(ApplicabilityNoTag(
+                        "JHU_CONTROLLER".to_string().into(),
+                        Some(0)
+                    )),
                     ApplicTokens::NestedNotOr(ApplicabilityNestedNotOrTag(
                         vec![
                             ApplicTokens::NoTag(ApplicabilityNoTag(
                                 "ENGINE_5=A2543".to_string().into(),
-                                0
+                                Some(0)
                             )),
                             ApplicTokens::And(ApplicabilityAndTag(
                                 "ROBOT_SPEAKER=SPKR_B".to_string().into(),
-                                0
+                                Some(0)
                             ))
                         ],
-                        0
+                        Some(0)
                     ))
                 ]
             ))
@@ -925,19 +1011,22 @@ mod applic_tag_inner_tests {
             Ok((
                 "",
                 vec![
-                    ApplicTokens::NoTag(ApplicabilityNoTag("JHU_CONTROLLER".to_string().into(), 0)),
+                    ApplicTokens::NoTag(ApplicabilityNoTag(
+                        "JHU_CONTROLLER".to_string().into(),
+                        Some(0)
+                    )),
                     ApplicTokens::NestedNotOr(ApplicabilityNestedNotOrTag(
                         vec![
                             ApplicTokens::NoTag(ApplicabilityNoTag(
                                 "ENGINE_5=A2543".to_string().into(),
-                                0
+                                Some(0)
                             )),
                             ApplicTokens::NotAnd(ApplicabilityNotAndTag(
                                 "ROBOT_SPEAKER=SPKR_B".to_string().into(),
-                                0
+                                Some(0)
                             ))
                         ],
-                        0
+                        Some(0)
                     ))
                 ]
             ))
@@ -952,19 +1041,22 @@ mod applic_tag_inner_tests {
             Ok((
                 "",
                 vec![
-                    ApplicTokens::NoTag(ApplicabilityNoTag("JHU_CONTROLLER".to_string().into(), 0)),
+                    ApplicTokens::NoTag(ApplicabilityNoTag(
+                        "JHU_CONTROLLER".to_string().into(),
+                        Some(0)
+                    )),
                     ApplicTokens::NestedNotOr(ApplicabilityNestedNotOrTag(
                         vec![
                             ApplicTokens::NoTag(ApplicabilityNoTag(
                                 "ENGINE_5=A2543".to_string().into(),
-                                0
+                                Some(0)
                             )),
                             ApplicTokens::Or(ApplicabilityOrTag(
                                 "ROBOT_SPEAKER=SPKR_B".to_string().into(),
-                                0
+                                Some(0)
                             ))
                         ],
-                        0
+                        Some(0)
                     ))
                 ]
             ))
@@ -978,19 +1070,22 @@ mod applic_tag_inner_tests {
             Ok((
                 "",
                 vec![
-                    ApplicTokens::NoTag(ApplicabilityNoTag("JHU_CONTROLLER".to_string().into(), 0)),
+                    ApplicTokens::NoTag(ApplicabilityNoTag(
+                        "JHU_CONTROLLER".to_string().into(),
+                        Some(0)
+                    )),
                     ApplicTokens::NestedNotOr(ApplicabilityNestedNotOrTag(
                         vec![
                             ApplicTokens::NoTag(ApplicabilityNoTag(
                                 "ENGINE_5=A2543".to_string().into(),
-                                0
+                                Some(0)
                             )),
                             ApplicTokens::NotOr(ApplicabilityNotOrTag(
                                 "ROBOT_SPEAKER=SPKR_B".to_string().into(),
-                                0
+                                Some(0)
                             ))
                         ],
-                        0
+                        Some(0)
                     ))
                 ]
             ))
@@ -1005,19 +1100,22 @@ mod applic_tag_inner_tests {
             Ok((
                 "",
                 vec![
-                    ApplicTokens::Not(ApplicabilityNotTag("JHU_CONTROLLER".to_string().into(), 0)),
+                    ApplicTokens::Not(ApplicabilityNotTag(
+                        "JHU_CONTROLLER".to_string().into(),
+                        Some(0)
+                    )),
                     ApplicTokens::NestedOr(ApplicabilityNestedOrTag(
                         vec![
                             ApplicTokens::NoTag(ApplicabilityNoTag(
                                 "ENGINE_5=A2543".to_string().into(),
-                                0
+                                Some(0)
                             )),
                             ApplicTokens::And(ApplicabilityAndTag(
                                 "ROBOT_SPEAKER=SPKR_B".to_string().into(),
-                                0
+                                Some(0)
                             ))
                         ],
-                        0
+                        Some(0)
                     ))
                 ]
             ))
@@ -1031,19 +1129,22 @@ mod applic_tag_inner_tests {
             Ok((
                 "",
                 vec![
-                    ApplicTokens::Not(ApplicabilityNotTag("JHU_CONTROLLER".to_string().into(), 0)),
+                    ApplicTokens::Not(ApplicabilityNotTag(
+                        "JHU_CONTROLLER".to_string().into(),
+                        Some(0)
+                    )),
                     ApplicTokens::NestedOr(ApplicabilityNestedOrTag(
                         vec![
                             ApplicTokens::NoTag(ApplicabilityNoTag(
                                 "ENGINE_5=A2543".to_string().into(),
-                                0
+                                Some(0)
                             )),
                             ApplicTokens::NotAnd(ApplicabilityNotAndTag(
                                 "ROBOT_SPEAKER=SPKR_B".to_string().into(),
-                                0
+                                Some(0)
                             ))
                         ],
-                        0
+                        Some(0)
                     ))
                 ]
             ))
@@ -1058,19 +1159,22 @@ mod applic_tag_inner_tests {
             Ok((
                 "",
                 vec![
-                    ApplicTokens::Not(ApplicabilityNotTag("JHU_CONTROLLER".to_string().into(), 0)),
+                    ApplicTokens::Not(ApplicabilityNotTag(
+                        "JHU_CONTROLLER".to_string().into(),
+                        Some(0)
+                    )),
                     ApplicTokens::NestedOr(ApplicabilityNestedOrTag(
                         vec![
                             ApplicTokens::NoTag(ApplicabilityNoTag(
                                 "ENGINE_5=A2543".to_string().into(),
-                                0
+                                Some(0)
                             )),
                             ApplicTokens::Or(ApplicabilityOrTag(
                                 "ROBOT_SPEAKER=SPKR_B".to_string().into(),
-                                0
+                                Some(0)
                             ))
                         ],
-                        0
+                        Some(0)
                     ))
                 ]
             ))
@@ -1084,19 +1188,22 @@ mod applic_tag_inner_tests {
             Ok((
                 "",
                 vec![
-                    ApplicTokens::Not(ApplicabilityNotTag("JHU_CONTROLLER".to_string().into(), 0)),
+                    ApplicTokens::Not(ApplicabilityNotTag(
+                        "JHU_CONTROLLER".to_string().into(),
+                        Some(0)
+                    )),
                     ApplicTokens::NestedOr(ApplicabilityNestedOrTag(
                         vec![
                             ApplicTokens::NoTag(ApplicabilityNoTag(
                                 "ENGINE_5=A2543".to_string().into(),
-                                0
+                                Some(0)
                             )),
                             ApplicTokens::NotOr(ApplicabilityNotOrTag(
                                 "ROBOT_SPEAKER=SPKR_B".to_string().into(),
-                                0
+                                Some(0)
                             ))
                         ],
-                        0
+                        Some(0)
                     ))
                 ]
             ))
@@ -1110,19 +1217,22 @@ mod applic_tag_inner_tests {
             Ok((
                 "",
                 vec![
-                    ApplicTokens::Not(ApplicabilityNotTag("JHU_CONTROLLER".to_string().into(), 0)),
+                    ApplicTokens::Not(ApplicabilityNotTag(
+                        "JHU_CONTROLLER".to_string().into(),
+                        Some(0)
+                    )),
                     ApplicTokens::NestedNotOr(ApplicabilityNestedNotOrTag(
                         vec![
                             ApplicTokens::NoTag(ApplicabilityNoTag(
                                 "ENGINE_5=A2543".to_string().into(),
-                                0
+                                Some(0)
                             )),
                             ApplicTokens::And(ApplicabilityAndTag(
                                 "ROBOT_SPEAKER=SPKR_B".to_string().into(),
-                                0
+                                Some(0)
                             ))
                         ],
-                        0
+                        Some(0)
                     ))
                 ]
             ))
@@ -1136,19 +1246,22 @@ mod applic_tag_inner_tests {
             Ok((
                 "",
                 vec![
-                    ApplicTokens::Not(ApplicabilityNotTag("JHU_CONTROLLER".to_string().into(), 0)),
+                    ApplicTokens::Not(ApplicabilityNotTag(
+                        "JHU_CONTROLLER".to_string().into(),
+                        Some(0)
+                    )),
                     ApplicTokens::NestedNotOr(ApplicabilityNestedNotOrTag(
                         vec![
                             ApplicTokens::NoTag(ApplicabilityNoTag(
                                 "ENGINE_5=A2543".to_string().into(),
-                                0
+                                Some(0)
                             )),
                             ApplicTokens::NotAnd(ApplicabilityNotAndTag(
                                 "ROBOT_SPEAKER=SPKR_B".to_string().into(),
-                                0
+                                Some(0)
                             ))
                         ],
-                        0
+                        Some(0)
                     ))
                 ]
             ))
@@ -1163,19 +1276,22 @@ mod applic_tag_inner_tests {
             Ok((
                 "",
                 vec![
-                    ApplicTokens::Not(ApplicabilityNotTag("JHU_CONTROLLER".to_string().into(), 0)),
+                    ApplicTokens::Not(ApplicabilityNotTag(
+                        "JHU_CONTROLLER".to_string().into(),
+                        Some(0)
+                    )),
                     ApplicTokens::NestedNotOr(ApplicabilityNestedNotOrTag(
                         vec![
                             ApplicTokens::NoTag(ApplicabilityNoTag(
                                 "ENGINE_5=A2543".to_string().into(),
-                                0
+                                Some(0)
                             )),
                             ApplicTokens::Or(ApplicabilityOrTag(
                                 "ROBOT_SPEAKER=SPKR_B".to_string().into(),
-                                0
+                                Some(0)
                             ))
                         ],
-                        0
+                        Some(0)
                     ))
                 ]
             ))
@@ -1189,19 +1305,22 @@ mod applic_tag_inner_tests {
             Ok((
                 "",
                 vec![
-                    ApplicTokens::Not(ApplicabilityNotTag("JHU_CONTROLLER".to_string().into(), 0)),
+                    ApplicTokens::Not(ApplicabilityNotTag(
+                        "JHU_CONTROLLER".to_string().into(),
+                        Some(0)
+                    )),
                     ApplicTokens::NestedNotOr(ApplicabilityNestedNotOrTag(
                         vec![
                             ApplicTokens::NoTag(ApplicabilityNoTag(
                                 "ENGINE_5=A2543".to_string().into(),
-                                0
+                                Some(0)
                             )),
                             ApplicTokens::NotOr(ApplicabilityNotOrTag(
                                 "ROBOT_SPEAKER=SPKR_B".to_string().into(),
-                                0
+                                Some(0)
                             ))
                         ],
-                        0
+                        Some(0)
                     ))
                 ]
             ))
@@ -1212,12 +1331,18 @@ pub fn applicability_tag_inner<'a>() -> impl FnMut(&'a str) -> IResult<&'a str, 
     move |input: &'a str| {
         let attempt_starting_text =
             map(parse_until_new_word, |(parsed_characters, line_endings)| {
-                ApplicTokens::NoTag(ApplicabilityNoTag(parsed_characters.into(), line_endings))
+                ApplicTokens::NoTag(ApplicabilityNoTag(
+                    parsed_characters.into(),
+                    Some(line_endings),
+                ))
             });
         let parse_not_starting = map(
             preceded(tag("!"), parse_until_new_word),
             |(parsed_characters, line_endings)| {
-                ApplicTokens::Not(ApplicabilityNotTag(parsed_characters.into(), line_endings))
+                ApplicTokens::Not(ApplicabilityNotTag(
+                    parsed_characters.into(),
+                    Some(line_endings),
+                ))
             },
         );
         let starting_parse = alt((parse_not_starting, attempt_starting_text));
@@ -1250,7 +1375,7 @@ mod parse_applic_tags_tests {
                 "",
                 vec![ApplicTokens::NoTag(ApplicabilityNoTag(
                     "JHU_CONTROLLER".to_string().into(),
-                    0
+                    Some(0)
                 ))]
             ))
         )
@@ -1270,13 +1395,19 @@ pub fn applicability_tag<'a>(
 
     //1
     let attempt_starting_text = map(parse_until_new_word, |(parsed_characters, line_endings)| {
-        ApplicTokens::NoTag(ApplicabilityNoTag(parsed_characters.into(), line_endings))
+        ApplicTokens::NoTag(ApplicabilityNoTag(
+            parsed_characters.into(),
+            Some(line_endings),
+        ))
     });
     //1
     let parse_not_starting = map(
         preceded(tag("!"), parse_until_new_word),
         |(parsed_characters, line_endings)| {
-            ApplicTokens::Not(ApplicabilityNotTag(parsed_characters.into(), line_endings))
+            ApplicTokens::Not(ApplicabilityNotTag(
+                parsed_characters.into(),
+                Some(line_endings),
+            ))
         },
     );
 

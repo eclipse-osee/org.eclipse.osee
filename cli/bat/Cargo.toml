@@ -12,9 +12,9 @@
  ######################################################################
 [package]
 name = "bat"
-version = "1.1.1"
+version = "1.1.5"
 description="The Block Applicability Tool(BAT) is a CLI processor for features,configurations and substitutions on arbitrary files."
-edition = "2021"
+edition = "2024"
 authors=["Luciano Vaglienti <luciano.t.vaglienti@boeing.com>"]
 license.workspace=true
 
@@ -22,16 +22,11 @@ license.workspace=true
 
 [dependencies]
 clap = { version = "4.4.6", features = ["derive"] }
-common-path = { version = "1.0.0" }
-serde = {version = "1.0.188", optional=false, features = ["derive"] }
-serde_json = "1.0.107"
 anyhow = { version = "1.0.82" }
 tracing = { version = "0.1.40" }
-tracing-subscriber = { version = "0.3.18" }
-tracing-appender = { version = "0.2.3" }
-clap-verbosity-flag = { version = "2.2.0" }
-applicability = {path="../applicability",features=["serde"]}
-applicability_parser = {path="../applicability_parser",features=["serde"]}
-applicability_parser_config = {path="../applicability_parser_config"}
-applicability_substitution = {path="../applicability_substitution"}
-applicability_sanitization = {path="../applicability_sanitization"}
+
+bat_lib = { path = "../bat_lib" }
+cli_logging = { path = "../cli_logging"}
+
+[target.'cfg(not(target_env = "msvc"))'.dependencies]
+mimalloc = "0.1.46"

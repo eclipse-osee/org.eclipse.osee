@@ -15,9 +15,10 @@ module(
     version = "0.0.1",
     bazel_compatibility = [">=6.0.0"],
 )
+bazel_dep(name = "platforms", version = "1.0.0")
 bazel_dep(name = "rules_osee", version = "0.2.10")
 bazel_dep(name = "aspect_bazel_lib", version = "2.3.0")
-bazel_dep(name = "rules_pkg", version = "0.10.1")
+bazel_dep(name = "rules_pkg", version = "1.1.0")
 
 bat = use_extension("@rules_osee//bat:extensions.bzl","bat")
 bat.toolchain()

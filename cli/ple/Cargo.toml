@@ -1,0 +1,30 @@
+ #####################################################################
+ # Copyright (c) 2025 Boeing
+ #
+ # This program and the accompanying materials are made
+ # available under the terms of the Eclipse Public License 2.0
+ # which is available at https://www.eclipse.org/legal/epl-2.0/
+ #
+ # SPDX-License-Identifier: EPL-2.0
+ #
+ # Contributors:
+ #     Boeing - initial API and implementation
+ ######################################################################
+[package]
+name = "ple"
+version = "1.1.5"
+edition = "2024"
+license.workspace = true
+
+[dependencies]
+clap = { version = "4.4.6", features = ["derive"] }
+anyhow = { version = "1.0.82" }
+tracing = { version = "0.1.40" }
+clap-verbosity-flag = { version = "2.2.0" }
+
+pat_lib = { path = "../pat_lib" }
+bat_lib = { path = "../bat_lib" }
+cli_logging = { path = "../cli_logging"}
+
+[target.'cfg(not(target_env = "msvc"))'.dependencies]
+mimalloc = "0.1.46"

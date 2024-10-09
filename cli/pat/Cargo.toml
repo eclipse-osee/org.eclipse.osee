@@ -1,28 +1,30 @@
+ #####################################################################
+ # Copyright (c) 2025 Boeing
+ #
+ # This program and the accompanying materials are made
+ # available under the terms of the Eclipse Public License 2.0
+ # which is available at https://www.eclipse.org/legal/epl-2.0/
+ #
+ # SPDX-License-Identifier: EPL-2.0
+ #
+ # Contributors:
+ #     Boeing - initial API and implementation
+ ######################################################################
 [package]
 name = "pat"
-version = "1.0.0"
-edition = "2021"
+version = "1.1.5"
+edition = "2024"
 license.workspace = true
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 clap = { version = "4.4.6", features = ["derive"] }
-serde = {version = "1.0.188", optional=false, features = ["derive"] }
-serde_json = "1.0.107"
-jwalk = "0.5"
-symlink = { version = "0.1.0" }
 anyhow = { version = "1.0.82" }
-rayon = { version = "1.10.0" }
 tracing = { version = "0.1.40" }
-tracing-subscriber = { version = "0.3.18" }
-tracing-appender = { version = "0.2.3" }
-clap-verbosity-flag = { version = "2.2.0" }
-globset = { version = "0.4.14" }
-path-slash = { version = "0.2.1"}
-applicability = {path="../applicability",features=["serde"]}
-applicability_parser = {path="../applicability_parser",features=["serde"]}
-applicability_parser_config = {path="../applicability_parser_config"}
-applicability_substitution = {path="../applicability_substitution"}
-applicability_sanitization = {path="../applicability_sanitization"}
-applicability_path = {path="../applicability_path"}
+
+pat_lib = { path = "../pat_lib" }
+cli_logging = { path = "../cli_logging"}
+
+[target.'cfg(not(target_env = "msvc"))'.dependencies]
+mimalloc = "0.1.46"

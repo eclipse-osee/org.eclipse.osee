@@ -24,16 +24,16 @@ pub enum LineEnding {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum ApplicabilityParserSyntaxTag {
+pub enum ApplicabilityParserSyntaxTag<X1 = String> {
     Text(String),
-    Tag(ApplicabilitySyntaxTag),
-    TagNot(ApplicabilitySyntaxTagNot),
-    Substitution(SubstitutionSyntaxTag),
+    Tag(ApplicabilitySyntaxTag<X1>),
+    TagNot(ApplicabilitySyntaxTagNot<X1>),
+    Substitution(SubstitutionSyntaxTag<X1>),
     SubstitutionNot(String),
 }
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
-pub struct ApplicabilitySyntaxTag(
-    pub Vec<ApplicTokens>,
+pub struct ApplicabilitySyntaxTag<X1 = String>(
+    pub Vec<ApplicTokens<X1>>,
     pub Vec<ApplicabilityParserSyntaxTag>,
     pub ApplicabilityTagTypes,
     pub Vec<ApplicabilityParserSyntaxTag>,
@@ -45,8 +45,8 @@ pub struct ApplicabilitySyntaxTag(
     pub u8,
 );
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
-pub struct ApplicabilitySyntaxTagNot(
-    pub Vec<ApplicTokens>,
+pub struct ApplicabilitySyntaxTagNot<X1 = String>(
+    pub Vec<ApplicTokens<X1>>,
     pub Vec<ApplicabilityParserSyntaxTag>,
     pub ApplicabilityTagTypes,
     pub Vec<ApplicabilityParserSyntaxTag>,
@@ -58,7 +58,7 @@ pub struct ApplicabilitySyntaxTagNot(
     pub u8,
 );
 
-pub type SubstitutionSyntaxTag = Vec<ApplicTokens>;
+pub type SubstitutionSyntaxTag<X1 = String> = Vec<ApplicTokens<X1>>;
 
 impl From<&str> for ApplicabilityParserSyntaxTag {
     fn from(item: &str) -> Self {
@@ -68,12 +68,20 @@ impl From<&str> for ApplicabilityParserSyntaxTag {
 
 impl From<ApplicabilityParserSyntaxTag> for String {
     fn from(applicability_parser_syntax_tag: ApplicabilityParserSyntaxTag) -> Self {
-        match applicability_parser_syntax_tag{
+        match applicability_parser_syntax_tag {
             ApplicabilityParserSyntaxTag::Text(t) => t,
-            ApplicabilityParserSyntaxTag::Tag(_) =>                  panic!("content did not get fully processed, expected ElementType::Text, found ElementType::Tag"),
-            ApplicabilityParserSyntaxTag::TagNot(_) =>               panic!("content did not get fully processed, expected ElementType::Text, found ElementType::TagNot"),
-            ApplicabilityParserSyntaxTag::Substitution(_) =>         panic!("content did not get fully processed, expected ElementType::Text, found ElementType::Substitution"),
-            ApplicabilityParserSyntaxTag::SubstitutionNot(_) =>      panic!("content did not get fully processed, expected ElementType::Text, found ElementType::SubstitutionNot"),
+            ApplicabilityParserSyntaxTag::Tag(_) => panic!(
+                "content did not get fully processed, expected ElementType::Text, found ElementType::Tag"
+            ),
+            ApplicabilityParserSyntaxTag::TagNot(_) => panic!(
+                "content did not get fully processed, expected ElementType::Text, found ElementType::TagNot"
+            ),
+            ApplicabilityParserSyntaxTag::Substitution(_) => panic!(
+                "content did not get fully processed, expected ElementType::Text, found ElementType::Substitution"
+            ),
+            ApplicabilityParserSyntaxTag::SubstitutionNot(_) => panic!(
+                "content did not get fully processed, expected ElementType::Text, found ElementType::SubstitutionNot"
+            ),
         }
     }
 }

@@ -24,6 +24,7 @@ rust_library(
         "//cli/applicability_parser_config:applicability_parser_config",
         "//cli/applicability_substitution:applicability_substitution",
         "//cli/applicability_sanitization:applicability_sanitization",
+        "//cli/applicability_tokens_to_ast:applicability_tokens_to_ast"
     ],
     crate_features = [
         "default",

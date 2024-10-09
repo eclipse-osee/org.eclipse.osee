@@ -1,0 +1,113 @@
+/*********************************************************************
+ * Copyright (c) 2025 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+use nom::{AsChar, Compare, Input, Parser, error::ParseError};
+
+use applicability_lexer_base::{
+    applicability_structure::LexerToken,
+    delimiters::brace::{EndBrace, StartBrace},
+    position::Position,
+    utils::locatable::{Locatable, position},
+};
+
+pub trait LexStartBrace {
+    fn lex_start_brace<'x, I, E>(&self) -> impl Parser<I, Output = LexerToken<I>, Error = E>
+    where
+        I: Input + Compare<&'x str> + Locatable + Send + Sync,
+        I::Item: AsChar,
+        E: ParseError<I>;
+    fn lex_start_brace_tag<'x>(&self) -> &'x str;
+}
+
+impl<T> LexStartBrace for T
+where
+    T: StartBrace,
+{
+    fn lex_start_brace<'x, I, E>(&self) -> impl Parser<I, Output = LexerToken<I>, Error = E>
+    where
+        I: Input + Compare<&'x str> + Locatable + Send + Sync,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        position().and(self.start_brace()).and(position()).map(
+            |((start, _), end): ((Position, _), Position)| LexerToken::StartBrace((start, end)),
+        )
+    }
+
+    fn lex_start_brace_tag<'x>(&self) -> &'x str {
+        self.start_brace_tag()
+    }
+}
+pub trait LexEndBrace {
+    fn lex_end_brace<'x, I, E>(&self) -> impl Parser<I, Output = LexerToken<I>, Error = E>
+    where
+        I: Input + Compare<&'x str> + Locatable + Send + Sync,
+        I::Item: AsChar,
+        E: ParseError<I>;
+    fn lex_end_brace_tag<'x>(&self) -> &'x str;
+}
+
+impl<T> LexEndBrace for T
+where
+    T: EndBrace,
+{
+    fn lex_end_brace<'x, I, E>(&self) -> impl Parser<I, Output = LexerToken<I>, Error = E>
+    where
+        I: Input + Compare<&'x str> + Locatable + Send + Sync,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
+        position()
+            .and(self.end_brace())
+            .and(position())
+            .map(|((start, _), end): ((Position, _), Position)| LexerToken::EndBrace((start, end)))
+    }
+
+    fn lex_end_brace_tag<'x>(&self) -> &'x str {
+        self.end_brace_tag()
+    }
+}
+#[cfg(test)]
+mod tests {
+    use std::marker::PhantomData;
+
+    use nom::{IResult, Parser, error::Error};
+    use nom_locate::LocatedSpan;
+
+    use super::LexStartBrace;
+
+    use applicability_lexer_base::{
+        applicability_structure::LexerToken, default::DefaultApplicabilityLexer,
+    };
+    pub struct TestDoc<'a> {
+        _ph: PhantomData<&'a str>,
+    }
+    impl DefaultApplicabilityLexer for TestDoc<'_> {
+        fn is_default() -> bool {
+            true
+        }
+    }
+    #[test]
+    fn test() {
+        let doc = TestDoc { _ph: PhantomData };
+        let mut parser = doc.lex_start_brace();
+        let result: IResult<
+            LocatedSpan<&str>,
+            LexerToken<LocatedSpan<&str>>,
+            Error<LocatedSpan<&str>>,
+        > = Ok((
+            unsafe { LocatedSpan::new_from_raw_offset(1, 1, "", ()) },
+            LexerToken::StartBrace(((0, 1), (1, 1))),
+        ));
+        assert_eq!(parser.parse_complete(LocatedSpan::new("[")), result);
+    }
+}

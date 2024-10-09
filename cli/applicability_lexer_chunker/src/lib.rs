@@ -1,0 +1,324 @@
+/*********************************************************************
+ * Copyright (c) 2025 Boeing
+ *
+ * This program and the accompanying materials are made
+ * available under the terms of the Eclipse Public License 2.0
+ * which is available at https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ **********************************************************************/
+use std::fmt::Debug;
+
+use applicability_lexer_base::{applicability_structure::LexerToken, position::TokenPosition};
+use nom::{AsBytes, Input, Offset};
+use nom_locate::LocatedSpan;
+
+#[derive(Debug, Clone, PartialEq, Eq, Default, Copy)]
+enum Rate {
+    #[default]
+    Neutral,
+    Increasing,
+    Decreasing,
+}
+
+pub fn chunk<I>(input: Vec<LexerToken<I>>) -> Vec<Vec<LexerToken<I>>>
+where
+    I: Input + AsBytes + Offset + Send + Sync,
+{
+    input
+        .into_iter()
+        .scan(
+            (
+                0,
+                0,
+                0,
+                0,
+                Rate::Neutral,
+                Rate::Neutral,
+                Rate::Neutral,
+                Rate::Neutral,
+                LexerToken::<LocatedSpan<I, TokenPosition>>::Nothing,
+            ),
+            |(
+                feature_state,
+                config_state,
+                group_state,
+                substitution_state,
+                feature_rate,
+                config_rate,
+                group_rate,
+                substitution_rate,
+                _previous_element,
+            ),
+             current| {
+                *feature_rate = match current {
+                    LexerToken::Feature((_, _))
+                    | LexerToken::FeatureNot((_, _))
+                    | LexerToken::FeatureSwitch((_, _)) => Rate::Increasing,
+                    LexerToken::EndFeature((_, _)) => Rate::Decreasing,
+                    _ => Rate::Neutral,
+                };
+                *config_rate = match current {
+                    LexerToken::Configuration((_, _))
+                    | LexerToken::ConfigurationNot((_, _))
+                    | LexerToken::ConfigurationSwitch((_, _)) => Rate::Increasing,
+                    LexerToken::EndConfiguration((_, _)) => Rate::Decreasing,
+                    _ => Rate::Neutral,
+                };
+                *group_rate = match current {
+                    LexerToken::ConfigurationGroup((_, _))
+                    | LexerToken::ConfigurationGroupNot((_, _))
+                    | LexerToken::ConfigurationGroupSwitch((_, _)) => Rate::Increasing,
+                    LexerToken::EndConfigurationGroup((_, _)) => Rate::Decreasing,
+                    _ => Rate::Neutral,
+                };
+                *substitution_rate = match current {
+                    LexerToken::Substitution(_) => Rate::Increasing,
+                    LexerToken::EndBrace(_) => {
+                        if *substitution_state > 0 {
+                            Rate::Decreasing
+                        } else {
+                            Rate::Neutral
+                        }
+                    }
+                    _ => Rate::Neutral,
+                };
+                *feature_state = match feature_rate {
+                    Rate::Neutral => *feature_state,
+                    Rate::Increasing => *feature_state + 1,
+                    Rate::Decreasing => *feature_state - 1,
+                };
+                *config_state = match config_rate {
+                    Rate::Neutral => *config_state,
+                    Rate::Increasing => *config_state + 1,
+                    Rate::Decreasing => *config_state - 1,
+                };
+                *group_state = match group_rate {
+                    Rate::Neutral => *group_state,
+                    Rate::Increasing => *group_state + 1,
+                    Rate::Decreasing => *group_state - 1,
+                };
+                *substitution_state = match substitution_rate {
+                    Rate::Neutral => *substitution_state,
+                    Rate::Increasing => *substitution_state + 1,
+                    Rate::Decreasing => *substitution_state - 1,
+                };
+                match current {
+                    LexerToken::Illegal => None,
+                    _ => Some((
+                        *feature_state,
+                        *config_state,
+                        *group_state,
+                        *substitution_state,
+                        *feature_rate,
+                        *config_rate,
+                        *group_rate,
+                        *substitution_rate,
+                        current,
+                    )),
+                }
+            },
+        )
+        .collect::<Vec<_>>()
+        .chunk_by(
+            |(
+                current_feature_state,
+                current_config_state,
+                current_group_state,
+                current_substitution_state,
+                _current_feature_rate,
+                _current_config_rate,
+                _current_group_rate,
+                _current_substitution_rate,
+                _current_token,
+            ),
+             (
+                _next_feature_state,
+                _next_config_state,
+                _next_group_state,
+                _next_substitution_state,
+                _next_feature_rate,
+                _next_config_rate,
+                _next_group_rate,
+                _next_substitution_rate,
+                _next_token,
+            )| {
+                *current_feature_state != 0
+                    || *current_config_state != 0
+                    || *current_group_state != 0
+                    || *current_substitution_state != 0
+            },
+        )
+        .map(|slice| {
+            slice
+                .iter()
+                .cloned()
+                .map(
+                    |(
+                        _feature_state,
+                        _config_state,
+                        _group_state,
+                        _substitution_state,
+                        _feature_rate,
+                        _config_rate,
+                        _group_rate,
+                        _substitution_rate,
+                        token,
+                    )| { token },
+                )
+                .collect::<Vec<_>>()
+        })
+        .collect::<Vec<_>>()
+}
+
+#[cfg(test)]
+mod tests {
+
+    use applicability_lexer_config_markdown::ApplicabilityMarkdownLexerConfig;
+    use applicability_lexer_multi_stage_lexer::lexer::tokenize_comments;
+    use nom_locate::LocatedSpan;
+
+    use crate::chunk;
+
+    #[test]
+    fn sample_text() {
+        let sample_markdown_input = "# Overview
+
+This is a test file for using PLE
+
+## Feature Tests
+
+``Feature[APPLIC_1=Included]``
+Tag 1
+``End Feature``
+
+``Feature[APPLIC_2]``
+Tag 2
+``End Feature``
+
+``Feature[APPLIC_1=Included]``
+Included Text
+``End Feature``
+
+``Feature[APPLIC_1=Excluded]``
+Excluded Text
+``End Feature``
+
+
+## Else Tests
+
+``Feature[APPLIC_1]``
+Tag 1
+``Feature Else``
+Not Tag 1
+``End Feature``
+
+``Feature[APPLIC_2]``
+Tag 2
+``Feature Else``
+Not Tag 2
+``End Feature``
+
+## Boolean Tests
+
+``Feature[APPLIC_1 | APPLIC_2]``
+Included `OR` Excluded Feature
+``End Feature``
+
+``Feature[APPLIC_1 & APPLIC_2]``
+Included `AND` Excluded Feature
+``End Feature``
+
+## Substitution Tests
+
+``Eval[SUB_1]``
+``Eval[SUB_2]``
+
+- ``Eval[SUB_1]``
+- ``Eval[SUB_2]``
+
+## List Tests
+
+``Feature[APPLIC_1]``
+1. Tag 1
+``End Feature``
+2. Common Row 1
+``Feature[APPLIC_1]``
+    - Tag 2.1
+``End Feature``
+``Feature[APPLIC_2]``
+3. Tag 2
+    - Tag 2 Subbullet
+``End Feature``
+4. Common Row 2
+
+## Nested Tests
+
+``Feature[APPLIC_1]``
+Level 1
+
+``Feature[APPLIC_2]``
+Level 2
+``End Feature``
+``End Feature``
+
+## Feature and Substitution Test
+
+``Feature[APPLIC_1]``
+Tag1
+
+``Eval[SUB_1]``
+``End Feature``
+
+## Tables
+
+### Table Rows
+
+| Col A | Col B | Col C | Col D | Col E |
+|---|---|---|---|---:|
+``Feature[APPLIC_1]``| 0a | 0b | 0c | 0d  | 0e |``End Feature``
+| 1a | 1b | 1c | 1d | 1e |
+``Feature[APPLIC_2]``| 2a | 2b | 2c | 2d  | 2e |``End Feature``
+| 3a | 3b | 3c | 3d | 3e |
+| ``Feature[APPLIC_1]``4a | 4b | 4c | 4d | 4e``End Feature`` |
+| 5a | 5b | 5c | 5d | 5e |
+
+### Table Cells
+
+| Col A | Col B | Col C | Col D | Col E |
+|---|---|---|---|---:|
+| 1a | 1b | 1c | 1d | 1e |
+| ``Feature[APPLIC_1]``2a | 2b | 2c | 2d | 2e``End Feature`` |
+| 3a | 3b | 3c | 3d | 3e |
+| ``Feature[APPLIC_1]``4a | 4b | 4c``End Feature`` | 4d | 4e |
+| 5a | 5b | 5c | 5d | 5e |
+| ``Feature[APPLIC_1]``6a``End Feature`` | 6b | 6c | 6d | ``Feature[APPLIC_2]``6e``End Feature`` |
+| 7a | 7b | 7c | 7d | 7e |
+
+### Table Columns
+
+| Col A | ``Feature[APPLIC_1]``Col B |``End Feature`` Col C | Col D ``Feature[APPLIC_2]``| Col E ``End Feature``|
+|---|``Feature[APPLIC_1]``---|``End Feature``---|---``Feature[APPLIC_2]``|---:``End Feature``|
+| 1a | ``Feature[APPLIC_1]``1b |``End Feature`` 1c | 1d ``Feature[APPLIC_2]``| 1e ``End Feature``|
+| 2a | ``Feature[APPLIC_1]``2b |``End Feature`` 2c | 2d ``Feature[APPLIC_2]``| 2e ``End Feature``|
+| 3a | ``Feature[APPLIC_1]``3b |``End Feature`` 3c | 3d ``Feature[APPLIC_2]``| 3e ``End Feature``|
+| 3a | ``Feature[APPLIC_1]``3b |``End Feature`` 3c | 3d ``Feature[APPLIC_2]``| 3e ``End Feature``|
+
+";
+        let doc_config: ApplicabilityMarkdownLexerConfig =
+            ApplicabilityMarkdownLexerConfig::default();
+        let results = chunk(
+            match tokenize_comments::<ApplicabilityMarkdownLexerConfig, &str>(
+                &doc_config,
+                LocatedSpan::new_extra(sample_markdown_input, ((0usize, 0), (0usize, 0))),
+            ) {
+                Ok(i) => i.1,
+                Err(_) => vec![],
+            },
+        );
+        assert_eq!(results.len(), 71)
+    }
+}

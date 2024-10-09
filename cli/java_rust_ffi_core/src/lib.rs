@@ -10,12 +10,10 @@
 * Contributors:
 *     Boeing - initial API and implementation
 **********************************************************************/
-use applicability_parser::parse_applicability;
-use applicability_parser_config::{
-    applic_config::ApplicabilityConfigElement, get_comment_syntax_from_file_name_and_extension,
-};
-use applicability_sanitization::SanitizeApplicability;
-use applicability_substitution::SubstituteApplicability;
+use applicability_parser_config::applic_config::ApplicabilityConfigElement;
+use applicability_parser_config::get_config_for_name_and_ext;
+use applicability_sanitization::v2::SanitizeApplicabilityV2;
+use applicability_tokens_to_ast::tree::ApplicabilityExprKind;
 
 use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
@@ -43,52 +41,51 @@ fn run_parse_logic(
     let applicability_config: ApplicabilityConfigElement = match serde_json::from_str(config_json) {
         Ok(config) => config,
         Err(e) => {
-            return format!("Error deserializing JSON: {:?}", e);
+            return format!("Error deserializing JSON: {e:?}");
         }
     };
 
     // Get the start and end syntax from file name and extension
-    let (start_syntax, end_syntax) = get_comment_syntax_from_file_name_and_extension(
-        Some(file_extension),
-        Some(file_name),
-        "``", // Default start syntax
-        "``", // Default end syntax
-    );
-
-    // Call parse_applicability to parse the input string with the specified syntaxes
-    let content_result = parse_applicability(input, start_syntax, end_syntax);
-    let contents = match content_result {
-        Ok((_remaining, results)) => results,
-        Err(_) => {
-            return "Failed to unwrap parsed AST".to_string();
-        }
-    };
-
-    // Create a copy of the parsed contents for processing
-    let copy = contents.clone();
-    // Get the substitutions from the config; defaults to empty if not present
+    let parser_fn = get_config_for_name_and_ext(file_name, file_extension);
     let substitutions = applicability_config
         .clone()
         .get_substitutions()
         .unwrap_or_default();
-
-    // Sanitize the contents using the substitutions and configuration features
-    let sanitized_content = copy
-        .iter()
-        .cloned()
-        .map(|c| {
-            c.substitute(&substitutions) // Apply substitutions to each content item
-                .sanitize(
-                    applicability_config.clone().get_features(),
-                    &applicability_config.clone().get_name(),
-                    &substitutions,
-                    applicability_config.get_parent_group(),
-                    Some(applicability_config.get_configs().as_slice()),
-                )
-                .into() // Convert sanitized item back to String
-        })
-        .collect::<Vec<String>>() // Collect all sanitized items into a Vec
-        .join(""); // Join the sanitized items into a single String
+    // Call parse_applicability to parse the input string with the specified syntaxes
+    let content_result = parser_fn(input);
+    let contents = match content_result {
+        Ok(c) => {
+            let contents = c
+                .into_iter()
+                .map(Into::<ApplicabilityExprKind<String>>::into)
+                .collect::<Vec<_>>();
+            let group = applicability_config
+                .get_parent_group()
+                .map(|x| x.to_string());
+            let configs = applicability_config
+                .get_configs()
+                .iter()
+                .map(|x| x.to_string())
+                .collect::<Vec<_>>();
+            contents
+                .iter()
+                .filter_map(|c| {
+                    c.sanitize(
+                        applicability_config.clone().get_features().as_slice(),
+                        &applicability_config.clone().get_name(),
+                        &substitutions,
+                        group.as_ref(),
+                        Some(configs.as_slice()),
+                        Some(true),
+                    )
+                })
+                .collect::<Vec<_>>()
+                .join("")
+        }
+        Err(_) => {
+            return "Failed to unwrap parsed AST".to_string();
+        }
+    };
 
     // Match against the ApplicabilityConfigElement enum to determine the type and create a response message
     let message = match applicability_config {
@@ -99,16 +96,13 @@ fn run_parse_logic(
 
     // Combine the sanitized content and the message for the final response
     let response = Response {
-        sanitized_content,
+        sanitized_content: contents,
         message,
     };
 
     match serde_json::to_string(&response) {
         Ok(json) => json,
-        Err(e) => format!(
-            "{{\"error\": \"Error serializing response to JSON: {:?}\"}}",
-            e
-        ),
+        Err(e) => format!("{{\"error\": \"Error serializing response to JSON: {e:?}\"}}"),
     }
 }
 
@@ -120,7 +114,7 @@ fn run_parse_logic(
 /// - Each pointer is non-null and points to valid memory.
 /// - Each string is properly null-terminated.
 /// - The memory returned from this function must be freed using `rust_free_string`.
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn rust_parse_substitute(
     input: *const c_char,
     file_name: *const c_char,
@@ -128,67 +122,75 @@ pub unsafe extern "C" fn rust_parse_substitute(
     config_json: *const c_char,
 ) -> *mut c_char {
     // Convert C strings to Rust &str with detailed error handling
-    let input = match input.as_ref() {
-        Some(ptr) => match CStr::from_ptr(ptr).to_str() {
-            Ok(s) => s,
-            Err(_) => {
-                return CString::new("Error: invalid UTF-8 in input")
+    let input = unsafe {
+        match input.as_ref() {
+            Some(ptr) => match CStr::from_ptr(ptr).to_str() {
+                Ok(s) => s,
+                Err(_) => {
+                    return CString::new("Error: invalid UTF-8 in input")
+                        .unwrap()
+                        .into_raw()
+                }
+            },
+            None => {
+                return CString::new("Error: null pointer for input")
                     .unwrap()
                     .into_raw()
             }
-        },
-        None => {
-            return CString::new("Error: null pointer for input")
-                .unwrap()
-                .into_raw()
         }
     };
 
-    let file_name = match file_name.as_ref() {
-        Some(ptr) => match CStr::from_ptr(ptr).to_str() {
-            Ok(s) => s,
-            Err(_) => {
-                return CString::new("Error: invalid UTF-8 in file_name")
+    let file_name = unsafe {
+        match file_name.as_ref() {
+            Some(ptr) => match CStr::from_ptr(ptr).to_str() {
+                Ok(s) => s,
+                Err(_) => {
+                    return CString::new("Error: invalid UTF-8 in file_name")
+                        .unwrap()
+                        .into_raw()
+                }
+            },
+            None => {
+                return CString::new("Error: null pointer for file_name")
                     .unwrap()
                     .into_raw()
             }
-        },
-        None => {
-            return CString::new("Error: null pointer for file_name")
-                .unwrap()
-                .into_raw()
         }
     };
 
-    let file_extension = match file_extension.as_ref() {
-        Some(ptr) => match CStr::from_ptr(ptr).to_str() {
-            Ok(s) => s,
-            Err(_) => {
-                return CString::new("Error: invalid UTF-8 in file_extension")
+    let file_extension = unsafe {
+        match file_extension.as_ref() {
+            Some(ptr) => match CStr::from_ptr(ptr).to_str() {
+                Ok(s) => s,
+                Err(_) => {
+                    return CString::new("Error: invalid UTF-8 in file_extension")
+                        .unwrap()
+                        .into_raw()
+                }
+            },
+            None => {
+                return CString::new("Error: null pointer for file_extension")
                     .unwrap()
                     .into_raw()
             }
-        },
-        None => {
-            return CString::new("Error: null pointer for file_extension")
-                .unwrap()
-                .into_raw()
         }
     };
 
-    let config_json = match config_json.as_ref() {
-        Some(ptr) => match CStr::from_ptr(ptr).to_str() {
-            Ok(s) => s,
-            Err(_) => {
-                return CString::new("Error: invalid UTF-8 in config_json")
+    let config_json = unsafe {
+        match config_json.as_ref() {
+            Some(ptr) => match CStr::from_ptr(ptr).to_str() {
+                Ok(s) => s,
+                Err(_) => {
+                    return CString::new("Error: invalid UTF-8 in config_json")
+                        .unwrap()
+                        .into_raw()
+                }
+            },
+            None => {
+                return CString::new("Error: null pointer for config_json")
                     .unwrap()
                     .into_raw()
             }
-        },
-        None => {
-            return CString::new("Error: null pointer for config_json")
-                .unwrap()
-                .into_raw()
         }
     };
 
@@ -203,11 +205,11 @@ pub unsafe extern "C" fn rust_parse_substitute(
 /// # Safety
 /// The pointer must have been allocated by `CString::into_raw` in `rust_parse_substitute`.
 /// Passing a null or invalid pointer results in undefined behavior.
-#[no_mangle]
+#[unsafe(no_mangle)]
 pub unsafe extern "C" fn rust_free_string(ptr: *mut c_char) {
     if ptr.is_null() {
         return;
     }
 
-    let _ = CString::from_raw(ptr);
+    let _ = unsafe { CString::from_raw(ptr) };
 }
