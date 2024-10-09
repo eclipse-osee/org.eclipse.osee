@@ -31,22 +31,23 @@ use tracing::{info, Level};
 
 /// Block Applicability Tool(BAT)
 /// Supported Default Formats:
-///     *.md                            Starting Syntax: `` Ending Syntax: ``
-///     *.cpp                           Starting Syntax: // Ending Syntax:
-///     *.cxx                           Starting Syntax: // Ending Syntax:
-///     *.cc                            Starting Syntax: // Ending Syntax:
-///     *.c                             Starting Syntax: // Ending Syntax:
-///     *.hpp                           Starting Syntax: // Ending Syntax:
-///     *.hxx                           Starting Syntax: // Ending Syntax:
-///     *.hh                            Starting Syntax: // Ending Syntax:
-///     *.h                             Starting Syntax: // Ending Syntax:
-///     *.rs                            Starting Syntax: // Ending Syntax:
-///     *.bzl                           Starting Syntax: # Ending Syntax:
-///     *.bazel                         Starting Syntax: # Ending Syntax:
-///     WORKSPACE                       Starting Syntax: # Ending Syntax:
-///     BUILD                           Starting Syntax: # Ending Syntax:
-///     *.fileApplicability             Starting Syntax: # Ending Syntax:
-///     *.applicability                 Starting Syntax: # Ending Syntax:
+///     *.md                            Starting Syntax: ``     Ending Syntax: ``
+///     *.cpp                           Starting Syntax: //     Ending Syntax:
+///     *.cxx                           Starting Syntax: //     Ending Syntax:
+///     *.cc                            Starting Syntax: //     Ending Syntax:
+///     *.c                             Starting Syntax: //     Ending Syntax:
+///     *.hpp                           Starting Syntax: //     Ending Syntax:
+///     *.hxx                           Starting Syntax: //     Ending Syntax:
+///     *.hh                            Starting Syntax: //     Ending Syntax:
+///     *.h                             Starting Syntax: //     Ending Syntax:
+///     *.rs                            Starting Syntax: //     Ending Syntax:
+///     *.bzl                           Starting Syntax: #      Ending Syntax:
+///     *.bazel                         Starting Syntax: #      Ending Syntax:
+///     *.tex                           Starting Syntax: \if   Ending Syntax: {}
+///     WORKSPACE                       Starting Syntax: #      Ending Syntax:
+///     BUILD                           Starting Syntax: #      Ending Syntax:
+///     *.fileApplicability             Starting Syntax: #      Ending Syntax:
+///     *.applicability                 Starting Syntax: #      Ending Syntax:
 #[derive(Parser)]
 #[clap(author = "Luciano Vaglienti", version, verbatim_doc_comment)]
 struct CliOptions {

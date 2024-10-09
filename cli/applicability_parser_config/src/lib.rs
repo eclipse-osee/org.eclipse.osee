@@ -30,6 +30,7 @@ pub mod applic_config;
 //     .rs
 //     .bzl
 //     .bazel
+//     .tex
 //     WORKSPACE
 //     BUILD
 //     fileApplicability
@@ -51,6 +52,7 @@ pub fn get_comment_syntax(
     let (start_comment_syntax, end_comment_syntax) = match ext {
         Some("md") => ("``", "``"),
         Some("cpp" | "cxx" | "cc" | "c" | "hpp" | "hxx" | "hh" | "h" | "rs") => ("//", ""),
+        Some("tex") => ("\\if", "{}"),
         Some("bzl" | "bazel" | "fileApplicability" | "applicability") => ("#", ""),
         None => match name {
             Some("WORKSPACE" | "BUILD" | ".fileApplicability" | ".applicability") => ("#", ""),
