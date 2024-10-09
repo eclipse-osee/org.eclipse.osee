@@ -54,6 +54,7 @@ public class RelationEndpointImpl implements RelationEndpoint {
 
    @Override
    public List<ArtifactToken> getRelatedHierarchy(ArtifactId artifact, ArtifactId view) {
+      
       List<ArtifactToken> ids = getRelated(artifact, CoreRelationTypes.DefaultHierarchical, RelationSide.SIDE_A, view);
       return ids;
    }
@@ -87,6 +88,27 @@ public class RelationEndpointImpl implements RelationEndpoint {
          }
          tx.commit();
       }
+
+      return null;
+   }
+   
+   @Override
+   public List<RelationTypeToken> convertAllRelations(RelationTypeToken oldRelationType,
+      RelationTypeToken newRelationType) {
+      RelationTypeSide sideB = new RelationTypeSide(oldRelationType, RelationSide.SIDE_B);
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch,
+         String.format("Converting relations for Old Relation = %s New Relation = %s", oldRelationType.getName(),
+            newRelationType.getName()));
+
+      for (ArtifactReadable art : orcsApi.getQueryFactory().fromBranch(branch).andRelationExists(
+         oldRelationType).getResults().getList()) {
+         if (art.getRelatedCount(sideB) > 0) {
+            for (ArtifactReadable artB : art.getRelated(sideB).getList()) {
+               tx.relate(art, newRelationType, artB);
+            }
+         }
+      }
+      tx.commit();
 
       return null;
    }

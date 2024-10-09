@@ -258,4 +258,6 @@ public interface OrcsTokenService {
     * were registered by its OrcsTypeTokenProvider
     */
    Class<?> getTokenClass(String canonicalClassName);
+
+   List<String> getConvertedRelations();
 }
