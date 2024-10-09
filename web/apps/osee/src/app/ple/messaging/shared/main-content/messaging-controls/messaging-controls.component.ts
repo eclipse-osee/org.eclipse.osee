@@ -48,20 +48,22 @@ import { toSignal } from '@angular/core/rxjs-interop';
 		PeerReviewButtonComponent,
 	],
 	template: `<div
-		class="tw-flex tw-flex-row tw-items-end tw-justify-between tw-gap-4 tw-py-4 tw-pl-4 tw-pr-8">
-		@if (branchControls()) {
-			<osee-branch-picker
-				class="tw-min-w-[350px] tw-max-w-lg"
-				category="3"
-				[excludeCategory]="excludedBranchCategory()"
-				workType="MIM"></osee-branch-picker>
-		}
+		class="tw-flex tw-flex-row tw-flex-wrap tw-items-end tw-justify-between tw-gap-4 tw-py-4 tw-pl-4 tw-pr-8">
+		<div class="tw-flex tw-flex-wrap tw-items-end tw-gap-4">
+			@if (branchControls()) {
+				<osee-branch-picker
+					class="tw-min-w-[350px] tw-max-w-lg"
+					category="3"
+					[excludeCategory]="excludedBranchCategory()"
+					workType="MIM"></osee-branch-picker>
+			}
 
-		<!-- Any content can be inserted between the branch picker and the action controls -->
-		<ng-content></ng-content>
+			<!-- Any content can be inserted between the branch picker and the action controls -->
+			<ng-content></ng-content>
+		</div>
 
 		<div
-			class="tw-ml-auto tw-flex tw-min-w-[480px] tw-flex-row tw-items-center tw-justify-end tw-gap-2">
+			class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-2">
 			@if (actionControls() && branchId() && branchType()) {
 				<div
 					class="tw-flex tw-gap-2 tw-rounded-full tw-bg-background-app-bar tw-shadow-inner">

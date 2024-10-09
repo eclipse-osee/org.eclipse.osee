@@ -50,7 +50,7 @@ export default defineConfig({
               label: "Pages",
               items: [
                 {
-                  label: "Enumeration List Configuration",
+                  label: "List Configuration",
                   slug: "mim/pages/enum-list-config",
                 },
               ],

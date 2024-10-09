@@ -69,7 +69,7 @@ public class InterfaceValidationApiImpl implements InterfaceValidationApi {
       // All messages must have a message type
       for (InterfaceMessageToken message : messages) {
          if (Strings.isInvalid(message.getInterfaceMessageType().getValue())) {
-            result.getMessageTypeErrors().add(message.getName().getValue());
+            result.getMessageTypeErrors().put(message.getArtifactId(), message.getName().getValue());
          }
 
          // Get all the structs for this message while we're here
@@ -86,16 +86,16 @@ public class InterfaceValidationApiImpl implements InterfaceValidationApi {
       for (InterfaceStructureToken structure : structures) {
          structure.getElements().stream().filter(a -> a.getId() == -1L).collect(Collectors.toList());
          if (structure.getIncorrectlySized()) {
-            result.getStructureByteAlignmentErrors().add(structure.getName().getValue());
+            result.getStructureByteAlignmentErrors().put(structure.getArtifactId(), structure.getName().getValue());
          }
          if (structure.getElements().stream().anyMatch(a -> a.getId() == -1L)) {
-            result.getStructureWordAlignmentErrors().add(structure.getName().getValue());
+            result.getStructureWordAlignmentErrors().put(structure.getArtifactId(), structure.getName().getValue());
          }
          ;
          String structureSheetName =
             structure.getNameAbbrev().getValue().isEmpty() ? structure.getName().getValue() : structure.getNameAbbrev().getValue();
          if (structureSheetNames.contains(structureSheetName)) {
-            result.getDuplicateStructureNameErrors().add(structureSheetName);
+            result.getDuplicateStructureNameErrors().put(structure.getArtifactId(), structureSheetName);
          }
          structureSheetNames.add(structureSheetName);
       }

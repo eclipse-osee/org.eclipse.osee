@@ -32,7 +32,7 @@ In order to make changes on this new branch, you will need to turn on edit mode.
 
 A lot of the dropdowns in MIM are populated by Artifacts that are stored in the database. These generally only need to be created once per Product Line branch and then they can be used across all branches and ICDs that are created from the Product Line. To create these Artifacts, you must be a MIM Admin, or contact your admin.
 
-Navigate to the [Enumeration List Configuration Page](/org.eclipse.osee/mim/pages/enum-list-config), and add the values you'll need for your ICD.
+Navigate to the [List Configuration Page](/org.eclipse.osee/mim/pages/enum-list-config), and add the values you'll need for your ICD.
 
 ## Create a Transport Type
 

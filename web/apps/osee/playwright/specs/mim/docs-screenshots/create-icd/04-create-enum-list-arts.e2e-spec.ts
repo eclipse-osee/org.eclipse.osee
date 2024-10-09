@@ -16,9 +16,7 @@ test('test', async ({ page }) => {
 	await page.setViewportSize({ width: 1600, height: 1000 });
 	await page.goto('http://localhost:4200/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
-	await page
-		.getByRole('link', { name: 'Enumeration List Configuration' })
-		.click();
+	await page.getByRole('link', { name: 'List Configuration' }).click();
 	await page.getByLabel('Working').check();
 	await page.getByText('Select a Branch').click();
 	await page.getByText('TW2 - New MIM ICD').click();

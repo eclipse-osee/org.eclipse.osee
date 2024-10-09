@@ -18,26 +18,28 @@ const messaging = navigationStructure[0].children.filter(
 	(c) => c.label === 'MIM'
 )[0];
 const transports = messaging.children.find(
-	(page) => page.label === 'Transport Type Manager'
+	(page) => page.label === 'Transport Types'
 );
 const imports = messaging.children.find((page) => page.label === 'Import');
 const reports = messaging.children.find((page) => page.label === 'Reports');
 const crossReference = messaging.children.find(
-	(page) => page.label === 'Cross-Reference Data Manager'
+	(page) => page.label === 'Cross-References'
 );
-const types = messaging.children.find((page) => page.label === 'Type View');
+const types = messaging.children.find(
+	(page) => page.label === 'Platform Types'
+);
 const structureNames = messaging.children.find(
-	(page) => page.label === 'Structure Names'
+	(page) => page.label === 'Structures'
 );
 const typeSearch = messaging.children.find(
 	(page) => page.label === 'Find Elements By Type'
 );
 const connections = messaging.children.find(
-	(page) => page.label === 'Connection View'
+	(page) => page.label === 'Connections'
 );
 const help = messaging.children.find((page) => page.label === 'MIM Help');
 const lists = messaging.children.find(
-	(page) => page.label === 'Enumeration List Configuration'
+	(page) => page.label === 'List Configuration'
 );
 const routes: Routes = [
 	{

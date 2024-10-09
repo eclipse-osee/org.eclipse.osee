@@ -58,6 +58,7 @@ import org.eclipse.osee.mim.InterfaceDifferenceReportApi;
 import org.eclipse.osee.mim.InterfaceMessageApi;
 import org.eclipse.osee.mim.InterfaceStructureApi;
 import org.eclipse.osee.mim.MimApi;
+import org.eclipse.osee.mim.types.ConnectionValidationResult;
 import org.eclipse.osee.mim.types.ElementArrayIndexOrder;
 import org.eclipse.osee.mim.types.IcdElementIndex;
 import org.eclipse.osee.mim.types.InterfaceConnection;
@@ -138,7 +139,7 @@ public class MimIcdGenerator {
    }
 
    public void runOperation(OutputStream outputStream, BranchId branch, ArtifactId view, ArtifactId connectionId,
-      boolean diff) {
+      boolean diff, boolean showErrors) {
       InterfaceConnection conn = mimApi.getInterfaceConnectionViewApi().get(branch, view, connectionId,
          Arrays.asList(FollowRelation.fork(CoreRelationTypes.InterfaceConnectionNode_Node),
             FollowRelation.fork(CoreRelationTypes.InterfaceConnectionTransportType_TransportType),
@@ -154,6 +155,9 @@ public class MimIcdGenerator {
             FollowRelation.follow(CoreRelationTypes.InterfaceElementPlatformType_PlatformType),
             FollowRelation.follow(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet),
             FollowRelation.follow(CoreRelationTypes.InterfaceEnumeration_EnumerationState)));
+
+      ConnectionValidationResult validation = showErrors ? mimApi.getInterfaceValidationApi().validateConnection(branch,
+         view, connectionId) : new ConnectionValidationResult();
 
       Branch currentBranch =
          orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getAtMostOneOrDefault(Branch.SENTINEL);
@@ -264,16 +268,20 @@ public class MimIcdGenerator {
          createChangeSummary(writer, summary);
       }
 
+      if (!validation.isPassed()) {
+         writeValidationErrorsSheet(writer, validation);
+      }
+
       writeMessageSubMessageSummary(writer, conn.getArtifactReadable(), primaryNode.getArtifactReadable(),
          secondaryNode.getArtifactReadable(), messages);
       writeStoredSheets(writer, branch, view, conn);
       createUnitsAndTypesSheet(writer); // Create sheet but do not write until the end to allow for list population
       createStructureNamesSheet(writer); // Create sheet but do not write until the end to allow for header diff processing
       createStructureSummarySheet(writer); // Create sheet but do not write until the end to allow for header diff processing
-      writeStructureSheets(writer, subMessagesWithHeaders, structureLinks, messages);
+      writeStructureSheets(writer, subMessagesWithHeaders, structureLinks, messages, validation);
       writeUnitsAndTypesSheet(writer, branch, view, primaryNode, secondaryNode);
-      writeStructureNamesSheet(writer, structureLinks);
-      writeStructureSummarySheet(writer, messages, structureLinks);
+      writeStructureNamesSheet(writer, structureLinks, validation);
+      writeStructureSummarySheet(writer, messages, structureLinks, validation);
       writer.writeWorkbook();
       writer.closeWorkbook();
 
@@ -763,12 +771,54 @@ public class MimIcdGenerator {
       return artType.getName().replace("Interface ", "").replace("DataElement", "Element");
    }
 
+   private void writeValidationErrorsSheet(ExcelWorkbookWriter writer, ConnectionValidationResult validation) {
+      writer.createSheet("Validation Errors");
+
+      int rowIndex = 0;
+      int colIndex = 0;
+
+      if (!validation.getStructureByteAlignmentErrors().isEmpty()) {
+         writer.writeCell(rowIndex, colIndex, "Structures Not Byte Aligned", CELLSTYLE.BOLD);
+         rowIndex++;
+         for (String structure : validation.getStructureByteAlignmentErrors().values()) {
+            writer.writeCell(rowIndex, colIndex, structure);
+            rowIndex++;
+         }
+         rowIndex = 0;
+         colIndex++;
+      }
+
+      if (!validation.getStructureWordAlignmentErrors().isEmpty()) {
+         writer.writeCell(rowIndex, colIndex, "Structures Not Word Aligned", CELLSTYLE.BOLD);
+         rowIndex++;
+         for (String structure : validation.getStructureWordAlignmentErrors().values()) {
+            writer.writeCell(rowIndex, colIndex, structure);
+            rowIndex++;
+         }
+         rowIndex = 0;
+         colIndex++;
+      }
+
+      if (!validation.getMessageTypeErrors().isEmpty()) {
+         writer.writeCell(rowIndex, colIndex, "Messages Missing Message Type", CELLSTYLE.BOLD);
+         rowIndex++;
+         for (String structure : validation.getMessageTypeErrors().values()) {
+            writer.writeCell(rowIndex, colIndex, structure);
+            rowIndex++;
+         }
+         colIndex++;
+      }
+
+      writer.autoSizeAllColumns(colIndex);
+      writer.setTabColor(CELLSTYLE.LIGHT_RED);
+   }
+
    private void createStructureNamesSheet(ExcelWorkbookWriter writer) {
       writer.createSheet("Structure Names");
    }
 
    private void writeStructureNamesSheet(ExcelWorkbookWriter writer,
-      SortedMap<InterfaceStructureToken, String> structures) {
+      SortedMap<InterfaceStructureToken, String> structures, ConnectionValidationResult validation) {
       writer.setActiveSheet("Structure Names");
       String[] headers = {"Structure Name", "Structure Name", "Structure Name"};
       writer.writeRow(0, headers, CELLSTYLE.BOLD);
@@ -780,6 +830,8 @@ public class MimIcdGenerator {
             return o1.getName().getValue().toLowerCase().compareTo(o2.getName().getValue().toLowerCase());
          }
       });
+
+      CELLSTYLE tabColor = CELLSTYLE.NONE;
 
       int colLength = (int) Math.ceil(structureList.size() / 3.0);
       for (int i = 0; i < structureList.size(); i++) {
@@ -797,12 +849,21 @@ public class MimIcdGenerator {
          CELLSTYLE color =
             structure.isAutogenerated() ? getHeaderStructureNameColor(structure) : getStructureNameColor(structure);
 
+         if (isStructureValidationError(validation, structure.getArtifactId())) {
+            color = CELLSTYLE.LIGHT_RED;
+            tabColor = CELLSTYLE.LIGHT_RED;
+         }
+
          writer.writeCell(rowNum, colNum, structure.getName().getValue(), "'" + structures.get(structure) + "'!A1",
             HyperLinkType.SHEET, CELLSTYLE.HYPERLINK, color);
          rowNum++;
       }
 
       writer.autoSizeAllColumns(headers.length);
+
+      if (!CELLSTYLE.NONE.equals(tabColor)) {
+         writer.setTabColor(tabColor);
+      }
    }
 
    private CELLSTYLE getHeaderStructureNameColor(InterfaceStructureToken struct) {
@@ -837,7 +898,7 @@ public class MimIcdGenerator {
    }
 
    private void writeStructureSummarySheet(ExcelWorkbookWriter writer, List<ArtifactReadable> messages,
-      SortedMap<InterfaceStructureToken, String> structureLinks) {
+      SortedMap<InterfaceStructureToken, String> structureLinks, ConnectionValidationResult validation) {
       writer.setActiveSheet("Structure Summary");
 
       int totalMinSim = 0;
@@ -865,6 +926,9 @@ public class MimIcdGenerator {
          "Taskfile Type",
          "Description"};
       writer.writeRow(0, headers, CELLSTYLE.BOLD);
+
+      CELLSTYLE tabColor = CELLSTYLE.NONE;
+
       for (ArtifactReadable message : messages) {
          List<InterfaceSubMessageToken> subMessages =
             message.getRelated(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage).getList().stream().map(
@@ -896,6 +960,10 @@ public class MimIcdGenerator {
                totalMaxBps += stringToInt(structureInfo.maxBps);
                maxAttrs = Math.max(maxAttrs, structureInfo.numAttributes);
                totalStructs++;
+
+               if (isStructureValidationError(validation, struct.getArtifactId())) {
+                  tabColor = CELLSTYLE.LIGHT_RED;
+               }
 
                if (struct.isAutogenerated()) {
                   InterfaceStructureToken parentHeader = parentMessageHeaderStructures.get(struct.getName().getValue());
@@ -936,7 +1004,7 @@ public class MimIcdGenerator {
                } else {
                   // @formatter:off
                   writer.writeCell(rowIndex, 0, structureInfo.category, getCellColor(structReadable, CoreAttributeTypes.InterfaceStructureCategory.getId()));
-                  writer.writeCell(rowIndex, 1, struct.getName().getValue(), "'" + sheetName + "'!A1", HyperLinkType.SHEET, getCellColor(structReadable, CoreAttributeTypes.Name.getId()), CELLSTYLE.HYPERLINK);
+                  writer.writeCell(rowIndex, 1, struct.getName().getValue(), "'" + sheetName + "'!A1", HyperLinkType.SHEET, getCellColor(structReadable, CoreAttributeTypes.Name.getId(), validation), CELLSTYLE.HYPERLINK);
                   writer.writeCell(rowIndex, 2, structureInfo.txRate,
                      getCellColor(structReadable, message, CoreAttributeTypes.InterfaceMessageRate.getId()).equals(
                         CELLSTYLE.NONE) ? getCellColor(structReadable, message,
@@ -945,7 +1013,7 @@ public class MimIcdGenerator {
                   writer.writeCell(rowIndex, 3, structureInfo.minSim, getCellColor(structReadable, CoreAttributeTypes.InterfaceMinSimultaneity.getId()));
                   writer.writeCell(rowIndex, 4, structureInfo.maxSim, getCellColor(structReadable, CoreAttributeTypes.InterfaceMaxSimultaneity.getId()));
                   writer.writeCell(rowIndex, 5, structureInfo.numAttributes, getCellColor(structReadable, structureInfo.numElementsChanged));
-                  writer.writeCell(rowIndex, 6, structureInfo.sizeInBytes, getCellColor(structReadable, structureInfo.structureSizeChanged));
+                  writer.writeCell(rowIndex, 6, structureInfo.sizeInBytes, getCellColor(structReadable, structureInfo.structureSizeChanged, validation));
                   writer.writeCell(rowIndex, 7, structureInfo.minBps, getCellColor(structReadable, structureInfo.txRateChanged || structureInfo.structureSizeChanged));
                   writer.writeCell(rowIndex, 8, structureInfo.maxBps, getCellColor(structReadable, structureInfo.txRateChanged || structureInfo.structureSizeChanged));
                   writer.writeCell(rowIndex, 9, structureInfo.initiator, getCellColor(structReadable, false));
@@ -989,6 +1057,10 @@ public class MimIcdGenerator {
 
       writer.autoSizeAllColumns(headers.length);
       writer.setColumnWidth(13, 15000);
+
+      if (!CELLSTYLE.NONE.equals(tabColor)) {
+         writer.setTabColor(tabColor);
+      }
    }
 
    private StructureInfo getStructureInfo(InterfaceStructureToken struct) {
@@ -1008,7 +1080,7 @@ public class MimIcdGenerator {
     * @return array of string lengths of each column
     */
    private int[] printFirstRowInStructureSheet(ExcelWorkbookWriter writer, InterfaceStructureToken structure,
-      StructureInfo info) {
+      StructureInfo info, ConnectionValidationResult validation) {
       ArtifactReadable structReadable = structure.getArtifactReadable();
 
       Object date =
@@ -1047,7 +1119,7 @@ public class MimIcdGenerator {
       writer.writeCell(1, 6,  values[6], getCellColor(structReadable, CoreAttributeTypes.InterfaceMinSimultaneity.getId()), CELLSTYLE.CENTERH);
       writer.writeCell(1, 7,  values[7], getCellColor(structReadable, CoreAttributeTypes.InterfaceMaxSimultaneity.getId()), CELLSTYLE.CENTERH);
       writer.writeCell(1, 8,  values[8], getCellColor(structReadable, info.numElementsChanged), CELLSTYLE.CENTERH);
-      writer.writeCell(1, 9,  values[9], getCellColor(structReadable, info.structureSizeChanged), CELLSTYLE.CENTERH);
+      writer.writeCell(1, 9,  values[9], getCellColor(structReadable, info.structureSizeChanged, validation), CELLSTYLE.CENTERH);
       writer.writeCell(1, 10, values[10], getCellColor(structReadable, false), CELLSTYLE.CENTERH);
       writer.writeCell(1, 11, values[11], getCellColor(structReadable, info.message, CoreAttributeTypes.InterfaceMessageNumber.getId()), CELLSTYLE.CENTERH);
       writer.writeCell(1, 12, values[12], getCellColor(structReadable, info.submessage, CoreAttributeTypes.InterfaceSubMessageNumber.getId()), CELLSTYLE.CENTERH);
@@ -1187,7 +1259,8 @@ public class MimIcdGenerator {
    }
 
    private void writeStructureSheets(ExcelWorkbookWriter writer, List<InterfaceSubMessageToken> subMessages,
-      SortedMap<InterfaceStructureToken, String> structureLinks, List<ArtifactReadable> messages) {
+      SortedMap<InterfaceStructureToken, String> structureLinks, List<ArtifactReadable> messages,
+      ConnectionValidationResult validation) {
       String[] structureHeaders = {
          "Sheet Type",
          "Full Sheet Name",
@@ -1300,8 +1373,13 @@ public class MimIcdGenerator {
                }
             } else {
                StructureInfo info = structureInfoMap.get(struct.getArtifactId());
-               resultWidths = printFirstRowInStructureSheet(writer, struct, info);
+               resultWidths = printFirstRowInStructureSheet(writer, struct, info, validation);
                columnWidths = getMaxLengthsArray(columnWidths, resultWidths);
+
+               if (isStructureValidationError(validation, struct.getArtifactId())) {
+                  writer.setTabColor(CELLSTYLE.LIGHT_RED);
+               }
+
                writer.writeRow(3, elementHeaders, CELLSTYLE.BOLD, CELLSTYLE.WRAP, CELLSTYLE.CENTERH);
                int parentIndex = 0;
                for (int i = 0; i < info.elements.size(); i++) {
@@ -2142,6 +2220,14 @@ public class MimIcdGenerator {
    }
 
    private CELLSTYLE getCellColor(ArtifactReadable artifact, boolean changed) {
+      return getCellColor(artifact, changed, null);
+   }
+
+   private CELLSTYLE getCellColor(ArtifactReadable artifact, boolean changed, ConnectionValidationResult validation) {
+      if (artifact != null && isStructureValidationError(validation, artifact.getArtifactId())) {
+         return CELLSTYLE.LIGHT_RED;
+      }
+
       MimChangeSummaryItem diffItem = artifact == null ? null : diffs.get(artifact.getArtifactId());
       CELLSTYLE style = CELLSTYLE.NONE;
       if (diffItem != null) {
@@ -2154,7 +2240,19 @@ public class MimIcdGenerator {
       return getCellColor(artifact, artifact, attrId);
    }
 
+   private CELLSTYLE getCellColor(ArtifactReadable artifact, Long attrId, ConnectionValidationResult validation) {
+      return getCellColor(artifact, artifact, attrId, validation);
+   }
+
    private CELLSTYLE getCellColor(ArtifactReadable rowArtifact, ArtifactReadable cellArtifact, Long attrId) {
+      return getCellColor(rowArtifact, cellArtifact, attrId, null);
+   }
+
+   private CELLSTYLE getCellColor(ArtifactReadable rowArtifact, ArtifactReadable cellArtifact, Long attrId,
+      ConnectionValidationResult validation) {
+      if (rowArtifact != null && isStructureValidationError(validation, rowArtifact.getArtifactId())) {
+         return CELLSTYLE.LIGHT_RED;
+      }
       MimChangeSummaryItem rowDiffItem = rowArtifact == null ? null : diffs.get(rowArtifact.getArtifactId());
       MimChangeSummaryItem cellDiffItem = cellArtifact == null ? null : diffs.get(cellArtifact.getArtifactId());
       return getCellColor(rowDiffItem, cellDiffItem, attrId);
@@ -2209,6 +2307,11 @@ public class MimIcdGenerator {
          }
       }
       return false;
+   }
+
+   private boolean isStructureValidationError(ConnectionValidationResult validation, ArtifactId structureId) {
+      return validation != null && (validation.getStructureByteAlignmentErrors().containsKey(
+         structureId) || validation.getStructureWordAlignmentErrors().containsKey(structureId));
    }
 
    private String logicalTypeToDataType(String logicalType) {

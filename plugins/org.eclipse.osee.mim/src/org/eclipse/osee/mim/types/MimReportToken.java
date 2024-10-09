@@ -30,6 +30,7 @@ public class MimReportToken extends ArtifactAccessorResultWithoutGammas {
    private String producesMediaType;
    private boolean diffAvailable;
    private boolean requiresValidation;
+   private boolean supportsErrorColoring;
 
    public MimReportToken(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -46,6 +47,7 @@ public class MimReportToken extends ArtifactAccessorResultWithoutGammas {
       this.setProducesMediaType(art.getSoleAttributeAsString(CoreAttributeTypes.ProducesMediaType, ""));
       this.setDiffAvailable(art.getSoleAttributeValue(CoreAttributeTypes.DiffAvailable, false));
       this.setRequiresValidation(art.getSoleAttributeValue(CoreAttributeTypes.RequiresValidation, false));
+      this.setSupportsErrorColoring(art.getSoleAttributeValue(CoreAttributeTypes.SupportsErrorColoring, false));
    }
 
    /**
@@ -114,6 +116,14 @@ public class MimReportToken extends ArtifactAccessorResultWithoutGammas {
 
    public void setRequiresValidation(boolean requiresValidation) {
       this.requiresValidation = requiresValidation;
+   }
+
+   public boolean isSupportsErrorColoring() {
+      return supportsErrorColoring;
+   }
+
+   public void setSupportsErrorColoring(boolean supportsErrorColoring) {
+      this.supportsErrorColoring = supportsErrorColoring;
    }
 
 }

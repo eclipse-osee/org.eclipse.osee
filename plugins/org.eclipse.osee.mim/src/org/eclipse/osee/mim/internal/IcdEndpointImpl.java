@@ -45,8 +45,8 @@ public class IcdEndpointImpl implements IcdEndpoint {
    }
 
    @Override
-   public Response getIcd(boolean diff) {
-      StreamingOutput streamingOutput = new IcdStreamingOutput(mimApi, branch, viewId, connectionId, diff);
+   public Response getIcd(boolean diff, boolean showErrors) {
+      StreamingOutput streamingOutput = new IcdStreamingOutput(mimApi, branch, viewId, connectionId, diff, showErrors);
       String connectionName = orcsApi.getQueryFactory().fromBranch(branch).andId(connectionId).asArtifact().getName();
       ResponseBuilder builder = Response.ok(streamingOutput);
       builder.header("Content-Disposition", "attachment; filename=" + "InterfaceWorkbook_" + connectionName + ".xls");
