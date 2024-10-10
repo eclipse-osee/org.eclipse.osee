@@ -13,7 +13,9 @@
 [workspace]
 resolver = "2"
 members = [
-    "cli/applicability", "cli/applicability_match",
+    "cli/applicability",
+    "cli/applicability_match",
+    "cli/applicability_parse_substitute_and_sanitize",
     "cli/applicability_parser",
     "cli/applicability_parser_config", 
     "cli/applicability_parser_types", 
