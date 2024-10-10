@@ -76,16 +76,16 @@ public class ArtifactPersistenceManager {
       return ServiceUtil.getOseeClient().getAccessControlService().isDeleteable(artifacts, rd);
    }
 
-   // Confirm relations are fit to add
-   public static XResultData performAddRelationChecks(Artifact artifact, RelationTypeToken relationType,
+   // Confirm relations are fit to add; Should only be called by UIs, eg: Artifact Editor relations tab
+   public static XResultData performAddRelationChecksUI(Artifact artifact, RelationTypeToken relationType,
       XResultData rd) {
-      return ServiceUtil.getOseeClient().getAccessControlService().isAddableRelation(artifact, relationType, rd);
+      return ServiceUtil.getOseeClient().getAccessControlService().isAddableRelationUI(artifact, relationType, rd);
    }
 
-   // Confirm relations are fit to delete
-   public static XResultData performDeleteRelationChecks(Artifact artifact, RelationTypeToken relationType,
+   // Confirm relations are fit to delete; Should only be called by UIs, eg: Artifact Editor relations tab
+   public static XResultData performDeleteRelationChecksUI(Artifact artifact, RelationTypeToken relationType,
       XResultData rd) {
-      return ServiceUtil.getOseeClient().getAccessControlService().isDeleteableRelation(artifact, relationType, rd);
+      return ServiceUtil.getOseeClient().getAccessControlService().isDeleteableRelationUI(artifact, relationType, rd);
    }
 
    private static void bulkLoadRelatives(Collection<Artifact> artifacts) {

@@ -68,7 +68,7 @@ public class AtsArtifactChecks implements ArtifactCheck {
    }
 
    @Override
-   public XResultData isDeleteableRelation(ArtifactToken artifact, RelationTypeToken relationType,
+   public XResultData isDeleteableRelationUI(ArtifactToken artifact, RelationTypeToken relationType,
       XResultData results) {
       if (isDeletionChecksEnabled()) {
          if (Admin_Only_Relation_Type_Ids.contains(
