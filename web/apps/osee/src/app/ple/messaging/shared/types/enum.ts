@@ -21,6 +21,9 @@ export type enumeration = {
 	ordinal: Required<
 		attribute<number, typeof ATTRIBUTETYPEIDENUM.INTERFACEENUMORDINAL>
 	>;
+	ordinalType: Required<
+		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEENUMORDINALTYPE>
+	>;
 	applicability: applic;
 };
 

@@ -369,22 +369,6 @@ export abstract class CurrentStructureService {
 		return this._types;
 	}
 
-	getPaginatedFilteredTypes(
-		filter: string,
-		count: number,
-		pageNum: number | string
-	) {
-		return this.typeService.getPaginatedFilteredTypes(
-			filter,
-			count,
-			pageNum.toString()
-		);
-	}
-
-	getFilteredTypesCount(filter: string) {
-		return this.typeService.getFilteredTypesCount(filter);
-	}
-
 	get differences() {
 		return this.ui.differences;
 	}

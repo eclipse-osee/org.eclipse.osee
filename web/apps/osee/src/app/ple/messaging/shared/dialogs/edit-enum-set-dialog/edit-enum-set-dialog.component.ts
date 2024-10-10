@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import {
 	MAT_DIALOG_DATA,
@@ -22,20 +22,9 @@ import {
 	MatDialogTitle,
 } from '@angular/material/dialog';
 import { EditEnumSetFieldComponent } from '@osee/messaging/shared/forms';
-import {
-	EnumerationUIService,
-	PreferencesUIService,
-} from '@osee/messaging/shared/services';
-import type {
-	enumerationSet,
-	enumsetDialogData,
-} from '@osee/messaging/shared/types';
-import {
-	legacyCreateArtifact,
-	legacyModifyArtifact,
-	legacyModifyRelation,
-} from '@osee/transactions/types';
-import { Observable, Subject } from 'rxjs';
+import { PreferencesUIService } from '@osee/messaging/shared/services';
+import type { enumsetDialogData } from '@osee/messaging/shared/types';
+import { writableSlice } from '@osee/shared/utils';
 
 @Component({
 	selector: 'osee-messaging-edit-enum-set-dialog',
@@ -54,31 +43,20 @@ import { Observable, Subject } from 'rxjs';
 })
 export class EditEnumSetDialogComponent {
 	dialogRef = inject<MatDialogRef<EditEnumSetDialogComponent>>(MatDialogRef);
-	data = inject<enumsetDialogData>(MAT_DIALOG_DATA);
-	private enumSetService = inject(EnumerationUIService);
+	data = signal(inject<enumsetDialogData>(MAT_DIALOG_DATA));
 	private preferenceService = inject(PreferencesUIService);
 
-	enumObs: Observable<enumerationSet> = this.enumSetService.getEnumSet(
-		this.data.id
-	);
-	isOnEditablePage = this.data.isOnEditablePage;
-	inEditMode = this.preferenceService.inEditMode;
+	protected platformType = writableSlice(this.data, 'platformType');
 
-	receivedTx = new Subject<{
-		createArtifacts: legacyCreateArtifact[];
-		modifyArtifacts: legacyModifyArtifact[];
-		deleteRelations: legacyModifyRelation[];
-	}>();
+	protected bitSize = computed(
+		() => this.platformType().interfacePlatformTypeBitSize
+	);
+	protected enumSet = writableSlice(this.platformType, 'enumSet');
+	protected isOnEditablePage = writableSlice(this.data, 'isOnEditablePage');
+
+	protected inEditMode = this.preferenceService.inEditMode;
 
 	onNoClick(): void {
 		this.dialogRef.close();
-	}
-
-	receiveTx(value: {
-		createArtifacts: legacyCreateArtifact[];
-		modifyArtifacts: legacyModifyArtifact[];
-		deleteRelations: legacyModifyRelation[];
-	}) {
-		this.receivedTx.next(value);
 	}
 }

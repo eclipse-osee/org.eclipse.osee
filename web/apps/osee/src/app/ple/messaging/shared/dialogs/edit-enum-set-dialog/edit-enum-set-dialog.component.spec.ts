@@ -12,15 +12,15 @@
  **********************************************************************/
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgIf } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonHarness } from '@angular/material/button/testing';
 import {
+	MAT_DIALOG_DATA,
 	MatDialogModule,
 	MatDialogRef,
-	MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -36,16 +36,16 @@ import {
 	TypesService,
 } from '@osee/messaging/shared/services';
 import {
-	MockEditEnumSetFieldComponent,
 	enumerationSetServiceMock,
 	MimPreferencesServiceMock,
+	MockEditEnumSetFieldComponent,
 	typesServiceMock,
 } from '@osee/messaging/shared/testing';
 import { ApplicabilityListService } from '@osee/shared/services';
 import { applicabilityListServiceMock } from '@osee/shared/testing';
 import { of } from 'rxjs';
-import type { enumsetDialogData } from '../../types/EnumSetDialogData';
 
+import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 import { EditEnumSetDialogComponent } from './edit-enum-set-dialog.component';
 
 describe('EditEnumSetDialogComponent', () => {
@@ -74,10 +74,10 @@ describe('EditEnumSetDialogComponent', () => {
 					},
 					{
 						provide: MAT_DIALOG_DATA,
-						useValue: of<enumsetDialogData>({
-							id: '1234567890',
+						useValue: {
+							platformType: new PlatformTypeSentinel(),
 							isOnEditablePage: true,
-						}),
+						},
 					},
 					{
 						provide: EnumerationSetService,
@@ -124,10 +124,10 @@ describe('EditEnumSetDialogComponent', () => {
 					},
 					{
 						provide: MAT_DIALOG_DATA,
-						useValue: of<enumsetDialogData>({
-							id: '1234567890',
+						useValue: {
+							platformType: new PlatformTypeSentinel(),
 							isOnEditablePage: true,
-						}),
+						},
 					},
 					{
 						provide: EnumerationSetService,

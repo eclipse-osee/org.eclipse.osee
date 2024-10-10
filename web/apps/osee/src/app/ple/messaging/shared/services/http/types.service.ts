@@ -14,7 +14,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 import { apiURL } from '@osee/environments';
-import { TransactionBuilderService } from '@osee/shared/transactions-legacy';
 import { HttpParamsType } from '@osee/shared/types';
 import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
 import { createArtifact } from '@osee/transactions/functions';
@@ -32,7 +31,6 @@ import type { PlatformType, PlatformTypeAttr } from '../../types/platformType';
 })
 export class TypesService {
 	private http = inject(HttpClient);
-	private builder = inject(TransactionBuilderService);
 
 	private transactionService = inject(TransactionService);
 
@@ -60,6 +58,35 @@ export class TypesService {
 					pageNum: pageNum,
 					orderByAttributeType: ATTRIBUTETYPEIDENUM.NAME,
 				},
+			}
+		);
+	}
+
+	/**
+	 * Gets a list of Platform Types based on a filter condition using the platform types filter GET API
+	 * @param filter @type {string} filter conditions for finding the correct platform types
+	 * @param branchId @type {string} branch to fetch from
+	 * @returns @type {Observable<PlatformType[]>} Observable of array of platform types matching filter conditions (see @type {PlatformType} and @type {Observable})
+	 */
+	getFilteredFullTypes(
+		filter: string,
+		branchId: string,
+		pageNum: number,
+		pageSize: number
+	): Observable<PlatformType[]> {
+		let params: HttpParamsType = {};
+		//leaving a note here: it is ok to use this rest call with the regular types count as we are not allowing searches based on the enum set here, this is just so that platform type dialog and enum set dialogs have a full platform type to diff with
+		if (filter !== '') {
+			params = { ...params, filter: filter };
+		}
+		if (pageSize !== 0 && pageNum !== 0) {
+			params = { ...params, count: pageSize, pageNum: pageNum };
+		}
+		params = { ...params, orderByAttributeType: ATTRIBUTETYPEIDENUM.NAME };
+		return this.http.get<PlatformType[]>(
+			apiURL + '/mim/branch/' + branchId + '/types',
+			{
+				params: params,
 			}
 		);
 	}

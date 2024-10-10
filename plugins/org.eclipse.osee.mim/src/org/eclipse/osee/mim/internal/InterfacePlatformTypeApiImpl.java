@@ -313,8 +313,18 @@ public class InterfacePlatformTypeApiImpl implements InterfacePlatformTypeApi {
    public List<PlatformTypeToken> getAllWithEnumSet(BranchId branch, long pageNum, long pageSize,
       AttributeTypeId orderByAttribute) {
       return this.getAllWithRelations(branch,
-         FollowRelation.followList(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet), pageNum,
-         pageSize, orderByAttribute);
+         FollowRelation.followList(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet,
+            CoreRelationTypes.InterfaceEnumeration_EnumerationState),
+         pageNum, pageSize, orderByAttribute);
+   }
+
+   @Override
+   public List<PlatformTypeToken> getFilteredWithEnumSet(BranchId branch, long pageNum, long pageSize,
+      AttributeTypeId orderByAttribute, String filter) {
+      return this.getFilteredWithRelations(branch, filter,
+         FollowRelation.followList(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet,
+            CoreRelationTypes.InterfaceEnumeration_EnumerationState),
+         pageNum, pageSize, orderByAttribute);
    }
 
    @Override

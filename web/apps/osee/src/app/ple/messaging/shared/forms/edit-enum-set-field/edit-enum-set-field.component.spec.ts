@@ -32,7 +32,6 @@ import {
 	enumerationSetServiceMock,
 	MimPreferencesServiceMock,
 	MockEnumFormUniqueComponent,
-	platformTypes1,
 	QueryServiceMock,
 	typesUIServiceMock,
 } from '@osee/messaging/shared/testing';
@@ -128,25 +127,7 @@ describe('EditEnumSetFieldComponent', () => {
 		fixture = TestBed.createComponent(EditEnumSetFieldComponent);
 		component = fixture.componentInstance;
 	});
-	describe('Case 1 Platform Type By Id', () => {
-		beforeEach(() => {
-			component.editable = true;
-			component.platformTypeId = '10';
-			fixture.detectChanges();
-		});
-		it('should create', () => {
-			expect(component).toBeTruthy();
-		});
-	});
-	describe('Case 2 Platform Type by Type', () => {
-		beforeEach(() => {
-			component.editable = true;
-			component.platformType = platformTypes1[0];
-			fixture.detectChanges();
-		});
-
-		it('should create', () => {
-			expect(component).toBeTruthy();
-		});
+	it('should create', () => {
+		expect(component).toBeTruthy();
 	});
 });
