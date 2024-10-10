@@ -49,6 +49,7 @@ public class DeleteArtifactHandler extends CommandHandler {
             XResultData rd =
                ArtifactPersistenceManager.deleteArtifact(transaction, false, new XResultData(), artifactsArray);
             ArtifactPersistenceManagerUI.cancelTxAndExceptionUiIfErrors(rd, "Deleate Artifact Handler", transaction);
+            transaction.execute();
          }
       }
       return null;
