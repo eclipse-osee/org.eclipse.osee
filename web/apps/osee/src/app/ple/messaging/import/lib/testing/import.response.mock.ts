@@ -581,6 +581,12 @@ export const importSummaryMock: ImportSummary = {
 				gammaId: '-1',
 				value: 0,
 			},
+			ordinalType: {
+				id: '-1',
+				typeId: '2664267173310317306',
+				gammaId: '-1',
+				value: 'LONG',
+			},
 		},
 		{
 			id: '10',
@@ -600,6 +606,12 @@ export const importSummaryMock: ImportSummary = {
 				typeId: '2455059983007225790',
 				gammaId: '-1',
 				value: 1,
+			},
+			ordinalType: {
+				id: '-1',
+				typeId: '2664267173310317306',
+				gammaId: '-1',
+				value: 'LONG',
 			},
 		},
 	],

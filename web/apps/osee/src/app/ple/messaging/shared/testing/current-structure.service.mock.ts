@@ -139,16 +139,6 @@ export const CurrentStateServiceMock: Partial<CurrentStructureService> = {
 		throw new Error('Function not implemented.');
 	},
 	availableElements: undefined,
-	getPaginatedFilteredTypes: function (
-		filter: string,
-		count: number,
-		pageNum: string | number
-	): Observable<PlatformType[]> {
-		return of(platformTypesMock);
-	},
-	getFilteredTypesCount(filter: string) {
-		return of(10);
-	},
 	set difference(id: changeInstance[]) {},
 	DiffMode: false,
 	createNewElement: function (

@@ -131,8 +131,8 @@ export class SubElementArrayTableDropdownComponent {
 		this.elementDropdownService.openEditElementDialog(element, true);
 	}
 
-	openEnumDialog(id: string) {
-		this.elementDropdownService.openEnumDialog(id, this.editMode);
+	openEnumDialog(platformType: PlatformType) {
+		this.elementDropdownService.openEnumDialog(platformType, this.editMode);
 	}
 
 	openDescriptionDialog(element: element) {

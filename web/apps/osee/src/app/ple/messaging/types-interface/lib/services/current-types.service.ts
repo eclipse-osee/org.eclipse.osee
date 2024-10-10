@@ -62,7 +62,7 @@ export class CurrentTypesService {
 			iif(
 				() => id !== '' && id !== '0' && id !== '-1',
 				this.typesService
-					.getFilteredTypes(filter, id, page + 1, pageSize)
+					.getFilteredFullTypes(filter, id, page + 1, pageSize)
 					.pipe(
 						repeatWhen((_) => this.uiService.typeUpdateRequired),
 						share(),

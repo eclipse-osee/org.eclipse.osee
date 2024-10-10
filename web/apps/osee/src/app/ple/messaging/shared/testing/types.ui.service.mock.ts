@@ -30,9 +30,6 @@ export const typesUIServiceMock: Partial<TypesUIService> = {
 	changeType(type: PlatformType) {
 		return of(transactionResultMock);
 	},
-	performMutation(body: legacyTransaction) {
-		return of(transactionResultMock);
-	},
 	searchLocation: of(''),
 	detailLocation: of(''),
 };
