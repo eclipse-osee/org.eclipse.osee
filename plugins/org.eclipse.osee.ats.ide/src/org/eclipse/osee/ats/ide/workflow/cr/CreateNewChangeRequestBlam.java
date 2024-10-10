@@ -50,6 +50,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.ISelectableValueProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkTriStateBoolean;
@@ -262,11 +263,11 @@ public abstract class CreateNewChangeRequestBlam extends AbstractBlam implements
       actionResult = atsApi.getActionService().createAction(atsApi.getUserService().getCurrentUser(), title, desc,
          cType, priority == null ? null : priority.getName(), false, needBy, getNewActionAis(programAi), new Date(),
          atsApi.getUserService().getCurrentUser(), Collections.singleton(this), changes);
-      changes.execute();
       if (actionResult.getResults().isErrors()) {
-         log(actionResult.getResults().toString());
+         XResultDataUI.report(actionResult.getResults(), getTitle());
          return;
       }
+      changes.execute();
       Collection<IAtsTeamWorkflow> teamWfs = actionResult.getTeamWfs();
       if (teamWfs.size() == 1) {
          WorkflowEditor.edit(teamWfs.iterator().next());

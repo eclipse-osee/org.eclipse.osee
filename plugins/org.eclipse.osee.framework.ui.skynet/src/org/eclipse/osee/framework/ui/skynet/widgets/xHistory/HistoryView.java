@@ -462,7 +462,7 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
                      historyView.explore(artifact, loadHistory);
                   } catch (Exception ex) {
                      historyView.closeView();
-                     OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+                     OseeLog.log(Activator.class, Level.SEVERE, ex);
                   }
                }
             } catch (Exception ex) {

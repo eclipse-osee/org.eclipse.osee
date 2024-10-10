@@ -39,17 +39,17 @@ public interface ArtifactCheck {
    }
 
    /**
-    * @return error(s) of which artifact(s) and why relation(s) can not be deleted
+    * @return error(s) of which artifact(s) and why relation(s) can not be deleted by UI
     */
-   default public XResultData isDeleteableRelation(ArtifactToken artifact, RelationTypeToken relationType,
+   default public XResultData isDeleteableRelationUI(ArtifactToken artifact, RelationTypeToken relationType,
       XResultData rd) {
       return rd;
    }
 
    /**
-    * @return error(s) of which artifact(s) and why relation(s) can not be deleted
+    * @return error(s) of which artifact(s) and why relation(s) can not be added by UI
     */
-   default public XResultData isAddableRelation(ArtifactToken artifact, RelationTypeToken relationType,
+   default public XResultData isAddableRelationUI(ArtifactToken artifact, RelationTypeToken relationType,
       XResultData rd) {
       return rd;
    }
