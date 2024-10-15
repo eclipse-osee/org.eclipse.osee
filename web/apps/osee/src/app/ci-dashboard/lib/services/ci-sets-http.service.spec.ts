@@ -12,13 +12,23 @@
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
 import { CiSetsHttpService } from './ci-sets-http.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('CiSetsHttpService', () => {
 	let service: CiSetsHttpService;
 
 	beforeEach(() => {
-		TestBed.configureTestingModule({ imports: [HttpClientTestingModule] });
+		TestBed.configureTestingModule({
+			imports: [],
+			providers: [
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+			],
+		});
 		service = TestBed.inject(CiSetsHttpService);
 	});
 

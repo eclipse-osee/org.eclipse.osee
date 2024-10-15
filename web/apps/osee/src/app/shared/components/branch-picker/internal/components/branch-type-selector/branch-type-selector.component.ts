@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { LowerCasePipe, NgClass } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
 	MatRadioButton,
@@ -34,9 +34,10 @@ import { BranchRoutedUIService } from '@osee/shared/services';
 	],
 })
 export class BranchTypeSelectorComponent implements OnInit {
+	private routerState = inject(BranchRoutedUIService);
+
 	branchTypes: string[] = ['Product Line', 'Working'];
 	branchType = '';
-	constructor(private routerState: BranchRoutedUIService) {}
 
 	ngOnInit(): void {
 		this.routerState.type.subscribe((value) => {

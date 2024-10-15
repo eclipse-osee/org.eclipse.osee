@@ -10,11 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface targetedVersion {
+export type targetedVersion = {
 	id: number;
 	name: string;
 	Description: string | null;
-}
+};
 
 export const targetedVersionSentinel: targetedVersion = {
 	id: -1,

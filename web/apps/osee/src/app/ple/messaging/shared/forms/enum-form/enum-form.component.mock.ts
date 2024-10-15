@@ -10,10 +10,26 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input, Output } from '@angular/core';
-import { enumerationSetMock } from '@osee/messaging/shared/testing';
+import {
+	Component,
+	Output,
+	computed,
+	input,
+	model,
+	output,
+} from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
+import {
+	EnumerationSetQuery,
+	andDescriptionQuery,
+} from '@osee/messaging/shared/query';
 import type { enumeration } from '@osee/messaging/shared/types';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import {
+	createArtifact,
+	modifyArtifact,
+	modifyRelation,
+} from '@osee/transactions/types';
+import { map, of, switchMap } from 'rxjs';
 import { EnumFormComponent } from './enum-form.component';
 
 @Component({
@@ -22,17 +38,38 @@ import { EnumFormComponent } from './enum-form.component';
 	standalone: true,
 })
 export class MockEnumFormUniqueComponent implements Partial<EnumFormComponent> {
-	private _unique = new Subject<boolean>();
-	@Input() bitSize: string = '32';
-	@Input() enumSetName: string = 'testenumset';
-	@Input() enumSetId?: string = '';
-	@Input() preload: enumeration[] = [];
-	@Output() tableData: BehaviorSubject<enumeration[]> = new BehaviorSubject(
-		enumerationSetMock[0].enumerations || []
+	bitSize = input.required<string>();
+	enumSetName = input.required<string>();
+
+	enumSetId = input.required<string>();
+
+	enums = model.required<enumeration[]>();
+	private _enumString = computed(() =>
+		this.enums()
+			.map((x) => `${x.ordinal.value} = ${x.name.value}`)
+			.join('\n')
 	);
-	@Output() enumSetString: Observable<string> = new Subject();
-	@Output() unique: Observable<boolean> = this._unique;
-	constructor() {
-		this._unique.next(true);
-	}
+
+	private _enumString$ = toObservable(this._enumString);
+
+	@Output() enumSetString = this._enumString$;
+	@Output() unique = this._enumString$.pipe(
+		switchMap((description) =>
+			of(description).pipe(
+				switchMap((description) =>
+					of(
+						new EnumerationSetQuery(undefined, [
+							new andDescriptionQuery(description),
+						])
+					).pipe(switchMap((query) => of([])))
+				)
+			)
+		),
+		map((results) => (results.length > 0 ? false : true))
+	);
+	tx = output<{
+		createArtifacts: createArtifact[];
+		modifyArtifacts: modifyArtifact[];
+		deleteRelations: modifyRelation[];
+	}>();
 }

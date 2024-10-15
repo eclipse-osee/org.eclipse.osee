@@ -20,7 +20,7 @@ import { AsyncPipe, NgClass } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
-	Inject,
+	inject,
 	Input,
 	OnInit,
 	viewChild,
@@ -47,18 +47,15 @@ import {
 } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { applic } from '@osee/applicability/types';
 import { LayoutNotifierService } from '@osee/layout/notification';
-import {
-	CurrentStructureService,
-	HeaderService,
-} from '@osee/messaging/shared/services';
+import { HeaderService } from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 import {
+	DisplayableElementProps,
 	element,
 	elementSentinel,
-	elementWithChanges,
 } from '@osee/messaging/shared/types';
-import { applic } from '@osee/shared/types/applicability';
 import { difference } from '@osee/shared/types/change-report';
 import { SubElementTableFieldComponent } from '../../fields/sub-element-table-field/sub-element-table-field.component';
 import { SubElementArrayTableDropdownComponent } from '../../menus/sub-element-array-table-dropdown/sub-element-array-table-dropdown.component';
@@ -99,13 +96,19 @@ import { SubElementArrayTableDropdownComponent } from '../../menus/sub-element-a
 	],
 })
 export class SubElementArrayTableComponent implements OnInit {
-	@Input() filter: string = '';
-	@Input() element: element = elementSentinel;
-	@Input() elementHeaders: any;
-	@Input() editMode: boolean = false;
+	private route = inject(ActivatedRoute);
+	dialog = inject(MatDialog);
+	private structureService = inject(STRUCTURE_SERVICE_TOKEN);
+	private layoutNotifier = inject(LayoutNotifierService);
+	private headerService = inject(HeaderService);
 
-	_branchId: string = '';
-	_branchType: string = '';
+	@Input() filter = '';
+	@Input() element: element = elementSentinel;
+	@Input() elementHeaders: (keyof DisplayableElementProps | 'rowControls')[];
+	@Input() editMode = false;
+
+	_branchId = '';
+	_branchType = '';
 	layout = this.layoutNotifier.layout;
 	menuPosition = {
 		x: '0',
@@ -114,20 +117,16 @@ export class SubElementArrayTableComponent implements OnInit {
 	generalMenuTrigger = viewChild.required('generalMenuTrigger', {
 		read: MatMenuTrigger,
 	});
-	constructor(
-		private route: ActivatedRoute,
-		public dialog: MatDialog,
-		@Inject(STRUCTURE_SERVICE_TOKEN)
-		private structureService: CurrentStructureService,
-		private layoutNotifier: LayoutNotifierService,
-		private headerService: HeaderService
-	) {
+
+	/** Inserted by Angular inject() migration for backwards compatibility */
+	constructor(...args: unknown[]);
+	constructor() {
 		this.elementHeaders = [
 			'name',
 			'beginWord',
 			'endWord',
-			'BeginByte',
-			'EndByte',
+			'beginByte',
+			'endByte',
 			'interfaceElementAlterable',
 			'description',
 			'notes',
@@ -185,7 +184,7 @@ export class SubElementArrayTableComponent implements OnInit {
 		return this.headerService.getHeaderByName(value, 'element');
 	}
 
-	elementTracker(index: number, item: element | elementWithChanges) {
+	elementTracker(index: number, item: element) {
 		return item.id !== '-1' ? item.id : index.toString();
 	}
 

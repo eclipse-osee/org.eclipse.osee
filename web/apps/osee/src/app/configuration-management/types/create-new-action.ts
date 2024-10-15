@@ -19,7 +19,7 @@ import {
 } from '@osee/shared/types/configuration-management';
 import { CreateAction } from './create-action';
 
-export interface CreateNewActionInterface {
+export type CreateNewActionInterface = {
 	title: string;
 	description: string;
 	aiIds: string[];
@@ -35,9 +35,9 @@ export interface CreateNewActionInterface {
 	workPackage: string;
 	featureGroup: string;
 	sprint: string;
-	attrValues: { [key: string]: string };
+	attrValues: Record<string, string>;
 	parentAction: string;
-}
+};
 export class CreateNewAction implements CreateNewActionInterface {
 	constructor(config?: CreateAction) {
 		if (config) {
@@ -66,19 +66,19 @@ export class CreateNewAction implements CreateNewActionInterface {
 	}
 	changeType: NamedIdAndDescription = { id: '-1', name: '', description: '' };
 	priority: Priority = PRIORITIES.LowestPriority;
-	title: string = '';
-	description: string = '';
+	title = '';
+	description = '';
 	aiIds: string[] = [];
-	asUserId: string = '';
-	createdByUserId: string = '';
+	asUserId = '';
+	createdByUserId = '';
 	versionId: targetedVersion = targetedVersionSentinel;
-	originator: string = '';
-	assignees: string = '';
-	points: string = '';
-	unplanned: boolean = false;
-	workPackage: string = '';
-	featureGroup: string = '';
-	sprint: string = '';
-	attrValues: { [key: string]: string } = {};
-	parentAction: string = '';
+	originator = '';
+	assignees = '';
+	points = '';
+	unplanned = false;
+	workPackage = '';
+	featureGroup = '';
+	sprint = '';
+	attrValues: Record<string, string> = {};
+	parentAction = '';
 }

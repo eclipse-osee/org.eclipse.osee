@@ -21,7 +21,7 @@ import { finalize, tap } from 'rxjs';
 import { HttpLoadingService } from '@osee/shared/services/network';
 import { UiService } from '@osee/shared/services';
 
-let requests: HttpRequest<any>[] = [];
+const requests: HttpRequest<unknown>[] = [];
 export const LoadingIndicatorInterceptor = (
 	req: HttpRequest<unknown>,
 	next: HttpHandlerFn
@@ -48,7 +48,7 @@ export const LoadingIndicatorInterceptor = (
 	);
 };
 function removeRequest(
-	req: HttpRequest<any>,
+	req: HttpRequest<unknown>,
 	loadingService: HttpLoadingService
 ) {
 	const index = requests.indexOf(req);

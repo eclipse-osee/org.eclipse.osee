@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
 	selector: 'osee-branch-selector',

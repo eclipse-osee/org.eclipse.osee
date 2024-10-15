@@ -13,16 +13,12 @@
 import { Component, signal } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { ArtifactSearchComponent } from './artifact-search/artifact-search.component';
-import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
+import { ExpansionPanelComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-artifact-search-panel',
 	standalone: true,
-	imports: [
-		ArtifactExplorerExpansionPanelComponent,
-		MatIcon,
-		ArtifactSearchComponent,
-	],
+	imports: [ExpansionPanelComponent, MatIcon, ArtifactSearchComponent],
 	templateUrl: './artifact-search-panel.component.html',
 })
 export class ArtifactSearchPanelComponent {

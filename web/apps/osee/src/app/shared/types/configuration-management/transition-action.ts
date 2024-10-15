@@ -14,13 +14,13 @@ import { user } from '@osee/shared/types/auth';
 import { action } from './action';
 import { NamedId } from '../named-id';
 
-export interface workItem extends NamedId {}
-export interface transitionActionInterface {
+export type workItem = {} & NamedId;
+export type transitionActionInterface = {
 	toStateName: string;
 	name: string;
 	transitionUserArtId: string;
 	workItemIds: workItem[];
-}
+};
 
 export class transitionAction implements transitionActionInterface {
 	constructor(
@@ -35,7 +35,7 @@ export class transitionAction implements transitionActionInterface {
 		if (actions?.values) {
 			actions?.forEach((element) => {
 				this.workItemIds.push({
-					id: element.id.toString(),
+					id: element.id.toString() as `${number}`,
 					name: element.Name,
 				});
 			});
@@ -43,8 +43,8 @@ export class transitionAction implements transitionActionInterface {
 			this.workItemIds = [];
 		}
 	}
-	toStateName: string = '';
-	name: string = '';
-	transitionUserArtId: string = '';
+	toStateName = '';
+	name = '';
+	transitionUserArtId = '';
 	workItemIds: workItem[] = [];
 }

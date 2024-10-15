@@ -30,9 +30,11 @@ import org.eclipse.osee.mim.InterfaceElementEndpoint;
 import org.eclipse.osee.mim.InterfaceElementSearchEndpoint;
 import org.eclipse.osee.mim.InterfaceGraphEndpoint;
 import org.eclipse.osee.mim.InterfaceMessageEndpoint;
+import org.eclipse.osee.mim.InterfaceMessagePeriodicityEndpoint;
 import org.eclipse.osee.mim.InterfaceMessageTypeEndpoint;
 import org.eclipse.osee.mim.InterfaceNodeEndpoint;
 import org.eclipse.osee.mim.InterfaceRateEndpoint;
+import org.eclipse.osee.mim.InterfaceStructureCategoryEndpoint;
 import org.eclipse.osee.mim.InterfaceStructureCountEndpoint;
 import org.eclipse.osee.mim.InterfaceStructureEndpoint;
 import org.eclipse.osee.mim.InterfaceStructureSearchEndpoint;
@@ -230,6 +232,16 @@ public class BranchAccessor {
    @Path("{branch}/messageTypes")
    public InterfaceMessageTypeEndpoint getMessageTypesEndpoint(@PathParam("branch") BranchId branch) {
       return new InterfaceMessageTypeEndpointImpl(branch, mimApi.getInterfaceMessageTypeApi());
+   }
+
+   @Path("{branch}/structureCategories")
+   public InterfaceStructureCategoryEndpoint getStructureCategoriesEndpoint(@PathParam("branch") BranchId branch) {
+      return new InterfaceStructureCategoryEndpointImpl(branch, mimApi.getInterfaceStructureCategoryApi());
+   }
+
+   @Path("{branch}/messagePeriodicities")
+   public InterfaceMessagePeriodicityEndpoint getMessagePeriodicityEndpoint(@PathParam("branch") BranchId branch) {
+      return new InterfaceMessagePeriodicityEndpointImpl(branch, mimApi.getInterfaceMessagePeriodicityApi());
    }
 
    @Path("{branch}/validation")

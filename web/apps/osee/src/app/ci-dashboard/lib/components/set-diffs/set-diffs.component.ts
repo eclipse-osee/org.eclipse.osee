@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, NgClass } from '@angular/common';
-import { Component, effect, signal, viewChild } from '@angular/core';
+import { Component, effect, signal, viewChild, inject } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import {
 	MatCell,
@@ -61,6 +61,9 @@ import { SetDropdownMultiComponent } from './set-dropdown-multi/set-dropdown-mul
 	templateUrl: './set-diffs.component.html',
 })
 export default class SetDiffsComponent {
+	private diffService = inject(CiSetDiffService);
+	private headerService = inject(HeaderService);
+
 	private paginator = viewChild.required(MatPaginator);
 
 	dataSource = new MatTableDataSource<SetDiff>();
@@ -69,15 +72,27 @@ export default class SetDiffsComponent {
 		this.dataSource.paginator = this.paginator();
 	});
 
-	defaultHeaders = ['name', 'equal'];
-	setDiffHeaders = ['passes', 'fails', 'abort'];
+	defaultHeaders: ('name' | 'equal')[] = ['name', 'equal'];
+	setDiffHeaders: ('passes' | 'fails' | 'abort')[] = [
+		'passes',
+		'fails',
+		'abort',
+	];
 	groupHeaders = signal([' ']);
-	headers = signal(this.defaultHeaders);
-
-	constructor(
-		private diffService: CiSetDiffService,
-		private headerService: HeaderService
-	) {}
+	headers = signal<
+		(
+			| 'name'
+			| 'equal'
+			| 'passes'
+			| 'fails'
+			| 'abort'
+			| `name-${string}`
+			| `equal-${string}`
+			| `passes-${string}`
+			| `fails-${string}`
+			| `abort-${string}`
+		)[]
+	>(this.defaultHeaders);
 
 	selectedSets = this.diffService.selectedSets;
 
@@ -89,10 +104,13 @@ export default class SetDiffsComponent {
 			this.dataSource.data = setDiffs;
 			this.groupHeaders.set([' ']);
 			this.headers.set(this.defaultHeaders);
-			for (let set of sets) {
-				this.groupHeaders.update((headers) => [...headers, set.name]);
+			for (const set of sets) {
+				this.groupHeaders.update((headers) => [
+					...headers,
+					set.name.value,
+				]);
 				const mappedHeaders = this.setDiffHeaders.map(
-					(h) => h + '-' + set.id
+					(h) => `${h}-${set.id}` as const
 				);
 				this.headers.update((headers) => [
 					...headers,
@@ -102,8 +120,26 @@ export default class SetDiffsComponent {
 		})
 	);
 
-	getTableHeaderByName(header: string) {
-		const formattedHeader = header.split('-')[0];
+	getTableHeaderByName(
+		header:
+			| `name`
+			| `equal`
+			| `passes`
+			| `fails`
+			| `abort`
+			| `name-${string}`
+			| `equal-${string}`
+			| `passes-${string}`
+			| `fails-${string}`
+			| `abort-${string}`
+	) {
+		const formattedHeader: 'name' | 'equal' | 'passes' | 'fails' | 'abort' =
+			header.split('-')[0] as
+				| 'name'
+				| 'equal'
+				| 'passes'
+				| 'fails'
+				| 'abort';
 		return this.headerService.getHeaderByName(
 			setDiffHeaderDetails,
 			formattedHeader

@@ -116,13 +116,14 @@ public class CreateSystemBranches {
 
       ArtifactId mimIcdReport = tx.createArtifact(mimFolder, MimArtifactTokens.MimIcdReport);
       tx.setSoleAttributeValue(mimIcdReport, CoreAttributeTypes.EndpointUrl,
-         "/mim/branch/<branchId>/view/<viewId>/icd/<connectionId>?diff=<diffAvailable>");
+         "/mim/branch/<branchId>/view/<viewId>/icd/<connectionId>?diff=<diffAvailable>&showErrors=<showErrors>");
       tx.setSoleAttributeValue(mimIcdReport, CoreAttributeTypes.DiffAvailable, true);
       tx.setSoleAttributeValue(mimIcdReport, CoreAttributeTypes.FileExtension, "xlsx");
       tx.setSoleAttributeValue(mimIcdReport, CoreAttributeTypes.FileNamePrefix, "InterfaceWorkbook");
       tx.setSoleAttributeValue(mimIcdReport, CoreAttributeTypes.HttpMethod, "GET");
       tx.setSoleAttributeValue(mimIcdReport, CoreAttributeTypes.ProducesMediaType, "application/octet-stream");
       tx.setSoleAttributeValue(mimIcdReport, CoreAttributeTypes.RequiresValidation, true);
+      tx.setSoleAttributeValue(mimIcdReport, CoreAttributeTypes.SupportsErrorColoring, true);
 
       ArtifactId mimIcdImport = tx.createArtifact(mimFolder, MimArtifactTokens.MimIcdImport);
       tx.setSoleAttributeValue(mimIcdImport, CoreAttributeTypes.EndpointUrl, "/mim/import/icd/<branchId>");

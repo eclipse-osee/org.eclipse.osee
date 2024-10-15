@@ -10,25 +10,38 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { BehaviorSubject, of, ReplaySubject, Subject } from 'rxjs';
-import { MimPreferencesMock } from './mim-preferences.response.mock';
-import { applic } from '@osee/shared/types/applicability';
-import { CurrentMessagesService } from '../services/ui/current-messages.service';
+import { applic } from '@osee/applicability/types';
+import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
+import { attribute } from '@osee/attributes/types';
 import type {
-	ConnectionNode,
 	message,
-	messageWithChanges,
 	settingsDialogData,
 	subMessage,
 } from '@osee/messaging/shared/types';
-import { transactionToken } from '@osee/shared/types';
-import { transactionResultMock } from '@osee/shared/transactions/testing';
+import { transactionResultMock } from '@osee/transactions/testing';
+import { transactionToken } from '@osee/transactions/types';
+import { BehaviorSubject, of, ReplaySubject, Subject } from 'rxjs';
+import { CurrentMessagesService } from '../services/ui/current-messages.service';
+import { messagesMock } from './messages.response.mock';
+import { MimPreferencesMock } from './mim-preferences.response.mock';
+import { signal } from '@angular/core';
 
 let sideNavContentPlaceholder = new ReplaySubject<{
 	opened: boolean;
 	field: string;
-	currentValue: string | number | boolean | applic;
-	previousValue?: string | number | boolean | applic | undefined;
+	currentValue:
+		| string
+		| number
+		| boolean
+		| applic
+		| attribute<unknown, ATTRIBUTETYPEID>;
+	previousValue?:
+		| string
+		| number
+		| boolean
+		| applic
+		| undefined
+		| attribute<unknown, ATTRIBUTETYPEID>;
 	transaction?: transactionToken | undefined;
 	user?: string | undefined;
 	date?: string | undefined;
@@ -39,69 +52,11 @@ sideNavContentPlaceholder.next({
 	currentValue: '',
 	previousValue: '',
 });
-let expectedData: (message | messageWithChanges)[] = [
-	{
-		id: '10',
-		name: 'name',
-		description: 'description',
-		interfaceMessageRate: '50Hz',
-		interfaceMessageNumber: '0',
-		interfaceMessagePeriodicity: '1Hz',
-		interfaceMessageWriteAccess: true,
-		interfaceMessageType: 'Connection',
-		subMessages: [
-			{
-				id: '5',
-				name: 'sub message name',
-				description: '',
-				interfaceSubMessageNumber: '0',
-				applicability: {
-					id: '1',
-					name: 'Base',
-				},
-			},
-		],
-		applicability: {
-			id: '1',
-			name: 'Base',
-		},
-		interfaceMessageExclude: false,
-		interfaceMessageIoMode: '',
-		interfaceMessageModeCode: '',
-		interfaceMessageRateVer: '',
-		interfaceMessagePriority: '',
-		interfaceMessageProtocol: '',
-		interfaceMessageRptWordCount: '',
-		interfaceMessageRptCmdWord: '',
-		interfaceMessageRunBeforeProc: false,
-		interfaceMessageVer: '',
-		publisherNodes: [
-			{
-				id: '100',
-				name: 'Pub Node 1',
-			},
-		],
-		subscriberNodes: [
-			{
-				id: '101',
-				name: 'Sub Node 1',
-			},
-		],
-		changes: {
-			name: {
-				previousValue: '',
-				currentValue: 'name',
-				transactionToken: {
-					id: '-1',
-					branchId: '-1',
-				},
-			},
-		},
-	},
-];
 const diffmode = new BehaviorSubject<boolean>(false);
 export const CurrentMessageServiceMock: Partial<CurrentMessagesService> = {
-	messages: of(expectedData),
+	messageFilter: signal(''),
+	messages: of(messagesMock),
+	messagesCount: of(10),
 	applic: of([
 		{ id: '1', name: 'Base' },
 		{ id: '2', name: 'Second' },
@@ -112,11 +67,7 @@ export const CurrentMessageServiceMock: Partial<CurrentMessagesService> = {
 	partialUpdateMessage(body) {
 		return of(transactionResultMock);
 	},
-	createMessage(
-		pubNodes: ConnectionNode[],
-		subNodes: ConnectionNode[],
-		body: message
-	) {
+	createMessage(body: message) {
 		return of(transactionResultMock);
 	},
 	BranchId: new BehaviorSubject('10'),
@@ -168,14 +119,10 @@ export const CurrentMessageServiceMock: Partial<CurrentMessagesService> = {
 	get endOfRoute() {
 		return of('');
 	},
-	expandedRows: of([
-		{
-			id: '1',
-			name: 'dummy element',
-			description: 'description',
-		} as message,
-	]),
+	get connectionIdSignal() {
+		return signal<`${number}`>('123');
+	},
+	expandedRows: signal([messagesMock[0]]),
 	currentPage: new BehaviorSubject(0),
-	currentPageSize: new BehaviorSubject(10),
 	clearRows() {},
 };

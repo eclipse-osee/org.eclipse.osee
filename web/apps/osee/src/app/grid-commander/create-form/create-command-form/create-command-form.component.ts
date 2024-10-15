@@ -11,10 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatCard } from '@angular/material/card';
-import { artifact, createArtifact } from '@osee/shared/types';
+import { legacyArtifact, legacyCreateArtifact } from '@osee/transactions/types';
 import { combineLatest, map, take } from 'rxjs';
 
 import { ParameterSingleSelectComponent } from '../../parameter-types/parameter-single-select/parameter-single-select.component';
@@ -38,9 +38,16 @@ import { OpenUrlFormComponent } from './command-actions/open-url-form/open-url-f
 	],
 })
 export class CreateCommandFormComponent implements OnDestroy {
+	private createCommandService = inject(CreateCommandService);
+	private parameterDataService = inject(ParameterDataService);
+	private createCommandWithParameterArtifactService = inject(
+		CreateCommandWithParameterArtifactService
+	);
+	private contextSelectionService = inject(ContextSelectionService);
+
 	commandActionOptions = this.parameterDataService.parameterDefaultValue$;
 	availableContexts = this.contextSelectionService.availableContexts;
-	commandAction: string = '';
+	commandAction = '';
 
 	createCommandFormOptions = combineLatest([
 		this.availableContexts,
@@ -52,20 +59,13 @@ export class CreateCommandFormComponent implements OnDestroy {
 		}))
 	);
 
-	constructor(
-		private createCommandService: CreateCommandService,
-		private parameterDataService: ParameterDataService,
-		private createCommandWithParameterArtifactService: CreateCommandWithParameterArtifactService,
-		private contextSelectionService: ContextSelectionService
-	) {}
-
 	ngOnDestroy(): void {
 		this.createCommandService.doneFx = '';
 		this.createCommandWithParameterArtifactService.doneFx = '';
 	}
 	onSubmitHandler(e: {
-		command: Partial<createArtifact & artifact>;
-		parameter: Partial<createArtifact & artifact>;
+		command: Partial<legacyCreateArtifact & legacyArtifact>;
+		parameter: Partial<legacyCreateArtifact & legacyArtifact>;
 	}) {
 		this.createCommandWithParameterArtifactService
 			.createCommandWithParameter(e.command, e.parameter)

@@ -10,48 +10,7 @@
 * Contributors:
 *     Boeing - initial API and implementation
 -->
-<osee-messaging-controls
-	[branchControls]="false"
-	[actionControls]="true"
-	[diff]="true"
-	[diffRouteLink]="
-		(inDiffMode | async) === 'false'
-			? [
-					{
-						outlets: {
-							primary: 'diff',
-							rightSideNav: null
-						}
-					}
-			  ]
-			: '../'
-	">
-	<osee-current-view-selector></osee-current-view-selector>
-</osee-messaging-controls>
-@if ((inEditMode | async) === true) {
-	<osee-two-layer-add-button
-		class="tw-fixed tw-bottom-[3%] tw-left-[2%] tw-z-10"
-		[nestedLevel]="(expandedElement | async) || []"
-		baseLevel="Add message"
-		nestedLevelPrefix="Add submessage to "
-		(normalClick)="openNewMessageDialog()"
-		(nestedClick)="createNewSubMessage($event)"
-		nestedIcon="description"
-		baseIcon="assignment"></osee-two-layer-add-button>
-}
 <div class="message-interface message-element-interface-top-level-table">
-	<mat-form-field class="tw-w-full tw-pb-4">
-		<mat-label>Filter Message Information</mat-label>
-		<input
-			matInput
-			(keyup)="applyFilter($event)"
-			#input />
-		<mat-icon matPrefix>filter_list</mat-icon>
-		<mat-hint
-			>Enter text to filter Message Table. Only full text matches will
-			display results.
-		</mat-hint>
-	</mat-form-field>
 	<table
 		mat-table
 		[dataSource]="(messageData | async) || []"
@@ -83,7 +42,7 @@
 							header === 'interfaceMessageType',
 						'tw-max-w-[95px]': header === 'interfaceMessageRate',
 						'tw-max-w-[90px]':
-							header === 'interfaceMessageWriteAccess'
+							header === 'interfaceMessageWriteAccess',
 					}"
 					[matTooltip]="
 						(getHeaderByName(header) | async)?.description || ''
@@ -109,7 +68,7 @@
 							header === 'interfaceMessageType',
 						'tw-max-w-[95px]': header === 'interfaceMessageRate',
 						'tw-max-w-[90px]':
-							header === 'interfaceMessageWriteAccess'
+							header === 'interfaceMessageWriteAccess',
 					}"
 					(contextmenu)="
 						openMenu($event, element, element[header], header)
@@ -138,8 +97,7 @@
 								}
 								@if (
 									{
-										value:
-											(rowIsExpanded(element.id) | async)
+										value: rowIsExpanded(element.id),
 									};
 									as _expanded
 								) {
@@ -151,9 +109,9 @@
 										[attr.data-cy]="
 											_expanded.value
 												? 'close-message-btn-' +
-												  element.name
+													element.name
 												: 'expand-message-btn-' +
-												  element.name
+													element.name
 										"
 										(click)="
 											rowChange(element, !_expanded.value)
@@ -174,53 +132,110 @@
 								!element.deleted &&
 								!nonEditableHeaders.includes(header)
 							) {
-								@if (
-									header !== 'publisherNodes' &&
-									header !== 'subscriberNodes'
-								) {
-									<osee-messaging-edit-message-field
-										[messageId]="element.id"
-										[header]="header"
-										[value]="element[header]"
-										[attr.data-cy]="
-											'message-table-' +
-											header +
-											'-' +
-											element.name +
-											'-' +
-											element[header]
-										"></osee-messaging-edit-message-field>
-								}
-								@if (
-									header === 'publisherNodes' ||
-									header === 'subscriberNodes'
-								) {
-									<osee-edit-message-nodes-field
-										[message]="element"
-										[header]="header"
-										[value]="element[header]"
-										[attr.data-cy]="
-											'message-table-' +
-											header +
-											'-' +
-											element.name +
-											'-' +
-											element[header]
-										"></osee-edit-message-nodes-field>
+								@switch (header) {
+									@case ('publisherNodes') {
+										<osee-persisted-publisher-node-dropdown
+											[artifactId]="element.id"
+											[(nodes)]="element[header]"
+											[connectionId]="connectionId()" />
+									}
+									@case ('subscriberNodes') {
+										<osee-persisted-subscriber-node-dropdown
+											[artifactId]="element.id"
+											[(nodes)]="element[header]"
+											[connectionId]="connectionId()" />
+									}
+									@case ('interfaceMessagePeriodicity') {
+										<form
+											#defaultForm="ngForm"
+											[artifactId]="element.id"
+											oseeMessageImpactsValidator>
+											<osee-persisted-message-periodicity-dropdown
+												[artifactId]="element.id"
+												[artifactApplicability]="
+													element.applicability
+												"
+												[(value)]="element[header]" />
+										</form>
+									}
+									@case ('applicability') {
+										<form
+											#defaultForm="ngForm"
+											[artifactId]="element.id"
+											oseeMessageImpactsValidator>
+											<osee-persisted-applicability-dropdown
+												[artifactId]="element.id"
+												[(applicability)]="
+													element.applicability
+												" />
+										</form>
+									}
+									@case ('interfaceMessageWriteAccess') {
+										<form
+											#defaultForm="ngForm"
+											[artifactId]="element.id"
+											oseeMessageImpactsValidator>
+											<osee-persisted-boolean-attribute-toggle
+												[artifactId]="element.id"
+												[artifactApplicability]="
+													element.applicability
+												"
+												[(value)]="element[header]" />
+										</form>
+									}
+									@case ('interfaceMessageType') {
+										<form
+											#defaultForm="ngForm"
+											[artifactId]="element.id"
+											oseeMessageImpactsValidator>
+											<osee-persisted-message-type-dropdown
+												[artifactId]="element.id"
+												[artifactApplicability]="
+													element.applicability
+												"
+												[(value)]="element[header]" />
+										</form>
+									}
+									@case ('interfaceMessageRate') {
+										<form
+											#defaultForm="ngForm"
+											[artifactId]="element.id"
+											oseeMessageImpactsValidator>
+											<osee-persisted-rate-dropdown
+												[artifactId]="element.id"
+												[artifactApplicability]="
+													element.applicability
+												"
+												[(value)]="element[header]" />
+										</form>
+									}
+									@default {
+										<form
+											#defaultForm="ngForm"
+											[artifactId]="element.id"
+											oseeMessageImpactsValidator>
+											<osee-persisted-string-attribute-input
+												[artifactId]="element.id"
+												[artifactApplicability]="
+													element.applicability
+												"
+												[(value)]="element[header]" />
+										</form>
+									}
 								}
 							} @else {
 								@if (header === 'applicability') {
 									@if (element[header].name !== 'Base') {
 										<div
 											oseeHighlightFilteredText
-											[searchTerms]="searchTerms"
+											[searchTerms]="filter()"
 											[text]="element[header].name"
 											classToApply="tw-text-accent-900"
 											[attr.data-cy]="
 												'message-table-' +
 												header +
 												'-' +
-												element.name +
+												element.name.value +
 												'-' +
 												element[header].name
 											">
@@ -235,8 +250,8 @@
 								) {
 									<div
 										oseeHighlightFilteredText
-										[searchTerms]="searchTerms"
-										[text]="element[header]"
+										[searchTerms]="filter()"
+										[text]="element[header].value"
 										classToApply="tw-text-accent-900"
 										[attr.data-cy]="
 											'message-table-' +
@@ -244,9 +259,9 @@
 											'-' +
 											element.name +
 											'-' +
-											element[header]
+											element[header].value
 										">
-										{{ element[header] }}
+										{{ element[header].value }}
 									</div>
 								}
 								@if (
@@ -259,14 +274,14 @@
 									) {
 										<div
 											oseeHighlightFilteredText
-											[searchTerms]="searchTerms"
+											[searchTerms]="filter()"
 											[text]="nodeNames"
 											classToApply="tw-text-accent-900"
 											[attr.data-cy]="
 												'message-table-' +
 												header +
 												'-' +
-												element.name +
+												element.name.value +
 												'-' +
 												element.id
 											">
@@ -289,14 +304,12 @@
 				<div
 					class="tw-flex tw-flex-col tw-overflow-auto"
 					[@detailExpand]="
-						(rowIsExpanded(element.id) | async) || false
-							? 'expanded'
-							: 'collapsed'
+						rowIsExpanded(element.id) ? 'expanded' : 'collapsed'
 					">
-					@if ((rowIsExpanded(element.id) | async) || false) {
+					@if (rowIsExpanded(element.id)) {
 						<osee-messaging-sub-message-table
 							[data]="element.subMessages"
-							[filter]="filter"
+							[filter]="filter()"
 							[element]="element"
 							(expandRow)="expandRow($event)"
 							[editMode]="
@@ -314,94 +327,18 @@
 			*matRowDef="let row; columns: (headers | async) || []"
 			class="message-drag-row active:tw-bg-background-unselected-chip even-multi:tw-bg-background-background even-multi:hover:tw-bg-background-disabled-list-option odd-multi:tw-bg-background-selected-button odd-multi:hover:tw-bg-background-hover [&>td]:tw-border-b-0"
 			[ngClass]="{
-				'odd-multi:tw-bg-sucess-300 even-multi:tw-bg-success-100 even-multi:dark:tw-bg-success-600 odd-multi:dark:tw-bg-success-900':
+				'even-multi:tw-bg-success-100 odd-multi:tw-bg-success-300 even-multi:dark:tw-bg-success-600 odd-multi:dark:tw-bg-success-900':
 					row.added,
 				'even-multi:tw-bg-warning-100 odd-multi:tw-bg-warning-200':
-					row.deleted
+					row.deleted,
 			}"
 			[attr.data-cy]="'message-table-row-' + row.name"></tr>
 		<tr
 			mat-row
 			*matRowDef="let row; columns: ['expandedMessage']"
 			[ngClass]="{
-				'tw-hidden': !((rowIsExpanded(row.id) | async) || false)
+				'tw-hidden': !rowIsExpanded(row.id),
 			}"></tr>
 	</table>
-	@if (messages | async; as _messages) {
-		<mat-paginator
-			[pageSizeOptions]="[10, 15, 20, 25, 50, 75, 100, 200, 500]"
-			[pageSize]="currentPageSize | async"
-			[pageIndex]="currentPage | async"
-			(page)="setPage($event)"
-			[length]="messagesCount | async"
-			[disabled]="false"></mat-paginator>
-	}
 </div>
-<mat-menu
-	#contextMenu="matMenu"
-	class="wide-mat-menu">
-	<ng-template
-		matMenuContent
-		let-message="message"
-		let-field="field"
-		let-header="header">
-		<button
-			mat-menu-item
-			(click)="openDescriptionDialog(message.description, message.id)"
-			data-cy="message-description-btn">
-			<mat-icon color="primary">description</mat-icon>Open Description
-		</button>
-		@if (
-			hasChanges(message) &&
-				changeExists(message, header) &&
-				(getHeaderByName(header) | async)?.humanReadable;
-			as headerName
-		) {
-			<button
-				mat-menu-item
-				(click)="
-					viewDiff(
-						true,
-						message.changes[header] || {
-							previousValue: '',
-							currentValue: '',
-							transactionToken: { id: '-1', branchId: '-1' }
-						},
-						headerName
-					)
-				"
-				data-cy="message-diff-btn">
-				<mat-icon color="accent">pageview</mat-icon>View Diff
-			</button>
-		}
-		@if ((inEditMode | async) === true && !message.deleted) {
-			<button
-				mat-menu-item
-				(click)="copyMessageDialog(message)"
-				data-cy="message-copy-btn">
-				<mat-icon color="success"> add </mat-icon>Copy message
-			</button>
-			<button
-				mat-menu-item
-				(click)="removeMessage(message)"
-				data-cy="message-remove-btn">
-				<mat-icon color="warn">remove_circle_outline</mat-icon>Remove
-				message from connection
-			</button>
-			@if (message.subMessages.length === 0) {
-				<button
-					mat-menu-item
-					(click)="deleteMessage(message)"
-					data-cy="message-delete-btn">
-					<mat-icon color="warn">delete_forever</mat-icon>Delete
-					message globally
-				</button>
-			}
-		}
-	</ng-template>
-</mat-menu>
-<div
-	style="visibility: hidden; position: fixed"
-	[style.left]="menuPosition.x"
-	[style.top]="menuPosition.y"
-	[matMenuTriggerFor]="contextMenu"></div>
+<osee-message-menu [(menuData)]="menuData" />

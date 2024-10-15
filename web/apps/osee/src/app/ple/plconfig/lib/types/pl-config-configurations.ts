@@ -10,19 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { difference, hasChanges } from '@osee/shared/types/change-report';
+import { hasChanges } from '@osee/shared/types/change-report';
 import { NamedIdAndDescription } from '@osee/shared/types';
 
-export interface configuration {
+export type configuration = {
 	name: string;
 	description: string;
 	copyFrom?: string;
 	configurationGroup?: string[];
 	productApplicabilities?: string[];
-}
-export interface editConfiguration extends configuration {
+};
+export type editConfiguration = {
 	configurationGroup?: string[];
-}
+} & configuration;
 
 export type configGroup = _configGroup & _configGroupChanges;
 

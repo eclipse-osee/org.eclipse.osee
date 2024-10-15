@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatOption } from '@angular/material/core';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
@@ -35,6 +35,8 @@ import { trackableFeature } from '../../types/features/base';
 	styles: [],
 })
 export class SeparatedFeatureSelectorComponent {
+	private currentBranchService = inject(PlConfigCurrentBranchService);
+
 	features = this.currentBranchService.features.pipe(
 		concatMap((features) => from(features)),
 		filter(
@@ -61,6 +63,4 @@ export class SeparatedFeatureSelectorComponent {
 		})
 	);
 	options = this.selectedFeatureChange.pipe(map((feature) => feature.values));
-
-	constructor(private currentBranchService: PlConfigCurrentBranchService) {}
 }

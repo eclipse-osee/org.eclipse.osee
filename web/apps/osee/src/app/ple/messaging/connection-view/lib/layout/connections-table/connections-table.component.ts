@@ -18,7 +18,7 @@ import {
 	trigger,
 } from '@angular/animations';
 import { AsyncPipe, NgClass } from '@angular/common';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
@@ -86,11 +86,9 @@ import { Subject, switchMap, takeUntil } from 'rxjs';
 	],
 })
 export class ConnectionsTableComponent implements OnDestroy {
-	constructor(
-		private connectionService: ConnectionService,
-		private uiService: UiService,
-		private headerService: HeaderService
-	) {}
+	private connectionService = inject(ConnectionService);
+	private uiService = inject(UiService);
+	private headerService = inject(HeaderService);
 
 	private _done = new Subject<void>();
 

@@ -18,7 +18,7 @@ import { UserHeaderService } from '../user-header.service';
 	providedIn: 'root',
 })
 export class UserHeaderProdService extends UserHeaderService {
-	useCustomHeaders: boolean = false;
+	useCustomHeaders = false;
 	headers: HttpHeaders = new HttpHeaders();
 
 	constructor() {

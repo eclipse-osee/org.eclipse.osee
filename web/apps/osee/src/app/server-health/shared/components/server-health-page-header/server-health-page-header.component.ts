@@ -20,7 +20,7 @@ import { MatIcon } from '@angular/material/icon';
 	templateUrl: './server-health-page-header.component.html',
 })
 export class ServerHealthPageHeaderComponent {
-	@Input() icon: string = '';
-	@Input() name: string = '';
-	@Input() description: string = '';
+	@Input() icon = '';
+	@Input() name = '';
+	@Input() description = '';
 }

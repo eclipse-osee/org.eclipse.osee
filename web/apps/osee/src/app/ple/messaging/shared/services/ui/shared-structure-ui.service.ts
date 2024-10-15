@@ -10,21 +10,28 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { combineLatest } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { StructuresService } from '../http/structures.service';
 import { MimRouteService } from './mim-route.service';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class SharedStructureUIService {
+	private _mimRoute = inject(MimRouteService);
+	private structureService = inject(StructuresService);
+
+	private _subMessageId = toObservable(this._mimRoute.submessageId);
+
+	private _connectionId = toObservable(this._mimRoute.connectionId);
 	public readonly structure = combineLatest([
 		this._mimRoute.id,
-		this._mimRoute.connectionId,
+		this._connectionId,
 		this._mimRoute.messageId,
-		this._mimRoute.submessageId,
+		this._subMessageId,
 		this._mimRoute.singleStructureId,
 		this._mimRoute.viewId,
 	]).pipe(
@@ -40,8 +47,4 @@ export class SharedStructureUIService {
 				)
 		)
 	);
-	constructor(
-		private _mimRoute: MimRouteService,
-		private structureService: StructuresService
-	) {}
 }

@@ -1,3 +1,5 @@
+import { PlatformType } from './platformType';
+
 /*********************************************************************
  * Copyright (c) 2021 Boeing
  *
@@ -10,7 +12,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface enumsetDialogData {
-	id: string;
+export type enumsetDialogData = {
+	platformType: PlatformType;
 	isOnEditablePage: boolean;
-}
+};

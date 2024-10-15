@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface StructurePath {
+export type StructurePath = {
 	id: string;
 	name: string;
 	paths: { name: string; path: string }[];
-}
+};

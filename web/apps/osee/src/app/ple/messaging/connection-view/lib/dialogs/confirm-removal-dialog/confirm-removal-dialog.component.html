@@ -10,18 +10,18 @@
 * Contributors:
 *     Boeing - initial API and implementation
 -->
-<h1 mat-dialog-title>Remove {{ data.type | titlecase }}</h1>
+<h1 mat-dialog-title>Remove {{ data().type | titlecase }}</h1>
 <mat-dialog-content>
 	<mat-label>
-		Are you sure you want to remove {{ data.type }} {{ data.name }}
-		@if (data.extraNames.length > 0) {
+		Are you sure you want to remove {{ data().type }} {{ data().name }}
+		@if (data().extraNames.length > 0) {
 			and it's associated relationships:
 		}
-		@for (value of data.extraNames; track value) {
+		@for (value of data().extraNames; track value) {
 			<br />
 			{{ value }}
 		}
-		@if (data.extraNames.length > 0) {
+		@if (data().extraNames.length > 0) {
 			<br />
 		}
 		?
@@ -35,10 +35,10 @@
 		Cancel
 	</button>
 	<button
-		mat-raised-button
-		[mat-dialog-close]="data"
-		color="primary"
-		[disabled]="data.name.length === 0"
+		mat-flat-button
+		[mat-dialog-close]="data()"
+		class="primary-button"
+		[disabled]="data().name.length === 0"
 		data-cy="submit-btn">
 		Ok
 	</button>

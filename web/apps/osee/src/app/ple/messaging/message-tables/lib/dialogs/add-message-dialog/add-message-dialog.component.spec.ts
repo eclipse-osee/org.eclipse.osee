@@ -17,9 +17,9 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import {
+	MAT_DIALOG_DATA,
 	MatDialogModule,
 	MatDialogRef,
-	MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -28,29 +28,28 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MessageNodesCountDirective } from '@osee/messaging/shared/directives';
 import {
-	MockMessageTypeDropdownComponent,
-	MockRateDropdownComponent,
-} from '@osee/messaging/shared/dropdowns/testing';
-import {
 	CurrentMessagesService,
-	EnumsService,
 	TransportTypeUiService,
 } from '@osee/messaging/shared/services';
 import {
 	CurrentMessageServiceMock,
 	transportTypeUIServiceMock,
 } from '@osee/messaging/shared/testing';
-import { MockApplicabilitySelectorComponent } from '@osee/shared/components/testing';
-import { of } from 'rxjs';
 import { AddMessageDialog } from '../../types/AddMessageDialog';
 
+import { MockApplicabilityDropdownComponent } from '@osee/applicability/applicability-dropdown/testing';
 import { AddMessageDialogComponent } from './add-message-dialog.component';
+import { MockRateDropdownComponent } from '@osee/messaging/rate/rate-dropdown/testing';
+import { MockMessageTypeDropdownComponent } from '@osee/messaging/message-type/message-type-dropdown/testing';
+import { MockMessagePeriodicityDropdownComponent } from '@osee/messaging/message-periodicity/message-periodicity-dropdown/testing';
+import { MockNodeDropdownComponent } from '@osee/messaging/nodes/dropdown/testing';
+import { MatTooltip } from '@angular/material/tooltip';
 
 describe('AddMessageDialogComponent', () => {
 	let component: AddMessageDialogComponent;
 	let fixture: ComponentFixture<AddMessageDialogComponent>;
-	let dialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
-	let dialogData: AddMessageDialog = {
+	const dialogRef = jasmine.createSpyObj('MatDialogRef', ['close']);
+	const dialogData: AddMessageDialog = {
 		id: '-1',
 		name: '',
 		description: '',
@@ -63,22 +62,9 @@ describe('AddMessageDialogComponent', () => {
 			id: '1',
 			name: 'Base',
 		},
-		publisherNodes: [
-			{
-				id: '',
-				name: '',
-			},
-		],
-		subscriberNodes: [
-			{
-				id: '',
-				name: '',
-			},
-		],
+		publisherNodes: [],
+		subscriberNodes: [],
 		subMessages: [],
-	};
-	let enumServiceMock: Partial<EnumsService> = {
-		periodicities: of(['p1', 'p2', 'p3']),
 	};
 
 	beforeEach(async () => {
@@ -90,7 +76,6 @@ describe('AddMessageDialogComponent', () => {
 						useValue: dialogRef,
 					},
 					{ provide: MAT_DIALOG_DATA, useValue: dialogData },
-					{ provide: EnumsService, useValue: enumServiceMock },
 					{
 						provide: CurrentMessagesService,
 						useValue: CurrentMessageServiceMock,
@@ -114,9 +99,12 @@ describe('AddMessageDialogComponent', () => {
 					NgIf,
 					AsyncPipe,
 					MessageNodesCountDirective,
-					MockApplicabilitySelectorComponent,
+					MockApplicabilityDropdownComponent,
 					MockRateDropdownComponent,
 					MockMessageTypeDropdownComponent,
+					MockMessagePeriodicityDropdownComponent,
+					MockNodeDropdownComponent,
+					MatTooltip,
 				],
 			},
 		})
@@ -140,7 +128,6 @@ describe('AddMessageDialogComponent', () => {
 						useValue: dialogRef,
 					},
 					{ provide: MAT_DIALOG_DATA, useValue: dialogData },
-					{ provide: EnumsService, useValue: enumServiceMock },
 					{
 						provide: CurrentMessagesService,
 						useValue: CurrentMessageServiceMock,

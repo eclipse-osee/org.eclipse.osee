@@ -24,6 +24,7 @@ import { UiService } from '@osee/shared/services';
 import { AffectedArtifactService } from '../http/affected-artifact.service';
 
 import { WarningDialogService } from './warning-dialog.service';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 
 describe('WarningDialogService', () => {
 	let service: WarningDialogService;
@@ -62,7 +63,15 @@ describe('WarningDialogService', () => {
 
 		it('should return submessage', () => {
 			scheduler.run(({ expectObservable }) => {
-				const body = { id: '20', name: 'submessage0' };
+				const body = {
+					id: '20' as `${number}`,
+					name: {
+						id: '-1' as `${number}`,
+						typeId: ATTRIBUTETYPEIDENUM.NAME,
+						gammaId: '-1' as `${number}`,
+						value: 'submessage0',
+					},
+				};
 				expectObservable(service.openSubMessageDialog(body)).toBe(
 					'(a|)',
 					{ a: body }
@@ -72,7 +81,15 @@ describe('WarningDialogService', () => {
 
 		it('should return structure', () => {
 			scheduler.run(({ expectObservable }) => {
-				const body = { id: '20', name: 'structure0' };
+				const body = {
+					id: '20' as `${number}`,
+					name: {
+						id: '-1' as `${number}`,
+						typeId: ATTRIBUTETYPEIDENUM.NAME,
+						gammaId: '-1' as `${number}`,
+						value: 'structure0',
+					},
+				};
 				expectObservable(service.openStructureDialog(body)).toBe(
 					'(a|)',
 					{ a: body }
@@ -82,7 +99,15 @@ describe('WarningDialogService', () => {
 
 		it('should return element', () => {
 			scheduler.run(({ expectObservable }) => {
-				const body = { id: '20', name: 'element0' };
+				const body = {
+					id: '20' as `${number}`,
+					name: {
+						id: '-1' as `${number}`,
+						typeId: ATTRIBUTETYPEIDENUM.NAME,
+						gammaId: '-1' as `${number}`,
+						value: 'element0',
+					},
+				};
 				expectObservable(service.openElementDialog(body)).toBe('(a|)', {
 					a: body,
 				});
@@ -116,8 +141,16 @@ describe('WarningDialogService', () => {
 
 		it('should return submessage', () => {
 			scheduler.run(({ expectObservable }) => {
-				const body = { id: '20', name: 'submessage0' };
-				let dialogRefSpy = jasmine.createSpyObj({
+				const body = {
+					id: '20' as `${number}`,
+					name: {
+						id: '-1' as `${number}`,
+						typeId: ATTRIBUTETYPEIDENUM.NAME,
+						gammaId: '-1' as `${number}`,
+						value: 'submessage0',
+					},
+				};
+				const dialogRefSpy = jasmine.createSpyObj({
 					afterClosed: of({
 						affectedArtifacts: warningArtifacts,
 						body: body,
@@ -126,7 +159,7 @@ describe('WarningDialogService', () => {
 					}),
 					close: null,
 				});
-				let dialogSpy = spyOn(
+				const _dialogSpy = spyOn(
 					TestBed.inject(MatDialog),
 					'open'
 				).and.returnValue(dialogRefSpy);
@@ -139,8 +172,16 @@ describe('WarningDialogService', () => {
 
 		it('should return structure', () => {
 			scheduler.run(({ expectObservable }) => {
-				const body = { id: '20', name: 'structure0' };
-				let dialogRefSpy = jasmine.createSpyObj({
+				const body = {
+					id: '20' as `${number}`,
+					name: {
+						id: '-1' as `${number}`,
+						typeId: ATTRIBUTETYPEIDENUM.NAME,
+						gammaId: '-1' as `${number}`,
+						value: 'structure0',
+					},
+				};
+				const dialogRefSpy = jasmine.createSpyObj({
 					afterClosed: of({
 						affectedArtifacts: warningArtifacts,
 						body: body,
@@ -149,7 +190,7 @@ describe('WarningDialogService', () => {
 					}),
 					close: null,
 				});
-				let dialogSpy = spyOn(
+				const _dialogSpy = spyOn(
 					TestBed.inject(MatDialog),
 					'open'
 				).and.returnValue(dialogRefSpy);
@@ -162,8 +203,16 @@ describe('WarningDialogService', () => {
 
 		it('should return element', () => {
 			scheduler.run(({ expectObservable }) => {
-				const body = { id: '20', name: 'element0' };
-				let dialogRefSpy = jasmine.createSpyObj({
+				const body = {
+					id: '20' as `${number}`,
+					name: {
+						id: '-1' as `${number}`,
+						typeId: ATTRIBUTETYPEIDENUM.NAME,
+						gammaId: '-1' as `${number}`,
+						value: 'element0',
+					},
+				};
+				const dialogRefSpy = jasmine.createSpyObj({
 					afterClosed: of({
 						affectedArtifacts: warningArtifacts,
 						body: body,
@@ -172,7 +221,7 @@ describe('WarningDialogService', () => {
 					}),
 					close: null,
 				});
-				let dialogSpy = spyOn(
+				const _dialogSpy = spyOn(
 					TestBed.inject(MatDialog),
 					'open'
 				).and.returnValue(dialogRefSpy);

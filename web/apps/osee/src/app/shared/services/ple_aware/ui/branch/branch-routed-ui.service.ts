@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { UiService } from '@osee/shared/services';
 
@@ -18,10 +18,8 @@ import { UiService } from '@osee/shared/services';
 	providedIn: 'root',
 })
 export class BranchRoutedUIService {
-	constructor(
-		private branchService: UiService,
-		private router: Router
-	) {}
+	private branchService = inject(UiService);
+	private router = inject(Router);
 
 	set branchType(value: 'working' | 'baseline' | '') {
 		const tree = this.router.parseUrl(this.router.url);

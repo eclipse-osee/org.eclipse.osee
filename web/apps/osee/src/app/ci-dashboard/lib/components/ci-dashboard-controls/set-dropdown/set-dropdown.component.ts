@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import {
@@ -33,7 +33,7 @@ import {
 } from 'rxjs';
 import { CiDashboardUiService } from '../../../services/ci-dashboard-ui.service';
 import { CiSetsService } from '../../../services/ci-sets.service';
-import type { SetReference } from '../../../types/tmo';
+import type { CISet } from '../../../types/tmo';
 
 @Component({
 	selector: 'osee-set-dropdown',
@@ -51,13 +51,9 @@ import type { SetReference } from '../../../types/tmo';
 		MatOption,
 	],
 })
-export class SetDropdownComponent implements OnChanges {
-	@Input() setId: string = '';
-
-	constructor(
-		private ciSetsService: CiSetsService,
-		private ui: CiDashboardUiService
-	) {}
+export class SetDropdownComponent {
+	private ciSetsService = inject(CiSetsService);
+	private ui = inject(CiDashboardUiService);
 
 	filterText = new BehaviorSubject<string>('');
 
@@ -65,9 +61,11 @@ export class SetDropdownComponent implements OnChanges {
 		switchMap(([setRefs, filterText]) =>
 			from(setRefs).pipe(
 				filter((a) =>
-					a.name.toLowerCase().includes(filterText.toLowerCase())
+					a.name.value
+						.toLowerCase()
+						.includes(filterText.toLowerCase())
 				),
-				reduce((acc, curr) => [...acc, curr], [] as SetReference[])
+				reduce((acc, curr) => [...acc, curr], [] as CISet[])
 			)
 		)
 	);
@@ -92,16 +90,12 @@ export class SetDropdownComponent implements OnChanges {
 		this.ciSetsService.ActiveOnly = event.checked;
 	}
 
-	selectSet(set: SetReference) {
+	selectSet(set: CISet) {
 		this.ui.routeToSet(set.id);
 	}
 
 	applyFilter(text: Event) {
 		const value = (text.target as HTMLInputElement).value;
 		this.filterText.next(value);
-	}
-
-	ngOnChanges(changes: SimpleChanges): void {
-		this.ui.CiSetId = this.setId;
 	}
 }

@@ -10,11 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { EventEmitter, Output } from '@angular/core';
+import { EventEmitter, Output, input, model } from '@angular/core';
 import { Component, Input } from '@angular/core';
 import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
-import type { element, structure } from '@osee/messaging/shared/types';
-import { applic } from '@osee/shared/types/applicability';
+import type {
+	DisplayableElementProps,
+	element,
+	structure,
+} from '@osee/messaging/shared/types';
+import { applic, applicabilitySentinel } from '@osee/applicability/types';
 
 @Component({
 	selector: 'osee-messaging-sub-element-table-field',
@@ -22,43 +26,57 @@ import { applic } from '@osee/shared/types/applicability';
 })
 // eslint-disable-next-line @angular-eslint/component-class-suffix
 export class SubElementTableRowComponentMock {
-	@Input() header: string = '';
-	@Input() editMode: boolean = false;
-	@Input() element: element = {
-		id: '',
-		name: '',
-		description: '',
-		notes: '',
-		interfaceElementIndexEnd: 0,
-		interfaceElementIndexStart: 0,
-		interfaceElementAlterable: false,
-		interfaceElementBlockData: false,
-		interfaceElementArrayHeader: false,
-		interfaceElementWriteArrayHeaderName: false,
-		interfaceDefaultValue: '',
-		interfaceElementArrayIndexOrder: 'OUTER_INNER',
-		interfaceElementArrayIndexDelimiterOne: ' ',
-		interfaceElementArrayIndexDelimiterTwo: ' ',
-		enumLiteral: '',
-		units: 'Hertz',
-		platformType: new PlatformTypeSentinel(),
-		arrayElements: [],
-	};
-	@Input() structure: structure = {
-		id: '',
-		name: '',
-		nameAbbrev: '',
-		description: '',
-		interfaceMaxSimultaneity: '',
-		interfaceMinSimultaneity: '',
-		interfaceTaskFileType: 0,
-		interfaceStructureCategory: '',
-	};
-	@Input() filter: string = '';
-	@Output() menu = new EventEmitter<{
-		event: MouseEvent;
-		element: element;
-		field?: string | number | boolean | applic;
-	}>();
-	@Output() navigate = new EventEmitter<string>();
+	header = input.required<keyof DisplayableElementProps | 'rowControls'>();
+	editMode = input.required<boolean>();
+
+	element = model.required<element>();
+	structure = input<structure>({
+		id: '-1',
+		gammaId: '-1',
+		name: {
+			id: '-1',
+			typeId: '1152921504606847088',
+			gammaId: '-1',
+			value: '',
+		},
+		nameAbbrev: {
+			id: '-1',
+			typeId: '8355308043647703563',
+			gammaId: '-1',
+			value: '',
+		},
+		description: {
+			id: '-1',
+			typeId: '1152921504606847090',
+			gammaId: '-1',
+			value: '',
+		},
+		interfaceMaxSimultaneity: {
+			id: '-1',
+			typeId: '2455059983007225756',
+			gammaId: '-1',
+			value: '',
+		},
+		interfaceMinSimultaneity: {
+			id: '-1',
+			typeId: '2455059983007225755',
+			gammaId: '-1',
+			value: '',
+		},
+		interfaceTaskFileType: {
+			id: '-1',
+			typeId: '2455059983007225760',
+			gammaId: '-1',
+			value: 0,
+		},
+		interfaceStructureCategory: {
+			id: '-1',
+			typeId: '2455059983007225764',
+			gammaId: '-1',
+			value: '',
+		},
+		applicability: applicabilitySentinel,
+		elements: [],
+	});
+	filter = input<string>('');
 }

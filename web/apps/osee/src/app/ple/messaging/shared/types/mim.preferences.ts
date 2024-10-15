@@ -10,22 +10,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface MimPreferences<T = { name: '' }> {
+export type MimPreferences<T = { name: '' }> = {
 	id: string;
 	name: string;
 	columnPreferences: MimColumnPreference<T>[];
 	inEditMode: boolean;
 	hasBranchPref: boolean;
 	globalPrefs: MimUserGlobalPreferences;
-}
+};
 
-export interface MimColumnPreference<T = { name: '' }> {
+export type MimColumnPreference<T = { name: '' }> = {
 	enabled: boolean;
 	name: Exclude<keyof T, number>;
-}
+};
 
-export interface MimUserGlobalPreferences {
+export type MimUserGlobalPreferences = {
 	id: string;
 	name: string;
 	wordWrap: boolean;
-}
+};

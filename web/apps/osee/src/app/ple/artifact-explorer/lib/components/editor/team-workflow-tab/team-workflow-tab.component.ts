@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { teamWorkflowDetailsImpl } from '@osee/shared/types/configuration-management';
-import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
+import { ExpansionPanelComponent } from '@osee/shared/components';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, repeat, switchMap, take, tap } from 'rxjs';
 import { BranchRoutedUIService, UiService } from '@osee/shared/services';
@@ -20,18 +20,16 @@ import { AttributesEditorComponent } from '@osee/shared/components';
 import { TeamWorkflowService } from '../../../services/team-workflow.service';
 import { MatIcon } from '@angular/material/icon';
 import { NgClass } from '@angular/common';
-import {
-	attribute,
-	attributeType,
-	modifyArtifact,
-	transaction,
-} from '@osee/shared/types';
-import { TransactionService } from '@osee/shared/transactions';
+import { TransactionService } from '@osee/transactions/services';
 import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
+import { CreateActionWorkingBranchButtonComponent } from '@osee/configuration-management/components';
+import { attribute } from '@osee/shared/types';
 import {
-	ActionDropDownComponent,
-	CreateActionWorkingBranchButtonComponent,
-} from '@osee/configuration-management/components';
+	legacyAttributeType,
+	legacyModifyArtifact,
+	legacyTransaction,
+} from '@osee/transactions/types';
+import { ActionDropDownComponent } from '@osee/configuration-management/components';
 import { ActionService } from '@osee/configuration-management/services';
 import {
 	CommitManagerDialogComponent,
@@ -47,7 +45,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 	standalone: true,
 	imports: [
 		NgClass,
-		ArtifactExplorerExpansionPanelComponent,
+		ExpansionPanelComponent,
 		CreateActionWorkingBranchButtonComponent,
 		ActionDropDownComponent,
 		AttributesEditorComponent,
@@ -189,18 +187,18 @@ export class TeamWorkflowTabComponent {
 		if (!this.hasChanges()) {
 			return;
 		}
-		const tx: transaction = {
+		const tx: legacyTransaction = {
 			branch: '570',
 			txComment:
 				'Attribute changes for team workflow: ' +
 				this.teamWorkflow().AtsId,
 		};
-		const attributes: attributeType[] = this.updatedAttributes().map(
+		const attributes: legacyAttributeType[] = this.updatedAttributes().map(
 			(attr) => {
 				return { typeId: attr.typeId, value: attr.value };
 			}
 		);
-		const modifyArtifact: modifyArtifact = {
+		const modifyArtifact: legacyModifyArtifact = {
 			id: `${this.teamWorkflow().id}`,
 			setAttributes: attributes,
 		};

@@ -11,70 +11,74 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router, ActivatedRoute, convertToParamMap } from '@angular/router';
-import { of } from 'rxjs';
+import { provideRouter } from '@angular/router';
 
+import { AsyncPipe } from '@angular/common';
+import { MatSuffix } from '@angular/material/form-field';
+import { MockPersistedApplicabilityDropdownComponent } from '@osee/applicability/persisted-applicability-dropdown/testing';
+import { MockPersistedBooleanAttributeToggleComponent } from '@osee/attributes/persisted-boolean-attribute-toggle/testing';
+import { MockPersistedNumberAttributeInputComponent } from '@osee/attributes/persisted-number-attribute-input/testing';
+import { MockPersistedStringAttributeInputComponent } from '@osee/attributes/persisted-string-attribute-input/testing';
+import { AttributeToValuePipe } from '@osee/attributes/pipes';
+import {
+	CurrentStateServiceMock,
+	elementsMock,
+} from '@osee/messaging/shared/testing';
+import { MockPersistedPlatformTypeRelationSelectorComponent } from '@osee/messaging/types/persisted-relation-selector/testing';
+import { MockPersistedUnitDropdownComponent } from '@osee/messaging/units/persisted-unit-dropdown/testing';
+import { EnumLiteralsFieldComponent } from '../enum-literal-field/enum-literals-field.component';
+import { SubElementTableNoEditFieldComponent } from '../sub-element-table-no-edit-field/sub-element-table-no-edit-field.component';
 import { SubElementTableFieldComponent } from './sub-element-table-field.component';
+import { FormsModule } from '@angular/forms';
+import { ElementImpactsValidatorDirective } from '../../element-impacts-validator.directive';
+import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 
 describe('SubElementTableFieldComponent', () => {
 	let component: SubElementTableFieldComponent;
 	let fixture: ComponentFixture<SubElementTableFieldComponent>;
-	let router: any;
 
 	beforeEach(async () => {
-		router = jasmine.createSpyObj(
-			'Router',
-			['navigate', 'createUrlTree', 'serializeUrl'],
-			['paramMap']
-		);
-		await TestBed.configureTestingModule({
-			providers: [
-				{ provide: Router, useValue: router },
-				{
-					provide: ActivatedRoute,
-					useValue: {
-						paramMap: of(
-							convertToParamMap({
-								branchId: '10',
-								branchType: 'working',
-							})
-						),
+		await TestBed.overrideComponent(SubElementTableFieldComponent, {
+			set: {
+				imports: [
+					SubElementTableNoEditFieldComponent,
+					AsyncPipe,
+					EnumLiteralsFieldComponent,
+					AttributeToValuePipe,
+					MatSuffix,
+					MockPersistedStringAttributeInputComponent,
+					MockPersistedApplicabilityDropdownComponent,
+					MockPersistedBooleanAttributeToggleComponent,
+					MockPersistedNumberAttributeInputComponent,
+					MockPersistedPlatformTypeRelationSelectorComponent,
+					MockPersistedUnitDropdownComponent,
+					FormsModule,
+					ElementImpactsValidatorDirective,
+				],
+			},
+		})
+			.configureTestingModule({
+				providers: [
+					provideRouter([]),
+					{
+						provide: STRUCTURE_SERVICE_TOKEN,
+						useValue: CurrentStateServiceMock,
 					},
-				},
-			],
-		}).compileComponents();
+				],
+			})
+			.compileComponents();
 	});
 
 	beforeEach(() => {
 		fixture = TestBed.createComponent(SubElementTableFieldComponent);
+		fixture.componentRef.setInput('header', 'name');
+		fixture.componentRef.setInput('editMode', true);
+		fixture.componentRef.setInput('element', elementsMock[0]);
 		component = fixture.componentInstance;
-		component.header = 'applicability';
 		fixture.detectChanges();
 	});
 
 	it('should create', () => {
 		expect(component).toBeTruthy();
-	});
-
-	it('should get enum literals as array of strings', () => {
-		component.element = {
-			...component.element,
-			enumLiteral: '',
-		};
-		expect(component.getEnumLiterals()).toEqual(['']);
-		component.element = {
-			...component.element,
-			enumLiteral: 'test',
-		};
-		expect(component.getEnumLiterals()).toEqual(['test']);
-		component.element = {
-			...component.element,
-			enumLiteral: 'test\ntesting\ntested',
-		};
-		expect(component.getEnumLiterals()).toEqual([
-			'test',
-			'testing',
-			'tested',
-		]);
 	});
 });

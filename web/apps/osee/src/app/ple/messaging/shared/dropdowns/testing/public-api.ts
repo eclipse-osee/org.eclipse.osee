@@ -10,6 +10,4 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from '../unit-dropdown/unit-dropdown.component.mock';
-export * from '../message-type-dropdown/message-type-dropdown.component.mock';
-export * from '../rate-dropdown/rate-dropdown.component.mock';
+export * from '../../../units/components/unit-dropdown/testing/unit-dropdown.component.mock';

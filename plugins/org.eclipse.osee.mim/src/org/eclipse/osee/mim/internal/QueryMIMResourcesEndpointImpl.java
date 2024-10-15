@@ -13,8 +13,8 @@
 package org.eclipse.osee.mim.internal;
 
 import java.util.Collection;
-import org.eclipse.osee.accessor.types.AttributeQuery;
 import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.accessor.types.AttributeQuery;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;

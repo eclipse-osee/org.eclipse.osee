@@ -11,19 +11,17 @@
  *     Boeing - initial API and implementation
  -->
 @if ((isAuthenticated | async) === false) {
-	<a
-		class="tw-w-full tw-px-2 tw-pb-2 tw-pt-1 tw-text-center tw-text-lg tw-text-foreground-base"
-		color="primary"
+	<button
+		class="primary-button tw-w-full tw-px-2 tw-pb-2 tw-pt-1 tw-text-center tw-text-lg tw-text-foreground-base"
 		mat-flat-button
-		(click)="signIn()"
-		>Okta Sign in</a
-	>
+		(click)="signIn()">
+		Okta Sign in
+	</button>
 } @else {
-	<a
-		class="tw-w-full tw-px-2 tw-pb-2 tw-pt-1 tw-text-center tw-text-lg tw-text-foreground-base"
-		color="warn"
+	<button
+		class="error-button tw-w-full tw-px-2 tw-pb-2 tw-pt-1 tw-text-center tw-text-lg tw-text-foreground-base"
 		mat-flat-button
-		(click)="signOut()"
-		>Okta Sign out</a
-	>
+		(click)="signOut()">
+		Okta Sign out
+	</button>
 }

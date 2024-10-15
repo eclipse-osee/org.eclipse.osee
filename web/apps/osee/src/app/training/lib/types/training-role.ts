@@ -10,12 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface TrainingRoleRecord {
+export type TrainingRoleRecord = {
 	userName: string;
 	roleName: string;
 	startDate: string;
 	endDate: string;
-}
+};
 export class DefaultTrainingRoleRecord implements TrainingRoleRecord {
 	public userName = '';
 	public roleName = '';

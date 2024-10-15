@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/core';
@@ -53,12 +53,13 @@ import {
 	],
 })
 export class AddCompoundApplicabilityDialogComponent {
-	relationships = compApplicRelationshipStructure;
+	dialogRef =
+		inject<MatDialogRef<AddCompoundApplicabilityDialogComponent>>(
+			MatDialogRef
+		);
+	data = inject<PLAddCompoundApplicabilityData>(MAT_DIALOG_DATA);
 
-	constructor(
-		public dialogRef: MatDialogRef<AddCompoundApplicabilityDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: PLAddCompoundApplicabilityData
-	) {}
+	relationships = compApplicRelationshipStructure;
 
 	onNoClick(): void {
 		this.dialogRef.close();
@@ -74,7 +75,7 @@ export class AddCompoundApplicabilityDialogComponent {
 							? ''
 							: this.data.compoundApplicability.relationships[
 									index
-							  ];
+								];
 					return (
 						' ' +
 						value.featureName +
@@ -91,12 +92,12 @@ export class AddCompoundApplicabilityDialogComponent {
 
 	// user clicks 'add applicability' -> make new applic and push new values into the arrays
 	addApplicabilitySection(): void {
-		var newApplic: applicability = { featureName: '', featureValue: '' };
+		const newApplic: applicability = { featureName: '', featureValue: '' };
 		this.data.compoundApplicability.applicabilities.push(newApplic);
 		this.data.compoundApplicability.relationships.push('');
 	}
 
-	valueTracker<T>(index: number, item: T) {
+	valueTracker<T>(index: number, _item: T) {
 		return index;
 	}
 }

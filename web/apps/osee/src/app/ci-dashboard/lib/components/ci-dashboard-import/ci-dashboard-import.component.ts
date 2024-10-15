@@ -15,6 +15,7 @@ import {
 	Component,
 	computed,
 	effect,
+	inject,
 	signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -23,11 +24,11 @@ import { MatIcon } from '@angular/material/icon';
 import { take, tap } from 'rxjs';
 import { CiDashboardImportService } from '../../services/ci-dashboard-import.service';
 import { CiDashboardUiService } from '../../services/ci-dashboard-ui.service';
-import { CiDashboardControlsComponent } from '../ci-dashboard-controls/ci-dashboard-controls.component';
 import {
 	TmoImportResult,
 	tmoImportResultSentinel,
 } from '../../types/tmo-import';
+import { CiDashboardControlsComponent } from '../ci-dashboard-controls/ci-dashboard-controls.component';
 
 @Component({
 	selector: 'osee-ci-dashboard-import',
@@ -37,10 +38,8 @@ import {
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class CiDashboardImportComponent {
-	constructor(
-		private uiService: CiDashboardUiService,
-		private importService: CiDashboardImportService
-	) {}
+	private uiService = inject(CiDashboardUiService);
+	private importService = inject(CiDashboardImportService);
 
 	branchId = toSignal(this.uiService.branchId);
 	branchType = toSignal(this.uiService.branchType);

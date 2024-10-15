@@ -11,7 +11,13 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, NgClass } from '@angular/common';
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+	Component,
+	Input,
+	OnChanges,
+	SimpleChanges,
+	inject,
+} from '@angular/core';
 import {
 	MatFormField,
 	MatLabel,
@@ -31,9 +37,9 @@ import {
 	MatRowDef,
 	MatTable,
 } from '@angular/material/table';
+import { applic } from '@osee/applicability/types';
 import { HeaderService } from '@osee/shared/services';
 import { headerDetail } from '@osee/shared/types';
-import { applic } from '@osee/shared/types/applicability';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 
 @Component({
@@ -61,21 +67,21 @@ import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 	],
 	templateUrl: './import-table.component.html',
 })
-export class ImportTableComponent<T extends { [key: string]: any }>
+export class ImportTableComponent<T extends Record<string, unknown>>
 	implements OnChanges
 {
+	private headerService = inject(HeaderService);
+
 	@Input() data: T[] = [];
 	@Input() headers: string[] = [];
 	@Input() headerDetails: headerDetail<T>[] = [];
-	@Input() tableTitle: string = '';
+	@Input() tableTitle = '';
 
 	filteredData: T[] = [];
-	filterText: string = '';
-	showTableContents: boolean = false;
+	filterText = '';
+	showTableContents = false;
 
-	constructor(private headerService: HeaderService) {}
-
-	ngOnChanges(changes: SimpleChanges) {
+	ngOnChanges(_changes: SimpleChanges) {
 		this.filteredData = this.data;
 	}
 

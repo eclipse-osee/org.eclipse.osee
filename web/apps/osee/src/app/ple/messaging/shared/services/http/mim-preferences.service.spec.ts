@@ -11,8 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
-	HttpClientTestingModule,
 	HttpTestingController,
+	provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { TestScheduler } from 'rxjs/testing';
@@ -20,12 +20,14 @@ import { apiURL } from '@osee/environments';
 
 import { MimPreferencesService } from './mim-preferences.service';
 import type { MimUserGlobalPreferences } from '@osee/messaging/shared/types';
-import { TransactionService } from '@osee/shared/transactions';
-import {
-	transactionServiceMock,
-	transactionResultMock,
-} from '@osee/shared/transactions/testing';
 import { MockUserResponse } from '@osee/shared/testing';
+import { transactionResultMock } from '@osee/transactions/testing';
+import { TransactionService } from '@osee/transactions/services';
+import { transactionServiceMock } from '@osee/transactions/services/testing';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 const testGlobalUserPrefs: MimUserGlobalPreferences = {
 	id: '1',
@@ -40,12 +42,14 @@ describe('MimPreferencesService', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
+			imports: [],
 			providers: [
 				{
 					provide: TransactionService,
 					useValue: transactionServiceMock,
 				},
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
 			],
 		});
 		service = TestBed.inject(MimPreferencesService);
@@ -87,9 +91,7 @@ describe('MimPreferencesService', () => {
 				MockUserResponse,
 				testGlobalUserPrefs
 			);
-			scheduler
-				.expectObservable(result)
-				.toBe('(a|)', { a: transactionResultMock });
+			expectObservable(result).toBe('(a|)', { a: transactionResultMock });
 		});
 	});
 
@@ -99,9 +101,7 @@ describe('MimPreferencesService', () => {
 				testGlobalUserPrefs,
 				testGlobalUserPrefs
 			);
-			scheduler
-				.expectObservable(result)
-				.toBe('(a|)', { a: transactionResultMock });
+			expectObservable(result).toBe('(a|)', { a: transactionResultMock });
 		});
 	});
 });

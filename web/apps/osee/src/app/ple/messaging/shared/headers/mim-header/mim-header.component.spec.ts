@@ -132,11 +132,12 @@ describe('MimHeaderComponent', () => {
 			beforeEach(() => {
 				uiService.typeValue = header.type ? 'working' : '';
 				uiService.idValue = header.id ? '10' : '';
-				uiService.connectionIdString = header.connection ? '20' : '';
+				uiService.connectionId.set(header.connection ? '20' : '-1');
 				uiService.messageIdString = header.message ? '30' : '';
-				uiService.submessageIdString = header.submessage ? '40' : '';
-				uiService.submessageToStructureBreadCrumbsString ? '30>40' : '';
-				uiService.singleStructureIdValue ? '50' : '';
+				uiService.submessageId.set(header.submessage ? '40' : '-1');
+				uiService.submessageToStructureBreadCrumbsString =
+					header.breadcrumb ? '30>40' : '';
+				uiService.singleStructureIdValue = header.structure ? '50' : '';
 				fixture = TestBed.createComponent(MimHeaderComponent);
 				component = fixture.componentInstance;
 				fixture.detectChanges();

@@ -27,12 +27,14 @@ import { AsyncPipe, NgClass } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
-	Inject,
 	Input,
 	OnChanges,
 	OnInit,
 	SimpleChanges,
 	computed,
+	effect,
+	inject,
+	input,
 	signal,
 	viewChild,
 } from '@angular/core';
@@ -60,18 +62,15 @@ import {
 } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { applic, applicabilitySentinel } from '@osee/applicability/types';
 import { LayoutNotifierService } from '@osee/layout/notification';
-import {
-	CurrentStructureService,
-	HeaderService,
-} from '@osee/messaging/shared/services';
+import { HeaderService } from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 import type {
+	DisplayableElementProps,
 	element,
-	elementWithChanges,
 	structure,
 } from '@osee/messaging/shared/types';
-import { applic } from '@osee/shared/types/applicability';
 import { difference } from '@osee/shared/types/change-report';
 import { SubElementTableFieldComponent } from '../../fields/sub-element-table-field/sub-element-table-field.component';
 import { SubElementTableDropdownComponent } from '../../menus/sub-element-table-dropdown/sub-element-table-dropdown.component';
@@ -133,25 +132,84 @@ import { SubElementArrayTableComponent } from '../sub-element-array-table/sub-el
 	],
 })
 export class SubElementTableComponent implements OnInit, OnChanges {
-	@Input() data: any = {};
-	@Input() dataSource: MatTableDataSource<any> =
-		new MatTableDataSource<any>();
-	@Input() filter: string = '';
-	@Input() structure: structure = {
-		id: '',
-		name: '',
-		nameAbbrev: '',
-		description: '',
-		interfaceMaxSimultaneity: '',
-		interfaceMinSimultaneity: '',
-		interfaceTaskFileType: 0,
-		interfaceStructureCategory: '',
-	};
-	@Input() elementHeaders: any;
-	@Input() editMode: boolean = false;
+	private route = inject(ActivatedRoute);
+	dialog = inject(MatDialog);
+	private structureService = inject(STRUCTURE_SERVICE_TOKEN);
+	private layoutNotifier = inject(LayoutNotifierService);
+	private headerService = inject(HeaderService);
 
-	_branchId: string = '';
-	_branchType: string = '';
+	data = input.required<element[]>();
+
+	private _updateDataSourceBasedOnData = effect(
+		() => {
+			this.dataSource.data = this.data();
+		},
+		{ allowSignalWrites: true }
+	);
+	protected dataSource = new MatTableDataSource<element>();
+	@Input() filter = '';
+	@Input() structure: structure = {
+		id: '-1',
+		gammaId: '-1',
+		name: {
+			id: '-1',
+			typeId: '1152921504606847088',
+			gammaId: '-1',
+			value: '',
+		},
+		nameAbbrev: {
+			id: '-1',
+			typeId: '8355308043647703563',
+			gammaId: '-1',
+			value: '',
+		},
+		description: {
+			id: '-1',
+			typeId: '1152921504606847090',
+			gammaId: '-1',
+			value: '',
+		},
+		interfaceMaxSimultaneity: {
+			id: '-1',
+			typeId: '2455059983007225756',
+			gammaId: '-1',
+			value: '',
+		},
+		interfaceMinSimultaneity: {
+			id: '-1',
+			typeId: '2455059983007225755',
+			gammaId: '-1',
+			value: '',
+		},
+		interfaceTaskFileType: {
+			id: '-1',
+			typeId: '2455059983007225760',
+			gammaId: '-1',
+			value: 0,
+		},
+		interfaceStructureCategory: {
+			id: '-1',
+			typeId: '2455059983007225764',
+			gammaId: '-1',
+			value: '',
+		},
+		applicability: applicabilitySentinel,
+		elements: [],
+	};
+	elementHeaders = input<(keyof DisplayableElementProps | 'rowControls')[]>([
+		'name',
+		'beginWord',
+		'endWord',
+		'beginByte',
+		'endByte',
+		'interfaceElementAlterable',
+		'description',
+		'notes',
+	]);
+	editMode = input<boolean>(false);
+
+	_branchId = '';
+	_branchType = '';
 	layout = this.layoutNotifier.layout;
 	menuPosition = {
 		x: '0',
@@ -161,33 +219,10 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 	generalMenuTrigger = viewChild.required('generalMenuTrigger', {
 		read: MatMenuTrigger,
 	});
-	constructor(
-		private route: ActivatedRoute,
-		public dialog: MatDialog,
-		@Inject(STRUCTURE_SERVICE_TOKEN)
-		private structureService: CurrentStructureService,
-		private layoutNotifier: LayoutNotifierService,
-		private headerService: HeaderService
-	) {
-		this.elementHeaders = [
-			'name',
-			'beginWord',
-			'endWord',
-			'BeginByte',
-			'EndByte',
-			'interfaceElementAlterable',
-			'description',
-			'notes',
-		];
-		this.dataSource.data = this.data;
-	}
 
 	expandedRows = signal<element[]>([]);
 
-	ngOnChanges(changes: SimpleChanges): void {
-		if (Array.isArray(this.data)) {
-			this.dataSource.data = this.data;
-		}
+	ngOnChanges(_changes: SimpleChanges): void {
 		if (this.filter !== '') {
 			this.dataSource.data.forEach((e) => {
 				if (e.arrayElements.length > 0) {
@@ -198,16 +233,13 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 	}
 
 	ngOnInit(): void {
-		if (Array.isArray(this.data)) {
-			this.dataSource.data = this.data;
-		}
 		this.route.paramMap.subscribe((values) => {
 			this._branchId = values.get('branchId') || '';
 			this._branchType = values.get('branchType') || '';
 		});
 	}
 
-	rowIsExpanded(elementId: string) {
+	rowIsExpanded(elementId: `${number}`) {
 		return computed(() =>
 			this.expandedRows()
 				.map((e) => e.id)
@@ -273,8 +305,10 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 		return this.headerService.getHeaderByName(value, 'element');
 	}
 
-	elementTracker(index: number, item: element | elementWithChanges) {
-		return item.id !== '-1' ? item.id : index.toString();
+	elementTracker(index: number, item: element) {
+		return item.id !== '-1'
+			? item.id + item.arrayElements.map((x) => x.id).join(':')
+			: index.toString();
 	}
 	viewDiff(value: difference, header: string) {
 		this.structureService.sideNav = {

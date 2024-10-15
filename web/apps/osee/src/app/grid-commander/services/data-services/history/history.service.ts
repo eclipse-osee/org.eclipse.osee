@@ -10,27 +10,24 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
 import { executedCommandHistory } from '../../../types/grid-commander-types/userHistory';
 import { of } from 'rxjs';
-import {
-	TransactionBuilderService,
-	TransactionService,
-} from '@osee/shared/transactions';
-import { relation, transaction } from '@osee/shared/types';
+import { TransactionBuilderService } from '@osee/shared/transactions-legacy';
+import { legacyRelation, legacyTransaction } from '@osee/transactions/types';
+import { TransactionService } from '@osee/transactions/services';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class HistoryService {
-	constructor(
-		private transactionService: TransactionService,
-		private builder: TransactionBuilderService
-	) {}
+	private builder = inject(TransactionBuilderService);
+
+	private transactionService = inject(TransactionService);
 
 	createUserHistoryRelation(userId: string, historyId?: string) {
-		let relation: relation = {
+		const relation: legacyRelation = {
 			typeName: 'User to History',
 			sideA: userId,
 			sideB: historyId,
@@ -40,8 +37,8 @@ export class HistoryService {
 
 	createUserToHistoryRelationship(
 		branchId: string,
-		relation: relation,
-		transaction?: transaction
+		relation: legacyRelation,
+		transaction?: legacyTransaction
 	) {
 		return of(
 			this.builder.addRelation(
@@ -61,7 +58,7 @@ export class HistoryService {
 	createExecutedCommandHistoryArtifact(
 		branchId: string,
 		ecHistory: Partial<executedCommandHistory>,
-		transaction?: transaction,
+		transaction?: legacyTransaction,
 		key?: string
 	) {
 		return of(
@@ -77,7 +74,7 @@ export class HistoryService {
 		);
 	}
 
-	performMutation(body: transaction) {
+	performMutation(body: legacyTransaction) {
 		return this.transactionService.performMutation(body);
 	}
 }

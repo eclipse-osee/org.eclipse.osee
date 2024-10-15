@@ -75,7 +75,7 @@ describe('UsermenuComponent', () => {
 	});
 
 	it('should open settings dialog', async () => {
-		let dialogRefSpy = jasmine.createSpyObj({
+		const dialogRefSpy = jasmine.createSpyObj({
 			afterClosed: of({
 				branchId: '10',
 				allowedHeaders1: [],
@@ -89,12 +89,12 @@ describe('UsermenuComponent', () => {
 			}),
 			close: null,
 		});
-		let dialogSpy = spyOn(
+		const _dialogSpy = spyOn(
 			TestBed.inject(MatDialog),
 			'open'
 		).and.returnValue(dialogRefSpy);
-		let spy = spyOn(component, 'openSettingsDialog').and.callThrough();
-		let button = await loader.getHarness(
+		const spy = spyOn(component, 'openSettingsDialog').and.callThrough();
+		const button = await loader.getHarness(
 			MatMenuItemHarness.with({ text: new RegExp('Settings') })
 		);
 		await button.click();

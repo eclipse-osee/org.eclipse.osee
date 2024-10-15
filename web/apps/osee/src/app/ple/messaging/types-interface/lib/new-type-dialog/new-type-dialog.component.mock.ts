@@ -16,6 +16,7 @@ import type {
 	PlatformType,
 } from '@osee/messaging/shared/types';
 import { NewTypeDialogComponent } from './new-type-dialog.component';
+import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 
 @Component({
 	selector: 'osee-new-type-dialog',
@@ -29,7 +30,7 @@ export class MockNewTypeDialogComponent
 	@Input() preFillData?: PlatformType[];
 	public closeDialog() {
 		this.dialogClosed.emit({
-			platformType: {},
+			platformType: new PlatformTypeSentinel(),
 			createEnum: false,
 			enumSetId: '-1',
 			enumSetName: '',
@@ -38,7 +39,7 @@ export class MockNewTypeDialogComponent
 			enums: [],
 		});
 		return {
-			platformType: {},
+			platformType: new PlatformTypeSentinel(),
 			createEnum: false,
 			enumSetId: '-1',
 			enumSetName: '',

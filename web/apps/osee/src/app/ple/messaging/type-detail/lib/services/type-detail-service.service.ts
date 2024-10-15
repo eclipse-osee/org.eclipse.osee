@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { UiService } from '@osee/shared/services';
 
@@ -18,9 +18,9 @@ import { UiService } from '@osee/shared/services';
 	providedIn: 'root',
 })
 export class TypeDetailService {
-	private _typeId: BehaviorSubject<string> = new BehaviorSubject<string>('');
+	private _ui = inject(UiService);
 
-	constructor(private _ui: UiService) {}
+	private _typeId: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
 	get typeId() {
 		return this._typeId;

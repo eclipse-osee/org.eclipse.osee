@@ -14,54 +14,54 @@
 package org.eclipse.osee.mim;
 
 import java.util.Collection;
-import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.mim.types.InterfaceUnitToken;
 
 /**
  * @author Luciano T. Vaglienti
  */
 public interface InterfaceUnitApi {
 
-   ArtifactAccessorResult get(BranchId branch, ArtifactId unitId);
+   InterfaceUnitToken get(BranchId branch, ArtifactId unitId);
 
-   Collection<ArtifactAccessorResult> getAll(BranchId branch);
+   Collection<InterfaceUnitToken> getAll(BranchId branch);
 
-   Collection<ArtifactAccessorResult> getAll(BranchId branch, ArtifactId viewId);
+   Collection<InterfaceUnitToken> getAll(BranchId branch, ArtifactId viewId);
 
-   Collection<ArtifactAccessorResult> getAll(BranchId branch, AttributeTypeId orderByAttribute);
+   Collection<InterfaceUnitToken> getAll(BranchId branch, AttributeTypeId orderByAttribute);
 
-   Collection<ArtifactAccessorResult> getAll(BranchId branch, ArtifactId viewId, AttributeTypeId orderByAttribute);
+   Collection<InterfaceUnitToken> getAll(BranchId branch, ArtifactId viewId, AttributeTypeId orderByAttribute);
 
-   Collection<ArtifactAccessorResult> getAll(BranchId branch, long pageNum, long pageSize);
+   Collection<InterfaceUnitToken> getAll(BranchId branch, long pageNum, long pageSize);
 
-   Collection<ArtifactAccessorResult> getAll(BranchId branch, ArtifactId viewId, long pageNum, long pageSize);
+   Collection<InterfaceUnitToken> getAll(BranchId branch, ArtifactId viewId, long pageNum, long pageSize);
 
-   Collection<ArtifactAccessorResult> getAll(BranchId branch, long pageNum, long pageSize,
+   Collection<InterfaceUnitToken> getAll(BranchId branch, long pageNum, long pageSize,
       AttributeTypeId orderByAttribute);
 
-   Collection<ArtifactAccessorResult> getAll(BranchId branch, ArtifactId viewId, long pageNum, long pageSize,
+   Collection<InterfaceUnitToken> getAll(BranchId branch, ArtifactId viewId, long pageNum, long pageSize,
       AttributeTypeId orderByAttribute);
 
-   Collection<ArtifactAccessorResult> getAllByFilter(BranchId branch, String filter);
+   Collection<InterfaceUnitToken> getAllByFilter(BranchId branch, String filter);
 
-   Collection<ArtifactAccessorResult> getAllByFilter(BranchId branch, ArtifactId viewId, String filter);
+   Collection<InterfaceUnitToken> getAllByFilter(BranchId branch, ArtifactId viewId, String filter);
 
-   Collection<ArtifactAccessorResult> getAllByFilter(BranchId branch, String filter, AttributeTypeId orderByAttribute);
+   Collection<InterfaceUnitToken> getAllByFilter(BranchId branch, String filter, AttributeTypeId orderByAttribute);
 
-   Collection<ArtifactAccessorResult> getAllByFilter(BranchId branch, ArtifactId viewId, String filter,
+   Collection<InterfaceUnitToken> getAllByFilter(BranchId branch, ArtifactId viewId, String filter,
       AttributeTypeId orderByAttribute);
 
-   Collection<ArtifactAccessorResult> getAllByFilter(BranchId branch, String filter, long pageNum, long pageSize);
+   Collection<InterfaceUnitToken> getAllByFilter(BranchId branch, String filter, long pageNum, long pageSize);
 
-   Collection<ArtifactAccessorResult> getAllByFilter(BranchId branch, ArtifactId viewId, String filter, long pageNum,
+   Collection<InterfaceUnitToken> getAllByFilter(BranchId branch, ArtifactId viewId, String filter, long pageNum,
       long pageSize);
 
-   Collection<ArtifactAccessorResult> getAllByFilter(BranchId branch, String filter, long pageNum, long pageSize,
+   Collection<InterfaceUnitToken> getAllByFilter(BranchId branch, String filter, long pageNum, long pageSize,
       AttributeTypeId orderByAttribute);
 
-   Collection<ArtifactAccessorResult> getAllByFilter(BranchId branch, ArtifactId viewId, String filter, long pageNum,
+   Collection<InterfaceUnitToken> getAllByFilter(BranchId branch, ArtifactId viewId, String filter, long pageNum,
       long pageSize, AttributeTypeId orderByAttribute);
 
    int getCountWithFilter(BranchId branch, ArtifactId viewId, String filter);

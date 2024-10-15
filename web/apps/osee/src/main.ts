@@ -12,7 +12,7 @@
  **********************************************************************/
 import { enableProdMode, importProvidersFrom } from '@angular/core';
 
-import { environment, UserHeaderService, apiURL } from '@osee/environments';
+import { environment, UserHeaderService } from '@osee/environments';
 import { AppComponent } from './app/app.component';
 import { provideMarkdown, MARKED_OPTIONS } from 'ngx-markdown';
 import { provideAnimations } from '@angular/platform-browser/animations';

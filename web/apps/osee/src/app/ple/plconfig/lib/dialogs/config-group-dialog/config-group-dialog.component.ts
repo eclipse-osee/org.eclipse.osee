@@ -12,7 +12,7 @@
  **********************************************************************/
 import { CdkTrapFocus } from '@angular/cdk/a11y';
 
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import {
@@ -50,11 +50,16 @@ import { CfgGroupDialog } from '../../types/pl-config-cfggroups';
 	],
 })
 export class ConfigGroupDialogComponent {
+	dialogRef = inject<MatDialogRef<ConfigGroupDialogComponent>>(MatDialogRef);
+	data = inject<CfgGroupDialog>(MAT_DIALOG_DATA);
+
 	totalConfigurations: view[] = [];
-	constructor(
-		public dialogRef: MatDialogRef<ConfigGroupDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: CfgGroupDialog
-	) {
+
+	/** Inserted by Angular inject() migration for backwards compatibility */
+	constructor(...args: unknown[]);
+	constructor() {
+		const data = this.data;
+
 		this.totalConfigurations = data.configGroup.views;
 	}
 	onNoClick(): void {

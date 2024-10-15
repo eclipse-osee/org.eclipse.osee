@@ -1,0 +1,86 @@
+<!--
+* Copyright (c) 2024 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
+<h2 mat-dialog-title>Peer Review Manager</h2>
+<mat-dialog-content>
+	<div
+		class="tw-flex tw-flex-wrap tw-items-center tw-justify-between tw-gap-4 tw-pb-4">
+		<div class="tw-min-w-72">
+			<osee-peer-review-branch-selector />
+		</div>
+		<osee-create-peer-review-button workType="MIM" />
+	</div>
+	@if (prBranchId() !== '-1' && workingBranches()) {
+		<div class="tw-flex tw-max-h-fit tw-flex-col tw-gap-4">
+			<div class="tw-text-lg">Working branches included in PR</div>
+			<mat-form-field
+				subscriptSizing="dynamic"
+				class="tw-w-full">
+				<mat-label>Filter Working Branches</mat-label>
+				<input
+					matInput
+					[(ngModel)]="filter"
+					#input />
+				<mat-icon matPrefix>filter_list</mat-icon>
+			</mat-form-field>
+			<div class="tw-max-h-80 tw-overflow-auto">
+				<mat-selection-list [compareWith]="compareFn">
+					@for (branch of workingBranches(); track branch.branch.id) {
+						<mat-list-option
+							#option
+							[selected]="isBranchSelected(branch)"
+							[disabled]="!branch.selectable && !branch.selected"
+							matTooltip="This branch has been applied to another peer review"
+							[matTooltipDisabled]="
+								branch.selectable || branch.selected
+							"
+							class="tw-rounded-md"
+							(click)="handleChange(branch, option.selected)">
+							{{ branch.branch.name }}</mat-list-option
+						>
+					}
+				</mat-selection-list>
+			</div>
+			<div class="tw-flex tw-justify-between">
+				<div>Branches to add</div>
+				<div>Branches to remove</div>
+			</div>
+			<div
+				class="tw-flex tw-max-h-36 tw-justify-between tw-overflow-auto">
+				<div>
+					@for (branch of toAdd(); track branch.id) {
+						<div>{{ branch.name }}</div>
+					}
+				</div>
+				<div>
+					@for (branch of toRemove(); track branch.id) {
+						<div>{{ branch.name }}</div>
+					}
+				</div>
+			</div>
+			<button
+				mat-flat-button
+				[disabled]="toAdd().length === 0 && toRemove().length === 0"
+				(click)="applySelected()">
+				Apply Selected
+			</button>
+		</div>
+	}
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+	<button
+		mat-button
+		cdkFocusInitial
+		(click)="onNoClick()">
+		Close
+	</button>
+</mat-dialog-actions>

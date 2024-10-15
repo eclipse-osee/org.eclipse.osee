@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import {
 	MAT_DIALOG_DATA,
@@ -35,8 +35,7 @@ import { RemoveSubMessageDialogData } from '../../types/RemoveSubMessageDialog';
 	],
 })
 export class RemoveSubmessageDialogComponent {
-	constructor(
-		public dialogRef: MatDialogRef<RemoveSubmessageDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: RemoveSubMessageDialogData
-	) {}
+	dialogRef =
+		inject<MatDialogRef<RemoveSubmessageDialogComponent>>(MatDialogRef);
+	data = inject<RemoveSubMessageDialogData>(MAT_DIALOG_DATA);
 }

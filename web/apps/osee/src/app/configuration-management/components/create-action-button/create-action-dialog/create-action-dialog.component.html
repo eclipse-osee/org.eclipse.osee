@@ -191,9 +191,8 @@
 				</mat-form-field>
 			} @else if (field.name === 'Unplanned Work') {
 				<mat-checkbox
-					class="tw-pb-2"
-					[(ngModel)]="data.unplanned"
-					color="primary">
+					class="primary-checkbox tw-pb-2"
+					[(ngModel)]="data.unplanned">
 					<mat-label>Unplanned Work</mat-label>
 				</mat-checkbox>
 			} @else if (field.name === 'Work Package') {
@@ -256,9 +255,8 @@
 				</mat-form-field>
 			} @else if (field.widgetType === 'BOOLEAN') {
 				<mat-checkbox
-					class="tw-pb-2"
-					[(ngModel)]="data.attrValues[field.attribute]"
-					color="primary">
+					class="primary-checkbox tw-pb-2"
+					[(ngModel)]="data.attrValues[field.attribute]">
 					<mat-label>{{ field.name }}</mat-label>
 				</mat-checkbox>
 			}
@@ -279,9 +277,9 @@
 		Cancel
 	</button>
 	<button
-		mat-raised-button
+		mat-flat-button
 		[mat-dialog-close]="data"
-		color="primary"
+		class="primary-button"
 		[disabled]="
 			data.description.length === 0 ||
 			data.title.length === 0 ||

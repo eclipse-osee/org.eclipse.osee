@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import {
 	MAT_DIALOG_DATA,
@@ -38,10 +38,9 @@ import type { affectedArtifactWarning } from '@osee/messaging/shared/types';
 	],
 })
 export class AffectedArtifactDialogComponent<T = unknown> {
-	constructor(
-		public dialogRef: MatDialogRef<AffectedArtifactDialogComponent<T>>,
-		@Inject(MAT_DIALOG_DATA) public data: affectedArtifactWarning<T>
-	) {}
+	dialogRef =
+		inject<MatDialogRef<AffectedArtifactDialogComponent<T>>>(MatDialogRef);
+	data = inject<affectedArtifactWarning<T>>(MAT_DIALOG_DATA);
 
 	onNoClick() {
 		this.dialogRef.close();

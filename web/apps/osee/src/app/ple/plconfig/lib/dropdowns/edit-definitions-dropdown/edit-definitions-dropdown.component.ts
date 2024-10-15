@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { CurrentActionService } from '@osee/configuration-management/services';
@@ -39,9 +39,9 @@ import { ProductTypeDropDownComponent } from '../product-type-drop-down/product-
 	],
 })
 export class EditDefinitionsDropdownComponent {
+	private actionStateService = inject(CurrentActionService);
+
 	isTeamLead = this.actionStateService.isTeamLead;
 
-	constructor(
-		private actionStateService: CurrentActionService //kinda hacky, but best place for it to live for now
-	) {}
+	// kinda hacky, but best place for it to live for now
 }

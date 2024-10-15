@@ -27,6 +27,9 @@
 		"node_modules/cypress",
 		"./cypress.config.ts",
 		"cypress",
-		"cypress/**/*"
+		"cypress/**/*",
+		"playwright/**/*",
+		"playwright.config.ng.ts",
+		"playwright.config.ts"
 	]
 }

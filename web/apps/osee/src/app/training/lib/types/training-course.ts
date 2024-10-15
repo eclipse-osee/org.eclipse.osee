@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface TrainingCourse {
+export type TrainingCourse = {
 	courseID: string;
 	courseTitle: string;
 	deliveryMethod: string;
@@ -18,13 +18,13 @@ export interface TrainingCourse {
 	status: boolean;
 	docTitle: string;
 	link: string;
-}
-export interface TrainingCourseRecord {
+};
+export type TrainingCourseRecord = {
 	userName: string;
 	courseID: string;
 	startDate: string;
 	endDate: string;
-}
+};
 export class DefaultTrainingCourseRecord implements TrainingCourseRecord {
 	public userName = '';
 	public courseID = '';

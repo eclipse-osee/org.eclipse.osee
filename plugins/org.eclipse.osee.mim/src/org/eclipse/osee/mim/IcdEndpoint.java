@@ -31,6 +31,7 @@ public interface IcdEndpoint {
 
    @GET()
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-   Response getIcd(@DefaultValue("false") @QueryParam("diff") boolean diff);
+   Response getIcd(@QueryParam("diff") @DefaultValue("false") boolean diff,
+      @QueryParam("showErrors") @DefaultValue("false") boolean showErrors);
 
 }

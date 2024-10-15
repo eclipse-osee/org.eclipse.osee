@@ -19,28 +19,30 @@ import {
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { PageEvent } from '@angular/material/paginator';
 import { NamedId } from '@osee/shared/types';
-import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
-import { combineLatest, switchMap } from 'rxjs';
+import { combineLatest, debounceTime, switchMap } from 'rxjs';
 import { CiDashboardUiService } from '../../../services/ci-dashboard-ui.service';
 import { DashboardService } from '../../../services/dashboard.service';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
+import { NamedIdListEditorComponent } from '@osee/shared/components';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
 	selector: 'osee-teams-list',
 	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
-	imports: [],
+	imports: [NamedIdListEditorComponent, AsyncPipe],
 	template: `
-		<!-- <osee-named-id-list-editor
-		[name]="'Teams'"
-		[allowedToEdit]="branchType() === 'working'"
-		[dataToDisplay]="(teams | async) || []"
-		[pageIndex]="teamsPageNum()"
-		[pageSize]="teamsPageSize()"
-		[count]="(teamsCount | async) || 0"
-		(pageEvent)="updateteamsPage($event)"
-		(filterChange)="updateTeamFilter($event)"
-		(namedIdEdit)="updateTeam($event)"
-		(createNew)="createTeam($event)" /> -->
+		<osee-named-id-list-editor
+			[name]="'Teams'"
+			[allowedToEdit]="branchType() === 'working'"
+			[dataToDisplay]="(teams | async) || []"
+			[pageIndex]="teamsPageNum()"
+			[pageSize]="teamsPageSize()"
+			[count]="(teamsCount | async) || 0"
+			(pageEvent)="updateTeamsPage($event)"
+			(filterChange)="updateTeamFilter($event)"
+			(namedIdEdit)="updateTeam($event)"
+			(createNew)="createTeam($event)" />
 	`,
 })
 export class TeamsListComponent {
@@ -53,7 +55,7 @@ export class TeamsListComponent {
 	teamsPageSize = signal(100);
 	teamsPageNum = signal(0);
 
-	teamsFilter$ = toObservable(this.teamsFilter);
+	teamsFilter$ = toObservable(this.teamsFilter).pipe(debounceTime(250));
 
 	teams = combineLatest([
 		this.teamsFilter$,

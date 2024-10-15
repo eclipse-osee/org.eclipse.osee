@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatCheckbox } from '@angular/material/checkbox';
@@ -37,6 +37,7 @@ import {
 	HeaderService,
 } from '@osee/messaging/shared/services';
 import type {
+	PlatformType,
 	element,
 	settingsDialogData,
 	structure,
@@ -65,15 +66,21 @@ import { map } from 'rxjs/operators';
 	],
 })
 export class ColumnPreferencesDialogComponent {
+	dialogRef =
+		inject<MatDialogRef<ColumnPreferencesDialogComponent>>(MatDialogRef);
+	data = inject<settingsDialogData>(MAT_DIALOG_DATA);
+	private editAuthService = inject(EditAuthService);
+	private _headerService = inject(HeaderService);
+
 	editability: Observable<boolean> =
 		this.editAuthService.branchEditability.pipe(map((x) => x?.editable));
 
-	constructor(
-		public dialogRef: MatDialogRef<ColumnPreferencesDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: settingsDialogData,
-		private editAuthService: EditAuthService,
-		private _headerService: HeaderService
-	) {
+	/** Inserted by Angular inject() migration for backwards compatibility */
+	constructor(...args: unknown[]);
+
+	constructor() {
+		const data = this.data;
+
 		this.editAuthService.BranchIdString = data.branchId;
 	}
 
@@ -82,13 +89,25 @@ export class ColumnPreferencesDialogComponent {
 	}
 
 	getHeaderByName(
-		value: keyof structure | keyof element,
+		value:
+			| (
+					| keyof structure
+					| (
+							| 'txRate'
+							| 'publisher'
+							| 'subscriber'
+							| 'messageNumber'
+							| 'messagePeriodicity'
+							| ' '
+					  )
+			  )
+			| keyof (element & PlatformType),
 		type: 'structure' | 'element'
 	) {
 		return this._headerService.getHeaderByName(value, type);
 	}
 
-	resetToDefaultHeaders(event: MouseEvent) {
+	resetToDefaultHeaders(_event: MouseEvent) {
 		if (this.data.editable) {
 			this.data.allowedHeaders1 = defaultEditStructureProfile;
 			this.data.allowedHeaders2 = defaultEditElementProfile;
@@ -105,12 +124,21 @@ export class ColumnPreferencesDialogComponent {
 	isChecked<T extends 0 | 1>(
 		columnNumber: T,
 		preference: T extends 0
-			? Exclude<keyof structure, number>
-			: Exclude<keyof element, number>
+			?
+					| Exclude<keyof structure, number>
+					| (
+							| 'txRate'
+							| 'publisher'
+							| 'subscriber'
+							| 'messageNumber'
+							| 'messagePeriodicity'
+							| ' '
+					  )
+			: Exclude<keyof (element & PlatformType), number>
 	) {
 		const headerList = this.getHeaderList(columnNumber);
 		//typescript being dumb here
-		//@ts-ignore
+		//@ts-expect-error need to be smarter with type narrowing
 		return headerList.includes(preference);
 	}
 	/**
@@ -119,12 +147,26 @@ export class ColumnPreferencesDialogComponent {
 	/* istanbul ignore next */
 	getHeaderList<T extends 0 | 1>(
 		columnNumber: T
-	): T extends 0 ? (keyof structure)[] : (keyof element)[] {
+	): T extends 0
+		? (
+				| keyof structure
+				| (
+						| 'txRate'
+						| 'publisher'
+						| 'subscriber'
+						| 'messageNumber'
+						| 'messagePeriodicity'
+						| ' '
+				  )
+			)[]
+		: (keyof (element & PlatformType))[] {
 		if (columnNumber) {
+			//typescript doesn't understand class functions well..
+			//@ts-expect-error need to be smarter with type narrowing
 			return this.data.allowedHeaders2;
 		}
-		//typescript being dumb here
-		//@ts-ignore
+		//typescript doesn't understand class functions well..
+		//@ts-expect-error need to be smarter with type narrowing
 		return this.data.allowedHeaders1;
 	}
 

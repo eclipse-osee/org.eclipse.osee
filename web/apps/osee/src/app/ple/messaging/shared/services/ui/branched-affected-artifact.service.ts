@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import type { affectedArtifact } from '@osee/messaging/shared/types';
 import { iif, of } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
@@ -21,10 +21,8 @@ import { AffectedArtifactService } from '../http/affected-artifact.service';
 	providedIn: 'root',
 })
 export class BranchedAffectedArtifactService {
-	constructor(
-		private service: AffectedArtifactService,
-		private ui: UiService
-	) {}
+	private service = inject(AffectedArtifactService);
+	private ui = inject(UiService);
 
 	getEnumSetsByEnums(enumId: string | number) {
 		return this.ui.id.pipe(

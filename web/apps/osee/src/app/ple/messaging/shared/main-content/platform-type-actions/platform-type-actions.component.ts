@@ -52,7 +52,7 @@ export class PlatformTypeActionsComponent {
 
 	openEnumDialog(makeChanges: boolean) {
 		this.platformTypeActionsService
-			.openEnumDialog(this.typeData().id, makeChanges)
+			.openEnumDialog(this.typeData(), makeChanges)
 			.subscribe();
 	}
 }

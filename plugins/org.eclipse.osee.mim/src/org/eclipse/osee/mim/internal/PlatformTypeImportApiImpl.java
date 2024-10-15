@@ -27,7 +27,7 @@ import org.eclipse.osee.mim.types.InterfaceEnumOrdinalType;
 import org.eclipse.osee.mim.types.InterfaceEnumeration;
 import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
 import org.eclipse.osee.mim.types.MimImportSummary;
-import org.eclipse.osee.mim.types.PlatformTypeImportToken;
+import org.eclipse.osee.mim.types.PlatformTypeToken;
 
 /**
  * @author Ryan T. Baldwin
@@ -51,7 +51,7 @@ public class PlatformTypeImportApiImpl implements MimImportApi {
 
       reader.setActiveSheet(0);
 
-      Map<String, PlatformTypeImportToken> platformTypes = new HashMap<>();
+      Map<String, PlatformTypeToken> platformTypes = new HashMap<>();
       List<String> usedNames = new LinkedList<>();
 
       int rowIndex = 1;
@@ -70,8 +70,8 @@ public class PlatformTypeImportApiImpl implements MimImportApi {
          if (logicalType.equals("boolean")) {
             // Skip booleans. If one does not exist it should be created manually, or one will be created during an ICD import if needed.
          } else if (logicalType.equals("enumeration")) {
-            PlatformTypeImportToken pType = new PlatformTypeImportToken(id, name, logicalType, bitSize + "", minVal,
-               maxVal, units, description, defaultVal, validRange);
+            PlatformTypeToken pType = new PlatformTypeToken(id, name, logicalType, bitSize + "", minVal, maxVal, units,
+               description, defaultVal, validRange);
             incrementId();
             summary.getPlatformTypes().add(pType);
 
@@ -120,8 +120,8 @@ public class PlatformTypeImportApiImpl implements MimImportApi {
                if (usedNames.contains(suggestedName)) {
                   suggestedName += "_" + id;
                }
-               PlatformTypeImportToken pType = new PlatformTypeImportToken(id, suggestedName, logicalType, bitSize + "",
-                  minVal, maxVal, units, description, defaultVal, validRange);
+               PlatformTypeToken pType = new PlatformTypeToken(id, suggestedName, logicalType, bitSize + "", minVal,
+                  maxVal, units, description, defaultVal, validRange);
                incrementId();
                summary.getPlatformTypes().add(pType);
                platformTypes.put(ident, pType);

@@ -10,11 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
 	BehaviorSubject,
 	combineLatest,
-	distinctUntilChanged,
 	filter,
 	map,
 	repeat,
@@ -29,15 +28,20 @@ import { ArtifactHierarchyArtifactsExpandedService } from './artifact-hierarchy-
 	providedIn: 'root',
 })
 export class ArtifactHierarchyPathService {
-	constructor(
-		private artExpHttpService: ArtifactExplorerHttpService,
-		private uiService: UiService,
-		private artifactsExpandedService: ArtifactHierarchyArtifactsExpandedService
-	) {
+	private artExpHttpService = inject(ArtifactExplorerHttpService);
+	private uiService = inject(UiService);
+	private artifactsExpandedService = inject(
+		ArtifactHierarchyArtifactsExpandedService
+	);
+
+	/** Inserted by Angular inject() migration for backwards compatibility */
+	constructor(...args: unknown[]);
+
+	constructor() {
 		// Clearing the selectedArtifactId when the branch id / view id changes
 		combineLatest([this.uiService.id, this.uiService.viewId])
 			.pipe(
-				map(([branchId, viewId]) => {
+				map(([_branchId, _viewId]) => {
 					this.selectedArtifactId.next('');
 				})
 			)

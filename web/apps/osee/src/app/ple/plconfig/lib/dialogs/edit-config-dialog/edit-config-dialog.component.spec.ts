@@ -22,10 +22,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatSelectModule } from '@angular/material/select';
-import {
-	NoopAnimationsModule,
-	provideNoopAnimations,
-} from '@angular/platform-browser/animations';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { PlConfigBranchService } from '../../services/pl-config-branch-service.service';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';

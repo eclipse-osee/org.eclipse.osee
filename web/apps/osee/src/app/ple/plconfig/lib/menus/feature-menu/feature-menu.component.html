@@ -13,14 +13,16 @@
 <button
 	mat-menu-item
 	(click)="displayFeatureMenu(feature().id)">
-	<mat-icon color="primary">edit</mat-icon>Open Feature Dialog
+	<mat-icon class="tw-text-osee-blue-9">edit</mat-icon>Open Feature Dialog
 </button>
 @if (hasFeatureChanges(feature())) {
 	<button
 		mat-menu-item
 		[matMenuTriggerFor]="featureDiffMenu"
 		[matMenuTriggerData]="{ feature: feature() }">
-		<mat-icon color="accent">pageview</mat-icon>View Diff for
+		<mat-icon class="tw-text-osee-yellow-10 dark:tw-text-osee-amber-9"
+			>pageview</mat-icon
+		>View Diff for
 		{{ feature().name }}
 	</button>
 	<!--TODO IMPLEMENT DIFF VIEWER-->
@@ -73,7 +75,7 @@
 				mat-menu-item
 				[matMenuTriggerFor]="arrayDiffMenu"
 				[matMenuTriggerData]="{
-					array: feature.changes.productApplicabilities
+					array: feature.changes.productApplicabilities,
 				}">
 				Product Applicabilities
 			</button>

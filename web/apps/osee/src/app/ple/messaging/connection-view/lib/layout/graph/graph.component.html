@@ -139,15 +139,16 @@
 					(contextmenu)="
 						openNodeDialog($event, node, graphData.edges)
 					"
-					[attr.data-cy]="'node-' + node.data.name">
-					@if (node.data.interfaceNodeBackgroundColor !== '') {
+					[attr.data-cy]="'node-' + node.data.name.value">
+					@if (node.data.interfaceNodeBackgroundColor.value !== '') {
 						<ng-container>
 							<svg:rect
 								[attr.width]="node.dimension.width"
 								[attr.height]="node.dimension.height"
 								[attr.fill]="
-									node.data.interfaceNodeBackgroundColor
+									node.data.interfaceNodeBackgroundColor.value
 										? node.data.interfaceNodeBackgroundColor
+												.value
 										: ''
 								" />
 						</ng-container>
@@ -161,11 +162,13 @@
 							[attr.width]="node.dimension.width"
 							[attr.height]="node.dimension.height"
 							[attr.fill]="
-								node.data.interfaceNodeBackgroundColor
+								node.data.interfaceNodeBackgroundColor.value !==
+								''
 									? node.data.interfaceNodeBackgroundColor
+											.value
 									: node.data.color
-									  ? node.data.color
-									  : ''
+										? node.data.color
+										: ''
 							" />
 					</ng-template>
 					<svg:text
@@ -219,8 +222,8 @@
 								link.data.deleted
 									? 'tw-fill-warn-400'
 									: link.data.added
-									  ? 'tw-fill-success-400'
-									  : ''
+										? 'tw-fill-success-400'
+										: ''
 							">
 							<textPath
 								class="text-path"
@@ -250,7 +253,7 @@
 								dominant-baseline="hanging"
 								startOffset="50%"
 								side="left">
-								{{ link.data.transportType.name }}
+								{{ link.data.transportType.name.value }}
 							</textPath>
 						</svg:text>
 					</ng-template>
@@ -329,7 +332,7 @@
 				mat-menu-item
 				(click)="createNewNode()">
 				<mat-icon
-					color="success"
+					class="tw-text-osee-green-9"
 					data-cy="create-new-node-btn"
 					>add_circle_outline</mat-icon
 				>Create New Node
@@ -338,7 +341,7 @@
 				mat-menu-item
 				(click)="createNewConnection()">
 				<mat-icon
-					color="success"
+					class="tw-text-osee-green-9"
 					data-cy="create-new-connection-btn"
 					>add_circle_outline</mat-icon
 				>Create New Connection

@@ -20,8 +20,6 @@ import {
 	BranchInfoServiceMock,
 	branchRoutedUiServiceMock,
 } from '@osee/shared/testing';
-import { TransactionService } from '@osee/shared/transactions';
-import { transactionServiceMock } from '@osee/shared/transactions/testing';
 import { CommitBranchService } from '@osee/commit/services';
 import { commitBranchServiceMock } from '@osee/commit/testing';
 
@@ -40,10 +38,6 @@ describe('UpdateFromParentButtonComponent', () => {
 				{
 					provide: BranchInfoService,
 					useValue: BranchInfoServiceMock,
-				},
-				{
-					provide: TransactionService,
-					useValue: transactionServiceMock,
 				},
 				{
 					provide: CommitBranchService,

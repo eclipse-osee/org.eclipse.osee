@@ -13,6 +13,7 @@
 import { EventEmitter, Output } from '@angular/core';
 import { Component, Input } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import { applicabilitySentinel } from '@osee/applicability/types';
 import type { structure } from '@osee/messaging/shared/types';
 
 @Component({
@@ -32,13 +33,51 @@ export class SubElementTableComponentMock {
 	@Input() subMessageHeaders: string[] = [];
 	@Input() editMode: boolean = false;
 	@Input() structure: structure = {
-		id: '',
-		name: '',
-		nameAbbrev: '',
-		description: '',
-		interfaceMaxSimultaneity: '',
-		interfaceMinSimultaneity: '',
-		interfaceTaskFileType: 0,
-		interfaceStructureCategory: '',
+		id: '-1',
+		gammaId: '-1',
+		name: {
+			id: '-1',
+			typeId: '1152921504606847088',
+			gammaId: '-1',
+			value: '',
+		},
+		nameAbbrev: {
+			id: '-1',
+			typeId: '8355308043647703563',
+			gammaId: '-1',
+			value: '',
+		},
+		description: {
+			id: '-1',
+			typeId: '1152921504606847090',
+			gammaId: '-1',
+			value: '',
+		},
+		interfaceMaxSimultaneity: {
+			id: '-1',
+			typeId: '2455059983007225756',
+			gammaId: '-1',
+			value: '',
+		},
+		interfaceMinSimultaneity: {
+			id: '-1',
+			typeId: '2455059983007225755',
+			gammaId: '-1',
+			value: '',
+		},
+		interfaceTaskFileType: {
+			id: '-1',
+			typeId: '2455059983007225760',
+			gammaId: '-1',
+			value: 0,
+		},
+		interfaceStructureCategory: {
+			id: '-1',
+			typeId: '2455059983007225764',
+			gammaId: '-1',
+			value: '',
+		},
+		applicability: applicabilitySentinel,
+		elements: [],
 	};
 }

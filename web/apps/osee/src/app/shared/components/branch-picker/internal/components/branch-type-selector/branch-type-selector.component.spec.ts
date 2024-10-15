@@ -13,11 +13,7 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import {
-	MatRadioChange,
-	MatRadioGroup,
-	MatRadioModule,
-} from '@angular/material/radio';
+import { MatRadioModule } from '@angular/material/radio';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 
@@ -64,7 +60,7 @@ describe('BranchTypeSelectorComponent', () => {
 	});
 
 	it('should change the branch type to hello', () => {
-		const spy = spyOn(router, 'navigate').and.returnValue(
+		const _spy = spyOn(router, 'navigate').and.returnValue(
 			new Promise(() => true)
 		);
 		component.changeBranchType('baseline');

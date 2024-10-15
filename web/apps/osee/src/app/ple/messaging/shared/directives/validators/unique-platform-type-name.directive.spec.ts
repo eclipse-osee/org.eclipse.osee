@@ -11,10 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
-import {
-	CurrentQueryService,
-	QueryService,
-} from '@osee/messaging/shared/services';
+import { QueryService } from '@osee/messaging/shared/services';
 import { QueryServiceMock } from '@osee/messaging/shared/testing';
 import { UniquePlatformTypeNameDirective } from './unique-platform-type-name.directive';
 
@@ -25,9 +22,9 @@ describe('UniquePlatformTypeNameDirective', () => {
 		}).compileComponents();
 	});
 	it('should create an instance', () => {
-		const directive = new UniquePlatformTypeNameDirective(
-			TestBed.inject(CurrentQueryService)
-		);
-		expect(directive).toBeTruthy();
+		TestBed.runInInjectionContext(() => {
+			const directive = new UniquePlatformTypeNameDirective();
+			expect(directive).toBeTruthy();
+		});
 	});
 });

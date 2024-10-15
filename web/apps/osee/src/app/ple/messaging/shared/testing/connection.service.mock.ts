@@ -12,24 +12,36 @@
  **********************************************************************/
 import { ConnectionService } from '@osee/messaging/shared/services';
 import { connection } from '@osee/messaging/shared/types';
+import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
 import {
 	transactionMock,
 	transactionResultMock,
-} from '@osee/shared/transactions/testing';
-import { relation, transaction } from '@osee/shared/types';
-import { iif, of } from 'rxjs';
+} from '@osee/transactions/testing';
+import {
+	legacyRelation,
+	legacyTransaction,
+	transaction,
+} from '@osee/transactions/types';
+import { of } from 'rxjs';
 import { connectionMock } from './connection.response.mock';
 
 export const connectionServiceMock: Partial<ConnectionService> = {
 	getConnections(branchId: string) {
 		return of([connectionMock]);
 	},
-	createConnection(
-		branchId: string,
-		connection: connection,
-		relations: relation[]
-	) {
-		return of(transactionMock);
+	createConnection(connection: connection, tx: Required<transaction>) {
+		return {
+			tx: tx,
+			nodes: [],
+			connection: {
+				typeId: ARTIFACTTYPEIDENUM.CONNECTION,
+				name: connection.name.value,
+				applicabilityId: connection.applicability.id,
+				relations: [],
+				key: '',
+				attributes: [],
+			},
+		};
 	},
 	createNodeRelation(nodeId: string) {
 		return of({
@@ -44,16 +56,13 @@ export const connectionServiceMock: Partial<ConnectionService> = {
 			sideB: transportTypeId,
 		});
 	},
-	changeConnection(branchId: string, connection: Partial<connection>) {
-		return of(transactionMock);
-	},
-	performMutation(transaction: transaction) {
+	performMutation(transaction: legacyTransaction) {
 		return of(transactionResultMock);
 	},
 	deleteRelation(
 		branchId: string,
-		relation: relation,
-		transaction?: transaction
+		relation: legacyRelation,
+		transaction?: legacyTransaction
 	) {
 		return of(transactionMock);
 	},

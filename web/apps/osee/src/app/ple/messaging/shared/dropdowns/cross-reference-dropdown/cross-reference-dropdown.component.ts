@@ -105,14 +105,14 @@ export class CrossReferenceDropdownComponent implements OnChanges {
 
 	private _isOpen = new BehaviorSubject<boolean>(false);
 
-	@Input() id: string = '';
-	@Input() name: string = '';
-	@Input() required: boolean = false;
+	@Input() id = '';
+	@Input() name = '';
+	@Input() required = false;
 
-	@Input() disabled: boolean = false;
+	@Input() disabled = false;
 
-	@Input() hintHidden: boolean = false;
-	@Input() crossRef: string = '';
+	@Input() hintHidden = false;
+	@Input() crossRef = '';
 
 	_crossRefChange = new Subject<string>();
 	@Output() crossRefChange = this._crossRefChange.pipe(
@@ -123,13 +123,13 @@ export class CrossReferenceDropdownComponent implements OnChanges {
 	@Input() errorMatcher: ErrorStateMatcher =
 		new ShowOnDirtyErrorStateMatcher();
 
-	@Input() allowOutsideValues: boolean = false;
+	@Input() allowOutsideValues = false;
 
-	@Input() alternateObjectType: string = '';
+	@Input() alternateObjectType = '';
 
-	@Input() maximum: string = '';
+	@Input() maximum = '';
 
-	@Input() minimum: string = '';
+	@Input() minimum = '';
 
 	private _previousValue = '';
 

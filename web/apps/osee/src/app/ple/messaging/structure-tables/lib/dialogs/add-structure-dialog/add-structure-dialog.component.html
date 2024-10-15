@@ -11,19 +11,21 @@
 *     Boeing - initial API and implementation
 -->
 <h1 mat-dialog-title>Add Structure to {{ data.name }}</h1>
-<mat-horizontal-stepper #stepper>
+<mat-horizontal-stepper
+	#stepper
+	class="tw-p-4">
 	<mat-step
 		label="Select Structure options"
 		#step1>
 		<mat-dialog-content>
-			<div class="tw-flex tw-items-center tw-justify-between">
+			<div
+				class="tw-flex tw-content-evenly tw-items-center tw-justify-between tw-pt-4">
 				<button
-					mat-raised-button
-					color="primary"
+					mat-flat-button
 					matStepperNext
 					(click)="createNew()"
 					data-cy="create-new-btn"
-					class="tw-w-full tw-p-6">
+					class="primary-button tw-w-full tw-p-6">
 					Create new Structure
 				</button>
 
@@ -52,13 +54,13 @@
 								[paginationSize]="paginationSize">
 								<ng-template let-option>
 									<mat-option
-										[value]="option.name"
+										[value]="option.name.value"
 										(click)="
 											selectExistingStructure(option)
 										"
 										[matTooltip]="option.description"
 										matTooltipShowDelay="250">
-										{{ option.name }}
+										{{ option.name.value }}
 									</mat-option>
 								</ng-template>
 							</osee-mat-option-loading>
@@ -68,14 +70,13 @@
 			</div>
 		</mat-dialog-content>
 		<mat-dialog-actions align="end">
-			@if (selectedStructure) {
-				<button
-					mat-raised-button
-					color="primary"
-					(click)="moveToReview(stepper)">
-					Proceed to Review
-				</button>
-			}
+			<button
+				mat-flat-button
+				class="primary-button tw-mt-4"
+				[disabled]="!selectedStructure"
+				(click)="moveToReview(stepper)">
+				Proceed to Review
+			</button>
 		</mat-dialog-actions>
 	</mat-step>
 	<mat-step
@@ -87,7 +88,7 @@
 					<mat-label>Name</mat-label>
 					<input
 						matInput
-						[(ngModel)]="data.structure.name"
+						[(ngModel)]="data.structure.name.value"
 						required
 						data-cy="field-name" />
 				</mat-form-field>
@@ -96,8 +97,8 @@
 					<input
 						matInput
 						#nameAbbrevInput
-						[(ngModel)]="data.structure.nameAbbrev"
-						[required]="data.structure.name.length > 31"
+						[(ngModel)]="data.structure.nameAbbrev.value"
+						[required]="data.structure.name.value.length > 31"
 						maxlength="31"
 						data-cy="field-name-abbrev" />
 					@if (nameAbbrevInput.value.length > 0) {
@@ -112,7 +113,7 @@
 					<textarea
 						cdkTextareaAutosize
 						matInput
-						[(ngModel)]="data.structure.description"
+						[(ngModel)]="data.structure.description.value"
 						data-cy="field-description"></textarea>
 				</mat-form-field>
 				<mat-form-field>
@@ -120,7 +121,9 @@
 					<input
 						matInput
 						type="number"
-						[(ngModel)]="data.structure.interfaceMaxSimultaneity"
+						[(ngModel)]="
+							data.structure.interfaceMaxSimultaneity.value
+						"
 						required
 						data-cy="field-max-simultaneity" />
 				</mat-form-field>
@@ -129,7 +132,9 @@
 					<input
 						matInput
 						type="number"
-						[(ngModel)]="data.structure.interfaceMinSimultaneity"
+						[(ngModel)]="
+							data.structure.interfaceMinSimultaneity.value
+						"
 						required
 						data-cy="field-min-simultaneity" />
 				</mat-form-field>
@@ -138,32 +143,20 @@
 					<input
 						type="number"
 						matInput
-						[(ngModel)]="data.structure.interfaceTaskFileType"
+						[(ngModel)]="data.structure.interfaceTaskFileType.value"
 						required
 						data-cy="field-task-file-type" />
 				</mat-form-field>
-				<mat-form-field>
-					<mat-label>Category</mat-label>
-					<!-- <input matInput [(ngModel)]="data.structure.interfaceStructureCategory" required> -->
-					<mat-select
-						[(ngModel)]="data.structure.interfaceStructureCategory"
-						required
-						data-cy="field-category">
-						@for (option of categories | async; track option) {
-							<mat-option
-								[value]="option"
-								[attr.data-cy]="'option-' + option">
-								{{ option }}
-							</mat-option>
-						}
-					</mat-select>
-				</mat-form-field>
-				<osee-applicability-selector
+				<osee-structure-category-dropdown
+					[required]="true"
+					[(value)]="data.structure.interfaceStructureCategory">
+				</osee-structure-category-dropdown>
+				<osee-applicability-dropdown
 					[applicability]="data.structure.applicability"
 					(applicabilityChange)="
 						data.structure.applicability = $event
 					"
-					[required]="true"></osee-applicability-selector>
+					[required]="true"></osee-applicability-dropdown>
 			</div>
 		</mat-dialog-content>
 		<mat-dialog-actions align="end">
@@ -173,21 +166,20 @@
 				data-cy="stepper-back">
 				Back
 			</button>
-			@if (
-				data.structure.name !== '' &&
-				data.structure.interfaceMaxSimultaneity !== '' &&
-				data.structure.interfaceMinSimultaneity !== '' &&
-				data.structure.interfaceTaskFileType !== undefined &&
-				data.structure.interfaceStructureCategory !== ''
-			) {
-				<button
-					mat-raised-button
-					color="primary"
-					matStepperNext
-					data-cy="stepper-next">
-					Next
-				</button>
-			}
+			<button
+				mat-flat-button
+				class="primary-button"
+				[disabled]="
+					data.structure.name.value === '' ||
+					data.structure.interfaceMaxSimultaneity.value === '' ||
+					data.structure.interfaceMinSimultaneity.value === '' ||
+					data.structure.interfaceTaskFileType.value === undefined ||
+					data.structure.interfaceStructureCategory.value === ''
+				"
+				matStepperNext
+				data-cy="stepper-next">
+				Next
+			</button>
 		</mat-dialog-actions>
 	</mat-step>
 	<mat-step
@@ -198,30 +190,38 @@
 				A structure will be related to:
 				<mat-label>{{ data.name }}</mat-label> with the following
 				properties:
-				<mat-label>Structure Name: {{ data.structure.name }}</mat-label>
+				<mat-label
+					>Structure Name: {{ data.structure.name.value }}</mat-label
+				>
 				<mat-label
 					>Structure Description:
-					{{ data.structure.description }}</mat-label
+					{{ data.structure.description.value }}</mat-label
 				>
 				<mat-label
 					>Structure Max Simultaneity:
-					{{ data.structure.interfaceMaxSimultaneity }}</mat-label
+					{{
+						data.structure.interfaceMaxSimultaneity.value
+					}}</mat-label
 				>
 				<mat-label
 					>Structure Min Simultaneity:
-					{{ data.structure.interfaceMinSimultaneity }}</mat-label
+					{{
+						data.structure.interfaceMinSimultaneity.value
+					}}</mat-label
 				>
 				<mat-label
 					>Structure Task File Type:
-					{{ data.structure.interfaceTaskFileType }}</mat-label
+					{{ data.structure.interfaceTaskFileType.value }}</mat-label
 				>
 				<mat-label
 					>Structure Category:
-					{{ data.structure.interfaceStructureCategory }}</mat-label
+					{{
+						data.structure.interfaceStructureCategory.value
+					}}</mat-label
 				>
 				<mat-label
 					>Applicability:
-					{{ data.structure.applicability?.name }}
+					{{ data.structure.applicability.name }}
 				</mat-label>
 			</div>
 		</mat-dialog-content>
@@ -233,8 +233,8 @@
 				Back
 			</button>
 			<button
-				mat-raised-button
-				color="primary"
+				mat-flat-button
+				class="primary-button"
 				[mat-dialog-close]="data"
 				data-cy="submit-btn">
 				Ok

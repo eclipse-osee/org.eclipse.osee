@@ -14,11 +14,11 @@
 	<h1 mat-dialog-title>Create New Message</h1>
 	<mat-dialog-content>
 		<mat-form-field class="tw-w-full">
-			<label>Name</label>
+			<mat-label>Name</mat-label>
 			<input
 				matInput
 				type="text"
-				[(ngModel)]="data.name"
+				[(ngModel)]="name"
 				#input
 				required
 				name="name"
@@ -26,47 +26,32 @@
 		</mat-form-field>
 		<br />
 		<mat-form-field class="tw-w-full">
-			<label>Description</label>
+			<mat-label>Description</mat-label>
 			<textarea
 				matInput
 				cdkTextareaAutosize
 				type="text"
-				[(ngModel)]="data.description"
+				[(ngModel)]="description"
 				#input
 				name="description"
 				data-cy="field-description"></textarea>
 		</mat-form-field>
 		<br />
 		<osee-rate-dropdown
-			[(rate)]="data.interfaceMessageRate"
+			[(value)]="rateAttr"
 			[required]="true"></osee-rate-dropdown>
 		<br />
-		<mat-form-field class="tw-w-full">
-			<label>Periodicity</label>
-			<mat-select
-				[(ngModel)]="data.interfaceMessagePeriodicity"
-				required
-				name="periodicity"
-				data-cy="field-periodicity">
-				@for (option of periodicities | async; track option) {
-					<mat-option
-						[value]="option"
-						[attr.data-cy]="'option-' + option">
-						{{ option }}
-					</mat-option>
-				}
-			</mat-select>
-		</mat-form-field>
+		<osee-message-periodicity-dropdown
+			[(value)]="periodicityAttr"
+			[required]="true" />
 		<br />
 		<mat-slide-toggle
-			[(ngModel)]="data.interfaceMessageWriteAccess"
+			[(ngModel)]="writeAccess"
 			name="write_access"
-			[labelPosition]="
-				data.interfaceMessageWriteAccess ? 'after' : 'before'
-			"
+			[labelPosition]="writeAccess() ? 'after' : 'before'"
 			data-cy="field-write-access"
 			class="tw-w-full tw-pb-4">
-			@if (data.interfaceMessageWriteAccess) {
+			@if (writeAccess()) {
 				Writable
 			} @else {
 				Read Only
@@ -74,99 +59,35 @@
 		</mat-slide-toggle>
 		<br />
 		<osee-message-type-dropdown
-			[(messageType)]="data.interfaceMessageType"
+			[(value)]="messageTypeAttr"
 			[required]="true"></osee-message-type-dropdown>
 		<br />
 		<mat-form-field class="tw-w-full">
-			<label>Message Number</label>
+			<mat-label>Message Number</mat-label>
 			<input
 				matInput
 				type="text"
-				[(ngModel)]="data.interfaceMessageNumber"
+				[(ngModel)]="messageNumber"
 				#input
 				name="message_number"
 				required
 				data-cy="field-message-number" />
 		</mat-form-field>
-		@if (transportType | async; as type) {
-			<br />
-			<mat-form-field class="tw-w-full">
-				<label>Publisher Node(s)</label>
-				<mat-select
-					[(ngModel)]="data.publisherNodes"
-					required
-					name="pub_nodes"
-					[multiple]="type.maximumPublisherMultiplicity !== 1"
-					[compareWith]="compareIds"
-					#pubSelect="ngModel"
-					[oseeMessageNodesCount]="true"
-					data-cy="field-pub-node">
-					@for (option of nodes | async; track option) {
-						<mat-option
-							[value]="option"
-							[attr.data-cy]="'option-' + option.name">
-							{{ option.name }}
-						</mat-option>
-					}
-				</mat-select>
-				@if (
-					pubSelect.control.errors?.min ||
-					pubSelect.control.errors?.required
-				) {
-					<mat-error
-						>Minimum nodes is
-						{{ type.minimumPublisherMultiplicity || 1 }}</mat-error
-					>
-				}
-				@if (pubSelect.control.errors?.max) {
-					<mat-error
-						>Maximum nodes is
-						{{ type.maximumPublisherMultiplicity }}</mat-error
-					>
-				}
-			</mat-form-field>
-			<br />
-			<mat-form-field class="tw-w-full">
-				<label>Subscriber Node(s)</label>
-				<mat-select
-					[(ngModel)]="data.subscriberNodes"
-					required
-					name="sub_nodes"
-					[multiple]="type.maximumSubscriberMultiplicity !== 1"
-					#subSelect="ngModel"
-					[compareWith]="compareIds"
-					[oseeMessageNodesCount]="false"
-					data-cy="field-sub-node">
-					@for (option of nodes | async; track option) {
-						<mat-option
-							[value]="option"
-							[id]="option.id"
-							[attr.data-cy]="'option-' + option.name">
-							{{ option.name }}
-						</mat-option>
-					}
-				</mat-select>
-				@if (
-					subSelect.control.errors?.min ||
-					subSelect.control.errors?.required
-				) {
-					<mat-error
-						>Minimum nodes is
-						{{ type.minimumSubscriberMultiplicity || 1 }}</mat-error
-					>
-				}
-				@if (subSelect.control.errors?.max) {
-					<mat-error
-						>Maximum nodes is
-						{{ type.maximumSubscriberMultiplicity }}</mat-error
-					>
-				}
-			</mat-form-field>
-			<osee-applicability-selector
-				[applicability]="data.applicability"
-				(applicabilityChange)="data.applicability = $event"
-				[required]="true"></osee-applicability-selector>
-		}
+		<br />
+		<osee-node-dropdown
+			[(selectedNodes)]="publisherNodes"
+			[transportType]="transportType()"
+			validationType="publish"
+			label="Select Publisher Node(s)" />
+		<br />
+		<osee-node-dropdown
+			[(selectedNodes)]="subscriberNodes"
+			[transportType]="transportType()"
+			validationType="subscribe"
+			label="Select Subscriber Node(s)" />
+		<osee-applicability-dropdown
+			[(applicability)]="applicability"
+			[required]="true"></osee-applicability-dropdown>
 	</mat-dialog-content>
 	<mat-dialog-actions align="end">
 		<button
@@ -175,24 +96,29 @@
 			data-cy="cancel-btn">
 			Cancel
 		</button>
-		@if (transportType | async; as type) {
-			@if (type.id !== '-1') {
-				<button
-					mat-raised-button
-					[mat-dialog-close]="data"
-					color="primary"
-					[disabled]="
-						addMessageForm.invalid || addMessageForm.pending
-					"
-					data-cy="submit-btn">
-					Ok
-				</button>
-			} @else {
-				<mat-error
-					>Transport Type is invalid. Please contact a MIM
-					admin.</mat-error
-				>
-			}
-		}
+		<div
+			[matTooltip]="
+				transportType().id === '-1'
+					? 'Transport Type is invalid. Please contact a MIM admin.'
+					: addMessageForm.invalid ||
+						  addMessageForm.pending ||
+						  addMessageForm.disabled
+						? 'Complete the form to add a message'
+						: 'Add message'
+			">
+			<button
+				mat-flat-button
+				[mat-dialog-close]="data()"
+				class="primary-button"
+				[disabled]="
+					transportType().id === '-1' ||
+					addMessageForm.invalid ||
+					addMessageForm.pending ||
+					addMessageForm.disabled
+				"
+				data-cy="submit-btn">
+				Ok
+			</button>
+		</div>
 	</mat-dialog-actions>
 </form>

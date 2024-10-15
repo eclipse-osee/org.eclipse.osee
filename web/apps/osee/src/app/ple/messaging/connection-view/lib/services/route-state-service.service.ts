@@ -10,14 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { MimRouteService } from '@osee/messaging/shared/services';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class RouteStateService {
-	constructor(private uiService: MimRouteService) {}
+	private uiService = inject(MimRouteService);
 
 	get type() {
 		return this.uiService.type;
@@ -47,13 +47,13 @@ export class RouteStateService {
 		this.uiService.diffMode = value;
 	}
 
-	set connectionId(value: string) {
+	set connectionId(value: `${number}`) {
 		this.uiService.connectionIdString = value;
 	}
 	set messageId(value: string) {
 		this.uiService.messageIdString = value;
 	}
-	set subMessageId(value: string) {
+	set subMessageId(value: `${number}`) {
 		this.uiService.submessageIdString = value;
 	}
 	set subMessageToStructureBreadCrumbs(value: string) {

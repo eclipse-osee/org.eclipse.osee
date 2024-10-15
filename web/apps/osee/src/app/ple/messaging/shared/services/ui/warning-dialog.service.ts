@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import {
 	MatDialog,
 	MatDialogConfig,
@@ -21,17 +21,16 @@ import type {
 	affectedArtifact,
 	affectedArtifactWarning,
 	element,
-	enumeration,
 	message,
 	PlatformType,
 	structure,
 	subMessage,
 } from '@osee/messaging/shared/types';
 import {
-	createArtifact,
-	modifyArtifact,
-	modifyRelation,
-} from '@osee/shared/types';
+	legacyCreateArtifact,
+	legacyModifyArtifact,
+	legacyModifyRelation,
+} from '@osee/transactions/types';
 import { from, of } from 'rxjs';
 import {
 	concatMap,
@@ -43,7 +42,6 @@ import {
 	startWith,
 	switchMap,
 	take,
-	tap,
 } from 'rxjs/operators';
 import { BranchedAffectedArtifactService } from '../ui/branched-affected-artifact.service';
 
@@ -51,10 +49,9 @@ import { BranchedAffectedArtifactService } from '../ui/branched-affected-artifac
 	providedIn: 'any',
 })
 export class WarningDialogService {
-	constructor(
-		private dialog: MatDialog,
-		private affectedArtifacts: BranchedAffectedArtifactService
-	) {}
+	private dialog = inject(MatDialog);
+	private affectedArtifacts = inject(BranchedAffectedArtifactService);
+
 	private _openDialog<T>(
 		config: MatDialogConfig<T>
 	): MatDialogRef<AffectedArtifactDialogComponent<T>, T> {
@@ -79,20 +76,41 @@ export class WarningDialogService {
 								modifiedObjectType: 'Message',
 								affectedObjectType: 'Connection',
 							},
-					  }).pipe(
+						}).pipe(
 							filter(
 								(
 									value
-								): value is affectedArtifactWarning<subMessage> =>
+								): value is affectedArtifactWarning<message> =>
 									value !== undefined
 							),
 							map((value) => value.body)
-					  )
+						)
 					: of(body)
 			)
 		);
 	}
 
+	openMessageDialogForValidation(body: `${number}`) {
+		return of(body).pipe(
+			take(1),
+			filter((id: string | undefined): id is string => id !== undefined),
+			switchMap((id) =>
+				this._getAffectedConnectionsFromAffectedArtifacts([id])
+			),
+			switchMap((artifacts) =>
+				artifacts.length > 1
+					? this._listenToDialogEmission({
+							data: {
+								affectedArtifacts: artifacts,
+								body: body,
+								modifiedObjectType: 'Message',
+								affectedObjectType: 'Connection',
+							},
+						}).pipe(map((v) => (v !== undefined ? true : false)))
+					: of(true)
+			)
+		);
+	}
 	openSubMessageDialog(body: Partial<subMessage>) {
 		return of(body.id).pipe(
 			take(1),
@@ -109,7 +127,7 @@ export class WarningDialogService {
 								modifiedObjectType: 'SubMessage',
 								affectedObjectType: 'Message',
 							},
-					  }).pipe(
+						}).pipe(
 							filter(
 								(
 									value
@@ -117,8 +135,30 @@ export class WarningDialogService {
 									value !== undefined
 							),
 							map((value) => value.body)
-					  )
+						)
 					: of(body)
+			)
+		);
+	}
+
+	openSubMessageDialogForValidation(body: `${number}`) {
+		return of(body).pipe(
+			take(1),
+			filter((id: string | undefined): id is string => id !== undefined),
+			switchMap((id) =>
+				this.affectedArtifacts.getMessagesBySubMessage(id)
+			),
+			switchMap((artifacts) =>
+				artifacts.length > 1
+					? this._listenToDialogEmission({
+							data: {
+								affectedArtifacts: artifacts,
+								body: body,
+								modifiedObjectType: 'SubMessage',
+								affectedObjectType: 'Message',
+							},
+						}).pipe(map((v) => (v !== undefined ? true : false)))
+					: of(true)
 			)
 		);
 	}
@@ -139,7 +179,7 @@ export class WarningDialogService {
 								modifiedObjectType: 'Structure',
 								affectedObjectType: 'Submessage',
 							},
-					  }).pipe(
+						}).pipe(
 							filter(
 								(
 									value
@@ -147,8 +187,52 @@ export class WarningDialogService {
 									value !== undefined
 							),
 							map((value) => value.body)
-					  )
+						)
 					: of(body)
+			)
+		);
+	}
+
+	openStructureDialogForValidation(body: `${number}`) {
+		return of(body).pipe(
+			take(1),
+			filter((id: string | undefined): id is string => id !== undefined),
+			switchMap((id) =>
+				this.affectedArtifacts.getSubMessagesByStructure(id)
+			),
+			switchMap((artifacts) =>
+				artifacts.length > 1
+					? this._listenToDialogEmission({
+							data: {
+								affectedArtifacts: artifacts,
+								body: body,
+								modifiedObjectType: 'Structure',
+								affectedObjectType: 'Submessage',
+							},
+						}).pipe(map((v) => (v !== undefined ? true : false)))
+					: of(true)
+			)
+		);
+	}
+
+	openElementDialogForValidation(body: `${number}`) {
+		return of(body).pipe(
+			take(1),
+			filter((id: string | undefined): id is string => id !== undefined),
+			switchMap((id) =>
+				this.affectedArtifacts.getStructuresByElement(id)
+			),
+			switchMap((artifacts) =>
+				artifacts.length > 1
+					? this._listenToDialogEmission({
+							data: {
+								affectedArtifacts: artifacts,
+								body: body,
+								modifiedObjectType: 'Element',
+								affectedObjectType: 'Structure',
+							},
+						}).pipe(map((v) => (v !== undefined ? true : false)))
+					: of(true)
 			)
 		);
 	}
@@ -169,7 +253,7 @@ export class WarningDialogService {
 								modifiedObjectType: 'Element',
 								affectedObjectType: 'Structure',
 							},
-					  }).pipe(
+						}).pipe(
 							filter(
 								(
 									value
@@ -177,7 +261,37 @@ export class WarningDialogService {
 									value !== undefined
 							),
 							map((value) => value.body)
-					  )
+						)
+					: of(body)
+			)
+		);
+	}
+
+	openElementDialogById(body: `${number}`) {
+		return of(body).pipe(
+			take(1),
+			filter((id: string | undefined): id is string => id !== undefined),
+			switchMap((id) =>
+				this.affectedArtifacts.getStructuresByElement(id)
+			),
+			switchMap((artifacts) =>
+				artifacts.length > 1
+					? this._listenToDialogEmission({
+							data: {
+								affectedArtifacts: artifacts,
+								body: body,
+								modifiedObjectType: 'Element',
+								affectedObjectType: 'Structure',
+							},
+						}).pipe(
+							filter(
+								(
+									value
+								): value is affectedArtifactWarning<`${number}`> =>
+									value !== undefined
+							),
+							map((value) => value.body)
+						)
 					: of(body)
 			)
 		);
@@ -197,7 +311,7 @@ export class WarningDialogService {
 								modifiedObjectType: 'Platform Type',
 								affectedObjectType: 'Element',
 							},
-					  }).pipe(
+						}).pipe(
 							filter(
 								(
 									value
@@ -205,19 +319,19 @@ export class WarningDialogService {
 									value !== undefined
 							),
 							map((value) => value.body)
-					  )
+						)
 					: of(body)
 			)
 		);
 	}
 	openPlatformTypeDialogWithManifest(tx: {
-		createArtifacts: createArtifact[];
-		modifyArtifacts: modifyArtifact[];
-		deleteRelations: modifyRelation[];
+		createArtifacts: legacyCreateArtifact[];
+		modifyArtifacts: legacyModifyArtifact[];
+		deleteRelations: legacyModifyRelation[];
 	}) {
 		const platformType = tx.modifyArtifacts?.pop();
 		const enumSetIdArray: string[] = [];
-		const enumSetArray: modifyArtifact[] = [];
+		const enumSetArray: legacyModifyArtifact[] = [];
 		if (tx.modifyArtifacts !== undefined && tx.modifyArtifacts.length > 1) {
 			const enumSet = tx.modifyArtifacts?.pop();
 			if (enumSet) {
@@ -237,7 +351,7 @@ export class WarningDialogService {
 			enumSetIdArray,
 			platformTypeArray
 		).pipe(
-			map((results) => {
+			map((_) => {
 				if (enumSetIdArray.length > 1) {
 					tx.modifyArtifacts.push(...enumSetArray);
 				}
@@ -397,7 +511,7 @@ export class WarningDialogService {
 								modifiedObjectType: 'Enum',
 								affectedObjectType: 'Enum Set',
 							},
-					  }).pipe(
+						}).pipe(
 							filter(
 								(
 									value
@@ -406,7 +520,7 @@ export class WarningDialogService {
 								> => value !== undefined
 							),
 							map((value) => value.affectedArtifacts)
-					  )
+						)
 					: of(artifacts)
 			),
 			switchMap((enumSetArtifacts) =>
@@ -424,7 +538,7 @@ export class WarningDialogService {
 								modifiedObjectType: 'Enum Set',
 								affectedObjectType: 'Platform Type',
 							},
-					  }).pipe(
+						}).pipe(
 							filter(
 								(
 									value
@@ -433,7 +547,7 @@ export class WarningDialogService {
 								> => value !== undefined
 							),
 							map((value) => value.affectedArtifacts)
-					  )
+						)
 					: of(artifacts)
 			),
 			switchMap((platformTypeArtifacts) =>
@@ -451,7 +565,7 @@ export class WarningDialogService {
 								modifiedObjectType: 'Platform Type',
 								affectedObjectType: 'Element',
 							},
-					  }).pipe(
+						}).pipe(
 							filter(
 								(
 									value
@@ -460,7 +574,7 @@ export class WarningDialogService {
 								> => value !== undefined
 							),
 							map((value) => value.affectedArtifacts)
-					  )
+						)
 					: of(artifacts)
 			)
 		);

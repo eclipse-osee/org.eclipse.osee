@@ -11,20 +11,25 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
-	HttpClientTestingModule,
 	HttpTestingController,
+	provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { TransactionBuilderService } from '@osee/shared/transactions';
-import { relation } from '@osee/shared/types';
-import {
-	transactionBuilderMock,
-	transactionMock,
-} from '@osee/shared/transactions/testing';
-import { TestScheduler } from 'rxjs/testing';
 import { apiURL } from '@osee/environments';
+import { TransactionBuilderService } from '@osee/shared/transactions-legacy';
+import { transactionBuilderMock } from '@osee/shared/transactions-legacy/testing';
+import { TestScheduler } from 'rxjs/testing';
 
+import { messagesMock } from '@osee/messaging/shared/testing';
+import { CurrentTransactionService } from '@osee/transactions/services';
+import { currentTransactionServiceMock } from '@osee/transactions/services/testing';
+import { transactionMock, txMock } from '@osee/transactions/testing';
+import { legacyRelation } from '@osee/transactions/types';
 import { MessagesService } from './messages.service';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('MessagesService', () => {
 	let service: MessagesService;
@@ -33,13 +38,19 @@ describe('MessagesService', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
+			imports: [],
 			providers: [
 				{
 					provide: TransactionBuilderService,
 					useValue: transactionBuilderMock,
 				},
+				{
+					provide: CurrentTransactionService,
+					useValue: currentTransactionServiceMock,
+				},
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
 			],
-			imports: [HttpClientTestingModule],
 		});
 		service = TestBed.inject(MessagesService);
 		httpTestingController = TestBed.inject(HttpTestingController);
@@ -57,14 +68,14 @@ describe('MessagesService', () => {
 
 	it('should create a connection relation', () => {
 		scheduler.run(() => {
-			let relation: relation = {
+			const relation: legacyRelation = {
 				typeName: 'Interface Connection Message',
 				sideA: '10',
 				sideB: undefined,
 				afterArtifact: 'end',
 			};
-			let expectedObservable = { a: relation };
-			let expectedMarble = '(a|)';
+			const expectedObservable = { a: relation };
+			const expectedMarble = '(a|)';
 			scheduler
 				.expectObservable(service.createConnectionRelation('10'))
 				.toBe(expectedMarble, expectedObservable);
@@ -72,29 +83,19 @@ describe('MessagesService', () => {
 	});
 
 	it('should create a transaction for a message', () => {
-		scheduler.run(() => {
-			let expectedObservable = { a: transactionMock };
-			let expectedMarble = '(a|)';
-			scheduler
-				.expectObservable(service.createMessage('10', {}, []))
-				.toBe(expectedMarble, expectedObservable);
-		});
-	});
-
-	it('should create a transaction for a message change', () => {
-		scheduler.run(() => {
-			let expectedObservable = { a: transactionMock };
-			let expectedMarble = '(a|)';
-			scheduler
-				.expectObservable(service.changeMessage('10', {}))
-				.toBe(expectedMarble, expectedObservable);
-		});
+		expect(
+			service.addNewMessageToTransaction(
+				messagesMock[0],
+				txMock,
+				undefined
+			)
+		).toBe(txMock);
 	});
 
 	it('should create a delete relation transaction', () => {
 		scheduler.run(() => {
-			let expectedObservable = { a: transactionMock };
-			let expectedMarble = '(a|)';
+			const expectedObservable = { a: transactionMock };
+			const expectedMarble = '(a|)';
 			scheduler
 				.expectObservable(
 					service.deleteRelation('10', {
@@ -109,8 +110,8 @@ describe('MessagesService', () => {
 
 	it('should create a delete message transaction', () => {
 		scheduler.run(() => {
-			let expectedObservable = { a: transactionMock };
-			let expectedMarble = '(a|)';
+			const expectedObservable = { a: transactionMock };
+			const expectedMarble = '(a|)';
 			scheduler
 				.expectObservable(service.deleteMessage('10', '20'))
 				.toBe(expectedMarble, expectedObservable);

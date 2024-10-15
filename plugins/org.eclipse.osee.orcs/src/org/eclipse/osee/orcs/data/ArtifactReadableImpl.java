@@ -37,6 +37,8 @@ import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.ComputedCharacteristicToken;
+import org.eclipse.osee.framework.core.data.FallbackAttribute;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.IRelationLink;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -52,6 +54,7 @@ import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -75,6 +78,7 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    private final ModificationType modType;
    private final HashCollection<AttributeId, ArtifactReadable> referenceAttributes = new HashCollection<>();
    private final HashCollection<AttributeTypeToken, ArtifactReadable> referenceAttributeByType = new HashCollection<>();
+   private final GammaId gamma;
 
    public ArtifactReadableImpl(Long id, ArtifactTypeToken artifactType, BranchToken branch, ArtifactId view, ApplicabilityToken applicability, TransactionId txId, ModificationType modType, QueryFactory queryFactory) {
       super(id);
@@ -87,9 +91,10 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
          -1L, ArtifactId.SENTINEL);
       this.modType = modType;
       this.queryFactory = queryFactory;
+      this.gamma = GammaId.SENTINEL;
    }
 
-   public ArtifactReadableImpl(Long id, ArtifactTypeToken artifactType, BranchToken branch, ArtifactId view, ApplicabilityId applicability, TransactionId txId, ModificationType modType, QueryFactory queryFactory) {
+   public ArtifactReadableImpl(Long id, ArtifactTypeToken artifactType, BranchToken branch, ArtifactId view, ApplicabilityId applicability, TransactionId txId, TransactionDetails txDetails, ModificationType modType, QueryFactory queryFactory, GammaId gamma) {
       super(id);
       this.artifactType = artifactType;
       this.branch = branch;
@@ -100,6 +105,7 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
          -1L, ArtifactId.SENTINEL);
       this.modType = modType;
       this.queryFactory = queryFactory;
+      this.gamma = gamma;
    }
 
    public ArtifactReadableImpl(Long id, ArtifactTypeToken artifactType, BranchToken branch, ArtifactId view, ApplicabilityToken applicability, TransactionId txId, TransactionDetails txDetails, ModificationType modType, QueryFactory queryFactory) {
@@ -112,6 +118,7 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
       this.latestTxDetails = txDetails;
       this.modType = modType;
       this.queryFactory = queryFactory;
+      this.gamma = GammaId.SENTINEL;
    }
 
    @Override
@@ -211,6 +218,37 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
          return value == null ? defaultValue : value;
       } else {
          return defaultValue;
+      }
+   }
+
+   @Override
+   public <T> IAttribute<T> getSoleAttribute(AttributeTypeToken attributeType) {
+      List<IAttribute<?>> values = attributes.getValues(attributeType);
+      ensureNotMoreThanOne(attributeType, values.size());
+      if (values.size() == 1) {
+         @SuppressWarnings("unchecked")
+         IAttribute<T> value = (IAttribute<T>) values.iterator().next();
+         return value;
+      }
+      throw new AttributeDoesNotExist("Attribute of type [%s] could not be found on [%s]", attributeType,
+         getIdString());
+   }
+
+   @Override
+   public <T> IAttribute<T> getSoleAttribute(AttributeTypeToken attributeType, T defaultValue) {
+      //need to figure out how to construct an IAttribute of type default value
+      List<IAttribute<?>> values =
+         attributes.getValues(attributeType) != null ? attributes.getValues(attributeType) : Collections.emptyList();
+      ensureNotMoreThanOne(attributeType, values.size());
+      if (values.size() == 1) {
+         @SuppressWarnings("unchecked")
+         IAttribute<T> value = (IAttribute<T>) values.iterator().next();
+         IAttribute<T> defaultVal =
+            new FallbackAttribute<T>(value.getId() == Id.SENTINEL ? Long.valueOf(Id.SENTINEL) : value.getId(),
+               attributeType, value.getGammaId(), defaultValue);
+         return value.getValue() == null ? defaultVal : value;
+      } else {
+         return new FallbackAttribute<T>(Long.valueOf(Id.SENTINEL), attributeType, defaultValue);
       }
    }
 
@@ -538,6 +576,11 @@ public final class ArtifactReadableImpl extends BaseId implements ArtifactReadab
    @Override
    public HashCollection<AttributeTypeToken, IAttribute<?>> getAttributesHashCollection() {
       return this.attributes;
+   }
+
+   @Override
+   public GammaId getGamma() {
+      return this.gamma != GammaId.SENTINEL ? this.gamma : GammaId.SENTINEL;
    }
 
    @Override

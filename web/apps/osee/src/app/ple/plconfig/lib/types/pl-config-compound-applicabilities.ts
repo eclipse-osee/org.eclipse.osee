@@ -10,10 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface compoundApplicabilityRelationship {
+export type compoundApplicabilityRelationship = {
 	name: string;
 	symbol: string;
-}
+};
 export const compApplicRelationshipStructure: compoundApplicabilityRelationship[] =
 	[
 		{
@@ -21,15 +21,15 @@ export const compApplicRelationshipStructure: compoundApplicabilityRelationship[
 			symbol: '|',
 		},
 	];
-export interface compoundApplicability {
+export type compoundApplicability = {
 	name: string;
 	applicabilities: applicability[];
 	relationships: string[];
-}
-export interface applicability {
+};
+export type applicability = {
 	featureName: string;
 	featureValue: string;
-}
+};
 export class defaultCompoundApplicability implements compoundApplicability {
 	public name = '';
 	public applicabilities = [
@@ -38,10 +38,9 @@ export class defaultCompoundApplicability implements compoundApplicability {
 	];
 	public relationships = [''];
 }
-export interface PLAddCompoundApplicabilityData
-	extends PLCompoundApplicabilityData {
+export type PLAddCompoundApplicabilityData = {
 	compoundApplicability: defaultCompoundApplicability;
-}
-interface PLCompoundApplicabilityData {
+} & PLCompoundApplicabilityData;
+type PLCompoundApplicabilityData = {
 	currentBranch: string | number | undefined;
-}
+};

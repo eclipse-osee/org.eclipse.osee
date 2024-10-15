@@ -14,7 +14,11 @@ import { BehaviorSubject, of } from 'rxjs';
 import { ImportService } from '../services/import.service';
 import { importOptionsMock, importSummaryMock } from './import.response.mock';
 import { connectionMock } from '@osee/messaging/shared/testing';
-import type { ImportOption } from '@osee/messaging/shared/types';
+import {
+	getTransportTypeSentinel,
+	type ImportOption,
+	type transportType,
+} from '@osee/messaging/shared/types';
 
 export const importServiceMock: Partial<ImportService> = {
 	performImport() {},
@@ -41,11 +45,15 @@ export const importServiceMock: Partial<ImportService> = {
 
 	set SelectedImportOption(importOption: ImportOption | undefined) {},
 
+	get transportType() {
+		return of(getTransportTypeSentinel());
+	},
+
+	set TransportType(value: transportType) {},
+
 	get importSummary() {
 		return of(importSummaryMock);
 	},
-
-	set toggleDone(done: unknown) {},
 
 	get importSuccess() {
 		return new BehaviorSubject<boolean | undefined>(true);

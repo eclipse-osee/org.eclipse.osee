@@ -107,12 +107,12 @@ export const teamWorkflowTokenMock: teamWorkflowToken = {
 
 export const testARB = [
 	{
-		id: '123',
+		id: '123' as `${number}`,
 		name: 'First ARB',
 		workType: 'ARB',
 	},
 	{
-		id: '456',
+		id: '456' as `${number}`,
 		name: 'second ARB',
 		workType: 'ARB',
 	},

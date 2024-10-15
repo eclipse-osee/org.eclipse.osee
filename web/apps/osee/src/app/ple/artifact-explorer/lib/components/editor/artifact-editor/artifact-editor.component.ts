@@ -28,6 +28,4 @@ import { RelationsEditorPanelComponent } from '../relations-editor-panel/relatio
 })
 export class ArtifactEditorComponent {
 	tab = input.required<artifactTab>();
-
-	constructor() {}
 }

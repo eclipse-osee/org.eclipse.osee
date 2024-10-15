@@ -33,6 +33,7 @@ public class EmailGroupsData {
 
    private String replyToAddress, fromAddress;
    private String subject;
+   private String abridgedSubject;
    private String body;
    private boolean bodyIsHtml;
    private final Set<Artifact> groups = new HashSet<>(5);
@@ -158,6 +159,14 @@ public class EmailGroupsData {
 
    public void setFromAddress(String fromAddress) {
       this.fromAddress = fromAddress;
+   }
+
+   public String getAbridgedSubject() {
+      return abridgedSubject;
+   }
+
+   public void setAbridgedSubject(String abridgedSubject) {
+      this.abridgedSubject = abridgedSubject;
    }
 
 }

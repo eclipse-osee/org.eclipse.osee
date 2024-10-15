@@ -11,32 +11,29 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { of } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 import { apiURL } from '@osee/environments';
-import type { node, nodeData } from '../../types/node';
-import {
-	ATTRIBUTETYPEIDENUM,
-	ARTIFACTTYPEIDENUM,
-} from '@osee/shared/types/constants';
-import {
-	TransactionBuilderService,
-	TransactionService,
-} from '@osee/shared/transactions';
-import { relation, transaction } from '@osee/shared/types';
+import type { nodeData } from '@osee/messaging/shared/types';
+import { TransactionBuilderService } from '@osee/shared/transactions-legacy';
+import { HttpParamsType } from '@osee/shared/types';
+import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
+import { createArtifact } from '@osee/transactions/functions';
+import { TransactionService } from '@osee/transactions/services';
+import { legacyTransaction, transaction } from '@osee/transactions/types';
+import { of } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class NodeService {
-	constructor(
-		private http: HttpClient,
-		private builder: TransactionBuilderService,
-		private transactionService: TransactionService
-	) {}
+	private http = inject(HttpClient);
+	private builder = inject(TransactionBuilderService);
+
+	private transactionService = inject(TransactionService);
 
 	getNodes(branchId: string) {
-		return this.http.get<node[]>(
+		return this.http.get<nodeData[]>(
 			apiURL + '/mim/branch/' + branchId + '/nodes/'
 		);
 	}
@@ -46,7 +43,7 @@ export class NodeService {
 		pageNum: string | number,
 		pageSize: number
 	) {
-		return this.http.get<node[]>(
+		return this.http.get<nodeData[]>(
 			apiURL + '/mim/branch/' + branchId + '/nodes/',
 			{
 				params: {
@@ -62,16 +59,21 @@ export class NodeService {
 		branchId: string,
 		name: string,
 		pageNum: string | number,
-		pageSize: number
+		pageSize: number,
+		connectionId: `${number}`
 	) {
+		let params: HttpParamsType = {
+			name: name,
+			count: pageSize,
+			pageNum: pageNum,
+		};
+		if (connectionId !== '-1') {
+			params = { ...params, connectionId };
+		}
 		return this.http.get<nodeData[]>(
 			apiURL + '/mim/branch/' + branchId + '/nodes/name',
 			{
-				params: {
-					name: name,
-					count: pageSize,
-					pageNum: pageNum,
-				},
+				params,
 			}
 		);
 	}
@@ -88,19 +90,8 @@ export class NodeService {
 	}
 
 	getNode(branchId: string, nodeId: string) {
-		return this.http.get<node>(
+		return this.http.get<nodeData>(
 			apiURL + '/mim/branch/' + branchId + '/nodes/' + nodeId
-		);
-	}
-
-	changeNode(branchId: string, node: Partial<node>) {
-		return of(
-			this.builder.modifyArtifact(
-				node,
-				undefined,
-				branchId,
-				'Update Node'
-			)
 		);
 	}
 
@@ -115,27 +106,37 @@ export class NodeService {
 		);
 	}
 
-	createNode(
-		branchId: string,
-		node: Partial<node | nodeData>,
-		relations?: relation[],
-		transaction?: transaction,
+	addNewNodeToTransaction(
+		node: nodeData,
+		tx: Required<transaction>,
 		key?: string
 	) {
-		return of(
-			this.builder.createArtifact(
-				node,
-				ARTIFACTTYPEIDENUM.NODE,
-				relations || [],
-				transaction,
-				branchId,
-				'Create Node',
-				key
-			)
-		);
+		const {
+			id,
+			gammaId,
+			applicability,
+			deleted,
+			added,
+			changes,
+			...remainingAttributes
+		} = node;
+		const attributeKeys = Object.keys(
+			remainingAttributes
+		) as (keyof typeof remainingAttributes)[];
+		const attributes = attributeKeys
+			.map((k) => remainingAttributes[k])
+			.filter((attr) => attr !== undefined && attr.id !== '');
+		return createArtifact(
+			tx,
+			ARTIFACTTYPEIDENUM.NODE,
+			applicability,
+			[],
+			key,
+			...attributes
+		).tx;
 	}
 
-	performMutation(body: transaction) {
+	performMutation(body: legacyTransaction) {
 		return this.transactionService.performMutation(body);
 	}
 }

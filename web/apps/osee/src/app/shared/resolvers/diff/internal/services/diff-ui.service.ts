@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { iif, of } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import { UiService } from '@osee/shared/services';
@@ -20,16 +20,15 @@ import { DiffReportBranchService } from './diff-report-branch.service';
 	providedIn: 'root',
 })
 export class DiffUIService {
+	private uiService = inject(UiService);
+	private diffService = inject(DiffReportBranchService);
+
 	private _diff = this.uiService.isInDiff.pipe(
 		take(1),
 		switchMap((mode) =>
 			iif(() => mode, this.diffService.differences, of(undefined))
 		)
 	);
-	constructor(
-		private uiService: UiService,
-		private diffService: DiffReportBranchService
-	) {}
 
 	get diff() {
 		return this._diff;

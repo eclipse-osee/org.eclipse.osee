@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
-import { artifact, createArtifact } from '@osee/shared/types';
+import { Injectable, inject } from '@angular/core';
+import { legacyArtifact, legacyCreateArtifact } from '@osee/transactions/types';
 import {
 	combineLatest,
 	of,
@@ -30,24 +30,25 @@ import { ContextSelectionService } from './context-selection.service';
 	providedIn: 'root',
 })
 export class CreateCommandService {
+	private branchIdService = inject(GCBranchIdService);
+	private createCommandAndRelationsService = inject(
+		CreateCommandandAndRelationsService
+	);
+	private contextSelectionService = inject(ContextSelectionService);
+	private uiService = inject(UiService);
+
 	contextData = this.contextSelectionService.contextDetails;
 
-	private _commandArtId: string = '';
+	private _commandArtId = '';
 
 	done = new Subject();
 
 	public set doneFx(val: unknown) {
 		this.done.next(val);
 	}
-	constructor(
-		private branchIdService: GCBranchIdService,
-		private createCommandAndRelationsService: CreateCommandandAndRelationsService,
-		private contextSelectionService: ContextSelectionService,
-		private uiService: UiService
-	) {}
 
 	public createCommandArtifact(
-		commandObject: Partial<createArtifact & artifact>
+		commandObject: Partial<legacyCreateArtifact & legacyArtifact>
 	) {
 		return combineLatest([of(commandObject), this.contextData]).pipe(
 			take(1),

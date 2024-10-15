@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ParameterDataService } from '../../services/data-services/selected-command-data/parameter-data/parameter-data.service';
 import { SelectedCommandDataService } from '../../services/data-services/selected-command-data/selected-command-data.service';
 import { HideColumnCommandComponent } from './hide-column-command/hide-column-command.component';
@@ -24,11 +24,9 @@ import { AsyncPipe } from '@angular/common';
 	imports: [HideColumnCommandComponent, AsyncPipe],
 })
 export class ParameterMultipleSelectComponent {
+	private selectedCommandDataService = inject(SelectedCommandDataService);
+	private parameterDataService = inject(ParameterDataService);
+
 	command$ = this.selectedCommandDataService.selectedCommandObject;
 	parameter$ = this.parameterDataService.parameter$;
-
-	constructor(
-		private selectedCommandDataService: SelectedCommandDataService,
-		private parameterDataService: ParameterDataService
-	) {}
 }

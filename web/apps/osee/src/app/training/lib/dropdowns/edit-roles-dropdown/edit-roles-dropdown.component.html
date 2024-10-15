@@ -13,21 +13,20 @@
 <button
 	mat-raised-button
 	[matMenuTriggerFor]="roleMenu"
-	class="tw-flex tw-h-full tw-flex-col"
-	color="primary">
-	<mat-icon>transfer_within_a_station</mat-icon>
+	class="tw-flex tw-h-full tw-flex-col">
+	<mat-icon class="tw-text-osee-blue-9">transfer_within_a_station</mat-icon>
 	Edit Role
 </button>
 <mat-menu #roleMenu="matMenu">
 	<button
 		mat-menu-item
 		(click)="addRoles()">
-		<mat-icon color="success">add</mat-icon>Add Role
+		<mat-icon class="tw-text-osee-green-9">add</mat-icon>Add Role
 	</button>
 	<button
 		mat-menu-item
 		[matMenuTriggerFor]="deleteRoleMenu">
-		<mat-icon color="warn">delete</mat-icon>Delete Role
+		<mat-icon class="tw-text-osee-red-9">delete</mat-icon>Delete Role
 	</button>
 </mat-menu>
 <mat-menu #deleteRoleMenu="matMenu">

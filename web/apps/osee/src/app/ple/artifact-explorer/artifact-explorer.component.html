@@ -31,7 +31,7 @@
 			class="tw-flex tw-flex-col"
 			[ngClass]="{
 				'tw-float-right': panelLocation() === 'end',
-				'tw-float-left': panelLocation() === 'start'
+				'tw-float-left': panelLocation() === 'start',
 			}">
 			@if (openTabs().length > 0) {
 				<button
@@ -43,8 +43,7 @@
 			}
 			<button
 				mat-icon-button
-				color="primary"
-				class="-tw-rotate-90 hover:tw-bg-primary hover:tw-text-white"
+				class="primary-icon-button -tw-rotate-90 hover:tw-bg-primary hover:tw-text-white"
 				(click)="drawer.toggle()">
 				<mat-icon>
 					{{
@@ -53,8 +52,8 @@
 								? 'keyboard_double_arrow_down'
 								: 'keyboard_double_arrow_up'
 							: drawer.opened
-							  ? 'keyboard_double_arrow_up'
-							  : 'keyboard_double_arrow_down'
+								? 'keyboard_double_arrow_up'
+								: 'keyboard_double_arrow_down'
 					}}
 				</mat-icon>
 			</button>
@@ -64,7 +63,7 @@
 					(click)="setCurrentPanel('Artifacts')">
 					<mat-icon
 						[ngClass]="{
-							'tw-text-primary': currentPanel() === 'Artifacts'
+							'tw-text-primary': currentPanel() === 'Artifacts',
 						}"
 						>padding</mat-icon
 					>
@@ -75,7 +74,7 @@
 					<mat-icon
 						class="material-icons-outlined"
 						[ngClass]="{
-							'tw-text-primary': currentPanel() === 'Actions'
+							'tw-text-primary': currentPanel() === 'Actions',
 						}"
 						>assignment</mat-icon
 					>
@@ -93,7 +92,7 @@
 			<div
 				[ngClass]="{
 					'tw-bg-primary-100 dark:tw-bg-primary-200':
-						$index === selectedTabIndex()
+						$index === selectedTabIndex(),
 				}"
 				class="tw-flex tw-px-2">
 				<button

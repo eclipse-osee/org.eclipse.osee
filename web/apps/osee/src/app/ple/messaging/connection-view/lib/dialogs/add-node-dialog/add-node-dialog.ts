@@ -13,7 +13,7 @@
 
 import type { connection, nodeData } from '@osee/messaging/shared/types';
 
-export interface AddNodeDialog {
+export type AddNodeDialog = {
 	connection: connection;
 	node: nodeData;
-}
+};

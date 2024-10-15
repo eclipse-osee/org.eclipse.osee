@@ -19,29 +19,30 @@ import {
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { PageEvent } from '@angular/material/paginator';
 import { NamedId } from '@osee/shared/types';
-import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
-import { combineLatest, switchMap } from 'rxjs';
+import { combineLatest, debounceTime, switchMap } from 'rxjs';
 import { CiDashboardUiService } from '../../../services/ci-dashboard-ui.service';
 import { DashboardService } from '../../../services/dashboard.service';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
+import { NamedIdListEditorComponent } from '@osee/shared/components';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
 	selector: 'osee-subsystems-list',
 	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
-	imports: [],
-	// @TODO add the named id list once the gamma id change is done to minimize rework
+	imports: [NamedIdListEditorComponent, AsyncPipe],
 	template: `
-		<!-- <osee-named-id-list-editor
-		[name]="'Subsystems'"
-		[allowedToEdit]="branchType() === 'working'"
-		[dataToDisplay]="(subsystems | async) || []"
-		[pageIndex]="subsystemsPageNum()"
-		[pageSize]="subsystemsPageSize()"
-		[count]="(subsystemsCount | async) || 0"
-		(pageEvent)="updateSubsystemsPage($event)"
-		(filterChange)="updateSubsystemFilter($event)"
-		(namedIdEdit)="updateSubsystem($event)"
-		(createNew)="createSubsystem($event)" /> -->
+		<osee-named-id-list-editor
+			[name]="'Subsystems'"
+			[allowedToEdit]="branchType() === 'working'"
+			[dataToDisplay]="(subsystems | async) || []"
+			[pageIndex]="subsystemsPageNum()"
+			[pageSize]="subsystemsPageSize()"
+			[count]="(subsystemsCount | async) || 0"
+			(pageEvent)="updateSubsystemsPage($event)"
+			(filterChange)="updateSubsystemFilter($event)"
+			(namedIdEdit)="updateSubsystem($event)"
+			(createNew)="createSubsystem($event)" />
 	`,
 })
 export class SubsystemsListComponent {
@@ -54,7 +55,9 @@ export class SubsystemsListComponent {
 	subsystemsPageSize = signal(100);
 	subsystemsPageNum = signal(0);
 
-	subsystemsFilter$ = toObservable(this.subsystemsFilter);
+	subsystemsFilter$ = toObservable(this.subsystemsFilter).pipe(
+		debounceTime(250)
+	);
 
 	subsystems = combineLatest([
 		this.subsystemsFilter$,

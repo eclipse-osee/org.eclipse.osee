@@ -44,7 +44,7 @@ export class TransferFileService {
 		take(1),
 		switchMap((val) =>
 			this.generateExport(val).pipe(
-				tap((value) => (this.uiService.updated = true))
+				tap((_) => (this.uiService.updated = true))
 			)
 		)
 	);
@@ -63,7 +63,6 @@ export class TransferFileService {
 	}
 	getData() {
 		return this.http.get<results>(apiURL + '/orcs/txs/xfer/exportData');
-		0.0;
 	}
 	getDataWithId(id: string) {
 		return this.http.get<results>(

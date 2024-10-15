@@ -31,8 +31,6 @@ export class ParameterSingleSelectComponent {
 		selectedOption: string;
 	}> = new EventEmitter<{ selectedOption: string }>();
 
-	constructor() {}
-
 	onSelectionChange(e: MatSelectChange) {
 		this.selectionChange.emit({ selectedOption: e.value });
 	}

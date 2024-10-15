@@ -12,41 +12,43 @@
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
 import {
-	HttpClientTestingModule,
 	HttpTestingController,
+	provideHttpClientTesting,
 } from '@angular/common/http/testing';
 
 import { StructuresService } from './structures.service';
-import { HttpClient } from '@angular/common/http';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 import { TestScheduler } from 'rxjs/testing';
 import { apiURL } from '@osee/environments';
 import type { structure } from '@osee/messaging/shared/types';
 import { structuresMock3 } from '@osee/messaging/shared/testing';
-import { TransactionBuilderService } from '@osee/shared/transactions';
-import { relation } from '@osee/shared/types';
-import {
-	transactionBuilderMock,
-	transactionMock,
-} from '@osee/shared/transactions/testing';
+import { TransactionBuilderService } from '@osee/shared/transactions-legacy';
+import { transactionBuilderMock } from '@osee/shared/transactions-legacy/testing';
+import { transactionMock, txMock } from '@osee/transactions/testing';
+import { legacyRelation } from '@osee/transactions/types';
+import { applicabilitySentinel } from '@osee/applicability/types';
 
 describe('StructuresService', () => {
 	let service: StructuresService;
-	let httpClient: HttpClient;
 	let httpTestingController: HttpTestingController;
 	let scheduler: TestScheduler;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
+			imports: [],
 			providers: [
 				{
 					provide: TransactionBuilderService,
 					useValue: transactionBuilderMock,
 				},
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
 			],
-			imports: [HttpClientTestingModule],
 		});
 		service = TestBed.inject(StructuresService);
-		httpClient = TestBed.inject(HttpClient);
 		httpTestingController = TestBed.inject(HttpTestingController);
 	});
 
@@ -62,17 +64,54 @@ describe('StructuresService', () => {
 	});
 
 	it('should get filtered structures', () => {
-		let testData: structure[] = [
+		const testData: structure[] = [
 			{
-				id: '0',
-				name: 'name',
-				nameAbbrev: '',
+				id: '-1',
+				gammaId: '-1',
+				name: {
+					id: '-1',
+					typeId: '1152921504606847088',
+					gammaId: '-1',
+					value: '',
+				},
+				nameAbbrev: {
+					id: '-1',
+					typeId: '8355308043647703563',
+					gammaId: '-1',
+					value: '',
+				},
+				description: {
+					id: '-1',
+					typeId: '1152921504606847090',
+					gammaId: '-1',
+					value: '',
+				},
+				interfaceMaxSimultaneity: {
+					id: '-1',
+					typeId: '2455059983007225756',
+					gammaId: '-1',
+					value: '',
+				},
+				interfaceMinSimultaneity: {
+					id: '-1',
+					typeId: '2455059983007225755',
+					gammaId: '-1',
+					value: '',
+				},
+				interfaceTaskFileType: {
+					id: '-1',
+					typeId: '2455059983007225760',
+					gammaId: '-1',
+					value: 0,
+				},
+				interfaceStructureCategory: {
+					id: '-1',
+					typeId: '2455059983007225764',
+					gammaId: '-1',
+					value: '',
+				},
+				applicability: applicabilitySentinel,
 				elements: [],
-				description: 'description',
-				interfaceMaxSimultaneity: '1',
-				interfaceMinSimultaneity: '0',
-				interfaceStructureCategory: '1',
-				interfaceTaskFileType: 1,
 			},
 		];
 		service
@@ -100,29 +139,19 @@ describe('StructuresService', () => {
 	});
 
 	it('should create a transaction for a structure', () => {
-		scheduler.run(() => {
-			let expectedObservable = { a: transactionMock };
-			let expectedMarble = '(a|)';
-			scheduler
-				.expectObservable(service.createStructure({}, '10', []))
-				.toBe(expectedMarble, expectedObservable);
-		});
-	});
-
-	it('should create a transaction for a structure modification', () => {
-		scheduler.run(() => {
-			let expectedObservable = { a: transactionMock };
-			let expectedMarble = '(a|)';
-			scheduler
-				.expectObservable(service.changeStructure({}, '10'))
-				.toBe(expectedMarble, expectedObservable);
-		});
+		expect(
+			service.addNewStructureToTransaction(
+				structuresMock3[0],
+				txMock,
+				undefined
+			)
+		).toBe(txMock);
 	});
 
 	it('should create a transaction for deleting a submessage relation', () => {
 		scheduler.run(({ expectObservable }) => {
-			let expectedObservable = { a: transactionMock };
-			let expectedMarble = '(a|)';
+			const expectedObservable = { a: transactionMock };
+			const expectedMarble = '(a|)';
 			expectObservable(
 				service.deleteSubmessageRelation('10', '20', '30')
 			).toBe(expectedMarble, expectedObservable);
@@ -131,8 +160,8 @@ describe('StructuresService', () => {
 
 	it('should create a transaction for deleting a structure', () => {
 		scheduler.run(({ expectObservable }) => {
-			let expectedObservable = { a: transactionMock };
-			let expectedMarble = '(a|)';
+			const expectedObservable = { a: transactionMock };
+			const expectedMarble = '(a|)';
 			expectObservable(service.deleteStructure('10', '20')).toBe(
 				expectedMarble,
 				expectedObservable
@@ -142,14 +171,14 @@ describe('StructuresService', () => {
 
 	it('should create a sub message relation', () => {
 		scheduler.run(() => {
-			let relation: relation = {
+			const relation: legacyRelation = {
 				typeName: 'Interface SubMessage Content',
 				sideA: '10',
 				sideB: undefined,
 				afterArtifact: 'end',
 			};
-			let expectedObservable = { a: relation };
-			let expectedMarble = '(a|)';
+			const expectedObservable = { a: relation };
+			const expectedMarble = '(a|)';
 			scheduler
 				.expectObservable(service.createSubMessageRelation('10'))
 				.toBe(expectedMarble, expectedObservable);
@@ -157,14 +186,14 @@ describe('StructuresService', () => {
 	});
 	it('should create an add Relation transaction', () => {
 		scheduler.run(() => {
-			let relation: relation = {
+			const relation: legacyRelation = {
 				typeName: 'Interface SubMessage Content',
 				sideA: '10',
 				sideB: undefined,
 				afterArtifact: 'end',
 			};
-			let expectedObservable = { a: transactionMock };
-			let expectedMarble = '(a|)';
+			const expectedObservable = { a: transactionMock };
+			const expectedMarble = '(a|)';
 			scheduler
 				.expectObservable(service.addRelation('10', relation))
 				.toBe(expectedMarble, expectedObservable);

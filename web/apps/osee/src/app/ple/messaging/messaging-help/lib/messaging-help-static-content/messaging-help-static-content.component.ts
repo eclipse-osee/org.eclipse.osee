@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
 import { MarkdownComponent } from 'ngx-markdown';
 import { ActivatedRoute } from '@angular/router';
@@ -22,13 +22,13 @@ import { ActivatedRoute } from '@angular/router';
 	templateUrl: './messaging-help-static-content.component.html',
 })
 export class MessagingHelpStaticContentComponent implements OnInit {
-	constructor(private route: ActivatedRoute) {}
+	private route = inject(ActivatedRoute);
 
 	markdown: string | null = null;
 
 	ngOnInit(): void {
 		this.route.paramMap.subscribe((params) => {
-			let name = params.get('helpPage');
+			const name = params.get('helpPage');
 			if (name) {
 				this.markdown = 'assets/help/mim/' + name + '.md';
 			}

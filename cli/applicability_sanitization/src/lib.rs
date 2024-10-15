@@ -81,6 +81,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     /// use applicability_parser_types::applicability_parser_syntax_tag::ApplicabilitySyntaxTag;
     /// use applicability_parser_types::applicability_parser_syntax_tag::ApplicabilityParserSyntaxTag::Text;
     /// use applicability_parser_types::applicability_parser_syntax_tag::ApplicabilityParserSyntaxTag::Tag;
+    /// use applicability_parser_types::applicability_parser_syntax_tag::LineEnding;
     /// use applicability_parser_types::applic_tokens::{ApplicabilityNoTag,ApplicTokens};
     /// use applicability::applic_tag::ApplicabilityTagTypes::Feature;
     /// use applicability::applic_tag::ApplicabilityTagTypes::Configuration;
@@ -94,13 +95,16 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///         ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag{
     ///             tag:"ENGINE_5".to_string(),
     ///             value:"A2543".to_string()
-    ///             }))
+    ///             },0))
     ///         ],
     ///     vec![
     ///         Text("Engine 5 A2543".to_string())
     ///         ],
     ///     Feature,
-    ///     vec![]
+    ///     vec![],
+    ///     0,
+    ///     0,
+    ///     0
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -121,13 +125,16 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///         ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
     ///             value:"Included".to_string()
-    ///             }))
+    ///             },0))
     ///         ],
     ///     vec![
     ///         Text("Product A".to_string())
     ///         ],
     ///     Configuration,
-    ///     vec![]
+    ///     vec![],
+    ///     0,
+    ///     0,
+    ///     0
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -148,13 +155,16 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///         ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag{
     ///             tag:"ENGINE_5".to_string(),
     ///             value:"A2543".to_string()
-    ///             }))
+    ///             },0))
     ///         ],
     ///     vec![
     ///         Text("Engine 5 A2543".to_string())
     ///         ],
     ///     Feature,
-    ///     vec![]
+    ///     vec![],
+    ///     0,
+    ///     0,
+    ///     0
     /// ).sanitize(
     /// vec![],
     /// "PRODUCT_A",
@@ -170,13 +180,16 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///         ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
     ///             value:"Included".to_string()
-    ///             }))
+    ///             },0))
     ///         ],
     ///     vec![
     ///         Text("Product A".to_string())
     ///         ],
     ///     Configuration,
-    ///     vec![]
+    ///     vec![],
+    ///     0,
+    ///     0,
+    ///     0
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -197,7 +210,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///         ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag{
     ///             tag:"ENGINE_5".to_string(),
     ///             value:"A2543".to_string()
-    ///             }))
+    ///             },0))
     ///         ],
     ///     vec![
     ///         Text("Engine 5 A2543".to_string())
@@ -205,7 +218,10 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///     Feature,
     ///     vec![
     ///         Text("Engine 5 B5543".to_string())
-    ///         ]
+    ///         ],
+    ///     0,
+    ///     0,
+    ///     0
     /// ).sanitize(
     /// vec![],
     /// "PRODUCT_A",
@@ -221,7 +237,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///         ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
     ///             value:"Included".to_string()
-    ///             }))
+    ///             },0))
     ///         ],
     ///     vec![
     ///         Text("Product A".to_string())
@@ -229,7 +245,10 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///     Configuration,
     ///     vec![
     ///         Text("No Configuration".to_string())
-    ///         ]
+    ///         ],
+    ///     0,
+    ///     0,
+    ///     0
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -250,7 +269,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///         ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag{
     ///             tag:"ENGINE_5".to_string(),
     ///             value:"A2543".to_string()
-    ///             }))
+    ///             },0))
     ///         ],
     ///     vec![
     ///         Tag(ApplicabilitySyntaxTag(
@@ -258,17 +277,23 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///                 ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag{
     ///                     tag:"JHU_CONTROLLER".to_string(),
     ///                     value:"Excluded".to_string()
-    ///                     }))
+    ///                     },0))
     ///                 ],
     ///             vec![
     ///                 Text("No JHU Controller".to_string())
     ///                 ],
     ///             Feature,
-    ///             vec![]
+    ///             vec![],
+    ///             0,
+    ///             0,
+    ///             0
     ///             ))
     ///         ],
     ///     Feature,
-    ///     vec![]
+    ///     vec![],
+    ///     0,
+    ///     0,
+    ///     0
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -293,7 +318,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///         ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
     ///             value:"Included".to_string()
-    ///             }))
+    ///             },0))
     ///         ],
     ///     vec![
     ///         Tag(ApplicabilitySyntaxTag(
@@ -301,17 +326,23 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///                 ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag{
     ///                     tag:"JHU_CONTROLLER".to_string(),
     ///                     value:"Excluded".to_string()
-    ///                     }))
+    ///                     },0))
     ///                 ],
     ///             vec![
     ///                 Text("No JHU Controller".to_string())
     ///                 ],
     ///             Feature,
-    ///             vec![]
+    ///             vec![],
+    ///             0,
+    ///             0,
+    ///             0
     ///             ))
     ///         ],
     ///     Configuration,
-    ///     vec![]
+    ///     vec![],
+    ///     0,
+    ///     0,
+    ///     0
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -336,7 +367,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///         ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag{
     ///             tag:"ENGINE_5".to_string(),
     ///             value:"A2543".to_string()
-    ///             }))
+    ///             },0))
     ///         ],
     ///     vec![
     ///         Tag(ApplicabilitySyntaxTag(
@@ -344,7 +375,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///                 ApplicTokens::NoTag(ApplicabilityNoTag(ApplicabilityTag{
     ///                     tag:"JHU_CONTROLLER".to_string(),
     ///                     value:"Excluded".to_string()
-    ///                     }))
+    ///                     },0))
     ///                 ],
     ///             vec![
     ///                 Text("No JHU Controller".to_string())
@@ -352,11 +383,17 @@ impl SanitizeApplicability for ApplicabilitySyntaxTag {
     ///             Feature,
     ///             vec![
     ///                 Text("JHU Controller".to_string())
-    ///                 ]
+    ///                 ],
+    ///                 0,
+    ///                 0,
+    ///                 0
     ///             ))
     ///         ],
     ///     Feature,
-    ///     vec![]
+    ///     vec![],
+    ///     0,
+    ///     0,
+    ///     0
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -449,13 +486,16 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///         ApplicTokens::Not(ApplicabilityNotTag(ApplicabilityTag{
     ///             tag:"ENGINE_5".to_string(),
     ///             value:"A2543".to_string()
-    ///             }))
+    ///             },0))
     ///         ],
     ///     vec![
     ///         Text("Engine 5 A2543".to_string())
     ///         ],
     ///     Feature,
-    ///     vec![]
+    ///     vec![],
+    ///     0,
+    ///     0,
+    ///     0
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -476,13 +516,16 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///         ApplicTokens::Not(ApplicabilityNotTag(ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
     ///             value:"Included".to_string()
-    ///             }))
+    ///             },0))
     ///         ],
     ///     vec![
     ///         Text("Product A".to_string())
     ///         ],
     ///     Configuration,
-    ///     vec![]
+    ///     vec![],
+    ///     0,
+    ///     0,
+    ///     0
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -503,13 +546,16 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///         ApplicTokens::Not(ApplicabilityNotTag(ApplicabilityTag{
     ///             tag:"ENGINE_5".to_string(),
     ///             value:"A2543".to_string()
-    ///             }))
+    ///             },0))
     ///         ],
     ///     vec![
     ///         Text("Engine 5 A2543".to_string())
     ///         ],
     ///     Feature,
-    ///     vec![]
+    ///     vec![],
+    ///     0,
+    ///     0,
+    ///     0
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -530,13 +576,16 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///         ApplicTokens::Not(ApplicabilityNotTag(ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
     ///             value:"Included".to_string()
-    ///             }))
+    ///             },0))
     ///         ],
     ///     vec![
     ///         Text("Product A".to_string())
     ///         ],
     ///     Configuration,
-    ///     vec![]
+    ///     vec![],
+    ///     0,
+    ///     0,
+    ///     0
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -557,7 +606,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///         ApplicTokens::Not(ApplicabilityNotTag(ApplicabilityTag{
     ///             tag:"ENGINE_5".to_string(),
     ///             value:"A2543".to_string()
-    ///             }))
+    ///             },0))
     ///         ],
     ///     vec![
     ///         Text("Engine 5 B5543".to_string())
@@ -565,7 +614,10 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///     Feature,
     ///     vec![
     ///         Text("Engine 5 A2543".to_string())
-    ///         ]
+    ///         ],
+    ///     0,
+    ///     0,
+    ///     0
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -586,7 +638,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///         ApplicTokens::Not(ApplicabilityNotTag(ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
     ///             value:"Included".to_string()
-    ///             }))
+    ///             },0))
     ///         ],
     ///     vec![
     ///         Text("No Configuration".to_string())
@@ -594,7 +646,10 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///     Configuration,
     ///     vec![
     ///         Text("Product A".to_string())
-    ///         ]
+    ///         ],
+    ///     0,
+    ///     0,
+    ///     0
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -615,7 +670,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///         ApplicTokens::Not(ApplicabilityNotTag(ApplicabilityTag{
     ///             tag:"ENGINE_5".to_string(),
     ///             value:"A2543".to_string()
-    ///             }))
+    ///             },0))
     ///         ],
     ///     vec![
     ///         TagNot(ApplicabilitySyntaxTagNot(
@@ -623,17 +678,23 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///                 ApplicTokens::Not(ApplicabilityNotTag(ApplicabilityTag{
     ///                     tag:"JHU_CONTROLLER".to_string(),
     ///                     value:"Included".to_string()
-    ///                     }))
+    ///                     },0))
     ///                 ],
     ///             vec![
     ///                 Text("No JHU Controller".to_string())
     ///                 ],
     ///             Feature,
-    ///             vec![]
+    ///             vec![],
+    ///             0,
+    ///             0,
+    ///             0
     ///             ))
     ///         ],
     ///     Feature,
-    ///     vec![]
+    ///     vec![],
+    ///     0,
+    ///     0,
+    ///     0
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -658,7 +719,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///         ApplicTokens::Not(ApplicabilityNotTag(ApplicabilityTag{
     ///             tag:"PRODUCT_A".to_string(),
     ///             value:"Included".to_string()
-    ///             }))
+    ///             },0))
     ///         ],
     ///     vec![
     ///         TagNot(ApplicabilitySyntaxTagNot(
@@ -666,17 +727,23 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///                 ApplicTokens::Not(ApplicabilityNotTag(ApplicabilityTag{
     ///                     tag:"JHU_CONTROLLER".to_string(),
     ///                     value:"Included".to_string()
-    ///                     }))
+    ///                     },0))
     ///                 ],
     ///             vec![
     ///                 Text("No JHU Controller".to_string())
     ///                 ],
     ///             Feature,
-    ///             vec![]
+    ///             vec![],
+    ///             0,
+    ///             0,
+    ///             0
     ///             ))
     ///         ],
     ///     Feature,
-    ///     vec![]
+    ///     vec![],
+    ///     0,
+    ///     0,
+    ///     0
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -701,7 +768,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///         ApplicTokens::Not(ApplicabilityNotTag(ApplicabilityTag{
     ///             tag:"ENGINE_5".to_string(),
     ///             value:"A2543".to_string()
-    ///             }))
+    ///             },0))
     ///         ],
     ///     vec![
     ///         TagNot(ApplicabilitySyntaxTagNot(
@@ -709,7 +776,7 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///                 ApplicTokens::Not(ApplicabilityNotTag(ApplicabilityTag{
     ///                     tag:"JHU_CONTROLLER".to_string(),
     ///                     value:"Excluded".to_string()
-    ///                     }))
+    ///                     },0))
     ///                 ],
     ///             vec![
     ///                 Text("No JHU Controller".to_string())
@@ -717,11 +784,17 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///             Feature,
     ///             vec![
     ///                 Text("JHU Controller".to_string())
-    ///                 ]
+    ///                 ],
+    ///             0,
+    ///             0,
+    ///             0
     ///             ))
     ///         ],
     ///     Feature,
-    ///     vec![]
+    ///     vec![],
+    ///     0,
+    ///     0,
+    ///     0
     /// ).sanitize(
     /// vec![
     ///     ApplicabilityTag{
@@ -748,7 +821,8 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///                     ApplicabilityTag{
     ///                         tag: "PRODUCT_C".to_string(),
     ///                         value: "Included".to_string()
-    ///                     }
+    ///                     },
+    ///                     0
     ///                 ),
     ///             ),
     ///         ],
@@ -762,7 +836,8 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///                                 ApplicabilityTag{
     ///                                     tag:"ROBOT_ARM_LIGHT".to_string(),
     ///                                     value:"EXCLUDED".to_string()
-    ///                                 }
+    ///                                 },
+    ///                                 0
     ///                             ),
     ///                         ),
     ///                     ],
@@ -771,13 +846,19 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///                     ],
     ///                     Feature,
     ///                     vec![],
+    ///                     0,
+    ///                     0,
+    ///                     0
     ///                 ),
     ///             ),
     ///         ],
     ///         Configuration,
     ///         vec![
     ///             Text("\r\nMauris ut tortor id ipsum pharetra ultrices. \r\n".to_string())
-    ///         ]
+    ///         ],
+    ///         0,
+    ///         0,
+    ///         0
     ///         
     ///     ).sanitize(
     ///     vec![
@@ -805,7 +886,8 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///                     ApplicabilityTag{
     ///                         tag: "PRODUCT_C".to_string(),
     ///                         value: "Included".to_string()
-    ///                     }
+    ///                     },
+    ///                     0
     ///                 ),
     ///             ),
     ///         ],
@@ -819,7 +901,8 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///                                 ApplicabilityTag{
     ///                                     tag:"ROBOT_ARM_LIGHT".to_string(),
     ///                                     value:"EXCLUDED".to_string()
-    ///                                 }
+    ///                                 },
+    ///                                 0
     ///                             ),
     ///                         ),
     ///                     ],
@@ -828,13 +911,19 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///                     ],
     ///                     Feature,
     ///                     vec![],
+    ///                     0,
+    ///                     0,
+    ///                     0
     ///                 ),
     ///             ),
     ///         ],
     ///         Configuration,
     ///         vec![
     ///             Text("\r\nMauris ut tortor id ipsum pharetra ultrices. \r\n".to_string())
-    ///         ]
+    ///         ],
+    ///         0,
+    ///         0,
+    ///         0
     ///         
     ///     ).sanitize(
     ///     vec![
@@ -862,7 +951,8 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///                     ApplicabilityTag{
     ///                         tag: "PRODUCT_C".to_string(),
     ///                         value: "Included".to_string()
-    ///                     }
+    ///                     },
+    ///                     0
     ///                 ),
     ///             ),
     ///         ],
@@ -876,7 +966,8 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///                                 ApplicabilityTag{
     ///                                     tag:"ROBOT_ARM_LIGHT".to_string(),
     ///                                     value:"EXCLUDED".to_string()
-    ///                                 }
+    ///                                 },
+    ///                                 0
     ///                             ),
     ///                         ),
     ///                     ],
@@ -885,13 +976,19 @@ impl SanitizeApplicability for ApplicabilitySyntaxTagNot {
     ///                     ],
     ///                     Feature,
     ///                     vec![],
+    ///                     0,
+    ///                     0,
+    ///                     0
     ///                 ),
     ///             ),
     ///         ],
     ///         Configuration,
     ///         vec![
     ///             Text("\r\nMauris ut tortor id ipsum pharetra ultrices. \r\n".to_string())
-    ///         ]
+    ///         ],
+    ///         0,
+    ///         0,
+    ///         0
     ///         
     ///     ).sanitize(
     ///     vec![

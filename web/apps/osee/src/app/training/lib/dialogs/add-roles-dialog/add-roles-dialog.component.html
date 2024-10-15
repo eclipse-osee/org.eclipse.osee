@@ -59,10 +59,11 @@
 				name="role"
 				[(ngModel)]="data.roleName"
 				[multiple]="false"
-				required
-				color="primary">
+				required>
 				@for (role of test_roles | async; track role) {
-					<mat-list-option [value]="role">
+					<mat-list-option
+						[value]="role"
+						class="primary-checkbox">
 						{{ role }}
 					</mat-list-option>
 				}
@@ -107,8 +108,8 @@
 							Cancel
 						</button>
 						<button
-							mat-raised-button
-							color="primary"
+							mat-flat-button
+							class="primary-button"
 							matDateRangePickerApply>
 							Apply
 						</button>
@@ -126,9 +127,9 @@
 			Cancel
 		</button>
 		<button
-			mat-raised-button
+			mat-flat-button
 			[disabled]="addRoleForm.invalid"
-			color="primary">
+			class="primary-button">
 			Confirm
 		</button>
 	</div>

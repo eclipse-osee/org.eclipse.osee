@@ -29,7 +29,7 @@ describe('ConfigurationGroupDropdownComponent', () => {
 	let fixture: ComponentFixture<ConfigurationGroupDropdownComponent>;
 
 	beforeEach(async () => {
-		const currentBranchService = jasmine.createSpyObj(
+		const _currentBranchService = jasmine.createSpyObj(
 			'PlConfigCurrentBranchService',
 			[],
 			['cfgGroups', 'branchApplicability']

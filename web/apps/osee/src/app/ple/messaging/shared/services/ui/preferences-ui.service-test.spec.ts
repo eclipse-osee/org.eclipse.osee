@@ -11,18 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
-import { TestScheduler } from 'rxjs/testing';
 import type { settingsDialogData } from '@osee/messaging/shared/types';
+import { TestScheduler } from 'rxjs/testing';
 import { MimPreferencesService } from '../http/mim-preferences.service';
 
-import { PreferencesUIService } from './preferences-ui.service';
 import { UserDataAccountService } from '@osee/auth';
-import { TransactionService } from '@osee/shared/transactions';
-import {
-	transactionServiceMock,
-	transactionResultMock,
-} from '@osee/shared/transactions/testing';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
+import { transactionResultMock } from '@osee/transactions/testing';
+import { PreferencesUIService } from './preferences-ui.service';
 
 export function preferencesTest(
 	mimPreferencesServiceMock: Partial<MimPreferencesService>
@@ -40,10 +36,6 @@ export function preferencesTest(
 				{
 					provide: UserDataAccountService,
 					useValue: userDataAccountServiceMock,
-				},
-				{
-					provide: TransactionService,
-					useValue: transactionServiceMock,
 				},
 			],
 		});
@@ -77,17 +69,15 @@ export function preferencesTest(
 				wordWrap: false,
 			};
 			const result = service.createOrUpdateGlobalUserPrefs(testData);
-			scheduler
-				.expectObservable(result)
-				.toBe('(a|)', { a: transactionResultMock });
+			expectObservable(result).toBe('(a|)', { a: transactionResultMock });
 		});
 	});
 
 	it('should update user preferences', () => {
 		scheduler.run(() => {
 			service.BranchId = '10';
-			let expectedObservable = { a: transactionResultMock };
-			let expectedMarble = '(a|)';
+			const expectedObservable = { a: transactionResultMock };
+			const expectedMarble = '(a|)';
 			scheduler
 				.expectObservable(
 					service.updatePreferences({

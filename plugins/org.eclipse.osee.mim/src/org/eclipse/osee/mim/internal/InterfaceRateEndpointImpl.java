@@ -14,7 +14,7 @@
 package org.eclipse.osee.mim.internal;
 
 import java.util.Collection;
-import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -35,7 +35,7 @@ public class InterfaceRateEndpointImpl implements InterfaceRateEndpoint {
    }
 
    @Override
-   public Collection<ArtifactAccessorResult> getAllRates(String filter, ArtifactId viewId, long pageNum, long pageSize,
+   public Collection<ArtifactAccessorResultWithoutGammas> getAllRates(String filter, ArtifactId viewId, long pageNum, long pageSize,
       AttributeTypeToken orderByAttributeType) {
       viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
       if (Strings.isValid(filter)) {
@@ -45,7 +45,7 @@ public class InterfaceRateEndpointImpl implements InterfaceRateEndpoint {
    }
 
    @Override
-   public ArtifactAccessorResult getRate(ArtifactId rateId) {
+   public ArtifactAccessorResultWithoutGammas getRate(ArtifactId rateId) {
       return rateApi.get(branch, rateId);
    }
 

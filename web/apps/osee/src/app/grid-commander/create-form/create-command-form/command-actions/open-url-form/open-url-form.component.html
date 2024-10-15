@@ -84,9 +84,8 @@
 			</mat-form-field>
 			<button
 				type="button"
-				class="tw-m-4 tw-ml-8 tw-bg-background-app-bar"
+				class="tertiary-button tw-m-4 tw-ml-8 tw-bg-background-app-bar"
 				mat-raised-button
-				color="accent"
 				(click)="displayParameterOptionsBtnHandler($event)">
 				@if (!displayParameterOptions) {
 					<mat-icon> expand_more </mat-icon>
@@ -145,9 +144,8 @@
 		<div class="tw-m-4 tw-mb-7">
 			<button
 				type="submit"
-				class="tw-bg-background-app-bar"
+				class="tertiary-button tw-bg-background-app-bar"
 				mat-raised-button
-				color="accent"
 				[disabled]="!createArtifactForm.valid">
 				Create New Command
 			</button>

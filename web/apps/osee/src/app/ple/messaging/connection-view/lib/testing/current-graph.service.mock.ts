@@ -10,20 +10,32 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { of, BehaviorSubject, ReplaySubject } from 'rxjs';
-import { CurrentGraphService } from '../services/current-graph.service';
-import { applic } from '@osee/shared/types/applicability';
-import { changeInstance } from '@osee/shared/types/change-report';
-import type { node, connection } from '@osee/messaging/shared/types';
-import { transactionResultMock } from '@osee/shared/transactions/testing';
-import { MimPreferencesMock } from '@osee/messaging/shared/testing';
+import { MimPreferencesMock, nodesMock } from '@osee/messaging/shared/testing';
+import type { connection, nodeData } from '@osee/messaging/shared/types';
 import { changeReportMock } from '@osee/shared/testing';
+import { applic, applicabilitySentinel } from '@osee/applicability/types';
+import { changeInstance } from '@osee/shared/types/change-report';
+import { transactionResultMock } from '@osee/transactions/testing';
+import { BehaviorSubject, ReplaySubject, of } from 'rxjs';
+import { CurrentGraphService } from '../services/current-graph.service';
+import { attribute } from '@osee/attributes/types';
+import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
 
 let sideNavContentPlaceholder = new ReplaySubject<{
 	opened: boolean;
 	field: string;
-	currentValue: string | number | applic | boolean;
-	previousValue?: string | number | applic | boolean;
+	currentValue:
+		| string
+		| number
+		| applic
+		| boolean
+		| attribute<unknown, ATTRIBUTETYPEID>;
+	previousValue?:
+		| string
+		| number
+		| applic
+		| boolean
+		| attribute<unknown, ATTRIBUTETYPEID>;
 	user?: string;
 	date?: string;
 }>();
@@ -34,34 +46,24 @@ export const graphServiceMock: Partial<CurrentGraphService> = {
 	set update(value: boolean) {
 		return;
 	},
-	getPaginatedNodes(pageNum, pageSize) {
-		return of([
-			{ id: '1', name: 'First' },
-			{ id: '2', name: 'Second' },
-		]);
-	},
 	updateConnection(connection: Partial<connection>) {
 		return of(transactionResultMock);
 	},
-	unrelateConnection(nodeId: string, id: string) {
+	unrelateConnection(nodeIds: `${number}`[], connectionId: `${number}`) {
 		return of(transactionResultMock);
 	},
-	updateNode(node: Partial<node>) {
+	updateNode(node: Partial<nodeData>) {
 		return of(transactionResultMock);
 	},
-	deleteNodeAndUnrelate(nodeId: string, edges: []) {
+	deleteNodeAndUnrelate(nodeId: string) {
 		return of(transactionResultMock);
 	},
-	createNewConnection(connection: connection, nodeIds: string[]) {
+	createNewConnection(connection: connection) {
 		return of(transactionResultMock);
 	},
-	createNewNode(node: node) {
+	createNewNode(node: nodeData) {
 		return of(transactionResultMock);
 	},
-	nodeOptions: of([
-		{ id: '1', name: 'First' },
-		{ id: '2', name: 'Second' },
-	]),
 	preferences: of(MimPreferencesMock),
 	InDiff: new BehaviorSubject<boolean>(true),
 	differences: new BehaviorSubject<changeInstance[] | undefined>(

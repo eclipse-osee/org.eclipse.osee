@@ -12,7 +12,7 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CommandPaletteComponent } from './command-palette.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -20,6 +20,10 @@ import { CommonModule } from '@angular/common';
 import { HelperdialogComponent } from '../helperdialog/helperdialog.component';
 import { MatIconModule } from '@angular/material/icon';
 import { CheckboxContainerComponent } from '../checkbox-container/checkbox-container.component';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('CommandPaletteComponent', () => {
 	let component: CommandPaletteComponent;
@@ -32,12 +36,15 @@ describe('CommandPaletteComponent', () => {
 				MatDialogModule,
 				MatIconModule,
 				CommonModule,
-				HttpClientTestingModule,
 				CommandPaletteComponent,
 				HelperdialogComponent,
 				CheckboxContainerComponent,
 			],
-			providers: [{ provide: MatDialogRef, useValue: {} }],
+			providers: [
+				{ provide: MatDialogRef, useValue: {} },
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+			],
 		}).compileComponents();
 	});
 

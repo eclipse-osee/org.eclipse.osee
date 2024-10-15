@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Directive, forwardRef, Input } from '@angular/core';
+import { Directive, forwardRef, Input, inject } from '@angular/core';
 import {
 	AbstractControl,
 	AsyncValidator,
@@ -33,9 +33,9 @@ import { Observable, of, switchMap } from 'rxjs';
 	],
 })
 export class MessageNodesCountDirective implements AsyncValidator {
-	@Input() oseeMessageNodesCount: boolean = true; // true = publisher, false = subscriber
+	private transportTypeService = inject(TransportTypeUiService);
 
-	constructor(private transportTypeService: TransportTypeUiService) {}
+	@Input() oseeMessageNodesCount = true;
 
 	validate(
 		control: AbstractControl<ConnectionNode[]>
@@ -43,11 +43,11 @@ export class MessageNodesCountDirective implements AsyncValidator {
 		return this.transportTypeService.currentTransportType.pipe(
 			switchMap((type) => {
 				const min = this.oseeMessageNodesCount
-					? type.minimumPublisherMultiplicity
-					: type.minimumSubscriberMultiplicity;
+					? type.minimumPublisherMultiplicity.value
+					: type.minimumSubscriberMultiplicity.value;
 				const max = this.oseeMessageNodesCount
-					? type.maximumPublisherMultiplicity
-					: type.maximumSubscriberMultiplicity;
+					? type.maximumPublisherMultiplicity.value
+					: type.maximumSubscriberMultiplicity.value;
 				if (!control.value) {
 					return of<ValidationErrors>({
 						min: {

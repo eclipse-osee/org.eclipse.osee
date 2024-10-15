@@ -10,26 +10,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
-import { combineLatest, filter, switchMap, take, tap } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { combineLatest, filter, repeat, switchMap, take, tap } from 'rxjs';
 import { DashboardHttpService } from './dashboard-http.service';
 import { CiDashboardUiService } from './ci-dashboard-ui.service';
-import { TransactionService } from '@osee/shared/transactions';
-import {
-	ARTIFACTTYPEIDENUM,
-	ATTRIBUTETYPEIDENUM,
-} from '@osee/shared/types/constants';
+import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
 import { NamedId } from '@osee/shared/types';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
+import { TransactionService } from '@osee/transactions/services';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class DashboardService {
-	constructor(
-		private uiService: CiDashboardUiService,
-		private dashboardHttpService: DashboardHttpService,
-		private transactionService: TransactionService
-	) {}
+	private uiService = inject(CiDashboardUiService);
+	private dashboardHttpService = inject(DashboardHttpService);
+	private transactionService = inject(TransactionService);
 
 	private _teamStats = combineLatest([
 		this.uiService.branchId,
@@ -71,13 +67,17 @@ export class DashboardService {
 			take(1),
 			filter((branchId) => branchId !== '' && branchId !== '-1'),
 			switchMap((branchId) =>
-				this.dashboardHttpService.getSubsystems(
-					branchId,
-					filterText,
-					pageNum,
-					pageSize,
-					orderByAttributeId
-				)
+				this.dashboardHttpService
+					.getSubsystems(
+						branchId,
+						filterText,
+						pageNum,
+						pageSize,
+						orderByAttributeId
+					)
+					.pipe(
+						repeat({ delay: () => this.uiService.updateRequired })
+					)
 			)
 		);
 	}
@@ -87,10 +87,11 @@ export class DashboardService {
 			take(1),
 			filter((branchId) => branchId !== '' && branchId !== '-1'),
 			switchMap((branchId) =>
-				this.dashboardHttpService.getSubsystemsCount(
-					branchId,
-					filterText
-				)
+				this.dashboardHttpService
+					.getSubsystemsCount(branchId, filterText)
+					.pipe(
+						repeat({ delay: () => this.uiService.updateRequired })
+					)
 			)
 		);
 	}
@@ -124,13 +125,17 @@ export class DashboardService {
 			take(1),
 			filter((branchId) => branchId !== '' && branchId !== '-1'),
 			switchMap((branchId) =>
-				this.dashboardHttpService.getTeams(
-					branchId,
-					filterText,
-					pageNum,
-					pageSize,
-					orderByAttributeId
-				)
+				this.dashboardHttpService
+					.getTeams(
+						branchId,
+						filterText,
+						pageNum,
+						pageSize,
+						orderByAttributeId
+					)
+					.pipe(
+						repeat({ delay: () => this.uiService.updateRequired })
+					)
 			)
 		);
 	}
@@ -140,7 +145,11 @@ export class DashboardService {
 			take(1),
 			filter((branchId) => branchId !== '' && branchId !== '-1'),
 			switchMap((branchId) =>
-				this.dashboardHttpService.getTeamsCount(branchId, filterText)
+				this.dashboardHttpService
+					.getTeamsCount(branchId, filterText)
+					.pipe(
+						repeat({ delay: () => this.uiService.updateRequired })
+					)
 			)
 		);
 	}

@@ -11,20 +11,18 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 //used to create RowObj dynamically (may have more/less columns fetched from API)
-export interface RowObj {
-	[key: string]: string | boolean | number;
-}
+export type RowObj = Record<string, string | boolean | number>;
 
-export interface ResponseColumnSchema {
+export type ResponseColumnSchema = {
 	name: string;
 	type?: string;
 	filters?: [];
 	sort?: boolean;
-}
+};
 
-export interface ResponseTableData {
+export type ResponseTableData = {
 	tableOptions: {
 		columns: ResponseColumnSchema[];
 	};
 	data: string[][];
-}
+};

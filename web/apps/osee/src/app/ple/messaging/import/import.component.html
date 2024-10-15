@@ -17,7 +17,7 @@
 			@if (_branchType === 'working') {
 				@if (importOptions | async; as _importOptions) {
 					<div class="tw-pl-8">
-						<h2>Import</h2>
+						<h3>Import</h3>
 						<div class="tw-flex tw-w-60 tw-flex-col tw-gap-2">
 							<mat-form-field appearance="fill">
 								<mat-label>{{
@@ -28,7 +28,7 @@
 										selectImportOption($event)
 									"
 									[disabled]="_importOptions.length === 0"
-									[value]="importOptionSelection | async">
+									[value]="selectedImportOption()">
 									@for (
 										option of _importOptions;
 										track option
@@ -41,10 +41,16 @@
 									}
 								</mat-select>
 							</mat-form-field>
+							@if (selectedImportOption().transportTypeRequired) {
+								<osee-transport-type-dropdown
+									#transportTypeDropdown
+									[(transportType)]="
+										transportType
+									"></osee-transport-type-dropdown>
+							}
 							@if (connections | async; as _connections) {
 								@if (
-									(importOptionSelection | async)
-										?.connectionRequired
+									selectedImportOption().connectionRequired
 								) {
 									<mat-form-field
 										class="form-field"
@@ -77,20 +83,24 @@
 								}
 							}
 						</div>
-						@if (importOptionSelection | async; as option) {
+						@if (selectedImportOption(); as option) {
 							@if (
-								!option.connectionRequired ||
-								(option.connectionRequired &&
-									(selectedConnectionId | async) !== '')
+								option.id !== '-1' &&
+								(!option.connectionRequired ||
+									(option.connectionRequired &&
+										(selectedConnectionId | async) !==
+											'')) &&
+								(!option.transportTypeRequired ||
+									(option.transportTypeRequired &&
+										transportType().id !== '-1'))
 							) {
 								<div class="tw-flex tw-items-center">
 									<label
 										for="file-upload"
 										class="tw-block tw-w-48 hover:tw-cursor-pointer">
 										<button
-											mat-raised-button
-											color="primary"
-											class="-tw-z-50 tw-m-auto">
+											mat-flat-button
+											class="primary-button -tw-z-50 tw-m-auto">
 											Select File
 										</button>
 									</label>
@@ -112,37 +122,35 @@
 							}
 							@if (
 								(selectedFile | async) &&
-								(importSuccess | async) === undefined
+								importSuccess() === undefined
 							) {
 								<button
-									mat-raised-button
-									color="primary"
+									mat-flat-button
 									(click)="startImportSummary()"
-									class="tw-mt-4">
+									class="primary-button tw-mt-4">
 									Get Import Summary
 								</button>
 							}
-							@if (importSuccess | async; as _importSuccess) {
+							@if (importSuccess() !== undefined) {
 								<div class="tw-mt-4 tw-pr-4">
-									@if (_importSuccess) {
+									@if (importSuccess()) {
 										<p>Import successful</p>
-									}
-									@if (!_importSuccess) {
+									} @else {
 										<p>Import failed</p>
 									}
 								</div>
 							} @else {
 								@if (importSummary | async; as _importSummary) {
 									@if (showSummary) {
-										<div class="tw-mt-4 tw-pr-4">
-											<h3>
+										<div class="tw-p-4">
+											<div>
 												The following will be imported
 												from
 												<span class="tw-font-bold">{{
 													selectedImportFileName
 														| async
 												}}</span>
-											</h3>
+											</div>
 											@if (
 												_importSummary.nodes.length > 0
 											) {
@@ -294,8 +302,8 @@
 											}
 										</div>
 										<button
-											mat-raised-button
-											color="primary"
+											mat-flat-button
+											class="primary-button"
 											(click)="performImport()"
 											[disabled]="!_importSummary">
 											Import

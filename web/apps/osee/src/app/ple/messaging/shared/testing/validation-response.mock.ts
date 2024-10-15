@@ -17,8 +17,8 @@ export const connectionValidationResponseMock: ConnectionValidationResult = {
 	viewId: '-1',
 	connectionName: 'Name',
 	passed: true,
-	structureByteAlignmentErrors: ['Error 1', 'Error 2'],
-	structureWordAlignmentErrors: ['Error 1', 'Error 2'],
+	structureByteAlignmentErrors: { '1': 'Error 1', '2': 'Error 2' },
+	structureWordAlignmentErrors: { '1': 'Error 1', '2': 'Error 2' },
 	duplicateStructureNameErrors: [],
 	messageTypeErrors: [],
 };

@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, input } from '@angular/core';
+import { Component, input, inject } from '@angular/core';
 import { MatDialogTitle } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { ArtifactIconService } from '../../../services/artifact-icon.service';
@@ -26,7 +26,7 @@ import {
 	templateUrl: './artifact-dialog-title.component.html',
 })
 export class ArtifactDialogTitleComponent {
-	constructor(private artifactIconService: ArtifactIconService) {}
+	private artifactIconService = inject(ArtifactIconService);
 
 	operationType = input.required<operationType>();
 

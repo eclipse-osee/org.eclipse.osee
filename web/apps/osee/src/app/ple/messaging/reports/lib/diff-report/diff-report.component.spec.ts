@@ -61,14 +61,14 @@ describe('DiffReportComponent', () => {
 
 	it('should get the header name', () => {
 		scheduler.run(() => {
-			let expectedObservable = {
+			const expectedObservable = {
 				a: {
 					header: 'description',
 					description: 'Description of the branch',
 					humanReadable: 'Description',
 				},
 			};
-			let expectedMarble = '(a)';
+			const expectedMarble = '(a)';
 			scheduler
 				.expectObservable(
 					component.getHeaderByName('description', 'branchSummary')

@@ -20,7 +20,6 @@ export class DiffModeService {
 	private _isInDiff: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
 		false
 	);
-	constructor() {}
 
 	get isInDiff(): Observable<boolean> {
 		return this._isInDiff;

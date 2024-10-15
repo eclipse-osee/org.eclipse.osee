@@ -12,10 +12,13 @@
  **********************************************************************/
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { HttpClient } from '@angular/common/http';
 import {
-	HttpClientTestingModule,
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
+import {
 	HttpTestingController,
+	provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
@@ -49,7 +52,7 @@ import {
 describe('ColumnPreferencesDialogComponent', () => {
 	let component: ColumnPreferencesDialogComponent;
 	let fixture: ComponentFixture<ColumnPreferencesDialogComponent>;
-	let dialogData: settingsDialogData = {
+	const dialogData: settingsDialogData = {
 		allowedHeaders1: ['name', 'description'],
 		allHeaders1: ['name', 'description', 'applicability'],
 		allowedHeaders2: ['name', 'description'],
@@ -61,7 +64,6 @@ describe('ColumnPreferencesDialogComponent', () => {
 		headersTableActive: true,
 		wordWrap: false,
 	};
-	let httpClient: HttpClient;
 	let httpTestingController: HttpTestingController;
 	let loader: HarnessLoader;
 
@@ -77,15 +79,15 @@ describe('ColumnPreferencesDialogComponent', () => {
 				MatTableModule,
 				MatCheckboxModule,
 				MatTooltipModule,
-				HttpClientTestingModule,
 				ColumnPreferencesDialogComponent,
 			],
 			providers: [
 				{ provide: MatDialogRef, useValue: {} },
 				{ provide: MAT_DIALOG_DATA, useValue: dialogData },
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
 			],
 		}).compileComponents();
-		httpClient = TestBed.inject(HttpClient);
 		httpTestingController = TestBed.inject(HttpTestingController);
 	});
 
@@ -101,7 +103,7 @@ describe('ColumnPreferencesDialogComponent', () => {
 	});
 
 	it('should call the backend to get whether a branch is editable', () => {
-		let testData: branchApplicability = {
+		const testData: branchApplicability = {
 			associatedArtifactId: '-1',
 			branch: {
 				id: '-1',

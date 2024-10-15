@@ -18,6 +18,7 @@ public class BranchSelected {
    private BranchToken branch;
 
    private boolean selected;
+   private boolean selectable;
 
    public BranchSelected() {
       // Do Nothing
@@ -26,6 +27,7 @@ public class BranchSelected {
    public BranchSelected(BranchToken branch, boolean selected) {
       this.setBranch(branch);
       this.setSelected(selected);
+      this.setSelectable(true); // TODO this will be used once the query is in place to determine if a branch is selectable.
    }
 
    public BranchToken getBranch() {
@@ -44,5 +46,12 @@ public class BranchSelected {
       this.selected = selected;
    }
 
-   
+   public boolean isSelectable() {
+      return selectable;
+   }
+
+   public void setSelectable(boolean selectable) {
+      this.selectable = selectable;
+   }
+
 }

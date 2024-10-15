@@ -44,7 +44,7 @@
 			@if (
 				{
 					openedState: isOpen | async,
-					filter: filter | async
+					filter: filter | async,
 				};
 				as autoCompleteState
 			) {
@@ -118,9 +118,9 @@
 			Cancel
 		</button>
 		<button
-			mat-raised-button
+			mat-flat-button
 			[mat-dialog-close]="data"
-			color="primary"
+			class="primary-button"
 			[disabled]="createChildArtifactForm.invalid">
 			Ok
 		</button>

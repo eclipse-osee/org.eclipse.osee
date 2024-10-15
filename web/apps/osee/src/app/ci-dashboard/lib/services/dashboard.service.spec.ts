@@ -14,8 +14,8 @@ import { TestBed } from '@angular/core/testing';
 import { DashboardService } from './dashboard.service';
 import { DashboardHttpService } from '../services/dashboard-http.service';
 import { dashboardHttpServiceMock } from '../services/dashboard-http.service.mock';
-import { TransactionService } from '@osee/shared/transactions';
-import { transactionServiceMock } from '@osee/shared/transactions/testing';
+import { TransactionService } from '@osee/transactions/services';
+import { transactionServiceMock } from '@osee/transactions/services/testing';
 
 describe('DashboardService', () => {
 	let service: DashboardService;

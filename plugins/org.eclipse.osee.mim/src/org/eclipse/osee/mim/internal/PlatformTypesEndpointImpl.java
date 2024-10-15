@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.mim.InterfaceEnumerationApi;
 import org.eclipse.osee.mim.InterfaceEnumerationSetApi;
 import org.eclipse.osee.mim.InterfacePlatformTypeApi;
@@ -48,8 +49,11 @@ public class PlatformTypesEndpointImpl implements PlatformTypesEndpoint {
    }
 
    @Override
-   public Collection<PlatformTypeToken> getPlatformTypes(long pageNum, long pageSize,
+   public Collection<PlatformTypeToken> getPlatformTypes(String filter, long pageNum, long pageSize,
       AttributeTypeToken orderByAttributeTypeId) {
+      if (Strings.isValid(filter)) {
+         return platformApi.getFilteredWithEnumSet(branch, pageNum, pageSize, orderByAttributeTypeId, filter);
+      }
       return platformApi.getAllWithEnumSet(branch, pageNum, pageSize, orderByAttributeTypeId);
    }
 

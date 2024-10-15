@@ -575,18 +575,18 @@ public abstract class AbstractAccessControlService implements IAccessControlServ
    }
 
    @Override
-   public XResultData isAddableRelation(ArtifactToken artifact, RelationTypeToken relationType, XResultData results) {
+   public XResultData isAddableRelationUI(ArtifactToken artifact, RelationTypeToken relationType, XResultData results) {
       for (ArtifactCheck check : getArtifactChecks()) {
-         check.isAddableRelation(artifact, relationType, results);
+         check.isAddableRelationUI(artifact, relationType, results);
       }
       return results;
    }
 
    @Override
-   public XResultData isDeleteableRelation(ArtifactToken artifact, RelationTypeToken relationType,
+   public XResultData isDeleteableRelationUI(ArtifactToken artifact, RelationTypeToken relationType,
       XResultData results) {
       for (ArtifactCheck check : getArtifactChecks()) {
-         check.isDeleteableRelation(artifact, relationType, results);
+         check.isDeleteableRelationUI(artifact, relationType, results);
       }
       return results;
    }

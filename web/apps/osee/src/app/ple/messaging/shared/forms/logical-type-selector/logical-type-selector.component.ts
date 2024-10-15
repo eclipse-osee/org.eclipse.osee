@@ -11,25 +11,19 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TitleCasePipe } from '@angular/common';
-import {
-	Component,
-	EventEmitter,
-	Input,
-	Output,
-	viewChild,
-} from '@angular/core';
-import { FormsModule, NgForm } from '@angular/forms';
+import { Component, model, signal, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatOption } from '@angular/material/core';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatSelect } from '@angular/material/select';
 import { TypesService } from '@osee/messaging/shared/services';
 import type { logicalType } from '@osee/messaging/shared/types';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
-import { ParentErrorStateMatcher } from '@osee/shared/matchers';
+import { provideOptionalControlContainerNgForm } from '@osee/shared/utils';
 import { HasValidIdDirective } from '@osee/shared/validators';
-
+let nextUniqueId = 0;
 @Component({
-	selector: 'osee-logical-type-selector',
+	selector: 'osee-logical-type-dropdown',
 	standalone: true,
 	imports: [
 		TitleCasePipe,
@@ -41,25 +35,44 @@ import { HasValidIdDirective } from '@osee/shared/validators';
 		MatOptionLoadingComponent,
 		HasValidIdDirective,
 	],
-	templateUrl: './logical-type-selector.component.html',
-	styles: [],
+	template: `
+		<mat-form-field
+			class="tw-w-full"
+			required>
+			<mat-label>Logical Type</mat-label>
+			<mat-select
+				[(ngModel)]="type"
+				data-cy="logical_type_selector"
+				[name]="'logicalType_' + _componentId()"
+				required
+				oseeHasValidId
+				[compareWith]="compareIds">
+				<osee-mat-option-loading
+					[data]="logicalTypes"
+					objectName="Logical Types">
+					<ng-template let-option>
+						<mat-option
+							[value]="option"
+							[attr.data-cy]="'logical-type-' + option.name">
+							{{ option.name | titlecase }}
+						</mat-option>
+					</ng-template>
+				</osee-mat-option-loading>
+			</mat-select>
+		</mat-form-field>
+	`,
+	viewProviders: [provideOptionalControlContainerNgForm()],
 })
 export class LogicalTypeSelectorComponent {
-	form = viewChild.required('logicalTypeSelector', { read: NgForm });
-	@Input() type: logicalType = {
-		id: '-1',
-		name: '',
-		idString: '-1',
-		idIntValue: -1,
-	};
+	private typesService = inject(TypesService);
 
-	parentMatcher = new ParentErrorStateMatcher();
-	@Output() typeChanged = new EventEmitter<logicalType>();
+	protected _componentId = signal(`${nextUniqueId++}`);
+
+	type = model.required<logicalType>();
 	logicalTypes = this.typesService.logicalTypes;
 
-	constructor(private typesService: TypesService) {}
 	setType(value: logicalType) {
-		this.typeChanged.next(value);
+		this.type.set(value);
 	}
 
 	compareIds<T extends { id: string }>(a: T, b: T) {

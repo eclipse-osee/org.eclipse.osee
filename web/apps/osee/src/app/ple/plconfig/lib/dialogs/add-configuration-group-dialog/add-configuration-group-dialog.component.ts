@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import {
@@ -43,10 +43,11 @@ import { addCfgGroup } from '../../types/pl-config-cfggroups';
 	],
 })
 export class AddConfigurationGroupDialogComponent {
-	constructor(
-		public dialogRef: MatDialogRef<AddConfigurationGroupDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: addCfgGroup
-	) {}
+	dialogRef =
+		inject<MatDialogRef<AddConfigurationGroupDialogComponent>>(
+			MatDialogRef
+		);
+	data = inject<addCfgGroup>(MAT_DIALOG_DATA);
 
 	onNoClick(): void {
 		this.dialogRef.close();

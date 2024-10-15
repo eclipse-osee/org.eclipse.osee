@@ -11,3 +11,4 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export * from './has-valid-id.directive';
+export * from './has-valid-name.directive';

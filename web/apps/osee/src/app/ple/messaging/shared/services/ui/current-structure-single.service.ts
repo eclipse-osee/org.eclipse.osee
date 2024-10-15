@@ -11,39 +11,38 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
+import { applic, applicabilitySentinel } from '@osee/applicability/types';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 import type {
+	element,
 	structure,
 	structureWithChanges,
-	elementWithChanges,
 } from '@osee/messaging/shared/types';
 import {
+	ModificationType,
+	changeInstance,
+	changeTypeNumber,
+	ignoreType,
+} from '@osee/shared/types/change-report';
+import { RELATIONTYPEIDENUM } from '@osee/shared/types/constants';
+import {
+	Observable,
+	OperatorFunction,
 	combineLatest,
-	filter,
-	switchMap,
-	of,
 	count,
+	debounceTime,
+	filter,
 	from,
 	iif,
 	map,
 	mergeMap,
+	of,
 	repeat,
-	OperatorFunction,
-	debounceTime,
-	Observable,
+	switchMap,
 } from 'rxjs';
-import { applic } from '@osee/shared/types/applicability';
-import {
-	changeInstance,
-	ignoreType,
-	changeTypeNumber,
-	ModificationType,
-} from '@osee/shared/types/change-report';
-import {
-	ATTRIBUTETYPEIDENUM,
-	RELATIONTYPEIDENUM,
-} from '@osee/shared/types/constants';
 import { CurrentStructureService } from './current-structure.service';
 import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Injectable({
 	providedIn: 'root',
@@ -52,31 +51,32 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 	get structuresCount(): Observable<number> {
 		return of(1);
 	}
+	private _filter = toObservable(this.ui.filter);
 	private _structures = combineLatest([
 		this.BranchId,
 		this.branchInfoService.parentBranch,
 		this.MessageId,
-		this.SubMessageId,
+		this._submessageId,
 		this.connectionId,
 		this.ui.viewId,
-		this.ui.filter,
+		this._filter,
 		this.singleStructureId,
 	]).pipe(
 		filter(
 			([
 				branchId,
-				parentBranch,
+				_parentBranch,
 				messageId,
 				subMessageId,
 				connectionId,
-				viewId,
-				filterString,
+				_viewId,
+				_filterString,
 				structureId,
 			]) =>
 				branchId !== '' &&
 				messageId !== '' &&
-				subMessageId !== '' &&
-				connectionId !== '' &&
+				subMessageId !== '-1' &&
+				connectionId !== '-1' &&
 				structureId !== ''
 		),
 		debounceTime(500),
@@ -117,9 +117,9 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 									messageId,
 									subMessageId,
 									connectionId
-							  )
+								)
 							: //no differences
-							  of(structure)
+								of(structure)
 					)
 				)
 		),
@@ -135,11 +135,14 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 	/**
 	 * no-op implementation
 	 */
+	//eslint-disable-next-line @typescript-eslint/no-empty-function
 	set page(page: number) {}
+	//eslint-disable-next-line @typescript-eslint/no-empty-function
 	returnToFirstPage() {}
 	get currentPageSize(): Observable<number> {
 		return of(1);
 	}
+	//eslint-disable-next-line @typescript-eslint/no-empty-function
 	set pageSize(page: number) {}
 	get structures() {
 		return this._structures;
@@ -147,7 +150,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 
 	private _parseDifferences(
 		differences: changeInstance[] | undefined,
-		_oldStructure: Required<structure>,
+		_oldStructure: structure,
 		parentBranch: string,
 		branch: string,
 		message: string,
@@ -219,7 +222,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 										iif(
 											() => change.artId === structure.id,
 											of(structure).pipe(
-												map((val) => {
+												map((_) => {
 													structure =
 														this._structureChangeSetup(
 															structure
@@ -230,14 +233,13 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 													(
 														structure as structureWithChanges
 													).changes.applicability = {
-														previousValue:
-															change
-																.baselineVersion
-																.applicabilityToken,
-														currentValue:
-															change
-																.currentVersion
-																.applicabilityToken,
+														previousValue: change
+															.baselineVersion
+															.applicabilityToken as applic,
+
+														currentValue: change
+															.currentVersion
+															.applicabilityToken as applic,
 														transactionToken:
 															change
 																.currentVersion
@@ -254,49 +256,52 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 													structure.elements
 														?.map((a) => a.id)
 														.includes(
-															change.artId
+															change.artId as `${number}`
 														) || false,
 												of(structure).pipe(
-													map((val) => {
-														let index =
+													map((_) => {
+														const index =
 															structure.elements?.findIndex(
 																(el) =>
 																	el.id ===
 																	change.artId
 															);
-														structure.elements[
-															index
-														] =
+														let element =
+															structure.elements[
+																index
+															];
+														element =
 															this._elementChangeSetup(
 																structure
 																	.elements[
 																	index
 																]
 															);
-														(
-															structure.elements[
-																index
-															] as elementWithChanges
-														).changes.applicability =
-															{
-																previousValue:
-																	change
-																		.baselineVersion
-																		.applicabilityToken as applic,
-																currentValue:
-																	change
-																		.currentVersion
-																		.applicabilityToken as applic,
-																transactionToken:
-																	change
-																		.currentVersion
-																		.transactionToken,
-															};
-														(
-															structure.elements[
-																index
-															] as elementWithChanges
-														).added = true;
+														if (
+															this._elementIsDiffed(
+																element
+															)
+														) {
+															element.changes.applicability =
+																{
+																	previousValue:
+																		change
+																			.baselineVersion
+																			.applicabilityToken as applic,
+																	currentValue:
+																		change
+																			.currentVersion
+																			.applicabilityToken as applic,
+																	transactionToken:
+																		change
+																			.currentVersion
+																			.transactionToken,
+																};
+														}
+														element.added = true;
+														structure.elements[
+															index
+														] = element;
 														(
 															structure as structureWithChanges
 														).hasElementChanges =
@@ -320,43 +325,52 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 													!change.deleted &&
 													structure.elements
 														?.map((a) => a.id)
-														.includes(change.artId),
+														.includes(
+															change.artId as `${number}`
+														),
 												of(structure).pipe(
-													map((val) => {
-														let index =
+													map((_) => {
+														const index =
 															structure.elements?.findIndex(
 																(el) =>
 																	el.id ===
 																	change.artId
 															);
-														structure.elements[
-															index
-														] =
+														let element =
+															structure.elements[
+																index
+															];
+														element =
 															this._elementChangeSetup(
 																structure
 																	.elements[
 																	index
 																]
 															);
-														(
-															structure.elements[
-																index
-															] as elementWithChanges
-														).changes.applicability =
-															{
-																previousValue:
-																	change
-																		.baselineVersion
-																		.applicabilityToken as applic,
-																currentValue:
-																	change
-																		.currentVersion
-																		.applicabilityToken as applic,
-																transactionToken:
-																	change
-																		.currentVersion
-																		.transactionToken,
-															};
+														if (
+															this._elementIsDiffed(
+																element
+															)
+														) {
+															element.changes.applicability =
+																{
+																	previousValue:
+																		change
+																			.baselineVersion
+																			.applicabilityToken as applic,
+																	currentValue:
+																		change
+																			.currentVersion
+																			.applicabilityToken as applic,
+																	transactionToken:
+																		change
+																			.currentVersion
+																			.transactionToken,
+																};
+														}
+														structure.elements[
+															index
+														] = element;
 														(
 															structure as structureWithChanges
 														).hasElementChanges =
@@ -389,14 +403,37 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 															structure as structureWithChanges
 														).changes.description =
 															{
-																previousValue:
-																	change
+																previousValue: {
+																	id: structure
+																		.description
+																		.id,
+																	typeId: structure
+																		.description
+																		.typeId,
+																	gammaId:
+																		change
+																			.baselineVersion
+																			.gammaId as `${number}`,
+																	value: change
 																		.baselineVersion
-																		.value,
-																currentValue:
-																	change
+																		.value as string,
+																},
+
+																currentValue: {
+																	id: structure
+																		.description
+																		.id,
+																	typeId: structure
+																		.description
+																		.typeId,
+																	gammaId:
+																		change
+																			.currentVersion
+																			.gammaId as `${number}`,
+																	value: change
 																		.currentVersion
-																		.value,
+																		.value as string,
+																},
 																transactionToken:
 																	change
 																		.currentVersion
@@ -418,14 +455,36 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 															(
 																structure as structureWithChanges
 															).changes.name = {
-																previousValue:
-																	change
+																previousValue: {
+																	id: structure
+																		.name
+																		.id,
+																	typeId: structure
+																		.name
+																		.typeId,
+																	gammaId:
+																		change
+																			.baselineVersion
+																			.gammaId as `${number}`,
+																	value: change
 																		.baselineVersion
-																		.value,
-																currentValue:
-																	change
+																		.value as string,
+																},
+																currentValue: {
+																	id: structure
+																		.name
+																		.id,
+																	typeId: structure
+																		.name
+																		.typeId,
+																	gammaId:
+																		change
+																			.currentVersion
+																			.gammaId as `${number}`,
+																	value: change
 																		.currentVersion
-																		.value,
+																		.value as string,
+																},
 																transactionToken:
 																	change
 																		.currentVersion
@@ -449,13 +508,38 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																).changes.interfaceMaxSimultaneity =
 																	{
 																		previousValue:
-																			change
-																				.baselineVersion
-																				.value,
+																			{
+																				id: structure
+																					.interfaceMaxSimultaneity
+																					.id,
+																				typeId: structure
+																					.interfaceMaxSimultaneity
+																					.typeId,
+																				gammaId:
+																					change
+																						.baselineVersion
+																						.gammaId as `${number}`,
+																				value: change
+																					.baselineVersion
+																					.value as string,
+																			},
+
 																		currentValue:
-																			change
-																				.currentVersion
-																				.value,
+																			{
+																				id: structure
+																					.interfaceMaxSimultaneity
+																					.id,
+																				typeId: structure
+																					.interfaceMaxSimultaneity
+																					.typeId,
+																				gammaId:
+																					change
+																						.currentVersion
+																						.gammaId as `${number}`,
+																				value: change
+																					.currentVersion
+																					.value as string,
+																			},
 																		transactionToken:
 																			change
 																				.currentVersion
@@ -482,13 +566,38 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																		).changes.interfaceMinSimultaneity =
 																			{
 																				previousValue:
-																					change
-																						.baselineVersion
-																						.value,
+																					{
+																						id: structure
+																							.interfaceMinSimultaneity
+																							.id,
+																						typeId: structure
+																							.interfaceMinSimultaneity
+																							.typeId,
+																						gammaId:
+																							change
+																								.baselineVersion
+																								.gammaId as `${number}`,
+																						value: change
+																							.baselineVersion
+																							.value as string,
+																					},
+
 																				currentValue:
-																					change
-																						.currentVersion
-																						.value,
+																					{
+																						id: structure
+																							.interfaceMinSimultaneity
+																							.id,
+																						typeId: structure
+																							.interfaceMinSimultaneity
+																							.typeId,
+																						gammaId:
+																							change
+																								.currentVersion
+																								.gammaId as `${number}`,
+																						value: change
+																							.currentVersion
+																							.value as string,
+																					},
 																				transactionToken:
 																					change
 																						.currentVersion
@@ -518,13 +627,37 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																			).changes.interfaceStructureCategory =
 																				{
 																					previousValue:
-																						change
-																							.baselineVersion
-																							.value,
+																						{
+																							id: structure
+																								.interfaceStructureCategory
+																								.id,
+																							typeId: structure
+																								.interfaceStructureCategory
+																								.typeId,
+																							gammaId:
+																								change
+																									.baselineVersion
+																									.gammaId as `${number}`,
+																							value: change
+																								.baselineVersion
+																								.value as string,
+																						},
 																					currentValue:
-																						change
-																							.currentVersion
-																							.value,
+																						{
+																							id: structure
+																								.interfaceStructureCategory
+																								.id,
+																							typeId: structure
+																								.interfaceStructureCategory
+																								.typeId,
+																							gammaId:
+																								change
+																									.currentVersion
+																									.gammaId as `${number}`,
+																							value: change
+																								.currentVersion
+																								.value as string,
+																						},
 																					transactionToken:
 																						change
 																							.currentVersion
@@ -554,13 +687,37 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																				).changes.interfaceTaskFileType =
 																					{
 																						previousValue:
-																							change
-																								.baselineVersion
-																								.value,
+																							{
+																								id: structure
+																									.interfaceTaskFileType
+																									.id,
+																								typeId: structure
+																									.interfaceTaskFileType
+																									.typeId,
+																								gammaId:
+																									change
+																										.baselineVersion
+																										.gammaId as `${number}`,
+																								value: change
+																									.baselineVersion
+																									.value as number,
+																							},
 																						currentValue:
-																							change
-																								.currentVersion
-																								.value,
+																							{
+																								id: structure
+																									.interfaceTaskFileType
+																									.id,
+																								typeId: structure
+																									.interfaceTaskFileType
+																									.typeId,
+																								gammaId:
+																									change
+																										.currentVersion
+																										.gammaId as `${number}`,
+																								value: change
+																									.currentVersion
+																									.value as number,
+																							},
 																						transactionToken:
 																							change
 																								.currentVersion
@@ -581,48 +738,81 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 												() =>
 													structure.elements
 														?.map((a) => a.id)
-														.includes(change.artId),
+														.includes(
+															change.artId as `${number}`
+														),
 												iif(
 													() =>
 														change.itemTypeId ===
 														ATTRIBUTETYPEIDENUM.DESCRIPTION,
 													of(structure).pipe(
 														map((structure) => {
-															let index =
+															const index =
 																structure.elements?.findIndex(
 																	(el) =>
 																		el.id ===
 																		change.artId
 																);
-															structure.elements[
-																index
-															] =
+															let element =
+																structure
+																	.elements[
+																	index
+																];
+															element =
 																this._elementChangeSetup(
 																	structure
 																		.elements[
 																		index
 																	]
 																);
-															(
-																structure
-																	.elements[
-																	index
-																] as elementWithChanges
-															).changes.description =
-																{
-																	previousValue:
-																		change
-																			.baselineVersion
-																			.value as string,
-																	currentValue:
-																		change
-																			.currentVersion
-																			.value as string,
-																	transactionToken:
-																		change
-																			.currentVersion
-																			.transactionToken,
-																};
+															if (
+																this._elementIsDiffed(
+																	element
+																)
+															) {
+																element.changes.description =
+																	{
+																		previousValue:
+																			{
+																				id: element
+																					.description
+																					.id,
+																				typeId: element
+																					.description
+																					.typeId,
+																				gammaId:
+																					change
+																						.baselineVersion
+																						.gammaId as `${number}`,
+																				value: change
+																					.baselineVersion
+																					.value as string,
+																			},
+																		currentValue:
+																			{
+																				id: element
+																					.description
+																					.id,
+																				typeId: element
+																					.description
+																					.typeId,
+																				gammaId:
+																					change
+																						.currentVersion
+																						.gammaId as `${number}`,
+																				value: change
+																					.currentVersion
+																					.value as string,
+																			},
+																		transactionToken:
+																			change
+																				.currentVersion
+																				.transactionToken,
+																	};
+															}
+															structure.elements[
+																index
+															] = element;
 															(
 																structure as structureWithChanges
 															).hasElementChanges =
@@ -636,41 +826,72 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 															ATTRIBUTETYPEIDENUM.NAME,
 														of(structure).pipe(
 															map((structure) => {
-																let index =
+																const index =
 																	structure.elements?.findIndex(
 																		(el) =>
 																			el.id ===
 																			change.artId
 																	);
-																structure.elements[
-																	index
-																] =
+																let element =
+																	structure
+																		.elements[
+																		index
+																	];
+																element =
 																	this._elementChangeSetup(
 																		structure
 																			.elements[
 																			index
 																		]
 																	);
-																(
-																	structure
-																		.elements[
-																		index
-																	] as elementWithChanges
-																).changes.name =
-																	{
-																		previousValue:
-																			change
-																				.baselineVersion
-																				.value as string,
-																		currentValue:
-																			change
-																				.currentVersion
-																				.value as string,
-																		transactionToken:
-																			change
-																				.currentVersion
-																				.transactionToken,
-																	};
+																if (
+																	this._elementIsDiffed(
+																		element
+																	)
+																) {
+																	element.changes.name =
+																		{
+																			previousValue:
+																				{
+																					id: element
+																						.name
+																						.id,
+																					typeId: element
+																						.name
+																						.typeId,
+																					gammaId:
+																						change
+																							.baselineVersion
+																							.gammaId as `${number}`,
+																					value: change
+																						.baselineVersion
+																						.value as string,
+																				},
+																			currentValue:
+																				{
+																					id: element
+																						.name
+																						.id,
+																					typeId: element
+																						.name
+																						.typeId,
+																					gammaId:
+																						change
+																							.currentVersion
+																							.gammaId as `${number}`,
+																					value: change
+																						.currentVersion
+																						.value as string,
+																				},
+																			transactionToken:
+																				change
+																					.currentVersion
+																					.transactionToken,
+																		};
+																}
+																structure.elements[
+																	index
+																] = element;
 																(
 																	structure as structureWithChanges
 																).hasElementChanges =
@@ -687,7 +908,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																	(
 																		structure
 																	) => {
-																		let index =
+																		const index =
 																			structure.elements?.findIndex(
 																				(
 																					el
@@ -695,35 +916,67 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																					el.id ===
 																					change.artId
 																			);
-																		structure.elements[
-																			index
-																		] =
+																		let element =
+																			structure
+																				.elements[
+																				index
+																			];
+																		element =
 																			this._elementChangeSetup(
 																				structure
 																					.elements[
 																					index
 																				]
 																			);
-																		(
-																			structure
-																				.elements[
-																				index
-																			] as elementWithChanges
-																		).changes.interfaceElementAlterable =
-																			{
-																				previousValue:
-																					change
-																						.baselineVersion
-																						.value as boolean,
-																				currentValue:
-																					change
-																						.currentVersion
-																						.value as boolean,
-																				transactionToken:
-																					change
-																						.currentVersion
-																						.transactionToken,
-																			};
+																		if (
+																			this._elementIsDiffed(
+																				element
+																			)
+																		) {
+																			element.changes.interfaceElementAlterable =
+																				{
+																					previousValue:
+																						{
+																							id: element
+																								.interfaceElementAlterable
+																								.id,
+																							typeId: element
+																								.interfaceElementAlterable
+																								.typeId,
+																							gammaId:
+																								change
+																									.baselineVersion
+																									.gammaId as `${number}`,
+																							value: change
+																								.baselineVersion
+																								.value as boolean,
+																						},
+																					currentValue:
+																						{
+																							id: element
+																								.interfaceElementAlterable
+																								.id,
+																							typeId: element
+																								.interfaceElementAlterable
+																								.typeId,
+																							gammaId:
+																								change
+																									.currentVersion
+																									.gammaId as `${number}`,
+																							value: change
+																								.currentVersion
+																								.value as boolean,
+																						},
+																					transactionToken:
+																						change
+																							.currentVersion
+																							.transactionToken,
+																				};
+																		}
+																		structure.elements[
+																			index
+																		] =
+																			element;
 																		(
 																			structure as structureWithChanges
 																		).hasElementChanges =
@@ -743,7 +996,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																		(
 																			structure
 																		) => {
-																			let index =
+																			const index =
 																				structure.elements?.findIndex(
 																					(
 																						el
@@ -751,35 +1004,67 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																						el.id ===
 																						change.artId
 																				);
-																			structure.elements[
-																				index
-																			] =
+																			let element =
+																				structure
+																					.elements[
+																					index
+																				];
+																			element =
 																				this._elementChangeSetup(
 																					structure
 																						.elements[
 																						index
 																					]
 																				);
-																			(
-																				structure
-																					.elements[
-																					index
-																				] as elementWithChanges
-																			).changes.interfaceElementIndexEnd =
-																				{
-																					previousValue:
-																						change
-																							.baselineVersion
-																							.value as number,
-																					currentValue:
-																						change
-																							.currentVersion
-																							.value as number,
-																					transactionToken:
-																						change
-																							.currentVersion
-																							.transactionToken,
-																				};
+																			if (
+																				this._elementIsDiffed(
+																					element
+																				)
+																			) {
+																				element.changes.interfaceElementIndexEnd =
+																					{
+																						previousValue:
+																							{
+																								id: element
+																									.interfaceElementIndexEnd
+																									.id,
+																								typeId: element
+																									.interfaceElementIndexEnd
+																									.typeId,
+																								gammaId:
+																									change
+																										.baselineVersion
+																										.gammaId as `${number}`,
+																								value: change
+																									.baselineVersion
+																									.value as number,
+																							},
+																						currentValue:
+																							{
+																								id: element
+																									.interfaceElementIndexEnd
+																									.id,
+																								typeId: element
+																									.interfaceElementIndexEnd
+																									.typeId,
+																								gammaId:
+																									change
+																										.currentVersion
+																										.gammaId as `${number}`,
+																								value: change
+																									.currentVersion
+																									.value as number,
+																							},
+																						transactionToken:
+																							change
+																								.currentVersion
+																								.transactionToken,
+																					};
+																			}
+																			structure.elements[
+																				index
+																			] =
+																				element;
 																			(
 																				structure as structureWithChanges
 																			).hasElementChanges =
@@ -799,7 +1084,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																			(
 																				structure
 																			) => {
-																				let index =
+																				const index =
 																					structure.elements?.findIndex(
 																						(
 																							el
@@ -807,35 +1092,67 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																							el.id ===
 																							change.artId
 																					);
-																				structure.elements[
-																					index
-																				] =
+																				let element =
+																					structure
+																						.elements[
+																						index
+																					];
+																				element =
 																					this._elementChangeSetup(
 																						structure
 																							.elements[
 																							index
 																						]
 																					);
-																				(
-																					structure
-																						.elements[
-																						index
-																					] as elementWithChanges
-																				).changes.interfaceElementIndexStart =
-																					{
-																						previousValue:
-																							change
-																								.baselineVersion
-																								.value as number,
-																						currentValue:
-																							change
-																								.currentVersion
-																								.value as number,
-																						transactionToken:
-																							change
-																								.currentVersion
-																								.transactionToken,
-																					};
+																				if (
+																					this._elementIsDiffed(
+																						element
+																					)
+																				) {
+																					element.changes.interfaceElementIndexStart =
+																						{
+																							previousValue:
+																								{
+																									id: element
+																										.interfaceElementIndexStart
+																										.id,
+																									typeId: element
+																										.interfaceElementIndexStart
+																										.typeId,
+																									gammaId:
+																										change
+																											.baselineVersion
+																											.gammaId as `${number}`,
+																									value: change
+																										.baselineVersion
+																										.value as number,
+																								},
+																							currentValue:
+																								{
+																									id: element
+																										.interfaceElementIndexStart
+																										.id,
+																									typeId: element
+																										.interfaceElementIndexStart
+																										.typeId,
+																									gammaId:
+																										change
+																											.currentVersion
+																											.gammaId as `${number}`,
+																									value: change
+																										.currentVersion
+																										.value as number,
+																								},
+																							transactionToken:
+																								change
+																									.currentVersion
+																									.transactionToken,
+																						};
+																				}
+																				structure.elements[
+																					index
+																				] =
+																					element;
 																				(
 																					structure as structureWithChanges
 																				).hasElementChanges =
@@ -855,7 +1172,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																				(
 																					structure
 																				) => {
-																					let index =
+																					const index =
 																						structure.elements?.findIndex(
 																							(
 																								el
@@ -863,35 +1180,67 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																								el.id ===
 																								change.artId
 																						);
-																					structure.elements[
-																						index
-																					] =
+																					let element =
+																						structure
+																							.elements[
+																							index
+																						];
+																					element =
 																						this._elementChangeSetup(
 																							structure
 																								.elements[
 																								index
 																							]
 																						);
-																					(
-																						structure
-																							.elements[
-																							index
-																						] as elementWithChanges
-																					).changes.enumLiteral =
-																						{
-																							previousValue:
-																								change
-																									.baselineVersion
-																									.value as string,
-																							currentValue:
-																								change
-																									.currentVersion
-																									.value as string,
-																							transactionToken:
-																								change
-																									.currentVersion
-																									.transactionToken,
-																						};
+																					if (
+																						this._elementIsDiffed(
+																							element
+																						)
+																					) {
+																						element.changes.enumLiteral =
+																							{
+																								previousValue:
+																									{
+																										id: element
+																											.enumLiteral
+																											.id,
+																										typeId: element
+																											.enumLiteral
+																											.typeId,
+																										gammaId:
+																											change
+																												.baselineVersion
+																												.gammaId as `${number}`,
+																										value: change
+																											.baselineVersion
+																											.value as string,
+																									},
+																								currentValue:
+																									{
+																										id: element
+																											.enumLiteral
+																											.id,
+																										typeId: element
+																											.enumLiteral
+																											.typeId,
+																										gammaId:
+																											change
+																												.currentVersion
+																												.gammaId as `${number}`,
+																										value: change
+																											.currentVersion
+																											.value as string,
+																									},
+																								transactionToken:
+																									change
+																										.currentVersion
+																										.transactionToken,
+																							};
+																					}
+																					structure.elements[
+																						index
+																					] =
+																						element;
 																					(
 																						structure as structureWithChanges
 																					).hasElementChanges =
@@ -910,9 +1259,8 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 												iif(
 													() =>
 														structure.elements
-															?.map(
-																(a) =>
-																	a.platformType.id?.toString()
+															?.map((a) =>
+																a.platformType.id?.toString()
 															)
 															.includes(
 																change.artId
@@ -923,12 +1271,17 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 															ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEUNITS,
 														of(structure).pipe(
 															map((structure) => {
-																let index =
+																const index =
 																	structure.elements?.findIndex(
 																		(el) =>
 																			el.platformType.id?.toString() ===
 																			change.artId
 																	);
+																const element =
+																	structure
+																		.elements[
+																		index
+																	];
 																structure.elements[
 																	index
 																] =
@@ -938,30 +1291,106 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																			index
 																		]
 																	);
-																(
-																	structure
-																		.elements[
-																		index
-																	] as elementWithChanges
-																).changes.units =
-																	{
-																		previousValue:
-																			change
-																				.baselineVersion
-																				.value as string,
-																		currentValue:
-																			change
-																				.currentVersion
-																				.value as string,
-																		transactionToken:
-																			change
-																				.currentVersion
-																				.transactionToken,
-																	};
-																(
-																	structure as structureWithChanges
-																).hasElementChanges =
+																if (
+																	this._elementIsDiffed(
+																		element
+																	)
+																) {
+																	if (
+																		element
+																			.changes
+																			.platformType ===
+																		undefined
+																	) {
+																		element.changes.platformType =
+																			{
+																				previousValue:
+																					{
+																						...new PlatformTypeSentinel(),
+																						interfacePlatformTypeUnits:
+																							{
+																								id: '-1',
+																								value: '',
+																								typeId: '4026643196432874344',
+																								gammaId:
+																									'-1',
+																							},
+																					},
+																				currentValue:
+																					{
+																						...new PlatformTypeSentinel(),
+																						interfacePlatformTypeUnits:
+																							{
+																								id: change.itemId as `${number}`,
+																								value: change
+																									.currentVersion
+																									.value as string,
+																								typeId: change.itemTypeId as typeof ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEUNITS,
+																								gammaId:
+																									change
+																										.currentVersion
+																										.gammaId as `${number}`,
+																							},
+																					},
+																				transactionToken:
+																					change
+																						.currentVersion
+																						.transactionToken,
+																			};
+																	} else {
+																		element.changes.platformType.previousValue.interfacePlatformTypeUnits =
+																			{
+																				id: element
+																					.changes
+																					.platformType
+																					.previousValue
+																					.interfacePlatformTypeUnits
+																					.id,
+																				typeId: element
+																					.changes
+																					.platformType
+																					.previousValue
+																					.interfacePlatformTypeUnits
+																					.typeId,
+																				gammaId:
+																					change
+																						.baselineVersion
+																						.gammaId as `${number}`,
+																				value: change
+																					.baselineVersion
+																					.value as string,
+																			};
+																		element.changes.platformType.currentValue.interfacePlatformTypeUnits =
+																			{
+																				id: element
+																					.changes
+																					.platformType
+																					.previousValue
+																					.interfacePlatformTypeUnits
+																					.id,
+																				typeId: element
+																					.changes
+																					.platformType
+																					.previousValue
+																					.interfacePlatformTypeUnits
+																					.typeId,
+																				gammaId:
+																					change
+																						.currentVersion
+																						.gammaId as `${number}`,
+																				value: change
+																					.currentVersion
+																					.value as string,
+																			};
+																		element.changes.platformType.transactionToken =
+																			change.currentVersion.transactionToken;
+																	}
+																}
+																structure.hasElementChanges =
 																	true;
+																structure.elements[
+																	index
+																] = element;
 																return structure as structureWithChanges;
 															})
 														),
@@ -974,7 +1403,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																	(
 																		structure
 																	) => {
-																		let index =
+																		const index =
 																			structure.elements?.findIndex(
 																				(
 																					el
@@ -982,60 +1411,86 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																					el.platformType.id?.toString() ===
 																					change.artId
 																			);
-																		structure.elements[
-																			index
-																		] =
+																		let el =
+																			structure
+																				.elements[
+																				index
+																			];
+																		el =
 																			this._elementChangeSetup(
 																				structure
 																					.elements[
 																					index
 																				]
 																			);
-																		(
-																			structure
-																				.elements[
-																				index
-																			] as elementWithChanges
-																		).changes.platformType =
-																			{
-																				previousValue:
-																					{
-																						...(
-																							structure
-																								.elements[
-																								index
-																							] as elementWithChanges
-																						)
-																							.changes
-																							.platformType!
-																							.previousValue,
-																						name: change
-																							.baselineVersion
-																							.value as string,
-																					},
-																				currentValue:
-																					{
-																						...(
-																							structure
-																								.elements[
-																								index
-																							] as elementWithChanges
-																						)
-																							.changes
-																							.platformType!
-																							.currentValue,
-																						name: change
+																		if (
+																			this._elementIsDiffed(
+																				el
+																			)
+																		) {
+																			el.changes.platformType =
+																				{
+																					previousValue:
+																						{
+																							...(el
+																								.changes
+																								.platformType
+																								?.previousValue ||
+																								new PlatformTypeSentinel()),
+
+																							name: {
+																								id: el
+																									.platformType
+																									.name
+																									.id,
+																								typeId: el
+																									.platformType
+																									.name
+																									.typeId,
+																								gammaId:
+																									change
+																										.baselineVersion
+																										.gammaId as `${number}`,
+																								value: change
+																									.baselineVersion
+																									.value as string,
+																							},
+																						},
+																					currentValue:
+																						{
+																							...(el
+																								.changes
+																								.platformType
+																								?.currentValue ||
+																								new PlatformTypeSentinel()),
+																							name: {
+																								id: el
+																									.platformType
+																									.name
+																									.id,
+																								typeId: el
+																									.platformType
+																									.name
+																									.typeId,
+																								gammaId:
+																									change
+																										.baselineVersion
+																										.gammaId as `${number}`,
+																								value: change
+																									.currentVersion
+																									.value as string,
+																							},
+																						},
+																					transactionToken:
+																						change
 																							.currentVersion
-																							.value as string,
-																					},
-																				transactionToken:
-																					change
-																						.currentVersion
-																						.transactionToken,
-																			};
-																		(
-																			structure as structureWithChanges
-																		).hasElementChanges =
+																							.transactionToken,
+																				};
+																		}
+																		structure.elements[
+																			index
+																		] = el;
+																		structure.hasElementChanges =
 																			true;
 																		return structure as structureWithChanges;
 																	}
@@ -1087,55 +1542,56 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																	(a) => a.id
 																)
 																.includes(
-																	change.artIdB
+																	change.artIdB as `${number}`
 																),
 														of(change).pipe(
 															map(() => {
-																let index =
+																const index =
 																	structure.elements?.findIndex(
 																		(el) =>
 																			el.id ===
 																			change.artIdB
 																	);
-																structure.elements[
-																	index
-																] =
+																let element =
+																	structure
+																		.elements[
+																		index
+																	];
+																element =
 																	this._elementChangeSetup(
 																		structure
 																			.elements[
 																			index
 																		]
 																	);
-																(
-																	structure
-																		.elements[
-																		index
-																	] as elementWithChanges
-																).changes.applicability =
-																	{
-																		previousValue:
-																			change
-																				.baselineVersion
-																				.applicabilityToken as applic,
-																		currentValue:
-																			change
-																				.currentVersion
-																				.applicabilityToken as applic,
-																		transactionToken:
-																			change
-																				.currentVersion
-																				.transactionToken,
-																	};
-																(
-																	structure as structureWithChanges
-																).hasElementChanges =
+																if (
+																	this._elementIsDiffed(
+																		element
+																	)
+																) {
+																	element.changes.applicability =
+																		{
+																			previousValue:
+																				change
+																					.baselineVersion
+																					.applicabilityToken as applic,
+																			currentValue:
+																				change
+																					.currentVersion
+																					.applicabilityToken as applic,
+																			transactionToken:
+																				change
+																					.currentVersion
+																					.transactionToken,
+																		};
+																}
+																element.added =
 																	true;
-																(
-																	structure
-																		.elements[
-																		index
-																	] as elementWithChanges
-																).added = true;
+																structure.hasElementChanges =
+																	true;
+																structure.elements[
+																	index
+																] = element;
 																return structure as structureWithChanges;
 															})
 														),
@@ -1179,7 +1635,17 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																							previousValue:
 																								initialEl.name,
 																							currentValue:
-																								'',
+																								{
+																									id: initialEl
+																										.name
+																										.id,
+																									typeId: initialEl
+																										.name
+																										.typeId,
+																									gammaId:
+																										'-1' as const,
+																									value: '',
+																								},
 																							transactionToken:
 																								change
 																									.currentVersion
@@ -1190,7 +1656,17 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																								previousValue:
 																									initialEl.description,
 																								currentValue:
-																									'',
+																									{
+																										id: initialEl
+																											.description
+																											.id,
+																										typeId: initialEl
+																											.description
+																											.typeId,
+																										gammaId:
+																											'-1' as const,
+																										value: '',
+																									},
 																								transactionToken:
 																									change
 																										.currentVersion
@@ -1200,7 +1676,17 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																							previousValue:
 																								initialEl.notes,
 																							currentValue:
-																								'',
+																								{
+																									id: initialEl
+																										.notes
+																										.id,
+																									typeId: initialEl
+																										.notes
+																										.typeId,
+																									gammaId:
+																										'-1' as const,
+																									value: '',
+																								},
 																							transactionToken:
 																								change
 																									.currentVersion
@@ -1211,7 +1697,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																								previousValue:
 																									initialEl.platformType,
 																								currentValue:
-																									'',
+																									new PlatformTypeSentinel(),
 																								transactionToken:
 																									change
 																										.currentVersion
@@ -1222,7 +1708,17 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																								previousValue:
 																									initialEl.interfaceElementIndexEnd,
 																								currentValue:
-																									'',
+																									{
+																										id: initialEl
+																											.interfaceElementIndexEnd
+																											.id,
+																										typeId: initialEl
+																											.interfaceElementIndexEnd
+																											.typeId,
+																										gammaId:
+																											'-1' as const,
+																										value: 0,
+																									},
 																								transactionToken:
 																									change
 																										.currentVersion
@@ -1233,7 +1729,17 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																								previousValue:
 																									initialEl.interfaceElementIndexStart,
 																								currentValue:
-																									'',
+																									{
+																										id: initialEl
+																											.interfaceElementIndexStart
+																											.id,
+																										typeId: initialEl
+																											.interfaceElementIndexStart
+																											.typeId,
+																										gammaId:
+																											'-1' as const,
+																										value: 0,
+																									},
 																								transactionToken:
 																									change
 																										.currentVersion
@@ -1244,7 +1750,17 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																								previousValue:
 																									initialEl.interfaceElementAlterable,
 																								currentValue:
-																									'',
+																									{
+																										id: initialEl
+																											.interfaceElementAlterable
+																											.id,
+																										typeId: initialEl
+																											.interfaceElementAlterable
+																											.typeId,
+																										gammaId:
+																											'-1' as const,
+																										value: false,
+																									},
 																								transactionToken:
 																									change
 																										.currentVersion
@@ -1255,7 +1771,17 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																								previousValue:
 																									initialEl.enumLiteral,
 																								currentValue:
-																									'',
+																									{
+																										id: initialEl
+																											.enumLiteral
+																											.id,
+																										typeId: initialEl
+																											.enumLiteral
+																											.typeId,
+																										gammaId:
+																											'-1' as const,
+																										value: '',
+																									},
 																								transactionToken:
 																									change
 																										.currentVersion
@@ -1266,7 +1792,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																								previousValue:
 																									initialEl.applicability,
 																								currentValue:
-																									'',
+																									applicabilitySentinel,
 																								transactionToken:
 																									change
 																										.currentVersion
@@ -1278,14 +1804,17 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																	),
 																	map(
 																		(
-																			element
+																			deletedElement
 																		) => {
-																			structure.elements.push(
+																			const el: element =
 																				{
-																					...element,
+																					...deletedElement,
 																					deleted:
 																						true,
-																				}
+																					added: false,
+																				};
+																			structure.elements.push(
+																				el
 																			);
 																			structure.numElements++;
 																			structure =
@@ -1329,7 +1858,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																	(a) => a.id
 																)
 																.includes(
-																	change.artId
+																	change.artId as `${number}`
 																),
 														iif(
 															() =>
@@ -1351,7 +1880,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																		(
 																			type
 																		) => {
-																			let index =
+																			const index =
 																				structure.elements?.findIndex(
 																					(
 																						el
@@ -1359,90 +1888,72 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																						el.id ===
 																						change.artId
 																				);
+																			let element =
+																				structure
+																					.elements[
+																					index
+																				];
+																			element =
+																				this._elementChangeSetup(
+																					element
+																				);
+																			if (
+																				this._elementIsDiffed(
+																					element
+																				)
+																			) {
+																				if (
+																					element
+																						.changes
+																						.platformType ===
+																					undefined
+																				) {
+																					element.changes.platformType =
+																						{
+																							previousValue:
+																								{
+																									...element
+																										.changes
+																										.platformType!
+																										.previousValue,
+																									name: type.name,
+																								},
+																							currentValue:
+																								new PlatformTypeSentinel(),
+																							transactionToken:
+																								change
+																									.currentVersion
+																									.transactionToken,
+																						};
+																				} else if (
+																					element
+																						.changes
+																						.platformType !==
+																						undefined &&
+																					element
+																						.changes
+																						.platformType
+																						?.currentValue
+																						.name !==
+																						element
+																							.platformType
+																							.name
+																				) {
+																					element.changes.platformType!.previousValue.name =
+																						type.name;
+																					element.changes.platformType!.transactionToken =
+																						change.currentVersion.transactionToken;
+																				} else {
+																					element.changes.platformType!.previousValue.name =
+																						type.name;
+																				}
+																			}
+																			structure.hasElementChanges =
+																				true;
 																			structure.elements[
 																				index
 																			] =
-																				this._elementChangeSetup(
-																					structure
-																						.elements[
-																						index
-																					]
-																				);
-																			if (
-																				(
-																					structure
-																						.elements[
-																						index
-																					] as elementWithChanges
-																				)
-																					.changes
-																					.platformType ===
-																				undefined
-																			) {
-																				(
-																					structure
-																						.elements[
-																						index
-																					] as elementWithChanges
-																				).changes.platformType =
-																					{
-																						previousValue:
-																							new PlatformTypeSentinel(),
-																						currentValue:
-																							type,
-																						transactionToken:
-																							change
-																								.currentVersion
-																								.transactionToken,
-																					};
-																			} else if (
-																				(
-																					structure
-																						.elements[
-																						index
-																					] as elementWithChanges
-																				)
-																					.changes
-																					.platformType !==
-																					undefined &&
-																				(
-																					structure
-																						.elements[
-																						index
-																					] as elementWithChanges
-																				)
-																					.changes
-																					.platformType
-																					?.currentValue
-																					.name !==
-																					(
-																						structure
-																							.elements[
-																							index
-																						] as elementWithChanges
-																					)
-																						.platformType
-																						.name
-																			) {
-																				(
-																					structure
-																						.elements[
-																						index
-																					] as elementWithChanges
-																				).changes.platformType!.currentValue.name =
-																					type.name;
-																				(
-																					structure
-																						.elements[
-																						index
-																					] as elementWithChanges
-																				).changes.platformType!.transactionToken =
-																					change.currentVersion.transactionToken;
-																			}
-																			(
-																				structure as structureWithChanges
-																			).hasElementChanges =
-																				true;
+																				element;
 																			return structure as structureWithChanges;
 																		}
 																	)
@@ -1467,7 +1978,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																			(
 																				type
 																			) => {
-																				let index =
+																				const index =
 																					structure.elements?.findIndex(
 																						(
 																							el
@@ -1484,98 +1995,72 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 																							index
 																						]
 																					);
+																				let element =
+																					structure
+																						.elements[
+																						index
+																					];
+																				element =
+																					this._elementChangeSetup(
+																						element
+																					);
 																				if (
-																					(
-																						structure
-																							.elements[
-																							index
-																						] as elementWithChanges
+																					this._elementIsDiffed(
+																						element
 																					)
-																						.changes
-																						.platformType ===
-																					undefined
 																				) {
-																					(
-																						structure
-																							.elements[
-																							index
-																						] as elementWithChanges
-																					).changes.platformType =
-																						{
-																							previousValue:
-																								{
-																									...(
-																										structure
-																											.elements[
-																											index
-																										] as elementWithChanges
-																									)
-																										.changes
-																										.platformType!
-																										.previousValue,
-																									name: type.name,
-																								},
-																							currentValue:
-																								new PlatformTypeSentinel(),
-																							transactionToken:
-																								change
-																									.currentVersion
-																									.transactionToken,
-																						};
-																				} else if (
-																					(
-																						structure
-																							.elements[
-																							index
-																						] as elementWithChanges
-																					)
-																						.changes
-																						.platformType !==
-																						undefined &&
-																					(
-																						structure
-																							.elements[
-																							index
-																						] as elementWithChanges
-																					)
-																						.changes
-																						.platformType
-																						?.currentValue !==
-																						(
-																							structure
-																								.elements[
-																								index
-																							] as elementWithChanges
-																						)
+																					if (
+																						element
+																							.changes
+																							.platformType ===
+																						undefined
+																					) {
+																						element.changes.platformType =
+																							{
+																								previousValue:
+																									{
+																										...element
+																											.changes
+																											.platformType!
+																											.previousValue,
+																										name: type.name,
+																									},
+																								currentValue:
+																									new PlatformTypeSentinel(),
+																								transactionToken:
+																									change
+																										.currentVersion
+																										.transactionToken,
+																							};
+																					} else if (
+																						element
+																							.changes
+																							.platformType !==
+																							undefined &&
+																						element
+																							.changes
 																							.platformType
-																				) {
-																					(
-																						structure
-																							.elements[
-																							index
-																						] as elementWithChanges
-																					).changes.platformType!.previousValue.name =
-																						type.name;
-																					(
-																						structure
-																							.elements[
-																							index
-																						] as elementWithChanges
-																					).changes.platformType!.transactionToken =
-																						change.currentVersion.transactionToken;
-																				} else {
-																					(
-																						structure
-																							.elements[
-																							index
-																						] as elementWithChanges
-																					).changes.platformType!.previousValue.name =
-																						type.name;
+																							?.currentValue
+																							.name !==
+																							element
+																								.platformType
+																								.name
+																					) {
+																						element.changes.platformType!.previousValue.name =
+																							type.name;
+																						element.changes.platformType!.transactionToken =
+																							change.currentVersion.transactionToken;
+																					} else {
+																						element.changes.platformType!.previousValue.name =
+																							type.name;
+																					}
 																				}
-																				(
-																					structure as structureWithChanges
-																				).hasElementChanges =
+																				structure.hasElementChanges =
 																					true;
+																				structure.elements[
+																					index
+																				] =
+																					element;
 																				return structure as structureWithChanges;
 																			}
 																		)
@@ -1609,9 +2094,7 @@ export class CurrentStructureSingleService extends CurrentStructureService {
 				)
 			),
 
-			switchMap((val) =>
-				of(structure as structure | structureWithChanges)
-			)
+			switchMap((_) => of(structure as structure | structureWithChanges))
 		);
 	}
 }

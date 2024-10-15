@@ -11,26 +11,29 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
-import {
-	HttpClientTestingModule,
-	HttpTestingController,
-} from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ResponseTableData } from '../../../grid-commander/types/grid-commander-types/table-data-types';
 import { columnDataMock } from '../../mock-data/mock-tableData';
 
 import { DataTableService } from './datatable.service';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('DataTableService', () => {
 	let service: DataTableService;
-	let httpTestingController: HttpTestingController;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
-			providers: [DataTableService],
+			imports: [],
+			providers: [
+				DataTableService,
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+			],
 		});
 		service = TestBed.inject(DataTableService);
-		httpTestingController = TestBed.inject(HttpTestingController);
 	});
 
 	it('should be created', () => {

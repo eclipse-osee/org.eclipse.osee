@@ -12,7 +12,7 @@
  **********************************************************************/
 import { Component, Input } from '@angular/core';
 import { HighlightFilteredTextDirective } from '@osee/shared/utils';
-import { applic } from '@osee/shared/types/applicability';
+import { applic } from '@osee/applicability/types';
 
 @Component({
 	selector: 'osee-messaging-sub-element-table-no-edit-field-filtered',
@@ -23,6 +23,5 @@ import { applic } from '@osee/shared/types/applicability';
 })
 export class SubElementTableNoEditFieldFilteredComponent {
 	@Input() field: string | number | boolean | applic | undefined = '';
-	@Input() filter: string = '';
-	constructor() {}
+	@Input() filter = '';
 }

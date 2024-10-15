@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface RemoveElementDialogData {
+export type RemoveElementDialogData = {
 	removeType: string;
 	elementName: string;
-}
+};

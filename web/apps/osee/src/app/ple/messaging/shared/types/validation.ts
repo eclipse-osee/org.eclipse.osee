@@ -10,24 +10,24 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface ConnectionValidationResult {
+export type ConnectionValidationResult = {
 	branch: string;
 	viewId: string;
 	connectionName: string;
 	passed: boolean;
-	structureByteAlignmentErrors: string[];
-	structureWordAlignmentErrors: string[];
-	duplicateStructureNameErrors: string[];
-	messageTypeErrors: string[];
-}
+	structureByteAlignmentErrors: Record<`${number}`, string>;
+	structureWordAlignmentErrors: Record<`${number}`, string>;
+	duplicateStructureNameErrors: Record<`${number}`, string>;
+	messageTypeErrors: Record<`${number}`, string>;
+};
 
 export const connectionValidationResultSentinel: ConnectionValidationResult = {
 	branch: '-1',
 	viewId: '-1',
 	connectionName: '',
 	passed: true,
-	structureByteAlignmentErrors: [],
-	structureWordAlignmentErrors: [],
-	duplicateStructureNameErrors: [],
-	messageTypeErrors: [],
+	structureByteAlignmentErrors: {},
+	structureWordAlignmentErrors: {},
+	duplicateStructureNameErrors: {},
+	messageTypeErrors: {},
 };

@@ -40,9 +40,9 @@ import {
 	of,
 	switchMap,
 } from 'rxjs';
-import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
 import { MatIcon } from '@angular/material/icon';
 import { DefReference } from '../../types/tmo';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 
 @Component({
 	selector: 'osee-team-selector',

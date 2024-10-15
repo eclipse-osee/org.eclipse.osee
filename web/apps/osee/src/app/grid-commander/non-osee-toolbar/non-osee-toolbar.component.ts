@@ -21,6 +21,5 @@ import { ToolbarComponent } from '@osee/toolbar';
 })
 export class NonOseeToolbarComponent {
 	oseeToolbar = false;
-	constructor() {}
 }
 export default NonOseeToolbarComponent;

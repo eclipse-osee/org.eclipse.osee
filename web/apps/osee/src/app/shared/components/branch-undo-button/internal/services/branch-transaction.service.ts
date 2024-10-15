@@ -11,16 +11,16 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
-import { transactionResult } from '@osee/shared/types/change-report';
+import { transactionResult } from '@osee/transactions/types';
 import { apiURL } from '@osee/environments';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class BranchTransactionService {
-	constructor(private http: HttpClient) {}
+	private http = inject(HttpClient);
 
 	undoLatest(branchId: string | number) {
 		return this.http.delete<transactionResult>(

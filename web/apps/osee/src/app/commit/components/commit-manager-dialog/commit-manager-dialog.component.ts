@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CdkTrapFocus } from '@angular/cdk/a11y';
-import { Component, Inject, OnInit, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatButton } from '@angular/material/button';
 import {
@@ -36,10 +36,7 @@ import {
 import {} from '@osee/commit/types';
 import { ActionService } from '@osee/configuration-management/services';
 import { UiService } from '@osee/shared/services';
-import {
-	teamWorkflowDetails,
-	teamWorkflowDetailsImpl,
-} from '@osee/shared/types/configuration-management';
+import { teamWorkflowDetails } from '@osee/shared/types/configuration-management';
 import { filter, repeat, switchMap } from 'rxjs';
 import { CommitBranchButtonComponent } from '../commit-branch-button/commit-branch-button.component';
 import {

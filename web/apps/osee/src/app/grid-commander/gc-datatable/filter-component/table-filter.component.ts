@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, TitleCasePipe } from '@angular/common';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
 	MatChipListbox,
@@ -52,6 +52,8 @@ import { ColumnFilterComponent } from './column-filter/column-filter.component';
 	],
 })
 export class TableFilterComponent implements OnDestroy {
+	private filterService = inject(FilterService);
+
 	selectedColsToFilter = this.filterService.selectedColumnsToFilter;
 	indiciesOfSelectedColumns$ = this.filterService.indicesOfSelectedColumns;
 	filterColumnOptions = this.filterService.columnOptionsForFilter;
@@ -89,15 +91,15 @@ export class TableFilterComponent implements OnDestroy {
 		)
 	);
 
-	constructor(private filterService: FilterService) {}
-
 	ngOnDestroy(): void {
 		this.filterService.updateColumnsToFilter([]);
 	}
 	onSelectColumnToFilterBy(event: MatSelectChange) {
-		event.value.length === 0
-			? this.filterService.updateColumnsToFilter([])
-			: this.filterService.updateColumnsToFilter(event.value);
+		if (event.value.length === 0) {
+			this.filterService.updateColumnsToFilter([]);
+		} else {
+			this.filterService.updateColumnsToFilter(event.value);
+		}
 	}
 
 	removeColFromFilter(selectedCol: string) {

@@ -20,7 +20,7 @@ import {
 	MatMenuItem,
 	MatMenuTrigger,
 } from '@angular/material/menu';
-import { response } from '@osee/shared/types';
+import { XResultData } from '@osee/shared/types';
 import { Observable, OperatorFunction, of } from 'rxjs';
 import { filter, shareReplay, switchMap, take } from 'rxjs/operators';
 import { AddFeatureConstraintDialogComponent } from '../../dialogs/add-feature-constraint-dialog/add-feature-constraint-dialog.component';
@@ -59,6 +59,10 @@ import { CurrentBranchInfoService, branchImpl } from '@osee/shared/services';
 	],
 })
 export class FeatureDropdownComponent {
+	private uiStateService = inject(PlConfigUIStateService);
+	private currentBranchService = inject(PlConfigCurrentBranchService);
+	dialog = inject(MatDialog);
+
 	selectedBranch: Observable<string> = this.uiStateService.branchId.pipe(
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
@@ -73,17 +77,11 @@ export class FeatureDropdownComponent {
 	protected editable = computed(() => this._branch().branchType === '0');
 	features = this.currentBranchService.features;
 
-	constructor(
-		private uiStateService: PlConfigUIStateService,
-		private currentBranchService: PlConfigCurrentBranchService,
-		public dialog: MatDialog
-	) {}
-
 	deleteFeature(feature: trackableFeature) {
 		this.currentBranchService
 			.deleteFeature(feature.id)
 			.pipe(take(1))
-			.subscribe((response: response) => {
+			.subscribe((response: XResultData) => {
 				if (response.success) {
 					this.uiStateService.updateReqConfig = true;
 				}

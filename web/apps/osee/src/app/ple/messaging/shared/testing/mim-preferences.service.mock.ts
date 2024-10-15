@@ -11,12 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import type { MimUserGlobalPreferences } from '@osee/messaging/shared/types';
-import { transactionResultMock } from '@osee/shared/transactions/testing';
+import { transactionResultMock } from '@osee/transactions/testing';
 import { of } from 'rxjs';
 import { user } from '@osee/shared/types/auth';
 import { MimPreferencesService } from '../services/http/mim-preferences.service';
 import { MimPreferencesMock } from './mim-preferences.response.mock';
-import { transaction } from '@osee/shared/types';
+import { legacyTransaction } from '@osee/transactions/types';
 
 export const MimPreferencesServiceMock: Partial<MimPreferencesService> = {
 	getUserPrefs(branchId: string, user: user) {
@@ -37,7 +37,7 @@ export const MimPreferencesServiceMock: Partial<MimPreferencesService> = {
 	) {
 		return of(transactionResultMock);
 	},
-	performMutation(tx: transaction) {
+	performMutation(tx: legacyTransaction) {
 		return of(transactionResultMock);
 	},
 };
@@ -55,7 +55,7 @@ export const MimPreferencesServiceNoGlobalPrefsMock: Partial<MimPreferencesServi
 				},
 			});
 		},
-		performMutation(tx: transaction) {
+		performMutation(tx: legacyTransaction) {
 			return of(transactionResultMock);
 		},
 	};

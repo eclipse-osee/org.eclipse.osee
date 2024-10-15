@@ -15,7 +15,7 @@ import { MatFormField } from '@angular/material/form-field';
 import { NgChartsModule } from 'ng2-charts';
 import { CiDetailsService } from '../../../services/ci-details.service';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { of, switchMap, tap } from 'rxjs';
+import { of, switchMap } from 'rxjs';
 import 'chartjs-adapter-date-fns';
 import { TimelineResultsChartComponent } from './timeline-results-chart/timeline-results-chart.component';
 

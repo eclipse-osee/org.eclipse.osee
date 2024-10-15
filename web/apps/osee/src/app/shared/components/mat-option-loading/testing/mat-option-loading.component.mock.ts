@@ -14,6 +14,7 @@ import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import {
 	Component,
+	contentChild,
 	ContentChild,
 	ContentChildren,
 	Input,
@@ -57,7 +58,9 @@ export class MockMatOptionLoadingComponent<T = unknown> implements OnInit {
 	@Input() rateLimit: number = 500;
 
 	_options!: Observable<T[]>;
-	@ContentChild(TemplateRef) template!: TemplateRef<T>;
+	template = contentChild.required(TemplateRef, {
+		read: TemplateRef<{ $implicit: T; opt: T }>,
+	});
 
 	ngOnInit(): void {
 		this._options = of('').pipe(

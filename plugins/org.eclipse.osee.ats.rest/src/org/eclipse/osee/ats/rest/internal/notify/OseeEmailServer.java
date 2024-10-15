@@ -13,6 +13,7 @@
 package org.eclipse.osee.ats.rest.internal.notify;
 
 import java.util.Collection;
+import java.util.Collections;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -25,12 +26,12 @@ public class OseeEmailServer extends OseeEmail {
    private OseeEmailServer() {
    }
 
-   private OseeEmailServer(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject, String body, BodyType bodyType) {
-      super(toAddresses, fromAddress, replyToAddress, subject, body, bodyType);
+   private OseeEmailServer(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject, String body, BodyType bodyType, Collection<String> toAbridgedAddresses, String abridgedSubject) {
+      super(toAddresses, fromAddress, replyToAddress, subject, body, bodyType, toAbridgedAddresses, abridgedSubject);
    }
 
-   private OseeEmailServer(String fromEmail, String toAddress, String subject, String body, BodyType bodyType) {
-      super(fromEmail, toAddress, subject, body, bodyType);
+   private OseeEmailServer(String fromEmail, String toAddress, String subject, String body, BodyType bodyType, String toAbridgedAddress, String abridgedSubject) {
+      super(fromEmail, toAddress, subject, body, bodyType, toAbridgedAddress, abridgedSubject);
    }
 
    @Override
@@ -44,15 +45,16 @@ public class OseeEmailServer extends OseeEmail {
    }
 
    public static OseeEmailServer create(Collection<String> toAddresses, String fromAddress, String replyToAddress,
-      String subject, String body, BodyType bodyType) {
+      String subject, String body, BodyType bodyType, Collection<String> toAbridgedAddresses, String abridgedSubject) {
       loadDefaultMailServer();
-      return new OseeEmailServer(toAddresses, fromAddress, replyToAddress, subject, body, bodyType);
+      return new OseeEmailServer(toAddresses, fromAddress, replyToAddress, subject, body, bodyType, toAbridgedAddresses,
+         abridgedSubject);
    }
 
    public static OseeEmailServer create(String fromEmail, String toAddress, String subject, String body,
-      BodyType bodyType) {
+      BodyType bodyType, String toAbridgedAddress, String abridgedSubject) {
       loadDefaultMailServer();
-      return new OseeEmailServer(fromEmail, toAddress, subject, body, bodyType);
+      return new OseeEmailServer(fromEmail, toAddress, subject, body, bodyType, toAbridgedAddress, abridgedSubject);
    }
 
    private static void loadDefaultMailServer() {
@@ -63,6 +65,12 @@ public class OseeEmailServer extends OseeEmail {
                CoreArtifactTokens.GlobalPreferences).getArtifactOrSentinal();
          defaultMailServer = globalArt.getSoleAttributeValue(CoreAttributeTypes.DefaultMailServer, "");
       }
+   }
+
+   @Override
+   protected OseeEmail createAbridgedEmail(OseeEmail email) {
+      return OseeEmailServer.create(email.getToAbridgedAddresses(), email.getFromAddress(), email.getReplyToAddress(),
+         email.getAbridgedSubject(), getAbridgedBodyText(), email.getBodyType(), Collections.emptyList(), "");
    }
 
 }

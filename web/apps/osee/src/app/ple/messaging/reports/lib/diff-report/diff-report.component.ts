@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, DatePipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
 	MatCell,
@@ -66,10 +66,8 @@ import { StructureDiffsComponent } from './structure-diffs/structure-diffs.compo
 	],
 })
 export class DiffReportComponent {
-	constructor(
-		private diffReportService: DiffReportService,
-		private headerService: HeaderService
-	) {}
+	private diffReportService = inject(DiffReportService);
+	private headerService = inject(HeaderService);
 
 	date = new Date();
 

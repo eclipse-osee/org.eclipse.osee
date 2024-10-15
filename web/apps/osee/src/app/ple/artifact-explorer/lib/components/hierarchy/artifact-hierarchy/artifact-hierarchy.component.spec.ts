@@ -12,9 +12,10 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ArtifactHierarchyComponent } from './artifact-hierarchy.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { BranchPickerStub } from '@osee/shared/components/testing';
 import { BranchPickerComponent } from '@osee/shared/components';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('ArtifactHierarchyComponent', () => {
 	let component: ArtifactHierarchyComponent;
@@ -29,7 +30,8 @@ describe('ArtifactHierarchyComponent', () => {
 				imports: [BranchPickerComponent],
 			},
 		}).configureTestingModule({
-			imports: [ArtifactHierarchyComponent, HttpClientTestingModule],
+			imports: [ArtifactHierarchyComponent],
+			providers: [provideHttpClientTesting(), provideHttpClient()],
 		});
 		fixture = TestBed.createComponent(ArtifactHierarchyComponent);
 		component = fixture.componentInstance;

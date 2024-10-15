@@ -24,7 +24,8 @@ export const BranchInfoServiceMock: Partial<BranchInfoService> = {
 	},
 	getBranches(
 		type: string,
-		category: string,
+		category: `${number}`,
+		excludeCategory: `${number}`,
 		workType: workType,
 		filter?: string,
 		pageSize?: number,

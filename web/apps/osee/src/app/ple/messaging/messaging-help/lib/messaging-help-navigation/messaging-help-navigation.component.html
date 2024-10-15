@@ -16,7 +16,7 @@
 			recursiveMenu;
 			context: {
 				$implicit:
-					(getElementsWithPermission(staticNavElements) | async)
+					(getElementsWithPermission(staticNavElements) | async),
 			}
 		"></ng-template>
 	@if (loadedNavElements | async; as pages) {
@@ -24,7 +24,7 @@
 			*ngTemplateOutlet="
 				recursiveMenu;
 				context: {
-					$implicit: (getElementsWithPermission(pages) | async)
+					$implicit: (getElementsWithPermission(pages) | async),
 				}
 			">
 		</ng-template>
@@ -39,16 +39,16 @@
 			@for (element of elements; track element) {
 				<!-- If dropdown -->
 				@if (element.isDropdown) {
-					<a
+					<button
 						mat-list-item
 						(click)="
 							element.isDropdownOpen = !element.isDropdownOpen
 						"
-						class="hover:tw-bg-primary-100 dark:hover:tw-bg-primary-900"
+						class="tw-text-start hover:tw-bg-primary-100 dark:hover:tw-bg-primary-900"
 						[ngClass]="{
 							'tw-bg-primary-50 dark:tw-bg-primary-800':
 								currentPath === element.routerLink &&
-								!element.isDropdownOpen
+								!element.isDropdownOpen,
 						}">
 						@if (element.icon !== '') {
 							<mat-icon
@@ -66,7 +66,7 @@
 								<mat-icon>expand_more</mat-icon>
 							}
 						</div>
-					</a>
+					</button>
 				}
 				<!-- If not a dropdown -->
 				@if (!element.isDropdown) {
@@ -77,7 +77,7 @@
 						class="hover:tw-bg-primary-100 dark:hover:tw-bg-primary-900"
 						[ngClass]="{
 							'tw-bg-primary-50 dark:tw-bg-primary-800':
-								currentPath === element.routerLink
+								currentPath === element.routerLink,
 						}">
 						@if (element.icon !== '') {
 							<mat-icon
@@ -100,7 +100,7 @@
 									$implicit:
 										(getElementsWithPermission(
 											element.children
-										) | async)
+										) | async),
 								}
 							"></ng-container>
 					</mat-nav-list>

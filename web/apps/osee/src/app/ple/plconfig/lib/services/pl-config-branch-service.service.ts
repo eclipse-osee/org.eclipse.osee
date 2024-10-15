@@ -13,8 +13,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { apiURL } from '@osee/environments';
-import { HttpParamsType, NamedId, branch, response } from '@osee/shared/types';
-import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
+import { NamedId, branch } from '@osee/shared/types';
 import { Observable, of } from 'rxjs';
 import { share, tap } from 'rxjs/operators';
 import { trackableFeature } from '../types/features/base';
@@ -34,7 +33,9 @@ import {
 	featureConstraintData,
 } from '../types/pl-config-feature-constraints';
 import { modifyFeature, writeFeature } from '../types/pl-config-features';
+import { HttpParamsType, XResultData } from '@osee/shared/types';
 import { plConfigTable } from '../types/pl-config-table';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 
 @Injectable({
 	providedIn: 'root',
@@ -50,11 +51,11 @@ export class PlConfigBranchService {
 	public addFeatureConstraint(
 		data: featureConstraintData,
 		branchId: string | number | undefined
-	): Observable<response> {
+	): Observable<XResultData> {
 		let params: HttpParamsType = {};
 		if (
-			data.featureConstraint.applicability1.id !== '' &&
-			data.featureConstraint.applicability2.id !== ''
+			data.featureConstraint.applicability1.id !== '-1' &&
+			data.featureConstraint.applicability2.id !== '-1'
 		) {
 			params = {
 				...params,
@@ -62,7 +63,7 @@ export class PlConfigBranchService {
 				applicability2: data.featureConstraint.applicability2.id,
 			};
 		}
-		return this.http.post<response>(
+		return this.http.post<XResultData>(
 			apiURL + '/orcs/branch/' + branchId + '/applic/constraint',
 			null,
 			{ params: params }
@@ -184,11 +185,11 @@ export class PlConfigBranchService {
 	public deleteFeatureConstraint(
 		branchId: number | string | undefined,
 		data: featureConstraintData
-	): Observable<response> {
+	): Observable<XResultData> {
 		let params: HttpParamsType = {};
 		if (
-			data.featureConstraint.applicability1.id !== '' &&
-			data.featureConstraint.applicability2.id !== ''
+			data.featureConstraint.applicability1.id !== '-1' &&
+			data.featureConstraint.applicability2.id !== '-1'
 		) {
 			params = {
 				...params,
@@ -196,7 +197,7 @@ export class PlConfigBranchService {
 				applicability2: data.featureConstraint.applicability2.id,
 			};
 		}
-		return this.http.delete<response>(
+		return this.http.delete<XResultData>(
 			apiURL + '/orcs/branch/' + branchId + '/applic/constraint',
 			{ params: params }
 		);
@@ -240,8 +241,8 @@ export class PlConfigBranchService {
 	public addConfiguration(
 		branchId: string | number | undefined,
 		body: configuration
-	): Observable<response> {
-		return this.http.post<response>(
+	): Observable<XResultData> {
+		return this.http.post<XResultData>(
 			apiURL + '/orcs/branch/' + branchId + '/applic/view/',
 			body
 		);
@@ -249,8 +250,8 @@ export class PlConfigBranchService {
 	public deleteConfiguration(
 		configurationId: string,
 		branchId?: string
-	): Observable<response> {
-		return this.http.delete<response>(
+	): Observable<XResultData> {
+		return this.http.delete<XResultData>(
 			apiURL +
 				'/orcs/branch/' +
 				branchId +
@@ -276,7 +277,7 @@ export class PlConfigBranchService {
 		) {
 			body.configurationGroup = [];
 		}
-		return this.http.put<response>(
+		return this.http.put<XResultData>(
 			apiURL + '/orcs/branch/' + branchId + '/applic/view',
 			body
 		);
@@ -285,11 +286,11 @@ export class PlConfigBranchService {
 		branchId: string | number | undefined,
 		feature: writeFeature
 	) {
-		let body = feature;
+		const body = feature;
 		body.name = feature.name
 			.toUpperCase()
 			.replace(/[^a-zA-Z0-9-_() ]/g, '');
-		return this.http.post<response>(
+		return this.http.post<XResultData>(
 			apiURL + '/orcs/branch/' + branchId + '/applic/feature',
 			body
 		);
@@ -298,7 +299,7 @@ export class PlConfigBranchService {
 		branchId: string | number | undefined,
 		feature: modifyFeature
 	) {
-		return this.http.put<response>(
+		return this.http.put<XResultData>(
 			apiURL + '/orcs/branch/' + branchId + '/applic/feature',
 			feature
 		);
@@ -307,7 +308,7 @@ export class PlConfigBranchService {
 		branchId: string | number | undefined,
 		featureId: number | string
 	) {
-		return this.http.delete<response>(
+		return this.http.delete<XResultData>(
 			apiURL + '/orcs/branch/' + branchId + '/applic/feature/' + featureId
 		);
 	}
@@ -315,7 +316,7 @@ export class PlConfigBranchService {
 		branchId: string | number | undefined,
 		compApplicName: string
 	) {
-		return this.http.post<response>(
+		return this.http.post<XResultData>(
 			apiURL + '/orcs/branch/' + branchId + '/applic/compound',
 			compApplicName
 		);
@@ -324,7 +325,7 @@ export class PlConfigBranchService {
 		branchId: string | number | undefined,
 		compApplicId: number | string
 	) {
-		return this.http.delete<response>(
+		return this.http.delete<XResultData>(
 			apiURL +
 				'/orcs/branch/' +
 				branchId +
@@ -336,8 +337,8 @@ export class PlConfigBranchService {
 		branchId: string | number | undefined,
 		featureId: string,
 		body: string
-	): Observable<response> {
-		return this.http.put<response>(
+	): Observable<XResultData> {
+		return this.http.put<XResultData>(
 			apiURL +
 				'/orcs/branch/' +
 				branchId +
@@ -353,7 +354,7 @@ export class PlConfigBranchService {
 		viewId: string,
 		applicabilities: string[]
 	) {
-		return this.http.put<response>(
+		return this.http.put<XResultData>(
 			apiURL +
 				'/orcs/branch/' +
 				branchId +
@@ -411,7 +412,7 @@ export class PlConfigBranchService {
 	}
 
 	public getFeatures(branchId: number | string) {
-		let params: HttpParamsType = {
+		const params: HttpParamsType = {
 			orderByAttributeType: ATTRIBUTETYPEIDENUM.NAME,
 		};
 		return this.http.get<trackableFeature[]>(
@@ -450,8 +451,8 @@ export class PlConfigBranchService {
 	public addConfigurationGroup(
 		branchId: string | number | undefined,
 		cfgGroup: ConfigurationGroupDefinition
-	): Observable<response> {
-		return this.http.post<response>(
+	): Observable<XResultData> {
+		return this.http.post<XResultData>(
 			apiURL + '/orcs/branch/' + branchId + '/applic/cfggroup/',
 			cfgGroup
 		);
@@ -460,7 +461,7 @@ export class PlConfigBranchService {
 		branchId: string | number | undefined,
 		id: string
 	) {
-		return this.http.delete<response>(
+		return this.http.delete<XResultData>(
 			apiURL + '/orcs/branch/' + branchId + '/applic/cfggroup/' + id
 		);
 	}
@@ -468,7 +469,7 @@ export class PlConfigBranchService {
 		branchId: string | number | undefined,
 		cfgGroup: ConfigurationGroupDefinition
 	) {
-		return this.http.put<response>(
+		return this.http.put<XResultData>(
 			apiURL + '/orcs/branch/' + branchId + '/applic/cfggroup/',
 			cfgGroup
 		);

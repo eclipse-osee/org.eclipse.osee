@@ -15,43 +15,125 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TypesInterfaceComponent } from './types-interface.component';
 import { CurrentTypesService } from '../services/current-types.service';
 import { PlatformType, settingsDialogData } from '@osee/messaging/shared/types';
-import { transactionMock } from '@osee/shared/transactions/testing';
-import { Observable, of } from 'rxjs';
+import { transactionMock } from '@osee/transactions/testing';
+import { of } from 'rxjs';
 import { TypeGridComponent } from '../type-grid/type-grid.component';
 import { MockTypeGridComponent } from '../testing/type-grid.component.mock';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 
 describe('TypesInterfaceComponent', () => {
 	let component: TypesInterfaceComponent;
 	let fixture: ComponentFixture<TypesInterfaceComponent>;
 
 	beforeEach(async () => {
-		const typeData: Observable<PlatformType[]> = of([
+		const typeData = of<PlatformType[]>([
 			{
-				id: '1',
-				interfaceLogicalType: 'boolean',
-				description: '',
-				interfacePlatformType2sComplement: false,
-				interfacePlatformTypeAnalogAccuracy: 'Hello',
-				interfacePlatformTypeBitsResolution: '1',
-				interfacePlatformTypeBitSize: '8',
-				interfacePlatformTypeCompRate: '1',
-				interfaceDefaultValue: '1',
-				interfacePlatformTypeEnumLiteral: 'Enum Lit.',
-				interfacePlatformTypeMaxval: '1',
-				interfacePlatformTypeMinval: '0',
-				interfacePlatformTypeMsbValue: '1',
-				interfacePlatformTypeUnits: 'N/A',
-				interfacePlatformTypeValidRangeDescription: 'Description',
-				name: 'boolean',
+				id: '1' as `${number}`,
+				gammaId: '1' as `${number}`,
+				interfaceLogicalType: {
+					id: '-1' as `${number}`,
+					typeId: ATTRIBUTETYPEIDENUM.LOGICALTYPE,
+					gammaId: '-1' as `${number}`,
+					value: 'boolean',
+				},
+				description: {
+					id: '-1' as `${number}`,
+					typeId: ATTRIBUTETYPEIDENUM.DESCRIPTION,
+					gammaId: '-1' as `${number}`,
+					value: '',
+				},
+				interfacePlatformType2sComplement: {
+					id: '-1' as `${number}`,
+					typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPE2SCOMPLEMENT,
+					gammaId: '-1' as `${number}`,
+					value: false,
+				},
+				interfacePlatformTypeAnalogAccuracy: {
+					id: '-1' as `${number}`,
+					typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEANALOGACCURACY,
+					gammaId: '-1' as `${number}`,
+					value: 'Hello',
+				},
+				interfacePlatformTypeBitsResolution: {
+					id: '-1' as `${number}`,
+					typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEBITSRESOLUTION,
+					gammaId: '-1' as `${number}`,
+					value: '1',
+				},
+				interfacePlatformTypeBitSize: {
+					id: '-1' as `${number}`,
+					typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEBITSIZE,
+					gammaId: '-1' as `${number}`,
+					value: '8',
+				},
+				interfacePlatformTypeCompRate: {
+					id: '-1' as `${number}`,
+					typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPECOMPRATE,
+					gammaId: '-1' as `${number}`,
+					value: '1',
+				},
+				interfaceDefaultValue: {
+					id: '-1' as `${number}`,
+					typeId: ATTRIBUTETYPEIDENUM.INTERFACEDEFAULTVAL,
+					gammaId: '-1' as `${number}`,
+					value: '1',
+				},
+				interfacePlatformTypeMaxval: {
+					id: '-1' as `${number}`,
+					typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMAXVAL,
+					gammaId: '-1' as `${number}`,
+					value: '1',
+				},
+				interfacePlatformTypeMinval: {
+					id: '-1' as `${number}`,
+					typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMINVAL,
+					gammaId: '-1' as `${number}`,
+					value: '0',
+				},
+				interfacePlatformTypeMsbValue: {
+					id: '-1' as `${number}`,
+					typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMSBVAL,
+					gammaId: '-1' as `${number}`,
+					value: '1',
+				},
+				interfacePlatformTypeUnits: {
+					id: '-1' as `${number}`,
+					typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEUNITS,
+					gammaId: '-1' as `${number}`,
+					value: 'N/A',
+				},
+				interfacePlatformTypeValidRangeDescription: {
+					id: '-1' as `${number}`,
+					typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEVALIDRANGEDESCRIPTION,
+					gammaId: '-1' as `${number}`,
+					value: 'Description',
+				},
+				name: {
+					id: '-1' as `${number}`,
+					typeId: ATTRIBUTETYPEIDENUM.NAME,
+					gammaId: '-1' as `${number}`,
+					value: 'boolean',
+				},
 				applicability: {
 					id: '1',
 					name: 'Base',
 				},
 				enumSet: {
-					id: '-1',
-					name: '',
-					description: '',
+					id: '-1' as `${number}`,
+					gammaId: '-1' as `${number}`,
+					name: {
+						id: '-1' as `${number}`,
+						typeId: ATTRIBUTETYPEIDENUM.NAME,
+						gammaId: '-1' as `${number}`,
+						value: '',
+					},
+					description: {
+						id: '-1' as `${number}`,
+						typeId: ATTRIBUTETYPEIDENUM.DESCRIPTION,
+						gammaId: '-1' as `${number}`,
+						value: '',
+					},
 					enumerations: [],
 					applicability: {
 						id: '1',
@@ -60,30 +142,111 @@ describe('TypesInterfaceComponent', () => {
 				},
 			},
 			{
-				id: '2',
-				interfaceLogicalType: 'integer',
-				description: '',
-				interfacePlatformType2sComplement: false,
-				interfacePlatformTypeAnalogAccuracy: 'Hello',
-				interfacePlatformTypeBitsResolution: '1',
-				interfacePlatformTypeBitSize: '8',
-				interfacePlatformTypeCompRate: '1',
-				interfaceDefaultValue: '1',
-				interfacePlatformTypeEnumLiteral: 'Enum Lit.',
-				interfacePlatformTypeMaxval: '1',
-				interfacePlatformTypeMinval: '0',
-				interfacePlatformTypeMsbValue: '1',
-				interfacePlatformTypeUnits: 'N/A',
-				interfacePlatformTypeValidRangeDescription: 'Description',
-				name: 'integer',
+				id: '2' as `${number}`,
+				gammaId: '2' as `${number}`,
+				interfaceLogicalType: {
+					id: '-1' as `${number}`,
+					typeId: ATTRIBUTETYPEIDENUM.LOGICALTYPE,
+					gammaId: '-1' as `${number}`,
+					value: 'integer',
+				},
+				description: {
+					id: '-1' as `${number}`,
+					typeId: ATTRIBUTETYPEIDENUM.DESCRIPTION,
+					gammaId: '-1' as `${number}`,
+					value: '',
+				},
+				interfacePlatformType2sComplement: {
+					id: '-1' as `${number}`,
+					typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPE2SCOMPLEMENT,
+					gammaId: '-1' as `${number}`,
+					value: false,
+				},
+				interfacePlatformTypeAnalogAccuracy: {
+					id: '-1' as `${number}`,
+					typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEANALOGACCURACY,
+					gammaId: '-1' as `${number}`,
+					value: 'Hello',
+				},
+				interfacePlatformTypeBitsResolution: {
+					id: '-1' as `${number}`,
+					typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEBITSRESOLUTION,
+					gammaId: '-1' as `${number}`,
+					value: '1',
+				},
+				interfacePlatformTypeBitSize: {
+					id: '-1' as `${number}`,
+					typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEBITSIZE,
+					gammaId: '-1' as `${number}`,
+					value: '8',
+				},
+				interfacePlatformTypeCompRate: {
+					id: '-1' as `${number}`,
+					typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPECOMPRATE,
+					gammaId: '-1' as `${number}`,
+					value: '1',
+				},
+				interfaceDefaultValue: {
+					id: '-1' as `${number}`,
+					typeId: ATTRIBUTETYPEIDENUM.INTERFACEDEFAULTVAL,
+					gammaId: '-1' as `${number}`,
+					value: '1',
+				},
+				interfacePlatformTypeMaxval: {
+					id: '-1' as `${number}`,
+					typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMAXVAL,
+					gammaId: '-1' as `${number}`,
+					value: '1',
+				},
+				interfacePlatformTypeMinval: {
+					id: '-1' as `${number}`,
+					typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMINVAL,
+					gammaId: '-1' as `${number}`,
+					value: '0',
+				},
+				interfacePlatformTypeMsbValue: {
+					id: '-1' as `${number}`,
+					typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEMSBVAL,
+					gammaId: '-1' as `${number}`,
+					value: '1',
+				},
+				interfacePlatformTypeUnits: {
+					id: '-1' as `${number}`,
+					typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEUNITS,
+					gammaId: '-1' as `${number}`,
+					value: 'N/A',
+				},
+				interfacePlatformTypeValidRangeDescription: {
+					id: '-1' as `${number}`,
+					typeId: ATTRIBUTETYPEIDENUM.INTERFACEPLATFORMTYPEVALIDRANGEDESCRIPTION,
+					gammaId: '-1' as `${number}`,
+					value: 'Description',
+				},
+				name: {
+					id: '-1' as `${number}`,
+					typeId: ATTRIBUTETYPEIDENUM.NAME,
+					gammaId: '-1' as `${number}`,
+					value: 'integer',
+				},
 				applicability: {
 					id: '1',
 					name: 'Base',
 				},
 				enumSet: {
-					id: '-1',
-					name: '',
-					description: '',
+					id: '-1' as `${number}`,
+					gammaId: '-1' as `${number}`,
+					name: {
+						id: '-1' as `${number}`,
+						typeId: ATTRIBUTETYPEIDENUM.NAME,
+						gammaId: '-1' as `${number}`,
+						value: '',
+					},
+					description: {
+						id: '-1' as `${number}`,
+						typeId: ATTRIBUTETYPEIDENUM.DESCRIPTION,
+						gammaId: '-1' as `${number}`,
+						value: '',
+					},
 					enumerations: [],
 					applicability: {
 						id: '1',
@@ -92,6 +255,7 @@ describe('TypesInterfaceComponent', () => {
 				},
 			},
 		]);
+
 		await TestBed.overrideComponent(TypesInterfaceComponent, {
 			remove: {
 				imports: [TypeGridComponent],
@@ -108,7 +272,9 @@ describe('TypesInterfaceComponent', () => {
 							currentPage: of(0),
 							currentPageSize: of(10),
 							inEditMode: of(true),
-							updatePreferences(preferences: settingsDialogData) {
+							updatePreferences(
+								_preferences: settingsDialogData
+							) {
 								return of(transactionMock);
 							},
 						},

@@ -16,7 +16,7 @@ import type {
 	PlatformType,
 	settingsDialogData,
 } from '@osee/messaging/shared/types';
-import { transactionResultMock } from '@osee/shared/transactions/testing';
+import { transactionResultMock } from '@osee/transactions/testing';
 
 export const currentTypesServiceMock: Partial<CurrentTypesService> = {
 	createType(body: PlatformType | Partial<PlatformType>) {

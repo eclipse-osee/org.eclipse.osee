@@ -35,7 +35,5 @@ import {
 		MessagingHelpContentComponent,
 	],
 })
-export class MessagingHelpComponent {
-	constructor() {}
-}
+export class MessagingHelpComponent {}
 export default MessagingHelpComponent;

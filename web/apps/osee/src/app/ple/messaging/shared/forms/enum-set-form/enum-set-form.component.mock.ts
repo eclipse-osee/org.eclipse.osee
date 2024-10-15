@@ -25,7 +25,7 @@
 import { Component, Input } from '@angular/core';
 import type { enumerationSet } from '@osee/messaging/shared/types';
 import { Observable, of, Subject } from 'rxjs';
-import { applic } from '@osee/shared/types/applicability';
+import { applic } from '@osee/applicability/types';
 import { EnumSetFormComponent } from './enum-set-form.component';
 
 @Component({
@@ -38,16 +38,5 @@ export class MockEnumSetFormUniqueComponent
 	implements Partial<EnumSetFormComponent>
 {
 	@Input() bitSize: string = '32';
-	applics: Observable<applic[]> = of([]);
-	enumSet: enumerationSet = {
-		name: '',
-		description: '',
-		applicability: {
-			id: '1',
-			name: 'Base',
-		},
-	};
-	_unique = new Subject<boolean>();
-	unique: Observable<string> = of('');
 	_closeForm: Subject<unknown> = new Subject();
 }

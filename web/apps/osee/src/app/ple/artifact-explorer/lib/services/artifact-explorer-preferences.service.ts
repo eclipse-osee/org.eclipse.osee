@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ArtifactExplorerPreferencesHttpService } from './artifact-explorer-preferences-http.service';
 import { UserDataAccountService } from '@osee/auth';
 import { Subject, combineLatest, repeat, switchMap, tap } from 'rxjs';
@@ -20,16 +20,14 @@ import { artifactExplorerUserPreferences } from '../types/user-preferences';
 	providedIn: 'root',
 })
 export class ArtifactExplorerPreferencesService {
+	private preferencesService = inject(ArtifactExplorerPreferencesHttpService);
+	private userDataService = inject(UserDataAccountService);
+
 	private _prefsUpdated = new Subject<boolean>();
 
 	private _artifactExplorerPreferences = this.preferencesService
 		.getArtifactExplorerPreferences()
 		.pipe(repeat({ delay: () => this._prefsUpdated }));
-
-	constructor(
-		private preferencesService: ArtifactExplorerPreferencesHttpService,
-		private userDataService: UserDataAccountService
-	) {}
 
 	createOrUpdateArtifactExplorerPrefs(
 		newPrefs: artifactExplorerUserPreferences

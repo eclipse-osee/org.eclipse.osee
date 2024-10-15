@@ -12,12 +12,14 @@
 -->
 <div class="tw-flex tw-h-[94vh] tw-flex-col">
 	<div class="tw-flex tw-flex-grow tw-items-center tw-justify-between">
-		<div class="tw-flex tw-items-center tw-gap-12">
+		<div class="tw-flex tw-items-end tw-gap-12">
 			<osee-branch-picker
 				category="1"
 				workType="ARB"></osee-branch-picker>
-			<osee-current-view-selector />
-			<osee-edit-definitions-dropdown></osee-edit-definitions-dropdown>
+			<div class="tw-flex tw-items-center tw-gap-12">
+				<osee-current-view-selector />
+				<osee-edit-definitions-dropdown></osee-edit-definitions-dropdown>
+			</div>
 		</div>
 		<div class="tw-flex tw-items-center tw-gap-2">
 			@if (isAllowedToDiff | async; as _diff) {
@@ -30,10 +32,10 @@
 										{
 											outlets: {
 												primary: 'diff',
-												rightSideNav: null
-											}
-										}
-								  ]
+												rightSideNav: null,
+											},
+										},
+									]
 								: '../'
 						"
 						queryParamsHandling="merge">

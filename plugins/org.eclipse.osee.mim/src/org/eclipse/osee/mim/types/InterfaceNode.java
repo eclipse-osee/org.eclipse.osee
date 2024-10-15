@@ -13,20 +13,24 @@
 package org.eclipse.osee.mim.types;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
-import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithGammas;
+import org.eclipse.osee.accessor.types.AttributePojo;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.rest.model.transaction.Attribute;
 import org.eclipse.osee.orcs.rest.model.transaction.CreateArtifact;
@@ -34,23 +38,35 @@ import org.eclipse.osee.orcs.rest.model.transaction.CreateArtifact;
 /**
  * @author Luciano T. Vaglienti
  */
-public class InterfaceNode extends ArtifactAccessorResult {
+public class InterfaceNode extends ArtifactAccessorResultWithGammas {
 
    public static final InterfaceNode SENTINEL = new InterfaceNode();
 
-   private String description;
-   private String interfaceNodeNumber;
-   private String interfaceNodeGroupId;
+   private AttributePojo<String> description =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.Description, GammaId.SENTINEL, "", "");
+   private AttributePojo<String> interfaceNodeNumber =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceNodeNumber, GammaId.SENTINEL, "", "");;
+   private AttributePojo<String> interfaceNodeGroupId =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceNodeGroupId, GammaId.SENTINEL, "", "");
    private ApplicabilityToken applicability;
-   private String interfaceNodeBackgroundColor = generateColor() ? "#81d4fa" : "#c5e1a5";
-   private String interfaceNodeAddress;
-   private String nameAbbrev;
-   private String interfaceNodeCodeGenName;
-   private String InterfaceNodeType;
-   private String notes;
-   private boolean interfaceNodeCodeGen;
-   private boolean interfaceNodeBuildCodeGen;
-   private boolean interfaceNodeToolUse;
+   private AttributePojo<String> interfaceNodeBackgroundColor = AttributePojo.valueOf(Id.SENTINEL,
+      CoreAttributeTypes.InterfaceNodeBackgroundColor, GammaId.SENTINEL, generateColor() ? "#81d4fa" : "#c5e1a5", "");
+   private AttributePojo<String> interfaceNodeAddress =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceNodeAddress, GammaId.SENTINEL, "", "");
+   private AttributePojo<String> nameAbbrev =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.NameAbbrev, GammaId.SENTINEL, "", "");
+   private AttributePojo<String> interfaceNodeCodeGenName =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceNodeCodeGenName, GammaId.SENTINEL, "", "");
+   private AttributePojo<String> InterfaceNodeType =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceNodeType, GammaId.SENTINEL, "", "");
+   private AttributePojo<String> notes =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.Notes, GammaId.SENTINEL, "", "");
+   private AttributePojo<Boolean> interfaceNodeCodeGen =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceNodeCodeGen, GammaId.SENTINEL, false, "");
+   private AttributePojo<Boolean> interfaceNodeBuildCodeGen =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceNodeBuildCodeGen, GammaId.SENTINEL, false, "");
+   private AttributePojo<Boolean> interfaceNodeToolUse =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceNodeToolUse, GammaId.SENTINEL, false, "");
 
    public InterfaceNode(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -58,25 +74,32 @@ public class InterfaceNode extends ArtifactAccessorResult {
 
    public InterfaceNode(ArtifactReadable art) {
       super(art);
-      this.setDescription(art.getSoleAttributeValue(CoreAttributeTypes.Description, ""));
+      this.setDescription(AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.Description, "")));
       this.setInterfaceNodeBackgroundColor(
-         art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeBackgroundColor, ""));
-      this.setInterfaceNodeAddress(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeAddress, ""));
-      this.setInterfaceNodeNumber(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeNumber, ""));
-      this.setInterfaceNodeGroupId(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeGroupId, ""));
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceNodeBackgroundColor, "")));
+      this.setInterfaceNodeAddress(
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceNodeAddress, "")));
+      this.setInterfaceNodeNumber(
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceNodeNumber, "")));
+      this.setInterfaceNodeGroupId(
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceNodeGroupId, "")));
       this.setApplicability(
          !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
-      this.setNameAbbrev(art.getSoleAttributeValue(CoreAttributeTypes.NameAbbrev, ""));
-      this.setInterfaceNodeCodeGenName(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeCodeGenName, ""));
-      this.setInterfaceNodeType(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeType, ""));
-      this.setNotes(art.getSoleAttributeValue(CoreAttributeTypes.Notes, ""));
-      this.setInterfaceNodeCodeGen(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeCodeGen, false));
-      this.setInterfaceNodeBuildCodeGen(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeBuildCodeGen, false));
-      this.setInterfaceNodeToolUse(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceNodeToolUse, false));
+      this.setNameAbbrev(AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.NameAbbrev, "")));
+      this.setInterfaceNodeCodeGenName(
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceNodeCodeGenName, "")));
+      this.setInterfaceNodeType(AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceNodeType, "")));
+      this.setNotes(AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.Notes, "")));
+      this.setInterfaceNodeCodeGen(
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceNodeCodeGen, false)));
+      this.setInterfaceNodeBuildCodeGen(
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceNodeBuildCodeGen, false)));
+      this.setInterfaceNodeToolUse(
+         AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceNodeToolUse, false)));
    }
 
    public InterfaceNode(Long id, String name) {
-      super(id, name);
+      super(id, AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.Name, GammaId.SENTINEL, name, ""));
    }
 
    public InterfaceNode() {
@@ -85,15 +108,21 @@ public class InterfaceNode extends ArtifactAccessorResult {
    /**
     * @return the description
     */
-   public String getDescription() {
+   public AttributePojo<String> getDescription() {
       return description;
    }
 
    /**
     * @param description the description to set
     */
-   public void setDescription(String description) {
+   @JsonProperty
+   public void setDescription(AttributePojo<String> description) {
       this.description = description;
+   }
+
+   public void setDescription(String description) {
+      this.description = AttributePojo.valueOf(this.description.getId(), this.description.getTypeId(),
+         this.description.getGammaId(), description, this.description.getDisplayableString());
    }
 
    /**
@@ -113,105 +142,179 @@ public class InterfaceNode extends ArtifactAccessorResult {
    /**
     * @return the color
     */
-   public String getInterfaceNodeBackgroundColor() {
+   public AttributePojo<String> getInterfaceNodeBackgroundColor() {
       return interfaceNodeBackgroundColor;
    }
 
    /**
     * @param interfaceNodeBackgroundColor the color to set
     */
-   public void setInterfaceNodeBackgroundColor(String interfaceNodeBackgroundColor) {
+   @JsonProperty
+   public void setInterfaceNodeBackgroundColor(AttributePojo<String> interfaceNodeBackgroundColor) {
       this.interfaceNodeBackgroundColor = interfaceNodeBackgroundColor;
+   }
+
+   public void setInterfaceNodeBackgroundColor(String interfaceNodeBackgroundColor) {
+      this.interfaceNodeBackgroundColor = AttributePojo.valueOf(this.interfaceNodeBackgroundColor.getId(),
+         this.interfaceNodeBackgroundColor.getTypeId(), this.interfaceNodeBackgroundColor.getGammaId(),
+         interfaceNodeBackgroundColor, this.interfaceNodeBackgroundColor.getDisplayableString());
    }
 
    /**
     * @return the address
     */
-   public String getInterfaceNodeAddress() {
+   public AttributePojo<String> getInterfaceNodeAddress() {
       return interfaceNodeAddress;
    }
 
    /**
     * @param interfaceNodeAddress the address to set
     */
-   public void setInterfaceNodeAddress(String interfaceNodeAddress) {
+   @JsonProperty
+   public void setInterfaceNodeAddress(AttributePojo<String> interfaceNodeAddress) {
       this.interfaceNodeAddress = interfaceNodeAddress;
    }
 
-   public String getInterfaceNodeNumber() {
+   public void setInterfaceNodeAddress(String interfaceNodeAddress) {
+      this.interfaceNodeAddress = AttributePojo.valueOf(this.interfaceNodeAddress.getId(),
+         this.interfaceNodeAddress.getTypeId(), this.interfaceNodeAddress.getGammaId(), interfaceNodeAddress,
+         this.interfaceNodeAddress.getDisplayableString());
+   }
+
+   public AttributePojo<String> getInterfaceNodeNumber() {
       return interfaceNodeNumber;
    }
 
    public void setInterfaceNodeNumber(String interfaceNodeNumber) {
+      this.interfaceNodeNumber = AttributePojo.valueOf(this.interfaceNodeNumber.getId(),
+         this.interfaceNodeNumber.getTypeId(), this.interfaceNodeNumber.getGammaId(), interfaceNodeNumber,
+         this.interfaceNodeNumber.getDisplayableString());
+   }
+
+   @JsonProperty
+   public void setInterfaceNodeNumber(AttributePojo<String> interfaceNodeNumber) {
       this.interfaceNodeNumber = interfaceNodeNumber;
    }
 
-   public String getInterfaceNodeGroupId() {
+   public AttributePojo<String> getInterfaceNodeGroupId() {
       return interfaceNodeGroupId;
    }
 
    public void setInterfaceNodeGroupId(String interfaceNodeGroupId) {
+      this.interfaceNodeGroupId = AttributePojo.valueOf(this.interfaceNodeGroupId.getId(),
+         this.interfaceNodeGroupId.getTypeId(), this.interfaceNodeGroupId.getGammaId(), interfaceNodeGroupId,
+         this.interfaceNodeGroupId.getDisplayableString());
+   }
+
+   @JsonProperty
+   public void setInterfaceNodeGroupId(AttributePojo<String> interfaceNodeGroupId) {
       this.interfaceNodeGroupId = interfaceNodeGroupId;
    }
 
-   public String getNameAbbrev() {
+   public AttributePojo<String> getNameAbbrev() {
       return nameAbbrev;
    }
 
    public void setNameAbbrev(String nameAbbrev) {
+      this.nameAbbrev = AttributePojo.valueOf(this.nameAbbrev.getId(), this.nameAbbrev.getTypeId(),
+         this.nameAbbrev.getGammaId(), nameAbbrev, this.nameAbbrev.getDisplayableString());
+   }
+
+   @JsonProperty
+   public void setNameAbbrev(AttributePojo<String> nameAbbrev) {
       this.nameAbbrev = nameAbbrev;
    }
 
-   public String getInterfaceNodeCodeGenName() {
+   public AttributePojo<String> getInterfaceNodeCodeGenName() {
       return interfaceNodeCodeGenName;
    }
 
    public void setInterfaceNodeCodeGenName(String interfaceNodeCodeGenName) {
+      this.interfaceNodeCodeGenName = AttributePojo.valueOf(this.interfaceNodeCodeGenName.getId(),
+         this.interfaceNodeCodeGenName.getTypeId(), this.interfaceNodeCodeGenName.getGammaId(),
+         interfaceNodeCodeGenName, this.interfaceNodeCodeGenName.getDisplayableString());
+   }
+
+   @JsonProperty
+   public void setInterfaceNodeCodeGenName(AttributePojo<String> interfaceNodeCodeGenName) {
       this.interfaceNodeCodeGenName = interfaceNodeCodeGenName;
    }
 
-   public String getInterfaceNodeType() {
+   public AttributePojo<String> getInterfaceNodeType() {
       return InterfaceNodeType;
    }
 
    public void setInterfaceNodeType(String interfaceNodeType) {
+      this.InterfaceNodeType = AttributePojo.valueOf(this.InterfaceNodeType.getId(), this.InterfaceNodeType.getTypeId(),
+         this.InterfaceNodeType.getGammaId(), interfaceNodeType, this.InterfaceNodeType.getDisplayableString());
+   }
+
+   @JsonProperty
+   public void setInterfaceNodeType(AttributePojo<String> interfaceNodeType) {
       InterfaceNodeType = interfaceNodeType;
    }
 
-   public String getNotes() {
+   public AttributePojo<String> getNotes() {
       return notes;
    }
 
    public void setNotes(String notes) {
+      this.notes = AttributePojo.valueOf(this.notes.getId(), this.notes.getTypeId(), this.notes.getGammaId(), notes,
+         this.notes.getDisplayableString());
+   }
+
+   @JsonProperty
+   public void setNotes(AttributePojo<String> notes) {
       this.notes = notes;
    }
 
-   public boolean isInterfaceNodeCodeGen() {
+   public AttributePojo<Boolean> getInterfaceNodeCodeGen() {
       return interfaceNodeCodeGen;
    }
 
-   public void setInterfaceNodeCodeGen(boolean interfaceNodeCodeGen) {
+   public void setInterfaceNodeCodeGen(Boolean interfaceNodeCodeGen) {
+      this.interfaceNodeCodeGen = AttributePojo.valueOf(this.interfaceNodeCodeGen.getId(),
+         this.interfaceNodeCodeGen.getTypeId(), this.interfaceNodeCodeGen.getGammaId(), interfaceNodeCodeGen,
+         this.interfaceNodeCodeGen.getDisplayableString());
+   }
+
+   @JsonProperty
+   public void setInterfaceNodeCodeGen(AttributePojo<Boolean> interfaceNodeCodeGen) {
       this.interfaceNodeCodeGen = interfaceNodeCodeGen;
    }
 
-   public boolean isInterfaceNodeBuildCodeGen() {
+   public AttributePojo<Boolean> getInterfaceNodeBuildCodeGen() {
       return interfaceNodeBuildCodeGen;
    }
 
-   public void setInterfaceNodeBuildCodeGen(boolean interfaceNodeBuildCodeGen) {
+   public void setInterfaceNodeBuildCodeGen(Boolean interfaceNodeBuildCodeGen) {
+      this.interfaceNodeBuildCodeGen = AttributePojo.valueOf(this.interfaceNodeBuildCodeGen.getId(),
+         this.interfaceNodeBuildCodeGen.getTypeId(), this.interfaceNodeBuildCodeGen.getGammaId(),
+         interfaceNodeBuildCodeGen, this.interfaceNodeBuildCodeGen.getDisplayableString());
+   }
+
+   @JsonProperty
+   public void setInterfaceNodeBuildCodeGen(AttributePojo<Boolean> interfaceNodeBuildCodeGen) {
       this.interfaceNodeBuildCodeGen = interfaceNodeBuildCodeGen;
    }
 
-   public boolean isInterfaceNodeToolUse() {
+   public AttributePojo<Boolean> getInterfaceNodeToolUse() {
       return interfaceNodeToolUse;
    }
 
-   public void setInterfaceNodeToolUse(boolean interfaceNodeToolUse) {
+   public void setInterfaceNodeToolUse(Boolean interfaceNodeToolUse) {
+      this.interfaceNodeToolUse = AttributePojo.valueOf(this.interfaceNodeToolUse.getId(),
+         this.interfaceNodeToolUse.getTypeId(), this.interfaceNodeToolUse.getGammaId(), interfaceNodeToolUse,
+         this.interfaceNodeToolUse.getDisplayableString());
+   }
+
+   @JsonProperty
+   public void setInterfaceNodeToolUse(AttributePojo<Boolean> interfaceNodeToolUse) {
       this.interfaceNodeToolUse = interfaceNodeToolUse;
    }
 
    public String getColor() {
-      return interfaceNodeBackgroundColor;
+      return interfaceNodeBackgroundColor.getValue() != "" ? interfaceNodeBackgroundColor.getValue() : generateColor() ? "#81d4fa" : "#c5e1a5";
    }
 
    @JsonIgnore
@@ -222,21 +325,21 @@ public class InterfaceNode extends ArtifactAccessorResult {
    public CreateArtifact createArtifact(String key, ApplicabilityId applicId) {
       // @formatter:off
       Map<AttributeTypeToken, String> values = new HashMap<>();
-      values.put(CoreAttributeTypes.InterfaceNodeAddress, this.getInterfaceNodeAddress());
-      values.put(CoreAttributeTypes.InterfaceNodeNumber, this.getInterfaceNodeNumber());
-      values.put(CoreAttributeTypes.InterfaceNodeGroupId, this.getInterfaceNodeGroupId());
-      values.put(CoreAttributeTypes.NameAbbrev, this.getNameAbbrev());
-      values.put(CoreAttributeTypes.InterfaceNodeCodeGenName, this.getInterfaceNodeCodeGenName());
-      values.put(CoreAttributeTypes.InterfaceNodeType, this.getInterfaceNodeType());
-      values.put(CoreAttributeTypes.InterfaceNodeBackgroundColor, this.getInterfaceNodeBackgroundColor());
-      values.put(CoreAttributeTypes.InterfaceNodeCodeGen, Boolean.toString(this.isInterfaceNodeCodeGen()));
-      values.put(CoreAttributeTypes.InterfaceNodeBuildCodeGen, Boolean.toString(this.isInterfaceNodeBuildCodeGen()));
-      values.put(CoreAttributeTypes.InterfaceNodeToolUse, Boolean.toString(this.isInterfaceNodeToolUse()));
-      values.put(CoreAttributeTypes.Notes, this.getNotes());
+      values.put(CoreAttributeTypes.InterfaceNodeAddress, this.getInterfaceNodeAddress().getValue());
+      values.put(CoreAttributeTypes.InterfaceNodeNumber, this.getInterfaceNodeNumber().getValue());
+      values.put(CoreAttributeTypes.InterfaceNodeGroupId, this.getInterfaceNodeGroupId().getValue());
+      values.put(CoreAttributeTypes.NameAbbrev, this.getNameAbbrev().getValue());
+      values.put(CoreAttributeTypes.InterfaceNodeCodeGenName, this.getInterfaceNodeCodeGenName().getValue());
+      values.put(CoreAttributeTypes.InterfaceNodeType, this.getInterfaceNodeType().getValue());
+      values.put(CoreAttributeTypes.InterfaceNodeBackgroundColor, this.getInterfaceNodeBackgroundColor().getValue());
+      values.put(CoreAttributeTypes.InterfaceNodeCodeGen, Boolean.toString(this.getInterfaceNodeCodeGen().getValue()));
+      values.put(CoreAttributeTypes.InterfaceNodeBuildCodeGen, Boolean.toString(this.getInterfaceNodeBuildCodeGen().getValue()));
+      values.put(CoreAttributeTypes.InterfaceNodeToolUse, Boolean.toString(this.getInterfaceNodeToolUse().getValue()));
+      values.put(CoreAttributeTypes.Notes, this.getNotes().getValue());
       // @formatter:on
 
       CreateArtifact art = new CreateArtifact();
-      art.setName(this.getName());
+      art.setName(this.getName().getValue());
       art.setTypeId(CoreArtifactTypes.InterfaceNode.getIdString());
 
       List<Attribute> attrs = new LinkedList<>();

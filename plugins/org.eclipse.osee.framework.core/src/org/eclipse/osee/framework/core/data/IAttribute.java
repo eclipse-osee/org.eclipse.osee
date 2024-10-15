@@ -20,6 +20,8 @@ public interface IAttribute<T> extends AttributeId {
 
    T getValue();
 
+   GammaId getGammaId();
+
    AttributeTypeToken getAttributeType();
 
    String getDisplayableString();

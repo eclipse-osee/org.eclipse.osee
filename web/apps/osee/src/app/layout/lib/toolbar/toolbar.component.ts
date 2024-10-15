@@ -25,8 +25,6 @@ import { DisplayUserComponent } from './user-display/display-user.component';
 @Component({
 	selector: 'osee-toolbar',
 	standalone: true,
-	templateUrl: './toolbar.component.html',
-	styles: [],
 	imports: [
 		RouterOutlet,
 		AsyncPipe,
@@ -36,6 +34,44 @@ import { DisplayUserComponent } from './user-display/display-user.component';
 		MatIcon,
 		MatProgressSpinner,
 	],
+	styles: [],
+	template: `<mat-toolbar class="tw-relative tw-h-[6vh] tw-w-screen">
+		<div
+			class="tw-flex tw-w-[85vw] tw-min-w-[70vw] tw-max-w-[85vw] tw-items-center tw-justify-between">
+			<!-- Top Level Nav - Button -->
+			<span
+				class="tw-flex tw-flex-grow tw-items-center tw-justify-start tw-gap-4">
+				<button
+					mat-icon-button
+					(click)="toggleTopLevelNavIcon()">
+					<mat-icon>{{ topLevelNavIcon | async }}</mat-icon>
+				</button>
+
+				@if (oseeToolbar) {
+					<router-outlet name="toolbarLogo"></router-outlet>
+				}
+				<router-outlet
+					name="title"
+					class="tw-flex-shrink tw-flex-grow"
+					(click)="closeTopLevelNavIcon()"></router-outlet>
+				<router-outlet
+					name="navigationHeader"
+					class="tw-flex-shrink tw-flex-grow"
+					(click)="closeTopLevelNavIcon()"></router-outlet>
+			</span>
+		</div>
+		<span class="tw-flex-auto"></span>
+		<span
+			class="tw-relative tw-flex tw-min-w-[5vw] tw-items-center tw-justify-end tw-gap-2">
+			@if ((isLoading | async) === 'true') {
+				<mat-progress-spinner
+					mode="indeterminate"
+					diameter="40"></mat-progress-spinner>
+			}
+			<osee-display-user
+				(click)="closeTopLevelNavIcon()"></osee-display-user>
+		</span>
+	</mat-toolbar>`,
 })
 export class ToolbarComponent {
 	private loadingService: HttpLoadingService = inject(HttpLoadingService);
@@ -43,7 +79,7 @@ export class ToolbarComponent {
 	topLevelNavIcon = this.sideNavService.leftSideNav.pipe(map((v) => v.icon));
 	isLoading = this.loadingService.isLoading;
 
-	@Input() oseeToolbar: boolean = true;
+	@Input() oseeToolbar = true;
 	toggleTopLevelNavIcon() {
 		this.sideNavService.toggleLeftSideNav = '';
 	}

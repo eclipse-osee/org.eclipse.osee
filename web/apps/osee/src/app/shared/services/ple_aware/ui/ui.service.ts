@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ViewsUiService } from './views/views-ui.service';
 import { BranchUIService } from './branch/branch-ui.service';
 import { DiffModeService } from './diff/diff-mode.service';
@@ -23,14 +23,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 	providedIn: 'root',
 })
 export class UiService {
-	constructor(
-		private branchService: BranchUIService,
-		private viewService: ViewsUiService,
-		private updateService: UpdateService,
-		private diffModeService: DiffModeService,
-		private loadingService: HttpLoadingService,
-		private errorService: ErrorService
-	) {}
+	private branchService = inject(BranchUIService);
+	private viewService = inject(ViewsUiService);
+	private updateService = inject(UpdateService);
+	private diffModeService = inject(DiffModeService);
+	private loadingService = inject(HttpLoadingService);
+	private errorService = inject(ErrorService);
 
 	get id() {
 		return this.branchService.id;

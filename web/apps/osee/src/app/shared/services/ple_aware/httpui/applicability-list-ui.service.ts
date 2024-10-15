@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
 	share,
 	switchMap,
@@ -25,6 +25,9 @@ import { ApplicabilityListService, UiService } from '@osee/shared/services';
 	providedIn: 'root',
 })
 export class ApplicabilityListUIService {
+	private ui = inject(UiService);
+	private applicabilityService = inject(ApplicabilityListService);
+
 	private _applics = this.ui.id.pipe(
 		share(),
 		switchMap((id) =>
@@ -46,10 +49,6 @@ export class ApplicabilityListUIService {
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
-	constructor(
-		private ui: UiService,
-		private applicabilityService: ApplicabilityListService
-	) {}
 
 	_views = this.ui.id.pipe(
 		filter((v) => v !== ''),

@@ -12,8 +12,8 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 
@@ -25,10 +25,16 @@ public class ConnectionValidationResult {
    private final BranchId branch;
    private final ArtifactId viewId;
    private final String connectionName;
-   private final List<String> structureByteAlignmentErrors = new LinkedList<>();
-   private final List<String> structureWordAlignmentErrors = new LinkedList<>();
-   private final List<String> duplicateStructureNameErrors = new LinkedList<>();
-   private final List<String> messageTypeErrors = new LinkedList<>();
+   private final Map<ArtifactId, String> structureByteAlignmentErrors = new HashMap<>();
+   private final Map<ArtifactId, String> structureWordAlignmentErrors = new HashMap<>();
+   private final Map<ArtifactId, String> duplicateStructureNameErrors = new HashMap<>();
+   private final Map<ArtifactId, String> messageTypeErrors = new HashMap<>();
+
+   public ConnectionValidationResult() {
+      this.branch = BranchId.SENTINEL;
+      this.viewId = ArtifactId.SENTINEL;
+      this.connectionName = "";
+   }
 
    public ConnectionValidationResult(BranchId branch, ArtifactId viewId, String connectionName) {
       this.branch = branch;
@@ -49,22 +55,22 @@ public class ConnectionValidationResult {
    }
 
    public boolean isPassed() {
-      return structureByteAlignmentErrors.isEmpty() && duplicateStructureNameErrors.isEmpty() && messageTypeErrors.isEmpty();
+      return structureByteAlignmentErrors.isEmpty() && structureWordAlignmentErrors.isEmpty() && duplicateStructureNameErrors.isEmpty() && messageTypeErrors.isEmpty();
    }
 
-   public List<String> getStructureByteAlignmentErrors() {
+   public Map<ArtifactId, String> getStructureByteAlignmentErrors() {
       return structureByteAlignmentErrors;
    }
 
-   public List<String> getDuplicateStructureNameErrors() {
+   public Map<ArtifactId, String> getDuplicateStructureNameErrors() {
       return duplicateStructureNameErrors;
    }
 
-   public List<String> getMessageTypeErrors() {
+   public Map<ArtifactId, String> getMessageTypeErrors() {
       return messageTypeErrors;
    }
 
-   public List<String> getStructureWordAlignmentErrors() {
+   public Map<ArtifactId, String> getStructureWordAlignmentErrors() {
       return structureWordAlignmentErrors;
    }
 

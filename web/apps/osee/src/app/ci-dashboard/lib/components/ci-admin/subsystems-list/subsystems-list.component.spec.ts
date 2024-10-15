@@ -14,8 +14,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SubsystemsListComponent } from './subsystems-list.component';
 import { DashboardHttpService } from '../../../services/dashboard-http.service';
 import { dashboardHttpServiceMock } from '../../../services/dashboard-http.service.mock';
-import { TransactionService } from '@osee/shared/transactions';
-import { transactionServiceMock } from '@osee/shared/transactions/testing';
+import { TransactionService } from '@osee/transactions/services';
+import { transactionServiceMock } from '@osee/transactions/services/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 describe('SubsystemsListComponent', () => {
 	let component: SubsystemsListComponent;
@@ -25,6 +26,7 @@ describe('SubsystemsListComponent', () => {
 		await TestBed.configureTestingModule({
 			imports: [SubsystemsListComponent],
 			providers: [
+				provideNoopAnimations(),
 				{
 					provide: DashboardHttpService,
 					useValue: dashboardHttpServiceMock,

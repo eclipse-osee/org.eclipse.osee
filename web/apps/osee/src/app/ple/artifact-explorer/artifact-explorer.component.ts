@@ -12,7 +12,7 @@
  **********************************************************************/
 import { CdkDropListGroup } from '@angular/cdk/drag-drop';
 import { NgClass } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
@@ -50,6 +50,12 @@ import { ArtifactExplorerPreferencesService } from './lib/services/artifact-expl
 	templateUrl: './artifact-explorer.component.html',
 })
 export class ArtifactExplorerComponent {
+	private uiService = inject(UiService);
+	private tabService = inject(ArtifactExplorerTabService);
+	private userPrefsService = inject(ArtifactExplorerPreferencesService);
+	private routeUrl = inject(ActivatedRoute);
+	private router = inject(Router);
+
 	@Input() set branchType(branchType: 'working' | 'baseline' | '') {
 		if (branchType != undefined) {
 			this.uiService.typeValue = branchType;
@@ -84,14 +90,6 @@ export class ArtifactExplorerComponent {
 		),
 		{ initialValue: 'Artifacts' }
 	);
-
-	constructor(
-		private uiService: UiService,
-		private tabService: ArtifactExplorerTabService,
-		private userPrefsService: ArtifactExplorerPreferencesService,
-		private routeUrl: ActivatedRoute,
-		private router: Router
-	) {}
 
 	setCurrentPanel(panel: ExplorerPanel) {
 		this.router.navigate([], {

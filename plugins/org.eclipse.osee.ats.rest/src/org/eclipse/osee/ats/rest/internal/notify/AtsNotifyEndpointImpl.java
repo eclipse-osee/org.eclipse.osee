@@ -50,10 +50,11 @@ public class AtsNotifyEndpointImpl implements AtsNotifyEndpointApi {
       XResultData rd = new XResultData();
       rd.log("Send Test Email - Server");
       try {
-         OseeEmail emailMessage = OseeEmailServer.create(Arrays.asList(testEmail.getEmail()), testEmail.getEmail(),
-            testEmail.getEmail(), testEmail.getSubject(),
-            AHTML.simplePage(AHTML.bold("Hello World - this should be bold")), BodyType.Html);
-         emailMessage.send();
+         OseeEmail emailMessage =
+            OseeEmailServer.create(Arrays.asList(testEmail.getEmail()), testEmail.getEmail(), testEmail.getEmail(),
+               testEmail.getSubject(), AHTML.simplePage(AHTML.bold("Hello World - this should be bold")), BodyType.Html,
+               Arrays.asList(testEmail.getEmail()), "Abridged - " + testEmail.getSubject());
+         emailMessage.send(rd);
       } catch (Exception ex) {
          rd.error(Lib.exceptionToString(ex));
       }

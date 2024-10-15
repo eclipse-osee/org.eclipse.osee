@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import {
 	BehaviorSubject,
@@ -28,11 +28,9 @@ import { TmoHttpService } from './tmo-http.service';
 	providedIn: 'root',
 })
 export class CiBatchService {
-	constructor(
-		private uiService: CiDashboardUiService,
-		private tmoHttp: TmoHttpService,
-		private router: Router
-	) {}
+	private uiService = inject(CiDashboardUiService);
+	private tmoHttp = inject(TmoHttpService);
+	private router = inject(Router);
 
 	private _selectedBatchId = new BehaviorSubject<string>('-1');
 

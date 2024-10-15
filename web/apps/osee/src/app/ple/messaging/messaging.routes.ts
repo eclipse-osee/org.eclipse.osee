@@ -15,38 +15,32 @@ import { RoleGuard } from '@osee/auth';
 import { navigationStructure } from '@osee/layout/routing';
 
 const messaging = navigationStructure[0].children.filter(
-	(c) => c.label === 'Messaging Configuration'
+	(c) => c.label === 'MIM'
 )[0];
-const transports = navigationStructure[0].children
-	.filter((c) => c.label === 'Messaging Configuration')[0]
-	.children.find((page) => page.label === 'Transport Type Manager');
-const imports = navigationStructure[0].children
-	.filter((c) => c.label === 'Messaging Configuration')[0]
-	.children.find((page) => page.label === 'Import');
-const reports = navigationStructure[0].children
-	.filter((c) => c.label === 'Messaging Configuration')[0]
-	.children.find((page) => page.label === 'Reports');
-const crossReference = navigationStructure[0].children
-	.filter((c) => c.label === 'Messaging Configuration')[0]
-	.children.find((page) => page.label === 'Cross-Reference Data Manager');
-const types = navigationStructure[0].children
-	.filter((c) => c.label === 'Messaging Configuration')[0]
-	.children.find((page) => page.label === 'Type View');
-const structureNames = navigationStructure[0].children
-	.filter((c) => c.label === 'Messaging Configuration')[0]
-	.children.find((page) => page.label === 'Structure Names');
-const typeSearch = navigationStructure[0].children
-	.filter((c) => c.label === 'Messaging Configuration')[0]
-	.children.find((page) => page.label === 'Find Elements By Type');
-const connections = navigationStructure[0].children
-	.filter((c) => c.label === 'Messaging Configuration')[0]
-	.children.find((page) => page.label === 'Connection View');
-const help = navigationStructure[0].children
-	.filter((c) => c.label === 'Messaging Configuration')[0]
-	.children.find((page) => page.label === 'Help');
-const lists = navigationStructure[0].children
-	.filter((c) => c.label === 'Messaging Configuration')[0]
-	.children.find((page) => page.label === 'Enumeration List Configuration');
+const transports = messaging.children.find(
+	(page) => page.label === 'Transport Types'
+);
+const imports = messaging.children.find((page) => page.label === 'Import');
+const reports = messaging.children.find((page) => page.label === 'Reports');
+const crossReference = messaging.children.find(
+	(page) => page.label === 'Cross-References'
+);
+const types = messaging.children.find(
+	(page) => page.label === 'Platform Types'
+);
+const structureNames = messaging.children.find(
+	(page) => page.label === 'Structures'
+);
+const typeSearch = messaging.children.find(
+	(page) => page.label === 'Find Elements By Type'
+);
+const connections = messaging.children.find(
+	(page) => page.label === 'Connections'
+);
+const help = messaging.children.find((page) => page.label === 'MIM Help');
+const lists = messaging.children.find(
+	(page) => page.label === 'List Configuration'
+);
 const routes: Routes = [
 	{
 		path: '',
@@ -135,7 +129,7 @@ const routes: Routes = [
 		title: transports?.pageTitle || 'OSEE',
 		canActivate: [RoleGuard],
 		data: { requiredRoles: imports?.requiredRoles },
-		loadChildren: () => import('./transports/transports.routes'),
+		loadChildren: () => import('./pages/transports/transports.routes'),
 	},
 	{
 		path: 'lists',

@@ -12,12 +12,15 @@
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
 import { enumerationSetServiceMock } from '@osee/messaging/shared/testing';
-import { transactionResultMock } from '@osee/shared/transactions/testing';
-import { TestScheduler } from 'rxjs/testing';
 import { UiService } from '@osee/shared/services';
+import { transactionResultMock } from '@osee/transactions/testing';
+import { TestScheduler } from 'rxjs/testing';
 import { EnumerationSetService } from '../http/enumeration-set.service';
 
+import { applicabilitySentinel } from '@osee/applicability/types';
 import { EnumerationUIService } from './enumeration-ui.service';
+import { CurrentTransactionService } from '@osee/transactions/services';
+import { currentTransactionServiceMock } from '@osee/transactions/services/testing';
 
 describe('EnumerationUIService', () => {
 	let service: EnumerationUIService;
@@ -30,6 +33,10 @@ describe('EnumerationUIService', () => {
 				{
 					provide: EnumerationSetService,
 					useValue: enumerationSetServiceMock,
+				},
+				{
+					provide: CurrentTransactionService,
+					useValue: currentTransactionServiceMock,
 				},
 			],
 		});
@@ -55,11 +62,44 @@ describe('EnumerationUIService', () => {
 			uiService.idValue = '10';
 			scheduler
 				.expectObservable(
-					service.changeEnumSet({
-						createArtifacts: [],
-						modifyArtifacts: [],
-						deleteRelations: [],
-					})
+					service.changeEnumSet(
+						{
+							id: '-1',
+							gammaId: '-1',
+							name: {
+								id: '-1',
+								typeId: '1152921504606847088',
+								gammaId: '-1',
+								value: 'asdf',
+							},
+							description: {
+								id: '-1',
+								typeId: '1152921504606847090',
+								gammaId: '-1',
+								value: '',
+							},
+							applicability: applicabilitySentinel,
+							enumerations: [],
+						},
+						{
+							id: '-1',
+							gammaId: '-1',
+							name: {
+								id: '-1',
+								typeId: '1152921504606847088',
+								gammaId: '-1',
+								value: '',
+							},
+							description: {
+								id: '-1',
+								typeId: '1152921504606847090',
+								gammaId: '-1',
+								value: '',
+							},
+							applicability: applicabilitySentinel,
+							enumerations: [],
+						}
+					)
 				)
 				.toBe(expectedMarble, expectedFilterValues);
 		});

@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -30,7 +30,7 @@ import org.eclipse.osee.orcs.rest.model.transaction.CreateArtifact;
 /**
  * @author Ryan T. Baldwin
  */
-public class AttentionLocationToken extends ArtifactAccessorResult {
+public class AttentionLocationToken extends ArtifactAccessorResultWithoutGammas {
 
    public static final AttentionLocationToken SENTINEL = new AttentionLocationToken();
 

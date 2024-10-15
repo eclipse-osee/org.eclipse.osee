@@ -10,16 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
-import {
-	BehaviorSubject,
-	combineLatest,
-	filter,
-	iif,
-	map,
-	of,
-	switchMap,
-} from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { BehaviorSubject, filter, iif, map, of, switchMap } from 'rxjs';
 import { checkIfUndefinedOrNull } from '@osee/shared/utils';
 import { Parameter } from '../../../../types/grid-commander-types/gc-user-and-contexts-relationships';
 import { SelectedCommandDataService } from '../selected-command-data.service';
@@ -28,6 +20,8 @@ import { SelectedCommandDataService } from '../selected-command-data.service';
 	providedIn: 'root',
 })
 export class ParameterDataService {
+	private selectedCommandDataService = inject(SelectedCommandDataService);
+
 	private _parameter$ =
 		this.selectedCommandDataService.selectedCommandObject.pipe(
 			map((commandObj) => commandObj.parameter),
@@ -77,9 +71,8 @@ export class ParameterDataService {
 				iif(
 					() => attributes['default value'] !== undefined,
 					of(attributes).pipe(
-						map(
-							(attributes) =>
-								attributes['default value']?.split(', ')
+						map((attributes) =>
+							attributes['default value']?.split(', ')
 						)
 					),
 					of(null)
@@ -103,10 +96,6 @@ export class ParameterDataService {
 				)
 			);
 	}
-
-	constructor(
-		private selectedCommandDataService: SelectedCommandDataService
-	) {}
 
 	public get parameter$() {
 		return this._parameter$;

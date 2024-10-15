@@ -10,89 +10,124 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import type { difference } from '@osee/shared/types/change-report';
-import type { applic } from '@osee/shared/types/applicability';
-import type { subMessage, subMessageWithChanges } from './sub-messages';
-import type { ConnectionNode } from './connection-nodes';
+import type { hasApplic } from '@osee/applicability/types';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
+import { attribute } from '@osee/attributes/types';
+import type { hasChanges } from '@osee/shared/types/change-report';
 import type { nodeData } from './node';
+import type { subMessage, subMessageWithChanges } from './sub-messages';
 
-export interface message {
-	id: string;
-	name: string;
-	description: string;
-	subMessages: Array<subMessage | subMessageWithChanges>;
-	interfaceMessageRate: string;
-	interfaceMessagePeriodicity: string;
-	interfaceMessageWriteAccess: boolean;
-	interfaceMessageType: string;
-	interfaceMessageNumber: string;
-	interfaceMessageExclude: boolean;
-	interfaceMessageIoMode: string;
-	interfaceMessageModeCode: string;
-	interfaceMessageRateVer: string;
-	interfaceMessagePriority: string;
-	interfaceMessageProtocol: string;
-	interfaceMessageRptWordCount: string;
-	interfaceMessageRptCmdWord: string;
-	interfaceMessageRunBeforeProc: boolean;
-	interfaceMessageVer: string;
-	applicability: applic;
-	publisherNodes: Array<ConnectionNode>;
-	subscriberNodes: Array<ConnectionNode>;
-}
+export type message = Required<messageAttr> &
+	messageRelations &
+	hasApplic &
+	Partial<messageChanges> & {
+		id: `${number}`;
+		gammaId: `${number}`;
+	};
 
-export interface messageWithChanges extends message {
+export type messageRelations = {
+	subMessages: (subMessage | subMessageWithChanges)[];
+	publisherNodes: nodeData[];
+	subscriberNodes: nodeData[];
+};
+export type messageAttr = {
+	name: Required<attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>>;
+	description: Required<
+		attribute<string, typeof ATTRIBUTETYPEIDENUM.DESCRIPTION>
+	>;
+	interfaceMessageRate: Required<
+		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGERATE>
+	>;
+	interfaceMessagePeriodicity: Required<
+		attribute<
+			string,
+			typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEPERIODICITY
+		>
+	>;
+	interfaceMessageWriteAccess: Required<
+		attribute<
+			boolean,
+			typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEWRITEACCESS
+		>
+	>;
+	interfaceMessageType: Required<
+		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGETYPE>
+	>;
+	interfaceMessageNumber: Required<
+		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGENUMBER>
+	>;
+	interfaceMessageExclude: Required<
+		attribute<boolean, typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEEXCLUDE>
+	>;
+	interfaceMessageIoMode: Required<
+		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEIOCODE>
+	>;
+	interfaceMessageModeCode: Required<
+		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEMODECODE>
+	>;
+	interfaceMessageRateVer: Required<
+		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGERATEVER>
+	>;
+	interfaceMessagePriority: Required<
+		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEPRIORITY>
+	>;
+	interfaceMessageProtocol: Required<
+		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEPROTOCOL>
+	>;
+	interfaceMessageRptWordCount: Required<
+		attribute<
+			string,
+			typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGERPTWORDCOUNT
+		>
+	>;
+	interfaceMessageRptCmdWord: Required<
+		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGERPTCMDWORD>
+	>;
+	interfaceMessageRunBeforeProc: Required<
+		attribute<
+			boolean,
+			typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGERUNBEFOREPROC
+		>
+	>;
+	interfaceMessageVer: Required<
+		attribute<string, typeof ATTRIBUTETYPEIDENUM.INTERFACEMESSAGEVER>
+	>;
+};
+
+export type _messageChanges = hasChanges<messageAttr> & hasChanges<hasApplic>;
+
+export type messageChanges = {
 	added: boolean;
 	deleted: boolean;
 	hasSubMessageChanges: boolean;
-	changes: messageChanges;
-}
+	changes: _messageChanges;
+};
 
-export interface messageChanges {
-	name?: difference;
-	description?: difference;
-	interfaceMessageRate?: difference;
-	interfaceMessagePeriodicity?: difference;
-	interfaceMessageWriteAccess?: difference;
-	interfaceMessageType?: difference;
-	interfaceMessageNumber?: difference;
-	interfaceMessageExclude?: difference;
-	interfaceMessageIoMode?: difference;
-	interfaceMessageModeCode?: difference;
-	interfaceMessageRateVer?: difference;
-	interfaceMessagePriority?: difference;
-	interfaceMessageProtocol?: difference;
-	interfaceMessageRptWordCount?: difference;
-	interfaceMessageRptCmdWord?: difference;
-	interfaceMessageRunBeforeProc?: difference;
-	interfaceMessageVer?: difference;
-	applicability?: difference;
-}
+export type messageWithChanges = {} & Required<message>;
 
-export interface messageToken
-	extends Pick<
-		message,
-		| 'id'
-		| 'name'
-		| 'description'
-		| 'subMessages'
-		| 'interfaceMessageRate'
-		| 'interfaceMessagePeriodicity'
-		| 'interfaceMessageWriteAccess'
-		| 'interfaceMessageType'
-		| 'interfaceMessageNumber'
-		| 'applicability'
-		| 'interfaceMessageExclude'
-		| 'interfaceMessageIoMode'
-		| 'interfaceMessageModeCode'
-		| 'interfaceMessageRateVer'
-		| 'interfaceMessagePriority'
-		| 'interfaceMessageProtocol'
-		| 'interfaceMessageRptWordCount'
-		| 'interfaceMessageRptCmdWord'
-		| 'interfaceMessageRunBeforeProc'
-		| 'interfaceMessageVer'
-	> {
+export type messageToken = {
 	publisherNodes: nodeData[];
 	subscriberNodes: nodeData[];
-}
+} & Pick<
+	message,
+	| 'id'
+	| 'name'
+	| 'description'
+	| 'subMessages'
+	| 'interfaceMessageRate'
+	| 'interfaceMessagePeriodicity'
+	| 'interfaceMessageWriteAccess'
+	| 'interfaceMessageType'
+	| 'interfaceMessageNumber'
+	| 'applicability'
+	| 'interfaceMessageExclude'
+	| 'interfaceMessageIoMode'
+	| 'interfaceMessageModeCode'
+	| 'interfaceMessageRateVer'
+	| 'interfaceMessagePriority'
+	| 'interfaceMessageProtocol'
+	| 'interfaceMessageRptWordCount'
+	| 'interfaceMessageRptCmdWord'
+	| 'interfaceMessageRunBeforeProc'
+	| 'interfaceMessageVer'
+>;

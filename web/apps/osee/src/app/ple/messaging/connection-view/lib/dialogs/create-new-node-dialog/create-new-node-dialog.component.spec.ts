@@ -18,9 +18,9 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonHarness } from '@angular/material/button/testing';
 import {
+	MAT_DIALOG_DATA,
 	MatDialogModule,
 	MatDialogRef,
-	MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -79,8 +79,8 @@ describe('CreateNewNodeDialogComponent', () => {
 	});
 
 	it('should close without anything returning', async () => {
-		let buttons = await loader.getAllHarnesses(MatButtonHarness);
-		let spy = spyOn(component, 'onNoClick').and.callThrough();
+		const buttons = await loader.getAllHarnesses(MatButtonHarness);
+		const spy = spyOn(component, 'onNoClick').and.callThrough();
 		if ((await buttons[0].getText()) === 'Cancel') {
 			await buttons[0].click();
 			expect(spy).toHaveBeenCalled();

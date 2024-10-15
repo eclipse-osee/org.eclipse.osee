@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
 	BehaviorSubject,
 	combineLatest,
@@ -18,7 +18,7 @@ import {
 	shareReplay,
 	switchMap,
 } from 'rxjs';
-import { SetReference } from '../types';
+import { CISet } from '../types';
 import { TmoHttpService } from './tmo-http.service';
 import { CiDashboardUiService } from './ci-dashboard-ui.service';
 
@@ -26,12 +26,10 @@ import { CiDashboardUiService } from './ci-dashboard-ui.service';
 	providedIn: 'root',
 })
 export class CiSetDiffService {
-	constructor(
-		private uiService: CiDashboardUiService,
-		private tmoHttp: TmoHttpService
-	) {}
+	private uiService = inject(CiDashboardUiService);
+	private tmoHttp = inject(TmoHttpService);
 
-	private _selectedSets = new BehaviorSubject<SetReference[]>([]);
+	private _selectedSets = new BehaviorSubject<CISet[]>([]);
 
 	setDiffs = combineLatest([this.uiService.branchId, this.selectedSets]).pipe(
 		filter(
@@ -51,7 +49,7 @@ export class CiSetDiffService {
 		return this._selectedSets;
 	}
 
-	set SelectedSets(sets: SetReference[]) {
+	set SelectedSets(sets: CISet[]) {
 		this._selectedSets.next(sets);
 	}
 }

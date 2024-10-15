@@ -12,7 +12,7 @@
  **********************************************************************/
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { AsyncPipe } from '@angular/common';
-import { Component, Inject, viewChild } from '@angular/core';
+import { Component, inject, viewChild } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import {
@@ -39,16 +39,13 @@ import {
 	MatStepperPrevious,
 } from '@angular/material/stepper';
 import { MatTooltip } from '@angular/material/tooltip';
-import {
-	CurrentStructureService,
-	EnumsService,
-} from '@osee/messaging/shared/services';
+import { ApplicabilityDropdownComponent } from '@osee/applicability/applicability-dropdown';
+import { applicabilitySentinel } from '@osee/applicability/types';
+import { CurrentStructureService } from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 import type { structure } from '@osee/messaging/shared/types';
-import {
-	ApplicabilitySelectorComponent,
-	MatOptionLoadingComponent,
-} from '@osee/shared/components';
+import { StructureCategoryDropdownComponent } from '@osee/messaging/structure-category/structure-category-dropdown';
+import { MatOptionLoadingComponent } from '@osee/shared/components';
 import {
 	BehaviorSubject,
 	debounceTime,
@@ -58,7 +55,6 @@ import {
 	switchMap,
 	tap,
 } from 'rxjs';
-import { AddStructureDialog } from './add-structure-dialog';
 
 @Component({
 	selector: 'osee-messaging-add-structure-dialog',
@@ -88,7 +84,8 @@ import { AddStructureDialog } from './add-structure-dialog';
 		MatOptionLoadingComponent,
 		FormsModule,
 		AsyncPipe,
-		ApplicabilitySelectorComponent,
+		ApplicabilityDropdownComponent,
+		StructureCategoryDropdownComponent,
 	],
 	providers: [
 		{
@@ -98,6 +95,10 @@ import { AddStructureDialog } from './add-structure-dialog';
 	],
 })
 export class AddStructureDialogComponent {
+	private structures = inject(STRUCTURE_SERVICE_TOKEN);
+	dialogRef = inject<MatDialogRef<AddStructureDialogComponent>>(MatDialogRef);
+	data = inject(MAT_DIALOG_DATA);
+
 	_internalStepper = viewChild.required(MatStepper);
 	__internalStepper = toObservable(this._internalStepper);
 
@@ -117,8 +118,7 @@ export class AddStructureDialogComponent {
 			}
 		})
 	);
-	categories = this.enumService.categories;
-	paginationSize: number = 50;
+	paginationSize = 50;
 
 	selectedStructure: structure | undefined;
 	structureSearch = new BehaviorSubject<string>('');
@@ -142,13 +142,10 @@ export class AddStructureDialogComponent {
 		)
 	);
 
-	constructor(
-		@Inject(STRUCTURE_SERVICE_TOKEN)
-		private structures: CurrentStructureService,
-		public dialogRef: MatDialogRef<AddStructureDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: AddStructureDialog,
-		private enumService: EnumsService
-	) {
+	/** Inserted by Angular inject() migration for backwards compatibility */
+	constructor(...args: unknown[]);
+
+	constructor() {
 		this._moveToNextStep.subscribe();
 	}
 
@@ -159,6 +156,54 @@ export class AddStructureDialogComponent {
 	createNew() {
 		this.data.structure.id = '-1';
 		this.selectedStructure = undefined;
+		this.data.structure = {
+			id: '-1',
+			gammaId: '-1',
+			name: {
+				id: '-1',
+				typeId: '1152921504606847088',
+				gammaId: '-1',
+				value: '',
+			},
+			nameAbbrev: {
+				id: '-1',
+				typeId: '8355308043647703563',
+				gammaId: '-1',
+				value: '',
+			},
+			description: {
+				id: '-1',
+				typeId: '1152921504606847090',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMaxSimultaneity: {
+				id: '-1',
+				typeId: '2455059983007225756',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMinSimultaneity: {
+				id: '-1',
+				typeId: '2455059983007225755',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceTaskFileType: {
+				id: '-1',
+				typeId: '2455059983007225760',
+				gammaId: '-1',
+				value: 0,
+			},
+			interfaceStructureCategory: {
+				id: '-1',
+				typeId: '2455059983007225764',
+				gammaId: '-1',
+				value: '',
+			},
+			applicability: applicabilitySentinel,
+			elements: [],
+		};
 	}
 
 	moveToReview(stepper: MatStepper) {

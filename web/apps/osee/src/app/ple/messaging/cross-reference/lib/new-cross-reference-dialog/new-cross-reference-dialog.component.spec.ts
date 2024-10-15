@@ -21,9 +21,9 @@ import { dialogRef } from '@osee/messaging/shared/testing';
 import type { CrossReference } from '@osee/messaging/shared/types';
 import { of } from 'rxjs';
 import { NewCrossReferenceDialogComponent } from './new-cross-reference-dialog.component';
-import { applicabilitySentinel } from '@osee/shared/types/applicability';
-import { ApplicabilitySelectorComponent } from '@osee/shared/components';
-import { MockApplicabilitySelectorComponent } from '@osee/shared/components/testing';
+import { ApplicabilityDropdownComponent } from '@osee/applicability/applicability-dropdown';
+import { MockApplicabilityDropdownComponent } from '@osee/applicability/applicability-dropdown/testing';
+import { applicabilitySentinel } from '@osee/applicability/types';
 
 describe('NewCrossReferenceDialogComponent', () => {
 	let component: NewCrossReferenceDialogComponent;
@@ -32,10 +32,10 @@ describe('NewCrossReferenceDialogComponent', () => {
 	beforeEach(async () => {
 		await TestBed.overrideComponent(NewCrossReferenceDialogComponent, {
 			remove: {
-				imports: [ApplicabilitySelectorComponent],
+				imports: [ApplicabilityDropdownComponent],
 			},
 			add: {
-				imports: [MockApplicabilitySelectorComponent],
+				imports: [MockApplicabilityDropdownComponent],
 			},
 		})
 			.configureTestingModule({

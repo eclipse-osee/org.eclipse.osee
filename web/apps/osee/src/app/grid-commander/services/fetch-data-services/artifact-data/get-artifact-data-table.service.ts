@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { apiURL } from '@osee/environments';
 import { UiService } from '@osee/shared/services';
@@ -21,13 +21,11 @@ import { BehaviorSubject } from 'rxjs';
 	providedIn: 'root',
 })
 export class GetArtifactDataTableService {
+	private http = inject(HttpClient);
+	private uiService = inject(UiService);
+
 	defaultArtifactType = new BehaviorSubject<string>('784');
 	defaultBranchId = this.uiService.id;
-
-	constructor(
-		private http: HttpClient,
-		private uiService: UiService
-	) {}
 
 	getArtifactTableData(
 		artifactType: string = this.defaultArtifactType.value,

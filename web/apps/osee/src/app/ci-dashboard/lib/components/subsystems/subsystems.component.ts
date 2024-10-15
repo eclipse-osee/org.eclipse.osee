@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CiDashboardUiService } from '../../services/ci-dashboard-ui.service';
 import { DashboardService } from '../../services/dashboard.service';
@@ -29,10 +29,8 @@ import { CiDashboardControlsComponent } from '../ci-dashboard-controls/ci-dashbo
 	templateUrl: './subsystems.component.html',
 })
 export default class SubsystemsComponent {
-	constructor(
-		private uiService: CiDashboardUiService,
-		private dashboardService: DashboardService
-	) {}
+	private uiService = inject(CiDashboardUiService);
+	private dashboardService = inject(DashboardService);
 
 	subsystemStats = this.dashboardService.subsystemStats;
 	branchId = toSignal(this.uiService.branchId);

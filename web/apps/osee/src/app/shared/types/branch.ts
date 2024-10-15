@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { viewedId } from '@osee/shared/types';
-export interface branch extends viewedId {
+export type branch = {
 	idIntValue: number;
 	name: string;
 	associatedArtifact: string;
@@ -23,12 +23,12 @@ export interface branch extends viewedId {
 	inheritAccessControl: boolean;
 	archived: boolean;
 	shortName: string;
-}
-export interface branchInfo extends branchHeader {
+} & viewedId;
+export type branchInfo = {
 	idIntValue: number;
 	name: string;
-}
-export interface branchHeader extends viewedId {}
+} & branchHeader;
+export type branchHeader = {} & viewedId;
 
 export const branchSentinel: branch = {
 	id: '-1',

@@ -10,24 +10,22 @@
 * Contributors:
 *     Boeing - initial API and implementation
 -->
-@if (enumObs | async; as enumerationSet) {
-	@if ((inEditMode | async) === true && isOnEditablePage === true) {
-		<h1 mat-dialog-title>Editing {{ enumerationSet.name }}</h1>
-		<mat-dialog-content>
-			<osee-edit-enum-set-field
-				[editable]="true"
-				[platformTypeId]="data.id"
-				(enumSetTx)="receiveTx($event)"></osee-edit-enum-set-field>
-		</mat-dialog-content>
-	} @else {
-		<h1 mat-dialog-title>Viewing {{ enumerationSet.name }}</h1>
-		<mat-dialog-content>
-			<osee-edit-enum-set-field
-				[editable]="false"
-				[platformTypeId]="data.id"
-				(enumSetTx)="receiveTx($event)"></osee-edit-enum-set-field>
-		</mat-dialog-content>
-	}
+@if ((inEditMode | async) === true && isOnEditablePage() === true) {
+	<h1 mat-dialog-title>Editing {{ enumSet().name.value }}</h1>
+	<mat-dialog-content>
+		<osee-edit-enum-set-field
+			[editable]="true"
+			[bitSize]="bitSize()"
+			[(enumSet)]="enumSet"></osee-edit-enum-set-field>
+	</mat-dialog-content>
+} @else {
+	<h1 mat-dialog-title>Viewing {{ enumSet().name.value }}</h1>
+	<mat-dialog-content>
+		<osee-edit-enum-set-field
+			[editable]="false"
+			[bitSize]="bitSize()"
+			[(enumSet)]="enumSet"></osee-edit-enum-set-field>
+	</mat-dialog-content>
 }
 <mat-dialog-actions align="end">
 	<button
@@ -35,12 +33,10 @@
 		(click)="onNoClick()">
 		Cancel
 	</button>
-	@if (receivedTx | async; as result) {
-		<button
-			mat-raised-button
-			color="primary"
-			[mat-dialog-close]="result">
-			Ok
-		</button>
-	}
+	<button
+		mat-flat-button
+		class="primary-button"
+		[mat-dialog-close]="enumSet()">
+		Ok
+	</button>
 </mat-dialog-actions>

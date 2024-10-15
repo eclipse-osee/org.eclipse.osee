@@ -13,12 +13,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ArtifactOperationsContextMenuComponent } from './artifact-operations-context-menu.component';
-import { TransactionService } from '@osee/shared/transactions';
-import { transactionServiceMock } from '@osee/shared/transactions/testing';
 import { ArtifactHierarchyPathService } from '../../../services/artifact-hierarchy-path.service';
 import { artifactHierarchyPathServiceMock } from '../../../testing/artifact-hierarchy-path.service.mock';
 import { ArtifactExplorerHttpService } from '../../../services/artifact-explorer-http.service';
 import { ArtifactExplorerHttpServiceMock } from '../../../testing/artifact-explorer-http.service.mock';
+import { TransactionService } from '@osee/transactions/services';
+import { transactionServiceMock } from '@osee/transactions/services/testing';
 
 describe('ArtifactOperationsContextMenuComponent', () => {
 	let component: ArtifactOperationsContextMenuComponent;

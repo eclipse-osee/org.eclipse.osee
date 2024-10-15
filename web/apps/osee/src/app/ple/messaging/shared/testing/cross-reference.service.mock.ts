@@ -13,7 +13,7 @@
 
 import { CrossReferenceService } from '@osee/messaging/shared/services';
 import { CrossReference } from '@osee/messaging/shared/types';
-import { transactionResultMock } from '@osee/shared/transactions/testing';
+import { transactionResultMock } from '@osee/transactions/testing';
 import { BehaviorSubject, of } from 'rxjs';
 import { connectionMock } from './connection.response.mock';
 import { crossReferencesMock } from './cross-references.mock';
@@ -26,7 +26,7 @@ export const CrossReferenceServiceMock: Partial<CrossReferenceService> = {
 		return of(crossReferencesMock);
 	},
 	get selectedConnectionId() {
-		return new BehaviorSubject<string>('123');
+		return new BehaviorSubject<`${number}`>('123');
 	},
 	connections: of([connectionMock]),
 };

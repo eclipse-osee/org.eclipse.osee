@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable, signal } from '@angular/core';
-import { BehaviorSubject, ReplaySubject } from 'rxjs';
+import { Injectable, inject, signal } from '@angular/core';
+import { ReplaySubject } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 import { UiService } from '@osee/shared/services';
 import { changeInstance } from '@osee/shared/types/change-report';
@@ -21,6 +21,8 @@ import { toObservable } from '@angular/core/rxjs-interop';
 	providedIn: 'root',
 })
 export class PlConfigUIStateService {
+	private ui = inject(UiService);
+
 	private _differences = new ReplaySubject<changeInstance[] | undefined>(
 		undefined
 	);
@@ -31,7 +33,6 @@ export class PlConfigUIStateService {
 	public currentPage$ = toObservable(this.currentPage);
 	public currentPageSize = signal<number>(100);
 	public currentPageSize$ = toObservable(this.currentPageSize);
-	constructor(private ui: UiService) {}
 
 	public set viewBranchTypeString(branchType: 'working' | 'baseline' | '') {
 		this.ui.typeValue = branchType;

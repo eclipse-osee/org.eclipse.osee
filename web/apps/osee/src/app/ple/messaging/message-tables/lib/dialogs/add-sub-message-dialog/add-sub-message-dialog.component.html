@@ -10,80 +10,92 @@
 * Contributors:
 *     Boeing - initial API and implementation
 -->
-<h1 mat-dialog-title>Add Sub Message to Message {{ data.name }}</h1>
+<h1 mat-dialog-title>Add Sub Message to Message {{ messageName() }}</h1>
 <mat-horizontal-stepper
 	#stepper
-	class="new-submessage-stepper">
+	class="new-submessage-stepper tw-h-full tw-p-4">
 	<mat-step
 		label="Select Sub Message options"
 		#step1
 		[editable]="_firstStepFilled | async">
-		<div class="tw-flex tw-items-center tw-justify-between">
-			<button
-				mat-raised-button
-				color="primary"
-				matStepperNext
-				(click)="createNew()"
-				class="tw-w-full tw-p-6"
-				data-cy="create-new-btn">
-				Create new Sub Message
-			</button>
-
-			<p class="tw-w-full tw-text-center">or</p>
-
-			<mat-form-field
-				class="tw-w-full"
-				appearance="fill"
-				subscriptSizing="dynamic">
-				<mat-label>Select an existing Submessage</mat-label>
-				<input
-					type="text"
-					matInput
-					[matAutocomplete]="auto"
-					(keyup)="applySearchTerm($event)"
-					name="autocomplete-text" />
-				<mat-autocomplete #auto="matAutocomplete">
-					@if (availableSubMessages | async; as submessages) {
-						<osee-mat-option-loading
-							[data]="submessages"
-							[count]="(availableSubMessagesCount | async) || -1"
-							objectName="Submessages"
-							paginationMode="AUTO"
-							[paginationSize]="paginationSize">
-							<ng-template let-option>
-								<mat-option
-									[value]="option.name"
-									(click)="selectExistingSubmessage(option)"
-									[matTooltip]="option.description"
-									matTooltipShowDelay="250">
-									{{ option.name }}
-								</mat-option>
-							</ng-template>
-						</osee-mat-option-loading>
-					}
-				</mat-autocomplete>
-			</mat-form-field>
-		</div>
-		<mat-dialog-actions align="end">
-			@if (selectedSubmessage) {
+		<div class="tw-flex tw-h-full tw-w-full tw-flex-col tw-gap-4">
+			<div
+				class="tw-flex tw-w-full tw-items-center tw-justify-between tw-pt-8">
 				<button
-					mat-raised-button
-					color="primary"
-					(click)="moveToReview(stepper)">
-					Proceed to Review
+					mat-flat-button
+					matStepperNext
+					matTooltip="Create new submessage"
+					(click)="createNew()"
+					class="primary-button tw-w-full tw-p-6"
+					data-cy="create-new-btn">
+					Create new Submessage
 				</button>
-			}
-		</mat-dialog-actions>
+
+				<p class="tw-w-full tw-text-center">or</p>
+
+				<mat-form-field
+					class="tw-w-full"
+					appearance="fill"
+					subscriptSizing="dynamic">
+					<mat-label>Select an existing Submessage</mat-label>
+					<input
+						type="text"
+						matInput
+						[matAutocomplete]="auto"
+						[(ngModel)]="subMessageFilter"
+						name="autocomplete-text" />
+					<mat-autocomplete
+						#auto="matAutocomplete"
+						(optionSelected)="subMessage.set($event.option.value)">
+						@if (availableSubMessages | async; as submessages) {
+							<osee-mat-option-loading
+								[data]="submessages"
+								[count]="
+									(availableSubMessagesCount | async) || -1
+								"
+								objectName="Submessages"
+								paginationMode="AUTO"
+								[paginationSize]="paginationSize">
+								<ng-template let-option>
+									<mat-option
+										[value]="option"
+										[matTooltip]="option.description.value"
+										matTooltipShowDelay="250">
+										{{ option.name.value }}
+									</mat-option>
+								</ng-template>
+							</osee-mat-option-loading>
+						}
+					</mat-autocomplete>
+				</mat-form-field>
+			</div>
+			<mat-dialog-actions align="end">
+				<div
+					[matTooltip]="
+						subMessageId() === '-1'
+							? 'Select a submessage to proceed to review'
+							: 'Review selection'
+					">
+					<button
+						mat-flat-button
+						[disabled]="subMessageId() === '-1'"
+						class="primary-button"
+						(click)="moveToReview(stepper)">
+						Proceed to Review
+					</button>
+				</div>
+			</mat-dialog-actions>
+		</div>
 	</mat-step>
 	<mat-step
 		label="Define Sub Message"
 		#step2>
-		<div style="display: flex; flex-direction: column">
+		<div class="tw-flex tw-flex-col tw-pt-8">
 			<mat-form-field>
 				<mat-label>Name</mat-label>
 				<input
 					matInput
-					[(ngModel)]="data.subMessage.name"
+					[(ngModel)]="subMessageName"
 					required
 					data-cy="field-name" />
 			</mat-form-field>
@@ -92,7 +104,7 @@
 				<textarea
 					matInput
 					cdkTextareaAutosize
-					[(ngModel)]="data.subMessage.description"
+					[(ngModel)]="subMessageDescription"
 					data-cy="field-description"></textarea>
 			</mat-form-field>
 			<mat-form-field>
@@ -100,71 +112,82 @@
 				<input
 					matInput
 					type="number"
-					[(ngModel)]="data.subMessage.interfaceSubMessageNumber"
+					[(ngModel)]="subMessageNumber"
 					required
 					data-cy="field-sub-message-number" />
 			</mat-form-field>
-			<osee-applicability-selector
-				[applicability]="data.subMessage.applicability"
-				(applicabilityChange)="data.subMessage.applicability = $event"
+			<osee-applicability-dropdown
+				[(applicability)]="subMessageApplicability"
 				[required]="true">
-			</osee-applicability-selector>
+			</osee-applicability-dropdown>
 		</div>
 		<mat-dialog-actions align="end">
-			@if (_firstStepFilled | async) {
-				<button
-					mat-raised-button
-					matStepperPrevious>
-					Back
-				</button>
-			}
-			@if (
-				data.subMessage.name.length > 0 &&
-				data.subMessage.interfaceSubMessageNumber !== undefined &&
-				data.subMessage.interfaceSubMessageNumber !== ''
-			) {
-				<button
-					mat-raised-button
-					color="primary"
-					matStepperNext
-					data-cy="stepper-next">
-					Next
-				</button>
-			}
+			<div class="tw-flex tw-gap-2">
+				@if (_firstStepFilled | async) {
+					<button
+						mat-raised-button
+						matStepperPrevious>
+						Back
+					</button>
+				}
+				<div
+					[matTooltip]="
+						subMessageName().length <= 0
+							? 'Enter a name to continue.'
+							: subMessageNumber() === undefined ||
+								  subMessageNumber() === ''
+								? 'Submessage number is improperly defined. Fix to continue.'
+								: 'Proceed to review'
+					">
+					<button
+						mat-flat-button
+						class="primary-button"
+						[disabled]="
+							subMessageName().length <= 0 ||
+							subMessageNumber() === undefined ||
+							subMessageNumber() === ''
+						"
+						matStepperNext
+						data-cy="stepper-next">
+						Next
+					</button>
+				</div>
+			</div>
 		</mat-dialog-actions>
 	</mat-step>
 	<mat-step
 		label="Review"
 		#step3>
-		<div class="tw-flex tw-flex-col tw-text-foreground-text">
+		<div class="tw-flex tw-flex-col tw-pt-8 tw-text-foreground-text">
 			A sub message will be related to:
-			<mat-label>{{ data.name }}</mat-label> with the following
+			<mat-label>{{ messageName() }}</mat-label> with the following
 			properties:
-			<mat-label>Sub Message Name: {{ data.subMessage.name }}</mat-label>
+			<mat-label>Sub Message Name: {{ subMessageName() }}</mat-label>
 			<mat-label
 				>Sub Message Description:
-				{{ data.subMessage.description }}</mat-label
+				{{ subMessageDescription() }}</mat-label
 			>
-			<mat-label
-				>Sub Message Number:
-				{{ data.subMessage.interfaceSubMessageNumber }}</mat-label
-			>
+			<mat-label>Sub Message Number: {{ subMessageNumber() }}</mat-label>
 			<mat-label
 				>Applicability:
-				{{ data.subMessage.applicability?.name }}
+				{{ subMessageApplicability().name }}
 			</mat-label>
 		</div>
 		<mat-dialog-actions align="end">
 			<button
 				mat-button
-				matStepperPrevious
+				(click)="
+					subMessageId() !== '-1'
+						? this.moveToStep(1, stepper)
+						: this.moveToStep(2, stepper)
+				"
 				data-cy="cancel-btn">
 				Back
 			</button>
 			<button
-				mat-raised-button
-				color="primary"
-				[mat-dialog-close]="data"
+				mat-flat-button
+				class="primary-button"
+				[mat-dialog-close]="data()"
 				data-cy="submit-btn">
 				Ok
 			</button>

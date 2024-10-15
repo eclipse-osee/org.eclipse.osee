@@ -10,24 +10,27 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import {
-	HttpClientTestingModule,
-	HttpTestingController,
-} from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
 import { CommandPaletteInputService } from './command-palette-input.service';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('CommandPaletteInputService', () => {
 	let service: CommandPaletteInputService;
-	let httpTestingController: HttpTestingController;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
+			imports: [],
+			providers: [
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+			],
 		});
 		service = TestBed.inject(CommandPaletteInputService);
-		httpTestingController = TestBed.inject(HttpTestingController);
 	});
 
 	it('should be created', () => {

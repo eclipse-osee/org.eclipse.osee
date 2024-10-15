@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ArtifactUiService } from '@osee/shared/services';
 import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
 import { shareReplay } from 'rxjs';
@@ -19,11 +19,11 @@ import { shareReplay } from 'rxjs';
 	providedIn: 'root',
 })
 export class TeamWorkflowService {
+	private artifactUiService = inject(ArtifactUiService);
+
 	private _allTeamWorkflowAttributes = this.artifactUiService
 		.getArtifactTypeAttributes(ARTIFACTTYPEIDENUM.TEAMWORKFLOW)
 		.pipe(shareReplay({ bufferSize: 1, refCount: true }));
-
-	constructor(private artifactUiService: ArtifactUiService) {}
 
 	get allTeamWorkflowAttributes() {
 		return this._allTeamWorkflowAttributes;

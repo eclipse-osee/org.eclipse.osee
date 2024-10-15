@@ -19,8 +19,6 @@ import { ToolbarComponent } from '../toolbar.component';
 	template: `<osee-toolbar [oseeToolbar]="true"></osee-toolbar>`,
 	imports: [ToolbarComponent],
 })
-export class OseeToolbarComponent {
-	constructor() {}
-}
+export class OseeToolbarComponent {}
 
 export default OseeToolbarComponent;

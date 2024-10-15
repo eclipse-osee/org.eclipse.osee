@@ -36,19 +36,17 @@ import {
 	MockNewPlatformTypeFormPage2Component,
 	MimPreferencesServiceMock,
 	typesServiceMock,
-	enumsServiceMock,
 	enumerationUiServiceMock,
 } from '@osee/messaging/shared/testing';
 import {
 	MimPreferencesService,
 	TypesService,
-	EnumsService,
 	EnumerationUIService,
 } from '@osee/messaging/shared/services';
 import { UserDataAccountService } from '@osee/auth';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
-import { TransactionBuilderService } from '@osee/shared/transactions';
-import { transactionBuilderMock } from '@osee/shared/transactions/testing';
+import { TransactionBuilderService } from '@osee/shared/transactions-legacy';
+import { transactionBuilderMock } from '@osee/shared/transactions-legacy/testing';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
 import { ApplicabilityListUIService } from '@osee/shared/services';
 import { applicabilityListUIServiceMock } from '@osee/shared/testing';
@@ -97,7 +95,6 @@ describe('NewTypeFormComponent', () => {
 							useValue: userDataAccountServiceMock,
 						},
 						{ provide: TypesService, useValue: typesServiceMock },
-						{ provide: EnumsService, useValue: enumsServiceMock },
 						{
 							provide: EnumerationUIService,
 							useValue: enumerationUiServiceMock,

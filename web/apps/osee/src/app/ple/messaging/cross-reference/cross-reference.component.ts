@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatFabButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -48,24 +48,23 @@ import { combineLatest, filter, iif, of, switchMap, take, tap } from 'rxjs';
 	templateUrl: './cross-reference.component.html',
 })
 export class CrossReferenceComponent implements OnInit, OnDestroy {
-	constructor(
-		private route: ActivatedRoute,
-		private ui: UiService,
-		private crossRefService: CrossReferenceService,
-		public dialog: MatDialog
-	) {}
+	private route = inject(ActivatedRoute);
+	private ui = inject(UiService);
+	private crossRefService = inject(CrossReferenceService);
+	dialog = inject(MatDialog);
 
 	ngOnInit(): void {
 		this.route.paramMap.subscribe((params) => {
 			this.ui.idValue = params.get('branchId') || '';
 			this.ui.typeValue =
 				(params.get('branchType') as 'working' | 'baseline' | '') || '';
-			this.SelectedConnectionId = params.get('connectionId') || '';
+			this.SelectedConnectionId =
+				(params.get('connectionId') as `${number}`) || '-1';
 		});
 	}
 
 	ngOnDestroy(): void {
-		this.SelectedConnectionId = '';
+		this.SelectedConnectionId = '-1';
 	}
 
 	openAddDialog() {
@@ -125,14 +124,14 @@ export class CrossReferenceComponent implements OnInit, OnDestroy {
 	}
 
 	set SelectedConnection(connection: connection) {
-		this.SelectedConnectionId = connection.id || '';
+		this.SelectedConnectionId = connection.id || '-1';
 	}
 
 	get selectedConnectionId() {
 		return this.crossRefService.selectedConnectionId;
 	}
 
-	set SelectedConnectionId(connectionId: string) {
+	set SelectedConnectionId(connectionId: `${number}`) {
 		this.crossRefService.SelectedConnectionId = connectionId;
 	}
 }

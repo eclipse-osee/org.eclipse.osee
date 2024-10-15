@@ -76,7 +76,7 @@ describe('UsermenuComponent', () => {
 	});
 
 	it('should open settings dialog', async () => {
-		let dialogRefSpy = jasmine.createSpyObj({
+		const dialogRefSpy = jasmine.createSpyObj({
 			afterClosed: of({
 				branchId: '10',
 				allowedHeaders1: [],
@@ -90,7 +90,7 @@ describe('UsermenuComponent', () => {
 			}),
 			close: null,
 		});
-		let dialogSpy = spyOn(
+		const _dialogSpy = spyOn(
 			TestBed.inject(MatDialog),
 			'open'
 		).and.returnValue(dialogRefSpy);

@@ -27,3 +27,4 @@ export * from './applicability-list-ui.service.mock';
 export * from './artifact-ui.service.mock';
 export * from './views-routed-ui.service.mock';
 export * from './branch-routed-ui.service.mock';
+export * from './mat-icon.mock';

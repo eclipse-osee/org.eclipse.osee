@@ -12,7 +12,7 @@
  **********************************************************************/
 import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { AsyncPipe } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import {
 	MAT_DIALOG_DATA,
@@ -43,13 +43,11 @@ import { BehaviorSubject } from 'rxjs';
 	templateUrl: './merge-manager-editor-dialog.component.html',
 })
 export class MergeManagerEditorDialogComponent implements OnInit {
-	attributes = new BehaviorSubject<attribute[]>([]);
+	dialogRef =
+		inject<MatDialogRef<MergeManagerEditorDialogComponent>>(MatDialogRef);
+	data = inject<mergeData>(MAT_DIALOG_DATA);
 
-	constructor(
-		public dialogRef: MatDialogRef<MergeManagerEditorDialogComponent>,
-		@Inject(MAT_DIALOG_DATA)
-		public data: mergeData
-	) {}
+	attributes = new BehaviorSubject<attribute[]>([]);
 
 	ngOnInit(): void {
 		const attr: attribute = {

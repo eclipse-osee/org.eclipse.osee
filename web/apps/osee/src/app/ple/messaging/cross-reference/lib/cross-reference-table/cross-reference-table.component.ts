@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, OnDestroy, viewChild } from '@angular/core';
+import { Component, OnDestroy, viewChild, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
@@ -40,11 +40,11 @@ import { TableEditTextFieldComponent } from '@osee/messaging/shared/forms';
 import { CrossReferenceService } from '@osee/messaging/shared/services';
 import { crossReferenceHeaderDetails } from '@osee/messaging/shared/table-headers';
 import type { CrossReference } from '@osee/messaging/shared/types';
-import { ApplicabilitySelectorComponent } from '@osee/shared/components';
 import { HeaderService, UiService } from '@osee/shared/services';
 import { SplitStringPipe } from '@osee/shared/utils';
 import { filter, switchMap, take, tap } from 'rxjs';
 import { NewCrossReferenceDialogComponent } from '../new-cross-reference-dialog/new-cross-reference-dialog.component';
+import { ApplicabilityDropdownComponent } from '@osee/applicability/applicability-dropdown';
 
 @Component({
 	selector: 'osee-cross-reference-table',
@@ -75,18 +75,16 @@ import { NewCrossReferenceDialogComponent } from '../new-cross-reference-dialog/
 		NewCrossReferenceDialogComponent,
 		TableEditTextFieldComponent,
 		SplitStringPipe,
-		ApplicabilitySelectorComponent,
+		ApplicabilityDropdownComponent,
 	],
 })
 export class CrossReferenceTableComponent implements OnDestroy {
-	matMenuTrigger = viewChild.required(MatMenuTrigger);
+	private headerService = inject(HeaderService);
+	private crossRefService = inject(CrossReferenceService);
+	private ui = inject(UiService);
+	dialog = inject(MatDialog);
 
-	constructor(
-		private headerService: HeaderService,
-		private crossRefService: CrossReferenceService,
-		private ui: UiService,
-		public dialog: MatDialog
-	) {}
+	matMenuTrigger = viewChild.required(MatMenuTrigger);
 
 	getTableHeaderByName(header: keyof CrossReference) {
 		return this.headerService.getHeaderByName(
@@ -119,7 +117,7 @@ export class CrossReferenceTableComponent implements OnDestroy {
 	deleteCrossReference(crossRef: CrossReference) {
 		const del = this.crossRefService
 			.deleteCrossReference(crossRef)
-			.pipe(tap((res) => (this.ui.updated = true)));
+			.pipe(tap((_) => (this.ui.updated = true)));
 		del.subscribe();
 	}
 

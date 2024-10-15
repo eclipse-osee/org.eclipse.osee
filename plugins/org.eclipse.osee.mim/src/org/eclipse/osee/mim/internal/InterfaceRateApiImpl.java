@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.accessor.ArtifactAccessor;
-import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -30,7 +30,7 @@ import org.eclipse.osee.orcs.OrcsApi;
  * @author Luciano T. Vaglienti
  */
 public class InterfaceRateApiImpl implements InterfaceRateApi {
-   private ArtifactAccessor<ArtifactAccessorResult> accessor;
+   private ArtifactAccessor<ArtifactAccessorResultWithoutGammas> accessor;
    private final List<AttributeTypeId> attributes;
    public InterfaceRateApiImpl(OrcsApi orcsApi) {
       this.setAccessor(new InterfaceRateAccessor(orcsApi));
@@ -38,113 +38,111 @@ public class InterfaceRateApiImpl implements InterfaceRateApi {
       attributes.add(CoreAttributeTypes.Name);
    }
 
-   private void setAccessor(ArtifactAccessor<ArtifactAccessorResult> interfaceRateAccessor) {
+   private void setAccessor(ArtifactAccessor<ArtifactAccessorResultWithoutGammas> interfaceRateAccessor) {
       this.accessor = interfaceRateAccessor;
    }
 
    @Override
-   public ArtifactAccessorResult get(BranchId branch, ArtifactId rateId) {
+   public ArtifactAccessorResultWithoutGammas get(BranchId branch, ArtifactId rateId) {
       try {
          return this.accessor.get(branch, rateId);
       } catch (Exception ex) {
-         return new ArtifactAccessorResult();
+         return new ArtifactAccessorResultWithoutGammas();
       }
    }
 
    @Override
-   public Collection<ArtifactAccessorResult> getAll(BranchId branch) {
+   public Collection<ArtifactAccessorResultWithoutGammas> getAll(BranchId branch) {
       return this.getAll(branch, ArtifactId.SENTINEL);
    }
 
    @Override
-   public Collection<ArtifactAccessorResult> getAll(BranchId branch, ArtifactId viewId) {
+   public Collection<ArtifactAccessorResultWithoutGammas> getAll(BranchId branch, ArtifactId viewId) {
       return this.getAll(branch, viewId, AttributeTypeId.SENTINEL);
    }
 
    @Override
-   public Collection<ArtifactAccessorResult> getAll(BranchId branch, AttributeTypeId orderByAttribute) {
+   public Collection<ArtifactAccessorResultWithoutGammas> getAll(BranchId branch, AttributeTypeId orderByAttribute) {
       return this.getAll(branch, ArtifactId.SENTINEL, orderByAttribute);
    }
 
    @Override
-   public Collection<ArtifactAccessorResult> getAll(BranchId branch, ArtifactId viewId,
-      AttributeTypeId orderByAttribute) {
+   public Collection<ArtifactAccessorResultWithoutGammas> getAll(BranchId branch, ArtifactId viewId, AttributeTypeId orderByAttribute) {
       return this.getAll(branch, viewId, 0L, 0L, orderByAttribute);
    }
 
    @Override
-   public Collection<ArtifactAccessorResult> getAll(BranchId branch, long pageNum, long pageSize) {
+   public Collection<ArtifactAccessorResultWithoutGammas> getAll(BranchId branch, long pageNum, long pageSize) {
       return this.getAll(branch, ArtifactId.SENTINEL, pageNum, pageSize);
    }
 
    @Override
-   public Collection<ArtifactAccessorResult> getAll(BranchId branch, ArtifactId viewId, long pageNum, long pageSize) {
+   public Collection<ArtifactAccessorResultWithoutGammas> getAll(BranchId branch, ArtifactId viewId, long pageNum, long pageSize) {
       return this.getAll(branch, viewId, pageNum, pageSize, AttributeTypeId.SENTINEL);
    }
 
    @Override
-   public Collection<ArtifactAccessorResult> getAll(BranchId branch, long pageNum, long pageSize,
+   public Collection<ArtifactAccessorResultWithoutGammas> getAll(BranchId branch, long pageNum, long pageSize,
       AttributeTypeId orderByAttribute) {
       return this.getAll(branch, ArtifactId.SENTINEL, pageNum, pageSize, orderByAttribute);
    }
 
    @Override
-   public Collection<ArtifactAccessorResult> getAll(BranchId branch, ArtifactId viewId, long pageNum, long pageSize,
+   public Collection<ArtifactAccessorResultWithoutGammas> getAll(BranchId branch, ArtifactId viewId, long pageNum, long pageSize,
       AttributeTypeId orderByAttribute) {
       try {
          return this.accessor.getAll(branch, pageNum, pageSize, orderByAttribute);
       } catch (Exception ex) {
-         return new LinkedList<ArtifactAccessorResult>();
+         return new LinkedList<ArtifactAccessorResultWithoutGammas>();
       }
    }
 
    @Override
-   public Collection<ArtifactAccessorResult> getAllByFilter(BranchId branch, String filter) {
+   public Collection<ArtifactAccessorResultWithoutGammas> getAllByFilter(BranchId branch, String filter) {
       return this.getAllByFilter(branch, ArtifactId.SENTINEL, filter);
    }
 
    @Override
-   public Collection<ArtifactAccessorResult> getAllByFilter(BranchId branch, ArtifactId viewId, String filter) {
+   public Collection<ArtifactAccessorResultWithoutGammas> getAllByFilter(BranchId branch, ArtifactId viewId, String filter) {
       return this.getAllByFilter(branch, viewId, filter, AttributeTypeId.SENTINEL);
    }
 
    @Override
-   public Collection<ArtifactAccessorResult> getAllByFilter(BranchId branch, String filter,
+   public Collection<ArtifactAccessorResultWithoutGammas> getAllByFilter(BranchId branch, String filter,
       AttributeTypeId orderByAttribute) {
       return this.getAllByFilter(branch, ArtifactId.SENTINEL, filter, orderByAttribute);
    }
 
    @Override
-   public Collection<ArtifactAccessorResult> getAllByFilter(BranchId branch, ArtifactId viewId, String filter,
+   public Collection<ArtifactAccessorResultWithoutGammas> getAllByFilter(BranchId branch, ArtifactId viewId, String filter,
       AttributeTypeId orderByAttribute) {
       return this.getAllByFilter(branch, viewId, filter, 0L, 0L, orderByAttribute);
    }
 
    @Override
-   public Collection<ArtifactAccessorResult> getAllByFilter(BranchId branch, String filter, long pageNum,
-      long pageSize) {
+   public Collection<ArtifactAccessorResultWithoutGammas> getAllByFilter(BranchId branch, String filter, long pageNum, long pageSize) {
       return this.getAllByFilter(branch, ArtifactId.SENTINEL, filter, pageNum, pageSize);
    }
 
    @Override
-   public Collection<ArtifactAccessorResult> getAllByFilter(BranchId branch, ArtifactId viewId, String filter,
-      long pageNum, long pageSize) {
+   public Collection<ArtifactAccessorResultWithoutGammas> getAllByFilter(BranchId branch, ArtifactId viewId, String filter, long pageNum,
+      long pageSize) {
       return this.getAllByFilter(branch, viewId, filter, pageNum, pageSize, AttributeTypeId.SENTINEL);
    }
 
    @Override
-   public Collection<ArtifactAccessorResult> getAllByFilter(BranchId branch, String filter, long pageNum, long pageSize,
+   public Collection<ArtifactAccessorResultWithoutGammas> getAllByFilter(BranchId branch, String filter, long pageNum, long pageSize,
       AttributeTypeId orderByAttribute) {
       return this.getAllByFilter(branch, ArtifactId.SENTINEL, filter, pageNum, pageSize, orderByAttribute);
    }
 
    @Override
-   public Collection<ArtifactAccessorResult> getAllByFilter(BranchId branch, ArtifactId viewId, String filter,
-      long pageNum, long pageSize, AttributeTypeId orderByAttribute) {
+   public Collection<ArtifactAccessorResultWithoutGammas> getAllByFilter(BranchId branch, ArtifactId viewId, String filter, long pageNum,
+      long pageSize, AttributeTypeId orderByAttribute) {
       try {
          return this.accessor.getAllByFilter(branch, filter, attributes, pageNum, pageSize, orderByAttribute);
       } catch (Exception ex) {
-         return new LinkedList<ArtifactAccessorResult>();
+         return new LinkedList<ArtifactAccessorResultWithoutGammas>();
       }
    }
 

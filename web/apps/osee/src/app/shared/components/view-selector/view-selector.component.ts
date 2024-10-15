@@ -11,7 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, computed, inject, model } from '@angular/core';
+import {
+	Component,
+	computed,
+	effect,
+	inject,
+	model,
+	signal,
+} from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import {
@@ -22,11 +29,8 @@ import {
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { ApplicabilityListUIService } from '@osee/shared/services';
-import { applic } from '@osee/shared/types/applicability';
-import {
-	provideOptionalControlContainerNgForm,
-	writableSlice,
-} from '@osee/shared/utils';
+import { applic } from '@osee/applicability/types';
+import { provideOptionalControlContainerNgForm } from '@osee/shared/utils';
 import { combineLatest, filter, from, of, scan, switchMap } from 'rxjs';
 
 @Component({
@@ -57,7 +61,12 @@ import { combineLatest, filter, from, of, scan, switchMap } from 'rxjs';
 			autoActiveFirstOption
 			#auto="matAutocomplete">
 			@if (views | async; as _views) {
-				@for (option of _views; track option) {
+				<mat-option
+					[value]="noneOption.name"
+					(click)="selectView(noneOption)">
+					{{ noneOption.name }}
+				</mat-option>
+				@for (option of _views; track option.id) {
 					<mat-option
 						[value]="option.name"
 						(click)="selectView(option)">
@@ -75,10 +84,14 @@ export class ViewSelectorComponent {
 	public view = model.required<applic>();
 	protected viewId = computed(() => this.view().id);
 	private viewId$ = toObservable(this.viewId);
-	protected filterText = writableSlice(this.view, 'name');
+	protected filterText = signal('');
 
 	private filterText$ = toObservable(this.filterText);
-	protected noneOption = { id: '-1', name: 'None' };
+	protected noneOption: applic = { id: '-1', name: 'None' };
+
+	private _viewEffect = effect(() => this.filterText.set(this.view().name), {
+		allowSignalWrites: true,
+	});
 
 	views = combineLatest([this.applicService.views, this.filterText$]).pipe(
 		switchMap(([applics, filterText]) =>

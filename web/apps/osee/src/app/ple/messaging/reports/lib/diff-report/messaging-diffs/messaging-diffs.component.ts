@@ -27,7 +27,7 @@ export class MessagingDiffsComponent {
 	@Input({ required: true }) set items(value: MimChangeSummaryItem[]) {
 		this.allItems.next(value);
 	}
-	@Input({ required: true }) title: string = '';
+	@Input({ required: true }) title = '';
 	@Input() showChildren = false;
 
 	allItems = new BehaviorSubject<MimChangeSummaryItem[]>([]);

@@ -20,10 +20,9 @@ import {
 } from '@angular/core';
 import { ChartConfiguration } from 'chart.js';
 import { enUS } from 'date-fns/locale';
-import { add, parseISO } from 'date-fns';
 import { BaseChartDirective, NgChartsModule } from 'ng2-charts';
 import { format } from 'date-fns';
-import { ResultReference } from 'src/app/ci-dashboard/lib/types';
+import { ResultReference } from '../../../../types';
 
 @Component({
 	selector: 'osee-timeline-results-chart',

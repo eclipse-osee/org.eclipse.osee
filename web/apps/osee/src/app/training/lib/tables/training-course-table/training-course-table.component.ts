@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, NgClass } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import {
@@ -66,6 +66,10 @@ import { trainingCourseRecordHeaderDetails } from './training-course-table-heade
 	],
 })
 export class TrainingCourseTableComponent {
+	private headerService = inject(HeaderService);
+	private trainingCourseService = inject(TrainingCourseService);
+	dialog = inject(MatDialog);
+
 	private dataSource = new MatTableDataSource<TrainingCourseRecord>();
 
 	courseRecordsAsMatTableDataSource$: Observable<
@@ -77,12 +81,6 @@ export class TrainingCourseTableComponent {
 			return dataSource;
 		})
 	);
-
-	constructor(
-		private headerService: HeaderService,
-		private trainingCourseService: TrainingCourseService,
-		public dialog: MatDialog
-	) {}
 
 	filterPredicate(data: TrainingCourseRecord, filter: string) {
 		const filterLower = filter.toLowerCase();

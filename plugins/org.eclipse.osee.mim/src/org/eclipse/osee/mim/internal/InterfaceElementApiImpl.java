@@ -162,7 +162,7 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
       InterfaceStructureElementToken previousElement, PlatformTypeToken defaultPlatformType) {
       try {
          PlatformTypeToken platformType;
-         if (element.getInterfaceElementArrayHeader()) {
+         if (element.getInterfaceElementArrayHeader().isValid() && element.getInterfaceElementArrayHeader().getValue()) {
             platformType = element.getPlatformType();
          } else if (defaultPlatformType.isInvalid()) {
             ArtifactReadable platformTypeReadable = element.getArtifactReadable().getRelated(
@@ -180,17 +180,6 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
                Math.floor(((previousElement.getEndWord() * 4) + previousElement.getEndByte() + 1) / 4));
          }
          element.setPlatformType(platformType);
-         element.setInterfacePlatformTypeBitSize(platformType.getInterfacePlatformTypeBitSize());
-         element.setLogicalType(
-            platformType.getInterfaceLogicalType() != null ? platformType.getInterfaceLogicalType() : "");
-         element.setInterfacePlatformTypeMinval(
-            platformType.getInterfacePlatformTypeMinval() != null ? platformType.getInterfacePlatformTypeMinval() : "");
-         element.setInterfacePlatformTypeMaxval(
-            platformType.getInterfacePlatformTypeMaxval() != null ? platformType.getInterfacePlatformTypeMaxval() : "");
-         element.setInterfaceDefaultValue(
-            platformType.getInterfaceDefaultValue() != null ? platformType.getInterfaceDefaultValue() : "");
-         element.setUnits(
-            platformType.getInterfacePlatformTypeUnits() != null ? platformType.getInterfacePlatformTypeUnits() : "");
       } catch (Exception ex) {
          System.out.println(ex);
       }

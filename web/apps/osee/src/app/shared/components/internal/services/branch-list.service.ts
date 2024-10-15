@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
 	BehaviorSubject,
 	Observable,
@@ -39,6 +39,12 @@ import { branch } from '@osee/shared/types';
 	providedIn: 'root',
 })
 export class BranchListService {
+	private branchService = inject(BranchInfoService);
+	private ui = inject(UiService);
+	private categoryService = inject(BranchCategoryService);
+	private workTypeService = inject(WorktypeService);
+	private pageSizeService = inject(BranchPageService);
+
 	private _type = this.ui.type.pipe(
 		map((type) =>
 			type === 'baseline' ? '2' : type == 'working' ? '0' : '-1'
@@ -50,15 +56,17 @@ export class BranchListService {
 	private _branches = combineLatest([
 		this._type,
 		this.categoryService.branchCategory,
+		this.categoryService.excludeBranchCategory,
 		this._branchFilter,
 		this.workTypeService.workType,
 	]).pipe(
-		switchMap(([type, category, filter, workType]) =>
+		switchMap(([type, category, excludeCategory, filter, workType]) =>
 			iif(
 				() => type !== '-1',
 				this.branchService.getBranches(
 					type,
 					category,
+					excludeCategory,
 					workType,
 					filter
 				),
@@ -88,13 +96,6 @@ export class BranchListService {
 		shareReplay({ bufferSize: 1, refCount: true }),
 		takeUntilDestroyed()
 	);
-	constructor(
-		private branchService: BranchInfoService,
-		private ui: UiService,
-		private categoryService: BranchCategoryService,
-		private workTypeService: WorktypeService,
-		private pageSizeService: BranchPageService
-	) {}
 
 	get branches() {
 		return this._branches;
@@ -114,14 +115,16 @@ export class BranchListService {
 		return combineLatest([
 			this._type,
 			this.categoryService.branchCategory,
+			this.categoryService.excludeBranchCategory,
 			this.workTypeService.workType,
 			this.pageSizeService.pageSize,
 		]).pipe(
 			take(1),
-			switchMap(([type, category, workType, pageSize]) =>
+			switchMap(([type, category, excludeCategory, workType, pageSize]) =>
 				this.branchService.getBranches(
 					type,
 					category,
+					excludeCategory,
 					workType,
 					filter,
 					pageSize,
@@ -131,17 +134,19 @@ export class BranchListService {
 		);
 	}
 
-	getFilteredCount(pageNum: string | number, filter?: string) {
+	getFilteredCount(filter?: string) {
 		return combineLatest([
 			this._type,
 			this.categoryService.branchCategory,
+			this.categoryService.excludeBranchCategory,
 			this.workTypeService.workType,
 		]).pipe(
 			take(1),
-			switchMap(([type, category, workType]) =>
+			switchMap(([type, category, excludeCategory, workType]) =>
 				this.branchService.getBranchCount(
 					type,
 					category,
+					excludeCategory,
 					workType,
 					filter
 				)

@@ -25,10 +25,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MockUnitDropdownComponent } from '@osee/messaging/shared/dropdowns/testing';
-import { TypesService, EnumsService } from '@osee/messaging/shared/services';
+import { TypesService } from '@osee/messaging/shared/services';
 import {
 	typesServiceMock,
-	enumsServiceMock,
 	MockUniquePlatformTypeAttributesDirective,
 } from '@osee/messaging/shared/testing';
 import { FirstLetterLowerPipe } from '@osee/shared/utils';
@@ -47,7 +46,6 @@ describe('NewPlatformTypeFormComponent', () => {
 				set: {
 					providers: [
 						{ provide: TypesService, useValue: typesServiceMock },
-						{ provide: EnumsService, useValue: enumsServiceMock },
 					],
 					viewProviders: [],
 					imports: [

@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { shareReplay } from 'rxjs';
@@ -24,7 +24,7 @@ import { AsyncPipe } from '@angular/common';
 	templateUrl: './server-health-top.component.html',
 })
 export class ServerHealthTopComponent {
-	constructor(private serverHealthHttpService: ServerHealthHttpService) {}
+	private serverHealthHttpService = inject(ServerHealthHttpService);
 
 	remoteHealthTop = this.serverHealthHttpService.RemoteTop.pipe(
 		shareReplay({ bufferSize: 1, refCount: true }),
