@@ -29,7 +29,8 @@
 				<mat-label>Enter a name</mat-label>
 				<input
 					matInput
-					[(ngModel)]="element.name.value" />
+					[(ngModel)]="element.name.value"
+					(ngModelChange)="updateName($event, i)" />
 			</mat-form-field>
 		</td>
 	</ng-container>
@@ -49,7 +50,8 @@
 				<input
 					matInput
 					[(ngModel)]="element.ordinal.value"
-					type="number" />
+					type="number"
+					(ngModelChange)="updateOrdinal($event, i)" />
 			</mat-form-field>
 		</td>
 	</ng-container>
@@ -64,6 +66,7 @@
 			*matCellDef="let element; index as i">
 			<osee-applicability-dropdown
 				[(applicability)]="element.applicability"
+				(applicabilityChange)="updateApplic($event, i)"
 				class="tw-w-full"></osee-applicability-dropdown>
 		</td>
 	</ng-container>

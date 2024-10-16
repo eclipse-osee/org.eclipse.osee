@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-import { element, structure } from '@osee/messaging/shared/types';
+import { element, PlatformType, structure } from '@osee/messaging/shared/types';
 import { difference } from '@osee/shared/types/change-report';
 import { ElementTableDropdownService } from '@osee/messaging/structure-tables/services';
 
@@ -29,7 +29,7 @@ export const elementTableDropdownServiceMock: Partial<ElementTableDropdownServic
 			removeType: 'Structure' | 'Array'
 		) {},
 		openEditElementDialog(element: element) {},
-		openEnumDialog(id: string, editMode: boolean) {},
+		openEnumDialog(platformType: PlatformType, editMode: boolean) {},
 		openDescriptionDialog(element: element) {},
 		openEnumLiteralDialog(element: element) {},
 		openNotesDialog(element: element) {},

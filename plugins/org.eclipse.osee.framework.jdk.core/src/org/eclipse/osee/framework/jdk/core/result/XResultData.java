@@ -500,4 +500,10 @@ public class XResultData {
       this.result = result;
    }
 
+   public void assertNotNull(Object obj, String format, Object... datas) {
+      if (obj == null) {
+         errorf(format, datas);
+      }
+   }
+
 }

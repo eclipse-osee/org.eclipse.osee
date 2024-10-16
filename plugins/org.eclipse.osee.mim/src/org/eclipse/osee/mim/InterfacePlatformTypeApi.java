@@ -66,6 +66,9 @@ public interface InterfacePlatformTypeApi extends QueryCapableMIMAPI<PlatformTyp
    List<PlatformTypeToken> getAllWithEnumSet(BranchId branch, long pageNum, long pageSize,
       AttributeTypeId orderByAttribute);
 
+   List<PlatformTypeToken> getFilteredWithEnumSet(BranchId branch, long pageNum, long pageSize,
+      AttributeTypeId orderByAttribute, String filter);
+
    List<PlatformTypeToken> getFilteredWithRelations(BranchId branch, String filter, List<FollowRelation> relationTypes,
       AttributeTypeId orderByAttribute);
 

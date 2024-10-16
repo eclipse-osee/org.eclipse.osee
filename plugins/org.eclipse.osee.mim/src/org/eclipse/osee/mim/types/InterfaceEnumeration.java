@@ -42,7 +42,8 @@ public class InterfaceEnumeration extends ArtifactAccessorResultWithGammas {
    private ApplicabilityToken applicability = ApplicabilityToken.SENTINEL;
    private AttributePojo<Long> ordinal =
       AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceEnumOrdinal, GammaId.SENTINEL, 0L, "");
-   private InterfaceEnumOrdinalType ordinalType;
+   private AttributePojo<String> ordinalType = AttributePojo.valueOf(Id.SENTINEL,
+      CoreAttributeTypes.InterfaceEnumOrdinalType, GammaId.SENTINEL, InterfaceEnumOrdinalType.LONG.toString(), "");
 
    public InterfaceEnumeration(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -51,8 +52,8 @@ public class InterfaceEnumeration extends ArtifactAccessorResultWithGammas {
    public InterfaceEnumeration(ArtifactReadable art) {
       super(art);
       this.setOrdinal(AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceEnumOrdinal, 0L)));
-      this.setOrdinalType(InterfaceEnumOrdinalType.valueOf(
-         art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceEnumOrdinalType, "LONG")));
+      this.setOrdinalType(AttributePojo.valueOf(
+         art.getSoleAttribute(CoreAttributeTypes.InterfaceEnumOrdinalType, InterfaceEnumOrdinalType.LONG.toString())));
       this.setApplicability(
          !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
    }
@@ -67,7 +68,7 @@ public class InterfaceEnumeration extends ArtifactAccessorResultWithGammas {
 
    @JsonIgnore
    public String getFormattedOrdinal() {
-      if (InterfaceEnumOrdinalType.HEX.equals(getOrdinalType())) {
+      if (InterfaceEnumOrdinalType.HEX.toString().equals(getOrdinalType().getValue())) {
          return "0x" + Long.toHexString(getOrdinal().getValue()).toUpperCase();
       } else {
          return getOrdinal().getValue().toString();
@@ -109,12 +110,17 @@ public class InterfaceEnumeration extends ArtifactAccessorResultWithGammas {
       this.ordinal = ordinal;
    }
 
-   public InterfaceEnumOrdinalType getOrdinalType() {
+   public AttributePojo<String> getOrdinalType() {
       return ordinalType;
    }
 
-   public void setOrdinalType(InterfaceEnumOrdinalType ordinalType) {
+   public void setOrdinalType(AttributePojo<String> ordinalType) {
       this.ordinalType = ordinalType;
+   }
+
+   public void setOrdinalType(InterfaceEnumOrdinalType ordinalType) {
+      this.ordinalType = AttributePojo.valueOf(this.ordinalType.getId(), this.ordinalType.getTypeId(),
+         this.ordinalType.getGammaId(), ordinalType.toString(), this.ordinalType.getDisplayableString());
    }
 
    @Override

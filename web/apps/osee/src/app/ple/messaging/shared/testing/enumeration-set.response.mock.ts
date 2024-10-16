@@ -49,6 +49,12 @@ export const enumerationSetMock: enumerationSet[] = [
 					gammaId: '-1',
 					value: 0,
 				},
+				ordinalType: {
+					id: '-1',
+					typeId: '2664267173310317306',
+					gammaId: '-1',
+					value: '',
+				},
 				applicability: { id: '1', name: 'Base' },
 			},
 		],

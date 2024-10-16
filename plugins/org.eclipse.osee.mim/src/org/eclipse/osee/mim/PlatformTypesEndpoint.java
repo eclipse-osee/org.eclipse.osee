@@ -40,8 +40,9 @@ public interface PlatformTypesEndpoint {
     *
     * @return List of platform types
     */
-   Collection<PlatformTypeToken> getPlatformTypes(@QueryParam("pageNum") long pageNum,
-      @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
+   Collection<PlatformTypeToken> getPlatformTypes(@QueryParam("filter") String filter,
+      @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize,
+      @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 
    @GET()
    @Path("{type_id}")

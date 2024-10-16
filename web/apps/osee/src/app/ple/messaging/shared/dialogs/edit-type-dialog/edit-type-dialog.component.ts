@@ -52,13 +52,7 @@ import type {
 import { UnitDropdownComponent } from '@osee/messaging/units/dropdown';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
 import { ParentErrorStateMatcher } from '@osee/shared/matchers';
-import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
 import { writableSlice } from '@osee/shared/utils';
-import {
-	legacyCreateArtifact,
-	legacyModifyArtifact,
-	legacyModifyRelation,
-} from '@osee/transactions/types';
 import { Subject, combineLatest, from, of } from 'rxjs';
 import {
 	concatMap,
@@ -136,11 +130,11 @@ export class EditTypeDialogComponent {
 		'interfacePlatformTypeBitsResolution'
 	);
 	protected resolution = writableSlice(this._resolutionAttr, 'value');
-	private _sizeAttr = writableSlice(
+	protected sizeAttr = writableSlice(
 		this.platformType,
 		'interfacePlatformTypeBitSize'
 	);
-	protected size = writableSlice(this._sizeAttr, 'value');
+	protected size = writableSlice(this.sizeAttr, 'value');
 	private _compRateAttr = writableSlice(
 		this.platformType,
 		'interfacePlatformTypeCompRate'
@@ -183,66 +177,8 @@ export class EditTypeDialogComponent {
 		inject<editPlatformTypeDialogData>(MAT_DIALOG_DATA).mode
 	);
 	private _id = computed(() => this.platformType().id);
+	protected enumSet = writableSlice(this.platformType, 'enumSet');
 
-	protected pTypeManifest = computed(() => {
-		if (this.mode() === 0) {
-			return {
-				createArtifacts: [],
-				modifyArtifacts: [
-					{
-						id: this._id() || '-1',
-						setAttributes: [
-							this._nameAttr(),
-							this._descriptionAttr(),
-							this._logicalTypeAttr(),
-							this._complementAttr(),
-							this._accuracyAttr(),
-							this._resolutionAttr(),
-							this._sizeAttr(),
-							this._compRateAttr(),
-							this._defaultValueAttr(),
-							this._defaultValueAttr(),
-							this._maxValAttr(),
-							this._minValAttr(),
-							this._msbValAttr(),
-							this._unitsAttr(),
-							this._validRangeAttr(),
-						],
-						applicabilityId: this._applicabilityId(),
-					},
-				],
-				deleteRelations: [],
-			};
-		}
-		return {
-			createArtifacts: [
-				{
-					typeId: ARTIFACTTYPEIDENUM.PLATFORMTYPE,
-					applicabilityId: this._applicabilityId(),
-					name: this.name(),
-					key: '3e1a2d30-f7db-43d2-af9d-d423115cbb8', //magic UUID to reference platform type
-					attributes: [
-						this._descriptionAttr(),
-						this._logicalTypeAttr(),
-						this._complementAttr(),
-						this._accuracyAttr(),
-						this._resolutionAttr(),
-						this._sizeAttr(),
-						this._compRateAttr(),
-						this._defaultValueAttr(),
-						this._defaultValueAttr(),
-						this._maxValAttr(),
-						this._minValAttr(),
-						this._msbValAttr(),
-						this._unitsAttr(),
-						this._validRangeAttr(),
-					],
-				},
-			],
-			modifyArtifacts: [],
-			deleteRelations: [],
-		};
-	});
 	private _platformType = toObservable(this.name);
 	platformTypeTitle = this._platformType.pipe(take(1));
 	logicalTypes = this.typesService.logicalTypes.pipe(
@@ -264,33 +200,6 @@ export class EditTypeDialogComponent {
 		reduce((acc, curr) => [...acc, curr], [] as logicalType[])
 	);
 
-	private enumSetManifest = signal<{
-		createArtifacts: legacyCreateArtifact[];
-		modifyArtifacts: legacyModifyArtifact[];
-		deleteRelations: legacyModifyRelation[];
-	}>({ createArtifacts: [], modifyArtifacts: [], deleteRelations: [] });
-	private _manifest = computed(() => {
-		return {
-			createArtifacts: [
-				...this.enumSetManifest().createArtifacts,
-				...this.pTypeManifest().createArtifacts,
-			],
-			modifyArtifacts: [
-				...this.enumSetManifest().modifyArtifacts,
-				...this.pTypeManifest().modifyArtifacts,
-			],
-			deleteRelations: [
-				...this.enumSetManifest().deleteRelations,
-				...this.pTypeManifest().deleteRelations,
-			],
-		};
-	});
-	protected manifest = computed(() => {
-		return {
-			manifest: this._manifest(),
-			mode: this.mode(),
-		};
-	});
 	parentMatcher = new ParentErrorStateMatcher();
 
 	enumUnique = new Subject<string>();
@@ -404,9 +313,6 @@ export class EditTypeDialogComponent {
 	);
 	reference: Partial<PlatformType> = new PlatformTypeSentinel();
 
-	/** Inserted by Angular inject() migration for backwards compatibility */
-	constructor(...args: unknown[]);
-
 	constructor() {
 		this.reference = structuredClone(this.data.type);
 	}
@@ -473,15 +379,6 @@ export class EditTypeDialogComponent {
 				val2.charAt(0) + val2.charAt(1).toUpperCase() + val2.slice(2);
 		}
 		return val1 === val2;
-	}
-	enumUpdate(value: {
-		createArtifacts: legacyCreateArtifact[];
-		modifyArtifacts: legacyModifyArtifact[];
-		deleteRelations: legacyModifyRelation[];
-	}) {
-		if (value) {
-			this.enumSetManifest.set(value);
-		}
 	}
 	updateUnique(value: boolean) {
 		this.enumUnique.next(value.toString());

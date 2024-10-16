@@ -31,6 +31,8 @@ import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
+import org.eclipse.osee.framework.jdk.core.util.ElapsedTime.Units;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -109,6 +111,7 @@ public class ViewApplicabilityUtil {
    }
 
    public static Map<Long, String> getBranchViews(BranchId branch) {
+      ElapsedTime time = new ElapsedTime(ViewApplicabilityUtil.class.getSimpleName() + ".getBranchViews", true);
       Map<Long, String> viewsToBranchData = new HashMap<>();
       if (branch != null && branch.isValid()) {
          List<ArtifactToken> branchViews = getApplicabilityEndpoint(branch).getViews();
@@ -116,6 +119,7 @@ public class ViewApplicabilityUtil {
             viewsToBranchData.put(art.getId(), art.getName());
          }
       }
+      time.end(Units.SEC);
       return viewsToBranchData;
    }
 

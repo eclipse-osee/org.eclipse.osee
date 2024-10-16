@@ -29,5 +29,6 @@ public enum Manipulations {
    RAW_HTML, // Just display in simple html page
    ERROR_WARNING_HEADER, // Shows Errors: 4 Warnings: 23 count at top of page
    ALL,
-   ERROR_WARNING_FROM_SEARCH // Performs search for error and warning count instead of using logError and logWarning counts
+   ERROR_WARNING_FROM_SEARCH, // Performs search for error and warning count instead of using logError and logWarning counts
+   NOUI
 };
