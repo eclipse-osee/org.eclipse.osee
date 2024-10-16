@@ -1,6 +1,13 @@
 #!/bin/bash
 
 #
+# Bash shell script to create java-rust ffi. 
+# Update the JAVA_FILE_DIR, RUST_TARGET_RELEASE_DIR variables if the location of this script changes from org.eclipse.osee\plugins\org.eclipse.osee.framework.core\scripts\build_java_rust_ffi_jar.sh
+#
+# Author: Jaden W. Puckett
+#
+
+#
 # Define global variables
 #
 
@@ -10,6 +17,10 @@ JAVA_DIR="${BASE_DIR}/${JAVA_PACKAGE_NAME}"
 NATIVE_DIR="${BASE_DIR}/native"
 JAVA_FILE="ApplicabilityParseSubstituteAndSanitize.java"
 MANIFEST_FILE="MANIFEST.MF"
+
+# !!! Update these variables if the location of this script changes
+JAVA_FILE_DIR="../src/org/eclipse/osee/framework/core/applicability/${JAVA_FILE}"
+RUST_TARGET_RELEASE_DIR="../../../target/release"
 
 #
 # Create necessary directories
@@ -47,13 +58,13 @@ echo "Cargo build (Complete)"
 echo ""
 
 #
-# Copy native libraries from /target/release to platform-specific directories
+# Copy native libraries from RUST_TARGET_RELEASE_DIR to platform-specific directories
 #
 
-echo "Copying native libraries from /target/release..."
+echo "Copying native libraries from "${RUST_TARGET_RELEASE_DIR}"..."
 
 # Copy .dylib files to the mac directory
-cp target/release/*.dylib "${NATIVE_DIR}/mac/" 2>/dev/null
+cp "${RUST_TARGET_RELEASE_DIR}"/*.dylib "${NATIVE_DIR}/mac/" 2>/dev/null
 if [ "$(ls -A "${NATIVE_DIR}/mac/")" ]; then
     echo "Files successfully copied to mac: "
     echo "$(ls "${NATIVE_DIR}/mac/") (Complete)"
@@ -62,7 +73,7 @@ else
 fi
 
 # Copy .dll files to the win directory
-cp target/release/*.dll "${NATIVE_DIR}/win/" 2>/dev/null
+cp "${RUST_TARGET_RELEASE_DIR}"/*.dll "${NATIVE_DIR}/win/" 2>/dev/null
 if [ "$(ls -A "${NATIVE_DIR}/win/")" ]; then
     echo "Files successfully copied to win: "
     echo "$(ls "${NATIVE_DIR}/win/") (Complete)"
@@ -71,7 +82,7 @@ else
 fi
 
 # Copy .so files to the linux directory
-cp target/release/*.so "${NATIVE_DIR}/linux/" 2>/dev/null
+cp "${RUST_TARGET_RELEASE_DIR}"/*.so "${NATIVE_DIR}/linux/" 2>/dev/null
 if [ "$(ls -A "${NATIVE_DIR}/linux/")" ]; then
     echo "Files successfully copied to linux: "
     echo "$(ls "${NATIVE_DIR}/linux/") (Complete)"
@@ -82,11 +93,11 @@ fi
 echo ""
 
 # 
-# Extract the ApplicabilityParseSubstituteAndSanitize.java file
+# Extract the Java file (one java file for now...)
 #
 
 echo "Copying ${JAVA_FILE}..."
-cp plugins/org.eclipse.osee.framework.core/src/org/eclipse/osee/framework/core/applicability/"${JAVA_FILE}" "${BASE_DIR}/"
+cp ../src/org/eclipse/osee/framework/core/applicability/"${JAVA_FILE}" "${BASE_DIR}/"
 echo "Copied ${JAVA_FILE} to ${BASE_DIR} (Complete)"
 
 echo ""

@@ -81,24 +81,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "applicability_parse_substitute_and_sanitize"
-version = "0.1.0"
-dependencies = [
- "applicability",
- "applicability_parser",
- "applicability_parser_config",
- "applicability_parser_types",
- "applicability_sanitization",
- "applicability_substitution",
- "jni",
- "nom",
- "nom-bufreader",
- "serde",
- "serde_json",
- "tracing",
-]
-
-[[package]]
 name = "applicability_parser"
 version = "2.0.0"
 dependencies = [
@@ -544,6 +526,24 @@ name = "itoa"
 version = "1.0.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "af150ab688ff2122fcef229be89cb50dd66af9e01a4ff320cc137eecc9bacc38"
+
+[[package]]
+name = "java_rust_ffi"
+version = "0.1.0"
+dependencies = [
+ "applicability",
+ "applicability_parser",
+ "applicability_parser_config",
+ "applicability_parser_types",
+ "applicability_sanitization",
+ "applicability_substitution",
+ "jni",
+ "nom",
+ "nom-bufreader",
+ "serde",
+ "serde_json",
+ "tracing",
+]
 
 [[package]]
 name = "jni"

@@ -19,36 +19,36 @@ import java.util.List;
  * Used by {@link ApplicabilityParseSubstituteAndSanitize} Java-Rust FFI
  */
 public abstract class BatFile {
-   
+
    private String name = "";
    private final List<String> features = new ArrayList<>();
    private final List<BatMatchText> substitutions = new ArrayList<>();
 
    public BatFile() {
-       // Default constructor
+      // Default constructor
    }
 
    public String getName() {
-       return name;
+      return name;
    }
 
    public void setName(String name) {
-       this.name = name;
+      this.name = name;
    }
 
    public List<String> getFeatures() {
-       return new ArrayList<>(features);
+      return new ArrayList<>(features);
    }
 
    public void addFeatures(List<String> features) {
-       this.features.addAll(features);
+      this.features.addAll(features);
    }
 
    public List<BatMatchText> getSubstitutions() {
-       return new ArrayList<>(substitutions);
+      return new ArrayList<>(substitutions);
    }
 
    public void addSubstitutions(List<BatMatchText> substitutions) {
-       this.substitutions.addAll(substitutions);
+      this.substitutions.addAll(substitutions);
    }
 }

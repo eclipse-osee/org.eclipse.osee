@@ -13,18 +13,20 @@
 use jni::objects::{JClass, JString};
 use jni::JNIEnv;
 use jni::sys::jstring;
-use applicability_parser_config::applic_config::ApplicabilityConfigElement;
+use applicability_parser_config::{
+    applic_config::ApplicabilityConfigElement, get_comment_syntax_from_file_name_and_extension
+};
 use applicability_parser::parse_applicability;
 use applicability_sanitization::SanitizeApplicability;
 use applicability_substitution::SubstituteApplicability;
 
 #[no_mangle]
 pub extern "system" fn Java_applicability_ApplicabilityParseSubstituteAndSanitize_parseSubstituteAndSanitizeApplicability<'a>(
-    mut env: JNIEnv<'a>,                      // JNI environment to interact with Java
+    mut env: JNIEnv<'a>,                     // JNI environment to interact with Java
     _class: JClass<'a>,                      // Class reference; unused in this function
     input: JString<'a>,                      // Input string from Java
-    custom_start_comment_syntax: JString<'a>, // Custom start comment syntax from Java
-    custom_end_comment_syntax: JString<'a>,   // Custom end comment syntax from Java
+    file_name: JString<'a>,                  // Name of file whose input string is passed in from Java
+    file_extension: JString<'a>,             // Extension of file whose input string is passed in from Java
     config_json: JString<'a>,                // Configuration JSON string from Java
 ) -> jstring {
     // Convert the input JString to a Rust String
@@ -37,21 +39,21 @@ pub extern "system" fn Java_applicability_ApplicabilityParseSubstituteAndSanitiz
         }
     };
 
-    // Convert the custom start comment syntax JString to Rust String
-    let start_syntax: String = match env.get_string(&custom_start_comment_syntax) {
+    // Convert the file name JString to Rust String
+    let file_name: String = match env.get_string(&file_name) {
         Ok(string) => string.into(),
         Err(e) => {
-            let error_message = format!("Error converting custom start syntax JString to Rust String: {:?}", e);
+            let error_message = format!("Error converting file name JString to Rust String: {:?}", e);
             // Return error message if conversion fails
             return env.new_string(error_message).expect("Failed to create error string").into_raw();
         }
     };
 
-    // Convert the custom end comment syntax JString to Rust String
-    let end_syntax: String = match env.get_string(&custom_end_comment_syntax) {
+    // Convert the file extension JString to Rust String
+    let file_extension: String = match env.get_string(&file_extension) {
         Ok(string) => string.into(),
         Err(e) => {
-            let error_message = format!("Error converting custom end syntax JString to Rust String: {:?}", e);
+            let error_message = format!("Error converting file extension JString to Rust String: {:?}", e);
             // Return error message if conversion fails
             return env.new_string(error_message).expect("Failed to create error string").into_raw();
         }
@@ -77,8 +79,16 @@ pub extern "system" fn Java_applicability_ApplicabilityParseSubstituteAndSanitiz
         }
     };
 
+    // Get the start and end syntax from file name and extension
+    let (start_syntax, end_syntax) = get_comment_syntax_from_file_name_and_extension(
+        Some(&file_extension),
+        Some(&file_name),
+        "``",  // Default start syntax
+        "``"   // Default end syntax
+    );
+
     // Call parse_applicability to parse the input string with the specified syntaxes
-    let content_result = parse_applicability(&input_string, &start_syntax, &end_syntax);
+    let content_result = parse_applicability(&input_string, start_syntax, end_syntax);
     let contents = match content_result {
         Ok((_remaining, results)) => results,  // Successfully parsed contents
         Err(_) => {

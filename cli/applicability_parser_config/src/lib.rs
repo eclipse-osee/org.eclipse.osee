@@ -34,7 +34,7 @@ pub mod applic_config;
 //     BUILD
 //     fileApplicability
 //     applicability
-pub fn get_comment_syntax(
+pub fn get_comment_syntax_from_file(
     file: &Path,
     start_comment_syntax: &str,
     end_comment_syntax: &str,
@@ -48,16 +48,12 @@ pub fn get_comment_syntax(
         Some(file_name) => file_name.to_str(),
         None => None,
     };
-    let (start_comment_syntax, end_comment_syntax) = match ext {
-        Some("md") => ("``", "``"),
-        Some("cpp" | "cxx" | "cc" | "c" | "hpp" | "hxx" | "hh" | "h" | "rs") => ("//", ""),
-        Some("bzl" | "bazel" | "fileApplicability" | "applicability") => ("#", ""),
-        None => match name {
-            Some("WORKSPACE" | "BUILD" | ".fileApplicability" | ".applicability") => ("#", ""),
-            _rest => (start_comment_syntax, end_comment_syntax),
-        },
-        _rest => (start_comment_syntax, end_comment_syntax),
-    };
+    let (start_comment_syntax, end_comment_syntax) = get_comment_syntax_from_file_name_and_extension(
+        ext, 
+        name, 
+        start_comment_syntax, 
+        end_comment_syntax
+    );
     info!(
         "\r\n start comment syntax {:#?}\r\n end comment syntax {:#?}",
         start_comment_syntax, end_comment_syntax
@@ -66,6 +62,24 @@ pub fn get_comment_syntax(
         start_comment_syntax.to_string(),
         end_comment_syntax.to_string(),
     )
+}
+
+pub fn get_comment_syntax_from_file_name_and_extension<'a>(
+    file_extension: Option<&'a str>,
+    file_name: Option<&'a str>,
+    start_comment_syntax: &'a str,
+    end_comment_syntax: &'a str
+) -> (&'a str, &'a str) {
+    match file_extension {
+        Some("md") => ("``", "``"),
+        Some("cpp" | "cxx" | "cc" | "c" | "hpp" | "hxx" | "hh" | "h" | "rs") => ("//", ""),
+        Some("bzl" | "bazel" | "fileApplicability" | "applicability") => ("#", ""),
+        None => match file_name {
+            Some("WORKSPACE" | "BUILD" | ".fileApplicability" | ".applicability") => ("#", ""),
+            _rest => (start_comment_syntax, end_comment_syntax),
+        },
+        _rest => (start_comment_syntax, end_comment_syntax),
+    }
 }
 
 pub fn get_file_contents(file: &Path) -> String {

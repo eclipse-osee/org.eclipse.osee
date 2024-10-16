@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.framework.core.applicability;
+package applicability;
 
 import java.io.File;
 import java.io.FileOutputStream;

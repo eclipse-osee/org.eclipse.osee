@@ -2,7 +2,7 @@ use anyhow::{Context, Result};
 use applicability::substitution::Substitution;
 use applicability_parser::parse_applicability;
 use applicability_parser_config::applic_config::ApplicabilityConfigElement;
-use applicability_parser_config::{get_comment_syntax, get_file_contents};
+use applicability_parser_config::{get_comment_syntax_from_file, get_file_contents};
 use applicability_path::{FileApplicabilityPath, ParsePaths};
 use applicability_sanitization::SanitizeApplicability;
 use applicability_substitution::SubstituteApplicability;
@@ -852,7 +852,7 @@ fn get_file_contents_based_on_applicability<C: ClientState>(
     applic_config: ApplicabilityConfigElement,
 ) -> String {
     let file_contents = get_file_contents(dir_entry.path().as_path());
-    let (start_syntax, end_syntax) = get_comment_syntax(dir_entry.path().as_path(), "", "");
+    let (start_syntax, end_syntax) = get_comment_syntax_from_file(dir_entry.path().as_path(), "", "");
     let parsed_contents = parse_applicability(
         file_contents.as_str(),
         start_syntax.as_str(),
@@ -891,7 +891,7 @@ fn get_file_applicability_contents_based_on_applicability<C: ClientState>(
     applic_config: ApplicabilityConfigElement,
 ) -> Vec<FileApplicabilityPath> {
     let file_contents = get_file_contents(dir_entry.path().as_path());
-    let (start_syntax, end_syntax) = get_comment_syntax(dir_entry.path().as_path(), "", "");
+    let (start_syntax, end_syntax) = get_comment_syntax_from_file(dir_entry.path().as_path(), "", "");
     let parsed_contents = parse_applicability(
         file_contents.as_str(),
         start_syntax.as_str(),

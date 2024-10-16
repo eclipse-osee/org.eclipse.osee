@@ -8,13 +8,13 @@ public class TestMainJadenDelete {
 
       // Sample input and configuration
       String input = "A name. ``Feature[ARB=Included]`` Some text. ``End Feature``";
-      String startSyntax = "``";
-      String endSyntax = "``";
+      String filename = "";
+      String fileextension = "md";
       String configJson =
          "{\"name\":\"config_name\",\"group\":\"group_name\",\"features\":[\"ARB=Excluded\"],\"substitutions\":[]}";
 
       // Call the native method
-      String output = parser.parseSubstituteAndSanitizeApplicability(input, startSyntax, endSyntax, configJson);
+      String output = parser.parseSubstituteAndSanitizeApplicability(input, filename, fileextension, configJson);
 
       // Print the result
       System.out.println("Processed Output: " + output);

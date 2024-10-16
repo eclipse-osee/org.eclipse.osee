@@ -11,7 +11,7 @@
  #     Boeing - initial API and implementation
  ######################################################################
 [package]
-name = "applicability_parse_substitute_and_sanitize"
+name = "java_rust_ffi"
 version = "0.1.0"
 edition = "2021"
 authors=["Jaden Puckett <jaden.w.puckett@boeing.com>"]
@@ -20,7 +20,7 @@ license.workspace=true
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [lib]
-name = "applicability_parse_substitute_and_sanitize"
+name = "java_rust_ffi"
 crate-type = ["cdylib", "lib"]
 
 [dependencies]
