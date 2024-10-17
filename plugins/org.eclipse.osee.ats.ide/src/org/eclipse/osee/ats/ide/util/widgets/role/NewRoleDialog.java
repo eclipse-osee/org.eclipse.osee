@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.util.widgets.role;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.review.ReviewRole;
@@ -24,6 +25,7 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
@@ -83,10 +85,9 @@ public class NewRoleDialog extends MessageDialog {
       roleCombo = new XComboViewer("Select Role", SWT.NONE);
       List<Object> roles = new ArrayList<>();
       for (ReviewRole role : workDefinition.getReviewRoles()) {
-         roles.add(role.getName() + " (" + role.getReviewRoleType() + " Type)");
+         roles.add(role);
       }
-
-      roleCombo.setInput(roles);
+      roleCombo.setInput(roles.stream().map(r -> ((Named) r).getName()).collect(Collectors.toList()));
       roleCombo.createWidgets(comp, 2);
 
       //add event listeners for enabling OK button
@@ -135,7 +136,6 @@ public class NewRoleDialog extends MessageDialog {
 
    public ReviewRole getRole() {
       String roleName = (String) roleCombo.getSelected();
-      roleName = roleName.substring(0, roleName.indexOf(" ("));
       return workDefinition.fromName(roleName);
    }
 

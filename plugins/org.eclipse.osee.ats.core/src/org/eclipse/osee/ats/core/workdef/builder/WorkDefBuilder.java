@@ -18,6 +18,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.api.config.tx.IAtsTeamDefinitionArtifactToken;
+import org.eclipse.osee.ats.api.review.ReviewRequiredMinimum;
 import org.eclipse.osee.ats.api.review.ReviewRole;
 import org.eclipse.osee.ats.api.review.ReviewRoleType;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
@@ -262,6 +264,12 @@ public class WorkDefBuilder {
 
    public void andAssigneesRequired() {
       workDef.getOptions().add(WorkDefOption.RequireAssignee);
+   }
+
+   public WorkDefBuilder andRequiredMinimum(ReviewRole reviewRole, int min,
+      IAtsTeamDefinitionArtifactToken parentTeamDef) {
+      workDef.andRequiredMinimum(new ReviewRequiredMinimum(reviewRole, min, parentTeamDef));
+      return this;
    }
 
 }
