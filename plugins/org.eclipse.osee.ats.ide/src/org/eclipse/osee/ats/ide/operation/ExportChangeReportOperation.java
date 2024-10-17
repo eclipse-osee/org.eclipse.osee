@@ -26,14 +26,17 @@ import java.util.Set;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.util.ExportChangeReportUtil;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.CompareData;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -43,6 +46,7 @@ import org.eclipse.osee.framework.core.publishing.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
@@ -109,23 +113,12 @@ public final class ExportChangeReportOperation extends AbstractOperation {
             String id = workflow.getAtsId();
             String prefix = "/" + id;
             if (writeChangeReports) {
-
-               Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
-
+               Collection<ArtifactDelta> artifactDeltas = new ArrayList<>(changes.size());
                // only allow SoftwareRequirementsFolder for HLR
-               Iterator<ArtifactDelta> it = artifactDeltas.iterator();
+               Iterator<Change> it = changes.iterator();
                while (it.hasNext()) {
-                  ArtifactDelta next = it.next();
-                  Artifact endArtifact = next.getEndArtifact();
-                  if (!endArtifact.isOfType(ExportChangeReportUtil.ARTIFACT_ALLOW_TYPES)) {
-                     it.remove();
-                     artIds.remove(ArtifactId.create(endArtifact));
-                     if (debug) {
-                        logf("skipping: [" + endArtifact.getName().replaceAll("%",
-                           "%%") + "] type: [" + endArtifact.getArtifactTypeName() + "] branch: [" + endArtifact.getBranch().getIdString() + "] artId: [" + endArtifact.getIdString() + "]");
-                     }
-                     skippedTypes.add(endArtifact.getArtifactTypeName());
-                  }
+                  Change next = it.next();
+                  filterChange(next, skippedTypes, artIds, artifactDeltas);
                }
                if (artifactDeltas.isEmpty()) {
                   logf("Nothing exported for Workflow[%s]", id);
@@ -168,6 +161,38 @@ public final class ExportChangeReportOperation extends AbstractOperation {
       }
    }
 
+   // determines if the item should carry forward or be removed from the artifacts list.
+   private void filterChange(Change change, Set<String> skipped, Set<ArtifactId> artIds,
+      Collection<ArtifactDelta> deltas) {
+      boolean remove = false;
+      ArtifactDelta delta = change.getDelta();
+      Artifact endArtifact = delta.getEndArtifact();
+      // if not an allowed type, remove it
+      // note: this change also removed headings from allowed types
+      if (!endArtifact.isOfType(ExportChangeReportUtil.ARTIFACT_ALLOW_TYPES)) {
+         remove = true;
+         artIds.remove(endArtifact);
+      }
+      // check to see if it is a new applicability change to base, if so, it is covered in the artifact
+      // this change is being added so that duplicate artifacts are not added to the word change report generation
+      if (!remove && (change.getModificationType() == ModificationType.APPLICABILITY)) {
+         if (delta.getStartArtifact() == null && delta.getEndArtifact().getApplicablityId().equals(
+            ApplicabilityId.BASE)) {
+            remove = true;
+         }
+      }
+      if (remove) {
+         if (debug) {
+            logf("skipping: [" + endArtifact.getName().replaceAll("%",
+               "%%") + "] type: [" + endArtifact.getArtifactTypeName() + "] branch: [" + endArtifact.getBranch().getIdString() + "] artId: [" + endArtifact.getIdString() + "]");
+         }
+
+         skipped.add(endArtifact.getArtifactTypeName());
+      } else {
+         deltas.add(delta);
+      }
+   }
+
    private void sortWorkflows() {
       Collections.sort(workflows, new Comparator<IAtsTeamWorkflow>() {
          @Override
@@ -193,7 +218,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
       List<Change> changes = new ArrayList<>();
       IOperation operation = null;
       if (AtsApiService.get().getBranchService().isCommittedBranchExists(teamWf)) {
-         operation = ChangeManager.comparedToPreviousTx(pickTransaction(teamWf), changes);
+         operation = ChangeManager.comparedToPreviousTx(pickTransactionFromTargetVersion(teamWf), changes);
       } else {
          BranchId workingBranch = AtsApiService.get().getBranchService().getWorkingBranch(teamWf);
          if (workingBranch != null && !BranchManager.getType(workingBranch).isBaselineBranch()) {
@@ -216,6 +241,26 @@ public final class ExportChangeReportOperation extends AbstractOperation {
          Collections.sort(changes);
       }
       return changes;
+   }
+
+   private TransactionToken pickTransactionFromTargetVersion(IAtsTeamWorkflow workflow) {
+      TransactionToken pickId = TransactionToken.SENTINEL;
+      IAtsProgram program = AtsApiService.get().getProgramService().getProgram(workflow);
+      String targetBranchStr = AtsApiService.get().getAttributeResolver().getSoleAttributeValue(program,
+         AtsAttributeTypes.ProductLineBranchId, "");
+      if (Strings.isValidAndNonBlank(targetBranchStr)) {
+         BranchId targetBranch = BranchId.valueOf(targetBranchStr);
+         for (TransactionToken transaction : TransactionManager.getCommittedArtifactTransactionIds(
+            AtsApiService.get().getQueryServiceIde().getArtifact(workflow))) {
+            if (transaction.getBranch().equals(targetBranch)) {
+               pickId = transaction;
+            }
+         }
+      }
+      if (!pickId.isValid()) {
+         return pickTransaction(workflow);
+      }
+      return pickId;
    }
 
    private TransactionToken pickTransaction(IAtsTeamWorkflow workflow) {
