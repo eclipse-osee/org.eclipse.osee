@@ -118,7 +118,7 @@ public class RemoteArtifactTopicEventHandler implements EventHandlerRemote<Remot
             // do nothing, artifact not in cache, so don't need to update
          } else if (!artifact.isHistorical()) {
 
-            artifact.setTransactionId(TransactionManager.getTransaction(transactionId));
+            artifact.setTransaction(TransactionManager.getTransaction(transactionId));
             for (EventTopicAttributeChangeTransfer attrChange : transArt.getAttributeChanges()) {
                if (!OseeEventManager.getPreferences().isEnableRemoteEventLoopback()) {
                   ModificationType modificationType = ModificationType.valueOf(attrChange.getModType());

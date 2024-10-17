@@ -115,7 +115,7 @@ public class FrameworkEventToRemoteEventListenerTest {
       Assert.assertEquals(newArtTx, artifactAfterUpdate.getTransaction());
 
       //Reset artifact tx - just to be clean
-      artifact.setTransactionId(origArtTx);
+      artifact.setTransaction(origArtTx);
    }
 
    private RemotePersistEvent1 createRemoteEvent(Artifact modifiedArt) {

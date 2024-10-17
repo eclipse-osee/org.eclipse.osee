@@ -1905,7 +1905,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    /**
     * This method should never be called from outside the OSEE Application Framework
     */
-   public final void setTransactionId(TransactionRecord transaction) {
+   public final void setTransaction(TransactionRecord transaction) {
       if (transaction.isInvalid()) {
          throw new OseeArgumentException("Transaction can not be set invalid for %s", toStringWithId());
       }

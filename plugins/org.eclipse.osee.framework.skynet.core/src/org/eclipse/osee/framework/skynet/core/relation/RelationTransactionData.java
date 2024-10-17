@@ -75,8 +75,10 @@ public class RelationTransactionData extends BaseTransactionData {
    }
 
    @Override
-   protected void internalUpdate(TransactionRecord transactionId) {
+   protected void internalUpdate(TransactionRecord transaction) {
       relation.internalSetGammaId(getGammaId());
+      relation.getArtifactA().setTransaction(transaction);
+      relation.getArtifactB().setTransaction(transaction);
    }
 
    @Override
