@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.RelTableInvalidException;
@@ -54,6 +55,7 @@ public class RelationEndpointImpl implements RelationEndpoint {
 
    @Override
    public List<ArtifactToken> getRelatedHierarchy(ArtifactId artifact, ArtifactId view) {
+      
       List<ArtifactToken> ids = getRelated(artifact, CoreRelationTypes.DefaultHierarchical, RelationSide.SIDE_A, view);
       return ids;
    }
@@ -89,6 +91,25 @@ public class RelationEndpointImpl implements RelationEndpoint {
       }
 
       return null;
+   }
+   
+   @Override
+   public TransactionToken convertAllRelations(RelationTypeToken oldRelationType,
+      RelationTypeToken newRelationType) {
+      RelationTypeSide sideB = new RelationTypeSide(oldRelationType, RelationSide.SIDE_B);
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch,
+         String.format("Converting relations for Old Relation = %s New Relation = %s", oldRelationType.getName(),
+            newRelationType.getName()));
+
+      for (ArtifactReadable art : orcsApi.getQueryFactory().fromBranch(branch).andRelationExists(
+         oldRelationType).getResults().getList()) {
+         if (art.getRelatedCount(sideB) > 0) {
+            for (ArtifactReadable artB : art.getRelated(sideB).getList()) {
+               tx.relate(art, newRelationType, artB);
+            }
+         }
+      }
+      return tx.commit();
    }
    
    @Override

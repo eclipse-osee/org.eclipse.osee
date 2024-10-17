@@ -27,6 +27,7 @@ import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 
 /**
  * @author Hugo Trejo, Torin Grenda, David Miller
@@ -89,6 +90,14 @@ public interface RelationEndpoint {
    @Consumes({MediaType.TEXT_PLAIN})
    @Produces({MediaType.APPLICATION_JSON})
    List<RelationTypeToken> convertRelations(@PathParam("artifactA") ArtifactId artifactA,
+      @PathParam("oldRelationType") RelationTypeToken oldRelationType,
+      @PathParam("newRelationType") RelationTypeToken newRelationType);
+   
+   @POST
+   @Path("convert/{oldRelationType}/{newRelationType}")
+   @Consumes({MediaType.TEXT_PLAIN})
+   @Produces({MediaType.APPLICATION_JSON})
+   TransactionToken convertAllRelations(
       @PathParam("oldRelationType") RelationTypeToken oldRelationType,
       @PathParam("newRelationType") RelationTypeToken newRelationType);
    
