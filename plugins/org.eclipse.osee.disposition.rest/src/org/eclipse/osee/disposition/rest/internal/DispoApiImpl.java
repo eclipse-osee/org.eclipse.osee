@@ -1238,7 +1238,8 @@ public class DispoApiImpl implements DispoApi {
          copier.copyAssignee(namesToDestItems, sourceItems, namesToToEditItems, params.getAssigneeParam());
          copier.copyNotes(namesToDestItems, sourceItems, namesToToEditItems, params.getNoteParam());
 
-         String operation = String.format("Copy Set from Program [%s] and Set [%s]", sourceBranch, sourceSetId);
+         String operation = String.format("Copy Set from Program [%s] and Set [%s] to branch [%s] set [%s]",
+            sourceBranch, sourceSetId, branch, destSetId);
          if (!namesToToEditItems.isEmpty() && !report.getStatus().isFailed()) {
             editDispoItems(branch, destSetId, namesToToEditItems.values(), false, operation);
             storage.updateOperationSummary(branch, destSetId, report);

@@ -720,7 +720,9 @@ public class TransactionEndpointTest {
    public void testPurgeUnusedBackingData() {
       JdbcClient client = AtsApiService.get().getJdbcService().getClient();
       int initialRowCount = client.fetch(0, "SELECT count(1) FROM osee_attribute");
-      transactionEndpoint.purgeUnusedBackingDataAndTransactions();
+      try (Response response = transactionEndpoint.purgeUnusedBackingDataAndTransactions();) {
+         //
+      }
       int afterRowCount = client.fetch(0, "SELECT count(1) FROM osee_attribute");
       Assert.assertNotEquals(initialRowCount, afterRowCount);
    }

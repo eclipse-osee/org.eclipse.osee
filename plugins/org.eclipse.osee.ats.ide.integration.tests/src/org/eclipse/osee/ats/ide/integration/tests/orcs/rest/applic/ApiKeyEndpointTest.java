@@ -137,14 +137,14 @@ public class ApiKeyEndpointTest {
          keyValue.length());
 
       // Check Use
-      Response branchesResponse = getRequestWithAuthorization("/orcs/branches", keyValue);
-      assertEquals("Call with API Key was not successful with status: " + branchesResponse.getStatus(),
-         Family.SUCCESSFUL, branchesResponse.getStatusInfo().getFamily());
-
+      try (Response branchesResponse = getRequestWithAuthorization("/orcs/branches", keyValue);) {
+         assertEquals("Call with API Key was not successful with status: " + branchesResponse.getStatus(),
+            Family.SUCCESSFUL, branchesResponse.getStatusInfo().getFamily());
+      }
       // Revoke
-      Response response = apiKeyEndpoint.revokeApiKey(Long.parseLong(uid));
-      assertEquals(Family.SUCCESSFUL, response.getStatusInfo().getFamily());
-
+      try (Response response = apiKeyEndpoint.revokeApiKey(Long.parseLong(uid));) {
+         assertEquals(Family.SUCCESSFUL, response.getStatusInfo().getFamily());
+      }
       // Check ApiKey is gone
       apiKeys = apiKeyEndpoint.getApiKeys().readEntity(apiKeyList);
 
@@ -163,11 +163,11 @@ public class ApiKeyEndpointTest {
       String keyValue = uidAndValue.get("keyValue");
 
       // Check Use
-      Response branchesResponse = getRequestWithAuthorization("/orcs/branches", keyValue);
-      assertNotEquals(
-         "Call with with expired API Key was unexpectedly successful with status: " + branchesResponse.getStatus(),
-         Family.SUCCESSFUL, branchesResponse.getStatusInfo().getFamily());
-
+      try (Response branchesResponse = getRequestWithAuthorization("/orcs/branches", keyValue);) {
+         assertNotEquals(
+            "Call with with expired API Key was unexpectedly successful with status: " + branchesResponse.getStatus(),
+            Family.SUCCESSFUL, branchesResponse.getStatusInfo().getFamily());
+      }
       // Create Key With Same Day Expiration
       scopes = setKeyScopes(new int[] {2});
       keyToCreate = new ApiKey("Key 1", scopes, currentDateString, currentDateString, "");
@@ -176,19 +176,21 @@ public class ApiKeyEndpointTest {
       keyValue = uidAndValue.get("keyValue");
 
       // Check Use
-      branchesResponse = getRequestWithAuthorization("/orcs/branches", keyValue);
-      assertEquals(
-         "API Key call with same day expiration unexpectedly failed with status: " + branchesResponse.getStatus(),
-         Family.SUCCESSFUL, branchesResponse.getStatusInfo().getFamily());
+      try (Response branchesResponse = getRequestWithAuthorization("/orcs/branches", keyValue);) {
+         assertEquals(
+            "API Key call with same day expiration unexpectedly failed with status: " + branchesResponse.getStatus(),
+            Family.SUCCESSFUL, branchesResponse.getStatusInfo().getFamily());
+      }
    }
 
    @Test
    public void testInvalidKey() {
       // Check Use
-      Response branchesResponse = getRequestWithAuthorization("/orcs/branches", "invalid");
-      assertNotEquals(
-         "Call with with expired API Key was unexpectedly successful with status: " + branchesResponse.getStatus(),
-         Family.SUCCESSFUL, branchesResponse.getStatusInfo().getFamily());
+      try (Response branchesResponse = getRequestWithAuthorization("/orcs/branches", "invalid");) {
+         assertNotEquals(
+            "Call with with expired API Key was unexpectedly successful with status: " + branchesResponse.getStatus(),
+            Family.SUCCESSFUL, branchesResponse.getStatusInfo().getFamily());
+      }
    }
 
    @Test

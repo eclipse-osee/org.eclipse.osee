@@ -65,7 +65,6 @@ public class DispoSetCopier {
          DispoItemData destItem = getCorrespondingDestItem(nameToDestItems, sourceItem);
 
          if (destItem != null && destItem.isValid()) {
-            destItem.setGuid(sourceItem.getGuid());
             DispoItemData newItem = createNewItemWithCopiedAnnotations(destItem, sourceItem, isCoverageCopy, reruns,
                report, allowOnlyValidResolutionTypes, validResolutionsTypes);
             if (newItem != null && newItem.isValid()) {
@@ -121,7 +120,6 @@ public class DispoSetCopier {
          if (sourceAnnotation.getGuid() == null) {
             sourceAnnotation.setId(String.valueOf(Lib.generateUuid()));
          }
-
          if (!destAnnotationMap.containsKey(sourceLocation)) {
             continue;
          }

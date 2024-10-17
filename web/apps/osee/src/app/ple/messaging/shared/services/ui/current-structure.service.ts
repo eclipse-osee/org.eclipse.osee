@@ -713,6 +713,7 @@ export abstract class CurrentStructureService {
 						{
 							typeId: RELATIONTYPEIDENUM.INTERFACESTRUCTURECONTENT,
 							sideA: structureId,
+							afterArtifact: afterElement || 'end',
 						},
 					];
 		const results = this._currentTx.createArtifact(
@@ -854,6 +855,7 @@ export abstract class CurrentStructureService {
 						{
 							typeId: RELATIONTYPEIDENUM.INTERFACELEMENTARRAY,
 							sideA: parentKey,
+							afterArtifact: afterArtifact || 'end',
 						},
 					],
 					undefined,

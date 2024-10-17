@@ -180,12 +180,7 @@
 						>Applicability:
 						{{ data().element.applicability.name }}
 					</mat-label>
-					<mat-label
-						>Platform Type:
-						{{
-							data().element.platformType.name | attributeToValue
-						}}</mat-label
-					>
+					<mat-label>Platform Type: {{ platformType() }}</mat-label>
 				</div>
 			</mat-dialog-content>
 			<mat-dialog-actions align="end">

@@ -124,7 +124,9 @@ export class AddElementDialogComponent {
 	protected data = signal(inject<ElementDialog>(MAT_DIALOG_DATA));
 
 	protected name = computed(() => this.data().name);
-
+	protected platformType = computed(
+		() => this.data().element.platformType.name.value
+	);
 	protected element = writableSlice(this.data, 'element');
 	protected type = writableSlice(this.data, 'type');
 	protected elementId = writableSlice(this.element, 'id');
