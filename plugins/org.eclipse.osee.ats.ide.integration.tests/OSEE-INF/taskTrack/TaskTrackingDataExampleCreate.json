@@ -1,0 +1,25 @@
+{
+  "asUserArtId" : "61106791",
+  "title" : "Readiness Reviews for SAW Release",
+  "description" : "Task Generated for Each Commit; Additional Tasks Added from Art Id 485234857 on Common",
+  "changeType" : "Support",
+  "priority" : "3",
+  "aiArtId" : "733306468",
+  "transactionComment" : "Create/Update Reviews",
+  "attrValues" : { },
+  "trackItems" : {
+    "tasks" : [ {
+      "title" : "01 - Test from commit TW7 ",
+      "assigneesArtIds" : "61106791", "comment": "Joe Smith",
+      "description" : "Load MIM Web and do minor checks",
+      "supportingAtsId" : "TW7" 
+    }, {
+      "title" : "02 - Test from commit TW10",
+      "assigneesArtIds" : "277990", "comment": "Jason Michael",
+      "description" : "Load customer facing Web",
+      "supportingAtsId" : "TW10"
+    } ]
+  },
+  "taskTrackArtId" : "485234857",
+  "transitionTo" : "Analyze,Authorize,Implement"
+}

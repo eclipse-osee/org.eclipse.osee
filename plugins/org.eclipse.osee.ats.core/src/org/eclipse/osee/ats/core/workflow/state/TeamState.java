@@ -32,20 +32,20 @@ public class TeamState extends StateTypeAdapter {
    public static TeamState Cancelled = new TeamState("Cancelled", StateType.Cancelled);
    public static TeamState Validate = new TeamState("Validate", StateType.Working);
 
-   private TeamState(String pageName, StateType StateType) {
-      super(TeamState.class, pageName, StateType);
+   private TeamState(String name, StateType StateType) {
+      super(TeamState.class, name, StateType);
    }
 
-   public static TeamState valueOf(String pageName) {
-      return StateTypeAdapter.valueOfPage(TeamState.class, pageName);
+   public static TeamState valueOf(String name) {
+      return StateTypeAdapter.valueOfPage(TeamState.class, name);
    }
 
    public static List<TeamState> values() {
       return StateTypeAdapter.pages(TeamState.class);
    }
 
-   public boolean isState(String toStateName) {
-      return getName().equals(toStateName);
+   public boolean isState(String stateName) {
+      return getName().equals(stateName);
    }
 
 }

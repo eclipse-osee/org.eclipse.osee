@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.action.AtsTest_Wo
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.cr.AtsTest_Workflow_CR_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.review.AtsTest_Workflow_Review_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.task.AtsTest_Workflow_Task_Suite;
+import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.tasktrack.TaskTrackingOperationTest;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.transition.AtsTest_Workflow_Transition_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.util.AtsTest_Workflow_Util_Suite;
 import org.junit.runner.RunWith;
@@ -27,6 +28,7 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   TaskTrackingOperationTest.class,
    AtsTest_Workflow_CR_Suite.class,
    TeamWorkflowTest.class,
    TeamWorkflowProvidersTest.class,
