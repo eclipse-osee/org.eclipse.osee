@@ -73,6 +73,24 @@ public class AtsTeamWfEndpointTest {
       changes.deleteArtifact(release);
       changes.execute();
    }
+   
+   @Test
+   public void testGetWfByReleaseById() {
+      IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet(
+         getClass().getSimpleName() + " - Create Release Artifact", AtsCoreUsers.SYSTEM_USER);
+      ArtifactToken release = changes.createArtifact(AtsArtifactTypes.ReleaseArtifact, "G123456.0");
+      changes.relate(codeTeamWorkFlow.getArtifactId(), AtsRelationTypes.TeamWorkflowToRelease_Release, release);
+      changes.execute();
+
+      Collection<ArtifactToken> workflows = teamWfEp.getWfByReleaseById(release);
+      Assert.assertTrue(workflows.contains(codeTeamWorkFlow));
+
+      changes = atsApi.getStoreService().createAtsChangeSet(getClass().getSimpleName() + " - Cleanup Releases",
+         AtsCoreUsers.SYSTEM_USER);
+      changes.unrelate(codeTeamWorkFlow.getArtifactId(), AtsRelationTypes.TeamWorkflowToRelease_Release, release);
+      changes.deleteArtifact(release);
+      changes.execute();
+   }
 
    @Test
    public void testGetChangeTypes() {
