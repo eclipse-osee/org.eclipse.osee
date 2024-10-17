@@ -49,24 +49,31 @@ public class UserRoleManagerTest {
          }
       }
 
-      if (rev1 != null) {
+      if (rev1 == null) {
+         Assert.fail("Peer Review not found.");
+      } else {
+
+         UserRoleManager userRoleManager = new UserRoleManager(rev1, AtsApiService.get());
+
+         // Peer review should not required role if parent is not different from what is set in ReviewRequiredMinimum
          ReviewRole TestRole1 = new ReviewRole(1L, "Test Role 1", ReviewRoleType.Reviewer);
-         ReviewRole TestRole2 = new ReviewRole(2L, "Test Role 2", ReviewRoleType.Reviewer);
          List<ReviewRequiredMinimum> reviewRequiredMinimums1 = new ArrayList<>();
          reviewRequiredMinimums1.add(
             new ReviewRequiredMinimum(TestRole1, 1, DemoArtifactToken.SAW_PL_Requirements_TeamDef));
-         List<ReviewRequiredMinimum> reviewRequiredMinimums2 = new ArrayList<>();
-         reviewRequiredMinimums2.add(new ReviewRequiredMinimum(TestRole2, 1, DemoArtifactToken.SAW_Code));
-         List<ReviewRequiredMinimum> reviewRequiredMinimums3 = new ArrayList<>();
-
-         UserRoleManager userRoleManager = new UserRoleManager(rev1, AtsApiService.get());
          UserRoleError error1 = userRoleManager.validateReviewRequiredMinimum(rev1, reviewRequiredMinimums1);
          Assert.assertEquals(error1.isOK(), true);
+
+         // Peer review should required role if parent is same as set in ReviewRequiredMinimum
+         ReviewRole TestRole2 = new ReviewRole(2L, "Test Role 2", ReviewRoleType.Reviewer);
+         List<ReviewRequiredMinimum> reviewRequiredMinimums2 = new ArrayList<>();
+         reviewRequiredMinimums2.add(new ReviewRequiredMinimum(TestRole2, 1, DemoArtifactToken.SAW_Code));
          UserRoleError error2 = userRoleManager.validateReviewRequiredMinimum(rev1, reviewRequiredMinimums2);
          Assert.assertEquals(error2.isOK(), false);
+
+         // No errors if ReviewReuiredMinimum is not set or empty.
+         List<ReviewRequiredMinimum> reviewRequiredMinimums3 = new ArrayList<>();
          UserRoleError error3 = userRoleManager.validateReviewRequiredMinimum(rev1, reviewRequiredMinimums3);
          Assert.assertEquals(error3.isOK(), true);
       }
-
    }
 }

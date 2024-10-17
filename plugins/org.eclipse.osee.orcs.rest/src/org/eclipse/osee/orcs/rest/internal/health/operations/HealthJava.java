@@ -18,7 +18,6 @@ import java.lang.management.OperatingSystemMXBean;
 import java.lang.management.RuntimeMXBean;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -77,8 +76,7 @@ public class HealthJava {
             psResults = HealthUtils.runCurlExecFromCurlServer("ps%20-ef", jdbcClient, auth);
          }
          if (Strings.isInValid(psResults)) {
-            psResults = "ps -ef command is not available for windows (example below)\n\n" + OseeInf.getResourceContents(
-               "web/health/psef.txt", HealthJava.class);
+            psResults = "ps -ef command is not available for windows \n";
          }
          processes.add(psResults);
       } else {
