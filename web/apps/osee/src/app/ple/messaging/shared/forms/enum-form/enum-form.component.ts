@@ -16,12 +16,9 @@ import {
 	Component,
 	Output,
 	computed,
-	effect,
+	inject,
 	input,
 	model,
-	output,
-	signal,
-	inject,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton, MatIconButton } from '@angular/material/button';
@@ -52,16 +49,8 @@ import { map, switchMap } from 'rxjs/operators';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { MatIcon } from '@angular/material/icon';
 import { ApplicabilityDropdownComponent } from '@osee/applicability/applicability-dropdown';
+import { applic } from '@osee/applicability/types';
 import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
-import {
-	ARTIFACTTYPEIDENUM,
-	RELATIONTYPEIDENUM,
-} from '@osee/shared/types/constants';
-import {
-	createArtifact,
-	modifyArtifact,
-	modifyRelation,
-} from '@osee/transactions/types';
 
 @Component({
 	selector: 'osee-enum-form',
@@ -129,91 +118,6 @@ export class EnumFormComponent {
 		),
 		map((results) => (results.length > 0 ? false : true))
 	);
-	private _addTxRows = computed(() => {
-		return this.enums().map((v) => {
-			return {
-				typeId: ARTIFACTTYPEIDENUM.ENUM,
-				name: v.name.value,
-				key: crypto.randomUUID(),
-				applicabilityId: v.applicability.id,
-				attributes: [
-					{
-						typeId: ATTRIBUTETYPEIDENUM.INTERFACEENUMORDINAL,
-						value: v.ordinal.value,
-					},
-				],
-				relations: [
-					{
-						typeId: RELATIONTYPEIDENUM.INTERFACEENUMTOENUMSET,
-						sideA:
-							this.enumSetId() !== '-1'
-								? this.enumSetId()
-								: 'ea95f2e8-6018-4975-917d-5d49ce56151a', //random GUID that's hopefully unique enough for enum set
-					},
-				],
-			};
-		});
-	});
-	protected _modifyTxRows = computed(() => {
-		return this.enums()
-			.filter((v) => 'id' in v)
-			.map((v) => {
-				return {
-					id: v.id || '-1',
-					applicabilityId: v.applicability.id,
-					setAttributes: [
-						{
-							typeId: ATTRIBUTETYPEIDENUM.INTERFACEENUMORDINAL,
-							value: v.ordinal,
-						},
-						{
-							typeId: ATTRIBUTETYPEIDENUM.NAME,
-							value: v.name,
-						},
-					],
-					relations: [
-						{
-							typeId: RELATIONTYPEIDENUM.INTERFACEENUMTOENUMSET,
-							sideA:
-								this.enumSetId() !== '-1'
-									? this.enumSetId()
-									: 'ea95f2e8-6018-4975-917d-5d49ce56151a', //random GUID that's hopefully unique enough for enum set
-						},
-					],
-				};
-			});
-	});
-
-	private deletedEnums = signal<enumeration[]>([]);
-
-	private _deletedTxRows = computed(() => {
-		return this.deletedEnums()
-			.filter((v) => 'id' in v)
-			.map((v) => {
-				return {
-					aArtId: this.enumSetId(),
-					bArtId: v.id || '-1',
-					typeId: RELATIONTYPEIDENUM.INTERFACEENUMTOENUMSET,
-				};
-			});
-	});
-
-	tx = output<{
-		createArtifacts: createArtifact[];
-		modifyArtifacts: modifyArtifact[];
-		deleteRelations: modifyRelation[];
-	}>();
-
-	private _updateTx = effect(
-		() => {
-			this.tx.emit({
-				createArtifacts: this._addTxRows(),
-				modifyArtifacts: this._modifyTxRows(),
-				deleteRelations: this._deletedTxRows(),
-			});
-		},
-		{ allowSignalWrites: true }
-	);
 
 	// /*transaction logic:
 	//  * If enum has an id and enum values !== previous values modifyArtifact
@@ -248,6 +152,12 @@ export class EnumFormComponent {
 						? this.enums()[this.enums().length - 1].ordinal.value
 						: -1) + 1,
 			},
+			ordinalType: {
+				id: '-1' as const,
+				typeId: ATTRIBUTETYPEIDENUM.INTERFACEENUMORDINALTYPE,
+				gammaId: '-1' as const,
+				value: 'LONG',
+			},
 			applicability: { id: '1' as const, name: 'Base' },
 		};
 		this.enums.update((e) => [...e, newEnum]);
@@ -255,6 +165,33 @@ export class EnumFormComponent {
 
 	removeEnum(enumeration: enumeration) {
 		this.enums.update((e) => e.filter((x) => x !== enumeration));
-		this.deletedEnums.update((d) => [...d, enumeration]);
+	}
+
+	protected updateName(value: string, index: number) {
+		this.enums.update((e) => {
+			const x: enumeration = e[index];
+			x.name.value = value;
+			const newArr = [...e];
+			newArr[index] = x;
+			return newArr;
+		});
+	}
+	protected updateOrdinal(value: number, index: number) {
+		this.enums.update((e) => {
+			const x: enumeration = e[index];
+			x.ordinal.value = value;
+			const newArr = [...e];
+			newArr[index] = x;
+			return newArr;
+		});
+	}
+	protected updateApplic(value: applic, index: number) {
+		this.enums.update((e) => {
+			const x: enumeration = e[index];
+			x.applicability = value;
+			const newArr = [...e];
+			newArr[index] = x;
+			return newArr;
+		});
 	}
 }

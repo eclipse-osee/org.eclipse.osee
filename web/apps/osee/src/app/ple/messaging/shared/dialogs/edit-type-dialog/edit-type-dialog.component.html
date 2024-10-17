@@ -334,7 +334,7 @@
 			@if (logicalType() !== 'enumeration') {
 				<button
 					mat-flat-button
-					[mat-dialog-close]="manifest()"
+					[mat-dialog-close]="platformType()"
 					class="primary-button"
 					[disabled]="
 						name().length === 0 ||
@@ -354,9 +354,8 @@
 			<mat-dialog-content>
 				<osee-edit-enum-set-field
 					[editable]="true"
-					[platformType]="platformType()"
-					[shouldCreateNew]="mode() === 1"
-					(enumSetTx)="enumUpdate($event)"
+					[(enumSet)]="enumSet"
+					[bitSize]="sizeAttr()"
 					(unique)="updateUnique($event)"></osee-edit-enum-set-field>
 			</mat-dialog-content>
 			<mat-dialog-actions align="end">
@@ -368,7 +367,7 @@
 				@if (logicalType() === 'enumeration') {
 					<button
 						mat-flat-button
-						[mat-dialog-close]="manifest()"
+						[mat-dialog-close]="platformType()"
 						class="primary-button"
 						[disabled]="
 							name().length === 0 ||

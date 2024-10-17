@@ -21,6 +21,7 @@ import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 import {
 	EditViewFreeTextDialog,
 	ElementDialog,
+	PlatformType,
 	element,
 	structure,
 } from '@osee/messaging/shared/types';
@@ -207,9 +208,9 @@ export class ElementTableDropdownService {
 			.subscribe();
 	}
 
-	openEnumDialog(id: string, editMode: boolean) {
+	openEnumDialog(platformType: PlatformType, editMode: boolean) {
 		this.platformTypeActionsService
-			.openEnumDialog(id, editMode)
+			.openEnumDialog(platformType, editMode)
 			.subscribe();
 	}
 

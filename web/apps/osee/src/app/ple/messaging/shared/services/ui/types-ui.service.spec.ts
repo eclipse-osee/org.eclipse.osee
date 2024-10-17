@@ -12,20 +12,20 @@
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
 import {
-	typesServiceMock,
 	enumerationSetServiceMock,
+	platformTypesMock,
+	typesServiceMock,
 } from '@osee/messaging/shared/testing';
+import { UiService } from '@osee/shared/services';
 import { transactionResultMock } from '@osee/transactions/testing';
 import { TestScheduler } from 'rxjs/testing';
-import { UiService } from '@osee/shared/services';
 import { EnumerationSetService } from '../http/enumeration-set.service';
 import { TypesService } from '../http/types.service';
 
-import { TypesUIService } from './types-ui.service';
-import { transactionMock } from '@osee/transactions/testing';
 import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 import { CurrentTransactionService } from '@osee/transactions/services';
 import { currentTransactionServiceMock } from '@osee/transactions/services/testing';
+import { TypesUIService } from './types-ui.service';
 
 describe('TypesUIService', () => {
 	let service: TypesUIService;
@@ -69,15 +69,6 @@ describe('TypesUIService', () => {
 		});
 	});
 
-	it('should perform a mutation', () => {
-		scheduler.run(({ expectObservable }) => {
-			expectObservable(service.performMutation(transactionMock)).toBe(
-				'(a|)',
-				{ a: transactionResultMock }
-			);
-		});
-	});
-
 	it('should send a modification request', () => {
 		scheduler.run(() => {
 			const expectedFilterValues = { a: transactionResultMock };
@@ -85,11 +76,10 @@ describe('TypesUIService', () => {
 			uiService.idValue = '10';
 			scheduler
 				.expectObservable(
-					service.partialUpdate({
-						createArtifacts: [],
-						modifyArtifacts: [],
-						deleteRelations: [],
-					})
+					service.partialUpdate(
+						platformTypesMock[0],
+						platformTypesMock[1]
+					)
 				)
 				.toBe(expectedMarble, expectedFilterValues);
 		});
@@ -101,13 +91,7 @@ describe('TypesUIService', () => {
 			const expectedMarble = '(a|)';
 			uiService.idValue = '10';
 			scheduler
-				.expectObservable(
-					service.copyType({
-						createArtifacts: [],
-						modifyArtifacts: [],
-						deleteRelations: [],
-					})
-				)
+				.expectObservable(service.copyType(platformTypesMock[0]))
 				.toBe(expectedMarble, expectedFilterValues);
 		});
 	});

@@ -40,6 +40,7 @@ import org.eclipse.osee.ats.ide.actions.CreateEnumeratedArtifactAction;
 import org.eclipse.osee.ats.ide.actions.EditEnumeratedArtifact;
 import org.eclipse.osee.ats.ide.actions.NewGoal;
 import org.eclipse.osee.ats.ide.actions.OpenArtifactEditorById;
+import org.eclipse.osee.ats.ide.actions.OpenOrphanedActionsAndTeamWorkflows;
 import org.eclipse.osee.ats.ide.actions.OpenOrphanedTasks;
 import org.eclipse.osee.ats.ide.actions.OpenWorkflowByIdAction;
 import org.eclipse.osee.ats.ide.actions.RevertDuplicateAtsTransitionByIdAction;
@@ -291,6 +292,7 @@ public final class AtsNavigateViewItems implements XNavigateItemProvider {
       items.add(new ClearAtsConfigCache());
       items.add(new ClearAtsConfigCacheAllServers());
       items.add(new UpdateWorkDefValidStateNameConfig());
+      items.add(new XNavigateItemAction(new OpenOrphanedActionsAndTeamWorkflows(), AtsImage.ACTION, ATS_ADMIN, OSEE_ADMIN));
       items.add(new XNavigateItemAction(new OpenOrphanedTasks(), AtsImage.TASK, ATS_ADMIN, OSEE_ADMIN));
       items.add(
          new XNavigateItemAction(new RevertDuplicateAtsTransitionByIdAction(), AtsImage.TASK, ATS_ADMIN, OSEE_ADMIN));

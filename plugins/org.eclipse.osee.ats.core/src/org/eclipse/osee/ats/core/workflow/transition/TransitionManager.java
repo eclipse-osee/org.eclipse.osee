@@ -803,6 +803,8 @@ public class TransitionManager implements IAtsChangeSetListener {
 
          if (toAssignees.contains(AtsCoreUsers.UNASSIGNED_USER)) {
             toAssignees.remove(AtsCoreUsers.UNASSIGNED_USER);
+         }
+         if (!getTransitionAsUser().equals(AtsCoreUsers.SYSTEM_USER)) {
             toAssignees.add(getTransitionAsUser());
          }
          if (toAssignees.isEmpty()) {
