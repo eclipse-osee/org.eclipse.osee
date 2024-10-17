@@ -181,35 +181,37 @@ public final class FeatureImpactStreamingOutput implements StreamingOutput {
                   final var baselineDocMsWordPreviewRequestData =
                      new PublishingRequestData(FeatureImpactStreamingOutput.publishingTemplateRequest,
                         baselineDocRendererOptions, List.of(previewHeadArtifactIdentifier));
-                  final var workingDocStream = this.publishingOperations.msWordPreview(
-                     workingDocMsWordPreviewRequestData).getDataHandler().getInputStream();
-                  final var baselineDocStream = this.publishingOperations.msWordPreview(
-                     baselineDocMsWordPreviewRequestData).getDataHandler().getInputStream();
-                  workingDocStream.mark(0);
-                  boolean equal = IOUtils.contentEquals(workingDocStream, baselineDocStream);
-                  baselineDocStream.close();
-                  if (!equal) {
-                     PrintWriter docWriter = new PrintWriter(writer);
-                     workingDocStream.reset();
+                  try (final var workingDocStream = this.publishingOperations.msWordPreview(
+                     workingDocMsWordPreviewRequestData).getDataHandler().getInputStream();) {
+                     try (final var baselineDocStream = this.publishingOperations.msWordPreview(
+                        baselineDocMsWordPreviewRequestData).getDataHandler().getInputStream();) {
+                        workingDocStream.mark(0);
+                        boolean equal = IOUtils.contentEquals(workingDocStream, baselineDocStream);
+                        baselineDocStream.close();
+                        if (!equal) {
+                           PrintWriter docWriter = new PrintWriter(writer);
+                           workingDocStream.reset();
 
-                     zipOut.putNextEntry(new ZipEntry(viewEntry.getKey() + ".xml"));
-                     try {
-                        InputStreamReader reader = new InputStreamReader(workingDocStream, "UTF-8");
-                        BufferedReader br = new BufferedReader(reader);
-                        String l;
-                        while ((l = br.readLine()) != null) {
-                           docWriter.println(l);
+                           zipOut.putNextEntry(new ZipEntry(viewEntry.getKey() + ".xml"));
+                           try {
+                              InputStreamReader reader = new InputStreamReader(workingDocStream, "UTF-8");
+                              BufferedReader br = new BufferedReader(reader);
+                              String l;
+                              while ((l = br.readLine()) != null) {
+                                 docWriter.println(l);
+                              }
+                              docWriter.flush();
+                              br.close();
+                              reader.close();
+                              workingDocStream.close();
+                           } catch (IOException ex) {
+                              OseeCoreException.wrapAndThrow(ex);
+                           }
+                           zipOut.closeEntry();
+                        } else {
+                           workingDocStream.close();
                         }
-                        docWriter.flush();
-                        br.close();
-                        reader.close();
-                        workingDocStream.close();
-                     } catch (IOException ex) {
-                        OseeCoreException.wrapAndThrow(ex);
                      }
-                     zipOut.closeEntry();
-                  } else {
-                     workingDocStream.close();
                   }
                }
             }
