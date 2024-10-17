@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
 	MatDialog,
 	MatDialogContent,
@@ -27,13 +27,11 @@ import { CommandGroupOptionsService } from '../../services/data-services/command
 	imports: [AsyncPipe, MatDialogContent],
 })
 export class HelperdialogComponent {
-	allCommands = this.commandGroupOptsService.allCommands;
+	private commandGroupOptsService = inject(CommandGroupOptionsService);
+	dialog = inject(MatDialog);
+	dialogRef = inject<MatDialogRef<HelperdialogComponent>>(MatDialogRef);
 
-	constructor(
-		private commandGroupOptsService: CommandGroupOptionsService,
-		public dialog: MatDialog,
-		public dialogRef: MatDialogRef<HelperdialogComponent>
-	) {}
+	allCommands = this.commandGroupOptsService.allCommands;
 
 	closeDialog() {
 		this.commandGroupOptsService.stringToFilterCommandsBy = '';

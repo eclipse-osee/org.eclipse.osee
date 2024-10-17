@@ -17,7 +17,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 	standalone: true,
 })
 export class AttributeNameTrimPipe implements PipeTransform {
-	transform(value: string, ...args: unknown[]): string {
+	transform(value: string, ..._args: unknown[]): string {
 		return value.replace('ats.', '');
 	}
 }

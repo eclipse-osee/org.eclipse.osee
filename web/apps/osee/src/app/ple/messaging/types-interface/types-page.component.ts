@@ -16,6 +16,7 @@ import {
 	OnInit,
 	effect,
 	input,
+	inject,
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
@@ -37,6 +38,9 @@ import { TypesInterfaceComponent } from './lib/types-interface/types-interface.c
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TypesPageComponent implements OnInit {
+	private route = inject(ActivatedRoute);
+	private uiService = inject(PlMessagingTypesUIService);
+
 	type = input('', {
 		transform: (value: string | undefined) =>
 			value ? value.trim().toLowerCase() : '',
@@ -48,11 +52,6 @@ export class TypesPageComponent implements OnInit {
 		},
 		{ allowSignalWrites: true }
 	);
-
-	constructor(
-		private route: ActivatedRoute,
-		private uiService: PlMessagingTypesUIService
-	) {}
 
 	ngOnInit(): void {
 		this.route.paramMap.subscribe((values) => {

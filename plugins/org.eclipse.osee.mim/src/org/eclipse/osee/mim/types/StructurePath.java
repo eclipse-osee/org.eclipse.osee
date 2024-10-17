@@ -15,12 +15,12 @@ package org.eclipse.osee.mim.types;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 
 /**
  * @author Luciano T. Vaglienti
  */
-public class StructurePath extends ArtifactAccessorResult {
+public class StructurePath extends ArtifactAccessorResultWithoutGammas {
    public static final StructurePath SENTINEL = new StructurePath();
    private final LinkedList<ResolvedStructurePath> paths = new LinkedList<ResolvedStructurePath>();
    private final InterfaceStructureToken structure;
@@ -31,7 +31,7 @@ public class StructurePath extends ArtifactAccessorResult {
    }
 
    public StructurePath(InterfaceStructureToken structure) {
-      super(structure.getId(), structure.getName());
+      super(structure.getId(), structure.getName().getValue());
       this.structure = structure;
    }
 

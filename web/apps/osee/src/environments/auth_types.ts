@@ -10,6 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-const auth_types = ['NONE', 'DEV', 'FORCED_SSO', 'DEMO', 'OKTA'];
+const _auth_types = ['NONE', 'DEV', 'FORCED_SSO', 'DEMO', 'OKTA'];
 
-export type AUTH_TYPE = (typeof auth_types)[keyof typeof auth_types];
+export type AUTH_TYPE = (typeof _auth_types)[keyof typeof _auth_types];

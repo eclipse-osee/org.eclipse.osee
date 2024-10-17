@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import {
 	MAT_DIALOG_DATA,
@@ -33,8 +33,5 @@ import {
 	templateUrl: './relation-delete-dialog.component.html',
 })
 export class RelationDeleteDialogComponent {
-	constructor(
-		@Inject(MAT_DIALOG_DATA)
-		public data: { sideAName: string; sideBName: string }
-	) {}
+	data = inject(MAT_DIALOG_DATA);
 }

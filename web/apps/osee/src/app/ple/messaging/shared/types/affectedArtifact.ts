@@ -10,14 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface affectedArtifact {
+export type affectedArtifact = {
 	id: string;
 	name: string;
-}
+};
 
-export interface affectedArtifactWarning<T, U = affectedArtifact> {
+export type affectedArtifactWarning<T, U = affectedArtifact> = {
 	affectedArtifacts: U[];
 	body: T;
 	modifiedObjectType: string;
 	affectedObjectType: string;
-}
+};

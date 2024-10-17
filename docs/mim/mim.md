@@ -10,7 +10,7 @@
   - [Add a Message/SubMessage/Structure](add_msg_submsg_struct.md)
   - [Using Cross Reference Data Manager](using_cross_ref_mgr.md)
 - [Connections Page](connections.md)
-- [Type View Page](type_view_page.md)
+- [Platform Types Page](type_view_page.md)
 - [Structure List Page](structures.md)
 - [Find Elements By Type Page](find_elements_by_type.md)
 - [Reports](reports.md)

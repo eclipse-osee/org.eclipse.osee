@@ -11,12 +11,16 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CommonModule } from '@angular/common';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HelperdialogComponent } from './helperdialog.component';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('HelperdialogComponent', () => {
 	let component: HelperdialogComponent;
@@ -28,11 +32,14 @@ describe('HelperdialogComponent', () => {
 				MatDialogModule,
 				MatIconModule,
 				CommonModule,
-				HttpClientTestingModule,
 				RouterTestingModule,
 				HelperdialogComponent,
 			],
-			providers: [{ provide: MatDialogRef, useValue: {} }],
+			providers: [
+				{ provide: MatDialogRef, useValue: {} },
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+			],
 		}).compileComponents();
 	});
 

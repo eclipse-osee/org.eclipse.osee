@@ -10,12 +10,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface Artifact {
+export type Artifact = {
 	icdSystem: string;
 	workflows: workflow[];
-}
+};
 
-export interface workflow {
+export type workflow = {
 	actionId: string;
 	workflowID: string;
 	program: string;
@@ -31,14 +31,14 @@ export interface workflow {
 	webExported: string;
 	requirements: requirement[];
 	expanded: boolean;
-}
+};
 
-export interface requirement {
+export type requirement = {
 	tests: test[];
 	name: string;
-}
+};
 
-export interface test {
+export type test = {
 	name: string;
 	script: string;
-}
+};

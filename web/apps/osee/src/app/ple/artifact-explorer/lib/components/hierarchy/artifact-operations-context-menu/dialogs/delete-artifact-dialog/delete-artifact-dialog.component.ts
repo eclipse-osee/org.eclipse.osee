@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import {
 	MAT_DIALOG_DATA,
@@ -33,10 +33,9 @@ import { ArtifactDialogTitleComponent } from '../../../../shared/artifact-dialog
 	templateUrl: './delete-artifact-dialog.component.html',
 })
 export class DeleteArtifactDialogComponent {
-	constructor(
-		public dialogRef: MatDialogRef<DeleteArtifactDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: deleteArtifactDialogData
-	) {}
+	dialogRef =
+		inject<MatDialogRef<DeleteArtifactDialogComponent>>(MatDialogRef);
+	data = inject<deleteArtifactDialogData>(MAT_DIALOG_DATA);
 
 	onSubmit() {
 		this.dialogRef.close('submit');

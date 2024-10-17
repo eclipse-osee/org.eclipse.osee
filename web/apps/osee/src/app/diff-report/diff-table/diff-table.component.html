@@ -111,8 +111,7 @@
 					<br />
 					<button
 						mat-button
-						color="primary"
-						class="tw-underline"
+						class="primary-button tw-underline"
 						(click)="
 							getChangeReport(
 								_link +
@@ -219,11 +218,11 @@
 			class="tw-h-0 tw-border-x-[0.1rem] tw-border-b-[0.1rem] tw-border-primary tw-p-0 tw-pl-2 tw-pr-[0.2rem]"
 			mat-raised-button
 			*matCellDef="let artifact">
-			<a
+			<button
 				mat-button
-				(click)="toggleRow(artifact)"
-				>{{ artifact.expanded ? 'Collapse' : 'Expand' }}</a
-			>
+				(click)="toggleRow(artifact)">
+				{{ artifact.expanded ? 'Collapse' : 'Expand' }}
+			</button>
 		</td>
 	</ng-container>
 

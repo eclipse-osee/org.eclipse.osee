@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { filter, switchMap } from 'rxjs/operators';
 import { UiService } from '@osee/shared/services';
 import { StructureNamesService } from '../http/structure-names.service';
@@ -19,10 +19,8 @@ import { StructureNamesService } from '../http/structure-names.service';
 	providedIn: 'root',
 })
 export class CurrentStructureNamesService {
-	constructor(
-		private ui: UiService,
-		private structureService: StructureNamesService
-	) {}
+	private ui = inject(UiService);
+	private structureService = inject(StructureNamesService);
 
 	getStructureNames(connectionId: string) {
 		return this.ui.id.pipe(

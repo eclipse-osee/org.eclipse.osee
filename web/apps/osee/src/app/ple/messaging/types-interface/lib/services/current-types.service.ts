@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import {
 	PreferencesUIService,
@@ -19,11 +19,9 @@ import {
 } from '@osee/messaging/shared/services';
 import type {
 	PlatformType,
-	enumeration,
 	settingsDialogData,
 } from '@osee/messaging/shared/types';
-import { transaction } from '@osee/shared/types';
-import { applic } from '@osee/shared/types/applicability';
+import { legacyTransaction } from '@osee/transactions/types';
 import { BehaviorSubject, combineLatest, iif, of } from 'rxjs';
 import {
 	debounceTime,
@@ -42,6 +40,11 @@ import { PlMessagingTypesUIService } from './pl-messaging-types-ui.service';
 	providedIn: 'root',
 })
 export class CurrentTypesService {
+	private typesService = inject(TypesService);
+	private uiService = inject(PlMessagingTypesUIService);
+	private preferenceService = inject(PreferencesUIService);
+	private sharedTypeService = inject(TypesUIService);
+
 	private _currentPage$ = new BehaviorSubject<number>(0);
 	private _currentPageSize$ = new BehaviorSubject<number>(10);
 
@@ -59,7 +62,7 @@ export class CurrentTypesService {
 			iif(
 				() => id !== '' && id !== '0' && id !== '-1',
 				this.typesService
-					.getFilteredTypes(filter, id, page + 1, pageSize)
+					.getFilteredFullTypes(filter, id, page + 1, pageSize)
 					.pipe(
 						repeatWhen((_) => this.uiService.typeUpdateRequired),
 						share(),
@@ -101,12 +104,6 @@ export class CurrentTypesService {
 		),
 		shareReplay({ refCount: true, bufferSize: 1 })
 	);
-	constructor(
-		private typesService: TypesService,
-		private uiService: PlMessagingTypesUIService,
-		private preferenceService: PreferencesUIService,
-		private sharedTypeService: TypesUIService
-	) {}
 
 	/**
 	 * Returns a list of platform types based on current branch and filter conditions(debounced).
@@ -128,22 +125,8 @@ export class CurrentTypesService {
 	 * @param body @type {PlatformType} platform type to create
 	 * @returns @type {Observable<TypesApiResponse>} observable containing results (see @type {TypesApiResponse} and @type {Observable})
 	 */
-	createType(
-		body: PlatformType | Partial<PlatformType>,
-		isNewEnumSet: boolean,
-		enumSetData: {
-			enumSetId: string;
-			enumSetName: string;
-			enumSetDescription: string;
-			enumSetApplicability: applic;
-			enums: enumeration[];
-		}
-	) {
-		return this.sharedTypeService.createType(
-			body,
-			isNewEnumSet,
-			enumSetData
-		);
+	createType(body: PlatformType) {
+		return this.sharedTypeService.createType(body);
 	}
 
 	get currentPage() {
@@ -197,7 +180,7 @@ export class CurrentTypesService {
 			switchMap(([prefs, branch, branchPrefs]) =>
 				iif(
 					() => prefs.hasBranchPref,
-					of<transaction>({
+					of<legacyTransaction>({
 						branch: '570',
 						txComment: 'Updating MIM User Preferences',
 						modifyArtifacts: [
@@ -215,7 +198,7 @@ export class CurrentTypesService {
 							},
 						],
 					}),
-					of<transaction>({
+					of<legacyTransaction>({
 						branch: '570',
 						txComment: 'Updating MIM User Preferences',
 						modifyArtifacts: [

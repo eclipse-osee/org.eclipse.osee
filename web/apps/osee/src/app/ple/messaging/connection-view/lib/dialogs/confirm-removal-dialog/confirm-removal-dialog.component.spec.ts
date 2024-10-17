@@ -32,8 +32,8 @@ describe('ConfirmRemovalDialogComponent', () => {
 	let component: ConfirmRemovalDialogComponent;
 	let fixture: ComponentFixture<ConfirmRemovalDialogComponent>;
 	let loader: HarnessLoader;
-	let dialogData: RemovalDialog = {
-		id: '',
+	const dialogData: RemovalDialog = {
+		id: '-1',
 		name: '',
 		extraNames: [],
 		type: '',
@@ -68,8 +68,8 @@ describe('ConfirmRemovalDialogComponent', () => {
 	});
 
 	it('should close without anything returning', async () => {
-		let buttons = await loader.getAllHarnesses(MatButtonHarness);
-		let spy = spyOn(component, 'onNoClick').and.callThrough();
+		const buttons = await loader.getAllHarnesses(MatButtonHarness);
+		const spy = spyOn(component, 'onNoClick').and.callThrough();
 		if ((await buttons[0].getText()) === 'Cancel') {
 			await buttons[0].click();
 			expect(spy).toHaveBeenCalled();

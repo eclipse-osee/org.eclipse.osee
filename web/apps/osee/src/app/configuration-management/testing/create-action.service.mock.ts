@@ -30,12 +30,12 @@ export const createActionServiceMock: Partial<CreateActionService> = {
 	user: of(MockUserResponse),
 	actionableItems: of([
 		{
-			id: '123',
+			id: '123' as `${number}`,
 			name: 'First ARB',
 			workType: 'ARB',
 		},
 		{
-			id: '456',
+			id: '456' as `${number}`,
 			name: 'Second ARB',
 			workType: 'ARB',
 		},

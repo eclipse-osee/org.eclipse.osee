@@ -114,7 +114,8 @@
 														</mat-icon>
 													}
 												</a>
-												<a
+												<button
+													class="tw-text-center"
 													(click)="
 														row.isEdit = !row.isEdit
 													">
@@ -128,7 +129,7 @@
 															mode_edit
 														</mat-icon>
 													}
-												</a>
+												</button>
 												<a>
 													<mat-icon
 														class="tw-mx-[0.2rem] tw-my-0 tw-text-warning-700"
@@ -171,7 +172,7 @@
 														$event
 															? onElementToggled(
 																	row
-															  )
+																)
 															: null
 													"
 													[checked]="
@@ -183,9 +184,9 @@
 											</div>
 										}
 										@default {
-											<div (click)="onRowClicked(row)">
+											<button (click)="onRowClicked(row)">
 												{{ row[col.name] }}
-											</div>
+											</button>
 										}
 									}
 								}
@@ -194,7 +195,8 @@
 										@case ('Action') {
 											<div
 												class="tw-flex tw-items-end tw-justify-center">
-												<a
+												<button
+													class="tw-text-center"
 													(click)="
 														row.isEdit = !row.isEdit
 													">
@@ -204,8 +206,9 @@
 														matTooltipClass="tw-bg-success-500">
 														done_outline
 													</mat-icon>
-												</a>
-												<a
+												</button>
+												<button
+													class="tw-text-center"
 													(click)="
 														row.isEdit = !row.isEdit
 													">
@@ -215,7 +218,7 @@
 														matTooltipClass="tw-bg-warning-700">
 														update_disabled
 													</mat-icon>
-												</a>
+												</button>
 											</div>
 										}
 										@case ('isSelect') {

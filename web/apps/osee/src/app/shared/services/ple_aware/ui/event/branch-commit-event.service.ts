@@ -19,8 +19,6 @@ import { Subject } from 'rxjs';
 export class BranchCommitEventService {
 	private _eventStream = new Subject<string>();
 
-	constructor() {}
-
 	sendEvent(branchId: string) {
 		this._eventStream.next(branchId);
 	}

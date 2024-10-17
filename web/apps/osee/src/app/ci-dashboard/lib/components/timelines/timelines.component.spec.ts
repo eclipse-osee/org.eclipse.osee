@@ -17,7 +17,11 @@ import { dashboardHttpServiceMock } from '../../services/dashboard-http.service.
 import { provideRouter } from '@angular/router';
 import { CiDashboardControlsMockComponent } from '../../testing/ci-dashboard-controls.component.mock';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('TimelinesComponent', () => {
 	let component: TimelinesComponent;
@@ -25,11 +29,7 @@ describe('TimelinesComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [
-				CiDashboardControlsMockComponent,
-				HttpClientTestingModule,
-				TimelinesComponent,
-			],
+			imports: [CiDashboardControlsMockComponent, TimelinesComponent],
 			providers: [
 				{
 					provide: DashboardHttpService,
@@ -37,6 +37,8 @@ describe('TimelinesComponent', () => {
 				},
 				provideRouter([]),
 				provideNoopAnimations(),
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
 			],
 		}).compileComponents();
 

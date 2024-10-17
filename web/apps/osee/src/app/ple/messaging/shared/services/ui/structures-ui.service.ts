@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, signal, inject } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 import { MimRouteService } from './mim-route.service';
@@ -21,7 +21,10 @@ import { UiService } from '@osee/shared/services';
 	providedIn: 'root',
 })
 export class StructuresUiService {
-	private _filter: BehaviorSubject<string> = new BehaviorSubject<string>('');
+	private ui = inject(UiService);
+	private _mimRoute = inject(MimRouteService);
+
+	public filter = signal('');
 
 	private _messageId: BehaviorSubject<string> = new BehaviorSubject<string>(
 		'0'
@@ -34,20 +37,6 @@ export class StructuresUiService {
 		undefined
 	);
 	private _done = new Subject();
-	constructor(
-		private ui: UiService,
-		private _mimRoute: MimRouteService
-	) {}
-
-	get filter() {
-		return this._filter;
-	}
-
-	set filterString(filter: string) {
-		if (filter !== this._filter.getValue()) {
-			this._filter.next(filter);
-		}
-	}
 
 	get UpdateRequired() {
 		return this.ui.update;
@@ -77,7 +66,7 @@ export class StructuresUiService {
 		return this._mimRoute.submessageId;
 	}
 
-	set subMessageIdString(value: string) {
+	set subMessageIdString(value: `${number}`) {
 		this._mimRoute.submessageIdString = value;
 	}
 
@@ -85,7 +74,7 @@ export class StructuresUiService {
 		return this._mimRoute.connectionId;
 	}
 
-	set connectionIdString(value: string) {
+	set connectionIdString(value: `${number}`) {
 		this._mimRoute.connectionIdString = value;
 	}
 
@@ -116,7 +105,7 @@ export class StructuresUiService {
 	set difference(value: changeInstance[]) {
 		this._differences.next(value);
 	}
-	set toggleDone(value: any) {
+	set toggleDone(value: unknown) {
 		this._done.next(value);
 		this._done.complete();
 	}

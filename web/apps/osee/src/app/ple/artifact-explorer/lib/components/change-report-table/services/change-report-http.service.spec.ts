@@ -11,14 +11,18 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
-	HttpClientTestingModule,
 	HttpTestingController,
+	provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { apiURL } from '@osee/environments';
 import { changeReportMock } from '../mocks/changeReportMock';
 
 import { ChangeReportHttpService } from './change-report-http.service';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('ChangeReportHttpService', () => {
 	let service: ChangeReportHttpService;
@@ -26,7 +30,11 @@ describe('ChangeReportHttpService', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule],
+			imports: [],
+			providers: [
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+			],
 		});
 		service = TestBed.inject(ChangeReportHttpService);
 		httpTestingController = TestBed.inject(HttpTestingController);

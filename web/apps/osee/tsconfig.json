@@ -15,6 +15,7 @@
 	"extends": "./tsconfig.editor.json",
 	"references": [
 		{ "path": "./tsconfig.spec.editor.json" },
-		{ "path": "./tsconfig.app.editor.json" }
+		{ "path": "./tsconfig.app.editor.json" },
+		{ "path": "./tsconfig.playwright.editor.json" }
 	]
 }

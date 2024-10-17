@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -40,17 +41,18 @@ import org.eclipse.osee.mim.MimApi;
 import org.eclipse.osee.mim.MimDatabaseInitApi;
 import org.eclipse.osee.mim.MimDemoBranches;
 import org.eclipse.osee.mim.types.InterfaceConnection;
-import org.eclipse.osee.mim.types.InterfaceElementImportToken;
 import org.eclipse.osee.mim.types.InterfaceEnumOrdinalType;
 import org.eclipse.osee.mim.types.InterfaceEnumeration;
 import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
 import org.eclipse.osee.mim.types.InterfaceNode;
+import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.InterfaceStructureToken;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
+import org.eclipse.osee.mim.types.InterfaceUnitToken;
 import org.eclipse.osee.mim.types.MIMImportUtil;
 import org.eclipse.osee.mim.types.MimImportSummary;
-import org.eclipse.osee.mim.types.PlatformTypeImportToken;
+import org.eclipse.osee.mim.types.PlatformTypeToken;
 import org.eclipse.osee.mim.types.TransportType;
 import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderData;
 import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderDataFactory;
@@ -134,11 +136,17 @@ public class MimDatabaseInitApiImpl implements MimDatabaseInitApi {
       InterfaceStructureToken structure = createStructure();
       summary.getStructures().add(structure);
 
-      List<InterfaceElementImportToken> elements = createElements();
+      List<InterfaceStructureElementToken> elements = createElements();
       summary.getElements().addAll(elements);
 
-      List<PlatformTypeImportToken> pTypes = createPlatformTypes(summary);
+      List<PlatformTypeToken> pTypes = createPlatformTypes(summary);
       summary.getPlatformTypes().addAll(pTypes);
+
+      summary.getUnits().addAll(createUnits());
+      summary.getMessagePeriodicities().addAll(createMessagePeriodicities());
+      summary.getMessageRates().addAll(createMessageRates());
+      summary.getMessageTypes().addAll(createMessageTypes());
+      summary.getStructureCategories().addAll(createStructureCategories());
 
       summary.getConnectionTransportTypeRelations().put(connection.getIdString(),
          Arrays.asList(transportType.getIdString()));
@@ -154,8 +162,8 @@ public class MimDatabaseInitApiImpl implements MimDatabaseInitApi {
 
       // Add element -> platform type relations. This assumes that elements and platform types were created in the right order
       for (int i = 0; i < elements.size(); i++) {
-         InterfaceElementImportToken element = elements.get(i);
-         PlatformTypeImportToken pType = pTypes.get(i);
+         InterfaceStructureElementToken element = elements.get(i);
+         PlatformTypeToken pType = pTypes.get(i);
          summary.getElementPlatformTypeRelations().put(element.getIdString(), Arrays.asList(pType.getIdString()));
       }
 
@@ -172,7 +180,7 @@ public class MimDatabaseInitApiImpl implements MimDatabaseInitApi {
    }
 
    private TransportType createTransportType() {
-      TransportType transportType = new TransportType(getRandomId(), "Demo Transport");
+      TransportType transportType = new TransportType(getRandomId(), "Ethernet");
       transportType.setByteAlignValidation(true);
       transportType.setByteAlignValidationSize(8);
       transportType.setMinimumPublisherMultiplicity(1);
@@ -186,15 +194,15 @@ public class MimDatabaseInitApiImpl implements MimDatabaseInitApi {
    }
 
    private InterfaceConnection createConnection() {
-      InterfaceConnection connection = new InterfaceConnection(getRandomId(), "Demo Connection");
+      InterfaceConnection connection = new InterfaceConnection(getRandomId(), "Connection A-B");
       connection.setDescription("This is a demo connection");
       return connection;
    }
 
    private List<InterfaceNode> createNodes() {
       List<InterfaceNode> nodes = new LinkedList<>();
-      InterfaceNode nodeA = new InterfaceNode(getRandomId(), "Demo Node A");
-      InterfaceNode nodeB = new InterfaceNode(getRandomId(), "Demo Node B");
+      InterfaceNode nodeA = new InterfaceNode(getRandomId(), "Node A");
+      InterfaceNode nodeB = new InterfaceNode(getRandomId(), "Node B");
 
       nodes.add(nodeA);
       nodes.add(nodeB);
@@ -226,40 +234,40 @@ public class MimDatabaseInitApiImpl implements MimDatabaseInitApi {
       return structure;
    }
 
-   private List<InterfaceElementImportToken> createElements() {
-      List<InterfaceElementImportToken> elements = new LinkedList<>();
-      InterfaceElementImportToken element = new InterfaceElementImportToken(getRandomId(), "Integer Element");
+   private List<InterfaceStructureElementToken> createElements() {
+      List<InterfaceStructureElementToken> elements = new LinkedList<>();
+      InterfaceStructureElementToken element = new InterfaceStructureElementToken(getRandomId(), "Integer Element");
       element.setInterfaceElementAlterable(true);
       elements.add(element);
 
-      element = new InterfaceElementImportToken(getRandomId(), "Boolean Element");
+      element = new InterfaceStructureElementToken(getRandomId(), "Boolean Element");
       element.setInterfaceElementIndexStart(1);
       element.setInterfaceElementIndexEnd(4);
       elements.add(element);
 
-      element = new InterfaceElementImportToken(getRandomId(), "Float Element");
+      element = new InterfaceStructureElementToken(getRandomId(), "Float Element");
       elements.add(element);
 
-      element = new InterfaceElementImportToken(getRandomId(), "Demo Fault");
+      element = new InterfaceStructureElementToken(getRandomId(), "Demo Fault");
       elements.add(element);
 
       return elements;
    }
 
-   private List<PlatformTypeImportToken> createPlatformTypes(MimImportSummary summary) {
-      List<PlatformTypeImportToken> pTypes = new LinkedList<>();
-      PlatformTypeImportToken pType =
-         new PlatformTypeImportToken(getRandomId(), "Integer", "unsigned integer", "32", "0", "2^31-1", "", "", "", "");
+   private List<PlatformTypeToken> createPlatformTypes(MimImportSummary summary) {
+      List<PlatformTypeToken> pTypes = new LinkedList<>();
+      PlatformTypeToken pType =
+         new PlatformTypeToken(getRandomId(), "Integer", "unsigned integer", "32", "0", "2^31-1", "", "", "", "");
       pTypes.add(pType);
 
-      pType = new PlatformTypeImportToken(getRandomId(), "Boolean", "boolean", "8", "0", "1", "", "", "", "");
+      pType = new PlatformTypeToken(getRandomId(), "Boolean", "boolean", "8", "0", "1", "", "", "", "");
       pTypes.add(pType);
 
-      pType = new PlatformTypeImportToken(getRandomId(), "Float", "float", "32", "", "", "", "", "", "");
+      pType = new PlatformTypeToken(getRandomId(), "Float", "float", "32", "", "", "", "", "", "");
       pTypes.add(pType);
 
       // Create Demo Fault platform type, enum set, and relations
-      pType = new PlatformTypeImportToken(getRandomId(), "Demo Fault", "enumeration", "32", "", "", "", "", "", "");
+      pType = new PlatformTypeToken(getRandomId(), "Demo Fault", "enumeration", "32", "", "", "", "", "", "");
       pTypes.add(pType);
       InterfaceEnumerationSet enumSet = new InterfaceEnumerationSet(getRandomId(), "Demo Fault");
       summary.getEnumSets().add(enumSet);
@@ -284,6 +292,59 @@ public class MimDatabaseInitApiImpl implements MimDatabaseInitApi {
          summary.getEnums().stream().map(e -> e.getIdString()).collect(Collectors.toList()));
 
       return pTypes;
+   }
+
+   private List<InterfaceUnitToken> createUnits() {
+      List<InterfaceUnitToken> units = new LinkedList<>();
+
+      InterfaceUnitToken unit = new InterfaceUnitToken(getRandomId(), "Seconds");
+      unit.setMeasurement("Time");
+      units.add(unit);
+
+      unit = new InterfaceUnitToken(getRandomId(), "Meters");
+      unit.setMeasurement("Distance");
+      units.add(unit);
+
+      unit = new InterfaceUnitToken(getRandomId(), "Meters/second");
+      unit.setMeasurement("Speed");
+      units.add(unit);
+
+      unit = new InterfaceUnitToken(getRandomId(), "Hertz");
+      unit.setMeasurement("Frequency");
+      units.add(unit);
+
+      return units;
+   }
+
+   private List<ArtifactAccessorResultWithoutGammas> createMessagePeriodicities() {
+      List<ArtifactAccessorResultWithoutGammas> periodicities = new LinkedList<>();
+      periodicities.add(new ArtifactAccessorResultWithoutGammas(getRandomId(), "Periodic"));
+      periodicities.add(new ArtifactAccessorResultWithoutGammas(getRandomId(), "Aperiodic"));
+      return periodicities;
+   }
+
+   private List<ArtifactAccessorResultWithoutGammas> createMessageRates() {
+      List<ArtifactAccessorResultWithoutGammas> rates = new LinkedList<>();
+      rates.add(new ArtifactAccessorResultWithoutGammas(getRandomId(), "1"));
+      rates.add(new ArtifactAccessorResultWithoutGammas(getRandomId(), "5"));
+      rates.add(new ArtifactAccessorResultWithoutGammas(getRandomId(), "10"));
+      rates.add(new ArtifactAccessorResultWithoutGammas(getRandomId(), "25"));
+      rates.add(new ArtifactAccessorResultWithoutGammas(getRandomId(), "Aperiodic"));
+      return rates;
+   }
+
+   private List<ArtifactAccessorResultWithoutGammas> createMessageTypes() {
+      List<ArtifactAccessorResultWithoutGammas> messageTypes = new LinkedList<>();
+      messageTypes.add(new ArtifactAccessorResultWithoutGammas(getRandomId(), "Operational"));
+      messageTypes.add(new ArtifactAccessorResultWithoutGammas(getRandomId(), "Connection"));
+      return messageTypes;
+   }
+
+   private List<ArtifactAccessorResultWithoutGammas> createStructureCategories() {
+      List<ArtifactAccessorResultWithoutGammas> categories = new LinkedList<>();
+      categories.add(new ArtifactAccessorResultWithoutGammas(getRandomId(), "Misc"));
+      categories.add(new ArtifactAccessorResultWithoutGammas(getRandomId(), "Test"));
+      return categories;
    }
 
    private long getRandomId() {

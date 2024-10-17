@@ -11,7 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Inject, OnDestroy } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	inject,
+	signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/core';
@@ -26,17 +31,64 @@ import {
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
-import { CurrentTransportTypeService } from '@osee/messaging/shared/services';
-import type { connection, transportType } from '@osee/messaging/shared/types';
-import {
-	ApplicabilitySelectorComponent,
-	MatOptionLoadingComponent,
-} from '@osee/shared/components';
-import { Subject } from 'rxjs';
+import { ApplicabilityDropdownComponent } from '@osee/applicability/applicability-dropdown';
+import type { connection } from '@osee/messaging/shared/types';
+import { TransportTypeDropdownComponent } from '@osee/messaging/transports/dropdown';
+import { MatOptionLoadingComponent } from '@osee/shared/components';
+import { writableSlice } from '@osee/shared/utils';
 
 @Component({
 	selector: 'osee-edit-connection-dialog',
-	templateUrl: './edit-connection-dialog.component.html',
+	template: `<h1 mat-dialog-title>Editing {{ title() }}</h1>
+		<mat-dialog-content>
+			<form #connectionForm="ngForm">
+				<mat-form-field id="connection-name-field">
+					<mat-label>Add a Name</mat-label>
+					<input
+						matInput
+						type="text"
+						name="name"
+						[(ngModel)]="name"
+						#input
+						required />
+				</mat-form-field>
+				<br />
+				<mat-form-field id="connection-description-field">
+					<mat-label>Add a Description</mat-label>
+					<input
+						matInput
+						type="text"
+						name="description"
+						[(ngModel)]="description"
+						#input />
+				</mat-form-field>
+				<br />
+				<osee-transport-type-dropdown
+					#transportTypeDropdown
+					[(transportType)]="
+						transportType
+					"></osee-transport-type-dropdown>
+				<br />
+				<osee-applicability-dropdown
+					[(applicability)]="applicability"
+					[required]="true">
+				</osee-applicability-dropdown>
+			</form>
+		</mat-dialog-content>
+		<div mat-dialog-actions>
+			<button
+				mat-button
+				(click)="onNoClick()">
+				Cancel
+			</button>
+			<button
+				mat-flat-button
+				[mat-dialog-close]="connection()"
+				class="primary-button"
+				[disabled]="connectionForm.invalid || connectionForm.pending">
+				Ok
+			</button>
+		</div>`,
 	standalone: true,
 	imports: [
 		MatDialogTitle,
@@ -52,34 +104,24 @@ import { Subject } from 'rxjs';
 		MatOption,
 		AsyncPipe,
 		MatButton,
-		ApplicabilitySelectorComponent,
+		ApplicabilityDropdownComponent,
+		TransportTypeDropdownComponent,
 	],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EditConnectionDialogComponent implements OnDestroy {
-	private _done = new Subject();
-	title: string = '';
-	paginationSize = 5;
-	transportTypes = (pageNum: string | number) =>
-		this.transportTypeService.getPaginatedTypes(
-			pageNum,
-			this.paginationSize
-		);
-	constructor(
-		public dialogRef: MatDialogRef<EditConnectionDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: connection,
-		private transportTypeService: CurrentTransportTypeService
-	) {
-		this.title = data.name;
-	}
-	ngOnDestroy(): void {
-		this._done.next(true);
-	}
-
+export class EditConnectionDialogComponent {
+	protected title = signal(inject<connection>(MAT_DIALOG_DATA).name.value);
+	protected connection = signal<connection>(
+		inject<connection>(MAT_DIALOG_DATA)
+	);
+	private nameAttr = writableSlice(this.connection, 'name');
+	protected name = writableSlice(this.nameAttr, 'value');
+	private descriptionAttr = writableSlice(this.connection, 'description');
+	protected description = writableSlice(this.descriptionAttr, 'value');
+	protected transportType = writableSlice(this.connection, 'transportType');
+	protected applicability = writableSlice(this.connection, 'applicability');
+	private _dialogRef = inject(MatDialogRef<EditConnectionDialogComponent>);
 	onNoClick() {
-		this.dialogRef.close();
-	}
-
-	compareTransportTypes(o1: transportType, o2: transportType) {
-		return o1?.id === o2?.id && o1?.name === o2?.name;
+		this._dialogRef.close();
 	}
 }

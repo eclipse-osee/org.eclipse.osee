@@ -622,6 +622,11 @@ public class WordMlPublishingAppender extends PublishingAppenderBase {
       }
 
    }
+   
+   @Override
+   public void endOutlineSubSection() {
+	this.endSubSection();
+   }
 
    @Override
    public PublishingAppender startParagraph() {

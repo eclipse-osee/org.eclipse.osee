@@ -14,6 +14,6 @@ use nom::{bytes::complete::tag, IResult};
 
 pub fn end_tag_parser<'a>(
     custom_comment_syntax: &'a str,
-) -> impl FnMut(&'a str) -> IResult<&str, &str> {
+) -> impl FnMut(&'a str) -> IResult<&'a str, &'a str> {
     tag(custom_comment_syntax)
 }

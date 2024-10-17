@@ -1,5 +1,3 @@
-import { element, structure } from '@osee/messaging/shared/types';
-
 /*********************************************************************
  * Copyright (c) 2022 Boeing
  *
@@ -12,13 +10,17 @@ import { element, structure } from '@osee/messaging/shared/types';
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export const defaultEditElementProfile: (keyof element)[] = [
+import {
+	DisplayableElementProps,
+	displayableStructureFields,
+} from '@osee/messaging/shared/types';
+export const defaultEditElementProfile: (keyof DisplayableElementProps)[] = [
 	'name',
 	'description',
 	'platformType',
 	'interfaceElementIndexStart',
 	'interfaceElementIndexEnd',
-	'logicalType',
+	'interfaceLogicalType',
 	'interfaceDefaultValue',
 	'interfacePlatformTypeMinval',
 	'interfacePlatformTypeMaxval',
@@ -27,16 +29,15 @@ export const defaultEditElementProfile: (keyof element)[] = [
 	'beginByte',
 	'endByte',
 	'interfaceElementAlterable',
-	'interfacePlatformTypeDescription',
 	'notes',
 	'applicability',
-	'units',
+	'interfacePlatformTypeUnits',
 ];
 
-export const defaultViewElementProfile: (keyof element)[] = [
+export const defaultViewElementProfile: (keyof DisplayableElementProps)[] = [
 	'name',
-	'logicalType',
-	'units',
+	'interfaceLogicalType',
+	'interfacePlatformTypeUnits',
 	'interfacePlatformTypeMinval',
 	'interfacePlatformTypeMaxval',
 	'interfaceElementAlterable',
@@ -47,7 +48,7 @@ export const defaultViewElementProfile: (keyof element)[] = [
 ];
 
 export const defaultEditStructureProfile: (
-	| keyof structure
+	| keyof displayableStructureFields
 	| 'txRate'
 	| 'publisher'
 	| 'messageNumber'
@@ -68,7 +69,7 @@ export const defaultEditStructureProfile: (
 ];
 
 export const defaultViewStructureProfile: (
-	| keyof structure
+	| keyof displayableStructureFields
 	| 'txRate'
 	| 'publisher'
 	| 'messageNumber'

@@ -10,10 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ChangeReportTableComponent } from './change-report-table.component';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('ChangeReportTableComponent', () => {
 	let component: ChangeReportTableComponent;
@@ -21,7 +25,11 @@ describe('ChangeReportTableComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [HttpClientTestingModule, ChangeReportTableComponent],
+			imports: [ChangeReportTableComponent],
+			providers: [
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
+			],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(ChangeReportTableComponent);

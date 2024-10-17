@@ -10,10 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { NamedId, response } from '@osee/shared/types';
+import { NamedId, XResultData } from '@osee/shared/types';
 
 export type UpdateBranchData = {
 	needsMerge: boolean;
 	newBranchId: NamedId;
-	results: response;
+	results: XResultData;
 };

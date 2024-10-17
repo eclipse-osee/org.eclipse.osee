@@ -12,11 +12,11 @@
  **********************************************************************/
 package org.eclipse.osee.ats.api.workflow;
 
-import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 
-public class TeamWorkflowToken extends ArtifactAccessorResult {
+public class TeamWorkflowToken extends ArtifactAccessorResultWithoutGammas {
 
    private final String atsId;
 

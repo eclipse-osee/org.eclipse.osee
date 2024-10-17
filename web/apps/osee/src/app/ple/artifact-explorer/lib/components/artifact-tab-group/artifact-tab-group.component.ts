@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
-import { Component, computed } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTab, MatTabGroup, MatTabLabel } from '@angular/material/tabs';
@@ -43,13 +43,13 @@ import { TeamWorkflowTabComponent } from '../editor/team-workflow-tab/team-workf
 	templateUrl: './artifact-tab-group.component.html',
 })
 export class ArtifactTabGroupComponent {
+	private tabService = inject(ArtifactExplorerTabService);
+
 	tabs = this.tabService.Tabs;
 
 	connections = computed(() => this.tabs().map((_, i) => '' + i));
 
 	selectedIndex = this.tabService.selectedIndex;
-
-	constructor(private tabService: ArtifactExplorerTabService) {}
 
 	removeTab(index: number) {
 		this.tabService.removeTab(index);

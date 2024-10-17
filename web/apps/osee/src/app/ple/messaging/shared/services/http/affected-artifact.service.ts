@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { apiURL } from '@osee/environments';
 import type { affectedArtifact } from '../../types/affectedArtifact';
 
@@ -19,7 +19,8 @@ import type { affectedArtifact } from '../../types/affectedArtifact';
 	providedIn: 'root',
 })
 export class AffectedArtifactService {
-	constructor(private http: HttpClient) {}
+	private http = inject(HttpClient);
+
 	getEnumSetsByEnums(branchId: string | number, enumId: string | number) {
 		return this.http.get<affectedArtifact[]>(
 			apiURL + '/mim/branch/' + branchId + '/affected/enums/' + enumId

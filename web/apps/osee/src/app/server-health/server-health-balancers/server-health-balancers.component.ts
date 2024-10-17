@@ -12,7 +12,7 @@
  **********************************************************************/
 import { state, style, trigger } from '@angular/animations';
 import { AsyncPipe, NgClass } from '@angular/common';
-import { Component, SecurityContext } from '@angular/core';
+import { Component, SecurityContext, inject } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import {
 	MatCell,
@@ -72,13 +72,12 @@ const _currNavItem: navigationElement =
 	],
 })
 export class ServerHealthBalancersComponent {
+	private serverHealthHttpService = inject(ServerHealthHttpService);
+	private sanitizer = inject(DomSanitizer);
+
 	get currNavItem() {
 		return _currNavItem;
 	}
-	constructor(
-		private serverHealthHttpService: ServerHealthHttpService,
-		private sanitizer: DomSanitizer
-	) {}
 
 	private dataSource = new MatTableDataSource<healthBalancer>();
 	balancersAsDataSource: Observable<MatTableDataSource<healthBalancer>> =

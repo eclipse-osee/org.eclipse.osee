@@ -10,10 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HarnessLoader } from '@angular/cdk/testing';
-import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { CommonModule } from '@angular/common';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { SimpleChange } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
@@ -22,7 +20,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
@@ -36,13 +34,15 @@ import { CurrentStructureService } from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 import { element } from '@osee/messaging/shared/types';
 import { elementSearch1 } from '@osee/messaging/type-element-search/testing';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('SubElementTableComponent', () => {
 	let component: SubElementTableComponent;
 	let fixture: ComponentFixture<SubElementTableComponent>;
-	let loader: HarnessLoader;
-	let service: CurrentStructureService;
-	let expectedData: element[] = elementSearch1.splice(1, 3);
+	const expectedData: element[] = elementSearch1.splice(1, 3);
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
@@ -58,7 +58,6 @@ describe('SubElementTableComponent', () => {
 				FormsModule,
 				NoopAnimationsModule,
 				RouterTestingModule,
-				HttpClientTestingModule,
 				MockSubElementTableComponent,
 			],
 			providers: [
@@ -82,30 +81,26 @@ describe('SubElementTableComponent', () => {
 					provide: CurrentStructureService,
 					useValue: CurrentStateServiceMock,
 				},
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
 			],
 		}).compileComponents();
-		service = TestBed.inject(CurrentStructureService);
 	});
 
 	beforeEach(() => {
 		fixture = TestBed.createComponent(SubElementTableComponent);
 		component = fixture.componentInstance;
-		component.editMode = true;
-		component.data = expectedData;
-		component.dataSource = new MatTableDataSource(expectedData);
-		component.dataSource.filter = 'name1';
+		fixture.componentRef.setInput('editMode', true);
+		fixture.componentRef.setInput('data', expectedData);
 		component.filter = 'element: name1';
 		fixture.detectChanges();
-		loader = TestbedHarnessEnvironment.loader(fixture);
 	});
 
 	it('should create', async () => {
 		fixture.detectChanges();
 		await fixture.whenStable();
 		expect(component).toBeTruthy();
-		expect(component.data === expectedData).toBeTruthy();
 		expect(component.filter === 'element: name1').toBeTruthy();
-		expect(component.dataSource.filter === 'name1').toBeTruthy();
 	});
 	it('should update filter on changes', async () => {
 		fixture.detectChanges();

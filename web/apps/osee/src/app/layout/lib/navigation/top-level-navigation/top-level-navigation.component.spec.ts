@@ -71,9 +71,9 @@ export const tests = (
 
 	it('should get elements matching user permissions', () => {
 		scheduler.run(() => {
-			// Using the messaging configuration elements for this test
+			// Using the MIM elements for this test
 			const elements = navigationStructure[0].children.filter(
-				(c) => c.label === 'Messaging Configuration'
+				(c) => c.label === 'MIM'
 			)[0].children;
 			const elementsNoAdmin = elements.filter(
 				(e) => e.requiredRoles.length == 0

@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, combineLatest, from, iif, of } from 'rxjs';
 import {
 	concatMap,
@@ -20,7 +20,6 @@ import {
 	reduce,
 	shareReplay,
 	switchMap,
-	tap,
 } from 'rxjs/operators';
 import { Command } from '../../../types/grid-commander-types/gc-user-and-contexts-relationships';
 import { UserContextRelationsService } from '../context-relations/user-context-relations.service';
@@ -29,10 +28,10 @@ import { UserContextRelationsService } from '../context-relations/user-context-r
 	providedIn: 'root',
 })
 export class CommandGroupOptionsService {
+	private userContextRelations = inject(UserContextRelationsService);
+
 	private _commands$ = this.userContextRelations.commands;
 	private _stringToFilterCommandsBy = new BehaviorSubject<string>('');
-
-	constructor(private userContextRelations: UserContextRelationsService) {}
 
 	commandsSortFunction(commands: Command[]) {
 		return commands.sort((a, b) =>

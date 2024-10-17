@@ -11,37 +11,41 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { user } from '@osee/shared/types/auth';
+import { Injectable, inject } from '@angular/core';
 import { apiURL } from '@osee/environments';
+import { user } from '@osee/shared/types/auth';
+import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
 import type { element } from '../../types/element';
-import type { structure } from '../../types/structure';
 import type { message } from '../../types/messages';
-import type { subMessage } from '../../types/sub-messages';
 import type {
 	MimPreferences,
 	MimUserGlobalPreferences,
 } from '../../types/mim.preferences';
-import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
+import type { displayableStructureFields } from '../../types/structure';
+import type { subMessage } from '../../types/sub-messages';
 
-import { TransactionService } from '@osee/shared/transactions';
-import { attributeType, transaction } from '@osee/shared/types';
+import { TransactionService } from '@osee/transactions/services';
+import {
+	legacyAttributeType,
+	legacyTransaction,
+} from '@osee/transactions/types';
 @Injectable({
 	providedIn: 'root',
 })
 export class MimPreferencesService {
-	constructor(
-		private http: HttpClient,
-		private txService: TransactionService
-	) {}
+	private http = inject(HttpClient);
 
-	getUserPrefs(branchId: string, user: user) {
+	private txService = inject(TransactionService);
+
+	getUserPrefs(branchId: string, _user: user) {
 		return this.http.get<
-			MimPreferences<structure & message & subMessage & element>
+			MimPreferences<
+				displayableStructureFields & message & subMessage & element
+			>
 		>(apiURL + '/mim/user/' + branchId);
 	}
 
-	getBranchPrefs(user: user) {
+	getBranchPrefs(_user: user) {
 		return this.http.get<string[]>(apiURL + '/mim/user/branches');
 	}
 
@@ -72,7 +76,7 @@ export class MimPreferencesService {
 					bArtId: 'globalPrefs',
 				},
 			],
-		} as transaction;
+		} as legacyTransaction;
 
 		return this.txService.performMutation(tx);
 	}
@@ -81,7 +85,7 @@ export class MimPreferencesService {
 		current: MimUserGlobalPreferences,
 		updated: MimUserGlobalPreferences
 	) {
-		let setAttributes: attributeType[] = [];
+		const setAttributes: legacyAttributeType[] = [];
 		if (current.wordWrap !== updated.wordWrap) {
 			setAttributes.push({
 				typeName: 'MIM Word Wrap',
@@ -93,12 +97,12 @@ export class MimPreferencesService {
 			branch: '570',
 			txComment: 'Updating MIM User Global Preferences',
 			modifyArtifacts: [{ id: updated.id, setAttributes: setAttributes }],
-		} as transaction;
+		} as legacyTransaction;
 
 		return this.txService.performMutation(tx);
 	}
 
-	performMutation(transaction: transaction) {
+	performMutation(transaction: legacyTransaction) {
 		return this.txService.performMutation(transaction);
 	}
 }

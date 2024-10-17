@@ -48,30 +48,30 @@ export class PLEditConfigData implements ConfigData {
 		| viewWithChangesAndGroups
 		| viewWithGroups
 		| viewWithDescription = {
-		id: '',
+		id: '-1',
 		name: '',
 		description: '',
 		hasFeatureApplicabilities: false,
 		groups: [],
 	};
-	copyFrom = {
-		id: '',
+	copyFrom: view = {
+		id: '-1',
 		name: '',
 		description: '',
 		hasFeatureApplicabilities: false,
 	};
 	group: ConfigGroup[] = [];
-	editable: boolean = false;
+	editable = false;
 }
-export interface copyFrom {
+export type copyFrom = {
 	copyFrom: number;
-}
-export interface PLAddConfigData extends ConfigData {
+};
+export type PLAddConfigData = {
 	title: string;
 	description: string;
-}
-interface ConfigData {
+} & ConfigData;
+type ConfigData = {
 	copyFrom: view;
 	group: ConfigGroup[];
 	productApplicabilities: string[];
-}
+};

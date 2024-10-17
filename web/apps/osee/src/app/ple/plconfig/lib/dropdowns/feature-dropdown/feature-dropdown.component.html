@@ -28,33 +28,36 @@
 			(click)="addFeature()"
 			[disabled]="!editable()"
 			data-cy="add-feature-btn">
-			<mat-icon color="success">add_box</mat-icon>Add Feature
+			<mat-icon class="tw-text-osee-green-9">add_box</mat-icon>Add Feature
 		</button>
 		<button
 			mat-menu-item
 			[disabled]="!editable()"
 			[matMenuTriggerFor]="editConfigMenu"
 			data-cy="edit-feature-btn">
-			<mat-icon color="primary">edit</mat-icon>Edit Feature
+			<mat-icon class="tw-text-osee-blue-9">edit</mat-icon>Edit Feature
 		</button>
 		<button
 			mat-menu-item
 			[disabled]="!editable()"
 			[matMenuTriggerFor]="deleteConfigMenu"
 			data-cy="delete-feature-btn">
-			<mat-icon color="warn">delete_forever</mat-icon>Delete Feature
+			<mat-icon class="tw-text-osee-red-9">delete_forever</mat-icon>Delete
+			Feature
 		</button>
 		<button
 			mat-menu-item
 			[disabled]="!editable()"
 			(click)="addFeatureConstraint()">
-			<mat-icon color="success">add_box</mat-icon>Add Feature Constraint
+			<mat-icon class="tw-text-osee-green-9">add_box</mat-icon>Add Feature
+			Constraint
 		</button>
 		<button
 			mat-menu-item
 			[disabled]="!editable()"
 			(click)="editFeatureConstraints()">
-			<mat-icon color="primary">edit</mat-icon>Edit Feature Constraints
+			<mat-icon class="tw-text-osee-blue-9">edit</mat-icon>Edit Feature
+			Constraints
 		</button>
 	</ng-template>
 </mat-menu>

@@ -32,13 +32,13 @@ describe('SplitOnSemicolonPipe', () => {
 
 	it('should split on semicolon by default', () => {
 		const pipe = new SplitStringPipe();
-		let result = pipe.transform('testing;testing');
+		const result = pipe.transform('testing;testing');
 		expect(result).toEqual(['testing', 'testing']);
 	});
 
 	it('should return an empty array', () => {
 		const pipe = new SplitStringPipe();
-		let result = pipe.transform(1, ';');
+		const result = pipe.transform(1, ';');
 		expect(result).toEqual([]);
 	});
 });

@@ -17,7 +17,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 	standalone: true,
 })
 export class ObjectValuesPipe implements PipeTransform {
-	transform<T>(value: { [key: string]: T }): T[] {
+	transform<T>(value: Record<string, T>): T[] {
 		if (value === undefined || value === null) {
 			return [];
 		}

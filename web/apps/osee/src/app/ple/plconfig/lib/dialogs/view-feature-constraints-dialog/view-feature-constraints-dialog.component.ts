@@ -11,7 +11,7 @@ import { featureConstraintData } from './../../types/pl-config-feature-constrain
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import {
 	MatDialogActions,
@@ -32,7 +32,7 @@ import {
 	MatTable,
 } from '@angular/material/table';
 import { PlConfigUIStateService } from '@osee/plconfig';
-import { response } from '@osee/shared/types';
+import { XResultData } from '@osee/shared/types';
 import { take } from 'rxjs';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import { applicWithConstraints } from '../../types/pl-config-feature-constraints';
@@ -60,11 +60,17 @@ import { applicWithConstraints } from '../../types/pl-config-feature-constraints
 	styles: [],
 })
 export class ViewFeatureConstraintsDialogComponent {
-	constructor(
-		private uiStateService: PlConfigUIStateService,
-		public currentBranchService: PlConfigCurrentBranchService,
-		public dialogRef: MatDialogRef<ViewFeatureConstraintsDialogComponent>
-	) {
+	private uiStateService = inject(PlConfigUIStateService);
+	currentBranchService = inject(PlConfigCurrentBranchService);
+	dialogRef =
+		inject<MatDialogRef<ViewFeatureConstraintsDialogComponent>>(
+			MatDialogRef
+		);
+
+	/** Inserted by Angular inject() migration for backwards compatibility */
+	constructor(...args: unknown[]);
+
+	constructor() {
 		this.currentBranchService.applicsWithFeatureConstraints.subscribe(
 			(applics) => {
 				this.applicsToDisplay = applics;
@@ -83,8 +89,8 @@ export class ViewFeatureConstraintsDialogComponent {
 	];
 	data: featureConstraintData = {
 		featureConstraint: {
-			applicability1: { id: '', name: '' },
-			applicability2: { id: '', name: '' },
+			applicability1: { id: '-1', name: '' },
+			applicability2: { id: '-1', name: '' },
 		},
 	};
 
@@ -93,15 +99,15 @@ export class ViewFeatureConstraintsDialogComponent {
 	}
 
 	deleteFeatureConstraint(
-		childApplicId: string,
+		childApplicId: `${number}`,
 		childApplicName: string,
-		parentApplicId: string,
+		parentApplicId: `${number}`,
 		parentApplicName: string
 	) {
 		if (
-			childApplicId != '' &&
+			childApplicId != '-1' &&
 			childApplicName != '' &&
-			parentApplicId != '' &&
+			parentApplicId != '-1' &&
 			parentApplicName != ''
 		) {
 			this.data.featureConstraint.applicability1.id = childApplicId;
@@ -111,7 +117,7 @@ export class ViewFeatureConstraintsDialogComponent {
 			this.currentBranchService
 				.deleteFeatureConstraint(this.data)
 				.pipe(take(1))
-				.subscribe((response: response) => {
+				.subscribe((response: XResultData) => {
 					if (response.success) {
 						this.uiStateService.updateReqConfig = true;
 					}

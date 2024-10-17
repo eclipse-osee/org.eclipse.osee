@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Directive, Input, Optional } from '@angular/core';
+import { Directive, Input, Optional, inject } from '@angular/core';
 import {
 	AbstractControl,
 	AsyncValidator,
@@ -21,6 +21,7 @@ import { CurrentQueryService } from '@osee/messaging/shared/services';
 import type {
 	logicalTypeFormDetail,
 	PlatformType,
+	PlatformTypeAttr,
 } from '@osee/messaging/shared/types';
 import {
 	andQuery,
@@ -28,8 +29,8 @@ import {
 	PlatformTypeQuery,
 } from '@osee/messaging/shared/query';
 import { Observable, of, switchMap, take } from 'rxjs';
-import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
 import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 
 @Directive({
 	selector: '[oseeUniquePlatformTypeAttributes]',
@@ -44,10 +45,12 @@ import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 	exportAs: 'oseeUniquePlatformTypeAttributes',
 })
 export class UniquePlatformTypeAttributesDirective implements AsyncValidator {
+	private queryService = inject(CurrentQueryService);
+
 	@Optional()
 	@Input('oseeUniquePlatformTypeAttributes')
-	inputField?: logicalTypeFormDetail<keyof PlatformType> = {
-		id: '',
+	inputField?: logicalTypeFormDetail<keyof PlatformTypeAttr> = {
+		id: '-1',
 		name: '',
 		idString: '',
 		idIntValue: 0,
@@ -56,21 +59,37 @@ export class UniquePlatformTypeAttributesDirective implements AsyncValidator {
 	@Input() referencePlatform: PlatformType | Partial<PlatformType> =
 		new PlatformTypeSentinel();
 	private __referencePlatform = new PlatformTypeSentinel();
-	constructor(private queryService: CurrentQueryService) {}
+
 	validate(
-		control: AbstractControl<PlatformType, any>
+		control: AbstractControl<
+			{
+				byteSize: number;
+				interfaceDefaultValue: string;
+				interfaceDescription: string;
+				interfaceLogicalType: string;
+				interfacePlatformTypeAnalogAccuracy: string;
+				interfacePlatformTypeBitSize: string;
+				interfacePlatformTypeBitsResolution: string;
+				interfacePlatformTypeCompRate: string;
+				interfacePlatformTypeMaxval: string;
+				interfacePlatformTypeMinval: string;
+				interfacePlatformTypeMsbValue: string;
+				interfacePlatformTypeUnits: string;
+			},
+			never
+		>
 	): Observable<ValidationErrors | null> {
 		const nonEditableFields =
 			this.inputField?.fields?.filter((field) => !field.editable) || [];
 		const queries: andQuery[] = [];
 		if (
-			control.value.description !== '' &&
-			control.value.description !== undefined
+			control.value.interfaceDescription !== '' &&
+			control.value.interfaceDescription !== undefined
 		)
 			queries.push(
 				new andQuery(
 					ATTRIBUTETYPEIDENUM.DESCRIPTION,
-					control.value.description
+					control.value.interfaceDescription
 				)
 			);
 		if (
@@ -175,7 +194,7 @@ export class UniquePlatformTypeAttributesDirective implements AsyncValidator {
 			);
 		nonEditableFields.forEach((field) => {
 			queries.push(
-				//@ts-ignore
+				//@ts-expect-error field doesn't narrow properly
 				new andQuery(field.attributeTypeId, field.defaultValue)
 			);
 		});
@@ -200,13 +219,13 @@ export class UniquePlatformTypeAttributesDirective implements AsyncValidator {
 					this.referencePlatform.id !== this.__referencePlatform.id &&
 					results
 						.map((v) => v.id)
-						.includes(this.referencePlatform?.id || '') &&
+						.includes(this.referencePlatform?.id || '-1') &&
 					results.length !== 1 &&
-					this.referencePlatform.interfaceLogicalType !==
+					this.referencePlatform.interfaceLogicalType?.value !==
 						'enumeration'
 						? of<ValidationErrors>({
 								attributesNotUnique: { value: results.length },
-						  })
+							})
 						: of(null)
 				)
 			);

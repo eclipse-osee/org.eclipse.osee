@@ -10,8 +10,5 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './unit-dropdown/unit-dropdown.component';
-export * from './rate-dropdown/rate-dropdown.component';
-export * from './message-type-dropdown/message-type-dropdown.component';
 export * from './cross-reference-dropdown/cross-reference-dropdown.component';
 export * from './connection-dropdown/connection-dropdown.component';

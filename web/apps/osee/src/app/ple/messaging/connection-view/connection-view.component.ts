@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
 	CurrentGraphService,
@@ -29,12 +29,10 @@ import { combineLatest, iif, of } from 'rxjs';
 	imports: [ConnectionsComponent],
 })
 export class ConnectionViewComponent implements OnInit {
-	constructor(
-		private route: ActivatedRoute,
-		private router: Router,
-		private routerState: RouteStateService,
-		private graph: CurrentGraphService
-	) {}
+	private route = inject(ActivatedRoute);
+	private router = inject(Router);
+	private routerState = inject(RouteStateService);
+	private graph = inject(CurrentGraphService);
 
 	ngOnInit(): void {
 		combineLatest([
@@ -50,17 +48,17 @@ export class ConnectionViewComponent implements OnInit {
 				/**
 				 * Set params to uninitalized state for invalid routes
 				 */
-				this.routerState.connectionId = '';
+				this.routerState.connectionId = '-1';
 				this.routerState.messageId = '';
-				this.routerState.subMessageId = '';
+				this.routerState.subMessageId = '-1';
 				this.routerState.subMessageToStructureBreadCrumbs = '';
 				this.routerState.singleStructureId = '';
 				///////////////////////////////////////////////////////////
 				this.routerState.DiffMode = false;
 			} else {
-				this.routerState.connectionId = '';
+				this.routerState.connectionId = '-1';
 				this.routerState.messageId = '';
-				this.routerState.subMessageId = '';
+				this.routerState.subMessageId = '-1';
 				this.routerState.subMessageToStructureBreadCrumbs = '';
 				this.routerState.singleStructureId = '';
 				this.graph.difference = data.diff;

@@ -15,7 +15,12 @@ import {
 	Breakpoints,
 	BreakpointState,
 } from '@angular/cdk/layout';
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	input,
+	inject,
+} from '@angular/core';
 import { PlatformTypeCardComponent } from '@osee/messaging/shared/main-content';
 import { PlatformType } from '@osee/messaging/shared/types';
 import { combineLatest } from 'rxjs';
@@ -36,15 +41,15 @@ import { PlMessagingTypesUIService } from '../services/pl-messaging-types-ui.ser
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TypeGridComponent {
+	private breakpointObserver = inject(BreakpointObserver);
+	private uiService = inject(PlMessagingTypesUIService);
+
 	platformTypes = input.required<PlatformType[]>();
 	columnCount = this.uiService.columnCount;
-	gutterSize: string = '';
-	rowHeight: string = '';
+	gutterSize = '';
+	rowHeight = '';
 
-	constructor(
-		private breakpointObserver: BreakpointObserver,
-		private uiService: PlMessagingTypesUIService
-	) {
+	constructor() {
 		const breakpoint = this.breakpointObserver.observe([
 			Breakpoints.XSmall,
 			Breakpoints.Small,
@@ -53,7 +58,7 @@ export class TypeGridComponent {
 			Breakpoints.XLarge,
 			Breakpoints.Web,
 		]);
-		const combined = combineLatest([
+		const _combined = combineLatest([
 			breakpoint,
 			this.uiService.singleLineAdjustment,
 		]).subscribe((result) => {

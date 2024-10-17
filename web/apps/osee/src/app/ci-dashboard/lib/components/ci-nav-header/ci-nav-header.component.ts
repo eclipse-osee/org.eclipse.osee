@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, NgClass } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { UserDataAccountService } from '@osee/auth';
 import { navigationElement } from '@osee/shared/types';
@@ -34,11 +34,9 @@ import { CiDashboardUiService } from '../../services/ci-dashboard-ui.service';
 	templateUrl: './ci-nav-header.component.html',
 })
 export default class CiNavHeaderComponent {
-	constructor(
-		private ui: CiDashboardUiService,
-		public router: Router,
-		private userService: UserDataAccountService
-	) {}
+	private ui = inject(CiDashboardUiService);
+	router = inject(Router);
+	private userService = inject(UserDataAccountService);
 
 	navItems = from(ciNavigationStructure[0].children).pipe(
 		concatMap((item) =>

@@ -22,7 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -36,7 +36,7 @@ import org.eclipse.osee.orcs.rest.model.transaction.CreateArtifact;
 /**
  * @author Stephen J. Molaro
  */
-public class ScriptDefToken extends ArtifactAccessorResult {
+public class ScriptDefToken extends ArtifactAccessorResultWithoutGammas {
 
    public static final ScriptDefToken SENTINEL = new ScriptDefToken();
 

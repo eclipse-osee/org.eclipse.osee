@@ -29,12 +29,13 @@ export class StructureDataSource extends DataSource<
 		super();
 	}
 	connect(
-		collectionViewer: CollectionViewer
+		_collectionViewer: CollectionViewer
 	): Observable<readonly (structure | structureWithChanges)[]> {
 		return this.structureService.structures.pipe(
 			takeUntil(this.structureService.done)
 		);
 	}
 
-	disconnect(collectionViewer: CollectionViewer): void {}
+	//eslint-disable-next-line @typescript-eslint/no-empty-function
+	disconnect(_collectionViewer: CollectionViewer): void {}
 }

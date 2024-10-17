@@ -11,10 +11,10 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-import { Component, Input, Output } from '@angular/core';
+import { Component, model, output } from '@angular/core';
+import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
 import { NewTypeFormComponent } from '@osee/messaging/shared/forms';
 import type { PlatformType } from '@osee/messaging/shared/types';
-import { of } from 'rxjs';
 
 @Component({
 	selector: 'osee-new-type-form',
@@ -22,14 +22,8 @@ import { of } from 'rxjs';
 	standalone: true,
 })
 export class MockNewTypeFormComponent implements Partial<NewTypeFormComponent> {
-	@Input() preFillData?: PlatformType[];
-	@Output() typeFormState = of({
-		platformType: {},
-		createEnum: false,
-		enumSetId: '',
-		enumSetName: '',
-		enumSetDescription: '',
-		enumSetApplicability: { id: '1', name: 'Base' },
-		enums: [],
-	});
+	platformType = model<PlatformType>(new PlatformTypeSentinel());
+	close = output<boolean>();
+
+	result = output<PlatformType>();
 }

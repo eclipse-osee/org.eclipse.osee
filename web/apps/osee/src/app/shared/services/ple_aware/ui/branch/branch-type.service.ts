@@ -19,7 +19,7 @@ import { BehaviorSubject } from 'rxjs';
 export class BranchTypeService {
 	private _branchType: BehaviorSubject<'working' | 'baseline' | ''> =
 		new BehaviorSubject<'working' | 'baseline' | ''>('');
-	constructor() {}
+
 	get branchType() {
 		return this._branchType;
 	}

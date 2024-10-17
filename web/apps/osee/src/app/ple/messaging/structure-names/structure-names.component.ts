@@ -11,7 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatAnchor } from '@angular/material/button';
 import {
@@ -65,10 +66,17 @@ import { map, switchMap } from 'rxjs/operators';
 	],
 })
 export class StructureNamesComponent implements OnInit {
-	_filter = new BehaviorSubject<string>('');
-	connection = new BehaviorSubject<connection>(connectionSentinel);
+	private uiService = inject(UiService);
+	private structureService = inject(CurrentStructureNamesService);
+	private route = inject(ActivatedRoute);
+	private loadingService = inject(HttpLoadingService);
 
-	names = this.connection.pipe(
+	_filter = new BehaviorSubject<string>('');
+	// connection = new BehaviorSubject<connection>(connectionSentinel);
+	protected connection = signal<connection>(connectionSentinel);
+	private _connection = toObservable(this.connection);
+
+	names = this._connection.pipe(
 		switchMap((connection) =>
 			this.structureService.getStructureNames(connection.id || '-1').pipe(
 				switchMap((names) =>
@@ -86,7 +94,7 @@ export class StructureNamesComponent implements OnInit {
 												)
 												.flat()
 												.includes(filter)
-								  )
+									)
 								: names
 						)
 					)
@@ -95,17 +103,19 @@ export class StructureNamesComponent implements OnInit {
 		)
 	);
 
+	protected computePathNames(
+		paths: {
+			name: string;
+			path: string;
+		}[]
+	) {
+		return paths.map((x) => x.name + ':' + x.path).join(',');
+	}
+
 	basePath = combineLatest([this.uiService.id, this.uiService.type]).pipe(
 		switchMap(([id, type]) => of(`../../../connections/${type}/${id}`))
 	);
 	loading = this.loadingService.isLoading;
-
-	constructor(
-		private uiService: UiService,
-		private structureService: CurrentStructureNamesService,
-		private route: ActivatedRoute,
-		private loadingService: HttpLoadingService
-	) {}
 
 	ngOnInit(): void {
 		this.route.paramMap
@@ -120,10 +130,6 @@ export class StructureNamesComponent implements OnInit {
 				})
 			)
 			.subscribe();
-	}
-
-	selectConnection(value: connection) {
-		this.connection.next(value);
 	}
 
 	applyFilter(event: Event) {

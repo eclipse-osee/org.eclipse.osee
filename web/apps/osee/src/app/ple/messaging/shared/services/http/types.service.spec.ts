@@ -11,73 +11,55 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
-	HttpClientTestingModule,
 	HttpTestingController,
+	provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { TestScheduler } from 'rxjs/testing';
 import { apiURL } from '@osee/environments';
 
-import { TypesService } from './types.service';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 import { platformTypesMock } from '@osee/messaging/shared/testing';
-import { TransactionBuilderService } from '@osee/shared/transactions';
+import { TransactionBuilderService } from '@osee/shared/transactions-legacy';
+import { transactionBuilderMock } from '@osee/shared/transactions-legacy/testing';
+import { txMock } from '@osee/transactions/testing';
+import { TypesService } from './types.service';
 import {
-	transactionBuilderMock,
-	transactionMock,
-} from '@osee/shared/transactions/testing';
-import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('TypesService', () => {
 	let service: TypesService;
-	let scheduler: TestScheduler;
 	let httpTestingController: HttpTestingController;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
+			imports: [],
 			providers: [
 				{
 					provide: TransactionBuilderService,
 					useValue: transactionBuilderMock,
 				},
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
 			],
-			imports: [HttpClientTestingModule],
 		});
 		service = TestBed.inject(TypesService);
 		httpTestingController = TestBed.inject(HttpTestingController);
 	});
-	beforeEach(
-		() =>
-			(scheduler = new TestScheduler((actual, expected) => {
-				expect(actual).toEqual(expected);
-			}))
-	);
 
 	it('should be created', () => {
 		expect(service).toBeTruthy();
 	});
 
 	it('should create a platform type transaction', () => {
-		scheduler.run(() => {
-			const expectedfilterValues = { a: transactionMock };
-			const expectedMarble = '(a|)';
-			scheduler
-				.expectObservable(
-					service.createPlatformType('10', platformTypesMock[0], [])
-				)
-				.toBe(expectedMarble, expectedfilterValues);
-		});
-	});
-
-	it('should create a transaction to change a platform type', () => {
-		scheduler.run(() => {
-			const expectedfilterValues = { a: transactionMock };
-			const expectedMarble = '(a|)';
-			scheduler
-				.expectObservable(
-					service.changePlatformType('10', platformTypesMock[0])
-				)
-				.toBe(expectedMarble, expectedfilterValues);
-		});
+		expect(
+			service.addNewPlatformTypeToTransaction(
+				platformTypesMock[0],
+				txMock,
+				undefined
+			)
+		).toBe(txMock);
 	});
 
 	it('should perform a mutation', () => {
@@ -114,7 +96,7 @@ describe('TypesService', () => {
 			apiURL +
 				'/mim/branch/' +
 				10 +
-				'/types/filter/' +
+				'/types/filter' +
 				'' +
 				'?count=10&pageNum=1' +
 				'&orderByAttributeType=' +

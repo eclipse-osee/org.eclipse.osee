@@ -16,14 +16,12 @@ import { logicalTypeMock } from './logical-type.response.mock';
 import { logicalTypeFormDetailMock } from './logical-type-form-detail.response.mock';
 import { platformTypes1 } from './platform-types.response.mock';
 import type { PlatformType } from '@osee/messaging/shared/types';
-import { transaction } from '@osee/shared/types';
-import {
-	transactionResultMock,
-	transactionMock,
-} from '@osee/shared/transactions/testing';
+import { transactionResultMock } from '@osee/transactions/testing';
+import { legacyTransaction, transaction } from '@osee/transactions/types';
+import { transactionMock } from '@osee/transactions/testing';
 
 export const typesServiceMock: Partial<TypesService> = {
-	performMutation(body: transaction) {
+	performMutation(body: legacyTransaction) {
 		return of(transactionResultMock);
 	},
 	getFilteredTypes(filter: string, branchId: string) {
@@ -35,14 +33,12 @@ export const typesServiceMock: Partial<TypesService> = {
 	getType(branchId: string, platformTypeId: string) {
 		return of(platformTypes1[0]);
 	},
-	changePlatformType(branchId: string, type: Partial<PlatformType>) {
-		return of(transactionMock);
-	},
-	createPlatformType(
-		branchId: string,
-		type: PlatformType | Partial<PlatformType>
+	addNewPlatformTypeToTransaction(
+		type: PlatformType,
+		tx: Required<transaction>,
+		key?: string
 	) {
-		return of(transactionMock);
+		return tx;
 	},
 	getLogicalTypeFormDetail(id: string) {
 		return of(logicalTypeFormDetailMock);

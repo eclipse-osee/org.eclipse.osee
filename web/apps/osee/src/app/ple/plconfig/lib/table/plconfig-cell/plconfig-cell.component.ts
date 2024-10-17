@@ -12,8 +12,6 @@
  **********************************************************************/
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { applicWithGamma } from '@osee/shared/types/applicability';
-import { ATTRIBUTETYPEIDENUM } from '@osee/shared/types/constants';
 import { OperatorFunction, debounceTime, filter, switchMap } from 'rxjs';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import {
@@ -23,6 +21,8 @@ import {
 import { PlconfigMultiSelectTupleComponent } from '../plconfig-multi-select-tuple/plconfig-multi-select-tuple.component';
 import { PLConfigSelectSingleTupleComponent } from '../plconfig-select-single-tuple/plconfig-select-single-tuple.component';
 import { SplitApplicabilityPipe } from '../split-applicability.pipe';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
+import { applicWithGamma } from '@osee/applicability/types';
 
 @Component({
 	selector: 'osee-plconfig-cell',
@@ -42,7 +42,7 @@ import { SplitApplicabilityPipe } from '../split-applicability.pipe';
 					(valueChange)="updateValue($event)"
 					[class]="
 						hasTupleChanges()
-							? 'hover:tw-bg-accent-50 hover:tw-text-accent-50-contrast  hover:tw-placeholder-accent-50-contrast tw-bg-accent-100 tw-text-accent-100-contrast tw-placeholder-accent-100-contrast'
+							? 'tw-bg-accent-100 tw-text-accent-100-contrast tw-placeholder-accent-100-contrast hover:tw-bg-accent-50 hover:tw-text-accent-50-contrast hover:tw-placeholder-accent-50-contrast'
 							: ''
 					" />
 			} @else {
@@ -54,7 +54,7 @@ import { SplitApplicabilityPipe } from '../split-applicability.pipe';
 					(valueChange)="updateValue($event)"
 					[class]="
 						hasTupleChanges()
-							? 'hover:tw-bg-accent-50 hover:tw-text-accent-50-contrast  hover:tw-placeholder-accent-50-contrast tw-bg-accent-100 tw-text-accent-100-contrast tw-placeholder-accent-100-contrast'
+							? 'tw-bg-accent-100 tw-text-accent-100-contrast tw-placeholder-accent-100-contrast hover:tw-bg-accent-50 hover:tw-text-accent-50-contrast hover:tw-placeholder-accent-50-contrast'
 							: ''
 					"></osee-plconfig-multi-select-tuple>
 			}
@@ -63,7 +63,7 @@ import { SplitApplicabilityPipe } from '../split-applicability.pipe';
 				<span
 					[class]="
 						hasTupleChanges()
-							? 'hover:tw-bg-accent-50 hover:tw-text-accent-50-contrast  hover:tw-placeholder-accent-50-contrast tw-bg-accent-100 tw-text-accent-100-contrast tw-placeholder-accent-100-contrast'
+							? 'tw-bg-accent-100 tw-text-accent-100-contrast tw-placeholder-accent-100-contrast hover:tw-bg-accent-50 hover:tw-text-accent-50-contrast hover:tw-placeholder-accent-50-contrast'
 							: ''
 					"
 					>{{ value() | splitApplicability }}</span
@@ -72,7 +72,7 @@ import { SplitApplicabilityPipe } from '../split-applicability.pipe';
 				<span
 					[class]="
 						hasTupleChanges()
-							? 'hover:tw-bg-accent-50 hover:tw-text-accent-50-contrast  hover:tw-placeholder-accent-50-contrast tw-bg-accent-100 tw-text-accent-100-contrast tw-placeholder-accent-100-contrast'
+							? 'tw-bg-accent-100 tw-text-accent-100-contrast tw-placeholder-accent-100-contrast hover:tw-bg-accent-50 hover:tw-text-accent-50-contrast hover:tw-placeholder-accent-50-contrast'
 							: ''
 					"
 					>{{ valueMultiValued() }}</span
@@ -90,12 +90,14 @@ export class PlconfigCellComponent {
 	 * For configuration groups, we should disable editing, for configurations we should allow it
 	 */
 	public allowEdits = input.required<boolean>();
-	protected applicability = computed(
-		() =>
+	protected applicability = computed(() => {
+		const applic: applicWithGamma = { id: '-1', name: '', gammaId: '-1' };
+		return (
 			this.feature().configurationValues.find(
 				(x) => x.id === this.configId()
-			)?.applicability || { id: '', name: '', gammaId: '' }
-	);
+			)?.applicability || applic
+		);
+	});
 	protected applicabilityMultiValue = computed(() =>
 		this.feature()
 			.configurationValues.filter((x) => x.id === this.configId())
@@ -180,7 +182,6 @@ export class PlconfigCellComponent {
 				this._updatedValue.set(
 					newValue.filter(
 						(x) =>
-							x.id !== '' &&
 							x.id !== '-1' &&
 							x.id !== '0' &&
 							x.gammaId !== '' &&
@@ -193,7 +194,6 @@ export class PlconfigCellComponent {
 		} else if (
 			newValue.id !== this.applicability().id &&
 			newValue.id !== '-1' &&
-			newValue.id !== '' &&
 			newValue.id !== '0' &&
 			newValue.gammaId !== '-1' &&
 			newValue.gammaId !== '' &&

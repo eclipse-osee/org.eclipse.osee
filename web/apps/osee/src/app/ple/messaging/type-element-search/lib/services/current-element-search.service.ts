@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { combineLatest } from 'rxjs';
 import { filter, switchMap, debounceTime } from 'rxjs/operators';
 import { RouterStateService } from './router-state.service';
@@ -21,6 +21,10 @@ import { SearchService } from './search.service';
 	providedIn: 'root',
 })
 export class CurrentElementSearchService {
+	private uiService = inject(RouterStateService);
+	private platformTypesService = inject(PlatformTypesService);
+	private searchService = inject(SearchService);
+
 	private _elements = combineLatest([
 		this.uiService.BranchId,
 		this.searchService.searchTerm,
@@ -37,11 +41,6 @@ export class CurrentElementSearchService {
 			this.platformTypesService.getFilteredElements(search, id)
 		)
 	);
-	constructor(
-		private uiService: RouterStateService,
-		private platformTypesService: PlatformTypesService,
-		private searchService: SearchService
-	) {}
 
 	get elements() {
 		return this._elements;

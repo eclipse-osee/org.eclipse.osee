@@ -22,7 +22,7 @@ import { NgChartsModule } from 'ng2-charts';
 	templateUrl: './pie-chart.component.html',
 })
 export class PieChartComponent implements OnInit {
-	@Input() title: string = '';
+	@Input() title = '';
 	@Input() labels: string[] = [];
 	@Input() data: number[] = [];
 	@Input() colors: string[] = [];

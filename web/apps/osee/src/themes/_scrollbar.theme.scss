@@ -14,47 +14,19 @@
 @use 'sass:math';
 @use '@angular/material' as mat;
 
-@mixin color($config-or-theme) {
-	// Extract the color configuration in case a theme has been passed.
-	// This allows consumers to either pass a theme object or a color configuration.
-	$config: mat.get-color-config($config-or-theme);
-
-	// Extract the palettes you need from the theme definition.
-	$primary: map.get($config, primary);
-	$accent: map.get($config, accent);
-	$warn: map.get($config, warn);
-	$background: map.get($config, background);
-	$foreground: map.get($config, foreground);
-
-	// Define any styles affected by the theme.
-
-	::-webkit-scrollbar {
-		background-color: mat.get-color-from-palette($background, app-bar);
-	}
-
-	::-webkit-scrollbar-track {
-		background-color: mat.get-color-from-palette($background, app-bar);
-	}
-
-	::-webkit-scrollbar-thumb {
-		background-color: mat.get-color-from-palette($foreground, divider);
-		border-color: mat.get-color-from-palette($foreground, divider);
-	}
-
-	::-webkit-scrollbar-corner {
-		background-color: mat.get-color-from-palette($background, status-bar);
-	}
+/* stylelint-disable-next-line block-no-empty */
+@mixin color($theme) {
 }
-@mixin typography($config-or-theme) {
-	$config: mat.get-typography-config($config-or-theme);
+/* stylelint-disable-next-line block-no-empty */
+@mixin typography($theme) {
 }
 
-@mixin density($config-or-theme) {
-	$config: mat.get-density-config($config-or-theme);
+@mixin density($theme) {
+	$config: mat.get-theme-density($theme);
 
 	::-webkit-scrollbar {
 		height: calc(1em + 0.25em * $config);
-		width: calc(math.abs(1em * $config));
+		width: calc(math.abs(0.5em * $config));
 	}
 
 	::-webkit-scrollbar-track {
@@ -66,17 +38,10 @@
 	}
 }
 @mixin material-theme($theme) {
-	$color: mat.get-color-config($theme);
-	$typography: mat.get-typography-config($theme);
-	$density: mat.get-density-config($theme);
-
-	@if $color {
-		@include color($color);
+	@if mat.theme-has($theme, color) {
+		@include color($theme);
 	}
-	@if $typography {
-		@include typography($typography);
-	}
-	@if $density {
-		@include density($density);
+	@if mat.theme-has($theme, density) {
+		@include density($theme);
 	}
 }

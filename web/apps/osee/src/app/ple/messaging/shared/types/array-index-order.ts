@@ -1,5 +1,3 @@
-import type { applic } from '@osee/shared/types/applicability';
-
 /*********************************************************************
  * Copyright (c) 2024 Boeing
  *

@@ -13,17 +13,20 @@
 package org.eclipse.osee.mim.types;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithGammas;
+import org.eclipse.osee.accessor.types.AttributePojo;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -34,11 +37,13 @@ import org.eclipse.osee.orcs.rest.model.transaction.CreateArtifact;
 /**
  * @author Luciano T. Vaglienti
  */
-public class InterfaceEnumeration extends ArtifactAccessorResult {
+public class InterfaceEnumeration extends ArtifactAccessorResultWithGammas {
    public static final InterfaceEnumeration SENTINEL = new InterfaceEnumeration();
    private ApplicabilityToken applicability = ApplicabilityToken.SENTINEL;
-   private Long ordinal = 0L;
-   private InterfaceEnumOrdinalType ordinalType;
+   private AttributePojo<Long> ordinal =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.InterfaceEnumOrdinal, GammaId.SENTINEL, 0L, "");
+   private AttributePojo<String> ordinalType = AttributePojo.valueOf(Id.SENTINEL,
+      CoreAttributeTypes.InterfaceEnumOrdinalType, GammaId.SENTINEL, InterfaceEnumOrdinalType.LONG.toString(), "");
 
    public InterfaceEnumeration(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -46,15 +51,15 @@ public class InterfaceEnumeration extends ArtifactAccessorResult {
 
    public InterfaceEnumeration(ArtifactReadable art) {
       super(art);
-      this.setOrdinal(art.getSoleAttributeValue(CoreAttributeTypes.InterfaceEnumOrdinal, 0L));
-      this.setOrdinalType(InterfaceEnumOrdinalType.valueOf(
-         art.getSoleAttributeAsString(CoreAttributeTypes.InterfaceEnumOrdinalType, "LONG")));
+      this.setOrdinal(AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.InterfaceEnumOrdinal, 0L)));
+      this.setOrdinalType(AttributePojo.valueOf(
+         art.getSoleAttribute(CoreAttributeTypes.InterfaceEnumOrdinalType, InterfaceEnumOrdinalType.LONG.toString())));
       this.setApplicability(
          !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
    }
 
    public InterfaceEnumeration(Long id, String name) {
-      super(id, name);
+      super(id, AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.Name, GammaId.SENTINEL, name, name));
    }
 
    public InterfaceEnumeration() {
@@ -63,10 +68,10 @@ public class InterfaceEnumeration extends ArtifactAccessorResult {
 
    @JsonIgnore
    public String getFormattedOrdinal() {
-      if (InterfaceEnumOrdinalType.HEX.equals(getOrdinalType())) {
-         return "0x" + Long.toHexString(getOrdinal()).toUpperCase();
+      if (InterfaceEnumOrdinalType.HEX.toString().equals(getOrdinalType().getValue())) {
+         return "0x" + Long.toHexString(getOrdinal().getValue()).toUpperCase();
       } else {
-         return getOrdinal().toString();
+         return getOrdinal().getValue().toString();
       }
    }
 
@@ -87,7 +92,7 @@ public class InterfaceEnumeration extends ArtifactAccessorResult {
    /**
     * @return the ordinal
     */
-   public Long getOrdinal() {
+   public AttributePojo<Long> getOrdinal() {
       return ordinal;
    }
 
@@ -95,15 +100,27 @@ public class InterfaceEnumeration extends ArtifactAccessorResult {
     * @param ordinal the ordinal to set
     */
    public void setOrdinal(Long ordinal) {
+      AttributePojo<Long> oldOrdinal = getOrdinal();
+      this.ordinal = AttributePojo.valueOf(oldOrdinal.getId(), oldOrdinal.getTypeId(), oldOrdinal.getGammaId(), ordinal,
+         oldOrdinal.getDisplayableString());
+   }
+
+   @JsonProperty
+   public void setOrdinal(AttributePojo<Long> ordinal) {
       this.ordinal = ordinal;
    }
 
-   public InterfaceEnumOrdinalType getOrdinalType() {
+   public AttributePojo<String> getOrdinalType() {
       return ordinalType;
    }
 
-   public void setOrdinalType(InterfaceEnumOrdinalType ordinalType) {
+   public void setOrdinalType(AttributePojo<String> ordinalType) {
       this.ordinalType = ordinalType;
+   }
+
+   public void setOrdinalType(InterfaceEnumOrdinalType ordinalType) {
+      this.ordinalType = AttributePojo.valueOf(this.ordinalType.getId(), this.ordinalType.getTypeId(),
+         this.ordinalType.getGammaId(), ordinalType.toString(), this.ordinalType.getDisplayableString());
    }
 
    @Override
@@ -113,11 +130,11 @@ public class InterfaceEnumeration extends ArtifactAccessorResult {
 
    public CreateArtifact createArtifact(String key, ApplicabilityId applicId) {
       Map<AttributeTypeToken, String> values = new HashMap<>();
-      values.put(CoreAttributeTypes.InterfaceEnumOrdinal, this.getOrdinal().toString());
+      values.put(CoreAttributeTypes.InterfaceEnumOrdinal, this.getOrdinal().getValue().toString());
       values.put(CoreAttributeTypes.InterfaceEnumOrdinalType, this.getOrdinalType().toString());
 
       CreateArtifact art = new CreateArtifact();
-      art.setName(this.getName());
+      art.setName(this.getName().getValue());
       art.setTypeId(CoreArtifactTypes.InterfaceEnum.getIdString());
 
       List<Attribute> attrs = new LinkedList<>();

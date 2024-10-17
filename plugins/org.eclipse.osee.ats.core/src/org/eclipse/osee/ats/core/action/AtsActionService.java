@@ -381,7 +381,7 @@ public class AtsActionService implements IAtsActionService {
       setArtifactIdentifyData(action, title, desc, changeType, priority, validationRequired, needByDate, changes);
       return action;
    }
-   
+
    @Override
    public NewActionResult createActionAndWorkingBranch(NewActionData newActionData) {
       NewActionResult result = new NewActionResult();
@@ -400,8 +400,7 @@ public class AtsActionService implements IAtsActionService {
          atsApi.getVersionService().setTargetedVersion(teamWf, version, changes);
          changes.execute();
 
-         BranchData workingBranch = atsApi.getBranchService().createWorkingBranch(
-            teamWf);
+         BranchData workingBranch = atsApi.getBranchService().createWorkingBranch(teamWf);
          result.setWorkingBranchId(workingBranch.getNewBranch());
       } catch (Exception ex) {
          result.getResults().errorf("Exception creating action [%s]", Lib.exceptionToString(ex));

@@ -20922,7 +20922,7 @@ export const changeReportMock: changeInstance[] = [
 			},
 			gammaId: '21189',
 			modType: ModificationType.MODIFIED,
-			value: 'Tactical Status',
+			value: 'Status',
 			uri: '',
 			valid: true,
 			applicabilityToken: {
@@ -20952,7 +20952,7 @@ export const changeReportMock: changeInstance[] = [
 			},
 			gammaId: '21189',
 			modType: ModificationType.MODIFIED,
-			value: 'Tactical Status',
+			value: 'Status',
 			uri: '',
 			valid: true,
 			applicabilityToken: {

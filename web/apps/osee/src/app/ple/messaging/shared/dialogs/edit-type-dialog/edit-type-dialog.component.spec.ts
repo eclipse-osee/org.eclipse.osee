@@ -10,48 +10,41 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-	MatDialogModule,
-	MatDialogRef,
-	MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
+import { A11yModule } from '@angular/cdk/a11y';
+import { OverlayContainer } from '@angular/cdk/overlay';
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { MatDialogHarness } from '@angular/material/dialog/testing';
-import { OverlayContainer } from '@angular/cdk/overlay';
-import { EditTypeDialogComponent } from './edit-type-dialog.component';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { AsyncPipe, NgIf } from '@angular/common';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { MatSelectModule } from '@angular/material/select';
-import { MatStepperModule } from '@angular/material/stepper';
-import { A11yModule } from '@angular/cdk/a11y';
-import { NgIf, AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import {
+	MAT_DIALOG_DATA,
+	MatDialogModule,
+	MatDialogRef,
+} from '@angular/material/dialog';
+import { MatDialogHarness } from '@angular/material/dialog/testing';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatStepperModule } from '@angular/material/stepper';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MockApplicabilityDropdownComponent } from '@osee/applicability/applicability-dropdown/testing';
+import { MockUnitDropdownComponent } from '@osee/messaging/shared/dropdowns/testing';
+import { editPlatformTypeDialogDataMode } from '@osee/messaging/shared/enumerations';
+import { QueryService, TypesService } from '@osee/messaging/shared/services';
+import {
+	MockCrossReferenceDropdownComponent,
 	MockEditEnumSetFieldComponent,
 	MockUniquePlatformTypeAttributesDirective,
-	typesServiceMock,
-	enumsServiceMock,
-	QueryServiceMock,
 	MockUniquePlatformTypeNameDirective,
-	MockCrossReferenceDropdownComponent,
+	QueryServiceMock,
+	typesServiceMock,
 } from '@osee/messaging/shared/testing';
 import type { editPlatformTypeDialogData } from '@osee/messaging/shared/types';
-import { editPlatformTypeDialogDataMode } from '@osee/messaging/shared/enumerations';
-import {
-	QueryService,
-	TypesService,
-	EnumsService,
-} from '@osee/messaging/shared/services';
-import {
-	MockApplicabilitySelectorComponent,
-	MockMatOptionLoadingComponent,
-} from '@osee/shared/components/testing';
-import { MockUnitDropdownComponent } from '@osee/messaging/shared/dropdowns/testing';
+import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
+import { EditTypeDialogComponent } from './edit-type-dialog.component';
 
 let loader: HarnessLoader;
 
@@ -59,32 +52,115 @@ describe('EditTypeDialogComponent', () => {
 	let component: EditTypeDialogComponent;
 	let fixture: ComponentFixture<EditTypeDialogComponent>;
 	let overlayContainer: OverlayContainer;
-	let matDialogData: editPlatformTypeDialogData = {
+	const matDialogData: editPlatformTypeDialogData = {
 		mode: editPlatformTypeDialogDataMode.edit,
 		type: {
 			id: '1',
-			interfaceLogicalType: 'boolean',
-			description: '',
-			interfacePlatformType2sComplement: false,
-			interfacePlatformTypeAnalogAccuracy: 'N/A',
-			interfacePlatformTypeBitsResolution: 'N/A',
-			interfacePlatformTypeCompRate: '50Hz',
-			interfacePlatformTypeBitSize: '8',
-			interfaceDefaultValue: '0',
-			interfacePlatformTypeMinval: '0',
-			interfacePlatformTypeMsbValue: '0',
-			interfacePlatformTypeMaxval: '1',
-			interfacePlatformTypeUnits: 'N/A',
-			interfacePlatformTypeValidRangeDescription: '',
-			name: 'FACE Boolean',
+			gammaId: '-1',
+			interfaceLogicalType: {
+				id: '-1',
+				typeId: '2455059983007225762',
+				gammaId: '-1',
+				value: 'boolean',
+			},
+			description: {
+				id: '-1',
+				typeId: '1152921504606847090',
+				gammaId: '-1',
+				value: '',
+			},
+			interfacePlatformType2sComplement: {
+				id: '-1',
+				typeId: '3899709087455064784',
+				gammaId: '-1',
+				value: false,
+			},
+			interfacePlatformTypeAnalogAccuracy: {
+				id: '-1',
+				typeId: '3899709087455064788',
+				gammaId: '-1',
+				value: 'N/A',
+			},
+			interfacePlatformTypeBitsResolution: {
+				id: '-1',
+				typeId: '3899709087455064786',
+				gammaId: '-1',
+				value: 'N/A',
+			},
+			interfacePlatformTypeCompRate: {
+				id: '-1',
+				typeId: '3899709087455064787',
+				gammaId: '-1',
+				value: '50Hz',
+			},
+			interfacePlatformTypeBitSize: {
+				id: '-1',
+				typeId: '2455059983007225786',
+				gammaId: '-1',
+				value: '8',
+			},
+			interfaceDefaultValue: {
+				id: '-1',
+				typeId: '2886273464685805413',
+				gammaId: '-1',
+				value: '0',
+			},
+			interfacePlatformTypeMinval: {
+				id: '-1',
+				typeId: '3899709087455064782',
+				gammaId: '-1',
+				value: '0',
+			},
+			interfacePlatformTypeMsbValue: {
+				id: '-1',
+				typeId: '3899709087455064785',
+				gammaId: '-1',
+				value: '0',
+			},
+			interfacePlatformTypeMaxval: {
+				id: '-1',
+				typeId: '3899709087455064783',
+				gammaId: '-1',
+				value: '1',
+			},
+			interfacePlatformTypeUnits: {
+				id: '-1',
+				typeId: '4026643196432874344',
+				gammaId: '-1',
+				value: 'N/A',
+			},
+			interfacePlatformTypeValidRangeDescription: {
+				id: '-1',
+				typeId: '2121416901992068417',
+				gammaId: '-1',
+				value: '',
+			},
+			name: {
+				id: '-1',
+				typeId: '1152921504606847088',
+				gammaId: '-1',
+				value: 'Boolean',
+			},
 			applicability: {
 				id: '1',
 				name: 'Base',
 			},
 			enumSet: {
 				id: '-1',
-				name: '',
-				description: '',
+				gammaId: '-1',
+				name: {
+					id: '-1',
+					typeId: '1152921504606847088',
+					gammaId: '-1',
+					value: '',
+				},
+				description: {
+					id: '-1',
+					typeId: '1152921504606847090',
+					gammaId: '-1',
+					value: '',
+				},
+				enumerations: [],
 				applicability: { id: '1', name: 'Base' },
 			},
 		},
@@ -109,7 +185,7 @@ describe('EditTypeDialogComponent', () => {
 					MockEditEnumSetFieldComponent,
 					MockUniquePlatformTypeAttributesDirective,
 					MockUniquePlatformTypeNameDirective,
-					MockApplicabilitySelectorComponent,
+					MockApplicabilityDropdownComponent,
 					MockUnitDropdownComponent,
 					MockCrossReferenceDropdownComponent,
 				],
@@ -118,7 +194,6 @@ describe('EditTypeDialogComponent', () => {
 					{ provide: MatDialogRef, useValue: {} },
 					{ provide: MAT_DIALOG_DATA, useValue: matDialogData },
 					{ provide: TypesService, useValue: typesServiceMock },
-					{ provide: EnumsService, useValue: enumsServiceMock },
 				],
 			},
 		})
@@ -130,7 +205,6 @@ describe('EditTypeDialogComponent', () => {
 					{ provide: MatDialogRef, useValue: {} },
 					{ provide: MAT_DIALOG_DATA, useValue: matDialogData },
 					{ provide: TypesService, useValue: typesServiceMock },
-					{ provide: EnumsService, useValue: enumsServiceMock },
 				],
 			})
 			.compileComponents();

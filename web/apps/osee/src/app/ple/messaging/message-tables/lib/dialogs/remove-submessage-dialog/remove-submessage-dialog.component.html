@@ -11,11 +11,11 @@
  *     Boeing - initial API and implementation
  -->
 <h1 mat-dialog-title>
-	Removing Submessage {{ data.submessage.name }} from Message
-	{{ data.message.name }}
+	Removing Submessage {{ data.submessage.name.value }} from Message
+	{{ data.message.name.value }}
 </h1>
 <mat-dialog-content>
-	Are you sure you want to remove {{ data.submessage.name }} from this
+	Are you sure you want to remove {{ data.submessage.name.value }} from this
 	message?
 </mat-dialog-content>
 <mat-dialog-actions>
@@ -26,8 +26,8 @@
 		No
 	</button>
 	<button
-		mat-raised-button
-		color="primary"
+		mat-flat-button
+		class="primary-button"
 		mat-dialog-close="ok"
 		data-cy="submit-btn">
 		Yes

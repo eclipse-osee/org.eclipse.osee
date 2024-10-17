@@ -11,24 +11,30 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { headerDetail } from '@osee/shared/types';
-import type { element } from './element';
-import type { structure } from './structure';
-import type { message } from './messages';
-import type { subMessage } from './sub-messages';
 import type { branchSummary, diffReportSummaryItem } from './DifferenceReport';
+import type { DisplayableElementProps } from './element';
+import type { message } from './messages';
+import type { displayableStructureFields } from './structure';
+import type { subMessage } from './sub-messages';
 import type { transportType } from './transportType';
 
-export interface messageHeaderDetail extends headerDetail<message> {}
-export interface subMessageHeaderDetail extends headerDetail<subMessage> {}
-export interface structureHeaderDetail extends headerDetail<structure> {}
+export type messageHeaderDetail = {} & headerDetail<message>;
+export type subMessageHeaderDetail = {} & headerDetail<subMessage>;
+export type structureHeaderDetail = {} & headerDetail<
+	displayableStructureFields & {
+		txRate: unknown;
+		publisher: unknown;
+		subscriber: unknown;
+		messageNumber: unknown;
+		messagePeriodicity: unknown;
+	}
+>;
 
-export interface elementHeaderDetail extends headerDetail<element> {}
+export type elementHeaderDetail = {} & headerDetail<DisplayableElementProps>;
 
-export interface branchSummaryHeaderDetail
-	extends headerDetail<branchSummary> {}
+export type branchSummaryHeaderDetail = {} & headerDetail<branchSummary>;
 
-export interface diffReportSummaryHeaderDetail
-	extends headerDetail<diffReportSummaryItem> {}
+export type diffReportSummaryHeaderDetail =
+	{} & headerDetail<diffReportSummaryItem>;
 
-export interface transportTypeSummaryHeaderDetail
-	extends headerDetail<transportType> {}
+export type transportTypeSummaryHeaderDetail = {} & headerDetail<transportType>;

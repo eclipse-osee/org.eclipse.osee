@@ -10,7 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClientModule } from '@angular/common/http';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -25,12 +28,12 @@ describe('ParameterSingleSelectComponent', () => {
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			imports: [
-				HttpClientModule,
 				MatSelectModule,
 				MatFormFieldModule,
 				NoopAnimationsModule,
 				ParameterSingleSelectComponent,
 			],
+			providers: [provideHttpClient(withInterceptorsFromDi())],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(ParameterSingleSelectComponent);

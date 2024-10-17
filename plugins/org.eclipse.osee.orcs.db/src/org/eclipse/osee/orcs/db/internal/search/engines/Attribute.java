@@ -20,6 +20,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import org.eclipse.osee.framework.core.data.AttributeTypeGeneric;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -36,8 +37,9 @@ public class Attribute<T> extends BaseId implements IAttribute<T> {
    private final AttributeTypeGeneric<T> attributeType;
    private final String uri;
    private T value;
+   private final GammaId gamma;
 
-   public Attribute(Long id, AttributeTypeGeneric<T> attributeType, String value, String uri, IResourceManager resourceManager) {
+   public Attribute(Long id, AttributeTypeGeneric<T> attributeType, String value, String uri, GammaId gamma, IResourceManager resourceManager) {
       super(id);
       this.attributeType = attributeType;
       this.uri = uri;
@@ -45,6 +47,7 @@ public class Attribute<T> extends BaseId implements IAttribute<T> {
       if (Strings.isValid(value)) {
          this.value = attributeType.valueFromStorageString(value);
       }
+      this.gamma = gamma;
    }
 
    @Override
@@ -104,5 +107,10 @@ public class Attribute<T> extends BaseId implements IAttribute<T> {
    @Override
    public String toString() {
       return attributeType.getName() + ": " + String.valueOf(value);
+   }
+
+   @Override
+   public GammaId getGammaId() {
+      return this.gamma;
    }
 }

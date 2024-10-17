@@ -13,18 +13,29 @@
 import { TmoImportResult } from '../types/tmo-import';
 import {
 	DefReference,
-	SetReference,
+	CISet,
 	ResultReference,
 	TestPointReference,
 	ScriptBatch,
 } from '../types';
-import { transactionResultMock } from '@osee/shared/transactions/testing';
+import { transactionResultMock } from '@osee/transactions/testing';
 
-export const setsMock: SetReference[] = [
+export const setsMock: CISet[] = [
 	{
 		id: '5555',
-		name: 'Set 1',
-		active: true,
+		gammaId: '-1',
+		name: {
+			id: '-1',
+			gammaId: '-1',
+			typeId: '1152921504606847088',
+			value: 'Set 1',
+		},
+		active: {
+			id: '-1',
+			gammaId: '-1',
+			typeId: '1152921504606847065',
+			value: true,
+		},
 	},
 ];
 

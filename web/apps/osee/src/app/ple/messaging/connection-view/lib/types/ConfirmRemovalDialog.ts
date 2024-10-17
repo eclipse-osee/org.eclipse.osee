@@ -10,9 +10,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface RemovalDialog {
-	id: string;
+export type RemovalDialog = {
+	id: `${number}`;
 	name: string;
 	extraNames: [];
 	type: string;
-}
+};

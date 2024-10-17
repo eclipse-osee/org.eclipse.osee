@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { createArtifact } from '@osee/shared/types';
+import { legacyCreateArtifact } from '@osee/transactions/types';
 import {
 	commandObject,
 	parameterObject,
@@ -21,14 +21,12 @@ import {
 	providedIn: 'root',
 })
 export class OpenUrlFormService {
-	constructor() {}
-
-	transformCommandObject(cmdObj: {}): Partial<createArtifact> {
-		return cmdObj satisfies Partial<createArtifact>;
+	transformCommandObject(cmdObj: object): Partial<legacyCreateArtifact> {
+		return cmdObj satisfies Partial<legacyCreateArtifact>;
 	}
 
-	transformParmeterObject(parameter: {}): Partial<createArtifact> {
-		return parameter satisfies Partial<createArtifact>;
+	transformParmeterObject(parameter: object): Partial<legacyCreateArtifact> {
+		return parameter satisfies Partial<legacyCreateArtifact>;
 	}
 
 	updateParameterAndTransformObjects(

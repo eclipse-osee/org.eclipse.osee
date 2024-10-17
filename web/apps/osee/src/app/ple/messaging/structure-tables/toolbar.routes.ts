@@ -24,7 +24,13 @@ export const routes: Routes = [
 			},
 			{
 				path: '',
-				loadComponent: () => import('@osee/messaging/shared/headers'),
+				loadComponent: () => import('@osee/toolbar/logo'),
+				outlet: 'toolbarLogo',
+			},
+			{
+				path: '',
+				loadComponent: () =>
+					import('./lib/structure-filter/structure-filter.component'),
 				outlet: 'navigationHeader',
 			},
 		],

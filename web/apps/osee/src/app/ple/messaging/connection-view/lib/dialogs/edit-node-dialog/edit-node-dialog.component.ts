@@ -11,7 +11,13 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	inject,
+	signal,
+} from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import {
 	MAT_DIALOG_DATA,
@@ -26,7 +32,30 @@ import { NewNodeFormComponent } from '../../forms/new-node-form/new-node-form.co
 
 @Component({
 	selector: 'osee-edit-node-dialog',
-	templateUrl: './edit-node-dialog.component.html',
+	template: `<h1 mat-dialog-title>Editing {{ title() }}</h1>
+		<mat-dialog-content>
+			<form #nodeForm="ngForm">
+				<osee-new-node-form
+					[(node)]="node"
+					fieldPrefix="Edit"></osee-new-node-form>
+			</form>
+		</mat-dialog-content>
+		<div
+			mat-dialog-actions
+			align="end">
+			<button
+				mat-button
+				(click)="onNoClick()">
+				Cancel
+			</button>
+			<button
+				mat-flat-button
+				[mat-dialog-close]="node()"
+				class="primary-button"
+				[disabled]="nodeForm.invalid || nodeForm.pending">
+				Ok
+			</button>
+		</div>`,
 	standalone: true,
 	imports: [
 		MatDialogTitle,
@@ -35,18 +64,16 @@ import { NewNodeFormComponent } from '../../forms/new-node-form/new-node-form.co
 		MatDialogActions,
 		MatButton,
 		AsyncPipe,
+		FormsModule,
 		NewNodeFormComponent,
 	],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditNodeDialogComponent {
-	title: string = '';
-	constructor(
-		public dialogRef: MatDialogRef<EditNodeDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: nodeData
-	) {
-		this.title = data.name;
-	}
-	onNoClick() {
-		this.dialogRef.close();
+	protected title = signal(inject<nodeData>(MAT_DIALOG_DATA).name.value);
+	protected node = signal<nodeData>(inject<nodeData>(MAT_DIALOG_DATA));
+	private _dialogRef = inject(MatDialogRef<EditNodeDialogComponent>);
+	protected onNoClick() {
+		this._dialogRef.close();
 	}
 }

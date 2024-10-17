@@ -12,9 +12,8 @@
  **********************************************************************/
 export * from './named-id';
 export * from './viewed-id';
-export * from './transaction';
 export * from './branch';
-export * from './responses';
+export * from './x-result-data';
 export * from './http-methods';
 export * from './files';
 export * from './header-detail';

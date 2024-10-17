@@ -11,21 +11,23 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import {
-	HttpClientTestingModule,
 	HttpTestingController,
+	provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { elementsMock } from '@osee/messaging/shared/testing';
-import { TransactionBuilderService } from '@osee/shared/transactions';
-import { relation } from '@osee/shared/types';
-import {
-	transactionBuilderMock,
-	transactionMock,
-} from '@osee/shared/transactions/testing';
+import { TransactionBuilderService } from '@osee/shared/transactions-legacy';
+import { transactionBuilderMock } from '@osee/shared/transactions-legacy/testing';
 import { TestScheduler } from 'rxjs/testing';
 import { apiURL } from '@osee/environments';
 
 import { ElementService } from './element.service';
+import { transactionMock } from '@osee/transactions/testing';
+import { legacyRelation } from '@osee/transactions/types';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('ElementService', () => {
 	let service: ElementService;
@@ -34,13 +36,15 @@ describe('ElementService', () => {
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
+			imports: [],
 			providers: [
 				{
 					provide: TransactionBuilderService,
 					useValue: transactionBuilderMock,
 				},
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
 			],
-			imports: [HttpClientTestingModule],
 		});
 		service = TestBed.inject(ElementService);
 		httpTestingController = TestBed.inject(HttpTestingController);
@@ -57,68 +61,14 @@ describe('ElementService', () => {
 		expect(service).toBeTruthy();
 	});
 
-	it('should return a create transaction for an element w/ end index removed', () => {
-		scheduler.run(() => {
-			let expectedObservable = { a: transactionMock };
-			let expectedMarble = '(a|)';
-			scheduler
-				.expectObservable(
-					service.createElement(
-						{
-							interfaceElementIndexEnd: 0,
-							interfaceElementIndexStart: 0,
-						},
-						'10',
-						[]
-					)
-				)
-				.toBe(expectedMarble, expectedObservable);
-		});
-	});
-
-	it('should return a create transaction for an element w/ start index removed', () => {
-		scheduler.run(() => {
-			let expectedObservable = { a: transactionMock };
-			let expectedMarble = '(a|)';
-			scheduler
-				.expectObservable(
-					service.createElement(
-						{ interfaceElementIndexStart: 0 },
-						'10',
-						[]
-					)
-				)
-				.toBe(expectedMarble, expectedObservable);
-		});
-	});
-
-	it('should return a create transaction for an element w/ no deletions', () => {
-		scheduler.run(() => {
-			let expectedObservable = { a: transactionMock };
-			let expectedMarble = '(a|)';
-			scheduler
-				.expectObservable(service.createElement({}, '10', []))
-				.toBe(expectedMarble, expectedObservable);
-		});
-	});
 	it('should create a transaction for deleting an element', () => {
 		scheduler.run(({ expectObservable }) => {
-			let expectedObservable = { a: transactionMock };
-			let expectedMarble = '(a|)';
+			const expectedObservable = { a: transactionMock };
+			const expectedMarble = '(a|)';
 			expectObservable(service.deleteElement('10', '20')).toBe(
 				expectedMarble,
 				expectedObservable
 			);
-		});
-	});
-
-	it('should create a transaction for an element modification', () => {
-		scheduler.run(() => {
-			let expectedObservable = { a: transactionMock };
-			let expectedMarble = '(a|)';
-			scheduler
-				.expectObservable(service.changeElement({}, '10'))
-				.toBe(expectedMarble, expectedObservable);
 		});
 	});
 
@@ -153,15 +103,15 @@ describe('ElementService', () => {
 	});
 
 	it('should create a relation to a structure', () => {
-		let relation: relation = {
+		const relation: legacyRelation = {
 			typeName: 'Interface Structure Content',
 			sideA: '10',
 			sideB: undefined,
 			afterArtifact: 'end',
 		};
 		scheduler.run(() => {
-			let expectedObservable = { a: relation };
-			let expectedMarble = '(a|)';
+			const expectedObservable = { a: relation };
+			const expectedMarble = '(a|)';
 			scheduler
 				.expectObservable(service.createStructureRelation('10'))
 				.toBe(expectedMarble, expectedObservable);
@@ -169,14 +119,14 @@ describe('ElementService', () => {
 	});
 
 	it('should create a relation to a platform type', () => {
-		let relation: relation = {
+		const relation: legacyRelation = {
 			typeName: 'Interface Element Platform Type',
 			sideB: '10',
 			sideA: undefined,
 		};
 		scheduler.run(() => {
-			let expectedObservable = { a: relation };
-			let expectedMarble = '(a|)';
+			const expectedObservable = { a: relation };
+			const expectedMarble = '(a|)';
 			scheduler
 				.expectObservable(service.createPlatformTypeRelation('10'))
 				.toBe(expectedMarble, expectedObservable);
@@ -184,15 +134,15 @@ describe('ElementService', () => {
 	});
 
 	it('should create an addRelation transaction', () => {
-		let relation: relation = {
+		const relation: legacyRelation = {
 			typeName: 'Interface Element Platform Type',
 			sideB: '10',
 			sideA: undefined,
 			afterArtifact: 'end',
 		};
 		scheduler.run(() => {
-			let expectedObservable = { a: transactionMock };
-			let expectedMarble = '(a|)';
+			const expectedObservable = { a: transactionMock };
+			const expectedMarble = '(a|)';
 			scheduler
 				.expectObservable(service.addRelation('10', relation))
 				.toBe(expectedMarble, expectedObservable);
@@ -200,15 +150,15 @@ describe('ElementService', () => {
 	});
 
 	it('should create a deleteRelation transaction', () => {
-		let relation: relation = {
+		const relation: legacyRelation = {
 			typeName: 'Interface Element Platform Type',
 			sideB: '10',
 			sideA: undefined,
 			afterArtifact: undefined,
 		};
 		scheduler.run(() => {
-			let expectedObservable = { a: transactionMock };
-			let expectedMarble = '(a|)';
+			const expectedObservable = { a: transactionMock };
+			const expectedMarble = '(a|)';
 			scheduler
 				.expectObservable(service.deleteRelation('10', relation))
 				.toBe(expectedMarble, expectedObservable);

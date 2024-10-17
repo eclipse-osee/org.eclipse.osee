@@ -50,13 +50,13 @@ public class QuerySqlWriter extends AbstractSqlWriter {
       if (!rootQueryData.isCountQueryType()) {
          Iterator<SqlHandler<?>> iter = handlers.iterator();
          write("\n ORDER BY ");
+         int len = this.output.length();
          while (iter.hasNext()) {
             SqlHandler<?> next = iter.next();
             next.writeOrder(this);
          }
          //this regex finds an existing ORDER BY for the id column in the query
-         if (!this.output.toString().matches(
-            "^(.|\\n)*((ORDER BY)+.*(" + tableAlias + "\\.+" + idColumn + "))(.|\\n)*$")) {
+         if (this.output.length() == len) {
             // TODO remove when all queries are updated to have an id order by handler
             write("%s.%s", tableAlias, idColumn);
          }

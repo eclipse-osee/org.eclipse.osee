@@ -10,11 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import {
-	BreakpointObserver,
-	Breakpoints,
-	BreakpointState,
-} from '@angular/cdk/layout';
+import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
 import { TestBed } from '@angular/core/testing';
 import { iif, of } from 'rxjs';
 import { TestScheduler } from 'rxjs/testing';
@@ -24,10 +20,9 @@ import { LayoutNotifierService } from './layout-notifier.service';
 describe('LayoutNotifierService', () => {
 	let service: LayoutNotifierService;
 	let scheduler: TestScheduler;
-	Breakpoints.XSmall;
-	let observer: Partial<BreakpointObserver> = {
+	const observer: Partial<BreakpointObserver> = {
 		observe(value: string | readonly string[]) {
-			let state1: BreakpointState = {
+			const state1: BreakpointState = {
 				matches: true,
 				breakpoints: { '(min-width: 1920px)': true },
 			};
@@ -61,8 +56,8 @@ describe('LayoutNotifierService', () => {
 
 	it('should return recommended table column width', () => {
 		scheduler.run(({ expectObservable }) => {
-			let expectedObservable = { a: '380px' };
-			let expectedMarble = '(a|)';
+			const expectedObservable = { a: '380px' };
+			const expectedMarble = '(a|)';
 			expectObservable(service.recommendedTableColumnWidth).toBe(
 				expectedMarble,
 				expectedObservable
@@ -72,8 +67,8 @@ describe('LayoutNotifierService', () => {
 
 	it('should return recommended table column count', () => {
 		scheduler.run(({ expectObservable }) => {
-			let expectedObservable = { a: 12 };
-			let expectedMarble = '(a|)';
+			const expectedObservable = { a: 12 };
+			const expectedMarble = '(a|)';
 			expectObservable(service.recommendedTableColumnCount).toBe(
 				expectedMarble,
 				expectedObservable
@@ -83,8 +78,8 @@ describe('LayoutNotifierService', () => {
 
 	it('should return recommended card column count', () => {
 		scheduler.run(({ expectObservable }) => {
-			let expectedObservable = { a: 5 };
-			let expectedMarble = '(a|)';
+			const expectedObservable = { a: 5 };
+			const expectedMarble = '(a|)';
 			expectObservable(service.recommendedCardColumnCount).toBe(
 				expectedMarble,
 				expectedObservable

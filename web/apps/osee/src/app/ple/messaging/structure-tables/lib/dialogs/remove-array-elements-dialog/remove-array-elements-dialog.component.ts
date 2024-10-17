@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import {
 	MatDialogActions,
@@ -33,7 +33,6 @@ import {
 	templateUrl: './remove-array-elements-dialog.component.html',
 })
 export class RemoveArrayElementsDialogComponent {
-	constructor(
-		public dialogRef: MatDialogRef<RemoveArrayElementsDialogComponent>
-	) {}
+	dialogRef =
+		inject<MatDialogRef<RemoveArrayElementsDialogComponent>>(MatDialogRef);
 }

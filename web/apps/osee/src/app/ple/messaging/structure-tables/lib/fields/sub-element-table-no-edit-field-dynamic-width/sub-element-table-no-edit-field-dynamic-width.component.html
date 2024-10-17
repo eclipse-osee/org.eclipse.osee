@@ -11,20 +11,20 @@
 *     Boeing - initial API and implementation
 -->
 @if (globalPrefs | async) {
-	<div
+	<summary
 		oseeHighlightFilteredText
 		[searchTerms]="filter"
 		[text]="field"
 		classToApply="tw-text-accent-900"
-		class="tw-cursor-pointer"
+		class="tw-inline-block tw-cursor-pointer"
 		[ngClass]="{
 			'tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap':
-				!wordWrap
+				!wordWrap,
 		}"
 		[ngStyle]="{
-			width: width
+			width: width,
 		}"
 		(click)="toggleExpanded()">
 		{{ field }}
-	</div>
+	</summary>
 }

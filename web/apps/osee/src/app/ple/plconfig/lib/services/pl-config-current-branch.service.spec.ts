@@ -11,15 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
-import { ActionService } from '@osee/configuration-management/services';
 import { UiService } from '@osee/shared/services';
-import {
-	MockXResultData,
-	testBranchActions,
-	testBranchListing,
-	testCommitResponse,
-	testWorkFlow,
-} from '@osee/shared/testing';
+import { MockXResultData } from '@osee/shared/testing';
 import { of } from 'rxjs';
 import { TestScheduler } from 'rxjs/testing';
 import {
@@ -38,7 +31,6 @@ describe('PlConfigCurrentBranchService', () => {
 	let ui: PlConfigUIStateService;
 	let baseUi: UiService;
 	let branchServiceSpy: jasmine.SpyObj<PlConfigBranchService>;
-	let actionServiceSpy: jasmine.SpyObj<ActionService>;
 	let scheduler: TestScheduler;
 
 	beforeEach(
@@ -52,12 +44,10 @@ describe('PlConfigCurrentBranchService', () => {
 		branchServiceSpy = jasmine.createSpyObj('PlConfigBranchService', {
 			//functions required to test
 			getBranchApplicability: of(testBranchApplicability),
-			getBranchState: of(testBranchListing),
 			modifyConfiguration: of(MockXResultData),
 			addFeature: of(MockXResultData),
 			modifyFeature: of(MockXResultData),
 			deleteFeature: of(MockXResultData),
-			commitBranch: of(testCommitResponse),
 			getApplicabilityToken: of(testApplicabilityTag),
 			getCfgGroupDetail: of<configGroup>({
 				id: '1',
@@ -72,11 +62,6 @@ describe('PlConfigCurrentBranchService', () => {
 			deleteConfigurationGroup: of(MockXResultData),
 			updateConfigurationGroup: of(MockXResultData),
 		});
-		actionServiceSpy = jasmine.createSpyObj('PlConfigActionService', {
-			//functions required to test
-			getAction: of(testBranchActions),
-			getWorkFlow: of(testWorkFlow),
-		});
 	});
 	describe('normal tests', () => {
 		beforeEach(() => {
@@ -86,7 +71,7 @@ describe('PlConfigCurrentBranchService', () => {
 						provide: PlConfigBranchService,
 						useValue: branchServiceSpy,
 					},
-					{ provide: ActionService, useValue: actionServiceSpy },
+					// { provide: ActionService, useValue: actionServiceSpy },
 					{
 						provide: PlConfigTypesService,
 						useValue: plConfigTypesServiceMock,
@@ -188,7 +173,9 @@ describe('PlConfigCurrentBranchService', () => {
 						productApplicabilities: [],
 						valueStr: '',
 						productAppStr: '',
+						//eslint-disable-next-line @typescript-eslint/no-empty-function
 						setValueStr: function (): void {},
+						//eslint-disable-next-line @typescript-eslint/no-empty-function
 						setProductAppStr: function (): void {},
 					})
 				).toBe('a', { a: MockXResultData });
@@ -211,7 +198,9 @@ describe('PlConfigCurrentBranchService', () => {
 						values: [],
 						productApplicabilities: [],
 						multiValued: false,
+						//eslint-disable-next-line @typescript-eslint/no-empty-function
 						setValueStr: function (): void {},
+						//eslint-disable-next-line @typescript-eslint/no-empty-function
 						setProductAppStr: function (): void {},
 					})
 				).toBe('a', { a: MockXResultData });

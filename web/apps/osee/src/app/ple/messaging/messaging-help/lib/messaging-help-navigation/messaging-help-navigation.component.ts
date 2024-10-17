@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { NgClass, AsyncPipe, NgTemplateOutlet } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatDivider } from '@angular/material/divider';
 import { MatIcon } from '@angular/material/icon';
 import {
@@ -45,11 +45,14 @@ import helpNavigationStructure from './messaging-help-navigation-structure';
 	templateUrl: './messaging-help-navigation.component.html',
 })
 export class MessagingHelpNavigationComponent {
-	constructor(
-		private route: ActivatedRoute,
-		private userService: UserDataAccountService,
-		private helpService: HelpService
-	) {
+	private route = inject(ActivatedRoute);
+	private userService = inject(UserDataAccountService);
+	private helpService = inject(HelpService);
+
+	/** Inserted by Angular inject() migration for backwards compatibility */
+	constructor(...args: unknown[]);
+
+	constructor() {
 		this.route.url.subscribe((url) => {
 			if (url.length > 0) {
 				this.currentPath = url.map((u) => u.path).join('/');

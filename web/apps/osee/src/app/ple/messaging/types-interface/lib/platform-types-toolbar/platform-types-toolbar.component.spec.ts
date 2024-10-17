@@ -13,9 +13,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PlatformTypesToolbarComponent } from './platform-types-toolbar.component';
-import { PlatformType, settingsDialogData } from '@osee/messaging/shared/types';
-import { Observable, of } from 'rxjs';
-import { transactionMock } from '@osee/shared/transactions/testing';
+import { settingsDialogData } from '@osee/messaging/shared/types';
+import { of } from 'rxjs';
+import { transactionMock } from '@osee/transactions/testing';
 import { CurrentTypesService } from '../services/current-types.service';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
@@ -34,7 +34,9 @@ describe('PlatformTypesToolbarComponent', () => {
 							currentPage: of(0),
 							currentPageSize: of(10),
 							inEditMode: of(true),
-							updatePreferences(preferences: settingsDialogData) {
+							updatePreferences(
+								_preferences: settingsDialogData
+							) {
 								return of(transactionMock);
 							},
 						},

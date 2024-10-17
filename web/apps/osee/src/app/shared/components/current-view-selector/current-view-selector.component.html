@@ -31,7 +31,7 @@
 				{{ noneOption.name }}
 			</mat-option>
 			@if (views | async; as _views) {
-				@for (option of _views; track option) {
+				@for (option of _views; track option.id) {
 					<mat-option
 						[value]="option.name"
 						(click)="selectView(option)">

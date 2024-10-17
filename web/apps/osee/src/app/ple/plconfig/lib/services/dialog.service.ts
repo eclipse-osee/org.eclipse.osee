@@ -12,26 +12,12 @@
  **********************************************************************/
 import { Injectable, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { combineLatest, iif, of, OperatorFunction, from } from 'rxjs';
-import {
-	take,
-	switchMap,
-	filter,
-	mergeMap,
-	reduce,
-	map,
-	tap,
-} from 'rxjs/operators';
+import { combineLatest, iif, of, OperatorFunction } from 'rxjs';
+import { take, switchMap, filter, map } from 'rxjs/operators';
 import { ConfigGroupDialogComponent } from '../dialogs/config-group-dialog/config-group-dialog.component';
 import { EditConfigurationDialogComponent } from '../dialogs/edit-config-dialog/edit-config-dialog.component';
 import { EditFeatureDialogComponent } from '../dialogs/edit-feature-dialog/edit-feature-dialog.component';
-import { extendedFeature } from '../types/features/base';
-import {
-	PlConfigApplicUIBranchMapping,
-	view,
-} from '../types/pl-config-applicui-branch-mapping';
 import { CfgGroupDialog } from '../types/pl-config-cfggroups';
-import { configGroup } from '../types/pl-config-configurations';
 import { modifyFeature, PLEditFeatureData } from '../types/pl-config-features';
 import { PLEditConfigData } from '../types/pl-edit-config-data';
 import { PlConfigCurrentBranchService } from './pl-config-current-branch.service';

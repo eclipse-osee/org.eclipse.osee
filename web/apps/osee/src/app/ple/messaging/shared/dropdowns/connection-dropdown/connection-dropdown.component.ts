@@ -92,9 +92,9 @@ import {
 	],
 })
 export class ConnectionDropdownComponent implements OnChanges {
-	@Input() required: boolean = false;
-	@Input() disabled: boolean = false;
-	@Input() showNoneOption: boolean = false;
+	@Input() required = false;
+	@Input() disabled = false;
+	@Input() showNoneOption = false;
 	@Input() connection: connection = connectionSentinel;
 	@Input() errorMatcher: ErrorStateMatcher =
 		new ShowOnDirtyErrorStateMatcher();
@@ -109,7 +109,15 @@ export class ConnectionDropdownComponent implements OnChanges {
 
 	protected _size = this._currentConnectionsService.currentPageSize;
 
-	noneOption = { ...connectionSentinel, name: 'None' };
+	noneOption = {
+		...connectionSentinel,
+		name: {
+			id: '-1',
+			typeId: '1152921504606847088',
+			gammaId: '-1',
+			value: 'None',
+		},
+	};
 
 	protected _connections = this._openAutoComplete.pipe(
 		debounceTime(500),
@@ -154,7 +162,7 @@ export class ConnectionDropdownComponent implements OnChanges {
 	}
 	updateValue(value: connection) {
 		this.connectionChange.next(value);
-		this.updateTypeAhead(value.name);
+		this.updateTypeAhead(value.name.value);
 	}
 
 	ngOnChanges(changes: SimpleChanges): void {

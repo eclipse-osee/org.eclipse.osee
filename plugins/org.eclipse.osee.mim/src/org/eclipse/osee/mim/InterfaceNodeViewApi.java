@@ -45,6 +45,9 @@ public interface InterfaceNodeViewApi extends QueryCapableMIMAPI<InterfaceNode>,
 
    Collection<InterfaceNode> getNodesForConnection(BranchId branch, ArtifactId connectionId);
 
+   Collection<InterfaceNode> getNodesForConnectionByName(BranchId branch, ArtifactId connectionId, String name,
+      long pageNum, long pageSize);
+
    Collection<InterfaceNode> getNodesByName(BranchId branch, String name, long pageNum, long pageSize);
 
    int getNodesByNameCount(BranchId branch, String name);

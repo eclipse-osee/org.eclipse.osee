@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
 import { apiURL } from '@osee/environments';
 import { Observable } from 'rxjs';
 import { HttpParamsType, attribute } from '@osee/shared/types';
@@ -29,7 +29,7 @@ import {
 	providedIn: 'root',
 })
 export class ArtifactExplorerHttpService {
-	constructor(private http: HttpClient) {}
+	private http = inject(HttpClient);
 
 	public getartifactWithRelations(
 		branchId: string,

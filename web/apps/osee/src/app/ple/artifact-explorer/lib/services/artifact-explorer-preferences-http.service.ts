@@ -11,10 +11,13 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { apiURL } from '@osee/environments';
-import { TransactionService } from '@osee/shared/transactions';
-import { attributeType, transaction } from '@osee/shared/types';
+import { TransactionService } from '@osee/transactions/services';
+import {
+	legacyAttributeType,
+	legacyTransaction,
+} from '@osee/transactions/types';
 import { user } from '@osee/shared/types/auth';
 import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
 import { artifactExplorerUserPreferences } from '../types/user-preferences';
@@ -23,10 +26,9 @@ import { artifactExplorerUserPreferences } from '../types/user-preferences';
 	providedIn: 'root',
 })
 export class ArtifactExplorerPreferencesHttpService {
-	constructor(
-		private http: HttpClient,
-		private txService: TransactionService
-	) {}
+	private http = inject(HttpClient);
+
+	private txService = inject(TransactionService);
 
 	getArtifactExplorerPreferences() {
 		return this.http.get<artifactExplorerUserPreferences>(
@@ -38,7 +40,7 @@ export class ArtifactExplorerPreferencesHttpService {
 		user: user,
 		prefs: artifactExplorerUserPreferences
 	) {
-		const tx: transaction = {
+		const tx: legacyTransaction = {
 			branch: '570',
 			txComment: 'Create Artifact Explorer Preferences',
 			createArtifacts: [
@@ -70,7 +72,7 @@ export class ArtifactExplorerPreferencesHttpService {
 		current: artifactExplorerUserPreferences,
 		updated: artifactExplorerUserPreferences
 	) {
-		let setAttributes: attributeType[] = [];
+		const setAttributes: legacyAttributeType[] = [];
 		if (
 			current.artifactExplorerPanelLocation !==
 			updated.artifactExplorerPanelLocation
@@ -85,7 +87,7 @@ export class ArtifactExplorerPreferencesHttpService {
 			branch: '570',
 			txComment: 'Updating Artifact Explorer Preferences',
 			modifyArtifacts: [{ id: updated.id, setAttributes: setAttributes }],
-		} as transaction;
+		} as legacyTransaction;
 
 		return this.txService.performMutation(tx);
 	}

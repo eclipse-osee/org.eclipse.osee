@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, NgClass } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatAnchor, MatButton } from '@angular/material/button';
 import {
 	MatMenu,
@@ -73,6 +73,10 @@ import { CurrentElementSearchService } from '../../services/current-element-sear
 	],
 })
 export class ElementTableComponent {
+	private elementService = inject(CurrentElementSearchService);
+	private headerService = inject(HeaderService);
+	private uiService = inject(UiService);
+
 	dataSource = new MatTableDataSource<element>();
 	headers: Extract<keyof elementWithPathsAndButtons, string>[] = [
 		'name',
@@ -84,16 +88,13 @@ export class ElementTableComponent {
 	];
 	branchType = this.uiService.type;
 	branchId = this.uiService.id;
-	constructor(
-		private elementService: CurrentElementSearchService,
-		private headerService: HeaderService,
-		private uiService: UiService
-	) {
+
+	constructor() {
 		this.elementService.elements.subscribe((val) => {
 			this.dataSource.data = val;
 		});
 	}
-	valueTracker(index: any, item: any) {
+	valueTracker(index: number, _item: unknown) {
 		return index;
 	}
 

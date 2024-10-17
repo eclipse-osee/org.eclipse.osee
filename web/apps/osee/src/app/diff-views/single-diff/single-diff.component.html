@@ -23,6 +23,8 @@
 			>Current value:
 			@if (isApplic(content.navInfo.currentValue)) {
 				{{ content.navInfo.currentValue.name }}
+			} @else if (isAttribute(content.navInfo.currentValue)) {
+				{{ content.navInfo.currentValue.value }}
 			} @else {
 				{{ content.navInfo.currentValue }}
 			}
@@ -32,6 +34,8 @@
 			>Previous value:
 			@if (isApplic(content.navInfo.previousValue)) {
 				{{ content.navInfo.previousValue.name }}
+			} @else if (isAttribute(content.navInfo.previousValue)) {
+				{{ content.navInfo.previousValue.value }}
 			} @else {
 				{{ content.navInfo.previousValue }}
 			}

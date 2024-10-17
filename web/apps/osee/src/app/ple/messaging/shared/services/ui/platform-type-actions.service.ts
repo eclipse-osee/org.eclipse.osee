@@ -20,15 +20,10 @@ import { editPlatformTypeDialogDataMode } from '@osee/messaging/shared/enumerati
 import {
 	PlatformType,
 	editPlatformTypeDialogData,
+	enumerationSet,
 } from '@osee/messaging/shared/types';
-import {
-	createArtifact,
-	modifyArtifact,
-	modifyRelation,
-	relation,
-} from '@osee/shared/types';
-import { OperatorFunction, iif, of } from 'rxjs';
-import { filter, switchMap, take } from 'rxjs/operators';
+import { OperatorFunction, of } from 'rxjs';
+import { filter, map, switchMap, take } from 'rxjs/operators';
 import { EnumerationUIService } from './enumeration-ui.service';
 import { TypesUIService } from './types-ui.service';
 import { WarningDialogService } from './warning-dialog.service';
@@ -46,49 +41,66 @@ export class PlatformTypeActionsService {
 		mode: editPlatformTypeDialogDataMode,
 		typeData: PlatformType
 	) {
-		const copy = structuredClone(typeData); //clone the object so that edits aren't reflected in the page
+		const copiedPlatformType = structuredClone(typeData); //clone the object so that edits aren't reflected in the page
+		if (mode === editPlatformTypeDialogDataMode.copy) {
+			//set the copy to -1 everywhere
+			copiedPlatformType.id = '-1';
+			copiedPlatformType.gammaId = '-1';
+			copiedPlatformType.description.id = '-1';
+			copiedPlatformType.interfaceDefaultValue.id = '-1';
+			copiedPlatformType.interfaceLogicalType.id = '-1';
+			copiedPlatformType.interfacePlatformType2sComplement.id = '-1';
+			copiedPlatformType.interfacePlatformTypeAnalogAccuracy.id = '-1';
+			copiedPlatformType.interfacePlatformTypeBitSize.id = '-1';
+			copiedPlatformType.interfacePlatformTypeBitsResolution.id = '-1';
+			copiedPlatformType.interfacePlatformTypeCompRate.id = '-1';
+			copiedPlatformType.interfacePlatformTypeMaxval.id = '-1';
+			copiedPlatformType.interfacePlatformTypeMinval.id = '-1';
+			copiedPlatformType.interfacePlatformTypeMsbValue.id = '-1';
+			copiedPlatformType.interfacePlatformTypeUnits.id = '-1';
+			copiedPlatformType.interfacePlatformTypeValidRangeDescription.id =
+				'-1';
+			copiedPlatformType.name.id = '-1';
+			copiedPlatformType.enumSet.id = '-1';
+			copiedPlatformType.enumSet.gammaId = '-1';
+			copiedPlatformType.enumSet.name.id = '-1';
+			copiedPlatformType.enumSet.description.id = '-1';
+			copiedPlatformType.enumSet.enumerations.forEach((e) => {
+				e.id = '-1';
+				e.name.id = '-1';
+				e.ordinal.id = '-1';
+				e.ordinalType.id = '-1';
+			});
+		}
 		const dialogData: editPlatformTypeDialogData = {
 			mode: mode,
-			type: copy,
+			type: copiedPlatformType,
 		};
 		const dialogRef = this.dialog.open(EditTypeDialogComponent, {
 			data: dialogData,
-			minWidth: '70%',
+			minWidth: '70vw',
 		});
 		return dialogRef.afterClosed().pipe(
 			filter((val) => val !== undefined),
-			switchMap(({ manifest, mode }) =>
-				this.warningDialogService
-					.openPlatformTypeDialogWithManifest(manifest)
-					.pipe(
-						switchMap((v) =>
-							iif(
-								() =>
-									mode ===
-									editPlatformTypeDialogDataMode.copy,
-								this.typesService.copyType(manifest),
-								this.getEditObservable(manifest)
-							)
-						)
-					)
+			switchMap((newType) =>
+				mode === editPlatformTypeDialogDataMode.copy
+					? this.typesService.copyType(newType)
+					: this.getEditObservable(newType, typeData)
 			)
 		);
 	}
-	private getEditObservable(manifest: {
-		createArtifacts: createArtifact[];
-		modifyArtifacts: modifyArtifact[];
-		deleteRelations: modifyRelation[];
-	}) {
+	private getEditObservable(current: PlatformType, previous: PlatformType) {
 		return this.warningDialogService
-			.openPlatformTypeDialogWithManifest(manifest)
+			.openPlatformTypeDialog(previous)
 			.pipe(
-				switchMap((body) => this.typesService.partialUpdate(manifest))
+				switchMap((_) =>
+					this.typesService.partialUpdate(current, previous)
+				)
 			);
 	}
 
-	openEnumDialog(id: string, editMode: boolean) {
+	openEnumDialog(platformType: PlatformType, editMode: boolean) {
 		/**
-		 * If create artifacts does not contain the enum set key(should be last or 2nd last object in modifiedArtifacts),
 		 * Display a warning for the following:
 		 * Each modified enum
 		 * The modified enum set
@@ -97,61 +109,37 @@ export class PlatformTypeActionsService {
 		return this.dialog
 			.open(EditEnumSetDialogComponent, {
 				data: {
-					id: id,
+					platformType: structuredClone(platformType),
 					isOnEditablePage: editMode,
 				},
+				minWidth: '70vw',
+				minHeight: '80vh',
 			})
 			.afterClosed()
 			.pipe(
 				filter((x) => x !== undefined) as OperatorFunction<
-					| {
-							createArtifacts: createArtifact[];
-							modifyArtifacts: modifyArtifact[];
-							deleteRelations: modifyRelation[];
-					  }
-					| undefined,
-					{
-						createArtifacts: createArtifact[];
-						modifyArtifacts: modifyArtifact[];
-						deleteRelations: modifyRelation[];
-					}
+					enumerationSet | undefined,
+					enumerationSet
 				>,
 				take(1),
-				switchMap((tx) =>
-					iif(
-						() => editMode,
-						this.warningDialogService
-							.openEnumsDialogs(
-								tx.modifyArtifacts
-									.slice(0, -1)
-									.map((v) => v.id),
-								[
-									...tx.createArtifacts
-										.flatMap((v) => v.relations)
-										.filter(
-											(v): v is relation =>
-												v !== undefined
-										)
-										.map((v) => v.sideA)
-										.filter(
-											(v): v is string | string[] =>
-												v !== undefined
-										)
-										.flatMap((v) => v),
-									...tx.deleteRelations
-										.flatMap((v) => v.aArtId)
-										.filter(
-											(v): v is string => v !== undefined
-										),
-								]
-							)
-							.pipe(
-								switchMap((_) =>
-									this.enumSetService.changeEnumSet(tx)
+				switchMap((enumSet) =>
+					editMode
+						? this.warningDialogService
+								.openEnumsDialogs(
+									enumSet.enumerations.map((v) => v.id),
+									[enumSet.id],
+									[platformType.id]
 								)
-							),
-						of()
-					)
+								.pipe(
+									map((_) => enumSet),
+									switchMap((enumSet) =>
+										this.enumSetService.changeEnumSet(
+											enumSet,
+											platformType.enumSet
+										)
+									)
+								)
+						: of()
 				)
 			);
 	}

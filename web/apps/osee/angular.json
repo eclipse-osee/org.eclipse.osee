@@ -31,13 +31,9 @@
 						"tsConfig": "tsconfig.app.json",
 						"assets": ["src/favicon.ico", "src/assets"],
 						"stylePreprocessorOptions": {
-							"includePaths": ["src", "src/modern-ple-theme"]
+							"includePaths": ["src"]
 						},
-						"styles": [
-							"src/custom-theme.scss",
-							"src/styles.sass",
-							"src/icons.css"
-						],
+						"styles": ["src/styles.sass", "src/icons.css"],
 						"scripts": [],
 						"extractLicenses": false,
 						"sourceMap": true,
@@ -534,6 +530,9 @@
 									"maximumError": "8kb"
 								}
 							]
+						},
+						"e2e": {
+							"tsConfig": "tsconfig.playwright.json"
 						}
 					},
 					"defaultConfiguration": ""
@@ -591,6 +590,9 @@
 						"none_local_release": {
 							"proxyConfig": "src/environments/proxy.conf.json",
 							"buildTarget": "osee-web:build:none_local_release"
+						},
+						"e2e": {
+							"buildTarget": "osee-web:build:e2e"
 						}
 					}
 				},
@@ -606,7 +608,7 @@
 						"main": "src/test.ts",
 						"polyfills": ["src/polyfills.ts"],
 						"tsConfig": "tsconfig.spec.json",
-						"karmaConfig": "karma.conf.js",
+						"karmaConfig": "karma.conf.cjs",
 						"codeCoverageExclude": [
 							"src/app/ple/plconfig/types/**",
 							"src/app/ple/plconfig/testing/**",
@@ -628,15 +630,14 @@
 					}
 				},
 				"e2e": {
-					"builder": "@cypress/schematic:cypress",
+					"builder": "@ngx-playwright/test:run",
 					"options": {
-						"devServerTarget": "osee-web:serve",
-						"watch": true,
-						"headless": false
+						"config": "playwright.config.ng.ts",
+						"devServerTarget": ":serve:e2e"
 					},
 					"configurations": {
-						"production": {
-							"devServerTarget": "osee-web:serve:production"
+						"ci": {
+							"forbidOnly": true
 						}
 					}
 				},

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -26,12 +26,12 @@ import { ParameterDataService } from '../../services/data-services/selected-comm
 	imports: [MatFormField, MatLabel, MatInput, FormsModule, AsyncPipe],
 })
 export class ParameterIntegerComponent {
+	private parameterDataService = inject(ParameterDataService);
+
 	value = '';
 	parameter$ = this.parameterDataService.parameter$;
 	paramString = '';
 	userPrompt$ = this.parameter$.pipe(
 		map((param) => param?.attributes.description)
 	);
-
-	constructor(private parameterDataService: ParameterDataService) {}
 }

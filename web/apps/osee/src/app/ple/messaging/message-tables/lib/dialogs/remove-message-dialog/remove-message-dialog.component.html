@@ -12,8 +12,8 @@
  -->
 <h1 mat-dialog-title>Removing Message</h1>
 <mat-dialog-content>
-	Are you sure you want to remove {{ data.message.name }} from this
-	connection?
+	Are you sure you want to remove
+	{{ data.message.name | attributeToValue }} from this connection?
 </mat-dialog-content>
 <mat-dialog-actions>
 	<button
@@ -22,8 +22,8 @@
 		No
 	</button>
 	<button
-		mat-raised-button
-		color="primary"
+		mat-flat-button
+		class="primary-button"
 		mat-dialog-close="ok">
 		Yes
 	</button>

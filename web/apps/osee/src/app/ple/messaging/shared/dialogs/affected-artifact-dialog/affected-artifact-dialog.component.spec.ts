@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -26,6 +26,10 @@ import { MatTableModule } from '@angular/material/table';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AffectedArtifactDialogComponent } from './affected-artifact-dialog.component';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
 describe('AffectedArtifactDialogComponent', () => {
 	let component: AffectedArtifactDialogComponent;
@@ -42,7 +46,6 @@ describe('AffectedArtifactDialogComponent', () => {
 				MatButtonModule,
 				MatTableModule,
 				MatCheckboxModule,
-				HttpClientTestingModule,
 				AffectedArtifactDialogComponent,
 			],
 			providers: [
@@ -51,6 +54,8 @@ describe('AffectedArtifactDialogComponent', () => {
 					provide: MAT_DIALOG_DATA,
 					useValue: { data: { affectedArtifacts: [] } },
 				},
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
 			],
 		}).compileComponents();
 

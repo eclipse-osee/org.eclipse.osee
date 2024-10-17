@@ -15,22 +15,22 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
 	{
 		path: '',
-		title: 'CI Dashboard',
+		title: 'Zenith - Set Diffs',
 		loadComponent: () => import('./set-diffs.component'),
 	},
 	{
 		path: ':branchType',
-		title: 'CI Dashboard',
+		title: 'Zenith - Set Diffs',
 		loadComponent: () => import('./set-diffs.component'),
 	},
 	{
 		path: ':branchType/:branchId',
-		title: 'CI Dashboard',
+		title: 'Zenith - Set Diffs',
 		loadComponent: () => import('./set-diffs.component'),
 	},
 	{
 		path: ':branchType/:branchId/:ciSet',
-		title: 'CI Dashboard',
+		title: 'Zenith - Set Diffs',
 		loadComponent: () => import('./set-diffs.component'),
 	},
 ];

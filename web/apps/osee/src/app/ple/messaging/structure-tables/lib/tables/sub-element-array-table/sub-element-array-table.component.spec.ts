@@ -10,10 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HarnessLoader } from '@angular/cdk/testing';
-import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { CommonModule } from '@angular/common';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -34,13 +32,15 @@ import { CurrentStateServiceMock } from '@osee/messaging/shared/testing';
 import { CurrentStructureService } from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 import { elementSearch4 } from '@osee/messaging/type-element-search/testing';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 
-describe('SubElementTableComponent', () => {
+describe('SubElementArrayTableComponent', () => {
 	let component: SubElementArrayTableComponent;
 	let fixture: ComponentFixture<SubElementArrayTableComponent>;
-	let loader: HarnessLoader;
-	let service: CurrentStructureService;
-	let expectedData = elementSearch4[0];
+	const expectedData = elementSearch4[0];
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
@@ -56,7 +56,6 @@ describe('SubElementTableComponent', () => {
 				FormsModule,
 				NoopAnimationsModule,
 				RouterTestingModule,
-				HttpClientTestingModule,
 				MockSubElementTableComponent,
 			],
 			providers: [
@@ -80,9 +79,10 @@ describe('SubElementTableComponent', () => {
 					provide: CurrentStructureService,
 					useValue: CurrentStateServiceMock,
 				},
+				provideHttpClient(withInterceptorsFromDi()),
+				provideHttpClientTesting(),
 			],
 		}).compileComponents();
-		service = TestBed.inject(CurrentStructureService);
 	});
 
 	beforeEach(() => {
@@ -92,7 +92,6 @@ describe('SubElementTableComponent', () => {
 		component.element = expectedData;
 		component.filter = 'element: name1';
 		fixture.detectChanges();
-		loader = TestbedHarnessEnvironment.loader(fixture);
 	});
 
 	it('should create', async () => {

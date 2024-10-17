@@ -19,8 +19,6 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class BranchPageService {
 	private _pageSize = new BehaviorSubject<number>(10);
 	private pageSize$ = this._pageSize.asObservable();
-	constructor() {}
-
 	get pageSize(): Observable<number> {
 		return this.pageSize$;
 	}

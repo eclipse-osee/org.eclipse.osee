@@ -22,6 +22,7 @@ import org.eclipse.osee.accessor.ArtifactAccessor;
 import org.eclipse.osee.accessor.types.ArtifactMatch;
 import org.eclipse.osee.accessor.types.AttributeQuery;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -138,9 +139,19 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
    public InterfaceMessageToken getRelatedToConnection(BranchId branch, ArtifactId connectionId, ArtifactId messageId,
       ArtifactId viewId) {
       try {
-         return this.setUpMessage(branch,
-            this.getAccessor().getByRelation(branch, messageId, CoreRelationTypes.InterfaceConnectionMessage_Connection,
-               connectionId, this.getFollowRelationDetails(), viewId));
+         List<FollowRelation> relations = Arrays.asList(
+            FollowRelation.fork(CoreRelationTypes.InterfaceConnectionMessage_Connection,
+               FollowRelation.followList(CoreRelationTypes.InterfaceConnectionTransportType_TransportType)),
+            FollowRelation.follow(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage));
+
+         InterfaceMessageToken message = this.setUpMessage(branch, this.getAccessor().getByRelation(branch, messageId,
+            CoreRelationTypes.InterfaceConnectionMessage_Connection, connectionId, relations, viewId));
+         ArtifactReadable connectionReadable = message.getArtifactReadable().getRelated(
+            CoreRelationTypes.InterfaceConnectionMessage_Connection).getAtMostOneOrDefault(ArtifactReadable.SENTINEL);
+         if (connectionReadable.isValid()) {
+            this.addHeader(message, new InterfaceConnection(connectionReadable));
+         }
+         return message;
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
          System.out.println(ex);
@@ -204,9 +215,9 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
 
    @Override
    public InterfaceSubMessageToken getMessageHeader(InterfaceMessageToken message) {
-      String name = "M" + message.getInterfaceMessageNumber() + " Header";
+      String name = "M" + message.getInterfaceMessageNumber().getValue() + " Header";
       if (message.getPublisherNodes().size() > 0) {
-         name = message.getPublisherNodes().get(0).getName() + " " + name;
+         name = message.getPublisherNodes().get(0).getName().getValue() + " " + name;
       }
       InterfaceSubMessageToken messageHeader =
          new InterfaceSubMessageToken(0L, name, "", "0", message.getApplicability());
@@ -376,9 +387,9 @@ public class InterfaceMessageApiImpl implements InterfaceMessageApi {
    }
 
    private void addHeader(InterfaceMessageToken m, InterfaceConnection connection) {
-      if (m.getInterfaceMessageType().equals(
-         connection.getTransportType().getMessageGenerationType()) && connection.getTransportType().isMessageGeneration()) {
-         String position = connection.getTransportType().getMessageGenerationPosition();
+      if (m.getInterfaceMessageType().getValue().equals(
+         connection.getTransportType().getMessageGenerationType().getValue()) && connection.getTransportType().getMessageGeneration().getValue()) {
+         String position = connection.getTransportType().getMessageGenerationPosition().getValue();
          if (position.equals("LAST")) {
             ((List<InterfaceSubMessageToken>) m.getSubMessages()).add(getMessageHeader(m));
             return;

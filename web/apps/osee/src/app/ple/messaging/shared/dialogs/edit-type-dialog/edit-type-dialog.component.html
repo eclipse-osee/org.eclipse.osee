@@ -10,11 +10,13 @@
 * Contributors:
 *     Boeing - initial API and implementation
 -->
-@if (!data.mode) {
-	<h1 mat-dialog-title>Editing {{ platform_type }}</h1>
+@if (!mode()) {
+	<h1 mat-dialog-title>Editing {{ platformTypeTitle | async }}</h1>
 }
-@if (data.mode) {
-	<h1 mat-dialog-title>Creating New Type from {{ platform_type }}</h1>
+@if (mode()) {
+	<h1 mat-dialog-title>
+		Creating New Type from {{ platformTypeTitle | async }}
+	</h1>
 }
 <mat-stepper #stepper>
 	<mat-step label="Platform Type">
@@ -24,10 +26,7 @@
 				<input
 					matInput
 					type="text"
-					[(ngModel)]="data.type.name"
-					(ngModelChange)="
-						updatePTypeManifest('1152921504606847088', $event)
-					"
+					[(ngModel)]="name"
 					oseeUniquePlatformTypeName
 					[referencePlatform]="reference"
 					#input
@@ -42,13 +41,7 @@
 					>
 				}
 			</mat-form-field>
-			<osee-applicability-selector
-				[applicability]="data.type.applicability"
-				(applicabilityChange)="
-					data.type.applicability = $event;
-					modifyApplicability($event)
-				">
-			</osee-applicability-selector>
+			<osee-applicability-dropdown [(applicability)]="applicability" />
 			<br />
 			<form
 				[oseeUniquePlatformTypeAttributes]="undefined"
@@ -59,8 +52,7 @@
 						>Logical Type</mat-label
 					>
 					<mat-select
-						[(ngModel)]="data.type.interfaceLogicalType"
-						(ngModelChange)="updateLogicalType($event)"
+						[(ngModel)]="logicalType"
 						required
 						[errorStateMatcher]="parentMatcher"
 						[compareWith]="compareLogicalTypes"
@@ -99,17 +91,11 @@
 							cdkTextareaAutosize
 							matInput
 							[errorStateMatcher]="parentMatcher"
-							[(ngModel)]="data.type.description"
-							(ngModelChange)="
-								updatePTypeManifest(
-									'1152921504606847090',
-									$event
-								)
-							"
+							[(ngModel)]="description"
 							[required]="(descriptionRequired | async) || false"
-							id="description"
-							name="description"
-							#description="ngModel"></textarea>
+							id="interfaceDescription"
+							name="interfaceDescription"
+							#interfaceDescription="ngModel"></textarea>
 						<mat-hint>Description of Platform Type</mat-hint>
 						@if (platformTypeForm.errors?.['attributesNotUnique']) {
 							<mat-error id="description"
@@ -131,10 +117,7 @@
 						name="interfacePlatformTypeMinval"
 						[errorMatcher]="parentMatcher"
 						[required]="(minValRequired | async) || false"
-						[(crossRef)]="data.type.interfacePlatformTypeMinval"
-						(crossRefChange)="
-							updatePTypeManifest('3899709087455064782', $event)
-						"
+						[(crossRef)]="minVal"
 						[allowOutsideValues]="true"
 						alternateObjectType="Minimum Value"></osee-cross-reference-dropdown>
 					<osee-cross-reference-dropdown
@@ -142,10 +125,7 @@
 						name="interfacePlatformTypeMaxval"
 						[errorMatcher]="parentMatcher"
 						[required]="(maxValRequired | async) || false"
-						[(crossRef)]="data.type.interfacePlatformTypeMaxval"
-						(crossRefChange)="
-							updatePTypeManifest('3899709087455064783', $event)
-						"
+						[(crossRef)]="maxVal"
 						[allowOutsideValues]="true"
 						alternateObjectType="Maximum Value">
 					</osee-cross-reference-dropdown>
@@ -154,29 +134,23 @@
 						name="interfaceDefaultValue"
 						[errorMatcher]="parentMatcher"
 						[required]="(defaultValRequired | async) || false"
-						[(crossRef)]="data.type.interfaceDefaultValue"
-						(crossRefChange)="
-							updatePTypeManifest('2886273464685805413', $event)
-						"
+						[(crossRef)]="defaultValue"
 						[allowOutsideValues]="true"
 						alternateObjectType="Default Value"
-						[minimum]="data.type.interfacePlatformTypeMinval"
-						[maximum]="data.type.interfacePlatformTypeMaxval">
+						[minimum]="minVal()"
+						[maximum]="maxVal()">
 					</osee-cross-reference-dropdown>
 					<osee-cross-reference-dropdown
 						id="interfacePlatformTypeMsbValue"
 						name="interfacePlatformTypeMsbValue"
 						[errorMatcher]="parentMatcher"
 						[required]="(msbValRequired | async) || false"
-						[(crossRef)]="data.type.interfacePlatformTypeMsbValue"
-						[crossRef]="getMSBValue()"
-						(crossRefChange)="
-							updatePTypeManifest('3899709087455064785', $event)
-						"
+						[crossRef]="msbValue()"
+						(crossRefChange)="msbVal.set($event)"
 						[allowOutsideValues]="true"
 						alternateObjectType="MSB"
-						[minimum]="data.type.interfacePlatformTypeMinval"
-						[maximum]="data.type.interfacePlatformTypeMaxval">
+						[minimum]="minVal()"
+						[maximum]="maxVal()">
 					</osee-cross-reference-dropdown>
 				</div>
 				<br />
@@ -215,13 +189,7 @@
 						<input
 							matInput
 							type="number"
-							[(ngModel)]="data.type.interfacePlatformTypeBitSize"
-							(ngModelChange)="
-								updatePTypeManifest(
-									'2455059983007225786',
-									$event
-								)
-							"
+							[(ngModel)]="size"
 							#input
 							required
 							[errorStateMatcher]="parentMatcher"
@@ -254,16 +222,8 @@
 						<input
 							matInput
 							type="number"
-							[(ngModel)]="
-								data.type.interfacePlatformTypeBitsResolution
-							"
-							[ngModel]="getResolution()"
-							(ngModelChange)="
-								updatePTypeManifest(
-									'3899709087455064786',
-									$event
-								)
-							"
+							[ngModel]="computedResolution()"
+							(ngModelChange)="resolution.set($event)"
 							#input
 							[errorStateMatcher]="parentMatcher"
 							[required]="
@@ -293,15 +253,7 @@
 						<input
 							matInput
 							type="number"
-							[(ngModel)]="
-								data.type.interfacePlatformTypeCompRate
-							"
-							(ngModelChange)="
-								updatePTypeManifest(
-									'3899709087455064787',
-									$event
-								)
-							"
+							[(ngModel)]="compRate"
 							#input
 							[errorStateMatcher]="parentMatcher"
 							[required]="(compRateRequired | async) || false"
@@ -329,15 +281,7 @@
 						<input
 							matInput
 							type="number"
-							[(ngModel)]="
-								data.type.interfacePlatformTypeAnalogAccuracy
-							"
-							(ngModelChange)="
-								updatePTypeManifest(
-									'3899709087455064788',
-									$event
-								)
-							"
+							[(ngModel)]="accuracy"
 							#input
 							[errorStateMatcher]="parentMatcher"
 							[required]="(analogAccRequired | async) || false"
@@ -359,10 +303,7 @@
 						}
 					</mat-form-field>
 					<osee-unit-dropdown
-						[(unit)]="data.type.interfacePlatformTypeUnits"
-						(unitChange)="
-							updatePTypeManifest('4026643196432874344', $event)
-						"
+						[(unit)]="_unitsAttr"
 						[required]="(unitsRequired | async) || false"
 						[errorMatcher]="parentMatcher"></osee-unit-dropdown>
 				</div>
@@ -374,14 +315,14 @@
 				(click)="onNoClick()">
 				Cancel
 			</button>
-			@if (data.type.interfaceLogicalType === 'enumeration') {
+			@if (logicalType() === 'enumeration') {
 				<button
-					mat-raised-button
+					mat-flat-button
 					matStepperNext
-					color="primary"
+					class="primary-button"
 					[disabled]="
-						data.type.name.length === 0 ||
-						data.type.interfaceLogicalType.length === 0 ||
+						name().length === 0 ||
+						logicalType().length === 0 ||
 						platformTypeForm.invalid ||
 						platformTypeForm.pending ||
 						platformTypeName.invalid ||
@@ -390,64 +331,57 @@
 					Next
 				</button>
 			}
-			@if (manifest | async; as _manifest) {
-				@if (data.type.interfaceLogicalType !== 'enumeration') {
+			@if (logicalType() !== 'enumeration') {
+				<button
+					mat-flat-button
+					[mat-dialog-close]="platformType()"
+					class="primary-button"
+					[disabled]="
+						name().length === 0 ||
+						logicalType().length === 0 ||
+						platformTypeForm.invalid ||
+						platformTypeForm.pending ||
+						platformTypeName.invalid ||
+						platformTypeName.pending
+					">
+					Ok
+				</button>
+			}
+		</mat-dialog-actions>
+	</mat-step>
+	@if (logicalType() === 'enumeration') {
+		<mat-step label="Enumeration Set">
+			<mat-dialog-content>
+				<osee-edit-enum-set-field
+					[editable]="true"
+					[(enumSet)]="enumSet"
+					[bitSize]="sizeAttr()"
+					(unique)="updateUnique($event)"></osee-edit-enum-set-field>
+			</mat-dialog-content>
+			<mat-dialog-actions align="end">
+				<button
+					mat-button
+					(click)="onNoClick()">
+					Cancel
+				</button>
+				@if (logicalType() === 'enumeration') {
 					<button
-						mat-raised-button
-						[mat-dialog-close]="_manifest"
-						color="primary"
+						mat-flat-button
+						[mat-dialog-close]="platformType()"
+						class="primary-button"
 						[disabled]="
-							data.type.name.length === 0 ||
-							data.type.interfaceLogicalType.length === 0 ||
+							name().length === 0 ||
+							logicalType().length === 0 ||
 							platformTypeForm.invalid ||
 							platformTypeForm.pending ||
 							platformTypeName.invalid ||
-							platformTypeName.pending
+							platformTypeName.pending ||
+							(enumUnique | async) === 'false'
 						">
 						Ok
 					</button>
 				}
-			}
-		</mat-dialog-actions>
-	</mat-step>
-	@if (data.type.interfaceLogicalType === 'enumeration') {
-		@if (manifest | async; as _manifest) {
-			<mat-step label="Enumeration Set">
-				<mat-dialog-content>
-					<osee-edit-enum-set-field
-						[editable]="true"
-						[platformType]="data.type"
-						[shouldCreateNew]="data.mode === 1"
-						(enumSetTx)="enumUpdate($event)"
-						(unique)="
-							updateUnique($event)
-						"></osee-edit-enum-set-field>
-				</mat-dialog-content>
-				<mat-dialog-actions align="end">
-					<button
-						mat-button
-						(click)="onNoClick()">
-						Cancel
-					</button>
-					@if (data.type.interfaceLogicalType === 'enumeration') {
-						<button
-							mat-raised-button
-							[mat-dialog-close]="_manifest"
-							color="primary"
-							[disabled]="
-								data.type.name.length === 0 ||
-								data.type.interfaceLogicalType.length === 0 ||
-								platformTypeForm.invalid ||
-								platformTypeForm.pending ||
-								platformTypeName.invalid ||
-								platformTypeName.pending ||
-								(enumUnique | async) === 'false'
-							">
-							Ok
-						</button>
-					}
-				</mat-dialog-actions>
-			</mat-step>
-		}
+			</mat-dialog-actions>
+		</mat-step>
 	}
 </mat-stepper>

@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton, MatMiniFabButton } from '@angular/material/button';
 import {
@@ -24,11 +24,11 @@ import {
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
+import { ApplicabilityDropdownComponent } from '@osee/applicability/applicability-dropdown';
 import type {
 	CrossRefKeyValue,
 	CrossReference,
 } from '@osee/messaging/shared/types';
-import { ApplicabilitySelectorComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-new-cross-reference-dialog',
@@ -45,15 +45,19 @@ import { ApplicabilitySelectorComponent } from '@osee/shared/components';
 		MatButton,
 		MatMiniFabButton,
 		MatIcon,
-		ApplicabilitySelectorComponent,
+		ApplicabilityDropdownComponent,
 	],
 	templateUrl: './new-cross-reference-dialog.component.html',
 })
 export class NewCrossReferenceDialogComponent {
-	constructor(
-		@Inject(MAT_DIALOG_DATA) public data: { crossRef: CrossReference },
-		public dialogRef: MatDialogRef<NewCrossReferenceDialogComponent>
-	) {
+	data = inject<{ crossRef: CrossReference }>(MAT_DIALOG_DATA);
+	dialogRef =
+		inject<MatDialogRef<NewCrossReferenceDialogComponent>>(MatDialogRef);
+
+	/** Inserted by Angular inject() migration for backwards compatibility */
+	constructor(...args: unknown[]);
+
+	constructor() {
 		if (this.data && this.data.crossRef) {
 			this.crossReference.id = this.data.crossRef.id;
 			this.crossReference.name = this.data.crossRef.name;
@@ -73,7 +77,7 @@ export class NewCrossReferenceDialogComponent {
 		}
 	}
 
-	crossReference: Partial<CrossReference> = {
+	crossReference: CrossReference = {
 		name: '',
 		crossReferenceValue: '',
 		crossReferenceArrayValues: '',

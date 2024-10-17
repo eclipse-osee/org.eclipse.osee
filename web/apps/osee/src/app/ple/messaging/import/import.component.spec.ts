@@ -16,12 +16,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { RouterTestingModule } from '@angular/router/testing';
 import { MessagingControlsMockComponent } from '@osee/messaging/shared/testing';
 import { ImportService } from '@osee/messaging/import';
 import { importServiceMock } from '@osee/messaging/import/testing';
 import { ImportComponent } from './import.component';
 import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
+import { provideRouter } from '@angular/router';
+import { MockTransportTypeDropdownComponent } from '@osee/messaging/transports/dropdown/testing';
+import { TransportTypeDropdownComponent } from '@osee/messaging/transports/dropdown';
 
 describe('ImportComponent', () => {
 	let component: ImportComponent;
@@ -37,10 +39,14 @@ describe('ImportComponent', () => {
 					MatButtonModule,
 					MatSelectModule,
 					MessagingControlsMockComponent,
+					MockTransportTypeDropdownComponent,
 				],
 			},
 			remove: {
-				imports: [MessagingControlsComponent],
+				imports: [
+					MessagingControlsComponent,
+					TransportTypeDropdownComponent,
+				],
 			},
 		})
 			.configureTestingModule({
@@ -49,11 +55,11 @@ describe('ImportComponent', () => {
 					MatFormFieldModule,
 					MatSelectModule,
 					NoopAnimationsModule,
-					RouterTestingModule,
 					ImportComponent,
 				],
 				providers: [
 					{ provide: ImportService, useValue: importServiceMock },
+					provideRouter([]),
 				],
 				declarations: [],
 			})

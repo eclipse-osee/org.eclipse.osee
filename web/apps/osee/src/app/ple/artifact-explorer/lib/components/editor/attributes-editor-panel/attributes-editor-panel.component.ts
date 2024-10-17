@@ -11,24 +11,21 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { NgClass } from '@angular/common';
-import { Component, Input, viewChild } from '@angular/core';
+import { Component, Input, inject, viewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import {
-	AttributesEditorComponent,
-	ExpandIconComponent,
-} from '@osee/shared/components';
+import { AttributesEditorComponent } from '@osee/shared/components';
 import { FormDirective } from '@osee/shared/directives';
-import { TransactionService } from '@osee/shared/transactions';
 import {
-	attribute,
-	attributeType,
-	modifyArtifact,
-	transaction,
-} from '@osee/shared/types';
+	legacyAttributeType,
+	legacyModifyArtifact,
+	legacyTransaction,
+} from '@osee/transactions/types';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { artifactTab } from '../../../types/artifact-explorer';
 import { MatIcon } from '@angular/material/icon';
-import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-explorer-expansion-panel/artifact-explorer-expansion-panel.component';
+import { ExpansionPanelComponent } from '@osee/shared/components';
+import { attribute } from '@osee/shared/types';
+import { TransactionService } from '@osee/transactions/services';
 
 @Component({
 	selector: 'osee-attributes-editor-panel',
@@ -39,8 +36,7 @@ import { ArtifactExplorerExpansionPanelComponent } from '../../shared/artifact-e
 		AttributesEditorComponent,
 		FormDirective,
 		MatIcon,
-		ArtifactExplorerExpansionPanelComponent,
-		ExpandIconComponent,
+		ExpansionPanelComponent,
 	],
 	templateUrl: './attributes-editor-panel.component.html',
 })
@@ -49,20 +45,20 @@ export class AttributesEditorPanelComponent {
 
 	enum$ = new Observable<string[]>();
 
-	constructor(private transactionService: TransactionService) {}
+	private transactionService = inject(TransactionService);
 
 	saveChanges() {
 		if (this.updatedAttributes.value.length > 0) {
-			const tx: transaction = {
+			const tx: legacyTransaction = {
 				branch: this.tab.branchId,
 				txComment:
 					'Attribute changes for artifact: ' + this.tab.artifact.name,
 			};
-			const attributes: attributeType[] =
+			const attributes: legacyAttributeType[] =
 				this.updatedAttributes.value.map((attr) => {
 					return { typeId: attr.typeId, value: attr.value };
 				});
-			const modifyArtifact: modifyArtifact = {
+			const modifyArtifact: legacyModifyArtifact = {
 				id: this.tab.artifact.id,
 				setAttributes: attributes,
 			};

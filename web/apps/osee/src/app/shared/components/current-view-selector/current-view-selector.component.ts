@@ -20,11 +20,11 @@ import {
 import { MatOption } from '@angular/material/core';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
+import { applic } from '@osee/applicability/types';
 import {
 	ApplicabilityListUIService,
 	ViewsRoutedUiService,
 } from '@osee/shared/services';
-import { applic } from '@osee/shared/types/applicability';
 import {
 	BehaviorSubject,
 	combineLatest,
@@ -59,7 +59,7 @@ export class CurrentViewSelectorComponent {
 
 	filterText = new BehaviorSubject<string>('');
 
-	noneOption = { id: '-1', name: 'None' };
+	noneOption: applic = { id: '-1', name: 'None' };
 
 	views = combineLatest([this.applicService.views, this.filterText]).pipe(
 		switchMap(([applics, filterText]) =>

@@ -12,8 +12,15 @@
  **********************************************************************/
 import type { enumerationSet } from './enum';
 import type { PlatformType } from './platformType';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 
-export interface enumeratedPlatformType extends PlatformType {
-	interfaceLogicalType: 'enumeration';
+type _id = `${number}`;
+export type enumeratedPlatformType = {
+	interfaceLogicalType: {
+		id: _id | '';
+		value: 'enumeration';
+		gammaId: _id;
+		typeId: typeof ATTRIBUTETYPEIDENUM.LOGICALTYPE;
+	};
 	enumerationSet: enumerationSet;
-}
+} & PlatformType;

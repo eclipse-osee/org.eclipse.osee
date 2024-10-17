@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ExecutedCommandsService } from '../../services/data-services/execution-services/executed-commands.service';
@@ -28,6 +28,13 @@ import { AsyncPipe } from '@angular/common';
 	imports: [InputControlComponent, AsyncPipe],
 })
 export class ParameterStringComponent implements OnDestroy {
+	private commandFromUserHistoryService = inject(
+		CommandFromUserHistoryService
+	);
+	private parameterDataService = inject(ParameterDataService);
+	private selectedCommandDataService = inject(SelectedCommandDataService);
+	private executedCommandsService = inject(ExecutedCommandsService);
+
 	isCustomCommand$ = this.selectedCommandDataService.isCustomCommand;
 	parameter$ = this.parameterDataService.parameter$;
 	userPrompt$ = this.parameterDataService.userPrompt$;
@@ -65,19 +72,12 @@ export class ParameterStringComponent implements OnDestroy {
 	parameterValueFromHistory =
 		this.commandFromUserHistoryService.parameterValueFromHistory$;
 
-	constructor(
-		private commandFromUserHistoryService: CommandFromUserHistoryService,
-		private parameterDataService: ParameterDataService,
-		private selectedCommandDataService: SelectedCommandDataService,
-		private executedCommandsService: ExecutedCommandsService
-	) {}
-
 	ngOnDestroy(): void {
 		this.executedCommandsService.doneFx = '';
 	}
 
 	_onInput(e: { input: string }) {
-		let inputVal = e.input;
+		const inputVal = e.input;
 		if (inputVal[0] === undefined || inputVal === '') {
 			this.commandFromUserHistoryService.fromHistory = false;
 			this.commandFromUserHistoryService.selectedCommandFromHistoryTableId =

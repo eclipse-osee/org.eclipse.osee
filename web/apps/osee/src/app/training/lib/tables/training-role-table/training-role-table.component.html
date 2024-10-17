@@ -23,7 +23,7 @@
 					mat-header-cell
 					*matHeaderCellDef
 					[ngClass]="{
-						'tw-border-r tw-border-solid': header !== 'endDate'
+						'tw-border-r tw-border-solid': header !== 'endDate',
 					}">
 					<div class="tw-font-mat-bold tw-text-primary-600">
 						{{
@@ -36,7 +36,7 @@
 					mat-cell
 					*matCellDef="let item; let row = index"
 					[ngClass]="{
-						'tw-border-r tw-border-solid': header !== 'endDate'
+						'tw-border-r tw-border-solid': header !== 'endDate',
 					}">
 					{{ item[header] }}
 				</td>

@@ -62,6 +62,10 @@ public interface MimApi {
 
    InterfaceValidationApi getInterfaceValidationApi();
 
+   InterfaceStructureCategoryApi getInterfaceStructureCategoryApi();
+
+   InterfaceMessagePeriodicityApi getInterfaceMessagePeriodicityApi();
+
    ConcurrentHashMap<Long, ? extends InterfaceLogicalTypeGeneric> getLogicalTypes();
 
    MimPeerReviewApi getMimPeerReviewApi();

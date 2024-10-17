@@ -11,8 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Inject, Optional, inject, viewChild } from '@angular/core';
-import { ControlContainer, FormsModule, NgForm } from '@angular/forms';
+import { Component, inject, viewChild } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
 import {
 	MatAutocomplete,
 	MatAutocompleteTrigger,
@@ -34,6 +34,7 @@ import {
 } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
+import { artifactTypeIcon } from '@osee/artifact-with-relations/types';
 import {
 	AttributesEditorComponent,
 	MatOptionLoadingComponent,
@@ -41,6 +42,7 @@ import {
 import { FormDirective } from '@osee/shared/directives';
 import { ArtifactUiService } from '@osee/shared/services';
 import { NamedId, attribute } from '@osee/shared/types';
+import { provideOptionalControlContainerNgForm } from '@osee/shared/utils';
 import {
 	BehaviorSubject,
 	ReplaySubject,
@@ -53,11 +55,6 @@ import {
 import { ArtifactExplorerHttpService } from '../../../../../services/artifact-explorer-http.service';
 import { ArtifactIconService } from '../../../../../services/artifact-icon.service';
 import { createChildArtifactDialogData } from '../../../../../types/artifact-explorer';
-import { artifactTypeIcon } from '@osee/artifact-with-relations/types';
-
-function controlContainerFactory(controlContainer?: ControlContainer) {
-	return controlContainer;
-}
 
 @Component({
 	selector: 'osee-create-artifact-dialog',
@@ -85,20 +82,13 @@ function controlContainerFactory(controlContainer?: ControlContainer) {
 		MatDialogClose,
 	],
 	templateUrl: './create-child-artifact-dialog.component.html',
-	viewProviders: [
-		{
-			provide: ControlContainer,
-			useFactory: controlContainerFactory,
-			deps: [[new Optional(), NgForm]],
-		},
-	],
+	viewProviders: [provideOptionalControlContainerNgForm()],
 })
 export class CreateChildArtifactDialogComponent {
-	constructor(
-		public dialogRef: MatDialogRef<CreateChildArtifactDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: createChildArtifactDialogData,
-		private artifactIconService: ArtifactIconService
-	) {}
+	dialogRef =
+		inject<MatDialogRef<CreateChildArtifactDialogComponent>>(MatDialogRef);
+	data = inject<createChildArtifactDialogData>(MAT_DIALOG_DATA);
+	private artifactIconService = inject(ArtifactIconService);
 
 	onCancel() {
 		this.dialogRef.close();
@@ -172,8 +162,8 @@ export class CreateChildArtifactDialogComponent {
 					a.multiplicityId === '2' || a.multiplicityId === '4'
 						? -1
 						: b.multiplicityId === '2' || b.multiplicityId === '4'
-						  ? 1
-						  : 0
+							? 1
+							: 0
 				)
 		)
 	);

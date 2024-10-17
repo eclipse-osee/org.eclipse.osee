@@ -13,6 +13,16 @@
 use applicability::applic_tag::ApplicabilityTagTypes;
 
 use crate::applic_tokens::ApplicTokens;
+
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
+pub enum LineEnding {
+    #[default]
+    NoLineEndings,
+    StartLineEnding,
+    EndLineEnding,
+    StartAndEndLineEnding
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ApplicabilityParserSyntaxTag {
     Text(String),
@@ -27,6 +37,12 @@ pub struct ApplicabilitySyntaxTag(
     pub Vec<ApplicabilityParserSyntaxTag>,
     pub ApplicabilityTagTypes,
     pub Vec<ApplicabilityParserSyntaxTag>,
+    /// start syntax tag line length, note: actual value is n+1
+    pub u8,
+    /// else syntax tag line length, note: actual value is n
+    pub u8,
+    /// end syntax tag line length, note: actual value is n+1
+    pub u8
 );
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub struct ApplicabilitySyntaxTagNot(
@@ -34,6 +50,12 @@ pub struct ApplicabilitySyntaxTagNot(
     pub Vec<ApplicabilityParserSyntaxTag>,
     pub ApplicabilityTagTypes,
     pub Vec<ApplicabilityParserSyntaxTag>,
+    /// start syntax tag line length, note: actual value is n+1
+    pub u8,
+    /// else syntax tag line length, note: actual value is n
+    pub u8,
+    /// end syntax tag line length, note: actual value is n+1
+    pub u8
 );
 
 pub type SubstitutionSyntaxTag = Vec<ApplicTokens>;

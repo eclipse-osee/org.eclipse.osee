@@ -116,7 +116,6 @@
 		<mat-label class="tw-text-lg">Select Product Types</mat-label>
 		<mat-selection-list
 			[(ngModel)]="data.feature.productApplicabilities"
-			color="primary"
 			class="tw-text-lg">
 			@for (type of productApplicabilities | async; track type) {
 				<mat-list-option
@@ -147,9 +146,9 @@
 		Clear Feature Data
 	</button>
 	<button
-		mat-raised-button
+		mat-flat-button
 		[mat-dialog-close]="data"
-		color="primary"
+		class="primary-button"
 		[disabled]="
 			data.feature.name.length === 0 ||
 			data.feature.description.length === 0 ||

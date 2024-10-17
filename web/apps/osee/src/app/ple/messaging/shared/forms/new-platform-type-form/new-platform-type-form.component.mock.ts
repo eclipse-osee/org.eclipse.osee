@@ -11,9 +11,8 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-import { Component, Input, Output } from '@angular/core';
-import type { logicalType, PlatformType } from '@osee/messaging/shared/types';
-import { Subject } from 'rxjs';
+import { Component, input, model } from '@angular/core';
+import type { PlatformType, logicalType } from '@osee/messaging/shared/types';
 import { NewPlatformTypeFormComponent } from './new-platform-type-form.component';
 
 @Component({
@@ -24,12 +23,12 @@ import { NewPlatformTypeFormComponent } from './new-platform-type-form.component
 export class MockNewPlatformTypeFormComponent
 	implements Partial<NewPlatformTypeFormComponent>
 {
-	@Input() logicalType: logicalType = {
+	logicalType = input<logicalType>({
 		id: '-1',
 		name: '',
-		idString: '-1',
-		idIntValue: -1,
-	};
+		idString: '',
+		idIntValue: 0,
+	});
 
-	@Output() platformType = new Subject<PlatformType>();
+	platformType = model.required<PlatformType>();
 }

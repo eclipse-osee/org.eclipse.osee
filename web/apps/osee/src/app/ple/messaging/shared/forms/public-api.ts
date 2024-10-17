@@ -13,4 +13,3 @@
 export * from './new-type-form/new-type-form.component';
 export * from './edit-enum-set-field/edit-enum-set-field.component';
 export * from './table-edit-text-field/table-edit-text-field.component';
-export * from './transport-type-form/transport-type-form.component';

@@ -634,7 +634,10 @@ public class TransactionBuilderImpl implements TransactionBuilder {
                   afterIndex = orcsApi.getJdbcService().getClient().fetch(0,
                      OseeSql.GET_CURRENT_REL_ORDER_FOR_TYPE_AND_ART_A_AND_ART_B.getSql(), getBranch(), artA,
                      relType.getId(), afterArtifact);
-                  beforeIndex = relOrders.higherKey(afterIndex);
+                  if (maxOrder > afterIndex) {
+
+                     beforeIndex = relOrders.higherKey(afterIndex);
+                  }
                }
             }
             txData.addRelationSideA(relType, artA, relOrders);
@@ -651,7 +654,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
                   "Error Calculating new RelOrder for relType:" + relType.toString() + " to the start");
             }
             txData.getNewRelations().get(relType, artA).addRelOrder(artB, relOrder);
-         } else if (insertType.equals("insert")) {
+         } else if (insertType.equals("insert") & maxOrder > afterIndex) {
             relOrder = txData.calculateInsertionOrderIndex(afterIndex, beforeIndex);
             int i;
             for (i = 0; i < 100 & txData.getNewRelations().get(relType, artA).getRelOrders().keySet().contains(

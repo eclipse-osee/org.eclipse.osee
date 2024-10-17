@@ -10,13 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import type {
-	nodeData,
-	nodeDataWithChanges,
 	OseeEdge,
 	connection,
-	connectionWithChanges,
+	nodeData,
 } from '@osee/messaging/shared/types';
 
 @Component({
@@ -25,22 +23,8 @@ import type {
 	standalone: true,
 })
 export class MockGraphNodeMenuComponent {
-	@Input() editMode: boolean = false;
-	@Input() data: nodeData | nodeDataWithChanges = {
-		id: '',
-		name: '',
-		interfaceNodeNumber: '',
-		interfaceNodeGroupId: '',
-		interfaceNodeAddress: '',
-		interfaceNodeBackgroundColor: '',
-		interfaceNodeBuildCodeGen: false,
-		interfaceNodeCodeGen: false,
-		interfaceNodeCodeGenName: '',
-		nameAbbrev: '',
-		interfaceNodeToolUse: false,
-		interfaceNodeType: '',
-		notes: '',
-	};
-	@Input() sources: OseeEdge<connection | connectionWithChanges>[] = [];
-	@Input() targets: OseeEdge<connection | connectionWithChanges>[] = [];
+	public editMode = input.required<boolean>();
+	public data = input.required<nodeData>();
+	public sources = input.required<OseeEdge<connection>[]>();
+	public targets = input.required<OseeEdge<connection>[]>();
 }

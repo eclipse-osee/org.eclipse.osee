@@ -1461,10 +1461,6 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
          relOrder = getNewRelOrder(getRelations(relationTypeSide), relationTypeSide, null, artifact);
       }
 
-      XResultData rd =
-         ArtifactPersistenceManager.performAddRelationChecks(artifact, relationTypeSide, new XResultData());
-      rd.exceptionIfErrors("Add Relation(s)");
-
       RelationManager.addRelation(sorterId, relationTypeSide.getRelationType(), sides.getFirst(), sides.getSecond(),
          rationale, relOrder, ArtifactId.SENTINEL);
    }
@@ -1472,10 +1468,6 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    public final void addRelation(RelationSorter sorterId, RelationTypeSide relationTypeSide, Artifact artifact,
       int relOrder, ArtifactId relArtId) {
       Pair<Artifact, Artifact> sides = determineArtifactSides(artifact, relationTypeSide);
-
-      XResultData rd =
-         ArtifactPersistenceManager.performAddRelationChecks(artifact, relationTypeSide, new XResultData());
-      rd.exceptionIfErrors("Add Relation(s)");
 
       RelationManager.addRelation(sorterId, relationTypeSide.getRelationType(), sides.getFirst(), sides.getSecond(), "",
          relOrder, relArtId);
@@ -1488,8 +1480,6 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    }
 
    public final void addRelation(RelationSorter sorterId, RelationTypeSide relationSide, Artifact artifact) {
-      XResultData rd = ArtifactPersistenceManager.performAddRelationChecks(artifact, relationSide, new XResultData());
-      rd.exceptionIfErrors("Add Relation(s)");
       addRelation(sorterId, relationSide, artifact, null);
    }
 
@@ -1498,10 +1488,6 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       boolean sideA = relationSide.getSide().isSideA();
       Artifact artifactA = sideA ? artToAdd : this;
       Artifact artifactB = sideA ? this : artToAdd;
-
-      XResultData rd =
-         ArtifactPersistenceManager.performAddRelationChecks(targetArtifact, relationSide, new XResultData());
-      rd.exceptionIfErrors("Add Relation(s)");
 
       RelationManager.addRelation(sorterId, relationSide, artifactA, artifactB, rationale, 0, ArtifactId.SENTINEL);
       setRelationOrder(relationSide, targetArtifact, insertAfterTarget, artToAdd);
@@ -1512,10 +1498,6 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       boolean sideA = relationSide.getSide().isSideA();
       Artifact artifactA = sideA ? artToAdd : this;
       Artifact artifactB = sideA ? this : artToAdd;
-
-      XResultData rd =
-         ArtifactPersistenceManager.performAddRelationChecks(targetArtifact, relationSide, new XResultData());
-      rd.exceptionIfErrors("Add Relation(s)");
 
       RelationManager.addRelation(sorterId, relationSide, artifactA, artifactB, "", relOrder, relArtId);
       setRelationOrder(relationSide, targetArtifact, insertAfterTarget, artToAdd);
@@ -1599,16 +1581,11 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
 
    public final void deleteRelation(RelationTypeSide relationTypeSide, Artifact artifact) {
       Pair<Artifact, Artifact> sides = determineArtifactSides(artifact, relationTypeSide);
-      XResultData rd =
-         ArtifactPersistenceManager.performDeleteRelationChecks(artifact, relationTypeSide, new XResultData());
-      rd.exceptionIfErrors("Delete Relation(s)");
       RelationManager.deleteRelation(relationTypeSide, sides.getFirst(), sides.getSecond());
    }
 
    public final void deleteRelations(RelationTypeSide relationSide) {
       for (Artifact art : getRelatedArtifacts(relationSide)) {
-         XResultData rd = ArtifactPersistenceManager.performDeleteRelationChecks(art, relationSide, new XResultData());
-         rd.exceptionIfErrors("Delete Relation(s)");
          deleteRelation(relationSide, art);
       }
    }

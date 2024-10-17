@@ -21,7 +21,7 @@
 				>
 			</button>
 		</div>
-		<osee-artifact-explorer-expansion-panel
+		<osee-expansion-panel
 			title="Team Workflow Details"
 			[openDefault]="true">
 			<div
@@ -51,7 +51,7 @@
 					{{ teamWorkflow().TargetedVersion }}
 				</div>
 			</div>
-		</osee-artifact-explorer-expansion-panel>
+		</osee-expansion-panel>
 		<div class="tw-flex tw-items-center tw-justify-between tw-px-4">
 			<div class="tw-flex tw-items-center tw-gap-4">
 				<span class="tw-font-bold">Current State:</span>
@@ -81,8 +81,9 @@
 								allBranchesCommitted()
 									? 'All commits are complete'
 									: 'There are ' +
-									  teamWorkflow().branchesToCommitTo.length +
-									  ' branches left to commit to'
+										teamWorkflow().branchesToCommitTo
+											.length +
+										' branches left to commit to'
 							"
 							(click)="openCommitManager()">
 							Open Commit Manager
@@ -101,7 +102,7 @@
 								class="tw-flex tw-justify-center [&_*]:tw-m-0"
 								[ngClass]="{
 									'tw-bg-primary tw-text-background':
-										teamWorkflow().branchEditable
+										teamWorkflow().branchEditable,
 								}"
 								(click)="openInArtifactExplorer()"
 								[disabled]="!teamWorkflow().branchEditable">
@@ -113,7 +114,7 @@
 			}
 		</div>
 		@for (state of previousStates(); track $index) {
-			<osee-artifact-explorer-expansion-panel
+			<osee-expansion-panel
 				[title]="state.state"
 				[openDefault]="
 					teamWorkflow().currentState.state === state.state
@@ -124,7 +125,7 @@
 						[editable]="true"
 						(updatedAttributes)="handleUpdatedAttributes($event)" />
 				</div>
-			</osee-artifact-explorer-expansion-panel>
+			</osee-expansion-panel>
 		}
 	</div>
 } @else {

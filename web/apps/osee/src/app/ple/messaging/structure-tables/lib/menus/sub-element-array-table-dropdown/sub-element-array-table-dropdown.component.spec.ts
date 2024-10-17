@@ -10,32 +10,28 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HarnessLoader } from '@angular/cdk/testing';
-import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgIf } from '@angular/common';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { RouterLink } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
-import { SubElementArrayTableDropdownComponent } from './sub-element-array-table-dropdown.component';
+import { provideRouter, RouterLink } from '@angular/router';
+import { AttributeToValuePipe } from '@osee/attributes/pipes';
+import { CurrentStructureService } from '@osee/messaging/shared/services';
 import {
 	CurrentStateServiceMock,
 	elementsMock,
 	elementTableDropdownServiceMock,
 } from '@osee/messaging/shared/testing';
-import { CurrentStructureService } from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
-import { MatDividerModule } from '@angular/material/divider';
 import { ElementTableDropdownService } from '../../services/element-table-dropdown.service';
+import { SubElementArrayTableDropdownComponent } from './sub-element-array-table-dropdown.component';
 
 describe('SubElementTableDropdownComponent', () => {
 	let component: SubElementArrayTableDropdownComponent;
 	let fixture: ComponentFixture<SubElementArrayTableDropdownComponent>;
-	let loader: HarnessLoader;
-	let service: CurrentStructureService;
 
 	beforeEach(async () => {
 		await TestBed.overrideComponent(SubElementArrayTableDropdownComponent, {
@@ -43,13 +39,13 @@ describe('SubElementTableDropdownComponent', () => {
 				imports: [
 					NgIf,
 					AsyncPipe,
-					RouterTestingModule,
 					RouterLink,
 					MatMenuModule,
 					MatIconModule,
 					MatDialogModule,
 					MatFormFieldModule,
 					MatDividerModule,
+					AttributeToValuePipe,
 				],
 				providers: [
 					{
@@ -70,6 +66,7 @@ describe('SubElementTableDropdownComponent', () => {
 			.configureTestingModule({
 				imports: [SubElementArrayTableDropdownComponent],
 				providers: [
+					provideRouter([]),
 					{
 						provide: STRUCTURE_SERVICE_TOKEN,
 						useValue: CurrentStateServiceMock,
@@ -85,7 +82,6 @@ describe('SubElementTableDropdownComponent', () => {
 				],
 			})
 			.compileComponents();
-		service = TestBed.inject(CurrentStructureService);
 
 		fixture = TestBed.createComponent(
 			SubElementArrayTableDropdownComponent
@@ -94,7 +90,6 @@ describe('SubElementTableDropdownComponent', () => {
 		component.headerElement = elementsMock[0];
 		component.element = elementsMock[0];
 		fixture.detectChanges();
-		loader = TestbedHarnessEnvironment.loader(fixture);
 	});
 
 	it('should create', () => {

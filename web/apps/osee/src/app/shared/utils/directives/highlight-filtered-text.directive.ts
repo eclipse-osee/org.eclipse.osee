@@ -17,6 +17,7 @@ import {
 	OnChanges,
 	Renderer2,
 	SimpleChanges,
+	inject,
 } from '@angular/core';
 
 @Directive({
@@ -24,15 +25,14 @@ import {
 	standalone: true,
 })
 export class HighlightFilteredTextDirective implements OnChanges {
-	@Input() searchTerms: string = '';
-	@Input() text: string = '';
-	@Input() classToApply: string = '';
-	constructor(
-		private el: ElementRef,
-		private renderer: Renderer2
-	) {}
+	private el = inject(ElementRef);
+	private renderer = inject(Renderer2);
 
-	ngOnChanges(changes: SimpleChanges): void {
+	@Input() searchTerms = '';
+	@Input() text = '';
+	@Input() classToApply = '';
+
+	ngOnChanges(_changes: SimpleChanges): void {
 		if (!this.classToApply && this.text) {
 			//we are now assuming users of this directive are string interpolating their value when searchTerms is not present.
 			return;
@@ -48,7 +48,7 @@ export class HighlightFilteredTextDirective implements OnChanges {
 	}
 	getFormattedText() {
 		const re = new RegExp(`(${this.searchTerms})`, 'i');
-		let returnValue = this.text
+		const returnValue = this.text
 			?.toString()
 			.replace('<', '&lt;')
 			.replace('>', '&gt;')

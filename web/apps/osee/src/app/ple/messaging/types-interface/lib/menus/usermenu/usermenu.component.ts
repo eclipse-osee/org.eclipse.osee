@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
@@ -31,12 +31,10 @@ import { PlMessagingTypesUIService } from '../../services/pl-messaging-types-ui.
 	imports: [MatButton, MatIcon, MatMenuItem],
 })
 export class UsermenuComponent {
-	constructor(
-		private typesService: CurrentTypesService,
-		private uiService: PlMessagingTypesUIService,
-		public dialog: MatDialog,
-		private preferencesService: PreferencesUIService
-	) {}
+	private typesService = inject(CurrentTypesService);
+	private uiService = inject(PlMessagingTypesUIService);
+	dialog = inject(MatDialog);
+	private preferencesService = inject(PreferencesUIService);
 
 	openSettingsDialog() {
 		combineLatest([

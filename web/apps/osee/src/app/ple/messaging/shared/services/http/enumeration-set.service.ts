@@ -11,108 +11,80 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { TransactionBuilderService } from '@osee/shared/transactions-legacy';
 import {
-	TransactionBuilderService,
-	TransactionService,
-} from '@osee/shared/transactions';
-import { relation, transaction } from '@osee/shared/types';
+	legacyRelation,
+	legacyTransaction,
+	transaction,
+} from '@osee/transactions/types';
 import { of } from 'rxjs';
 import { apiURL } from '@osee/environments';
-import {
-	ARTIFACTTYPEIDENUM,
-	ATTRIBUTETYPEIDENUM,
-} from '@osee/shared/types/constants';
-import type { enumeration, enumerationSet, enumSet } from '../../types/enum';
+import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
+import type { enumeration, enumerationSet } from '../../types/enum';
+import { TransactionService } from '@osee/transactions/services';
+import { createArtifact } from '@osee/transactions/functions';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class EnumerationSetService {
-	constructor(
-		private http: HttpClient,
-		private builder: TransactionBuilderService,
-		private transactionService: TransactionService
-	) {}
+	private http = inject(HttpClient);
+	private builder = inject(TransactionBuilderService);
+
+	private transactionService = inject(TransactionService);
+
 	createEnumSet(
-		branchId: string,
-		type: enumSet | Partial<enumSet>,
-		relations: relation[],
-		transaction?: transaction,
+		set: enumerationSet,
+		tx: Required<transaction>,
 		key?: string
 	) {
-		return of<transaction>(
-			this.builder.createArtifact(
-				type,
-				ARTIFACTTYPEIDENUM.ENUMSET,
-				relations,
-				transaction,
-				branchId,
-				'Create Enum Set',
-				key
-			)
+		const {
+			enumerations,
+			id,
+			gammaId,
+			applicability,
+			...remainingAttributes
+		} = set;
+		const attributeKeys = Object.keys(
+			remainingAttributes
+		) as (keyof typeof remainingAttributes)[];
+		const attributes = attributeKeys.map((k) => remainingAttributes[k]);
+		const results = createArtifact(
+			tx,
+			ARTIFACTTYPEIDENUM.ENUMSET,
+			applicability,
+			[],
+			key,
+			...attributes
 		);
-	}
-
-	changeEnumSet(
-		branchId: string,
-		type: Partial<enumSet>,
-		transaction?: transaction
-	) {
-		return of<transaction>(
-			this.builder.modifyArtifact(
-				type,
-				transaction,
-				branchId,
-				'Change enum set attributes'
-			)
-		);
+		return results.tx;
 	}
 
 	createEnum(
-		branchId: string,
-		type: enumeration | Partial<enumeration>,
-		relations: relation[],
-		transaction?: transaction,
+		enumeration: enumeration,
+		tx: Required<transaction>,
 		key?: string
 	) {
-		return of<transaction>(
-			this.builder.createArtifact(
-				type,
-				ARTIFACTTYPEIDENUM.ENUM,
-				relations,
-				transaction,
-				branchId,
-				'Create Enum',
-				key
-			)
-		);
-	}
-
-	changeEnum(
-		branchId: string,
-		type: enumeration | Partial<enumeration>,
-		transaction?: transaction
-	) {
-		return of<transaction>(
-			this.builder.modifyArtifact(
-				type,
-				transaction,
-				branchId,
-				'Change enum attributes'
-			)
-		);
-	}
-
-	createEnumSetToPlatformTypeRelation(sideA?: string) {
-		return of<relation>({
-			typeName: 'Interface Platform Type Enumeration Set',
-			sideA: sideA,
-		});
+		const { id, gammaId, applicability, ...remainingAttributes } =
+			enumeration;
+		const attributeKeys = Object.keys(
+			remainingAttributes
+		) as (keyof typeof remainingAttributes)[];
+		const attributes = attributeKeys.map((k) => remainingAttributes[k]);
+		return createArtifact(
+			tx,
+			ARTIFACTTYPEIDENUM.ENUM,
+			applicability,
+			[],
+			key,
+			...attributes
+		).tx;
 	}
 
 	createPlatformTypeToEnumSetRelation(sideB?: string, sideA?: string) {
-		return of<relation>({
+		return of<legacyRelation>({
 			typeName: 'Interface Platform Type Enumeration Set',
 			sideA: sideA,
 			sideB: sideB,
@@ -120,7 +92,7 @@ export class EnumerationSetService {
 	}
 
 	createEnumToEnumSetRelation(sideA?: string, sideB?: string) {
-		return of<relation>({
+		return of<legacyRelation>({
 			typeName: 'Interface Enumeration Definition',
 			sideA: sideA,
 			sideB: sideB,
@@ -148,14 +120,14 @@ export class EnumerationSetService {
 				'/enumeration'
 		);
 	}
-	performMutation(body: transaction) {
+	performMutation(body: legacyTransaction) {
 		return this.transactionService.performMutation(body);
 	}
 
 	addRelation(
 		branchId: string,
-		relation: relation,
-		transaction?: transaction
+		relation: legacyRelation,
+		transaction?: legacyTransaction
 	) {
 		return of(
 			this.builder.addRelation(

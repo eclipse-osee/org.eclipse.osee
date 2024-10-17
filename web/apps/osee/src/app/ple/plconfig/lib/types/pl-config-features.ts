@@ -36,18 +36,18 @@ export class modifyFeature extends baseFeature implements trackableFeature {
 		this.productAppStr = productAppStr || '';
 		this.valueStr = valueStr || '';
 	}
-	id: string = '';
+	id = '';
 	idIntValue?: number;
-	idString: string = '';
+	idString = '';
 	type: null | undefined;
 }
-export interface PLAddFeatureData extends PlFeatureData {
+export type PLAddFeatureData = {
 	feature: writeFeature;
-}
-interface PlFeatureData {
+} & PlFeatureData;
+type PlFeatureData = {
 	currentBranch: string | number | undefined;
-}
-export interface PLEditFeatureData extends PlFeatureData {
+};
+export type PLEditFeatureData = {
 	editable: boolean;
 	feature: modifyFeature;
-}
+} & PlFeatureData;

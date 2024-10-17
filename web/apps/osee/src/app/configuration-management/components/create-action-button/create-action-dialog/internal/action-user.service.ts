@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { user } from '@osee/shared/types/auth';
@@ -20,7 +20,8 @@ import { ActionService } from '@osee/configuration-management/services';
 	providedIn: 'root',
 })
 export class ActionUserService {
-	constructor(private actionService: ActionService) {}
+	private actionService = inject(ActionService);
+
 	private _getSortedUsers = this.actionService.users.pipe(
 		map((results) =>
 			results.sort((a, b) => {

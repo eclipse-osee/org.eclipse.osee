@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { apiURL } from '@osee/environments';
 import type { MimQuery } from '../../query/MimQuery';
 
@@ -19,7 +19,7 @@ import type { MimQuery } from '../../query/MimQuery';
 	providedIn: 'root',
 })
 export class QueryService {
-	constructor(private http: HttpClient) {}
+	private http = inject(HttpClient);
 
 	/**
 	 * Returns a typed query element

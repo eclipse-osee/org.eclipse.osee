@@ -14,14 +14,14 @@
 package org.eclipse.osee.mim.internal;
 
 import org.eclipse.osee.accessor.internal.ArtifactAccessorImpl;
-import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Luciano T. Vaglienti
  */
-public class InterfaceMessageTypeAccessor extends ArtifactAccessorImpl<ArtifactAccessorResult> {
+public class InterfaceMessageTypeAccessor extends ArtifactAccessorImpl<ArtifactAccessorResultWithoutGammas> {
 
    public InterfaceMessageTypeAccessor(OrcsApi orcsApi) {
       super(CoreArtifactTypes.InterfaceMessageTypeEnum, orcsApi);

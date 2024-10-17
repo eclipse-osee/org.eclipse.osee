@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenuItem } from '@angular/material/menu';
@@ -38,6 +38,10 @@ import {
 	imports: [MatMenuItem, MatIcon],
 })
 export class UsermenuComponent {
+	private messageService = inject(CurrentMessagesService);
+	dialog = inject(MatDialog);
+	private preferencesService = inject(PreferencesUIService);
+
 	preferences = this.messageService.preferences.pipe(
 		takeUntil(this.messageService.done)
 	);
@@ -47,11 +51,6 @@ export class UsermenuComponent {
 		shareReplay(1),
 		takeUntil(this.messageService.done)
 	);
-	constructor(
-		private messageService: CurrentMessagesService,
-		public dialog: MatDialog,
-		private preferencesService: PreferencesUIService
-	) {}
 
 	openSettingsDialog() {
 		combineLatest([

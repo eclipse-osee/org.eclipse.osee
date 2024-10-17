@@ -1,0 +1,84 @@
+<!--
+* Copyright (c) 2024 Boeing
+*
+* This program and the accompanying materials are made
+* available under the terms of the Eclipse Public License 2.0
+* which is available at https://www.eclipse.org/legal/epl-2.0/
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Contributors:
+*     Boeing - initial API and implementation
+-->
+<mat-form-field class="tw-w-full">
+	<input
+		type="text"
+		matInput
+		placeholder="Filter CI Sets"
+		[(ngModel)]="filter"
+		#input />
+</mat-form-field>
+<div class="tw-max-h-96 tw-overflow-auto">
+	<table
+		mat-table
+		[dataSource]="datasource">
+		@for (header of headers; track $index) {
+			<ng-container [matColumnDef]="header">
+				<th
+					mat-header-cell
+					*matHeaderCellDef
+					class="tw-text-primary-600">
+					{{ header }}
+				</th>
+				<td
+					mat-cell
+					*matCellDef="let ciset">
+					@if (header === 'Name') {
+						<form #defaultForm="ngForm">
+							<osee-persisted-string-attribute-input
+								[artifactId]="ciset.id"
+								[value]="ciset.name"
+								[artifactApplicability]="applic" />
+						</form>
+					} @else if (header === 'Active') {
+						<form #defaultForm="ngForm">
+							<osee-persisted-boolean-attribute-toggle
+								[artifactId]="ciset.id"
+								[value]="ciset.active"
+								[artifactApplicability]="applic" />
+						</form>
+					} @else if (header === ' ') {
+						<button
+							mat-icon-button
+							(click)="deleteCISet(ciset)"
+							[matTooltip]="'Delete ' + ciset.name.value">
+							<mat-icon class="tw-text-osee-red-8"
+								>delete</mat-icon
+							>
+						</button>
+					}
+				</td>
+			</ng-container>
+		}
+		<tr
+			mat-header-row
+			*matHeaderRowDef="headers; sticky: true"></tr>
+		<tr
+			mat-row
+			*matRowDef="let row; columns: headers"
+			class="odd:tw-bg-selected-button even:tw-bg-background-background"></tr>
+	</table>
+</div>
+<div class="tw-flex tw-w-full tw-items-center tw-justify-end tw-px-4 tw-py-2">
+	<div
+		class="tw-pr-4"
+		matTooltip="Add a CI Set
+			">
+		<button
+			mat-mini-fab
+			class="tertiary-fab"
+			(click)="openNewCiSetDialog()">
+			<mat-icon>add</mat-icon>
+		</button>
+	</div>
+</div>

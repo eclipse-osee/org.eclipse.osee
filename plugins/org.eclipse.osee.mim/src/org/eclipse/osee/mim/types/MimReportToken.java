@@ -12,7 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
-import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 /**
  * @author Ryan Baldwin
  */
-public class MimReportToken extends ArtifactAccessorResult {
+public class MimReportToken extends ArtifactAccessorResultWithoutGammas {
    public static final MimReportToken SENTINEL = new MimReportToken();
 
    private String url;
@@ -30,6 +30,7 @@ public class MimReportToken extends ArtifactAccessorResult {
    private String producesMediaType;
    private boolean diffAvailable;
    private boolean requiresValidation;
+   private boolean supportsErrorColoring;
 
    public MimReportToken(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -46,6 +47,7 @@ public class MimReportToken extends ArtifactAccessorResult {
       this.setProducesMediaType(art.getSoleAttributeAsString(CoreAttributeTypes.ProducesMediaType, ""));
       this.setDiffAvailable(art.getSoleAttributeValue(CoreAttributeTypes.DiffAvailable, false));
       this.setRequiresValidation(art.getSoleAttributeValue(CoreAttributeTypes.RequiresValidation, false));
+      this.setSupportsErrorColoring(art.getSoleAttributeValue(CoreAttributeTypes.SupportsErrorColoring, false));
    }
 
    /**
@@ -114,6 +116,14 @@ public class MimReportToken extends ArtifactAccessorResult {
 
    public void setRequiresValidation(boolean requiresValidation) {
       this.requiresValidation = requiresValidation;
+   }
+
+   public boolean isSupportsErrorColoring() {
+      return supportsErrorColoring;
+   }
+
+   public void setSupportsErrorColoring(boolean supportsErrorColoring) {
+      this.supportsErrorColoring = supportsErrorColoring;
    }
 
 }

@@ -11,20 +11,19 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import type { element } from '@osee/messaging/shared/types';
-import { transaction, relation } from '@osee/shared/types';
-import {
-	transactionMock,
-	transactionResultMock,
-} from '@osee/shared/transactions/testing';
+import { transactionResultMock } from '@osee/transactions/testing';
 import { of } from 'rxjs';
 import { ElementService } from '../services/http/element.service';
 import { elementsMock } from './element.response.mock';
+import { transactionMock } from '@osee/transactions/testing';
+import {
+	legacyRelation,
+	legacyTransaction,
+	transaction,
+} from '@osee/transactions/types';
 
 export const elementServiceMock: Partial<ElementService> = {
-	changeElement(body: Partial<element>, branchId: string) {
-		return of(transactionMock);
-	},
-	performMutation(body: transaction) {
+	performMutation(body: legacyTransaction) {
 		return of(transactionResultMock);
 	},
 	createStructureRelation(structureId: string) {
@@ -39,24 +38,24 @@ export const elementServiceMock: Partial<ElementService> = {
 			sideB: '10',
 		});
 	},
-	createElement(
-		body: Partial<element>,
-		branchId: string,
-		relations: relation[]
+	addNewElementToTransaction(
+		body: element,
+		tx: Required<transaction>,
+		key?: string
 	) {
-		return of(transactionMock);
+		return tx;
 	},
 	addRelation(
 		branchId: string,
-		relation: relation,
-		transaction?: transaction
+		relation: legacyRelation,
+		transaction?: legacyTransaction
 	) {
 		return of(transactionMock);
 	},
 	deleteRelation(
 		branchId: string,
-		relation: relation,
-		transaction?: transaction
+		relation: legacyRelation,
+		transaction?: legacyTransaction
 	) {
 		return of(transactionMock);
 	},

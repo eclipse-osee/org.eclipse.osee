@@ -10,10 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenuItem } from '@angular/material/menu';
-import { applic } from '@osee/shared/types/applicability';
+import { applic } from '@osee/applicability/types';
 import { difference } from '@osee/shared/types/change-report';
 import { PlConfigCurrentBranchService } from '../../services/pl-config-current-branch.service';
 import {
@@ -29,14 +29,14 @@ import {
 	imports: [MatMenuItem, MatIcon],
 })
 export class ValueMenuComponent {
+	private currentBranchService = inject(PlConfigCurrentBranchService);
+
 	@Input() value: ExtendedNameValuePair | ExtendedNameValuePairWithChanges = {
 		id: '',
 		name: '',
 		value: '',
 		values: [],
 	};
-
-	constructor(private currentBranchService: PlConfigCurrentBranchService) {}
 
 	hasChanges(
 		value: ExtendedNameValuePair | ExtendedNameValuePairWithChanges

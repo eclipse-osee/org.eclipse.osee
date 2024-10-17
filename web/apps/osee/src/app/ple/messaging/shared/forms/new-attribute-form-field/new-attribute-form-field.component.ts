@@ -18,7 +18,7 @@ import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
 import { UniquePlatformTypeNameDirective } from '@osee/messaging/shared/directives';
 import type {
-	PlatformType,
+	PlatformTypeAttr,
 	logicalTypeFieldInfo,
 } from '@osee/messaging/shared/types';
 import { FirstLetterLowerPipe } from '@osee/shared/utils';
@@ -42,12 +42,11 @@ import { FirstLetterLowerPipe } from '@osee/shared/utils';
 	viewProviders: [{ provide: ControlContainer, useExisting: NgModelGroup }],
 })
 export class NewAttributeFormFieldComponent implements OnInit {
-	@Input() form!: logicalTypeFieldInfo<keyof PlatformType>;
+	@Input() form!: logicalTypeFieldInfo<keyof PlatformTypeAttr>;
 	@Input() units: string[] = [];
 	@Output() formChanged = new EventEmitter<
-		logicalTypeFieldInfo<keyof PlatformType>
+		logicalTypeFieldInfo<keyof PlatformTypeAttr>
 	>();
-	constructor() {}
 
 	ngOnInit(): void {
 		this.setDefaultValue();

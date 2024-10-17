@@ -11,16 +11,16 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { apiURL } from '@osee/environments';
-import { response } from '@osee/shared/types';
+import { XResultData } from '@osee/shared/types';
 import { productType, ProductType } from '../types/pl-config-product-types';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class PlConfigTypesService {
-	constructor(private http: HttpClient) {}
+	private http = inject(HttpClient);
 
 	getProductTypes(branchId: string) {
 		return this.http.get<Required<ProductType>[]>(
@@ -29,21 +29,21 @@ export class PlConfigTypesService {
 	}
 
 	createProductType(branchId: string, productType: productType) {
-		return this.http.post<response>(
+		return this.http.post<XResultData>(
 			apiURL + `/orcs/branch/${branchId}/applic/product-types`,
 			productType
 		);
 	}
 
 	updateProductType(branchId: string, productType: productType) {
-		return this.http.put<response>(
+		return this.http.put<XResultData>(
 			apiURL + `/orcs/branch/${branchId}/applic/product-types`,
 			productType
 		);
 	}
 
 	deleteProductType(branchId: string, id: string) {
-		return this.http.delete<response>(
+		return this.http.delete<XResultData>(
 			apiURL + `/orcs/branch/${branchId}/applic/product-types/${id}`
 		);
 	}

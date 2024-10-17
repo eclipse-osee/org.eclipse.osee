@@ -11,14 +11,9 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { of, Subject } from 'rxjs';
-import type {
-	enumerationSet,
-	PlatformType,
-} from '@osee/messaging/shared/types';
+import { Component, input, model, output } from '@angular/core';
 import { EditEnumSetFieldComponent } from '@osee/messaging/shared/forms';
-import { enumerationSetMock } from '@osee/messaging/shared/testing';
+import type { bitSize, enumerationSet } from '@osee/messaging/shared/types';
 
 @Component({
 	selector: 'osee-edit-enum-set-field',
@@ -28,14 +23,10 @@ import { enumerationSetMock } from '@osee/messaging/shared/testing';
 export class MockEditEnumSetFieldComponent
 	implements Partial<EditEnumSetFieldComponent>
 {
-	@Input() editable: boolean = false;
+	editable = input(false);
 
-	@Input() platformTypeId: string | undefined;
+	bitSize = input.required<bitSize>();
+	enumSet = model.required<enumerationSet>();
 
-	//type enumset loading case 2: by type
-	@Input() platformType: PlatformType | undefined;
-
-	@Output() enum$ = of<enumerationSet>(enumerationSetMock[0]);
-
-	@Output('unique') unique = new Subject<boolean>();
+	unique = output<boolean>();
 }

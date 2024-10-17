@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface headerDetail<T> {
+export type headerDetail<T> = {
 	header: Extract<keyof T, string>;
 	description: string;
 	humanReadable: string;
-}
+};

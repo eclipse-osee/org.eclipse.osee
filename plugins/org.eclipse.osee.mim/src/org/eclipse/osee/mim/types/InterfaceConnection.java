@@ -12,21 +12,25 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithGammas;
+import org.eclipse.osee.accessor.types.AttributePojo;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.rest.model.transaction.Attribute;
 import org.eclipse.osee.orcs.rest.model.transaction.CreateArtifact;
@@ -34,11 +38,12 @@ import org.eclipse.osee.orcs.rest.model.transaction.CreateArtifact;
 /**
  * @author Luciano T. Vaglienti
  */
-public class InterfaceConnection extends ArtifactAccessorResult {
+public class InterfaceConnection extends ArtifactAccessorResultWithGammas {
 
    public static final InterfaceConnection SENTINEL = new InterfaceConnection();
 
-   private String Description;
+   private AttributePojo<String> Description =
+      AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.Description, GammaId.SENTINEL, "", "");
    private TransportType TransportType;
    private List<InterfaceNode> nodes;
    private ApplicabilityToken applicability;
@@ -61,13 +66,13 @@ public class InterfaceConnection extends ArtifactAccessorResult {
       } else {
          this.setTransportType(org.eclipse.osee.mim.types.TransportType.SENTINEL);
       }
-      this.setDescription(art.getSoleAttributeValue(CoreAttributeTypes.Description, ""));
+      this.setDescription(AttributePojo.valueOf(art.getSoleAttribute(CoreAttributeTypes.Description, "")));
       this.setApplicability(
          !art.getApplicabilityToken().getId().equals(-1L) ? art.getApplicabilityToken() : ApplicabilityToken.SENTINEL);
    }
 
    public InterfaceConnection(Long id, String name) {
-      super(id, name);
+      super(id, AttributePojo.valueOf(Id.SENTINEL, CoreAttributeTypes.Name, GammaId.SENTINEL, name, ""));
       this.setNodes(new LinkedList<>());
    }
 
@@ -77,15 +82,21 @@ public class InterfaceConnection extends ArtifactAccessorResult {
    /**
     * @return the description
     */
-   public String getDescription() {
+   public AttributePojo<String> getDescription() {
       return Description;
    }
 
    /**
     * @param description the description to set
     */
-   public void setDescription(String description) {
+   @JsonProperty
+   public void setDescription(AttributePojo<String> description) {
       this.Description = description;
+   }
+
+   public void setDescription(String description) {
+      this.Description = AttributePojo.valueOf(this.Description.getId(), this.Description.getTypeId(),
+         this.Description.getGammaId(), description, this.Description.getDisplayableString());
    }
 
    /**
@@ -127,11 +138,11 @@ public class InterfaceConnection extends ArtifactAccessorResult {
    public CreateArtifact createArtifact(String key, ApplicabilityId applicId) {
       // @formatter:off
       Map<AttributeTypeToken, String> values = new HashMap<>();
-      values.put(CoreAttributeTypes.Description, this.getDescription());
+      values.put(CoreAttributeTypes.Description, this.getDescription().getValue());
       // @formatter:on
 
       CreateArtifact art = new CreateArtifact();
-      art.setName(this.getName());
+      art.setName(this.getName().getValue());
       art.setTypeId(CoreArtifactTypes.InterfaceConnection.getIdString());
 
       List<Attribute> attrs = new LinkedList<>();

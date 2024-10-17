@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, signal, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { UiService } from '@osee/shared/services';
 
@@ -18,23 +18,22 @@ import { UiService } from '@osee/shared/services';
 	providedIn: 'root',
 })
 export class MimRouteService {
-	private readonly _connectionId: BehaviorSubject<string> =
-		new BehaviorSubject<string>('0');
+	private _ui = inject(UiService);
+
+	connectionId = signal<`${number}`>('-1'); //'0'
 	private readonly _messageId: BehaviorSubject<string> =
 		new BehaviorSubject<string>('');
-	private readonly _subMessageId: BehaviorSubject<string> =
-		new BehaviorSubject<string>('');
+	private _subMessageId = signal<`${number}`>('-1');
 	private readonly _subMessageToStructurebreadCrumbs: BehaviorSubject<string> =
 		new BehaviorSubject<string>('');
 	private readonly _singleStructureId: BehaviorSubject<string> =
 		new BehaviorSubject<string>('');
-	public readonly connectionId = this._connectionId.asObservable();
+	// public readonly connectionId = this._connectionId.asObservable();
 	public readonly messageId = this._messageId.asObservable();
-	public readonly submessageId = this._subMessageId.asObservable();
+	public submessageId = this._subMessageId;
 	public readonly submessageToStructureBreadCrumbs =
 		this._subMessageToStructurebreadCrumbs.asObservable();
 	public readonly singleStructureId = this._singleStructureId.asObservable();
-	constructor(private _ui: UiService) {}
 
 	get type() {
 		return this._ui.type;
@@ -61,16 +60,16 @@ export class MimRouteService {
 		this._ui.diffMode = value;
 	}
 
-	set connectionIdString(value: string) {
-		this._connectionId.next(value);
+	set connectionIdString(value: `${number}`) {
+		this.connectionId.set(value);
 	}
 
 	set messageIdString(value: string) {
 		this._messageId.next(value);
 	}
 
-	set submessageIdString(value: string) {
-		this._subMessageId.next(value);
+	set submessageIdString(value: `${number}`) {
+		this._subMessageId.set(value);
 	}
 
 	set submessageToStructureBreadCrumbsString(value: string) {

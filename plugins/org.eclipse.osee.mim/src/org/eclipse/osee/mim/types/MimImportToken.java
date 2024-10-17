@@ -12,7 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
-import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -20,12 +20,12 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 /**
  * @author Ryan Baldwin
  */
-public class MimImportToken extends ArtifactAccessorResult {
+public class MimImportToken extends ArtifactAccessorResultWithoutGammas {
    public static final MimImportToken SENTINEL = new MimImportToken();
 
    private String url;
-   private String transportType;
    private boolean connectionRequired;
+   private boolean transportTypeRequired;
 
    public MimImportToken(ArtifactToken art) {
       this((ArtifactReadable) art);
@@ -36,8 +36,8 @@ public class MimImportToken extends ArtifactAccessorResult {
       this.setId(art.getId());
       this.setName(art.getName());
       this.setUrl(art.getSoleAttributeValue(CoreAttributeTypes.EndpointUrl, ""));
-      this.setTransportType(art.getSoleAttributeValue(CoreAttributeTypes.ImportTransportType, ""));
       this.setConnectionRequired(art.getSoleAttributeValue(CoreAttributeTypes.ConnectionRequired, false));
+      this.setTransportTypeRequired(art.getSoleAttributeValue(CoreAttributeTypes.TransportTypeRequired, false));
    }
 
    /**
@@ -60,26 +60,20 @@ public class MimImportToken extends ArtifactAccessorResult {
       this.url = url;
    }
 
-   /**
-    * @return the transportType
-    */
-   public String getTransportType() {
-      return transportType;
-   }
-
-   /**
-    * @param transportType the transportType to set
-    */
-   public void setTransportType(String transportType) {
-      this.transportType = transportType;
-   }
-
    public boolean isConnectionRequired() {
       return connectionRequired;
    }
 
    public void setConnectionRequired(boolean connectionRequired) {
       this.connectionRequired = connectionRequired;
+   }
+
+   public boolean isTransportTypeRequired() {
+      return transportTypeRequired;
+   }
+
+   public void setTransportTypeRequired(boolean transportTypeRequired) {
+      this.transportTypeRequired = transportTypeRequired;
    }
 
 }

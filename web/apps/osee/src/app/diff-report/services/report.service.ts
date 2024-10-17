@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, combineLatest, iif, Observable, of } from 'rxjs';
 import {
 	debounceTime,
@@ -33,6 +33,9 @@ import { HttpMethods } from '@osee/shared/types';
 	providedIn: 'root',
 })
 export class ReportService {
+	private http = inject(HttpClient);
+	private fileService = inject(FilesService);
+
 	private _selectedProgram$: BehaviorSubject<Program | undefined> =
 		new BehaviorSubject<Program | undefined>(undefined);
 	private _selectedBuild$ = new BehaviorSubject<Build | undefined>(undefined);
@@ -47,11 +50,6 @@ export class ReportService {
 		});
 
 	private _displayTable$ = new BehaviorSubject<boolean>(false);
-
-	constructor(
-		private http: HttpClient,
-		private fileService: FilesService
-	) {}
 
 	diffEndpoint = this.http
 		.get<DiffEndPoint>(apiURL + '/ats/teamwf/diff')
@@ -131,11 +129,11 @@ export class ReportService {
 		} else return of();
 	}
 
-	downloadAllDatatoCsv(url: string): Observable<String> {
-		var program = this._searchOptions$.value.program;
-		var build = this._searchOptions$.value.build;
+	downloadAllDatatoCsv(url: string): Observable<string> {
+		const program = this._searchOptions$.value.program;
+		const build = this._searchOptions$.value.build;
 		if (program && build) {
-			return this.http.get<String>(url + '/downloadAllDataToCsv', {
+			return this.http.get<string>(url + '/downloadAllDataToCsv', {
 				params: {
 					build: build,
 					program: program,
@@ -156,7 +154,7 @@ export class ReportService {
 		);
 	}
 
-	downloadChangeReports(url: string): any {
+	downloadChangeReports(url: string): Observable<Blob> {
 		return this.http.get(url + '/downloadChangeReports', {
 			responseType: 'blob',
 		});

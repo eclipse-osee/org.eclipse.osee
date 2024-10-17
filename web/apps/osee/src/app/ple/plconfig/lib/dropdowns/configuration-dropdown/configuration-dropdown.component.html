@@ -28,7 +28,7 @@
 			[disabled]="!editable()"
 			(click)="addConfiguration()">
 			<mat-icon
-				color="success"
+				class="tw-text-osee-green-9"
 				data-cy="add-menu-btn"
 				>add_box</mat-icon
 			>Add Configuration
@@ -45,14 +45,16 @@
 			[disabled]="!editable()"
 			[matMenuTriggerFor]="editConfigMenu"
 			data-cy="edit-menu-btn">
-			<mat-icon color="primary">edit</mat-icon>Edit Configuration
+			<mat-icon class="tw-text-osee-blue-9">edit</mat-icon>Edit
+			Configuration
 		</button>
 		<button
 			mat-menu-item
 			[disabled]="!editable()"
 			[matMenuTriggerFor]="deleteConfigMenu"
 			data-cy="delete-menu-btn">
-			<mat-icon color="warn">delete_forever</mat-icon>Delete Configuration
+			<mat-icon class="tw-text-osee-red-9">delete_forever</mat-icon>Delete
+			Configuration
 		</button>
 	</ng-template>
 </mat-menu>
@@ -82,8 +84,3 @@
 		</button>
 	}
 </mat-menu>
-@if (!editable()) {
-	<mat-label class="tw-items-center tw-text-center"
-		>Branch is not editable</mat-label
-	>
-}

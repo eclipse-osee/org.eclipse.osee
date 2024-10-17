@@ -10,8 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HarnessLoader } from '@angular/cdk/testing';
-import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
@@ -23,7 +21,7 @@ import { MessagingComponent } from './messaging.component';
 
 @Component({
 	selector: 'osee-mock-help',
-	template: '<p>Dummy</p>',
+	template: `<p>Dummy</p>`,
 	standalone: true,
 	imports: [MessagingComponent, MatIconModule],
 })
@@ -31,7 +29,7 @@ class MessagingHelpDummyComponent {}
 
 @Component({
 	selector: 'osee-mock-main',
-	template: '<p>Dummy</p>',
+	template: `<p>Dummy</p>`,
 	standalone: true,
 	imports: [MessagingComponent, MatIconModule],
 })
@@ -48,7 +46,6 @@ class MessagingTypeSearchMockComponent {}
 describe('MessagingComponent', () => {
 	let component: MessagingComponent;
 	let fixture: ComponentFixture<MessagingComponent>;
-	let loader: HarnessLoader;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
@@ -83,7 +80,6 @@ describe('MessagingComponent', () => {
 		fixture = TestBed.createComponent(MessagingComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
-		loader = TestbedHarnessEnvironment.loader(fixture);
 	});
 
 	it('should create', () => {

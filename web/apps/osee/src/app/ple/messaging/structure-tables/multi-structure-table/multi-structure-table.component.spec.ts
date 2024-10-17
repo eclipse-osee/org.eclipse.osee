@@ -11,22 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HarnessLoader } from '@angular/cdk/testing';
-import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 
-import { MultiStructureTableComponent } from './multi-structure-table.component';
-import { RouterTestingModule } from '@angular/router/testing';
 import { AsyncPipe } from '@angular/common';
-import { CurrentStateServiceMock } from '@osee/messaging/shared/testing';
-import { StructureTableComponentMock } from '@osee/messaging/structure-tables/testing';
-import { CurrentStructureMultiService } from '@osee/messaging/shared/services';
-import {
-	STRUCTURE_SERVICE_TOKEN,
-	MULTI_STRUCTURE_SERVICE,
-} from '@osee/messaging/shared/tokens';
 import { provideRouter } from '@angular/router';
-
-let loader: HarnessLoader;
+import { CurrentStructureMultiService } from '@osee/messaging/shared/services';
+import { CurrentStateServiceMock } from '@osee/messaging/shared/testing';
+import { MULTI_STRUCTURE_SERVICE } from '@osee/messaging/shared/tokens';
+import { MockStructureInterfaceComponent } from '../lib/structure-interface/structure-interface.component.mock';
+import { MultiStructureTableComponent } from './multi-structure-table.component';
 
 describe('MultiStructureComponent', () => {
 	let component: MultiStructureTableComponent;
@@ -35,7 +27,7 @@ describe('MultiStructureComponent', () => {
 	beforeEach(async () => {
 		await TestBed.overrideComponent(MultiStructureTableComponent, {
 			set: {
-				imports: [AsyncPipe, StructureTableComponentMock],
+				imports: [AsyncPipe, MockStructureInterfaceComponent],
 				providers: [
 					{
 						provide: CurrentStructureMultiService,
@@ -54,7 +46,6 @@ describe('MultiStructureComponent', () => {
 	beforeEach(() => {
 		fixture = TestBed.createComponent(MultiStructureTableComponent);
 		component = fixture.componentInstance;
-		loader = TestbedHarnessEnvironment.loader(fixture);
 		fixture.detectChanges();
 	});
 

@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -193,8 +193,8 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
    }
 
    @Override
-   public Collection<ArtifactAccessorResult> getSubsystems(BranchId branch, String filter, long pageNum, long pageSize,
-      AttributeTypeToken orderByAttributeType) {
+   public Collection<ArtifactAccessorResultWithoutGammas> getSubsystems(BranchId branch, String filter, long pageNum,
+      long pageSize, AttributeTypeToken orderByAttributeType) {
       return this.testScriptApi.getDashboardApi().getSubsystems(branch, filter, pageNum, pageSize,
          orderByAttributeType);
    }
@@ -205,8 +205,8 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
    }
 
    @Override
-   public Collection<ArtifactAccessorResult> getTeams(BranchId branch, String filter, long pageNum, long pageSize,
-      AttributeTypeToken orderByAttributeType) {
+   public Collection<ArtifactAccessorResultWithoutGammas> getTeams(BranchId branch, String filter, long pageNum,
+      long pageSize, AttributeTypeToken orderByAttributeType) {
       return this.testScriptApi.getDashboardApi().getTeams(branch, filter, pageNum, pageSize, orderByAttributeType);
    }
 

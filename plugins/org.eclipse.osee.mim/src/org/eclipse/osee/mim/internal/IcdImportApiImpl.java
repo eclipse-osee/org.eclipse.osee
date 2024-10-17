@@ -22,24 +22,26 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookReader;
 import org.eclipse.osee.framework.jdk.core.util.io.excel.ExcelWorkbookWriter.WorkbookFormat;
 import org.eclipse.osee.mim.MimApi;
 import org.eclipse.osee.mim.MimImportApi;
+import org.eclipse.osee.mim.types.IcdElementIndex;
 import org.eclipse.osee.mim.types.InterfaceConnection;
-import org.eclipse.osee.mim.types.InterfaceElementImportToken;
 import org.eclipse.osee.mim.types.InterfaceEnumOrdinalType;
 import org.eclipse.osee.mim.types.InterfaceEnumeration;
 import org.eclipse.osee.mim.types.InterfaceEnumerationSet;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
 import org.eclipse.osee.mim.types.InterfaceNode;
+import org.eclipse.osee.mim.types.InterfaceStructureElementToken;
 import org.eclipse.osee.mim.types.InterfaceStructureToken;
 import org.eclipse.osee.mim.types.InterfaceSubMessageToken;
 import org.eclipse.osee.mim.types.MimImportSummary;
-import org.eclipse.osee.mim.types.PlatformTypeImportToken;
 import org.eclipse.osee.mim.types.PlatformTypeToken;
+import org.eclipse.osee.mim.types.TransportType;
 import org.eclipse.osee.orcs.core.ds.FollowRelation;
 
 /**
@@ -50,15 +52,17 @@ public class IcdImportApiImpl implements MimImportApi {
    private final ExcelWorkbookReader reader;
    private final MimApi mimApi;
    private final BranchId branch;
+   private final ArtifactId transportTypeId;
    private MimImportSummary summary;
 
    private Long id = 1L;
 
-   public IcdImportApiImpl(BranchId branch, String fileName, InputStream inputStream, MimApi mimApi) {
+   public IcdImportApiImpl(BranchId branch, ArtifactId transportTypeId, String fileName, InputStream inputStream, MimApi mimApi) {
       this.reader = new ExcelWorkbookReader(inputStream,
          fileName != null && fileName.toLowerCase().endsWith("xls") ? WorkbookFormat.XLS : WorkbookFormat.XLSX);
       this.mimApi = mimApi;
       this.branch = branch;
+      this.transportTypeId = transportTypeId == null ? ArtifactId.SENTINEL : transportTypeId;
    }
 
    @Override
@@ -72,10 +76,10 @@ public class IcdImportApiImpl implements MimImportApi {
 
       List<InterfaceNode> existingNodes = (List<InterfaceNode>) mimApi.getInterfaceNodeViewApi().getAll(branch);
       InterfaceNode existingPrimaryNode =
-         existingNodes.stream().filter(node -> node.getName().equals(primaryNodeName)).findFirst().orElse(
+         existingNodes.stream().filter(node -> node.getName().getValue().equals(primaryNodeName)).findFirst().orElse(
             InterfaceNode.SENTINEL);
       InterfaceNode existingSecondaryNode =
-         existingNodes.stream().filter(node -> node.getName().equals(secondaryNodeName)).findFirst().orElse(
+         existingNodes.stream().filter(node -> node.getName().getValue().equals(secondaryNodeName)).findFirst().orElse(
             InterfaceNode.SENTINEL);
       InterfaceNode primaryNode;
       InterfaceNode secondaryNode;
@@ -121,6 +125,17 @@ public class IcdImportApiImpl implements MimImportApi {
          summary.getConnectionNodeRelations().put(connection.getIdString(), rels);
       }
 
+      TransportType transportType = mimApi.getTransportTypeApi().get(branch, transportTypeId);
+
+      if (transportType.isInvalid()) {
+         summary.getErrors().add("Invalid Transport Type ID");
+         return summary;
+      }
+      List<String> rels =
+         summary.getConnectionTransportTypeRelations().getOrDefault(connection.getIdString(), new LinkedList<>());
+      rels.add(transportType.getIdString());
+      summary.getConnectionTransportTypeRelations().put(connection.getIdString(), rels);
+
       // Messages and SubMessages
       List<String> primaryRegions = reader.getMergedRegions().stream().filter(
          r -> r.split(":")[0].charAt(0) == 'A' && r.split(":")[1].charAt(0) == 'A').collect(Collectors.toList());
@@ -145,7 +160,7 @@ public class IcdImportApiImpl implements MimImportApi {
       // Structures and Elements
       reader.setActiveSheet("Structure Summary");
       List<String> structureSheetNames = new LinkedList<>();
-      int rowIndex = 4;
+      int rowIndex = 1;
       while (reader.rowExists(rowIndex)) {
          String nameFormula = reader.getCellHyperlinkString(rowIndex, 1);
          String sheetName = nameFormula.split("!")[0].replace("'", "");
@@ -158,25 +173,26 @@ public class IcdImportApiImpl implements MimImportApi {
       List<PlatformTypeToken> existingPlatformTypes = mimApi.getInterfacePlatformTypeApi().getAllWithRelations(branch,
          FollowRelation.followList(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet,
             CoreRelationTypes.InterfaceEnumeration_EnumerationState));
-      Map<String, InterfaceElementImportToken> elements = new HashMap<>();
-      Map<String, PlatformTypeImportToken> platformTypes = new HashMap<>();
-      List<PlatformTypeImportToken> platformTypesToCreate = new LinkedList<>();
+      Map<String, InterfaceStructureElementToken> elements = new HashMap<>();
+      Map<String, PlatformTypeToken> platformTypes = new HashMap<>();
+      List<PlatformTypeToken> platformTypesToCreate = new LinkedList<>();
       Map<String, InterfaceEnumerationSet> enumsToUpdate = new HashMap<>();
 
       for (PlatformTypeToken type : existingPlatformTypes) {
-         String typeKey = type.getInterfaceLogicalType().equals("enumeration") ? getEnumSetKey(
+         String typeKey = type.getInterfaceLogicalType().getValue().equals("enumeration") ? getEnumSetKey(
             type.getEnumSet()) : mimApi.getInterfacePlatformTypeApi().getUniqueIdentifier(
-               type.getInterfaceLogicalType(), type.getInterfacePlatformTypeMinval(),
-               type.getInterfacePlatformTypeMaxval(), type.getInterfacePlatformTypeValidRangeDescription(),
-               type.getInterfacePlatformTypeUnits(), type.getInterfaceDefaultValue(),
-               Integer.parseInt(type.getInterfacePlatformTypeBitSize()) / 8);
-         platformTypes.put(typeKey, new PlatformTypeImportToken(type.getId(), type.getName(), type.getEnumSet()));
+               type.getInterfaceLogicalType().getValue(), type.getInterfacePlatformTypeMinval().getValue(),
+               type.getInterfacePlatformTypeMaxval().getValue(),
+               type.getInterfacePlatformTypeValidRangeDescription().getValue(),
+               type.getInterfacePlatformTypeUnits().getValue(), type.getInterfaceDefaultValue().getValue(),
+               Integer.parseInt(type.getInterfacePlatformTypeBitSize().getValue()) / 8);
+         platformTypes.put(typeKey, type);
       }
 
       // Create a boolean type to avoid extra processing for booleans
       if (!platformTypes.containsKey("boolean")) {
-         PlatformTypeImportToken boolToken =
-            new PlatformTypeImportToken(id, "Boolean", "boolean", "8", "0", "1", "", "", "", "0 to 1");
+         PlatformTypeToken boolToken =
+            new PlatformTypeToken(id, "Boolean", "boolean", "8", "0", "1", "", "", "", "0 to 1");
          platformTypes.put("boolean", boolToken);
          incrementId();
          platformTypesToCreate.add(boolToken);
@@ -189,7 +205,7 @@ public class IcdImportApiImpl implements MimImportApi {
             primaryNodeName + "_" + secondaryNodeName);
       }
 
-      for (PlatformTypeImportToken pTypeToken : platformTypesToCreate) {
+      for (PlatformTypeToken pTypeToken : platformTypesToCreate) {
          summary.getPlatformTypes().add(pTypeToken);
       }
 
@@ -198,19 +214,20 @@ public class IcdImportApiImpl implements MimImportApi {
       Collections.sort(summary.getMessages(), new Comparator<InterfaceMessageToken>() {
          @Override
          public int compare(InterfaceMessageToken o1, InterfaceMessageToken o2) {
-            if (o1.getPublisherNodes().get(0).getName().equals(o2.getPublisherNodes().get(0).getName())) {
-               boolean isO1Numeric = isStringNumeric(o1.getInterfaceMessageNumber());
-               boolean isO2Numeric = isStringNumeric(o2.getInterfaceMessageNumber());
+            if (o1.getPublisherNodes().get(0).getName().getValue().equals(
+               o2.getPublisherNodes().get(0).getName().getValue())) {
+               boolean isO1Numeric = isStringNumeric(o1.getInterfaceMessageNumber().getValue());
+               boolean isO2Numeric = isStringNumeric(o2.getInterfaceMessageNumber().getValue());
                if (isO1Numeric && isO2Numeric) {
-                  return (int) Double.parseDouble(o1.getInterfaceMessageNumber()) > (int) Double.parseDouble(
-                     o2.getInterfaceMessageNumber()) ? 1 : -1;
+                  return (int) Double.parseDouble(o1.getInterfaceMessageNumber().getValue()) > (int) Double.parseDouble(
+                     o2.getInterfaceMessageNumber().getValue()) ? 1 : -1;
                }
                if (!isO1Numeric && !isO2Numeric) {
-                  return o1.getInterfaceMessageNumber().compareTo(o2.getInterfaceMessageNumber());
+                  return o1.getInterfaceMessageNumber().getValue().compareTo(o2.getInterfaceMessageNumber().getValue());
                }
                return isO2Numeric ? 1 : -1;
             }
-            if (o1.getPublisherNodes().get(0).getName().equals(primaryNode.getName())) {
+            if (o1.getPublisherNodes().get(0).getName().getValue().equals(primaryNode.getName().getValue())) {
                return -1;
             } else {
                return 1;
@@ -279,7 +296,7 @@ public class IcdImportApiImpl implements MimImportApi {
          subMessage.setInterfaceSubMessageNumber("" + subMsgNum);
          subMessage.setDescription("");
          subMessageIds.add("" + id);
-         subMessageIdMap.put(getSubMessageMapKey(messageNumber + "", subMsgNum + "", pubNode.getName()), id);
+         subMessageIdMap.put(getSubMessageMapKey(messageNumber + "", subMsgNum + "", pubNode.getName().getValue()), id);
          incrementId();
          summary.getSubMessages().add(subMessage);
          subMsgNum++;
@@ -329,9 +346,9 @@ public class IcdImportApiImpl implements MimImportApi {
       // Find message based on node and number and update with new information
       InterfaceMessageToken message = InterfaceMessageToken.SENTINEL;
       for (InterfaceMessageToken msg : summary.getMessages()) {
-         if (msg.getInterfaceMessageNumber().equals(
-            msgNum + "") && msg.getPublisherNodes().size() > 0 && msg.getPublisherNodes().get(0).getName().equals(
-               nodeName)) {
+         if (msg.getInterfaceMessageNumber().getValue().equals(
+            msgNum + "") && msg.getPublisherNodes().size() > 0 && msg.getPublisherNodes().get(
+               0).getName().getValue().equals(nodeName)) {
             message = msg;
             break;
          }
@@ -339,7 +356,7 @@ public class IcdImportApiImpl implements MimImportApi {
 
       // If the message does not exist, create a new one
       if (!message.isValid()) {
-         InterfaceNode pubNode = primaryNode.getName().equals(nodeName) ? primaryNode : secondaryNode;
+         InterfaceNode pubNode = primaryNode.getName().getValue().equals(nodeName) ? primaryNode : secondaryNode;
          InterfaceNode subNode = pubNode.equals(primaryNode) ? secondaryNode : primaryNode;
          message = new InterfaceMessageToken(id, "Message " + msgNum);
          message.setInterfaceMessageNumber("" + msgNum);
@@ -398,24 +415,24 @@ public class IcdImportApiImpl implements MimImportApi {
    }
 
    private void readStructureElements(InterfaceStructureToken structure,
-      Map<String, InterfaceElementImportToken> elements, Map<String, PlatformTypeImportToken> platformTypes,
-      List<PlatformTypeImportToken> platformTypesToCreate, Map<String, InterfaceEnumerationSet> enumsToUpdate,
+      Map<String, InterfaceStructureElementToken> elements, Map<String, PlatformTypeToken> platformTypes,
+      List<PlatformTypeToken> platformTypesToCreate, Map<String, InterfaceEnumerationSet> enumsToUpdate,
       String connectionName) {
       Boolean hasDefaultValue = reader.getCellStringValue(3, 18).equals("Default Value");
       int rowIndex = 4;
-      InterfaceElementImportToken previousElement = InterfaceElementImportToken.SENTINEL;
-      PlatformTypeImportToken previousPType = PlatformTypeImportToken.SENTINEL;
+      InterfaceStructureElementToken previousElement = InterfaceStructureElementToken.SENTINEL;
+      PlatformTypeToken previousPType = PlatformTypeToken.SENTINEL;
       while (reader.rowExists(rowIndex)) {
-         int numBytes = (int) reader.getCellNumericValue(rowIndex, 2);
-         String logicalType = reader.getCellStringValue(rowIndex, 5).trim();
-         String name = reader.getCellStringValue(rowIndex, 6).trim();
-         String units = reader.getCellStringValue(rowIndex, 7).trim();
-         String validRange = reader.getCellStringValue(rowIndex, 8);
-         boolean alterable = reader.getCellStringValue(rowIndex, 9).equals("Yes");
-         String description = reader.getCellStringValue(rowIndex, 10);
-         String enumDesc = reader.getCellStringValue(rowIndex, 11);
-         String notes = reader.getCellStringValue(rowIndex, 12);
-         String defaultValue = reader.getCellStringValue(rowIndex, 13);
+         int numBytes = (int) reader.getCellNumericValue(rowIndex, IcdElementIndex.byteSize.ordinal());
+         String logicalType = reader.getCellStringValue(rowIndex, IcdElementIndex.dataType.ordinal()).trim();
+         String name = reader.getCellStringValue(rowIndex, IcdElementIndex.name.ordinal()).trim();
+         String units = reader.getCellStringValue(rowIndex, IcdElementIndex.units.ordinal()).trim();
+         String validRange = reader.getCellStringValue(rowIndex, IcdElementIndex.validRange.ordinal());
+         boolean alterable = reader.getCellStringValue(rowIndex, IcdElementIndex.alterable.ordinal()).equals("Yes");
+         String description = reader.getCellStringValue(rowIndex, IcdElementIndex.description.ordinal());
+         String enumDesc = reader.getCellStringValue(rowIndex, IcdElementIndex.enumLiterals.ordinal());
+         String notes = reader.getCellStringValue(rowIndex, IcdElementIndex.notes.ordinal());
+         String defaultValue = reader.getCellStringValue(rowIndex, IcdElementIndex.defaultValue.ordinal());
 
          if (hasDefaultValue) {
             defaultValue = reader.getCellStringValue(rowIndex, 18);
@@ -424,15 +441,15 @@ public class IcdImportApiImpl implements MimImportApi {
          // Instrumentation message elements don't have names which will cause issues, so we set a name here.
          // The merged cells containing the instrumentation message text begin on the logicalType cell.
          if (name.isEmpty() && logicalType.toLowerCase().contains("instrumentation message")) {
-            name = structure.getName();
+            name = structure.getName().getValue();
          }
 
-         PlatformTypeImportToken pType = PlatformTypeImportToken.SENTINEL;
+         PlatformTypeToken pType = PlatformTypeToken.SENTINEL;
          if (logicalType.equals("boolean")) {
             pType = platformTypes.get("boolean");
          } else if (logicalType.equals("enumeration")) {
             String enumName = enumDesc.split("\n")[0].split(":")[0].replaceAll("[()]", "").trim();
-            enumName = name.equals("Taskfile Type") ? structure.getName().toLowerCase().contains(
+            enumName = name.equals("Taskfile Type") ? structure.getName().getValue().toLowerCase().contains(
                "command taskfile") ? "Command Taskfile" : "Status Taskfile" : enumName;
             enumName = enumName.isEmpty() || (enumName.split("[-=]").length > 1 && enumName.split("[-=]")[0].matches(
                "^\\d+\\s*")) ? name : enumName;
@@ -495,14 +512,14 @@ public class IcdImportApiImpl implements MimImportApi {
             else if (enumSet.getEnumerations().isEmpty()) {
                pType = platformTypesToCreate.stream().filter(e -> e.getEnumSet() != null).filter(
                   e -> e.getEnumSet().getName().equals(enumSet.getName())).findFirst().orElse(
-                     PlatformTypeImportToken.SENTINEL);
+                     PlatformTypeToken.SENTINEL);
                if (!pType.isValid()) {
                   pType = platformTypes.values().stream().filter(e -> e.getEnumSet() != null).filter(
                      e -> e.getEnumSet().getName().equals(enumSet.getName())).findFirst().orElse(
-                        PlatformTypeImportToken.SENTINEL);
+                        PlatformTypeToken.SENTINEL);
                   if (!pType.isValid()) {
                      create = true;
-                     enumsToUpdate.put(enumSet.getName(), enumSet);
+                     enumsToUpdate.put(enumSet.getName().getValue(), enumSet);
                   }
                }
             } else {
@@ -514,11 +531,11 @@ public class IcdImportApiImpl implements MimImportApi {
                String pTypeName = enumName;
                // Search the platform types to see if there is already a type with this enum name. If there is, append the connection in parenthesis.
                final String n = pTypeName;
-               if (platformTypes.values().stream().filter(t -> t.getName().equals(n)).findFirst().orElse(
-                  PlatformTypeImportToken.SENTINEL).isValid()) {
+               if (platformTypes.values().stream().filter(t -> t.getName().getValue().equals(n)).findFirst().orElse(
+                  PlatformTypeToken.SENTINEL).isValid()) {
                   pTypeName += " (" + connectionName + ")";
                }
-               pType = new PlatformTypeImportToken(id, pTypeName, logicalType, (numBytes * 8) + "", "", "", units, "",
+               pType = new PlatformTypeToken(id, pTypeName, logicalType, (numBytes * 8) + "", "", "", units, "",
                   defaultValue, validRange);
                pType.setEnumSet(enumSet);
                incrementId();
@@ -559,8 +576,8 @@ public class IcdImportApiImpl implements MimImportApi {
             if (platformTypes.containsKey(pTypeName)) {
                pType = platformTypes.get(pTypeName);
             } else {
-               pType = new PlatformTypeImportToken(id, pTypeName, logicalType, (numBytes * 8) + "", minVal, maxVal,
-                  units, "", defaultValue, validRange);
+               pType = new PlatformTypeToken(id, pTypeName, logicalType, (numBytes * 8) + "", minVal, maxVal, units, "",
+                  defaultValue, validRange);
                incrementId();
                platformTypes.put(pTypeName, pType);
                platformTypesToCreate.add(pType);
@@ -568,7 +585,7 @@ public class IcdImportApiImpl implements MimImportApi {
          }
 
          String elementKey = getElementKey(name, alterable, description, notes, pType.getId());
-         InterfaceElementImportToken element = InterfaceElementImportToken.SENTINEL;
+         InterfaceStructureElementToken element = InterfaceStructureElementToken.SENTINEL;
          boolean relateElement = true;
          boolean possibleArray = name.matches(".*\\s\\d+$") && !name.matches(".*\\s(and)\\s\\d+$");
 
@@ -580,11 +597,11 @@ public class IcdImportApiImpl implements MimImportApi {
             previousPType = pType;
          } else if (possibleArray && name.matches(".*\\s\\d+$") && !name.matches(
             ".*\\s(and)\\s\\d+$") && previousElement.isValid() && previousPType.isValid() && compareElementsForArray(
-               previousElement.getName(), name, previousPType.getId(), pType.getId())) {
+               previousElement.getName().getValue(), name, previousPType.getId(), pType.getId())) {
             String[] nameSplit = name.split(" ");
             int arrayNum = Integer.parseInt(nameSplit[nameSplit.length - 1]);
-            if (previousElement.getInterfaceElementIndexStart() == 0) {
-               String[] prevNameSplit = previousElement.getName().split(" ");
+            if (previousElement.getInterfaceElementIndexStart().getValue() == 0) {
+               String[] prevNameSplit = previousElement.getName().getValue().split(" ");
                int prevArrayNum = Integer.parseInt(prevNameSplit[prevNameSplit.length - 1]);
                previousElement.setInterfaceElementIndexStart(prevArrayNum);
             }
@@ -595,16 +612,16 @@ public class IcdImportApiImpl implements MimImportApi {
                0) != null && !reader.getCellValue(rowIndex + 1, 0).toString().isEmpty()) {
                String nextName = reader.getCellStringValue(rowIndex + 1, 11).trim();
                if (!nextName.split("\\s\\d+$")[0].trim().equals(name.split("\\s\\d+$")[0].trim())) {
-                  previousElement.setName(previousElement.getName().split("\\s\\d+$")[0].trim());
+                  previousElement.setName(previousElement.getName().getValue().split("\\s\\d+$")[0].trim());
                }
             } else {
                // If on the last row and the last element is part of an array, remove the number from the array element name.
-               if (previousElement.getName().matches(".*\\s\\d+$")) {
-                  previousElement.setName(previousElement.getName().split("\\s\\d+$")[0].trim());
+               if (previousElement.getName().getValue().matches(".*\\s\\d+$")) {
+                  previousElement.setName(previousElement.getName().getValue().split("\\s\\d+$")[0].trim());
                }
             }
          } else {
-            element = new InterfaceElementImportToken(id, name);
+            element = new InterfaceStructureElementToken(id, name);
             incrementId();
             element.setInterfaceElementAlterable(alterable);
             element.setDescription(description);
@@ -654,8 +671,9 @@ public class IcdImportApiImpl implements MimImportApi {
 
    private String getEnumSetKey(InterfaceEnumerationSet enumSet) {
       String key = String.join(";",
-         enumSet.getEnumerations().stream().map(e -> e.getOrdinal() + "=" + e.getName()).collect(Collectors.toList()));
-      return enumSet.getName().toUpperCase().replace(" ", "_") + "_" + key.hashCode();
+         enumSet.getEnumerations().stream().map(e -> e.getOrdinal().getValue() + "=" + e.getName().getValue()).collect(
+            Collectors.toList()));
+      return enumSet.getName().getValue().toUpperCase().replace(" ", "_") + "_" + key.hashCode();
    }
 
    private boolean compareElementsForArray(String name1, String name2, Long pTypeId1, Long pTypeId2) {

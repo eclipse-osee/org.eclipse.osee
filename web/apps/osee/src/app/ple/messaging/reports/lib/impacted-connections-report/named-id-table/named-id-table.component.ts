@@ -86,9 +86,7 @@ import { NamedId } from '@osee/shared/types';
 			class="tw-text-primary-500"></mat-header-row>
 		<mat-row
 			*matRowDef="let row; columns: displayedColumns()"
-			class="
-			 even:tw-bg-background-background hover:tw-bg-background-hover hover:tw-font-extrabold
-			"></mat-row>
+			class="even:tw-bg-background-background hover:tw-bg-background-hover hover:tw-font-extrabold"></mat-row>
 	</mat-table>`,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })

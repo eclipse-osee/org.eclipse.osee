@@ -10,8 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
-import { Subject, combineLatest, filter, of, switchMap } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { combineLatest, filter, of, switchMap } from 'rxjs';
 import { CiDashboardImportHttpService } from './ci-dashboard-import-http.service';
 import { CiDashboardUiService } from './ci-dashboard-ui.service';
 
@@ -19,10 +19,8 @@ import { CiDashboardUiService } from './ci-dashboard-ui.service';
 	providedIn: 'root',
 })
 export class CiDashboardImportService {
-	constructor(
-		private uiService: CiDashboardUiService,
-		private importHttpService: CiDashboardImportHttpService
-	) {}
+	private uiService = inject(CiDashboardUiService);
+	private importHttpService = inject(CiDashboardImportHttpService);
 
 	importFile(file: File | undefined) {
 		if (file === undefined || file.name === '') {

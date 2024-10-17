@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { AsyncPipe, NgClass, NgStyle } from '@angular/common';
 import { tap } from 'rxjs';
 import { PreferencesUIService } from '@osee/messaging/shared/services';
@@ -18,18 +18,56 @@ import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 
 @Component({
 	selector: 'osee-structure-table-long-text-field',
-	templateUrl: './structure-table-long-text-field.component.html',
+	template: `@if (globalPrefs | async) {
+			<summary
+				oseeHighlightFilteredText
+				[searchTerms]="searchTerms"
+				[text]="text"
+				(click)="toggleExpanded()"
+				classToApply="tw-text-accent-900"
+				class="tw-inline-block tw-cursor-pointer"
+				[ngStyle]="{
+					width: width,
+				}"
+				[ngClass]="{
+					'tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap':
+						wordWrap === null || !wordWrap,
+				}"
+				[attr.data-cy]="data_cy">
+				{{ text }}
+			</summary>
+		} @else {
+			<summary
+				oseeHighlightFilteredText
+				[searchTerms]="searchTerms"
+				[text]="text"
+				(click)="toggleExpanded()"
+				classToApply="tw-text-accent-900"
+				class="tw-inline-block tw-cursor-pointer"
+				[ngStyle]="{
+					width: width,
+				}"
+				[ngClass]="{
+					'tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap':
+						wordWrap === null || !wordWrap,
+				}"
+				[attr.data-cy]="data_cy">
+				{{ text }}
+			</summary>
+		}`,
 	styles: [],
 	standalone: true,
 	imports: [NgClass, NgStyle, HighlightFilteredTextDirective, AsyncPipe],
 })
 export class StructureTableLongTextFieldComponent {
-	@Input() text: string = '';
-	@Input() searchTerms: string = '';
-	@Input() width: string | undefined = '';
-	@Input() data_cy: string = '';
+	private preferencesService = inject(PreferencesUIService);
 
-	wordWrap: boolean = false;
+	@Input() text = '';
+	@Input() searchTerms = '';
+	@Input() width: string | undefined = '';
+	@Input() data_cy = '';
+
+	wordWrap = false;
 	globalPrefs = this.preferencesService.globalPrefs.pipe(
 		tap((prefs) => {
 			if (prefs !== null && prefs !== undefined) {
@@ -37,8 +75,6 @@ export class StructureTableLongTextFieldComponent {
 			}
 		})
 	);
-
-	constructor(private preferencesService: PreferencesUIService) {}
 
 	toggleExpanded() {
 		this.wordWrap = !this.wordWrap;

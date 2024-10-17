@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, inject, Inject, viewChild } from '@angular/core';
+import { Component, inject, viewChild } from '@angular/core';
 import {
 	MAT_DIALOG_DATA,
 	MatDialogActions,
@@ -20,16 +20,15 @@ import {
 	MatDialogRef,
 } from '@angular/material/dialog';
 import { artifactTypeIcon } from '@osee/artifact-with-relations/types';
-import { ArtifactExplorerHttpService } from 'src/app/ple/artifact-explorer/lib/services/artifact-explorer-http.service';
-import { ArtifactIconService } from 'src/app/ple/artifact-explorer/lib/services/artifact-icon.service';
+import { ArtifactExplorerHttpService } from '../../../../../services/artifact-explorer-http.service';
+import { ArtifactIconService } from '../../../../../services/artifact-icon.service';
 import {
 	key,
 	publishingTemplateKey,
 	publishMarkdownDialogData,
-} from 'src/app/ple/artifact-explorer/lib/types/artifact-explorer';
+} from '../../../../../types/artifact-explorer';
 import { ArtifactDialogTitleComponent } from '../../../../shared/artifact-dialog-title/artifact-dialog-title.component';
 import { FormsModule, NgForm } from '@angular/forms';
-import { ArtifactUiService } from '@osee/shared/services';
 import { NamedId } from '@osee/shared/types';
 import {
 	BehaviorSubject,
@@ -71,11 +70,12 @@ import { MatButton } from '@angular/material/button';
 	templateUrl: './publish-markdown-as-html-dialog.component.html',
 })
 export class PublishMarkdownAsHtmlDialogComponent {
-	constructor(
-		public dialogRef: MatDialogRef<PublishMarkdownAsHtmlDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: publishMarkdownDialogData,
-		private artifactIconService: ArtifactIconService
-	) {}
+	dialogRef =
+		inject<MatDialogRef<PublishMarkdownAsHtmlDialogComponent>>(
+			MatDialogRef
+		);
+	data = inject<publishMarkdownDialogData>(MAT_DIALOG_DATA);
+	private artifactIconService = inject(ArtifactIconService);
 
 	onCancel() {
 		this.dialogRef.close();

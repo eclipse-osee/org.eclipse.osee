@@ -12,11 +12,11 @@
  **********************************************************************/
 package org.eclipse.osee.ats.api.ai;
 
-import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 
-public class ActionableItemToken extends ArtifactAccessorResult {
+public class ActionableItemToken extends ArtifactAccessorResultWithoutGammas {
 
    private final String workType;
 

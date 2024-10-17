@@ -25,6 +25,7 @@ import {
 import { MatIcon } from '@angular/material/icon';
 import type { PlatformType } from '@osee/messaging/shared/types';
 import { PlatformTypeActionsComponent } from '../platform-type-actions/platform-type-actions.component';
+import { AttributeToValuePipe } from '@osee/attributes/pipes';
 
 @Component({
 	selector: 'osee-messaging-types-platform-type-card',
@@ -43,6 +44,7 @@ import { PlatformTypeActionsComponent } from '../platform-type-actions/platform-
 		MatButton,
 		MatIcon,
 		PlatformTypeActionsComponent,
+		AttributeToValuePipe,
 	],
 })
 export class PlatformTypeCardComponent {

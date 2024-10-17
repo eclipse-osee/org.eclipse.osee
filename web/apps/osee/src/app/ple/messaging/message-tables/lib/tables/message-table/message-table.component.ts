@@ -17,7 +17,12 @@ import {
 	transition,
 	trigger,
 } from '@angular/animations';
-import { ChangeDetectionStrategy, Component, viewChild } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	signal,
+	inject,
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import {
 	MatMenu,
@@ -39,18 +44,11 @@ import {
 	MatTableDataSource,
 } from '@angular/material/table';
 import { RouterLink } from '@angular/router';
-import { difference } from '@osee/shared/types/change-report';
-import { combineLatest, iif, of } from 'rxjs';
+import { iif, of } from 'rxjs';
 import {
-	debounceTime,
-	filter,
-	first,
 	map,
-	pairwise,
-	scan,
 	share,
 	shareReplay,
-	startWith,
 	switchMap,
 	take,
 	takeUntil,
@@ -63,6 +61,7 @@ import {
 	CdkDropList,
 } from '@angular/cdk/drag-drop';
 import { AsyncPipe, NgClass } from '@angular/common';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import {
@@ -73,36 +72,36 @@ import {
 } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatTooltip } from '@angular/material/tooltip';
-import { EditViewFreeTextFieldDialogComponent } from '@osee/messaging/shared/dialogs/free-text';
-import { MessagingControlsComponent } from '@osee/messaging/shared/main-content';
+import { PersistedApplicabilityDropdownComponent } from '@osee/applicability/persisted-applicability-dropdown';
+import { applic } from '@osee/applicability/types';
+import { PersistedBooleanAttributeToggleComponent } from '@osee/attributes/persisted-boolean-attribute-toggle';
+import { PersistedNumberAttributeInputComponent } from '@osee/attributes/persisted-number-attribute-input';
+import { PersistedStringAttributeInputComponent } from '@osee/attributes/persisted-string-attribute-input';
+import { PersistedMessagePeriodicityDropdownComponent } from '@osee/messaging/message-periodicity/persisted-message-periodicity-dropdown';
+import { PersistedMessageTypeDropdownComponent } from '@osee/messaging/message-type/persisted-message-type-dropdown';
+import { PersistedPublisherNodeDropdownComponent } from '@osee/messaging/nodes/persisted-publisher-node-dropdown';
+import { PersistedSubscriberNodeDropdownComponent } from '@osee/messaging/nodes/persisted-subscriber-node-dropdown';
+import { PersistedRateDropdownComponent } from '@osee/messaging/rate/persisted-rate-dropdown';
 import {
 	CurrentMessagesService,
 	HeaderService,
 } from '@osee/messaging/shared/services';
 import type {
-	ConnectionNode,
-	EditViewFreeTextDialog,
+	_messageChanges,
 	message,
-	messageChanges,
 	messageWithChanges,
+	nodeData,
 } from '@osee/messaging/shared/types';
 import {
-	TwoLayerAddButtonComponent,
-	CurrentViewSelectorComponent,
-} from '@osee/shared/components';
-import { applic } from '@osee/shared/types/applicability';
-import { HighlightFilteredTextDirective } from '@osee/shared/utils';
-import { AddMessageDialogComponent } from '../../dialogs/add-message-dialog/add-message-dialog.component';
-import { AddSubMessageDialogComponent } from '../../dialogs/add-sub-message-dialog/add-sub-message-dialog.component';
-import { DeleteMessageDialogComponent } from '../../dialogs/delete-message-dialog/delete-message-dialog.component';
-import { RemoveMessageDialogComponent } from '../../dialogs/remove-message-dialog/remove-message-dialog.component';
-import { EditMessageFieldComponent } from '../../fields/edit-message-field/edit-message-field.component';
-import { EditMessageNodesFieldComponent } from '../../fields/edit-message-nodes-field/edit-message-nodes-field.component';
-import { AddMessageDialog } from '../../types/AddMessageDialog';
-import { AddSubMessageDialog } from '../../types/AddSubMessageDialog';
+	HighlightFilteredTextDirective,
+	writableSlice,
+} from '@osee/shared/utils';
+import { MessageMenuComponent } from '../../menus/message-menu/message-menu.component';
+import { MessageImpactsValidatorDirective } from '../../message-impacts-validator.directive';
 import { SubMessageTableComponent } from '../sub-message-table/sub-message-table.component';
+import { CurrentViewSelectorComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-messaging-message-table',
@@ -163,20 +162,27 @@ import { SubMessageTableComponent } from '../sub-message-table/sub-message-table
 		MatMenuContent,
 		MatMenuItem,
 		MatMenuTrigger,
-		AddMessageDialogComponent,
-		AddSubMessageDialogComponent,
-		RemoveMessageDialogComponent,
-		DeleteMessageDialogComponent,
-		EditMessageFieldComponent,
-		EditMessageNodesFieldComponent,
 		HighlightFilteredTextDirective,
 		SubMessageTableComponent,
-		TwoLayerAddButtonComponent,
+		PersistedApplicabilityDropdownComponent,
+		PersistedNumberAttributeInputComponent,
+		PersistedStringAttributeInputComponent,
+		PersistedBooleanAttributeToggleComponent,
+		PersistedMessagePeriodicityDropdownComponent,
+		PersistedMessageTypeDropdownComponent,
+		PersistedRateDropdownComponent,
 		CurrentViewSelectorComponent,
-		MessagingControlsComponent,
+		PersistedPublisherNodeDropdownComponent,
+		PersistedSubscriberNodeDropdownComponent,
+		MessageMenuComponent,
+		MessageImpactsValidatorDirective,
 	],
 })
 export class MessageTableComponent {
+	private messageService = inject(CurrentMessagesService);
+	dialog = inject(MatDialog);
+	private headerService = inject(HeaderService);
+
 	messageData = this.messageService.messages.pipe(
 		switchMap((data) =>
 			of(new MatTableDataSource<message | messageWithChanges>(data))
@@ -191,8 +197,6 @@ export class MessageTableComponent {
 	);
 	nonEditableHeaders: (keyof message)[] = [];
 	expandedElement = this.messageService.expandedRows;
-	filter: string = '';
-	searchTerms: string = '';
 	preferences = this.messageService.preferences.pipe(
 		takeUntil(this.messageService.done)
 	);
@@ -202,51 +206,154 @@ export class MessageTableComponent {
 		shareReplay(1),
 		takeUntil(this.messageService.done)
 	);
-	menuPosition = {
+	protected filter = this.messageService.messageFilter;
+	private _inEditMode = toSignal(this.inEditMode, { initialValue: false });
+	protected menuData = signal<{
+		x: string;
+		y: string;
+		open: boolean;
+		message: message;
+		header: keyof _messageChanges;
+		editMode: boolean;
+	}>({
 		x: '0',
 		y: '0',
-	};
-	matMenuTrigger = viewChild.required(MatMenuTrigger);
-	sideNav = this.messageService.sideNavContent;
-	sideNavOpened = this.sideNav.pipe(map((value) => value.opened));
+		open: false,
+		editMode: false,
+		header: 'name',
+		message: {
+			id: '-1',
+			gammaId: '-1',
+			name: {
+				id: '-1',
+				typeId: '1152921504606847088',
+				gammaId: '-1',
+				value: '',
+			},
+			description: {
+				id: '-1',
+				typeId: '1152921504606847090',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMessageNumber: {
+				id: '-1',
+				typeId: '2455059983007225768',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMessagePeriodicity: {
+				id: '-1',
+				typeId: '3899709087455064789',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMessageRate: {
+				id: '-1',
+				typeId: '2455059983007225763',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMessageType: {
+				id: '-1',
+				typeId: '2455059983007225770',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMessageWriteAccess: {
+				id: '-1',
+				typeId: '2455059983007225754',
+				gammaId: '-1',
+				value: false,
+			},
+			interfaceMessageExclude: {
+				id: '-1',
+				typeId: '2455059983007225811',
+				gammaId: '-1',
+				value: false,
+			},
+			interfaceMessageIoMode: {
+				id: '-1',
+				typeId: '2455059983007225813',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMessageModeCode: {
+				id: '-1',
+				typeId: '2455059983007225810',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMessagePriority: {
+				id: '-1',
+				typeId: '2455059983007225806',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMessageProtocol: {
+				id: '-1',
+				typeId: '2455059983007225809',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMessageRateVer: {
+				id: '-1',
+				typeId: '2455059983007225805',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMessageRptCmdWord: {
+				id: '-1',
+				typeId: '2455059983007225808',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMessageRptWordCount: {
+				id: '-1',
+				typeId: '2455059983007225807',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceMessageRunBeforeProc: {
+				id: '-1',
+				typeId: '2455059983007225812',
+				gammaId: '-1',
+				value: false,
+			},
+			interfaceMessageVer: {
+				id: '-1',
+				typeId: '2455059983007225804',
+				gammaId: '-1',
+				value: '',
+			},
+			applicability: {
+				id: '1',
+				name: 'Base',
+			},
+			publisherNodes: [],
+			subscriberNodes: [],
+			subMessages: [],
+		},
+	});
+	protected menuPositionX = writableSlice(this.menuData, 'x');
+	protected menuPositionY = writableSlice(this.menuData, 'y');
+	protected menuEditMode = writableSlice(this.menuData, 'editMode');
+	protected menuOpen = writableSlice(this.menuData, 'open');
+	protected menuHeader = writableSlice(this.menuData, 'header');
+	protected menuMessage = writableSlice(this.menuData, 'message');
+
 	inDiffMode = this.messageService.isInDiff.pipe(
 		switchMap((val) => iif(() => val, of('true'), of('false')))
 	);
 	_connectionsRoute = this.messageService.connectionsRoute;
 	messages = this.messageService.messages;
-	messagesCount = this.messageService.messagesCount;
-	currentPage = this.messageService.currentPage;
-	currentPageSize = this.messageService.currentPageSize;
+	connectionId = this.messageService.connectionIdSignal;
 
-	currentOffset = combineLatest([
-		this.messageService.currentPage.pipe(startWith(0), pairwise()),
-		this.messageService.currentPageSize,
-	]).pipe(
-		debounceTime(100),
-		scan((acc, [[previousPageNum, currentPageNum], currentSize]) => {
-			if (previousPageNum < currentPageNum) {
-				return (acc += currentSize);
-			} else {
-				return acc;
-			}
-		}, 10)
-	);
-
-	minPageSize = combineLatest([this.currentOffset, this.messagesCount]).pipe(
-		debounceTime(100),
-		switchMap(([offset, messages]) => of([offset, messages])),
-		map(([offset, length]) => Math.max(offset + 1, length + 1))
-	);
-
-	constructor(
-		private messageService: CurrentMessagesService,
-		public dialog: MatDialog,
-		private headerService: HeaderService
-	) {}
-	rowIsExpanded(value: string) {
-		return this.messageService.expandedRows.pipe(
-			map((rows) => rows.map((s) => s.id).includes(value))
-		);
+	rowIsExpanded(value: `${number}`) {
+		return this.messageService
+			.expandedRows()
+			.map((s) => s.id)
+			.includes(value);
 	}
 	expandRow(value: message | messageWithChanges) {
 		this.messageService.addExpandedRow = value;
@@ -263,202 +370,45 @@ export class MessageTableComponent {
 		}
 	}
 
-	applyFilter(event: Event) {
-		const filterValue = (event.target as HTMLInputElement).value;
-		this.searchTerms = filterValue;
-		this.messageService.filter = filterValue.trim().toLowerCase();
-		this.filter = filterValue.trim().toLowerCase();
-	}
-	valueTracker(index: number, item: keyof message | 'rowControls') {
+	valueTracker(index: number, _item: keyof message | 'rowControls') {
 		return index;
 	}
 
-	messageTracker(index: any, item: message | messageWithChanges) {
-		return item.id;
+	messageTracker(_index: number, item: message | messageWithChanges) {
+		return item.id + item.subMessages.map((x) => x.id).join(':');
 	}
 
-	openNewMessageDialog() {
-		let dialogData: Partial<AddMessageDialog> = {
-			name: '',
-			description: '',
-			interfaceMessageNumber: '',
-			interfaceMessagePeriodicity: '',
-			interfaceMessageRate: '',
-			interfaceMessageType: '',
-			applicability: {
-				id: '1',
-				name: 'Base',
-			},
-			interfaceMessageWriteAccess: false,
-			publisherNodes: [
-				{
-					id: '',
-					name: '',
-				},
-			],
-			subscriberNodes: [
-				{
-					id: '',
-					name: '',
-				},
-			],
-			subMessages: [],
-		};
-		const dialogRef = this.dialog.open(AddMessageDialogComponent, {
-			data: dialogData,
-		});
-		dialogRef
-			.afterClosed()
-			.pipe(
-				first(),
-				filter((val) => val !== undefined),
-				switchMap(
-					({
-						publisherNodes,
-						subscriberNodes,
-						subMessages,
-						...val
-					}) =>
-						this.messageService.createMessage(
-							publisherNodes,
-							subscriberNodes,
-							val
-						)
-				)
-			)
-			.subscribe();
-	}
-	copyMessageDialog(message: message) {
-		let dialogData: Partial<AddMessageDialog> = {
-			name: message.name,
-			description: message.description,
-			interfaceMessageNumber: message.interfaceMessageNumber,
-			interfaceMessagePeriodicity: message.interfaceMessagePeriodicity,
-			interfaceMessageRate: message.interfaceMessageRate,
-			interfaceMessageType: message.interfaceMessageType,
-			applicability: message.applicability,
-			interfaceMessageWriteAccess: message.interfaceMessageWriteAccess,
-			publisherNodes: message.publisherNodes,
-			subscriberNodes: message.subscriberNodes,
-			subMessages: message.subMessages,
-		};
-		const dialogRef = this.dialog.open(AddMessageDialogComponent, {
-			data: dialogData,
-		});
-		dialogRef
-			.afterClosed()
-			.pipe(
-				first(),
-				filter((val) => val !== undefined),
-				switchMap(
-					({
-						publisherNodes,
-						subscriberNodes,
-						subMessages,
-						...val
-					}) =>
-						this.messageService.createMessage(
-							publisherNodes,
-							subscriberNodes,
-							val,
-							subMessages
-						)
-				)
-			)
-			.subscribe();
+	getNodeNames(nodes: nodeData[]) {
+		return nodes.map((n) => n.name.value).join(', ');
 	}
 
-	getNodeNames(nodes: ConnectionNode[]) {
-		return nodes.map((n) => n.name).join(', ');
+	headerIsChangable(
+		value: message,
+		header: keyof message
+	): header is keyof _messageChanges {
+		return (
+			(value as Required<message>)[header as keyof _messageChanges] !==
+			undefined
+		);
 	}
-
 	openMenu(
 		event: MouseEvent,
 		message: message,
-		field: string | boolean | applic,
-		header: string
+		_field: string | boolean | applic,
+		header: keyof message | 'rowControls'
 	) {
-		event.preventDefault();
-		this.menuPosition.x = event.clientX + 'px';
-		this.menuPosition.y = event.clientY + 'px';
-		this.matMenuTrigger().menuData = {
-			message: message,
-			field: field,
-			header: header,
-		};
-		this.matMenuTrigger().openMenu();
-	}
-	removeMessage(message: message) {
-		//open dialog, iif result ==='ok' messageservice. removemessage
-		this.dialog
-			.open(RemoveMessageDialogComponent, {
-				data: { message: message },
-			})
-			.afterClosed()
-			.pipe(
-				take(1),
-				switchMap((dialogResult: string) =>
-					iif(
-						() => dialogResult === 'ok',
-						this.messageService.removeMessage(message.id),
-						of()
-					)
-				)
-			)
-			.subscribe();
-	}
-
-	deleteMessage(message: message) {
-		this.dialog
-			.open(DeleteMessageDialogComponent, {
-				data: { message: message },
-			})
-			.afterClosed()
-			.pipe(
-				take(1),
-				switchMap((dialogResult: string) =>
-					iif(
-						() => dialogResult === 'ok',
-						this.messageService.deleteMessage(message.id),
-						of()
-					)
-				)
-			)
-			.subscribe();
-	}
-
-	openDescriptionDialog(description: string, messageId: string) {
-		this.dialog
-			.open(EditViewFreeTextFieldDialogComponent, {
-				data: {
-					original: JSON.parse(JSON.stringify(description)) as string,
-					type: 'Description',
-					return: description,
-				},
-				minHeight: '60%',
-				minWidth: '60%',
-			})
-			.afterClosed()
-			.pipe(
-				take(1),
-				switchMap((response: EditViewFreeTextDialog | string) =>
-					iif(
-						() =>
-							response === 'ok' ||
-							response === 'cancel' ||
-							response === undefined,
-						//do nothing
-						of(),
-						//change description
-						this.messageService.partialUpdateMessage({
-							id: messageId,
-							description: (response as EditViewFreeTextDialog)
-								.return,
-						})
-					)
-				)
-			)
-			.subscribe();
+		if (
+			header !== 'rowControls' &&
+			this.headerIsChangable(message, header)
+		) {
+			event.preventDefault();
+			this.menuPositionX.set(event.clientX + 'px');
+			this.menuPositionY.set(event.clientY + 'px');
+			this.menuEditMode.set(this._inEditMode());
+			this.menuMessage.set(message);
+			this.menuHeader.set(header);
+			this.menuOpen.set(true);
+		}
 	}
 
 	handleDragDrop(event: CdkDragDrop<unknown[]>) {
@@ -495,76 +445,5 @@ export class MessageTableComponent {
 
 	getHeaderByName(value: string) {
 		return this.headerService.getHeaderByName(value, 'message');
-	}
-
-	viewDiff(open: boolean, value: difference, header: string) {
-		this.messageService.sideNav = {
-			opened: open,
-			field: header,
-			currentValue: value.currentValue as string | number | applic,
-			previousValue: value.previousValue as
-				| string
-				| number
-				| applic
-				| undefined,
-			transaction: value.transactionToken,
-		};
-	}
-
-	hasChanges(
-		value: message | messageWithChanges
-	): value is messageWithChanges {
-		return (value as messageWithChanges).changes !== undefined;
-	}
-	changeExists(
-		value: messageWithChanges,
-		header: keyof messageChanges
-	): header is keyof messageChanges {
-		return (value as messageWithChanges).changes[header] !== undefined;
-	}
-
-	createNewSubMessage(message: message | messageWithChanges) {
-		this.dialog
-			.open(AddSubMessageDialogComponent, {
-				minWidth: '80%',
-				data: {
-					name: message.name,
-					id: message.id,
-					subMessage: {
-						name: '',
-						description: '',
-						interfaceSubMessageNumber: '',
-						applicability: {
-							id: '1',
-							name: 'Base',
-						},
-					},
-				},
-			})
-			.afterClosed()
-			.pipe(
-				take(1),
-				filter((val) => val !== undefined),
-				switchMap((z: AddSubMessageDialog) =>
-					iif(
-						() =>
-							z != undefined &&
-							z.subMessage != undefined &&
-							z.subMessage.id != undefined &&
-							z?.subMessage?.id.length > 0 &&
-							z.subMessage.id !== '-1',
-						this.messageService.relateSubMessage(
-							z.id,
-							z?.subMessage?.id || '-1'
-						),
-						this.messageService.createSubMessage(z.subMessage, z.id)
-					)
-				)
-			)
-			.subscribe();
-	}
-	setPage(event: PageEvent) {
-		this.messageService.pageSize = event.pageSize;
-		this.messageService.page = event.pageIndex;
 	}
 }

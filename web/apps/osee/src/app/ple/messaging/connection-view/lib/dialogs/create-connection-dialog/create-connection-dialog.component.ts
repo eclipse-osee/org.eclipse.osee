@@ -10,11 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe } from '@angular/common';
-import { Component, Inject, OnDestroy } from '@angular/core';
+import {
+	ChangeDetectionStrategy,
+	Component,
+	computed,
+	inject,
+	signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
-import { MatOption } from '@angular/material/core';
 import {
 	MAT_DIALOG_DATA,
 	MatDialogActions,
@@ -25,32 +29,95 @@ import {
 } from '@angular/material/dialog';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { MatSelect, MatSelectChange } from '@angular/material/select';
-import { ConnectionNodesCountDirective } from '@osee/messaging/shared/directives';
-import { CurrentTransportTypeService } from '@osee/messaging/shared/services';
-import type {
-	newConnection,
-	node,
-	transportType,
-} from '@osee/messaging/shared/types';
-import { MatOptionLoadingComponent } from '@osee/shared/components';
-import {
-	BehaviorSubject,
-	Subject,
-	debounceTime,
-	filter,
-	map,
-	of,
-	switchMap,
-} from 'rxjs';
-import { CurrentGraphService } from '../../services/current-graph.service';
+import { NodeDropdownComponent } from '@osee/messaging/nodes/dropdown';
+import type { connection, nodeData } from '@osee/messaging/shared/types';
+import { TransportTypeDropdownComponent } from '@osee/messaging/transports/dropdown';
+import { applicabilitySentinel } from '@osee/applicability/types';
+import { writableSlice } from '@osee/shared/utils';
 
 @Component({
 	selector: 'osee-create-connection-dialog',
-	templateUrl: './create-connection-dialog.component.html',
+	template: `<form #connectionForm="ngForm">
+		<h1 mat-dialog-title>
+			Create Connection{{ title() ? ' to Node: ' + title() : '' }}
+		</h1>
+		<mat-dialog-content>
+			<div class="tw-flex tw-flex-col tw-gap-2">
+				<mat-form-field
+					id="connection-name-field"
+					class="tw-w-full">
+					<mat-label>Add a Name</mat-label>
+					<input
+						matInput
+						name="name"
+						type="text"
+						[(ngModel)]="name"
+						#input
+						required
+						data-cy="field-name" />
+				</mat-form-field>
+				<mat-form-field
+					id="connection-description-field"
+					class="tw-w-full">
+					<mat-label>Add a Description</mat-label>
+					<input
+						matInput
+						name="description"
+						type="text"
+						[(ngModel)]="description"
+						#input
+						data-cy="field-description" />
+				</mat-form-field>
+				<osee-transport-type-dropdown
+					#transportTypeDropdown
+					[(transportType)]="
+						transportType
+					"></osee-transport-type-dropdown>
+				@if (
+					connectionForm.form.controls[
+						transportTypeDropdown.formId()
+					] !== undefined &&
+					connectionForm.form.controls[transportTypeDropdown.formId()]
+						.valid
+				) {
+					@if (data()) {
+						<osee-node-dropdown
+							[(selectedNodes)]="selectedNodes"
+							[transportType]="transportType()"
+							[protectedNode]="
+								protectedNode()
+							"></osee-node-dropdown>
+					} @else {
+						<osee-node-dropdown
+							[(selectedNodes)]="selectedNodes"
+							[transportType]="
+								transportType()
+							"></osee-node-dropdown>
+					}
+				}
+			</div>
+		</mat-dialog-content>
+		<div
+			mat-dialog-actions
+			align="end">
+			<button
+				mat-button
+				(click)="onNoClick()"
+				data-cy="cancel-btn">
+				Cancel
+			</button>
+			<button
+				mat-flat-button
+				[mat-dialog-close]="connection()"
+				class="primary-button"
+				[disabled]="connectionForm.invalid || connectionForm.pending"
+				data-cy="submit-btn">
+				Ok
+			</button>
+		</div>
+	</form>`,
 	standalone: true,
 	imports: [
-		AsyncPipe,
 		MatDialogTitle,
 		MatDialogContent,
 		MatDialogActions,
@@ -60,131 +127,250 @@ import { CurrentGraphService } from '../../services/current-graph.service';
 		MatError,
 		FormsModule,
 		MatInput,
-		MatSelect,
-		MatOptionLoadingComponent,
-		MatOption,
 		MatButton,
-		ConnectionNodesCountDirective,
+		TransportTypeDropdownComponent,
+		NodeDropdownComponent,
 	],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CreateConnectionDialogComponent implements OnDestroy {
-	constructor(
-		private graphService: CurrentGraphService,
-		private transportTypeService: CurrentTransportTypeService,
-		public dialogRef: MatDialogRef<CreateConnectionDialogComponent>,
-		@Inject(MAT_DIALOG_DATA) public data: node | undefined
-	) {
-		this.title = data?.name || '';
-		this.toNode = data?.id || '';
-		if (this.toNode !== '') {
-			this.newConnection.nodeIds.push(this.toNode);
+export class CreateConnectionDialogComponent {
+	private _dialogRef = inject(MatDialogRef<CreateConnectionDialogComponent>);
+	protected data = signal(
+		inject<nodeData | undefined>(MAT_DIALOG_DATA)
+	).asReadonly();
+
+	protected protectedNode = computed(() => {
+		if (this.data()) {
+			return this.data() as unknown as nodeData;
 		}
-	}
+		const node: nodeData = {
+			id: '-1' as const,
+			gammaId: '-1',
+			name: {
+				id: '-1',
+				typeId: '1152921504606847088',
+				gammaId: '-1',
+				value: '',
+			},
+			description: {
+				id: '-1',
+				typeId: '1152921504606847090',
+				gammaId: '-1',
+				value: '',
+			},
+			applicability: applicabilitySentinel,
+			interfaceNodeNumber: {
+				id: '-1',
+				typeId: '5726596359647826657',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceNodeGroupId: {
+				id: '-1',
+				typeId: '5726596359647826658',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceNodeBackgroundColor: {
+				id: '-1',
+				typeId: '5221290120300474048',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceNodeAddress: {
+				id: '-1',
+				typeId: '5726596359647826656',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceNodeBuildCodeGen: {
+				id: '-1',
+				typeId: '5806420174793066197',
+				gammaId: '-1',
+				value: false,
+			},
+			interfaceNodeCodeGen: {
+				id: '-1',
+				typeId: '4980834335211418740',
+				gammaId: '-1',
+				value: false,
+			},
+			interfaceNodeCodeGenName: {
+				id: '-1',
+				typeId: '5390401355909179776',
+				gammaId: '-1',
+				value: '',
+			},
+			nameAbbrev: {
+				id: '-1',
+				typeId: '8355308043647703563',
+				gammaId: '-1',
+				value: '',
+			},
+			interfaceNodeToolUse: {
+				id: '-1',
+				typeId: '5863226088234748106',
+				gammaId: '-1',
+				value: false,
+			},
+			interfaceNodeType: {
+				id: '-1',
+				typeId: '6981431177168910500',
+				gammaId: '-1',
+				value: '',
+			},
+			notes: {
+				id: '-1',
+				typeId: '1152921504606847085',
+				gammaId: '-1',
+				value: '',
+			},
+		};
+		return node;
+	});
 
-	private _done = new Subject();
-	paginationSize = 50;
+	protected title = signal(
+		inject<nodeData | undefined>(MAT_DIALOG_DATA)?.name.value || ''
+	).asReadonly();
 
-	paginatedNodes = (pageNum: string | number) =>
-		this.graphService.getPaginatedNodes(pageNum, this.paginationSize);
-
-	nodes = this.graphService.getPaginatedNodes(0, 0);
-
-	title: string = '';
-	fromNode: string = '';
-	toNode: string = '';
-	nodeSearch = new BehaviorSubject<string>('');
-
-	newConnection: newConnection = {
-		connection: {
-			name: '',
-			description: '',
+	protected connection = signal<connection>({
+		id: '-1',
+		gammaId: '-1',
+		name: {
+			id: '-1',
+			typeId: '1152921504606847088',
+			gammaId: '-1',
+			value: '',
 		},
-		nodeIds: [],
-	};
+		description: {
+			id: '-1',
+			typeId: '1152921504606847090',
+			gammaId: '-1',
+			value: '',
+		},
+		applicability: applicabilitySentinel,
+		transportType: {
+			name: {
+				id: '-1',
+				typeId: '1152921504606847088',
+				gammaId: '-1',
+				value: '',
+			},
+			byteAlignValidation: {
+				id: '-1',
+				typeId: '1682639796635579163',
+				gammaId: '-1',
+				value: false,
+			},
+			byteAlignValidationSize: {
+				id: '-1',
+				typeId: '6745328086388470469',
+				gammaId: '-1',
+				value: 0,
+			},
+			messageGeneration: {
+				id: '-1',
+				typeId: '6696101226215576386',
+				gammaId: '-1',
+				value: false,
+			},
+			messageGenerationType: {
+				id: '-1',
+				typeId: '7121809480940961886',
+				gammaId: '-1',
+				value: '',
+			},
+			messageGenerationPosition: {
+				id: '-1',
+				typeId: '7004358807289801815',
+				gammaId: '-1',
+				value: '',
+			},
+			minimumPublisherMultiplicity: {
+				id: '-1',
+				typeId: '7904304476851517',
+				gammaId: '-1',
+				value: 0,
+			},
+			maximumPublisherMultiplicity: {
+				id: '-1',
+				typeId: '8536169210675063038',
+				gammaId: '-1',
+				value: 0,
+			},
+			minimumSubscriberMultiplicity: {
+				id: '-1',
+				typeId: '6433031401579983113',
+				gammaId: '-1',
+				value: 0,
+			},
+			maximumSubscriberMultiplicity: {
+				id: '-1',
+				typeId: '7284240818299786725',
+				gammaId: '-1',
+				value: 0,
+			},
+			availableMessageHeaders: {
+				id: '-1',
+				typeId: '2811393503797133191',
+				gammaId: '-1',
+				value: [],
+			},
+			availableSubmessageHeaders: {
+				id: '-1',
+				typeId: '3432614776670156459',
+				gammaId: '-1',
+				value: [],
+			},
+			availableStructureHeaders: {
+				id: '-1',
+				typeId: '3020789555488549747',
+				gammaId: '-1',
+				value: [],
+			},
+			availableElementHeaders: {
+				id: '-1',
+				typeId: '3757258106573748121',
+				gammaId: '-1',
+				value: [],
+			},
+			interfaceLevelsToUse: {
+				id: '-1',
+				typeId: '1668394842614655222',
+				gammaId: '-1',
+				value: ['message', 'submessage', 'structure', 'element'],
+			},
+			dashedPresentation: {
+				id: '-1',
+				typeId: '3564212740439618526',
+				gammaId: '-1',
+				value: false,
+			},
+			spareAutoNumbering: {
+				id: '-1',
+				typeId: '6696101226215576390',
+				gammaId: '-1',
+				value: false,
+			},
+			id: '-1',
+			gammaId: '-1',
+			applicability: { id: '1', name: 'Base' },
+			directConnection: false,
+		},
+		nodes:
+			inject<nodeData | undefined>(MAT_DIALOG_DATA) !== undefined &&
+			inject<nodeData | undefined>(MAT_DIALOG_DATA) !== null
+				? [inject<nodeData>(MAT_DIALOG_DATA)]
+				: [],
+	});
+	private nameAttr = writableSlice(this.connection, 'name');
+	protected name = writableSlice(this.nameAttr, 'value');
+	private descriptionAttr = writableSlice(this.connection, 'description');
+	protected description = writableSlice(this.descriptionAttr, 'value');
+	protected transportType = writableSlice(this.connection, 'transportType');
+	protected selectedNodes = writableSlice(this.connection, 'nodes');
 
-	availableNodes = this.nodeSearch.pipe(
-		debounceTime(250),
-		map(
-			(search) => (pageNum: number | string) =>
-				this.graphService.getPaginatedNodesByName(
-					search,
-					pageNum,
-					this.paginationSize
-				)
-		)
-	);
-
-	availableNodesCount = this.nodeSearch.pipe(
-		debounceTime(250),
-		switchMap((search) => this.graphService.getNodesByNameCount(search))
-	);
-
-	minNodes = of(this.newConnection).pipe(
-		switchMap((newConnection) =>
-			of(newConnection.connection).pipe(
-				filter((connection) => connection.transportType !== undefined),
-				switchMap((connection) => {
-					const minPub =
-						connection.transportType!.minimumPublisherMultiplicity;
-					const minSub =
-						connection.transportType!.minimumSubscriberMultiplicity;
-					const min = Math.min(minPub, minSub);
-					return of(min);
-				})
-			)
-		)
-	);
-
-	maxNodes = of(this.newConnection.connection.transportType).pipe(
-		filter((transportType) => transportType !== undefined),
-		switchMap((transportType) => {
-			const maxPub = transportType!.maximumPublisherMultiplicity;
-			const maxSub = transportType!.maximumSubscriberMultiplicity;
-			const max = maxPub + maxSub;
-			return of(max);
-		})
-	);
-
-	transportTypes = (pageNum: string | number) =>
-		this.transportTypeService.getPaginatedTypes(
-			pageNum,
-			this.paginationSize
-		);
-
-	ngOnDestroy(): void {
-		this._done.next(true);
-	}
-
-	onNoClick() {
-		this.dialogRef.close();
-	}
-
-	selectFromNode(change: MatSelectChange) {
-		this.fromNode = change.value;
-		if (this.data?.id) {
-			this.newConnection.nodeIds = [this.fromNode, this.data.id];
-		}
-	}
-
-	selectToNode(change: MatSelectChange) {
-		this.toNode = change.value;
-		this.newConnection.nodeIds = [this.fromNode, this.toNode];
-	}
-
-	applySearchTerm(searchTerm: Event) {
-		const value = (searchTerm.target as HTMLInputElement).value;
-		this.nodeSearch.next(value);
-	}
-
-	compareTransportTypes(o1: transportType, o2: transportType) {
-		return o1?.id === o2?.id && o1?.name === o2?.name;
-	}
-
-	compareNodes(node1: string, node2: string) {
-		return node1 && node2 ? node1 === node2 : false;
-	}
-
-	updateNodes(val: string[]) {
-		this.newConnection.nodeIds = val;
+	protected onNoClick() {
+		this._dialogRef.close();
 	}
 }

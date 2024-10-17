@@ -10,12 +10,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { ReportsService } from '../services';
 import { NodeTraceReportMock } from './node-trace-report-mock';
 import { MockNamedId } from '@osee/shared/testing';
+import { mimReportsMock } from './mim-reports.mock';
 
 export const ReportsServiceMock: Partial<ReportsService> = {
+	getReports() {
+		return of(mimReportsMock);
+	},
 	get currentPage() {
 		return of(0);
 	},
@@ -57,5 +61,8 @@ export const ReportsServiceMock: Partial<ReportsService> = {
 	},
 	get impactedConnectionsArtifacts() {
 		return of(MockNamedId);
+	},
+	get branchId() {
+		return new BehaviorSubject<string>('1');
 	},
 };

@@ -12,17 +12,22 @@
  **********************************************************************/
 import { Observable, of } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { TrainingRoleRecord } from '../types/training-role';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class TrainingRoleService {
+	private http = inject(HttpClient);
+
 	private trainingRoleRecords: Observable<TrainingRoleRecord[]>;
 	private trainingRoles: Observable<string[]>;
 
-	constructor(private http: HttpClient) {
+	/** Inserted by Angular inject() migration for backwards compatibility */
+	constructor(...args: unknown[]);
+
+	constructor() {
 		this.trainingRoleRecords = of(this.TEST_ROLE_RECORDS);
 		this.trainingRoles = of(this.TEST_ROLES_TO_ADD);
 	}

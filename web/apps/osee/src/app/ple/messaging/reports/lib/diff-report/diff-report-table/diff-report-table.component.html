@@ -44,50 +44,53 @@
 							isChanged(item, header) &&
 							!item.added &&
 							!item.deleted
-								? 'tw-bg-accent-300 dark:tw-bg-accent-600'
+								? 'tw-bg-accent-50 hover:tw-bg-accent-100 dark:tw-bg-accent-500 dark:tw-text-background-background hover:dark:tw-bg-accent-400'
 								: ''
 						">
-						<a
-							id="{{ item.artId }}"
-							class="tw-top tw-absolute -tw-top-12 tw-left-0"></a>
-						@if (isChanged(item, header)) {
-							@if (!item.added && !item.deleted) {
+						<a id="{{ item.artId }}">
+							@if (isChanged(item, header)) {
+								@if (!item.added && !item.deleted) {
+									<div
+										class="tw-flex tw-items-center tw-gap-4">
+										<mat-icon class="tw-w-6 tw-text-warning"
+											>remove</mat-icon
+										>
+										@if (header === 'Applicability') {
+											<span>{{
+												item.wasApplic.name
+											}}</span>
+										} @else {
+											<span>{{
+												getChange(item, header)
+													?.wasValue
+											}}</span>
+										}
+									</div>
+									<div
+										style="
+											width: 100%;
+											border-bottom: 1px solid #000;
+											margin: 0.5em 0 0.5em 0;
+										"></div>
+								}
 								<div class="tw-flex tw-items-center tw-gap-4">
-									<mat-icon class="tw-w-6 tw-text-warning"
-										>remove</mat-icon
-									>
+									@if (!item.added && !item.deleted) {
+										<mat-icon class="tw-w-6 tw-text-success"
+											>add</mat-icon
+										>
+									}
 									@if (header === 'Applicability') {
-										<span>{{ item.wasApplic.name }}</span>
+										<span>{{ item.isApplic.name }}</span>
 									} @else {
 										<span>{{
-											getChange(item, header)?.wasValue
+											getChange(item, header)?.isValue
 										}}</span>
 									}
 								</div>
-								<div
-									style="
-										width: 100%;
-										border-bottom: 1px solid #000;
-										margin: 0.5em 0 0.5em 0;
-									"></div>
+							} @else if (header === 'Name') {
+								{{ item.name }}
 							}
-							<div class="tw-flex tw-items-center tw-gap-4">
-								@if (!item.added && !item.deleted) {
-									<mat-icon class="tw-w-6 tw-text-success"
-										>add</mat-icon
-									>
-								}
-								@if (header === 'Applicability') {
-									<span>{{ item.isApplic.name }}</span>
-								} @else {
-									<span>{{
-										getChange(item, header)?.isValue
-									}}</span>
-								}
-							</div>
-						} @else if (header === 'Name') {
-							{{ item.name }}
-						}
+						</a>
 					</td>
 				</ng-container>
 			}
@@ -126,10 +129,10 @@
 				class="hover:tw-bg-background-app-bar active:tw-bg-background-unselected-chip"
 				[ngClass]="
 					row.added
-						? 'odd:tw-bg-success-300 even:tw-bg-success-100 odd:hover:tw-bg-success-400 even:hover:tw-bg-success-200 odd:dark:tw-bg-success-600 even:dark:tw-bg-success-500 odd:dark:hover:tw-bg-success-700 even:dark:hover:tw-bg-success-600'
+						? 'odd:tw-bg-success-300 even:tw-bg-success-100 odd:hover:tw-bg-success-400 even:hover:tw-bg-success-200 dark:tw-text-background-background odd:dark:tw-bg-success-400 even:dark:tw-bg-success-300 odd:dark:hover:tw-bg-success-500 even:dark:hover:tw-bg-success-400'
 						: row.deleted
-						  ? 'odd:tw-bg-warning-200 even:tw-bg-warning-100 odd:hover:tw-bg-warning-300 even:hover:tw-bg-warning-200 odd:dark:tw-bg-warning-600 even:dark:tw-bg-warning-500 odd:dark:hover:tw-bg-warning-700 even:dark:hover:tw-bg-warning-600'
-						  : ''
+							? 'odd:tw-bg-warning-200 even:tw-bg-warning-100 odd:hover:tw-bg-warning-300 even:hover:tw-bg-warning-200 dark:tw-text-background-background odd:dark:tw-bg-warning-400 even:dark:tw-bg-warning-300 odd:dark:hover:tw-bg-warning-500 even:dark:hover:tw-bg-warning-400'
+							: ''
 				"></tr>
 			@if (showChildren) {
 				<tr

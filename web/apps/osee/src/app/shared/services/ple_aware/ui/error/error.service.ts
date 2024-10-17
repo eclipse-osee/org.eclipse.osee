@@ -45,6 +45,4 @@ export class ErrorService {
 		this._errorText.next('');
 		this._errorDetails.next('');
 	}
-
-	constructor() {}
 }

@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { MimQuery } from '@osee/messaging/shared/query';
 import { switchMap, shareReplay } from 'rxjs/operators';
 import { UiService } from '@osee/shared/services';
@@ -20,10 +20,8 @@ import { QueryService } from '../http/query.service';
 	providedIn: 'root',
 })
 export class CurrentQueryService {
-	constructor(
-		private ui: UiService,
-		private queryService: QueryService
-	) {}
+	private ui = inject(UiService);
+	private queryService = inject(QueryService);
 
 	query<T = unknown>(query: MimQuery<T>) {
 		return this.ui.id.pipe(

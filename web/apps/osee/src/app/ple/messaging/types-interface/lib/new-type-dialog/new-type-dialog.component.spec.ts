@@ -10,8 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HarnessLoader } from '@angular/cdk/testing';
-import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -36,19 +34,17 @@ import {
 	MockNewTypeFormComponent,
 	MimPreferencesServiceMock,
 	typesServiceMock,
-	enumsServiceMock,
 	enumerationUiServiceMock,
 } from '@osee/messaging/shared/testing';
 import {
 	MimPreferencesService,
 	TypesService,
-	EnumsService,
 	EnumerationUIService,
 } from '@osee/messaging/shared/services';
 import { UserDataAccountService } from '@osee/auth';
 import { MockMatOptionLoadingComponent } from '@osee/shared/components/testing';
-import { TransactionBuilderService } from '@osee/shared/transactions';
-import { transactionBuilderMock } from '@osee/shared/transactions/testing';
+import { TransactionBuilderService } from '@osee/shared/transactions-legacy';
+import { transactionBuilderMock } from '@osee/shared/transactions-legacy/testing';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
 import { ApplicabilityListUIService } from '@osee/shared/services';
 import { applicabilityListUIServiceMock } from '@osee/shared/testing';
@@ -56,7 +52,6 @@ import { applicabilityListUIServiceMock } from '@osee/shared/testing';
 describe('NewTypeDialogComponent', () => {
 	let component: NewTypeDialogComponent;
 	let fixture: ComponentFixture<NewTypeDialogComponent>;
-	let loader: HarnessLoader;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
@@ -97,7 +92,6 @@ describe('NewTypeDialogComponent', () => {
 							useValue: userDataAccountServiceMock,
 						},
 						{ provide: TypesService, useValue: typesServiceMock },
-						{ provide: EnumsService, useValue: enumsServiceMock },
 						{
 							provide: EnumerationUIService,
 							useValue: enumerationUiServiceMock,
@@ -115,7 +109,6 @@ describe('NewTypeDialogComponent', () => {
 	beforeEach(async () => {
 		fixture = TestBed.createComponent(NewTypeDialogComponent);
 		component = fixture.componentInstance;
-		loader = TestbedHarnessEnvironment.loader(fixture);
 		fixture.detectChanges();
 	});
 

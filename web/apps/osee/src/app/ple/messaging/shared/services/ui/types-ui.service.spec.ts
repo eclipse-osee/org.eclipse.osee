@@ -12,20 +12,19 @@
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
 import {
-	typesServiceMock,
-	enumsServiceMock,
 	enumerationSetServiceMock,
+	platformTypesMock,
+	typesServiceMock,
 } from '@osee/messaging/shared/testing';
-import {
-	transactionMock,
-	transactionResultMock,
-} from '@osee/shared/transactions/testing';
-import { TestScheduler } from 'rxjs/testing';
 import { UiService } from '@osee/shared/services';
+import { transactionResultMock } from '@osee/transactions/testing';
+import { TestScheduler } from 'rxjs/testing';
 import { EnumerationSetService } from '../http/enumeration-set.service';
-import { EnumsService } from '../http/enums.service';
 import { TypesService } from '../http/types.service';
 
+import { PlatformTypeSentinel } from '@osee/messaging/shared/enumerations';
+import { CurrentTransactionService } from '@osee/transactions/services';
+import { currentTransactionServiceMock } from '@osee/transactions/services/testing';
 import { TypesUIService } from './types-ui.service';
 
 describe('TypesUIService', () => {
@@ -37,10 +36,13 @@ describe('TypesUIService', () => {
 		TestBed.configureTestingModule({
 			providers: [
 				{ provide: TypesService, useValue: typesServiceMock },
-				{ provide: EnumsService, useValue: enumsServiceMock },
 				{
 					provide: EnumerationSetService,
 					useValue: enumerationSetServiceMock,
+				},
+				{
+					provide: CurrentTransactionService,
+					useValue: currentTransactionServiceMock,
 				},
 			],
 		});
@@ -59,18 +61,11 @@ describe('TypesUIService', () => {
 
 	it('should create a transaction', () => {
 		scheduler.run(({ expectObservable }) => {
-			expectObservable(service.changeType({})).toBe('(a|)', {
-				a: transactionMock,
+			expectObservable(
+				service.changeType(new PlatformTypeSentinel())
+			).toBe('(a|)', {
+				a: transactionResultMock,
 			});
-		});
-	});
-
-	it('should perform a mutation', () => {
-		scheduler.run(({ expectObservable }) => {
-			expectObservable(service.performMutation(transactionMock)).toBe(
-				'(a|)',
-				{ a: transactionResultMock }
-			);
 		});
 	});
 
@@ -81,11 +76,10 @@ describe('TypesUIService', () => {
 			uiService.idValue = '10';
 			scheduler
 				.expectObservable(
-					service.partialUpdate({
-						createArtifacts: [],
-						modifyArtifacts: [],
-						deleteRelations: [],
-					})
+					service.partialUpdate(
+						platformTypesMock[0],
+						platformTypesMock[1]
+					)
 				)
 				.toBe(expectedMarble, expectedFilterValues);
 		});
@@ -97,13 +91,7 @@ describe('TypesUIService', () => {
 			const expectedMarble = '(a|)';
 			uiService.idValue = '10';
 			scheduler
-				.expectObservable(
-					service.copyType({
-						createArtifacts: [],
-						modifyArtifacts: [],
-						deleteRelations: [],
-					})
-				)
+				.expectObservable(service.copyType(platformTypesMock[0]))
 				.toBe(expectedMarble, expectedFilterValues);
 		});
 	});
@@ -115,19 +103,7 @@ describe('TypesUIService', () => {
 			uiService.idValue = '10';
 			scheduler
 				.expectObservable(
-					service.createType({}, true, {
-						enumSetId: '1',
-						enumSetName: 'hello',
-						enumSetApplicability: { id: '1', name: 'Base' },
-						enumSetDescription: 'description',
-						enums: [
-							{
-								name: 'Hello',
-								ordinal: 0,
-								applicability: { id: '1', name: 'base' },
-							},
-						],
-					})
+					service.createType(new PlatformTypeSentinel())
 				)
 				.toBe(expectedMarble, expectedFilterValues);
 		});
@@ -140,19 +116,7 @@ describe('TypesUIService', () => {
 			uiService.idValue = '10';
 			scheduler
 				.expectObservable(
-					service.createType({}, false, {
-						enumSetId: '1',
-						enumSetName: 'hello',
-						enumSetApplicability: { id: '1', name: 'Base' },
-						enumSetDescription: 'description',
-						enums: [
-							{
-								name: 'Hello',
-								ordinal: 0,
-								applicability: { id: '1', name: 'base' },
-							},
-						],
-					})
+					service.createType(new PlatformTypeSentinel())
 				)
 				.toBe(expectedMarble, expectedFilterValues);
 		});
@@ -165,23 +129,7 @@ describe('TypesUIService', () => {
 			uiService.idValue = '10';
 			scheduler
 				.expectObservable(
-					service.createType(
-						{ interfaceLogicalType: 'enumeration' },
-						true,
-						{
-							enumSetId: '1',
-							enumSetName: 'hello',
-							enumSetApplicability: { id: '1', name: 'Base' },
-							enumSetDescription: 'description',
-							enums: [
-								{
-									name: 'Hello',
-									ordinal: 0,
-									applicability: { id: '1', name: 'base' },
-								},
-							],
-						}
-					)
+					service.createType(new PlatformTypeSentinel())
 				)
 				.toBe(expectedMarble, expectedFilterValues);
 		});
@@ -194,23 +142,7 @@ describe('TypesUIService', () => {
 			uiService.idValue = '10';
 			scheduler
 				.expectObservable(
-					service.createType(
-						{ interfaceLogicalType: 'enumeration' },
-						false,
-						{
-							enumSetId: '1',
-							enumSetName: 'hello',
-							enumSetApplicability: { id: '1', name: 'Base' },
-							enumSetDescription: 'description',
-							enums: [
-								{
-									name: 'Hello',
-									ordinal: 0,
-									applicability: { id: '1', name: 'base' },
-								},
-							],
-						}
-					)
+					service.createType(new PlatformTypeSentinel())
 				)
 				.toBe(expectedMarble, expectedFilterValues);
 		});

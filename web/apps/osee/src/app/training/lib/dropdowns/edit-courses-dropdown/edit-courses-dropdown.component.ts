@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
@@ -31,7 +31,7 @@ import {
 	imports: [MatButton, MatMenuTrigger, MatIcon, MatMenu, MatMenuItem],
 })
 export class EditCoursesDropdownComponent {
-	constructor(public dialog: MatDialog) {}
+	dialog = inject(MatDialog);
 
 	addCourses() {
 		this.dialog

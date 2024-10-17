@@ -11,18 +11,16 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, from, iif, of } from 'rxjs';
-import { filter, map, mergeMap, reduce, shareReplay } from 'rxjs/operators';
 import type {
+	DisplayableElementProps,
 	branchSummary,
 	branchSummaryHeaderDetail,
 	diffReportSummaryHeaderDetail,
 	diffReportSummaryItem,
-	element,
+	displayableStructureFields,
 	elementHeaderDetail,
 	message,
 	messageHeaderDetail,
-	structure,
 	structureHeaderDetail,
 	subMessage,
 	subMessageHeaderDetail,
@@ -30,6 +28,8 @@ import type {
 	transportTypeSummaryHeaderDetail,
 } from '@osee/messaging/shared/types';
 import { headerDetail } from '@osee/shared/types';
+import { BehaviorSubject, from, iif, of } from 'rxjs';
+import { filter, map, mergeMap, reduce, shareReplay } from 'rxjs/operators';
 
 export const HeaderKeysEnum = {
 	NONE: '',
@@ -73,7 +73,7 @@ export class HeaderService {
 			humanReadable: 'End Index',
 		},
 		{
-			header: 'logicalType',
+			header: 'interfaceLogicalType',
 			description: 'Primitive Type of Element',
 			humanReadable: 'Logical Type',
 		},
@@ -91,11 +91,6 @@ export class HeaderService {
 			header: 'interfacePlatformTypeMaxval',
 			description: 'Maximum Value of Element',
 			humanReadable: 'Max',
-		},
-		{
-			header: 'interfacePlatformTypeDescription',
-			description: 'Description of the Type',
-			humanReadable: 'Type Description',
 		},
 		{
 			header: 'beginWord',
@@ -139,7 +134,7 @@ export class HeaderService {
 			humanReadable: 'Applicability',
 		},
 		{
-			header: 'units',
+			header: 'interfacePlatformTypeUnits',
 			description:
 				'Units of the platform type associated with the given element',
 			humanReadable: 'Units',
@@ -520,7 +515,10 @@ export class HeaderService {
 		mergeMap((elements) =>
 			from(elements).pipe(
 				map((element) => element.header),
-				reduce((acc, curr) => [...acc, curr], [] as (keyof element)[])
+				reduce(
+					(acc, curr) => [...acc, curr],
+					[] as (keyof DisplayableElementProps)[]
+				)
 			)
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
@@ -532,7 +530,17 @@ export class HeaderService {
 				map((structure) => structure.header),
 				reduce(
 					(acc, curr) => [...acc, curr],
-					[] as (keyof structure | string)[]
+					[] as (
+						| keyof displayableStructureFields
+						| (
+								| 'txRate'
+								| 'publisher'
+								| 'subscriber'
+								| 'messageNumber'
+								| 'messagePeriodicity'
+								| ' '
+						  )
+					)[]
 				)
 			)
 		),
@@ -564,8 +572,6 @@ export class HeaderService {
 		),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
-
-	constructor() {}
 
 	get AllBranchSummaryHeaders() {
 		return this._allBranchSummaryHeaders;

@@ -11,21 +11,19 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
-import { ElementTableDropdownService } from './element-table-dropdown.service';
-import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
-import {
-	CurrentStateServiceMock,
-	enumerationUiServiceMock,
-	warningDialogServiceMock,
-} from '@osee/messaging/shared/testing';
+import { MatDialogModule } from '@angular/material/dialog';
 import {
 	CurrentStructureService,
-	EnumerationUIService,
 	PlatformTypeActionsService,
 	WarningDialogService,
 } from '@osee/messaging/shared/services';
-import { MatDialogModule } from '@angular/material/dialog';
+import {
+	CurrentStateServiceMock,
+	warningDialogServiceMock,
+} from '@osee/messaging/shared/testing';
+import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 import { of } from 'rxjs';
+import { ElementTableDropdownService } from './element-table-dropdown.service';
 
 describe('ElementTableDropdownService', () => {
 	let service: ElementTableDropdownService;
@@ -50,7 +48,7 @@ describe('ElementTableDropdownService', () => {
 					provide: PlatformTypeActionsService,
 					useValue: {
 						openCopyEditDialog: of(),
-						openEnumDialog(id: string, editMode: boolean) {
+						openEnumDialog(_id: string, _editMode: boolean) {
 							return of();
 						},
 					},

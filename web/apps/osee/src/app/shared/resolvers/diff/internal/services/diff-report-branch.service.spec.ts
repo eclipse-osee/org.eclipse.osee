@@ -51,7 +51,7 @@ describe('DiffReportBranchService', () => {
 
 	it('should get differences', () => {
 		scheduler.run(({ expectObservable, cold }) => {
-			const makeemissions = cold('-a|', { a: '10' }).pipe(
+			const _makeemissions = cold('-a|', { a: '10' }).pipe(
 				tap((t) => (branchService.idValue = t))
 			);
 			const expectedValues = { a: changeReportMock };

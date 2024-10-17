@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe, JsonPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ReportsService } from '@osee/messaging/shared/services';
 import { CurrentBranchInfoService, UiService } from '@osee/shared/services';
@@ -22,17 +22,20 @@ import { toSignal } from '@angular/core/rxjs-interop';
 	selector: 'osee-impacted-connections-report',
 	standalone: true,
 	imports: [JsonPipe, AsyncPipe, NamedIdTableComponent],
-	template: `<div class="mat-h3">Impacted Connections:</div>
+	template: `<h5 class="tw-p-4">Impacted Connections</h5>
 		<osee-named-id-table
 			[content]="impactedConnections()"></osee-named-id-table>`,
 })
 export class ImpactedConnectionsReportComponent {
-	constructor(
-		private route: ActivatedRoute,
-		private ui: UiService,
-		private reportsService: ReportsService,
-		private branchService: CurrentBranchInfoService
-	) {
+	private route = inject(ActivatedRoute);
+	private ui = inject(UiService);
+	private reportsService = inject(ReportsService);
+	private branchService = inject(CurrentBranchInfoService);
+
+	/** Inserted by Angular inject() migration for backwards compatibility */
+	constructor(...args: unknown[]);
+
+	constructor() {
 		this.route.paramMap.subscribe((params) => {
 			this.ui.idValue = params.get('branchId') || '';
 			this.ui.typeValue =

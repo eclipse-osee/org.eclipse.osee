@@ -13,15 +13,14 @@
 <div
 	ngModelGroup="enumSetForm"
 	#enumSetCtrl="ngModelGroup"
-	[oseeEnumSetUniqueDescription]="enumSet">
+	[oseeEnumSetUniqueDescription]="enumSet()">
 	<mat-form-field class="tw-w-full">
 		<mat-label>Enter Enum Set Name</mat-label>
 		<input
 			matInput
 			name="enumSetName"
-			[(ngModel)]="enumSet.name"
-			required
-			(ngModelChange)="updateEnumSet()" />
+			[(ngModel)]="nameValue"
+			required />
 		<button
 			mat-icon-button
 			matSuffix
@@ -39,22 +38,19 @@
 			cdkTextareaAutosize
 			matInput
 			name="enumSetDescription"
-			[(ngModel)]="enumSet.description"
+			[(ngModel)]="descriptionValue"
 			required
-			disabled
-			(ngModelChange)="updateEnumSet()"></textarea>
+			disabled></textarea>
 	</mat-form-field>
 	<br />
-	<osee-applicability-selector
-		[applicability]="enumSet.applicability"
-		(applicabilityChange)="enumSet.applicability = $event; updateEnumSet()"
+	<osee-applicability-dropdown
+		[(applicability)]="applicability"
 		class="tw-w-full">
-	</osee-applicability-selector>
+	</osee-applicability-dropdown>
 	<osee-enum-form
 		[bitSize]="bitSize"
-		[enumSetId]="enumSet.id || '-1'"
-		[enumSetName]="enumSet.name"
+		[enumSetId]="enumSet().id || '-1'"
+		[enumSetName]="nameValue()"
 		(enumSetString)="updateDescription($event)"
-		(enums)="updateEnums($event)"
-		[preload]="enumSet.enumerations || []"></osee-enum-form>
+		[(enums)]="enumerations"></osee-enum-form>
 </div>

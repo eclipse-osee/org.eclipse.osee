@@ -12,4 +12,5 @@
  **********************************************************************/
 export * from './osee-toolbar/osee-toolbar.component';
 export * from './toolbar.component';
+export * from './osee-logo/osee-logo.component';
 export { default } from './toolbar.routes';

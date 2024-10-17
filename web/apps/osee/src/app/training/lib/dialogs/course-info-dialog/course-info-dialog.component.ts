@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import {
 	MAT_DIALOG_DATA,
@@ -40,13 +40,16 @@ import { TrainingCourse } from '../../types/training-course';
 	styles: [],
 })
 export class CourseInfoDialogComponent {
+	data = inject<string>(MAT_DIALOG_DATA);
+	dialogRef = inject<MatDialogRef<CourseInfoDialogComponent>>(MatDialogRef);
+	private trainingCourseService = inject(TrainingCourseService);
+
 	courses$: Observable<TrainingCourse[]>;
 
-	constructor(
-		@Inject(MAT_DIALOG_DATA) public data: string,
-		public dialogRef: MatDialogRef<CourseInfoDialogComponent>,
-		private trainingCourseService: TrainingCourseService
-	) {
+	/** Inserted by Angular inject() migration for backwards compatibility */
+	constructor(...args: unknown[]);
+
+	constructor() {
 		this.courses$ = this.trainingCourseService
 			.getTrainingCourses()
 			.pipe(

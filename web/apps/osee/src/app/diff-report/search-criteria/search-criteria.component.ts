@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Output, signal } from '@angular/core';
+import { Component, Output, signal, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/core';
@@ -49,8 +49,10 @@ import { ReportService } from '../services/report.service';
 	templateUrl: './search-criteria.component.html',
 })
 export class SearchCriteriaComponent {
-	workflowNum: string = '';
-	workflowDesc: string = '';
+	private reportService = inject(ReportService);
+
+	workflowNum = '';
+	workflowDesc = '';
 	endPointUrl = this.reportService.diffEndpoint;
 	programSelection = this.reportService.selectedProgram;
 	selectedBuild = this.reportService.selectedBuild;
@@ -87,8 +89,6 @@ export class SearchCriteriaComponent {
 			this.startReport.next(false);
 		})
 	);
-
-	constructor(private reportService: ReportService) {}
 
 	programToBuilds = combineLatest([this.endPointUrl]).pipe(
 		share(),
@@ -129,7 +129,7 @@ export class SearchCriteriaComponent {
 	builds = combineLatest([this.programToBuilds, this.programSelectionName])
 		.pipe(
 			filter(
-				([programToBuilds, programSelectionName]) =>
+				([_programToBuilds, programSelectionName]) =>
 					programSelectionName !== undefined
 			),
 			switchMap(([programToBuilds, programSelectionName]) =>

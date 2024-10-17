@@ -10,14 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { UiService } from '@osee/shared/services';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class RouterStateService {
-	constructor(private uiService: UiService) {}
+	private uiService = inject(UiService);
 
 	get BranchId() {
 		return this.uiService.id;

@@ -11,29 +11,31 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { combineLatest, from, Observable, of } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
 import { apiURL } from '@osee/environments';
-import type { message } from '../../types/messages';
-import type { connection } from '../../types/connection';
-import type { ConnectionNode } from '../../types/connection-nodes';
-import { concatMap, map, reduce, switchMap } from 'rxjs/operators';
+import { TransactionBuilderService } from '@osee/shared/transactions-legacy';
+import { HttpParamsType } from '@osee/shared/types';
 import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
+import { createArtifact } from '@osee/transactions/functions';
+import { TransactionService } from '@osee/transactions/services';
 import {
-	TransactionBuilderService,
-	TransactionService,
-} from '@osee/shared/transactions';
-import { HttpParamsType, relation, transaction } from '@osee/shared/types';
+	legacyRelation,
+	legacyTransaction,
+	transaction,
+} from '@osee/transactions/types';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
+import type { connection } from '../../types/connection';
+import type { message } from '../../types/messages';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class MessagesService {
-	constructor(
-		private http: HttpClient,
-		private builder: TransactionBuilderService,
-		private transactionService: TransactionService
-	) {}
+	private http = inject(HttpClient);
+	private builder = inject(TransactionBuilderService);
+
+	private transactionService = inject(TransactionService);
 
 	/**
 	 * Gets an array of messages based on a filter condition
@@ -141,22 +143,12 @@ export class MessagesService {
 		);
 	}
 
-	getConnectionNodes(branchId: string, connectionId: string) {
-		return this.http.get<ConnectionNode[]>(
-			apiURL +
-				'/mim/branch/' +
-				branchId +
-				'/nodes/connection/' +
-				connectionId
-		);
-	}
-
 	createConnectionRelation(
 		connectionId: string,
 		messageId?: string,
 		afterArtifactId?: string
 	) {
-		let relation: relation = {
+		const relation: legacyRelation = {
 			typeName: 'Interface Connection Message',
 			sideA: connectionId,
 			sideB: messageId,
@@ -177,7 +169,7 @@ export class MessagesService {
 		nodeId: string,
 		type?: boolean
 	) {
-		let relation: relation = {
+		const relation: legacyRelation = {
 			typeName: type
 				? 'Interface Message Publisher Node'
 				: 'Interface Message Subscriber Node',
@@ -188,7 +180,7 @@ export class MessagesService {
 	}
 
 	createSubMessageRelation(subMessageId?: string, afterArtifact?: string) {
-		let relation: relation = {
+		const relation: legacyRelation = {
 			typeName: 'Interface Message SubMessage Content',
 			sideB: subMessageId,
 			afterArtifact: afterArtifact || 'end',
@@ -196,41 +188,45 @@ export class MessagesService {
 		return of(relation);
 	}
 
-	changeMessage(branchId: string, message: Partial<message>) {
-		return of(
-			this.builder.modifyArtifact(
-				message,
-				undefined,
-				branchId,
-				'Update Message'
-			)
-		);
-	}
-
-	createMessage(
-		branchId: string,
-		message: Partial<message>,
-		relations: relation[],
-		transaction?: transaction,
+	addNewMessageToTransaction(
+		message: message,
+		tx: Required<transaction>,
 		key?: string
 	) {
-		return of(
-			this.builder.createArtifact(
-				message,
-				ARTIFACTTYPEIDENUM.MESSAGE,
-				relations,
-				transaction,
-				branchId,
-				`Creating message ${message.name}`,
-				key
-			)
+		const {
+			id,
+			gammaId,
+			applicability,
+			publisherNodes,
+			subscriberNodes,
+			subMessages,
+			added,
+			deleted,
+			changes,
+			hasSubMessageChanges,
+			...remainingAttributes
+		} = message;
+		const attributeKeys = Object.keys(
+			remainingAttributes
+		) as (keyof typeof remainingAttributes)[];
+		const attributes = attributeKeys
+			.map((k) => remainingAttributes[k])
+			.filter((attr) => attr.id !== '');
+		const results = createArtifact(
+			tx,
+			ARTIFACTTYPEIDENUM.MESSAGE,
+			applicability,
+			[],
+			key,
+			...attributes
 		);
+		return results.tx;
 	}
 
 	deleteMessage(
 		branchId: string,
 		messageId: string,
-		transaction?: transaction
+		transaction?: legacyTransaction
 	) {
 		return of(
 			this.builder.deleteArtifact(
@@ -244,8 +240,8 @@ export class MessagesService {
 
 	addRelation(
 		branchId: string,
-		relation: relation,
-		transaction?: transaction
+		relation: legacyRelation,
+		transaction?: legacyTransaction
 	) {
 		return of(
 			this.builder.addRelation(
@@ -264,8 +260,8 @@ export class MessagesService {
 
 	deleteRelation(
 		branchId: string,
-		relation: relation,
-		transaction?: transaction
+		relation: legacyRelation,
+		transaction?: legacyTransaction
 	) {
 		return of(
 			this.builder.deleteRelation(
@@ -281,7 +277,7 @@ export class MessagesService {
 		);
 	}
 
-	performMutation(body: transaction) {
+	performMutation(body: legacyTransaction) {
 		return this.transactionService.performMutation(body);
 	}
 }

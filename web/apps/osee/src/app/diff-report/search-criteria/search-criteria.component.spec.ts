@@ -10,7 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { HttpClientModule } from '@angular/common/http';
+import {
+	provideHttpClient,
+	withInterceptorsFromDi,
+} from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { SearchCriteriaComponent } from './search-criteria.component';
@@ -21,11 +24,8 @@ describe('SearchCriteriaComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [
-				SearchCriteriaComponent,
-				NoopAnimationsModule,
-				HttpClientModule,
-			],
+			imports: [SearchCriteriaComponent, NoopAnimationsModule],
+			providers: [provideHttpClient(withInterceptorsFromDi())],
 		}).compileComponents();
 
 		fixture = TestBed.createComponent(SearchCriteriaComponent);

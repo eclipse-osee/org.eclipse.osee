@@ -10,30 +10,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable, signal, inject } from '@angular/core';
+
 import { UiService } from '@osee/shared/services';
 import { MimRouteService } from './mim-route.service';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class MessageUiService {
-	private _filter: BehaviorSubject<string> = new BehaviorSubject<string>('');
-	constructor(
-		private _mimRoute: MimRouteService,
-		private ui: UiService
-	) {}
+	private _mimRoute = inject(MimRouteService);
+	private ui = inject(UiService);
 
-	get filter() {
-		return this._filter;
-	}
-
-	set filterString(filter: string) {
-		if (filter !== this._filter.getValue()) {
-			this._filter.next(filter);
-		}
-	}
+	public filter = signal('');
+	public currentPageSize = signal(50);
+	public currentPage = signal(0);
 
 	get UpdateRequired() {
 		return this.ui.update;
@@ -59,11 +51,11 @@ export class MessageUiService {
 		this._mimRoute.idValue = value;
 	}
 
-	get connectionId() {
-		return this._mimRoute.connectionId;
-	}
+	connectionIdSignal = this._mimRoute.connectionId;
 
-	set connectionIdString(value: string) {
+	connectionId = toObservable(this._mimRoute.connectionId);
+
+	set connectionIdString(value: `${number}`) {
 		this._mimRoute.connectionIdString = value;
 	}
 
@@ -83,7 +75,7 @@ export class MessageUiService {
 		this._mimRoute.messageIdString = value;
 	}
 
-	set subMessageId(value: string) {
+	set subMessageId(value: `${number}`) {
 		this._mimRoute.submessageIdString = value;
 	}
 

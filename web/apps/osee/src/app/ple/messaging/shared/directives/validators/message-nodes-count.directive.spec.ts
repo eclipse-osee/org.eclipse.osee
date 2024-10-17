@@ -27,9 +27,9 @@ describe('MessageNodesCountDirective', () => {
 		}).compileComponents();
 	});
 	it('should create an instance', () => {
-		const directive = new MessageNodesCountDirective(
-			TestBed.inject(TransportTypeUiService)
-		);
-		expect(directive).toBeTruthy();
+		TestBed.runInInjectionContext(() => {
+			const directive = new MessageNodesCountDirective();
+			expect(directive).toBeTruthy();
+		});
 	});
 });

@@ -12,7 +12,7 @@
  **********************************************************************/
 
 import { Component, model } from '@angular/core';
-import { applic } from '@osee/shared/types/applicability';
+import { applic } from '@osee/applicability/types';
 
 /**
  * Component utilized strictly for stubbing out functionality in tests

@@ -11,13 +11,13 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
-import { CommitBranchService } from './commit-branch.service';
-import { BranchInfoService } from '@osee/shared/services';
-import { BranchInfoServiceMock } from '@osee/shared/testing';
-import { TransactionService } from '@osee/shared/transactions';
-import { transactionServiceMock } from '@osee/shared/transactions/testing';
 import { UserDataAccountService } from '@osee/auth';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
+import { BranchInfoService } from '@osee/shared/services';
+import { BranchInfoServiceMock } from '@osee/shared/testing';
+import { TransactionService } from '@osee/transactions/services';
+import { transactionServiceMock } from '@osee/transactions/services/testing';
+import { CommitBranchService } from './commit-branch.service';
 
 describe('CommitBranchService', () => {
 	let service: CommitBranchService;

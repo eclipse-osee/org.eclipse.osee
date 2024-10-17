@@ -15,8 +15,8 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { TransactionService } from '@osee/shared/transactions';
-import { transactionServiceMock } from '@osee/shared/transactions/testing';
+import { TransactionHistoryService } from '@osee/transaction-history/services';
+import { transactionInfoServiceMock } from '@osee/transaction-history/services/testing';
 import { SideNavService } from '@osee/shared/services/layout';
 
 import { SingleDiffComponent } from './single-diff.component';
@@ -36,8 +36,8 @@ describe('MimSingleDiffComponent', () => {
 			providers: [
 				{ provide: SideNavService },
 				{
-					provide: TransactionService,
-					useValue: transactionServiceMock,
+					provide: TransactionHistoryService,
+					useValue: transactionInfoServiceMock,
 				},
 			],
 		}).compileComponents();

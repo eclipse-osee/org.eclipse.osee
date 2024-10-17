@@ -10,11 +10,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export interface mdExample {
+export type mdExample = {
 	name: string;
 	icon: string;
 	markdown: string;
-}
+};
 
 export const mdExamples: mdExample[] = [
 	{

@@ -10,178 +10,207 @@
 * Contributors:
 *     Boeing - initial API and implementation
 -->
-<h1 mat-dialog-title>Add Element to {{ data.name }}</h1>
+<h1 mat-dialog-title>Add Element to {{ name() }}</h1>
 <mat-horizontal-stepper
 	#stepper
-	class="new-submessage-stepper">
-	<mat-step
-		label="Select Element options"
-		#step1>
-		<mat-dialog-content>
-			<div class="tw-flex tw-items-center tw-justify-between">
-				<button
-					mat-raised-button
-					color="primary"
-					class="tw-w-full tw-p-6"
-					matStepperNext
-					(click)="createNew()"
-					data-cy="create-new-btn">
-					Create new Element
-				</button>
+	class="tw-p-4">
+	<form #elementDialogForm="ngForm">
+		<mat-step
+			label="Select Element options"
+			#step1>
+			<mat-dialog-content>
+				<div class="tw-flex tw-items-center tw-justify-between tw-pt-4">
+					<button
+						mat-flat-button
+						class="primary-button tw-w-full tw-p-6"
+						matStepperNext
+						type="button"
+						(click)="createNew()"
+						data-cy="create-new-btn">
+						Create new Element
+					</button>
 
-				<p class="tw-w-full tw-text-center">or</p>
+					<p class="tw-w-full tw-text-center">or</p>
 
-				<mat-form-field
-					class="tw-w-full"
-					appearance="fill"
-					subscriptSizing="dynamic">
-					<mat-label>Select an existing Element</mat-label>
-					<input
-						type="text"
-						matInput
-						[matAutocomplete]="auto"
-						(keyup)="applySearchTerm($event)"
-						name="autocomplete-text" />
-					<mat-autocomplete #auto="matAutocomplete">
-						@if (availableElements | async; as elements) {
-							<osee-mat-option-loading
-								[data]="elements"
-								[count]="(availableElementsCount | async) || -1"
-								objectName="Elements"
-								paginationMode="AUTO"
-								[paginationSize]="paginationSize">
-								<ng-template let-option>
-									<mat-option
-										[value]="option.name"
-										(click)="selectExistingElement(option)"
-										[matTooltip]="
-											getElementOptionToolTip(option)
-										"
-										[matTooltipClass]="
-											'tw-whitespace-pre-line'
-										"
-										matTooltipShowDelay="250">
-										{{ option.name }}
-									</mat-option>
-								</ng-template>
-							</osee-mat-option-loading>
-						}
-					</mat-autocomplete>
-				</mat-form-field>
-			</div>
-		</mat-dialog-content>
-		<mat-dialog-actions align="end">
-			@if (selectedElement) {
+					<mat-form-field
+						class="tw-w-full"
+						name="element_selector_0"
+						appearance="fill"
+						subscriptSizing="dynamic">
+						<mat-label>Select an existing Element</mat-label>
+						<input
+							type="text"
+							matInput
+							[matAutocomplete]="auto"
+							[(ngModel)]="elementSearchString"
+							name="element_selector_1" />
+						<mat-autocomplete
+							#auto="matAutocomplete"
+							(optionSelected)="selectElement($event)">
+							@if (availableElements | async; as elements) {
+								<osee-mat-option-loading
+									[data]="elements"
+									[count]="
+										(availableElementsCount | async) || -1
+									"
+									objectName="Elements"
+									paginationMode="AUTO"
+									[paginationSize]="paginationSize">
+									<ng-template let-option>
+										<mat-option
+											[value]="option"
+											[matTooltip]="
+												getElementOptionToolTip(option)
+											"
+											[matTooltipClass]="
+												'tw-whitespace-pre-line'
+											"
+											matTooltipShowDelay="250">
+											{{ option.name.value }}
+										</mat-option>
+									</ng-template>
+								</osee-mat-option-loading>
+							}
+						</mat-autocomplete>
+					</mat-form-field>
+				</div>
+			</mat-dialog-content>
+			<mat-dialog-actions align="end">
 				<button
-					mat-raised-button
-					color="primary"
+					mat-flat-button
+					class="primary-button tw-mt-4"
+					type="button"
+					[disabled]="
+						elementDialogForm.invalid ||
+						elementDialogForm.pending ||
+						elementDialogForm.disabled
+					"
 					(click)="moveToReview(stepper)">
 					Proceed to Review
 				</button>
-			}
-		</mat-dialog-actions>
-	</mat-step>
-	<mat-step
-		label="Define element"
-		#step2>
-		<mat-dialog-content>
-			<osee-element-form
-				[(data)]="data"
-				[reset]="resetElementForm | async"></osee-element-form>
-		</mat-dialog-content>
-		<mat-dialog-actions align="end">
-			<button
-				mat-raised-button
-				matStepperPrevious
-				data-cy="back-2"
-				(click)="resetDialog()">
-				Back
-			</button>
-			@if (
-				data.element.name !== undefined &&
-				data.element.description !== undefined &&
-				data.element.name.length > 0 &&
-				(data.element.interfaceElementArrayHeader ||
-					(data.type.name.length > 0 &&
-						+(data.type.id !== undefined && data.type.id) > 0))
-			) {
+			</mat-dialog-actions>
+		</mat-step>
+		<mat-step
+			label="Define element"
+			#step2>
+			<mat-dialog-content>
+				<osee-element-form [(data)]="data"></osee-element-form>
+			</mat-dialog-content>
+			<mat-dialog-actions align="end">
 				<button
 					mat-raised-button
-					color="primary"
-					(click)="resetDialog()"
+					matStepperPrevious
+					type="button"
+					data-cy="back-2"
+					(click)="resetId()">
+					Back
+				</button>
+				<button
+					mat-flat-button
+					class="primary-button"
 					matStepperNext
+					[disabled]="
+						elementDialogForm.invalid ||
+						elementDialogForm.pending ||
+						elementDialogForm.disabled
+					"
+					type="button"
 					data-cy="stepper-next">
 					Next
 				</button>
-			}
-		</mat-dialog-actions>
-	</mat-step>
-	<mat-step
-		label="Review"
-		#step3>
-		<mat-dialog-content>
-			<div class="tw-flex tw-flex-col">
-				An element will be related to:
-				<mat-label>{{ data.name }}</mat-label> with the following
-				properties:
-				<mat-label>Element Name: {{ data.element.name }}</mat-label>
-				<mat-label
-					>Element Description:
-					{{ data.element.description }}</mat-label
-				>
-				<mat-label>Element Notes: {{ data.element.notes }}</mat-label>
-				<mat-label
-					>Element Enum Literals:
-					{{ data.element.enumLiteral }}</mat-label
-				>
-				<mat-label
-					>Element Start Index:
-					{{ data.element.interfaceElementIndexStart }}</mat-label
-				>
-				<mat-label
-					>Element End Index:
-					{{ data.element.interfaceElementIndexEnd }}</mat-label
-				>
-				<mat-label
-					>Element Alterable:
-					{{ data.element.interfaceElementAlterable }}</mat-label
-				>
-				<mat-label
-					>Enumerated Literals:
-					{{ data.element.enumLiteral }}</mat-label
-				>
-				<mat-label
-					>Applicability:
-					{{ data.element.applicability?.name }}
-				</mat-label>
-				<mat-label>Platform Type: {{ data.type.name }}</mat-label>
-			</div>
-		</mat-dialog-content>
-		<mat-dialog-actions align="end">
-			<button
-				mat-button
-				matStepperPrevious
-				data-cy="cancel-btn">
-				Back
-			</button>
-			<button
-				mat-raised-button
-				color="primary"
-				[mat-dialog-close]="data"
-				data-cy="submit-btn">
-				Ok
-			</button>
-		</mat-dialog-actions>
-	</mat-step>
+				<!-- } -->
+			</mat-dialog-actions>
+		</mat-step>
+		<mat-step
+			label="Review"
+			#step3>
+			<mat-dialog-content>
+				<div class="tw-flex tw-flex-col">
+					An element will be related to:
+					<mat-label>{{ data().name }}</mat-label> with the following
+					properties:
+					<mat-label
+						>Element Name:
+						{{ data().element.name | attributeToValue }}</mat-label
+					>
+					<mat-label
+						>Element Description:
+						{{
+							data().element.description | attributeToValue
+						}}</mat-label
+					>
+					<mat-label
+						>Element Notes:
+						{{ data().element.notes | attributeToValue }}</mat-label
+					>
+					<mat-label
+						>Element Enum Literals:
+						{{
+							data().element.enumLiteral | attributeToValue
+						}}</mat-label
+					>
+					<mat-label
+						>Element Start Index:
+						{{
+							data().element.interfaceElementIndexStart
+								| attributeToValue
+						}}</mat-label
+					>
+					<mat-label
+						>Element End Index:
+						{{
+							data().element.interfaceElementIndexEnd
+								| attributeToValue
+						}}</mat-label
+					>
+					<mat-label
+						>Element Alterable:
+						{{
+							data().element.interfaceElementAlterable
+								| attributeToValue
+						}}</mat-label
+					>
+					<mat-label
+						>Enumerated Literals:
+						{{
+							data().element.enumLiteral | attributeToValue
+						}}</mat-label
+					>
+					<mat-label
+						>Applicability:
+						{{ data().element.applicability.name }}
+					</mat-label>
+					<mat-label
+						>Platform Type:
+						{{
+							data().element.platformType.name | attributeToValue
+						}}</mat-label
+					>
+				</div>
+			</mat-dialog-content>
+			<mat-dialog-actions align="end">
+				<button
+					mat-button
+					type="button"
+					matStepperPrevious
+					data-cy="cancel-btn"
+					(click)="resetId()">
+					Back
+				</button>
+				<button
+					mat-flat-button
+					class="primary-button"
+					type="button"
+					[mat-dialog-close]="data()"
+					[disabled]="
+						elementDialogForm.invalid ||
+						elementDialogForm.pending ||
+						elementDialogForm.disabled
+					"
+					data-cy="submit-btn">
+					Ok
+				</button>
+			</mat-dialog-actions>
+		</mat-step>
+	</form>
 </mat-horizontal-stepper>
-
-<ng-template #loading_types>
-	<div class="tw-flex tw-items-center">
-		<mat-spinner
-			color="primary"
-			diameter="20"
-			class="tw-pr-4"
-			data-cy="types-loading-spinner"></mat-spinner>
-		<span>Loading Platform Types...</span>
-	</div>
-</ng-template>
