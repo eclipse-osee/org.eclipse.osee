@@ -23,3 +23,6 @@ bazel-*
 bazel-out
 bazel-testlogs
 output_rules_osee_bazel
+
+# Ignore any directory named java_rust_ffi
+java_rust_ffi/
