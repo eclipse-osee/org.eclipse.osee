@@ -7,7 +7,7 @@ public class TestMainJadenDelete {
       ApplicabilityParseSubstituteAndSanitize parser = new ApplicabilityParseSubstituteAndSanitize();
 
       // Sample input and configuration
-      String input = "A name. ``Feature[ARB=Included]`` Some text. ``End Feature``";
+      String input = "A name. ``Feature[ARB=Excluded]`` Some text. ``End Feature``";
       String filename = "";
       String fileextension = "md";
       String configJson =
