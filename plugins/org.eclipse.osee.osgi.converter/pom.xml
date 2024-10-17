@@ -40,9 +40,25 @@
 								</artifact>
 								
 								<artifact>
-									<id>com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:jar:2.15.2</id>
+									<id>com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:jar:2.14.3</id>
 									<source>true</source>
 								</artifact>
+								
+								<artifact>
+									<id>com.fasterxml.jackson.core:jackson-databind:jar:2.14.3</id>
+									<source>true</source>
+								</artifact>
+								
+								<artifact>
+									<id>com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:2.14.3</id>
+									<source>true</source>
+								</artifact>
+								
+								<artifact>
+									<id>com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:jar:2.14.3</id>
+									<source>true</source>
+								</artifact>
+								
 								<artifact>
 									<id>org.postgresql:postgresql:jar:42.3.10</id>
 									<source>true</source>
@@ -72,7 +88,7 @@
 									<id>org.apache.cxf:cxf-rt-rs-client:jar:3.5.8</id>
 									<source>true</source>
 								</artifact>
-																
+								
 								
 								<artifact>
 									<id>org.hsqldb:hsqldb:2.6.1</id>
