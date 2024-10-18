@@ -20,7 +20,7 @@ every release.
 ** Action Title MUST be unique
 ** Use appropriate Actionable Item artifact id for action creation
 * See TaskTrackingDataExampleCreate.json in org.eclipse.osee.ats.ide.integration.tests/OSEE-INF/taskTrack for an example of the json to send it.  
-* The resulting XResultData object will contain errors if something when wrong
+* The resulting XResultData object will contain errors if something went wrong
 
 #### Using database configured tasks during REST call
 
