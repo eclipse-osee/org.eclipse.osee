@@ -386,7 +386,7 @@ public class CommitBranchUtil {
             artQuery + " , " + attrQuery + //
             "select count('x') value, 'conflicts' value_type from (select 'x' from attrConflicts t4 where currentDestGammaId is null and baselineTxGammaId is null " + //
             "and exists (select null from osee_txs txs, osee_attribute attr where txs.branch_id = ? and txs.gamma_id = attr.gamma_id and attr.attr_type_id in (" + //
-            singleAttrTypes + ") and attr.art_id = t4.art_id " + //
+            singleAttrTypes + ") and attr.art_id = t4.art_id and attr.attr_type_id = t4.attr_type_id " + //
             "and tx_current = 1) union all " + //
             "select 'x' from attrConflicts t5, " + String.format(ARTJOIN, "t5") + " union all " + //
             "select 'x' from artConflicts t7, " + String.format(ARTJOIN, "t7") + ") t8 union all " + //
