@@ -479,10 +479,14 @@ public final class RenderingUtil {
          }
 
          //@formatter:off
+         // the short safe name is being used to make a directory name, and the '-' at the end makes
+         // a name that VB diff won't accept
          var shortSafeAssociatedArtifactName =
             ( safeAssociatedArtifactName.length() <= 15 )
                ? safeAssociatedArtifactName
-               : safeAssociatedArtifactName.substring( 0, 15 );
+               : (safeAssociatedArtifactName.charAt(15) == '-')
+                   ? safeAssociatedArtifactName.substring( 0, 14 )
+                   : safeAssociatedArtifactName.substring( 0, 15 );
          //@formatter:on
 
          return Optional.ofNullable(shortSafeAssociatedArtifactName);
