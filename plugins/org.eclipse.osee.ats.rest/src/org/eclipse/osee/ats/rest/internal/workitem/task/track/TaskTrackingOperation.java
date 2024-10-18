@@ -201,11 +201,6 @@ public class TaskTrackingOperation {
                }
             }
 
-            System.err.println(getClass().getSimpleName() + " - " + taskItem.getTitle());
-            if (supportingTeamWf != null) {
-               System.err.println(getClass().getSimpleName() + " - " + supportingTeamWf.getAtsId());
-            }
-
             // Assign user specified in taskItem
             List<String> assigneeUserIds = new LinkedList<>();
             if (Strings.isValid(taskItem.getAssigneesArtIds())) {
