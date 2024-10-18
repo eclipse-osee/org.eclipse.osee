@@ -32,7 +32,7 @@ every release.
 
 #### Adding new tasks using successive REST calls
 
-* Successive POSTs with json payload will create any new tasks (names don't match an existing task)
+* Successive POSTs with json payload will create any new tasks if names don't match an existing task
 * Search of action/workflow is by name.  If duplicate workflow names exist, operation will fail.  
 * Tasks will NOT be duplicated/updated if they were already created
 
