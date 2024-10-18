@@ -174,6 +174,16 @@ public class TransactionEndpointTest {
    }
 
    @Test
+   public void testArtifactForCorrectJson() {
+      String uniqueString = "22222222";
+      String deleteAndAddJson = setupTransferJsonFromDeleteAddAttribute(CoreArtifactTypes.Artifact,
+         CoreAttributeTypes.Description, uniqueString);
+      assertTrue(deleteAndAddJson.contains("deleteAttributes"));
+      assertTrue(deleteAndAddJson.contains("addAttributes"));
+      assertTrue(deleteAndAddJson.contains(uniqueString));
+   }
+
+   @Test
    public void testAddBooleanAttribute() {
       boolean testBoolean = true;
       String json = setupTransferJson(CoreArtifactTypes.OseeTypeDefinition,
@@ -632,6 +642,53 @@ public class TransactionEndpointTest {
          throw new OseeCoreException("Failed to purge Transaction:" + currentTx.getIdString());
       }
       return json;
+   }
+
+   /**
+    * Create a test that first creates an Artifact in a known folder. Add an description to that artifact. Commit the
+    * changes and keep the transaction ID. Create a new transaction that deletes the description from the artifact
+    * created in the previous transactino. Add another description to the same artifact. Commit the transaction. Get the
+    * json from exportTxsDiff for the description deletion then addition. Test the json to make sure it has both the
+    * deletion and the addition of the description attribute. Consider purging the transaction that did the delete and
+    * re-addition, then using the api to apply the json.
+    */
+   private String setupTransferJsonFromDeleteAddAttribute(ArtifactTypeToken artType, AttributeTypeId attrType,
+      String uniqueString) {
+      //Create a new Artifact of type artType on SAWL_PL_Working_Branch
+      SkynetTransaction transaction = TransactionManager.createTransaction(DemoBranches.SAW_PL_Working_Branch,
+         TransactionEndpointTest.class.getName() + attrType.getIdString());
+      Artifact artifact = ArtifactTypeManager.addArtifact(artType, DemoBranches.SAW_PL_Working_Branch);
+      artifact.addAttributeFromString(CoreAttributeTypes.Description, "UniqueID 11111111");
+      //Commit transaction and return the newly created TransactionToken
+      transaction.addArtifact(artifact);
+      TransactionToken setupTx = transaction.execute();
+
+      //Delete then add string attribute
+      SkynetTransaction deleteAndAdd = TransactionManager.createTransaction(DemoBranches.SAW_PL_Working_Branch,
+         TransactionEndpointTest.class.getName() + attrType.getIdString());
+
+      artifact.deleteAttributes(CoreAttributeTypes.Description);
+      artifact.addAttributeFromString(CoreAttributeTypes.Description, uniqueString);
+      deleteAndAdd.addArtifact(artifact);
+      TransactionToken deleteAndAddTx = deleteAndAdd.execute();
+
+      TransactionBuilderData deleteAndAddData = transactionEndpoint.exportTxsDiff(setupTx, deleteAndAddTx);
+      ObjectMapper mapper = new ObjectMapper();
+      String deleteAndAddJson;
+      try {
+         deleteAndAddJson = mapper.writeValueAsString(deleteAndAddData);
+      } catch (JsonProcessingException ex) {
+         throw new OseeCoreException("Failed to write txData as json in setupTransferJsonFromDeleteAddAttribute");
+      }
+
+      try {
+         purge(deleteAndAddTx);
+         purge(setupTx);
+      } catch (Exception ex) {
+         throw new OseeCoreException("Failed to purge Transaction:" + deleteAndAddTx.getIdString());
+      }
+
+      return deleteAndAddJson;
    }
 
    /**
