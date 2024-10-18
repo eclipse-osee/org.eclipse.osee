@@ -48,6 +48,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
+import org.eclipse.osee.ats.api.task.track.TaskTrackingData;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -79,6 +80,7 @@ import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.JiraReportDiffOpera
 import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.JiraReportEpicDiffsOperation;
 import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.SyncJiraOperation;
 import org.eclipse.osee.ats.rest.internal.workitem.sync.jira.SyncTeam;
+import org.eclipse.osee.ats.rest.internal.workitem.task.track.TaskTrackingOperation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -119,15 +121,6 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    public AtsActionEndpointImpl(AtsApi atsApi, OrcsApi orcsApi) {
       this.atsApi = atsApi;
       this.orcsApi = orcsApi;
-   }
-
-   @Override
-   public String get() {
-      try {
-         return RestUtil.simplePageHtml("Action Resource");
-      } catch (Exception ex) {
-         return "Error producing action page " + ex.getMessage();
-      }
    }
 
    /**
@@ -919,6 +912,12 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          widget -> (widget.getAttributeType2() == null) ? AttributeTypeToken.SENTINEL : widget.getAttributeType2());
 
       return Stream.concat(attr1, attr2).collect(Collectors.toList());
+   }
+
+   @Override
+   public TaskTrackingData createUpdateTaskTrack(TaskTrackingData taskTrackingData) {
+      TaskTrackingOperation op = new TaskTrackingOperation(taskTrackingData, atsApi);
+      return op.run();
    }
 
 }
