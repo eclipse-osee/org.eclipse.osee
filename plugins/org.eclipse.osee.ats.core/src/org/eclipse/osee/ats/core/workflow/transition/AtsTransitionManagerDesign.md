@@ -1,4 +1,4 @@
-# ATS Workflow Documentation/Design
+# ATS Workflow Transition Documentation/Design
 
 * <a href="../AtsWorkflowLinks.md">ATS Workflow Links</a>
 
