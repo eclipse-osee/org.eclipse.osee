@@ -135,7 +135,9 @@ public final class AtsProductLineEndpointImpl implements AtsProductLineEndpointA
          if (commitArtIds.contains(branch.getAssociatedArtifact())) {
             peerReviewBranchList.add(new BranchSelected(branch, true));
          } else {
-            peerReviewBranchList.add(new BranchSelected(branch, false));
+            if (branch.getBranchState().isModified()) {
+               peerReviewBranchList.add(new BranchSelected(branch, false));
+            }
          }
       }
       return peerReviewBranchList;
