@@ -65,12 +65,12 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
       RemotePersistEvent1 event1 = remoteEvent;
       ArtifactEvent transEvent = FrameworkEventUtil.getPersistEvent(event1, tokenService);
       updateArtifacts(sender, transEvent.getArtifacts(), remoteEvent.getTransaction());
-      updateRelations(sender, transEvent.getRelations());
+      updateRelations(sender, transEvent.getRelations(), remoteEvent.getTransaction());
       transport.send(sender, transEvent);
    }
 
    private void updateArtifacts(Sender sender, Collection<EventBasicGuidArtifact> artifacts,
-      TransactionToken transactionId) {
+      TransactionToken transaction) {
       // Don't crash on any one artifact update problem (no update method throughs exceptions)
       for (EventBasicGuidArtifact guidArt : artifacts) {
          EventUtil.eventLog(String.format("REM: updateArtifact -> [%s]", guidArt));
@@ -82,7 +82,7 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
                // do nothing cause not in cache
                break;
             case Modified:
-               updateModifiedArtifact((EventModifiedBasicGuidArtifact) guidArt, transactionId);
+               updateModifiedArtifact((EventModifiedBasicGuidArtifact) guidArt, transaction);
                break;
             case ChangeType:
                ChangeArtifactType.handleRemoteChangeType((EventChangeTypeBasicGuidArtifact) guidArt);
@@ -113,14 +113,14 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
       }
    }
 
-   private void updateModifiedArtifact(EventModifiedBasicGuidArtifact guidArt, TransactionToken transactionId) {
+   private void updateModifiedArtifact(EventModifiedBasicGuidArtifact guidArt, TransactionToken transaction) {
       try {
          Artifact artifact = ArtifactCache.getActive(guidArt);
          if (artifact == null) {
             // do nothing, artifact not in cache, so don't need to update
          } else if (!artifact.isHistorical()) {
 
-            artifact.setTransactionId(TransactionManager.getTransaction(transactionId));
+            artifact.setTransaction(TransactionManager.getTransaction(transaction));
             for (AttributeChange attrChange : guidArt.getAttributeChanges()) {
                if (!OseeEventManager.getPreferences().isEnableRemoteEventLoopback()) {
                   ModificationType modificationType =
@@ -180,7 +180,8 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
       }
    }
 
-   private void updateRelations(Sender sender, Collection<EventBasicGuidRelation> relations) {
+   private void updateRelations(Sender sender, Collection<EventBasicGuidRelation> relations,
+      TransactionToken transaction) {
       for (EventBasicGuidRelation guidArt : relations) {
          // Don't crash on any one relation update problem
          try {
@@ -192,6 +193,12 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
             // Nothing in cache, ignore this relation only
             if (aArtifact == null && bArtifact == null) {
                continue;
+            }
+            if (aArtifact != null) {
+               aArtifact.setTransaction(TransactionManager.getTransaction(transaction));
+            }
+            if (bArtifact != null) {
+               bArtifact.setTransaction(TransactionManager.getTransaction(transaction));
             }
             boolean aArtifactLoaded = aArtifact != null;
             boolean bArtifactLoaded = bArtifact != null;
