@@ -13,20 +13,29 @@
 
 package org.eclipse.osee.framework.core.data;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.enums.CoreTypeTokenProvider;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.ShadowCoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Ryan D. Brooks
@@ -46,6 +55,7 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    private final Map<Long, Tuple3Type<?, ?, ?>> tuple3Types = new ConcurrentHashMap<>();
    private final Map<Long, Tuple4Type<?, ?, ?, ?>> tuple4Types = new ConcurrentHashMap<>();
 
+   private final List<String> convertedRelations = new ArrayList<>();
    /**
     * Register core types first to prevent their ids from being registered by mistaken or malicious code
     */
@@ -60,6 +70,21 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
       typeProvider.registerTypes(this);
    }
 
+   public void setConvertedRelations() {
+    File relFile = OseeInf.getResourceAsFile("relations"+File.separator+"relations.json", OrcsTypeTokens.class);
+    if (relFile.exists()) {
+       try {
+          String json = Lib.fileToString(relFile);
+          ObjectMapper objectMapper = new ObjectMapper();
+          TypeReference<List<String>> relListType = new TypeReference<List<String>>() {};
+          List<String> relList = objectMapper.readValue(json, relListType);
+          convertedRelations.addAll(relList);
+       } catch (Exception ex) {
+          throw new OseeArgumentException("Can't retrieve relations.json file");
+       }
+    }
+   }
+   
    @Override
    public BranchToken getBranch(BranchId branch) {
       return BranchToken.valueOf(branch);
@@ -414,12 +439,35 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    @Override
    public List<RelationTypeToken> getValidRelationTypes(ArtifactTypeToken artifactType) {
       Collection<RelationTypeToken> relationTypes = getRelationTypes();
+      List<RelationTypeToken> invalidRels = new ArrayList<>();
+      //populate convertedRelations if empty
+      if (convertedRelations.isEmpty()) {
+         setConvertedRelations();
+      }
+      //add all rels in shadowRels and remove the ones that have been converted
+      for (Field field : Arrays.asList(ShadowCoreRelationTypes.class.getDeclaredFields())) {
+         try {
+            RelationTypeToken rel = (RelationTypeToken) field.get(null);
+            Optional<String> findFirst = convertedRelations.stream().filter(a->a.equals(rel.getIdString())).findFirst();
+            if (findFirst.isPresent()) {
+               invalidRels.add(rel.getOldRelationTypeToken());
+            } else if (rel.isValid()) {
+               invalidRels.add(rel);
+            }
+
+         } catch (Exception ex) {
+            //
+         } 
+      }
+      
       List<RelationTypeToken> validRelationTypes = new ArrayList<>();
       for (RelationTypeToken relationType : relationTypes) {
-         boolean onSideA = relationType.getRelationSideMax(artifactType, RelationSide.SIDE_A) > 0;
-         boolean onSideB = relationType.getRelationSideMax(artifactType, RelationSide.SIDE_B) > 0;
-         if (onSideA || onSideB) {
-            validRelationTypes.add(relationType);
+         if (!invalidRels.contains(relationType)) {
+            boolean onSideA = relationType.getRelationSideMax(artifactType, RelationSide.SIDE_A) > 0;
+            boolean onSideB = relationType.getRelationSideMax(artifactType, RelationSide.SIDE_B) > 0;
+            if (onSideA || onSideB) {
+               validRelationTypes.add(relationType);
+            }
          }
       }
       return validRelationTypes;
@@ -469,6 +517,11 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
          throw new OseeArgumentException("The tuple4 type %s with the same id as %s has already been registered.",
             existingType, tupleType);
       }
+   }
+
+   @Override
+   public List<String> getConvertedRelations() {
+      return convertedRelations;
    }
 
 }
