@@ -22,6 +22,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.ai.ActionableItem;
 import org.eclipse.osee.ats.api.branch.BranchData;
@@ -137,6 +138,12 @@ public interface AtsConfigEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public Version getVersion(@PathParam("verId") ArtifactId verId);
 
+   @POST
+   @SkipAtsConfigJsonWriter
+   @Path("version")
+   @Produces(MediaType.APPLICATION_JSON)
+   public Version createVersion(@QueryParam("name") String name, @QueryParam("description") String description, @QueryParam("team") ArtifactId teamId);
+   
    @GET
    @SkipAtsConfigJsonWriter
    @Path("parallel/{verId}")

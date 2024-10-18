@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.commit.CommitConfigItem;
+import org.eclipse.osee.ats.api.config.TeamDefinition;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -49,6 +50,7 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
@@ -326,6 +328,26 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    @Override
    public Version createVersion(String title, IAtsChangeSet changes) {
       return createVersion(title, Lib.generateArtifactIdAsInt(), changes);
+   }
+   
+   @Override
+   public Version createVersion(String name, String description, ArtifactId teamId) {
+      Version newVersion = null;
+      TeamDefinition teamDef = atsApi.getTeamDefinitionService().getTeamDefinitionById(teamId);
+      if (Strings.isNameValid(name) && Strings.isValidAndNonBlank(
+         description) && teamDef != null) {
+         IAtsChangeSet changes = atsApi.createChangeSet("Create Version: " + name);
+         newVersion = createVersion(name, changes);
+         changes.addAttribute(newVersion, CoreAttributeTypes.Description, description);
+         changes.relate(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version, newVersion);
+         changes.execute();         
+      } else {
+         throw new OseeArgumentException("Invalid name, description or teamId passed in %s, %s, %s", name, description, teamId.toString());
+      }
+      if (newVersion == null ) {
+         throw new OseeCoreException("Version not created with arguments: %s, %s, %s", name, description, teamId.toString());
+      }
+      return atsApi.getVersionService().getVersionById(newVersion.getArtifactId());
    }
 
    @Override
