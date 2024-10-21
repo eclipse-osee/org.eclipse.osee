@@ -16,7 +16,6 @@ package org.eclipse.osee.framework.core.enums;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.AbstractSoftwareRequirement;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.AbstractTestResult;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.ArtifactExplorerUserPreferences;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.BranchView;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.CodeUnit;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Component;
@@ -28,7 +27,6 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GitCommit;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GitRepository;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GroupArtifact;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.ImplementationDetailsMsWord;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.MimUserGlobalPreferences;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Requirement;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SafetyAssessment;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SubsystemFunctionMsWord;
@@ -77,7 +75,7 @@ public interface ShadowCoreRelationTypes {
    RelationTypeSide DefaultHierarchicalRel_Child = RelationTypeSide.create(DefaultHierarchicalRel, SIDE_B);
 
    // Use same relation as DefaultHierarchical; This is here for readability and to document this in code
-   RelationTypeToken DEFAULT_HIERARCHY = DefaultHierarchicalRel_Parent;
+   RelationTypeToken DEFAULT_HIERARCHY_REL = DefaultHierarchicalRel_Parent;
    RelationSide IS_PARENT = SIDE_A;
    RelationSide IS_CHILD = SIDE_B;
 
@@ -150,10 +148,6 @@ public interface ShadowCoreRelationTypes {
    RelationTypeSide UsersRel_Artifact = RelationTypeSide.create(UsersRel, SIDE_A);
    RelationTypeSide UsersRel_User = RelationTypeSide.create(UsersRel, SIDE_B);
 
-   RelationTypeToken UserToArtifactExplorerPrefs = osee.addNewRelationType(614953967981759467L, "User to Artifact Explorer Preferences", ONE_TO_ONE, RelationSorter.USER_DEFINED, User, "User", ArtifactExplorerUserPreferences, "Artifact Explorer User Preferences");
-   RelationTypeSide UserToArtifactExplorerPrefs_User = RelationTypeSide.create(UserToArtifactExplorerPrefs, SIDE_A);
-   RelationTypeSide UserToArtifactExplorerPrefs_Prefs = RelationTypeSide.create(UserToArtifactExplorerPrefs, SIDE_B);
-
    RelationTypeToken UserToContextRel = osee.addNewRelationType(4400405161969600826L, "User to Context", MANY_TO_MANY, UNORDERED, User, "User", Context, "Context",CoreRelationTypes.UserToContext);
    RelationTypeSide UserToContextRel_User = RelationTypeSide.create(UserToContextRel, SIDE_A);
    RelationTypeSide UserToContextRel_Context = RelationTypeSide.create(UserToContextRel, SIDE_B);
@@ -161,10 +155,6 @@ public interface ShadowCoreRelationTypes {
    RelationTypeToken UserGroupToContextRel = osee.addNewRelationType(4400405161969600827L, "User Group to Context", MANY_TO_MANY, UNORDERED, UserGroup, "User Group", Context, "Context",CoreRelationTypes.UserGroupToContext);
    RelationTypeSide UserGroupToContextRel_UserGroup = RelationTypeSide.create(UserGroupToContextRel, SIDE_A);
    RelationTypeSide UserGroupToContextRel_Context = RelationTypeSide.create(UserGroupToContextRel, SIDE_B);
-
-   RelationTypeToken UserMimGlobalPreferences = osee.addNewRelationType(2600664754080134468L, "User to MIM User Global Preferences", ONE_TO_ONE, RelationSorter.LEXICOGRAPHICAL_ASC, User, "User", MimUserGlobalPreferences, "MIM User Global Preferences");
-   RelationTypeSide UserMimGlobalPreferences_User = RelationTypeSide.create(UserMimGlobalPreferences, SIDE_A);
-   RelationTypeSide UserMimGlobalPreferences_MimGlobalPreferences = RelationTypeSide.create(UserMimGlobalPreferences, SIDE_B);
 
    RelationTypeToken UserToHistoryRel = osee.addNewRelationType(4400405161969600828L, "User to History", ONE_TO_ONE, UNORDERED, User, "User", ExecutedCommandHistory, "Executed Command History",CoreRelationTypes.UserToHistory);
    RelationTypeSide UserToHistoryRel_User = RelationTypeSide.create(UserToHistoryRel, SIDE_A);
