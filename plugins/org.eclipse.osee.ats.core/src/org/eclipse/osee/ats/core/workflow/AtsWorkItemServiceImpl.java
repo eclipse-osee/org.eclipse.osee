@@ -63,7 +63,6 @@ import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.review.DecisionReviewOnTransitionToHook;
 import org.eclipse.osee.ats.core.review.PeerReviewOnTransitionToHook;
 import org.eclipse.osee.ats.core.review.hooks.AtsDecisionReviewPrepareWorkItemHook;
-import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.validator.AtsXWidgetValidateManager;
 import org.eclipse.osee.ats.core.workflow.hooks.AtsArchiveBranchWhenCompleteHook;
 import org.eclipse.osee.ats.core.workflow.hooks.AtsForceAssigneesToTeamLeadsWorkItemHook;
@@ -168,7 +167,9 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
             teams.add(atsApi.getWorkItemService().getTeamWf(teamWfArt));
          }
       } else if (object instanceof ActionResult) {
-         return Collections.castAll(AtsObjects.getArtifacts(((ActionResult) object).getTeamWfArts()));
+         for (ArtifactToken teamWfArt : ((ActionResult) object).getTeamWfArts()) {
+            teams.add(getTeamWf(teamWfArt));
+         }
       } else {
          throw new OseeArgumentException("Unhandled object type");
       }

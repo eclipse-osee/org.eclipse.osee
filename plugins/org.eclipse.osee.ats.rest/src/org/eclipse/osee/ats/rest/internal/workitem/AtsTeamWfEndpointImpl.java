@@ -252,12 +252,22 @@ public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
 
    @Override
    public Collection<ArtifactToken> getWfByRelease(String releaseName) {
-      Collection<ArtifactToken> releases =
-         atsApi.getQueryService().createQuery(AtsArtifactTypes.ReleaseArtifact).andName(releaseName).getArtifacts();
+      Collection<ArtifactToken> releases = atsApi.getQueryService().createQuery(AtsArtifactTypes.ReleaseArtifact).andName(releaseName).getArtifacts();
       if (releases.size() > 1) {
          throw new OseeCoreException("Release Name [%s] matches multiple releases", releaseName);
       } else if (releases.isEmpty()) {
          throw new OseeCoreException("No Releases found with name [%s]", releaseName);
+      }
+      ArtifactToken release = releases.iterator().next();
+      IRelationResolver relationResolver = atsApi.getRelationResolver();
+      return relationResolver.getRelated(release, AtsRelationTypes.TeamWorkflowToRelease_TeamWorkflow);
+   }
+   
+   @Override
+   public Collection<ArtifactToken> getWfByReleaseById(ArtifactId releaseId) {
+      Collection<ArtifactToken> releases = atsApi.getQueryService().createQuery(AtsArtifactTypes.ReleaseArtifact).andId(ArtifactId.valueOf(releaseId)).getArtifacts();
+      if (releases.isEmpty()) {
+         throw new OseeCoreException("No Releases found with id: [%s]", releaseId.getIdString());
       }
       ArtifactToken release = releases.iterator().next();
       IRelationResolver relationResolver = atsApi.getRelationResolver();
