@@ -68,7 +68,7 @@ public class AttributeTransactionData extends BaseTransactionData {
    @Override
    protected void internalUpdate(TransactionRecord transaction) {
       attribute.internalSetGammaId(getGammaId());
-      attribute.getArtifact().setTransactionId(transaction);
+      attribute.getArtifact().setTransaction(transaction);
    }
 
    @Override
