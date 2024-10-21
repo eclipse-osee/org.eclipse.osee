@@ -17,9 +17,11 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.client.OseeClient;
@@ -107,6 +109,8 @@ public final class TransactionManager {
       "select max(transaction_id) as prevTx from osee_attribute atr, osee_txs txs where branch_id = ? and art_id = ? and atr.gamma_id = txs.gamma_id and transaction_id < ?";
 
    private static final TxMonitorImpl<BranchId> txMonitor = new TxMonitorImpl<>(new TxMonitorCache<>());
+   private static Map<TransactionId, TransactionRecord> txTokToRecordCache = new HashMap<>();
+
    /**
     * The commitArtifactIdMap and processedCommitArtifactId are protected from concurrent access via synchronizing all
     * methods of this class that use it
@@ -469,6 +473,21 @@ public final class TransactionManager {
          art.persist(transaction);
       }
       transaction.execute();
+   }
+
+   public static TransactionRecord getTransactionRecord(TransactionId txId) {
+      if (txId instanceof TransactionRecord) {
+         return (TransactionRecord) txId;
+      }
+      TransactionRecord txRec = txTokToRecordCache.get(txId);
+      if (txRec == null) {
+         txRec = TransactionRecord.SENTINEL;
+      }
+      if (txRec.isInvalid()) {
+         txRec = TransactionManager.getTransaction(txId);
+         txTokToRecordCache.put(txId, txRec);
+      }
+      return txRec;
    }
 
 }

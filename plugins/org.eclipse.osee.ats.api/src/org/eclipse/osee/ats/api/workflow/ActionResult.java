@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
@@ -49,8 +50,8 @@ public class ActionResult {
       return teamWfs;
    }
 
-   public Collection<ArtifactId> getTeamWfArts() {
-      List<ArtifactId> arts = new LinkedList<>();
+   public Collection<ArtifactToken> getTeamWfArts() {
+      List<ArtifactToken> arts = new LinkedList<>();
       for (IAtsTeamWorkflow team : teamWfs) {
          arts.add(team.getStoreObject());
       }

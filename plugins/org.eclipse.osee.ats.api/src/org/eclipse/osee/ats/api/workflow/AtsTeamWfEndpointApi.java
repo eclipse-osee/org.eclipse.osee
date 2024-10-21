@@ -122,6 +122,11 @@ public interface AtsTeamWfEndpointApi {
    @Path("release/{release}")
    @Produces(MediaType.APPLICATION_JSON)
    Collection<ArtifactToken> getWfByRelease(@PathParam("release") String releaseName);
+   
+   @GET
+   @Path("release/id/{release}")
+   @Produces(MediaType.APPLICATION_JSON)
+   Collection<ArtifactToken> getWfByReleaseById(@PathParam("release") ArtifactId releaseId);
 
    @PUT
    @Path("build/{build}")

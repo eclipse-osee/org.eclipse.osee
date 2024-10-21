@@ -35,6 +35,7 @@ import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.jira.JiraByEpicData;
 import org.eclipse.osee.ats.api.agile.jira.JiraDiffData;
+import org.eclipse.osee.ats.api.task.track.TaskTrackingData;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
 import org.eclipse.osee.ats.api.workflow.journal.JournalData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
@@ -56,10 +57,6 @@ import org.eclipse.osee.jaxrs.mvc.IdentityView;
 @Path("action")
 @Swagger
 public interface AtsActionEndpointApi {
-
-   @GET
-   @Produces(MediaType.TEXT_HTML)
-   String get();
 
    /**
     * @param ids (atsId, artId) of action to display
@@ -365,4 +362,13 @@ public interface AtsActionEndpointApi {
    @POST
    @Produces(MediaType.APPLICATION_JSON)
    public boolean setApproval(@PathParam("id") String atsId);
+
+   /**
+    * See AtsTaskTrackingDesign.md for design and use
+    */
+   @Path("tasktrack")
+   @POST
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public TaskTrackingData createUpdateTaskTrack(TaskTrackingData taskTrackingData);
 }
