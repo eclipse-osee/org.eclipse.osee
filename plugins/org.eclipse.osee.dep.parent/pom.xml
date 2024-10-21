@@ -13,8 +13,7 @@
 		<module>../../plugins/org.eclipse.oss.ajax</module>
 	  	<module>../../plugins/org.eclipse.nebula.widgets.xviewer</module>
 		<module>../../plugins/org.eclipse.nebula.widgets.xviewer.core</module>
-			<module>../../plugins/org.eclipse.nebula.widgets.xviewer.feature</module>
-	
+		<module>../../plugins/org.eclipse.nebula.widgets.xviewer.feature</module>
 		<module>../../features/org.eclipse.osee.dep.feature</module>
 		<module>../../plugins/org.eclipse.osee.dep.p2</module>
 	</modules>
