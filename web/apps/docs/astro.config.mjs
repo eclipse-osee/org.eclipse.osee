@@ -44,6 +44,10 @@ export default defineConfig({
                   label: "Peer Review Workflow",
                   slug: "mim/guides/peer-review",
                 },
+                {
+                  label: "Traceability",
+                  slug: "mim/guides/traceability",
+                },
               ],
             },
             {
