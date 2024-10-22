@@ -37,33 +37,44 @@ const config: PlaywrightTestConfig = {
 			use: { ...devices['Desktop Chrome'] },
 		},
 		{
-			name: 'MIM Setup',
-			testDir: 'playwright/specs/mim/setup',
+			name: 'MIM Demo Init',
+			testMatch: 'playwright/specs/mim/setup/mim-demo-init.e2e-spec.ts',
+		},
+		{
+			name: 'MIM Commit Demo Branch',
+			testMatch:
+				'playwright/specs/mim/setup/commit-demo-branch.e2e-spec.ts',
 		},
 		{
 			name: 'MIM Docs - Overview',
 			use: { ...devices['Desktop Chrome'] },
 			testDir: 'playwright/specs/mim/docs-screenshots/overview',
-			dependencies: ['MIM Setup'],
+			dependencies: ['MIM Demo Init'],
 		},
 		{
 			name: 'MIM Docs - Create ICD',
 			use: { ...devices['Desktop Chrome'] },
 			testDir: 'playwright/specs/mim/docs-screenshots/create-icd',
-			dependencies: ['MIM Setup'],
+			dependencies: ['MIM Demo Init'],
 		},
 		{
 			name: 'MIM Docs - Peer Review',
 			use: { ...devices['Desktop Chrome'] },
 			testDir: 'playwright/specs/mim/docs-screenshots/peer-review',
-			dependencies: ['MIM Setup'],
+			dependencies: ['MIM Demo Init'],
 		},
 		{
 			name: 'MIM Docs - Platform Types Page',
 			use: { ...devices['Desktop Chrome'] },
 			testDir:
 				'playwright/specs/mim/docs-screenshots/platform-types-page',
-			dependencies: ['MIM Setup'],
+			dependencies: ['MIM Demo Init'],
+		},
+		{
+			name: 'MIM Docs - Reports Page',
+			use: { ...devices['Desktop Chrome'] },
+			testDir: 'playwright/specs/mim/docs-screenshots/reports-page',
+			dependencies: ['MIM Commit Demo Branch', 'MIM Demo Init'],
 		},
 	],
 };
