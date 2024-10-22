@@ -585,54 +585,58 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
+   <!-- 
+	Jackson 2.15 adds maximum processing limits to Strings. 
+	Publishing client-server API exchanges large strings.
+	Migrate the usage of Strings in code before updating past 2.14.
+   -->
    <plugin
          id="com.fasterxml.jackson.core.jackson-core"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+         version="2.14.3"
+         unpack="false"/> 
 
    <plugin
          id="com.fasterxml.jackson.core.jackson-annotations"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.14.3"
          unpack="false"/>
 
    <plugin
          id="com.fasterxml.jackson.core.jackson-databind"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.14.3"
          unpack="false"/>
 
    <plugin
          id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.14.3"
          unpack="false"/>
 
    <plugin
          id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.14.3"
          unpack="false"/>
     
     <plugin
          id="com.fasterxml.jackson.dataformat.jackson-dataformat-yaml"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.14.3"
          unpack="false"/>     
    
    <plugin
          id="com.fasterxml.jackson.datatype.jackson-datatype-jsr310"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="2.14.3"
          unpack="false"/>    
 
    <plugin
@@ -2251,7 +2255,7 @@
          id="org.yaml.snakeyaml"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.33"
          unpack="false"/>   
   
    <plugin

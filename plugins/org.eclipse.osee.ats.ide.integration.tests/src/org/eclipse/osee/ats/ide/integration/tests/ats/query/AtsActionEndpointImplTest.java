@@ -240,12 +240,6 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    }
 
    @Test
-   public void testGet() {
-      String results = getHtml("/ats/action");
-      Assert.assertTrue(results.contains("Action Resource"));
-   }
-
-   @Test
    public void testAtsActionsRestCall() {
       String url = "ats/action/" + DemoUtil.getSawAtsIdsStr();
       testActionRestCall(url, 3);

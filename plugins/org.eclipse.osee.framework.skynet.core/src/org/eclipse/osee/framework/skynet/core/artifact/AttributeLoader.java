@@ -162,7 +162,7 @@ public class AttributeLoader {
                }
                previous = current;
             }
-            artifact.setTransactionId(maxTransaction);
+            artifact.setTransaction(maxTransaction);
             artifact.meetMinimumAttributeCounts(false);
          }
       }
@@ -173,7 +173,7 @@ public class AttributeLoader {
       // transaction is used first due to sorting on the query
       if (!historical) {
          OseeLog.logf(ArtifactLoader.class, Level.WARNING,
-            "multiple attribute version for attribute id [%s] artifact id[%s] branch[%s] previousGammaId[%s] currentGammaId[%s] previousModType[%s] currentModType[%s]",
+            "multiple attribute version for attribute id [%s] artifact id[%s] branch[%s] prevGammaId[%s] currGammaId[%s] prevModType[%s] currModType[%s]",
             current.attrId, current.artifactId, current.branch, previous.gammaId, current.gammaId, previous.modType,
             current.modType);
       }

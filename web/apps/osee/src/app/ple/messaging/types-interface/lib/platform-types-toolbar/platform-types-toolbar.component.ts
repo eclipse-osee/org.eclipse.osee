@@ -31,24 +31,29 @@ import { AttributeToValuePipe } from '@osee/attributes/pipes';
 		AttributeToValuePipe,
 	],
 	template: `<mat-toolbar>
-		@if (selection().id !== '-1' && selection().id !== '0') {
-			{{ (selection().name | attributeToValue) + ' Selected ' }}
-			<span class="tw-flex-auto"></span>
-			<osee-platform-type-actions
-				[typeData]="selection()"></osee-platform-type-actions>
-		}
-		<span class="tw-flex-auto"></span>
-		<mat-paginator
-			class="tw-w-1/3"
-			[pageSizeOptions]="[
-				10, 15, 20, 25, 50, 75, 100, 200, 250, 500, 1000, 1500, 2000,
-				2500, 5000,
-			]"
-			[pageIndex]="currentPage()"
-			(page)="setPage($event)"
-			[length]="filteredDataSize()"
-			[disabled]="false"></mat-paginator>
-		<osee-platform-types-fab class="tw-pl-4"></osee-platform-types-fab>
+		<div class="tw-flex tw-w-screen tw-items-center">
+			@if (selection().id !== '-1' && selection().id !== '0') {
+				<div
+					class="tw-flex tw-w-full tw-flex-shrink tw-items-center tw-justify-between tw-gap-4">
+					<span>{{
+						(selection().name | attributeToValue) + ' Selected '
+					}}</span>
+					<osee-platform-type-actions
+						[typeData]="selection()"></osee-platform-type-actions>
+				</div>
+			}
+			<mat-paginator
+				class="tw-w-full tw-flex-shrink"
+				[pageSizeOptions]="[
+					10, 15, 20, 25, 50, 75, 100, 200, 250, 500, 1000, 1500,
+					2000, 2500, 5000,
+				]"
+				[pageIndex]="currentPage()"
+				(page)="setPage($event)"
+				[length]="filteredDataSize()"
+				[disabled]="false"></mat-paginator>
+			<osee-platform-types-fab class="tw-pl-4"></osee-platform-types-fab>
+		</div>
 	</mat-toolbar>`,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })

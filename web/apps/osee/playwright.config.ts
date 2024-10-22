@@ -15,8 +15,6 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import ngPlaywrightConfig from './playwright.config.ng';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
 const config: PlaywrightTestConfig = {
 	...ngPlaywrightConfig,
 	webServer: {

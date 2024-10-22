@@ -1,0 +1,14 @@
+{
+  "tasks" : [ {
+    "title" : "03 - Test Publish - Manual",
+    "assigneesArtIds" : "61106791", "comment": "Joe Smith",
+    "description" : "Load MIM Web and do minor checks"
+  }, {
+    "title" : "04 - Test Customer X Web - Manual",
+    "assigneesArtIds" : "5896672", "comment": "Kay Jones",
+    "description" : "Load customer facing Website"
+  }, {
+    "title" : "05 - Test Web - Manual UnAssigned",
+    "description" : "Load customer facing Website"
+  } ]
+}
