@@ -57,6 +57,10 @@ export default defineConfig({
                   label: "Platform Types",
                   slug: "mim/pages/platform-types",
                 },
+                {
+                  label: "Reports",
+                  slug: "mim/pages/reports",
+                },
               ],
             },
           ],
