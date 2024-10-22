@@ -15,7 +15,7 @@
 		@if (artWithRelation$ | async; as art) {
 			@for (
 				relation of art.relations;
-				track relationOpen($index, relation)
+				track relation.relationTypeToken.id
 			) {
 				<div class="tw-h-auto">
 					<!-- expand icon button and relation name -->
@@ -59,10 +59,7 @@
 						</div>
 					</div>
 					<!-- relation sides and their artifacts -->
-					@for (
-						side of relation.relationSides;
-						track relationSideOpen($index, side)
-					) {
+					@for (side of relation.relationSides; track $index) {
 						@if (
 							dropdownsOpen.value.includes(
 								relation.relationTypeToken.id
@@ -132,7 +129,10 @@
 										<!-- aritfacts within the relation side -->
 										@if (side.artifacts; as arts) {
 											<mat-list class="tw-p-0">
-												@for (art of arts; track art) {
+												@for (
+													art of arts;
+													track art.id
+												) {
 													<div
 														class="tw-h-auto tw-px-0 tw-py-1">
 														<div
@@ -163,7 +163,7 @@
 															<button
 																class="tw-px-4"
 																(click)="
-																	editable
+																	editable()
 																		? deleteRelation(
 																				art,
 																				relation,
