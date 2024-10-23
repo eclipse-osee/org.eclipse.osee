@@ -40,7 +40,20 @@ export default defineConfig({
             {
               label: "Guides",
               items: [
-                { label: "Creating an ICD", slug: "mim/guides/create-icd" },
+                {
+                  label: "Creating an ICD",
+                  collapsed: true,
+                  items: [
+                    {
+                      label: "Creating an ICD",
+                      slug: "mim/guides/create-icd",
+                    },
+                    {
+                      label: "Creating Elements",
+                      slug: "mim/guides/create-elements",
+                    },
+                  ],
+                },
                 {
                   label: "Peer Review Workflow",
                   slug: "mim/guides/peer-review",
@@ -65,6 +78,10 @@ export default defineConfig({
                 {
                   label: "Reports",
                   slug: "mim/pages/reports",
+                },
+                {
+                  label: "Transport Types",
+                  slug: "mim/pages/transport-types",
                 },
               ],
             },
