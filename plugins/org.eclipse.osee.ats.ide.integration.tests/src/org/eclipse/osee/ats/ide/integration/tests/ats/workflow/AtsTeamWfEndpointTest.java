@@ -17,15 +17,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.AtsTeamWfEndpointApi;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.demo.DemoUtil;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
+import org.eclipse.osee.ats.ide.integration.tests.ats.resource.AbstractRestTest;
 import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -43,11 +47,12 @@ import org.junit.Test;
  * @author Stephen Molaro
  * @author Kenn Luecke
  */
-public class AtsTeamWfEndpointTest {
+public class AtsTeamWfEndpointTest extends AbstractRestTest {
 
    private AtsTeamWfEndpointApi teamWfEp;
    private AtsApiIde atsApi;
    private TeamWorkFlowArtifact codeTeamWorkFlow;
+   private IAtsTeamWorkflow buttonSTeamWf, buttonWTeamWf;
 
    @Before
    public void setup() {
@@ -56,6 +61,60 @@ public class AtsTeamWfEndpointTest {
       codeTeamWorkFlow = (TeamWorkFlowArtifact) DemoUtil.getSawCodeUnCommittedWf();
    }
 
+   //   @Path("{aiId}/version")
+   @Test
+   public void testGetVersionsbyTeamDefinition() {
+      IAtsActionableItem ai = atsApi.getActionableItemService().getActionableItemById(DemoArtifactToken.SAW_Code_AI);
+      Assert.assertNotNull(ai);
+
+      testUrl("ats/teamwf/" + ai.getIdString() + "/version", 3, "SAW_Bld_1", "name", true);
+   }
+
+   //   @Path("{id}")
+   @Test
+   public void testGetTeamWorkflow() {
+      buttonSTeamWf = getButtonSTeamWf();
+      Assert.assertNotNull(buttonSTeamWf);
+
+      testUrl("ats/teamwf/" + buttonSTeamWf.getAtsId(), 40);
+   }
+
+   //   @Path("ids/{id}/")
+   @Test
+   public void testGetTeamWorkflows() {
+      testUrl("ats/teamwf/ids/TW5,TW6", 2);
+
+      testUrl(String.format("ats/teamwf/ids/%s,%s", DemoArtifactToken.ButtonSDoesntWorkOnHelp_TeamWf.getIdString(),
+         DemoArtifactToken.ButtonWDoesntWorkOnSituationPage_TeamWf.getIdString()), 2);
+   }
+
+   //   @Path("{id}/changeTypes")
+   @Test
+   public void testGetChangeTypes() {
+      Collection<ChangeTypes> changeTypes =
+         teamWfEp.getChangeTypes(DemoUtil.getSawCodeUnCommittedWf().getArtifactId().getIdString(), "true");
+      Assert.assertTrue(changeTypes.size() == 4);
+   }
+
+   //   @Path("{id}/goals")
+   @Test
+   public void testGetGoals() {
+      buttonSTeamWf = getButtonSTeamWf();
+      testUrl("ats/teamwf/" + buttonSTeamWf.getAtsId() + "/goal", 0);
+      buttonWTeamWf = getButtonWTeamWf();
+      testUrl("ats/teamwf/" + buttonWTeamWf.getAtsId() + "/goal", 1);
+   }
+
+   //   @Path("details/{id}")
+   @Test
+   public void testGetTeamWorkflowDetails() {
+      buttonSTeamWf = getButtonSTeamWf();
+      Assert.assertNotNull(buttonSTeamWf);
+
+      testUrl("ats/teamwf/details/" + buttonSTeamWf.getAtsId(), 40);
+   }
+
+   //   @Path("release/{release}")
    @Test
    public void testGetWfByRelease() {
       IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet(
@@ -74,13 +133,7 @@ public class AtsTeamWfEndpointTest {
       changes.execute();
    }
 
-   @Test
-   public void testGetChangeTypes() {
-      Collection<ChangeTypes> changeTypes =
-         teamWfEp.getChangeTypes(DemoUtil.getSawCodeUnCommittedWf().getArtifactId().getIdString(), "true");
-      Assert.assertTrue(changeTypes.size() == 4);
-   }
-
+   //    @Path("build/{build}")
    @Test
    public void testRelateReleaseToWorkflow() {
       String changeId = "IO98293838";
@@ -116,6 +169,20 @@ public class AtsTeamWfEndpointTest {
       changes.deleteAttributes(codeTeamWorkFlow.getArtifactId(), CoreAttributeTypes.GitChangeId);
       changes.execute();
 
+   }
+
+   private IAtsTeamWorkflow getButtonWTeamWf() {
+      if (buttonWTeamWf == null) {
+         buttonWTeamWf = atsApi.getQueryService().getTeamWf(DemoArtifactToken.ButtonWDoesntWorkOnSituationPage_TeamWf);
+      }
+      return buttonWTeamWf;
+   }
+
+   private IAtsTeamWorkflow getButtonSTeamWf() {
+      if (buttonSTeamWf == null) {
+         buttonSTeamWf = atsApi.getQueryService().getTeamWf(DemoArtifactToken.ButtonSDoesntWorkOnHelp_TeamWf);
+      }
+      return buttonSTeamWf;
    }
 
 }
