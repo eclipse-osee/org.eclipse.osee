@@ -16,7 +16,7 @@
 			@if (artifacts | async; as artifacts) {
 				@if (latestPaths | async; as paths) {
 					<!-- artifacts -->
-					@for (artifact of artifacts; track trackById) {
+					@for (artifact of artifacts; track artifact.id) {
 						<div
 							(contextmenu)="openContextMenu($event, artWithRel)"
 							class="tw-flex tw-py-1 tw-pl-4"
