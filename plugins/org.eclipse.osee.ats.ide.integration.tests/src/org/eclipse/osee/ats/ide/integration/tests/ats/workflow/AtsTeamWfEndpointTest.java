@@ -111,7 +111,7 @@ public class AtsTeamWfEndpointTest extends AbstractRestTest {
       buttonSTeamWf = getButtonSTeamWf();
       Assert.assertNotNull(buttonSTeamWf);
 
-      testUrl("ats/teamwf/details/" + buttonSTeamWf.getAtsId(), 40);
+      testUrl("ats/teamwf/details/" + buttonSTeamWf.getId(), 46);
    }
 
    //   @Path("release/{release}")
