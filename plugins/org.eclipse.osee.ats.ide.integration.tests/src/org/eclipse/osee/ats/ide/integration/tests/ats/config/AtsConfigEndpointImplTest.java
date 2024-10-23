@@ -19,8 +19,10 @@ import org.eclipse.osee.ats.api.branch.BranchData;
 import org.eclipse.osee.ats.api.column.AtsCoreAttrTokColumnToken;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
+import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.integration.tests.AtsApiService;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.AtsTestUtil;
@@ -135,6 +137,12 @@ public class AtsConfigEndpointImplTest {
       branchView = atsApi.getBranchService().getBranchView(version);
       Assert.assertTrue(branchView.isValid());
       Assert.assertTrue(Strings.isValid(branchView.getName()));
+   }
+   
+   @Test
+   public void testCreateVersion() {
+      Version createVersion = atsApi.getVersionService().createVersion("Test Version", "Test Version Description", AtsArtifactToken.TopTeamDefinition);
+      Assert.assertTrue(createVersion.isValid());
    }
 
 }

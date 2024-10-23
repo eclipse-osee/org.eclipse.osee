@@ -46,6 +46,7 @@ public class Strings {
    private static final String SPACE_COMMON = "\n|\t|\r|" + System.getProperty("line.separator");
    private static final String STR = "%s%s%s";
    public static final Charset UTF_8 = StandardCharsets.UTF_8;
+   private static final Pattern SAFENAME = Pattern.compile("^[\\p{L}\\p{N}\\s#$\\-\\.<=>\\[\\]^_`\\{\\}]{1,64}$");
 
    /**
     * Regular expression pattern that matches any Unicode line break.
@@ -242,6 +243,16 @@ public class Strings {
 
    public static boolean isNotNumeric(String idStr) {
       return !isNumeric(idStr);
+   }
+
+   public static boolean isNameValid(String name) {
+      boolean valid = false;
+
+      if (Strings.isValidAndNonBlank(name)) {
+         Matcher matcher = SAFENAME.matcher(name);
+         valid = matcher.matches();
+      }
+      return valid;
    }
 
    public static boolean isNumeric(String value) {
