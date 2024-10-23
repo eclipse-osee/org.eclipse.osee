@@ -14,6 +14,7 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import tailwind from "@astrojs/tailwind";
+import starlightImageZoomPlugin from "starlight-image-zoom";
 
 // https://astro.build/config
 export default defineConfig({
@@ -73,6 +74,11 @@ export default defineConfig({
           label: "BAT",
           items: [{ label: "BAT Overview", slug: "bat/bat-overview" }],
         },
+      ],
+      plugins: [
+        starlightImageZoomPlugin({
+          showCaptions: false,
+        }),
       ],
     }),
     tailwind({
