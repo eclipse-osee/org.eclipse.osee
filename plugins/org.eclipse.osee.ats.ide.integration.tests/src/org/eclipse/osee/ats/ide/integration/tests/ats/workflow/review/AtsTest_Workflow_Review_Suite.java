@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.ide.integration.tests.ats.workflow.review;
 
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.review.defect.ReviewDefectItemTest;
+import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.review.role.UserRoleManagerTest;
 import org.eclipse.osee.ats.ide.integration.tests.ats.workflow.review.role.UserRoleTest;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.junit.BeforeClass;
@@ -28,7 +29,8 @@ import org.junit.runners.Suite;
    DecisionReviewManagerTest.class,
    DecisionReviewDefinitionManagerTest.class,
    PeerToPeerReviewManagerTest.class,
-   PeerReviewDefinitionManagerTest.class})
+   PeerReviewDefinitionManagerTest.class,
+   UserRoleManagerTest.class})
 
 /**
  * This test suite contains tests that must be run against demo database
