@@ -83,6 +83,10 @@ export default defineConfig({
                   label: "Transport Types",
                   slug: "mim/pages/transport-types",
                 },
+                {
+                  label: "Cross-References",
+                  slug: "mim/pages/cross-references",
+                },
               ],
             },
           ],
