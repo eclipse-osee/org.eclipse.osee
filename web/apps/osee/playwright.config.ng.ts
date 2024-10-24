@@ -76,6 +76,12 @@ const config: PlaywrightTestConfig = {
 			testDir: 'playwright/specs/mim/docs-screenshots/reports-page',
 			dependencies: ['MIM Commit Demo Branch', 'MIM Demo Init'],
 		},
+		{
+			name: 'MIM Docs - Cross-References Page',
+			use: { ...devices['Desktop Chrome'] },
+			testDir: 'playwright/specs/mim/docs-screenshots/cross-references',
+			dependencies: ['MIM Demo Init'],
+		},
 	],
 };
 

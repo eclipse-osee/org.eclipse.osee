@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.review.ReviewRequiredMinimum;
 import org.eclipse.osee.ats.api.review.ReviewRole;
 import org.eclipse.osee.ats.api.review.ReviewRoleType;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinition;
@@ -59,6 +60,7 @@ public class WorkDefinition extends AbstractWorkDefItem {
    private final List<ChangeTypes> changeTypes = new ArrayList<>();
    private AttributeTypeToken pointsAttrType = AtsAttributeTypes.PointsNumeric;
    private final List<Priorities> priorities = new ArrayList<>();
+   private final List<ReviewRequiredMinimum> reviewRequiredMinimums = new ArrayList<>();
 
    public WorkDefinition(Long id, String name) {
       this(id, name, ArtifactTypeToken.SENTINEL);
@@ -227,4 +229,13 @@ public class WorkDefinition extends AbstractWorkDefItem {
       }
       return stateNames;
    }
+
+   public void andRequiredMinimum(ReviewRequiredMinimum reviewRequiredMinimum) {
+      reviewRequiredMinimums.add(reviewRequiredMinimum);
+   }
+
+   public List<ReviewRequiredMinimum> getReviewRequiredMinimums() {
+      return reviewRequiredMinimums;
+   }
+
 }
