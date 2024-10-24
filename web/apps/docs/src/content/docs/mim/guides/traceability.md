@@ -2,7 +2,7 @@
 title: Traceability
 ---
 
-OSEE provides traceability between MIM artifacts and requirements. This makes it easy to view which MIM requirements
+OSEE provides traceability between MIM artifacts and requirements.
 
 ## What Is Traceability?
 
