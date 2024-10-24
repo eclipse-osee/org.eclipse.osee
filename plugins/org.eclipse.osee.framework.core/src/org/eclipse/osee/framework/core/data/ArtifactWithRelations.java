@@ -28,7 +28,7 @@ public class ArtifactWithRelations {
    private final ArtifactReadable artReadable;
    private final OrcsTokenService tokenService;
    private final List<ArtifactWithRelationsAttribute> attributes = new ArrayList<>();
-   private List<ArtifactRelation> relations;
+   private List<ArtifactRelation> relations = Collections.emptyList();
 
    public ArtifactWithRelations(ArtifactReadable artReadable, OrcsTokenService tokenService, boolean includeRelations) {
       this.artReadable = artReadable;
@@ -42,8 +42,6 @@ public class ArtifactWithRelations {
 
       if (includeRelations) {
          this.relations = loadRelations();
-      } else {
-         this.relations = Collections.emptyList();
       }
    }
 
