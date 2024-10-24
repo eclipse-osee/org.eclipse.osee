@@ -87,6 +87,10 @@ export default defineConfig({
                   label: "Cross-References",
                   slug: "mim/pages/cross-references",
                 },
+                {
+                  label: "Import",
+                  slug: "mim/pages/import",
+                },
               ],
             },
           ],
