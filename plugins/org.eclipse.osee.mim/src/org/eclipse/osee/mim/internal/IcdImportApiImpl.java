@@ -71,8 +71,8 @@ public class IcdImportApiImpl implements MimImportApi {
 
       reader.setActiveSheet("Message and Submessage Summary");
 
-      String primaryNodeName = reader.getCellStringValue(0, 0).split(" ")[0];
-      String secondaryNodeName = reader.getCellStringValue(0, 5).split(" ")[0];
+      String primaryNodeName = reader.getCellStringValue(0, 0).split(" Initiated Message")[0];
+      String secondaryNodeName = reader.getCellStringValue(0, 5).split(" Initiated Message")[0];
 
       List<InterfaceNode> existingNodes = (List<InterfaceNode>) mimApi.getInterfaceNodeViewApi().getAll(branch);
       InterfaceNode existingPrimaryNode =
