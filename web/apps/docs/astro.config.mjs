@@ -35,8 +35,8 @@ export default defineConfig({
           label: "MIM",
           items: [
             { label: "MIM Overview", slug: "mim/mim-overview" },
-            { label: "Data Model", slug: "mim/datamodel" },
             { label: "Example ICD", slug: "mim/example-icd" },
+            { label: "Data Model", slug: "mim/datamodel" },
             {
               label: "Guides",
               items: [
