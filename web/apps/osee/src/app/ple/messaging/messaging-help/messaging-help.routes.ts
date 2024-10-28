@@ -26,7 +26,7 @@ const routes: Routes = [
 	{
 		path: '',
 		pathMatch: 'full',
-		redirectTo: 'overview',
+		redirectTo: 'mim-overview',
 	},
 	{
 		path: ':helpPage',

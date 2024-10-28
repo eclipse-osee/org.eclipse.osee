@@ -21,7 +21,10 @@ import { HelpService } from '@osee/shared/services/help';
 	selector: 'osee-messaging-help-content',
 	standalone: true,
 	imports: [AsyncPipe, MarkdownComponent],
-	templateUrl: './messaging-help-content.component.html',
+	template: `<markdown
+		[data]="markdown | async"
+		[disableSanitizer]="true"
+		class="[&_a]:tw-text-primary-700 [&_code]:tw-bg-background-status-bar [&_code]:tw-px-2 dark:[&_code]:tw-bg-background-card [&_ol]:tw-list-decimal [&_ol]:tw-pl-8 [&_ul]:tw-list-disc [&_ul]:tw-pl-8"></markdown> `,
 })
 export class MessagingHelpContentComponent {
 	private route = inject(ActivatedRoute);

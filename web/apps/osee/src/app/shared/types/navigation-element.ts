@@ -23,6 +23,7 @@ export type navigationElement = {
 	description: string;
 	usesBranch: boolean;
 	children: navigationElement[];
+	external?: boolean;
 };
 
 export const defaultNavigationElement: navigationElement = {
