@@ -17,7 +17,7 @@
 
 		<maven-antrun-version>1.6</maven-antrun-version>
 		<ant-contrib-version>1.0b3</ant-contrib-version>
-		<jsch-version>0.1.42</jsch-version>
+		<jsch-version>0.1.54</jsch-version>
 		<ant-jsch-version>1.8.2</ant-jsch-version>
 		<ant-commons-net-version>1.7.0</ant-commons-net-version>
 		<commons-net-version>1.4.1</commons-net-version>
