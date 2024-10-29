@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package applicability;
+package org.eclipse.osee.java.rust.ffi.applicability;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -19,25 +19,16 @@ import java.io.InputStream;
 import java.util.Locale;
 
 /**
- * Java-Rust FFI for applicability parsing DO NOT CHANGE THE FILENAME. The Rust JNI method name is required to match the
- * name of the generated c header source file method name (created using a combination of this class name and the native
- * method within this class). If you do decide to change the class name and/or native method name within this class, you
- * must update the Rust JNI method name as well to match the generated c header source file (which you can generate
- * using javac -h . (insert filename here).java). The filename is also used by bash shell script to create the jar.
+ * Java-Rust FFI for applicability processing. DO NOT CHANGE THE FILENAME. The Rust JNI method name(s) is required to
+ * match the name of the generated c header source file method name(s) (created using a combination of this class name
+ * and the native method within this class). If you do decide to change the class name and/or native method name within
+ * this class, you must update the Rust JNI method name as well to match the generated c header source file (which you
+ * can generate using javac -h . (insert filename here).java). The filename is also used by bash shell script to create
+ * the jar.
  * 
  * @author Jaden W. Puckett
  */
 public class ApplicabilityParseSubstituteAndSanitize {
-
-   //   static {
-   //      try {
-   //         System.loadLibrary("applicability_parse_substitute_and_sanitize");
-   //      } catch (UnsatisfiedLinkError e) {
-   //         throw new RuntimeException(
-   //            "Failed to load Rust (native) library. Make sure java.library.path is pointed at Rust (native) library path.",
-   //            e);
-   //      }
-   //   }
 
    static {
       try {
@@ -54,7 +45,7 @@ public class ApplicabilityParseSubstituteAndSanitize {
          }
 
          // Build the path to the native library inside the JAR
-         String libName = "applicability_parse_substitute_and_sanitize"; // Name of your library without extension
+         String libName = "java_rust_ffi";
          String libExtension = (osName.equals("win")) ? ".dll" : (osName.equals("mac")) ? ".dylib" : ".so";
          String resourcePath = String.format("/native/%s/%s%s", osName, libName, libExtension);
 
@@ -78,7 +69,7 @@ public class ApplicabilityParseSubstituteAndSanitize {
             System.out.println("Loading native library from temporary file: " + tempLibFile.getAbsolutePath());
             System.load(tempLibFile.getAbsolutePath());
          } else {
-            // If not found, revert to the default search path
+            // If not found, revert to loading from java.library.path environment path variable
             System.out.println("Native library not found in JAR. Falling back to java.library.path.");
             System.loadLibrary(libName);
          }
@@ -88,24 +79,6 @@ public class ApplicabilityParseSubstituteAndSanitize {
       } catch (UnsatisfiedLinkError e) {
          throw new UnsatisfiedLinkError("Failed to load native library: " + e.getMessage());
       }
-   }
-
-   // DO NOT COMMIT THIS METHOD JADEN
-   public static void main(String[] args) {
-      ApplicabilityParseSubstituteAndSanitize parser = new ApplicabilityParseSubstituteAndSanitize();
-
-      // Sample input and configuration
-      String input = "A name. ``Feature[ARB=Included]`` Some text. ``End Feature``";
-      String startSyntax = "``";
-      String endSyntax = "``";
-      String configJson =
-         "{\"name\":\"config_name\",\"group\":\"group_name\",\"features\":[\"ARB=Excluded\"],\"substitutions\":[]}";
-
-      // Call the native method
-      String output = parser.parseSubstituteAndSanitizeApplicability(input, startSyntax, endSyntax, configJson);
-
-      // Print the result
-      System.out.println("Processed Output: " + output);
    }
 
    /**
@@ -157,17 +130,17 @@ public class ApplicabilityParseSubstituteAndSanitize {
     * provided JSON, and process the applicability logic accordingly.
     * </p>
     * <p>
-    * <b>Note for Markdown processing:</b> When parsing and substituting Markdown content, the {@code startSyntax} and
-    * {@code endSyntax} parameters should both be set to backticks (``).
+    * <b>Note for Markdown processing:</b> When parsing and substituting Markdown content, the file name and file
+    * extension are used to determine the appropriate syntax markers for applicability tags.
     * </p>
     * 
     * @param input The input string that needs to be applicability processed.
-    * @param startSyntax The starting syntax marker for applicability tags.
-    * @param endSyntax The ending syntax marker for applicability tags.
+    * @param fileName The name of the file whose input string content is being processed.
+    * @param fileExtension The extension of the file whose input string content is being processed.
     * @param configJson A JSON string that matches one of the 3 defined shapes for configuration.
     * @return The processed string after parsing, substitution, and sanitization.
     */
-   public native String parseSubstituteAndSanitizeApplicability(String input, String startSyntax, String endSyntax,
+   public native String parseSubstituteAndSanitizeApplicability(String input, String fileName, String fileExtension,
       String configJson);
 
 }

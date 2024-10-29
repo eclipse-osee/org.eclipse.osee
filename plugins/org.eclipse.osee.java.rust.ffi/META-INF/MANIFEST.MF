@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSEE Java Rust FFI
+Bundle-SymbolicName: org.eclipse.osee.java.rust.ffi;singleton:=true
+Bundle-ActivationPolicy: lazy
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Eclipse Open System Engineering Environment
+Bundle-RequiredExecutionEnvironment: JavaSE-11

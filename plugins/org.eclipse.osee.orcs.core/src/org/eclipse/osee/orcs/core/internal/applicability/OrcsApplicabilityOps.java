@@ -13,10 +13,6 @@
 
 package org.eclipse.osee.orcs.core.internal.applicability;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -91,6 +87,10 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.TupleQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 
 /**
  * @author Donald G. Dunne
@@ -3666,4 +3666,15 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       return content;
 
    }
+
+   //   @Override
+   //   public String processApplicability(String markdownInput, String fileName, String fileExtension,
+   //      BatConfigFile config) {
+   //      ApplicabilityParseSubstituteAndSanitize parser = new ApplicabilityParseSubstituteAndSanitize();
+   //      ObjectMapper objMapper = new ObjectMapper();
+   //      String configJsonString = objMapper.writeValueAsString(config);
+   //      String output =
+   //         parser.parseSubstituteAndSanitizeApplicability(markdownInput, fileName, fileExtension, configJsonString);
+   //      return output;
+   //   }
 }

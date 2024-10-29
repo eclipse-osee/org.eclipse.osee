@@ -15,7 +15,6 @@ resolver = "2"
 members = [
     "cli/applicability",
     "cli/applicability_match",
-    "cli/java_rust_ffi",
     "cli/applicability_parser",
     "cli/applicability_parser_config", 
     "cli/applicability_parser_types", 
@@ -23,6 +22,7 @@ members = [
     "cli/applicability_sanitization",
     "cli/applicability_sanitization_preserve_line_numbers",
     "cli/applicability_substitution",
+    "cli/java_rust_ffi",
     "cli/bat",
     "cli/pat"
 ]

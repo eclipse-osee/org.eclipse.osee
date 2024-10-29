@@ -218,4 +218,6 @@ public interface OrcsApplicability {
     */
    BatGroupFile getPatConfigurationGroupFile(BranchId branchId, ArtifactReadable art,
       List<ArtifactReadable> featureArts);
+
+   //   String processApplicability(String markdownInput, String fileName, String fileExtension, BatConfigFile config);
 }

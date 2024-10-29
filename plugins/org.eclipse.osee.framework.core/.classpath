@@ -8,6 +8,5 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="lib" path="libs/java_rust_ffi.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
