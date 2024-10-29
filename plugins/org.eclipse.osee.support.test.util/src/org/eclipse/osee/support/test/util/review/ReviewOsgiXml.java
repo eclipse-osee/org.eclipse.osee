@@ -15,6 +15,8 @@ package org.eclipse.osee.support.test.util.review;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -181,6 +183,7 @@ public class ReviewOsgiXml {
                bind = line;
                bind = bind.replaceFirst("^.* bind=\"", "");
                bind = bind.replaceFirst("\".*", "");
+               bind = bind.strip();
                rd.logf("==> Bind [%s]\n", bind);
                validateBind = true;
             }
@@ -188,6 +191,7 @@ public class ReviewOsgiXml {
                unbind = line;
                unbind = unbind.replaceFirst("^.*unbind=\"", "");
                unbind = unbind.replaceFirst("\".*", "");
+               unbind = unbind.strip();
                rd.logf("==> UnBind [%s]\n", unbind);
                validateBind = true;
             }
@@ -205,6 +209,7 @@ public class ReviewOsgiXml {
 
       String ifaceClass = iface;
       ifaceClass = ifaceClass.replaceAll("^.*\\.", "");
+      ifaceClass = ifaceClass.strip();
       rd.logf("==> IFace Class [%s]\n", ifaceClass);
 
       if (Strings.isValid(bind)) {
@@ -267,9 +272,10 @@ public class ReviewOsgiXml {
 
    public Collection<String> getMethodLines(String filecontents, String method) {
       String[] lines = filecontents.split("\n");
+      String bindMethod = "void " + method + "(";
       ArrayList<String> results = new ArrayList<>();
       for (String line : lines) {
-         if (line.contains("void " + method + "(") && !line.contains(IGNORE_LINE)) {
+         if (line.contains(bindMethod) && !line.contains(IGNORE_LINE)) {
             results.add(line);
          }
       }
@@ -284,7 +290,7 @@ public class ReviewOsgiXml {
       // validate filename
       String bundle = xmlfilename;
       bundle = bundle.replaceFirst("OSGI-INF.*", "src");
-      bundle = bundle + "/";
+      bundle = bundle + File.separatorChar;
       bundle = Matcher.quoteReplacement(bundle);
       rd.logf("==> Bundle [%s]\n", bundle);
 
@@ -300,10 +306,15 @@ public class ReviewOsgiXml {
       }
 
       String filename = fileqname;
-      filename = filename.replaceAll("\\.", "/");
+      String s = "/";
+      filename = filename.replaceAll("\\.", s);
       filename = filename.replaceFirst("^", bundle);
       filename = filename.replaceFirst("$", ".java");
+      filename = filename.strip();
       rd.logf("==> FileName [%s]\n", filename);
+
+      Path normalizePath = Paths.get(filename);
+      filename = normalizePath.normalize().toString();
 
       if ((new File(filename)).exists()) {
          return filename;
