@@ -19,7 +19,12 @@ import { ActivatedRoute } from '@angular/router';
 	selector: 'osee-messaging-help-static-content',
 	standalone: true,
 	imports: [MarkdownComponent],
-	templateUrl: './messaging-help-static-content.component.html',
+	template: `@if (markdown) {
+		<markdown
+			[src]="markdown"
+			[disableSanitizer]="true"
+			class="[&_a]:tw-text-primary-700 [&_code]:tw-bg-background-status-bar [&_code]:tw-px-2 dark:[&_code]:tw-bg-background-card [&_ol]:tw-list-decimal [&_ol]:tw-pl-8 [&_ul]:tw-list-disc [&_ul]:tw-pl-8"></markdown>
+	}`,
 })
 export class MessagingHelpStaticContentComponent implements OnInit {
 	private route = inject(ActivatedRoute);
