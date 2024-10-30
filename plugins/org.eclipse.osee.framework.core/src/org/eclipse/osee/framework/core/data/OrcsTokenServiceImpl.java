@@ -71,20 +71,21 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    }
 
    public void setConvertedRelations() {
-    File relFile = OseeInf.getResourceAsFile("relations"+File.separator+"relations.json", OrcsTypeTokens.class);
-    if (relFile.exists()) {
-       try {
-          String json = Lib.fileToString(relFile);
-          ObjectMapper objectMapper = new ObjectMapper();
-          TypeReference<List<String>> relListType = new TypeReference<List<String>>() {};
-          List<String> relList = objectMapper.readValue(json, relListType);
-          convertedRelations.addAll(relList);
-       } catch (Exception ex) {
-          throw new OseeArgumentException("Can't retrieve relations.json file");
-       }
-    }
+      File relFile = OseeInf.getResourceAsFile("relations/relations.json", getClass());
+      if (relFile.exists()) {
+         try {
+            String json = Lib.fileToString(relFile);
+            ObjectMapper objectMapper = new ObjectMapper();
+            TypeReference<List<String>> relListType = new TypeReference<List<String>>() {
+            };
+            List<String> relList = objectMapper.readValue(json, relListType);
+            convertedRelations.addAll(relList);
+         } catch (Exception ex) {
+            throw new OseeArgumentException("Can't retrieve relations.json file");
+         }
+      }
    }
-   
+
    @Override
    public BranchToken getBranch(BranchId branch) {
       return BranchToken.valueOf(branch);
@@ -448,7 +449,8 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
       for (Field field : Arrays.asList(ShadowCoreRelationTypes.class.getDeclaredFields())) {
          try {
             RelationTypeToken rel = (RelationTypeToken) field.get(null);
-            Optional<String> findFirst = convertedRelations.stream().filter(a->a.equals(rel.getIdString())).findFirst();
+            Optional<String> findFirst =
+               convertedRelations.stream().filter(a -> a.equals(rel.getIdString())).findFirst();
             if (findFirst.isPresent()) {
                invalidRels.add(rel.getOldRelationTypeToken());
             } else if (rel.isValid()) {
@@ -457,9 +459,9 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
 
          } catch (Exception ex) {
             //
-         } 
+         }
       }
-      
+
       List<RelationTypeToken> validRelationTypes = new ArrayList<>();
       for (RelationTypeToken relationType : relationTypes) {
          if (!invalidRels.contains(relationType)) {
