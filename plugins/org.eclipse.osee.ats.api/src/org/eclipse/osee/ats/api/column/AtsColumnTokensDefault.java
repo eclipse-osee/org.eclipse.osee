@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.api.config.MultiEdit;
 import org.eclipse.osee.ats.api.config.Show;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.ColumnType;
-import org.eclipse.osee.framework.core.data.AttributeTypeString;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 
@@ -64,7 +63,6 @@ public class AtsColumnTokensDefault {
    public static CoreAttrTokColTokenDefault HoursSpent = new CoreAttrTokColTokenDefault(AtsAttributeTypes.HoursSpentWorkflow);
    public static CoreAttrTokColTokenDefault LegacyPcrIdColumn = new CoreAttrTokColTokenDefault(AtsAttributeTypes.LegacyPcrId);
    public static CoreAttrTokColTokenDefault NameColumn = new CoreAttrTokColTokenDefault(CoreAttributeTypes.Name);
-   public static CoreAttrTokColTokenDefault NotesColumn = new CoreAttrTokColTokenDefault(AtsAttributeTypes.WorkflowNotes);
    public static CoreAttrTokColTokenDefault PercentCompleteWorkflowColumn = new CoreAttrTokColTokenDefault(AtsAttributeTypes.PercentComplete);
    public static CoreAttrTokColTokenDefault ResolutionColumn = new CoreAttrTokColTokenDefault(AtsAttributeTypes.Resolution);
    public static CoreAttrTokColTokenDefault ReviewedByColumn = new CoreAttrTokColTokenDefault(AtsAttributeTypes.ReviewedBy);
@@ -88,13 +86,15 @@ public class AtsColumnTokensDefault {
    public static CoreCodeColumnTokenDefault AtsIdColumn = new CoreCodeColumnTokenDefault("ats.id", "ATS Id", 75, AtsAttributeTypes.AtsId);
    public static CoreCodeColumnTokenDefault AttachmentsCountColumn = new CoreCodeColumnTokenDefault("ats.column.attachment.count", "Attachment Count", 20, ColumnType.String, ColumnAlign.Left, Show.Yes, MultiEdit.No, "Shows number of attachments.  Double-click to open task.");
    public static CoreCodeColumnTokenDefault BacklogOrderColumn = new CoreCodeColumnTokenDefault("ats.column.backlogOrder", "Backlog Order", 45, ColumnType.Integer, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
-   public static CoreCodeColumnTokenDefault CrIdColumn = new CoreCodeColumnTokenDefault("ats.column.crId", "CR ID", 80, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.No, InheritParent.No, "");
    public static CoreCodeColumnTokenDefault ChangeTypeColumn = new CoreCodeColumnTokenDefault("ats.column.changetype", AtsAttributeTypes.ChangeType);
    public static CoreCodeColumnTokenDefault CheckColumn = new CoreCodeColumnTokenDefault("ats.column.check", "Select", 53, ColumnType.String, ColumnAlign.Left, Show.Yes, MultiEdit.No, "Check and plus to create canned tasks.  Add task to create manual tasks.");
    public static CoreCodeColumnTokenDefault CompletedCancelledByColumn = new CoreCodeColumnTokenDefault( "ats.column.cmpCnclBy", "Completed or Cancelled By", 80, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.Yes, InheritParent.No, "User transitioning action to completed or cancelled state.");
    public static CoreCodeColumnTokenDefault CompletedCancelledDateColumn = new CoreCodeColumnTokenDefault("ats.column.cmpCnclDate", "Completed or Cancelled Date", 80, ColumnType.Date, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.No, InheritParent.No, "Date action to completed or cancelled");
+   public static CoreCodeColumnTokenDefault CrIdColumn = new CoreCodeColumnTokenDefault("ats.column.crId", "CR ID", 80, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.No, InheritParent.No, "");
    public static CoreCodeColumnTokenDefault DerivedFromAtsIdColumn = new CoreCodeColumnTokenDefault("ats.column.derivedFromAtsId", "Derived From ATS Id", 80, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.Yes, InheritParent.No, "");
+   public static CoreCodeColumnTokenDefault DerivedFromTaskColumn = new CoreCodeColumnTokenDefault("ats.column.derived.from.task", "Derived From Task", 200, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, "Show related task workflows was created from");
    public static CoreCodeColumnTokenDefault DerivedFromTeamDefColumn = new CoreCodeColumnTokenDefault("ats.column.derivedFromTeam", "Derived From Team Def", 80, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.Yes, InheritParent.No, "");
+   public static CoreCodeColumnTokenDefault DerivedWorkflowColumn = new CoreCodeColumnTokenDefault("ats.column.derived.workflow", "Derived Workflow", 200, ColumnType.String, ColumnAlign.Left, Show.Yes, MultiEdit.No, "Show related Team Workflow, if created");
    public static CoreCodeColumnTokenDefault FeatureImpactReferenceColumn = new CoreCodeColumnTokenDefault("ats.column.featureImpactReference", "Feature Impacted", 150, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
    public static CoreCodeColumnTokenDefault FoundInVersionColumn = new CoreCodeColumnTokenDefault("ats.column.foundInVersion", "Found In Version", 40, ColumnType.String, ColumnAlign.Left, Show.Yes, MultiEdit.Yes, ActionRollup.Yes, InheritParent.Yes, "Release version in which software issue occured.");
    public static CoreCodeColumnTokenDefault GoalOrderColumn = new CoreCodeColumnTokenDefault("ats.column.goalOrder", "Goal Order", 45, ColumnType.Integer, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
@@ -104,13 +104,13 @@ public class AtsColumnTokensDefault {
    public static CoreCodeColumnTokenDefault IncorporatedInColumn = new CoreCodeColumnTokenDefault("ats.column.incorporated.in", "Incorporated In", 80, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.Yes, InheritParent.Yes, "");
    public static CoreCodeColumnTokenDefault InsertionActivityColumn = new CoreCodeColumnTokenDefault( "ats.column.insertionActivity", "Insertion Activity", 80, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.Yes, InheritParent.Yes, "Insertion Activity specified by related Work Package.  (I) if inherited from parent.");
    public static CoreCodeColumnTokenDefault InsertionColumn = new CoreCodeColumnTokenDefault("ats.column.insertion", "Insertion", 80, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.Yes, InheritParent.Yes, "Insertion specified by related Work Package.  (I) if inherited from parent.");
+   public static CoreCodeColumnTokenDefault NotesColumn = new CoreCodeColumnTokenDefault("ats.column.notes", "Notes", AtsAttributeTypes.WorkflowNotes);
+   public static CoreCodeColumnTokenDefault NotesColorColumn = new CoreCodeColumnTokenDefault("ats.column.notes.color", "Notes Color", AtsAttributeTypes.WorkflowNoteColor);
    public static CoreCodeColumnTokenDefault ParentTitleColumn = new CoreCodeColumnTokenDefault("ats.column.parentTitle", "Parent Title", 150, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.No, InheritParent.No, null);
    public static CoreCodeColumnTokenDefault PercentCompleteTasksColumn = new CoreCodeColumnTokenDefault("ats.column.taskPercentComplete", "Percent Complete Tasks", 80, ColumnType.Integer, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.Yes, InheritParent.No, "Insertion specified by related Work Package.  (I) if inherited from parent.");
    public static CoreCodeColumnTokenDefault PointsColumn = new CoreCodeColumnTokenDefault("ats.column.points", "Points", 80, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.Yes, InheritParent.No, "Insertion specified by related Work Package.  (I) if inherited from parent.");
-   public static CoreCodeColumnTokenDefault PriorityColumn = new CoreCodeColumnTokenDefault("ats.column.priority", AtsAttributeTypes.Priority);
    public static CoreCodeColumnTokenDefault PrIdColumn = new CoreCodeColumnTokenDefault("ats.column.prId", "PR ID", 20, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.No, InheritParent.No, "");
-   public static CoreCodeColumnTokenDefault DerivedFromTaskColumn = new CoreCodeColumnTokenDefault("ats.column.derived.from.task", "Derived From Task", 200, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, "Show related task workflows was created from");
-   public static CoreCodeColumnTokenDefault DerivedWorkflowColumn = new CoreCodeColumnTokenDefault("ats.column.derived.workflow", "Derived Workflow", 200, ColumnType.String, ColumnAlign.Left, Show.Yes, MultiEdit.No, "Show related Team Workflow, if created");
+   public static CoreCodeColumnTokenDefault PriorityColumn = new CoreCodeColumnTokenDefault("ats.column.priority", AtsAttributeTypes.Priority);
    public static CoreCodeColumnTokenDefault RelatedToStateColumn = new CoreCodeColumnTokenDefault("ats.column.relatedToState", AtsAttributeTypes.RelatedToState);
    public static CoreCodeColumnTokenDefault SprintColumn = new CoreCodeColumnTokenDefault("ats.column.sprint", "Sprint", 100, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "");
    public static CoreCodeColumnTokenDefault SprintOrderColumn = new CoreCodeColumnTokenDefault("ats.column.sprintOrder", "Sprint Order", 45, ColumnType.Integer, ColumnAlign.Left, Show.No, MultiEdit.Yes, ActionRollup.No, InheritParent.No, "Order of item within displayed sprint.  Editing this field changes order.");
@@ -122,8 +122,8 @@ public class AtsColumnTokensDefault {
    public static CoreCodeColumnTokenDefault TeamColumn = new CoreCodeColumnTokenDefault("ats.column.team", "Team", 50, ColumnType.String, ColumnAlign.Left, Show.Yes, MultiEdit.No, ActionRollup.Yes, InheritParent.Yes, "Team that has been assigned to work this Action.");
    public static CoreCodeColumnTokenDefault TitleColumn = new CoreCodeColumnTokenDefault("framework.artifact.name.Title", CoreAttributeTypes.Name);
    public static CoreCodeColumnTokenDefault TypeColumn = new CoreCodeColumnTokenDefault("ats.column.type", "Type", 150, ColumnType.String, ColumnAlign.Left, Show.Yes, MultiEdit.No, ActionRollup.No, InheritParent.No, null);
-   public static CoreCodeColumnTokenDefault WorkDefinitionColumn = new CoreCodeColumnTokenDefault("ats.column.workDefinition", "Work Definition", 150, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.No, InheritParent.No, null);
    public static CoreCodeColumnTokenDefault WebExportReviewed = new CoreCodeColumnTokenDefault("ats.column.web.export.reviewed", AtsAttributeTypes.WebExportReviewed);
+   public static CoreCodeColumnTokenDefault WorkDefinitionColumn = new CoreCodeColumnTokenDefault("ats.column.workDefinition", "Work Definition", 150, ColumnType.String, ColumnAlign.Left, Show.No, MultiEdit.No, ActionRollup.No, InheritParent.No, null);
 
    // @formatter:on
 
@@ -172,11 +172,11 @@ public class AtsColumnTokensDefault {
          super(columnId, attrType);
       }
 
-      public CoreCodeColumnTokenDefault(String columnId, String name, AttributeTypeString attrType) {
+      public CoreCodeColumnTokenDefault(String columnId, String name, AttributeTypeToken attrType) {
          super(columnId, name, attrType);
       }
 
-      public CoreCodeColumnTokenDefault(String columnId, String name, int width, AttributeTypeString attrType) {
+      public CoreCodeColumnTokenDefault(String columnId, String name, int width, AttributeTypeToken attrType) {
          super(columnId, name, width, attrType);
       }
 
