@@ -186,7 +186,7 @@ public class LoadArtifactHistory extends AbstractDatastoreTxCallable<List<Change
             }
             case 2: {
                AttributeId attrId = AttributeId.valueOf(itemId);
-               AttributeTypeId attrTypeId = tokenService.getAttributeType(itemTypeId);
+               AttributeTypeId attrTypeId = tokenService.getAttributeTypeOrCreate(itemTypeId);
                ArtifactId artifactId = ArtifactId.valueOf(itemFirst);
                ChangeItem attrChange = ChangeItemUtil.newAttributeChange(attrId, attrTypeId, artifactId, gammaId,
                   modType, value, uri, applicToken, txToken);
