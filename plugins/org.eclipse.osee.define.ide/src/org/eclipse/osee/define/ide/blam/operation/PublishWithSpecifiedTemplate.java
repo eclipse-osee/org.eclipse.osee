@@ -613,7 +613,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
                      Artifact art = artifacts.iterator().next();
                      BranchId isArtBranch = art.getBranch();
                      if (isArtBranch != null && isArtBranch.isValid()) {
-                        if (ViewApplicabilityUtil.isBranchOfProductLine(isArtBranch)) {
+                        if (ViewApplicabilityUtil.isProductLineBranch(isArtBranch)) {
                            branchViews = ViewApplicabilityUtil.getBranchViews(isArtBranch);
                            branchViewWidget.setDataStrings(branchViews.values());
                         }
