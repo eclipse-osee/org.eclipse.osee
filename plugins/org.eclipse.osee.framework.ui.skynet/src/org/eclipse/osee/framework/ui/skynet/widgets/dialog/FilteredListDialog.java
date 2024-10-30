@@ -16,19 +16,26 @@ import java.util.Collection;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 
 /**
  * Provides a simple filtered list single select dialog that takes and returns given objects where name comes from
- * either toString or given label provider
+ * either toString or given label provider. setClearAllowed(true) to show a "Clear and Close" button.
  *
  * @author Donald G. Dunne
  */
 public class FilteredListDialog<T> extends ElementListSelectionDialog {
 
    private Collection<T> input;
+   private boolean clearAllowed = false;
 
    public FilteredListDialog(String title, String message) {
       this(title, message, new LabelProvider());
@@ -56,9 +63,42 @@ public class FilteredListDialog<T> extends ElementListSelectionDialog {
       return null;
    }
 
+   public boolean isClearAllowedSelected() {
+      if (clearAllowed && getSelected() == null) {
+         return true;
+      }
+      return false;
+   }
+
+   public boolean isClearAllowed() {
+      return clearAllowed;
+   }
+
+   public void setClearAllowed(boolean clearAllowed) {
+      this.clearAllowed = clearAllowed;
+   }
+
    @Override
-   protected Control createDialogArea(Composite parent) {
-      return super.createDialogArea(parent);
+   protected Control createDialogArea(Composite container) {
+      Control control = super.createDialogArea(container);
+
+      if (clearAllowed) {
+         Composite composite = new Composite((Composite) control, SWT.None);
+         composite.setLayout(new GridLayout());
+         composite.setLayoutData(new GridData());
+
+         final Button button = new Button(composite, SWT.PUSH);
+         button.setText("Clear and Close");
+         button.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               setSelection(null);
+               close();
+            }
+         });
+      }
+
+      return control;
    }
 
    public Collection<T> getInput() {
