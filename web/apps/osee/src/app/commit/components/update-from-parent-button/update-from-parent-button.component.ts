@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, inject, input, output } from '@angular/core';
+import { Component, inject, input, output, signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -22,17 +22,23 @@ import { branch } from '@osee/shared/types';
 import { iif, of, switchMap, take, tap } from 'rxjs';
 import { MergeManagerDialogComponent } from '../merge-manager-dialog/merge-manager-dialog.component';
 import { BranchRoutedUIService, UiService } from '@osee/shared/services';
+import { NgClass } from '@angular/common';
 
 @Component({
 	selector: 'osee-update-from-parent-button',
 	standalone: true,
-	imports: [MatButton, MatTooltip, MatIcon],
+	imports: [MatButton, MatTooltip, MatIcon, NgClass],
 	template: `<button
 		mat-raised-button
-		class="tw-flex tw-justify-center tw-bg-primary tw-text-background [&_*]:tw-m-0"
+		class="tw-flex tw-justify-center [&_*]:tw-m-0"
+		[ngClass]="{
+			'tw-bg-background-app-bar tw-text-foreground-text': loading(),
+			'tw-bg-primary tw-text-background': !loading(),
+		}"
 		(click)="updateFromParent()"
+		[disabled]="loading()"
 		matTooltip="Update branch from parent">
-		<mat-icon>sync</mat-icon>
+		<mat-icon [ngClass]="{ 'tw-animate-spin': loading() }">sync</mat-icon>
 	</button>`,
 })
 export class UpdateFromParentButtonComponent {
@@ -47,12 +53,16 @@ export class UpdateFromParentButtonComponent {
 	dialog = inject(MatDialog);
 	snackbar = inject(MatSnackBar);
 
+	loading = signal(false);
+
 	updateFromParent() {
 		this.workingBranch$
 			.pipe(
 				take(1),
+				tap(() => this.loading.set(true)),
 				switchMap((branch) =>
 					this.commitBranchService.updateFromParent(branch.id).pipe(
+						tap(() => this.loading.set(false)),
 						switchMap((res) =>
 							iif(
 								() => res.needsMerge,
