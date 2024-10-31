@@ -255,14 +255,7 @@ public class XViewerColumn {
    }
 
    public String sumValues(Collection<String> values) {
-      if (sortDataType == SortDataType.Float) {
-         double sum = 0.0;
-         Set<String> exceptions = new HashSet<>();
-         sum = sumFloatValues(values, sum, exceptions);
-         return "Sum: " + XViewerUtil.doubleToI18nString(
-            sum) + "\n\nNum Items: " + values.size() + (exceptions.size() > 0 ? "\n\nErrors: " + CollectionsUtil.toString(
-               ";", exceptions) : "");
-      } else if (sortDataType == SortDataType.Integer || sortDataType == SortDataType.Percent) {
+      if (sortDataType == SortDataType.Integer || sortDataType == SortDataType.Percent) {
          int sum = 0;
          Set<String> exceptions = new HashSet<>();
          sum = sumIntegerValues(values, sum, exceptions);
@@ -274,8 +267,14 @@ public class XViewerColumn {
          sum = sumLongValues(values, sum, exceptions);
          return "Sum: " + sum + "\n\nNum Items: " + values.size() + (exceptions.size() > 0 ? "\n\nErrors: " + CollectionsUtil.toString(
             ";", exceptions) : "");
+      } else {
+         double sum = 0.0;
+         Set<String> exceptions = new HashSet<>();
+         sum = sumFloatValues(values, sum, exceptions);
+         return "Sum: " + XViewerUtil.doubleToI18nString(
+            sum) + "\n\nNum Items: " + values.size() + (exceptions.size() > 0 ? "\n\nErrors: " + CollectionsUtil.toString(
+               ";", exceptions) : "");
       }
-      return "Unhandled column type";
    }
 
    private double sumFloatValues(Collection<String> values, double sum, Set<String> exceptions) {
