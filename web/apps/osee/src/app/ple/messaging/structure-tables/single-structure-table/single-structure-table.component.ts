@@ -40,7 +40,6 @@ export class SingleStructureTableComponent implements OnInit, OnDestroy {
 	private structureService = inject(STRUCTURE_SERVICE_TOKEN);
 
 	breadCrumb = this.structureService.breadCrumbs;
-	structureId = this.structureService.singleStructureId;
 
 	ngOnInit(): void {
 		combineLatest([

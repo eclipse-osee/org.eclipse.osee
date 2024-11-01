@@ -27,10 +27,6 @@ import { AsyncPipe, NgClass } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
-	Input,
-	OnChanges,
-	OnInit,
-	SimpleChanges,
 	computed,
 	effect,
 	inject,
@@ -75,6 +71,8 @@ import { difference } from '@osee/shared/types/change-report';
 import { SubElementTableFieldComponent } from '../../fields/sub-element-table-field/sub-element-table-field.component';
 import { SubElementTableDropdownComponent } from '../../menus/sub-element-table-dropdown/sub-element-table-dropdown.component';
 import { SubElementArrayTableComponent } from '../sub-element-array-table/sub-element-array-table.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-messaging-message-element-interface-sub-element-table',
@@ -131,12 +129,13 @@ import { SubElementArrayTableComponent } from '../sub-element-array-table/sub-el
 		]),
 	],
 })
-export class SubElementTableComponent implements OnInit, OnChanges {
+export class SubElementTableComponent {
 	private route = inject(ActivatedRoute);
 	dialog = inject(MatDialog);
 	private structureService = inject(STRUCTURE_SERVICE_TOKEN);
 	private layoutNotifier = inject(LayoutNotifierService);
 	private headerService = inject(HeaderService);
+	snackbar = inject(MatSnackBar);
 
 	data = input.required<element[]>();
 
@@ -147,8 +146,8 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 		{ allowSignalWrites: true }
 	);
 	protected dataSource = new MatTableDataSource<element>();
-	@Input() filter = '';
-	@Input() structure: structure = {
+	filter = input('');
+	structure = input<structure>({
 		id: '-1',
 		gammaId: '-1',
 		name: {
@@ -195,7 +194,7 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 		},
 		applicability: applicabilitySentinel,
 		elements: [],
-	};
+	});
 	elementHeaders = input<(keyof DisplayableElementProps | 'rowControls')[]>([
 		'name',
 		'beginWord',
@@ -207,9 +206,8 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 		'notes',
 	]);
 	editMode = input<boolean>(false);
+	tableFieldsEditMode = input<boolean>(false);
 
-	_branchId = '';
-	_branchType = '';
 	layout = this.layoutNotifier.layout;
 	menuPosition = {
 		x: '0',
@@ -222,22 +220,20 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 
 	expandedRows = signal<element[]>([]);
 
-	ngOnChanges(_changes: SimpleChanges): void {
-		if (this.filter !== '') {
+	private _paramMap = toSignal(this.route.paramMap);
+
+	branchId = computed(() => this._paramMap()?.get('branchId') || '');
+	branchType = computed(() => this._paramMap()?.get('branchType') || '');
+
+	private _filterEffect = effect(() => {
+		if (this.filter() !== '') {
 			this.dataSource.data.forEach((e) => {
 				if (e.arrayElements.length > 0) {
 					this.rowChange(e, true);
 				}
 			});
 		}
-	}
-
-	ngOnInit(): void {
-		this.route.paramMap.subscribe((values) => {
-			this._branchId = values.get('branchId') || '';
-			this._branchType = values.get('branchType') || '';
-		});
-	}
+	});
 
 	rowIsExpanded(elementId: `${number}`) {
 		return computed(() =>
@@ -272,7 +268,7 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 
 		this.structureService
 			.changeElementRelationOrder(
-				this.structure.id,
+				this.structure().id,
 				elementId,
 				afterArtifactId
 			)
@@ -294,7 +290,7 @@ export class SubElementTableComponent implements OnInit, OnChanges {
 		this.menuPosition.y = event.clientY + 'px';
 		this.generalMenuTrigger().menuData = {
 			element: element,
-			structure: this.structure,
+			structure: this.structure(),
 			field: field,
 			header: header,
 		};

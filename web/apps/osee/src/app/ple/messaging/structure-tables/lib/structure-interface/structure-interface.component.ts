@@ -52,19 +52,16 @@ import { StructureTableToolbarComponent } from '../structure-table-toolbar/struc
 								},
 							},
 						]
-					: structureId() !== ''
-						? '../'
-						: '../'
+					: '../'
 			">
 			<osee-current-view-selector />
 		</osee-messaging-controls>
 		<!-- TODO: think of a good way to show this and hide the top level search for smaller screen sizes -->
 		<!-- <osee-structure-filter /> -->
 		<div
-			class="tw-inline-block tw-max-h-[82vh] tw-w-full tw-max-w-[100vw] tw-overflow-auto tw-bg-background-background max-sm:tw-block">
+			class="tw-inline-block tw-max-h-[78vh] tw-w-full tw-max-w-[100vw] tw-overflow-auto tw-bg-background-background max-sm:tw-block">
 			<osee-structure-table
 				[previousLink]="previousLink()"
-				[structureId]="structureId()"
 				[breadCrumb]="breadCrumb()" />
 		</div>
 		<osee-structure-table-toolbar
@@ -75,7 +72,6 @@ import { StructureTableToolbarComponent } from '../structure-table-toolbar/struc
 })
 export class StructureInterfaceComponent {
 	previousLink = input('../../../../');
-	structureId = input('');
 	breadCrumb = input('');
 	private structureService = inject(STRUCTURE_SERVICE_TOKEN);
 	private _structuresCount = this.structureService.structuresCount;
