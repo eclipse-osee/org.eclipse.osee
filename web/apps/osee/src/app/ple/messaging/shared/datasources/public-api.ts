@@ -11,4 +11,3 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 export * from './message/message';
-export * from './structure/structure';
