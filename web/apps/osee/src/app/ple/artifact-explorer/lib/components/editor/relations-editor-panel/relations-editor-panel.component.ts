@@ -12,15 +12,12 @@
  **********************************************************************/
 import { CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
 import { AsyncPipe, NgClass } from '@angular/common';
+import { Component, computed, inject, input } from '@angular/core';
 import {
-	Component,
-	Input,
-	OnChanges,
-	SimpleChanges,
-	computed,
-	inject,
-} from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+	takeUntilDestroyed,
+	toObservable,
+	toSignal,
+} from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatList } from '@angular/material/list';
@@ -33,6 +30,7 @@ import {
 	filter,
 	iif,
 	of,
+	repeat,
 	shareReplay,
 	switchMap,
 	take,
@@ -65,7 +63,7 @@ import { TransactionService } from '@osee/transactions/services';
 	],
 	templateUrl: './relations-editor-panel.component.html',
 })
-export class RelationsEditorPanelComponent implements OnChanges {
+export class RelationsEditorPanelComponent {
 	private artExpHttpService = inject(ArtifactExplorerHttpService);
 	private tabService = inject(ArtifactExplorerTabService);
 	private builder = inject(TransactionBuilderService);
@@ -73,15 +71,14 @@ export class RelationsEditorPanelComponent implements OnChanges {
 	dialog = inject(MatDialog);
 	private artifactIconService = inject(ArtifactIconService);
 
-	@Input({ required: true }) artifactId!: string;
-	@Input({ required: true }) branchId!: string;
-	@Input({ required: true }) viewId!: string;
-	@Input({ required: true }) editable!: boolean;
+	artifactId = input.required<`${number}`>();
+	branchId = input.required<string>();
+	viewId = input.required<string>();
+	editable = input.required<boolean>();
 
-	private _artifactId = new BehaviorSubject<string>('');
-	private _branchId = new BehaviorSubject<string>('');
-	private _viewId = new BehaviorSubject<string>('');
-	private _editable = new BehaviorSubject<boolean>(false);
+	private artifactId$ = toObservable(this.artifactId);
+	private branchId$ = toObservable(this.branchId);
+	private viewId$ = toObservable(this.viewId);
 
 	private _hierarchyType = toSignal(this.uiService.type, {
 		initialValue: 'baseline',
@@ -90,51 +87,29 @@ export class RelationsEditorPanelComponent implements OnChanges {
 		() => this._hierarchyType() === 'working'
 	);
 
-	ngOnChanges(changes: SimpleChanges): void {
-		if (
-			changes.artifactId !== undefined &&
-			changes.artifactId.previousValue !==
-				changes.artifactId.currentValue &&
-			changes.artifactId.currentValue !== undefined
-		) {
-			this._artifactId.next(changes.artifactId.currentValue);
-		}
-		if (
-			changes.branchId !== undefined &&
-			changes.branchId.previousValue !== changes.branchId.currentValue &&
-			changes.branchId.currentValue !== undefined
-		) {
-			this._branchId.next(changes.branchId.currentValue);
-		}
-		if (
-			changes.viewId !== undefined &&
-			changes.viewId.previousValue !== changes.viewId.currentValue &&
-			changes.viewId.currentValue !== undefined
-		) {
-			this._viewId.next(changes.viewId.currentValue);
-		}
-		if (
-			changes.editable !== undefined &&
-			changes.editable.previousValue !== changes.editable.currentValue &&
-			changes.editable.currentValue !== undefined
-		) {
-			this._editable.next(changes.editable.currentValue);
-		}
-	}
-
 	artWithRelation$ = combineLatest([
-		this._branchId,
-		this._viewId,
-		this._artifactId,
+		this.branchId$,
+		this.viewId$,
+		this.artifactId$,
 	]).pipe(
-		filter(([branch, _view, artifact]) => branch != '' && artifact != ''),
+		filter(
+			([branch, _view, artifact]) =>
+				branch !== '-1' &&
+				branch !== '0' &&
+				branch !== '' &&
+				artifact !== '-1'
+		),
 		switchMap(([branch, view, artifact]) =>
-			this.artExpHttpService.getartifactWithRelations(
-				branch,
-				artifact,
-				view,
-				true
-			)
+			this.artExpHttpService
+				.getartifactWithRelations(branch, artifact, view, true)
+				.pipe(
+					repeat({
+						delay: () =>
+							this.uiService.updateArtifact.pipe(
+								filter((id) => id === artifact)
+							),
+					})
+				)
 		),
 		shareReplay({ bufferSize: 1, refCount: true }),
 		takeUntilDestroyed()
@@ -168,9 +143,9 @@ export class RelationsEditorPanelComponent implements OnChanges {
 		side: artifactRelationSide
 	): void {
 		const droppedArt: artifactWithRelations = event.item.data;
-		if (this._editable && this._hierarchyEditable()) {
+		if (this.editable() && this._hierarchyEditable()) {
 			// Build the transaction based on which side an artifact is dropped into
-			this._branchId
+			this.branchId$
 				.pipe(
 					take(1),
 					filter((id) => id == this.uiService.id.value),
@@ -179,8 +154,12 @@ export class RelationsEditorPanelComponent implements OnChanges {
 							this.builder.addRelation(
 								undefined,
 								relation.relationTypeToken.id,
-								side.isSideA ? droppedArt.id : this.artifactId,
-								side.isSideA ? this.artifactId : droppedArt.id,
+								side.isSideA
+									? droppedArt.id
+									: this.artifactId(),
+								side.isSideA
+									? this.artifactId()
+									: droppedArt.id,
 								'end',
 								undefined,
 								undefined,
@@ -192,7 +171,11 @@ export class RelationsEditorPanelComponent implements OnChanges {
 							switchMap((transaction) =>
 								this.transaction.performMutation(transaction)
 							),
-							tap(() => (this.uiService.updated = true))
+							tap(() => {
+								this.uiService.updated = true;
+								this.uiService.updatedArtifact =
+									this.artifactId();
+							})
 						)
 					)
 				)
@@ -205,9 +188,9 @@ export class RelationsEditorPanelComponent implements OnChanges {
 		relation: artifactRelation,
 		side: artifactRelationSide
 	) {
-		const branchId = this._branchId.pipe(
+		const branchId = this.branchId$.pipe(
 			take(1),
-			filter((id) => id != '')
+			filter((id) => id !== '-1' && id !== '0' && id !== '')
 		);
 		this.artWithRelation$
 			.pipe(
@@ -251,11 +234,12 @@ export class RelationsEditorPanelComponent implements OnChanges {
 														transaction
 													)
 												),
-												tap(
-													() =>
-														(this.uiService.updated =
-															true)
-												)
+												tap(() => {
+													this.uiService.updated =
+														true;
+													this.uiService.updatedArtifact =
+														this.artifactId();
+												})
 											)
 										)
 									),
@@ -277,22 +261,14 @@ export class RelationsEditorPanelComponent implements OnChanges {
 	// track the state of the UI as relation dropdowns expand and collapse
 	dropdownsOpen = new BehaviorSubject<string[]>([]);
 
-	relationOpen(_index: number, relation: artifactRelation) {
-		return relation.relationTypeToken.id;
-	}
-
-	relationSideOpen(_index: number, relationSide: artifactRelationSide) {
-		return relationSide.name;
-	}
-
 	addTab(artifact: artifactWithRelations) {
 		this.tabService.addArtifactTabOnBranch(
 			{
 				...artifact,
-				editable: this._editable.getValue(),
+				editable: this.editable(),
 			},
-			this._branchId.getValue(),
-			this._viewId.getValue()
+			this.branchId(),
+			this.viewId()
 		);
 	}
 }

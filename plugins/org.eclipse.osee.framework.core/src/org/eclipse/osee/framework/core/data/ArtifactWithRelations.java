@@ -28,18 +28,21 @@ public class ArtifactWithRelations {
    private final ArtifactReadable artReadable;
    private final OrcsTokenService tokenService;
    private final List<ArtifactWithRelationsAttribute> attributes = new ArrayList<>();
-   private final boolean includeRelations;
+   private List<ArtifactRelation> relations = Collections.emptyList();
 
    public ArtifactWithRelations(ArtifactReadable artReadable, OrcsTokenService tokenService, boolean includeRelations) {
       this.artReadable = artReadable;
       this.tokenService = tokenService;
-      this.includeRelations = includeRelations;
 
       List<IAttribute<?>> attrs = artReadable.getAttributesHashCollection().getValues();
       List<ArtifactWithRelationsAttribute> pojoAttributes = attrs.stream().filter(attr -> attr != null).map(
          attr -> new ArtifactWithRelationsAttribute(attr, artReadable.getArtifactType(), tokenService)).collect(
             Collectors.toList());
       this.attributes.addAll(pojoAttributes);
+
+      if (includeRelations) {
+         this.relations = loadRelations();
+      }
    }
 
    public List<ArtifactWithRelationsAttribute> getAttributes() {
@@ -76,9 +79,10 @@ public class ArtifactWithRelations {
    }
 
    public List<ArtifactRelation> getRelations() {
-      if (!this.includeRelations) {
-         return Collections.emptyList();
-      }
+      return this.relations;
+   }
+
+   private List<ArtifactRelation> loadRelations() {
       List<ArtifactRelation> relations = new ArrayList<>();
       // get the list of all valid relation types for the overall artifact we are finding the direct relations for
       List<RelationTypeToken> validRelationTypes = tokenService.getValidRelationTypes(artReadable.getArtifactType());

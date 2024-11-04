@@ -10,12 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { enumerationSet } from '@osee/messaging/shared/types';
 import { transactionResultMock } from '@osee/transactions/testing';
-import {
-	legacyCreateArtifact,
-	legacyModifyArtifact,
-	legacyModifyRelation,
-} from '@osee/transactions/types';
 import { of } from 'rxjs';
 import { EnumerationUIService } from '../services/ui/enumeration-ui.service';
 import { enumerationSetMock } from './enumeration-set.response.mock';
@@ -27,11 +23,10 @@ export const enumerationUiServiceMock: Partial<EnumerationUIService> = {
 	getEnumSet(platformTypeId: string) {
 		return of(enumerationSetMock[0]);
 	},
-	changeEnumSet(dialogResponse: {
-		createArtifacts: legacyCreateArtifact[];
-		modifyArtifacts: legacyModifyArtifact[];
-		deleteRelations: legacyModifyRelation[];
-	}) {
+	changeEnumSet(
+		currentEnumSet: enumerationSet,
+		previousEnumSet: enumerationSet
+	) {
 		return of(transactionResultMock);
 	},
 };

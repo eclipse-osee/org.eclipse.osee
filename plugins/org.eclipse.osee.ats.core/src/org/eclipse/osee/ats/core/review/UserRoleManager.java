@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.PeerToPeerReviewState;
+import org.eclipse.osee.ats.api.review.ReviewRequiredMinimum;
 import org.eclipse.osee.ats.api.review.ReviewRole;
 import org.eclipse.osee.ats.api.review.ReviewRoleType;
 import org.eclipse.osee.ats.api.review.UserRole;
@@ -62,7 +63,7 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
    private final CountingMap<ReviewRoleType> actualTypeCountMap;
    private final Map<ReviewRoleType, Integer> expectedRoleTypeMap;
    private final Map<ReviewRole, Integer> expectedRoleMap;
-
+   private final List<ReviewRequiredMinimum> reviewRequiredMinimums;
    private List<UserRole> roles;
 
    public UserRoleManager(IAtsPeerToPeerReview peerRev, AtsApi atsApi) {
@@ -72,6 +73,7 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
       this.peerRev = peerRev;
       expectedRoleTypeMap = peerRev.getWorkDefinition().getReviewRoleTypeMap();
       expectedRoleMap = peerRev.getWorkDefinition().getReviewRoleMap();
+      reviewRequiredMinimums = peerRev.getWorkDefinition().getReviewRequiredMinimums();
       actualTypeCountMap = new CountingMap<>();
       for (UserRole userRole : getUserRoles()) {
          actualTypeCountMap.put(userRole.getRole().getReviewRoleType());
@@ -140,8 +142,12 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
    public UserRoleError validateRoleTypeMinimums(StateDefinition fromStateDef, IAtsPeerReviewRoleManager roleMgr) {
 
       UserRoleError rError = validateRoleMinimums();
+      UserRoleError reqError = validateReviewRequiredMinimums();
       if (!rError.getName().equals(UserRoleError.None.name())) {
          return rError;
+      }
+      if (!reqError.getName().equals(UserRoleError.None.name())) {
+         return reqError;
       }
 
       // If in review state, all roles must have hours spent entered
@@ -154,6 +160,31 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
          }
       }
       return UserRoleError.None;
+   }
+
+   public UserRoleError validateReviewRequiredMinimums() {
+      return validateReviewRequiredMinimum(peerRev, reviewRequiredMinimums);
+   }
+
+   public UserRoleError validateReviewRequiredMinimum(IAtsPeerToPeerReview peerRev,
+      List<ReviewRequiredMinimum> reviewRequiredMinimums) {
+      StringBuilder userRoleError = new StringBuilder();
+      for (ReviewRequiredMinimum reviewRequiredMinimum : reviewRequiredMinimums) {
+         if (peerRev.getParentTeamWorkflow() != null && reviewRequiredMinimum.getParentTeamDef() != null && peerRev.getParentTeamWorkflow().getTeamDefinition().equals(
+            reviewRequiredMinimum.getParentTeamDef())) {
+            int actualCount = actualCountMap.get(reviewRequiredMinimum.getReviewRole());
+            if (actualCount < reviewRequiredMinimum.getMin()) {
+               userRoleError.append(
+                  String.format("Must have minimum of %s [%s], not %s. \n", reviewRequiredMinimum.getMin(),
+                     reviewRequiredMinimum.getReviewRole().getName(), actualCount).toString());
+            }
+         }
+      }
+      if (userRoleError.toString().isEmpty()) {
+         return UserRoleError.None;
+      } else {
+         return new UserRoleError("MustMeetMinimumRole", userRoleError.toString(), WidgetStatus.Invalid_Incompleted);
+      }
    }
 
    private UserRoleError validateRoleMinimums() {

@@ -1,0 +1,24 @@
+{
+  "asUserArtId" : "61106791",
+  "title" : "Readiness Reviews for SAW Release",
+  "transactionComment" : "Create/Update Reviews",
+  "trackItems" : {
+    "tasks" : [ {
+      "title" : "01 - Test from commit TW7 ",
+      "assigneesArtIds" : "61106791", "comment": "Joe Smith",
+      "description" : "Load MIM Web and do minor checks",
+      "supportingAtsId" : "TW7" 
+    }, {
+      "title" : "06 - Test from commit TW8 - Added",
+		"comment" : "no assignee, so TW8 assignee (Kay Jones) should be used",
+      "description" : "Improve report",
+      "supportingAtsId" : "TW8" 
+    }, {
+      "title" : "02 - Test from commit TW10",
+      "assigneesArtIds" : "277990", "comment": "Jason Micheal",
+      "description" : "Load customer facing Web",
+      "supportingAtsId" : "TW10"
+    } ]
+  },
+  "taskTrackArtId" : "485234857"
+}

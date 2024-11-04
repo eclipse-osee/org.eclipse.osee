@@ -36,13 +36,14 @@ import org.junit.Assert;
  */
 public class AtsRestCoverageTest {
 
-   RestData data = new RestData();
-   XResultData rd = new XResultData();
    /**
     * This number should not be reduced, ask if you do not know how to create tests for new REST calls.<br/>
     * Please increase this number as percent coverage goes up.
     */
-   private final float MINIMUM_PERCENT_COVERAGE = Float.valueOf(44);
+   private final float MINIMUM_PERCENT_COVERAGE = Float.valueOf(49);
+   RestData data = new RestData();
+   XResultData rd = new XResultData();
+   private int match;
 
    @org.junit.Test
    public void test() {
@@ -51,12 +52,14 @@ public class AtsRestCoverageTest {
       setSkips();
       matchup();
       float percentCoverage = report();
-      Assert.assertTrue("ATS REST Coverage should not drop below " + MINIMUM_PERCENT_COVERAGE + ". Add REST tests!\n",
+      Assert.assertTrue(
+         String.format("ATS REST Coverage %s should not drop below %s; Actual %s / Expected %s. Add ATS REST tests!",
+            percentCoverage, MINIMUM_PERCENT_COVERAGE, data.actuals, data.expected),
          percentCoverage > MINIMUM_PERCENT_COVERAGE);
    }
 
    private float report() {
-      int match = 0;
+      match = 0;
       for (ActualUrl actUrl : data.actuals) {
          if (actUrl.isMatch()) {
             match++;
@@ -126,7 +129,7 @@ public class AtsRestCoverageTest {
          // if {} is in expected, try to matchup with path params / ids
          if (cleanUrl.contains("{")) {
             String cleanPatternStr = cleanUrl;
-            cleanPatternStr = cleanPatternStr.replaceAll("\\{.*?\\}", "[0-9a-z]+");
+            cleanPatternStr = cleanPatternStr.replaceAll("\\{.*?\\}", "[0-9a-zA-Z]+");
             cleanPatternStr = cleanPatternStr + "$";
             rd.logf("Cln Pattern: %s\n", cleanPatternStr);
             Pattern cleanPattern = Pattern.compile(cleanPatternStr);

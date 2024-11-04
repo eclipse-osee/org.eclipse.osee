@@ -216,6 +216,7 @@ export const navigationStructure: navigationElement[] = [
 						icon: 'help_outline',
 						description: '',
 						usesBranch: false,
+						external: true,
 						children: [],
 					},
 				],

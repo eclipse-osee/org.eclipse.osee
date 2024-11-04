@@ -128,6 +128,7 @@ public class CreateSystemBranches {
       ArtifactId mimIcdImport = tx.createArtifact(mimFolder, MimArtifactTokens.MimIcdImport);
       tx.setSoleAttributeValue(mimIcdImport, CoreAttributeTypes.EndpointUrl, "/mim/import/icd/<branchId>");
       tx.setSoleAttributeValue(mimIcdImport, CoreAttributeTypes.ConnectionRequired, false);
+      tx.setSoleAttributeValue(mimIcdImport, CoreAttributeTypes.TransportTypeRequired, true);
 
       tx.commit();
 

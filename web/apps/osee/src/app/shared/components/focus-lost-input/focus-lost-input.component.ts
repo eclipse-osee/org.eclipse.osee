@@ -35,7 +35,7 @@ let nextUniqueId = 0;
 		(focusin)="focus.set(true)"
 		(focusout)="focus.set(false)"
 		[subscriptSizing]="subscriptSizing()"
-		class="tw-bg-inherit tw-text-inherit [&>.mat-mdc-form-field-input-control]:tw-text-inherit [&>.mdc-text-field--filled]:tw-bg-inherit">
+		class="tw-w-full tw-bg-inherit tw-px-2 tw-text-inherit [&>.mat-mdc-form-field-input-control]:tw-text-inherit [&>.mdc-text-field--filled]:tw-bg-inherit">
 		<input
 			matInput
 			[name]="'focus-lost-input-' + _componentId()"

@@ -12,7 +12,7 @@
  **********************************************************************/
 import { test } from '@ngx-playwright/test';
 
-test('test', async ({ page }) => {
+test('create elements', async ({ page }) => {
 	await page.goto('http://localhost:4200/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
@@ -35,6 +35,8 @@ test('test', async ({ page }) => {
 		.getByRole('row', { name: 'Structure 1 1 1 0 Misc' })
 		.getByRole('button')
 		.click();
+
+	// Create Integer Element
 	await page.getByRole('button', { name: 'Add Element to:' }).click();
 	await page.getByRole('menuitem', { name: 'Structure' }).click();
 	await page.getByRole('button', { name: 'Create new Element' }).click();
@@ -77,6 +79,8 @@ test('test', async ({ page }) => {
 	await page.getByRole('button', { name: 'Ok' }).click();
 	await page.getByRole('button', { name: 'Next' }).click();
 	await page.getByRole('button', { name: 'Ok' }).click();
+
+	// Create Demo Fault element
 	await page.getByRole('button', { name: 'Add Element to:' }).click();
 	await page.getByRole('menuitem', { name: 'Structure' }).click();
 	await page.getByRole('button', { name: 'Create new Element' }).click();
@@ -113,9 +117,9 @@ test('test', async ({ page }) => {
 		.click();
 	await page
 		.locator('div')
-		.filter({ hasText: /^Enter Enum Set Name$/ })
+		.filter({ hasText: /^Enumeration Set Name$/ })
 		.click();
-	await page.getByLabel('Enter Enum Set Name').fill('Demo Fault');
+	await page.getByLabel('Enumeration Set Name').fill('Demo Fault');
 	await page.locator('osee-enum-form').getByRole('button').click();
 	await page.getByText('Enter a name').click();
 	await page.getByLabel('Enter a name').fill('Warning');
@@ -152,10 +156,8 @@ test('test', async ({ page }) => {
 	await page.getByRole('button', { name: 'Ok' }).click();
 	await page.getByRole('button', { name: 'Next' }).click();
 	await page.getByRole('button', { name: 'Ok' }).click();
-	await page.locator('button').filter({ hasText: /^add$/ }).click();
-	await page
-		.getByRole('tab', { name: 'Select Structure options' })
-		.press('Escape');
+
+	// Create ETA element
 	await page.getByRole('button', { name: 'Add Element to:' }).click();
 	await page.getByRole('menuitem', { name: 'Structure' }).click();
 	await page.getByRole('button', { name: 'Create new Element' }).click();
@@ -205,6 +207,8 @@ test('test', async ({ page }) => {
 	await page.getByRole('button', { name: 'Ok' }).click();
 	await page.getByRole('button', { name: 'Next' }).click();
 	await page.getByRole('button', { name: 'Ok' }).click();
+
+	// Create Yes or No element
 	await page.getByRole('button', { name: 'Add Element to:' }).click();
 	await page.getByRole('menuitem', { name: 'Structure' }).click();
 	await page.getByRole('button', { name: 'Create new Element' }).click();
@@ -249,6 +253,8 @@ test('test', async ({ page }) => {
 	await page.getByRole('button', { name: 'Ok' }).click();
 	await page.getByRole('button', { name: 'Next' }).click();
 	await page.getByRole('button', { name: 'Ok' }).click();
+
+	// Change start and end index in table
 	await page.getByText('account_circle').click();
 	await page.getByRole('menuitem', { name: 'Settings' }).click();
 	await page
@@ -271,4 +277,49 @@ test('test', async ({ page }) => {
 		.click();
 
 	await page.waitForTimeout(500);
+});
+
+test('add array element', async ({ page }) => {
+	await page.setViewportSize({ width: 1200, height: 900 });
+	await page.goto('http://localhost:4200/ple/messaging/connections/working');
+	await page.getByText('Select a Branch').click();
+	await page.getByText('TW2 - New MIM ICD').click();
+	await page.getByText('Connection A-B', { exact: true }).click();
+	await page
+		.locator('button')
+		.filter({ hasText: /^expand_more$/ })
+		.click();
+	await page
+		.getByRole('row', {
+			name: 'Submessage 1 1 Go To Message Details Base',
+			exact: true,
+		})
+		.getByRole('link')
+		.click();
+	await page
+		.getByRole('row', { name: 'Structure 1 1 1 0 Misc 3 16' })
+		.getByRole('button')
+		.click();
+	await page.getByRole('button', { name: 'Add Element to:' }).click();
+	await page.getByRole('menuitem', { name: 'Structure' }).click();
+	await page.getByRole('button', { name: 'Create new Element' }).click();
+	await page.getByLabel('Name', { exact: true }).click();
+	await page.getByLabel('Name', { exact: true }).fill('Test Char');
+
+	await page.screenshot({
+		animations: 'disabled',
+		path: 'screenshots/create-element-dialog.png',
+	});
+
+	await page.getByLabel('Array Header').click();
+	await page.getByLabel('Use Array Header Name in').click();
+	await page.getByLabel('Array Index Delimiter 1').click();
+	await page.getByLabel('Array Index Delimiter 1').fill('_');
+	await page.getByLabel('Array Index Delimiter 2').click();
+	await page.getByLabel('Array Index Delimiter 2').fill('-');
+
+	await page.screenshot({
+		animations: 'disabled',
+		path: 'screenshots/create-array-header-delimiters.png',
+	});
 });

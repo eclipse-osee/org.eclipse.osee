@@ -27,6 +27,7 @@
 							<excludes>
 								<plugin id="org.slf4j.api"/>
 								<plugin id="swagger-models"/>
+								<plugin id="com.fasterxml.jackson.dataformat.jackson-dataformat-yaml"/>
 								<plugin id="swagger-integration"/>
 								<plugin id="swagger-annotations"/>
 								<plugin id="swagger-core"/>

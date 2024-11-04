@@ -14,6 +14,7 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import tailwind from "@astrojs/tailwind";
+import starlightImageZoomPlugin from "starlight-image-zoom";
 
 // https://astro.build/config
 export default defineConfig({
@@ -34,15 +35,32 @@ export default defineConfig({
           label: "MIM",
           items: [
             { label: "MIM Overview", slug: "mim/mim-overview" },
-            { label: "Data Model", slug: "mim/datamodel" },
             { label: "Example ICD", slug: "mim/example-icd" },
+            { label: "Data Model", slug: "mim/datamodel" },
             {
               label: "Guides",
               items: [
-                { label: "Creating an ICD", slug: "mim/guides/create-icd" },
+                {
+                  label: "Creating an ICD",
+                  collapsed: true,
+                  items: [
+                    {
+                      label: "Creating an ICD",
+                      slug: "mim/guides/create-icd",
+                    },
+                    {
+                      label: "Creating Elements",
+                      slug: "mim/guides/create-elements",
+                    },
+                  ],
+                },
                 {
                   label: "Peer Review Workflow",
                   slug: "mim/guides/peer-review",
+                },
+                {
+                  label: "Traceability",
+                  slug: "mim/guides/traceability",
                 },
               ],
             },
@@ -51,7 +69,27 @@ export default defineConfig({
               items: [
                 {
                   label: "List Configuration",
-                  slug: "mim/pages/enum-list-config",
+                  slug: "mim/pages/list-config",
+                },
+                {
+                  label: "Platform Types",
+                  slug: "mim/pages/platform-types",
+                },
+                {
+                  label: "Reports",
+                  slug: "mim/pages/reports",
+                },
+                {
+                  label: "Transport Types",
+                  slug: "mim/pages/transport-types",
+                },
+                {
+                  label: "Cross-References",
+                  slug: "mim/pages/cross-references",
+                },
+                {
+                  label: "Import",
+                  slug: "mim/pages/import",
                 },
               ],
             },
@@ -61,6 +99,11 @@ export default defineConfig({
           label: "BAT",
           items: [{ label: "BAT Overview", slug: "bat/bat-overview" }],
         },
+      ],
+      plugins: [
+        starlightImageZoomPlugin({
+          showCaptions: false,
+        }),
       ],
     }),
     tailwind({

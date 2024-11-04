@@ -110,6 +110,7 @@ public class DeleteAction extends Action {
                XResultData rd =
                   ArtifactPersistenceManager.deleteArtifact(transaction, false, new XResultData(), artifactsArray);
                ArtifactPersistenceManager.cancelTxAndExceptionIfErrors(rd, "Delete Artifact", transaction);
+               transaction.execute();
                return toReturn;
             }
          };

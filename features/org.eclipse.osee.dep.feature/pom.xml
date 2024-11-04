@@ -28,6 +28,7 @@
 						</goals>
 						<configuration>
 							<excludes>
+								<plugin id="com.fasterxml.jackson.dataformat.jackson-dataformat-yaml"/>
 								<plugin id="org.slf4j.api"/>
 							    <plugin id="net.jini.jsk-lib"/>
 								<plugin id="net.jini.jsk-platform"/>

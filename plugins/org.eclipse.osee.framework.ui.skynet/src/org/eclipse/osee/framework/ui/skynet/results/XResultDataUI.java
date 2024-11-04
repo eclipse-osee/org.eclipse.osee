@@ -116,31 +116,33 @@ public class XResultDataUI {
 
    public static String report(XResultData resultData, final String title, final Manipulations... manipulations) {
       final String html = getReport(resultData, title, manipulations).getManipulatedHtml();
-      // The else should work in all cases and does in runtime, but doesn't in full release.  Call old way if no tables.
-      if (resultData.getTables().isEmpty()) {
-         ResultsEditor.open("Results", title, html);
-      } else {
-         ResultsEditor.open(new IResultsEditorProvider() {
+      if (!org.eclipse.osee.framework.jdk.core.util.Collections.asList(manipulations).contains(Manipulations.NOUI)) {
+         // The else should work in all cases and does in runtime, but doesn't in full release.  Call old way if no tables.
+         if (resultData.getTables().isEmpty()) {
+            ResultsEditor.open("Results", title, html);
+         } else {
+            ResultsEditor.open(new IResultsEditorProvider() {
 
-            private List<IResultsEditorTab> tabs;
+               private List<IResultsEditorTab> tabs;
 
-            @Override
-            public String getEditorName() {
-               return title;
-            }
-
-            @Override
-            public List<IResultsEditorTab> getResultsEditorTabs() {
-               if (tabs == null) {
-                  tabs = new LinkedList<>();
-                  tabs.add(new ResultsEditorHtmlTab(title, "Results", html));
-                  for (XResultTable table : resultData.getTables()) {
-                     tabs.add(createDataTable(table));
-                  }
+               @Override
+               public String getEditorName() {
+                  return title;
                }
-               return tabs;
-            }
-         });
+
+               @Override
+               public List<IResultsEditorTab> getResultsEditorTabs() {
+                  if (tabs == null) {
+                     tabs = new LinkedList<>();
+                     tabs.add(new ResultsEditorHtmlTab(title, "Results", html));
+                     for (XResultTable table : resultData.getTables()) {
+                        tabs.add(createDataTable(table));
+                     }
+                  }
+                  return tabs;
+               }
+            });
+         }
       }
       return html;
    }
@@ -263,7 +265,7 @@ public class XResultDataUI {
    }
 
    public static void reportAndOpen(XResultData rd, String title, String filename) {
-      String html = report(rd, title);
+      String html = report(rd, title, Manipulations.ALL, Manipulations.NOUI);
       try {
          String fName = System.getProperty("user.home") + File.separator + filename;
          File outFile = new File(fName);

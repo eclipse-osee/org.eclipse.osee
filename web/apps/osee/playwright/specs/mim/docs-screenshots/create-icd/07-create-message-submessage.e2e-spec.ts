@@ -66,7 +66,7 @@ test('test', async ({ page }) => {
 
 	await page.screenshot({
 		animations: 'disabled',
-		path: 'create-submessage-dialog.png',
+		path: 'screenshots/create-submessage-dialog.png',
 	});
 
 	await page.getByRole('button', { name: 'Create new Submessage' }).click();
@@ -77,7 +77,7 @@ test('test', async ({ page }) => {
 
 	await page.screenshot({
 		animations: 'disabled',
-		path: 'create-submessage-dialog-new.png',
+		path: 'screenshots/create-submessage-dialog-new.png',
 	});
 
 	await page.getByRole('button', { name: 'Next' }).click();

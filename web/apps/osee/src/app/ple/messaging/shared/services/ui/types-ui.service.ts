@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable, inject } from '@angular/core';
+import { applicabilitySentinel } from '@osee/applicability/types';
 import type {
 	PlatformType,
 	enumeration,
@@ -21,16 +22,12 @@ import {
 	ARTIFACTTYPEIDENUM,
 	RELATIONTYPEIDENUM,
 } from '@osee/shared/types/constants';
-import { createArtifact as _createArtifact } from '@osee/transactions/functions';
-import { CurrentTransactionService } from '@osee/transactions/services';
 import {
-	legacyCreateArtifact,
-	legacyModifyArtifact,
-	legacyModifyRelation,
-	legacyTransaction,
-	transaction,
-	transactionResult,
-} from '@osee/transactions/types';
+	createArtifact as _createArtifact,
+	modifyArtifact,
+} from '@osee/transactions/functions';
+import { CurrentTransactionService } from '@osee/transactions/services';
+import { transaction, transactionResult } from '@osee/transactions/types';
 import { Observable, combineLatest, of } from 'rxjs';
 import {
 	filter,
@@ -167,13 +164,6 @@ export class TypesUIService {
 			{ set: attributes }
 		);
 	}
-	performMutation(body: legacyTransaction) {
-		return this._ui.id.pipe(
-			take(1),
-			filter((id) => id !== ''),
-			switchMap((_) => this._typesService.performMutation(body))
-		);
-	}
 
 	createPlatformType(
 		type: PlatformType,
@@ -254,66 +244,106 @@ export class TypesUIService {
 		elementKey?: string,
 		existingTx?: Required<transaction>
 	) {
-		//TODO: luciano confirm this didn't break
 		const { tx } = this.createPlatformType(body, existingTx, elementKey);
 		if (!(elementKey && existingTx)) {
 			return of(tx).pipe(take(1), this._currentTx.performMutation());
 		}
 		return of(tx).pipe(take(1));
 	}
-	partialUpdate(dialogResponse: {
-		createArtifacts: legacyCreateArtifact[];
-		modifyArtifacts: legacyModifyArtifact[];
-		deleteRelations: legacyModifyRelation[];
-	}) {
-		return this._ui.id.pipe(
-			take(1),
-			map((id) => {
-				const tx: legacyTransaction = {
-					branch: id,
-					txComment: 'Updating platform type',
-					createArtifacts: dialogResponse.createArtifacts,
-					modifyArtifacts: dialogResponse.modifyArtifacts,
-					deleteRelations: dialogResponse.deleteRelations,
-				};
-				return tx;
-			}),
-			switchMap((transaction) =>
-				this._typesService.performMutation(transaction)
-			)
-		);
+	private _getPlatformTypeAttributes(platformType: PlatformType) {
+		const {
+			id,
+			applicability,
+			gammaId,
+			added,
+			deleted,
+			changes,
+			enumSet,
+			...remainingAttributes
+		} = platformType;
+		const attributeKeys = Object.keys(
+			remainingAttributes
+		) as (keyof typeof remainingAttributes)[];
+		const attributes = attributeKeys
+			.map((k) => remainingAttributes[k])
+			.filter((attr) => attr.id !== '');
+		return attributes;
 	}
-
-	copyType(dialogResponse: {
-		createArtifacts: legacyCreateArtifact[];
-		modifyArtifacts: legacyModifyArtifact[];
-		deleteRelations: legacyModifyRelation[];
-	}) {
-		const createArtifacts = dialogResponse.createArtifacts.sort((a, b) => {
-			if (_isCreationRel(a.typeId) && _isCreationRel(b.typeId)) {
-				return (
-					_artTypes.indexOf(b.typeId) - _artTypes.indexOf(a.typeId)
-				);
-			} else {
-				return 0;
-			}
-		});
-		return this._ui.id.pipe(
-			take(1),
-			map((id) => {
-				const tx: legacyTransaction = {
-					branch: id,
-					txComment: 'Creating platform type',
-					createArtifacts: createArtifacts,
-					modifyArtifacts: dialogResponse.modifyArtifacts,
-					deleteRelations: dialogResponse.deleteRelations,
-				};
-				return tx;
-			}),
-			switchMap((transaction) =>
-				this._typesService.performMutation(transaction)
-			)
+	partialUpdate(current: PlatformType, previous: PlatformType) {
+		let tx = this._currentTx.createTransaction(
+			`Changing Platform Type ${previous.name.value}`
 		);
+		const currentAttr = this._getPlatformTypeAttributes(current);
+		const previousAttr = this._getPlatformTypeAttributes(previous);
+		const attrToAdd = currentAttr.filter((x) => x.id === '-1');
+		const modifyAttr = currentAttr
+			.filter((v) => v.id !== '-1')
+			.filter(
+				(v) =>
+					previousAttr.filter(
+						(x) =>
+							x.id === v.id &&
+							x.typeId === v.typeId &&
+							x.gammaId === v.gammaId &&
+							x.value !== v.value
+					).length > 0
+			);
+		const deleteAttr = previousAttr.filter(
+			(v) => !currentAttr.map((x) => x.id).includes(v.id)
+		);
+		if (
+			previous.applicability.id !== current.applicability.id ||
+			attrToAdd.length > 0 ||
+			modifyAttr.length > 0 ||
+			deleteAttr.length > 0
+		) {
+			tx = modifyArtifact(tx, previous.id, current.applicability, {
+				add: attrToAdd,
+				set: modifyAttr,
+				delete: deleteAttr,
+			});
+		}
+		tx = this._enumSetService.updateEnumSet(
+			current.enumSet,
+			previous.enumSet,
+			tx
+		);
+		return of(tx).pipe(this._currentTx.performMutation());
+	}
+	copyType(platformType: PlatformType) {
+		const attributes = this._getPlatformTypeAttributes(platformType);
+		const results = this._currentTx.createArtifact(
+			`Copying Platform Type`,
+			ARTIFACTTYPEIDENUM.PLATFORMTYPE,
+			platformType.applicability,
+			[],
+			...attributes
+		);
+		let tx = results.tx;
+		tx = this._enumSetService.updateEnumSet(
+			platformType.enumSet,
+			{
+				id: '-1',
+				gammaId: '-1',
+				name: {
+					id: '-1',
+					typeId: '1152921504606847088',
+					gammaId: '-1',
+					value: '',
+				},
+				description: {
+					id: '-1',
+					typeId: '1152921504606847090',
+					gammaId: '-1',
+					value: '',
+				},
+				applicability: applicabilitySentinel,
+				enumerations: [],
+			},
+			tx,
+			results._newArtifact.key
+		);
+		return of(tx).pipe(this._currentTx.performMutation());
 	}
 
 	createEnum(
