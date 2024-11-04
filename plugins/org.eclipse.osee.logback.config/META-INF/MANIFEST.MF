@@ -5,5 +5,4 @@ Bundle-SymbolicName: org.eclipse.osee.logback.config;singleton:=true
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Fragment-Host: ch.qos.logback.classic;bundle-version="0.9.27"
 Bundle-RequiredExecutionEnvironment: JavaSE-11

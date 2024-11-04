@@ -36,7 +36,6 @@
 								<plugin id="jakarta.xml.bind"/>
 								<plugin id="ch.qos.logback.slf4j"/>
 								<plugin id="org.slf4j.api"/>
-								<plugin id="com.fasterxml.jackson.dataformat.jackson-dataformat-yaml"/>
 						                <plugin	id="jackson-datatype-jsr310"/>
 						        	<plugin id="io.swagger.core.v3.swagger-models"/>
 						        	<plugin id="commons-lang3"/>

@@ -50,10 +50,6 @@
          version="0.0.0"/>
    
    <includes
-         id="org.eclipse.egit"
-         version="0.0.0"/>
-   
-   <includes
          id="org.eclipse.equinox.core.feature"
          version="0.0.0"/>
 
@@ -585,65 +581,61 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-   <!-- 
-	Jackson 2.15 adds maximum processing limits to Strings. 
-	Publishing client-server API exchanges large strings.
-	Migrate the usage of Strings in code before updating past 2.14.
-   -->
+
    <plugin
          id="com.fasterxml.jackson.core.jackson-core"
          download-size="0"
          install-size="0"
-         version="2.14.3"
-         unpack="false"/> 
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="com.fasterxml.jackson.core.jackson-annotations"
          download-size="0"
          install-size="0"
-         version="2.14.3"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="com.fasterxml.jackson.core.jackson-databind"
          download-size="0"
          install-size="0"
-         version="2.14.3"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base"
          download-size="0"
          install-size="0"
-         version="2.14.3"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider"
          download-size="0"
          install-size="0"
-         version="2.14.3"
+         version="0.0.0"
          unpack="false"/>
     
     <plugin
          id="com.fasterxml.jackson.dataformat.jackson-dataformat-yaml"
          download-size="0"
          install-size="0"
-         version="2.14.3"
+         version="0.0.0"
          unpack="false"/>     
    
    <plugin
          id="com.fasterxml.jackson.datatype.jackson-datatype-jsr310"
          download-size="0"
          install-size="0"
-         version="2.14.3"
+         version="0.0.0"
          unpack="false"/>    
 
    <plugin
          id="ch.qos.logback.slf4j"
          download-size="0"
          install-size="0"
-         version="1.1.2.v20160301-0943"
+         version="0.0.0"
          fragment="true"
          unpack="false"/>
 
@@ -893,14 +885,14 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-    <!--
+   
     <plugin
          id="slf4j.api"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-        -->        
+              
    <plugin
          id="com.lowagie.text"
          download-size="0"
@@ -989,14 +981,14 @@
          id="ch.qos.logback.core"
          download-size="0"
          install-size="0"
-         version="1.1.2.v20200204-2150"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="ch.qos.logback.classic"
          download-size="0"
          install-size="0"
-         version="1.1.2.v20171220-1825"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
@@ -2255,7 +2247,7 @@
          id="org.yaml.snakeyaml"
          download-size="0"
          install-size="0"
-         version="1.33"
+         version="0.0.0"
          unpack="false"/>   
   
    <plugin

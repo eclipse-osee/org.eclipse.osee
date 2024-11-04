@@ -13,7 +13,8 @@
 		<module>../../plugins/org.eclipse.oss.ajax</module>
 	  	<module>../../plugins/org.eclipse.nebula.widgets.xviewer</module>
 		<module>../../plugins/org.eclipse.nebula.widgets.xviewer.core</module>
-		<module>../../plugins/org.eclipse.nebula.widgets.xviewer.feature</module>
+			<module>../../plugins/org.eclipse.nebula.widgets.xviewer.feature</module>
+	
 		<module>../../features/org.eclipse.osee.dep.feature</module>
 		<module>../../plugins/org.eclipse.osee.dep.p2</module>
 	</modules>
@@ -84,6 +85,13 @@
              <url>file:./../org.eclipse.oss.ajax.p2/target/repository</url>
           </repository>
     -->
+    
+     <repository>
+		<id>jgit</id>
+		<layout>p2</layout>
+	        <url>https://repo.eclipse.org/content/unzip/releases.unzip/org/eclipse/jgit/org.eclipse.jgit.repository/5.13.3.202401111512-r/org.eclipse.jgit.repository-5.13.3.202401111512-r.zip-unzip/</url>
+           </repository>
+    
      <repository>
 		<id>nebula</id>
 		<layout>p2</layout>

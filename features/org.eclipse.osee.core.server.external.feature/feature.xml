@@ -523,20 +523,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-   <plugin
-         id="ch.qos.logback.slf4j"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
-         unpack="false"/>
 
-   <plugin
-         id="ch.qos.logback.classic"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="org.apache.commons.codec"
@@ -594,12 +581,6 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="ch.qos.logback.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="org.eclipse.equinox.common"
@@ -1358,12 +1339,6 @@
          version="0.0.0"
          unpack="false"/>
   
-  <plugin
-         id="org.xerial.sqlite-jdbc"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>  
   
   <plugin
          id="com.vladsch.flexmark.ext-gitlab"
