@@ -586,65 +586,65 @@
             version="0.0.0"
             unpack="false"/>
 
-   <plugin
-         id="javax.xml.bind"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-   <!--
-	Jackson 2.15 adds maximum processing limits to Strings.
-	Publishing client-server API exchanges large strings.
-	Migrate the usage of Strings in code before updating past 2.14.
-   -->
-   <plugin
-         id="com.fasterxml.jackson.core.jackson-core"
-         download-size="0"
-         install-size="0"
-         version="2.14.3"
-         unpack="false"/>
+      <plugin
+            id="javax.xml.bind"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
+      <!--
+      Jackson 2.15 adds maximum processing limits to Strings.
+      Publishing client-server API exchanges large strings.
+      Migrate the usage of Strings in code before updating past 2.14.
+      -->
+      <plugin
+            id="com.fasterxml.jackson.core.jackson-core"
+            download-size="0"
+            install-size="0"
+            version="2.14.3"
+            unpack="false"/>
 
-   <plugin
-         id="com.fasterxml.jackson.core.jackson-annotations"
-         download-size="0"
-         install-size="0"
-         version="2.14.3"
-         unpack="false"/>
+      <plugin
+            id="com.fasterxml.jackson.core.jackson-annotations"
+            download-size="0"
+            install-size="0"
+            version="2.14.3"
+            unpack="false"/>
 
-   <plugin
-         id="com.fasterxml.jackson.core.jackson-databind"
-         download-size="0"
-         install-size="0"
-         version="2.14.3"
-         unpack="false"/>
+      <plugin
+            id="com.fasterxml.jackson.core.jackson-databind"
+            download-size="0"
+            install-size="0"
+            version="2.14.3"
+            unpack="false"/>
 
-   <plugin
-         id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base"
-         download-size="0"
-         install-size="0"
-         version="2.14.3"
-         unpack="false"/>
+      <plugin
+            id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base"
+            download-size="0"
+            install-size="0"
+            version="2.14.3"
+            unpack="false"/>
 
-   <plugin
-         id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+      <plugin
+            id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
 
-    <plugin
-         id="com.fasterxml.jackson.dataformat.jackson-dataformat-yaml"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+      <plugin
+            id="com.fasterxml.jackson.dataformat.jackson-dataformat-yaml"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
 
-   <plugin
-         id="com.fasterxml.jackson.datatype.jackson-datatype-jsr310"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+      <plugin
+            id="com.fasterxml.jackson.datatype.jackson-datatype-jsr310"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
 
       <plugin
             id="ch.qos.logback.slf4j"
@@ -669,18 +669,18 @@
             unpack="false"/>
 
       <plugin
-      id="org.apache.poi.ooxml.schemas"
-      download-size="0"
-      install-size="0"
-      version="0.0.0"
-      unpack="false"/>
+            id="org.apache.poi.ooxml.schemas"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
 
       <plugin
-      id="org.apache.ws.xmlschema.core"
-      download-size="0"
-      install-size="0"
-      version="0.0.0"
-      unpack="false"/>
+            id="org.apache.ws.xmlschema.core"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
 
       <plugin
             id="org.apache.xmlbeans"
@@ -1473,7 +1473,6 @@
             install-size="0"
             version="0.0.0"
             unpack="false"/>
-
 
       <plugin
             id="org.eclipse.gmf.runtime.diagram.ui.printing"
@@ -2293,158 +2292,158 @@
             version="0.0.0"
             unpack="false"/>
 
-   <plugin
-         id="org.yaml.snakeyaml"
-         download-size="0"
-         install-size="0"
-         version="1.33"
-         unpack="false"/>
+      <plugin
+            id="org.yaml.snakeyaml"
+            download-size="0"
+            install-size="0"
+            version="1.33"
+            unpack="false"/>
 
-   <plugin
-         id="io.swagger.core.v3.swagger-annotations"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+      <plugin
+            id="io.swagger.core.v3.swagger-annotations"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
 
-   <plugin
-         id="io.swagger.core.v3.swagger-core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+      <plugin
+            id="io.swagger.core.v3.swagger-core"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
 
-   <plugin
-         id="io.swagger.core.v3.swagger-integration"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+      <plugin
+            id="io.swagger.core.v3.swagger-integration"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
 
- <plugin
-         id="io.swagger.core.v3.swagger-jaxrs2"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+      <plugin
+            id="io.swagger.core.v3.swagger-jaxrs2"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
 
-  <plugin
-         id="io.swagger.core.v3.swagger-models"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+      <plugin
+            id="io.swagger.core.v3.swagger-models"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
 
-  <plugin
-         id="org.glassfish.corba.glassfish-corba-orb"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+      <plugin
+            id="org.glassfish.corba.glassfish-corba-orb"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
 
-  <plugin
-         id="org.glassfish.corba.glassfish-corba-internal-api"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+      <plugin
+            id="org.glassfish.corba.glassfish-corba-internal-api"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
 
-  <plugin
-         id="org.glassfish.corba.glassfish-corba-omgapi"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+      <plugin
+            id="org.glassfish.corba.glassfish-corba-omgapi"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
 
-  <plugin
-         id="org.xerial.sqlite-jdbc"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+      <plugin
+            id="org.xerial.sqlite-jdbc"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
 
-   <plugin
-         id="org.glassfish.jaxb.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+      <plugin
+            id="org.glassfish.jaxb.core"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
 
-   <plugin
-         id="org.glassfish.jaxb.runtime"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+      <plugin
+            id="org.glassfish.jaxb.runtime"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
 
-   <plugin
-         id="org.glassfish.pfl.pfl-tf"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+      <plugin
+            id="org.glassfish.pfl.pfl-tf"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
 
-  <plugin
-         id="org.glassfish.pfl.pfl-basic"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+      <plugin
+            id="org.glassfish.pfl.pfl-basic"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
 
-   <plugin
-         id="org.glassfish.pfl.pfl-dynamic"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+      <plugin
+            id="org.glassfish.pfl.pfl-dynamic"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
 
-   <plugin
-         id="jakarta.xml.bind-api"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+      <plugin
+            id="jakarta.xml.bind-api"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
 
-   <plugin
-         id="jakarta.validation.jakarta.validation-api"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+      <plugin
+            id="jakarta.validation.jakarta.validation-api"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
 
-   <plugin
-         id="jakarta.xml.bind"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+      <plugin
+            id="jakarta.xml.bind"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
 
-   <plugin
-         id="jakarta.activation-api"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+      <plugin
+            id="jakarta.activation-api"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
 
-   <plugin
-         id="org.eclipse.nebula.widgets.ganttchart"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+      <plugin
+            id="org.eclipse.nebula.widgets.ganttchart"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
 
-   <plugin
-         id="com.sun.xml.fastinfoset.FastInfoset"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+      <plugin
+            id="com.sun.xml.fastinfoset.FastInfoset"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
 
-   <plugin
-         id="org.glassfish.hk2.osgi-resource-locator"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
+      <plugin
+            id="org.glassfish.hk2.osgi-resource-locator"
+            download-size="0"
+            install-size="0"
+            version="0.0.0"
+            unpack="false"/>
 
 </feature>
