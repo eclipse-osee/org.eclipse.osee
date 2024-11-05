@@ -43,4 +43,4 @@ WORKDIR ${OSEE_HOME}
 
 HEALTHCHECK --interval=10s --timeout=5s --start-period=1m --retries=5 CMD curl -I -f --max-time 5 http://localhost:8089 || exit 1
 
-ENTRYPOINT java -server -Xmx3G -Dorg.osgi.service.http.port=8089 -Dlogback.configurationFile=logback-dev.xml -Dosee.application.server.wsso.uri=${WEB_URI} -Dorg.eclipse.equinox.http.jetty.context.sessioninactiveinterval=3600 -Dcm.config.uri=${CM_CONFIG_URI} -Dosee.authentication.protocol=loginId -Dosee.application.server.data=${APPLICATION_SERVER_DATA} -jar plugins/org.eclipse.equinox.launcher_1.5.700.v20200207-2156.jar -console -consoleLog 2>&1
+ENTRYPOINT java -server -Xmx3G -Dorg.osgi.service.http.port=8089 -Dlogback.configurationFile=logback-dev.xml -Dosee.application.server.wsso.uri=${WEB_URI} -Dorg.eclipse.equinox.http.jetty.context.sessioninactiveinterval=3600 -Dcm.config.uri=${CM_CONFIG_URI} -Dosee.authentication.protocol=loginId -Dosee.application.server.data=${APPLICATION_SERVER_DATA} -jar plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar -console -consoleLog 2>&1

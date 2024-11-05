@@ -21,7 +21,7 @@ java_import(
                 "javax.servlet_3.1.0.v201410161800.jar",
                 "javax.validation_1.1.0.v20221112-0806.jar",
                 "javax.mail_1.4.0.v201005080615.jar"
-                
+
        ],
 )
 
@@ -42,7 +42,7 @@ java_import(
        jars = [
          	"org.apache.poi.ooxml.schemas_4.1.1.v20221112-0806.jar",
 		"org.apache.poi.ooxml_4.1.1.v20221112-0806.jar",
-		"org.apache.poi_4.1.1.v20221112-0806.jar" 
+		"org.apache.poi_4.1.1.v20221112-0806.jar"
        ]
 )
 
@@ -98,7 +98,7 @@ java_import(
                 "org.apache.commons.codec_1.14.0.v20221112-0806.jar",
 		"org.slf4j.api_1.7.30.v20200204-2150.jar",
 		"org.antlr.runtime_3.2.0.v201101311130.jar"
-                
+
        ],
 )
 
@@ -125,15 +125,15 @@ java_import(
 
 java_import(
         name = "swt",
-        jars = 
+        jars =
                select ({
 
                    "@platforms//os:windows": ["org.eclipse.swt.win32.win32.x86_64_3.114.100.v20200604-0951.jar","org.eclipse.swt_3.114.100.v20200604-0951.jar"],
                    "@platforms//os:linux": ["org.eclipse.swt.gtk.linux.x86_64_3.114.100.v20200604-0951.jar","org.eclipse.swt_3.114.100.v20200604-0951.jar"],
-                 
+
 	           }
                 )
-       
+
 )
 
 java_import(
@@ -162,7 +162,7 @@ java_import(
 		"org.eclipse.jdt.ui-3.21.100.jar",
 		"org.eclipse.ui.navigator_3.9.300.v20200513-0930.jar",
        ],
-       
+
 )
 
 java_import(
@@ -170,8 +170,8 @@ java_import(
         jars = [
                 "org.eclipse.help_3.8.800.v20200525-0755.jar"
        ],
-       
+
 )
 
-       
+
 
