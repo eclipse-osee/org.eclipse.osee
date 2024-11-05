@@ -629,21 +629,21 @@
             id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider"
             download-size="0"
             install-size="0"
-            version="0.0.0"
+            version="2.14.3"
             unpack="false"/>
 
       <plugin
             id="com.fasterxml.jackson.dataformat.jackson-dataformat-yaml"
             download-size="0"
             install-size="0"
-            version="0.0.0"
+            version="2.14.3"
             unpack="false"/>
 
       <plugin
             id="com.fasterxml.jackson.datatype.jackson-datatype-jsr310"
             download-size="0"
             install-size="0"
-            version="0.0.0"
+            version="2.14.3"
             unpack="false"/>
 
       <plugin
