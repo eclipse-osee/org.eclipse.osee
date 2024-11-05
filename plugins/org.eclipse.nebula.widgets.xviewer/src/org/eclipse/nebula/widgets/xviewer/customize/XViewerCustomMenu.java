@@ -5,7 +5,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * https://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -23,7 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.GroupMarker;
@@ -85,6 +86,7 @@ public class XViewerCustomMenu {
 
    protected XViewer xViewer;
    private final Clipboard clipboard = new Clipboard(null);
+   private static final Pattern NUMERIC_PATTERN = Pattern.compile("-?\\d+(\\.\\d+)?");
 
    protected Action filterByValue, filterByColumn, filterBySelColumn, clearAllSorting, clearAllFilters, tableProperties,
       viewTableReport, columnMultiEdit, removeSelected, removeNonSelected, viewLoadingReport, copySelected, showColumn,
@@ -422,11 +424,6 @@ public class XViewerCustomMenu {
    protected void handleSumColumn() {
       TreeColumn treeCol = xViewer.getRightClickSelectedColumn();
       XViewerColumn xCol = (XViewerColumn) treeCol.getData();
-      if (!xCol.isSummable()) {
-         XViewerLib.popup("Invalid Selection for Sum",
-            String.format("Sum not available for column [%s]", xCol.getName()));
-         return;
-      }
 
       TreeItem[] items = xViewer.getTree().getSelection();
       if (items.length == 0) {
@@ -440,7 +437,19 @@ public class XViewerCustomMenu {
       for (TreeItem item : items) {
          for (int x = 0; x < xViewer.getTree().getColumnCount(); x++) {
             if (xViewer.getTree().getColumn(x).equals(treeCol)) {
-               values.add(((IXViewerLabelProvider) xViewer.getLabelProvider()).getColumnText(item.getData(), x));
+               String val = ((IXViewerLabelProvider) xViewer.getLabelProvider()).getColumnText(item.getData(), x);
+               if (xCol.isSummable()) {
+                  values.add(val);
+               } else {
+                  boolean result = false;
+                  if (val != null && !val.isBlank()) {
+                     Matcher matcher = NUMERIC_PATTERN.matcher(val);
+                     result = matcher.matches();
+                  }
+                  if (result) {
+                     values.add(val);
+                  }
+               }
             }
          }
       }
