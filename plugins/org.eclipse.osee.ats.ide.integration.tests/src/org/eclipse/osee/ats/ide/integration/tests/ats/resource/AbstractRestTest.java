@@ -102,6 +102,12 @@ public abstract class AbstractRestTest {
       return obj;
    }
 
+   protected JsonNode testUrl(String url, int size) {
+      JsonNode array = readTree(url);
+      Assert.assertEquals(array.toString(), size, array.size());
+      return array;
+   }
+
    protected JsonNode testUrl(String url, String expectedName) {
       JsonNode node = readTree(url);
 

@@ -255,6 +255,7 @@ public interface AtsAttributeTypes {
    WorkPackageTypeAttributeType WorkPackageType = ats.createEnum(new WorkPackageTypeAttributeType(), Edit);
    AttributeTypeArtifactId WorkflowDefinitionReference = ats.createArtifactId(53049621055799825L, "ats.Workflow Definition Reference", TEXT_PLAIN, "Specific work flow definition id used by this Workflow artifact", Read);
    AttributeTypeString WorkflowNotes = ats.createString(1152921504606847205L, "ats.Notes", TEXT_PLAIN, "Notes applicable to ATS Workflow", MultiLine, Edit);
+   AttributeTypeLong WorkflowNoteColor = ats.createLong(8814630952882602L, "ats.Notes Color", TEXT_PLAIN, "Color to apply to Notes Cell", Edit);
    AttributeTypeString WorkType = ats.createString(72063456955810043L, "ats.Work Type", TEXT_PLAIN, "Work Type of this Team.", Config);
    AttributeTypeBoolean Removal = ats.createBoolean(7402091773036597223L, "ats.Removal", TEXT_PLAIN, "", Edit);
    AttributeTypeString StatementofLimitations = ats.createString(8062112497567930999L, "ats.Statement of Limitations", TEXT_PLAIN, "", MultiLine, Edit);

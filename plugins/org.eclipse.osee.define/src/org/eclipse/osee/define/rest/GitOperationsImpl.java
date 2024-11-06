@@ -24,10 +24,6 @@ import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitChange
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.GitCommitAuthorDate;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.RepositoryUrl;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.GitRepositoryCommit_GitCommit;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
-import com.jcraft.jsch.UserInfo;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
@@ -53,7 +49,6 @@ import org.eclipse.jgit.diff.DiffEntry.ChangeType;
 import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.diff.RawTextComparator;
 import org.eclipse.jgit.errors.RevisionSyntaxException;
-import org.eclipse.jgit.errors.UnsupportedCredentialItem;
 import org.eclipse.jgit.lib.ConfigConstants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
@@ -64,18 +59,16 @@ import org.eclipse.jgit.revwalk.RevSort;
 import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.eclipse.jgit.transport.CredentialItem;
-import org.eclipse.jgit.transport.CredentialsProvider;
-import org.eclipse.jgit.transport.CredentialsProviderUserInfo;
 import org.eclipse.jgit.transport.FetchResult;
-import org.eclipse.jgit.transport.JschConfigSessionFactory;
 import org.eclipse.jgit.transport.NetRCCredentialsProvider;
-import org.eclipse.jgit.transport.OpenSshConfig;
 import org.eclipse.jgit.transport.SshSessionFactory;
 import org.eclipse.jgit.transport.SshTransport;
 import org.eclipse.jgit.transport.TagOpt;
 import org.eclipse.jgit.transport.Transport;
 import org.eclipse.jgit.transport.URIish;
+import org.eclipse.jgit.transport.sshd.IdentityPasswordProvider;
+import org.eclipse.jgit.transport.sshd.SshdSessionFactory;
+import org.eclipse.jgit.transport.sshd.SshdSessionFactoryBuilder;
 import org.eclipse.jgit.treewalk.filter.AndTreeFilter;
 import org.eclipse.jgit.treewalk.filter.PathFilter;
 import org.eclipse.jgit.treewalk.filter.TreeFilter;
@@ -195,62 +188,36 @@ public final class GitOperationsImpl implements GitOperations {
    }
 
    private void configureSsh(TransportCommand<?, ?> transportCommand, String passphrase) {
-      JschConfigSessionFactory sessionFactory = new JschConfigSessionFactory() {
-         @Override
-         protected void configure(OpenSshConfig.Host hc, Session session) {
-            CredentialsProvider provider = new CredentialsProvider() {
-               @Override
-               public boolean isInteractive() {
-                  return false;
-               }
+      String serverDataPath = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER_DATA);
+      if (serverDataPath == null) {
+         serverDataPath = System.getProperty("user.home");
+      }
+      File serverApplicDir = new File(String.format("%s%s.ssh", serverDataPath, File.separator));
+      if (!serverApplicDir.exists()) {
+         serverApplicDir.mkdirs(); // Create .ssh directory if it doesn't exist
+      }
 
-               @Override
-               public boolean supports(CredentialItem... items) {
-                  return true;
-               }
+      // Set up the identity file (id_rsa) manually like the original
+      File privateKeyFile = new File(String.format("%s%sid_rsa", serverApplicDir.getPath(), File.separator));
 
-               @Override
-               public boolean get(URIish uri, CredentialItem... items) throws UnsupportedCredentialItem {
-                  for (CredentialItem item : items) {
-                     logger.info("Credential Item with Prompt [%s]", item.getPromptText());
-                     try {
-                        ((CredentialItem.StringType) item).setValue(passphrase);
-                     } catch (Exception ex) {
-                        logger.warn("Issue with CredentialItem with Prompt [%s] Giving Exception [%s]",
-                           item.getPromptText(), ex);
-                     }
+      // Create the SshdSessionFactory with the manually specified key
+      SshdSessionFactory sshSessionFactory =
+         new SshdSessionFactoryBuilder().setPreferredAuthentications("publickey").setHomeDirectory(
+            FS.DETECTED.userHome()).setSshDirectory(serverApplicDir).setKeyPasswordProvider(
+               cp -> new IdentityPasswordProvider(cp) {
+                  @Override
+                  protected char[] getPassword(URIish uri, String message) {
+                     return passphrase.toCharArray();
                   }
-                  return true;
-               }
+               }).build(null);
 
-            };
-            UserInfo userInfo = new CredentialsProviderUserInfo(session, provider);
-            session.setUserInfo(userInfo);
-         }
-
-         @Override
-         protected JSch createDefaultJSch(FS fs) throws JSchException {
-            String serverDataPath = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER_DATA);
-            if (serverDataPath == null) {
-               serverDataPath = System.getProperty("user.home");
-            }
-            File serverApplicDir = new File(String.format("%s%s.ssh", serverDataPath, File.separator));
-            if (!serverApplicDir.exists()) {
-               serverApplicDir.mkdirs();
-            }
-
-            JSch defaultJSch = super.createDefaultJSch(fs);
-            defaultJSch.addIdentity(String.format("%s%sid_rsa", serverApplicDir.getPath(), File.separator));
-            return defaultJSch;
-         }
-      };
-      SshSessionFactory.setInstance(sessionFactory);
+      SshSessionFactory.setInstance(sshSessionFactory);
 
       transportCommand.setTransportConfigCallback(new TransportConfigCallback() {
          @Override
          public void configure(Transport transport) {
             SshTransport sshTransport = (SshTransport) transport;
-            sshTransport.setSshSessionFactory(sessionFactory);
+            sshTransport.setSshSessionFactory(sshSessionFactory);
          }
       });
    }

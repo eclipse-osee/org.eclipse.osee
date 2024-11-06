@@ -84,27 +84,47 @@
 								router.url !== element.routerLink,
 						}"
 						class="tw-py-6">
-						<a
-							class="tw-flex tw-flex-row tw-items-center"
-							[routerLink]="
-								element.usesBranch
-									? element.routerLink + branchPath()
-									: element.routerLink
-							"
-							queryParamsHandling="merge">
-							<div class="tw-pr-2">
-								@if (element.icon !== '') {
-									<mat-icon
-										matListItemIcon
-										class="material-icons-outlined"
-										>{{ element.icon }}
-									</mat-icon>
-								}
-							</div>
-							<div>
-								{{ element.label }}
-							</div>
-						</a>
+						@if (element.external) {
+							<a
+								class="tw-flex tw-flex-row tw-items-center"
+								[href]="element.routerLink"
+								target="_blank">
+								<div class="tw-pr-2">
+									@if (element.icon !== '') {
+										<mat-icon
+											matListItemIcon
+											class="material-icons-outlined"
+											>{{ element.icon }}
+										</mat-icon>
+									}
+								</div>
+								<div>
+									{{ element.label }}
+								</div>
+							</a>
+						} @else {
+							<a
+								class="tw-flex tw-flex-row tw-items-center"
+								[routerLink]="
+									element.usesBranch
+										? element.routerLink + branchPath()
+										: element.routerLink
+								"
+								queryParamsHandling="merge">
+								<div class="tw-pr-2">
+									@if (element.icon !== '') {
+										<mat-icon
+											matListItemIcon
+											class="material-icons-outlined"
+											>{{ element.icon }}
+										</mat-icon>
+									}
+								</div>
+								<div>
+									{{ element.label }}
+								</div>
+							</a>
+						}
 					</mat-list-item>
 				}
 				<!-- If the element has children and dropdown is open -->

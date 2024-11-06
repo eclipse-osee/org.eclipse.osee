@@ -5,4 +5,4 @@ java -server \
 -Dorg.eclipse.equinox.http.jetty.context.sessioninactiveinterval=3600 \
 -Dcm.config.uri="etc/osee.hsql.json" \
 -Dosee.authentication.protocol=trustAll  \
--jar plugins/org.eclipse.equinox.launcher_1.5.700.v20200207-2156.jar -console -consoleLog
+-jar plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar -console -consoleLog

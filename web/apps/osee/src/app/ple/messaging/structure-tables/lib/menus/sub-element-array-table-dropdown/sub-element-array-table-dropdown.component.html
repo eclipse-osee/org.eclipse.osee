@@ -154,6 +154,13 @@
 	<mat-divider></mat-divider>
 	<button
 		mat-menu-item
+		(click)="openMoveElementDialog(element, headerElement)"
+		data-cy="element-move-btn">
+		<mat-icon class="tw-text-accent-200">swap_vert</mat-icon>Move Element
+	</button>
+	<mat-divider></mat-divider>
+	<button
+		mat-menu-item
 		(click)="removeElement()"
 		data-cy="element-remove-btn">
 		<mat-icon class="tw-text-osee-red-9">remove_circle_outline</mat-icon

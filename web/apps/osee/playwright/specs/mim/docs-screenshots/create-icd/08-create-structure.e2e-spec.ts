@@ -46,5 +46,9 @@ test('test', async ({ page }) => {
 	await page.getByRole('button', { name: 'Next' }).click();
 	await page.getByRole('button', { name: 'Ok' }).click();
 
-	await expect(page.getByText('Structure 1')).toBeVisible();
+	await expect(
+		page
+			.getByRole('row', { name: 'Structure 1 1 1 0 Misc' })
+			.getByRole('button')
+	).toBeVisible();
 });
