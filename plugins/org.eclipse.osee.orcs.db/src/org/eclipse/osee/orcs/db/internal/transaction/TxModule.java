@@ -88,10 +88,10 @@ public class TxModule {
          }
 
          @Override
-         public int[] purgeUnusedBackingDataAndTransactions() {
+         public int[] purgeUnusedBackingDataAndTransactions(int rowCount) {
             PurgeUnusedBackingDataAndTransactions op;
             op = new PurgeUnusedBackingDataAndTransactions(jdbcClient);
-            return op.purgeUnused();
+            return op.purgeUnused(rowCount);
          }
 
          @Override
