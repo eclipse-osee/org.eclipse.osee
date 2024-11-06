@@ -150,9 +150,9 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
    }
 
    @Override
-   public Response purgeUnusedBackingDataAndTransactions() {
+   public Response purgeUnusedBackingDataAndTransactions(int rowCount) {
       orcsApi.userService().requireRole(CoreUserGroups.OseeAccessAdmin);
-      int[] rtn = orcsApi.getTransactionFactory().purgeUnusedBackingDataAndTransactions();
+      int[] rtn = orcsApi.getTransactionFactory().purgeUnusedBackingDataAndTransactions(rowCount);
       return Response.ok().entity(Arrays.toString(rtn)).build();
    }
 
