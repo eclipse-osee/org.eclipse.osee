@@ -228,6 +228,7 @@ public interface AtsArtifactTypes {
       .zeroOrOne(AtsAttributeTypes.WorkPackage)
       .zeroOrOne(WorkPackageReference)
       .zeroOrOne(WorkflowDefinitionReference)
+      .zeroOrOne(WorkflowNoteColor)
       .zeroOrOne(WorkflowNotes));
 
    ArtifactTypeToken TeamWorkflow = ats.add(ats.artifactType(73L, "Team Workflow", false, AbstractAccessControlled, AbstractWorkflowArtifact)

@@ -95,7 +95,7 @@ maven_install(
         "org.apache.cxf:cxf-core:3.3.12",
 	"org.apache.cxf:cxf-rt-frontend-jaxrs:3.3.12",
 	"org.apache.cxf:cxf-rt-rs-client:3.3.12",
-	"org.apache.cxf:cxf-rt-rs-security-oauth:3.3.12",        
+	"org.apache.cxf:cxf-rt-rs-security-oauth:3.3.12",
  	"org.apache.cxf:cxf-rt-rs-security-oauth2:3.3.12",
 	"org.apache.cxf:cxf-rt-security:3.3.12",
 	"org.apache.cxf:cxf-rt-transports-http:3.3.12",
@@ -134,7 +134,7 @@ maven_install(
 
     repositories = [
         # Private repositories are supported through HTTP Basic auth
-        "https://repo1.maven.org/maven2",   
+        "https://repo1.maven.org/maven2",
     ]
     ,
 )
@@ -149,7 +149,7 @@ http_jar(
 http_jar(
       name = "equinox_security",
       url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.equinox.security_1.3.500.v20200114-1637.jar&r=1",
-      downloaded_file_name = "org.eclipse.equinox.security_1.3.500.v20200114-1637.jar"        
+      downloaded_file_name = "org.eclipse.equinox.security_1.3.500.v20200114-1637.jar"
 )
 
 http_jar(
@@ -351,8 +351,8 @@ http_jar(
 )
 http_jar(
       name = "eclipse_equinox_launcher",
-      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.equinox.launcher_1.5.700.v20200207-2156.jar&r=1",
-      downloaded_file_name = "org.eclipse.equinox.launcher_1.5.700.v20200207-2156.jar"
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar&r=1",
+      downloaded_file_name = "org.eclipse.equinox.launcher_1.6.400.v20210924-0641.jar"
 )
 
 http_jar(
@@ -393,14 +393,14 @@ http_jar(
 
 http_jar(
       name = "eclipse_osgi",
-      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.osgi_3.15.300.v20200520-1959.jar&r=1",
-      downloaded_file_name = "org.eclipse.osgi_3.15.300.v20200520-1959.jar"
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.osgi_3.18.0.v20220516-2155.jar&r=1",
+      downloaded_file_name = "org.eclipse.osgi_3.18.0.v20220516-2155.jar"
 )
 
 http_jar(
       name = "eclipse_osgi_services",
-      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.osgi.services_3.8.0.v20190206-2147.jar&r=1",
-      downloaded_file_name = "org.eclipse.osgi.services_3.8.0.v20190206-2147.jar"
+      url = "https://www.eclipse.org/downloads/download.php?file=/releases/2020-06/202006171000/plugins/org.eclipse.osgi.services_3.10.200.v20210723-0643.jar&r=1",
+      downloaded_file_name = "org.eclipse.osgi.services_3.10.200.v20210723-0643.jar"
 )
 
 http_jar(
