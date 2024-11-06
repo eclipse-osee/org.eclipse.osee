@@ -24,14 +24,14 @@ test('test', async ({ page }) => {
 	await page.keyboard.press('Escape'); // Get rid of a tooltip
 	await page.screenshot({
 		animations: 'disabled',
-		path: 'screenshots/overview-connection.png',
+		path: 'screenshots/example-icd/overview-connection.png',
 		clip: { x: 0, y: 0, width: 650, height: 325 },
 	});
 
 	await page.getByText('Connection A-B', { exact: true }).click();
 	await expect(page.getByText('Message 1')).toBeVisible();
 	await page.screenshot({
-		path: 'screenshots/message-table.png',
+		path: 'screenshots/example-icd/message-table.png',
 		clip: { x: 0, y: 0, width: 650, height: 325 },
 	});
 
@@ -41,7 +41,10 @@ test('test', async ({ page }) => {
 		.click();
 	await expect(page.getByText('Submessage 1')).toBeVisible();
 	await page.waitForTimeout(500);
-	await page.screenshot({ path: 'submessage-table.png' });
+
+	await page.screenshot({
+		path: 'screenshots/example-icd/submessage-table.png',
+	});
 
 	await page
 		.getByRole('row', {
@@ -56,5 +59,8 @@ test('test', async ({ page }) => {
 		.click();
 	await page.waitForTimeout(500);
 	await page.getByText('Demo Fault').click();
-	await page.screenshot({ path: 'structure-table.png' });
+
+	await page.screenshot({
+		path: 'screenshots/example-icd/structure-table.png',
+	});
 });
