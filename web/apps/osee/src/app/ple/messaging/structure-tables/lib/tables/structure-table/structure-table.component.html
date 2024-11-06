@@ -13,7 +13,7 @@
 @if (inDiffMode | async; as _diff) {
 	<div #topOfTable>
 		@if (currentStructureHeaders | async; as currentHeaders) {
-			@if (!tableFieldsEditMode()) {
+			@if (isEditing() && !tableFieldsEditMode()) {
 				<div
 					class="tw-w-full tw-bg-primary-100 tw-px-4 tw-py-2 dark:tw-bg-primary-500">
 					The element tables are in limited editing mode due to the

@@ -212,11 +212,7 @@ test('create elements', async ({ page }) => {
 	await page.getByRole('button', { name: 'Add Element to:' }).click();
 	await page.getByRole('menuitem', { name: 'Structure' }).click();
 	await page.getByRole('button', { name: 'Create new Element' }).click();
-	await page
-		.locator('div')
-		.filter({ hasText: /^Name$/ })
-		.nth(2)
-		.click();
+	await page.getByLabel('Name').click();
 	await page.getByLabel('Name').fill('Yes or No');
 	await page
 		.locator('osee-platform-type-dropdown')
