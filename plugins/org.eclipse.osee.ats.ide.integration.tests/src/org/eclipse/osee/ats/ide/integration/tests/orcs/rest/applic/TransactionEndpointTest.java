@@ -775,12 +775,14 @@ public class TransactionEndpointTest {
 
    @Test
    public void testPurgeUnusedBackingData() {
+      
       JdbcClient client = AtsApiService.get().getJdbcService().getClient();
-      int initialRowCount = client.fetch(0, "SELECT count(1) FROM osee_attribute");
-      try (Response response = transactionEndpoint.purgeUnusedBackingDataAndTransactions();) {
+      client.runPreparedUpdate("insert into osee_attribute(attr_id, gamma_id, art_id, attr_type_id, value) values (1,-1,1,1,'x')");
+      int initialRowCount = client.fetch(0, "SELECT count(1) FROM osee_attribute where gamma_id = -1");
+      try (Response response = transactionEndpoint.purgeUnusedBackingDataAndTransactions(10)) {
          //
       }
-      int afterRowCount = client.fetch(0, "SELECT count(1) FROM osee_attribute");
+      int afterRowCount = client.fetch(0, "SELECT count(1) FROM osee_attribute where gamma_id = -1");
       Assert.assertNotEquals(initialRowCount, afterRowCount);
    }
 }
