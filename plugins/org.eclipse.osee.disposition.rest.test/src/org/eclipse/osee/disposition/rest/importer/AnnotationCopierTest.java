@@ -289,8 +289,8 @@ public class AnnotationCopierTest {
       DispoSetCopier copier = new DispoSetCopier(connector);
       Map<String, Set<DispoItemData>> nameToItems = new HashMap<>();
       nameToItems.put(destItemForTest.getName(), Collections.singleton(destItemForTest));
-      List<DispoItem> toModify =
-         copier.copyAllDispositions(nameToItems, Collections.singletonList((DispoItem) sourceItem), true, null, report);
+      List<DispoItem> toModify = copier.copyAllDispositions(nameToItems,
+         Collections.singletonList((DispoItem) sourceItem), true, null, false, Collections.emptySet(), false, report);
 
       List<DispoAnnotationData> modifiedItemAnnotations = toModify.get(0).getAnnotationsList();
 
