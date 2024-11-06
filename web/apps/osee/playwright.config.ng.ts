@@ -33,23 +33,21 @@ const config: PlaywrightTestConfig = {
 	],
 	projects: [
 		{
-			name: 'chromium',
-			use: { ...devices['Desktop Chrome'] },
-		},
-		{
 			name: 'MIM Demo Init',
 			testMatch: 'playwright/specs/mim/setup/mim-demo-init.e2e-spec.ts',
 		},
 		{
 			name: 'MIM Commit Demo Branch',
+			use: { ...devices['Desktop Chrome'] },
 			testMatch:
 				'playwright/specs/mim/setup/commit-demo-branch.e2e-spec.ts',
+			dependencies: ['MIM Demo Init'],
 		},
 		{
 			name: 'MIM Docs - Overview',
 			use: { ...devices['Desktop Chrome'] },
 			testDir: 'playwright/specs/mim/docs-screenshots/overview',
-			dependencies: ['MIM Demo Init'],
+			dependencies: ['MIM Commit Demo Branch'],
 		},
 		{
 			name: 'MIM Docs - Create ICD',
@@ -74,7 +72,7 @@ const config: PlaywrightTestConfig = {
 			name: 'MIM Docs - Reports Page',
 			use: { ...devices['Desktop Chrome'] },
 			testDir: 'playwright/specs/mim/docs-screenshots/reports-page',
-			dependencies: ['MIM Commit Demo Branch', 'MIM Demo Init'],
+			dependencies: ['MIM Commit Demo Branch'],
 		},
 		{
 			name: 'MIM Docs - Cross-References Page',
