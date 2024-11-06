@@ -262,9 +262,11 @@ public class OrcsStorageImpl implements Storage {
    public ArtifactId createDispoSet(BranchId branch, DispoSet descriptor) {
       TransactionBuilder tx = getTxFactory().createTransaction(branch, "Create Dispo Set");
       ArtifactId creatdArtId = tx.createArtifact(CoreArtifactTypes.DispositionSet, descriptor.getName());
-      tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.CoveragePartition, descriptor.getCoveragePartition());
-      tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.CoverageImportPath, descriptor.getImportPath());
+      if (descriptor.getDispoType().equals(DispoStrings.CODE_COVERAGE)) {
+         tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.CoveragePartition, descriptor.getCoveragePartition());
+      }
       tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.CoverageImportApi, descriptor.getImportPath());
+      tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.CoverageImportPath, descriptor.getImportPath());
       tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.CoverageImportState, descriptor.getImportState());
       tx.setSoleAttributeValue(creatdArtId, DispoOseeTypes.CoverageConfig, descriptor.getDispoType());
       tx.setSoleAttributeValue(creatdArtId, CoreAttributeTypes.CoverageNotesJson,

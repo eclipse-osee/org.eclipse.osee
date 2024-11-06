@@ -231,7 +231,7 @@ public class LisFileParser implements DispoImporterApi {
          }
       }
 
-      toReturn = copier.copyAllDispositions(namesToDestItems, exisitingItems.values(), false, null, report);
+      toReturn = copier.copyAllDispositionsSameSet(namesToDestItems, exisitingItems.values(), false, null, report);
       return toReturn;
    }
 

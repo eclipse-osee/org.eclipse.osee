@@ -163,7 +163,7 @@ public class DispoSetCopierTest {
       DispoSetCopier copier = new DispoSetCopier(dispoConnector);
       List<DispoItem> copyResults =
          copier.copyAllDispositions(getNameToDestItemsMap(Collections.singletonList(destItem)),
-            Collections.singletonList(sourceItem), false, null, report);
+            Collections.singletonList(sourceItem), false, null, false, Collections.emptySet(), false, report);
 
       DispoItem resultItem = copyResults.get(0);
 
