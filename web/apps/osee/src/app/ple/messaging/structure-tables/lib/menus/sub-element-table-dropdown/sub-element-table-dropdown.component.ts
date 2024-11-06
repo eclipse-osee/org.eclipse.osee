@@ -41,6 +41,7 @@ import { iif, of, switchMap, take } from 'rxjs';
 import { RemoveElementDialogData } from '../../dialogs/remove-element-dialog/remove-element-dialog';
 import { RemoveElementDialogComponent } from '../../dialogs/remove-element-dialog/remove-element-dialog.component';
 import { ElementTableDropdownService } from '../../services/element-table-dropdown.service';
+import { MoveElementDialogComponent } from '../../dialogs/move-element-dialog/move-element-dialog.component';
 
 /**
  * Required attributes:
@@ -211,6 +212,32 @@ export class SubElementTableDropdownComponent {
 
 	openNotesDialog(element: element) {
 		this.elementDropdownService.openNotesDialog(element, this.editMode);
+	}
+
+	openMoveElementDialog(element: element, structure: structure) {
+		this.dialog
+			.open(MoveElementDialogComponent, {
+				data: {
+					element,
+					structure,
+				},
+				minHeight: '40vh',
+				minWidth: '40vw',
+			})
+			.afterClosed()
+			.pipe(
+				switchMap((afterArtifact) => {
+					if (!afterArtifact) {
+						return of();
+					}
+					return this.structureService.changeElementRelationOrder(
+						structure.id,
+						element.id,
+						afterArtifact
+					);
+				})
+			)
+			.subscribe();
 	}
 
 	getHeaderByName(value: string) {

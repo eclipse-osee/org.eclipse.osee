@@ -12,6 +12,9 @@ The description field allows for certain keywords to be entered that affect the 
 
 -   $index: If the element is an array, this keyword in the description will be replaced by the current array index in the report.
 -   $parentindex: If the element is under an array header, this keyword in the description will be replaced by the current array header index in the report.
+-   $parentname: If the element is under an array header, this keyword in the description will be replaced by the array header's name.
+
+> These variables can also be used in the `Notes` field.
 
 ## Enum Literals
 
