@@ -668,7 +668,8 @@ public class InterfaceStructureApiImpl implements InterfaceStructureApi {
             spareType.setInterfacePlatformTypeValidRangeDescription("n/a");
             e.setName("Byte Alignment Spare");
             e.setPlatformType(spareType);
-            //            e.setLogicalType("unsigned integer");
+            e.setInterfaceElementIndexStart(0);
+            e.setInterfaceElementIndexEnd(0);
          }
       });
 

@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, Input } from '@angular/core';
+import { Component, input, Input } from '@angular/core';
 import {
 	DisplayableElementProps,
 	PlatformType,
@@ -82,8 +82,5 @@ export class MockSubElementTableComponent {
 	@Input() header!: keyof DisplayableElementProps;
 	@Input() field?: string | number | boolean | PlatformType | applic;
 
-	@Input('branchId') _branchId: string = '';
-	@Input('branchType') _branchType: string = '';
-
-	@Input() editMode: boolean = false;
+	editMode = input(false);
 }

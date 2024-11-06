@@ -10,15 +10,20 @@
 * Contributors:
 *     Boeing - initial API and implementation
 -->
-@if (_messageData | async) {
-	<ng-container class="tw-hidden"></ng-container>
-}
 @if (inDiffMode | async; as _diff) {
 	<div #topOfTable>
 		@if (currentStructureHeaders | async; as currentHeaders) {
+			@if (isEditing() && !tableFieldsEditMode()) {
+				<div
+					class="tw-w-full tw-bg-primary-100 tw-px-4 tw-py-2 dark:tw-bg-primary-500">
+					The element tables are in limited editing mode due to the
+					number elements present in the structures. Right click
+					elements to edit.
+				</div>
+			}
 			<table
 				mat-table
-				[dataSource]="messageData || []"
+				[dataSource]="structures()"
 				multiTemplateDataRows
 				[trackBy]="structureTracker"
 				class="mat-elevation-z7 tw-w-full">
@@ -235,8 +240,9 @@
 									[elementHeaders]="
 										(currentElementHeaders | async) || []
 									"
-									[editMode]="
-										isEditing()
+									[editMode]="isEditing()"
+									[tableFieldsEditMode]="
+										tableFieldsEditMode()
 									"></osee-messaging-message-element-interface-sub-element-table>
 							}
 						</div>

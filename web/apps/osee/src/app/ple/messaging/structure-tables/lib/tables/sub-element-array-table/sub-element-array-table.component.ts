@@ -21,7 +21,8 @@ import {
 	ChangeDetectionStrategy,
 	Component,
 	inject,
-	Input,
+	input,
+	model,
 	OnInit,
 	viewChild,
 } from '@angular/core';
@@ -102,10 +103,10 @@ export class SubElementArrayTableComponent implements OnInit {
 	private layoutNotifier = inject(LayoutNotifierService);
 	private headerService = inject(HeaderService);
 
-	@Input() filter = '';
-	@Input() element: element = elementSentinel;
-	@Input() elementHeaders: (keyof DisplayableElementProps | 'rowControls')[];
-	@Input() editMode = false;
+	element = input<element>(elementSentinel);
+	elementHeaders = model<(keyof DisplayableElementProps | 'rowControls')[]>();
+	editMode = input(false);
+	tableFieldsEditMode = input(false);
 
 	_branchId = '';
 	_branchType = '';
@@ -121,7 +122,7 @@ export class SubElementArrayTableComponent implements OnInit {
 	/** Inserted by Angular inject() migration for backwards compatibility */
 	constructor(...args: unknown[]);
 	constructor() {
-		this.elementHeaders = [
+		this.elementHeaders.set([
 			'name',
 			'beginWord',
 			'endWord',
@@ -130,7 +131,7 @@ export class SubElementArrayTableComponent implements OnInit {
 			'interfaceElementAlterable',
 			'description',
 			'notes',
-		];
+		]);
 	}
 
 	ngOnInit(): void {
@@ -146,7 +147,7 @@ export class SubElementArrayTableComponent implements OnInit {
 		}
 		// Rows not marked as draggable are not included in the index count,
 		// so remove them from the list before checking index.
-		const tableData = this.element.arrayElements.filter(
+		const tableData = this.element().arrayElements.filter(
 			(e) => e.id !== '-1'
 		);
 		const elementId = tableData[event.previousIndex].id;
@@ -155,7 +156,7 @@ export class SubElementArrayTableComponent implements OnInit {
 		const afterArtifactId = newIndex < 0 ? 'start' : tableData[newIndex].id;
 		this.structureService
 			.changeElementArrayRelationOrder(
-				this.element.id,
+				this.element().id,
 				elementId,
 				afterArtifactId
 			)
@@ -173,7 +174,7 @@ export class SubElementArrayTableComponent implements OnInit {
 		this.menuPosition.y = event.clientY + 'px';
 		this.generalMenuTrigger().menuData = {
 			element: element,
-			headerElement: this.element,
+			headerElement: this.element(),
 			field: field,
 			header: header,
 		};
