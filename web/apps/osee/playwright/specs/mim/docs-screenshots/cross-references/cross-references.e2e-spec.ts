@@ -55,7 +55,7 @@ test('test', async ({ page }) => {
 
 	await page.screenshot({
 		animations: 'disabled',
-		path: 'screenshots/create-cross-reference.png',
+		path: 'screenshots/cross-references/create-cross-reference.png',
 	});
 
 	await page.getByRole('button', { name: 'Ok' }).click();
