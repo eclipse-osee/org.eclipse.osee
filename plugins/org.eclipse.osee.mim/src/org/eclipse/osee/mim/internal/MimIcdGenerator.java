@@ -466,13 +466,14 @@ public class MimIcdGenerator {
                            arrayElementCopy.setInterfaceElementArrayIndexDelimiterTwo(
                               element.getInterfaceElementArrayIndexDelimiterTwo());
 
-                           // If $parentindex is used in the element name, description, or notes, replace it with the parent array index.
-                           arrayElementCopy.setName(
-                              arrayElementCopy.getName().getValue().replace("$parentindex", Integer.toString(i)));
-                           arrayElementCopy.setDescription(arrayElementCopy.getDescription().getValue().replace(
-                              "$parentindex", Integer.toString(i)));
-                           arrayElementCopy.setNotes(
-                              arrayElementCopy.getNotes().getValue().replace("$parentindex", Integer.toString(i)));
+                           // If $parentindex or $parentname are used in the element name, description, or notes, replace it with the parent array index or name.
+                           arrayElementCopy.setName(arrayElementCopy.getName().getValue().replace("$parentindex",
+                              Integer.toString(i)).replace("$parentname", element.getName().getValue()));
+                           arrayElementCopy.setDescription(
+                              arrayElementCopy.getDescription().getValue().replace("$parentindex",
+                                 Integer.toString(i)).replace("$parentname", element.getName().getValue()));
+                           arrayElementCopy.setNotes(arrayElementCopy.getNotes().getValue().replace("$parentindex",
+                              Integer.toString(i)).replace("$parentname", element.getName().getValue()));
 
                            flatElements.add(arrayElementCopy);
                         }
