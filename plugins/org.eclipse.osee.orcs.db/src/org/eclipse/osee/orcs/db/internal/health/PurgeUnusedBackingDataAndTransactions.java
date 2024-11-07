@@ -48,12 +48,17 @@ import org.eclipse.osee.orcs.OseeDb;
  */
 public class PurgeUnusedBackingDataAndTransactions {
 
+   private static final String INSERT_VALIDATED_GAMMAS =
+      "insert into osee_validate_gamma_id select gamma_id from %s t1 where not exists (select null from osee_validate_gamma_id vgi where vgi.gamma_id = t1.gamma_id) ORDER BY gamma_id fetch first %s rows ONLY";
+   private static final String INSERT_VALIDATED_GAMMAS_ART_REFERENCES =
+      "insert into osee_validate_gamma_id(gamma_id) select gamma_id from (select gamma_id, art_id from (select distinct gamma_id, %s art_id from %s where gamma_id not in (select gamma_id from osee_validate_gamma_id)) t1 ) t2 fetch first %s rows only";
    private static final String OBSOLETE_TAGS =
-      "select gamma_id from osee_search_tags tag where not exists (select 1 from osee_attribute att where tag.gamma_id = att.gamma_id) %s";
+      "select gamma_id from osee_search_tags tag where not exists (select 1 from osee_attribute att where tag.gamma_id = att.gamma_id)  fetch first %s rows ONLY";
 
    private static final String NOT_ADDRESSED_GAMMAS =
-      "select gamma_id from %s art where not exists (select gamma_id from osee_txs txs where txs.gamma_id = art.gamma_id) " + //
-         "and not exists (select gamma_id from osee_txs_archived txs where txs.gamma_id = art.gamma_id) fetch first 1000 rows only";
+      "with items as (select gamma_id from %s t1 where t1.gamma_id not in (select gamma_id from osee_validate_gamma_id) ORDER BY gamma_id fetch first %s rows only)"
+      + "select gamma_id from items where not exists (select gamma_id from osee_txs txs where txs.gamma_id = items.gamma_id) " + //
+         "and not exists (select gamma_id from osee_txs_archived txs where txs.gamma_id = items.gamma_id)";
 
    private static final String EMPTY_TRANSACTIONS =
       "select branch_id, transaction_id from osee_tx_details txd where transaction_id <> 1 and not exists (select 1 from osee_txs txs1 where txs1.branch_id = txd.branch_id and txs1.transaction_id = txd.transaction_id) and not exists (select 1 from osee_txs_archived txs2 where txs2.branch_id = txd.branch_id and txs2.transaction_id = txd.transaction_id) and not exists (select 1 from osee_branch br where br.parent_branch_id = txd.branch_id and br.parent_transaction_id = txd.transaction_id)";
@@ -73,7 +78,7 @@ public class PurgeUnusedBackingDataAndTransactions {
       "DELETE FROM osee_tx_details WHERE branch_id = ? and transaction_id = ?";
 
    private static final String GET_INVALID_ART_REFERENCES =
-      "with gammas_to_check(gamma_id, art_id) as (select gamma_id, art_id from (select gamma_id, art_id, %s rn from (select distinct gamma_id, %s art_id from %s where gamma_id not in (select gamma_id from osee_validate_gamma_id) ) t1 ) t2 where rn between 0 and 10000) " + //
+      "with gammas_to_check(gamma_id, art_id) as (select gamma_id, art_id from (select gamma_id, art_id from (select distinct gamma_id, %s art_id from %s where gamma_id not in (select gamma_id from osee_validate_gamma_id) ) t1 ) t2 fetch first %s rows only) " + //
          "select * from gammas_to_check gtc where not exists (select 1 from osee_artifact art where art.art_id = gtc.art_id)";
 
    private static final String GET_INVALID_ART_REFERENCES_ACL =
@@ -90,9 +95,12 @@ public class PurgeUnusedBackingDataAndTransactions {
       this.jdbcClient = jdbcClient;
    }
 
-   private int purgeNotAddressedGammas(JdbcConnection connection, SqlTable tableName) {
-      String selectSql = String.format(NOT_ADDRESSED_GAMMAS, tableName);
-      return purgeGammas(connection, selectSql, tableName);
+   private int purgeNotAddressedGammas(JdbcConnection connection, SqlTable tableName, int rowCount) {
+      String selectSql = String.format(NOT_ADDRESSED_GAMMAS, tableName, rowCount);
+      String insertValidatedGammas = String.format(INSERT_VALIDATED_GAMMAS,tableName,rowCount);
+      int rowsPurged = purgeGammas(connection, selectSql, tableName);
+      jdbcClient.runPreparedUpdate(insertValidatedGammas);
+      return rowsPurged;
    }
 
    private int purgeGammasByList(JdbcConnection connection, SqlTable table, List<Long> gammasToDelete) {
@@ -119,15 +127,18 @@ public class PurgeUnusedBackingDataAndTransactions {
       return purgeData(connection, EMPTY_TRANSACTIONS, DELETE_EMPTY_TRANSACTIONS, this::addTx, OseeDb.TX_DETAILS_TABLE);
    }
 
-   private int deleteObsoleteTags(JdbcConnection connection) {
-      return purgeGammas(connection, String.format(OBSOLETE_TAGS, jdbcClient.getDbType().getLimitRowsReturned(1000)),
+   private int deleteObsoleteTags(JdbcConnection connection, int rowCount) {
+      return purgeGammas(connection, String.format(OBSOLETE_TAGS, rowCount),
          OseeDb.OSEE_SEARCH_TAGS_TABLE);
    }
 
-   private int purgeInvalidArtifactReferences(JdbcConnection connection, SqlTable table, String artColumn) {
+   private int purgeInvalidArtifactReferences(JdbcConnection connection, SqlTable table, String artColumn, int rowCount) {
       String selectSql =
-         String.format(GET_INVALID_ART_REFERENCES, jdbcClient.getDbType().getRowNum(), artColumn, table);
-      return purgeGammas(connection, selectSql, table);
+         String.format(GET_INVALID_ART_REFERENCES, artColumn, table, rowCount);
+      int rowsPurged = purgeGammas(connection, selectSql, table);
+      String insertValidatedGammas = String.format(INSERT_VALIDATED_GAMMAS_ART_REFERENCES, artColumn, table, rowCount);
+      jdbcClient.runPreparedUpdate(insertValidatedGammas);
+      return rowsPurged;
    }
 
    private int purgeInvalidArtfactReferencesAcl(JdbcConnection connection) {
@@ -153,7 +164,7 @@ public class PurgeUnusedBackingDataAndTransactions {
       int purgedRows = jdbcClient.runBatchUpdate(purgeSQL, data);
       return purgedRows;
    }
-
+   
    private void addBranchGamma(OseePreparedStatement purgeStmt, JdbcStatement stmt) {
       purgeStmt.addToBatch(stmt.getLong("branch_id"), stmt.getLong("gamma_id"));
    }
@@ -170,7 +181,8 @@ public class PurgeUnusedBackingDataAndTransactions {
       purgeStmt.addToBatch(stmt.getLong("art_id"));
    }
 
-   public int[] purgeUnused() {
+   public int[] purgeUnused(int rowCount) {
+      
       String serverPath = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER_DATA);
       if (serverPath == null) {
          serverPath = System.getProperty("user.home");
@@ -185,17 +197,17 @@ public class PurgeUnusedBackingDataAndTransactions {
       int i = 0;
       int[] counts = new int[11];
       try (JdbcConnection connection = jdbcClient.getConnection()) {
-         counts[i++] = purgeNotAddressedGammas(connection, OseeDb.ARTIFACT_TABLE);
-         counts[i++] = purgeNotAddressedGammas(connection, OseeDb.ATTRIBUTE_TABLE);
-         counts[i++] = purgeNotAddressedGammas(connection, OseeDb.RELATION_TABLE);
-         counts[i++] = purgeNotAddressedGammas(connection, OseeDb.RELATION_TABLE2);
-         counts[i++] = purgeInvalidArtifactReferences(connection, OseeDb.RELATION_TABLE, "a_art_id");
-         counts[i++] = purgeInvalidArtifactReferences(connection, OseeDb.RELATION_TABLE, "b_art_id");
-         counts[i++] = purgeInvalidArtifactReferences(connection, OseeDb.RELATION_TABLE2, "a_art_id");
-         counts[i++] = purgeInvalidArtifactReferences(connection, OseeDb.RELATION_TABLE2, "b_art_id");
-         counts[i++] = purgeInvalidArtifactReferences(connection, OseeDb.ATTRIBUTE_TABLE, "art_id");
+         counts[i++] = purgeNotAddressedGammas(connection, OseeDb.ARTIFACT_TABLE, rowCount);
+         counts[i++] = purgeNotAddressedGammas(connection, OseeDb.ATTRIBUTE_TABLE, rowCount);
+         counts[i++] = purgeNotAddressedGammas(connection, OseeDb.RELATION_TABLE, rowCount);
+         counts[i++] = purgeNotAddressedGammas(connection, OseeDb.RELATION_TABLE2, rowCount);
+         counts[i++] = purgeInvalidArtifactReferences(connection, OseeDb.RELATION_TABLE, "a_art_id", rowCount);
+         counts[i++] = purgeInvalidArtifactReferences(connection, OseeDb.RELATION_TABLE, "b_art_id", rowCount);
+         counts[i++] = purgeInvalidArtifactReferences(connection, OseeDb.RELATION_TABLE2, "a_art_id", rowCount);
+         counts[i++] = purgeInvalidArtifactReferences(connection, OseeDb.RELATION_TABLE2, "b_art_id", rowCount);
+         counts[i++] = purgeInvalidArtifactReferences(connection, OseeDb.ATTRIBUTE_TABLE, "art_id", rowCount);
          counts[i++] = purgeInvalidArtfactReferencesAcl(connection);
-         counts[i++] = deleteObsoleteTags(connection);
+         counts[i++] = deleteObsoleteTags(connection, rowCount);
          /**
           * TODO:Need to come up with efficient scheme to purge rows in osee_txs and txs_archived
           */

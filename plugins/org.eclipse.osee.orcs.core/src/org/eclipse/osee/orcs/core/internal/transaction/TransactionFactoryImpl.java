@@ -267,8 +267,8 @@ public class TransactionFactoryImpl implements TransactionFactory {
    }
 
    @Override
-   public int[] purgeUnusedBackingDataAndTransactions() {
-      return txDataStore.purgeUnusedBackingDataAndTransactions();
+   public int[] purgeUnusedBackingDataAndTransactions(int rowCount) {
+      return txDataStore.purgeUnusedBackingDataAndTransactions(rowCount);
    }
 
    @Override

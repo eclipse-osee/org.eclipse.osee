@@ -37,7 +37,7 @@ public interface TransactionFactory {
 
    Callable<Integer> purgeTransaction(Collection<? extends TransactionId> transactions);
 
-   int[] purgeUnusedBackingDataAndTransactions();
+   int[] purgeUnusedBackingDataAndTransactions(int rowCount);
 
    int[] purgeUnusedBackingDataAndTransactions(List<Long> gammasToPurge, List<String> additionalStatements,
       String prefixRecoveryFile);
