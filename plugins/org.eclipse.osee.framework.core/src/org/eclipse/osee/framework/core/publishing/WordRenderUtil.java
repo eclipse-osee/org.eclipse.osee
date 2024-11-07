@@ -1654,17 +1654,17 @@ public class WordRenderUtil {
             );
 
       }
-      
+
       /*
        * Add relation table(s) to the output
        */
-      
+
       WordRenderUtil.processRelationTable
          (
-            formatIndicator, 
-            relationTableOptions, 
+            formatIndicator,
+            relationTableOptions,
             artifact,
-            publishingAppender, 
+            publishingAppender,
             orcsTokenService
          );
 
@@ -1696,7 +1696,7 @@ public class WordRenderUtil {
     * determines the format of the relation table (HTML or Word) based on the provided {@code formatIndicator},
     * constructs the appropriate {@link RelationTableAppender}, and then uses the {@link RelationTableBuilder} to build
     * the table. The generated content is appended to the provided {@code publishingAppender}.
-    * 
+    *
     * @param formatIndicator the format indicator specifying whether to generate HTML or Word table content
     * @param relationTableOptions the options configuring the relation table, including artifact types, columns, and
     * relation type sides
@@ -1852,7 +1852,7 @@ public class WordRenderUtil {
       wtcData.setArtId(artifactId);
       wtcData.setBranch(branchId);
       wtcData.setViewId(viewId);
-      wtcData.setFooter(presentationType != PresentationType.SPECIALIZED_EDIT ? footer : "");
+      wtcData.setFooter(footer);
       wtcData.setIsEdit(presentationType == PresentationType.SPECIALIZED_EDIT);
       wtcData.setLinkType(rendererMap.getRendererOptionValue(RendererOption.LINK_TYPE));
       wtcData.setPresentationType(presentationType);
