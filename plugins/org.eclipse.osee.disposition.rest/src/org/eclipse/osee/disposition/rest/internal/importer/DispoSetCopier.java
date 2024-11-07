@@ -48,23 +48,27 @@ public class DispoSetCopier {
       this.connector = connector;
    }
 
-   public List<DispoItem> copyAllDispositions(Map<String, Set<DispoItemData>> nameToDestItems,
+   public List<DispoItem> copyAllDispositionsSameSet(Map<String, Set<DispoItemData>> nameToDestItems,
       Collection<DispoItem> sourceItems, boolean isCoverageCopy, HashMap<String, String> reruns,
       OperationReport report) {
       return copyAllDispositions(nameToDestItems, sourceItems, isCoverageCopy, reruns, false, Collections.emptySet(),
-         report);
+         true, report);
    }
 
    public List<DispoItem> copyAllDispositions(Map<String, Set<DispoItemData>> nameToDestItems,
       Collection<DispoItem> sourceItems, boolean isCoverageCopy, HashMap<String, String> reruns,
-      boolean allowOnlyValidResolutionTypes, Set<String> validResolutionsTypes, OperationReport report) {
+      boolean allowOnlyValidResolutionTypes, Set<String> validResolutionsTypes, boolean isSameSet,
+      OperationReport report) {
       List<DispoItem> modifiedItems = new ArrayList<>();
 
       // Iterate through every source item since we want to try to find a match for every item in the source
       for (DispoItem sourceItem : sourceItems) {
          DispoItemData destItem = getCorrespondingDestItem(nameToDestItems, sourceItem);
 
-         if (destItem != null && destItem.isValid()) {
+         if (destItem.isValid()) {
+            if (isSameSet) {
+               destItem.setGuid(sourceItem.getGuid());
+            }
             DispoItemData newItem = createNewItemWithCopiedAnnotations(destItem, sourceItem, isCoverageCopy, reruns,
                report, allowOnlyValidResolutionTypes, validResolutionsTypes);
             if (newItem != null && newItem.isValid()) {
@@ -80,7 +84,7 @@ public class DispoSetCopier {
 
    private DispoItemData getCorrespondingDestItem(Map<String, Set<DispoItemData>> nameToDestItems,
       DispoItem sourceItem) {
-      DispoItemData destItem = null;
+      DispoItemData destItem = DispoItemData.SENTINEL;
       String name = sourceItem.getName();
       Set<DispoItemData> itemsWithSameName = nameToDestItems.get(name);
 
@@ -225,7 +229,7 @@ public class DispoSetCopier {
       for (DispoItem sourceItem : sourceItems) {
          DispoItem destItem = getCorrespondingDestItem(destinationItems, sourceItem);
 
-         if (destItem != null) {
+         if (destItem.isValid()) {
             String currentCategory = destItem.getCategory();
             String sourceCategory = sourceItem.getCategory();
             String newCategory;
@@ -276,7 +280,7 @@ public class DispoSetCopier {
       for (DispoItem sourceItem : sourceItems) {
          DispoItem destItem = getCorrespondingDestItem(destinationItems, sourceItem);
 
-         if (destItem != null) {
+         if (destItem.isValid()) {
             String currentAssignee = destItem.getAssignee();
             String sourceAssignee = sourceItem.getAssignee();
             String newAssignee;
@@ -322,7 +326,7 @@ public class DispoSetCopier {
       for (DispoItem sourceItem : sourceItems) {
          DispoItem destItem = getCorrespondingDestItem(destinationItems, sourceItem);
 
-         if (destItem != null) {
+         if (destItem.isValid()) {
             String currentItemNotes = destItem.getItemNotes();
             String sourceItemNotes = sourceItem.getItemNotes();
             String newItemNotes;

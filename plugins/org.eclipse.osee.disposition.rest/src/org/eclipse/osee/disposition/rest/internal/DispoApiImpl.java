@@ -1193,6 +1193,11 @@ public class DispoApiImpl implements DispoApi {
    @Override
    public void copyDispoSet(BranchId branch, String destSetId, BranchId sourceBranch, String sourceSetId,
       CopySetParams params) {
+
+      if (branch == sourceBranch && destSetId == sourceSetId) {
+         return;
+      }
+
       boolean wasUpdated = false;
 
       DispoSet destDispoSet = getQuery().findDispoSetsById(branch, destSetId);
@@ -1228,7 +1233,7 @@ public class DispoApiImpl implements DispoApi {
          DispoSetCopier copier = new DispoSetCopier(dispoConnector);
          if (!params.getAnnotationParam().isNone()) {
             List<DispoItem> copyResults = copier.copyAllDispositions(namesToDestItems, sourceItems, true, reruns,
-               params.getAllowOnlyValidResolutionTypes(), validResolutions, report);
+               params.getAllowOnlyValidResolutionTypes(), validResolutions, false, report);
             for (DispoItem item : copyResults) {
                namesToToEditItems.put(item.getName(), item);
             }
