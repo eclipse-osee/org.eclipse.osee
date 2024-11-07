@@ -37,12 +37,14 @@ public class ArtEdAttrXViewerFactory extends SkynetXViewerFactory {
       XViewerAlign.Left, true, SortDataType.String, false, null);
    public static XViewerColumn GammaId = new XViewerColumn("osee.attribute.gamma.id", "Gamma Id", 80, XViewerAlign.Left,
       true, SortDataType.String, false, null);
+   public static XViewerColumn Error =
+      new XViewerColumn("osee.attribute.error", "Error", 80, XViewerAlign.Left, true, SortDataType.String, false, null);
 
    private final static String NAMESPACE = "ArtEdAttr";
 
    public ArtEdAttrXViewerFactory(IOseeTreeReportProvider reportProvider) {
       super(NAMESPACE, reportProvider);
-      registerColumns(AttrTypeName, Value, Id, GammaId, AttrTypeId);
+      registerColumns(AttrTypeName, Value, Id, GammaId, AttrTypeId, Error);
    }
 
    @Override

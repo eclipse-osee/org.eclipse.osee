@@ -25,6 +25,9 @@ public class IntegerAttribute extends CharacterBackedAttribute<Integer> {
 
    @Override
    public Integer convertStringToValue(String value) {
-      return Integer.valueOf(value);
+      if (org.eclipse.osee.framework.jdk.core.util.Strings.isNumeric(value)) {
+         return Integer.valueOf(value);
+      }
+      return -1;
    }
 }

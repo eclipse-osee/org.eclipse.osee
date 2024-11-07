@@ -34,7 +34,10 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
@@ -96,6 +99,7 @@ public class AttributeLoader {
       public TransactionId stripeId = TransactionId.SENTINEL;
       public String uri = "";
       public ApplicabilityId applicabilityId = ApplicabilityId.BASE;
+      public String error = null;
 
       public AttrData() {
          // do nothing
@@ -112,7 +116,13 @@ public class AttributeLoader {
 
          attributeType = tokenservice.getAttributeTypeOrCreate(chStmt.getLong("attr_type_id"));
 
-         value = chStmt.loadAttributeValue(attributeType);
+         try {
+            value = chStmt.loadAttributeValue(attributeType);
+         } catch (Exception ex) {
+            error = String.format("Error loading ArtId [%s] AttrId [%s] AttrType %s: %s", artifactId.getIdString(),
+               attrId.toString(), attributeType.toStringWithId(), Lib.exceptionToString(ex));
+            OseeLog.logf(Activator.class, Level.SEVERE, error);
+         }
 
          if (historical) {
             stripeId = TransactionId.valueOf(chStmt.getLong("stripe_transaction_id"));
@@ -128,6 +138,15 @@ public class AttributeLoader {
       public static boolean multipleVersionsExist(AttrData current, AttrData previous) {
          return current.attrId.equals(previous.attrId) && current.branch.equals(
             previous.branch) && current.artifactId.equals(previous.artifactId);
+      }
+
+      public String getError() {
+         if (Strings.isValid(error)) {
+            return error;
+         } else if (attributeType.getName().startsWith(AttributeTypeToken.MISSING_TYPE)) {
+            return attributeType.getName();
+         }
+         return "";
       }
    }
 
@@ -182,7 +201,7 @@ public class AttributeLoader {
    private static void loadAttribute(Artifact artifact, AttrData current, AttrData previous) {
       boolean markDirty = false;
       artifact.internalInitializeAttribute(current.attributeType, current.attrId, current.gammaId, current.modType,
-         current.applicabilityId, markDirty, current.value, current.uri);
+         current.applicabilityId, current.getError(), markDirty, current.value, current.uri);
    }
 
    private static String getSql(DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel, boolean historical,

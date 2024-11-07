@@ -46,6 +46,7 @@ public abstract class AttributeImpl<T> extends BaseId implements Comparable<Attr
    private final Log logger = null;
    private AttributeData<T> attributeData;
    private OrcsTokenService tokenService;
+   private String error;
 
    @Override
    public void internalInitialize(Reference<AttributeContainer> containerReference, AttributeData<T> attributeData,
@@ -319,4 +320,14 @@ public abstract class AttributeImpl<T> extends BaseId implements Comparable<Attr
     * supply a default
     */
    abstract T subclassConvertStringToValue(String value);
+
+   @Override
+   public String getError() {
+      return error;
+   }
+
+   @Override
+   public void setError(String error) {
+      this.error = error;
+   }
 }

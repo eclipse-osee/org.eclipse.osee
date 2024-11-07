@@ -53,10 +53,12 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
    private boolean useBackingData;
    private AttributeTypeId attributeTypeToken;
    private ApplicabilityId applicabilityId;
+   private String error;
 
    void internalInitialize(AttributeTypeId attributeType, Artifact artifact, ModificationType modificationType,
-      ApplicabilityId applicabilityId, boolean markDirty, boolean setDefaultValue) {
+      ApplicabilityId applicabilityId, String error, boolean markDirty, boolean setDefaultValue) {
       this.attributeTypeToken = attributeType;
+      this.error = error;
       this.artifactRef = new WeakReference<>(artifact);
       internalSetModType(modificationType, false, markDirty);
       if (applicabilityId == null) {
@@ -106,9 +108,9 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
    }
 
    public void internalInitialize(AttributeTypeId attributeType, Artifact artifact, ModificationType modificationType,
-      ApplicabilityId applicabilityId, AttributeId attributeId, GammaId gammaId, boolean markDirty,
+      ApplicabilityId applicabilityId, AttributeId attributeId, GammaId gammaId, String error, boolean markDirty,
       boolean setDefaultValue) {
-      internalInitialize(attributeType, artifact, modificationType, applicabilityId, markDirty, setDefaultValue);
+      internalInitialize(attributeType, artifact, modificationType, applicabilityId, error, markDirty, setDefaultValue);
       this.attrId = attributeId;
       this.gammaId = gammaId;
    }
@@ -318,6 +320,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
       return attrId.getId();
    }
 
+   @Override
    public GammaId getGammaId() {
       return gammaId;
    }
@@ -376,6 +379,16 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
    @Override
    public int compareTo(Attribute<T> other) {
       return toString().compareTo(other.toString());
+   }
+
+   @Override
+   public String getError() {
+      return error;
+   }
+
+   @Override
+   public void setError(String error) {
+      this.error = error;
    }
 
 }
