@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchCategoryToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -42,6 +43,7 @@ public class Branch extends NamedIdBase implements BranchToken, Adaptable {
    private Branch parent;
    private ArtifactId associatedArtifact;
    private ArtifactId branchView;
+   private List<BranchCategoryToken> categories;
 
    public Branch(Long uuid, String name, BranchType branchType, BranchState branchState, boolean isArchived, boolean inheritsAccessControl) {
       this(uuid, name, branchType, branchState, isArchived, inheritsAccessControl, ArtifactId.SENTINEL);
@@ -205,6 +207,14 @@ public class Branch extends NamedIdBase implements BranchToken, Adaptable {
    @Override
    public ArtifactId getViewId() {
       return branchView;
+   }
+
+   public List<BranchCategoryToken> getCategories() {
+      return categories;
+   }
+
+   public void setCategories(List<BranchCategoryToken> categories) {
+      this.categories = categories;
    }
 
 }
