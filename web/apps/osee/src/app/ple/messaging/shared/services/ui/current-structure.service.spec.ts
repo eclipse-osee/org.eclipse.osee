@@ -269,8 +269,8 @@ servicesUnderTest.forEach((testCase) => {
 				const expectedObservable = { a: transactionResultMock };
 				const expectedMarble = '(a|)';
 				expectObservable(
-					service.removeElementFromStructure(
-						elementsMock[0],
+					service.removeElementsFromStructure(
+						[elementsMock[0]],
 						structuresMock3[0]
 					)
 				).toBe(expectedMarble, expectedObservable);
@@ -281,10 +281,9 @@ servicesUnderTest.forEach((testCase) => {
 			scheduler.run(({ expectObservable }) => {
 				const expectedObservable = { a: transactionResultMock };
 				const expectedMarble = '(a|)';
-				expectObservable(service.deleteElement(elementsMock[0])).toBe(
-					expectedMarble,
-					expectedObservable
-				);
+				expectObservable(
+					service.deleteElements([elementsMock[0]])
+				).toBe(expectedMarble, expectedObservable);
 			});
 		});
 

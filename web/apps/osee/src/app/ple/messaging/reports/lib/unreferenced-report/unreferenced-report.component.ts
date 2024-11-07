@@ -164,20 +164,12 @@ export class UnreferencedReportComponent {
 				}
 			case 'element':
 				if (Array.isArray(value)) {
-					return from(value).pipe(
-						concatMap((v) =>
-							this.warningDialogService
-								.openElementDialog({ id: v.id })
-								.pipe(map((_) => v))
-						),
-						reduce(
-							(acc, curr) => [...acc, curr],
-							[] as NamedIdWithGammas[]
-						)
-					);
-				} else {
 					return this.warningDialogService
 						.openElementDialog(value)
+						.pipe(map((_) => value));
+				} else {
+					return this.warningDialogService
+						.openElementDialog([value])
 						.pipe(map((_) => value));
 				}
 			case 'structure':

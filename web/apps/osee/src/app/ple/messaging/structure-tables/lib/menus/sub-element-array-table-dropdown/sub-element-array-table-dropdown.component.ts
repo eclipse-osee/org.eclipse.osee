@@ -23,7 +23,6 @@ import {
 	MatMenuTrigger,
 } from '@angular/material/menu';
 import { RouterLink } from '@angular/router';
-import { applic } from '@osee/applicability/types';
 import { AttributeToValuePipe } from '@osee/attributes/pipes';
 import { HeaderService } from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
@@ -80,15 +79,18 @@ export class SubElementArrayTableDropdownComponent {
 	branchId = input.required<string>();
 	branchType = input.required<string>();
 	editMode = input.required<boolean>();
+	selectedElements = input.required<element[]>();
 
-	hasChanges = computed(() =>
-		this.elementDropdownService.hasChanges(this.element())
-	);
+	multiselect = computed(() => this.selectedElements().length > 0);
 
 	removeElement() {
+		const elementsToRemove = this.multiselect()
+			? this.selectedElements()
+			: [this.element()];
 		const dialogData: RemoveElementDialogData = {
-			removeType: 'Array',
-			elementName: this.element().name.value,
+			deleteRemove: 'remove',
+			elementsToRemove,
+			removeFromName: this.element().name.value,
 		};
 		this.dialog
 			.open(RemoveElementDialogComponent, {
@@ -100,8 +102,8 @@ export class SubElementArrayTableDropdownComponent {
 				switchMap((dialogResult: string) =>
 					iif(
 						() => dialogResult === 'ok',
-						this.structureService.removeElementFromArray(
-							this.element(),
+						this.structureService.removeElementsFromArray(
+							elementsToRemove,
 							this.headerElement()
 						),
 						of()
@@ -112,9 +114,12 @@ export class SubElementArrayTableDropdownComponent {
 	}
 
 	deleteElement() {
+		const elementsToDelete = this.multiselect()
+			? this.selectedElements()
+			: [this.element()];
 		this.elementDropdownService.openDeleteElementDialog(
-			this.element(),
-			'Array'
+			elementsToDelete,
+			this.headerElement().name.value
 		);
 	}
 
@@ -192,6 +197,14 @@ export class SubElementArrayTableDropdownComponent {
 
 	viewDiff<T>(value: difference<T> | undefined, header: string) {
 		this.elementDropdownService.viewDiff(value, header);
+	}
+
+	noop() {
+		// Do nothing
+	}
+
+	hasChanges(v: element): v is Required<element> {
+		return this.elementDropdownService.hasChanges(v);
 	}
 
 	protected isDiffableHeader(

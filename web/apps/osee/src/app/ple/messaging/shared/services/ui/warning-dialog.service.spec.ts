@@ -99,15 +99,17 @@ describe('WarningDialogService', () => {
 
 		it('should return element', () => {
 			scheduler.run(({ expectObservable }) => {
-				const body = {
-					id: '20' as `${number}`,
-					name: {
-						id: '-1' as `${number}`,
-						typeId: ATTRIBUTETYPEIDENUM.NAME,
-						gammaId: '-1' as `${number}`,
-						value: 'element0',
+				const body = [
+					{
+						id: '20' as `${number}`,
+						name: {
+							id: '-1' as `${number}`,
+							typeId: ATTRIBUTETYPEIDENUM.NAME,
+							gammaId: '-1' as `${number}`,
+							value: 'element0',
+						},
 					},
-				};
+				];
 				expectObservable(service.openElementDialog(body)).toBe('(a|)', {
 					a: body,
 				});
@@ -203,15 +205,17 @@ describe('WarningDialogService', () => {
 
 		it('should return element', () => {
 			scheduler.run(({ expectObservable }) => {
-				const body = {
-					id: '20' as `${number}`,
-					name: {
-						id: '-1' as `${number}`,
-						typeId: ATTRIBUTETYPEIDENUM.NAME,
-						gammaId: '-1' as `${number}`,
-						value: 'element0',
+				const body = [
+					{
+						id: '20' as `${number}`,
+						name: {
+							id: '-1' as `${number}`,
+							typeId: ATTRIBUTETYPEIDENUM.NAME,
+							gammaId: '-1' as `${number}`,
+							value: 'element0',
+						},
 					},
-				};
+				];
 				const dialogRefSpy = jasmine.createSpyObj({
 					afterClosed: of({
 						affectedArtifacts: warningArtifacts,

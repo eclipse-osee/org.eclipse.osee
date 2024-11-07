@@ -237,19 +237,15 @@ export class WarningDialogService {
 		);
 	}
 
-	openElementDialog(body: Partial<element>) {
-		return of(body.id).pipe(
-			take(1),
-			filter((id: string | undefined): id is string => id !== undefined),
-			switchMap((id) =>
-				this.affectedArtifacts.getStructuresByElement(id)
-			),
+	openElementDialog(elements: Partial<element>[]) {
+		const ids = elements.map((e) => e.id).filter((id) => id !== undefined);
+		return this._getAffectedStructuresFromAffectedArtifacts(ids).pipe(
 			switchMap((artifacts) =>
 				artifacts.length > 1
 					? this._listenToDialogEmission({
 							data: {
 								affectedArtifacts: artifacts,
-								body: body,
+								body: elements,
 								modifiedObjectType: 'Element',
 								affectedObjectType: 'Structure',
 							},
@@ -257,12 +253,13 @@ export class WarningDialogService {
 							filter(
 								(
 									value
-								): value is affectedArtifactWarning<element> =>
-									value !== undefined
+								): value is affectedArtifactWarning<
+									element[]
+								> => value !== undefined
 							),
 							map((value) => value.body)
 						)
-					: of(body)
+					: of(elements)
 			)
 		);
 	}

@@ -23,7 +23,6 @@ import {
 	MatMenuTrigger,
 } from '@angular/material/menu';
 import { RouterLink } from '@angular/router';
-import { applic } from '@osee/applicability/types';
 import { AttributeToValuePipe } from '@osee/attributes/pipes';
 import { HeaderService } from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
@@ -36,7 +35,7 @@ import {
 	type structure,
 } from '@osee/messaging/shared/types';
 import { difference } from '@osee/shared/types/change-report';
-import { iif, of, switchMap, take } from 'rxjs';
+import { of, switchMap, take } from 'rxjs';
 import { RemoveElementDialogData } from '../../dialogs/remove-element-dialog/remove-element-dialog';
 import { RemoveElementDialogComponent } from '../../dialogs/remove-element-dialog/remove-element-dialog.component';
 import { ElementTableDropdownService } from '../../services/element-table-dropdown.service';
@@ -81,15 +80,18 @@ export class SubElementTableDropdownComponent {
 	branchId = input.required<string>();
 	branchType = input.required<string>();
 	editMode = input.required<boolean>();
+	selectedElements = input.required<element[]>();
 
-	hasChanges = computed(() =>
-		this.elementDropdownService.hasChanges(this.element())
-	);
+	multiselect = computed(() => this.selectedElements().length > 0);
 
 	removeElement() {
+		const elementsToRemove = this.multiselect()
+			? this.selectedElements()
+			: [this.element()];
 		const dialogData: RemoveElementDialogData = {
-			removeType: 'Structure',
-			elementName: this.element().name.value,
+			deleteRemove: 'remove',
+			elementsToRemove,
+			removeFromName: this.structure().name.value,
 		};
 		this.dialog
 			.open(RemoveElementDialogComponent, {
@@ -98,24 +100,26 @@ export class SubElementTableDropdownComponent {
 			.afterClosed()
 			.pipe(
 				take(1),
-				switchMap((dialogResult: string) =>
-					iif(
-						() => dialogResult === 'ok',
-						this.structureService.removeElementFromStructure(
-							this.element(),
-							this.structure()
-						),
-						of()
-					)
-				)
+				switchMap((dialogResult: string) => {
+					if (dialogResult !== 'ok') {
+						return of();
+					}
+					return this.structureService.removeElementsFromStructure(
+						elementsToRemove,
+						this.structure()
+					);
+				})
 			)
 			.subscribe();
 	}
 
 	deleteElement() {
+		const elementsToDelete = this.multiselect()
+			? this.selectedElements()
+			: [this.element()];
 		this.elementDropdownService.openDeleteElementDialog(
-			this.element(),
-			'Structure'
+			elementsToDelete,
+			this.structure().name.value
 		);
 	}
 
@@ -205,6 +209,14 @@ export class SubElementTableDropdownComponent {
 
 	viewDiff<T>(value: difference<T> | undefined, header: string) {
 		this.elementDropdownService.viewDiff(value, header);
+	}
+
+	noop() {
+		// Do nothing
+	}
+
+	hasChanges(v: element): v is Required<element> {
+		return this.elementDropdownService.hasChanges(v);
 	}
 
 	protected isDiffableHeader(

@@ -23,7 +23,6 @@ import {
 
 @Component({
 	selector: 'osee-messaging-remove-element-dialog',
-	templateUrl: './remove-element-dialog.component.html',
 	styles: [],
 	standalone: true,
 	imports: [
@@ -33,6 +32,46 @@ import {
 		MatButton,
 		MatDialogClose,
 	],
+	template: `<h1 mat-dialog-title>
+			{{
+				data.deleteRemove === 'delete'
+					? 'Deleting Elements'
+					: 'Removing from ' + data.removeFromName
+			}}
+		</h1>
+		<mat-dialog-content>
+			@if (data.deleteRemove === 'delete') {
+				<p>Are you sure you want to delete the following elements?</p>
+			} @else {
+				<p>
+					Are you sure you want to remove the following elements from
+					{{ data.removeFromName }}?
+				</p>
+			}
+			<ul>
+				@for (
+					element of data.elementsToRemove;
+					track element.name.value
+				) {
+					<li>{{ element.name.value }}</li>
+				}
+			</ul>
+		</mat-dialog-content>
+		<mat-dialog-actions>
+			<button
+				mat-button
+				mat-dialog-close="cancel"
+				data-cy="cancel-btn">
+				No
+			</button>
+			<button
+				mat-flat-button
+				class="primary-button"
+				mat-dialog-close="ok"
+				data-cy="submit-btn">
+				Yes
+			</button>
+		</mat-dialog-actions> `,
 })
 export class RemoveElementDialogComponent {
 	dialogRef =
