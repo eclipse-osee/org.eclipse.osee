@@ -26,4 +26,12 @@ public interface IAttribute<T> extends AttributeId {
 
    String getDisplayableString();
 
+   default String getError() {
+      return "";
+   }
+
+   default void setError(String error) {
+      throw new UnsupportedOperationException("Invalid Set");
+   }
+
 }

@@ -515,28 +515,28 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    }
 
    private <T> Attribute<T> initializeAttribute(AttributeTypeId attributeType, ModificationType modificationType,
-      boolean markDirty, boolean setDefaultValue) {
+      String error, boolean markDirty, boolean setDefaultValue) {
       Conditions.checkValid(attributeType);
       Attribute<T> attribute = createAttribute(attributeType);
-      attribute.internalInitialize(attributeType, this, modificationType, ApplicabilityId.BASE, markDirty,
+      attribute.internalInitialize(attributeType, this, modificationType, ApplicabilityId.BASE, error, markDirty,
          setDefaultValue);
       return attribute;
    }
 
    public final <T> Attribute<T> internalInitializeAttribute(AttributeTypeToken attributeType, int attributeId,
-      GammaId gammaId, ModificationType modificationType, ApplicabilityId applicabilityId, boolean markDirty,
-      Object... data) {
+      GammaId gammaId, ModificationType modificationType, ApplicabilityId applicabilityId, String error,
+      boolean markDirty, Object... data) {
       Conditions.checkValid(attributeType);
       return internalInitializeAttribute(attributeType, AttributeId.valueOf(attributeId), gammaId, modificationType,
-         applicabilityId, markDirty, data);
+         applicabilityId, error, markDirty, data);
    }
 
    public final <T> Attribute<T> internalInitializeAttribute(AttributeTypeToken attributeType, AttributeId attributeId,
-      GammaId gammaId, ModificationType modificationType, ApplicabilityId applicabilityId, boolean markDirty,
-      Object... data) {
+      GammaId gammaId, ModificationType modificationType, ApplicabilityId applicabilityId, String error,
+      boolean markDirty, Object... data) {
       Conditions.checkValid(attributeType);
       Attribute<T> attribute = createAttribute(attributeType);
-      attribute.internalInitialize(attributeType, this, modificationType, applicabilityId, attributeId, gammaId,
+      attribute.internalInitialize(attributeType, this, modificationType, applicabilityId, attributeId, gammaId, error,
          markDirty, false);
       attribute.getAttributeDataProvider().loadData(data);
       return attribute;
@@ -690,7 +690,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
             throw new OseeArgumentException("The attribute type %s is not valid for artifacts of type [%s]",
                attributeType, getArtifactTypeName());
          }
-         attribute = initializeAttribute(attributeType, ModificationType.NEW, true, true);
+         attribute = initializeAttribute(attributeType, ModificationType.NEW, "", true, true);
       }
       return attribute;
    }
@@ -1088,7 +1088,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
 
       for (InputStream newValue : values) {
          if (remainingAttributes.isEmpty()) {
-            initializeAttribute(attributeType, ModificationType.NEW, true, false).setValueFromInputStream(newValue);
+            initializeAttribute(attributeType, ModificationType.NEW, "", true, false).setValueFromInputStream(newValue);
          } else {
             int index = remainingAttributes.size() - 1;
             remainingAttributes.get(index).setValueFromInputStream(newValue);
@@ -1106,7 +1106,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     */
    public final <T> void addAttribute(AttributeTypeId attributeType, T value) {
       Conditions.checkValid(attributeType);
-      initializeAttribute(attributeType, ModificationType.NEW, true, false).setValue(value);
+      initializeAttribute(attributeType, ModificationType.NEW, "", true, false).setValue(value);
    }
 
    /**
@@ -1115,7 +1115,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     */
    public final void addAttribute(AttributeTypeId attributeType) {
       Conditions.checkValid(attributeType);
-      initializeAttribute(attributeType, ModificationType.NEW, true, true);
+      initializeAttribute(attributeType, ModificationType.NEW, "", true, true);
    }
 
    /**
@@ -1124,7 +1124,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     */
    public final void addAttribute(AttributeTypeToken attributeType) {
       Conditions.checkValid(attributeType);
-      initializeAttribute(attributeType, ModificationType.NEW, true, true);
+      initializeAttribute(attributeType, ModificationType.NEW, "", true, true);
    }
 
    /**
@@ -1132,7 +1132,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     */
    public final void addAttributeFromString(AttributeTypeId attributeType, String value) {
       Conditions.checkValid(attributeType);
-      initializeAttribute(attributeType, ModificationType.NEW, true, false).setFromString(value);
+      initializeAttribute(attributeType, ModificationType.NEW, "", true, false).setFromString(value);
    }
 
    /**
@@ -1934,7 +1934,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       for (AttributeTypeToken attributeType : artifactType.getValidAttributeTypes()) {
          int missingCount = artifactType.getMin(attributeType) - getAttributeCount(attributeType);
          for (int i = 0; i < missingCount; i++) {
-            initializeAttribute(attributeType, ModificationType.NEW, isNewArtifact, true);
+            initializeAttribute(attributeType, ModificationType.NEW, "", isNewArtifact, true);
          }
       }
    }

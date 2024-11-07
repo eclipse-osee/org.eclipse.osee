@@ -16,7 +16,10 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor.tab.attr;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.ui.swt.FontManager;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -46,6 +49,8 @@ public class ArtEdAttrLabelProvider extends XViewerLabelProvider {
          return attr.getAttributeType().getIdString();
       } else if (aCol.equals(ArtEdAttrXViewerFactory.GammaId)) {
          return attr.getGammaId().toString();
+      } else if (aCol.equals(ArtEdAttrXViewerFactory.Error)) {
+         return attr.getError();
       }
       return "Unhandled Column";
    }
@@ -68,6 +73,17 @@ public class ArtEdAttrLabelProvider extends XViewerLabelProvider {
    @Override
    public void removeListener(ILabelProviderListener listener) {
       // do nothing
+   }
+
+   @Override
+   public Color getBackground(Object element, XViewerColumn aCol, int columnIndex) {
+      Attribute<?> attr = (Attribute<?>) element;
+      if (aCol.equals(ArtEdAttrXViewerFactory.Error)) {
+         if (Strings.isValid(attr.getError())) {
+            return FontManager.getLightRed();
+         }
+      }
+      return super.getBackground(element, aCol, columnIndex);
    }
 
 }

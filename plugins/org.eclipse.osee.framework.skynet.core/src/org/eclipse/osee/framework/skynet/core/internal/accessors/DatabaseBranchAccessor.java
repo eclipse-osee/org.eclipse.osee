@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeDataAccessor;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -70,9 +71,10 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
     */
    public static Branch loadBranch(IOseeCache<Branch> cache, BranchId branchId) {
       Conditions.assertTrue(branchId.isValid(), "Invalid Branch %s", branchId);
-      return ConnectionHandler.getJdbcClient().fetchOrException(
+      Branch branch = ConnectionHandler.getJdbcClient().fetchOrException(
          () -> new BranchDoesNotExist("Branch could not be acquired for id [%s]", branchId.getIdString()),
          stmt -> load(cache, stmt, null), SELECT_BRANCH, branchId);
+      return branch;
    }
 
    /**
@@ -97,7 +99,6 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
       }
       branch.setBaseTransaction(createTx(true, branch, stmt));
       branch.setSourceTransaction(createTx(false, sourceTxBranch, stmt));
-
       return branch;
    }
 
@@ -135,6 +136,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
          branch.setBranchState(branchState);
          branch.setArchived(isArchived);
          branch.setInheritAccessControl(inheritAccessControl);
+         branch.setCategories(BranchManager.getBranchCategories(branch));
       }
       branch.setAssociatedArtifact(artifactId);
       return branch;

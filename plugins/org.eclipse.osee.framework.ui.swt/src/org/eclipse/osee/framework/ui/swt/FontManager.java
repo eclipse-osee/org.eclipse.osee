@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 
@@ -28,6 +29,7 @@ import org.eclipse.swt.graphics.FontData;
 public final class FontManager {
 
    public static Map<String, Font> fontMap = new HashMap<>();
+   private static Color LIGHT_RED;
 
    private FontManager() {
       // Utility Class
@@ -58,6 +60,13 @@ public final class FontManager {
          fontMap.put(hashKey, new Font(baseFont.getDevice(), fontData.getName(), fontData.getHeight(), SWT.BOLD));
       }
       return fontMap.get(hashKey);
+   }
+
+   public static Color getLightRed() {
+      if (LIGHT_RED == null) {
+         LIGHT_RED = Displays.getColor(255, 108, 113);
+      }
+      return LIGHT_RED;
    }
 
 }

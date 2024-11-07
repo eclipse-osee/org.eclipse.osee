@@ -13,6 +13,8 @@
 
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+
 /**
  * @author Ryan D. Brooks
  */
@@ -25,6 +27,9 @@ public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
 
    @Override
    public Double convertStringToValue(String value) {
-      return Double.valueOf(value);
+      if (Strings.isNumeric(value)) {
+         return Double.valueOf(value);
+      }
+      return 0.0;
    }
 }

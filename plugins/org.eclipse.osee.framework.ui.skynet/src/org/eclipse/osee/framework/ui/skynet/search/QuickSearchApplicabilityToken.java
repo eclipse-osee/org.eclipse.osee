@@ -112,7 +112,7 @@ public class QuickSearchApplicabilityToken {
       if (quickSearch != null) {
          BranchId branch = quickSearch.getBranch();
          if (branch.isValid()) {
-            if (!ViewApplicabilityUtil.isBranchOfProductLine(branch)) {
+            if (!ViewApplicabilityUtil.isProductLineBranch(branch)) {
                button.setEnabled(false);
                checkBox.setSelection(false);
                checkBox.setEnabled(false);

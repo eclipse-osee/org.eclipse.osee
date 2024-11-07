@@ -19,6 +19,7 @@ package org.eclipse.osee.framework.core.data;
  */
 public interface AttributeReadable<T> extends OrcsReadable, IAttribute<T> {
 
+   @Override
    GammaId getGammaId();
 
 }

@@ -114,7 +114,7 @@ import { moveLocation, moveLocations } from '../../types/structure-tables';
 		<mat-dialog-actions>
 			<button
 				mat-button
-				mat-dialog-close="cancel"
+				mat-dialog-close=""
 				data-cy="cancel-btn"
 				cdkFocusInitial>
 				Cancel

@@ -19,12 +19,15 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.BranchQueryData;
+import org.eclipse.ui.PartInitException;
 
 /**
  * This is a beta replacement for BranchManager that uses searches instead of always loading every branch. BranchView
@@ -32,13 +35,28 @@ import org.eclipse.osee.orcs.rest.model.BranchQueryData;
  *
  * @author Donald G. Dunne
  */
-public class BranchSearchView extends BranchView {
+public class BranchManager extends BranchView {
 
-   public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchSearchView";
+   public static final String VIEW_ID = BranchView.VIEW_ID;
    BranchQueryData showBranchData = branchData;
 
-   public BranchSearchView() {
+   public BranchManager() {
       super(VIEW_ID, "Branch Search Manager");
+   }
+
+   public static void revealBranch(BranchId branch) {
+      try {
+         BranchManager branchView = (BranchManager) AWorkbench.getActivePage().showView(VIEW_ID);
+         branchView.reveal(branch);
+      } catch (PartInitException ex) {
+         OseeCoreException.wrapAndThrow(ex);
+      }
+   }
+
+   private void reveal(BranchId branch) {
+      if (isInitialized()) {
+         xBranchWidget.reveal(branch);
+      }
    }
 
    @Override
@@ -96,7 +114,7 @@ public class BranchSearchView extends BranchView {
             branches = endpoint.getBranches(branchData);
          }
       } catch (Exception ex) {
-         OseeLog.log(BranchSearchView.class, Level.SEVERE, ex);
+         OseeLog.log(BranchManager.class, Level.SEVERE, ex);
          xBranchWidget.setExtraInfoLabel("Exception caught, see error log");
          exceptionCaught = true;
       }

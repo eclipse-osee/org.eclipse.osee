@@ -128,7 +128,7 @@ public class IntroduceArtifactOperation {
          if (destinationAttribute == null) {
             destinationArtifact.internalInitializeAttribute(sourceAttribute.getAttributeType(), sourceAttribute,
                sourceAttribute.getGammaId(), sourceAttribute.getModificationType(),
-               sourceAttribute.getApplicabilityId(), true,
+               sourceAttribute.getApplicabilityId(), "", true,
                sourceAttribute.getAttributeDataProvider().getData()).internalSetModType(
                   sourceAttribute.getModificationType(), true, true);
          } else {
