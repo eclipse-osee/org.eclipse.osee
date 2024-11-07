@@ -10,7 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { element } from '@osee/messaging/shared/types';
+
 export type RemoveElementDialogData = {
-	removeType: string;
-	elementName: string;
+	deleteRemove: 'delete' | 'remove';
+	elementsToRemove: element[];
+	removeFromName: string;
 };
