@@ -23,11 +23,9 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomMenu;
 import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -57,13 +55,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.PartInitException;
 import org.osgi.service.prefs.Preferences;
 
 /**
  * @author Jeff C. Phillips
  */
-public class BranchView extends GenericViewPart implements IBranchWidgetMenuListener, IBranchEventListener, ITransactionEventListener, ITransactionRecordSelectionProvider, IPartListener {
+public abstract class BranchView extends GenericViewPart implements IBranchWidgetMenuListener, IBranchEventListener, ITransactionEventListener, ITransactionRecordSelectionProvider, IPartListener {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView";
    public static final String BRANCH_ID = "branchUuid";
 
@@ -77,10 +74,7 @@ public class BranchView extends GenericViewPart implements IBranchWidgetMenuList
    private final String viewId;
    private final String name;
    protected final BranchQueryData branchData = new BranchQueryData();
-
-   public BranchView() {
-      this(VIEW_ID, "Branch Manager");
-   }
+   protected AtomicBoolean loaded = new AtomicBoolean(false);
 
    public BranchView(String viewId, String name) {
       super();
@@ -183,21 +177,6 @@ public class BranchView extends GenericViewPart implements IBranchWidgetMenuList
    @Override
    public void updateMenuActionsForTable(MenuManager mm) {
       mm.insertBefore(XViewer.MENU_GROUP_PRE, new SetAsFavoriteAction(xBranchWidget));
-   }
-
-   public static void revealBranch(BranchId branch) {
-      try {
-         BranchView branchView = (BranchView) AWorkbench.getActivePage().showView(VIEW_ID);
-         branchView.reveal(branch);
-      } catch (PartInitException ex) {
-         OseeCoreException.wrapAndThrow(ex);
-      }
-   }
-
-   private void reveal(BranchId branch) {
-      if (isInitialized()) {
-         xBranchWidget.reveal(branch);
-      }
    }
 
    private void refreshIfNeeded() {

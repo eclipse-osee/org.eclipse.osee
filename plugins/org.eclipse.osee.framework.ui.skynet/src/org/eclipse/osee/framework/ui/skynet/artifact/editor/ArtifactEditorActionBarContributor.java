@@ -41,7 +41,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.action.OpenHistoryAc
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.XResultDataDialog;
-import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchManager;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.ui.PartInitException;
@@ -97,7 +97,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor, I
       @Override
       public void run() {
          try {
-            BranchView.revealBranch(artifact.getBranch());
+            BranchManager.revealBranch(artifact.getBranch());
          } catch (Exception ex) {
             OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
          }

@@ -131,10 +131,10 @@
   <view
         allowMultiple="true"
         category="osee.jdk.core.category"
-        class="org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchSearchView"
+        class="org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchManager"
         icon="OSEE-INF/images/branch.gif"
-        id="org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchSearchView"
-        name="Branch Search View">
+        id="org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView"
+        name="Branch Manager">
   </view>
 	</extension>
 	<extension point="org.eclipse.search.searchPages">
@@ -472,16 +472,16 @@
    </menuContribution>
 </extension>
 <extension
-      name="Menus for the Branch Search View"
+      name="Menus for the Branch Manager"
       point="org.eclipse.ui.menus">
    <menuContribution
-         locationURI="popup:org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchSearchView">
+         locationURI="popup:org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView">
       <command
             commandId="org.eclipse.osee.framework.ui.skynet.OpenArtifactExplorerCommand"
             style="push">
       </command>
       <separator
-            name="separator.xBranch.BranchSearchView0"
+            name="separator.xBranch.BranchManager0"
             visible="true">
       </separator>
       <command
@@ -500,7 +500,7 @@
          </dynamic>
       </menu>
       <separator
-            name="separator.xBranch.BranchSearchView1"
+            name="separator.xBranch.BranchManager1"
             visible="true">
       </separator>
       <command
@@ -521,7 +521,7 @@
       </command>
       
       <separator
-            name="separator.xBranch.BranchSearchView2"
+            name="separator.xBranch.BranchManager2"
             visible="true">
       </separator>
       <command
@@ -529,7 +529,7 @@
             style="push">
       </command>
             <separator
-            name="separator.xBranch.BranchSearchView3"
+            name="separator.xBranch.BranchManager3"
             visible="true">
       </separator>
       <command
@@ -541,7 +541,7 @@
             style="push">
       </command>
       <separator
-            name="separator.xBranch.BranchSearchView4"
+            name="separator.xBranch.BranchManager4"
             visible="true">
       </separator>
       <command
@@ -553,7 +553,7 @@
             style="push">
       </command>
       <separator
-            name="separator.xBranch.BranchSearchView5"
+            name="separator.xBranch.BranchManager5"
             visible="true">
       </separator>
       <dynamic
@@ -564,7 +564,7 @@
             commandId="org.eclipse.osee.framework.ui.skynet.accessControl">
       </command>
       <separator
-            name="separator.xBranch.BranchSearchView6"
+            name="separator.xBranch.BranchManager6"
             visible="true">
       </separator>
       <command
@@ -572,7 +572,7 @@
             style="push">
       </command>
       <separator
-            name="separator.xBranch.BranchSearchView3"
+            name="separator.xBranch.BranchManager3"
             visible="true">
       </separator>
       <dynamic
@@ -580,7 +580,7 @@
             id="org.eclipse.osee.framework.ui.skynet.dynamicToggleFavorite">
       </dynamic>
       <separator
-            name="separator.xBranch.BranchSearchView8"
+            name="separator.xBranch.BranchManager8"
             visible="true">
       </separator>
       <command
