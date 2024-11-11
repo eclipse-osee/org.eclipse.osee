@@ -91,7 +91,7 @@ public class MimIcdGenerator {
    private final Set<String> units;
    private final Set<String> txRates;
    private final Set<String> categories;
-   private final Map<ArtifactId, StructureInfo> structureInfoMap;
+   private final Map<String, StructureInfo> structureInfoMap;
    private final Map<String, StructureInfo> headerStructureInfoMap;
    private final Map<ArtifactId, InterfaceSubMessageToken> messageHeaders;
    private final Map<String, InterfaceStructureToken> messageHeaderStructures;
@@ -186,14 +186,7 @@ public class MimIcdGenerator {
 
       List<InterfaceSubMessageToken> subMessagesWithHeaders = new LinkedList<>();
       List<InterfaceStructureToken> structures = new LinkedList<>();
-      SortedMap<InterfaceStructureToken, String> structureLinks =
-         new TreeMap<InterfaceStructureToken, String>(new Comparator<InterfaceStructureToken>() {
-            @Override
-            public int compare(InterfaceStructureToken o1, InterfaceStructureToken o2) {
-               return o1.getName().getValue().compareTo(o2.getName().getValue());
-            }
-         });
-
+      
       // Write sheets
       ExcelWorkbookWriter writer = new ExcelWorkbookWriter(outputStream, WorkbookFormat.XLSX);
       writer.setDefaultZoom(80);
@@ -248,22 +241,9 @@ public class MimIcdGenerator {
          }
       }
 
-      for (InterfaceStructureToken structure : structures) {
-         String sheetName =
-            structure.getNameAbbrev().getValue().isEmpty() ? structure.getName().getValue().replace("Command Taskfile",
-               "CT").replace("Status Taskfile", "ST") : structure.getNameAbbrev().getValue();
-         if (structure.getArtifactReadable() != null && structure.getArtifactReadable().isValid()) {
-            String abbrevName =
-               structure.getArtifactReadable().getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData, "null");
-            if (!abbrevName.equals("null")) {
-               sheetName = abbrevName;
-            }
-         }
-         structureLinks.put(structure, sheetName);
-      }
 
       createStructureInfo(branch, parentBranch, view, conn, messages);
-
+      
       if (diff) {
          createChangeSummary(writer, summary);
       }
@@ -278,10 +258,10 @@ public class MimIcdGenerator {
       createUnitsAndTypesSheet(writer); // Create sheet but do not write until the end to allow for list population
       createStructureNamesSheet(writer); // Create sheet but do not write until the end to allow for header diff processing
       createStructureSummarySheet(writer); // Create sheet but do not write until the end to allow for header diff processing
-      writeStructureSheets(writer, subMessagesWithHeaders, structureLinks, messages, validation);
+      writeStructureSheets(writer, subMessagesWithHeaders, messages, validation);
       writeUnitsAndTypesSheet(writer, branch, view, primaryNode, secondaryNode);
-      writeStructureNamesSheet(writer, structureLinks, validation);
-      writeStructureSummarySheet(writer, messages, structureLinks, validation);
+      writeStructureNamesSheet(writer, structures, validation);
+      writeStructureSummarySheet(writer, messages, validation);
       writer.writeWorkbook();
       writer.closeWorkbook();
 
@@ -544,17 +524,24 @@ public class MimIcdGenerator {
                   numElementsChanged = !struct.getNumElements().equals(parentStructure.getNumElements());
                   sizeInBytesChanged = !struct.getSizeInBytes().equals(parentStructure.getSizeInBytes());
                }
-
-               StructureInfo structureInfo = new StructureInfo(struct.getName().getValue(),
+               String sheetName = struct.getNameAbbrev().getValue().isEmpty() ? struct.getName().getValue().replace("Command Taskfile",
+                  "CT").replace("Status Taskfile", "ST") : struct.getNameAbbrev().getValue();
+               if (structureInfoMap.values().stream().anyMatch(a->a.sheetName.equals(struct.getNameAbbrev().getValue().isEmpty() ? struct.getName().getValue().replace("Command Taskfile",
+                  "CT").replace("Status Taskfile", "ST") : struct.getNameAbbrev().getValue()))) {
+                  sheetName = struct.getNameAbbrev().getValue().isEmpty() ? struct.getName().getValue() : struct.getNameAbbrev().getValue();
+                  sheetName = sheetName + "_"+sendingNode.getName()+"_"+msgNumber+"_"+subMsgNumber;
+               }
+               
+               StructureInfo structureInfo = new StructureInfo(struct.getId(),struct.getName().getValue(),
                   struct.getNameAbbrev().getValue(), cat, msgRateText, minSim, maxSim, minBps, maxBps, elementCount,
                   sizeInBytes, sendingNode.getName(), msgNumber, subMsgNumber, taskFileType, desc, message,
                   subMessage.getArtifactReadable(), flatElements, structureChanged, txRateChanged, numElementsChanged,
-                  sizeInBytesChanged, false, icdcn, parentStructure);
+                  sizeInBytesChanged, false, icdcn, parentStructure, sheetName);
 
                if (struct.getId() == 0) {
                   headerStructureInfoMap.put(struct.getName().getValue(), structureInfo);
                } else {
-                  structureInfoMap.put(ArtifactId.valueOf(struct.getId()), structureInfo);
+                  structureInfoMap.put(subMessage.getIdString()+"."+struct.getIdString(), structureInfo);
                }
             }
          }
@@ -819,26 +806,27 @@ public class MimIcdGenerator {
    }
 
    private void writeStructureNamesSheet(ExcelWorkbookWriter writer,
-      SortedMap<InterfaceStructureToken, String> structures, ConnectionValidationResult validation) {
+      List<InterfaceStructureToken> structureTokens,ConnectionValidationResult validation ) {
       writer.setActiveSheet("Structure Names");
       String[] headers = {"Structure Name", "Structure Name", "Structure Name"};
       writer.writeRow(0, headers, CELLSTYLE.BOLD);
-
-      List<InterfaceStructureToken> structureList = new LinkedList<>(structures.keySet());
-      structureList.sort(new Comparator<InterfaceStructureToken>() {
-         @Override
-         public int compare(InterfaceStructureToken o1, InterfaceStructureToken o2) {
-            return o1.getName().getValue().toLowerCase().compareTo(o2.getName().getValue().toLowerCase());
-         }
-      });
-
+      
+      SortedMap<String,StructureInfo> structureLinks = new TreeMap<String,StructureInfo>();
+      for (StructureInfo struct : headerStructureInfoMap.values()) {
+         structureLinks.put(struct.sheetName, struct);
+      }
+      for (StructureInfo struct : structureInfoMap.values()) {
+         structureLinks.put(struct.sheetName, struct);
+      }
+      List<String> keyset = new LinkedList<>(structureLinks.keySet());
+      
       CELLSTYLE tabColor = CELLSTYLE.NONE;
 
-      int colLength = (int) Math.ceil(structureList.size() / 3.0);
-      for (int i = 0; i < structureList.size(); i++) {
+      int colLength = (int) Math.ceil(keyset.size() / 3.0);
+      for (int i = 0; i < keyset.size(); i++) {
          int rowNum = i + 1;
          int colNum = 0;
-         InterfaceStructureToken structure = structureList.get(i);
+         String sheetName = keyset.get(i);
          if (i >= colLength * 2) {
             colNum = 2;
             rowNum -= (colLength * 2);
@@ -847,15 +835,19 @@ public class MimIcdGenerator {
             rowNum -= colLength;
          }
 
-         CELLSTYLE color =
-            structure.isAutogenerated() ? getHeaderStructureNameColor(structure) : getStructureNameColor(structure);
-
+         InterfaceStructureToken structure = structureTokens.stream().filter(a->a.getId() == structureLinks.get(sheetName).id).findFirst().get();
+         InterfaceSubMessageToken subMessage = InterfaceSubMessageToken.SENTINEL;
+         if (structure.getArtifactReadable().isValid()) {
+            subMessage = new InterfaceSubMessageToken(structure.getArtifactReadable().getRelated(CoreRelationTypes.InterfaceSubMessageContent_SubMessage).getList().get(0));
+         }
+         CELLSTYLE color = structure.isAutogenerated() ? getHeaderStructureNameColor(subMessage,structure) : getStructureNameColor(subMessage,structure);
+         
          if (isStructureValidationError(validation, structure.getArtifactId())) {
             color = CELLSTYLE.LIGHT_RED;
             tabColor = CELLSTYLE.LIGHT_RED;
          }
-
-         writer.writeCell(rowNum, colNum, structure.getName().getValue(), "'" + structures.get(structure) + "'!A1",
+         
+         writer.writeCell(rowNum, colNum, structureLinks.get(sheetName).name, "'" + sheetName + "'!A1",
             HyperLinkType.SHEET, CELLSTYLE.HYPERLINK, color);
          rowNum++;
       }
@@ -867,16 +859,16 @@ public class MimIcdGenerator {
       }
    }
 
-   private CELLSTYLE getHeaderStructureNameColor(InterfaceStructureToken struct) {
+   private CELLSTYLE getHeaderStructureNameColor(InterfaceSubMessageToken subMessage, InterfaceStructureToken struct) {
       CELLSTYLE style = headerNameStyles.getOrDefault(struct.getName().getValue(), CELLSTYLE.NONE);
       if (!style.equals(CELLSTYLE.NONE)) {
          return style;
       }
-      return getStructureNameColor(struct);
+      return getStructureNameColor(subMessage, struct);
    }
 
-   private CELLSTYLE getStructureNameColor(InterfaceStructureToken struct) {
-      StructureInfo info = getStructureInfo(struct);
+   private CELLSTYLE getStructureNameColor(InterfaceSubMessageToken subMessage, InterfaceStructureToken struct) {
+      StructureInfo info = getStructureInfo(subMessage, struct);
       boolean msgRatePeriodicityChange = false;
       if (diffs.containsKey(info.message)) {
          msgRatePeriodicityChange = diffs.get(info.message).getAttributeChanges(
@@ -899,7 +891,7 @@ public class MimIcdGenerator {
    }
 
    private void writeStructureSummarySheet(ExcelWorkbookWriter writer, List<ArtifactReadable> messages,
-      SortedMap<InterfaceStructureToken, String> structureLinks, ConnectionValidationResult validation) {
+      ConnectionValidationResult validation) {
       writer.setActiveSheet("Structure Summary");
 
       int totalMinSim = 0;
@@ -950,8 +942,10 @@ public class MimIcdGenerator {
             }
 
             for (InterfaceStructureToken struct : structures) {
-               String sheetName = structureLinks.get(struct);
-               StructureInfo structureInfo = getStructureInfo(struct);
+
+               StructureInfo structureInfo = getStructureInfo(subMessage, struct);
+               String sheetName = structureInfo.sheetName;
+               
                ArtifactReadable structReadable = struct.getArtifactReadable();
 
                totalMinSim += stringToInt(structureInfo.minSim);
@@ -1064,9 +1058,9 @@ public class MimIcdGenerator {
       }
    }
 
-   private StructureInfo getStructureInfo(InterfaceStructureToken struct) {
+   private StructureInfo getStructureInfo(InterfaceSubMessageToken subMessage, InterfaceStructureToken struct) {
       return struct.getId() == 0 ? headerStructureInfoMap.get(struct.getName().getValue()) : structureInfoMap.get(
-         ArtifactId.valueOf(struct.getId()));
+         subMessage.getIdString()+"."+struct.getIdString());
    }
 
    private int stringToInt(String str) {
@@ -1260,7 +1254,7 @@ public class MimIcdGenerator {
    }
 
    private void writeStructureSheets(ExcelWorkbookWriter writer, List<InterfaceSubMessageToken> subMessages,
-      SortedMap<InterfaceStructureToken, String> structureLinks, List<ArtifactReadable> messages,
+      List<ArtifactReadable> messages,
       ConnectionValidationResult validation) {
       String[] structureHeaders = {
          "Sheet Type",
@@ -1314,7 +1308,13 @@ public class MimIcdGenerator {
 
             AtomicInteger rowIndex = new AtomicInteger(4); // Start elements on 4th row
             int byteLocation = 0;
-            writer.createSheet(structureLinks.get(struct));
+            StructureInfo structureInfo;
+            if (struct.getId() == 0) {
+               structureInfo = headerStructureInfoMap.get(struct.getName().getValue());
+            } else {
+               structureInfo = structureInfoMap.get(subMessage.getIdString()+"."+struct.getIdString());
+            }
+            writer.createSheet(structureInfo.sheetName);
             writer.writeRow(0, structureHeaders, CELLSTYLE.BOLD, CELLSTYLE.WRAP, CELLSTYLE.CENTERH);
             columnWidths = getMaxLengthsArray(columnWidths, createStringLengthArray(structureHeaders));
 
@@ -1373,7 +1373,7 @@ public class MimIcdGenerator {
                   rowIndex.getAndAdd(1);
                }
             } else {
-               StructureInfo info = structureInfoMap.get(struct.getArtifactId());
+               StructureInfo info = structureInfoMap.get(subMessage.getIdString()+"."+struct.getIdString());
                resultWidths = printFirstRowInStructureSheet(writer, struct, info, validation);
                columnWidths = getMaxLengthsArray(columnWidths, resultWidths);
 
@@ -1420,7 +1420,7 @@ public class MimIcdGenerator {
             }
 
             CELLSTYLE color =
-               struct.isAutogenerated() ? getHeaderStructureNameColor(struct) : getStructureNameColor(struct);
+               struct.isAutogenerated() ? getHeaderStructureNameColor(subMessage,struct) : getStructureNameColor(subMessage,struct);
             writer.setTabColor(color);
 
             for (int i = 0; i < columnWidths.length; i++) {
@@ -2339,6 +2339,7 @@ public class MimIcdGenerator {
    }
 
    private class StructureInfo {
+      final Long id;
       final String name;
       final String nameAbbrev;
       final String category;
@@ -2364,7 +2365,9 @@ public class MimIcdGenerator {
       boolean isAdded;
       final String icdcn;
       final InterfaceStructureToken parentStructure;
-      public StructureInfo(String name, String nameAbbrev, String cat, String msgRateText, String minSim, String maxSim, String minBps, String maxBps, Integer elementCount, Integer sizeInBytes, String sendingNode, String msgNumber, String subMsgNumber, String taskfile, String desc, ArtifactReadable message, ArtifactReadable submessage, List<InterfaceStructureElementToken> elements, boolean structureChanged, boolean txRateChanged, boolean numElementsChanged, boolean structureSizeChanged, boolean isAdded, String icdcn, InterfaceStructureToken parentStructure) {
+      final String sheetName;
+      public StructureInfo(Long id, String name, String nameAbbrev, String cat, String msgRateText, String minSim, String maxSim, String minBps, String maxBps, Integer elementCount, Integer sizeInBytes, String sendingNode, String msgNumber, String subMsgNumber, String taskfile, String desc, ArtifactReadable message, ArtifactReadable submessage, List<InterfaceStructureElementToken> elements, boolean structureChanged, boolean txRateChanged, boolean numElementsChanged, boolean structureSizeChanged, boolean isAdded, String icdcn, InterfaceStructureToken parentStructure, String sheetName) {
+         this.id = id;
          this.name = name;
          this.nameAbbrev = nameAbbrev;
          this.category = cat;
@@ -2390,6 +2393,7 @@ public class MimIcdGenerator {
          this.isAdded = isAdded;
          this.icdcn = icdcn;
          this.parentStructure = parentStructure;
+         this.sheetName = sheetName;
       }
 
    }
