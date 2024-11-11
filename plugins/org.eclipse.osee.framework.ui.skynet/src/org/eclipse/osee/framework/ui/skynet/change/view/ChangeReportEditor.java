@@ -101,7 +101,8 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
-      setActivePage(getEditorInput().isTransactionTabActive() ? 1 : 0);
+      boolean transactionTabActive = getEditorInput().isTransactionTabActive();
+      setActivePage(transactionTabActive ? 1 : 0);
       OseeEventManager.addListener(eventRelay);
    }
 

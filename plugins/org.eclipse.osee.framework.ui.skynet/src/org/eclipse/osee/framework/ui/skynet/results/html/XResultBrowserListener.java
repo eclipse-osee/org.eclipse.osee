@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchManager;
+import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
 import org.eclipse.swt.browser.LocationEvent;
 import org.eclipse.swt.browser.LocationListener;
 import org.eclipse.swt.program.Program;
@@ -83,7 +83,7 @@ public class XResultBrowserListener implements LocationListener {
                break;
             case openBranch:
                event.doit = false;
-               BranchManager.revealBranch(BranchId.valueOf(value));
+               BranchView.revealBranch(BranchId.valueOf(value));
                break;
             case browserInternal:
                event.doit = false;
