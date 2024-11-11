@@ -64,6 +64,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -511,6 +512,7 @@ public class XViewer extends TreeViewer {
    private Composite searchComp;
    private XViewerMouseListener mouseListener;
    private boolean loading;
+   private static Font boldFont;
 
    public void resetDefaultSorter() {
       customizeMgr.resetDefaultSorter();
@@ -677,8 +679,7 @@ public class XViewer extends TreeViewer {
       filterText.setToolTipText(str);
       filterText.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
       filterText.setWordWrap(false);
-      FontDescriptor boldDescriptor = FontDescriptor.createFrom(filterText.getFont()).setStyle(SWT.BOLD);
-      filterText.setFont(boldDescriptor.createFont(Display.getCurrent()));
+      filterText.setFont(getBoldFont());
 
       if (loading) {
          filterText.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
@@ -697,6 +698,14 @@ public class XViewer extends TreeViewer {
       } else {
          filterText.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
       }
+   }
+
+   public Font getBoldFont() {
+      if (boldFont == null) {
+         FontDescriptor boldDescriptor = FontDescriptor.createFrom(filterText.getFont()).setStyle(SWT.BOLD);
+         boldFont = boldDescriptor.createFont(Display.getCurrent());
+      }
+      return boldFont;
    }
 
    public void setLoading(boolean loading) {
