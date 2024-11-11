@@ -88,7 +88,8 @@ describe('SubElementTableDropdownComponent', () => {
 
 		fixture = TestBed.createComponent(SubElementTableDropdownComponent);
 		component = fixture.componentInstance;
-		component.structure = {
+		fixture.componentRef.setInput('element', elementsMock[0]);
+		fixture.componentRef.setInput('structure', {
 			id: '-1',
 			gammaId: '-1',
 			name: {
@@ -135,8 +136,12 @@ describe('SubElementTableDropdownComponent', () => {
 			},
 			applicability: applicabilitySentinel,
 			elements: [],
-		};
-		component.element = elementsMock[0];
+		});
+		fixture.componentRef.setInput('header', 'Name');
+		fixture.componentRef.setInput('branchId', '1');
+		fixture.componentRef.setInput('branchType', 'working');
+		fixture.componentRef.setInput('editMode', true);
+		fixture.componentRef.setInput('selectedElements', []);
 		fixture.detectChanges();
 	});
 

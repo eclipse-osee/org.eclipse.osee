@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Input, inject } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatDivider } from '@angular/material/divider';
 import { MatLabel } from '@angular/material/form-field';
@@ -31,8 +31,6 @@ import {
 	DiffableElementProps,
 	DisplayableElementProps,
 	diffableElementHeaders,
-	elementHeaderSentinel,
-	elementSentinel,
 	type PlatformType,
 	type element,
 } from '@osee/messaging/shared/types';
@@ -76,22 +74,21 @@ export class SubElementArrayTableDropdownComponent {
 	private headerService = inject(HeaderService);
 	private elementDropdownService = inject(ElementTableDropdownService);
 
-	@Input() element: element = elementSentinel;
+	element = input.required<element>();
+	headerElement = input.required<element>();
+	header = input.required<keyof DisplayableElementProps>();
+	branchId = input.required<string>();
+	branchType = input.required<string>();
+	editMode = input.required<boolean>();
 
-	@Input() headerElement: element = elementHeaderSentinel;
-
-	@Input() header!: keyof DisplayableElementProps;
-	@Input() field?: string | number | boolean | PlatformType | applic;
-
-	@Input('branchId') _branchId = '';
-	@Input('branchType') _branchType = '';
-
-	@Input() editMode = false;
+	hasChanges = computed(() =>
+		this.elementDropdownService.hasChanges(this.element())
+	);
 
 	removeElement() {
 		const dialogData: RemoveElementDialogData = {
 			removeType: 'Array',
-			elementName: this.element.name.value,
+			elementName: this.element().name.value,
 		};
 		this.dialog
 			.open(RemoveElementDialogComponent, {
@@ -104,8 +101,8 @@ export class SubElementArrayTableDropdownComponent {
 					iif(
 						() => dialogResult === 'ok',
 						this.structureService.removeElementFromArray(
-							this.element,
-							this.headerElement
+							this.element(),
+							this.headerElement()
 						),
 						of()
 					)
@@ -114,13 +111,16 @@ export class SubElementArrayTableDropdownComponent {
 			.subscribe();
 	}
 
-	deleteElement(element: element) {
-		this.elementDropdownService.openDeleteElementDialog(element, 'Array');
+	deleteElement() {
+		this.elementDropdownService.openDeleteElementDialog(
+			this.element(),
+			'Array'
+		);
 	}
 
 	openAddElementDialog(afterElement?: string, copyElement?: element) {
 		this.elementDropdownService.openAddElementDialog(
-			this.headerElement,
+			this.headerElement(),
 			true,
 			false,
 			afterElement,
@@ -128,38 +128,44 @@ export class SubElementArrayTableDropdownComponent {
 		);
 	}
 
-	openEditElementDialog(element: element) {
-		this.elementDropdownService.openEditElementDialog(element, true);
+	openEditElementDialog() {
+		this.elementDropdownService.openEditElementDialog(this.element(), true);
 	}
 
 	openEnumDialog(platformType: PlatformType) {
-		this.elementDropdownService.openEnumDialog(platformType, this.editMode);
+		this.elementDropdownService.openEnumDialog(
+			platformType,
+			this.editMode()
+		);
 	}
 
-	openDescriptionDialog(element: element) {
+	openDescriptionDialog() {
 		this.elementDropdownService.openDescriptionDialog(
-			element,
-			this.editMode
+			this.element(),
+			this.editMode()
 		);
 	}
 
-	openEnumLiteralDialog(element: element) {
+	openEnumLiteralDialog() {
 		this.elementDropdownService.openEnumLiteralDialog(
-			element,
-			this.editMode
+			this.element(),
+			this.editMode()
 		);
 	}
 
-	openNotesDialog(element: element) {
-		this.elementDropdownService.openNotesDialog(element, this.editMode);
+	openNotesDialog() {
+		this.elementDropdownService.openNotesDialog(
+			this.element(),
+			this.editMode()
+		);
 	}
 
-	openMoveElementDialog(element: element, parent: element) {
+	openMoveElementDialog() {
 		this.dialog
 			.open(MoveArrayElementDialogComponent, {
 				data: {
-					element,
-					parent,
+					element: this.element(),
+					parent: this.headerElement(),
 				},
 				minHeight: '40vh',
 				minWidth: '40vw',
@@ -171,8 +177,8 @@ export class SubElementArrayTableDropdownComponent {
 						return of();
 					}
 					return this.structureService.changeElementArrayRelationOrder(
-						parent.id,
-						element.id,
+						this.headerElement().id,
+						this.element().id,
 						afterArtifact
 					);
 				})
@@ -188,9 +194,6 @@ export class SubElementArrayTableDropdownComponent {
 		this.elementDropdownService.viewDiff(value, header);
 	}
 
-	hasChanges(v: element): v is Required<element> {
-		return this.elementDropdownService.hasChanges(v);
-	}
 	protected isDiffableHeader(
 		value: keyof DisplayableElementProps
 	): value is keyof DiffableElementProps {
