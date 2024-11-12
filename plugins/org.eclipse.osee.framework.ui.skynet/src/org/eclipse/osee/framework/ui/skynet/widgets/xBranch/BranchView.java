@@ -13,21 +13,29 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xBranch;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomMenu;
+import org.eclipse.osee.framework.core.client.OseeClient;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
@@ -41,11 +49,13 @@ import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.action.EditTransactionComment;
 import org.eclipse.osee.framework.ui.skynet.action.ITransactionRecordSelectionProvider;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchWidget.IBranchWidgetMenuListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.actions.SetAsFavoriteAction;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.BranchQueryData;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
@@ -55,14 +65,16 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PartInitException;
 import org.osgi.service.prefs.Preferences;
 
 /**
  * @author Jeff C. Phillips
  */
-public abstract class BranchView extends GenericViewPart implements IBranchWidgetMenuListener, IBranchEventListener, ITransactionEventListener, ITransactionRecordSelectionProvider, IPartListener {
+public class BranchView extends GenericViewPart implements IBranchWidgetMenuListener, IBranchEventListener, ITransactionEventListener, ITransactionRecordSelectionProvider, IPartListener {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView";
    public static final String BRANCH_ID = "branchUuid";
+   public static final String NAME = "Branch Search";
 
    private final Clipboard clipboard = new Clipboard(null);
 
@@ -71,19 +83,11 @@ public abstract class BranchView extends GenericViewPart implements IBranchWidge
    private final AtomicBoolean refreshNeeded = new AtomicBoolean(false);
    private final AtomicBoolean processEvents = new AtomicBoolean(false);
    private XViewerCustomMenu customMenu;
-   private final String viewId;
-   private final String name;
    protected final BranchQueryData branchData = new BranchQueryData();
    protected AtomicBoolean loaded = new AtomicBoolean(false);
+   BranchQueryData showBranchData = branchData;
 
-   public BranchView(String viewId, String name) {
-      super();
-      this.viewId = viewId;
-      this.name = name;
-   }
-
-   protected boolean isBranchSearchView() {
-      return false;
+   public BranchView() {
    }
 
    @Override
@@ -103,7 +107,7 @@ public abstract class BranchView extends GenericViewPart implements IBranchWidge
 
    @Override
    public void createPartControl(Composite parent) {
-      setPartName(name);
+      setPartName(NAME);
 
       GridLayout layout = new GridLayout();
       layout.numColumns = 1;
@@ -117,24 +121,14 @@ public abstract class BranchView extends GenericViewPart implements IBranchWidge
 
       if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
 
-         if (isBranchSearchView()) {
-            new BranchLoadComposite(this, parent, SWT.NONE);
-         }
+         new BranchLoadComposite(this, parent, SWT.NONE);
 
          xBranchWidget = new XBranchWidget(this);
          xBranchWidget.setDisplayLabel(false);
-         if (isBranchSearchView()) {
-            xBranchWidget.setBranchData(branchData);
-         }
-         xBranchWidget.setBranchSearchView(isBranchSearchView());
+         xBranchWidget.setBranchData(branchData);
          xBranchWidget.createWidgets(parent, 1);
 
          branchViewPresentationPreferences = new BranchViewPresentationPreferences(this);
-
-         if (!isBranchSearchView()) {
-            xBranchWidget.setBranchPresentationType(BranchPresentationType.Flat);
-            xBranchWidget.loadData();
-         }
 
          final BranchView fBranchView = this;
 
@@ -162,7 +156,7 @@ public abstract class BranchView extends GenericViewPart implements IBranchWidge
 
          menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
          branchWidget.getTree().setMenu(menuManager.createContextMenu(branchWidget.getTree()));
-         getSite().registerContextMenu(viewId, menuManager, branchWidget);
+         getSite().registerContextMenu(VIEW_ID, menuManager, branchWidget);
          getSite().setSelectionProvider(branchWidget);
          HelpUtil.setHelp(parent, OseeHelpContext.BRANCH_MANAGER);
          OseeStatusContributionItemFactory.addTo(this, true);
@@ -277,20 +271,74 @@ public abstract class BranchView extends GenericViewPart implements IBranchWidge
    }
 
    public void handleQuerySearch() {
-      // not needed for normal BranchView, only BranchSearchView
+      // Clear results
+      xBranchWidget.getXViewer().setInput(Collections.emptyList());
+      List<Branch> branches = null;
+      boolean exceptionCaught = false;
+      try {
+         xBranchWidget.setExtraInfoLabel("Searching... ");
+         OseeClient oseeClient = ServiceUtil.getOseeClient();
+         BranchEndpoint endpoint = oseeClient.getBranchEndpoint();
+         if (branchData.isAsIds()) {
+            if (Strings.isNumeric(branchData.getNamePattern())) {
+               // Only want to search by id and ignore rest of criteria
+               BranchQueryData idBranchData = new BranchQueryData();
+               idBranchData.setAsIds(true);
+               idBranchData.setBranchIds(Arrays.asList(BranchId.valueOf(branchData.getNamePattern())));
+               if (UserManager.getUser().isOseeAdmin()) {
+                  idBranchData.setIncludeArchived(true);
+                  idBranchData.setIncludeDeleted(true);
+               }
+               showBranchData = idBranchData;
+               branches = endpoint.getBranches(idBranchData);
+            } else {
+               xBranchWidget.setExtraInfoLabel("Must enter ID to search");
+               return;
+            }
+         } else {
+            showBranchData = branchData;
+            branches = endpoint.getBranches(branchData);
+         }
+      } catch (Exception ex) {
+         OseeLog.log(BranchManager.class, Level.SEVERE, ex);
+         xBranchWidget.setExtraInfoLabel("Exception caught, see error log");
+         exceptionCaught = true;
+      }
+      if (!exceptionCaught && branches != null) {
+         if (branches.isEmpty()) {
+            xBranchWidget.setExtraInfoLabel("No Branches Found");
+         } else {
+            loadData(branches);
+            xBranchWidget.setExtraInfoLabel(String.format("%s Branches Found", branches.size()));
+         }
+      }
    }
 
-   public BranchQueryData getShowQueryData() {
-      // not needed for normal BranchView, only BranchSearchView
-      return null;
+   public static void revealBranch(BranchId branch) {
+      try {
+         BranchView branchView = (BranchView) AWorkbench.getActivePage().showView(VIEW_ID);
+         branchView.reveal(branch);
+      } catch (PartInitException ex) {
+         OseeCoreException.wrapAndThrow(ex);
+      }
+   }
+
+   private void reveal(BranchId branch) {
+      if (isInitialized()) {
+         xBranchWidget.reveal(branch);
+      }
    }
 
    public void loadData() {
-      // not needed for normal BranchView, only BranchSearchView
+      xBranchWidget.loadData();
    }
 
    public void loadData(List<Branch> branches) {
-      // not needed for normal BranchView, only BranchSearchView
+      xBranchWidget.loadData(branches);
+   }
+
+   public BranchQueryData getShowQueryData() {
+      return showBranchData;
    }
 
 }
