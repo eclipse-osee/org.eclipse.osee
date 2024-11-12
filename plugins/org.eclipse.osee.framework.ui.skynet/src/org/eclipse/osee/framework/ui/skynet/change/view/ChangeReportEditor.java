@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -39,8 +40,11 @@ import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
 import org.eclipse.osee.framework.ui.skynet.change.IChangeReportView;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.editor.FormEditor;
 
 public class ChangeReportEditor extends FormEditor implements IChangeReportView {
@@ -224,11 +228,45 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
    protected void pageChange(int newPageIndex) {
       super.pageChange(newPageIndex);
       getEditorInput().setTransactionTabActive(newPageIndex == 1);
+      updateSelectionProvider(newPageIndex);
+   }
+
+   private void updateSelectionProvider(int newPageIndex) {
       if (newPageIndex == 0) {
          changeReportPage.setSelectionProvider();
       } else {
          branchTransactionPage.setSelectionProvider();
       }
+   }
+
+   public static ChangeReportEditor getEditor(BranchToken branchTok) {
+      IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+      IEditorReference editors[] = page.getEditorReferences();
+      for (int j = 0; j < editors.length; j++) {
+         IEditorReference editor = editors[j];
+         if (editor.getPart(false) instanceof ChangeReportEditor) {
+            ChangeReportEditor cre = (ChangeReportEditor) editor.getPart(false);
+            BranchToken branch = cre.getEditorInput().getBranch();
+            if (branchTok.equals(branch)) {
+               return cre;
+            }
+         }
+      }
+      return null;
+   }
+
+   public void showTransactionTab() {
+      showTab(1);
+   }
+
+   public void showChangeReportTab() {
+      showTab(0);
+   }
+
+   private void showTab(Integer newPageIndex) {
+      getEditorInput().setTransactionTabActive(newPageIndex == 1);
+      setActivePage(newPageIndex);
+      updateSelectionProvider(newPageIndex);
    }
 
 }

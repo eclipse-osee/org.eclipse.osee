@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiUtil;
+import org.eclipse.osee.framework.ui.skynet.change.view.ChangeReportEditor;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 
@@ -62,6 +63,10 @@ public class BranchTransactionHandler extends CommandHandler {
                diag.setEntry("499");
                if (diag.open() == Window.OK) {
                   BranchToken selBranch = BranchManager.getBranch((BranchId) selectedObject);
+                  ChangeReportEditor cre = ChangeReportEditor.getEditor(selBranch);
+                  if (cre != null) {
+                     cre.showTransactionTab();
+                  }
                   ChangeUiUtil.open(selBranch, true, Integer.valueOf(diag.getEntry()));
                }
             }
