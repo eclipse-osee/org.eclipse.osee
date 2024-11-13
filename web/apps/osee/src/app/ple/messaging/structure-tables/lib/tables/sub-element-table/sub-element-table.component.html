@@ -68,6 +68,7 @@
 				mat-cell
 				*matCellDef="let element"
 				class="tw-text-center"
+				[attr.data-testid]="'element-table-cell-' + header"
 				[ngClass]="{
 					'tw-bg-accent-100 dark:tw-text-background-app-bar dark:[&>*>*>*>*>*>*>*>*>*]:tw-text-background-app-bar dark:[&>*>*>*>*]:tw-text-background-app-bar':
 						!element.added &&
@@ -184,7 +185,7 @@
 		mat-row
 		*matRowDef="let row2; columns: elementHeaders()"
 		[id]="'a' + row2.id"
-		[attr.data-cy]="'element-table-row-' + row2.name"
+		[attr.data-testid]="'element-table-row-' + row2.name.value"
 		class="sub-element-drag-row tw-transition-colors tw-duration-300 tw-ease-in-out"
 		[ngClass]="
 			row2.added

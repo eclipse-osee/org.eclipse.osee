@@ -21,6 +21,7 @@ const config: PlaywrightTestConfig = {
 		channel: 'chrome',
 		headless: true,
 		baseURL: 'http://localhost:4200/ple',
+		screenshot: 'only-on-failure',
 	},
 
 	testDir: join(__dirname, 'playwright/specs'),
@@ -53,6 +54,12 @@ const config: PlaywrightTestConfig = {
 			name: 'MIM Docs - Create ICD',
 			use: { ...devices['Desktop Chrome'] },
 			testDir: 'playwright/specs/mim/docs-screenshots/create-icd',
+			dependencies: ['MIM Demo Init'],
+		},
+		{
+			name: 'MIM Docs - Edit ICD',
+			use: { ...devices['Desktop Chrome'] },
+			testDir: 'playwright/specs/mim/docs-screenshots/edit-icd',
 			dependencies: ['MIM Demo Init'],
 		},
 		{
