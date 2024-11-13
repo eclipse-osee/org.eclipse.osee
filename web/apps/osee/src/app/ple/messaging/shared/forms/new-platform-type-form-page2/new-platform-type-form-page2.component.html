@@ -39,7 +39,8 @@
 						<button
 							mat-icon-button
 							matSuffix
-							(click)="toggleEnumCreationState($event)">
+							(click)="toggleEnumCreationState($event)"
+							data-testid="create-enum-set">
 							<mat-icon>{{
 								createNewEnum() !== true ? 'add' : 'remove'
 							}}</mat-icon>
@@ -100,13 +101,7 @@
 					? ''
 					: 'primary'
 			"
-			[attr.data-cy]="
-				platformTypeFromLogicalTypeForm.pending ||
-				platformTypeFromLogicalTypeForm.invalid ||
-				platformTypeFromLogicalTypeForm.disabled
-					? 'stepper-next-2-disabled'
-					: 'stepper-next-2'
-			">
+			data-testid="type-form-next">
 			Next
 		</button>
 	</mat-dialog-actions>

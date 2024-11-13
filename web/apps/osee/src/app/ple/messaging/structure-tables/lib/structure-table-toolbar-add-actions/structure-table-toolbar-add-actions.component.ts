@@ -68,6 +68,7 @@ import { AddStructureDialogComponent } from '../dialogs/add-structure-dialog/add
 						isEditing() === false || structures().length === 0
 					"
 					[matMenuTriggerFor]="addElementMenu"
+					data-testid="add-element"
 					[disabled]="
 						isEditing() === false || structures().length === 0
 					">
