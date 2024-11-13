@@ -198,4 +198,6 @@ public interface IAgileService {
 
    XResultData sortAgileBacklog(ArtifactToken backlog, String comment);
 
+   IAgileSprint getSprint(IAtsWorkItem workItem);
+
 }

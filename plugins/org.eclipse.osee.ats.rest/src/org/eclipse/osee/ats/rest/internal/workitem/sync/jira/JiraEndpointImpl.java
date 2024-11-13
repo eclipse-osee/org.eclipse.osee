@@ -27,6 +27,8 @@ import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Stephen J. Molaro
@@ -99,6 +101,13 @@ public class JiraEndpointImpl implements JiraEndpoint {
          try (OutputStream os = conn.getOutputStream()) {
             byte[] input = jsonPayload.getBytes();
             os.write(input, 0, input.length);
+         }
+         conn.getResponseCode(); // Populates the error stream
+         if (conn.getErrorStream() != null) {
+            String errorStr = Lib.inputStreamToString(conn.getErrorStream());
+            if (Strings.isValid(errorStr)) {
+               return errorStr;
+            }
          }
          try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"))) {
             String responseLine = null;

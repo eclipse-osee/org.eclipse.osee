@@ -615,6 +615,18 @@ public class AgileService implements IAgileService {
    }
 
    @Override
+   public IAgileSprint getSprint(IAtsWorkItem workItem) {
+      IAgileSprint sprint = null;
+      ArtifactToken itemArt = atsApi.getQueryService().getArtifact(workItem);
+      ArtifactToken sprintArt =
+         atsApi.getRelationResolver().getRelatedOrSentinel(itemArt, AtsRelationTypes.AgileSprintToItem_AgileSprint);
+      if (sprintArt.isValid()) {
+         sprint = atsApi.getWorkItemService().getAgileSprint(sprintArt);
+      }
+      return sprint;
+   }
+
+   @Override
    public void deleteSprint(long sprintId) {
       ArtifactId sprint = atsApi.getQueryService().getArtifact(sprintId);
       if (sprint != null) {
