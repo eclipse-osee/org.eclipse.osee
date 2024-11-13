@@ -67,4 +67,10 @@ public abstract class AbstractAtsConfigurationService implements IAtsConfigurati
       return user;
    }
 
+   @Override
+   public AtsUser getUserByLoginId(String loginId) {
+      AtsUser user = getConfigurations().getLoginIdToUser().get(loginId);
+      return user;
+   }
+
 }

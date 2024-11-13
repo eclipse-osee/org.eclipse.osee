@@ -185,4 +185,9 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
       return atsApi.getAttributeResolver().getSoleAttributeValue(user, CoreAttributeTypes.AbridgedEmail, "");
    }
 
+   @Override
+   public AtsUser getUserByLoginId(String loginId) {
+      return configurationService.getUserByLoginId(loginId);
+   }
+
 }

@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.ide.editor.tab;
 
 import java.util.logging.Level;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
@@ -29,6 +30,8 @@ import org.eclipse.osee.ats.ide.actions.ShowChangeReportAction;
 import org.eclipse.osee.ats.ide.actions.ShowContextChangeReportAction;
 import org.eclipse.osee.ats.ide.actions.ShowMergeManagerAction;
 import org.eclipse.osee.ats.ide.actions.ShowWordChangeReportAction;
+import org.eclipse.osee.ats.ide.editor.IWfeEditorContributor;
+import org.eclipse.osee.ats.ide.editor.WfeEditorContributors;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.note.AddStateNoteAction;
 import org.eclipse.osee.ats.ide.editor.tab.workflow.note.AddWorkflowNotesAction;
@@ -111,6 +114,10 @@ public abstract class WfeAbstractTab extends FormPage {
          toolBarMgr.add(new ShowWordChangeReportAction((TeamWorkFlowArtifact) awa));
          toolBarMgr.add(new ShowContextChangeReportAction((TeamWorkFlowArtifact) awa));
       }
+      for (IWfeEditorContributor contrib : WfeEditorContributors.getContributors()) {
+         contrib.addToolBarItems(workItem, toolBarMgr, editor);
+      }
+      toolBarMgr.add(new Separator());
       toolBarMgr.add(new FavoriteAction(editor));
       if (awa.getParentAWA() != null) {
          toolBarMgr.add(new OpenParentAction(awa));
@@ -118,6 +125,7 @@ public abstract class WfeAbstractTab extends FormPage {
       toolBarMgr.add(new EmailActionAction(editor));
       toolBarMgr.add(new AddWorkflowNotesAction(awa));
       toolBarMgr.add(new AddStateNoteAction(awa));
+      toolBarMgr.add(new Separator());
       toolBarMgr.add(new OpenInAtsWorldAction(awa));
       toolBarMgr.add(new OpenActionViewAction());
       if (AtsApiService.get().getUserService().isAtsAdmin()) {
@@ -127,6 +135,7 @@ public abstract class WfeAbstractTab extends FormPage {
       if (awa instanceof TeamWorkFlowArtifact) {
          toolBarMgr.add(new OpenTeamDefinitionAction((TeamWorkFlowArtifact) awa));
       }
+      toolBarMgr.add(new Separator());
       toolBarMgr.add(new CopyActionDetailsAction(awa, AtsApiService.get()));
       toolBarMgr.add(new OpenInBrowserAction(awa));
       toolBarMgr.add(new ResourceHistoryAction(awa));

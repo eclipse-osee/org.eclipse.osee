@@ -80,4 +80,6 @@ public interface IAtsUserService {
 
    String getAbridgedEmail(ArtifactToken user, AtsApi atsApi);
 
+   AtsUser getUserByLoginId(String loginId);
+
 }
