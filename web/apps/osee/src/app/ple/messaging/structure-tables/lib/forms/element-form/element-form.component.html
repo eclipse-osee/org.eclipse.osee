@@ -20,7 +20,7 @@
 			[(ngModel)]="name"
 			required
 			name="name"
-			data-cy="field-name" />
+			data-testid="element-form-name" />
 		<mat-hint>Name of the element being created</mat-hint>
 	</mat-form-field>
 	<br />
@@ -203,6 +203,7 @@
 					mat-icon-button
 					class="tertiary-icon-button"
 					(click)="openPlatformTypeDialog($event)"
+					data-testid="create-platform-type-button"
 					matTooltip="Create New Platform Type">
 					<mat-icon class="tertiary-icon-button">add</mat-icon>
 				</button>

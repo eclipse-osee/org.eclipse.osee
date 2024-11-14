@@ -78,7 +78,7 @@ export class ElementTableDropdownService {
 			switchMap((dialogResults: ElementDialog) =>
 				!this._isStructure(parent)
 					? this.warningDialogService
-							.openElementDialog(dialogResults.element)
+							.openElementDialog([dialogResults.element])
 							.pipe(map((_) => dialogResults))
 					: this.warningDialogService
 							.openStructureDialog(parent)
@@ -146,14 +146,12 @@ export class ElementTableDropdownService {
 		);
 		createElement.subscribe();
 	}
-	openDeleteElementDialog(
-		element: element,
-		removeType: 'Structure' | 'Array'
-	) {
+	openDeleteElementDialog(elements: element[], removeFromName: string) {
 		//open dialog, yes/no if yes -> this.structures.deleteElement()
 		const dialogData: RemoveElementDialogData = {
-			removeType: removeType,
-			elementName: element.name.value,
+			deleteRemove: 'delete',
+			elementsToRemove: elements,
+			removeFromName,
 		};
 		this.dialog
 			.open(RemoveElementDialogComponent, {
@@ -165,7 +163,7 @@ export class ElementTableDropdownService {
 				switchMap((dialogResult: string) =>
 					iif(
 						() => dialogResult === 'ok',
-						this.structureService.deleteElement(element),
+						this.structureService.deleteElements(elements),
 						of()
 					)
 				)
