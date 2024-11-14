@@ -26,8 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -528,8 +526,13 @@ public class MimIcdGenerator {
                   "CT").replace("Status Taskfile", "ST") : struct.getNameAbbrev().getValue();
                if (structureInfoMap.values().stream().anyMatch(a->a.sheetName.equals(struct.getNameAbbrev().getValue().isEmpty() ? struct.getName().getValue().replace("Command Taskfile",
                   "CT").replace("Status Taskfile", "ST") : struct.getNameAbbrev().getValue()))) {
-                  sheetName = struct.getNameAbbrev().getValue().isEmpty() ? struct.getName().getValue() : struct.getNameAbbrev().getValue();
-                  sheetName = sheetName + "_"+sendingNode.getName()+"_"+msgNumber+"_"+subMsgNumber;
+                  String ids = sendingNode.getName()+msgNumber+subMsgNumber+struct.getIdString();
+                  String hash = String.format("%08x",ids.hashCode());
+                  if ((sheetName+"_"+hash).length() > 31) {
+                     sheetName = sheetName.substring(1, sheetName.length() - hash.length() + 1);
+                  } else {
+                     sheetName = sheetName + "_"+hash;
+                  }
                }
                
                StructureInfo structureInfo = new StructureInfo(struct.getId(),struct.getName().getValue(),
@@ -811,22 +814,31 @@ public class MimIcdGenerator {
       String[] headers = {"Structure Name", "Structure Name", "Structure Name"};
       writer.writeRow(0, headers, CELLSTYLE.BOLD);
       
-      SortedMap<String,StructureInfo> structureLinks = new TreeMap<String,StructureInfo>();
+      
+      List<StructureInfo> structures = new LinkedList<>();
       for (StructureInfo struct : headerStructureInfoMap.values()) {
-         structureLinks.put(struct.sheetName, struct);
+         structures.add(struct);
       }
       for (StructureInfo struct : structureInfoMap.values()) {
-         structureLinks.put(struct.sheetName, struct);
+         structures.add(struct);
       }
-      List<String> keyset = new LinkedList<>(structureLinks.keySet());
       
+      structures.sort(new Comparator<StructureInfo>() {
+         @Override
+         public int compare(StructureInfo o1, StructureInfo o2) {
+            if (o1.name.equals(o2.name)) {
+               return o1.sheetName.toLowerCase().compareTo(o2.sheetName.toLowerCase());
+            }
+            return o1.name.toLowerCase().compareTo(o2.name.toLowerCase());
+         }
+      });
       CELLSTYLE tabColor = CELLSTYLE.NONE;
 
-      int colLength = (int) Math.ceil(keyset.size() / 3.0);
-      for (int i = 0; i < keyset.size(); i++) {
+      int colLength = (int) Math.ceil(structures.size() / 3.0);
+      for (int i = 0; i < structures.size(); i++) {
          int rowNum = i + 1;
          int colNum = 0;
-         String sheetName = keyset.get(i);
+         StructureInfo struct = structures.get(i);
          if (i >= colLength * 2) {
             colNum = 2;
             rowNum -= (colLength * 2);
@@ -835,7 +847,7 @@ public class MimIcdGenerator {
             rowNum -= colLength;
          }
 
-         InterfaceStructureToken structure = structureTokens.stream().filter(a->a.getId() == structureLinks.get(sheetName).id).findFirst().get();
+         InterfaceStructureToken structure = structureTokens.stream().filter(a->a.getId() == struct.id).findFirst().get();
          InterfaceSubMessageToken subMessage = InterfaceSubMessageToken.SENTINEL;
          if (structure.getArtifactReadable().isValid()) {
             subMessage = new InterfaceSubMessageToken(structure.getArtifactReadable().getRelated(CoreRelationTypes.InterfaceSubMessageContent_SubMessage).getList().get(0));
@@ -847,7 +859,7 @@ public class MimIcdGenerator {
             tabColor = CELLSTYLE.LIGHT_RED;
          }
          
-         writer.writeCell(rowNum, colNum, structureLinks.get(sheetName).name, "'" + sheetName + "'!A1",
+         writer.writeCell(rowNum, colNum, struct.name, "'" + struct.sheetName + "'!A1",
             HyperLinkType.SHEET, CELLSTYLE.HYPERLINK, color);
          rowNum++;
       }
