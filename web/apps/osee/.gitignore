@@ -47,11 +47,12 @@ src/assets/iconassets
 .DS_Store
 Thumbs.db
 
-#cypress files
+#test result files
 cypress/screenshots
 cypress/videos
 /playwright-report/
 /blob-report/
 /playwright/.cache/
 /results/
+/screenshots/
 /test-results/

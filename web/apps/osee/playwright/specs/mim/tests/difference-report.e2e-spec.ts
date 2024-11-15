@@ -11,28 +11,15 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { expect, test } from '@ngx-playwright/test';
+import { createWorkingBranchFromPL, enableEditMode } from '../utils/helpers';
 
 test('test', async ({ page }) => {
 	await page.setViewportSize({ width: 1200, height: 900 });
-	await page.goto(
-		'http://localhost:4200/ple/messaging/connections/baseline/8'
-	);
-	await page.getByRole('button', { name: 'Create Action' }).click();
-	await page.getByLabel('Title').fill('Make Changes');
-	await page.getByText('Actionable Item').click();
-	await page.getByRole('combobox', { name: 'Actionable Item' }).fill('mim');
-	await page.getByText('SAW PL MIM').click();
-	await page.getByText('Description').click();
-	await page.getByLabel('Description').fill('asdf');
-	await page.getByLabel('Change Type').locator('span').click();
-	await page.getByRole('option', { name: 'Improvement' }).click();
-	await page.getByRole('button', { name: 'Create Action' }).click();
+	await page.goto('http://localhost:4200/ple/messaging/connections');
+	await createWorkingBranchFromPL(page, 'Difference Report');
+	await enableEditMode(page);
 
 	await page.getByText('Connection A-B', { exact: true }).click();
-	await page.getByText('account_circle').click();
-	await page.getByRole('menuitem', { name: 'Settings' }).click();
-	await page.getByLabel('Edit Mode').check();
-	await page.getByRole('button', { name: 'Ok' }).click();
 
 	await page
 		.locator('button')
@@ -98,7 +85,7 @@ test('test', async ({ page }) => {
 	await page.waitForTimeout(500);
 
 	await page.screenshot({
-		path: 'screenshots/difference-report.png',
+		path: 'screenshots/reports/difference-report.png',
 		animations: 'disabled',
 	});
 });

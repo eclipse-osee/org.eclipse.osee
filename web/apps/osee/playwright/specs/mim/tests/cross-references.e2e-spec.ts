@@ -11,6 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { test } from '@ngx-playwright/test';
+import { enableEditMode } from '../utils/helpers';
 
 test('test', async ({ page }) => {
 	await page.setViewportSize({ width: 1200, height: 800 });
@@ -19,15 +20,11 @@ test('test', async ({ page }) => {
 	await page.getByRole('link', { name: 'Cross-References' }).click();
 	await page.getByLabel('Working').check();
 	await page.getByText('Select a Branch').click();
-	await page.getByText('MIM Demo').click();
+	await page.getByText('TW2 - MIM Demo').click();
 	await page.getByLabel('Select a Connection').locator('span').click();
 	await page.getByText('Connection A-B').click();
 
-	// Enable edit mode
-	await page.getByText('account_circle').click();
-	await page.getByRole('menuitem', { name: 'Settings' }).click();
-	await page.getByLabel('Edit Mode').check();
-	await page.getByRole('button', { name: 'Ok' }).click();
+	await enableEditMode(page);
 
 	// Create cross-reference
 	await page.locator('button').filter({ hasText: 'add' }).click();
@@ -36,7 +33,6 @@ test('test', async ({ page }) => {
 	await page.getByLabel('Name').press('Tab');
 	await page.getByLabel('Value').fill('Private Array');
 	await page.locator('mat-dialog-content').getByRole('button').click();
-	await page.getByText('Key', { exact: true }).click();
 	await page.getByLabel('Key').fill('1');
 	await page
 		.locator('#mat-mdc-form-field-label-26')
@@ -44,7 +40,6 @@ test('test', async ({ page }) => {
 		.click();
 	await page.locator('#mat-input-10').fill('FIRST_VAL');
 	await page.locator('mat-dialog-content').getByRole('button').click();
-	await page.locator('#mat-input-11').click();
 	await page.locator('#mat-input-11').fill('2');
 	await page
 		.locator(
