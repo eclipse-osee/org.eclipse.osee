@@ -10,10 +10,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { test } from '@ngx-playwright/test';
+import { expect, test } from '@ngx-playwright/test';
+import { createWorkingBranchFromPL } from '../utils/helpers';
 
-test('test', async ({ page }) => {
+test.describe.configure({ mode: 'serial' });
+
+test('set up relations', async ({ page }) => {
 	await page.setViewportSize({ width: 1200, height: 1000 });
+	await page.goto('http://localhost:4200/ple/messaging/connections');
+	await createWorkingBranchFromPL(page, 'Traceability');
 	await page.goto('http://localhost:4200/ple');
 	await page.getByRole('button').click();
 	await page
@@ -22,7 +27,7 @@ test('test', async ({ page }) => {
 		.click();
 
 	await page.screenshot({
-		path: 'screenshots/artifact-explorer-navigation.png',
+		path: 'screenshots/traceability/artifact-explorer-navigation.png',
 		animations: 'disabled',
 	});
 
@@ -30,7 +35,7 @@ test('test', async ({ page }) => {
 	await page.getByLabel('Working').check();
 	await page.getByText('Select a Branch').click();
 	await page
-		.getByRole('option', { name: 'TW2 - Make Changes' })
+		.getByRole('option', { name: 'Traceability' })
 		.locator('span')
 		.click();
 
@@ -93,7 +98,35 @@ test('test', async ({ page }) => {
 	await page.waitForTimeout(500);
 
 	await page.screenshot({
-		path: 'screenshots/artifact-explorer-relations.png',
+		path: 'screenshots/traceability/artifact-explorer-relations.png',
 		animations: 'disabled',
+	});
+});
+
+test('trace report', async ({ page }) => {
+	await page.setViewportSize({ width: 1200, height: 900 });
+	await page.goto('http://localhost:4200/ple');
+	await page.getByRole('link', { name: 'MIM' }).click();
+	await page.getByRole('link', { name: 'Reports' }).click();
+	await page.getByLabel('Working').check();
+	await page.getByPlaceholder('Branches').click();
+	await page.getByText('Traceability').click();
+	await page.getByRole('link', { name: 'Traceability Report' }).click();
+	await page.getByRole('radio', { name: 'Requirements' }).click();
+	await expect(page.getByText('Demo Fault')).toBeVisible();
+
+	await page.screenshot({
+		path: 'screenshots/traceability/trace-report-requirements.png',
+		animations: 'disabled',
+		clip: { x: 0, y: 0, height: 500, width: 1200 },
+	});
+
+	await page.getByRole('radio', { name: 'MIM Artifacts' }).click();
+	await expect(page.getByText('Demo Fault')).toBeVisible();
+
+	await page.screenshot({
+		path: 'screenshots/traceability/trace-report-mim-artifacts.png',
+		animations: 'disabled',
+		clip: { x: 0, y: 0, height: 500, width: 1200 },
 	});
 });

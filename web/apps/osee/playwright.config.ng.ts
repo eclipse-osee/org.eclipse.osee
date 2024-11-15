@@ -26,7 +26,10 @@ const config: PlaywrightTestConfig = {
 
 	testDir: join(__dirname, 'playwright/specs'),
 	testMatch: '**/*.e2e-spec.ts',
-	workers: 1,
+	reportSlowTests: {
+		max: 5, // 5 is the default
+		threshold: 60000,
+	},
 
 	reporter: [
 		[process.env['GITHUB_ACTION'] ? 'github' : 'list'],
@@ -45,47 +48,10 @@ const config: PlaywrightTestConfig = {
 			dependencies: ['MIM Demo Init'],
 		},
 		{
-			name: 'MIM Docs - Overview',
+			name: 'MIM Tests',
 			use: { ...devices['Desktop Chrome'] },
-			testDir: 'playwright/specs/mim/docs-screenshots/overview',
+			testDir: 'playwright/specs/mim/tests',
 			dependencies: ['MIM Commit Demo Branch'],
-		},
-		{
-			name: 'MIM Docs - Create ICD',
-			use: { ...devices['Desktop Chrome'] },
-			testDir: 'playwright/specs/mim/docs-screenshots/create-icd',
-			dependencies: ['MIM Demo Init'],
-		},
-		{
-			name: 'MIM Docs - Edit ICD',
-			use: { ...devices['Desktop Chrome'] },
-			testDir: 'playwright/specs/mim/docs-screenshots/edit-icd',
-			dependencies: ['MIM Demo Init'],
-		},
-		{
-			name: 'MIM Docs - Peer Review',
-			use: { ...devices['Desktop Chrome'] },
-			testDir: 'playwright/specs/mim/docs-screenshots/peer-review',
-			dependencies: ['MIM Demo Init'],
-		},
-		{
-			name: 'MIM Docs - Platform Types Page',
-			use: { ...devices['Desktop Chrome'] },
-			testDir:
-				'playwright/specs/mim/docs-screenshots/platform-types-page',
-			dependencies: ['MIM Demo Init'],
-		},
-		{
-			name: 'MIM Docs - Reports Page',
-			use: { ...devices['Desktop Chrome'] },
-			testDir: 'playwright/specs/mim/docs-screenshots/reports-page',
-			dependencies: ['MIM Commit Demo Branch'],
-		},
-		{
-			name: 'MIM Docs - Cross-References Page',
-			use: { ...devices['Desktop Chrome'] },
-			testDir: 'playwright/specs/mim/docs-screenshots/cross-references',
-			dependencies: ['MIM Demo Init'],
 		},
 	],
 };

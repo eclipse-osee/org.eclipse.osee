@@ -11,28 +11,25 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { test } from '@ngx-playwright/test';
+import { createWorkingBranchFromPL, enableEditMode } from '../utils/helpers';
 
 test('test', async ({ page }) => {
-	await page.setViewportSize({ width: 1200, height: 900 });
+	await page.setViewportSize({ width: 1200, height: 1000 });
 	await page.goto('http://localhost:4200/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Platform Types' }).click();
-	await page.getByLabel('Working').check();
-	await page.getByText('Select a Branch').click();
-	await page.getByText('MIM Demo').click();
-	await page.getByText('account_circle').click();
-	await page.getByRole('menuitem', { name: 'Settings' }).click();
-	await page.getByLabel('Edit Mode').check();
-	await page.getByRole('button', { name: 'Ok' }).click();
+	await createWorkingBranchFromPL(page, 'Platform Types');
+	await enableEditMode(page);
 	await page.locator('button').filter({ hasText: 'add' }).click();
-	await page.getByLabel('', { exact: true }).locator('span').click();
+	await page.getByTestId('logical-type-selector').click({ force: true });
+
 	await page
 		.getByRole('option', { name: 'Integer', exact: true })
 		.locator('span')
 		.click();
 
 	await page.screenshot({
-		path: 'screenshots/select-logical-type.png',
+		path: 'screenshots/platform-types-page/select-logical-type.png',
 		animations: 'disabled',
 	});
 
@@ -53,7 +50,7 @@ test('test', async ({ page }) => {
 	await page.getByLabel('Default Value').fill('0');
 
 	await page.screenshot({
-		path: 'screenshots/create-platform-type.png',
+		path: 'screenshots/platform-types-page/create-platform-type.png',
 		animations: 'disabled',
 	});
 
@@ -61,7 +58,7 @@ test('test', async ({ page }) => {
 	await page.getByRole('button', { name: 'Ok' }).click();
 	await page.locator('mat-row:nth-child(3) > mat-cell:nth-child(2)').click();
 	await page.locator('button').filter({ hasText: /^add$/ }).click();
-	await page.getByLabel('', { exact: true }).locator('span').click();
+	await page.getByTestId('logical-type-selector').click({ force: true });
 	await page.getByText('Enumeration', { exact: true }).click();
 	await page.getByRole('button', { name: 'Next' }).click();
 	await page.getByLabel('Name').click();
@@ -70,7 +67,7 @@ test('test', async ({ page }) => {
 	await page.getByLabel('Bit Size').fill('32');
 
 	await page.screenshot({
-		path: 'screenshots/select-enumeration-set.png',
+		path: 'screenshots/platform-types-page/select-enumeration-set.png',
 		animations: 'disabled',
 	});
 
@@ -130,7 +127,7 @@ test('test', async ({ page }) => {
 	await page.getByText('Back Next').click();
 
 	await page.screenshot({
-		path: 'screenshots/added-enums.png',
+		path: 'screenshots/platform-types-page/added-enums.png',
 		animations: 'disabled',
 	});
 
