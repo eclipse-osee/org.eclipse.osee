@@ -55,6 +55,10 @@ export default defineConfig({
                   ],
                 },
                 {
+                  label: "Editing ICDs",
+                  slug: "mim/guides/edit-icd",
+                },
+                {
                   label: "Peer Review Workflow",
                   slug: "mim/guides/peer-review",
                 },

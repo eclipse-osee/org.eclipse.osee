@@ -42,7 +42,7 @@ let nextUniqueId = 0;
 			<mat-label>Logical Type</mat-label>
 			<mat-select
 				[(ngModel)]="type"
-				data-cy="logical_type_selector"
+				data-testid="logical-type-selector"
 				[name]="'logicalType_' + _componentId()"
 				required
 				oseeHasValidId

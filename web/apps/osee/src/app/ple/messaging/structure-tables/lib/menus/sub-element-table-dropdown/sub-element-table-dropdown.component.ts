@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
-import { Component, Input, inject } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatDivider } from '@angular/material/divider';
 import { MatLabel } from '@angular/material/form-field';
@@ -23,7 +23,6 @@ import {
 	MatMenuTrigger,
 } from '@angular/material/menu';
 import { RouterLink } from '@angular/router';
-import { applic, applicabilitySentinel } from '@osee/applicability/types';
 import { AttributeToValuePipe } from '@osee/attributes/pipes';
 import { HeaderService } from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
@@ -31,13 +30,12 @@ import {
 	DiffableElementProps,
 	DisplayableElementProps,
 	diffableElementHeaders,
-	elementSentinel,
 	type PlatformType,
 	type element,
 	type structure,
 } from '@osee/messaging/shared/types';
 import { difference } from '@osee/shared/types/change-report';
-import { iif, of, switchMap, take } from 'rxjs';
+import { of, switchMap, take } from 'rxjs';
 import { RemoveElementDialogData } from '../../dialogs/remove-element-dialog/remove-element-dialog';
 import { RemoveElementDialogComponent } from '../../dialogs/remove-element-dialog/remove-element-dialog.component';
 import { ElementTableDropdownService } from '../../services/element-table-dropdown.service';
@@ -53,8 +51,7 @@ import { MoveElementDialogComponent } from '../../dialogs/move-element-dialog/mo
  * editMode
  */
 @Component({
-	selector:
-		'osee-sub-element-table-dropdown[element][structure][header][branchId][branchType][editMode]',
+	selector: 'osee-sub-element-table-dropdown',
 	standalone: true,
 	imports: [
 		AsyncPipe,
@@ -77,69 +74,24 @@ export class SubElementTableDropdownComponent {
 	private headerService = inject(HeaderService);
 	private elementDropdownService = inject(ElementTableDropdownService);
 
-	@Input() element: element = elementSentinel;
+	element = input.required<element>();
+	structure = input.required<structure>();
+	header = input.required<keyof DisplayableElementProps>();
+	branchId = input.required<string>();
+	branchType = input.required<string>();
+	editMode = input.required<boolean>();
+	selectedElements = input.required<element[]>();
 
-	@Input() structure: structure = {
-		id: '-1',
-		gammaId: '-1',
-		name: {
-			id: '-1',
-			typeId: '1152921504606847088',
-			gammaId: '-1',
-			value: '',
-		},
-		nameAbbrev: {
-			id: '-1',
-			typeId: '8355308043647703563',
-			gammaId: '-1',
-			value: '',
-		},
-		description: {
-			id: '-1',
-			typeId: '1152921504606847090',
-			gammaId: '-1',
-			value: '',
-		},
-		interfaceMaxSimultaneity: {
-			id: '-1',
-			typeId: '2455059983007225756',
-			gammaId: '-1',
-			value: '',
-		},
-		interfaceMinSimultaneity: {
-			id: '-1',
-			typeId: '2455059983007225755',
-			gammaId: '-1',
-			value: '',
-		},
-		interfaceTaskFileType: {
-			id: '-1',
-			typeId: '2455059983007225760',
-			gammaId: '-1',
-			value: 0,
-		},
-		interfaceStructureCategory: {
-			id: '-1',
-			typeId: '2455059983007225764',
-			gammaId: '-1',
-			value: '',
-		},
-		applicability: applicabilitySentinel,
-		elements: [],
-	};
+	multiselect = computed(() => this.selectedElements().length > 0);
 
-	@Input() header!: keyof DisplayableElementProps;
-	@Input() field?: string | number | boolean | PlatformType | applic;
-
-	@Input('branchId') _branchId = '';
-	@Input('branchType') _branchType = '';
-
-	@Input() editMode = false;
-
-	removeElement(element: element, structure: structure) {
+	removeElement() {
+		const elementsToRemove = this.multiselect()
+			? this.selectedElements()
+			: [this.element()];
 		const dialogData: RemoveElementDialogData = {
-			removeType: 'Structure',
-			elementName: element.name.value,
+			deleteRemove: 'remove',
+			elementsToRemove,
+			removeFromName: this.structure().name.value,
 		};
 		this.dialog
 			.open(RemoveElementDialogComponent, {
@@ -148,24 +100,26 @@ export class SubElementTableDropdownComponent {
 			.afterClosed()
 			.pipe(
 				take(1),
-				switchMap((dialogResult: string) =>
-					iif(
-						() => dialogResult === 'ok',
-						this.structureService.removeElementFromStructure(
-							element,
-							structure
-						),
-						of()
-					)
-				)
+				switchMap((dialogResult: string) => {
+					if (dialogResult !== 'ok') {
+						return of();
+					}
+					return this.structureService.removeElementsFromStructure(
+						elementsToRemove,
+						this.structure()
+					);
+				})
 			)
 			.subscribe();
 	}
 
-	deleteElement(element: element) {
+	deleteElement() {
+		const elementsToDelete = this.multiselect()
+			? this.selectedElements()
+			: [this.element()];
 		this.elementDropdownService.openDeleteElementDialog(
-			element,
-			'Structure'
+			elementsToDelete,
+			this.structure().name.value
 		);
 	}
 
@@ -185,41 +139,50 @@ export class SubElementTableDropdownComponent {
 		);
 	}
 
-	openEditElementDialog(element: element) {
-		this.elementDropdownService.openEditElementDialog(element, false);
+	openEditElementDialog() {
+		this.elementDropdownService.openEditElementDialog(
+			this.element(),
+			false
+		);
 	}
 
 	openEnumDialog(platformType: PlatformType) {
-		this.elementDropdownService.openEnumDialog(platformType, this.editMode);
+		this.elementDropdownService.openEnumDialog(
+			platformType,
+			this.editMode()
+		);
 	}
 
-	openDescriptionDialog(element: element) {
+	openDescriptionDialog() {
 		this.elementDropdownService.openDescriptionDialog(
-			element,
-			this.editMode
+			this.element(),
+			this.editMode()
 		);
 	}
 
 	/**
 	 * Need to verify if type is required
 	 */
-	openEnumLiteralDialog(element: element) {
+	openEnumLiteralDialog() {
 		this.elementDropdownService.openEnumLiteralDialog(
-			element,
-			this.editMode
+			this.element(),
+			this.editMode()
 		);
 	}
 
-	openNotesDialog(element: element) {
-		this.elementDropdownService.openNotesDialog(element, this.editMode);
+	openNotesDialog() {
+		this.elementDropdownService.openNotesDialog(
+			this.element(),
+			this.editMode()
+		);
 	}
 
-	openMoveElementDialog(element: element, structure: structure) {
+	openMoveElementDialog() {
 		this.dialog
 			.open(MoveElementDialogComponent, {
 				data: {
-					element,
-					structure,
+					element: this.element(),
+					structure: this.structure(),
 				},
 				minHeight: '40vh',
 				minWidth: '40vw',
@@ -231,8 +194,8 @@ export class SubElementTableDropdownComponent {
 						return of();
 					}
 					return this.structureService.changeElementRelationOrder(
-						structure.id,
-						element.id,
+						this.structure().id,
+						this.element().id,
 						afterArtifact
 					);
 				})
@@ -246,6 +209,10 @@ export class SubElementTableDropdownComponent {
 
 	viewDiff<T>(value: difference<T> | undefined, header: string) {
 		this.elementDropdownService.viewDiff(value, header);
+	}
+
+	noop() {
+		// Do nothing
 	}
 
 	hasChanges(v: element): v is Required<element> {

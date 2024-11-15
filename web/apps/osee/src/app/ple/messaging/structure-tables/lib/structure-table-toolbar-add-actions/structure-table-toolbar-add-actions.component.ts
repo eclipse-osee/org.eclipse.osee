@@ -50,7 +50,8 @@ import { AddStructureDialogComponent } from '../dialogs/add-structure-dialog/add
 		MatMenuTrigger,
 		MatBadge,
 	],
-	template: ` <div class="tw-flex tw-items-center tw-justify-between">
+	template: ` <div
+			class="tw-flex tw-items-center tw-justify-between tw-gap-4 tw-pr-4">
 			<div
 				[matTooltip]="
 					isEditing() === false
@@ -58,8 +59,7 @@ import { AddStructureDialogComponent } from '../dialogs/add-structure-dialog/add
 						: structures().length === 0
 							? 'Expand a structure to add elements'
 							: 'Add an element to an existing structure'
-				"
-				class="tw-px-4">
+				">
 				<button
 					mat-stroked-button
 					class="tertiary-badge"
@@ -68,6 +68,7 @@ import { AddStructureDialogComponent } from '../dialogs/add-structure-dialog/add
 						isEditing() === false || structures().length === 0
 					"
 					[matMenuTriggerFor]="addElementMenu"
+					data-testid="add-element"
 					[disabled]="
 						isEditing() === false || structures().length === 0
 					">
@@ -78,9 +79,7 @@ import { AddStructureDialogComponent } from '../dialogs/add-structure-dialog/add
 					}}
 				</button>
 			</div>
-			<span class="tw-flex-auto"></span>
 			<div
-				class="tw-pr-4"
 				[matTooltip]="
 					isEditing() === false
 						? 'Switch to edit mode to add structures'
@@ -236,6 +235,7 @@ export class StructureTableToolbarAddActionsComponent {
 				)
 		)
 	);
+
 	protected openAddStructureDialog() {
 		this.structureDialog.subscribe();
 	}

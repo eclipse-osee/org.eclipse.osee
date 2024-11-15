@@ -131,9 +131,9 @@
   <view
         allowMultiple="true"
         category="osee.jdk.core.category"
-        class="org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchManager"
+        class="org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView"
         icon="OSEE-INF/images/branch.gif"
-        id="org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView"
+        id="org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchSearchView"
         name="Branch Manager">
   </view>
 	</extension>
