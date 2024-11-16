@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.core.util;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
