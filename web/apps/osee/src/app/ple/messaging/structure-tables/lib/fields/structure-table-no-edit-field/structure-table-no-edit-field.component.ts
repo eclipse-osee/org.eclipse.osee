@@ -68,7 +68,8 @@ import { MatIcon } from '@angular/material/icon';
 						structure().hasElementChanges
 							? 'tw-bg-accent-100 tw-text-background-app-bar'
 							: ''
-					">
+					"
+					data-testid="structure-table-expand-button">
 					<mat-icon
 						[ngClass]="
 							structure().hasElementChanges
