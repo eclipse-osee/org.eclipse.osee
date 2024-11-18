@@ -82,10 +82,15 @@ test('set up relations', async ({ page }) => {
 	await page.getByRole('button', { name: 'Relations Editor' }).click();
 	await page.waitForTimeout(500);
 	await page.keyboard.press('End');
-	await page.locator('div:nth-child(19) > div > button').click();
+	await page
+		.locator('div:nth-child(19) > div > button')
+		.click({ force: true });
 	await page.waitForTimeout(500);
 	await page.keyboard.press('End');
-	await page.locator('#relationList > div > button').first().click();
+	await page
+		.locator('#relationList > div > button')
+		.first()
+		.click({ force: true });
 	await page.waitForTimeout(500);
 	await page.keyboard.press('End');
 

@@ -63,14 +63,12 @@ import org.eclipse.osee.orcs.search.TransactionQuery;
 public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    private final OrcsApi orcsApi;
-   private final TransactionQuery txQuery;
    private final HashCollectionSet<ArtifactId, TransactionRecord> commitArtifactIdMap =
       new HashCollectionSet<>(true, HashSet::new);
 
    public AtsBranchServiceImpl(AtsApi atsApi, OrcsApi orcsApi, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
       super(atsApi, teamWorkflowProvidersLazy);
       this.orcsApi = orcsApi;
-      txQuery = orcsApi.getQueryFactory().transactionQuery();
    }
 
    @Override
@@ -170,6 +168,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    public Collection<TransactionRecord> getCommittedArtifactTransactionIds(IAtsTeamWorkflow teamWf) {
       ArtifactId artId = ArtifactId.valueOf(teamWf.getId());
       if (!commitArtifactIdMap.containsKey(artId)) {
+         TransactionQuery txQuery = orcsApi.getQueryFactory().transactionQuery();
          txQuery.andCommitId(teamWf.getArtifactId());
          txQuery.getResults().forEach(
             tx -> commitArtifactIdMap.put(artId, new TransactionRecord(tx.getId(), tx.getBranch(), tx.getComment(),

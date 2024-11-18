@@ -56,6 +56,4 @@ const config: PlaywrightTestConfig = {
 	],
 };
 
-const mimProjects = [];
-
 export default config;
