@@ -61,7 +61,7 @@ export const enableEditMode = async (page: Page) => {
 	const editCheckbox = await page.getByLabel('Edit Mode');
 	const isChecked = await editCheckbox.isChecked();
 	if (!isChecked) {
-		await page.getByLabel('Edit Mode').check();
+		await editCheckbox.check();
 	}
 
 	await page.getByRole('button', { name: 'Ok' }).click();

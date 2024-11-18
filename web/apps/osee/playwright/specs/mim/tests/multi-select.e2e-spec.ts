@@ -50,7 +50,7 @@ test('screenshot', async ({ page }) => {
 		})
 		.getByRole('link')
 		.click();
-	await page.getByTestId('structure-table').getByRole('button').click();
+	await page.getByTestId('structure-table-expand-button').click();
 	await page
 		.getByTestId('element-table-row-Integer Element')
 		.getByTestId('element-table-cell-rowControls')
@@ -156,7 +156,7 @@ test('delete elements', async ({ page }) => {
 		})
 		.getByRole('link')
 		.click();
-	await page.getByTestId('structure-table').getByRole('button').click();
+	await page.getByTestId('structure-table-expand-button').click();
 
 	await expect(
 		page.getByTestId('element-table-row-Boolean Element')

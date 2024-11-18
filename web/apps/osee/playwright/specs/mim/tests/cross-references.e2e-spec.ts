@@ -28,16 +28,10 @@ test('test', async ({ page }) => {
 
 	// Create cross-reference
 	await page.locator('button').filter({ hasText: 'add' }).click();
-	await page.getByLabel('Name').click();
 	await page.getByLabel('Name').fill('C1');
-	await page.getByLabel('Name').press('Tab');
 	await page.getByLabel('Value').fill('Private Array');
 	await page.locator('mat-dialog-content').getByRole('button').click();
 	await page.getByLabel('Key').fill('1');
-	await page
-		.locator('#mat-mdc-form-field-label-26')
-		.getByText('Value')
-		.click();
 	await page.locator('#mat-input-10').fill('FIRST_VAL');
 	await page.locator('mat-dialog-content').getByRole('button').click();
 	await page.locator('#mat-input-11').fill('2');

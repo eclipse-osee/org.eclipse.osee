@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { test } from '@ngx-playwright/test';
+import { test, expect } from '@ngx-playwright/test';
 import { createWorkingBranchFromPL, enableEditMode } from '../utils/helpers';
 
 test('test', async ({ page }) => {
@@ -21,6 +21,7 @@ test('test', async ({ page }) => {
 	await createWorkingBranchFromPL(page, 'Platform Types');
 	await enableEditMode(page);
 	await page.locator('button').filter({ hasText: 'add' }).click();
+	await expect(page.getByTestId('logical-type-selector')).toBeVisible();
 	await page.getByTestId('logical-type-selector').click({ force: true });
 
 	await page
@@ -61,7 +62,6 @@ test('test', async ({ page }) => {
 	await page.getByTestId('logical-type-selector').click({ force: true });
 	await page.getByText('Enumeration', { exact: true }).click();
 	await page.getByRole('button', { name: 'Next' }).click();
-	await page.getByLabel('Name').click();
 	await page.getByLabel('Name').fill('Decision');
 	await page.getByLabel('Bit Size').click();
 	await page.getByLabel('Bit Size').fill('32');

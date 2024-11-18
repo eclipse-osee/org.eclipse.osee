@@ -81,11 +81,11 @@ test('create working branches', async ({ page }) => {
 	await page
 		.getByRole('row', { name: 'Structure 1 1 1 0' })
 		.getByRole('button')
-		.click();
+		.click({ timeout: 60000 });
 	await page
 		.getByRole('button', { name: 'Add Element to:' })
 		.click({ force: true });
-	await page.getByRole('menuitem', { name: 'Structure' }).click();
+	await page.getByRole('menuitem', { name: 'Structure 1' }).click();
 	await page.getByRole('button', { name: 'Create new Element' }).click();
 	await page.getByLabel('Name').fill('New Element', { force: true });
 
