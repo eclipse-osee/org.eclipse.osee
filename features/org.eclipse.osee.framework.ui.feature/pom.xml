@@ -17,8 +17,8 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.eclipse.tycho.extras</groupId>
-				<artifactId>tycho-source-feature-plugin</artifactId>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-source-plugin</artifactId>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -31,7 +31,7 @@
 								<plugin id="org.eclipse.osee.framework.ui.product" />
 								<plugin id="org.eclipse.osee.framework.dev.help.ui" />
 							   <plugin id="org.eclipse.sdk" />
-							   <plugin id="org.antlr.runtime" />							
+							   <plugin id="org.antlr.runtime" />
 							   <plugin id="org.eclipse.swt" />
 							  <plugin id="com.fasterxml.jackson.core.jackson-core" />
 							</excludes>
