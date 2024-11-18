@@ -87,6 +87,9 @@ public class ArtifactReadableSerializer extends StdScalarSerializer<@NonNull Art
 
       jgen.writeArrayFieldStart("attributes");
       for (AttributeTypeToken type : types) {
+         if (type.isMissingAttributeType()) {
+            continue;
+         }
          List<?> values = artifactReadable.getAttributeValues(type);
          for (Object value : values) {
             jgen.writeStartObject();
