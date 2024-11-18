@@ -22,9 +22,9 @@
 				<executions>
 					<execution>
 						<phase>package</phase>
-						<id>source-feature</id>
+						<id>feature-source</id>
 						<goals>
-							<goal>source-feature</goal>
+							<goal>feature-source</goal>
 						</goals>
 						<configuration>
 							<excludes>
@@ -54,9 +54,9 @@
 						<executions>
 							<execution>
 								<phase>package</phase>
-								<id>source-feature</id>
+								<id>feature-source</id>
 								<goals>
-									<goal>source-feature</goal>
+									<goal>feature-source</goal>
 								</goals>
 								<configuration>
 									<excludes>
