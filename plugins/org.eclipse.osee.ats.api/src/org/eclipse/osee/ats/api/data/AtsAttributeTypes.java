@@ -77,7 +77,7 @@ public interface AtsAttributeTypes {
    AttributeTypeBoolean Actionable = ats.createBoolean(1152921504606847160L, "ats.Actionable", TEXT_PLAIN, "True if item can have Action written against or assigned to.", Config);
    AttributeTypeArtifactId ActionableItemReference = ats.createArtifactId(6780739363553225476L, "ats.Actionable Item Reference", TEXT_PLAIN, "Actionable Items that are impacted by this change.", Read);
    AgilePiTrackingEnumAttributeType AgilePiTrackingEnum = ats.createEnum(new AgilePiTrackingEnumAttributeType(), Edit);
-   AttributeTypeString AircrewDetails = ats.createString(6479770428311494165L, "ats.Aircrew Details", TEXT_PLAIN, "", MultiLine, Edit);
+   AttributeTypeString ApprovedByAircrew = ats.createString(6479770428311494165L, "ats.Approved By Aircrew", TEXT_PLAIN, "", Edit);
    AttributeTypeBoolean Active = ats.createBoolean(1152921504606847153L, "ats.Active", TEXT_PLAIN, "Active ATS configuration object.", Config);
    AttributeTypeString ActivityId = ats.createString(1152921504606847874L, "ats.Activity Id", TEXT_PLAIN, "", Edit);
    AttributeTypeString ActivityName = ats.createString(1152921504606847875L, "ats.Activity Name", TEXT_PLAIN, "", Edit);
