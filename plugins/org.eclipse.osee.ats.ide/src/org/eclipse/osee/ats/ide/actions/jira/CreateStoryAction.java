@@ -13,19 +13,27 @@
 
 package org.eclipse.osee.ats.ide.actions.jira;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.jira.CreateStoryResponse;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.AtsImage;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.jira.JiraSearch;
 import org.eclipse.osee.ats.ide.actions.AbstractAtsAction;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
+import org.eclipse.osee.ats.ide.agile.jira.AbstractJiraSyncColumnUI;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
@@ -68,23 +76,60 @@ public abstract class CreateStoryAction extends AbstractAtsAction {
             return;
          }
 
-         String createJson = getCreateJson(workItem, rd);
-         if (rd.isSuccess()) {
-            rd.logf("Json: \n\n%s\n\n", createJson);
-            String jiraIssue = AtsApiService.get().getServerEndpoints().getJiraEndpoint().createJiraIssue(createJson);
-            if (jiraIssue.contains("errorMessages")) {
-               rd.errorf("%s", jiraIssue);
-            } else {
-               rd.log("\n\n" + jiraIssue);
-               CreateStoryResponse createResp = JsonUtil.readValue(jiraIssue, CreateStoryResponse.class);
-               wfArt.setSoleAttributeValue(AtsAttributeTypes.JiraStoryId, createResp.getKey());
-               wfArt.persist(getText());
+         // Search for existing JIRA story first
+         JiraSearch srch = AbstractJiraSyncColumnUI.search(workItem);
+         if (srch.issues != null && !srch.issues.isEmpty()) {
+            jiraStoryId = srch.issues.iterator().next().key;
+            if (Strings.isValid(jiraStoryId)) {
+               if (MessageDialog.openConfirm(Displays.getActiveShell(), "Already Exists", String.format(
+                  "This workflow %s has story %s created, Link to ATS?", workItem.getAtsId(), jiraStoryId))) {
+                  IAtsChangeSet changes = AtsApiService.get().createChangeSet("Link JIRA Story");
+                  changes.setSoleAttributeValue(workItem, AtsAttributeTypes.JiraStoryId, jiraStoryId);
+                  changes.execute();
 
-               String link = JiraUtil.getJiraBasePath() + "browse/" + createResp.getKey();
-               rd.log(link);
-               Program.launch(link);
+                  AWorkbench.popup("Story Linked");
+                  return;
+               }
             }
          }
+
+         Job createJiraStory = new Job("Creating JIRA Story") {
+
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+               try {
+                  String createJson = getCreateJson(workItem, rd);
+                  if (rd.isErrors()) {
+                     XResultDataUI.report(rd, getText());
+                     return Status.OK_STATUS;
+                  }
+                  rd.logf("Json: \n\n%s\n\n", createJson);
+                  String jiraIssue =
+                     AtsApiService.get().getServerEndpoints().getJiraEndpoint().createJiraIssue(createJson);
+                  if (jiraIssue.contains("errorMessages")) {
+                     rd.errorf("%s", jiraIssue);
+                  } else {
+                     rd.log("\n\n" + jiraIssue);
+                     CreateStoryResponse createResp = JsonUtil.readValue(jiraIssue, CreateStoryResponse.class);
+                     wfArt.setSoleAttributeValue(AtsAttributeTypes.JiraStoryId, createResp.getKey());
+                     wfArt.persist(getText());
+
+                     String link = JiraUtil.getJiraBasePath() + "browse/" + createResp.getKey();
+                     rd.log(link);
+                     Program.launch(link);
+                  }
+                  if (rd.isErrors()) {
+                     XResultDataUI.report(rd, getText());
+                  }
+               } catch (Exception ex) {
+                  rd.log(Lib.exceptionToString(ex));
+                  XResultDataUI.report(rd, getText());
+               }
+               return Status.OK_STATUS;
+            }
+         };
+         Jobs.startJob(createJiraStory);
+
       } catch (Exception ex) {
          rd.log(Lib.exceptionToString(ex));
       }

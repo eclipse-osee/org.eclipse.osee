@@ -181,23 +181,6 @@ app.controller('userController', [
         	return (a.size > 1 && b.size > 1);
         }
 
-        $scope.getSourceFlie = function() {
-            var requst = [];
-            requst.push(
-                "program/",
-                $scope.programSelection,
-                "/set/",
-                $scope.setSelection,
-                "/file/",
-           	    $scope.selectedItem.name,
-         	    "/",
-         	    $scope.selectedItem.fileNumber
-            );
-            var url = requst.join("");
-
-            window.open(url);
-        }
-
         $scope.toggleEditItems = function toggleEditItems() {
             $scope.isMultiEditView = !$scope.isMultiEditView;
             console.log($scope.gridOptions.enableRowSelection);
@@ -218,17 +201,52 @@ app.controller('userController', [
 		  $scope.closeItemDetails = function closeItemDetails() {
             $scope.itemSelectedView = false;
             $scope.gridApi.selection.clearSelectedRows();
-					            var blankAnnotation = new Annotation();
+				var blankAnnotation = new Annotation();
             $scope.annotations.push(blankAnnotation);
             $scope.subGridOptions.data = $scope.annotations;
         }
+        
+        $scope.refreshItemStatus = function refreshItemStatus() {
+         	var request = [];
+         	
+         	let currentUrl = window.location.href;
+         	let modifiedUrl = currentUrl.replace("web", "ci");
+         	let urlObj = new URL(modifiedUrl);
+
+         	request.push(
+         	  "/dispo/",
+         	  "program/",
+         	  $scope.programSelection,
+         	  "/set/",
+         	  $scope.setSelection,
+				  "/item/updateAllItems"
+         	  );
+         	  var url = request.join("");
+         	
+         	const xhr = new XMLHttpRequest();
+         	
+         	let newUrl = urlObj.origin + url;
+         	
+         	xhr.open('PUT', newUrl);
+
+				xhr.onload = function() {
+				    if (xhr.status === 200) {
+				      $scope.updateSet();
+				    } else {
+				      console.error('Request failed.  Returned status of ' + xhr.status);
+				    }
+				};
+
+  			   xhr.send();
+        }
+        
 
         $scope.stealItem = function(item, row) {
             Item.get({
                 programId: $scope.programSelection,
                 setId: $scope.setSelection,
                 itemId: item.guid
-            }, function(data) {
+            }, function(data) { 
                 $scope.updateItemFromServer(item, data);
                 $scope.askToSteal(item);
             });
