@@ -54,6 +54,13 @@ public abstract class AbstractOseeCache<T extends NamedId> implements IOseeCache
    }
 
    @Override
+   public void decacheById(Id id) {
+      Conditions.checkNotNull(id, "type to de-cache");
+      ensurePopulated();
+      idToTypeMap.remove(id.getId());
+   }
+
+   @Override
    public void decache(T type) {
       Conditions.checkNotNull(type, "type to de-cache");
       ensurePopulated();
