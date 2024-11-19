@@ -52,7 +52,7 @@ public class JiraAssigneeColumnUI extends AbstractJiraSyncColumnUI {
       if (workItem.isTeamWorkflow()) {
          IAgileSprint sprint = AtsApiService.get().getAgileService().getSprint((IAtsTeamWorkflow) workItem);
          if (sprint != null) {
-            AtsUser user = getAssignee(workItem);
+            AtsUser user = AtsApiService.get().getJiraService().getJiraAssignee(workItem);
             if (user != null) {
                return user.getName();
             } else {
