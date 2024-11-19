@@ -372,6 +372,7 @@ public interface AtsArtifactTypes {
    ArtifactTypeToken AgileSprint = ats.add(ats.artifactType(9088615648290692675L, "Agile Sprint", false, new MaterialIcon("loop"), AbstractWorkflowArtifact)
       .any(Holiday)
       .any(KanbanStoryName)
+      .zeroOrOne(CurrentSprint)
       .zeroOrOne(PlannedPoints)
       .zeroOrOne(JiraSprintId)
       .zeroOrOne(UnplannedPoints));

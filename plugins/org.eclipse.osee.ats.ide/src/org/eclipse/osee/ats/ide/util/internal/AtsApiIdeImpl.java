@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.agile.jira.AtsJiraService;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
@@ -35,6 +36,7 @@ import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.core.ai.ActionableItemServiceImpl;
 import org.eclipse.osee.ats.core.util.AtsApiImpl;
+import org.eclipse.osee.ats.ide.agile.jira.AtsJiraServiceImpl;
 import org.eclipse.osee.ats.ide.branch.AtsBranchServiceIde;
 import org.eclipse.osee.ats.ide.branch.internal.AtsBranchServiceIdeImpl;
 import org.eclipse.osee.ats.ide.branch.internal.AtsBranchServiceImpl;
@@ -76,6 +78,7 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
    private IAtsWorkItemServiceIde workItemServiceIde;
    private IAtsServerEndpointProvider serverEndpoints;
    private AtsBranchServiceIde branchServiceIde;
+   private AtsJiraServiceImpl jiraService;
 
    public void setConfigurationsService(IAtsConfigurationsService configurationsService) {
       this.configurationsService = configurationsService;
@@ -127,6 +130,8 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
       taskService = new AtsTaskService(this);
 
       notificationService = new AtsNotificationServiceImpl(this);
+
+      jiraService = new AtsJiraServiceImpl(this);
    }
 
    public void setAttributeResolverService(IAttributeResolver attributeResolverService) {
@@ -280,6 +285,11 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
    @Override
    public IAccessControlService getAccessControlService() {
       return getOseeClient().getAccessControlService();
+   }
+
+   @Override
+   public AtsJiraService getJiraService() {
+      return jiraService;
    }
 
 }

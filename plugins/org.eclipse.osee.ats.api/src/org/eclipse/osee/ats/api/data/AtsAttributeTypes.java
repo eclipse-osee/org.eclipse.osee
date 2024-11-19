@@ -120,6 +120,7 @@ public interface AtsAttributeTypes {
    AttributeTypeString CreatedBy = ats.createString(1152921504606847174L, "ats.Created By", TEXT_PLAIN, "UserId of the user who created the workflow.", Read, UserUserId);
    AttributeTypeDate CreatedDate = ats.createDate(1152921504606847173L, "ats.Created Date", TEXT_CALENDAR, "Date the workflow was created.", Read);
    // CurrentState attribute type is To-Be-Deleted
+   AttributeTypeBoolean CurrentSprint = ats.createBoolean(6939385903286837736L, "ats.Current Sprint", TEXT_PLAIN, "True if sprint is the current sprint .", Read);
    AttributeTypeString CurrentState = ats.createString(1152921504606847192L, "ats.Current State", TEXT_PLAIN, "Current state of workflow state machine.", Read);
    AttributeTypeString CurrentStateName = ats.createString(4689644240272725681L, "ats.Current State Name", TEXT_PLAIN, "Current state name of workflow state machine.", Read);
    AttributeTypeString CurrentStateAssignee = ats.createString(1902418199157448550L, "ats.Current State Assignee", TEXT_PLAIN, "Current state assignees as user art id.", Read);
