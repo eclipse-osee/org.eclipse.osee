@@ -56,7 +56,7 @@
 		<subversive-site>https://download.eclipse.org/technology/subversive/${subversive-version}/update-site</subversive-site>
 		<polarion-site>https://community.polarion.com/projects/subversive/download/eclipse/6.0/neon-site</polarion-site>
 		<emma-site>https://s3.amazonaws.com/update.eclemma.org</emma-site>
-		<osgi_deps>file:./../org.eclipse.osee.osgi.converter/target/repository</osgi_deps>
+		<osgi_deps>${project.basedir}/../org.eclipse.osee.osgi.converter/target/repository</osgi_deps>
 	</properties>
 
 	<licenses>
@@ -92,7 +92,7 @@
 		<repository>
 			<id>osgi-repo</id>
 			<layout>p2</layout>
-			<url>${osgi_deps}</url>
+			<url>file:${osgi_deps}</url>
 		</repository>
 
 		<repository>
