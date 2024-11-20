@@ -14,8 +14,11 @@ package org.eclipse.osee.ats.ide.agile.jira;
 
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.jira.JiraEndpoint;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.agile.jira.AbstractAtsJiraService;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
@@ -31,6 +34,23 @@ public class AtsJiraServiceImpl extends AbstractAtsJiraService {
       JiraEndpoint jiraEndpoint = AtsApiService.get().getServerEndpoints().getJiraEndpoint();
       String searchResults = jiraEndpoint.searchJira(json);
       return searchResults;
+   }
+
+   @Override
+   public XResultData transition(IAtsTeamWorkflow teamWf, int statusId, XResultData rd) {
+      String transitionJson = java.lang.String.format(STATUS_ISSUE, statusId);
+      String jiraStoryId = getJiraStoryLink(teamWf);
+      if (Strings.isInvalid(jiraStoryId)) {
+         rd.error("Team Workflow not linked to JIRA Story");
+         return rd;
+      }
+
+      String responseStr =
+         AtsApiService.get().getServerEndpoints().getJiraEndpoint().transitionJiraIssue(transitionJson, jiraStoryId);
+      if (responseStr.contains("errorMessages")) {
+         rd.errorf("%s", responseStr);
+      }
+      return rd;
    }
 
 }

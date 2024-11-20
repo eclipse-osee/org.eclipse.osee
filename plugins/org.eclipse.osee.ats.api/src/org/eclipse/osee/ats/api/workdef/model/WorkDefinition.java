@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.task.create.CreateTasksDefinition;
 import org.eclipse.osee.ats.api.task.create.CreateTasksDefinitionBuilder;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.Priorities;
+import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
@@ -61,6 +62,7 @@ public class WorkDefinition extends AbstractWorkDefItem {
    private AttributeTypeToken pointsAttrType = AtsAttributeTypes.PointsNumeric;
    private final List<Priorities> priorities = new ArrayList<>();
    private final List<ReviewRequiredMinimum> reviewRequiredMinimums = new ArrayList<>();
+   private List<IAtsTransitionHook> transitionHooks = new ArrayList<>();
 
    public WorkDefinition(Long id, String name) {
       this(id, name, ArtifactTypeToken.SENTINEL);
@@ -236,6 +238,18 @@ public class WorkDefinition extends AbstractWorkDefItem {
 
    public List<ReviewRequiredMinimum> getReviewRequiredMinimums() {
       return reviewRequiredMinimums;
+   }
+
+   public void addTransitionHook(IAtsTransitionHook transitionHook) {
+      transitionHooks.add(transitionHook);
+   }
+
+   public List<IAtsTransitionHook> getTransitionHooks() {
+      return transitionHooks;
+   }
+
+   public void setTransitionHooks(List<IAtsTransitionHook> transitionHooks) {
+      this.transitionHooks = transitionHooks;
    }
 
 }
