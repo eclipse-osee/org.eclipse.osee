@@ -16,4 +16,4 @@ Import-Package: org.eclipse.osee.framework.core.exception,
  org.junit.runners,
  org.osgi.framework,
  org.osgi.util.tracker
-Bundle-RequiredExecutionEnvironment: JavaSE-21
+Bundle-RequiredExecutionEnvironment: JavaSE-11

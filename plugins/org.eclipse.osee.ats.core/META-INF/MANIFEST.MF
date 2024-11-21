@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.ats.core;singleton:=true
 Automatic-Module-Name: org.eclipse.osee.ats.core
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-21
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: com.fasterxml.jackson.annotation,
  com.fasterxml.jackson.core,
  com.fasterxml.jackson.databind,

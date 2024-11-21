@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.ats.core.demo;singleton:=true
 Automatic-Module-Name: org.eclipse.osee.ats.core.demo
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-21
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Service-Component: OSGI-INF/*.xml
 Import-Package: org.eclipse.osee.framework.core.data,

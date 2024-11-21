@@ -6,7 +6,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.messaging.internal.Activator
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-RequiredExecutionEnvironment: JavaSE-21
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: jakarta.xml.bind,
  jakarta.xml.bind.annotation,
  javax.jms,

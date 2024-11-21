@@ -127,5 +127,5 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.osgi.framework,
  org.osgi.framework.launch,
  org.osgi.service.event
-Bundle-RequiredExecutionEnvironment: JavaSE-21
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Service-Component: OSGI-INF/*.xml

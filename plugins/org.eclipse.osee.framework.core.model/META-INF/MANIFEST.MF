@@ -6,7 +6,7 @@ Automatic-Module-Name: org.eclipse.osee.framework.core.model
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-RequiredExecutionEnvironment: JavaSE-21
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Import-Package: com.fasterxml.jackson.annotation,
  com.fasterxml.jackson.databind.annotation,
  org.eclipse.core.runtime,
