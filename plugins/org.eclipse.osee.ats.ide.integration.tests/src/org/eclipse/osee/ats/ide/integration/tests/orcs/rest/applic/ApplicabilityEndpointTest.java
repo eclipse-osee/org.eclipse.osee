@@ -222,6 +222,9 @@ public class ApplicabilityEndpointTest {
 
       // Checking that readme.txt exists
       File readmeFile = new File(inputFolder, "readme.txt");
+      System.out.println("Input Folder: " + inputFolder);
+      System.out.println("readmeFile absolute path: " + readmeFile.getAbsolutePath());
+      System.out.println("isFile: " + readmeFile.isFile());
       assertTrue(readmeFile.exists());
 
       // Checking Code Folder
