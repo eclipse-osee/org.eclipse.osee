@@ -220,6 +220,11 @@ public class ApplicabilityEndpointTest {
       File inputFolder = new File(viewFolder, "InputFiles");
       assertTrue(inputFolder.exists());
 
+      // Alt Check
+      Path resourcePath = Paths.get(ApplicabilityEndpointTest.class.getResource("/support/BlockApplicabilityTest/InputFiles").toURI());
+      System.out.println("Resolved Path: " + resourcePath);
+      assertTrue(Files.exists(resourcePath.resolve("readme.txt")));
+      
       // Checking that readme.txt exists
       File readmeFile = new File(inputFolder, "readme.txt");
       System.out.println("Input Folder: " + inputFolder);
