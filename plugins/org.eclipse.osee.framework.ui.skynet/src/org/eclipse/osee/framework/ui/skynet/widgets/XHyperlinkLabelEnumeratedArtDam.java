@@ -49,7 +49,11 @@ public class XHyperlinkLabelEnumeratedArtDam extends XHyperlinkLabelEnumeratedAr
                AWorkbench.popup("Attribute Type is Invalid");
                return false;
             }
-            artifact.setAttributeValues(attributeType, checked);
+            if (checked.isEmpty()) {
+               artifact.deleteAttributes(attributeType);
+            } else {
+               artifact.setAttributeValues(attributeType, checked);
+            }
             artifact.persistInThread("Set Value(s)");
             return true;
          }
