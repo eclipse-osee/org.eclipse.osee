@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -228,7 +229,8 @@ public class ApplicabilityEndpointTest {
 
       // Alt Check
       System.out.println("ALTERNATE CHECK");
-      Path resourcePath = Paths.get(inputPath.toURI());
+      Path resourcePath = Paths.get(OsgiUtil.getResourceAsUrl(ApplicabilityEndpointTest.class,
+         "/support/BlockApplicabilityTest/InputFiles").toURI());
       System.out.println("Resolved Path: " + resourcePath);
       assertTrue(Files.exists(resourcePath.resolve("readme.txt")));
 
