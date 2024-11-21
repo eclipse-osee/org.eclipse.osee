@@ -5,10 +5,11 @@ Bundle-SymbolicName: org.eclipse.osee.define;singleton:=true
 Automatic-Module-Name: org.eclipse.osee.define
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Service-Component: OSGI-INF/*.xml
 Require-Bundle: org.antlr.runtime,
- org.eclipse.jgit;visibility:=reexport
+ org.eclipse.jgit;visibility:=reexport,
+ javax.activation
 Import-Package: com.fasterxml.jackson.annotation,
  com.fasterxml.jackson.core,
  com.fasterxml.jackson.databind,

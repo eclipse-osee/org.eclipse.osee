@@ -201,7 +201,7 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.osgi.service.event,
  org.osgi.service.packageadmin,
  org.osgi.service.prefs
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Export-Package: org.eclipse.osee.framework.ui.skynet,
  org.eclipse.osee.framework.ui.skynet.Import,
  org.eclipse.osee.framework.ui.skynet.access,
@@ -281,4 +281,5 @@ Export-Package: org.eclipse.osee.framework.ui.skynet,
  org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column
 Require-Bundle: org.eclipse.ui.workbench,
  org.eclipse.debug.ui,
- org.eclipse.osee.framework.core
+ org.eclipse.osee.framework.core,
+ javax.activation

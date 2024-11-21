@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.ats.rest;singleton:=true
 Automatic-Module-Name: org.eclipse.osee.ats.rest
 Bundle-ActivationPolicy: lazy
 Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Service-Component: OSGI-INF/*.xml
 Osee-JaxRs-Resource: OSEE-INF/web/*;path=/ats
@@ -88,7 +88,8 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.osgi.service.event,
  org.osgi.service.packageadmin
 Require-Bundle: org.eclipse.osee.ats.api,
- org.eclipse.osee.framework.core.server
+ org.eclipse.osee.framework.core.server,
+ javax.activation
 Export-Package: org.eclipse.osee.ats.rest,
  org.eclipse.osee.ats.rest.internal.workitem.sync.jira,
  org.eclipse.osee.ats.rest.users,
