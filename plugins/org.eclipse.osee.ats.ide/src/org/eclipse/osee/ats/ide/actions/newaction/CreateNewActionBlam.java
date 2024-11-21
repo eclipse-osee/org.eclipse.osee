@@ -303,7 +303,13 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
                DefaultXWidgetOptionResolver optionResolver = new DefaultXWidgetOptionResolver();
                XWidgetPage widgetPage = new XWidgetPage(layoutDatas, optionResolver);
                widgetPage.createBody(form, teamComp, null, null, true);
-               teamXWidgets.addAll(widgetPage.getDynamicXWidgetLayout().getXWidgets());
+               for (XWidget widget : widgetPage.getDynamicXWidgetLayout().getXWidgets()) {
+                  teamXWidgets.add(widget);
+                  for (CreateNewActionProvider provider : getCreateNewActionProviderExtensions()) {
+                     provider.widgetCreated(widget, form.getToolkit(), null, widgetPage.getDynamicXWidgetLayout(), null,
+                        true);
+                  }
+               }
                XWidgetUtility.setLabelFontsBold(widgetPage.getDynamicXWidgetLayout().getXWidgets());
                for (XWidget widget : widgetPage.getDynamicXWidgetLayout().getXWidgets()) {
                   widget.validate();
@@ -380,6 +386,9 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
             }
          });
       }
+      for (CreateNewActionProvider provider : getCreateNewActionProviderExtensions()) {
+         provider.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, xModListener, isEditable);
+      }
    }
 
    private Collection<ChangeTypes> setChangeTypeWidget(XHyperlinkChangeTypeSelection changeWidget) {
@@ -408,21 +417,21 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
       try {
          Collection<IAtsActionableItem> ais = new ArrayList<IAtsActionableItem>();
          for (IAtsActionableItem ai : atsApi.getConfigService().getConfigurations().getIdToAi().values()) {
-            if (ai.getName().equals("ATS")) {
+            if (ai.getName().equals("Framework")) {
                ais.add(ai);
             } else if (ai.getName().equals("SAW Requirements")) {
-               ais.add(ai);
-            } else if (ai.getName().contains("Requirements")) {
                ais.add(ai);
             }
          }
          aiWidget.setSelectedAIs(ais);
          titleWidget.set(title);
-         descWidget.set("Description...");
+         descWidget.set("see title");
          Collection<ChangeTypes> cTypes = setChangeTypeWidget(changeTypeWidget);
          changeTypeWidget.setSelected(cTypes.iterator().next().name());
-         List<Priorities> selectable = priorityWidget.getSelectable();
-         priorityWidget.setSelected(selectable.iterator().next());
+         priorityWidget.setSelected("3");
+         for (CreateNewActionProvider provider : getCreateNewActionProviderExtensions()) {
+            provider.handlePopulateWithDebugInfo(title);
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -575,7 +584,9 @@ public class CreateNewActionBlam extends AbstractBlam implements INewActionListe
                      }
                   }
                }
-
+               for (CreateNewActionProvider provider : getCreateNewActionProviderExtensions()) {
+                  provider.teamCreated(action, teamWf, teamXWidgets, changes);
+               }
             }
          }
       }, true);

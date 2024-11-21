@@ -47,6 +47,7 @@ import org.eclipse.swt.program.Program;
 public abstract class CreateStoryAction extends AbstractAtsAction {
 
    private final ISelectedAtsArtifacts selectedAtsArtifacts;
+   private XResultData rd;
 
    public CreateStoryAction(ISelectedAtsArtifacts selectedAtsArtifacts) {
       this.selectedAtsArtifacts = selectedAtsArtifacts;
@@ -55,86 +56,88 @@ public abstract class CreateStoryAction extends AbstractAtsAction {
 
    @Override
    public void runWithException() {
-      XResultData rd = new XResultData();
+      rd = new XResultData();
       rd.log(getClass().getSimpleName() + "\n");
 
-      Artifact wfArt = this.selectedAtsArtifacts.getSelectedWorkflowArtifacts().iterator().next();
-      IAtsWorkItem workItem = AtsApiService.get().getWorkItemService().getWorkItem(wfArt);
-      rd.log("Team Workflow: " + workItem.toStringWithAtsId() + "\n");
-      try {
-         if (!workItem.isTeamWorkflow()) {
-            AWorkbench.popup("Must be Team Workflow");
-            return;
-         }
-         String jiraStoryId = wfArt.getSoleAttributeValue(AtsAttributeTypes.JiraStoryId, "");
-         if (Strings.isValid(jiraStoryId)) {
-            AWorkbench.popup("JIRA Story " + jiraStoryId + " is already created and mapped to this Team Workflow");
-            return;
-         }
-         if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Create JIRA Story",
-            "Create JIRA Story and link to this Team Workflow\n\nAre you sure?")) {
-            return;
-         }
-
-         // Search for existing JIRA story first
-         JiraSearch srch = AbstractJiraSyncColumnUI.search(workItem);
-         if (srch.issues != null && !srch.issues.isEmpty()) {
-            jiraStoryId = srch.issues.iterator().next().key;
+      for (Artifact wfArt : this.selectedAtsArtifacts.getSelectedWorkflowArtifacts()) {
+         IAtsWorkItem workItem = AtsApiService.get().getWorkItemService().getWorkItem(wfArt);
+         rd.log("Team Workflow: " + workItem.toStringWithAtsId() + "\n");
+         try {
+            if (!workItem.isTeamWorkflow()) {
+               AWorkbench.popup("Must be Team Workflow");
+               continue;
+            }
+            String jiraStoryId = wfArt.getSoleAttributeValue(AtsAttributeTypes.JiraStoryId, "");
             if (Strings.isValid(jiraStoryId)) {
-               if (MessageDialog.openConfirm(Displays.getActiveShell(), "Already Exists", String.format(
-                  "This workflow %s has story %s created, Link to ATS?", workItem.getAtsId(), jiraStoryId))) {
-                  IAtsChangeSet changes = AtsApiService.get().createChangeSet("Link JIRA Story");
-                  changes.setSoleAttributeValue(workItem, AtsAttributeTypes.JiraStoryId, jiraStoryId);
-                  changes.execute();
+               AWorkbench.popup("JIRA Story " + jiraStoryId + " is already created and mapped to this Team Workflow");
+               continue;
+            }
+            if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Create JIRA Story",
+               "Create JIRA Story and link to this Team Workflow\n\nAre you sure?")) {
+               continue;
+            }
 
-                  AWorkbench.popup("Story Linked");
-                  return;
+            // Search for existing JIRA story first
+            JiraSearch srch = AbstractJiraSyncColumnUI.search(workItem);
+            if (srch.issues != null && !srch.issues.isEmpty()) {
+               jiraStoryId = srch.issues.iterator().next().key;
+               if (Strings.isValid(jiraStoryId)) {
+                  if (MessageDialog.openConfirm(Displays.getActiveShell(), "Already Exists", String.format(
+                     "This workflow %s has story %s created, Link to ATS?", workItem.getAtsId(), jiraStoryId))) {
+                     IAtsChangeSet changes = AtsApiService.get().createChangeSet("Link JIRA Story");
+                     changes.setSoleAttributeValue(workItem, AtsAttributeTypes.JiraStoryId, jiraStoryId);
+                     changes.execute();
+
+                     AWorkbench.popup("Story Linked");
+                     continue;
+                  }
                }
             }
+
+            Job createJiraStory = new Job("Creating JIRA Story") {
+
+               @Override
+               protected IStatus run(IProgressMonitor monitor) {
+                  try {
+                     String createJson = getCreateJson(workItem, rd);
+                     if (rd.isErrors()) {
+                        XResultDataUI.report(rd, getText());
+                        return Status.OK_STATUS;
+                     }
+                     rd.logf("Json: \n\n%s\n\n", createJson);
+                     String jiraIssue =
+                        AtsApiService.get().getServerEndpoints().getJiraEndpoint().createJiraIssue(createJson);
+                     if (jiraIssue.contains("errorMessages")) {
+                        rd.errorf("%s", jiraIssue);
+                     } else {
+                        rd.log("\n\n" + jiraIssue);
+                        CreateStoryResponse createResp = JsonUtil.readValue(jiraIssue, CreateStoryResponse.class);
+                        wfArt.setSoleAttributeValue(AtsAttributeTypes.JiraStoryId, createResp.getKey());
+                        wfArt.persist(getText());
+
+                        String link =
+                           AtsApiService.get().getJiraService().getJiraBasePath() + "browse/" + createResp.getKey();
+                        rd.log(link);
+                        Program.launch(link);
+                     }
+                     if (rd.isErrors()) {
+                        XResultDataUI.report(rd, getText());
+                     }
+                  } catch (Exception ex) {
+                     rd.log(Lib.exceptionToString(ex));
+                     XResultDataUI.report(rd, getText());
+                  }
+                  return Status.OK_STATUS;
+               }
+            };
+            Jobs.startJob(createJiraStory);
+
+         } catch (Exception ex) {
+            rd.log(Lib.exceptionToString(ex));
          }
-
-         Job createJiraStory = new Job("Creating JIRA Story") {
-
-            @Override
-            protected IStatus run(IProgressMonitor monitor) {
-               try {
-                  String createJson = getCreateJson(workItem, rd);
-                  if (rd.isErrors()) {
-                     XResultDataUI.report(rd, getText());
-                     return Status.OK_STATUS;
-                  }
-                  rd.logf("Json: \n\n%s\n\n", createJson);
-                  String jiraIssue =
-                     AtsApiService.get().getServerEndpoints().getJiraEndpoint().createJiraIssue(createJson);
-                  if (jiraIssue.contains("errorMessages")) {
-                     rd.errorf("%s", jiraIssue);
-                  } else {
-                     rd.log("\n\n" + jiraIssue);
-                     CreateStoryResponse createResp = JsonUtil.readValue(jiraIssue, CreateStoryResponse.class);
-                     wfArt.setSoleAttributeValue(AtsAttributeTypes.JiraStoryId, createResp.getKey());
-                     wfArt.persist(getText());
-
-                     String link = JiraUtil.getJiraBasePath() + "browse/" + createResp.getKey();
-                     rd.log(link);
-                     Program.launch(link);
-                  }
-                  if (rd.isErrors()) {
-                     XResultDataUI.report(rd, getText());
-                  }
-               } catch (Exception ex) {
-                  rd.log(Lib.exceptionToString(ex));
-                  XResultDataUI.report(rd, getText());
-               }
-               return Status.OK_STATUS;
-            }
-         };
-         Jobs.startJob(createJiraStory);
-
-      } catch (Exception ex) {
-         rd.log(Lib.exceptionToString(ex));
-      }
-      if (rd.isErrors()) {
-         XResultDataUI.report(rd, getClass().getSimpleName());
+         if (rd.isErrors()) {
+            XResultDataUI.report(rd, getClass().getSimpleName());
+         }
       }
    }
 
@@ -143,6 +146,14 @@ public abstract class CreateStoryAction extends AbstractAtsAction {
    @Override
    public ImageDescriptor getImageDescriptor() {
       return ImageManager.getImageDescriptor(AtsImage.JIRA_ADD);
+   }
+
+   public XResultData getRd() {
+      return rd;
+   }
+
+   public void setRd(XResultData rd) {
+      this.rd = rd;
    }
 
 }
