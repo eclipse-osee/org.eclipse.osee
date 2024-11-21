@@ -1325,7 +1325,7 @@ public class PublishingServerPreviewTest {
       Assert.assertEquals
          (
             "One un-nested \"<w:p>\" expected in \"<wx:sub-section>\"( 0, 0 ).",
-            2,
+            1,
             this.wordParagraphListForEachSubSection.get( 0 ).get( 0 ).size()
          );
 

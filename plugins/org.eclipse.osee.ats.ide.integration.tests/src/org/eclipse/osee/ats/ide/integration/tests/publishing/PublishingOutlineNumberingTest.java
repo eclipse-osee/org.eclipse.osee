@@ -295,7 +295,7 @@ public class PublishingOutlineNumberingTest {
                            List.of(),                                                       //section a
                            List.of                                                          //section b
                               (
-                                 List.of( 3, 2, 3 ),                                        //child paragraph counts
+                                 List.of( 2, 2, 3 ),                                        //child paragraph counts
                                  List.of                                                    //section 1
                                     (
                                        List.of( 2, 2 ),                                     //child paragraph counts
@@ -407,7 +407,7 @@ public class PublishingOutlineNumberingTest {
                            List.of(),                                                       //section a
                            List.of                                                          //section b
                               (
-                                 List.of( 3, 2, 3 ),                                        //child paragraph counts
+                                 List.of( 2, 2, 3 ),                                        //child paragraph counts
                                  List.of                                                    //section 1
                                     (
                                        List.of( 2, 2 ),                                     //child paragraph counts
@@ -518,7 +518,7 @@ public class PublishingOutlineNumberingTest {
                             List.of(),                                                       //section a
                             List.of                                                          //section b
                                (
-                                  List.of( 3, 2, 3 ),                                        //child paragraph counts
+                                  List.of( 2, 2, 3 ),                                        //child paragraph counts
                                   List.of                                                    //section 1
                                      (
                                         List.of( 2, 2 ),                                     //child paragraph counts
@@ -635,7 +635,7 @@ public class PublishingOutlineNumberingTest {
                            List.of(),                                                       //section a
                            List.of                                                          //section b
                               (
-                                 List.of( 4 ),                                              //child paragraph counts
+                                 List.of( 3 ),                                              //child paragraph counts
                                  List.of                                                    //section 1
                                     (
                                        List.of( 5 ),                                        //child paragraph counts
@@ -698,7 +698,7 @@ public class PublishingOutlineNumberingTest {
                            List.of(),                                                       //section a
                            List.of                                                          //section b
                               (
-                                 List.of( 4 ),                                              //child paragraph counts
+                                 List.of( 3 ),                                              //child paragraph counts
                                  List.of                                                    //section 1
                                     (
                                        List.of( 5 ),                                        //child paragraph counts
@@ -764,7 +764,7 @@ public class PublishingOutlineNumberingTest {
                            List.of(),                                                       //section a
                            List.of                                                          //section b
                               (
-                                 List.of( 8 ),                                              //child paragraph count
+                                 List.of( 7 ),                                              //child paragraph count
                                  List.of                                                    //section 1
                                     (
                                        List.of( 7 ),                                        //child paragraph count
@@ -815,7 +815,7 @@ public class PublishingOutlineNumberingTest {
                            List.of(),                                                       //section a
                            List.of                                                          //section b
                               (
-                                 List.of( 8 ),                                              //child paragraph counts
+                                 List.of( 7 ),                                              //child paragraph counts
                                  List.of                                                    //section 1
                                     (
                                        List.of( 7 ),                                        //child paragraph counts
@@ -865,7 +865,7 @@ public class PublishingOutlineNumberingTest {
                      /* expected paragraph counts */
                      List.of                                                                //body
                         (
-                           List.of( 4, 11 ),                                                //child paragraph count
+                           List.of( 4, 10 ),                                                //child paragraph count
                            List.of(),                                                       //section a
                            List.of                                                          //section b
                               (
@@ -916,7 +916,7 @@ public class PublishingOutlineNumberingTest {
                      /* expected paragraph counts */
                      List.of                                                                //body
                         (
-                           List.of( 4, 11 ),                                                //child paragraph counts
+                           List.of( 4, 10 ),                                                //child paragraph counts
                            List.of(),                                                       //section a
                            List.of                                                          //section b
                               (
@@ -970,7 +970,7 @@ public class PublishingOutlineNumberingTest {
                      /* expected paragraph counts */
                      List.of                                                                //body
                         (
-                           List.of( 4, 29 ),                                                //child paragraph counts
+                           List.of( 4, 28 ),                                                //child paragraph counts
                            List.of(),                                                       //section a
                            List.of                                                          //section b
                               (
@@ -1026,7 +1026,7 @@ public class PublishingOutlineNumberingTest {
                            List.of(),                                                       //section a
                            List.of                                                          //section b
                               (
-                                 List.of( 8 ),                                              //child paragraph count
+                                 List.of( 7 ),                                              //child paragraph count
                                  List.of                                                    //section 1
                                     (
                                        List.of( 7 ),                                        //child paragraph count
@@ -1092,7 +1092,7 @@ public class PublishingOutlineNumberingTest {
                            List.of(),                                                       //section a
                            List.of                                                          //section b
                               (
-                                 List.of( 3 ),                                              //child paragraph count
+                                 List.of( 2 ),                                              //child paragraph count
                                  List.of                                                    //section 1
                                     (
                                        List.of( 4 ),                                        //child paragraph count
@@ -1148,7 +1148,7 @@ public class PublishingOutlineNumberingTest {
                            List.of(),                                                       //section a
                            List.of                                                          //section b
                               (
-                                 List.of( 3 ),                                              //child paragraph count
+                                 List.of( 2 ),                                              //child paragraph count
                                  List.of                                                    //section 1
                                     (
                                        List.of( 4 ),                                        //child paragraph count
@@ -1205,7 +1205,7 @@ public class PublishingOutlineNumberingTest {
                            List.of(),                                                       //section a
                            List.of                                                          //section b
                               (
-                                 List.of( 3 ),                                              //child paragraph count
+                                 List.of( 2 ),                                              //child paragraph count
                                  List.of                                                    //section 1
                                     (
                                        List.of( 4 ),                                        //child paragraph count
@@ -1262,7 +1262,7 @@ public class PublishingOutlineNumberingTest {
                            List.of(),                                                       //section a
                            List.of                                                          //section b
                              (
-                                List.of( 4 ),                                               //child paragraph count
+                                List.of( 3 ),                                               //child paragraph count
                                 List.of                                                     //section 1
                                    (
                                       List.of( 2 ),                                         //child paragraph count
@@ -1317,7 +1317,7 @@ public class PublishingOutlineNumberingTest {
                      /* expected paragraph counts */
                      List.of                                                                //body
                         (
-                           List.of( 4, 5 ),                                                 //child paragraph count
+                           List.of( 4, 4 ),                                                 //child paragraph count
                            List.of(),                                                       //section a
                            List.of()                                                        //section b
                         ),
@@ -1410,7 +1410,7 @@ public class PublishingOutlineNumberingTest {
                            List.of(),                                                       //section a
                            List.of                                                          //section b
                               (
-                                 List.of( 3 ),                                              //child paragraph count
+                                 List.of( 2 ),                                              //child paragraph count
                                  List.of                                                    //section 1
                                     (
                                        List.of( 4 ),                                        //child paragraph count
@@ -1466,7 +1466,7 @@ public class PublishingOutlineNumberingTest {
                            List.of(),                                                       //section a
                            List.of                                                          //section b
                               (
-                                 List.of( 3 ),                                              //child paragraph count
+                                 List.of( 2 ),                                              //child paragraph count
                                  List.of                                                    //section 1
                                     (
                                        List.of( 4 ),                                        //child paragraph count
@@ -1523,7 +1523,7 @@ public class PublishingOutlineNumberingTest {
                            List.of(),                                                       //section a
                            List.of                                                          //section b
                               (
-                                 List.of( 3 ),                                              //child paragraph count
+                                 List.of( 2 ),                                              //child paragraph count
                                  List.of                                                    //section 1
                                     (
                                        List.of( 4 ),                                        //child paragraph count
@@ -1580,7 +1580,7 @@ public class PublishingOutlineNumberingTest {
                            List.of(),                                                       //section a
                            List.of                                                          //section b
                              (
-                                List.of( 4 ),                                               //child paragraph count
+                                List.of( 3 ),                                               //child paragraph count
                                 List.of                                                     //section 1
                                    (
                                       List.of( 2 ),                                         //child paragraph count
@@ -1635,7 +1635,7 @@ public class PublishingOutlineNumberingTest {
                      /* expected paragraph counts */
                      List.of                                                                //body
                         (
-                           List.of( 4, 5 ),                                                 //child paragraph count
+                           List.of( 4, 4 ),                                                 //child paragraph count
                            List.of(),                                                       //section a
                            List.of()                                                        //section b
                         ),
@@ -1727,7 +1727,7 @@ public class PublishingOutlineNumberingTest {
                               List.of(),                                                       //section a
                               List.of                                                         //section b
                               (
-                                 List.of( 3 ),
+                                 List.of( 2 ),
                                  List.of(                                                      //section 5
                                     List.of( 2, 2 ),
                                     List.of(                                             //section 5.1
@@ -1798,7 +1798,7 @@ public class PublishingOutlineNumberingTest {
                             List.of(),                                                       //section a
                             List.of                                                         //section b
                             (
-                               List.of( 3 ),
+                               List.of( 2 ),
                                List.of(                                                      //section 5
                                   List.of( 2, 2 ),
                                   List.of(                                             //section 5.1
