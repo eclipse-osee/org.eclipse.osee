@@ -33,27 +33,6 @@ public interface CoreArtifactTypes {
 
    // @formatter:off
 
-   /**
-    * This artifact type is the base artifact type for all artifacts.
-    * <dl>
-    * <dt>Display Name:</dt>
-    * <dd>Artifact</dd>
-    * <dt>Artifact Type Identifier</dt>
-    * <dd>1L</dd>
-    * <dt>Attributes</dt>
-    * <dd>
-    * <ul>
-    * <li>{@link CoreAttributeTypes#Annotation}</li>
-    * <li>{@link CoreAttributeTypes#ContentUrl}</li>
-    * <li>{@link CoreAttributeTypes#Description}</li>
-    * <li>{@link CoreAttributeTypes#Name}</li>
-    * <li>{@link CoreAttributeTypes#RelationOrder}</li>
-    * <li>{@link CoreAttributeTypes#StaticId}</li>
-    * </ul>
-    * </dd>
-    * </dl>
-    */
-
    ArtifactTypeToken Artifact = osee.add(osee.artifactType(1L, "Artifact", false, new MaterialIcon("article"), Collections.asHashSet(CoreOperationTypes.CreateChildArtifact, CoreOperationTypes.DeleteArtifact))
       .any(Annotation)
       .zeroOrOne(ContentUrl)
@@ -811,7 +790,8 @@ public interface CoreArtifactTypes {
       .any(XViewerDefaults)
       .zeroOrOne(Zip)
       .any(MimBranchPreferences)
-      .any(MimColumnPreferences));
+      .any(MimColumnPreferences)
+      .zeroOrOne(RecentlyVisitedItemsKey));
 
    ArtifactTypeToken UserGroup = osee.add(osee.artifactType(7L, "User Group", false, new MaterialIcon("supervised_user_circle"), AbstractAccessControlled, GroupArtifact)
       .zeroOrOne(DefaultGroup)

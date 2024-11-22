@@ -87,7 +87,7 @@ public abstract class AbstractAccessControlService implements IAccessControlServ
    }
 
    public synchronized void addOseeAccessProvider(IOseeAccessProvider provider) {
-      AccessControlUtil.errorf("%s - Register: %s", getClass().getSimpleName(), provider.getClass().getSimpleName());
+      AccessControlUtil.errorf("%s - Register: %s\n", getClass().getSimpleName(), provider.getClass().getSimpleName());
       oseeAccessProviders.add(provider);
       // clear so it will be re-populated before next usage
       artifactChecks.clear();
