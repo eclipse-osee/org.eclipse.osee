@@ -38,6 +38,8 @@ import org.eclipse.osee.ats.api.demo.DemoWorkflowTitles;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.util.RecentlyVisistedItem;
+import org.eclipse.osee.ats.api.util.RecentlyVisitedItems;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
@@ -768,6 +770,51 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       html = actionUiEp.getJournal(atsId, atsApi.getUserService().getCurrentUser().getIdString());
       Assert.assertTrue(html.contains(addMsg));
       Assert.assertTrue(html.contains(atsApi.getUserService().getCurrentUser().getName()));
+
+   }
+
+   /**
+    * POST "visited/{userArtId} <br/>
+    * GET "visited/{userArtId}
+    */
+   @Test
+   public void testVisited() {
+      AtsApi atsApi = AtsApiService.get();
+      AtsActionEndpointApi actionEp = atsApi.getServerEndpoints().getActionEndpoint();
+
+      RecentlyVisitedItems visitedBefore =
+         actionEp.getVisited(atsApi.getUserService().getCurrentUser().getArtifactId());
+      Assert.assertEquals(0, visitedBefore.getVisited().size());
+
+      IAtsTeamWorkflow codeWf = DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
+      RecentlyVisitedItems visitedItems = new RecentlyVisitedItems();
+      visitedItems.addVisited(codeWf);
+
+      actionEp.storeVisited(atsApi.getUserService().getCurrentUser().getArtifactId(), visitedItems);
+
+      RecentlyVisitedItems visitedAfter = actionEp.getVisited(atsApi.getUserService().getCurrentUser().getArtifactId());
+      Assert.assertEquals(1, visitedAfter.getVisited().size());
+      RecentlyVisistedItem item = visitedAfter.getVisited().iterator().next();
+      Assert.assertEquals(codeWf.getId(), item.getWorkflowId());
+      Assert.assertEquals(codeWf.getName(), item.getWorkflowName());
+      Assert.assertEquals(codeWf.getArtifactType().getId(), item.getArtifactTypeId());
+
+      IAtsTeamWorkflow testWf = DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Test);
+      visitedAfter.addVisited(testWf);
+      // code is first
+      Assert.assertEquals(codeWf.getId(), visitedAfter.getVisited().iterator().next().getWorkflowId());
+
+      // Should store both in order
+      actionEp.storeVisited(atsApi.getUserService().getCurrentUser().getArtifactId(), visitedAfter);
+
+      RecentlyVisitedItems visitedAfter2 =
+         actionEp.getVisited(atsApi.getUserService().getCurrentUser().getArtifactId());
+      Assert.assertEquals(2, visitedAfter2.getVisited().size());
+      // code is first
+      Assert.assertEquals(codeWf.getId(), visitedAfter2.getVisited().iterator().next().getWorkflowId());
+
+      List<RecentlyVisistedItem> reverseVisited = visitedAfter2.getReverseVisited();
+      Assert.assertEquals(testWf.getId(), reverseVisited.iterator().next().getWorkflowId());
 
    }
 }

@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.jira.JiraByEpicData;
 import org.eclipse.osee.ats.api.agile.jira.JiraDiffData;
 import org.eclipse.osee.ats.api.task.track.TaskTrackingData;
+import org.eclipse.osee.ats.api.util.RecentlyVisitedItems;
 import org.eclipse.osee.ats.api.workflow.cr.bit.model.BuildImpactDatas;
 import org.eclipse.osee.ats.api.workflow.journal.JournalData;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionData;
@@ -371,4 +372,15 @@ public interface AtsActionEndpointApi {
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    public TaskTrackingData createUpdateTaskTrack(TaskTrackingData taskTrackingData);
+
+   @Path("visited/{userArtId}")
+   @POST
+   @Consumes(MediaType.APPLICATION_JSON)
+   public void storeVisited(@PathParam("userArtId") ArtifactId userArtId, RecentlyVisitedItems visitedItems);
+
+   @Path("visited/{userArtId}")
+   @GET
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public RecentlyVisitedItems getVisited(@PathParam("userArtId") ArtifactId userArtId);
 }
