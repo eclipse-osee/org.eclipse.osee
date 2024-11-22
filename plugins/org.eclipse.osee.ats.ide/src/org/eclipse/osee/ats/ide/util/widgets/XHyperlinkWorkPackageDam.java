@@ -25,7 +25,7 @@ public class XHyperlinkWorkPackageDam extends XHyperlinkLabelEnumeratedArtDam {
 
    public XHyperlinkWorkPackageDam() {
       super("Work Package");
-      this.attributeType = AtsAttributeTypes.WorkPackage;
+      setAttributeType(AtsAttributeTypes.WorkPackage);
    }
 
    /**
@@ -33,7 +33,7 @@ public class XHyperlinkWorkPackageDam extends XHyperlinkLabelEnumeratedArtDam {
     */
    @Override
    public ArtifactToken getEnumeratedArt() {
-      if (enumeratedArt == null) {
+      if (enumeratedArt.isInvalid()) {
          Artifact wfArt = getArtifact();
          if (wfArt != null && wfArt instanceof IAtsTeamWorkflow) {
             IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) wfArt;
@@ -45,7 +45,7 @@ public class XHyperlinkWorkPackageDam extends XHyperlinkLabelEnumeratedArtDam {
                   break;
                }
             }
-            if (enumeratedArt == null) {
+            if (enumeratedArt.isInvalid()) {
                IAtsTeamDefinition topTeamDef =
                   AtsApiService.get().getTeamDefinitionService().getTeamDefinitionHoldingVersions(teamDef);
                Artifact topTeamDefArt = (Artifact) topTeamDef.getStoreObject();
@@ -58,7 +58,7 @@ public class XHyperlinkWorkPackageDam extends XHyperlinkLabelEnumeratedArtDam {
             }
          }
          // Only check once, so set to SENTINEL if not found
-         if (enumeratedArt == null) {
+         if (enumeratedArt.isInvalid()) {
             enumeratedArt = ArtifactToken.SENTINEL;
          }
       }
