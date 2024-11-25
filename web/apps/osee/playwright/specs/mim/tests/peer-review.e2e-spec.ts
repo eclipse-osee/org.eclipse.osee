@@ -82,9 +82,7 @@ test('create working branches', async ({ page }) => {
 		.getByRole('row', { name: 'Structure 1 1 1 0' })
 		.getByRole('button')
 		.click({ timeout: 60000 });
-	await page
-		.getByRole('button', { name: 'Add Element to:' })
-		.click({ force: true });
+	await page.getByRole('button', { name: 'Add Element to:' }).click();
 	await page.getByRole('menuitem', { name: 'Structure 1' }).click();
 	await page.getByRole('button', { name: 'Create new Element' }).click();
 	await page.getByLabel('Name').fill('New Element', { force: true });
@@ -132,7 +130,6 @@ test('peer review branch', async ({ page }) => {
 	await page.getByLabel('Actionable Item').click();
 	await page.getByRole('combobox', { name: 'Actionable Item' }).fill('mim');
 	await page.getByText('SAW PL MIM').click();
-	await page.locator('#mat-mdc-form-field-label-16 span').click();
 	await page.getByLabel('Description').fill('Peer review');
 	await page.getByLabel('Change Type').locator('span').click();
 	await page.getByText('Improvement').click();
