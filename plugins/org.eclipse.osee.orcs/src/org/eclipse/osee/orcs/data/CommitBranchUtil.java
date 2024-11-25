@@ -345,7 +345,8 @@ public class CommitBranchUtil {
    public static String getAddressingConflictQuery(BranchId branch, BranchId destinationBranch,
       TransactionId baselineTx, OrcsTokenService tokenService) {
 
-      String singleAttrTypes = "1";
+      String singleAttrTypes =
+         tokenService.getSingletonAttributeTypes().stream().map(a -> a.getIdString()).collect(Collectors.joining(","));
 
       String allQuery = "with " + artQuery + " , " + attrQuery + ", conflictArts(art_id) as (" + //
          "select art.art_id " + //
@@ -392,7 +393,7 @@ public class CommitBranchUtil {
             "select 'x' from artConflicts t7, " + String.format(ARTJOIN, "t7") + ") t8 union all " + //
             "select txId value, 'commit_transaction_id' value_type from (" + GET_COMMIT_TRANSACTION + ") t9 " + //
             "union all select resolved_count value, 'resolved_count' value_type from savedConflicts";
-
+         System.out.println(allQuery);
          try (JdbcStatement stmt = orcsApi.getJdbcService().getClient().getStatement()) {
             stmt.runPreparedQuery(allQuery, branch.getId(), destinationBranch.getId(), branch.getId(),
                baselineTx.getId(), destinationBranch.getId(), branch.getId(), baselineTx.getId(), branch.getId(),
@@ -428,7 +429,8 @@ public class CommitBranchUtil {
 
    public static List<ConflictData> populateMergeConflictData(BranchId sourceBranch, BranchId destinationBranch,
       TransactionId baselineTx, JdbcClient jdbcClient, OrcsTokenService tokenService) {
-      String singleAttrTypes = "1";
+      String singleAttrTypes =
+         tokenService.getSingletonAttributeTypes().stream().map(a -> a.getIdString()).collect(Collectors.joining(","));
       List<ConflictData> conflicts = new ArrayList<>();
 
       String allQuery = "with " + artQuery + " , " + attrQuery + //
@@ -447,7 +449,8 @@ public class CommitBranchUtil {
          "currentDestTx, currentDestTxCurrent, currentDestModType, currentDestGammaId, currentDestAppId, " + //
          "baselineTxTx, baselineTxTxCurrent, baselineTxModType, baselineTxGammaId, baselineTxAppId " + //
          "from artConflicts t7, " + String.format(ARTJOIN, "t7");
-
+      System.out.println("load conflicts");
+      System.out.println(allQuery);
       try (JdbcStatement stmt = jdbcClient.getStatement()) {
          stmt.runPreparedQuery(allQuery, sourceBranch, baselineTx, destinationBranch, sourceBranch, baselineTx,
             sourceBranch, baselineTx, destinationBranch, sourceBranch, baselineTx, destinationBranch, sourceBranch,
