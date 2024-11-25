@@ -452,36 +452,24 @@ export class ApplicabilityTableComponent {
 	private paginator = viewChild.required(MatPaginator);
 	private _filter = this.uiStateService.filter;
 	protected dataSource = new MatTableDataSource<plconfigTableEntry>();
-	private _updateDataSourceWithData = effect(
-		() => {
-			this.dataSource.data = this.completeTable().table;
-		},
-		{ allowSignalWrites: true }
-	);
-	private _updateDataSourceWithSorter = effect(
-		() => {
-			if (this.dataSource.sort === null) {
-				this.dataSource.sort = this.sort();
-			}
-		},
-		{ allowSignalWrites: true }
-	);
-	private _updateDataSourceWithPaginator = effect(
-		() => {
-			if (this.dataSource.paginator === null) {
-				this.dataSource.paginator = this.paginator();
-			}
-		},
-		{ allowSignalWrites: true }
-	);
-	private _updateDataSourceWithFilter = effect(
-		() => {
-			if (this.dataSource.paginator && this._filter()) {
-				this.dataSource.paginator.firstPage();
-			}
-		},
-		{ allowSignalWrites: true }
-	);
+	private _updateDataSourceWithData = effect(() => {
+		this.dataSource.data = this.completeTable().table;
+	});
+	private _updateDataSourceWithSorter = effect(() => {
+		if (this.dataSource.sort === null) {
+			this.dataSource.sort = this.sort();
+		}
+	});
+	private _updateDataSourceWithPaginator = effect(() => {
+		if (this.dataSource.paginator === null) {
+			this.dataSource.paginator = this.paginator();
+		}
+	});
+	private _updateDataSourceWithFilter = effect(() => {
+		if (this.dataSource.paginator && this._filter()) {
+			this.dataSource.paginator.firstPage();
+		}
+	});
 
 	errors = this.uiStateService.errors;
 

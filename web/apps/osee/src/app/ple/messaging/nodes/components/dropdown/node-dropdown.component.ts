@@ -197,12 +197,9 @@ export class NodeDropdownComponent {
 
 	protected _innerNodes = signal<nodeData[]>([]);
 
-	private _updateInnerNodesBasedOnInput = effect(
-		() => {
-			this._innerNodes.set(this.selectedNodes());
-		},
-		{ allowSignalWrites: true }
-	);
+	private _updateInnerNodesBasedOnInput = effect(() => {
+		this._innerNodes.set(this.selectedNodes());
+	});
 	protected __statusChanges = signal<
 		'VALID' | 'INVALID' | 'PENDING' | 'DISABLED'
 	>('PENDING');

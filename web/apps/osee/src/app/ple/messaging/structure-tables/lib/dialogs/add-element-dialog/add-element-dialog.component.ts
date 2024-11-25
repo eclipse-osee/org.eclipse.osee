@@ -130,12 +130,9 @@ export class AddElementDialogComponent {
 
 	protected elementSearchString = signal('');
 
-	private _updateElementSearchOnSelection = effect(
-		() => {
-			this.elementSearchString.set(this.elementName());
-		},
-		{ allowSignalWrites: true }
-	);
+	private _updateElementSearchOnSelection = effect(() => {
+		this.elementSearchString.set(this.elementName());
+	});
 	elementSearch = toObservable(this.elementSearchString);
 	selectedElement: element | undefined = undefined;
 

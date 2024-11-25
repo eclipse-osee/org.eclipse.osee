@@ -151,16 +151,13 @@ export abstract class CurrentStructureService {
 	abstract get structuresCount(): Observable<number>;
 
 	structureFilter = this.ui.filter;
-	private _returnToFirstPageOnFilterChange = effect(
-		() => {
-			//very low chance this happens and it keeps the read working...
-			if (this.structureFilter() !== crypto.randomUUID()) {
-				this.returnToFirstPage();
-				this.clearRows();
-			}
-		},
-		{ allowSignalWrites: true }
-	);
+	private _returnToFirstPageOnFilterChange = effect(() => {
+		//very low chance this happens and it keeps the read working...
+		if (this.structureFilter() !== crypto.randomUUID()) {
+			this.returnToFirstPage();
+			this.clearRows();
+		}
+	});
 
 	set branchId(value: string) {
 		this.ui.BranchIdString = value;

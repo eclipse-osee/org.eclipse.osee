@@ -224,12 +224,9 @@ export class UnitDropdownComponent {
 
 	protected filter$ = signal(this._unitValue());
 
-	private _syncFilter = effect(
-		() => {
-			this.filter$.set(this._unitValue());
-		},
-		{ allowSignalWrites: true }
-	);
+	private _syncFilter = effect(() => {
+		this.filter$.set(this._unitValue());
+	});
 
 	private _typeAhead = toObservable(this.filter$);
 

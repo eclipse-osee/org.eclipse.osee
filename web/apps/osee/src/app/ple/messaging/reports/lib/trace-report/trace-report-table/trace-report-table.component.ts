@@ -95,12 +95,9 @@ export class TraceReportTableComponent {
 		this.dataSource.paginator = this.paginator();
 	});
 
-	private _setDataSourceData = effect(
-		() => {
-			this.dataSource.data = this.data();
-		},
-		{ allowSignalWrites: true }
-	);
+	private _setDataSourceData = effect(() => {
+		this.dataSource.data = this.data();
+	});
 
 	dataSource: MatTableDataSource<NodeTraceReportItem> =
 		new MatTableDataSource<NodeTraceReportItem>([]);

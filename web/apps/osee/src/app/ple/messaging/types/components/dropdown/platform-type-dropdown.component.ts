@@ -171,12 +171,9 @@ export class PlatformTypeDropdownComponent {
 
 	protected filter = signal(this.name());
 	private _filter = toObservable(this.filter);
-	private _updateFilter = effect(
-		() => {
-			this.filter.set(this.name());
-		},
-		{ allowSignalWrites: true }
-	);
+	private _updateFilter = effect(() => {
+		this.filter.set(this.name());
+	});
 	private _autoCompleteOpened = new ReplaySubject<void>();
 	protected _paginationSize = 10;
 	private _typesUiService = inject(TypesUIService);

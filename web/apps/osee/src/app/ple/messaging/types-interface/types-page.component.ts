@@ -45,12 +45,9 @@ export class TypesPageComponent implements OnInit {
 			value ? value.trim().toLowerCase() : '',
 	});
 
-	updateFilter = effect(
-		() => {
-			this.uiService.filterString = this.type();
-		},
-		{ allowSignalWrites: true }
-	);
+	updateFilter = effect(() => {
+		this.uiService.filterString = this.type();
+	});
 
 	ngOnInit(): void {
 		this.route.paramMap.subscribe((values) => {

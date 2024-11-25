@@ -122,14 +122,11 @@ export class AddSubMessageDialogComponent {
 		'applicability'
 	);
 	protected subMessageFilter = signal('');
-	private _updateFilterBasedOnSubMessageSelection = effect(
-		() => {
-			if (this.subMessageId() !== '-1') {
-				this.subMessageFilter.set(this.subMessageName());
-			}
-		},
-		{ allowSignalWrites: true }
-	);
+	private _updateFilterBasedOnSubMessageSelection = effect(() => {
+		if (this.subMessageId() !== '-1') {
+			this.subMessageFilter.set(this.subMessageName());
+		}
+	});
 	private _moveToNextStep = this.__internalStepper.pipe(
 		debounceTime(1),
 		delay(1),

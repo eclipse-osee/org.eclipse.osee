@@ -205,14 +205,11 @@ export class StructureMenuComponent {
 	protected menuPositionX = computed(() => this.menuData().x);
 	protected menuPositionY = computed(() => this.menuData().y);
 	protected matMenuTrigger = viewChild.required(MatMenuTrigger);
-	private _openMenu = effect(
-		() => {
-			if (this.open()) {
-				this.matMenuTrigger().openMenu();
-			}
-		},
-		{ allowSignalWrites: true }
-	);
+	private _openMenu = effect(() => {
+		if (this.open()) {
+			this.matMenuTrigger().openMenu();
+		}
+	});
 	protected structure = computed(() => this.menuData().structure);
 	protected url = computed(() => this.menuData().url);
 	isEditing = input.required<boolean>();

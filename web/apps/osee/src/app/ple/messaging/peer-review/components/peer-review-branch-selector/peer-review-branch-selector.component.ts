@@ -62,9 +62,8 @@ export class PeerReviewBranchSelectorComponent {
 	private _filter$ = toObservable(this.filter);
 
 	prBranch = toSignal(this.peerReviewUiService.prBranch);
-	private _prBranchEffect = effect(
-		() => this.filter.set(this.prBranch()?.name || ''),
-		{ allowSignalWrites: true }
+	private _prBranchEffect = effect(() =>
+		this.filter.set(this.prBranch()?.name || '')
 	);
 
 	branchCount = toSignal(
