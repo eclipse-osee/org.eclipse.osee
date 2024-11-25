@@ -44,7 +44,6 @@ import { applicabilitySentinel } from '@osee/applicability/types';
 
 @Component({
 	selector: 'osee-add-node-dialog',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		FormsModule,

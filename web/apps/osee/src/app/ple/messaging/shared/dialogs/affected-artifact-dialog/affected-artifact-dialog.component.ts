@@ -27,7 +27,6 @@ import type { affectedArtifactWarning } from '@osee/messaging/shared/types';
 	selector: 'osee-affected-artifact-dialog',
 	templateUrl: './affected-artifact-dialog.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		MatDialogTitle,
 		MatDialogContent,

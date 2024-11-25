@@ -18,7 +18,6 @@ import { applic } from '@osee/applicability/types';
 	selector: 'osee-messaging-sub-element-table-no-edit-field-filtered',
 	templateUrl: './sub-element-table-no-edit-field-filtered.component.html',
 	styles: [],
-	standalone: true,
 	imports: [HighlightFilteredTextDirective],
 })
 export class SubElementTableNoEditFieldFilteredComponent {

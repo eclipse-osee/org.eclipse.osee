@@ -71,7 +71,6 @@ import { NoDataToDisplayComponent } from './no-data-to-display/no-data-to-displa
 	selector: 'osee-gc-datatable',
 	templateUrl: './gc-datatable.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		FormsModule,
 		NgClass,

@@ -51,7 +51,6 @@ import { TransactionService } from '@osee/transactions/services';
 
 @Component({
 	selector: 'osee-relations-editor-panel',
-	standalone: true,
 	imports: [
 		NgClass,
 		AsyncPipe,

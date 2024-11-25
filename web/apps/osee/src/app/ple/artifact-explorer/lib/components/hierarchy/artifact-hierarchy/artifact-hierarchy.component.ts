@@ -48,7 +48,6 @@ import { ArtifactOperationsContextMenuComponent } from '../artifact-operations-c
 
 @Component({
 	selector: 'osee-artifact-hierarchy',
-	standalone: true,
 	imports: [
 		NgClass,
 		AsyncPipe,

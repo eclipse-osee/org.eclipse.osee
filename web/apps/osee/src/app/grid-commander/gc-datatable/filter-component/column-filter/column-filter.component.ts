@@ -17,7 +17,6 @@ import { InputControlComponent } from '../../../shared/input-control/input-contr
 	selector: 'osee-column-filter',
 	templateUrl: './column-filter.component.html',
 	styles: [],
-	standalone: true,
 	imports: [InputControlComponent],
 })
 export class ColumnFilterComponent {

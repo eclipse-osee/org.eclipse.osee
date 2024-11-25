@@ -53,7 +53,6 @@ import { nodeTraceReportHeaderDetails } from './trace-report-table-headers';
 
 @Component({
 	selector: 'osee-trace-report-table',
-	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		NgTemplateOutlet,

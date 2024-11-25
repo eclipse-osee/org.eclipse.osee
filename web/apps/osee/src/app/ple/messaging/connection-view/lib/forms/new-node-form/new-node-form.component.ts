@@ -30,7 +30,6 @@ import {
 
 @Component({
 	selector: 'osee-new-node-form',
-	standalone: true,
 	imports: [
 		MatFormField,
 		MatLabel,

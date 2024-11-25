@@ -25,7 +25,6 @@ import { AdvancedSearchFormComponent } from '../advanced-search-form/advanced-se
 
 @Component({
 	selector: 'osee-advanced-search-dialog',
-	standalone: true,
 	imports: [
 		MatDialogContent,
 		MatDialogTitle,

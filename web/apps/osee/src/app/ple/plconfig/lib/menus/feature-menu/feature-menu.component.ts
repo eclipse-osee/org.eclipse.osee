@@ -29,7 +29,6 @@ import { ArrayDiffMenuComponent } from '../array-diff-menu/array-diff-menu.compo
 	selector: 'osee-plconfig-feature-menu',
 	templateUrl: './feature-menu.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		MatMenuItem,
 		MatMenuTrigger,

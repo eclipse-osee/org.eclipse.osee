@@ -89,7 +89,6 @@ import { writableSlice } from '@osee/shared/utils';
 				Ok
 			</button>
 		</div>`,
-	standalone: true,
 	imports: [
 		MatDialogTitle,
 		MatDialogContent,

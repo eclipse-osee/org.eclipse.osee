@@ -31,7 +31,6 @@ import { productType } from '../../types/pl-config-product-types';
 	selector: 'osee-add-product-type-dialog',
 	templateUrl: './add-product-type-dialog.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		FormsModule,
 		MatDialogTitle,

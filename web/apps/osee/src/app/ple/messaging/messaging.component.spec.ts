@@ -22,7 +22,6 @@ import { MessagingComponent } from './messaging.component';
 @Component({
 	selector: 'osee-mock-help',
 	template: `<p>Dummy</p>`,
-	standalone: true,
 	imports: [MessagingComponent, MatIconModule],
 })
 class MessagingHelpDummyComponent {}
@@ -30,7 +29,6 @@ class MessagingHelpDummyComponent {}
 @Component({
 	selector: 'osee-mock-main',
 	template: `<p>Dummy</p>`,
-	standalone: true,
 	imports: [MessagingComponent, MatIconModule],
 })
 class MessagingMainMockComponent {}
@@ -38,7 +36,6 @@ class MessagingMainMockComponent {}
 @Component({
 	selector: 'osee-mock-type-search',
 	template: '<p>Dummy</p>',
-	standalone: true,
 	imports: [MessagingComponent, MatIconModule],
 })
 class MessagingTypeSearchMockComponent {}

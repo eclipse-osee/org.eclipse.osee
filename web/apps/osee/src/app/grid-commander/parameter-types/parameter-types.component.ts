@@ -20,7 +20,6 @@ import { AsyncPipe } from '@angular/common';
 	selector: 'osee-parameter-types',
 	templateUrl: './parameter-types.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		ParameterStringComponent,
 		ParameterMultipleSelectComponent,

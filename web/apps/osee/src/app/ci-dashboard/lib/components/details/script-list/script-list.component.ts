@@ -44,7 +44,6 @@ import { tap } from 'rxjs';
 
 @Component({
 	selector: 'osee-script-list',
-	standalone: true,
 	template: ` @if (scriptDefs | async) {
 			<div
 				class="mat-elevation-z8 tw-max-h-96 tw-w-full tw-overflow-auto">

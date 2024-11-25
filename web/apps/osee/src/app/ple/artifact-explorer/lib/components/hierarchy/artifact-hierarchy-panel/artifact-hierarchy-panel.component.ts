@@ -38,7 +38,6 @@ import {
 
 @Component({
 	selector: 'osee-artifact-hierarchy-panel',
-	standalone: true,
 	imports: [
 		NgClass,
 		AsyncPipe,

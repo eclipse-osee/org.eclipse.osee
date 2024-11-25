@@ -44,7 +44,6 @@ import { NamedId } from '@osee/shared/types';
 
 @Component({
 	selector: 'osee-named-id-table',
-	standalone: true,
 	imports: [
 		MatTable,
 		MatHeaderRow,

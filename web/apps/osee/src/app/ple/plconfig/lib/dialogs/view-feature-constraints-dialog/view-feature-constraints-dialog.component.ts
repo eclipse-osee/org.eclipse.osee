@@ -39,7 +39,6 @@ import { applicWithConstraints } from '../../types/pl-config-feature-constraints
 
 @Component({
 	selector: 'osee-view-feature-constraints-dialog',
-	standalone: true,
 	imports: [
 		MatDialogTitle,
 		MatDialogContent,

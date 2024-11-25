@@ -42,7 +42,6 @@ import { BranchRoutedUIService } from '@osee/shared/services';
 @Component({
 	selector: 'osee-branch-selector',
 	templateUrl: './branch-selector.component.html',
-	standalone: true,
 	imports: [
 		FormsModule,
 		AsyncPipe,

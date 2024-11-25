@@ -35,7 +35,6 @@ import { CurrentBranchInfoService, branchImpl } from '@osee/shared/services';
 	selector: 'osee-plconfig-config-menu',
 	templateUrl: './config-menu.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		MatMenuItem,
 		MatMenuTrigger,

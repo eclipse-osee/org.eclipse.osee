@@ -52,7 +52,6 @@ let nextUniqueId = 0;
 
 @Component({
 	selector: 'osee-attribute-enums-dropdown',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		FormsModule,

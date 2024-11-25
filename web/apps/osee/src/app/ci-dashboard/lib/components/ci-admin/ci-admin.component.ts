@@ -19,7 +19,6 @@ import { CiSetsTableComponent } from './ci-sets-table/ci-sets-table.component';
 
 @Component({
 	selector: 'osee-ci-admin',
-	standalone: true,
 	imports: [
 		CiDashboardControlsComponent,
 		ExpansionPanelComponent,

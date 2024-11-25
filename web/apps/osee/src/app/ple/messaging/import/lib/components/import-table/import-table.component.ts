@@ -44,7 +44,6 @@ import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 
 @Component({
 	selector: 'osee-import-table',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		HighlightFilteredTextDirective,

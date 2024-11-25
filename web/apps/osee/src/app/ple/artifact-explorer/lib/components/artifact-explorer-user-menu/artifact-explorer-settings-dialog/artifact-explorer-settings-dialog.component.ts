@@ -30,7 +30,6 @@ import { artifactExplorerUserPreferences } from '../../../types/user-preferences
 
 @Component({
 	selector: 'osee-artifact-explorer-settings-dialog',
-	standalone: true,
 	imports: [
 		MatDialogTitle,
 		MatDialogContent,

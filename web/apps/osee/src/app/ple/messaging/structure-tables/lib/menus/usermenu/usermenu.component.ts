@@ -46,7 +46,6 @@ import {
 	selector: 'osee-messaging-usermenu',
 	templateUrl: './usermenu.component.html',
 	styles: [],
-	standalone: true,
 	imports: [MatMenuItem, MatIcon],
 })
 export class UsermenuComponent {

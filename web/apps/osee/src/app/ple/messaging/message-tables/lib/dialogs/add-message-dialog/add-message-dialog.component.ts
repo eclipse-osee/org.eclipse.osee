@@ -48,7 +48,6 @@ import { MatTooltip } from '@angular/material/tooltip';
 @Component({
 	selector: 'osee-messaging-add-message-dialog',
 	templateUrl: './add-message-dialog.component.html',
-	standalone: true,
 	imports: [
 		MatDialogTitle,
 		MatDialogContent,

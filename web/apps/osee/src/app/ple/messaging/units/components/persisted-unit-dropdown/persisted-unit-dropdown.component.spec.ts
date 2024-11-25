@@ -27,7 +27,6 @@ describe('PersistedUnitDropdownComponent', () => {
 
 	@Component({
 		selector: 'osee-test-standalone-form',
-		standalone: true,
 		imports: [FormsModule, PersistedUnitDropdownComponent],
 		template: `<form #testForm="ngForm">
 			<osee-persisted-unit-dropdown

@@ -21,7 +21,6 @@ import { ExpandIconComponent } from '../expand-icon/expand-icon.component';
 
 @Component({
 	selector: 'osee-expansion-panel',
-	standalone: true,
 	imports: [
 		MatExpansionPanel,
 		MatExpansionPanelHeader,

@@ -60,7 +60,6 @@ import {
 	selector: 'osee-messaging-add-structure-dialog',
 	templateUrl: './add-structure-dialog.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		MatDialogTitle,
 		MatStepper,

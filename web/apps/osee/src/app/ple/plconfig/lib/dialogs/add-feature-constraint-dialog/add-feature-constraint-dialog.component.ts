@@ -38,7 +38,6 @@ import { featureConstraintData } from '../../types/pl-config-feature-constraints
 
 @Component({
 	selector: 'osee-add-feature-constraint-dialog',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		FormsModule,

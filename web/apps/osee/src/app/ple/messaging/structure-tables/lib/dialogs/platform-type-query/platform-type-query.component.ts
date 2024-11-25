@@ -51,7 +51,6 @@ import { UnitDropdownComponent } from '@osee/messaging/units/dropdown';
 	selector: 'osee-messaging-platform-type-query',
 	templateUrl: './platform-type-query.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		FormsModule,
 		MatLabel,

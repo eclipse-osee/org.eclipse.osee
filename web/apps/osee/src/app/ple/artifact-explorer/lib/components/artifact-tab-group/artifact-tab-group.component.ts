@@ -25,7 +25,6 @@ import { TeamWorkflowTabComponent } from '../editor/team-workflow-tab/team-workf
 
 @Component({
 	selector: 'osee-artifact-tab-group',
-	standalone: true,
 	imports: [
 		MatTabGroup,
 		CdkDropList,

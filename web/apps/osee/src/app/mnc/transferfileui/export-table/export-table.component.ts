@@ -37,7 +37,6 @@ import { TransferData } from '../../types/transfer-file/transferdata';
 
 @Component({
 	selector: 'osee-export-table',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		CommonModule,

@@ -274,7 +274,6 @@ import { PLConfigFilterComponent } from '../plconfig-filter/plconfig-filter.comp
 			class="valueMenuTrigger">
 			GraphMenu
 		</div>`,
-	standalone: true,
 	imports: [
 		FormsModule,
 		AsyncPipe,

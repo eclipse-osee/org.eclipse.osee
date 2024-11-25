@@ -72,7 +72,6 @@ import { MatBadge } from '@angular/material/badge';
 		':host {display: block;width: 100%;overflow-x: auto;max-height: 10%;}',
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
-	standalone: true,
 	imports: [
 		NgClass,
 		AsyncPipe,

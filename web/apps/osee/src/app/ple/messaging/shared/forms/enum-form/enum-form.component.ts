@@ -56,7 +56,6 @@ import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 	selector: 'osee-enum-form',
 	templateUrl: './enum-form.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		FormsModule,
 		MatTable,

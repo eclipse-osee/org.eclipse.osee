@@ -28,7 +28,6 @@ import { StructureTableToolbarComponent } from '../structure-table-toolbar/struc
 
 @Component({
 	selector: 'osee-structure-interface',
-	standalone: true,
 	imports: [
 		StructureTableToolbarComponent,
 		StructureTableComponent,

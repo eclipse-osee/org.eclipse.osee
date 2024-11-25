@@ -39,7 +39,6 @@ import { testPointDetails } from '../../../table-headers/test-point-headers';
 
 @Component({
 	selector: 'osee-test-point-table',
-	standalone: true,
 	template: ` <div class="mat-elevation-z8">
 		<mat-table [dataSource]="datasource">
 			@for (header of headers; track $index) {

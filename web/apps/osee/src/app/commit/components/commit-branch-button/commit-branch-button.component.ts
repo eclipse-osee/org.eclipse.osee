@@ -22,7 +22,6 @@ import { toObservable } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-commit-branch-button',
-	standalone: true,
 	imports: [NgClass, MatButton],
 	template: `<button
 		class="tw-min-w-fit"

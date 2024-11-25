@@ -22,9 +22,9 @@ import { PlatformType } from '@osee/messaging/shared/types';
 export class MockPlatformTypeDropdownComponent {
 	allowOpenInSameTab = input(false);
 	extraPlatformTypes = input<PlatformType[]>([]);
-	disabled = input(false);
-	required = input(false);
+	isDisabled = input(false);
+	isRequired = input(false);
 	hideSearchButton = input(false);
-	contextmenu = output<MouseEvent>();
+	openContextMenu = output<MouseEvent>();
 	platformType = model<PlatformType>(new PlatformTypeSentinel('None'));
 }

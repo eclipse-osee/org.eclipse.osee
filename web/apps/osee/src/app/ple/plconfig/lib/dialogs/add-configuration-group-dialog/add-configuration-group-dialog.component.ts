@@ -29,7 +29,6 @@ import { addCfgGroup } from '../../types/pl-config-cfggroups';
 	selector: 'osee-plconfig-add-configuration-group-dialog',
 	templateUrl: './add-configuration-group-dialog.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		FormsModule,
 		MatDialogTitle,

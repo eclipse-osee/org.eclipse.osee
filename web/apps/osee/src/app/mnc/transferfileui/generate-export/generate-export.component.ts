@@ -24,7 +24,6 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
 	selector: 'osee-generate-export',
-	standalone: true,
 	imports: [FormsModule, AsyncPipe],
 	template: `<div class="tw-flex tw-place-content-center">
 		<form>

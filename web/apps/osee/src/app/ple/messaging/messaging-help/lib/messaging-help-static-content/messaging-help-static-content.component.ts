@@ -17,7 +17,6 @@ import { ActivatedRoute } from '@angular/router';
 
 @Component({
 	selector: 'osee-messaging-help-static-content',
-	standalone: true,
 	imports: [MarkdownComponent],
 	template: `@if (markdown) {
 		<markdown

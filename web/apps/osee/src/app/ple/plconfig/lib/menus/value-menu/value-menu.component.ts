@@ -25,7 +25,6 @@ import {
 	selector: 'osee-plconfig-value-menu',
 	templateUrl: './value-menu.component.html',
 	styles: [],
-	standalone: true,
 	imports: [MatMenuItem, MatIcon],
 })
 export class ValueMenuComponent {

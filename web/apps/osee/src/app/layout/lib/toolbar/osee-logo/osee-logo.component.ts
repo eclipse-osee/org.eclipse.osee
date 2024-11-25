@@ -16,7 +16,6 @@ import { RouterLink } from '@angular/router';
 
 @Component({
 	selector: 'osee-osee-logo',
-	standalone: true,
 	imports: [MatIcon, RouterLink],
 	template: `<a
 		class="tw-flex tw-gap-3"

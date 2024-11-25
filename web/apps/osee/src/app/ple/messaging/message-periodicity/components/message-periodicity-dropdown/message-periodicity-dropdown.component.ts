@@ -67,7 +67,6 @@ import {
 
 @Component({
 	selector: 'osee-message-periodicity-dropdown',
-	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		AsyncPipe,

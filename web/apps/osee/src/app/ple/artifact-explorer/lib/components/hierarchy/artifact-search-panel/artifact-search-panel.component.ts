@@ -17,7 +17,6 @@ import { ExpansionPanelComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-artifact-search-panel',
-	standalone: true,
 	imports: [ExpansionPanelComponent, MatIcon, ArtifactSearchComponent],
 	templateUrl: './artifact-search-panel.component.html',
 })

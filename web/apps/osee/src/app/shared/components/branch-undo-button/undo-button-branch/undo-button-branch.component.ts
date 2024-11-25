@@ -19,7 +19,6 @@ import { CurrentBranchTransactionService } from '../internal/services/current-br
 @Component({
 	selector: 'osee-undo-button-branch',
 	styles: [],
-	standalone: true,
 	imports: [MatButton, MatIconButton, MatIcon, MatTooltip],
 	template: `<button
 		mat-icon-button

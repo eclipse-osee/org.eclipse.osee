@@ -32,7 +32,6 @@ import { CiDashboardControlsComponent } from '../ci-dashboard-controls/ci-dashbo
 
 @Component({
 	selector: 'osee-ci-dashboard-import',
-	standalone: true,
 	imports: [CiDashboardControlsComponent, MatButton, MatIcon],
 	templateUrl: './ci-dashboard-import.component.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,

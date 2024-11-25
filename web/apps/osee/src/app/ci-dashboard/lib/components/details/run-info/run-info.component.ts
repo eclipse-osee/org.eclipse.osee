@@ -38,7 +38,6 @@ import { scriptResHeaderDetails } from '../../../table-headers/script-headers';
 
 @Component({
 	selector: 'osee-run-info',
-	standalone: true,
 	template: `
 		@if (scriptResult()) {
 			<div class="mat-elevation-z8 tw-max-h-96 tw-overflow-auto">

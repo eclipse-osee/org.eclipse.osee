@@ -49,7 +49,6 @@ import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
  */
 @Component({
 	selector: 'osee-new-platform-type-form',
-	standalone: true,
 	templateUrl: './new-platform-type-form.component.html',
 	styles: [],
 	viewProviders: [provideOptionalControlContainerNgForm()],

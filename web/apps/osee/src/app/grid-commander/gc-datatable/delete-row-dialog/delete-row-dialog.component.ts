@@ -26,7 +26,6 @@ import { RowObj } from '../../types/grid-commander-types/table-data-types';
 	selector: 'osee-delete-row-dialog',
 	templateUrl: './delete-row-dialog.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		MatDialogTitle,
 		MatDialogContent,

@@ -47,7 +47,6 @@ import { mdExamples } from './markdown-editor-examples';
 
 @Component({
 	selector: 'osee-markdown-editor',
-	standalone: true,
 	imports: [
 		MatIcon,
 		FormsModule,

@@ -27,7 +27,6 @@ describe('PersistedMessagePeriodicityDropdownComponent', () => {
 
 	@Component({
 		selector: 'osee-test-standalone-form',
-		standalone: true,
 		imports: [FormsModule, PersistedMessagePeriodicityDropdownComponent],
 		template: `<form #testForm="ngForm">
 			<osee-persisted-message-periodicity-dropdown

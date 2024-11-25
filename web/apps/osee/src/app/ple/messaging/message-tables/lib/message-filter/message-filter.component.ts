@@ -26,7 +26,6 @@ import { MessageUiService } from '@osee/messaging/shared/services';
 
 @Component({
 	selector: 'osee-message-filter',
-	standalone: true,
 	imports: [
 		MatFormField,
 		MatLabel,

@@ -35,7 +35,6 @@ import { combineLatest, filter, from, of, scan, switchMap } from 'rxjs';
 
 @Component({
 	selector: 'osee-view-selector',
-	standalone: true,
 	imports: [
 		MatFormField,
 		MatLabel,

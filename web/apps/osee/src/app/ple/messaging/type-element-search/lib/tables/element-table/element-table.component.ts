@@ -48,7 +48,6 @@ import { CurrentElementSearchService } from '../../services/current-element-sear
 	selector: 'osee-typesearch-element-table',
 	templateUrl: './element-table.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		NgClass,

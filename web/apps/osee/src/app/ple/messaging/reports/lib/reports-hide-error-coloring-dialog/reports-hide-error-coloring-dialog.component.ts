@@ -23,7 +23,6 @@ import { ConnectionValidationResult } from '@osee/messaging/shared/types';
 
 @Component({
 	selector: 'osee-reports-hide-error-coloring-dialog',
-	standalone: true,
 	imports: [
 		MatDialogContent,
 		MatDialogActions,

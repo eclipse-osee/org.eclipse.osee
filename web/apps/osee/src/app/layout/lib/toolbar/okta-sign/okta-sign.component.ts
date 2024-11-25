@@ -19,7 +19,6 @@ import { filter, map } from 'rxjs';
 
 @Component({
 	selector: 'osee-okta-sign',
-	standalone: true,
 	imports: [AsyncPipe, MatAnchor],
 	templateUrl: './okta-sign.component.html',
 	styles: [':host{ width: 100%; height: 100%; display:inline-block}'],

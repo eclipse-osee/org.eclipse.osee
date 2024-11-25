@@ -62,7 +62,6 @@ import {
 
 @Component({
 	selector: 'osee-message-type-dropdown',
-	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		AsyncPipe,

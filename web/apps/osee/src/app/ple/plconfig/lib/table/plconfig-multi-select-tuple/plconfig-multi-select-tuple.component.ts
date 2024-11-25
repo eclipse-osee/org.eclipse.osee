@@ -45,7 +45,6 @@ import { SplitApplicabilityPipe } from '../split-applicability.pipe';
 let nextUniqueId = 0;
 @Component({
 	selector: 'osee-plconfig-multi-select-tuple',
-	standalone: true,
 	imports: [
 		MatFormField,
 		MatLabel,

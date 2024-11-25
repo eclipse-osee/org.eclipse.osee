@@ -39,7 +39,6 @@ import { UiService } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-peer-review-branch-selector',
-	standalone: true,
 	imports: [
 		MatFormField,
 		MatInput,

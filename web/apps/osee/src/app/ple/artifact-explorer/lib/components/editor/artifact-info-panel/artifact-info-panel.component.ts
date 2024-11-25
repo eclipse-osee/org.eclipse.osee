@@ -18,7 +18,6 @@ import { ExpansionPanelComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-artifact-info-panel',
-	standalone: true,
 	imports: [NgClass, ExpansionPanelComponent],
 	templateUrl: './artifact-info-panel.component.html',
 })

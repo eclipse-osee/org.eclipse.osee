@@ -31,7 +31,6 @@ import { AttributeToValuePipe } from '@osee/attributes/pipes';
 	selector: 'osee-messaging-types-platform-type-card',
 	templateUrl: './platform-type-card.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		MatCard,

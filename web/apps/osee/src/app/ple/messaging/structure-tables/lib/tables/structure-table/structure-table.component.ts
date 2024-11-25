@@ -88,7 +88,6 @@ import { SubElementTableComponent } from '../sub-element-table/sub-element-table
 	selector: 'osee-structure-table',
 	templateUrl: './structure-table.component.html',
 	styles: [],
-	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		NgClass,

@@ -47,7 +47,6 @@ import { MatInput } from '@angular/material/input';
 
 @Component({
 	selector: 'osee-ci-sets-table',
-	standalone: true,
 	imports: [
 		FormsModule,
 		MatTable,

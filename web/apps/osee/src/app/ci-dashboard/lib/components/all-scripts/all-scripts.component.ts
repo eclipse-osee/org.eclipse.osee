@@ -21,7 +21,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-all-scripts',
-	standalone: true,
 	template: `<osee-ci-dashboard-controls />
 		<div class="tw-h-[76vh] tw-px-4"><osee-script-table /></div>`,
 	imports: [

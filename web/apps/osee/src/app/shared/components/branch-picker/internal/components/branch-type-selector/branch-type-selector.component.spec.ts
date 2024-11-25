@@ -27,6 +27,7 @@ describe('BranchTypeSelectorComponent', () => {
 	@Component({
 		selector: 'osee-dummy',
 		template: '<div>Dummy</div>',
+		standalone: false,
 	})
 	class DummyComponent {}
 

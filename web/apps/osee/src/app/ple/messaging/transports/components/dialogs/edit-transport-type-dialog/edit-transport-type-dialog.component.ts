@@ -27,7 +27,6 @@ import { BehaviorSubject } from 'rxjs';
 
 @Component({
 	selector: 'osee-edit-transport-type-dialog',
-	standalone: true,
 	imports: [MatDialogTitle, AsyncPipe, TransportTypeFormComponent],
 	template: `@if (transportType | async; as _t) {
 			<h1 mat-dialog-title>Editing Transport Type {{ _t.name }}</h1>

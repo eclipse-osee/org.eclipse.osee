@@ -117,7 +117,6 @@ import { GraphNodeRemoveMenuComponent } from './graph-node-remove-menu.component
 				}
 			</ng-template>
 		</mat-menu>`,
-	standalone: true,
 	imports: [
 		MatMenuItem,
 		MatMenuTrigger,

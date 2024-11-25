@@ -22,7 +22,6 @@ import {
 	selector: 'osee-no-data-to-display',
 	templateUrl: './no-data-to-display.component.html',
 	styles: [],
-	standalone: true,
 	imports: [MatCard, MatCardHeader, MatCardTitle, MatCardSubtitle],
 })
 export class NoDataToDisplayComponent {}

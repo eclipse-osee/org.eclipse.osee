@@ -130,7 +130,6 @@ import { CurrentViewSelectorComponent } from '@osee/shared/components';
 			),
 		]),
 	],
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		RouterLink,

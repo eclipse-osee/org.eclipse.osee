@@ -67,7 +67,6 @@ import {
 
 @Component({
 	selector: 'osee-structure-category-dropdown',
-	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		AsyncPipe,

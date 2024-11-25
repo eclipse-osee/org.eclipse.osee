@@ -32,7 +32,6 @@ import { changeReportRow } from '@osee/shared/types/change-report';
 	selector: 'osee-messaging-diff-report-table',
 	templateUrl: './diff-report-table.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		NgClass,

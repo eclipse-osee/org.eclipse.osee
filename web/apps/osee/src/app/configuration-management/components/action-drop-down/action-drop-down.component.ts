@@ -36,7 +36,6 @@ import { MergeManagerDialogComponent } from '@osee/commit/components';
 	selector: 'osee-action-dropdown',
 	templateUrl: './action-drop-down.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		MatButton,

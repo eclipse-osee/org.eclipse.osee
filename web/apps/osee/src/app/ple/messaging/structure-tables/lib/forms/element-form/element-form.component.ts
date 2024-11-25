@@ -61,7 +61,6 @@ type platformTypeStates =
 
 @Component({
 	selector: 'osee-element-form',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		NgTemplateOutlet,

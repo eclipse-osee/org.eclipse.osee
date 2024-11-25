@@ -37,7 +37,6 @@ import { CurrentBranchInfoService, branchImpl } from '@osee/shared/services';
 	selector: 'osee-compound-applicability-dropdown',
 	templateUrl: './compound-applicability-dropdown.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		MatMenuItem,

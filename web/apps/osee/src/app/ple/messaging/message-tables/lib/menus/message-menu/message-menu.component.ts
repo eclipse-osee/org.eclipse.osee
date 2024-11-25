@@ -45,7 +45,6 @@ import { EditViewFreeTextFieldDialogComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-message-menu',
-	standalone: true,
 	imports: [
 		MatMenu,
 		MatIcon,

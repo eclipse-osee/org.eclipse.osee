@@ -49,7 +49,6 @@ import { EditViewFreeTextFieldDialogComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-structure-menu',
-	standalone: true,
 	imports: [
 		RouterLink,
 		MatMenuItem,

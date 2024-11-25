@@ -19,7 +19,6 @@ import { TrainingCourseTableComponent } from './lib/tables/training-course-table
 import { TrainingRoleTableComponent } from './lib/tables/training-role-table/training-role-table.component';
 
 @Component({
-	standalone: true,
 	selector: 'osee-training',
 	templateUrl: './training.component.html',
 	styles: [],

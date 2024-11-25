@@ -62,7 +62,6 @@ import {
 
 @Component({
 	selector: 'osee-rate-dropdown',
-	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		AsyncPipe,

@@ -23,7 +23,6 @@ import { DataTableService } from './services/datatable-services/datatable.servic
 	templateUrl: './grid-commander.component.html',
 	styles: [],
 	providers: [],
-	standalone: true,
 	imports: [
 		CommandPaletteComponent,
 		CreateCommandFormComponent,

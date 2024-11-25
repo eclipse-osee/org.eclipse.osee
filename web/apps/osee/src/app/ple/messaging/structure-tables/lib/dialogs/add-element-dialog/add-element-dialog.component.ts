@@ -61,7 +61,6 @@ import { PlatformTypeQueryComponent } from '../platform-type-query/platform-type
 @Component({
 	selector: 'osee-messaging-add-element-dialog',
 	templateUrl: './add-element-dialog.component.html',
-	standalone: true,
 	imports: [
 		FormsModule,
 		MatDialogTitle,

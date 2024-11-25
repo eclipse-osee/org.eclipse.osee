@@ -32,7 +32,6 @@ import { tablespace } from '../../../shared/types/server-health-types';
 
 @Component({
 	selector: 'osee-server-health-tablespace',
-	standalone: true,
 	imports: [
 		NgClass,
 		AsyncPipe,
@@ -54,10 +53,13 @@ import { tablespace } from '../../../shared/types/server-health-types';
 export class ServerHealthTablespaceComponent {
 	private serverHealthHttpService = inject(ServerHealthHttpService);
 
-	private sort = viewChild.required(MatSort);
+	private sort = viewChild(MatSort);
 
 	private _updateDataSourceSort = effect(() => {
-		this.dataSource.sort = this.sort();
+		const sort = this.sort();
+		if (sort) {
+			this.dataSource.sort = sort;
+		}
 	});
 
 	orderBy$ = new BehaviorSubject<orderByPair>({
