@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgClass } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import {
 	Component,
 	Input,
@@ -47,7 +47,6 @@ import { ChangeReportService } from './services/change-report.service';
 	templateUrl: './change-report-table.component.html',
 	styles: [],
 	imports: [
-		NgClass,
 		AsyncPipe,
 		MatTable,
 		MatColumnDef,

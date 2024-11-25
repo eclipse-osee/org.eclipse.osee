@@ -19,7 +19,6 @@ import { applic } from '@osee/applicability/types';
 import { iif, of } from 'rxjs';
 import { map, share, shareReplay, switchMap } from 'rxjs/operators';
 import { CurrentGraphService } from '../../services/current-graph.service';
-import { ConnectionsTableComponent } from '../connections-table/connections-table.component';
 import { GraphComponent } from '../graph/graph.component';
 
 @Component({
@@ -30,7 +29,6 @@ import { GraphComponent } from '../graph/graph.component';
 		GraphComponent,
 		MessagingControlsComponent,
 		CurrentViewSelectorComponent,
-		ConnectionsTableComponent,
 	],
 })
 export class ConnectionsComponent {

@@ -21,12 +21,11 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { AsyncPipe } from '@angular/common';
 import { Component, OnInit, effect, viewChild, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatAnchor, MatButton } from '@angular/material/button';
+import { MatButton } from '@angular/material/button';
 import { MatFormField, MatPrefix } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSelect } from '@angular/material/select';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
 import {
 	MatCell,
@@ -65,13 +64,11 @@ import { ReportService } from '../services/report.service';
 		MatSortHeader,
 		MatCell,
 		MatCellDef,
-		MatAnchor,
 		MatHeaderRow,
 		MatHeaderRowDef,
 		MatRow,
 		MatRowDef,
 		MatPaginator,
-		MatSelect,
 		MatIcon,
 		MatPrefix,
 	],

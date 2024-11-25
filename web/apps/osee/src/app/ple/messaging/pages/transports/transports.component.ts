@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgClass } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, OnInit, viewChild, inject } from '@angular/core';
 import { MatFabButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -57,7 +57,6 @@ import { AttributeToValuePipe } from '@osee/attributes/pipes';
 	],
 	imports: [
 		AsyncPipe,
-		NgClass,
 		MatTable,
 		MatColumnDef,
 		MatHeaderCell,

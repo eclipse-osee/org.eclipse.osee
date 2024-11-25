@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, OnInit, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -18,7 +18,6 @@ import { MatAnchor, MatButton } from '@angular/material/button';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatOption } from '@angular/material/core';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -47,7 +46,6 @@ import { ViewSelectorComponent } from '@osee/shared/components';
 	imports: [
 		AsyncPipe,
 		RouterLink,
-		NgTemplateOutlet,
 		FormsModule,
 		MessagingControlsComponent,
 		MatAnchor,
@@ -58,7 +56,6 @@ import { ViewSelectorComponent } from '@osee/shared/components';
 		MatInput,
 		MatCheckbox,
 		MatButton,
-		MatIcon,
 		ViewSelectorComponent,
 		ConnectionValidationResultsComponent,
 		ShowErrorsCheckboxComponent,

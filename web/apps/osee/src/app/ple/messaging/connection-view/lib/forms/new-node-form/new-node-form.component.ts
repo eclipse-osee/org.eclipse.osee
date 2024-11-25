@@ -17,7 +17,6 @@ import {
 	model,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButton } from '@angular/material/button';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
@@ -35,7 +34,6 @@ import {
 		MatLabel,
 		MatInput,
 		FormsModule,
-		MatButton,
 		MatSlideToggle,
 		ApplicabilityDropdownComponent,
 	],

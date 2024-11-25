@@ -11,13 +11,12 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, signal } from '@angular/core';
-import { MatIcon } from '@angular/material/icon';
 import { ArtifactSearchComponent } from './artifact-search/artifact-search.component';
 import { ExpansionPanelComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-artifact-search-panel',
-	imports: [ExpansionPanelComponent, MatIcon, ArtifactSearchComponent],
+	imports: [ExpansionPanelComponent, ArtifactSearchComponent],
 	templateUrl: './artifact-search-panel.component.html',
 })
 export class ArtifactSearchPanelComponent {

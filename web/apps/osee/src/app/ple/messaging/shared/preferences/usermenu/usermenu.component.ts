@@ -12,7 +12,6 @@
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenuItem } from '@angular/material/menu';
@@ -34,7 +33,7 @@ import {
 	selector: 'osee-messaging-usermenu',
 	templateUrl: './usermenu.component.html',
 	styles: [],
-	imports: [AsyncPipe, MatMenuItem, MatIcon, MatButton],
+	imports: [AsyncPipe, MatMenuItem, MatIcon],
 })
 export class UsermenuComponent {
 	private routeState = inject(UiService);

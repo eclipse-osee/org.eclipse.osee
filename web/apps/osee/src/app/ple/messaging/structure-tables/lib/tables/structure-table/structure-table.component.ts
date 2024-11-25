@@ -17,7 +17,6 @@ import {
 	transition,
 	trigger,
 } from '@angular/animations';
-import { CdkVirtualForOf } from '@angular/cdk/scrolling';
 import { AsyncPipe, NgClass, NgStyle } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
@@ -30,7 +29,6 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { MatIconButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import {
 	MatCell,
@@ -78,7 +76,6 @@ import {
 	switchMap,
 	tap,
 } from 'rxjs/operators';
-import { StructureTableLongTextFieldComponent } from '../../fields/structure-table-long-text-field/structure-table-long-text-field.component';
 import { StructureTableNoEditFieldComponent } from '../../fields/structure-table-no-edit-field/structure-table-no-edit-field.component';
 import { StructureMenuComponent } from '../../menus/structure-menu/structure-menu.component';
 import { StructureImpactsValidatorDirective } from '../../structure-impacts-validator.directive';
@@ -102,17 +99,14 @@ import { SubElementTableComponent } from '../sub-element-table/sub-element-table
 		MatTooltip,
 		MatCell,
 		MatCellDef,
-		MatIconButton,
 		MatHeaderRow,
 		MatHeaderRowDef,
 		MatRow,
 		MatRowDef,
-		CdkVirtualForOf,
 		PersistedApplicabilityDropdownComponent,
 		PersistedStringAttributeInputComponent,
 		PersistedStructureCategoryDropdownComponent,
 		SubElementTableComponent,
-		StructureTableLongTextFieldComponent,
 		StructureMenuComponent,
 		StructureTableNoEditFieldComponent,
 		StructureImpactsValidatorDirective,

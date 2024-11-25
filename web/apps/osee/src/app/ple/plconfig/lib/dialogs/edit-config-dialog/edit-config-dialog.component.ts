@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -54,7 +53,6 @@ import { PLEditConfigData } from '../../types/pl-edit-config-data';
 		MatDialogActions,
 		MatButton,
 		MatDialogClose,
-		CdkTrapFocus,
 		ViewSelectorComponent,
 	],
 })

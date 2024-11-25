@@ -19,17 +19,10 @@ import {
 	signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatIconButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
-import { MatFormField, MatInput, MatLabel } from '@angular/material/input';
 import {
 	MatCell,
 	MatCellDef,
 	MatColumnDef,
-	MatFooterCell,
-	MatFooterCellDef,
-	MatFooterRow,
-	MatFooterRowDef,
 	MatHeaderCell,
 	MatHeaderCellDef,
 	MatHeaderRow,
@@ -56,16 +49,7 @@ import { NamedId } from '@osee/shared/types';
 		MatCell,
 		MatCellDef,
 		MatTooltip,
-		MatFooterRow,
-		MatFooterRowDef,
-		MatFooterCell,
-		MatFooterCellDef,
-		MatIcon,
-		MatIconButton,
 		FormsModule,
-		MatFormField,
-		MatInput,
-		MatLabel,
 	],
 	template: ` <mat-table [dataSource]="dataSource">
 		@for (column of displayedColumns(); track column; let idx = $index) {

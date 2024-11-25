@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
@@ -34,7 +33,7 @@ import { PublishMarkdownAsHtmlDialogComponent } from './dialogs/publish-markdown
 
 @Component({
 	selector: 'osee-artifact-operations-context-menu',
-	imports: [AsyncPipe, MatMenuItem, MatIcon],
+	imports: [MatMenuItem, MatIcon],
 	templateUrl: './artifact-operations-context-menu.component.html',
 })
 export class ArtifactOperationsContextMenuComponent {

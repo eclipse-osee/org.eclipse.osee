@@ -30,7 +30,6 @@ import {
 	MatRowDef,
 	MatTable,
 } from '@angular/material/table';
-import { MatTooltip } from '@angular/material/tooltip';
 import { CiDetailsService } from '../../../services/ci-details.service';
 import { HeaderService } from '@osee/shared/services';
 import { ResultReference } from '../../../types';
@@ -100,7 +99,6 @@ import { scriptResHeaderDetails } from '../../../table-headers/script-headers';
 		MatColumnDef,
 		MatHeaderCell,
 		MatHeaderCellDef,
-		MatTooltip,
 		MatCell,
 		MatCellDef,
 		MatHeaderRow,

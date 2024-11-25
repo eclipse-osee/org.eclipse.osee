@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import {
@@ -38,7 +37,6 @@ import { CurrentBranchInfoService, branchImpl } from '@osee/shared/services';
 		MatMenuContent,
 		MatMenu,
 		MatIcon,
-		AsyncPipe,
 		ArrayDiffMenuComponent,
 	],
 })

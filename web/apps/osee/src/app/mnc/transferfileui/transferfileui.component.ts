@@ -12,19 +12,13 @@
  **********************************************************************/
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { AsyncPipe } from '@angular/common';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import {
-	MatCellDef,
-	MatColumnDef,
-	MatHeaderCellDef,
-	MatTableModule,
-} from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 import { UiService } from '@osee/shared/services';
 import { BehaviorSubject, map } from 'rxjs';
 import { TransferFileService } from '../../mnc/services/transfer-file/transfer-file.service';
@@ -36,16 +30,12 @@ import { TransferData } from '../types/transfer-file/transferdata';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	templateUrl: './transferfileui.component.html',
 	imports: [
-		AsyncPipe,
 		CommonModule,
 		MatFormFieldModule,
 		MatInputModule,
 		FormsModule,
 		MatSnackBarModule,
 		MatDialogModule,
-		MatColumnDef,
-		MatHeaderCellDef,
-		MatCellDef,
 		MatTableModule,
 		ExportTableComponent,
 		GenerateExportComponent,

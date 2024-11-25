@@ -35,10 +35,7 @@ import {
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { artifactTypeIcon } from '@osee/artifact-with-relations/types';
-import {
-	AttributesEditorComponent,
-	MatOptionLoadingComponent,
-} from '@osee/shared/components';
+import { AttributesEditorComponent } from '@osee/shared/components';
 import { FormDirective } from '@osee/shared/directives';
 import { ArtifactUiService } from '@osee/shared/services';
 import { NamedId, attribute } from '@osee/shared/types';
@@ -64,7 +61,6 @@ import { createChildArtifactDialogData } from '../../../../../types/artifact-exp
 		AsyncPipe,
 		AttributesEditorComponent,
 		FormDirective,
-		MatOptionLoadingComponent,
 		MatDialogTitle,
 		MatIcon,
 		MatDialogContent,

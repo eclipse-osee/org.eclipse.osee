@@ -14,18 +14,12 @@ import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import { Component, computed, model, signal, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatIconButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatDivider } from '@angular/material/divider';
-import {
-	MatFormField,
-	MatHint,
-	MatLabel,
-	MatSuffix,
-} from '@angular/material/form-field';
+import { MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatOption, MatSelect } from '@angular/material/select';
 import {
 	MatSlideToggle,
@@ -52,7 +46,6 @@ import {
 import { filter, take, tap } from 'rxjs';
 // import { AddElementDialogComponent } from '../../dialogs/add-element-dialog/add-element-dialog.component';
 import { DefaultAddElementDialog } from '../../dialogs/add-element-dialog/add-element-dialog.default';
-import { PlatformTypeQueryComponent } from '../../dialogs/platform-type-query/platform-type-query.component';
 import { RemoveArrayElementsDialogComponent } from '../../dialogs/remove-array-elements-dialog/remove-array-elements-dialog.component';
 
 const _platformTypeStates = ['SELECT', 'QUERY', 'CREATE'] as const;
@@ -71,17 +64,13 @@ type platformTypeStates =
 		MatHint,
 		CdkTextareaAutosize,
 		MatSlideToggle,
-		MatButton,
 		MatTooltip,
 		MatIcon,
 		MatSelect,
 		MatOption,
-		MatSuffix,
 		MatIconButton,
 		MatDivider,
-		MatProgressSpinner,
 		ApplicabilityDropdownComponent,
-		PlatformTypeQueryComponent,
 		PlatformTypeDropdownComponent,
 		NewTypeFormComponent,
 	],

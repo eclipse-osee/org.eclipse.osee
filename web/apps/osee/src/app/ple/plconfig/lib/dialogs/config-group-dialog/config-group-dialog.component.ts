@@ -10,8 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CdkTrapFocus } from '@angular/cdk/a11y';
-
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
@@ -45,7 +43,6 @@ import { CfgGroupDialog } from '../../types/pl-config-cfggroups';
 		MatDialogActions,
 		MatButton,
 		MatDialogClose,
-		CdkTrapFocus,
 	],
 })
 export class ConfigGroupDialogComponent {

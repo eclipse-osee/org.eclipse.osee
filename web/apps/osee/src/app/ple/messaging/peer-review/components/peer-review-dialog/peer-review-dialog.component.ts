@@ -13,13 +13,11 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import {
 	MatDialogActions,
-	MatDialogClose,
 	MatDialogContent,
 	MatDialogRef,
 	MatDialogTitle,
 } from '@angular/material/dialog';
 import { PeerReviewBranchSelectorComponent } from '../peer-review-branch-selector/peer-review-branch-selector.component';
-import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { MatButton } from '@angular/material/button';
 import { MatListOption, MatSelectionList } from '@angular/material/list';
 import { CreatePeerReviewButtonComponent } from '../create-peer-review-button/create-peer-review-button.component';
@@ -40,7 +38,6 @@ import { MatIcon } from '@angular/material/icon';
 		MatDialogTitle,
 		MatDialogContent,
 		MatDialogActions,
-		MatDialogClose,
 		MatFormField,
 		MatLabel,
 		MatInput,
@@ -49,7 +46,6 @@ import { MatIcon } from '@angular/material/icon';
 		MatSelectionList,
 		MatListOption,
 		MatTooltip,
-		CdkTrapFocus,
 		CreatePeerReviewButtonComponent,
 		PeerReviewBranchSelectorComponent,
 	],

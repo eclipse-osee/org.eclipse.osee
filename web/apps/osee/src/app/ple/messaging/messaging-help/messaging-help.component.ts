@@ -17,10 +17,7 @@ import {
 	MatSidenavContent,
 } from '@angular/material/sidenav';
 import { RouterOutlet } from '@angular/router';
-import {
-	MessagingHelpContentComponent,
-	MessagingHelpNavigationComponent,
-} from '@osee/messaging/help';
+import { MessagingHelpNavigationComponent } from '@osee/messaging/help';
 
 @Component({
 	selector: 'osee-messaging-help',
@@ -31,7 +28,6 @@ import {
 		MatSidenav,
 		MatSidenavContent,
 		MessagingHelpNavigationComponent,
-		MessagingHelpContentComponent,
 	],
 })
 export class MessagingHelpComponent {}

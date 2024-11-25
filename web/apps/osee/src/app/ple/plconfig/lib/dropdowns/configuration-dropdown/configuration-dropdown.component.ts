@@ -13,7 +13,6 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { MatLabel } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import {
 	MatMenu,
@@ -46,7 +45,6 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 		MatMenuContent,
 		MatMenu,
 		MatIcon,
-		MatLabel,
 	],
 })
 export class ConfigurationDropdownComponent {

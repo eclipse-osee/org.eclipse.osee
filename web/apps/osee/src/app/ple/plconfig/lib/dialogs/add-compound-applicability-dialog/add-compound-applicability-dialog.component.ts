@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
@@ -37,7 +36,6 @@ import {
 	templateUrl: './add-compound-applicability-dialog.component.html',
 	styles: [],
 	imports: [
-		AsyncPipe,
 		FormsModule,
 		MatDialogTitle,
 		MatDialogContent,

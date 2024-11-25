@@ -71,7 +71,6 @@ import { ApplicabilityDropdownComponent } from '@osee/applicability/applicabilit
 		MatRow,
 		MatRowDef,
 		MatTooltip,
-		NewCrossReferenceDialogComponent,
 		TableEditTextFieldComponent,
 		SplitStringPipe,
 		ApplicabilityDropdownComponent,

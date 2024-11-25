@@ -26,7 +26,7 @@ import {
 	MatChipInput,
 } from '@angular/material/chips';
 import { MatOption } from '@angular/material/core';
-import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
+import { MatFormField } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
@@ -47,8 +47,6 @@ let nextUniqueId = 0;
 	selector: 'osee-plconfig-multi-select-tuple',
 	imports: [
 		MatFormField,
-		MatLabel,
-		MatError,
 		FormsModule,
 		MatChipGrid,
 		MatChipRow,

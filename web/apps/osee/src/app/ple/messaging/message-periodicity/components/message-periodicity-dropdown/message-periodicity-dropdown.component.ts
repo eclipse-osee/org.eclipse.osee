@@ -39,12 +39,7 @@ import {
 	MatOption,
 	ShowOnDirtyErrorStateMatcher,
 } from '@angular/material/core';
-import {
-	MatFormField,
-	MatHint,
-	MatPrefix,
-	MatSuffix,
-} from '@angular/material/form-field';
+import { MatFormField, MatHint, MatSuffix } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
@@ -76,7 +71,6 @@ import {
 		MatAutocomplete,
 		MatAutocompleteTrigger,
 		MatHint,
-		MatPrefix,
 		MatSuffix,
 		MatIcon,
 		MatIconButton,

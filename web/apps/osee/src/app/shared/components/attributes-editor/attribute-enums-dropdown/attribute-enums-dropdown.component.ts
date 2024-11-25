@@ -46,7 +46,6 @@ import {
 	filter,
 	switchMap,
 } from 'rxjs';
-import { MatOptionLoadingComponent } from '../../mat-option-loading/mat-option-loading/mat-option-loading.component';
 
 let nextUniqueId = 0;
 
@@ -63,7 +62,6 @@ let nextUniqueId = 0;
 		MatSuffix,
 		MatIconButton,
 		MatOption,
-		MatOptionLoadingComponent,
 	],
 	templateUrl: './attribute-enums-dropdown.component.html',
 	viewProviders: [provideOptionalControlContainerNgForm()],

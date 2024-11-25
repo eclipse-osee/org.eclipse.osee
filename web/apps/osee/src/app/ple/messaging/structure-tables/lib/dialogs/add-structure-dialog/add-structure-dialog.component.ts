@@ -31,7 +31,6 @@ import {
 } from '@angular/material/dialog';
 import { MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { MatSelect } from '@angular/material/select';
 import {
 	MatStep,
 	MatStepper,
@@ -77,7 +76,6 @@ import {
 		MatDialogActions,
 		MatHint,
 		CdkTextareaAutosize,
-		MatSelect,
 		MatStepperPrevious,
 		MatDialogClose,
 		MatOptionLoadingComponent,

@@ -39,7 +39,6 @@ import {
 } from '@angular/material/dialog';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import {
 	MatStep,
 	MatStepper,
@@ -48,7 +47,6 @@ import {
 } from '@angular/material/stepper';
 import { MatTooltip } from '@angular/material/tooltip';
 import { AttributeToValuePipe } from '@osee/attributes/pipes';
-import { NewTypeFormComponent } from '@osee/messaging/shared/forms';
 import { CurrentStructureService } from '@osee/messaging/shared/services';
 import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 import type { ElementDialog, element } from '@osee/messaging/shared/types';
@@ -56,7 +54,6 @@ import { MatOptionLoadingComponent } from '@osee/shared/components';
 import { writableSlice } from '@osee/shared/utils';
 import { debounceTime, delay, map, switchMap, tap } from 'rxjs/operators';
 import { ElementFormComponent } from '../../forms/element-form/element-form.component';
-import { PlatformTypeQueryComponent } from '../platform-type-query/platform-type-query.component';
 
 @Component({
 	selector: 'osee-messaging-add-element-dialog',
@@ -79,10 +76,7 @@ import { PlatformTypeQueryComponent } from '../platform-type-query/platform-type
 		MatDialogActions,
 		MatStepperPrevious,
 		MatDialogClose,
-		MatProgressSpinner,
 		AsyncPipe,
-		PlatformTypeQueryComponent,
-		NewTypeFormComponent,
 		MatOptionLoadingComponent,
 		ElementFormComponent,
 		AttributeToValuePipe,

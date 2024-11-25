@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgClass } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
@@ -52,7 +52,6 @@ import { BranchRoutedUIService } from '@osee/shared/services';
 		MatAutocompleteTrigger,
 		MatOption,
 		MatOptionLoadingComponent,
-		NgClass,
 	],
 })
 export class BranchSelectorComponent {
