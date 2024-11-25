@@ -14,7 +14,6 @@
 package org.eclipse.osee.ats.ide.util;
 
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.agile.jira.AtsJiraService;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.ide.branch.AtsBranchServiceIde;
 import org.eclipse.osee.ats.ide.query.AtsQueryServiceIde;
@@ -44,7 +43,5 @@ public interface AtsApiIde extends AtsApi {
    AtsBranchServiceIde getBranchServiceIde();
 
    AtsConfigurations clearCachesServerWithPend();
-
-   AtsJiraService getJiraService();
 
 }

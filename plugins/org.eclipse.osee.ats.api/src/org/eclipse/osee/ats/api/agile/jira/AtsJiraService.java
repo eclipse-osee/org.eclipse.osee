@@ -44,4 +44,8 @@ public interface AtsJiraService {
 
    String getJiraStoryLink(IAtsWorkItem workItem);
 
+   boolean isJiraStoryWorkflow(IAtsWorkItem workItem);
+
+   XResultData transition(IAtsTeamWorkflow teamWf, int statusId, XResultData rd);
+
 }

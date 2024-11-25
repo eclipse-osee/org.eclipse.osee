@@ -17,6 +17,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.access.IAtsAccessService;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.agile.IAgileSprintHtmlOperation;
+import org.eclipse.osee.ats.api.agile.jira.AtsJiraService;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.column.IAtsColumnService;
 import org.eclipse.osee.ats.api.config.AtsConfigKey;
@@ -254,5 +255,7 @@ public interface AtsApi extends OseeApi, IAtsEarnedValueServiceProvider, IAtsWor
    void setOseeInfo(String key, String value);
 
    void removeOseeInfo(String key);
+
+   AtsJiraService getJiraService();
 
 }
