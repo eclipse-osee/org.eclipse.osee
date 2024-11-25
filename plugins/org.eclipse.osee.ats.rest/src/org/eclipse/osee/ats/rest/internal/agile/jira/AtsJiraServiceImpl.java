@@ -10,22 +10,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.ats.ide.actions.jira;
+package org.eclipse.osee.ats.rest.internal.agile.jira;
 
-import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.core.agile.jira.AbstractAtsJiraService;
 
 /**
  * @author Donald G. Dunne
  */
-public class JiraUtil {
+public class AtsJiraServiceImpl extends AbstractAtsJiraService {
 
-   public static String JIRA_BASEPATH_KEY = "JiraBasepath";
-
-   private JiraUtil() {
-      // Utility Class
+   public AtsJiraServiceImpl(AtsApi atsApi) {
+      super(atsApi);
    }
 
-   public static String getJiraBasePath() {
-      return AtsApiService.get().getConfigValue(JIRA_BASEPATH_KEY);
+   @Override
+   protected String searchJira(String json) {
+      return null;
    }
+
 }

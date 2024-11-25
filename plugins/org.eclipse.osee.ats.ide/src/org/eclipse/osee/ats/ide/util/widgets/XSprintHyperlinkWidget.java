@@ -105,4 +105,8 @@ public class XSprintHyperlinkWidget extends XHyperlinkLabelCmdValueSelection {
       this.teamDef = teamDef;
    }
 
+   public void setSelected(IAgileSprint sprint) {
+      this.sprint = sprint;
+   }
+
 }

@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.jira.JiraSearch;
 import org.eclipse.osee.ats.ide.actions.AbstractAtsAction;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
-import org.eclipse.osee.ats.ide.agile.jira.AbstractJiraSyncColumnUI;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -54,8 +53,8 @@ public class SearchJiraStoryAction extends AbstractAtsAction {
       }
 
       try {
-         JiraSearch srch = AbstractJiraSyncColumnUI.search(workItem);
-         rd.log("\n\n" + srch);
+         JiraSearch srch = AtsApiService.get().getJiraService().search(workItem);
+         rd.log("\n\n" + srch + "\n\n" + srch.getRd().toString());
       } catch (Exception ex) {
          rd.log(Lib.exceptionToString(ex));
       }

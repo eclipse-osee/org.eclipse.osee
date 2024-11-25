@@ -54,7 +54,7 @@ public class FilteredCheckboxTreeDialog<T> extends MessageDialog {
    private boolean multiSelect = true;
    private PatternFilter patternFilter;
    protected Collection<T> selectables = new ArrayList<>();
-   private boolean withClear;
+   private boolean clearAllowed;
    private boolean clearSelected = false;
 
    public FilteredCheckboxTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider) {
@@ -65,13 +65,13 @@ public class FilteredCheckboxTreeDialog<T> extends MessageDialog {
       this(dialogTitle, dialogMessage, contentProvider, labelProvider, viewerSorter, false);
    }
 
-   public FilteredCheckboxTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerComparator viewerSorter, boolean withClear) {
+   public FilteredCheckboxTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerComparator viewerSorter, boolean clearAllowed) {
       super(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.NONE,
-         (withClear ? new String[] {"OK", "Cancel", "Clear"} : new String[] {"OK", "Cancel"}), 0);
+         (clearAllowed ? new String[] {"OK", "Cancel", "Clear"} : new String[] {"OK", "Cancel"}), 0);
       this.contentProvider = contentProvider;
       this.labelProvider = labelProvider;
       this.viewerComparator = viewerSorter;
-      this.withClear = withClear;
+      this.clearAllowed = clearAllowed;
       this.patternFilter = new ToStringContainsPatternFilter();
       setShellStyle(getShellStyle() | SWT.RESIZE);
    }
@@ -217,7 +217,7 @@ public class FilteredCheckboxTreeDialog<T> extends MessageDialog {
       Control c = super.createButtonBar(parent);
       okButton = getButton(0);
       okButton.setEnabled(false);
-      if (withClear) {
+      if (clearAllowed) {
          Button clearButton = getButton(2);
          clearButton.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -275,6 +275,14 @@ public class FilteredCheckboxTreeDialog<T> extends MessageDialog {
 
    public boolean isClearSelected() {
       return clearSelected;
+   }
+
+   public boolean isClearAllowed() {
+      return clearAllowed;
+   }
+
+   public void setClearAllowed(boolean clearAllowed) {
+      this.clearAllowed = clearAllowed;
    }
 
 }

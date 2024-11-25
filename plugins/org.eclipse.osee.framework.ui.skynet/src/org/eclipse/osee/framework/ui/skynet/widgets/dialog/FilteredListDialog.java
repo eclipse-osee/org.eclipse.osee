@@ -63,7 +63,7 @@ public class FilteredListDialog<T> extends ElementListSelectionDialog {
       return null;
    }
 
-   public boolean isClearAllowedSelected() {
+   public boolean isClearSelected() {
       if (clearAllowed && getSelected() == null) {
          return true;
       }

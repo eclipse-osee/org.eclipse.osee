@@ -101,4 +101,8 @@ public class XTargetedVersionHyperlinkWidget extends XHyperlinkLabelCmdValueSele
       this.teamDef = teamDef;
    }
 
+   public void setSelected(IAtsVersion version) {
+      this.version = version;
+   }
+
 }
