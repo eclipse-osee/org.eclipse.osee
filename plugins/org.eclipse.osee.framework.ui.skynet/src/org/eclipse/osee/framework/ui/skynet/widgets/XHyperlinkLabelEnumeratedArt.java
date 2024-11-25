@@ -21,8 +21,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -44,7 +42,6 @@ import org.eclipse.osee.framework.ui.swt.Widgets;
 public class XHyperlinkLabelEnumeratedArt extends XHyperlinkLabelValueSelection implements EnumeratedArtifactWidget {
 
    public static final String WIDGET_ID = XHyperlinkLabelEnumeratedArt.class.getSimpleName();
-   protected ArtifactTypeToken artifactType = ArtifactTypeToken.SENTINEL;
    protected List<String> checked = new ArrayList<>();
 
    public XHyperlinkLabelEnumeratedArt() {
@@ -53,11 +50,6 @@ public class XHyperlinkLabelEnumeratedArt extends XHyperlinkLabelValueSelection 
 
    public XHyperlinkLabelEnumeratedArt(String label) {
       super(label);
-   }
-
-   @Override
-   public void setAttributeType(AttributeTypeToken attributeType) {
-      this.attributeType = attributeType;
    }
 
    @Override
@@ -82,6 +74,7 @@ public class XHyperlinkLabelEnumeratedArt extends XHyperlinkLabelValueSelection 
             FilteredCheckboxTreeDialog<String> dialog = new FilteredCheckboxTreeDialog<String>(title, title,
                new ArrayTreeContentProvider(), new StringLabelProvider(), new StringNameComparator());
             dialog.setInput(selectable);
+            dialog.setClearAllowed(true);
             Collection<String> selectedValues = getCurrentSelected();
             if (!selectedValues.isEmpty()) {
                dialog.setInitialSelections(selectedValues);
@@ -89,18 +82,21 @@ public class XHyperlinkLabelEnumeratedArt extends XHyperlinkLabelValueSelection 
             dialog.setShowSelectButtons(true);
             if (dialog.open() == Window.OK) {
                checked.clear();
-               checked.addAll(dialog.getChecked());
+               if (!dialog.isClearSelected()) {
+                  checked.addAll(dialog.getChecked());
+               }
                return true;
             }
          } else {
             FilteredListDialog<String> dialog = new FilteredListDialog<String>(title, title);
             dialog.setInput(selectable);
+            dialog.setClearAllowed(true);
             if (dialog.open() == Window.OK) {
-               if (dialog.getSelected() != null) {
-                  checked.clear();
+               checked.clear();
+               if (!dialog.isClearSelected() && dialog.getSelected() != null) {
                   checked.add(dialog.getSelected());
-                  return true;
                }
+               return true;
             }
          }
       } catch (OseeCoreException ex) {
@@ -120,11 +116,6 @@ public class XHyperlinkLabelEnumeratedArt extends XHyperlinkLabelValueSelection 
 
    public List<String> getCurrentSelected() {
       return checked;
-   }
-
-   @Override
-   public AttributeTypeToken getAttributeType() {
-      return attributeType;
    }
 
    @Override
@@ -151,12 +142,10 @@ public class XHyperlinkLabelEnumeratedArt extends XHyperlinkLabelValueSelection 
 
    public ArtifactToken checkEnumeratedArtifact() {
       ArtifactToken enumArt = getEnumeratedArt();
-      if (enumArt == null) {
+      if (enumArt.isInvalid()) {
          return ArtifactToken.SENTINEL;
       }
-      if (enumArt.isValid()) {
-         enumArt = ArtifactQuery.getArtifactFromTokenOrSentinel(enumArt);
-      }
+      enumArt = ArtifactQuery.getArtifactFromTokenOrSentinel(enumArt);
       return enumArt;
    }
 
@@ -169,16 +158,6 @@ public class XHyperlinkLabelEnumeratedArt extends XHyperlinkLabelValueSelection 
          }
       }
       return Collections.emptyList();
-   }
-
-   @Override
-   public ArtifactTypeToken getArtifactType() {
-      return artifactType;
-   }
-
-   @Override
-   public void setArtifactType(ArtifactTypeToken artifactType) {
-      this.artifactType = artifactType;
    }
 
    public List<String> getChecked() {

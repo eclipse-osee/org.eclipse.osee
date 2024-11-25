@@ -139,7 +139,7 @@ public class NotesColorColumnUI extends XViewerAtsCoreCodeXColumn {
          WfNoteColors selected = diag.getSelected();
          IAtsChangeSet changes = AtsApiService.get().createChangeSet("Notes Color");
          for (IAtsWorkItem workItem : workItems) {
-            if (diag.isClearAllowedSelected() || selected.isInvalid() || selected.equals(WfNoteColors.COLOR_BLACK)) {
+            if (diag.isClearSelected() || selected.isInvalid() || selected.equals(WfNoteColors.COLOR_BLACK)) {
                changes.deleteAttributes(workItem, AtsAttributeTypes.WorkflowNoteColor);
             } else {
                changes.setSoleAttributeValue(workItem, AtsAttributeTypes.WorkflowNoteColor, selected.getId());
