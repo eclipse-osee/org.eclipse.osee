@@ -112,13 +112,10 @@ export class SubElementArrayTableComponent implements OnInit {
 	editMode = input(false);
 	tableFieldsEditMode = input(false);
 
-	private _editEffect = effect(
-		() => {
-			this.editMode();
-			this.selectedElements.set([]);
-		},
-		{ allowSignalWrites: true }
-	);
+	private _editEffect = effect(() => {
+		this.editMode();
+		this.selectedElements.set([]);
+	});
 
 	_branchId = '';
 	_branchType = '';

@@ -288,16 +288,13 @@ export class CurrentMessagesService {
 	}
 	messageFilter = this.ui.filter;
 
-	private _returnToFirstPageOnFilterChange = effect(
-		() => {
-			//very low chance this happens and it keeps the read working...
-			if (this.messageFilter() !== crypto.randomUUID()) {
-				this.ui.currentPage.set(0);
-				this.clearRows();
-			}
-		},
-		{ allowSignalWrites: true }
-	);
+	private _returnToFirstPageOnFilterChange = effect(() => {
+		//very low chance this happens and it keeps the read working...
+		if (this.messageFilter() !== crypto.randomUUID()) {
+			this.ui.currentPage.set(0);
+			this.clearRows();
+		}
+	});
 
 	set branch(id: string) {
 		this.ui.BranchIdString = id;

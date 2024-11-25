@@ -127,9 +127,7 @@ export class TeamSelectorComponent {
 	autoCompleteOpened = signal(false);
 	private _autoCompleteOpened$ = toObservable(this.autoCompleteOpened);
 
-	private _scriptEffect = effect(() => this.filter.set(this.script().team), {
-		allowSignalWrites: true,
-	});
+	private _scriptEffect = effect(() => this.filter.set(this.script().team));
 
 	private _teams$ = this._autoCompleteOpened$.pipe(
 		debounceTime(250),

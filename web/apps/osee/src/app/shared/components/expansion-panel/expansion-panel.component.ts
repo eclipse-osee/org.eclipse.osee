@@ -48,9 +48,7 @@ export class ExpansionPanelComponent implements OnInit {
 	title = input('');
 	panelOpen = signal(false);
 
-	openEffect = effect(() => this.panelOpen.set(this.openDefault()), {
-		allowSignalWrites: true,
-	});
+	openEffect = effect(() => this.panelOpen.set(this.openDefault()));
 
 	ngOnInit(): void {
 		this.panelOpen.set(this.openDefault());

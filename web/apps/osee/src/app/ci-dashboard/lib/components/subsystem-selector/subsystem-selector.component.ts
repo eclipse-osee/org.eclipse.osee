@@ -130,11 +130,8 @@ export class SubsystemSelectorComponent {
 	autoCompleteOpened = signal(false);
 	private _autoCompleteOpened$ = toObservable(this.autoCompleteOpened);
 
-	private _scriptEffect = effect(
-		() => this.filter.set(this.script().subsystem),
-		{
-			allowSignalWrites: true,
-		}
+	private _scriptEffect = effect(() =>
+		this.filter.set(this.script().subsystem)
 	);
 
 	private _subsystems$ = this._autoCompleteOpened$.pipe(

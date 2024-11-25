@@ -85,19 +85,16 @@ export class NewTypeFormComponent {
 
 	platformType = model<PlatformType>(new PlatformTypeSentinel());
 
-	private _updateLogicalTypeBasedOnPlatformType = effect(
-		() => {
-			const foundType = this.__lt().find(
-				(v) =>
-					v.name.toLowerCase() ===
-					this.platformType().interfaceLogicalType.value.toLowerCase()
-			);
-			if (foundType) {
-				this.setLogicalType(foundType);
-			}
-		},
-		{ allowSignalWrites: true }
-	);
+	private _updateLogicalTypeBasedOnPlatformType = effect(() => {
+		const foundType = this.__lt().find(
+			(v) =>
+				v.name.toLowerCase() ===
+				this.platformType().interfaceLogicalType.value.toLowerCase()
+		);
+		if (foundType) {
+			this.setLogicalType(foundType);
+		}
+	});
 
 	private _removeIds = effect(() => {
 		//if the platform type, or it's attributes have ids they should be zeroized to -1

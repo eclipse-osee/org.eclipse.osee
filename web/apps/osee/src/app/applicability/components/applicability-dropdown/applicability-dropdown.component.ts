@@ -139,12 +139,9 @@ export class ApplicabilityDropdownComponent {
 	required = input(false);
 	disabled = input(false);
 
-	private _updateFilterBasedOnApplic = effect(
-		() => {
-			this.filter.set(this.applicability().name);
-		},
-		{ allowSignalWrites: true }
-	);
+	private _updateFilterBasedOnApplic = effect(() => {
+		this.filter.set(this.applicability().name);
+	});
 
 	count = input(3);
 

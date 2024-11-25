@@ -88,9 +88,7 @@ export class ViewSelectorComponent {
 	private filterText$ = toObservable(this.filterText);
 	protected noneOption: applic = { id: '-1', name: 'None' };
 
-	private _viewEffect = effect(() => this.filterText.set(this.view().name), {
-		allowSignalWrites: true,
-	});
+	private _viewEffect = effect(() => this.filterText.set(this.view().name));
 
 	views = combineLatest([this.applicService.views, this.filterText$]).pipe(
 		switchMap(([applics, filterText]) =>

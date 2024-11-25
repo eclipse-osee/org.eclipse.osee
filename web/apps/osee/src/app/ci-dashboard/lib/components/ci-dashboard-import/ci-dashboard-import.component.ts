@@ -48,13 +48,10 @@ export default class CiDashboardImportComponent {
 		return set !== undefined && set !== '' && set !== '-1';
 	});
 
-	private _ciSetEffect = effect(
-		() => {
-			this.ciSetId();
-			this.importResult.set(tmoImportResultSentinel);
-		},
-		{ allowSignalWrites: true }
-	);
+	private _ciSetEffect = effect(() => {
+		this.ciSetId();
+		this.importResult.set(tmoImportResultSentinel);
+	});
 
 	selectedFile = signal<File | undefined>(undefined);
 	private importResult = signal<TmoImportResult>(tmoImportResultSentinel);

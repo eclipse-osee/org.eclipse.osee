@@ -94,14 +94,11 @@ export class ReportsComponent implements OnInit {
 	selectedReport: MimReport | undefined = undefined;
 
 	selectedApplic = signal<applic>({ id: '-1', name: 'None' });
-	private _applicEffect = effect(
-		() => {
-			// Reset validation results when the selected view changes
-			this.selectedApplic();
-			this.resetValidation();
-		},
-		{ allowSignalWrites: true }
-	);
+	private _applicEffect = effect(() => {
+		// Reset validation results when the selected view changes
+		this.selectedApplic();
+		this.resetValidation();
+	});
 
 	branchType = this.reportsService.branchType;
 	reports = this.reportsService.getReports();

@@ -141,12 +141,9 @@ export class SubElementTableComponent {
 
 	data = input.required<element[]>();
 
-	private _updateDataSourceBasedOnData = effect(
-		() => {
-			this.dataSource.data = this.data();
-		},
-		{ allowSignalWrites: true }
-	);
+	private _updateDataSourceBasedOnData = effect(() => {
+		this.dataSource.data = this.data();
+	});
 	protected dataSource = new MatTableDataSource<element>();
 	filter = input('');
 	structure = input<structure>({
@@ -212,13 +209,10 @@ export class SubElementTableComponent {
 
 	selectedElements = signal<element[]>([]);
 
-	private _editEffect = effect(
-		() => {
-			this.editMode();
-			this.selectedElements.set([]);
-		},
-		{ allowSignalWrites: true }
-	);
+	private _editEffect = effect(() => {
+		this.editMode();
+		this.selectedElements.set([]);
+	});
 
 	layout = this.layoutNotifier.layout;
 	menuPosition = {
