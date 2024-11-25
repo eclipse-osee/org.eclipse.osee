@@ -58,7 +58,6 @@ import { createChildArtifactDialogData } from '../../../../../types/artifact-exp
 
 @Component({
 	selector: 'osee-create-artifact-dialog',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		FormsModule,

@@ -39,7 +39,6 @@ import { UiService } from '@osee/shared/services';
 	selector: 'osee-plconfig-edit-feature-dialog',
 	templateUrl: './edit-feature-dialog.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		FormsModule,

@@ -25,7 +25,6 @@ import { GraphComponent } from '../graph/graph.component';
 @Component({
 	selector: 'osee-connection-view-host',
 	templateUrl: './connections.component.html',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		GraphComponent,

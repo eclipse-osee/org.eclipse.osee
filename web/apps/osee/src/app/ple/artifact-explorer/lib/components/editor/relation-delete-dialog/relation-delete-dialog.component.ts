@@ -22,7 +22,6 @@ import {
 
 @Component({
 	selector: 'osee-relation-delete-dialog',
-	standalone: true,
 	imports: [
 		MatDialogTitle,
 		MatDialogContent,

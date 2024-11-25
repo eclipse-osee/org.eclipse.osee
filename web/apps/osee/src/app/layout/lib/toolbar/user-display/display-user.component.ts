@@ -46,7 +46,6 @@ import { OktaSignComponent } from '../okta-sign/okta-sign.component';
 			),
 		]),
 	],
-	standalone: true,
 	imports: [
 		RouterOutlet,
 		AsyncPipe,

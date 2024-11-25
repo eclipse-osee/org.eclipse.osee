@@ -38,7 +38,6 @@ import { AttributeEnumsDropdownComponent } from './attribute-enums-dropdown/attr
 // Output is the changed attributes list for parent component to handle.
 @Component({
 	selector: 'osee-attributes-editor',
-	standalone: true,
 	imports: [
 		NgClass,
 		AsyncPipe,

@@ -21,7 +21,6 @@ import { TimelineResultsChartComponent } from './timeline-results-chart/timeline
 
 @Component({
 	selector: 'osee-script-timeline',
-	standalone: true,
 	imports: [
 		NgIf,
 		NgFor,

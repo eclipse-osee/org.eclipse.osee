@@ -23,7 +23,6 @@ import { TypesTableComponent } from '../types-table/types-table.component';
 
 @Component({
 	selector: 'osee-types-interface',
-	standalone: true,
 	imports: [
 		PlatformTypesFilterComponent,
 		PlatformTypesFabComponent,

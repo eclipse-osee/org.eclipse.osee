@@ -29,7 +29,6 @@ import { BehaviorSubject } from 'rxjs';
 
 @Component({
 	selector: 'osee-merge-manager-editor-dialog',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		MatDialogTitle,

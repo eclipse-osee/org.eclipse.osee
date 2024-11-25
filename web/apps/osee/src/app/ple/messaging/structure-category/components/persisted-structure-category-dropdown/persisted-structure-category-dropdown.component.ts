@@ -42,7 +42,6 @@ import {
 
 @Component({
 	selector: 'osee-persisted-structure-category-dropdown',
-	standalone: true,
 	imports: [StructureCategoryDropdownComponent],
 	template: `<osee-structure-category-dropdown
 		[required]="required()"

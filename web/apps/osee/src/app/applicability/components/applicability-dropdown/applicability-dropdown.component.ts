@@ -62,7 +62,6 @@ import {
  */
 @Component({
 	selector: 'osee-applicability-dropdown',
-	standalone: true,
 	template: `<mat-form-field
 		subscriptSizing="dynamic"
 		id="applicability-selector"

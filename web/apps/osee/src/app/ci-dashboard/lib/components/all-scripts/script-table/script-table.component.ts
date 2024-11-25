@@ -45,7 +45,6 @@ import { TeamSelectorComponent } from '../../team-selector/team-selector.compone
 
 @Component({
 	selector: 'osee-script-table',
-	standalone: true,
 	template: `<div
 		class="mat-elevation-z8 tw-h-[76vh] tw-w-screen tw-overflow-auto">
 		@if (scriptDefs | async; as _defs) {

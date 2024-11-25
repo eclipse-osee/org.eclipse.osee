@@ -49,7 +49,6 @@ import { FormsModule } from '@angular/forms';
  */
 @Component({
 	selector: 'osee-new-type-form',
-	standalone: true,
 	imports: [
 		MatDialogTitle,
 		MatStepper,
@@ -121,9 +120,9 @@ export class NewTypeFormComponent {
 		_platformType.interfacePlatformTypeValidRangeDescription.id = '-1';
 		_platformType.name.id = '-1';
 	});
-	close = output<boolean>();
+	closeForm = output<boolean>();
 
-	result = output<PlatformType>();
+	resultType = output<PlatformType>();
 
 	/**
 	 * Sets the current logical type
@@ -135,8 +134,8 @@ export class NewTypeFormComponent {
 	 * Closes the form and returns a result
 	 */
 	triggerClose() {
-		this.close.emit(true);
-		this.result.emit(this.platformType());
+		this.closeForm.emit(true);
+		this.resultType.emit(this.platformType());
 	}
 
 	isApplic(value: unknown): value is applic {

@@ -31,7 +31,6 @@ import { CurrentGraphService } from '../../services/current-graph.service';
 
 @Component({
 	selector: 'osee-graph-link-add-menu',
-	standalone: true,
 	imports: [MatMenuItem, MatTooltip, MatIcon],
 	template: ` <button
 		mat-menu-item

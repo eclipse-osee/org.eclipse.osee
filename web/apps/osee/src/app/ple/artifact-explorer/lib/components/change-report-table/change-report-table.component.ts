@@ -46,7 +46,6 @@ import { ChangeReportService } from './services/change-report.service';
 	selector: 'osee-change-report-table',
 	templateUrl: './change-report-table.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		NgClass,
 		AsyncPipe,

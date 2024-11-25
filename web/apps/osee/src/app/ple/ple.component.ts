@@ -17,7 +17,6 @@ import { RouterLink } from '@angular/router';
 @Component({
 	selector: 'osee-ple-main',
 	templateUrl: './ple.component.html',
-	standalone: true,
 	imports: [MatAnchor, RouterLink],
 })
 export class PleComponent {}

@@ -28,7 +28,6 @@ import { combineLatest, map, switchMap, tap } from 'rxjs';
 
 @Component({
 	selector: 'osee-create-action-working-branch-button',
-	standalone: true,
 	imports: [MatButton, MatIcon],
 	template: `<button
 		mat-raised-button

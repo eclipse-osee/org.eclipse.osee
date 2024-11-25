@@ -32,7 +32,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-api-key-form',
-	standalone: true,
 	imports: [
 		FormsModule,
 		MatCheckbox,

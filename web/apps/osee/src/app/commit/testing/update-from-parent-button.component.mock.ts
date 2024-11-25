@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2022 Boeing
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,14 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component } from '@angular/core';
-import { ToolbarComponent } from '../toolbar.component';
+import { Component, input } from '@angular/core';
+import { branch } from '@osee/shared/types';
 
 @Component({
-	selector: 'osee-osee-toolbar',
-	template: `<osee-toolbar [oseeToolbar]="true"></osee-toolbar>`,
-	imports: [ToolbarComponent],
+	selector: 'osee-update-from-parent-button',
+	template: '<div>Dummy</div>',
+	standalone: true,
 })
-export class OseeToolbarComponent {}
-
-export default OseeToolbarComponent;
+export class UpdateFromParentButtonComponentMock {
+	workingBranch = input.required<Pick<branch, 'id' | 'branchState'>>();
+}

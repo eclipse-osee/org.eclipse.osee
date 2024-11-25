@@ -20,7 +20,6 @@ import { NamedIdTableComponent } from './named-id-table/named-id-table.component
 import { toSignal } from '@angular/core/rxjs-interop';
 @Component({
 	selector: 'osee-impacted-connections-report',
-	standalone: true,
 	imports: [JsonPipe, AsyncPipe, NamedIdTableComponent],
 	template: `<h5 class="tw-p-4">Impacted Connections</h5>
 		<osee-named-id-table

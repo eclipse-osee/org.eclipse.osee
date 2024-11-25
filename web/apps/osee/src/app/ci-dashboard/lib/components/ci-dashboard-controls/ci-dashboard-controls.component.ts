@@ -27,7 +27,6 @@ import { CurrentActionDropDownComponent } from '@osee/configuration-management/c
 
 @Component({
 	selector: 'osee-ci-dashboard-controls',
-	standalone: true,
 	imports: [
 		BranchPickerComponent,
 		SetDropdownComponent,

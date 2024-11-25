@@ -32,7 +32,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-messaging-controls',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		RouterLink,

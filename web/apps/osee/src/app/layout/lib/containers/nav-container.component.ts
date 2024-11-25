@@ -23,7 +23,6 @@ import { map } from 'rxjs';
 
 @Component({
 	selector: 'osee-nav-container',
-	standalone: true,
 	templateUrl: './nav-container.component.html',
 	styles: [],
 	imports: [

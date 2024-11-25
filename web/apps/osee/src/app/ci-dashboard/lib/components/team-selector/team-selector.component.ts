@@ -46,7 +46,6 @@ import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 
 @Component({
 	selector: 'osee-team-selector',
-	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		MatFormField,

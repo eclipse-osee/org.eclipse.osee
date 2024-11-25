@@ -45,7 +45,6 @@ import { EnumFormComponent } from '../enum-form/enum-form.component';
 	selector: 'osee-edit-enum-set-field',
 	templateUrl: './edit-enum-set-field.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		FormsModule,
 		MatFormField,

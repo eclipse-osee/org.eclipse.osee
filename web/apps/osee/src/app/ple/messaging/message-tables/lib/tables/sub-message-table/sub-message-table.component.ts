@@ -82,7 +82,6 @@ import { EditViewFreeTextFieldDialogComponent } from '@osee/shared/components';
 	templateUrl: './sub-message-table.component.html',
 	styles: [],
 	changeDetection: ChangeDetectionStrategy.OnPush,
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		NgClass,

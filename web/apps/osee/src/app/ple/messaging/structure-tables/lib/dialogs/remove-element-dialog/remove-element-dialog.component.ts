@@ -24,7 +24,6 @@ import {
 @Component({
 	selector: 'osee-messaging-remove-element-dialog',
 	styles: [],
-	standalone: true,
 	imports: [
 		MatDialogTitle,
 		MatDialogContent,

@@ -33,7 +33,6 @@ import { CfgGroupDialog } from '../../types/pl-config-cfggroups';
 	selector: 'osee-plconfig-config-group-dialog',
 	templateUrl: './config-group-dialog.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		FormsModule,
 		MatDialogTitle,

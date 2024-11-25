@@ -27,7 +27,6 @@ import { PlMessagingTypesUIService } from '../../services/pl-messaging-types-ui.
 	selector: 'osee-messaging-usermenu',
 	templateUrl: './usermenu.component.html',
 	styles: [],
-	standalone: true,
 	imports: [MatButton, MatIcon, MatMenuItem],
 })
 export class UsermenuComponent {

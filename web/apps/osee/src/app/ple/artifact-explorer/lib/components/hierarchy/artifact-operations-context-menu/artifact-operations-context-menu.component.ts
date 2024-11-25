@@ -34,7 +34,6 @@ import { PublishMarkdownAsHtmlDialogComponent } from './dialogs/publish-markdown
 
 @Component({
 	selector: 'osee-artifact-operations-context-menu',
-	standalone: true,
 	imports: [AsyncPipe, MatMenuItem, MatIcon],
 	templateUrl: './artifact-operations-context-menu.component.html',
 })

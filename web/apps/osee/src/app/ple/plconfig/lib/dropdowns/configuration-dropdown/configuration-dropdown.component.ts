@@ -39,7 +39,6 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 	selector: 'osee-plconfig-configuration-dropdown',
 	templateUrl: './configuration-dropdown.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		MatMenuItem,

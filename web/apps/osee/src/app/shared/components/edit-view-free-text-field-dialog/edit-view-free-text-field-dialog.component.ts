@@ -32,7 +32,6 @@ import type { EditViewFreeTextDialog } from '@osee/messaging/shared/types';
 	selector: 'osee-messaging-edit-view-free-text-field-dialog',
 	templateUrl: './edit-view-free-text-field-dialog.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		FormsModule,

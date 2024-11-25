@@ -47,7 +47,6 @@ import { SplitApplicabilityPipe } from '../split-applicability.pipe';
 let nextUniqueId = 0;
 @Component({
 	selector: 'osee-plconfig-select-single-tuple',
-	standalone: true,
 	imports: [
 		MatFormField,
 		NgClass,

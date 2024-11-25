@@ -62,7 +62,6 @@ import { NewPlatformTypeFormComponent } from '../new-platform-type-form/new-plat
 
 @Component({
 	selector: 'osee-new-platform-type-form-page2',
-	standalone: true,
 	templateUrl: './new-platform-type-form-page2.component.html',
 	styles: [],
 	imports: [

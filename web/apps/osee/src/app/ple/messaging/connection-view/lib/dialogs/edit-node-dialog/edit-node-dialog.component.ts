@@ -56,7 +56,6 @@ import { NewNodeFormComponent } from '../../forms/new-node-form/new-node-form.co
 				Ok
 			</button>
 		</div>`,
-	standalone: true,
 	imports: [
 		MatDialogTitle,
 		MatDialogClose,

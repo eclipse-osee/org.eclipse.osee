@@ -39,7 +39,6 @@ import { AddStructureDialogComponent } from '../dialogs/add-structure-dialog/add
 
 @Component({
 	selector: 'osee-structure-table-toolbar-add-actions',
-	standalone: true,
 	imports: [
 		MatMiniFabButton,
 		MatIcon,

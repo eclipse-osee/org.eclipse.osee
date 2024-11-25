@@ -25,7 +25,6 @@ import {
 @Component({
 	selector: 'osee-messaging-help',
 	templateUrl: './messaging-help.component.html',
-	standalone: true,
 	imports: [
 		RouterOutlet,
 		MatSidenavContainer,

@@ -24,7 +24,6 @@ import { HasValidIdDirective } from '@osee/shared/validators';
 let nextUniqueId = 0;
 @Component({
 	selector: 'osee-logical-type-dropdown',
-	standalone: true,
 	imports: [
 		TitleCasePipe,
 		FormsModule,

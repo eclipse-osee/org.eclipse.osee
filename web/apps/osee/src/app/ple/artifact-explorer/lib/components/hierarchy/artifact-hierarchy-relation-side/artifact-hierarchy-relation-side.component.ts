@@ -36,7 +36,6 @@ import {
 
 @Component({
 	selector: 'osee-artifact-hierarchy-relation-side',
-	standalone: true,
 	imports: [
 		NgClass,
 		AsyncPipe,

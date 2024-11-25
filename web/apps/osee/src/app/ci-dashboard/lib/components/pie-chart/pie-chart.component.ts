@@ -17,7 +17,6 @@ import { NgChartsModule } from 'ng2-charts';
 
 @Component({
 	selector: 'osee-pie-chart',
-	standalone: true,
 	imports: [NgChartsModule, MatLabel],
 	templateUrl: './pie-chart.component.html',
 })

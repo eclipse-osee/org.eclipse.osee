@@ -19,7 +19,6 @@ import { AsyncPipe } from '@angular/common';
 
 @Component({
 	selector: 'osee-server-health-top',
-	standalone: true,
 	imports: [AsyncPipe],
 	templateUrl: './server-health-top.component.html',
 })

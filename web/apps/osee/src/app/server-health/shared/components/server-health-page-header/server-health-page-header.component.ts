@@ -15,7 +15,6 @@ import { MatIcon } from '@angular/material/icon';
 
 @Component({
 	selector: 'osee-server-health-page-header',
-	standalone: true,
 	imports: [MatIcon],
 	templateUrl: './server-health-page-header.component.html',
 })

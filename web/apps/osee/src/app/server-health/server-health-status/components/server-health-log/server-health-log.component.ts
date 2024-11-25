@@ -24,7 +24,6 @@ import { AsyncPipe } from '@angular/common';
 
 @Component({
 	selector: 'osee-server-health-log',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		CdkVirtualScrollViewport,

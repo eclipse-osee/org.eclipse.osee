@@ -47,7 +47,6 @@ import {
 
 @Component({
 	selector: 'osee-commit-manager-dialog',
-	standalone: true,
 	imports: [
 		CommitBranchButtonComponent,
 		MatDialogContent,

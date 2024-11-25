@@ -36,7 +36,6 @@ import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
 	selector: 'osee-single-diff',
 	templateUrl: './single-diff.component.html',
 	styles: [],
-	standalone: true,
 	imports: [FormsModule, AsyncPipe, MatButton, MatIcon, MatLine, MatLabel],
 	animations: [
 		trigger('expandButton', [

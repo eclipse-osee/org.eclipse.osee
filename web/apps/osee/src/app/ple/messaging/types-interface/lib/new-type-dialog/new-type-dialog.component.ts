@@ -19,7 +19,6 @@ import { PlatformType } from '@osee/messaging/shared/types';
 	selector: 'osee-new-type-dialog',
 	templateUrl: './new-type-dialog.component.html',
 	styles: [],
-	standalone: true,
 	imports: [NewTypeFormComponent],
 })
 export class NewTypeDialogComponent {

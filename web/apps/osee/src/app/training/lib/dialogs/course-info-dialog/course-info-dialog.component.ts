@@ -27,7 +27,6 @@ import { TrainingCourse } from '../../types/training-course';
 
 @Component({
 	selector: 'osee-course-info-dialog',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		MatDialogTitle,

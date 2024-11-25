@@ -26,7 +26,6 @@ import { StructuresUiService } from '@osee/messaging/shared/services';
 
 @Component({
 	selector: 'osee-structure-filter',
-	standalone: true,
 	imports: [
 		MatFormField,
 		MatLabel,

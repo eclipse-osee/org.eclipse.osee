@@ -63,7 +63,6 @@ import { applicabilitySentinel } from '@osee/applicability/types';
 @Component({
 	selector: 'osee-messaging-add-sub-message-dialog',
 	templateUrl: './add-sub-message-dialog.component.html',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		FormsModule,

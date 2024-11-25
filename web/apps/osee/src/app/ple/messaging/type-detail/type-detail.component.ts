@@ -22,7 +22,6 @@ import { filter, map, switchMap } from 'rxjs/operators';
 	selector: 'osee-messaging-type-detail',
 	templateUrl: './type-detail.component.html',
 	styles: [],
-	standalone: true,
 	imports: [AsyncPipe, PlatformTypeCardComponent],
 })
 export class TypeDetailComponent implements OnInit {

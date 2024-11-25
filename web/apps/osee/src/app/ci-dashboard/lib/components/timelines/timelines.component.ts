@@ -20,7 +20,6 @@ import { DashboardService } from '../../services/dashboard.service';
 
 @Component({
 	selector: 'osee-timelines',
-	standalone: true,
 	template: `<osee-ci-dashboard-controls />
 
 		@if (branchId() && branchType()) {

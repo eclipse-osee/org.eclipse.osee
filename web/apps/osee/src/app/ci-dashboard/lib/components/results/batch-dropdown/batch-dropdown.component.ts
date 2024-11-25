@@ -40,7 +40,6 @@ import { ScriptBatch } from '../../../types';
 
 @Component({
 	selector: 'osee-batch-dropdown',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		FormsModule,

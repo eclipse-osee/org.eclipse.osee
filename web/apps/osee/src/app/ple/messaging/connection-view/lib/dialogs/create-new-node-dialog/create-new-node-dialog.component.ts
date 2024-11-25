@@ -55,7 +55,6 @@ import { applicabilitySentinel } from '@osee/applicability/types';
 				Ok
 			</button>
 		</div>`,
-	standalone: true,
 	imports: [
 		MatDialogTitle,
 		MatDialogContent,

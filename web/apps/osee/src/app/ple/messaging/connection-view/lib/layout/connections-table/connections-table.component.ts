@@ -42,7 +42,6 @@ import { Subject, switchMap, takeUntil } from 'rxjs';
 
 @Component({
 	selector: 'osee-connections-table',
-	standalone: true,
 	imports: [
 		NgClass,
 		AsyncPipe,

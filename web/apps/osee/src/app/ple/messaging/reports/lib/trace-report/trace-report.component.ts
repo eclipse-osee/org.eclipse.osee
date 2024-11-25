@@ -31,7 +31,6 @@ import { TraceReportTableComponent } from './trace-report-table/trace-report-tab
 
 @Component({
 	selector: 'osee-trace-report',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		TraceReportTableComponent,

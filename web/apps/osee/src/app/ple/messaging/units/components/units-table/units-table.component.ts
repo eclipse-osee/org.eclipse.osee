@@ -47,7 +47,6 @@ import { filter, first, switchMap } from 'rxjs';
 
 @Component({
 	selector: 'osee-units-table',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		FormsModule,

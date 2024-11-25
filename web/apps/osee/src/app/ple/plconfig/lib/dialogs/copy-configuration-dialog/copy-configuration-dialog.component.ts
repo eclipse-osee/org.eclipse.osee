@@ -44,7 +44,6 @@ import { UiService } from '@osee/shared/services';
 	selector: 'osee-plconfig-copy-configuration-dialog',
 	templateUrl: './copy-configuration-dialog.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		FormsModule,
 		AsyncPipe,

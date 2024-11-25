@@ -68,7 +68,6 @@ import {
 let nextUniqueId = 0;
 @Component({
 	selector: 'osee-node-dropdown',
-	standalone: true,
 	imports: [
 		MatFormField,
 		MatLabel,

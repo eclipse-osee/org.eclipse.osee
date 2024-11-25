@@ -42,7 +42,6 @@ import { MatIcon } from '@angular/material/icon';
 
 @Component({
 	selector: 'osee-structure-table-no-edit-field',
-	standalone: true,
 	imports: [
 		MatIcon,
 		MatIconButton,

@@ -34,7 +34,6 @@ import { ColumnFilterComponent } from './column-filter/column-filter.component';
 	selector: 'osee-table-filter-component',
 	templateUrl: './table-filter.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		FormsModule,
 		ColumnFilterComponent,

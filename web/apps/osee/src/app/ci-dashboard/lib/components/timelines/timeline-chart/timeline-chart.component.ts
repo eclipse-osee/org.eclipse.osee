@@ -28,7 +28,6 @@ import { format } from 'date-fns';
 
 @Component({
 	selector: 'osee-timeline-chart',
-	standalone: true,
 	template: `<div class="tw-text-center">
 			<mat-label class="tw-text-lg tw-font-bold">{{ title }}</mat-label>
 		</div>

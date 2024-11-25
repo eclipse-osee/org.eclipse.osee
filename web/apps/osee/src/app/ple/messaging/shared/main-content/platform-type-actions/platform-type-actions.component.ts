@@ -29,7 +29,6 @@ import { PlatformType } from '@osee/messaging/shared/types';
 
 @Component({
 	selector: 'osee-platform-type-actions',
-	standalone: true,
 	imports: [MatButton, MatIcon, MatMenuItem, MatFabButton],
 	templateUrl: './platform-type-actions.component.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,

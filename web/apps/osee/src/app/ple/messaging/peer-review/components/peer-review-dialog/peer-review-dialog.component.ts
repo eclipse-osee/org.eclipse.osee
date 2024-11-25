@@ -35,7 +35,6 @@ import { MatIcon } from '@angular/material/icon';
 
 @Component({
 	selector: 'osee-peer-review-dialog',
-	standalone: true,
 	imports: [
 		FormsModule,
 		MatDialogTitle,

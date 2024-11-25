@@ -21,7 +21,6 @@ import { ArtifactHierarchyOptionsService } from '../../../services/artifact-hier
 
 @Component({
 	selector: 'osee-artifact-hierarchy-options',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		RouterLink,

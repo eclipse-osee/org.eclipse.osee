@@ -18,7 +18,6 @@ import { MatDialog } from '@angular/material/dialog';
 
 @Component({
 	selector: 'osee-peer-review-button',
-	standalone: true,
 	imports: [MatButton, MatIcon],
 	template: `<button
 		mat-flat-button

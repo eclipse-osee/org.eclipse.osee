@@ -35,7 +35,6 @@ import { ReportService } from '../services/report.service';
 
 @Component({
 	selector: 'osee-search-criteria',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		FormsModule,

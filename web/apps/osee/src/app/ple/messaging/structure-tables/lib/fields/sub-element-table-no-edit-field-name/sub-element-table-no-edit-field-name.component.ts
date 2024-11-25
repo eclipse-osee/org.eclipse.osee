@@ -17,7 +17,6 @@ import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 	selector: 'osee-messaging-sub-element-table-no-edit-field-name',
 	templateUrl: './sub-element-table-no-edit-field-name.component.html',
 	styles: [],
-	standalone: true,
 	imports: [HighlightFilteredTextDirective],
 })
 export class SubElementTableNoEditFieldNameComponent {

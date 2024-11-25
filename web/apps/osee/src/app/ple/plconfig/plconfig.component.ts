@@ -31,7 +31,6 @@ import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 @Component({
 	selector: 'osee-plconfig',
 	templateUrl: './plconfig.component.html',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		RouterLink,

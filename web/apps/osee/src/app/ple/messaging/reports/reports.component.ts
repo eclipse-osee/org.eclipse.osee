@@ -44,7 +44,6 @@ import { ViewSelectorComponent } from '@osee/shared/components';
 @Component({
 	selector: 'osee-messaging-reports',
 	templateUrl: './reports.component.html',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		RouterLink,

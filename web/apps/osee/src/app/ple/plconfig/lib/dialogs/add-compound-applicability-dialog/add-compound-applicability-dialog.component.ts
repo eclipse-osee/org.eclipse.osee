@@ -36,7 +36,6 @@ import {
 	selector: 'osee-add-compound-applicability-dialog',
 	templateUrl: './add-compound-applicability-dialog.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		FormsModule,

@@ -33,7 +33,6 @@ import { GenerateExportComponent } from '../../mnc/transferfileui/generate-expor
 import { TransferData } from '../types/transfer-file/transferdata';
 @Component({
 	selector: 'osee-transferfile',
-	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	templateUrl: './transferfileui.component.html',
 	imports: [

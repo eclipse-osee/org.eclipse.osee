@@ -18,7 +18,6 @@ import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 	selector: 'osee-structure-table-long-text-field',
 	template: `<div></div>`,
 	styles: [],
-	standalone: true,
 	imports: [NgClass, NgStyle, HighlightFilteredTextDirective, AsyncPipe],
 })
 export class MockStructureTableLongTextFieldComponent {
