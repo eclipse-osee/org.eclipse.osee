@@ -10,10 +10,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgClass, NgTemplateOutlet } from '@angular/common';
+import { NgClass, NgTemplateOutlet } from '@angular/common';
 import { Component, computed, input, output, inject } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
@@ -37,10 +37,8 @@ import { MergeManagerDialogComponent } from '@osee/commit/components';
 	templateUrl: './action-drop-down.component.html',
 	styles: [],
 	imports: [
-		AsyncPipe,
 		MatButton,
 		MatIcon,
-		MatIconButton,
 		MatMenuTrigger,
 		MatMenu,
 		MatMenuItem,

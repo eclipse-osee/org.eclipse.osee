@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgClass } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import {
 	Component,
 	computed,
@@ -28,7 +28,7 @@ import {
 } from '@angular/material/autocomplete';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { MatOption, MatSelect } from '@angular/material/select';
+import { MatOption } from '@angular/material/select';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
 import { applicWithGamma } from '@osee/applicability/types';
@@ -49,8 +49,6 @@ let nextUniqueId = 0;
 	selector: 'osee-plconfig-select-single-tuple',
 	imports: [
 		MatFormField,
-		NgClass,
-		MatSelect,
 		MatInput,
 		MatAutocomplete,
 		MatAutocompleteTrigger,
@@ -59,7 +57,6 @@ let nextUniqueId = 0;
 		FormsModule,
 		MatOption,
 		AsyncPipe,
-		SplitApplicabilityPipe,
 	],
 	template: ` <mat-form-field
 		subscriptSizing="dynamic"

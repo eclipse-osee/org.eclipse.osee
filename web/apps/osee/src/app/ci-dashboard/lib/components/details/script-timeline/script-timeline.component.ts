@@ -11,24 +11,16 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { MatFormField } from '@angular/material/form-field';
 import { NgChartsModule } from 'ng2-charts';
 import { CiDetailsService } from '../../../services/ci-details.service';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, NgIf } from '@angular/common';
 import { of, switchMap } from 'rxjs';
 import 'chartjs-adapter-date-fns';
 import { TimelineResultsChartComponent } from './timeline-results-chart/timeline-results-chart.component';
 
 @Component({
 	selector: 'osee-script-timeline',
-	imports: [
-		NgIf,
-		NgFor,
-		AsyncPipe,
-		NgChartsModule,
-		MatFormField,
-		TimelineResultsChartComponent,
-	],
+	imports: [NgIf, AsyncPipe, NgChartsModule, TimelineResultsChartComponent],
 	template: `<div>
 		<ng-container *ngIf="scriptResults | async as _results"
 			><osee-timeline-results-chart [timelineData]="_results"

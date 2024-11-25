@@ -11,8 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import { AddCoursesDialogComponent } from './lib/dialogs/add-courses-dialog/add-courses-dialog.component';
-import { AddRolesDialogComponent } from './lib/dialogs/add-roles-dialog/add-roles-dialog.component';
 import { EditCoursesDropdownComponent } from './lib/dropdowns/edit-courses-dropdown/edit-courses-dropdown.component';
 import { EditRolesDropdownComponent } from './lib/dropdowns/edit-roles-dropdown/edit-roles-dropdown.component';
 import { TrainingCourseTableComponent } from './lib/tables/training-course-table/training-course-table.component';
@@ -27,8 +25,6 @@ import { TrainingRoleTableComponent } from './lib/tables/training-role-table/tra
 		EditRolesDropdownComponent,
 		TrainingRoleTableComponent,
 		TrainingCourseTableComponent,
-		AddRolesDialogComponent,
-		AddCoursesDialogComponent,
 	],
 })
 export class TrainingComponent {}

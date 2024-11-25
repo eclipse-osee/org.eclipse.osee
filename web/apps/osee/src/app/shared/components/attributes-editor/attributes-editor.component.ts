@@ -10,8 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CdkTextareaAutosize } from '@angular/cdk/text-field';
-import { AsyncPipe, DatePipe, NgClass } from '@angular/common';
+import { DatePipe, NgClass } from '@angular/common';
 import { Component, Output, input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatOption, provideNativeDateAdapter } from '@angular/material/core';
@@ -23,7 +22,6 @@ import {
 import { MatFormField, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatSelect } from '@angular/material/select';
-import { FormDirective } from '@osee/shared/directives';
 import { attribute } from '@osee/shared/types';
 import { provideOptionalControlContainerNgForm } from '@osee/shared/utils';
 import { BehaviorSubject } from 'rxjs';
@@ -40,24 +38,20 @@ import { AttributeEnumsDropdownComponent } from './attribute-enums-dropdown/attr
 	selector: 'osee-attributes-editor',
 	imports: [
 		NgClass,
-		AsyncPipe,
 		AttributeEnumsDropdownComponent,
 		FormsModule,
 		MatFormField,
 		MatInput,
-		CdkTextareaAutosize,
 		MatSelect,
 		MatOption,
 		MatDatepicker,
 		MatDatepickerToggle,
 		MatDatepickerInput,
 		MatSuffix,
-		FormDirective,
 		MarkdownEditorComponent,
 		AttributeNameTrimPipe,
 		IfIdReturnFalsePipe,
 		StringToDatePipe,
-		DatePipe,
 	],
 	providers: [provideNativeDateAdapter()],
 	templateUrl: './attributes-editor.component.html',

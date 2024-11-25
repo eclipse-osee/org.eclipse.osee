@@ -23,7 +23,6 @@ import { STRUCTURE_SERVICE_TOKEN } from '@osee/messaging/shared/tokens';
 import { CurrentViewSelectorComponent } from '@osee/shared/components';
 import { switchMap, iif, of } from 'rxjs';
 import { StructureTableComponent } from '../tables/structure-table/structure-table.component';
-import { StructureFilterComponent } from '../structure-filter/structure-filter.component';
 import { StructureTableToolbarComponent } from '../structure-table-toolbar/structure-table-toolbar.component';
 
 @Component({
@@ -31,7 +30,6 @@ import { StructureTableToolbarComponent } from '../structure-table-toolbar/struc
 	imports: [
 		StructureTableToolbarComponent,
 		StructureTableComponent,
-		StructureFilterComponent,
 		MessagingControlsComponent,
 		CurrentViewSelectorComponent,
 		AsyncPipe,

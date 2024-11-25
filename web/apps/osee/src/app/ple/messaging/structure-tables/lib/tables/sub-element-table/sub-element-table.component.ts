@@ -57,7 +57,7 @@ import {
 	MatTableDataSource,
 } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { applic, applicabilitySentinel } from '@osee/applicability/types';
 import { LayoutNotifierService } from '@osee/layout/notification';
 import { HeaderService } from '@osee/messaging/shared/services';
@@ -86,7 +86,6 @@ import { MatBadge } from '@angular/material/badge';
 	imports: [
 		NgClass,
 		AsyncPipe,
-		RouterLink,
 		CdkDrag,
 		CdkDragHandle,
 		CdkDropList,

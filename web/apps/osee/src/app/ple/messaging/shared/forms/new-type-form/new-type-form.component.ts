@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, KeyValuePipe, TitleCasePipe } from '@angular/common';
+import { KeyValuePipe, TitleCasePipe } from '@angular/common';
 import {
 	Component,
 	effect,
@@ -59,7 +59,6 @@ import { FormsModule } from '@angular/forms';
 		MatStepperNext,
 		MatLabel,
 		MatStepperPrevious,
-		AsyncPipe,
 		TitleCasePipe,
 		KeyValuePipe,
 		LogicalTypeSelectorComponent,

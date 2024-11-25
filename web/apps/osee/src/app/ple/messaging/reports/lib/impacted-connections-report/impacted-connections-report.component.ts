@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, JsonPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ReportsService } from '@osee/messaging/shared/services';
@@ -20,7 +19,7 @@ import { NamedIdTableComponent } from './named-id-table/named-id-table.component
 import { toSignal } from '@angular/core/rxjs-interop';
 @Component({
 	selector: 'osee-impacted-connections-report',
-	imports: [JsonPipe, AsyncPipe, NamedIdTableComponent],
+	imports: [NamedIdTableComponent],
 	template: `<h5 class="tw-p-4">Impacted Connections</h5>
 		<osee-named-id-table
 			[content]="impactedConnections()"></osee-named-id-table>`,

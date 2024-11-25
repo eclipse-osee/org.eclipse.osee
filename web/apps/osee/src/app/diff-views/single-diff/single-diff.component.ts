@@ -20,7 +20,6 @@ import {
 import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButton } from '@angular/material/button';
 import { MatLine } from '@angular/material/core';
 import { MatLabel } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
@@ -36,7 +35,7 @@ import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
 	selector: 'osee-single-diff',
 	templateUrl: './single-diff.component.html',
 	styles: [],
-	imports: [FormsModule, AsyncPipe, MatButton, MatIcon, MatLine, MatLabel],
+	imports: [FormsModule, AsyncPipe, MatIcon, MatLine, MatLabel],
 	animations: [
 		trigger('expandButton', [
 			state('closed', style({ transform: 'rotate(180deg)' })),

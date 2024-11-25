@@ -24,11 +24,7 @@ import {
 	MatAutocompleteTrigger,
 	MatOption,
 } from '@angular/material/autocomplete';
-import {
-	MatFormField,
-	MatPrefix,
-	MatSuffix,
-} from '@angular/material/form-field';
+import { MatFormField, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
 import { DashboardService } from '../../services/dashboard.service';
@@ -57,7 +53,6 @@ import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 		MatOption,
 		MatIcon,
 		MatSuffix,
-		MatPrefix,
 	],
 	template: `
 		<mat-form-field

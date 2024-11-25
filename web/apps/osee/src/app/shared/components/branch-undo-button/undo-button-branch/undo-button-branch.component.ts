@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, inject } from '@angular/core';
-import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { CurrentBranchTransactionService } from '../internal/services/current-branch-transaction.service';
@@ -19,7 +19,7 @@ import { CurrentBranchTransactionService } from '../internal/services/current-br
 @Component({
 	selector: 'osee-undo-button-branch',
 	styles: [],
-	imports: [MatButton, MatIconButton, MatIcon, MatTooltip],
+	imports: [MatIconButton, MatIcon, MatTooltip],
 	template: `<button
 		mat-icon-button
 		(click)="undo()"

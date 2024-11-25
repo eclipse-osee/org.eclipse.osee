@@ -25,12 +25,6 @@ import {
 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import {
-	MatMenu,
-	MatMenuContent,
-	MatMenuItem,
-	MatMenuTrigger,
-} from '@angular/material/menu';
-import {
 	MatCell,
 	MatCellDef,
 	MatColumnDef,
@@ -43,7 +37,6 @@ import {
 	MatTable,
 	MatTableDataSource,
 } from '@angular/material/table';
-import { RouterLink } from '@angular/router';
 import { iif, of } from 'rxjs';
 import {
 	map,
@@ -63,21 +56,11 @@ import {
 import { AsyncPipe, NgClass } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { MatButton } from '@angular/material/button';
-import {
-	MatFormField,
-	MatHint,
-	MatLabel,
-	MatPrefix,
-} from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
-import { MatInput } from '@angular/material/input';
-import { MatPaginator } from '@angular/material/paginator';
 import { MatTooltip } from '@angular/material/tooltip';
 import { PersistedApplicabilityDropdownComponent } from '@osee/applicability/persisted-applicability-dropdown';
 import { applic } from '@osee/applicability/types';
 import { PersistedBooleanAttributeToggleComponent } from '@osee/attributes/persisted-boolean-attribute-toggle';
-import { PersistedNumberAttributeInputComponent } from '@osee/attributes/persisted-number-attribute-input';
 import { PersistedStringAttributeInputComponent } from '@osee/attributes/persisted-string-attribute-input';
 import { PersistedMessagePeriodicityDropdownComponent } from '@osee/messaging/message-periodicity/persisted-message-periodicity-dropdown';
 import { PersistedMessageTypeDropdownComponent } from '@osee/messaging/message-type/persisted-message-type-dropdown';
@@ -101,7 +84,6 @@ import {
 import { MessageMenuComponent } from '../../menus/message-menu/message-menu.component';
 import { MessageImpactsValidatorDirective } from '../../message-impacts-validator.directive';
 import { SubMessageTableComponent } from '../sub-message-table/sub-message-table.component';
-import { CurrentViewSelectorComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-messaging-message-table',
@@ -132,18 +114,12 @@ import { CurrentViewSelectorComponent } from '@osee/shared/components';
 	],
 	imports: [
 		AsyncPipe,
-		RouterLink,
 		FormsModule,
 		NgClass,
 		CdkDrag,
 		CdkDragHandle,
 		CdkDropList,
-		MatFormField,
-		MatLabel,
-		MatInput,
 		MatIcon,
-		MatPrefix,
-		MatHint,
 		MatTable,
 		MatColumnDef,
 		MatHeaderCell,
@@ -151,26 +127,18 @@ import { CurrentViewSelectorComponent } from '@osee/shared/components';
 		MatTooltip,
 		MatCell,
 		MatCellDef,
-		MatButton,
 		MatHeaderRow,
 		MatHeaderRowDef,
 		MatRow,
 		MatRowDef,
-		MatPaginator,
-		MatMenu,
-		MatMenuContent,
-		MatMenuItem,
-		MatMenuTrigger,
 		HighlightFilteredTextDirective,
 		SubMessageTableComponent,
 		PersistedApplicabilityDropdownComponent,
-		PersistedNumberAttributeInputComponent,
 		PersistedStringAttributeInputComponent,
 		PersistedBooleanAttributeToggleComponent,
 		PersistedMessagePeriodicityDropdownComponent,
 		PersistedMessageTypeDropdownComponent,
 		PersistedRateDropdownComponent,
-		CurrentViewSelectorComponent,
 		PersistedPublisherNodeDropdownComponent,
 		PersistedSubscriberNodeDropdownComponent,
 		MessageMenuComponent,

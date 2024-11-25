@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CiDashboardControlsComponent } from '../ci-dashboard-controls/ci-dashboard-controls.component';
 import { TimelineChartComponent } from './timeline-chart/timeline-chart.component';
@@ -44,13 +44,7 @@ import { DashboardService } from '../../services/dashboard.service';
 				}
 			</div>
 		}`,
-	imports: [
-		AsyncPipe,
-		NgIf,
-		NgFor,
-		CiDashboardControlsComponent,
-		TimelineChartComponent,
-	],
+	imports: [AsyncPipe, CiDashboardControlsComponent, TimelineChartComponent],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class TimelinesComponent {

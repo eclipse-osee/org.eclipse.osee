@@ -28,12 +28,7 @@ import { applicabilitySentinel } from '@osee/applicability/types';
 import { FormsModule } from '@angular/forms';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
-import {
-	MatButton,
-	MatFabButton,
-	MatIconButton,
-	MatMiniFabButton,
-} from '@angular/material/button';
+import { MatIconButton, MatMiniFabButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -62,9 +57,7 @@ import { filter, first, switchMap } from 'rxjs';
 		MatHeaderRowDef,
 		MatTooltip,
 		MatIcon,
-		MatButton,
 		MatIconButton,
-		MatFabButton,
 		MatMiniFabButton,
 		MatFormField,
 		MatInput,

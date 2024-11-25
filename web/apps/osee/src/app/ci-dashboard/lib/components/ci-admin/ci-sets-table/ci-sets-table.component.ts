@@ -33,12 +33,7 @@ import { FormsModule } from '@angular/forms';
 import { PersistedBooleanAttributeToggleComponent } from '@osee/attributes/persisted-boolean-attribute-toggle';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
-import {
-	MatButton,
-	MatFabButton,
-	MatIconButton,
-	MatMiniFabButton,
-} from '@angular/material/button';
+import { MatIconButton, MatMiniFabButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { CreateCiSetDialogComponent } from './create-ci-set-dialog/create-ci-set-dialog.component';
 import { filter, first, switchMap } from 'rxjs';
@@ -61,9 +56,7 @@ import { MatInput } from '@angular/material/input';
 		MatHeaderRowDef,
 		MatTooltip,
 		MatIcon,
-		MatButton,
 		MatIconButton,
-		MatFabButton,
 		MatMiniFabButton,
 		MatFormField,
 		MatInput,

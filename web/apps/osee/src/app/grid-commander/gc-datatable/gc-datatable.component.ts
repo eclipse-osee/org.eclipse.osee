@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { SelectionModel } from '@angular/cdk/collections';
-import { AsyncPipe, NgClass } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import {
 	AfterViewInit,
 	Component,
@@ -73,7 +73,6 @@ import { NoDataToDisplayComponent } from './no-data-to-display/no-data-to-displa
 	styles: [],
 	imports: [
 		FormsModule,
-		NgClass,
 		NoDataToDisplayComponent,
 		AsyncPipe,
 		MatTable,

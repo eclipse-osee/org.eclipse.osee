@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -55,7 +54,6 @@ import { UiService } from '@osee/shared/services';
 		MatDialogActions,
 		MatButton,
 		MatDialogClose,
-		CdkTrapFocus,
 	],
 })
 export class CopyConfigurationDialogComponent {

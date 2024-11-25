@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
@@ -21,7 +20,7 @@ import {
 	model,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatButton } from '@angular/material/button';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import {
@@ -73,8 +72,6 @@ import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 		MatRow,
 		MatRowDef,
 		MatButton,
-		MatIconButton,
-		AsyncPipe,
 		ApplicabilityDropdownComponent,
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,

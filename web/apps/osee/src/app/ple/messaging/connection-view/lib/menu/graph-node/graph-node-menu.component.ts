@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
@@ -122,7 +121,6 @@ import { GraphNodeRemoveMenuComponent } from './graph-node-remove-menu.component
 		MatMenuTrigger,
 		MatMenu,
 		MatIcon,
-		AsyncPipe,
 		GraphNodeEditMenuComponent,
 		GraphNodeAddMenuComponent,
 		GraphNodeRemoveMenuComponent,

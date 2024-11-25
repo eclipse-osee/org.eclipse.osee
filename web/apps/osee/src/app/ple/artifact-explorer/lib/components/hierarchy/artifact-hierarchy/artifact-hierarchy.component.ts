@@ -14,16 +14,12 @@ import { CdkDrag } from '@angular/cdk/drag-drop';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { Component, Input, input, viewChild, inject } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
-import { MatListItemIcon } from '@angular/material/list';
 import {
 	MatMenu,
 	MatMenuContent,
 	MatMenuTrigger,
 } from '@angular/material/menu';
-import {
-	BranchPickerComponent,
-	ExpandIconComponent,
-} from '@osee/shared/components';
+import { ExpandIconComponent } from '@osee/shared/components';
 import { UiService } from '@osee/shared/services';
 import {
 	BehaviorSubject,
@@ -51,11 +47,9 @@ import { ArtifactOperationsContextMenuComponent } from '../artifact-operations-c
 	imports: [
 		NgClass,
 		AsyncPipe,
-		BranchPickerComponent,
 		ArtifactHierarchyRelationsComponent,
 		ArtifactOperationsContextMenuComponent,
 		MatIcon,
-		MatListItemIcon,
 		CdkDrag,
 		MatMenuTrigger,
 		MatMenu,
