@@ -31,7 +31,6 @@ import { ServerHealthHttpService } from '../../../shared/services/server-health-
 
 @Component({
 	selector: 'osee-server-health-java',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		MatTable,

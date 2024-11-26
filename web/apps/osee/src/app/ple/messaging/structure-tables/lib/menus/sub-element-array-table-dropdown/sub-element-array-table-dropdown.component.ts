@@ -52,7 +52,6 @@ import { MoveArrayElementDialogComponent } from '../../dialogs/move-array-elemen
 @Component({
 	selector:
 		'osee-sub-element-array-table-dropdown[element][headerElement][header][branchId][branchType][editMode]',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		RouterLink,

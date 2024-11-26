@@ -68,7 +68,6 @@ import {
 	selector: 'osee-edit-type-dialog',
 	templateUrl: './edit-type-dialog.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		FormsModule,
 		AsyncPipe,

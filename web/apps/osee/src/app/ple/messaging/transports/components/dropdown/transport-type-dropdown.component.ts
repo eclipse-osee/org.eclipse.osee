@@ -24,7 +24,6 @@ let nextUniqueId = 0;
 
 @Component({
 	selector: 'osee-transport-type-dropdown',
-	standalone: true,
 	imports: [
 		MatFormField,
 		MatLabel,

@@ -28,7 +28,6 @@ import { applicabilitySentinel } from '@osee/applicability/types';
 
 @Component({
 	selector: 'osee-message-table-toolbar-add-actions',
-	standalone: true,
 	imports: [
 		MatMiniFabButton,
 		MatIcon,

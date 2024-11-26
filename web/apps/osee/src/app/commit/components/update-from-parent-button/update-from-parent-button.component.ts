@@ -26,7 +26,6 @@ import { NgClass } from '@angular/common';
 
 @Component({
 	selector: 'osee-update-from-parent-button',
-	standalone: true,
 	imports: [MatButton, MatTooltip, MatIcon, NgClass],
 	template: `<button
 		mat-raised-button

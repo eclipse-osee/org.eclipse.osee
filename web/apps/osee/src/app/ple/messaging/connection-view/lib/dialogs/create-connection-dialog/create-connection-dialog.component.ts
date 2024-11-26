@@ -27,7 +27,7 @@ import {
 	MatDialogRef,
 	MatDialogTitle,
 } from '@angular/material/dialog';
-import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { NodeDropdownComponent } from '@osee/messaging/nodes/dropdown';
 import type { connection, nodeData } from '@osee/messaging/shared/types';
@@ -116,7 +116,6 @@ import { writableSlice } from '@osee/shared/utils';
 			</button>
 		</div>
 	</form>`,
-	standalone: true,
 	imports: [
 		MatDialogTitle,
 		MatDialogContent,
@@ -124,7 +123,6 @@ import { writableSlice } from '@osee/shared/utils';
 		MatDialogClose,
 		MatFormField,
 		MatLabel,
-		MatError,
 		FormsModule,
 		MatInput,
 		MatButton,

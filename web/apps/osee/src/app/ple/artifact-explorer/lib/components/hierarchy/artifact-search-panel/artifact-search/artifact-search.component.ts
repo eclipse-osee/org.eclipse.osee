@@ -58,7 +58,6 @@ import {
 
 @Component({
 	selector: 'osee-artifact-search',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		FormsModule,

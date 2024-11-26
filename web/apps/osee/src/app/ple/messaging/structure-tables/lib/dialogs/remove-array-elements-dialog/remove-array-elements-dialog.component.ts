@@ -22,7 +22,6 @@ import {
 
 @Component({
 	selector: 'osee-remove-array-elements-dialog',
-	standalone: true,
 	imports: [
 		MatDialogTitle,
 		MatDialogContent,

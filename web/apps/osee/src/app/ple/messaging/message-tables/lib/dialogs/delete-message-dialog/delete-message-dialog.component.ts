@@ -26,7 +26,6 @@ import { AttributeToValuePipe } from '@osee/attributes/pipes';
 @Component({
 	selector: 'osee-messaging-delete-message-dialog',
 	templateUrl: './delete-message-dialog.component.html',
-	standalone: true,
 	imports: [
 		MatDialogTitle,
 		MatDialogContent,

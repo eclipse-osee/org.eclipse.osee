@@ -24,7 +24,6 @@ import { AsyncPipe } from '@angular/common';
 	selector: 'osee-parameter-string',
 	templateUrl: './parameter-string.component.html',
 	styles: [],
-	standalone: true,
 	imports: [InputControlComponent, AsyncPipe],
 })
 export class ParameterStringComponent implements OnDestroy {

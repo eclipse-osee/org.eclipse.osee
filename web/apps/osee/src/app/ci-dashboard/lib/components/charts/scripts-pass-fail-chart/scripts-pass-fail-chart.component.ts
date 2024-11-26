@@ -16,7 +16,6 @@ import { CIStats, teamStatsSentinel } from '../../../types/ci-stats';
 
 @Component({
 	selector: 'osee-scripts-pass-fail-chart',
-	standalone: true,
 	imports: [PieChartComponent],
 	templateUrl: './scripts-pass-fail-chart.component.html',
 })

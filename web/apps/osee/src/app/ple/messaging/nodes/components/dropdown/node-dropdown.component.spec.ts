@@ -28,7 +28,6 @@ describe('NodeDropdownComponent', () => {
 	let fixture: ComponentFixture<ParentDriverComponent>;
 	@Component({
 		selector: 'osee-test-standalone-form',
-		standalone: true,
 		imports: [FormsModule, NodeDropdownComponent],
 		template: `<form #testForm="ngForm">
 			<osee-node-dropdown

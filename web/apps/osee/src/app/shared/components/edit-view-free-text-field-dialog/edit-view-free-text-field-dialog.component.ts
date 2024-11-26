@@ -11,7 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
-import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
@@ -32,9 +31,7 @@ import type { EditViewFreeTextDialog } from '@osee/messaging/shared/types';
 	selector: 'osee-messaging-edit-view-free-text-field-dialog',
 	templateUrl: './edit-view-free-text-field-dialog.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
-		AsyncPipe,
 		FormsModule,
 		MatDialogTitle,
 		MatDialogContent,

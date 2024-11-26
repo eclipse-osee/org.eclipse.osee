@@ -65,7 +65,6 @@ import { concatMap, filter, map, reduce, switchMap, tap } from 'rxjs/operators';
 @Component({
 	selector: 'osee-import',
 	templateUrl: './import.component.html',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		FormsModule,

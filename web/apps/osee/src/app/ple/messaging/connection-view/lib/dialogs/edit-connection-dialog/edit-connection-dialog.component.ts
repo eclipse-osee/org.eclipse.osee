@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
@@ -19,7 +18,6 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
-import { MatOption } from '@angular/material/core';
 import {
 	MAT_DIALOG_DATA,
 	MatDialogActions,
@@ -30,11 +28,9 @@ import {
 } from '@angular/material/dialog';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { MatSelect } from '@angular/material/select';
 import { ApplicabilityDropdownComponent } from '@osee/applicability/applicability-dropdown';
 import type { connection } from '@osee/messaging/shared/types';
 import { TransportTypeDropdownComponent } from '@osee/messaging/transports/dropdown';
-import { MatOptionLoadingComponent } from '@osee/shared/components';
 import { writableSlice } from '@osee/shared/utils';
 
 @Component({
@@ -89,7 +85,6 @@ import { writableSlice } from '@osee/shared/utils';
 				Ok
 			</button>
 		</div>`,
-	standalone: true,
 	imports: [
 		MatDialogTitle,
 		MatDialogContent,
@@ -99,10 +94,6 @@ import { writableSlice } from '@osee/shared/utils';
 		MatLabel,
 		FormsModule,
 		MatInput,
-		MatSelect,
-		MatOptionLoadingComponent,
-		MatOption,
-		AsyncPipe,
 		MatButton,
 		ApplicabilityDropdownComponent,
 		TransportTypeDropdownComponent,

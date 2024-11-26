@@ -19,7 +19,6 @@ import { WorktypeService } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-branch-picker',
-	standalone: true,
 	imports: [BranchTypeSelectorComponent, BranchSelectorComponent],
 	template: `<div class="tw-flex tw-flex-col">
 		<osee-branch-type-selector />

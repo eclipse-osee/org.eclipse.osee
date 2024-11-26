@@ -30,7 +30,6 @@ import { CISet } from '../../../../types';
 
 @Component({
 	selector: 'osee-create-ci-set-dialog',
-	standalone: true,
 	imports: [
 		FormsModule,
 		MatDialogTitle,

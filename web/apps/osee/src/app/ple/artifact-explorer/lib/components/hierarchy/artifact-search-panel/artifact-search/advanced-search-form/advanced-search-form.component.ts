@@ -34,7 +34,6 @@ import {
 
 @Component({
 	selector: 'osee-advanced-search-form',
-	standalone: true,
 	imports: [
 		FormsModule,
 		MatFormField,

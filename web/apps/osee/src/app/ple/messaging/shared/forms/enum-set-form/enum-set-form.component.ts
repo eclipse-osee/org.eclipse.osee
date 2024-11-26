@@ -11,7 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
-import { AsyncPipe } from '@angular/common';
 import { Component, Input, Output, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
@@ -37,7 +36,6 @@ import { EnumFormComponent } from '../../forms/enum-form/enum-form.component';
 	selector: 'osee-enum-set-form',
 	templateUrl: './enum-set-form.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		FormsModule,
 		MatFormField,
@@ -48,7 +46,6 @@ import { EnumFormComponent } from '../../forms/enum-form/enum-form.component';
 		MatIcon,
 		MatError,
 		CdkTextareaAutosize,
-		AsyncPipe,
 		EnumFormComponent,
 		EnumSetUniqueDescriptionDirective,
 		ApplicabilityDropdownComponent,

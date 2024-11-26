@@ -17,7 +17,6 @@ import {
 	transition,
 	trigger,
 } from '@angular/animations';
-import { AsyncPipe } from '@angular/common';
 import { Component, input, model, signal, inject } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -62,14 +61,12 @@ import { NewPlatformTypeFormComponent } from '../new-platform-type-form/new-plat
 
 @Component({
 	selector: 'osee-new-platform-type-form-page2',
-	standalone: true,
 	templateUrl: './new-platform-type-form-page2.component.html',
 	styles: [],
 	imports: [
 		NewPlatformTypeFormComponent,
 		MatOptionLoadingComponent,
 		EnumSetFormComponent,
-		AsyncPipe,
 		FormsModule,
 		MatDialogContent,
 		MatFormField,

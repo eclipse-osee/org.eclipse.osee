@@ -42,7 +42,6 @@ import {
 
 @Component({
 	selector: 'osee-persisted-message-type-dropdown',
-	standalone: true,
 	imports: [MessageTypeDropdownComponent],
 	template: `<osee-message-type-dropdown
 		[required]="required()"

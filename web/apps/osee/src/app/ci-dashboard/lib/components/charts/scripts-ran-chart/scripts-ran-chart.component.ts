@@ -16,7 +16,6 @@ import { CIStats, teamStatsSentinel } from '../../../types/ci-stats';
 
 @Component({
 	selector: 'osee-scripts-ran-chart',
-	standalone: true,
 	imports: [PieChartComponent],
 	templateUrl: './scripts-ran-chart.component.html',
 })

@@ -46,13 +46,11 @@ import {
 	filter,
 	switchMap,
 } from 'rxjs';
-import { MatOptionLoadingComponent } from '../../mat-option-loading/mat-option-loading/mat-option-loading.component';
 
 let nextUniqueId = 0;
 
 @Component({
 	selector: 'osee-attribute-enums-dropdown',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		FormsModule,
@@ -64,7 +62,6 @@ let nextUniqueId = 0;
 		MatSuffix,
 		MatIconButton,
 		MatOption,
-		MatOptionLoadingComponent,
 	],
 	templateUrl: './attribute-enums-dropdown.component.html',
 	viewProviders: [provideOptionalControlContainerNgForm()],

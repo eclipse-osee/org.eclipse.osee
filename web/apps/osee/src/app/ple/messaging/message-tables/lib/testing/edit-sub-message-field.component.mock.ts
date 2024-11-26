@@ -15,7 +15,6 @@ import { Component, Input } from '@angular/core';
 @Component({
 	selector: 'osee-messaging-edit-sub-message-field',
 	template: '<button>Ok</button>',
-	standalone: true,
 	imports: [],
 })
 export class MockEditMessageFieldComponent<T = unknown, R = unknown> {

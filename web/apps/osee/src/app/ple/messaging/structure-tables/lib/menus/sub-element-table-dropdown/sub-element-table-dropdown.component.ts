@@ -52,7 +52,6 @@ import { MoveElementDialogComponent } from '../../dialogs/move-element-dialog/mo
  */
 @Component({
 	selector: 'osee-sub-element-table-dropdown',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		RouterLink,

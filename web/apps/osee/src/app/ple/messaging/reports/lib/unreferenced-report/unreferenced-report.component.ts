@@ -48,7 +48,6 @@ type warningDialogTypes =
 
 @Component({
 	selector: 'osee-unreferenced-report',
-	standalone: true,
 	imports: [NamedIdTableComponent],
 	template: `
 		<div class="tw-px-4 tw-py-2 tw-text-xl">Platform Types</div>

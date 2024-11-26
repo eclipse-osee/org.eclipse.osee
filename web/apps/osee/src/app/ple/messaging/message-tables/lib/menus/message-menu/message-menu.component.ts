@@ -45,7 +45,6 @@ import { EditViewFreeTextFieldDialogComponent } from '@osee/shared/components';
 
 @Component({
 	selector: 'osee-message-menu',
-	standalone: true,
 	imports: [
 		MatMenu,
 		MatIcon,
@@ -288,14 +287,11 @@ export class MessageMenuComponent {
 	protected menuPositionX = computed(() => this.menuData().x);
 	protected menuPositionY = computed(() => this.menuData().y);
 	protected matMenuTrigger = viewChild.required(MatMenuTrigger);
-	private _openMenu = effect(
-		() => {
-			if (this.open()) {
-				this.matMenuTrigger().openMenu();
-			}
-		},
-		{ allowSignalWrites: true }
-	);
+	private _openMenu = effect(() => {
+		if (this.open()) {
+			this.matMenuTrigger().openMenu();
+		}
+	});
 
 	protected copyTooltip = computed(() => {
 		if (this.inEditMode() === false) {

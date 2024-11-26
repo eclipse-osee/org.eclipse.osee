@@ -26,7 +26,6 @@ describe('PersistedApplicabilityDropdownComponent', () => {
 
 	@Component({
 		selector: 'osee-test-standalone-form',
-		standalone: true,
 		imports: [FormsModule, PersistedApplicabilityDropdownComponent],
 		template: `<form #testForm="ngForm">
 			<osee-persisted-applicability-dropdown

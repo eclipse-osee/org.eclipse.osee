@@ -42,7 +42,6 @@ import { moveLocation, moveLocations } from '../../types/structure-tables';
 
 @Component({
 	selector: 'osee-move-element-dialog',
-	standalone: true,
 	imports: [
 		MatDialogContent,
 		MatDialogActions,

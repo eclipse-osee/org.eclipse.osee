@@ -15,16 +15,13 @@ import { Component, inject } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatTooltip } from '@angular/material/tooltip';
-import { RouterLink } from '@angular/router';
 import { map, take } from 'rxjs';
 import { ArtifactHierarchyOptionsService } from '../../../services/artifact-hierarchy-options.service';
 
 @Component({
 	selector: 'osee-artifact-hierarchy-options',
-	standalone: true,
 	imports: [
 		AsyncPipe,
-		RouterLink,
 		MatMenuTrigger,
 		MatTooltip,
 		MatIcon,

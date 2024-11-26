@@ -10,9 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { MatButton } from '@angular/material/button';
 import {
 	MatCard,
 	MatCardActions,
@@ -22,7 +20,6 @@ import {
 	MatCardTitle,
 	MatCardTitleGroup,
 } from '@angular/material/card';
-import { MatIcon } from '@angular/material/icon';
 import type { PlatformType } from '@osee/messaging/shared/types';
 import { PlatformTypeActionsComponent } from '../platform-type-actions/platform-type-actions.component';
 import { AttributeToValuePipe } from '@osee/attributes/pipes';
@@ -31,9 +28,7 @@ import { AttributeToValuePipe } from '@osee/attributes/pipes';
 	selector: 'osee-messaging-types-platform-type-card',
 	templateUrl: './platform-type-card.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
-		AsyncPipe,
 		MatCard,
 		MatCardHeader,
 		MatCardTitleGroup,
@@ -41,8 +36,6 @@ import { AttributeToValuePipe } from '@osee/attributes/pipes';
 		MatCardSubtitle,
 		MatCardContent,
 		MatCardActions,
-		MatButton,
-		MatIcon,
 		PlatformTypeActionsComponent,
 		AttributeToValuePipe,
 	],

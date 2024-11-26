@@ -43,7 +43,6 @@ import { ControlContainer } from '@angular/forms';
 
 @Component({
 	selector: 'osee-persisted-number-attribute-input',
-	standalone: true,
 	imports: [FocusLostInputComponent],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	template: ` <osee-focus-lost-input

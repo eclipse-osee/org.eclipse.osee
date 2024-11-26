@@ -18,7 +18,6 @@ import { RelationsEditorPanelComponent } from '../relations-editor-panel/relatio
 
 @Component({
 	selector: 'osee-artifact-editor',
-	standalone: true,
 	imports: [
 		RelationsEditorPanelComponent,
 		ArtifactInfoPanelComponent,

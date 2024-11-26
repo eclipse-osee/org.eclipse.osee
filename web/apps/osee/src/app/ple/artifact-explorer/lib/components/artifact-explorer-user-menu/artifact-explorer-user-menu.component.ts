@@ -21,7 +21,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-artifact-explorer-user-menu',
-	standalone: true,
 	imports: [MatIcon, MatMenuItem],
 	template: `
 		<button

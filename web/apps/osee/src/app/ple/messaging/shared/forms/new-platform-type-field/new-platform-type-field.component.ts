@@ -28,7 +28,6 @@ import {
 let nextUniqueId = 0;
 @Component({
 	selector: 'osee-new-platform-type-field',
-	standalone: true,
 	imports: [
 		MatFormField,
 		MatLabel,

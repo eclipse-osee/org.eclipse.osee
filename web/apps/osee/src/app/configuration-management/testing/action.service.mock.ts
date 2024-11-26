@@ -17,6 +17,7 @@ import { CreateNewActionInterface } from '@osee/configuration-management/types';
 import {
 	MockNamedId,
 	MockXResultData,
+	teamWorkflowDetailsMock,
 	teamWorkflowTokenMock,
 	testARB,
 	testAgilePoints,
@@ -27,6 +28,7 @@ import {
 	testWorkType,
 } from '@osee/shared/testing';
 import { testnewActionResponse } from './new-action.response.mock';
+import { branchSentinel } from '@osee/shared/types';
 
 export const actionServiceMock: Partial<ActionService> = {
 	getActionableItems(workType: string) {
@@ -81,5 +83,19 @@ export const actionServiceMock: Partial<ActionService> = {
 	},
 	getBranchApproved(teamWf: string | number) {
 		return of(true);
+	},
+	getBranchCommitStatus(teamWf: string | number) {
+		return of([
+			{
+				branch: branchSentinel,
+				commitStatus: 'Commit_Needed',
+			},
+		]);
+	},
+	getTeamWorkflowDetails(artifactId: string | number) {
+		return of(teamWorkflowDetailsMock);
+	},
+	getWorkDefinition(id: `${number}` | number) {
+		return of({ id: '123', name: 'work def', states: [] });
 	},
 };

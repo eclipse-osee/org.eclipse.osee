@@ -23,7 +23,6 @@ import { PeerReviewUiService } from '../../services/peer-review-ui.service';
 
 @Component({
 	selector: 'osee-create-peer-review-button',
-	standalone: true,
 	imports: [MatButton, MatIcon],
 	template: `<button
 		mat-raised-button

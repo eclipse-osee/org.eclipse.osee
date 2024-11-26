@@ -26,7 +26,6 @@ describe('PersistedBooleanAttributeToggleComponent', () => {
 
 	@Component({
 		selector: 'osee-test-standalone-form',
-		standalone: true,
 		imports: [FormsModule, PersistedBooleanAttributeToggleComponent],
 		template: `<form #testForm="ngForm">
 			<osee-persisted-boolean-attribute-toggle

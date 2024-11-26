@@ -29,7 +29,6 @@ import { EditNodeDialogComponent } from '../../dialogs/edit-node-dialog/edit-nod
 
 @Component({
 	selector: 'osee-graph-node-edit-menu',
-	standalone: true,
 	imports: [MatMenuItem, MatIcon, MatTooltip],
 	template: `<button
 		mat-menu-item

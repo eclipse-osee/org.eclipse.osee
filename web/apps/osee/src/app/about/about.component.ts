@@ -18,7 +18,6 @@ import { BuildNum, version } from './version';
 	selector: 'osee-about',
 	templateUrl: './about.component.html',
 	styles: [],
-	standalone: true,
 	imports: [MatLabel],
 })
 export class AboutComponent {

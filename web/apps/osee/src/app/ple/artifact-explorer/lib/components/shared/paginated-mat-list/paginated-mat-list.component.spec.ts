@@ -25,6 +25,7 @@ import { Component } from '@angular/core';
 			<button>Test</button>
 		</ng-template>
 	</osee-paginated-mat-list>`,
+	standalone: false,
 })
 class WrapperComponent {}
 

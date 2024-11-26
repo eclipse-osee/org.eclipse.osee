@@ -30,7 +30,6 @@ import { writableSlice } from '@osee/shared/utils';
 	selector: 'osee-messaging-edit-enum-set-dialog',
 	templateUrl: './edit-enum-set-dialog.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		EditEnumSetFieldComponent,

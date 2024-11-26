@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
@@ -44,9 +43,7 @@ import { applicabilitySentinel } from '@osee/applicability/types';
 
 @Component({
 	selector: 'osee-add-node-dialog',
-	standalone: true,
 	imports: [
-		AsyncPipe,
 		FormsModule,
 		MatDialogActions,
 		MatDialogClose,

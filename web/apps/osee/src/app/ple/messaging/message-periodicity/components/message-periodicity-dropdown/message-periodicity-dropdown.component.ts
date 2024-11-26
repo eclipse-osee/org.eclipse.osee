@@ -39,12 +39,7 @@ import {
 	MatOption,
 	ShowOnDirtyErrorStateMatcher,
 } from '@angular/material/core';
-import {
-	MatFormField,
-	MatHint,
-	MatPrefix,
-	MatSuffix,
-} from '@angular/material/form-field';
+import { MatFormField, MatHint, MatSuffix } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
@@ -67,7 +62,6 @@ import {
 
 @Component({
 	selector: 'osee-message-periodicity-dropdown',
-	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		AsyncPipe,
@@ -77,7 +71,6 @@ import {
 		MatAutocomplete,
 		MatAutocompleteTrigger,
 		MatHint,
-		MatPrefix,
 		MatSuffix,
 		MatIcon,
 		MatIconButton,
@@ -226,12 +219,9 @@ export class MessagePeriodicityDropdownComponent {
 
 	protected filter$ = signal(this._value());
 
-	private _syncFilter = effect(
-		() => {
-			this.filter$.set(this._value());
-		},
-		{ allowSignalWrites: true }
-	);
+	private _syncFilter = effect(() => {
+		this.filter$.set(this._value());
+	});
 
 	private _typeAhead = toObservable(this.filter$);
 

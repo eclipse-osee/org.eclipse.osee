@@ -24,7 +24,6 @@ import { CISet } from '../../../types';
 
 @Component({
 	selector: 'osee-set-dropdown-multi',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		MatCheckbox,

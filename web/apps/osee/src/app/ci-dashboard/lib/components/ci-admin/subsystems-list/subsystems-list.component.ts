@@ -28,7 +28,6 @@ import { AsyncPipe } from '@angular/common';
 
 @Component({
 	selector: 'osee-subsystems-list',
-	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [NamedIdListEditorComponent, AsyncPipe],
 	template: `

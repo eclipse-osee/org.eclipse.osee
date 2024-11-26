@@ -28,7 +28,6 @@ import { ElementDialog } from '@osee/messaging/shared/types';
 
 @Component({
 	selector: 'osee-edit-element-dialog',
-	standalone: true,
 	imports: [
 		MatDialogTitle,
 		MatDialogContent,

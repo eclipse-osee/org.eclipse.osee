@@ -22,7 +22,6 @@ import { ParameterDataService } from '../../services/data-services/selected-comm
 	selector: 'osee-parameter-integer',
 	templateUrl: './parameter-integer.component.html',
 	styles: [],
-	standalone: true,
 	imports: [MatFormField, MatLabel, MatInput, FormsModule, AsyncPipe],
 })
 export class ParameterIntegerComponent {
