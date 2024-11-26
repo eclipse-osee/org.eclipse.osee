@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.access.IAtsAccessService;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.agile.IAgileSprintHtmlOperation;
+import org.eclipse.osee.ats.api.agile.jira.AtsJiraService;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.column.IAtsColumnService;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
@@ -130,6 +131,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    protected IAtsNotificationService notificationService;
    protected IAtsAccessService atsAccessService;
    protected IAgileService agileService;
+   protected AtsJiraService jiraService;
 
    Collection<IAgileSprintHtmlOperation> agileSprintHtmlReportOperations = new LinkedList<>();
 
@@ -602,6 +604,11 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    @Override
    public void removeOseeInfo(String key) {
       OseeInfo.setValue(jdbcService.getClient(), key, null);
+   }
+
+   @Override
+   public AtsJiraService getJiraService() {
+      return jiraService;
    }
 
 }

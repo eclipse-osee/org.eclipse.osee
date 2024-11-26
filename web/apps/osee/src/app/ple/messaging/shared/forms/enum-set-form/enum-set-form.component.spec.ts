@@ -35,7 +35,6 @@ import { EnumSetFormComponent } from './enum-set-form.component';
 
 @Component({
 	selector: 'osee-test-standalone-form',
-	standalone: true,
 	imports: [FormsModule, EnumSetFormComponent],
 	template: `<form #testForm="ngForm">
 		<osee-enum-set-form

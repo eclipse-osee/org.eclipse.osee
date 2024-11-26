@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import {
@@ -32,14 +31,12 @@ import { CurrentBranchInfoService, branchImpl } from '@osee/shared/services';
 	selector: 'osee-plconfig-config-group-menu',
 	templateUrl: './config-group-menu.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		MatMenuItem,
 		MatMenuTrigger,
 		MatMenuContent,
 		MatMenu,
 		MatIcon,
-		AsyncPipe,
 		ArrayDiffMenuComponent,
 	],
 })

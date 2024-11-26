@@ -67,6 +67,11 @@ public class AtsImage extends OseeImage {
    public static AtsImage INSERTION = new AtsImage("insertion.gif");
    public static AtsImage INSERTION_ACTIVITY = new AtsImage("insertionActivity.gif");
    public static AtsImage JSON = new AtsImage("json.gif");
+   public static AtsImage JIRA = new AtsImage("jira.gif");
+   public static AtsImage JIRA_ADD = new AtsImage("jiraAdd.gif");
+   public static AtsImage JIRA_LINKED = new AtsImage("jiraLinked.gif");
+   public static AtsImage JIRA_TRANSITION = new AtsImage("jiraTransition.gif");
+   public static AtsImage JIRA_SEARCH = new AtsImage("jiraSearch.gif");
    public static AtsImage LAYOUT = new AtsImage("layout.gif");
    public static AtsImage NEW_ACTION = new AtsImage("newAction.gif");
    public static AtsImage NEW_NOTE = new AtsImage("newNote.gif");

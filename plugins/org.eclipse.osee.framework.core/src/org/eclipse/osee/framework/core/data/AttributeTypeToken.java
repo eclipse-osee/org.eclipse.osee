@@ -241,4 +241,8 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
 
    public Set<OperationTypeToken> getOperationTypes();
 
+   public default boolean isMissingAttributeType() {
+      return getName().startsWith(MISSING_TYPE);
+   }
+
 }

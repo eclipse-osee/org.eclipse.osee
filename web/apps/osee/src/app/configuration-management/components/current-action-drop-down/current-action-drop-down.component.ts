@@ -19,7 +19,6 @@ import { CurrentActionService } from '@osee/configuration-management/services';
 
 @Component({
 	selector: 'osee-current-action-drop-down',
-	standalone: true,
 	imports: [ActionDropDownComponent, CreateActionButtonComponent],
 	templateUrl: './current-action-drop-down.component.html',
 })

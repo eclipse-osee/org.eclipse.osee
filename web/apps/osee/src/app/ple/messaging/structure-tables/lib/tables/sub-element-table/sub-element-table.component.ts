@@ -57,7 +57,7 @@ import {
 	MatTableDataSource,
 } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { applic, applicabilitySentinel } from '@osee/applicability/types';
 import { LayoutNotifierService } from '@osee/layout/notification';
 import { HeaderService } from '@osee/messaging/shared/services';
@@ -83,11 +83,9 @@ import { MatBadge } from '@angular/material/badge';
 		':host {display: block;width: 100%;max-width: 100vw;overflow-x: auto;max-height: 10%;}',
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
-	standalone: true,
 	imports: [
 		NgClass,
 		AsyncPipe,
-		RouterLink,
 		CdkDrag,
 		CdkDragHandle,
 		CdkDropList,
@@ -143,12 +141,9 @@ export class SubElementTableComponent {
 
 	data = input.required<element[]>();
 
-	private _updateDataSourceBasedOnData = effect(
-		() => {
-			this.dataSource.data = this.data();
-		},
-		{ allowSignalWrites: true }
-	);
+	private _updateDataSourceBasedOnData = effect(() => {
+		this.dataSource.data = this.data();
+	});
 	protected dataSource = new MatTableDataSource<element>();
 	filter = input('');
 	structure = input<structure>({
@@ -214,13 +209,10 @@ export class SubElementTableComponent {
 
 	selectedElements = signal<element[]>([]);
 
-	private _editEffect = effect(
-		() => {
-			this.editMode();
-			this.selectedElements.set([]);
-		},
-		{ allowSignalWrites: true }
-	);
+	private _editEffect = effect(() => {
+		this.editMode();
+		this.selectedElements.set([]);
+	});
 
 	layout = this.layoutNotifier.layout;
 	menuPosition = {

@@ -57,7 +57,6 @@ import { CreateActionService } from '@osee/configuration-management/services';
 	selector: 'osee-create-action-dialog',
 	templateUrl: './create-action-dialog.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		FormsModule,

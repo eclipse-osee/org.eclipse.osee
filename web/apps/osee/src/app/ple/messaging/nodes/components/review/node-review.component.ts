@@ -21,7 +21,6 @@ import { connection, nodeData } from '@osee/messaging/shared/types';
 
 @Component({
 	selector: 'osee-node-review',
-	standalone: true,
 	imports: [MatLabel],
 	template: ` @if (node().id === '-1') {
 			<div class="tw-flex tw-flex-col">

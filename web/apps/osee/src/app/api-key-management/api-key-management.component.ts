@@ -15,7 +15,6 @@ import { ApiKeyGeneratorComponent } from './lib/components/api-key-generator/api
 
 @Component({
 	selector: 'osee-api-key-management',
-	standalone: true,
 	imports: [ApiKeyGeneratorComponent],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	template: '<osee-api-key-generator></osee-api-key-generator>',

@@ -35,7 +35,6 @@ import { DataTableService } from '../../../services/datatable-services/datatable
 	selector: 'osee-hide-column-command',
 	templateUrl: './hide-column-command.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		FormsModule,
 		AsyncPipe,

@@ -83,9 +83,9 @@ public abstract class XWidget {
    protected FormToolkit toolkit;
    private Object object;
    private ILabelProvider labelProvider;
-   private ArtifactTypeToken artifactType = ArtifactTypeToken.SENTINEL;
+   protected ArtifactTypeToken artifactType = ArtifactTypeToken.SENTINEL;
    protected AttributeTypeToken attributeType = AttributeTypeToken.SENTINEL;
-   private AttributeTypeToken attributeType2 = AttributeTypeToken.SENTINEL;
+   protected AttributeTypeToken attributeType2 = AttributeTypeToken.SENTINEL;
    private String id;
    protected Object defaultValueObj;
    private boolean autoSave = false;
@@ -572,7 +572,9 @@ public abstract class XWidget {
    }
 
    public void setAttributeType(AttributeTypeToken attributeType) {
-      this.attributeType = attributeType;
+      if (attributeType.isValid()) {
+         this.attributeType = attributeType;
+      }
    }
 
    public ArtifactId getTeamId() {
@@ -600,7 +602,9 @@ public abstract class XWidget {
    }
 
    public void setAttributeType2(AttributeTypeToken attributeType2) {
-      this.attributeType2 = attributeType2;
+      if (attributeType2.isValid()) {
+         this.attributeType2 = attributeType2;
+      }
    }
 
    public OseeImage getOseeImage() {

@@ -17,9 +17,8 @@ import {
 	input,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { MatButton, MatFabButton } from '@angular/material/button';
+import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { MatMenuItem } from '@angular/material/menu';
 import { editPlatformTypeDialogDataMode } from '@osee/messaging/shared/enumerations';
 import {
 	PreferencesUIService,
@@ -29,8 +28,7 @@ import { PlatformType } from '@osee/messaging/shared/types';
 
 @Component({
 	selector: 'osee-platform-type-actions',
-	standalone: true,
-	imports: [MatButton, MatIcon, MatMenuItem, MatFabButton],
+	imports: [MatButton, MatIcon],
 	templateUrl: './platform-type-actions.component.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })

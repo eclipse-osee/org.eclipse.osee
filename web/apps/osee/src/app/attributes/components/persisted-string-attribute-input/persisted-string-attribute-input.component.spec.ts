@@ -27,7 +27,6 @@ describe('PersistedStringAttributeInputComponent', () => {
 
 	@Component({
 		selector: 'osee-test-standalone-form',
-		standalone: true,
 		imports: [FormsModule, PersistedStringAttributeInputComponent],
 		template: `<form #testForm="ngForm">
 			<osee-persisted-string-attribute-input

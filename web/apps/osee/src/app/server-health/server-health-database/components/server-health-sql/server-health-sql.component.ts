@@ -40,7 +40,6 @@ import { sql } from '../../../shared/types/server-health-types';
 
 @Component({
 	selector: 'osee-server-health-sql',
-	standalone: true,
 	imports: [
 		NgClass,
 		AsyncPipe,
@@ -64,9 +63,12 @@ export class ServerHealthSqlComponent {
 	private serverHealthHttpService = inject(ServerHealthHttpService);
 
 	private paginator = viewChild(MatPaginator);
-	private sort = viewChild.required(MatSort);
+	private sort = viewChild(MatSort);
 	private _updateSort = effect(() => {
-		this.dataSource.sort = this.sort();
+		const sort = this.sort();
+		if (sort) {
+			this.dataSource.sort = sort;
+		}
 	});
 
 	private _updatePaginator = effect(() => {

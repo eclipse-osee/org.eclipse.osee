@@ -11,7 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, inject } from '@angular/core';
-import { MatButton } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenuItem } from '@angular/material/menu';
@@ -27,8 +26,7 @@ import { PlMessagingTypesUIService } from '../../services/pl-messaging-types-ui.
 	selector: 'osee-messaging-usermenu',
 	templateUrl: './usermenu.component.html',
 	styles: [],
-	standalone: true,
-	imports: [MatButton, MatIcon, MatMenuItem],
+	imports: [MatIcon, MatMenuItem],
 })
 export class UsermenuComponent {
 	private typesService = inject(CurrentTypesService);

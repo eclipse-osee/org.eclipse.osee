@@ -15,7 +15,6 @@ import { MatIcon } from '@angular/material/icon';
 
 @Component({
 	selector: 'osee-ci-logo',
-	standalone: true,
 	imports: [MatIcon],
 	template: `<div class="tw-flex tw-gap-3">
 		<mat-icon

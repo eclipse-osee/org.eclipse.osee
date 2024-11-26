@@ -42,7 +42,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
 	selector: 'osee-team-workflow-tab',
-	standalone: true,
 	imports: [
 		NgClass,
 		ExpansionPanelComponent,

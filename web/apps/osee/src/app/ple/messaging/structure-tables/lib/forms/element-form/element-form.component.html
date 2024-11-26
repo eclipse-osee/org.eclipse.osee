@@ -195,7 +195,7 @@
 		@if (typeState() === 'SELECT') {
 			<osee-platform-type-dropdown
 				[(platformType)]="platformType"
-				[required]="true"
+				[isRequired]="true"
 				[extraPlatformTypes]="createdPlatformTypes()"
 				class="tw-w-full">
 				<button
@@ -218,7 +218,7 @@
 			</button>
 			<mat-divider></mat-divider>
 			<osee-new-type-form
-				(result)="receivePlatformTypeData($event)"
+				(resultType)="receivePlatformTypeData($event)"
 				[(platformType)]="platformType"></osee-new-type-form>
 			<br />
 		}

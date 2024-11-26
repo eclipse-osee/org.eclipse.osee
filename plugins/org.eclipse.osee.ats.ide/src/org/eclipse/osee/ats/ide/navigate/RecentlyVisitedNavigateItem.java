@@ -14,10 +14,12 @@
 package org.eclipse.osee.ats.ide.navigate;
 
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.core.util.RecentlyVisistedItem;
+import org.eclipse.osee.ats.api.util.RecentlyVisistedItem;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -35,8 +37,8 @@ public class RecentlyVisitedNavigateItem extends XNavigateItemAction {
    private final RecentlyVisistedItem item;
 
    public RecentlyVisitedNavigateItem(RecentlyVisistedItem item) {
-      super(item.getIdToken().getName(), FrameworkImage.OPEN, XNavItemCat.TOP);
-      ArtifactTypeToken artifactType = item.getArtifactType();
+      super(item.getWorkflowName(), FrameworkImage.OPEN, XNavItemCat.TOP);
+      ArtifactTypeToken artifactType = getArtifactType(item);
       if (artifactType != null && artifactType.isValid()) {
          oseeImage = ArtifactImageManager.getArtifactTypeImage(artifactType);
       }
@@ -46,7 +48,7 @@ public class RecentlyVisitedNavigateItem extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
       // Load artifact to check for deleted
-      Artifact workItemArt = (Artifact) AtsApiService.get().getQueryService().getArtifact(item.getIdToken(),
+      Artifact workItemArt = (Artifact) AtsApiService.get().getQueryService().getArtifact(getIdToken(item),
          AtsApiService.get().getAtsBranch(), DeletionFlag.INCLUDE_DELETED);
       if (workItemArt != null) {
          if (workItemArt.isDeleted()) {
@@ -55,11 +57,20 @@ public class RecentlyVisitedNavigateItem extends XNavigateItemAction {
          }
          IAtsWorkItem workItem = AtsApiService.get().getWorkItemService().getWorkItem(workItemArt);
          if (workItem == null) {
-            AWorkbench.popupf("Item %s can not be found.", item.getIdToken());
+            AWorkbench.popupf("Item %s can not be found.", getIdToken(item));
             return;
          }
          WorkflowEditor.edit(workItem);
       }
+   }
+
+   public static ArtifactTypeToken getArtifactType(RecentlyVisistedItem item) {
+      return AtsApiService.get().tokenService().getArtifactType(item.getArtifactTypeId());
+   }
+
+   public static ArtifactToken getIdToken(RecentlyVisistedItem item) {
+      return ArtifactToken.valueOf(item.getWorkflowId(), item.getWorkflowName(), CoreBranches.COMMON,
+         getArtifactType(item));
    }
 
 }

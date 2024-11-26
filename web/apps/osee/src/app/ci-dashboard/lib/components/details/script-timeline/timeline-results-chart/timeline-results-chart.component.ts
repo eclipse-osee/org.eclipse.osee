@@ -26,7 +26,6 @@ import { ResultReference } from '../../../../types';
 
 @Component({
 	selector: 'osee-timeline-results-chart',
-	standalone: true,
 	template: `<canvas
 		baseChart
 		[data]="chartConfig()"

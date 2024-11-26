@@ -23,7 +23,6 @@ import { CiDashboardControlsComponent } from '../ci-dashboard-controls/ci-dashbo
 
 @Component({
 	selector: 'osee-dashboard',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		ScriptsPassFailChartComponent,

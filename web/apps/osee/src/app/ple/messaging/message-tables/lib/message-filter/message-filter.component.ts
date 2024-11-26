@@ -17,7 +17,6 @@ import {
 	MatLabel,
 	MatPrefix,
 	MatSuffix,
-	MatHint,
 } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
@@ -26,7 +25,6 @@ import { MessageUiService } from '@osee/messaging/shared/services';
 
 @Component({
 	selector: 'osee-message-filter',
-	standalone: true,
 	imports: [
 		MatFormField,
 		MatLabel,
@@ -34,7 +32,6 @@ import { MessageUiService } from '@osee/messaging/shared/services';
 		MatIcon,
 		MatPrefix,
 		MatSuffix,
-		MatHint,
 		FormsModule,
 		MimHeaderComponent,
 	],

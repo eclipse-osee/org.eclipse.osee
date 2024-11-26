@@ -50,7 +50,6 @@ describe('ElementFormComponent', () => {
 	let fixture: ComponentFixture<ParentDriverComponent>;
 	@Component({
 		selector: 'osee-test-standalone-form',
-		standalone: true,
 		imports: [FormsModule, ElementFormComponent],
 		template:
 			'<form #testForm="ngForm"><osee-element-form [(data)]="data"/></form>',

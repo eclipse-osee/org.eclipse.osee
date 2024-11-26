@@ -112,7 +112,6 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
    private WfeRelationsTab relationsTab;
    private WfeJournalTab journalTab;
    int attrPageIndex = 0;
-   private final List<IWfeEditorListener> editorListeners = new ArrayList<>();
    private WfeOutlinePage outlinePage;
    private WfeReloadTab reloadTab;
 
@@ -303,8 +302,8 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
 
    @Override
    public void dispose() {
-      for (IWfeEditorListener listener : editorListeners) {
-         listener.editorDisposing();
+      for (IWfeEditorContributor contrib : WfeEditorContributors.getContributors()) {
+         contrib.editorDisposing();
       }
       WfeArtifactEventManager.remove(this);
       WfeBranchEventManager.remove(this);
@@ -706,10 +705,6 @@ public class WorkflowEditor extends AbstractArtifactEditor implements EditorData
 
    public boolean isDisposed() {
       return getContainer() == null || getContainer().isDisposed();
-   }
-
-   public void addEditorListeners(IWfeEditorListener listener) {
-      editorListeners.add(listener);
    }
 
    @Override

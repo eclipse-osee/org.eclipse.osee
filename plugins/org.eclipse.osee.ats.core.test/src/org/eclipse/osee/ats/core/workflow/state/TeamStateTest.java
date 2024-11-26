@@ -47,7 +47,7 @@ public class TeamStateTest {
 
    @Test
    public void testValues() {
-      Assert.assertEquals(10, TeamState.values().size());
+      Assert.assertEquals(11, TeamState.values().size());
    }
 
 }

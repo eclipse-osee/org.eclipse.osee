@@ -47,4 +47,6 @@ public interface IAtsConfigurationsService {
 
    AtsUser getUser(ArtifactId userArt);
 
+   AtsUser getUserByLoginId(String loginId);
+
 }

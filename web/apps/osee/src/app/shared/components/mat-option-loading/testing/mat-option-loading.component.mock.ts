@@ -43,7 +43,6 @@ import { paginationMode } from '../internal/pagination-options';
 @Component({
 	selector: 'osee-mat-option-loading',
 	templateUrl: './mat-option-loading.component.mock.html',
-	standalone: true,
 	imports: [AsyncPipe, NgTemplateOutlet],
 })
 export class MockMatOptionLoadingComponent<T = unknown> implements OnInit {

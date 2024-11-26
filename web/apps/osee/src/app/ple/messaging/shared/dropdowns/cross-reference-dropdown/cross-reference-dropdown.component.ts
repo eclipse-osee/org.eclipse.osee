@@ -58,7 +58,6 @@ import {
 
 @Component({
 	selector: 'osee-cross-reference-dropdown',
-	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		AsyncPipe,

@@ -24,6 +24,7 @@ import static org.eclipse.osee.framework.core.data.AttributeTypeToken.TEXT_CALEN
 import static org.eclipse.osee.framework.core.data.DisplayHint.MultiLine;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.config.AtsDisplayHint;
+import org.eclipse.osee.ats.api.data.enums.token.AgilePiTrackingEnumAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.ApplicableToProgramAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.BitStateEnumAttributeType;
 import org.eclipse.osee.ats.api.data.enums.token.CancelledReasonEnumAttributeType;
@@ -53,6 +54,12 @@ public interface AtsAttributeTypes {
 
    // @formatter:off
 
+   // JIRA attribute types
+   AttributeTypeLong JiraTeamId = ats.createLong(856509071102410L, "ats.JIRA Team Id", TEXT_PLAIN, "", Read);
+   AttributeTypeLong JiraProjectId = ats.createLong(20475079317360L, "ats.JIRA Project Id", TEXT_PLAIN, "", Read);
+   AttributeTypeLong JiraSprintId = ats.createLong(4790601788340L, "ats.JIRA Sprint Id", TEXT_PLAIN, "", Read);
+   AttributeTypeString JiraStoryId = ats.createString(6010635574150573L, "ats.JIRA Story Id", TEXT_PLAIN, "", Read);
+
    // Sign-By attribute types
    AttributeTypeLong ApproveRequestedHoursBy = ats.createLong(224884848210198L, "ats.Approve Requested Hours By", TEXT_PLAIN, "", Read, UserArtId);
    AttributeTypeDate ApproveRequestedHoursByDate = ats.createDate(83388338833828L, "ats.Approve Requested Hours Date", TEXT_CALENDAR, "", Read);
@@ -69,7 +76,8 @@ public interface AtsAttributeTypes {
    AttributeTypeString ActionDetailsFormat = ats.createString(1152921504606847199L, "ats.Action Details Format", TEXT_PLAIN, "Format of string when push Action Details Copy button on SMA Workflow Editor.", Config);
    AttributeTypeBoolean Actionable = ats.createBoolean(1152921504606847160L, "ats.Actionable", TEXT_PLAIN, "True if item can have Action written against or assigned to.", Config);
    AttributeTypeArtifactId ActionableItemReference = ats.createArtifactId(6780739363553225476L, "ats.Actionable Item Reference", TEXT_PLAIN, "Actionable Items that are impacted by this change.", Read);
-   AttributeTypeString AircrewDetails = ats.createString(6479770428311494165L, "ats.Aircrew Details", TEXT_PLAIN, "", MultiLine, Edit);
+   AgilePiTrackingEnumAttributeType AgilePiTrackingEnum = ats.createEnum(new AgilePiTrackingEnumAttributeType(), Edit);
+   AttributeTypeString ApprovedByAircrew = ats.createString(6479770428311494165L, "ats.Approved By Aircrew", TEXT_PLAIN, "", Edit);
    AttributeTypeBoolean Active = ats.createBoolean(1152921504606847153L, "ats.Active", TEXT_PLAIN, "Active ATS configuration object.", Config);
    AttributeTypeString ActivityId = ats.createString(1152921504606847874L, "ats.Activity Id", TEXT_PLAIN, "", Edit);
    AttributeTypeString ActivityName = ats.createString(1152921504606847875L, "ats.Activity Name", TEXT_PLAIN, "", Edit);
@@ -112,6 +120,7 @@ public interface AtsAttributeTypes {
    AttributeTypeString CreatedBy = ats.createString(1152921504606847174L, "ats.Created By", TEXT_PLAIN, "UserId of the user who created the workflow.", Read, UserUserId);
    AttributeTypeDate CreatedDate = ats.createDate(1152921504606847173L, "ats.Created Date", TEXT_CALENDAR, "Date the workflow was created.", Read);
    // CurrentState attribute type is To-Be-Deleted
+   AttributeTypeBoolean CurrentSprint = ats.createBoolean(6939385903286837736L, "ats.Current Sprint", TEXT_PLAIN, "True if sprint is the current sprint .", Read);
    AttributeTypeString CurrentState = ats.createString(1152921504606847192L, "ats.Current State", TEXT_PLAIN, "Current state of workflow state machine.", Read);
    AttributeTypeString CurrentStateName = ats.createString(4689644240272725681L, "ats.Current State Name", TEXT_PLAIN, "Current state name of workflow state machine.", Read);
    AttributeTypeString CurrentStateAssignee = ats.createString(1902418199157448550L, "ats.Current State Assignee", TEXT_PLAIN, "Current state assignees as user art id.", Read);

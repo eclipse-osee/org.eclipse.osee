@@ -42,7 +42,6 @@ import {
 
 @Component({
 	selector: 'osee-persisted-message-periodicity-dropdown',
-	standalone: true,
 	imports: [MessagePeriodicityDropdownComponent],
 	template: `<osee-message-periodicity-dropdown
 		[required]="required()"

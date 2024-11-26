@@ -24,7 +24,6 @@ import { PlMessagingTypesUIService } from '../services/pl-messaging-types-ui.ser
 
 @Component({
 	selector: 'osee-platform-types-filter',
-	standalone: true,
 	imports: [
 		FormsModule,
 		MatFormField,

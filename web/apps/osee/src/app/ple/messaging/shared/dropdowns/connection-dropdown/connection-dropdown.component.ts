@@ -56,7 +56,6 @@ import {
 
 @Component({
 	selector: 'osee-connection-dropdown',
-	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		AsyncPipe,

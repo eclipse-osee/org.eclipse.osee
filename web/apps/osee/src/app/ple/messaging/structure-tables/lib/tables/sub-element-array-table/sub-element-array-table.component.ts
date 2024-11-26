@@ -49,7 +49,7 @@ import {
 	MatTable,
 } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { applic } from '@osee/applicability/types';
 import { LayoutNotifierService } from '@osee/layout/notification';
 import { HeaderService } from '@osee/messaging/shared/services';
@@ -72,11 +72,9 @@ import { MatBadge } from '@angular/material/badge';
 		':host {display: block;width: 100%;overflow-x: auto;max-height: 10%;}',
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,
-	standalone: true,
 	imports: [
 		NgClass,
 		AsyncPipe,
-		RouterLink,
 		CdkDrag,
 		CdkDragHandle,
 		CdkDropList,
@@ -114,13 +112,10 @@ export class SubElementArrayTableComponent implements OnInit {
 	editMode = input(false);
 	tableFieldsEditMode = input(false);
 
-	private _editEffect = effect(
-		() => {
-			this.editMode();
-			this.selectedElements.set([]);
-		},
-		{ allowSignalWrites: true }
-	);
+	private _editEffect = effect(() => {
+		this.editMode();
+		this.selectedElements.set([]);
+	});
 
 	_branchId = '';
 	_branchType = '';

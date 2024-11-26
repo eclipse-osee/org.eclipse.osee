@@ -29,7 +29,6 @@ import { writableSlice } from '@osee/shared/utils';
 
 @Component({
 	selector: 'osee-create-unit-dialog',
-	standalone: true,
 	imports: [
 		FormsModule,
 		MatDialogTitle,

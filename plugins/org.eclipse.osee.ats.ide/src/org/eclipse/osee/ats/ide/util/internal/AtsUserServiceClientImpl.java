@@ -113,4 +113,5 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService {
    public Collection<AtsUser> getUsers() {
       return configurationService.getConfigurations().getUsers();
    }
+
 }

@@ -20,7 +20,6 @@ import { CiDashboardControlsComponent } from '../ci-dashboard-controls/ci-dashbo
 
 @Component({
 	selector: 'osee-subsystems',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		CiDashboardControlsComponent,

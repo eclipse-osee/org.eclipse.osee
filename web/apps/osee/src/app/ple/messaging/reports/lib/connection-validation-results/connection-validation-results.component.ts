@@ -16,7 +16,6 @@ import { ObjectValuesPipe } from '@osee/shared/utils';
 
 @Component({
 	selector: 'osee-connection-validation-results',
-	standalone: true,
 	imports: [ObjectValuesPipe, MatIcon],
 	template: `
 		<ul class="tw-pl-4">

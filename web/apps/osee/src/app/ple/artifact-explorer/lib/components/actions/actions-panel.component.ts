@@ -33,7 +33,6 @@ import { PaginatedMatListComponent } from '../shared/paginated-mat-list/paginate
 
 @Component({
 	selector: 'osee-actions-panel',
-	standalone: true,
 	imports: [
 		ExpansionPanelComponent,
 		PaginatedMatListComponent,

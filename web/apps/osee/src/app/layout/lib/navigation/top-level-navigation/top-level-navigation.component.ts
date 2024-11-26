@@ -34,7 +34,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 @Component({
 	selector: 'osee-top-level-navigation',
 	templateUrl: './top-level-navigation.component.html',
-	standalone: true,
 	imports: [
 		NgClass,
 		AsyncPipe,

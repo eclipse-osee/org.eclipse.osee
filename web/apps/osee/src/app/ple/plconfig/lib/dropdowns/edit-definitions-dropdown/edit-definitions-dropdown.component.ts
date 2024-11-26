@@ -25,7 +25,6 @@ import { ProductTypeDropDownComponent } from '../product-type-drop-down/product-
 	selector: 'osee-edit-definitions-dropdown',
 	templateUrl: './edit-definitions-dropdown.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		MatButton,
 		MatMenu,

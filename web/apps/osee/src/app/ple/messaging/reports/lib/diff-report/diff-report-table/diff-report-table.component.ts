@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, NgClass } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import {
@@ -32,9 +32,7 @@ import { changeReportRow } from '@osee/shared/types/change-report';
 	selector: 'osee-messaging-diff-report-table',
 	templateUrl: './diff-report-table.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
-		AsyncPipe,
 		NgClass,
 		MatTable,
 		MatColumnDef,

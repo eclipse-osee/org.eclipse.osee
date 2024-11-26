@@ -39,7 +39,6 @@ import { UiService } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-peer-review-branch-selector',
-	standalone: true,
 	imports: [
 		MatFormField,
 		MatInput,
@@ -63,9 +62,8 @@ export class PeerReviewBranchSelectorComponent {
 	private _filter$ = toObservable(this.filter);
 
 	prBranch = toSignal(this.peerReviewUiService.prBranch);
-	private _prBranchEffect = effect(
-		() => this.filter.set(this.prBranch()?.name || ''),
-		{ allowSignalWrites: true }
+	private _prBranchEffect = effect(() =>
+		this.filter.set(this.prBranch()?.name || '')
 	);
 
 	branchCount = toSignal(

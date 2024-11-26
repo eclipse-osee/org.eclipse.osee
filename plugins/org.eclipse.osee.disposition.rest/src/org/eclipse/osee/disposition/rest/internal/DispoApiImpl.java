@@ -1250,6 +1250,7 @@ public class DispoApiImpl implements DispoApi {
             storage.updateOperationSummary(branch, destSetId, report);
          }
          storeRerunData(branch, destSetId, reruns);
+         updateAllDispoItems(branch, destSetId);
       } else {
          TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch,
             String.format("Merge CI Dispositions from branch [%s] set [%s] to branch [%s] set [%s]", sourceBranch,
