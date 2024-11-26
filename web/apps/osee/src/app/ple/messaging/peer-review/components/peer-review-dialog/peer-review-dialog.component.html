@@ -67,12 +67,20 @@
 					}
 				</div>
 			</div>
-			<button
-				mat-flat-button
-				[disabled]="toAdd().length === 0 && toRemove().length === 0"
-				(click)="applySelected()">
-				Apply Selected
-			</button>
+			<div class="tw-grid tw-w-full tw-grid-cols-[3fr_1fr] tw-gap-4">
+				<button
+					mat-flat-button
+					[disabled]="toAdd().length === 0 && toRemove().length === 0"
+					(click)="applySelected()">
+					Apply Selected
+				</button>
+				<button
+					mat-button
+					[disabled]="toAdd().length === 0 && toRemove().length === 0"
+					(click)="resetSelections()">
+					Reset Selections
+				</button>
+			</div>
 		</div>
 	}
 </mat-dialog-content>

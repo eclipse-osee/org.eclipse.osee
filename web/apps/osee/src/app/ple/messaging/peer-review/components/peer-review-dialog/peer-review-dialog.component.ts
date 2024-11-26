@@ -96,6 +96,10 @@ export class PeerReviewDialogComponent {
 		this.prUIService.applyWorkingBranches().pipe(take(1)).subscribe();
 	}
 
+	resetSelections() {
+		this.prUIService.resetBranchSelections();
+	}
+
 	onNoClick() {
 		this.dialogRef.close();
 	}
