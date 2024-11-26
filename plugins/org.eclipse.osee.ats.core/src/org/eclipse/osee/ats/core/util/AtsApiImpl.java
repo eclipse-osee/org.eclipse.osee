@@ -243,7 +243,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
 
    @Override
    public void setUserConfigValue(String key, String value) {
-      ArtifactId userArt = getUserService().getCurrentUser();
+      ArtifactId userArt = getUserService().getCurrentUser().getStoreObject();
       IAtsChangeSet changes =
          storeService.createAtsChangeSet("Set User AtsConfig Value", getUserService().getCurrentUser());
       if (userArt != null) {
@@ -253,7 +253,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
             getAttributeResolver().getAttributes(userArt, CoreAttributeTypes.AtsUserConfig);
          for (IAttribute<String> attr : attributes) {
             String str = attr.getValue();
-            if (str.startsWith(key)) {
+            if (str.startsWith(key + "=")) {
                changes.setAttribute(userArt, attr, keyValue);
                found = true;
                break;

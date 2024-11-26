@@ -19,7 +19,6 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProvider;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
-import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.ats.core.workdef.WorkDefTaskDemoForCrEstimating;
 import org.eclipse.osee.ats.core.workdef.WorkDefTeamProductLine;
 import org.eclipse.osee.ats.core.workdef.WorkDefTeamSimpleInWork;
@@ -69,7 +68,7 @@ public class AtsWorkDefinitionProvider implements IAtsWorkDefinitionProvider {
             new WorkDefTeamSimpleInWork().build(),
             new WorkDefTeamSimple().build(),
             new WorkDefTeamSimpleAnalyze().build()));
-         if (isDemoDb()) {
+         if (System.getProperty("osee.db","").equals("orgdemo")) {
             ret.addAll(Arrays.asList(
             // Team Wf
             new WorkDefTeamDemoChangeRequest().build(),
@@ -86,10 +85,6 @@ public class AtsWorkDefinitionProvider implements IAtsWorkDefinitionProvider {
       }
       // @formatter:on
       return ret;
-   }
-
-   public boolean isDemoDb() {
-      return AtsApiService.get().getUserService().getUserByUserId("3333") != null;
    }
 
 }

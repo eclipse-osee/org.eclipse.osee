@@ -19,14 +19,18 @@ import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
+import org.eclipse.osee.ats.core.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 public abstract class AbstractAtsStoreService implements IAtsStoreService {
 
    protected final AtsApi atsApi;
+   protected static Boolean demoDb;
 
    public AbstractAtsStoreService(AtsApi atsApi) {
       this.atsApi = atsApi;
@@ -81,6 +85,19 @@ public abstract class AbstractAtsStoreService implements IAtsStoreService {
          customizationArts.add(artifact);
       }
       return customizationArts;
+   }
+
+   @Override
+   public boolean isDemoDb() {
+      if (demoDb == null) {
+         if (AtsApiService.get().getStoreService().isProductionDb()) {
+            demoDb = false;
+         }
+         ArtifactToken art = AtsApiService.get().getQueryService().getArtifact(DemoUsers.Joe_Smith.getId());
+         demoDb = (art != null && art.isOfType(CoreArtifactTypes.User) && art.getName().equals(
+            DemoUsers.Joe_Smith.getName()));
+      }
+      return demoDb;
    }
 
 }

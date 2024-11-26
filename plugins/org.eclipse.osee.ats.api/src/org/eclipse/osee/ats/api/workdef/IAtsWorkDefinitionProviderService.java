@@ -26,4 +26,6 @@ public interface IAtsWorkDefinitionProviderService {
 
    void addWorkDefinition(WorkDefinition workDef);
 
+   void clearCaches();
+
 }
