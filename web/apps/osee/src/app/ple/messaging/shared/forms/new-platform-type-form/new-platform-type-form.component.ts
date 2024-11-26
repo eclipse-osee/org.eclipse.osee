@@ -14,8 +14,7 @@ import { AsyncPipe, NgTemplateOutlet, TitleCasePipe } from '@angular/common';
 import { Component, input, model, inject } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
+import { MatLabel } from '@angular/material/form-field';
 import { applic } from '@osee/applicability/types';
 import { attribute } from '@osee/attributes/types';
 import { UniquePlatformTypeAttributesDirective } from '@osee/messaging/shared/directives';
@@ -30,7 +29,6 @@ import type {
 } from '@osee/messaging/shared/types';
 import { ParentErrorStateMatcher } from '@osee/shared/matchers';
 import {
-	FirstLetterLowerPipe,
 	provideOptionalControlContainerNgForm,
 	writableSlice,
 } from '@osee/shared/utils';
@@ -49,7 +47,6 @@ import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
  */
 @Component({
 	selector: 'osee-new-platform-type-form',
-	standalone: true,
 	templateUrl: './new-platform-type-form.component.html',
 	styles: [],
 	viewProviders: [provideOptionalControlContainerNgForm()],
@@ -57,12 +54,8 @@ import { ATTRIBUTETYPEID } from '@osee/attributes/constants';
 		AsyncPipe,
 		FormsModule,
 		MatLabel,
-		MatFormField,
-		MatInput,
-		MatHint,
 		TitleCasePipe,
 		UniquePlatformTypeAttributesDirective,
-		FirstLetterLowerPipe,
 		NgTemplateOutlet,
 		UnitDropdownComponent,
 		NewPlatformTypeFieldComponent,

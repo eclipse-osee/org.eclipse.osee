@@ -39,7 +39,6 @@ import { PLAddConfigData } from '../../types/pl-edit-config-data';
 	selector: 'osee-plconfig-add-configuration-dialog',
 	templateUrl: './add-configuration-dialog.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		FormsModule,

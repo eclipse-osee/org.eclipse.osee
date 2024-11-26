@@ -20,7 +20,6 @@ import { applic } from '@osee/applicability/types';
 @Component({
 	selector: 'osee-view-selector',
 	template: `<div></div>`,
-	standalone: true,
 	imports: [],
 })
 export class MockViewSelectorComponent {

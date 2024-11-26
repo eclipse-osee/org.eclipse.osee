@@ -135,6 +135,10 @@ public class DataRightContentBuilder {
 
          var footer = dataRight.getContent();
 
+         if (dataRightAnchor.getIsContinuous()) {
+            return footer.toString();
+         }
+
          var newPage = pageType.getNewPage(footer);
 
          return newPage.toString();

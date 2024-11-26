@@ -11,13 +11,14 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.ide.actions.jira;
+package org.eclipse.osee.ats.ide.agile.jira.actions;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.actions.AbstractAtsAction;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
+import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -45,7 +46,7 @@ public class ShowJiraStoryAction extends AbstractAtsAction {
       Artifact wfArt = this.selectedAtsArtifacts.getSelectedWorkflowArtifacts().iterator().next();
       String jiraStoryId = wfArt.getSoleAttributeValue(AtsAttributeTypes.JiraStoryId, "");
       if (Strings.isValid(jiraStoryId)) {
-         String link = JiraUtil.getJiraBasePath() + "browse/" + jiraStoryId;
+         String link = AtsApiService.get().getJiraService().getJiraBasePath() + "browse/" + jiraStoryId;
          rd.log(link);
          Program.launch(link);
       } else {

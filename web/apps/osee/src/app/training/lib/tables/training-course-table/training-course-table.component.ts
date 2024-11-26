@@ -41,7 +41,6 @@ import { TrainingCourseRecord } from '../../types/training-course';
 import { trainingCourseRecordHeaderDetails } from './training-course-table-headers';
 
 @Component({
-	standalone: true,
 	selector: 'osee-training-course-table',
 	templateUrl: './training-course-table.component.html',
 	styles: [],

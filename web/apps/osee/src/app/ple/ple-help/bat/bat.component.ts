@@ -16,7 +16,6 @@ import { MarkdownComponent } from 'ngx-markdown';
 
 @Component({
 	selector: 'osee-bat',
-	standalone: true,
 	imports: [MarkdownComponent],
 	templateUrl: './bat.component.html',
 	styles: [],

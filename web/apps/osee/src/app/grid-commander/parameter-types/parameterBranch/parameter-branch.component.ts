@@ -20,7 +20,6 @@ import { CurrentActionDropDownComponent } from '@osee/configuration-management/c
 	selector: 'osee-parameter-branch',
 	templateUrl: './parameter-branch.component.html',
 	styles: [],
-	standalone: true,
 	imports: [BranchPickerComponent, CurrentActionDropDownComponent],
 })
 export class ParameterBranchComponent {

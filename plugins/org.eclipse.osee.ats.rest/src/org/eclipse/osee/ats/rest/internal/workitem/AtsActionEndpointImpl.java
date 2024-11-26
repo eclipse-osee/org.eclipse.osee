@@ -53,6 +53,7 @@ import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.util.RecentlyVisitedItems;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
@@ -918,6 +919,50 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    public TaskTrackingData createUpdateTaskTrack(TaskTrackingData taskTrackingData) {
       TaskTrackingOperation op = new TaskTrackingOperation(taskTrackingData, atsApi);
       return op.run();
+   }
+
+   @Path("visited/{userArtId}")
+   @POST
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Override
+   public void storeVisited(@PathParam("userArtId") ArtifactId userArtId, RecentlyVisitedItems visitedItems) {
+      Conditions.assertNotSentinel(userArtId);
+      String toStoreJson = atsApi.jaxRsApi().toJson(visitedItems);
+      Long storeId =
+         atsApi.getAttributeResolver().getSoleAttributeValue(userArtId, CoreAttributeTypes.RecentlyVisitedItemsKey, 0L);
+      if (storeId == 0) {
+         storeId = Lib.generateId();
+         IAtsChangeSet changes = atsApi.createChangeSet("Set Recently Visited Key");
+         changes.setSoleAttributeValue(userArtId, CoreAttributeTypes.RecentlyVisitedItemsKey, storeId);
+         changes.execute();
+         orcsApi.getKeyValueOps().putByKey(storeId, toStoreJson);
+      } else {
+         orcsApi.getKeyValueOps().updateByKey(storeId, toStoreJson);
+      }
+   }
+
+   @Path("visited/{userArtId}")
+   @GET
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   @Override
+   public RecentlyVisitedItems getVisited(@PathParam("userArtId") ArtifactId userArtId) {
+      RecentlyVisitedItems visitedItems = RecentlyVisitedItems.EMPTY_ITEMS;
+      if (userArtId.isValid()) {
+         Long storeId = atsApi.getAttributeResolver().getSoleAttributeValue(userArtId,
+            CoreAttributeTypes.RecentlyVisitedItemsKey, 0L);
+         if (storeId > 0) {
+            try {
+               String visitedItemsJson = orcsApi.getKeyValueOps().getByKey(storeId);
+               if (Strings.isValid(visitedItemsJson)) {
+                  visitedItems = atsApi.jaxRsApi().readValue(visitedItemsJson, RecentlyVisitedItems.class);
+               }
+            } catch (Exception ex) {
+               // do nothing
+            }
+         }
+      }
+      return visitedItems;
    }
 
 }

@@ -31,7 +31,6 @@ import { ArtifactExplorerPreferencesService } from './lib/services/artifact-expl
 
 @Component({
 	selector: 'osee-artifact-explorer',
-	standalone: true,
 	imports: [
 		NgClass,
 		ArtifactHierarchyPanelComponent,

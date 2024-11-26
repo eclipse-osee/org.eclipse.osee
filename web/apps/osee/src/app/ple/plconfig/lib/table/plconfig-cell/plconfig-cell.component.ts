@@ -26,7 +26,6 @@ import { applicWithGamma } from '@osee/applicability/types';
 
 @Component({
 	selector: 'osee-plconfig-cell',
-	standalone: true,
 	imports: [
 		PLConfigSelectSingleTupleComponent,
 		PlconfigMultiSelectTupleComponent,

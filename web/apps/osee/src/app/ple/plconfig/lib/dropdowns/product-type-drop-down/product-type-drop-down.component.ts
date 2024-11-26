@@ -35,7 +35,6 @@ import { CurrentBranchInfoService, branchImpl } from '@osee/shared/services';
 	selector: 'osee-plconfig-product-type-dropdown',
 	templateUrl: './product-type-drop-down.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		MatMenuItem,
 		MatMenuTrigger,

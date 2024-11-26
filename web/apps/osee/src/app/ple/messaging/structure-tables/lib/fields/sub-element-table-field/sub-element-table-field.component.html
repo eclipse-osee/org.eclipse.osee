@@ -22,7 +22,7 @@
 				<osee-persisted-platform-type-relation-selector
 					[artifactId]="element().id"
 					[(platformType)]="platformType"
-					(contextmenu)="
+					(openContextMenu)="
 						openGeneralMenu($event, element(), platformType())
 					"></osee-persisted-platform-type-relation-selector>
 			} @else if (editableElementHeaders.includes(header())) {

@@ -10,22 +10,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-package org.eclipse.osee.ats.ide.actions.jira;
+import { Component, input } from '@angular/core';
+import { branch } from '@osee/shared/types';
 
-import org.eclipse.osee.ats.ide.internal.AtsApiService;
-
-/**
- * @author Donald G. Dunne
- */
-public class JiraUtil {
-
-   public static String JIRA_BASEPATH_KEY = "JiraBasepath";
-
-   private JiraUtil() {
-      // Utility Class
-   }
-
-   public static String getJiraBasePath() {
-      return AtsApiService.get().getConfigValue(JIRA_BASEPATH_KEY);
-   }
+@Component({
+	selector: 'osee-update-from-parent-button',
+	template: '<div>Dummy</div>',
+	standalone: true,
+})
+export class UpdateFromParentButtonComponentMock {
+	workingBranch = input.required<Pick<branch, 'id' | 'branchState'>>();
 }

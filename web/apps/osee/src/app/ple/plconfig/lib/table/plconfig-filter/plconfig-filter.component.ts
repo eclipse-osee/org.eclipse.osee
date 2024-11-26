@@ -24,7 +24,6 @@ import { PlConfigUIStateService } from '../../services/pl-config-uistate.service
 
 @Component({
 	selector: 'osee-plconfig-filter',
-	standalone: true,
 	imports: [
 		MatFormField,
 		MatLabel,

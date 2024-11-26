@@ -38,7 +38,6 @@ import { SetDropdownMultiComponent } from './set-dropdown-multi/set-dropdown-mul
 
 @Component({
 	selector: 'osee-set-diffs',
-	standalone: true,
 	imports: [
 		NgClass,
 		AsyncPipe,

@@ -30,7 +30,6 @@ const _currNavItem: navigationElement =
 
 @Component({
 	selector: 'osee-server-health-headers',
-	standalone: true,
 	imports: [AsyncPipe, ServerHealthPageHeaderComponent],
 	templateUrl: './server-health-headers.component.html',
 })

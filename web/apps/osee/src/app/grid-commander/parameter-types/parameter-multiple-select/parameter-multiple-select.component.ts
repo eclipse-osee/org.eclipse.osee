@@ -20,7 +20,6 @@ import { AsyncPipe } from '@angular/common';
 	selector: 'osee-parameter-multiple-select',
 	templateUrl: './parameter-multiple-select.component.html',
 	styles: [],
-	standalone: true,
 	imports: [HideColumnCommandComponent, AsyncPipe],
 })
 export class ParameterMultipleSelectComponent {

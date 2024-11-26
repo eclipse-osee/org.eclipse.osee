@@ -24,13 +24,11 @@ import {
 	MatDialogContent,
 	MatDialogTitle,
 } from '@angular/material/dialog';
-import { MatLabel } from '@angular/material/form-field';
 import { ArtifactExplorerPreferencesService } from '../../../services/artifact-explorer-preferences.service';
 import { artifactExplorerUserPreferences } from '../../../types/user-preferences';
 
 @Component({
 	selector: 'osee-artifact-explorer-settings-dialog',
-	standalone: true,
 	imports: [
 		MatDialogTitle,
 		MatDialogContent,
@@ -40,7 +38,6 @@ import { artifactExplorerUserPreferences } from '../../../types/user-preferences
 		MatButtonToggleGroup,
 		MatButtonToggle,
 		FormsModule,
-		MatLabel,
 	],
 	templateUrl: './artifact-explorer-settings-dialog.component.html',
 })

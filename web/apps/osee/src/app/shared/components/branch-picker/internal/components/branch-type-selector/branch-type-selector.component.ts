@@ -24,7 +24,6 @@ import { BranchRoutedUIService } from '@osee/shared/services';
 	selector: 'osee-branch-type-selector',
 	templateUrl: './branch-type-selector.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		MatRadioGroup,
 		MatRadioButton,

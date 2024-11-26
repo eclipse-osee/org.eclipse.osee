@@ -47,7 +47,6 @@ describe('NewPlatformTypeFormPage2Component', () => {
 	let loader: HarnessLoader;
 	@Component({
 		selector: 'osee-test-standalone-form',
-		standalone: true,
 		imports: [FormsModule, NewPlatformTypeFormPage2Component],
 		template: `<form #testForm="ngForm">
 			<osee-new-platform-type-form-page2 [logicalType]="logicalType()" />

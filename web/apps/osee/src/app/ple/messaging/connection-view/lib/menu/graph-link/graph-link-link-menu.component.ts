@@ -26,7 +26,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-graph-link-link-menu',
-	standalone: true,
 	imports: [MatMenuItem, RouterLink, MatIcon],
 	template: ` <a
 			mat-menu-item

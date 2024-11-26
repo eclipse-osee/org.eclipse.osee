@@ -39,7 +39,6 @@ import {
 	MatHeaderCellDef,
 	MatHeaderRow,
 	MatHeaderRowDef,
-	MatRecycleRows,
 	MatRow,
 	MatRowDef,
 	MatTable,
@@ -53,7 +52,6 @@ import { nodeTraceReportHeaderDetails } from './trace-report-table-headers';
 
 @Component({
 	selector: 'osee-trace-report-table',
-	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		NgTemplateOutlet,
@@ -67,7 +65,6 @@ import { nodeTraceReportHeaderDetails } from './trace-report-table-headers';
 		MatPrefix,
 		MatTable,
 		MatSort,
-		MatRecycleRows,
 		MatColumnDef,
 		MatHeaderCell,
 		MatHeaderCellDef,
@@ -98,12 +95,9 @@ export class TraceReportTableComponent {
 		this.dataSource.paginator = this.paginator();
 	});
 
-	private _setDataSourceData = effect(
-		() => {
-			this.dataSource.data = this.data();
-		},
-		{ allowSignalWrites: true }
-	);
+	private _setDataSourceData = effect(() => {
+		this.dataSource.data = this.data();
+	});
 
 	dataSource: MatTableDataSource<NodeTraceReportItem> =
 		new MatTableDataSource<NodeTraceReportItem>([]);

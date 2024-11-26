@@ -14,7 +14,6 @@ import { Component } from '@angular/core';
 
 @Component({
 	selector: 'osee-ple-help',
-	standalone: true,
 	imports: [],
 	templateUrl: './ple-help.component.html',
 	styles: [],

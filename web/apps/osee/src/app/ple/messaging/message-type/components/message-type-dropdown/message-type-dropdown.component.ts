@@ -62,7 +62,6 @@ import {
 
 @Component({
 	selector: 'osee-message-type-dropdown',
-	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		AsyncPipe,
@@ -218,12 +217,9 @@ export class MessageTypeDropdownComponent {
 
 	protected filter$ = signal(this._value());
 
-	private _syncFilter = effect(
-		() => {
-			this.filter$.set(this._value());
-		},
-		{ allowSignalWrites: true }
-	);
+	private _syncFilter = effect(() => {
+		this.filter$.set(this._value());
+	});
 
 	private _typeAhead = toObservable(this.filter$);
 

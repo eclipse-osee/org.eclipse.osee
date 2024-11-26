@@ -63,7 +63,6 @@ import { applicabilitySentinel } from '@osee/applicability/types';
 @Component({
 	selector: 'osee-messaging-add-sub-message-dialog',
 	templateUrl: './add-sub-message-dialog.component.html',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		FormsModule,
@@ -123,14 +122,11 @@ export class AddSubMessageDialogComponent {
 		'applicability'
 	);
 	protected subMessageFilter = signal('');
-	private _updateFilterBasedOnSubMessageSelection = effect(
-		() => {
-			if (this.subMessageId() !== '-1') {
-				this.subMessageFilter.set(this.subMessageName());
-			}
-		},
-		{ allowSignalWrites: true }
-	);
+	private _updateFilterBasedOnSubMessageSelection = effect(() => {
+		if (this.subMessageId() !== '-1') {
+			this.subMessageFilter.set(this.subMessageName());
+		}
+	});
 	private _moveToNextStep = this.__internalStepper.pipe(
 		debounceTime(1),
 		delay(1),

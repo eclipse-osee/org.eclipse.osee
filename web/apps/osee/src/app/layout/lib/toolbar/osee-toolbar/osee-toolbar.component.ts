@@ -15,7 +15,6 @@ import { ToolbarComponent } from '../toolbar.component';
 
 @Component({
 	selector: 'osee-osee-toolbar',
-	standalone: true,
 	template: `<osee-toolbar [oseeToolbar]="true"></osee-toolbar>`,
 	imports: [ToolbarComponent],
 })

@@ -25,7 +25,6 @@ import { DeleteSubMessageDialog } from '../../types/DeleteSubMessageDialog';
 @Component({
 	selector: 'osee-messaging-delete-submessage-dialog',
 	templateUrl: './delete-submessage-dialog.component.html',
-	standalone: true,
 	imports: [
 		MatDialogTitle,
 		MatDialogContent,

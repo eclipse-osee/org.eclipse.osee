@@ -25,7 +25,6 @@ import { combineLatest, iif, of } from 'rxjs';
 	styles: [
 		':host{ height: 94vh; min-height: calc(94vh - 10%); max-height: 94vh; width: 100vw; min-width: calc(100vw - 10%); display: inline-block; overflow: hidden; margin-bottom: -1em;}',
 	],
-	standalone: true,
 	imports: [ConnectionsComponent],
 })
 export class ConnectionViewComponent implements OnInit {

@@ -25,7 +25,6 @@ import {
 	selector: 'osee-messaging-delete-structure-dialog',
 	templateUrl: './delete-structure-dialog.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		MatDialogTitle,
 		MatDialogContent,

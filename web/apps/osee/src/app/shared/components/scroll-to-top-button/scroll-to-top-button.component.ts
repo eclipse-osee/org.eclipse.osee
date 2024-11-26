@@ -23,7 +23,6 @@ import { MatIcon } from '@angular/material/icon';
 	selector: 'osee-scroll-to-top-button',
 	templateUrl: './scroll-to-top-button.component.html',
 	styles: [],
-	standalone: true,
 	imports: [MatFabButton, MatIcon],
 })
 export class ScrollToTopButtonComponent {

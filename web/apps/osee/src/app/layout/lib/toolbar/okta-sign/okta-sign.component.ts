@@ -12,15 +12,13 @@
  **********************************************************************/
 import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { MatAnchor } from '@angular/material/button';
 import { OKTA_AUTH, OktaAuthStateService } from '@okta/okta-angular';
 import { AuthState } from '@okta/okta-auth-js';
 import { filter, map } from 'rxjs';
 
 @Component({
 	selector: 'osee-okta-sign',
-	standalone: true,
-	imports: [AsyncPipe, MatAnchor],
+	imports: [AsyncPipe],
 	templateUrl: './okta-sign.component.html',
 	styles: [':host{ width: 100%; height: 100%; display:inline-block}'],
 })

@@ -22,7 +22,6 @@ import { MessageTableComponent } from '../tables/message-table/message-table.com
 
 @Component({
 	selector: 'osee-message-interface',
-	standalone: true,
 	imports: [
 		MessagingControlsComponent,
 		CurrentViewSelectorComponent,

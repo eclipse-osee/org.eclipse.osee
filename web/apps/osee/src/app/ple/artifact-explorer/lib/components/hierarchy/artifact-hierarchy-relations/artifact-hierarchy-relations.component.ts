@@ -23,7 +23,6 @@ import {
 
 @Component({
 	selector: 'osee-artifact-hierarchy-relations',
-	standalone: true,
 	templateUrl: './artifact-hierarchy-relations.component.html',
 	imports: [AsyncPipe, ArtifactHierarchyRelationSideComponent],
 })

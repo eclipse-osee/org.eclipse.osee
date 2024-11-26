@@ -36,7 +36,6 @@ import { EditViewFreeTextFieldDialogComponent } from '../edit-view-free-text-fie
 
 @Component({
 	selector: 'osee-named-id-list-editor',
-	standalone: true,
 	imports: [
 		FormsModule,
 		MatFormField,

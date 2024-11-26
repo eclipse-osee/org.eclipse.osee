@@ -13,3 +13,4 @@
 export * from './commit-branch.mock';
 export * from './commit-branch.service.mock';
 export * from './commit-branch-button.component.mock';
+export * from './update-from-parent-button.component.mock';

@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe, KeyValuePipe, TitleCasePipe } from '@angular/common';
+import { KeyValuePipe, TitleCasePipe } from '@angular/common';
 import {
 	Component,
 	effect,
@@ -49,7 +49,6 @@ import { FormsModule } from '@angular/forms';
  */
 @Component({
 	selector: 'osee-new-type-form',
-	standalone: true,
 	imports: [
 		MatDialogTitle,
 		MatStepper,
@@ -60,7 +59,6 @@ import { FormsModule } from '@angular/forms';
 		MatStepperNext,
 		MatLabel,
 		MatStepperPrevious,
-		AsyncPipe,
 		TitleCasePipe,
 		KeyValuePipe,
 		LogicalTypeSelectorComponent,
@@ -87,19 +85,16 @@ export class NewTypeFormComponent {
 
 	platformType = model<PlatformType>(new PlatformTypeSentinel());
 
-	private _updateLogicalTypeBasedOnPlatformType = effect(
-		() => {
-			const foundType = this.__lt().find(
-				(v) =>
-					v.name.toLowerCase() ===
-					this.platformType().interfaceLogicalType.value.toLowerCase()
-			);
-			if (foundType) {
-				this.setLogicalType(foundType);
-			}
-		},
-		{ allowSignalWrites: true }
-	);
+	private _updateLogicalTypeBasedOnPlatformType = effect(() => {
+		const foundType = this.__lt().find(
+			(v) =>
+				v.name.toLowerCase() ===
+				this.platformType().interfaceLogicalType.value.toLowerCase()
+		);
+		if (foundType) {
+			this.setLogicalType(foundType);
+		}
+	});
 
 	private _removeIds = effect(() => {
 		//if the platform type, or it's attributes have ids they should be zeroized to -1
@@ -121,9 +116,9 @@ export class NewTypeFormComponent {
 		_platformType.interfacePlatformTypeValidRangeDescription.id = '-1';
 		_platformType.name.id = '-1';
 	});
-	close = output<boolean>();
+	closeForm = output<boolean>();
 
-	result = output<PlatformType>();
+	resultType = output<PlatformType>();
 
 	/**
 	 * Sets the current logical type
@@ -135,8 +130,8 @@ export class NewTypeFormComponent {
 	 * Closes the form and returns a result
 	 */
 	triggerClose() {
-		this.close.emit(true);
-		this.result.emit(this.platformType());
+		this.closeForm.emit(true);
+		this.resultType.emit(this.platformType());
 	}
 
 	isApplic(value: unknown): value is applic {

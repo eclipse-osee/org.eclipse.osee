@@ -27,7 +27,6 @@ import { debounceTime, switchMap } from 'rxjs/operators';
 @Component({
 	selector: 'osee-messaging-header',
 	styles: [],
-	standalone: true,
 	imports: [MatAnchor, RouterLink, AsyncPipe],
 	template: `<p class="tw-line-clamp-1 tw-truncate">
 		@for (link of route | async; track link.routerLink) {

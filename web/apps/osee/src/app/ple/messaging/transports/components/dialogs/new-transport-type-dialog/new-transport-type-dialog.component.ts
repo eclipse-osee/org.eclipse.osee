@@ -28,7 +28,6 @@ import { TransportTypeFormComponent } from '@osee/messaging/transports/forms';
 				receiveFormState($event)
 			"></osee-transport-type-form>`,
 	styles: [],
-	standalone: true,
 	imports: [FormsModule, TransportTypeFormComponent, MatDialogTitle],
 })
 export class NewTransportTypeDialogComponent {

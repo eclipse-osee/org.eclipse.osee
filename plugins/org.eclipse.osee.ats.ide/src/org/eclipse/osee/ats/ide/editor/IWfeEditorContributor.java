@@ -13,8 +13,11 @@
 
 package org.eclipse.osee.ats.ide.editor;
 
+import java.util.Collection;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -26,6 +29,10 @@ public interface IWfeEditorContributor {
    }
 
    default public void addToolBarItems(IAtsWorkItem workItem, IToolBarManager toolBarMgr, WorkflowEditor editor) {
+      // do nothing
+   }
+
+   default public void createStoryLink(Collection<IAtsTeamWorkflow> teamWfs, XResultData rd) {
       // do nothing
    }
 

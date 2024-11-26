@@ -17,22 +17,17 @@ import {
 	MatSidenavContent,
 } from '@angular/material/sidenav';
 import { RouterOutlet } from '@angular/router';
-import {
-	MessagingHelpContentComponent,
-	MessagingHelpNavigationComponent,
-} from '@osee/messaging/help';
+import { MessagingHelpNavigationComponent } from '@osee/messaging/help';
 
 @Component({
 	selector: 'osee-messaging-help',
 	templateUrl: './messaging-help.component.html',
-	standalone: true,
 	imports: [
 		RouterOutlet,
 		MatSidenavContainer,
 		MatSidenav,
 		MatSidenavContent,
 		MessagingHelpNavigationComponent,
-		MessagingHelpContentComponent,
 	],
 })
 export class MessagingHelpComponent {}

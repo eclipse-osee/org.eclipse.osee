@@ -29,7 +29,6 @@ import helpNavigationStructure from './messaging-help-navigation-structure';
 
 @Component({
 	selector: 'osee-messaging-help-navigation',
-	standalone: true,
 	imports: [
 		NgClass,
 		NgTemplateOutlet,

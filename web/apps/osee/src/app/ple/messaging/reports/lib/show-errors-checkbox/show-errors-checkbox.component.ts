@@ -28,7 +28,6 @@ import { first, tap } from 'rxjs';
 
 @Component({
 	selector: 'osee-show-errors-checkbox',
-	standalone: true,
 	imports: [MatCheckbox, MatLabel],
 	template: `
 		<mat-checkbox

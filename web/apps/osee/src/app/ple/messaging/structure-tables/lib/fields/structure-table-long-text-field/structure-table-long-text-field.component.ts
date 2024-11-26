@@ -56,7 +56,6 @@ import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 			</summary>
 		}`,
 	styles: [],
-	standalone: true,
 	imports: [NgClass, NgStyle, HighlightFilteredTextDirective, AsyncPipe],
 })
 export class StructureTableLongTextFieldComponent {

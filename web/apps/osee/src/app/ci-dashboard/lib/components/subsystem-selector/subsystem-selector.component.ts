@@ -24,11 +24,7 @@ import {
 	MatAutocompleteTrigger,
 	MatOption,
 } from '@angular/material/autocomplete';
-import {
-	MatFormField,
-	MatPrefix,
-	MatSuffix,
-} from '@angular/material/form-field';
+import { MatFormField, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatOptionLoadingComponent } from '@osee/shared/components';
 import { DashboardService } from '../../services/dashboard.service';
@@ -46,7 +42,6 @@ import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 
 @Component({
 	selector: 'osee-subsystem-selector',
-	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		MatFormField,
@@ -58,7 +53,6 @@ import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 		MatOption,
 		MatIcon,
 		MatSuffix,
-		MatPrefix,
 	],
 	template: `
 		<mat-form-field
@@ -136,11 +130,8 @@ export class SubsystemSelectorComponent {
 	autoCompleteOpened = signal(false);
 	private _autoCompleteOpened$ = toObservable(this.autoCompleteOpened);
 
-	private _scriptEffect = effect(
-		() => this.filter.set(this.script().subsystem),
-		{
-			allowSignalWrites: true,
-		}
+	private _scriptEffect = effect(() =>
+		this.filter.set(this.script().subsystem)
 	);
 
 	private _subsystems$ = this._autoCompleteOpened$.pipe(

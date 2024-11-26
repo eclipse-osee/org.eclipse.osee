@@ -47,6 +47,7 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -670,6 +671,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       QueryData followQueryData = followQueryData();
       followQueryData.followCausesChild = terminalFollow;
       followQueryData.addCriteria(new CriteriaRelationTypeFollow(relationTypeSide, artifactType, terminalFollow, true));
+      
       if (this.hasCriteriaType(CriteriaFollowSearch.class)) {
          //this is strictly to create an invalid condition so child artWith queries have '' as order_value
          followQueryData.addCriteria(this.getAllCriteria().stream().filter(
@@ -683,6 +685,27 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
          followQueryData = followQueryData();
          followQueryData.addCriteria(
             new CriteriaRelationTypeFollow(relationTypeSide, artifactType, terminalFollow, false));
+      }
+      if (relationTypeSide.isInvalid()) {
+         RelationTypeSide otherSide = new RelationTypeSide(RelationTypeToken.SENTINEL, RelationSide.SIDE_B);
+         followQueryData = followQueryData();
+         followQueryData.followCausesChild = terminalFollow;
+         followQueryData.addCriteria(new CriteriaRelationTypeFollow(otherSide, artifactType, terminalFollow, true));
+         
+         if (this.hasCriteriaType(CriteriaFollowSearch.class)) {
+            //this is strictly to create an invalid condition so child artWith queries have '' as order_value
+            followQueryData.addCriteria(this.getAllCriteria().stream().filter(
+               a -> a.getClass().equals(CriteriaFollowSearch.class)).findFirst().get());
+         }
+         if (this.hasCriteriaType(CriteriaAttributeSort.class)) {
+            //this is strictly to create an invalid condition so child artWith queries have '' as order_value
+            followQueryData.addCriteria(new CriteriaAttributeSort(-1L));
+         }
+         if (relationTypeSide.isInvalid()) {
+            followQueryData = followQueryData();
+            followQueryData.addCriteria(
+               new CriteriaRelationTypeFollow(otherSide, artifactType, terminalFollow, false));
+         }  
       }
       return followQueryData;
    }

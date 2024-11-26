@@ -40,7 +40,6 @@ import { mergeDialogType, validateCommitResult } from '@osee/commit/types';
 
 @Component({
 	selector: 'osee-merge-manager-dialog',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		NgClass,
