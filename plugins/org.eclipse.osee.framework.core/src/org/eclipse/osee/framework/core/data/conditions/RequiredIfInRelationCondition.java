@@ -12,24 +12,27 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data.conditions;
 
-import java.util.List;
-import org.eclipse.osee.framework.core.enums.BooleanTriState;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 
 /**
+ * Note: It enables the widget when at least one value matches the current attribute value.
+ *
  * @author Donald G. Dunne
  */
-public abstract class ConditionalRule {
+public class RequiredIfInRelationCondition extends ConditionalRule {
 
-   public boolean isDisabled(List<String> currentValues) {
-      return !isEnabled(currentValues);
+   private RelationTypeSide relationSide;
+
+   public RequiredIfInRelationCondition(RelationTypeSide relationSide) {
+      this.relationSide = relationSide;
    }
 
-   public boolean isEnabled(List<String> currentValues) {
-      return true;
+   public RelationTypeSide getRelationSide() {
+      return relationSide;
    }
 
-   public BooleanTriState isRequired() {
-      return BooleanTriState.NotSet;
+   public void setRelationSide(RelationTypeSide relationSide) {
+      this.relationSide = relationSide;
    }
 
 }

@@ -38,6 +38,7 @@
 						<osee.application.server>http://localhost:${ats-server-port}</osee.application.server>
 						<org.eclipse.swt.browser.DefaultType>webkit</org.eclipse.swt.browser.DefaultType>
 						<user.name>3333</user.name>
+						<osee.db>orgdemo</osee.db>
 						<postgresqlDB>${postgresqlDB}</postgresqlDB>
 					</systemProperties>
 					<redirectTestOutputToFile>false</redirectTestOutputToFile>

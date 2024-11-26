@@ -106,7 +106,8 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
 
    @Override
    public AtsConfigurations get() {
-      return atsApi.getConfigService().getConfigurations();
+      AtsConfigurations configurations = atsApi.getConfigService().getConfigurations();
+      return configurations;
    }
 
    @Override
@@ -252,7 +253,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    public Version createVersion(String name, String description, ArtifactId teamId) {
       return atsApi.getVersionService().createVersion(name, description, teamId);
    }
-   
+
    @Override
    public Collection<IAtsVersion> getParallelVersions(ArtifactId verId) {
       Version ver = getVersion(verId);

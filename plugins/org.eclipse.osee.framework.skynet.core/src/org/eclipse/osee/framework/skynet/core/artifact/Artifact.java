@@ -1990,4 +1990,15 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       return getTags().contains(tag);
    }
 
+   public boolean isInRelation(RelationTypeSide relationSide) {
+      for (RelationLink link : getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
+         if (link.getRelationType().equals(relationSide.getRelationType())) {
+            if (this.equals(link.getArtifact(relationSide.getSide()))) {
+               return true;
+            }
+         }
+      }
+      return false;
+   }
+
 }

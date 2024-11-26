@@ -17,6 +17,8 @@ import java.util.Date;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.conditions.ConditionalRule;
+import org.eclipse.osee.framework.core.data.conditions.RequiredIfInRelationCondition;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -141,6 +143,19 @@ public class XHyperlinkLabelValueSelectionDam extends XHyperlinkLabelValueSelect
          }
       }
       return status;
+   }
+
+   @Override
+   public boolean isRequiredEntry() {
+      for (ConditionalRule rule : getConditions()) {
+         if (rule instanceof RequiredIfInRelationCondition) {
+            RequiredIfInRelationCondition cond = (RequiredIfInRelationCondition) rule;
+            if (artifact.isInRelation(cond.getRelationSide())) {
+               return true;
+            }
+         }
+      }
+      return super.isRequiredEntry();
    }
 
 }
