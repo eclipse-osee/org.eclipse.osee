@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
  * @author Donald G. Dunne
  */
 public class GenerateIdsAndArtId extends XNavigateItemAction {
-   @SuppressWarnings("java:S2245") //This random doesn't need to be truly random as it is not sensitive
+   //This random doesn't need to be truly random as it is not sensitive
    private final Random random = new Random();
 
    public GenerateIdsAndArtId() {
