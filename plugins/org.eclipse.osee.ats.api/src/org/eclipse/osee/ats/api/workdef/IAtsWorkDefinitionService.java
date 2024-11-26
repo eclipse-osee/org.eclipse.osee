@@ -70,16 +70,10 @@ public interface IAtsWorkDefinitionService {
 
    StateDefinition getStateDefinitionByName(IAtsWorkItem workItem, String stateName);
 
-   /**
-    * @return unique set of state names from work definitions. This should only be used to store state names, not
-    * retrieve them for use. Use getAllValidStateNamesFromConfig.
+   /*
+    * @return unique set of state names from work definitions
     */
-   Collection<String> computeAllValidStateNames();
-
-   /**
-    * @return cached set of state names for use in UI
-    */
-   Collection<String> getAllValidStateNamesFromConfig();
+   Collection<String> getStateNames();
 
    boolean hasWidgetNamed(StateDefinition stateDef, String name);
 
@@ -122,8 +116,6 @@ public interface IAtsWorkDefinitionService {
     * @return widget definitions from header and all states
     */
    Collection<WidgetDefinition> getWidgets(WorkDefinition workDef);
-
-   public Collection<String> updateAllValidStateNames();
 
    default WidgetDefinition getWidgetFromLayoutItems(StateDefinition stateDef, String label) {
       for (WidgetDefinition widgetDef : getWidgetsFromLayoutItems(stateDef)) {
