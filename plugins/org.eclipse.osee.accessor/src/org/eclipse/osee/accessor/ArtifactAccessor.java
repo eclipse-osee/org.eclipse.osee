@@ -14,6 +14,7 @@ package org.eclipse.osee.accessor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.Map;
 import org.eclipse.osee.accessor.types.ArtifactMatch;
 import org.eclipse.osee.accessor.types.AttributeQuery;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -37,6 +38,10 @@ public interface ArtifactAccessor<T> {
       NoSuchMethodException, SecurityException;
 
    T get(BranchId branch, ArtifactId artId, Collection<FollowRelation> followRelations, ArtifactId viewId)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException;
+
+   Map<ArtifactId, T> getForAllViews(BranchId branch, ArtifactId artId, Collection<FollowRelation> followRelations)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException;
 
