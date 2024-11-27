@@ -39,6 +39,7 @@ import { filter, map, switchMap, tap } from 'rxjs/operators';
 import { ConnectionValidationResultsComponent } from './lib/connection-validation-results/connection-validation-results.component';
 import { ShowErrorsCheckboxComponent } from './lib/show-errors-checkbox/show-errors-checkbox.component';
 import { ViewSelectorComponent } from '@osee/shared/components';
+import { AttributeToValuePipe } from '@osee/attributes/pipes';
 
 @Component({
 	selector: 'osee-messaging-reports',
@@ -59,6 +60,7 @@ import { ViewSelectorComponent } from '@osee/shared/components';
 		ViewSelectorComponent,
 		ConnectionValidationResultsComponent,
 		ShowErrorsCheckboxComponent,
+		AttributeToValuePipe,
 	],
 })
 export class ReportsComponent implements OnInit {
