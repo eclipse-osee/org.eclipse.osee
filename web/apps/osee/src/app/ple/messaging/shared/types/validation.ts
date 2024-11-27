@@ -10,6 +10,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
+import { attribute } from '@osee/attributes/types';
 export type ConnectionValidationResult = {
 	branch: string;
 	viewId: string;
@@ -19,6 +21,11 @@ export type ConnectionValidationResult = {
 	structureWordAlignmentErrors: Record<`${number}`, string>;
 	duplicateStructureNameErrors: Record<`${number}`, string>;
 	messageTypeErrors: Record<`${number}`, string>;
+	affectedConfigurations: {
+		id: `${number}`;
+		gammaId: `${number}`;
+		name: attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>;
+	}[];
 };
 
 export const connectionValidationResultSentinel: ConnectionValidationResult = {
@@ -30,4 +37,5 @@ export const connectionValidationResultSentinel: ConnectionValidationResult = {
 	structureWordAlignmentErrors: {},
 	duplicateStructureNameErrors: {},
 	messageTypeErrors: {},
+	affectedConfigurations: [],
 };
