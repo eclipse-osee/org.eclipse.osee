@@ -25,9 +25,8 @@ import { PeerReviewUiService } from '../../services/peer-review-ui.service';
 	selector: 'osee-create-peer-review-button',
 	imports: [MatButton, MatIcon],
 	template: `<button
-		mat-raised-button
-		(click)="addAction()"
-		class="tw-bg-primary tw-text-background-background">
+		mat-flat-button
+		(click)="addAction()">
 		<mat-icon>add</mat-icon>Create Peer Review
 	</button>`,
 })

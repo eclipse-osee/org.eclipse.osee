@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2023 Boeing
+ * Copyright (c) 2024 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -10,11 +10,4 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-export * from './action-drop-down.mock.component';
-export * from './action.service.mock';
-export * from './create-action.service.mock';
-export * from './create-action-button.component.mock';
-export * from './current-action.service.mock';
-export * from './current-action-drop-down.component.mock';
-export * from './new-action.response.mock';
-export * from './manage-action-button.component.mock';
+export * from './confirm-dialog/confirm-dialog.component';

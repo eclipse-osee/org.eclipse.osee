@@ -24,9 +24,8 @@ import { BranchRoutedUIService, UiService } from '@osee/shared/services';
 	selector: 'osee-create-action-button',
 	imports: [MatButton, MatIcon],
 	template: `<button
-		mat-raised-button
-		(click)="addAction()"
-		class="tw-bg-primary tw-text-background-background">
+		mat-flat-button
+		(click)="addAction()">
 		<mat-icon>add</mat-icon>Create Action
 	</button>`,
 })
