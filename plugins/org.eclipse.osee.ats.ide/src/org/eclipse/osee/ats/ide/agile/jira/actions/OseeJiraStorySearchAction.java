@@ -14,28 +14,29 @@
 package org.eclipse.osee.ats.ide.agile.jira.actions;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.AtsImage;
+import org.eclipse.osee.ats.api.workflow.jira.JiraSearch;
 import org.eclipse.osee.ats.ide.actions.AbstractAtsAction;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.swt.program.Program;
 
 /**
  * @author Donald G. Dunne
  */
-public class ShowJiraStoryAction extends AbstractAtsAction {
+public class OseeJiraStorySearchAction extends AbstractAtsAction {
 
    private final ISelectedAtsArtifacts selectedAtsArtifacts;
 
-   public ShowJiraStoryAction(ISelectedAtsArtifacts selectedAtsArtifacts) {
+   public OseeJiraStorySearchAction(ISelectedAtsArtifacts selectedAtsArtifacts) {
       this.selectedAtsArtifacts = selectedAtsArtifacts;
-      setToolTipText("Show Related JIRA Story");
+      setToolTipText("Search Related JIRA Story");
    }
 
    @Override
@@ -44,25 +45,25 @@ public class ShowJiraStoryAction extends AbstractAtsAction {
       rd.log(getClass().getSimpleName() + "\n");
 
       Artifact wfArt = this.selectedAtsArtifacts.getSelectedWorkflowArtifacts().iterator().next();
-      String jiraStoryId = wfArt.getSoleAttributeValue(AtsAttributeTypes.JiraStoryId, "");
-      if (Strings.isValid(jiraStoryId)) {
-         String link = AtsApiService.get().getJiraService().getJiraBasePath() + "browse/" + jiraStoryId;
-         rd.log(link);
-         Program.launch(link);
-      } else {
-         AWorkbench.popup("No JIRA Story Linked to this Team Workflow");
+      IAtsWorkItem workItem = AtsApiService.get().getWorkItemService().getWorkItem(wfArt);
+      rd.log("Team Workflow: " + workItem.toStringWithAtsId() + "\n");
+      if (!workItem.isTeamWorkflow()) {
+         AWorkbench.popup("Must be Team Workflow");
+         return;
       }
 
+      try {
+         JiraSearch srch = AtsApiService.get().getJiraService().search(workItem);
+         rd.log("\n\n" + srch + "\n\n" + srch.getRd().toString());
+      } catch (Exception ex) {
+         rd.log(Lib.exceptionToString(ex));
+      }
+      XResultDataUI.report(rd, getClass().getSimpleName());
    }
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      Artifact wfArt = this.selectedAtsArtifacts.getSelectedWorkflowArtifacts().iterator().next();
-      String jiraStoryId = wfArt.getSoleAttributeValue(AtsAttributeTypes.JiraStoryId, "");
-      if (Strings.isValid(jiraStoryId)) {
-         return ImageManager.getImageDescriptor(AtsImage.JIRA_LINKED);
-      }
-      return ImageManager.getImageDescriptor(AtsImage.JIRA);
+      return ImageManager.getImageDescriptor(AtsImage.JIRA_SEARCH);
    }
 
 }
