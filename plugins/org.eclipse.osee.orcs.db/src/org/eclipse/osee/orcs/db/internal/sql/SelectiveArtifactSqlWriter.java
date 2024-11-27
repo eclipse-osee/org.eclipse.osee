@@ -272,6 +272,10 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
                addParameter(getRootQueryData().getBranch().getId());
             }
             writeFieldsCommonTableExpression(artWithAlias, attsAlias);
+            if (OptionsUtil.getContentsForAllViews(rootQueryData.getOptions())) {
+               writeFields2CommonTableExpression();
+
+            }
          }
       }
       finishWithClause();
@@ -309,6 +313,9 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
             write(" ORDER BY " + fieldAlias + ".art_id");
          } else if (this.rels2Alias != null) {
             write(" ORDER BY ");
+            if (OptionsUtil.getContentsForAllViews(rootQueryData.getOptions())) {
+               write(fieldAlias + ".configuration, ");
+            }
             write(fieldAlias + ".top desc");
             if (this.rootQueryData.orderMechanism().equals("ATTRIBUTE") || this.rootQueryData.orderMechanism().equals(
                "RELATION AND ATTRIBUTE")) {
@@ -372,6 +379,27 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          write("\n union all \n");
          write("select " + refAtts + ".* from " + refAtts);
       }
+   }
+
+   private void writeFields2CommonTableExpression() {
+      String oldFieldAlias = fieldAlias;
+      fieldAlias = startCommonTableExpression("fields");
+      writeSelectAndHint();
+      writeSelectFields(oldFieldAlias, "*");
+      String tuple2Alias = "t2_1";
+      writeSelectFields(tuple2Alias, "e1");
+      write(" as configuration ");
+      String tuple2TxAlias = "txs_t2_1";
+      write(" FROM ");
+      write(oldFieldAlias);
+      write(", ");
+      write("osee_tuple2 " + tuple2Alias + " , ");
+      write("osee_txs " + tuple2TxAlias + " ");
+      write(" WHERE ");
+      writeEqualsParameterAnd(tuple2Alias, "tuple_type", CoreTupleTypes.ViewApplicability);
+      writeEqualsAnd(tuple2Alias, tuple2TxAlias, "gamma_id");
+      writeEqualsAnd(tuple2Alias, "e2", oldFieldAlias, "app_id");
+      writeTxBranchFilter(tuple2TxAlias);
    }
 
    private String writeAttsCommonTableExpression(String artWithAlias) {
@@ -441,14 +469,13 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          writeSelectFields(primary, "*", relAlias, "rel_type AS type_id");
       }
       write(", '%s'  AS value, ", side);
-      write("'' AS spare1, 0 AS spare2 ,%s.gamma_id, ",relTxsAlias);
+      write("'' AS spare1, 0 AS spare2 ,%s.gamma_id, ", relTxsAlias);
       if (side.equals("B")) {
          write("b_art_id AS other_art_id, ");
       } else {
          write("a_art_id AS other_art_id, ");
       }
-      write("%s.art_type_id as other_art_type_id, %s.gamma_id as other_art_gamma_id",
-          secondary, secondaryTxsAlias);
+      write("%s.art_type_id as other_art_type_id, %s.gamma_id as other_art_gamma_id", secondary, secondaryTxsAlias);
       if (relTable.equals("osee_relation_link")) {
          write(", 0 as rel_type, 0 as rel_order ");
       } else {
@@ -463,7 +490,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       write("\n FROM %s %s, %s rel, osee_txs txs, osee_artifact %s, osee_txs %s", artWithAlias, primary, relTable,
          secondary, secondaryTxsAlias);
       if (queryDataCursor.getView().isValid()) {
-         write(", osee_tuple2 %s, osee_txs %s ",tuple2Alias, tuple2TxsAlias);
+         write(", osee_tuple2 %s, osee_txs %s ", tuple2Alias, tuple2TxsAlias);
       }
       if (OptionsUtil.getIncludeLatestTransactionDetails(rootQueryData.getOptions())) {
          write(", osee_tx_details txd");
@@ -493,7 +520,8 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       writeTxBranchFilter(secondaryTxsAlias);
       if (queryDataCursor.getView().isValid()) {
          writeAnd();
-         write("%s.tuple_type = ? and %s.e1 = ? and %s.e2 = %s.app_id ",tuple2Alias, tuple2Alias, tuple2Alias, secondaryTxsAlias);
+         write("%s.tuple_type = ? and %s.e1 = ? and %s.e2 = %s.app_id ", tuple2Alias, tuple2Alias, tuple2Alias,
+            secondaryTxsAlias);
          addParameter(CoreTupleTypes.ViewApplicability);
          addParameter(queryDataCursor.getView());
          writeAnd();
@@ -501,7 +529,6 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          writeTxBranchFilter(tuple2TxsAlias);
       }
    }
-
 
    @Override
    protected void writeSelectFields() {
@@ -517,7 +544,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          write(queryDataCursor.getParentQueryData() == null ? "1" : "0");
          write(" AS top");
 
-      } 
+      }
    }
 
    @Override
