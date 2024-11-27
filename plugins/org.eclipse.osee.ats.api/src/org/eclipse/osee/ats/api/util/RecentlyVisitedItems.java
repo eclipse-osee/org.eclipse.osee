@@ -15,7 +15,9 @@ package org.eclipse.osee.ats.api.util;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 
 /**
@@ -25,6 +27,8 @@ public class RecentlyVisitedItems {
 
    public static final RecentlyVisitedItems EMPTY_ITEMS = new RecentlyVisitedItems();
    public List<RecentlyVisistedItem> visited = new ArrayList<>();
+   public Map<Long, RecentlyVisistedItem> workItemToVisited = new HashMap<>();
+
    // This number can not be increased without analyzing size of storage value
    private final int defaultRecentlyVisitedCount = 20;
 
@@ -41,12 +45,18 @@ public class RecentlyVisitedItems {
    public void addVisited(IAtsWorkItem workItem) {
       RecentlyVisistedItem item = RecentlyVisistedItem.valueOf(workItem.getArtifactToken(), workItem.getArtifactType());
       visited.remove(item);
+      workItemToVisited.remove(workItem.getId());
       visited.add(item);
+      workItemToVisited.put(workItem.getId(), item);
       if (visited.size() > defaultRecentlyVisitedCount) {
          for (int x = defaultRecentlyVisitedCount - 1; x < defaultRecentlyVisitedCount; x++) {
             visited.remove(0);
          }
       }
+   }
+
+   public RecentlyVisistedItem getVisitedItem(Long id) {
+      return workItemToVisited.get(id);
    }
 
    public void clearVisited() {
@@ -55,16 +65,12 @@ public class RecentlyVisitedItems {
       }
    }
 
-   public void addVisitedItem(RecentlyVisistedItem item) {
-      visited.add(item);
-   }
-
    public List<RecentlyVisistedItem> getVisited() {
       return visited;
    }
 
-   public void setVisited(List<RecentlyVisistedItem> visited) {
-      this.visited = visited;
+   public boolean remove(RecentlyVisistedItem visitedItem) {
+      return visited.remove(visitedItem);
    }
 
 }
