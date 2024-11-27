@@ -14,20 +14,33 @@
 package org.eclipse.osee.ats.ide.navigate;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.util.RecentlyVisistedItem;
 import org.eclipse.osee.ats.api.util.RecentlyVisitedItems;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactTopicEventListener;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
+import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -39,7 +52,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Donald G. Dunne
  */
-public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements IWorkbenchListener {
+public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements IWorkbenchListener, IArtifactEventListener, IArtifactTopicEventListener {
 
    private static final String NAME = "Recently Visited Workflows";
    private static RecentlyVisitedItems visitedItems;
@@ -50,6 +63,7 @@ public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements
       topNavigateItem = this;
       PlatformUI.getWorkbench().addWorkbenchListener(this);
       refresh();
+      OseeEventManager.addListener(this);
    }
 
    @Override
@@ -150,4 +164,51 @@ public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements
       }
       return true;
    }
+
+   @Override
+   public List<? extends IEventFilter> getEventFilters() {
+      return AtsUtilClient.getAtsObjectEventFilters();
+   }
+
+   @Override
+   public List<? extends ITopicEventFilter> getTopicEventFilters() {
+      return AtsUtilClient.getAtsTopicObjectEventFilters();
+   }
+
+   @Override
+   public void handleArtifactTopicEvent(ArtifactTopicEvent artifactTopicEvent, Sender sender) {
+      Collection<Artifact> cacheArtifacts =
+         artifactTopicEvent.getCacheArtifacts(EventModType.Modified, EventModType.Deleted, EventModType.Purged);
+      handleCachedArtifacts(cacheArtifacts);
+   }
+
+   @Override
+   public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+      Collection<Artifact> cacheArtifacts =
+         artifactEvent.getCacheArtifacts(EventModType.Modified, EventModType.Deleted, EventModType.Purged);
+      handleCachedArtifacts(cacheArtifacts);
+   }
+
+   private void handleCachedArtifacts(Collection<Artifact> cacheArtifacts) {
+      boolean updated = false;
+      for (Artifact art : cacheArtifacts) {
+         if (art.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
+            RecentlyVisistedItem visitedItem = visitedItems.getVisitedItem(art.getId());
+            if (visitedItem != null) {
+               if (art.isDeleted()) {
+                  if (visitedItems.remove(visitedItem)) {
+                     updated = true;
+                  }
+               } else if (!visitedItem.getWorkflowName().equals(art.getName())) {
+                  visitedItem.setWorkflowName(art.getName());
+                  updated = true;
+               }
+            }
+         }
+      }
+      if (updated) {
+         refresh();
+      }
+   }
+
 }
