@@ -15,8 +15,10 @@ package org.eclipse.osee.mim.internal;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.eclipse.osee.accessor.ArtifactAccessor;
 import org.eclipse.osee.accessor.types.ArtifactMatch;
@@ -122,6 +124,20 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
          //
       }
       return new LinkedList<>();
+   }
+
+   @Override
+   public Map<ArtifactId, InterfaceConnection> getForAllViews(BranchId branch, ArtifactId connectionId,
+      Collection<FollowRelation> followRelations) {
+      try {
+         Map<ArtifactId, InterfaceConnection> connections =
+            this.getAccessor().getForAllViews(branch, connectionId, followRelations);
+         return connections;
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         //
+      }
+      return new HashMap<>();
    }
 
    @Override

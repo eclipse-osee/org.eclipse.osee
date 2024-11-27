@@ -12,8 +12,12 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithGammas;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 
@@ -29,6 +33,7 @@ public class ConnectionValidationResult {
    private final Map<ArtifactId, String> structureWordAlignmentErrors = new HashMap<>();
    private final Map<ArtifactId, String> duplicateStructureNameErrors = new HashMap<>();
    private final Map<ArtifactId, String> messageTypeErrors = new HashMap<>();
+   private final List<ArtifactAccessorResultWithGammas> affectedConfigurations = new ArrayList<>();
 
    public ConnectionValidationResult() {
       this.branch = BranchId.SENTINEL;
@@ -72,6 +77,14 @@ public class ConnectionValidationResult {
 
    public Map<ArtifactId, String> getStructureWordAlignmentErrors() {
       return structureWordAlignmentErrors;
+   }
+
+   public void addAllAffectedConfigurations(List<ArtifactAccessorResultWithGammas> configurations) {
+      this.affectedConfigurations.addAll(configurations);
+   }
+
+   public List<ArtifactAccessorResultWithGammas> getAffectedConfigurations() {
+      return this.affectedConfigurations.stream().collect(Collectors.toList());
    }
 
 }
