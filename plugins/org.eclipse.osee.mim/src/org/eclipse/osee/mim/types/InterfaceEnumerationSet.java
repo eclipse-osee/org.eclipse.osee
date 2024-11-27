@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -151,4 +152,26 @@ public class InterfaceEnumerationSet extends ArtifactAccessorResultWithGammas {
       return art;
    }
 
+   @JsonIgnore
+   @Override
+   public boolean equals(Object obj) {
+      if (obj == this) {
+         return true;
+      }
+      if (obj instanceof InterfaceEnumerationSet) {
+         InterfaceEnumerationSet other = ((InterfaceEnumerationSet) obj);
+         if (!this.getName().valueEquals(other.getName())) {
+            return false;
+         }
+         if (!this.getDescription().valueEquals(other.getDescription())) {
+            return false;
+         }
+         if (!this.getEnumerations().equals(other.getEnumerations())) {
+            return false;
+         }
+         return true;
+      }
+      return false;
+
+   }
 }

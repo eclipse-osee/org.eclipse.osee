@@ -518,4 +518,68 @@ public class TransportType extends ArtifactAccessorResultWithGammas {
       return art;
    }
 
+   @JsonIgnore
+   @Override
+   public boolean equals(Object obj) {
+      if (obj == this) {
+         return true;
+      }
+      if (obj instanceof TransportType) {
+         TransportType other = ((TransportType) obj);
+         if (!this.getName().valueEquals(other.getName())) {
+            return false;
+         }
+         if (!this.getByteAlignValidation().valueEquals(other.getByteAlignValidation())) {
+            return false;
+         }
+         if (!this.getMessageGeneration().valueEquals(other.getMessageGeneration())) {
+            return false;
+         }
+         if (!this.getByteAlignValidationSize().valueEquals(other.getByteAlignValidationSize())) {
+            return false;
+         }
+         if (!this.getMessageGenerationType().valueEquals(other.getMessageGenerationType())) {
+            return false;
+         }
+         if (!this.getMessageGenerationPosition().valueEquals(other.getMessageGenerationPosition())) {
+            return false;
+         }
+         if (!this.getMinimumSubscriberMultiplicity().valueEquals(other.getMinimumSubscriberMultiplicity())) {
+            return false;
+         }
+         if (!this.getMaximumSubscriberMultiplicity().valueEquals(other.getMaximumSubscriberMultiplicity())) {
+            return false;
+         }
+         if (!this.getMinimumPublisherMultiplicity().valueEquals(other.getMinimumPublisherMultiplicity())) {
+            return false;
+         }
+         if (!this.getMaximumPublisherMultiplicity().valueEquals(other.getMaximumPublisherMultiplicity())) {
+            return false;
+         }
+         if (!this.getDashedPresentation().valueEquals(other.getDashedPresentation())) {
+            return false;
+         }
+         if (!this.getSpareAutoNumbering().valueEquals(other.getSpareAutoNumbering())) {
+            return false;
+         }
+         if (!this.getInterfaceLevelsToUse().valueEquals(other.getInterfaceLevelsToUse())) {
+            return false;
+         }
+         if (!this.getAvailableMessageHeaders().valueEquals(other.getAvailableMessageHeaders())) {
+            return false;
+         }
+         if (!this.getAvailableSubmessageHeaders().valueEquals(other.getAvailableSubmessageHeaders())) {
+            return false;
+         }
+         if (!this.getAvailableStructureHeaders().valueEquals(other.getAvailableStructureHeaders())) {
+            return false;
+         }
+         if (!this.getAvailableElementHeaders().valueEquals(other.getAvailableElementHeaders())) {
+            return false;
+         }
+         return true;
+      }
+      return false;
+   }
+
 }
