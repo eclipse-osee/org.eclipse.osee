@@ -16,8 +16,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import org.eclipse.osee.accessor.ArtifactAccessor;
 import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
@@ -129,6 +132,24 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
       return this.getType().getDeclaredConstructor().newInstance();
    }
 
+   private Map<ArtifactId, T> fetchSingleForAllViews(QueryBuilder query, BranchId branch)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
+      Map<ArtifactId, ArtifactReadable> results = query.asViewToArtifactMap();
+      Map<ArtifactId, T> mapToReturn = new HashMap<>();
+      for (Entry<ArtifactId, ArtifactReadable> entry : results.entrySet()) {
+         if (entry.getValue().isValid()) {
+            T returnObj = this.getType().getDeclaredConstructor(ArtifactReadable.class).newInstance(entry.getValue());
+            if (getSetApplic(this.getType()) != null && !query.areApplicabilityTokensIncluded()) {
+               getSetApplic(this.getType()).invoke(returnObj,
+                  orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(entry.getValue(), branch));
+            }
+            mapToReturn.put(entry.getKey(), returnObj);
+         }
+      }
+      return mapToReturn;
+   }
+
    @Override
    public Collection<ArtifactMatch> getAffectedArtifacts(BranchId branch, ArtifactId relatedId,
       Collection<RelationTypeSide> relations) throws IllegalArgumentException, SecurityException {
@@ -170,6 +191,19 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
          query = buildFollowRelationQuery(query, rel);
       }
       return fetchSingle(query, branch);
+   }
+
+   @Override
+   public Map<ArtifactId, T> getForAllViews(BranchId branch, ArtifactId artId,
+      Collection<FollowRelation> followRelations) throws InstantiationException, IllegalAccessException,
+      IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      QueryBuilder query =
+         orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andIsOfType(artifactType).andId(
+            artId);
+      for (FollowRelation rel : followRelations) {
+         query = buildFollowRelationQuery(query, rel);
+      }
+      return fetchSingleForAllViews(query, branch);
    }
 
    @Override
