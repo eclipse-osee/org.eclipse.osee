@@ -32,6 +32,9 @@ import { FormsModule } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
 import { MatFormField, MatInput, MatLabel } from '@angular/material/input';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { ManageActionButtonComponentMock } from '@osee/configuration-management/testing';
+import { BranchInfoService } from '@osee/shared/services';
+import { BranchInfoServiceMock } from '@osee/shared/testing';
 
 describe('PeerReviewDialogComponent', () => {
 	let component: PeerReviewDialogComponent;
@@ -54,6 +57,7 @@ describe('PeerReviewDialogComponent', () => {
 					MatIcon,
 					MatLabel,
 					MatInput,
+					ManageActionButtonComponentMock,
 				],
 			},
 		})
@@ -76,6 +80,10 @@ describe('PeerReviewDialogComponent', () => {
 					{
 						provide: PeerReviewUiService,
 						useValue: PeerReviewUiServiceMock,
+					},
+					{
+						provide: BranchInfoService,
+						useValue: BranchInfoServiceMock,
 					},
 					{ provide: MatDialogRef, useValue: dialogRef },
 				],

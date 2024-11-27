@@ -10,18 +10,52 @@
 * Contributors:
 *     Boeing - initial API and implementation
 -->
-<h2 mat-dialog-title>Peer Review Manager</h2>
+<div class="tw-flex tw-w-full tw-items-center tw-justify-between tw-pr-4">
+	<h2 mat-dialog-title>Peer Review Manager</h2>
+	<a
+		[routerLink]="'/ple/messaging/help/peer-review'"
+		target="_blank">
+		<mat-icon class="tw-text-foreground">help_outline</mat-icon>
+	</a>
+</div>
 <mat-dialog-content>
 	<div
 		class="tw-flex tw-flex-wrap tw-items-center tw-justify-between tw-gap-4 tw-pb-4">
 		<div class="tw-min-w-72">
 			<osee-peer-review-branch-selector />
 		</div>
-		<osee-create-peer-review-button workType="MIM" />
+		<div class="tw-flex tw-gap-4">
+			@if (prBranchId() !== '-1') {
+				<div
+					matTooltip="The peer review branch can't be closed until all applied branches are committed"
+					[matTooltipDisabled]="completedCommitting()">
+					<button
+						mat-flat-button
+						(click)="closePeerReview()"
+						[disabled]="!completedCommitting()">
+						Close Peer Review
+					</button>
+				</div>
+			}
+			<osee-create-peer-review-button workType="MIM" />
+		</div>
 	</div>
 	@if (prBranchId() !== '-1' && workingBranches()) {
 		<div class="tw-flex tw-max-h-fit tw-flex-col tw-gap-4">
-			<div class="tw-text-lg">Working branches included in PR</div>
+			@if (isCommitting()) {
+				<div
+					class="tw-bg-primary-50 tw-px-4 tw-py-2 tw-text-lg dark:tw-bg-primary-500">
+					<mat-icon class="material-icons-outlined tw-align-middle"
+						>info</mat-icon
+					>
+					<span class="tw-align-middle">
+						&nbsp;Branches included in this PR have been committed.
+						No more branches can be applied.</span
+					>
+				</div>
+			} @else {
+				<div class="tw-text-lg">Working branches included in PR</div>
+			}
 			<mat-form-field
 				subscriptSizing="dynamic"
 				class="tw-w-full">
@@ -35,18 +69,37 @@
 			<div class="tw-max-h-80 tw-overflow-auto">
 				<mat-selection-list [compareWith]="compareFn">
 					@for (branch of workingBranches(); track branch.branch.id) {
-						<mat-list-option
-							#option
-							[selected]="isBranchSelected(branch)"
-							[disabled]="!branch.selectable && !branch.selected"
-							matTooltip="This branch has been applied to another peer review"
-							[matTooltipDisabled]="
-								branch.selectable || branch.selected
-							"
-							class="tw-rounded-md"
-							(click)="handleChange(branch, option.selected)">
-							{{ branch.branch.name }}</mat-list-option
-						>
+						<div
+							class="tw-my-1 tw-grid tw-w-full tw-grid-cols-[5fr_1fr] tw-items-center tw-gap-2 tw-pr-2">
+							<mat-list-option
+								#option
+								[selected]="isBranchSelected(branch)"
+								[disabled]="
+									(!branch.selectable && !branch.selected) ||
+									isCommitting()
+								"
+								matTooltip="This branch has been applied to another peer review"
+								[matTooltipDisabled]="
+									branch.selectable || branch.selected
+								"
+								class="tw-rounded-md"
+								(click)="handleChange(branch, option.selected)">
+								{{ branch.branch.name }}</mat-list-option
+							>
+							<div class="tw-flex tw-min-w-32 tw-justify-center">
+								<osee-manage-action-button
+									[label]="
+										branch.committedToBaseline
+											? 'Committed'
+											: 'Transition'
+									"
+									[branch]="branch.branch"
+									[isDisabled]="
+										!branch.selected ||
+										branch.committedToBaseline
+									" />
+							</div>
+						</div>
 					}
 				</mat-selection-list>
 			</div>
@@ -88,7 +141,8 @@
 	<button
 		mat-button
 		cdkFocusInitial
-		(click)="onNoClick()">
+		(click)="onNoClick()"
+		data-testid="pr-dialog-close">
 		Close
 	</button>
 </mat-dialog-actions>
