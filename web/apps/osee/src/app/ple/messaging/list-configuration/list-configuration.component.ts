@@ -32,7 +32,6 @@ import { UnitsTableComponent } from '@osee/messaging/units/table';
 
 @Component({
 	selector: 'osee-list-configuration',
-	standalone: true,
 	imports: [
 		NamedIdListEditorComponent,
 		MessagingControlsComponent,

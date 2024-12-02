@@ -48,7 +48,6 @@ import { ApplicabilityDropdownComponent } from '@osee/applicability/applicabilit
 
 @Component({
 	selector: 'osee-cross-reference-table',
-	standalone: true,
 	templateUrl: './cross-reference-table.component.html',
 	imports: [
 		AsyncPipe,
@@ -72,7 +71,6 @@ import { ApplicabilityDropdownComponent } from '@osee/applicability/applicabilit
 		MatRow,
 		MatRowDef,
 		MatTooltip,
-		NewCrossReferenceDialogComponent,
 		TableEditTextFieldComponent,
 		SplitStringPipe,
 		ApplicabilityDropdownComponent,

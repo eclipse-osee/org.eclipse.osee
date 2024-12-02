@@ -26,7 +26,6 @@ import { OpenUrlFormComponent } from './command-actions/open-url-form/open-url-f
 
 @Component({
 	selector: 'osee-create-command-form',
-	standalone: true,
 	templateUrl: './create-command-form.component.html',
 	styles: [],
 	imports: [

@@ -40,7 +40,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 	selector: 'osee-plconfig-add-feature-dialog',
 	templateUrl: './add-feature-dialog.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		FormsModule,

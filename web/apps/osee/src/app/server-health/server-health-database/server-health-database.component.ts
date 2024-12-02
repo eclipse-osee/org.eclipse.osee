@@ -26,7 +26,6 @@ const _currNavItem: navigationElement =
 
 @Component({
 	selector: 'osee-server-health-database',
-	standalone: true,
 	imports: [
 		ServerHealthSqlComponent,
 		ServerHealthTablespaceComponent,

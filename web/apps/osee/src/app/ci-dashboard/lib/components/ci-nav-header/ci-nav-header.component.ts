@@ -29,7 +29,6 @@ import { CiDashboardUiService } from '../../services/ci-dashboard-ui.service';
 
 @Component({
 	selector: 'osee-ci-nav-header',
-	standalone: true,
 	imports: [AsyncPipe, NgClass, RouterLink],
 	templateUrl: './ci-nav-header.component.html',
 })

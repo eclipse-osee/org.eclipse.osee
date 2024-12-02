@@ -28,7 +28,6 @@ import { AsyncPipe } from '@angular/common';
 
 @Component({
 	selector: 'osee-teams-list',
-	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [NamedIdListEditorComponent, AsyncPipe],
 	template: `

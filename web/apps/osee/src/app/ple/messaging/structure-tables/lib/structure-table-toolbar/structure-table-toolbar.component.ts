@@ -17,7 +17,6 @@ import { StructureTableToolbarAddActionsComponent } from '../structure-table-too
 
 @Component({
 	selector: 'osee-structure-table-toolbar',
-	standalone: true,
 	imports: [
 		MatToolbar,
 		StructureTablePaginatorComponent,

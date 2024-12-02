@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.access.IAtsAccessService;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.agile.IAgileSprintHtmlOperation;
+import org.eclipse.osee.ats.api.agile.jira.AtsJiraService;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.column.IAtsColumnService;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
@@ -130,6 +131,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    protected IAtsNotificationService notificationService;
    protected IAtsAccessService atsAccessService;
    protected IAgileService agileService;
+   protected AtsJiraService jiraService;
 
    Collection<IAgileSprintHtmlOperation> agileSprintHtmlReportOperations = new LinkedList<>();
 
@@ -241,7 +243,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
 
    @Override
    public void setUserConfigValue(String key, String value) {
-      ArtifactId userArt = getUserService().getCurrentUser();
+      ArtifactId userArt = getUserService().getCurrentUser().getStoreObject();
       IAtsChangeSet changes =
          storeService.createAtsChangeSet("Set User AtsConfig Value", getUserService().getCurrentUser());
       if (userArt != null) {
@@ -251,7 +253,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
             getAttributeResolver().getAttributes(userArt, CoreAttributeTypes.AtsUserConfig);
          for (IAttribute<String> attr : attributes) {
             String str = attr.getValue();
-            if (str.startsWith(key)) {
+            if (str.startsWith(key + "=")) {
                changes.setAttribute(userArt, attr, keyValue);
                found = true;
                break;
@@ -602,6 +604,11 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
    @Override
    public void removeOseeInfo(String key) {
       OseeInfo.setValue(jdbcService.getClient(), key, null);
+   }
+
+   @Override
+   public AtsJiraService getJiraService() {
+      return jiraService;
    }
 
 }

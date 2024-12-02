@@ -12,29 +12,72 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CommitManagerDialogComponent } from './commit-manager-dialog.component';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+	MAT_DIALOG_DATA,
+	MatDialogActions,
+	MatDialogClose,
+	MatDialogContent,
+	MatDialogTitle,
+} from '@angular/material/dialog';
 import { teamWorkflowDetailsMock } from '@osee/shared/testing';
 import { ActionService } from '@osee/configuration-management/services';
 import { actionServiceMock } from '@osee/configuration-management/testing';
+import { CommitBranchButtonMockComponent } from '@osee/commit/testing';
+import { MatButton } from '@angular/material/button';
+import {
+	MatCell,
+	MatCellDef,
+	MatColumnDef,
+	MatHeaderCell,
+	MatHeaderCellDef,
+	MatHeaderRow,
+	MatHeaderRowDef,
+	MatRow,
+	MatRowDef,
+	MatTable,
+} from '@angular/material/table';
 
 describe('CommitManagerDialogComponent', () => {
 	let component: CommitManagerDialogComponent;
 	let fixture: ComponentFixture<CommitManagerDialogComponent>;
 
 	beforeEach(async () => {
-		await TestBed.configureTestingModule({
-			imports: [CommitManagerDialogComponent],
-			providers: [
-				{
-					provide: MAT_DIALOG_DATA,
-					useValue: teamWorkflowDetailsMock,
-				},
-				{
-					provide: ActionService,
-					useValue: actionServiceMock,
-				},
-			],
-		}).compileComponents();
+		await TestBed.overrideComponent(CommitManagerDialogComponent, {
+			set: {
+				imports: [
+					CommitBranchButtonMockComponent,
+					MatDialogContent,
+					MatDialogTitle,
+					MatDialogActions,
+					MatDialogClose,
+					MatButton,
+					MatTable,
+					MatColumnDef,
+					MatRowDef,
+					MatHeaderRowDef,
+					MatCellDef,
+					MatHeaderCellDef,
+					MatRow,
+					MatHeaderRow,
+					MatCell,
+					MatHeaderCell,
+				],
+			},
+		})
+			.configureTestingModule({
+				imports: [CommitManagerDialogComponent],
+				providers: [
+					{
+						provide: MAT_DIALOG_DATA,
+						useValue: teamWorkflowDetailsMock,
+					},
+					{
+						provide: ActionService,
+						useValue: actionServiceMock,
+					},
+				],
+			})
+			.compileComponents();
 
 		fixture = TestBed.createComponent(CommitManagerDialogComponent);
 		component = fixture.componentInstance;

@@ -59,7 +59,6 @@ import { paginationMode } from '../internal/pagination-options';
 @Component({
 	selector: 'osee-mat-option-loading',
 	templateUrl: './mat-option-loading.component.html',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		MatOption,
@@ -71,7 +70,7 @@ import { paginationMode } from '../internal/pagination-options';
 		MatListItemTitle,
 		NgTemplateOutlet,
 	],
-	changeDetection: ChangeDetectionStrategy.OnPush, //lessen the amount of redrawing necessary to cause less "bounciness"
+	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MatOptionLoadingComponent<T> implements OnChanges {
 	private _parentSelect = inject(MatSelect, { host: true, optional: true })!;

@@ -16,7 +16,6 @@ import { message } from '@osee/messaging/shared/types';
 @Component({
 	selector: 'osee-edit-message-nodes-field',
 	template: '<button>Ok</button>',
-	standalone: true,
 	imports: [],
 })
 export class MockEditMessageNodesFieldComponent {

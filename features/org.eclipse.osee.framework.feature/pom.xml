@@ -28,6 +28,7 @@
 						</goals>
 						<configuration>
 							<excludes>
+								<plugin id="com.github.spotbugs.plugin.eclipse"/>
 								<plugin id="org.eclipse.oss.ajax"/>
 								<plugin id="org.apache.ws.xmlschema.core"/>
 								<plugin id="jackson-dataformat-yaml"/>

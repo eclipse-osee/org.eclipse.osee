@@ -49,7 +49,6 @@ import { CurrentGraphService } from '../../services/current-graph.service';
 	selector: 'osee-connection-view-graph',
 	templateUrl: './graph.component.html',
 	styles: [':host{ width: 100%; height: 100%;}'],
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		NgClass,

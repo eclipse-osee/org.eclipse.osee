@@ -46,7 +46,6 @@ import {
 
 @Component({
 	selector: 'osee-persisted-publisher-node-dropdown',
-	standalone: true,
 	imports: [NodeDropdownComponent, FormsModule],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	template: `<form>

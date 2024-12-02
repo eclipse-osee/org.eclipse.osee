@@ -26,7 +26,6 @@ import { CurrentGraphService } from '../../services/current-graph.service';
 
 @Component({
 	selector: 'osee-graph-link-diff-menu',
-	standalone: true,
 	imports: [MatMenuItem, MatTooltip],
 	template: `
 		<button

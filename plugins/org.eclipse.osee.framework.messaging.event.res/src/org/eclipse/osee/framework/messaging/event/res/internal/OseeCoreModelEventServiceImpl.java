@@ -111,8 +111,6 @@ public class OseeCoreModelEventServiceImpl implements OseeMessagingStatusCallbac
 
    @Override
    public void addFrameworkListener(IFrameworkEventListener frameworkEventListener) {
-      OseeLog.log(OseeCoreModelEventServiceImpl.class, Level.INFO, "Registering Client for Remote Events");
-
       for (Entry<ResMessages, Boolean> messageEntries : messages.entrySet()) {
          ResMessages resMessageID = messageEntries.getKey();
          boolean isVerbose = messageEntries.getValue();
@@ -122,8 +120,6 @@ public class OseeCoreModelEventServiceImpl implements OseeMessagingStatusCallbac
 
    @Override
    public void removeFrameworkListener(IFrameworkEventListener frameworkEventListener) {
-      OseeLog.log(OseeCoreModelEventServiceImpl.class, Level.INFO, "De-Registering Client for Remote Events");
-
       HashCollectionSet<ResMessages, OseeMessagingListener> listeners = subscriptions.get(frameworkEventListener);
       if (listeners != null) {
          for (ResMessages messageID : listeners.keySet()) {

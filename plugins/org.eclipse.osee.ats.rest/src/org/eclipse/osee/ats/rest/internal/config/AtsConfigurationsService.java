@@ -140,8 +140,8 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
       configs.setViews(views);
       // load color column config
       configs.setColorColumns(update.getColorColumns(configValues.get(UpdateAtsConfiguration.COLOR_COLUMN_KEY)));
-      // load valid state names
-      configs.setValidStateNames(atsApi.getWorkDefinitionService().getAllValidStateNamesFromConfig());
+      // load valid state name
+      configs.setValidStateNames(atsApi.getWorkDefinitionService().getStateNames());
       time2.end();
 
       time.end();

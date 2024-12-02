@@ -37,7 +37,6 @@ import { Subject } from 'rxjs';
 
 @Component({
 	selector: 'osee-transport-type-form',
-	standalone: true,
 	imports: [
 		FormsModule,
 		AsyncPipe,

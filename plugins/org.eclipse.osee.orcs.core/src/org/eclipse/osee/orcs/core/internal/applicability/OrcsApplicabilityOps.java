@@ -1637,7 +1637,7 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       }
       List<String> applicList = Arrays.asList(applicability);
       for (String applic : existingApps) {
-         if (!applicList.contains(applic) && applic.startsWith(feature.getName())) {
+         if (!applicList.contains(applic) && applic.startsWith(feature.getName() + " =")) {
             removedValues.add(applic);
          }
       }

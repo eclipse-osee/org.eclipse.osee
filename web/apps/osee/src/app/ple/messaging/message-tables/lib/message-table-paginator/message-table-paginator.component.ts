@@ -21,7 +21,6 @@ import { MessageUiService } from '@osee/messaging/shared/services';
 
 @Component({
 	selector: 'osee-message-table-paginator',
-	standalone: true,
 	imports: [MatPaginator],
 	template: `<mat-paginator
 		[pageSizeOptions]="[10, 15, 20, 25, 50, 75, 100, 200, 500]"

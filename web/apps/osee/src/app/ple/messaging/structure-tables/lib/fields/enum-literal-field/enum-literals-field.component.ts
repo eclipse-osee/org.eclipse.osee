@@ -16,7 +16,6 @@ import { PreferencesUIService } from '@osee/messaging/shared/services';
 import { tap } from 'rxjs';
 
 @Component({
-	standalone: true,
 	selector: 'osee-enum-literals-field',
 	templateUrl: './enum-literals-field.component.html',
 	styles: [],

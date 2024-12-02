@@ -43,7 +43,6 @@ const _currNavItem: navigationElement =
 
 @Component({
 	selector: 'osee-server-health-balancers',
-	standalone: true,
 	imports: [
 		NgClass,
 		AsyncPipe,

@@ -32,7 +32,6 @@ import { CiDashboardControlsComponent } from '../ci-dashboard-controls/ci-dashbo
 
 @Component({
 	selector: 'osee-ci-dashboard-import',
-	standalone: true,
 	imports: [CiDashboardControlsComponent, MatButton, MatIcon],
 	templateUrl: './ci-dashboard-import.component.html',
 	changeDetection: ChangeDetectionStrategy.OnPush,
@@ -49,13 +48,10 @@ export default class CiDashboardImportComponent {
 		return set !== undefined && set !== '' && set !== '-1';
 	});
 
-	private _ciSetEffect = effect(
-		() => {
-			this.ciSetId();
-			this.importResult.set(tmoImportResultSentinel);
-		},
-		{ allowSignalWrites: true }
-	);
+	private _ciSetEffect = effect(() => {
+		this.ciSetId();
+		this.importResult.set(tmoImportResultSentinel);
+	});
 
 	selectedFile = signal<File | undefined>(undefined);
 	private importResult = signal<TmoImportResult>(tmoImportResultSentinel);

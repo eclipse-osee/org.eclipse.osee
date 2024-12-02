@@ -49,7 +49,6 @@ import { TrainingRoleRecord } from '../../types/training-role';
 import { AddCoursesDialogComponent } from '../add-courses-dialog/add-courses-dialog.component';
 
 @Component({
-	standalone: true,
 	selector: 'osee-add-roles-dialog',
 	templateUrl: './add-roles-dialog.component.html',
 	styles: [],

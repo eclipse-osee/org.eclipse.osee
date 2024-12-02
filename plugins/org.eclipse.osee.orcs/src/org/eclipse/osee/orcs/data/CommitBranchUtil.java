@@ -345,7 +345,8 @@ public class CommitBranchUtil {
    public static String getAddressingConflictQuery(BranchId branch, BranchId destinationBranch,
       TransactionId baselineTx, OrcsTokenService tokenService) {
 
-      String singleAttrTypes = "1";
+      String singleAttrTypes =
+         tokenService.getSingletonAttributeTypes().stream().map(a -> a.getIdString()).collect(Collectors.joining(","));
 
       String allQuery = "with " + artQuery + " , " + attrQuery + ", conflictArts(art_id) as (" + //
          "select art.art_id " + //
@@ -428,7 +429,8 @@ public class CommitBranchUtil {
 
    public static List<ConflictData> populateMergeConflictData(BranchId sourceBranch, BranchId destinationBranch,
       TransactionId baselineTx, JdbcClient jdbcClient, OrcsTokenService tokenService) {
-      String singleAttrTypes = "1";
+      String singleAttrTypes =
+         tokenService.getSingletonAttributeTypes().stream().map(a -> a.getIdString()).collect(Collectors.joining(","));
       List<ConflictData> conflicts = new ArrayList<>();
 
       String allQuery = "with " + artQuery + " , " + attrQuery + //

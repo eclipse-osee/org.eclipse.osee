@@ -358,7 +358,6 @@ test('create message and submessage', async ({ page }) => {
 	});
 
 	await page.getByRole('button', { name: 'Create new Submessage' }).click();
-	await page.locator('#mat-mdc-form-field-label-54 span').click();
 	await page.getByLabel('Name').fill('Submessage 1');
 	await page.getByText('Sub Message Number', { exact: true }).click();
 	await page.getByLabel('Sub Message Number').fill('1');

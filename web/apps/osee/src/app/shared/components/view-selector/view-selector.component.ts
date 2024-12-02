@@ -35,7 +35,6 @@ import { combineLatest, filter, from, of, scan, switchMap } from 'rxjs';
 
 @Component({
 	selector: 'osee-view-selector',
-	standalone: true,
 	imports: [
 		MatFormField,
 		MatLabel,
@@ -89,9 +88,7 @@ export class ViewSelectorComponent {
 	private filterText$ = toObservable(this.filterText);
 	protected noneOption: applic = { id: '-1', name: 'None' };
 
-	private _viewEffect = effect(() => this.filterText.set(this.view().name), {
-		allowSignalWrites: true,
-	});
+	private _viewEffect = effect(() => this.filterText.set(this.view().name));
 
 	views = combineLatest([this.applicService.views, this.filterText$]).pipe(
 		switchMap(([applics, filterText]) =>

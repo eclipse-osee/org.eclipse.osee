@@ -32,7 +32,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-api-key-generator',
-	standalone: true,
 	imports: [MatIcon, MatButton],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	templateUrl: './api-key-generator.component.html',

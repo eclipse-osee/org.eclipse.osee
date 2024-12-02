@@ -27,7 +27,6 @@ describe('PersistedNumberAttributeInputComponent', () => {
 
 	@Component({
 		selector: 'osee-test-standalone-form',
-		standalone: true,
 		imports: [FormsModule, PersistedNumberAttributeInputComponent],
 		template: `<form #testForm="ngForm">
 			<osee-persisted-number-attribute-input

@@ -32,7 +32,6 @@ import type {
 
 @Component({
 	selector: 'osee-new-cross-reference-dialog',
-	standalone: true,
 	imports: [
 		FormsModule,
 		MatDialogTitle,

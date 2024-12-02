@@ -17,7 +17,6 @@ import { defer, switchMap, take, timer } from 'rxjs';
 
 @Component({
 	selector: 'osee-auto-login',
-	standalone: true,
 	imports: [AsyncPipe],
 	templateUrl: './auto-login.component.html',
 })

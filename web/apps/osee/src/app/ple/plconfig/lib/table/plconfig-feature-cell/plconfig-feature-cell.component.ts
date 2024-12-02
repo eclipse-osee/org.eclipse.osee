@@ -21,7 +21,6 @@ import {
 
 @Component({
 	selector: 'osee-plconfig-feature-cell',
-	standalone: true,
 	imports: [MatTooltip],
 	template: ` <button
 		[matTooltip]="description()"

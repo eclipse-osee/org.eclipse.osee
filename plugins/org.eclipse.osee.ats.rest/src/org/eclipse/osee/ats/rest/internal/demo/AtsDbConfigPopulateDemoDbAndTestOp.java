@@ -35,6 +35,9 @@ public class AtsDbConfigPopulateDemoDbAndTestOp {
 
    public XResultData run() {
 
+      System.setProperty("osee.db", "orgdemo");
+      atsApi.getWorkDefinitionService().internalClearCaches();
+
       (new Pdd15CreateNotesAndAnnotations(rd, atsApi)).run();
       if (rd.isErrors()) {
          return rd;

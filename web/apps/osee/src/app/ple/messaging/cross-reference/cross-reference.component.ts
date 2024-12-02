@@ -31,7 +31,6 @@ import { combineLatest, filter, iif, of, switchMap, take, tap } from 'rxjs';
 
 @Component({
 	selector: 'osee-cross-reference',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		CrossReferenceTableComponent,

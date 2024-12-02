@@ -24,7 +24,6 @@ import {
 } from '../../types/training-course';
 
 @Component({
-	standalone: true,
 	selector: 'osee-edit-courses-dropdown',
 	templateUrl: './edit-courses-dropdown.component.html',
 	styles: [],

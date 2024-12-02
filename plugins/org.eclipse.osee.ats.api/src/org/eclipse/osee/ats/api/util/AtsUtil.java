@@ -33,6 +33,7 @@ public class AtsUtil {
    public static final String SINGLE_SERVER_DEPLOYMENT = "single_server_deployment";
    public static final String WORK_PKG_STATIC_ID = "Work Package Enum Art";
    public static final String WEB_BASEPATH_KEY = "WebBasepath";
+   public static final String DEFAULT_AI_KEY = "DefaultAI";
    private static boolean emailEnabled;
 
    public static boolean isInTest() {

@@ -19,7 +19,6 @@ import { filter, tap } from 'rxjs';
 
 @Component({
 	selector: 'osee-snackbar-wrapper',
-	standalone: true,
 	imports: [AsyncPipe],
 	templateUrl: './snackbar-wrapper.component.html',
 })
@@ -43,7 +42,6 @@ export class SnackbarWrapperComponent {
 
 @Component({
 	selector: 'osee-snackbar-internal',
-	standalone: true,
 	imports: [AsyncPipe, MatButton],
 	templateUrl: './snackbar-wrapper-internal.component.html',
 })

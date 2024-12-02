@@ -22,7 +22,6 @@ import { trackableFeature } from '../../types/features/base';
 
 @Component({
 	selector: 'osee-separated-feature-selector',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		FormsModule,

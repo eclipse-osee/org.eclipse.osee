@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.core.ai.ActionableItemServiceImpl;
 import org.eclipse.osee.ats.core.util.AtsApiImpl;
 import org.eclipse.osee.ats.rest.AtsApiServer;
+import org.eclipse.osee.ats.rest.internal.agile.jira.AtsJiraServiceImpl;
 import org.eclipse.osee.ats.rest.internal.branch.AtsBranchServiceImpl;
 import org.eclipse.osee.ats.rest.internal.config.AtsConfigurationsService;
 import org.eclipse.osee.ats.rest.internal.health.AtsHealthServiceImpl;
@@ -106,6 +107,8 @@ public class AtsApiServerImpl extends AtsApiImpl implements AtsApiServer {
       earnedValueService = new AtsEarnedValueImpl(logger, this);
 
       notificationService = new AtsNotificationServiceImpl(this);
+
+      jiraService = new AtsJiraServiceImpl(this);
 
       loadAtsConfigCache();
 

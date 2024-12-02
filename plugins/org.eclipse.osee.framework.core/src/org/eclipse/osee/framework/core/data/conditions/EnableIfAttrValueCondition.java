@@ -20,12 +20,12 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
  *
  * @author Donald G. Dunne
  */
-public class EnableIfCondition extends ConditionalRule {
+public class EnableIfAttrValueCondition extends ConditionalRule {
 
    private AttributeTypeToken attrType;
    private Object value;
 
-   public EnableIfCondition(AttributeTypeToken attrType, Object... value) {
+   public EnableIfAttrValueCondition(AttributeTypeToken attrType, Object... value) {
       this.attrType = attrType;
       this.value = value;
    }

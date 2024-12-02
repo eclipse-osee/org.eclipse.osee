@@ -22,10 +22,12 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.branch.BranchData;
 import org.eclipse.osee.ats.api.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.api.demo.DemoCscis;
+import org.eclipse.osee.ats.api.demo.DemoWorkDefinitions;
 import org.eclipse.osee.ats.api.demo.DemoWorkflowTitles;
 import org.eclipse.osee.ats.api.team.ChangeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
@@ -59,6 +61,17 @@ public class Pdd20CreateCommittedAction extends AbstractPopulateDemoDatabase {
    @Override
    public void run() {
       rd.logf("Running [%s]...\n", getClass().getSimpleName());
+
+      boolean found = false;
+      for (WorkDefinition workDef : atsApi.getWorkDefinitionService().getAllWorkDefinitions()) {
+         if (workDef.getId().equals(DemoWorkDefinitions.WorkDef_Team_Demo_Req.getId())) {
+            found = true;
+         }
+      }
+      if (!found) {
+         rd.errorf("Demo Work Definitions not Loaded");
+         return;
+      }
 
       Collection<IAtsActionableItem> aias = DemoUtil.getActionableItems(atsApi, DemoArtifactToken.SAW_Requirements_AI,
          DemoArtifactToken.SAW_Code_AI, DemoArtifactToken.SAW_Test_AI);

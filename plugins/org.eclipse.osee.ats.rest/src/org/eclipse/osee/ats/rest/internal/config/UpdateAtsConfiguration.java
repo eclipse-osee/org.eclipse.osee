@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -56,11 +55,6 @@ public class UpdateAtsConfiguration {
    public XResultData createUpdateConfig(XResultData rd) {
       ArtifactReadable atsConfigArt = (ArtifactReadable) AtsDbConfigBase.getOrCreateAtsConfig(atsApi);
       createUpdateConfigAttributes(atsConfigArt, rd);
-      try {
-         createUpdateValidStateAttributes();
-      } catch (Exception ex) {
-         rd.errorf("Error in createUpdateValidStateAttributes [%s]", Lib.exceptionToString(ex));
-      }
       return rd;
    }
 
@@ -126,10 +120,6 @@ public class UpdateAtsConfiguration {
 
    private String getViewsAttrValue(AtsViews defaultViews) {
       return VIEWS_EQUAL_KEY + jaxRsApi.toJson(defaultViews);
-   }
-
-   private void createUpdateValidStateAttributes() throws Exception {
-      atsApi.getWorkDefinitionService().updateAllValidStateNames();
    }
 
    public AtsViews getConfigViews(String viewsStr) {

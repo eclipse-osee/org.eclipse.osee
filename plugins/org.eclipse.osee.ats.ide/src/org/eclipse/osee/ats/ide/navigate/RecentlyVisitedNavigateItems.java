@@ -14,20 +14,33 @@
 package org.eclipse.osee.ats.ide.navigate;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.util.AtsImage;
-import org.eclipse.osee.ats.core.util.RecentlyVisistedItem;
-import org.eclipse.osee.ats.core.util.RecentlyVisitedItems;
+import org.eclipse.osee.ats.api.util.RecentlyVisistedItem;
+import org.eclipse.osee.ats.api.util.RecentlyVisitedItems;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.AtsUtilClient;
 import org.eclipse.osee.ats.ide.world.WorldEditor;
 import org.eclipse.osee.ats.ide.world.WorldEditorSimpleProvider;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactTopicEventListener;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.ArtifactTopicEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
+import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.skynet.core.topic.event.filter.ITopicEventFilter;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavItemCat;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -39,11 +52,10 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Donald G. Dunne
  */
-public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements IWorkbenchListener {
+public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements IWorkbenchListener, IArtifactEventListener, IArtifactTopicEventListener {
 
    private static final String NAME = "Recently Visited Workflows";
    private static RecentlyVisitedItems visitedItems;
-   private static String RECENTLY_VISITED_TOKENS = "recentlyVisitedTokens";
    private static RecentlyVisitedNavigateItems topNavigateItem;
 
    public RecentlyVisitedNavigateItems(XNavItemCat category) {
@@ -51,6 +63,7 @@ public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements
       topNavigateItem = this;
       PlatformUI.getWorkbench().addWorkbenchListener(this);
       refresh();
+      OseeEventManager.addListener(this);
    }
 
    @Override
@@ -87,13 +100,15 @@ public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements
       ensureFirstLoad();
       List<ArtifactToken> workItems = new ArrayList<>();
 
-      cleanupVisitedItems();
-
       // Re-add non-deleted/non-purged
-      for (RecentlyVisistedItem item : visitedItems.getReverseVisited()) {
-         IAtsWorkItem workItem = AtsApiService.get().getWorkItemService().getWorkItem(item.getIdToken());
-         if (workItem != null && !AtsApiService.get().getStoreService().isDeleted(item.getIdToken())) {
+      List<RecentlyVisistedItem> reverseVisited = visitedItems.getReverseVisited();
+      for (RecentlyVisistedItem item : reverseVisited) {
+         IAtsWorkItem workItem = AtsApiService.get().getWorkItemService().getWorkItem(item.getWorkflowId());
+         if (workItem != null && !AtsApiService.get().getStoreService().isDeleted(
+            ArtifactId.valueOf(item.getWorkflowId()))) {
             workItems.add(workItem.getStoreObject());
+         } else {
+            visitedItems.getVisited().remove(item);
          }
       }
 
@@ -102,18 +117,6 @@ public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements
 
       // Refresh with non-deleted/non-purged
       refresh();
-   }
-
-   private void cleanupVisitedItems() {
-      if (visitedItems != null) {
-         List<RecentlyVisistedItem> reverseVisited = visitedItems.getReverseVisited();
-         visitedItems.clearVisited();
-         for (RecentlyVisistedItem item : reverseVisited) {
-            if (AtsApiService.get().getQueryService().getArtifactTokenOrSentinal(item.getIdToken()).isValid()) {
-               visitedItems.addVisitedItem(item);
-            }
-         }
-      }
    }
 
    public static void clearVisited() {
@@ -134,24 +137,14 @@ public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements
       if (visitedItems == null) {
          try {
             AtsApi atsApi = AtsApiService.get();
-            String recentlyVisistedTokensJson = atsApi.getUserConfigValue(RECENTLY_VISITED_TOKENS);
-            if (Strings.isValid(recentlyVisistedTokensJson)) {
-               visitedItems = atsApi.jaxRsApi().readValue(recentlyVisistedTokensJson, RecentlyVisitedItems.class);
-            } else {
-               visitedItems = new RecentlyVisitedItems();
-            }
+            visitedItems = atsApi.getServerEndpoints().getActionEndpoint().getVisited(
+               atsApi.getUserService().getCurrentUser().getArtifactId());
          } catch (Exception ex) {
-            AtsApiService.get().getLogger().error(
-               "Unable to read visited items from Ats Config attribute on user artifact %s; Exception %s",
-               AtsApiService.get().getUserService().getCurrentUser(), Lib.exceptionToString(ex));
+            AtsApiService.get().getLogger().error("Unable to get visited items; Exception %s",
+               Lib.exceptionToString(ex));
             visitedItems = new RecentlyVisitedItems();
          }
       }
-   }
-
-   public static List<RecentlyVisistedItem> getReverseItems() {
-      ensureFirstLoad();
-      return visitedItems.getReverseVisited();
    }
 
    @Override
@@ -163,16 +156,59 @@ public class RecentlyVisitedNavigateItems extends XNavigateItemAction implements
    public boolean preShutdown(IWorkbench workbench, boolean forced) {
       try {
          if (visitedItems != null && !visitedItems.getReverseVisited().isEmpty()) {
-            cleanupVisitedItems();
-            String toStoreJson = AtsApiService.get().jaxRsApi().toJson(visitedItems);
-            String fromStoreJson = AtsApiService.get().getUserConfigValue(RECENTLY_VISITED_TOKENS);
-            if (!toStoreJson.equals(fromStoreJson)) {
-               AtsApiService.get().setUserConfigValue(RECENTLY_VISITED_TOKENS, toStoreJson);
-            }
+            AtsApiService.get().getServerEndpoints().getActionEndpoint().storeVisited(
+               AtsApiService.get().getUserService().getCurrentUser().getArtifactId(), visitedItems);
          }
       } catch (Exception ex) {
-         OseeLog.log(RecentlyVisitedNavigateItem.class, Level.WARNING, "Error saving recently visited items.", ex);
+         OseeLog.log(RecentlyVisitedNavigateItem.class, Level.WARNING, "Error saving Recently Visited Items.", ex);
       }
       return true;
    }
+
+   @Override
+   public List<? extends IEventFilter> getEventFilters() {
+      return AtsUtilClient.getAtsObjectEventFilters();
+   }
+
+   @Override
+   public List<? extends ITopicEventFilter> getTopicEventFilters() {
+      return AtsUtilClient.getAtsTopicObjectEventFilters();
+   }
+
+   @Override
+   public void handleArtifactTopicEvent(ArtifactTopicEvent artifactTopicEvent, Sender sender) {
+      Collection<Artifact> cacheArtifacts =
+         artifactTopicEvent.getCacheArtifacts(EventModType.Modified, EventModType.Deleted, EventModType.Purged);
+      handleCachedArtifacts(cacheArtifacts);
+   }
+
+   @Override
+   public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
+      Collection<Artifact> cacheArtifacts =
+         artifactEvent.getCacheArtifacts(EventModType.Modified, EventModType.Deleted, EventModType.Purged);
+      handleCachedArtifacts(cacheArtifacts);
+   }
+
+   private void handleCachedArtifacts(Collection<Artifact> cacheArtifacts) {
+      boolean updated = false;
+      for (Artifact art : cacheArtifacts) {
+         if (art.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
+            RecentlyVisistedItem visitedItem = visitedItems.getVisitedItem(art.getId());
+            if (visitedItem != null) {
+               if (art.isDeleted()) {
+                  if (visitedItems.remove(visitedItem)) {
+                     updated = true;
+                  }
+               } else if (!visitedItem.getWorkflowName().equals(art.getName())) {
+                  visitedItem.setWorkflowName(art.getName());
+                  updated = true;
+               }
+            }
+         }
+      }
+      if (updated) {
+         refresh();
+      }
+   }
+
 }

@@ -24,7 +24,6 @@ import { DisplayUserComponent } from './user-display/display-user.component';
 
 @Component({
 	selector: 'osee-toolbar',
-	standalone: true,
 	imports: [
 		RouterOutlet,
 		AsyncPipe,

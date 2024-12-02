@@ -17,11 +17,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-   AtsCoreServiceImplTest.class,
-   RecentlyVisitedItemsTest.class,
-   AtsObjectsTest.class,
-   AtsUserGroupTest.class})
+@Suite.SuiteClasses({AtsCoreServiceImplTest.class, AtsObjectsTest.class, AtsUserGroupTest.class})
 /**
  * This test suite contains tests that can be run as stand-alone JUnit tests (JT)
  *

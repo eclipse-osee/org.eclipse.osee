@@ -29,7 +29,6 @@ import { TransactionService } from '@osee/transactions/services';
 
 @Component({
 	selector: 'osee-attributes-editor-panel',
-	standalone: true,
 	imports: [
 		NgClass,
 		FormsModule,

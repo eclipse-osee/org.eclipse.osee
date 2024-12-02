@@ -158,12 +158,14 @@ $light-theme: mat.define-theme(
 			primary: $_primary,
 			tertiary: $_tertiary,
 			use-system-variables: true,
+			system-variables-prefix: sys,
 		),
 		density: (
 			scale: -1,
 		),
 		typography: (
 			use-system-variables: true,
+			system-variables-prefix: sys,
 		),
 	)
 );
@@ -174,12 +176,14 @@ $dark-theme: mat.define-theme(
 			primary: $_primary,
 			tertiary: $_tertiary,
 			use-system-variables: true,
+			system-variables-prefix: sys,
 		),
 		density: (
 			scale: -1,
 		),
 		typography: (
 			use-system-variables: true,
+			system-variables-prefix: sys,
 		),
 	)
 );

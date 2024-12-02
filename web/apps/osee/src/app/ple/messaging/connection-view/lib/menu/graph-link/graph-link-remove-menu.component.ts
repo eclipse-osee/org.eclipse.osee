@@ -24,7 +24,6 @@ import { RemovalDialog } from '../../types/ConfirmRemovalDialog';
 
 @Component({
 	selector: 'osee-graph-link-remove-menu',
-	standalone: true,
 	imports: [MatMenuItem, MatTooltip, MatIcon],
 	template: `<button
 		mat-menu-item

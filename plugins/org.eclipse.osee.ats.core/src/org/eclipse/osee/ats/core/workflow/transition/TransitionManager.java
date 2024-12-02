@@ -319,7 +319,7 @@ public class TransitionManager implements IAtsChangeSetListener {
    public void isTransitionValidForExtensions(TransitionResults results, IAtsWorkItem workItem,
       StateDefinition fromStateDef, StateDefinition toStateDef) {
       logTimeStart("05.5 - isTransitionValidForExtensions");
-      for (IAtsTransitionHook listener : getTransitionHooks()) {
+      for (IAtsTransitionHook listener : getTransitionHooks(workItem)) {
          try {
             logTimeStart("05.51 - transitioning - " + listener.getClass().getSimpleName());
             listener.transitioning(results, workItem, fromStateDef, toStateDef, getToAssignees(workItem, toStateDef),
@@ -418,7 +418,7 @@ public class TransitionManager implements IAtsChangeSetListener {
                   }
 
                   // Notify extension points of transition
-                  for (IAtsTransitionHook listener : getTransitionHooks()) {
+                  for (IAtsTransitionHook listener : getTransitionHooks(workItem)) {
                      logTimeStart("20.1 - hooks transitioned " + listener.getClass().getSimpleName());
                      listener.transitioned(workItem, fromState, toState, toStateAssigees, transData.getTransitionUser(),
                         changes, atsApi);
@@ -836,10 +836,11 @@ public class TransitionManager implements IAtsChangeSetListener {
    @Override
    public void changesStored(IAtsChangeSet changes) {
       // Notify extension points of transitionAndPersist
-      for (IAtsTransitionHook listener : getTransitionHooks()) {
+      Collection<IAtsTransitionHook> transitionHooks = getTransitionHooks(transData.getWorkItems().iterator().next());
+      for (IAtsTransitionHook listener : transitionHooks) {
          logTimeStart("25.0 - transitionPersisted " + listener.getClass().getSimpleName());
 
-         // Run forground tasks
+         // Run foreground tasks
          listener.transitionPersisted(transData.getWorkItems(), workItemFromStateMap, transData.getToStateName(),
             transData.getTransitionUser(), atsApi);
 
@@ -861,11 +862,12 @@ public class TransitionManager implements IAtsChangeSetListener {
       }
    }
 
-   public Collection<IAtsTransitionHook> getTransitionHooks() {
+   public Collection<IAtsTransitionHook> getTransitionHooks(IAtsWorkItem workItem) {
       try {
          List<IAtsTransitionHook> hooks = new ArrayList<>();
          hooks.addAll(workItemService.getTransitionHooks());
          hooks.addAll(transData.getTransitionHooks());
+         hooks.addAll(workItem.getWorkDefinition().getTransitionHooks());
          return hooks;
       } catch (OseeCoreException ex) {
          OseeLog.log(TransitionManager.class, Level.SEVERE, ex);

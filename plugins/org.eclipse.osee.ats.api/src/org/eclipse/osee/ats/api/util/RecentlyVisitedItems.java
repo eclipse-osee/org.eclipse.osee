@@ -11,24 +11,26 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.core.util;
+package org.eclipse.osee.ats.api.util;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.core.internal.AtsApiService;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
  */
 public class RecentlyVisitedItems {
 
+   public static final RecentlyVisitedItems EMPTY_ITEMS = new RecentlyVisitedItems();
    public List<RecentlyVisistedItem> visited = new ArrayList<>();
-   private static String RECENTLY_VISITED_COUNT = "recentlyVisitedCount";
+   public Map<Long, RecentlyVisistedItem> workItemToVisited = new HashMap<>();
+
+   // This number can not be increased without analyzing size of storage value
    private final int defaultRecentlyVisitedCount = 20;
-   private Integer recentlyVisitedCount = null;
 
    @JsonIgnore
    public List<RecentlyVisistedItem> getReverseVisited() {
@@ -43,12 +45,18 @@ public class RecentlyVisitedItems {
    public void addVisited(IAtsWorkItem workItem) {
       RecentlyVisistedItem item = RecentlyVisistedItem.valueOf(workItem.getArtifactToken(), workItem.getArtifactType());
       visited.remove(item);
+      workItemToVisited.remove(workItem.getId());
       visited.add(item);
-      if (visited.size() > getRecentlyVisitedCount()) {
-         for (int x = getRecentlyVisitedCount() - 1; x < getRecentlyVisitedCount(); x++) {
+      workItemToVisited.put(workItem.getId(), item);
+      if (visited.size() > defaultRecentlyVisitedCount) {
+         for (int x = defaultRecentlyVisitedCount - 1; x < defaultRecentlyVisitedCount; x++) {
             visited.remove(0);
          }
       }
+   }
+
+   public RecentlyVisistedItem getVisitedItem(Long id) {
+      return workItemToVisited.get(id);
    }
 
    public void clearVisited() {
@@ -57,22 +65,12 @@ public class RecentlyVisitedItems {
       }
    }
 
-   @JsonIgnore
-   private int getRecentlyVisitedCount() {
-      if (recentlyVisitedCount == null) {
-         recentlyVisitedCount = defaultRecentlyVisitedCount;
-         if (AtsApiService.get() != null) {
-            String recentlyVisitedCountStr = AtsApiService.get().getConfigValue(RECENTLY_VISITED_COUNT);
-            if (Strings.isNumeric(recentlyVisitedCountStr)) {
-               recentlyVisitedCount = Integer.valueOf(recentlyVisitedCountStr);
-            }
-         }
-      }
-      return recentlyVisitedCount;
+   public List<RecentlyVisistedItem> getVisited() {
+      return visited;
    }
 
-   public void addVisitedItem(RecentlyVisistedItem item) {
-      visited.add(item);
+   public boolean remove(RecentlyVisistedItem visitedItem) {
+      return visited.remove(visitedItem);
    }
 
 }

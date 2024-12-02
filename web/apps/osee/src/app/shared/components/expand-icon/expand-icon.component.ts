@@ -16,7 +16,6 @@ import { MatIcon } from '@angular/material/icon';
 
 @Component({
 	selector: 'osee-expand-icon',
-	standalone: true,
 	imports: [NgClass, MatIcon],
 	template: `<div class="tw-flex tw-items-center">
 		<mat-icon

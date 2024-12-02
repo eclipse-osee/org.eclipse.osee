@@ -105,4 +105,10 @@ public class AtsWorkDefinitionProviderService implements IAtsWorkDefinitionProvi
       idToWorkDef.put(workDef.getId(), workDef);
    }
 
+   @Override
+   public void clearCaches() {
+      workDefProviderProcessed.clear();
+      idToWorkDef.clear();
+   }
+
 }

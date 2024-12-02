@@ -11,15 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component, Input } from '@angular/core';
-import { AsyncPipe, NgClass, NgStyle } from '@angular/common';
-import { HighlightFilteredTextDirective } from '@osee/shared/utils';
 
 @Component({
 	selector: 'osee-structure-table-long-text-field',
 	template: `<div></div>`,
 	styles: [],
-	standalone: true,
-	imports: [NgClass, NgStyle, HighlightFilteredTextDirective, AsyncPipe],
 })
 export class MockStructureTableLongTextFieldComponent {
 	@Input() text: string = '';

@@ -110,15 +110,7 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
          bodyComp.setLayoutData(gd);
 
          setLoading(true);
-         if (awa.isTypeEqual(AtsArtifactTypes.DecisionReview)) {
-            HelpUtil.setHelp(managedForm.getForm(), AtsHelpContext.DECISION_REVIEW);
-
-         } else if (awa.isTypeEqual(AtsArtifactTypes.PeerToPeerReview)) {
-            HelpUtil.setHelp(managedForm.getForm(), AtsHelpContext.PEER_TO_PEER_REVIEW);
-
-         } else {
-            HelpUtil.setHelp(managedForm.getForm(), AtsHelpContext.WORKFLOW_EDITOR__WORKFLOW_TAB);
-         }
+         setHelp(managedForm);
 
          List<IOperation> ops = new ArrayList<>();
          ops.addAll(AtsBulkLoad.getConfigLoadingOperations());
@@ -127,6 +119,18 @@ public class WfeWorkFlowTab extends WfeAbstractTab implements IWorldViewerEventH
 
       } catch (Exception ex) {
          handleException(ex);
+      }
+   }
+
+   private void setHelp(IManagedForm managedForm) {
+      if (awa.isTypeEqual(AtsArtifactTypes.DecisionReview)) {
+         HelpUtil.setHelp(managedForm.getForm(), AtsHelpContext.DECISION_REVIEW);
+
+      } else if (awa.isTypeEqual(AtsArtifactTypes.PeerToPeerReview)) {
+         HelpUtil.setHelp(managedForm.getForm(), AtsHelpContext.PEER_TO_PEER_REVIEW);
+
+      } else {
+         HelpUtil.setHelp(managedForm.getForm(), AtsHelpContext.WORKFLOW_EDITOR__WORKFLOW_TAB);
       }
    }
 

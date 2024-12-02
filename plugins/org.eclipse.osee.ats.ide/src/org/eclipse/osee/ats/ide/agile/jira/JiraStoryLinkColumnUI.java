@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.editor.IWfeEditorContributor;
 import org.eclipse.osee.ats.ide.editor.WfeEditorContributors;
@@ -60,6 +61,10 @@ public class JiraStoryLinkColumnUI extends AbstractJiraSyncColumnUI {
    @Override
    public String getValue(IAtsWorkItem workItem, Map<Long, String> idToValueMap) {
       if (workItem.isTeamWorkflow()) {
+         if (AtsApiService.get().getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.Points,
+            "").equals(AtsAttributeTypes.Points.Epic.getName())) {
+            return "Epic";
+         }
          return AtsApiService.get().getJiraService().getJiraStoryLink(workItem);
       }
       return "";

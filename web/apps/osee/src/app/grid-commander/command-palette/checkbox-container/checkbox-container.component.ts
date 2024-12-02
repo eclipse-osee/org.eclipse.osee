@@ -21,7 +21,6 @@ import { CheckboxContainerService } from '../../services/command-palette-service
 	selector: 'osee-checkbox-container',
 	templateUrl: './checkbox-container.component.html',
 	styles: [],
-	standalone: true,
 	imports: [FormsModule, MatTooltip, MatCheckbox, MatLabel],
 })
 export class CheckboxContainerComponent {

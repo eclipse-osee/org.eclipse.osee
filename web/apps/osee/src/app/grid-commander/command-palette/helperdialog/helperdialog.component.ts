@@ -23,7 +23,6 @@ import { CommandGroupOptionsService } from '../../services/data-services/command
 	selector: 'osee-helperdialog',
 	templateUrl: './helperdialog.component.html',
 	styles: [],
-	standalone: true,
 	imports: [AsyncPipe, MatDialogContent],
 })
 export class HelperdialogComponent {

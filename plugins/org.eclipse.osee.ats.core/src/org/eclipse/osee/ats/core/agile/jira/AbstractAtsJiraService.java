@@ -34,11 +34,13 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public abstract class AbstractAtsJiraService implements AtsJiraService {
 
-   public String TW_DESCRIPTION_SEARCH =
+   protected String TW_DESCRIPTION_SEARCH =
       "{ \"jql\": \"team = %s AND description ~ %s \", \"startAt\": 0, \"maxResults\": 4, " //
          + "\"fields\": [ \"summary\", \"description\", \"status\", \"assignee\" ] }";
-   public String STORY_ID_SEARCH = "{ \"jql\": \"key = %s\" , \"startAt\": 0, \"maxResults\": 4, " //
+   protected String STORY_ID_SEARCH = "{ \"jql\": \"key = %s\" , \"startAt\": 0, \"maxResults\": 4, " //
       + "\"fields\": [ \"summary\", \"description\", \"status\", \"assignee\" ] }";
+   // Fields found at: rest/api/2/issue/createmeta/<project>/issuetypes/10001
+   protected final String STATUS_ISSUE = "{\"transition\":{\"id\":\"%s\"}}";
 
    protected final AtsApi atsApi;
 
@@ -54,6 +56,11 @@ public abstract class AbstractAtsJiraService implements AtsJiraService {
          status = twSearch.issues.iterator().next().fields.status.name;
       }
       return status;
+   }
+
+   @Override
+   public boolean isJiraStoryWorkflow(IAtsWorkItem workItem) {
+      return Strings.isValid(getJiraStoryLink(workItem));
    }
 
    @Override

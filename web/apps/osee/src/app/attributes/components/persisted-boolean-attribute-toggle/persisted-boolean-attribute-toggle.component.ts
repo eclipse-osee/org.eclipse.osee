@@ -43,7 +43,6 @@ import {
 
 @Component({
 	selector: 'osee-persisted-boolean-attribute-toggle',
-	standalone: true,
 	imports: [FormsModule, MatSlideToggle],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	template: `<mat-slide-toggle

@@ -28,7 +28,6 @@ import { debounceTime, filter, sample } from 'rxjs';
 let nextUniqueId = 0;
 @Component({
 	selector: 'osee-focus-lost-input',
-	standalone: true,
 	imports: [MatFormField, MatInput, MatTooltip, FormsModule],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	template: ` <mat-form-field

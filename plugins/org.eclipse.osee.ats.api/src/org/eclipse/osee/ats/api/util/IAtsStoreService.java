@@ -140,4 +140,6 @@ public interface IAtsStoreService {
 
    Collection<CustomizeData> getCustomizationsGlobal(String namespace);
 
+   boolean isDemoDb();
+
 }
