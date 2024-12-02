@@ -41,7 +41,6 @@ import { TrainingCourseService } from '../../services/training-course.service';
 import { TrainingCourseRecord } from '../../types/training-course';
 
 @Component({
-	standalone: true,
 	selector: 'osee-add-courses-dialog',
 	templateUrl: './add-courses-dialog.component.html',
 	styles: [],

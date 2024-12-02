@@ -20,7 +20,6 @@ import { DiffReportTableComponent } from '../diff-report-table/diff-report-table
 @Component({
 	selector: 'osee-structure-diffs',
 	templateUrl: './structure-diffs.component.html',
-	standalone: true,
 	imports: [AsyncPipe, DiffReportTableComponent],
 })
 export class StructureDiffsComponent {

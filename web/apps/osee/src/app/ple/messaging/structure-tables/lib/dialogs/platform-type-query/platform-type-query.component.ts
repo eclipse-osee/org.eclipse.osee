@@ -11,7 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
-import { AsyncPipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
@@ -51,7 +50,6 @@ import { UnitDropdownComponent } from '@osee/messaging/units/dropdown';
 	selector: 'osee-messaging-platform-type-query',
 	templateUrl: './platform-type-query.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		FormsModule,
 		MatLabel,
@@ -67,7 +65,6 @@ import { UnitDropdownComponent } from '@osee/messaging/units/dropdown';
 		MatOption,
 		CdkTextareaAutosize,
 		MatSelect,
-		AsyncPipe,
 		UnitDropdownComponent,
 	],
 })

@@ -62,7 +62,6 @@ import {
 
 @Component({
 	selector: 'osee-rate-dropdown',
-	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		AsyncPipe,
@@ -215,12 +214,9 @@ export class RateDropdownComponent {
 
 	protected filter$ = signal(this._rateValue());
 
-	private _syncFilter = effect(
-		() => {
-			this.filter$.set(this._rateValue());
-		},
-		{ allowSignalWrites: true }
-	);
+	private _syncFilter = effect(() => {
+		this.filter$.set(this._rateValue());
+	});
 
 	private _typeAhead = toObservable(this.filter$);
 

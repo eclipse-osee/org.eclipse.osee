@@ -32,7 +32,6 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 	selector: 'osee-plconfig-configuration-group-dropdown',
 	templateUrl: './configuration-group-dropdown.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		MatMenuItem,
 		MatMenuTrigger,

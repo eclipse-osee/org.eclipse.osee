@@ -22,7 +22,6 @@ import { BranchRoutedUIService, UiService } from '@osee/shared/services';
 
 @Component({
 	selector: 'osee-create-action-button',
-	standalone: true,
 	imports: [MatButton, MatIcon],
 	template: `<button
 		mat-raised-button

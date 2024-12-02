@@ -23,7 +23,6 @@ import {
 } from '../../types/training-role';
 
 @Component({
-	standalone: true,
 	selector: 'osee-edit-roles-dropdown',
 	templateUrl: './edit-roles-dropdown.component.html',
 	styles: [],

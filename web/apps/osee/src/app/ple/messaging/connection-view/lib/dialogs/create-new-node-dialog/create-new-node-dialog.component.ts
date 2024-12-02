@@ -25,8 +25,6 @@ import {
 	MatDialogRef,
 	MatDialogTitle,
 } from '@angular/material/dialog';
-import { MatInput } from '@angular/material/input';
-import { MatSlideToggle } from '@angular/material/slide-toggle';
 import type { nodeData } from '@osee/messaging/shared/types';
 import { NewNodeFormComponent } from '../../forms/new-node-form/new-node-form.component';
 import { applicabilitySentinel } from '@osee/applicability/types';
@@ -55,16 +53,13 @@ import { applicabilitySentinel } from '@osee/applicability/types';
 				Ok
 			</button>
 		</div>`,
-	standalone: true,
 	imports: [
 		MatDialogTitle,
 		MatDialogContent,
 		MatDialogActions,
 		MatDialogClose,
-		MatInput,
 		FormsModule,
 		MatButton,
-		MatSlideToggle,
 		NewNodeFormComponent,
 	],
 	changeDetection: ChangeDetectionStrategy.OnPush,

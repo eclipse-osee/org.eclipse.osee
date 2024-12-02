@@ -17,7 +17,6 @@ import { MessageTableToolbarAddActionsComponent } from '../message-table-toolbar
 
 @Component({
 	selector: 'osee-message-toolbar',
-	standalone: true,
 	imports: [
 		MatToolbar,
 		MessageTablePaginatorComponent,

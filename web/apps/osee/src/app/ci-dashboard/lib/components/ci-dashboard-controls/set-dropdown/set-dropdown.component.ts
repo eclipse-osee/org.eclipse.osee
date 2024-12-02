@@ -37,7 +37,6 @@ import type { CISet } from '../../../types/tmo';
 
 @Component({
 	selector: 'osee-set-dropdown',
-	standalone: true,
 	templateUrl: './set-dropdown.component.html',
 	imports: [
 		AsyncPipe,

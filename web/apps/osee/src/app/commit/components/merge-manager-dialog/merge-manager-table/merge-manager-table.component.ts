@@ -42,7 +42,6 @@ import { attrMergeData, mergeData } from '@osee/commit/types';
 
 @Component({
 	selector: 'osee-merge-manager-table',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		NgClass,

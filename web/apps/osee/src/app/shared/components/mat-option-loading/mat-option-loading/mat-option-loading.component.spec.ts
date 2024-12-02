@@ -32,7 +32,6 @@ import { MatOptionLoadingComponent } from './mat-option-loading.component';
 	selector: 'osee-outer-component',
 	template:
 		'<mat-form-field><mat-label>OuterComponent</mat-label><mat-select><osee-mat-option-loading [data]="observable$"><ng-template let-option><mat-option>{{option}}</mat-option></ng-template></osee-mat-option-loading></mat-select></mat-form-field>',
-	standalone: true,
 	imports: [
 		FormsModule,
 		MatFormFieldModule,

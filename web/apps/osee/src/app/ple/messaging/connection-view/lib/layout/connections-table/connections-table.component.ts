@@ -19,9 +19,7 @@ import {
 } from '@angular/animations';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { Component, OnDestroy, inject } from '@angular/core';
-import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { MatInput } from '@angular/material/input';
 import {
 	MatCell,
 	MatCellDef,
@@ -42,7 +40,6 @@ import { Subject, switchMap, takeUntil } from 'rxjs';
 
 @Component({
 	selector: 'osee-connections-table',
-	standalone: true,
 	imports: [
 		NgClass,
 		AsyncPipe,
@@ -56,10 +53,8 @@ import { Subject, switchMap, takeUntil } from 'rxjs';
 		MatRow,
 		MatRowDef,
 		MatColumnDef,
-		MatInput,
 		MatIcon,
 		MatTooltip,
-		MatButton,
 	],
 	templateUrl: './connections-table.component.html',
 	animations: [

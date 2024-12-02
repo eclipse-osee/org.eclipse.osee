@@ -18,7 +18,6 @@ import {
 	signal,
 } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { NgChartsModule } from 'ng2-charts';
 import { CITimelineStats } from '../../../types/ci-stats';
 import { ChartConfiguration } from 'chart.js';
@@ -28,7 +27,6 @@ import { format } from 'date-fns';
 
 @Component({
 	selector: 'osee-timeline-chart',
-	standalone: true,
 	template: `<div class="tw-text-center">
 			<mat-label class="tw-text-lg tw-font-bold">{{ title }}</mat-label>
 		</div>
@@ -39,7 +37,7 @@ import { format } from 'date-fns';
 				[type]="'line'"
 				[options]="lineChartOptions()"></canvas>
 		</div>`,
-	imports: [NgIf, NgFor, AsyncPipe, NgChartsModule, MatFormFieldModule],
+	imports: [NgChartsModule, MatFormFieldModule],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TimelineChartComponent implements OnInit {

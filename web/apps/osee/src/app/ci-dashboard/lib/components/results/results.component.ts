@@ -43,7 +43,6 @@ import { CiDetailsService } from '../../services/ci-details.service';
 
 @Component({
 	selector: 'osee-results',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		CiDashboardControlsComponent,

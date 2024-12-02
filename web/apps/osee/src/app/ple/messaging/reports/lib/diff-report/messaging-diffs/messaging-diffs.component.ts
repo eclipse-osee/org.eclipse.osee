@@ -20,7 +20,6 @@ import { DiffReportTableComponent } from '../diff-report-table/diff-report-table
 @Component({
 	selector: 'osee-messaging-diffs',
 	templateUrl: './messaging-diffs.component.html',
-	standalone: true,
 	imports: [AsyncPipe, DiffReportTableComponent],
 })
 export class MessagingDiffsComponent {

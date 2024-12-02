@@ -12,14 +12,12 @@
  **********************************************************************/
 import { Component, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
 import { PeerReviewDialogComponent } from '../peer-review-dialog/peer-review-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
 	selector: 'osee-peer-review-button',
-	standalone: true,
-	imports: [MatButton, MatIcon],
+	imports: [MatButton],
 	template: `<button
 		mat-flat-button
 		(click)="openPeerReviewDialog()">

@@ -38,7 +38,6 @@ import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
 	selector: 'osee-result-list',
-	standalone: true,
 	template: `@if (scriptResults | async; as _results) {
 		<div class="mat-elevation-z8 tw-max-h-96 tw-w-full tw-overflow-auto">
 			<mat-table [dataSource]="_results">

@@ -19,7 +19,6 @@ import { HelpService } from '@osee/shared/services/help';
 
 @Component({
 	selector: 'osee-messaging-help-content',
-	standalone: true,
 	imports: [AsyncPipe, MarkdownComponent],
 	template: `<markdown
 		[data]="markdown | async"

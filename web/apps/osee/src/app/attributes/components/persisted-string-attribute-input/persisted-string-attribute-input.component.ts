@@ -43,7 +43,6 @@ import {
 
 @Component({
 	selector: 'osee-persisted-string-attribute-input',
-	standalone: true,
 	imports: [FocusLostInputComponent],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	template: ` <osee-focus-lost-input

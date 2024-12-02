@@ -21,7 +21,6 @@ import { tap } from 'rxjs';
 	templateUrl:
 		'./sub-element-table-no-edit-field-dynamic-width.component.html',
 	styles: [],
-	standalone: true,
 	imports: [HighlightFilteredTextDirective, NgStyle, NgClass, AsyncPipe],
 })
 export class SubElementTableNoEditFieldDynamicWidthComponent {

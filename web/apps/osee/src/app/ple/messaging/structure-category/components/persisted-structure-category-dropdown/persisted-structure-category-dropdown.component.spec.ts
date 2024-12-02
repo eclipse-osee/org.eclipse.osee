@@ -27,7 +27,6 @@ describe('PersistedStructureCategoryDropdownComponent', () => {
 
 	@Component({
 		selector: 'osee-test-standalone-form',
-		standalone: true,
 		imports: [FormsModule, PersistedStructureCategoryDropdownComponent],
 		template: `<form #testForm="ngForm">
 			<osee-persisted-structure-category-dropdown

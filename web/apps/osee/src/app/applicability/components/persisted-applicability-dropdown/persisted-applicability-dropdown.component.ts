@@ -37,7 +37,6 @@ import {
 
 @Component({
 	selector: 'osee-persisted-applicability-dropdown',
-	standalone: true,
 	imports: [ApplicabilityDropdownComponent],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	template: `<osee-applicability-dropdown

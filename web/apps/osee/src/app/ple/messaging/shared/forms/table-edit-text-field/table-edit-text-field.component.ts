@@ -17,7 +17,6 @@ import { MatInput } from '@angular/material/input';
 
 @Component({
 	selector: 'osee-table-edit-text-field',
-	standalone: true,
 	imports: [FormsModule, MatFormField, MatInput],
 	templateUrl: './table-edit-text-field.component.html',
 	styles: [],

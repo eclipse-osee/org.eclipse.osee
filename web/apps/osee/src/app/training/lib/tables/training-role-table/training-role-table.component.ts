@@ -33,7 +33,6 @@ import { TrainingRoleRecord } from '../../types/training-role';
 import { trainingRoleHeaderDetails } from './training-role-table-header';
 
 @Component({
-	standalone: true,
 	selector: 'osee-training-role-table',
 	templateUrl: './training-role-table.component.html',
 	styles: [],

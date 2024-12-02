@@ -37,7 +37,6 @@ import {
 
 @Component({
 	selector: 'osee-current-view-selector',
-	standalone: true,
 	imports: [
 		AsyncPipe,
 		FormsModule,

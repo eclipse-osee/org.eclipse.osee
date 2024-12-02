@@ -20,7 +20,6 @@ import { PlConfigCurrentBranchService } from '../../services/pl-config-current-b
 	selector: 'osee-plconfig-array-diff-menu',
 	templateUrl: './array-diff-menu.component.html',
 	styles: [],
-	standalone: true,
 	imports: [MatMenuItem],
 })
 export class ArrayDiffMenuComponent {

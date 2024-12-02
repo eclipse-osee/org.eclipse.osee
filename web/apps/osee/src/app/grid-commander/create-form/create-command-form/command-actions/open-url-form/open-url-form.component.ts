@@ -29,7 +29,6 @@ import {
 
 @Component({
 	selector: 'osee-open-url-form',
-	standalone: true,
 	imports: [
 		FormsModule,
 		MatFormField,

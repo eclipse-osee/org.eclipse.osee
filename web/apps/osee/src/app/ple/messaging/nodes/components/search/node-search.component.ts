@@ -52,7 +52,6 @@ import {
 let nextUniqueId = 0;
 @Component({
 	selector: 'osee-node-search',
-	standalone: true,
 	imports: [
 		FormsModule,
 		AsyncPipe,

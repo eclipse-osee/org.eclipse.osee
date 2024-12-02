@@ -21,7 +21,6 @@ import {
 	signal,
 } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
-import { MatListItemIcon } from '@angular/material/list';
 import { ExpandIconComponent } from '@osee/shared/components';
 import { BehaviorSubject } from 'rxjs';
 import { ArtifactExplorerTabService } from '../../../services/artifact-explorer-tab.service';
@@ -36,12 +35,10 @@ import {
 
 @Component({
 	selector: 'osee-artifact-hierarchy-relation-side',
-	standalone: true,
 	imports: [
 		NgClass,
 		AsyncPipe,
 		MatIcon,
-		MatListItemIcon,
 		CdkDrag,
 		ExpandIconComponent,
 		forwardRef(() => ArtifactHierarchyComponent),

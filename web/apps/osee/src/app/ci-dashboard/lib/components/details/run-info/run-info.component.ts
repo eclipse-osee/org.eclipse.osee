@@ -30,7 +30,6 @@ import {
 	MatRowDef,
 	MatTable,
 } from '@angular/material/table';
-import { MatTooltip } from '@angular/material/tooltip';
 import { CiDetailsService } from '../../../services/ci-details.service';
 import { HeaderService } from '@osee/shared/services';
 import { ResultReference } from '../../../types';
@@ -38,7 +37,6 @@ import { scriptResHeaderDetails } from '../../../table-headers/script-headers';
 
 @Component({
 	selector: 'osee-run-info',
-	standalone: true,
 	template: `
 		@if (scriptResult()) {
 			<div class="mat-elevation-z8 tw-max-h-96 tw-overflow-auto">
@@ -101,7 +99,6 @@ import { scriptResHeaderDetails } from '../../../table-headers/script-headers';
 		MatColumnDef,
 		MatHeaderCell,
 		MatHeaderCellDef,
-		MatTooltip,
 		MatCell,
 		MatCellDef,
 		MatHeaderRow,

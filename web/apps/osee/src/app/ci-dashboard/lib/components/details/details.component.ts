@@ -40,7 +40,6 @@ import { resultReferenceSentinel } from '../../types/tmo';
 
 @Component({
 	selector: 'osee-scripts',
-	standalone: true,
 	template: `<osee-ci-dashboard-controls />
 		@if (selectedResult().id !== '-1') {
 			<div class="tw-flex tw-justify-between tw-gap-8 tw-px-4 tw-pb-2">

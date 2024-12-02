@@ -50,7 +50,6 @@ import { ElementImpactsValidatorDirective } from '../../element-impacts-validato
 	selector: 'osee-messaging-sub-element-table-field',
 	templateUrl: './sub-element-table-field.component.html',
 	styles: [],
-	standalone: true,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		SubElementTableNoEditFieldComponent,

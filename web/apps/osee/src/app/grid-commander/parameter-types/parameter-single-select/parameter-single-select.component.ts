@@ -19,7 +19,6 @@ import { MatSelect, MatSelectChange } from '@angular/material/select';
 	selector: 'osee-parameter-single-select',
 	templateUrl: './parameter-single-select.component.html',
 	styles: [],
-	standalone: true,
 	imports: [MatFormField, MatLabel, MatSelect, MatOption],
 })
 export class ParameterSingleSelectComponent {

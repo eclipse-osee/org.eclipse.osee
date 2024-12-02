@@ -29,7 +29,6 @@ import { AsyncPipe } from '@angular/common';
 	selector: 'osee-command-palette',
 	templateUrl: './command-palette.component.html',
 	styles: [],
-	standalone: true,
 	imports: [
 		InputControlComponent,
 		TableFilterComponent,

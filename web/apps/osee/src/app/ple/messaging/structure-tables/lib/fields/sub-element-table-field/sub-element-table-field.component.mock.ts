@@ -23,6 +23,7 @@ import { applic, applicabilitySentinel } from '@osee/applicability/types';
 @Component({
 	selector: 'osee-messaging-sub-element-table-field',
 	template: '<p>Dummy</p>',
+	standalone: false,
 })
 // eslint-disable-next-line @angular-eslint/component-class-suffix
 export class SubElementTableRowComponentMock {

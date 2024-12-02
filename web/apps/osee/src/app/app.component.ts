@@ -23,7 +23,6 @@ import { osee_logo } from './osee_logo';
 @Component({
 	selector: 'osee-root',
 	templateUrl: './app.component.html',
-	standalone: true,
 	imports: [RouterOutlet, NavContainerComponent, SnackbarWrapperComponent],
 })
 export class AppComponent {

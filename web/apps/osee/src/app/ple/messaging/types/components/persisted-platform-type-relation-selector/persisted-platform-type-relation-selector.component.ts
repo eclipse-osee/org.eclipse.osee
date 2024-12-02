@@ -39,22 +39,21 @@ import {
 
 @Component({
 	selector: 'osee-persisted-platform-type-relation-selector',
-	standalone: true,
 	imports: [FormsModule, PlatformTypeDropdownComponent],
 	template: `<form>
 		<osee-platform-type-dropdown
 			[allowOpenInSameTab]="true"
-			[required]="true"
+			[isRequired]="true"
 			[hideSearchButton]="true"
 			[(platformType)]="platformType"
-			(contextmenu)="contextmenu.emit($event)" />
+			(contextmenu)="openContextMenu.emit($event)" />
 	</form>`,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PersistedPlatformTypeRelationSelectorComponent {
 	artifactId = input.required<`${number}`>();
 	platformType = model.required<PlatformType>();
-	contextmenu = output<MouseEvent>();
+	openContextMenu = output<MouseEvent>();
 
 	private _platformTypeId = computed(() => this.platformType().id);
 	//current and previous platform type in order to unrelate/relate

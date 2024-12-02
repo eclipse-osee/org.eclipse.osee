@@ -10,7 +10,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { AsyncPipe } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
@@ -56,14 +55,12 @@ import { NewNodeFormComponent } from '../../forms/new-node-form/new-node-form.co
 				Ok
 			</button>
 		</div>`,
-	standalone: true,
 	imports: [
 		MatDialogTitle,
 		MatDialogClose,
 		MatDialogContent,
 		MatDialogActions,
 		MatButton,
-		AsyncPipe,
 		FormsModule,
 		NewNodeFormComponent,
 	],

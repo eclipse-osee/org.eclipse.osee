@@ -76,7 +76,6 @@ import { GraphLinkRemoveMenuComponent } from './graph-link-remove-menu.component
 					[data]="diffData"></osee-graph-link-diff-menu>
 			</ng-template>
 		</mat-menu>`,
-	standalone: true,
 	imports: [
 		MatIcon,
 		MatTooltip,

@@ -34,7 +34,6 @@ import { SubElementTableNoEditFieldNameComponent } from '../sub-element-table-no
 	selector: 'osee-messaging-sub-element-table-no-edit-field',
 	templateUrl: './sub-element-table-no-edit-field.component.html',
 	styles: [':host{display: block;width: 100%;height: 100%;}'],
-	standalone: true,
 	imports: [
 		SubElementTableNoEditFieldDynamicWidthComponent,
 		SubElementTableNoEditFieldFilteredComponent,
