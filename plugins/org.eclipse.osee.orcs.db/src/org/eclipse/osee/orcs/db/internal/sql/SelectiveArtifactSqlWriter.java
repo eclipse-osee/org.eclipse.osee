@@ -273,6 +273,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
             }
             writeFieldsCommonTableExpression(artWithAlias, attsAlias);
             if (OptionsUtil.getContentsForAllViews(rootQueryData.getOptions())) {
+               writeOrderedFieldCommonTableExpression();
                writeFields2CommonTableExpression();
 
             }
@@ -308,42 +309,7 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       if (rootQueryData.isCountQueryType() && rootQueryData.hasCriteriaType(CriteriaFollowSearch.class)) {
          write(" and " + fieldAlias + ".top = 1");
       }
-      if (!rootQueryData.isCountQueryType()) {
-         if (parentWriter == null && !rootQueryData.isSelectQueryType()) {
-            write(" ORDER BY " + fieldAlias + ".art_id");
-         } else if (this.rels2Alias != null) {
-            write(" ORDER BY ");
-            if (OptionsUtil.getContentsForAllViews(rootQueryData.getOptions())) {
-               write(fieldAlias + ".configuration, ");
-            }
-            write(fieldAlias + ".top desc");
-            if (this.rootQueryData.orderMechanism().equals("ATTRIBUTE") || this.rootQueryData.orderMechanism().equals(
-               "RELATION AND ATTRIBUTE")) {
-               addParameter(this.rootQueryData.orderByAttribute().getId());
-               write(", CASE WHEN " + fieldAlias + ".type_id = ?");
-               write(" THEN 0 ELSE 1 END ASC");
-               addParameter(this.rootQueryData.orderByAttribute().getId());
-               write(", CASE WHEN " + fieldAlias + ".type_id = ?");
-               write(" THEN " + fieldAlias + ".VALUE ELSE \n");
-               String orderAttrString = "'" + new String(new char[3998]).replace('\0', 'Z') + "'";
-               addParameter(orderAttrString);
-               write("?");
-               write("\n" + "END " + (this.rootQueryData.orderByAttributeDirection().equals(
-                  SortOrder.DESCENDING) ? "DESC" : "ASC"));
-            }
-            if (this.rootQueryData.orderMechanism().equals("RELATION") || this.rootQueryData.orderMechanism().equals(
-               "RELATION AND ATTRIBUTE")) {
-               if (this.output.toString().contains("top_rel_type")) {
-                  write(
-                     ", " + fieldAlias + ".top_rel_type, " + fieldAlias + ".top_rel_order, " + fieldAlias + ".rel_order");
-               } else {
-                  write(
-                     ", case when " + fieldAlias + ".other_art_id = 0 then " + fieldAlias + ".other_art_id else 1 end, " + fieldAlias + ".rel_order");
-               }
-
-            }
-         }
-      }
+      writeOrderStatements(true, fieldAlias);
    }
 
    private void writeFollowSearchCommonTableExpression(SqlHandlerFactory handlerFactory, String attsAlias) {
@@ -379,6 +345,55 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
          write("\n union all \n");
          write("select " + refAtts + ".* from " + refAtts);
       }
+   }
+
+   private void writeOrderStatements(boolean configurationAvailable, String fieldAlias) {
+      if (!rootQueryData.isCountQueryType()) {
+         if (parentWriter == null && !rootQueryData.isSelectQueryType()) {
+            write(" ORDER BY " + fieldAlias + ".art_id");
+         } else if (this.rels2Alias != null) {
+            write(" ORDER BY ");
+            if (OptionsUtil.getContentsForAllViews(rootQueryData.getOptions()) && configurationAvailable) {
+               write(fieldAlias + ".configuration, ");
+            }
+            write(fieldAlias + ".top desc");
+            if (this.rootQueryData.orderMechanism().equals("ATTRIBUTE") || this.rootQueryData.orderMechanism().equals(
+               "RELATION AND ATTRIBUTE")) {
+               addParameter(this.rootQueryData.orderByAttribute().getId());
+               write(", CASE WHEN " + fieldAlias + ".type_id = ?");
+               write(" THEN 0 ELSE 1 END ASC");
+               addParameter(this.rootQueryData.orderByAttribute().getId());
+               write(", CASE WHEN " + fieldAlias + ".type_id = ?");
+               write(" THEN " + fieldAlias + ".VALUE ELSE \n");
+               String orderAttrString = "'" + new String(new char[3998]).replace('\0', 'Z') + "'";
+               addParameter(orderAttrString);
+               write("?");
+               write("\n" + "END " + (this.rootQueryData.orderByAttributeDirection().equals(
+                  SortOrder.DESCENDING) ? "DESC" : "ASC"));
+            }
+            if (this.rootQueryData.orderMechanism().equals("RELATION") || this.rootQueryData.orderMechanism().equals(
+               "RELATION AND ATTRIBUTE")) {
+               if (this.output.toString().contains("top_rel_type")) {
+                  write(
+                     ", " + fieldAlias + ".top_rel_type, " + fieldAlias + ".top_rel_order, " + fieldAlias + ".rel_order");
+               } else {
+                  write(
+                     ", case when " + fieldAlias + ".other_art_id = 0 then " + fieldAlias + ".other_art_id else 1 end, " + fieldAlias + ".rel_order");
+               }
+
+            }
+         }
+      }
+   }
+
+   private void writeOrderedFieldCommonTableExpression() {
+      String oldFieldAlias = fieldAlias;
+      fieldAlias = startCommonTableExpression("fields");
+      writeSelectAndHint();
+      writeSelectFields(oldFieldAlias, "*");
+      write(" FROM ");
+      write(oldFieldAlias);
+      writeOrderStatements(false, oldFieldAlias);
    }
 
    private void writeFields2CommonTableExpression() {
