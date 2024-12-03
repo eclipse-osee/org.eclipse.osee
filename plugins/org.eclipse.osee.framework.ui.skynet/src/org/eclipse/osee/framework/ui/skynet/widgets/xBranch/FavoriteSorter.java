@@ -44,6 +44,9 @@ public class FavoriteSorter extends XViewerSorter {
                User user = UserManager.getUser();
                boolean fav1 = user.isFavoriteBranch((BranchId) o1);
                boolean fav2 = user.isFavoriteBranch((BranchId) o2);
+               if (fav1) {
+                  System.err.println("Favorite: " + fav1);
+               }
 
                if (fav1 ^ fav2) {
                   return fav1 ? -1 : 1;
@@ -60,16 +63,10 @@ public class FavoriteSorter extends XViewerSorter {
       return super.compare(viewer, o1, o2);
    }
 
-   /**
-    * @return Returns the favoritesFirst.
-    */
    public boolean isFavoritesFirst() {
       return favoritesFirst;
    }
 
-   /**
-    * @param favoritesFirst The favoritesFirst to set.
-    */
    public void setFavoritesFirst(boolean favoritesFirst) {
       this.favoritesFirst = favoritesFirst;
    }

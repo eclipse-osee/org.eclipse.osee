@@ -128,14 +128,9 @@ public class User extends Artifact implements UserToken {
    }
 
    public boolean isFavoriteBranch(BranchId branch) {
-      Collection<String> attributes = getAttributesToStringList(CoreAttributeTypes.FavoriteBranch);
-      for (String value : attributes) {
-         try {
-            if (branch.equals(BranchId.valueOf(value))) {
-               return true;
-            }
-         } catch (Exception ex) {
-            // do nothing
+      for (Attribute<Object> attri : getAttributes(CoreAttributeTypes.FavoriteBranch)) {
+         if (branch.getIdString().equals(attri.getValue())) {
+            return true;
          }
       }
       return false;
