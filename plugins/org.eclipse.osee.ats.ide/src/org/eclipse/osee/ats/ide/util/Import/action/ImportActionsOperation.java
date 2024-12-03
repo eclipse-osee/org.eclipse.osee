@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
+
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
@@ -338,9 +339,6 @@ public class ImportActionsOperation {
                   rd.errorf("No Attribute Type for cell with value %s\n", cell.toString());
                }
             }
-         }
-         if (last) {
-            break;
          }
          actionDatas.add(actionData);
       }
