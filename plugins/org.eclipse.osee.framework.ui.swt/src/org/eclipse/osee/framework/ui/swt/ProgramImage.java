@@ -13,7 +13,10 @@
 
 package org.eclipse.osee.framework.ui.swt;
 
+import java.io.BufferedReader;
+import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.internal.Activator;
 import org.eclipse.swt.program.Program;
 
@@ -22,14 +25,26 @@ import org.eclipse.swt.program.Program;
  */
 public class ProgramImage implements KeyedImage {
    private final String extension;
+   private String msoApplication;
 
    public ProgramImage(String extension) {
       this.extension = extension;
    }
 
+   public static ProgramImage create(String extension, BufferedReader xmlContent) {
+      ProgramImage programImage = new ProgramImage(extension);
+      try {
+         programImage.msoApplication = MsoApplicationExtractor.findMsoApplicationValue(xmlContent);
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         programImage.msoApplication = "";
+      }
+      return programImage;
+   }
+
    @Override
    public ImageDescriptor createImageDescriptor() {
-      Program program = ProgramFinder.findProgram(extension);
+      Program program = ProgramFinder.findProgram(extension, msoApplication);
       if (program == null || program.getImageData() == null) {
          return null;
       }
@@ -38,6 +53,6 @@ public class ProgramImage implements KeyedImage {
 
    @Override
    public String getImageKey() {
-      return Activator.PLUGIN_ID + ".program." + extension;
+      return Activator.PLUGIN_ID + ".program." + extension + "." + msoApplication;
    }
 }
