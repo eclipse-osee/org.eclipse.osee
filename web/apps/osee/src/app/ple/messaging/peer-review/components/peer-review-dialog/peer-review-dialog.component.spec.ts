@@ -35,6 +35,7 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { ManageActionButtonComponentMock } from '@osee/configuration-management/testing';
 import { BranchInfoService } from '@osee/shared/services';
 import { BranchInfoServiceMock } from '@osee/shared/testing';
+import { provideRouter, RouterLink } from '@angular/router';
 
 describe('PeerReviewDialogComponent', () => {
 	let component: PeerReviewDialogComponent;
@@ -58,6 +59,7 @@ describe('PeerReviewDialogComponent', () => {
 					MatLabel,
 					MatInput,
 					ManageActionButtonComponentMock,
+					RouterLink,
 				],
 			},
 		})
@@ -74,9 +76,11 @@ describe('PeerReviewDialogComponent', () => {
 					MatIcon,
 					MatLabel,
 					MatInput,
+					RouterLink,
 				],
 				providers: [
 					provideNoopAnimations(),
+					provideRouter([]),
 					{
 						provide: PeerReviewUiService,
 						useValue: PeerReviewUiServiceMock,

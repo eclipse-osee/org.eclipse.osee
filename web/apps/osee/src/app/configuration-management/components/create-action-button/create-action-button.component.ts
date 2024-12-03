@@ -44,7 +44,11 @@ export class CreateActionButtonComponent {
 				switchMap((thisUser) =>
 					this.dialog
 						.open(CreateActionDialogComponent, {
-							data: new CreateAction(thisUser, this.workType()),
+							data: new CreateAction(
+								thisUser,
+								true,
+								this.workType()
+							),
 							minWidth: '60vw',
 						})
 						.afterClosed()
