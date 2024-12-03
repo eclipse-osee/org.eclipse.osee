@@ -44,7 +44,11 @@ export class CreatePeerReviewButtonComponent {
 				switchMap((thisUser) =>
 					this.dialog
 						.open(CreateActionDialogComponent, {
-							data: new CreateAction(thisUser, this.workType()),
+							data: new CreateAction(
+								thisUser,
+								false,
+								this.workType()
+							),
 							minWidth: '60vw',
 						})
 						.afterClosed()
