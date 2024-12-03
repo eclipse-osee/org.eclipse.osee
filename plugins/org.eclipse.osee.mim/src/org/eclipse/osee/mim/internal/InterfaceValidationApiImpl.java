@@ -63,13 +63,17 @@ public class InterfaceValidationApiImpl implements InterfaceValidationApi {
             Arrays.asList(FollowRelation.fork(CoreRelationTypes.InterfaceConnectionNode_Node),
                FollowRelation.fork(CoreRelationTypes.InterfaceConnectionTransportType_TransportType),
                FollowRelation.follow(CoreRelationTypes.InterfaceConnectionMessage_Message),
-               FollowRelation.fork(CoreRelationTypes.InterfaceMessagePubNode_Node),
                FollowRelation.follow(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage),
                FollowRelation.follow(CoreRelationTypes.InterfaceSubMessageContent_Structure),
                FollowRelation.follow(CoreRelationTypes.InterfaceStructureContent_DataElement),
-               FollowRelation.fork(CoreRelationTypes.InterfaceElementArrayElement_ArrayElement,
-                  FollowRelation.follow(CoreRelationTypes.InterfaceElementPlatformType_PlatformType)),
-               FollowRelation.follow(CoreRelationTypes.InterfaceElementPlatformType_PlatformType)));
+               FollowRelation.fork(CoreRelationTypes.InterfaceElementPlatformType_PlatformType,
+                  FollowRelation.follow(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet),
+                  FollowRelation.follow(CoreRelationTypes.InterfaceEnumeration_EnumerationState)),
+               FollowRelation.follow(CoreRelationTypes.InterfaceElementArrayElement_ArrayElement),
+               FollowRelation.fork(CoreRelationTypes.InterfaceElementArrayIndexDescriptionSet_Set),
+               FollowRelation.follow(CoreRelationTypes.InterfaceElementPlatformType_PlatformType),
+               FollowRelation.follow(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet),
+               FollowRelation.follow(CoreRelationTypes.InterfaceEnumeration_EnumerationState)));
          if (viewId.isValid()) {
             connection = connections.get(viewId);
          } else {
@@ -91,13 +95,17 @@ public class InterfaceValidationApiImpl implements InterfaceValidationApi {
                Arrays.asList(FollowRelation.fork(CoreRelationTypes.InterfaceConnectionNode_Node),
                   FollowRelation.fork(CoreRelationTypes.InterfaceConnectionTransportType_TransportType),
                   FollowRelation.follow(CoreRelationTypes.InterfaceConnectionMessage_Message),
-                  FollowRelation.fork(CoreRelationTypes.InterfaceMessagePubNode_Node),
                   FollowRelation.follow(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage),
                   FollowRelation.follow(CoreRelationTypes.InterfaceSubMessageContent_Structure),
                   FollowRelation.follow(CoreRelationTypes.InterfaceStructureContent_DataElement),
-                  FollowRelation.fork(CoreRelationTypes.InterfaceElementArrayElement_ArrayElement,
-                     FollowRelation.follow(CoreRelationTypes.InterfaceElementPlatformType_PlatformType)),
-                  FollowRelation.follow(CoreRelationTypes.InterfaceElementPlatformType_PlatformType)));
+                  FollowRelation.fork(CoreRelationTypes.InterfaceElementPlatformType_PlatformType,
+                     FollowRelation.follow(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet),
+                     FollowRelation.follow(CoreRelationTypes.InterfaceEnumeration_EnumerationState)),
+                  FollowRelation.follow(CoreRelationTypes.InterfaceElementArrayElement_ArrayElement),
+                  FollowRelation.fork(CoreRelationTypes.InterfaceElementArrayIndexDescriptionSet_Set),
+                  FollowRelation.follow(CoreRelationTypes.InterfaceElementPlatformType_PlatformType),
+                  FollowRelation.follow(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet),
+                  FollowRelation.follow(CoreRelationTypes.InterfaceEnumeration_EnumerationState)));
          //compare the past and the current, if there is anything different the view has affected
          for (ArtifactId configuration : connections.keySet()) {
             InterfaceConnection workingConnection =
