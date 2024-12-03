@@ -46,6 +46,18 @@ public class ProgramFinder {
       }
    }
 
+   public static Program findProgram(String extension, String msoApplication) {
+      // If mso-application value found, check for Word or Excel
+      if (!msoApplication.equals("")) {
+         if (msoApplication.contains("Word.Document")) {
+            return findProgram("docx"); // Map to Word file extension
+         } else if (msoApplication.contains("Excel.Sheet")) {
+            return findProgram("xlsx"); // Map to Excel file extension
+         }
+      }
+      return findProgram(extension);
+   }
+
    public static Program findProgram(String extension) {
       Program program = Program.findProgram(extension);
       if (program == null && isMediaFile(extension.toLowerCase())) {

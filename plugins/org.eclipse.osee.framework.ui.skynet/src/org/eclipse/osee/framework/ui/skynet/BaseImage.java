@@ -13,7 +13,10 @@
 
 package org.eclipse.osee.framework.ui.skynet;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -76,7 +79,13 @@ public class BaseImage implements KeyedImage {
       try {
          String extension = artifact.getSoleAttributeValue(CoreAttributeTypes.Extension, "");
          if (Strings.isValid(extension)) {
-            return new ProgramImage(extension);
+            if (extension.equals("xml")) {
+               InputStream xmlStream = artifact.getSoleAttributeValue(CoreAttributeTypes.NativeContent);
+               InputStreamReader inputStreamReader = new InputStreamReader(xmlStream);
+               return ProgramImage.create(extension, new BufferedReader(inputStreamReader));
+            } else {
+               return new ProgramImage(extension);
+            }
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

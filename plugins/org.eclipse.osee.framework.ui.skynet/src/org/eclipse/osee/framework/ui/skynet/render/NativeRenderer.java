@@ -17,8 +17,10 @@ import static org.eclipse.osee.framework.core.enums.PresentationType.DEFAULT_OPE
 import static org.eclipse.osee.framework.core.enums.PresentationType.DIFF;
 import static org.eclipse.osee.framework.core.enums.PresentationType.PREVIEW;
 import static org.eclipse.osee.framework.core.enums.PresentationType.SPECIALIZED_EDIT;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,7 +42,9 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.NativeWordCompare;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.MsoApplicationExtractor;
 import org.eclipse.osee.framework.ui.swt.ProgramFinder;
+import org.eclipse.osee.framework.ui.swt.ProgramImage;
 import org.eclipse.swt.program.Program;
 
 /**
@@ -90,7 +94,16 @@ public class NativeRenderer extends FileSystemRenderer {
    public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact) {
       ImageDescriptor imageDescriptor = null;
       try {
-         imageDescriptor = ImageManager.getProgramImageDescriptor(getAssociatedExtension(artifact));
+         // If artifact has xml extension, extract xml content and create a ProgramImage
+         String extension = getAssociatedExtension(artifact);
+         if (extension.equals("xml")) {
+            InputStream xmlStream = artifact.getSoleAttributeValue(CoreAttributeTypes.NativeContent);
+            InputStreamReader inputStreamReader = new InputStreamReader(xmlStream);
+            imageDescriptor =
+               ImageManager.getImageDescriptor(ProgramImage.create(extension, new BufferedReader(inputStreamReader)));
+         } else {
+            imageDescriptor = ImageManager.getProgramImageDescriptor(extension);
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          imageDescriptor = ArtifactImageManager.getImageDescriptor(artifact);
@@ -171,8 +184,22 @@ public class NativeRenderer extends FileSystemRenderer {
 
    @Override
    public Program getAssociatedProgram(Artifact artifact) {
+      Program program = null;
       String extension = getAssociatedExtension(artifact);
-      Program program = ProgramFinder.findProgram(extension);
+      if (extension.equals("xml")) {
+         InputStream xmlStream = artifact.getSoleAttributeValue(CoreAttributeTypes.NativeContent);
+         InputStreamReader inputStreamReader = new InputStreamReader(xmlStream);
+         String msoApplication;
+         try {
+            msoApplication = MsoApplicationExtractor.findMsoApplicationValue(new BufferedReader(inputStreamReader));
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            msoApplication = "";
+         }
+         program = ProgramFinder.findProgram(extension, msoApplication);
+      } else {
+         program = ProgramFinder.findProgram(extension);
+      }
       if (program == null) {
          throw new OseeArgumentException("No program associated with the extension [%s] found on your local machine.",
             extension);
