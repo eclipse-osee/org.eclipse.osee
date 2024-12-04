@@ -240,6 +240,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
          if (matches(TeamWorkflowDetails.class, annotations)) {
             writeTeamWorkflowDetails(orcsApi, atsApi, writer, teamWf);
          }
+         writeDerived(atsApi, writer, teamWf);
       }
 
       if (workItem.isReview()) {
@@ -476,6 +477,19 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
             break;
          }
          writeState(atsApi, writer, state);
+      }
+      writer.writeEndArray();
+   }
+
+   private static void writeDerived(AtsApi atsApi, JsonGenerator writer, IAtsTeamWorkflow teamWf) throws IOException {
+      writer.writeArrayFieldStart("derivedfrom");
+      for (ArtifactToken art : atsApi.getRelationResolver().getRelated(teamWf, AtsRelationTypes.Derive_From)) {
+         writer.writeStartObject();
+         writer.writeObjectField("id", art.getIdString());
+         writer.writeObjectField("name", art.getName());
+         writer.writeObjectField("AtsId", teamWf.getAtsId());
+         writer.writeObjectField("type", art.getArtifactType().toStringWithId());
+         writer.writeEndObject();
       }
       writer.writeEndArray();
    }
