@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.core.model.cache;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * @author Roberto E. Escobar
@@ -37,4 +38,6 @@ public interface IOseeCache<TYPE> {
    TYPE getById(Number typeId);
 
    TYPE getByGuid(Long guid);
+
+   void decacheById(Id id);
 }
