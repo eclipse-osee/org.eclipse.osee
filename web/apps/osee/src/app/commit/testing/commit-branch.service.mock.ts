@@ -13,6 +13,7 @@
 import { CommitBranchService } from '@osee/commit/services';
 import { of } from 'rxjs';
 import { mergeDataMock } from './commit-branch.mock';
+import { testCommitResponse } from '@osee/shared/testing';
 
 export const commitBranchServiceMock: Partial<CommitBranchService> = {
 	getMergeData(branchId: string) {
@@ -27,5 +28,8 @@ export const commitBranchServiceMock: Partial<CommitBranchService> = {
 			conflictCount: 0,
 			conflictsResolved: 0,
 		});
+	},
+	commitBranch(branchId, parentBranchId) {
+		return of(testCommitResponse);
 	},
 };
