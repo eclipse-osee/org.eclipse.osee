@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.rest.internal.util;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -140,6 +141,34 @@ public final class AtsProductLineEndpointImpl implements AtsProductLineEndpointA
             }
          }
       }
+      if (commitArtIds.size() > 0) {
+         List<Branch> committedBranches =
+            orcsApi.getQueryFactory().branchQuery().andAssociatedArtIds(commitArtIds).getResults().getList();
+         for (Branch committedBranch : committedBranches) {
+            if (committedBranch.isValid() && peerReviewBranchList.stream().noneMatch(
+               branch -> branch.getBranch().equals(committedBranch))) {
+               peerReviewBranchList.add(new BranchSelected(committedBranch, true, true));
+            }
+         }
+      }
+
+      peerReviewBranchList.sort(new Comparator<BranchSelected>() {
+         @Override
+         public int compare(BranchSelected o1, BranchSelected o2) {
+            Integer tw1 = -1;
+            Integer tw2 = -1;
+            if (o1.getBranch().getName().startsWith("TW")) {
+               tw1 = Integer.parseInt(o1.getBranch().getName().split(" ")[0].replace("TW", ""));
+            }
+            if (o2.getBranch().getName().startsWith("TW")) {
+               tw2 = Integer.parseInt(o2.getBranch().getName().split(" ")[0].replace("TW", ""));
+            }
+            if (tw1 > -1 && tw2 > -1) {
+               return tw1.compareTo(tw2);
+            }
+            return o1.getBranch().getName().compareTo(o2.getBranch().getName());
+         }
+      });
       return peerReviewBranchList;
    }
 

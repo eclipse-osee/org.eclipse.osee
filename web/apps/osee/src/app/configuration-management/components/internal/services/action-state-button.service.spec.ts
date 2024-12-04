@@ -22,11 +22,11 @@ import { ActionStateButtonService } from './action-state-button.service';
 import { UserDataAccountService } from '@osee/auth';
 import {
 	BranchInfoServiceMock,
-	testCommitResponse,
 	testDataTransitionResponse,
 	branchRoutedUiServiceMock,
 	testBranchActions,
 	testWorkFlow,
+	testBranchListing,
 } from '@osee/shared/testing';
 import { userDataAccountServiceMock } from '@osee/auth/testing';
 import { CommitBranchService } from '@osee/commit/services';
@@ -79,11 +79,15 @@ describe('ActionStateButtonService', () => {
 	it('should commit a branch', () => {
 		scheduler.run(({ expectObservable }) => {
 			expectObservable(
-				service.commitBranch({ committer: '', archive: '' })
-			).toBe('(a|)', { a: testCommitResponse });
+				service.commitBranch(
+					testBranchActions[0],
+					testBranchListing[0],
+					testBranchListing[1]
+				)
+			).toBe('(a|)', { a: testDataTransitionResponse });
 		});
 	});
-	it('should approve current branch', () => {
+	it('should approve a branch', () => {
 		scheduler.run(({ expectObservable }) => {
 			expectObservable(service.approveBranch(testBranchActions[0])).toBe(
 				'(a|)',
@@ -94,7 +98,7 @@ describe('ActionStateButtonService', () => {
 		});
 	});
 
-	it('should transition current branch', () => {
+	it('should transition a branch', () => {
 		scheduler.run(({ expectObservable }) => {
 			expectObservable(
 				service.transition(
@@ -102,14 +106,6 @@ describe('ActionStateButtonService', () => {
 					testBranchActions[0]
 				)
 			).toBe('(a|)', {
-				a: testDataTransitionResponse,
-			});
-		});
-	});
-
-	it('should execute a commit branch', () => {
-		scheduler.run(({ expectObservable }) => {
-			expectObservable(service.doCommitBranch).toBe('(a|)', {
 				a: testDataTransitionResponse,
 			});
 		});

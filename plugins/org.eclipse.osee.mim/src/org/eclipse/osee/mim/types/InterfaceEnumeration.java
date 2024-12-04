@@ -114,6 +114,7 @@ public class InterfaceEnumeration extends ArtifactAccessorResultWithGammas {
       return ordinalType;
    }
 
+   @JsonProperty
    public void setOrdinalType(AttributePojo<String> ordinalType) {
       this.ordinalType = ordinalType;
    }
