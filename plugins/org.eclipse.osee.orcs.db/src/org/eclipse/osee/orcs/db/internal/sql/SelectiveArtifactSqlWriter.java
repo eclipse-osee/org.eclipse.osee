@@ -186,7 +186,24 @@ public class SelectiveArtifactSqlWriter extends AbstractSqlWriter {
       return false;
    }
 
+   private void writeBranchCte() {
+      if (OptionsUtil.getRelatedBranchData(getOptions())) {
+         //TODO: refactor this to a handler
+         startCommonTableExpression("branchInfo");
+         writeSelectAndHint();
+         String branch = getNextAlias(OseeDb.BRANCH_TABLE);
+         writeSelectFields(branch, "*");
+         write(" FROM ");
+         write(OseeDb.BRANCH_TABLE.getName());
+         write(" ");
+         write(branch);
+         write(" LIMIT 1 ");
+
+      }
+   }
+
    public void build(SqlHandlerFactory handlerFactory) {
+      writeBranchCte();
       List<String> artWithAliases = new ArrayList<>();
       /*
        * with artWith1 as (...), artWith2 as (...), ...
