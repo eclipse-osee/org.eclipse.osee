@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.framework.core.util;
+package org.eclipse.osee.ats.ide.integration.tests.skynet.core;
 
 import static org.junit.Assert.assertTrue;
 import java.io.BufferedReader;
@@ -23,8 +23,14 @@ import java.util.List;
 import org.junit.Test;
 
 /**
+ * Test that manifest files do not have bundle version specified.<br/>
+ * <br/>
+ * NOTE: Test had to be duplicated to multiple integration suites. See other MaifestTest if changes are needed.
+ *
  * @author Baily Roberts
+ * @author Donald G. Dunne
  */
+
 public class ManifestTest {
 
    @Test

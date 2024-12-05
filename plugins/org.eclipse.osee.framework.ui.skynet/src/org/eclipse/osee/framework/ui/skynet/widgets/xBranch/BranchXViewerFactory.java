@@ -66,8 +66,4 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
       return new XViewerSorter(xViewer);
    }
 
-   public boolean isBranchManager() {
-      return true;
-   }
-
 }

@@ -44,8 +44,4 @@ public class BranchTransactionXViewerFactory extends BranchXViewerFactory {
       return customizeData;
    }
 
-   @Override
-   public boolean isBranchManager() {
-      return false;
-   }
 }
