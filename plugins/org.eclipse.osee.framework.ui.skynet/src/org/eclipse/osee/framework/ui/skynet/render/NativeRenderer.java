@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.MicrosoftOfficeApplicationEnum;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -36,13 +37,13 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.importing.parsers.MsoApplicationExtractor;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.NativeWordCompare;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.osee.framework.ui.swt.MsoApplicationExtractor;
 import org.eclipse.osee.framework.ui.swt.ProgramFinder;
 import org.eclipse.osee.framework.ui.swt.ProgramImage;
 import org.eclipse.swt.program.Program;
@@ -94,14 +95,34 @@ public class NativeRenderer extends FileSystemRenderer {
    public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact) {
       ImageDescriptor imageDescriptor = null;
       try {
-         // If artifact has xml extension, extract xml content and create a ProgramImage
          String extension = getAssociatedExtension(artifact);
+         // Case 1: Handle artifact with an "xml" extension
          if (extension.equals("xml")) {
-            InputStream xmlStream = artifact.getSoleAttributeValue(CoreAttributeTypes.NativeContent);
-            InputStreamReader inputStreamReader = new InputStreamReader(xmlStream);
-            imageDescriptor =
-               ImageManager.getImageDescriptor(ProgramImage.create(extension, new BufferedReader(inputStreamReader)));
-         } else {
+            MicrosoftOfficeApplicationEnum msoApplication = MicrosoftOfficeApplicationEnum.SENTINEL;
+            // Sub-case 1.1: The artifact explicitly specifies a Microsoft Office application
+            if (artifact.hasAttribute(CoreAttributeTypes.MicrosoftOfficeApplication)) {
+               // Use the specified Microsoft Office application to determine the image descriptor
+               msoApplication = MicrosoftOfficeApplicationEnum.fromApplicationName(
+                  artifact.getSoleAttributeValue(CoreAttributeTypes.MicrosoftOfficeApplication));
+               imageDescriptor = ImageManager.getImageDescriptor(new ProgramImage(extension, msoApplication));
+            }
+            // Sub-case 1.2: The artifact does not specify a Microsoft Office application
+            else {
+               // Extract the application information from the XML content
+               InputStream xmlStream = artifact.getSoleAttributeValue(CoreAttributeTypes.NativeContent);
+               InputStreamReader inputStreamReader = new InputStreamReader(xmlStream);
+               try {
+                  // Attempt to find the "mso-application" value in the XML content
+                  msoApplication =
+                     MsoApplicationExtractor.findMsoApplicationValue(new BufferedReader(inputStreamReader));
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, ex);
+               }
+               imageDescriptor = ImageManager.getImageDescriptor(new ProgramImage(extension, msoApplication));
+            }
+         }
+         // Case 2: Handle artifact with a non-XML extension
+         else {
             imageDescriptor = ImageManager.getProgramImageDescriptor(extension);
          }
       } catch (OseeCoreException ex) {
@@ -186,18 +207,34 @@ public class NativeRenderer extends FileSystemRenderer {
    public Program getAssociatedProgram(Artifact artifact) {
       Program program = null;
       String extension = getAssociatedExtension(artifact);
+      // Case 1: Handle artifact with an "xml" extension
       if (extension.equals("xml")) {
-         InputStream xmlStream = artifact.getSoleAttributeValue(CoreAttributeTypes.NativeContent);
-         InputStreamReader inputStreamReader = new InputStreamReader(xmlStream);
-         String msoApplication;
-         try {
-            msoApplication = MsoApplicationExtractor.findMsoApplicationValue(new BufferedReader(inputStreamReader));
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-            msoApplication = "";
+         MicrosoftOfficeApplicationEnum msoApplication = MicrosoftOfficeApplicationEnum.SENTINEL;
+
+         // Sub-case 1.1: The artifact explicitly specifies a Microsoft Office application
+         if (artifact.hasAttributeWithValuesSet(CoreAttributeTypes.MicrosoftOfficeApplication)) {
+            // Use the specified Microsoft Office application to find the program
+            msoApplication = MicrosoftOfficeApplicationEnum.fromApplicationName(
+               artifact.getSoleAttributeValue(CoreAttributeTypes.MicrosoftOfficeApplication));
+            program = ProgramFinder.findProgram(extension, msoApplication);
          }
-         program = ProgramFinder.findProgram(extension, msoApplication);
-      } else {
+         // Sub-case 1.2: The artifact does not specify a Microsoft Office application
+         else {
+            // Extract the application information from the XML content
+            InputStream xmlStream = artifact.getSoleAttributeValue(CoreAttributeTypes.NativeContent);
+            InputStreamReader inputStreamReader = new InputStreamReader(xmlStream);
+            try {
+               // Attempt to find the program using the "mso-application" value from the XML content
+               program = ProgramFinder.findProgram(extension,
+                  MsoApplicationExtractor.findMsoApplicationValue(new BufferedReader(inputStreamReader)));
+            } catch (Exception ex) {
+               // Log any errors encountered during the extraction process
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         }
+      }
+      // Case 2: Handle artifact with a non-XML extension
+      else {
          program = ProgramFinder.findProgram(extension);
       }
       if (program == null) {
