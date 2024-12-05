@@ -238,4 +238,9 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
       return art.getRelations(relationTypeSide).getList();
    }
 
+   @Override
+   public List<IRelationLink> getRelations(ArtifactToken art) {
+      throw new UnsupportedOperationException("unsupported on server");
+   }
+
 }

@@ -117,17 +117,20 @@ public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
 
    @Override
    public void refresh() {
+      if (getClass().getSimpleName().equals("XPiTrackingHyperlinkLabelWidget")) {
+         System.err.println("here");
+      }
       if (!Widgets.isAccessible(comp)) {
          return;
       }
       if (Widgets.isAccessible(valueLabel)) {
-         if (getCurrentValue().equals(valueLabel.getText())) {
-            return;
+         String currentValue = getCurrentValue();
+         if (!currentValue.equals(valueLabel.getText())) {
+            valueLabel.setText(currentValue);
+            valueLabel.update();
+            valueLabel.getParent().update();
+            valueLabel.getParent().getParent().layout();
          }
-         valueLabel.setText(getCurrentValue());
-         valueLabel.update();
-         valueLabel.getParent().update();
-         valueLabel.getParent().getParent().layout();
       }
       validate();
    }
