@@ -13,10 +13,6 @@
 
 package org.eclipse.osee.orcs.core.internal.applicability;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -43,6 +39,7 @@ import java.util.stream.StreamSupport;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
 import org.eclipse.osee.framework.core.applicability.ApplicabilityBranchConfig;
 import org.eclipse.osee.framework.core.applicability.BatConfigFile;
 import org.eclipse.osee.framework.core.applicability.BatGroupFile;
@@ -91,6 +88,11 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.TupleQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 
 /**
  * @author Donald G. Dunne
@@ -3580,7 +3582,6 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       List<ArtifactReadable> featureArts) {
       Map<String, List<String>> namedViewApplicabilityMap =
          orcsApi.getQueryFactory().applicabilityQuery().getNamedViewApplicabilityMap(branchId, art);
-      orcsApi.jaxRsApi().getObjectMapper();
       BatConfigFile configFile = new BatConfigFile(art, namedViewApplicabilityMap, featureArts);
       return configFile;
    }
@@ -3589,7 +3590,6 @@ public class OrcsApplicabilityOps implements OrcsApplicability {
       List<ArtifactReadable> featureArts) {
       Map<String, List<String>> namedViewApplicabilityMap =
          orcsApi.getQueryFactory().applicabilityQuery().getNamedViewApplicabilityMap(branchId, art);
-      orcsApi.jaxRsApi().getObjectMapper();
       BatGroupFile configFile = new BatGroupFile(art, namedViewApplicabilityMap, featureArts);
       return configFile;
    }

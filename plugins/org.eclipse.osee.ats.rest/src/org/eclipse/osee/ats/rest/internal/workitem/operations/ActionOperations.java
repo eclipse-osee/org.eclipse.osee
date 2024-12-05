@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -211,11 +212,7 @@ public class ActionOperations {
       if (changeType.equals(AttributeKey.Assignee.name())) {
          if (artifacts.isEmpty()) {
             IAtsChangeSet changes = atsApi.createChangeSet("Clear assignees");
-            if (workItem.isCompletedOrCancelled()) {
-               changes.clearAssignees(workItem);
-            } else {
-               changes.clearAssignees(workItem);
-            }
+            changes.clearAssignees(workItem);
             changes.executeIfNeeded();
          } else {
             Set<AtsUser> assignees = new HashSet<>();
