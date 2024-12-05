@@ -58,10 +58,6 @@ public abstract class CreateStoryAction extends AbstractAtsAction {
       setToolTipText(name);
    }
 
-   public boolean performCreateOps() {
-      return true;
-   }
-
    @Override
    public void runWithException() {
       rd = new XResultData();
@@ -76,38 +72,30 @@ public abstract class CreateStoryAction extends AbstractAtsAction {
                continue;
             }
             String jiraStoryId = wfArt.getSoleAttributeValue(AtsAttributeTypes.JiraStoryId, "");
-            if (performCreateOps()) {
 
+            if (Strings.isValid(jiraStoryId)) {
+               AWorkbench.popup("JIRA Story " + jiraStoryId + " is already created and mapped to this Team Workflow");
+               continue;
+            }
+            if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Create JIRA Story",
+               "JIRA Story and link to this Team Workflow\n\nAre you sure?")) {
+               continue;
+            }
+
+            // Search for existing JIRA story first
+            JiraSearch srch = AbstractJiraSyncColumnUI.search(workItem);
+            if (srch.issues != null && !srch.issues.isEmpty()) {
+               jiraStoryId = srch.issues.iterator().next().key;
                if (Strings.isValid(jiraStoryId)) {
-                  AWorkbench.popup(
-                     "JIRA Story " + jiraStoryId + " is already created and mapped to this Team Workflow");
-                  continue;
-               }
-               if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Create JIRA Story",
-                  "JIRA Story and link to this Team Workflow\n\nAre you sure?")) {
-                  continue;
-               }
+                  if (MessageDialog.openConfirm(Displays.getActiveShell(), "Already Exists", String.format(
+                     "This workflow %s has story %s created, Link to ATS?", workItem.getAtsId(), jiraStoryId))) {
+                     IAtsChangeSet changes = AtsApiService.get().createChangeSet("Link JIRA Story");
+                     changes.setSoleAttributeValue(workItem, AtsAttributeTypes.JiraStoryId, jiraStoryId);
+                     changes.execute();
 
-               // Search for existing JIRA story first
-               JiraSearch srch = AbstractJiraSyncColumnUI.search(workItem);
-               if (srch.issues != null && !srch.issues.isEmpty()) {
-                  jiraStoryId = srch.issues.iterator().next().key;
-                  if (Strings.isValid(jiraStoryId)) {
-                     if (MessageDialog.openConfirm(Displays.getActiveShell(), "Already Exists", String.format(
-                        "This workflow %s has story %s created, Link to ATS?", workItem.getAtsId(), jiraStoryId))) {
-                        IAtsChangeSet changes = AtsApiService.get().createChangeSet("Link JIRA Story");
-                        changes.setSoleAttributeValue(workItem, AtsAttributeTypes.JiraStoryId, jiraStoryId);
-                        changes.execute();
-
-                        AWorkbench.popup("Story Linked");
-                        continue;
-                     }
+                     AWorkbench.popup("Story Linked");
+                     continue;
                   }
-               }
-            } else {
-               if (Strings.isInvalid(jiraStoryId)) {
-                  AWorkbench.popup("Workflow not mapped to JIRA Story; Skipping");
-                  continue;
                }
             }
 
@@ -123,28 +111,20 @@ public abstract class CreateStoryAction extends AbstractAtsAction {
                         return Status.OK_STATUS;
                      }
                      rd.logf("Json: \n\n%s\n\n", createJson);
-                     String jiraIssue = null;
-                     if (performCreateOps()) {
-                        jiraIssue =
-                           AtsApiService.get().getServerEndpoints().getJiraEndpoint().createJiraIssue(createJson);
-                     } else {
-                        jiraIssue = AtsApiService.get().getServerEndpoints().getJiraEndpoint().editJira(createJson,
-                           fJiraStoryId);
-                     }
+                     String jiraIssue =
+                        AtsApiService.get().getServerEndpoints().getJiraEndpoint().createJiraIssue(createJson);
                      if (jiraIssue.contains("errorMessages")) {
                         rd.errorf("%s", jiraIssue);
                      } else {
                         rd.log("\n\n" + jiraIssue);
 
                         String responseJiraId = fJiraStoryId;
-                        if (performCreateOps()) {
-                           CreateStoryResponse createResp = JsonUtil.readValue(jiraIssue, CreateStoryResponse.class);
-                           responseJiraId = createResp.getKey();
-                           wfArt.setSoleAttributeValue(AtsAttributeTypes.JiraStoryId, responseJiraId);
-                           wfArt.persist(getText());
-                        } else {
-                           rd.log(jiraIssue);
-                        }
+                        CreateStoryResponse createResp = JsonUtil.readValue(jiraIssue, CreateStoryResponse.class);
+                        responseJiraId = createResp.getKey();
+                        wfArt.setSoleAttributeValue(AtsAttributeTypes.JiraStoryId, responseJiraId);
+                        wfArt.persist(getText());
+
+                        performAfterCreate(workItem, responseJiraId);
 
                         String link =
                            AtsApiService.get().getJiraService().getJiraBasePath() + "browse/" + responseJiraId;
@@ -170,6 +150,11 @@ public abstract class CreateStoryAction extends AbstractAtsAction {
             XResultDataUI.report(rd, getClass().getSimpleName());
          }
       }
+   }
+
+   // Override to perform additional actions.  eg: Transition
+   protected void performAfterCreate(IAtsWorkItem workItem, String responseJiraId) {
+      // do nothing
    }
 
    abstract protected String getCreateJson(IAtsWorkItem workItem, XResultData rd);

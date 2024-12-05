@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.api.team.Priorities;
 import org.eclipse.osee.ats.api.workflow.hooks.IAtsTransitionHook;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.conditions.ConditionalRule;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 
@@ -63,6 +64,7 @@ public class WorkDefinition extends AbstractWorkDefItem {
    private final List<Priorities> priorities = new ArrayList<>();
    private final List<ReviewRequiredMinimum> reviewRequiredMinimums = new ArrayList<>();
    private List<IAtsTransitionHook> transitionHooks = new ArrayList<>();
+   private List<ConditionalRule> conditions = new ArrayList<>();
 
    public WorkDefinition(Long id, String name) {
       this(id, name, ArtifactTypeToken.SENTINEL);
@@ -250,6 +252,18 @@ public class WorkDefinition extends AbstractWorkDefItem {
 
    public void setTransitionHooks(List<IAtsTransitionHook> transitionHooks) {
       this.transitionHooks = transitionHooks;
+   }
+
+   public List<ConditionalRule> getConditions() {
+      return conditions;
+   }
+
+   public void setConditions(List<ConditionalRule> conditions) {
+      this.conditions = conditions;
+   }
+
+   public void addCondition(ConditionalRule conditionalRule) {
+      this.conditions.add(conditionalRule);
    }
 
 }

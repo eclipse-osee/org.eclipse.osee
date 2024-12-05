@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.ide.util.widgets;
 
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
@@ -71,11 +72,15 @@ public class XSprintHyperlinkWidget extends XHyperlinkLabelCmdValueSelection {
       final SprintFilteredListDialog dialog =
          new SprintFilteredListDialog("Select Sprint", "Select Sprint", activeSprints);
       int result = dialog.open();
-      if (result != 0) {
+      if (result != Window.OK) {
          return false;
       }
-      Object obj = dialog.getSelectedFirst();
-      sprint = (IAgileSprint) obj;
+      if (dialog.isClearSelected()) {
+         sprint = null;
+      } else {
+         Object obj = dialog.getSelectedFirst();
+         sprint = (IAgileSprint) obj;
+      }
       return true;
    }
 

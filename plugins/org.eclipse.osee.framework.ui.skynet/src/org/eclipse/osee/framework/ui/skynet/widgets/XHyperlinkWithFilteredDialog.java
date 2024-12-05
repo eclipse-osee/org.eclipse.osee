@@ -132,13 +132,19 @@ public abstract class XHyperlinkWithFilteredDialog<T> extends XHyperlinkLabelVal
             }
          } else {
             FilteredTreeDialog dialog = new FilteredTreeDialog("Select " + label, "Select " + label,
-               new ArrayTreeContentProvider(), labelProvider, getComparator());
+               new ArrayTreeContentProvider(), labelProvider, getComparator(), true);
             dialog.setInput(getSelectable());
             T defaultSelected = getDefaultSelected();
             if (defaultSelected != null) {
                dialog.setInitialSelections(Arrays.asList(defaultSelected));
             }
-            if (dialog.open() == Window.OK) {
+            int result = dialog.open();
+            if (result == 2) {
+               selected = null;
+               handleSelectionPersist(selected);
+               return true;
+            }
+            if (result == Window.OK) {
                selected = (T) dialog.getSelectedFirst();
                handleSelectionPersist(selected);
                return true;
