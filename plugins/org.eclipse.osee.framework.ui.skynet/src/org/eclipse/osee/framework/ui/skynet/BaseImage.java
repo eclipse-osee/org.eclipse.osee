@@ -20,10 +20,12 @@ import java.io.InputStreamReader;
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.MicrosoftOfficeApplicationEnum;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.importing.parsers.MsoApplicationExtractor;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.osee.framework.ui.swt.ProgramImage;
@@ -79,11 +81,33 @@ public class BaseImage implements KeyedImage {
       try {
          String extension = artifact.getSoleAttributeValue(CoreAttributeTypes.Extension, "");
          if (Strings.isValid(extension)) {
+            // Case 1: Handle artifact with an "xml" extension
             if (extension.equals("xml")) {
-               InputStream xmlStream = artifact.getSoleAttributeValue(CoreAttributeTypes.NativeContent);
-               InputStreamReader inputStreamReader = new InputStreamReader(xmlStream);
-               return ProgramImage.create(extension, new BufferedReader(inputStreamReader));
-            } else {
+               MicrosoftOfficeApplicationEnum msoApplication = MicrosoftOfficeApplicationEnum.SENTINEL;
+
+               // Sub-case 1.1: The artifact explicitly specifies a Microsoft Office application
+               if (artifact.hasAttribute(CoreAttributeTypes.MicrosoftOfficeApplication)) {
+                  // Retrieve the specified Microsoft Office application and return a ProgramImage
+                  msoApplication = MicrosoftOfficeApplicationEnum.fromApplicationName(
+                     artifact.getSoleAttributeValue(CoreAttributeTypes.MicrosoftOfficeApplication));
+                  return new ProgramImage(extension, msoApplication);
+               }
+               // Sub-case 1.2: The artifact does not specify a Microsoft Office application
+               else {
+                  // Extract the application information from the XML content
+                  InputStream xmlStream = artifact.getSoleAttributeValue(CoreAttributeTypes.NativeContent);
+                  InputStreamReader inputStreamReader = new InputStreamReader(xmlStream);
+                  try {
+                     msoApplication =
+                        MsoApplicationExtractor.findMsoApplicationValue(new BufferedReader(inputStreamReader));
+                  } catch (Exception ex) {
+                     OseeLog.log(Activator.class, Level.SEVERE, ex);
+                  }
+                  return new ProgramImage(extension, msoApplication);
+               }
+            }
+            // Case 2: Handle artifact with a non-XML extension
+            else {
                return new ProgramImage(extension);
             }
          }
