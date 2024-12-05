@@ -83,7 +83,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 @SuppressWarnings("deprecation")
 public class TraceReportBlam extends AbstractBlam {
-   private static final String BRANCH = "Branch";
+   private static final String BRANCH = "Requirements Branch";
    private final List<IResultsEditorTab> resultsTabs;
    private XCombo branchViewWidget;
    private XBranchSelectWidget branchWidget;
