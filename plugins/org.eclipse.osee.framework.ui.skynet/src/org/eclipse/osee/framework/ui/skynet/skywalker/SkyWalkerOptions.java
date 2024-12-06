@@ -152,7 +152,7 @@ public final class SkyWalkerOptions {
       if (relTypes == null) {
          relTypes = new HashMap<>();
          try {
-            for (RelationTypeToken relationType : tokenService.getRelationTypes()) {
+            for (RelationTypeToken relationType : tokenService.getValidRelationTypes()) {
                relTypes.put(relationType, true);
                relTypes.put(new RelationTypeSide(relationType, RelationSide.SIDE_A), true);
                relTypes.put(new RelationTypeSide(relationType, RelationSide.SIDE_B), true);

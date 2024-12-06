@@ -83,7 +83,7 @@ public class AddRelationColumnAction extends Action {
 
    private Collection<RelationTypeSide> getInput() {
       List<RelationTypeSide> sides = new ArrayList<>();
-      for (RelationTypeToken type : ServiceUtil.getTokenService().getRelationTypes()) {
+      for (RelationTypeToken type : ServiceUtil.getTokenService().getValidRelationTypes()) {
          sides.add(new RelationTypeSide(type, RelationSide.SIDE_A));
          sides.add(new RelationTypeSide(type, RelationSide.SIDE_B));
       }

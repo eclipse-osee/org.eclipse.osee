@@ -102,7 +102,7 @@ public class OrderParserTest {
 
       final Collection<? extends RelationTypeToken> types = Arrays.asList(relationType1, relationType2);
 
-      when(tokenService.getRelationTypes()).thenAnswer(new Answer<Collection<? extends RelationTypeToken>>() {
+      when(tokenService.getValidRelationTypes()).thenAnswer(new Answer<Collection<? extends RelationTypeToken>>() {
 
          @Override
          public Collection<? extends RelationTypeToken> answer(InvocationOnMock invocation) throws Throwable {
