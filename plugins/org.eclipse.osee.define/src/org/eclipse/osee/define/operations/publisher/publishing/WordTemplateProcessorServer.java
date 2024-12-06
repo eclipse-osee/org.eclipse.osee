@@ -1028,7 +1028,7 @@ public class WordTemplateProcessorServer implements ToMessage {
                this.headingArtifactTypeToken,
                this.headingAttributeTypeToken,
                ( lambdaHeadingText ) -> this.headingTextProcessor( lambdaHeadingText, artifact ),
-               IncludeBookmark.NO.getArtifactAcceptor(),
+               includeBookmarkArtifactAcceptor,
                this.includeHeadings,
                this.includeMainContentForHeadings,
                this.includeMetadataAttributes,
