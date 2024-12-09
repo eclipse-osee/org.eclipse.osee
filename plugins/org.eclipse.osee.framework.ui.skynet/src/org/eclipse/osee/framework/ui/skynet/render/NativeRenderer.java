@@ -100,7 +100,7 @@ public class NativeRenderer extends FileSystemRenderer {
          if (extension.equals("xml")) {
             MicrosoftOfficeApplicationEnum msoApplication = MicrosoftOfficeApplicationEnum.SENTINEL;
             // Sub-case 1.1: The artifact explicitly specifies a Microsoft Office application
-            if (artifact.hasAttribute(CoreAttributeTypes.MicrosoftOfficeApplication)) {
+            if (artifact.hasAttributeWithNonNullValues(CoreAttributeTypes.MicrosoftOfficeApplication)) {
                // Use the specified Microsoft Office application to determine the image descriptor
                msoApplication = MicrosoftOfficeApplicationEnum.fromApplicationName(
                   artifact.getSoleAttributeValue(CoreAttributeTypes.MicrosoftOfficeApplication));
@@ -212,7 +212,7 @@ public class NativeRenderer extends FileSystemRenderer {
          MicrosoftOfficeApplicationEnum msoApplication = MicrosoftOfficeApplicationEnum.SENTINEL;
 
          // Sub-case 1.1: The artifact explicitly specifies a Microsoft Office application
-         if (artifact.hasAttributeWithValuesSet(CoreAttributeTypes.MicrosoftOfficeApplication)) {
+         if (artifact.hasAttributeWithNonNullValues(CoreAttributeTypes.MicrosoftOfficeApplication)) {
             // Use the specified Microsoft Office application to find the program
             msoApplication = MicrosoftOfficeApplicationEnum.fromApplicationName(
                artifact.getSoleAttributeValue(CoreAttributeTypes.MicrosoftOfficeApplication));

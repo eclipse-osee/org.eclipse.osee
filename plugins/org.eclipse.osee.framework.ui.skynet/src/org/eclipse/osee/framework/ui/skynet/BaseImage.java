@@ -86,7 +86,7 @@ public class BaseImage implements KeyedImage {
                MicrosoftOfficeApplicationEnum msoApplication = MicrosoftOfficeApplicationEnum.SENTINEL;
 
                // Sub-case 1.1: The artifact explicitly specifies a Microsoft Office application
-               if (artifact.hasAttribute(CoreAttributeTypes.MicrosoftOfficeApplication)) {
+               if (artifact.hasAttributeWithNonNullValues(CoreAttributeTypes.MicrosoftOfficeApplication)) {
                   // Retrieve the specified Microsoft Office application and return a ProgramImage
                   msoApplication = MicrosoftOfficeApplicationEnum.fromApplicationName(
                      artifact.getSoleAttributeValue(CoreAttributeTypes.MicrosoftOfficeApplication));
