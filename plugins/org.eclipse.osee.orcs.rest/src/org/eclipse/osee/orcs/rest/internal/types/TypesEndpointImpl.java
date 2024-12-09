@@ -69,7 +69,7 @@ public class TypesEndpointImpl implements TypesEndpoint {
                attrType.getStoreType());
          }
       }
-      for (RelationTypeToken relType : orcsTokenService.getRelationTypes()) {
+      for (RelationTypeToken relType : orcsTokenService.getValidRelationTypes()) {
          if (relType.equals(RelationTypeToken.SENTINEL)) {
             continue;
          }

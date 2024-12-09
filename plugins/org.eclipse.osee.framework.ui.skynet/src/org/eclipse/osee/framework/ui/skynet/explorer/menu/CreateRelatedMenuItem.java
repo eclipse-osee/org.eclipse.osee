@@ -119,7 +119,7 @@ public class CreateRelatedMenuItem implements SelectionListener {
             }
 
             List<RelationTypeSide> validRelationTypes = new LinkedList<>();
-            for (RelationTypeToken relType : tokenService.getRelationTypes()) {
+            for (RelationTypeToken relType : tokenService.getValidRelationTypes()) {
                if (relType.isArtifactTypeAllowed(RelationSide.SIDE_A, parentArt.getArtifactType())) {
                   validRelationTypes.add(new RelationTypeSide(relType, RelationSide.SIDE_B));
                }

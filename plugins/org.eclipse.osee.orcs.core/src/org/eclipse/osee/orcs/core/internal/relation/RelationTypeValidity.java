@@ -104,7 +104,7 @@ public class RelationTypeValidity {
 
    public List<RelationTypeToken> getValidRelationTypes(ArtifactTypeToken artifactType) {
       Conditions.checkNotNull(artifactType, "artifactType");
-      Collection<? extends RelationTypeToken> types = tokenService.getRelationTypes();
+      Collection<? extends RelationTypeToken> types = tokenService.getValidRelationTypes();
       List<RelationTypeToken> toReturn = new ArrayList<>();
       for (RelationTypeToken relationType : types) {
          if (isTypeAllowed(artifactType, relationType)) {
