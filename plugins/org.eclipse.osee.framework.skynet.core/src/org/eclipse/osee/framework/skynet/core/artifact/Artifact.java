@@ -356,14 +356,15 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    }
 
    /**
-    * Checks if the specified attribute type ID exists in the artifact and has values set.
+    * Checks if the specified attribute type ID exists in the artifact and has non-null values set.
     *
     * @param attributeTypeId the {@link Id} of the attribute type to check
-    * @return {@code true} if the attribute type ID exists and has values, {@code false} otherwise
+    * @return {@code true} if the attribute type ID exists and its values are non-null, {@code false} otherwise
     */
-   public final boolean hasAttributeWithValuesSet(Id attributeTypeId) {
+   public final boolean hasAttributeWithNonNullValues(Id attributeTypeId) {
       return id != null && attributes.getValues((AttributeTypeId) attributeTypeId) != null;
    }
+
 
    public final List<AttributeId> getAttributeIds(AttributeTypeId attributeType) {
       List<AttributeId> items = new ArrayList<>();
