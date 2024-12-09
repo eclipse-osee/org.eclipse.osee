@@ -54,6 +54,7 @@ import org.eclipse.osee.framework.core.enums.token.GfeCfeAttributeType;
 import org.eclipse.osee.framework.core.enums.token.HttpMethodAttributeType;
 import org.eclipse.osee.framework.core.enums.token.IdalAttributeType;
 import org.eclipse.osee.framework.core.enums.token.LegacyDalAttributeType;
+import org.eclipse.osee.framework.core.enums.token.MicrosoftOfficeApplicationAttributeType;
 import org.eclipse.osee.framework.core.enums.token.PageOrientationAttributeType;
 import org.eclipse.osee.framework.core.enums.token.PartitionAttributeType;
 import org.eclipse.osee.framework.core.enums.token.ProducesMediaTypeAttributeType;
@@ -267,6 +268,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString AttentionMessage = osee.createString(4657673604881393123L, "Attention Message", MediaType.TEXT_PLAIN, "");
    AttributeTypeString MachineName = osee.createString(1152921504606847359L, "Machine Name", MediaType.TEXT_PLAIN, "Machine Name");
    AttributeTypeString MaintainerText = osee.createStringNoTag(188458874335285L, "Maintainer Text", MediaType.TEXT_PLAIN, "");
+   MicrosoftOfficeApplicationAttributeType MicrosoftOfficeApplication = osee.createEnum(new MicrosoftOfficeApplicationAttributeType());
    AttributeTypeString MimBranchPreferences = osee.createString(6600561480190271962L,"MIM Branch Preferences",MediaType.TEXT_PLAIN,"");
    AttributeTypeString MimColumnPreferences = osee.createString(5383153557691494043L,"MIM Column Preferences",MediaType.TEXT_PLAIN,"");
    AttributeTypeBoolean MimSettingWordWrap = osee.createBoolean(1640046550470950506L, "MIM Word Wrap", MediaType.TEXT_PLAIN, "");
