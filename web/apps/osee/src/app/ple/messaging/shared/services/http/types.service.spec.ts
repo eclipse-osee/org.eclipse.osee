@@ -91,12 +91,12 @@ describe('TypesService', () => {
 	});
 
 	it('should get filtered types', () => {
-		service.getFilteredTypes('', '10', 1, 10).subscribe();
+		service.getPaginatedFilteredTypes('', '10', 10, 1).subscribe();
 		const req = httpTestingController.expectOne(
 			apiURL +
 				'/mim/branch/' +
 				10 +
-				'/types/filter' +
+				'/types/filter/' +
 				'' +
 				'?count=10&pageNum=1' +
 				'&orderByAttributeType=' +
