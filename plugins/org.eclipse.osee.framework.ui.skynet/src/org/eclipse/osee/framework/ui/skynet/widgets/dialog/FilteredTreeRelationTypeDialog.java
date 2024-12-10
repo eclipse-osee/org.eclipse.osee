@@ -37,7 +37,7 @@ public class FilteredTreeRelationTypeDialog extends FilteredTreeDialog {
    private Collection<? extends RelationTypeToken> selectable;
 
    public FilteredTreeRelationTypeDialog(String title, String message) {
-      this(title, message, ServiceUtil.getTokenService().getRelationTypes(), new StringLabelProvider());
+      this(title, message, ServiceUtil.getTokenService().getValidRelationTypes(), new StringLabelProvider());
    }
 
    public FilteredTreeRelationTypeDialog(String title, String message, Collection<? extends RelationTypeToken> selectable, ILabelProvider labelProvider) {

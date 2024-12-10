@@ -114,7 +114,7 @@ public class OrderParser {
 
                   // TODO don't store relation type by name - use type UUID
                   RelationTypeToken type =
-                     Iterables.find(tokenService.getRelationTypes(), new Predicate<RelationTypeToken>() {
+                     Iterables.find(tokenService.getValidRelationTypes(), new Predicate<RelationTypeToken>() {
                         @Override
                         public boolean apply(RelationTypeToken type) {
                            return type.getName().equalsIgnoreCase(relationTypeName);
