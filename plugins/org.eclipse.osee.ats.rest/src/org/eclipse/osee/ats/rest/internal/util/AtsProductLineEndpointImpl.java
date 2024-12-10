@@ -132,18 +132,20 @@ public final class AtsProductLineEndpointImpl implements AtsProductLineEndpointA
       List<ArtifactId> commitArtIds = txs.stream().filter(
          a -> a.getCommitArt().getId() > 0 && a.getCommitArt().getId() > prBranch.getBaselineTx().getId()).map(
             b -> b.getCommitArt()).collect(Collectors.toList());
-      for (Branch branch : getBranchesWithDetails(type, workType, category, filter, pageNum, pageSize)) {
+      List<Branch> branches = getBranchesWithDetails(type, workType, category, filter, pageNum, pageSize);
+      for (Branch branch : branches) {
          if (commitArtIds.contains(branch.getAssociatedArtifact())) {
             peerReviewBranchList.add(new BranchSelected(branch, true));
-         } else {
-            if (branch.getBranchState().isModified()) {
-               peerReviewBranchList.add(new BranchSelected(branch, false));
-            }
+         } else if (branch.getBranchState().isModified()) {
+            peerReviewBranchList.add(new BranchSelected(branch, false));
+
          }
       }
       if (commitArtIds.size() > 0) {
-         List<Branch> committedBranches =
-            orcsApi.getQueryFactory().branchQuery().andAssociatedArtIds(commitArtIds).getResults().getList();
+         BranchQuery committedBranchesQuery = orcsApi.getQueryFactory().branchQuery().andAssociatedArtIds(commitArtIds);
+         committedBranchesQuery = type.getId() > -1 ? committedBranchesQuery.andIsOfType(type) : committedBranchesQuery;
+         committedBranchesQuery.andStateIs(BranchState.COMMITTED);
+         List<Branch> committedBranches = committedBranchesQuery.getResults().getList();
          for (Branch committedBranch : committedBranches) {
             if (committedBranch.isValid() && peerReviewBranchList.stream().noneMatch(
                branch -> branch.getBranch().equals(committedBranch))) {
