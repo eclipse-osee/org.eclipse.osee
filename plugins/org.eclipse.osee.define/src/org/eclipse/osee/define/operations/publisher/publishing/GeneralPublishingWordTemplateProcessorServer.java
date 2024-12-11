@@ -71,98 +71,105 @@ public class GeneralPublishingWordTemplateProcessorServer extends WordTemplatePr
             PublishingAppender       wordMl
          ) {
 
-      this.emptyFoldersArtifactAcceptor =
-         WordRenderUtil.populateEmptyHeaders
-            (
-               artifacts,
-               this.includeHeadings,
-               this.allowedOutlineTypes,
-               this.headingArtifactTypeToken,
-               this.contentAttributeType,
-               this.excludedArtifactTypeArtifactAcceptor,
-               ArtifactAcceptor.ok()
-            );
+      if (artifacts.isEmpty()) {
 
-      /**
-       * Setup Data Rights for the publish.
-       * <p>
-       * DataRightsClassification override comes in as a publishing option string, compare string to all
-       * DataRightsClassifications, if they match, set override variable to that classification. This override makes it
-       * that the entire published document uses the same data rights footer, regardless of the attribute on artifacts.
-       * <p>
-       * Given the list of artifacts for the publish, this loops through and adds any recursive artifacts to also be
-       * published (if specified through recurseChildren) and determines all of their data rights.
-       */
+         wordMl.addParagraphNoEscape("No artifact(s) have been published. Make sure that your artifact(s) are applicable for the view.");
 
-      //@formatter:off
-      WordRenderUtil
-         .getDataRights
-            (
-               /*
-                * Publish artifact to analyze for data rights
-                */
+      } else {
 
-               artifacts,
+         this.emptyFoldersArtifactAcceptor =
+            WordRenderUtil.populateEmptyHeaders
+               (
+                  artifacts,
+                  this.includeHeadings,
+                  this.allowedOutlineTypes,
+                  this.headingArtifactTypeToken,
+                  this.contentAttributeType,
+                  this.excludedArtifactTypeArtifactAcceptor,
+                  ArtifactAcceptor.ok()
+               );
 
-               /*
-                * The publishing branch
-                */
+         /**
+          * Setup Data Rights for the publish.
+          * <p>
+          * DataRightsClassification override comes in as a publishing option string, compare string to all
+          * DataRightsClassifications, if they match, set override variable to that classification. This override makes it
+          * that the entire published document uses the same data rights footer, regardless of the attribute on artifacts.
+          * <p>
+          * Given the list of artifacts for the publish, this loops through and adds any recursive artifacts to also be
+          * published (if specified through recurseChildren) and determines all of their data rights.
+          */
 
-               this.branchSpecification.getBranchId(),
+         //@formatter:off
+         WordRenderUtil
+            .getDataRights
+               (
+                  /*
+                   * Publish artifact to analyze for data rights
+                   */
 
-               /*
-                * Recursion logic
-                */
+                  artifacts,
 
-               this.recurseChildren,
+                  /*
+                   * The publishing branch
+                   */
 
-               /*
-                * Not Historical, false -> accept descendants of historical artifacts and historical descendants
-                */
+                  this.branchSpecification.getBranchId(),
 
-               false,
+                  /*
+                   * Recursion logic
+                   */
 
-               /*
-                * Data rights classification override
-                */
+                  this.recurseChildren,
 
-               this.overrideClassification,
+                  /*
+                   * Not Historical, false -> accept descendants of historical artifacts and historical descendants
+                   */
 
-               /*
-                * When recursing, this tester accepts or rejects descendant artifacts
-                */
+                  false,
 
-               ArtifactAcceptor.and
-                  (
-                     this.wordRenderApplicabilityChecker,
-                     this.emptyFoldersArtifactAcceptor
-                  ),
+                  /*
+                   * Data rights classification override
+                   */
 
-               /*
-                * Client/Server calling of the Data Rights Manager is different.
-                */
+                  this.overrideClassification,
 
-               this.dataRightsOperations::getDataRights
+                  /*
+                   * When recursing, this tester accepts or rejects descendant artifacts
+                   */
 
-            )
-         .ifPresent
-            (
-               ( datarightsContentBuilder ) ->
-                  artifacts
-                     .forEach
-                        (
-                           ( artifact ) -> this.processArtifact
-                                              (
-                                                 artifact,
-                                                 wordMl,
-                                                 ArtifactAcceptor.ok(),
-                                                 datarightsContentBuilder,
-                                                 PublishingArtifactLoader.CacheReadMode.LOAD_FROM_DATABASE,
-                                                 IncludeBookmark.YES.getArtifactAcceptor(),
-                                                 null   /* Artifact Post Processor */
-                                              )
-                        )
-            );
+                  ArtifactAcceptor.and
+                     (
+                        this.wordRenderApplicabilityChecker,
+                        this.emptyFoldersArtifactAcceptor
+                     ),
+
+                  /*
+                   * Client/Server calling of the Data Rights Manager is different.
+                   */
+
+                  this.dataRightsOperations::getDataRights
+
+               )
+            .ifPresent
+               (
+                  ( datarightsContentBuilder ) ->
+                     artifacts
+                        .forEach
+                           (
+                              ( artifact ) -> this.processArtifact
+                                                 (
+                                                    artifact,
+                                                    wordMl,
+                                                    ArtifactAcceptor.ok(),
+                                                    datarightsContentBuilder,
+                                                    PublishingArtifactLoader.CacheReadMode.LOAD_FROM_DATABASE,
+                                                    IncludeBookmark.YES.getArtifactAcceptor(),
+                                                    null   /* Artifact Post Processor */
+                                                 )
+                           )
+               );
+      }
    }
    //@formatter:on
 }
