@@ -86,6 +86,9 @@ public final class ImageManager {
    }
 
    public synchronized static ImageDescriptor getImageDescriptor(KeyedImage imageEnum) {
+      if (isInTest()) {
+         return getImageDescriptor(setupImage(MISSING));
+      }
       return getImageDescriptor(setupImage(imageEnum));
    }
 
@@ -96,7 +99,13 @@ public final class ImageManager {
    public synchronized static String setupImage(KeyedImage imageEnum) {
       String imageKey = imageEnum != null ? imageEnum.getImageKey() : MISSING.getImageKey();
       if (getImageRegistry().getDescriptor(imageKey) == null && imageEnum != null) {
-         ImageDescriptor imageDescriptor = imageEnum.createImageDescriptor();
+         ImageDescriptor imageDescriptor = null;
+         if (imageEnum instanceof ProgramImage) {
+            ProgramImage programImage = (ProgramImage) imageEnum;
+            imageDescriptor = programImage.createImageDescriptor();
+         } else {
+            imageDescriptor = imageEnum.createImageDescriptor();
+         }
          if (imageDescriptor == null) {
             if (!imageKey.contains("nothere.gif") && !(imageEnum instanceof ProgramImage)) {
                OseeLog.logf(Activator.class, Level.SEVERE, "Unable to load the image for [%s]",

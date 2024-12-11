@@ -380,7 +380,8 @@ public interface CoreArtifactTypes {
 
    ArtifactTypeToken NativeArtifact = osee.add(osee.artifactType(20L, "Native Artifact", true, Artifact)
       .zeroOrOne(Extension)
-      .zeroOrOne(NativeContent));
+      .zeroOrOne(NativeContent)
+      .zeroOrOne(MicrosoftOfficeApplication));
 
    ArtifactTypeToken GeneralDocument = osee.add(osee.artifactType(14L, "General Document", false, new MaterialIcon("text_snippet"), NativeArtifact));
 

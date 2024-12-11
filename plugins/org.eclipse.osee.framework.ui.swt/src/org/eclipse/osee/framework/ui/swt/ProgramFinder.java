@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.ui.swt;
 
+import org.eclipse.osee.framework.core.data.MicrosoftOfficeApplicationEnum;
 import org.eclipse.swt.program.Program;
 
 /**
@@ -44,6 +45,26 @@ public class ProgramFinder {
       } catch (IllegalArgumentException e) {
          return false;
       }
+   }
+
+   public static Program findProgram(String extension, MicrosoftOfficeApplicationEnum msoApplication) {
+      if (extension.equals("xml") && !msoApplication.equals(MicrosoftOfficeApplicationEnum.SENTINEL)) {
+         switch (msoApplication) {
+            case WORD_DOCUMENT:
+            case EXCEL_SPREADSHEET:
+            case POWERPOINT_SHOW:
+            case VISIO_DRAWING:
+            case PUBLISHER_DOCUMENT:
+            case ACCESS_DATABASE:
+            case INFOPATH_FORM:
+            case PROJECT_FILE:
+            case EXCEL_CHART:
+               return findProgram(msoApplication.getFileExtension());
+            default:
+               break;
+         }
+      }
+      return findProgram(extension);
    }
 
    public static Program findProgram(String extension) {
