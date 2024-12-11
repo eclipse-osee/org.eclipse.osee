@@ -83,19 +83,18 @@ export class TypesService {
 		count: number,
 		pageNum: string | number
 	): Observable<PlatformType[]> {
-		const formattedFilter = filter === '' ? '' : filter.replace('/', '%2F');
+		let params: HttpParamsType = {
+			count: count,
+			pageNum: pageNum,
+			orderByAttributeType: ATTRIBUTETYPEIDENUM.NAME,
+		};
+		if (filter && filter !== '') {
+			params = { ...params, filter };
+		}
 		return this.http.get<PlatformType[]>(
-			apiURL +
-				'/mim/branch/' +
-				branchId +
-				'/types/filter/' +
-				formattedFilter,
+			apiURL + '/mim/branch/' + branchId + '/types/filter',
 			{
-				params: {
-					count: count,
-					pageNum: pageNum,
-					orderByAttributeType: ATTRIBUTETYPEIDENUM.NAME,
-				},
+				params,
 			}
 		);
 	}

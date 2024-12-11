@@ -96,8 +96,7 @@ describe('TypesService', () => {
 			apiURL +
 				'/mim/branch/' +
 				10 +
-				'/types/filter/' +
-				'' +
+				'/types/filter' +
 				'?count=10&pageNum=1' +
 				'&orderByAttributeType=' +
 				ATTRIBUTETYPEIDENUM.NAME
