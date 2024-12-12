@@ -160,6 +160,16 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab, IBrowserActi
          }
       });
 
+      item = new ToolItem(toolBar, SWT.PUSH);
+      item.setImage(ImageManager.getProgramImage("json"));
+      item.setToolTipText("Export as JSON");
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent event) {
+            xResultPage.saveTableAsJson();
+         }
+      });
+
       new ToolItem(toolBar, SWT.SEPARATOR);
 
       item = new ToolItem(toolBar, SWT.PUSH);

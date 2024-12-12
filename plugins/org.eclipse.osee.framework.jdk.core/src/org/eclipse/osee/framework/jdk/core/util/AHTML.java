@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.framework.jdk.core.util;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -20,8 +21,15 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 /**
  * @author Michael A. Winston
@@ -620,6 +628,43 @@ public class AHTML {
 
    public static Object beginMultiColumnTableWithTableSortFilter(int width, int border, String color) {
       return "<table id=\"sorttable\" class=\"display\" border=\"" + border + "\" " + (color != null ? "color=\"" + color + "\"" : "") + "cellpadding=\"3\" cellspacing=\"0\" width=\"" + width + "%\">";
+   }
+
+   /**
+    * @author: BCAI
+    */
+   public static String htmlToJson(String html) throws Exception {
+      Document document = Jsoup.parse(html);
+      List<Map<String, String>> jsonList = new ArrayList<>();
+
+      // Select the table element
+      Elements tables = document.select("table");
+      for (Element table : tables) {
+         // Get the headers
+         Elements headers = table.select("thead th");
+         if (headers == null || headers.size() == 0) {
+            headers = table.select("th");
+         }
+         List<String> headerList = new ArrayList<>();
+         for (Element header : headers) {
+            headerList.add(header.text());
+         }
+
+         // Get the rows
+         Elements rows = table.select("tbody tr");
+         for (Element row : rows) {
+            Map<String, String> jsonObject = new HashMap<>();
+            Elements cells = row.select("td");
+            for (int i = 0; i < cells.size(); i++) {
+               jsonObject.put(headerList.get(i), cells.get(i).text());
+            }
+            jsonList.add(jsonObject);
+         }
+      }
+
+      // Convert the list of maps to a JSON string
+      ObjectMapper objectMapper = new ObjectMapper();
+      return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(jsonList);
    }
 
 }
