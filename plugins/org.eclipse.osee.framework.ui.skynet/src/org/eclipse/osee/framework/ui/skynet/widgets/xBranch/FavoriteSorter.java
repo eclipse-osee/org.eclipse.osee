@@ -18,6 +18,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -39,7 +40,7 @@ public class FavoriteSorter extends XViewerSorter {
    public int compare(Viewer viewer, Object o1, Object o2) {
 
       if (favoritesFirst) {
-         if (o1 instanceof BranchId && o2 instanceof BranchId) {
+         if (o1 instanceof BranchToken && o2 instanceof BranchToken) {
             try {
                User user = UserManager.getUser();
                boolean fav1 = user.isFavoriteBranch((BranchId) o1);
@@ -60,16 +61,10 @@ public class FavoriteSorter extends XViewerSorter {
       return super.compare(viewer, o1, o2);
    }
 
-   /**
-    * @return Returns the favoritesFirst.
-    */
    public boolean isFavoritesFirst() {
       return favoritesFirst;
    }
 
-   /**
-    * @param favoritesFirst The favoritesFirst to set.
-    */
    public void setFavoritesFirst(boolean favoritesFirst) {
       this.favoritesFirst = favoritesFirst;
    }
