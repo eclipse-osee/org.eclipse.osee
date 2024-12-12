@@ -52,4 +52,6 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.apache.poi.ss.util,
  org.apache.poi.xssf.usermodel,
  org.eclipse.jdt.annotation
-Require-Bundle: org.apache.poi.ooxml, org.apache.poi.ooxml.schemas
+Require-Bundle: org.apache.poi.ooxml,
+ org.apache.poi.ooxml.schemas,
+ org.jsoup
