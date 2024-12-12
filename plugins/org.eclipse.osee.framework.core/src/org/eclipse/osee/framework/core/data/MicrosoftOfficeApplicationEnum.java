@@ -47,10 +47,6 @@ public enum MicrosoftOfficeApplicationEnum {
 
    /**
     * Retrieves an enum constant by its application name.
-    *
-    * @param name the application name to match.
-    * @return the matching {@link MicrosoftOfficeApplicationEnum} enum constant, or {@code SENTINEL} if no match is
-    * found.
     */
    public static MicrosoftOfficeApplicationEnum fromApplicationName(String name) {
       for (MicrosoftOfficeApplicationEnum app : values()) {

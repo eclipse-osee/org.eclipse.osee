@@ -109,12 +109,11 @@ public class NativeRenderer extends FileSystemRenderer {
             // Sub-case 1.2: The artifact does not specify a Microsoft Office application
             else {
                // Extract the application information from the XML content
-               InputStream xmlStream = artifact.getSoleAttributeValue(CoreAttributeTypes.NativeContent);
-               InputStreamReader inputStreamReader = new InputStreamReader(xmlStream);
-               try {
+               try (InputStream xmlStream = artifact.getSoleAttributeValue(CoreAttributeTypes.NativeContent);
+                  InputStreamReader inputStreamReader = new InputStreamReader(xmlStream);
+                  BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
                   // Attempt to find the "mso-application" value in the XML content
-                  msoApplication =
-                     MsoApplicationExtractor.findMsoApplicationValue(new BufferedReader(inputStreamReader));
+                  msoApplication = MsoApplicationExtractor.findMsoApplicationValue(bufferedReader);
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
@@ -221,14 +220,13 @@ public class NativeRenderer extends FileSystemRenderer {
          // Sub-case 1.2: The artifact does not specify a Microsoft Office application
          else {
             // Extract the application information from the XML content
-            InputStream xmlStream = artifact.getSoleAttributeValue(CoreAttributeTypes.NativeContent);
-            InputStreamReader inputStreamReader = new InputStreamReader(xmlStream);
-            try {
+            try (InputStream xmlStream = artifact.getSoleAttributeValue(CoreAttributeTypes.NativeContent);
+               InputStreamReader inputStreamReader = new InputStreamReader(xmlStream);
+               BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
                // Attempt to find the program using the "mso-application" value from the XML content
-               program = ProgramFinder.findProgram(extension,
-                  MsoApplicationExtractor.findMsoApplicationValue(new BufferedReader(inputStreamReader)));
+               program =
+                  ProgramFinder.findProgram(extension, MsoApplicationExtractor.findMsoApplicationValue(bufferedReader));
             } catch (Exception ex) {
-               // Log any errors encountered during the extraction process
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }

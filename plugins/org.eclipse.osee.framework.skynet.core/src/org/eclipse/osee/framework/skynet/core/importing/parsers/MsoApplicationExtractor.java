@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
 import java.io.BufferedReader;
 import org.eclipse.osee.framework.core.data.MicrosoftOfficeApplicationEnum;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * Extracts the value of the "mso-application" processing instruction from an XML document. This helps identify the
@@ -45,9 +46,9 @@ public class MsoApplicationExtractor {
     * @throws IllegalArgumentException if {@code xmlContent} is {@code null} or the application is invalid.
     * @throws Exception if an error occurs while reading the XML content.
     */
-   public static MicrosoftOfficeApplicationEnum findMsoApplicationValue(BufferedReader xmlContent) throws Exception {
+   public static MicrosoftOfficeApplicationEnum findMsoApplicationValue(BufferedReader xmlContent) {
       if (xmlContent == null) {
-         throw new IllegalArgumentException("BufferedReader is null");
+         throw new OseeCoreException("MsoApplicationExtractor.java: xmlContent BufferedReader is null");
       }
       return extractMsoApplicationValue(xmlContent);
    }
@@ -64,8 +65,7 @@ public class MsoApplicationExtractor {
     * processing instruction.
     * @throws Exception if an error occurs while reading the XML content.
     */
-   private static MicrosoftOfficeApplicationEnum extractMsoApplicationValue(BufferedReader xmlContent)
-      throws Exception {
+   private static MicrosoftOfficeApplicationEnum extractMsoApplicationValue(BufferedReader xmlContent) {
       String line;
       try {
          while ((line = xmlContent.readLine()) != null) {
@@ -83,7 +83,7 @@ public class MsoApplicationExtractor {
             }
          }
       } catch (Exception e) {
-         throw new Exception(
+         throw new OseeCoreException(
             "Failed to scan XML content and extract 'mso-application' progid in MsoApplicationExtractor.extractMsoApplicationValue",
             e);
       }

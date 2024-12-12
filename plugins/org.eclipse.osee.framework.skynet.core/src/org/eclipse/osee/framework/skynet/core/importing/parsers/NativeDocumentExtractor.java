@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.skynet.core.importing.parsers;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import org.eclipse.osee.framework.core.data.MicrosoftOfficeApplicationEnum;
@@ -44,15 +45,14 @@ public class NativeDocumentExtractor extends AbstractArtifactExtractor {
       collector.addRoughArtifact(roughArtifact);
       roughArtifact.addAttribute(CoreAttributeTypes.Extension, extension);
       roughArtifact.addAttribute(CoreAttributeTypes.NativeContent, source);
-      try {
-         MicrosoftOfficeApplicationEnum msoApplicationName = MsoApplicationExtractor.findMsoApplicationValue(
-            new BufferedReader(new InputStreamReader(source.toURL().openStream())));
+      try (InputStream inputStream = source.toURL().openStream();
+         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+         MicrosoftOfficeApplicationEnum msoApplicationName = MsoApplicationExtractor.findMsoApplicationValue(reader);
          roughArtifact.addAttribute(CoreAttributeTypes.MicrosoftOfficeApplication,
             msoApplicationName.getApplicationName());
       } catch (Exception ex) {
          OseeLog.log(NativeDocumentExtractor.class, OseeLevel.SEVERE_POPUP, ex);
       }
-
    }
 
    @Override
