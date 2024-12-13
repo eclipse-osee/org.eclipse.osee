@@ -217,8 +217,6 @@ test('commit branches', async ({ page }) => {
 		.click();
 	await page.getByRole('menuitem', { name: 'Transition to Review' }).click();
 	await page.getByRole('button', { name: 'Review', exact: true }).click();
-	await page.getByRole('menuitem', { name: 'Approve Transition to' }).click();
-	await page.getByRole('button', { name: 'Review', exact: true }).click();
 	await page.getByRole('menuitem', { name: 'Commit Branch' }).click();
 
 	await expect(
@@ -244,8 +242,6 @@ test('commit branches', async ({ page }) => {
 		.getByRole('button')
 		.click();
 	await page.getByRole('menuitem', { name: 'Transition to Review' }).click();
-	await page.getByRole('button', { name: 'Review', exact: true }).click();
-	await page.getByRole('menuitem', { name: 'Approve Transition to' }).click();
 	await page.getByRole('button', { name: 'Review', exact: true }).click();
 	await page.getByRole('menuitem', { name: 'Commit Branch' }).click();
 	await page.getByRole('button', { name: 'Close Peer Review' }).click();
