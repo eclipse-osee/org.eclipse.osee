@@ -248,7 +248,7 @@ public class OrcsWriterCollectorGenerator {
    private void createRelationTypeSheet() {
       Map<String, RelationTypeToken> types = new HashMap<>(100);
       if (config == null) {
-         for (RelationTypeToken type : orcsApi.tokenService().getRelationTypes()) {
+         for (RelationTypeToken type : orcsApi.tokenService().getValidRelationTypes()) {
             types.put(type.getName(), type);
          }
       } else {

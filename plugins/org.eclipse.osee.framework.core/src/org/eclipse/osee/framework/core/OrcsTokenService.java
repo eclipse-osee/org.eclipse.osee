@@ -223,6 +223,11 @@ public interface OrcsTokenService {
    List<RelationTypeToken> getValidRelationTypes(ArtifactTypeToken artifactType);
 
    /**
+    * Get List of all valid relation types
+    */
+   List<RelationTypeToken> getValidRelationTypes();
+
+   /**
     * Register the given type join by its id. Throws OseeArgumentException if that id is already registered.
     */
    void registerArtifactTypeJoin(ArtifactTypeJoin typeJoin);

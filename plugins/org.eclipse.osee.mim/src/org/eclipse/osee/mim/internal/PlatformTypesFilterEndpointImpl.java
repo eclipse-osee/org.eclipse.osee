@@ -76,12 +76,6 @@ public class PlatformTypesFilterEndpointImpl implements PlatformTypesFilterEndpo
    }
 
    @Override
-   public Collection<PlatformTypeToken> getPlatformTypes(long pageNum, long pageSize,
-      AttributeTypeToken orderByAttributeTypeId) {
-      return platformApi.getAll(branch, pageNum, pageSize, orderByAttributeTypeId);
-   }
-
-   @Override
    public int getPlatformTypesCount(String filter) {
       List<AttributeTypeId> attributes = this.createAttributeList();
       try {

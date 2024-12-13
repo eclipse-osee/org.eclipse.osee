@@ -232,7 +232,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       relationSideList.setLabelProvider(new StringLabelProvider());
 
       try {
-         for (RelationTypeToken linkDescriptor : tokenService.getRelationTypes()) {
+         for (RelationTypeToken linkDescriptor : tokenService.getValidRelationTypes()) {
             relationTypeList.add(linkDescriptor);
             relationTypeList.setData(linkDescriptor.getName(), linkDescriptor);
          }

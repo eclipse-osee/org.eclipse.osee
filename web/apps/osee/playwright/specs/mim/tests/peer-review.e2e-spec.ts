@@ -110,7 +110,7 @@ test('create working branches', async ({ page }) => {
 });
 
 test('peer review branch', async ({ page }) => {
-	await page.setViewportSize({ width: 1200, height: 800 });
+	await page.setViewportSize({ width: 1300, height: 800 });
 	await page.goto('http://localhost:4200/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
@@ -186,5 +186,68 @@ test('peer review branch', async ({ page }) => {
 	});
 
 	await page.getByRole('button', { name: 'Apply Selected' }).click();
-	await page.getByRole('button', { name: 'Close' }).click();
+	await page.getByTestId('pr-dialog-close').click();
+});
+
+test('commit branches', async ({ page }) => {
+	await page.setViewportSize({ width: 1300, height: 800 });
+	await page.goto('http://localhost:4200/ple');
+	await page.getByRole('link', { name: 'MIM' }).click();
+	await page.getByRole('link', { name: 'Connections' }).click();
+	await page.getByLabel('Product Line').check();
+	await page.getByText('Select a Branch').click();
+	await page.getByText('SAW Product Line').click();
+
+	await page.getByRole('button', { name: 'Peer Review' }).click();
+
+	await page.getByText('Select a Peer Review Branch').click();
+	await page.getByText('MIM Peer Review').click({ timeout: 60000 });
+	await page
+		.getByRole('listbox')
+		.locator('div')
+		.filter({ hasText: 'Edit Message' })
+		.getByRole('button')
+		.click();
+	await expect(page.getByText('In Work')).toBeVisible();
+	await page
+		.getByRole('listbox')
+		.locator('div')
+		.filter({ hasText: 'Edit Message' })
+		.getByRole('button')
+		.click();
+	await page.getByRole('menuitem', { name: 'Transition to Review' }).click();
+	await page.getByRole('button', { name: 'Review', exact: true }).click();
+	await page.getByRole('menuitem', { name: 'Approve Transition to' }).click();
+	await page.getByRole('button', { name: 'Review', exact: true }).click();
+	await page.getByRole('menuitem', { name: 'Commit Branch' }).click();
+
+	await expect(
+		page.getByText('Branches included in this PR have been committed')
+	).toBeVisible();
+
+	await page.screenshot({
+		animations: 'disabled',
+		path: 'screenshots/peer-review/peer-review-committed.png',
+	});
+
+	await page
+		.getByRole('listbox')
+		.locator('div')
+		.filter({ hasText: 'Add an Element' })
+		.getByRole('button')
+		.click();
+	await expect(page.getByText('In Work')).toBeVisible();
+	await page
+		.getByRole('listbox')
+		.locator('div')
+		.filter({ hasText: 'Add an Element' })
+		.getByRole('button')
+		.click();
+	await page.getByRole('menuitem', { name: 'Transition to Review' }).click();
+	await page.getByRole('button', { name: 'Review', exact: true }).click();
+	await page.getByRole('menuitem', { name: 'Approve Transition to' }).click();
+	await page.getByRole('button', { name: 'Review', exact: true }).click();
+	await page.getByRole('menuitem', { name: 'Commit Branch' }).click();
+	await page.getByRole('button', { name: 'Close Peer Review' }).click();
+	await page.getByRole('button', { name: 'Ok' }).click();
 });

@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.rest.internal.util;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -131,15 +132,45 @@ public final class AtsProductLineEndpointImpl implements AtsProductLineEndpointA
       List<ArtifactId> commitArtIds = txs.stream().filter(
          a -> a.getCommitArt().getId() > 0 && a.getCommitArt().getId() > prBranch.getBaselineTx().getId()).map(
             b -> b.getCommitArt()).collect(Collectors.toList());
-      for (Branch branch : getBranchesWithDetails(type, workType, category, filter, pageNum, pageSize)) {
+      List<Branch> branches = getBranchesWithDetails(type, workType, category, filter, pageNum, pageSize);
+      for (Branch branch : branches) {
          if (commitArtIds.contains(branch.getAssociatedArtifact())) {
             peerReviewBranchList.add(new BranchSelected(branch, true));
-         } else {
-            if (branch.getBranchState().isModified()) {
-               peerReviewBranchList.add(new BranchSelected(branch, false));
+         } else if (branch.getBranchState().isModified()) {
+            peerReviewBranchList.add(new BranchSelected(branch, false));
+
+         }
+      }
+      if (commitArtIds.size() > 0) {
+         BranchQuery committedBranchesQuery = orcsApi.getQueryFactory().branchQuery().andAssociatedArtIds(commitArtIds);
+         committedBranchesQuery = type.getId() > -1 ? committedBranchesQuery.andIsOfType(type) : committedBranchesQuery;
+         committedBranchesQuery.andStateIs(BranchState.COMMITTED);
+         List<Branch> committedBranches = committedBranchesQuery.getResults().getList();
+         for (Branch committedBranch : committedBranches) {
+            if (committedBranch.isValid() && peerReviewBranchList.stream().noneMatch(
+               branch -> branch.getBranch().equals(committedBranch))) {
+               peerReviewBranchList.add(new BranchSelected(committedBranch, true, true));
             }
          }
       }
+
+      peerReviewBranchList.sort(new Comparator<BranchSelected>() {
+         @Override
+         public int compare(BranchSelected o1, BranchSelected o2) {
+            Integer tw1 = -1;
+            Integer tw2 = -1;
+            if (o1.getBranch().getName().startsWith("TW")) {
+               tw1 = Integer.parseInt(o1.getBranch().getName().split(" ")[0].replace("TW", ""));
+            }
+            if (o2.getBranch().getName().startsWith("TW")) {
+               tw2 = Integer.parseInt(o2.getBranch().getName().split(" ")[0].replace("TW", ""));
+            }
+            if (tw1 > -1 && tw2 > -1) {
+               return tw1.compareTo(tw2);
+            }
+            return o1.getBranch().getName().compareTo(o2.getBranch().getName());
+         }
+      });
       return peerReviewBranchList;
    }
 
