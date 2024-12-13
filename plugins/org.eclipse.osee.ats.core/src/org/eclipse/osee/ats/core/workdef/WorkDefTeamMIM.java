@@ -44,8 +44,6 @@ public class WorkDefTeamMIM extends AbstractWorkDef {
 
       bld.andState(1, "InWork", StateType.Working).isStartState() //
          .andToStates(StateToken.Review, StateToken.Cancelled) //
-
-         .andRules(RuleDefinitionOption.AllowTransitionWithWorkingBranch) //
          .andColor(StateColor.DARK_BLUE) //
          .andLayout( //
             new WidgetDefinition("Description", AtsAttributeTypes.Description, "XTextDam", FILL_VERTICALLY), //
