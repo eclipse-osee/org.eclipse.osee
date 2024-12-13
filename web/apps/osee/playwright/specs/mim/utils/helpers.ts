@@ -37,6 +37,12 @@ export const createWorkingBranchFromPL = async (
 
 	await page.getByLabel('Description').fill(branchDescription || 'Test');
 	await page.getByLabel('Change Type').locator('span').click();
+
+	await page.screenshot({
+		animations: 'disabled',
+		path: 'screenshots/create-icd/audreytest.png',
+	});
+
 	await page.getByRole('option', { name: 'Improvement' }).click();
 
 	if (screenshots) {
