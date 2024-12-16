@@ -284,6 +284,7 @@ jobs:
               uses: actions/checkout@v4
 
             - name: setup environment files
+              if: ${{ needs.check_changes.outputs.angular_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' }}
               id: compose_file
               uses: ./.github/actions/generate-docker-compose
               with:
@@ -316,7 +317,7 @@ jobs:
               run: pnpm -r run playwright
 
             - name: Write report to gha comment
-              if: "!cancelled()"
+              if: ${{ (needs.check_changes.outputs.angular_changed == 'true' || needs.check_changes.outputs.java_changed == 'true') && !cancelled() }}
               uses: daun/playwright-report-summary@v3
               with:
                   report-file: web/apps/osee/results/results.json
@@ -345,10 +346,12 @@ jobs:
               uses: actions/checkout@v4
 
             - name: create artifact ref
+              if: ${{ needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true' }}
               id: artifact_ref
               uses: ./.github/actions/artifact-current-ref
 
             - name: setup environment files
+              if: ${{ needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true' }}
               id: compose_file
               uses: ./.github/actions/generate-docker-compose
               with:
@@ -384,6 +387,7 @@ jobs:
               run: echo $USERNAME
 
             - name: setup db
+              if: ${{ needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true' }}
               run: ./tools/support/setup-db.sh
 
             - name: build

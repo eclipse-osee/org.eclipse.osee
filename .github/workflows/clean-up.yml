@@ -1,71 +1,83 @@
 name: PR cleanup
 
 on:
-  pull_request:
-    types: [closed]
+    pull_request:
+        types: [closed]
 
 concurrency:
-  group: ${{ github.ref }}-${{ github.workflow }}
-  cancel-in-progress: true
+    group: ${{ github.ref }}-${{ github.workflow }}
+    cancel-in-progress: true
 
 permissions:
-  contents: read
-  packages: delete
+    contents: read
+    packages: write
 
 env:
-  ARTIFACT_PATH: "plugins/org.eclipse.osee.server.p2/target/org.eclipse.osee.server.runtime.zip"
-  SERVER_PATH: "osee_server"
-  SERVER_ZIP: "org.eclipse.osee.server.runtime.zip"
-  IMAGE_DIRECTORY: ".github/docker/osee-server/Dockerfile"
+    ARTIFACT_PATH: "plugins/org.eclipse.osee.server.p2/target/org.eclipse.osee.server.runtime.zip"
+    SERVER_PATH: "osee_server"
+    SERVER_ZIP: "org.eclipse.osee.server.runtime.zip"
+    IMAGE_DIRECTORY: ".github/docker/osee-server/Dockerfile"
 
 jobs:
-  cleanup_platform_specific:
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-      
-      - name: create artifact ref
-        id: artifact_ref
-        uses: ./.github/actions/artifact-current-ref
+    cleanup_platform_specific:
+        strategy:
+            matrix:
+                os: [ubuntu-latest]
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v4
 
-      - uses: geekyeggo/delete-artifact@v5
-        with:
-          name: bat-${{matrix.os}}${{steps.artifact_ref.outputs.artifact_current_ref}}
-      - uses: geekyeggo/delete-artifact@v5
-        with:
-          name: pat-${{matrix.os}}${{steps.artifact_ref.outputs.artifact_current_ref}}
-  cleanup_docker:
-    runs-on: ubuntu-latest
-    steps:
-        - name: Checkout Repository
-          uses: actions/checkout@v4
+            - name: create artifact ref
+              id: artifact_ref
+              uses: ./.github/actions/artifact-current-ref
 
-        - name: create docker ref
-          id: docker_ref
-          uses: ./.github/actions/docker-current-ref
+            - uses: geekyeggo/delete-artifact@v5
+              continue-on-error: true
+              with:
+                  name: bat-${{matrix.os}}${{steps.artifact_ref.outputs.artifact_current_ref}}
+            - uses: geekyeggo/delete-artifact@v5
+              continue-on-error: true
+              with:
+                  name: pat-${{matrix.os}}${{steps.artifact_ref.outputs.artifact_current_ref}}
+    cleanup_docker:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v4
 
-        - name: cleanup osee server
-          uses: chipkent/action-cleanup-package@v1.0.1
-          with:
-            package-name: ghcr.io/${{ github.repository }}/osee-server${{steps.docker_ref.outputs.docker_current_ref}}
-        
-        - name: cleanup postgres
-          uses: chipkent/action-cleanup-package@v1.0.1
-          with:
-            package-name: ghcr.io/${{ github.repository }}/osee-postgres${{steps.docker_ref.outputs.docker_current_ref}}
-        
-        - name: create artifact ref
-          id: artifact_ref
-          uses: ./.github/actions/artifact-current-ref
-        
-        - uses: geekyeggo/delete-artifact@v5
-          with:
-            name: osee-server${{steps.artifact_ref.outputs.artifact_current_ref}}-binaries
+            - name: create docker ref
+              id: docker_ref
+              uses: ./.github/actions/docker-current-ref
 
-        - uses: geekyeggo/delete-artifact@v5
-          with:
-            name: compose-file${{steps.artifact_ref.outputs.artifact_current_ref}}
+            - name: cleanup osee server
+              uses: actions/delete-package-versions@v5
+              continue-on-error: true
+              with:
+                  min-versions-to-keep: 0
+                  delete-only-untagged-versions: "false"
+                  package-name: osee-server${{steps.docker_ref.outputs.docker_current_ref}}
+                  package-type: "container"
+
+            - name: cleanup postgres
+              uses: actions/delete-package-versions@v5
+              continue-on-error: true
+              with:
+                  min-versions-to-keep: 0
+                  delete-only-untagged-versions: "false"
+                  package-name: osee-postgres${{steps.docker_ref.outputs.docker_current_ref}}
+                  package-type: "container"
+
+            - name: create artifact ref
+              id: artifact_ref
+              uses: ./.github/actions/artifact-current-ref
+
+            - uses: geekyeggo/delete-artifact@v5
+              continue-on-error: true
+              with:
+                  name: osee-server${{steps.artifact_ref.outputs.artifact_current_ref}}-binaries
+
+            - uses: geekyeggo/delete-artifact@v5
+              continue-on-error: true
+              with:
+                  name: compose-file${{steps.artifact_ref.outputs.artifact_current_ref}}
