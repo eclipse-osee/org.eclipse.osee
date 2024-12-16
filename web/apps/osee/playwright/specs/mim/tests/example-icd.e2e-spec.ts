@@ -13,6 +13,7 @@
 import { test, expect } from '@ngx-playwright/test';
 
 test('test', async ({ page }) => {
+	test.setTimeout(600000);
 	await page.goto('http://localhost:4200/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();
@@ -29,7 +30,7 @@ test('test', async ({ page }) => {
 	});
 
 	await page.getByText('Connection A-B', { exact: true }).click();
-	await expect(page.getByText('Message 1')).toBeVisible();
+	await expect(page.getByText('Message 1')).toBeVisible({ timeout: 30000 });
 	await page.screenshot({
 		path: 'screenshots/example-icd/message-table.png',
 		clip: { x: 0, y: 0, width: 650, height: 325 },

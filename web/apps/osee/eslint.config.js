@@ -31,7 +31,6 @@ export default tseslint.config(
 				project: [
 					'tsconfig.app.editor.json',
 					'tsconfig.spec.editor.json',
-					'cypress/tsconfig.json',
 				],
 			},
 		},
