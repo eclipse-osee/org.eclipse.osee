@@ -117,9 +117,6 @@ public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
 
    @Override
    public void refresh() {
-      if (getClass().getSimpleName().equals("XPiTrackingHyperlinkLabelWidget")) {
-         System.err.println("here");
-      }
       if (!Widgets.isAccessible(comp)) {
          return;
       }
