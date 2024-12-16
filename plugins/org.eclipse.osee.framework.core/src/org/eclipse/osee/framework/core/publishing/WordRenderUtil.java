@@ -402,7 +402,7 @@ public class WordRenderUtil {
     * <dd>The contents of the {@link CoreAttributeTypes#ParagraphNumber} attribute.</dd>
     * </dl>
     *
-    * @param artifact the first artifact selected for the publish.
+    * @param artifact the first artifact selected for the publish. Can be null if the list of artifacts is empty.
     * @param publishingTemplate the {@link PublishingTemplate} for the publish.
     * @return the starting paragraph number.
     */
@@ -414,6 +414,7 @@ public class WordRenderUtil {
       //@formatter:off
       if(    Objects.isNull(publishingTemplate)
           || Objects.isNull(artifact)
+          || artifact.isInvalid()
           || publishingTemplate.test(WordCoreUtil::isNotArtifactPublishingTemplateInsertToken) /* is nested template? */
           || !artifact.isAttributeTypeValid(CoreAttributeTypes.ParagraphNumber) ) {
          return startParagraphNumber;

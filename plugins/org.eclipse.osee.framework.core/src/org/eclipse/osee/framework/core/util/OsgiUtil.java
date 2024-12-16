@@ -14,6 +14,7 @@
 package org.eclipse.osee.framework.core.util;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -52,6 +53,16 @@ public final class OsgiUtil {
             OseeLog.log(OsgiUtil.class, Level.WARNING, ex);
          }
       }
+   }
+
+   /**
+    * @return <git-repo>/plugins directory for a run-time
+    */
+   public static File getGitRepoPluginsDir(Class<?> clazz) {
+      String workspacePath = "src";
+      workspacePath = OsgiUtil.getResourceAsUrl(clazz, workspacePath).getFile();
+      File pluginsRoot = new File(workspacePath + "../../../plugins");
+      return pluginsRoot;
    }
 
    public static BundleContext createOsgiBundleContext() {
