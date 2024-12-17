@@ -48,7 +48,6 @@ public final class OptionsUtil {
    private static final String MAX_TIME = "max.time";
    private static final String LEGACY_POST_PROCESSING = "legacy_post_processing";
    private static final String GET_CONTENTS_FOR_ALL_VIEWS = "get.contents.for.all.views";
-   private static final String GET_RELATED_BRANCH_DATA = "related.branch.data";
 
    public static Options createBranchOptions() {
       Options options = new Options();
@@ -74,7 +73,6 @@ public final class OptionsUtil {
       setOrderByAttributeDirection(options, SortOrder.ASCENDING);
       setLegacyPostProcessing(options, true);
       setContentsForAllViews(options, false);
-      setGetRelatedBranchData(options, false);
       return options;
    }
 
@@ -305,13 +303,5 @@ public final class OptionsUtil {
 
    public static void setContentsForAllViews(Options options, boolean getAllViews) {
       options.put(GET_CONTENTS_FOR_ALL_VIEWS, getAllViews);
-   }
-
-   public static boolean getRelatedBranchData(Options options) {
-      return options.getBoolean(GET_RELATED_BRANCH_DATA);
-   }
-
-   public static void setGetRelatedBranchData(Options options, boolean getBranchData) {
-      options.put(GET_RELATED_BRANCH_DATA, getBranchData);
    }
 }
