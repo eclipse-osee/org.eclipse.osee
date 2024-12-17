@@ -91,7 +91,7 @@ public class InterfaceValidationApiImpl implements InterfaceValidationApi {
          }
          //get the parent branch and query to get past connections
          Map<ArtifactId, InterfaceConnection> parentConnections =
-            this.connectionApi.getForAllViews(currentBranch.getParentBranch(), connectionId,
+            this.connectionApi.getForAllViews(branch, connectionId,
                Arrays.asList(FollowRelation.fork(CoreRelationTypes.InterfaceConnectionNode_Node),
                   FollowRelation.fork(CoreRelationTypes.InterfaceConnectionTransportType_TransportType),
                   FollowRelation.follow(CoreRelationTypes.InterfaceConnectionMessage_Message),
@@ -105,7 +105,8 @@ public class InterfaceValidationApiImpl implements InterfaceValidationApi {
                   FollowRelation.fork(CoreRelationTypes.InterfaceElementArrayIndexDescriptionSet_Set),
                   FollowRelation.follow(CoreRelationTypes.InterfaceElementPlatformType_PlatformType),
                   FollowRelation.follow(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet),
-                  FollowRelation.follow(CoreRelationTypes.InterfaceEnumeration_EnumerationState)));
+                  FollowRelation.follow(CoreRelationTypes.InterfaceEnumeration_EnumerationState)),
+               currentBranch.getBaselineTx());
          //compare the past and the current, if there is anything different the view has affected
          for (ArtifactId configuration : connections.keySet()) {
             InterfaceConnection workingConnection =
