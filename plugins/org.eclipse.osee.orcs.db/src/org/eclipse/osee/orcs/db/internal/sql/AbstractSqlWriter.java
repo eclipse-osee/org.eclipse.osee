@@ -449,10 +449,6 @@ public abstract class AbstractSqlWriter implements HasOptions {
       return getAliasManager().getLastAlias(table, type);
    }
 
-   public String getLastAlias(String prefix) {
-      return getAliasManager().getLastAlias(prefix);
-   }
-
    public String getNextAlias(SqlTable table) {
       return getNextAlias(table.getPrefix(), table.getObjectType());
    }
