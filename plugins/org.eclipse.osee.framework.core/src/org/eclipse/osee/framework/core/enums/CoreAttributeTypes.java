@@ -316,7 +316,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString PublishingRelationTableArtifactTypeNameOrId = osee.createString(2842593463578222826L, "Relation Table Artifact Type Name Or Id", "Artifact type to filter the table by", MediaType.TEXT_PLAIN, DisplayHint.SingleLine);
    QualificationMethodAttributeType QualificationMethod = osee.createEnum(new QualificationMethodAttributeType());
    AttributeTypeString QualificationLevel = osee.createString(1152921504606847305L, "Qualification Level", MediaType.TEXT_PLAIN, "Qualification level");
-   AttributeTypeString RelationOrder = osee.createStringNoTag(1152921504606847089L, "Relation Order", MediaType.TEXT_PLAIN, "Defines relation ordering information", DisplayHint.NoGeneralEdit);
+   AttributeTypeString RelationOrder = osee.createStringNoTag(1152921504606847089L, "Relation Order", MediaType.TEXT_PLAIN, "Defines relation ordering information", DisplayHint.NoGeneralRender);
    AttributeTypeString RendererOptions = osee.createString(904L, "Renderer Options", MediaType.APPLICATION_JSON, "", "txt", DisplayHint.MultiLine);
    AttributeTypeString RepositoryType = osee.createString(8150083798685627257L, "Repository Type", MediaType.TEXT_PLAIN, "");
    AttributeTypeString RepositoryUrl = osee.createString(1152921504606847700L, "Repository URL", MediaType.TEXT_PLAIN, "");
