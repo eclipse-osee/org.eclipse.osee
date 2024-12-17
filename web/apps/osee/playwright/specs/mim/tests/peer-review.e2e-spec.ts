@@ -12,6 +12,7 @@
  **********************************************************************/
 import { test, expect } from '@ngx-playwright/test';
 import { createWorkingBranchFromPL, enableEditMode } from '../utils/helpers';
+import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 
 test.describe.configure({ mode: 'serial' });
 
@@ -26,8 +27,16 @@ test('create working branches', async ({ page }) => {
 	await createWorkingBranchFromPL(page, 'Edit Message Description');
 	await enableEditMode(page);
 	await page.getByText('Connection A-B', { exact: true }).click();
-	await page.locator('#mat-input-12').click();
-	await page.locator('#mat-input-12').fill('This is the first message');
+	const MessageDescriptionTextbox = page
+		.getByTestId('message-table-row-' + 'Message 1')
+		.getByTestId('msg-field-description')
+		//TODO: review if we still need this inner styling?
+		.getByTestId('inner-styling')
+		.getByTestId('form-' + ATTRIBUTETYPEIDENUM.DESCRIPTION)
+		.getByTestId(ATTRIBUTETYPEIDENUM.DESCRIPTION)
+		.getByRole('textbox');
+	await MessageDescriptionTextbox.click();
+	await MessageDescriptionTextbox.fill('This is the first message');
 
 	await Promise.all([
 		page.waitForResponse(
@@ -35,7 +44,7 @@ test('create working branches', async ({ page }) => {
 				res.url() === 'http://localhost:4200/orcs/txs' &&
 				res.status() === 200
 		),
-		page.locator('#mat-input-12').press('Tab'),
+		MessageDescriptionTextbox.press('Tab'),
 	]);
 
 	await page.getByRole('link', { name: 'working' }).click();
@@ -48,8 +57,14 @@ test('create working branches', async ({ page }) => {
 		.locator('button')
 		.filter({ hasText: /^expand_more$/ })
 		.click();
-	await page.locator('#mat-input-39').click();
-	await page.locator('#mat-input-39').fill('This is a new description');
+	const SubmsgDescriptionTextbox = page
+		.getByTestId('sub-message-table-row-' + 'Submessage 1')
+		.getByTestId('sub-msg-field-description')
+		.getByTestId('form-' + ATTRIBUTETYPEIDENUM.DESCRIPTION)
+		.getByTestId(ATTRIBUTETYPEIDENUM.DESCRIPTION)
+		.getByRole('textbox');
+	await SubmsgDescriptionTextbox.click();
+	await SubmsgDescriptionTextbox.fill('This is a new description');
 
 	await Promise.all([
 		page.waitForResponse(
@@ -57,7 +72,7 @@ test('create working branches', async ({ page }) => {
 				res.url() === 'http://localhost:4200/orcs/txs' &&
 				res.status() === 200
 		),
-		page.locator('#mat-input-39').press('Tab'),
+		SubmsgDescriptionTextbox.press('Tab'),
 	]);
 
 	await page.getByRole('link', { name: 'working' }).click();
@@ -217,8 +232,6 @@ test('commit branches', async ({ page }) => {
 		.click();
 	await page.getByRole('menuitem', { name: 'Transition to Review' }).click();
 	await page.getByRole('button', { name: 'Review', exact: true }).click();
-	await page.getByRole('menuitem', { name: 'Approve Transition to' }).click();
-	await page.getByRole('button', { name: 'Review', exact: true }).click();
 	await page.getByRole('menuitem', { name: 'Commit Branch' }).click();
 
 	await expect(
@@ -244,8 +257,6 @@ test('commit branches', async ({ page }) => {
 		.getByRole('button')
 		.click();
 	await page.getByRole('menuitem', { name: 'Transition to Review' }).click();
-	await page.getByRole('button', { name: 'Review', exact: true }).click();
-	await page.getByRole('menuitem', { name: 'Approve Transition to' }).click();
 	await page.getByRole('button', { name: 'Review', exact: true }).click();
 	await page.getByRole('menuitem', { name: 'Commit Branch' }).click();
 	await page.getByRole('button', { name: 'Close Peer Review' }).click();

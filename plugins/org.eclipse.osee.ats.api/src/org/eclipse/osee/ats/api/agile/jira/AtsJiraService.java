@@ -48,4 +48,6 @@ public interface AtsJiraService {
 
    XResultData transition(IAtsTeamWorkflow teamWf, int statusId, XResultData rd);
 
+   String editJira(String json, String jiraStoryId);
+
 }

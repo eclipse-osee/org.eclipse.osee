@@ -36,6 +36,7 @@ public class XButton extends XButtonCommon {
    protected Composite comp;
    private boolean labelAfter = true;
    protected int numColumns = 2;
+   private static Cursor cursorHand;
 
    public XButton(String displayLabel) {
       super(displayLabel);
@@ -111,7 +112,7 @@ public class XButton extends XButtonCommon {
                }
             }
          });
-         labelWidget.setCursor(CursorManager.getCursor(SWT.CURSOR_HAND));
+         labelWidget.setCursor(getCursorHand());
       }
       if (getToolTip() != null) {
          button.setToolTipText(getToolTip());
@@ -128,6 +129,13 @@ public class XButton extends XButtonCommon {
       }
       button.setCursor(new Cursor(null, SWT.CURSOR_HAND));
 
+   }
+
+   private Cursor getCursorHand() {
+      if (cursorHand == null) {
+         cursorHand = CursorManager.getCursor(SWT.CURSOR_HAND);
+      }
+      return cursorHand;
    }
 
    @Override

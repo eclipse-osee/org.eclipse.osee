@@ -35,9 +35,7 @@
 					mat-cell
 					*matCellDef="let value"
 					class="tw-px-[2px] tw-py-0 tw-text-center"
-					[attr.data-cy]="
-						'sub-msg-field-' + header + '-' + value[header]
-					"
+					[attr.data-testid]="'sub-msg-field-' + header"
 					(contextmenu)="
 						openMenu(
 							$event,
@@ -122,7 +120,7 @@
 										[searchTerms]="filter"
 										[text]="value[header].name"
 										classToApply="message-interface-table-highlighted-text"
-										[attr.data-cy]="
+										[attr.data-testid]="
 											'submessage-table-' +
 											header +
 											'-' +
@@ -154,13 +152,19 @@
 									<form
 										#defaultForm="ngForm"
 										[artifactId]="value.id"
-										oseeSubMessageImpactsValidator>
+										oseeSubMessageImpactsValidator
+										[attr.data-testid]="
+											'form-' + value[header].typeId
+										">
 										<osee-persisted-string-attribute-input
 											[artifactId]="value.id"
 											[artifactApplicability]="
 												value.applicability
 											"
-											[(value)]="value[header]" />
+											[(value)]="value[header]"
+											[attr.data-testid]="
+												value[header].typeId
+											" />
 									</form>
 								}
 							}
@@ -208,7 +212,9 @@
 							? 'odd:tw-bg-accent-50 even:tw-bg-accent-100 odd:dark:tw-bg-accent-600 even:dark:tw-bg-accent-700'
 							: 'odd:tw-bg-primary-200 even:tw-bg-primary-100 odd:dark:tw-bg-primary-700 even:dark:tw-bg-primary-600'
 			"
-			[attr.data-cy]="'sub-message-table-row-' + row2.name"></tr>
+			[attr.data-testid]="
+				'sub-message-table-row-' + row2.name.value
+			"></tr>
 	</table>
 </div>
 <mat-menu #contextMenu="matMenu">
@@ -233,7 +239,7 @@
 					mRoute.end
 				"
 				queryParamsHandling="merge"
-				data-cy="sub-msg-details-nav-btn"
+				data-testid="sub-msg-details-nav-btn"
 				><mat-icon>subdirectory_arrow_right</mat-icon>Open submessage
 				details</a
 			>
@@ -250,7 +256,7 @@
 					mRoute.end
 				"
 				queryParamsHandling="merge"
-				data-cy="sub-msg-details-nav-new-tab-btn"
+				data-testid="sub-msg-details-nav-new-tab-btn"
 				><mat-icon class="tw-text-osee-blue-9">open_in_new</mat-icon
 				>Open submessage details in new tab</a
 			>
@@ -259,7 +265,7 @@
 			<button
 				mat-menu-item
 				(click)="openDescriptionDialog(submessage)"
-				data-cy="sub-msg-open-description-btn">
+				data-testid="sub-msg-open-description-btn">
 				<mat-icon class="tw-text-osee-blue-9">description</mat-icon>Open
 				Description
 			</button>
@@ -270,7 +276,7 @@
 				(click)="viewDiff(true, change, header)">
 				<mat-icon
 					class="tw-text-osee-yellow-10 dark:tw-text-osee-amber-9"
-					data-cy="sub-msg-diff-btn"
+					data-testid="sub-msg-diff-btn"
 					>pageview</mat-icon
 				>View Diff
 			</button>
@@ -282,7 +288,7 @@
 					(click)="removeSubMessage(submessage, message)">
 					<mat-icon
 						class="tw-text-osee-red-9"
-						data-cy="sub-msg-remove-btn"
+						data-testid="sub-msg-remove-btn"
 						>remove_circle_outline</mat-icon
 					>Remove submsg from message
 				</button>
@@ -291,28 +297,28 @@
 					(click)="deleteSubMessage(submessage)">
 					<mat-icon
 						class="tw-text-osee-red-9"
-						data-cy="sub-msg-delete-btn"
+						data-testid="sub-msg-delete-btn"
 						>delete_forever</mat-icon
 					>Delete submsg globally
 				</button>
 				<button
 					mat-menu-item
 					(click)="insertSubMessage(message, submessage.id)"
-					data-cy="sub-msg-insert-after-btn">
+					data-testid="sub-msg-insert-after-btn">
 					<mat-icon class="tw-text-osee-green-9">add</mat-icon>Insert
 					submsg after
 				</button>
 				<button
 					mat-menu-item
 					(click)="insertSubMessage(message, 'start')"
-					data-cy="sub-msg-insert-top-btn">
+					data-testid="sub-msg-insert-top-btn">
 					<mat-icon class="tw-text-osee-green-9">add</mat-icon>Insert
 					submsg at top
 				</button>
 				<button
 					mat-menu-item
 					(click)="insertSubMessage(message)"
-					data-cy="sub-msg-insert-end-btn">
+					data-testid="sub-msg-insert-end-btn">
 					<mat-icon class="tw-text-osee-green-9">add</mat-icon>Insert
 					submsg at end
 				</button>
@@ -323,7 +329,7 @@
 						submessage: submessage,
 						message: message,
 					}"
-					data-cy="submessage-copy-btn">
+					data-testid="submessage-copy-btn">
 					<mat-icon>content_copy</mat-icon>Copy
 				</button>
 			}
@@ -342,21 +348,21 @@
 		let-message="message">
 		<button
 			mat-menu-item
-			data-cy="element-insert-after-btn"
+			data-testid="element-insert-after-btn"
 			(click)="copySubMessage(message, submessage, submessage.id)">
 			<mat-icon class="tw-text-osee-green-9">add</mat-icon>Insert submsg
 			after
 		</button>
 		<button
 			mat-menu-item
-			data-cy="element-insert-top-btn"
+			data-testid="element-insert-top-btn"
 			(click)="copySubMessage(message, submessage, 'start')">
 			<mat-icon class="tw-text-osee-green-9">add</mat-icon>Insert submsg
 			at top
 		</button>
 		<button
 			mat-menu-item
-			data-cy="element-insert-end-btn"
+			data-testid="element-insert-end-btn"
 			(click)="copySubMessage(message, submessage)">
 			<mat-icon class="tw-text-osee-green-9">add</mat-icon>Insert submsg
 			at end

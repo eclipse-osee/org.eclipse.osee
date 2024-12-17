@@ -40,34 +40,6 @@ export class TypesService {
 	 * @param branchId @type {string} branch to fetch from
 	 * @returns @type {Observable<PlatformType[]>} Observable of array of platform types matching filter conditions (see @type {PlatformType} and @type {Observable})
 	 */
-	getFilteredTypes(
-		filter: string,
-		branchId: string,
-		pageNum: number,
-		pageSize: number
-	): Observable<PlatformType[]> {
-		return this.http.get<PlatformType[]>(
-			apiURL +
-				'/mim/branch/' +
-				branchId +
-				'/types/filter' +
-				(filter !== '' ? '/' + filter : ''),
-			{
-				params: {
-					count: pageSize,
-					pageNum: pageNum,
-					orderByAttributeType: ATTRIBUTETYPEIDENUM.NAME,
-				},
-			}
-		);
-	}
-
-	/**
-	 * Gets a list of Platform Types based on a filter condition using the platform types filter GET API
-	 * @param filter @type {string} filter conditions for finding the correct platform types
-	 * @param branchId @type {string} branch to fetch from
-	 * @returns @type {Observable<PlatformType[]>} Observable of array of platform types matching filter conditions (see @type {PlatformType} and @type {Observable})
-	 */
 	getFilteredFullTypes(
 		filter: string,
 		branchId: string,
@@ -109,16 +81,20 @@ export class TypesService {
 		filter: string,
 		branchId: string,
 		count: number,
-		pageNum: string
+		pageNum: string | number
 	): Observable<PlatformType[]> {
+		let params: HttpParamsType = {
+			count: count,
+			pageNum: pageNum,
+			orderByAttributeType: ATTRIBUTETYPEIDENUM.NAME,
+		};
+		if (filter && filter !== '') {
+			params = { ...params, filter };
+		}
 		return this.http.get<PlatformType[]>(
-			apiURL + '/mim/branch/' + branchId + '/types/filter/' + filter,
+			apiURL + '/mim/branch/' + branchId + '/types/filter',
 			{
-				params: {
-					count: count,
-					pageNum: pageNum,
-					orderByAttributeType: ATTRIBUTETYPEIDENUM.NAME,
-				},
+				params,
 			}
 		);
 	}

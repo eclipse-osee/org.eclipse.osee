@@ -253,7 +253,8 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       JsonNode action = testActionRestCall(url, 1);
       Assert.assertEquals(action.get("AtsId").asText(), action.get("ats.Id").asText());
       Assert.assertFalse(Strings.isNumeric(action.get("ats.Created Date").asText()));
-      Assert.assertNotNull(action.get("derivedfrom"));
+      Assert.assertNotNull(action.get("DerivedFrom"));
+      // Note: derivedfrom results tested from DemoBranchRegresstionTest
    }
 
    @Test

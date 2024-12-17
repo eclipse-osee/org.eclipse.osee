@@ -16,7 +16,6 @@ package org.eclipse.osee.mim;
 import java.util.Collection;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -34,22 +33,11 @@ public interface PlatformTypesFilterEndpoint {
    @GET()
    @Produces(MediaType.APPLICATION_JSON)
    /**
-    * Same as /types/ GET() returns a *blank* filtered request
-    *
-    * @return list of platform Types
-    */
-   Collection<PlatformTypeToken> getPlatformTypes(@QueryParam("pageNum") long pageNum,
-      @QueryParam("count") long pageSize, @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
-
-   @GET()
-   @Path("{filter}")
-   @Produces(MediaType.APPLICATION_JSON)
-   /**
     * Gets List of filtered Platform Types
     *
     * @return List of platform types
     */
-   Collection<PlatformTypeToken> getPlatformTypes(@PathParam("filter") String filter,
+   Collection<PlatformTypeToken> getPlatformTypes(@QueryParam("filter") String filter,
       @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize,
       @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 

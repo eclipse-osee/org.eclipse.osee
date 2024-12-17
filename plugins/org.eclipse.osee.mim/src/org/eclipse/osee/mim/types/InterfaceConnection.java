@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -163,4 +164,41 @@ public class InterfaceConnection extends ArtifactAccessorResultWithGammas {
       return art;
    }
 
+   @JsonIgnore
+   @Override
+   public boolean equals(Object obj) {
+      if (obj == this) {
+         return true;
+      }
+      if (obj instanceof InterfaceConnection) {
+         InterfaceConnection other = ((InterfaceConnection) obj);
+         ArtifactReadable otherArt = other.getArtifactReadable();
+         if (!this.getName().valueEquals(other.getName())) {
+            return false;
+         }
+         if (!this.getDescription().valueEquals(other.getDescription())) {
+            return false;
+         }
+         if (!this.getTransportType().equals(other.getTransportType())) {
+            return false;
+         }
+         if (!this.getNodes().equals(other.getNodes())) {
+            return false;
+         }
+         List<InterfaceMessageToken> messages = this.getArtifactReadable().getRelated(
+            CoreRelationTypes.InterfaceConnectionMessage_Message).getList().stream().filter(
+               a -> !a.getExistingAttributeTypes().isEmpty()).map(art -> new InterfaceMessageToken(art)).collect(
+                  Collectors.toList());
+         List<InterfaceMessageToken> otherMessages =
+            otherArt.getRelated(CoreRelationTypes.InterfaceConnectionMessage_Message).getList().stream().filter(
+               a -> !a.getExistingAttributeTypes().isEmpty()).map(art -> new InterfaceMessageToken(art)).collect(
+                  Collectors.toList());
+         if (!messages.equals(otherMessages)) {
+            return false;
+         }
+         return true;
+      }
+      return false;
+
+   }
 }

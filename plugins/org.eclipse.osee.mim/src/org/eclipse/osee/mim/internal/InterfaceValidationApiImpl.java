@@ -12,14 +12,20 @@
  **********************************************************************/
 package org.eclipse.osee.mim.internal;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithGammas;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.mim.InterfaceConnectionViewApi;
@@ -29,6 +35,7 @@ import org.eclipse.osee.mim.types.ConnectionValidationResult;
 import org.eclipse.osee.mim.types.InterfaceConnection;
 import org.eclipse.osee.mim.types.InterfaceMessageToken;
 import org.eclipse.osee.mim.types.InterfaceStructureToken;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.core.ds.FollowRelation;
 
 /**
@@ -38,24 +45,93 @@ public class InterfaceValidationApiImpl implements InterfaceValidationApi {
 
    private final InterfaceConnectionViewApi connectionApi;
    private final InterfaceStructureApi structureApi;
-   InterfaceValidationApiImpl(InterfaceConnectionViewApi connectionApi, InterfaceStructureApi structureApi) {
+   private final OrcsApi orcsApi;
+   InterfaceValidationApiImpl(InterfaceConnectionViewApi connectionApi, InterfaceStructureApi structureApi, OrcsApi orcsApi) {
       this.connectionApi = connectionApi;
       this.structureApi = structureApi;
+      this.orcsApi = orcsApi;
    }
 
    @Override
    public ConnectionValidationResult validateConnection(BranchId branch, ArtifactId viewId, ArtifactId connectionId) {
-      InterfaceConnection connection = this.connectionApi.get(branch, viewId, connectionId,
-         Arrays.asList(FollowRelation.fork(CoreRelationTypes.InterfaceConnectionNode_Node),
-            FollowRelation.fork(CoreRelationTypes.InterfaceConnectionTransportType_TransportType),
-            FollowRelation.follow(CoreRelationTypes.InterfaceConnectionMessage_Message),
-            FollowRelation.fork(CoreRelationTypes.InterfaceMessagePubNode_Node),
-            FollowRelation.follow(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage),
-            FollowRelation.follow(CoreRelationTypes.InterfaceSubMessageContent_Structure),
-            FollowRelation.follow(CoreRelationTypes.InterfaceStructureContent_DataElement),
-            FollowRelation.fork(CoreRelationTypes.InterfaceElementArrayElement_ArrayElement,
-               FollowRelation.follow(CoreRelationTypes.InterfaceElementPlatformType_PlatformType)),
-            FollowRelation.follow(CoreRelationTypes.InterfaceElementPlatformType_PlatformType)));
+      InterfaceConnection connection = InterfaceConnection.SENTINEL;
+      List<ArtifactId> configurationsMismatching = new ArrayList<>();
+      Branch currentBranch =
+         orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getAtMostOneOrDefault(Branch.SENTINEL);
+      if (currentBranch.getBranchType().equals(BranchType.WORKING)) {
+         Map<ArtifactId, InterfaceConnection> connections = this.connectionApi.getForAllViews(branch, connectionId,
+            Arrays.asList(FollowRelation.fork(CoreRelationTypes.InterfaceConnectionNode_Node),
+               FollowRelation.fork(CoreRelationTypes.InterfaceConnectionTransportType_TransportType),
+               FollowRelation.follow(CoreRelationTypes.InterfaceConnectionMessage_Message),
+               FollowRelation.follow(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage),
+               FollowRelation.follow(CoreRelationTypes.InterfaceSubMessageContent_Structure),
+               FollowRelation.follow(CoreRelationTypes.InterfaceStructureContent_DataElement),
+               FollowRelation.fork(CoreRelationTypes.InterfaceElementPlatformType_PlatformType,
+                  FollowRelation.follow(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet),
+                  FollowRelation.follow(CoreRelationTypes.InterfaceEnumeration_EnumerationState)),
+               FollowRelation.follow(CoreRelationTypes.InterfaceElementArrayElement_ArrayElement),
+               FollowRelation.fork(CoreRelationTypes.InterfaceElementArrayIndexDescriptionSet_Set),
+               FollowRelation.follow(CoreRelationTypes.InterfaceElementPlatformType_PlatformType),
+               FollowRelation.follow(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet),
+               FollowRelation.follow(CoreRelationTypes.InterfaceEnumeration_EnumerationState)));
+         if (viewId.isValid()) {
+            connection = connections.get(viewId);
+         } else {
+            connection = this.connectionApi.get(branch, viewId, connectionId,
+               Arrays.asList(FollowRelation.fork(CoreRelationTypes.InterfaceConnectionNode_Node),
+                  FollowRelation.fork(CoreRelationTypes.InterfaceConnectionTransportType_TransportType),
+                  FollowRelation.follow(CoreRelationTypes.InterfaceConnectionMessage_Message),
+                  FollowRelation.fork(CoreRelationTypes.InterfaceMessagePubNode_Node),
+                  FollowRelation.follow(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage),
+                  FollowRelation.follow(CoreRelationTypes.InterfaceSubMessageContent_Structure),
+                  FollowRelation.follow(CoreRelationTypes.InterfaceStructureContent_DataElement),
+                  FollowRelation.fork(CoreRelationTypes.InterfaceElementArrayElement_ArrayElement,
+                     FollowRelation.follow(CoreRelationTypes.InterfaceElementPlatformType_PlatformType)),
+                  FollowRelation.follow(CoreRelationTypes.InterfaceElementPlatformType_PlatformType)));
+         }
+         //get the parent branch and query to get past connections
+         Map<ArtifactId, InterfaceConnection> parentConnections =
+            this.connectionApi.getForAllViews(branch, connectionId,
+               Arrays.asList(FollowRelation.fork(CoreRelationTypes.InterfaceConnectionNode_Node),
+                  FollowRelation.fork(CoreRelationTypes.InterfaceConnectionTransportType_TransportType),
+                  FollowRelation.follow(CoreRelationTypes.InterfaceConnectionMessage_Message),
+                  FollowRelation.follow(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage),
+                  FollowRelation.follow(CoreRelationTypes.InterfaceSubMessageContent_Structure),
+                  FollowRelation.follow(CoreRelationTypes.InterfaceStructureContent_DataElement),
+                  FollowRelation.fork(CoreRelationTypes.InterfaceElementPlatformType_PlatformType,
+                     FollowRelation.follow(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet),
+                     FollowRelation.follow(CoreRelationTypes.InterfaceEnumeration_EnumerationState)),
+                  FollowRelation.follow(CoreRelationTypes.InterfaceElementArrayElement_ArrayElement),
+                  FollowRelation.fork(CoreRelationTypes.InterfaceElementArrayIndexDescriptionSet_Set),
+                  FollowRelation.follow(CoreRelationTypes.InterfaceElementPlatformType_PlatformType),
+                  FollowRelation.follow(CoreRelationTypes.InterfacePlatformTypeEnumeration_EnumerationSet),
+                  FollowRelation.follow(CoreRelationTypes.InterfaceEnumeration_EnumerationState)),
+               currentBranch.getBaselineTx());
+         //compare the past and the current, if there is anything different the view has affected
+         for (ArtifactId configuration : connections.keySet()) {
+            InterfaceConnection workingConnection =
+               connections.getOrDefault(configuration, InterfaceConnection.SENTINEL);
+            InterfaceConnection baselineConnection =
+               parentConnections.getOrDefault(configuration, InterfaceConnection.SENTINEL);
+            if (workingConnection.isValid() && baselineConnection.isValid()) {
+               if (!workingConnection.equals(baselineConnection)) {
+                  configurationsMismatching.add(configuration);
+               }
+            }
+         }
+      } else {
+         connection = this.connectionApi.get(branch, viewId, connectionId,
+            Arrays.asList(FollowRelation.fork(CoreRelationTypes.InterfaceConnectionNode_Node),
+               FollowRelation.fork(CoreRelationTypes.InterfaceConnectionTransportType_TransportType),
+               FollowRelation.follow(CoreRelationTypes.InterfaceConnectionMessage_Message),
+               FollowRelation.fork(CoreRelationTypes.InterfaceMessagePubNode_Node),
+               FollowRelation.follow(CoreRelationTypes.InterfaceMessageSubMessageContent_SubMessage),
+               FollowRelation.follow(CoreRelationTypes.InterfaceSubMessageContent_Structure),
+               FollowRelation.follow(CoreRelationTypes.InterfaceStructureContent_DataElement),
+               FollowRelation.fork(CoreRelationTypes.InterfaceElementArrayElement_ArrayElement,
+                  FollowRelation.follow(CoreRelationTypes.InterfaceElementPlatformType_PlatformType)),
+               FollowRelation.follow(CoreRelationTypes.InterfaceElementPlatformType_PlatformType)));
+      }
 
       List<InterfaceMessageToken> messages = connection.getArtifactReadable().getRelated(
          CoreRelationTypes.InterfaceConnectionMessage_Message).getList().stream().map(
@@ -99,7 +175,11 @@ public class InterfaceValidationApiImpl implements InterfaceValidationApi {
          }
          structureSheetNames.add(structureSheetName);
       }
-
+      List<ArtifactAccessorResultWithGammas> configurations =
+         orcsApi.getQueryFactory().fromBranch(currentBranch).andIds(configurationsMismatching).setOrderByAttribute(
+            CoreAttributeTypes.Name).asArtifacts().stream().map(x -> new ArtifactAccessorResultWithGammas(x)).collect(
+               Collectors.toList());
+      result.addAllAffectedConfigurations(configurations);
       return result;
    }
 

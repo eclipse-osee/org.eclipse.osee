@@ -76,7 +76,7 @@ public class AtsTeamWfEndpointTest extends AbstractRestTest {
       buttonSTeamWf = getButtonSTeamWf();
       Assert.assertNotNull(buttonSTeamWf);
 
-      testUrl("ats/teamwf/" + buttonSTeamWf.getAtsId(), 41);
+      testUrl("ats/teamwf/" + buttonSTeamWf.getAtsId(), 42);
    }
 
    //   @Path("ids/{id}/")
@@ -111,7 +111,7 @@ public class AtsTeamWfEndpointTest extends AbstractRestTest {
       buttonSTeamWf = getButtonSTeamWf();
       Assert.assertNotNull(buttonSTeamWf);
 
-      testUrl("ats/teamwf/details/" + buttonSTeamWf.getId(), 47);
+      testUrl("ats/teamwf/details/" + buttonSTeamWf.getId(), 48);
    }
 
    //   @Path("release/{release}")

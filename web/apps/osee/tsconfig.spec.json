@@ -446,11 +446,5 @@
 		}
 	},
 	"files": ["src/test.ts", "src/polyfills.ts"],
-	"exclude": [
-		"node_modules/cypress",
-		"./cypress.config.ts",
-		"cypress",
-		"playwright.config.ts",
-		"playwright.config.ng.ts"
-	]
+	"exclude": ["playwright.config.ts", "playwright.config.ng.ts"]
 }

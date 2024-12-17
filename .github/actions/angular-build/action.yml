@@ -1,0 +1,63 @@
+name: OSEE Web Build
+description: Builds osee-web, and installs pnpm dependencies
+inputs:
+    angular_environment:
+        description: Angular environment to build
+        default: 'forced_sso_java_release'
+    archive:
+        description: Whether to archive build results.
+        default: 'false'
+    stamp:
+      description: Whether to stamp the javascript build
+      default: 'false'
+    angular_cache:
+        description: Whether to use angular's .angular cache
+        default: 'true'
+
+runs:
+    using: composite
+    steps:
+        - uses: ./.github/actions/web-setup
+          name: Setup web dependencies
+
+        - uses: actions/cache@v4
+          name: Setup angular cache
+          if: inputs.angular_cache == 'true'
+          with:
+            path: ${{ env.GITHUB_WORKSPACE }}/web/apps/osee/.angular
+            key: ${{ runner.os }}-angular-cache-${{ hashFiles('**/pnpm-lock.yaml') }}
+            restore-keys: |
+              ${{ runner.os }}-angular-cache-
+        
+        
+        - name: Output build type
+          shell: bash
+          run: echo "Building $ANGULAR_ENVIRONMENT."
+          env:
+            ANGULAR_ENVIRONMENT: ${{inputs.angular_environment}}
+
+
+        - name: Set Angular Build Information
+          if: inputs.stamp == 'true'
+          shell: bash
+          run: |
+            : Set Angular Build Information
+            pwd
+            ls -al ${GITHUB_WORKSPACE}/web/apps/osee/src/app/about
+            echo "export const BuildNum = 'SHA - ${{ github.sha }} | Build Date - ${{ github.event.head_commit.timestamp }} | GitHub Job URL - ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}';" > ${GITHUB_WORKSPACE}/web/apps/osee/src/app/about/version.ts
+            echo "export const version = '1.0.0';" >> ${GITHUB_WORKSPACE}/web/apps/osee/src/app/about/version.ts
+
+        - name: Angular build
+          shell: bash
+          working-directory: ./web/apps/osee/
+          run: ng build --configuration $ANGULAR_ENVIRONMENT
+          env:
+            ANGULAR_ENVIRONMENT: ${{inputs.angular_environment}}
+        
+        - name: Upload angular build
+          if: ${{ inputs.archive == 'true' }}
+          uses: actions/upload-artifact@v4
+          with:
+            name: angular-${{inputs.angular_environment}}
+            path: |
+              dist

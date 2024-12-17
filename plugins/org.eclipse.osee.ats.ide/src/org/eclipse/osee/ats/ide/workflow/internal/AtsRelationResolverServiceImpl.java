@@ -258,4 +258,9 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
       return Collections.castAll(art.getRelations(relationTypeSide));
    }
 
+   @Override
+   public List<IRelationLink> getRelations(ArtifactToken art) {
+      return Collections.castAll(getArtifact(art).getRelationsAll(DeletionFlag.EXCLUDE_DELETED));
+   }
+
 }
