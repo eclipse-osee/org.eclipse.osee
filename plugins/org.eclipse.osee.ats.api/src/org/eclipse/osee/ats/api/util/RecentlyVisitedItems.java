@@ -27,6 +27,7 @@ public class RecentlyVisitedItems {
 
    public static final RecentlyVisitedItems EMPTY_ITEMS = new RecentlyVisitedItems();
    public List<RecentlyVisistedItem> visited = new ArrayList<>();
+   @JsonIgnore
    public Map<Long, RecentlyVisistedItem> workItemToVisited = new HashMap<>();
 
    // This number can not be increased without analyzing size of storage value
