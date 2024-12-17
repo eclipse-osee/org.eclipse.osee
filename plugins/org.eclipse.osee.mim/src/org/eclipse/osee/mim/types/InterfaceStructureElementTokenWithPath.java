@@ -148,7 +148,7 @@ public class InterfaceStructureElementTokenWithPath extends InterfaceStructureEl
          if (!this.getInterfaceDefaultValue().valueEquals(other.getInterfaceDefaultValue())) {
             return false;
          }
-         if (this.getPlatformType().equals(other.getPlatformType())) {
+         if (!this.getPlatformType().equals(other.getPlatformType())) {
             return false;
          }
          return true;
