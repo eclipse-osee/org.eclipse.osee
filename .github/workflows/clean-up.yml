@@ -49,7 +49,7 @@ jobs:
             - name: create docker ref
               id: docker_ref
               shell: bash
-              run: echo "current_ref=$(echo ${{ github.ref_name }} | tr '/' '-')" >> "$GITHUB_OUTPUT"
+              run: echo "current_ref=$(echo ${{ github.event.pull_request.number }}-merge | tr '/' '-')" >> "$GITHUB_OUTPUT"
 
             - id: repo-basename
               run: |
