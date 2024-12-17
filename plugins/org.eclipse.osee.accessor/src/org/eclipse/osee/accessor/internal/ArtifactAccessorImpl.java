@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
@@ -197,9 +198,20 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
    public Map<ArtifactId, T> getForAllViews(BranchId branch, ArtifactId artId,
       Collection<FollowRelation> followRelations) throws InstantiationException, IllegalAccessException,
       IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+      return this.getForAllViews(branch, artId, followRelations, TransactionId.SENTINEL);
+   }
+
+   @Override
+   public Map<ArtifactId, T> getForAllViews(BranchId branch, ArtifactId artId,
+      Collection<FollowRelation> followRelations, TransactionId transactionId)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException {
       QueryBuilder query =
          orcsApi.getQueryFactory().fromBranch(branch).includeApplicabilityTokens().andIsOfType(artifactType).andId(
             artId);
+      if (transactionId.isValid()) {
+         query = query.fromTransaction(transactionId);
+      }
       for (FollowRelation rel : followRelations) {
          query = buildFollowRelationQuery(query, rel);
       }
