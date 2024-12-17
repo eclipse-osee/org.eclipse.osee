@@ -48,25 +48,35 @@ jobs:
 
             - name: create docker ref
               id: docker_ref
-              uses: ./.github/actions/docker-current-ref
+              shell: bash
+              run: echo "current_ref=$(echo ${{ github.ref_name }} | tr '/' '-')" >> "$GITHUB_OUTPUT"
+
+            - id: repo-basename
+              run: |
+                  echo "value=`basename ${{ github.repository }}`" >> $GITHUB_OUTPUT
+              shell: bash
 
             - name: cleanup osee server
-              uses: actions/delete-package-versions@v5
+              shell: bash
+              run: |
+                  curl -L \
+                   -X DELETE \
+                   -H "Accept: application/vnd.github+json" \
+                   -H "Authorization: Bearer ${{github.token}}" \
+                   -H "X-GitHub-Api-Version: 2022-11-28" \
+                   https://api.github.com/orgs/eclipse-osee/packages/container/$(jq -rn --arg x '${{ steps.repo-basename.outputs.value }}/osee-server/${{steps.docker_ref.outputs.current_ref}}' '$x|@uri')
               continue-on-error: true
-              with:
-                  min-versions-to-keep: 0
-                  delete-only-untagged-versions: "false"
-                  package-name: osee-server${{steps.docker_ref.outputs.docker_current_ref}}
-                  package-type: "container"
 
             - name: cleanup postgres
-              uses: actions/delete-package-versions@v5
+              shell: bash
+              run: |
+                  curl -L \
+                   -X DELETE \
+                   -H "Accept: application/vnd.github+json" \
+                   -H "Authorization: Bearer ${{github.token}}" \
+                   -H "X-GitHub-Api-Version: 2022-11-28" \
+                   https://api.github.com/orgs/eclipse-osee/packages/container/$(jq -rn --arg x '${{ steps.repo-basename.outputs.value }}/osee-postgres/${{steps.docker_ref.outputs.current_ref}}' '$x|@uri')
               continue-on-error: true
-              with:
-                  min-versions-to-keep: 0
-                  delete-only-untagged-versions: "false"
-                  package-name: osee-postgres${{steps.docker_ref.outputs.docker_current_ref}}
-                  package-type: "container"
 
             - name: create artifact ref
               id: artifact_ref
