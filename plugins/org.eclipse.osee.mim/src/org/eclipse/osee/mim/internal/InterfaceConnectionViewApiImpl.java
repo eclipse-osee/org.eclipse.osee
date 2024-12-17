@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -129,9 +130,15 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
    @Override
    public Map<ArtifactId, InterfaceConnection> getForAllViews(BranchId branch, ArtifactId connectionId,
       Collection<FollowRelation> followRelations) {
+      return this.getForAllViews(branch, connectionId, followRelations, TransactionId.SENTINEL);
+   }
+
+   @Override
+   public Map<ArtifactId, InterfaceConnection> getForAllViews(BranchId branch, ArtifactId connectionId,
+      Collection<FollowRelation> followRelations, TransactionId transactionId) {
       try {
          Map<ArtifactId, InterfaceConnection> connections =
-            this.getAccessor().getForAllViews(branch, connectionId, followRelations);
+            this.getAccessor().getForAllViews(branch, connectionId, followRelations, transactionId);
          return connections;
       } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
          | NoSuchMethodException | SecurityException ex) {
