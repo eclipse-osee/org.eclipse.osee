@@ -70,13 +70,14 @@ public class InterfaceElementSearchEndpointImpl implements InterfaceElementSearc
    }
 
    @Override
-   public Collection<InterfaceStructureElementToken> getElementsByName(String name, long pageNum, long pageSize) {
-      return this.elementApi.getElementsByName(branch, name, pageNum, pageSize);
+   public Collection<InterfaceStructureElementToken> getElementsByName(String name, long pageNum, long pageSize,
+      ArtifactId artifactToAvoidId) {
+      return this.elementApi.getElementsByName(branch, name, pageNum, pageSize, artifactToAvoidId);
    }
 
    @Override
-   public int getElementsByNameCount(String name) {
-      return this.elementApi.getElementsByNameCount(branch, name);
+   public int getElementsByNameCount(String name, ArtifactId artifactToAvoidId) {
+      return this.elementApi.getElementsByNameCount(branch, name, artifactToAvoidId);
    }
 
 }

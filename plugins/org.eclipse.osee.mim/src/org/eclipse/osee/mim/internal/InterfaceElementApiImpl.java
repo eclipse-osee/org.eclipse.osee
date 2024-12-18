@@ -47,6 +47,7 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
    private final List<AttributeTypeId> elementAttributeList;
    private final List<FollowRelation> relations;
    private final List<RelationTypeSide> affectedRelations;
+   private final List<RelationTypeSide> relationsToAvoid;
 
    InterfaceElementApiImpl(OrcsApi orcsApi, InterfacePlatformTypeApi platformTypeApi) {
       this.setAccessor(new InterfaceElementAccessor(orcsApi));
@@ -54,6 +55,7 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
       this.elementAttributeList = this.createElementAttributeList();
       this.relations = this.createRelationTypeSideList();
       this.affectedRelations = this.createAffectedRelationTypeSideList();
+      this.relationsToAvoid = this.createRelationsToAvoidDuplicating();
    }
 
    private List<AttributeTypeId> createElementAttributeList() {
@@ -78,6 +80,13 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
    private List<RelationTypeSide> createAffectedRelationTypeSideList() {
       List<RelationTypeSide> relations = new LinkedList<RelationTypeSide>();
       relations.add(CoreRelationTypes.InterfaceStructureContent_DataElement);
+      return relations;
+   }
+
+   private List<RelationTypeSide> createRelationsToAvoidDuplicating() {
+      List<RelationTypeSide> relations = new LinkedList<RelationTypeSide>();
+      relations.add(CoreRelationTypes.InterfaceStructureContent_DataElement);
+      relations.add(CoreRelationTypes.InterfaceElementArrayElement_ArrayElement);
       return relations;
    }
 
@@ -257,11 +266,12 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
 
    @Override
    public List<InterfaceStructureElementToken> getElementsByName(BranchId branch, String name, long pageNum,
-      long pageSize) {
+      long pageSize, ArtifactId artifactToAvoidId) {
       try {
-         return (List<InterfaceStructureElementToken>) this.getAccessor().getAll(branch,
+         return (List<InterfaceStructureElementToken>) this.getAccessor().getAllNotRelatedTo(branch,
             FollowRelation.followList(CoreRelationTypes.InterfaceElementPlatformType_PlatformType), name,
-            Arrays.asList(CoreAttributeTypes.Name), pageNum, pageSize, CoreAttributeTypes.Name);
+            Arrays.asList(CoreAttributeTypes.Name), pageNum, pageSize, CoreAttributeTypes.Name, this.relationsToAvoid,
+            artifactToAvoidId);
       } catch (Exception ex) {
          System.out.println(ex);
          return new LinkedList<>();
@@ -269,8 +279,9 @@ public class InterfaceElementApiImpl implements InterfaceElementApi {
    }
 
    @Override
-   public int getElementsByNameCount(BranchId branch, String name) {
-      return this.getAccessor().getAllByFilterAndCount(branch, name, Arrays.asList(CoreAttributeTypes.Name));
+   public int getElementsByNameCount(BranchId branch, String name, ArtifactId artifactToAvoidId) {
+      return this.getAccessor().getAllNotRelatedToByFilterAndCount(branch, name, Arrays.asList(CoreAttributeTypes.Name),
+         this.relationsToAvoid, artifactToAvoidId);
    }
 
    @Override
