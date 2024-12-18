@@ -87,12 +87,13 @@
 			<layout>p2</layout>
 			<url>${nebula-site}</url>
 		</repository>
+		
 		<repository>
 			<id>sb</id>
 			<layout>p2</layout>
 			<url>https://spotbugs.github.io/eclipse</url>
 		</repository>
-
+	    
 		<repository>
 			<id>osgi-repo</id>
 			<layout>p2</layout>
