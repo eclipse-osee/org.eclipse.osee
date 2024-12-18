@@ -1,0 +1,60 @@
+name: PR cleanup
+
+on:
+    pull_request:
+
+concurrency:
+    group: ${{ github.ref }}-${{ github.workflow }}
+    cancel-in-progress: true
+
+permissions:
+    contents: read
+    packages: write
+
+env:
+    ARTIFACT_PATH: "plugins/org.eclipse.osee.server.p2/target/org.eclipse.osee.server.runtime.zip"
+    SERVER_PATH: "osee_server"
+    SERVER_ZIP: "org.eclipse.osee.server.runtime.zip"
+    IMAGE_DIRECTORY: ".github/docker/osee-server/Dockerfile"
+
+jobs:
+    cleanup_docker:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                pull_num: [144, 154, 153, 152, 151, 150, 147]
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v4
+
+            - name: create docker ref
+              id: docker_ref
+              shell: bash
+              run: echo "current_ref=$(echo ${{ matrix.pull_num }}-merge | tr '/' '-')" >> "$GITHUB_OUTPUT"
+
+            - id: repo-basename
+              run: |
+                  echo "value=`basename ${{ github.repository }}`" >> $GITHUB_OUTPUT
+              shell: bash
+
+            - name: cleanup osee server
+              shell: bash
+              run: |
+                  curl -L \
+                   -X DELETE \
+                   -H "Accept: application/vnd.github+json" \
+                   -H "Authorization: Bearer ${{github.token}}" \
+                   -H "X-GitHub-Api-Version: 2022-11-28" \
+                   https://api.github.com/orgs/eclipse-osee/packages/container/$(jq -rn --arg x '${{ steps.repo-basename.outputs.value }}/osee-server/${{steps.docker_ref.outputs.current_ref}}' '$x|@uri')
+              continue-on-error: true
+
+            - name: cleanup postgres
+              shell: bash
+              run: |
+                  curl -L \
+                   -X DELETE \
+                   -H "Accept: application/vnd.github+json" \
+                   -H "Authorization: Bearer ${{github.token}}" \
+                   -H "X-GitHub-Api-Version: 2022-11-28" \
+                   https://api.github.com/orgs/eclipse-osee/packages/container/$(jq -rn --arg x '${{ steps.repo-basename.outputs.value }}/osee-postgres/${{steps.docker_ref.outputs.current_ref}}' '$x|@uri')
+              continue-on-error: true
