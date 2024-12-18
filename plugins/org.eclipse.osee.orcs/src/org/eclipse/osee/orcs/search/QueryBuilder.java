@@ -333,6 +333,11 @@ public interface QueryBuilder extends Query {
     */
    QueryBuilder andRelatedTo(RelationTypeSide relationTypeSide, ArtifactId artifactId);
 
+   /**
+    * Search for artifacts which aren't related to the given artifact via relationTypeSide
+    */
+   QueryBuilder andNotRelatedTo(RelationTypeSide relationTypeSide, ArtifactId artifact);
+
    QueryBuilder andRelatedRecursive(RelationTypeSide relationTypeSide, ArtifactId artifactId);
 
    /**
