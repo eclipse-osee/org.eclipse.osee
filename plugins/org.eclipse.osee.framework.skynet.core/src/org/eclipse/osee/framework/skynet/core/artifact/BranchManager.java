@@ -838,4 +838,8 @@ public final class BranchManager {
       }
       return branch.getCategories();
    }
+
+   public static void decacheById(BranchId branchId) {
+      getCache().decacheById(branchId);
+   }
 }

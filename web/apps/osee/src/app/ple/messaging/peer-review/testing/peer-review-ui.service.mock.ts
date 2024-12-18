@@ -23,8 +23,18 @@ export const PeerReviewUiServiceMock: Partial<PeerReviewUiService> = {
 	branchesToRemove: signal<branch[]>([testBranchListing[2]]),
 	prBranch: of(testBranchListing[0]),
 	workingBranches: of([
-		{ branch: testBranchListing[0], selected: true, selectable: true },
-		{ branch: testBranchListing[1], selected: false, selectable: false },
+		{
+			branch: testBranchListing[0],
+			selected: true,
+			selectable: true,
+			committedToBaseline: false,
+		},
+		{
+			branch: testBranchListing[1],
+			selected: false,
+			selectable: false,
+			committedToBaseline: false,
+		},
 	]),
 	getPeerReviewBranches(
 		filter: string,

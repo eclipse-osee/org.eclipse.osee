@@ -875,7 +875,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
                empty -> empty).collect(Collectors.toList()).size() == 0;
       }
 
-      return false;
+      return true;
    }
 
    @Override

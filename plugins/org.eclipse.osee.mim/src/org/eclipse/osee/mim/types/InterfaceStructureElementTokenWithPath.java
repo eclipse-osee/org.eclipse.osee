@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -86,6 +87,74 @@ public class InterfaceStructureElementTokenWithPath extends InterfaceStructureEl
                         connection -> "Connection: " + connection.getName() + " " + message.getName() + " > " + submessage.getName() + " > " + structure.getName())).flatMap(
                            result -> result)).flatMap(result -> result)).flatMap(result -> result).distinct().collect(
                               Collectors.toList());
+   }
+
+   @JsonIgnore
+   @Override
+   public boolean equals(Object obj) {
+      if (obj == this) {
+         return true;
+      }
+      if (obj instanceof InterfaceStructureElementToken) {
+         InterfaceStructureElementToken other = ((InterfaceStructureElementToken) obj);
+         if (!this.getName().valueEquals(other.getName())) {
+            return false;
+         }
+         if (!this.getDescription().valueEquals(other.getDescription())) {
+            return false;
+         }
+         if (!this.getEnumLiteral().valueEquals(other.getEnumLiteral())) {
+            return false;
+         }
+         if (!this.getInterfaceElementAlterable().valueEquals(other.getInterfaceElementAlterable())) {
+            return false;
+         }
+         if (!this.getInterfaceElementArrayHeader().valueEquals(other.getInterfaceElementArrayHeader())) {
+            return false;
+         }
+         if (!this.getInterfaceElementWriteArrayHeaderName().valueEquals(
+            other.getInterfaceElementWriteArrayHeaderName())) {
+            return false;
+         }
+         if (!this.getInterfaceElementArrayIndexOrder().valueEquals(other.getInterfaceElementArrayIndexOrder())) {
+            return false;
+         }
+         if (!this.getInterfaceElementArrayIndexDelimiterOne().valueEquals(
+            other.getInterfaceElementArrayIndexDelimiterOne())) {
+            return false;
+         }
+         if (!this.getInterfaceElementArrayIndexDelimiterTwo().valueEquals(
+            other.getInterfaceElementArrayIndexDelimiterTwo())) {
+            return false;
+         }
+         if (!this.getNotes().valueEquals(other.getNotes())) {
+            return false;
+         }
+         if (!this.getInterfaceElementIndexStart().valueEquals(other.getInterfaceElementIndexStart())) {
+            return false;
+         }
+         if (!this.getInterfaceElementIndexEnd().valueEquals(other.getInterfaceElementIndexEnd())) {
+            return false;
+         }
+         if (!this.getArrayElements().equals(other.getArrayElements())) {
+            return false;
+         }
+         if (!this.getArrayDescriptionSet().equals(other.getArrayDescriptionSet())) {
+            return false;
+         }
+         if (!this.getInterfaceElementBlockData().valueEquals(other.getInterfaceElementBlockData())) {
+            return false;
+         }
+         if (!this.getInterfaceDefaultValue().valueEquals(other.getInterfaceDefaultValue())) {
+            return false;
+         }
+         if (!this.getPlatformType().equals(other.getPlatformType())) {
+            return false;
+         }
+         return true;
+      }
+      return false;
+
    }
 
 }

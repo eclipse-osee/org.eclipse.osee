@@ -54,6 +54,7 @@ import org.eclipse.osee.framework.core.enums.token.GfeCfeAttributeType;
 import org.eclipse.osee.framework.core.enums.token.HttpMethodAttributeType;
 import org.eclipse.osee.framework.core.enums.token.IdalAttributeType;
 import org.eclipse.osee.framework.core.enums.token.LegacyDalAttributeType;
+import org.eclipse.osee.framework.core.enums.token.MicrosoftOfficeApplicationAttributeType;
 import org.eclipse.osee.framework.core.enums.token.PageOrientationAttributeType;
 import org.eclipse.osee.framework.core.enums.token.PartitionAttributeType;
 import org.eclipse.osee.framework.core.enums.token.ProducesMediaTypeAttributeType;
@@ -267,6 +268,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString AttentionMessage = osee.createString(4657673604881393123L, "Attention Message", MediaType.TEXT_PLAIN, "");
    AttributeTypeString MachineName = osee.createString(1152921504606847359L, "Machine Name", MediaType.TEXT_PLAIN, "Machine Name");
    AttributeTypeString MaintainerText = osee.createStringNoTag(188458874335285L, "Maintainer Text", MediaType.TEXT_PLAIN, "");
+   MicrosoftOfficeApplicationAttributeType MicrosoftOfficeApplication = osee.createEnum(new MicrosoftOfficeApplicationAttributeType());
    AttributeTypeString MimBranchPreferences = osee.createString(6600561480190271962L,"MIM Branch Preferences",MediaType.TEXT_PLAIN,"");
    AttributeTypeString MimColumnPreferences = osee.createString(5383153557691494043L,"MIM Column Preferences",MediaType.TEXT_PLAIN,"");
    AttributeTypeBoolean MimSettingWordWrap = osee.createBoolean(1640046550470950506L, "MIM Word Wrap", MediaType.TEXT_PLAIN, "");
@@ -316,7 +318,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString PublishingRelationTableArtifactTypeNameOrId = osee.createString(2842593463578222826L, "Relation Table Artifact Type Name Or Id", "Artifact type to filter the table by", MediaType.TEXT_PLAIN, DisplayHint.SingleLine);
    QualificationMethodAttributeType QualificationMethod = osee.createEnum(new QualificationMethodAttributeType());
    AttributeTypeString QualificationLevel = osee.createString(1152921504606847305L, "Qualification Level", MediaType.TEXT_PLAIN, "Qualification level");
-   AttributeTypeString RelationOrder = osee.createStringNoTag(1152921504606847089L, "Relation Order", MediaType.TEXT_PLAIN, "Defines relation ordering information", DisplayHint.MultiLine);
+   AttributeTypeString RelationOrder = osee.createStringNoTag(1152921504606847089L, "Relation Order", MediaType.TEXT_PLAIN, "Defines relation ordering information", DisplayHint.NoGeneralRender);
    AttributeTypeString RendererOptions = osee.createString(904L, "Renderer Options", MediaType.APPLICATION_JSON, "", "txt", DisplayHint.MultiLine);
    AttributeTypeString RepositoryType = osee.createString(8150083798685627257L, "Repository Type", MediaType.TEXT_PLAIN, "");
    AttributeTypeString RepositoryUrl = osee.createString(1152921504606847700L, "Repository URL", MediaType.TEXT_PLAIN, "");
@@ -404,7 +406,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString WholeWordContent = osee.createString(1152921504606847099L, "Whole Word Content", AttributeTypeToken.APPLICATION_MSWORD, "value must comply with WordML xml schema", DisplayHint.NoGeneralRender);
    AttributeTypeString Witness = osee.createString(1152921504606847378L, "Witness", MediaType.TEXT_PLAIN, "");
    AttributeTypeString WordOleData = osee.createStringNoTag(1152921504606847092L, "Word Ole Data", AttributeTypeToken.APPLICATION_MSWORD, "Word Ole Data");
-   AttributeTypeString WordTemplateContent = osee.createString(1152921504606847098L, "Word Template Content", AttributeTypeToken.APPLICATION_MSWORD, "value must comply with WordML xml schema", DisplayHint.MultiLine);
+   AttributeTypeString WordTemplateContent = osee.createString(1152921504606847098L, "Word Template Content", AttributeTypeToken.APPLICATION_MSWORD, "value must comply with WordML xml schema", DisplayHint.NoGeneralRender);
    AttributeTypeString WorkData = osee.createStringNoTag(1152921504606847126L, "osee.wi.Work Data", MediaType.TEXT_XML, "");
    AttributeTypeString WorkDescription = osee.createStringNoTag(1152921504606847129L, "osee.wi.Work Description", MediaType.TEXT_PLAIN, "");
    AttributeTypeString WorkId = osee.createStringNoTag(1152921504606847127L, "osee.wi.Work Id", MediaType.TEXT_PLAIN, "");

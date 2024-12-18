@@ -592,6 +592,7 @@
 							"buildTarget": "osee-web:build:none_local_release"
 						},
 						"e2e": {
+							"proxyConfig": "src/environments/proxy.conf.json",
 							"buildTarget": "osee-web:build:e2e"
 						}
 					}
@@ -641,24 +642,6 @@
 						}
 					}
 				},
-				"cypress-run": {
-					"builder": "@cypress/schematic:cypress",
-					"options": {
-						"devServerTarget": "osee-web:serve"
-					},
-					"configurations": {
-						"production": {
-							"devServerTarget": "osee-web:serve:production"
-						}
-					}
-				},
-				"cypress-open": {
-					"builder": "@cypress/schematic:cypress",
-					"options": {
-						"watch": true,
-						"headless": false
-					}
-				},
 				"lint": {
 					"builder": "@angular-eslint/builder:lint",
 					"options": {
@@ -669,6 +652,9 @@
 		}
 	},
 	"cli": {
+		"cache": {
+			"environment": "all"
+		},
 		"packageManager": "pnpm",
 		"schematicCollections": ["@angular-eslint/schematics"]
 	},

@@ -62,7 +62,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 			class="tw-flex tw-flex-row tw-items-center tw-justify-end tw-gap-2">
 			@if (actionControls() && branchId() && branchType()) {
 				<div
-					class="tw-flex tw-gap-2 tw-rounded-full tw-bg-background-app-bar tw-shadow-inner">
+					class="tw-flex tw-gap-4 tw-rounded-full tw-bg-background-app-bar tw-px-2 tw-shadow-inner">
 					@if (inEditMode()) {
 						<osee-undo-button-branch></osee-undo-button-branch>
 					}

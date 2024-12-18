@@ -49,10 +49,11 @@ export type CreateActionInterface = {
 };
 // only used in action dropdown component
 export class CreateAction implements CreateActionInterface {
-	constructor(currentUser: user, workType = '') {
+	constructor(currentUser: user, allowParentAction = true, workType = '') {
 		this.createdByUser = currentUser;
 		this.originator = currentUser;
 		this.defaultWorkType = workType;
+		this.allowParentAction = allowParentAction;
 	}
 	createdByUser: user;
 	defaultWorkType = '';
@@ -77,5 +78,6 @@ export class CreateAction implements CreateActionInterface {
 		idIntValue: -1,
 		description: '',
 	};
+	allowParentAction = true;
 	parentAction = '';
 }

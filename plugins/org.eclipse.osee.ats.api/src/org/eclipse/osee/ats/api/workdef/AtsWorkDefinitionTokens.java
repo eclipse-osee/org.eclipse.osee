@@ -37,6 +37,7 @@ public class AtsWorkDefinitionTokens {
    public static AtsWorkDefinitionToken WorkDef_Team_Simple_InWork = new AtsWorkDefinitionToken(7285608L, "WorkDef_Team_Simple_InWork");
    public static AtsWorkDefinitionToken WorkDef_Team_Simple_Analyze = new AtsWorkDefinitionToken(946555776L, "WorkDef_Team_Simple_Analyze");
    public static AtsWorkDefinitionToken WorkDef_Team_ProductLine = new AtsWorkDefinitionToken(10837868L, "WorkDef_Team_ProductLine");
+   public static AtsWorkDefinitionToken WorkDef_Team_MIM = new AtsWorkDefinitionToken(10837869L, "WorkDef_Team_MIM");
 
    // @formatter:on
 

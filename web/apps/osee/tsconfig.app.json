@@ -24,10 +24,6 @@
 		"src/test.ts",
 		"src/**/*.harness.ts",
 		"src/**/testing/**/*.ts",
-		"node_modules/cypress",
-		"./cypress.config.ts",
-		"cypress",
-		"cypress/**/*",
 		"playwright/**/*",
 		"playwright.config.ng.ts",
 		"playwright.config.ts"

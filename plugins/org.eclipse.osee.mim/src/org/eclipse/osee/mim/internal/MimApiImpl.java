@@ -144,16 +144,16 @@ public class MimApiImpl implements MimApi {
       this.interfaceRateApi = new InterfaceRateApiImpl(orcsApi);
       this.interfaceMessageTypeApi = new InterfaceMessageTypeApiImpl(orcsApi);
       this.interfaceDifferenceReportApi = new InterfaceDifferenceReportApiImpl(orcsApi);
-      
+
       this.mimArtifactsApi = new MimArtifactsApiImpl(orcsApi);
       this.mimReportsApi = new MimReportsApiImpl(orcsApi);
-      
+
       this.crossReferenceApi = new CrossReferenceApiImpl(orcsApi);
       this.interfaceValidationApi =
-         new InterfaceValidationApiImpl(this.interfaceConnectionViewApi, this.interfaceStructureApi);
+         new InterfaceValidationApiImpl(this.interfaceConnectionViewApi, this.interfaceStructureApi, orcsApi);
       this.interfaceStructureCategoryApi = new InterfaceStructureCategoryApiImpl(orcsApi);
       this.interfaceMessagePeriodicityApi = new InterfaceMessagePeriodicityApiImpl(orcsApi);
-	  this.mimPeerReviewApi = new MimPeerReviewApiImpl(orcsApi, atsApi);
+      this.mimPeerReviewApi = new MimPeerReviewApiImpl(orcsApi, atsApi);
    }
 
    @Override
@@ -230,7 +230,7 @@ public class MimApiImpl implements MimApi {
    public MimReportsApi getMimReportsApi() {
       return this.mimReportsApi;
    }
-   
+
    @Override
    public MimPeerReviewApi getMimPeerReviewApi() {
       return this.mimPeerReviewApi;

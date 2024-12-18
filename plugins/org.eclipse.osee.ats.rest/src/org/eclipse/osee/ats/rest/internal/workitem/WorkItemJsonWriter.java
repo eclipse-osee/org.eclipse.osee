@@ -240,6 +240,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
          if (matches(TeamWorkflowDetails.class, annotations)) {
             writeTeamWorkflowDetails(orcsApi, atsApi, writer, teamWf);
          }
+         writeDerived(atsApi, writer, teamWf);
       }
 
       if (workItem.isReview()) {
@@ -476,6 +477,35 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
             break;
          }
          writeState(atsApi, writer, state);
+      }
+      writer.writeEndArray();
+   }
+
+   private static void writeDerived(AtsApi atsApi, JsonGenerator writer, IAtsTeamWorkflow teamWf) throws IOException {
+      writer.writeArrayFieldStart("DerivedFrom");
+      for (ArtifactToken art : atsApi.getRelationResolver().getRelated(teamWf, AtsRelationTypes.Derive_From)) {
+         writer.writeStartObject();
+         writer.writeObjectField("id", art.getIdString());
+         writer.writeObjectField("name", art.getName());
+         writer.writeObjectField("AtsId",
+            atsApi.getAttributeResolver().getSoleAttributeValue(art, AtsAttributeTypes.AtsId, ""));
+         writer.writeObjectField("type", art.getArtifactType().toStringWithId());
+         writer.writeObjectField("state",
+            atsApi.getAttributeResolver().getSoleAttributeValueAsString(art, AtsAttributeTypes.CurrentStateName, ""));
+         writer.writeEndObject();
+      }
+      writer.writeEndArray();
+      writer.writeArrayFieldStart("DerivedTo");
+      for (ArtifactToken art : atsApi.getRelationResolver().getRelated(teamWf, AtsRelationTypes.Derive_To)) {
+         writer.writeStartObject();
+         writer.writeObjectField("id", art.getIdString());
+         writer.writeObjectField("name", art.getName());
+         writer.writeObjectField("AtsId",
+            atsApi.getAttributeResolver().getSoleAttributeValue(art, AtsAttributeTypes.AtsId, ""));
+         writer.writeObjectField("type", art.getArtifactType().toStringWithId());
+         writer.writeObjectField("state",
+            atsApi.getAttributeResolver().getSoleAttributeValueAsString(art, AtsAttributeTypes.CurrentStateName, ""));
+         writer.writeEndObject();
       }
       writer.writeEndArray();
    }

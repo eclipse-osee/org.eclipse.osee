@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 import java.util.Collection;
@@ -345,6 +346,44 @@ public class InterfaceStructureToken extends ArtifactAccessorResultWithGammas {
       art.setApplicabilityId(applicId.getIdString());
       art.setkey(key);
       return art;
+   }
+
+   @JsonIgnore
+   @Override
+   public boolean equals(Object obj) {
+      if (obj == this) {
+         return true;
+      }
+      if (obj instanceof InterfaceStructureToken) {
+         InterfaceStructureToken other = ((InterfaceStructureToken) obj);
+         if (!this.getName().valueEquals(other.getName())) {
+            return false;
+         }
+         if (!this.getDescription().valueEquals(other.getDescription())) {
+            return false;
+         }
+         if (!this.getNameAbbrev().valueEquals(other.getNameAbbrev())) {
+            return false;
+         }
+         if (!this.getInterfaceStructureCategory().valueEquals(other.getInterfaceStructureCategory())) {
+            return false;
+         }
+         if (!this.getInterfaceMinSimultaneity().valueEquals(other.getInterfaceMinSimultaneity())) {
+            return false;
+         }
+         if (!this.getInterfaceMaxSimultaneity().valueEquals(other.getInterfaceMaxSimultaneity())) {
+            return false;
+         }
+         if (!this.getInterfaceTaskFileType().valueEquals(other.getInterfaceTaskFileType())) {
+            return false;
+         }
+         if (!this.getElements().equals(other.getElements())) {
+            return false;
+         }
+         return true;
+      }
+      return false;
+
    }
 
 }

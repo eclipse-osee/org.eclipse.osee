@@ -18,10 +18,12 @@ import java.io.StringWriter;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchToken;
 import org.eclipse.osee.framework.core.data.IUserGroupArtifactToken;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -41,7 +43,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
  * @author Donald G. Dunne
  */
 public class User extends Artifact implements UserToken {
+
    private PropertyStore userSettings;
+   // Cache branch favorites based on transactionId of this User's artifact
+   private TransactionId userModTx = TransactionId.SENTINEL;
+   private Set<BranchId> favoriteBranchIds = null;
 
    public User(Long id, String guid, BranchToken branch) {
       super(id, guid, branch, CoreArtifactTypes.User);
@@ -127,18 +133,23 @@ public class User extends Artifact implements UserToken {
       saveSettings();
    }
 
+   /**
+    * Cached for efficiency as this is called thousands of times to sort favorites. Cache is updated when User artifact
+    * is changed (eg: transaction in User art is different)
+    */
    public boolean isFavoriteBranch(BranchId branch) {
-      Collection<String> attributes = getAttributesToStringList(CoreAttributeTypes.FavoriteBranch);
-      for (String value : attributes) {
-         try {
-            if (branch.equals(BranchId.valueOf(value))) {
-               return true;
-            }
-         } catch (Exception ex) {
-            // do nothing
+      if (!getTransaction().equals(userModTx)) {
+         if (favoriteBranchIds == null) {
+            favoriteBranchIds = new HashSet<>();
+         } else {
+            favoriteBranchIds.clear();
          }
+         for (Attribute<Object> attri : getAttributes(CoreAttributeTypes.FavoriteBranch)) {
+            favoriteBranchIds.add(BranchId.valueOf((String) attri.getValue()));
+         }
+         userModTx = getTransaction();
       }
-      return false;
+      return favoriteBranchIds.contains(branch);
    }
 
    public String getSetting(String key) {

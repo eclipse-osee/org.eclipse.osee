@@ -17,7 +17,9 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED
 import static org.eclipse.osee.framework.core.enums.LoadLevel.ARTIFACT_DATA;
 import static org.eclipse.osee.framework.core.enums.LoadLevel.RELATION_DATA;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
@@ -47,6 +49,8 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  * @author Ryan Schmitt
  */
 public class AttributeLoader {
+
+   private static Set<Long> attrIdsErrorLogged = new HashSet<>(10000);
 
    static void loadAttributeData(Long queryId, CompositeKeyHashMap<ArtifactId, Id, Artifact> tempCache,
       boolean historical, DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel, boolean isArchived,
@@ -190,11 +194,13 @@ public class AttributeLoader {
    private static void handleMultipleVersions(AttrData previous, AttrData current, boolean historical) {
       // Do not warn about skipping on historical loading, because the most recent
       // transaction is used first due to sorting on the query
-      if (!historical) {
+      // Only display error once; This needs to be fixed; can not tell what is valid error vs invalid
+      if (!historical && !attrIdsErrorLogged.contains(current.attrId.getId())) {
          OseeLog.logf(ArtifactLoader.class, Level.WARNING,
             "multiple attribute version for attribute id [%s] artifact id[%s] branch[%s] prevGammaId[%s] currGammaId[%s] prevModType[%s] currModType[%s]",
             current.attrId, current.artifactId, current.branch, previous.gammaId, current.gammaId, previous.modType,
             current.modType);
+         attrIdsErrorLogged.add(current.attrId.getId());
       }
    }
 

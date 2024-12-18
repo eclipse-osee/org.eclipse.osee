@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.mim.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -489,5 +490,67 @@ public class PlatformTypeToken extends ArtifactAccessorResultWithGammas {
       art.setApplicabilityId(applicId.getIdString());
       art.setkey(key);
       return art;
+   }
+
+   @JsonIgnore
+   @Override
+   public boolean equals(Object obj) {
+      if (obj == this) {
+         return true;
+      }
+      if (obj instanceof PlatformTypeToken) {
+         PlatformTypeToken other = ((PlatformTypeToken) obj);
+         if (!this.getName().valueEquals(other.getName())) {
+            return false;
+         }
+         if (!this.getDescription().valueEquals(other.getDescription())) {
+            return false;
+         }
+         if (!this.getInterfacePlatformTypeUnits().valueEquals(other.getInterfacePlatformTypeUnits())) {
+            return false;
+         }
+         if (!this.getInterfacePlatformTypeValidRangeDescription().valueEquals(
+            other.getInterfacePlatformTypeValidRangeDescription())) {
+            return false;
+         }
+         if (!this.getInterfacePlatformTypeMinval().valueEquals(other.getInterfacePlatformTypeMinval())) {
+            return false;
+         }
+         if (!this.getInterfacePlatformTypeMaxval().valueEquals(other.getInterfacePlatformTypeMaxval())) {
+            return false;
+         }
+         if (!this.getInterfacePlatformTypeMsbValue().valueEquals(other.getInterfacePlatformTypeMsbValue())) {
+            return false;
+         }
+         if (!this.getInterfacePlatformTypeBitSize().valueEquals(other.getInterfacePlatformTypeBitSize())) {
+            return false;
+         }
+         if (!this.getInterfaceDefaultValue().valueEquals(other.getInterfaceDefaultValue())) {
+            return false;
+         }
+         if (!this.getInterfacePlatformTypeBitsResolution().valueEquals(
+            other.getInterfacePlatformTypeBitsResolution())) {
+            return false;
+         }
+         if (!this.getInterfacePlatformTypeCompRate().valueEquals(other.getInterfacePlatformTypeCompRate())) {
+            return false;
+         }
+         if (!this.getInterfacePlatformTypeAnalogAccuracy().valueEquals(
+            other.getInterfacePlatformTypeAnalogAccuracy())) {
+            return false;
+         }
+         if (!this.getInterfaceLogicalType().valueEquals(other.getInterfaceLogicalType())) {
+            return false;
+         }
+         if (!this.getInterfacePlatformType2sComplement().valueEquals(other.getInterfacePlatformType2sComplement())) {
+            return false;
+         }
+         if (!this.getEnumSet().equals(other.getEnumSet())) {
+            return false;
+         }
+         return true;
+      }
+      return false;
+
    }
 }

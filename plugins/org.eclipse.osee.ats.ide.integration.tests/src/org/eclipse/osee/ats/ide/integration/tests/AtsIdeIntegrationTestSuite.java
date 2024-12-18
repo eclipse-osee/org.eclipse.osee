@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.ide.integration.tests.framework.ui.skynet.FrameworkU
 import org.eclipse.osee.ats.ide.integration.tests.framework.ui.skynet.dialog.FrameworkUiSkynetTest_Dialog_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.orcs.rest.ClientEndpointTest;
 import org.eclipse.osee.ats.ide.integration.tests.orcs.rest.applic.OrcsRestTestSuite;
+import org.eclipse.osee.ats.ide.integration.tests.skynet.core.ManifestTest;
 import org.eclipse.osee.ats.ide.integration.tests.skynet.core.SkynetCoreIntegrationTestSuite;
 import org.eclipse.osee.ats.ide.integration.tests.synchronization.SynchronizationTestSuite;
 import org.eclipse.osee.ats.ide.integration.tests.ui.skynet.SkynetUiCoreIntegrationTestSuite;
@@ -41,6 +42,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    DbInitTest.class,
    DemoDbPopulateSuite.class,
+   ManifestTest.class,
    /**
     * AtsTest_AllAts_Suite suite needs to be right after populate because<br/>
     * search counts are used from populate and need to remain the same.

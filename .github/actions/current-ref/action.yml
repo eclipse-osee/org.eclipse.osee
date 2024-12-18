@@ -1,0 +1,21 @@
+name: 'Set Current Ref'
+description: Generates a normalized reference based on whether an action is operating on main or a PR.
+
+outputs:
+  current_ref:
+    description: The current ref (branch or tag name)
+    value: ${{ steps.set-ref.outputs.current_ref }}
+
+runs:
+  using: composite
+
+  steps:
+    - name: Set Ref
+      id: set-ref
+      shell: bash
+      run: |
+        if [[ "${{ github.ref_name }}" == "main" ]]; then
+          echo "current_ref=" >> "$GITHUB_OUTPUT"
+        else
+          echo "current_ref=$(echo ${{ github.ref_name }} | tr '/' '-')" >> "$GITHUB_OUTPUT"
+        fi

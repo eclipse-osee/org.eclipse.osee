@@ -142,6 +142,11 @@ public interface BranchQuery extends BranchQueryBuilder<BranchQuery>, Query {
          }
 
          @Override
+         public BranchQuery andAssociatedArtIds(List<ArtifactId> artId) {
+            return null;
+         }
+
+         @Override
          public boolean exists() {
             return false;
          }
@@ -180,7 +185,7 @@ public interface BranchQuery extends BranchQueryBuilder<BranchQuery>, Query {
          public BranchQuery andIsOfCategory(BranchCategoryToken category) {
             return null;
          }
-         
+
          @Override
          public BranchQuery andIsNotOfCategory(BranchCategoryToken category) {
             return null;

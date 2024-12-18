@@ -25,9 +25,8 @@ import { PeerReviewUiService } from '../../services/peer-review-ui.service';
 	selector: 'osee-create-peer-review-button',
 	imports: [MatButton, MatIcon],
 	template: `<button
-		mat-raised-button
-		(click)="addAction()"
-		class="tw-bg-primary tw-text-background-background">
+		mat-flat-button
+		(click)="addAction()">
 		<mat-icon>add</mat-icon>Create Peer Review
 	</button>`,
 })
@@ -45,7 +44,11 @@ export class CreatePeerReviewButtonComponent {
 				switchMap((thisUser) =>
 					this.dialog
 						.open(CreateActionDialogComponent, {
-							data: new CreateAction(thisUser, this.workType()),
+							data: new CreateAction(
+								thisUser,
+								false,
+								this.workType()
+							),
 							minWidth: '60vw',
 						})
 						.afterClosed()

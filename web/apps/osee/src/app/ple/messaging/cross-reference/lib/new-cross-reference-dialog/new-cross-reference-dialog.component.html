@@ -21,7 +21,8 @@
 					[(ngModel)]="crossReference.name"
 					required
 					name="field-name"
-					data-cy="field-name" />
+					data-cy="field-name"
+					data-testid="field-name" />
 			</mat-form-field>
 			<mat-form-field class="tw-w-full">
 				<mat-label>Value</mat-label>
@@ -30,7 +31,8 @@
 					[(ngModel)]="crossReference.crossReferenceValue"
 					required
 					name="field-value"
-					data-cy="field-value" />
+					data-cy="field-value"
+					data-testid="field-value" />
 			</mat-form-field>
 			<mat-form-field class="tw-w-full">
 				<mat-label>Additional Content</mat-label>
@@ -51,7 +53,8 @@
 							matInput
 							[(ngModel)]="item.key"
 							(ngModelChange)="updateArrayString()"
-							[name]="'field-item-key-' + i" />
+							[name]="'field-item-key-' + i"
+							[attr.data-testid]="'field-item-key-' + i" />
 					</mat-form-field>
 					<mat-form-field>
 						<mat-label>Value</mat-label>
@@ -59,7 +62,8 @@
 							matInput
 							[(ngModel)]="item.value"
 							(ngModelChange)="updateArrayString()"
-							[name]="'field-item-value-' + i" />
+							[name]="'field-item-value-' + i"
+							[attr.data-testid]="'field-item-value-' + i" />
 					</mat-form-field>
 				</div>
 			}
@@ -67,7 +71,8 @@
 		<button
 			mat-mini-fab
 			(click)="addArrayValue()"
-			class="tertiary-fab tw-float-right tw-mb-2">
+			class="tertiary-fab tw-float-right tw-mb-2"
+			data-testid="add-array-value">
 			<mat-icon>add</mat-icon>
 		</button>
 		<osee-applicability-dropdown

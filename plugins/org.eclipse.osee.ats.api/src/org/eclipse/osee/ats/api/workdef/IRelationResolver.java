@@ -92,4 +92,24 @@ public interface IRelationResolver extends IParentProvider {
 
    Collection<IRelationLink> getRelations(ArtifactId artifact, RelationTypeSide relationTypeSide);
 
+   default public boolean isInRelation(ArtifactToken art, RelationTypeSide relationSide) {
+      for (IRelationLink link : getRelations(art)) {
+         if (link.getRelationType().equals(relationSide.getRelationType())) {
+            if (relationSide.getSide().isSideA()) {
+               if (art.equals(link.getArtifactIdA())) {
+                  return true;
+               }
+            } else {
+               if (art.equals(link.getArtifactIdB())) {
+                  return true;
+               }
+
+            }
+         }
+      }
+      return false;
+   }
+
+   List<IRelationLink> getRelations(ArtifactToken art);
+
 }

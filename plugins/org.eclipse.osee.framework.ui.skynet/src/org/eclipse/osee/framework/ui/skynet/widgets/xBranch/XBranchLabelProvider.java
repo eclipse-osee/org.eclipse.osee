@@ -25,10 +25,12 @@ import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -119,7 +121,14 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          String userName = "";
          try {
             if (branch.getBaseTransaction() != null) {
-               userName = UserManager.getSafeUserNameById(branch.getBaseTransaction().getAuthor());
+               UserToken author = branch.getBaseTransaction().getAuthor();
+               if (author == null) {
+                  userName = "Error: Author Should Not Be Null";
+               } else if (Strings.isValid(author.getName())) {
+                  userName = author.getName();
+               } else {
+                  userName = UserManager.getSafeUserNameById(author);
+               }
             }
             return userName;
          } catch (OseeCoreException ex) {

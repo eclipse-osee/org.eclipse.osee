@@ -24,7 +24,6 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    AbstractOperationTest.class,
    ConditionsTest.class,
-   ManifestTest.class,
    WordCoreUtilTest.class,
    XResultDataTest.class,
    XResultDataTimeMapTest.class})

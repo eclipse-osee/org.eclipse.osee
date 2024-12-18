@@ -1,0 +1,25 @@
+name: 'Set Docker Current Ref'
+description: Generates a normalized reference for a docker image based on whether an action is operating on main or a PR.
+
+outputs:
+  docker_current_ref:
+    description: The current ref (branch or tag name)
+    value: ${{ steps.set-ref.outputs.docker_current_ref }}
+
+runs:
+  using: composite
+
+  steps:
+    - name: Inner Ref
+      id: inner-ref
+      uses: ./.github/actions/current-ref
+
+    - name: Set Ref
+      id: set-ref
+      shell: bash
+      run: |
+        if [[ "${{ github.ref_name }}" == "main" ]]; then
+          echo "docker_current_ref=${{steps.inner-ref.outputs.current_ref}}" >> "$GITHUB_OUTPUT"
+        else
+          echo "docker_current_ref=/${{steps.inner-ref.outputs.current_ref}}" >> "$GITHUB_OUTPUT"
+        fi

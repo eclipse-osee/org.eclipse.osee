@@ -25,9 +25,9 @@ bat.toolchain()
 plconfig = use_extension("@rules_osee//plconfig:extensions.bzl","plconfig")
 plconfig.config(
     name="my_product_line",            
-    osee_url="http://host.docker.internal:8089",
+    osee_url="http://localhost:8089",
     branch_id="8",
-    sha256="f02a000d60677a7f9d9511362241176f2d7afba3b1e6544bcbd1c60f12353545")
+    sha256="30e77eeea6b35d7308567c30b774bb7fc571efd5511065ded283df76bb7958ea")
 
 use_repo(
     plconfig,

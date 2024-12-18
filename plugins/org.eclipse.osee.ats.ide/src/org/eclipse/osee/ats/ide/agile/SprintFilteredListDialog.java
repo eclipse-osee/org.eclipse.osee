@@ -34,8 +34,6 @@ import org.eclipse.swt.widgets.Control;
  */
 public class SprintFilteredListDialog extends FilteredTreeDialog {
 
-   private boolean removeFromSprint;
-
    public SprintFilteredListDialog(String dialogTitle, String dialogMessage, Collection<? extends IAgileSprint> values) {
       super(dialogTitle, dialogMessage, new ArrayTreeContentProvider(), new StringLabelProvider(),
          new StringNameComparator());
@@ -65,15 +63,14 @@ public class SprintFilteredListDialog extends FilteredTreeDialog {
       checkbox.setFillHorizontally(true);
       checkbox.setFocus();
       checkbox.setDisplayLabel(false);
-      checkbox.set(removeFromSprint);
       checkbox.createWidgets(parent, 2);
 
       SelectionListener selectionListener = new SelectionAdapter() {
 
          @Override
          public void widgetSelected(SelectionEvent e) {
-            removeFromSprint = checkbox.isSelected();
-            if (removeFromSprint) {
+            clearSelected = checkbox.isSelected();
+            if (clearSelected) {
                getButton(getDefaultButtonIndex()).setEnabled(true);
             } else {
                getButton(getDefaultButtonIndex()).setEnabled(false);
@@ -87,7 +84,7 @@ public class SprintFilteredListDialog extends FilteredTreeDialog {
    }
 
    public boolean isRemoveFromSprint() {
-      return removeFromSprint;
+      return clearSelected;
    }
 
 }

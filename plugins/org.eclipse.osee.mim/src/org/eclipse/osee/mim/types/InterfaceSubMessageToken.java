@@ -12,12 +12,14 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithGammas;
 import org.eclipse.osee.accessor.types.AttributePojo;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
@@ -28,6 +30,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.rest.model.transaction.Attribute;
@@ -176,4 +179,37 @@ public class InterfaceSubMessageToken extends ArtifactAccessorResultWithGammas {
       return art;
    }
 
+   @JsonIgnore
+   @Override
+   public boolean equals(Object obj) {
+      if (obj == this) {
+         return true;
+      }
+      if (obj instanceof InterfaceSubMessageToken) {
+         InterfaceSubMessageToken other = ((InterfaceSubMessageToken) obj);
+         ArtifactReadable otherArt = other.getArtifactReadable();
+         if (!this.getName().valueEquals(other.getName())) {
+            return false;
+         }
+         if (!this.getDescription().valueEquals(other.getDescription())) {
+            return false;
+         }
+         if (!this.getInterfaceSubMessageNumber().valueEquals(other.getInterfaceSubMessageNumber())) {
+            return false;
+         }
+         List<InterfaceStructureToken> structures = this.getArtifactReadable().getRelated(
+            CoreRelationTypes.InterfaceSubMessageContent_Structure).getList().stream().filter(
+               a -> !a.getExistingAttributeTypes().isEmpty()).map(art -> new InterfaceStructureToken(art)).collect(
+                  Collectors.toList());
+         List<InterfaceStructureToken> otherStructures =
+            otherArt.getRelated(CoreRelationTypes.InterfaceSubMessageContent_Structure).getList().stream().filter(
+               a -> !a.getExistingAttributeTypes().isEmpty()).map(art -> new InterfaceStructureToken(art)).collect(
+                  Collectors.toList());
+         if (!structures.equals(otherStructures)) {
+            return false;
+         }
+         return true;
+      }
+      return false;
+   }
 }

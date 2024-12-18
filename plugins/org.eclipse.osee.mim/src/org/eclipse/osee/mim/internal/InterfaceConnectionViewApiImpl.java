@@ -15,8 +15,10 @@ package org.eclipse.osee.mim.internal;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.eclipse.osee.accessor.ArtifactAccessor;
 import org.eclipse.osee.accessor.types.ArtifactMatch;
@@ -26,6 +28,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -122,6 +125,26 @@ public class InterfaceConnectionViewApiImpl implements InterfaceConnectionViewAp
          //
       }
       return new LinkedList<>();
+   }
+
+   @Override
+   public Map<ArtifactId, InterfaceConnection> getForAllViews(BranchId branch, ArtifactId connectionId,
+      Collection<FollowRelation> followRelations) {
+      return this.getForAllViews(branch, connectionId, followRelations, TransactionId.SENTINEL);
+   }
+
+   @Override
+   public Map<ArtifactId, InterfaceConnection> getForAllViews(BranchId branch, ArtifactId connectionId,
+      Collection<FollowRelation> followRelations, TransactionId transactionId) {
+      try {
+         Map<ArtifactId, InterfaceConnection> connections =
+            this.getAccessor().getForAllViews(branch, connectionId, followRelations, transactionId);
+         return connections;
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         //
+      }
+      return new HashMap<>();
    }
 
    @Override

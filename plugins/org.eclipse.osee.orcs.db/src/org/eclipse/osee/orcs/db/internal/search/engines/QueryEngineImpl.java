@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
@@ -218,6 +220,187 @@ public class QueryEngineImpl implements QueryEngine {
       List<ArtifactReadable> artifacts = new ArrayList<>(1);
       loadArtifactsInto(queryData, queryFactory, a -> artifacts.add(a), 1);
       return artifacts;
+   }
+
+   @Override
+   public Map<ArtifactId, ArtifactReadable> asViewToArtifactMap(QueryData queryData, QueryFactory queryFactory) {
+      var artifactsMap = new HashMap<ArtifactId, ArtifactReadable>(DefaultMapCapacity);
+      loadArtifactsInto(queryData, queryFactory, (view, artifact) -> artifactsMap.put(view, artifact), 1);
+      return artifactsMap;
+   }
+
+   /**
+    * Note: this function assumes that all queries that pass through here are grouped by their configuration
+    */
+   private void loadArtifactsInto(QueryData queryData, QueryFactory queryFactory,
+      BiConsumer<ArtifactId, ArtifactReadable> artifactConsumer, int numArtifacts) {
+      // make the HashMap capacity large enough to accommodate the artifactCount given the default load factor of 75%
+      HashMap<ArtifactId, ArtifactReadable> artifactMap = new HashMap<>((int) (numArtifacts / 0.75) + 1);
+      AtomicReference<Long> currentConfiguration = new AtomicReference<>(0L);
+      List<ArtifactId> consumedArts = new LinkedList<>();
+      Consumer<JdbcStatement> jdbcConsumer = stmt -> {
+         Long artId = stmt.getLong("art_id");
+         GammaId artGamma = GammaId.valueOf(stmt.getLong("art_gamma_id"));
+         Long attr_id = stmt.getLong("attr_id");
+         Long otherArtId = stmt.getLong("other_art_id");
+         Long otherArtType = stmt.getLong("other_art_type_id");
+         Long typeId = stmt.getLong("type_id");
+         String value = stmt.getString("value");
+         String uri = stmt.getString("uri");
+         Long configuration = stmt.getLong("configuration");
+         if (!currentConfiguration.get().equals(configuration)) {
+            //this resets the maps for the next configuration such that they can be re-populated
+            artifactMap.clear();
+            consumedArts.clear();
+            currentConfiguration.set(configuration);
+         }
+
+         ArtifactReadableImpl artifact = (ArtifactReadableImpl) artifactMap.get(ArtifactId.valueOf(artId));
+         if (artifact == null && artGamma != null) {
+            artifact = createArtifact(stmt, artId, stmt.getLong("art_type_id"), queryData, queryFactory, artGamma);
+            artifactMap.put(artifact, artifact);
+            if (stmt.getLong("top") == 1) {
+               artifactConsumer.accept(ArtifactId.valueOf(configuration), artifact);
+               consumedArts.add(ArtifactId.valueOf(artifact.getId()));
+            } else {
+               //if we have attr_id AND other artid then we are a reference artifact
+
+               if (attr_id > 0 && otherArtId > 0 && otherArtType > 0) {
+                  //see if the parent artifact has been created, if so add to the resourceArtifacts hash map
+                  //if not, create? like relation logic?
+                  Long sourceAttrId = stmt.getLong("rel_type"); //overloading the rel_type column as attr Id for reference artifacts
+                  ArtifactReadableImpl sourceArtifact =
+                     (ArtifactReadableImpl) artifactMap.get(ArtifactId.valueOf(otherArtId));
+                  if (sourceArtifact != null) {
+                     List<IAttribute<?>> values = sourceArtifact.getAttributesHashCollection().getValues();
+                     Optional<IAttribute<?>> findFirst =
+                        values.stream().filter(a -> a.getId().equals(sourceAttrId)).findFirst();
+                     if (findFirst.isPresent()) {
+                        sourceArtifact.putReferenceArtifact(AttributeId.valueOf(findFirst.get().getId()), artifact);
+                     }
+                  }
+
+               }
+            }
+         } else {
+            // If an artifact with top = 1 appears as an "otherArtifact" first, because it's related to an artifact with top = 1, it needs
+            // to be added to the consumer as well.
+            if (!consumedArts.contains(ArtifactId.valueOf(artifact.getId())) && stmt.getLong("top") == 1) {
+               artifactConsumer.accept(ArtifactId.valueOf(configuration), artifact);
+               consumedArts.add(ArtifactId.valueOf(artifact.getId()));
+            }
+            /**
+             * if artifact is already in the map that means it was first found as a relation and applicability may not
+             * have been set
+             */
+            Long applicId = stmt.getLong("app_id");
+            artifactMap.get(ArtifactId.valueOf(artId)).getApplicabilityToken().setId(applicId);
+            if (OptionsUtil.getIncludeApplicabilityTokens(queryData.getRootQueryData().getOptions())) {
+               String applicValue = stmt.getString("app_value");
+               artifactMap.get(ArtifactId.valueOf(artId)).getApplicabilityToken().setName(applicValue);
+            }
+         }
+
+         if (attr_id != 0) {
+            AttributeTypeGeneric<?> attributeType = tokenService.getAttributeTypeOrCreate(typeId);
+            GammaId gamma = GammaId.valueOf(stmt.getLong("gamma_id"));
+            Attribute<?> attribute =
+               new Attribute<>(stmt.getLong("attr_id"), attributeType, value, uri, gamma, resourceManager);
+            // Check if the attribute value has been added already to the artifact to prevent duplicate values.
+            // This can happen when the same object is returned multiple times when following relations.
+            if (!artifact.getAttributeList(attributeType).stream().anyMatch(a -> a.getId().equals(attribute.getId()))) {
+               artifact.putAttributeValue(attributeType, attribute);
+            }
+            if (OptionsUtil.getIncludeLatestTransactionDetails(queryData.getRootQueryData().getOptions())) {
+
+               if (artifact.getTxDetails().getAuthor().isInvalid()) {
+
+                  Date time = null;
+
+                  String maxTime = stmt.getString("max_time").replaceAll("'", "");
+                  String timeStr = stmt.getString("timeStr").replaceAll("'", "");
+                  if (maxTime.equals(timeStr)) {
+                     try {
+                        int indexOf = timeStr.indexOf(".");
+                        int endIndex = timeStr.length() - 1;
+                        if (indexOf > 0) {
+                           endIndex = indexOf;
+                        }
+                        time = DateUtil.getDate("yyyyMMddHHmmss", timeStr);
+                     } catch (ParseException ex) {
+                        time = DateUtil.getSentinalDate();
+                     }
+                     String oseeComment = stmt.getString("osee_comment");
+                     int txType = stmt.getInt("tx_type");
+                     TransactionId suppTxId = TransactionId.valueOf(stmt.getLong("supp_tx_id"));
+                     ArtifactId commitArtId = ArtifactId.valueOf(stmt.getLong("commit_art_id"));
+                     Long buildId = stmt.getLong("build_id");
+                     ArtifactId author = ArtifactId.valueOf(stmt.getLong("author"));
+                     artifact.getTxDetails().setTime(time);
+                     artifact.getTxDetails().setAuthor(author);
+                     artifact.getTxDetails().setOseeComment(oseeComment);
+                     artifact.getTxDetails().setTxType(txType);
+                     artifact.getTxDetails().setTxId(suppTxId);
+                     artifact.getTxDetails().setCommitArtId(commitArtId);
+                     artifact.getTxDetails().setBuild_id(buildId);
+                  }
+               }
+            }
+         } else if (attr_id == 0) {
+            RelationSide side = value.equals("A") ? RelationSide.SIDE_A : RelationSide.SIDE_B;
+
+            ArtifactReadableImpl otherArtifact = (ArtifactReadableImpl) artifactMap.get(ArtifactId.valueOf(otherArtId));
+            if (otherArtifact == null) {
+               GammaId gamma = GammaId.valueOf(stmt.getLong("other_art_gamma_id"));
+               otherArtifact = createArtifact(stmt, otherArtId, otherArtType, queryData, queryFactory, gamma);
+               artifactMap.put(otherArtifact, otherArtifact);
+            }
+            /*
+             * If using followSearch, multi rows of a relation may return in some conditions e.g. followSearch Ideally
+             * should try and updates handlers so that select * isn't used, instead explicity calling out columns so
+             * that some can be excluded in final select
+             */
+
+            RelationTypeSide relTypeSide = new RelationTypeSide(tokenService.getRelationTypeOrCreate(typeId), side);
+            if (!artifact.areRelated(relTypeSide, otherArtifact)) {
+               artifact.putRelation(tokenService.getRelationTypeOrCreate(typeId), side, otherArtifact);
+            }
+            if (OptionsUtil.getIncludeLatestTransactionDetails(queryData.getRootQueryData().getOptions())) {
+
+               if (artifact.getTxDetails().getAuthor().isInvalid()) {
+
+                  Date time = null;
+
+                  String maxTime = stmt.getString("max_time").replaceAll("'", "");
+                  String timeStr = stmt.getString("timeStr").replaceAll("'", "");
+                  if (maxTime.equals(timeStr)) {
+                     try {
+                        time = DateUtil.getDate("yyyyMMddHHmmss", timeStr);
+                     } catch (ParseException ex) {
+                        time = DateUtil.getSentinalDate();
+                     }
+
+                     String oseeComment = stmt.getString("osee_comment");
+                     int txType = stmt.getInt("tx_type");
+                     TransactionId suppTxId = TransactionId.valueOf(stmt.getLong("supp_tx_id"));
+                     ArtifactId commitArtId = ArtifactId.valueOf(stmt.getLong("commit_art_id"));
+                     Long buildId = stmt.getLong("build_id");
+                     ArtifactId author = ArtifactId.valueOf(stmt.getLong("author"));
+                     artifact.getTxDetails().setTime(time);
+                     artifact.getTxDetails().setAuthor(author);
+                     artifact.getTxDetails().setOseeComment(oseeComment);
+                     artifact.getTxDetails().setTxType(txType);
+                     artifact.getTxDetails().setTxId(suppTxId);
+                     artifact.getTxDetails().setCommitArtId(commitArtId);
+                     artifact.getTxDetails().setBuild_id(buildId);
+                  }
+               }
+            }
+
+         }
+      };
+
+      selectiveArtifactLoad(queryData, numArtifacts, jdbcConsumer);
    }
 
    private void loadArtifactsInto(QueryData queryData, QueryFactory queryFactory,
@@ -583,4 +766,5 @@ public class QueryEngineImpl implements QueryEngine {
 
       return new ArtifactTable(tableOptions, data);
    }
+
 }

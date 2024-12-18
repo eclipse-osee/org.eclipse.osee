@@ -20,6 +20,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionProvider;
 import org.eclipse.osee.ats.api.workdef.model.WorkDefinition;
 import org.eclipse.osee.ats.core.workdef.WorkDefTaskDemoForCrEstimating;
+import org.eclipse.osee.ats.core.workdef.WorkDefTeamMIM;
 import org.eclipse.osee.ats.core.workdef.WorkDefTeamProductLine;
 import org.eclipse.osee.ats.core.workdef.WorkDefTeamSimpleInWork;
 import org.eclipse.osee.ats.core.workdef.internal.workdefs.WorkDefGoal;
@@ -65,6 +66,7 @@ public class AtsWorkDefinitionProvider implements IAtsWorkDefinitionProvider {
             new WorkDefTeamAtsConfig2Example().build(),
             new WorkDefTeamDefault().build(),
             new WorkDefTeamProductLine().build(),
+            new WorkDefTeamMIM().build(),
             new WorkDefTeamSimpleInWork().build(),
             new WorkDefTeamSimple().build(),
             new WorkDefTeamSimpleAnalyze().build()));

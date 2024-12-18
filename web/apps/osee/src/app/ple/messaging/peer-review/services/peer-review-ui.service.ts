@@ -44,7 +44,7 @@ export class PeerReviewUiService {
 	private _workingBranchFilter$ = toObservable(this.workingBranchFilter);
 
 	prBranch = this._prBranchId$.pipe(
-		tap(() => this._resetBranchSelections()),
+		tap(() => this.resetBranchSelections()),
 		filter((id) => id !== '-1'),
 		switchMap((id) => this.branchInfoService.getBranch(id))
 	);
@@ -62,7 +62,7 @@ export class PeerReviewUiService {
 		)
 	);
 
-	private _resetBranchSelections() {
+	resetBranchSelections() {
 		this.branchesToAdd.set([]);
 		this.branchesToRemove.set([]);
 	}
@@ -140,7 +140,7 @@ export class PeerReviewUiService {
 			tap((res) => {
 				if (res.success) {
 					this.uiService.updated = true;
-					this._resetBranchSelections();
+					this.resetBranchSelections();
 				}
 			})
 		);

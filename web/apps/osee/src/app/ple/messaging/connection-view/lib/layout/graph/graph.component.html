@@ -13,7 +13,7 @@
 @if (data | async; as graphData) {
 	<div
 		(contextmenu)="openGraphDialog($event)"
-		data-cy="graph"
+		data-testid="graph"
 		class="tw-h-full tw-w-screen">
 		<ngx-graph
 			class="chart-container"
@@ -139,7 +139,7 @@
 					(contextmenu)="
 						openNodeDialog($event, node, graphData.edges)
 					"
-					[attr.data-cy]="'node-' + node.data.name.value">
+					[attr.data-testid]="'node-' + node.data.name.value">
 					@if (node.data.interfaceNodeBackgroundColor.value !== '') {
 						<ng-container>
 							<svg:rect
@@ -193,7 +193,7 @@
 					(contextmenu)="
 						openLinkDialog($event, link, graphData.nodes)
 					"
-					[attr.data-cy]="'link-' + link.label"
+					[attr.data-testid]="'link-' + link.label"
 					[matTooltip]="'Open connection ' + link.label">
 					<ng-template #linkView>
 						@if (link.data.dashed) {
@@ -333,7 +333,7 @@
 				(click)="createNewNode()">
 				<mat-icon
 					class="tw-text-osee-green-9"
-					data-cy="create-new-node-btn"
+					data-testid="create-new-node-btn"
 					>add_circle_outline</mat-icon
 				>Create New Node
 			</button>
@@ -342,7 +342,7 @@
 				(click)="createNewConnection()">
 				<mat-icon
 					class="tw-text-osee-green-9"
-					data-cy="create-new-connection-btn"
+					data-testid="create-new-connection-btn"
 					>add_circle_outline</mat-icon
 				>Create New Connection
 			</button>

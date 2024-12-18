@@ -15,8 +15,8 @@ load("@rules_osee//bat:apply_applicability.bzl","apply_applicability")
 apply_applicability(
     name="processed_subhdrs",
     srcs=glob(["test2.h"]),
-    # applic_config = "@my_product_line//config_files:resolved_config",
-    applic_config = "//rules_osee_examples/c_compile_test:PRODUCT_A.json",
+    applic_config = "@my_product_line//config_files:resolved_config",
+    # applic_config = "//rules_osee_examples/c_compile_test:PRODUCT_A.json",
     visibility = [ "//visibility:public"]
 )
 

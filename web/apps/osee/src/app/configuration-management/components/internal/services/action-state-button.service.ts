@@ -13,11 +13,7 @@
 import { Injectable, inject } from '@angular/core';
 import { iif, of, combineLatest } from 'rxjs';
 import { map, switchMap, take, tap } from 'rxjs/operators';
-import {
-	BranchRoutedUIService,
-	CurrentBranchInfoService,
-	UiService,
-} from '@osee/shared/services';
+import { BranchRoutedUIService, UiService } from '@osee/shared/services';
 import { UserDataAccountService } from '@osee/auth';
 import {
 	transitionAction,
@@ -31,6 +27,8 @@ import {
 	ActionService,
 	CurrentActionService,
 } from '@osee/configuration-management/services';
+import { CommitBranchService } from '@osee/commit/services';
+import { branch } from '@osee/shared/types';
 
 @Injectable({
 	providedIn: 'root',
@@ -39,19 +37,16 @@ export class ActionStateButtonService {
 	dialog = inject(MatDialog);
 	private uiService = inject(UiService);
 	private actionService = inject(ActionService);
-	private currentBranchService = inject(CurrentBranchInfoService);
 	private accountService = inject(UserDataAccountService);
 	private branchedRouter = inject(BranchRoutedUIService);
 	private currentActionService = inject(CurrentActionService);
+	private commitBranchService = inject(CommitBranchService);
 
-	private _user = this.accountService.user;
-	private _branchAction = this.currentActionService.branchAction;
+	private _user$ = this.accountService.user;
+	private _currentAction$ = this.currentActionService.branchAction;
 
 	performTransition(state: teamWorkflowState, action: action) {
-		return combineLatest([
-			this._user,
-			this.currentActionService.branchAction,
-		]).pipe(
+		return combineLatest([this._user$, this._currentAction$]).pipe(
 			take(1),
 			switchMap(([user, branchActions]) =>
 				this.actionService
@@ -115,7 +110,7 @@ export class ActionStateButtonService {
 	}
 
 	private transitionValidate(state: teamWorkflowState, action: action) {
-		return this._user.pipe(
+		return this._user$.pipe(
 			take(1),
 			switchMap((user) =>
 				this.actionService.validateTransitionAction(
@@ -131,7 +126,7 @@ export class ActionStateButtonService {
 	}
 
 	isTeamLead(teamWorkflow: teamWorkflowDetails) {
-		return this._user.pipe(
+		return this._user$.pipe(
 			map((user) => {
 				let isLead = false;
 				teamWorkflow.leads.forEach((lead) => {
@@ -146,16 +141,16 @@ export class ActionStateButtonService {
 	}
 
 	approveBranch(action: action) {
-		return this._branchAction.pipe(
+		return this._currentAction$.pipe(
 			take(1),
-			switchMap((branchActions) =>
+			switchMap((currentActions) =>
 				this.actionService.approveBranch(action.TeamWfAtsId).pipe(
 					tap((res) => {
 						if (!res) {
 							this.uiService.ErrorText = `Failed to approve branch ${action.TeamWfAtsId}`;
 						} else if (
-							branchActions.length > 0 &&
-							branchActions[0].id === action.id
+							currentActions.length > 0 &&
+							currentActions[0].id === action.id
 						) {
 							this.uiService.updated = true;
 							this.uiService.updatedArtifact = `${action.id}`;
@@ -166,89 +161,90 @@ export class ActionStateButtonService {
 		);
 	}
 
-	private _doCommitBranch = combineLatest([
-		this._branchAction,
-		this._user,
-	]).pipe(
-		take(1),
-		switchMap(([actions, user]) =>
-			iif(
-				() => actions.length > 0 && user.name.length > 0,
-				this.commitBranch({
-					committer: user.id,
-					archive: 'false',
-				}).pipe(
-					switchMap((commitObs) =>
-						iif(
-							() => commitObs.success,
-							this.actionService
-								.validateTransitionAction(
-									new transitionAction(
-										'Completed',
-										'Transition to Completed',
-										actions,
-										user
-									)
-								)
-								.pipe(
-									switchMap((validateObs) =>
-										iif(
-											() =>
-												validateObs.results.length ===
-												0,
-											this.actionService
-												.transitionAction(
-													new transitionAction(
-														'Completed',
-														'Transition To Completed',
-														actions,
-														user
-													)
-												)
-												.pipe(
-													tap(
-														(
-															transitionResponse
-														) => {
-															if (
-																transitionResponse
-																	.results
-																	.length > 0
-															) {
-																this.uiService.ErrorText =
-																	transitionResponse.results[0];
-															} else {
-																this.uiService.updated =
-																	true;
-																this.branchedRouter.position =
-																	{
-																		type: 'baseline',
-																		id: commitObs
-																			.tx
-																			.branchId,
-																	};
-															}
-														}
-													)
-												),
-											of() // @todo replace with a false response
+	public commitBranch(action: action, branch: branch, destBranch: branch) {
+		return combineLatest([this._user$, this._currentAction$]).pipe(
+			take(1),
+			switchMap(([user, currentAction]) =>
+				iif(
+					() =>
+						action.id !== 0 &&
+						action.id !== -1 &&
+						user.name.length > 0,
+					this.commitBranchService
+						.commitBranch(branch.id, destBranch.id)
+						.pipe(
+							switchMap((commitObs) =>
+								iif(
+									() => commitObs.success,
+									this.actionService
+										.validateTransitionAction(
+											new transitionAction(
+												'Completed',
+												'Transition to Completed',
+												[action],
+												user
+											)
 										)
-									)
-								),
-							of() // @todo replace with a false response
-						)
-					)
-				),
-				of() // @todo replace with a false response
+										.pipe(
+											switchMap((validateObs) =>
+												iif(
+													() =>
+														validateObs.results
+															.length === 0,
+													this.actionService
+														.transitionAction(
+															new transitionAction(
+																'Completed',
+																'Transition To Completed',
+																[action],
+																user
+															)
+														)
+														.pipe(
+															tap(
+																(
+																	transitionResponse
+																) => {
+																	if (
+																		transitionResponse
+																			.results
+																			.length >
+																		0
+																	) {
+																		this.uiService.ErrorText =
+																			transitionResponse.results[0];
+																	} else {
+																		this.uiService.updated =
+																			true;
+																		if (
+																			currentAction.length >
+																				0 &&
+																			currentAction[0]
+																				.id ===
+																				action.id
+																		)
+																			this.branchedRouter.position =
+																				{
+																					type: 'baseline',
+																					id: commitObs
+																						.tx
+																						.branchId,
+																				};
+																	}
+																}
+															)
+														),
+													of() // @todo replace with a false response
+												)
+											)
+										),
+									of() // @todo replace with a false response
+								)
+							)
+						),
+					of() // @todo replace with a false response
+				)
 			)
-		)
-	);
-
-	public commitBranch(body: { committer: string; archive: string }) {
-		return this.currentBranchService.commitBranch(body);
-	}
-
-	public get doCommitBranch() {
-		return this._doCommitBranch;
+		);
 	}
 }

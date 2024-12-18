@@ -262,10 +262,12 @@
 			}
 		}
 	}
-	<osee-latest-action-drop-down
-		(parentActionChange)="
-			data.parentAction = $event.id
-		"></osee-latest-action-drop-down>
+	@if (data.allowParentAction) {
+		<osee-latest-action-drop-down
+			(parentActionChange)="
+				data.parentAction = $event.id
+			"></osee-latest-action-drop-down>
+	}
 	@if (data.createBranchDefault) {
 		<p>* A working branch will be created for this action</p>
 	}

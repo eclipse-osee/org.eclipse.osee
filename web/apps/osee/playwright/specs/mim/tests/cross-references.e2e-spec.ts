@@ -27,20 +27,18 @@ test('test', async ({ page }) => {
 	await enableEditMode(page);
 
 	// Create cross-reference
-	await page.locator('button').filter({ hasText: 'add' }).click();
-	await page.getByLabel('Name').fill('C1');
-	await page.getByLabel('Value').fill('Private Array');
-	await page.locator('mat-dialog-content').getByRole('button').click();
-	await page.getByLabel('Key').fill('1');
-	await page.locator('#mat-input-10').fill('FIRST_VAL');
-	await page.locator('mat-dialog-content').getByRole('button').click();
-	await page.locator('#mat-input-11').fill('2');
+	await page.getByTestId('add-cross-ref').filter({ hasText: 'add' }).click();
+	await page.getByTestId('field-name').fill('C1');
+	await page.getByTestId('field-value').fill('Private Array');
 	await page
-		.locator(
-			'div:nth-child(3) > mat-form-field:nth-child(2) > .mat-mdc-text-field-wrapper > .mat-mdc-form-field-flex > .mat-mdc-form-field-infix'
-		)
+		.getByTestId('add-array-value')
+		.and(page.getByRole('button'))
 		.click();
-	await page.locator('#mat-input-12').fill('SECOND_VAL');
+	await page.getByTestId('field-item-key-' + 0).fill('1');
+	await page.getByTestId('field-item-value-' + 0).fill('FIRST_VAL');
+	await page.getByTestId('add-array-value').click();
+	await page.getByTestId('field-item-key-' + 1).fill('2');
+	await page.getByTestId('field-item-value-' + 1).fill('SECOND_VAL');
 
 	await page.screenshot({
 		animations: 'disabled',

@@ -16,6 +16,7 @@ export type branchSelected = {
 	branch: branch;
 	selected: boolean;
 	selectable: boolean;
+	committedToBaseline: boolean;
 };
 
 export type peerReviewApplyData = {

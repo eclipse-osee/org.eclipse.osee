@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Component, effect, inject, input, signal } from '@angular/core';
+import { Component, inject, input, linkedSignal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
 	MatAutocomplete,
@@ -58,13 +58,16 @@ export class PeerReviewBranchSelectorComponent {
 	private peerReviewUiService = inject(PeerReviewUiService);
 	private uiService = inject(UiService);
 
-	filter = signal('');
-	private _filter$ = toObservable(this.filter);
+	private _prBranchId = toSignal(this.peerReviewUiService.prBranchId);
+	private _prBranch = toSignal(this.peerReviewUiService.prBranch);
 
-	prBranch = toSignal(this.peerReviewUiService.prBranch);
-	private _prBranchEffect = effect(() =>
-		this.filter.set(this.prBranch()?.name || '')
-	);
+	filter = linkedSignal(() => {
+		if (this._prBranchId() === '-1') {
+			return '';
+		}
+		return this._prBranch()?.name || '';
+	});
+	private _filter$ = toObservable(this.filter);
 
 	branchCount = toSignal(
 		toObservable(this.filter).pipe(

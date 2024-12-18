@@ -53,4 +53,9 @@ public class AtsJiraServiceImpl extends AbstractAtsJiraService {
       return rd;
    }
 
+   @Override
+   public String editJira(String json, String jiraStoryId) {
+      return atsApi.getServerEndpoints().getJiraEndpoint().editJira(json, jiraStoryId);
+   }
+
 }

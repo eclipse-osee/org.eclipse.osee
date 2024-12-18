@@ -671,7 +671,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       QueryData followQueryData = followQueryData();
       followQueryData.followCausesChild = terminalFollow;
       followQueryData.addCriteria(new CriteriaRelationTypeFollow(relationTypeSide, artifactType, terminalFollow, true));
-      
+
       if (this.hasCriteriaType(CriteriaFollowSearch.class)) {
          //this is strictly to create an invalid condition so child artWith queries have '' as order_value
          followQueryData.addCriteria(this.getAllCriteria().stream().filter(
@@ -691,7 +691,7 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
          followQueryData = followQueryData();
          followQueryData.followCausesChild = terminalFollow;
          followQueryData.addCriteria(new CriteriaRelationTypeFollow(otherSide, artifactType, terminalFollow, true));
-         
+
          if (this.hasCriteriaType(CriteriaFollowSearch.class)) {
             //this is strictly to create an invalid condition so child artWith queries have '' as order_value
             followQueryData.addCriteria(this.getAllCriteria().stream().filter(
@@ -703,9 +703,8 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
          }
          if (relationTypeSide.isInvalid()) {
             followQueryData = followQueryData();
-            followQueryData.addCriteria(
-               new CriteriaRelationTypeFollow(otherSide, artifactType, terminalFollow, false));
-         }  
+            followQueryData.addCriteria(new CriteriaRelationTypeFollow(otherSide, artifactType, terminalFollow, false));
+         }
       }
       return followQueryData;
    }
@@ -849,6 +848,14 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
       setQueryType(QueryType.TOKEN);
       select(attributeType);
       return queryEngine.asArtifactTokens(this);
+   }
+
+   @Override
+   public Map<ArtifactId, ArtifactReadable> asViewToArtifactMap() {
+      setQueryType(QueryType.SELECT);
+      //      note: this shouldn't be exposed outside of here or an asViewToArtifactMaps() due to the very specific nature of loading all views at once
+      OptionsUtil.setContentsForAllViews(this.getRootQueryData().getOptions(), true);
+      return queryEngine.asViewToArtifactMap(this, queryFactory);
    }
 
    @Override

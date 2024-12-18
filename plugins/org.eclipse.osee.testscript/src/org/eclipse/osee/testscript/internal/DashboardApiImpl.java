@@ -64,7 +64,7 @@ public class DashboardApiImpl implements DashboardApi {
 
       SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
-      //Record all of the relevant dates for each respective team
+      //Pre-record all relevant dates so we can ensure all are populated with data from previously run scripts not run that day.
       for (ScriptDefToken def : defs) {
          for (ScriptResultToken res : def.getScriptResults()) {
             Date executionDate = res.getExecutionDate();
@@ -78,39 +78,24 @@ public class DashboardApiImpl implements DashboardApi {
                stats.put("All", executionDate, new CIStatsToken("All", executionDate));
             }
 
-            if (def.getTeam().isEmpty()) {
-               continue;
-            }
-
-            if (!stats.contains(def.getTeam(), executionDate)) {
+            if (!def.getTeam().isEmpty() && !stats.contains(def.getTeam(), executionDate)) {
                stats.put(def.getTeam(), executionDate, new CIStatsToken(def.getTeam(), executionDate));
             }
          }
       }
 
-      //Make sure that it always has the current date
-      Date currentDate = new Date();
-      try {
-         currentDate = formatter.parse(formatter.format(currentDate));
-      } catch (ParseException ex) {
-         //Do Nothing
-      }
-      for (String team : stats.rowKeySet()) {
-         CIStatsToken allStats = new CIStatsToken(team, currentDate);
-         stats.put(team, currentDate, allStats);
-      }
-
       for (ScriptDefToken def : defs) {
 
          List<ScriptResultToken> scriptResults = def.getScriptResults();
-         Collections.sort(scriptResults, Comparator.comparing(ScriptResultToken::getExecutionDate));
+         Collections.sort(scriptResults, Comparator.comparing(ScriptResultToken::getExecutionDate).reversed());
 
          int prevPointsPassed = 0;
          int prevPointsFailed = 0;
          boolean prevAborted = false;
          boolean prevPassed = false;
          boolean prevScriptRun = false;
-         Date prevExecutionDate = new Date(0);
+
+         Date prevExecutionDate = new Date();
 
          for (ScriptResultToken res : scriptResults) {
             Date executionDate = res.getExecutionDate();
@@ -120,13 +105,17 @@ public class DashboardApiImpl implements DashboardApi {
                //Do Nothing
             }
 
+            if (executionDate.equals(prevExecutionDate)) {
+               continue;
+            }
+
             int pointsPassed = res.getPassedCount();
             int pointsFailed = res.getFailedCount();
             boolean aborted = res.getScriptAborted();
             boolean passed = aborted ? false : pointsFailed == 0;
             boolean scriptRun = true;
 
-            //Update the script values for this specific date.
+            //Updates the script values on the current Test Result's execution date
             CIStatsToken allStats = stats.get("All", executionDate);
             if (aborted) {
                allStats.addScriptsAbort(1);
@@ -144,6 +133,7 @@ public class DashboardApiImpl implements DashboardApi {
             allStats.addTestPointsFail(pointsFailed);
             stats.put("All", executionDate, allStats);
 
+            //Updates the script values for each team on the current Test Result's execution date
             if (!def.getTeam().isEmpty()) {
                CIStatsToken teamStats = stats.get(def.getTeam(), executionDate);
                if (aborted) {
@@ -163,9 +153,9 @@ public class DashboardApiImpl implements DashboardApi {
                stats.put(def.getTeam(), executionDate, teamStats);
             }
 
-            //Assign the script value for any relevant dates not directly covered by the script. stats.columnKeySet() is always ordered
+            //Maintains this Test Result's data for relevant days that this script was not run.
             for (Date specifiedDate : stats.row("All").keySet()) {
-               if (specifiedDate.after(prevExecutionDate) && (specifiedDate.before(executionDate))) {
+               if (specifiedDate.after(executionDate) && specifiedDate.before(prevExecutionDate)) {
                   allStats = stats.get("All", specifiedDate);
                   if (prevAborted) {
                      allStats.addScriptsAbort(1);
@@ -182,14 +172,12 @@ public class DashboardApiImpl implements DashboardApi {
                   allStats.addTestPointsPass(prevPointsPassed);
                   allStats.addTestPointsFail(prevPointsFailed);
                   stats.put("All", specifiedDate, allStats);
-
-               } else if (specifiedDate.equals(executionDate)) {
-                  break;
                }
             }
 
+            //For each team, maintains this Test Result's data for relevant days that this script was not run.
             for (Date specifiedDate : stats.row(def.getTeam()).keySet()) {
-               if (specifiedDate.after(prevExecutionDate) && (specifiedDate.before(executionDate))) {
+               if (specifiedDate.after(executionDate) && specifiedDate.before(prevExecutionDate)) {
                   if (!def.getTeam().isEmpty()) {
                      CIStatsToken teamStats = stats.get(def.getTeam(), executionDate);
                      teamStats = stats.get(def.getTeam(), specifiedDate);
@@ -209,7 +197,7 @@ public class DashboardApiImpl implements DashboardApi {
                      teamStats.addTestPointsFail(prevPointsFailed);
                      stats.put(def.getTeam(), specifiedDate, teamStats);
                   }
-               } else if (specifiedDate.equals(executionDate)) {
+               } else if (specifiedDate.equals(prevExecutionDate)) {
                   break;
                }
             }
@@ -220,60 +208,6 @@ public class DashboardApiImpl implements DashboardApi {
             prevPassed = passed;
             prevScriptRun = scriptRun;
             prevExecutionDate = executionDate;
-         }
-
-         //Make sure the script is updated for the current day
-         if (!prevExecutionDate.equals(currentDate)) {
-            for (Date specifiedDate : stats.row("All").keySet()) {
-               if (specifiedDate.after(
-                  prevExecutionDate) && (specifiedDate.before(currentDate) || specifiedDate.equals(currentDate))) {
-                  CIStatsToken allStats = stats.get("All", specifiedDate);
-                  if (prevAborted) {
-                     allStats.addScriptsAbort(1);
-                  } else if (prevPassed) {
-                     allStats.addScriptsPass(1);
-                  } else {
-                     allStats.addScriptsFail(1);
-                  }
-                  if (prevScriptRun) {
-                     allStats.addScriptsRan(1);
-                  } else {
-                     allStats.addScriptsNotRan(1);
-                  }
-                  allStats.addTestPointsPass(prevPointsPassed);
-                  allStats.addTestPointsFail(prevPointsFailed);
-                  stats.put("All", specifiedDate, allStats);
-               } else if (specifiedDate.equals(currentDate)) {
-                  break;
-               }
-            }
-
-            for (Date specifiedDate : stats.row(def.getTeam()).keySet()) {
-               if (specifiedDate.after(
-                  prevExecutionDate) && (specifiedDate.before(currentDate) || specifiedDate.equals(currentDate))) {
-                  if (!def.getTeam().isEmpty()) {
-                     CIStatsToken teamStats = stats.get(def.getTeam(), specifiedDate);
-                     if (prevAborted) {
-                        teamStats.addScriptsAbort(1);
-                     } else if (prevPassed) {
-                        teamStats.addScriptsPass(1);
-                     } else {
-                        teamStats.addScriptsFail(1);
-                     }
-                     if (prevScriptRun) {
-                        teamStats.addScriptsRan(1);
-                     } else {
-                        teamStats.addScriptsNotRan(1);
-                     }
-                     teamStats.addTestPointsPass(prevPointsPassed);
-                     teamStats.addTestPointsFail(prevPointsFailed);
-                     stats.put(def.getTeam(), specifiedDate, teamStats);
-                  }
-               } else if (specifiedDate.equals(currentDate)) {
-                  break;
-               }
-            }
-
          }
       }
 

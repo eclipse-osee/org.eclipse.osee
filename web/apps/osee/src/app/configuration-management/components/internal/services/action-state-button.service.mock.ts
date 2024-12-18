@@ -20,15 +20,15 @@ import {
 	teamWorkflowState,
 	action,
 } from '@osee/shared/types/configuration-management';
+import { branch } from '@osee/shared/types';
 
 export const actionStateButtonServiceMock: Partial<ActionStateButtonService> = {
 	isTransitionApproved(action: action) {
 		return of(true);
 	},
-	commitBranch(body: { committer: string; archive: string }) {
-		return of(testCommitResponse);
+	commitBranch(action: action, branch: branch, destBranch: branch) {
+		return of(testDataTransitionResponse);
 	},
-	doCommitBranch: of(testDataTransitionResponse),
 	transition(state: teamWorkflowState, action: action) {
 		return of(testDataTransitionResponse);
 	},
@@ -41,10 +41,9 @@ export const actionStateButtonServiceMockApprove: Partial<ActionStateButtonServi
 		isTransitionApproved(action: action) {
 			return of(true);
 		},
-		commitBranch(body: { committer: string; archive: string }) {
-			return of(testCommitResponse);
+		commitBranch(action: action, branch: branch, destBranch: branch) {
+			return of(testDataTransitionResponse);
 		},
-		doCommitBranch: of(testDataTransitionResponse),
 		transition(state: teamWorkflowState, action: action) {
 			return of(testDataTransitionResponse);
 		},
@@ -57,10 +56,9 @@ export const actionStateButtonServiceMockCommit: Partial<ActionStateButtonServic
 		isTransitionApproved(action: action) {
 			return of(true);
 		},
-		commitBranch(body: { committer: string; archive: string }) {
-			return of(testCommitResponse);
+		commitBranch(action: action, branch: branch, destBranch: branch) {
+			return of(testDataTransitionResponse);
 		},
-		doCommitBranch: of(testDataTransitionResponse),
 		transition(state: teamWorkflowState, action: action) {
 			return of(testDataTransitionResponse);
 		},

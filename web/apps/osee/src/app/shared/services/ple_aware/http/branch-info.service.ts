@@ -174,4 +174,12 @@ export class BranchInfoService {
 			data
 		);
 	}
+
+	public archiveBranch(branchId: string) {
+		return this.http.post(
+			`${apiURL}/orcs/branches/${branchId}/archive`,
+			null,
+			{ observe: 'response' }
+		);
+	}
 }

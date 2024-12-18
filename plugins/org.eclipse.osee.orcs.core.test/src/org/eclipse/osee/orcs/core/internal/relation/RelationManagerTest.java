@@ -190,7 +190,7 @@ public class RelationManagerTest {
       setupAdjacencies(node5, relation4);
       setupAdjacencies(node6);
 
-      when(tokenService.getRelationTypes()).thenReturn(new ArrayList(
+      when(tokenService.getValidRelationTypes()).thenReturn(new ArrayList(
          Arrays.asList(CoreRelationTypes.DefaultHierarchical_Child, CoreRelationTypes.DefaultHierarchical_Parent)));
    }
 

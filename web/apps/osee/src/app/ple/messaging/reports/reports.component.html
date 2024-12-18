@@ -154,6 +154,20 @@
 										connectionValidationResults()
 											.messageTypeErrors
 									" />
+								<ul class="tw-pl-4">
+									Affected Configurations/Configuration
+									Groups:
+									@for (
+										config of connectionValidationResults()
+											.affectedConfigurations;
+										track config.id
+									) {
+										<li
+											class="tw-flex tw-items-center tw-gap-2">
+											{{ config.name | attributeToValue }}
+										</li>
+									}
+								</ul>
 							}
 							<div class="jusity-between tw-flex tw-gap-4">
 								<button

@@ -83,11 +83,11 @@ import org.eclipse.osee.logger.Log;
  */
 public class AgileService implements IAgileService {
 
-   private final Log logger;
-   private final AtsApi atsApi;
+   protected final Log logger;
+   protected final AtsApi atsApi;
 
-   public AgileService(Log logger, AtsApi atsApi) {
-      this.logger = logger;
+   public AgileService(AtsApi atsApi) {
+      this.logger = atsApi.getLogger();
       this.atsApi = atsApi;
    }
 

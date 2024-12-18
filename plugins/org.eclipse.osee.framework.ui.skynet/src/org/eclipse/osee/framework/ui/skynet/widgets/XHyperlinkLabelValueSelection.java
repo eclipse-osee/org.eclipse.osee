@@ -121,13 +121,13 @@ public abstract class XHyperlinkLabelValueSelection extends GenericXWidget {
          return;
       }
       if (Widgets.isAccessible(valueLabel)) {
-         if (getCurrentValue().equals(valueLabel.getText())) {
-            return;
+         String currentValue = getCurrentValue();
+         if (!currentValue.equals(valueLabel.getText())) {
+            valueLabel.setText(currentValue);
+            valueLabel.update();
+            valueLabel.getParent().update();
+            valueLabel.getParent().getParent().layout();
          }
-         valueLabel.setText(getCurrentValue());
-         valueLabel.update();
-         valueLabel.getParent().update();
-         valueLabel.getParent().getParent().layout();
       }
       validate();
    }

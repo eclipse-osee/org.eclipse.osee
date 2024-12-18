@@ -299,7 +299,7 @@ public class AtsDbConfigAIsAndTeamsDemoOp {
          .andWorkType(WorkType.MIM) //
          .andLeads(DemoUsers.Joe_Smith) //
          .andMembers(DemoUsers.Joe_Smith) //
-         .andWorkDef(AtsWorkDefinitionTokens.WorkDef_Team_ProductLine) //
+         .andWorkDef(AtsWorkDefinitionTokens.WorkDef_Team_MIM) //
          .andTeamWorkflowArtifactType(AtsArtifactTypes.TeamWorkflow);
 
       // SAW SW Actionable Items

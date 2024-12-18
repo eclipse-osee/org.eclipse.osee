@@ -47,6 +47,7 @@ public final class OptionsUtil {
    private static final String INCLUDE_LATEST_TRANSACTION_DETAILS = "include.latest.transaction.details";
    private static final String MAX_TIME = "max.time";
    private static final String LEGACY_POST_PROCESSING = "legacy_post_processing";
+   private static final String GET_CONTENTS_FOR_ALL_VIEWS = "get.contents.for.all.views";
 
    public static Options createBranchOptions() {
       Options options = new Options();
@@ -60,6 +61,7 @@ public final class OptionsUtil {
       setBranchOrder(options, "id");
       setMaxTime(options, DateUtil.getSentinalDate());
       setLegacyPostProcessing(options, true);
+      setContentsForAllViews(options, false);
       return options;
    }
 
@@ -70,6 +72,7 @@ public final class OptionsUtil {
       setBranchOrder(options, "id");
       setOrderByAttributeDirection(options, SortOrder.ASCENDING);
       setLegacyPostProcessing(options, true);
+      setContentsForAllViews(options, false);
       return options;
    }
 
@@ -88,6 +91,7 @@ public final class OptionsUtil {
       setOrderByAttributeDirection(options, SortOrder.ASCENDING);
       setMaxTime(options, DateUtil.getSentinalDate());
       setLegacyPostProcessing(options, true);
+      setContentsForAllViews(options, false);
    }
 
    public static boolean isCacheIncluded(Options options) {
@@ -291,5 +295,13 @@ public final class OptionsUtil {
 
    public static void setLegacyPostProcessing(Options options, boolean postProcess) {
       options.put(LEGACY_POST_PROCESSING, postProcess);
+   }
+
+   public static boolean getContentsForAllViews(Options options) {
+      return options.getBoolean(GET_CONTENTS_FOR_ALL_VIEWS);
+   }
+
+   public static void setContentsForAllViews(Options options, boolean getAllViews) {
+      options.put(GET_CONTENTS_FOR_ALL_VIEWS, getAllViews);
    }
 }

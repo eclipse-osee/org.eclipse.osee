@@ -14,8 +14,12 @@
 package org.eclipse.osee.framework.ui.skynet.action;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
@@ -23,19 +27,16 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperation;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -74,16 +75,21 @@ public class PurgeTransactionAction extends Action {
             @Override
             public void done(IJobChangeEvent event) {
                if (event.getResult().getSeverity() == IStatus.OK) {
-                  Displays.ensureInDisplayThread(new Runnable() {
+                  Job refreshBranches = new Job("Refresh Branches After Purge") {
+
                      @Override
-                     public void run() {
-                        try {
-                           BranchManager.refreshBranches();
-                        } catch (OseeCoreException ex) {
-                           OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+                     protected IStatus run(IProgressMonitor monitor) {
+                        Set<BranchId> branches = new HashSet<>();
+                        for (TransactionToken tx : transactions) {
+                           branches.add(tx.getBranch());
                         }
+                        for (BranchId branchId : branches) {
+                           BranchManager.decacheById(branchId);
+                        }
+                        return Status.OK_STATUS;
                      }
-                  });
+                  };
+                  refreshBranches.schedule();
                }
             }
 

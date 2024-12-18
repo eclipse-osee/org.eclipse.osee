@@ -14,6 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
+  contents: read
   packages: write
 
 env:
@@ -87,41 +88,10 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-
-      - name: Create Download Path
-        run: mkdir -p ${SERVER_PATH}
-
-      - name: Download Binaries
-        uses: actions/download-artifact@v4
+        
+      - name: create image
+        uses: ./.github/actions/osee-server-container-build
         with:
-          name: ${{ matrix.IMAGE_NAME }}-binaries
-          path: ${{ env.SERVER_PATH }}
-
-      - name: Set Up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Log in to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Get Current Timestamp
-        id: date
-        run: echo "timestamp=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
-
-      - name: Build And Push Docker Image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: ${{ env.IMAGE_DIRECTORY }}
-          build-args: |
-            IMAGE_DIRECTORY=${{ env.IMAGE_DIRECTORY }}
-            SERVER_PATH=${{ env.SERVER_PATH }}
-            SERVER_ZIP=org.eclipse.osee.server.runtime.zip
-          push: true
-          tags: |
-            ghcr.io/${{ github.repository }}/${{ matrix.IMAGE_NAME }}:${{ github.sha }}
-            ghcr.io/${{ github.repository }}/${{ matrix.IMAGE_NAME }}:${{ steps.date.outputs.timestamp }}
-            ghcr.io/${{ github.repository }}/${{ matrix.IMAGE_NAME }}:latest
+          IMAGE_NAME: ${{matrix.IMAGE_NAME}}
+          SERVER_PATH: ${{env.SERVER_PATH}}
+          IMAGE_DIRECTORY: ${{env.IMAGE_DIRECTORY}}

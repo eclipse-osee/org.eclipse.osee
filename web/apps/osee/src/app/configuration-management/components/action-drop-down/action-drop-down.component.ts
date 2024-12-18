@@ -22,7 +22,7 @@ import {
 	teamWorkflowDetails,
 	teamWorkflowState,
 } from '@osee/shared/types/configuration-management';
-import { Subject, iif, of } from 'rxjs';
+import { Subject, combineLatest, iif, of } from 'rxjs';
 import { filter, shareReplay, switchMap, take, tap } from 'rxjs/operators';
 import { ActionStateButtonService } from '../internal/services/action-state-button.service';
 import { branch, branchSentinel } from '@osee/shared/types';
@@ -94,45 +94,6 @@ export class ActionDropDownComponent {
 		)
 	);
 
-	doCommitBranch = this.branch$.pipe(
-		take(1),
-		filter((currentBranch) => currentBranch.id !== '-1'),
-		switchMap((currentBranch) =>
-			this.branchService.getBranch(currentBranch.parentBranch.id).pipe(
-				switchMap((parentBranch) =>
-					this.commitBranchService
-						.validateCommit(currentBranch.id, parentBranch.id)
-						.pipe(
-							switchMap((validateResults) => {
-								if (validateResults.conflictCount > 0) {
-									return this.dialog
-										.open(MergeManagerDialogComponent, {
-											data: {
-												sourceBranch: currentBranch,
-												destBranch: parentBranch,
-												validateResults:
-													validateResults,
-											},
-											minWidth: '60%',
-										})
-										.afterClosed()
-										.pipe(take(1));
-								}
-								return of(true);
-							}),
-							switchMap((commit) =>
-								iif(
-									() => commit === true,
-									this.actionService.doCommitBranch,
-									of()
-								)
-							)
-						)
-				)
-			)
-		)
-	);
-
 	transition(state: teamWorkflowState) {
 		this.teamWorkflow$
 			.pipe(
@@ -166,6 +127,58 @@ export class ActionDropDownComponent {
 	}
 
 	commitBranch(): void {
-		this.doCommitBranch.subscribe();
+		combineLatest([this.branch$, this.teamWorkflow$])
+			.pipe(
+				take(1),
+				filter(
+					([branch, tw]) =>
+						branch.id !== '-1' && tw.id !== 0 && tw.id !== -1
+				),
+				switchMap(([branch, teamWorkflow]) =>
+					this.branchService.getBranch(branch.parentBranch.id).pipe(
+						filter((parentBranch) => parentBranch.id !== '-1'),
+						switchMap((parentBranch) =>
+							this.commitBranchService
+								.validateCommit(branch.id, parentBranch.id)
+								.pipe(
+									switchMap((validateResults) => {
+										if (validateResults.conflictCount > 0) {
+											return this.dialog
+												.open(
+													MergeManagerDialogComponent,
+													{
+														data: {
+															sourceBranch:
+																branch,
+															destBranch:
+																parentBranch,
+															validateResults:
+																validateResults,
+														},
+														minWidth: '60%',
+													}
+												)
+												.afterClosed()
+												.pipe(take(1));
+										}
+										return of(true);
+									}),
+									switchMap((commit) =>
+										iif(
+											() => commit === true,
+											this.actionService.commitBranch(
+												teamWorkflow,
+												branch,
+												parentBranch
+											),
+											of()
+										)
+									)
+								)
+						)
+					)
+				)
+			)
+			.subscribe();
 	}
 }

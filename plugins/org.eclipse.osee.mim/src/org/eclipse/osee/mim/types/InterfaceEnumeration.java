@@ -114,6 +114,7 @@ public class InterfaceEnumeration extends ArtifactAccessorResultWithGammas {
       return ordinalType;
    }
 
+   @JsonProperty
    public void setOrdinalType(AttributePojo<String> ordinalType) {
       this.ordinalType = ordinalType;
    }
@@ -153,6 +154,29 @@ public class InterfaceEnumeration extends ArtifactAccessorResultWithGammas {
       art.setApplicabilityId(applicId.getIdString());
       art.setkey(key);
       return art;
+   }
+
+   @JsonIgnore
+   @Override
+   public boolean equals(Object obj) {
+      if (obj == this) {
+         return true;
+      }
+      if (obj instanceof InterfaceEnumeration) {
+         InterfaceEnumeration other = ((InterfaceEnumeration) obj);
+         if (!this.getName().valueEquals(other.getName())) {
+            return false;
+         }
+         if (!this.getOrdinal().valueEquals(other.getOrdinal())) {
+            return false;
+         }
+         if (!this.getOrdinalType().valueEquals(other.getOrdinalType())) {
+            return false;
+         }
+         return true;
+      }
+      return false;
+
    }
 
 }

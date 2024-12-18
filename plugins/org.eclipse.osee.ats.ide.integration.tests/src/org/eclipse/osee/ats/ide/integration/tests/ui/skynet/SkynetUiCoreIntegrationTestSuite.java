@@ -19,6 +19,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    ArtifactImportWizardTest.class,
+   ArtifactXmlNativeContentTest.class,
    ArtifactPasteOperationTest.class,
    AttributeTypeEditPresenterTest.class,
    BlamXWidgetTest.class,

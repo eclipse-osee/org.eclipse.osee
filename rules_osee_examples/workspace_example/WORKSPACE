@@ -46,6 +46,6 @@ bat_register_toolchains()
 load("@rules_osee//plconfig:repositories.bzl","product_line_config")
 product_line_config(
     name="my_product_line",            
-    osee_url="http://host.docker.internal:8089",
+    osee_url="http://localhost:8089",
     branch_id="8",
-    sha256="2bbe988cfadbd341e60dba04e7e37e0dd2ea5a15c56806cbffb20f728a33e54a")
+    sha256="30e77eeea6b35d7308567c30b774bb7fc571efd5511065ded283df76bb7958ea")

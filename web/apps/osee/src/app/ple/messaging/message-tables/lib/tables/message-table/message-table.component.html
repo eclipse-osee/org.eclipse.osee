@@ -73,9 +73,11 @@
 					(contextmenu)="
 						openMenu($event, element, element[header], header)
 					"
+					[attr.data-testid]="'msg-field-' + header"
 					class="message-attribute-cell tw-px-[2px] tw-py-0">
 					<div
 						class="tw-flex tw-w-[95%] tw-items-center"
+						data-testid="inner-styling"
 						[ngClass]="
 							!element.added &&
 							element.changes &&
@@ -106,7 +108,7 @@
 										[@expandButton]="
 											!_expanded.value ? 'closed' : 'open'
 										"
-										[attr.data-cy]="
+										[attr.data-testid]="
 											_expanded.value
 												? 'close-message-btn-' +
 													element.name
@@ -213,13 +215,19 @@
 										<form
 											#defaultForm="ngForm"
 											[artifactId]="element.id"
-											oseeMessageImpactsValidator>
+											oseeMessageImpactsValidator
+											[attr.data-testid]="
+												'form-' + element[header].typeId
+											">
 											<osee-persisted-string-attribute-input
 												[artifactId]="element.id"
 												[artifactApplicability]="
 													element.applicability
 												"
-												[(value)]="element[header]" />
+												[(value)]="element[header]"
+												[attr.data-testid]="
+													element[header].typeId
+												" />
 										</form>
 									}
 								}
@@ -231,7 +239,7 @@
 											[searchTerms]="filter()"
 											[text]="element[header].name"
 											classToApply="tw-text-accent-900"
-											[attr.data-cy]="
+											[attr.data-testid]="
 												'message-table-' +
 												header +
 												'-' +
@@ -253,7 +261,7 @@
 										[searchTerms]="filter()"
 										[text]="element[header].value"
 										classToApply="tw-text-accent-900"
-										[attr.data-cy]="
+										[attr.data-testid]="
 											'message-table-' +
 											header +
 											'-' +
@@ -277,7 +285,7 @@
 											[searchTerms]="filter()"
 											[text]="nodeNames"
 											classToApply="tw-text-accent-900"
-											[attr.data-cy]="
+											[attr.data-testid]="
 												'message-table-' +
 												header +
 												'-' +
@@ -332,7 +340,7 @@
 				'even-multi:tw-bg-warning-100 odd-multi:tw-bg-warning-200':
 					row.deleted,
 			}"
-			[attr.data-cy]="'message-table-row-' + row.name"></tr>
+			[attr.data-testid]="'message-table-row-' + row.name.value"></tr>
 		<tr
 			mat-row
 			*matRowDef="let row; columns: ['expandedMessage']"

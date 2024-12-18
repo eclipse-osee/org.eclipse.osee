@@ -329,6 +329,7 @@
 			"@osee/shared/utils": ["src/app/shared/utils"],
 			"@osee/shared/resolvers": ["src/app/shared/resolvers"],
 			"@osee/shared/components": ["src/app/shared/components"],
+			"@osee/shared/dialogs": ["src/app/shared/dialogs"],
 			"@osee/shared/directives": ["src/app/shared/directives"],
 			"@osee/shared/matchers": ["src/app/shared/matchers"],
 			"@osee/shared/services": ["src/app/shared/services"],
