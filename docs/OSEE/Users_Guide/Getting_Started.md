@@ -95,6 +95,7 @@
   - Uncheck the following folders if present (click ‘Finish’ upon completion):
     - org.eclipse.osee
     - org.eclipse.osee\plugins\org.eclipse.osee.icteam.ui
+    - Any org.eclipse.osee\plugins\org.eclipse.osee.doors.*
 
 
 ![image:9_-_deselect_folders.png](/docs/images/9_-_deselect_folders.png "image:9_-_deselect_folders.png")
