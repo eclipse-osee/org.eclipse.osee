@@ -418,6 +418,71 @@ public interface ArtifactAccessor<T> {
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException;
 
+   Collection<T> getAllNotRelatedTo(BranchId branch, Collection<RelationTypeSide> unrelatedSide,
+      ArtifactId unrelatedArtifact) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+      InvocationTargetException, NoSuchMethodException, SecurityException;
+
+   Collection<T> getAllNotRelatedTo(BranchId branch, ArtifactId viewId, Collection<RelationTypeSide> unrelatedSide,
+      ArtifactId unrelatedArtifact) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+      InvocationTargetException, NoSuchMethodException, SecurityException;
+
+   Collection<T> getAllNotRelatedTo(BranchId branch, Collection<FollowRelation> followRelations,
+      Collection<RelationTypeSide> unrelatedSide, ArtifactId unrelatedArtifact)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException;
+
+   Collection<T> getAllNotRelatedTo(BranchId branch, long pageCount, long pageSize,
+      Collection<RelationTypeSide> unrelatedSide, ArtifactId unrelatedArtifact)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException;
+
+   Collection<T> getAllNotRelatedTo(BranchId branch, Collection<FollowRelation> followRelations, long pageCount,
+      long pageSize, Collection<RelationTypeSide> unrelatedSide, ArtifactId unrelatedArtifact)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException;
+
+   Collection<T> getAllNotRelatedTo(BranchId branch, AttributeTypeId orderByAttribute,
+      Collection<RelationTypeSide> unrelatedSide, ArtifactId unrelatedArtifact)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException;
+
+   Collection<T> getAllNotRelatedTo(BranchId branch, Collection<FollowRelation> followRelations,
+      AttributeTypeId orderByAttribute, Collection<RelationTypeSide> unrelatedSide, ArtifactId unrelatedArtifact)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException;
+
+   Collection<T> getAllNotRelatedTo(BranchId branch, long pageCount, long pageSize, AttributeTypeId orderByAttribute,
+      Collection<RelationTypeSide> unrelatedSide, ArtifactId unrelatedArtifact)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException;
+
+   Collection<T> getAllNotRelatedTo(BranchId branch, long pageCount, long pageSize, AttributeTypeId orderByAttribute,
+      ArtifactId viewId, Collection<RelationTypeSide> unrelatedSide, ArtifactId unrelatedArtifact)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException;
+
+   Collection<T> getAllNotRelatedTo(BranchId branch, Collection<FollowRelation> followRelations, long pageCount,
+      long pageSize, AttributeTypeId orderByAttribute, Collection<RelationTypeSide> unrelatedSide,
+      ArtifactId unrelatedArtifact) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+      InvocationTargetException, NoSuchMethodException, SecurityException;
+
+   Collection<T> getAllNotRelatedTo(BranchId branch, Collection<FollowRelation> followRelations, long pageCount,
+      long pageSize, AttributeTypeId orderByAttribute, ArtifactId viewId, Collection<RelationTypeSide> unrelatedSide,
+      ArtifactId unrelatedArtifact) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+      InvocationTargetException, NoSuchMethodException, SecurityException;
+
+   Collection<T> getAllNotRelatedTo(BranchId branch, Collection<FollowRelation> followRelations, String filter,
+      Collection<AttributeTypeId> attributes, long pageCount, long pageSize, AttributeTypeId orderByAttribute,
+      Collection<RelationTypeSide> unrelatedSide, ArtifactId unrelatedArtifact)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException;
+
+   Collection<T> getAllNotRelatedTo(BranchId branch, Collection<FollowRelation> followRelations, String filter,
+      Collection<AttributeTypeId> attributes, long pageCount, long pageSize, AttributeTypeId orderByAttribute,
+      ArtifactId viewId, Collection<RelationTypeSide> unrelatedSide, ArtifactId unrelatedArtifact)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException;
+
    Collection<ArtifactMatch> getAffectedArtifacts(BranchId branch, ArtifactId relatedId,
       Collection<RelationTypeSide> relations) throws InstantiationException, IllegalAccessException,
       IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException;
@@ -429,4 +494,15 @@ public interface ArtifactAccessor<T> {
 
    int getAllLackingRelationByFilterAndCount(BranchId branch, String filter, Collection<AttributeTypeId> attributes,
       Collection<RelationTypeSide> relations) throws IllegalArgumentException, SecurityException;
+
+   int getAllNotRelatedToByFilterAndCount(BranchId branch, String filter, Collection<AttributeTypeId> attributes,
+      Collection<RelationTypeSide> unrelatedSide, ArtifactId unrelatedArtifact);
+
+   int getAllNotRelatedToByFilterAndCount(BranchId branch, String filter, Collection<AttributeTypeId> attributes,
+      ArtifactId viewId, Collection<RelationTypeSide> unrelatedSide, ArtifactId unrelatedArtifact);
+
+   int getAllNotRelatedToByFilterAndCount(BranchId branch, String filter, Collection<FollowRelation> followRelations,
+      Collection<AttributeTypeId> followAttributes, ArtifactId viewId, Collection<RelationTypeSide> unrelatedSide,
+      ArtifactId unrelatedArtifact);
+
 }

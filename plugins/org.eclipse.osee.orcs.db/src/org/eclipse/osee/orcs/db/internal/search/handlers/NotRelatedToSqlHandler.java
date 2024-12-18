@@ -36,11 +36,9 @@ public class NotRelatedToSqlHandler extends SqlHandler<CriteriaNotRelatedTo> {
       if (criteria.getType().isNewRelationTable()) {
          writer.write("NOT EXISTS (");
          writer.write("SELECT 1 FROM ");
-         //TODO: hopefully this writes it the way I expect...
          relAlias = writer.getNextAlias(OseeDb.RELATION_TABLE2);
          txsAlias = writer.getNextAlias(OseeDb.TXS_TABLE);
          artAlias = writer.getFirstAlias(OseeDb.ARTIFACT_TABLE);
-         // END TODO
          writer.write(OseeDb.RELATION_TABLE2.getName());
          writer.write(" ");
          writer.write(relAlias);
