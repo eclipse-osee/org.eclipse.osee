@@ -354,7 +354,12 @@
 
 	<profiles>
 
-
+	       <profile>
+	            <id>dev</id>
+		    <modules>
+		   	<module>../../plugins/org.eclipse.osee.devdeps.feature</module>
+		    </modules>
+		</profile>
 
 		<profile>
 			<id>osee-target-build</id>
