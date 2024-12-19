@@ -143,18 +143,18 @@ export class AddElementDialogComponent {
 				this.structures.getPaginatedElementsByName(
 					search,
 					this.paginationSize,
-					pageNum
+					pageNum,
+					this.data().id
 				)
 		)
 	);
 
 	availableElementsCount = this.elementSearch.pipe(
 		debounceTime(250),
-		switchMap((search) => this.structures.getElementsByNameCount(search))
+		switchMap((search) =>
+			this.structures.getElementsByNameCount(search, this.data().id)
+		)
 	);
-
-	/** Inserted by Angular inject() migration for backwards compatibility */
-	constructor(...args: unknown[]);
 
 	constructor() {
 		this._moveToNextStep.subscribe();

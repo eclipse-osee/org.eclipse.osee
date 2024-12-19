@@ -340,7 +340,8 @@ export abstract class CurrentStructureService {
 	getPaginatedElementsByName(
 		name: string,
 		count: number,
-		pageNum: string | number
+		pageNum: string | number,
+		artifactToAvoid: string
 	) {
 		return this.BranchId.pipe(
 			take(1),
@@ -349,16 +350,19 @@ export abstract class CurrentStructureService {
 					id,
 					name,
 					count,
-					pageNum
+					pageNum,
+					artifactToAvoid
 				)
 			)
 		);
 	}
 
-	getElementsByNameCount(name: string) {
+	getElementsByNameCount(name: string, artifactToAvoid: string) {
 		return this.BranchId.pipe(
 			take(1),
-			switchMap((id) => this.elements.getElementsByNameCount(id, name))
+			switchMap((id) =>
+				this.elements.getElementsByNameCount(id, name, artifactToAvoid)
+			)
 		);
 	}
 
