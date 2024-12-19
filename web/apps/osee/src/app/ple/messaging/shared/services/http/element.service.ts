@@ -87,7 +87,8 @@ export class ElementService {
 		branchId: string,
 		name: string,
 		count: number,
-		pageNum: string | number
+		pageNum: string | number,
+		artifactToAvoid: string
 	) {
 		return this.http.get<element[]>(
 			apiURL + '/mim/branch/' + branchId + '/elements/name',
@@ -97,17 +98,23 @@ export class ElementService {
 					count: count,
 					pageNum: pageNum,
 					orderByAttributeType: ATTRIBUTETYPEIDENUM.NAME,
+					artifactToAvoid: artifactToAvoid,
 				},
 			}
 		);
 	}
 
-	getElementsByNameCount(branchId: string, name: string) {
+	getElementsByNameCount(
+		branchId: string,
+		name: string,
+		artifactToAvoid: string
+	) {
 		return this.http.get<number>(
 			apiURL + '/mim/branch/' + branchId + '/elements/name/count',
 			{
 				params: {
 					name: name,
+					artifactToAvoid: artifactToAvoid,
 				},
 			}
 		);
