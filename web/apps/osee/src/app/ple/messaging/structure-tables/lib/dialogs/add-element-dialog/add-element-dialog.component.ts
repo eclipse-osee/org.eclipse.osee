@@ -143,18 +143,18 @@ export class AddElementDialogComponent {
 				this.structures.getPaginatedElementsByName(
 					search,
 					this.paginationSize,
-					pageNum
+					pageNum,
+					this.data().id
 				)
 		)
 	);
 
 	availableElementsCount = this.elementSearch.pipe(
 		debounceTime(250),
-		switchMap((search) => this.structures.getElementsByNameCount(search))
+		switchMap((search) =>
+			this.structures.getElementsByNameCount(search, this.data().id)
+		)
 	);
-
-	/** Inserted by Angular inject() migration for backwards compatibility */
-	constructor(...args: unknown[]);
 
 	constructor() {
 		this._moveToNextStep.subscribe();
@@ -177,7 +177,7 @@ export class AddElementDialogComponent {
 	getElementOptionToolTip(element: element) {
 		let tooltip = '';
 		if (element.platformType.interfaceLogicalType) {
-			tooltip += element.platformType.interfaceLogicalType;
+			tooltip += element.platformType.interfaceLogicalType.value;
 		}
 		if (
 			element.interfaceElementIndexStart.value !==
@@ -185,15 +185,15 @@ export class AddElementDialogComponent {
 		) {
 			tooltip +=
 				' [' +
-				element.interfaceElementIndexStart +
+				element.interfaceElementIndexStart.value +
 				'...' +
-				element.interfaceElementIndexEnd +
+				element.interfaceElementIndexEnd.value +
 				']';
 		}
 		if (tooltip !== '') {
 			tooltip += '\n\n';
 		}
-		tooltip += element.description;
+		tooltip += element.description.value;
 		return tooltip;
 	}
 

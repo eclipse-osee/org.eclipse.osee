@@ -92,10 +92,12 @@ public interface InterfaceElementSearchEndpoint {
    @Path("name")
    @Produces(MediaType.APPLICATION_JSON)
    Collection<InterfaceStructureElementToken> getElementsByName(@QueryParam("name") String name,
-      @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize);
+      @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize,
+      @QueryParam("artifactToAvoid") ArtifactId artifactToAvoidId);
 
    @GET
    @Path("name/count")
    @Produces(MediaType.APPLICATION_JSON)
-   int getElementsByNameCount(@QueryParam("name") String name);
+   int getElementsByNameCount(@QueryParam("name") String name,
+      @QueryParam("artifactToAvoid") ArtifactId artifactToAvoidId);
 }

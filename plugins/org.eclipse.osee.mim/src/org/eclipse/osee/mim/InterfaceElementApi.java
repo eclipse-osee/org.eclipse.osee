@@ -77,9 +77,10 @@ public interface InterfaceElementApi extends QueryCapableMIMAPI<InterfaceStructu
 
    List<InterfaceStructureElementToken> getElementsByType(BranchId branch, ArtifactId platformTypeId);
 
-   List<InterfaceStructureElementToken> getElementsByName(BranchId branch, String name, long pageNum, long pageSize);
+   List<InterfaceStructureElementToken> getElementsByName(BranchId branch, String name, long pageNum, long pageSize,
+      ArtifactId artifactToAvoidId);
 
-   int getElementsByNameCount(BranchId branch, String name);
+   int getElementsByNameCount(BranchId branch, String name, ArtifactId artifactToAvoidId);
 
    List<InterfaceStructureElementTokenWithPath> getElementsByType(BranchId branch);
 

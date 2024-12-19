@@ -66,7 +66,10 @@ test('test', async ({ page }) => {
 		.click();
 	await page.getByLabel('Name').fill('New Element');
 	await page.getByLabel('2Define element').getByText('Platform Type').click();
-	await page.getByText('Integer').click();
+	const integerOption = page.getByText('Integer', { exact: true });
+	await expect(integerOption).toBeVisible();
+	await expect(integerOption).toBeEnabled();
+	await integerOption.click();
 	await page.getByRole('button', { name: 'Next' }).click();
 	await page.getByRole('button', { name: 'Ok' }).click();
 
