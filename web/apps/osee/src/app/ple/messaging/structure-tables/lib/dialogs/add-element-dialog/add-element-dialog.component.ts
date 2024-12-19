@@ -177,7 +177,7 @@ export class AddElementDialogComponent {
 	getElementOptionToolTip(element: element) {
 		let tooltip = '';
 		if (element.platformType.interfaceLogicalType) {
-			tooltip += element.platformType.interfaceLogicalType;
+			tooltip += element.platformType.interfaceLogicalType.value;
 		}
 		if (
 			element.interfaceElementIndexStart.value !==
@@ -185,15 +185,15 @@ export class AddElementDialogComponent {
 		) {
 			tooltip +=
 				' [' +
-				element.interfaceElementIndexStart +
+				element.interfaceElementIndexStart.value +
 				'...' +
-				element.interfaceElementIndexEnd +
+				element.interfaceElementIndexEnd.value +
 				']';
 		}
 		if (tooltip !== '') {
 			tooltip += '\n\n';
 		}
-		tooltip += element.description;
+		tooltip += element.description.value;
 		return tooltip;
 	}
 
