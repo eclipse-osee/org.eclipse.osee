@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.eclipse.osee.devdeps.feature_1.0.0.qualifier.jar" id="org.eclipse.osee.devdeps.feature" version="1.0.0.qualifier">
+      <category name="org.eclipse.osee.devdeps"/>
+   </feature>
+  
+   
+   <category-def name="org.eclipse.osee.devdeps" label="Eclipse OSEE Development Dependencies">
+      <description>
+         Eclipse OSEE Development Dependencies
+      </description>
+   </category-def>
+</site>
