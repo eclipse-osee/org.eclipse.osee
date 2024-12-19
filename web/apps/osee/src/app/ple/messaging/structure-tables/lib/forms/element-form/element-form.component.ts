@@ -263,7 +263,7 @@ export class ElementFormComponent {
 
 	async addArrayElement() {
 		const dialogData = new DefaultAddElementDialog(
-			'',
+			this.data().element.id,
 			this.name() + ' Array',
 			undefined,
 			undefined,
