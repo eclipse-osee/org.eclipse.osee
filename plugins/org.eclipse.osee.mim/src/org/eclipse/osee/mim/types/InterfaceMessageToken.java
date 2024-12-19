@@ -12,6 +12,7 @@
  **********************************************************************/
 package org.eclipse.osee.mim.types;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 import java.util.Collection;
@@ -498,4 +499,76 @@ public class InterfaceMessageToken extends ArtifactAccessorResultWithGammas {
       return art;
    }
 
+   @JsonIgnore
+   @Override
+   public boolean equals(Object obj) {
+      if (obj == this) {
+         return true;
+      }
+      if (obj instanceof InterfaceMessageToken) {
+         InterfaceMessageToken other = ((InterfaceMessageToken) obj);
+         if (!this.getName().valueEquals(other.getName())) {
+            return false;
+         }
+         if (!this.getDescription().valueEquals(other.getDescription())) {
+            return false;
+         }
+         if (!this.getInterfaceMessageNumber().valueEquals(other.getInterfaceMessageNumber())) {
+            return false;
+         }
+         if (!this.getInterfaceMessagePeriodicity().valueEquals(other.getInterfaceMessagePeriodicity())) {
+            return false;
+         }
+         if (!this.getInterfaceMessageRate().valueEquals(other.getInterfaceMessageRate())) {
+            return false;
+         }
+         if (!this.getInterfaceMessageWriteAccess().valueEquals(other.getInterfaceMessageWriteAccess())) {
+            return false;
+         }
+         if (!this.getInterfaceMessageType().valueEquals(other.getInterfaceMessageType())) {
+            return false;
+         }
+         if (!this.getInterfaceMessageExclude().valueEquals(other.getInterfaceMessageExclude())) {
+            return false;
+         }
+         if (!this.getInterfaceMessageIoMode().valueEquals(other.getInterfaceMessageIoMode())) {
+            return false;
+         }
+         if (!this.getInterfaceMessageModeCode().valueEquals(other.getInterfaceMessageModeCode())) {
+            return false;
+         }
+         if (!this.getInterfaceMessageRateVer().valueEquals(other.getInterfaceMessageRateVer())) {
+            return false;
+         }
+         if (!this.getInterfaceMessagePriority().valueEquals(other.getInterfaceMessagePriority())) {
+            return false;
+         }
+         if (!this.getInterfaceMessageProtocol().valueEquals(other.getInterfaceMessageProtocol())) {
+            return false;
+         }
+         if (!this.getInterfaceMessageRptWordCount().valueEquals(other.getInterfaceMessageRptWordCount())) {
+            return false;
+         }
+         if (!this.getInterfaceMessageRptCmdWord().valueEquals(other.getInterfaceMessageRptCmdWord())) {
+            return false;
+         }
+         if (!this.getInterfaceMessageRunBeforeProc().valueEquals(other.getInterfaceMessageRunBeforeProc())) {
+            return false;
+         }
+         if (!this.getInterfaceMessageVer().valueEquals(other.getInterfaceMessageVer())) {
+            return false;
+         }
+         if (!this.getPublisherNodes().equals(other.getPublisherNodes())) {
+            return false;
+         }
+         if (!this.getSubscriberNodes().equals(other.getSubscriberNodes())) {
+            return false;
+         }
+         if (!this.getSubMessages().equals(other.getSubMessages())) {
+            return false;
+         }
+         return true;
+      }
+      return false;
+   }
 }

@@ -95,4 +95,27 @@ public class AttributePojo<T> extends BaseId {
       return this.value.toString();
    }
 
+   @JsonIgnore()
+   @Override
+   public boolean equals(Object obj) {
+      if (obj instanceof AttributePojo<?>) {
+         AttributePojo<?> other = (AttributePojo<?>) obj;
+         if (this.getId().equals(other.getId()) && this.getTypeId().equals(
+            other.getTypeId()) && this.getGammaId().equals(other.getGammaId())) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   @JsonIgnore()
+   public boolean valueEquals(Object obj) {
+      if (obj instanceof AttributePojo<?>) {
+         AttributePojo<?> other = (AttributePojo<?>) obj;
+         if (this.getValue().equals(other.getValue())) {
+            return true;
+         }
+      }
+      return false;
+   }
 }

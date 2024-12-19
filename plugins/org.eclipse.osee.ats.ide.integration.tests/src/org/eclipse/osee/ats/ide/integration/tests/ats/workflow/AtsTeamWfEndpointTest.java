@@ -76,7 +76,7 @@ public class AtsTeamWfEndpointTest extends AbstractRestTest {
       buttonSTeamWf = getButtonSTeamWf();
       Assert.assertNotNull(buttonSTeamWf);
 
-      testUrl("ats/teamwf/" + buttonSTeamWf.getAtsId(), 40);
+      testUrl("ats/teamwf/" + buttonSTeamWf.getAtsId(), 42);
    }
 
    //   @Path("ids/{id}/")
@@ -111,7 +111,7 @@ public class AtsTeamWfEndpointTest extends AbstractRestTest {
       buttonSTeamWf = getButtonSTeamWf();
       Assert.assertNotNull(buttonSTeamWf);
 
-      testUrl("ats/teamwf/details/" + buttonSTeamWf.getId(), 46);
+      testUrl("ats/teamwf/details/" + buttonSTeamWf.getId(), 48);
    }
 
    //   @Path("release/{release}")
@@ -132,7 +132,7 @@ public class AtsTeamWfEndpointTest extends AbstractRestTest {
       changes.deleteArtifact(release);
       changes.execute();
    }
-   
+
    @Test
    public void testGetWfByReleaseById() {
       IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet(

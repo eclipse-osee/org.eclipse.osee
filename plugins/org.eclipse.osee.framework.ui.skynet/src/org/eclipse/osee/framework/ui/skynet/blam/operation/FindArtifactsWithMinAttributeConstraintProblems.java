@@ -27,11 +27,11 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 /**
  * @author Andrew M. Finkbeiner
  */
-public class FindArtifactsWithMinAttributeContraintProblems extends AbstractBlam {
+public class FindArtifactsWithMinAttributeConstraintProblems extends AbstractBlam {
 
    @Override
    public String getName() {
-      return "Find Artifacts With MinAttribute Contraint Problems";
+      return "Find Artifacts With MinAttribute Constraint Problems";
    }
 
    @Override

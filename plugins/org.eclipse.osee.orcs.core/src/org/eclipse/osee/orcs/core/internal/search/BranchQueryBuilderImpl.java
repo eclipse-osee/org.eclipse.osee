@@ -178,11 +178,17 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
    }
 
    @Override
+   public T andAssociatedArtIds(List<ArtifactId> artIds) {
+      Criteria criteria = criteriaFactory.createAssociatedArtIdsCriteria(artIds);
+      return addAndCheck(getQueryData(), criteria);
+   }
+
+   @Override
    public T andIsOfCategory(BranchCategoryToken category) {
       Criteria criteria = criteriaFactory.createBranchCategoryCriteria(category, true);
       return addAndCheck(getQueryData(), criteria);
    }
-   
+
    @Override
    public T andIsNotOfCategory(BranchCategoryToken category) {
       Criteria criteria = criteriaFactory.createBranchCategoryCriteria(category, false);

@@ -190,7 +190,7 @@ public abstract class AtsApiImpl extends OseeApiBase implements AtsApi {
       workDefinitionService = new AtsWorkDefinitionServiceImpl(this, teamWorkflowProvidersLazy);
       logFactory = new AtsLogFactory();
       actionService = new AtsActionService(this);
-      agileService = new AgileService(logger, this);
+      agileService = new AgileService(this);
 
    }
 

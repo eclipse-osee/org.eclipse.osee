@@ -1,0 +1,78 @@
+name: osee-web-pr
+on:
+  pull_request:
+
+jobs:
+  check-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      angular_changed: ${{steps.angular_changes.outputs.any_modified}}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Check For Angular Changes
+        id: angular_changes
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            web/**/*
+            pnpm-lock.yaml
+            !.github/workflows/osee_web_pr.yml
+  build:
+    needs: check-changes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Angular Build
+        if: needs.check-changes.outputs.angular_changed == 'true' || needs.check-changes.outputs.angular_changed == 'true'
+        uses: ./.github/actions/angular-build
+  lint:
+    needs: check-changes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Web Setup
+        if: needs.check-changes.outputs.angular_changed == 'true' || needs.check-changes.outputs.angular_changed == 'true'
+        uses: ./.github/actions/web-setup
+      
+      - name: Angular Lint
+        if: needs.check-changes.outputs.angular_changed == 'true' || needs.check-changes.outputs.angular_changed == 'true'
+        working-directory: ./
+        run: pnpm -r run lint
+  
+  formatting:
+    needs: check-changes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Web Setup
+        if: needs.check-changes.outputs.angular_changed == 'true' || needs.check-changes.outputs.angular_changed == 'true'
+        uses: ./.github/actions/web-setup
+      
+      - name: Angular Formatting
+        if: needs.check-changes.outputs.angular_changed == 'true' || needs.check-changes.outputs.angular_changed == 'true'
+        working-directory: ./
+        run: pnpm -r run prettier:check
+  
+  unit_tests:
+    needs: check-changes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Web Setup
+        if: needs.check-changes.outputs.angular_changed == 'true' || needs.check-changes.outputs.angular_changed == 'true'
+        uses: ./.github/actions/web-setup
+      
+      - name: Angular Unit Tests
+        if: needs.check-changes.outputs.angular_changed == 'true' || needs.check-changes.outputs.angular_changed == 'true'
+        working-directory: ./
+        run: pnpm -r run test --browsers=ChromeHeadlessNoSandbox --watch=false

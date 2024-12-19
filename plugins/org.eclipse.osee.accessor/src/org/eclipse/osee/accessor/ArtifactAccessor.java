@@ -14,12 +14,14 @@ package org.eclipse.osee.accessor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.Map;
 import org.eclipse.osee.accessor.types.ArtifactMatch;
 import org.eclipse.osee.accessor.types.AttributeQuery;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 import org.eclipse.osee.orcs.core.ds.FollowRelation;
 
@@ -39,6 +41,14 @@ public interface ArtifactAccessor<T> {
    T get(BranchId branch, ArtifactId artId, Collection<FollowRelation> followRelations, ArtifactId viewId)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException;
+
+   Map<ArtifactId, T> getForAllViews(BranchId branch, ArtifactId artId, Collection<FollowRelation> followRelations)
+      throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
+      NoSuchMethodException, SecurityException;
+
+   Map<ArtifactId, T> getForAllViews(BranchId branch, ArtifactId artId, Collection<FollowRelation> followRelations,
+      TransactionId transactionId) throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+      InvocationTargetException, NoSuchMethodException, SecurityException;
 
    Collection<T> get(BranchId branch, Collection<ArtifactId> artIds)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,

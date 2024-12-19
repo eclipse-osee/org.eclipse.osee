@@ -59,7 +59,7 @@ public class FilteredTreeDialog extends MessageDialog {
    private PatternFilter patternFilter;
    List<Object> selected = new ArrayList<>();
    private final boolean withClear;
-   private boolean clearSelected = false;
+   protected boolean clearSelected = false;
 
    public FilteredTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider) {
       this(dialogTitle, dialogMessage, contentProvider, labelProvider, null);
@@ -268,6 +268,10 @@ public class FilteredTreeDialog extends MessageDialog {
 
    public boolean isClearSelected() {
       return clearSelected;
+   }
+
+   public boolean isWithClear() {
+      return withClear;
    }
 
 }

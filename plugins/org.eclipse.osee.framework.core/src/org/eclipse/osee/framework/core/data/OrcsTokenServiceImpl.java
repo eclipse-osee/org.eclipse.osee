@@ -438,6 +438,40 @@ public final class OrcsTokenServiceImpl implements OrcsTokenService {
    }
 
    @Override
+   public List<RelationTypeToken> getValidRelationTypes() {
+      Collection<RelationTypeToken> relationTypes = getRelationTypes();
+      List<RelationTypeToken> invalidRels = new ArrayList<>();
+      //populate convertedRelations if empty
+      if (convertedRelations.isEmpty()) {
+         setConvertedRelations();
+      }
+      //add all rels in shadowRels and remove the ones that have been converted
+      for (Field field : Arrays.asList(ShadowCoreRelationTypes.class.getDeclaredFields())) {
+         try {
+            RelationTypeToken rel = (RelationTypeToken) field.get(null);
+            Optional<String> findFirst =
+               convertedRelations.stream().filter(a -> a.equals(rel.getIdString())).findFirst();
+            if (findFirst.isPresent()) {
+               invalidRels.add(rel.getOldRelationTypeToken());
+            } else if (rel.isValid()) {
+               invalidRels.add(rel);
+            }
+
+         } catch (Exception ex) {
+            //
+         }
+      }
+
+      List<RelationTypeToken> validRelationTypes = new ArrayList<>();
+      for (RelationTypeToken relationType : relationTypes) {
+         if (!invalidRels.contains(relationType)) {
+            validRelationTypes.add(relationType);
+         }
+      }
+      return validRelationTypes;
+   }
+
+   @Override
    public List<RelationTypeToken> getValidRelationTypes(ArtifactTypeToken artifactType) {
       Collection<RelationTypeToken> relationTypes = getRelationTypes();
       List<RelationTypeToken> invalidRels = new ArrayList<>();

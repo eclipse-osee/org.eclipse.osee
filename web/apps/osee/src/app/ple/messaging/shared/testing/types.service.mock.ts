@@ -18,13 +18,12 @@ import { platformTypes1 } from './platform-types.response.mock';
 import type { PlatformType } from '@osee/messaging/shared/types';
 import { transactionResultMock } from '@osee/transactions/testing';
 import { legacyTransaction, transaction } from '@osee/transactions/types';
-import { transactionMock } from '@osee/transactions/testing';
 
 export const typesServiceMock: Partial<TypesService> = {
 	performMutation(body: legacyTransaction) {
 		return of(transactionResultMock);
 	},
-	getFilteredTypes(filter: string, branchId: string) {
+	getPaginatedFilteredTypes(filter: string, branchId: string) {
 		return of(platformTypes1);
 	},
 	getTypes(branchId: string) {

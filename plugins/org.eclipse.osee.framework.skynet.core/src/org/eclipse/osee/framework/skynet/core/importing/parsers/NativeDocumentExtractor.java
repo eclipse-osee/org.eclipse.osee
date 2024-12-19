@@ -13,13 +13,19 @@
 
 package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
+import org.eclipse.osee.framework.core.data.MicrosoftOfficeApplicationEnum;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 
@@ -39,6 +45,14 @@ public class NativeDocumentExtractor extends AbstractArtifactExtractor {
       collector.addRoughArtifact(roughArtifact);
       roughArtifact.addAttribute(CoreAttributeTypes.Extension, extension);
       roughArtifact.addAttribute(CoreAttributeTypes.NativeContent, source);
+      try (InputStream inputStream = source.toURL().openStream();
+         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+         MicrosoftOfficeApplicationEnum msoApplicationName = MsoApplicationExtractor.findMsoApplicationValue(reader);
+         roughArtifact.addAttribute(CoreAttributeTypes.MicrosoftOfficeApplication,
+            msoApplicationName.getApplicationName());
+      } catch (Exception ex) {
+         OseeLog.log(NativeDocumentExtractor.class, OseeLevel.SEVERE_POPUP, ex);
+      }
    }
 
    @Override

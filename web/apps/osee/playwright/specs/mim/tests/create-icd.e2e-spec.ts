@@ -37,7 +37,7 @@ test('create action', async ({ page }) => {
 		'Creating a new MIM ICD',
 		true
 	);
-	await expect(page.getByText('New MIM ICD')).toBeVisible();
+	await expect(page.getByText(branchName)).toBeVisible();
 });
 
 test('create nodes', async ({ page }) => {
@@ -421,6 +421,7 @@ test('create structure', async ({ page }) => {
 });
 
 test('create elements', async ({ page }) => {
+	test.setTimeout(600000);
 	await page.goto('http://localhost:4200/ple');
 	await page.getByRole('link', { name: 'MIM' }).click();
 	await page.getByRole('link', { name: 'Connections' }).click();

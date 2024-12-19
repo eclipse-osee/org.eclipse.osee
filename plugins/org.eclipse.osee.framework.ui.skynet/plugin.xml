@@ -23,7 +23,7 @@
 		</wizard>
 		<category id="org.eclipse.osee.define.import.category" name="OSEE">
       </category>
-  	</extension>  	
+  	</extension>
   <extension
         point="org.eclipse.ui.exportWizards">
      <wizard
@@ -143,16 +143,16 @@
 	<extension point="org.eclipse.search.searchResultViewPages">
 		<viewPage class="org.eclipse.osee.framework.ui.skynet.search.page.ArtifactSearchPage" id="org.eclipse.osee.framework.ui.skynet.ArtifactSearchViewPage" searchResultClass="org.eclipse.osee.framework.ui.skynet.search.ArtifactSearchResult"/>
 	</extension>
-	
+
        <extension
-             id="FindArtifactsWithMinAttributeContraintProblems"
+             id="FindArtifactsWithMinAttributeConstraintProblems"
              point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
           <Operation
-                className="org.eclipse.osee.framework.ui.skynet.blam.operation.FindArtifactsWithMinAttributeContraintProblems">
+                className="org.eclipse.osee.framework.ui.skynet.blam.operation.FindArtifactsWithMinAttributeConstraintProblems">
           </Operation>
        </extension>
-       
-       
+
+
 	<extension id="native" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
 		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.NativeRenderer"/>
 	</extension>
@@ -165,16 +165,16 @@
 	<extension id="html" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
 		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.HTMLRenderer"/>
 	</extension>
-	
-	<extension 
-	   id    = "word" 
+
+	<extension
+	   id    = "word"
 	   point = "org.eclipse.osee.framework.ui.skynet.ArtifactRenderer" >
-	   
-		<Renderer 
+
+		<Renderer
 		   classname = "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer"/>
-		   
+
 	</extension>
-	
+
 	<extension id="url" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
 		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.UrlRenderer"/>
 	</extension>
@@ -401,7 +401,7 @@
             commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.commitInto"
             style="push">
       </command>
-      
+
       <separator
             name="separator.xBranch.BranchView2"
             visible="true">
@@ -519,7 +519,7 @@
             commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.commitInto"
             style="push">
       </command>
-      
+
       <separator
             name="separator.xBranch.BranchManager2"
             visible="true">
@@ -1431,7 +1431,7 @@
                     class="org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseIntegrityCheckApplication">
               </run>
            </application>
-        </extension>      
+        </extension>
    <extension
          id="ExperimentalBlam"
          name="ExperimentalBlam"
@@ -1573,11 +1573,11 @@
    <extension point="org.eclipse.ui.handlers">
       <handler
             commandId="org.eclipse.osee.framework.ui.skynet.action.OpenConfigDetails"
-            class="org.eclipse.osee.framework.ui.skynet.action.OpenConfigDetailsHandler"> 
+            class="org.eclipse.osee.framework.ui.skynet.action.OpenConfigDetailsHandler">
       </handler>
       <handler
             commandId="org.eclipse.osee.framework.ui.skynet.action.OpenOseeProperties"
-            class="org.eclipse.osee.framework.ui.skynet.action.OpenPropertiesHandler">  
+            class="org.eclipse.osee.framework.ui.skynet.action.OpenPropertiesHandler">
       </handler>
    </extension>
    <extension point="org.eclipse.ui.commandImages">
@@ -1605,17 +1605,17 @@
          </menu>
       </menuContribution>
    </extension>
-   
+
 
 
    <extension
       point = "org.eclipse.osee.framework.skynet.core.OseeValidator">
-      
+
       <OseeValidator
          classname="org.eclipse.osee.framework.ui.skynet.templates.TemplateArtifactValidator"/>
-         
+
    </extension>
-   
+
    <extension
          id="DeleteInvalidAttributeTypes"
          name="DeleteInvalidAttributeTypes"

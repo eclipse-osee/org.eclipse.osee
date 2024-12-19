@@ -16,7 +16,7 @@ module(
     bazel_compatibility = [">=6.0.0"],
 )
 bazel_dep(name = "rules_osee", version = "0.0.0")
-bazel_dep(name = "aspect_bazel_lib", version = "2.3.0")
+bazel_dep(name = "aspect_bazel_lib", version = "2.9.4")
 bazel_dep(name = "rules_pkg", version = "0.10.1")
 
 bat = use_extension("@rules_osee//bat:extensions.bzl","bat")
@@ -25,9 +25,9 @@ bat.toolchain()
 plconfig = use_extension("@rules_osee//plconfig:extensions.bzl","plconfig")
 plconfig.config(
     name="my_product_line",            
-    osee_url="http://host.docker.internal:8089",
+    osee_url="http://localhost:8089",
     branch_id="8",
-    sha256="560e0b693fc28f468d3ce1f864d575de93f08255172d0b9333a258cb919d04f3")
+    sha256="30e77eeea6b35d7308567c30b774bb7fc571efd5511065ded283df76bb7958ea")
 
 use_repo(
     plconfig,
