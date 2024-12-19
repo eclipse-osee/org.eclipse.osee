@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { test } from '@ngx-playwright/test';
+import { expect, test } from '@ngx-playwright/test';
 import { enableEditMode } from '../utils/helpers';
 
 test('test', async ({ page }) => {
@@ -28,8 +28,14 @@ test('test', async ({ page }) => {
 
 	// Create cross-reference
 	await page.getByTestId('add-cross-ref').filter({ hasText: 'add' }).click();
-	await page.getByTestId('field-name').fill('C1');
-	await page.getByTestId('field-value').fill('Private Array');
+	const nameField = page.getByTestId('field-name');
+	await expect(nameField).toHaveValue('');
+	await nameField.fill('C1');
+	await expect(nameField).toHaveValue('C1');
+	const valueField = page.getByTestId('field-value');
+	await expect(valueField).toHaveValue('');
+	await valueField.fill('Private Array');
+	await expect(valueField).toHaveValue('Private Array');
 	await page
 		.getByTestId('add-array-value')
 		.and(page.getByRole('button'))
@@ -39,6 +45,9 @@ test('test', async ({ page }) => {
 	await page.getByTestId('add-array-value').click();
 	await page.getByTestId('field-item-key-' + 1).fill('2');
 	await page.getByTestId('field-item-value-' + 1).fill('SECOND_VAL');
+
+	await expect(nameField).toHaveValue('C1');
+	await expect(valueField).toHaveValue('Private Array');
 
 	await page.screenshot({
 		animations: 'disabled',
