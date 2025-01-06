@@ -172,6 +172,7 @@ public class OrcsAdminImpl implements OrcsAdmin {
       batchStatement.execute();
    }
 
+   @Override
    public IResourceManager getResourceManager() {
       return resourceManager;
    }

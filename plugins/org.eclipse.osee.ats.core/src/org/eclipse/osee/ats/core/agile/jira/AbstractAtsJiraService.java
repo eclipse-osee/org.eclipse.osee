@@ -89,7 +89,7 @@ public abstract class AbstractAtsJiraService implements AtsJiraService {
    @Override
    public AtsUser getJiraAssignee(IAtsWorkItem workItem) {
       JiraSearch srch = search(workItem);
-      if (!srch.issues.isEmpty() && srch.issues != null) {
+      if (srch.issues != null && !srch.issues.isEmpty()) {
          String userId = srch.issues.iterator().next().getAssigneeUserId();
          if (Strings.isValid(userId)) {
             AtsUser user = AtsApiService.get().getUserService().getUserByLoginId(userId);

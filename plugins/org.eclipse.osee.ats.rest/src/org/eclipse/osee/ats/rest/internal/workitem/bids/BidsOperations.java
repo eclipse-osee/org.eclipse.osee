@@ -148,12 +148,25 @@ public class BidsOperations {
       jTeamWf.setCurrentState(newTeamWf.getCurrentStateName());
    }
 
+   public BuildImpactDatas getBidsById(ArtifactId twId) {
+      BuildImpactDatas bids = new BuildImpactDatas();
+      IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) atsApi.getWorkItemService().getWorkItem(twId.getId());
+      if (teamWf == null) {
+         bids.getResults().errorf("Invalid TW Id [%s]", twId);
+      }
+      return getBids(teamWf, bids);
+   }
+
    public BuildImpactDatas getBids(String atsId) {
       BuildImpactDatas bids = new BuildImpactDatas();
       IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) atsApi.getWorkItemService().getWorkItemByAtsId(atsId);
       if (teamWf == null) {
          bids.getResults().errorf("Invalid ATS Id [%s]", atsId);
       }
+      return getBids(teamWf, bids);
+   }
+
+   public BuildImpactDatas getBids(IAtsTeamWorkflow teamWf, BuildImpactDatas bids) {
       if (bids.getResults().isErrors()) {
          return bids;
       }

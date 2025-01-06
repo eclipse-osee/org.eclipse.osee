@@ -630,9 +630,6 @@ public class AHTML {
       return "<table id=\"sorttable\" class=\"display\" border=\"" + border + "\" " + (color != null ? "color=\"" + color + "\"" : "") + "cellpadding=\"3\" cellspacing=\"0\" width=\"" + width + "%\">";
    }
 
-   /**
-    * @author: BCAI
-    */
    public static String htmlToJson(String html) throws Exception {
       Document document = Jsoup.parse(html);
       List<Map<String, String>> jsonList = new ArrayList<>();

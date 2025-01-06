@@ -349,6 +349,12 @@ public interface AtsActionEndpointApi {
    @Produces({MediaType.APPLICATION_JSON})
    public BuildImpactDatas getBids(@PathParam("atsId") String atsId);
 
+   @Path("{id}/bidsbyid")
+   @GET
+   @Produces({MediaType.APPLICATION_JSON})
+   @Consumes({MediaType.APPLICATION_JSON})
+   public BuildImpactDatas getBidsById(@PathParam("id") ArtifactId twId);
+
    @Path("points")
    @GET
    @Produces(MediaType.APPLICATION_JSON)
@@ -383,4 +389,5 @@ public interface AtsActionEndpointApi {
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    public RecentlyVisitedItems getVisited(@PathParam("userArtId") ArtifactId userArtId);
+
 }

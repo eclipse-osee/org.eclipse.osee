@@ -156,7 +156,7 @@ public class WfeBitTab extends WfeAbstractTab implements IArtifactEventListener,
 
          @Override
          protected IStatus run(IProgressMonitor monitor) {
-            bids = atsApi.getServerEndpoints().getActionEndpoint().getBids(teamWf.getAtsId());
+            bids = atsApi.getServerEndpoints().getActionEndpoint().getBidsById(teamWf.getArtifactId());
 
             Displays.ensureInDisplayThread(new Runnable() {
 

@@ -91,13 +91,11 @@ public class OrcsApiImpl extends OseeApiBase implements OrcsApi {
    /**
     * Saves a handle to the Exception Registry service implementation.
     */
-
    private ExceptionRegistryOperations exceptionRegistryOperations;
 
    /**
     * Saves a weak reference handle to the Resources service implementation.
     */
-
    private WeakReference<ResourcesOperations> resourcesOperations;
 
    private UserService userService;
