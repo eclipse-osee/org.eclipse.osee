@@ -247,7 +247,7 @@ public interface AtsRelationTypes {
    RelationTypeSide BuildImpactTableToData_TeamWf = RelationTypeSide.create(BuildImpactTableToData, SIDE_A);
    RelationTypeSide BuildImpactTableToData_Bid = RelationTypeSide.create(BuildImpactTableToData, SIDE_B);
 
-   RelationTypeToken BuildImpactDataToTeamWf = ats.add(353139807960131327L, "BuildImpactDataToTeamWf", ONE_TO_MANY, UNORDERED, BuildImpactData, "BuildImpactData", TeamWorkflow, "TeamWf" );
+   RelationTypeToken BuildImpactDataToTeamWf = ats.add(353139807960131327L, "BuildImpactDataToTeamWf", MANY_TO_MANY, UNORDERED, BuildImpactData, "BuildImpactData", TeamWorkflow, "TeamWf" );
    RelationTypeSide BuildImpactDataToTeamWf_Bid = RelationTypeSide.create(BuildImpactDataToTeamWf, SIDE_A);
    RelationTypeSide BuildImpactDataToTeamWf_TeamWf = RelationTypeSide.create(BuildImpactDataToTeamWf, SIDE_B);
 

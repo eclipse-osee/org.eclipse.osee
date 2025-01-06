@@ -67,6 +67,15 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
    public List<XWidgetRendererItem> getDynamicXWidgetLayoutData(ArtifactTypeToken artType,
       AttributeTypeToken attributeType) {
       List<XWidgetRendererItem> layouts = new ArrayList<>();
+      if (artRefAttributeTypes.contains(attributeType)) {
+         layouts = super.getDynamicXWidgetLayoutData(artType, attributeType);
+         XWidgetRendererItem layoutData = layouts.get(0);
+         ArtifactTypeToken newArtType = artRefAttrTypeToValidArtType.get(attributeType);
+         if (newArtType.isValid()) {
+            layoutData.setArtifactType(newArtType);
+         }
+      }
+
       if (attributeType.equals(AtsAttributeTypes.BaselineBranchId)) {
          layouts = super.getDynamicXWidgetLayoutData(artType, attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);
@@ -87,15 +96,8 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
          layouts = super.getDynamicXWidgetLayoutData(artType, attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);
          layoutData.setXWidgetName(XHyperlinkBranchViewSelect.class.getSimpleName());
-      } else if (artRefAttributeTypes.contains(attributeType)) {
-         layouts = super.getDynamicXWidgetLayoutData(artType, attributeType);
-         XWidgetRendererItem layoutData = layouts.get(0);
-         ArtifactTypeToken newArtType = artRefAttrTypeToValidArtType.get(attributeType);
-         if (newArtType.isValid()) {
-            layoutData.setArtifactType(newArtType);
-         }
-         layoutData.setXWidgetName(XTextFlatDam.WIDGET_ID);
       }
+
       return layouts;
    }
 }
