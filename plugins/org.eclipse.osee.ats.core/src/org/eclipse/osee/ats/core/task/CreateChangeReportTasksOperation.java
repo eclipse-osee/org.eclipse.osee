@@ -249,7 +249,6 @@ public class CreateChangeReportTasksOperation {
 
             if (crtd.getWorkOrParentBranchId().isInvalid()) {
                crtd.getResults().log("No Working or Parent Branch; Nothing to do");
-               return crtd;
             }
 
             // Add task match for each task that is needed (matches to existing tasks will be later)
