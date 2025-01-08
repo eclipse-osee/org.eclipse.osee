@@ -173,7 +173,6 @@ public class TransactionWriter {
          for (SqlOrderEnum key : SqlOrderEnum.values()) {
             List<Object[]> data = sqlBuilder.getInsertData(key);
             if (data != null && !data.isEmpty()) {
-               //
                jdbcClient.runBatchUpdate(connection, key.getInsertSql(), data);
             }
          }

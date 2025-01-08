@@ -101,7 +101,8 @@ public enum OseeSql {
    ARTIFACT_TYPE_COUNT("select count(*) from osee_artifact art where art.art_type_id = ?"),
    ARTIFACT_ID_BRANCHES("select distinct(branch_id) from osee_txs txs, osee_artifact art where art.art_id = ? and art.gamma_id = txs.gamma_id"),
    SELECT_IMPACTED_GAMMAS_BY_BRANCH_TX("select gamma_id from osee_txs where branch_id = ? and transaction_id = ?"),
-   UNUSED_IMPACTED_GAMMAS_AFTER_PURGE("SELECT gamma_id FROM ( SELECT ? as gamma_id, count(*) cnt FROM (select gamma_id from osee_txs where gamma_id = ? union all select gamma_id from osee_txs_archived where gamma_id = ? ) t1 ) t2 WHERE cnt = ? ");
+   UNUSED_IMPACTED_GAMMAS_AFTER_PURGE("SELECT gamma_id FROM ( SELECT ? as gamma_id, count(*) cnt FROM (select gamma_id from osee_txs where gamma_id = ? union all select gamma_id from osee_txs_archived where gamma_id = ? ) t1 ) t2 WHERE cnt = ? "),
+   GET_MAX_TRANSACTION_ID("SELECT max(transaction_id) FROM osee_tx_details WHERE branch_id = ?");
 
    private final String sql;
    private final String hints;

@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxCurrent;
+import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -249,7 +250,9 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
                   parentBranch, TxCurrent.NOT_CURRENT, newBranchData.getMergeAddressingQueryId());
             }
          } else {
-            if (newBranchData.getFromTransaction().isValid()) {
+            Long maxParentTxId = jdbcClient.fetch(-1L, OseeSql.GET_MAX_TRANSACTION_ID.getSql(), parentBranch.getId());
+            if (newBranchData.getFromTransaction().isValid() && !maxParentTxId.equals(
+               newBranchData.getFromTransaction().getId())) {
                populateAddressingToCopy(connection, addressing, baseTxId, gammas, SELECT_ADDRESSING, parentBranch,
                   sourceTxId);
             } else {
