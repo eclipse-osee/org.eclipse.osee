@@ -18,7 +18,7 @@ import {
 	input,
 	viewChild,
 } from '@angular/core';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { HeaderService } from '@osee/shared/services';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { FormsModule } from '@angular/forms';
@@ -44,6 +44,24 @@ import { tap } from 'rxjs';
 
 @Component({
 	selector: 'osee-script-list',
+	imports: [
+		AsyncPipe,
+		FormsModule,
+		MatTable,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatTooltip,
+		MatCell,
+		MatCellDef,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
+		MatPaginator,
+		NgClass,
+	],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	template: ` @if (scriptDefs | async) {
 			<div
 				class="mat-elevation-z8 tw-max-h-96 tw-w-full tw-overflow-auto">
@@ -69,7 +87,11 @@ import { tap } from 'rxjs';
 							<td
 								mat-cell
 								*matCellDef="let def"
-								class="tw-align-middle">
+								class="tw-align-middle"
+								[ngClass]="{
+									'tw-bg-primary-100 dark:tw-bg-primary-700':
+										def.id === selectedScript(),
+								}">
 								<button
 									mat-button
 									(click)="setResultList(def.id)">
@@ -84,8 +106,9 @@ import { tap } from 'rxjs';
 						class="tw-w-full"></tr>
 					<tr
 						mat-row
-						*matRowDef="let row; columns: headers; let i = index"
-						class="odd:tw-bg-selected-button tw-w-full even:tw-bg-background-background"
+						*matRowDef="let row; columns: headers"
+						class="odd:tw-bg-selected-button tw-w-full even:tw-bg-background-background hover:tw-bg-background-app-bar"
+						[id]="row.id"
 						[attr.data-cy]="
 							'script-def-table-row-' + row.name
 						"></tr>
@@ -97,23 +120,6 @@ import { tap } from 'rxjs';
 			[pageSize]="100"
 			[length]="datasource.data.length"
 			[disabled]="false"></mat-paginator>`,
-	imports: [
-		AsyncPipe,
-		FormsModule,
-		MatTable,
-		MatColumnDef,
-		MatHeaderCell,
-		MatHeaderCellDef,
-		MatTooltip,
-		MatCell,
-		MatCellDef,
-		MatHeaderRow,
-		MatHeaderRowDef,
-		MatRow,
-		MatRowDef,
-		MatPaginator,
-	],
-	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ScriptListComponent {
 	filterText = input<string>('');
@@ -124,6 +130,8 @@ export class ScriptListComponent {
 	private paginator = viewChild.required(MatPaginator);
 
 	datasource = new MatTableDataSource<DefReference>();
+
+	selectedScript = this.ciDetailsService.ciDefId;
 
 	private _filterEffect = effect(
 		() => (this.datasource.filter = this.filterText())

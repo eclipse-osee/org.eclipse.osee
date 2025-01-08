@@ -17,6 +17,7 @@ import { AsyncPipe, NgIf } from '@angular/common';
 import { of, switchMap } from 'rxjs';
 import 'chartjs-adapter-date-fns';
 import { TimelineResultsChartComponent } from './timeline-results-chart/timeline-results-chart.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-script-timeline',
@@ -32,6 +33,7 @@ export class ScriptTimelineComponent {
 	ciDetailsService = inject(CiDetailsService);
 
 	scriptResults = this.ciDetailsService.scriptResults.pipe(
+		takeUntilDestroyed(),
 		switchMap((results) => of(results.reverse()))
 	);
 

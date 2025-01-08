@@ -13,6 +13,7 @@
 import {
 	ChangeDetectionStrategy,
 	Component,
+	computed,
 	inject,
 	signal,
 } from '@angular/core';
@@ -23,7 +24,7 @@ import { CiDashboardControlsComponent } from '../ci-dashboard-controls/ci-dashbo
 import { CiDashboardUiService } from '../../services/ci-dashboard-ui.service';
 import { ScriptTimelineComponent } from './script-timeline/script-timeline.component';
 import { RunInfoComponent } from './run-info/run-info.component';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { BehaviorSubject, iif, of, shareReplay, switchMap, take } from 'rxjs';
 import { CiDetailsService } from '../../services/ci-details.service';
 import { MatIcon } from '@angular/material/icon';
@@ -36,10 +37,27 @@ import {
 	MatPrefix,
 } from '@angular/material/input';
 import { MatTooltip } from '@angular/material/tooltip';
-import { resultReferenceSentinel } from '../../types/tmo';
+import { ResultReference, resultReferenceSentinel } from '../../types/tmo';
 
 @Component({
 	selector: 'osee-scripts',
+	imports: [
+		NgClass,
+		ScriptListComponent,
+		ResultListComponent,
+		TestPointTableComponent,
+		ScriptTimelineComponent,
+		RunInfoComponent,
+		CiDashboardControlsComponent,
+		MatIcon,
+		MatIconButton,
+		MatFormField,
+		MatInput,
+		MatLabel,
+		MatPrefix,
+		MatTooltip,
+	],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	template: `<osee-ci-dashboard-controls />
 		@if (selectedResult().id !== '-1') {
 			<div class="tw-flex tw-justify-between tw-gap-8 tw-px-4 tw-pb-2">
@@ -48,7 +66,7 @@ import { resultReferenceSentinel } from '../../types/tmo';
 					<button
 						mat-icon-button
 						class="tw-text-primary"
-						(click)="setResult('-1')">
+						(click)="clearResult()">
 						<mat-icon>arrow_back</mat-icon>
 					</button>
 					<div class="md-headline tw-m-0">
@@ -115,18 +133,27 @@ import { resultReferenceSentinel } from '../../types/tmo';
 				</div>
 				<div>
 					<!-- This form field is not visible, but is here to maintain table alignment -->
-					<mat-form-field
-						subscriptSizing="dynamic"
-						class="tw-opacity-0"
+					<div
 						[ngClass]="
 							selectedResult().id === '-1'
 								? 'tw-visible'
 								: 'tw-hidden'
-						">
-						<input
-							matInput
-							disabled />
-					</mat-form-field>
+						"
+						class="tw-w-full">
+						<div class="tw-relative">
+							<mat-form-field
+								subscriptSizing="dynamic"
+								class="tw-z-0 tw-opacity-0">
+								<input
+									matInput
+									disabled />
+							</mat-form-field>
+							<p
+								class="tw-absolute tw-left-0 tw-top-0 tw-z-50 tw-flex tw-h-full tw-w-full tw-items-center tw-font-bold">
+								{{ scriptName() }}
+							</p>
+						</div>
+					</div>
 					<osee-result-list (resultId)="setResult($event)" />
 				</div>
 				@if (selectedResult().id !== '-1') {
@@ -154,23 +181,6 @@ import { resultReferenceSentinel } from '../../types/tmo';
 				</div>
 			}
 		</div>`,
-	imports: [
-		NgClass,
-		ScriptListComponent,
-		ResultListComponent,
-		TestPointTableComponent,
-		ScriptTimelineComponent,
-		RunInfoComponent,
-		CiDashboardControlsComponent,
-		MatIcon,
-		MatIconButton,
-		MatFormField,
-		MatInput,
-		MatLabel,
-		MatPrefix,
-		MatTooltip,
-	],
-	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class DetailsComponent {
 	uiService = inject(CiDashboardUiService);
@@ -197,6 +207,14 @@ export default class DetailsComponent {
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
+	results = toSignal(
+		this.ciDetailsService.scriptResults.pipe(takeUntilDestroyed()),
+		{ initialValue: [] }
+	);
+	scriptName = computed(() =>
+		this.results().length > 0 ? this.results()[0].name : ''
+	);
+
 	selectedResult = toSignal(this._selectedResult$, {
 		initialValue: resultReferenceSentinel,
 	});
@@ -212,8 +230,12 @@ export default class DetailsComponent {
 			.subscribe();
 	}
 
-	setResult(id: `${number}`) {
-		this.selectedResultId.next(id);
+	setResult(res: ResultReference) {
+		this.selectedResultId.next(res.id);
+	}
+
+	clearResult() {
+		this.setResult(resultReferenceSentinel);
 	}
 
 	updateScriptListFilter(event: Event) {
