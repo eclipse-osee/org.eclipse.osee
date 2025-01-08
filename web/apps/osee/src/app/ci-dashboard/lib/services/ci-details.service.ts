@@ -51,35 +51,10 @@ export class CiDetailsService {
 		switchMap(([brid, setId]) =>
 			this.tmoHttpService.getScriptDefList(brid, setId)
 		),
-		takeUntilDestroyed(),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
-	_scriptDefs = combineLatest([
-		this.branchId,
-		this.ciDashboardUiService.ciSetId,
-		this.currentPage,
-		this.currentPageSize,
-	]).pipe(
-		filter(
-			([brid, setId, _page, _pageSize]) => brid !== '' && setId !== '-1'
-		),
-		share(),
-		debounceTime(500),
-		distinctUntilChanged(),
-		switchMap(([brid, setId, page, pageSize]) =>
-			this.tmoHttpService.getScriptDefListPagination(
-				brid,
-				setId,
-				page + 1,
-				pageSize
-			)
-		),
-		takeUntilDestroyed(),
-		shareReplay({ bufferSize: 1, refCount: true }) //Same instance for multiple calls using it.
-	);
-
-	_scriptDefCount = combineLatest([
+	private _scriptDefCount = combineLatest([
 		this.branchId,
 		this.ciDashboardUiService.ciSetId,
 	]).pipe(
@@ -98,7 +73,7 @@ export class CiDetailsService {
 		)
 	);
 
-	_scriptResults = combineLatest([
+	private _scriptResults = combineLatest([
 		this.branchId,
 		toObservable(this.ciDefId),
 	]).pipe(
