@@ -76,7 +76,7 @@ export type DefReference = {
 };
 
 export type ResultReference = {
-	id: string;
+	id: `${number}`;
 	name: string;
 	processorId: string;
 	runtimeVersion: string;

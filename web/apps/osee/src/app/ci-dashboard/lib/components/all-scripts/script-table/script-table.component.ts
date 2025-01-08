@@ -140,7 +140,7 @@ import { MatSort, MatSortHeader } from '@angular/material/sort';
 				<tr
 					mat-row
 					*matRowDef="let row; columns: headers; let i = index"
-					class="odd:tw-bg-selected-button even:tw-bg-background-background"
+					class="odd:tw-bg-selected-button even:tw-bg-background-background hover:tw-bg-background-app-bar"
 					[attr.data-cy]="'script-def-table-row-' + row.name"></tr>
 			</mat-table>
 			<mat-paginator

@@ -108,7 +108,7 @@ export const scriptDefHeaderDetails: headerDetail<DefReference>[] = [
 	{
 		header: 'fullScriptName',
 		description: 'Full qualified name of test script',
-		humanReadable: 'Full ScriptName',
+		humanReadable: 'Full Script Name',
 	},
 ];
 
@@ -121,7 +121,7 @@ export const scriptDefListHeaderDetails: headerDetail<DefReference>[] = [
 	{
 		header: 'fullScriptName',
 		description: 'Full qualified name of test script',
-		humanReadable: 'Full ScriptName',
+		humanReadable: 'Full Script Name',
 	},
 ];
 

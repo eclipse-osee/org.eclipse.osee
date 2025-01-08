@@ -35,9 +35,27 @@ import {
 	MatTable,
 } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
 	selector: 'osee-result-list',
+	imports: [
+		AsyncPipe,
+		NgClass,
+		FormsModule,
+		MatTable,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatTooltip,
+		MatCell,
+		MatCellDef,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
+	],
+	changeDetection: ChangeDetectionStrategy.OnPush,
 	template: `@if (scriptResults | async; as _results) {
 		<div class="mat-elevation-z8 tw-max-h-96 tw-w-full tw-overflow-auto">
 			<mat-table [dataSource]="_results">
@@ -63,7 +81,7 @@ import { MatTooltip } from '@angular/material/tooltip';
 							@if (header === 'executionDate') {
 								<button
 									mat-list-item
-									(click)="setResultId(result.id)">
+									(click)="setResultId(result)">
 									{{ result[header] }}
 								</button>
 							} @else if (header === 'failedCount') {
@@ -102,33 +120,17 @@ import { MatTooltip } from '@angular/material/tooltip';
 			</mat-table>
 		</div>
 	}`,
-	imports: [
-		AsyncPipe,
-		NgClass,
-		FormsModule,
-		MatTable,
-		MatColumnDef,
-		MatHeaderCell,
-		MatHeaderCellDef,
-		MatTooltip,
-		MatCell,
-		MatCellDef,
-		MatHeaderRow,
-		MatHeaderRowDef,
-		MatRow,
-		MatRowDef,
-	],
-	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResultListComponent {
 	ciDetailsService = inject(CiDetailsService);
 	headerService = inject(HeaderService);
-	resultId = output<`${number}`>();
+	resultId = output<ResultReference>();
 
-	scriptResults = this.ciDetailsService.scriptResults;
+	scriptResults =
+		this.ciDetailsService.scriptResults.pipe(takeUntilDestroyed());
 
-	setResultId(resId: `${number}`) {
-		this.resultId.emit(resId);
+	setResultId(res: ResultReference) {
+		this.resultId.emit(res);
 	}
 
 	getTableHeaderByName(header: keyof ResultReference) {

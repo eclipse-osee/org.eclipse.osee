@@ -14,18 +14,16 @@ import { Injectable, signal, inject } from '@angular/core';
 import {
 	BehaviorSubject,
 	combineLatest,
-	debounceTime,
 	distinctUntilChanged,
 	filter,
 	map,
-	share,
 	shareReplay,
 	switchMap,
 	take,
 } from 'rxjs';
 import { CiDashboardUiService } from './ci-dashboard-ui.service';
 import { TmoHttpService } from './tmo-http.service';
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { forkJoin } from 'rxjs';
 import { format } from 'date-fns';
 
@@ -81,7 +79,6 @@ export class CiDetailsService {
 		switchMap(([brId, defId]) =>
 			this.tmoHttpService.getScriptResults(brId, defId)
 		),
-		takeUntilDestroyed(),
 		shareReplay({ bufferSize: 1, refCount: true })
 	);
 
