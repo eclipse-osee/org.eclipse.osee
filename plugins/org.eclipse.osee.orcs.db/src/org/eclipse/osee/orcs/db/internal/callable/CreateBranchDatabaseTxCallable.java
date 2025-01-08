@@ -71,7 +71,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
 "txsM as (SELECT MAX(transaction_id) AS transaction_id, item_type, group_id FROM txsI GROUP BY item_type, group_id)\n\n"+
 
 "select gamma_id, mod_type, app_id from txsI, txsM where txsM.item_type = txsI.item_type and txsM.group_id = txsI.group_id and txsM.transaction_id = txsI.transaction_id order by txsM.transaction_id desc";
-   private static final String SELECT_ADDRESSING_TX_CURRENT = "select gamma_id, mod_type, app_id from osee_txs where branch_id = ? and tx_current > 0";
+   private static final String SELECT_ADDRESSING_TX_CURRENT = "SELECT gamma_id, mod_type, app_id FROM osee_txs WHERE branch_id = ? AND tx_current <> " + TxCurrent.NOT_CURRENT;
    // descending order is used so that the most recent entry will be used if there are multiple rows with the same gamma (an error case)
    // @formatter:on
 
@@ -250,9 +250,11 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
                   parentBranch, TxCurrent.NOT_CURRENT, newBranchData.getMergeAddressingQueryId());
             }
          } else {
-            Long maxParentTxId = jdbcClient.fetch(-1L, OseeSql.GET_MAX_TRANSACTION_ID.getSql(), parentBranch.getId());
-            if (newBranchData.getFromTransaction().isValid() && !maxParentTxId.equals(
-               newBranchData.getFromTransaction().getId())) {
+            TransactionId maxParentTxId =
+               jdbcClient.fetch(TransactionId.SENTINEL, OseeSql.GET_MAX_TRANSACTION_ID.getSql(), parentBranch);
+            if (newBranchData.getFromTransaction().isValid() && maxParentTxId.notEqual(
+               newBranchData.getFromTransaction())) {
+
                populateAddressingToCopy(connection, addressing, baseTxId, gammas, SELECT_ADDRESSING, parentBranch,
                   sourceTxId);
             } else {
