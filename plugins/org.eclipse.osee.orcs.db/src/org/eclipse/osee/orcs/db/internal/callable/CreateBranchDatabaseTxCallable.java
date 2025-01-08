@@ -67,11 +67,10 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
 "   SELECT transaction_id, item.gamma_id, mod_type, app_id, 7 as item_type, item.gamma_id as group_id FROM osee_relation item, txs where txs.gamma_id = item.gamma_id\n"+
 "UNION ALL\n"+
 "   SELECT transaction_id, item.gamma_id, mod_type, app_id, 3 as item_type, rel_link_id as group_id FROM osee_relation_link item, txs where txs.gamma_id = item.gamma_id),\n\n"+
-
-
 "txsM as (SELECT MAX(transaction_id) AS transaction_id, item_type, group_id FROM txsI GROUP BY item_type, group_id)\n\n"+
 
 "select gamma_id, mod_type, app_id from txsI, txsM where txsM.item_type = txsI.item_type and txsM.group_id = txsI.group_id and txsM.transaction_id = txsI.transaction_id order by txsM.transaction_id desc";
+   private static final String SELECT_ADDRESSING_TX_CURRENT = "select gamma_id, mod_type, app_id from osee_txs where branch_id = ? and tx_current > 0";
    // descending order is used so that the most recent entry will be used if there are multiple rows with the same gamma (an error case)
    // @formatter:on
 
@@ -250,8 +249,13 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
                   parentBranch, TxCurrent.NOT_CURRENT, newBranchData.getMergeAddressingQueryId());
             }
          } else {
-            populateAddressingToCopy(connection, addressing, baseTxId, gammas, SELECT_ADDRESSING, parentBranch,
-               sourceTxId);
+            if (newBranchData.getFromTransaction().isValid()) {
+               populateAddressingToCopy(connection, addressing, baseTxId, gammas, SELECT_ADDRESSING, parentBranch,
+                  sourceTxId);
+            } else {
+               populateAddressingToCopy(connection, addressing, baseTxId, gammas, SELECT_ADDRESSING_TX_CURRENT,
+                  parentBranch);
+            }
          }
 
          addressing.execute();
