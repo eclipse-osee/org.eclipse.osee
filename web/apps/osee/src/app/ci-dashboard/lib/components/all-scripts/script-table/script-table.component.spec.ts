@@ -33,6 +33,16 @@ import {
 	MatTable,
 } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
+import {
+	MatFormField,
+	MatLabel,
+	MatPrefix,
+} from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatIcon } from '@angular/material/icon';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort, MatSortHeader } from '@angular/material/sort';
+import { FormsModule } from '@angular/forms';
 
 describe('ScriptTableComponent', () => {
 	let component: ScriptTableComponent;
@@ -45,6 +55,7 @@ describe('ScriptTableComponent', () => {
 					SubsystemSelectorMockComponent,
 					TeamSelectorMockComponent,
 					AsyncPipe,
+					FormsModule,
 					MatTable,
 					MatColumnDef,
 					MatHeaderCell,
@@ -56,6 +67,14 @@ describe('ScriptTableComponent', () => {
 					MatHeaderRowDef,
 					MatRow,
 					MatRowDef,
+					MatFormField,
+					MatLabel,
+					MatInput,
+					MatIcon,
+					MatPrefix,
+					MatPaginator,
+					MatSort,
+					MatSortHeader,
 				],
 			},
 		}).configureTestingModule({

@@ -19,7 +19,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 @Component({
 	selector: 'osee-all-scripts',
 	template: `<osee-ci-dashboard-controls />
-		<div class="tw-h-[76vh] tw-px-4"><osee-script-table /></div>`,
+		<div class="tw-h-[76vh]"><osee-script-table /></div>`,
 	imports: [ScriptTableComponent, CiDashboardControlsComponent],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 })

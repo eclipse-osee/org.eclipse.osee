@@ -13,14 +13,15 @@
 import {
 	ChangeDetectionStrategy,
 	Component,
+	effect,
 	inject,
+	signal,
 	viewChild,
 } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { scriptDefHeaderDetails } from '../../../table-headers/script-headers';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { MatMenuTrigger } from '@angular/material/menu';
 import {
 	MatCell,
 	MatCellDef,
@@ -32,6 +33,7 @@ import {
 	MatRow,
 	MatRowDef,
 	MatTable,
+	MatTableDataSource,
 } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
 import { HeaderService } from '@osee/shared/services';
@@ -39,21 +41,68 @@ import { CiDetailsService } from '../../../services/ci-details.service';
 import type { DefReference } from '../../../types/tmo';
 import { CiDashboardUiService } from '../../../services/ci-dashboard-ui.service';
 import { Router } from '@angular/router';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { SubsystemSelectorComponent } from '../../subsystem-selector/subsystem-selector.component';
 import { TeamSelectorComponent } from '../../team-selector/team-selector.component';
+import {
+	MatFormField,
+	MatLabel,
+	MatPrefix,
+} from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatIcon } from '@angular/material/icon';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort, MatSortHeader } from '@angular/material/sort';
 
 @Component({
 	selector: 'osee-script-table',
-	template: `<div
-		class="mat-elevation-z8 tw-h-[76vh] tw-w-screen tw-overflow-auto">
-		@if (scriptDefs | async; as _defs) {
-			<mat-table [dataSource]="_defs">
+	imports: [
+		AsyncPipe,
+		SubsystemSelectorComponent,
+		TeamSelectorComponent,
+		FormsModule,
+		MatTable,
+		MatColumnDef,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatTooltip,
+		MatCell,
+		MatCellDef,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatRow,
+		MatRowDef,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatIcon,
+		MatPrefix,
+		MatPaginator,
+		MatSort,
+		MatSortHeader,
+	],
+	changeDetection: ChangeDetectionStrategy.OnPush,
+	template: `<div class="tw-flex tw-h-full tw-w-screen tw-flex-col">
+		@if (scriptDefs()) {
+			<mat-form-field
+				class="tw-w-full"
+				subscriptSizing="dynamic">
+				<mat-label>Filter Scripts</mat-label>
+				<input
+					matInput
+					[(ngModel)]="filterText" />
+				<mat-icon matPrefix>filter_list</mat-icon>
+			</mat-form-field>
+			<mat-table
+				[dataSource]="datasource"
+				class="tw-overflow-auto"
+				matSort>
 				@for (header of headers; track $index) {
 					<ng-container [matColumnDef]="header">
 						<th
 							mat-header-cell
 							*matHeaderCellDef
+							mat-sort-header
 							class="tw-text-center tw-align-middle tw-font-medium tw-text-primary-600"
 							[matTooltip]="
 								(getTableHeaderByName(header) | async)
@@ -94,26 +143,13 @@ import { TeamSelectorComponent } from '../../team-selector/team-selector.compone
 					class="odd:tw-bg-selected-button even:tw-bg-background-background"
 					[attr.data-cy]="'script-def-table-row-' + row.name"></tr>
 			</mat-table>
+			<mat-paginator
+				[pageSizeOptions]="[10, 25, 50, 100, 200, 500]"
+				[pageSize]="100"
+				[length]="datasource.data.length"
+				[disabled]="false"></mat-paginator>
 		}
 	</div>`,
-	imports: [
-		AsyncPipe,
-		SubsystemSelectorComponent,
-		TeamSelectorComponent,
-		FormsModule,
-		MatTable,
-		MatColumnDef,
-		MatHeaderCell,
-		MatHeaderCellDef,
-		MatTooltip,
-		MatCell,
-		MatCellDef,
-		MatHeaderRow,
-		MatHeaderRowDef,
-		MatRow,
-		MatRowDef,
-	],
-	changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ScriptTableComponent {
 	ciDetailsService = inject(CiDetailsService);
@@ -122,12 +158,17 @@ export class ScriptTableComponent {
 	dialog = inject(MatDialog);
 	router = inject(Router);
 
-	matMenuTrigger = viewChild.required(MatMenuTrigger);
+	private paginator = viewChild(MatPaginator);
+	private matSort = viewChild(MatSort);
 
-	scriptDefs = this.ciDetailsService.scriptDefs.pipe(takeUntilDestroyed());
+	scriptDefs = toSignal(
+		this.ciDetailsService.scriptDefs.pipe(takeUntilDestroyed())
+	);
 	ciSetId = this.ciDashboardService.ciSetId;
 
-	protected filter = this.ciDetailsService.filter;
+	datasource = new MatTableDataSource<DefReference>();
+
+	filterText = signal('');
 
 	resultList(defId: string) {
 		let url = this.router.url;
@@ -136,25 +177,37 @@ export class ScriptTableComponent {
 		this.router.navigateByUrl(url);
 	}
 
-	applyFilter(_event: Event) {
-		//TODO: stephen,ryan finish this?
-		// const filterValue = (event.target as HTMLInputElement).value;
-	}
+	private _filterEffect = effect(
+		() => (this.datasource.filter = this.filterText())
+	);
+
+	private _paginatorEffect = effect(() => {
+		const paginator = this.paginator();
+		if (paginator) {
+			this.datasource.paginator = paginator;
+		}
+	});
+
+	private _sortEffect = effect(() => {
+		const sort = this.matSort();
+		if (sort) {
+			this.datasource.sort = sort;
+		}
+	});
+
+	private _scriptsEffect = effect(() => {
+		const scripts = this.scriptDefs();
+		if (scripts) {
+			this.datasource.data = scripts;
+		} else {
+			this.datasource.data = [];
+		}
+	});
 
 	menuPosition = {
 		x: '0',
 		y: '0',
 	};
-
-	openMenu(event: MouseEvent, defRef: DefReference) {
-		event.preventDefault();
-		this.menuPosition.x = event.clientX + 'px';
-		this.menuPosition.y = event.clientY + 'px';
-		this.matMenuTrigger().menuData = {
-			defRef: defRef,
-		};
-		this.matMenuTrigger().openMenu();
-	}
 
 	getTableHeaderByName(header: keyof DefReference) {
 		return this.headerService.getHeaderByName(
