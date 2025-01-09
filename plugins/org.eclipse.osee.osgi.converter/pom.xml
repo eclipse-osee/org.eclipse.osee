@@ -23,7 +23,7 @@
 						<phase>package</phase>
 						<configuration>
 							<artifacts>
-
+							
 								<artifact>
 									<id>com.sun.xml.fastinfoset:FastInfoset:jar:1.2.13</id>
 									<source>true</source>
@@ -45,22 +45,22 @@
 								Migrate the usage of Strings in code before updating past 2.14.
 								 -->
 								<artifact>
-									<id>com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:jar:2.14.3</id>
+									<id>com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:jar:2.15.2</id>
 									<source>true</source>
 								</artifact>
 
 								<artifact>
-									<id>com.fasterxml.jackson.core:jackson-databind:jar:2.14.3</id>
+									<id>com.fasterxml.jackson.core:jackson-databind:jar:2.15.2</id>
 									<source>true</source>
 								</artifact>
 
 								<artifact>
-									<id>com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:2.14.3</id>
+									<id>com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:2.15.2</id>
 									<source>true</source>
 								</artifact>
 
 								<artifact>
-									<id>com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:jar:2.14.3</id>
+									<id>com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:jar:2.15.2</id>
 									<source>true</source>
 								</artifact>
 								<artifact>
@@ -136,7 +136,35 @@
 									</instructions>
 									<excludes/>
 								</artifact>
-
+								<artifact>
+									<id>ch.qos.logback:logback-classic:1.5.16</id>
+									<transitive>false</transitive>
+									<source>true</source>
+									<override>true</override>
+									<instructions>
+										<Import-Package>*;resolution:=optional</Import-Package>
+										<Export-Package>*</Export-Package>
+										<_fixupmessages>"Classes found in the wrong directory";is:=warning</_fixupmessages>
+										<_removeheaders>Require-Capability</_removeheaders>
+										<_reproducible>true</_reproducible>
+									</instructions>
+									<excludes/>
+								</artifact>
+								<artifact>
+									<id>ch.qos.logback:logback-core:1.5.16</id>
+									<transitive>false</transitive>
+									<source>true</source>
+									<override>true</override>
+									<instructions>
+										<Import-Package>*;resolution:=optional</Import-Package>
+										<Export-Package>*</Export-Package>
+										<_fixupmessages>"Classes found in the wrong directory";is:=warning</_fixupmessages>
+										<_removeheaders>Require-Capability</_removeheaders>
+										<_reproducible>true</_reproducible>
+									</instructions>
+									<excludes/>
+								</artifact>
+								
 								<artifact>
 									<id>com.vladsch.flexmark:flexmark-ext-gitlab:0.64.8</id>
 									<transitive>false</transitive>
@@ -388,7 +416,7 @@
 								</artifact>
 
 								<artifact>
-									<id>org.yaml:snakeyaml:jar:1.33</id>
+									<id>org.yaml:snakeyaml:jar:2.2</id>
 									<source>true</source>
 								</artifact>
 
