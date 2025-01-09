@@ -123,9 +123,9 @@ export default class BatchesComponent {
 	navigateToResults(result: ResultReference) {
 		let url = this.router.url;
 		url = url.replace('batches', 'results');
-		this.detailsService.CiDefId = result.definitionId;
 		const tree = this.router.parseUrl(url);
 		delete tree.queryParams['batch'];
+		tree.queryParams['script'] = result.definitionId;
 		this.router.navigateByUrl(tree);
 	}
 }

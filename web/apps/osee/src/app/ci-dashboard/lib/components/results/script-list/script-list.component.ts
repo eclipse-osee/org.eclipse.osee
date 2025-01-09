@@ -41,6 +41,7 @@ import {
 import { MatTooltip } from '@angular/material/tooltip';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { tap } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'osee-script-list',
@@ -126,6 +127,7 @@ export class ScriptListComponent {
 
 	ciDetailsService = inject(CiDetailsService);
 	headerService = inject(HeaderService);
+	router = inject(Router);
 
 	private paginator = viewChild.required(MatPaginator);
 
@@ -147,7 +149,13 @@ export class ScriptListComponent {
 	);
 
 	setResultList(defId: string) {
-		this.ciDetailsService.CiDefId = defId;
+		const tree = this.router.parseUrl(this.router.url);
+		if (!defId || defId === '' || defId === '-1') {
+			delete tree.queryParams['script'];
+		} else {
+			tree.queryParams['script'] = defId;
+		}
+		this.router.navigateByUrl(tree);
 	}
 
 	getTableHeaderByName(header: keyof DefReference) {

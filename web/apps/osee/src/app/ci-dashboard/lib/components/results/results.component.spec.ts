@@ -24,6 +24,8 @@ import { ScriptTimelineComponent } from './script-timeline/script-timeline.compo
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
+import { ActivatedRoute } from '@angular/router';
+import { Subject } from 'rxjs';
 
 describe('ResultsComponent', () => {
 	let component: ResultsComponent;
@@ -49,6 +51,10 @@ describe('ResultsComponent', () => {
 			imports: [ResultsComponent],
 			providers: [
 				{ provide: CiDetailsService, useValue: ciDetailsServiceMock },
+				{
+					provide: ActivatedRoute,
+					useValue: { queryParamMap: new Subject() },
+				},
 				provideNoopAnimations(),
 			],
 		});

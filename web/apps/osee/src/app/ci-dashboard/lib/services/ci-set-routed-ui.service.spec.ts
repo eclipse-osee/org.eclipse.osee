@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2023 Boeing
+ * Copyright (c) 2025 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,26 +11,24 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { TestBed } from '@angular/core/testing';
-import { CiBatchService } from './ci-batch.service';
-import { TmoHttpService } from './tmo-http.service';
-import { tmoHttpServiceMock } from './tmo-http.service.mock';
+
+import { CiSetRoutedUiService } from './ci-set-routed-ui.service';
 import { ActivatedRoute } from '@angular/router';
 import { Subject } from 'rxjs';
 
-describe('CiBatchService', () => {
-	let service: CiBatchService;
+describe('CiSetRoutedUiService', () => {
+	let service: CiSetRoutedUiService;
 
 	beforeEach(() => {
 		TestBed.configureTestingModule({
 			providers: [
-				{ provide: TmoHttpService, useValue: tmoHttpServiceMock },
 				{
 					provide: ActivatedRoute,
 					useValue: { queryParamMap: new Subject() },
 				},
 			],
 		});
-		service = TestBed.inject(CiBatchService);
+		service = TestBed.inject(CiSetRoutedUiService);
 	});
 
 	it('should be created', () => {
