@@ -134,7 +134,7 @@ export default class BatchesComponent {
 
 	navigateToResults(result: ResultReference) {
 		let url = this.router.url;
-		url = url.replace('batches', 'details');
+		url = url.replace('batches', 'results');
 		url = url.split('/').slice(0, -1).join('/'); // Remove batch id from url
 		this.detailsService.CiDefId = result.definitionId;
 		this.router.navigateByUrl(url);

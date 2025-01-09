@@ -40,9 +40,9 @@ export const routes: Routes = [
 			import('./lib/components/all-scripts/all-scripts.routes'),
 	},
 	{
-		path: 'details',
+		path: 'results',
 		title: 'Zenith',
-		loadChildren: () => import('./lib/components/details/details.routes'),
+		loadChildren: () => import('./lib/components/results/results.routes'),
 	},
 	{
 		path: 'dashboard',
