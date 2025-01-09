@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import ResultsComponent from './results.component';
+import BatchesComponent from './batches.component';
 import { TmoHttpService } from '../../services/tmo-http.service';
 import { tmoHttpServiceMock } from '../../services/tmo-http.service.mock';
 import { CiDashboardControlsMockComponent } from '@osee/ci-dashboard/testing';
@@ -22,12 +22,12 @@ import { BatchDropdownMockComponent } from './batch-dropdown/batch-dropdown.comp
 import { RouterTestingModule } from '@angular/router/testing';
 import { MatIconModule } from '@angular/material/icon';
 
-describe('ResultsComponent', () => {
-	let component: ResultsComponent;
-	let fixture: ComponentFixture<ResultsComponent>;
+describe('BatchesComponent', () => {
+	let component: BatchesComponent;
+	let fixture: ComponentFixture<BatchesComponent>;
 
 	beforeEach(() => {
-		TestBed.overrideComponent(ResultsComponent, {
+		TestBed.overrideComponent(BatchesComponent, {
 			set: {
 				imports: [
 					CommonModule,
@@ -40,12 +40,12 @@ describe('ResultsComponent', () => {
 				],
 			},
 		}).configureTestingModule({
-			imports: [ResultsComponent],
+			imports: [BatchesComponent],
 			providers: [
 				{ provide: TmoHttpService, useValue: tmoHttpServiceMock },
 			],
 		});
-		fixture = TestBed.createComponent(ResultsComponent);
+		fixture = TestBed.createComponent(BatchesComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});
