@@ -11,7 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { UiService } from '@osee/shared/services';
 import { BehaviorSubject } from 'rxjs';
 
@@ -20,21 +19,8 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class CiDashboardUiService {
 	private uiService = inject(UiService);
-	private router = inject(Router);
-	private route = inject(ActivatedRoute);
 
 	private _ciSetId = new BehaviorSubject<string>('-1');
-
-	constructor() {
-		this.route.queryParamMap?.subscribe((queryParams) => {
-			const setId = queryParams.get('set');
-			if (setId !== null) {
-				this.CiSetId = setId;
-			} else {
-				this.CiSetId = '-1';
-			}
-		});
-	}
 
 	get branchType() {
 		return this.uiService.type;
@@ -66,17 +52,5 @@ export class CiDashboardUiService {
 
 	set update(value: boolean) {
 		this.uiService.updated = value;
-	}
-
-	routeToSet(id: string) {
-		this.CiSetId = id;
-		const tree = this.router.parseUrl(this.router.url);
-		const queryParams = tree.queryParams;
-		if (!id || id === '' || id === '-1') {
-			delete queryParams['set'];
-		} else {
-			queryParams['set'] = id;
-		}
-		this.router.navigate([], { queryParams: queryParams });
 	}
 }

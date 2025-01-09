@@ -19,6 +19,8 @@ import {
 	provideHttpClient,
 	withInterceptorsFromDi,
 } from '@angular/common/http';
+import { CiSetRoutedUiService } from '../../../services/ci-set-routed-ui.service';
+import { ciSetRoutedUiServiceMock } from '../../../testing/ci-set-routed-ui.servoce.mock';
 
 describe('SetDropdownComponent', () => {
 	let component: SetDropdownComponent;
@@ -28,6 +30,10 @@ describe('SetDropdownComponent', () => {
 		TestBed.configureTestingModule({
 			imports: [SetDropdownComponent, NoopAnimationsModule],
 			providers: [
+				{
+					provide: CiSetRoutedUiService,
+					useValue: ciSetRoutedUiServiceMock,
+				},
 				provideHttpClient(withInterceptorsFromDi()),
 				provideHttpClientTesting(),
 			],

@@ -173,8 +173,9 @@ export class ScriptTableComponent {
 	resultList(defId: string) {
 		let url = this.router.url;
 		url = url.replace('allScripts', 'results');
-		this.ciDetailsService.CiDefId = defId;
-		this.router.navigateByUrl(url);
+		const tree = this.router.parseUrl(url);
+		tree.queryParams['script'] = defId;
+		this.router.navigateByUrl(tree);
 	}
 
 	private _filterEffect = effect(

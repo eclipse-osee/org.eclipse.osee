@@ -15,6 +15,8 @@ import { BatchDropdownComponent } from './batch-dropdown.component';
 import { TmoHttpService } from '../../../services/tmo-http.service';
 import { tmoHttpServiceMock } from '../../../services/tmo-http.service.mock';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { CiBatchService } from '../../../services/ci-batch.service';
+import { ciBatchServiceMock } from '../../../testing/ci-batch.service.mock';
 
 describe('BatchDropdownComponent', () => {
 	let component: BatchDropdownComponent;
@@ -25,6 +27,7 @@ describe('BatchDropdownComponent', () => {
 			imports: [BatchDropdownComponent, NoopAnimationsModule],
 			providers: [
 				{ provide: TmoHttpService, useValue: tmoHttpServiceMock },
+				{ provide: CiBatchService, useValue: ciBatchServiceMock },
 			],
 		});
 		fixture = TestBed.createComponent(BatchDropdownComponent);

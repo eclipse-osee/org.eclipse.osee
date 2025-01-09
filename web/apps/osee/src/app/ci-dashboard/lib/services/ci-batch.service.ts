@@ -10,7 +10,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { Injectable, inject } from '@angular/core';
+import { Injectable, effect, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
 	BehaviorSubject,
@@ -23,6 +23,7 @@ import {
 } from 'rxjs';
 import { CiDashboardUiService } from './ci-dashboard-ui.service';
 import { TmoHttpService } from './tmo-http.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable({
 	providedIn: 'root',
@@ -51,16 +52,19 @@ export class CiBatchService {
 		)
 	);
 
-	constructor() {
-		this.route.queryParamMap?.subscribe((queryParams) => {
-			const batchId = queryParams.get('batch');
-			if (batchId !== null) {
-				this.SelectedBatchId = batchId;
-			} else {
-				this.SelectedBatchId = '-1';
-			}
-		});
-	}
+	private _queryParamMap = toSignal(this.route.queryParamMap);
+	private _queryParamEffect = effect(() => {
+		const params = this._queryParamMap();
+		if (!params) {
+			return;
+		}
+		const batchId = params.get('batch');
+		if (batchId !== null) {
+			this.SelectedBatchId = batchId;
+		} else {
+			this.SelectedBatchId = '-1';
+		}
+	});
 
 	getBatches(pageNum: number | string, pageSize: number, filterText: string) {
 		return combineLatest([
@@ -191,7 +195,7 @@ export class CiBatchService {
 	}
 
 	get selectedBatchId() {
-		return this._selectedBatchId;
+		return this._selectedBatchId.asObservable();
 	}
 
 	set SelectedBatchId(batchId: string) {

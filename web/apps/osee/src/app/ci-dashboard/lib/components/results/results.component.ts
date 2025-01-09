@@ -14,6 +14,7 @@ import {
 	ChangeDetectionStrategy,
 	Component,
 	computed,
+	effect,
 	inject,
 	signal,
 } from '@angular/core';
@@ -38,6 +39,7 @@ import {
 } from '@angular/material/input';
 import { MatTooltip } from '@angular/material/tooltip';
 import { ResultReference, resultReferenceSentinel } from '../../types/tmo';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
 	selector: 'osee-scripts',
@@ -183,18 +185,41 @@ import { ResultReference, resultReferenceSentinel } from '../../types/tmo';
 		</div>`,
 })
 export default class ResultsComponent {
-	uiService = inject(CiDashboardUiService);
-	ciDetailsService = inject(CiDetailsService);
+	private uiService = inject(CiDashboardUiService);
+	private ciDetailsService = inject(CiDetailsService);
+	private router = inject(Router);
+	private route = inject(ActivatedRoute);
 
 	branchId = toSignal(this.uiService.branchId);
 	branchType = toSignal(this.uiService.branchType);
+	queryParams = toSignal(this.route.queryParamMap);
 
-	selectedResultId = new BehaviorSubject<`${number}`>('-1');
+	private _selectedResultId = new BehaviorSubject<`${number}`>('-1');
 	scriptListFilterText = signal('');
 	testPointFilterText = signal('');
 	expandTestPoints = signal(false);
 
-	private _selectedResult$ = this.selectedResultId.pipe(
+	private _queryParamEffect = effect(() => {
+		const params = this.queryParams();
+		if (!params) {
+			return;
+		}
+		const scriptId = params.get('script');
+		if (scriptId !== null) {
+			this.ciDetailsService.CiDefId = scriptId;
+		} else {
+			this.ciDetailsService.CiDefId = '-1';
+		}
+
+		const resultId = params.get('result');
+		if (resultId !== null && !isNaN(Number(resultId))) {
+			this._selectedResultId.next(resultId as `${number}`);
+		} else {
+			this._selectedResultId.next('-1');
+		}
+	});
+
+	private _selectedResult$ = this._selectedResultId.pipe(
 		switchMap((id) =>
 			iif(
 				() => id === '-1',
@@ -225,13 +250,19 @@ export default class ResultsComponent {
 
 	downloadTmo() {
 		this.ciDetailsService
-			.downloadTmo(this.selectedResultId.value.toString())
+			.downloadTmo(this._selectedResultId.value.toString())
 			.pipe(take(1))
 			.subscribe();
 	}
 
 	setResult(res: ResultReference) {
-		this.selectedResultId.next(res.id);
+		const tree = this.router.parseUrl(this.router.url);
+		if (res.id === '-1') {
+			delete tree.queryParams['result'];
+		} else {
+			tree.queryParams['result'] = res.id;
+		}
+		this.router.navigateByUrl(tree);
 	}
 
 	clearResult() {
