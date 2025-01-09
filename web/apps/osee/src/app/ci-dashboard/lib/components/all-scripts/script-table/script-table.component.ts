@@ -172,7 +172,7 @@ export class ScriptTableComponent {
 
 	resultList(defId: string) {
 		let url = this.router.url;
-		url = url.replace('allScripts', 'details');
+		url = url.replace('allScripts', 'results');
 		this.ciDetailsService.CiDefId = defId;
 		this.router.navigateByUrl(url);
 	}

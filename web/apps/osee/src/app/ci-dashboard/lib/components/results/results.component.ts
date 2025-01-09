@@ -182,7 +182,7 @@ import { ResultReference, resultReferenceSentinel } from '../../types/tmo';
 			}
 		</div>`,
 })
-export default class DetailsComponent {
+export default class ResultsComponent {
 	uiService = inject(CiDashboardUiService);
 	ciDetailsService = inject(CiDetailsService);
 

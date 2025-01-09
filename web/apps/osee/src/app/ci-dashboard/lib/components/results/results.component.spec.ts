@@ -12,7 +12,7 @@
  **********************************************************************/
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import DetailsComponent from './details.component';
+import ResultsComponent from './results.component';
 import { CiDashboardControlsMockComponent } from '../../testing/ci-dashboard-controls.component.mock';
 import { CiDetailsService } from '../../services/ci-details.service';
 import { ciDetailsServiceMock } from '../../testing/ci-details.service.mock';
@@ -25,12 +25,12 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 
-describe('DetailsComponent', () => {
-	let component: DetailsComponent;
-	let fixture: ComponentFixture<DetailsComponent>;
+describe('ResultsComponent', () => {
+	let component: ResultsComponent;
+	let fixture: ComponentFixture<ResultsComponent>;
 
 	beforeEach(() => {
-		TestBed.overrideComponent(DetailsComponent, {
+		TestBed.overrideComponent(ResultsComponent, {
 			set: {
 				imports: [
 					CiDashboardControlsMockComponent,
@@ -46,13 +46,13 @@ describe('DetailsComponent', () => {
 				],
 			},
 		}).configureTestingModule({
-			imports: [DetailsComponent],
+			imports: [ResultsComponent],
 			providers: [
 				{ provide: CiDetailsService, useValue: ciDetailsServiceMock },
 				provideNoopAnimations(),
 			],
 		});
-		fixture = TestBed.createComponent(DetailsComponent);
+		fixture = TestBed.createComponent(ResultsComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});

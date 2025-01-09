@@ -15,23 +15,23 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
 	{
 		path: '',
-		title: 'Zenith - Details',
-		loadComponent: () => import('./details.component'),
+		title: 'Zenith - Results',
+		loadComponent: () => import('./results.component'),
 	},
 	{
 		path: ':branchType',
-		title: 'Zenith - Details',
-		loadComponent: () => import('./details.component'),
+		title: 'Zenith - Results',
+		loadComponent: () => import('./results.component'),
 	},
 	{
 		path: ':branchType/:branchId',
-		title: 'Zenith - Details',
-		loadComponent: () => import('./details.component'),
+		title: 'Zenith - Results',
+		loadComponent: () => import('./results.component'),
 	},
 	{
 		path: ':branchType/:branchId/:ciSet',
-		title: 'Zenith - Details',
-		loadComponent: () => import('./details.component'),
+		title: 'Zenith - Results',
+		loadComponent: () => import('./results.component'),
 	},
 ];
 
