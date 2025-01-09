@@ -68,9 +68,9 @@ export const routes: Routes = [
 		loadChildren: () => import('./lib/components/ci-admin/ci-admin.routes'),
 	},
 	{
-		path: 'results',
+		path: 'batches',
 		title: 'Zenith',
-		loadChildren: () => import('./lib/components/results/results.routes'),
+		loadChildren: () => import('./lib/components/batches/batches.routes'),
 	},
 	{
 		path: 'diffs',

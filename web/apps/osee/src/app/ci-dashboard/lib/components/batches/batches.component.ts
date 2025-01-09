@@ -42,7 +42,7 @@ import { BatchDropdownComponent } from './batch-dropdown/batch-dropdown.componen
 import { CiDetailsService } from '../../services/ci-details.service';
 
 @Component({
-	selector: 'osee-results',
+	selector: 'osee-batches',
 	imports: [
 		AsyncPipe,
 		CiDashboardControlsComponent,
@@ -63,9 +63,9 @@ import { CiDetailsService } from '../../services/ci-details.service';
 		MatRowDef,
 		MatPaginator,
 	],
-	templateUrl: './results.component.html',
+	templateUrl: './batches.component.html',
 })
-export default class ResultsComponent {
+export default class BatchesComponent {
 	private uiService = inject(CiDashboardUiService);
 	private batchService = inject(CiBatchService);
 	private headerService = inject(HeaderService);
@@ -134,7 +134,7 @@ export default class ResultsComponent {
 
 	navigateToResults(result: ResultReference) {
 		let url = this.router.url;
-		url = url.replace('results', 'details');
+		url = url.replace('batches', 'details');
 		url = url.split('/').slice(0, -1).join('/'); // Remove batch id from url
 		this.detailsService.CiDefId = result.definitionId;
 		this.router.navigateByUrl(url);

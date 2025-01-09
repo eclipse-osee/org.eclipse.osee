@@ -15,28 +15,28 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
 	{
 		path: '',
-		title: 'Zenith - Results',
-		loadComponent: () => import('./results.component'),
+		title: 'Zenith - Batches',
+		loadComponent: () => import('./batches.component'),
 	},
 	{
 		path: ':branchType',
-		title: 'Zenith - Results',
-		loadComponent: () => import('./results.component'),
+		title: 'Zenith - Batches',
+		loadComponent: () => import('./batches.component'),
 	},
 	{
 		path: ':branchType/:branchId',
-		title: 'Zenith - Results',
-		loadComponent: () => import('./results.component'),
+		title: 'Zenith - Batches',
+		loadComponent: () => import('./batches.component'),
 	},
 	{
 		path: ':branchType/:branchId/:ciSet',
-		title: 'Zenith - Results',
-		loadComponent: () => import('./results.component'),
+		title: 'Zenith - Batches',
+		loadComponent: () => import('./batches.component'),
 	},
 	{
 		path: ':branchType/:branchId/:ciSet/:batchId',
-		title: 'Zenith - Results',
-		loadComponent: () => import('./results.component'),
+		title: 'Zenith - Batches',
+		loadComponent: () => import('./batches.component'),
 	},
 ];
 
