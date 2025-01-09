@@ -28,11 +28,6 @@ export const routes: Routes = [
 		title: 'Zenith',
 		loadComponent: () => import('./all-scripts.component'),
 	},
-	{
-		path: ':branchType/:branchId/:ciSet',
-		title: 'Zenith',
-		loadComponent: () => import('./all-scripts.component'),
-	},
 ];
 
 export default routes;

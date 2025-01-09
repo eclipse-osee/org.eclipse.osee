@@ -28,11 +28,6 @@ export const routes: Routes = [
 		title: 'Zenith - Timeline',
 		loadComponent: () => import('./timelines.component'),
 	},
-	{
-		path: ':branchType/:branchId/:ciSet',
-		title: 'Zenith - Timeline',
-		loadComponent: () => import('./timelines.component'),
-	},
 ];
 
 export default routes;

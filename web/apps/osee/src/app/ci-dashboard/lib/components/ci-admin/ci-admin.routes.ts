@@ -28,11 +28,6 @@ export const routes: Routes = [
 		title: 'Zenith - Admin',
 		loadComponent: () => import('./ci-admin.component'),
 	},
-	{
-		path: ':branchType/:branchId/:ciSet',
-		title: 'Zenith - Admin',
-		loadComponent: () => import('./ci-admin.component'),
-	},
 ];
 
 export default routes;
