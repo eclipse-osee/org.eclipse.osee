@@ -76,7 +76,6 @@ export class CiDashboardControlsComponent {
 		this.uiService.BranchId = params.get('branchId') || '';
 		this.uiService.BranchType =
 			(params.get('branchType') as 'working' | 'baseline' | '') || '';
-		this.uiService.CiSetId = params.get('ciSet') || '-1';
 	});
 
 	branchType = toSignal(this.uiService.branchType);

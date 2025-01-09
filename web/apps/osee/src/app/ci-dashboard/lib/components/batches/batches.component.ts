@@ -29,7 +29,7 @@ import {
 	MatTable,
 } from '@angular/material/table';
 import { MatTooltip } from '@angular/material/tooltip';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { HeaderService } from '@osee/shared/services';
 import { FormatMillisecondsPipe } from '@osee/shared/utils';
 import { BehaviorSubject, combineLatest, switchMap, take, tap } from 'rxjs';
@@ -69,13 +69,9 @@ export default class BatchesComponent {
 	private uiService = inject(CiDashboardUiService);
 	private batchService = inject(CiBatchService);
 	private headerService = inject(HeaderService);
-	private route = inject(ActivatedRoute);
 
 	router = inject(Router);
 	detailsService = inject(CiDetailsService);
-
-	/** Inserted by Angular inject() migration for backwards compatibility */
-	constructor(...args: unknown[]);
 
 	constructor() {
 		this.batchService.selectedBatchId
@@ -84,14 +80,6 @@ export default class BatchesComponent {
 				takeUntilDestroyed()
 			)
 			.subscribe();
-
-		this.route.paramMap
-			.pipe(takeUntilDestroyed())
-			.subscribe(
-				(params) =>
-					(this.batchService.SelectedBatchId =
-						params.get('batchId') || '-1')
-			);
 	}
 
 	branchId = toSignal(this.uiService.branchId);
@@ -135,8 +123,9 @@ export default class BatchesComponent {
 	navigateToResults(result: ResultReference) {
 		let url = this.router.url;
 		url = url.replace('batches', 'results');
-		url = url.split('/').slice(0, -1).join('/'); // Remove batch id from url
 		this.detailsService.CiDefId = result.definitionId;
-		this.router.navigateByUrl(url);
+		const tree = this.router.parseUrl(url);
+		delete tree.queryParams['batch'];
+		this.router.navigateByUrl(tree);
 	}
 }

@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UiService } from '@osee/shared/services';
 import { BehaviorSubject } from 'rxjs';
 
@@ -21,8 +21,20 @@ import { BehaviorSubject } from 'rxjs';
 export class CiDashboardUiService {
 	private uiService = inject(UiService);
 	private router = inject(Router);
+	private route = inject(ActivatedRoute);
 
 	private _ciSetId = new BehaviorSubject<string>('-1');
+
+	constructor() {
+		this.route.queryParamMap?.subscribe((queryParams) => {
+			const setId = queryParams.get('set');
+			if (setId !== null) {
+				this.CiSetId = setId;
+			} else {
+				this.CiSetId = '-1';
+			}
+		});
+	}
 
 	get branchType() {
 		return this.uiService.type;
@@ -56,17 +68,15 @@ export class CiDashboardUiService {
 		this.uiService.updated = value;
 	}
 
-	// Sets the current CI Set and adds the CI Set ID to the current url.
-	// Assumes the CI Set ID always belongs at the end of the url
 	routeToSet(id: string) {
-		const formattedSetId = this.ciSetId.getValue().replace('-', '%2D');
-		const formattedId = id.replace('-', '%2D');
-		let url = this.router.url;
-		if (url.includes(formattedSetId)) {
-			url = url.split(formattedSetId)[0] + formattedId;
-		} else if (url.endsWith(this.branchId.getValue())) {
-			url = url + '/' + formattedId;
+		this.CiSetId = id;
+		const tree = this.router.parseUrl(this.router.url);
+		const queryParams = tree.queryParams;
+		if (!id || id === '' || id === '-1') {
+			delete queryParams['set'];
+		} else {
+			queryParams['set'] = id;
 		}
-		this.router.navigateByUrl(url);
+		this.router.navigate([], { queryParams: queryParams });
 	}
 }

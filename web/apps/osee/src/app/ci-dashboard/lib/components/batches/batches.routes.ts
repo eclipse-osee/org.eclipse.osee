@@ -28,16 +28,6 @@ export const routes: Routes = [
 		title: 'Zenith - Batches',
 		loadComponent: () => import('./batches.component'),
 	},
-	{
-		path: ':branchType/:branchId/:ciSet',
-		title: 'Zenith - Batches',
-		loadComponent: () => import('./batches.component'),
-	},
-	{
-		path: ':branchType/:branchId/:ciSet/:batchId',
-		title: 'Zenith - Batches',
-		loadComponent: () => import('./batches.component'),
-	},
 ];
 
 export default routes;

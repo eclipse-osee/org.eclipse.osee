@@ -32,7 +32,7 @@ export const ciNavigationStructure: navigationElement[] = [
 		routerLink: '/ci/allScripts',
 		icon: 'landscape',
 		description: '',
-		usesBranch: false,
+		usesBranch: true,
 		children: [
 			// Level-2
 			{
@@ -45,7 +45,7 @@ export const ciNavigationStructure: navigationElement[] = [
 				routerLink: '/ci/timeline',
 				icon: '',
 				description: '',
-				usesBranch: false,
+				usesBranch: true,
 				children: [],
 			},
 			{
@@ -58,7 +58,7 @@ export const ciNavigationStructure: navigationElement[] = [
 				routerLink: '/ci/allScripts',
 				icon: '',
 				description: '',
-				usesBranch: false,
+				usesBranch: true,
 				children: [],
 			},
 			{
@@ -71,7 +71,7 @@ export const ciNavigationStructure: navigationElement[] = [
 				routerLink: '/ci/results',
 				icon: '',
 				description: '',
-				usesBranch: false,
+				usesBranch: true,
 				children: [],
 			},
 			{
@@ -84,7 +84,7 @@ export const ciNavigationStructure: navigationElement[] = [
 				routerLink: '/ci/dashboard',
 				icon: '',
 				description: '',
-				usesBranch: false,
+				usesBranch: true,
 				children: [],
 			},
 			{
@@ -97,7 +97,7 @@ export const ciNavigationStructure: navigationElement[] = [
 				routerLink: '/ci/subsystems',
 				icon: '',
 				description: '',
-				usesBranch: false,
+				usesBranch: true,
 				children: [],
 			},
 			{
@@ -110,7 +110,7 @@ export const ciNavigationStructure: navigationElement[] = [
 				routerLink: '/ci/batches',
 				icon: '',
 				description: '',
-				usesBranch: false,
+				usesBranch: true,
 				children: [],
 			},
 			{
@@ -123,7 +123,7 @@ export const ciNavigationStructure: navigationElement[] = [
 				routerLink: '/ci/diffs',
 				icon: '',
 				description: '',
-				usesBranch: false,
+				usesBranch: true,
 				children: [],
 			},
 			{
@@ -136,7 +136,7 @@ export const ciNavigationStructure: navigationElement[] = [
 				routerLink: '/ci/import',
 				icon: '',
 				description: '',
-				usesBranch: false,
+				usesBranch: true,
 				children: [],
 			},
 			{
@@ -149,7 +149,7 @@ export const ciNavigationStructure: navigationElement[] = [
 				routerLink: '/ci/admin',
 				icon: '',
 				description: '',
-				usesBranch: false,
+				usesBranch: true,
 				children: [],
 			},
 		],

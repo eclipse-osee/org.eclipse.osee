@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Injectable, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
 	BehaviorSubject,
 	combineLatest,
@@ -31,6 +31,7 @@ export class CiBatchService {
 	private uiService = inject(CiDashboardUiService);
 	private tmoHttp = inject(TmoHttpService);
 	private router = inject(Router);
+	private route = inject(ActivatedRoute);
 
 	private _selectedBatchId = new BehaviorSubject<string>('-1');
 
@@ -49,6 +50,17 @@ export class CiBatchService {
 			this.tmoHttp.getBatch(branchId, batchId)
 		)
 	);
+
+	constructor() {
+		this.route.queryParamMap?.subscribe((queryParams) => {
+			const batchId = queryParams.get('batch');
+			if (batchId !== null) {
+				this.SelectedBatchId = batchId;
+			} else {
+				this.SelectedBatchId = '-1';
+			}
+		});
+	}
 
 	getBatches(pageNum: number | string, pageSize: number, filterText: string) {
 		return combineLatest([
@@ -134,17 +146,15 @@ export class CiBatchService {
 	}
 
 	routeToBatch(id: string) {
-		const formattedBatchId = this.selectedBatchId
-			.getValue()
-			.replace('-', '%2D');
-		const formattedId = id.replace('-', '%2D');
-		let url = this.router.url;
-		if (url.endsWith(formattedBatchId)) {
-			url = url.replace(formattedBatchId, formattedId);
-		} else if (url.endsWith(this.uiService.ciSetId.getValue())) {
-			url = url + '/' + formattedId;
+		this.SelectedBatchId = id;
+		const tree = this.router.parseUrl(this.router.url);
+		const queryParams = tree.queryParams;
+		if (!id || id === '' || id === '-1') {
+			delete queryParams['batch'];
+		} else {
+			queryParams['batch'] = id;
 		}
-		this.router.navigateByUrl(url);
+		this.router.navigate([], { queryParams: queryParams });
 	}
 
 	downloadBatch() {
