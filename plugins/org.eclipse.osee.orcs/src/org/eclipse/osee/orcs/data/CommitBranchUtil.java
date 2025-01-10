@@ -139,9 +139,8 @@ public class CommitBranchUtil {
    private static final String getMergeBranches =
       "select merge_branch_id, dest_branch_id from osee_merge where source_branch_id = ?";
 
-   private static final String getHeadTxIgnoreBranchCategory =
-      "SELECT MAX(txs.transaction_id) from osee_branch_category bc, osee_txs txs " + //
-         "WHERE txs.gamma_id NOT IN (SELECT gamma_id from osee_branch_category where branch_id = ?) AND bc.branch_id = ? AND txs.branch_id = ?";
+   private static final String getHeadTxIgnoreBranchCategory = "SELECT MAX(txs.transaction_id) from osee_txs txs " + //
+      "WHERE txs.gamma_id NOT IN (SELECT gamma_id from osee_branch_category where branch_id = ?) AND txs.branch_id = ?";
 
    private static final String getUpdateFromParentData = "WITH branch1 as (" + //
       "SELECT branch_id, branch_name, parent_branch_id, branch_state, parent_transaction_id, baseline_transaction_id, associated_art_id " + //
@@ -164,7 +163,7 @@ public class CommitBranchUtil {
    public static UpdateFromParentData getUpdateFromParentData(OrcsApi orcsApi, BranchId branchId) {
       UpdateFromParentData branchData = new UpdateFromParentData();
       try (JdbcStatement stmt = orcsApi.getJdbcService().getClient().getStatement()) {
-         stmt.runPreparedQuery(getUpdateFromParentData, branchId, branchId, branchId, branchId);
+         stmt.runPreparedQuery(getUpdateFromParentData, branchId, branchId, branchId);
          if (stmt.next()) {
             BranchId sourceBranchId = BranchId.valueOf(stmt.getLong("br1_id"));
             String sourceBranchName = stmt.getString("br1_name");
