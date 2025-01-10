@@ -86,7 +86,7 @@ public class GraphView {
 
    @JsonIgnore
    public void removeEdges(Long index) {
-      edges = this.edges.stream().filter(x -> x.getId() != index).collect(Collectors.toList());
+      edges = this.edges.stream().filter(x -> !(x.getId().equals(index))).collect(Collectors.toList());
    }
 
    public Collection<ClusterView> getClusters() {

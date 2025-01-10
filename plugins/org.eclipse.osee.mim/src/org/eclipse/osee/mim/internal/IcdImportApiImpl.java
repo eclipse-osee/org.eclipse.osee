@@ -679,7 +679,7 @@ public class IcdImportApiImpl implements MimImportApi {
    private boolean compareElementsForArray(String name1, String name2, Long pTypeId1, Long pTypeId2) {
       String n1 = name1.split("\\s\\d+$")[0];
       String n2 = name2.split("\\s\\d+$")[0];
-      return n1.equals(n2) && pTypeId1 == pTypeId2;
+      return n1.equals(n2) && pTypeId1.equals(pTypeId2);
    }
 
    private String getSubMessageMapKey(String messageNum, String subMessageNum, String nodeName) {

@@ -61,7 +61,7 @@ public class AccountSessionData {
          return false;
       }
       AccountSessionData other = (AccountSessionData) obj;
-      if (accountId != other.accountId) {
+      if (!accountId.equals(other.accountId)) {
          return false;
       }
       if (token == null) {

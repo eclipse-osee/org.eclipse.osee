@@ -179,7 +179,7 @@ public final class TraceabilityOperationsImpl implements TraceabilityOperations 
    public ArtifactId baselineFiles(BranchId branch, ArtifactReadable repoArtifact, CertBaselineData baselineData,
       String password) {
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, "rest - baseline  files");
-      ArtifactId baselineEvent = baselineFiles(branch, repoArtifact, baselineData, password);
+      ArtifactId baselineEvent = baselineFiles(branch, repoArtifact, baselineData, tx, password);
       tx.commit();
 
       return baselineEvent;

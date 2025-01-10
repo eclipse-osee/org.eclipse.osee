@@ -109,7 +109,7 @@ public class Statement {
                   Objects.nonNull( this.statementBody )
                && ( this.statementBody.length > 0 )
                && Arrays.stream( this.statementBody )
-                     .peek( ( statementBody ) -> gotText[0] |= statementBody.getFormatIndicator().equals( "text" ) )
+                     .peek( ( statementBody ) -> gotText[0] |= statementBody.getFormatIndicator().getFormatName().equals( "text" ) )
                      .allMatch( StatementBody::isValid )
                && gotText[0]
             );

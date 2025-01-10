@@ -140,9 +140,9 @@ public class PlatformTypeToken extends ArtifactAccessorResultWithGammas {
       this.setInterfacePlatformTypeMaxval(maxVal);
       this.setInterfacePlatformTypeUnits(units);
 
-      if (minVal == Strings.EMPTY_STRING || maxVal == Strings.EMPTY_STRING) {
+      if (minVal.equals(Strings.EMPTY_STRING) || maxVal.equals(Strings.EMPTY_STRING)) {
          this.setInterfacePlatformTypeValidRangeDescription("Calculated");
-      } else if (minVal == maxVal) {
+      } else if (minVal.equals(maxVal)) {
          this.setInterfacePlatformTypeValidRangeDescription(minVal);
       } else {
          this.setInterfacePlatformTypeValidRangeDescription(minVal + "-" + maxVal);

@@ -47,6 +47,14 @@ public class AccountActiveResourceTest {
       resource = new AccountActiveResource(ops, accountId);
    }
 
+   public void setOps(AccountOps ops) {
+      this.ops = ops;
+   }
+
+   public void setAccountId(ArtifactId accountId) {
+      this.accountId = accountId;
+   }
+
    @Test
    public void testIsActive() {
       when(ops.isActive(accountId)).thenReturn(activeData);

@@ -40,7 +40,7 @@ public class CriteriaMapAssocArtToRelatedAttributes extends Criteria implements 
       Conditions.checkExpressionFailOnTrue(getArtAttrPairs() == null,
          "Related Artifact Types/Attribute Types pairs cannot be null");
       Conditions.checkExpressionFailOnTrue(value == "", "value cannot be empty");
-      Conditions.checkExpressionFailOnTrue(relatedBranch.getId() == BranchId.SENTINEL.getId(),
+      Conditions.checkExpressionFailOnTrue(relatedBranch.getId().equals(BranchId.SENTINEL.getId()),
          "Related branch cannot be sentinel");
       Conditions.checkExpressionFailOnTrue(getArtAttrPairs().size() == 0,
          "Related Artifact Types/Attribute Types pairs cannot be empty");
