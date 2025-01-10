@@ -483,14 +483,14 @@ public class BranchEndpointImpl implements BranchEndpoint {
          String originalBranchName = updateData.getSourceBranchName();
          try (
             Response res =
-            associateBranchToArtifact(branchData.getNewBranchId(), updateData.getSourceBranchAssociatedArtifact());
+               associateBranchToArtifact(branchData.getNewBranchId(), updateData.getSourceBranchAssociatedArtifact());
             Response res2 = setBranchName(branchId, branchData.getToName());
             Response res3 = setBranchName(branchData.getNewBranchId(), originalBranchName);
             Response res4 = setBranchState(branchId, BranchState.DELETE_IN_PROGRESS);
             Response res5 = archiveBranch(branchId);
             Response res6 = setBranchState(branchId, BranchState.DELETED);
 
-            ) {
+         ) {
             // Empty block to close resource
          }
 
@@ -827,14 +827,16 @@ public class BranchEndpointImpl implements BranchEndpoint {
             OseeDb.TXS_TABLE.getSelectInsertString(" where branch_id = ?"), branchId);
 
          orcsApi.getJdbcService().getClient().runQuery(stmt -> impactedGammaIds.add(stmt.getLong("gamma_id")),
-            SELECT_IMPACTED_GAMMAS_ON_BRANCH_AFTER_BASELINE_TX, branchId, branch.getBaselineTx(),branchId, branch.getBaselineTx());
+            SELECT_IMPACTED_GAMMAS_ON_BRANCH_AFTER_BASELINE_TX, branchId, branch.getBaselineTx(), branchId,
+            branch.getBaselineTx());
 
          Callable<?> op = branchOps.purgeBranch(branch, recurse);
          executeCallable(op);
          modified = true;
       }
       if (modified) {
-         String recoveryFileNamePrefix = "delete_branch_" + branch.getIdString() + "_";
+         String recoveryFileNamePrefix =
+            orcsApi.getAdminOps().isDataStoreProduction() ? "delete_branch_" + branch.getIdString() + "_" : "";
          //Purge unused gammas if job was successful
          //recovery files are created and stored inside PurgeUnusedBackingDataAndTransactions
          try {
@@ -1020,7 +1022,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
    public BranchToken createProgramBranch(BranchId branch, String branchName) {
       BranchToken branchToken =
          branch.isValid() ? BranchToken.create(branch, branchName) : BranchToken.create(branchName);
-         return branchOps.createProgramBranch(branchToken);
+      return branchOps.createProgramBranch(branchToken);
    }
 
    @Override
