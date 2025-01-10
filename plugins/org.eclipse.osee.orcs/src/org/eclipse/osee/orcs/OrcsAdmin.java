@@ -48,4 +48,6 @@ public interface OrcsAdmin {
 
    public IResourceManager getResourceManager();
 
+   boolean isDataStoreProduction();
+
 }

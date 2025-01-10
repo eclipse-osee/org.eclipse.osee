@@ -176,4 +176,9 @@ public class OrcsAdminImpl implements OrcsAdmin {
    public IResourceManager getResourceManager() {
       return resourceManager;
    }
+
+   @Override
+   public boolean isDataStoreProduction() {
+      return jdbcClient.getConfig().isProduction();
+   }
 }
