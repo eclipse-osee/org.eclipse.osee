@@ -207,15 +207,13 @@ public class InterfaceDifferenceReportApiImpl implements InterfaceDifferenceRepo
                elementMap.put(artId, currentElements);
             }
             for (ArtifactReadable element : currentElements) {
-               if (!(CoreArtifactTypes.InterfaceDataElement.equals(
-                  artType) || CoreArtifactTypes.InterfaceDataElement.equals(artType)) && !applicTokens.contains(
-                     element.getApplicabilityToken())) {
+               if (!(CoreArtifactTypes.InterfaceDataElement.equals(artType)) && !applicTokens.contains(
+                  element.getApplicabilityToken())) {
                   continue;
                }
                MimChangeSummaryItem elementItem = changeMap.get(element.getArtifactId());
                if (elementItem == null) {
-                  if (CoreArtifactTypes.InterfaceDataElement.equals(
-                     artType) || CoreArtifactTypes.InterfaceDataElement.equals(artType)) {
+                  if (CoreArtifactTypes.InterfaceDataElement.equals(artType)) {
                      elementItem = item;
                   } else {
                      elementItem = new MimChangeSummaryItem(element);

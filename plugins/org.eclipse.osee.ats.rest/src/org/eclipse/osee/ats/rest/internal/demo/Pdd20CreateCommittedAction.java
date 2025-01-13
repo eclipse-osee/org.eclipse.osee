@@ -251,7 +251,7 @@ public class Pdd20CreateCommittedAction extends AbstractPopulateDemoDatabase {
 
       for (ArtifactToken art : atsApi.getRelationResolver().getRelatedArtifacts(parentArtifactToken,
          CoreRelationTypes.Allocation_Component)) {
-         if (art.getId() == testRelArtifact.getId()) {
+         if (art.getId().equals(testRelArtifact.getId())) {
             throw new OseeArgumentException(
                "ArtifactToken Relation exists in Working and Parent branch before commit.  Invalid Test. ");
          }

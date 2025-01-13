@@ -79,8 +79,8 @@ public class Identifier {
       return
             ( obj != null)
          && ( obj instanceof Identifier )
-         && ( this.identifierCount == ((Identifier) obj).identifierCount )
-         && ( this.identifierType  == ((Identifier) obj).identifierType  );
+         && ( this.identifierCount.equals(((Identifier)obj).identifierCount))
+         && ( this.identifierType.equals(((Identifier) obj).identifierType));
       //@formatter:on
    }
 
