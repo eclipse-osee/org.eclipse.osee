@@ -39,7 +39,7 @@ public class AtsProductLineEndpointTest extends AbstractRestTest {
          CoreBranchCategoryTokens.PLE.getIdString());
       System.out.println(target.getUri());
 
-      testActionRestCall(target, 1);
+      testActionRestCall(target, 2);
    }
 
    private JsonNode testActionRestCall(WebTarget target, int size) {

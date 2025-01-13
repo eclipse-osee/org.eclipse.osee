@@ -19,7 +19,6 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.Interface
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.stream.Collectors;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.OrcsTokenService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -110,10 +109,7 @@ public class OrcsBranchImpl implements OrcsBranch {
          branchStore.createBranch(branchData, userService, orcsApi.tokenService());
       }
       if (!branchData.getCategories().isEmpty()) {
-         List<BranchCategoryToken> branchCategories =
-            orcsApi.getQueryFactory().branchQuery().getBranchCategories(branchData.getBranch());
-         for (BranchCategoryToken bc : branchData.getCategories().stream().filter(
-            a -> !branchCategories.contains(a)).collect(Collectors.toList())) {
+         for (BranchCategoryToken bc : branchData.getCategories()) {
             orcsApi.getBranchOps().setBranchCategory(branchData.getBranch(), bc);
          }
          // Reset to CREATED since inheriting branch category does not qualify as MODIFIED
