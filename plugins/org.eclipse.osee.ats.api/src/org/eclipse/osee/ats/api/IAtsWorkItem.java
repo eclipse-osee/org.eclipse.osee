@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.ats.api;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
@@ -216,6 +218,46 @@ public interface IAtsWorkItem extends IAtsObject {
    @SuppressWarnings("unlikely-arg-type")
    default public boolean isUnAssigned() {
       return getAssignees().contains(SystemUser.UnAssigned);
+   }
+
+   default String getLegacyId() {
+      return getAtsApi().getAttributeResolver().getSoleAttributeValue(this, AtsAttributeTypes.LegacyPcrId, "");
+   }
+
+   default List<String> getPcrIds() {
+      return getAtsApi().getAttributeResolver().getAttributesToStringList(this, AtsAttributeTypes.PcrId);
+   }
+
+   /**
+    * @return ATS Id, Legacy PCR Id and all PCR Ids
+    */
+   default Collection<String> getIds() {
+      List<String> ids = new ArrayList<>();
+      ids.add(getAtsId());
+      String legacyPcrId = getLegacyId();
+      if (Strings.isValid(legacyPcrId)) {
+         ids.add(legacyPcrId);
+      }
+      ids.addAll(getPcrIds());
+      return ids;
+   }
+
+   default String getIdsStr() {
+      return Collections.toString(", ", getIds());
+   }
+
+   /**
+    * @return Legacy PCR Id and all PCR Ids
+    */
+   default Collection<String> getPcrIdsAll() {
+      List<String> ids = new ArrayList<>();
+      String legacyPcrId = getLegacyId();
+      if (Strings.isValid(legacyPcrId)) {
+         ids.add(legacyPcrId);
+      }
+      ids.addAll(getPcrIds());
+      return ids;
+
    }
 
    public static IAtsWorkItem createSentinel() {
