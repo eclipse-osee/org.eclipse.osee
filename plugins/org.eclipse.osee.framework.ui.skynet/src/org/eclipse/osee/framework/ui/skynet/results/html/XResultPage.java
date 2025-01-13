@@ -22,10 +22,13 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.util.result.XResultPageBase;
 import org.eclipse.osee.framework.jdk.core.result.HyperType;
 import org.eclipse.osee.framework.jdk.core.result.Manipulations;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.Dialogs;
 import org.eclipse.swt.program.Program;
@@ -122,6 +125,17 @@ public class XResultPage extends XResultPageBase {
             OseeLog.log(org.eclipse.osee.framework.ui.skynet.internal.Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
          Program.launch(filename);
+      }
+   }
+
+   public void saveTableAsJson() {
+      if (!manipulatedHtml.contains("<table>")) {
+         try {
+            String json = AHTML.htmlToJson(manipulatedHtml);
+            ResultsEditor.open("JSON", "JSON", json);
+         } catch (Exception ex) {
+            AWorkbench.popup("To JSON", Lib.exceptionToString(ex));
+         }
       }
    }
 
