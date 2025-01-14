@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.ide.util.widgets.dialog.ProgramVersion;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.ProgramVersionTreeDialog;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
@@ -57,16 +56,8 @@ public class NewProgramVersionAction extends Action {
    @Override
    public void run() {
       List<ProgramVersion> pvers = new ArrayList<>();
-      // TODO Convert to TeamDefinitionToBitProgram when relation goes through release
       for (ArtifactToken art : atsApi.getRelationResolver().getRelated(teamWf.getTeamDefinition(),
          AtsRelationTypes.TeamDefinitionToBitProgram_BitProgram)) {
-         if (art.isOfType(AtsArtifactTypes.Program)) {
-            addProgramVersion(pvers, art);
-         }
-      }
-      // Remove after conversion to above relation
-      for (ArtifactToken art : atsApi.getRelationResolver().getRelated(teamWf.getTeamDefinition(),
-         CoreRelationTypes.SupportingInfo_SupportingInfo)) {
          if (art.isOfType(AtsArtifactTypes.Program)) {
             addProgramVersion(pvers, art);
          }
