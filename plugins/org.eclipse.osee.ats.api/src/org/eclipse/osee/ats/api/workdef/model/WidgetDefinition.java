@@ -266,4 +266,9 @@ public class WidgetDefinition extends LayoutItem {
       return this;
    }
 
+   public LayoutItem andWidgetHint(WidgetHint widgetHint) {
+      getWidgetHints().add(widgetHint);
+      return this;
+   }
+
 }

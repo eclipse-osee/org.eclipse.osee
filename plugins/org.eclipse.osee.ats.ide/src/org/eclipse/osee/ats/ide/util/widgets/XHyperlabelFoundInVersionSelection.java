@@ -12,6 +12,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.ide.util.widgets;
 
+import org.eclipse.osee.framework.jdk.core.util.WidgetHint;
+
 /**
  * @author Donald G. Dunne
  */
@@ -21,6 +23,7 @@ public class XHyperlabelFoundInVersionSelection extends XHyperlabelVersionSelect
 
    public XHyperlabelFoundInVersionSelection() {
       super(LABEL);
+      getWidgetHints().add(WidgetHint.SortAscending);
    }
 
 }
