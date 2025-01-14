@@ -72,6 +72,7 @@ public class WfeTeamAndIdsHeader extends Composite {
 
             @Override
             public void mouseUp(MouseEvent e) {
+
                Clipboard clipboard = new Clipboard(null);
                try {
                   clipboard.setContents(new Object[] {workItem.getAtsId()},
@@ -79,6 +80,7 @@ public class WfeTeamAndIdsHeader extends Composite {
                } finally {
                   clipboard.dispose();
                }
+
             }
 
          });
