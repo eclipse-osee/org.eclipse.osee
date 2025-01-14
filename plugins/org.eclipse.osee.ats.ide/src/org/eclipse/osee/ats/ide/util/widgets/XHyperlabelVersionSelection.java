@@ -16,12 +16,16 @@ package org.eclipse.osee.ats.ide.util.widgets;
 import java.util.Collection;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.widgets.dialog.AtsObjectNameReverseSorter;
+import org.eclipse.osee.ats.ide.util.widgets.dialog.AtsObjectNameSorter;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.VersionListDialog;
+import org.eclipse.osee.framework.jdk.core.util.WidgetHint;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelValueSelection;
@@ -81,10 +85,17 @@ public class XHyperlabelVersionSelection extends XHyperlinkLabelValueSelection {
    @Override
    public boolean handleSelection() {
       try {
-         if (selectableVersions == null) {
-            dialog = new VersionListDialog("Select Version", "Select Version", getSelectableVersions());
+         ViewerComparator viewerComparator = null;
+         if (hasWidgetHint(WidgetHint.SortAscending)) {
+            viewerComparator = new AtsObjectNameSorter();
          } else {
-            dialog = new VersionListDialog("Select Version", "Select Version", selectableVersions);
+            viewerComparator = new AtsObjectNameReverseSorter();
+         }
+         if (selectableVersions == null) {
+            dialog =
+               new VersionListDialog("Select Version", "Select Version", getSelectableVersions(), viewerComparator);
+         } else {
+            dialog = new VersionListDialog("Select Version", "Select Version", selectableVersions, viewerComparator);
          }
          dialog.setRemoveAllAllowed(false);
          int result = dialog.open();

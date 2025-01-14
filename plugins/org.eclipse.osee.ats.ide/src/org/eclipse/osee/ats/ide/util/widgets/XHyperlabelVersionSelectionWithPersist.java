@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.ide.util.widgets;
 
 import java.util.Collection;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -22,12 +23,15 @@ import org.eclipse.osee.ats.api.version.Version;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.widgets.dialog.AtsObjectNameReverseSorter;
+import org.eclipse.osee.ats.ide.util.widgets.dialog.AtsObjectNameSorter;
 import org.eclipse.osee.ats.ide.util.widgets.dialog.VersionListDialog;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.jdk.core.util.WidgetHint;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -90,10 +94,17 @@ public abstract class XHyperlabelVersionSelectionWithPersist extends XHyperlinkL
    @Override
    public boolean handleSelection() {
       try {
-         if (selectableVersions == null) {
-            dialog = new VersionListDialog("Select Version", "Select Version", getSelectableVersions());
+         ViewerComparator viewerComparator = null;
+         if (hasWidgetHint(WidgetHint.SortAscending)) {
+            viewerComparator = new AtsObjectNameSorter();
          } else {
-            dialog = new VersionListDialog("Select Version", "Select Version", selectableVersions);
+            viewerComparator = new AtsObjectNameReverseSorter();
+         }
+         if (selectableVersions == null) {
+            dialog =
+               new VersionListDialog("Select Version", "Select Version", getSelectableVersions(), viewerComparator);
+         } else {
+            dialog = new VersionListDialog("Select Version", "Select Version", selectableVersions, viewerComparator);
          }
          dialog.setRemoveAllAllowed(removeAllAllowed);
          int result = dialog.open();
