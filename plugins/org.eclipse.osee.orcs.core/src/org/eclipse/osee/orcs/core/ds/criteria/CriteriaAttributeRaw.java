@@ -69,7 +69,8 @@ public class CriteriaAttributeRaw extends Criteria {
    @Override
    public void checkValid(Options options) {
       Conditions.checkNotNullOrEmptyOrContainNull(getAttributeTypes(), "attributeType");
-      Conditions.checkExpressionFailOnTrue(getAttributeTypes().equals(QueryBuilder.ANY_ATTRIBUTE_TYPE),
+      Conditions.checkExpressionFailOnTrue(
+         (getAttributeTypes().contains(QueryBuilder.ANY_ATTRIBUTE_TYPE) && getAttributeTypes().size() == 1),
          "Any attribute type is not allowed");
 
       List<QueryOption> unsupportedOptions = getUnsupportedOptions();

@@ -314,7 +314,8 @@ public class InterfaceNode extends ArtifactAccessorResultWithGammas {
    }
 
    public String getColor() {
-      return interfaceNodeBackgroundColor.getValue() != "" ? interfaceNodeBackgroundColor.getValue() : generateColor() ? "#81d4fa" : "#c5e1a5";
+      return !interfaceNodeBackgroundColor.getValue().equals(
+         "") ? interfaceNodeBackgroundColor.getValue() : generateColor() ? "#81d4fa" : "#c5e1a5";
    }
 
    @JsonIgnore
