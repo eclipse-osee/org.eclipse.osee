@@ -318,9 +318,11 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       Conditions.checkExpressionFailOnTrue(attrId.isInvalid(),
          "Can not set attribute by id that has not been persisted.  Atrribute Id [%s] ArtifactId [%s]", attrId,
          artifact.toString());
-      for (AttributeReadable<?> attribute : getArtifact(artifact).getAttributes()) {
+      ArtifactReadable artifact2 = getArtifact(artifact);
+      for (AttributeReadable<?> attribute : artifact2.getAttributes()) {
          if (attrId.equals(attribute)) {
-            getTransaction().setAttributeById(getArtifact(artifact), attribute, value);
+            getTransaction().setAttributeById(artifact2, attribute, value);
+            add(artifact2);
          }
       }
    }
