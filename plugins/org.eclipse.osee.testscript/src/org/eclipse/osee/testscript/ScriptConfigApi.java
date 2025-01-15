@@ -10,16 +10,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { of } from 'rxjs';
-import { CiBatchService } from '../services/ci-batch.service';
-import { scriptBatchResultMock } from './tmo.response.mock';
 
-export const ciBatchServiceMock: Partial<CiBatchService> = {
-	get selectedBatchId() {
-		return of('1');
-	},
-	set SelectedBatchId(batchId: string) {},
-	get selectedBatch() {
-		return of(scriptBatchResultMock[0]);
-	},
-};
+package org.eclipse.osee.testscript;
+
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionResult;
+
+/**
+ * @author Ryan T. Baldwin
+ */
+public interface ScriptConfigApi {
+
+   ScriptConfigToken get(BranchId branchId);
+
+   TransactionResult createScriptConfiguration(BranchId branchId);
+
+}

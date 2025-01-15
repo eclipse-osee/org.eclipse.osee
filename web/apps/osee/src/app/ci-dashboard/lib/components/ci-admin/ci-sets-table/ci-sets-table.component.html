@@ -38,20 +38,23 @@
 							<osee-persisted-string-attribute-input
 								[artifactId]="ciset.id"
 								[value]="ciset.name"
-								[artifactApplicability]="applic" />
+								[artifactApplicability]="applic"
+								[disabled]="!editable()" />
 						</form>
 					} @else if (header === 'Active') {
 						<form #defaultForm="ngForm">
 							<osee-persisted-boolean-attribute-toggle
 								[artifactId]="ciset.id"
 								[value]="ciset.active"
-								[artifactApplicability]="applic" />
+								[artifactApplicability]="applic"
+								[disabled]="!editable()" />
 						</form>
 					} @else if (header === ' ') {
 						<button
 							mat-icon-button
 							(click)="deleteCISet(ciset)"
-							[matTooltip]="'Delete ' + ciset.name.value">
+							[matTooltip]="'Delete ' + ciset.name.value"
+							[disabled]="!editable()">
 							<mat-icon class="tw-text-osee-red-8"
 								>delete</mat-icon
 							>
@@ -77,7 +80,8 @@
 		<button
 			mat-mini-fab
 			class="tertiary-fab"
-			(click)="openNewCiSetDialog()">
+			(click)="openNewCiSetDialog()"
+			[disabled]="!editable()">
 			<mat-icon>add</mat-icon>
 		</button>
 	</div>

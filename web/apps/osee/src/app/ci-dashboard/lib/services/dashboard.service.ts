@@ -64,7 +64,6 @@ export class DashboardService {
 		orderByAttributeId: string
 	) {
 		return this.uiService.branchId.pipe(
-			take(1),
 			filter((branchId) => branchId !== '' && branchId !== '-1'),
 			switchMap((branchId) =>
 				this.dashboardHttpService
@@ -84,7 +83,6 @@ export class DashboardService {
 
 	getSubsystemsCount(filterText: string) {
 		return this.uiService.branchId.pipe(
-			take(1),
 			filter((branchId) => branchId !== '' && branchId !== '-1'),
 			switchMap((branchId) =>
 				this.dashboardHttpService
@@ -122,7 +120,6 @@ export class DashboardService {
 		orderByAttributeId: string
 	) {
 		return this.uiService.branchId.pipe(
-			take(1),
 			filter((branchId) => branchId !== '' && branchId !== '-1'),
 			switchMap((branchId) =>
 				this.dashboardHttpService
@@ -142,7 +139,6 @@ export class DashboardService {
 
 	getTeamsCount(filterText: string) {
 		return this.uiService.branchId.pipe(
-			take(1),
 			filter((branchId) => branchId !== '' && branchId !== '-1'),
 			switchMap((branchId) =>
 				this.dashboardHttpService

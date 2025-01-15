@@ -377,8 +377,9 @@ public interface CoreAttributeTypes {
    AttributeTypeString TestPointGroupName = osee.createString(1152921504606847375L, "Script Group Name", MediaType.TEXT_PLAIN, "Script Group Name");
    AttributeTypeString TestPointGroupType = osee.createString(1152921504606847376L, "Script Group Name", MediaType.TEXT_PLAIN, "Script Group Name");
    AttributeTypeString TestPointGroupOperator = osee.createString(1152921504606847366L, "Script Group Name", MediaType.TEXT_PLAIN, "Script Group Name");
-   AttributeTypeDouble TestNumber = osee.createDouble(1152921504606847369L, "Script Errors", MediaType.TEXT_PLAIN, "Script Errors");
+   AttributeTypeDouble TestNumber = osee.createDouble(1152921504606847369L, "Test Number", MediaType.TEXT_PLAIN, "Test Number");
    AttributeTypeString TestPointRequirement = osee.createString(750383587408069958L, "Test Point Requirement", MediaType.TEXT_PLAIN, "");
+   AttributeTypeInteger TestResultsToKeep = osee.createInteger(6846375894770628832L, "Test Results To Keep", MediaType.TEXT_PLAIN, "Number of test results to keep for a single test script");
    AttributeTypeInteger TransmissionCount = osee.createInteger(6150912720805220879L, "Transmission Count", MediaType.TEXT_PLAIN, "Number Of Transmissions");
    TestProcedureStatusAttributeType TestProcedureStatus = osee.createEnum(new TestProcedureStatusAttributeType());
    AttributeTypeString TestScriptGuid = osee.createString(1152921504606847301L, "Test Script GUID", MediaType.TEXT_PLAIN, "Test Case GUID");
