@@ -44,11 +44,15 @@ public class ConvertAtsSearchDataAttributesToIdJson implements IAtsDatabaseConve
          changes = atsApi.createChangeSet("AtsSearchData uuid to id - Convert", AtsCoreUsers.SYSTEM_USER);
       }
       for (ArtifactToken art : artifacts) {
-         for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(art)) {
+         for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(art,
+            CoreAttributeTypes.AtsActionSearch)) {
             String val = (String) attr.getValue();
             if (val.contains("\"uuid\"")) {
                String newVal = val.replaceAll("\"uuid\"", "\"id\"");
                rd.logf("For %s\nConvert [%s]\nTo    [%s]\n\n", art.toStringWithId(), val, newVal);
+               if (!reportOnly) {
+                  changes.setAttribute(art, attr, newVal);
+               }
             }
          }
       }
