@@ -11,8 +11,6 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { type PlaywrightTestConfig } from '@ngx-playwright/test';
-import { dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import ngPlaywrightConfig from './playwright.config.ng';
 
 const config: PlaywrightTestConfig = {

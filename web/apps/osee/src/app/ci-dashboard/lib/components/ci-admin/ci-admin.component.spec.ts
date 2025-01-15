@@ -18,6 +18,7 @@ import { MockTeamsListComponent } from './teams-list/teams-list.component.mock';
 import { MockCISetsTableComponent } from './ci-sets-table/ci-sets-table.component.mock';
 import { ExpansionPanelComponent } from '@osee/shared/components';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { MockCiAdminConfigComponent } from './ci-admin-config/ci-admin-config.component.mock';
 
 describe('CiAdminComponent', () => {
 	let component: CiAdminComponent;
@@ -32,6 +33,7 @@ describe('CiAdminComponent', () => {
 					MockCISetsTableComponent,
 					MockSubsystemListComponent,
 					MockTeamsListComponent,
+					MockCiAdminConfigComponent,
 				],
 			},
 		})

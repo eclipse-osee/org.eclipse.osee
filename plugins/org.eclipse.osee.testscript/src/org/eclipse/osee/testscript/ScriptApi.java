@@ -37,4 +37,6 @@ public interface ScriptApi {
 
    DashboardApi getDashboardApi();
 
+   ScriptConfigApi getScriptConfigApi();
+
 }

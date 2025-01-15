@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.core.enums.CoreUserGroups;
 import org.eclipse.osee.framework.core.enums.MimArtifactTokens;
 import org.eclipse.osee.framework.core.enums.MimUserGroups;
 import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.framework.core.enums.ZenithArtifactTokens;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -129,6 +130,12 @@ public class CreateSystemBranches {
       tx.setSoleAttributeValue(mimIcdImport, CoreAttributeTypes.EndpointUrl, "/mim/import/icd/<branchId>");
       tx.setSoleAttributeValue(mimIcdImport, CoreAttributeTypes.ConnectionRequired, false);
       tx.setSoleAttributeValue(mimIcdImport, CoreAttributeTypes.TransportTypeRequired, true);
+
+      // Zenith Common Branch Artifacts
+      ArtifactId zenithFolder = tx.createArtifact(oseeConfig, ZenithArtifactTokens.ZenithConfigFolder);
+
+      ArtifactId zenithConfig = tx.createArtifact(zenithFolder, ZenithArtifactTokens.ZenithConfiguration);
+      tx.setSoleAttributeValue(zenithConfig, CoreAttributeTypes.TestResultsToKeep, 10);
 
       tx.commit();
 

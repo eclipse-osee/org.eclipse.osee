@@ -10,16 +10,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  **********************************************************************/
-import { of } from 'rxjs';
-import { CiBatchService } from '../services/ci-batch.service';
-import { scriptBatchResultMock } from './tmo.response.mock';
+import { Component } from '@angular/core';
+import { CiAdminConfigComponent } from './ci-admin-config.component';
 
-export const ciBatchServiceMock: Partial<CiBatchService> = {
-	get selectedBatchId() {
-		return of('1');
-	},
-	set SelectedBatchId(batchId: string) {},
-	get selectedBatch() {
-		return of(scriptBatchResultMock[0]);
-	},
-};
+@Component({
+	selector: 'osee-ci-admin-config',
+	template: '<p>Dummy</p>',
+	standalone: true,
+})
+export class MockCiAdminConfigComponent
+	implements Partial<CiAdminConfigComponent> {}
