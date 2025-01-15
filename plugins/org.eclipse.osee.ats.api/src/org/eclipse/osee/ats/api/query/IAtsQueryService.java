@@ -250,7 +250,9 @@ public interface IAtsQueryService {
     */
    List<Map<String, String>> query(String query, Object... data);
 
-   Collection<IAtsWorkItem> getWorkItemsAtrTypeExists(AttributeTypeToken attrType);
+   Collection<IAtsWorkItem> getWorkItemsAttrTypeExists(AttributeTypeToken attrType);
+
+   Collection<ArtifactToken> getArtifactsAttrTypeExists(AttributeTypeToken attrType);
 
    List<ArtifactToken> getArtifactsFromIds(Collection<String> atsIds);
 

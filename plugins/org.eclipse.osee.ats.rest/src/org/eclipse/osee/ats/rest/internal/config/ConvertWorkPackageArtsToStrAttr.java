@@ -140,7 +140,7 @@ public class ConvertWorkPackageArtsToStrAttr implements IAtsDatabaseConversion {
    private void convertActivityIdToWorkPkgAttr(XResultData rd, boolean reportOnly, AtsApi atsApi) {
       try {
          Collection<IAtsWorkItem> workItems =
-            atsApi.getQueryService().getWorkItemsAtrTypeExists(AtsAttributeTypes.ActivityId);
+            atsApi.getQueryService().getWorkItemsAttrTypeExists(AtsAttributeTypes.ActivityId);
 
          int size = workItems.size();
          int count = 1;
