@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.rest.internal.agile.operations.SprintSummaryOperatio
 import org.eclipse.osee.ats.rest.internal.config.ActionableItemResource;
 import org.eclipse.osee.ats.rest.internal.config.AtsConfigEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.config.ConvertAtsConfigGuidAttributes;
+import org.eclipse.osee.ats.rest.internal.config.ConvertAtsSearchDataAttributesToIdJson;
 import org.eclipse.osee.ats.rest.internal.config.ConvertCompCancelStateAndAssigneeAttributes;
 import org.eclipse.osee.ats.rest.internal.config.ConvertCreateUpdateAtsConfig;
 import org.eclipse.osee.ats.rest.internal.config.ConvertMeetingAttendeesToIdAttr;
@@ -112,6 +113,7 @@ public class AtsApplication extends Application {
       OseeTemplateTokens.register(registry);
 
       // Register conversions (add new ones to top)
+      atsApiServer.addAtsDatabaseConversion(new ConvertAtsSearchDataAttributesToIdJson());
       atsApiServer.addAtsDatabaseConversion(new ConvertMeetingAttendeesToIdAttr());
       atsApiServer.addAtsDatabaseConversion(new ConvertWorkPackageArtsToStrAttr());
       atsApiServer.addAtsDatabaseConversion(new ConvertCompCancelStateAndAssigneeAttributes(atsApiServer));

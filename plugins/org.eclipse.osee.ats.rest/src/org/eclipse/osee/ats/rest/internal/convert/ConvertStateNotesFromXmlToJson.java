@@ -67,7 +67,7 @@ public class ConvertStateNotesFromXmlToJson extends AbstractConvertGuidToId {
       //      Collection<IAtsWorkItem> workItems = atsApi.getQueryService().getWorkItemsByIds(
       //         "10597232,10827167,10827897,10838579,10838691,10849611,10863883");
       Collection<IAtsWorkItem> workItems =
-         atsApi.getQueryService().getWorkItemsAtrTypeExists(AtsAttributeTypes.StateNotes);
+         atsApi.getQueryService().getWorkItemsAttrTypeExists(AtsAttributeTypes.StateNotes);
       rd.logf("Found %s attributes\n\n", workItems.size());
       StringBuilder sb = new StringBuilder();
       for (IAtsWorkItem workItem : workItems) {
