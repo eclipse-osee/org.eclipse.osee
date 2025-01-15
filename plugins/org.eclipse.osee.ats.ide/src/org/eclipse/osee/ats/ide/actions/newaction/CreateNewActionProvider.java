@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.ide.actions.newaction;
 
 import java.util.Collection;
+import java.util.Collections;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -95,6 +96,10 @@ public interface CreateNewActionProvider {
 
    public default void handlePopulateWithDebugInfo(String title) {
       // do nothing
+   }
+
+   public default Collection<IAtsActionableItem> getDisabledAis() {
+      return Collections.emptyList();
    }
 
 }
