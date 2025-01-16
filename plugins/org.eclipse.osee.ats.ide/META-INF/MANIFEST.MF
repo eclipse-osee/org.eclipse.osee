@@ -106,6 +106,8 @@ Import-Package: com.fasterxml.jackson.annotation,
  javax.ws.rs.client,
  javax.ws.rs.core,
  javax.ws.rs.ext,
+ org.eclipse.core.runtime,
+ org.eclipse.core.runtime.preferences,
  org.eclipse.jdt.annotation,
  org.eclipse.nebula.widgets.xviewer,
  org.eclipse.nebula.widgets.xviewer.action,
@@ -278,6 +280,8 @@ Import-Package: com.fasterxml.jackson.annotation,
  org.eclipse.osee.ote.define.artifacts,
  org.eclipse.zest.core.viewers,
  org.eclipse.zest.core.widgets,
+ org.osgi.framework,
  org.osgi.service.component.annotations,
- org.osgi.service.event
+ org.osgi.service.event,
+ org.osgi.service.prefs
 Bundle-RequiredExecutionEnvironment: JavaSE-11
