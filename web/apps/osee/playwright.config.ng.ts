@@ -38,8 +38,13 @@ const config: PlaywrightTestConfig = {
 	],
 	projects: [
 		{
+			name: 'Setup',
+			testMatch: 'playwright/specs/setup/setup.e2e-spec.ts',
+		},
+		{
 			name: 'MIM Demo Init',
 			testMatch: 'playwright/specs/mim/setup/mim-demo-init.e2e-spec.ts',
+			dependencies: ['Setup'],
 		},
 		{
 			name: 'MIM Commit Demo Branch',
@@ -53,6 +58,12 @@ const config: PlaywrightTestConfig = {
 			use: { ...devices['Desktop Chrome'] },
 			testDir: 'playwright/specs/mim/tests',
 			dependencies: ['MIM Commit Demo Branch'],
+		},
+		{
+			name: 'Zenith Tests',
+			use: { ...devices['Desktop Chrome'] },
+			testDir: 'playwright/specs/zenith/tests',
+			dependencies: ['Setup'],
 		},
 	],
 };

@@ -81,7 +81,8 @@
 			mat-mini-fab
 			class="tertiary-fab"
 			(click)="openNewCiSetDialog()"
-			[disabled]="!editable()">
+			[disabled]="!editable()"
+			data-testid="add-ci-set-button">
 			<mat-icon>add</mat-icon>
 		</button>
 	</div>

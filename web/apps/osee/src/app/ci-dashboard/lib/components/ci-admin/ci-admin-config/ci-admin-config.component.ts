@@ -25,13 +25,17 @@ import { UiService } from '@osee/shared/services';
 	template: `
 		<h5 class="tw-pl-4">Settings</h5>
 		@if (ciConfig().id !== '-1') {
-			@if (ciConfig().branch.id === commonBranch) {
+			@if (
+				ciConfig().branch.id === commonBranch &&
+				branchType() === 'working'
+			) {
 				<p class="tw-px-4">
 					Currently using the global Zenith configuration. If
 					different settings are needed for this branch,
 					<button
 						class="tw-text-primary"
-						(click)="createBranchConfig()">
+						(click)="createBranchConfig()"
+						data-testid="create-config-button">
 						Click Here
 					</button>
 					to create a branch configuration.
@@ -46,7 +50,8 @@ import { UiService } from '@osee/shared/services';
 					[value]="ciConfig().testResultsToKeep"
 					[disabled]="isDisabled()"
 					label="Number of results to keep"
-					tooltip="Number of test results that will be kept per test script per CI Set. When the number of results exceeds this limit, the oldest results are deleted."></osee-persisted-number-attribute-input>
+					tooltip="Number of test results that will be kept per test script per CI Set. When the number of results exceeds this limit, the oldest results are deleted."
+					data-testid="results-to-keep"></osee-persisted-number-attribute-input>
 			</form>
 		} @else {
 			<p class="tw-p-4">
@@ -59,6 +64,8 @@ import { UiService } from '@osee/shared/services';
 export class CiAdminConfigComponent {
 	ciConfigService = inject(CiAdminConfigService);
 	uiService = inject(UiService);
+
+	branchType = toSignal(this.uiService.type);
 
 	commonBranch = '570';
 
