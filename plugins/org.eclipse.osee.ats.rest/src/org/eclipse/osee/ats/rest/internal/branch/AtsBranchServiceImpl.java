@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.rest.internal.branch;
 
-import java.rmi.activation.Activator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -321,7 +320,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
                branchView = atsApi.getQueryService().getArtifact(branchViewArtId, baselineBranch);
             }
          } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+            OseeLog.log(getClass(), Level.SEVERE, ex);
          }
       }
       return branchView;

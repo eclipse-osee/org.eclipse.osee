@@ -13,7 +13,7 @@
 
 package org.eclipse.osee.ats.core.util;
 
-import java.rmi.activation.Activator;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -756,7 +756,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
             return result;
          }
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         OseeLog.log(getClass(), Level.SEVERE, ex);
          return new Result("Exception occurred: " + ex.getLocalizedMessage());
       }
       return Result.TrueResult;
