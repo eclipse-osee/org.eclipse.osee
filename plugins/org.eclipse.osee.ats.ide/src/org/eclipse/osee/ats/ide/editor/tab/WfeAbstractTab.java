@@ -175,4 +175,8 @@ public abstract class WfeAbstractTab extends FormPage {
       // do nothing
    }
 
+   public void createToolbar2(Composite composite) {
+      // do no
+   }
+
 }

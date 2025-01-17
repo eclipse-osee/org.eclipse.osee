@@ -15,6 +15,7 @@ package org.eclipse.osee.ats.ide.editor.tab.members;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -37,7 +38,9 @@ import org.eclipse.nebula.widgets.xviewer.action.ViewTableReportAction;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
+import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.actions.OpenNewAtsWorldEditorSelectedAction;
 import org.eclipse.osee.ats.ide.actions.ShowSprintsAction;
@@ -50,6 +53,7 @@ import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.WfeAbstractTab;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
+import org.eclipse.osee.ats.ide.util.AtsApiIde;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.CollectorArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.CloneActionToGoalAction;
@@ -74,6 +78,7 @@ import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -96,8 +101,11 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
@@ -122,6 +130,9 @@ public class WfeMembersTab extends WfeAbstractTab implements IWorldEditor, ISele
    private WorkflowMetricsUI workflowMetricsUi;
    private WfeMembersTabActions wfeMembersTabActions;
    private final WfeMembersTab membersTab;
+   private final AtsApiIde atsApi;
+   private final Map<AtsUser, Button> userToButton = new HashMap<>();
+   private AtsUser selectedUser;
 
    public WfeMembersTab(WorkflowEditor editor, IMemberProvider provider) {
       super(editor, ID, editor.getWorkItem(), provider.getMembersName());
@@ -129,6 +140,7 @@ public class WfeMembersTab extends WfeAbstractTab implements IWorldEditor, ISele
       this.provider = provider;
       reloadAdapter = new ReloadJobChangeAdapter(editor);
       membersTab = this;
+      this.atsApi = AtsApiService.get();
    }
 
    @Override
@@ -232,6 +244,7 @@ public class WfeMembersTab extends WfeAbstractTab implements IWorldEditor, ISele
     */
    private boolean createMembersBody() {
       if (!Widgets.isAccessible(worldComposite)) {
+         createToolbar2(bodyComp);
          WorldXViewerFactory factory = (WorldXViewerFactory) provider.getXViewerFactory(provider.getArtifact());
          worldComposite = new WorldComposite(this, factory, bodyComp, SWT.BORDER, false);
          worldComposite.getWorldXViewer().setContentProvider(
@@ -393,16 +406,75 @@ public class WfeMembersTab extends WfeAbstractTab implements IWorldEditor, ISele
    }
 
    @Override
+   public void createToolbar2(Composite parentComp) {
+      if (workItem.isSprint() || workItem.isBacklog()) {
+         List<AtsUser> users = new ArrayList<>();
+         users.addAll(getAssignees());
+
+         Composite comp = new Composite(parentComp, SWT.None);
+         comp.setLayout(ALayout.getZeroMarginLayout(15, false));
+         comp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
+         editor.getToolkit().adapt(comp);
+
+         for (AtsUser user : getAssignees()) {
+            Button userBut = new Button(comp, SWT.RADIO);
+            userToButton.put(user, userBut);
+            userBut.setText(Strings.truncate(user.getName(), 7));
+            userBut.setToolTipText(user.getName());
+            userBut.addSelectionListener(new UserSelection(user, userBut));
+            userBut.setBackground(comp.getBackground());
+         }
+         comp.layout();
+      }
+   }
+
+   private class UserSelection extends SelectionAdapter {
+
+      private final AtsUser user;
+      private final Button userBut;
+      public UserSelection(AtsUser user, Button userBut) {
+         this.user = user;
+         this.userBut = userBut;
+      }
+
+      @Override
+      public void widgetSelected(SelectionEvent e) {
+         if (selectedUser != null && selectedUser.equals(user)) {
+            userBut.setSelection(false);
+            selectedUser = null;
+            worldComposite.getXViewer().getCustomizeMgr().clearFilters();
+         } else {
+            selectedUser = user;
+            worldComposite.getXViewer().getCustomizeMgr().setFilterText(user.getName(), false);
+         }
+      }
+
+   }
+   private Set<AtsUser> getAssignees() {
+      if (workItem.isSprint()) {
+         IAgileSprint sprint = atsApi.getAgileService().getAgileSprint(workItem.getStoreObject());
+         IAgileTeam agileTeam = atsApi.getAgileService().getAgileTeam(sprint);
+         return atsApi.getAgileService().getTeamMebers(agileTeam);
+      }
+      if (workItem.isBacklog()) {
+         IAgileBacklog backlog = atsApi.getAgileService().getAgileBacklog(workItem.getStoreObject());
+         IAgileTeam agileTeam = atsApi.getAgileService().getAgileTeamFromBacklog(backlog);
+         return atsApi.getAgileService().getTeamMebers(agileTeam);
+      }
+      return Collections.emptySet();
+   }
+
+   @Override
    public IToolBarManager createToolbar(IManagedForm managedForm) {
       IToolBarManager toolBarMgr = scrolledForm.getToolBarManager();
       toolBarMgr.removeAll();
       if (workItem.isBacklog()) {
-         IAgileBacklog backlog = AtsApiService.get().getAgileService().getAgileBacklog(workItem.getStoreObject());
+         IAgileBacklog backlog = atsApi.getAgileService().getAgileBacklog(workItem.getStoreObject());
          toolBarMgr.add(new ShowSprintsAction(backlog));
          toolBarMgr.add(new SprintReportAction(backlog, true));
       }
       if (workItem.isSprint()) {
-         IAgileSprint sprint = AtsApiService.get().getAgileService().getAgileSprint(workItem.getStoreObject());
+         IAgileSprint sprint = atsApi.getAgileService().getAgileSprint(workItem.getStoreObject());
          toolBarMgr.add(new SprintReportAction(sprint));
       }
       toolBarMgr.add(new Separator());
