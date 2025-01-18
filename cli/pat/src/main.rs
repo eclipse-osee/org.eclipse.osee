@@ -269,6 +269,7 @@ fn main() -> Result<()> {
     create_dir_all(out_dir)
         .with_context(|| format!("Failed to create output directory {:#?}", out_dir))?;
     //re walk over the tree, processing each file and excluding or including based on the include param and the found_dirs list
+    //TODO: switch to using par_bridge
     for entry in WalkDir::new(in_dir)
         .skip_hidden(hide_by_default)
         .parallelism(Parallelism::RayonExistingPool(thread_pool_arc.clone()))

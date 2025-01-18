@@ -26,3 +26,11 @@ tracing = { version = "0.1.40" }
 serde = { version = "1.0.188", optional = true, features = ["derive"] }
 applicability = {path="../applicability",features=["serde"]}
 applicability_parser_types = {path="../applicability_parser_types"}
+rand = "0.8.5"
+
+[dev-dependencies]
+criterion = "0.5.1"
+
+[[bench]]
+name = "applicability_parser"
+harness = false
