@@ -291,4 +291,6 @@ public interface IAtsWorkItemService {
 
    boolean isAllowSiblingCreation(IAtsWorkItem workItem);
 
+   AtsSubcribeService getSubscribeService();
+
 }
