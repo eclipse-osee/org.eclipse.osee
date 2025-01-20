@@ -13,7 +13,6 @@
 
 package org.eclipse.osee.ats.ide.editor.tab.workflow.section.goal;
 
-import java.rmi.activation.Activator;
 import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
@@ -40,8 +39,8 @@ public class OpenInstructionsAction extends AbstractWebExportAction {
             try {
                OseeMarkdownEditor.openOseeInfInOseeData("misc/AtsWebExportDesign.md", "AtsWebExportDesign.md",
                   getClass(), OseeMarkdownEditor.EDITOR_ID);
-            } catch (PartInitException ex) {
-               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            } catch (Exception ex) {
+               OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
             }
          }
       });

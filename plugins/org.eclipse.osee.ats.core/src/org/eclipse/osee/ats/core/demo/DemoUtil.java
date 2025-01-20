@@ -14,7 +14,6 @@
 package org.eclipse.osee.ats.core.demo;
 
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
-import java.rmi.activation.Activator;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -65,14 +64,14 @@ public class DemoUtil {
    public static Collection<ArtifactToken> getArtifactsFromType(boolean DEBUG, ArtifactTypeToken artifactType,
       BranchToken branch) {
       if (DEBUG) {
-         OseeLog.log(Activator.class, Level.INFO,
+         OseeLog.log(DemoUtil.class, Level.INFO,
             "Getting \"" + artifactType.getName() + "\" requirement(s) from Branch " + branch.getIdString());
       }
       Collection<ArtifactToken> arts =
          AtsApiService.get().getQueryService().getArtifacts(BranchId.valueOf(branch.getId()), false, artifactType);
 
       if (DEBUG) {
-         OseeLog.log(Activator.class, Level.INFO, "Found " + arts.size() + " Artifacts");
+         OseeLog.log(DemoUtil.class, Level.INFO, "Found " + arts.size() + " Artifacts");
       }
       return arts;
    }
@@ -80,14 +79,14 @@ public class DemoUtil {
    public static Collection<ArtifactToken> getArtTypeRequirements(boolean DEBUG, ArtifactTypeToken artifactType,
       String artifactNameStr, BranchToken branch) {
       if (DEBUG) {
-         OseeLog.log(Activator.class, Level.INFO,
+         OseeLog.log(DemoUtil.class, Level.INFO,
             "Getting \"" + artifactNameStr + "\" requirement(s) from Branch " + branch.getIdString());
       }
       Collection<ArtifactToken> arts = AtsApiService.get().getQueryService().getArtifactsFromTypeAndName(artifactType,
          artifactNameStr, branch, QueryOption.CONTAINS_MATCH_OPTIONS);
 
       if (DEBUG) {
-         OseeLog.log(Activator.class, Level.INFO, "Found " + arts.size() + " Artifacts");
+         OseeLog.log(DemoUtil.class, Level.INFO, "Found " + arts.size() + " Artifacts");
       }
       return arts;
    }
@@ -103,7 +102,7 @@ public class DemoUtil {
 
    public static ArtifactToken getInterfaceInitializationSoftwareRequirement(boolean DEBUG, BranchToken branch) {
       if (DEBUG) {
-         OseeLog.log(Activator.class, Level.INFO, "Getting \"" + INTERFACE_INITIALIZATION + "\" requirement.");
+         OseeLog.log(DemoUtil.class, Level.INFO, "Getting \"" + INTERFACE_INITIALIZATION + "\" requirement.");
       }
       return AtsApiService.get().getQueryService().getArtifactByName(CoreArtifactTypes.SoftwareRequirementMsWord,
          INTERFACE_INITIALIZATION, branch);
