@@ -79,6 +79,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "applicability_lexer"
+version = "0.1.0"
+dependencies = [
+ "nom",
+]
+
+[[package]]
 name = "applicability_match"
 version = "0.1.0"
 dependencies = [
