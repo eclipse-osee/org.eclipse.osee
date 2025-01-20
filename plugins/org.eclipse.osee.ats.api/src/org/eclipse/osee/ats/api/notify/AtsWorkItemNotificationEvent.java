@@ -37,6 +37,7 @@ public class AtsWorkItemNotificationEvent {
    }
 
    public void setNotifyType(AtsNotifyType... notifyTypes) {
+      this.notifyTypes.clear();
       for (AtsNotifyType type : notifyTypes) {
          this.notifyTypes.add(type);
       }
