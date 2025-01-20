@@ -21,10 +21,10 @@ import java.util.HashSet;
  */
 public class AtsNotificationEvent {
 
-   private Collection<String> userIds = new HashSet<>();
    private Collection<String> emailAddresses = new HashSet<>();
+   private Collection<String> abridgedEmailAddresses = new HashSet<>();
    private String id;
-   private String fromUserId;
+   private String fromEmailAddress;
    private String type;
    private String description;
    private String url;
@@ -58,29 +58,13 @@ public class AtsNotificationEvent {
       this.url = url;
    }
 
-   public Collection<String> getUserIds() {
-      return userIds;
-   }
-
-   public void setUserIds(Collection<String> userIds) {
-      this.userIds = userIds;
-   }
-
    public void setId(String id) {
       this.id = id;
    }
 
-   public String getFromUserId() {
-      return fromUserId;
-   }
-
-   public void setFromUserId(String fromUserId) {
-      this.fromUserId = fromUserId;
-   }
-
    @Override
    public String toString() {
-      return "AtsNotificationEvent [userIds=" + userIds + ", emailAddresses=" + emailAddresses + ", id=" + id + ", fromUserId=" + fromUserId + ", type=" + type + ", description=" + description + ", url=" + url + "]";
+      return "AtsNotificationEvent [emailAddresses=" + emailAddresses + ", abridgedEmailAddresses=" + abridgedEmailAddresses + ", id=" + id + ", fromEmailAddress=" + fromEmailAddress + ", type=" + type + ", description=" + description + ", url=" + url + "]";
    }
 
    public Collection<String> getEmailAddresses() {
@@ -97,6 +81,22 @@ public class AtsNotificationEvent {
 
    public void setCancelUrl(String cancelUrl) {
       this.cancelUrl = cancelUrl;
+   }
+
+   public Collection<String> getAbridgedEmailAddresses() {
+      return abridgedEmailAddresses;
+   }
+
+   public void setAbridgedEmailAddresses(Collection<String> abridgedEmailAddresses) {
+      this.abridgedEmailAddresses = abridgedEmailAddresses;
+   }
+
+   public String getFromEmailAddress() {
+      return fromEmailAddress;
+   }
+
+   public void setFromEmailAddress(String fromEmailAddress) {
+      this.fromEmailAddress = fromEmailAddress;
    }
 
 }

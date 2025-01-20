@@ -16,13 +16,14 @@ package org.eclipse.osee.ats.api.notify;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IAtsNotificationService {
 
-   void sendNotifications(AtsNotificationCollector notifications);
+   XResultData sendNotifications(AtsNotificationCollector notifications, XResultData rd);
 
    void sendNotifications(String fromUserEmail, Collection<String> toUserEmails, String subject, String htmlBody);
 
@@ -35,6 +36,6 @@ public interface IAtsNotificationService {
    void setJournalSubscribedUsers(IAtsWorkItem workItem, Collection<AtsUser> users);
 
    void sendNotifications(String fromEmail, String toEmail, String subject, String body,
-      Collection<? extends AtsNotificationEvent> notificationEvents);
+      Collection<? extends AtsNotificationEvent> notificationEvents, XResultData rd);
 
 }

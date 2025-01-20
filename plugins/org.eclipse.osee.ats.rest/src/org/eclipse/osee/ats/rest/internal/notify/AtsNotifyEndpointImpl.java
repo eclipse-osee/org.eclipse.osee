@@ -41,7 +41,7 @@ public class AtsNotifyEndpointImpl implements AtsNotifyEndpointApi {
       System.err.println(
          String.format("server: [%s] - [%s]", AtsNotificationServiceImpl.class.getSimpleName(), notifications));
 
-      atsApi.getNotificationService().sendNotifications(notifications);
+      atsApi.getNotificationService().sendNotifications(notifications, new XResultData());
       return Response.ok().build();
    }
 

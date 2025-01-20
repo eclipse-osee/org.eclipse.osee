@@ -28,10 +28,10 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.util.OseeEmail;
+import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.EmailUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
@@ -83,9 +83,9 @@ public abstract class AbstractAtsNotificationService implements IAtsNotification
    }
 
    @Override
-   public synchronized void sendNotifications(final AtsNotificationCollector notifications) {
+   public synchronized XResultData sendNotifications(final AtsNotificationCollector notifications, XResultData rd) {
 
-      workItemNotificationProcessor = new WorkItemNotificationProcessor(atsApi);
+      workItemNotificationProcessor = new WorkItemNotificationProcessor(rd);
 
       // convert all WorkItem notifications to AtsNotificationEvent
       for (AtsWorkItemNotificationEvent workItemEvent : notifications.getWorkItemNotificationEvents()) {
@@ -118,7 +118,7 @@ public abstract class AbstractAtsNotificationService implements IAtsNotification
                            String fromUserEmail = getFromUserEmail(notifications);
 
                            sendNotifications(fromUserEmail, testingUserEmail, notifications.getSubject(),
-                              notifications.getBody(), notifications.getNotificationEvents());
+                              notifications.getBody(), notifications.getNotificationEvents(), new XResultData());
                         }
 
                      };
@@ -130,13 +130,14 @@ public abstract class AbstractAtsNotificationService implements IAtsNotification
          };
          send.start();
       }
+      return rd;
    }
 
    @Override
    public void sendNotifications(String fromUserEmail, String testingUserEmail, String subject, String body,
-      Collection<? extends AtsNotificationEvent> notificationEvents) {
+      Collection<? extends AtsNotificationEvent> notificationEvents, XResultData rd) {
       SendNotificationEvents job = new SendNotificationEvents(this, atsApi, fromUserEmail, testingUserEmail, subject,
-         body, notificationEvents, atsApi.getUserService());
+         body, notificationEvents, atsApi.getUserService(), rd);
       job.run();
    }
 
@@ -171,12 +172,9 @@ public abstract class AbstractAtsNotificationService implements IAtsNotification
    private String getFromUserEmail(AtsNotificationCollector notifications) {
       String email = atsApi.getConfigValue("NoReplyEmail");
       for (AtsNotificationEvent event : notifications.getNotificationEvents()) {
-         if (Strings.isValid(event.getFromUserId())) {
-            AtsUser userById = atsApi.getUserService().getUserByUserId(event.getFromUserId());
-            if (EmailUtil.isEmailValid(userById.getEmail())) {
-               email = userById.getEmail();
-               break;
-            }
+         if (EmailUtil.isEmailValid(event.getFromEmailAddress())) {
+            email = event.getFromEmailAddress();
+            break;
          }
       }
       return email;

@@ -543,7 +543,7 @@ public class AtsActionService implements IAtsActionService {
             artToken = listener.getArtifactToken(applicableAis);
          }
       }
-      
+
       if (artToken == null) {
          String name = (action.getName() == null) ? Strings.EMPTY_STRING : action.getName();
          teamWf = atsApi.getWorkItemService().getTeamWf(changes.createArtifact(artifactType, name));
@@ -591,7 +591,7 @@ public class AtsActionService implements IAtsActionService {
       changes.add(teamWf);
 
       changes.addWorkItemNotificationEvent(AtsNotificationEventFactory.getWorkItemNotificationEvent(
-         AtsCoreUsers.SYSTEM_USER, teamWf, AtsNotifyType.SubscribedTeamOrAi));
+         AtsCoreUsers.SYSTEM_USER, teamWf, AtsNotifyType.SubscribedTeam, AtsNotifyType.SubscribedAi));
 
       changes.addWorkflowCreated(teamWf);
 
