@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2004, 2007 Boeing
+ * Copyright (c) 2025 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.ats.rest.internal.notify;
+package org.eclipse.osee.ats.rest.internal.agile;
 
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.junit.AfterClass;
@@ -23,16 +23,16 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({WorkItemNotificationProcessorTest.class})
-public class AtsImpl_Notify_Suite {
+@Suite.SuiteClasses({FeatureGroupSumTest.class})
+public class AtsImpl_Util_Suite {
    @BeforeClass
    public static void setUp() throws Exception {
       OseeProperties.setIsInTest(true);
-      System.out.println("\n\nBegin " + AtsImpl_Notify_Suite.class.getSimpleName());
+      System.out.println("\n\nBegin " + AtsImpl_Util_Suite.class.getSimpleName());
    }
 
    @AfterClass
    public static void tearDown() throws Exception {
-      System.out.println("End " + AtsImpl_Notify_Suite.class.getSimpleName());
+      System.out.println("End " + AtsImpl_Util_Suite.class.getSimpleName());
    }
 }

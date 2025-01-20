@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.ide.integration.tests.ats.editor.AtsTest_Editor_Suit
 import org.eclipse.osee.ats.ide.integration.tests.ats.export.AtsTest_Export_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.health.AtsTest_Health_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.navigate.AtsTest_Navigate_Suite;
+import org.eclipse.osee.ats.ide.integration.tests.ats.notify.AtsTest_Notify_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.operation.AtsTest_Operation_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.render.AtsTest_Renderer_Suite;
 import org.eclipse.osee.ats.ide.integration.tests.ats.resource.AtsTest_Resource_Suite;
@@ -40,6 +41,7 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   AtsTest_Notify_Suite.class,
    AtsTest_Workflow_Suite.class,
    AtsTest_Access_Suite.class,
    // Note: AtsTest_Action_Suite in parent suite

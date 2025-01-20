@@ -21,12 +21,9 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.AtsConfigKey;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
-import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.core.users.AtsUsersUtility;
 import org.eclipse.osee.framework.core.util.OseeEmail;
-import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.EmailUtil;
@@ -44,12 +41,14 @@ public class SendNotificationEvents {
    private final String testingUserEmail;
    private final OseeEmailCreator oseeEmailCreator;
    private final AtsApi atsApi;
-   private final IAtsUserService userService;
+   private final XResultData rd;
 
-   public SendNotificationEvents(OseeEmailCreator oseeEmailCreator, AtsApi atsApi, String fromUserEmail, String testingUserEmail, String subject, String body, Collection<? extends AtsNotificationEvent> notificationEvents, IAtsUserService userService) {
+   public SendNotificationEvents(OseeEmailCreator oseeEmailCreator, AtsApi atsApi, String fromUserEmail, String //
+   testingUserEmail, String subject, String body, Collection<? extends AtsNotificationEvent> notificationEvents, //
+      IAtsUserService userService, XResultData rd) {
       this.oseeEmailCreator = oseeEmailCreator;
       this.atsApi = atsApi;
-      this.userService = atsApi.getUserService();
+      this.rd = rd;
       this.fromUserEmail = fromUserEmail;
       this.testingUserEmail = testingUserEmail;
       this.subject = subject;
@@ -60,30 +59,8 @@ public class SendNotificationEvents {
       }
    }
 
-   public Result run() {
+   public XResultData run() {
       try {
-         Set<AtsUser> uniqueUusers = new HashSet<>();
-         for (AtsNotificationEvent notificationEvent : notificationEvents) {
-            uniqueUusers.addAll(AtsUsersUtility.getUsers(notificationEvent.getUserIds(), atsApi.getUserService()));
-         }
-         XResultData resultData = new XResultData();
-         if (isTesting()) {
-            resultData.errorf("Testing Results Report for Osee Notification; Email to user [%s].<br>",
-               testingUserEmail);
-         }
-
-         // Notify specified OSEE users; one email for all events that user was specified for
-         for (AtsUser user : AtsUsersUtility.getValidEmailUsers(uniqueUusers)) {
-            List<AtsNotificationEvent> notifyEvents = new ArrayList<>();
-            for (AtsNotificationEvent notificationEvent : notificationEvents) {
-               if (isTesting() || AtsUsersUtility.getUsers(notificationEvent.getUserIds(), userService).contains(
-                  user)) {
-                  notifyEvents.add(notificationEvent);
-               }
-            }
-            notifyUser(user, notifyEvents, resultData);
-         }
-
          // Notify email address; one email for all events that email was specified for
          Set<String> uniqueEmailAddresses = getUniqueEmailAddresses(notificationEvents);
          if (!uniqueEmailAddresses.isEmpty()) {
@@ -94,14 +71,13 @@ public class SendNotificationEvents {
                      notifyEvents.add(notificationEvent);
                   }
                }
-               notifyUser(email, notifyEvents);
+               notifyUser(email, notifyEvents, rd);
             }
          }
-         return Result.TrueResult;
       } catch (Exception ex) {
-         //         logger.error(ex, "Error notifying users");
-         return new Result("Error notifying users [%s]", ex.getMessage());
+         rd.errorf("Error notifying users [%s]", ex.getMessage());
       }
+      return rd;
    }
 
    private Set<String> getUniqueEmailAddresses(Collection<? extends AtsNotificationEvent> notificationEvents) {
@@ -158,16 +134,7 @@ public class SendNotificationEvents {
          "Cancel") : "";
    }
 
-   private void notifyUser(AtsUser user, List<AtsNotificationEvent> notificationEvents, XResultData resultData) {
-      if (AtsCoreUsers.isAtsCoreUser(user)) {
-         // do nothing
-         return;
-      }
-      String email = user.getEmail();
-      notifyUser(email, notificationEvents);
-   }
-
-   private void notifyUser(String email, List<AtsNotificationEvent> notificationEvents) {
+   private void notifyUser(String email, List<AtsNotificationEvent> notificationEvents, XResultData rd) {
       if (!AtsUsersUtility.isEmailValid(email)) {
          // do nothing; can't send email from user with invalid email address
          return;
