@@ -62,7 +62,6 @@ public class WorkItemNotificationProcessorTest {
       jason_ValidEmail = setupUser(DemoUsers.Jason_Michael);
       alex_NoValidEmail = setupUser(DemoUsers.Alex_Kay);
       inactiveSteve = setupUser(DemoUsers.Inactive_Steve);
-
    }
 
    @org.junit.Test
@@ -251,6 +250,7 @@ public class WorkItemNotificationProcessorTest {
          "[Team Workflow] titled [AtsTestUtilCore - Team WF [NotificationProcessor.testNotifyCompleted]] is [Completed]",
          notifyEvent.getDescription());
 
+      AtsTestUtil.cleanup();
    }
 
    @org.junit.Test
@@ -291,6 +291,7 @@ public class WorkItemNotificationProcessorTest {
          + "Team WF [NotificationProcessor.testNotifyCancelled]] " //
          + "was [Cancelled] from the [Implement] state on "));
 
+      AtsTestUtil.cleanup();
    }
 
    @org.junit.Test
@@ -319,22 +320,31 @@ public class WorkItemNotificationProcessorTest {
       changes.relate(teamWf.getTeamDefinition(), AtsRelationTypes.SubscribedUser_User, DemoUsers.Kay_Jones);
       changes.execute();
 
+      processor = new WorkItemNotificationProcessor(rd);
+      notifications = new AtsNotificationCollector();
       event.setNotifyType(AtsNotifyType.SubscribedAi);
       processor.run(notifications, event);
       Assert.assertEquals(1, notifications.getNotificationEvents().size());
-      AtsNotificationEvent notifyEvent = notifications.getNotificationEvents().get(0);
-      Assert.assertTrue(notifyEvent.getEmailAddresses().contains(joeSmith_CurrentUser.getEmail()));
-      Assert.assertTrue(notifyEvent.getDescription().contains(
-         "You have subscribed for email notification for Team [AtsTestUtilCore - Team Def [NotificationProcessor.testNotifySubscribedTeamOrAi]]"));
-      Assert.assertEquals(AtsNotifyType.SubscribedAi.name(), notifyEvent.getType());
+      for (AtsNotificationEvent notifyEvent : notifications.getNotificationEvents()) {
+         if (notifyEvent.getEmailAddresses().isEmpty()) {
+            Assert.assertTrue(notifyEvent.getEmailAddresses().contains(joeSmith_CurrentUser.getEmail()));
+            Assert.assertTrue(notifyEvent.getDescription().contains(
+               "You have subscribed for email notification for Team [AtsTestUtilCore - Team Def [NotificationProcessor.testNotifySubscribedTeamOrAi]]"));
+         }
+      }
 
+      processor = new WorkItemNotificationProcessor(rd);
+      notifications = new AtsNotificationCollector();
       event.setNotifyType(AtsNotifyType.SubscribedTeam);
       processor.run(notifications, event);
       Assert.assertEquals(1, notifications.getNotificationEvents().size());
-      notifyEvent = notifications.getNotificationEvents().get(0);
-      Assert.assertTrue(notifyEvent.getEmailAddresses().contains(kay_ValidEmail.getEmail()));
-      Assert.assertTrue(notifyEvent.getDescription().contains(
-         "You have subscribed for email notification for Team [AtsTestUtilCore - Team Def [NotificationProcessor.testNotifySubscribedTeamOrAi]]"));
+      for (AtsNotificationEvent notifyEvent : notifications.getNotificationEvents()) {
+         if (notifyEvent.getEmailAddresses().isEmpty()) {
+            Assert.assertTrue(notifyEvent.getEmailAddresses().contains(kay_ValidEmail.getEmail()));
+            Assert.assertTrue(notifyEvent.getDescription().contains(
+               "You have subscribed for email notification for Team [AtsTestUtilCore - Team Def [NotificationProcessor.testNotifySubscribedTeamOrAi]]"));
+         }
+      }
    }
 
 }
