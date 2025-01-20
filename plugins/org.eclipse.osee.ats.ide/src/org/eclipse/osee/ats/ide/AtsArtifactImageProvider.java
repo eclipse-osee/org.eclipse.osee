@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.FavoritesManager;
-import org.eclipse.osee.ats.ide.util.SubscribeManager;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactImage;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -91,7 +90,8 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
       }
       if (artifact instanceof AbstractWorkflowArtifact) {
          AbstractWorkflowArtifact wfArt = (AbstractWorkflowArtifact) artifact;
-         if (SubscribeManager.isSubscribed(wfArt, AtsApiService.get().getUserService().getCurrentUser())) {
+         if (AtsApiService.get().getWorkItemService().getSubscribeService().isSubscribed(wfArt,
+            AtsApiService.get().getUserService().getCurrentUser())) {
             // was 8,6
             return ArtifactImageManager.setupImage(artifact, AtsImage.SUBSCRIBED_OVERLAY, Location.BOT_RIGHT);
          }
