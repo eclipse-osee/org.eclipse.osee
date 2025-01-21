@@ -53,6 +53,7 @@ public class WfeTitleHeader extends Composite {
 
       try {
          titleText = new XTextDam("Title");
+         titleText.setAutoSave(true);
          titleText.setAttributeType((Artifact) workItem.getStoreObject(), CoreAttributeTypes.Name);
          titleText.createWidgets(this, 1);
          titleText.adaptControls(editor.getToolkit());

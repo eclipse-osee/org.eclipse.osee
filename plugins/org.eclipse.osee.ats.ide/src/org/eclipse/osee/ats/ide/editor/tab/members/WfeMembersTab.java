@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.ide.editor.tab.members;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -450,18 +451,24 @@ public class WfeMembersTab extends WfeAbstractTab implements IWorldEditor, ISele
       }
 
    }
-   private Set<AtsUser> getAssignees() {
+   private List<AtsUser> getAssignees() {
       if (workItem.isSprint()) {
          IAgileSprint sprint = atsApi.getAgileService().getAgileSprint(workItem.getStoreObject());
          IAgileTeam agileTeam = atsApi.getAgileService().getAgileTeam(sprint);
-         return atsApi.getAgileService().getTeamMebers(agileTeam);
+         List<AtsUser> members = new ArrayList<>();
+         members.addAll(atsApi.getAgileService().getTeamMebers(agileTeam));
+         members.sort(Comparator.naturalOrder());
+         return members;
       }
       if (workItem.isBacklog()) {
          IAgileBacklog backlog = atsApi.getAgileService().getAgileBacklog(workItem.getStoreObject());
          IAgileTeam agileTeam = atsApi.getAgileService().getAgileTeamFromBacklog(backlog);
-         return atsApi.getAgileService().getTeamMebers(agileTeam);
+         List<AtsUser> members = new ArrayList<>();
+         members.addAll(atsApi.getAgileService().getTeamMebers(agileTeam));
+         members.sort(Comparator.naturalOrder());
+         return members;
       }
-      return Collections.emptySet();
+      return Collections.emptyList();
    }
 
    @Override
