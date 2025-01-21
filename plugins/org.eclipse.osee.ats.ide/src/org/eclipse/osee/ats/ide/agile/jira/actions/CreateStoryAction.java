@@ -72,14 +72,11 @@ public abstract class CreateStoryAction extends AbstractAtsAction {
                continue;
             }
             String jiraStoryId = wfArt.getSoleAttributeValue(AtsAttributeTypes.JiraStoryId, "");
-
             if (Strings.isValid(jiraStoryId)) {
-               AWorkbench.popup("JIRA Story " + jiraStoryId + " is already created and mapped to this Team Workflow");
-               continue;
-            }
-            if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Create JIRA Story",
-               "JIRA Story and link to this Team Workflow\n\nAre you sure?")) {
-               continue;
+               if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Create/Update JIRA Story",
+                  "Create JIRA Story(s) and link to this Team Workflow\n\nAre you sure?")) {
+                  continue;
+               }
             }
 
             // Search for existing JIRA story first
@@ -93,6 +90,9 @@ public abstract class CreateStoryAction extends AbstractAtsAction {
                      changes.setSoleAttributeValue(workItem, AtsAttributeTypes.JiraStoryId, jiraStoryId);
                      changes.execute();
 
+                     // Since created externally, update required fields done during create
+                     performAfterCreate(workItem, jiraStoryId);
+
                      AWorkbench.popup("Story Linked");
                      continue;
                   }
@@ -100,7 +100,7 @@ public abstract class CreateStoryAction extends AbstractAtsAction {
             }
 
             final String fJiraStoryId = jiraStoryId;
-            Job createJiraStory = new Job("Creating/Updating JIRA Story") {
+            Job createJiraStory = new Job("Creating JIRA Story") {
 
                @Override
                protected IStatus run(IProgressMonitor monitor) {
