@@ -48,8 +48,10 @@ public class NativeDocumentExtractor extends AbstractArtifactExtractor {
       try (InputStream inputStream = source.toURL().openStream();
          BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
          MicrosoftOfficeApplicationEnum msoApplicationName = MsoApplicationExtractor.findMsoApplicationValue(reader);
-         roughArtifact.addAttribute(CoreAttributeTypes.MicrosoftOfficeApplication,
-            msoApplicationName.getApplicationName());
+         if (!msoApplicationName.equals(MicrosoftOfficeApplicationEnum.SENTINEL)) {
+            roughArtifact.addAttribute(CoreAttributeTypes.MicrosoftOfficeApplication,
+               msoApplicationName.getApplicationName());
+         }
       } catch (Exception ex) {
          OseeLog.log(NativeDocumentExtractor.class, OseeLevel.SEVERE_POPUP, ex);
       }
