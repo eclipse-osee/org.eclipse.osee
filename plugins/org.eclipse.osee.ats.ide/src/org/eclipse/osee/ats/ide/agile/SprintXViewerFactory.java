@@ -13,11 +13,14 @@
 
 package org.eclipse.osee.ats.ide.agile;
 
+import java.util.Arrays;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.api.column.AtsColumnTokensDefault;
 import org.eclipse.osee.ats.api.column.AtsCoreColumnToken;
-import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
+import org.eclipse.osee.ats.ide.column.AbstractMembersOrderColumnUI;
+import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvider;
 
@@ -26,30 +29,36 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvi
  */
 public class SprintXViewerFactory extends WorldXViewerFactory {
 
-   private final SprintArtifact soleSprintArtifact;
-   private BacklogXViewerFactory backlogFactory;
    private static String NAMESPACE = "SprintXViewer";
 
-   public SprintXViewerFactory(SprintArtifact soleSprintArtifact, IOseeTreeReportProvider reportProvider) {
+   public SprintXViewerFactory(GoalArtifact soleSprintArtifact, IOseeTreeReportProvider reportProvider) {
       super(NAMESPACE, reportProvider);
-      this.soleSprintArtifact = soleSprintArtifact;
-   }
-
-   private BacklogXViewerFactory getBacklogFactory() {
-      if (this.backlogFactory == null) {
-         backlogFactory = new BacklogXViewerFactory(null, reportProvider);
-      }
-      return backlogFactory;
    }
 
    @Override
    public List<AtsCoreColumnToken> getDefaultVisibleColumns() {
-      return getBacklogFactory().getDefaultVisibleColumns();
+      return Arrays.asList( //
+         AtsColumnTokensDefault.SprintOrderColumn, //
+         AtsColumnTokensDefault.TitleColumn, //
+         AtsColumnTokensDefault.AgileTeamPointsColumn, //
+         AtsColumnTokensDefault.StateColumn, //
+         AtsColumnTokensDefault.PriorityColumn, //
+         AtsColumnTokensDefault.ChangeTypeColumn, //
+         AtsColumnTokensDefault.AssigneeColumn, //
+         AtsColumnTokensDefault.TargetedVersionColumn, //
+         AtsColumnTokensDefault.SprintColumn, //
+         AtsColumnTokensDefault.UnPlannedWorkColumn, //
+         AtsColumnTokensDefault.AgileFeatureGroupColumn, //
+         AtsColumnTokensDefault.CreatedDateColumn, //
+         AtsColumnTokensDefault.AtsIdColumn, //
+         AtsColumnTokensDefault.NotesColumn //
+      );
    }
 
    @Override
    public List<Integer> getDefaultColumnWidths() {
-      return getBacklogFactory().getDefaultColumnWidths();
+      return Arrays.asList(AbstractMembersOrderColumnUI.DEFAULT_WIDTH, 300,
+         AtsColumnTokensDefault.SprintOrderColumn.getWidth(), 116, 20, 20, 113, 50, 100, 20, 90, 80, 50, 200);
    }
 
    @Override
@@ -62,10 +71,6 @@ public class SprintXViewerFactory extends WorldXViewerFactory {
       }
       customizeData.getSortingData().setSortingNames(SprintOrderColumnUI.getInstance().getId());
       return customizeData;
-   }
-
-   public SprintArtifact getSoleSprintArtifact() {
-      return soleSprintArtifact;
    }
 
 }

@@ -83,14 +83,14 @@ public class AtsWorkItemServiceClientImpl extends AtsWorkItemServiceImpl impleme
                for (IAtsWorkItem workItem : transData.getWorkItems()) {
                   for (ArtifactToken goal : atsApi.getRelationResolver().getRelated(workItem,
                      AtsRelationTypes.Goal_Goal)) {
-                     if (goal.isOfType(AtsArtifactTypes.AgileBacklog)) {
+                     if (goal.isOfType(AtsArtifactTypes.AgileBacklog, AtsArtifactTypes.AgileSprint)) {
                         backlog = goal;
                         break;
                      }
                   }
                }
                if (backlog.isValid()) {
-                  XResultData rd = atsApi.getServerEndpoints().getAgileEndpoint().sortBacklog(backlog.getToken());
+                  XResultData rd = atsApi.getServerEndpoints().getAgileEndpoint().sortBacklogOrSprint(backlog.getToken());
                   if (Strings.isValid(rd.getTxId())) {
                      reloadBacklogIfItemChanged(transData);
                   }
@@ -108,7 +108,7 @@ public class AtsWorkItemServiceClientImpl extends AtsWorkItemServiceImpl impleme
          ArtifactToken backlog = ArtifactToken.SENTINEL;
          for (IAtsWorkItem workItem : transData.getWorkItems()) {
             for (ArtifactToken goal : atsApi.getRelationResolver().getRelated(workItem, AtsRelationTypes.Goal_Goal)) {
-               if (goal.isOfType(AtsArtifactTypes.AgileBacklog)) {
+               if (goal.isOfType(AtsArtifactTypes.AgileBacklog, AtsArtifactTypes.AgileSprint)) {
                   backlog = goal;
                   break;
                }

@@ -105,6 +105,8 @@ public class CopyActionDetails {
          result = "Goal";
       } else if (workItem.isTypeEqual(AtsArtifactTypes.AgileBacklog)) {
          result = "Backlog";
+      } else if (workItem.isTypeEqual(AtsArtifactTypes.AgileSprint)) {
+         result = "Sprint";
       }
       if (!Strings.isValid(result)) {
          result = "unknown";

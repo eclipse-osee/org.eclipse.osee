@@ -53,7 +53,6 @@ import org.eclipse.osee.ats.ide.actions.IAtsTaskArtifactProvider;
 import org.eclipse.osee.ats.ide.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.ide.actions.ISelectedTeamWorkflowArtifacts;
 import org.eclipse.osee.ats.ide.actions.SubscribedAction;
-import org.eclipse.osee.ats.ide.agile.SprintOrderColumnUI;
 import org.eclipse.osee.ats.ide.column.GoalOrderColumnUI;
 import org.eclipse.osee.ats.ide.internal.Activator;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
@@ -61,7 +60,6 @@ import org.eclipse.osee.ats.ide.util.widgets.XWorldTextFilter;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.action.ActionArtifactRollup;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
-import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.ide.workflow.transition.TransitionToMenu;
@@ -112,7 +110,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, ISel
    public List<IMenuActionProvider> menuActionProviders = new ArrayList<>();
    protected final IDirtiableEditor editor;
    private GoalArtifact parentGoalArtifact;
-   private SprintArtifact parentSprintArtifact;
 
    public WorldXViewer(Composite parent, int style, IXViewerFactory xViewerFactory, IDirtiableEditor editor) {
       super(parent, style, xViewerFactory);
@@ -616,10 +613,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, ISel
          if (parentGoalArtifact != null) {
             this.parentGoalArtifact = parentGoalArtifact;
          }
-         SprintArtifact parentSprintArtifact1 = SprintOrderColumnUI.getParentSprintArtifact((TreeItem) item);
-         if (parentSprintArtifact1 != null) {
-            this.parentSprintArtifact = parentSprintArtifact1;
-         }
       }
       super.doUpdateItem(item, element);
    }
@@ -658,14 +651,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, ISel
 
    public GoalArtifact getParentGoalArtifact() {
       return parentGoalArtifact;
-   }
-
-   public void setParentSprint(SprintArtifact parentSprintArtifact) {
-      this.parentSprintArtifact = parentSprintArtifact;
-   }
-
-   public SprintArtifact getParentSprintArtifact() {
-      return parentSprintArtifact;
    }
 
    public boolean isDisposed() {

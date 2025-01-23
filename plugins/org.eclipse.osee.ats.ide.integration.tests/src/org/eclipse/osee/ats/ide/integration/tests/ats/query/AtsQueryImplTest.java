@@ -143,7 +143,7 @@ public class AtsQueryImplTest {
    public void testByWorkingGoal() {
       IAtsQuery query = queryService.createQuery(WorkItemType.Goal);
       query.andStateType(StateType.Working);
-      assertEquals(1, query.getResults().size());
+      assertEquals(2, query.getResults().size());
    }
 
    @Test

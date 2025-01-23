@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.ide.editor.tab.members.IMemberProvider;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.widgets.XHyperlabelActionableItemSelection;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
-import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetPage;
@@ -63,9 +62,7 @@ public class CreateNewActionAtLocactionBlam extends CreateNewActionBlam {
          collectorArt.setRelationOrder(memberProvider.getMemberRelationTypeSide(), dropTarget, false,
             AtsApiService.get().getQueryServiceIde().getArtifact(teamWf));
          if (collectorArt.isOfType(AtsArtifactTypes.Goal)) {
-            AtsApiService.get().getGoalMembersCache().decache((GoalArtifact) collectorArt);
-         } else if (memberProvider.isSprint()) {
-            AtsApiService.get().getSprintItemsCache().decache((SprintArtifact) collectorArt);
+            AtsApiService.get().getGoalMembersCache((GoalArtifact) collectorArt).decache((GoalArtifact) collectorArt);
          }
       }
 

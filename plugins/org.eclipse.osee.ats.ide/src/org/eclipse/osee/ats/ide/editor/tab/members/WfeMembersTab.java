@@ -49,6 +49,7 @@ import org.eclipse.osee.ats.ide.actions.SprintReportAction;
 import org.eclipse.osee.ats.ide.actions.WorldViewColumnReport;
 import org.eclipse.osee.ats.ide.actions.task.CreateTasksFromActions;
 import org.eclipse.osee.ats.ide.actions.task.RestoreTasksFromActions;
+import org.eclipse.osee.ats.ide.agile.actions.SortBacklogOrSprintAction;
 import org.eclipse.osee.ats.ide.config.AtsBulkLoad;
 import org.eclipse.osee.ats.ide.editor.WorkflowEditor;
 import org.eclipse.osee.ats.ide.editor.tab.WfeAbstractTab;
@@ -64,7 +65,6 @@ import org.eclipse.osee.ats.ide.workflow.goal.OpenAgileTasksAction;
 import org.eclipse.osee.ats.ide.workflow.goal.RemoveFromCollectorAction;
 import org.eclipse.osee.ats.ide.workflow.goal.RemoveFromCollectorAction.RemovedFromCollectorHandler;
 import org.eclipse.osee.ats.ide.workflow.goal.SetCollectorOrderAction;
-import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.world.BacklogContentProvider;
 import org.eclipse.osee.ats.ide.world.IMenuActionProvider;
@@ -256,8 +256,6 @@ public class WfeMembersTab extends WfeAbstractTab implements IWorldEditor, ISele
 
          if (editor.getWorkItem().isOfType(AtsArtifactTypes.Goal)) {
             worldComposite.getXViewer().setParentGoal((GoalArtifact) editor.getWorkItem());
-         } else {
-            worldComposite.getXViewer().setParentSprint((SprintArtifact) editor.getWorkItem());
          }
 
          worldComposite.getWorldXViewer().addMenuActionProvider(this);
@@ -479,10 +477,12 @@ public class WfeMembersTab extends WfeAbstractTab implements IWorldEditor, ISele
          IAgileBacklog backlog = atsApi.getAgileService().getAgileBacklog(workItem.getStoreObject());
          toolBarMgr.add(new ShowSprintsAction(backlog));
          toolBarMgr.add(new SprintReportAction(backlog, true));
+         toolBarMgr.add(new SortBacklogOrSprintAction(backlog));
       }
       if (workItem.isSprint()) {
          IAgileSprint sprint = atsApi.getAgileService().getAgileSprint(workItem.getStoreObject());
          toolBarMgr.add(new SprintReportAction(sprint));
+         toolBarMgr.add(new SortBacklogOrSprintAction(sprint));
       }
       toolBarMgr.add(new Separator());
       toolBarMgr.add(new WorldViewColumnReport(worldComposite));

@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.api.agile.jira.AtsJiraService;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.task.related.IAtsTaskRelatedService;
@@ -54,7 +53,6 @@ import org.eclipse.osee.ats.ide.workflow.IAtsWorkItemServiceIde;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.internal.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.ide.workflow.internal.AtsRelationResolverServiceImpl;
-import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.IAtsTaskServiceIde;
 import org.eclipse.osee.ats.ide.workflow.task.internal.AtsTaskService;
 import org.eclipse.osee.ats.ide.workflow.task.related.AtsTaskRelatedService;
@@ -73,7 +71,6 @@ import org.eclipse.osee.framework.skynet.core.access.UserServiceImpl;
 public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
 
    private ArtifactCollectorsCache<GoalArtifact> goalMembersCache;
-   private ArtifactCollectorsCache<SprintArtifact> sprintItemsCache;
    private AtsQueryServiceIde queryServiceIde;
    private IAtsWorkItemServiceIde workItemServiceIde;
    private IAtsServerEndpointProvider serverEndpoints;
@@ -156,9 +153,6 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
       if (goalMembersCache != null) {
          goalMembersCache.invalidate();
       }
-      if (sprintItemsCache != null) {
-         sprintItemsCache.invalidate();
-      }
 
       getAccessControlService().clearCaches();
       getAtsAccessService().clearCaches();
@@ -187,19 +181,11 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
    }
 
    @Override
-   public IArtifactMembersCache<GoalArtifact> getGoalMembersCache() {
+   public IArtifactMembersCache<GoalArtifact> getGoalMembersCache(GoalArtifact goalArt) {
       if (goalMembersCache == null) {
-         goalMembersCache = new ArtifactCollectorsCache<>(AtsRelationTypes.Goal_Member);
+         goalMembersCache = new ArtifactCollectorsCache<>();
       }
       return goalMembersCache;
-   }
-
-   @Override
-   public IArtifactMembersCache<SprintArtifact> getSprintItemsCache() {
-      if (sprintItemsCache == null) {
-         sprintItemsCache = new ArtifactCollectorsCache<>(AtsRelationTypes.AgileSprintToItem_AtsItem);
-      }
-      return sprintItemsCache;
    }
 
    @Override

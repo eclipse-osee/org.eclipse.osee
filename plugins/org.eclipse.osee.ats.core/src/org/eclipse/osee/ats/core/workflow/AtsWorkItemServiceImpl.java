@@ -354,10 +354,11 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          } else if (artifact.isOfType(AtsArtifactTypes.AgileBacklog)) {
             // note, an agile backlog is also a goal type, so this has to be before the goal
             workItem = getAgileBacklog(artifact);
+         } else if (artifact.isOfType(AtsArtifactTypes.AgileSprint)) {
+            // note, an agile sprint is also a goal type, so this has to be before the goal
+            workItem = getAgileSprint(artifact);
          } else if (artifact.isOfType(AtsArtifactTypes.Goal)) {
             workItem = getGoal(artifact);
-         } else if (artifact.isOfType(AtsArtifactTypes.AgileSprint)) {
-            workItem = getAgileSprint(artifact);
          } else {
             throw new OseeArgumentException("Artifact %s must be of type IAtsWorkItem", artifact.toStringWithId());
          }

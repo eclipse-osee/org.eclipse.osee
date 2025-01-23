@@ -43,7 +43,6 @@ import org.eclipse.osee.ats.ide.workflow.action.ActionArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
@@ -104,8 +103,6 @@ public class AtsArtifactFactory extends ArtifactFactory {
          toReturn = new PeerToPeerReviewArtifact(id, guid, branch, artifactType);
       } else if (artifactType.inheritsFrom(Goal)) {
          toReturn = new GoalArtifact(id, guid, branch, artifactType);
-      } else if (artifactType.inheritsFrom(AgileSprint)) {
-         toReturn = new SprintArtifact(id, guid, branch, artifactType);
       } else if (artifactType.inheritsFrom(Action)) {
          toReturn = new ActionArtifact(id, guid, branch, artifactType);
       } else {

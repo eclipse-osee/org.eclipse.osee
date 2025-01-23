@@ -196,7 +196,7 @@ public interface IAgileService {
 
    AttributeTypeToken getPointsAttrType(IAtsTeamDefinition teamDef);
 
-   XResultData sortAgileBacklog(ArtifactToken backlog, String comment);
+   XResultData sortAgileBacklogOrSprint(ArtifactToken backlog);
 
    IAgileSprint getSprint(IAtsWorkItem workItem);
 
