@@ -3,6 +3,7 @@ use nom::{bytes::complete::tag, combinator::value, IResult, Parser};
 mod config_def;
 mod config_group_def;
 mod feature_def;
+mod utility_def;
 
 /**
 *
