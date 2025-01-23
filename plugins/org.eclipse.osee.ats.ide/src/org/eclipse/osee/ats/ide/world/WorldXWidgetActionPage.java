@@ -785,7 +785,7 @@ public class WorldXWidgetActionPage extends FormPage {
                for (Artifact art : artifacts) {
                   if (art.isOfType(AtsArtifactTypes.Goal)) {
                      arts.addAll(Collections.castAll(AtsObjects.getArtifacts(
-                        AtsApiService.get().getGoalMembersCache((GoalArtifact) art).getMembers((GoalArtifact) art))));
+                        AtsApiService.get().getGoalMembersCache().getMembers((GoalArtifact) art))));
                   } else if (art.isOfType(AtsArtifactTypes.Action)) {
                      arts.addAll(Collections.castAll(
                         AtsObjects.getArtifacts(AtsApiService.get().getWorkItemService().getTeams(art))));

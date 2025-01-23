@@ -181,7 +181,7 @@ public class AtsApiIdeImpl extends AtsApiImpl implements AtsApiIde {
    }
 
    @Override
-   public IArtifactMembersCache<GoalArtifact> getGoalMembersCache(GoalArtifact goalArt) {
+   public IArtifactMembersCache<GoalArtifact> getGoalMembersCache() {
       if (goalMembersCache == null) {
          goalMembersCache = new ArtifactCollectorsCache<>();
       }

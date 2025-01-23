@@ -73,7 +73,7 @@ public class GoalManager extends MembersManager<GoalArtifact> {
 
    @Override
    public String getMemberOrder(GoalArtifact goalArt, Artifact member) {
-      return AtsApiService.get().getGoalMembersCache(goalArt).getMemberOrder(goalArt, member);
+      return AtsApiService.get().getGoalMembersCache().getMemberOrder(goalArt, member);
    }
 
 }

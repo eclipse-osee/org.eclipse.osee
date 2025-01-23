@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.core.client.OseeClient;
  */
 public interface AtsApiIde extends AtsApi {
 
-   IArtifactMembersCache<GoalArtifact> getGoalMembersCache(GoalArtifact goalArt);
+   IArtifactMembersCache<GoalArtifact> getGoalMembersCache();
 
    OseeClient getOseeClient();
 
