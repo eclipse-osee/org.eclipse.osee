@@ -23,7 +23,7 @@ mod feature_def;
     ConfigurationGroupNotParse = tuple((ConfigurationGroupNot, StartParenParse, many_till(alt((Space,NewLine,Not,And,Or,Tag(String))),EndParen)))
     ConfigurationGroupCaseParse = tuple((ConfigurationGroupCase, StartParenParse, many_till(alt((Space,NewLine,Not,And,Or,Tag(String))),EndParen)))
     SubstitutionParse = tuple((Substitution, StartParenParse, many_till(alt((Space,NewLine,Not,And,Or,Tag(String))),EndParen)))
-* alt((
+* results = alt((
 * tuple((StartCommentSingleLine,
 many_till(
 * alt((
