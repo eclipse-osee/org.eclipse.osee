@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -29,7 +30,6 @@ import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
 import org.eclipse.osee.ats.ide.AtsOpenOption;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.util.AtsEditors;
-import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -84,7 +84,7 @@ public class OpenAgileSprint extends XNavigateItemAction {
 
       @Override
       public int compare(Viewer viewer, Object e1, Object e2) {
-         if (e1 instanceof SprintArtifact && e2 instanceof SprintArtifact) {
+         if (e1 instanceof IAgileSprint && e2 instanceof IAgileSprint) {
             StateType e1StateType = ((IAtsWorkItem) e1).getCurrentStateType();
             StateType e2StateType = ((IAtsWorkItem) e2).getCurrentStateType();
             if (e1StateType != e2StateType) {

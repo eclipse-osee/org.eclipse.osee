@@ -94,6 +94,7 @@ public class AtsImage extends OseeImage {
    public static AtsImage RIGHT_ARROW_SM = new AtsImage("right_arrow_sm.gif");
    public static AtsImage ROLE = new AtsImage("role.gif");
    public static AtsImage SEARCH = new AtsImage("search.gif");
+   public static AtsImage SORT = new AtsImage("sort.gif");
    public static AtsImage STATE = new AtsImage("state.gif");
    public static AtsImage STATE_DEFINITION = new AtsImage("stateDefinition.gif");
    public static AtsImage STATE_ITEM = new AtsImage("stateItem.gif");

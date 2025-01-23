@@ -931,9 +931,9 @@ public class AgileService implements IAgileService {
    }
 
    @Override
-   public XResultData sortAgileBacklog(ArtifactToken backlog, String comment) {
+   public XResultData sortAgileBacklogOrSprint(ArtifactToken backlogOrSprint) {
       BacklogOperations ops = new BacklogOperations(atsApi);
-      return ops.sort(backlog, comment);
+      return ops.sort(backlogOrSprint);
    }
 
 }

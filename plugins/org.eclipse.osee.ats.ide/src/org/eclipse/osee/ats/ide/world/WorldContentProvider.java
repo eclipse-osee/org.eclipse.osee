@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.ats.ide.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.ide.workflow.goal.GoalArtifact;
 import org.eclipse.osee.ats.ide.workflow.review.ReviewManager;
-import org.eclipse.osee.ats.ide.workflow.sprint.SprintArtifact;
 import org.eclipse.osee.ats.ide.workflow.task.TaskArtifact;
 import org.eclipse.osee.ats.ide.workflow.teamwf.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -91,13 +90,8 @@ public class WorldContentProvider implements ITreeContentProvider {
                return AtsApiService.get().getWorkItemService().getTeams(artifact).toArray();
             }
             if (artifact.isOfType(AtsArtifactTypes.Goal)) {
-               List<Artifact> arts = AtsApiService.get().getGoalMembersCache().getMembers((GoalArtifact) artifact);
-               relatedArts.addAll(arts);
-               AtsBulkLoad.bulkLoadArtifacts(relatedArts);
-               return arts.toArray(new Artifact[arts.size()]);
-            }
-            if (artifact.isOfType(AtsArtifactTypes.AgileSprint)) {
-               List<Artifact> arts = AtsApiService.get().getSprintItemsCache().getMembers((SprintArtifact) artifact);
+               List<Artifact> arts =
+                  AtsApiService.get().getGoalMembersCache((GoalArtifact) artifact).getMembers((GoalArtifact) artifact);
                relatedArts.addAll(arts);
                AtsBulkLoad.bulkLoadArtifacts(relatedArts);
                return arts.toArray(new Artifact[arts.size()]);
@@ -137,9 +131,6 @@ public class WorldContentProvider implements ITreeContentProvider {
             }
             if (artifact.isOfType(AtsArtifactTypes.Goal)) {
                return ((GoalArtifact) artifact).getParentAWA();
-            }
-            if (artifact.isOfType(AtsArtifactTypes.AgileSprint)) {
-               return ((SprintArtifact) artifact).getParentAWA();
             }
          } catch (Exception ex) {
             // do nothing
@@ -185,10 +176,6 @@ public class WorldContentProvider implements ITreeContentProvider {
          return true;
       }
       if (workflow instanceof GoalArtifact && workflow.getRelatedArtifactsCount(AtsRelationTypes.Goal_Member) > 0) {
-         return true;
-      }
-      if (workflow instanceof SprintArtifact && workflow.getRelatedArtifactsCount(
-         AtsRelationTypes.AgileSprintToItem_AtsItem) > 0) {
          return true;
       }
       return false;

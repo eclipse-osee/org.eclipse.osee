@@ -13,7 +13,6 @@
 package org.eclipse.osee.ats.core.agile.operations;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -41,21 +40,19 @@ public class BacklogOperations {
       this.atsApi = atsApi;
    }
 
-   public XResultData sort(ArtifactToken backlog, String comment) {
+   public XResultData sort(ArtifactToken backlogOrSprint) {
       XResultData rd = new XResultData();
       try {
          ElapsedTime time = new ElapsedTime("Sort Backlog", false, false);
-         IAgileBacklog bLog = atsApi.getAgileService().getAgileBacklog(backlog);
-         time.logPoint("Load Backlog");
-         Collection<IAgileItem> items = atsApi.getAgileService().getItems(bLog);
-         time.logPoint("Load Items");
          List<IAgileItem> sItems = new ArrayList<>();
-         for (IAgileItem aItem : items) {
-            if (aItem == null) {
-               rd.errorf("Backlog item == null\n");
-            } else {
-               sItems.add(aItem);
-            }
+         boolean isBacklog = false;
+         if (atsApi.getAgileService().isBacklog(backlogOrSprint)) {
+            IAgileBacklog bLog = atsApi.getAgileService().getAgileBacklog(backlogOrSprint);
+            sItems.addAll(atsApi.getAgileService().getItems(bLog));
+            isBacklog = true;
+         } else {
+            IAgileSprint sprint = atsApi.getAgileService().getAgileSprint(backlogOrSprint);
+            sItems.addAll(atsApi.getAgileService().getItems(sprint));
          }
 
          time.logPoint("Start Sort");
@@ -72,14 +69,18 @@ public class BacklogOperations {
          }
 
          time.logPoint("Commit");
-         IAtsChangeSet changes = atsApi.createChangeSet(comment);
-         changes.setRelationsAndOrder(backlog, AtsRelationTypes.Goal_Member, arts);
+         IAtsChangeSet changes = atsApi.createChangeSet("Sort " + backlogOrSprint.getArtifactType().getName());
+         if (isBacklog) {
+            changes.setRelationsAndOrder(backlogOrSprint, AtsRelationTypes.Goal_Member, arts);
+         } else {
+            changes.setRelationsAndOrder(backlogOrSprint, AtsRelationTypes.AgileSprintToItem_AtsItem, arts);
+         }
          time.logPoint("Commit End");
          TransactionToken transaction = changes.executeIfNeeded();
          rd.setTxId(transaction.getIdString());
          time.end();
       } catch (Exception ex) {
-         rd.errorf("Error: Exception sorting backlog %s: %s", backlog.toStringWithId(), Lib.exceptionToString(ex));
+         rd.errorf("Error: Exception sorting goal %s: %s", backlogOrSprint.toStringWithId(), Lib.exceptionToString(ex));
       }
       return rd;
    }

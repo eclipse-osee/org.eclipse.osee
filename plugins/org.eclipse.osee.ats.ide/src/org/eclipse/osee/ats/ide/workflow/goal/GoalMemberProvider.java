@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.util.AtsImage;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.ide.AtsArtifactImageProvider;
 import org.eclipse.osee.ats.ide.agile.BacklogXViewerFactory;
+import org.eclipse.osee.ats.ide.agile.SprintXViewerFactory;
 import org.eclipse.osee.ats.ide.internal.AtsApiService;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.util.Result;
@@ -43,6 +44,8 @@ public class GoalMemberProvider extends AbstractMemberProvider {
    public String getCollectorName() {
       if (isBacklog()) {
          return "Backlog";
+      } else if (isSprint()) {
+         return "Sprint";
       }
       return "Goal";
    }
@@ -50,15 +53,20 @@ public class GoalMemberProvider extends AbstractMemberProvider {
    @Override
    public String getMembersName() {
       if (isBacklog()) {
-         return "Items";
+         return "Backlog Items";
+      } else if (isSprint()) {
+         return "Sprint Items";
       }
-      return "Members";
+      return "Goal Items";
    }
 
    @Override
    public KeyedImage getImageKey() {
       if (isBacklog()) {
          return AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_BACKLOG);
+      }
+      if (isSprint()) {
+         return AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_SPRINT);
       }
       return ImageManager.create(AtsImage.GOAL);
    }
@@ -87,6 +95,8 @@ public class GoalMemberProvider extends AbstractMemberProvider {
    public IXViewerFactory getXViewerFactory(Artifact awa) {
       if (isBacklog()) {
          return new BacklogXViewerFactory((GoalArtifact) awa, this);
+      } else if (isSprint()) {
+         return new SprintXViewerFactory((GoalArtifact) awa, this);
       }
       return new GoalXViewerFactory((GoalArtifact) awa, this);
    }
@@ -96,11 +106,17 @@ public class GoalMemberProvider extends AbstractMemberProvider {
       if (isBacklog()) {
          return "ats.column.backlogOrder";
       }
+      if (isSprint()) {
+         return "ats.column.sprintOrder";
+      }
       return "ats.column.goalOrder";
    }
 
    @Override
    public RelationTypeSide getMemberRelationTypeSide() {
+      if (isSprint()) {
+         return AtsRelationTypes.AgileSprintToItem_AtsItem;
+      }
       return AtsRelationTypes.Goal_Member;
    }
 
@@ -121,7 +137,7 @@ public class GoalMemberProvider extends AbstractMemberProvider {
 
    @Override
    public boolean isSprint() {
-      return false;
+      return AtsApiService.get().getAgileService().isSprint(getArtifact());
    }
 
    @Override

@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.ide.util.IArtifactMembersCache;
 import org.eclipse.osee.ats.ide.workflow.CollectorArtifact;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -43,10 +44,14 @@ public class ArtifactCollectorsCache<T extends CollectorArtifact> implements IAr
    private static DoubleKeyHashMap<Long, Long, String> collectorMemberOrderMap;
    private static Set<Long> registered;
    private static volatile boolean initialized = false;
-   private final RelationTypeSide memberRelationType;
 
-   public ArtifactCollectorsCache(RelationTypeSide memberRelationType) {
-      this.memberRelationType = memberRelationType;
+   private RelationTypeSide getRelationType(T collectorArt) {
+      if (collectorArt.isSprint()) {
+         return AtsRelationTypes.AgileSprintToItem_AtsItem;
+      } else {
+         return AtsRelationTypes.Goal_Member;
+      }
+
    }
 
    private void initializeStructures() {
@@ -99,7 +104,7 @@ public class ArtifactCollectorsCache<T extends CollectorArtifact> implements IAr
       registerForEvents(collector);
       List<Artifact> members = cache.get(collector.getId());
       if (members == null) {
-         members = collector.getRelatedArtifacts(memberRelationType, DeletionFlag.EXCLUDE_DELETED);
+         members = collector.getRelatedArtifacts(getRelationType(collector), DeletionFlag.EXCLUDE_DELETED);
          synchronized (cache) {
             cache.put(collector.getId(), members);
             fillOrderCache(collector, members);
