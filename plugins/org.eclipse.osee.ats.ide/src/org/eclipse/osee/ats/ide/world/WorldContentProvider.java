@@ -90,8 +90,7 @@ public class WorldContentProvider implements ITreeContentProvider {
                return AtsApiService.get().getWorkItemService().getTeams(artifact).toArray();
             }
             if (artifact.isOfType(AtsArtifactTypes.Goal)) {
-               List<Artifact> arts =
-                  AtsApiService.get().getGoalMembersCache((GoalArtifact) artifact).getMembers((GoalArtifact) artifact);
+               List<Artifact> arts = AtsApiService.get().getGoalMembersCache().getMembers((GoalArtifact) artifact);
                relatedArts.addAll(arts);
                AtsBulkLoad.bulkLoadArtifacts(relatedArts);
                return arts.toArray(new Artifact[arts.size()]);

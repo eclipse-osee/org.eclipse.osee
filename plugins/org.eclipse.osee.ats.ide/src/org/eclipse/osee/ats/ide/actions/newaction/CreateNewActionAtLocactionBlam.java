@@ -62,7 +62,7 @@ public class CreateNewActionAtLocactionBlam extends CreateNewActionBlam {
          collectorArt.setRelationOrder(memberProvider.getMemberRelationTypeSide(), dropTarget, false,
             AtsApiService.get().getQueryServiceIde().getArtifact(teamWf));
          if (collectorArt.isOfType(AtsArtifactTypes.Goal)) {
-            AtsApiService.get().getGoalMembersCache((GoalArtifact) collectorArt).decache((GoalArtifact) collectorArt);
+            AtsApiService.get().getGoalMembersCache().decache((GoalArtifact) collectorArt);
          }
       }
 

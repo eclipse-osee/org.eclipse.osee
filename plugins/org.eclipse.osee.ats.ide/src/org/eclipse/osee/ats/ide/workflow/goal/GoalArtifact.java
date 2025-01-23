@@ -52,7 +52,7 @@ public class GoalArtifact extends CollectorArtifact implements IAtsGoal {
 
    @Override
    public List<Artifact> getMembers() {
-      return AtsApiService.get().getGoalMembersCache(this).getMembers(this);
+      return AtsApiService.get().getGoalMembersCache().getMembers(this);
    }
 
    @Override
