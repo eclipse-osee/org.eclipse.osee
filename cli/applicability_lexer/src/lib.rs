@@ -1,6 +1,117 @@
-use nom::{bytes::complete::tag, combinator::value, error::ParseError, Err, IResult, Parser};
+use nom::{bytes::complete::tag, combinator::value, IResult, Parser};
 
+mod config_def;
+mod config_group_def;
 mod feature_def;
+
+/**
+*
+* the alts in the comment need to be many0'd or take_until'd
+* StartCommentSingleLine should take until EndCommentSingleLine
+* StartCommentMultiLine should take until EndCommentMultiLine
+* SingleLineCommentCharacter should take until NewLine
+* Theoretical prototype:
+
+    StartParenParse = many_till(Space,StartParen)
+    FeatureParse = tuple((Feature, StartParenParse, many_till(alt((Space,NewLine,Not,And,Or,Tag(String))),EndParen)))
+    FeatureNotParse = tuple((FeatureNot, StartParenParse, many_till(alt((Space,NewLine,Not,And,Or,Tag(String))),EndParen)))
+    FeatureCaseParse = tuple((FeatureCase, StartParenParse, many_till(alt((Space,NewLine,Not,And,Or,Tag(String))),EndParen)))
+    ConfigurationParse = tuple((Configuration, StartParenParse, many_till(alt((Space,NewLine,Not,And,Or,Tag(String))),EndParen)))
+    ConfigurationNotParse = tuple((ConfigurationNot, StartParenParse, many_till(alt((Space,NewLine,Not,And,Or,Tag(String))),EndParen)))
+    ConfigurationCaseParse = tuple((ConfigurationCase, StartParenParse, many_till(alt((Space,NewLine,Not,And,Or,Tag(String))),EndParen)))
+    ConfigurationGroupParse = tuple((ConfigurationGroup, StartParenParse, many_till(alt((Space,NewLine,Not,And,Or,Tag(String))),EndParen)))
+    ConfigurationGroupNotParse = tuple((ConfigurationGroupNot, StartParenParse, many_till(alt((Space,NewLine,Not,And,Or,Tag(String))),EndParen)))
+    ConfigurationGroupCaseParse = tuple((ConfigurationGroupCase, StartParenParse, many_till(alt((Space,NewLine,Not,And,Or,Tag(String))),EndParen)))
+    SubstitutionParse = tuple((Substitution, StartParenParse, many_till(alt((Space,NewLine,Not,And,Or,Tag(String))),EndParen)))
+* alt((
+* tuple((StartCommentSingleLine,
+many_till(
+* alt((
+   FeatureParse,
+   FeatureNotParse,
+   FeatureSwitch,
+   FeatureCaseParse,
+   FeatureElse,
+   EndFeature,
+   ConfigurationParse,
+   ConfigurationNotParse,
+   ConfigurationSwitch,
+   ConfigurationCaseParse,
+   ConfigurationElse,
+   EndConfiguration,
+   ConfigurationGroupParse,
+   ConfigurationGroupNotParse,
+   ConfigurationGroupSwitch,
+   ConfigurationGroupCaseParse,
+   ConfigurationGroupElse,
+   EndConfigurationGroup,
+   SubstitutionParse,
+   Space,
+   NewLine,
+* ))
+, EndCommentSingleLine)
+)),
+* tuple((
+* StartCommentMultiLine,
+many_till(
+* alt((
+* MultilineCommentCharacter,
+   FeatureParse,
+   FeatureNotParse,
+   FeatureSwitch,
+   FeatureCaseParse,
+   FeatureElse,
+   EndFeature,
+   ConfigurationParse,
+   ConfigurationNotParse,
+   ConfigurationSwitch,
+   ConfigurationCaseParse,
+   ConfigurationElse,
+   EndConfiguration,
+   ConfigurationGroupParse,
+   ConfigurationGroupNotParse,
+   ConfigurationGroupSwitch,
+   ConfigurationGroupCaseParse,
+   ConfigurationGroupElse,
+   EndConfigurationGroup,
+   SubstitutionParse,
+   Space,
+   NewLine,
+* )), EndCommentMultiLine)
+)),
+* tuple((
+* SingleLineCommentCharacter,
+many_till(
+* alt((
+   FeatureParse,
+   FeatureNotParse,
+   FeatureSwitch,
+   FeatureCaseParse,
+   FeatureElse,
+   EndFeature,
+   ConfigurationParse,
+   ConfigurationNotParse,
+   ConfigurationSwitch,
+   ConfigurationCaseParse,
+   ConfigurationElse,
+   EndConfiguration,
+   ConfigurationGroupParse,
+   ConfigurationGroupNotParse,
+   ConfigurationGroupSwitch,
+   ConfigurationGroupCaseParse,
+   ConfigurationGroupElse,
+   EndConfigurationGroup,
+   SubstitutionParse,
+   Space,
+   * ))
+   , NewLine)
+* ))
+* Nothing,
+* Illegal,
+* Identity,
+* Eof,
+* ))
+*/
 
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 pub enum LexerToken {
@@ -17,8 +128,6 @@ pub enum LexerToken {
     EndCommentSingleLine,
     EndCommentMultiLine,
     MultilineCommentCharacter,
-    StartBrace,
-    EndBrace,
     Feature,
     FeatureNot,
     FeatureSwitch,
