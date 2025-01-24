@@ -259,7 +259,7 @@ pub struct LexerConfig<
     P32,
     P33,
 > where
-    I: Clone + InputLength + InputIter + AsChar + Slice<RangeFrom<usize>>,
+    I: Clone + InputLength + InputIter + Slice<RangeFrom<usize>>,
     <I as InputIter>::Item: AsChar,
     E: ParseError<I>,
     P1: Parser<I, O1, E> + Copy,
@@ -335,7 +335,7 @@ pub struct LexerConfig<
 
 pub struct ApplicabilityLexerConfig<I, O1, O2, O3, O4, O5, O6, E, P1, P2, P3, P4, P5, P6>
 where
-    I: Clone + InputLength + InputIter + AsChar + Slice<RangeFrom<usize>>,
+    I: Clone + InputLength + InputIter + Slice<RangeFrom<usize>>,
     <I as InputIter>::Item: AsChar,
     P1: Parser<I, O1, E>,
     P2: Parser<I, O2, E>,
@@ -500,8 +500,9 @@ pub fn lex_applicability<
         P32,
         P33,
     >,
-) where
-    I: Clone + InputLength + InputIter + AsChar + Slice<RangeFrom<usize>>,
+) -> impl FnMut(I) -> Result<(I, Vec<LexerToken>), nom::Err<E>>
+where
+    I: Clone + InputLength + InputIter + Slice<RangeFrom<usize>>,
     <I as InputIter>::Item: AsChar,
     E: ParseError<I>,
     P1: Parser<I, O1, E> + Copy,
@@ -986,4 +987,5 @@ pub fn lex_applicability<
             flattened
         },
     );
+    parser
 }
