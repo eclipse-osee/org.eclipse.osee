@@ -13,9 +13,18 @@
 
 package org.eclipse.osee.ats.ide.integration.tests.ats.notify;
 
+import static org.eclipse.osee.ats.core.notify.WorkItemNotificationProcessor.SUBSCRIBED_FOR_AI_EMAIL;
+import static org.eclipse.osee.ats.core.notify.WorkItemNotificationProcessor.SUBSCRIBED_FOR_TEAM_EMAIL;
+import static org.eclipse.osee.ats.core.notify.WorkItemNotificationProcessor.SUBSCRIBED_WORKFLOW;
+import static org.eclipse.osee.ats.core.notify.WorkItemNotificationProcessor.WORKFLOW_ASSIGNEE;
+import static org.eclipse.osee.ats.core.notify.WorkItemNotificationProcessor.WORKFLOW_CANCELLED_WITH_ATSID;
+import static org.eclipse.osee.ats.core.notify.WorkItemNotificationProcessor.WORKFLOW_CANCELLED_WITH_REASON;
+import static org.eclipse.osee.ats.core.notify.WorkItemNotificationProcessor.WORKFLOW_COMPLETED;
+import static org.eclipse.osee.ats.core.notify.WorkItemNotificationProcessor.WORKFLOW_ORIGINATOR;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
@@ -36,6 +45,7 @@ import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.result.XResultData;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 
@@ -53,10 +63,14 @@ public class WorkItemNotificationProcessorTest {
       return atsApi.getUserService().getUserByUserId(userToken.getUserId());
    }
 
+   @After
+   public void cleanup() {
+      AtsTestUtil.cleanup();
+   }
+
    @Before
    public void setup() {
       atsApi = AtsApiService.get();
-
       joeSmith_CurrentUser = setupUser(DemoUsers.Joe_Smith);
       kay_ValidEmail = setupUser(DemoUsers.Kay_Jones);
       jason_ValidEmail = setupUser(DemoUsers.Jason_Michael);
@@ -98,10 +112,22 @@ public class WorkItemNotificationProcessorTest {
       Assert.assertTrue(rd.isSuccess());
       Assert.assertEquals(1, notifications.getNotificationEvents().size());
       AtsNotificationEvent notifyEvent = notifications.getNotificationEvents().get(0);
-      Assert.assertEquals(AtsNotifyType.Originator.name(), notifyEvent.getType());
+      Assert.assertEquals(AtsNotifyType.Originator.name(), notifyEvent.getSubjectType());
       Assert.assertEquals(joeSmith_CurrentUser.getEmail(), notifyEvent.getEmailAddresses().iterator().next());
-      Assert.assertEquals("You have been set as the originator of [Demo Code Team Workflow] state [Implement] " //
-         + "titled [SAW (uncommitted) More Reqt Changes for Diagram View]", notifyEvent.getDescription());
+
+      String artType = teamWf.getArtifactTypeName();
+      String currState = teamWf.getCurrentStateName();
+      String atsId = teamWf.getAtsId();
+      String toStrAtsId = teamWf.toStringWithAtsId();
+
+      String msg = notifyEvent.getSubjectDescription();
+      String msgAbridged = notifyEvent.getSubjectDescriptionAbridged();
+
+      String msgAbridgedExpected = String.format(WORKFLOW_ORIGINATOR, artType, currState, atsId);
+      String msgExpected = String.format(WORKFLOW_ORIGINATOR, artType, currState, toStrAtsId);
+
+      Assert.assertEquals(msgExpected, msg);
+      Assert.assertEquals(msgAbridgedExpected, msgAbridged);
 
    }
 
@@ -127,32 +153,47 @@ public class WorkItemNotificationProcessorTest {
 
       /////////////////////////////////////////////////////////////////
       // One notification to assignee (Kay)
-      IAtsTeamWorkflow designTeamWf = DemoUtil.getSawSWDesignUnCommittedWf();
-      Assert.assertNotNull(designTeamWf);
+      IAtsTeamWorkflow teamWf = DemoUtil.getSawSWDesignUnCommittedWf();
+      Assert.assertNotNull(teamWf);
 
       processor = new WorkItemNotificationProcessor(rd);
       notifications = new AtsNotificationCollector();
       event = new AtsWorkItemNotificationEvent();
       event.setFromUserId(joeSmith_CurrentUser.getUserId());
       event.setNotifyType(AtsNotifyType.Assigned);
-      event.getWorkItemIds().add(designTeamWf.getId());
+      event.getWorkItemIds().add(teamWf.getId());
       processor.run(notifications, event);
       Assert.assertEquals(1, notifications.getNotificationEvents().size());
       AtsNotificationEvent notifyEvent = notifications.getNotificationEvents().get(0);
-      Assert.assertEquals(AtsNotifyType.Assigned.name(), notifyEvent.getType());
+      Assert.assertEquals(AtsNotifyType.Assigned.name(), notifyEvent.getSubjectType());
       List<String> expectedUserEmails = new ArrayList<>();
       expectedUserEmails.add(kay_ValidEmail.getEmail());
       Assert.assertTrue(org.eclipse.osee.framework.jdk.core.util.Collections.isEqual(expectedUserEmails,
          notifyEvent.getEmailAddresses()));
-      Assert.assertEquals(
-         "You have been set as the assignee of [Team Workflow] in state [Implement] titled [SAW (uncommitted) " //
-            + "More Reqt Changes for Diagram View]",
-         notifyEvent.getDescription());
+
+      String artType = teamWf.getArtifactTypeName();
+      String currState = teamWf.getCurrentStateName();
+      String atsId = teamWf.getAtsId();
+      String toStrAtsId = teamWf.toStringWithAtsId();
+
+      String msg = notifyEvent.getSubjectDescription();
+      String msgAbridged = notifyEvent.getSubjectDescriptionAbridged();
+
+      String msgAbridgedExpected = String.format(WORKFLOW_ASSIGNEE, artType, currState, atsId);
+      String msgExpected = String.format(WORKFLOW_ASSIGNEE, artType, currState, toStrAtsId);
+
+      Assert.assertEquals(msgExpected, msg);
+      Assert.assertEquals(msgAbridgedExpected, msgAbridged);
 
       /////////////////////////////////////////////////////////////////
       // Two notifications should be created, one for each assignee
       IAtsPeerToPeerReview rev = (IAtsPeerToPeerReview) atsApi.getQueryService().getWorkItemByAtsId("RVW15");
       Assert.assertNotNull(rev);
+
+      artType = rev.getArtifactTypeName();
+      currState = rev.getCurrentStateName();
+      atsId = rev.getAtsId();
+      toStrAtsId = rev.toStringWithAtsId();
 
       processor = new WorkItemNotificationProcessor(rd);
       notifications = new AtsNotificationCollector();
@@ -165,14 +206,22 @@ public class WorkItemNotificationProcessorTest {
       // Single event with 2 email addresses
       Assert.assertEquals(1, notifications.getNotificationEvents().size());
       notifyEvent = notifications.getNotificationEvents().get(0);
-      Assert.assertEquals(AtsNotifyType.Assigned.name(), notifyEvent.getType());
+      Assert.assertEquals(AtsNotifyType.Assigned.name(), notifyEvent.getSubjectType());
       expectedUserEmails.clear();
       expectedUserEmails.add(joeSmith_CurrentUser.getEmail());
       expectedUserEmails.add(kay_ValidEmail.getEmail());
       Assert.assertTrue(org.eclipse.osee.framework.jdk.core.util.Collections.isEqual(expectedUserEmails,
          notifyEvent.getEmailAddresses()));
-      Assert.assertEquals("You have been set as the assignee of [Peer-To-Peer Review] in state [Review] titled " //
-         + "[2 - Peer Review algorithm used in code]", notifyEvent.getDescription());
+
+      msg = notifyEvent.getSubjectDescription();
+      msgAbridged = notifyEvent.getSubjectDescriptionAbridged();
+
+      msgAbridgedExpected = String.format(WORKFLOW_ASSIGNEE, artType, currState, atsId);
+      msgExpected = String.format(WORKFLOW_ASSIGNEE, artType, currState, toStrAtsId);
+
+      Assert.assertEquals(msgExpected, msg);
+      Assert.assertEquals(msgAbridgedExpected, msgAbridged);
+
    }
 
    @org.junit.Test
@@ -180,31 +229,45 @@ public class WorkItemNotificationProcessorTest {
 
       XResultData rd = new XResultData();
 
-      IAtsTeamWorkflow codeTeamWf = DemoUtil.getSawCodeUnCommittedWf();
-      Assert.assertNotNull(codeTeamWf);
+      IAtsTeamWorkflow teamWf = DemoUtil.getSawCodeUnCommittedWf();
+      Assert.assertNotNull(teamWf);
 
       WorkItemNotificationProcessor processor = new WorkItemNotificationProcessor(rd);
       AtsNotificationCollector notifications = new AtsNotificationCollector();
       AtsWorkItemNotificationEvent event = new AtsWorkItemNotificationEvent();
       event.setFromUserId(joeSmith_CurrentUser.getUserId());
       event.setNotifyType(AtsNotifyType.Subscribed);
-      event.getWorkItemIds().add(codeTeamWf.getId());
+      event.getWorkItemIds().add(teamWf.getId());
 
       processor.run(notifications, event);
       Assert.assertEquals(0, notifications.getNotificationEvents().size());
 
       IAtsChangeSet changes = atsApi.createChangeSet("Add Subscribed");
-      atsApi.getWorkItemService().getSubscribeService().addSubscribed(codeTeamWf, joeSmith_CurrentUser, changes);
+      atsApi.getWorkItemService().getSubscribeService().addSubscribed(teamWf, joeSmith_CurrentUser, changes);
       changes.execute();
 
+      processor = new WorkItemNotificationProcessor(rd);
+      notifications = new AtsNotificationCollector();
       processor.run(notifications, event);
       Assert.assertEquals(1, notifications.getNotificationEvents().size());
       AtsNotificationEvent notifyEvent = notifications.getNotificationEvents().get(0);
-      Assert.assertEquals(AtsNotifyType.Subscribed.name(), notifyEvent.getType());
+      Assert.assertEquals(AtsNotifyType.Subscribed.name(), notifyEvent.getSubjectType());
       Assert.assertEquals(1, notifyEvent.getEmailAddresses().size());
       Assert.assertEquals(joeSmith_CurrentUser.getEmail(), notifyEvent.getEmailAddresses().iterator().next());
-      Assert.assertEquals("[Demo Code Team Workflow] titled [SAW (uncommitted) More Reqt Changes for Diagram View] " //
-         + "transitioned to [Implement] and you subscribed for notification.", notifyEvent.getDescription());
+
+      String artType = teamWf.getArtifactTypeName();
+      String currState = teamWf.getCurrentStateName();
+      String atsId = teamWf.getAtsId();
+      String toStrAtsId = teamWf.toStringWithAtsId();
+
+      String msg = notifyEvent.getSubjectDescription();
+      String msgAbridged = notifyEvent.getSubjectDescriptionAbridged();
+
+      String msgAbridgedExpected = String.format(SUBSCRIBED_WORKFLOW, artType, currState, atsId);
+      String msgExpected = String.format(SUBSCRIBED_WORKFLOW, artType, currState, toStrAtsId);
+
+      Assert.assertEquals(msgExpected, msg);
+      Assert.assertEquals(msgAbridgedExpected, msgAbridged);
 
    }
 
@@ -244,13 +307,22 @@ public class WorkItemNotificationProcessorTest {
       // One notification because Kay is originator
       Assert.assertEquals(1, notifications.getNotificationEvents().size());
       AtsNotificationEvent notifyEvent = notifications.getNotificationEvents().get(0);
-      Assert.assertEquals(AtsNotifyType.Completed.name(), notifyEvent.getType());
+      Assert.assertEquals(AtsNotifyType.Completed.name(), notifyEvent.getSubjectType());
       Assert.assertEquals(kay_ValidEmail.getEmail(), notifyEvent.getEmailAddresses().iterator().next());
-      Assert.assertEquals(
-         "[Team Workflow] titled [AtsTestUtilCore - Team WF [NotificationProcessor.testNotifyCompleted]] is [Completed]",
-         notifyEvent.getDescription());
 
-      AtsTestUtil.cleanup();
+      String artType = teamWf.getArtifactTypeName();
+      String currState = teamWf.getCurrentStateName();
+      String atsId = teamWf.getAtsId();
+      String toStrAtsId = teamWf.toStringWithAtsId();
+
+      String msg = notifyEvent.getSubjectDescription();
+      String msgExpected = String.format(WORKFLOW_COMPLETED, artType, currState, toStrAtsId);
+
+      String msgAbridged = notifyEvent.getSubjectDescriptionAbridged();
+      String msgAbridgedExpected = String.format(WORKFLOW_COMPLETED, artType, currState, atsId);
+
+      Assert.assertEquals(msgExpected, msg);
+      Assert.assertEquals(msgAbridgedExpected, msgAbridged);
    }
 
    @org.junit.Test
@@ -285,13 +357,26 @@ public class WorkItemNotificationProcessorTest {
       // One notification because Kay is originator
       Assert.assertEquals(1, notifications.getNotificationEvents().size());
       AtsNotificationEvent notifyEvent = notifications.getNotificationEvents().get(0);
-      Assert.assertEquals(AtsNotifyType.Cancelled.name(), notifyEvent.getType());
+      Assert.assertEquals(AtsNotifyType.Cancelled.name(), notifyEvent.getSubjectType());
       Assert.assertEquals(kay_ValidEmail.getEmail(), notifyEvent.getEmailAddresses().iterator().next());
-      Assert.assertTrue(notifyEvent.getDescription().startsWith("[Team Workflow] titled [AtsTestUtilCore - " //
-         + "Team WF [NotificationProcessor.testNotifyCancelled]] " //
-         + "was [Cancelled] from the [Implement] state on "));
 
-      AtsTestUtil.cleanup();
+      String artType = teamWf.getArtifactTypeName();
+      String currState = teamWf.getCurrentStateName();
+      String atsId = teamWf.getAtsId();
+      String toStrAtsId = teamWf.toStringWithAtsId();
+      String cancFrom = teamWf.getCancelledFromState();
+      String cancReas = teamWf.getCancelledReason();
+
+      String msg = notifyEvent.getSubjectDescription();
+      String msgExpected =
+         String.format(WORKFLOW_CANCELLED_WITH_REASON, artType, currState, cancFrom, cancReas, toStrAtsId);
+
+      String msgAbridged = notifyEvent.getSubjectDescriptionAbridged();
+      String msgAbridgedExpected = String.format(WORKFLOW_CANCELLED_WITH_ATSID, artType, currState, cancFrom, atsId);
+
+      Assert.assertEquals(msgExpected, msg);
+      Assert.assertEquals(msgAbridgedExpected, msgAbridged);
+
    }
 
    @org.junit.Test
@@ -315,36 +400,48 @@ public class WorkItemNotificationProcessorTest {
 
       // Setup Subscribed Team for Joe and AI for Kay
       IAtsChangeSet changes = atsApi.createChangeSet("Set AI and Team Def Config");
-      changes.relate(teamWf.getActionableItems().iterator().next(), AtsRelationTypes.SubscribedUser_User,
-         DemoUsers.Joe_Smith);
+      IAtsActionableItem ai = teamWf.getActionableItems().iterator().next();
+      changes.relate(ai, AtsRelationTypes.SubscribedUser_User, DemoUsers.Joe_Smith);
       changes.relate(teamWf.getTeamDefinition(), AtsRelationTypes.SubscribedUser_User, DemoUsers.Kay_Jones);
       changes.execute();
 
+      String teamDefName = teamWf.getTeamDefinition().getName();
+
+      event.setNotifyType(AtsNotifyType.SubscribedAi);
       processor = new WorkItemNotificationProcessor(rd);
       notifications = new AtsNotificationCollector();
-      event.setNotifyType(AtsNotifyType.SubscribedAi);
       processor.run(notifications, event);
       Assert.assertEquals(1, notifications.getNotificationEvents().size());
-      for (AtsNotificationEvent notifyEvent : notifications.getNotificationEvents()) {
-         if (notifyEvent.getEmailAddresses().isEmpty()) {
-            Assert.assertTrue(notifyEvent.getEmailAddresses().contains(joeSmith_CurrentUser.getEmail()));
-            Assert.assertTrue(notifyEvent.getDescription().contains(
-               "You have subscribed for email notification for Team [AtsTestUtilCore - Team Def [NotificationProcessor.testNotifySubscribedTeamOrAi]]"));
-         }
-      }
+      AtsNotificationEvent notifyEvent = notifications.getNotificationEvents().get(0);
+      Assert.assertTrue(notifyEvent.getEmailAddresses().contains(joeSmith_CurrentUser.getEmail()));
+
+      String msg = notifyEvent.getSubjectDescription();
+      String msgAbridged = notifyEvent.getSubjectDescriptionAbridged();
+
+      String msgAbridgedExpected = String.format(SUBSCRIBED_FOR_AI_EMAIL, ai.getName(), teamWf.getAtsId());
+      String msgExpected = String.format(SUBSCRIBED_FOR_AI_EMAIL, ai.getName(), teamWf.toStringWithAtsId());
+
+      Assert.assertEquals(msgExpected, msg);
+      Assert.assertEquals(msgAbridgedExpected, msgAbridged);
+
+      Assert.assertEquals(AtsNotifyType.SubscribedAi.name(), notifyEvent.getSubjectType());
 
       processor = new WorkItemNotificationProcessor(rd);
       notifications = new AtsNotificationCollector();
       event.setNotifyType(AtsNotifyType.SubscribedTeam);
       processor.run(notifications, event);
       Assert.assertEquals(1, notifications.getNotificationEvents().size());
-      for (AtsNotificationEvent notifyEvent : notifications.getNotificationEvents()) {
-         if (notifyEvent.getEmailAddresses().isEmpty()) {
-            Assert.assertTrue(notifyEvent.getEmailAddresses().contains(kay_ValidEmail.getEmail()));
-            Assert.assertTrue(notifyEvent.getDescription().contains(
-               "You have subscribed for email notification for Team [AtsTestUtilCore - Team Def [NotificationProcessor.testNotifySubscribedTeamOrAi]]"));
-         }
-      }
+      notifyEvent = notifications.getNotificationEvents().get(0);
+      Assert.assertTrue(notifyEvent.getEmailAddresses().contains(kay_ValidEmail.getEmail()));
+
+      msg = notifyEvent.getSubjectDescription();
+      msgAbridged = notifyEvent.getSubjectDescriptionAbridged();
+
+      msgAbridgedExpected = String.format(SUBSCRIBED_FOR_TEAM_EMAIL, teamDefName, teamWf.getAtsId());
+      msgExpected = String.format(SUBSCRIBED_FOR_TEAM_EMAIL, teamDefName, teamWf.toStringWithAtsId());
+
+      Assert.assertEquals(msgExpected, msg);
+      Assert.assertEquals(msgAbridgedExpected, msgAbridged);
    }
 
 }

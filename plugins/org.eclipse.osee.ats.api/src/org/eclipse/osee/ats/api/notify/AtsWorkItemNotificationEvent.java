@@ -27,6 +27,7 @@ public class AtsWorkItemNotificationEvent {
    private final Collection<String> atsIds = new HashSet<>();
    private final Collection<Long> workItemIds = new HashSet<>();
    private final Set<AtsNotifyType> notifyTypes = new HashSet<>();
+   private boolean inTest = false;
 
    public Collection<String> getAtsIds() {
       return atsIds;
@@ -62,5 +63,13 @@ public class AtsWorkItemNotificationEvent {
 
    public Collection<Long> getWorkItemIds() {
       return workItemIds;
+   }
+
+   public boolean isInTest() {
+      return inTest;
+   }
+
+   public void setInTest(boolean inTest) {
+      this.inTest = inTest;
    }
 }
