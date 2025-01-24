@@ -38,13 +38,13 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 /**
  * @author Donald G. Dunne
  */
-public class TestEmailSend extends XNavigateItemAction {
+public class TestOseeEmailSend extends XNavigateItemAction {
 
-   private static final String TITLE = "Test Email Send";
+   private static final String TITLE = "Test OseeEmail Send";
    AtsApi atsApi;
    private XResultData rd;
 
-   public TestEmailSend() {
+   public TestOseeEmailSend() {
       super(TITLE, FrameworkImage.EMAIL, XNavigateItem.EMAIL_NOTIFICATIONS);
       atsApi = AtsApiService.get();
    }

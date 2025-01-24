@@ -88,8 +88,8 @@ public abstract class AbstractXHyperlinkTriStateNotifyDam extends XHyperlinkTriS
             }
 
             AtsNotificationEvent notify = new AtsNotificationEvent();
-            notify.setType("OSEE modified " + attrType.getUnqualifiedName());
-            notify.setDescription(String.format("OSEE modified [%s] to value [%s]<br/><br/>" //
+            notify.setSubjectType("OSEE modified " + attrType.getUnqualifiedName());
+            notify.setSubjectDescription(String.format("OSEE modified [%s] to value [%s]<br/><br/>" //
                + "This email sent to [%s] User Group.", //
                workItem.toStringWithAtsId(), //
                value, notifyUserGroup.getName()));

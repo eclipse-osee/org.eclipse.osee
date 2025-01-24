@@ -77,6 +77,7 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
       atsUser.setStoreObject(userArt);
       atsUser.setUserId(userArt.getSoleAttributeAsString(CoreAttributeTypes.UserId, ""));
       atsUser.setEmail(userArt.getSoleAttributeAsString(CoreAttributeTypes.Email, ""));
+      atsUser.setAbridgedEmail(userArt.getSoleAttributeAsString(CoreAttributeTypes.AbridgedEmail, ""));
       atsUser.setActive(userArt.getSoleAttributeValue(CoreAttributeTypes.Active, true));
       atsUser.setId(userArt.getId());
       atsUser.getLoginIds().addAll(userArt.getAttributeValues(CoreAttributeTypes.LoginId));
