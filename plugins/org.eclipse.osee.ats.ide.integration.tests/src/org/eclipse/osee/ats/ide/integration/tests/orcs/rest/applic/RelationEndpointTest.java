@@ -122,9 +122,18 @@ public class RelationEndpointTest {
 
       Response res2 = relationEndpoint.createRelationByType(middle, bottom, CoreRelationTypes.RequirementTrace);
       res2.close();
-      List<ArtifactToken> arts =
-         relationEndpoint.getRelatedRecursive(top, CoreRelationTypes.RequirementTrace, ArtifactId.SENTINEL);
-      Assert.assertTrue(arts.contains(middle));
-      Assert.assertTrue(arts.contains(bottom));
+
+      // Test Downstream Relation Recursion
+      List<ArtifactToken> artsDownstream =
+         relationEndpoint.getRelatedRecursive(top, CoreRelationTypes.RequirementTrace, ArtifactId.SENTINEL, false);
+      Assert.assertTrue(artsDownstream.contains(middle));
+      Assert.assertTrue(artsDownstream.contains(bottom));
+
+      // Test Upstream Relation Recursion
+      List<ArtifactToken> artsUpstream =
+         relationEndpoint.getRelatedRecursive(middle, CoreRelationTypes.RequirementTrace, ArtifactId.SENTINEL, true);
+      Assert.assertTrue(artsUpstream.contains(top));
+      Assert.assertTrue(artsUpstream.contains(parentArtifact));
+      Assert.assertTrue(!artsUpstream.contains(bottom));
    }
 }

@@ -595,6 +595,11 @@ public final class QueryData implements QueryBuilder, HasOptions, HasBranch {
    }
 
    @Override
+   public QueryBuilder andRelatedRecursive(RelationTypeSide relationTypeSide, ArtifactId artifactId, boolean upstream) {
+      return addAndCheck(new CriteriaRelatedRecursive(relationTypeSide, artifactId, upstream));
+   }
+
+   @Override
    public QueryBuilder andNotRelatedTo(RelationTypeSide relationTypeSide, ArtifactId artifactId) {
       return addAndCheck(new CriteriaNotRelatedTo(relationTypeSide, artifactId));
    }
