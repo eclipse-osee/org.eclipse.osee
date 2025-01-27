@@ -14,19 +14,19 @@ use feature_def::{
 };
 use nom::{
     branch::alt,
-    bytes::complete::tag,
     character::complete::anychar,
-    combinator::{eof, map, peek, value},
+    combinator::{map, peek},
     error::ParseError,
-    multi::{many0, many_till},
+    multi::many_till,
     sequence::tuple,
     AsChar, IResult, InputIter, InputLength, Parser, Slice,
 };
 use utility_def::{
     lex_and_def, lex_carriage_return_def, lex_end_brace_def, lex_end_comment_multi_line,
-    lex_end_comment_single_line, lex_eof, lex_multi_line_comment_character, lex_not_def,
-    lex_or_def, lex_space_def, lex_start_brace_def, lex_start_comment_multi_line,
-    lex_start_comment_single_line, lex_start_single_line_comment, lex_unix_new_line_def,
+    lex_end_comment_single_line, lex_end_paren_def, lex_eof, lex_multi_line_comment_character,
+    lex_not_def, lex_or_def, lex_space_def, lex_start_brace_def, lex_start_comment_multi_line,
+    lex_start_comment_single_line, lex_start_paren_def, lex_start_single_line_comment,
+    lex_unix_new_line_def,
 };
 
 mod config_def;
@@ -184,6 +184,8 @@ pub enum LexerToken {
     StartBrace,
     EndBrace,
     // the following should only be tokenized following a StartBrace and preceding an EndBrace
+    StartParen,
+    EndParen,
     Not,
     And,
     Or,
@@ -224,6 +226,8 @@ pub struct LexerConfig<
     O31,
     O32,
     O33,
+    O34,
+    O35,
     E,
     P1,
     P2,
@@ -258,6 +262,8 @@ pub struct LexerConfig<
     P31,
     P32,
     P33,
+    P34,
+    P35,
     U1,
     U2,
     U3,
@@ -291,6 +297,8 @@ pub struct LexerConfig<
     U31,
     U32,
     U33,
+    U34,
+    U35,
 > where
     I: Clone + InputLength + InputIter + Slice<RangeFrom<usize>>,
     <I as InputIter>::Item: AsChar,
@@ -328,6 +336,8 @@ pub struct LexerConfig<
     U31: Parser<I, O31, E>,
     U32: Parser<I, O32, E>,
     U33: Parser<I, O33, E>,
+    U34: Parser<I, O34, E>,
+    U35: Parser<I, O35, E>,
     P1: Copy + Fn() -> U1,
     P2: Copy + Fn() -> U2,
     P3: Copy + Fn() -> U3,
@@ -361,6 +371,8 @@ pub struct LexerConfig<
     P31: Copy + Fn() -> U31,
     P32: Copy + Fn() -> U32,
     P33: Copy + Fn() -> U33,
+    P34: Copy + Fn() -> U34,
+    P35: Copy + Fn() -> U35,
 {
     feature: ApplicabilityLexerConfig<
         I,
@@ -443,6 +455,8 @@ pub struct LexerConfig<
     _phantom_o13: PhantomData<O31>,
     _phantom_o14: PhantomData<O32>,
     _phantom_o15: PhantomData<O33>,
+    _phantom_o16: PhantomData<O34>,
+    _phantom_o17: PhantomData<O35>,
     space: P19,
     unix_new_line: P20,
     carriage_new_line: P21,
@@ -458,6 +472,8 @@ pub struct LexerConfig<
     multi_line_comment_character: P31,
     single_line_comment: P32,
     eof: P33,
+    start_paren: P34,
+    end_paren: P35,
 }
 
 pub struct ApplicabilityLexerConfig<
@@ -548,6 +564,8 @@ pub fn lex_applicability<
     O31,
     O32,
     O33,
+    O34,
+    O35,
     E,
     P1,
     P2,
@@ -582,6 +600,8 @@ pub fn lex_applicability<
     P31,
     P32,
     P33,
+    P34,
+    P35,
     U1,
     U2,
     U3,
@@ -615,6 +635,8 @@ pub fn lex_applicability<
     U31,
     U32,
     U33,
+    U34,
+    U35,
 >(
     config: LexerConfig<
         I,
@@ -651,6 +673,8 @@ pub fn lex_applicability<
         O31,
         O32,
         O33,
+        O34,
+        O35,
         E,
         P1,
         P2,
@@ -685,6 +709,8 @@ pub fn lex_applicability<
         P31,
         P32,
         P33,
+        P34,
+        P35,
         U1,
         U2,
         U3,
@@ -718,6 +744,8 @@ pub fn lex_applicability<
         U31,
         U32,
         U33,
+        U34,
+        U35,
     >,
 ) -> impl FnMut(I) -> Result<(I, Vec<LexerToken>), nom::Err<E>>
 where
@@ -757,6 +785,8 @@ where
     U31: Parser<I, O31, E>,
     U32: Parser<I, O32, E>,
     U33: Parser<I, O33, E>,
+    U34: Parser<I, O34, E>,
+    U35: Parser<I, O35, E>,
     P1: Copy + Fn() -> U1,
     P2: Copy + Fn() -> U2,
     P3: Copy + Fn() -> U3,
@@ -790,6 +820,8 @@ where
     P31: Copy + Fn() -> U31,
     P32: Copy + Fn() -> U32,
     P33: Copy + Fn() -> U33,
+    P34: Copy + Fn() -> U34,
+    P35: Copy + Fn() -> U35,
 {
     let start_brace_parse = || {
         many_till(
@@ -805,6 +837,8 @@ where
                     lex_space_def((config.space)()),
                     lex_carriage_return_def((config.carriage_new_line)()),
                     lex_unix_new_line_def((config.unix_new_line)()),
+                    lex_start_paren_def((config.start_paren)()),
+                    lex_end_paren_def((config.end_paren)()),
                     lex_not_def((config.not)()),
                     lex_and_def((config.and)()),
                     lex_or_def((config.or)()),
@@ -827,6 +861,8 @@ where
                         lex_space_def((config.space)()),
                         lex_carriage_return_def((config.carriage_new_line)()),
                         lex_unix_new_line_def((config.unix_new_line)()),
+                        lex_start_paren_def((config.start_paren)()),
+                        lex_end_paren_def((config.end_paren)()),
                         lex_not_def((config.not)()),
                         lex_and_def((config.and)()),
                         lex_or_def((config.or)()),
@@ -854,6 +890,8 @@ where
                         lex_space_def((config.space)()),
                         lex_carriage_return_def((config.carriage_new_line)()),
                         lex_unix_new_line_def((config.unix_new_line)()),
+                        lex_start_paren_def((config.start_paren)()),
+                        lex_end_paren_def((config.end_paren)()),
                         lex_not_def((config.not)()),
                         lex_and_def((config.and)()),
                         lex_or_def((config.or)()),
@@ -881,6 +919,8 @@ where
                         lex_space_def((config.space)()),
                         lex_carriage_return_def((config.carriage_new_line)()),
                         lex_unix_new_line_def((config.unix_new_line)()),
+                        lex_start_paren_def((config.start_paren)()),
+                        lex_end_paren_def((config.end_paren)()),
                         lex_not_def((config.not)()),
                         lex_and_def((config.and)()),
                         lex_or_def((config.or)()),
@@ -908,6 +948,8 @@ where
                         lex_space_def((config.space)()),
                         lex_carriage_return_def((config.carriage_new_line)()),
                         lex_unix_new_line_def((config.unix_new_line)()),
+                        lex_start_paren_def((config.start_paren)()),
+                        lex_end_paren_def((config.end_paren)()),
                         lex_not_def((config.not)()),
                         lex_and_def((config.and)()),
                         lex_or_def((config.or)()),
@@ -935,6 +977,8 @@ where
                         lex_space_def((config.space)()),
                         lex_carriage_return_def((config.carriage_new_line)()),
                         lex_unix_new_line_def((config.unix_new_line)()),
+                        lex_start_paren_def((config.start_paren)()),
+                        lex_end_paren_def((config.end_paren)()),
                         lex_not_def((config.not)()),
                         lex_and_def((config.and)()),
                         lex_or_def((config.or)()),
@@ -962,6 +1006,8 @@ where
                         lex_space_def((config.space)()),
                         lex_carriage_return_def((config.carriage_new_line)()),
                         lex_unix_new_line_def((config.unix_new_line)()),
+                        lex_start_paren_def((config.start_paren)()),
+                        lex_end_paren_def((config.end_paren)()),
                         lex_not_def((config.not)()),
                         lex_and_def((config.and)()),
                         lex_or_def((config.or)()),
@@ -990,6 +1036,8 @@ where
                         lex_space_def((config.space)()),
                         lex_carriage_return_def((config.carriage_new_line)()),
                         lex_unix_new_line_def((config.unix_new_line)()),
+                        lex_start_paren_def((config.start_paren)()),
+                        lex_end_paren_def((config.end_paren)()),
                         lex_not_def((config.not)()),
                         lex_and_def((config.and)()),
                         lex_or_def((config.or)()),
@@ -1017,6 +1065,8 @@ where
                         lex_space_def((config.space)()),
                         lex_carriage_return_def((config.carriage_new_line)()),
                         lex_unix_new_line_def((config.unix_new_line)()),
+                        lex_start_paren_def((config.start_paren)()),
+                        lex_end_paren_def((config.end_paren)()),
                         lex_not_def((config.not)()),
                         lex_and_def((config.and)()),
                         lex_or_def((config.or)()),
@@ -1044,6 +1094,8 @@ where
                         lex_space_def((config.space)()),
                         lex_carriage_return_def((config.carriage_new_line)()),
                         lex_unix_new_line_def((config.unix_new_line)()),
+                        lex_start_paren_def((config.start_paren)()),
+                        lex_end_paren_def((config.end_paren)()),
                         lex_not_def((config.not)()),
                         lex_and_def((config.and)()),
                         lex_or_def((config.or)()),
@@ -1297,9 +1349,6 @@ where
                 }
                 None => panic!("failed to tokenize text document"),
             }
-            // if (flattened.last() != LexerToken::Eof) {
-            //     flattened.push(eof);
-            // }
             flattened
         },
     );
@@ -1307,7 +1356,7 @@ where
 }
 
 #[cfg(test)]
-mod lex_applicability_tests {
+mod tests {
     use std::marker::PhantomData;
 
     use nom::{
@@ -1319,7 +1368,104 @@ mod lex_applicability_tests {
     use crate::{lex_applicability, ApplicabilityLexerConfig, LexerConfig, LexerToken};
 
     #[test]
-    fn first() {
+    fn basic_text() {
+        let config = LexerConfig {
+            feature: ApplicabilityLexerConfig {
+                _phantom_i: PhantomData::<&str>,
+                _phantom_o1: PhantomData,
+                _phantom_o2: PhantomData,
+                _phantom_o3: PhantomData,
+                _phantom_o4: PhantomData,
+                _phantom_o5: PhantomData,
+                _phantom_o6: PhantomData,
+                _phantom_e: PhantomData::<nom::error::Error<_>>,
+                base: || tag("Feature"),
+                not: || tag("Feature Not"),
+                switch: || tag("Feature Switch"),
+                case: || tag("Feature Case"),
+                applic_else: || tag("Feature Else"),
+                end: || tag("End Feature"),
+            },
+            configuration: ApplicabilityLexerConfig {
+                _phantom_i: PhantomData::<&str>,
+                _phantom_o1: PhantomData,
+                _phantom_o2: PhantomData,
+                _phantom_o3: PhantomData,
+                _phantom_o4: PhantomData,
+                _phantom_o5: PhantomData,
+                _phantom_o6: PhantomData,
+                _phantom_e: PhantomData::<nom::error::Error<_>>,
+                base: || tag("Configuration"),
+                not: || tag("Configuration Not"),
+                switch: || tag("Configuration Switch"),
+                case: || tag("Configuration Case"),
+                applic_else: || tag("Configuration Else"),
+                end: || tag("End Configuration"),
+            },
+            configuration_group: ApplicabilityLexerConfig {
+                _phantom_i: PhantomData::<&str>,
+                _phantom_o1: PhantomData,
+                _phantom_o2: PhantomData,
+                _phantom_o3: PhantomData,
+                _phantom_o4: PhantomData,
+                _phantom_o5: PhantomData,
+                _phantom_o6: PhantomData,
+                _phantom_e: PhantomData::<nom::error::Error<_>>,
+                base: || tag("ConfigurationGroup"),
+                not: || tag("ConfigurationGroup Not"),
+                switch: || tag("ConfigurationGroup Switch"),
+                case: || tag("ConfigurationGroup Case"),
+                applic_else: || tag("ConfigurationGroup Else"),
+                end: || tag("End ConfigurationGroup"),
+            },
+            _phantom_o1: PhantomData,
+            _phantom_o2: PhantomData,
+            _phantom_o3: PhantomData,
+            _phantom_o4: PhantomData,
+            _phantom_o5: PhantomData,
+            _phantom_o6: PhantomData,
+            _phantom_o7: PhantomData,
+            _phantom_o8: PhantomData,
+            _phantom_o9: PhantomData,
+            _phantom_o10: PhantomData,
+            _phantom_o11: PhantomData::<LexerToken>,
+            _phantom_o12: PhantomData::<LexerToken>,
+            _phantom_o13: PhantomData::<LexerToken>,
+            _phantom_o14: PhantomData::<LexerToken>,
+            _phantom_o15: PhantomData,
+            _phantom_o16: PhantomData,
+            _phantom_o17: PhantomData,
+            space: || space1,
+            unix_new_line: || newline,
+            carriage_new_line: || char('\r'),
+            start_brace: || tag("["),
+            end_brace: || tag("]"),
+            start_paren: || tag("("),
+            end_paren: || tag(")"),
+            not: || tag("!"),
+            and: || tag("&"),
+            or: || tag("|"),
+            start_comment_single_line: || tag("``"),
+            end_comment_single_line: || tag("``"),
+            start_comment_multi_line: || fail,
+            end_comment_multi_line: || fail,
+            multi_line_comment_character: || fail,
+            single_line_comment: || fail,
+            eof: || eof,
+        };
+        let mut tokenizer = lex_applicability(config);
+
+        assert_eq!(
+            tokenizer("some text"),
+            Ok((
+                "",
+                vec![LexerToken::Text("some text".to_string()), LexerToken::Eof]
+            ))
+        )
+    }
+
+    #[test]
+    fn feature_tag() {
         let config = LexerConfig {
             feature: ApplicabilityLexerConfig {
                 _phantom_i: PhantomData,
@@ -1384,11 +1530,15 @@ mod lex_applicability_tests {
             _phantom_o13: PhantomData::<LexerToken>,
             _phantom_o14: PhantomData::<LexerToken>,
             _phantom_o15: PhantomData,
+            _phantom_o16: PhantomData,
+            _phantom_o17: PhantomData,
             space: || space1,
             unix_new_line: || newline,
             carriage_new_line: || char('\r'),
             start_brace: || tag("["),
             end_brace: || tag("]"),
+            start_paren: || tag("("),
+            end_paren: || tag(")"),
             not: || tag("!"),
             and: || tag("&"),
             or: || tag("|"),
@@ -1401,15 +1551,6 @@ mod lex_applicability_tests {
             eof: || eof,
         };
         let mut tokenizer = lex_applicability(config);
-
-        assert_eq!(
-            tokenizer("some text"),
-            Ok((
-                "",
-                vec![LexerToken::Text("some text".to_string()), LexerToken::Eof]
-            ))
-        );
-
         assert_eq!(
             tokenizer("``Feature[FEATURE_1]`` some text ``End Feature``"),
             Ok((
@@ -1428,6 +1569,230 @@ mod lex_applicability_tests {
                     LexerToken::Eof
                 ]
             ))
-        );
+        )
+    }
+
+    #[test]
+    fn feature_and_feature_tag() {
+        let config = LexerConfig {
+            feature: ApplicabilityLexerConfig {
+                _phantom_i: PhantomData,
+                _phantom_o1: PhantomData,
+                _phantom_o2: PhantomData,
+                _phantom_o3: PhantomData,
+                _phantom_o4: PhantomData,
+                _phantom_o5: PhantomData,
+                _phantom_o6: PhantomData,
+                _phantom_e: PhantomData::<nom::error::Error<_>>,
+                base: || tag("Feature"),
+                not: || tag("Feature Not"),
+                switch: || tag("Feature Switch"),
+                case: || tag("Feature Case"),
+                applic_else: || tag("Feature Else"),
+                end: || tag("End Feature"),
+            },
+            configuration: ApplicabilityLexerConfig {
+                _phantom_i: PhantomData,
+                _phantom_o1: PhantomData,
+                _phantom_o2: PhantomData,
+                _phantom_o3: PhantomData,
+                _phantom_o4: PhantomData,
+                _phantom_o5: PhantomData,
+                _phantom_o6: PhantomData,
+                _phantom_e: PhantomData::<nom::error::Error<_>>,
+                base: || tag("Configuration"),
+                not: || tag("Configuration Not"),
+                switch: || tag("Configuration Switch"),
+                case: || tag("Configuration Case"),
+                applic_else: || tag("Configuration Else"),
+                end: || tag("End Configuration"),
+            },
+            configuration_group: ApplicabilityLexerConfig {
+                _phantom_i: PhantomData,
+                _phantom_o1: PhantomData,
+                _phantom_o2: PhantomData,
+                _phantom_o3: PhantomData,
+                _phantom_o4: PhantomData,
+                _phantom_o5: PhantomData,
+                _phantom_o6: PhantomData,
+                _phantom_e: PhantomData::<nom::error::Error<_>>,
+                base: || tag("ConfigurationGroup"),
+                not: || tag("ConfigurationGroup Not"),
+                switch: || tag("ConfigurationGroup Switch"),
+                case: || tag("ConfigurationGroup Case"),
+                applic_else: || tag("ConfigurationGroup Else"),
+                end: || tag("End ConfigurationGroup"),
+            },
+            _phantom_o1: PhantomData,
+            _phantom_o2: PhantomData,
+            _phantom_o3: PhantomData,
+            _phantom_o4: PhantomData,
+            _phantom_o5: PhantomData,
+            _phantom_o6: PhantomData,
+            _phantom_o7: PhantomData,
+            _phantom_o8: PhantomData,
+            _phantom_o9: PhantomData,
+            _phantom_o10: PhantomData,
+            _phantom_o11: PhantomData::<LexerToken>,
+            _phantom_o12: PhantomData::<LexerToken>,
+            _phantom_o13: PhantomData::<LexerToken>,
+            _phantom_o14: PhantomData::<LexerToken>,
+            _phantom_o15: PhantomData,
+            _phantom_o16: PhantomData,
+            _phantom_o17: PhantomData,
+            space: || space1,
+            unix_new_line: || newline,
+            carriage_new_line: || char('\r'),
+            start_brace: || tag("["),
+            end_brace: || tag("]"),
+            start_paren: || tag("("),
+            end_paren: || tag(")"),
+            not: || tag("!"),
+            and: || tag("&"),
+            or: || tag("|"),
+            start_comment_single_line: || tag("``"),
+            end_comment_single_line: || tag("``"),
+            start_comment_multi_line: || fail,
+            end_comment_multi_line: || fail,
+            multi_line_comment_character: || fail,
+            single_line_comment: || fail,
+            eof: || eof,
+        };
+        let mut tokenizer = lex_applicability(config);
+        assert_eq!(
+            tokenizer("``Feature[FEATURE_1 & FEATURE_2]`` some text ``End Feature``"),
+            Ok((
+                "",
+                vec![
+                    LexerToken::StartCommentSingleLine,
+                    LexerToken::Feature,
+                    LexerToken::StartBrace,
+                    LexerToken::Tag("FEATURE_1".to_string()),
+                    LexerToken::Space,
+                    LexerToken::And,
+                    LexerToken::Space,
+                    LexerToken::Tag("FEATURE_2".to_string()),
+                    LexerToken::EndBrace,
+                    LexerToken::EndCommentSingleLine,
+                    LexerToken::Text(" some text ".to_string()),
+                    LexerToken::StartCommentSingleLine,
+                    LexerToken::EndFeature,
+                    LexerToken::EndCommentSingleLine,
+                    LexerToken::Eof
+                ]
+            ))
+        )
+    }
+
+    #[test]
+    fn feature_or_feature_tag() {
+        let config = LexerConfig {
+            feature: ApplicabilityLexerConfig {
+                _phantom_i: PhantomData,
+                _phantom_o1: PhantomData,
+                _phantom_o2: PhantomData,
+                _phantom_o3: PhantomData,
+                _phantom_o4: PhantomData,
+                _phantom_o5: PhantomData,
+                _phantom_o6: PhantomData,
+                _phantom_e: PhantomData::<nom::error::Error<_>>,
+                base: || tag("Feature"),
+                not: || tag("Feature Not"),
+                switch: || tag("Feature Switch"),
+                case: || tag("Feature Case"),
+                applic_else: || tag("Feature Else"),
+                end: || tag("End Feature"),
+            },
+            configuration: ApplicabilityLexerConfig {
+                _phantom_i: PhantomData,
+                _phantom_o1: PhantomData,
+                _phantom_o2: PhantomData,
+                _phantom_o3: PhantomData,
+                _phantom_o4: PhantomData,
+                _phantom_o5: PhantomData,
+                _phantom_o6: PhantomData,
+                _phantom_e: PhantomData::<nom::error::Error<_>>,
+                base: || tag("Configuration"),
+                not: || tag("Configuration Not"),
+                switch: || tag("Configuration Switch"),
+                case: || tag("Configuration Case"),
+                applic_else: || tag("Configuration Else"),
+                end: || tag("End Configuration"),
+            },
+            configuration_group: ApplicabilityLexerConfig {
+                _phantom_i: PhantomData,
+                _phantom_o1: PhantomData,
+                _phantom_o2: PhantomData,
+                _phantom_o3: PhantomData,
+                _phantom_o4: PhantomData,
+                _phantom_o5: PhantomData,
+                _phantom_o6: PhantomData,
+                _phantom_e: PhantomData::<nom::error::Error<_>>,
+                base: || tag("ConfigurationGroup"),
+                not: || tag("ConfigurationGroup Not"),
+                switch: || tag("ConfigurationGroup Switch"),
+                case: || tag("ConfigurationGroup Case"),
+                applic_else: || tag("ConfigurationGroup Else"),
+                end: || tag("End ConfigurationGroup"),
+            },
+            _phantom_o1: PhantomData,
+            _phantom_o2: PhantomData,
+            _phantom_o3: PhantomData,
+            _phantom_o4: PhantomData,
+            _phantom_o5: PhantomData,
+            _phantom_o6: PhantomData,
+            _phantom_o7: PhantomData,
+            _phantom_o8: PhantomData,
+            _phantom_o9: PhantomData,
+            _phantom_o10: PhantomData,
+            _phantom_o11: PhantomData::<LexerToken>,
+            _phantom_o12: PhantomData::<LexerToken>,
+            _phantom_o13: PhantomData::<LexerToken>,
+            _phantom_o14: PhantomData::<LexerToken>,
+            _phantom_o15: PhantomData,
+            _phantom_o16: PhantomData,
+            _phantom_o17: PhantomData,
+            space: || space1,
+            unix_new_line: || newline,
+            carriage_new_line: || char('\r'),
+            start_brace: || tag("["),
+            end_brace: || tag("]"),
+            start_paren: || tag("("),
+            end_paren: || tag(")"),
+            not: || tag("!"),
+            and: || tag("&"),
+            or: || tag("|"),
+            start_comment_single_line: || tag("``"),
+            end_comment_single_line: || tag("``"),
+            start_comment_multi_line: || fail,
+            end_comment_multi_line: || fail,
+            multi_line_comment_character: || fail,
+            single_line_comment: || fail,
+            eof: || eof,
+        };
+        let mut tokenizer = lex_applicability(config);
+        assert_eq!(
+            tokenizer("``Feature[FEATURE_1 | FEATURE_2]`` some text ``End Feature``"),
+            Ok((
+                "",
+                vec![
+                    LexerToken::StartCommentSingleLine,
+                    LexerToken::Feature,
+                    LexerToken::StartBrace,
+                    LexerToken::Tag("FEATURE_1".to_string()),
+                    LexerToken::Space,
+                    LexerToken::Or,
+                    LexerToken::Space,
+                    LexerToken::Tag("FEATURE_2".to_string()),
+                    LexerToken::EndBrace,
+                    LexerToken::EndCommentSingleLine,
+                    LexerToken::Text(" some text ".to_string()),
+                    LexerToken::StartCommentSingleLine,
+                    LexerToken::EndFeature,
+                    LexerToken::EndCommentSingleLine,
+                    LexerToken::Eof
+                ]
+            ))
+        )
     }
 }
