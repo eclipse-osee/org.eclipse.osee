@@ -55,7 +55,7 @@ public class RelationEndpointImpl implements RelationEndpoint {
 
    @Override
    public List<ArtifactToken> getRelatedHierarchy(ArtifactId artifact, ArtifactId view) {
-      
+
       List<ArtifactToken> ids = getRelated(artifact, CoreRelationTypes.DefaultHierarchical, RelationSide.SIDE_A, view);
       return ids;
    }
@@ -67,10 +67,12 @@ public class RelationEndpointImpl implements RelationEndpoint {
    }
 
    @Override
-   public List<ArtifactToken> getRelatedRecursive(ArtifactId artifact, RelationTypeToken relationType,
-      ArtifactId view) {
-      RelationTypeSide sideB = new RelationTypeSide(relationType, RelationSide.SIDE_B);
-      return orcsApi.getQueryFactory().fromBranch(branch, view).andRelatedRecursive(sideB, artifact).asArtifactTokens();
+   public List<ArtifactToken> getRelatedRecursive(ArtifactId artifact, RelationTypeToken relationType, ArtifactId view,
+      boolean upstream) {
+      RelationTypeSide side = upstream ? new RelationTypeSide(relationType,
+         RelationSide.SIDE_A) : new RelationTypeSide(relationType, RelationSide.SIDE_B);
+      return orcsApi.getQueryFactory().fromBranch(branch, view).andRelatedRecursive(side, artifact,
+         upstream).asArtifactTokens();
    }
 
    @Override
@@ -92,10 +94,9 @@ public class RelationEndpointImpl implements RelationEndpoint {
 
       return null;
    }
-   
+
    @Override
-   public TransactionToken convertAllRelations(RelationTypeToken oldRelationType,
-      RelationTypeToken newRelationType) {
+   public TransactionToken convertAllRelations(RelationTypeToken oldRelationType, RelationTypeToken newRelationType) {
       RelationTypeSide sideB = new RelationTypeSide(oldRelationType, RelationSide.SIDE_B);
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch,
          String.format("Converting relations for Old Relation = %s New Relation = %s", oldRelationType.getName(),
@@ -111,14 +112,14 @@ public class RelationEndpointImpl implements RelationEndpoint {
       }
       return tx.commit();
    }
-   
+
    @Override
    public String validateRel2Table() {
-   int count = orcsApi.getJdbcService().getClient().fetch(0,
-      "select count(*) from (select distinct rel_type, a_art_id, rel_order, cnt\n" + "from\n" + "(select rel_type, a_art_id, b_art_id, rel_order, count('x') over (partition by rel_type, a_art_id, rel_order) cnt\n" + "from osee_relation rel where rel_order > 0) t1\n" + "where cnt > 1) t2");
-   if (count > 0) {
-      throw new RelTableInvalidException("Invalid relations detected. Count: %s", count);
-   }
+      int count = orcsApi.getJdbcService().getClient().fetch(0,
+         "select count(*) from (select distinct rel_type, a_art_id, rel_order, cnt\n" + "from\n" + "(select rel_type, a_art_id, b_art_id, rel_order, count('x') over (partition by rel_type, a_art_id, rel_order) cnt\n" + "from osee_relation rel where rel_order > 0) t1\n" + "where cnt > 1) t2");
+      if (count > 0) {
+         throw new RelTableInvalidException("Invalid relations detected. Count: %s", count);
+      }
       return "<html><div>Relations Valid</div></html>";
    }
 }

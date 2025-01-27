@@ -340,6 +340,8 @@ public interface QueryBuilder extends Query {
 
    QueryBuilder andRelatedRecursive(RelationTypeSide relationTypeSide, ArtifactId artifactId);
 
+   QueryBuilder andRelatedRecursive(RelationTypeSide relationTypeSide, ArtifactId artifactId, boolean upstream);
+
    /**
     * @return DefaultHeirarchicalRootArtifact
     */
