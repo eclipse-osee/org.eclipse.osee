@@ -18,7 +18,7 @@ use nom::{
     character::complete::anychar,
     combinator::{eof, map, value},
     error::ParseError,
-    multi::many_till,
+    multi::{many0, many_till},
     sequence::tuple,
     AsChar, IResult, InputIter, InputLength, Parser, Slice,
 };
@@ -258,64 +258,191 @@ pub struct LexerConfig<
     P31,
     P32,
     P33,
+    U1,
+    U2,
+    U3,
+    U4,
+    U5,
+    U6,
+    U7,
+    U8,
+    U9,
+    U10,
+    U11,
+    U12,
+    U13,
+    U14,
+    U15,
+    U16,
+    U17,
+    U18,
+    U19,
+    U20,
+    U21,
+    U22,
+    U23,
+    U24,
+    U25,
+    U26,
+    U27,
+    U28,
+    U29,
+    U30,
+    U31,
+    U32,
+    U33,
 > where
     I: Clone + InputLength + InputIter + Slice<RangeFrom<usize>>,
     <I as InputIter>::Item: AsChar,
     E: ParseError<I>,
-    P1: Parser<I, O1, E> + Copy,
-    P2: Parser<I, O2, E> + Copy,
-    P3: Parser<I, O3, E> + Copy,
-    P4: Parser<I, O4, E> + Copy,
-    P5: Parser<I, O5, E> + Copy,
-    P6: Parser<I, O6, E> + Copy,
-    P7: Parser<I, O7, E> + Copy,
-    P8: Parser<I, O8, E> + Copy,
-    P9: Parser<I, O9, E> + Copy,
-    P10: Parser<I, O10, E> + Copy,
-    P11: Parser<I, O11, E> + Copy,
-    P12: Parser<I, O12, E> + Copy,
-    P13: Parser<I, O13, E> + Copy,
-    P14: Parser<I, O14, E> + Copy,
-    P15: Parser<I, O15, E> + Copy,
-    P16: Parser<I, O16, E> + Copy,
-    P17: Parser<I, O17, E> + Copy,
-    P18: Parser<I, O18, E> + Copy,
-    P19: Parser<I, O19, E> + Copy,
-    P20: Parser<I, O20, E> + Copy,
-    P21: Parser<I, O21, E> + Copy,
-    P22: Parser<I, O22, E> + Copy,
-    P23: Parser<I, O23, E> + Copy,
-    P24: Parser<I, O24, E> + Copy,
-    P25: Parser<I, O25, E> + Copy,
-    P26: Parser<I, O26, E> + Copy,
-    P27: Parser<I, O27, E> + Copy,
-    P28: Parser<I, O28, E> + Copy,
-    P29: Parser<I, O29, E> + Copy,
-    P30: Parser<I, O30, E> + Copy,
-    P31: Parser<I, O31, E> + Copy,
-    P32: Parser<I, O32, E> + Copy,
-    P33: Parser<I, O33, E> + Copy,
+    U1: Parser<I, O1, E>,
+    U2: Parser<I, O2, E>,
+    U3: Parser<I, O3, E>,
+    U4: Parser<I, O4, E>,
+    U5: Parser<I, O5, E>,
+    U6: Parser<I, O6, E>,
+    U7: Parser<I, O7, E>,
+    U8: Parser<I, O8, E>,
+    U9: Parser<I, O9, E>,
+    U10: Parser<I, O10, E>,
+    U11: Parser<I, O11, E>,
+    U12: Parser<I, O12, E>,
+    U13: Parser<I, O13, E>,
+    U14: Parser<I, O14, E>,
+    U15: Parser<I, O15, E>,
+    U16: Parser<I, O16, E>,
+    U17: Parser<I, O17, E>,
+    U18: Parser<I, O18, E>,
+    U19: Parser<I, O19, E>,
+    U20: Parser<I, O20, E>,
+    U21: Parser<I, O21, E>,
+    U22: Parser<I, O22, E>,
+    U23: Parser<I, O23, E>,
+    U24: Parser<I, O24, E>,
+    U25: Parser<I, O25, E>,
+    U26: Parser<I, O26, E>,
+    U27: Parser<I, O27, E>,
+    U28: Parser<I, O28, E>,
+    U29: Parser<I, O29, E>,
+    U30: Parser<I, O30, E>,
+    U31: Parser<I, O31, E>,
+    U32: Parser<I, O32, E>,
+    U33: Parser<I, O33, E>,
+    P1: Copy + Fn() -> U1,
+    P2: Copy + Fn() -> U2,
+    P3: Copy + Fn() -> U3,
+    P4: Copy + Fn() -> U4,
+    P5: Copy + Fn() -> U5,
+    P6: Copy + Fn() -> U6,
+    P7: Copy + Fn() -> U7,
+    P8: Copy + Fn() -> U8,
+    P9: Copy + Fn() -> U9,
+    P10: Copy + Fn() -> U10,
+    P11: Copy + Fn() -> U11,
+    P12: Copy + Fn() -> U12,
+    P13: Copy + Fn() -> U13,
+    P14: Copy + Fn() -> U14,
+    P15: Copy + Fn() -> U15,
+    P16: Copy + Fn() -> U16,
+    P17: Copy + Fn() -> U17,
+    P18: Copy + Fn() -> U18,
+    P19: Copy + Fn() -> U19,
+    P20: Copy + Fn() -> U20,
+    P21: Copy + Fn() -> U21,
+    P22: Copy + Fn() -> U22,
+    P23: Copy + Fn() -> U23,
+    P24: Copy + Fn() -> U24,
+    P25: Copy + Fn() -> U25,
+    P26: Copy + Fn() -> U26,
+    P27: Copy + Fn() -> U27,
+    P28: Copy + Fn() -> U28,
+    P29: Copy + Fn() -> U29,
+    P30: Copy + Fn() -> U30,
+    P31: Copy + Fn() -> U31,
+    P32: Copy + Fn() -> U32,
+    P33: Copy + Fn() -> U33,
 {
-    feature: ApplicabilityLexerConfig<I, O1, O2, O3, O4, O5, O6, E, P1, P2, P3, P4, P5, P6>,
-    configuration:
-        ApplicabilityLexerConfig<I, O7, O8, O9, O10, O11, O12, E, P7, P8, P9, P10, P11, P12>,
-    configuration_group:
-        ApplicabilityLexerConfig<I, O13, O14, O15, O16, O17, O18, E, P13, P14, P15, P16, P17, P18>,
-    phantom_o1: PhantomData<O19>,
-    phantom_o2: PhantomData<O20>,
-    phantom_o3: PhantomData<O21>,
-    phantom_o4: PhantomData<O22>,
-    phantom_o5: PhantomData<O23>,
-    phantom_o6: PhantomData<O24>,
-    phantom_o7: PhantomData<O25>,
-    phantom_o8: PhantomData<O26>,
-    phantom_o9: PhantomData<O27>,
-    phantom_o10: PhantomData<O28>,
-    phantom_o11: PhantomData<O29>,
-    phantom_o12: PhantomData<O30>,
-    phantom_o13: PhantomData<O31>,
-    phantom_o14: PhantomData<O32>,
-    phantom_o15: PhantomData<O33>,
+    feature: ApplicabilityLexerConfig<
+        I,
+        O1,
+        O2,
+        O3,
+        O4,
+        O5,
+        O6,
+        E,
+        P1,
+        P2,
+        P3,
+        P4,
+        P5,
+        P6,
+        U1,
+        U2,
+        U3,
+        U4,
+        U5,
+        U6,
+    >,
+    configuration: ApplicabilityLexerConfig<
+        I,
+        O7,
+        O8,
+        O9,
+        O10,
+        O11,
+        O12,
+        E,
+        P7,
+        P8,
+        P9,
+        P10,
+        P11,
+        P12,
+        U7,
+        U8,
+        U9,
+        U10,
+        U11,
+        U12,
+    >,
+    configuration_group: ApplicabilityLexerConfig<
+        I,
+        O13,
+        O14,
+        O15,
+        O16,
+        O17,
+        O18,
+        E,
+        P13,
+        P14,
+        P15,
+        P16,
+        P17,
+        P18,
+        U13,
+        U14,
+        U15,
+        U16,
+        U17,
+        U18,
+    >,
+    _phantom_o1: PhantomData<O19>,
+    _phantom_o2: PhantomData<O20>,
+    _phantom_o3: PhantomData<O21>,
+    _phantom_o4: PhantomData<O22>,
+    _phantom_o5: PhantomData<O23>,
+    _phantom_o6: PhantomData<O24>,
+    _phantom_o7: PhantomData<O25>,
+    _phantom_o8: PhantomData<O26>,
+    _phantom_o9: PhantomData<O27>,
+    _phantom_o10: PhantomData<O28>,
+    _phantom_o11: PhantomData<O29>,
+    _phantom_o12: PhantomData<O30>,
+    _phantom_o13: PhantomData<O31>,
+    _phantom_o14: PhantomData<O32>,
+    _phantom_o15: PhantomData<O33>,
     space: P19,
     unix_new_line: P20,
     carriage_new_line: P21,
@@ -333,25 +460,51 @@ pub struct LexerConfig<
     eof: P33,
 }
 
-pub struct ApplicabilityLexerConfig<I, O1, O2, O3, O4, O5, O6, E, P1, P2, P3, P4, P5, P6>
-where
+pub struct ApplicabilityLexerConfig<
+    I,
+    O1,
+    O2,
+    O3,
+    O4,
+    O5,
+    O6,
+    E,
+    P1,
+    P2,
+    P3,
+    P4,
+    P5,
+    P6,
+    U1,
+    U2,
+    U3,
+    U4,
+    U5,
+    U6,
+> where
     I: Clone + InputLength + InputIter + Slice<RangeFrom<usize>>,
     <I as InputIter>::Item: AsChar,
-    P1: Parser<I, O1, E>,
-    P2: Parser<I, O2, E>,
-    P3: Parser<I, O3, E>,
-    P4: Parser<I, O4, E>,
-    P5: Parser<I, O5, E>,
-    P6: Parser<I, O6, E>,
+    U1: Parser<I, O1, E>,
+    U2: Parser<I, O2, E>,
+    U3: Parser<I, O3, E>,
+    U4: Parser<I, O4, E>,
+    U5: Parser<I, O5, E>,
+    U6: Parser<I, O6, E>,
+    P1: Copy + Fn() -> U1,
+    P2: Copy + Fn() -> U2,
+    P3: Copy + Fn() -> U3,
+    P4: Copy + Fn() -> U4,
+    P5: Copy + Fn() -> U5,
+    P6: Copy + Fn() -> U6,
 {
-    phantom_i: PhantomData<I>,
-    phantom_o1: PhantomData<O1>,
-    phantom_o2: PhantomData<O2>,
-    phantom_o3: PhantomData<O3>,
-    phantom_o4: PhantomData<O4>,
-    phantom_o5: PhantomData<O5>,
-    phantom_o6: PhantomData<O6>,
-    phantom_e: PhantomData<E>,
+    _phantom_i: PhantomData<I>,
+    _phantom_o1: PhantomData<O1>,
+    _phantom_o2: PhantomData<O2>,
+    _phantom_o3: PhantomData<O3>,
+    _phantom_o4: PhantomData<O4>,
+    _phantom_o5: PhantomData<O5>,
+    _phantom_o6: PhantomData<O6>,
+    _phantom_e: PhantomData<E>,
     base: P1,
     not: P2,
     switch: P3,
@@ -429,6 +582,39 @@ pub fn lex_applicability<
     P31,
     P32,
     P33,
+    U1,
+    U2,
+    U3,
+    U4,
+    U5,
+    U6,
+    U7,
+    U8,
+    U9,
+    U10,
+    U11,
+    U12,
+    U13,
+    U14,
+    U15,
+    U16,
+    U17,
+    U18,
+    U19,
+    U20,
+    U21,
+    U22,
+    U23,
+    U24,
+    U25,
+    U26,
+    U27,
+    U28,
+    U29,
+    U30,
+    U31,
+    U32,
+    U33,
 >(
     config: LexerConfig<
         I,
@@ -499,67 +685,133 @@ pub fn lex_applicability<
         P31,
         P32,
         P33,
+        U1,
+        U2,
+        U3,
+        U4,
+        U5,
+        U6,
+        U7,
+        U8,
+        U9,
+        U10,
+        U11,
+        U12,
+        U13,
+        U14,
+        U15,
+        U16,
+        U17,
+        U18,
+        U19,
+        U20,
+        U21,
+        U22,
+        U23,
+        U24,
+        U25,
+        U26,
+        U27,
+        U28,
+        U29,
+        U30,
+        U31,
+        U32,
+        U33,
     >,
 ) -> impl FnMut(I) -> Result<(I, Vec<LexerToken>), nom::Err<E>>
 where
     I: Clone + InputLength + InputIter + Slice<RangeFrom<usize>>,
     <I as InputIter>::Item: AsChar,
     E: ParseError<I>,
-    P1: Parser<I, O1, E> + Copy,
-    P2: Parser<I, O2, E> + Copy,
-    P3: Parser<I, O3, E> + Copy,
-    P4: Parser<I, O4, E> + Copy,
-    P5: Parser<I, O5, E> + Copy,
-    P6: Parser<I, O6, E> + Copy,
-    P7: Parser<I, O7, E> + Copy,
-    P8: Parser<I, O8, E> + Copy,
-    P9: Parser<I, O9, E> + Copy,
-    P10: Parser<I, O10, E> + Copy,
-    P11: Parser<I, O11, E> + Copy,
-    P12: Parser<I, O12, E> + Copy,
-    P13: Parser<I, O13, E> + Copy,
-    P14: Parser<I, O14, E> + Copy,
-    P15: Parser<I, O15, E> + Copy,
-    P16: Parser<I, O16, E> + Copy,
-    P17: Parser<I, O17, E> + Copy,
-    P18: Parser<I, O18, E> + Copy,
-    P19: Parser<I, O19, E> + Copy,
-    P20: Parser<I, O20, E> + Copy,
-    P21: Parser<I, O21, E> + Copy,
-    P22: Parser<I, O22, E> + Copy,
-    P23: Parser<I, O23, E> + Copy,
-    P24: Parser<I, O24, E> + Copy,
-    P25: Parser<I, O25, E> + Copy,
-    P26: Parser<I, O26, E> + Copy,
-    P27: Parser<I, O27, E> + Copy,
-    P28: Parser<I, O28, E> + Copy,
-    P29: Parser<I, O29, E> + Copy,
-    P30: Parser<I, O30, E> + Copy,
-    P31: Parser<I, O31, E> + Copy,
-    P32: Parser<I, O32, E> + Copy,
-    P33: Parser<I, O33, E> + Copy,
+    U1: Parser<I, O1, E>,
+    U2: Parser<I, O2, E>,
+    U3: Parser<I, O3, E>,
+    U4: Parser<I, O4, E>,
+    U5: Parser<I, O5, E>,
+    U6: Parser<I, O6, E>,
+    U7: Parser<I, O7, E>,
+    U8: Parser<I, O8, E>,
+    U9: Parser<I, O9, E>,
+    U10: Parser<I, O10, E>,
+    U11: Parser<I, O11, E>,
+    U12: Parser<I, O12, E>,
+    U13: Parser<I, O13, E>,
+    U14: Parser<I, O14, E>,
+    U15: Parser<I, O15, E>,
+    U16: Parser<I, O16, E>,
+    U17: Parser<I, O17, E>,
+    U18: Parser<I, O18, E>,
+    U19: Parser<I, O19, E>,
+    U20: Parser<I, O20, E>,
+    U21: Parser<I, O21, E>,
+    U22: Parser<I, O22, E>,
+    U23: Parser<I, O23, E>,
+    U24: Parser<I, O24, E>,
+    U25: Parser<I, O25, E>,
+    U26: Parser<I, O26, E>,
+    U27: Parser<I, O27, E>,
+    U28: Parser<I, O28, E>,
+    U29: Parser<I, O29, E>,
+    U30: Parser<I, O30, E>,
+    U31: Parser<I, O31, E>,
+    U32: Parser<I, O32, E>,
+    U33: Parser<I, O33, E>,
+    P1: Copy + Fn() -> U1,
+    P2: Copy + Fn() -> U2,
+    P3: Copy + Fn() -> U3,
+    P4: Copy + Fn() -> U4,
+    P5: Copy + Fn() -> U5,
+    P6: Copy + Fn() -> U6,
+    P7: Copy + Fn() -> U7,
+    P8: Copy + Fn() -> U8,
+    P9: Copy + Fn() -> U9,
+    P10: Copy + Fn() -> U10,
+    P11: Copy + Fn() -> U11,
+    P12: Copy + Fn() -> U12,
+    P13: Copy + Fn() -> U13,
+    P14: Copy + Fn() -> U14,
+    P15: Copy + Fn() -> U15,
+    P16: Copy + Fn() -> U16,
+    P17: Copy + Fn() -> U17,
+    P18: Copy + Fn() -> U18,
+    P19: Copy + Fn() -> U19,
+    P20: Copy + Fn() -> U20,
+    P21: Copy + Fn() -> U21,
+    P22: Copy + Fn() -> U22,
+    P23: Copy + Fn() -> U23,
+    P24: Copy + Fn() -> U24,
+    P25: Copy + Fn() -> U25,
+    P26: Copy + Fn() -> U26,
+    P27: Copy + Fn() -> U27,
+    P28: Copy + Fn() -> U28,
+    P29: Copy + Fn() -> U29,
+    P30: Copy + Fn() -> U30,
+    P31: Copy + Fn() -> U31,
+    P32: Copy + Fn() -> U32,
+    P33: Copy + Fn() -> U33,
 {
     let start_paren_parse = || {
         many_till(
-            lex_space_def(config.space),
-            lex_start_paren_def(config.start_paren),
+            lex_space_def((config.space)()),
+            lex_start_paren_def((config.start_paren)()),
         )
     };
     let feature_parse = || {
         map(
             tuple((
-                lex_feature_def(config.feature.base),
+                lex_feature_def((config.feature.base)()),
                 start_paren_parse(),
                 many_till(
                     alt((
-                        lex_space_def(config.space),
-                        lex_carriage_return_def(config.carriage_new_line),
-                        lex_unix_new_line_def(config.unix_new_line),
-                        lex_not_def(config.not),
-                        lex_and_def(config.and),
-                        lex_or_def(config.or), //insert tag parse here
+                        lex_space_def((config.space)()),
+                        lex_carriage_return_def((config.carriage_new_line)()),
+                        lex_unix_new_line_def((config.unix_new_line)()),
+                        lex_not_def((config.not)()),
+                        lex_and_def((config.and)()),
+                        lex_or_def((config.or)()), //insert tag parse here
                     )),
-                    lex_end_paren_def(config.end_paren),
+                    lex_end_paren_def((config.end_paren)()),
                 ),
             )),
             |(feature, (mut spaces, start), (mut inner, end))| {
@@ -574,18 +826,18 @@ where
     let feature_not_parse = || {
         map(
             tuple((
-                lex_feature_not_def(config.feature.not),
+                lex_feature_not_def((config.feature.not)()),
                 start_paren_parse(),
                 many_till(
                     alt((
-                        lex_space_def(config.space),
-                        lex_carriage_return_def(config.carriage_new_line),
-                        lex_unix_new_line_def(config.unix_new_line),
-                        lex_not_def(config.not),
-                        lex_and_def(config.and),
-                        lex_or_def(config.or), //insert tag parse here
+                        lex_space_def((config.space)()),
+                        lex_carriage_return_def((config.carriage_new_line)()),
+                        lex_unix_new_line_def((config.unix_new_line)()),
+                        lex_not_def((config.not)()),
+                        lex_and_def((config.and)()),
+                        lex_or_def((config.or)()), //insert tag parse here
                     )),
-                    lex_end_paren_def(config.end_paren),
+                    lex_end_paren_def((config.end_paren)()),
                 ),
             )),
             |(feature, (mut spaces, start), (mut inner, end))| {
@@ -600,18 +852,18 @@ where
     let feature_case_parse = || {
         map(
             tuple((
-                lex_feature_case_def(config.feature.case),
+                lex_feature_case_def((config.feature.case)()),
                 start_paren_parse(),
                 many_till(
                     alt((
-                        lex_space_def(config.space),
-                        lex_carriage_return_def(config.carriage_new_line),
-                        lex_unix_new_line_def(config.unix_new_line),
-                        lex_not_def(config.not),
-                        lex_and_def(config.and),
-                        lex_or_def(config.or), //insert tag parse here
+                        lex_space_def((config.space)()),
+                        lex_carriage_return_def((config.carriage_new_line)()),
+                        lex_unix_new_line_def((config.unix_new_line)()),
+                        lex_not_def((config.not)()),
+                        lex_and_def((config.and)()),
+                        lex_or_def((config.or)()), //insert tag parse here
                     )),
-                    lex_end_paren_def(config.end_paren),
+                    lex_end_paren_def((config.end_paren)()),
                 ),
             )),
             |(feature, (mut spaces, start), (mut inner, end))| {
@@ -626,18 +878,18 @@ where
     let config_parse = || {
         map(
             tuple((
-                lex_config_def(config.configuration.base),
+                lex_config_def((config.configuration.base)()),
                 start_paren_parse(),
                 many_till(
                     alt((
-                        lex_space_def(config.space),
-                        lex_carriage_return_def(config.carriage_new_line),
-                        lex_unix_new_line_def(config.unix_new_line),
-                        lex_not_def(config.not),
-                        lex_and_def(config.and),
-                        lex_or_def(config.or), //insert tag parse here
+                        lex_space_def((config.space)()),
+                        lex_carriage_return_def((config.carriage_new_line)()),
+                        lex_unix_new_line_def((config.unix_new_line)()),
+                        lex_not_def((config.not)()),
+                        lex_and_def((config.and)()),
+                        lex_or_def((config.or)()), //insert tag parse here
                     )),
-                    lex_end_paren_def(config.end_paren),
+                    lex_end_paren_def((config.end_paren)()),
                 ),
             )),
             |(config, (mut spaces, start), (mut inner, end))| {
@@ -652,18 +904,18 @@ where
     let config_not_parse = || {
         map(
             tuple((
-                lex_config_not_def(config.configuration.not),
+                lex_config_not_def((config.configuration.not)()),
                 start_paren_parse(),
                 many_till(
                     alt((
-                        lex_space_def(config.space),
-                        lex_carriage_return_def(config.carriage_new_line),
-                        lex_unix_new_line_def(config.unix_new_line),
-                        lex_not_def(config.not),
-                        lex_and_def(config.and),
-                        lex_or_def(config.or), //insert tag parse here
+                        lex_space_def((config.space)()),
+                        lex_carriage_return_def((config.carriage_new_line)()),
+                        lex_unix_new_line_def((config.unix_new_line)()),
+                        lex_not_def((config.not)()),
+                        lex_and_def((config.and)()),
+                        lex_or_def((config.or)()), //insert tag parse here
                     )),
-                    lex_end_paren_def(config.end_paren),
+                    lex_end_paren_def((config.end_paren)()),
                 ),
             )),
             |(config, (mut spaces, start), (mut inner, end))| {
@@ -678,18 +930,18 @@ where
     let config_case_parse = || {
         map(
             tuple((
-                lex_config_case_def(config.configuration.case),
+                lex_config_case_def((config.configuration.case)()),
                 start_paren_parse(),
                 many_till(
                     alt((
-                        lex_space_def(config.space),
-                        lex_carriage_return_def(config.carriage_new_line),
-                        lex_unix_new_line_def(config.unix_new_line),
-                        lex_not_def(config.not),
-                        lex_and_def(config.and),
-                        lex_or_def(config.or), //insert tag parse here
+                        lex_space_def((config.space)()),
+                        lex_carriage_return_def((config.carriage_new_line)()),
+                        lex_unix_new_line_def((config.unix_new_line)()),
+                        lex_not_def((config.not)()),
+                        lex_and_def((config.and)()),
+                        lex_or_def((config.or)()), //insert tag parse here
                     )),
-                    lex_end_paren_def(config.end_paren),
+                    lex_end_paren_def((config.end_paren)()),
                 ),
             )),
             |(config, (mut spaces, start), (mut inner, end))| {
@@ -705,18 +957,18 @@ where
     let config_group_parse = || {
         map(
             tuple((
-                lex_config_group_def(config.configuration_group.base),
+                lex_config_group_def((config.configuration_group.base)()),
                 start_paren_parse(),
                 many_till(
                     alt((
-                        lex_space_def(config.space),
-                        lex_carriage_return_def(config.carriage_new_line),
-                        lex_unix_new_line_def(config.unix_new_line),
-                        lex_not_def(config.not),
-                        lex_and_def(config.and),
-                        lex_or_def(config.or), //insert tag parse here
+                        lex_space_def((config.space)()),
+                        lex_carriage_return_def((config.carriage_new_line)()),
+                        lex_unix_new_line_def((config.unix_new_line)()),
+                        lex_not_def((config.not)()),
+                        lex_and_def((config.and)()),
+                        lex_or_def((config.or)()), //insert tag parse here
                     )),
-                    lex_end_paren_def(config.end_paren),
+                    lex_end_paren_def((config.end_paren)()),
                 ),
             )),
             |(group, (mut spaces, start), (mut inner, end))| {
@@ -731,18 +983,18 @@ where
     let config_group_not_parse = || {
         map(
             tuple((
-                lex_config_group_not_def(config.configuration_group.not),
+                lex_config_group_not_def((config.configuration_group.not)()),
                 start_paren_parse(),
                 many_till(
                     alt((
-                        lex_space_def(config.space),
-                        lex_carriage_return_def(config.carriage_new_line),
-                        lex_unix_new_line_def(config.unix_new_line),
-                        lex_not_def(config.not),
-                        lex_and_def(config.and),
-                        lex_or_def(config.or), //insert tag parse here
+                        lex_space_def((config.space)()),
+                        lex_carriage_return_def((config.carriage_new_line)()),
+                        lex_unix_new_line_def((config.unix_new_line)()),
+                        lex_not_def((config.not)()),
+                        lex_and_def((config.and)()),
+                        lex_or_def((config.or)()), //insert tag parse here
                     )),
-                    lex_end_paren_def(config.end_paren),
+                    lex_end_paren_def((config.end_paren)()),
                 ),
             )),
             |(group, (mut spaces, start), (mut inner, end))| {
@@ -757,18 +1009,18 @@ where
     let config_group_case_parse = || {
         map(
             tuple((
-                lex_config_group_case_def(config.configuration_group.case),
+                lex_config_group_case_def((config.configuration_group.case)()),
                 start_paren_parse(),
                 many_till(
                     alt((
-                        lex_space_def(config.space),
-                        lex_carriage_return_def(config.carriage_new_line),
-                        lex_unix_new_line_def(config.unix_new_line),
-                        lex_not_def(config.not),
-                        lex_and_def(config.and),
-                        lex_or_def(config.or), //insert tag parse here
+                        lex_space_def((config.space)()),
+                        lex_carriage_return_def((config.carriage_new_line)()),
+                        lex_unix_new_line_def((config.unix_new_line)()),
+                        lex_not_def((config.not)()),
+                        lex_and_def((config.and)()),
+                        lex_or_def((config.or)()), //insert tag parse here
                     )),
-                    lex_end_paren_def(config.end_paren),
+                    lex_end_paren_def((config.end_paren)()),
                 ),
             )),
             |(group, (mut spaces, start), (mut inner, end))| {
@@ -783,47 +1035,55 @@ where
     let start_end_single_line_comment_parser = || {
         map(
             tuple((
-                lex_start_comment_single_line(config.start_comment_single_line),
+                lex_start_comment_single_line((config.start_comment_single_line)()),
                 map(
                     many_till(
                         alt((
-                            map(lex_space_def(config.space), |x| vec![x]),
-                            map(lex_unix_new_line_def(config.unix_new_line), |x| vec![x]),
+                            map(lex_space_def((config.space)()), |x| vec![x]),
+                            map(lex_unix_new_line_def((config.unix_new_line)()), |x| vec![x]),
                             feature_not_parse(),
-                            map(lex_feature_switch_def(config.feature.switch), |x| vec![x]),
+                            map(lex_feature_switch_def((config.feature.switch)()), |x| {
+                                vec![x]
+                            }),
                             feature_case_parse(),
-                            map(lex_feature_else_def(config.feature.applic_else), |x| {
+                            map(lex_feature_else_def((config.feature.applic_else)()), |x| {
                                 vec![x]
                             }),
                             feature_parse(),
-                            map(lex_end_feature_def(config.feature.end), |x| vec![x]),
+                            map(lex_end_feature_def((config.feature.end)()), |x| vec![x]),
                             config_not_parse(),
-                            map(lex_config_switch_def(config.configuration.switch), |x| {
-                                vec![x]
-                            }),
+                            map(
+                                lex_config_switch_def((config.configuration.switch)()),
+                                |x| vec![x],
+                            ),
                             config_case_parse(),
-                            map(lex_config_else_def(config.configuration.applic_else), |x| {
+                            map(
+                                lex_config_else_def((config.configuration.applic_else)()),
+                                |x| vec![x],
+                            ),
+                            config_parse(),
+                            map(lex_end_config_def((config.configuration.end)()), |x| {
                                 vec![x]
                             }),
-                            config_parse(),
-                            map(lex_end_config_def(config.configuration.end), |x| vec![x]),
                             config_group_not_parse(),
                             map(
-                                lex_config_group_switch_def(config.configuration_group.switch),
+                                lex_config_group_switch_def((config.configuration_group.switch)()),
                                 |x| vec![x],
                             ),
                             config_group_case_parse(),
                             map(
-                                lex_config_group_else_def(config.configuration_group.applic_else),
+                                lex_config_group_else_def(
+                                    (config.configuration_group.applic_else)(),
+                                ),
                                 |x| vec![x],
                             ),
                             config_group_parse(),
                             map(
-                                lex_end_config_group_def(config.configuration_group.end),
+                                lex_end_config_group_def((config.configuration_group.end)()),
                                 |x| vec![x],
                             ),
                         )),
-                        lex_end_comment_single_line(config.end_comment_single_line),
+                        lex_end_comment_single_line((config.end_comment_single_line)()),
                     ),
                     |(list, end)| {
                         let mut flattened = list.into_iter().flatten().collect::<Vec<LexerToken>>();
@@ -842,53 +1102,61 @@ where
     let multi_line_comment_parser = || {
         map(
             tuple((
-                lex_start_comment_multi_line(config.start_comment_multi_line),
+                lex_start_comment_multi_line((config.start_comment_multi_line)()),
                 map(
                     many_till(
                         alt((
-                            map(lex_space_def(config.space), |x| vec![x]),
-                            map(lex_unix_new_line_def(config.unix_new_line), |x| vec![x]),
+                            map(lex_space_def((config.space)()), |x| vec![x]),
+                            map(lex_unix_new_line_def((config.unix_new_line)()), |x| vec![x]),
                             map(
-                                lex_multi_line_comment_character(
-                                    config.multi_line_comment_character,
-                                ),
+                                lex_multi_line_comment_character((config
+                                    .multi_line_comment_character)(
+                                )),
                                 |x| vec![x],
                             ),
                             feature_not_parse(),
-                            map(lex_feature_switch_def(config.feature.switch), |x| vec![x]),
+                            map(lex_feature_switch_def((config.feature.switch)()), |x| {
+                                vec![x]
+                            }),
                             feature_case_parse(),
-                            map(lex_feature_else_def(config.feature.applic_else), |x| {
+                            map(lex_feature_else_def((config.feature.applic_else)()), |x| {
                                 vec![x]
                             }),
                             feature_parse(),
-                            map(lex_end_feature_def(config.feature.end), |x| vec![x]),
+                            map(lex_end_feature_def((config.feature.end)()), |x| vec![x]),
                             config_not_parse(),
-                            map(lex_config_switch_def(config.configuration.switch), |x| {
-                                vec![x]
-                            }),
+                            map(
+                                lex_config_switch_def((config.configuration.switch)()),
+                                |x| vec![x],
+                            ),
                             config_case_parse(),
-                            map(lex_config_else_def(config.configuration.applic_else), |x| {
+                            map(
+                                lex_config_else_def((config.configuration.applic_else)()),
+                                |x| vec![x],
+                            ),
+                            config_parse(),
+                            map(lex_end_config_def((config.configuration.end)()), |x| {
                                 vec![x]
                             }),
-                            config_parse(),
-                            map(lex_end_config_def(config.configuration.end), |x| vec![x]),
                             config_group_not_parse(),
                             map(
-                                lex_config_group_switch_def(config.configuration_group.switch),
+                                lex_config_group_switch_def((config.configuration_group.switch)()),
                                 |x| vec![x],
                             ),
                             config_group_case_parse(),
                             map(
-                                lex_config_group_else_def(config.configuration_group.applic_else),
+                                lex_config_group_else_def(
+                                    (config.configuration_group.applic_else)(),
+                                ),
                                 |x| vec![x],
                             ),
                             config_group_parse(),
                             map(
-                                lex_end_config_group_def(config.configuration_group.end),
+                                lex_end_config_group_def((config.configuration_group.end)()),
                                 |x| vec![x],
                             ),
                         )),
-                        lex_end_comment_multi_line(config.end_comment_multi_line),
+                        lex_end_comment_multi_line((config.end_comment_multi_line)()),
                     ),
                     |(list, end)| {
                         let mut flattened = list.into_iter().flatten().collect::<Vec<LexerToken>>();
@@ -906,49 +1174,57 @@ where
     let single_line_comment_parser = || {
         map(
             tuple((
-                lex_start_single_line_comment(config.single_line_comment),
+                lex_start_single_line_comment((config.single_line_comment)()),
                 map(
                     many_till(
                         alt((
-                            map(lex_space_def(config.space), |x| vec![x]),
+                            map(lex_space_def((config.space)()), |x| vec![x]),
                             feature_not_parse(),
-                            map(lex_feature_switch_def(config.feature.switch), |x| vec![x]),
+                            map(lex_feature_switch_def((config.feature.switch)()), |x| {
+                                vec![x]
+                            }),
                             feature_case_parse(),
-                            map(lex_feature_else_def(config.feature.applic_else), |x| {
+                            map(lex_feature_else_def((config.feature.applic_else)()), |x| {
                                 vec![x]
                             }),
                             feature_parse(),
-                            map(lex_end_feature_def(config.feature.end), |x| vec![x]),
+                            map(lex_end_feature_def((config.feature.end)()), |x| vec![x]),
                             config_not_parse(),
-                            map(lex_config_switch_def(config.configuration.switch), |x| {
-                                vec![x]
-                            }),
+                            map(
+                                lex_config_switch_def((config.configuration.switch)()),
+                                |x| vec![x],
+                            ),
                             config_case_parse(),
-                            map(lex_config_else_def(config.configuration.applic_else), |x| {
+                            map(
+                                lex_config_else_def((config.configuration.applic_else)()),
+                                |x| vec![x],
+                            ),
+                            config_parse(),
+                            map(lex_end_config_def((config.configuration.end)()), |x| {
                                 vec![x]
                             }),
-                            config_parse(),
-                            map(lex_end_config_def(config.configuration.end), |x| vec![x]),
                             config_group_not_parse(),
                             map(
-                                lex_config_group_switch_def(config.configuration_group.switch),
+                                lex_config_group_switch_def((config.configuration_group.switch)()),
                                 |x| vec![x],
                             ),
                             config_group_case_parse(),
                             map(
-                                lex_config_group_else_def(config.configuration_group.applic_else),
+                                lex_config_group_else_def(
+                                    (config.configuration_group.applic_else)(),
+                                ),
                                 |x| vec![x],
                             ),
                             config_group_parse(),
                             map(
-                                lex_end_config_group_def(config.configuration_group.end),
+                                lex_end_config_group_def((config.configuration_group.end)()),
                                 |x| vec![x],
                             ),
                         )),
                         //TODO: convert to make carriage return have to be followed by a new line
                         alt((
-                            lex_unix_new_line_def(config.unix_new_line),
-                            lex_carriage_return_def(config.carriage_new_line),
+                            lex_unix_new_line_def((config.unix_new_line)()),
+                            lex_carriage_return_def((config.carriage_new_line)()),
                         )),
                     ),
                     |(list, end)| {
@@ -971,8 +1247,9 @@ where
             single_line_comment_parser(),
         ))
     };
+    let eof = || map(lex_eof((config.eof)()), |_| vec![LexerToken::Eof]);
     let text_parser = map(
-        many_till(anychar, comments()),
+        many_till(anychar, alt((comments(), eof()))),
         |(results, mut comment): (Vec<char>, Vec<LexerToken>)| {
             let res = results.iter().clone().collect::<String>();
             comment.insert(0, LexerToken::Text(res));
@@ -980,12 +1257,148 @@ where
         },
     );
     let parser = map(
-        many_till(alt((comments(), text_parser)), lex_eof(config.eof)),
+        many_till(alt((comments(), text_parser)), lex_eof((config.eof)())),
         |(res, eof): (Vec<Vec<LexerToken>>, LexerToken)| {
             let mut flattened = res.into_iter().flatten().collect::<Vec<LexerToken>>();
-            flattened.push(eof);
+            match flattened.last() {
+                Some(i) => {
+                    if *i != LexerToken::Eof {
+                        flattened.push(eof);
+                    }
+                }
+                None => panic!("failed to tokenize text document"),
+            }
+            // if (flattened.last() != LexerToken::Eof) {
+            //     flattened.push(eof);
+            // }
             flattened
         },
     );
     parser
+}
+
+#[cfg(test)]
+mod lex_applicability_tests {
+    use std::marker::PhantomData;
+
+    use nom::{
+        bytes::complete::tag,
+        character::complete::{char, newline, space1},
+        combinator::{eof, fail},
+    };
+
+    use crate::{lex_applicability, ApplicabilityLexerConfig, LexerConfig, LexerToken};
+
+    #[test]
+    fn first() {
+        let config = LexerConfig {
+            feature: ApplicabilityLexerConfig {
+                _phantom_i: PhantomData,
+                _phantom_o1: PhantomData,
+                _phantom_o2: PhantomData,
+                _phantom_o3: PhantomData,
+                _phantom_o4: PhantomData,
+                _phantom_o5: PhantomData,
+                _phantom_o6: PhantomData,
+                _phantom_e: PhantomData::<nom::error::Error<_>>,
+                base: || tag("Feature"),
+                not: || tag("Feature Not"),
+                switch: || tag("Feature Switch"),
+                case: || tag("Feature Case"),
+                applic_else: || tag("Feature Else"),
+                end: || tag("End Feature"),
+            },
+            configuration: ApplicabilityLexerConfig {
+                _phantom_i: PhantomData,
+                _phantom_o1: PhantomData,
+                _phantom_o2: PhantomData,
+                _phantom_o3: PhantomData,
+                _phantom_o4: PhantomData,
+                _phantom_o5: PhantomData,
+                _phantom_o6: PhantomData,
+                _phantom_e: PhantomData::<nom::error::Error<_>>,
+                base: || tag("Configuration"),
+                not: || tag("Configuration Not"),
+                switch: || tag("Configuration Switch"),
+                case: || tag("Configuration Case"),
+                applic_else: || tag("Configuration Else"),
+                end: || tag("End Configuration"),
+            },
+            configuration_group: ApplicabilityLexerConfig {
+                _phantom_i: PhantomData,
+                _phantom_o1: PhantomData,
+                _phantom_o2: PhantomData,
+                _phantom_o3: PhantomData,
+                _phantom_o4: PhantomData,
+                _phantom_o5: PhantomData,
+                _phantom_o6: PhantomData,
+                _phantom_e: PhantomData::<nom::error::Error<_>>,
+                base: || tag("ConfigurationGroup"),
+                not: || tag("ConfigurationGroup Not"),
+                switch: || tag("ConfigurationGroup Switch"),
+                case: || tag("ConfigurationGroup Case"),
+                applic_else: || tag("ConfigurationGroup Else"),
+                end: || tag("End ConfigurationGroup"),
+            },
+            _phantom_o1: PhantomData,
+            _phantom_o2: PhantomData,
+            _phantom_o3: PhantomData,
+            _phantom_o4: PhantomData,
+            _phantom_o5: PhantomData,
+            _phantom_o6: PhantomData,
+            _phantom_o7: PhantomData,
+            _phantom_o8: PhantomData,
+            _phantom_o9: PhantomData,
+            _phantom_o10: PhantomData,
+            _phantom_o11: PhantomData::<LexerToken>,
+            _phantom_o12: PhantomData::<LexerToken>,
+            _phantom_o13: PhantomData::<LexerToken>,
+            _phantom_o14: PhantomData::<LexerToken>,
+            _phantom_o15: PhantomData,
+            space: || space1,
+            unix_new_line: || newline,
+            carriage_new_line: || char('\r'),
+            start_paren: || char('['),
+            end_paren: || char(']'),
+            not: || char('!'),
+            and: || tag("&"),
+            or: || tag("|"),
+            start_comment_single_line: || tag("``"),
+            end_comment_single_line: || tag("``"),
+            start_comment_multi_line: || fail,
+            end_comment_multi_line: || fail,
+            multi_line_comment_character: || fail,
+            single_line_comment: || fail,
+            eof: || eof,
+        };
+        let mut tokenizer = lex_applicability(config);
+
+        assert_eq!(
+            tokenizer("some text"),
+            Ok((
+                "",
+                vec![LexerToken::Text("some text".to_string()), LexerToken::Eof]
+            ))
+        );
+
+        assert_eq!(
+            tokenizer("``Feature[FEATURE_1]`` some text ``End Feature``"),
+            Ok((
+                "",
+                vec![
+                    LexerToken::StartCommentSingleLine,
+                    LexerToken::Feature,
+                    LexerToken::StartParen,
+                    LexerToken::Tag("FEATURE_1".to_string()),
+                    LexerToken::EndParen,
+                    LexerToken::EndCommentSingleLine,
+                    LexerToken::Text(" some text ".to_string()),
+                    LexerToken::StartCommentSingleLine,
+                    LexerToken::EndFeature,
+                    LexerToken::EndCommentSingleLine,
+                    LexerToken::Eof
+                ]
+            ))
+        );
+    }
 }
