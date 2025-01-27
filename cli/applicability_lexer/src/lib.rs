@@ -16,17 +16,17 @@ use nom::{
     branch::alt,
     bytes::complete::tag,
     character::complete::anychar,
-    combinator::{eof, map, value},
+    combinator::{eof, map, peek, value},
     error::ParseError,
     multi::{many0, many_till},
     sequence::tuple,
     AsChar, IResult, InputIter, InputLength, Parser, Slice,
 };
 use utility_def::{
-    lex_and_def, lex_carriage_return_def, lex_end_comment_multi_line, lex_end_comment_single_line,
-    lex_end_paren_def, lex_eof, lex_multi_line_comment_character, lex_not_def, lex_or_def,
-    lex_space_def, lex_start_comment_multi_line, lex_start_comment_single_line,
-    lex_start_paren_def, lex_start_single_line_comment, lex_unix_new_line_def,
+    lex_and_def, lex_carriage_return_def, lex_end_brace_def, lex_end_comment_multi_line,
+    lex_end_comment_single_line, lex_eof, lex_multi_line_comment_character, lex_not_def,
+    lex_or_def, lex_space_def, lex_start_brace_def, lex_start_comment_multi_line,
+    lex_start_comment_single_line, lex_start_single_line_comment, lex_unix_new_line_def,
 };
 
 mod config_def;
@@ -42,17 +42,17 @@ mod utility_def;
 * SingleLineCommentCharacter should take until UnixNewLine
 * Theoretical prototype:
 
-    StartParenParse = many_till(Space,StartParen)
-    FeatureParse = tuple((Feature, StartParenParse, many_till(alt((Space,UnixNewLine,Not,And,Or,Tag(String))),EndParen)))
-    FeatureNotParse = tuple((FeatureNot, StartParenParse, many_till(alt((Space,UnixNewLine,Not,And,Or,Tag(String))),EndParen)))
-    FeatureCaseParse = tuple((FeatureCase, StartParenParse, many_till(alt((Space,UnixNewLine,Not,And,Or,Tag(String))),EndParen)))
-    ConfigurationParse = tuple((Configuration, StartParenParse, many_till(alt((Space,UnixNewLine,Not,And,Or,Tag(String))),EndParen)))
-    ConfigurationNotParse = tuple((ConfigurationNot, StartParenParse, many_till(alt((Space,UnixNewLine,Not,And,Or,Tag(String))),EndParen)))
-    ConfigurationCaseParse = tuple((ConfigurationCase, StartParenParse, many_till(alt((Space,UnixNewLine,Not,And,Or,Tag(String))),EndParen)))
-    ConfigurationGroupParse = tuple((ConfigurationGroup, StartParenParse, many_till(alt((Space,UnixNewLine,Not,And,Or,Tag(String))),EndParen)))
-    ConfigurationGroupNotParse = tuple((ConfigurationGroupNot, StartParenParse, many_till(alt((Space,UnixNewLine,Not,And,Or,Tag(String))),EndParen)))
-    ConfigurationGroupCaseParse = tuple((ConfigurationGroupCase, StartParenParse, many_till(alt((Space,UnixNewLine,Not,And,Or,Tag(String))),EndParen)))
-    SubstitutionParse = tuple((Substitution, StartParenParse, many_till(alt((Space,UnixNewLine,Not,And,Or,Tag(String))),EndParen)))
+    StartBraceParse = many_till(Space,StartBrace)
+    FeatureParse = tuple((Feature, StartBraceParse, many_till(alt((Space,UnixNewLine,Not,And,Or,Tag(String))),EndBrace)))
+    FeatureNotParse = tuple((FeatureNot, StartBraceParse, many_till(alt((Space,UnixNewLine,Not,And,Or,Tag(String))),EndBrace)))
+    FeatureCaseParse = tuple((FeatureCase, StartBraceParse, many_till(alt((Space,UnixNewLine,Not,And,Or,Tag(String))),EndBrace)))
+    ConfigurationParse = tuple((Configuration, StartBraceParse, many_till(alt((Space,UnixNewLine,Not,And,Or,Tag(String))),EndBrace)))
+    ConfigurationNotParse = tuple((ConfigurationNot, StartBraceParse, many_till(alt((Space,UnixNewLine,Not,And,Or,Tag(String))),EndBrace)))
+    ConfigurationCaseParse = tuple((ConfigurationCase, StartBraceParse, many_till(alt((Space,UnixNewLine,Not,And,Or,Tag(String))),EndBrace)))
+    ConfigurationGroupParse = tuple((ConfigurationGroup, StartBraceParse, many_till(alt((Space,UnixNewLine,Not,And,Or,Tag(String))),EndBrace)))
+    ConfigurationGroupNotParse = tuple((ConfigurationGroupNot, StartBraceParse, many_till(alt((Space,UnixNewLine,Not,And,Or,Tag(String))),EndBrace)))
+    ConfigurationGroupCaseParse = tuple((ConfigurationGroupCase, StartBraceParse, many_till(alt((Space,UnixNewLine,Not,And,Or,Tag(String))),EndBrace)))
+    SubstitutionParse = tuple((Substitution, StartBraceParse, many_till(alt((Space,UnixNewLine,Not,And,Or,Tag(String))),EndBrace)))
 * results = alt((
 * tuple((StartCommentSingleLine,
 many_till(
@@ -181,9 +181,9 @@ pub enum LexerToken {
     CarriageReturn,
     UnixNewLine,
     //the following should only be tokenized following one of the Feature|Configuration|ConfigurationGroup Base|Not|Switch|Case
-    StartParen,
-    EndParen,
-    // the following should only be tokenized following a StartParen and preceding an EndParen
+    StartBrace,
+    EndBrace,
+    // the following should only be tokenized following a StartBrace and preceding an EndBrace
     Not,
     And,
     Or,
@@ -446,8 +446,8 @@ pub struct LexerConfig<
     space: P19,
     unix_new_line: P20,
     carriage_new_line: P21,
-    start_paren: P22,
-    end_paren: P23,
+    start_brace: P22,
+    end_brace: P23,
     not: P24,
     and: P25,
     or: P26,
@@ -791,17 +791,37 @@ where
     P32: Copy + Fn() -> U32,
     P33: Copy + Fn() -> U33,
 {
-    let start_paren_parse = || {
+    let start_brace_parse = || {
         many_till(
             lex_space_def((config.space)()),
-            lex_start_paren_def((config.start_paren)()),
+            lex_start_brace_def((config.start_brace)()),
+        )
+    };
+    let base_tag_parse = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def((config.space)()),
+                    lex_carriage_return_def((config.carriage_new_line)()),
+                    lex_unix_new_line_def((config.unix_new_line)()),
+                    lex_not_def((config.not)()),
+                    lex_and_def((config.and)()),
+                    lex_or_def((config.or)()),
+                    lex_end_brace_def((config.end_brace)()),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
         )
     };
     let feature_parse = || {
         map(
             tuple((
                 lex_feature_def((config.feature.base)()),
-                start_paren_parse(),
+                start_brace_parse(),
                 many_till(
                     alt((
                         lex_space_def((config.space)()),
@@ -809,9 +829,10 @@ where
                         lex_unix_new_line_def((config.unix_new_line)()),
                         lex_not_def((config.not)()),
                         lex_and_def((config.and)()),
-                        lex_or_def((config.or)()), //insert tag parse here
+                        lex_or_def((config.or)()),
+                        base_tag_parse(),
                     )),
-                    lex_end_paren_def((config.end_paren)()),
+                    lex_end_brace_def((config.end_brace)()),
                 ),
             )),
             |(feature, (mut spaces, start), (mut inner, end))| {
@@ -827,7 +848,7 @@ where
         map(
             tuple((
                 lex_feature_not_def((config.feature.not)()),
-                start_paren_parse(),
+                start_brace_parse(),
                 many_till(
                     alt((
                         lex_space_def((config.space)()),
@@ -835,9 +856,10 @@ where
                         lex_unix_new_line_def((config.unix_new_line)()),
                         lex_not_def((config.not)()),
                         lex_and_def((config.and)()),
-                        lex_or_def((config.or)()), //insert tag parse here
+                        lex_or_def((config.or)()),
+                        base_tag_parse(),
                     )),
-                    lex_end_paren_def((config.end_paren)()),
+                    lex_end_brace_def((config.end_brace)()),
                 ),
             )),
             |(feature, (mut spaces, start), (mut inner, end))| {
@@ -853,7 +875,7 @@ where
         map(
             tuple((
                 lex_feature_case_def((config.feature.case)()),
-                start_paren_parse(),
+                start_brace_parse(),
                 many_till(
                     alt((
                         lex_space_def((config.space)()),
@@ -861,9 +883,10 @@ where
                         lex_unix_new_line_def((config.unix_new_line)()),
                         lex_not_def((config.not)()),
                         lex_and_def((config.and)()),
-                        lex_or_def((config.or)()), //insert tag parse here
+                        lex_or_def((config.or)()),
+                        base_tag_parse(),
                     )),
-                    lex_end_paren_def((config.end_paren)()),
+                    lex_end_brace_def((config.end_brace)()),
                 ),
             )),
             |(feature, (mut spaces, start), (mut inner, end))| {
@@ -879,7 +902,7 @@ where
         map(
             tuple((
                 lex_config_def((config.configuration.base)()),
-                start_paren_parse(),
+                start_brace_parse(),
                 many_till(
                     alt((
                         lex_space_def((config.space)()),
@@ -887,9 +910,10 @@ where
                         lex_unix_new_line_def((config.unix_new_line)()),
                         lex_not_def((config.not)()),
                         lex_and_def((config.and)()),
-                        lex_or_def((config.or)()), //insert tag parse here
+                        lex_or_def((config.or)()),
+                        base_tag_parse(),
                     )),
-                    lex_end_paren_def((config.end_paren)()),
+                    lex_end_brace_def((config.end_brace)()),
                 ),
             )),
             |(config, (mut spaces, start), (mut inner, end))| {
@@ -905,7 +929,7 @@ where
         map(
             tuple((
                 lex_config_not_def((config.configuration.not)()),
-                start_paren_parse(),
+                start_brace_parse(),
                 many_till(
                     alt((
                         lex_space_def((config.space)()),
@@ -913,9 +937,10 @@ where
                         lex_unix_new_line_def((config.unix_new_line)()),
                         lex_not_def((config.not)()),
                         lex_and_def((config.and)()),
-                        lex_or_def((config.or)()), //insert tag parse here
+                        lex_or_def((config.or)()),
+                        base_tag_parse(),
                     )),
-                    lex_end_paren_def((config.end_paren)()),
+                    lex_end_brace_def((config.end_brace)()),
                 ),
             )),
             |(config, (mut spaces, start), (mut inner, end))| {
@@ -931,7 +956,7 @@ where
         map(
             tuple((
                 lex_config_case_def((config.configuration.case)()),
-                start_paren_parse(),
+                start_brace_parse(),
                 many_till(
                     alt((
                         lex_space_def((config.space)()),
@@ -939,9 +964,10 @@ where
                         lex_unix_new_line_def((config.unix_new_line)()),
                         lex_not_def((config.not)()),
                         lex_and_def((config.and)()),
-                        lex_or_def((config.or)()), //insert tag parse here
+                        lex_or_def((config.or)()),
+                        base_tag_parse(),
                     )),
-                    lex_end_paren_def((config.end_paren)()),
+                    lex_end_brace_def((config.end_brace)()),
                 ),
             )),
             |(config, (mut spaces, start), (mut inner, end))| {
@@ -958,7 +984,7 @@ where
         map(
             tuple((
                 lex_config_group_def((config.configuration_group.base)()),
-                start_paren_parse(),
+                start_brace_parse(),
                 many_till(
                     alt((
                         lex_space_def((config.space)()),
@@ -966,9 +992,10 @@ where
                         lex_unix_new_line_def((config.unix_new_line)()),
                         lex_not_def((config.not)()),
                         lex_and_def((config.and)()),
-                        lex_or_def((config.or)()), //insert tag parse here
+                        lex_or_def((config.or)()),
+                        base_tag_parse(),
                     )),
-                    lex_end_paren_def((config.end_paren)()),
+                    lex_end_brace_def((config.end_brace)()),
                 ),
             )),
             |(group, (mut spaces, start), (mut inner, end))| {
@@ -984,7 +1011,7 @@ where
         map(
             tuple((
                 lex_config_group_not_def((config.configuration_group.not)()),
-                start_paren_parse(),
+                start_brace_parse(),
                 many_till(
                     alt((
                         lex_space_def((config.space)()),
@@ -992,9 +1019,10 @@ where
                         lex_unix_new_line_def((config.unix_new_line)()),
                         lex_not_def((config.not)()),
                         lex_and_def((config.and)()),
-                        lex_or_def((config.or)()), //insert tag parse here
+                        lex_or_def((config.or)()),
+                        base_tag_parse(),
                     )),
-                    lex_end_paren_def((config.end_paren)()),
+                    lex_end_brace_def((config.end_brace)()),
                 ),
             )),
             |(group, (mut spaces, start), (mut inner, end))| {
@@ -1010,7 +1038,7 @@ where
         map(
             tuple((
                 lex_config_group_case_def((config.configuration_group.case)()),
-                start_paren_parse(),
+                start_brace_parse(),
                 many_till(
                     alt((
                         lex_space_def((config.space)()),
@@ -1018,9 +1046,10 @@ where
                         lex_unix_new_line_def((config.unix_new_line)()),
                         lex_not_def((config.not)()),
                         lex_and_def((config.and)()),
-                        lex_or_def((config.or)()), //insert tag parse here
+                        lex_or_def((config.or)()),
+                        base_tag_parse(),
                     )),
-                    lex_end_paren_def((config.end_paren)()),
+                    lex_end_brace_def((config.end_brace)()),
                 ),
             )),
             |(group, (mut spaces, start), (mut inner, end))| {
@@ -1358,9 +1387,9 @@ mod lex_applicability_tests {
             space: || space1,
             unix_new_line: || newline,
             carriage_new_line: || char('\r'),
-            start_paren: || char('['),
-            end_paren: || char(']'),
-            not: || char('!'),
+            start_brace: || tag("["),
+            end_brace: || tag("]"),
+            not: || tag("!"),
             and: || tag("&"),
             or: || tag("|"),
             start_comment_single_line: || tag("``"),
@@ -1388,9 +1417,9 @@ mod lex_applicability_tests {
                 vec![
                     LexerToken::StartCommentSingleLine,
                     LexerToken::Feature,
-                    LexerToken::StartParen,
+                    LexerToken::StartBrace,
                     LexerToken::Tag("FEATURE_1".to_string()),
-                    LexerToken::EndParen,
+                    LexerToken::EndBrace,
                     LexerToken::EndCommentSingleLine,
                     LexerToken::Text(" some text ".to_string()),
                     LexerToken::StartCommentSingleLine,
