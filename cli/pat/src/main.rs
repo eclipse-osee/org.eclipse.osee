@@ -94,6 +94,11 @@ use tracing::{debug_span, error, trace, trace_span, warn, Level};
 ///     *.fileApplicability             Starting Syntax: #      Ending Syntax:
 ///     *.applicability                 Starting Syntax: #      Ending Syntax:
 ///     *.gpj                           Starting Syntax: #      Ending Syntax:
+///     *.mk                            Starting Syntax: #      Ending Syntax:
+///     *.opt                           Starting Syntax: #      Ending Syntax:
+///     Makefile                        Starting Syntax: #      Ending Syntax:
+///     makefile                        Starting Syntax: #      Ending Syntax:
+///     MAKEFILE                        Starting Syntax: #      Ending Syntax:
 #[derive(Parser)]
 #[clap(author = "Luciano Vaglienti", version, verbatim_doc_comment)]
 struct CliOptions {

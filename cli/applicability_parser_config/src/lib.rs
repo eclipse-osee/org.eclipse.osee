@@ -31,6 +31,9 @@ pub mod applic_config;
 //     .bzl
 //     .bazel
 //     .tex
+//     .gpj
+//     .mk
+//     .opt
 //     WORKSPACE
 //     BUILD
 //     fileApplicability
@@ -53,9 +56,9 @@ pub fn get_comment_syntax(
         Some("md") => ("``", "``"),
         Some("cpp" | "cxx" | "cc" | "c" | "hpp" | "hxx" | "hh" | "h" | "rs") => ("//", ""),
         Some("tex") => ("\\if", "{}"),
-        Some("bzl" | "bazel" | "fileApplicability" | "applicability" | "gpj") => ("#", ""),
+        Some("bzl" | "bazel" | "fileApplicability" | "applicability" | "gpj" | "mk" | "opt") => ("#", ""),
         None => match name {
-            Some("WORKSPACE" | "BUILD" | ".fileApplicability" | ".applicability") => ("#", ""),
+            Some("WORKSPACE" | "BUILD" | ".fileApplicability" | ".applicability" | "Makefile" | "makefile"| "MAKEFILE") => ("#", ""),
             _rest => (start_comment_syntax, end_comment_syntax),
         },
         _rest => (start_comment_syntax, end_comment_syntax),
