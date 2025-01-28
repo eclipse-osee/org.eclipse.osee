@@ -48,6 +48,7 @@ use tracing::{info, Level};
 ///     BUILD                           Starting Syntax: #      Ending Syntax:
 ///     *.fileApplicability             Starting Syntax: #      Ending Syntax:
 ///     *.applicability                 Starting Syntax: #      Ending Syntax:
+///     *.gpj                           Starting Syntax: #      Ending Syntax:
 #[derive(Parser)]
 #[clap(author = "Luciano Vaglienti", version, verbatim_doc_comment)]
 struct CliOptions {

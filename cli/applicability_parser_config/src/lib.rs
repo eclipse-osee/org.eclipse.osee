@@ -53,7 +53,7 @@ pub fn get_comment_syntax(
         Some("md") => ("``", "``"),
         Some("cpp" | "cxx" | "cc" | "c" | "hpp" | "hxx" | "hh" | "h" | "rs") => ("//", ""),
         Some("tex") => ("\\if", "{}"),
-        Some("bzl" | "bazel" | "fileApplicability" | "applicability") => ("#", ""),
+        Some("bzl" | "bazel" | "fileApplicability" | "applicability" | "gpj") => ("#", ""),
         None => match name {
             Some("WORKSPACE" | "BUILD" | ".fileApplicability" | ".applicability") => ("#", ""),
             _rest => (start_comment_syntax, end_comment_syntax),
