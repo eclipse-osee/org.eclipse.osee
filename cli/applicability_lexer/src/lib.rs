@@ -20,7 +20,7 @@ use nom::{
     error::ParseError,
     multi::many_till,
     sequence::tuple,
-    AsChar, Compare, InputIter, InputLength, InputTake, Parser, Slice,
+    Compare, InputIter, InputLength, InputTake, Parser, Slice,
 };
 use utility_def::{
     lex_and_def, lex_carriage_return_def, lex_end_brace_def, lex_end_comment_multi_line,
@@ -193,7 +193,7 @@ pub enum LexerToken {
     Tag(String),
 }
 
-trait LexerConfigurable {
+pub trait LexerConfigurable {
     type I;
     type O1;
     type O2;
@@ -232,7 +232,7 @@ trait LexerConfigurable {
     type O35;
 }
 
-trait LexerError {
+pub trait LexerError {
     type E;
 }
 pub trait LexerConfig<T: LexerConfigurable, E: LexerError> {
@@ -1060,10 +1060,11 @@ pub fn lex_applicability<
     I,
     E,
     T: LexerConfigurable<I = I>,
-    L: LexerConfig<T, impl LexerError<E = E>>,
+    U: LexerError<E = E>,
+    L: LexerConfig<T, U> + 'static,
 >(
-    config: L,
-) -> &'a impl FnMut(I) -> Result<(I, Vec<LexerToken>), nom::Err<E>>
+    config: &L,
+) -> impl FnMut(I) -> Result<(I, Vec<LexerToken>), nom::Err<E>> + use<'_, I, E, T, L, U>
 // &'a impl Parser<I, Vec<LexerToken>, E>
 // impl FnMut(I) -> Result<(I, Vec<LexerToken>), nom::Err<E>>
 where
@@ -1075,473 +1076,4021 @@ where
         + Compare<T::O2>,
     E: ParseError<I>,
 {
-    let p = move |c: L| {
-        let start_brace_parse = || {
-            many_till(
-                lex_space_def(c.space()),
-                lex_start_brace_def(c.start_brace()),
-            )
-        };
-        let base_tag_parse = || {
-            map(
-                many_till(
-                    anychar,
-                    peek(alt((
-                        lex_space_def(c.space()),
-                        lex_carriage_return_def(c.carriage_new_line()),
-                        lex_unix_new_line_def(c.unix_new_line()),
-                        lex_start_paren_def(c.start_paren()),
-                        lex_end_paren_def(c.end_paren()),
-                        lex_not_def(c.not()),
-                        lex_and_def(c.and()),
-                        lex_or_def(c.or()),
-                        lex_end_brace_def(c.end_brace()),
-                    ))),
-                ),
-                |(results, _)| {
-                    let res = results.into_iter().clone().collect::<String>();
-                    LexerToken::Tag(res)
-                },
-            )
-        };
-        let feature_parse = || {
-            map(
-                tuple((
-                    lex_feature_def(c.feature_base()),
-                    start_brace_parse(),
-                    many_till(
-                        alt((
-                            lex_space_def(c.space()),
-                            lex_carriage_return_def(c.carriage_new_line()),
-                            lex_unix_new_line_def(c.unix_new_line()),
-                            lex_start_paren_def(c.start_paren()),
-                            lex_end_paren_def(c.end_paren()),
-                            lex_not_def(c.not()),
-                            lex_and_def(c.and()),
-                            lex_or_def(c.or()),
-                            base_tag_parse(),
-                        )),
-                        lex_end_brace_def(c.end_brace()),
-                    ),
-                )),
-                |(feature, (mut spaces, start), (mut inner, end))| {
-                    spaces.insert(0, feature);
-                    spaces.push(start);
-                    inner.push(end);
-                    spaces.append(&mut inner);
-                    spaces
-                },
-            )
-        };
-        let feature_not_parse = || {
-            map(
-                tuple((
-                    lex_feature_not_def(c.feature_not()),
-                    start_brace_parse(),
-                    many_till(
-                        alt((
-                            lex_space_def(c.space()),
-                            lex_carriage_return_def(c.carriage_new_line()),
-                            lex_unix_new_line_def(c.unix_new_line()),
-                            lex_start_paren_def(c.start_paren()),
-                            lex_end_paren_def(c.end_paren()),
-                            lex_not_def(c.not()),
-                            lex_and_def(c.and()),
-                            lex_or_def(c.or()),
-                            base_tag_parse(),
-                        )),
-                        lex_end_brace_def(c.end_brace()),
-                    ),
-                )),
-                |(feature, (mut spaces, start), (mut inner, end))| {
-                    spaces.insert(0, feature);
-                    spaces.push(start);
-                    inner.push(end);
-                    spaces.append(&mut inner);
-                    spaces
-                },
-            )
-        };
-        let feature_case_parse = || {
-            map(
-                tuple((
-                    lex_feature_case_def(c.feature_case()),
-                    start_brace_parse(),
-                    many_till(
-                        alt((
-                            lex_space_def(c.space()),
-                            lex_carriage_return_def(c.carriage_new_line()),
-                            lex_unix_new_line_def(c.unix_new_line()),
-                            lex_start_paren_def(c.start_paren()),
-                            lex_end_paren_def(c.end_paren()),
-                            lex_not_def(c.not()),
-                            lex_and_def(c.and()),
-                            lex_or_def(c.or()),
-                            base_tag_parse(),
-                        )),
-                        lex_end_brace_def(c.end_brace()),
-                    ),
-                )),
-                |(feature, (mut spaces, start), (mut inner, end))| {
-                    spaces.insert(0, feature);
-                    spaces.push(start);
-                    inner.push(end);
-                    spaces.append(&mut inner);
-                    spaces
-                },
-            )
-        };
-        let config_parse = || {
-            map(
-                tuple((
-                    lex_config_def(c.config_base()),
-                    start_brace_parse(),
-                    many_till(
-                        alt((
-                            lex_space_def(c.space()),
-                            lex_carriage_return_def(c.carriage_new_line()),
-                            lex_unix_new_line_def(c.unix_new_line()),
-                            lex_start_paren_def(c.start_paren()),
-                            lex_end_paren_def(c.end_paren()),
-                            lex_not_def(c.not()),
-                            lex_and_def(c.and()),
-                            lex_or_def(c.or()),
-                            base_tag_parse(),
-                        )),
-                        lex_end_brace_def(c.end_brace()),
-                    ),
-                )),
-                |(config, (mut spaces, start), (mut inner, end))| {
-                    spaces.insert(0, config);
-                    spaces.push(start);
-                    inner.push(end);
-                    spaces.append(&mut inner);
-                    spaces
-                },
-            )
-        };
-        let config_not_parse = || {
-            map(
-                tuple((
-                    lex_config_not_def(c.config_not()),
-                    start_brace_parse(),
-                    many_till(
-                        alt((
-                            lex_space_def(c.space()),
-                            lex_carriage_return_def(c.carriage_new_line()),
-                            lex_unix_new_line_def(c.unix_new_line()),
-                            lex_start_paren_def(c.start_paren()),
-                            lex_end_paren_def(c.end_paren()),
-                            lex_not_def(c.not()),
-                            lex_and_def(c.and()),
-                            lex_or_def(c.or()),
-                            base_tag_parse(),
-                        )),
-                        lex_end_brace_def(c.end_brace()),
-                    ),
-                )),
-                |(config, (mut spaces, start), (mut inner, end))| {
-                    spaces.insert(0, config);
-                    spaces.push(start);
-                    inner.push(end);
-                    spaces.append(&mut inner);
-                    spaces
-                },
-            )
-        };
-        let config_case_parse = || {
-            map(
-                tuple((
-                    lex_config_case_def(c.config_case()),
-                    start_brace_parse(),
-                    many_till(
-                        alt((
-                            lex_space_def(c.space()),
-                            lex_carriage_return_def(c.carriage_new_line()),
-                            lex_unix_new_line_def(c.unix_new_line()),
-                            lex_start_paren_def(c.start_paren()),
-                            lex_end_paren_def(c.end_paren()),
-                            lex_not_def(c.not()),
-                            lex_and_def(c.and()),
-                            lex_or_def(c.or()),
-                            base_tag_parse(),
-                        )),
-                        lex_end_brace_def(c.end_brace()),
-                    ),
-                )),
-                |(config, (mut spaces, start), (mut inner, end))| {
-                    spaces.insert(0, config);
-                    spaces.push(start);
-                    inner.push(end);
-                    spaces.append(&mut inner);
-                    spaces
-                },
-            )
-        };
-
-        let config_group_parse = || {
-            map(
-                tuple((
-                    lex_config_group_def(c.group_base()),
-                    start_brace_parse(),
-                    many_till(
-                        alt((
-                            lex_space_def(c.space()),
-                            lex_carriage_return_def(c.carriage_new_line()),
-                            lex_unix_new_line_def(c.unix_new_line()),
-                            lex_start_paren_def(c.start_paren()),
-                            lex_end_paren_def(c.end_paren()),
-                            lex_not_def(c.not()),
-                            lex_and_def(c.and()),
-                            lex_or_def(c.or()),
-                            base_tag_parse(),
-                        )),
-                        lex_end_brace_def(c.end_brace()),
-                    ),
-                )),
-                |(group, (mut spaces, start), (mut inner, end))| {
-                    spaces.insert(0, group);
-                    spaces.push(start);
-                    inner.push(end);
-                    spaces.append(&mut inner);
-                    spaces
-                },
-            )
-        };
-        let config_group_not_parse = || {
-            map(
-                tuple((
-                    lex_config_group_not_def(c.group_not()),
-                    start_brace_parse(),
-                    many_till(
-                        alt((
-                            lex_space_def(c.space()),
-                            lex_carriage_return_def(c.carriage_new_line()),
-                            lex_unix_new_line_def(c.unix_new_line()),
-                            lex_start_paren_def(c.start_paren()),
-                            lex_end_paren_def(c.end_paren()),
-                            lex_not_def(c.not()),
-                            lex_and_def(c.and()),
-                            lex_or_def(c.or()),
-                            base_tag_parse(),
-                        )),
-                        lex_end_brace_def(c.end_brace()),
-                    ),
-                )),
-                |(group, (mut spaces, start), (mut inner, end))| {
-                    spaces.insert(0, group);
-                    spaces.push(start);
-                    inner.push(end);
-                    spaces.append(&mut inner);
-                    spaces
-                },
-            )
-        };
-        let config_group_case_parse = || {
-            map(
-                tuple((
-                    lex_config_group_case_def(c.group_case()),
-                    start_brace_parse(),
-                    many_till(
-                        alt((
-                            lex_space_def(c.space()),
-                            lex_carriage_return_def(c.carriage_new_line()),
-                            lex_unix_new_line_def(c.unix_new_line()),
-                            lex_start_paren_def(c.start_paren()),
-                            lex_end_paren_def(c.end_paren()),
-                            lex_not_def(c.not()),
-                            lex_and_def(c.and()),
-                            lex_or_def(c.or()),
-                            base_tag_parse(),
-                        )),
-                        lex_end_brace_def(c.end_brace()),
-                    ),
-                )),
-                |(group, (mut spaces, start), (mut inner, end))| {
-                    spaces.insert(0, group);
-                    spaces.push(start);
-                    inner.push(end);
-                    spaces.append(&mut inner);
-                    spaces
-                },
-            )
-        };
-        let start_end_single_line_comment_parser = || {
-            map(
-                tuple((
-                    lex_start_comment_single_line(c.start_comment_single_line()),
-                    map(
-                        many_till(
-                            alt((
-                                map(lex_space_def(c.space()), |x| vec![x]),
-                                map(lex_unix_new_line_def(c.unix_new_line()), |x| vec![x]),
-                                feature_not_parse(),
-                                map(lex_feature_switch_def(c.feature_switch()), |x| vec![x]),
-                                feature_case_parse(),
-                                map(lex_feature_else_def(c.feature_else()), |x| vec![x]),
-                                feature_parse(),
-                                map(lex_end_feature_def(c.feature_end()), |x| vec![x]),
-                                config_not_parse(),
-                                map(lex_config_switch_def(c.config_switch()), |x| vec![x]),
-                                config_case_parse(),
-                                map(lex_config_else_def(c.config_else()), |x| vec![x]),
-                                config_parse(),
-                                map(lex_end_config_def(c.config_end()), |x| vec![x]),
-                                config_group_not_parse(),
-                                map(lex_config_group_switch_def(c.group_switch()), |x| vec![x]),
-                                config_group_case_parse(),
-                                map(lex_config_group_else_def(c.group_else()), |x| vec![x]),
-                                config_group_parse(),
-                                map(lex_end_config_group_def(c.group_end()), |x| vec![x]),
-                            )),
-                            lex_end_comment_single_line(c.end_comment_single_line()),
-                        ),
-                        |(list, end)| {
-                            let mut flattened =
-                                list.into_iter().flatten().collect::<Vec<LexerToken>>();
-                            flattened.push(end);
-                            flattened
-                        },
-                    ),
-                )),
-                |(start, mut list)| {
-                    list.insert(0, start);
-                    list
-                },
-            )
-        };
-
-        let multi_line_comment_parser = || {
-            map(
-                tuple((
-                    lex_start_comment_multi_line(c.start_comment_multi_line()),
-                    map(
-                        many_till(
-                            alt((
-                                map(lex_space_def(c.space()), |x| vec![x]),
-                                map(lex_unix_new_line_def(c.unix_new_line()), |x| vec![x]),
-                                map(
-                                    lex_multi_line_comment_character(
-                                        c.multi_line_comment_character(),
-                                    ),
-                                    |x| vec![x],
-                                ),
-                                feature_not_parse(),
-                                map(lex_feature_switch_def(c.feature_switch()), |x| vec![x]),
-                                feature_case_parse(),
-                                map(lex_feature_else_def(c.feature_else()), |x| vec![x]),
-                                feature_parse(),
-                                map(lex_end_feature_def(c.feature_end()), |x| vec![x]),
-                                config_not_parse(),
-                                map(lex_config_switch_def(c.config_switch()), |x| vec![x]),
-                                config_case_parse(),
-                                map(lex_config_else_def(c.config_else()), |x| vec![x]),
-                                config_parse(),
-                                map(lex_end_config_def(c.config_end()), |x| vec![x]),
-                                config_group_not_parse(),
-                                map(lex_config_group_switch_def(c.group_switch()), |x| vec![x]),
-                                config_group_case_parse(),
-                                map(lex_config_group_else_def(c.group_else()), |x| vec![x]),
-                                config_group_parse(),
-                                map(lex_end_config_group_def(c.group_end()), |x| vec![x]),
-                            )),
-                            lex_end_comment_multi_line(c.end_comment_multi_line()),
-                        ),
-                        |(list, end)| {
-                            let mut flattened =
-                                list.into_iter().flatten().collect::<Vec<LexerToken>>();
-                            flattened.push(end);
-                            flattened
-                        },
-                    ),
-                )),
-                |(start, mut list)| {
-                    list.insert(0, start);
-                    list
-                },
-            )
-        };
-        let single_line_comment_parser = || {
-            map(
-                tuple((
-                    lex_start_single_line_comment(c.single_line_comment()),
-                    map(
-                        many_till(
-                            alt((
-                                map(lex_space_def(c.space()), |x| vec![x]),
-                                feature_not_parse(),
-                                map(lex_feature_switch_def(c.feature_switch()), |x| vec![x]),
-                                feature_case_parse(),
-                                map(lex_feature_else_def(c.feature_else()), |x| vec![x]),
-                                feature_parse(),
-                                map(lex_end_feature_def(c.feature_end()), |x| vec![x]),
-                                config_not_parse(),
-                                map(lex_config_switch_def(c.config_switch()), |x| vec![x]),
-                                config_case_parse(),
-                                map(lex_config_else_def(c.config_else()), |x| vec![x]),
-                                config_parse(),
-                                map(lex_end_config_def(c.config_end()), |x| vec![x]),
-                                config_group_not_parse(),
-                                map(lex_config_group_switch_def(c.group_switch()), |x| vec![x]),
-                                config_group_case_parse(),
-                                map(lex_config_group_else_def(c.group_else()), |x| vec![x]),
-                                config_group_parse(),
-                                map(lex_end_config_group_def(c.group_end()), |x| vec![x]),
-                            )),
-                            //TODO: convert to make carriage return have to be followed by a new line
-                            alt((
-                                lex_unix_new_line_def(c.unix_new_line()),
-                                lex_carriage_return_def(c.carriage_new_line()),
-                            )),
-                        ),
-                        |(list, end)| {
-                            let mut flattened =
-                                list.into_iter().flatten().collect::<Vec<LexerToken>>();
-                            flattened.push(end);
-                            flattened
-                        },
-                    ),
-                )),
-                |(start, mut list)| {
-                    list.insert(0, start);
-                    list
-                },
-            )
-        };
-        let comments = || {
-            alt((
-                start_end_single_line_comment_parser(),
-                multi_line_comment_parser(),
-                single_line_comment_parser(),
-            ))
-        };
-        let eof = || map(lex_eof(c.eof()), |_| vec![LexerToken::Eof]);
-        let text_parser = map(
-            many_till(anychar, alt((comments(), eof()))),
-            |(results, mut comment): (Vec<char>, Vec<LexerToken>)| {
-                let res = results.iter().clone().collect::<String>();
-                comment.insert(0, LexerToken::Text(res));
-                comment
-            },
-        );
-        let parser = map(
-            many_till(alt((comments(), text_parser)), lex_eof(c.eof())),
-            |(res, eof): (Vec<Vec<LexerToken>>, LexerToken)| {
-                let mut flattened = res.into_iter().flatten().collect::<Vec<LexerToken>>();
-                match flattened.last() {
-                    Some(i) => {
-                        if *i != LexerToken::Eof {
-                            flattened.push(eof);
-                        }
-                    }
-                    None => panic!("failed to tokenize text document"),
-                }
-                flattened
-            },
-        );
-        &parser
+    let space_0_0 = config.space();
+    let start_brace_0_0 = config.start_brace();
+    let start_brace_parse_0_0 = || {
+        many_till(
+            lex_space_def(space_0_0),
+            lex_start_brace_def(start_brace_0_0),
+        )
     };
-    p(config)
+    let space_1_0 = config.space();
+    let start_brace_1_0 = config.start_brace();
+    let start_brace_parse_1_0 = || {
+        many_till(
+            lex_space_def(space_1_0),
+            lex_start_brace_def(start_brace_1_0),
+        )
+    };
+    let space_2_0 = config.space();
+    let start_brace_2_0 = config.start_brace();
+    let start_brace_parse_2_0 = || {
+        many_till(
+            lex_space_def(space_2_0),
+            lex_start_brace_def(start_brace_2_0),
+        )
+    };
+    let space_3_0 = config.space();
+    let start_brace_3_0 = config.start_brace();
+    let start_brace_parse_3_0 = || {
+        many_till(
+            lex_space_def(space_3_0),
+            lex_start_brace_def(start_brace_3_0),
+        )
+    };
+    let space_4_0 = config.space();
+    let start_brace_4_0 = config.start_brace();
+    let start_brace_parse_4_0 = || {
+        many_till(
+            lex_space_def(space_4_0),
+            lex_start_brace_def(start_brace_4_0),
+        )
+    };
+    let space_5_0 = config.space();
+    let start_brace_5_0 = config.start_brace();
+    let start_brace_parse_5_0 = || {
+        many_till(
+            lex_space_def(space_5_0),
+            lex_start_brace_def(start_brace_5_0),
+        )
+    };
+    let space_6_0 = config.space();
+    let start_brace_6_0 = config.start_brace();
+    let start_brace_parse_6_0 = || {
+        many_till(
+            lex_space_def(space_6_0),
+            lex_start_brace_def(start_brace_6_0),
+        )
+    };
+    let space_7_0 = config.space();
+    let start_brace_7_0 = config.start_brace();
+    let start_brace_parse_7_0 = || {
+        many_till(
+            lex_space_def(space_7_0),
+            lex_start_brace_def(start_brace_7_0),
+        )
+    };
+    let space_8_0 = config.space();
+    let start_brace_8_0 = config.start_brace();
+    let start_brace_parse_8_0 = || {
+        many_till(
+            lex_space_def(space_8_0),
+            lex_start_brace_def(start_brace_8_0),
+        )
+    };
+    // let p = move |c: L| {
+    let space_base_0_0 = config.space();
+    let carriage_new_line_base_0_0 = config.carriage_new_line();
+    let unix_new_line_base_0_0 = config.unix_new_line();
+    let start_paren_base_0_0 = config.start_paren();
+    let end_paren_base_0_0 = config.end_paren();
+    let not_base_0_0 = config.not();
+    let and_base_0_0 = config.and();
+    let or_base_0_0 = config.or();
+    let end_brace_base_0_0 = config.end_brace();
+    let base_tag_parse_0_0 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_0_0),
+                    lex_carriage_return_def(carriage_new_line_base_0_0),
+                    lex_unix_new_line_def(unix_new_line_base_0_0),
+                    lex_start_paren_def(start_paren_base_0_0),
+                    lex_end_paren_def(end_paren_base_0_0),
+                    lex_not_def(not_base_0_0),
+                    lex_and_def(and_base_0_0),
+                    lex_or_def(or_base_0_0),
+                    lex_end_brace_def(end_brace_base_0_0),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_1_0 = config.space();
+    let carriage_new_line_base_1_0 = config.carriage_new_line();
+    let unix_new_line_base_1_0 = config.unix_new_line();
+    let start_paren_base_1_0 = config.start_paren();
+    let end_paren_base_1_0 = config.end_paren();
+    let not_base_1_0 = config.not();
+    let and_base_1_0 = config.and();
+    let or_base_1_0 = config.or();
+    let end_brace_base_1_0 = config.end_brace();
+    let base_tag_parse_1_0 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_1_0),
+                    lex_carriage_return_def(carriage_new_line_base_1_0),
+                    lex_unix_new_line_def(unix_new_line_base_1_0),
+                    lex_start_paren_def(start_paren_base_1_0),
+                    lex_end_paren_def(end_paren_base_1_0),
+                    lex_not_def(not_base_1_0),
+                    lex_and_def(and_base_1_0),
+                    lex_or_def(or_base_1_0),
+                    lex_end_brace_def(end_brace_base_1_0),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_2_0 = config.space();
+    let carriage_new_line_base_2_0 = config.carriage_new_line();
+    let unix_new_line_base_2_0 = config.unix_new_line();
+    let start_paren_base_2_0 = config.start_paren();
+    let end_paren_base_2_0 = config.end_paren();
+    let not_base_2_0 = config.not();
+    let and_base_2_0 = config.and();
+    let or_base_2_0 = config.or();
+    let end_brace_base_2_0 = config.end_brace();
+    let base_tag_parse_2_0 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_2_0),
+                    lex_carriage_return_def(carriage_new_line_base_2_0),
+                    lex_unix_new_line_def(unix_new_line_base_2_0),
+                    lex_start_paren_def(start_paren_base_2_0),
+                    lex_end_paren_def(end_paren_base_2_0),
+                    lex_not_def(not_base_2_0),
+                    lex_and_def(and_base_2_0),
+                    lex_or_def(or_base_2_0),
+                    lex_end_brace_def(end_brace_base_2_0),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_3_0 = config.space();
+    let carriage_new_line_base_3_0 = config.carriage_new_line();
+    let unix_new_line_base_3_0 = config.unix_new_line();
+    let start_paren_base_3_0 = config.start_paren();
+    let end_paren_base_3_0 = config.end_paren();
+    let not_base_3_0 = config.not();
+    let and_base_3_0 = config.and();
+    let or_base_3_0 = config.or();
+    let end_brace_base_3_0 = config.end_brace();
+    let base_tag_parse_3_0 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_3_0),
+                    lex_carriage_return_def(carriage_new_line_base_3_0),
+                    lex_unix_new_line_def(unix_new_line_base_3_0),
+                    lex_start_paren_def(start_paren_base_3_0),
+                    lex_end_paren_def(end_paren_base_3_0),
+                    lex_not_def(not_base_3_0),
+                    lex_and_def(and_base_3_0),
+                    lex_or_def(or_base_3_0),
+                    lex_end_brace_def(end_brace_base_3_0),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_4_0 = config.space();
+    let carriage_new_line_base_4_0 = config.carriage_new_line();
+    let unix_new_line_base_4_0 = config.unix_new_line();
+    let start_paren_base_4_0 = config.start_paren();
+    let end_paren_base_4_0 = config.end_paren();
+    let not_base_4_0 = config.not();
+    let and_base_4_0 = config.and();
+    let or_base_4_0 = config.or();
+    let end_brace_base_4_0 = config.end_brace();
+    let base_tag_parse_4_0 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_4_0),
+                    lex_carriage_return_def(carriage_new_line_base_4_0),
+                    lex_unix_new_line_def(unix_new_line_base_4_0),
+                    lex_start_paren_def(start_paren_base_4_0),
+                    lex_end_paren_def(end_paren_base_4_0),
+                    lex_not_def(not_base_4_0),
+                    lex_and_def(and_base_4_0),
+                    lex_or_def(or_base_4_0),
+                    lex_end_brace_def(end_brace_base_4_0),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_5_0 = config.space();
+    let carriage_new_line_base_5_0 = config.carriage_new_line();
+    let unix_new_line_base_5_0 = config.unix_new_line();
+    let start_paren_base_5_0 = config.start_paren();
+    let end_paren_base_5_0 = config.end_paren();
+    let not_base_5_0 = config.not();
+    let and_base_5_0 = config.and();
+    let or_base_5_0 = config.or();
+    let end_brace_base_5_0 = config.end_brace();
+    let base_tag_parse_5_0 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_5_0),
+                    lex_carriage_return_def(carriage_new_line_base_5_0),
+                    lex_unix_new_line_def(unix_new_line_base_5_0),
+                    lex_start_paren_def(start_paren_base_5_0),
+                    lex_end_paren_def(end_paren_base_5_0),
+                    lex_not_def(not_base_5_0),
+                    lex_and_def(and_base_5_0),
+                    lex_or_def(or_base_5_0),
+                    lex_end_brace_def(end_brace_base_5_0),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_6_0 = config.space();
+    let carriage_new_line_base_6_0 = config.carriage_new_line();
+    let unix_new_line_base_6_0 = config.unix_new_line();
+    let start_paren_base_6_0 = config.start_paren();
+    let end_paren_base_6_0 = config.end_paren();
+    let not_base_6_0 = config.not();
+    let and_base_6_0 = config.and();
+    let or_base_6_0 = config.or();
+    let end_brace_base_6_0 = config.end_brace();
+    let base_tag_parse_6_0 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_6_0),
+                    lex_carriage_return_def(carriage_new_line_base_6_0),
+                    lex_unix_new_line_def(unix_new_line_base_6_0),
+                    lex_start_paren_def(start_paren_base_6_0),
+                    lex_end_paren_def(end_paren_base_6_0),
+                    lex_not_def(not_base_6_0),
+                    lex_and_def(and_base_6_0),
+                    lex_or_def(or_base_6_0),
+                    lex_end_brace_def(end_brace_base_6_0),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_7_0 = config.space();
+    let carriage_new_line_base_7_0 = config.carriage_new_line();
+    let unix_new_line_base_7_0 = config.unix_new_line();
+    let start_paren_base_7_0 = config.start_paren();
+    let end_paren_base_7_0 = config.end_paren();
+    let not_base_7_0 = config.not();
+    let and_base_7_0 = config.and();
+    let or_base_7_0 = config.or();
+    let end_brace_base_7_0 = config.end_brace();
+    let base_tag_parse_7_0 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_7_0),
+                    lex_carriage_return_def(carriage_new_line_base_7_0),
+                    lex_unix_new_line_def(unix_new_line_base_7_0),
+                    lex_start_paren_def(start_paren_base_7_0),
+                    lex_end_paren_def(end_paren_base_7_0),
+                    lex_not_def(not_base_7_0),
+                    lex_and_def(and_base_7_0),
+                    lex_or_def(or_base_7_0),
+                    lex_end_brace_def(end_brace_base_7_0),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_8_0 = config.space();
+    let carriage_new_line_base_8_0 = config.carriage_new_line();
+    let unix_new_line_base_8_0 = config.unix_new_line();
+    let start_paren_base_8_0 = config.start_paren();
+    let end_paren_base_8_0 = config.end_paren();
+    let not_base_8_0 = config.not();
+    let and_base_8_0 = config.and();
+    let or_base_8_0 = config.or();
+    let end_brace_base_8_0 = config.end_brace();
+    let base_tag_parse_8_0 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_8_0),
+                    lex_carriage_return_def(carriage_new_line_base_8_0),
+                    lex_unix_new_line_def(unix_new_line_base_8_0),
+                    lex_start_paren_def(start_paren_base_8_0),
+                    lex_end_paren_def(end_paren_base_8_0),
+                    lex_not_def(not_base_8_0),
+                    lex_and_def(and_base_8_0),
+                    lex_or_def(or_base_8_0),
+                    lex_end_brace_def(end_brace_base_8_0),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let feature_parse_0 = || {
+        map(
+            tuple((
+                lex_feature_def(config.feature_base()),
+                start_brace_parse_0_0(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_0_0(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(feature, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, feature);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let feature_not_parse_0 = || {
+        map(
+            tuple((
+                lex_feature_not_def(config.feature_not()),
+                start_brace_parse_1_0(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_1_0(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(feature, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, feature);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let feature_case_parse_0 = || {
+        map(
+            tuple((
+                lex_feature_case_def(config.feature_case()),
+                start_brace_parse_2_0(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_2_0(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(feature, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, feature);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let config_parse_0 = || {
+        map(
+            tuple((
+                lex_config_def(config.config_base()),
+                start_brace_parse_3_0(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_3_0(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(config, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, config);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let config_not_parse_0 = || {
+        map(
+            tuple((
+                lex_config_not_def(config.config_not()),
+                start_brace_parse_4_0(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_4_0(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(config, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, config);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let config_case_parse_0 = || {
+        map(
+            tuple((
+                lex_config_case_def(config.config_case()),
+                start_brace_parse_5_0(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_5_0(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(config, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, config);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+
+    let config_group_parse_0 = || {
+        map(
+            tuple((
+                lex_config_group_def(config.group_base()),
+                start_brace_parse_6_0(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_6_0(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(group, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, group);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let config_group_not_parse_0 = || {
+        map(
+            tuple((
+                lex_config_group_not_def(config.group_not()),
+                start_brace_parse_7_0(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_7_0(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(group, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, group);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let config_group_case_parse_0 = || {
+        map(
+            tuple((
+                lex_config_group_case_def(config.group_case()),
+                start_brace_parse_8_0(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_8_0(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(group, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, group);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let space_0_1 = config.space();
+    let start_brace_0_1 = config.start_brace();
+    let start_brace_parse_0_1 = || {
+        many_till(
+            lex_space_def(space_0_1),
+            lex_start_brace_def(start_brace_0_1),
+        )
+    };
+    let space_1_1 = config.space();
+    let start_brace_1_1 = config.start_brace();
+    let start_brace_parse_1_1 = || {
+        many_till(
+            lex_space_def(space_1_1),
+            lex_start_brace_def(start_brace_1_1),
+        )
+    };
+    let space_2_1 = config.space();
+    let start_brace_2_1 = config.start_brace();
+    let start_brace_parse_2_1 = || {
+        many_till(
+            lex_space_def(space_2_1),
+            lex_start_brace_def(start_brace_2_1),
+        )
+    };
+    let space_3_1 = config.space();
+    let start_brace_3_1 = config.start_brace();
+    let start_brace_parse_3_1 = || {
+        many_till(
+            lex_space_def(space_3_1),
+            lex_start_brace_def(start_brace_3_1),
+        )
+    };
+    let space_4_1 = config.space();
+    let start_brace_4_1 = config.start_brace();
+    let start_brace_parse_4_1 = || {
+        many_till(
+            lex_space_def(space_4_1),
+            lex_start_brace_def(start_brace_4_1),
+        )
+    };
+    let space_5_1 = config.space();
+    let start_brace_5_1 = config.start_brace();
+    let start_brace_parse_5_1 = || {
+        many_till(
+            lex_space_def(space_5_1),
+            lex_start_brace_def(start_brace_5_1),
+        )
+    };
+    let space_6_1 = config.space();
+    let start_brace_6_1 = config.start_brace();
+    let start_brace_parse_6_1 = || {
+        many_till(
+            lex_space_def(space_6_1),
+            lex_start_brace_def(start_brace_6_1),
+        )
+    };
+    let space_7_1 = config.space();
+    let start_brace_7_1 = config.start_brace();
+    let start_brace_parse_7_1 = || {
+        many_till(
+            lex_space_def(space_7_1),
+            lex_start_brace_def(start_brace_7_1),
+        )
+    };
+    let space_8_1 = config.space();
+    let start_brace_8_1 = config.start_brace();
+    let start_brace_parse_8_1 = || {
+        many_till(
+            lex_space_def(space_8_1),
+            lex_start_brace_def(start_brace_8_1),
+        )
+    };
+    // let p = move |c: L| {
+    let space_base_0_1 = config.space();
+    let carriage_new_line_base_0_1 = config.carriage_new_line();
+    let unix_new_line_base_0_1 = config.unix_new_line();
+    let start_paren_base_0_1 = config.start_paren();
+    let end_paren_base_0_1 = config.end_paren();
+    let not_base_0_1 = config.not();
+    let and_base_0_1 = config.and();
+    let or_base_0_1 = config.or();
+    let end_brace_base_0_1 = config.end_brace();
+    let base_tag_parse_0_1 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_0_1),
+                    lex_carriage_return_def(carriage_new_line_base_0_1),
+                    lex_unix_new_line_def(unix_new_line_base_0_1),
+                    lex_start_paren_def(start_paren_base_0_1),
+                    lex_end_paren_def(end_paren_base_0_1),
+                    lex_not_def(not_base_0_1),
+                    lex_and_def(and_base_0_1),
+                    lex_or_def(or_base_0_1),
+                    lex_end_brace_def(end_brace_base_0_1),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_1_1 = config.space();
+    let carriage_new_line_base_1_1 = config.carriage_new_line();
+    let unix_new_line_base_1_1 = config.unix_new_line();
+    let start_paren_base_1_1 = config.start_paren();
+    let end_paren_base_1_1 = config.end_paren();
+    let not_base_1_1 = config.not();
+    let and_base_1_1 = config.and();
+    let or_base_1_1 = config.or();
+    let end_brace_base_1_1 = config.end_brace();
+    let base_tag_parse_1_1 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_1_1),
+                    lex_carriage_return_def(carriage_new_line_base_1_1),
+                    lex_unix_new_line_def(unix_new_line_base_1_1),
+                    lex_start_paren_def(start_paren_base_1_1),
+                    lex_end_paren_def(end_paren_base_1_1),
+                    lex_not_def(not_base_1_1),
+                    lex_and_def(and_base_1_1),
+                    lex_or_def(or_base_1_1),
+                    lex_end_brace_def(end_brace_base_1_1),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_2_1 = config.space();
+    let carriage_new_line_base_2_1 = config.carriage_new_line();
+    let unix_new_line_base_2_1 = config.unix_new_line();
+    let start_paren_base_2_1 = config.start_paren();
+    let end_paren_base_2_1 = config.end_paren();
+    let not_base_2_1 = config.not();
+    let and_base_2_1 = config.and();
+    let or_base_2_1 = config.or();
+    let end_brace_base_2_1 = config.end_brace();
+    let base_tag_parse_2_1 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_2_1),
+                    lex_carriage_return_def(carriage_new_line_base_2_1),
+                    lex_unix_new_line_def(unix_new_line_base_2_1),
+                    lex_start_paren_def(start_paren_base_2_1),
+                    lex_end_paren_def(end_paren_base_2_1),
+                    lex_not_def(not_base_2_1),
+                    lex_and_def(and_base_2_1),
+                    lex_or_def(or_base_2_1),
+                    lex_end_brace_def(end_brace_base_2_1),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_3_1 = config.space();
+    let carriage_new_line_base_3_1 = config.carriage_new_line();
+    let unix_new_line_base_3_1 = config.unix_new_line();
+    let start_paren_base_3_1 = config.start_paren();
+    let end_paren_base_3_1 = config.end_paren();
+    let not_base_3_1 = config.not();
+    let and_base_3_1 = config.and();
+    let or_base_3_1 = config.or();
+    let end_brace_base_3_1 = config.end_brace();
+    let base_tag_parse_3_1 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_3_1),
+                    lex_carriage_return_def(carriage_new_line_base_3_1),
+                    lex_unix_new_line_def(unix_new_line_base_3_1),
+                    lex_start_paren_def(start_paren_base_3_1),
+                    lex_end_paren_def(end_paren_base_3_1),
+                    lex_not_def(not_base_3_1),
+                    lex_and_def(and_base_3_1),
+                    lex_or_def(or_base_3_1),
+                    lex_end_brace_def(end_brace_base_3_1),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_4_1 = config.space();
+    let carriage_new_line_base_4_1 = config.carriage_new_line();
+    let unix_new_line_base_4_1 = config.unix_new_line();
+    let start_paren_base_4_1 = config.start_paren();
+    let end_paren_base_4_1 = config.end_paren();
+    let not_base_4_1 = config.not();
+    let and_base_4_1 = config.and();
+    let or_base_4_1 = config.or();
+    let end_brace_base_4_1 = config.end_brace();
+    let base_tag_parse_4_1 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_4_1),
+                    lex_carriage_return_def(carriage_new_line_base_4_1),
+                    lex_unix_new_line_def(unix_new_line_base_4_1),
+                    lex_start_paren_def(start_paren_base_4_1),
+                    lex_end_paren_def(end_paren_base_4_1),
+                    lex_not_def(not_base_4_1),
+                    lex_and_def(and_base_4_1),
+                    lex_or_def(or_base_4_1),
+                    lex_end_brace_def(end_brace_base_4_1),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_5_1 = config.space();
+    let carriage_new_line_base_5_1 = config.carriage_new_line();
+    let unix_new_line_base_5_1 = config.unix_new_line();
+    let start_paren_base_5_1 = config.start_paren();
+    let end_paren_base_5_1 = config.end_paren();
+    let not_base_5_1 = config.not();
+    let and_base_5_1 = config.and();
+    let or_base_5_1 = config.or();
+    let end_brace_base_5_1 = config.end_brace();
+    let base_tag_parse_5_1 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_5_1),
+                    lex_carriage_return_def(carriage_new_line_base_5_1),
+                    lex_unix_new_line_def(unix_new_line_base_5_1),
+                    lex_start_paren_def(start_paren_base_5_1),
+                    lex_end_paren_def(end_paren_base_5_1),
+                    lex_not_def(not_base_5_1),
+                    lex_and_def(and_base_5_1),
+                    lex_or_def(or_base_5_1),
+                    lex_end_brace_def(end_brace_base_5_1),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_6_1 = config.space();
+    let carriage_new_line_base_6_1 = config.carriage_new_line();
+    let unix_new_line_base_6_1 = config.unix_new_line();
+    let start_paren_base_6_1 = config.start_paren();
+    let end_paren_base_6_1 = config.end_paren();
+    let not_base_6_1 = config.not();
+    let and_base_6_1 = config.and();
+    let or_base_6_1 = config.or();
+    let end_brace_base_6_1 = config.end_brace();
+    let base_tag_parse_6_1 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_6_1),
+                    lex_carriage_return_def(carriage_new_line_base_6_1),
+                    lex_unix_new_line_def(unix_new_line_base_6_1),
+                    lex_start_paren_def(start_paren_base_6_1),
+                    lex_end_paren_def(end_paren_base_6_1),
+                    lex_not_def(not_base_6_1),
+                    lex_and_def(and_base_6_1),
+                    lex_or_def(or_base_6_1),
+                    lex_end_brace_def(end_brace_base_6_1),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_7_1 = config.space();
+    let carriage_new_line_base_7_1 = config.carriage_new_line();
+    let unix_new_line_base_7_1 = config.unix_new_line();
+    let start_paren_base_7_1 = config.start_paren();
+    let end_paren_base_7_1 = config.end_paren();
+    let not_base_7_1 = config.not();
+    let and_base_7_1 = config.and();
+    let or_base_7_1 = config.or();
+    let end_brace_base_7_1 = config.end_brace();
+    let base_tag_parse_7_1 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_7_1),
+                    lex_carriage_return_def(carriage_new_line_base_7_1),
+                    lex_unix_new_line_def(unix_new_line_base_7_1),
+                    lex_start_paren_def(start_paren_base_7_1),
+                    lex_end_paren_def(end_paren_base_7_1),
+                    lex_not_def(not_base_7_1),
+                    lex_and_def(and_base_7_1),
+                    lex_or_def(or_base_7_1),
+                    lex_end_brace_def(end_brace_base_7_1),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_8_1 = config.space();
+    let carriage_new_line_base_8_1 = config.carriage_new_line();
+    let unix_new_line_base_8_1 = config.unix_new_line();
+    let start_paren_base_8_1 = config.start_paren();
+    let end_paren_base_8_1 = config.end_paren();
+    let not_base_8_1 = config.not();
+    let and_base_8_1 = config.and();
+    let or_base_8_1 = config.or();
+    let end_brace_base_8_1 = config.end_brace();
+    let base_tag_parse_8_1 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_8_1),
+                    lex_carriage_return_def(carriage_new_line_base_8_1),
+                    lex_unix_new_line_def(unix_new_line_base_8_1),
+                    lex_start_paren_def(start_paren_base_8_1),
+                    lex_end_paren_def(end_paren_base_8_1),
+                    lex_not_def(not_base_8_1),
+                    lex_and_def(and_base_8_1),
+                    lex_or_def(or_base_8_1),
+                    lex_end_brace_def(end_brace_base_8_1),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let feature_parse_1 = || {
+        map(
+            tuple((
+                lex_feature_def(config.feature_base()),
+                start_brace_parse_0_1(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_0_1(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(feature, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, feature);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let feature_not_parse_1 = || {
+        map(
+            tuple((
+                lex_feature_not_def(config.feature_not()),
+                start_brace_parse_1_1(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_1_1(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(feature, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, feature);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let feature_case_parse_1 = || {
+        map(
+            tuple((
+                lex_feature_case_def(config.feature_case()),
+                start_brace_parse_2_1(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_2_1(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(feature, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, feature);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let config_parse_1 = || {
+        map(
+            tuple((
+                lex_config_def(config.config_base()),
+                start_brace_parse_3_1(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_3_1(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(config, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, config);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let config_not_parse_1 = || {
+        map(
+            tuple((
+                lex_config_not_def(config.config_not()),
+                start_brace_parse_4_1(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_4_1(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(config, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, config);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let config_case_parse_1 = || {
+        map(
+            tuple((
+                lex_config_case_def(config.config_case()),
+                start_brace_parse_5_1(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_5_1(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(config, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, config);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+
+    let config_group_parse_1 = || {
+        map(
+            tuple((
+                lex_config_group_def(config.group_base()),
+                start_brace_parse_6_1(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_6_1(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(group, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, group);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let config_group_not_parse_1 = || {
+        map(
+            tuple((
+                lex_config_group_not_def(config.group_not()),
+                start_brace_parse_7_1(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_7_1(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(group, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, group);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let config_group_case_parse_1 = || {
+        map(
+            tuple((
+                lex_config_group_case_def(config.group_case()),
+                start_brace_parse_8_1(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_8_1(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(group, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, group);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let space_0_2 = config.space();
+    let start_brace_0_2 = config.start_brace();
+    let start_brace_parse_0_2 = || {
+        many_till(
+            lex_space_def(space_0_2),
+            lex_start_brace_def(start_brace_0_2),
+        )
+    };
+    let space_1_2 = config.space();
+    let start_brace_1_2 = config.start_brace();
+    let start_brace_parse_1_2 = || {
+        many_till(
+            lex_space_def(space_1_2),
+            lex_start_brace_def(start_brace_1_2),
+        )
+    };
+    let space_2_2 = config.space();
+    let start_brace_2_2 = config.start_brace();
+    let start_brace_parse_2_2 = || {
+        many_till(
+            lex_space_def(space_2_2),
+            lex_start_brace_def(start_brace_2_2),
+        )
+    };
+    let space_3_2 = config.space();
+    let start_brace_3_2 = config.start_brace();
+    let start_brace_parse_3_2 = || {
+        many_till(
+            lex_space_def(space_3_2),
+            lex_start_brace_def(start_brace_3_2),
+        )
+    };
+    let space_4_2 = config.space();
+    let start_brace_4_2 = config.start_brace();
+    let start_brace_parse_4_2 = || {
+        many_till(
+            lex_space_def(space_4_2),
+            lex_start_brace_def(start_brace_4_2),
+        )
+    };
+    let space_5_2 = config.space();
+    let start_brace_5_2 = config.start_brace();
+    let start_brace_parse_5_2 = || {
+        many_till(
+            lex_space_def(space_5_2),
+            lex_start_brace_def(start_brace_5_2),
+        )
+    };
+    let space_6_2 = config.space();
+    let start_brace_6_2 = config.start_brace();
+    let start_brace_parse_6_2 = || {
+        many_till(
+            lex_space_def(space_6_2),
+            lex_start_brace_def(start_brace_6_2),
+        )
+    };
+    let space_7_2 = config.space();
+    let start_brace_7_2 = config.start_brace();
+    let start_brace_parse_7_2 = || {
+        many_till(
+            lex_space_def(space_7_2),
+            lex_start_brace_def(start_brace_7_2),
+        )
+    };
+    let space_8_2 = config.space();
+    let start_brace_8_2 = config.start_brace();
+    let start_brace_parse_8_2 = || {
+        many_till(
+            lex_space_def(space_8_2),
+            lex_start_brace_def(start_brace_8_2),
+        )
+    };
+    // let p = move |c: L| {
+    let space_base_0_2 = config.space();
+    let carriage_new_line_base_0_2 = config.carriage_new_line();
+    let unix_new_line_base_0_2 = config.unix_new_line();
+    let start_paren_base_0_2 = config.start_paren();
+    let end_paren_base_0_2 = config.end_paren();
+    let not_base_0_2 = config.not();
+    let and_base_0_2 = config.and();
+    let or_base_0_2 = config.or();
+    let end_brace_base_0_2 = config.end_brace();
+    let base_tag_parse_0_2 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_0_2),
+                    lex_carriage_return_def(carriage_new_line_base_0_2),
+                    lex_unix_new_line_def(unix_new_line_base_0_2),
+                    lex_start_paren_def(start_paren_base_0_2),
+                    lex_end_paren_def(end_paren_base_0_2),
+                    lex_not_def(not_base_0_2),
+                    lex_and_def(and_base_0_2),
+                    lex_or_def(or_base_0_2),
+                    lex_end_brace_def(end_brace_base_0_2),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_1_2 = config.space();
+    let carriage_new_line_base_1_2 = config.carriage_new_line();
+    let unix_new_line_base_1_2 = config.unix_new_line();
+    let start_paren_base_1_2 = config.start_paren();
+    let end_paren_base_1_2 = config.end_paren();
+    let not_base_1_2 = config.not();
+    let and_base_1_2 = config.and();
+    let or_base_1_2 = config.or();
+    let end_brace_base_1_2 = config.end_brace();
+    let base_tag_parse_1_2 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_1_2),
+                    lex_carriage_return_def(carriage_new_line_base_1_2),
+                    lex_unix_new_line_def(unix_new_line_base_1_2),
+                    lex_start_paren_def(start_paren_base_1_2),
+                    lex_end_paren_def(end_paren_base_1_2),
+                    lex_not_def(not_base_1_2),
+                    lex_and_def(and_base_1_2),
+                    lex_or_def(or_base_1_2),
+                    lex_end_brace_def(end_brace_base_1_2),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_2_2 = config.space();
+    let carriage_new_line_base_2_2 = config.carriage_new_line();
+    let unix_new_line_base_2_2 = config.unix_new_line();
+    let start_paren_base_2_2 = config.start_paren();
+    let end_paren_base_2_2 = config.end_paren();
+    let not_base_2_2 = config.not();
+    let and_base_2_2 = config.and();
+    let or_base_2_2 = config.or();
+    let end_brace_base_2_2 = config.end_brace();
+    let base_tag_parse_2_2 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_2_2),
+                    lex_carriage_return_def(carriage_new_line_base_2_2),
+                    lex_unix_new_line_def(unix_new_line_base_2_2),
+                    lex_start_paren_def(start_paren_base_2_2),
+                    lex_end_paren_def(end_paren_base_2_2),
+                    lex_not_def(not_base_2_2),
+                    lex_and_def(and_base_2_2),
+                    lex_or_def(or_base_2_2),
+                    lex_end_brace_def(end_brace_base_2_2),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_3_2 = config.space();
+    let carriage_new_line_base_3_2 = config.carriage_new_line();
+    let unix_new_line_base_3_2 = config.unix_new_line();
+    let start_paren_base_3_2 = config.start_paren();
+    let end_paren_base_3_2 = config.end_paren();
+    let not_base_3_2 = config.not();
+    let and_base_3_2 = config.and();
+    let or_base_3_2 = config.or();
+    let end_brace_base_3_2 = config.end_brace();
+    let base_tag_parse_3_2 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_3_2),
+                    lex_carriage_return_def(carriage_new_line_base_3_2),
+                    lex_unix_new_line_def(unix_new_line_base_3_2),
+                    lex_start_paren_def(start_paren_base_3_2),
+                    lex_end_paren_def(end_paren_base_3_2),
+                    lex_not_def(not_base_3_2),
+                    lex_and_def(and_base_3_2),
+                    lex_or_def(or_base_3_2),
+                    lex_end_brace_def(end_brace_base_3_2),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_4_2 = config.space();
+    let carriage_new_line_base_4_2 = config.carriage_new_line();
+    let unix_new_line_base_4_2 = config.unix_new_line();
+    let start_paren_base_4_2 = config.start_paren();
+    let end_paren_base_4_2 = config.end_paren();
+    let not_base_4_2 = config.not();
+    let and_base_4_2 = config.and();
+    let or_base_4_2 = config.or();
+    let end_brace_base_4_2 = config.end_brace();
+    let base_tag_parse_4_2 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_4_2),
+                    lex_carriage_return_def(carriage_new_line_base_4_2),
+                    lex_unix_new_line_def(unix_new_line_base_4_2),
+                    lex_start_paren_def(start_paren_base_4_2),
+                    lex_end_paren_def(end_paren_base_4_2),
+                    lex_not_def(not_base_4_2),
+                    lex_and_def(and_base_4_2),
+                    lex_or_def(or_base_4_2),
+                    lex_end_brace_def(end_brace_base_4_2),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_5_2 = config.space();
+    let carriage_new_line_base_5_2 = config.carriage_new_line();
+    let unix_new_line_base_5_2 = config.unix_new_line();
+    let start_paren_base_5_2 = config.start_paren();
+    let end_paren_base_5_2 = config.end_paren();
+    let not_base_5_2 = config.not();
+    let and_base_5_2 = config.and();
+    let or_base_5_2 = config.or();
+    let end_brace_base_5_2 = config.end_brace();
+    let base_tag_parse_5_2 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_5_2),
+                    lex_carriage_return_def(carriage_new_line_base_5_2),
+                    lex_unix_new_line_def(unix_new_line_base_5_2),
+                    lex_start_paren_def(start_paren_base_5_2),
+                    lex_end_paren_def(end_paren_base_5_2),
+                    lex_not_def(not_base_5_2),
+                    lex_and_def(and_base_5_2),
+                    lex_or_def(or_base_5_2),
+                    lex_end_brace_def(end_brace_base_5_2),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_6_2 = config.space();
+    let carriage_new_line_base_6_2 = config.carriage_new_line();
+    let unix_new_line_base_6_2 = config.unix_new_line();
+    let start_paren_base_6_2 = config.start_paren();
+    let end_paren_base_6_2 = config.end_paren();
+    let not_base_6_2 = config.not();
+    let and_base_6_2 = config.and();
+    let or_base_6_2 = config.or();
+    let end_brace_base_6_2 = config.end_brace();
+    let base_tag_parse_6_2 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_6_2),
+                    lex_carriage_return_def(carriage_new_line_base_6_2),
+                    lex_unix_new_line_def(unix_new_line_base_6_2),
+                    lex_start_paren_def(start_paren_base_6_2),
+                    lex_end_paren_def(end_paren_base_6_2),
+                    lex_not_def(not_base_6_2),
+                    lex_and_def(and_base_6_2),
+                    lex_or_def(or_base_6_2),
+                    lex_end_brace_def(end_brace_base_6_2),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_7_2 = config.space();
+    let carriage_new_line_base_7_2 = config.carriage_new_line();
+    let unix_new_line_base_7_2 = config.unix_new_line();
+    let start_paren_base_7_2 = config.start_paren();
+    let end_paren_base_7_2 = config.end_paren();
+    let not_base_7_2 = config.not();
+    let and_base_7_2 = config.and();
+    let or_base_7_2 = config.or();
+    let end_brace_base_7_2 = config.end_brace();
+    let base_tag_parse_7_2 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_7_2),
+                    lex_carriage_return_def(carriage_new_line_base_7_2),
+                    lex_unix_new_line_def(unix_new_line_base_7_2),
+                    lex_start_paren_def(start_paren_base_7_2),
+                    lex_end_paren_def(end_paren_base_7_2),
+                    lex_not_def(not_base_7_2),
+                    lex_and_def(and_base_7_2),
+                    lex_or_def(or_base_7_2),
+                    lex_end_brace_def(end_brace_base_7_2),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_8_2 = config.space();
+    let carriage_new_line_base_8_2 = config.carriage_new_line();
+    let unix_new_line_base_8_2 = config.unix_new_line();
+    let start_paren_base_8_2 = config.start_paren();
+    let end_paren_base_8_2 = config.end_paren();
+    let not_base_8_2 = config.not();
+    let and_base_8_2 = config.and();
+    let or_base_8_2 = config.or();
+    let end_brace_base_8_2 = config.end_brace();
+    let base_tag_parse_8_2 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_8_2),
+                    lex_carriage_return_def(carriage_new_line_base_8_2),
+                    lex_unix_new_line_def(unix_new_line_base_8_2),
+                    lex_start_paren_def(start_paren_base_8_2),
+                    lex_end_paren_def(end_paren_base_8_2),
+                    lex_not_def(not_base_8_2),
+                    lex_and_def(and_base_8_2),
+                    lex_or_def(or_base_8_2),
+                    lex_end_brace_def(end_brace_base_8_2),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let feature_parse_2 = || {
+        map(
+            tuple((
+                lex_feature_def(config.feature_base()),
+                start_brace_parse_0_2(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_0_2(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(feature, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, feature);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let feature_not_parse_2 = || {
+        map(
+            tuple((
+                lex_feature_not_def(config.feature_not()),
+                start_brace_parse_1_2(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_1_2(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(feature, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, feature);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let feature_case_parse_2 = || {
+        map(
+            tuple((
+                lex_feature_case_def(config.feature_case()),
+                start_brace_parse_2_2(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_2_2(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(feature, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, feature);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let config_parse_2 = || {
+        map(
+            tuple((
+                lex_config_def(config.config_base()),
+                start_brace_parse_3_2(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_3_2(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(config, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, config);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let config_not_parse_2 = || {
+        map(
+            tuple((
+                lex_config_not_def(config.config_not()),
+                start_brace_parse_4_2(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_4_2(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(config, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, config);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let config_case_parse_2 = || {
+        map(
+            tuple((
+                lex_config_case_def(config.config_case()),
+                start_brace_parse_5_2(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_5_2(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(config, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, config);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+
+    let config_group_parse_2 = || {
+        map(
+            tuple((
+                lex_config_group_def(config.group_base()),
+                start_brace_parse_6_2(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_6_2(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(group, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, group);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let config_group_not_parse_2 = || {
+        map(
+            tuple((
+                lex_config_group_not_def(config.group_not()),
+                start_brace_parse_7_2(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_7_2(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(group, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, group);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let config_group_case_parse_2 = || {
+        map(
+            tuple((
+                lex_config_group_case_def(config.group_case()),
+                start_brace_parse_8_2(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_8_2(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(group, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, group);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let space_0_4 = config.space();
+    let start_brace_0_4 = config.start_brace();
+    let start_brace_parse_0_4 = || {
+        many_till(
+            lex_space_def(space_0_4),
+            lex_start_brace_def(start_brace_0_4),
+        )
+    };
+    let space_1_4 = config.space();
+    let start_brace_1_4 = config.start_brace();
+    let start_brace_parse_1_4 = || {
+        many_till(
+            lex_space_def(space_1_4),
+            lex_start_brace_def(start_brace_1_4),
+        )
+    };
+    let space_2_4 = config.space();
+    let start_brace_2_4 = config.start_brace();
+    let start_brace_parse_2_4 = || {
+        many_till(
+            lex_space_def(space_2_4),
+            lex_start_brace_def(start_brace_2_4),
+        )
+    };
+    let space_3_4 = config.space();
+    let start_brace_3_4 = config.start_brace();
+    let start_brace_parse_3_4 = || {
+        many_till(
+            lex_space_def(space_3_4),
+            lex_start_brace_def(start_brace_3_4),
+        )
+    };
+    let space_4_4 = config.space();
+    let start_brace_4_4 = config.start_brace();
+    let start_brace_parse_4_4 = || {
+        many_till(
+            lex_space_def(space_4_4),
+            lex_start_brace_def(start_brace_4_4),
+        )
+    };
+    let space_5_4 = config.space();
+    let start_brace_5_4 = config.start_brace();
+    let start_brace_parse_5_4 = || {
+        many_till(
+            lex_space_def(space_5_4),
+            lex_start_brace_def(start_brace_5_4),
+        )
+    };
+    let space_6_4 = config.space();
+    let start_brace_6_4 = config.start_brace();
+    let start_brace_parse_6_4 = || {
+        many_till(
+            lex_space_def(space_6_4),
+            lex_start_brace_def(start_brace_6_4),
+        )
+    };
+    let space_7_4 = config.space();
+    let start_brace_7_4 = config.start_brace();
+    let start_brace_parse_7_4 = || {
+        many_till(
+            lex_space_def(space_7_4),
+            lex_start_brace_def(start_brace_7_4),
+        )
+    };
+    let space_8_4 = config.space();
+    let start_brace_8_4 = config.start_brace();
+    let start_brace_parse_8_4 = || {
+        many_till(
+            lex_space_def(space_8_4),
+            lex_start_brace_def(start_brace_8_4),
+        )
+    };
+    // let p = move |c: L| {
+    let space_base_0_4 = config.space();
+    let carriage_new_line_base_0_4 = config.carriage_new_line();
+    let unix_new_line_base_0_4 = config.unix_new_line();
+    let start_paren_base_0_4 = config.start_paren();
+    let end_paren_base_0_4 = config.end_paren();
+    let not_base_0_4 = config.not();
+    let and_base_0_4 = config.and();
+    let or_base_0_4 = config.or();
+    let end_brace_base_0_4 = config.end_brace();
+    let base_tag_parse_0_4 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_0_4),
+                    lex_carriage_return_def(carriage_new_line_base_0_4),
+                    lex_unix_new_line_def(unix_new_line_base_0_4),
+                    lex_start_paren_def(start_paren_base_0_4),
+                    lex_end_paren_def(end_paren_base_0_4),
+                    lex_not_def(not_base_0_4),
+                    lex_and_def(and_base_0_4),
+                    lex_or_def(or_base_0_4),
+                    lex_end_brace_def(end_brace_base_0_4),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_1_4 = config.space();
+    let carriage_new_line_base_1_4 = config.carriage_new_line();
+    let unix_new_line_base_1_4 = config.unix_new_line();
+    let start_paren_base_1_4 = config.start_paren();
+    let end_paren_base_1_4 = config.end_paren();
+    let not_base_1_4 = config.not();
+    let and_base_1_4 = config.and();
+    let or_base_1_4 = config.or();
+    let end_brace_base_1_4 = config.end_brace();
+    let base_tag_parse_1_4 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_1_4),
+                    lex_carriage_return_def(carriage_new_line_base_1_4),
+                    lex_unix_new_line_def(unix_new_line_base_1_4),
+                    lex_start_paren_def(start_paren_base_1_4),
+                    lex_end_paren_def(end_paren_base_1_4),
+                    lex_not_def(not_base_1_4),
+                    lex_and_def(and_base_1_4),
+                    lex_or_def(or_base_1_4),
+                    lex_end_brace_def(end_brace_base_1_4),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_2_4 = config.space();
+    let carriage_new_line_base_2_4 = config.carriage_new_line();
+    let unix_new_line_base_2_4 = config.unix_new_line();
+    let start_paren_base_2_4 = config.start_paren();
+    let end_paren_base_2_4 = config.end_paren();
+    let not_base_2_4 = config.not();
+    let and_base_2_4 = config.and();
+    let or_base_2_4 = config.or();
+    let end_brace_base_2_4 = config.end_brace();
+    let base_tag_parse_2_4 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_2_4),
+                    lex_carriage_return_def(carriage_new_line_base_2_4),
+                    lex_unix_new_line_def(unix_new_line_base_2_4),
+                    lex_start_paren_def(start_paren_base_2_4),
+                    lex_end_paren_def(end_paren_base_2_4),
+                    lex_not_def(not_base_2_4),
+                    lex_and_def(and_base_2_4),
+                    lex_or_def(or_base_2_4),
+                    lex_end_brace_def(end_brace_base_2_4),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_3_4 = config.space();
+    let carriage_new_line_base_3_4 = config.carriage_new_line();
+    let unix_new_line_base_3_4 = config.unix_new_line();
+    let start_paren_base_3_4 = config.start_paren();
+    let end_paren_base_3_4 = config.end_paren();
+    let not_base_3_4 = config.not();
+    let and_base_3_4 = config.and();
+    let or_base_3_4 = config.or();
+    let end_brace_base_3_4 = config.end_brace();
+    let base_tag_parse_3_4 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_3_4),
+                    lex_carriage_return_def(carriage_new_line_base_3_4),
+                    lex_unix_new_line_def(unix_new_line_base_3_4),
+                    lex_start_paren_def(start_paren_base_3_4),
+                    lex_end_paren_def(end_paren_base_3_4),
+                    lex_not_def(not_base_3_4),
+                    lex_and_def(and_base_3_4),
+                    lex_or_def(or_base_3_4),
+                    lex_end_brace_def(end_brace_base_3_4),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_4_4 = config.space();
+    let carriage_new_line_base_4_4 = config.carriage_new_line();
+    let unix_new_line_base_4_4 = config.unix_new_line();
+    let start_paren_base_4_4 = config.start_paren();
+    let end_paren_base_4_4 = config.end_paren();
+    let not_base_4_4 = config.not();
+    let and_base_4_4 = config.and();
+    let or_base_4_4 = config.or();
+    let end_brace_base_4_4 = config.end_brace();
+    let base_tag_parse_4_4 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_4_4),
+                    lex_carriage_return_def(carriage_new_line_base_4_4),
+                    lex_unix_new_line_def(unix_new_line_base_4_4),
+                    lex_start_paren_def(start_paren_base_4_4),
+                    lex_end_paren_def(end_paren_base_4_4),
+                    lex_not_def(not_base_4_4),
+                    lex_and_def(and_base_4_4),
+                    lex_or_def(or_base_4_4),
+                    lex_end_brace_def(end_brace_base_4_4),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_5_4 = config.space();
+    let carriage_new_line_base_5_4 = config.carriage_new_line();
+    let unix_new_line_base_5_4 = config.unix_new_line();
+    let start_paren_base_5_4 = config.start_paren();
+    let end_paren_base_5_4 = config.end_paren();
+    let not_base_5_4 = config.not();
+    let and_base_5_4 = config.and();
+    let or_base_5_4 = config.or();
+    let end_brace_base_5_4 = config.end_brace();
+    let base_tag_parse_5_4 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_5_4),
+                    lex_carriage_return_def(carriage_new_line_base_5_4),
+                    lex_unix_new_line_def(unix_new_line_base_5_4),
+                    lex_start_paren_def(start_paren_base_5_4),
+                    lex_end_paren_def(end_paren_base_5_4),
+                    lex_not_def(not_base_5_4),
+                    lex_and_def(and_base_5_4),
+                    lex_or_def(or_base_5_4),
+                    lex_end_brace_def(end_brace_base_5_4),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_6_4 = config.space();
+    let carriage_new_line_base_6_4 = config.carriage_new_line();
+    let unix_new_line_base_6_4 = config.unix_new_line();
+    let start_paren_base_6_4 = config.start_paren();
+    let end_paren_base_6_4 = config.end_paren();
+    let not_base_6_4 = config.not();
+    let and_base_6_4 = config.and();
+    let or_base_6_4 = config.or();
+    let end_brace_base_6_4 = config.end_brace();
+    let base_tag_parse_6_4 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_6_4),
+                    lex_carriage_return_def(carriage_new_line_base_6_4),
+                    lex_unix_new_line_def(unix_new_line_base_6_4),
+                    lex_start_paren_def(start_paren_base_6_4),
+                    lex_end_paren_def(end_paren_base_6_4),
+                    lex_not_def(not_base_6_4),
+                    lex_and_def(and_base_6_4),
+                    lex_or_def(or_base_6_4),
+                    lex_end_brace_def(end_brace_base_6_4),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_7_4 = config.space();
+    let carriage_new_line_base_7_4 = config.carriage_new_line();
+    let unix_new_line_base_7_4 = config.unix_new_line();
+    let start_paren_base_7_4 = config.start_paren();
+    let end_paren_base_7_4 = config.end_paren();
+    let not_base_7_4 = config.not();
+    let and_base_7_4 = config.and();
+    let or_base_7_4 = config.or();
+    let end_brace_base_7_4 = config.end_brace();
+    let base_tag_parse_7_4 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_7_4),
+                    lex_carriage_return_def(carriage_new_line_base_7_4),
+                    lex_unix_new_line_def(unix_new_line_base_7_4),
+                    lex_start_paren_def(start_paren_base_7_4),
+                    lex_end_paren_def(end_paren_base_7_4),
+                    lex_not_def(not_base_7_4),
+                    lex_and_def(and_base_7_4),
+                    lex_or_def(or_base_7_4),
+                    lex_end_brace_def(end_brace_base_7_4),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_8_4 = config.space();
+    let carriage_new_line_base_8_4 = config.carriage_new_line();
+    let unix_new_line_base_8_4 = config.unix_new_line();
+    let start_paren_base_8_4 = config.start_paren();
+    let end_paren_base_8_4 = config.end_paren();
+    let not_base_8_4 = config.not();
+    let and_base_8_4 = config.and();
+    let or_base_8_4 = config.or();
+    let end_brace_base_8_4 = config.end_brace();
+    let base_tag_parse_8_4 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_8_4),
+                    lex_carriage_return_def(carriage_new_line_base_8_4),
+                    lex_unix_new_line_def(unix_new_line_base_8_4),
+                    lex_start_paren_def(start_paren_base_8_4),
+                    lex_end_paren_def(end_paren_base_8_4),
+                    lex_not_def(not_base_8_4),
+                    lex_and_def(and_base_8_4),
+                    lex_or_def(or_base_8_4),
+                    lex_end_brace_def(end_brace_base_8_4),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let feature_parse_4 = || {
+        map(
+            tuple((
+                lex_feature_def(config.feature_base()),
+                start_brace_parse_0_4(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_0_4(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(feature, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, feature);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let feature_not_parse_4 = || {
+        map(
+            tuple((
+                lex_feature_not_def(config.feature_not()),
+                start_brace_parse_1_4(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_1_4(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(feature, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, feature);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let feature_case_parse_4 = || {
+        map(
+            tuple((
+                lex_feature_case_def(config.feature_case()),
+                start_brace_parse_2_4(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_2_4(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(feature, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, feature);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let config_parse_4 = || {
+        map(
+            tuple((
+                lex_config_def(config.config_base()),
+                start_brace_parse_3_4(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_3_4(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(config, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, config);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let config_not_parse_4 = || {
+        map(
+            tuple((
+                lex_config_not_def(config.config_not()),
+                start_brace_parse_4_4(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_4_4(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(config, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, config);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let config_case_parse_4 = || {
+        map(
+            tuple((
+                lex_config_case_def(config.config_case()),
+                start_brace_parse_5_4(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_5_4(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(config, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, config);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+
+    let config_group_parse_4 = || {
+        map(
+            tuple((
+                lex_config_group_def(config.group_base()),
+                start_brace_parse_6_4(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_6_4(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(group, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, group);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let config_group_not_parse_4 = || {
+        map(
+            tuple((
+                lex_config_group_not_def(config.group_not()),
+                start_brace_parse_7_4(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_7_4(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(group, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, group);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let config_group_case_parse_4 = || {
+        map(
+            tuple((
+                lex_config_group_case_def(config.group_case()),
+                start_brace_parse_8_4(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_8_4(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(group, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, group);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let space_0_5 = config.space();
+    let start_brace_0_5 = config.start_brace();
+    let start_brace_parse_0_5 = || {
+        many_till(
+            lex_space_def(space_0_5),
+            lex_start_brace_def(start_brace_0_5),
+        )
+    };
+    let space_1_5 = config.space();
+    let start_brace_1_5 = config.start_brace();
+    let start_brace_parse_1_5 = || {
+        many_till(
+            lex_space_def(space_1_5),
+            lex_start_brace_def(start_brace_1_5),
+        )
+    };
+    let space_2_5 = config.space();
+    let start_brace_2_5 = config.start_brace();
+    let start_brace_parse_2_5 = || {
+        many_till(
+            lex_space_def(space_2_5),
+            lex_start_brace_def(start_brace_2_5),
+        )
+    };
+    let space_3_5 = config.space();
+    let start_brace_3_5 = config.start_brace();
+    let start_brace_parse_3_5 = || {
+        many_till(
+            lex_space_def(space_3_5),
+            lex_start_brace_def(start_brace_3_5),
+        )
+    };
+    let space_4_5 = config.space();
+    let start_brace_4_5 = config.start_brace();
+    let start_brace_parse_4_5 = || {
+        many_till(
+            lex_space_def(space_4_5),
+            lex_start_brace_def(start_brace_4_5),
+        )
+    };
+    let space_5_5 = config.space();
+    let start_brace_5_5 = config.start_brace();
+    let start_brace_parse_5_5 = || {
+        many_till(
+            lex_space_def(space_5_5),
+            lex_start_brace_def(start_brace_5_5),
+        )
+    };
+    let space_6_5 = config.space();
+    let start_brace_6_5 = config.start_brace();
+    let start_brace_parse_6_5 = || {
+        many_till(
+            lex_space_def(space_6_5),
+            lex_start_brace_def(start_brace_6_5),
+        )
+    };
+    let space_7_5 = config.space();
+    let start_brace_7_5 = config.start_brace();
+    let start_brace_parse_7_5 = || {
+        many_till(
+            lex_space_def(space_7_5),
+            lex_start_brace_def(start_brace_7_5),
+        )
+    };
+    let space_8_5 = config.space();
+    let start_brace_8_5 = config.start_brace();
+    let start_brace_parse_8_5 = || {
+        many_till(
+            lex_space_def(space_8_5),
+            lex_start_brace_def(start_brace_8_5),
+        )
+    };
+    // let p = move |c: L| {
+    let space_base_0_5 = config.space();
+    let carriage_new_line_base_0_5 = config.carriage_new_line();
+    let unix_new_line_base_0_5 = config.unix_new_line();
+    let start_paren_base_0_5 = config.start_paren();
+    let end_paren_base_0_5 = config.end_paren();
+    let not_base_0_5 = config.not();
+    let and_base_0_5 = config.and();
+    let or_base_0_5 = config.or();
+    let end_brace_base_0_5 = config.end_brace();
+    let base_tag_parse_0_5 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_0_5),
+                    lex_carriage_return_def(carriage_new_line_base_0_5),
+                    lex_unix_new_line_def(unix_new_line_base_0_5),
+                    lex_start_paren_def(start_paren_base_0_5),
+                    lex_end_paren_def(end_paren_base_0_5),
+                    lex_not_def(not_base_0_5),
+                    lex_and_def(and_base_0_5),
+                    lex_or_def(or_base_0_5),
+                    lex_end_brace_def(end_brace_base_0_5),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_1_5 = config.space();
+    let carriage_new_line_base_1_5 = config.carriage_new_line();
+    let unix_new_line_base_1_5 = config.unix_new_line();
+    let start_paren_base_1_5 = config.start_paren();
+    let end_paren_base_1_5 = config.end_paren();
+    let not_base_1_5 = config.not();
+    let and_base_1_5 = config.and();
+    let or_base_1_5 = config.or();
+    let end_brace_base_1_5 = config.end_brace();
+    let base_tag_parse_1_5 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_1_5),
+                    lex_carriage_return_def(carriage_new_line_base_1_5),
+                    lex_unix_new_line_def(unix_new_line_base_1_5),
+                    lex_start_paren_def(start_paren_base_1_5),
+                    lex_end_paren_def(end_paren_base_1_5),
+                    lex_not_def(not_base_1_5),
+                    lex_and_def(and_base_1_5),
+                    lex_or_def(or_base_1_5),
+                    lex_end_brace_def(end_brace_base_1_5),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_2_5 = config.space();
+    let carriage_new_line_base_2_5 = config.carriage_new_line();
+    let unix_new_line_base_2_5 = config.unix_new_line();
+    let start_paren_base_2_5 = config.start_paren();
+    let end_paren_base_2_5 = config.end_paren();
+    let not_base_2_5 = config.not();
+    let and_base_2_5 = config.and();
+    let or_base_2_5 = config.or();
+    let end_brace_base_2_5 = config.end_brace();
+    let base_tag_parse_2_5 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_2_5),
+                    lex_carriage_return_def(carriage_new_line_base_2_5),
+                    lex_unix_new_line_def(unix_new_line_base_2_5),
+                    lex_start_paren_def(start_paren_base_2_5),
+                    lex_end_paren_def(end_paren_base_2_5),
+                    lex_not_def(not_base_2_5),
+                    lex_and_def(and_base_2_5),
+                    lex_or_def(or_base_2_5),
+                    lex_end_brace_def(end_brace_base_2_5),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_3_5 = config.space();
+    let carriage_new_line_base_3_5 = config.carriage_new_line();
+    let unix_new_line_base_3_5 = config.unix_new_line();
+    let start_paren_base_3_5 = config.start_paren();
+    let end_paren_base_3_5 = config.end_paren();
+    let not_base_3_5 = config.not();
+    let and_base_3_5 = config.and();
+    let or_base_3_5 = config.or();
+    let end_brace_base_3_5 = config.end_brace();
+    let base_tag_parse_3_5 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_3_5),
+                    lex_carriage_return_def(carriage_new_line_base_3_5),
+                    lex_unix_new_line_def(unix_new_line_base_3_5),
+                    lex_start_paren_def(start_paren_base_3_5),
+                    lex_end_paren_def(end_paren_base_3_5),
+                    lex_not_def(not_base_3_5),
+                    lex_and_def(and_base_3_5),
+                    lex_or_def(or_base_3_5),
+                    lex_end_brace_def(end_brace_base_3_5),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_4_5 = config.space();
+    let carriage_new_line_base_4_5 = config.carriage_new_line();
+    let unix_new_line_base_4_5 = config.unix_new_line();
+    let start_paren_base_4_5 = config.start_paren();
+    let end_paren_base_4_5 = config.end_paren();
+    let not_base_4_5 = config.not();
+    let and_base_4_5 = config.and();
+    let or_base_4_5 = config.or();
+    let end_brace_base_4_5 = config.end_brace();
+    let base_tag_parse_4_5 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_4_5),
+                    lex_carriage_return_def(carriage_new_line_base_4_5),
+                    lex_unix_new_line_def(unix_new_line_base_4_5),
+                    lex_start_paren_def(start_paren_base_4_5),
+                    lex_end_paren_def(end_paren_base_4_5),
+                    lex_not_def(not_base_4_5),
+                    lex_and_def(and_base_4_5),
+                    lex_or_def(or_base_4_5),
+                    lex_end_brace_def(end_brace_base_4_5),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_5_5 = config.space();
+    let carriage_new_line_base_5_5 = config.carriage_new_line();
+    let unix_new_line_base_5_5 = config.unix_new_line();
+    let start_paren_base_5_5 = config.start_paren();
+    let end_paren_base_5_5 = config.end_paren();
+    let not_base_5_5 = config.not();
+    let and_base_5_5 = config.and();
+    let or_base_5_5 = config.or();
+    let end_brace_base_5_5 = config.end_brace();
+    let base_tag_parse_5_5 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_5_5),
+                    lex_carriage_return_def(carriage_new_line_base_5_5),
+                    lex_unix_new_line_def(unix_new_line_base_5_5),
+                    lex_start_paren_def(start_paren_base_5_5),
+                    lex_end_paren_def(end_paren_base_5_5),
+                    lex_not_def(not_base_5_5),
+                    lex_and_def(and_base_5_5),
+                    lex_or_def(or_base_5_5),
+                    lex_end_brace_def(end_brace_base_5_5),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_6_5 = config.space();
+    let carriage_new_line_base_6_5 = config.carriage_new_line();
+    let unix_new_line_base_6_5 = config.unix_new_line();
+    let start_paren_base_6_5 = config.start_paren();
+    let end_paren_base_6_5 = config.end_paren();
+    let not_base_6_5 = config.not();
+    let and_base_6_5 = config.and();
+    let or_base_6_5 = config.or();
+    let end_brace_base_6_5 = config.end_brace();
+    let base_tag_parse_6_5 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_6_5),
+                    lex_carriage_return_def(carriage_new_line_base_6_5),
+                    lex_unix_new_line_def(unix_new_line_base_6_5),
+                    lex_start_paren_def(start_paren_base_6_5),
+                    lex_end_paren_def(end_paren_base_6_5),
+                    lex_not_def(not_base_6_5),
+                    lex_and_def(and_base_6_5),
+                    lex_or_def(or_base_6_5),
+                    lex_end_brace_def(end_brace_base_6_5),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_7_5 = config.space();
+    let carriage_new_line_base_7_5 = config.carriage_new_line();
+    let unix_new_line_base_7_5 = config.unix_new_line();
+    let start_paren_base_7_5 = config.start_paren();
+    let end_paren_base_7_5 = config.end_paren();
+    let not_base_7_5 = config.not();
+    let and_base_7_5 = config.and();
+    let or_base_7_5 = config.or();
+    let end_brace_base_7_5 = config.end_brace();
+    let base_tag_parse_7_5 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_7_5),
+                    lex_carriage_return_def(carriage_new_line_base_7_5),
+                    lex_unix_new_line_def(unix_new_line_base_7_5),
+                    lex_start_paren_def(start_paren_base_7_5),
+                    lex_end_paren_def(end_paren_base_7_5),
+                    lex_not_def(not_base_7_5),
+                    lex_and_def(and_base_7_5),
+                    lex_or_def(or_base_7_5),
+                    lex_end_brace_def(end_brace_base_7_5),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_8_5 = config.space();
+    let carriage_new_line_base_8_5 = config.carriage_new_line();
+    let unix_new_line_base_8_5 = config.unix_new_line();
+    let start_paren_base_8_5 = config.start_paren();
+    let end_paren_base_8_5 = config.end_paren();
+    let not_base_8_5 = config.not();
+    let and_base_8_5 = config.and();
+    let or_base_8_5 = config.or();
+    let end_brace_base_8_5 = config.end_brace();
+    let base_tag_parse_8_5 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_8_5),
+                    lex_carriage_return_def(carriage_new_line_base_8_5),
+                    lex_unix_new_line_def(unix_new_line_base_8_5),
+                    lex_start_paren_def(start_paren_base_8_5),
+                    lex_end_paren_def(end_paren_base_8_5),
+                    lex_not_def(not_base_8_5),
+                    lex_and_def(and_base_8_5),
+                    lex_or_def(or_base_8_5),
+                    lex_end_brace_def(end_brace_base_8_5),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let feature_parse_5 = || {
+        map(
+            tuple((
+                lex_feature_def(config.feature_base()),
+                start_brace_parse_0_5(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_0_5(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(feature, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, feature);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let feature_not_parse_5 = || {
+        map(
+            tuple((
+                lex_feature_not_def(config.feature_not()),
+                start_brace_parse_1_5(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_1_5(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(feature, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, feature);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let feature_case_parse_5 = || {
+        map(
+            tuple((
+                lex_feature_case_def(config.feature_case()),
+                start_brace_parse_2_5(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_2_5(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(feature, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, feature);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let config_parse_5 = || {
+        map(
+            tuple((
+                lex_config_def(config.config_base()),
+                start_brace_parse_3_5(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_3_5(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(config, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, config);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let config_not_parse_5 = || {
+        map(
+            tuple((
+                lex_config_not_def(config.config_not()),
+                start_brace_parse_4_5(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_4_5(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(config, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, config);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let config_case_parse_5 = || {
+        map(
+            tuple((
+                lex_config_case_def(config.config_case()),
+                start_brace_parse_5_5(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_5_5(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(config, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, config);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+
+    let config_group_parse_5 = || {
+        map(
+            tuple((
+                lex_config_group_def(config.group_base()),
+                start_brace_parse_6_5(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_6_5(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(group, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, group);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let config_group_not_parse_5 = || {
+        map(
+            tuple((
+                lex_config_group_not_def(config.group_not()),
+                start_brace_parse_7_5(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_7_5(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(group, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, group);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let config_group_case_parse_5 = || {
+        map(
+            tuple((
+                lex_config_group_case_def(config.group_case()),
+                start_brace_parse_8_5(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_8_5(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(group, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, group);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let space_0_6 = config.space();
+    let start_brace_0_6 = config.start_brace();
+    let start_brace_parse_0_6 = || {
+        many_till(
+            lex_space_def(space_0_6),
+            lex_start_brace_def(start_brace_0_6),
+        )
+    };
+    let space_1_6 = config.space();
+    let start_brace_1_6 = config.start_brace();
+    let start_brace_parse_1_6 = || {
+        many_till(
+            lex_space_def(space_1_6),
+            lex_start_brace_def(start_brace_1_6),
+        )
+    };
+    let space_2_6 = config.space();
+    let start_brace_2_6 = config.start_brace();
+    let start_brace_parse_2_6 = || {
+        many_till(
+            lex_space_def(space_2_6),
+            lex_start_brace_def(start_brace_2_6),
+        )
+    };
+    let space_3_6 = config.space();
+    let start_brace_3_6 = config.start_brace();
+    let start_brace_parse_3_6 = || {
+        many_till(
+            lex_space_def(space_3_6),
+            lex_start_brace_def(start_brace_3_6),
+        )
+    };
+    let space_4_6 = config.space();
+    let start_brace_4_6 = config.start_brace();
+    let start_brace_parse_4_6 = || {
+        many_till(
+            lex_space_def(space_4_6),
+            lex_start_brace_def(start_brace_4_6),
+        )
+    };
+    let space_5_6 = config.space();
+    let start_brace_5_6 = config.start_brace();
+    let start_brace_parse_5_6 = || {
+        many_till(
+            lex_space_def(space_5_6),
+            lex_start_brace_def(start_brace_5_6),
+        )
+    };
+    let space_6_6 = config.space();
+    let start_brace_6_6 = config.start_brace();
+    let start_brace_parse_6_6 = || {
+        many_till(
+            lex_space_def(space_6_6),
+            lex_start_brace_def(start_brace_6_6),
+        )
+    };
+    let space_7_6 = config.space();
+    let start_brace_7_6 = config.start_brace();
+    let start_brace_parse_7_6 = || {
+        many_till(
+            lex_space_def(space_7_6),
+            lex_start_brace_def(start_brace_7_6),
+        )
+    };
+    let space_8_6 = config.space();
+    let start_brace_8_6 = config.start_brace();
+    let start_brace_parse_8_6 = || {
+        many_till(
+            lex_space_def(space_8_6),
+            lex_start_brace_def(start_brace_8_6),
+        )
+    };
+    // let p = move |c: L| {
+    let space_base_0_6 = config.space();
+    let carriage_new_line_base_0_6 = config.carriage_new_line();
+    let unix_new_line_base_0_6 = config.unix_new_line();
+    let start_paren_base_0_6 = config.start_paren();
+    let end_paren_base_0_6 = config.end_paren();
+    let not_base_0_6 = config.not();
+    let and_base_0_6 = config.and();
+    let or_base_0_6 = config.or();
+    let end_brace_base_0_6 = config.end_brace();
+    let base_tag_parse_0_6 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_0_6),
+                    lex_carriage_return_def(carriage_new_line_base_0_6),
+                    lex_unix_new_line_def(unix_new_line_base_0_6),
+                    lex_start_paren_def(start_paren_base_0_6),
+                    lex_end_paren_def(end_paren_base_0_6),
+                    lex_not_def(not_base_0_6),
+                    lex_and_def(and_base_0_6),
+                    lex_or_def(or_base_0_6),
+                    lex_end_brace_def(end_brace_base_0_6),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_1_6 = config.space();
+    let carriage_new_line_base_1_6 = config.carriage_new_line();
+    let unix_new_line_base_1_6 = config.unix_new_line();
+    let start_paren_base_1_6 = config.start_paren();
+    let end_paren_base_1_6 = config.end_paren();
+    let not_base_1_6 = config.not();
+    let and_base_1_6 = config.and();
+    let or_base_1_6 = config.or();
+    let end_brace_base_1_6 = config.end_brace();
+    let base_tag_parse_1_6 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_1_6),
+                    lex_carriage_return_def(carriage_new_line_base_1_6),
+                    lex_unix_new_line_def(unix_new_line_base_1_6),
+                    lex_start_paren_def(start_paren_base_1_6),
+                    lex_end_paren_def(end_paren_base_1_6),
+                    lex_not_def(not_base_1_6),
+                    lex_and_def(and_base_1_6),
+                    lex_or_def(or_base_1_6),
+                    lex_end_brace_def(end_brace_base_1_6),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_2_6 = config.space();
+    let carriage_new_line_base_2_6 = config.carriage_new_line();
+    let unix_new_line_base_2_6 = config.unix_new_line();
+    let start_paren_base_2_6 = config.start_paren();
+    let end_paren_base_2_6 = config.end_paren();
+    let not_base_2_6 = config.not();
+    let and_base_2_6 = config.and();
+    let or_base_2_6 = config.or();
+    let end_brace_base_2_6 = config.end_brace();
+    let base_tag_parse_2_6 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_2_6),
+                    lex_carriage_return_def(carriage_new_line_base_2_6),
+                    lex_unix_new_line_def(unix_new_line_base_2_6),
+                    lex_start_paren_def(start_paren_base_2_6),
+                    lex_end_paren_def(end_paren_base_2_6),
+                    lex_not_def(not_base_2_6),
+                    lex_and_def(and_base_2_6),
+                    lex_or_def(or_base_2_6),
+                    lex_end_brace_def(end_brace_base_2_6),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_3_6 = config.space();
+    let carriage_new_line_base_3_6 = config.carriage_new_line();
+    let unix_new_line_base_3_6 = config.unix_new_line();
+    let start_paren_base_3_6 = config.start_paren();
+    let end_paren_base_3_6 = config.end_paren();
+    let not_base_3_6 = config.not();
+    let and_base_3_6 = config.and();
+    let or_base_3_6 = config.or();
+    let end_brace_base_3_6 = config.end_brace();
+    let base_tag_parse_3_6 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_3_6),
+                    lex_carriage_return_def(carriage_new_line_base_3_6),
+                    lex_unix_new_line_def(unix_new_line_base_3_6),
+                    lex_start_paren_def(start_paren_base_3_6),
+                    lex_end_paren_def(end_paren_base_3_6),
+                    lex_not_def(not_base_3_6),
+                    lex_and_def(and_base_3_6),
+                    lex_or_def(or_base_3_6),
+                    lex_end_brace_def(end_brace_base_3_6),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_4_6 = config.space();
+    let carriage_new_line_base_4_6 = config.carriage_new_line();
+    let unix_new_line_base_4_6 = config.unix_new_line();
+    let start_paren_base_4_6 = config.start_paren();
+    let end_paren_base_4_6 = config.end_paren();
+    let not_base_4_6 = config.not();
+    let and_base_4_6 = config.and();
+    let or_base_4_6 = config.or();
+    let end_brace_base_4_6 = config.end_brace();
+    let base_tag_parse_4_6 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_4_6),
+                    lex_carriage_return_def(carriage_new_line_base_4_6),
+                    lex_unix_new_line_def(unix_new_line_base_4_6),
+                    lex_start_paren_def(start_paren_base_4_6),
+                    lex_end_paren_def(end_paren_base_4_6),
+                    lex_not_def(not_base_4_6),
+                    lex_and_def(and_base_4_6),
+                    lex_or_def(or_base_4_6),
+                    lex_end_brace_def(end_brace_base_4_6),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_5_6 = config.space();
+    let carriage_new_line_base_5_6 = config.carriage_new_line();
+    let unix_new_line_base_5_6 = config.unix_new_line();
+    let start_paren_base_5_6 = config.start_paren();
+    let end_paren_base_5_6 = config.end_paren();
+    let not_base_5_6 = config.not();
+    let and_base_5_6 = config.and();
+    let or_base_5_6 = config.or();
+    let end_brace_base_5_6 = config.end_brace();
+    let base_tag_parse_5_6 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_5_6),
+                    lex_carriage_return_def(carriage_new_line_base_5_6),
+                    lex_unix_new_line_def(unix_new_line_base_5_6),
+                    lex_start_paren_def(start_paren_base_5_6),
+                    lex_end_paren_def(end_paren_base_5_6),
+                    lex_not_def(not_base_5_6),
+                    lex_and_def(and_base_5_6),
+                    lex_or_def(or_base_5_6),
+                    lex_end_brace_def(end_brace_base_5_6),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_6_6 = config.space();
+    let carriage_new_line_base_6_6 = config.carriage_new_line();
+    let unix_new_line_base_6_6 = config.unix_new_line();
+    let start_paren_base_6_6 = config.start_paren();
+    let end_paren_base_6_6 = config.end_paren();
+    let not_base_6_6 = config.not();
+    let and_base_6_6 = config.and();
+    let or_base_6_6 = config.or();
+    let end_brace_base_6_6 = config.end_brace();
+    let base_tag_parse_6_6 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_6_6),
+                    lex_carriage_return_def(carriage_new_line_base_6_6),
+                    lex_unix_new_line_def(unix_new_line_base_6_6),
+                    lex_start_paren_def(start_paren_base_6_6),
+                    lex_end_paren_def(end_paren_base_6_6),
+                    lex_not_def(not_base_6_6),
+                    lex_and_def(and_base_6_6),
+                    lex_or_def(or_base_6_6),
+                    lex_end_brace_def(end_brace_base_6_6),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_7_6 = config.space();
+    let carriage_new_line_base_7_6 = config.carriage_new_line();
+    let unix_new_line_base_7_6 = config.unix_new_line();
+    let start_paren_base_7_6 = config.start_paren();
+    let end_paren_base_7_6 = config.end_paren();
+    let not_base_7_6 = config.not();
+    let and_base_7_6 = config.and();
+    let or_base_7_6 = config.or();
+    let end_brace_base_7_6 = config.end_brace();
+    let base_tag_parse_7_6 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_7_6),
+                    lex_carriage_return_def(carriage_new_line_base_7_6),
+                    lex_unix_new_line_def(unix_new_line_base_7_6),
+                    lex_start_paren_def(start_paren_base_7_6),
+                    lex_end_paren_def(end_paren_base_7_6),
+                    lex_not_def(not_base_7_6),
+                    lex_and_def(and_base_7_6),
+                    lex_or_def(or_base_7_6),
+                    lex_end_brace_def(end_brace_base_7_6),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let space_base_8_6 = config.space();
+    let carriage_new_line_base_8_6 = config.carriage_new_line();
+    let unix_new_line_base_8_6 = config.unix_new_line();
+    let start_paren_base_8_6 = config.start_paren();
+    let end_paren_base_8_6 = config.end_paren();
+    let not_base_8_6 = config.not();
+    let and_base_8_6 = config.and();
+    let or_base_8_6 = config.or();
+    let end_brace_base_8_6 = config.end_brace();
+    let base_tag_parse_8_6 = || {
+        map(
+            many_till(
+                anychar,
+                peek(alt((
+                    lex_space_def(space_base_8_6),
+                    lex_carriage_return_def(carriage_new_line_base_8_6),
+                    lex_unix_new_line_def(unix_new_line_base_8_6),
+                    lex_start_paren_def(start_paren_base_8_6),
+                    lex_end_paren_def(end_paren_base_8_6),
+                    lex_not_def(not_base_8_6),
+                    lex_and_def(and_base_8_6),
+                    lex_or_def(or_base_8_6),
+                    lex_end_brace_def(end_brace_base_8_6),
+                ))),
+            ),
+            |(results, _)| {
+                let res = results.into_iter().clone().collect::<String>();
+                LexerToken::Tag(res)
+            },
+        )
+    };
+    let feature_parse_6 = || {
+        map(
+            tuple((
+                lex_feature_def(config.feature_base()),
+                start_brace_parse_0_6(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_0_6(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(feature, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, feature);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let feature_not_parse_6 = || {
+        map(
+            tuple((
+                lex_feature_not_def(config.feature_not()),
+                start_brace_parse_1_6(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_1_6(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(feature, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, feature);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let feature_case_parse_6 = || {
+        map(
+            tuple((
+                lex_feature_case_def(config.feature_case()),
+                start_brace_parse_2_6(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_2_6(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(feature, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, feature);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let config_parse_6 = || {
+        map(
+            tuple((
+                lex_config_def(config.config_base()),
+                start_brace_parse_3_6(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_3_6(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(config, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, config);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let config_not_parse_6 = || {
+        map(
+            tuple((
+                lex_config_not_def(config.config_not()),
+                start_brace_parse_4_6(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_4_6(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(config, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, config);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let config_case_parse_6 = || {
+        map(
+            tuple((
+                lex_config_case_def(config.config_case()),
+                start_brace_parse_5_6(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_5_6(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(config, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, config);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+
+    let config_group_parse_6 = || {
+        map(
+            tuple((
+                lex_config_group_def(config.group_base()),
+                start_brace_parse_6_6(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_6_6(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(group, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, group);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let config_group_not_parse_6 = || {
+        map(
+            tuple((
+                lex_config_group_not_def(config.group_not()),
+                start_brace_parse_7_6(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_7_6(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(group, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, group);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let config_group_case_parse_6 = || {
+        map(
+            tuple((
+                lex_config_group_case_def(config.group_case()),
+                start_brace_parse_8_6(),
+                many_till(
+                    alt((
+                        lex_space_def(config.space()),
+                        lex_carriage_return_def(config.carriage_new_line()),
+                        lex_unix_new_line_def(config.unix_new_line()),
+                        lex_start_paren_def(config.start_paren()),
+                        lex_end_paren_def(config.end_paren()),
+                        lex_not_def(config.not()),
+                        lex_and_def(config.and()),
+                        lex_or_def(config.or()),
+                        base_tag_parse_8_6(),
+                    )),
+                    lex_end_brace_def(config.end_brace()),
+                ),
+            )),
+            |(group, (mut spaces, start), (mut inner, end))| {
+                spaces.insert(0, group);
+                spaces.push(start);
+                inner.push(end);
+                spaces.append(&mut inner);
+                spaces
+            },
+        )
+    };
+    let start_end_single_line_comment_parser_0 = || {
+        map(
+            tuple((
+                lex_start_comment_single_line(config.start_comment_single_line()),
+                map(
+                    many_till(
+                        alt((
+                            map(lex_space_def(config.space()), |x| vec![x]),
+                            map(lex_unix_new_line_def(config.unix_new_line()), |x| vec![x]),
+                            feature_not_parse_0(),
+                            map(lex_feature_switch_def(config.feature_switch()), |x| vec![x]),
+                            feature_case_parse_0(),
+                            map(lex_feature_else_def(config.feature_else()), |x| vec![x]),
+                            feature_parse_0(),
+                            map(lex_end_feature_def(config.feature_end()), |x| vec![x]),
+                            config_not_parse_0(),
+                            map(lex_config_switch_def(config.config_switch()), |x| vec![x]),
+                            config_case_parse_0(),
+                            map(lex_config_else_def(config.config_else()), |x| vec![x]),
+                            config_parse_0(),
+                            map(lex_end_config_def(config.config_end()), |x| vec![x]),
+                            config_group_not_parse_0(),
+                            map(lex_config_group_switch_def(config.group_switch()), |x| {
+                                vec![x]
+                            }),
+                            config_group_case_parse_0(),
+                            map(lex_config_group_else_def(config.group_else()), |x| vec![x]),
+                            config_group_parse_0(),
+                            map(lex_end_config_group_def(config.group_end()), |x| vec![x]),
+                        )),
+                        lex_end_comment_single_line(config.end_comment_single_line()),
+                    ),
+                    |(list, end)| {
+                        let mut flattened = list.into_iter().flatten().collect::<Vec<LexerToken>>();
+                        flattened.push(end);
+                        flattened
+                    },
+                ),
+            )),
+            |(start, mut list)| {
+                list.insert(0, start);
+                list
+            },
+        )
+    };
+
+    let multi_line_comment_parser_0 = || {
+        map(
+            tuple((
+                lex_start_comment_multi_line(config.start_comment_multi_line()),
+                map(
+                    many_till(
+                        alt((
+                            map(lex_space_def(config.space()), |x| vec![x]),
+                            map(lex_unix_new_line_def(config.unix_new_line()), |x| vec![x]),
+                            map(
+                                lex_multi_line_comment_character(
+                                    config.multi_line_comment_character(),
+                                ),
+                                |x| vec![x],
+                            ),
+                            feature_not_parse_1(),
+                            map(lex_feature_switch_def(config.feature_switch()), |x| vec![x]),
+                            feature_case_parse_1(),
+                            map(lex_feature_else_def(config.feature_else()), |x| vec![x]),
+                            feature_parse_1(),
+                            map(lex_end_feature_def(config.feature_end()), |x| vec![x]),
+                            config_not_parse_1(),
+                            map(lex_config_switch_def(config.config_switch()), |x| vec![x]),
+                            config_case_parse_1(),
+                            map(lex_config_else_def(config.config_else()), |x| vec![x]),
+                            config_parse_1(),
+                            map(lex_end_config_def(config.config_end()), |x| vec![x]),
+                            config_group_not_parse_1(),
+                            map(lex_config_group_switch_def(config.group_switch()), |x| {
+                                vec![x]
+                            }),
+                            config_group_case_parse_1(),
+                            map(lex_config_group_else_def(config.group_else()), |x| vec![x]),
+                            config_group_parse_1(),
+                            map(lex_end_config_group_def(config.group_end()), |x| vec![x]),
+                        )),
+                        lex_end_comment_multi_line(config.end_comment_multi_line()),
+                    ),
+                    |(list, end)| {
+                        let mut flattened = list.into_iter().flatten().collect::<Vec<LexerToken>>();
+                        flattened.push(end);
+                        flattened
+                    },
+                ),
+            )),
+            |(start, mut list)| {
+                list.insert(0, start);
+                list
+            },
+        )
+    };
+    let single_line_comment_parser_0 = || {
+        map(
+            tuple((
+                lex_start_single_line_comment(config.single_line_comment()),
+                map(
+                    many_till(
+                        alt((
+                            map(lex_space_def(config.space()), |x| vec![x]),
+                            feature_not_parse_2(),
+                            map(lex_feature_switch_def(config.feature_switch()), |x| vec![x]),
+                            feature_case_parse_2(),
+                            map(lex_feature_else_def(config.feature_else()), |x| vec![x]),
+                            feature_parse_2(),
+                            map(lex_end_feature_def(config.feature_end()), |x| vec![x]),
+                            config_not_parse_2(),
+                            map(lex_config_switch_def(config.config_switch()), |x| vec![x]),
+                            config_case_parse_2(),
+                            map(lex_config_else_def(config.config_else()), |x| vec![x]),
+                            config_parse_2(),
+                            map(lex_end_config_def(config.config_end()), |x| vec![x]),
+                            config_group_not_parse_2(),
+                            map(lex_config_group_switch_def(config.group_switch()), |x| {
+                                vec![x]
+                            }),
+                            config_group_case_parse_2(),
+                            map(lex_config_group_else_def(config.group_else()), |x| vec![x]),
+                            config_group_parse_2(),
+                            map(lex_end_config_group_def(config.group_end()), |x| vec![x]),
+                        )),
+                        //TODO: convert to make carriage return have to be followed by a new line
+                        alt((
+                            lex_unix_new_line_def(config.unix_new_line()),
+                            lex_carriage_return_def(config.carriage_new_line()),
+                        )),
+                    ),
+                    |(list, end)| {
+                        let mut flattened = list.into_iter().flatten().collect::<Vec<LexerToken>>();
+                        flattened.push(end);
+                        flattened
+                    },
+                ),
+            )),
+            |(start, mut list)| {
+                list.insert(0, start);
+                list
+            },
+        )
+    };
+    let start_end_single_line_comment_parser_1 = || {
+        map(
+            tuple((
+                lex_start_comment_single_line(config.start_comment_single_line()),
+                map(
+                    many_till(
+                        alt((
+                            map(lex_space_def(config.space()), |x| vec![x]),
+                            map(lex_unix_new_line_def(config.unix_new_line()), |x| vec![x]),
+                            feature_not_parse_4(),
+                            map(lex_feature_switch_def(config.feature_switch()), |x| vec![x]),
+                            feature_case_parse_4(),
+                            map(lex_feature_else_def(config.feature_else()), |x| vec![x]),
+                            feature_parse_4(),
+                            map(lex_end_feature_def(config.feature_end()), |x| vec![x]),
+                            config_not_parse_4(),
+                            map(lex_config_switch_def(config.config_switch()), |x| vec![x]),
+                            config_case_parse_4(),
+                            map(lex_config_else_def(config.config_else()), |x| vec![x]),
+                            config_parse_4(),
+                            map(lex_end_config_def(config.config_end()), |x| vec![x]),
+                            config_group_not_parse_4(),
+                            map(lex_config_group_switch_def(config.group_switch()), |x| {
+                                vec![x]
+                            }),
+                            config_group_case_parse_4(),
+                            map(lex_config_group_else_def(config.group_else()), |x| vec![x]),
+                            config_group_parse_4(),
+                            map(lex_end_config_group_def(config.group_end()), |x| vec![x]),
+                        )),
+                        lex_end_comment_single_line(config.end_comment_single_line()),
+                    ),
+                    |(list, end)| {
+                        let mut flattened = list.into_iter().flatten().collect::<Vec<LexerToken>>();
+                        flattened.push(end);
+                        flattened
+                    },
+                ),
+            )),
+            |(start, mut list)| {
+                list.insert(0, start);
+                list
+            },
+        )
+    };
+
+    let multi_line_comment_parser_1 = || {
+        map(
+            tuple((
+                lex_start_comment_multi_line(config.start_comment_multi_line()),
+                map(
+                    many_till(
+                        alt((
+                            map(lex_space_def(config.space()), |x| vec![x]),
+                            map(lex_unix_new_line_def(config.unix_new_line()), |x| vec![x]),
+                            map(
+                                lex_multi_line_comment_character(
+                                    config.multi_line_comment_character(),
+                                ),
+                                |x| vec![x],
+                            ),
+                            feature_not_parse_5(),
+                            map(lex_feature_switch_def(config.feature_switch()), |x| vec![x]),
+                            feature_case_parse_5(),
+                            map(lex_feature_else_def(config.feature_else()), |x| vec![x]),
+                            feature_parse_5(),
+                            map(lex_end_feature_def(config.feature_end()), |x| vec![x]),
+                            config_not_parse_5(),
+                            map(lex_config_switch_def(config.config_switch()), |x| vec![x]),
+                            config_case_parse_5(),
+                            map(lex_config_else_def(config.config_else()), |x| vec![x]),
+                            config_parse_5(),
+                            map(lex_end_config_def(config.config_end()), |x| vec![x]),
+                            config_group_not_parse_5(),
+                            map(lex_config_group_switch_def(config.group_switch()), |x| {
+                                vec![x]
+                            }),
+                            config_group_case_parse_5(),
+                            map(lex_config_group_else_def(config.group_else()), |x| vec![x]),
+                            config_group_parse_5(),
+                            map(lex_end_config_group_def(config.group_end()), |x| vec![x]),
+                        )),
+                        lex_end_comment_multi_line(config.end_comment_multi_line()),
+                    ),
+                    |(list, end)| {
+                        let mut flattened = list.into_iter().flatten().collect::<Vec<LexerToken>>();
+                        flattened.push(end);
+                        flattened
+                    },
+                ),
+            )),
+            |(start, mut list)| {
+                list.insert(0, start);
+                list
+            },
+        )
+    };
+    let single_line_comment_parser_1 = || {
+        map(
+            tuple((
+                lex_start_single_line_comment(config.single_line_comment()),
+                map(
+                    many_till(
+                        alt((
+                            map(lex_space_def(config.space()), |x| vec![x]),
+                            feature_not_parse_6(),
+                            map(lex_feature_switch_def(config.feature_switch()), |x| vec![x]),
+                            feature_case_parse_6(),
+                            map(lex_feature_else_def(config.feature_else()), |x| vec![x]),
+                            feature_parse_6(),
+                            map(lex_end_feature_def(config.feature_end()), |x| vec![x]),
+                            config_not_parse_6(),
+                            map(lex_config_switch_def(config.config_switch()), |x| vec![x]),
+                            config_case_parse_6(),
+                            map(lex_config_else_def(config.config_else()), |x| vec![x]),
+                            config_parse_6(),
+                            map(lex_end_config_def(config.config_end()), |x| vec![x]),
+                            config_group_not_parse_6(),
+                            map(lex_config_group_switch_def(config.group_switch()), |x| {
+                                vec![x]
+                            }),
+                            config_group_case_parse_6(),
+                            map(lex_config_group_else_def(config.group_else()), |x| vec![x]),
+                            config_group_parse_6(),
+                            map(lex_end_config_group_def(config.group_end()), |x| vec![x]),
+                        )),
+                        //TODO: convert to make carriage return have to be followed by a new line
+                        alt((
+                            lex_unix_new_line_def(config.unix_new_line()),
+                            lex_carriage_return_def(config.carriage_new_line()),
+                        )),
+                    ),
+                    |(list, end)| {
+                        let mut flattened = list.into_iter().flatten().collect::<Vec<LexerToken>>();
+                        flattened.push(end);
+                        flattened
+                    },
+                ),
+            )),
+            |(start, mut list)| {
+                list.insert(0, start);
+                list
+            },
+        )
+    };
+    let comments_0 = || {
+        alt((
+            start_end_single_line_comment_parser_0(),
+            multi_line_comment_parser_0(),
+            single_line_comment_parser_0(),
+        ))
+    };
+    let comments_1 = || {
+        alt((
+            start_end_single_line_comment_parser_1(),
+            multi_line_comment_parser_1(),
+            single_line_comment_parser_1(),
+        ))
+    };
+    let eof = || map(lex_eof(config.eof()), |_| vec![LexerToken::Eof]);
+    let text_parser = map(
+        many_till(anychar, alt((comments_0(), eof()))),
+        |(results, mut comment): (Vec<char>, Vec<LexerToken>)| {
+            let res = results.iter().clone().collect::<String>();
+            comment.insert(0, LexerToken::Text(res));
+            comment
+        },
+    );
+    let parser = map(
+        many_till(alt((comments_1(), text_parser)), lex_eof(config.eof())),
+        |(res, eof): (Vec<Vec<LexerToken>>, LexerToken)| {
+            let mut flattened = res.into_iter().flatten().collect::<Vec<LexerToken>>();
+            match flattened.last() {
+                Some(i) => {
+                    if *i != LexerToken::Eof {
+                        flattened.push(eof);
+                    }
+                }
+                None => panic!("failed to tokenize text document"),
+            }
+            flattened
+        },
+    );
+    parser
+    // };
+    // p(config)
 }
 // pub fn lex_applicability<
 //     I,
@@ -2371,15 +5920,8 @@ where
 
 #[cfg(test)]
 mod tests {
-    use std::marker::PhantomData;
 
-    use nom::{
-        bytes::complete::tag,
-        character::complete::{char, newline, space1},
-        combinator::{eof, fail},
-    };
-
-    use crate::{lex_applicability, LexerConfig, LexerToken, MarkdownConfig};
+    use crate::{lex_applicability, LexerToken, MarkdownConfig};
 
     #[test]
     fn basic_text() {
@@ -2469,10 +6011,10 @@ mod tests {
         // };
         let config = MarkdownConfig::new();
         config.document = "some text";
-        let mut tokenizer = lex_applicability(config);
+        let mut tokenizer = lex_applicability(&config);
 
         assert_eq!(
-            *tokenizer(config.document),
+            tokenizer(config.document),
             Ok((
                 "",
                 vec![LexerToken::Text("some text".to_string()), LexerToken::Eof]
