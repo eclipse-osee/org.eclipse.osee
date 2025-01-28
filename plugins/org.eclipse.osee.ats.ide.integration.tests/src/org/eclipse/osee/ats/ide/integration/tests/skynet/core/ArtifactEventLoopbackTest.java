@@ -20,7 +20,7 @@ import org.junit.Before;
 /**
  * event loopback will test that remote messages get processed and treated like local messages by turning off local and
  * enabling remote to be loop-ed back without another client. same tests as base-class should still pass
- * 
+ *
  * @author Donald G. Dunne
  */
 public class ArtifactEventLoopbackTest extends ArtifactEventTest {
@@ -28,7 +28,7 @@ public class ArtifactEventLoopbackTest extends ArtifactEventTest {
    private boolean remoteEventLoopback;
 
    @Before
-   public void setUp() {
+   public void initialize() {
       remoteEventLoopback = OseeEventManager.getPreferences().isEnableRemoteEventLoopback();
       OseeEventManager.getPreferences().setEnableRemoteEventLoopback(true);
    }

@@ -181,16 +181,16 @@ public final class ArtifactTest {
       art.persist("test");
 
       DefaultBasicGuidArtifact equalGuid = new DefaultBasicGuidArtifact(SYSTEM_ROOT, art);
-      Assert.assertNotSame(art, equalGuid);
+      Assert.assertNotSame(art.getBasicGuidArtifact(), equalGuid);
 
       DefaultBasicGuidArtifact equalGuidArtType = new DefaultBasicGuidArtifact(SYSTEM_ROOT, art);
-      Assert.assertNotSame(art, equalGuidArtType);
+      Assert.assertNotSame(art.getBasicGuidArtifact(), equalGuidArtType);
 
       DefaultBasicGuidArtifact equalGuidArtTypeBranchUuid = new DefaultBasicGuidArtifact(COMMON, art);
-      Assert.assertEquals(art, equalGuidArtTypeBranchUuid);
+      Assert.assertEquals(art.getBasicGuidArtifact(), equalGuidArtTypeBranchUuid);
 
       DefaultBasicGuidArtifact equalArtTypeBranchUuidNotGuid = new DefaultBasicGuidArtifact(COMMON, GeneralData);
-      Assert.assertNotSame(art, equalArtTypeBranchUuidNotGuid);
+      Assert.assertNotSame(art.getBasicGuidArtifact(), equalArtTypeBranchUuidNotGuid);
    }
 
 }

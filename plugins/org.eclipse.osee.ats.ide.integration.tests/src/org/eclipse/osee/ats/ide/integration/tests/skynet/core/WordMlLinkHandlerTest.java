@@ -224,7 +224,7 @@ public class WordMlLinkHandlerTest {
             } else if (isExpectedFile(url.getPath())) {
                pair.expected = url;
             } else if (pair.data == null || pair.expected == null) {
-               toReturn.remove(pair);
+               toReturn.remove(key);
             }
          }
       }
