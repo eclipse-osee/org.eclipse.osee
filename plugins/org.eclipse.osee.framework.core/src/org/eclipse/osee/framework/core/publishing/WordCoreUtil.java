@@ -311,12 +311,6 @@ public class WordCoreUtil {
       ;
    //@formatter:on
 
-   public static final String CHANGE_TAG = "[*] ";
-   public static final int CHANGE_TAG_LENGTH = CHANGE_TAG.length();
-
-   public static final String CHANGE_TAG_WORDML =
-      "<w:r><w:rPr><w:color w:val=\"#FF0000\"/></w:rPr><w:t>" + CHANGE_TAG + "</w:t></w:r>";
-
    public static final String CONFIGAPP = "configuration";
 
    public static final String CONFIGGRPAPP = "configurationgroup";
@@ -581,7 +575,9 @@ public class WordCoreUtil {
    public static final String LIST_NUMBER_FIELD_PARAGRAPH_PRESENTATION = "<w:pPr><w:rPr><w:vanish/></w:rPr></w:pPr>";
 
    public static final String LIST_NUMBER_FIELD_RUN =
-      "<w:r><w:rPr><w:vanish/></w:rPr><w:fldChar w:fldCharType=\"begin\"/></w:r><w:r><w:rPr><w:vanish/></w:rPr><w:instrText> LISTNUM  \\l 1 \\s 0 </w:instrText></w:r><w:r><w:rPr><w:vanish/></w:rPr><w:fldChar w:fldCharType=\"end\"/><wx:t wx:val=\"1.\"/></w:r>";
+      "<w:r><w:rPr><w:vanish/></w:rPr><w:fldChar w:fldCharType=\"begin\"/></w:r>" //
+         + "<w:r><w:rPr><w:vanish/></w:rPr><w:instrText> LISTNUM  \\l 1 \\s 0 </w:instrText></w:r>" //
+         + "<w:r><w:rPr><w:vanish/></w:rPr><w:fldChar w:fldCharType=\"end\"/><wx:t wx:val=\"1.\"/></w:r>";
 
    public static final String LIST_NUMBER_FIELD =
       WordCoreUtil.LIST_NUMBER_FIELD_PARAGRAPH_PRESENTATION + WordCoreUtil.LIST_NUMBER_FIELD_RUN;
@@ -1745,33 +1741,6 @@ public class WordCoreUtil {
       //@formatter:on
 
       return output;
-   }
-
-   /**
-    * Currently OSEE is using {@link #CHANGE_TAG} to signify changes on that content. This method is used to append that
-    * tag along with red text formatting. The WordML must be added inside the first paragraph tag in the content in
-    * order to achieve proper formatting.
-    */
-
-   public static CharSequence appendInlineChangeTag(CharSequence content) {
-      Matcher paragraphMatcher = WordCoreUtil.PARAGRAPH_PATTERN.matcher(content);
-      if (paragraphMatcher.find()) {
-         StringBuilder strB = new StringBuilder();
-         strB.append(content.subSequence(0, paragraphMatcher.end()));
-         strB.append(CHANGE_TAG_WORDML);
-         strB.append(content.subSequence(paragraphMatcher.end(), content.length()));
-         content = strB;
-      }
-      return content;
-   }
-
-   public static StringBuilder appendInlineChangeTagToHeadingText(CharSequence headingText) {
-      //@formatter:off
-      return
-         new StringBuilder( headingText.length() + WordCoreUtil.CHANGE_TAG_LENGTH )
-                .append( WordCoreUtil.CHANGE_TAG )
-                .append( headingText );
-      //@formatter:on
    }
 
    public static boolean areApplicabilityTagsInvalid(String wordml, BranchId branch,

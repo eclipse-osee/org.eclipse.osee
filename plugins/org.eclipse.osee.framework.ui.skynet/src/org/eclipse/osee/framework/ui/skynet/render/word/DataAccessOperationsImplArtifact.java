@@ -149,47 +149,6 @@ public class DataAccessOperationsImplArtifact implements DataAccessOperations {
     */
 
    @Override
-   public Result<List<ArtifactId>, DataAccessException> getArtifactIdentifiersFilterByTxCommentForChange(
-      BranchSpecification branchSpecification) {
-
-      //@formatter:off
-      try {
-
-         var queryBuilder = ServiceUtil.getOseeClient().createQueryBuilder( branchSpecification.getBranchId() );
-
-         queryBuilder.andTxComment( "(E|P)R\\s?\\d{5}" );
-
-         var foundArtifactIdentifiers = queryBuilder.getIds();
-
-         return Result.<List<ArtifactId>,DataAccessException>ofValue( foundArtifactIdentifiers );
-
-      } catch( Exception e ) {
-
-         return
-            Result.ofError
-               (
-                  new DataAccessException
-                         (
-                            new Message()
-                                   .title( "DataAccessOperationsImplArtifact::getArtifactIdentifiersFilterByTxCommentForChange, failed to load artifact identifiers." )
-                                   .indentInc()
-                                   .segment( "Branch Specification", branchSpecification )
-                                   .reasonFollows( e )
-                                   .toString(),
-                            Cause.ERROR,
-                            e
-                         )
-               );
-
-      }
-      //@formatter:on
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-
-   @Override
    public Result<ArtifactReadable, DataAccessException> getArtifactReadableByIdentifier(
       ArtifactSpecification artifactSpecification) {
 
