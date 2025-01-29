@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.orcs.rest.model.transaction.CycleDetectionResult;
 
 /**
  * @author Hugo Trejo, Torin Grenda, David Miller
@@ -64,6 +65,17 @@ public interface RelationEndpoint {
       @PathParam("relationType") RelationTypeToken relationType,
       @DefaultValue("-1") @QueryParam("view") ArtifactId view,
       @DefaultValue("false") @QueryParam("upstream") boolean upstream);
+
+   /**
+    * Find any relation cycles of the given relation type
+    *
+    * @param relationType the relation type to scan for cycles
+    * @return list of components with cycles and a set of cycle nodes
+    */
+   @GET
+   @Path("findRelationCycles/{relationType}")
+   @Produces({MediaType.APPLICATION_JSON})
+   CycleDetectionResult findRelationCycles(@PathParam("relationType") RelationTypeToken relationType);
 
    /**
     * Create a relation between the given artifacts of the given relation type
