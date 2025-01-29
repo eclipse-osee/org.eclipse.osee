@@ -78,22 +78,22 @@ public class AtsConfigurationsTest extends AtsHealthTestTest {
 
       Assert.assertTrue(!configs.getUserIdToUserArtId().isEmpty());
       Assert.assertTrue(configs.getUserIdToUserArtId().containsKey(DemoUsers.Joe_Smith.getUserId()));
-      Assert.assertTrue(configs.getUserIdToUserArtId().containsValue(DemoUsers.Joe_Smith));
+      Assert.assertTrue(configs.getUserIdToUserArtId().containsValue(DemoUsers.Joe_Smith.getId()));
 
       Assert.assertTrue(!configs.getUserNameToUserArtId().isEmpty());
       Assert.assertTrue(configs.getUserNameToUserArtId().containsKey(DemoUsers.Joe_Smith.getName()));
-      Assert.assertTrue(configs.getUserNameToUserArtId().containsValue(DemoUsers.Joe_Smith));
+      Assert.assertTrue(configs.getUserNameToUserArtId().containsValue(DemoUsers.Joe_Smith.getId()));
 
       Assert.assertEquals(configs.getTeamDefToAgileTeam().size(), 6);
-      Assert.assertTrue(configs.getTeamDefToAgileTeam().containsKey(DemoArtifactToken.SAW_Requirements));
-      Assert.assertTrue(configs.getTeamDefToAgileTeam().containsValue(DemoArtifactToken.SAW_Agile_Team));
+      Assert.assertTrue(configs.getTeamDefToAgileTeam().containsKey(DemoArtifactToken.SAW_Requirements.getId()));
+      Assert.assertTrue(configs.getTeamDefToAgileTeam().containsValue(DemoArtifactToken.SAW_Agile_Team.getId()));
 
       Assert.assertTrue(!configs.getTeamDefToProgram().isEmpty());
       Assert.assertTrue(configs.getTeamDefToProgram().containsKey(DemoArtifactToken.SAW_Requirements.getId()));
       Assert.assertTrue(configs.getTeamDefToProgram().containsValue(DemoProgram.sawProgram.getId()));
 
       Assert.assertTrue(!configs.getFeatureToAgileTeam().isEmpty());
-      Assert.assertTrue(configs.getFeatureToAgileTeam().containsValue(DemoArtifactToken.SAW_Agile_Team));
+      Assert.assertTrue(configs.getFeatureToAgileTeam().containsValue(DemoArtifactToken.SAW_Agile_Team.getId()));
 
    }
 
