@@ -14,7 +14,12 @@
 package org.eclipse.osee.ats.ide.integration.tests.orcs.rest.applic;
 
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.DefaultHierarchyRoot;
+import static org.junit.Assert.assertEquals;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.ide.util.ServiceUtil;
 import org.eclipse.osee.client.test.framework.NotProductionDataStoreRule;
@@ -26,6 +31,7 @@ import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
 import org.eclipse.osee.orcs.rest.model.RelationEndpoint;
+import org.eclipse.osee.orcs.rest.model.transaction.CycleDetectionResult;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -107,24 +113,92 @@ public class RelationEndpointTest {
    public void testGetRelatedRecursive() {
       ArtifactToken parentArtifact = DefaultHierarchyRoot;
 
-      ArtifactToken top = artifactEndpoint.createArtifact(DemoBranches.SAW_PL_Working_Branch,
+      ArtifactToken first = artifactEndpoint.createArtifact(DemoBranches.SAW_PL_Working_Branch,
          CoreArtifactTypes.SoftwareRequirementMsWord, parentArtifact, "requirementA");
 
-      ArtifactToken middle = artifactEndpoint.createArtifact(DemoBranches.SAW_PL_Working_Branch,
+      ArtifactToken second = artifactEndpoint.createArtifact(DemoBranches.SAW_PL_Working_Branch,
          CoreArtifactTypes.SoftwareRequirementMsWord, parentArtifact, "requirementB");
 
-      ArtifactToken bottom = artifactEndpoint.createArtifact(DemoBranches.SAW_PL_Working_Branch,
+      ArtifactToken third = artifactEndpoint.createArtifact(DemoBranches.SAW_PL_Working_Branch,
          CoreArtifactTypes.SoftwareRequirementMsWord, parentArtifact, "requirementC");
 
+      ArtifactToken fourth = artifactEndpoint.createArtifact(DemoBranches.SAW_PL_Working_Branch,
+         CoreArtifactTypes.SoftwareRequirementMsWord, parentArtifact, "requirementD");
+
       // Act
-      Response res = relationEndpoint.createRelationByType(top, middle, CoreRelationTypes.RequirementTrace);
+      Response res1 = relationEndpoint.createRelationByType(first, second, CoreRelationTypes.RequirementTrace);
+      res1.close();
+
+      Response res2 = relationEndpoint.createRelationByType(second, third, CoreRelationTypes.RequirementTrace);
+      res2.close();
+
+      Response res3 = relationEndpoint.createRelationByType(third, fourth, CoreRelationTypes.RequirementTrace);
+      res3.close();
+
+      // Test Downstream Relation Recursion
+      List<ArtifactToken> artsDownstream =
+         relationEndpoint.getRelatedRecursive(second, CoreRelationTypes.RequirementTrace, ArtifactId.SENTINEL, false);
+      Assert.assertTrue(artsDownstream.contains(third));
+      Assert.assertTrue(artsDownstream.contains(fourth));
+      Assert.assertTrue(!artsDownstream.contains(first));
+
+      // Test Upstream Relation Recursion
+      List<ArtifactToken> artsUpstream =
+         relationEndpoint.getRelatedRecursive(third, CoreRelationTypes.RequirementTrace, ArtifactId.SENTINEL, true);
+      Assert.assertTrue(artsUpstream.contains(second));
+      Assert.assertTrue(artsUpstream.contains(first));
+      Assert.assertTrue(!artsUpstream.contains(fourth));
+   }
+
+   @Test
+   public void testFindRelationCycles() {
+      ArtifactToken parentArtifact = DefaultHierarchyRoot;
+
+      ArtifactToken first = artifactEndpoint.createArtifact(DemoBranches.SAW_PL_Working_Branch,
+         CoreArtifactTypes.SoftwareRequirementMsWord, parentArtifact, "requirementE");
+
+      ArtifactToken second = artifactEndpoint.createArtifact(DemoBranches.SAW_PL_Working_Branch,
+         CoreArtifactTypes.SoftwareRequirementMsWord, parentArtifact, "requirementF");
+
+      ArtifactToken third = artifactEndpoint.createArtifact(DemoBranches.SAW_PL_Working_Branch,
+         CoreArtifactTypes.SoftwareRequirementMsWord, parentArtifact, "requirementG");
+
+      // Disconnected Component
+      ArtifactToken fourth = artifactEndpoint.createArtifact(DemoBranches.SAW_PL_Working_Branch,
+         CoreArtifactTypes.SoftwareRequirementMsWord, parentArtifact, "requirementH");
+
+      ArtifactToken fifth = artifactEndpoint.createArtifact(DemoBranches.SAW_PL_Working_Branch,
+         CoreArtifactTypes.SoftwareRequirementMsWord, parentArtifact, "requirementI");
+
+      // Act
+      Response res = relationEndpoint.createRelationByType(first, second, CoreRelationTypes.RequirementTrace);
       res.close();
 
-      Response res2 = relationEndpoint.createRelationByType(middle, bottom, CoreRelationTypes.RequirementTrace);
+      Response res2 = relationEndpoint.createRelationByType(second, third, CoreRelationTypes.RequirementTrace);
       res2.close();
-      List<ArtifactToken> arts =
-         relationEndpoint.getRelatedRecursive(top, CoreRelationTypes.RequirementTrace, ArtifactId.SENTINEL);
-      Assert.assertTrue(arts.contains(middle));
-      Assert.assertTrue(arts.contains(bottom));
+
+      Response res3 = relationEndpoint.createRelationByType(third, first, CoreRelationTypes.RequirementTrace);
+      res3.close();
+
+      // Disconnected Relation
+      Response res4 = relationEndpoint.createRelationByType(fourth, fifth, CoreRelationTypes.RequirementTrace);
+      res4.close();
+
+      // Find Cycles
+      CycleDetectionResult cycleResult = relationEndpoint.findRelationCycles(CoreRelationTypes.RequirementTrace);
+
+      List<Set<Integer>> componentsWithCyclesExpected = Arrays.asList(
+         new HashSet<>(Arrays.asList(first.getIdIntValue(), second.getIdIntValue(), third.getIdIntValue())));
+      Set<Integer> possibleCycleNodes =
+         new HashSet<>(Arrays.asList(first.getIdIntValue(), second.getIdIntValue(), third.getIdIntValue()));
+
+      assertEquals("The result does not match the expected components with cycles.", componentsWithCyclesExpected,
+         cycleResult.getComponentsWithCycles());
+
+      Assert.assertTrue("Expected only one cycle node.", cycleResult.getCycleNodes().size() == 1);
+      Assert.assertTrue("Captured cycle node did not contain one of the expected nodes.",
+         !Collections.disjoint(possibleCycleNodes, cycleResult.getCycleNodes()));
+
+      artifactEndpoint.deleteArtifact(DemoBranches.SAW_PL_Working_Branch, third);
    }
 }

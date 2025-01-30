@@ -22,13 +22,25 @@ import org.eclipse.osee.orcs.core.ds.RelationTypeCriteria;
  */
 public class CriteriaRelatedRecursive extends RelationTypeCriteria<RelationTypeToken> {
    private final ArtifactId startArtifact;
+   private final boolean upstream;
 
    public CriteriaRelatedRecursive(RelationTypeToken relationType, ArtifactId startArtifact) {
       super(relationType);
       this.startArtifact = startArtifact;
+      this.upstream = false;
+   }
+
+   public CriteriaRelatedRecursive(RelationTypeToken relationType, ArtifactId startArtifact, boolean upstream) {
+      super(relationType);
+      this.startArtifact = startArtifact;
+      this.upstream = upstream;
    }
 
    public ArtifactId getStartArtifact() {
       return startArtifact;
+   }
+
+   public boolean isUpstream() {
+      return upstream;
    }
 }

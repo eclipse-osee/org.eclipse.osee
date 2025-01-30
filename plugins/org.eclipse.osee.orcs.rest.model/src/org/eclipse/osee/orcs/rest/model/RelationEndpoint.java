@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.orcs.rest.model.transaction.CycleDetectionResult;
 
 /**
  * @author Hugo Trejo, Torin Grenda, David Miller
@@ -52,8 +53,9 @@ public interface RelationEndpoint {
     * Find the recursive related artifacts of the given artifact
     *
     * @param artifact the parent artifact for which children artifacts are desired
-    * @param relationType the relation type to follow - currently only side A to side B
+    * @param relationType the relation type to follow
     * @param view the view to apply during the query for the related hierarchy, default is SENTINEL
+    * @param upstream the direction of recursion, B -> A if true, A -> B if false, default is false
     * @return list of related artifact tokens
     */
    @GET
@@ -61,7 +63,19 @@ public interface RelationEndpoint {
    @Produces({MediaType.APPLICATION_JSON})
    List<ArtifactToken> getRelatedRecursive(@PathParam("artifact") ArtifactId artifact,
       @PathParam("relationType") RelationTypeToken relationType,
-      @DefaultValue("-1") @QueryParam("view") ArtifactId view);
+      @DefaultValue("-1") @QueryParam("view") ArtifactId view,
+      @DefaultValue("false") @QueryParam("upstream") boolean upstream);
+
+   /**
+    * Find any relation cycles of the given relation type
+    *
+    * @param relationType the relation type to scan for cycles
+    * @return list of components with cycles and a set of cycle nodes
+    */
+   @GET
+   @Path("findRelationCycles/{relationType}")
+   @Produces({MediaType.APPLICATION_JSON})
+   CycleDetectionResult findRelationCycles(@PathParam("relationType") RelationTypeToken relationType);
 
    /**
     * Create a relation between the given artifacts of the given relation type
@@ -92,18 +106,17 @@ public interface RelationEndpoint {
    List<RelationTypeToken> convertRelations(@PathParam("artifactA") ArtifactId artifactA,
       @PathParam("oldRelationType") RelationTypeToken oldRelationType,
       @PathParam("newRelationType") RelationTypeToken newRelationType);
-   
+
    @POST
    @Path("convert/{oldRelationType}/{newRelationType}")
    @Consumes({MediaType.TEXT_PLAIN})
    @Produces({MediaType.APPLICATION_JSON})
-   TransactionToken convertAllRelations(
-      @PathParam("oldRelationType") RelationTypeToken oldRelationType,
+   TransactionToken convertAllRelations(@PathParam("oldRelationType") RelationTypeToken oldRelationType,
       @PathParam("newRelationType") RelationTypeToken newRelationType);
-   
- @GET
- @Path("rel2/validate")
- @Produces(MediaType.TEXT_HTML)
- public String validateRel2Table() ;
+
+   @GET
+   @Path("rel2/validate")
+   @Produces(MediaType.TEXT_HTML)
+   public String validateRel2Table();
 
 }
