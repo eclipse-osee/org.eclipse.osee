@@ -44,10 +44,9 @@ public class AtsUsersTest {
    public void testGetCurrentUser() {
       User currentUser = UserManager.getUser();
 
-      Assert.assertEquals(currentUser, AtsApiService.get().getUserService().getCurrentUser());
-
       AtsUser atsUser = AtsApiService.get().getUserService().getUserByUserId(currentUser.getUserId());
 
+      Assert.assertEquals(atsUser, AtsApiService.get().getUserService().getCurrentUser());
       Assert.assertEquals(currentUser.getUserId(), atsUser.getUserId());
       Assert.assertEquals(currentUser.getEmail(), atsUser.getEmail());
       Assert.assertEquals(currentUser.isActive(), atsUser.isActive());

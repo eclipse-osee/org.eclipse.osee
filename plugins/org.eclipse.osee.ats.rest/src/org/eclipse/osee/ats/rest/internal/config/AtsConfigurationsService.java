@@ -158,7 +158,7 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
                TeamDefinition teamDef = atsApi.getTeamDefinitionService().createTeamDefinition(art);
                configs.addTeamDef(teamDef);
                handleTeamDef(art, teamDef, idToArtifact, configs);
-               if (AtsArtifactToken.TopTeamDefinition.equals(art)) {
+               if (AtsArtifactToken.TopTeamDefinition.getToken().equals(art)) {
                   configs.setTopTeamDefinition(ArtifactId.create(art));
                }
                ArtifactId program = atsApi.getAttributeResolver().getSoleAttributeValue(art,
@@ -171,7 +171,7 @@ public class AtsConfigurationsService extends AbstractAtsConfigurationService {
                ActionableItem ai = atsApi.getActionableItemService().createActionableItem(art);
                configs.addAi(ai);
                handleAi(art, ai, idToArtifact, configs);
-               if (AtsArtifactToken.TopActionableItem.equals(art)) {
+               if (AtsArtifactToken.TopActionableItem.getToken().equals(art.getToken())) {
                   configs.setTopActionableItem(ArtifactId.create(art));
                }
                ai.setAtsApi(atsApi);

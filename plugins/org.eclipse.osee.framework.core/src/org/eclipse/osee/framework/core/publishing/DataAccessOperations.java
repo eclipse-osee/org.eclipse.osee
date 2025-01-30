@@ -83,19 +83,6 @@ public interface DataAccessOperations {
       IncludeDeleted includeDeleted);
 
    /**
-    * Gets the identifiers of all artifacts on a branch with a transaction comment that indicates the artifact has been
-    * changed.
-    *
-    * @param branchSpecification the branch and optionally view to get artifacts from.
-    * @return when artifact with a transaction comment that indicate the artifact has been changed are present, a
-    * {@link Result} containing a {@link List} of the {@link ArtifactId}s of the changed artifacts from the branch;
-    * otherwise, a {@link Result} with a {@link DataAccessException}.
-    */
-
-   Result<List<ArtifactId>, DataAccessException> getArtifactIdentifiersFilterByTxCommentForChange(
-      BranchSpecification branchSpecification);
-
-   /**
     * Finds an artifact by identifier.
     *
     * @param artifactSpecification the branch identifier, optional view identifier, and artifact identifier of the

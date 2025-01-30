@@ -262,11 +262,11 @@ public class Pdd20CreateCommittedAction extends AbstractPopulateDemoDatabase {
    private class ArtifactTokenActionListener implements INewActionListener {
       @Override
       public ArtifactToken getArtifactToken(List<IAtsActionableItem> applicableAis) {
-         if (applicableAis.iterator().next().equals(DemoArtifactToken.SAW_Test_AI)) {
+         if (applicableAis.iterator().next().getArtifactToken().equals(DemoArtifactToken.SAW_Test_AI)) {
             return DemoArtifactToken.SAW_Commited_Test_TeamWf;
-         } else if (applicableAis.iterator().next().equals(DemoArtifactToken.SAW_Code_AI)) {
+         } else if (applicableAis.iterator().next().getArtifactToken().equals(DemoArtifactToken.SAW_Code_AI)) {
             return DemoArtifactToken.SAW_Commited_Code_TeamWf;
-         } else if (applicableAis.iterator().next().equals(DemoArtifactToken.SAW_Requirements_AI)) {
+         } else if (applicableAis.iterator().next().getArtifactToken().equals(DemoArtifactToken.SAW_Requirements_AI)) {
             return DemoArtifactToken.SAW_Commited_Req_TeamWf;
          }
          throw new UnsupportedOperationException();

@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.jdk.core.util.ToMessage;
 public class WordTemplateContentData implements ToMessage {
 
    private ArtifactId artId;
-   private boolean artIsChanged;
    private BranchId branch;
    private String footer;
    private boolean isEdit;
@@ -64,10 +63,6 @@ public class WordTemplateContentData implements ToMessage {
 
    public ArtifactId getArtId() {
       return artId;
-   }
-
-   public boolean getArtIsChanged() {
-      return artIsChanged;
    }
 
    public BranchId getBranch() {
@@ -192,10 +187,6 @@ public class WordTemplateContentData implements ToMessage {
       }
       this.artId =
          Objects.requireNonNull(artId, "WordTemplateContentData::setArtId, parameter \"artId\" cannot be null.");
-   }
-
-   public void setArtIsChanged(boolean artIsChanged) {
-      this.artIsChanged = artIsChanged;
    }
 
    /**
@@ -329,9 +320,8 @@ public class WordTemplateContentData implements ToMessage {
       outMessage
          .indent( indent )
          .title( "WordTemplateContentData" )
-         .indentInc()                     
+         .indentInc()
          .segment( "artId",               this.artId               )
-         .segment( "artIsChanged",        this.artIsChanged        )
          .segment( "branch",              this.branch              )
          .segment( "footer",              this.footer              )
          .segment( "isEdit",              this.isEdit              )

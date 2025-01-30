@@ -33,7 +33,7 @@ public class ArtifactTopicEventLoopbackTest extends ArtifactTopicEventTest {
    private boolean remoteEventLoopback;
 
    @Before
-   public void setUp() {
+   public void initialize() {
       remoteEventLoopback = OseeEventManager.getPreferences().isEnableRemoteEventLoopback();
       OseeEventManager.getPreferences().setEnableRemoteEventLoopback(true);
    }
