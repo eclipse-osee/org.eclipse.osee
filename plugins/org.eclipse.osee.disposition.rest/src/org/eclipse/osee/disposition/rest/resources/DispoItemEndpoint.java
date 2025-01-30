@@ -82,7 +82,7 @@ public class DispoItemEndpoint {
       @ApiResponse(responseCode = "200", description = "OK. Found Dispositionable Item"),
       @ApiResponse(responseCode = "404", description = "Not Found. Could not find any Dispositionable Items")})
    public DispoItem getDispoItemsById(
-      @Parameter(description = "TThe Id of the Dispositionable Item to search for", required = true) @PathParam("itemId") String itemId) {
+      @Parameter(description = "The Id of the Dispositionable Item to search for", required = true) @PathParam("itemId") String itemId) {
       return dispoApi.getDispoItemById(branch, itemId);
    }
 
