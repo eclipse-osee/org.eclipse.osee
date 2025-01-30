@@ -294,7 +294,6 @@ public interface CoreAttributeTypes {
    AttributeTypeString ParagraphNumber = osee.createString(1152921504606847101L, "Paragraph Number", MediaType.TEXT_PLAIN, "This is the corresponding section number from the outline of document from which this artifact was imported");
    AttributeTypeString ParameterizedCommand = osee.createString(8062747461195678171L, "Parameterized Command", MediaType.APPLICATION_JSON, "The JSON representation of the command with its parameterized values");
    PartitionAttributeType Partition = osee.createEnum(new PartitionAttributeType());
-   AttributeTypeString CoveragePartition = osee.createString(1152921504608470507L, "Name of Partition for Coverage", MediaType.TEXT_PLAIN, "");
    AttributeTypeInteger CoveredCount = osee.createInteger(1152921504608470508L, "Covered Count", MediaType.TEXT_PLAIN, "Number of points that were manually covered");
    AttributeTypeInteger ModifyCount = osee.createInteger(1152921504608470509L, "Modify Count", MediaType.TEXT_PLAIN, "Number of points that were set to need modification");
    AttributeTypeInteger PassedCount = osee.createInteger(1152921504606847297L, "Passed Count", MediaType.TEXT_PLAIN, "Number of points that passed");
@@ -432,6 +431,7 @@ public interface CoreAttributeTypes {
    AttributeTypeString CoverageMethodNumber = osee.createString(3458764513820541460L, "Method Number", MediaType.TEXT_PLAIN, "");
    AttributeTypeBoolean CoverageNeedsRerun = osee.createBoolean(3458764513820541444L, "Needs Rerun", MediaType.TEXT_PLAIN, "");
    AttributeTypeString CoverageNotes = osee.createString(3458764513820541456L, "Notes", MediaType.TEXT_PLAIN, "");
+   AttributeTypeString CoveragePartition = osee.createString(1152921504608470507L, "Name of Partition for Coverage", MediaType.TEXT_PLAIN, "");
    AttributeTypeString CoveragePercentComplete = osee.createString(3458764513820541449L, "Percent Complete", MediaType.TEXT_PLAIN, ""); //Not Used in Code
    DispoItemStatusAttributeType CoverageStatus = osee.createEnum(new DispoItemStatusAttributeType());
    AttributeTypeString CoverageTeam = osee.createString(3160880792426011047L, "Team", MediaType.TEXT_PLAIN, "");

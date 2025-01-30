@@ -115,6 +115,7 @@ app.factory('ColumnFactory', function() {
     var columnsCoverage = [{
         field: 'name',
         displayName: 'Name',
+        width: '20%',
         cellTemplate: origCellTmpl,
         filter: {
             condition: usePureRegex
@@ -237,6 +238,15 @@ app.factory('ColumnFactory', function() {
         filter: {
             condition: usePureRegex
         }
+    }, {
+        field: 'sourceFilePath',
+        displayName: 'File Path',
+        width: '40%',
+        enableCellEdit: false,
+        visible: false,
+        filter: {
+            condition: usePureRegex
+        },
     } ];
     
     var columnsTestScript = [{

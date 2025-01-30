@@ -159,6 +159,11 @@ public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem
    }
 
    @Override
+   public String getSourceFilePath() {
+      return artifact.getSoleAttributeAsString(CoreAttributeTypes.FileSystemPath, "");
+   }
+
+   @Override
    public Boolean getNeedsReview() {
       return artifact.getSoleAttributeValue(DispoOseeTypes.DispoItemNeedsReview, false);
    }
