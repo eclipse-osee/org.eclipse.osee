@@ -13,6 +13,7 @@
 
 package org.eclipse.osee.disposition.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 import java.util.List;
@@ -23,8 +24,8 @@ import java.util.Map;
  */
 
 @XmlRootElement(name = "DispoItemData")
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class DispoItemData implements DispoItem {
-
    private String guid;
    private String name;
    private String assignee;
@@ -48,6 +49,7 @@ public class DispoItemData implements DispoItem {
    private String methodNumber;
    private Boolean isIncludeDetails;
    private String team;
+   private String sourceFilePath;
 
    public static DispoItemData SENTINEL = valueOf("-1");
 
@@ -172,6 +174,11 @@ public class DispoItemData implements DispoItem {
    }
 
    @Override
+   public String getSourceFilePath() {
+      return sourceFilePath;
+   }
+
+   @Override
    public String getMethodNumber() {
       return methodNumber;
    }
@@ -267,6 +274,10 @@ public class DispoItemData implements DispoItem {
 
    public void setFileNumber(String fileNumber) {
       this.fileNumber = fileNumber;
+   }
+
+   public void setSourceFilePath(String sourceFilePath) {
+      this.sourceFilePath = sourceFilePath;
    }
 
    public void setMethodNumber(String methodNumber) {

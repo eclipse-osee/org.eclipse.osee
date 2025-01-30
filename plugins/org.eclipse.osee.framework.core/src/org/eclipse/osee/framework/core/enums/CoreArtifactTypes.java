@@ -1085,7 +1085,8 @@ public interface CoreArtifactTypes {
       .exactlyOne(ModifyCount)
       .zeroOrOne(Result)
       .exactlyOne(ExecutionDate)
-      .zeroOrOne(ExecutedBy));
+      .zeroOrOne(ExecutedBy)
+      .zeroOrOne(FileSystemPath));
 
    // @formatter:on
 }
