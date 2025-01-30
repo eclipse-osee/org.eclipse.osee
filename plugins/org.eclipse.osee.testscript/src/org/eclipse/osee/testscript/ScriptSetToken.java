@@ -11,7 +11,7 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 
-package org.eclipse.osee.testscript.internal;
+package org.eclipse.osee.testscript;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithGammas;

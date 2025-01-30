@@ -16,6 +16,7 @@ package org.eclipse.osee.testscript.internal;
 import org.eclipse.osee.accessor.internal.ArtifactAccessorImpl;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.testscript.ScriptSetToken;
 
 /**
  * @author Stephen J. Molaro
