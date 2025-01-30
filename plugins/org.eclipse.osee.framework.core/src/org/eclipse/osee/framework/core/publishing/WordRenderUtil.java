@@ -1208,7 +1208,6 @@ public class WordRenderUtil {
             @NonNull  PublishingArtifact                          artifact,
             @Nullable AttributeTypeToken                          headingAttributeTypeToken,
             @Nullable String                                      headingFont,
-            @Nullable Function<CharSequence,CharSequence>         headingTextFunction,
             @NonNull  IncludeBookmark                             includeBookmark,
                       boolean                                     overrideOutlineNumber,
             @NonNull  OutlineNumber                               outlineNumber,
@@ -1224,11 +1223,6 @@ public class WordRenderUtil {
          ( headingAttributeTypeToken != null ) && artifact.isAttributeTypeValid( headingAttributeTypeToken )
             ? artifact.getSoleAttributeAsString(headingAttributeTypeToken, Strings.EMPTY_STRING )
             : Strings.EMPTY_STRING;
-      //@formatter:on
-
-      if (headingTextFunction != null) {
-         headingText = headingTextFunction.apply(headingText);
-      }
 
       //@formatter:off
       final var paragraphNumberOptional =
@@ -1330,7 +1324,6 @@ public class WordRenderUtil {
             @NonNull  OutlineNumber                               outlineNumber,
             @Nullable ArtifactTypeToken                           headingArtifactTypeToken,
             @Nullable AttributeTypeToken                          headingAttributeTypeToken,
-            @Nullable Function<CharSequence,CharSequence>         headingTextFunction,
             @Nullable String                                      headingFont,
             @Nullable Consumer<PublishingArtifact>                invalidAttributesHandler,
             @Nullable BiConsumer<PublishingArtifact,CharSequence> updateParagraphNumber,
@@ -1399,7 +1392,6 @@ public class WordRenderUtil {
                safeArtifact,
                headingAttributeTypeToken,
                headingFont,
-               headingTextFunction,
                safeIncludeBookmark,
                overrideOutlineNumber,
                safeOutlineNumber,
@@ -1439,7 +1431,6 @@ public class WordRenderUtil {
             FormatIndicator                             formatIndicator,
             ArtifactTypeToken                           headingArtifactTypeToken,
             AttributeTypeToken                          headingAttributeTypeToken,
-            Function<CharSequence,CharSequence>         headingTextFunction ,
             ArtifactAcceptor                            includeBookmarkArtifactAcceptor,
             IncludeHeadings                             includeHeadings,
             IncludeMainContentForHeadings               includeMainContentForHeadings,
@@ -1466,7 +1457,6 @@ public class WordRenderUtil {
                outlineNumber,
                headingArtifactTypeToken,
                headingAttributeTypeToken,
-               headingTextFunction,
                Strings.EMPTY_STRING,
                invalidAttributesHandler,
                updateParagraphNumber,
@@ -1827,7 +1817,6 @@ public class WordRenderUtil {
             String                             label,
             String                             footer,
             String                             desktopClientLoopbackUrl,
-            boolean                            artifactIsChanged,
             IncludeBookmark                    includeBookmark,
             TransactionToken                   historicalArtifactTransactionToken,
             Set<String>                        unknownGuids,
@@ -1859,7 +1848,6 @@ public class WordRenderUtil {
       wtcData.setPresentationType(presentationType);
       wtcData.setTxId(historicalArtifactTransactionToken);
       wtcData.setDesktopClientLoopbackUrl(desktopClientLoopbackUrl);
-      wtcData.setArtIsChanged(artifactIsChanged);
       wtcData.setIncludeBookmark(safeIncludeBookmark);
 
       String wordMlContentDataAndFooter = "";

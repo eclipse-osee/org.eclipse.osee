@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -54,7 +53,6 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.DoubleEnumMap;
 import org.eclipse.osee.framework.jdk.core.util.DoubleMap;
 import org.eclipse.osee.framework.jdk.core.util.EnumMapHashMap;
-import org.eclipse.osee.framework.jdk.core.util.ListMap;
 import org.eclipse.osee.framework.jdk.core.util.Message;
 import org.eclipse.osee.framework.jdk.core.util.RankHashMap;
 import org.eclipse.osee.framework.jdk.core.util.RankMap;
@@ -488,19 +486,6 @@ public class PublishingArtifactLoader implements ToMessage {
    private int cacheTest;
 
    /**
-    * Flag to indicated that changed artifacts have been loaded by {@link #loadByTransactionComment} or by
-    * {@link #loadByAtsTeamworkflow}. Changed artifacts should only be loaded once.
-    */
-
-   private boolean changedArtifactsLoaded;
-
-   /**
-    * Caches the changed artifacts from the publishing branch by {@link ArtifactId}.
-    */
-
-   private ListMap<ArtifactId, PublishingArtifact> changedArtifactsMap;
-
-   /**
     * Counts the number of successful child cache requests.
     */
 
@@ -620,7 +605,6 @@ public class PublishingArtifactLoader implements ToMessage {
       this.publishingErrorLog = Objects.requireNonNull(publishingErrorLog);
       this.publishingArtifactFactoryWithoutView = Objects.requireNonNull(publishingArtifactFactoryWithoutView);
       this.publishingArtifactFactoryWithView = Objects.requireNonNull(publishingArtifactFactoryWithView);
-      this.changedArtifactsLoaded = false;
       this.atsTeamWorkflowLoader = atsTeamWorkflowLoader;
       this.cacheClearBranchView = 0;
       this.cacheHit = 0;
@@ -1339,11 +1323,7 @@ public class PublishingArtifactLoader implements ToMessage {
       this.branchSpecificationMap.put( BranchIndicator.PRODUCT_LINE_BRANCH, FilterForView.NO,  this.branchSpecificationProductLineWithoutView );
       this.branchSpecificationMap.put( BranchIndicator.PUBLISHING_BRANCH,   FilterForView.YES, this.branchSpecification                       );
       this.branchSpecificationMap.put( BranchIndicator.PUBLISHING_BRANCH,   FilterForView.NO,  this.branchSpecificationWithoutView            );
-      //@formatter:on
 
-      this.changedArtifactsMap = new ListMap<>();
-
-      //@formatter:off
       @SuppressWarnings("unchecked")
       Predicate<Object>[] predicates =
          new Predicate[]
@@ -2339,16 +2319,6 @@ public class PublishingArtifactLoader implements ToMessage {
          }
       }
       //@formatter:on
-   }
-
-   /**
-    * Gets an unmodifiable list view of the changed artifacts from the publishing branch for the publish.
-    *
-    * @return a {@link List} of the changed {@link PublishingArtifact}s on the publishing branch.
-    */
-
-   public List<PublishingArtifact> getChangedArtifactsList() {
-      return Collections.unmodifiableList(this.changedArtifactsMap.listView());
    }
 
    /**
@@ -3514,18 +3484,6 @@ public class PublishingArtifactLoader implements ToMessage {
       return result;
    }
 
-   /**
-    * Predicate to determine if an artifact for the publish has been changed.
-    *
-    * @param artifactId the identifier of the artifact to check.
-    * @return <code>true</code>, when the artifact has been changed; otherwise, <code>false</code>.
-    */
-
-   public boolean isChangedArtifact(ArtifactId artifactId) {
-
-      return this.changedArtifactsMap.mapView().containsKey(artifactId);
-   }
-
    public boolean isHeading(ArtifactId artifactIdentifier) {
       //@formatter:off
       return
@@ -3623,85 +3581,6 @@ public class PublishingArtifactLoader implements ToMessage {
          this.getChildren(publishingArtifact, FilterForView.NO, CacheReadMode.LOAD_FROM_DATABASE);
       }
 
-   }
-
-   /**
-    * Finds the artifacts that have been changed under one of the ATS Team Workflows that are associated with the
-    * artifact specified by <code>artifactSpecification</code> and that are hierarchical descendants of one of the
-    * artifacts in <code>headerArtifacts</code>.
-    * <p>
-    * Call only one of the methods {@link #loadByAtsTeamworkflow} or {@link #loadByTransactionComment} only once per
-    * instantiation of the {@link ChangedArtifactsTracker} class.
-    * <p>
-    * If the parameter <code>headerArtifacts</code> is an empty {@link Collection}, no changed artifacts will be loaded.
-    *
-    * @param headerArtifacts find changed artifacts that are hierarchical descendants of these artifacts.
-    * @param artifactSpecification ATS Team Workflows related to this artifact are used to find the changed artifacts.
-    * @throws NullPointerException when <code>headerArtifacts</code> or <code>artifactSpecification</code> are
-    * <code>null</code>.
-    * @implNote This method is for taking a Goal artifact and gathering the ArtifactIds of all changed artifacts
-    * associated with the workflows under the goal. There is a future plan to publish off of working branches, once
-    * implemented, the transaction query will need to be modified. Also, if a working branch is selected, it is okay for
-    * that branch to not be committed. If publishing off of a baseline branch, any uncommitted workflows will be logged
-    * and changes will not be included in the publish. Will move to MSWordTemplatePublisher when completed.
-    */
-
-   public void loadByAtsTeamWorkflow(Collection<? extends PublishingArtifact> headerArtifacts,
-      ArtifactId artifactIdentifier) {
-
-      if (this.changedArtifactsLoaded) {
-         //@formatter:off
-         throw
-            new IllegalStateException
-                   (
-                      "PublishingArtifactLoader::loadByAtsTeamWorkflow, changed artifacts already loaded."
-                   );
-         //@formatter:on
-      }
-
-      this.atsTeamWorkflowLoader.load(headerArtifacts, artifactIdentifier, this, this.branchSpecification,
-         this.changedArtifactsMap.mapView());
-
-      this.changedArtifactsLoaded = true;
-   }
-
-   /**
-    * Loads all artifacts from a branch with a transaction comment that indicates the artifact has been modified on the
-    * branch.
-    *
-    * @param branchSpecification the branch to load modified artifacts from.
-    * @throws NullPointerException when the parameter <code>branchSpecification</code> is <code>null</code>.
-    */
-
-   public void loadByTransactionComment(BranchSpecification branchSpecification) {
-
-      if (this.changedArtifactsLoaded) {
-         //@formatter:off
-         throw
-            new IllegalStateException
-                   (
-                      "PublishingArtifactLoader::loadByAtsTeamWorkflow, changed artifacts already loaded."
-                   );
-         //@formatter:on
-      }
-
-      Objects.requireNonNull(branchSpecification,
-         "ChangedArtifactsTracker::loadByTransactionComment, parameter \"branchSpecification\" cannot be null.");
-
-      //@formatter:off
-      this.streamChangedArtifactReadables( branchSpecification )
-         .collect
-            (
-               Collectors.toMap
-                  (
-                     ArtifactId::create,
-                     Function.identity(),
-                     ( a, b ) -> a,
-                     () -> this.changedArtifactsMap.mapView()
-                  )
-            );
-      //@formatter:on
-      this.changedArtifactsLoaded = true;
    }
 
    private Optional<List<PublishingArtifact>> mergeJustLoadedArtifacts(BranchIndicator branchIndicator,
@@ -3849,43 +3728,6 @@ public class PublishingArtifactLoader implements ToMessage {
          .forEach(this::setHierarchyPosition);
 
       artifacts.sort(new HierarchyComparator());
-      //@formatter:on
-   }
-
-   /**
-    * Streams all artifacts on the <code>branchSpecification</code> branch that have a transaction comment that
-    * indicates the artifact was modified on the branch.
-    *
-    * @param branchSpecification the branch to stream changed artifacts from.
-    * @return a {@link Stream} of the changed artifacts as {@link ArtifactReadable} objects.
-    */
-
-   private Stream<PublishingArtifact> streamChangedArtifactReadables(BranchSpecification branchSpecification) {
-      //@formatter:off
-      return
-         this.dataAccessOperations
-            .getArtifactIdentifiersFilterByTxCommentForChange(branchSpecification)
-            .flatMapValue
-               (
-                  ( artifactIdentifiers )                      -> this.getPublishingArtifactsByArtifactIdentifiers
-                                                                     (
-                                                                        BranchIndicator.PUBLISHING_BRANCH,
-                                                                        artifactIdentifiers,
-                                                                        FilterForView.NO,
-                                                                        WhenNotFound.EMPTY,
-                                                                        TransactionId.SENTINEL,
-                                                                        IncludeDeleted.NO
-                                                                     ),
-                  ( artifactIdentifiers, dataAccessException ) -> (DataAccessException) dataAccessException
-               )
-            .orElseGet
-               (
-                  ( dataAccessException ) ->  Result.ofValue( List.of() ),
-                  List::of
-               )
-            .stream()
-            .filter( PublishingArtifact::isFound )
-            .peek( PublishingArtifact::setChanged );
       //@formatter:on
    }
 
