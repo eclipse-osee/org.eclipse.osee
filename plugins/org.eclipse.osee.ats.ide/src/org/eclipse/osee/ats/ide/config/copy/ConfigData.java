@@ -33,6 +33,8 @@ public class ConfigData {
    boolean retainTeamLeads;
    boolean persistChanges;
    Long newProgramId;
+   // Allows a Static Id tag to be set in db to choose what AIs and Team Defs to copy
+   boolean copyFromTag = false;
 
    public void validateData(XResultData resultData) {
       if (teamDef == null) {
@@ -129,6 +131,14 @@ public class ConfigData {
 
    public void setNewProgramId(Long newProgramId) {
       this.newProgramId = newProgramId;
+   }
+
+   public boolean isCopyFromTag() {
+      return copyFromTag;
+   }
+
+   public void setCopyFromTag(boolean copyFromTag) {
+      this.copyFromTag = copyFromTag;
    }
 
 }

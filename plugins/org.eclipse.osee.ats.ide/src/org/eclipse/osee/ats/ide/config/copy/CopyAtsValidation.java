@@ -14,6 +14,7 @@
 package org.eclipse.osee.ats.ide.config.copy;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -30,6 +31,7 @@ public class CopyAtsValidation {
 
    private final ConfigData configData;
    protected final XResultData resultData;
+   public static final String COPY_FROM_TAG = "CopyFromTag";
 
    public CopyAtsValidation(ConfigData configData, XResultData resultData) {
       this.configData = configData;
@@ -54,16 +56,28 @@ public class CopyAtsValidation {
    private void performValidateAtsDatabaseChecks() {
       ValidateResults results = new ValidateResults();
 
+      boolean isCopyFromTagSet = configData.isCopyFromTag();
+
       // Validate AIs to TeamDefs
       Set<Artifact> aias = new HashSet<>();
-      aias.addAll(Collections.castAll(AtsApiService.get().getQueryService().getArtifactsFromObjects(
+      List<Artifact> allAiArts = Collections.castAll(AtsApiService.get().getQueryService().getArtifactsFromObjects(
          AtsApiService.get().getActionableItemService().getActionableItemsFromItemAndChildren(
-            configData.getActionableItem()))));
+            configData.getActionableItem())));
+      for (Artifact aiArt : allAiArts) {
+         if (!isCopyFromTagSet || (isCopyFromTagSet && aiArt.getTags().contains(COPY_FROM_TAG))) {
+            aias.add(aiArt);
+         }
+      }
 
       // Validate TeamDefs have Workflow Definitions
       Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
-      teamDefs.addAll(
-         AtsApiService.get().getTeamDefinitionService().getTeamsFromItemAndChildren(configData.getTeamDef()));
+      Set<IAtsTeamDefinition> allTeamDefs =
+         AtsApiService.get().getTeamDefinitionService().getTeamsFromItemAndChildren(configData.getTeamDef());
+      for (IAtsTeamDefinition teamDefArt : allTeamDefs) {
+         if (!isCopyFromTagSet || (isCopyFromTagSet && teamDefArt.getTags().contains(COPY_FROM_TAG))) {
+            teamDefs.add(teamDefArt);
+         }
+      }
 
       results.addResultsMapToResultData(resultData);
    }
