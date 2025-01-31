@@ -133,6 +133,7 @@ public final class DispoUtil {
       dispoItemData.setElapsedTime(dispoItemArt.getElapsedTime());
       dispoItemData.setItemNotes(dispoItemArt.getItemNotes());
       dispoItemData.setFileNumber(dispoItemArt.getFileNumber());
+      dispoItemData.setSourceFilePath(dispoItemArt.getSourceFilePath());
       dispoItemData.setMethodNumber(dispoItemArt.getMethodNumber());
       dispoItemData.setTeam(dispoItemArt.getTeam());
       if (isIncludeDiscrepancies) {
@@ -169,6 +170,7 @@ public final class DispoUtil {
       dispoItemData.setItemNotes(dispoItem.getItemNotes());
       dispoItemData.setVersion(dispoItem.getVersion());
       dispoItemData.setFileNumber(dispoItem.getFileNumber());
+      dispoItemData.setSourceFilePath(dispoItem.getSourceFilePath());
       dispoItemData.setMethodNumber(dispoItem.getMethodNumber());
       dispoItemData.setTeam(dispoItem.getTeam());
 

@@ -56,6 +56,8 @@ public interface DispoItem extends Identifiable<String> {
 
    String getFileNumber();
 
+   String getSourceFilePath();
+
    Boolean getNeedsReview();
 
    String getTeam();
