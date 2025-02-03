@@ -32,7 +32,9 @@ public interface DashboardApi {
 
    Integer getSubsystemsCount(BranchId branch, String filter);
 
-   Collection<ArtifactAccessorResultWithoutGammas> getTeams(BranchId branch, String filter, long pageNum, long pageSize,
+   ScriptTeamToken getTeam(BranchId branch, ArtifactId id);
+
+   Collection<ScriptTeamToken> getTeams(BranchId branch, String filter, long pageNum, long pageSize,
       AttributeTypeToken orderByAttributeType);
 
    Integer getTeamsCount(BranchId branch, String filter);

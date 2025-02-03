@@ -68,7 +68,7 @@ public interface DashboardEndpoint {
    @GET
    @Path("{branch}/teams")
    @Produces(MediaType.APPLICATION_JSON)
-   public Collection<ArtifactAccessorResultWithoutGammas> getTeams(@PathParam("branch") BranchId branch,
+   public Collection<ScriptTeamToken> getTeams(@PathParam("branch") BranchId branch,
       @QueryParam("filter") String filter, @QueryParam("pageNum") long pageNum, @QueryParam("count") long pageSize,
       @QueryParam("orderByAttributeType") AttributeTypeToken orderByAttributeType);
 

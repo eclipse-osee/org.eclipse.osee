@@ -15,6 +15,7 @@ import { Injectable, inject } from '@angular/core';
 import { CIStats, CITimelineStats } from '../types/ci-stats';
 import { apiURL } from '@osee/environments';
 import { HttpParamsType, NamedId } from '@osee/shared/types';
+import { ScriptTeam } from '../types';
 
 @Injectable({
 	providedIn: 'root',
@@ -85,7 +86,7 @@ export class DashboardHttpService {
 			pageSize: pageSize,
 			orderByAttributeType: orderByAttributeId,
 		};
-		return this.http.get<NamedId[]>(
+		return this.http.get<ScriptTeam[]>(
 			`${apiURL}/script/dashboard/${branchId}/teams`,
 			{ params: params }
 		);

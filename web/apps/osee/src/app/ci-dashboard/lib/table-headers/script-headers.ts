@@ -22,7 +22,7 @@ export const scriptDefHeaderDetails: headerDetail<DefReference>[] = [
 	{
 		header: 'team',
 		description: '',
-		humanReadable: 'Team Name',
+		humanReadable: 'Team',
 	},
 	{
 		header: 'subsystem',

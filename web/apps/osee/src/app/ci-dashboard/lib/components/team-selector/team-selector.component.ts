@@ -16,6 +16,7 @@ import {
 	effect,
 	inject,
 	input,
+	linkedSignal,
 	signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -37,8 +38,11 @@ import {
 	switchMap,
 } from 'rxjs';
 import { MatIcon } from '@angular/material/icon';
-import { DefReference } from '../../types/tmo';
+import { DefReference, ScriptTeam } from '../../types/tmo';
 import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
+import { CurrentTransactionService } from '@osee/transactions/services';
+import { RELATIONTYPEIDENUM } from '@osee/shared/types/constants';
+import { addRelation } from '@osee/transactions/operators';
 
 @Component({
 	selector: 'osee-team-selector',
@@ -61,7 +65,8 @@ import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 			<input
 				type="text"
 				matInput
-				[(ngModel)]="filter"
+				[value]="filter()"
+				(input)="updateFilter($event)"
 				placeholder="Select a Team"
 				(focusin)="openAutoComplete()"
 				(focusout)="closeAutoComplete()"
@@ -80,7 +85,8 @@ import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 			}
 			<mat-autocomplete
 				#autocomplete="matAutocomplete"
-				(optionSelected)="selectValue($event.option.value)">
+				(optionSelected)="selectTeam($event.option.value)"
+				[displayWith]="displayFn">
 				@if (teams() === undefined && teamsCount() === undefined) {
 					<mat-option
 						id="-1"
@@ -98,13 +104,13 @@ import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 						[noneOption]="filter() === '' ? noneOption : undefined">
 						<ng-template let-option>
 							<mat-option
-								[attr.data-cy]="'option-' + option.name"
-								[value]="option.name"
+								[attr.data-cy]="'option-' + option.name.value"
+								[value]="option"
 								[id]="option.id">
 								@if (option.name === '') {
 									None
 								} @else {
-									{{ option.name }}
+									{{ option.name.value }}
 								}
 							</mat-option>
 						</ng-template>
@@ -117,17 +123,25 @@ import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
 export class TeamSelectorComponent {
 	script = input.required<DefReference>();
 
-	dashboardService = inject(DashboardService);
+	private dashboardService = inject(DashboardService);
+	private txService = inject(CurrentTransactionService);
 
 	pageSize = 100;
-	noneOption = { id: '-1', name: '' };
+	noneOption: ScriptTeam = {
+		id: '-1',
+		gammaId: '-1',
+		name: {
+			id: '-1',
+			gammaId: '-1',
+			typeId: '1152921504606847088',
+			value: '',
+		},
+	};
 
-	filter = signal('');
+	filter = linkedSignal(() => this.script().team.name.value);
 	private _filter$ = toObservable(this.filter).pipe(debounceTime(250));
 	autoCompleteOpened = signal(false);
 	private _autoCompleteOpened$ = toObservable(this.autoCompleteOpened);
-
-	private _scriptEffect = effect(() => this.filter.set(this.script().team));
 
 	private _teams$ = this._autoCompleteOpened$.pipe(
 		debounceTime(250),
@@ -151,6 +165,10 @@ export class TeamSelectorComponent {
 
 	teams = toSignal(this._teams$);
 
+	private _scriptEffect = effect(() => {
+		this.filter.set(this.script().team.name.value);
+	});
+
 	private _teamsCount$ = this._autoCompleteOpened$.pipe(
 		debounceTime(250),
 		distinctUntilChanged(),
@@ -166,15 +184,43 @@ export class TeamSelectorComponent {
 
 	teamsCount = toSignal(this._teamsCount$);
 
-	selectValue(value: string) {
-		this.filter.set(value);
-		if (this.script().id !== '-1' && this.script().team !== value) {
-			this.dashboardService
-				.updateAttribute(
-					this.script().id,
-					ATTRIBUTETYPEIDENUM.TEAMNAME,
-					value
+	selectTeam(team: ScriptTeam) {
+		this.filter.set(team.name.value);
+
+		if (team.id === this.script().team.id) {
+			return;
+		}
+
+		if (this.script().team.id !== '-1') {
+			this.txService
+				.deleteRelation(
+					`Changing team relation for script ${this.script().id}`,
+					{
+						typeId: RELATIONTYPEIDENUM.SCRIPTDEFTOTEAM,
+						aArtId: this.script().id,
+						bArtId: this.script().team.id,
+					}
 				)
+				.pipe(
+					addRelation({
+						typeId: RELATIONTYPEIDENUM.SCRIPTDEFTOTEAM,
+						aArtId: this.script().id,
+						bArtId: team.id,
+					}),
+					this.txService.performMutation()
+				)
+				.subscribe();
+		} else {
+			this.txService
+				.addRelation(
+					`Changing team relation for script ${this.script().id}`,
+					{
+						typeId: RELATIONTYPEIDENUM.SCRIPTDEFTOTEAM,
+						aArtId: this.script().id,
+						bArtId: team.id,
+					}
+				)
+				.pipe(this.txService.performMutation())
 				.subscribe();
 		}
 	}
@@ -187,7 +233,16 @@ export class TeamSelectorComponent {
 		this.autoCompleteOpened.set(false);
 	}
 
+	updateFilter(event: Event) {
+		const filterValue = (event.target as HTMLInputElement).value;
+		this.filter.set(filterValue);
+	}
+
 	clearFilter() {
 		this.filter.set('');
+	}
+
+	displayFn(val: ScriptTeam) {
+		return val?.name?.value || '';
 	}
 }

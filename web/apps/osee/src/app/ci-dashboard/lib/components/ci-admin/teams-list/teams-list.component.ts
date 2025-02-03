@@ -34,7 +34,7 @@ import { AsyncPipe } from '@angular/common';
 		<osee-named-id-list-editor
 			[name]="'Teams'"
 			[allowedToEdit]="branchType() === 'working'"
-			[dataToDisplay]="(teams | async) || []"
+			[dataToDisplay]="[]"
 			[pageIndex]="teamsPageNum()"
 			[pageSize]="teamsPageSize()"
 			[count]="(teamsCount | async) || 0"
