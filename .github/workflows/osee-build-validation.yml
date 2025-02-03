@@ -1,457 +1,456 @@
 name: OSEE Build Validation
 
 on:
-    pull_request:
-        branches:
-            - main
+  pull_request:
+    branches:
+      - main
 
 permissions:
-    contents: read
-    packages: write
-    pull-requests: write
+  contents: read
+  packages: write
+  pull-requests: write
 
 env:
-    ARTIFACT_PATH: "plugins/org.eclipse.osee.server.p2/target/org.eclipse.osee.server.runtime.zip"
-    SERVER_PATH: "osee_server"
-    SERVER_ZIP: "org.eclipse.osee.server.runtime.zip"
-    IMAGE_DIRECTORY: ".github/docker/osee-server/Dockerfile"
+  ARTIFACT_PATH: "plugins/org.eclipse.osee.server.p2/target/org.eclipse.osee.server.runtime.zip"
+  SERVER_PATH: "osee_server"
+  SERVER_ZIP: "org.eclipse.osee.server.runtime.zip"
+  IMAGE_DIRECTORY: ".github/docker/osee-server/Dockerfile"
 
 jobs:
-    check_changes:
-        runs-on: ubuntu-latest
-        outputs:
-            angular_changed: ${{ steps.angular_changes.outputs.any_modified }}
-            java_changed: ${{ steps.java_changes.outputs.any_modified }}
-            rust_changed: ${{ steps.rust_changes.outputs.any_modified }}
-            rules_osee_changed: ${{ steps.rules_osee_changes.outputs.any_modified }}
-            postgres_schema_changed: ${{ steps.postgres_schema_changes.outputs.any_modified }}
-        steps:
-            - name: Checkout Repository
-              uses: actions/checkout@v4
+  check_changes:
+    runs-on: ubuntu-latest
+    outputs:
+      angular_changed: ${{ steps.angular_changes.outputs.any_modified }}
+      java_changed: ${{ steps.java_changes.outputs.any_modified }}
+      rust_changed: ${{ steps.rust_changes.outputs.any_modified }}
+      rules_osee_changed: ${{ steps.rules_osee_changes.outputs.any_modified }}
+      postgres_schema_changed: ${{ steps.postgres_schema_changes.outputs.any_modified }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-            - name: Check For Angular Changes
-              id: angular_changes
-              uses: tj-actions/changed-files@v44
-              with:
-                  files: |
-                      web/**/*
-                      **/package.json
-                      pnpm-lock.yaml
+      - name: Check For Angular Changes
+        id: angular_changes
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            web/**/*
+            **/package.json
+            pnpm-lock.yaml
 
-            - name: Check For Java Changes
-              id: java_changes
-              uses: tj-actions/changed-files@v44
-              with:
-                  files: |
-                      plugins/**/*
-                      features/**/*
-                      .github/docker/osee-server/*
+      - name: Check For Java Changes
+        id: java_changes
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            plugins/**/*
+            features/**/*
+            .github/docker/osee-server/*
 
-            - name: Check For Rust Changes
-              id: rust_changes
-              uses: tj-actions/changed-files@v44
-              with:
-                  files: |
-                      **/*.rs
-                      **/Cargo.toml
-                      Cargo.lock
+      - name: Check For Rust Changes
+        id: rust_changes
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            **/*.rs
+            **/Cargo.toml
+            Cargo.lock
 
-            - name: Check For rules_osee Changes
-              id: rules_osee_changes
-              uses: tj-actions/changed-files@v44
-              with:
-                  files: |
-                      rules_osee/**/*
-                      rules_osee_examples/**/*
-                      WORKSPACE
-                      MODULE.bazel
-                      MODULE.bazel.lock
-                      BUILD
-                      **/.bazelrc
-                      **/.bazelversion
+      - name: Check For rules_osee Changes
+        id: rules_osee_changes
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            rules_osee/**/*
+            rules_osee_examples/**/*
+            WORKSPACE
+            MODULE.bazel
+            MODULE.bazel.lock
+            BUILD
+            **/.bazelrc
+            **/.bazelversion
 
-            - name: Check For postgres schema Changes
-              id: postgres_schema_changes
-              uses: tj-actions/changed-files@v44
-              with:
-                  files: |
-                      .github/docker/utility/osee-postgres/**/*
+      - name: Check For postgres schema Changes
+        id: postgres_schema_changes
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            .github/docker/utility/osee-postgres/**/*
 
-            - name: Show Outputs
-              run: |
-                  echo "# Changed Files: " >> $GITHUB_STEP_SUMMARY
-                  echo "## Angular Changed: ${{ steps.angular_changes.outputs.any_modified }}" >> $GITHUB_STEP_SUMMARY
-                  echo "## Java Changed: ${{ steps.java_changes.outputs.any_modified }}" >> $GITHUB_STEP_SUMMARY
-                  echo "## Rust Changed: ${{ steps.rust_changes.outputs.any_modified }}" >> $GITHUB_STEP_SUMMARY
-                  echo "## Rules_Osee Changed: ${{ steps.rules_osee_changes.outputs.any_modified }}" >> $GITHUB_STEP_SUMMARY
-                  echo "## Postgres schema Changed: ${{ steps.postgres_schema_changes.outputs.any_modified }}" >> $GITHUB_STEP_SUMMARY
+      - name: Show Outputs
+        run: |
+          echo "# Changed Files: " >> $GITHUB_STEP_SUMMARY
+          echo "## Angular Changed: ${{ steps.angular_changes.outputs.any_modified }}" >> $GITHUB_STEP_SUMMARY
+          echo "## Java Changed: ${{ steps.java_changes.outputs.any_modified }}" >> $GITHUB_STEP_SUMMARY
+          echo "## Rust Changed: ${{ steps.rust_changes.outputs.any_modified }}" >> $GITHUB_STEP_SUMMARY
+          echo "## Rules_Osee Changed: ${{ steps.rules_osee_changes.outputs.any_modified }}" >> $GITHUB_STEP_SUMMARY
+          echo "## Postgres schema Changed: ${{ steps.postgres_schema_changes.outputs.any_modified }}" >> $GITHUB_STEP_SUMMARY
 
-    generate_potential_docker_ref:
-        runs-on: ubuntu-latest
-        needs: check_changes
-        outputs:
-            osee_server_latest_ref: ${{ steps.osee_server_latest_ref.outputs.osee_server_latest_ref }}
-            osee_server_main_ref: ${{ steps.osee_server_main_ref.outputs.osee_server_main_ref }}
-            osee_server_image_ref: ${{ steps.osee_server_image_ref.outputs.osee_server_image_ref}}
-            osee_postgres_latest_ref: ${{ steps.osee_postgres_latest_ref.outputs.osee_postgres_latest_ref }}
-            osee_postgres_main_ref: ${{ steps.osee_postgres_main_ref.outputs.osee_postgres_main_ref }}
-            osee_postgres_image_ref: ${{ steps.osee_postgres_image_ref.outputs.osee_postgres_image_ref}}
-            compose_file_ref: compose-file${{ steps.artifact_ref.outputs.artifact_current_ref }}
-        steps:
-            - uses: actions/checkout@v4
+  generate_potential_docker_ref:
+    runs-on: ubuntu-latest
+    needs: check_changes
+    outputs:
+      osee_server_latest_ref: ${{ steps.osee_server_latest_ref.outputs.osee_server_latest_ref }}
+      osee_server_main_ref: ${{ steps.osee_server_main_ref.outputs.osee_server_main_ref }}
+      osee_server_image_ref: ${{ steps.osee_server_image_ref.outputs.osee_server_image_ref}}
+      osee_postgres_latest_ref: ${{ steps.osee_postgres_latest_ref.outputs.osee_postgres_latest_ref }}
+      osee_postgres_main_ref: ${{ steps.osee_postgres_main_ref.outputs.osee_postgres_main_ref }}
+      osee_postgres_image_ref: ${{ steps.osee_postgres_image_ref.outputs.osee_postgres_image_ref}}
+      compose_file_ref: compose-file${{ steps.artifact_ref.outputs.artifact_current_ref }}
+    steps:
+      - uses: actions/checkout@v4
 
-            - id: docker_ref
-              uses: ./.github/actions/docker-current-ref
+      - id: docker_ref
+        uses: ./.github/actions/docker-current-ref
 
-            - name: osee_server_main_ref
-              id: osee_server_main_ref
-              shell: bash
-              run: echo "osee_server_main_ref=ghcr.io/${{ github.repository }}/osee-server:latest" >> "$GITHUB_OUTPUT"
+      - name: osee_server_main_ref
+        id: osee_server_main_ref
+        shell: bash
+        run: echo "osee_server_main_ref=ghcr.io/${{ github.repository }}/osee-server:latest" >> "$GITHUB_OUTPUT"
 
-            - name: osee_server_latest_ref
-              id: osee_server_latest_ref
-              shell: bash
-              run: echo "osee_server_latest_ref=ghcr.io/${{ github.repository }}/osee-server${{steps.docker_ref.outputs.docker_current_ref}}:latest" >> "$GITHUB_OUTPUT"
+      - name: osee_server_latest_ref
+        id: osee_server_latest_ref
+        shell: bash
+        run: echo "osee_server_latest_ref=ghcr.io/${{ github.repository }}/osee-server${{steps.docker_ref.outputs.docker_current_ref}}:latest" >> "$GITHUB_OUTPUT"
 
-            - id: osee_server_image_ref
-              shell: bash
-              run: |
-                  if [[ "${{needs.check_changes.outputs.java_changed}}" == "true" ]]; then
-                    echo "osee_server_image_ref=${{ steps.osee_server_latest_ref.outputs.osee_server_latest_ref }}" >> "$GITHUB_OUTPUT"
-                  else
-                    echo "osee_server_image_ref=${{ steps.osee_server_main_ref.outputs.osee_server_main_ref }}" >> "$GITHUB_OUTPUT"
-                  fi
+      - id: osee_server_image_ref
+        shell: bash
+        run: |
+          if [[ "${{needs.check_changes.outputs.java_changed}}" == "true" ]]; then
+            echo "osee_server_image_ref=${{ steps.osee_server_latest_ref.outputs.osee_server_latest_ref }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "osee_server_image_ref=${{ steps.osee_server_main_ref.outputs.osee_server_main_ref }}" >> "$GITHUB_OUTPUT"
+          fi
 
-            - name: osee_postgres_main_ref
-              id: osee_postgres_main_ref
-              shell: bash
-              run: echo "osee_postgres_main_ref=ghcr.io/${{ github.repository }}/osee-postgres:latest" >> "$GITHUB_OUTPUT"
+      - name: osee_postgres_main_ref
+        id: osee_postgres_main_ref
+        shell: bash
+        run: echo "osee_postgres_main_ref=ghcr.io/${{ github.repository }}/osee-postgres:latest" >> "$GITHUB_OUTPUT"
 
-            - name: osee_postgres_latest_ref
-              id: osee_postgres_latest_ref
-              shell: bash
-              run: echo "osee_postgres_latest_ref=ghcr.io/${{ github.repository }}/osee-postgres${{steps.docker_ref.outputs.docker_current_ref}}:latest" >> "$GITHUB_OUTPUT"
+      - name: osee_postgres_latest_ref
+        id: osee_postgres_latest_ref
+        shell: bash
+        run: echo "osee_postgres_latest_ref=ghcr.io/${{ github.repository }}/osee-postgres${{steps.docker_ref.outputs.docker_current_ref}}:latest" >> "$GITHUB_OUTPUT"
 
-            - id: osee_postgres_image_ref
-              shell: bash
-              run: |
-                  if [[ "${{needs.check_changes.outputs.postgres_schema_changed}}" == "true" ]]; then
-                    echo "osee_postgres_image_ref=${{ steps.osee_postgres_latest_ref.outputs.osee_postgres_latest_ref }}" >> "$GITHUB_OUTPUT"
-                  else
-                    echo "osee_postgres_image_ref=${{ steps.osee_postgres_main_ref.outputs.osee_postgres_main_ref }}" >> "$GITHUB_OUTPUT"
-                  fi
+      - id: osee_postgres_image_ref
+        shell: bash
+        run: |
+          if [[ "${{needs.check_changes.outputs.postgres_schema_changed}}" == "true" ]]; then
+            echo "osee_postgres_image_ref=${{ steps.osee_postgres_latest_ref.outputs.osee_postgres_latest_ref }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "osee_postgres_image_ref=${{ steps.osee_postgres_main_ref.outputs.osee_postgres_main_ref }}" >> "$GITHUB_OUTPUT"
+          fi
 
-            - name: create artifact ref
-              id: artifact_ref
-              uses: ./.github/actions/artifact-current-ref
+      - name: create artifact ref
+        id: artifact_ref
+        uses: ./.github/actions/artifact-current-ref
 
-            - name: setup environment files
-              id: compose_file
-              uses: ./.github/actions/generate-docker-compose
-              with:
-                  postgres_image: "${{ steps.osee_postgres_image_ref.outputs.osee_postgres_image_ref }}"
-                  osee_image: "${{ steps.osee_server_image_ref.outputs.osee_server_image_ref }}"
+      - name: setup environment files
+        id: compose_file
+        uses: ./.github/actions/generate-docker-compose
+        with:
+          postgres_image: "${{ steps.osee_postgres_image_ref.outputs.osee_postgres_image_ref }}"
+          osee_image: "${{ steps.osee_server_image_ref.outputs.osee_server_image_ref }}"
 
-            - name: upload compose
-              uses: actions/upload-artifact@v4
-              with:
-                  name: compose-file${{steps.artifact_ref.outputs.artifact_current_ref}}
-                  overwrite: true
-                  path: docker-compose.yml
+      - name: upload compose
+        uses: actions/upload-artifact@v4
+        with:
+          name: compose-file${{steps.artifact_ref.outputs.artifact_current_ref}}
+          overwrite: true
+          path: docker-compose.yml
 
-    build_osee_postgres:
-        runs-on: ubuntu-latest
-        needs: [check_changes, generate_potential_docker_ref]
-        steps:
-            - name: Checkout Code
-              uses: actions/checkout@v4
+  build_osee_postgres:
+    runs-on: ubuntu-latest
+    needs: [check_changes, generate_potential_docker_ref]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-            - name: create docker ref
-              if: needs.check_changes.outputs.postgres_schema_changed == 'true'
-              id: docker_ref
-              uses: ./.github/actions/docker-current-ref
+      - name: create docker ref
+        if: needs.check_changes.outputs.postgres_schema_changed == 'true'
+        id: docker_ref
+        uses: ./.github/actions/docker-current-ref
 
-            - name: Set Up Docker Buildx
-              if: needs.check_changes.outputs.postgres_schema_changed == 'true'
-              uses: docker/setup-buildx-action@v3
+      - name: Set Up Docker Buildx
+        if: needs.check_changes.outputs.postgres_schema_changed == 'true'
+        uses: docker/setup-buildx-action@v3
 
-            - name: Log in to GHCR
-              if: needs.check_changes.outputs.postgres_schema_changed == 'true'
-              uses: docker/login-action@v3
-              with:
-                  registry: ghcr.io
-                  username: ${{ github.repository_owner }}
-                  password: ${{ github.token }}
+      - name: Log in to GHCR
+        if: needs.check_changes.outputs.postgres_schema_changed == 'true'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ github.token }}
 
-            - name: Get Current Timestamp
-              if: needs.check_changes.outputs.postgres_schema_changed == 'true'
-              id: date
-              run: echo "timestamp=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
+      - name: Get Current Timestamp
+        if: needs.check_changes.outputs.postgres_schema_changed == 'true'
+        id: date
+        run: echo "timestamp=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
 
-            - name: Build And Push Docker Image
-              if: needs.check_changes.outputs.postgres_schema_changed == 'true'
-              uses: docker/build-push-action@v6
-              with:
-                  context: .
-                  file: .github/docker/utility/osee-postgres/Dockerfile
-                  build-args: |
-                      IMAGE_DIRECTORY=.github/docker/utility/osee-postgres
-                  push: "true"
-                  tags: |
-                      ghcr.io/${{ github.repository }}/osee-postgres${{steps.docker_ref.outputs.docker_current_ref}}:${{ github.sha }}
-                      ghcr.io/${{ github.repository }}/osee-postgres${{steps.docker_ref.outputs.docker_current_ref}}:${{ steps.date.outputs.timestamp }}
-                      ghcr.io/${{ github.repository }}/osee-postgres${{steps.docker_ref.outputs.docker_current_ref}}:latest
+      - name: Build And Push Docker Image
+        if: needs.check_changes.outputs.postgres_schema_changed == 'true'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: .github/docker/utility/osee-postgres/Dockerfile
+          build-args: |
+            IMAGE_DIRECTORY=.github/docker/utility/osee-postgres
+          push: "true"
+          tags: |
+            ghcr.io/${{ github.repository }}/osee-postgres${{steps.docker_ref.outputs.docker_current_ref}}:${{ github.sha }}
+            ghcr.io/${{ github.repository }}/osee-postgres${{steps.docker_ref.outputs.docker_current_ref}}:${{ steps.date.outputs.timestamp }}
+            ghcr.io/${{ github.repository }}/osee-postgres${{steps.docker_ref.outputs.docker_current_ref}}:latest
 
-    validate_osee_build_linux:
-        runs-on: ubuntu-latest
-        needs:
-            [check_changes, generate_potential_docker_ref, build_osee_postgres]
-        container:
-            image: ghcr.io/eclipse-osee/org.eclipse.osee/maven-node:20240717003623
-        services:
-            postgres:
-                image: ${{ needs.check_changes.outputs.java_changed == 'true' && needs.generate_potential_docker_ref.outputs.osee_postgres_image_ref || '' }}
-                env:
-                    POSTGRES_PASSWORD: osee
-                    POSTGRES_USER: osee
-                    POSTGRES_DB: osee
-                options: >-
-                    --health-cmd pg_isready
-                    --health-interval 10s
-                    --health-timeout 5s
-                    --health-retries 5
-                ports:
-                    - 5432:5432
-
-        steps:
-            - name: Checkout Repository
-              uses: actions/checkout@v4
-
-            - name: Build OSEE Binaries
-              if: ${{ needs.check_changes.outputs.java_changed == 'true' }}
-              uses: ./.github/actions/build-osee-binary
-              with:
-                  SKIP_ANGULAR_TESTS: "true"
-                  ANGULAR_BUILD_TYPE: "forced_sso_java_release"
-
-            - name: create artifact ref
-              id: artifact_ref
-              if: ${{ needs.check_changes.outputs.java_changed == 'true' }}
-              uses: ./.github/actions/artifact-current-ref
-
-            - name: Archive Binaries
-              if: ${{ needs.check_changes.outputs.java_changed == 'true' }}
-              uses: actions/upload-artifact@v4
-              with:
-                  name: osee-server${{steps.artifact_ref.outputs.artifact_current_ref}}-binaries
-                  overwrite: true
-                  path: ${{ env.ARTIFACT_PATH }}
-
-    osee_server_container_build:
-        runs-on: ubuntu-latest
-        needs: [validate_osee_build_linux, check_changes]
-
-        steps:
-            - name: init_osee_server_container_build
-              shell: bash
-              run: echo " Checking for docker build and push "
-
-            - name: Checkout Repository
-              if: ${{ needs.check_changes.outputs.java_changed == 'true' }}
-              uses: actions/checkout@v4
-
-            - name: create image
-              if: ${{ needs.check_changes.outputs.java_changed == 'true' }}
-              uses: ./.github/actions/osee-server-container-build
-              with:
-                  IMAGE_NAME: osee-server
-                  SERVER_PATH: ${{env.SERVER_PATH}}
-                  IMAGE_DIRECTORY: ${{env.IMAGE_DIRECTORY}}
-    web_e2e:
-        runs-on: ubuntu-latest
-        # continue-on-error: true
-        needs:
-            [
-                osee_server_container_build,
-                check_changes,
-                generate_potential_docker_ref,
-            ]
-        steps:
-            - run: echo "${{ needs.generate_potential_docker_ref.outputs.osee_server_image_ref }}"
-
-            - name: Checkout Repository
-              if: ${{ needs.check_changes.outputs.angular_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' }}
-              uses: actions/checkout@v4
-
-            - name: setup environment files
-              if: ${{ needs.check_changes.outputs.angular_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' }}
-              id: compose_file
-              uses: ./.github/actions/generate-docker-compose
-              with:
-                  postgres_image: "${{ needs.generate_potential_docker_ref.outputs.osee_postgres_image_ref }}"
-                  osee_image: "${{ needs.generate_potential_docker_ref.outputs.osee_server_image_ref }}"
-
-            - name: Set Up Docker Buildx
-              if: ${{ needs.check_changes.outputs.angular_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' }}
-              uses: docker/setup-buildx-action@v3
-
-            - name: Log in to GHCR
-              if: ${{ needs.check_changes.outputs.angular_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' }}
-              uses: docker/login-action@v3
-              with:
-                  registry: ghcr.io
-                  username: ${{ github.repository_owner }}
-                  password: ${{ github.token }}
-
-            - name: setup environment
-              if: ${{ needs.check_changes.outputs.angular_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' }}
-              shell: bash
-              run: docker compose up -d --wait
-
-            - name: web setup
-              if: ${{ needs.check_changes.outputs.angular_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' }}
-              uses: ./.github/actions/web-setup
-
-            - name: Run tests
-              if: ${{ needs.check_changes.outputs.angular_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' }}
-              run: pnpm -r run playwright
-
-            - name: Write report to gha comment
-              if: ${{ (needs.check_changes.outputs.angular_changed == 'true' || needs.check_changes.outputs.java_changed == 'true') && !cancelled() }}
-              uses: daun/playwright-report-summary@v3
-              with:
-                  report-file: web/apps/osee/results/results.json
-
-            - name: cleanup
-              if: ${{ (needs.check_changes.outputs.angular_changed == 'true' || needs.check_changes.outputs.java_changed == 'true') && !cancelled()  }}
-              shell: bash
-              run: docker compose down
-
-    rules_osee_e2e:
-        runs-on: ubuntu-latest
-        # continue-on-error: true
+  validate_osee_build_linux:
+    runs-on: ubuntu-latest
+    needs: [check_changes, generate_potential_docker_ref, build_osee_postgres]
+    container:
+      image: ghcr.io/eclipse-osee/org.eclipse.osee/maven-node:20240717003623
+    services:
+      postgres:
+        image: ${{ needs.check_changes.outputs.java_changed == 'true' && needs.generate_potential_docker_ref.outputs.osee_postgres_image_ref || '' }}
         env:
-            USERNAME: "3333"
-        needs:
-            [
-                osee_server_container_build,
-                check_changes,
-                generate_potential_docker_ref,
-            ]
-        steps:
-            - run: echo "${{ needs.generate_potential_docker_ref.outputs.osee_server_image_ref }}"
+          POSTGRES_PASSWORD: osee
+          POSTGRES_USER: osee
+          POSTGRES_DB: osee
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
 
-            - name: Checkout Repository
-              if: ${{ needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true' }}
-              uses: actions/checkout@v4
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-            - name: create artifact ref
-              if: ${{ needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true' }}
-              id: artifact_ref
-              uses: ./.github/actions/artifact-current-ref
+      - name: Build OSEE Binaries
+        if: ${{ needs.check_changes.outputs.java_changed == 'true' }}
+        uses: ./.github/actions/build-osee-binary
+        with:
+          SKIP_ANGULAR_TESTS: "true"
+          ANGULAR_BUILD_TYPE: "forced_sso_java_release"
 
-            - name: setup environment files
-              if: ${{ needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true' }}
-              id: compose_file
-              uses: ./.github/actions/generate-docker-compose
-              with:
-                  postgres_image: "${{ needs.generate_potential_docker_ref.outputs.osee_postgres_image_ref }}"
-                  osee_image: "${{ needs.generate_potential_docker_ref.outputs.osee_server_image_ref }}"
+      - name: create artifact ref
+        id: artifact_ref
+        if: ${{ needs.check_changes.outputs.java_changed == 'true' }}
+        uses: ./.github/actions/artifact-current-ref
 
-            - name: Set Up Docker Buildx
-              if: ${{ needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true' }}
-              uses: docker/setup-buildx-action@v3
+      - name: Archive Binaries
+        if: ${{ needs.check_changes.outputs.java_changed == 'true' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: osee-server${{steps.artifact_ref.outputs.artifact_current_ref}}-binaries
+          overwrite: true
+          path: ${{ env.ARTIFACT_PATH }}
 
-            - name: Log in to GHCR
-              if: ${{ needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true' }}
-              uses: docker/login-action@v3
-              with:
-                  registry: ghcr.io
-                  username: ${{ github.repository_owner }}
-                  password: ${{ github.token }}
+  osee_server_container_build:
+    runs-on: ubuntu-latest
+    needs: [validate_osee_build_linux, check_changes]
 
-            - name: setup environment
-              if: ${{ needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true' }}
-              shell: bash
-              run: docker compose up -d --wait
+    steps:
+      - name: init_osee_server_container_build
+        shell: bash
+        run: echo " Checking for docker build and push "
 
-            - name: bazel setup
-              if: ${{ needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true' }}
-              uses: bazel-contrib/setup-bazel@0.8.5
-              with:
-                  bazelisk-cache: true
-                  disk-cache: ${{ github.workflow }}
-                  repository-cache: true
+      - name: Checkout Repository
+        if: ${{ needs.check_changes.outputs.java_changed == 'true' }}
+        uses: actions/checkout@v4
 
-            - name: check username
-              run: echo $USERNAME
+      - name: create image
+        if: ${{ needs.check_changes.outputs.java_changed == 'true' }}
+        uses: ./.github/actions/osee-server-container-build
+        with:
+          IMAGE_NAME: osee-server
+          SERVER_PATH: ${{env.SERVER_PATH}}
+          IMAGE_DIRECTORY: ${{env.IMAGE_DIRECTORY}}
+  web_e2e:
+    runs-on: ubuntu-latest
+    # continue-on-error: true
+    needs:
+      [
+        osee_server_container_build,
+        check_changes,
+        generate_potential_docker_ref,
+      ]
+    steps:
+      - run: echo "${{ needs.generate_potential_docker_ref.outputs.osee_server_image_ref }}"
 
-            - name: setup db
-              if: ${{ needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true' }}
-              run: ./tools/support/setup-db.sh
+      - name: Checkout Repository
+        if: ${{ needs.check_changes.outputs.angular_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' }}
+        uses: actions/checkout@v4
 
-            - name: build
-              if: ${{ needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true' }}
-              run: bazel build //rules_osee_examples/...:all --platforms=@my_product_line//platforms/configurations:Product_A_host
+      - name: setup environment files
+        if: ${{ needs.check_changes.outputs.angular_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' }}
+        id: compose_file
+        uses: ./.github/actions/generate-docker-compose
+        with:
+          postgres_image: "${{ needs.generate_potential_docker_ref.outputs.osee_postgres_image_ref }}"
+          osee_image: "${{ needs.generate_potential_docker_ref.outputs.osee_server_image_ref }}"
 
-            - name: test
-              if: ${{ needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true' }}
-              run: bazel test //rules_osee_examples/...:all --platforms=@my_product_line//platforms/configurations:Product_A_host
+      - name: Set Up Docker Buildx
+        if: ${{ needs.check_changes.outputs.angular_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' }}
+        uses: docker/setup-buildx-action@v3
 
-            # note: the following is for debugging purposes, uncomment if you need it. This requires that the above test step is running with --sandbox_debug
-            # - name: debug_please_delete
-            #   if: ${{ (needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true') }}
-            #   id: debug_please_delete
-            #   run: echo "debug1=$(head -4 /home/runner/.bazel/execroot/_main/bazel-out/k8-fastbuild/testlogs/rules_osee_examples/module_example/applic_test/test.log | tail -1 | cut -f3 -d" ")" >> "$GITHUB_OUTPUT"
+      - name: Log in to GHCR
+        if: ${{ needs.check_changes.outputs.angular_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' }}
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ github.token }}
 
-            # - name: Archive debug1
-            #   if: ${{ (needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true') }}
-            #   uses: actions/upload-artifact@v4
-            #   with:
-            #     name: module_example
-            #     overwrite: true
-            #     path: ${{ steps.debug_please_delete.outputs.debug1 }}
+      - name: setup environment
+        if: ${{ needs.check_changes.outputs.angular_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' }}
+        shell: bash
+        run: docker compose up -d --wait
 
-            # - name: debug_please_delete2
-            #   if: ${{ (needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true') }}
-            #   id: debug_please_delete2
-            #   run: echo "debug2=$(head -4 /home/runner/.bazel/execroot/_main/bazel-out/k8-fastbuild/testlogs/rules_osee_examples/workspace_example/applic_test/test.log | tail -1 | cut -f3 -d" ")" >> "$GITHUB_OUTPUT"
+      - name: web setup
+        if: ${{ needs.check_changes.outputs.angular_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' }}
+        uses: ./.github/actions/web-setup
 
-            # - name: Archive debug2
-            #   if: ${{ (needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true') }}
-            #   uses: actions/upload-artifact@v4
-            #   with:
-            #     name: workspace_example
-            #     overwrite: true
-            #     path: ${{ steps.debug_please_delete2.outputs.debug2 }}
+      - name: Run tests
+        if: ${{ needs.check_changes.outputs.angular_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' }}
+        run: pnpm -r run playwright
 
-            # - name: debug_please_delete3
-            #   if: ${{ (needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true') }}
-            #   id: debug_please_delete3
-            #   run: echo "debug3=$(head -4 /home/runner/.bazel/execroot/_main/bazel-out/k8-fastbuild/testlogs/rules_osee_examples/c_compile_test/flat_zip_test/test.log | tail -1 | cut -f3 -d" ")" >> "$GITHUB_OUTPUT"
+      - name: Write report to gha comment
+        if: ${{ (needs.check_changes.outputs.angular_changed == 'true' || needs.check_changes.outputs.java_changed == 'true') && !cancelled() }}
+        uses: daun/playwright-report-summary@v3
+        with:
+          report-file: web/apps/osee/results/results.json
 
-            # - name: Archive debug3
-            #   if: ${{ (needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true') }}
-            #   uses: actions/upload-artifact@v4
-            #   with:
-            #     name: flat_zip
-            #     overwrite: true
-            #     path: ${{ steps.debug_please_delete3.outputs.debug3 }}
+      - name: cleanup
+        if: ${{ (needs.check_changes.outputs.angular_changed == 'true' || needs.check_changes.outputs.java_changed == 'true') && !cancelled()  }}
+        shell: bash
+        run: docker compose down
 
-            # - name: debug_please_delete4
-            #   if: ${{ (needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true') }}
-            #   id: debug_please_delete4
-            #   run: echo "debug4=$(head -4 /home/runner/.bazel/execroot/_main/bazel-out/k8-fastbuild/testlogs/rules_osee_examples/c_compile_test/nested_zip_test/test.log | tail -1 | cut -f3 -d" ")" >> "$GITHUB_OUTPUT"
+  rules_osee_e2e:
+    runs-on: ubuntu-latest
+    # continue-on-error: true
+    env:
+      USERNAME: "3333"
+    needs:
+      [
+        osee_server_container_build,
+        check_changes,
+        generate_potential_docker_ref,
+      ]
+    steps:
+      - run: echo "${{ needs.generate_potential_docker_ref.outputs.osee_server_image_ref }}"
 
-            # - name: Archive debug4
-            #   if: ${{ (needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true') }}
-            #   uses: actions/upload-artifact@v4
-            #   with:
-            #     name: nested_zip
-            #     overwrite: true
-            #     path: ${{ steps.debug_please_delete4.outputs.debug4 }}
+      - name: Checkout Repository
+        if: ${{ needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true' }}
+        uses: actions/checkout@v4
 
-            - name: cleanup
-              if: ${{ (needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true') && !cancelled() }}
-              shell: bash
-              run: docker compose down
+      - name: create artifact ref
+        if: ${{ needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true' }}
+        id: artifact_ref
+        uses: ./.github/actions/artifact-current-ref
+
+      - name: setup environment files
+        if: ${{ needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true' }}
+        id: compose_file
+        uses: ./.github/actions/generate-docker-compose
+        with:
+          postgres_image: "${{ needs.generate_potential_docker_ref.outputs.osee_postgres_image_ref }}"
+          osee_image: "${{ needs.generate_potential_docker_ref.outputs.osee_server_image_ref }}"
+
+      - name: Set Up Docker Buildx
+        if: ${{ needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true' }}
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        if: ${{ needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true' }}
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ github.token }}
+
+      - name: setup environment
+        if: ${{ needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true' }}
+        shell: bash
+        run: docker compose up -d --wait
+
+      - name: bazel setup
+        if: ${{ needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true' }}
+        uses: bazel-contrib/setup-bazel@0.8.5
+        with:
+          bazelisk-cache: true
+          disk-cache: ${{ github.workflow }}
+          repository-cache: true
+
+      - name: check username
+        run: echo $USERNAME
+
+      - name: setup db
+        if: ${{ needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true' }}
+        run: ./tools/support/setup-db.sh
+
+      - name: build
+        if: ${{ needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true' }}
+        run: bazel build //rules_osee_examples/...:all --platforms=@my_product_line//platforms/configurations:Product_A_host
+
+      - name: test
+        if: ${{ needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true' }}
+        run: bazel test //rules_osee_examples/...:all --platforms=@my_product_line//platforms/configurations:Product_A_host
+
+      # note: the following is for debugging purposes, uncomment if you need it. This requires that the above test step is running with --sandbox_debug
+      # - name: debug_please_delete
+      #   if: ${{ (needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true') }}
+      #   id: debug_please_delete
+      #   run: echo "debug1=$(head -4 /home/runner/.bazel/execroot/_main/bazel-out/k8-fastbuild/testlogs/rules_osee_examples/module_example/applic_test/test.log | tail -1 | cut -f3 -d" ")" >> "$GITHUB_OUTPUT"
+
+      # - name: Archive debug1
+      #   if: ${{ (needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true') }}
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: module_example
+      #     overwrite: true
+      #     path: ${{ steps.debug_please_delete.outputs.debug1 }}
+
+      # - name: debug_please_delete2
+      #   if: ${{ (needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true') }}
+      #   id: debug_please_delete2
+      #   run: echo "debug2=$(head -4 /home/runner/.bazel/execroot/_main/bazel-out/k8-fastbuild/testlogs/rules_osee_examples/workspace_example/applic_test/test.log | tail -1 | cut -f3 -d" ")" >> "$GITHUB_OUTPUT"
+
+      # - name: Archive debug2
+      #   if: ${{ (needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true') }}
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: workspace_example
+      #     overwrite: true
+      #     path: ${{ steps.debug_please_delete2.outputs.debug2 }}
+
+      # - name: debug_please_delete3
+      #   if: ${{ (needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true') }}
+      #   id: debug_please_delete3
+      #   run: echo "debug3=$(head -4 /home/runner/.bazel/execroot/_main/bazel-out/k8-fastbuild/testlogs/rules_osee_examples/c_compile_test/flat_zip_test/test.log | tail -1 | cut -f3 -d" ")" >> "$GITHUB_OUTPUT"
+
+      # - name: Archive debug3
+      #   if: ${{ (needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true') }}
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: flat_zip
+      #     overwrite: true
+      #     path: ${{ steps.debug_please_delete3.outputs.debug3 }}
+
+      # - name: debug_please_delete4
+      #   if: ${{ (needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true') }}
+      #   id: debug_please_delete4
+      #   run: echo "debug4=$(head -4 /home/runner/.bazel/execroot/_main/bazel-out/k8-fastbuild/testlogs/rules_osee_examples/c_compile_test/nested_zip_test/test.log | tail -1 | cut -f3 -d" ")" >> "$GITHUB_OUTPUT"
+
+      # - name: Archive debug4
+      #   if: ${{ (needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true') }}
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: nested_zip
+      #     overwrite: true
+      #     path: ${{ steps.debug_please_delete4.outputs.debug4 }}
+
+      - name: cleanup
+        if: ${{ (needs.check_changes.outputs.rust_changed == 'true' || needs.check_changes.outputs.java_changed == 'true' || needs.check_changes.outputs.rules_osee_changed == 'true') && !cancelled() }}
+        shell: bash
+        run: docker compose down

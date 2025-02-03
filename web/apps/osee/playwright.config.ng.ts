@@ -18,7 +18,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const config: PlaywrightTestConfig = {
 	use: {
-		channel: 'chrome',
+		channel: 'chromium',
 		headless: true,
 		baseURL: 'http://localhost:4200/ple',
 		screenshot: 'only-on-failure',
