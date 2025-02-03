@@ -111,9 +111,9 @@
 										[attr.data-testid]="
 											_expanded.value
 												? 'close-message-btn-' +
-													element.name
+													element.name.value
 												: 'expand-message-btn-' +
-													element.name
+													element.name.value
 										"
 										(click)="
 											rowChange(element, !_expanded.value)

@@ -20,7 +20,7 @@ test('test', async ({ page }) => {
 	await page.getByRole('link', { name: 'Cross-References' }).click();
 	await page.getByLabel('Working').check();
 	await page.getByText('Select a Branch').click();
-	await page.getByText('TW2 - MIM Demo').click();
+	await page.getByText('MIM Demo').click();
 	await page.getByLabel('Select a Connection').locator('span').click();
 	await page.getByText('Connection A-B').click();
 
