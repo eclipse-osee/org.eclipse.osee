@@ -23,5 +23,6 @@ public enum AtsNotifyType {
    Assigned, // New assignee added, notify assignee
    Originator, // Originator Changed, notify new originator
    Peer_Reviewers_Completed, // Review has been completed , notify authors and moderators
-   SubscribedTeamOrAi // Subscribed to get email of action written against team or ai
+   SubscribedTeam, // Subscribed to get email of action written against team
+   SubscribedAi // Subscribed to get email of action written against ai
 };

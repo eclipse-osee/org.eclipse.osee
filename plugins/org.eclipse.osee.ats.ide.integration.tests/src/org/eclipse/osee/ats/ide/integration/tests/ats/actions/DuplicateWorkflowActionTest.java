@@ -78,9 +78,9 @@ public class DuplicateWorkflowActionTest extends AbstractAtsActionRunTest {
          AtsCoreUsers.SYSTEM_USER, dupTeamWf.getWorkDefinition(), changes);
 
       changes.add(dupTeamWf);
-      changes.addWorkItemNotificationEvent(
-         AtsNotificationEventFactory.getWorkItemNotificationEvent(teamWf.getAssignees().iterator().next(), dupTeamWf,
-            AtsNotifyType.Originator, AtsNotifyType.Assigned, AtsNotifyType.SubscribedTeamOrAi));
+      changes.addWorkItemNotificationEvent(AtsNotificationEventFactory.getWorkItemNotificationEvent(
+         teamWf.getAssignees().iterator().next(), dupTeamWf, AtsNotifyType.Originator, AtsNotifyType.Assigned,
+         AtsNotifyType.SubscribedTeam, AtsNotifyType.SubscribedAi));
 
       assertTrue(changes.getNotifications().getWorkItemNotificationEvents().size() == 4);
       assertTrue(dupTeamWf.getAssignees().size() == 2);
