@@ -46,7 +46,7 @@ export type DefReference = {
 	machineName: string;
 	revision: string;
 	repositoryType: string;
-	team: string;
+	team: ScriptTeam;
 	lastAuthor: string;
 	lastModified: Date;
 	modifiedFlag: string;
@@ -119,7 +119,16 @@ export const defReferenceSentinel: DefReference = {
 	machineName: '',
 	revision: '',
 	repositoryType: '',
-	team: '',
+	team: {
+		id: '-1',
+		gammaId: '-1',
+		name: {
+			id: '-1',
+			gammaId: '-1',
+			typeId: '1152921504606847088',
+			value: '',
+		},
+	},
 	lastAuthor: '',
 	lastModified: new Date(),
 	modifiedFlag: '',
@@ -231,4 +240,10 @@ export type SetDiff = {
 			abort: boolean;
 		}
 	>;
+};
+
+export type ScriptTeam = {
+	id: `${number}`;
+	gammaId: `${number}`;
+	name: Required<attribute<string, typeof ATTRIBUTETYPEIDENUM.NAME>>;
 };

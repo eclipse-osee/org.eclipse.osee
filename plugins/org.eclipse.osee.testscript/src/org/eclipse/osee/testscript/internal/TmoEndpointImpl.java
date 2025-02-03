@@ -62,7 +62,7 @@ public class TmoEndpointImpl implements TmoEndpoint {
    @Path("{branch}/def")
    @Produces(MediaType.APPLICATION_JSON)
    public ScriptDefEndpoint getScriptDefinitionTypes(@PathParam("branch") BranchId branch) {
-      return new ScriptDefEndpointImpl(branch, testScriptApi.getScriptDefApi());
+      return new ScriptDefEndpointImpl(branch, testScriptApi.getScriptDefApi(), testScriptApi.getDashboardApi());
    }
 
    @Override

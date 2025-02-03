@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.rest.model.transaction.Attribute;
 import org.eclipse.osee.orcs.rest.model.transaction.CreateArtifact;
+import org.eclipse.osee.testscript.ScriptTeamToken;
 
 /**
  * @author Stephen J. Molaro
@@ -47,7 +48,6 @@ public class ScriptDefToken extends ArtifactAccessorResultWithoutGammas {
    private String machine;
    private String revision;
    private String repositoryType;
-   private String team;
    private String lastAuthor;
    private Date lastModified;
    private String modifiedFlag;
@@ -77,6 +77,8 @@ public class ScriptDefToken extends ArtifactAccessorResultWithoutGammas {
    private String latestUserId;
    private String latestUserName;
 
+   private ScriptTeamToken team = ScriptTeamToken.SENTINEL;
+
    private List<ScriptResultToken> scriptResults;
 
    public ScriptDefToken(ArtifactToken art) {
@@ -85,7 +87,6 @@ public class ScriptDefToken extends ArtifactAccessorResultWithoutGammas {
 
    public ScriptDefToken(ArtifactReadable art) {
       super(art);
-
       this.setId(art.getId());
       this.setName(art.getName());
       this.setFullScriptName(art.getSoleAttributeAsString(CoreAttributeTypes.ScriptName, ""));
@@ -94,7 +95,6 @@ public class ScriptDefToken extends ArtifactAccessorResultWithoutGammas {
       this.setMachineName(art.getSoleAttributeAsString(CoreAttributeTypes.MachineName, ""));
       this.setRevision(art.getSoleAttributeAsString(CoreAttributeTypes.Revision, ""));
       this.setRepositoryType(art.getSoleAttributeAsString(CoreAttributeTypes.RepositoryType, ""));
-      this.setTeam(art.getSoleAttributeAsString(CoreAttributeTypes.TeamName, ""));
       this.setLastAuthor(art.getSoleAttributeAsString(CoreAttributeTypes.LastAuthor, ""));
       this.setLastModified(art.getSoleAttributeValue(CoreAttributeTypes.LastModifiedDate, new Date()));
       this.setModifiedFlag(art.getSoleAttributeAsString(CoreAttributeTypes.ModifiedFlag, ""));
@@ -133,6 +133,11 @@ public class ScriptDefToken extends ArtifactAccessorResultWithoutGammas {
          this.setLatestUserId(resultToken.getUserId());
          this.setLatestUserName(resultToken.getUserName());
       }
+      ArtifactReadable teamArt =
+         art.getRelated(CoreRelationTypes.TestScriptDefToTeam_ScriptTeam).getOneOrDefault(ArtifactReadable.SENTINEL);
+      if (teamArt.isValid()) {
+         this.team = new ScriptTeamToken(teamArt);
+      }
    }
 
    public ScriptDefToken(Long id, String name) {
@@ -143,7 +148,6 @@ public class ScriptDefToken extends ArtifactAccessorResultWithoutGammas {
       this.setMachineName("");
       this.setRevision("");
       this.setRepositoryType("");
-      this.setTeam("");
       this.setLastAuthor("");
       this.setLastModified(new Date());
       this.setModifiedFlag("");
@@ -268,14 +272,11 @@ public class ScriptDefToken extends ArtifactAccessorResultWithoutGammas {
    /**
     * @return get the team
     */
-   public String getTeam() {
-      return team;
+   public ScriptTeamToken getTeam() {
+      return this.team;
    }
 
-   /**
-    * @param set the team to team
-    */
-   public void setTeam(String team) {
+   public void setTeam(ScriptTeamToken team) {
       this.team = team;
    }
 
@@ -689,7 +690,6 @@ public class ScriptDefToken extends ArtifactAccessorResultWithoutGammas {
       values.put(CoreAttributeTypes.ScriptSubsystem, this.getSubsystem());
       values.put(CoreAttributeTypes.StatusBy, this.getStatusBy());
       values.put(CoreAttributeTypes.StatusDate, Long.toString(this.getStatusDate().getTime()));
-      values.put(CoreAttributeTypes.TeamName, this.getTeam());
 
       CreateArtifact art = new CreateArtifact();
       art.setName(this.getName());

@@ -368,7 +368,7 @@ public class ArtifactAccessorImpl<T extends ArtifactAccessorResult> implements A
    public Collection<T> getAllByFilter(BranchId branch, String filter, Collection<AttributeTypeId> attributes,
       Collection<FollowRelation> followRelations) throws InstantiationException, IllegalAccessException,
       IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-      return this.getAllByFilter(branch, filter, attributes, 0L, 0L);
+      return this.getAllByFilter(branch, filter, attributes, followRelations, 0L, 0L);
    }
 
    @Override

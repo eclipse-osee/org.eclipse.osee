@@ -870,7 +870,6 @@ public interface CoreArtifactTypes {
       .exactlyOne(MachineName)
       .exactlyOne(Revision)
       .exactlyOne(RepositoryType)
-      .exactlyOne(TeamName)
       .exactlyOne(LastAuthor)
       .exactlyOne(LastModifiedDate)
       .exactlyOne(ModifiedFlag)

@@ -42,7 +42,7 @@ describe('TeamSelectorComponent', () => {
 
 		fixture = TestBed.createComponent(TeamSelectorComponent);
 		component = fixture.componentInstance;
-		fixture.componentRef.setInput('script', defReferenceMock);
+		fixture.componentRef.setInput('script', defReferenceMock[0]);
 		fixture.detectChanges();
 	});
 

@@ -26,7 +26,6 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.accessor.ArtifactAccessor;
 import org.eclipse.osee.accessor.internal.ArtifactAccessorImpl;
-import org.eclipse.osee.accessor.types.ArtifactAccessorResult;
 import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
@@ -39,6 +38,7 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.core.ds.FollowRelation;
 import org.eclipse.osee.testscript.DashboardApi;
 import org.eclipse.osee.testscript.ScriptDefApi;
+import org.eclipse.osee.testscript.ScriptTeamToken;
 
 /**
  * @author Stephen J. Molaro
@@ -78,8 +78,9 @@ public class DashboardApiImpl implements DashboardApi {
                stats.put("All", executionDate, new CIStatsToken("All", executionDate));
             }
 
-            if (!def.getTeam().isEmpty() && !stats.contains(def.getTeam(), executionDate)) {
-               stats.put(def.getTeam(), executionDate, new CIStatsToken(def.getTeam(), executionDate));
+            if (def.getTeam().isValid() && !stats.contains(def.getTeam(), executionDate)) {
+               stats.put(def.getTeam().getName().getValue(), executionDate,
+                  new CIStatsToken(def.getTeam().getName().getValue(), executionDate));
             }
          }
       }
@@ -134,7 +135,7 @@ public class DashboardApiImpl implements DashboardApi {
             stats.put("All", executionDate, allStats);
 
             //Updates the script values for each team on the current Test Result's execution date
-            if (!def.getTeam().isEmpty()) {
+            if (def.getTeam().isValid()) {
                CIStatsToken teamStats = stats.get(def.getTeam(), executionDate);
                if (aborted) {
                   teamStats.addScriptsAbort(1);
@@ -150,7 +151,7 @@ public class DashboardApiImpl implements DashboardApi {
                }
                teamStats.addTestPointsPass(pointsPassed);
                teamStats.addTestPointsFail(pointsFailed);
-               stats.put(def.getTeam(), executionDate, teamStats);
+               stats.put(def.getTeam().getName().getValue(), executionDate, teamStats);
             }
 
             //Maintains this Test Result's data for relevant days that this script was not run.
@@ -176,9 +177,9 @@ public class DashboardApiImpl implements DashboardApi {
             }
 
             //For each team, maintains this Test Result's data for relevant days that this script was not run.
-            for (Date specifiedDate : stats.row(def.getTeam()).keySet()) {
+            for (Date specifiedDate : stats.row(def.getTeam().getName().getValue()).keySet()) {
                if (specifiedDate.after(executionDate) && specifiedDate.before(prevExecutionDate)) {
-                  if (!def.getTeam().isEmpty()) {
+                  if (def.getTeam().isValid()) {
                      CIStatsToken teamStats = stats.get(def.getTeam(), executionDate);
                      teamStats = stats.get(def.getTeam(), specifiedDate);
                      if (prevAborted) {
@@ -195,7 +196,7 @@ public class DashboardApiImpl implements DashboardApi {
                      }
                      teamStats.addTestPointsPass(prevPointsPassed);
                      teamStats.addTestPointsFail(prevPointsFailed);
-                     stats.put(def.getTeam(), specifiedDate, teamStats);
+                     stats.put(def.getTeam().getName().getValue(), specifiedDate, teamStats);
                   }
                } else if (specifiedDate.equals(prevExecutionDate)) {
                   break;
@@ -246,10 +247,20 @@ public class DashboardApiImpl implements DashboardApi {
    }
 
    @Override
-   public Collection<ArtifactAccessorResultWithoutGammas> getTeams(BranchId branch, String filter, long pageNum,
-      long pageSize, AttributeTypeToken orderByAttributeType) {
-      ArtifactAccessor<ArtifactAccessorResultWithoutGammas> accessor =
-         new ArtifactAccessorResultAccessor(CoreArtifactTypes.ScriptTeam, orcsApi);
+   public ScriptTeamToken getTeam(BranchId branch, ArtifactId id) {
+      ArtifactAccessor<ScriptTeamToken> accessor = new ScriptTeamAccessor(CoreArtifactTypes.ScriptTeam, orcsApi);
+      try {
+         return accessor.get(branch, id);
+      } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+         | NoSuchMethodException | SecurityException ex) {
+         return ScriptTeamToken.SENTINEL;
+      }
+   }
+
+   @Override
+   public Collection<ScriptTeamToken> getTeams(BranchId branch, String filter, long pageNum, long pageSize,
+      AttributeTypeToken orderByAttributeType) {
+      ArtifactAccessor<ScriptTeamToken> accessor = new ScriptTeamAccessor(CoreArtifactTypes.ScriptTeam, orcsApi);
       try {
          return accessor.getAllByFilter(branch, filter, Arrays.asList(CoreAttributeTypes.Name), pageNum, pageSize,
             orderByAttributeType);
@@ -262,13 +273,18 @@ public class DashboardApiImpl implements DashboardApi {
 
    @Override
    public Integer getTeamsCount(BranchId branch, String filter) {
-      ArtifactAccessor<ArtifactAccessorResult> accessor =
-         new ArtifactAccessorImpl<>(CoreArtifactTypes.ScriptTeam, orcsApi);
+      ArtifactAccessor<ScriptTeamToken> accessor = new ScriptTeamAccessor(CoreArtifactTypes.ScriptTeam, orcsApi);
       return accessor.getAllByFilterAndCount(branch, filter, Arrays.asList(CoreAttributeTypes.Name));
    }
 
    private class ArtifactAccessorResultAccessor extends ArtifactAccessorImpl<ArtifactAccessorResultWithoutGammas> {
       public ArtifactAccessorResultAccessor(ArtifactTypeToken type, OrcsApi orcsApi) {
+         super(type, orcsApi);
+      }
+   }
+
+   private class ScriptTeamAccessor extends ArtifactAccessorImpl<ScriptTeamToken> {
+      public ScriptTeamAccessor(ArtifactTypeToken type, OrcsApi orcsApi) {
          super(type, orcsApi);
       }
    }

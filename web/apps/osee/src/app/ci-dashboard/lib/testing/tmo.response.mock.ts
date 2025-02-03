@@ -49,7 +49,16 @@ export const defReferenceMock: DefReference[] = [
 		machineName: 'Machine 1',
 		revision: 'revision',
 		repositoryType: 'repository',
-		team: 'team 1',
+		team: {
+			id: '1111',
+			gammaId: '2222',
+			name: {
+				id: '22222',
+				gammaId: '33333',
+				typeId: '1152921504606847088',
+				value: 'Team 1',
+			},
+		},
 		lastAuthor: 'Last Author',
 		lastModified: new Date(),
 		modifiedFlag: '1',
