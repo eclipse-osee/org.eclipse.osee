@@ -1,4 +1,4 @@
-use std::ops::RangeFrom;
+use std::{marker::PhantomData, ops::RangeFrom};
 
 use config_def::{
     lex_config_case_def, lex_config_def, lex_config_else_def, lex_config_not_def,
@@ -575,18 +575,105 @@ pub trait Eof {
 impl Eof for MarkdownDocumentConfig {}
 
 // COMMENT SYNTAXES
-pub trait StartCommentSingleLine<I: Input, E: ParseError<I>> {
-    fn start_comment_single_line(&self) -> impl Parser<I, Error = E>;
+pub trait StartCommentSingleLine {
+    fn start_comment_single_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        E: ParseError<I>;
 }
 
-impl<I: Input + for<'a> Compare<&'a str>, E: ParseError<I>> StartCommentSingleLine<I, E>
-    for MarkdownDocumentConfig
-{
-    fn start_comment_single_line(&self) -> impl Parser<I, Error = E>
+impl StartCommentSingleLine for MarkdownDocumentConfig {
+    fn start_comment_single_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
     where
-        I: for<'a> Compare<&'a str>,
+        I: Input + Compare<&'x str>,
+        E: ParseError<I>,
     {
         tag("``")
+    }
+}
+
+pub trait EndCommentSingleLine {
+    fn end_comment_single_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        E: ParseError<I>;
+}
+
+impl EndCommentSingleLine for MarkdownDocumentConfig {
+    fn end_comment_single_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        E: ParseError<I>,
+    {
+        tag("``")
+    }
+}
+
+pub trait StartCommentMultiLine {
+    fn start_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        E: ParseError<I>;
+}
+
+impl StartCommentMultiLine for MarkdownDocumentConfig {
+    fn start_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        E: ParseError<I>,
+    {
+        fail::<I, PhantomData<LexerToken>, E>()
+    }
+}
+
+pub trait EndCommentMultiLine {
+    fn end_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        E: ParseError<I>;
+}
+
+impl EndCommentMultiLine for MarkdownDocumentConfig {
+    fn end_comment_multi_line<'x, I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        E: ParseError<I>,
+    {
+        fail::<I, PhantomData<LexerToken>, E>()
+    }
+}
+
+pub trait MultilineCommentCharacter {
+    fn multi_line_comment_character<'x, I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        E: ParseError<I>;
+}
+
+impl MultilineCommentCharacter for MarkdownDocumentConfig {
+    fn multi_line_comment_character<'x, I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        E: ParseError<I>,
+    {
+        fail::<I, PhantomData<LexerToken>, E>()
+    }
+}
+
+pub trait SingleLineComment {
+    fn single_line_comment<'x, I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        E: ParseError<I>;
+}
+
+impl SingleLineComment for MarkdownDocumentConfig {
+    fn single_line_comment<'x, I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        E: ParseError<I>,
+    {
+        fail::<I, PhantomData<LexerToken>, E>()
     }
 }
 
