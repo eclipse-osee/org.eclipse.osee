@@ -1154,7 +1154,12 @@ where
                     contents,
                     lex_end_comment_single_line(self.end_comment_single_line()),
                 ))
-                .map(|(start, list, end)| {});
+                .map(|(start, (list, end))| {
+                    let mut flattened = list.into_iter().flatten().collect::<Vec<LexerToken>>();
+                    list.insert(0, start);
+                    flattened.push(end);
+                    flattened
+                });
         start_end_single_line_comment_parser
     }
 }
