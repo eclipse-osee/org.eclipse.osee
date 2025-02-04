@@ -559,33 +559,16 @@ impl<'x, I: Input + Compare<&'x str>, E: ParseError<I>> And<'x, I, E> for Markdo
 {
 }
 
-// pub trait Or<'x, I: Input + Compare<&'x str>, E: ParseError<I>>
-// where
-//     I::Item: AsChar,
-// {
-//     fn or(&self) -> impl Parser<I, Error = E> {
-//         char('|')
-//     }
-// }
-pub trait Or {
-    fn or<I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input,
-        E: ParseError<I>;
-}
-
-impl<T> Or for T {
-    fn or<I, E>(&self) -> impl Parser<I, Error = E>
-    where
-        I: Input,
-        E: ParseError<I>,
-        <I as nom::Input>::Item: AsChar,
-    {
+pub trait Or<I: Input, E: ParseError<I>>
+where
+    I::Item: AsChar,
+{
+    fn or(&self) -> impl Parser<I, Error = E> {
         char('|')
     }
 }
 
-impl<'x, I: Input + Compare<&'x str>, E: ParseError<I>> Or<'x, I, E> for MarkdownDocumentConfig where
+impl<'x, I: Input + Compare<&'x str>, E: ParseError<I>> Or<I, E> for MarkdownDocumentConfig where
     I::Item: AsChar
 {
 }
