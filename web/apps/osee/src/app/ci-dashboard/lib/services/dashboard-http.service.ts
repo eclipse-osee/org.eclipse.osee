@@ -12,7 +12,7 @@
  **********************************************************************/
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { CIStats, CITimelineStats } from '../types/ci-stats';
+import { CIStats, Timeline } from '../types/ci-stats';
 import { apiURL } from '@osee/environments';
 import { HttpParamsType, NamedId } from '@osee/shared/types';
 import { ScriptTeam } from '../types';
@@ -35,9 +35,9 @@ export class DashboardHttpService {
 		);
 	}
 
-	getTimelineStats(branchId: string, ciSet: string) {
-		return this.http.get<CITimelineStats[]>(
-			`${apiURL}/script/dashboard/${branchId}/${ciSet}/timelinestats`
+	getTeamTimelines(branchId: string, ciSetId: `${number}`) {
+		return this.http.get<Timeline[]>(
+			`${apiURL}/script/dashboard/${branchId}/${ciSetId}/timeline/teams`
 		);
 	}
 

@@ -52,7 +52,7 @@ public class ScriptApiImpl implements ScriptApi {
       this.testCaseApi = new TestCaseApiImpl(orcsApi);
       this.testPointApi = new TestPointApiImpl(orcsApi);
       this.tmoImportApi = new TmoImportApiImpl(orcsApi, scriptDefApi);
-      this.dashboardApi = new DashboardApiImpl(scriptDefApi, orcsApi);
+      this.dashboardApi = new DashboardApiImpl(scriptResultApi, scriptProgramApi, orcsApi);
       this.scriptConfigApi = new ScriptConfigApiImpl(orcsApi);
    }
 

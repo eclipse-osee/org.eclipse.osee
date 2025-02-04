@@ -25,12 +25,14 @@ import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.orcs.core.ds.FollowRelation;
 import org.eclipse.osee.testscript.DashboardEndpoint;
 import org.eclipse.osee.testscript.ScriptApi;
 import org.eclipse.osee.testscript.ScriptTeamToken;
+import org.eclipse.osee.testscript.TimelineStatsToken;
 
 /**
  * @author Ryan T. Baldwin
@@ -192,8 +194,23 @@ public class DashboardEndpointImpl implements DashboardEndpoint {
    }
 
    @Override
-   public Collection<CITimelineStatsToken> getTimelineStats(BranchId branch, ArtifactId ciSet, ArtifactId viewId) {
-      return this.testScriptApi.getDashboardApi().getTimelineStats(branch, ciSet, viewId);
+   public TimelineStatsToken getTimeline(BranchId branch, ArtifactId ciSet) {
+      return this.testScriptApi.getDashboardApi().getTimelineStatsToken(branch, ciSet);
+   }
+
+   @Override
+   public List<TimelineStatsToken> getTeamTimelines(BranchId branch, ArtifactId ciSet) {
+      return this.testScriptApi.getDashboardApi().getTeamTimelineStats(branch, ciSet);
+   }
+
+   @Override
+   public TransactionResult updateTimelines(BranchId branch, ArtifactId ciSet) {
+      return this.testScriptApi.getDashboardApi().updateTimelineStats(branch, ciSet);
+   }
+
+   @Override
+   public boolean updateAllActiveTimelines(BranchId branch) {
+      return this.testScriptApi.getDashboardApi().updateAllActiveTimelineStats(branch);
    }
 
    @Override

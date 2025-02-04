@@ -12,216 +12,291 @@
  **********************************************************************/
 package org.eclipse.osee.testscript.internal;
 
-import com.google.common.collect.Table;
-import com.google.common.collect.TreeBasedTable;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 import org.eclipse.osee.accessor.ArtifactAccessor;
 import org.eclipse.osee.accessor.internal.ArtifactAccessorImpl;
 import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactReadable;
 import org.eclipse.osee.framework.core.data.ArtifactTypeToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionResult;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.core.ds.FollowRelation;
+import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderData;
+import org.eclipse.osee.orcs.rest.model.transaction.TransactionBuilderDataFactory;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.testscript.DashboardApi;
-import org.eclipse.osee.testscript.ScriptDefApi;
+import org.eclipse.osee.testscript.ScriptResultApi;
+import org.eclipse.osee.testscript.ScriptSetApi;
+import org.eclipse.osee.testscript.ScriptSetToken;
 import org.eclipse.osee.testscript.ScriptTeamToken;
+import org.eclipse.osee.testscript.TimelineDayToken;
+import org.eclipse.osee.testscript.TimelineScriptToken;
+import org.eclipse.osee.testscript.TimelineStatsToken;
 
 /**
  * @author Stephen J. Molaro
  */
 public class DashboardApiImpl implements DashboardApi {
 
-   private final ScriptDefApi scriptDefApi;
+   private final ScriptResultApi resultApi;
+   private final ScriptSetApi setApi;
    private final OrcsApi orcsApi;
 
-   public DashboardApiImpl(ScriptDefApi scriptDefApi, OrcsApi orcsApi) {
-      this.scriptDefApi = scriptDefApi;
+   public DashboardApiImpl(ScriptResultApi resultApi, ScriptSetApi setApi, OrcsApi orcsApi) {
+      this.resultApi = resultApi;
+      this.setApi = setApi;
       this.orcsApi = orcsApi;
    }
 
    @Override
-   public Collection<CITimelineStatsToken> getTimelineStats(BranchId branch, ArtifactId ciSet, ArtifactId viewId) {
-      viewId = viewId == null ? ArtifactId.SENTINEL : viewId;
-      Table<String, Date, CIStatsToken> stats = TreeBasedTable.create();
+   public TimelineStatsToken getTimelineStatsToken(BranchId branch, ArtifactId ciSet) {
+      ArtifactReadable timelineArt = this.orcsApi.getQueryFactory().fromBranch(branch).andTypeEquals(
+         CoreArtifactTypes.ScriptTimeline).andAttributeIs(CoreAttributeTypes.SetId,
+            ciSet.getIdString()).asArtifactOrSentinel();
+      return new TimelineStatsToken(timelineArt);
+   }
 
-      Collection<ScriptDefToken> defs = this.scriptDefApi.getAllByFilter(branch, ciSet.getIdString(),
-         FollowRelation.followList(CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptResults), 0L, 0L, null,
-         Arrays.asList(CoreAttributeTypes.SetId));
+   @Override
+   public List<TimelineStatsToken> getTeamTimelineStats(BranchId branch, ArtifactId ciSet) {
+      List<TimelineStatsToken> timelines = new LinkedList<>();
+      TimelineStatsToken fullTimeline = getTimelineStatsToken(branch, ciSet);
+      fullTimeline.setTeam("All");
 
-      SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-
-      //Pre-record all relevant dates so we can ensure all are populated with data from previously run scripts not run that day.
-      for (ScriptDefToken def : defs) {
-         for (ScriptResultToken res : def.getScriptResults()) {
-            Date executionDate = res.getExecutionDate();
-            try {
-               executionDate = formatter.parse(formatter.format(executionDate));
-            } catch (ParseException ex) {
-               //Do Nothing
-            }
-
-            if (!stats.contains("All", executionDate)) {
-               stats.put("All", executionDate, new CIStatsToken("All", executionDate));
-            }
-
-            if (def.getTeam().isValid() && !stats.contains(def.getTeam(), executionDate)) {
-               stats.put(def.getTeam().getName().getValue(), executionDate,
-                  new CIStatsToken(def.getTeam().getName().getValue(), executionDate));
-            }
+      Collection<ScriptTeamToken> teams = this.getTeams(branch, "", 0L, 0L, AttributeTypeToken.SENTINEL);
+      for (ScriptTeamToken team : teams) {
+         TimelineStatsToken teamTimeline = new TimelineStatsToken(ArtifactReadable.SENTINEL);
+         teamTimeline.setUpdatedAt(fullTimeline.getUpdatedAt());
+         teamTimeline.setSetId(fullTimeline.getSetId());
+         teamTimeline.setTeam(team.getName().getValue());
+         teamTimeline = calculateTeamTimelineStats(fullTimeline, teamTimeline, team.getName().getValue());
+         if (!teamTimeline.getDays().isEmpty()) {
+            timelines.add(teamTimeline);
          }
       }
 
-      for (ScriptDefToken def : defs) {
+      Collections.sort(timelines, new Comparator<TimelineStatsToken>() {
+         @Override
+         public int compare(TimelineStatsToken o1, TimelineStatsToken o2) {
+            return o1.getTeam().compareTo(o2.getTeam());
+         }
+      });
 
-         List<ScriptResultToken> scriptResults = def.getScriptResults();
-         Collections.sort(scriptResults, Comparator.comparing(ScriptResultToken::getExecutionDate).reversed());
+      timelines.add(0, fullTimeline);
+      return timelines;
+   }
 
-         int prevPointsPassed = 0;
-         int prevPointsFailed = 0;
-         boolean prevAborted = false;
-         boolean prevPassed = false;
-         boolean prevScriptRun = false;
-
-         Date prevExecutionDate = new Date();
-
-         for (ScriptResultToken res : scriptResults) {
-            Date executionDate = res.getExecutionDate();
-            try {
-               executionDate = formatter.parse(formatter.format(executionDate));
-            } catch (ParseException ex) {
-               //Do Nothing
-            }
-
-            if (executionDate.equals(prevExecutionDate)) {
-               continue;
-            }
-
-            int pointsPassed = res.getPassedCount();
-            int pointsFailed = res.getFailedCount();
-            boolean aborted = res.getScriptAborted();
-            boolean passed = aborted ? false : pointsFailed == 0;
-            boolean scriptRun = true;
-
-            //Updates the script values on the current Test Result's execution date
-            CIStatsToken allStats = stats.get("All", executionDate);
-            if (aborted) {
-               allStats.addScriptsAbort(1);
-            } else if (passed) {
-               allStats.addScriptsPass(1);
-            } else {
-               allStats.addScriptsFail(1);
-            }
-            if (scriptRun) {
-               allStats.addScriptsRan(1);
-            } else {
-               allStats.addScriptsNotRan(1);
-            }
-            allStats.addTestPointsPass(pointsPassed);
-            allStats.addTestPointsFail(pointsFailed);
-            stats.put("All", executionDate, allStats);
-
-            //Updates the script values for each team on the current Test Result's execution date
-            if (def.getTeam().isValid()) {
-               CIStatsToken teamStats = stats.get(def.getTeam(), executionDate);
-               if (aborted) {
-                  teamStats.addScriptsAbort(1);
-               } else if (passed) {
-                  teamStats.addScriptsPass(1);
-               } else {
-                  teamStats.addScriptsFail(1);
-               }
-               if (scriptRun) {
-                  teamStats.addScriptsRan(1);
-               } else {
-                  teamStats.addScriptsNotRan(1);
-               }
-               teamStats.addTestPointsPass(pointsPassed);
-               teamStats.addTestPointsFail(pointsFailed);
-               stats.put(def.getTeam().getName().getValue(), executionDate, teamStats);
-            }
-
-            //Maintains this Test Result's data for relevant days that this script was not run.
-            for (Date specifiedDate : stats.row("All").keySet()) {
-               if (specifiedDate.after(executionDate) && specifiedDate.before(prevExecutionDate)) {
-                  allStats = stats.get("All", specifiedDate);
-                  if (prevAborted) {
-                     allStats.addScriptsAbort(1);
-                  } else if (prevPassed) {
-                     allStats.addScriptsPass(1);
-                  } else {
-                     allStats.addScriptsFail(1);
-                  }
-                  if (prevScriptRun) {
-                     allStats.addScriptsRan(1);
-                  } else {
-                     allStats.addScriptsNotRan(1);
-                  }
-                  allStats.addTestPointsPass(prevPointsPassed);
-                  allStats.addTestPointsFail(prevPointsFailed);
-                  stats.put("All", specifiedDate, allStats);
-               }
-            }
-
-            //For each team, maintains this Test Result's data for relevant days that this script was not run.
-            for (Date specifiedDate : stats.row(def.getTeam().getName().getValue()).keySet()) {
-               if (specifiedDate.after(executionDate) && specifiedDate.before(prevExecutionDate)) {
-                  if (def.getTeam().isValid()) {
-                     CIStatsToken teamStats = stats.get(def.getTeam(), executionDate);
-                     teamStats = stats.get(def.getTeam(), specifiedDate);
-                     if (prevAborted) {
-                        teamStats.addScriptsAbort(1);
-                     } else if (prevPassed) {
-                        teamStats.addScriptsPass(1);
-                     } else {
-                        teamStats.addScriptsFail(1);
-                     }
-                     if (prevScriptRun) {
-                        teamStats.addScriptsRan(1);
-                     } else {
-                        teamStats.addScriptsNotRan(1);
-                     }
-                     teamStats.addTestPointsPass(prevPointsPassed);
-                     teamStats.addTestPointsFail(prevPointsFailed);
-                     stats.put(def.getTeam().getName().getValue(), specifiedDate, teamStats);
-                  }
-               } else if (specifiedDate.equals(prevExecutionDate)) {
-                  break;
-               }
-            }
-
-            prevPointsPassed = pointsPassed;
-            prevPointsFailed = pointsFailed;
-            prevAborted = aborted;
-            prevPassed = passed;
-            prevScriptRun = scriptRun;
-            prevExecutionDate = executionDate;
+   @Override
+   public boolean updateAllActiveTimelineStats(BranchId branch) {
+      Collection<ScriptSetToken> ciSets =
+         this.setApi.getAll(branch, ArtifactId.SENTINEL, 0L, 0L, AttributeTypeId.SENTINEL, true);
+      for (ScriptSetToken ciSet : ciSets) {
+         if (ciSet.getActive().getValue()) {
+            updateTimelineStats(branch, ciSet.getArtifactId());
          }
       }
+      return true;
+   }
 
-      List<CITimelineStatsToken> values = new LinkedList<>();
+   @Override
+   public TransactionResult updateTimelineStats(BranchId branch, ArtifactId ciSet) {
+      TimelineStatsToken currentTimeline = this.getTimelineStatsToken(branch, ciSet);
 
-      for (String teamName : stats.rowKeySet()) {
-         CITimelineStatsToken timelineStats = new CITimelineStatsToken(teamName);
-         timelineStats.setCiStats(stats.row(teamName).values());
-         values.add(timelineStats);
+      if (currentTimeline.getArtifactReadable().isInvalid()) {
+         currentTimeline.setSetId(ciSet);
       }
 
-      return values;
+      Collection<ScriptResultToken> results = resultApi.getAllForSetWithScripts(branch, ArtifactId.SENTINEL, ciSet);
+      TimelineStatsToken updatedTimeline = this.getUpdatedTimelineStats(branch, currentTimeline, results);
 
+      TransactionBuilderDataFactory txBdf = new TransactionBuilderDataFactory(orcsApi);
+
+      TransactionBuilderData txData = new TransactionBuilderData();
+      txData.setBranch(branch.getIdString());
+      txData.setTxComment("Update Zenith Timelines for CI Set " + ciSet);
+      txData.setCreateArtifacts(new LinkedList<>());
+      txData.setModifyArtifacts(new LinkedList<>());
+      txData.setAddRelations(new LinkedList<>());
+
+      if (updatedTimeline.getArtifactReadable().isValid()) {
+         txData.getModifyArtifacts().add(updatedTimeline.modifyArtifact());
+      } else {
+         txData.getCreateArtifacts().add(updatedTimeline.createArtifact("timeline", ApplicabilityId.SENTINEL));
+      }
+
+      TransactionResult txResult = new TransactionResult();
+      try {
+         ObjectMapper mapper = new ObjectMapper();
+         TransactionBuilder tx = txBdf.loadFromJson(mapper.writeValueAsString(txData));
+         TransactionToken token = tx.commit();
+         txResult.setTx(token);
+         txResult.getResults().setIds(
+            tx.getTxDataReadables().stream().map(readable -> readable.getIdString()).collect(Collectors.toList()));
+      } catch (JsonProcessingException ex) {
+         txResult.getResults().error("Error processing tx json");
+      }
+
+      return txResult;
+   }
+
+   @Override
+   public TimelineStatsToken getUpdatedTimelineStats(BranchId branch, TimelineStatsToken timeline,
+      Collection<ScriptResultToken> results) {
+      Date newTime = new Date();
+      Map<ArtifactId, String> teamNames = new HashMap<>();
+
+      SortedMap<String, TimelineDayToken> timelineDays = new TreeMap<>();
+      for (TimelineDayToken day : timeline.getDays()) {
+         String key = TimelineStatsToken.dateFormat.format(day.getExecutionDate());
+         timelineDays.put(key, day);
+      }
+
+      for (ScriptResultToken result : results) {
+         String dayKey = TimelineStatsToken.dateFormat.format(result.getExecutionDate());
+         TimelineDayToken timelineDay;
+         try {
+            timelineDay =
+               timelineDays.getOrDefault(dayKey, new TimelineDayToken(TimelineStatsToken.dateFormat.parse(dayKey)));
+         } catch (ParseException ex) {
+            throw new OseeCoreException("Unable to parse date from format", ex);
+         }
+
+         TimelineScriptToken dayScript = timelineDay.getScripts().get(result.getName());
+         if (dayScript == null) {
+            dayScript = new TimelineScriptToken(result.getExecutionDate(), result.getPassedCount(),
+               result.getFailedCount(), result.getScriptAborted());
+         }
+
+         ArtifactReadable script = result.getArtifactReadable().getRelated(
+            CoreRelationTypes.TestScriptDefToTestScriptResults_TestScriptDef).getExactlyOne();
+         ArtifactId teamId = script.getRelated(CoreRelationTypes.TestScriptDefToTeam_ScriptTeam).getAtMostOneOrDefault(
+            ArtifactReadable.SENTINEL).getArtifactId();
+         if (teamId.isInvalid()) {
+            dayScript.setTeamName("");
+         } else if (teamNames.containsKey(teamId)) {
+            dayScript.setTeamName(teamNames.get(teamId));
+         } else {
+            ScriptTeamToken team = this.getTeam(branch, teamId);
+            if (team.getArtifactId().isValid()) {
+               teamNames.put(teamId, team.getName().getValue());
+               dayScript.setTeamName(team.getName().getValue());
+            }
+         }
+
+         // If a more recent script has already been included for the day, skip this one.
+         if (dayScript.getExecutedAt().after(result.getExecutionDate())) {
+            continue;
+         }
+
+         timelineDay.getScripts().put(result.getName(), dayScript);
+         timelineDays.put(dayKey, timelineDay);
+      }
+
+      timeline.setDays(new LinkedList<>(timelineDays.values()));
+
+      Map<String, TimelineScriptToken> currentScripts = new HashMap<>();
+
+      for (TimelineDayToken day : timeline.getDays()) {
+         for (String scriptName : day.getScripts().keySet()) {
+            TimelineScriptToken script = day.getScripts().get(scriptName);
+            currentScripts.put(scriptName, script);
+         }
+
+         int scriptsPass = 0;
+         int scriptsFail = 0;
+         int pointsPass = 0;
+         int pointsFail = 0;
+         int abort = 0;
+         for (TimelineScriptToken script : currentScripts.values()) {
+            pointsPass += script.getPass();
+            pointsFail += script.getFail();
+            abort += script.getAbort() ? 1 : 0;
+            if (!script.getAbort() && script.getFail() == 0) {
+               scriptsPass++;
+            } else if (!script.getAbort()) {
+               scriptsFail++;
+            }
+         }
+         day.setScriptsPass(scriptsPass);
+         day.setScriptsFail(scriptsFail);
+         day.setPointsPass(pointsPass);
+         day.setPointsFail(pointsFail);
+         day.setAbort(abort);
+      }
+
+      timeline.setUpdatedAt(newTime);
+
+      return timeline;
+   }
+
+   private TimelineStatsToken calculateTeamTimelineStats(TimelineStatsToken fullTimeline,
+      TimelineStatsToken teamTimeline, String team) {
+      Map<String, TimelineScriptToken> currentScripts = new HashMap<>();
+
+      for (int i = 0; i < fullTimeline.getDays().size(); i++) {
+         TimelineDayToken fullDay = fullTimeline.getDays().get(i);
+         boolean dayChanged = false;
+         for (String scriptName : fullDay.getScripts().keySet()) {
+            TimelineScriptToken script = fullDay.getScripts().get(scriptName);
+            if (team.isEmpty() || team.equals(script.getTeamName())) {
+               currentScripts.put(scriptName, script);
+               dayChanged = true;
+            }
+         }
+
+         if (!dayChanged) {
+            continue;
+         }
+
+         TimelineDayToken teamDay = new TimelineDayToken(fullDay.getExecutionDate());
+         teamTimeline.getDays().add(teamDay);
+
+         int scriptsPass = 0;
+         int scriptsFail = 0;
+         int pointsPass = 0;
+         int pointsFail = 0;
+         int abort = 0;
+         for (TimelineScriptToken script : currentScripts.values()) {
+            pointsPass += script.getPass();
+            pointsFail += script.getFail();
+            abort += script.getAbort() ? 1 : 0;
+            if (!script.getAbort() && script.getFail() == 0) {
+               scriptsPass++;
+            } else if (!script.getAbort()) {
+               scriptsFail++;
+            }
+         }
+         teamDay.setScriptsPass(scriptsPass);
+         teamDay.setScriptsFail(scriptsFail);
+         teamDay.setPointsPass(pointsPass);
+         teamDay.setPointsFail(pointsFail);
+         teamDay.setAbort(abort);
+      }
+
+      return teamTimeline;
    }
 
    @Override

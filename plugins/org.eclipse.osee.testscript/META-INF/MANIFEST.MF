@@ -11,6 +11,7 @@ Export-Package: org.eclipse.osee.testscript
 Import-Package: com.fasterxml.jackson.annotation,
  com.fasterxml.jackson.core,
  com.fasterxml.jackson.databind,
+ com.fasterxml.jackson.databind.type,
  com.google.common.collect,
  javax.ws.rs,
  javax.ws.rs.core,

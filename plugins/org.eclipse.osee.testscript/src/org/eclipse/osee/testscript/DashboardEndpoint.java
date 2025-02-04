@@ -14,7 +14,9 @@
 package org.eclipse.osee.testscript;
 
 import java.util.Collection;
+import java.util.List;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -24,9 +26,9 @@ import org.eclipse.osee.accessor.types.ArtifactAccessorResultWithoutGammas;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionResult;
 import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 import org.eclipse.osee.testscript.internal.CIStatsToken;
-import org.eclipse.osee.testscript.internal.CITimelineStatsToken;
 
 /**
  * @author Ryan T. Baldwin
@@ -48,10 +50,25 @@ public interface DashboardEndpoint {
       @PathParam("ciSet") ArtifactId ciSet, @QueryParam("viewId") ArtifactId viewId);
 
    @GET
-   @Path("{branch}/{ciSet}/timelinestats")
+   @Path("{branch}/{ciSet}/timeline/teams")
    @Produces(MediaType.APPLICATION_JSON)
-   public Collection<CITimelineStatsToken> getTimelineStats(@PathParam("branch") BranchId branch,
-      @PathParam("ciSet") ArtifactId ciSet, @QueryParam("viewId") ArtifactId viewId);
+   public List<TimelineStatsToken> getTeamTimelines(@PathParam("branch") BranchId branch,
+      @PathParam("ciSet") ArtifactId ciSet);
+
+   @GET
+   @Path("{branch}/{ciSet}/timeline")
+   @Produces(MediaType.APPLICATION_JSON)
+   public TimelineStatsToken getTimeline(@PathParam("branch") BranchId branch, @PathParam("ciSet") ArtifactId ciSet);
+
+   @POST
+   @Path("{branch}/{ciSet}/timeline/update")
+   @Produces(MediaType.APPLICATION_JSON)
+   public TransactionResult updateTimelines(@PathParam("branch") BranchId branch, @PathParam("ciSet") ArtifactId ciSet);
+
+   @POST
+   @Path("{branch}/timeline/update")
+   @Produces(MediaType.APPLICATION_JSON)
+   public boolean updateAllActiveTimelines(@PathParam("branch") BranchId branch);
 
    @GET
    @Path("{branch}/subsystems")
