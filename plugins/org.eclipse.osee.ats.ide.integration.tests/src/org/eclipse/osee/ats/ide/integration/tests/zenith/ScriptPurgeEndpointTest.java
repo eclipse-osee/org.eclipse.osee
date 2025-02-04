@@ -99,7 +99,7 @@ public class ScriptPurgeEndpointTest {
 
       // Delete results
       res = jaxRsApi.newTarget("script/purge/results/" + testBranch.getIdString() + "?deleteonly=true").request(
-         MediaType.APPLICATION_JSON).post(null);
+         MediaType.APPLICATION_JSON).delete();
       assertEquals(200, res.getStatus());
       res.close();
 
@@ -125,7 +125,7 @@ public class ScriptPurgeEndpointTest {
 
       // Run purge
       res = jaxRsApi.newTarget("script/purge/results/" + testBranch.getIdString()).request(
-         MediaType.APPLICATION_JSON).post(null);
+         MediaType.APPLICATION_JSON).delete();
       assertEquals(200, res.getStatus());
       res.close();
 
