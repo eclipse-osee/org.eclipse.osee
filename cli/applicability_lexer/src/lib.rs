@@ -321,106 +321,115 @@ pub trait FeatureSwitch {
 
 impl FeatureSwitch for MarkdownDocumentConfig {}
 
-pub trait FeatureCase<'x, I: Input + Compare<&'x str>, E: ParseError<I>> {
-    fn feature_case(&self) -> impl Parser<I, Error = E> {
+pub trait FeatureCase {
+    fn feature_case<'x, I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        E: ParseError<I>,
+    {
         tag("Feature Case")
     }
 }
 
-impl<'x, I: Input + Compare<&'x str>, E: ParseError<I>> FeatureCase<'x, I, E>
-    for MarkdownDocumentConfig
-{
-}
+impl FeatureCase for MarkdownDocumentConfig {}
 
 //Configuration
-pub trait ConfigBase<'x, I: Input + Compare<&'x str>, E: ParseError<I>> {
-    fn config_base(&self) -> impl Parser<I, Error = E> {
+pub trait ConfigBase {
+    fn config_base<'x, I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        E: ParseError<I>,
+    {
         tag("Configuration")
     }
 }
 
-impl<'x, I: Input + Compare<&'x str>, E: ParseError<I>> ConfigBase<'x, I, E>
-    for MarkdownDocumentConfig
-{
-}
+impl ConfigBase for MarkdownDocumentConfig {}
 
-pub trait ConfigNot<'x, I: Input + Compare<&'x str>, E: ParseError<I>> {
-    fn config_not(&self) -> impl Parser<I, Error = E> {
+pub trait ConfigNot {
+    fn config_not<'x, I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        E: ParseError<I>,
+    {
         tag("Configuration Not")
     }
 }
 
-impl<'x, I: Input + Compare<&'x str>, E: ParseError<I>> ConfigNot<'x, I, E>
-    for MarkdownDocumentConfig
-{
-}
+impl ConfigNot for MarkdownDocumentConfig {}
 
 pub trait ConfigSwitch<'x, I: Input + Compare<&'x str>, E: ParseError<I>> {
-    fn config_switch(&self) -> impl Parser<I, Error = E> {
+    fn config_switch<'x, I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        E: ParseError<I>,
+    {
         tag("Configuration Switch")
     }
 }
 
-impl<'x, I: Input + Compare<&'x str>, E: ParseError<I>> ConfigSwitch<'x, I, E>
-    for MarkdownDocumentConfig
-{
-}
+impl ConfigSwitch for MarkdownDocumentConfig {}
 
-pub trait ConfigCase<'x, I: Input + Compare<&'x str>, E: ParseError<I>> {
-    fn config_case(&self) -> impl Parser<I, Error = E> {
+pub trait ConfigCase {
+    fn config_case<'x, I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        E: ParseError<I>,
+    {
         tag("Configuration Case")
     }
 }
 
-impl<'x, I: Input + Compare<&'x str>, E: ParseError<I>> ConfigCase<'x, I, E>
-    for MarkdownDocumentConfig
-{
-}
+impl ConfigCase for MarkdownDocumentConfig {}
 
 //Configuration Group
-pub trait GroupBase<'x, I: Input + Compare<&'x str>, E: ParseError<I>> {
-    fn group_base(&self) -> impl Parser<I, Error = E> {
+pub trait GroupBase {
+    fn group_base<'x, I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        E: ParseError<I>,
+    {
         tag("ConfigurationGroup")
     }
 }
 
-impl<'x, I: Input + Compare<&'x str>, E: ParseError<I>> GroupBase<'x, I, E>
-    for MarkdownDocumentConfig
-{
-}
+impl GroupBase for MarkdownDocumentConfig {}
 
-pub trait GroupNot<'x, I: Input + Compare<&'x str>, E: ParseError<I>> {
-    fn group_not(&self) -> impl Parser<I, Error = E> {
+pub trait GroupNot {
+    fn group_not<'x, I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        E: ParseError<I>,
+    {
         tag("ConfigurationGroup Not")
     }
 }
 
-impl<'x, I: Input + Compare<&'x str>, E: ParseError<I>> GroupNot<'x, I, E>
-    for MarkdownDocumentConfig
-{
-}
+impl GroupNot for MarkdownDocumentConfig {}
 
-pub trait GroupSwitch<'x, I: Input + Compare<&'x str>, E: ParseError<I>> {
-    fn group_switch(&self) -> impl Parser<I, Error = E> {
+pub trait GroupSwitch {
+    fn group_switch<'x, I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        E: ParseError<I>,
+    {
         tag("ConfigurationGroup Switch")
     }
 }
 
-impl<'x, I: Input + Compare<&'x str>, E: ParseError<I>> GroupSwitch<'x, I, E>
-    for MarkdownDocumentConfig
-{
-}
+impl GroupSwitch for MarkdownDocumentConfig {}
 
-pub trait GroupCase<'x, I: Input + Compare<&'x str>, E: ParseError<I>> {
-    fn group_case(&self) -> impl Parser<I, Error = E> {
+pub trait GroupCase {
+    fn group_case<'x, I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        E: ParseError<I>,
+    {
         tag("ConfigurationGroup Case")
     }
 }
 
-impl<'x, I: Input + Compare<&'x str>, E: ParseError<I>> GroupCase<'x, I, E>
-    for MarkdownDocumentConfig
-{
-}
+impl GroupCase for MarkdownDocumentConfig {}
 
 // Base Capabilities
 pub trait Space<I: Input, E: ParseError<I>>
