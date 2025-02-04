@@ -423,7 +423,7 @@ impl<'x, I: Input + Compare<&'x str>, E: ParseError<I>> GroupCase<'x, I, E>
 }
 
 // Base Capabilities
-pub trait Space<'x, I: Input + Compare<&'x str>, E: ParseError<I>>
+pub trait Space<I: Input, E: ParseError<I>>
 where
     I::Item: AsChar,
 {
@@ -432,12 +432,9 @@ where
     }
 }
 
-impl<'x, I: Input + Compare<&'x str>, E: ParseError<I>> Space<'x, I, E> for MarkdownDocumentConfig where
-    I::Item: AsChar
-{
-}
+impl<I: Input, E: ParseError<I>> Space<I, E> for MarkdownDocumentConfig where I::Item: AsChar {}
 
-pub trait NewLine<'x, I: Input + Compare<&'x str>, E: ParseError<I>>
+pub trait NewLine<I: Input, E: ParseError<I>>
 where
     I::Item: AsChar,
 {
@@ -446,12 +443,9 @@ where
     }
 }
 
-impl<'x, I: Input + Compare<&'x str>, E: ParseError<I>> NewLine<'x, I, E> for MarkdownDocumentConfig where
-    I::Item: AsChar
-{
-}
+impl<I: Input, E: ParseError<I>> NewLine<I, E> for MarkdownDocumentConfig where I::Item: AsChar {}
 
-pub trait CarriageReturn<'x, I: Input + Compare<&'x str>, E: ParseError<I>>
+pub trait CarriageReturn<I: Input, E: ParseError<I>>
 where
     I::Item: AsChar,
 {
@@ -460,14 +454,12 @@ where
     }
 }
 
-impl<'x, I: Input + Compare<&'x str>, E: ParseError<I>> CarriageReturn<'x, I, E>
-    for MarkdownDocumentConfig
-where
-    I::Item: AsChar,
+impl<I: Input, E: ParseError<I>> CarriageReturn<I, E> for MarkdownDocumentConfig where
+    I::Item: AsChar
 {
 }
 
-pub trait StartBrace<'x, I: Input + Compare<&'x str>, E: ParseError<I>>
+pub trait StartBrace<I: Input, E: ParseError<I>>
 where
     I::Item: AsChar,
 {
@@ -476,14 +468,9 @@ where
     }
 }
 
-impl<'x, I: Input + Compare<&'x str>, E: ParseError<I>> StartBrace<'x, I, E>
-    for MarkdownDocumentConfig
-where
-    I::Item: AsChar,
-{
-}
+impl<I: Input, E: ParseError<I>> StartBrace<I, E> for MarkdownDocumentConfig where I::Item: AsChar {}
 
-pub trait EndBrace<'x, I: Input + Compare<&'x str>, E: ParseError<I>>
+pub trait EndBrace<I: Input, E: ParseError<I>>
 where
     I::Item: AsChar,
 {
@@ -492,14 +479,9 @@ where
     }
 }
 
-impl<'x, I: Input + Compare<&'x str>, E: ParseError<I>> EndBrace<'x, I, E>
-    for MarkdownDocumentConfig
-where
-    I::Item: AsChar,
-{
-}
+impl<I: Input, E: ParseError<I>> EndBrace<I, E> for MarkdownDocumentConfig where I::Item: AsChar {}
 
-pub trait StartParen<'x, I: Input + Compare<&'x str>, E: ParseError<I>>
+pub trait StartParen<I: Input, E: ParseError<I>>
 where
     I::Item: AsChar,
 {
@@ -508,14 +490,9 @@ where
     }
 }
 
-impl<'x, I: Input + Compare<&'x str>, E: ParseError<I>> StartParen<'x, I, E>
-    for MarkdownDocumentConfig
-where
-    I::Item: AsChar,
-{
-}
+impl<I: Input, E: ParseError<I>> StartParen<I, E> for MarkdownDocumentConfig where I::Item: AsChar {}
 
-pub trait EndParen<'x, I: Input + Compare<&'x str>, E: ParseError<I>>
+pub trait EndParen<I: Input, E: ParseError<I>>
 where
     I::Item: AsChar,
 {
@@ -524,14 +501,9 @@ where
     }
 }
 
-impl<'x, I: Input + Compare<&'x str>, E: ParseError<I>> EndParen<'x, I, E>
-    for MarkdownDocumentConfig
-where
-    I::Item: AsChar,
-{
-}
+impl<I: Input, E: ParseError<I>> EndParen<I, E> for MarkdownDocumentConfig where I::Item: AsChar {}
 
-pub trait Not<'x, I: Input + Compare<&'x str>, E: ParseError<I>>
+pub trait Not<I: Input, E: ParseError<I>>
 where
     I::Item: AsChar,
 {
@@ -540,12 +512,9 @@ where
     }
 }
 
-impl<'x, I: Input + Compare<&'x str>, E: ParseError<I>> Not<'x, I, E> for MarkdownDocumentConfig where
-    I::Item: AsChar
-{
-}
+impl<I: Input, E: ParseError<I>> Not<I, E> for MarkdownDocumentConfig where I::Item: AsChar {}
 
-pub trait And<'x, I: Input + Compare<&'x str>, E: ParseError<I>>
+pub trait And<I: Input, E: ParseError<I>>
 where
     I::Item: AsChar,
 {
@@ -554,10 +523,7 @@ where
     }
 }
 
-impl<'x, I: Input + Compare<&'x str>, E: ParseError<I>> And<'x, I, E> for MarkdownDocumentConfig where
-    I::Item: AsChar
-{
-}
+impl<I: Input, E: ParseError<I>> And<I, E> for MarkdownDocumentConfig where I::Item: AsChar {}
 
 pub trait Or<I: Input, E: ParseError<I>>
 where
@@ -568,10 +534,7 @@ where
     }
 }
 
-impl<'x, I: Input + Compare<&'x str>, E: ParseError<I>> Or<I, E> for MarkdownDocumentConfig where
-    I::Item: AsChar
-{
-}
+impl<I: Input, E: ParseError<I>> Or<I, E> for MarkdownDocumentConfig where I::Item: AsChar {}
 
 pub trait Eof {
     fn eof<I, E>(&self) -> impl Parser<I, Error = E>
