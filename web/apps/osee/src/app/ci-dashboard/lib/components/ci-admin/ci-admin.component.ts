@@ -13,12 +13,12 @@
 import { Component, computed, inject } from '@angular/core';
 import { CiDashboardControlsComponent } from '../ci-dashboard-controls/ci-dashboard-controls.component';
 import { SubsystemsListComponent } from './subsystems-list/subsystems-list.component';
-import { TeamsListComponent } from './teams-list/teams-list.component';
 import { ExpansionPanelComponent } from '@osee/shared/components';
 import { CiSetsTableComponent } from './ci-sets-table/ci-sets-table.component';
 import { CiAdminConfigComponent } from './ci-admin-config/ci-admin-config.component';
 import { UiService } from '@osee/shared/services';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { TeamsTableComponent } from './teams-table/teams-table.component';
 
 @Component({
 	selector: 'osee-ci-admin',
@@ -26,7 +26,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 		CiDashboardControlsComponent,
 		ExpansionPanelComponent,
 		SubsystemsListComponent,
-		TeamsListComponent,
+		TeamsTableComponent,
 		CiSetsTableComponent,
 		CiAdminConfigComponent,
 	],
@@ -45,7 +45,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 					<osee-subsystems-list />
 				</osee-expansion-panel>
 				<osee-expansion-panel title="Teams">
-					<osee-teams-list />
+					<osee-teams-table />
 				</osee-expansion-panel>
 			</div>
 		}

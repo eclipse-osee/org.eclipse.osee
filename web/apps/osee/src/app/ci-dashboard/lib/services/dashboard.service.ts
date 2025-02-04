@@ -17,7 +17,11 @@ import { CiDashboardUiService } from './ci-dashboard-ui.service';
 import { ARTIFACTTYPEIDENUM } from '@osee/shared/types/constants';
 import { NamedId } from '@osee/shared/types';
 import { ATTRIBUTETYPEIDENUM } from '@osee/attributes/constants';
-import { TransactionService } from '@osee/transactions/services';
+import {
+	CurrentTransactionService,
+	TransactionService,
+} from '@osee/transactions/services';
+import { ScriptTeam } from '../types';
 
 @Injectable({
 	providedIn: 'root',
@@ -26,6 +30,7 @@ export class DashboardService {
 	private uiService = inject(CiDashboardUiService);
 	private dashboardHttpService = inject(DashboardHttpService);
 	private transactionService = inject(TransactionService);
+	private _currentTx = inject(CurrentTransactionService);
 
 	private _teamStats = combineLatest([
 		this.uiService.branchId,
@@ -173,6 +178,13 @@ export class DashboardService {
 			),
 			tap((_) => (this.uiService.update = true))
 		);
+	}
+
+	deleteTeam(team: ScriptTeam) {
+		this._currentTx
+			.deleteArtifactAndMutate(`Delete Team ${team.name.value}`, team.id)
+			.pipe(take(1))
+			.subscribe();
 	}
 
 	updateArtifact(value: NamedId) {

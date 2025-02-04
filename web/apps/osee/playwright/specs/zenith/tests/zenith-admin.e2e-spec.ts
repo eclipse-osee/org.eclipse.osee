@@ -29,9 +29,7 @@ test('test baseline branch', async ({ page }) => {
 	).toBeDisabled();
 
 	await page.getByRole('button', { name: 'Teams' }).click();
-	await expect(
-		page.getByRole('button', { name: 'Add New Teams' })
-	).toBeDisabled();
+	await expect(page.getByTestId('add-team-button')).toBeDisabled();
 });
 
 test('test working branch', async ({ page }) => {
@@ -92,11 +90,9 @@ test('test working branch', async ({ page }) => {
 	).toBeVisible();
 
 	await page.getByRole('button', { name: 'Teams' }).click();
-	await expect(
-		page.getByRole('button', { name: 'Add New Teams' })
-	).toBeEnabled();
-	await page.getByRole('button', { name: 'Add New Teams' }).click();
+	await expect(page.getByTestId('add-team-button')).toBeEnabled();
+	await page.getByTestId('add-team-button').click();
 	await page.getByLabel('Name', { exact: true }).fill('Test Team');
-	await page.getByRole('button', { name: 'Save Changes' }).click();
-	await expect(page.getByRole('button', { name: 'Test Team' })).toBeVisible();
+	await page.getByRole('button', { name: 'Ok' }).click();
+	await expect(page.getByRole('cell', { name: 'Test Team' })).toBeVisible();
 });

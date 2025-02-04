@@ -1,5 +1,5 @@
 /*********************************************************************
- * Copyright (c) 2023 Boeing
+ * Copyright (c) 2025 Boeing
  *
  * This program and the accompanying materials are made
  * available under the terms of the Eclipse Public License 2.0
@@ -11,11 +11,11 @@
  *     Boeing - initial API and implementation
  **********************************************************************/
 import { Component } from '@angular/core';
-import { TeamsListComponent } from './teams-list.component';
+import { TeamsTableComponent } from './teams-table.component';
 
 @Component({
-	selector: 'osee-teams-list',
+	selector: 'osee-teams-table',
 	template: '<p>Dummy</p>',
 	standalone: true,
 })
-export class MockTeamsListComponent implements Partial<TeamsListComponent> {}
+export class MockTeamsTableComponent implements Partial<TeamsTableComponent> {}
