@@ -18,10 +18,18 @@ import { ciConfigSentinel } from '../../../types/ci-config';
 import { FormsModule } from '@angular/forms';
 import { filter, repeat, switchMap, take, tap } from 'rxjs';
 import { UiService } from '@osee/shared/services';
+import { MatButton } from '@angular/material/button';
+import { DashboardService } from '../../../services/dashboard.service';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
 	selector: 'osee-ci-admin-config',
-	imports: [PersistedNumberAttributeInputComponent, FormsModule],
+	imports: [
+		PersistedNumberAttributeInputComponent,
+		FormsModule,
+		MatButton,
+		MatTooltip,
+	],
 	template: `
 		<h5 class="tw-pl-4">Settings</h5>
 		@if (ciConfig().id !== '-1') {
@@ -41,18 +49,26 @@ import { UiService } from '@osee/shared/services';
 					to create a branch configuration.
 				</p>
 			}
-			<form
-				class="tw-max-w-80"
-				#defaultForm="ngForm">
-				<osee-persisted-number-attribute-input
-					[artifactId]="ciConfig().id"
-					[artifactApplicability]="ciConfig().applicability"
-					[value]="ciConfig().testResultsToKeep"
-					[disabled]="isDisabled()"
-					label="Number of results to keep"
-					tooltip="Number of test results that will be kept per test script per CI Set. When the number of results exceeds this limit, the oldest results are deleted."
-					data-testid="results-to-keep"></osee-persisted-number-attribute-input>
-			</form>
+			<div class="tw-flex tw-items-center tw-justify-between tw-px-4">
+				<form
+					class="tw-max-w-80"
+					#defaultForm="ngForm">
+					<osee-persisted-number-attribute-input
+						[artifactId]="ciConfig().id"
+						[artifactApplicability]="ciConfig().applicability"
+						[value]="ciConfig().testResultsToKeep"
+						[disabled]="isDisabled()"
+						label="Number of results to keep"
+						matTooltip="Number of test results that will be kept per test script per CI Set. When the number of results exceeds this limit, the oldest results are deleted."
+						data-testid="results-to-keep"></osee-persisted-number-attribute-input>
+				</form>
+				<button
+					mat-flat-button
+					matTooltip="Update timelines for active CI Sets"
+					(click)="updateTimelines()">
+					Update Timelines
+				</button>
+			</div>
 		} @else {
 			<p class="tw-p-4">
 				The Zenith Configuration artifact has not been created. Please
@@ -62,8 +78,9 @@ import { UiService } from '@osee/shared/services';
 	`,
 })
 export class CiAdminConfigComponent {
-	ciConfigService = inject(CiAdminConfigService);
-	uiService = inject(UiService);
+	private ciConfigService = inject(CiAdminConfigService);
+	private uiService = inject(UiService);
+	private dashboardService = inject(DashboardService);
 
 	branchType = toSignal(this.uiService.type);
 
@@ -88,6 +105,20 @@ export class CiAdminConfigComponent {
 			this.ciConfig().branch.id === this.commonBranch ||
 			this.ciConfig().branch.id === '-1'
 	);
+
+	updateTimelines() {
+		this.uiService.id
+			.pipe(
+				filter(
+					(branchId) =>
+						branchId !== '0' && branchId !== '-1' && branchId !== ''
+				),
+				switchMap((branchId) =>
+					this.dashboardService.updateTimelines(branchId)
+				)
+			)
+			.subscribe();
+	}
 
 	createBranchConfig() {
 		this.uiService.id
