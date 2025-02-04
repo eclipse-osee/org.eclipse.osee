@@ -333,6 +333,17 @@ pub trait FeatureCase {
 
 impl FeatureCase for MarkdownDocumentConfig {}
 
+pub trait EndFeature {
+    fn end_feature<'x, I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        E: ParseError<I>,
+    {
+        tag("End Feature")
+    }
+}
+
+impl EndFeature for MarkdownDocumentConfig {}
 //Configuration
 pub trait ConfigBase {
     fn config_base<'x, I, E>(&self) -> impl Parser<I, Error = E>
@@ -382,6 +393,18 @@ pub trait ConfigCase {
 
 impl ConfigCase for MarkdownDocumentConfig {}
 
+pub trait EndConfig {
+    fn end_config<'x, I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        E: ParseError<I>,
+    {
+        tag("End Configuration")
+    }
+}
+
+impl EndConfig for MarkdownDocumentConfig {}
+
 //Configuration Group
 pub trait GroupBase {
     fn group_base<'x, I, E>(&self) -> impl Parser<I, Error = E>
@@ -430,6 +453,18 @@ pub trait GroupCase {
 }
 
 impl GroupCase for MarkdownDocumentConfig {}
+
+pub trait EndGroup {
+    fn end_group<'x, I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        E: ParseError<I>,
+    {
+        tag("End ConfigurationGroup")
+    }
+}
+
+impl EndGroup for MarkdownDocumentConfig {}
 
 // Base Capabilities
 pub trait Space {
@@ -678,17 +713,48 @@ impl SingleLineComment for MarkdownDocumentConfig {
 }
 
 // LEXER IMPLEMENTATION
-pub trait LexApplicability<'x, I: Input + Compare<&'x str>, E: ParseError<I>> {
-    fn lex_applicability(&self) -> impl Parser<I, Error = E>;
+pub trait LexApplicability {
+    fn lex_applicability<'x, I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>;
 }
 
-impl<'a, I: Input + Compare<&'a str>, E: ParseError<I>, T> LexApplicability<'a, I, E> for T
+impl<T> LexApplicability for T
 where
-    I::Item: AsChar,
-    E: ParseError<I>,
-    T: FeatureBase + FeatureNot + FeatureSwitch,
+    T: FeatureBase
+        + FeatureNot
+        + FeatureSwitch
+        + FeatureCase
+        + EndFeature
+        + ConfigBase
+        + ConfigNot
+        + ConfigSwitch
+        + ConfigCase
+        + EndConfig
+        + GroupBase
+        + GroupNot
+        + GroupSwitch
+        + GroupCase
+        + EndGroup
+        + StartBrace
+        + EndBrace
+        + StartParen
+        + EndParen
+        + Not
+        + And
+        + Or
+        + Eof
+        + CarriageReturn
+        + NewLine,
 {
-    fn lex_applicability(&self) -> impl Parser<I, Error = E> {
+    fn lex_applicability<'x, I, E>(&self) -> impl Parser<I, Error = E>
+    where
+        I: Input + Compare<&'x str>,
+        I::Item: AsChar,
+        E: ParseError<I>,
+    {
         self.feature_base()
     }
 }
