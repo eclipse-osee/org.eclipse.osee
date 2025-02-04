@@ -548,6 +548,22 @@ pub trait Eof {
 
 impl Eof for MarkdownDocumentConfig {}
 
+// COMMENT SYNTAXES
+pub trait StartCommentSingleLine<I: Input, E: ParseError<I>> {
+    fn start_comment_single_line(&self) -> impl Parser<I, Error = E>;
+}
+
+impl<I: Input + for<'a> Compare<&'a str>, E: ParseError<I>> StartCommentSingleLine<I, E>
+    for MarkdownDocumentConfig
+{
+    fn start_comment_single_line(&self) -> impl Parser<I, Error = E>
+    where
+        I: for<'a> Compare<&'a str>,
+    {
+        tag("``")
+    }
+}
+
 // LEXER IMPLEMENTATION
 pub trait LexApplicability<'x, I: Input + Compare<&'x str>, E: ParseError<I>> {
     fn lex_applicability(&self) -> impl Parser<I, Error = E>;
