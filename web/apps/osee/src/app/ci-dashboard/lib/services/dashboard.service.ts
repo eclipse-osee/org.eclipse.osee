@@ -239,6 +239,10 @@ export class DashboardService {
 		);
 	}
 
+	updateTimelines(branchId: string) {
+		return this.dashboardHttpService.updateTimelines(branchId);
+	}
+
 	get teamStats() {
 		return this._teamStats;
 	}

@@ -98,4 +98,11 @@ export class DashboardHttpService {
 			{ params: { filter: filter } }
 		);
 	}
+
+	updateTimelines(branchId: string) {
+		return this.http.post(
+			`${apiURL}/script/dashboard/${branchId}/timeline/update`,
+			{}
+		);
+	}
 }

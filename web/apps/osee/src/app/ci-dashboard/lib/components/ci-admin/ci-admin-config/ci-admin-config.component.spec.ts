@@ -14,6 +14,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CiAdminConfigComponent } from './ci-admin-config.component';
 import { CiAdminConfigService } from '../../../services/ci-admin-config.service';
 import { ciAdminConfigServiceMock } from '../../../testing/ci-admin-config.service.mock';
+import { DashboardHttpService } from '../../../services/dashboard-http.service';
+import { dashboardHttpServiceMock } from '../../../services/dashboard-http.service.mock';
+import { TransactionService } from '@osee/transactions/services';
+import { transactionServiceMock } from '@osee/transactions/services/testing';
 
 describe('CiAdminConfigComponent', () => {
 	let component: CiAdminConfigComponent;
@@ -26,6 +30,14 @@ describe('CiAdminConfigComponent', () => {
 				{
 					provide: CiAdminConfigService,
 					useValue: ciAdminConfigServiceMock,
+				},
+				{
+					provide: DashboardHttpService,
+					useValue: dashboardHttpServiceMock,
+				},
+				{
+					provide: TransactionService,
+					useValue: transactionServiceMock,
 				},
 			],
 		}).compileComponents();
