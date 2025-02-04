@@ -20,7 +20,7 @@ import { BehaviorSubject } from 'rxjs';
 export class CiDashboardUiService {
 	private uiService = inject(UiService);
 
-	private _ciSetId = new BehaviorSubject<string>('-1');
+	private _ciSetId = new BehaviorSubject<`${number}`>('-1');
 
 	get branchType() {
 		return this.uiService.type;
@@ -42,7 +42,7 @@ export class CiDashboardUiService {
 		return this._ciSetId;
 	}
 
-	set CiSetId(id: string) {
+	set CiSetId(id: `${number}`) {
 		this._ciSetId.next(id);
 	}
 

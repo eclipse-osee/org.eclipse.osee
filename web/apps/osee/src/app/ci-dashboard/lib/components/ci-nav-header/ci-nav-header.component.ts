@@ -97,11 +97,7 @@ export default class CiNavHeaderComponent {
 						route.path = `/${branchType}`;
 					}
 					route.path = `/${branchType}/${branchId}`;
-					if (
-						ciSetId !== undefined &&
-						ciSetId !== '' &&
-						ciSetId !== '-1'
-					) {
+					if (ciSetId !== undefined && ciSetId !== '-1') {
 						route.queryParams = { set: ciSetId };
 					}
 					return of(route);

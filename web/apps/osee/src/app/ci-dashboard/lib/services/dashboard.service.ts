@@ -31,7 +31,7 @@ export class DashboardService {
 		this.uiService.branchId,
 		this.uiService.ciSetId,
 	]).pipe(
-		filter(([branchId, ciSetId]) => branchId !== '' && ciSetId !== ''),
+		filter(([branchId, ciSetId]) => branchId !== '' && ciSetId !== '-1'),
 		switchMap(([branchId, ciSetId]) =>
 			this.dashboardHttpService.getTeamStats(branchId, ciSetId)
 		)
@@ -41,7 +41,7 @@ export class DashboardService {
 		this.uiService.branchId,
 		this.uiService.ciSetId,
 	]).pipe(
-		filter(([branchId, ciSetId]) => branchId !== '' && ciSetId !== ''),
+		filter(([branchId, ciSetId]) => branchId !== '' && ciSetId !== '-1'),
 		switchMap(([branchId, ciSetId]) =>
 			this.dashboardHttpService.getSubsystemStats(branchId, ciSetId)
 		)
@@ -51,7 +51,13 @@ export class DashboardService {
 		this.uiService.branchId,
 		this.uiService.ciSetId,
 	]).pipe(
-		filter(([branchId, ciSetId]) => branchId !== '' && ciSetId !== ''),
+		filter(
+			([branchId, ciSetId]) =>
+				branchId !== '' &&
+				branchId !== '0' &&
+				branchId !== '-1' &&
+				ciSetId !== '-1'
+		),
 		switchMap(([branchId, ciSetId]) =>
 			this.dashboardHttpService.getTimelineStats(branchId, ciSetId)
 		)

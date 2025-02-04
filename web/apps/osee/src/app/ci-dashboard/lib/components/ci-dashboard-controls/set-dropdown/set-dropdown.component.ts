@@ -75,7 +75,7 @@ export class SetDropdownComponent {
 
 	selectedSet = combineLatest([this.sets, this.ui.ciSetId]).pipe(
 		switchMap(([sets, setId]) => {
-			if (setId === undefined || setId === '' || setId === '-1') {
+			if (setId === undefined || setId === '-1') {
 				if (sets.length > 0) {
 					this.selectSet(sets[0]);
 					return of(sets[0]);

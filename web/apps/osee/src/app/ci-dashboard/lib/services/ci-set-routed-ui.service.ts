@@ -30,8 +30,8 @@ export class CiSetRoutedUiService {
 			return;
 		}
 		const setId = params.get('set');
-		if (setId !== null) {
-			this.uiService.CiSetId = setId;
+		if (setId !== null && !isNaN(Number(setId))) {
+			this.uiService.CiSetId = setId as `${number}`;
 		} else {
 			this.uiService.CiSetId = '-1';
 		}

@@ -73,10 +73,7 @@ export class CiBatchService {
 		]).pipe(
 			filter(
 				([branchId, setId]) =>
-					branchId !== '' &&
-					branchId !== '-1' &&
-					setId !== '' &&
-					setId !== '-1'
+					branchId !== '' && branchId !== '-1' && setId !== '-1'
 			),
 			switchMap(([branchId, setId]) =>
 				this.tmoHttp.getBatches(
@@ -97,10 +94,7 @@ export class CiBatchService {
 		]).pipe(
 			filter(
 				([branchId, setId]) =>
-					branchId !== '' &&
-					branchId !== '-1' &&
-					setId !== '' &&
-					setId !== '-1'
+					branchId !== '' && branchId !== '-1' && setId !== '-1'
 			),
 			switchMap(([branchId, setId]) =>
 				this.tmoHttp.getBatchesCount(branchId, setId, filterText)
