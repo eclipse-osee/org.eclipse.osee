@@ -14,8 +14,8 @@
 package org.eclipse.osee.testscript;
 
 import java.util.Collection;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -32,7 +32,16 @@ import org.eclipse.osee.framework.jdk.core.annotation.Swagger;
 @Swagger
 public interface ScriptPurgeEndpoint {
 
-   @POST
+   /**
+    * Purge test results and their TMOs from the database/file system. The number of results that are kept is determined
+    * by the Zenith configuration artifact for the given branch.
+    *
+    * @param branchId - The working branch containing the test results to be purged.
+    * @param deleteOnly - If true, test results will be marked as deleted but not purged. If true, results will be
+    * deleted and then purged.
+    * @return TransactionResult determining success/fail and descriptions of errors if they occur.
+    */
+   @DELETE
    @Path("results/{branch}")
    @Produces(MediaType.APPLICATION_JSON)
    public TransactionResult purgeTestResults(@PathParam("branch") BranchId branchId,
